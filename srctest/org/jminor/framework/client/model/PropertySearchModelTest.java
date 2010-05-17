@@ -37,9 +37,9 @@ public class PropertySearchModelTest {
     assertEquals(property, model.getSearchProperty());
     model.setSearchType(SearchType.LIKE);
     model.setUpperBound("upper");
-    assertEquals(property.getPropertyID() + " = '" + "upper'", model.getPropertyCriteria().asString(DATABASE, VALUE_PROVIDER));
+    assertEquals(property.getPropertyID() + " like '" + "upper'", model.getPropertyCriteria().asString(DATABASE, VALUE_PROVIDER));
     model.setSearchType(SearchType.NOT_LIKE);
-    assertEquals(property.getPropertyID() + " <> '" + "upper'", model.getPropertyCriteria().asString(DATABASE, VALUE_PROVIDER));
+    assertEquals(property.getPropertyID() + " not like '" + "upper'", model.getPropertyCriteria().asString(DATABASE, VALUE_PROVIDER));
     model.setSearchType(SearchType.AT_MOST);
     assertEquals(property.getPropertyID() + " >= '" + "upper'", model.getPropertyCriteria().asString(DATABASE, VALUE_PROVIDER));
     model.setSearchType(SearchType.AT_LEAST);

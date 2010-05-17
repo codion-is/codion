@@ -30,15 +30,15 @@ public class EntityCriteriaUtilTest {
 
     EntityCriteria criteria = EntityCriteriaUtil.criteria(entity.getPrimaryKey());
     assertEquals(EmpDept.T_DEPARTMENT, criteria.getEntityID());
-    assertEquals("where (deptno = 10)", criteria.getWhereClause(DATABASE, VALUE_PROVIDER));
+    assertEquals("where deptno = 10", criteria.getWhereClause(DATABASE, VALUE_PROVIDER));
 
     criteria = EntityCriteriaUtil.criteria(Arrays.asList(entity.getPrimaryKey()));
     assertEquals(EmpDept.T_DEPARTMENT, criteria.getEntityID());
-    assertEquals("where (deptno = 10)", criteria.getWhereClause(DATABASE, VALUE_PROVIDER));
+    assertEquals("where deptno = 10", criteria.getWhereClause(DATABASE, VALUE_PROVIDER));
 
     criteria = EntityCriteriaUtil.criteria(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, SearchType.NOT_LIKE, "DEPT");
     assertEquals(EmpDept.T_DEPARTMENT, criteria.getEntityID());
-    assertEquals("where dname <> 'DEPT'", criteria.getWhereClause(DATABASE, VALUE_PROVIDER));
+    assertEquals("where dname not like 'DEPT'", criteria.getWhereClause(DATABASE, VALUE_PROVIDER));
   }
 
   @Test
@@ -48,14 +48,14 @@ public class EntityCriteriaUtilTest {
 
     EntitySelectCriteria criteria = EntityCriteriaUtil.selectCriteria(entity.getPrimaryKey());
     assertEquals(EmpDept.T_DEPARTMENT, criteria.getEntityID());
-    assertEquals("where (deptno = 10)", criteria.getWhereClause(DATABASE, VALUE_PROVIDER));
+    assertEquals("where deptno = 10", criteria.getWhereClause(DATABASE, VALUE_PROVIDER));
 
     criteria = EntityCriteriaUtil.selectCriteria(Arrays.asList(entity.getPrimaryKey()));
     assertEquals(EmpDept.T_DEPARTMENT, criteria.getEntityID());
-    assertEquals("where (deptno = 10)", criteria.getWhereClause(DATABASE, VALUE_PROVIDER));
+    assertEquals("where deptno = 10", criteria.getWhereClause(DATABASE, VALUE_PROVIDER));
 
     criteria = EntityCriteriaUtil.selectCriteria(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, SearchType.NOT_LIKE, "DEPT");
     assertEquals(EmpDept.T_DEPARTMENT, criteria.getEntityID());
-    assertEquals("where dname <> 'DEPT'", criteria.getWhereClause(DATABASE, VALUE_PROVIDER));
+    assertEquals("where dname not like 'DEPT'", criteria.getWhereClause(DATABASE, VALUE_PROVIDER));
   }
 }

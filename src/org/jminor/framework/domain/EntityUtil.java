@@ -115,6 +115,14 @@ public class EntityUtil {
     return keys;
   }
 
+  public static List<Object> getPropertyValues(final List<Entity.Key> keys) {
+    final List<Object> list = new ArrayList<Object>(keys.size());
+    for (final Entity.Key key : keys)
+      list.add(key.getFirstKeyValue());
+
+    return list;
+  }
+
   /**
    * @param propertyID the ID of the property for which to retrieve the values
    * @param entities the entities from which to retrieve the property value
@@ -214,6 +222,27 @@ public class EntityUtil {
       else {
         final Collection<Entity> list = new ArrayList<Entity>();
         list.add(entity);
+        entityMap.put(entityID, list);
+      }
+    }
+
+    return entityMap;
+  }
+
+  /**
+   * Returns a Map containing the given entity keys hashed by their entityIDs
+   * @param keys the entity keys to map by entityID
+   * @return a Map of entity keys hashed by entityID
+   */
+  public static Map<String, Collection<Entity.Key>> hashKeysByEntityID(final Collection<Entity.Key> keys) {
+    final Map<String, Collection<Entity.Key>> entityMap = new HashMap<String, Collection<Entity.Key>>(keys.size());
+    for (final Entity.Key key : keys) {
+      final String entityID = key.getEntityID();
+      if (entityMap.containsKey(entityID))
+        entityMap.get(entityID).add(key);
+      else {
+        final Collection<Entity.Key> list = new ArrayList<Entity.Key>();
+        list.add(key);
         entityMap.put(entityID, list);
       }
     }

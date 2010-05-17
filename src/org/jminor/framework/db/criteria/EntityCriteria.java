@@ -8,6 +8,7 @@ import org.jminor.common.db.dbms.Database;
 import org.jminor.framework.domain.EntityRepository;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * A class encapsulating query criteria parameters.
@@ -41,6 +42,20 @@ public class EntityCriteria implements Serializable {
       throw new IllegalArgumentException("Can not instantiate EntityCriteria without entityID");
     this.entityID = entityID;
     this.criteria = criteria;
+  }
+
+  /**
+   * @return the values the underlying criteria is based on, if any
+   */
+  public List<?> getValues() {
+    return criteria == null ? null : criteria.getValues();
+  }
+
+  /**
+   * @return the types of the values the underlying criteria is based on, if any
+   */
+  public List<Integer> getTypes() {
+    return criteria == null ? null : criteria.getTypes();
   }
 
   /**
@@ -82,7 +97,8 @@ public class EntityCriteria implements Serializable {
    * @param includeWhereKeyword if false AND is used instead of the WHERE keyword
    * @return a where clause base on this criteria
    */
-  public String getWhereClause(final Database database, final Criteria.ValueProvider valueProvider, final boolean includeWhereKeyword) {
+  public String getWhereClause(final Database database, final Criteria.ValueProvider valueProvider,
+                               final boolean includeWhereKeyword) {
     final String criteriaString = criteria == null ? "" : criteria.asString(database, valueProvider);
 
     return criteriaString.length() > 0 ? (includeWhereKeyword ? "where " : "and ") + criteriaString : "";

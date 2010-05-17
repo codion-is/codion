@@ -51,6 +51,8 @@ public class PropertyCriteria implements Criteria, Serializable {
    */
   private boolean caseSensitive = true;
 
+  private boolean isNullCriteria;
+
   /**
    * Instantiates a new PropertyCriteria instance
    * @param property the property
@@ -67,14 +69,35 @@ public class PropertyCriteria implements Criteria, Serializable {
     this.property = property;
     this.searchType = searchType;
     this.values = initValues(values);
+    this.isNullCriteria = this.values.size() == 1 && this.values.get(0) == null;
   }
 
   public Property getProperty() {
     return property;
   }
 
-  public List<Object> getValues() {
+  public List<?> getValues() {
+    if (isNullCriteria)
+      return new ArrayList();
+
+    if (getProperty() instanceof Property.ForeignKeyProperty)
+      return getForeignKeyCriteriaValues();
+
     return values;
+  }
+
+  public List<Integer> getTypes() {
+    if (isNullCriteria)
+      return new ArrayList<Integer>();
+
+    if (getProperty() instanceof Property.ForeignKeyProperty)
+      return getForeignKeyCriteriaTypes();
+
+    final ArrayList<Integer> types = new ArrayList<Integer>(values.size());
+    for (int i = 0; i < values.size(); i++)
+      types.add(property.getType());
+
+    return types;
   }
 
   public SearchType getSearchType() {
@@ -91,7 +114,7 @@ public class PropertyCriteria implements Criteria, Serializable {
   }
 
   public int getValueCount() {
-    return getValues().size();
+    return values.size();
   }
 
   /**
@@ -144,15 +167,14 @@ public class PropertyCriteria implements Criteria, Serializable {
     if (getProperty() instanceof Property.ForeignKeyProperty)
       return getForeignKeyCriteriaString(this, database, valueProvider);
 
-    final boolean isNullCriteria = getValueCount() == 1 && getValues().get(0) == null;
     final String columnIdentifier = initializeColumnIdentifier(isNullCriteria);
     if (isNullCriteria)
       return columnIdentifier + (getSearchType() == SearchType.LIKE ? " is null" : " is not null");
 
     final String sqlValue = getSqlValue(valueProvider.getSQLString(database,
-            getProperty(), getValues().get(0)));
+            getProperty(), values.get(0)));
     final String sqlValue2 = getValueCount() == 2 ? getSqlValue(valueProvider.getSQLString(
-            database, getProperty(), getValues().get(1))) : null;
+            database, getProperty(), values.get(1))) : null;
 
     switch(getSearchType()) {
       case LIKE:
@@ -177,7 +199,7 @@ public class PropertyCriteria implements Criteria, Serializable {
       return getMultipleColumnForeignKeyCriteriaString(database, valueProvider);
 
     final CriteriaSet set = new CriteriaSet(CriteriaSet.Conjunction.AND);
-    final Entity.Key entityKey = (Entity.Key) criteria.getValues().get(0);
+    final Entity.Key entityKey = (Entity.Key) criteria.values.get(0);
     final Collection<Property.PrimaryKeyProperty > primaryKeyProperties =
             EntityRepository.getPrimaryKeyProperties(((Property.ForeignKeyProperty) criteria.getProperty()).getReferencedEntityID());
     for (final Property.PrimaryKeyProperty keyProperty : primaryKeyProperties)
@@ -188,12 +210,44 @@ public class PropertyCriteria implements Criteria, Serializable {
     return set.asString(database, valueProvider);
   }
 
+  private List<?> getForeignKeyCriteriaValues() {
+    if (values.size() > 1)
+      return getMultipleColumnForeignKeyCriteriaValues();
+
+    final CriteriaSet set = new CriteriaSet(CriteriaSet.Conjunction.AND);
+    final Entity.Key entityKey = (Entity.Key) values.get(0);
+    final Collection<Property.PrimaryKeyProperty > primaryKeyProperties =
+            EntityRepository.getPrimaryKeyProperties(((Property.ForeignKeyProperty) getProperty()).getReferencedEntityID());
+    for (final Property.PrimaryKeyProperty keyProperty : primaryKeyProperties)
+      set.addCriteria(new PropertyCriteria(
+              ((Property.ForeignKeyProperty) getProperty()).getReferenceProperties().get(keyProperty.getIndex()),
+              getSearchType(), entityKey == null ? null : entityKey.getValue(keyProperty.getPropertyID())));
+
+    return set.getValues();
+  }
+
+  private List<Integer> getForeignKeyCriteriaTypes() {
+    if (values.size() > 1)
+      return getMultipleColumnForeignKeyCriteriaTypes();
+
+    final CriteriaSet set = new CriteriaSet(CriteriaSet.Conjunction.AND);
+    final Entity.Key entityKey = (Entity.Key) values.get(0);
+    final Collection<Property.PrimaryKeyProperty > primaryKeyProperties =
+            EntityRepository.getPrimaryKeyProperties(((Property.ForeignKeyProperty) getProperty()).getReferencedEntityID());
+    for (final Property.PrimaryKeyProperty keyProperty : primaryKeyProperties)
+      set.addCriteria(new PropertyCriteria(
+              ((Property.ForeignKeyProperty) getProperty()).getReferenceProperties().get(keyProperty.getIndex()),
+              getSearchType(), entityKey == null ? null : entityKey.getValue(keyProperty.getPropertyID())));
+
+    return set.getTypes();
+  }
+
   private String getMultipleColumnForeignKeyCriteriaString(final Database database, final ValueProvider valueProvider) {
     final Collection<Property.PrimaryKeyProperty > primaryKeyProperties =
             EntityRepository.getPrimaryKeyProperties(((Property.ForeignKeyProperty) getProperty()).getReferencedEntityID());
     if (primaryKeyProperties.size() > 1) {
       final CriteriaSet set = new CriteriaSet(CriteriaSet.Conjunction.OR);
-      for (final Object entityKey : getValues()) {
+      for (final Object entityKey : values) {
         final CriteriaSet pkSet = new CriteriaSet(CriteriaSet.Conjunction.AND);
         for (final Property.PrimaryKeyProperty keyProperty : primaryKeyProperties)
           pkSet.addCriteria(new PropertyCriteria(
@@ -210,13 +264,47 @@ public class PropertyCriteria implements Criteria, Serializable {
               getSearchType() == SearchType.NOT_LIKE, valueProvider);
   }
 
+  private List<?> getMultipleColumnForeignKeyCriteriaValues() {
+    final Collection<Property.PrimaryKeyProperty > primaryKeyProperties =
+            EntityRepository.getPrimaryKeyProperties(((Property.ForeignKeyProperty) getProperty()).getReferencedEntityID());
+    final CriteriaSet set = new CriteriaSet(CriteriaSet.Conjunction.OR);
+    for (final Object entityKey : values) {
+      final CriteriaSet pkSet = new CriteriaSet(CriteriaSet.Conjunction.AND);
+      for (final Property.PrimaryKeyProperty keyProperty : primaryKeyProperties)
+        pkSet.addCriteria(new PropertyCriteria(
+                ((Property.ForeignKeyProperty) getProperty()).getReferenceProperties().get(keyProperty.getIndex()),
+                getSearchType(), ((Entity.Key) entityKey).getValue(keyProperty.getPropertyID())));
+
+      set.addCriteria(pkSet);
+    }
+
+    return set.getValues();
+  }
+
+  private List<Integer> getMultipleColumnForeignKeyCriteriaTypes() {
+    final Collection<Property.PrimaryKeyProperty > primaryKeyProperties =
+            EntityRepository.getPrimaryKeyProperties(((Property.ForeignKeyProperty) getProperty()).getReferencedEntityID());
+    final CriteriaSet set = new CriteriaSet(CriteriaSet.Conjunction.OR);
+    for (final Object entityKey : values) {
+      final CriteriaSet pkSet = new CriteriaSet(CriteriaSet.Conjunction.AND);
+      for (final Property.PrimaryKeyProperty keyProperty : primaryKeyProperties)
+        pkSet.addCriteria(new PropertyCriteria(
+                ((Property.ForeignKeyProperty) getProperty()).getReferenceProperties().get(keyProperty.getIndex()),
+                getSearchType(), ((Entity.Key) entityKey).getValue(keyProperty.getPropertyID())));
+
+      set.addCriteria(pkSet);
+    }
+
+    return set.getTypes();
+  }
+
   private String getInList(final Database database, final String whereColumn, final boolean notIn,
                            final ValueProvider valueProvider) {
     final StringBuilder stringBuilder = new StringBuilder("(").append(whereColumn).append((notIn ? " not in (" : " in ("));
     int cnt = 1;
-    for (int i = 0; i < getValues().size(); i++) {
+    for (int i = 0; i < getValueCount(); i++) {
       final String sqlValue = valueProvider.getSQLString(database, getProperty(),
-              getValues().get(i));
+              values.get(i));
       if (getProperty().isString() && !isCaseSensitive())
         stringBuilder.append("upper(").append(sqlValue).append(")");
       else
@@ -236,19 +324,13 @@ public class PropertyCriteria implements Criteria, Serializable {
   private String getNotLikeCondition(final Database database, final String columnIdentifier, final String sqlValue,
                                      final ValueProvider valueProvider) {
     return getValueCount() > 1 ? getInList(database, columnIdentifier, true, valueProvider) :
-            columnIdentifier + (getProperty().isString() && containsWildcard(sqlValue)
-            ? " not like " + sqlValue : " <> " + sqlValue);
+            columnIdentifier + (getProperty().isString() ? " not like " + sqlValue : " <> " + sqlValue);
   }
 
   private String getLikeCondition(final Database database, final String columnIdentifier, final String sqlValue,
                                   final ValueProvider valueProvider) {
     return getValueCount() > 1 ? getInList(database, columnIdentifier, false, valueProvider) :
-            columnIdentifier + (getProperty().isString() && containsWildcard(sqlValue)
-            ? " like " + sqlValue : " = " + sqlValue);
-  }
-
-  private boolean containsWildcard(final String val) {
-    return val != null && val.length() > 0 && val.indexOf(getWildcard()) > -1;
+            columnIdentifier + (getProperty().isString() ? " like " + sqlValue : " = " + sqlValue);
   }
 
   private String initializeColumnIdentifier(final boolean isNullCriteria) {

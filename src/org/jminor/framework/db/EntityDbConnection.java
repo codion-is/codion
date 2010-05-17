@@ -6,7 +6,6 @@ package org.jminor.framework.db;
 import org.jminor.common.db.DbConnection;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.criteria.Criteria;
-import org.jminor.common.db.criteria.SimpleCriteria;
 import org.jminor.common.db.dbms.Database;
 import org.jminor.common.db.exception.DbException;
 import org.jminor.common.db.exception.RecordModifiedException;
@@ -155,14 +154,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     if (entityKeys == null || entityKeys.size() == 0)
       return;
 
-    final List<String> statements = new ArrayList<String>(entityKeys.size());
-    for (final Entity.Key entityKey : entityKeys) {
-      if (EntityRepository.isReadOnly(entityKey.getEntityID()))
-        throw new DbException("Can not delete a read only entity");
-      statements.add(0, getDeleteSQL(getDatabase(), entityKey));
-    }
-
-    executeStatements(statements);
+    delete(EntityCriteriaUtil.criteria(entityKeys));
   }
 
   /** {@inheritDoc} */
@@ -170,7 +162,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     if (EntityRepository.isReadOnly(criteria.getEntityID()))
       throw new DbException("Can not delete a read only entity");
 
-    executeStatements(Arrays.asList(getDeleteSQL(getDatabase(), criteria)));
+    executeStatements(Arrays.asList(getDeleteSQL(getDatabase(), criteria, ENTITY_SQL_VALUE_PROVIDER)));
   }
 
   /** {@inheritDoc} */
@@ -460,14 +452,23 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
    * @return a query for inserting this entity instance
    */
   static String getInsertSQL(final Database database, final Entity entity) {
+    return getInsertSQL(database, entity, ENTITY_SQL_VALUE_PROVIDER, getInsertProperties(entity));
+  }
+
+  /**
+   * @param database the Database instance
+   * @param entity the Entity instance
+   * @return a query for inserting this entity instance
+   */
+  static String getInsertSQL(final Database database, final Entity entity, final Criteria.ValueProvider valueProvider,
+                             final Collection<Property> insertProperties) {
     final StringBuilder sql = new StringBuilder("insert into ");
     sql.append(EntityRepository.getTableName(entity.getEntityID())).append("(");
     final StringBuilder columnValues = new StringBuilder(") values(");
-    final Collection<Property> insertProperties = getInsertProperties(entity);
     int columnIndex = 0;
     for (final Property property : insertProperties) {
       sql.append(property.getColumnName());
-      columnValues.append(ENTITY_SQL_VALUE_PROVIDER.getSQLString(database, property, entity.getValue(property.getPropertyID())));
+      columnValues.append(valueProvider.getSQLString(database, property, entity.getValue(property.getPropertyID())));
       if (columnIndex++ < insertProperties.size() - 1) {
         sql.append(", ");
         columnValues.append(", ");
@@ -509,7 +510,8 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
    * @return a query for deleting the entity having the given primary key
    */
   static String getDeleteSQL(final Database database, final Entity.Key entityKey) {
-    return getDeleteSQL(database, new EntityCriteria(entityKey.getEntityID(), new EntityKeyCriteria(entityKey)));
+    return getDeleteSQL(database, new EntityCriteria(entityKey.getEntityID(), new EntityKeyCriteria(entityKey)),
+            ENTITY_SQL_VALUE_PROVIDER);
   }
 
   /**
@@ -518,8 +520,18 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
    * @return a query for deleting the entities specified by the given criteria
    */
   static String getDeleteSQL(final Database database, final EntityCriteria criteria) {
+    return getDeleteSQL(database, criteria, ENTITY_SQL_VALUE_PROVIDER);
+  }
+
+  /**
+   * @param database the Database instance
+   * @param criteria the EntityCriteria instance
+   * @return a query for deleting the entities specified by the given criteria
+   */
+  static String getDeleteSQL(final Database database, final EntityCriteria criteria,
+                             final Criteria.ValueProvider valueProvider) {
     return new StringBuilder("delete from ").append(EntityRepository.getTableName(criteria.getEntityID())).append(" ")
-            .append(criteria.getWhereClause(database, ENTITY_SQL_VALUE_PROVIDER)).toString();
+            .append(criteria.getWhereClause(database, valueProvider)).toString();
   }
 
   /**
@@ -578,25 +590,13 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     return properties;
   }
 
-  private void executeStatements(final List<String> statements) throws DbException {
-    String sql = null;
-    try {
-      execute(statements);
-      if (!isTransactionOpen())
-        commit();
-    }
-    catch (SQLException exception) {
-      try {
-        if (!isTransactionOpen())
-          rollback();
-      }
-      catch (SQLException ex) {
-        log.info(sql);
-        log.error(this, ex);
-      }
+  protected EntityResultPacker getEntityResultPacker(final String entityID) {
+    EntityResultPacker packer = entityResultPackers.get(entityID);
+    if (packer == null)
+      entityResultPackers.put(entityID, packer = new EntityResultPacker(entityID,
+              EntityRepository.getDatabaseProperties(entityID), EntityRepository.getTransientProperties(entityID)));
 
-      throw new DbException(exception, sql, getDatabase().getErrorMessage(exception));
-    }
+    return packer;
   }
 
   /**
@@ -606,9 +606,9 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
    * @throws RecordNotFoundException in case the entity has been deleted
    * @throws RecordModifiedException in case the entity has been modified
    */
-  private void checkIfModified(final Entity entity) throws DbException {
-    final Entity current = selectSingle(new EntitySelectCriteria(entity.getEntityID(),
-            new SimpleCriteria(getWhereCondition(getDatabase(), entity))).setFetchDepthForAll(0));
+  protected void checkIfModified(final Entity entity) throws DbException {
+    final Entity current = selectSingle(EntityCriteriaUtil.selectCriteria(
+            entity.getPrimaryKey()).setFetchDepthForAll(0));
 
     if (!current.getPrimaryKey().equals(entity.getPrimaryKey().getOriginalCopy()))
       throw new RecordModifiedException(entity, current);
@@ -624,7 +624,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
    * @param criteria the criteria
    * @throws DbException in case of a database exception
    */
-  private void setForeignKeyValues(final List<Entity> entities, final EntitySelectCriteria criteria) throws DbException {
+  protected void setForeignKeyValues(final List<Entity> entities, final EntitySelectCriteria criteria) throws DbException {
     if (entities == null || entities.size() == 0)
       return;
     //Any sufficiently complex algorithm is indistinguishable from evil
@@ -647,19 +647,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     }
   }
 
-  private static List<Entity.Key> getReferencedPrimaryKeys(final List<Entity> entities,
-                                                           final Property.ForeignKeyProperty foreignKeyProperty) {
-    final Set<Entity.Key> keySet = new HashSet<Entity.Key>(entities.size());
-    for (final Entity entity : entities) {
-      final Entity.Key key = entity.getReferencedPrimaryKey(foreignKeyProperty);
-      if (key != null)
-        keySet.add(key);
-    }
-
-    return new ArrayList<Entity.Key>(keySet);
-  }
-
-  private int queryNewIdValue(final String entityID, final IdSource idSource) throws DbException {
+  protected int queryNewIdValue(final String entityID, final IdSource idSource) throws DbException {
     String sql;
     switch (idSource) {
       case MAX_PLUS_ONE:
@@ -683,13 +671,37 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     }
   }
 
-  private EntityResultPacker getEntityResultPacker(final String entityID) {
-    EntityResultPacker packer = entityResultPackers.get(entityID);
-    if (packer == null)
-      entityResultPackers.put(entityID, packer = new EntityResultPacker(entityID,
-              EntityRepository.getDatabaseProperties(entityID), EntityRepository.getTransientProperties(entityID)));
+  private void executeStatements(final List<String> statements) throws DbException {
+    String sql = null;
+    try {
+      execute(statements);
+      if (!isTransactionOpen())
+        commit();
+    }
+    catch (SQLException exception) {
+      try {
+        if (!isTransactionOpen())
+          rollback();
+      }
+      catch (SQLException ex) {
+        log.info(sql);
+        log.error(this, ex);
+      }
 
-    return packer;
+      throw new DbException(exception, sql, getDatabase().getErrorMessage(exception));
+    }
+  }
+
+  private static List<Entity.Key> getReferencedPrimaryKeys(final List<Entity> entities,
+                                                           final Property.ForeignKeyProperty foreignKeyProperty) {
+    final Set<Entity.Key> keySet = new HashSet<Entity.Key>(entities.size());
+    for (final Entity entity : entities) {
+      final Entity.Key key = entity.getReferencedPrimaryKey(foreignKeyProperty);
+      if (key != null)
+        keySet.add(key);
+    }
+
+    return new ArrayList<Entity.Key>(keySet);
   }
 
   private ResultPacker getPropertyResultPacker(final Property property) {

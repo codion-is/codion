@@ -20,6 +20,7 @@ import org.jminor.common.server.ServerLog;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityDb;
 import org.jminor.framework.db.EntityDbConnection;
+import org.jminor.framework.db.EntityDbPreparedConnection;
 import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.db.criteria.EntitySelectCriteria;
 import org.jminor.framework.domain.Entity;
@@ -548,7 +549,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     if (pool == null) {
       connectionPools.put(settings.getUser(), new DbConnectionPool(new DbConnectionProvider() {
         public DbConnection createConnection(final User user) throws ClassNotFoundException, SQLException {
-          return new EntityDbConnection(database, user);
+          return EntityDbRemoteAdapter.createDbConnection(database, user);
         }
         public void destroyConnection(final DbConnection connection) {
           connection.disconnect();
@@ -656,11 +657,16 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     }
 
     if (entityDbConnection == null) {
-      entityDbConnection = new EntityDbConnection(database, clientInfo.getUser());
+      entityDbConnection = createDbConnection(database, clientInfo.getUser());
       entityDbConnection.setLoggingEnabled(methodLogger.isEnabled());
     }
 
     return entityDbConnection;
+  }
+
+  private static EntityDbConnection createDbConnection(final Database database, final User user) throws ClassNotFoundException, SQLException {
+    return Configuration.getBooleanValue(Configuration.USE_PREPARED_STATEMENTS) ?
+            new EntityDbPreparedConnection(database, user) : new EntityDbConnection(database, user);
   }
 
   private static final String IS_CONNECTED = "isConnected";

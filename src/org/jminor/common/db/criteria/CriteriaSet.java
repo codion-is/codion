@@ -97,4 +97,20 @@ public class CriteriaSet implements Criteria, Serializable {
 
     return criteriaString.append(criteriaList.size() > 1 ? ")" : "").toString();
   }
+
+  public List<?> getValues() {
+    final List<Object> values = new ArrayList<Object>();
+    for (final Criteria criteria : criteriaList)
+      values.addAll(criteria.getValues());
+
+    return values;
+  }
+
+  public List<Integer> getTypes() {
+    final List<Integer> types = new ArrayList<Integer>();
+    for (final Criteria criteria : criteriaList)
+      types.addAll(criteria.getTypes());
+
+    return types;
+  }
 }

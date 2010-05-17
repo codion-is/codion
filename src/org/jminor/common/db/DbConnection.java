@@ -45,7 +45,6 @@ public class DbConnection {
   private Connection connection;
   private Statement checkConnectionStatement;
   private boolean transactionOpen = false;
-  private boolean connected = false;
 
   private long poolTime = -1;
 
@@ -54,7 +53,7 @@ public class DbConnection {
   /**
    * The object containing the method call log
    */
-  private final MethodLogger methodLogger = new DbLogger(true);
+  protected final MethodLogger methodLogger = new DbLogger(true);
 
   /**
    * Constructs a new instance of the DbConnection class, initialized and ready for usage
@@ -128,7 +127,6 @@ public class DbConnection {
     if (!isConnected())
       return;
 
-    connected = false;
     try {
       if (checkConnectionStatement != null && !checkConnectionStatement.isClosed())
         checkConnectionStatement.close();
@@ -151,7 +149,7 @@ public class DbConnection {
    * @return true if the connection is connected
    */
   public boolean isConnected() {
-    return connected;
+    return connection != null;
   }
 
   /**
@@ -529,6 +527,9 @@ public class DbConnection {
    * @return the underlying Connection object
    */
   public Connection getConnection() {
+    if (!isConnected())
+      throw new RuntimeException("Not connected");
+
     return connection;
   }
 
@@ -567,7 +568,6 @@ public class DbConnection {
             database.addConnectionProperties(connectionProperties));
     connection.setAutoCommit(false);
     checkConnectionStatement = connection.createStatement();
-    connected = true;
   }
 
   private boolean checkConnection() throws SQLException {
@@ -609,7 +609,7 @@ public class DbConnection {
     }
   }
 
-  private static final ResultPacker<Integer> INT_PACKER = new ResultPacker<Integer>() {
+  public static final ResultPacker<Integer> INT_PACKER = new ResultPacker<Integer>() {
     public List<Integer> pack(final ResultSet rs, final int fetchCount) throws SQLException {
       final List<Integer> integers = new ArrayList<Integer>();
       int counter = 0;
@@ -620,7 +620,7 @@ public class DbConnection {
     }
   };
 
-  private static final ResultPacker<String> STRING_PACKER = new ResultPacker<String>() {
+  public static final ResultPacker<String> STRING_PACKER = new ResultPacker<String>() {
     public List<String> pack(final ResultSet rs, final int fetchCount) throws SQLException {
       final List<String> strings = new ArrayList<String>();
       int counter = 0;

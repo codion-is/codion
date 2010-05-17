@@ -62,19 +62,20 @@ public class HSQLDatabase extends AbstractDatabase {
     else {
       final String host = getHost();
       if (host == null || host.length() == 0)
-        throw new RuntimeException(DATABASE_HOST + " is required for database type " + getDatabaseType());
+        throw new RuntimeException(DATABASE_HOST + " is required for embedded database type " + getDatabaseType());
       final String port = getPort();
       if (port == null || port.length() == 0)
-        throw new RuntimeException(DATABASE_PORT + " is required for database type " + getDatabaseType());
+        throw new RuntimeException(DATABASE_PORT + " is required for embedded database type " + getDatabaseType());
       final String sid = getSid();
       if (sid == null || sid.length() == 0)
-        throw new RuntimeException(DATABASE_SID + " is required for database type " + getDatabaseType());
+        throw new RuntimeException(DATABASE_SID + " is required for embedded database type " + getDatabaseType());
 
       return "jdbc:hsqldb:hsql//" + host + ":" + port + "/" + sid + (authentication == null ? "" : ";" + authentication);
     }
   }
 
   /** {@inheritDoc} */
+  @Override
   public String getAuthenticationInfo(final Properties connectionProperties) {
     if (connectionProperties != null) {
       final String username = (String) connectionProperties.get("user");
@@ -87,6 +88,6 @@ public class HSQLDatabase extends AbstractDatabase {
   }
 
   /** {@inheritDoc} */
-  public void shutdownEmbedded(final Properties connectionProperties) {
-  }
+  @Override
+  public void shutdownEmbedded(final Properties connectionProperties) {}
 }

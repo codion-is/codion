@@ -140,6 +140,13 @@ public class Configuration {
   public static final String DEFAULT_DATE_FORMAT = "jminor.client.defaultDateFormat";
 
   /**
+   * Indicates whether the db layer should use prepared statements<br>
+   * Value type: Boolean<br>
+   * Default value: true
+   */
+  public static final String USE_PREPARED_STATEMENTS = "jminor.db.usePreparedStatements";
+
+  /**
    * Indicates whether all entity panels should be enabled and receiving input by default<br>
    * Value type: Boolean<br>
    * Default value: false
@@ -419,6 +426,7 @@ public class Configuration {
     setValue(USE_LOOKUP_FIELD_SEARCH_HINT, true);
     setValue(DEFAULT_FOREIGN_KEY_FETCH_DEPTH, 1);
     setValue(LIMIT_FOREIGN_KEY_FETCH_DEPTH, true);
+    setValue(USE_PREPARED_STATEMENTS, true);
     parseSystemSettings();
   }
 
@@ -455,6 +463,7 @@ public class Configuration {
     parseBooleanSetting(USE_LOOKUP_FIELD_SEARCH_HINT);
     parseIntegerSetting(DEFAULT_FOREIGN_KEY_FETCH_DEPTH);
     parseBooleanSetting(LIMIT_FOREIGN_KEY_FETCH_DEPTH);
+    parseBooleanSetting(USE_PREPARED_STATEMENTS);
   }
 
   private static void parseIntegerSetting(final String setting) {

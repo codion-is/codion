@@ -111,7 +111,7 @@ public class EmpDept {
     Entity.setProxy(T_EMPLOYEE, new Entity.Proxy() {
       @Override
       public Color getBackgroundColor(final Entity entity) {
-        if (entity.getStringValue(EMPLOYEE_JOB).equals("MANAGER"))
+        if (!entity.isValueNull(EMPLOYEE_JOB) && entity.getStringValue(EMPLOYEE_JOB).equals("MANAGER"))
           return Color.CYAN;
 
         return super.getBackgroundColor(entity);

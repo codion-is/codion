@@ -5,6 +5,8 @@ package org.jminor.common.db.criteria;
 
 import org.jminor.common.db.dbms.Database;
 
+import java.util.List;
+
 /**
  * A generic interface for objects serving as where conditions in database queries
  */
@@ -15,6 +17,16 @@ public interface Criteria {
    * @param valueProvider responsible for providing the actual sql string values
    */
   String asString(final Database database, final ValueProvider valueProvider);
+
+  /**
+   * @return a list of the values this criteria is based on
+   */
+  List<?> getValues();
+
+  /**
+   * @return the types of the values this criteria is based on, if any
+   */
+  List<Integer> getTypes();
 
   /**
    * An interface describing an object responsible for returning sql string representations

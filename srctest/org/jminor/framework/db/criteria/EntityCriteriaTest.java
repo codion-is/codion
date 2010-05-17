@@ -34,7 +34,7 @@ public class EntityCriteriaTest {
             new PropertyCriteria(new Property("intProperty", Types.INTEGER), SearchType.LIKE, 666)
     );
     final EntityCriteria criteria = new EntityCriteria("entityID", set1);
-    assertEquals("where (stringProperty = 'value' and intProperty = 666)", criteria.getWhereClause(database, VALUE_PROVIDER));
+    assertEquals("where (stringProperty like 'value' and intProperty = 666)", criteria.getWhereClause(database, VALUE_PROVIDER));
     assertEquals(set1, criteria.getCriteria());
     final CriteriaSet set2 = new CriteriaSet(
             CriteriaSet.Conjunction.AND,
@@ -42,8 +42,8 @@ public class EntityCriteriaTest {
             new PropertyCriteria(new Property("stringProperty2", Types.VARCHAR), SearchType.LIKE, "value2").setCaseSensitive(false)
     );
     final CriteriaSet set3 = new CriteriaSet(CriteriaSet.Conjunction.OR, set1, set2);
-    assertEquals("where ((stringProperty = 'value' and intProperty = 666) " + "or"
-            + " (doubleProperty = 666.666 and upper(stringProperty2) = upper('value2')))",
+    assertEquals("where ((stringProperty like 'value' and intProperty = 666) " + "or"
+            + " (doubleProperty = 666.666 and upper(stringProperty2) like upper('value2')))",
             new EntityCriteria("entityID", set3).getWhereClause(database, VALUE_PROVIDER));
   }
 }

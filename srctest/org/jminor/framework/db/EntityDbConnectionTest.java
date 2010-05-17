@@ -11,6 +11,7 @@ import org.jminor.common.db.exception.RecordModifiedException;
 import org.jminor.common.db.exception.RecordNotFoundException;
 import org.jminor.common.model.User;
 import org.jminor.framework.db.criteria.EntityCriteria;
+import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.db.criteria.EntityKeyCriteria;
 import org.jminor.framework.db.criteria.EntitySelectCriteria;
 import org.jminor.framework.db.provider.EntityDbProvider;
@@ -28,9 +29,12 @@ import org.jminor.framework.domain.Property;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.util.JRLoader;
+import org.junit.After;
 import static org.junit.Assert.*;
+import org.junit.Before;
 import org.junit.Test;
 
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.Arrays;
@@ -52,6 +56,8 @@ public class EntityDbConnectionTest {
 
   public static final String COMBINED_ENTITY_ID = "selectQueryEntityID";
 
+  private EntityDbConnection connection;
+
   static {
     new Petstore();
     new EmpDept();
@@ -61,8 +67,50 @@ public class EntityDbConnectionTest {
             .setSelectQuery("select e.empno, d.deptno from scott.emp e, scott.dept d where e.deptno = d.deptno"));
   }
 
-  public EntityDbConnectionTest() {
+  public EntityDbConnectionTest() throws ClassNotFoundException, SQLException {
     new EntityTestDomain();
+  }
+
+  @Before
+  public void setup() throws ClassNotFoundException, SQLException {
+    connection = initializeConnection();
+  }
+
+  @After
+  public void tearDown() {
+    connection.disconnect();
+  }
+
+  @Test
+  public void delete() throws Exception {
+    try {
+      getConnection().beginTransaction();
+      final Entity.Key key = new Entity.Key(EmpDept.T_DEPARTMENT);
+      key.setValue(EmpDept.DEPARTMENT_ID, 40);
+      getConnection().delete(Arrays.asList(key));
+      try {
+        getConnection().selectSingle(key);
+        fail();
+      }
+      catch (DbException e) {}
+    }
+    finally {
+      getConnection().rollbackTransaction();
+    }
+    try {
+      getConnection().beginTransaction();
+      final Entity.Key key = new Entity.Key(EmpDept.T_DEPARTMENT);
+      key.setValue(EmpDept.DEPARTMENT_ID, 40);
+      getConnection().delete(EntityCriteriaUtil.criteria(key));
+      try {
+        getConnection().selectSingle(key);
+        fail();
+      }
+      catch (DbException e) {}
+    }
+    finally {
+      getConnection().rollbackTransaction();
+    }
   }
 
   @Test
@@ -70,22 +118,22 @@ public class EntityDbConnectionTest {
     final JasperReport report = (JasperReport) JRLoader.loadObject("resources/demos/empdept/reports/empdept_employees.jasper");
     final HashMap<String, Object> reportParameters = new HashMap<String, Object>();
     reportParameters.put("DEPTNO", Arrays.asList(10, 20));
-    final JasperPrint print = DB_PROVIDER.getEntityDb().fillReport(report, reportParameters);
+    final JasperPrint print = getConnection().fillReport(report, reportParameters);
     assertNotNull(print);
   }
 
   @Test
   public void selectAll() throws Exception {
-    final List<Entity> depts = DB_PROVIDER.getEntityDb().selectAll(EmpDept.T_DEPARTMENT);
+    final List<Entity> depts = getConnection().selectAll(EmpDept.T_DEPARTMENT);
     assertEquals(depts.size(), 4);
-    List<Entity> emps = DB_PROVIDER.getEntityDb().selectAll(COMBINED_ENTITY_ID);
+    List<Entity> emps = getConnection().selectAll(COMBINED_ENTITY_ID);
     assertTrue(emps.size() > 0);
   }
 
   @Test
   public void selectDependentEntities() throws Exception {
-    final List<Entity> accounting = DB_PROVIDER.getEntityDb().selectMany(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "ACCOUNTING");
-    final Map<String, List<Entity>> emps = DB_PROVIDER.getEntityDb().selectDependentEntities(accounting);
+    final List<Entity> accounting = getConnection().selectMany(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "ACCOUNTING");
+    final Map<String, List<Entity>> emps = getConnection().selectDependentEntities(accounting);
     assertEquals(1, emps.size());
     assertTrue(emps.containsKey(EmpDept.T_EMPLOYEE));
     assertEquals(7, emps.get(EmpDept.T_EMPLOYEE).size());
@@ -93,36 +141,36 @@ public class EntityDbConnectionTest {
 
   @Test
   public void selectMany() throws Exception {
-    List<Entity> result = DB_PROVIDER.getEntityDb().selectMany(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_ID, 10, 20);
+    List<Entity> result = getConnection().selectMany(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_ID, 10, 20);
     assertEquals(2, result.size());
-    result = DB_PROVIDER.getEntityDb().selectMany(EntityUtil.getPrimaryKeys(result));
+    result = getConnection().selectMany(EntityUtil.getPrimaryKeys(result));
     assertEquals(2, result.size());
-    result = DB_PROVIDER.getEntityDb().selectMany(new EntitySelectCriteria(EmpDept.T_DEPARTMENT, new SimpleCriteria("deptno in (10, 20)")));
+    result = getConnection().selectMany(new EntitySelectCriteria(EmpDept.T_DEPARTMENT, new SimpleCriteria("deptno in (10, 20)")));
     assertEquals(2, result.size());
-    result = DB_PROVIDER.getEntityDb().selectMany(new EntitySelectCriteria(COMBINED_ENTITY_ID, new SimpleCriteria("d.deptno = 10")));
+    result = getConnection().selectMany(new EntitySelectCriteria(COMBINED_ENTITY_ID, new SimpleCriteria("d.deptno = 10")));
     assertTrue(result.size() > 0);
 
     final EntitySelectCriteria criteria = new EntitySelectCriteria(EmpDept.T_EMPLOYEE, new SimpleCriteria("ename = 'BLAKE'"));
-    result = DB_PROVIDER.getEntityDb().selectMany(criteria);
+    result = getConnection().selectMany(criteria);
     Entity emp = result.get(0);
     assertTrue(emp.isLoaded(EmpDept.EMPLOYEE_DEPARTMENT_FK));
     assertTrue(emp.isLoaded(EmpDept.EMPLOYEE_MGR_FK));
     emp = emp.getEntityValue(EmpDept.EMPLOYEE_MGR_FK);
     assertFalse(emp.isLoaded(EmpDept.EMPLOYEE_MGR_FK));
 
-    result = DB_PROVIDER.getEntityDb().selectMany(criteria.setFetchDepth(EmpDept.EMPLOYEE_DEPARTMENT_FK, 0));
+    result = getConnection().selectMany(criteria.setFetchDepth(EmpDept.EMPLOYEE_DEPARTMENT_FK, 0));
     assertEquals(1, result.size());
     emp = result.get(0);
     assertFalse(emp.isLoaded(EmpDept.EMPLOYEE_DEPARTMENT_FK));
     assertTrue(emp.isLoaded(EmpDept.EMPLOYEE_MGR_FK));
 
-    result = DB_PROVIDER.getEntityDb().selectMany(criteria.setFetchDepth(EmpDept.EMPLOYEE_MGR_FK, 0));
+    result = getConnection().selectMany(criteria.setFetchDepth(EmpDept.EMPLOYEE_MGR_FK, 0));
     assertEquals(1, result.size());
     emp = result.get(0);
     assertFalse(emp.isLoaded(EmpDept.EMPLOYEE_DEPARTMENT_FK));
     assertFalse(emp.isLoaded(EmpDept.EMPLOYEE_MGR_FK));
 
-    result = DB_PROVIDER.getEntityDb().selectMany(criteria.setFetchDepth(EmpDept.EMPLOYEE_MGR_FK, 2));
+    result = getConnection().selectMany(criteria.setFetchDepth(EmpDept.EMPLOYEE_MGR_FK, 2));
     assertEquals(1, result.size());
     emp = result.get(0);
     assertFalse(emp.isLoaded(EmpDept.EMPLOYEE_DEPARTMENT_FK));
@@ -133,41 +181,41 @@ public class EntityDbConnectionTest {
 
   @Test(expected = DbException.class)
   public void selectManyInvalidColumn() throws Exception {
-    DB_PROVIDER.getEntityDb().selectMany(new EntitySelectCriteria(EmpDept.T_DEPARTMENT,
+    getConnection().selectMany(new EntitySelectCriteria(EmpDept.T_DEPARTMENT,
             new SimpleCriteria("no_column is null")));
   }
 
   @Test
   public void selectRowCount() throws Exception {
-    int rowCount = DB_PROVIDER.getEntityDb().selectRowCount(new EntityCriteria(EmpDept.T_DEPARTMENT));
+    int rowCount = getConnection().selectRowCount(new EntityCriteria(EmpDept.T_DEPARTMENT));
     assertEquals(4, rowCount);
-    rowCount = DB_PROVIDER.getEntityDb().selectRowCount(new EntityCriteria(COMBINED_ENTITY_ID));
+    rowCount = getConnection().selectRowCount(new EntityCriteria(COMBINED_ENTITY_ID));
     assertEquals(16, rowCount);
   }
 
   @Test
   public void selectSingle() throws Exception {
-    Entity sales = DB_PROVIDER.getEntityDb().selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "SALES");
+    Entity sales = getConnection().selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "SALES");
     assertEquals(sales.getStringValue(EmpDept.DEPARTMENT_NAME), "SALES");
-    sales = DB_PROVIDER.getEntityDb().selectSingle(sales.getPrimaryKey());
+    sales = getConnection().selectSingle(sales.getPrimaryKey());
     assertEquals(sales.getStringValue(EmpDept.DEPARTMENT_NAME), "SALES");
-    sales = DB_PROVIDER.getEntityDb().selectSingle(new EntitySelectCriteria(EmpDept.T_DEPARTMENT, new SimpleCriteria("dname = 'SALES'")));
+    sales = getConnection().selectSingle(new EntitySelectCriteria(EmpDept.T_DEPARTMENT, new SimpleCriteria("dname = 'SALES'")));
     assertEquals(sales.getStringValue(EmpDept.DEPARTMENT_NAME), "SALES");
   }
 
   @Test(expected = RecordNotFoundException.class)
   public void selectSingleNotFound() throws Exception {
-    DB_PROVIDER.getEntityDb().selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "NO_NAME");
+    getConnection().selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "NO_NAME");
   }
 
   @Test(expected = DbException.class)
   public void selectSingleManyFound() throws Exception {
-    DB_PROVIDER.getEntityDb().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB, "MANAGER");
+    getConnection().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB, "MANAGER");
   }
 
   @Test
   public void selectPropertyValues() throws Exception {
-    final List<Object> result = DB_PROVIDER.getEntityDb().selectPropertyValues(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, false);
+    final List<Object> result = getConnection().selectPropertyValues(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, false);
     assertTrue(result.contains("ACCOUNTING"));
     assertTrue(result.contains("SALES"));
     assertTrue(result.contains("RESEARCH"));
@@ -213,10 +261,10 @@ public class EntityDbConnectionTest {
     final Entity testEntity = new Entity(EntityTestDomain.T_DETAIL);
     testEntity.setValue(EntityTestDomain.DETAIL_ID, 1);
 
-    assertEquals("delete from " + EntityTestDomain.T_DETAIL + " where (id = 1)",
+    assertEquals("delete from " + EntityTestDomain.T_DETAIL + " where id = 1",
             EntityDbConnection.getDeleteSQL(DATABASE, testEntity.getPrimaryKey()));
 
-    assertEquals("delete from " + EntityTestDomain.T_DETAIL + " where (id = 1)",
+    assertEquals("delete from " + EntityTestDomain.T_DETAIL + " where id = 1",
             EntityDbConnection.getDeleteSQL(DATABASE, new EntityCriteria(testEntity.getEntityID(),
                     new EntityKeyCriteria(testEntity.getPrimaryKey()))));
   }
@@ -263,11 +311,10 @@ public class EntityDbConnectionTest {
 
   @Test
   public void optimisticLocking() throws Exception {
-    final Database database = DatabaseProvider.createInstance();
     String oldLocation = null;
     Entity updatedDeparment = null;
-    final EntityDbConnection baseDb = new EntityDbConnection(database, User.UNIT_TEST_USER);
-    final EntityDbConnection optimisticDb = new EntityDbConnection(database, User.UNIT_TEST_USER);
+    final EntityDbConnection baseDb = initializeConnection();
+    final EntityDbConnection optimisticDb = initializeConnection();
     optimisticDb.setOptimisticLocking(true);
     try {
       final Entity department = baseDb.selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "SALES");
@@ -295,5 +342,13 @@ public class EntityDbConnectionTest {
         e.printStackTrace();
       }
     }
+  }
+
+  protected EntityDbConnection initializeConnection() throws ClassNotFoundException, SQLException {
+    return new EntityDbConnection(DATABASE, User.UNIT_TEST_USER);
+  }
+
+  protected EntityDbConnection getConnection() {
+    return connection;
   }
 }

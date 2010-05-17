@@ -9,6 +9,8 @@ import org.jminor.common.db.dbms.DatabaseProvider;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
+import java.util.List;
+
 public class CriteriaSetTest {
 
   private static final Database DATABASE = DatabaseProvider.createInstance();
@@ -33,6 +35,14 @@ public class CriteriaSetTest {
   private static class Criteria implements org.jminor.common.db.criteria.Criteria {
     public String asString(final Database database, final ValueProvider valueProvider) {
       return "criteria";
+    }
+
+    public List<?> getValues() {
+      return null;
+    }
+
+    public List<Integer> getTypes() {
+      return null;
     }
   }
 }
