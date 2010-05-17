@@ -1568,3 +1568,4 @@
   ValueChangeMapEditPanel.getComponent(key) added
   PropertySummaryModel.Sum now uses long for integer sums, preventing overflow
   EntityPanel.getSelectComponentProperties() now excludes disabled components
+0.5.5
