@@ -319,8 +319,9 @@ public class Chinook {
 
     EntityRepository.add(new EntityDefinition(T_INVOICE,
             new Property.PrimaryKeyProperty(INVOICE_INVOICEID, Types.INTEGER, "Invoice no."),
-            new Property(INVOICE_INVOICEID_AS_STRING, Types.VARCHAR)
-                    .setReadOnly(true),
+            new Property(INVOICE_INVOICEID_AS_STRING, Types.VARCHAR, "Invoice no.")
+                    .setReadOnly(true)
+                    .setHidden(true),
             new Property.ForeignKeyProperty(INVOICE_CUSTOMERID_FK, "Customer", T_CUSTOMER,
                     new Property(INVOICE_CUSTOMERID))
                     .setNullable(false),
