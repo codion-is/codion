@@ -600,6 +600,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
                                      final List<?> values, final List<? extends Property> properties) throws SQLException {
     SQLException exception = null;
     try {
+      queryCounter.count(sqlStatement);
       methodLogger.logAccess("executePreparedUpdate", new Object[] {sqlStatement, values});
       setParameterValues(statement, values, properties);
       statement.executeUpdate();
@@ -619,6 +620,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
                                           final List<?> values, final List<Property> properties) throws SQLException {
     SQLException exception = null;
     try {
+      queryCounter.count(sqlStatement);
       methodLogger.logAccess("executePreparedSelect", new Object[] {sqlStatement, values});
       setParameterValues(statement, values, properties);
       return statement.executeQuery();

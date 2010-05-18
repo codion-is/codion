@@ -48,7 +48,7 @@ public class DbConnection {
 
   private long poolTime = -1;
 
-  private static final QueryCounter counter = new QueryCounter();
+  protected static final QueryCounter queryCounter = new QueryCounter();
 
   /**
    * The object containing the method call log
@@ -225,7 +225,7 @@ public class DbConnection {
    * @throws SQLException thrown if anything goes wrong during the query execution
    */
   public final List query(final String sql, final ResultPacker resultPacker, final int fetchCount) throws SQLException {
-    counter.count(sql);
+    queryCounter.count(sql);
     methodLogger.logAccess("query", new Object[] {sql});
     final long time = System.currentTimeMillis();
     Statement statement = null;
@@ -337,7 +337,7 @@ public class DbConnection {
     ByteArrayInputStream inputStream = null;
     PreparedStatement statement = null;
     final String sql = "update " + tableName + " set " + columnName + " = ? where " + whereClause;
-    counter.count(sql);
+    queryCounter.count(sql);
     methodLogger.logAccess("writeBlobField", new Object[] {sql});
     SQLException exception = null;
     try {
@@ -417,7 +417,7 @@ public class DbConnection {
   }
 
   public Object executeCallableStatement(final String sqlStatement, final int outParameterType) throws SQLException {
-    counter.count(sqlStatement);
+    queryCounter.count(sqlStatement);
     methodLogger.logAccess("executeCallableStatement", new Object[] {sqlStatement, outParameterType});
     final long time = System.currentTimeMillis();
     log.debug(sqlStatement);
@@ -456,7 +456,7 @@ public class DbConnection {
    * @throws SQLException thrown if anything goes wrong during execution
    */
   public final void execute(final String sql) throws SQLException {
-    counter.count(sql);
+    queryCounter.count(sql);
     methodLogger.logAccess("execute", new Object[] {sql});
     final long time = System.currentTimeMillis();
     log.debug(sql);
@@ -502,7 +502,7 @@ public class DbConnection {
       statement = connection.createStatement();
       for (final String sql : sqls) {
         statement.addBatch(sql);
-        counter.count(sql);
+        queryCounter.count(sql);
         log.debug(sql);
       }
       statement.executeBatch();
@@ -538,9 +538,9 @@ public class DbConnection {
   }
 
   public static DatabaseStatistics getDatabaseStatistics() {
-    return new DatabaseStatistics(counter.getQueriesPerSecond(),
-            counter.getSelectsPerSecond(), counter.getInsertsPerSecond(),
-            counter.getDeletesPerSecond(), counter.getUpdatesPerSecond());
+    return new DatabaseStatistics(queryCounter.getQueriesPerSecond(),
+            queryCounter.getSelectsPerSecond(), queryCounter.getInsertsPerSecond(),
+            queryCounter.getDeletesPerSecond(), queryCounter.getUpdatesPerSecond());
   }
 
   public List<LogEntry> getLogEntries() {
@@ -653,7 +653,7 @@ public class DbConnection {
     }
   }
 
-  private static class QueryCounter {
+  public static class QueryCounter {
     private long queriesPerSecondTime = System.currentTimeMillis();
     private int queriesPerSecond = 0;
     private int queriesPerSecondCounter = 0;
