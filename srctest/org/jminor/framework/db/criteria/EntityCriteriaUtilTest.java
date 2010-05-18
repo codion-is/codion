@@ -1,8 +1,5 @@
 package org.jminor.framework.db.criteria;
 
-import org.jminor.common.db.criteria.Criteria;
-import org.jminor.common.db.dbms.Database;
-import org.jminor.common.db.dbms.DatabaseProvider;
 import org.jminor.common.model.SearchType;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entity;
@@ -14,9 +11,6 @@ import org.junit.Test;
 import java.util.Arrays;
 
 public class EntityCriteriaUtilTest {
-
-  private static final Database DATABASE = DatabaseProvider.createInstance();
-  private static final Criteria.ValueProvider VALUE_PROVIDER = EntityCriteriaUtil.getCriteriaValueProvider();
 
   @BeforeClass
   public static void init() {
@@ -30,15 +24,15 @@ public class EntityCriteriaUtilTest {
 
     EntityCriteria criteria = EntityCriteriaUtil.criteria(entity.getPrimaryKey());
     assertEquals(EmpDept.T_DEPARTMENT, criteria.getEntityID());
-    assertEquals("where deptno = 10", criteria.getWhereClause(DATABASE, VALUE_PROVIDER));
+    assertEquals("where deptno = ?", criteria.getWhereClause());
 
     criteria = EntityCriteriaUtil.criteria(Arrays.asList(entity.getPrimaryKey()));
     assertEquals(EmpDept.T_DEPARTMENT, criteria.getEntityID());
-    assertEquals("where deptno = 10", criteria.getWhereClause(DATABASE, VALUE_PROVIDER));
+    assertEquals("where deptno = ?", criteria.getWhereClause());
 
     criteria = EntityCriteriaUtil.criteria(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, SearchType.NOT_LIKE, "DEPT");
     assertEquals(EmpDept.T_DEPARTMENT, criteria.getEntityID());
-    assertEquals("where dname not like 'DEPT'", criteria.getWhereClause(DATABASE, VALUE_PROVIDER));
+    assertEquals("where dname not like ?", criteria.getWhereClause());
   }
 
   @Test
@@ -48,14 +42,14 @@ public class EntityCriteriaUtilTest {
 
     EntitySelectCriteria criteria = EntityCriteriaUtil.selectCriteria(entity.getPrimaryKey());
     assertEquals(EmpDept.T_DEPARTMENT, criteria.getEntityID());
-    assertEquals("where deptno = 10", criteria.getWhereClause(DATABASE, VALUE_PROVIDER));
+    assertEquals("where deptno = ?", criteria.getWhereClause());
 
     criteria = EntityCriteriaUtil.selectCriteria(Arrays.asList(entity.getPrimaryKey()));
     assertEquals(EmpDept.T_DEPARTMENT, criteria.getEntityID());
-    assertEquals("where deptno = 10", criteria.getWhereClause(DATABASE, VALUE_PROVIDER));
+    assertEquals("where deptno = ?", criteria.getWhereClause());
 
     criteria = EntityCriteriaUtil.selectCriteria(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, SearchType.NOT_LIKE, "DEPT");
     assertEquals(EmpDept.T_DEPARTMENT, criteria.getEntityID());
-    assertEquals("where dname not like 'DEPT'", criteria.getWhereClause(DATABASE, VALUE_PROVIDER));
+    assertEquals("where dname not like ?", criteria.getWhereClause());
   }
 }

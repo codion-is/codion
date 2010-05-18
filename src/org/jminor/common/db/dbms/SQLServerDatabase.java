@@ -3,19 +3,12 @@
  */
 package org.jminor.common.db.dbms;
 
-import org.jminor.common.model.DateUtil;
-
-import java.text.DateFormat;
-import java.util.Date;
 import java.util.Properties;
 
 /**
  * A Database implementation based on the SQL Server (2000 or higher) database.
  */
 public class SQLServerDatabase extends AbstractDatabase {
-
-  private static final ThreadLocal<DateFormat> dateFormat = DateUtil.getThreadLocalDateFormat("dd-MM-yyyy");//105
-  private static final ThreadLocal<DateFormat> timestampFormat = DateUtil.getThreadLocalDateFormat("yyyy-MM-dd HH:mm:ss");//120
 
   public SQLServerDatabase() {
     super(SQLSERVER);
@@ -38,13 +31,6 @@ public class SQLServerDatabase extends AbstractDatabase {
   /** {@inheritDoc} */
   public String getSequenceSQL(final String sequenceName) {
     throw new RuntimeException("Sequence support is not implemented for database type: " + getDatabaseType());
-  }
-
-  /** {@inheritDoc} */
-  public String getSQLDateString(final Date value, final boolean isTimestamp) {
-    return isTimestamp ?
-            "convert(datetime, '" + timestampFormat.get().format(value) + "', 120)" :
-            "convert(datetime, '" + dateFormat.get().format(value) + "', 105)";
   }
 
   /** {@inheritDoc} */

@@ -3,19 +3,12 @@
  */
 package org.jminor.common.db.dbms;
 
-import org.jminor.common.model.DateUtil;
-
-import java.text.DateFormat;
-import java.util.Date;
 import java.util.Properties;
 
 /**
  * A Database implementation based on the H2 database.
  */
 public class H2Database extends AbstractDatabase {
-
-  private static final ThreadLocal<DateFormat> dateFormat = DateUtil.getThreadLocalDateFormat("yyyy-MM-dd");
-  private static final ThreadLocal<DateFormat> timestampFormat = DateUtil.getThreadLocalDateFormat("yyyy-MM-dd HH:mm:ss");
 
   public H2Database() {
     super(H2);
@@ -42,13 +35,6 @@ public class H2Database extends AbstractDatabase {
   /** {@inheritDoc} */
   public String getSequenceSQL(final String sequenceName) {
     return "select next value for " + sequenceName;
-  }
-
-  /** {@inheritDoc} */
-  public String getSQLDateString(final Date value, final boolean isTimestamp) {
-    return isTimestamp ?
-            "PARSEDATETIME('" + timestampFormat.get().format(value) + "', 'yyyy-MM-dd HH:mm:ss')" :
-            "PARSEDATETIME('" + dateFormat.get().format(value) + "', 'yyyy-MM-dd')";
   }
 
   /** {@inheritDoc} */

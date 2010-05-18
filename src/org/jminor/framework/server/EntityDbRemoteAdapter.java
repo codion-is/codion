@@ -5,7 +5,6 @@ package org.jminor.framework.server;
 
 import org.jminor.common.db.DbConnection;
 import org.jminor.common.db.DbConnectionProvider;
-import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.dbms.Database;
 import org.jminor.common.db.exception.DbException;
 import org.jminor.common.db.pool.ConnectionPool;
@@ -20,7 +19,6 @@ import org.jminor.common.server.ServerLog;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityDb;
 import org.jminor.framework.db.EntityDbConnection;
-import org.jminor.framework.db.EntityDbPreparedConnection;
 import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.db.criteria.EntitySelectCriteria;
 import org.jminor.framework.domain.Entity;
@@ -128,7 +126,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     this.database = database;
     this.clientInfo = clientInfo;
     this.loggingEntityDbProxy = initializeProxy();
-    this.methodLogger = new RemoteLogger(database, EntityDbConnection.ENTITY_SQL_VALUE_PROVIDER);
+    this.methodLogger = new RemoteLogger();
     this.methodLogger.setEnabled(loggingEnabled);
     try {
       clientInfo.setClientHost(getClientHost());
@@ -665,8 +663,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   }
 
   private static EntityDbConnection createDbConnection(final Database database, final User user) throws ClassNotFoundException, SQLException {
-    return Configuration.getBooleanValue(Configuration.USE_PREPARED_STATEMENTS) ?
-            new EntityDbPreparedConnection(database, user) : new EntityDbConnection(database, user);
+    return new EntityDbConnection(database, user);
   }
 
   private static final String IS_CONNECTED = "isConnected";
@@ -728,13 +725,8 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
 
   static class RemoteLogger extends MethodLogger {
 
-    private final Database database;
-    private final Criteria.ValueProvider valueProvider;
-
-    public RemoteLogger(final Database database, final Criteria.ValueProvider valueProvider) {
+    public RemoteLogger() {
       super(Integer.parseInt(System.getProperty(Configuration.SERVER_CONNECTION_LOG_SIZE, "40")));
-      this.database = database;
-      this.valueProvider = valueProvider;
     }
 
     @Override
@@ -771,20 +763,15 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     }
 
     private void appendEntityCriteria(final EntityCriteria criteria, StringBuilder destination) {
-      if (Configuration.getBooleanValue(Configuration.USE_PREPARED_STATEMENTS)) {
-        destination.append(criteria.getEntityID());
-        final String whereClause = criteria.getWhereClause(database, EntityDbPreparedConnection.PREPARED_VALUE_PROVIDER, true);
-        if (whereClause != null && whereClause.length() > 0) {
-          destination.append(", ").append(whereClause);
-        }
-        final List<?> values = criteria.getValues();
-        if (values != null) {
-          destination.append(", ");
-          parameterToString(values, destination);
-        }
+      destination.append(criteria.getEntityID());
+      final String whereClause = criteria.getWhereClause(true);
+      if (whereClause != null && whereClause.length() > 0) {
+        destination.append(", ").append(whereClause);
       }
-      else {
-        destination.append(criteria.asString(database, valueProvider));
+      final List<?> values = criteria.getValues();
+      if (values != null) {
+        destination.append(", ");
+        parameterToString(values, destination);
       }
     }
 

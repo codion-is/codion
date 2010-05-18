@@ -381,7 +381,7 @@ public class DbConnection {
     methodLogger.logAccess("commit", new Object[0]);
     SQLException exception = null;
     try {
-      connection.commit();
+      getConnection().commit();
     }
     catch (SQLException e) {
       exception = e;
@@ -405,7 +405,7 @@ public class DbConnection {
     methodLogger.logAccess("rollback", new Object[0]);
     SQLException exception = null;
     try {
-      connection.rollback();
+      getConnection().rollback();
     }
     catch (SQLException e) {
       exception = e;

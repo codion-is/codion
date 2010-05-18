@@ -6,8 +6,6 @@ package org.jminor.common.db.dbms;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.Properties;
 
 public class DerbyDatabaseTest {
@@ -27,9 +25,6 @@ public class DerbyDatabaseTest {
     }
     catch (RuntimeException e) {}
     assertEquals("jdbc:derby://host:1234/sid;user=scott;password=tiger", db.getURL(props));
-    final Timestamp date = new Timestamp(System.currentTimeMillis());
-    assertEquals("DATE('" + new SimpleDateFormat("yyyy-MM-dd").format(date) + "')", db.getSQLDateString(date, false));
-    assertEquals("DATE('" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date) + "')", db.getSQLDateString(date, true));
 
     db = new DerbyDatabase("dbname");
     assertEquals("jdbc:derby:dbname;user=scott;password=tiger", db.getURL(props));

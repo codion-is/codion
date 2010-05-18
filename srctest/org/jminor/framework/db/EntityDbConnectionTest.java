@@ -4,7 +4,6 @@
 package org.jminor.framework.db;
 
 import org.jminor.common.db.criteria.SimpleCriteria;
-import org.jminor.common.db.dbms.Database;
 import org.jminor.common.db.dbms.DatabaseProvider;
 import org.jminor.common.db.exception.DbException;
 import org.jminor.common.db.exception.RecordModifiedException;
@@ -12,7 +11,6 @@ import org.jminor.common.db.exception.RecordNotFoundException;
 import org.jminor.common.model.User;
 import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
-import org.jminor.framework.db.criteria.EntityKeyCriteria;
 import org.jminor.framework.db.criteria.EntitySelectCriteria;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.db.provider.EntityDbProviderFactory;
@@ -21,7 +19,6 @@ import org.jminor.framework.demos.petstore.domain.Petstore;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityDefinition;
 import org.jminor.framework.domain.EntityRepository;
-import org.jminor.framework.domain.EntityTest;
 import org.jminor.framework.domain.EntityTestDomain;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
@@ -35,10 +32,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,7 +47,6 @@ public class EntityDbConnectionTest {
 
   public static final EntityDbProvider DB_PROVIDER =
           EntityDbProviderFactory.createEntityDbProvider(User.UNIT_TEST_USER, "JMinor Unit Tests");
-  public static final Database DATABASE = DatabaseProvider.createInstance();
 
   public static final String COMBINED_ENTITY_ID = "selectQueryEntityID";
 
@@ -222,93 +216,6 @@ public class EntityDbConnectionTest {
   }
 
   @Test
-  public void getInsertSQL() throws Exception {
-    final int idValue = 1;
-    final int intValue = 2;
-    final double doubleValue = 1.2;
-    final String stringValue = "string";
-    final Date dateValue = new Date();
-    final Timestamp timestampValue = new Timestamp(new Date().getTime());
-    final Boolean booleanValue = true;
-    final int referenceId = 2;
-
-    final Entity referencedEntityValue = new Entity(EntityTestDomain.T_MASTER);
-    referencedEntityValue.setValue(EntityTestDomain.MASTER_ID, referenceId);
-    referencedEntityValue.setValue(EntityTestDomain.MASTER_NAME, stringValue);
-
-    final Entity testEntity = EntityTest.getDetailEntity(idValue, intValue, null,
-            stringValue, null, null, booleanValue, referencedEntityValue);
-
-    assertEquals("insert into " + EntityTestDomain.T_DETAIL
-            + "(id, int, string, boolean, entity_id)"
-            + " values(1, 2, 'string', 1, 2)", EntityDbConnection.getInsertSQL(DATABASE, testEntity));
-
-    testEntity.setValue(EntityTestDomain.DETAIL_DOUBLE, doubleValue);
-    testEntity.setValue(EntityTestDomain.DETAIL_DATE, dateValue);
-    testEntity.setValue(EntityTestDomain.DETAIL_TIMESTAMP, timestampValue);
-
-    final String shortDateStringSql = DATABASE.getSQLDateString(dateValue, false);
-    final String longDateStringSql = DATABASE.getSQLDateString(timestampValue, true);
-    assertEquals("insert into " + EntityTestDomain.T_DETAIL
-            + "(id, int, double, string, date, timestamp, boolean, entity_id)"
-            + " values(1, 2, 1.2, 'string', " + shortDateStringSql + ", " + longDateStringSql + ", 1, 2)",
-            EntityDbConnection.getInsertSQL(DATABASE, testEntity));
-  }
-
-  @Test
-  public void getDeleteSQL() throws Exception {
-    final Entity testEntity = new Entity(EntityTestDomain.T_DETAIL);
-    testEntity.setValue(EntityTestDomain.DETAIL_ID, 1);
-
-    assertEquals("delete from " + EntityTestDomain.T_DETAIL + " where id = 1",
-            EntityDbConnection.getDeleteSQL(DATABASE, testEntity.getPrimaryKey()));
-
-    assertEquals("delete from " + EntityTestDomain.T_DETAIL + " where id = 1",
-            EntityDbConnection.getDeleteSQL(DATABASE, new EntityCriteria(testEntity.getEntityID(),
-                    new EntityKeyCriteria(testEntity.getPrimaryKey()))));
-  }
-
-  @Test
-  public void getUpdateSQL() throws Exception {
-    final int idValue = 1;
-    final int intValue = 2;
-    final double doubleValue = 1.2;
-    final String stringValue = "string";
-    final Date dateValue = new Date();
-    final Timestamp timestampValue = new Timestamp(new Date().getTime());
-    final Boolean booleanValue = true;
-    final int referenceId = 2;
-
-    final Entity referencedEntityValue = new Entity(EntityTestDomain.T_MASTER);
-    referencedEntityValue.setValue(EntityTestDomain.MASTER_ID, referenceId);
-    referencedEntityValue.setValue(EntityTestDomain.MASTER_NAME, stringValue);
-
-    final Entity testEntity = EntityTest.getDetailEntity(idValue, intValue, doubleValue,
-            stringValue, dateValue, timestampValue, booleanValue, referencedEntityValue);
-
-    try {
-      EntityDbConnection.getUpdateSQL(DATABASE, testEntity);
-      fail("Should get an exception when trying to get update sql of a non-modified entity");
-    }
-    catch (Exception e) {}
-
-    testEntity.setValue(EntityTestDomain.DETAIL_INT, 42);
-    testEntity.setValue(EntityTestDomain.DETAIL_STRING, "newString");
-    assertEquals( "update " + EntityTestDomain.T_DETAIL
-            + " set int = 42, string = 'newString' where (id = 1)",
-            EntityDbConnection.getUpdateSQL(DATABASE, testEntity));
-    testEntity.setValue(EntityTestDomain.DETAIL_STRING, "string");
-    assertEquals("update " + EntityTestDomain.T_DETAIL + " set int = 42 where (id = 1)",
-            EntityDbConnection.getUpdateSQL(DATABASE, testEntity));
-  }
-
-  @Test
-  public void getSelectSql() throws Exception {
-    final String generated = EntityDbConnection.getSelectSQL("table", "col, col2", "where col = 1", "col2");
-    assertEquals("Generate select should be working", "select col, col2 from table where col = 1 order by col2", generated);
-  }
-
-  @Test
   public void optimisticLocking() throws Exception {
     String oldLocation = null;
     Entity updatedDeparment = null;
@@ -344,7 +251,7 @@ public class EntityDbConnectionTest {
   }
 
   protected EntityDbConnection initializeConnection() throws ClassNotFoundException, SQLException {
-    return new EntityDbConnection(DATABASE, User.UNIT_TEST_USER);
+    return new EntityDbConnection(DatabaseProvider.createInstance(), User.UNIT_TEST_USER);
   }
 
   protected EntityDbConnection getConnection() {

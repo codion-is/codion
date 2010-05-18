@@ -5,7 +5,6 @@ package org.jminor.framework.db.criteria;
 
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.criteria.CriteriaSet;
-import org.jminor.common.db.dbms.Database;
 import org.jminor.common.model.SearchType;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.domain.Entity;
@@ -79,9 +78,9 @@ public class PropertyCriteria implements Criteria<Property>, Serializable {
     return property;
   }
 
-  public List<?> getValues() {
+  public List<Object> getValues() {
     if (isNullCriteria)
-      return new ArrayList();//null criteria, uses 'x is null', not 'x = ?'
+      return new ArrayList<Object>();//null criteria, uses 'x is null', not 'x = ?'
 
     if (getProperty() instanceof Property.ForeignKeyProperty)
       return getForeignKeyCriteriaValues();
@@ -99,21 +98,30 @@ public class PropertyCriteria implements Criteria<Property>, Serializable {
     return Collections.nCopies(values.size(), property);
   }
 
+  /**
+   * @return the number values contained in this criteria.
+   */
+  public int getValueCount() {
+    return getValues().size();
+  }
+
+  /**
+   * @return the active search type.
+   */
   public SearchType getSearchType() {
     return searchType;
   }
 
+  /**
+   * @return the wildcard to use in case of string properties.
+   */
   public String getWildcard() {
     return wildcard;
   }
 
   /** {@inheritDoc} */
-  public String asString(final Database database, final ValueProvider valueProvider) {
-    return getConditionString(database, valueProvider);
-  }
-
-  public int getValueCount() {
-    return values.size();
+  public String asString() {
+    return getConditionString();
   }
 
   /**
@@ -158,22 +166,22 @@ public class PropertyCriteria implements Criteria<Property>, Serializable {
       return Arrays.asList(values);
   }
 
-  private String getConditionString(final Database database, final ValueProvider valueProvider) {
+  private String getConditionString() {
     if (property instanceof Property.ForeignKeyProperty)
-      return getForeignKeyCriteriaString(database, valueProvider);
+      return getForeignKeyCriteriaString();
 
     final String columnIdentifier = initializeColumnIdentifier(property);
     if (isNullCriteria)
       return columnIdentifier + (getSearchType() == SearchType.LIKE ? " is null" : " is not null");
 
-    final String sqlValue = getSqlValue(valueProvider.getSQLString(database, property, values.get(0)));
-    final String sqlValue2 = getValueCount() == 2 ? getSqlValue(valueProvider.getSQLString(database, property, values.get(1))) : null;
+    final String sqlValue = getSqlValue("?");
+    final String sqlValue2 = getValueCount() == 2 ? getSqlValue("?") : null;
 
     switch(getSearchType()) {
       case LIKE:
-        return getLikeCondition(database, property, sqlValue, valueProvider);
+        return getLikeCondition(property, sqlValue);
       case NOT_LIKE:
-        return getNotLikeCondition(database, property, sqlValue, valueProvider);
+        return getNotLikeCondition(property, sqlValue);
       case AT_LEAST:
         return columnIdentifier + " <= " + sqlValue;
       case AT_MOST:
@@ -191,29 +199,29 @@ public class PropertyCriteria implements Criteria<Property>, Serializable {
     return property.isString() && !caseSensitive ? "upper(" + sqlStringValue + ")" : sqlStringValue;
   }
 
-  private String getForeignKeyCriteriaString(final Database database, final ValueProvider valueProvider) {
+  private String getForeignKeyCriteriaString() {
     if (getValueCount() > 1)
-      return getMultipleForeignKeyCriteriaString(database, valueProvider);
+      return getMultipleForeignKeyCriteriaString();
 
-    return createSingleForeignKeyCriteria((Entity.Key) values.get(0)).asString(database, valueProvider);
+    return createSingleForeignKeyCriteria((Entity.Key) values.get(0)).asString();
   }
 
-  private String getMultipleForeignKeyCriteriaString(final Database database, final ValueProvider valueProvider) {
+  private String getMultipleForeignKeyCriteriaString() {
     if (((Property.ForeignKeyProperty) getProperty()).isCompositeReference())
-      return createMultipleCompositeForeignKeyCriteria().asString(database, valueProvider);
+      return createMultipleCompositeForeignKeyCriteria().asString();
     else
-      return getInList(database, ((Property.ForeignKeyProperty) getProperty()).getReferenceProperties().get(0),
-              getSearchType() == SearchType.NOT_LIKE, valueProvider);
+      return getInList(((Property.ForeignKeyProperty) getProperty()).getReferenceProperties().get(0),
+              getSearchType() == SearchType.NOT_LIKE);
   }
 
-  private List<?> getForeignKeyCriteriaValues() {
+  private List<Object> getForeignKeyCriteriaValues() {
     if (values.size() > 1)
       return getCompositeForeignKeyCriteriaValues();
 
     return createSingleForeignKeyCriteria((Entity.Key) values.get(0)).getValues();
   }
 
-  private List<?> getCompositeForeignKeyCriteriaValues() {
+  private List<Object> getCompositeForeignKeyCriteriaValues() {
     return createMultipleCompositeForeignKeyCriteria().getValues();
   }
 
@@ -249,22 +257,19 @@ public class PropertyCriteria implements Criteria<Property>, Serializable {
     }
   }
 
-  private String getNotLikeCondition(final Database database, final Property property, final String sqlValue, final ValueProvider valueProvider) {
-    return getValueCount() > 1 ? getInList(database, property, true, valueProvider) :
-            initializeColumnIdentifier(property) + (property.isString() ? " not like " + sqlValue : " <> " + sqlValue);
+  private String getNotLikeCondition(final Property property, final String likeValue) {
+    return getValueCount() > 1 ? getInList(property, true) :
+            initializeColumnIdentifier(property) + (property.isString() ? " not like "  + likeValue: " <> " + likeValue);
   }
 
-  private String getInList(final Database database, final Property property, final boolean notIn,
-                           final ValueProvider valueProvider) {
+  private String getInList(final Property property, final boolean notIn) {
     final StringBuilder stringBuilder = new StringBuilder("(").append(initializeColumnIdentifier(property)).append((notIn ? " not in (" : " in ("));
     int cnt = 1;
     for (int i = 0; i < getValueCount(); i++) {
-      final String sqlValue = valueProvider.getSQLString(database, getProperty(),
-              values.get(i));
       if (getProperty().isString() && !isCaseSensitive())
-        stringBuilder.append("upper(").append(sqlValue).append(")");
+        stringBuilder.append("upper(?)");
       else
-        stringBuilder.append(sqlValue);
+        stringBuilder.append("?");
       if (cnt++ == 1000 && i < getValueCount() - 1) {//Oracle limit
         stringBuilder.append(notIn ? ") and " : ") or ").append(property.getColumnName()).append(" in (");
         cnt = 1;
@@ -277,9 +282,9 @@ public class PropertyCriteria implements Criteria<Property>, Serializable {
     return stringBuilder.toString();
   }
 
-  private String getLikeCondition(final Database database, final Property property, final String sqlValue, final ValueProvider valueProvider) {
-    return getValueCount() > 1 ? getInList(database, property, false, valueProvider) :
-            initializeColumnIdentifier(property) + (property.isString() ? " like " + sqlValue : " = " + sqlValue);
+  private String getLikeCondition(final Property property, final String likeValue) {
+    return getValueCount() > 1 ? getInList(property, false) : initializeColumnIdentifier(property) +
+            (property.isString() ? " like " + likeValue : " = " + likeValue);
   }
 
   private String initializeColumnIdentifier(final Property property) {

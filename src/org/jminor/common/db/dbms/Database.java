@@ -4,7 +4,6 @@
 package org.jminor.common.db.dbms;
 
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.Properties;
 
 /**
@@ -146,13 +145,6 @@ public interface Database {
    * @return a query for selecting the next value from the given sequence
    */
   String getSequenceSQL(final String sequenceName);
-
-  /**
-   * @param value the date value
-   * @param isTimestamp if true then a timestamp is expected
-   * @return a sql string for inserting the given date
-   */
-  String getSQLDateString(final Date value, final boolean isTimestamp);
 
   /**
    * @param connectionProperties the connection properties, used primarily to provide

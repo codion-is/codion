@@ -4,7 +4,6 @@
 package org.jminor.framework.db.criteria;
 
 import org.jminor.common.db.criteria.Criteria;
-import org.jminor.common.db.dbms.Database;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
 
@@ -75,32 +74,25 @@ public class EntityCriteria implements Serializable {
 
   /**
    * Returns a where condition based on this EntityCriteria
-   * @param database the Database instance
-   * @param valueProvider responsible for providing the actual sql string values
    * @return a where condition based on this EntityCriteria
    */
-  public String asString(final Database database, final Criteria.ValueProvider valueProvider) {
-    return EntityRepository.getTableName(getEntityID()) + " " + getWhereClause(database, valueProvider);
+  public String asString() {
+    return EntityRepository.getTableName(getEntityID()) + " " + getWhereClause();
   }
 
   /**
-   * @param database the Database instance
-   * @param valueProvider responsible for providing the actual sql string values
    * @return the where clause
    */
-  public String getWhereClause(final Database database, final Criteria.ValueProvider valueProvider) {
-    return getWhereClause(database, valueProvider, true);
+  public String getWhereClause() {
+    return getWhereClause(true);
   }
 
   /**
-   * @param database the Database instance
-   * @param valueProvider responsible for providing the actual sql string values
    * @param includeWhereKeyword if false AND is used instead of the WHERE keyword
    * @return a where clause base on this criteria
    */
-  public String getWhereClause(final Database database, final Criteria.ValueProvider valueProvider,
-                               final boolean includeWhereKeyword) {
-    final String criteriaString = criteria == null ? "" : criteria.asString(database, valueProvider);
+  public String getWhereClause(final boolean includeWhereKeyword) {
+    final String criteriaString = criteria == null ? "" : criteria.asString();
 
     return criteriaString.length() > 0 ? (includeWhereKeyword ? "where " : "and ") + criteriaString : "";
   }

@@ -3,21 +3,14 @@
  */
 package org.jminor.common.db.dbms;
 
-import org.jminor.common.model.DateUtil;
-
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.text.DateFormat;
-import java.util.Date;
 import java.util.Properties;
 
 /**
  * A Database implementation based on the Derby database.
  */
 public class DerbyDatabase extends AbstractDatabase {
-
-  private static final ThreadLocal<DateFormat> dateFormat = DateUtil.getThreadLocalDateFormat("yyyy-MM-dd");
-  private static final ThreadLocal<DateFormat> timestampFormat = DateUtil.getThreadLocalDateFormat("yyyy-MM-dd HH:mm:ss");
 
   public DerbyDatabase() {
     super(DERBY);
@@ -44,11 +37,6 @@ public class DerbyDatabase extends AbstractDatabase {
   /** {@inheritDoc} */
   public String getSequenceSQL(final String sequenceName) {
     throw new RuntimeException("Sequence support is not implemented for database type: " + getDatabaseType());
-  }
-
-  /** {@inheritDoc} */
-  public String getSQLDateString(final Date value, final boolean isTimestamp) {
-    return "DATE('" + (isTimestamp ? timestampFormat.get().format(value) : dateFormat.get().format(value)) + "')";
   }
 
   /** {@inheritDoc} */

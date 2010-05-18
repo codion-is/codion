@@ -3,8 +3,6 @@
  */
 package org.jminor.common.db.criteria;
 
-import org.jminor.common.db.dbms.Database;
-
 import java.util.List;
 
 /**
@@ -26,11 +24,11 @@ public class SimpleCriteria<T> implements Criteria<T> {
     this.keys = keys;
   }
 
-  public String asString(final Database database, final ValueProvider valueProvider) {
+  public String asString() {
     return criteriaString;
   }
 
-  public List<?> getValues() {
+  public List<Object> getValues() {
     return values;
   }
 

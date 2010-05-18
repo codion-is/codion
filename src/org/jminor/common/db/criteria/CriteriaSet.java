@@ -3,8 +3,6 @@
  */
 package org.jminor.common.db.criteria;
 
-import org.jminor.common.db.dbms.Database;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -83,14 +81,14 @@ public class CriteriaSet<T> implements Criteria<T>, Serializable {
   }
 
   /** {@inheritDoc} */
-  public String asString(final Database database, final ValueProvider valueProvider) {
+  public String asString() {
     if (criteriaList.size() == 0)
       return "";
 
     final StringBuilder criteriaString = new StringBuilder(criteriaList.size() > 1 ? "(" : "");
     int i = 0;
     for (final Criteria criteria : criteriaList) {
-      criteriaString.append(criteria.asString(database, valueProvider));
+      criteriaString.append(criteria.asString());
       if (i++ < criteriaList.size() - 1)
         criteriaString.append(conjunction.toString());
     }
@@ -98,7 +96,7 @@ public class CriteriaSet<T> implements Criteria<T>, Serializable {
     return criteriaString.append(criteriaList.size() > 1 ? ")" : "").toString();
   }
 
-  public List<?> getValues() {
+  public List<Object> getValues() {
     final List<Object> values = new ArrayList<Object>();
     for (final Criteria<T> criteria : criteriaList)
       values.addAll(criteria.getValues());

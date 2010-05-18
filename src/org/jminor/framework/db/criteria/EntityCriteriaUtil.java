@@ -3,73 +3,18 @@
  */
 package org.jminor.framework.db.criteria;
 
-import org.jminor.common.db.criteria.Criteria;
-import org.jminor.common.db.dbms.Database;
 import org.jminor.common.model.SearchType;
-import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
-import org.jminor.framework.domain.Property;
 
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 /**
  * A static utility class for constructing query criteria implementations
  */
 public class EntityCriteriaUtil {
-
-  private static Criteria.ValueProvider valueProvider;
-
-  public static Criteria.ValueProvider getCriteriaValueProvider() {
-    if (valueProvider == null)
-      valueProvider = new Criteria.ValueProvider() {
-        public String getSQLString(final Database database, final Object columnKey, final Object value) {
-          final Property property = (Property) columnKey;
-          if (value == null)
-            return "null";
-
-          if (property.isNumerical())
-            return value.toString();//localize?
-          else if (property.isTimestamp()) {
-            if (!(value instanceof Date))
-              throw new IllegalArgumentException("Date value expected for: " + columnKey + ", got: " + value.getClass());
-            return database.getSQLDateString((Date) value, true);
-          }
-          else if (property.isDate()) {
-            if (!(value instanceof Date))
-              throw new IllegalArgumentException("Date value expected for: " + columnKey + ", got: " + value.getClass());
-            return database.getSQLDateString((Date) value, false);
-          }
-          else if (property.isCharacter()) {
-            return "'" + value + "'";
-          }
-          else if (property.isString()) {
-            if (!(value instanceof String))
-              throw new IllegalArgumentException("String value expected for: " + columnKey + ", got: " + value.getClass());
-            return "'" + Util.sqlEscapeString((String) value) + "'";
-          }
-          else if (property.isBoolean()) {
-            if (!(value instanceof Boolean))
-              throw new IllegalArgumentException("Boolean value expected for property: " + property + ", got: " + value.getClass());
-            if (property instanceof Property.BooleanProperty)
-              return ((Property.BooleanProperty) property).toSQLString((Boolean) value);
-            else
-              return getBooleanSQLString((Boolean) value);
-          }
-          else if (property.isReference()) {
-            return value instanceof Entity ? getSQLString(database, columnKey, ((Entity) value).getPrimaryKey().getFirstKeyValue())
-                    : getSQLString(database, ((Entity.Key) value).getFirstKeyProperty(), ((Entity.Key) value).getFirstKeyValue());
-          }
-          else
-            throw new IllegalArgumentException("Undefined property type: " + property.getType());
-        }
-      };
-
-    return valueProvider;
-  }
 
   public static String getBooleanSQLString(final Boolean value) {
     String sqlString;

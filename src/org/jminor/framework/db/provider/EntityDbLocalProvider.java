@@ -7,10 +7,8 @@ import org.jminor.common.db.dbms.Database;
 import org.jminor.common.db.dbms.DatabaseProvider;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
-import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityDb;
 import org.jminor.framework.db.EntityDbConnection;
-import org.jminor.framework.db.EntityDbPreparedConnection;
 
 import org.apache.log4j.Logger;
 
@@ -105,7 +103,6 @@ public class EntityDbLocalProvider implements EntityDbProvider {
 
   private void connect() throws ClassNotFoundException, SQLException {
     log.debug("Initializing connection for " + user);
-    entityDb = Configuration.getBooleanValue(Configuration.USE_PREPARED_STATEMENTS) ?
-            new EntityDbPreparedConnection(database, user) : new EntityDbConnection(database, user);
+    entityDb = new EntityDbConnection(database, user);
   }
 }

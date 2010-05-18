@@ -3,18 +3,16 @@
  */
 package org.jminor.framework.client.model;
 
-import org.jminor.common.db.criteria.Criteria;
-import org.jminor.common.db.dbms.Database;
-import org.jminor.common.db.dbms.DatabaseProvider;
 import org.jminor.common.model.SearchType;
-import org.jminor.framework.Configuration;
-import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
+
+import java.util.List;
 
 /**
  * User: Bjorn Darri
@@ -22,9 +20,6 @@ import org.junit.Test;
  * Time: 18:07:24
  */
 public class PropertySearchModelTest {
-
-  private static final Database DATABASE = DatabaseProvider.createInstance();
-  private static final Criteria.ValueProvider VALUE_PROVIDER = EntityCriteriaUtil.getCriteriaValueProvider();
 
   static {
     new EmpDept();
@@ -37,24 +32,27 @@ public class PropertySearchModelTest {
     assertEquals(property, model.getSearchProperty());
     model.setSearchType(SearchType.LIKE);
     model.setUpperBound("upper");
-    assertEquals(property.getPropertyID() + " like '" + "upper'", model.getPropertyCriteria().asString(DATABASE, VALUE_PROVIDER));
+    assertEquals(property.getPropertyID() + " like ?", model.getPropertyCriteria().asString());
     model.setSearchType(SearchType.NOT_LIKE);
-    assertEquals(property.getPropertyID() + " not like '" + "upper'", model.getPropertyCriteria().asString(DATABASE, VALUE_PROVIDER));
+    assertEquals(property.getPropertyID() + " not like ?", model.getPropertyCriteria().asString());
     model.setSearchType(SearchType.AT_MOST);
-    assertEquals(property.getPropertyID() + " >= '" + "upper'", model.getPropertyCriteria().asString(DATABASE, VALUE_PROVIDER));
+    assertEquals(property.getPropertyID() + " >= ?", model.getPropertyCriteria().asString());
     model.setSearchType(SearchType.AT_LEAST);
-    assertEquals(property.getPropertyID() + " <= '" + "upper'", model.getPropertyCriteria().asString(DATABASE, VALUE_PROVIDER));
+    assertEquals(property.getPropertyID() + " <= ?", model.getPropertyCriteria().asString());
 
     model.setSearchType(SearchType.WITHIN_RANGE);
     model.setLowerBound("lower");
-    assertEquals("(" + property.getPropertyID() + " >= '" + "lower' and "
-            + property.getPropertyID() + " <= '" + "upper')", model.getPropertyCriteria().asString(DATABASE, VALUE_PROVIDER));
+    List<Object> values = model.getPropertyCriteria().getValues();
+    assertTrue(values.contains("upper"));
+    assertTrue(values.contains("lower"));
+    assertEquals("(" + property.getPropertyID() + " >= ? and " + property.getPropertyID() + " <= ?)", model.getPropertyCriteria().asString());
 
     model.setSearchType(SearchType.LIKE);
     model.setAutomaticWildcard(true);
-    final String wildcard = (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER);
-    assertEquals(property.getPropertyID() + " like '" + wildcard + "upper" + wildcard + "'", model.getPropertyCriteria().asString(DATABASE, VALUE_PROVIDER));
+    values = model.getPropertyCriteria().getValues();
+    assertTrue(values.contains("%upper%"));
+    assertEquals(property.getPropertyID() + " like ?", model.getPropertyCriteria().asString());
     model.setSearchType(SearchType.NOT_LIKE);
-    assertEquals(property.getPropertyID() + " not like '" + wildcard + "upper" + wildcard + "'", model.getPropertyCriteria().asString(DATABASE, VALUE_PROVIDER));
+    assertEquals(property.getPropertyID() + " not like ?", model.getPropertyCriteria().asString());
   }
 }
