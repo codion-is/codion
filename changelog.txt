@@ -1600,3 +1600,6 @@
   Entity.Key.setAs() now sets the hashCode value instead of simply setting the hash code dirty flag
   FilteredComboBoxModel now contains the nullValueString, sort comparator guarantees it stays at the top
   ItemComboBoxModel sort comparator keeps null items at the top
+  Property.hasDescription() added
+  EntityUiUtil now only adds tool tips to components if description is provided
+  EntityLookupField adds the lookup properties as default tool tip

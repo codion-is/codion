@@ -7,6 +7,7 @@ import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.criteria.CriteriaSet;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.SearchType;
+import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.criteria.EntitySelectCriteria;
 import org.jminor.framework.db.criteria.PropertyCriteria;
@@ -16,6 +17,7 @@ import org.jminor.framework.domain.Property;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -89,6 +91,14 @@ public class EntityLookupModel {
 
   public String getEntityID() {
     return entityID;
+  }
+
+  public List<Property> getLookupProperties() {
+    return Collections.unmodifiableList(lookupProperties);
+  }
+
+  public String getDescription() {
+    return Util.getListContentsAsString(getLookupProperties(), false);
   }
 
   public boolean isMultipleSelectionAllowed() {
@@ -196,7 +206,7 @@ public class EntityLookupModel {
     if (getSearchString().equals(getWildcard()))
       return new EntitySelectCriteria(getEntityID());
 
-    final CriteriaSet baseCriteria = new CriteriaSet(CriteriaSet.Conjunction.OR);
+    final CriteriaSet<Property> baseCriteria = new CriteriaSet<Property>(CriteriaSet.Conjunction.OR);
     final String[] lookupTexts = isMultipleSelectionAllowed() ? getSearchString().split(getMultipleValueSeparator()) : new String[] {getSearchString()};
     for (final Property lookupProperty : lookupProperties) {
       for (final String lookupText : lookupTexts) {
@@ -207,7 +217,7 @@ public class EntityLookupModel {
     }
 
     return new EntitySelectCriteria(getEntityID(), additionalLookupCriteria == null ? baseCriteria :
-            new CriteriaSet(CriteriaSet.Conjunction.AND, additionalLookupCriteria, baseCriteria));
+            new CriteriaSet<Property>(CriteriaSet.Conjunction.AND, additionalLookupCriteria, baseCriteria));
   }
 
   public List<Entity> performQuery() {

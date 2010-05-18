@@ -78,6 +78,7 @@ public class EntityLookupField extends JTextField {
       throw new IllegalArgumentException("Can not construct a EntityLookupField without a EntityLookupModel");
     this.model = model;
     setEnterAction(enterAction);
+    setToolTipText(model.getDescription());
     setComponentPopupMenu(initializePopupMenu());
     addActionListener(initializeLookupAction());
     addFocusListener(initializeFocusListener());
@@ -200,6 +201,8 @@ public class EntityLookupField extends JTextField {
       public void focusLost(final FocusEvent e) {
         if (getText().length() == 0)
           getModel().setSelectedEntity(null);
+//        else //todo?
+//          performLookup();
         updateState(false);
       }
     };
@@ -231,28 +234,32 @@ public class EntityLookupField extends JTextField {
   private AbstractAction initializeLookupAction() {
     return new AbstractAction(FrameworkMessages.get(FrameworkMessages.SEARCH)) {
       public void actionPerformed(final ActionEvent e) {
-        if (getModel().getSearchString().length() == 0) {
-          getModel().setSelectedEntities(null);
-          if (getEnterAction() != null)
-            getEnterAction().actionPerformed(new ActionEvent(EntityLookupField.this, 0, "actionPerformed"));
-        }
-        else {
-          if (getModel().searchStringRepresentsSelected() && getEnterAction() != null)
-            getEnterAction().actionPerformed(new ActionEvent(EntityLookupField.this, 0, "actionPerformed"));
-          else if (!getModel().searchStringRepresentsSelected()) {
-            List<Entity> queryResult;
-            try {
-              UiUtil.setWaitCursor(true, EntityLookupField.this);
-              queryResult = getModel().performQuery();
-            }
-            finally {
-              UiUtil.setWaitCursor(false, EntityLookupField.this);
-            }
-            selectEntities(queryResult);
-          }
-        }
+        performLookup();
       }
     };
+  }
+
+  private void performLookup() {
+    if (getModel().getSearchString().length() == 0) {
+      getModel().setSelectedEntities(null);
+      if (getEnterAction() != null)
+        getEnterAction().actionPerformed(new ActionEvent(this, 0, "actionPerformed"));
+    }
+    else {
+      if (getModel().searchStringRepresentsSelected() && getEnterAction() != null)
+        getEnterAction().actionPerformed(new ActionEvent(this, 0, "actionPerformed"));
+      else if (!getModel().searchStringRepresentsSelected()) {
+        List<Entity> queryResult;
+        try {
+          UiUtil.setWaitCursor(true, this);
+          queryResult = getModel().performQuery();
+        }
+        finally {
+          UiUtil.setWaitCursor(false, this);
+        }
+        selectEntities(queryResult);
+      }
+    }
   }
 
   private JPopupMenu initializePopupMenu() {

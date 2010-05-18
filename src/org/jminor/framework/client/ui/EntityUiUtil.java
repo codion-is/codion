@@ -218,10 +218,10 @@ public class EntityUiUtil {
     final JCheckBox checkBox = includeCaption ? new JCheckBox(property.getCaption()) : new JCheckBox();
     new BooleanValueLink<String>(checkBox.getModel(), editModel, property.getPropertyID());
     UiUtil.linkToEnabledState(enabledState, checkBox);
-    if (property.getDescription() == null)
-      checkBox.setToolTipText(property.getCaption());
-    else
+    if (property.hasDescription())
       checkBox.setToolTipText(property.getDescription());
+    else
+      checkBox.setToolTipText(property.getCaption());
     if (Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER))
       UiUtil.transferFocusOnEnter(checkBox);
 
@@ -236,10 +236,10 @@ public class EntityUiUtil {
     final TristateCheckBox checkBox = new TristateCheckBox(includeCaption ? property.getCaption() : null);
     new TristateValueLink<String>((TristateButtonModel) checkBox.getModel(), editModel, property.getPropertyID());
     UiUtil.linkToEnabledState(enabledState, checkBox);
-    if (property.getDescription() == null)
-      checkBox.setToolTipText(property.getCaption());
-    else
+    if (property.hasDescription())
       checkBox.setToolTipText(property.getDescription());
+    else
+      checkBox.setToolTipText(property.getCaption());
     if (Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER))
       UiUtil.transferFocusOnEnter(checkBox);
 
@@ -272,7 +272,8 @@ public class EntityUiUtil {
     new EntityComboBoxValueLink(comboBox, editModel, foreignKeyProperty);
     UiUtil.linkToEnabledState(enabledState, comboBox);
     MaximumMatch.enable(comboBox);
-    comboBox.setToolTipText(foreignKeyProperty.getDescription());
+    if (foreignKeyProperty.hasDescription())
+      comboBox.setToolTipText(foreignKeyProperty.getDescription());
     if (Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER))
       UiUtil.transferFocusOnEnter((JComponent) comboBox.getEditor().getEditorComponent());
 
@@ -288,7 +289,8 @@ public class EntityUiUtil {
                                              final EntityEditModel editModel) {
     final JTextField textField = new JTextField();
     textField.setEditable(false);
-    textField.setToolTipText(foreignKeyProperty.getDescription());
+    if (foreignKeyProperty.hasDescription())
+      textField.setToolTipText(foreignKeyProperty.getDescription());
     editModel.getValueChangeEvent(foreignKeyProperty.getPropertyID()).addListener(new ValueChangeListener() {
       @Override
       public void valueChanged(final ValueChangeEvent e) {
@@ -330,7 +332,8 @@ public class EntityUiUtil {
                     additionalSearchCriteria, searchProperties),
                     Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER));
     new LookupValueLink(lookupField.getModel(), editModel, foreignKeyProperty);
-    lookupField.setToolTipText(foreignKeyProperty.getDescription());
+    if (foreignKeyProperty.hasDescription())
+      lookupField.setToolTipText(foreignKeyProperty.getDescription());
     if (Configuration.getBooleanValue(Configuration.USE_LOOKUP_FIELD_SEARCH_HINT))
       lookupField.setSearchHint(FrameworkMessages.get(FrameworkMessages.LOOKUP_FIELD_SEARCH_HINT));
     UiUtil.selectAllOnFocusGained(lookupField);
@@ -358,7 +361,8 @@ public class EntityUiUtil {
     comboBox.setEditable(editable);
     new EntityComboBoxValueLink(comboBox, editModel, property);
     UiUtil.linkToEnabledState(enabledState, comboBox);
-    comboBox.setToolTipText(property.getDescription());
+    if (property.hasDescription())
+      comboBox.setToolTipText(property.getDescription());
     if (Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER)) {
       UiUtil.transferFocusOnEnter((JComponent) comboBox.getEditor().getEditorComponent());
       UiUtil.transferFocusOnEnter(comboBox);
@@ -399,7 +403,8 @@ public class EntityUiUtil {
     textArea.setWrapStyleWord(true);
 
     new TextValueLink<String>(textArea, editModel, property.getPropertyID(), true, LinkType.READ_WRITE);
-    textArea.setToolTipText(property.getDescription());
+    if (property.hasDescription())
+      textArea.setToolTipText(property.getDescription());
 
     return textArea;
   }
@@ -575,7 +580,8 @@ public class EntityUiUtil {
     UiUtil.linkToEnabledState(enabledState, field);
     if (Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER))
       UiUtil.transferFocusOnEnter(field);
-    field.setToolTipText(property.getDescription());
+    if (property.hasDescription())
+      field.setToolTipText(property.getDescription());
     if (field instanceof TextFieldPlus && property.getMaxLength() > 0)
       ((TextFieldPlus) field).setMaxLength(property.getMaxLength());
     if (property.isDatabaseProperty())

@@ -566,6 +566,13 @@ public class Property implements Serializable {
   }
 
   /**
+   * @return true if this property has a description
+   */
+  public boolean hasDescription() {
+    return description != null;
+  }
+
+  /**
    * @return the mnemonic to use when creating a label for this property
    */
   public Character getMnemonic() {
