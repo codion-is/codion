@@ -882,7 +882,12 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
       if (isCompositeKey())
         throw new RuntimeException("Not a single value key");
 
-      initializeValue(properties.get(0).getPropertyID(), value);
+      final Property property = properties.get(0);
+      initializeValue(property.getPropertyID(), value);
+      if (singleIntegerKey) {
+        hashCode = value == null ? INTEGER_NULL_VALUE : (Integer) value;
+        hashCodeDirty = false;
+      }
     }
 
     /**
@@ -1058,8 +1063,9 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
       if (key != null && !key.getEntityID().equals(getEntityID()))
         throw new IllegalArgumentException("Entity ID mismatch, expected: " + getEntityID() + ", actual: " + key.getEntityID());
 
-      hashCodeDirty = true;
       super.setAs(sourceKey);
+      hashCode = key == null ? INTEGER_NULL_VALUE : key.hashCode;
+      hashCodeDirty = key != null && key.hashCodeDirty;
     }
 
     @Override

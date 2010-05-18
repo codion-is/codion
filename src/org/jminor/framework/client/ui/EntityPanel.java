@@ -1670,7 +1670,7 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> im
   }
 
   /**
-   * @return the ControlSet on which the control panel is based
+   * @return the ControlSet on which to base the control panel
    */
   protected ControlSet getControlPanelControlSet() {
     final ControlSet controlSet = new ControlSet("Actions");

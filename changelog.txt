@@ -1596,3 +1596,7 @@
   Criteria.asString() removed Database and ValueProvider parameters
   EntityDbConnection code cleanup/refactoring
   Database.getSQLDateString() removed
+  Entity.Key single value constructor optimized for integer values
+  Entity.Key.setAs() now sets the hashCode value instead of simply setting the hash code dirty flag
+  FilteredComboBoxModel now contains the nullValueString, sort comparator guarantees it stays at the top
+  ItemComboBoxModel sort comparator keeps null items at the top

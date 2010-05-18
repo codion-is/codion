@@ -86,6 +86,8 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
   public final void setContents(final Collection<?> contents) {
     filteredItems.clear();
     visibleItems.clear();
+    if (nullValueString != null)
+      visibleItems.add(nullValueString);
     if (contents != null)
       visibleItems.addAll(contents);
     filterContents();
@@ -210,18 +212,12 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
 
   /** {@inheritDoc} */
   public Object getElementAt(final int index) {
-    if (nullValueString == null)
-      return visibleItems.get(index);
-
-    return index == 0 ? nullValueString : visibleItems.get(index - 1);
+    return visibleItems.get(index);
   }
 
   /** {@inheritDoc} */
   public int getSize() {
-    if (nullValueString == null)
-      return visibleItems.size();
-
-    return visibleItems.size() + 1;
+    return visibleItems.size();
   }
 
   public Event eventSelectionChanged() {
@@ -264,6 +260,12 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
       private final Collator collator = Collator.getInstance();
       @SuppressWarnings({"unchecked"})
       public int compare(final Object objectOne, final Object objectTwo) {
+        if (nullValueString != null) {
+          if (objectOne.equals(nullValueString))
+            return -1;
+          if (objectTwo.equals(nullValueString))
+            return 1;
+        }
         if (objectOne instanceof Comparable && objectTwo instanceof Comparable)
           return ((Comparable) objectOne).compareTo(objectTwo);
         else

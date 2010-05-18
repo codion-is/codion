@@ -14,6 +14,7 @@ import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -59,13 +60,20 @@ public class ItemComboBoxModel<T> extends DefaultComboBoxModel {
 
   protected void initializeItems(final List<Item<T>> items) {
     if (items != null) {
-      Item<T> nullItem = null;
-      final int nullIndex = items.indexOf(new Item<T>(null, ""));
-      if (nullIndex >= 0)
-        nullItem = items.remove(nullIndex);
-      Collections.sort(items);
-      if (nullItem != null)
-        super.addElement(nullItem);
+      Collections.sort(items, new Comparator<Item<T>>() {
+        /* Null items at front of list*/
+        public int compare(final Item<T> o1, final Item<T> o2) {
+          if (o1.getItem() == null && o2.getItem() == null)
+            return o1.compareTo(o2);
+          if (o1.getItem() == null)
+            return -1;
+          if (o2.getItem() == null)
+            return 1;
+
+          return o1.compareTo(o2);
+        }
+      });
+
       for (final Item item : items)
         super.addElement(item);
     }
