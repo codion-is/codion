@@ -1584,3 +1584,9 @@
   EntityDbPreparedConnection.setStatementValue() now handles the specific case of Property.BooleanProperty
   EntityUtil.getRandomValue() now handles value list properties correctly
   Entity.Key.isCompositeKey() added
+  Entity.Key.hashCode() improved
+  Entity.addInsertProperties() and addUpdateProperties() added
+  EntityDbPreparedConnection setParameterValues() call moved into executePreparedSelect/Update()
+  EntityDbPreparedConnection refactored
+  EntityDbRemoteAdapter.appendEntityCriteria() added, takes prepared statement usage into account when logging
+  Property.ForeignKeyProperty.isMultipleColumnReference() renamed to isCompositeReference()

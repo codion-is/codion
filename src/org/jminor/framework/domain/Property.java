@@ -825,7 +825,7 @@ public class Property implements Serializable {
     /**
      * @return true if this reference is based on more than on column
      */
-    public boolean isMultipleColumnReference() {
+    public boolean isCompositeReference() {
       return this.referenceProperties.size() > 1;
     }
 

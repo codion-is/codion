@@ -281,9 +281,8 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
   public boolean isValueNull(final Property property) {
     if (property instanceof Property.PrimaryKeyProperty)
       return primaryKey.isValueNull(property.getPropertyID());
-    if (property instanceof Property.ForeignKeyProperty) {
+    if (property instanceof Property.ForeignKeyProperty)
       return foreignKeyValues.isValueNull(property.getPropertyID());
-    }
 
     return super.isValueNull(property.getPropertyID());
   }
@@ -880,7 +879,7 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
      */
     public Key(final String entityID, final Object value) {
       this(entityID);
-      if (properties.size() > 1)
+      if (isCompositeKey())
         throw new RuntimeException("Not a single value key");
 
       initializeValue(properties.get(0).getPropertyID(), value);
@@ -912,7 +911,7 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
      * @return true if this key is comprised of multiple properties.
      */
     public boolean isCompositeKey() {
-      return getProperties().size() > 1;
+      return getPropertyCount() > 1;
     }
 
     /**
@@ -1005,11 +1004,21 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
     @Override
     public int hashCode() {
       if (hashCodeDirty) {
+        final Collection values = getValues();
+        boolean nullValue = values.size() == 0;
         int hash = 0;
-        for (final Object value : getValues())
-          hash = hash + (value == null ? 0 : value.hashCode());
+        if (!nullValue) {
+          for (final Object value : values) {
+            if (value != null)
+              hash = hash + value.hashCode();
+            else {
+              nullValue = true;
+              break;
+            }
+          }
+        }
 
-        hashCode = hash == 0 ? INTEGER_NULL_VALUE : hash;//in case all values were null
+        hashCode = nullValue ? INTEGER_NULL_VALUE : hash;
         hashCodeDirty = false;
       }
 
@@ -1026,19 +1035,11 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
       if (hashCode() == INTEGER_NULL_VALUE)
         return true;
 
-      for (final Property property : getProperties())
-        if (isValueNull(property.getPropertyID()))
+      for (final Object value : getValues())
+        if (value == null)
           return true;
 
       return false;
-    }
-
-    public static List<Key> copy(final List<Key> entityKeys) {
-      final List<Key> copies = new ArrayList<Key>(entityKeys.size());
-      for (final Key key : entityKeys)
-        copies.add((Key) key.getCopy());
-
-      return copies;
     }
 
     /**
@@ -1064,6 +1065,14 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
     @Override
     public Object copyValue(final Object value) {
       return copyPropertyValue(value);
+    }
+
+    public static List<Key> copy(final List<Key> entityKeys) {
+      final List<Key> copies = new ArrayList<Key>(entityKeys.size());
+      for (final Key key : entityKeys)
+        copies.add((Key) key.getCopy());
+
+      return copies;
     }
   }
 

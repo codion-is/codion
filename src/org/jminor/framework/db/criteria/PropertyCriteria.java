@@ -72,7 +72,7 @@ public class PropertyCriteria implements Criteria<Property>, Serializable {
       throw new RuntimeException("No values specified for PropertyCriteria: " + property);
     this.property = property;
     this.searchType = searchType;
-    this.values = initValues(values);
+    this.values = initializeValues(values);
     this.isNullCriteria = this.values.size() == 1 && this.values.get(0) == null;
   }
 
@@ -139,7 +139,7 @@ public class PropertyCriteria implements Criteria<Property>, Serializable {
    * @return a list containing the values
    */
   @SuppressWarnings({"unchecked"})
-  private List<Object> initValues(final Object... values) {
+  private List<Object> initializeValues(final Object... values) {
     final List<Object> ret = new ArrayList<Object>();
     if (values == null)
       ret.add(null);
@@ -288,7 +288,7 @@ public class PropertyCriteria implements Criteria<Property>, Serializable {
     for (final Object entityKey : values) {
       final CriteriaSet<Property> primaryKeySet = new CriteriaSet<Property>(CriteriaSet.Conjunction.AND);
       for (final Property.PrimaryKeyProperty primaryKeyProperty : primaryKeyProperties)
-        primaryKeySet.addCriteria(new PropertyCriteria(
+        primaryKeySet.addCriteria(new PropertyCriteria(//todo referennce property by index below!!!
                 ((Property.ForeignKeyProperty) getProperty()).getReferenceProperties().get(primaryKeyProperty.getIndex()),
                 getSearchType(), ((Entity.Key) entityKey).getValue(primaryKeyProperty.getPropertyID())));
 

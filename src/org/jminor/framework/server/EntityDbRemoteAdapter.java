@@ -742,7 +742,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
       if (arguments == null)
         return "";
 
-      final StringBuilder stringBuilder = new StringBuilder(arguments.length*40);//best guess ?
+      final StringBuilder stringBuilder = new StringBuilder(arguments.length*42);
       for (int i = 0; i < arguments.length; i++) {
         parameterToString(arguments[i], stringBuilder);
         if (i < arguments.length-1)
@@ -753,22 +753,39 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     }
 
     private void parameterToString(final Object arg, final StringBuilder destination) {
-      if (arg instanceof Object[]) {
-        if (((Object[]) arg).length > 0)
-          destination.append("[").append(parameterArrayToString((Object[]) arg)).append("]");
-      }
-      else if (arg instanceof Collection) {
-        if (((Collection) arg).size() > 0)
-          destination.append("[").append(parameterArrayToString(((Collection) arg).toArray())).append("]");
-      }
-      else if (arg instanceof EntityCriteria)
-        destination.append(((EntityCriteria) arg).asString(database, valueProvider));
+      if (arg == null)
+        return;
+
+      if (arg instanceof EntityCriteria)
+        appendEntityCriteria((EntityCriteria) arg, destination);
+      else if (arg instanceof Object[] && ((Object[]) arg).length > 0)
+        destination.append("[").append(parameterArrayToString((Object[]) arg)).append("]");
+      else if (arg instanceof Collection && ((Collection) arg).size() > 0)
+        destination.append("[").append(parameterArrayToString(((Collection) arg).toArray())).append("]");
       else if (arg instanceof Entity)
         destination.append(getEntityParameterString((Entity) arg));
       else if (arg instanceof JasperReport)
         destination.append(((JasperReport) arg).getName());
       else
         destination.append(arg.toString());
+    }
+
+    private void appendEntityCriteria(final EntityCriteria criteria, StringBuilder destination) {
+      if (Configuration.getBooleanValue(Configuration.USE_PREPARED_STATEMENTS)) {
+        destination.append(criteria.getEntityID());
+        final String whereClause = criteria.getWhereClause(database, EntityDbPreparedConnection.PREPARED_VALUE_PROVIDER, true);
+        if (whereClause != null && whereClause.length() > 0) {
+          destination.append(", ").append(whereClause);
+        }
+        final List<?> values = criteria.getValues();
+        if (values != null) {
+          destination.append(", ");
+          parameterToString(values, destination);
+        }
+      }
+      else {
+        destination.append(criteria.asString(database, valueProvider));
+      }
     }
 
     private static String getEntityParameterString(final Entity entity) {

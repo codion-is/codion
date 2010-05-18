@@ -558,10 +558,20 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   /**
    * Returns the properties used when inserting an instance of this entity, leaving out properties with null values
    * @param entity the entity
-   * @return the properties used to insert the given entity type
    */
   static Collection<Property> getInsertProperties(final Entity entity) {
     final Collection<Property> properties = new ArrayList<Property>();
+    addInsertProperties(entity, properties);
+
+    return properties;
+  }
+
+  /**
+   * Returns the properties used when inserting an instance of this entity, leaving out properties with null values
+   * @param entity the entity
+   * @param properties the properties are added to this collection
+   */
+  static void addInsertProperties(final Entity entity, final Collection<Property> properties) {
     for (final Property property : EntityRepository.getDatabaseProperties(entity.getEntityID(),
             EntityRepository.getIdSource(entity.getEntityID()) != IdSource.AUTO_INCREMENT, false, true)) {
       if (!(property instanceof Property.ForeignKeyProperty) && !(property instanceof Property.TransientProperty)
@@ -569,8 +579,6 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
         properties.add(property);
       }
     }
-
-    return properties;
   }
 
   /**
@@ -578,7 +586,18 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
    * @return the properties used to update this entity, modified properties that is
    */
   static Collection<Property> getUpdateProperties(final Entity entity) {
-    final List<Property> properties = new ArrayList<Property>();
+    final Collection<Property> properties = new ArrayList<Property>();
+    addUpdateProperties(entity, properties);
+
+    return properties;
+  }
+
+  /**
+   * @param entity the Entity instance
+   * @param properties the collection to add the properties to
+   * @return the properties used to update this entity, modified properties that is
+   */
+  static Collection<Property> addUpdateProperties(final Entity entity, final Collection<Property> properties) {
     for (final Property property : EntityRepository.getDatabaseProperties(entity.getEntityID(), true, false, false))
       if (entity.isModified(property.getPropertyID()) && !(property instanceof Property.ForeignKeyProperty))
         properties.add(property);
