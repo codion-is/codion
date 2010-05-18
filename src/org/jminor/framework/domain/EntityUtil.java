@@ -116,10 +116,10 @@ public class EntityUtil {
     return keys;
   }
 
-  public static List<Object> getPropertyValues(final List<Entity.Key> keys) {
+  public static List<Object> getOriginalPropertyValues(final List<Entity.Key> keys) {
     final List<Object> list = new ArrayList<Object>(keys.size());
     for (final Entity.Key key : keys)
-      list.add(key.getFirstKeyValue());
+      list.add(key.getOriginalValue(key.getFirstKeyProperty().getPropertyID()));
 
     return list;
   }

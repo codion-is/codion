@@ -1603,3 +1603,4 @@
   Property.hasDescription() added
   EntityUiUtil now only adds tool tips to components if description is provided
   EntityLookupField adds the lookup properties as default tool tip
+  EntityKeyCriteria now always uses original key values

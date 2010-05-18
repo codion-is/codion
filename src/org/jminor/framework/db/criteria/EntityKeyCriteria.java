@@ -92,7 +92,7 @@ public class EntityKeyCriteria extends CriteriaSet<Property> {
         int i = 0;
         for (final Property property : propertyList)
           andSet.addCriteria(new PropertyCriteria(property, SearchType.LIKE,
-                  key.getValue(pkProperties.get(i++).getPropertyID())));
+                  key.getOriginalValue(pkProperties.get(i++).getPropertyID())));
 
         addCriteria(andSet);
       }
@@ -100,10 +100,12 @@ public class EntityKeyCriteria extends CriteriaSet<Property> {
     else {
       final Property property = properties == null ? keys.get(0).getFirstKeyProperty() : properties.get(0);
       //a = b
-      if (keys.size() == 1)
-        addCriteria(new PropertyCriteria(property, SearchType.LIKE, keys.get(0).getFirstKeyValue()));
+      if (keys.size() == 1) {
+        final Entity.Key key = keys.get(0);
+        addCriteria(new PropertyCriteria(property, SearchType.LIKE, key.getOriginalValue(property.getPropertyID())));
+      }
       else //a in (c, v, d, s)
-        addCriteria(new PropertyCriteria(property, SearchType.LIKE, EntityUtil.getPropertyValues(keys)));
+        addCriteria(new PropertyCriteria(property, SearchType.LIKE, EntityUtil.getOriginalPropertyValues(keys)));
     }
   }
 }
