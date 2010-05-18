@@ -850,7 +850,7 @@ public class Property implements Serializable {
       if (!linkedReferenceProperties.containsKey(referenceProperty))
         throw new RuntimeException("No referenced property ID associated with reference property: " + referenceProperty);
 
-      return  linkedReferenceProperties.get(referenceProperty);
+      return linkedReferenceProperties.get(referenceProperty);
     }
 
     private void link(final Property referenceProperty, final String referencedPropertyID) {

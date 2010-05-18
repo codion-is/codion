@@ -1590,3 +1590,5 @@
   EntityDbPreparedConnection refactored
   EntityDbRemoteAdapter.appendEntityCriteria() added, takes prepared statement usage into account when logging
   Property.ForeignKeyProperty.isMultipleColumnReference() renamed to isCompositeReference()
+  JMinorServerMonitorTruststore added
+  PropertyCriteria refactored

@@ -1,1 +1,21 @@
 http://today.java.net/pub/a/today/2005/10/06/the-new-rmi.html
+
+//server
+keytool -genkey -alias JMinorServer -keyalg RSA -keystore JMinorServerKeystore
+
+keytool -list -v -keystore JMinorServerKeystore
+
+//client/monitor
+
+keytool -export -alias JMinorServer -keystore JMinorServerKeystore -rfc -file JMinorServer.cer
+
+keytool -import -alias JMinorServer -file JMinorServer.cer -keystore JMinorClientTruststore
+
+keytool -import -alias JMinorServer -file JMinorServer.cer -keystore JMinorServerMonitorTruststore
+
+//debug
+-Dsun.rmi.transport.logLevel=VERBOSE
+-Dsun.rmi.transport.tcp.logLevel=VERBOSE
+-Djavax.net.debug=all
+-Dsun.rmi.client.logCalls=true
+-Djava.security.debug=policy,access,failure

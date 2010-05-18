@@ -9,7 +9,6 @@ import org.jminor.common.db.dbms.Database;
 import org.jminor.common.model.SearchType;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 
@@ -159,28 +158,22 @@ public class PropertyCriteria implements Criteria<Property>, Serializable {
       return Arrays.asList(values);
   }
 
-  private String getSqlValue(final String sqlStringValue) {
-    return property.isString() && !caseSensitive ? "upper(" + sqlStringValue + ")" : sqlStringValue;
-  }
-
   private String getConditionString(final Database database, final ValueProvider valueProvider) {
-    if (getProperty() instanceof Property.ForeignKeyProperty)
-      return getForeignKeyCriteriaString(this, database, valueProvider);
+    if (property instanceof Property.ForeignKeyProperty)
+      return getForeignKeyCriteriaString(database, valueProvider);
 
-    final String columnIdentifier = initializeColumnIdentifier(isNullCriteria);
+    final String columnIdentifier = initializeColumnIdentifier(property);
     if (isNullCriteria)
       return columnIdentifier + (getSearchType() == SearchType.LIKE ? " is null" : " is not null");
 
-    final String sqlValue = getSqlValue(valueProvider.getSQLString(database,
-            getProperty(), values.get(0)));
-    final String sqlValue2 = getValueCount() == 2 ? getSqlValue(valueProvider.getSQLString(
-            database, getProperty(), values.get(1))) : null;
+    final String sqlValue = getSqlValue(valueProvider.getSQLString(database, property, values.get(0)));
+    final String sqlValue2 = getValueCount() == 2 ? getSqlValue(valueProvider.getSQLString(database, property, values.get(1))) : null;
 
     switch(getSearchType()) {
       case LIKE:
-        return getLikeCondition(database, columnIdentifier, sqlValue, valueProvider);
+        return getLikeCondition(database, property, sqlValue, valueProvider);
       case NOT_LIKE:
-        return getNotLikeCondition(database, columnIdentifier, sqlValue, valueProvider);
+        return getNotLikeCondition(database, property, sqlValue, valueProvider);
       case AT_LEAST:
         return columnIdentifier + " <= " + sqlValue;
       case AT_MOST:
@@ -194,113 +187,76 @@ public class PropertyCriteria implements Criteria<Property>, Serializable {
     throw new IllegalArgumentException("Unknown search type" + getSearchType());
   }
 
-  private String getForeignKeyCriteriaString(final PropertyCriteria criteria, final Database database, final ValueProvider valueProvider) {
-    if (criteria.getValueCount() > 1)
-      return getMultipleColumnForeignKeyCriteriaString(database, valueProvider);
-
-    final CriteriaSet<Property> set = new CriteriaSet<Property>(CriteriaSet.Conjunction.AND);
-    final Entity.Key entityKey = (Entity.Key) criteria.values.get(0);
-    final Collection<Property.PrimaryKeyProperty > primaryKeyProperties =
-            EntityRepository.getPrimaryKeyProperties(((Property.ForeignKeyProperty) criteria.getProperty()).getReferencedEntityID());
-    for (final Property.PrimaryKeyProperty keyProperty : primaryKeyProperties)
-      set.addCriteria(new PropertyCriteria(
-              ((Property.ForeignKeyProperty) criteria.getProperty()).getReferenceProperties().get(keyProperty.getIndex()),
-              criteria.getSearchType(), entityKey == null ? null : entityKey.getValue(keyProperty.getPropertyID())));
-
-    return set.asString(database, valueProvider);
+  private String getSqlValue(final String sqlStringValue) {
+    return property.isString() && !caseSensitive ? "upper(" + sqlStringValue + ")" : sqlStringValue;
   }
 
-  private String getMultipleColumnForeignKeyCriteriaString(final Database database, final ValueProvider valueProvider) {
-    final Collection<Property.PrimaryKeyProperty > primaryKeyProperties =
-            EntityRepository.getPrimaryKeyProperties(((Property.ForeignKeyProperty) getProperty()).getReferencedEntityID());
-    if (primaryKeyProperties.size() > 1) {
-      final CriteriaSet<Property> set = new CriteriaSet<Property>(CriteriaSet.Conjunction.OR);
-      for (final Object entityKey : values) {
-        final CriteriaSet<Property> pkSet = new CriteriaSet<Property>(CriteriaSet.Conjunction.AND);
-        for (final Property.PrimaryKeyProperty keyProperty : primaryKeyProperties)
-          pkSet.addCriteria(new PropertyCriteria(
-                  ((Property.ForeignKeyProperty) getProperty()).getReferenceProperties().get(keyProperty.getIndex()),
-                  getSearchType(), ((Entity.Key) entityKey).getValue(keyProperty.getPropertyID())));
+  private String getForeignKeyCriteriaString(final Database database, final ValueProvider valueProvider) {
+    if (getValueCount() > 1)
+      return getMultipleForeignKeyCriteriaString(database, valueProvider);
 
-        set.addCriteria(pkSet);
-      }
+    return createSingleForeignKeyCriteria((Entity.Key) values.get(0)).asString(database, valueProvider);
+  }
 
-      return set.asString(database, valueProvider);
-    }
+  private String getMultipleForeignKeyCriteriaString(final Database database, final ValueProvider valueProvider) {
+    if (((Property.ForeignKeyProperty) getProperty()).isCompositeReference())
+      return createMultipleCompositeForeignKeyCriteria().asString(database, valueProvider);
     else
-      return getInList(database, ((Property.ForeignKeyProperty) getProperty()).getReferenceProperties().get(0).getColumnName(),
+      return getInList(database, ((Property.ForeignKeyProperty) getProperty()).getReferenceProperties().get(0),
               getSearchType() == SearchType.NOT_LIKE, valueProvider);
   }
 
   private List<?> getForeignKeyCriteriaValues() {
     if (values.size() > 1)
-      return getMultipleColumnForeignKeyCriteriaValues();
+      return getCompositeForeignKeyCriteriaValues();
 
-    final CriteriaSet<Property> set = new CriteriaSet<Property>(CriteriaSet.Conjunction.AND);
-    final Entity.Key entityKey = (Entity.Key) values.get(0);
-    final Collection<Property.PrimaryKeyProperty > primaryKeyProperties =
-            EntityRepository.getPrimaryKeyProperties(((Property.ForeignKeyProperty) getProperty()).getReferencedEntityID());
-    for (final Property.PrimaryKeyProperty keyProperty : primaryKeyProperties)
-      set.addCriteria(new PropertyCriteria(
-              ((Property.ForeignKeyProperty) getProperty()).getReferenceProperties().get(keyProperty.getIndex()),
-              getSearchType(), entityKey == null ? null : entityKey.getValue(keyProperty.getPropertyID())));
-
-    return set.getValues();
+    return createSingleForeignKeyCriteria((Entity.Key) values.get(0)).getValues();
   }
 
-  private List<?> getMultipleColumnForeignKeyCriteriaValues() {
-    final Collection<Property.PrimaryKeyProperty > primaryKeyProperties =
-            EntityRepository.getPrimaryKeyProperties(((Property.ForeignKeyProperty) getProperty()).getReferencedEntityID());
-    final CriteriaSet<Property> set = new CriteriaSet<Property>(CriteriaSet.Conjunction.OR);
-    for (final Object entityKey : values) {
-      final CriteriaSet<Property> pkSet = new CriteriaSet<Property>(CriteriaSet.Conjunction.AND);
-      for (final Property.PrimaryKeyProperty keyProperty : primaryKeyProperties)
-        pkSet.addCriteria(new PropertyCriteria(
-                ((Property.ForeignKeyProperty) getProperty()).getReferenceProperties().get(keyProperty.getIndex()),
-                getSearchType(), ((Entity.Key) entityKey).getValue(keyProperty.getPropertyID())));
-
-      set.addCriteria(pkSet);
-    }
-
-    return set.getValues();
+  private List<?> getCompositeForeignKeyCriteriaValues() {
+    return createMultipleCompositeForeignKeyCriteria().getValues();
   }
 
   private List<Property> getForeignKeyValueProperties() {
     if (values.size() > 1)
-      return getMultipleColumnForeignKeyValueProperties();
+      return createMultipleCompositeForeignKeyCriteria().getValueKeys();
 
-    final CriteriaSet<Property> set = new CriteriaSet<Property>(CriteriaSet.Conjunction.AND);
-    final Entity.Key entityKey = (Entity.Key) values.get(0);
-    final Collection<Property.PrimaryKeyProperty > primaryKeyProperties =
-            EntityRepository.getPrimaryKeyProperties(((Property.ForeignKeyProperty) getProperty()).getReferencedEntityID());
-    for (final Property.PrimaryKeyProperty keyProperty : primaryKeyProperties)
-      set.addCriteria(new PropertyCriteria(
-              ((Property.ForeignKeyProperty) getProperty()).getReferenceProperties().get(keyProperty.getIndex()),
-              getSearchType(), entityKey == null ? null : entityKey.getValue(keyProperty.getPropertyID())));
-
-    return set.getValueKeys();
+    return createSingleForeignKeyCriteria((Entity.Key) values.get(0)).getValueKeys();
   }
 
-  private List<Property> getMultipleColumnForeignKeyValueProperties() {
-    final Collection<Property.PrimaryKeyProperty > primaryKeyProperties =
-            EntityRepository.getPrimaryKeyProperties(((Property.ForeignKeyProperty) getProperty()).getReferencedEntityID());
-    final CriteriaSet<Property> set = new CriteriaSet<Property>(CriteriaSet.Conjunction.OR);
-    for (final Object entityKey : values) {
-      final CriteriaSet<Property> primaryKeySet = new CriteriaSet<Property>(CriteriaSet.Conjunction.AND);
-      for (final Property.PrimaryKeyProperty primaryKeyProperty : primaryKeyProperties)
-        primaryKeySet.addCriteria(new PropertyCriteria(//todo referennce property by index below!!!
-                ((Property.ForeignKeyProperty) getProperty()).getReferenceProperties().get(primaryKeyProperty.getIndex()),
-                getSearchType(), ((Entity.Key) entityKey).getValue(primaryKeyProperty.getPropertyID())));
+  private Criteria<Property> createMultipleCompositeForeignKeyCriteria() {
+    final CriteriaSet<Property> criteriaSet = new CriteriaSet<Property>(CriteriaSet.Conjunction.OR);
+    for (final Object entityKey : values)
+      criteriaSet.addCriteria(createSingleForeignKeyCriteria((Entity.Key) entityKey));
 
-      set.addCriteria(primaryKeySet);
+    return criteriaSet;
+  }
+
+  private Criteria<Property> createSingleForeignKeyCriteria(final Entity.Key entityKey) {
+    final Property.ForeignKeyProperty foreignKeyProperty = (Property.ForeignKeyProperty) getProperty();
+    if (foreignKeyProperty.isCompositeReference()) {
+      final CriteriaSet<Property> pkSet = new CriteriaSet<Property>(CriteriaSet.Conjunction.AND);
+      for (final Property referencedProperty : foreignKeyProperty.getReferenceProperties()) {
+        final String referencedPropertyID = foreignKeyProperty.getReferencedPropertyID(referencedProperty);
+        final Object referencedValue = entityKey == null ? null : entityKey.getValue(referencedPropertyID);
+        pkSet.addCriteria(new PropertyCriteria(referencedProperty, getSearchType(), referencedValue));
+      }
+
+      return pkSet;
     }
-
-    return set.getValueKeys();
+    else {
+      return new PropertyCriteria(foreignKeyProperty.getReferenceProperties().get(0), getSearchType(), entityKey == null ? null : entityKey.getFirstKeyValue());
+    }
   }
 
-  private String getInList(final Database database, final String whereColumn, final boolean notIn,
+  private String getNotLikeCondition(final Database database, final Property property, final String sqlValue, final ValueProvider valueProvider) {
+    return getValueCount() > 1 ? getInList(database, property, true, valueProvider) :
+            initializeColumnIdentifier(property) + (property.isString() ? " not like " + sqlValue : " <> " + sqlValue);
+  }
+
+  private String getInList(final Database database, final Property property, final boolean notIn,
                            final ValueProvider valueProvider) {
-    final StringBuilder stringBuilder = new StringBuilder("(").append(whereColumn).append((notIn ? " not in (" : " in ("));
+    final StringBuilder stringBuilder = new StringBuilder("(").append(initializeColumnIdentifier(property)).append((notIn ? " not in (" : " in ("));
     int cnt = 1;
     for (int i = 0; i < getValueCount(); i++) {
       final String sqlValue = valueProvider.getSQLString(database, getProperty(),
@@ -310,7 +266,7 @@ public class PropertyCriteria implements Criteria<Property>, Serializable {
       else
         stringBuilder.append(sqlValue);
       if (cnt++ == 1000 && i < getValueCount() - 1) {//Oracle limit
-        stringBuilder.append(notIn ? ") and " : ") or ").append(whereColumn).append(" in (");
+        stringBuilder.append(notIn ? ") and " : ") or ").append(property.getColumnName()).append(" in (");
         cnt = 1;
       }
       else if (i < getValueCount() - 1)
@@ -321,26 +277,19 @@ public class PropertyCriteria implements Criteria<Property>, Serializable {
     return stringBuilder.toString();
   }
 
-  private String getNotLikeCondition(final Database database, final String columnIdentifier, final String sqlValue,
-                                     final ValueProvider valueProvider) {
-    return getValueCount() > 1 ? getInList(database, columnIdentifier, true, valueProvider) :
-            columnIdentifier + (getProperty().isString() ? " not like " + sqlValue : " <> " + sqlValue);
+  private String getLikeCondition(final Database database, final Property property, final String sqlValue, final ValueProvider valueProvider) {
+    return getValueCount() > 1 ? getInList(database, property, false, valueProvider) :
+            initializeColumnIdentifier(property) + (property.isString() ? " like " + sqlValue : " = " + sqlValue);
   }
 
-  private String getLikeCondition(final Database database, final String columnIdentifier, final String sqlValue,
-                                  final ValueProvider valueProvider) {
-    return getValueCount() > 1 ? getInList(database, columnIdentifier, false, valueProvider) :
-            columnIdentifier + (getProperty().isString() ? " like " + sqlValue : " = " + sqlValue);
-  }
-
-  private String initializeColumnIdentifier(final boolean isNullCriteria) {
+  private String initializeColumnIdentifier(final Property property) {
     String columnName;
-    if (getProperty() instanceof Property.SubqueryProperty)
-      columnName = "(" + ((Property.SubqueryProperty) getProperty()).getSubQuery() + ")";
+    if (property instanceof Property.SubqueryProperty)
+      columnName = "(" + ((Property.SubqueryProperty) property).getSubQuery() + ")";
     else
-      columnName = getProperty().getColumnName();
+      columnName = property.getColumnName();
 
-    if (!isNullCriteria && getProperty().isString() && !isCaseSensitive())
+    if (!isNullCriteria && property.isString() && !isCaseSensitive())
       columnName = "upper(" + columnName + ")";
 
     return columnName;

@@ -301,18 +301,18 @@ public class PropertyCriteriaTest {
     final Property property2 = new Property("colName2", Types.INTEGER);
     final PropertyCriteria criteria1 = new PropertyCriteria(property1, SearchType.LIKE, "value");
     final PropertyCriteria criteria2 = new PropertyCriteria(property2, SearchType.AT_LEAST, 10);
-    final CriteriaSet set = new CriteriaSet(CriteriaSet.Conjunction.OR, criteria1, criteria2);
+    final CriteriaSet set = new CriteriaSet<Property>(CriteriaSet.Conjunction.OR, criteria1, criteria2);
     assertEquals("Set condition should fit", "(colName1 like 'value' or colName2 <= 10)", set.asString(DATABASE, VALUE_PROVIDER));
 
     final Property property3 = new Property("colName3", Types.DOUBLE);
     final PropertyCriteria criteria3 = new PropertyCriteria(property3, SearchType.NOT_LIKE, 34.5);
-    final CriteriaSet set2 = new CriteriaSet(CriteriaSet.Conjunction.AND, set, criteria3);
+    final CriteriaSet set2 = new CriteriaSet<Property>(CriteriaSet.Conjunction.AND, set, criteria3);
     assertEquals("Set condition should fit", "((colName1 like 'value' or colName2 <= 10) and colName3 <> 34.5)",
             set2.asString(DATABASE, VALUE_PROVIDER));
 
     final Property property4 = new Property("colName4", Types.CHAR);
     final PropertyCriteria criteria4 = new PropertyCriteria(property4, SearchType.LIKE, 'a', 'b', 'c');
-    final CriteriaSet set3 = new CriteriaSet(CriteriaSet.Conjunction.OR, set2, criteria4);
+    final CriteriaSet set3 = new CriteriaSet<Property>(CriteriaSet.Conjunction.OR, set2, criteria4);
     assertEquals("Set condition should fit", "(((colName1 like 'value' or colName2 <= 10) and colName3 <> 34.5)"
             + " or (colName4 in ('a', 'b', 'c')))", set3.asString(DATABASE, VALUE_PROVIDER));
   }
