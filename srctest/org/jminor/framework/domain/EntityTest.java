@@ -173,6 +173,10 @@ public class EntityTest {
     testEntity.setValue(EntityTestDomain.DETAIL_ENTITY_FK, referencedEntityValue);
     assertEquals(testEntity.getValue(EntityTestDomain.DETAIL_MASTER_CODE),
             referencedEntityValue.getValue(EntityTestDomain.MASTER_CODE));
+
+    testEntity.getPrimaryKey().clear();
+    assertTrue(testEntity.getPrimaryKey().isNull());
+    assertTrue(testEntity.isNull());
   }
 
   @Test

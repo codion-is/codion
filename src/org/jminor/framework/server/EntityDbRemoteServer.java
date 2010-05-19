@@ -286,7 +286,7 @@ public class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
 
   @Override
   protected EntityDbRemoteAdapter doConnect(final ClientInfo client) throws RemoteException {
-    final EntityDbRemoteAdapter remoteAdapter = new EntityDbRemoteAdapter(database, client, SERVER_DB_PORT, CLIENT_LOGGING_ENABLED);
+    final EntityDbRemoteAdapter remoteAdapter = new EntityDbRemoteAdapter(this, database, client, SERVER_DB_PORT, CLIENT_LOGGING_ENABLED);
     if (log.isDebugEnabled())
       log.debug("Connection added: " + client);
 

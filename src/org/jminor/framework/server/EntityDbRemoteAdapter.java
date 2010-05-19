@@ -15,6 +15,7 @@ import org.jminor.common.model.MethodLogger;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.server.ClientInfo;
+import org.jminor.common.server.RemoteServer;
 import org.jminor.common.server.ServerLog;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityDb;
@@ -97,8 +98,11 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   /**
    * The available connection pools
    */
-  private static final Map<User, ConnectionPool> connectionPools =
-          Collections.synchronizedMap(new HashMap<User, ConnectionPool>());
+  private static final Map<User, ConnectionPool> connectionPools = Collections.synchronizedMap(new HashMap<User, ConnectionPool>());
+  /**
+   * The remote server responsible for instantiating this remote adapter
+   */
+  private final RemoteServer server;
 
   static {
     new Timer(true).schedule(new TimerTask() {
@@ -111,18 +115,20 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
 
   /**
    * Instantiates a new EntityDbRemoteAdapter and exports it on the given port number
+   * @param server the RemoteServer instance responsible for instantiating this remote adapter
    * @param database defines the underlying database
    * @param clientInfo information about the client requesting the connection
    * @param port the port to use when exporting this remote connection
    * @param loggingEnabled specifies whether or not method logging is enabled
    * @throws RemoteException in case of an exception
    */
-  public EntityDbRemoteAdapter(final Database database, final ClientInfo clientInfo, final int port,
+  public EntityDbRemoteAdapter(final RemoteServer server, final Database database, final ClientInfo clientInfo, final int port,
                                final boolean loggingEnabled) throws RemoteException {
     super(port, SSL_CONNECTION_ENABLED ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
             SSL_CONNECTION_ENABLED ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
     if (connectionPools.containsKey(clientInfo.getUser()))
       connectionPools.get(clientInfo.getUser()).getConnectionPoolSettings().getUser().setPassword(clientInfo.getUser().getPassword());
+    this.server = server;
     this.database = database;
     this.clientInfo = clientInfo;
     this.loggingEntityDbProxy = initializeProxy();
@@ -145,6 +151,29 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   public boolean isConnected() throws RemoteException {
     try {
       return entityDbConnection == null ? connected : entityDbConnection.isConnected();
+    }
+    catch (Exception e) {
+      throw new RemoteException(e.getMessage(), e);
+    }
+  }
+
+  /** {@inheritDoc} */
+  public void disconnect() throws RemoteException {
+    try {
+      if (!isConnected())
+        return;
+
+      if (entityDbConnection != null)
+        entityDbConnection.disconnect();
+      entityDbConnection = null;
+      connected = false;
+      server.disconnect(clientInfo.getClientID());
+      try {
+        UnicastRemoteObject.unexportObject(this, true);
+      }
+      catch (NoSuchObjectException e) {
+        log.error(e);
+      }
     }
     catch (Exception e) {
       throw new RemoteException(e.getMessage(), e);
@@ -597,26 +626,6 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
         final User user = new User(username.trim(), null);
         setConnectionPoolSettings(database, ConnectionPoolSettings.getDefault(user));
       }
-    }
-  }
-
-  void disconnect() throws RemoteException {
-    try {
-      if (entityDbConnection != null)
-        entityDbConnection.disconnect();
-
-      entityDbConnection = null;
-      connected = false;
-
-      try {
-        UnicastRemoteObject.unexportObject(this, true);
-      }
-      catch (NoSuchObjectException e) {
-        log.error(e);
-      }
-    }
-    catch (Exception e) {
-      throw new RemoteException(e.getMessage(), e);
     }
   }
 

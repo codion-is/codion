@@ -1604,3 +1604,7 @@
   EntityUiUtil now only adds tool tips to components if description is provided
   EntityLookupField adds the lookup properties as default tool tip
   EntityKeyCriteria now always uses original key values
+  EntityDataUtil added
+  EntityDb.disconnect() added
+  EntityDbRemoteAdapter.server field added, used when disconnecting
+  Entity.Key overrides clear() to handle hash code caching

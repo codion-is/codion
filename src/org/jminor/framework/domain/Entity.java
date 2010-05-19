@@ -950,6 +950,13 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
       return super.setValue(propertyID, newValue);
     }
 
+    @Override
+    public void clear() {
+      super.clear();
+      hashCode = INTEGER_NULL_VALUE;
+      hashCodeDirty = false;
+    }
+
     /**
      * @return a string representation of this key
      */
