@@ -34,6 +34,7 @@ public class EntityTest {
 
   public EntityTest() {
     new EntityTestDomain();
+    new EmpDept();
   }
 
   @Test
@@ -181,8 +182,6 @@ public class EntityTest {
 
   @Test
   public void setValue() {
-    new EmpDept();
-
     final Entity department = new Entity(EmpDept.T_DEPARTMENT);
     department.setValue(EmpDept.DEPARTMENT_ID, -10);
 
