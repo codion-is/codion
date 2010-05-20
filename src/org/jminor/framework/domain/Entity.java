@@ -1071,8 +1071,14 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
         throw new IllegalArgumentException("Entity ID mismatch, expected: " + getEntityID() + ", actual: " + key.getEntityID());
 
       super.setAs(sourceKey);
-      hashCode = key == null ? INTEGER_NULL_VALUE : key.hashCode;
-      hashCodeDirty = key != null && key.hashCodeDirty;
+      if (key == null) {
+        hashCode = INTEGER_NULL_VALUE;
+        hashCodeDirty = false;
+      }
+      else {
+        hashCode = key.hashCode;
+        hashCodeDirty = key.hashCodeDirty;
+      }
     }
 
     @Override

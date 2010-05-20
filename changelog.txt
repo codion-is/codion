@@ -1608,3 +1608,6 @@
   EntityDb.disconnect() added
   EntityDbRemoteAdapter.server field added, used when disconnecting
   Entity.Key overrides clear() to handle hash code caching
+  DateFormats.getDateFormat() overloaded with lenient parameter
+  Configuration.getDefaultDate/TimestampFormat() returns non-lenient formats
+  EntityDataUtil.copyEntities() copyPrimaryKeys parameter added

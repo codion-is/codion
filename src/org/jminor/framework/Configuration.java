@@ -4,6 +4,7 @@
 package org.jminor.framework;
 
 import org.jminor.common.model.Util;
+import org.jminor.common.model.formats.DateFormats;
 
 import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
@@ -506,18 +507,18 @@ public class Configuration {
   }
 
   /**
-   * @return A SimpleDateFormat based on Configuration.DEFAULT_DATE_FORMAT
+   * @return A non-lenient SimpleDateFormat based on Configuration.DEFAULT_DATE_FORMAT
    * @see Configuration#DEFAULT_DATE_FORMAT
    */
   public static SimpleDateFormat getDefaultDateFormat() {
-    return new SimpleDateFormat((String) getValue(DEFAULT_DATE_FORMAT));
+    return DateFormats.getDateFormat((String) getValue(DEFAULT_DATE_FORMAT));
 }
 
   /**
-   * @return A SimpleDateFormat based on Configuration.DEFAULT_TIMESTAMP_FORMAT
+   * @return A non-lenient SimpleDateFormat based on Configuration.DEFAULT_TIMESTAMP_FORMAT
    * @see org.jminor.framework.Configuration#DEFAULT_TIMESTAMP_FORMAT
    */
   public static SimpleDateFormat getDefaultTimestampFormat() {
-    return new SimpleDateFormat((String) getValue(DEFAULT_TIMESTAMP_FORMAT));
+    return DateFormats.getDateFormat((String) getValue(DEFAULT_TIMESTAMP_FORMAT));
   }
 }
