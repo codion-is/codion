@@ -4,17 +4,20 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.model.valuemap.ValueCollectionProvider;
+import org.jminor.common.model.valuemap.ValueProvider;
 import org.jminor.framework.db.provider.EntityDbProvider;
+import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.Property;
 
 import java.util.Collection;
 
-public class PropertyValueListProvider implements ValueCollectionProvider<Object> {
+public class PropertyValueProvider implements ValueCollectionProvider<Object> {
 
   private final EntityDbProvider dbProvider;
   private final String entityID;
   private final String propertyID;
 
-  public PropertyValueListProvider(final EntityDbProvider dbProvider, final String entityID, final String propertyID) {
+  public PropertyValueProvider(final EntityDbProvider dbProvider, final String entityID, final String propertyID) {
     this.dbProvider = dbProvider;
     this.entityID = entityID;
     this.propertyID = propertyID;
@@ -39,5 +42,13 @@ public class PropertyValueListProvider implements ValueCollectionProvider<Object
     catch (Exception e) {
       throw new RuntimeException(e);
     }
+  }
+
+  public static ValueProvider<Property, Object> getValueProvider(final Entity entity) {
+    return new ValueProvider<Property, Object>() {
+      public Object getValue(final Property property) {
+        return entity.getValue(property);
+      }
+    };
   }
 }

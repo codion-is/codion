@@ -14,8 +14,8 @@ import javax.swing.JTextField;
  */
 public class TextInputProvider extends AbstractInputProvider<String> {
 
-  public TextInputProvider(final String inputDialogTitle, final ValueCollectionProvider valueListProvider, final String currentValue) {
-    super(createTextInputPanel(inputDialogTitle, valueListProvider, currentValue));
+  public TextInputProvider(final String inputDialogTitle, final ValueCollectionProvider valueProvider, final String currentValue) {
+    super(createTextInputPanel(inputDialogTitle, valueProvider, currentValue));
   }
 
   @Override
@@ -25,11 +25,11 @@ public class TextInputProvider extends AbstractInputProvider<String> {
     return value.length() == 0 ? null : value;
   }
 
-  private static TextInputPanel createTextInputPanel(final String inputDialogTitle, final ValueCollectionProvider valueListProvider,
+  private static TextInputPanel createTextInputPanel(final String inputDialogTitle, final ValueCollectionProvider valueProvider,
                                                      final Object currentValue) {
     final JTextField txtField = new JTextField(currentValue != null ? currentValue.toString() : "");
     txtField.setColumns(16);
-    UiUtil.addLookupDialog(txtField, valueListProvider);
+    UiUtil.addLookupDialog(txtField, valueProvider);
 
     return new TextInputPanel(txtField, inputDialogTitle);
   }

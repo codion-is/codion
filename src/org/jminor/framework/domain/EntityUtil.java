@@ -142,12 +142,36 @@ public class EntityUtil {
    */
   public static List<Object> getPropertyValues(final String propertyID, final List<Entity> entities,
                                                final boolean includeNullValues) {
+    if (entities == null || entities.size() == 0)
+      return new ArrayList<Object>(0);
+
+    return getPropertyValues(entities.get(0).getProperty(propertyID), entities, includeNullValues);
+  }
+
+  /**
+   * @param property the the property for which to retrieve the values
+   * @param entities the entities from which to retrieve the property value
+   * @return a List containing the values of the property with the given ID from the given entities,
+   * null values are included
+   */
+  public static List<Object> getPropertyValues(final Property property, final List<Entity> entities) {
+    return getPropertyValues(property, entities, true);
+  }
+
+  /**
+   * @param property the the property for which to retrieve the values
+   * @param entities the entities from which to retrieve the property value
+   * @param includeNullValues if true then null values are included
+   * @return a List containing the values of the property with the given ID from the given entities
+   */
+  public static List<Object> getPropertyValues(final Property property, final List<Entity> entities,
+                                               final boolean includeNullValues) {
     final List<Object> values = new ArrayList<Object>(entities.size());
     for (final Entity entity : entities) {
       if (includeNullValues)
-        values.add(entity.getValue(propertyID));
-      else if (!entity.isValueNull(propertyID))
-        values.add(entity.getValue(propertyID));
+        values.add(entity.getValue(property));
+      else if (!entity.isValueNull(property))
+        values.add(entity.getValue(property));
     }
 
     return values;
@@ -375,7 +399,12 @@ public class EntityUtil {
 
   public static Entity randomize(final Entity entity, final boolean includePrimaryKey, final Map<String, Entity> referenceEntities) {
     for (final Property property : EntityRepository.getDatabaseProperties(entity.getEntityID(), includePrimaryKey, false, true)) {
-      if (!property.hasParentProperty() && !property.isDenormalized())
+      if (property instanceof Property.ForeignKeyProperty) {
+        final Property.ForeignKeyProperty foreignKeyProperty = (Property.ForeignKeyProperty) property;
+        if (referenceEntities != null && referenceEntities.containsKey(foreignKeyProperty.getReferencedEntityID()))
+          entity.setValue(property, getRandomValue(property, referenceEntities));
+      }
+      else if (!property.hasParentProperty() && !property.isDenormalized())
         entity.setValue(property, getRandomValue(property, referenceEntities));
     }
 

@@ -8,6 +8,7 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.ValueChangeMapModel;
+import org.jminor.common.model.valuemap.ValueCollectionProvider;
 import org.jminor.framework.client.model.event.DeleteEvent;
 import org.jminor.framework.client.model.event.InsertEvent;
 import org.jminor.framework.client.model.event.UpdateEvent;
@@ -379,6 +380,16 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
 
     for (final Property.ForeignKeyProperty foreignKeyProperty : EntityRepository.getForeignKeyProperties(getEntityID(), masterEntityID))
       getEditModel().setValue(foreignKeyProperty.getPropertyID(), selectedMasterEntities != null && selectedMasterEntities.size() > 0 ? selectedMasterEntities.get(0) : null);
+  }
+
+  /**
+   * Initializes a value provider for the given property, used for adding lookup
+   * functionality to input fields for example.
+   * @param property the property
+   * @return a value provider for the given property
+   */
+  public ValueCollectionProvider<Object> getValueProvider(final Property property) {
+    return new PropertyValueProvider(getDbProvider(), getEntityID(), property.getPropertyID());
   }
 
   /**

@@ -1611,3 +1611,7 @@
   DateFormats.getDateFormat() overloaded with lenient parameter
   Configuration.getDefaultDate/TimestampFormat() returns non-lenient formats
   EntityDataUtil.copyEntities() copyPrimaryKeys parameter added
+  MethodLogger.parameterArrayToString() renamed to argumentArrayToString() and implemented, appendArgumentAsString() added for overriding, no longer abstract
+  EntityUtil.getPropertyValues() overloaded
+  PropertyValueListProvider renamed to PropertyValueProvider, getValueProvider() added
+  EntityDbConnection insert improved a bit when it comes to queried/autogen keys

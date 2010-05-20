@@ -37,7 +37,6 @@ import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.EntityTableModel;
-import org.jminor.framework.client.model.PropertyValueListProvider;
 import org.jminor.framework.client.ui.reporting.EntityReportUiUtil;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
@@ -1725,8 +1724,7 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> im
     if (property.isBoolean())
       return new BooleanInputProvider((Boolean) currentValue);
     if (property.isString())
-      return new TextInputProvider(property.getCaption(), new PropertyValueListProvider(getModel().getDbProvider(),
-              getModel().getEntityID(), property.getPropertyID()), (String) currentValue);
+      return new TextInputProvider(property.getCaption(), getModel().getValueProvider(property), (String) currentValue);
     if (property.isReference())
       return createEntityInputProvider((Property.ForeignKeyProperty) property, (Entity) currentValue);
 

@@ -922,7 +922,7 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
     /**
      * @return the first key property
      */
-    public Property getFirstKeyProperty() {
+    public Property.PrimaryKeyProperty getFirstKeyProperty() {
       if (getPropertyCount() == 0)
         throw new RuntimeException("No properties defined for primary key");
 

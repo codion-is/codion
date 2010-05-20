@@ -739,36 +739,22 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     }
 
     @Override
-    protected String parameterArrayToString(final Object[] arguments) {
-      if (arguments == null)
-        return "";
-
-      final StringBuilder stringBuilder = new StringBuilder(arguments.length*42);
-      for (int i = 0; i < arguments.length; i++) {
-        parameterToString(arguments[i], stringBuilder);
-        if (i < arguments.length-1)
-          stringBuilder.append(", ");
-      }
-
-      return stringBuilder.toString();
-    }
-
-    private void parameterToString(final Object arg, final StringBuilder destination) {
-      if (arg == null)
+    protected void appendArgumentAsString(final Object argument, final StringBuilder destination) {
+      if (argument == null)
         return;
 
-      if (arg instanceof EntityCriteria)
-        appendEntityCriteria((EntityCriteria) arg, destination);
-      else if (arg instanceof Object[] && ((Object[]) arg).length > 0)
-        destination.append("[").append(parameterArrayToString((Object[]) arg)).append("]");
-      else if (arg instanceof Collection && ((Collection) arg).size() > 0)
-        destination.append("[").append(parameterArrayToString(((Collection) arg).toArray())).append("]");
-      else if (arg instanceof Entity)
-        destination.append(getEntityParameterString((Entity) arg));
-      else if (arg instanceof JasperReport)
-        destination.append(((JasperReport) arg).getName());
+      if (argument instanceof EntityCriteria)
+        appendEntityCriteria((EntityCriteria) argument, destination);
+      else if (argument instanceof Object[] && ((Object[]) argument).length > 0)
+        destination.append("[").append(argumentArrayToString((Object[]) argument)).append("]");
+      else if (argument instanceof Collection && ((Collection) argument).size() > 0)
+        destination.append("[").append(argumentArrayToString(((Collection) argument).toArray())).append("]");
+      else if (argument instanceof Entity)
+        destination.append(getEntityParameterString((Entity) argument));
+      else if (argument instanceof JasperReport)
+        destination.append(((JasperReport) argument).getName());
       else
-        destination.append(arg.toString());
+        destination.append(argument.toString());
     }
 
     private void appendEntityCriteria(final EntityCriteria criteria, StringBuilder destination) {
@@ -780,7 +766,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
       final List<?> values = criteria.getValues();
       if (values != null) {
         destination.append(", ");
-        parameterToString(values, destination);
+        appendArgumentAsString(values, destination);
       }
     }
 

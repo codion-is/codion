@@ -53,7 +53,7 @@ public class DbConnection {
   /**
    * The object containing the method call log
    */
-  protected final MethodLogger methodLogger = new DbLogger(true);
+  protected final MethodLogger methodLogger = new MethodLogger(100, true);
 
   /**
    * Constructs a new instance of the DbConnection class, initialized and ready for usage
@@ -630,28 +630,6 @@ public class DbConnection {
       return strings;
     }
   };
-
-  private static class DbLogger extends MethodLogger {
-
-    public DbLogger(final boolean enabled) {
-      super(40, enabled);
-    }
-
-    @Override
-    protected String parameterArrayToString(final Object[] arguments) {
-      if (arguments == null)
-        return "";
-
-      final StringBuilder stringBuilder = new StringBuilder(arguments.length*40);
-      for (int i = 0; i < arguments.length; i++) {
-        stringBuilder.append(String.valueOf(arguments[i]));
-        if (i < arguments.length-1)
-          stringBuilder.append(", ");
-      }
-
-      return stringBuilder.toString();
-    }
-  }
 
   public static class QueryCounter {
     private long queriesPerSecondTime = System.currentTimeMillis();

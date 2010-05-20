@@ -12,7 +12,7 @@ import java.util.List;
  * Date: 24.4.2010<br>
  * Time: 10:10:55<br>
  */
-public abstract class MethodLogger {
+public class MethodLogger {
 
   private int logSize;
   private boolean enabled = false;
@@ -79,7 +79,7 @@ public abstract class MethodLogger {
     this.lastAccessDate = System.currentTimeMillis();
     this.lastAccessedMethod = method;
     if (enabled) {
-      this.lastAccessMessage = parameterArrayToString(arguments);
+      this.lastAccessMessage = argumentArrayToString(arguments);
       addLogEntry(lastAccessedMethod, lastAccessMessage, lastAccessDate, false, null, null);
     }
   }
@@ -103,7 +103,7 @@ public abstract class MethodLogger {
   }
 
   private synchronized long addLogEntry(final String method, final String message, final long time, final boolean isExit,
-                           final Throwable exception, final List<LogEntry> subLog) {
+                                        final Throwable exception, final List<LogEntry> subLog) {
     if (!isExit) {
       if (currentLogEntryIndex > logEntries.size()-1)
         currentLogEntryIndex = 0;
@@ -129,5 +129,21 @@ public abstract class MethodLogger {
     return logEntries;
   }
 
-  protected abstract String parameterArrayToString(final Object[] arguments);
+  protected String argumentArrayToString(final Object[] arguments) {
+    if (arguments == null)
+      return "";
+
+    final StringBuilder stringBuilder = new StringBuilder(arguments.length*40);
+    for (int i = 0; i < arguments.length; i++) {
+      appendArgumentAsString(arguments[i], stringBuilder);
+      if (i < arguments.length-1)
+        stringBuilder.append(", ");
+    }
+
+    return stringBuilder.toString();
+  }
+
+  protected void appendArgumentAsString(final Object argument, final StringBuilder destination) {
+    destination.append(String.valueOf(argument));
+  }
 }

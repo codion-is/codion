@@ -41,7 +41,7 @@ import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityLookupModel;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.model.PropertyComboBoxModel;
-import org.jminor.framework.client.model.PropertyValueListProvider;
+import org.jminor.framework.client.model.PropertyValueProvider;
 import org.jminor.framework.client.model.event.InsertEvent;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
@@ -585,7 +585,7 @@ public class EntityUiUtil {
     if (field instanceof TextFieldPlus && property.getMaxLength() > 0)
       ((TextFieldPlus) field).setMaxLength(property.getMaxLength());
     if (property.isDatabaseProperty())
-      UiUtil.addLookupDialog(field, new PropertyValueListProvider(editModel.getDbProvider(), editModel.getEntityID(), property.getPropertyID()));
+      UiUtil.addLookupDialog(field, new PropertyValueProvider(editModel.getDbProvider(), editModel.getEntityID(), property.getPropertyID()));
 
     return field;
   }

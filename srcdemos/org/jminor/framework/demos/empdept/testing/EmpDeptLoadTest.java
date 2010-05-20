@@ -55,11 +55,9 @@ public class EmpDeptLoadTest extends EntityLoadTestModel {
         final EntityModel employeeModel = departmentModel.getDetailModel(EmployeeModel.class);
         if (employeeModel.getTableModel().getRowCount() > 0) {
           selectRandomRow(employeeModel.getTableModel());
-          if (random.nextDouble() < 0.5)
-            employeeModel.getEditModel().setValue(EmpDept.EMPLOYEE_COMMISSION, 100 + random.nextDouble() * 1900);
-          else
-            employeeModel.getEditModel().setValue(EmpDept.EMPLOYEE_SALARY, 1000 + random.nextDouble() * 9000);
-
+          final Entity selected = employeeModel.getTableModel().getSelectedItem();
+          EntityUtil.randomize(selected, false, null);
+          employeeModel.getEditModel().setEntity(selected);
           employeeModel.getEditModel().update();
         }
       }
