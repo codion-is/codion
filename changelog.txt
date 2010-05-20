@@ -1615,3 +1615,10 @@
   EntityUtil.getPropertyValues() overloaded
   PropertyValueListProvider renamed to PropertyValueProvider, getValueProvider() added
   EntityDbConnection insert improved a bit when it comes to queried/autogen keys
+  EntityPanel.updateSelectedEntities(property) and getInputProvider() moved to EntityTablePanel
+  EntityEditModel.getValueProvider() added
+  EntityUtil.getUpdateProperties() added
+  EntityPanel.createStaticEntityPanel() removed
+  EntityTabelPanel.createStaticEntityTablePanel() added
+  EntityPanel.viewSelectionDependencies() moved to EntityTablePanel
+  EntityPanel.exportSelected() moved to EntityTablePanel

@@ -3,7 +3,9 @@
  */
 package org.jminor.framework.client.ui;
 
+import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.criteria.CriteriaSet;
+import org.jminor.common.db.exception.DbException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
@@ -17,7 +19,16 @@ import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.ControlSet;
 import org.jminor.common.ui.control.ToggleBeanValueLink;
 import org.jminor.common.ui.images.Images;
+import org.jminor.common.ui.input.BooleanInputProvider;
+import org.jminor.common.ui.input.DateInputProvider;
+import org.jminor.common.ui.input.DoubleInputProvider;
+import org.jminor.common.ui.input.InputProvider;
+import org.jminor.common.ui.input.InputProviderPanel;
+import org.jminor.common.ui.input.IntInputProvider;
+import org.jminor.common.ui.input.TextInputProvider;
+import org.jminor.common.ui.input.ValueListInputProvider;
 import org.jminor.framework.Configuration;
+import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.model.EntityTableSearchModel;
 import org.jminor.framework.client.model.PropertyFilterModel;
@@ -25,8 +36,11 @@ import org.jminor.framework.client.model.PropertySearchModel;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
+import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
+
+import org.json.JSONException;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -50,14 +64,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.print.PrinterException;
 import java.text.Collator;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
+import java.util.*;
 
 /**
  * The EntityTablePanel class consists of a JTable as well as filtering/searching and summary facilities.
@@ -314,6 +321,86 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     return "EntityTablePanel: " + getTableModel().getEntityID();
   }
 
+  /**
+   * Queries the user on which property to update, after which it calls the
+   * <code>updateSelectedEntities(property)</code> with that property
+   * @param editModel the edit model for performing the actual update
+   * @see #updateSelectedEntities(org.jminor.framework.domain.Property, org.jminor.framework.client.model.EntityEditModel)
+   * @see #getInputProvider(org.jminor.framework.domain.Property, java.util.List, org.jminor.framework.client.model.EntityEditModel)
+   */
+  public void updateSelectedEntities(final EntityEditModel editModel) {
+    try {
+      updateSelectedEntities(getPropertyToUpdate(), editModel);
+    }
+    catch (CancelException e) {/**/}
+  }
+
+  /**
+   * Retrieves a new property value via input dialog and performs an update on the selected entities
+   * @param propertyToUpdate the property to update
+   * @param editModel the edit model for performing the actual update
+   * @see #getInputProvider(org.jminor.framework.domain.Property, java.util.List, org.jminor.framework.client.model.EntityEditModel)
+   */
+  public void updateSelectedEntities(final Property propertyToUpdate, final EntityEditModel editModel) {
+    if (getTableModel().stateSelectionEmpty().isActive())
+      return;
+
+    final List<Entity> selectedEntities = EntityUtil.copyEntities(getTableModel().getSelectedItems());
+    final InputProviderPanel inputPanel = new InputProviderPanel(propertyToUpdate.getCaption(),
+            getInputProvider(propertyToUpdate, selectedEntities, editModel));
+    UiUtil.showInDialog(this, inputPanel, true, FrameworkMessages.get(FrameworkMessages.SET_PROPERTY_VALUE),
+            null, inputPanel.getOkButton(), inputPanel.eventButtonClicked());
+    if (inputPanel.isEditAccepted()) {
+      EntityUtil.setPropertyValue(propertyToUpdate.getPropertyID(), inputPanel.getValue(), selectedEntities);
+      try {
+        UiUtil.setWaitCursor(true, this);
+        editModel.update(selectedEntities);
+      }
+      catch (RuntimeException re) {
+        throw re;
+      }
+      catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+      finally {
+        UiUtil.setWaitCursor(false, this);
+      }
+    }
+  }
+
+  /**
+   * Shows a dialog containing lists of entities depending on the selected entities via foreign key
+   * @throws org.jminor.common.db.exception.DbException in case of a database exception
+   */
+  public void viewSelectionDependencies() throws DbException {
+    final Map<String, List<Entity>> dependencies;
+    try {
+      UiUtil.setWaitCursor(true, this);
+      dependencies = getTableModel().getSelectionDependencies();
+    }
+    finally {
+      UiUtil.setWaitCursor(false, this);
+    }
+    if (dependencies.size() > 0) {
+      showDependenciesDialog(dependencies, getTableModel().getDbProvider(), this);
+    }
+    else {
+      JOptionPane.showMessageDialog(this, FrameworkMessages.get(FrameworkMessages.NONE_FOUND),
+              FrameworkMessages.get(FrameworkMessages.NO_DEPENDENT_RECORDS), JOptionPane.INFORMATION_MESSAGE);
+    }
+  }
+
+  /**
+   * Exports the selected records as a JSON file
+   * @throws CancelException in case the action is cancelled
+   * @throws org.json.JSONException in case of a JSON exception
+   */
+  public void exportSelected() throws CancelException, JSONException {
+    final List<Entity> selected = getTableModel().getSelectedItems();
+    Util.writeFile(EntityUtil.getJSONString(selected, false, 2), UiUtil.chooseFileToSave(this, null, null));
+    JOptionPane.showMessageDialog(this, FrameworkMessages.get(FrameworkMessages.EXPORT_SELECTED_DONE));
+  }
+
   public void initializeSouthPanelToolBar(final ControlSet controls) {
     if (southPanel == null)
       throw new RuntimeException("No south panel available for toolbar");
@@ -482,6 +569,44 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
   }
 
   /**
+   * Creates a static entity table panel showing the given entities
+   * @param entities the entities to show in the panel
+   * @param dbProvider the EntityDbProvider, in case the returned panel should require one
+   * @return a static EntityTablePanel showing the given entities
+   */
+  public static EntityTablePanel createStaticEntityTablePanel(final Collection<Entity> entities, final EntityDbProvider dbProvider) {
+    if (entities == null || entities.size() == 0)
+      throw new RuntimeException("Cannot create an EntityPanel without the entities");
+
+    return createStaticEntityTablePanel(entities, dbProvider, entities.iterator().next().getEntityID());
+  }
+
+  /**
+   * Creates a static entity table panel showing the given entities
+   * @param entities the entities to show in the panel
+   * @param dbProvider the EntityDbProvider, in case the returned panel should require one
+   * @param entityID the entityID
+   * @return a static EntityTablePanel showing the given entities
+   */
+  public static EntityTablePanel createStaticEntityTablePanel(final Collection<Entity> entities, final EntityDbProvider dbProvider,
+                                                    final String entityID) {
+    final EntityTablePanel tablePanel = new EntityTablePanel(new EntityTableModel(entityID, dbProvider) {
+      @Override
+      protected List<Entity> performQuery(final Criteria criteria) {
+        return new ArrayList<Entity>(entities);
+      }
+    }, null) {
+      @Override
+      protected JPanel initializeSearchPanel() {
+        return null;
+      }
+    };
+    tablePanel.getTableModel().refresh();
+
+    return tablePanel;
+  }
+
+  /**
    * Override to add event bindings
    */
   protected void bindEvents() {}
@@ -595,16 +720,16 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
       ((JComponent) table.getParent()).setComponentPopupMenu(popupMenu);
     UiUtil.addKeyEvent(table, KeyEvent.VK_G, JComponent.WHEN_FOCUSED,
             KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, new AbstractAction("showPopupMenu") {
-      public void actionPerformed(ActionEvent event) {
-        popupMenu.show(table, 100, table.getSelectedRow() * table.getRowHeight());
-      }
-    });
+              public void actionPerformed(ActionEvent event) {
+                popupMenu.show(table, 100, table.getSelectedRow() * table.getRowHeight());
+              }
+            });
     UiUtil.addKeyEvent(table, KeyEvent.VK_V, JComponent.WHEN_FOCUSED,
             KeyEvent.CTRL_DOWN_MASK, new AbstractAction("showEntityMenu") {
-      public void actionPerformed(ActionEvent event) {
-        showEntityMenu(new Point(100, table.getSelectedRow() * table.getRowHeight()));
-      }
-    });
+              public void actionPerformed(ActionEvent event) {
+                showEntityMenu(new Point(100, table.getSelectedRow() * table.getRowHeight()));
+              }
+            });
   }
 
   /**
@@ -717,6 +842,62 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     toolBar.add(button);
 
     return toolBar;
+  }
+
+  /**
+   * Provides value input components for multiple entity update, override to supply
+   * specific InputValueProvider implementations for properties.
+   * Remember to return with a call to super.getInputProviderInputProvider().
+   * @param property the property for which to get the InputProvider
+   * @param toUpdate the entities that are about to be updated
+   * @param editModel the edit model involved in the updating
+   * @return the InputProvider handling input for <code>property</code>
+   * @see #updateSelectedEntities
+   */
+  @SuppressWarnings({"UnusedDeclaration"})
+  protected InputProvider getInputProvider(final Property property, final List<Entity> toUpdate,
+                                           final EntityEditModel editModel) {
+    final Collection<Object> values = EntityUtil.getDistinctPropertyValues(toUpdate, property.getPropertyID());
+    final Object currentValue = values.size() == 1 ? values.iterator().next() : null;
+    if (property instanceof Property.ValueListProperty)
+      return new ValueListInputProvider(currentValue, ((Property.ValueListProperty) property).getValues());
+    if (property.isTimestamp())
+      return new DateInputProvider((Date) currentValue, Configuration.getDefaultTimestampFormat());
+    if (property.isDate())
+      return new DateInputProvider((Date) currentValue, Configuration.getDefaultDateFormat());
+    if (property.isDouble())
+      return new DoubleInputProvider((Double) currentValue);
+    if (property.isInteger())
+      return new IntInputProvider((Integer) currentValue);
+    if (property.isBoolean())
+      return new BooleanInputProvider((Boolean) currentValue);
+    if (property.isString())
+      return new TextInputProvider(property.getCaption(), editModel.getValueProvider(property), (String) currentValue);
+    if (property.isReference())
+      return createEntityInputProvider((Property.ForeignKeyProperty) property, (Entity) currentValue, editModel);
+
+    throw new IllegalArgumentException("Unsupported property type: " + property.getType());
+  }
+
+  /**
+   * Creates a InputProvider for the given foreign key property
+   * @param foreignKeyProperty the property
+   * @param currentValue the current value to initialize the InputProvider with
+   * @param editModel the edit model involved in the updating
+   * @return a Entity InputProvider
+   */
+  protected InputProvider createEntityInputProvider(final Property.ForeignKeyProperty foreignKeyProperty, final Entity currentValue,
+                                                    final EntityEditModel editModel) {
+    if (!EntityRepository.isLargeDataset(foreignKeyProperty.getReferencedEntityID())) {
+      return new EntityComboProvider(editModel.createEntityComboBoxModel(foreignKeyProperty), currentValue);
+    }
+    else {
+      List<Property> searchProperties = EntityRepository.getSearchProperties(foreignKeyProperty.getReferencedEntityID());
+      if (searchProperties.size() == 0)
+        throw new RuntimeException("No searchable properties found for entity: " + foreignKeyProperty.getReferencedEntityID());
+
+      return new EntityLookupProvider(editModel.createEntityLookupModel(foreignKeyProperty.getReferencedEntityID(), null, searchProperties), currentValue);
+    }
   }
 
   /**
@@ -931,6 +1112,18 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     }
   }
 
+  private Property getPropertyToUpdate() throws CancelException {
+    final JComboBox box = new JComboBox(new Vector<Property>(EntityUtil.getUpdateProperties(getTableModel().getEntityID())));
+    final int ret = JOptionPane.showOptionDialog(this, box,
+            FrameworkMessages.get(FrameworkMessages.SELECT_PROPERTY_FOR_UPDATE),
+            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+
+    if (ret == JOptionPane.OK_OPTION)
+      return (Property) box.getSelectedItem();
+    else
+      throw new CancelException();
+  }
+
   private void updateStatusMessage() {
     if (statusMessageLabel != null) {
       final String status = getTableModel().getStatusMessage();
@@ -1082,6 +1275,35 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
       val = val.substring(1);
 
     column.setHeaderValue(val);
+  }
+
+  private static void showDependenciesDialog(final Map<String, List<Entity>> dependencies, final EntityDbProvider dbProvider,
+                                             final JComponent dialogParent) {
+    JPanel dependenciesPanel;
+    try {
+      UiUtil.setWaitCursor(true, dialogParent);
+      dependenciesPanel = createDependenciesPanel(dependencies, dbProvider);
+    }
+    finally {
+      UiUtil.setWaitCursor(false, dialogParent);
+    }
+    UiUtil.showInDialog(UiUtil.getParentWindow(dialogParent), dependenciesPanel,
+            true, FrameworkMessages.get(FrameworkMessages.DEPENDENT_RECORDS_FOUND), true, true, null);
+  }
+
+  private static JPanel createDependenciesPanel(final Map<String, List<Entity>> dependencies,
+                                                final EntityDbProvider dbProvider) {
+    final JPanel panel = new JPanel(new BorderLayout());
+    final JTabbedPane tabPane = new JTabbedPane(JTabbedPane.TOP);
+    tabPane.setUI(UiUtil.getBorderlessTabbedPaneUI());
+    for (final Map.Entry<String, List<Entity>> entry : dependencies.entrySet()) {
+      final List<Entity> dependantEntities = entry.getValue();
+      if (dependantEntities.size() > 0)
+        tabPane.addTab(entry.getKey(), createStaticEntityTablePanel(dependantEntities, dbProvider));
+    }
+    panel.add(tabPane, BorderLayout.CENTER);
+
+    return panel;
   }
 
   /**

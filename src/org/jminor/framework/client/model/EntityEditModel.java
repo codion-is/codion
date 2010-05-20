@@ -14,6 +14,7 @@ import org.jminor.common.model.valuemap.ValueChangeEvent;
 import org.jminor.common.model.valuemap.ValueChangeListener;
 import org.jminor.common.model.valuemap.ValueChangeMap;
 import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
+import org.jminor.common.model.valuemap.ValueCollectionProvider;
 import org.jminor.common.model.valuemap.exception.NullValidationException;
 import org.jminor.common.model.valuemap.exception.RangeValidationException;
 import org.jminor.common.model.valuemap.exception.ValidationException;
@@ -242,7 +243,7 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
     final Entity copy = (Entity) getEntity().getCopy();
     if (!includePrimaryKeyValues)
       copy.getPrimaryKey().clear();
-    
+
     return copy;
   }
 
@@ -598,6 +599,16 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
         defaultEntity.setValue(property, getDefaultValue(property));
 
     return defaultEntity;
+  }
+
+  /**
+   * Initializes a value provider for the given property, used for adding lookup
+   * functionality to input fields for example.
+   * @param property the property
+   * @return a value provider for the given property
+   */
+  public ValueCollectionProvider<Object> getValueProvider(final Property property) {
+    return new PropertyValueProvider(getDbProvider(), getEntityID(), property.getPropertyID());
   }
 
   /**
