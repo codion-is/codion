@@ -40,7 +40,7 @@ public class ProductPanel extends EntityPanel {
       protected void initializeUI() {
         setLayout(new FlexibleGridLayout(3,1,5,5));
         final EntityComboBox box = createEntityComboBox(PRODUCT_CATEGORY_FK);
-        setDefaultFocusComponent(box);
+        setInitialFocusComponent(box);
         add(createPropertyPanel(PRODUCT_CATEGORY_FK, box));
         add(createPropertyPanel(PRODUCT_NAME, createTextField(PRODUCT_NAME)));
         final JTextField txt = createTextField(PRODUCT_DESCRIPTION);

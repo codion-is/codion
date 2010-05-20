@@ -36,7 +36,7 @@ public class TagItemPanel extends EntityPanel {
       protected void initializeUI() {
         setLayout(new FlexibleGridLayout(2,1,5,5));
         EntityComboBox box = createEntityComboBox(TAG_ITEM_ITEM_FK);
-        setDefaultFocusComponent(box);
+        setInitialFocusComponent(box);
         box.setPopupWidth(240);
         box.setPreferredSize(new Dimension(180, UiUtil.getPreferredTextFieldHeight()));
         add(createPropertyPanel(TAG_ITEM_ITEM_FK, box));

@@ -35,7 +35,7 @@ public class GenrePanel extends EntityPanel {
         setLayout(new GridLayout(1, 1, 5, 5));
         final JTextField txtName = createTextField(GENRE_NAME);
         txtName.setColumns(12);
-        setDefaultFocusComponent(txtName);
+        setInitialFocusComponent(txtName);
         add(createPropertyPanel(GENRE_NAME, txtName));
       }
     };

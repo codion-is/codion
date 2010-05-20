@@ -39,7 +39,7 @@ public class ContactInfoPanel extends EntityPanel {
       protected void initializeUI() {
         setLayout(new FlexibleGridLayout(3,1,5,5));
         final JTextField txt = createTextField(SELLER_CONTACT_INFO_LAST_NAME);
-        setDefaultFocusComponent(txt);
+        setInitialFocusComponent(txt);
         txt.setColumns(10);
         add(createPropertyPanel(SELLER_CONTACT_INFO_LAST_NAME, txt));
         add(createPropertyPanel(SELLER_CONTACT_INFO_FIRST_NAME, createTextField(SELLER_CONTACT_INFO_FIRST_NAME)));

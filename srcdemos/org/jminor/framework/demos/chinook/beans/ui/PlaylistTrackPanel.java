@@ -32,7 +32,7 @@ public class PlaylistTrackPanel extends EntityPanel {
       protected void initializeUI() {
         setLayout(new GridLayout(2, 1, 5, 5));
         final JComboBox boxPlaylist = createEntityComboBox(PLAYLISTTRACK_PLAYLISTID_FK);
-        setDefaultFocusComponent(boxPlaylist);
+        setInitialFocusComponent(boxPlaylist);
         final JTextField txtTrack = createEntityLookupField(PLAYLISTTRACK_TRACKID_FK);
         txtTrack.setColumns(30);
         add(createPropertyPanel(PLAYLISTTRACK_PLAYLISTID_FK, boxPlaylist));

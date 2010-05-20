@@ -1622,3 +1622,5 @@
   EntityTabelPanel.createStaticEntityTablePanel() added
   EntityPanel.viewSelectionDependencies() moved to EntityTablePanel
   EntityPanel.exportSelected() moved to EntityTablePanel
+  EntityTablePanel.hiddenColumns and associated stuff moved all the way down to AbstractFilteredTableModel/Panel
+  ValueChangeMapEditPanel.defaultFocusComponent renamed to initialFocusComponent (along with related methods)

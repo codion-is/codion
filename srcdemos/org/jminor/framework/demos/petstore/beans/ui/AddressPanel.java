@@ -31,7 +31,7 @@ public class AddressPanel extends EntityPanel {
       protected void initializeUI() {
         setLayout(new FlexibleGridLayout(4,2,5,5));
         JTextField txt = createTextField(ADDRESS_CITY);
-        setDefaultFocusComponent(txt);
+        setInitialFocusComponent(txt);
         txt.setColumns(12);
         add(createPropertyPanel(ADDRESS_CITY, txt));
         txt = createTextField(ADDRESS_STATE);

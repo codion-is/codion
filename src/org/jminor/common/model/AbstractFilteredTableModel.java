@@ -18,6 +18,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -40,6 +41,8 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
   private final Event evtFilteringStarted = new Event();
   private final Event evtFilteringDone = new Event();
   private final Event evtTableDataChanged = new Event();
+  private final Event evtColumnHidden = new Event();
+  private final Event evtColumnShown = new Event();
 
   /**
    * Holds visible items
@@ -57,6 +60,11 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
   private final TableColumnModel columnModel;
 
   /**
+   * Contains columns that have been hidden
+   */
+  private final List<TableColumn> hiddenColumns = new ArrayList<TableColumn>();
+
+  /**
    * The sorter model
    */
   private final TableSorter tableSorter;
@@ -66,6 +74,9 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
    */
   private final SelectionModel selectionModel = new SelectionModel();
 
+  /**
+   * Caches the column indexes in the model
+   */
   private final int[] columnIndexCache;
 
   /**
@@ -446,30 +457,73 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
   }
 
   /**
-   * Maps the index of the column in the table model at
-   * <code>modelColumnIndex</code> to the index of the column
-   * in the view.  Returns the index of the
-   * corresponding column in the view; returns -1 if this column is not
-   * being displayed.  If <code>modelColumnIndex</code> is less than zero,
-   * returns <code>modelColumnIndex</code>.
-   * @param modelColumnIndex the index of the column in the model
-   * @return the index of the corresponding column in the view
+   * Toggles the visibility of the column representing the given columnIdentifier.<br>
+   * @param columnIdentifier the column identifier
+   * @param visible if true the column is shown, otherwise it is hidden
    */
-  protected int convertColumnIndexToView(final int modelColumnIndex) {
-    if (modelColumnIndex < 0)
-      return modelColumnIndex;
-
-    final int cachedIndex = columnIndexCache[modelColumnIndex];
-    if (cachedIndex > 0)
-      return cachedIndex;
-
-    for (int index = 0; index < getColumnCount(); index++)
-      if (columnModel.getColumn(index).getModelIndex() == modelColumnIndex) {
-        columnIndexCache[modelColumnIndex] = index;
-        return index;
+  public void setColumnVisible(final Object columnIdentifier, final boolean visible) {
+    if (visible) {
+      if (!isColumnVisible(columnIdentifier)) {
+        showColumn(columnIdentifier);
       }
+    }
+    else {
+      if (isColumnVisible(columnIdentifier)) {
+        hideColumn(columnIdentifier);
+      }
+    }
+  }
 
-    return -1;
+  public void showColumn(final Object columnIdentifier) {
+    final ListIterator<TableColumn> hiddenColumnIterator = hiddenColumns.listIterator();
+    while (hiddenColumnIterator.hasNext()) {
+      final TableColumn hiddenColumn = hiddenColumnIterator.next();
+      if (hiddenColumn.getIdentifier().equals(columnIdentifier)) {
+        hiddenColumnIterator.remove();
+        getColumnModel().addColumn(hiddenColumn);
+        evtColumnShown.fire(new ActionEvent(hiddenColumn.getIdentifier(), 0, "showColumn"));
+      }
+    }
+  }
+
+  public void hideColumn(final Object columnIdentifier) {
+    final TableColumn column = getTableColumn(columnIdentifier);
+    getColumnModel().removeColumn(column);
+    hiddenColumns.add(column);
+    evtColumnHidden.fire(new ActionEvent(columnIdentifier, 0, "hideColumn"));
+  }
+
+  /**
+   * @param columnIdentifier the key for which to query if its column is visible
+   * @return true if the column is visible, false if it is hidden
+   */
+  public boolean isColumnVisible(final Object columnIdentifier) {
+    for (final TableColumn column : hiddenColumns) {
+      if (column.getIdentifier().equals(columnIdentifier))
+        return false;
+    }
+
+    return true;
+  }
+
+  public List<TableColumn> getHiddenColumns() {
+    return Collections.unmodifiableList(hiddenColumns);
+  }
+
+  /**
+   * @return an Event fired whenever a column is hidden,
+   * the ActionEvent source is the column identifier.
+   */
+  public Event eventColumnHidden() {
+    return evtColumnHidden;
+  }
+
+  /**
+   * @return an Event fired whenever a column is shown,
+   * the ActionEvent source is the column identifier.
+   */
+  public Event eventColumnShown() {
+    return evtColumnShown;
   }
 
   /**
@@ -519,6 +573,33 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
    */
   public Event eventTableDataChanged() {
     return evtTableDataChanged;
+  }
+
+  /**
+   * Maps the index of the column in the table model at
+   * <code>modelColumnIndex</code> to the index of the column
+   * in the view.  Returns the index of the
+   * corresponding column in the view; returns -1 if this column is not
+   * being displayed.  If <code>modelColumnIndex</code> is less than zero,
+   * returns <code>modelColumnIndex</code>.
+   * @param modelColumnIndex the index of the column in the model
+   * @return the index of the corresponding column in the view
+   */
+  protected int convertColumnIndexToView(final int modelColumnIndex) {
+    if (modelColumnIndex < 0)
+      return modelColumnIndex;
+
+    final int cachedIndex = columnIndexCache[modelColumnIndex];
+    if (cachedIndex > 0)
+      return cachedIndex;
+
+    for (int index = 0; index < getColumnCount(); index++)
+      if (columnModel.getColumn(index).getModelIndex() == modelColumnIndex) {
+        columnIndexCache[modelColumnIndex] = index;
+        return index;
+      }
+
+    return -1;
   }
 
   /**

@@ -582,7 +582,7 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
    * @param criteria a criteria
    * @return entities selected from the database according the the query criteria.
    */
-  protected List<Entity> performQuery(final Criteria criteria) {
+  protected List<Entity> performQuery(final Criteria<Property> criteria) {
     if (isQueryFilteredByMaster() && criteria == null && !isShowAllWhenNotFiltered())
       return new ArrayList<Entity>();
 
@@ -619,7 +619,7 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
    * found in the underlying EntityTableSearchModel
    * @see org.jminor.framework.client.model.EntityTableSearchModel#getSearchCriteria()
    */
-  protected Criteria getQueryCriteria() {
+  protected Criteria<Property> getQueryCriteria() {
     return tableSearchModel.getSearchCriteria();
   }
 
@@ -638,6 +638,13 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
   protected void bindEvents() {}
 
   private void bindEventsInternal() {
+    eventColumnHidden().addListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        //disable the search model for the column to be hidden, to prevent confusion
+        final Property property = (Property) e.getSource();
+        getSearchModel().setSearchEnabled(property.getPropertyID(), false);
+      }
+    });
     tableSearchModel.eventFilterStateChanged().addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent event) {
         filterTable();

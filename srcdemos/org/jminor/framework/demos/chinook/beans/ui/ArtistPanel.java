@@ -35,7 +35,7 @@ public class ArtistPanel extends EntityPanel {
         setLayout(new GridLayout(1, 1, 5, 5));
         final JTextField txtName = createTextField(ARTIST_NAME);
         txtName.setColumns(18);
-        setDefaultFocusComponent(txtName);
+        setInitialFocusComponent(txtName);
         add(createPropertyPanel(ARTIST_NAME, txtName));
       }
     };

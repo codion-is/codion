@@ -68,7 +68,7 @@ public class DepartmentPanel extends EntityPanel {
         final JTextField txtDepartmentName = (JTextField) UiUtil.makeUpperCase(createTextField(DEPARTMENT_NAME));
         final JTextField txtDepartmentLocation = (JTextField) UiUtil.makeUpperCase(createTextField(DEPARTMENT_LOCATION));
 
-        setDefaultFocusComponent(txtDepartmentNumber);
+        setInitialFocusComponent(txtDepartmentNumber);
         txtDepartmentNumber.setColumns(10);
 
         //we don't allow editing of the department number since it's a primary key
@@ -76,11 +76,11 @@ public class DepartmentPanel extends EntityPanel {
           public void actionPerformed(ActionEvent e) {
             if (getEditModel().isEntityNull()) {
               txtDepartmentNumber.setEnabled(true);
-              setDefaultFocusComponent(txtDepartmentNumber);
+              setInitialFocusComponent(txtDepartmentNumber);
             }
             else {
               txtDepartmentNumber.setEnabled(false);
-              setDefaultFocusComponent(txtDepartmentName);
+              setInitialFocusComponent(txtDepartmentName);
             }
           }
         });

@@ -35,7 +35,7 @@ public class MediaTypePanel extends EntityPanel {
         setLayout(new GridLayout(1, 1, 5, 5));
         final JTextField txtName = createTextField(MEDIATYPE_NAME);
         txtName.setColumns(12);
-        setDefaultFocusComponent(txtName);
+        setInitialFocusComponent(txtName);
         add(createPropertyPanel(MEDIATYPE_NAME, txtName));
       }
     };

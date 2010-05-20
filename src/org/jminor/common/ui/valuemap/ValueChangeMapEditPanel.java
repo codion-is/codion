@@ -27,9 +27,9 @@ public abstract class ValueChangeMapEditPanel<K, V> extends JPanel {
   /**
    * The component that should receive focus when the UI is prepared for a new record
    */
-  private JComponent defaultFocusComponent;
+  private JComponent initialFocusComponent;
 
-  private K defaultFocusComponentKey;
+  private K initialFocusComponentKey;
 
   public ValueChangeMapEditPanel(final ValueChangeMapEditModel<K, V> model) {
     this.model = model;
@@ -39,45 +39,45 @@ public abstract class ValueChangeMapEditPanel<K, V> extends JPanel {
     return model;
   }
 
-  public void prepareUI(final boolean requestDefaultFocus, final boolean clearUI) {
+  public void prepareUI(final boolean setInitialFocus, final boolean clearUI) {
     if (clearUI)
       getEditModel().setValueMap(null);
-    if (requestDefaultFocus && isVisible())
-      setDefaultFocus();
+    if (setInitialFocus && isVisible())
+      setInitialFocus();
   }
 
   /**
    * Sets the component that should receive the focus when the UI is cleared or activated.
-   * Overrides the value set via setDefaultFocusComponentKey()
-   * @param defaultFocusComponent the component
+   * Overrides the value set via setInitialFocusComponentKey()
+   * @param initialFocusComponent the component
    * @return the component
    * @see #prepareUI(boolean, boolean)
    */
-  public JComponent setDefaultFocusComponent(final JComponent defaultFocusComponent) {
-    return this.defaultFocusComponent = defaultFocusComponent;
+  public JComponent setInitialFocusComponent(final JComponent initialFocusComponent) {
+    return this.initialFocusComponent = initialFocusComponent;
   }
 
-  public K getDefaultFocusComponentKey() {
-    return defaultFocusComponentKey;
+  public K getInitialFocusComponentKey() {
+    return initialFocusComponentKey;
   }
 
   /**
    * Defines the component associated with the given key as the component
-   * that should recieve the default focus in this edit panel.
-   * This is overridden by setDefaultFocusComponent().
-   * @param defaultFocusComponentKey the component key
-   * @see #setDefaultFocusComponent(javax.swing.JComponent)
+   * that should recieve the initial focus in this edit panel.
+   * This is overridden by setInitialFocusComponent().
+   * @param initialFocusComponentKey the component key
+   * @see #setInitialFocusComponent(javax.swing.JComponent)
    */
-  public void setDefaultFocusComponentKey(final K defaultFocusComponentKey) {
-    this.defaultFocusComponentKey = defaultFocusComponentKey;
+  public void setInitialFocusComponentKey(final K initialFocusComponentKey) {
+    this.initialFocusComponentKey = initialFocusComponentKey;
   }
 
-  public void setDefaultFocus() {
-    final JComponent defaultFocusComponent = getDefaultFocusComponent();
-    if (defaultFocusComponent == null)
+  public void setInitialFocus() {
+    final JComponent initialFocusComponent = getInitialFocusComponent();
+    if (initialFocusComponent == null)
       requestFocusInWindow();
     else
-      defaultFocusComponent.requestFocusInWindow();
+      initialFocusComponent.requestFocusInWindow();
   }
 
   /**
@@ -99,12 +99,12 @@ public abstract class ValueChangeMapEditPanel<K, V> extends JPanel {
       components.get(key).requestFocusInWindow();
   }
 
-  protected JComponent getDefaultFocusComponent() {
-    if (defaultFocusComponent != null)
-      return defaultFocusComponent;
+  protected JComponent getInitialFocusComponent() {
+    if (initialFocusComponent != null)
+      return initialFocusComponent;
 
-    if (defaultFocusComponentKey != null)
-      return components.get(defaultFocusComponentKey);
+    if (initialFocusComponentKey != null)
+      return components.get(initialFocusComponentKey);
 
     return null;
   }

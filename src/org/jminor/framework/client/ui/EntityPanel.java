@@ -281,7 +281,7 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> im
         if (isActive()) {
           initializePanel();
           showPanelTab();
-          //do not try to grab the default focus when a child component already has the focus, for example the table
+          //do not try to grab the initial focus when a child component already has the focus, for example the table
           prepareUI(!isParentPanel(KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner()), false);
         }
       }
@@ -771,20 +771,20 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> im
   //#############################################################################################
 
   /**
-   * Prepares the UI, by clearing the input fields and setting the default focus,
+   * Prepares the UI, by clearing the input fields and setting the initial focus,
    * if both parameters are set to false then there is no effect
-   * @param requestDefaultFocus if true the component defined as the defaultFocusComponent
+   * @param setInitialFocus if true the component defined as the initialFocusComponent
    * gets the input focus, if none is defined the first child component of this EntityPanel is used,
    * if no edit panel is available the table receives the focus
    * @param clearUI if true the the input components are cleared
-   * @see EntityEditPanel#setDefaultFocusComponent(javax.swing.JComponent)
+   * @see EntityEditPanel#setInitialFocusComponent(javax.swing.JComponent)
    */
-  public final void prepareUI(final boolean requestDefaultFocus, final boolean clearUI) {
+  public final void prepareUI(final boolean setInitialFocus, final boolean clearUI) {
     final ValueChangeMapEditPanel editPanel = getEditPanel();
     if (editPanel != null) {
-      editPanel.prepareUI(requestDefaultFocus, clearUI);
+      editPanel.prepareUI(setInitialFocus, clearUI);
     }
-    else if (requestDefaultFocus) {
+    else if (setInitialFocus) {
       if (getTablePanel() != null)
         getTablePanel().getJTable().requestFocus();
       else if (getComponentCount() > 0)

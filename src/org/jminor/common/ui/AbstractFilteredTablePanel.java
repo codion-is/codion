@@ -4,10 +4,20 @@
 package org.jminor.common.ui;
 
 import org.jminor.common.model.AbstractFilteredTableModel;
+import org.jminor.framework.i18n.FrameworkMessages;
 
+import javax.swing.JCheckBox;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.table.TableColumn;
+import java.awt.GridLayout;
+import java.text.Collator;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * User: Björn Darri<br>
@@ -53,6 +63,37 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
 
   public JScrollPane getTableScrollPane() {
     return tableScrollPane;
+  }
+
+  /**
+   * Shows a dialog for selecting which columns to show/hide
+   */
+  public void selectTableColumns() {
+    final List<TableColumn> allColumns = Collections.list(getTableModel().getColumnModel().getColumns());
+    allColumns.addAll(getTableModel().getHiddenColumns());
+    Collections.sort(allColumns, new Comparator<TableColumn>() {
+      public int compare(final TableColumn colOne, final TableColumn colTwo) {
+        return Collator.getInstance().compare(colOne.getIdentifier().toString(), colTwo.getIdentifier().toString());
+      }
+    });
+
+    final JPanel togglePanel = new JPanel(new GridLayout(Math.min(15, allColumns.size()), 0));
+    final List<JCheckBox> buttonList = new ArrayList<JCheckBox>();
+    for (final TableColumn column : allColumns) {
+      final JCheckBox chkColumn = new JCheckBox(column.getHeaderValue().toString(), getTableModel().isColumnVisible(column.getIdentifier()));
+      buttonList.add(chkColumn);
+      togglePanel.add(chkColumn);
+    }
+    final JScrollPane scroller = new JScrollPane(togglePanel);
+    final int result = JOptionPane.showOptionDialog(this, scroller,
+            FrameworkMessages.get(FrameworkMessages.SELECT_COLUMNS), JOptionPane.OK_CANCEL_OPTION,
+            JOptionPane.QUESTION_MESSAGE, null, null, null);
+    if (result == JOptionPane.OK_OPTION) {
+      for (final JCheckBox chkButton : buttonList) {
+        final TableColumn column = allColumns.get(buttonList.indexOf(chkButton));
+        getTableModel().setColumnVisible(column.getIdentifier(), chkButton.isSelected());
+      }
+    }
   }
 
   /**

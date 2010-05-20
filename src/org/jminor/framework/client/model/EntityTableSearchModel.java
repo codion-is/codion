@@ -226,8 +226,8 @@ public class EntityTableSearchModel implements FilterCriteria<Entity> {
   /**
    * @return the current criteria based on the state of the search models
    */
-  public Criteria getSearchCriteria() {
-    final CriteriaSet criteriaSet = new CriteriaSet(getSearchConjunction());
+  public Criteria<Property> getSearchCriteria() {
+    final CriteriaSet<Property> criteriaSet = new CriteriaSet<Property>(getSearchConjunction());
     for (final AbstractSearchModel criteria : propertySearchModels.values())
       if (criteria.isSearchEnabled())
         criteriaSet.addCriteria(((PropertySearchModel) criteria).getPropertyCriteria());

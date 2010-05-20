@@ -12,8 +12,6 @@ import java.util.*;
 
 /**
  * A class encapsulating a entity definition, such as table name, order by clause and properties.
- * Also acts as a proxy for retrieving values from Entity objects, allowing for plugged
- * in entity specific functionality, such as providing toString() and compareTo() implementations.
  */
 public class EntityDefinition implements Serializable {
 

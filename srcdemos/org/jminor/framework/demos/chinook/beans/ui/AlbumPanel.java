@@ -36,7 +36,7 @@ public class AlbumPanel extends EntityPanel {
         setLayout(new GridLayout(2, 1, 5, 5));
         final JTextField txtArtists = createEntityLookupField(ALBUM_ARTISTID_FK);
         txtArtists.setColumns(18);
-        setDefaultFocusComponent(txtArtists);
+        setInitialFocusComponent(txtArtists);
         final JTextField txtTitle = createTextField(ALBUM_TITLE);
         txtTitle.setColumns(18);
         add(createPropertyPanel(ALBUM_ARTISTID_FK, txtArtists));

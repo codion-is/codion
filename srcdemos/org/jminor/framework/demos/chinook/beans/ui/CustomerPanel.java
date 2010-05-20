@@ -36,7 +36,7 @@ public class CustomerPanel extends EntityPanel {
       protected void initializeUI() {
         final JTextField txtFirstName = createTextField(CUSTOMER_FIRSTNAME);
         txtFirstName.setColumns(16);
-        setDefaultFocusComponent(txtFirstName);
+        setInitialFocusComponent(txtFirstName);
         final JTextField txtLastName = createTextField(CUSTOMER_LASTNAME);
         txtLastName.setColumns(16);
         final JTextField txtCompany = createTextField(CUSTOMER_COMPANY);

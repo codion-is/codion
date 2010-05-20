@@ -39,7 +39,7 @@ public class TagPanel extends EntityPanel {
       protected void initializeUI() {
         setLayout(new FlexibleGridLayout(1,1,5,5));
         final JTextField txt = createTextField(TAG_TAG);
-        setDefaultFocusComponent(txt);
+        setInitialFocusComponent(txt);
         txt.setColumns(16);
         add(createPropertyPanel(TAG_TAG, txt));
       }

@@ -44,7 +44,7 @@ public class ItemPanel extends EntityPanel {
       protected void initializeUI() {
         setLayout(new FlexibleGridLayout(3,3,5,5));
         EntityComboBox box = createEntityComboBox(ITEM_PRODUCT_FK);
-        setDefaultFocusComponent(box);
+        setInitialFocusComponent(box);
         add(createPropertyPanel(ITEM_PRODUCT_FK, box));
         JTextField txt = createTextField(ITEM_NAME);
         txt.setColumns(12);

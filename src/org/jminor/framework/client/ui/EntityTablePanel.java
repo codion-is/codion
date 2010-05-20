@@ -54,7 +54,6 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -63,8 +62,15 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.print.PrinterException;
-import java.text.Collator;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Vector;
 
 /**
  * The EntityTablePanel class consists of a JTable as well as filtering/searching and summary facilities.
@@ -98,11 +104,6 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
   private final Event evtTableDoubleClicked = new Event();
   private final Event evtSearchPanelVisibilityChanged = new Event();
   private final Event evtSummaryPanelVisibilityChanged = new Event();
-
-  /**
-   * Contains columns that have been hidden
-   */
-  private final List<TableColumn> hiddenColumns = new ArrayList<TableColumn>();
 
   /**
    * the horizontal table scroll bar
@@ -415,64 +416,6 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
   }
 
   /**
-   * Shows a dialog for selecting which columns to show/hide
-   */
-  public void selectTableColumns() {
-    final Enumeration<TableColumn> columns = getTableModel().getColumnModel().getColumns();
-    final List<TableColumn> allColumns = new ArrayList<TableColumn>();
-    while (columns.hasMoreElements())
-      allColumns.add(columns.nextElement());
-    allColumns.addAll(hiddenColumns);
-    Collections.sort(allColumns, new Comparator<TableColumn>() {
-      public int compare(final TableColumn colOne, final TableColumn colTwo) {
-        return Collator.getInstance().compare(colOne.getIdentifier().toString(), colTwo.getIdentifier().toString());
-      }
-    });
-
-    final JPanel togglePanel = new JPanel(new GridLayout(Math.min(15, allColumns.size()), 0));
-    final List<JCheckBox> buttonList = new ArrayList<JCheckBox>();
-    for (final TableColumn column : allColumns) {
-      final JCheckBox chkColumn = new JCheckBox(column.getHeaderValue().toString(), !hiddenColumns.contains(column));
-      buttonList.add(chkColumn);
-      togglePanel.add(chkColumn);
-    }
-    final JScrollPane scroller = new JScrollPane(togglePanel);
-    final int result = JOptionPane.showOptionDialog(this, scroller,
-            FrameworkMessages.get(FrameworkMessages.SELECT_COLUMNS), JOptionPane.OK_CANCEL_OPTION,
-            JOptionPane.QUESTION_MESSAGE, null, null, null);
-    if (result == JOptionPane.OK_OPTION) {
-      for (final JCheckBox chkButton : buttonList) {
-        final TableColumn column = allColumns.get(buttonList.indexOf(chkButton));
-        setPropertyColumnVisible((Property) column.getIdentifier(), chkButton.isSelected());
-      }
-    }
-  }
-
-  /**
-   * Toggles the visibility of the column representing the given property
-   * Hiding a column removes it from the query criteria, by disabling the underlying search model (PropertySearchModel)
-   * @param property the property
-   * @param visible if true the column is shown, otherwise it is hidden
-   */
-  public void setPropertyColumnVisible(final Property property, final boolean visible) {
-    if (getJTable() == null)
-      return;
-
-    if (visible) {
-      if (!isPropertyColumnVisible(property)) {
-        showColumn(property);
-      }
-    }
-    else {
-      if (isPropertyColumnVisible(property)) {
-        //disable the search model for the column to be hidden, to prevent confusion
-        getTableModel().getSearchModel().setSearchEnabled(property.getPropertyID(), false);
-        hideColumn(property);
-      }
-    }
-  }
-
-  /**
    * @return a control for printing the table
    */
   public Control getPrintControl() {
@@ -616,14 +559,14 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
    * @param tablePopupControls the ControlSet on which to base the table's popup menu
    */
   protected void initializeUI(final ControlSet tablePopupControls) {
-    final JPanel base = new JPanel(new BorderLayout());
+    final JPanel tableSearchAndSummaryPanel = new JPanel(new BorderLayout());
     setLayout(new BorderLayout());
     if (searchPanel != null) {
       searchScrollPane = new JScrollPane(searchPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER,
               JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
       if (searchPanel instanceof EntityTableSearchPanel)
         searchScrollPane.getHorizontalScrollBar().setModel(getTableScrollPane().getHorizontalScrollBar().getModel());
-      base.add(searchScrollPane, BorderLayout.NORTH);
+      tableSearchAndSummaryPanel.add(searchScrollPane, BorderLayout.NORTH);
     }
 
     final ControlSet popupControls = tablePopupControls == null ? new ControlSet() : tablePopupControls;
@@ -651,8 +594,8 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     setTablePopupMenu(getJTable(), popupControls);
 
     final JScrollPane tableScrollPane = getTableScrollPane();
-    base.add(tableScrollPane, BorderLayout.CENTER);
-    add(base, BorderLayout.CENTER);
+    tableSearchAndSummaryPanel.add(tableScrollPane, BorderLayout.CENTER);
+    add(tableSearchAndSummaryPanel, BorderLayout.CENTER);
     if (summaryPanel != null) {
       summaryScrollPane = new JScrollPane(summaryPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER,
               JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -666,7 +609,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
       summaryScrollPane.getHorizontalScrollBar().setModel(horizontalTableScrollBar.getModel());
       summaryScrollPane.setVisible(false);
       summaryBasePanel = new JPanel(new BorderLayout());
-      base.add(summaryBasePanel, BorderLayout.SOUTH);
+      tableSearchAndSummaryPanel.add(summaryBasePanel, BorderLayout.SOUTH);
     }
 
     southPanel = initializeSouthPanel();
@@ -677,8 +620,8 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
   }
 
   /**
-   * Initializes the south panel
-   * @return the south panel
+   * Initializes the south panel, override and return null for no south panel.
+   * @return the south panel, or null if no south panel should be used
    */
   protected JPanel initializeSouthPanel() {
     statusMessageLabel = new JLabel("", JLabel.CENTER);
@@ -1077,7 +1020,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     final ListIterator<Property> iterator = properties.listIterator();
     //remove hidden columns
     while (iterator.hasNext())
-      if (!isPropertyColumnVisible(iterator.next()))
+      if (!getTableModel().isColumnVisible(iterator.next()))
         iterator.remove();
     for (final Property property : properties)
       headerValues.add(property.getCaption());
@@ -1208,36 +1151,6 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
         getJTable().repaint();
       }
     });
-  }
-
-  private void showColumn(final Property property) {
-    final ListIterator<TableColumn> hiddenColumnIterator = hiddenColumns.listIterator();
-    while (hiddenColumnIterator.hasNext()) {
-      final TableColumn hiddenColumn = hiddenColumnIterator.next();
-      if (hiddenColumn.getIdentifier().equals(property)) {
-        hiddenColumnIterator.remove();
-        getTableModel().getColumnModel().addColumn(hiddenColumn);
-      }
-    }
-  }
-
-  private void hideColumn(final Property property) {
-    final TableColumn column = getTableModel().getTableColumn(property);
-    getTableModel().getColumnModel().removeColumn(column);
-    hiddenColumns.add(column);
-  }
-
-  /**
-   * @param property the property for which to query if its column is visible or hidden
-   * @return true if the column is visible, false if it is hidden
-   */
-  private boolean isPropertyColumnVisible(final Property property) {
-    for (final TableColumn column : hiddenColumns) {
-      if (column.getIdentifier().equals(property))
-        return false;
-    }
-
-    return true;
   }
 
   private void toggleColumnFilterPanel(final MouseEvent event) {

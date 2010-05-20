@@ -37,7 +37,7 @@ public class TrackPanel extends EntityPanel {
         setLayout(new FlexibleGridLayout(4, 2, 5, 5, true, false));
         final JTextField txtAlbum = createEntityLookupField(TRACK_ALBUMID_FK);
         txtAlbum.setColumns(18);
-        setDefaultFocusComponent(txtAlbum);
+        setInitialFocusComponent(txtAlbum);
         final JTextField txtName = createTextField(TRACK_NAME);
         txtName.setColumns(18);
         final JComboBox cmbMediaType = createEntityComboBox(TRACK_MEDIATYPEID_FK);

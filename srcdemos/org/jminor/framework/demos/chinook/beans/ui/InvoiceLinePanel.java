@@ -31,7 +31,7 @@ public class InvoiceLinePanel extends EntityPanel {
       protected void initializeUI() {
         setLayout(new GridLayout(4, 1, 5, 5));
         final JTextField txtInvoice = createEntityLookupField(INVOICELINE_INVOICEID_FK);
-        setDefaultFocusComponent(txtInvoice);
+        setInitialFocusComponent(txtInvoice);
         final JTextField txtTrack = createEntityLookupField(INVOICELINE_TRACKID_FK);
         txtTrack.setColumns(25);
         final JTextField txtQuantity = createTextField(INVOICELINE_QUANTITY);

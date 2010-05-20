@@ -39,7 +39,7 @@ public class CategoryPanel extends EntityPanel {
       protected void initializeUI() {
         setLayout(new FlexibleGridLayout(2,2,5,5));
         final JTextField txtName = createTextField(CATEGORY_NAME);
-        setDefaultFocusComponent(txtName);
+        setInitialFocusComponent(txtName);
         txtName.setColumns(10);
         add(createPropertyPanel(CATEGORY_NAME, txtName));
         final JTextField txtDesc = createTextField(CATEGORY_DESCRIPTION);

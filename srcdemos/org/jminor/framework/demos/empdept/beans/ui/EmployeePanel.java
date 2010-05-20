@@ -41,7 +41,7 @@ public class EmployeePanel extends EntityPanel {
         final JTextField txtCommission = createTextField(EMPLOYEE_COMMISSION);
         final DateInputPanel pnlHiredate = createDateInputPanel(EMPLOYEE_HIREDATE);
 
-        setDefaultFocusComponent(txtName);
+        setInitialFocusComponent(txtName);
 
         txtName.setColumns(8);
         txtJob.setColumns(8);

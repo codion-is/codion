@@ -37,7 +37,7 @@ public class EmployeePanel extends EntityPanel {
       protected void initializeUI() {
         final JTextField txtFirstName = createTextField(EMPLOYEE_FIRSTNAME);
         txtFirstName.setColumns(16);
-        setDefaultFocusComponent(txtFirstName);
+        setInitialFocusComponent(txtFirstName);
         final JTextField txtLastName = createTextField(EMPLOYEE_LASTNAME);
         txtLastName.setColumns(16);
         final DateInputPanel birthdateInputPanel = createDateInputPanel(EMPLOYEE_BIRTHDATE);
