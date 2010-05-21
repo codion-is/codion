@@ -428,7 +428,7 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
    */
   @Override
   protected EntityTableModel initializeTableModel() {
-    return includeTableModel ? new EntityTableModel(getEntityID(), getDbProvider()) : null;
+    return includeTableModel ? new EntityTableModel(getEditModel()) : null;
   }
 
   /**

@@ -37,7 +37,6 @@ import org.jminor.framework.i18n.FrameworkMessages;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import org.apache.log4j.Logger;
-import org.json.JSONException;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -94,12 +93,6 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> im
   public static final String REFRESH = "refresh";
   public static final String CLEAR = "clear";
   public static final String PRINT = "print";
-  public static final String MENU_DELETE = "menuDelete";
-  public static final String VIEW_DEPENDENCIES = "viewDependencies";
-  public static final String UPDATE_SELECTED = "updateSelected";
-  public static final String CONFIGURE_QUERY = "configureQuery";
-  public static final String SELECT_COLUMNS = "selectTableColumns";
-  public static final String EXPORT_JSON = "exportJSON";
 
   public static final int UP = 0;
   public static final int DOWN = 1;
@@ -706,66 +699,6 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> im
     return false;
   }
 
-  /**
-   * Queries the user on which property to update, after which it calls the
-   * <code>updateSelectedEntities(property)</code> with that property
-   * @see EntityTablePanel#updateSelectedEntities(org.jminor.framework.client.model.EntityEditModel)
-   * @see EntityTablePanel#getInputProvider(org.jminor.framework.domain.Property, java.util.List, org.jminor.framework.client.model.EntityEditModel)
-   */
-  public void updateSelectedEntities() {
-    getTablePanel().updateSelectedEntities(getModel().getEditModel());
-  }
-
-  /**
-   * Shows a dialog containing lists of entities depending on the selected entities via foreign key
-   */
-  public void viewSelectionDependencies() {
-    try {
-      getTablePanel().viewSelectionDependencies();
-    }
-    catch (Exception e) {
-      handleException(e);
-    }
-  }
-
-  /**
-   * Exports the selected records as a JSON file
-   * @throws CancelException in case the action is cancelled
-   * @throws JSONException in case of a JSON exception
-   */
-  public void exportSelected() throws CancelException, JSONException {
-    try {
-      getTablePanel().exportSelected();
-    }
-    catch (Exception e) {
-      handleException(e);
-    }
-  }
-
-  /**
-   * Prints the table if one is available
-   */
-  public void printTable() {
-    if (getTablePanel() != null)
-      getTablePanel().printTable();
-  }
-
-  /**
-   * Shows the query configuration dialog if a table panel is available
-   */
-  public void configureQuery() {
-    if (getTablePanel() != null)
-      getTablePanel().configureQuery();
-  }
-
-  /**
-   * Shows a dialog for selecting which columns to show/hide if a table panel is available
-   */
-  public void selectTableColumns() {
-    if (getTablePanel() != null)
-      getTablePanel().selectTableColumns();
-  }
-
   //#############################################################################################
   // End - control methods
   //#############################################################################################
@@ -793,66 +726,6 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> im
   }
 
   /**
-   * @return a control for showing the column selection dialog
-   */
-  public Control getSelectColumnsControl() {
-    return ControlFactory.methodControl(this, "selectTableColumns",
-            FrameworkMessages.get(FrameworkMessages.SELECT_COLUMNS) + "...", null,
-            FrameworkMessages.get(FrameworkMessages.SELECT_COLUMNS));
-  }
-
-  /**
-   * @return a control for showing the query configuration dialog
-   */
-  public Control getConfigureQueryControl() {
-    return ControlFactory.methodControl(this, "configureQuery",
-            FrameworkMessages.get(FrameworkMessages.CONFIGURE_QUERY) + "...", null,
-            FrameworkMessages.get(FrameworkMessages.CONFIGURE_QUERY));
-  }
-
-  /**
-   * @return a control for showing the dependencies dialog
-   */
-  public Control getViewDependenciesControl() {
-    return ControlFactory.methodControl(this, "viewSelectionDependencies",
-            FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES) + "...",
-            getModel().getTableModel().stateSelectionEmpty().getReversedState(),
-            FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES_TIP), 'W');
-  }
-
-  /**
-   * @return a control for printing the table
-   */
-  public Control getPrintControl() {
-    final String printCaption = FrameworkMessages.get(FrameworkMessages.PRINT_TABLE);
-    return ControlFactory.methodControl(this, "printTable", printCaption, null,
-            printCaption, printCaption.charAt(0));
-  }
-
-  /**
-   * @return a control for exporting the selected records to file
-   */
-  public Control getExportControl() {
-    return ControlFactory.methodControl(this, "exportSelected",
-            FrameworkMessages.get(FrameworkMessages.EXPORT_SELECTED) + "...",
-            getModel().getTableModel().stateSelectionEmpty().getReversedState(),
-            FrameworkMessages.get(FrameworkMessages.EXPORT_SELECTED_TIP), 0, null,
-            Images.loadImage(Images.IMG_SAVE_16));
-  }
-
-  /**
-   * @return a control for deleting the selected entities
-   */
-  public Control getDeleteSelectedControl() {
-    return ControlFactory.methodControl(this, "delete", FrameworkMessages.get(FrameworkMessages.DELETE),
-            new AggregateState(AggregateState.Type.AND,
-                    getModel().getEditModel().stateAllowDelete(),
-                    getModel().getTableModel().stateSelectionEmpty().getReversedState()),
-            FrameworkMessages.get(FrameworkMessages.DELETE_TIP), 0, null,
-            Images.loadImage(Images.IMG_DELETE_16));
-  }
-
-  /**
    * @return a control for refreshing the model data
    */
   public Control getRefreshControl() {
@@ -860,42 +733,6 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> im
     return ControlFactory.methodControl(getModel(), "refresh", FrameworkMessages.get(FrameworkMessages.REFRESH),
             stActive, FrameworkMessages.get(FrameworkMessages.REFRESH_TIP) + " (ALT-" + mnemonic + ")",
             mnemonic.charAt(0), null, Images.loadImage(Images.IMG_REFRESH_16));
-  }
-
-  /**
-   * @return a control for updating a property in the selected entities
-   */
-  public Control getUpdateSelectedControl() {
-    return ControlFactory.methodControl(this, "updateSelectedEntities",
-            FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED),
-            new AggregateState(AggregateState.Type.AND,
-                    getModel().getEditModel().stateAllowUpdate(),
-                    getModel().getTableModel().stateSelectionEmpty().getReversedState()),
-            FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_TIP), 0,
-            null, Images.loadImage(Images.IMG_SAVE_16));
-  }
-
-  /**
-   * @return a control set containing a set of controls, one for each updatable property in the
-   * underlying entity, for performing an update on the selected entities
-   */
-  public ControlSet getUpdateSelectedControlSet() {
-    final State enabled = new AggregateState(AggregateState.Type.AND,
-            getModel().getEditModel().stateAllowUpdate(),
-            getModel().getTableModel().stateSelectionEmpty().getReversedState());
-    final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED),
-            (char) 0, Images.loadImage("Modify16.gif"), enabled);
-    controlSet.setDescription(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_TIP));
-    for (final Property property : EntityUtil.getUpdateProperties(getModel().getEntityID())) {
-      final String caption = property.getCaption() == null ? property.getPropertyID() : property.getCaption();
-      controlSet.add(UiUtil.linkToEnabledState(enabled, new AbstractAction(caption) {
-        public void actionPerformed(final ActionEvent event) {
-          getTablePanel().updateSelectedEntities(property, getModel().getEditModel());
-        }
-      }));
-    }
-
-    return controlSet;
   }
 
   /**
@@ -1084,7 +921,6 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> im
     editControlPanel = initializeEditControlPanel();
     final EntityTablePanel entityTablePanel = getTablePanel();
     if (entityTablePanel != null) {
-      entityTablePanel.initializeSouthPanelToolBar(getTablePanelControlSet(entityTablePanel));
       entityTablePanel.setTableDoubleClickAction(initializeTableDoubleClickAction());
       entityTablePanel.setMinimumSize(new Dimension(0,0));
     }
@@ -1219,7 +1055,7 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> im
   }
 
   protected EntityTablePanel initializeTablePanel(final EntityTableModel tableModel) {
-    return new EntityTablePanel(tableModel, getTablePopupControlSet());
+    return new EntityTablePanel(tableModel, getTablePopupControlSet(), getToolbarControlSet());
   }
 
   /**
@@ -1309,7 +1145,6 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> im
   /**
    * Called during construction, after controls have been initialized,
    * use this method to initialize any application panels that rely on controls having been initialized
-   * @see #setupControls()
    */
   protected void initializeControlPanels() {}
 
@@ -1349,53 +1184,6 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> im
   }
 
   /**
-   * @param tablePanel the EntityTablePanel
-   * @return a ControlSet containing the controls to include on the table panel, usually in a toolbar
-   */
-  protected ControlSet getTablePanelControlSet(final EntityTablePanel tablePanel) {
-    final ControlSet controls = new ControlSet();
-
-    Control control = tablePanel.getToggleSummaryPanelControl();
-    if (control != null)
-      controls.add(control);
-    control = tablePanel.getToggleSearchPanelControl();
-    if (control != null)
-      controls.add(control);
-    control = tablePanel.getPrintControl();
-    if (control != null) {
-      control.setName("");
-      controls.add(control);
-    }
-    controls.addSeparator();
-    if (!getModel().getEditModel().isReadOnly() && getModel().getEditModel().isDeleteAllowed()) {
-      control = getDeleteSelectedControl();
-      if (control != null) {
-        control.setName(null);
-        controls.add(control);
-      }
-    }
-    control = tablePanel.getClearSelectionControl();
-    if (control != null)
-      controls.add(control);
-    controls.addSeparator();
-    control = tablePanel.getMoveSelectionDownControl();
-    if (control != null)
-      controls.add(control);
-    control = tablePanel.getMoveSelectionUpControl();
-    if (control != null)
-      controls.add(control);
-    controls.addSeparator();
-    control = getToggleEditPanelControl();
-    if (control != null)
-      controls.add(control);
-    control = getToggleDetailPanelControl();
-    if (control != null)
-      controls.add(control);
-
-    return controls;
-  }
-
-  /**
    * Initializes the controls available to this EntityPanel by mapping them to their respective
    * control codes (EntityPanel.INSERT, UPDATE etc) via the <code>setControl(String, Control) method,
    * these can then be retrieved via the <code>getControl(String)</code> method.
@@ -1413,20 +1201,7 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> im
         setControl(DELETE, getDeleteControl());
     }
     setControl(CLEAR, getClearControl());
-    if (getModel().containsTableModel()) {
-      if (!getModel().getEditModel().isReadOnly() && getModel().getEditModel().isUpdateAllowed()
-              && getModel().getEditModel().isMultipleUpdateAllowed())
-        setControl(UPDATE_SELECTED, getUpdateSelectedControlSet());
-      setControl(REFRESH, getRefreshControl());
-      if (!getModel().getEditModel().isReadOnly() && getModel().getEditModel().isDeleteAllowed())
-        setControl(MENU_DELETE, getDeleteSelectedControl());
-      setControl(PRINT, getPrintControl());
-      setControl(EXPORT_JSON, getExportControl());
-      setControl(VIEW_DEPENDENCIES, getViewDependenciesControl());
-      if (getModel().getTableModel().isQueryConfigurationAllowed())
-        setControl(CONFIGURE_QUERY, getConfigureQueryControl());
-      setControl(SELECT_COLUMNS, getSelectColumnsControl());
-    }
+    setControl(PRINT, getPrintControls());
   }
 
   /**
@@ -1439,51 +1214,30 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> im
       controlSet.add(getDetailPanelControls(EMBEDDED));
       separatorRequired = true;
     }
-    if (separatorRequired) {
+    if (separatorRequired)
       controlSet.addSeparator();
-      separatorRequired = false;
-    }
-    if (controlMap.containsKey(UPDATE_SELECTED)) {
-      controlSet.add(controlMap.get(UPDATE_SELECTED));
-      separatorRequired = true;
-    }
-    if (controlMap.containsKey(MENU_DELETE)) {
-      controlSet.add(controlMap.get(MENU_DELETE));
-      separatorRequired = true;
-    }
-    if (controlMap.containsKey(EXPORT_JSON)) {
-      controlSet.add(controlMap.get(EXPORT_JSON));
-      separatorRequired = true;
-    }
-    if (separatorRequired) {
-      controlSet.addSeparator();
-      separatorRequired = false;
-    }
-    if (controlMap.containsKey(VIEW_DEPENDENCIES)) {
-      controlSet.add(controlMap.get(VIEW_DEPENDENCIES));
-      separatorRequired = true;
-    }
-    if (separatorRequired) {
-      controlSet.addSeparator();
-      separatorRequired = false;
-    }
     final ControlSet printControls = getPrintControls();
     if (printControls != null) {
       controlSet.add(getPrintControls());
+    }
+
+    return controlSet;
+  }
+
+  /**
+   * @return the ControlSet on which the table popup menu is based
+   */
+  protected ControlSet getToolbarControlSet() {
+    boolean separatorRequired = false;
+    final ControlSet controlSet = new ControlSet("");
+    if (detailEntityPanels.size() > 0) {
+      controlSet.add(getToggleDetailPanelControl());
       separatorRequired = true;
     }
-    if (controlMap.containsKey(CONFIGURE_QUERY)) {
-      if (separatorRequired) {
-        controlSet.addSeparator();
-        separatorRequired = false;
-      }
-      controlSet.add(controlMap.get(CONFIGURE_QUERY));
-    }
-    if (controlMap.containsKey(SELECT_COLUMNS)) {
-      if (separatorRequired)
-        controlSet.addSeparator();
-      controlSet.add(controlMap.get(SELECT_COLUMNS));
-    }
+    if (separatorRequired)
+      controlSet.addSeparator();
+
+    controlSet.add(getToggleEditPanelControl());
 
     return controlSet;
   }
@@ -1834,6 +1588,11 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> im
         setFilterPanelsVisible(true);
       }
     });
+  }
+
+  public static void checkForReadOnly(final EntityEditModel editModel) {
+    if (editModel.isReadOnly())
+      throw new RuntimeException(editModel + " is read only");
   }
 
   private static class ActivationFocusAdapter extends MouseAdapter {

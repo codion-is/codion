@@ -44,25 +44,6 @@ public class EntityTableModelTest {
   }
 
   @Test
-  public void testConstructor() {
-    try {
-      new EntityTableModel(null, EntityDbConnectionTest.DB_PROVIDER);
-      fail();
-    }
-    catch (Exception e) {}
-    try {
-      new EntityTableModel("entityID", null);
-      fail();
-    }
-    catch (Exception e) {}
-    try {
-      new EntityTableModel(null, null);
-      fail();
-    }
-    catch (Exception e) {}
-  }
-
-  @Test
   public void testBasics() {
     final List<Property> columnProperties = testModel.getTableColumnProperties();
     assertEquals(testModel.getColumnCount(), columnProperties.size());
@@ -237,7 +218,7 @@ public class EntityTableModelTest {
 
   public static class EntityTableModelTmp extends EntityTableModel {
     public EntityTableModelTmp() {
-      super(EntityTestDomain.T_DETAIL, EntityDbConnectionTest.DB_PROVIDER);
+      super(new EntityEditModel(EntityTestDomain.T_DETAIL, EntityDbConnectionTest.DB_PROVIDER));
     }
 
     @Override

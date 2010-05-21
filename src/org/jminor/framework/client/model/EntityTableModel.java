@@ -47,11 +47,6 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
   private final Event evtRefreshDone = new Event();
 
   /**
-   * The entity ID
-   */
-  private final String entityID;
-
-  /**
    * The EntityDb connection provider
    */
   private final EntityDbProvider dbProvider;
@@ -60,6 +55,8 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
    * The search model
    */
   private final EntityTableSearchModel tableSearchModel;
+
+  private final EntityEditModel editModel;
 
   /**
    * Maps PropertySummaryModels to their respective properties
@@ -88,28 +85,21 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
 
   /**
    * Initializes a new EntityTableModel
-   * @param entityID the ID of the entity this table model should represent
-   * @param dbProvider a EntityDbProvider instance
+   * @param editModel a EntityEditModel instance
    */
-  public EntityTableModel(final String entityID, final EntityDbProvider dbProvider) {
-    this(entityID, dbProvider, true);
+  public EntityTableModel(final EntityEditModel editModel) {
+    this(editModel, true);
   }
 
   /**
    * Initializes a new EntityTableModel
-   * @param entityID the ID of the entity this table model should represent
-   * @param dbProvider a EntityDbProvider instance
+   * @param editModel a EntityEditModel instance
    * @param queryConfigurationAllowed true if the underlying query should be configurable by the user
    */
-  public EntityTableModel(final String entityID, final EntityDbProvider dbProvider,
-                          final boolean queryConfigurationAllowed) {
-    super(entityID);
-    if (dbProvider == null)
-      throw new IllegalArgumentException("dbProvider can not be null");
-    if (entityID == null || entityID.length() == 0)
-      throw new IllegalArgumentException("entityID must be specified");
-    this.entityID = entityID;
-    this.dbProvider = dbProvider;
+  public EntityTableModel(final EntityEditModel editModel, final boolean queryConfigurationAllowed) {
+    super(editModel.getEntityID());
+    this.editModel = editModel;
+    this.dbProvider = editModel.getDbProvider();
     this.queryConfigurationAllowed = queryConfigurationAllowed;
     this.tableSearchModel = initializeSearchModel();
     bindEventsInternal();
@@ -169,7 +159,7 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
    * @return the ID of the entity this table model represents
    */
   public String getEntityID() {
-    return entityID;
+    return editModel.getEntityID();
   }
 
   /**
@@ -177,6 +167,10 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
    */
   public EntityTableSearchModel getSearchModel() {
     return tableSearchModel;
+  }
+
+  public EntityEditModel getEditModel() {
+    return editModel;
   }
 
   /**
@@ -251,7 +245,7 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
     final Object value = getItemAt(rowIndex).getValue(property);
     if (property instanceof Property.ValueListProperty)
       return ((Property.ValueListProperty) property).getCaption(value);
-      
+
     return value;
   }
 

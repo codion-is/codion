@@ -7,9 +7,11 @@ import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.criteria.CriteriaSet;
 import org.jminor.common.db.exception.DbException;
 import org.jminor.common.i18n.Messages;
+import org.jminor.common.model.AggregateState;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.SearchType;
+import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.AbstractFilteredTablePanel;
 import org.jminor.common.ui.UiUtil;
@@ -101,9 +103,28 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
 
   public static final char FILTER_INDICATOR = '*';
 
+  public static final String PRINT = "print";
+  public static final String DELETE_SELECTED = "deleteSelected";
+  public static final String VIEW_DEPENDENCIES = "viewDependencies";
+  public static final String UPDATE_SELECTED = "updateSelected";
+  public static final String CONFIGURE_QUERY = "configureQuery";
+  public static final String SELECT_COLUMNS = "selectTableColumns";
+  public static final String EXPORT_JSON = "exportJSON";
+  private static final String TOGGLE_SUMMARY_PANEL = "toggleSummaryPanel";
+  private static final String TOGGLE_SEARCH_PANEL = "toggleSearchPanel";
+  private static final String SEARCH_PANEL_VISIBLE = "searchPanelVisible";
+  private static final String CLEAR_SELECTION = "clearSelection";
+  private static final String MOVE_SELECTION_UP = "moveSelectionUp";
+  private static final String MOVE_SELECTION_DOWN = "moveSelectionDown";
+  public static final String COPY_TABLE_DATA = "copyTableData";
+  public static final String CLEAR = "clear";
+  public static final String REFRESH = "refresh";
+
   private final Event evtTableDoubleClicked = new Event();
   private final Event evtSearchPanelVisibilityChanged = new Event();
   private final Event evtSummaryPanelVisibilityChanged = new Event();
+
+  private final Map<String, Control> controlMap = new HashMap<String, Control>();
 
   /**
    * the horizontal table scroll bar
@@ -146,11 +167,6 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
   private JToolBar refreshToolBar;
 
   /**
-   * The south panel
-   */
-  private JPanel southPanel;
-
-  /**
    * the label for showing the status of the table, that is, the number of rows, number of selected rows etc.
    */
   private JLabel statusMessageLabel;
@@ -163,17 +179,25 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
   /**
    * Initializes a new EntityTablePanel instance
    * @param tableModel the EntityTableModel instance
-   * @param popupControls a ControlSet on which the table popup menu is based
+   * @param popupControls a ControlSet which will be added to the popup control set
+   * @param toolbarControls a ControlSet which will be added to the toolbar control set
    */
-  public EntityTablePanel(final EntityTableModel tableModel, final ControlSet popupControls) {
+  public EntityTablePanel(final EntityTableModel tableModel, final ControlSet popupControls, final ControlSet toolbarControls) {
     super(tableModel);
     this.searchPanel = initializeSearchPanel();
     this.summaryPanel = initializeSummaryPanel();
     this.propertyFilterPanels = initializeFilterPanels();
-    initializeUI(popupControls);
+    setupControls();
+    addPopupControls(popupControls);
+    addToolbarControls(toolbarControls);
+    initializeUI(popupControls, toolbarControls);
     bindEventsInternal();
     bindEvents();
     updateStatusMessage();
+  }
+
+  public EntityEditModel getEditModel() {
+    return getTableModel().getEditModel();
   }
 
   /**
@@ -323,6 +347,115 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
   }
 
   /**
+   * Associates <code>control</code> with <code>controlCode</code>
+   * @param controlCode the control code
+   * @param control the control to associate with <code>controlCode</code>
+   */
+  public final void setControl(final String controlCode, final Control control) {
+    if (control == null)
+      controlMap.remove(controlCode);
+    else
+      controlMap.put(controlCode, control);
+  }
+
+  /**
+   * @param controlCode the control code
+   * @return the control associated with <code>controlCode</code>
+   * @throws RuntimeException in case no control is associated with the given control code
+   */
+  public final Control getControl(final String controlCode) {
+    if (!controlMap.containsKey(controlCode))
+      throw new RuntimeException(controlCode + " control not available in panel: " + this);
+
+    return controlMap.get(controlCode);
+  }
+
+  /**
+   * @return a control set containing a set of controls, one for each updatable property in the
+   * underlying entity, for performing an update on the selected entities
+   */
+  public ControlSet getUpdateSelectedControlSet() {
+    final EntityEditModel editModel = getTableModel().getEditModel();
+    final State enabled = new AggregateState(AggregateState.Type.AND,
+            editModel.stateAllowUpdate(),
+            getTableModel().stateSelectionEmpty().getReversedState());
+    final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED),
+            (char) 0, Images.loadImage("Modify16.gif"), enabled);
+    controlSet.setDescription(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_TIP));
+    for (final Property property : EntityUtil.getUpdateProperties(editModel.getEntityID())) {
+      final String caption = property.getCaption() == null ? property.getPropertyID() : property.getCaption();
+      controlSet.add(UiUtil.linkToEnabledState(enabled, new AbstractAction(caption) {
+        public void actionPerformed(final ActionEvent event) {
+          updateSelectedEntities(property, editModel);
+        }
+      }));
+    }
+
+    return controlSet;
+  }
+
+  /**
+   * @return a control for showing the column selection dialog
+   */
+  public Control getSelectColumnsControl() {
+    return ControlFactory.methodControl(this, "selectTableColumns",
+            FrameworkMessages.get(FrameworkMessages.SELECT_COLUMNS) + "...", null,
+            FrameworkMessages.get(FrameworkMessages.SELECT_COLUMNS));
+  }
+
+  /**
+   * @return a control for showing the query configuration dialog
+   */
+  public Control getConfigureQueryControl() {
+    return ControlFactory.methodControl(this, "configureQuery",
+            FrameworkMessages.get(FrameworkMessages.CONFIGURE_QUERY) + "...", null,
+            FrameworkMessages.get(FrameworkMessages.CONFIGURE_QUERY));
+  }
+
+  /**
+   * @return a control for showing the dependencies dialog
+   */
+  public Control getViewDependenciesControl() {
+    return ControlFactory.methodControl(this, "viewSelectionDependencies",
+            FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES) + "...",
+            getTableModel().stateSelectionEmpty().getReversedState(),
+            FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES_TIP), 'W');
+  }
+
+  /**
+   * @return a control for deleting the selected entities
+   */
+  public Control getDeleteSelectedControl() {
+    final EntityEditModel editModel = getTableModel().getEditModel();
+    return ControlFactory.methodControl(this, "delete", FrameworkMessages.get(FrameworkMessages.DELETE),
+            new AggregateState(AggregateState.Type.AND,
+                    editModel.stateAllowDelete(),
+                    getTableModel().stateSelectionEmpty().getReversedState()),
+            FrameworkMessages.get(FrameworkMessages.DELETE_TIP), 0, null,
+            Images.loadImage(Images.IMG_DELETE_16));
+  }
+
+  /**
+   * @return a control for exporting the selected records to file
+   */
+  public Control getExportControl() {
+    return ControlFactory.methodControl(this, "exportSelected",
+            FrameworkMessages.get(FrameworkMessages.EXPORT_SELECTED) + "...",
+            getTableModel().stateSelectionEmpty().getReversedState(),
+            FrameworkMessages.get(FrameworkMessages.EXPORT_SELECTED_TIP), 0, null,
+            Images.loadImage(Images.IMG_SAVE_16));
+  }
+
+  /**
+   * @return a control for printing the table
+   */
+  public Control getPrintControl() {
+    final String printCaption = FrameworkMessages.get(FrameworkMessages.PRINT_TABLE);
+    return ControlFactory.methodControl(this, "printTable", printCaption, null,
+            printCaption, printCaption.charAt(0), null, Images.loadImage("Print16.gif"));
+  }
+
+  /**
    * Queries the user on which property to update, after which it calls the
    * <code>updateSelectedEntities(property)</code> with that property
    * @param editModel the edit model for performing the actual update
@@ -400,28 +533,6 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     final List<Entity> selected = getTableModel().getSelectedItems();
     Util.writeFile(EntityUtil.getJSONString(selected, false, 2), UiUtil.chooseFileToSave(this, null, null));
     JOptionPane.showMessageDialog(this, FrameworkMessages.get(FrameworkMessages.EXPORT_SELECTED_DONE));
-  }
-
-  public void initializeSouthPanelToolBar(final ControlSet controls) {
-    if (southPanel == null)
-      throw new RuntimeException("No south panel available for toolbar");
-
-    final JToolBar southToolBar = ControlProvider.createToolbar(controls, JToolBar.HORIZONTAL);
-    for (final Component component : southToolBar.getComponents())
-      component.setPreferredSize(new Dimension(20, 20));
-    southToolBar.setFocusable(false);
-    southToolBar.setFloatable(false);
-    southToolBar.setRollover(true);
-    southPanel.add(southToolBar, BorderLayout.EAST);
-  }
-
-  /**
-   * @return a control for printing the table
-   */
-  public Control getPrintControl() {
-    final String printCaption = FrameworkMessages.get(FrameworkMessages.PRINT_TABLE);
-    return ControlFactory.methodControl(this, "printTable", printCaption, null,
-            printCaption, printCaption.charAt(0), null, Images.loadImage("Print16.gif"));
   }
 
   /**
@@ -533,12 +644,12 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
    */
   public static EntityTablePanel createStaticEntityTablePanel(final Collection<Entity> entities, final EntityDbProvider dbProvider,
                                                     final String entityID) {
-    final EntityTablePanel tablePanel = new EntityTablePanel(new EntityTableModel(entityID, dbProvider) {
+    final EntityTablePanel tablePanel = new EntityTablePanel(new EntityTableModel(new EntityEditModel(entityID, dbProvider)) {
       @Override
-      protected List<Entity> performQuery(final Criteria criteria) {
+      protected List<Entity> performQuery(final Criteria<Property> criteria) {
         return new ArrayList<Entity>(entities);
       }
-    }, null) {
+    }, null, null) {
       @Override
       protected JPanel initializeSearchPanel() {
         return null;
@@ -557,8 +668,9 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
   /**
    * Initializes the UI
    * @param tablePopupControls the ControlSet on which to base the table's popup menu
+   * @param toolbarControlSet the ControlSet on which to base the south toolbar
    */
-  protected void initializeUI(final ControlSet tablePopupControls) {
+  protected void initializeUI(final ControlSet tablePopupControls, final ControlSet toolbarControlSet) {
     final JPanel tableSearchAndSummaryPanel = new JPanel(new BorderLayout());
     setLayout(new BorderLayout());
     if (searchPanel != null) {
@@ -578,19 +690,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
           }
         }
       });
-      if (getTableModel().isQueryConfigurationAllowed()) {
-        final ControlSet searchControls = ((EntityTableSearchPanel)searchPanel).getControls();
-        searchControls.addAt(ControlFactory.toggleControl(this, "searchPanelVisible",
-                FrameworkMessages.get(FrameworkMessages.SHOW), evtSearchPanelVisibilityChanged), 0);
-        popupControls.addSeparatorAt(0);
-        popupControls.addAt(getClearControl(), 0);
-        popupControls.addAt(getRefreshControl(), 0);
-        popupControls.add(searchControls);
-      }
     }
-    if (popupControls.size() > 0)
-      popupControls.addSeparator();
-    popupControls.add(new ControlSet(Messages.get(Messages.COPY), getCopyCellControl(), getCopyTableWithHeaderControl()));
     setTablePopupMenu(getJTable(), popupControls);
 
     final JScrollPane tableScrollPane = getTableScrollPane();
@@ -612,7 +712,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
       tableSearchAndSummaryPanel.add(summaryBasePanel, BorderLayout.SOUTH);
     }
 
-    southPanel = initializeSouthPanel();
+    final JPanel southPanel = initializeSouthPanel(toolbarControlSet);
     if (southPanel != null)
       add(southPanel, BorderLayout.SOUTH);
 
@@ -621,9 +721,10 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
 
   /**
    * Initializes the south panel, override and return null for no south panel.
+   * @param toolbarControlSet the control set from which to create the toolbar
    * @return the south panel, or null if no south panel should be used
    */
-  protected JPanel initializeSouthPanel() {
+  protected JPanel initializeSouthPanel(final ControlSet toolbarControlSet) {
     statusMessageLabel = new JLabel("", JLabel.CENTER);
     if (getTableModel().isQueryConfigurationAllowed()) {
       statusMessageLabel.addMouseListener(new MouseAdapter() {
@@ -643,6 +744,14 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     refreshToolBar = initializeRefreshToolbar();
     if (refreshToolBar != null)
       panel.add(refreshToolBar, BorderLayout.WEST);
+
+    final JToolBar southToolBar = ControlProvider.createToolbar(toolbarControlSet, JToolBar.HORIZONTAL);
+    for (final Component component : southToolBar.getComponents())
+      component.setPreferredSize(new Dimension(20, 20));
+    southToolBar.setFocusable(false);
+    southToolBar.setFloatable(false);
+    southToolBar.setRollover(true);
+    panel.add(southToolBar, BorderLayout.EAST);
 
     return panel;
   }
@@ -673,6 +782,102 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
                 showEntityMenu(new Point(100, table.getSelectedRow() * table.getRowHeight()));
               }
             });
+  }
+
+  /**
+   * Initializes the controls available to this EntityPanel by mapping them to their respective
+   * control codes (EntityPanel.INSERT, UPDATE etc) via the <code>setControl(String, Control) method,
+   * these can then be retrieved via the <code>getControl(String)</code> method.
+   * @see org.jminor.common.ui.control.Control
+   * @see #setControl(String, org.jminor.common.ui.control.Control)
+   * @see #getControl(String)
+   */
+  protected void setupControls() {
+    final EntityEditModel editModel = getEditModel();
+    if (!editModel.isReadOnly() && editModel.isDeleteAllowed())
+      setControl(DELETE_SELECTED, getDeleteSelectedControl());
+    if (!editModel.isReadOnly() && editModel.isMultipleUpdateAllowed())
+      setControl(UPDATE_SELECTED, getUpdateSelectedControlSet());
+    if (getTableModel().isQueryConfigurationAllowed()) {
+      setControl(CONFIGURE_QUERY, getConfigureQueryControl());
+      setControl(SEARCH_PANEL_VISIBLE, getSearchPanelControl());
+    }
+    setControl(CLEAR, getClearControl());
+    setControl(REFRESH, getRefreshControl());
+    setControl(PRINT, getPrintControl());
+    setControl(SELECT_COLUMNS, getSelectColumnsControl());
+    setControl(EXPORT_JSON, getExportControl());
+    setControl(TOGGLE_SUMMARY_PANEL, getToggleSummaryPanelControl());
+    setControl(TOGGLE_SEARCH_PANEL, getToggleSearchPanelControl());
+    setControl(PRINT, getPrintControl());
+    setControl(CLEAR_SELECTION, getClearSelectionControl());
+    setControl(MOVE_SELECTION_UP, getMoveSelectionDownControl());
+    setControl(MOVE_SELECTION_DOWN, getMoveSelectionUpControl());
+    setControl(COPY_TABLE_DATA, getCopyControlSet());
+  }
+
+  protected void addToolbarControls(final ControlSet toolbarControls) {
+    if (toolbarControls == null)
+      return;
+
+    toolbarControls.add(controlMap.get(PRINT));
+    toolbarControls.add(controlMap.get(TOGGLE_SUMMARY_PANEL));
+    toolbarControls.add(controlMap.get(TOGGLE_SEARCH_PANEL));
+  }
+
+  protected void addPopupControls(final ControlSet popupControls) {
+    if (popupControls == null)
+      return;
+
+    boolean separatorRequired = false;
+    if (controlMap.containsKey(UPDATE_SELECTED)) {
+      popupControls.add(controlMap.get(UPDATE_SELECTED));
+      separatorRequired = true;
+    }
+    if (controlMap.containsKey(DELETE_SELECTED)) {
+      popupControls.add(controlMap.get(DELETE_SELECTED));
+      separatorRequired = true;
+    }
+    if (controlMap.containsKey(EXPORT_JSON)) {
+      popupControls.add(controlMap.get(EXPORT_JSON));
+      separatorRequired = true;
+    }
+    if (separatorRequired) {
+      popupControls.addSeparator();
+      separatorRequired = false;
+    }
+    if (controlMap.containsKey(VIEW_DEPENDENCIES)) {
+      popupControls.add(controlMap.get(VIEW_DEPENDENCIES));
+      separatorRequired = true;
+    }
+    if (controlMap.containsKey(CONFIGURE_QUERY)) {
+      if (separatorRequired) {
+        popupControls.addSeparator();
+        separatorRequired = false;
+      }
+      popupControls.add(controlMap.get(CONFIGURE_QUERY));
+      final ControlSet searchControls = ((EntityTableSearchPanel)searchPanel).getControls();
+      searchControls.add(getControl(SEARCH_PANEL_VISIBLE));
+      popupControls.addSeparatorAt(0);
+      popupControls.addAt(controlMap.get(CLEAR), 0);
+      popupControls.addAt(controlMap.get(REFRESH), 0);
+      popupControls.add(searchControls);
+    }
+    if (controlMap.containsKey(SELECT_COLUMNS)) {
+      if (separatorRequired)
+        popupControls.addSeparator();
+      popupControls.add(controlMap.get(SELECT_COLUMNS));
+    }
+    popupControls.add(controlMap.get(COPY_TABLE_DATA));
+  }
+
+  protected ToggleBeanValueLink getSearchPanelControl() {
+    return ControlFactory.toggleControl(this, "searchPanelVisible",
+              FrameworkMessages.get(FrameworkMessages.SHOW), evtSearchPanelVisibilityChanged);
+  }
+
+  protected ControlSet getCopyControlSet() {
+    return new ControlSet(Messages.get(Messages.COPY), getCopyCellControl(), getCopyTableWithHeaderControl());
   }
 
   /**

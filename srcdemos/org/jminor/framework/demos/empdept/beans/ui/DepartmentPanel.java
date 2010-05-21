@@ -49,7 +49,7 @@ public class DepartmentPanel extends EntityPanel {
   public ControlSet getPrintControls() {
     final ControlSet controlSet = new ControlSet(Messages.get(Messages.PRINT));
     controlSet.add(ControlFactory.methodControl(this, "viewEmployeeReport", EmpDept.getString(EmpDept.EMPLOYEE_REPORT)));
-    controlSet.add(getControl(PRINT));
+    controlSet.add(getTablePanel().getPrintControl());
 
     return controlSet;
   }

@@ -105,7 +105,7 @@ public class EntityUiUtil {
       }
     };
 
-    final EntityTablePanel entityTablePanel = new EntityTablePanel(lookupModel, null) {
+    final EntityTablePanel entityTablePanel = new EntityTablePanel(lookupModel, null, null) {
       @Override
       protected void bindEvents() {
         eventTableDoubleClicked().addListener(new ActionListener() {
