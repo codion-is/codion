@@ -98,9 +98,6 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
         if (EntityRepository.isReadOnly(entity.getEntityID()))
           throw new DbException("Cannot insert a read only entity: " + entity.getEntityID());
 
-        insertProperties.clear();
-        statementValues.clear();
-
         final IdSource idSource = EntityRepository.getIdSource(entity.getEntityID());
         final Property.PrimaryKeyProperty firstPrimaryKeyProperty = entity.getPrimaryKey().getFirstKeyProperty();
         if (idSource.isQueried() && entity.getPrimaryKey().isNull())
@@ -121,6 +118,8 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
         keys.add(entity.getPrimaryKey());
 
         statement.close();
+        insertProperties.clear();
+        statementValues.clear();
       }
       if (!isTransactionOpen())
         commit();
@@ -162,9 +161,6 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
           if (isOptimisticLocking())
             checkIfModified(entity);
 
-          statementValues.clear();
-          statementProperties.clear();
-
           addUpdateProperties(entity, statementProperties);
           updateQuery = getUpdateSQL(entity, statementProperties, primaryKeyProperties);
           for (final Property property : statementProperties)
@@ -176,6 +172,8 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
           statement = getConnection().prepareStatement(updateQuery);
           executePreparedUpdate(statement, updateQuery, statementValues, statementProperties);
           statement.close();
+          statementValues.clear();
+          statementProperties.clear();
         }
       }
       if (!isTransactionOpen())
@@ -240,10 +238,10 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
         deleteQuery = "delete from " + EntityRepository.getTableName(entry.getKey()) + getWhereCondition(primaryKeyProperties);
         statement = getConnection().prepareStatement(deleteQuery);
         for (final Entity.Key key : entry.getValue()) {
-          statementValues.clear();
           for (final Property property : primaryKeyProperties)
             statementValues.add(key.getOriginalValue(property.getPropertyID()));
           executePreparedUpdate(statement, deleteQuery, statementValues, primaryKeyProperties);
+          statementValues.clear();
         }
         statement.close();
       }
@@ -621,7 +619,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     SQLException exception = null;
     try {
       queryCounter.count(sqlStatement);
-      methodLogger.logAccess("executePreparedSelect", new Object[] {sqlStatement, values});
+      methodLogger.logAccess("executePreparedSelect", values == null ? new Object[] {sqlStatement} : new Object[] {sqlStatement, values});
       setParameterValues(statement, values, properties);
       return statement.executeQuery();
     }
@@ -650,9 +648,9 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
       throw new SQLException("Parameter properties not specified: " + (parameterProperties == null ?
               "no properties" : ("expected: " + values.size() + ", got: " + parameterProperties.size())));
 
-    int i = 1;
+    int i = 0;
     for (final Object value : values) {
-      setParameterValue(statement, i, value, parameterProperties.get(i - 1));
+      setParameterValue(statement, i + 1, value, parameterProperties.get(i));
       i++;
     }
   }
@@ -729,11 +727,14 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     if (selectQuery == null)
       selectQuery = getSelectSQL(EntityRepository.getSelectTableName(criteria.getEntityID()), columnsString, null, null);
 
-    selectQuery += " " + criteria.getWhereClause(!containsWhereKeyword(selectQuery));
+    final StringBuilder queryBuilder = new StringBuilder(selectQuery);
+    final String whereClause = criteria.getWhereClause(!containsWhereKeyword(selectQuery));
+    if (whereClause.length() > 0)
+      queryBuilder.append(" ").append(whereClause);
     if (orderByClause != null)
-      selectQuery += " order by " + orderByClause;
+      queryBuilder.append(" order by ").append(orderByClause);
 
-    return selectQuery;
+    return queryBuilder.toString();
   }
 
   /**
