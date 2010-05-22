@@ -51,7 +51,19 @@ public class EntityTest {
     final String masterName = "master";
     final int masterCode = 7;
 
-    final Entity referencedEntityValue = new Entity(EntityTestDomain.T_MASTER);
+    Entity referencedEntityValue = new Entity(EntityTestDomain.T_MASTER);
+
+    referencedEntityValue.setValue(EntityTestDomain.MASTER_ID, masterId);
+    referencedEntityValue.setValue(EntityTestDomain.MASTER_NAME, masterName);
+    referencedEntityValue.setValue(EntityTestDomain.MASTER_CODE, masterCode);
+
+    referencedEntityValue.setValue(EntityTestDomain.MASTER_ID, -55);
+    assertTrue(referencedEntityValue.stateModified().isActive());
+    referencedEntityValue.saveValue(EntityTestDomain.MASTER_ID);
+    assertFalse(referencedEntityValue.stateModified().isActive());
+
+    referencedEntityValue = new Entity(EntityTestDomain.T_MASTER);
+
     referencedEntityValue.setValue(EntityTestDomain.MASTER_ID, masterId);
     referencedEntityValue.setValue(EntityTestDomain.MASTER_NAME, masterName);
     referencedEntityValue.setValue(EntityTestDomain.MASTER_CODE, masterCode);

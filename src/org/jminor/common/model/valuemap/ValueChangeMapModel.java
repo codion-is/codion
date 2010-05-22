@@ -29,6 +29,15 @@ public abstract class ValueChangeMapModel<K, V> implements Refreshable {
    * The table model
    */
   private AbstractFilteredTableModel<? extends ValueChangeMap<K, V>> tableModel;
+  private final String mapTypeID;
+
+  public ValueChangeMapModel(final String mapTypeID) {
+    this.mapTypeID = mapTypeID;
+  }
+
+  public String getMapTypeID() {
+    return mapTypeID;
+  }
 
   /**
    * @return the ValueChangeMapEditModel instance used by this ValueChangeMapModel
@@ -36,6 +45,9 @@ public abstract class ValueChangeMapModel<K, V> implements Refreshable {
   public ValueChangeMapEditModel<K, V> getEditModel() {
     if (editModel == null) {
       editModel = initializeEditModel();
+      if (!editModel.getValueMap().getMapTypeID().equals(getMapTypeID()))
+        throw new RuntimeException("Expected edit model based on " + getMapTypeID() +
+                ", got: " + editModel.getValueMap().getMapTypeID());
       bindEvents();
     }
 
@@ -48,6 +60,9 @@ public abstract class ValueChangeMapModel<K, V> implements Refreshable {
   public AbstractFilteredTableModel<? extends ValueChangeMap<K, V>> getTableModel() {
     if (tableModel == null) {
       tableModel = initializeTableModel();
+      if (!tableModel.getMapTypeID().equals(getMapTypeID()))
+        throw new RuntimeException("Expected table model based on " + getMapTypeID() +
+                ", got: " + tableModel.getMapTypeID());
       bindEvents();
     }
 

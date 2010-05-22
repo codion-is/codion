@@ -830,7 +830,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
 
   private static void activatePanel(final EntityPanel panel) {
     if (panel != null)
-      panel.setActive(true);
+      panel.getEditModel().setActive(true);
   }
 
   private EntityPanel getActivePanel(final List<EntityPanel> panels) {

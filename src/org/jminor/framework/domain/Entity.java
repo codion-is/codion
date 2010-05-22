@@ -438,6 +438,24 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
   }
 
   @Override
+  public void saveValue(final String key) {
+    final Property property = getProperty(key);
+    if (property instanceof Property.PrimaryKeyProperty)
+      primaryKey.saveValue(key);
+    else if (property instanceof Property.ForeignKeyProperty)
+      foreignKeyValues.saveValue(key);
+    else
+      super.saveValue(key);
+  }
+
+  @Override
+  public void saveAll() {
+    primaryKey.saveAll();
+    foreignKeyValues.saveAll();
+    super.revertAll();
+  }
+
+  @Override
   public void clear() {
     primaryKey.clear();
     foreignKeyValues.clear();

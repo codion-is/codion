@@ -1626,3 +1626,14 @@
   ValueChangeMapEditPanel.defaultFocusComponent renamed to initialFocusComponent (along with related methods)
   PropertyValueProviderTest added
   common.db.DbUtil added, with createEmbeddedDatabase()
+  EntityKeyCriteria bug fixed, it didn't use the original key values
+  EntityTableModel constructor now takes a EntityEditModel as parameter
+  EntityPanel, refactored all controls into EntityEditPanel and EntityTablePanel
+  EntityEditModel constructor takes stActive as parameter
+  EntityEditModel.isEntityNull() renamed to the more apt isEntityNew()
+  EntityEditModel.isEntityNew() also checks the original key values
+  EntityPanel.stActive and activeStateGroup moved to EntityEditModel
+  ValueMap.saveValue() and saveAll() added, implemented in ValueChangeMapImpl and overridden in Entity
+  ValueChangeMapModel.removeOriginalValue() now notifies a value change
+  ValueChangeMapModel.mapTypeID field added
+  AbstractFilteredTableModel.mapTypeID field added

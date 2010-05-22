@@ -3,37 +3,77 @@
  */
 package org.jminor.framework.client.ui;
 
+import org.jminor.common.i18n.Messages;
+import org.jminor.common.model.AggregateState;
+import org.jminor.common.model.CancelException;
 import org.jminor.common.model.State;
+import org.jminor.common.model.Util;
+import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.common.ui.DateInputPanel;
+import org.jminor.common.ui.DefaultExceptionHandler;
+import org.jminor.common.ui.ExceptionHandler;
 import org.jminor.common.ui.TextInputPanel;
+import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.checkbox.TristateCheckBox;
 import org.jminor.common.ui.combobox.MaximumMatch;
 import org.jminor.common.ui.combobox.SteppedComboBox;
+import org.jminor.common.ui.control.Control;
+import org.jminor.common.ui.control.ControlFactory;
+import org.jminor.common.ui.control.ControlProvider;
+import org.jminor.common.ui.control.ControlSet;
 import org.jminor.common.ui.control.LinkType;
+import org.jminor.common.ui.images.Images;
 import org.jminor.common.ui.valuemap.ValueChangeMapEditPanel;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
+import org.jminor.framework.i18n.FrameworkMessages;
+
+import org.apache.log4j.Logger;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JToolBar;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A UI component based on the EntityEditModel.
  * @see EntityEditModel
  */
-public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Object> {
+public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Object> implements ExceptionHandler {
+
+  private static final Logger log = Util.getLogger(EntityEditPanel.class);
+
+  public static final int CONFIRM_TYPE_INSERT = 1;
+  public static final int CONFIRM_TYPE_UPDATE = 2;
+  public static final int CONFIRM_TYPE_DELETE = 3;
+
+  public static final int ACTION_NONE = 0;
+  public static final int ACTION_INSERT = 1;
+  public static final int ACTION_UPDATE = 2;
+  public static final int ACTION_DELETE = 3;
+
+  //Control codes
+  public static final String INSERT = "insert";
+  public static final String UPDATE = "update";
+  public static final String DELETE = "delete";
+  public static final String REFRESH = "refresh";
+  public static final String CLEAR = "clear";
+
+  private final Map<String, Control> controlMap = new HashMap<String, Control>();
 
   /**
    * Instantiates a new EntityEditPanel based on the provided EntityEditModel
@@ -41,6 +81,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    */
   public EntityEditPanel(final EntityEditModel editModel) {
     super(editModel);
+    setupControls();
     initializeUI();
     bindEvents();
   }
@@ -48,6 +89,384 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   @Override
   public EntityEditModel getEditModel() {
     return (EntityEditModel) super.getEditModel();
+  }
+
+  /**
+   * @return the ControlSet on which to base the control panel
+   */
+  public ControlSet getControlPanelControlSet() {
+    final ControlSet controlSet = new ControlSet("Actions");
+    if (controlMap.containsKey(INSERT))
+      controlSet.add(controlMap.get(INSERT));
+    if (controlMap.containsKey(UPDATE))
+      controlSet.add(controlMap.get(UPDATE));
+    if (controlMap.containsKey(DELETE))
+      controlSet.add(controlMap.get(DELETE));
+    if (controlMap.containsKey(CLEAR))
+      controlSet.add(controlMap.get(CLEAR));
+    if (controlMap.containsKey(REFRESH))
+      controlSet.add(controlMap.get(REFRESH));
+
+    return controlSet;
+  }
+
+  /**
+   * @param controlCode the control code
+   * @return the control associated with <code>controlCode</code>
+   * @throws RuntimeException in case no control is associated with the given control code
+   */
+  public final Control getControl(final String controlCode) {
+    if (!controlMap.containsKey(controlCode))
+      throw new RuntimeException(controlCode + " control not available in panel: " + this);
+
+    return controlMap.get(controlCode);
+  }
+
+  /**
+   * @return a control for refreshing the model data
+   */
+  public Control getRefreshControl() {
+    final String mnemonic = FrameworkMessages.get(FrameworkMessages.REFRESH_MNEMONIC);
+    return ControlFactory.methodControl(getEditModel(), "refresh", FrameworkMessages.get(FrameworkMessages.REFRESH),
+            getEditModel().stateActive(), FrameworkMessages.get(FrameworkMessages.REFRESH_TIP) + " (ALT-" + mnemonic + ")",
+            mnemonic.charAt(0), null, Images.loadImage(Images.IMG_REFRESH_16));
+  }
+
+  /**
+   * @return a control for deleting the active entity (or the selected entities if a table model is available)
+   */
+  public Control getDeleteControl() {
+    final String mnemonic = FrameworkMessages.get(FrameworkMessages.DELETE_MNEMONIC);
+    return ControlFactory.methodControl(this, "delete", FrameworkMessages.get(FrameworkMessages.DELETE),
+            new AggregateState(AggregateState.Type.AND,
+                    getEditModel().stateActive(),
+                    getEditModel().stateAllowDelete(),
+                    getEditModel().getEntityNullState().getReversedState()),
+            FrameworkMessages.get(FrameworkMessages.DELETE_TIP) + " (ALT-" + mnemonic + ")", mnemonic.charAt(0), null,
+            Images.loadImage(Images.IMG_DELETE_16));
+  }
+
+  /**
+   * @return a control for clearing the UI controls
+   */
+  public Control getClearControl() {//todo move to edit panel
+    final String mnemonic = FrameworkMessages.get(FrameworkMessages.CLEAR_MNEMONIC);
+    return ControlFactory.methodControl(getEditModel(), "clear", FrameworkMessages.get(FrameworkMessages.CLEAR),
+            getEditModel().stateActive(), FrameworkMessages.get(FrameworkMessages.CLEAR_ALL_TIP) + " (ALT-" + mnemonic + ")",
+            mnemonic.charAt(0), null, Images.loadImage(Images.IMG_NEW_16));
+  }
+
+  /**
+   * @return a control for performing an update on the active entity
+   */
+  public Control getUpdateControl() {
+    final String mnemonic = FrameworkMessages.get(FrameworkMessages.UPDATE_MNEMONIC);
+    return ControlFactory.methodControl(this, "update", FrameworkMessages.get(FrameworkMessages.UPDATE),
+            new AggregateState(AggregateState.Type.AND,
+                    getEditModel().stateActive(),
+                    getEditModel().stateAllowUpdate(),
+                    getEditModel().getEntityNullState().getReversedState(),
+                    getEditModel().stateModified()),
+            FrameworkMessages.get(FrameworkMessages.UPDATE_TIP) + " (ALT-" + mnemonic + ")", mnemonic.charAt(0),
+            null, Images.loadImage(Images.IMG_SAVE_16));
+  }
+
+  /**
+   * @return a control for performing an insert on the active entity
+   */
+  public Control getInsertControl() {
+    final String mnemonic = FrameworkMessages.get(FrameworkMessages.INSERT_MNEMONIC);
+    return ControlFactory.methodControl(this, "save", FrameworkMessages.get(FrameworkMessages.INSERT),
+            new AggregateState(AggregateState.Type.AND, getEditModel().stateActive(), getEditModel().stateAllowInsert()),
+            FrameworkMessages.get(FrameworkMessages.INSERT_TIP) + " (ALT-" + mnemonic + ")",
+            mnemonic.charAt(0), null, Images.loadImage("Add16.gif"));
+  }
+
+  /**
+   * @return a control for performing a save on the active entity
+   */
+  public Control getSaveControl() {
+    final String insertCaption = FrameworkMessages.get(FrameworkMessages.INSERT_UPDATE);
+    final State stInsertUpdate = new AggregateState(AggregateState.Type.OR, getEditModel().stateAllowInsert(),
+            new AggregateState(AggregateState.Type.AND, getEditModel().stateAllowUpdate(),
+                    getEditModel().stateModified()));
+    return ControlFactory.methodControl(this, "save", insertCaption,
+            new AggregateState(AggregateState.Type.AND, getEditModel().stateActive(), stInsertUpdate),
+            FrameworkMessages.get(FrameworkMessages.INSERT_UPDATE_TIP),
+            insertCaption.charAt(0), null, Images.loadImage(Images.IMG_PROPERTIES_16));
+  }
+
+  public void handleException(final Throwable throwable) {
+    if (throwable instanceof ValidationException) {
+      JOptionPane.showMessageDialog(this, throwable.getMessage(), Messages.get(Messages.EXCEPTION),
+              JOptionPane.ERROR_MESSAGE);
+      selectComponent((String) ((ValidationException) throwable).getKey());
+    }
+    else {
+      handleException(throwable, this);
+    }
+  }
+
+  /**
+   * Handles the given exception
+   * @param throwable the exception to handle
+   * @param dialogParent the component to use as exception dialog parent
+   */
+  public void handleException(final Throwable throwable, final JComponent dialogParent) {
+    log.error(this, throwable);
+    DefaultExceptionHandler.get().handleException(throwable, dialogParent);
+  }
+
+  /**
+   * Initializes the control panel, that is, the panel containing buttons for editing entities (Insert, Update...)
+   * @param horizontal true if the buttons should be layed out horizontally, false otherwise
+   * @return the control panel
+   */
+  public JPanel getControlPanel(final boolean horizontal) {
+    if (horizontal) {
+      final JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER,5,5));
+      panel.add(ControlProvider.createHorizontalButtonPanel(getControlPanelControlSet()));
+      return panel;
+    }
+    else {
+      final JPanel panel = new JPanel(new BorderLayout(5,5));
+      panel.add(ControlProvider.createVerticalButtonPanel(getControlPanelControlSet()), BorderLayout.NORTH);
+      return panel;
+    }
+  }
+
+  /**
+   * Initializes the control toolbar, that is, the toolbar containing buttons for editing entities (Insert, Update...)
+   * @return the control toolbar
+   */
+  public JToolBar getControlToolBar() {
+    return ControlProvider.createToolbar(getControlPanelControlSet(), JToolBar.VERTICAL);
+  }
+
+  //#############################################################################################
+  // Begin - control methods, see setupControls
+  //#############################################################################################
+
+  /**
+   * Saves the active entity, that is, if no entity is selected it performs a insert otherwise the user
+   * is asked whether to update the selected entity or insert a new one
+   */
+  public final void save() {
+    if (getEditModel().isEntityNew() || !getEditModel().isEntityModified() || !getEditModel().isUpdateAllowed()) {
+      //no entity selected, selected entity is unmodified or update is not allowed, can only insert
+      insert();
+    }
+    else {//possibly update
+      final int choiceIdx = JOptionPane.showOptionDialog(this, FrameworkMessages.get(FrameworkMessages.UPDATE_OR_INSERT),
+              FrameworkMessages.get(FrameworkMessages.UPDATE_OR_INSERT_TITLE), -1, JOptionPane.QUESTION_MESSAGE, null,
+              new String[] {FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_RECORD),
+                      FrameworkMessages.get(FrameworkMessages.INSERT_NEW), Messages.get(Messages.CANCEL)},
+              new String[] {FrameworkMessages.get(FrameworkMessages.UPDATE)});
+      if (choiceIdx == 0) //update
+        update(false);
+      else if (choiceIdx == 1) //insert
+        insert(false);
+    }
+  }
+
+  /**
+   * Performs a insert on the active entity
+   * @return true in case of successful insert, false otherwise
+   */
+  public final boolean insert() {
+    return insert(true);
+  }
+
+  /**
+   * Performs a insert on the active entity
+   * @param confirm if true then confirmInsert() is called
+   * @return true in case of successful insert, false otherwise
+   */
+  public final boolean insert(final boolean confirm) {
+    try {
+      if (!confirm || confirmInsert()) {
+        validateData();
+        try {
+          UiUtil.setWaitCursor(true, this);
+          getEditModel().insert();
+        }
+        finally {
+          UiUtil.setWaitCursor(false, this);
+        }
+        prepareUI(true, true);
+        return true;
+      }
+    }
+    catch (Exception ex) {
+      handleException(ex);
+    }
+
+    return false;
+  }
+
+  /**
+   * Performs a delete on the active entity or if a table model is available, the selected entities
+   * @return true if the delete operation was successful
+   */
+  public final boolean delete() {
+    return delete(true);
+  }
+
+  /**
+   * Performs a delete on the active entity or if a table model is available, the selected entities
+   * @param confirm if true then confirmDelete() is called
+   * @return true if the delete operation was successful
+   */
+  public final boolean delete(final boolean confirm) {
+    try {
+      if (!confirm || confirmDelete()) {
+        try {
+          UiUtil.setWaitCursor(true, this);
+          getEditModel().delete();
+        }
+        finally {
+          UiUtil.setWaitCursor(false, this);
+        }
+
+        return true;
+      }
+    }
+    catch (Exception e) {
+      handleException(e);
+    }
+
+    return false;
+  }
+
+  /**
+   * Performs an update on the active entity
+   * @return true if the update operation was successful
+   */
+  public final boolean update() {
+    return update(true);
+  }
+
+  /**
+   * Performs an update on the active entity
+   * @param confirm if true then confirmUpdate() is called
+   * @return true if the update operation was successful
+   */
+  public final boolean update(final boolean confirm) {
+    try {
+      if (!confirm || confirmUpdate()) {
+        validateData();
+        try {
+          UiUtil.setWaitCursor(true, this);
+          getEditModel().update();
+        }
+        finally {
+          UiUtil.setWaitCursor(false, this);
+        }
+        prepareUI(true, false);
+
+        return true;
+      }
+    }
+    catch (Exception e) {
+      handleException(e);
+    }
+
+    return false;
+  }
+
+  //#############################################################################################
+  // End - control methods
+  //#############################################################################################
+
+  /**
+   * for overriding, called before insert/update
+   * @throws org.jminor.common.model.valuemap.exception.ValidationException in case of a validation failure
+   * @throws org.jminor.common.model.CancelException in case the user cancels the action during validation
+   */
+  protected void validateData() throws ValidationException, CancelException {}
+
+  /**
+   * Called before a insert is performed, the default implementation simply returns true
+   * @return true if a insert should be performed, false if it should be vetoed
+   */
+  protected boolean confirmInsert() {
+    return true;
+  }
+
+  /**
+   * Called before a delete is performed, if true is returned the delete action is performed otherwise it is canceled
+   * @return true if the delete action should be performed
+   */
+  protected boolean confirmDelete() {
+    final String[] messages = getConfirmationMessages(CONFIRM_TYPE_DELETE);
+    final int res = JOptionPane.showConfirmDialog(this, messages[0], messages[1], JOptionPane.OK_CANCEL_OPTION);
+
+    return res == JOptionPane.OK_OPTION;
+  }
+
+  /**
+   * Called before an update is performed, if true is returned the update action is performed otherwise it is cancelled
+   * @return true if the update action should be performed
+   */
+  protected boolean confirmUpdate() {
+    final String[] messages = getConfirmationMessages(CONFIRM_TYPE_UPDATE);
+    final int res = JOptionPane.showConfirmDialog(this, messages[0], messages[1], JOptionPane.OK_CANCEL_OPTION);
+
+    return res == JOptionPane.OK_OPTION;
+  }
+
+  /**
+   * @param type the confirmation message type, one of the following:
+   * EntityPanel.CONFIRM_TYPE_INSERT, EntityPanel.CONFIRM_TYPE_DELETE or EntityPanel.CONFIRM_TYPE_UPDATE
+   * @return a string array containing two elements, the element at index 0 is used
+   * as the message displayed in the dialog and the element at index 1 is used as the dialog title,
+   * i.e. ["Are you sure you want to delete the selected records?", "About to delete selected records"]
+   */
+  protected String[] getConfirmationMessages(final int type) {
+    switch (type) {
+      case CONFIRM_TYPE_DELETE:
+        return new String[]{FrameworkMessages.get(FrameworkMessages.CONFIRM_DELETE_SELECTED),
+            FrameworkMessages.get(FrameworkMessages.DELETE)};//todo
+      case CONFIRM_TYPE_INSERT:
+        return EntityUiUtil.getDefaultConfirmInsertMessages();
+      case CONFIRM_TYPE_UPDATE:
+        return EntityUiUtil.getDefaultConfirmUpdateMessages();
+    }
+
+    throw new IllegalArgumentException("Unknown confirmation type constant: " + type);
+  }
+
+  /**
+   * Initializes the controls available to this EntityEditPanel by mapping them to their respective
+   * control codes (EntityEditPanel.INSERT, UPDATE etc) via the <code>setControl(String, Control) method,
+   * these can then be retrieved via the <code>getControl(String)</code> method.
+   * @see org.jminor.common.ui.control.Control
+   * @see #setControl(String, org.jminor.common.ui.control.Control)
+   * @see #getControl(String)
+   */
+  protected void setupControls() {
+    if (!getEditModel().isReadOnly()) {
+      if (getEditModel().isInsertAllowed())
+        setControl(INSERT, getInsertControl());
+      if (getEditModel().isUpdateAllowed())
+        setControl(UPDATE, getUpdateControl());
+      if (getEditModel().isDeleteAllowed())
+        setControl(DELETE, getDeleteControl());
+    }
+    setControl(CLEAR, getClearControl());
+    setControl(REFRESH, getRefreshControl());
+  }
+
+  /**
+   * Associates <code>control</code> with <code>controlCode</code>
+   * @param controlCode the control code
+   * @param control the control to associate with <code>controlCode</code>
+   */
+  protected void setControl(final String controlCode, final Control control) {
+    if (control == null)
+      controlMap.remove(controlCode);
+    else
+      controlMap.put(controlCode, control);
   }
 
   /**

@@ -170,6 +170,17 @@ public class ValueChangeMapImpl<K, V> implements ValueChangeMap<K, V>, Serializa
   }
 
   /** {@inheritDoc} */
+  public void saveValue(final K key) {
+    removeOriginalValue(key);
+  }
+
+  /** {@inheritDoc} */
+  public void saveAll() {
+    for (final K key : getValueKeys())
+      saveValue(key);
+  }
+
+  /** {@inheritDoc} */
   public void clear() {
     values.clear();
     if (originalValues != null)
@@ -276,7 +287,7 @@ public class ValueChangeMapImpl<K, V> implements ValueChangeMap<K, V>, Serializa
   }
 
   protected void notifyValueChange(final K key, final V value, final V oldValue, final boolean initialization) {
-    evtValueChanged.fire(new ValueChangeEvent<K, V>(this, getMapTypeID(), key, value, oldValue, true, initialization));
+    eventValueChanged().fire(new ValueChangeEvent<K, V>(this, getMapTypeID(), key, value, oldValue, true, initialization));
   }
 
   protected void setOriginalValue(final K key, final V oldValue) {
@@ -284,8 +295,11 @@ public class ValueChangeMapImpl<K, V> implements ValueChangeMap<K, V>, Serializa
   }
 
   protected void removeOriginalValue(final K key) {
-    if (originalValues != null)
+    if (originalValues != null && originalValues.containsKey(key)) {
       originalValues.remove(key);
+      if (evtValueChanged != null)
+        notifyValueChange(key, values.get(key), null, true);
+    }
   }
 
   protected void updateModifiedState(final K key, final V value, final V previousValue) {

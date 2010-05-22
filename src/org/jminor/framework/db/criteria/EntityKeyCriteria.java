@@ -84,8 +84,8 @@ public class EntityKeyCriteria extends CriteriaSet<Property> {
 
   private void setupCriteria() {
     if (keys.get(0).isCompositeKey()) {//multiple column key
-      final List<? extends Property> propertyList = properties == null ? keys.get(0).getProperties() : properties;
       final List<Property.PrimaryKeyProperty> pkProperties = keys.get(0).getProperties();
+      final List<? extends Property> propertyList = properties == null ? pkProperties : properties;
       //(a = b and c = d) or (a = g and c = d)
       for (final Entity.Key key : keys) {
         final CriteriaSet<Property> andSet = new CriteriaSet<Property>(Conjunction.AND);
@@ -99,10 +99,11 @@ public class EntityKeyCriteria extends CriteriaSet<Property> {
     }
     else {
       final Property property = properties == null ? keys.get(0).getFirstKeyProperty() : properties.get(0);
+      final Property primaryKeyProperty = properties == null ? property : keys.get(0).getFirstKeyProperty();
       //a = b
       if (keys.size() == 1) {
         final Entity.Key key = keys.get(0);
-        addCriteria(new PropertyCriteria(property, SearchType.LIKE, key.getOriginalValue(property.getPropertyID())));
+        addCriteria(new PropertyCriteria(property, SearchType.LIKE, key.getOriginalValue(primaryKeyProperty.getPropertyID())));
       }
       else //a in (c, v, d, s)
         addCriteria(new PropertyCriteria(property, SearchType.LIKE, EntityUtil.getOriginalPropertyValues(keys)));

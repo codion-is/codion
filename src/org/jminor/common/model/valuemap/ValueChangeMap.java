@@ -72,9 +72,22 @@ public interface ValueChangeMap<K, V> extends ValueMap<K, V> {
 
   /**
    * Reverts all value changes that have been made.
+   * This value map will be unmodified after a call to this method.
    * If no changes have been made then calling this method has no effect.
    */
   void revertAll();
+
+  /**
+   * Saves the value associated with the given key, that is, removes the original value
+   * @param key the key for which to save the value
+   */
+  void saveValue(final K key);
+
+  /**
+   * Saves all the value changes that have been.
+   * This value map will be unmodified after a call to this method.
+   */
+  void saveAll();
 
   /**
    * @return a new ValueChangeMap instance compatible with this instance,

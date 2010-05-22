@@ -10,9 +10,11 @@ import org.jminor.common.ui.control.ControlSet;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityModel;
+import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.ui.EntityEditPanel;
 import org.jminor.framework.client.ui.EntityPanel;
 import org.jminor.framework.client.ui.EntityPanelProvider;
+import org.jminor.framework.client.ui.EntityTablePanel;
 import org.jminor.framework.demos.empdept.beans.EmployeeModel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import static org.jminor.framework.demos.empdept.domain.EmpDept.*;
@@ -46,17 +48,13 @@ public class DepartmentPanel extends EntityPanel {
   }
 
   @Override
-  public ControlSet getPrintControls() {
-    final ControlSet controlSet = new ControlSet(Messages.get(Messages.PRINT));
-    controlSet.add(ControlFactory.methodControl(this, "viewEmployeeReport", EmpDept.getString(EmpDept.EMPLOYEE_REPORT)));
-    controlSet.add(getTablePanel().getPrintControl());
-
-    return controlSet;
+  protected List<EntityPanelProvider> getDetailPanelProviders() {
+    return Arrays.asList(new EntityPanelProvider(EmployeeModel.class, EmployeePanel.class));
   }
 
   @Override
-  protected List<EntityPanelProvider> getDetailPanelProviders() {
-    return Arrays.asList(new EntityPanelProvider(EmployeeModel.class, EmployeePanel.class));
+  protected EntityTablePanel initializeTablePanel(EntityTableModel tableModel) {
+    return new EntityTablePanel(tableModel, getTablePopupControlSet(), getToolbarControlSet(), getPrintControls());
   }
 
   @Override
@@ -74,7 +72,7 @@ public class DepartmentPanel extends EntityPanel {
         //we don't allow editing of the department number since it's a primary key
         getEditModel().getEntityNullState().eventStateChanged().addListener(new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            if (getEditModel().isEntityNull()) {
+            if (getEditModel().isEntityNew()) {
               txtDepartmentNumber.setEnabled(true);
               setInitialFocusComponent(txtDepartmentNumber);
             }
@@ -91,5 +89,12 @@ public class DepartmentPanel extends EntityPanel {
         add(createPropertyPanel(DEPARTMENT_LOCATION, txtDepartmentLocation));
       }
     };
+  }
+
+  private ControlSet getPrintControls() {
+    final ControlSet controlSet = new ControlSet(Messages.get(Messages.PRINT));
+    controlSet.add(ControlFactory.methodControl(this, "viewEmployeeReport", EmpDept.getString(EmpDept.EMPLOYEE_REPORT)));
+
+    return controlSet;
   }
 }

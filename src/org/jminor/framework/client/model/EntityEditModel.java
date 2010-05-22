@@ -60,6 +60,11 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
   private final State stAllowDelete = new State(true);
 
   /**
+   * Indicates whether the panel is active and ready to receive input
+   */
+  protected final State stActive = new State(Configuration.getBooleanValue(Configuration.ALL_PANELS_ACTIVE));
+
+  /**
    * The ID of the entity this edit model is based on
    */
   private final String entityID;
@@ -70,11 +75,21 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
   private final EntityDbProvider dbProvider;
 
   /**
+   * Fired after a refresh has been performed
+   */
+  private final Event evtRefreshDone = new Event();
+
+  /**
    * Holds the ComboBoxModels used by this EntityModel, those that implement Refreshable
    * are refreshed when refreshComboBoxModels() is called
    * @see org.jminor.common.model.Refreshable
    */
   private final Map<Property, ComboBoxModel> propertyComboBoxModels = new HashMap<Property, ComboBoxModel>();
+
+  /**
+   * The mechanism for restricting a single active EntityPanel at a time
+   */
+  private static final State.StateGroup activeStateGroup = new State.StateGroup();
 
   /**
    * Instantiates a new EntityEditModel based on the entity identified by <code>entityID</code>.
@@ -83,6 +98,8 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
    */
   public EntityEditModel(final String entityID, final EntityDbProvider dbProvider) {
     super(new Entity(entityID));
+    if (!Configuration.getBooleanValue(Configuration.ALL_PANELS_ACTIVE))
+      activeStateGroup.addState(stActive);
     if (entityID == null)
       throw new IllegalArgumentException("entityID is null");
     if (dbProvider == null)
@@ -208,11 +225,13 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
   }
 
   /**
-   * @return true if the active entity is null
+   * @return true if the active entity is new, that is, has a primary key with null value
+   * or a original null value
    * @see org.jminor.framework.domain.Entity#isNull()
    */
-  public boolean isEntityNull() {
-    return ((Entity) getValueMap()).isNull();
+  public boolean isEntityNew() {
+    final Entity.Key key = ((Entity) getValueMap()).getPrimaryKey();
+    return key.isNull() || ((Entity.Key) key.getOriginalCopy()).isNull();
   }
 
   /**
@@ -232,6 +251,14 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
    */
   public Entity getEntityCopy() {
     return getEntityCopy(true);
+  }
+
+  public State stateActive() {
+    return stActive.getLinkedState();
+  }
+
+  public void setActive(boolean active) {
+    stActive.setActive(active);
   }
 
   /**
@@ -419,6 +446,7 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
    */
   public void refresh() {
     refreshComboBoxModels();
+    evtRefreshDone.fire();
   }
 
   /**
@@ -675,6 +703,13 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
    */
   public Event eventEntitiesChanged() {
     return evtEntitiesChanged;
+  }
+
+  /**
+   * @return an event fired after a refresh has been performed
+   */
+  public Event eventRefreshDone() {
+    return evtRefreshDone;
   }
 
   /**

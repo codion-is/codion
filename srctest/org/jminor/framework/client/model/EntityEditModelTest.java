@@ -56,7 +56,7 @@ public class EntityEditModelTest {
     assertTrue(entityNullState.isActive());
 
     employeeModel.getTableModel().refresh();
-    assertTrue(editModel.isEntityNull());
+    assertTrue(editModel.isEntityNew());
     assertFalse(editModel.stateModified().isActive());
 
     employeeModel.getTableModel().setSelectedItemIndex(0);
@@ -66,10 +66,10 @@ public class EntityEditModelTest {
     assertTrue("Active entity is not equal to the selected entity",
             editModel.getEntityCopy().propertyValuesEqual(employeeModel.getTableModel().getItemAtViewIndex(0)));
 
-    assertFalse("Active entity is null after an entity is selected", editModel.isEntityNull());
+    assertFalse("Active entity is new after an entity is selected", editModel.isEntityNew());
     assertFalse(editModel.stateModified().isActive());
     employeeModel.getTableModel().getSelectionModel().clearSelection();
-    assertTrue("Active entity is not null after selection is cleared", editModel.isEntityNull());
+    assertTrue("Active entity is new null after selection is cleared", editModel.isEntityNew());
     assertFalse(editModel.stateModified().isActive());
     assertTrue("Active entity is not null after selection is cleared", editModel.getEntityCopy().isNull());
 

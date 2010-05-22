@@ -131,6 +131,15 @@ public class EntityDbConnectionTest {
     assertEquals(1, emps.size());
     assertTrue(emps.containsKey(EmpDept.T_EMPLOYEE));
     assertEquals(7, emps.get(EmpDept.T_EMPLOYEE).size());
+
+    Entity emp = getConnection().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "KING");
+    Map<String, List<Entity>> deps = getConnection().selectDependentEntities(Arrays.asList(emp));
+    assertTrue(deps.containsKey(EmpDept.T_EMPLOYEE));
+    assertTrue(deps.get(EmpDept.T_EMPLOYEE).size() == 2);
+
+    emp = getConnection().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "MILLER");
+    deps = getConnection().selectDependentEntities(Arrays.asList(emp));
+    assertFalse(deps.containsKey(EmpDept.T_EMPLOYEE));
   }
 
   @Test

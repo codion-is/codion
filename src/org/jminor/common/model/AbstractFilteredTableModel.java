@@ -88,12 +88,19 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
    * true while the model data is being sorted
    */
   private boolean isSorting = false;
+  
+  private final String mapTypeID;
 
-  public AbstractFilteredTableModel(final String tableIdentifier) {
+  public AbstractFilteredTableModel(final String mapTypeID) {
+    this.mapTypeID = mapTypeID;
     this.tableSorter = new TableSorter(this);
-    this.columnModel = initializeColumnModel(tableIdentifier);
+    this.columnModel = initializeColumnModel(mapTypeID);
     this.columnIndexCache = new int[columnModel.getColumnCount()];
     bindEventsInternal();
+  }
+
+  public String getMapTypeID() {
+    return mapTypeID;
   }
 
   public List<T> getVisibleItems() {

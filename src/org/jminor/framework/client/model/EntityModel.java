@@ -46,11 +46,6 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
   private final State stCascadeRefresh = new State();
 
   /**
-   * The ID of the Entity this EntityModel represents
-   */
-  private final String entityID;
-
-  /**
    * The EntityDb connection provider
    */
   private final EntityDbProvider dbProvider;
@@ -101,11 +96,11 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
    * @param includeTableModel true if this EntityModel should include a table model
    */
   public EntityModel(final String entityID, final EntityDbProvider dbProvider, final boolean includeTableModel) {
+    super(entityID);
     if (entityID == null || entityID.length() == 0)
       throw new IllegalArgumentException("entityID must be specified");
     if (dbProvider == null)
       throw new IllegalArgumentException("dbProvider can not be null");
-    this.entityID = entityID;
     this.dbProvider = dbProvider;
     this.includeTableModel = includeTableModel;
     addDetailModels();
@@ -120,7 +115,7 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
    * @return the ID of the entity this model represents
    */
   public String getEntityID() {
-    return entityID;
+    return getMapTypeID();
   }
 
   /**
@@ -345,7 +340,6 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
    * @see #evtRefreshDone
    * @see #isCascadeRefresh
    */
-  @Override
   public void refresh() {
     if (isRefreshing)
       return;
@@ -354,7 +348,7 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
       log.trace(this + " refreshing");
       isRefreshing = true;
       evtRefreshStarted.fire();
-      super.refresh();
+      getEditModel().refresh();
       if (isCascadeRefresh())
         refreshDetailModels();
 
@@ -521,7 +515,7 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
   protected void updateDetailModelsByActiveEntity() {
     final List<Entity> activeEntities = containsTableModel() ?
             (getTableModel().stateSelectionEmpty().isActive() ? null : getTableModel().getSelectedItems()) :
-            (getEditModel().isEntityNull() ? null : Arrays.asList(getEditModel().getEntityCopy()));
+            (getEditModel().isEntityNew() ? null : Arrays.asList(getEditModel().getEntityCopy()));
     for (final EntityModel detailModel : linkedDetailModels)
       detailModel.masterSelectionChanged(getEntityID(), activeEntities);
   }
@@ -593,7 +587,7 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
     });
     evtLinkedDetailModelsChanged.addListener(new ActionListener() {
       public void actionPerformed(ActionEvent event) {
-        if (!getEditModel().isEntityNull())
+        if (!getEditModel().isEntityNew())
           updateDetailModelsByActiveEntity();
       }
     });
@@ -610,6 +604,11 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
     if (!containsTableModel())
       return;
 
+    getEditModel().eventRefreshDone().addListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        getTableModel().refresh();
+      }
+    });
     getTableModel().eventSelectionChanged().addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent event) {
         updateDetailModelsByActiveEntity();
