@@ -1163,11 +1163,6 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
     });
   }
 
-  public static void checkForReadOnly(final EntityEditModel editModel) {
-    if (editModel.isReadOnly())
-      throw new RuntimeException(editModel + " is read only");
-  }
-
   private static class ActivationFocusAdapter extends MouseAdapter {
 
     private final JComponent target;
