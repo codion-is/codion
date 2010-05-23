@@ -1626,6 +1626,7 @@
   ValueChangeMapEditPanel.defaultFocusComponent renamed to initialFocusComponent (along with related methods)
   PropertyValueProviderTest added
   common.db.DbUtil added, with createEmbeddedDatabase()
+  EntityEditModel.getEntityNullState() renamed to stateEntityNull()
   EntityKeyCriteria bug fixed, it didn't use the original key values
   EntityTableModel constructor now takes a EntityEditModel as parameter
   EntityPanel, refactored all controls into EntityEditPanel and EntityTablePanel
@@ -1639,3 +1640,4 @@
   AbstractFilteredTableModel.mapTypeID field added
   EntityModel.handleInsert/Update/Delete() added
   ValueChangeMapModel no longer implements Refreshable
+  EntityTablePanel.getSelectColumnsControl() moved up to superclass

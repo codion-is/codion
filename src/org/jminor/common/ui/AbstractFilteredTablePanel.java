@@ -3,8 +3,10 @@
  */
 package org.jminor.common.ui;
 
+import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.AbstractFilteredTableModel;
-import org.jminor.framework.i18n.FrameworkMessages;
+import org.jminor.common.ui.control.Control;
+import org.jminor.common.ui.control.ControlFactory;
 
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
@@ -66,6 +68,15 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
   }
 
   /**
+   * @return a control for showing the column selection dialog
+   */
+  public Control getSelectColumnsControl() {
+    return ControlFactory.methodControl(this, "selectTableColumns",
+            Messages.get(Messages.SELECT_COLUMNS) + "...", null,
+            Messages.get(Messages.SELECT_COLUMNS));
+  }
+
+  /**
    * Shows a dialog for selecting which columns to show/hide
    */
   public void selectTableColumns() {
@@ -86,7 +97,7 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
     }
     final JScrollPane scroller = new JScrollPane(togglePanel);
     final int result = JOptionPane.showOptionDialog(this, scroller,
-            FrameworkMessages.get(FrameworkMessages.SELECT_COLUMNS), JOptionPane.OK_CANCEL_OPTION,
+            Messages.get(Messages.SELECT_COLUMNS), JOptionPane.OK_CANCEL_OPTION,
             JOptionPane.QUESTION_MESSAGE, null, null, null);
     if (result == JOptionPane.OK_OPTION) {
       for (final JCheckBox chkButton : buttonList) {

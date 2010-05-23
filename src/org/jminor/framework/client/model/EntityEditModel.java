@@ -196,6 +196,13 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
   }
 
   /**
+   * @return a State indicating whether or not the active entity is null
+   */
+  public State stateEntityNull() {
+    return stEntityNull.getLinkedState();
+  }
+
+  /**
    * Sets the Entity instance to edit
    * @param entity the entity
    */
@@ -215,13 +222,6 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
    */
   public EntityDbProvider getDbProvider() {
     return dbProvider;
-  }
-
-  /**
-   * @return a State indicating whether or not the active entity is null
-   */
-  public State getEntityNullState() {
-    return stEntityNull.getLinkedState();
   }
 
   /**

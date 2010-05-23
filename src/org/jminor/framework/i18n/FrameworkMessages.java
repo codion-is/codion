@@ -122,7 +122,6 @@ public class FrameworkMessages {
   public static final String ADVANCED = "advanced";
   public static final String APPLICATION_TREE = "view_application_tree";
   public static final String CHANGE_HISTORY = "change_history";
-  public static final String SELECT_COLUMNS = "select_columns";
   public static final String COPY_CELL = "copy_cell";
   public static final String COPY_TABLE_WITH_HEADER = "copy_table_with_header";
 
@@ -143,5 +142,20 @@ public class FrameworkMessages {
 
   public static String get(final String key) {
     return bundle.getString(key);
+  }
+
+  public static String[] getDefaultConfirmUpdateMessages() {
+    return new String[]{get(CONFIRM_UPDATE),
+            get(UPDATE)};
+  }
+
+  public static String[] getDefaultConfirmInsertMessages() {
+    return new String[]{get(CONFIRM_INSERT),
+            get(INSERT)};
+  }
+
+  public static String[] getDefaultConfirmDeleteMessages() {
+    return new String[]{get(CONFIRM_DELETE_SELECTED),
+            get(DELETE)};
   }
 }

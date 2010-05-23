@@ -644,21 +644,6 @@ public class EntityUiUtil {
     return button;
   }
 
-  public static String[] getDefaultConfirmUpdateMessages() {
-    return new String[]{FrameworkMessages.get(FrameworkMessages.CONFIRM_UPDATE),
-            FrameworkMessages.get(FrameworkMessages.UPDATE)};
-  }
-
-  public static String[] getDefaultConfirmInsertMessages() {
-    return new String[]{FrameworkMessages.get(FrameworkMessages.CONFIRM_INSERT),
-            FrameworkMessages.get(FrameworkMessages.INSERT)};
-  }
-
-  public static String[] getDefaultConfirmDeleteMessages() {
-    return new String[]{FrameworkMessages.get(FrameworkMessages.CONFIRM_DELETE_SELECTED),
-            FrameworkMessages.get(FrameworkMessages.DELETE)};
-  }
-
   public static class EntityComboBoxValueLink extends ComboBoxValueLink<String> {
     public EntityComboBoxValueLink(final JComboBox comboBox, final ValueChangeMapEditModel<String, Object> editModel,
                                    final Property property) {

@@ -395,15 +395,6 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
   }
 
   /**
-   * @return a control for showing the column selection dialog
-   */
-  public Control getSelectColumnsControl() {
-    return ControlFactory.methodControl(this, "selectTableColumns",
-            FrameworkMessages.get(FrameworkMessages.SELECT_COLUMNS) + "...", null,
-            FrameworkMessages.get(FrameworkMessages.SELECT_COLUMNS));
-  }
-
-  /**
    * @return a control for showing the query configuration dialog
    */
   public Control getConfigureQueryControl() {
@@ -956,7 +947,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
    * @return true if the delete action should be performed
    */
   protected boolean confirmDelete() {
-    final String[] messages = EntityUiUtil.getDefaultConfirmDeleteMessages();
+    final String[] messages = FrameworkMessages.getDefaultConfirmDeleteMessages();
     final int res = JOptionPane.showConfirmDialog(this, messages[0], messages[1], JOptionPane.OK_CANCEL_OPTION);
 
     return res == JOptionPane.OK_OPTION;

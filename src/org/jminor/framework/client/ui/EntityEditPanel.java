@@ -33,16 +33,7 @@ import org.jminor.framework.i18n.FrameworkMessages;
 
 import org.apache.log4j.Logger;
 
-import javax.swing.ComboBoxModel;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.JToolBar;
+import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.text.SimpleDateFormat;
@@ -141,7 +132,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
             new AggregateState(AggregateState.Type.AND,
                     getEditModel().stateActive(),
                     getEditModel().stateAllowDelete(),
-                    getEditModel().getEntityNullState().getReversedState()),
+                    getEditModel().stateEntityNull().getReversedState()),
             FrameworkMessages.get(FrameworkMessages.DELETE_TIP) + " (ALT-" + mnemonic + ")", mnemonic.charAt(0), null,
             Images.loadImage(Images.IMG_DELETE_16));
   }
@@ -165,7 +156,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
             new AggregateState(AggregateState.Type.AND,
                     getEditModel().stateActive(),
                     getEditModel().stateAllowUpdate(),
-                    getEditModel().getEntityNullState().getReversedState(),
+                    getEditModel().stateEntityNull().getReversedState(),
                     getEditModel().stateModified()),
             FrameworkMessages.get(FrameworkMessages.UPDATE_TIP) + " (ALT-" + mnemonic + ")", mnemonic.charAt(0),
             null, Images.loadImage(Images.IMG_SAVE_16));
@@ -428,9 +419,9 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
         return new String[]{FrameworkMessages.get(FrameworkMessages.CONFIRM_DELETE_SELECTED),
             FrameworkMessages.get(FrameworkMessages.DELETE)};//todo
       case CONFIRM_TYPE_INSERT:
-        return EntityUiUtil.getDefaultConfirmInsertMessages();
+        return FrameworkMessages.getDefaultConfirmInsertMessages();
       case CONFIRM_TYPE_UPDATE:
-        return EntityUiUtil.getDefaultConfirmUpdateMessages();
+        return FrameworkMessages.getDefaultConfirmUpdateMessages();
     }
 
     throw new IllegalArgumentException("Unknown confirmation type constant: " + type);

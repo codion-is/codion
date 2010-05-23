@@ -51,7 +51,7 @@ public class EntityEditModelTest {
     catch (IllegalArgumentException e) {}
 
     final EntityEditModel editModel = employeeModel.getEditModel();
-    final State entityNullState = editModel.getEntityNullState();
+    final State entityNullState = editModel.stateEntityNull();
 
     assertTrue(entityNullState.isActive());
 
