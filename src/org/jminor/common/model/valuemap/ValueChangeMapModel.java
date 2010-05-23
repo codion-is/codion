@@ -4,7 +4,6 @@
 package org.jminor.common.model.valuemap;
 
 import org.jminor.common.model.AbstractFilteredTableModel;
-import org.jminor.common.model.Refreshable;
 
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
@@ -18,7 +17,7 @@ import java.awt.event.ActionListener;
  * Date: 25.4.2010<br>
  * Time: 13:10:14<br>
  */
-public abstract class ValueChangeMapModel<K, V> implements Refreshable {
+public abstract class ValueChangeMapModel<K, V> {
 
   /**
    * The ValueChangeMapEditModel instance
@@ -83,21 +82,13 @@ public abstract class ValueChangeMapModel<K, V> implements Refreshable {
 
     getTableModel().addTableModelListener(new TableModelListener() {
       public void tableChanged(final TableModelEvent event) {
-        //if the selected record is being updated via the table model refresh the one in the model
+        //if the selected record is being updated via the table model refresh the one in the edit model
         if (event.getType() == TableModelEvent.UPDATE && event.getFirstRow() == getTableModel().getSelectedIndex()) {
           getEditModel().setValueMap(null);
           getEditModel().setValueMap(getTableModel().getSelectedItem());
         }
       }
     });
-  }
-
-  public void refresh() {
-    if (tableModel != null)
-      tableModel.refresh();
-
-    if (editModel != null)
-      editModel.refresh();
   }
 
   /**

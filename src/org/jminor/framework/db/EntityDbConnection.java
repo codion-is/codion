@@ -96,7 +96,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
       final List<Object> statementValues = new ArrayList<Object>();
       for (final Entity entity : entities) {
         if (EntityRepository.isReadOnly(entity.getEntityID()))
-          throw new DbException("Cannot insert a read only entity: " + entity.getEntityID());
+          throw new DbException("Can not insert a read only entity: " + entity.getEntityID());
 
         final IdSource idSource = EntityRepository.getIdSource(entity.getEntityID());
         final Property.PrimaryKeyProperty firstPrimaryKeyProperty = entity.getPrimaryKey().getFirstKeyProperty();
@@ -149,7 +149,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
       final Map<String, Collection<Entity>> hashedEntities = EntityUtil.hashByEntityID(entities);
       for (final String entityID : hashedEntities.keySet())
         if (EntityRepository.isReadOnly(entityID))
-          throw new DbException("Cannot update a read only entity: " + entityID);
+          throw new DbException("Can not update a read only entity: " + entityID);
 
       final List<Object> statementValues = new ArrayList<Object>();
       final List<Property> statementProperties = new ArrayList<Property>();
@@ -157,7 +157,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
         final List<Property.PrimaryKeyProperty> primaryKeyProperties = EntityRepository.getPrimaryKeyProperties(entry.getKey());
         for (final Entity entity : entry.getValue()) {
           if (!entity.isModified())
-            throw new DbException("Trying to update an unmodified entity: " + entity);
+            throw new DbException("Can not update an unmodified entity: " + entity);
           if (isOptimisticLocking())
             checkIfModified(entity);
 
@@ -198,7 +198,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     String deleteQuery = null;
     try {
       if (EntityRepository.isReadOnly(criteria.getEntityID()))
-        throw new DbException("Cannot delete a read only entity: " + criteria.getEntityID());
+        throw new DbException("Can not delete a read only entity: " + criteria.getEntityID());
 
       deleteQuery = getDeleteSQL(criteria);
       statement = getConnection().prepareStatement(deleteQuery);
@@ -230,7 +230,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
       final Map<String, Collection<Entity.Key>> hashedEntities = EntityUtil.hashKeysByEntityID(entities);
       for (final String entityID : hashedEntities.keySet())
         if (EntityRepository.isReadOnly(entityID))
-          throw new DbException("Cannot delete a read only entity: " + entityID);
+          throw new DbException("Can not delete a read only entity: " + entityID);
 
       final List<Object> statementValues = new ArrayList<Object>(1);
       for (final Map.Entry<String, Collection<Entity.Key>> entry : hashedEntities.entrySet()) {

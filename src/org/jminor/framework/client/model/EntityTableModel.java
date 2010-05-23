@@ -4,7 +4,6 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.db.criteria.Criteria;
-import org.jminor.common.db.exception.DbException;
 import org.jminor.common.model.AbstractFilteredTableModel;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Refreshable;
@@ -330,14 +329,10 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
    * Retrieves the entities identified by the given primary keys and adds them to this table model
    * @param primaryKeys the primary keys
    * @param atFrontOfList if true the entities are added to the front
-   * @throws DbException in case of a database exception
    */
-  public void addEntitiesByPrimaryKeys(final List<Entity.Key> primaryKeys, boolean atFrontOfList) throws DbException {
+  public void addEntitiesByPrimaryKeys(final List<Entity.Key> primaryKeys, boolean atFrontOfList) {
     try {
       addItems(getEntityDb().selectMany(primaryKeys), atFrontOfList);
-    }
-    catch (DbException dbe) {
-      throw dbe;
     }
     catch (Exception e) {
       throw new RuntimeException(e);
@@ -467,14 +462,10 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
   /**
    * @return a Map containing all entities which depend on the selected entities,
    * where the keys are entityIDs and the value is an array of entities of that type
-   * @throws DbException in case of a database exception
    */
-  public final Map<String, List<Entity>> getSelectionDependencies() throws DbException {
+  public final Map<String, List<Entity>> getSelectionDependencies() {
     try {
       return getEntityDb().selectDependentEntities(getSelectedItems());
-    }
-    catch (DbException dbe) {
-      throw dbe;
     }
     catch (Exception e) {
       throw new RuntimeException(e);
@@ -626,6 +617,11 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
     return getSelectedItems().iterator();
   }
 
+  protected void handleColumnHidden(final Property property) {
+    //disable the search model for the column to be hidden, to prevent confusion
+    getSearchModel().setSearchEnabled(property.getPropertyID(), false);
+  }
+
   /**
    * Override to add event bindings
    */
@@ -634,9 +630,7 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
   private void bindEventsInternal() {
     eventColumnHidden().addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        //disable the search model for the column to be hidden, to prevent confusion
-        final Property property = (Property) e.getSource();
-        getSearchModel().setSearchEnabled(property.getPropertyID(), false);
+        handleColumnHidden((Property) e.getSource());
       }
     });
     tableSearchModel.eventFilterStateChanged().addListener(new ActionListener() {

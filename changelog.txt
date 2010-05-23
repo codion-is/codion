@@ -1637,3 +1637,5 @@
   ValueChangeMapModel.removeOriginalValue() now notifies a value change
   ValueChangeMapModel.mapTypeID field added
   AbstractFilteredTableModel.mapTypeID field added
+  EntityModel.handleInsert/Update/Delete() added
+  ValueChangeMapModel no longer implements Refreshable

@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.client.model;
 
-import org.jminor.common.db.exception.DbException;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
@@ -295,8 +294,6 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
     throw new RuntimeException("No detail model based on entityID " + entityID + " found in model: " + this);
   }
 
-
-
   /**
    * Takes a path to a report which uses a JDBC datasource and returns an initialized JasperPrint object
    * @param reportPath the path to the report file
@@ -348,7 +345,7 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
       log.trace(this + " refreshing");
       isRefreshing = true;
       evtRefreshStarted.fire();
-      getEditModel().refresh();
+      getEditModel().refresh();//triggers table model refresh as per bindTableModelEventsInternal()
       if (isCascadeRefresh())
         refreshDetailModels();
 
@@ -443,6 +440,43 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
    */
   protected void bindTableModelEvents() {}
 
+  protected void handleInsert(final InsertEvent insertEvent) {
+    final List<Entity.Key> primaryKeys = insertEvent.getInsertedKeys();
+    if (containsTableModel()) {
+      getTableModel().getSelectionModel().clearSelection();
+      getTableModel().addEntitiesByPrimaryKeys(primaryKeys, true);
+    }
+
+    refreshDetailModelsAfterInsert(primaryKeys);
+  }
+
+  protected void handleUpdate(final UpdateEvent updateEvent) {
+    final List<Entity> updatedEntities = updateEvent.getUpdatedEntities();
+    if (containsTableModel()) {
+      if (updateEvent.isPrimaryKeyModified()) {
+        getTableModel().refresh();//best we can do under the circumstances
+      }
+      else {//replace and select the updated entities
+        final List<Entity> updated = new ArrayList<Entity>();
+        for (final Entity entity : updatedEntities)
+          if (entity.is(getEntityID()))
+            updated.add(entity);
+        getTableModel().replaceEntities(updated);
+        getTableModel().setSelectedItems(updated);
+      }
+    }
+
+    refreshDetailModelsAfterUpdate(updatedEntities);
+  }
+
+  protected void handleDelete(final DeleteEvent deleteEvent) {
+    final List<Entity> entities = deleteEvent.getDeletedEntities();
+    if (containsTableModel())
+      getTableModel().removeItems(entities);
+
+    refreshDetailModelsAfterDelete(entities);
+  }
+
   /**
    * Removes the deleted entities from combobox models
    * @param deletedEntities the deleted entities
@@ -536,53 +570,17 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
   private void bindEventsInternal() {
     getEditModel().eventAfterInsert().addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
-        try {
-          final List<Entity.Key> primaryKeys = ((InsertEvent) e).getInsertedKeys();
-          if (containsTableModel()) {
-            getTableModel().getSelectionModel().clearSelection();
-            getTableModel().addEntitiesByPrimaryKeys(primaryKeys, true);
-          }
-
-          refreshDetailModelsAfterInsert(primaryKeys);
-        }
-        catch (DbException ex) {
-          throw new RuntimeException(ex);
-        }
+        handleInsert((InsertEvent) e);
       }
     });
     getEditModel().eventAfterUpdate().addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
-        final List<Entity> updatedEntities = ((UpdateEvent) e).getUpdatedEntities();
-        if (containsTableModel()) {
-          if (((UpdateEvent) e).isPrimaryKeyModified()) {
-            getTableModel().refresh();//best we can do under the circumstances
-          }
-          else {//replace and select the updated entities
-            final List<Entity> updated = new ArrayList<Entity>();
-            for (final Entity entity : updatedEntities)
-              if (entity.is(getEntityID()))
-                updated.add(entity);
-            getTableModel().replaceEntities(updated);
-            getTableModel().setSelectedItems(updated);
-          }
-        }
-
-        refreshDetailModelsAfterUpdate(updatedEntities);
-      }
-    });
-    getEditModel().eventBeforeDelete().addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent e) {
-        if (containsTableModel())
-          getTableModel().getSelectionModel().clearSelection();
+        handleUpdate((UpdateEvent) e);
       }
     });
     getEditModel().eventAfterDelete().addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
-        final List<Entity> entities = ((DeleteEvent) e).getDeletedEntities();
-        if (containsTableModel())
-          getTableModel().removeItems(entities);
-
-        refreshDetailModelsAfterDelete(entities);
+        handleDelete((DeleteEvent) e);
       }
     });
     evtLinkedDetailModelsChanged.addListener(new ActionListener() {
