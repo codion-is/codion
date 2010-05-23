@@ -75,6 +75,11 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
   private final EntityDbProvider dbProvider;
 
   /**
+   * Fired before a refresh
+   */
+  private final Event evtRefreshStarted = new Event();
+
+  /**
    * Fired after a refresh has been performed
    */
   private final Event evtRefreshDone = new Event();
@@ -445,8 +450,13 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
    * such as combo box models.
    */
   public void refresh() {
-    refreshComboBoxModels();
-    evtRefreshDone.fire();
+    try {
+      evtRefreshStarted.fire();
+      refreshComboBoxModels();
+    }
+    finally {
+      evtRefreshDone.fire();
+    }
   }
 
   /**
@@ -703,6 +713,13 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
    */
   public Event eventEntitiesChanged() {
     return evtEntitiesChanged;
+  }
+
+  /**
+   * @return an event fired before a refresh
+   */
+  public Event eventRefreshStarted() {
+    return evtRefreshStarted;
   }
 
   /**

@@ -1641,3 +1641,5 @@
   EntityModel.handleInsert/Update/Delete() added
   ValueChangeMapModel no longer implements Refreshable
   EntityTablePanel.getSelectColumnsControl() moved up to superclass
+  EntityEditModel.evtRefreshStarted added
+  EntityEditPanel uses the above to set the wait cursor during update

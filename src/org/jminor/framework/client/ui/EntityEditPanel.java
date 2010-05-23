@@ -36,6 +36,8 @@ import org.apache.log4j.Logger;
 import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
@@ -74,6 +76,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
     super(editModel);
     setupControls();
     initializeUI();
+    bindEventsInternal();
     bindEvents();
   }
 
@@ -140,7 +143,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   /**
    * @return a control for clearing the UI controls
    */
-  public Control getClearControl() {//todo move to edit panel
+  public Control getClearControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.CLEAR_MNEMONIC);
     return ControlFactory.methodControl(getEditModel(), "clear", FrameworkMessages.get(FrameworkMessages.CLEAR),
             getEditModel().stateActive(), FrameworkMessages.get(FrameworkMessages.CLEAR_ALL_TIP) + " (ALT-" + mnemonic + ")",
@@ -1501,5 +1504,18 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    */
   protected final JLabel createLabel(final String propertyID, final int horizontalAlignment) {
     return EntityUiUtil.createLabel(EntityRepository.getProperty(getEditModel().getEntityID(), propertyID), horizontalAlignment);
+  }
+
+  private void bindEventsInternal() {
+    getEditModel().eventRefreshStarted().addListener(new ActionListener() {
+      public void actionPerformed(ActionEvent event) {
+        UiUtil.setWaitCursor(true, EntityEditPanel.this);
+      }
+    });
+    getEditModel().eventRefreshDone().addListener(new ActionListener() {
+      public void actionPerformed(ActionEvent event) {
+        UiUtil.setWaitCursor(false, EntityEditPanel.this);
+      }
+    });
   }
 }
