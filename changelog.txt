@@ -1645,3 +1645,6 @@
   EntityEditPanel uses the above to set the wait cursor during update
   ConnectionPoolSettings.set() added
   DbConnectionPool cleanupInterval is now editable
+  Database.createConnection() added
+  DbConnection constructor overloaded with Connection parameter
+  EntityDbConnection constructor overloaded with Connection parameter

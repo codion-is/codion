@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.sql.Blob;
 import java.sql.CallableStatement;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -26,7 +25,6 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -38,7 +36,6 @@ public class DbConnection {
 
   private static final Logger log = Util.getLogger(DbConnection.class);
 
-  private final Properties connectionProperties = new Properties();
   private final User user;
   private final Database database;
 
@@ -63,6 +60,10 @@ public class DbConnection {
    * @throws ClassNotFoundException in case the database driver was not found
    */
   public DbConnection(final Database database, final User user) throws ClassNotFoundException, SQLException {
+    this(database.createConnection(user), database, user);
+  }
+
+  public DbConnection(final Connection connection, final Database database, final User user) throws SQLException {
     if (user == null)
       throw new IllegalArgumentException("DbConnection requires a non-null user instance");
     if (user.getUsername() == null)
@@ -71,9 +72,9 @@ public class DbConnection {
       throw new IllegalArgumentException("Password must be provided");
     this.database = database;
     this.user = user;
-    this.connectionProperties.put("user", user.getUsername());
-    this.connectionProperties.put("password", user.getPassword());
-    connect();
+    setConnection(connection);
+    if (!isConnectionValid())
+      throw new IllegalArgumentException("Connection invalid during instantiation");
   }
 
   /**
@@ -551,21 +552,11 @@ public class DbConnection {
     methodLogger.reset();
   }
 
-  private void connect() throws ClassNotFoundException, SQLException {
-    try {
-      if (connection != null) {
-        log.info("Establishing connection: " + user.getUsername());
-        connection.rollback();
-        connection.close();
-      }
-      if (checkConnectionStatement != null && !checkConnectionStatement.isClosed())
-        checkConnectionStatement.close();
-    }
-    catch (SQLException e) {/**/}
+  private void setConnection(final Connection connection) throws SQLException {
+    if (isConnected())
+      throw new IllegalStateException("Already connected");
 
-    database.loadDriver();
-    connection = DriverManager.getConnection(database.getURL(connectionProperties),
-            database.addConnectionProperties(connectionProperties));
+    this.connection = connection;
     connection.setAutoCommit(false);
     checkConnectionStatement = connection.createStatement();
   }

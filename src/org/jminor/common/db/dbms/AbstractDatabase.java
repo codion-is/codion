@@ -3,6 +3,10 @@
  */
 package org.jminor.common.db.dbms;
 
+import org.jminor.common.model.User;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
@@ -109,6 +113,16 @@ public abstract class AbstractDatabase implements Database {
   /** {@inheritDoc} */
   public boolean isEmbedded() {
     return embedded;
+  }
+
+  /** {@inheritDoc} */
+  public Connection createConnection(final User user) throws ClassNotFoundException, SQLException {
+    loadDriver();
+    final Properties connectionProperties = new Properties();
+    connectionProperties.put("user", user.getUsername());
+    connectionProperties.put("password", user.getPassword());
+    return DriverManager.getConnection(getURL(connectionProperties),
+            addConnectionProperties(connectionProperties));
   }
 
   /**

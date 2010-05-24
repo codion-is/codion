@@ -3,6 +3,9 @@
  */
 package org.jminor.common.db.dbms;
 
+import org.jminor.common.model.User;
+
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 
@@ -200,4 +203,13 @@ public interface Database {
    * @return the properties map
    */
   Properties addConnectionProperties(final Properties properties);
+
+  /**
+   * Creates a connection for the given user.
+   * @param user the user for which to create a connection
+   * @return a Connection
+   * @throws ClassNotFoundException in case the driver class was not on the classpath
+   * @throws SQLException in case of a connection error
+   */
+  Connection createConnection(final User user) throws ClassNotFoundException, SQLException;
 }

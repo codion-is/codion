@@ -30,6 +30,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import org.apache.log4j.Logger;
 
+import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -65,6 +66,10 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
    */
   public EntityDbConnection(final Database database, final User user) throws SQLException, ClassNotFoundException {
     super(database, user);
+  }
+
+  public EntityDbConnection(final Connection connection, final Database database, final User user) throws SQLException {
+    super(connection, database, user);
   }
 
   public boolean isOptimisticLocking() {
