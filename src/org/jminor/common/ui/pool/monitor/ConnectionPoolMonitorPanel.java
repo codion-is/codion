@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.ui;
+package org.jminor.common.ui.pool.monitor;
 
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.db.pool.monitor.ConnectionPoolMonitor;
@@ -126,14 +126,17 @@ public class ConnectionPoolMonitorPanel extends JPanel {
     final JPanel configBase = new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
 
     final JSpinner spnTimeout = new JSpinner(new IntBeanSpinnerValueLink(model, "pooledConnectionTimeout", null, null).getSpinnerModel());
+    final JSpinner spnCleanupInterval = new JSpinner(new IntBeanSpinnerValueLink(model, "poolCleanupInterval", null, null).getSpinnerModel());
     final JSpinner spnMaximumSize = new JSpinner(new IntBeanSpinnerValueLink(model, "maximumPoolSize", null, null).getSpinnerModel());
     final JSpinner spnMinimumSize = new JSpinner(new IntBeanSpinnerValueLink(model, "minimumPoolSize", null, null).getSpinnerModel());
 
     ((JSpinner.DefaultEditor) spnTimeout.getEditor()).getTextField().setEditable(false);
+    ((JSpinner.DefaultEditor) spnCleanupInterval.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) spnMinimumSize.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) spnMaximumSize.getEditor()).getTextField().setEditable(false);
 
     ((JSpinner.DefaultEditor) spnTimeout.getEditor()).getTextField().setColumns(3);
+    ((JSpinner.DefaultEditor) spnCleanupInterval.getEditor()).getTextField().setColumns(3);
     ((JSpinner.DefaultEditor) spnMinimumSize.getEditor()).getTextField().setColumns(3);
     ((JSpinner.DefaultEditor) spnMaximumSize.getEditor()).getTextField().setColumns(3);
 
@@ -149,6 +152,8 @@ public class ConnectionPoolMonitorPanel extends JPanel {
     configBase.add(spnMaximumSize);
     configBase.add(new JLabel("Idle timeout (s)"));
     configBase.add(spnTimeout);
+    configBase.add(new JLabel("Cleanup interval (s)"));
+    configBase.add(spnCleanupInterval);
 
     final JPanel panel = new JPanel(new BorderLayout(5,5));
     panel.setBorder(BorderFactory.createTitledBorder("Configuration"));

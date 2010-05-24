@@ -12,8 +12,8 @@ import org.jminor.common.db.pool.monitor.ConnectionPoolMonitor;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.LoadTestModel;
 import org.jminor.common.model.User;
-import org.jminor.common.ui.ConnectionPoolMonitorPanel;
 import org.jminor.common.ui.UiUtil;
+import org.jminor.common.ui.pool.monitor.ConnectionPoolMonitorPanel;
 
 import static org.junit.Assert.*;
 import org.junit.Test;

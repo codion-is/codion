@@ -15,7 +15,7 @@ public class ConnectionPoolSettings implements Serializable {
   private static final long serialVersionUID = 1;
 
   private final User user;
-  private final int poolCleanupInterval;
+  private int poolCleanupInterval;
   private boolean enabled;
   private int pooledConnectionTimeout;
   private int maximumPoolSize;
@@ -37,6 +37,10 @@ public class ConnectionPoolSettings implements Serializable {
 
   public int getPoolCleanupInterval() {
     return poolCleanupInterval;
+  }
+
+  public void setPoolCleanupInterval(final int poolCleanupInterval) {
+    this.poolCleanupInterval = poolCleanupInterval;
   }
 
   public boolean isEnabled() {
@@ -69,6 +73,14 @@ public class ConnectionPoolSettings implements Serializable {
 
   public void setPooledConnectionTimeout(final int pooledConnectionTimeout) {
     this.pooledConnectionTimeout = pooledConnectionTimeout;
+  }
+
+  public void set(final ConnectionPoolSettings poolSettings) {
+    this.enabled = poolSettings.enabled;
+    this.maximumPoolSize = poolSettings.maximumPoolSize;
+    this.minimumPoolSize = poolSettings.minimumPoolSize;
+    this.poolCleanupInterval = poolSettings.poolCleanupInterval;
+    this.pooledConnectionTimeout = poolSettings.pooledConnectionTimeout;
   }
 
   public static ConnectionPoolSettings getDefault(final User user) {

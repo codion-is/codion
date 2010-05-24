@@ -92,6 +92,17 @@ public class ConnectionPoolMonitor {
     poolSettings = settings;
   }
 
+  public int getPoolCleanupInterval() throws RemoteException {
+    return pool.getConnectionPoolSettings().getPoolCleanupInterval() / 1000;
+  }
+
+  public void setPoolCleanupInterval(final int value) throws RemoteException {
+    final ConnectionPoolSettings settings = pool.getConnectionPoolSettings();
+    settings.setPoolCleanupInterval(value * 1000);
+    pool.setConnectionPoolSettings(settings);
+    poolSettings = settings;
+  }
+
   public int getMinimumPoolSize() {
     return poolSettings.getMinimumPoolSize();
   }

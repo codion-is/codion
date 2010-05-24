@@ -37,6 +37,8 @@ public class DbConnectionPool implements ConnectionPool {
 
   private final List<ConnectionPoolState> connectionPoolStatistics = new ArrayList<ConnectionPoolState>(1000);
 
+  private Timer poolCleaner;
+
   private int connectionPoolStatisticsIndex = 0;
   private ConnectionPoolSettings connectionPoolSettings;
   private boolean collectFineGrainedStatistics = System.getProperty(Database.DATABASE_POOL_STATISTICS, "true").equalsIgnoreCase("true");
@@ -51,12 +53,7 @@ public class DbConnectionPool implements ConnectionPool {
   public DbConnectionPool(final DbConnectionProvider dbConnectionProvider, final ConnectionPoolSettings settings) {
     this.dbConnectionProvider = dbConnectionProvider;
     this.connectionPoolSettings = settings;
-    new Timer(true).schedule(new TimerTask() {
-      @Override
-      public void run() {
-        cleanPool();
-      }
-    }, new Date(), settings.getPoolCleanupInterval());
+    startPoolCleaner(settings.getPoolCleanupInterval());
   }
 
   public DbConnection checkOutConnection() throws ClassNotFoundException, SQLException {
@@ -143,8 +140,11 @@ public class DbConnectionPool implements ConnectionPool {
   }
 
   public void setConnectionPoolSettings(final ConnectionPoolSettings poolSettings) {
-    connectionPoolSettings = poolSettings;
-    if (!poolSettings.isEnabled())
+    final boolean cleanupIntervalChanged = connectionPoolSettings.getPoolCleanupInterval() != poolSettings.getPoolCleanupInterval();
+    connectionPoolSettings.set(poolSettings);
+    if (cleanupIntervalChanged)
+      startPoolCleaner(connectionPoolSettings.getPoolCleanupInterval());
+    if (!connectionPoolSettings.isEnabled())
       close();
   }
 
@@ -232,6 +232,19 @@ public class DbConnectionPool implements ConnectionPool {
 
       connectionPoolStatisticsIndex++;
     }
+  }
+
+  private void startPoolCleaner(final int interval) {
+    if (poolCleaner != null)
+      poolCleaner.cancel();
+
+    poolCleaner = new Timer(true);
+    poolCleaner.schedule(new TimerTask() {
+      @Override
+      public void run() {
+        cleanPool();
+      }
+    }, new Date(), interval);
   }
 
   private void cleanPool() {

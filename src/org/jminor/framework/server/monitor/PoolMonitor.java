@@ -84,7 +84,7 @@ public class PoolMonitor {
           }
         }
 
-        public void setConnectionPoolSettings(ConnectionPoolSettings settings) {
+        public void setConnectionPoolSettings(ConnectionPoolSettings settings)  {
           try {
             server.setConnectionPoolSettings(settings);
           }
