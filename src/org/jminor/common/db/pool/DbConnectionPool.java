@@ -61,6 +61,7 @@ public class DbConnectionPool implements ConnectionPool {
       throw new IllegalStateException("Can not check out a connection from a closed connection pool!");
 
     final long time = System.nanoTime();
+    int retryCount = 0;
     counter.incrementRequestCounter();
     DbConnection connection = getConnectionFromPool();
     if (connection == null) {
@@ -79,7 +80,6 @@ public class DbConnectionPool implements ConnectionPool {
           }
         }
       }
-      int retryCount = 0;
       while (connection == null) {
         try {
           synchronized (connectionPool) {
@@ -98,6 +98,7 @@ public class DbConnectionPool implements ConnectionPool {
       }
     }
 
+    connection.setPoolRetryCount(retryCount);
     counter.addCheckOutTime(System.nanoTime() - time);
     return connection;
   }

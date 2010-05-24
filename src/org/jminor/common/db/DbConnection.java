@@ -51,6 +51,7 @@ public class DbConnection {
    * The object containing the method call log
    */
   protected final MethodLogger methodLogger = new MethodLogger(100, true);
+  private int poolRetryCount;
 
   /**
    * Constructs a new instance of the DbConnection class, initialized and ready for usage
@@ -90,6 +91,14 @@ public class DbConnection {
    */
   public long getPoolTime() {
     return poolTime;
+  }
+
+  public void setPoolRetryCount(final int poolRetryCount) {
+    this.poolRetryCount = poolRetryCount;
+  }
+
+  public int getPoolRetryCount() {
+    return poolRetryCount;
   }
 
   @Override

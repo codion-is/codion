@@ -23,6 +23,7 @@ public class LogEntry implements Serializable, Comparable<LogEntry> {
 
   private String method;
   private String message;
+  private String exitMessage;
   private long entryTime;
   private long exitTime;
   private long delta;
@@ -36,6 +37,7 @@ public class LogEntry implements Serializable, Comparable<LogEntry> {
   public LogEntry(final LogEntry entry) {
     this.method = entry.method;
     this.message = entry.message;
+    this.exitMessage = entry.exitMessage;
     this.entryTime = entry.entryTime;
     this.exitTime = entry.exitTime;
     this.delta = entry.delta;
@@ -114,7 +116,8 @@ public class LogEntry implements Serializable, Comparable<LogEntry> {
     if (exitTime > 0) {
       stringBuilder.append(indentString).append(getEntryTimeFormatted()).append(" @ ").append(method).append(
               message != null && message.length() > 0 ? (": " + message) : "").append("\n");
-      stringBuilder.append(indentString).append(getExitTimeFormatted()).append(" > ").append(delta).append(" ms").append("\n");
+      stringBuilder.append(indentString).append(getExitTimeFormatted()).append(" > ").append(delta).append(" ms")
+              .append(exitMessage == null ? "" : " (" + exitMessage + ")").append("\n");
       if (stackTrace != null)
         stringBuilder.append(stackTrace);
     }
@@ -142,6 +145,11 @@ public class LogEntry implements Serializable, Comparable<LogEntry> {
     this.delta = this.exitTime - this.entryTime;
 
     return delta;
+  }
+
+  public LogEntry setExitMessage(final String message) {
+    this.exitMessage = message;
+    return this;
   }
 
   public LogEntry setException(final Throwable exception) {

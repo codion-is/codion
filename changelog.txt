@@ -1648,3 +1648,7 @@
   Database.createConnection() added
   DbConnection constructor overloaded with Connection parameter
   EntityDbConnection constructor overloaded with Connection parameter
+  DbConnection.poolRetryCount field added
+  LogEntry.exitMessage field added
+  EntityDbRemoteAdapter logs pool retry count
+  ReportResult, ReportWrapper and Jasper reports impl added, quite experimental

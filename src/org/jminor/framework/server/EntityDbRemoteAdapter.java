@@ -14,6 +14,9 @@ import org.jminor.common.db.pool.DbConnectionPool;
 import org.jminor.common.model.MethodLogger;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.reports.ReportException;
+import org.jminor.common.model.reports.ReportResult;
+import org.jminor.common.model.reports.ReportWrapper;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.RemoteServer;
 import org.jminor.common.server.ServerLog;
@@ -200,6 +203,19 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     }
     catch (JRException jre) {
       throw jre;
+    }
+    catch (Exception e) {
+      throw new RemoteException(e.getMessage(), e);
+    }
+  }
+
+  /** {@inheritDoc} */
+  public ReportResult fillReport(final ReportWrapper report, final Map reportParameters) throws ReportException, RemoteException {
+    try {
+      return loggingEntityDbProxy.fillReport(report, reportParameters);
+    }
+    catch (ReportException re) {
+      throw re;
     }
     catch (Exception e) {
       throw new RemoteException(e.getMessage(), e);
@@ -702,7 +718,9 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
           remoteAdapter.methodLogger.logAccess("getConnection", new Object[] {remoteAdapter.clientInfo.getUser()});
         connection = remoteAdapter.getConnection(remoteAdapter.clientInfo.getUser());
         if (logMethod) {
-          remoteAdapter.methodLogger.logExit("getConnection", null, null);
+          final int retries = connection.getPoolRetryCount();
+          final String message = retries > 0 ? "retries: " + retries : null;
+          remoteAdapter.methodLogger.logExit("getConnection", null, null, message);
           remoteAdapter.methodLogger.logAccess(methodName, arguments);
         }
 

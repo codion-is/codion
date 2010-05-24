@@ -4,6 +4,8 @@
 package org.jminor.framework.db;
 
 import org.jminor.common.model.User;
+import org.jminor.common.model.reports.ReportResult;
+import org.jminor.common.model.reports.ReportWrapper;
 import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.db.criteria.EntitySelectCriteria;
 import org.jminor.framework.domain.Entity;
@@ -229,6 +231,8 @@ public interface EntityDb {
    * @throws net.sf.jasperreports.engine.JRException in case of a report exception
    */
   JasperPrint fillReport(final JasperReport report, final Map reportParameters) throws Exception;
+
+  ReportResult fillReport(final ReportWrapper report, final Map reportParameters) throws Exception;
 
   /**
    * Executes the given statement and returns the result in a List of rows, where each row

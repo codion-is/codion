@@ -13,6 +13,9 @@ import org.jminor.common.model.IdSource;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.reports.ReportException;
+import org.jminor.common.model.reports.ReportResult;
+import org.jminor.common.model.reports.ReportWrapper;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
@@ -445,6 +448,11 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   /** {@inheritDoc} */
   public JasperPrint fillReport(final JasperReport report, final Map reportParameters) throws JRException {
     return JasperFillManager.fillReport(report, reportParameters, getConnection());
+  }
+
+  /** {@inheritDoc} */
+  public ReportResult fillReport(final ReportWrapper reportWrapper, final Map reportParameters) throws ReportException {
+    return reportWrapper.fillReport(reportParameters, getConnection());
   }
 
   /** {@inheritDoc} */

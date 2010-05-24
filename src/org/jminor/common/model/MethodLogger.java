@@ -85,10 +85,15 @@ public class MethodLogger {
   }
 
   public long logExit(final String method, final Throwable exception, final List<LogEntry> subLog) {
+    return logExit(method, exception, subLog, null);
+  }
+
+  public long logExit(final String method, final Throwable exception, final List<LogEntry> subLog,
+                      final String exitMessage) {
     this.lastExitDate = System.currentTimeMillis();
     this.lastExitedMethod = method;
     if (enabled)
-      return addLogEntry(lastExitedMethod, lastAccessMessage, lastExitDate, true, exception, subLog);
+      return addLogEntry(lastExitedMethod, exitMessage, lastExitDate, true, exception, subLog);
 
     return -1;
   }
@@ -117,7 +122,7 @@ public class MethodLogger {
       assert lastEntry.getMethod().equals(method);
       lastEntry.setSubLog(subLog);
       currentLogEntryIndex++;
-      return lastEntry.setException(exception).setExitTime(time);
+      return lastEntry.setException(exception).setExitMessage(message).setExitTime(time);
     }
   }
 
