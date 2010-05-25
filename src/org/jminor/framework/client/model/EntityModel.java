@@ -296,27 +296,27 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
   }
 
   /**
-   * Takes a path to a report which uses a JDBC datasource and returns an initialized ReportResult object
+   * Returns an initialized ReportResult object from the given report wrapper
    * @param reportWrapper the report wrapper
    * @param reportParameters the report parameters
    * @return an initialized ReportResult object
    * @throws ReportException in case of a report exception
    */
-  public ReportResult fillJdbcReport(final ReportWrapper reportWrapper, final Map reportParameters) throws ReportException {
-    return EntityReportUtil.fillReport(getEntityDb(), reportWrapper, reportParameters);
+  public ReportResult fillReport(final ReportWrapper reportWrapper, final Map reportParameters) throws ReportException {
+    return EntityReportUtil.fillReport(reportWrapper, getDbProvider(), reportParameters);
   }
 
   /**
-   * Takes a path to a report which uses a JRDataSource and returns an initialized ReportResult object
+   * Returns an initialized ReportResult object from the given report wrapper and data wrapper
    * @param reportWrapper the report wrapper
-   * @param reportParameters the report parameters
    * @param dataSource the ReportDataWrapper used to provide the report data
+   * @param reportParameters the report parameters
    * @return an initialized ReportResult object
    * @throws ReportException in case of a report exception
    */
-  public ReportResult fillReport(final ReportWrapper reportWrapper, final Map reportParameters,
-                                 final ReportDataWrapper dataSource) throws ReportException {
-    return EntityReportUtil.fillReport(reportWrapper, reportParameters, dataSource);
+  public ReportResult fillReport(final ReportWrapper reportWrapper, final ReportDataWrapper dataSource,
+                                 final Map reportParameters) throws ReportException {
+    return EntityReportUtil.fillReport(reportWrapper, dataSource, reportParameters);
   }
 
   /**

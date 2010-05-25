@@ -11,9 +11,9 @@ import net.sf.jasperreports.view.JRViewer;
 
 import javax.swing.JComponent;
 
-public class JasperReportsUIWrapper implements ReportUIWrapper {
+public class JasperReportsUIWrapper implements ReportUIWrapper<JasperPrint> {
 
-  public JComponent createReportComponent(final ReportResult result) {
-    return new JRViewer((JasperPrint) result.getResult());
+  public JComponent createReportComponent(final ReportResult<JasperPrint> result) {
+    return new JRViewer(result.getResult());
   }
 }

@@ -13,6 +13,6 @@ import javax.swing.JComponent;
  * Date: 25.5.2010
  * Time: 14:42:03
  */
-public interface ReportUIWrapper {
-  JComponent createReportComponent(final ReportResult result) throws ReportException;
+public interface ReportUIWrapper<T> {
+  JComponent createReportComponent(final ReportResult<T> result) throws ReportException;
 }

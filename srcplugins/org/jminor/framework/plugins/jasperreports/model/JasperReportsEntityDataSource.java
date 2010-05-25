@@ -15,7 +15,7 @@ import java.util.Iterator;
 /**
  * A default JRDataSource implementation which iterates through the iterator received via the constructor.
  */
-public class JasperReportsEntityDataSource implements JRDataSource, ReportDataWrapper {
+public class JasperReportsEntityDataSource implements JRDataSource, ReportDataWrapper<JRDataSource> {
 
   private final Iterator<Entity> reportIterator;
   private Entity currentEntity;

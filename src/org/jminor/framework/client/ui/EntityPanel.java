@@ -1056,7 +1056,7 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
                                 final Map<String, Object> reportParameters, final String frameTitle) {
     try {
       UiUtil.setWaitCursor(true, this);
-      EntityReportUiUtil.viewReport(getModel().fillJdbcReport(reportWrapper, reportParameters), uiWrapper, frameTitle);
+      EntityReportUiUtil.viewReport(getModel().fillReport(reportWrapper, reportParameters), uiWrapper, frameTitle);
     }
     catch (ReportException e) {
       throw new RuntimeException(e);
@@ -1079,7 +1079,7 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
                             final String frameTitle) {
     try {
       UiUtil.setWaitCursor(true, this);
-      EntityReportUiUtil.viewReport(getModel().fillReport(reportWrapper, reportParameters, dataSource), uiWrapper, frameTitle);
+      EntityReportUiUtil.viewReport(getModel().fillReport(reportWrapper, dataSource, reportParameters), uiWrapper, frameTitle);
     }
     catch (ReportException e) {
       throw new RuntimeException(e);
