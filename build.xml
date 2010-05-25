@@ -26,6 +26,7 @@
           description="Clean all output and generated dirs">
     <delete dir="${build.base}" includeEmptyDirs="true"/>
     <delete dir="${build.demos}" includeEmptyDirs="true"/>
+    <delete dir="${build.plugins}" includeEmptyDirs="true"/>
     <delete dir="${build.test}" includeEmptyDirs="true"/>
     <delete dir="${build.root}" includeEmptyDirs="true"/>
     <delete dir="${test.reports}" includeEmptyDirs="true"/>
@@ -36,6 +37,7 @@
   <target name="build"
           description="Compiles all source files">
     <mkdir dir="${build.base}"/>
+    <mkdir dir="${build.plugins}"/>
     <mkdir dir="${build.demos}"/>
     <mkdir dir="${build.test}"/>
 
@@ -55,18 +57,6 @@
       <fileset refid="framework_resources"/>
     </copy>
 
-    <javac destdir="${build.demos}" debug="{build.debug}">
-      <src path="${srcdemos}"/>
-      <classpath>
-        <path refid="libraries"/>
-        <path location="${build.base}"/>
-      </classpath>
-    </javac>
-
-    <copy todir="${build.demos}">
-      <fileset refid="demos_resources"/>
-    </copy>
-
     <javac destdir="${build.plugins}" debug="{build.debug}">
       <src path="${srcplugins}"/>
       <classpath>
@@ -79,11 +69,25 @@
       <fileset refid="plugins_resources"/>
     </copy>
 
+    <javac destdir="${build.demos}" debug="{build.debug}">
+      <src path="${srcdemos}"/>
+      <classpath>
+        <path refid="libraries"/>
+        <path location="${build.base}"/>
+        <path location="${build.plugins}"/>
+      </classpath>
+    </javac>
+
+    <copy todir="${build.demos}">
+      <fileset refid="demos_resources"/>
+    </copy>
+
     <javac destdir="${build.test}" debug="{build.debug}">
       <src path="${srctest}"/>
       <classpath>
         <path refid="libraries"/>
         <path location="${build.base}"/>
+        <path location="${build.plugins}"/>
         <path location="${build.demos}"/>
       </classpath>
     </javac>
@@ -162,6 +166,9 @@
                 org/jminor/framework/server/EntityDbServerAdmin.class,
                 org/jminor/framework/server/EntityDbRemoteServerAdmin_Stub.class"/>
 
+    <jar jarfile="${dist}/${ant.project.name}-plugins.jar" basedir="${build.plugins}"
+         manifest="${build.base}/META-INF/MANIFEST.MF"/>
+
     <jar jarfile="${dist}/${ant.project.name}-demos.jar" basedir="${build.demos}"
          manifest="${build.base}/META-INF/MANIFEST.MF"/>
 
@@ -210,6 +217,7 @@
     <mkdir dir="${deploy.server.path}"/>
     <copy file="${dist}/${ant.project.name}-server.jar" todir="${deploy.server.path}/lib"/>
     <copy file="${dist}/${ant.project.name}-common.jar" todir="${deploy.server.path}/lib"/>
+    <copy file="${dist}/${ant.project.name}-plugins.jar" todir="${deploy.server.path}/lib"/>
     <copy file="${dist}/${ant.project.name}-demos.jar" todir="${deploy.server.path}/lib"/>
     <copy file="${lib.log4j}" todir="${deploy.server.path}/lib"/>
     <copy file="${lib.derby}" todir="${deploy.server.path}/lib"/>
@@ -237,6 +245,7 @@
           description="Deploys the rmi server monitor to the path defined by the 'deploy.server.monitor.path' property">
     <mkdir dir="${deploy.server.monitor.path}"/>
     <copy file="${dist}/${ant.project.name}-server-monitor.jar" todir="${deploy.server.monitor.path}/lib"/>
+    <copy file="${dist}/${ant.project.name}-plugins.jar" todir="${deploy.server.path}/lib"/>
     <copy file="${dist}/${ant.project.name}-common.jar" todir="${deploy.server.monitor.path}/lib"/>
     <copy file="${lib.log4j}" todir="${deploy.server.monitor.path}/lib"/>
     <copy file="${lib.jfreechart.base}" todir="${deploy.server.monitor.path}/lib"/>
@@ -255,6 +264,7 @@
     <mkdir dir="${deploy.demos.path}"/>
     <copy file="${dist}/${ant.project.name}-client.jar" todir="${deploy.demos.path}/lib"/>
     <copy file="${dist}/${ant.project.name}-client-remote.jar" todir="${deploy.demos.path}/lib"/>
+    <copy file="${dist}/${ant.project.name}-plugins.jar" todir="${deploy.demos.path}/lib"/>
     <copy file="${dist}/${ant.project.name}-demos.jar" todir="${deploy.demos.path}/lib"/>
     <copy file="${dist}/${ant.project.name}-common.jar" todir="${deploy.demos.path}/lib"/>
     <copy file="${lib.derby}" todir="${deploy.demos.path}/lib"/>
@@ -303,6 +313,9 @@
     </copy>
     <copy todir="${wiki.media.project}/src">
       <fileset dir="${srctest}"/>
+    </copy>
+    <copy todir="${wiki.media.project}/src">
+      <fileset dir="${srcplugins}"/>
     </copy>
     <copy todir="${wiki.media.project}/src">
       <fileset dir="${srcdemos}"/>
@@ -355,6 +368,7 @@
       <formatter type="xml" usefile="true"/>
       <classpath>
         <pathelement path="${build.base}"/>
+        <pathelement path="${build.plugins}"/>
         <pathelement path="${build.demos}"/>
         <pathelement path="${build.test}"/>
         <path refid="libraries"/>
@@ -376,6 +390,7 @@
     <java classname="org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel" fork="yes">
       <classpath>
         <pathelement path="${build.base}"/>
+        <pathelement path="${build.plugins}"/>
         <pathelement path="${build.demos}"/>
         <pathelement location="${lib.jasperreports.base}"/>
         <pathelement location="${lib.jasperreports.logging}"/>
@@ -399,6 +414,7 @@
     <java classname="org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel" fork="yes">
       <classpath>
         <pathelement path="${build.base}"/>
+        <pathelement path="${build.plugins}"/>
         <pathelement path="${build.demos}"/>
         <pathelement location="${lib.jasperreports.base}"/>
         <pathelement location="${lib.jcalendar}"/>
@@ -417,6 +433,7 @@
     <java classname="org.jminor.framework.demos.empdept.testing.EmpDeptLoadTest" fork="yes">
       <classpath>
         <pathelement path="${build.base}"/>
+        <pathelement path="${build.plugins}"/>
         <pathelement path="${build.demos}"/>
         <pathelement location="${lib.jasperreports.base}"/>
         <pathelement location="${lib.jcalendar}"/>
@@ -437,6 +454,7 @@
     <java classname="org.jminor.framework.demos.petstore.client.ui.PetstoreAppPanel" fork="yes">
       <classpath>
         <pathelement path="${build.base}"/>
+        <pathelement path="${build.plugins}"/>
         <pathelement path="${build.demos}"/>
         <pathelement location="${lib.jasperreports.base}"/>
         <pathelement location="${lib.jcalendar}"/>
@@ -458,6 +476,7 @@
     <java classname="org.jminor.framework.demos.petstore.client.ui.PetstoreAppPanel" fork="yes">
       <classpath>
         <pathelement path="${build.base}"/>
+        <pathelement path="${build.plugins}"/>
         <pathelement path="${build.demos}"/>
         <pathelement location="${lib.jasperreports.base}"/>
         <pathelement location="${lib.jcalendar}"/>
@@ -476,6 +495,7 @@
     <java classname="org.jminor.framework.server.EntityDbRemoteServerAdmin" fork="yes">
       <classpath>
         <pathelement path="${build.base}"/>
+        <pathelement path="${build.plugins}"/>
         <pathelement path="${build.demos}"/>
         <pathelement location="${lib.derby}"/>
         <pathelement location="${lib.h2}"/>
@@ -508,6 +528,7 @@
     <java classname="org.jminor.framework.server.monitor.ui.MonitorPanel" fork="yes">
       <classpath>
         <pathelement path="${build.base}"/>
+        <pathelement path="${build.plugins}"/>
         <pathelement location="${lib.derby}"/>
         <pathelement location="${lib.log4j}"/>
         <pathelement location="${lib.jfreechart.base}"/>
@@ -525,6 +546,7 @@
     <java classname="sun.rmi.registry.RegistryImpl" fork="yes">
       <classpath>
         <pathelement path="${build.base}"/>
+        <pathelement path="${build.plugins}"/>
         <pathelement location="${lib.log4j}"/>
         <pathelement location="${lib.jasperreports.base}"/>
       </classpath>
