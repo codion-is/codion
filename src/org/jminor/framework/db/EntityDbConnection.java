@@ -68,7 +68,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   }
 
   public EntityDbConnection(final Connection connection, final Database database, final User user) throws SQLException {
-    super(connection, database, user);
+    super(database, user, connection);
   }
 
   public boolean isOptimisticLocking() {

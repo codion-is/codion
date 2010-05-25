@@ -226,6 +226,7 @@ public interface EntityDb {
    * @param reportParameters the report parameters
    * @return an initialized ReportResult object
    * @throws org.jminor.common.model.reports.ReportException in case of a report exception
+   * @see org.jminor.common.model.reports.ReportWrapper#fillReport(java.util.Map, java.sql.Connection)
    */
   ReportResult fillReport(final ReportWrapper report, final Map reportParameters) throws Exception;
 

@@ -117,6 +117,13 @@ public abstract class AbstractDatabase implements Database {
 
   /** {@inheritDoc} */
   public Connection createConnection(final User user) throws ClassNotFoundException, SQLException {
+    if (user == null)
+      throw new IllegalArgumentException("Connection requires a non-null user instance");
+    if (user.getUsername() == null)
+      throw new IllegalArgumentException("Username must be provided");
+    if (user.getPassword() == null)
+      throw new IllegalArgumentException("Password must be provided");
+
     loadDriver();
     final Properties connectionProperties = new Properties();
     connectionProperties.put("user", user.getUsername());

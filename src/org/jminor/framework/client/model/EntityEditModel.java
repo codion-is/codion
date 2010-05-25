@@ -207,6 +207,14 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
     return stEntityNull.getLinkedState();
   }
 
+  public State stateActive() {
+    return stActive.getLinkedState();
+  }
+
+  public void setActive(boolean active) {
+    stActive.setActive(active);
+  }
+
   /**
    * Sets the Entity instance to edit
    * @param entity the entity
@@ -256,14 +264,6 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
    */
   public Entity getEntityCopy() {
     return getEntityCopy(true);
-  }
-
-  public State stateActive() {
-    return stActive.getLinkedState();
-  }
-
-  public void setActive(boolean active) {
-    stActive.setActive(active);
   }
 
   /**
@@ -443,6 +443,17 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
       performNullValidation(entity, property, action);
     if (property.isNumerical())
       performRangeValidation(entity, property);
+  }
+
+  /**
+   * Returns true if the given property accepts a null value, by default this
+   * method simply returns <code>property.isNullable()</code>
+   * @param propertyID the property ID
+   * @return true if the property accepts a null value
+   */
+  @Override
+  public boolean isNullable(final String propertyID) {
+    return isNullable(getEntity(), propertyID);
   }
 
   /**
@@ -813,17 +824,6 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
 
       }
     }
-  }
-
-  /**
-   * Returns true if the given property accepts a null value, by default this
-   * method simply returns <code>property.isNullable()</code>
-   * @param propertyID the property ID
-   * @return true if the property accepts a null value
-   */
-  @Override
-  public boolean isNullable(final String propertyID) {
-    return isNullable(getEntity(), propertyID);
   }
 
   /**
