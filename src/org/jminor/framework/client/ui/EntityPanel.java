@@ -384,6 +384,14 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
   }
 
   /**
+   * By default this delegates to the edit panel
+   * @param exception the exception to handle
+   */
+  public void handleException(final Exception exception) {
+    getEditPanel().handleException(exception);
+  }
+
+  /**
    * @return true if this EntityPanel is active and ready to receive input
    */
   public boolean isActive() {
@@ -786,7 +794,15 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
   }
 
   protected EntityTablePanel initializeTablePanel(final EntityTableModel tableModel) {
-    return new EntityTablePanel(tableModel, getTablePopupControlSet(), getToolbarControlSet());
+    return new EntityTablePanel(tableModel, getTablePopupControlSet(), getToolbarControlSet(), getPrintControls());
+  }
+
+  /**
+   * Override to provide additional print controls to display in the table popup menu.
+   * @return a ControlSet containing the print controls
+   */
+  protected ControlSet getPrintControls() {
+    return null;
   }
 
   /**

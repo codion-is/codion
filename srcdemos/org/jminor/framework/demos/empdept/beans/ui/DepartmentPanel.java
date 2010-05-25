@@ -10,11 +10,9 @@ import org.jminor.common.ui.control.ControlSet;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityModel;
-import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.ui.EntityEditPanel;
 import org.jminor.framework.client.ui.EntityPanel;
 import org.jminor.framework.client.ui.EntityPanelProvider;
-import org.jminor.framework.client.ui.EntityTablePanel;
 import org.jminor.framework.demos.empdept.beans.EmployeeModel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import static org.jminor.framework.demos.empdept.domain.EmpDept.*;
@@ -53,11 +51,6 @@ public class DepartmentPanel extends EntityPanel {
   }
 
   @Override
-  protected EntityTablePanel initializeTablePanel(EntityTableModel tableModel) {
-    return new EntityTablePanel(tableModel, getTablePopupControlSet(), getToolbarControlSet(), getPrintControls());
-  }
-
-  @Override
   protected EntityEditPanel initializeEditPanel(final EntityEditModel editModel) {
     return new EntityEditPanel(editModel) {
       @Override
@@ -91,7 +84,8 @@ public class DepartmentPanel extends EntityPanel {
     };
   }
 
-  private ControlSet getPrintControls() {
+  @Override
+  protected ControlSet getPrintControls() {
     final ControlSet controlSet = new ControlSet(Messages.get(Messages.PRINT));
     controlSet.add(ControlFactory.methodControl(this, "viewEmployeeReport", EmpDept.getString(EmpDept.EMPLOYEE_REPORT)));
 

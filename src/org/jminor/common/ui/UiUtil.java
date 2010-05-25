@@ -791,4 +791,27 @@ public class UiUtil {
 
     return list.getSelectedValue();
   }
+
+  public static Action getBrowseAction(final JTextField txtFilename) {
+    return new AbstractAction("...") {
+      public void actionPerformed(final ActionEvent e) {
+        try {
+          final File file = selectFile(txtFilename, getStartDir(txtFilename.getText()));
+          txtFilename.setText(file.getAbsolutePath());
+        }
+        catch (CancelException ex) {/**/}
+      }
+    };
+  }
+
+  public static String getStartDir(final String text) {
+    if (text == null || text.length() == 0)
+      return null;
+    try {
+      return new File(text).getParentFile().getPath();
+    }
+    catch (Exception e) {
+      return null;
+    }
+  }
 }

@@ -1652,3 +1652,8 @@
   LogEntry.exitMessage field added
   EntityDbRemoteAdapter logs pool retry count
   ReportResult, ReportWrapper and Jasper reports impl added, quite experimental
+  EntityTablePanel.initializeViewImageAction() added
+  UiUtil.getBrowseAction() added
+  ControlSet.hasName() and addAll() added
+  EntityTablePanel.getPopupControls(), if additionalPopupControls has a name it is added as a submenu, else all items added sequentially
+  EntityPanel.handleException() added, delegates to edit panel

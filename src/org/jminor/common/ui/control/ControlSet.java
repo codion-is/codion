@@ -136,4 +136,13 @@ public class ControlSet extends Control {
   public void addSeparatorAt(final int index) {
     actions.add(index, null);
   }
+
+  public boolean hasName() {
+    final String name = getName();
+    return name != null && name.length() > 0;
+  }
+
+  public void addAll(final ControlSet controlSet) {
+    actions.addAll(controlSet.actions);
+  }
 }
