@@ -406,6 +406,7 @@
       <jvmarg value="-Djminor.db.port=${demo.db.port}"/>
       <jvmarg value="-Djminor.db.sid=${demo.db.sid}"/>
       <jvmarg value="-Djminor.db.embedded=${demo.db.embedded}"/>
+      <jvmarg value="-Djminor.report.path=resources/demos/empdept/reports/"/>
     </java>
   </target>
 
@@ -423,6 +424,7 @@
       </classpath>
       <jvmarg value="-Djminor.client.connectionType=remote"/>
       <jvmarg value="-Djminor.server.hostname=localhost"/>
+      <jvmarg value="-Djminor.report.path=resources/demos/empdept/reports/"/>
       <jvmarg value="-Djavax.net.ssl.trustStore=${basedir}/resources/security/JMinorClientTruststore"/>
       <jvmarg value="-Djava.security.policy=${basedir}/resources/security/jminor_client.policy"/>
     </java>
@@ -444,6 +446,7 @@
       </classpath>
       <jvmarg value="-Djminor.client.connectionType=remote"/>
       <jvmarg value="-Djminor.server.hostname=localhost"/>
+      <jvmarg value="-Djminor.report.path=resources/demos/empdept/reports/"/>
       <jvmarg value="-Djavax.net.ssl.trustStore=${basedir}/resources/security/JMinorClientTruststore"/>
       <jvmarg value="-Djava.security.policy=${basedir}/resources/security/jminor_load_test.policy"/>
     </java>
@@ -454,7 +457,6 @@
     <java classname="org.jminor.framework.demos.petstore.client.ui.PetstoreAppPanel" fork="yes">
       <classpath>
         <pathelement path="${build.base}"/>
-        <pathelement path="${build.plugins}"/>
         <pathelement path="${build.demos}"/>
         <pathelement location="${lib.jasperreports.base}"/>
         <pathelement location="${lib.jcalendar}"/>
@@ -476,7 +478,6 @@
     <java classname="org.jminor.framework.demos.petstore.client.ui.PetstoreAppPanel" fork="yes">
       <classpath>
         <pathelement path="${build.base}"/>
-        <pathelement path="${build.plugins}"/>
         <pathelement path="${build.demos}"/>
         <pathelement location="${lib.jasperreports.base}"/>
         <pathelement location="${lib.jcalendar}"/>
@@ -528,7 +529,6 @@
     <java classname="org.jminor.framework.server.monitor.ui.MonitorPanel" fork="yes">
       <classpath>
         <pathelement path="${build.base}"/>
-        <pathelement path="${build.plugins}"/>
         <pathelement location="${lib.derby}"/>
         <pathelement location="${lib.log4j}"/>
         <pathelement location="${lib.jfreechart.base}"/>

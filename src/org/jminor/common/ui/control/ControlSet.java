@@ -142,6 +142,10 @@ public class ControlSet extends Control {
     return name != null && name.length() > 0;
   }
 
+  public boolean hasIcon() {
+    return getIcon() != null;
+  }
+
   public void addAll(final ControlSet controlSet) {
     actions.addAll(controlSet.actions);
   }

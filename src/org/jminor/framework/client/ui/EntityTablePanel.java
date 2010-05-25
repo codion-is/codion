@@ -894,8 +894,11 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
       setControl(TOGGLE_SUMMARY_PANEL, getToggleSummaryPanelControl());
     if (searchPanel != null)
       setControl(TOGGLE_SEARCH_PANEL, getToggleSearchPanelControl());
-    if (printControls != null)
+    if (printControls != null) {
       printControls.add(getPrintTableControl());
+      if (!printControls.hasIcon())
+        printControls.setIcon(Images.loadImage("Print16.gif"));
+    }
     setControl(PRINT_TABLE, printControls == null ? getPrintTableControl() : printControls);
     setControl(CLEAR_SELECTION, getClearSelectionControl());
     setControl(MOVE_SELECTION_UP, getMoveSelectionDownControl());
