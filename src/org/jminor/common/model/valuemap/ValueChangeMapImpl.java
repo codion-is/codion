@@ -36,7 +36,7 @@ public class ValueChangeMapImpl<K, V> implements ValueChangeMap<K, V>, Serializa
   private Map<K, V> originalValues;
 
   /**
-   * Fired when a value changes.
+   * Fired when a value changes, null until initialized by a call to eventValueChanged().
    */
   protected transient Event evtValueChanged;
 

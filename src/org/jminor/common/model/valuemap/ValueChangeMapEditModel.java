@@ -34,7 +34,15 @@ public abstract class ValueChangeMapEditModel<K, V> implements Refreshable {
    */
   public static final int UNKNOWN = 3;
 
+  /**
+   * The value map instance edited by this edit model.
+   */
   private final ValueChangeMap<K, V> valueMap;
+
+  /**
+   * Fired when the active value map is set.
+   * @see #setValueMap(ValueChangeMap)
+   */
   private final Event evtValueMapSet = new Event();
 
   /**
