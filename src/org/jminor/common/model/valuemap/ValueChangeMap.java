@@ -84,7 +84,7 @@ public interface ValueChangeMap<K, V> extends ValueMap<K, V> {
   void saveValue(final K key);
 
   /**
-   * Saves all the value changes that have been.
+   * Saves all the value changes that have been made.
    * This value map will be unmodified after a call to this method.
    */
   void saveAll();
