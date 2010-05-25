@@ -19,6 +19,8 @@
           "org/jminor/**/*.gif, org/jminor/**/*.properties, org/jminor/**/*.txt"/>
   <fileset id="demos_resources" dir="${srcdemos}" includes=
           "org/jminor/framework/**/*.gif, org/jminor/framework/**/*.png, org/jminor/framework/**/*.properties, org/jminor/framework/**/*.txt"/>
+  <fileset id="plugins_resources" dir="${srcplugins}" includes=
+          "org/jminor/framework/**/*.gif, org/jminor/framework/**/*.png, org/jminor/framework/**/*.properties, org/jminor/framework/**/*.txt"/>
 
   <target name="clean"
           description="Clean all output and generated dirs">
@@ -63,6 +65,18 @@
 
     <copy todir="${build.demos}">
       <fileset refid="demos_resources"/>
+    </copy>
+
+    <javac destdir="${build.plugins}" debug="{build.debug}">
+      <src path="${srcplugins}"/>
+      <classpath>
+        <path refid="libraries"/>
+        <path location="${build.base}"/>
+      </classpath>
+    </javac>
+
+    <copy todir="${build.plugins}">
+      <fileset refid="plugins_resources"/>
     </copy>
 
     <javac destdir="${build.test}" debug="{build.debug}">
