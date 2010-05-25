@@ -10,9 +10,6 @@ import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.db.criteria.EntitySelectCriteria;
 import org.jminor.framework.domain.Entity;
 
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
-
 import java.util.List;
 import java.util.Map;
 
@@ -224,14 +221,12 @@ public interface EntityDb {
   int selectRowCount(final EntityCriteria criteria) throws Exception;
 
   /**
-   * Takes a JasperReport object using a JDBC datasource and returns an initialized JasperPrint object
+   * Takes a ReportWrapper object using a JDBC datasource and returns an initialized ReportResult object
    * @param report the report to fill
    * @param reportParameters the report parameters
-   * @return an initialized JasperPrint object
-   * @throws net.sf.jasperreports.engine.JRException in case of a report exception
+   * @return an initialized ReportResult object
+   * @throws org.jminor.common.model.reports.ReportException in case of a report exception
    */
-  JasperPrint fillReport(final JasperReport report, final Map reportParameters) throws Exception;
-
   ReportResult fillReport(final ReportWrapper report, final Map reportParameters) throws Exception;
 
   /**

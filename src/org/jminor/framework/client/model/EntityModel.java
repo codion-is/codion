@@ -6,6 +6,10 @@ package org.jminor.framework.client.model;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.reports.ReportDataWrapper;
+import org.jminor.common.model.reports.ReportException;
+import org.jminor.common.model.reports.ReportResult;
+import org.jminor.common.model.reports.ReportWrapper;
 import org.jminor.common.model.valuemap.ValueChangeMapModel;
 import org.jminor.framework.client.model.event.DeleteEvent;
 import org.jminor.framework.client.model.event.InsertEvent;
@@ -17,9 +21,6 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
 
-import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperPrint;
 import org.apache.log4j.Logger;
 
 import java.awt.event.ActionEvent;
@@ -295,40 +296,27 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
   }
 
   /**
-   * Takes a path to a report which uses a JDBC datasource and returns an initialized JasperPrint object
-   * @param reportPath the path to the report file
+   * Takes a path to a report which uses a JDBC datasource and returns an initialized ReportResult object
+   * @param reportWrapper the report wrapper
    * @param reportParameters the report parameters
-   * @return an initialized JasperPrint object
-   * @throws JRException in case of a report exception
+   * @return an initialized ReportResult object
+   * @throws ReportException in case of a report exception
    */
-  public JasperPrint fillJdbcReport(final String reportPath, final Map reportParameters) throws JRException {
-    return EntityReportUtil.fillJdbcReport(getEntityDb(), reportPath, reportParameters);
+  public ReportResult fillJdbcReport(final ReportWrapper reportWrapper, final Map reportParameters) throws ReportException {
+    return EntityReportUtil.fillReport(getEntityDb(), reportWrapper, reportParameters);
   }
 
   /**
-   * Takes a path to a report and returns an initialized JasperPrint object using the
-   * datasource returned by <code>getTableModel().getJRDataSource()</code> method
-   * @param reportPath the path to the report file
+   * Takes a path to a report which uses a JRDataSource and returns an initialized ReportResult object
+   * @param reportWrapper the report wrapper
    * @param reportParameters the report parameters
-   * @return an initialized JasperPrint object
-   * @throws JRException in case of a report exception
-   * @see EntityTableModel#getJRDataSource()
+   * @param dataSource the ReportDataWrapper used to provide the report data
+   * @return an initialized ReportResult object
+   * @throws ReportException in case of a report exception
    */
-  public JasperPrint fillReport(final String reportPath, final Map reportParameters) throws JRException {
-    return fillReport(reportPath, reportParameters, getTableModel().getJRDataSource());
-  }
-
-  /**
-   * Takes a path to a report which uses a JRDataSource and returns an initialized JasperPrint object
-   * @param reportPath the path to the report file, this path can be http or file based
-   * @param reportParameters the report parameters
-   * @param dataSource the JRDataSource used to provide the report data
-   * @return an initialized JasperPrint object
-   * @throws JRException in case of a report exception
-   */
-  public JasperPrint fillReport(final String reportPath, final Map reportParameters,
-                                final JRDataSource dataSource) throws JRException {
-    return EntityReportUtil.fillReport(reportPath, reportParameters, dataSource);
+  public ReportResult fillReport(final ReportWrapper reportWrapper, final Map reportParameters,
+                                 final ReportDataWrapper dataSource) throws ReportException {
+    return EntityReportUtil.fillReport(reportWrapper, reportParameters, dataSource);
   }
 
   /**

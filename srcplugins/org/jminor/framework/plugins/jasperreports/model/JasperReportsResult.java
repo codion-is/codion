@@ -1,23 +1,28 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.model.reports;
+package org.jminor.framework.plugins.jasperreports.model;
+
+import org.jminor.common.model.reports.ReportResult;
 
 import net.sf.jasperreports.engine.JasperPrint;
+
+import java.io.Serializable;
 
 /**
  * User: Björn Darri
  * Date: 23.5.2010
  * Time: 21:20:16
  */
-public class JasperReportsResult implements ReportResult<JasperPrint> {
+public class JasperReportsResult implements ReportResult<JasperPrint>, Serializable {
+  private static final long serialVersionUID = 1;
   private final JasperPrint jasperPrint;
 
   public JasperReportsResult(final JasperPrint jasperPrint) {
     this.jasperPrint = jasperPrint;
   }
 
-  public JasperPrint getResult() throws ReportException {
+  public JasperPrint getResult() {
     return jasperPrint;
   }
 }

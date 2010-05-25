@@ -27,10 +27,6 @@ import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
 import org.apache.log4j.Logger;
 
 import java.sql.Connection;
@@ -443,11 +439,6 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
         rollbackQuietly();
       throw new DbException(exception, statement, getDatabase().getErrorMessage(exception));
     }
-  }
-
-  /** {@inheritDoc} */
-  public JasperPrint fillReport(final JasperReport report, final Map reportParameters) throws JRException {
-    return JasperFillManager.fillReport(report, reportParameters, getConnection());
   }
 
   /** {@inheritDoc} */

@@ -3,21 +3,16 @@
  */
 package org.jminor.framework.client.model.reporting;
 
+import org.jminor.common.model.reports.ReportDataWrapper;
+import org.jminor.common.model.reports.ReportException;
+import org.jminor.common.model.reports.ReportResult;
+import org.jminor.common.model.reports.ReportWrapper;
 import org.jminor.framework.db.EntityDb;
 
-import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.util.JRLoader;
-
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Map;
 
 /**
- * A static utility class for working with jasper reports.<br>
+ * A static utility class for working with reports.<br>
  * User: Bjorn Darri<br>
  * Date: 30.7.2009<br>
  * Time: 17:58:09<br>
@@ -27,19 +22,18 @@ public class EntityReportUtil {
   private EntityReportUtil() {}
 
   /**
-   * Takes a path to a JasperReport which uses a JDBC datasource and returns an initialized JasperPrint object
+   * Takes a ReportWrapper which uses a JDBC datasource and returns an initialized ReportResult object
    * @param entityDb the EntityDb instance to use when filling the report
-   * @param reportPath the path to the report to fill
+   * @param reportWrapper the report wrapper
    * @param reportParameters the report parameters
-   * @return an initialized JasperPrint object
-   * @throws JRException in case of a report exception
+   * @return an initialized ReportResult object
+   * @throws ReportException in case of a report exception
    */
-  public static JasperPrint fillJdbcReport(final EntityDb entityDb, final String reportPath,
-                                           final Map reportParameters) throws JRException {
+  public static ReportResult fillReport(final EntityDb entityDb, final ReportWrapper reportWrapper, final Map reportParameters) throws ReportException {
     try {
-      return entityDb.fillReport(loadJasperReport(reportPath), reportParameters);
+      return entityDb.fillReport(reportWrapper, reportParameters);
     }
-    catch (JRException e) {
+    catch (ReportException e) {
       throw e;
     }
     catch (Exception e) {
@@ -48,33 +42,15 @@ public class EntityReportUtil {
   }
 
   /**
-   * Takes a path to a JasperReport file and returns an initialized JasperPrint object
-   * @param reportPath the path to the report to fill
+   * Takes a ReportWrapper object and returns an initialized ReportResult object
+   * @param reportWrapper the report wrapper
    * @param reportParameters the report parameters
-   * @param dataSource the JRDataSource to use
-   * @return an initialized JasperPrint object
-   * @throws JRException in case of a report exception
+   * @param dataSource the ReportDataWrapper to use
+   * @return an initialized ReportResult object
+   * @throws ReportException in case of a report exception
    */
-  public static JasperPrint fillReport(final String reportPath, final Map reportParameters,
-                                       final JRDataSource dataSource) throws JRException {
-    return JasperFillManager.fillReport(loadJasperReport(reportPath), reportParameters, dataSource);
-  }
-
-  /**
-   * Loads a JasperReport file from the path given, it can be a URL or a file path
-   * @param reportPath the path to the report file to load
-   * @return a loaded JasperReport file
-   * @throws JRException in case of an exception
-   */
-  public static JasperReport loadJasperReport(final String reportPath) throws JRException {
-    try {
-      if (reportPath.toLowerCase().startsWith("http"))
-        return (JasperReport) JRLoader.loadObject(new URL(reportPath));
-      else
-        return (JasperReport) JRLoader.loadObject(reportPath);
-    }
-    catch (MalformedURLException e) {
-      throw new RuntimeException(e);
-    }
+  public static ReportResult fillReport(final ReportWrapper reportWrapper, final Map reportParameters,
+                                        final ReportDataWrapper dataSource) throws ReportException {
+    return reportWrapper.fillReport(reportParameters, dataSource);
   }
 }

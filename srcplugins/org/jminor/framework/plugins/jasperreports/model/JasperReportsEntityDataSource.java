@@ -1,8 +1,9 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.client.model.reporting;
+package org.jminor.framework.plugins.jasperreports.model;
 
+import org.jminor.common.model.reports.ReportDataWrapper;
 import org.jminor.framework.domain.Entity;
 
 import net.sf.jasperreports.engine.JRDataSource;
@@ -14,14 +15,14 @@ import java.util.Iterator;
 /**
  * A default JRDataSource implementation which iterates through the iterator received via the constructor.
  */
-public class EntityJRDataSource implements JRDataSource {
+public class JasperReportsEntityDataSource implements JRDataSource, ReportDataWrapper {
 
   private final Iterator<Entity> reportIterator;
   private Entity currentEntity;
 
-  public EntityJRDataSource(final Iterator<Entity> reportIterator) {
+  public JasperReportsEntityDataSource(final Iterator<Entity> reportIterator) {
     if (reportIterator == null)
-      throw new IllegalArgumentException("EntityJRDataSource requires a non-null reportIterator");
+      throw new IllegalArgumentException("JasperReportsEntityDataSource requires a non-null reportIterator");
     this.reportIterator = reportIterator;
   }
 
@@ -41,10 +42,19 @@ public class EntityJRDataSource implements JRDataSource {
    * @see org.jminor.framework.domain.Entity#getValue(String)
    */
   public Object getFieldValue(final JRField jrField) throws JRException {
-    return getCurrentEntity().getValue(jrField.getName());
+    try {
+      return getCurrentEntity().getValue(jrField.getName());
+    }
+    catch (Exception e) {
+      throw new JRException("Unable to get field value: " + jrField.getName(), e);
+    }
   }
 
   protected Entity getCurrentEntity() {
     return currentEntity;
+  }
+
+  public JRDataSource getDataSource() {
+    return this;
   }
 }

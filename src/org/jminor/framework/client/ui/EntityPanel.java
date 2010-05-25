@@ -6,6 +6,9 @@ package org.jminor.framework.client.ui;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.AbstractFilteredTableModel;
 import org.jminor.common.model.WeakPropertyChangeListener;
+import org.jminor.common.model.reports.ReportDataWrapper;
+import org.jminor.common.model.reports.ReportException;
+import org.jminor.common.model.reports.ReportWrapper;
 import org.jminor.common.model.valuemap.ValueChangeMap;
 import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
 import org.jminor.common.ui.AbstractFilteredTablePanel;
@@ -14,6 +17,7 @@ import org.jminor.common.ui.control.Control;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlSet;
 import org.jminor.common.ui.images.Images;
+import org.jminor.common.ui.reports.ReportUIWrapper;
 import org.jminor.common.ui.valuemap.ValueChangeMapEditPanel;
 import org.jminor.common.ui.valuemap.ValueChangeMapPanel;
 import org.jminor.framework.Configuration;
@@ -25,9 +29,6 @@ import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
-
-import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.JRException;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -910,7 +911,7 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
   protected ControlSet getTablePopupControlSet() {
     final ControlSet controlSet = new ControlSet("");
     if (detailEntityPanels.size() > 0)
-      return getDetailPanelControls(EMBEDDED);
+      controlSet.add(getDetailPanelControls(EMBEDDED));
 
     return controlSet;
   }
@@ -1046,17 +1047,18 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
 
   /**
    * Shows a JRViewer for report printing
-   * @param reportPath the path to the report object
+   * @param reportWrapper the report wrapper
+   * @param uiWrapper the ui wrapper
    * @param reportParameters a map containing the parameters required for the report
    * @param frameTitle the title to display on the frame
    */
-  protected void viewJdbcReport(final String reportPath, final Map<String, Object> reportParameters,
-                                final String frameTitle) {
+  protected void viewJdbcReport(final ReportWrapper reportWrapper, final ReportUIWrapper uiWrapper,
+                                final Map<String, Object> reportParameters, final String frameTitle) {
     try {
       UiUtil.setWaitCursor(true, this);
-      EntityReportUiUtil.viewReport(getModel().fillJdbcReport(reportPath, reportParameters), frameTitle);
+      EntityReportUiUtil.viewReport(getModel().fillJdbcReport(reportWrapper, reportParameters), uiWrapper, frameTitle);
     }
-    catch (JRException e) {
+    catch (ReportException e) {
       throw new RuntimeException(e);
     }
     finally {
@@ -1065,32 +1067,21 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
   }
 
   /**
-   * Shows a JRViewer for printing a report using the datasource returned
-   * by <code>getModel().getTableModel().getJRDataSource()</code> method
-   * @param reportPath the path to the report object
-   * @param reportParameters a map containing the parameters required for the report
-   * @param frameTitle the title to display on the frame
-   * @see EntityTableModel#getJRDataSource()
-   */
-  protected void viewReport(final String reportPath, final Map<String, Object> reportParameters,
-                            final String frameTitle) {
-    viewReport(reportPath, reportParameters, getModel().getTableModel().getJRDataSource(), frameTitle);
-  }
-
-  /**
    * Shows a JRViewer for report printing
-   * @param reportPath the path to the report object
    * @param reportParameters a map containing the parameters required for the report
+   * @param reportWrapper the report wrapper
+   * @param uiWrapper the ui wrapper
    * @param dataSource the JRDataSource used to provide the report data
    * @param frameTitle the title to display on the frame
    */
-  protected void viewReport(final String reportPath, final Map<String, Object> reportParameters,
-                            final JRDataSource dataSource, final String frameTitle) {
+  protected void viewReport(final ReportWrapper reportWrapper, final ReportUIWrapper uiWrapper,
+                            final ReportDataWrapper dataSource, final Map<String, Object> reportParameters,
+                            final String frameTitle) {
     try {
       UiUtil.setWaitCursor(true, this);
-      EntityReportUiUtil.viewReport(getModel().fillReport(reportPath, reportParameters, dataSource), frameTitle);
+      EntityReportUiUtil.viewReport(getModel().fillReport(reportWrapper, reportParameters, dataSource), uiWrapper, frameTitle);
     }
-    catch (JRException e) {
+    catch (ReportException e) {
       throw new RuntimeException(e);
     }
     finally {

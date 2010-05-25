@@ -8,7 +8,7 @@ import org.jminor.common.model.AbstractFilteredTableModel;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.Util;
-import org.jminor.framework.client.model.reporting.EntityJRDataSource;
+import org.jminor.common.model.reports.ReportDataWrapper;
 import org.jminor.framework.db.EntityDb;
 import org.jminor.framework.db.criteria.EntitySelectCriteria;
 import org.jminor.framework.db.provider.EntityDbProvider;
@@ -18,7 +18,6 @@ import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 
-import net.sf.jasperreports.engine.JRDataSource;
 import org.apache.log4j.Logger;
 
 import javax.swing.table.DefaultTableColumnModel;
@@ -213,15 +212,12 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
   }
 
   /**
-   * Returns an initialized JRDataSource instance, the default implementation
-   * returns an instance of EntityJRDataSource using the Iterator returned by
-   * the <code>initializeReportIterator()</code> method
-   * @return an initialized JRDataSource
-   * @see #initializeReportIterator()
-   * @see org.jminor.framework.client.model.reporting.EntityJRDataSource
+   * Returns an initialized ReportDataWrapper instance, the default implementation returns null.
+   * @return an initialized ReportDataWrapper
+   * @see #getSelectedEntitiesIterator()
    */
-  public JRDataSource getJRDataSource() {
-    return new EntityJRDataSource(initializeReportIterator());
+  public ReportDataWrapper getReportDataSource() {
+    return null;
   }
 
   /** {@inheritDoc} */
@@ -524,6 +520,15 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
   }
 
   /**
+   * Returns an Iterator which iterates through the selected entities
+   * @return the iterator used when generating reports
+   * @see #getReportDataSource()
+   */
+  public Iterator<Entity> getSelectedEntitiesIterator() {
+    return getSelectedItems().iterator();
+  }
+
+  /**
    * @return an Event fired when the model has been refreshed, N.B. this event
    * is fired even if the refresh results in an exception
    */
@@ -606,15 +611,6 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
    */
   protected Criteria<Property> getQueryCriteria() {
     return tableSearchModel.getSearchCriteria();
-  }
-
-  /**
-   * Returns an Iterator which iterates through the selected entities
-   * @return the iterator used when generating reports
-   * @see #getJRDataSource()
-   */
-  protected Iterator<Entity> initializeReportIterator() {
-    return getSelectedItems().iterator();
   }
 
   protected void handleColumnHidden(final Property property) {

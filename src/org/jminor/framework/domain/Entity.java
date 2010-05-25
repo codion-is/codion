@@ -115,7 +115,11 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
     if (properties == null)
       properties = EntityRepository.getProperties(getEntityID());
 
-    return properties.get(propertyID);
+    final Property property = properties.get(propertyID);
+    if (property == null)
+      throw new RuntimeException("Property " + propertyID + " not found in entity: " + getEntityID());
+
+    return property;
   }
 
   /**

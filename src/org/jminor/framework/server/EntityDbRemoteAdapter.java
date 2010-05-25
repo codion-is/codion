@@ -29,9 +29,6 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
 
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
 import org.apache.log4j.Logger;
 
 import javax.rmi.ssl.SslRMIClientSocketFactory;
@@ -190,19 +187,6 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     }
     catch (DbException dbe) {
       throw dbe;
-    }
-    catch (Exception e) {
-      throw new RemoteException(e.getMessage(), e);
-    }
-  }
-
-  /** {@inheritDoc} */
-  public JasperPrint fillReport(final JasperReport report, final Map reportParameters) throws JRException, RemoteException {
-    try {
-      return loggingEntityDbProxy.fillReport(report, reportParameters);
-    }
-    catch (JRException jre) {
-      throw jre;
     }
     catch (Exception e) {
       throw new RemoteException(e.getMessage(), e);
@@ -769,8 +753,8 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
         destination.append("[").append(argumentArrayToString(((Collection) argument).toArray())).append("]");
       else if (argument instanceof Entity)
         destination.append(getEntityParameterString((Entity) argument));
-      else if (argument instanceof JasperReport)
-        destination.append(((JasperReport) argument).getName());
+      else if (argument instanceof ReportWrapper)
+        destination.append(((ReportWrapper) argument).getReportName());
       else
         destination.append(argument.toString());
     }

@@ -1657,3 +1657,7 @@
   ControlSet.hasName() and addAll() added
   EntityTablePanel.getPopupControls(), if additionalPopupControls has a name it is added as a submenu, else all items added sequentially
   EntityPanel.handleException() added, delegates to edit panel
+  Configuration.getReportPath() added
+  EntityDb.fillReport() generic using wrappers now
+  framework.plugins.jasperreports.* added
+  Entity.getProperty() now throws exception if the property was not found

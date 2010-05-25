@@ -27,19 +27,23 @@ public class TristateButtonModel extends ToggleButtonModel {
   }
 
   // Overrides of superclass methods
+  @Override
   public void setEnabled(boolean enabled) {
     super.setEnabled(enabled);
     // Restore state display
     displayState();
   }
 
+  @Override
   public void setSelected(boolean selected) {
     setState(selected ? TristateState.SELECTED : TristateState.DESELECTED);
   }
 
   // Empty overrides of superclass methods
+  @Override
   public void setArmed(boolean b) {}
 
+  @Override
   public void setPressed(boolean b) {}
 
   public void iterateState() {

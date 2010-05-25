@@ -456,6 +456,7 @@ public class Configuration {
     parseBooleanSetting(USE_LOOKUP_FIELD_SEARCH_HINT);
     parseIntegerSetting(DEFAULT_FOREIGN_KEY_FETCH_DEPTH);
     parseBooleanSetting(LIMIT_FOREIGN_KEY_FETCH_DEPTH);
+    parseStringSetting(REPORT_PATH);
   }
 
   private static void parseIntegerSetting(final String setting) {
@@ -520,5 +521,13 @@ public class Configuration {
    */
   public static SimpleDateFormat getDefaultTimestampFormat() {
     return DateFormats.getDateFormat((String) getValue(DEFAULT_TIMESTAMP_FORMAT));
+  }
+
+  public static String getReportPath() {
+    final String path = getStringValue(REPORT_PATH);
+    if (path == null || path.isEmpty())
+      throw new RuntimeException("jminor.report.path property is not speficied");
+
+    return path;
   }
 }

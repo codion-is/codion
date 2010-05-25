@@ -29,8 +29,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /**
- * A database connection class providing transaction control, a simple query cache
- * and functions for querying and manipulating data.
+ * A database connection class providing transaction control and functions for querying and manipulating data.
  */
 public class DbConnection {
 
@@ -44,6 +43,7 @@ public class DbConnection {
   private boolean transactionOpen = false;
 
   private long poolTime = -1;
+  private int poolRetryCount = 0;
 
   protected static final QueryCounter queryCounter = new QueryCounter();
 
@@ -51,7 +51,6 @@ public class DbConnection {
    * The object containing the method call log
    */
   protected final MethodLogger methodLogger = new MethodLogger(100, true);
-  private int poolRetryCount;
 
   /**
    * Constructs a new instance of the DbConnection class, initialized and ready for usage
@@ -567,13 +566,14 @@ public class DbConnection {
 
     this.connection = connection;
     connection.setAutoCommit(false);
-    checkConnectionStatement = connection.createStatement();
   }
 
   private boolean checkConnection() throws SQLException {
     ResultSet rs = null;
     if (connection != null) {
       try {
+        if (checkConnectionStatement == null)
+          checkConnectionStatement = connection.createStatement();
         rs = checkConnectionStatement.executeQuery(database.getCheckConnectionQuery());
         return true;
       }
@@ -643,6 +643,8 @@ public class DbConnection {
     private int updatesPerSecondCounter = 0;
     private int deletesPerSecond = 0;
     private int deletesPerSecondCounter = 0;
+    private int undefinedPerSecond = 0;
+    private int undefinedPerSecondCounter = 0;
 
     public QueryCounter() {
       new Timer(true).schedule(new TimerTask() {
@@ -663,6 +665,8 @@ public class DbConnection {
         updatesPerSecondCounter++;
       else if (sql.startsWith("d"))
         deletesPerSecondCounter++;
+      else
+        undefinedPerSecondCounter++;
     }
 
     public int getQueriesPerSecond() {
@@ -685,6 +689,10 @@ public class DbConnection {
       return updatesPerSecond;
     }
 
+    public int getUndefinedPerSecond() {
+      return undefinedPerSecond;
+    }
+
     private void updateQueriesPerSecond() {
       final long current = System.currentTimeMillis();
       final double seconds = (current - queriesPerSecondTime)/ 1000;
@@ -694,11 +702,13 @@ public class DbConnection {
         insertsPerSecond = (int) (insertsPerSecondCounter / (double) seconds);
         deletesPerSecond = (int) (deletesPerSecondCounter / (double) seconds);
         updatesPerSecond = (int) (updatesPerSecondCounter / (double) seconds);
+        undefinedPerSecond = (int) (undefinedPerSecondCounter / (double) seconds);
         queriesPerSecondCounter = 0;
         selectsPerSecondCounter = 0;
         insertsPerSecondCounter = 0;
         deletesPerSecondCounter = 0;
         updatesPerSecondCounter = 0;
+        undefinedPerSecondCounter = 0;
         queriesPerSecondTime = current;
       }
     }

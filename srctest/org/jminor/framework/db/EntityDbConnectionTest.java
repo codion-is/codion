@@ -9,6 +9,7 @@ import org.jminor.common.db.exception.DbException;
 import org.jminor.common.db.exception.RecordModifiedException;
 import org.jminor.common.db.exception.RecordNotFoundException;
 import org.jminor.common.model.User;
+import org.jminor.common.model.reports.ReportResult;
 import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.db.criteria.EntitySelectCriteria;
@@ -22,10 +23,8 @@ import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.EntityTestDomain;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
+import org.jminor.framework.plugins.jasperreports.model.JasperReportsWrapper;
 
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.util.JRLoader;
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -109,11 +108,11 @@ public class EntityDbConnectionTest {
 
   @Test
   public void fillReport() throws Exception {
-    final JasperReport report = (JasperReport) JRLoader.loadObject("resources/demos/empdept/reports/empdept_employees.jasper");
-    final HashMap<String, Object> reportParameters = new HashMap<String, Object>();
+    final Map<String, Object> reportParameters = new HashMap<String, Object>();
     reportParameters.put("DEPTNO", Arrays.asList(10, 20));
-    final JasperPrint print = getConnection().fillReport(report, reportParameters);
-    assertNotNull(print);
+    final ReportResult print = getConnection().fillReport(
+            new JasperReportsWrapper("resources/demos/empdept/reports/empdept_employees.jasper"), reportParameters);
+    assertNotNull(print.getResult());
   }
 
   @Test

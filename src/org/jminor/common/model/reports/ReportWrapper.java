@@ -12,5 +12,9 @@ import java.util.Map;
  * Time: 21:09:45
  */
 public interface ReportWrapper<R> {
+  String getReportName();
+
   ReportResult<R> fillReport(final Map reportParameters, final Connection connection) throws ReportException;
+
+  ReportResult<R> fillReport(final Map reportParameters, final ReportDataWrapper dataWrapper) throws ReportException;
 }

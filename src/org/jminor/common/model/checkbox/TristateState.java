@@ -5,16 +5,19 @@ package org.jminor.common.model.checkbox;
  */
 public enum TristateState {
   SELECTED {
+    @Override
     public TristateState next() {
       return INDETERMINATE;
     }
   },
   INDETERMINATE {
+    @Override
     public TristateState next() {
       return DESELECTED;
     }
   },
   DESELECTED {
+    @Override
     public TristateState next() {
       return SELECTED;
     }

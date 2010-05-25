@@ -17,6 +17,8 @@ import org.jminor.framework.demos.empdept.beans.EmployeeModel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import static org.jminor.framework.demos.empdept.domain.EmpDept.*;
 import org.jminor.framework.domain.EntityUtil;
+import org.jminor.framework.plugins.jasperreports.model.JasperReportsWrapper;
+import org.jminor.framework.plugins.jasperreports.ui.JasperReportsUIWrapper;
 
 import javax.swing.JTextField;
 import java.awt.GridLayout;
@@ -37,12 +39,12 @@ public class DepartmentPanel extends EntityPanel {
     if (getModel().getTableModel().getSelectionModel().isSelectionEmpty())
       return;
 
-    final String reportPath = System.getProperty(Configuration.REPORT_PATH) + "/empdept_employees.jasper";
+    final String reportPath = Configuration.getReportPath() + "/empdept_employees.jasper";
     final Collection<Object> departmentNumbers =
             EntityUtil.getDistinctPropertyValues(getModel().getTableModel().getSelectedItems(), EmpDept.DEPARTMENT_ID);
     final HashMap<String, Object> reportParameters = new HashMap<String, Object>();
     reportParameters.put("DEPTNO", departmentNumbers);
-    viewJdbcReport(reportPath, reportParameters, null);
+    viewJdbcReport(new JasperReportsWrapper(reportPath), new JasperReportsUIWrapper(), reportParameters, null);
   }
 
   @Override
