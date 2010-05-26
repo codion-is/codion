@@ -73,12 +73,12 @@ public class BoundedRandomItemModel<T> extends RandomItemModel<T> {
 
   @Override
   public void setWeight(final T item, final int weight) {
-    throw new RuntimeException("setWeigth is not implemented in the " + getClass().getSimpleName());
+    throw new RuntimeException("setWeigth is not implemented in " + getClass().getSimpleName());
   }
 
   @Override
   public void addItem(final T item, final int weight) {
-    throw new RuntimeException("addItem is not implemented in the BoundedRandomItemModel " + getClass().getSimpleName());
+    throw new RuntimeException("addItem is not implemented in " + getClass().getSimpleName());
   }
 
   protected void initializeItems(final T... items) {
