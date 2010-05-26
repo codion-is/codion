@@ -72,6 +72,13 @@ public abstract class EntityTestUnit {
   }
 
   /**
+   * @return the EntityDbProvider instance used by this EntityTestUnit
+   */
+  protected EntityDbProvider getDbProvider() {
+    return entityDbProvider;
+  }
+
+  /**
    * @return the EntityDb instance used by this EntityTestUnit
    */
   protected EntityDb getEntityDb() {
