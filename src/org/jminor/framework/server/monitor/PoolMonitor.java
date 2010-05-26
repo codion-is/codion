@@ -7,7 +7,6 @@ import org.jminor.common.db.DbConnection;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolSettings;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
-import org.jminor.common.db.pool.monitor.ConnectionPoolMonitor;
 import org.jminor.common.model.User;
 import org.jminor.framework.server.EntityDbServerAdmin;
 

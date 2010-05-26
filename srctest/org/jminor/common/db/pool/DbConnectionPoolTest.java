@@ -8,18 +8,13 @@ import org.jminor.common.db.DbConnectionProvider;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.dbms.Database;
 import org.jminor.common.db.dbms.DatabaseProvider;
-import org.jminor.common.db.pool.monitor.ConnectionPoolMonitor;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.LoadTestModel;
 import org.jminor.common.model.User;
-import org.jminor.common.ui.UiUtil;
-import org.jminor.common.ui.pool.monitor.ConnectionPoolMonitorPanel;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-import javax.swing.JFrame;
-import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.ResultSet;
@@ -48,16 +43,6 @@ public class DbConnectionPoolTest {
         System.out.println("####################################");
       }
     }, startTime, 500);
-    final ConnectionPoolMonitor monitor = new ConnectionPoolMonitor(User.UNIT_TEST_USER, pool);
-    monitor.setStatsUpdateInterval(1);
-    JFrame frame = null;
-    if (!GraphicsEnvironment.isHeadless()) {
-      frame = new JFrame("DbConnectionPoolTest");
-      frame.add(new ConnectionPoolMonitorPanel(monitor));
-      frame.pack();
-      UiUtil.centerWindow(frame);
-      frame.setVisible(true);
-    }
     model.addApplications();
     model.setCollectChartData(true);
     Thread.sleep(4200);
@@ -66,10 +51,6 @@ public class DbConnectionPoolTest {
     Thread.sleep(1000);
     final ConnectionPoolStatistics statistics = pool.getConnectionPoolStatistics(startTime.getTime());
     assertEquals(statistics.getConnectionsCreated(), statistics.getConnectionsDestroyed());
-    if (!GraphicsEnvironment.isHeadless() && frame != null) {
-      frame.setVisible(false);
-      frame.dispose();
-    }
   }
 
   @Test

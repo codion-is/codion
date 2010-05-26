@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.server.monitor.ui;
 
-import org.jminor.common.db.pool.monitor.ConnectionPoolMonitor;
 import org.jminor.framework.server.EntityDbRemoteServerTest;
+import org.jminor.framework.server.monitor.ConnectionPoolMonitor;
 import org.jminor.framework.server.monitor.DatabaseMonitor;
 import org.jminor.framework.server.monitor.MonitorModel;
 import org.jminor.framework.server.monitor.ServerMonitor;
