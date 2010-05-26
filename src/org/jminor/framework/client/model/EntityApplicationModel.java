@@ -122,7 +122,7 @@ public abstract class EntityApplicationModel {
       if (model.getClass().equals(modelClass))
         return model;
 
-    return null;
+    throw new RuntimeException("Detail model of class: " + modelClass + " not found");
   }
 
   public Event eventCascadeRefreshChanged() {

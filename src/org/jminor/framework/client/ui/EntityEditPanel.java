@@ -33,7 +33,16 @@ import org.jminor.framework.i18n.FrameworkMessages;
 
 import org.apache.log4j.Logger;
 
-import javax.swing.*;
+import javax.swing.ComboBoxModel;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.JToolBar;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
@@ -127,7 +136,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   }
 
   /**
-   * @return a control for deleting the active entity (or the selected entities if a table model is available)
+   * @return a control for deleting the active entity
    */
   public Control getDeleteControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.DELETE_MNEMONIC);
@@ -1192,11 +1201,23 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @throws IllegalArgumentException in case the property is not a value list property
    */
   protected final SteppedComboBox createValueListComboBox(final String propertyID) {
+    return createValueListComboBox(propertyID, null);
+  }
+
+  /**
+   * Creates a SteppedComboBox containing the values defined by the given value list property,
+   * bound to the given property.
+   * @param propertyID the propertyID
+   * @param enabledState a state for controlling the enabled state of the component
+   * @return a SteppedComboBox bound to the property
+   * @throws IllegalArgumentException in case the property is not a value list property
+   */
+  protected final SteppedComboBox createValueListComboBox(final String propertyID, final State enabledState) {
     final Property property = EntityRepository.getProperty(getEditModel().getEntityID(), propertyID);
     if (!(property instanceof Property.ValueListProperty))
       throw new IllegalArgumentException("Property identified by '" + propertyID + "' is not a ValueListProperty");
 
-    return createValueListComboBox((Property.ValueListProperty) property);
+    return createValueListComboBox((Property.ValueListProperty) property, enabledState);
   }
 
   /**
@@ -1206,7 +1227,18 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @return a SteppedComboBox bound to the property
    */
   protected final SteppedComboBox createValueListComboBox(final Property.ValueListProperty property) {
-    final SteppedComboBox box = EntityUiUtil.createValueListComboBox(property, getEditModel());
+    return createValueListComboBox(property, null);
+  }
+
+  /**
+   * Creates a SteppedComboBox containing the values defined in the given value list property,
+   * bound to the given property.
+   * @param property the property
+   * @param enabledState a state for controlling the enabled state of the component
+   * @return a SteppedComboBox bound to the property
+   */
+  protected final SteppedComboBox createValueListComboBox(final Property.ValueListProperty property, final State enabledState) {
+    final SteppedComboBox box = EntityUiUtil.createValueListComboBox(property, getEditModel(), enabledState);
     setComponent(property.getPropertyID(), box);
 
     return box;

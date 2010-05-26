@@ -342,8 +342,13 @@ public class EntityUiUtil {
   }
 
   public static SteppedComboBox createValueListComboBox(final Property.ValueListProperty property, final EntityEditModel editModel) {
+    return createValueListComboBox(property, editModel, null);
+  }
+
+  public static SteppedComboBox createValueListComboBox(final Property.ValueListProperty property, final EntityEditModel editModel,
+                                                        final State enabledState) {
     final SteppedComboBox comboBox = createComboBox(property, editModel,
-            new ItemComboBoxModel<Object>(property.getValues()), null);
+            new ItemComboBoxModel<Object>(property.getValues()), enabledState);
     MaximumMatch.enable(comboBox);
 
     return comboBox;
