@@ -1664,3 +1664,4 @@
   build.xml/.properties added -plugins.jar and related stuff
   Added jminor-plugins.jar to demo run files
   ConnectionPoolMonitor moved back to framework.server.monitor to remove common -> JFreeChart dependency
+  EntityComboBoxModel.createForeignKeyFilterComboBoxModel(), returned model selects the item referenced by the selected item

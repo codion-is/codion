@@ -237,11 +237,11 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
   }
 
   protected List<Object> getFilteredItems() {
-    return new ArrayList<Object>(filteredItems);
+    return Collections.unmodifiableList(filteredItems);
   }
 
   protected List<Object> getVisibleItems() {
-    return new ArrayList<Object>(visibleItems);
+    return Collections.unmodifiableList(visibleItems);
   }
 
   /**

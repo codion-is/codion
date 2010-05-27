@@ -176,9 +176,15 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
    * @param primaryKey the primary key of the entity to select
    */
   public void setSelectedEntityByPrimaryKey(final Entity.Key primaryKey) {
-    final int indexOfKey = getIndexOfKey(primaryKey);
+    final Entity toSelect = new Entity(primaryKey);
+    List<Object> items = getVisibleItems();
+    int indexOfKey = items.indexOf(toSelect);
     if (indexOfKey >= 0)
-      setSelectedItem(getElementAt(indexOfKey));
+      setSelectedItem(items.get(indexOfKey));
+    items = getFilteredItems();
+    indexOfKey = items.indexOf(toSelect);
+    if (indexOfKey >= 0)
+      setSelectedItem(items.get(indexOfKey));
   }
 
   /**
@@ -267,6 +273,13 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
         final Entity selectedEntity = foreignKeyModel.getSelectedEntity();
         setForeignKeyFilterEntities(foreignKeyPropertyID,
                 selectedEntity == null ? new ArrayList<Entity>(0) : Arrays.asList(selectedEntity));
+      }
+    });
+    eventSelectionChanged().addListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        final Entity selected = getSelectedEntity();
+        if (selected != null)
+          foreignKeyModel.setSelectedEntityByPrimaryKey(selected.getReferencedPrimaryKey(foreignKeyProperty));
       }
     });
 
