@@ -1665,3 +1665,7 @@
   Added jminor-plugins.jar to demo run files
   ConnectionPoolMonitor moved back to framework.server.monitor to remove common -> JFreeChart dependency
   EntityComboBoxModel.createForeignKeyFilterComboBoxModel(), returned model selects the item referenced by the selected item
+  AbstractFilteredTablePanel.txtSearch, initializeSearchField() added
+  AbstractFilteredTableModel.findNextItemIndex() and getSearchCriteria() added
+  EntityTableModel overrides above method
+  EntityTablePanel.initializeSouthPanel() now adds search field

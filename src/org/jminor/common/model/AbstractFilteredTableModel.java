@@ -156,6 +156,20 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
     return ret;
   }
 
+  public int findNextItemIndex(final int startIdx, final String searchText) {
+    return findNextItemIndex(startIdx, getSearchCriteria(searchText));
+  }
+
+  public int findNextItemIndex(final int startIdx, final FilterCriteria<T> criteria) {
+    for (int i = startIdx; i < visibleItems.size(); i++) {
+      final T item = getItemAtViewIndex(i);
+      if (criteria.include(item))
+        return i;
+    }
+
+    return -1;
+  }
+
   /**
    * Clears all entities from this TableModel
    */
@@ -634,6 +648,15 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
 
   protected int viewIndexOf(final T item) {
     return tableSorter.viewIndex(modelIndexOf(item));
+  }
+
+  protected FilterCriteria<T> getSearchCriteria(final String searchText) {
+    return new FilterCriteria<T>() {
+      public boolean include(final T item) {
+        return !(item == null || searchText == null) &&
+                item.toString().toLowerCase().contains(searchText.toLowerCase());
+      }
+    };
   }
 
   protected abstract TableColumnModel initializeColumnModel(final String tableIdentifier);

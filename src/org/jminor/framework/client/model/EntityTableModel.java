@@ -6,6 +6,7 @@ package org.jminor.framework.client.model;
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.model.AbstractFilteredTableModel;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.FilterCriteria;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.reports.ReportDataWrapper;
@@ -592,6 +593,22 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
    */
   protected int getFetchCount() {
     return -1;
+  }
+
+  @Override
+  protected FilterCriteria<Entity> getSearchCriteria(final String searchText) {
+    return new FilterCriteria<Entity>() {
+      public boolean include(final Entity entity) {
+        for (final Property property : EntityRepository.getVisibleProperties(entity.getEntityID())) {
+          if (!entity.isValueNull(property)) {
+            final String value = entity.getValueAsString(property.getPropertyID());
+            if (value.toLowerCase().contains(searchText.toLowerCase()))
+              return true;
+          }
+        }
+        return false;
+      }
+    };
   }
 
   /**

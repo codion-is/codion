@@ -58,6 +58,7 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -818,8 +819,11 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     statusMessageLabel = new JLabel("", JLabel.CENTER);
     statusMessageLabel.setFont(new Font(statusMessageLabel.getFont().getName(), Font.PLAIN, 12));
 
+    final JPanel centerPanel = new JPanel(new GridLayout(1, 2, 5, 5));
+    centerPanel.add(statusMessageLabel);
+    centerPanel.add(getSearchField());
     final JPanel panel = new JPanel(new BorderLayout());
-    panel.add(statusMessageLabel, BorderLayout.CENTER);
+    panel.add(centerPanel, BorderLayout.CENTER);
     panel.setBorder(BorderFactory.createEtchedBorder());
     refreshToolBar = initializeRefreshToolbar();
     if (refreshToolBar != null)

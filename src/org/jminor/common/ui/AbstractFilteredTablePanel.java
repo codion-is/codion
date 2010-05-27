@@ -13,8 +13,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.table.TableColumn;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,6 +43,8 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
    */
   private final JScrollPane tableScrollPane;
 
+  private final JTextField txtSearch;
+
   public AbstractFilteredTablePanel(final AbstractFilteredTableModel<T> model) {
     if (model == null)
       throw new IllegalArgumentException("Table model must not be null");
@@ -47,6 +52,7 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
     this.model = model;
     this.table = initializeJTable();
     this.tableScrollPane = new JScrollPane(table);
+    this.txtSearch = initializeSearchField();
   }
 
   /**
@@ -61,6 +67,10 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
    */
   public JTable getJTable() {
     return table;
+  }
+
+  public JTextField getSearchField() {
+    return txtSearch;
   }
 
   public JScrollPane getTableScrollPane() {
@@ -105,6 +115,29 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
         getTableModel().setColumnVisible(column.getIdentifier(), chkButton.isSelected());
       }
     }
+  }
+
+  protected JTextField initializeSearchField() {
+    final JTextField txtSearch = new JTextField();
+    txtSearch.addActionListener(new ActionListener() {
+      int currentSearchIndex = 0;
+      public void actionPerformed(ActionEvent e) {
+        if (txtSearch.getText().length() == 0) {
+          currentSearchIndex = 0;
+          return;
+        }
+        final int viewIndex = getTableModel().findNextItemIndex(currentSearchIndex, txtSearch.getText());
+        if (viewIndex >= 0) {
+          currentSearchIndex = viewIndex + 1;
+          getTableModel().setSelectedItemIndex(viewIndex);
+        }
+        else {
+          currentSearchIndex = 0;
+        }
+      }
+    });
+
+    return txtSearch;
   }
 
   /**
