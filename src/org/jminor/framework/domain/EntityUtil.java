@@ -275,14 +275,23 @@ public class EntityUtil {
     return entityMap;
   }
 
-  public static List<Property> getSortedProperties(final String entityID, final Collection<String> propertyIDs) {
+  public static List<Property> getProperties(final String entityID, final Collection<String> propertyIDs) {
     if (propertyIDs == null || propertyIDs.size() == 0)
       return new ArrayList<Property>(0);
 
-    final Collator collator = Collator.getInstance();
     final List<Property> properties = new ArrayList<Property>(propertyIDs.size());
     for (final String propertyID : propertyIDs)
       properties.add(EntityRepository.getProperty(entityID, propertyID));
+
+    return properties;
+  }
+
+  public static List<Property> getSortedProperties(final String entityID, final Collection<String> propertyIDs) {
+    return sort(getProperties(entityID, propertyIDs));
+  }
+
+  public static List<Property> sort(final List<Property> properties) {
+    final Collator collator = Collator.getInstance();
     Collections.sort(properties, new Comparator<Property>() {
       public int compare(final Property propertyOne, final Property propertyTwo) {
         return collator.compare(propertyOne.toString(), propertyTwo.toString());
