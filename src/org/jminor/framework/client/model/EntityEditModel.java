@@ -419,7 +419,7 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
   }
 
   @Override
-  public void validate(final String property, final int action) throws ValidationException {
+  public final void validate(final String property, final int action) throws ValidationException {
     validate(getEntity(), property, action);
   }
 
