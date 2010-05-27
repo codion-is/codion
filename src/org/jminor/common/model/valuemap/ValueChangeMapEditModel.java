@@ -98,7 +98,7 @@ public abstract class ValueChangeMapEditModel<K, V> implements Refreshable {
   /**
    * Sets the active value map, that is, deep copies the value from the source map into the underlying map
    * @param valueMap the map to set as active, if null then the default map value is set as active
-   * @see #getDefaultValueMap() 
+   * @see #getDefaultValueMap()
    * @see #eventValueMapSet()
    */
   public void setValueMap(final ValueChangeMap<K, V> valueMap) {
@@ -144,8 +144,7 @@ public abstract class ValueChangeMapEditModel<K, V> implements Refreshable {
   public abstract boolean isNullable(final ValueChangeMap<K, V> valueMap, final K key);
 
   /**
-   * Checks if the value associated with the give key is valid, throws a ValidationException if not,
-   * this default implementation performs a null value validation if the corresponding configuration parameter is set
+   * Checks if the value associated with the give key is valid, throws a ValidationException if not
    * @param key the key
    * @param action describes the action requiring validation,
    * ValueChangeMapEditModel.INSERT, ValueChangeMapEditModel.UPDATE or ValueChangeMapEditModel.UNKNOWN
@@ -154,8 +153,7 @@ public abstract class ValueChangeMapEditModel<K, V> implements Refreshable {
   public abstract void validate(final K key, final int action) throws ValidationException;
 
   /**
-   * Checks if the value associated with the give key is valid, throws a ValidationException if not,
-   * this default implementation performs a null value validation if the corresponding configuration parameter is set
+   * Checks if the value associated with the give key is valid, throws a ValidationException if not
    * @param valueMap the value map to validate
    * @param key the key the value is associated with
    * @param action describes the action requiring validation,
