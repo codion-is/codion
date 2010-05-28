@@ -713,10 +713,11 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
                 });
       if (getTablePanel().getSearchPanel() != null) {
         UiUtil.addKeyEvent(this, KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
-                true, new AbstractAction("selectSearchPanel") {
+                true, new AbstractAction("toggleSearchPanel") {
                   public void actionPerformed(ActionEvent event) {
-                    getTablePanel().setSearchPanelVisible(true);
-                    getTablePanel().getSearchPanel().requestFocusInWindow();
+                    getTablePanel().toggleSearchPanel();
+                    if (getTablePanel().isSearchPanelVisible())
+                      getTablePanel().getSearchPanel().requestFocusInWindow();
                   }
                 });
       }

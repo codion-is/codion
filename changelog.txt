@@ -1673,3 +1673,4 @@
   ALT removed from shortcut key combos
   DocumentAdapter added
   EntityTablePanel overrides initializeSearchField()
+  EntityPanel.setupKeyboardActions(), search panel is now toggled instead of simply shown
