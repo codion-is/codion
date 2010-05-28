@@ -134,24 +134,26 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
     txtSearch.getDocument().addDocumentListener(new DocumentAdapter() {
       @Override
       public void insertOrUpdate(final DocumentEvent e) {
-        doSearch(false, searchResultIndex == -1 ? 0 : searchResultIndex, searchField.getText());
+        doSearch(false, searchResultIndex == -1 ? 0 : searchResultIndex, true, searchField.getText());
       }
     });
     txtSearch.addKeyListener(new KeyAdapter() {
       @Override
       public void keyReleased(final KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_ENTER)
-          doSearch(e.isShiftDown(), searchResultIndex + 1, searchField.getText());
+        if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_DOWN)
+          doSearch(e.isShiftDown(), searchResultIndex + 1, true, searchField.getText());
+        else if (e.getKeyCode() == KeyEvent.VK_UP)
+          doSearch(e.isShiftDown(), searchResultIndex - 1, false, searchField.getText());
       }
     });
 
     return txtSearch;
   }
 
-  private void doSearch(final boolean addToSelection, final int fromIndex,
+  private void doSearch(final boolean addToSelection, final int fromIndex, final boolean forward,
                         final String searchText) {
     if (searchText.length() > 0) {
-      final int viewIndex = getTableModel().findNextItemIndex(fromIndex, searchText);
+      final int viewIndex = getTableModel().findNextItemIndex(fromIndex, forward, searchText);
       if (viewIndex >= 0) {
         searchResultIndex = viewIndex;
         if (addToSelection)

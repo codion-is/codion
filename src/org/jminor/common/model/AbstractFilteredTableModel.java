@@ -156,18 +156,30 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
     return ret;
   }
 
-  public int findNextItemIndex(final int startIdx, final String searchText) {
-    return findNextItemIndex(startIdx, getSearchCriteria(searchText));
+  public int findNextItemIndex(final int startIdx, final boolean forward, final String searchText) {
+    return findNextItemIndex(startIdx, forward, getSearchCriteria(searchText));
   }
 
-  public int findNextItemIndex(final int startIdx, final FilterCriteria<T> criteria) {
-    int index = startIdx;
-    if (index >= visibleItems.size())
-      index = 0;//wrap around
-    for (int i = index; i < visibleItems.size(); i++) {
-      final T item = getItemAtViewIndex(i);
-      if (criteria.include(item))
-        return i;
+  public int findNextItemIndex(final int startIdx, final boolean forward, final FilterCriteria<T> criteria) {
+    if (forward) {
+      int index = startIdx;
+      if (index >= visibleItems.size())
+        index = 0;//wrap around
+      for (int i = index; i < visibleItems.size(); i++) {
+        final T item = getItemAtViewIndex(i);
+        if (criteria.include(item))
+          return i;
+      }
+    }
+    else {
+      int index = startIdx;
+      if (index < 0)
+        index = visibleItems.size() - 1;//wrap around
+      for (int i = index; i >= 0; i--) {
+        final T item = getItemAtViewIndex(i);
+        if (criteria.include(item))
+          return i;
+      }
     }
 
     return -1;
