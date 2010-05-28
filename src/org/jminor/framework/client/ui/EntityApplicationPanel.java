@@ -735,37 +735,30 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   }
 
   private void initializeResizing(final EntityPanel panel) {
-    final InputMap inputMap = panel.getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-    final ActionMap actionMap = panel.getActionMap();
-    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT,
-            KeyEvent.SHIFT_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, true), DIV_LEFT);
-    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT,
-            KeyEvent.SHIFT_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, true), DIV_RIGHT);
-    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP,
-            KeyEvent.SHIFT_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, true), DIV_UP);
-    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN,
-            KeyEvent.SHIFT_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, true), DIV_DOWN);
-
-    actionMap.put(DIV_RIGHT, new AbstractAction() {
-      public void actionPerformed(ActionEvent e) {
-        final EntityPanel activePanelParent = panel.getMasterPanel();
-        if (activePanelParent != null)
-          activePanelParent.resizePanel(EntityPanel.RIGHT, DIVIDER_JUMP);
-      }
-    });
-    actionMap.put(DIV_LEFT, new AbstractAction() {
+    UiUtil.addKeyEvent(panel, KeyEvent.VK_LEFT, KeyEvent.SHIFT_DOWN_MASK + KeyEvent.ALT_DOWN_MASK,
+            new AbstractAction(DIV_LEFT) {
       public void actionPerformed(ActionEvent e) {
         final EntityPanel activePanelParent = panel.getMasterPanel();
         if (activePanelParent != null)
           activePanelParent.resizePanel(EntityPanel.LEFT, DIVIDER_JUMP);
       }
     });
-    actionMap.put(DIV_DOWN, new AbstractAction() {
+    UiUtil.addKeyEvent(panel, KeyEvent.VK_RIGHT, KeyEvent.SHIFT_DOWN_MASK + KeyEvent.ALT_DOWN_MASK,
+            new AbstractAction(DIV_RIGHT) {
+      public void actionPerformed(ActionEvent e) {
+        final EntityPanel activePanelParent = panel.getMasterPanel();
+        if (activePanelParent != null)
+          activePanelParent.resizePanel(EntityPanel.RIGHT, DIVIDER_JUMP);
+      }
+    });
+    UiUtil.addKeyEvent(panel, KeyEvent.VK_DOWN, KeyEvent.SHIFT_DOWN_MASK + KeyEvent.ALT_DOWN_MASK,
+            new AbstractAction(DIV_DOWN) {
       public void actionPerformed(ActionEvent e) {
         panel.resizePanel(EntityPanel.DOWN, DIVIDER_JUMP);
       }
     });
-    actionMap.put(DIV_UP, new AbstractAction() {
+    UiUtil.addKeyEvent(panel, KeyEvent.VK_UP, KeyEvent.SHIFT_DOWN_MASK + KeyEvent.ALT_DOWN_MASK,
+            new AbstractAction(DIV_UP) {
       public void actionPerformed(ActionEvent e) {
         panel.resizePanel(EntityPanel.UP, DIVIDER_JUMP);
       }

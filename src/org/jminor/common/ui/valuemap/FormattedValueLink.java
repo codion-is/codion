@@ -3,12 +3,12 @@
  */
 package org.jminor.common.ui.valuemap;
 
+import org.jminor.common.model.DocumentAdapter;
 import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
 import org.jminor.common.ui.control.LinkType;
 
 import javax.swing.JFormattedTextField;
 import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -93,14 +93,11 @@ public class FormattedValueLink<K> extends TextValueLink<K> {
     final Color invalidBackgroundColor = Color.LIGHT_GRAY;
     final String defaultToolTip = textComponent.getToolTipText();
     final String maskString = textComponent.getText();
-    textComponent.getDocument().addDocumentListener(new DocumentListener() {
-      public void insertUpdate(final DocumentEvent e) {
+    textComponent.getDocument().addDocumentListener(new DocumentAdapter() {
+      @Override
+      public void insertOrUpdate(final DocumentEvent e) {
         updateValidityInfo(textComponent, editModel, maskString, defaultTextFieldBackground, invalidBackgroundColor, defaultToolTip);
       }
-      public void removeUpdate(final DocumentEvent e) {
-        updateValidityInfo(textComponent, editModel, maskString, defaultTextFieldBackground, invalidBackgroundColor, defaultToolTip);
-      }
-      public void changedUpdate(final DocumentEvent e) {}
     });
     editModel.getValueChangeEvent(getKey()).addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {

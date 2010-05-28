@@ -88,7 +88,7 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
    * true while the model data is being sorted
    */
   private boolean isSorting = false;
-  
+
   private final String mapTypeID;
 
   public AbstractFilteredTableModel(final String mapTypeID) {
@@ -161,7 +161,10 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
   }
 
   public int findNextItemIndex(final int startIdx, final FilterCriteria<T> criteria) {
-    for (int i = startIdx; i < visibleItems.size(); i++) {
+    int index = startIdx;
+    if (index >= visibleItems.size())
+      index = 0;//wrap around
+    for (int i = index; i < visibleItems.size(); i++) {
       final T item = getItemAtViewIndex(i);
       if (criteria.include(item))
         return i;

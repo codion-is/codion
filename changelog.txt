@@ -1669,3 +1669,7 @@
   AbstractFilteredTableModel.findNextItemIndex() and getSearchCriteria() added
   EntityTableModel overrides above method
   EntityTablePanel.initializeSouthPanel() now adds search field
+  SearchFieldHint added
+  ALT removed from shortcut key combos
+  DocumentAdapter added
+  EntityTablePanel overrides initializeSearchField()

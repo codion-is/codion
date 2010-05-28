@@ -698,24 +698,24 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
    *///todo fix this so that dialogged panels also behave accordingly
   protected void setupKeyboardActions() {
     if (containsTablePanel()) {
-      UiUtil.addKeyEvent(this, KeyEvent.VK_T, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
-              KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, true, new AbstractAction("selectTablePanel") {
+      UiUtil.addKeyEvent(this, KeyEvent.VK_T, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
+              true, new AbstractAction("selectTablePanel") {
                 public void actionPerformed(ActionEvent event) {
                   getTablePanel().getJTable().requestFocusInWindow();
                 }
               });
     }
     if (containsEditPanel()) {
-      UiUtil.addKeyEvent(this, KeyEvent.VK_E, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
-              KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, true, new AbstractAction("selectEditPanel") {
+      UiUtil.addKeyEvent(this, KeyEvent.VK_E, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
+              true, new AbstractAction("selectEditPanel") {
                 public void actionPerformed(ActionEvent event) {
                   if (getEditPanelState() == HIDDEN)
                     setEditPanelState(EMBEDDED);
                   getEditPanel().prepareUI(true, false);
                 }
               });
-      UiUtil.addKeyEvent(this, KeyEvent.VK_C, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
-              KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, true, new AbstractAction("selectComponent") {
+      UiUtil.addKeyEvent(this, KeyEvent.VK_C, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
+              true, new AbstractAction("selectComponent") {
                 public void actionPerformed(ActionEvent event) {
                   if (getEditPanelState() == HIDDEN)
                     setEditPanelState(EMBEDDED);
@@ -728,8 +728,8 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
               });
     }
     if (getTablePanel().getSearchPanel() != null) {
-      UiUtil.addKeyEvent(this, KeyEvent.VK_S, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
-              KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, true, new AbstractAction("selectSearchPanel") {
+      UiUtil.addKeyEvent(this, KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
+              true, new AbstractAction("selectSearchPanel") {
                 public void actionPerformed(ActionEvent event) {
                   getTablePanel().setSearchPanelVisible(true);
                   getTablePanel().getSearchPanel().requestFocusInWindow();

@@ -44,6 +44,7 @@ public class TristateCheckBox extends JCheckBox {
 
     // override action behaviour
     super.addMouseListener(new MouseAdapter() {
+      @Override
       public void mousePressed(MouseEvent e) {
         TristateCheckBox.this.iterateState();
       }
@@ -72,6 +73,7 @@ public class TristateCheckBox extends JCheckBox {
   }
 
   //Overrides superclass method
+  @Override
   public void setModel(ButtonModel newModel) {
     super.setModel(newModel);
 
@@ -81,6 +83,7 @@ public class TristateCheckBox extends JCheckBox {
   }
 
   //Empty override of superclass method
+  @Override
   public void addMouseListener(MouseListener l) {}
 
   // Mostly delegates to model

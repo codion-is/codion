@@ -3,6 +3,7 @@
  */
 package org.jminor.common.ui.valuemap;
 
+import org.jminor.common.model.DocumentAdapter;
 import org.jminor.common.model.Item;
 import org.jminor.common.model.combobox.ItemComboBoxModel;
 import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
@@ -12,7 +13,6 @@ import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
@@ -58,14 +58,11 @@ public class ComboBoxValueLink<K> extends AbstractValueMapLink<K, Object> {
     });
     //this allows editable string based combo boxes to post their edits after each keystroke
     if (comboBox.isEditable() && isString) {
-      ((JTextField)comboBox.getEditor().getEditorComponent()).getDocument().addDocumentListener(new DocumentListener() {
-        public void insertUpdate(DocumentEvent e) {
+      ((JTextField)comboBox.getEditor().getEditorComponent()).getDocument().addDocumentListener(new DocumentAdapter() {
+        @Override
+        public void insertOrUpdate(final DocumentEvent e) {
           boxModel.setSelectedItem(comboBox.getEditor().getItem());
         }
-        public void removeUpdate(DocumentEvent e) {
-          boxModel.setSelectedItem(comboBox.getEditor().getItem());
-        }
-        public void changedUpdate(DocumentEvent e) {}
       });
     }
   }

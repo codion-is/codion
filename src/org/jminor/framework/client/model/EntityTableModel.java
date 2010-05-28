@@ -600,11 +600,9 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
     return new FilterCriteria<Entity>() {
       public boolean include(final Entity entity) {
         for (final Property property : EntityRepository.getVisibleProperties(entity.getEntityID())) {
-          if (!entity.isValueNull(property)) {
-            final String value = entity.getValueAsString(property.getPropertyID());
-            if (value.toLowerCase().contains(searchText.toLowerCase()))
-              return true;
-          }
+          final String value = entity.getValueAsString(property);
+          if (value.toLowerCase().contains(searchText.toLowerCase()))
+            return true;
         }
         return false;
       }

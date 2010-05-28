@@ -58,7 +58,6 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -818,10 +817,10 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
   protected JPanel initializeSouthPanel(final ControlSet toolbarControlSet) {
     statusMessageLabel = new JLabel("", JLabel.CENTER);
     statusMessageLabel.setFont(new Font(statusMessageLabel.getFont().getName(), Font.PLAIN, 12));
-
-    final JPanel centerPanel = new JPanel(new GridLayout(1, 2, 5, 5));
-    centerPanel.add(statusMessageLabel);
-    centerPanel.add(getSearchField());
+    final JPanel centerPanel = new JPanel(new BorderLayout(5, 5));
+    final JTextField searchField = getSearchField();
+    centerPanel.add(statusMessageLabel, BorderLayout.CENTER);
+    centerPanel.add(searchField, BorderLayout.WEST);
     final JPanel panel = new JPanel(new BorderLayout());
     panel.add(centerPanel, BorderLayout.CENTER);
     panel.setBorder(BorderFactory.createEtchedBorder());
@@ -842,6 +841,15 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     return panel;
   }
 
+  @Override
+  protected JTextField initializeSearchField() {
+    final JTextField searchField = super.initializeSearchField();
+    searchField.setBorder(BorderFactory.createLoweredBevelBorder());
+    searchField.setColumns(8);
+
+    return searchField;
+  }
+
   /**
    * Adds a popup menu to <code>table</code>
    * @param table the table
@@ -856,14 +864,14 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     table.getTableHeader().setComponentPopupMenu(popupMenu);
     if (table.getParent() != null)
       ((JComponent) table.getParent()).setComponentPopupMenu(popupMenu);
-    UiUtil.addKeyEvent(table, KeyEvent.VK_G, JComponent.WHEN_FOCUSED,
-            KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, new AbstractAction("showPopupMenu") {
+    UiUtil.addKeyEvent(table, KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_FOCUSED,
+            new AbstractAction("showPopupMenu") {
               public void actionPerformed(ActionEvent event) {
                 popupMenu.show(table, 100, table.getSelectedRow() * table.getRowHeight());
               }
             });
-    UiUtil.addKeyEvent(table, KeyEvent.VK_V, JComponent.WHEN_FOCUSED,
-            KeyEvent.CTRL_DOWN_MASK, new AbstractAction("showEntityMenu") {
+    UiUtil.addKeyEvent(table, KeyEvent.VK_V, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_FOCUSED,
+            new AbstractAction("showEntityMenu") {
               public void actionPerformed(ActionEvent event) {
                 showEntityMenu(new Point(100, table.getSelectedRow() * table.getRowHeight()));
               }

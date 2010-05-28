@@ -403,6 +403,8 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
   public String getValueAsString(final Property property) {
     if (property instanceof Property.DenormalizedViewProperty)
       return getDenormalizedViewValueFormatted((Property.DenormalizedViewProperty) property);
+    if (property instanceof Property.ValueListProperty)
+      return ((Property.ValueListProperty) property).getCaption(getValue(property));
 
     return getFormattedValue(property);
   }
@@ -1141,7 +1143,7 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
 
     public String getFormattedValue(final Entity entity, final Property property, final Format format) {
       final Object value = entity.getValue(property);
-      return entity.isValueNull(property) ? "" : (format != null ? format.format(value) : value.toString());
+      return value == null ? "" : (format != null ? format.format(value) : value.toString());
     }
 
     @SuppressWarnings({"UnusedDeclaration"})

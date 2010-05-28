@@ -702,23 +702,28 @@ public class UiUtil {
   }
 
   public static void addKeyEvent(final JComponent component, final int keyEvent, final Action action) {
-    addKeyEvent(component, keyEvent, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, 0, action);
+    addKeyEvent(component, keyEvent, 0, action);
   }
 
-  public static void addKeyEvent(final JComponent component, final int keyEvent, final int condition,
-                                 final int modifiers, final Action action) {
-    addKeyEvent(component, keyEvent,  condition, modifiers, false, action);
+  public static void addKeyEvent(final JComponent component, final int keyEvent, final int modifiers,
+                                 final Action action) {
+    addKeyEvent(component, keyEvent, modifiers, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, action);
   }
 
-  public static void addKeyEvent(final JComponent component, final int keyEvent, final int condition,
-                                 final int modifiers, final boolean onKeyRelease, final Action action) {
+  public static void addKeyEvent(final JComponent component, final int keyEvent, final int modifiers, final int condition,
+                                 final Action action) {
+    addKeyEvent(component, keyEvent, modifiers, condition, false, action);
+  }
+
+  public static void addKeyEvent(final JComponent component, final int keyEvent, final int modifiers, final int condition,
+                                 final boolean onKeyRelease, final Action action) {
     final Object name = action.getValue(Action.NAME);
     component.getInputMap(condition).put(KeyStroke.getKeyStroke(keyEvent, modifiers, onKeyRelease), name);
     component.getActionMap().put(name, action);
   }
 
   public static void addLookupDialog(final JTextField txtField, final ValueCollectionProvider valueListProvider) {
-    addKeyEvent(txtField, KeyEvent.VK_SPACE, 0, InputEvent.CTRL_DOWN_MASK, new AbstractAction("valueLookup") {
+    addKeyEvent(txtField, KeyEvent.VK_SPACE, InputEvent.CTRL_DOWN_MASK, 0, new AbstractAction("valueLookup") {
       public void actionPerformed(final ActionEvent e) {
         try {
           final Object value = selectValue(txtField, valueListProvider.getValues());

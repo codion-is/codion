@@ -5,8 +5,10 @@ package org.jminor.common.ui;
 
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.AbstractFilteredTableModel;
+import org.jminor.common.model.DocumentAdapter;
 import org.jminor.common.ui.control.Control;
 import org.jminor.common.ui.control.ControlFactory;
+import org.jminor.common.ui.textfield.SearchFieldHint;
 
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
@@ -14,10 +16,13 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.UIManager;
+import javax.swing.event.DocumentEvent;
 import javax.swing.table.TableColumn;
+import java.awt.Color;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,7 +48,12 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
    */
   private final JScrollPane tableScrollPane;
 
-  private final JTextField txtSearch;
+  /**
+   * Represents the index of the last search result
+   */
+  private int searchResultIndex = -1;
+
+  private final JTextField searchField;
 
   public AbstractFilteredTablePanel(final AbstractFilteredTableModel<T> model) {
     if (model == null)
@@ -52,7 +62,7 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
     this.model = model;
     this.table = initializeJTable();
     this.tableScrollPane = new JScrollPane(table);
-    this.txtSearch = initializeSearchField();
+    this.searchField = initializeSearchField();
   }
 
   /**
@@ -70,7 +80,7 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
   }
 
   public JTextField getSearchField() {
-    return txtSearch;
+    return searchField;
   }
 
   public JScrollPane getTableScrollPane() {
@@ -119,25 +129,41 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
 
   protected JTextField initializeSearchField() {
     final JTextField txtSearch = new JTextField();
-    txtSearch.addActionListener(new ActionListener() {
-      int currentSearchIndex = 0;
-      public void actionPerformed(ActionEvent e) {
-        if (txtSearch.getText().length() == 0) {
-          currentSearchIndex = 0;
-          return;
-        }
-        final int viewIndex = getTableModel().findNextItemIndex(currentSearchIndex, txtSearch.getText());
-        if (viewIndex >= 0) {
-          currentSearchIndex = viewIndex + 1;
-          getTableModel().setSelectedItemIndex(viewIndex);
-        }
-        else {
-          currentSearchIndex = 0;
-        }
+    txtSearch.setBackground((Color) UIManager.getLookAndFeel().getDefaults().get("TextField.inactiveBackground"));
+    new SearchFieldHint(txtSearch);
+    txtSearch.getDocument().addDocumentListener(new DocumentAdapter() {
+      @Override
+      public void insertOrUpdate(final DocumentEvent e) {
+        doSearch(false, searchResultIndex == -1 ? 0 : searchResultIndex, searchField.getText());
+      }
+    });
+    txtSearch.addKeyListener(new KeyAdapter() {
+      @Override
+      public void keyReleased(final KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_ENTER)
+          doSearch(e.isShiftDown(), searchResultIndex + 1, searchField.getText());
       }
     });
 
     return txtSearch;
+  }
+
+  private void doSearch(final boolean addToSelection, final int fromIndex,
+                        final String searchText) {
+    if (searchText.length() > 0) {
+      final int viewIndex = getTableModel().findNextItemIndex(fromIndex, searchText);
+      if (viewIndex >= 0) {
+        searchResultIndex = viewIndex;
+        if (addToSelection)
+          getTableModel().addSelectedItemIndex(viewIndex);
+        else
+          getTableModel().setSelectedItemIndex(viewIndex);
+      }
+      else
+        searchResultIndex = -1;
+    }
+    else
+      searchResultIndex = -1;
   }
 
   /**

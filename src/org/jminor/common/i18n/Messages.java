@@ -68,6 +68,7 @@ public class Messages {
   public static final String SELECT_VALUE = "select_value";
   public static final String SELECT_INPUT_FIELD = "select_input_field";
   public static final String SELECT_COLUMNS = "select_columns";
+  public static final String SEARCH_FIELD_HINT = "search_field_hint";
 
   static {
     UIManager.put("OptionPane.yesButtonText", get(YES));

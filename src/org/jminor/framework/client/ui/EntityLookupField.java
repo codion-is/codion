@@ -6,6 +6,7 @@ package org.jminor.framework.client.ui;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.TextBeanValueLink;
+import org.jminor.common.ui.textfield.SearchFieldHint;
 import org.jminor.framework.client.model.EntityLookupModel;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.i18n.FrameworkMessages;
@@ -36,11 +37,11 @@ import java.util.Vector;
 public class EntityLookupField extends JTextField {
 
   private final EntityLookupModel model;
+  private final SearchFieldHint searchHint;
 
   private Action enterAction;
-  private String searchHint = "";
   private Color defaultBackgroundColor = getBackground();
-  private Color defaultForegroundColor = getForeground();
+  private boolean searchHintEnabled = true;
 
   /**
    * Initializes a new EntityLookupField
@@ -77,6 +78,7 @@ public class EntityLookupField extends JTextField {
     if (model == null)
       throw new IllegalArgumentException("Can not construct a EntityLookupField without a EntityLookupModel");
     this.model = model;
+    this.searchHint = new SearchFieldHint(this, Messages.get(Messages.SEARCH_FIELD_HINT));
     setEnterAction(enterAction);
     setToolTipText(model.getDescription());
     setComponentPopupMenu(initializePopupMenu());
@@ -84,11 +86,6 @@ public class EntityLookupField extends JTextField {
     addFocusListener(initializeFocusListener());
     addEscapeListener();
     bindProperty();
-  }
-
-  public void setSearchHint(final String text) {
-    this.searchHint = text == null ? "" : text;
-    updateState(false);
   }
 
   public EntityLookupModel getModel() {
@@ -105,6 +102,10 @@ public class EntityLookupField extends JTextField {
 
   public void setDefaultBackgroundColor(final Color defaultBackgroundColor) {
     this.defaultBackgroundColor = defaultBackgroundColor;
+  }
+
+  public void setSearchHintEnabled(final boolean searchHintEnabled) {
+    this.searchHintEnabled = searchHintEnabled;
   }
 
   private void selectEntities(final List<Entity> entities) {
@@ -174,12 +175,14 @@ public class EntityLookupField extends JTextField {
       @Override
       protected void setUIValue(final Object propertyValue) {
         super.setUIValue(propertyValue);
-        updateState(false);
+        updateColors();
+        if (searchHintEnabled)
+          searchHint.updateState();
       }
     };
     getModel().eventSearchStringChanged().addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        updateState(true);
+        updateColors();
       }
     });
   }
@@ -196,39 +199,21 @@ public class EntityLookupField extends JTextField {
   private FocusListener initializeFocusListener() {
     return new FocusListener() {
       public void focusGained(final FocusEvent e) {
-        updateState(false);
+        updateColors();
       }
       public void focusLost(final FocusEvent e) {
         if (getText().length() == 0)
           getModel().setSelectedEntity(null);
 //        else //todo?
 //          performLookup();
-        updateState(false);
+        updateColors();
       }
     };
   }
 
-  private void updateState(final boolean colorsOnly) {
-    if (colorsOnly)
-      udpateColors();
-    else
-      updateHint();
-  }
-
-  private void updateHint() {
-    final boolean hideHint = hasFocus() && getText().equals(searchHint);
-    final boolean showHint = !hasFocus() && getText().length() == 0;
-    if (hideHint)
-      setText("");
-    else if (showHint)
-      setText(searchHint);
-  }
-
-  private void udpateColors() {
-    final boolean defaultBackground = getModel().searchStringRepresentsSelected() || getText().equals(searchHint);
+  private void updateColors() {
+    final boolean defaultBackground = getModel().searchStringRepresentsSelected() || searchHint.isHintVisible();
     setBackground(defaultBackground ? defaultBackgroundColor : Color.LIGHT_GRAY);
-    final boolean specificForeground = !hasFocus() && getText().equals(searchHint);
-    setForeground(specificForeground ? Color.LIGHT_GRAY : defaultForegroundColor);
   }
 
   private AbstractAction initializeLookupAction() {

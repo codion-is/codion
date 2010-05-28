@@ -111,17 +111,16 @@ public class LoginPanel extends JPanel {
     setLayout(new BorderLayout());
     add(retBase, BorderLayout.CENTER);
     if (usernameField.getText().length() == 0)
-      addInitialFocusHack(usernameField, usernameField.getText().length());
+      addInitialFocusHack(usernameField);
     else
-      addInitialFocusHack(passwordField, passwordField.getPassword().length);
+      addInitialFocusHack(passwordField);
   }
 
   /**
    * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=5018574
    * @param textField the field
-   * @param caretPosition the caret position
    */
-  private static void addInitialFocusHack(final JTextField textField, final int caretPosition) {
+  private static void addInitialFocusHack(final JTextField textField) {
     textField.addHierarchyListener(new HierarchyListener() {
       public void hierarchyChanged(HierarchyEvent e) {
         if (textField.isShowing() && (e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0) {
@@ -129,7 +128,7 @@ public class LoginPanel extends JPanel {
             @Override
             public void windowGainedFocus(WindowEvent e) {
               textField.requestFocusInWindow();
-              textField.setCaretPosition(caretPosition);
+              textField.setCaretPosition(textField.getText().length());
             }
           });
         }

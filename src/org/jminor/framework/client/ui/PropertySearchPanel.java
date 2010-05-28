@@ -23,7 +23,6 @@ import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityComboBoxModel;
 import org.jminor.framework.client.model.PropertySearchModel;
 import org.jminor.framework.domain.Property;
-import org.jminor.framework.i18n.FrameworkMessages;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -123,8 +122,8 @@ public class PropertySearchPanel extends AbstractSearchPanel<Property> {
     else {
       final EntityLookupField field =
               new EntityLookupField(((PropertySearchModel) getModel()).getEntityLookupModel(), getEnableAction());
-      if (Configuration.getBooleanValue(Configuration.USE_LOOKUP_FIELD_SEARCH_HINT))
-        field.setSearchHint(FrameworkMessages.get(FrameworkMessages.LOOKUP_FIELD_SEARCH_HINT));
+      if (!Configuration.getBooleanValue(Configuration.USE_LOOKUP_FIELD_SEARCH_HINT))
+        field.setSearchHintEnabled(false);
       field.getModel().refreshSearchText();
 
       return field;
