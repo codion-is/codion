@@ -148,12 +148,12 @@ public class PropertySearchPanel extends AbstractSearchPanel<Property> {
     else if (property.isTime()) {
       new FormattedTextBeanValueLink((JFormattedTextField) field, getModel(),
               isUpperBound ? PropertySearchModel.UPPER_BOUND_PROPERTY : PropertySearchModel.LOWER_BOUND_PROPERTY,
-              Timestamp.class, isUpperBound ? getModel().eventUpperBoundChanged() : getModel().eventLowerBoundChanged(),
+              property.isTimestamp() ? Timestamp.class : Date.class, isUpperBound ? getModel().eventUpperBoundChanged() : getModel().eventLowerBoundChanged(),
               LinkType.READ_WRITE, format) {
         @Override
         protected Object getUIValue() {
-          final Date value = (Date) super.getUIValue();
-          return value == null ? null : property.isDate() ? value : new Timestamp(value.getTime());
+          final Date date = (Date) super.getUIValue();
+          return date == null ? null : property.isTimestamp() ? new Timestamp(date.getTime()) : date;
         }
       };
     }

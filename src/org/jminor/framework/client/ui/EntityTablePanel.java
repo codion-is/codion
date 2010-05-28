@@ -57,6 +57,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -819,8 +820,10 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     statusMessageLabel.setFont(new Font(statusMessageLabel.getFont().getName(), Font.PLAIN, 12));
     final JPanel centerPanel = new JPanel(new BorderLayout(5, 5));
     final JTextField searchField = getSearchField();
+    final JPanel searchFieldPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+    searchFieldPanel.add(searchField);
     centerPanel.add(statusMessageLabel, BorderLayout.CENTER);
-    centerPanel.add(searchField, BorderLayout.WEST);
+    centerPanel.add(searchFieldPanel, BorderLayout.WEST);
     final JPanel panel = new JPanel(new BorderLayout());
     panel.add(centerPanel, BorderLayout.CENTER);
     panel.setBorder(BorderFactory.createEtchedBorder());
@@ -844,6 +847,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
   @Override
   protected JTextField initializeSearchField() {
     final JTextField searchField = super.initializeSearchField();
+    searchField.setPreferredSize(new Dimension(searchField.getWidth(), 18));
     searchField.setBorder(BorderFactory.createLineBorder(searchField.getForeground(), 1));
     searchField.setColumns(8);
     UiUtil.selectAllOnFocusGained(searchField);

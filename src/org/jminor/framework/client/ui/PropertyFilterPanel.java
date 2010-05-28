@@ -247,10 +247,7 @@ public class PropertyFilterPanel extends AbstractSearchPanel<Property> {
         @Override
         protected Object getUIValue() {
           final Date date = (Date) super.getUIValue();
-          if (date != null)
-            return property.isTimestamp() ? new Timestamp(date.getTime()) : date;
-
-          return null;
+          return date == null ? null : property.isTimestamp() ? new Timestamp(date.getTime()) : date;
         }
       };
     }
