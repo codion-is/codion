@@ -692,9 +692,10 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
 
   /**
    * Initializes the keyboard navigation actions.
-   * By default ALT-CTRL-T transfers focus to the table in case one is available,
-   * ALT-CTR-E transfers focus to the edit panel in case one is available,
-   * ALT-CTR-S transfers focus to the search panel and ALT-CTR-C opens a select control dialog
+   * By default CTRL-T transfers focus to the table in case one is available,
+   * CTR-E transfers focus to the edit panel in case one is available,
+   * CTR-S transfers focus to the search panel, CTR-C opens a select control dialog
+   * and CTR-F selects the table search field
    *///todo fix this so that dialogged panels also behave accordingly
   protected void setupKeyboardActions() {
     if (containsTablePanel()) {
@@ -704,6 +705,21 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
                   getTablePanel().getJTable().requestFocusInWindow();
                 }
               });
+      UiUtil.addKeyEvent(this, KeyEvent.VK_F, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
+                true, new AbstractAction("selectSearchField") {
+                  public void actionPerformed(ActionEvent event) {
+                    getTablePanel().getSearchField().requestFocusInWindow();
+                  }
+                });
+      if (getTablePanel().getSearchPanel() != null) {
+        UiUtil.addKeyEvent(this, KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
+                true, new AbstractAction("selectSearchPanel") {
+                  public void actionPerformed(ActionEvent event) {
+                    getTablePanel().setSearchPanelVisible(true);
+                    getTablePanel().getSearchPanel().requestFocusInWindow();
+                  }
+                });
+      }
     }
     if (containsEditPanel()) {
       UiUtil.addKeyEvent(this, KeyEvent.VK_E, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
@@ -724,15 +740,6 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
                           Messages.get(Messages.SELECT_INPUT_FIELD));
                   if (property != null)
                     getEditPanel().selectComponent(property.getPropertyID());
-                }
-              });
-    }
-    if (getTablePanel().getSearchPanel() != null) {
-      UiUtil.addKeyEvent(this, KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
-              true, new AbstractAction("selectSearchPanel") {
-                public void actionPerformed(ActionEvent event) {
-                  getTablePanel().setSearchPanelVisible(true);
-                  getTablePanel().getSearchPanel().requestFocusInWindow();
                 }
               });
     }

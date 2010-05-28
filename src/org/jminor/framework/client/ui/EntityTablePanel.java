@@ -844,8 +844,14 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
   @Override
   protected JTextField initializeSearchField() {
     final JTextField searchField = super.initializeSearchField();
-    searchField.setBorder(BorderFactory.createLoweredBevelBorder());
+    searchField.setBorder(BorderFactory.createLineBorder(searchField.getForeground(), 1));
     searchField.setColumns(8);
+    UiUtil.selectAllOnFocusGained(searchField);
+    UiUtil.addKeyEvent(searchField, KeyEvent.VK_ESCAPE, new AbstractAction("selectTablePanel") {
+      public void actionPerformed(ActionEvent event) {
+        getJTable().requestFocusInWindow();
+      }
+    });
 
     return searchField;
   }
