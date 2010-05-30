@@ -128,11 +128,11 @@ public class PropertyFilterPanel extends AbstractSearchPanel<Property> {
   }
 
   public State stateIsDialogActive() {
-    return stIsDialogActive;
+    return stIsDialogActive.getLinkedState();
   }
 
   public State stateIsDialogShowing() {
-    return stIsDialogShowing;
+    return stIsDialogShowing.getLinkedState();
   }
 
   /** {@inheritDoc} */

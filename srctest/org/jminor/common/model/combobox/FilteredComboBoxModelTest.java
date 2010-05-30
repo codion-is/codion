@@ -24,15 +24,6 @@ public class FilteredComboBoxModelTest {
   private static final String BJORN = "björn";
 
   @Test
-  public void setSelectedItem() {
-    testModel.setEmptyStringIsNull(false);
-    testModel.setSelectedItem("");
-    assertFalse(testModel.isNullValueItemSelected());
-    testModel.setEmptyStringIsNull(true);
-    assertTrue(testModel.isNullValueItemSelected());
-  }
-
-  @Test
   public void setSortContents() {
     testModel.setSortContents(true);
     assertTrue(testModel.isSortContents());
@@ -88,12 +79,6 @@ public class FilteredComboBoxModelTest {
     //remove visible item
     testModel.removeItem(KALLI);
     assertFalse(KALLI + " should no longer be in the model", modelContains(KALLI));
-  }
-
-  @Test
-  public void setEmptyStringIsNull() throws Exception {
-    testModel.setEmptyStringIsNull(true);
-    assertTrue(testModel.isEmptyStringIsNull());
   }
 
   @Test

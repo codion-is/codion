@@ -64,7 +64,7 @@ public class ValueChangeMapImpl<K, V> implements ValueChangeMap<K, V>, Serializa
       }
     });
 
-    return state;
+    return state.getLinkedState();
   }
 
   /** {@inheritDoc} */

@@ -661,7 +661,7 @@ public class EntityUiUtil {
       if (boxModel instanceof EntityComboBoxModel)
         return ((EntityComboBoxModel) boxModel).getSelectedEntity();
       else if (boxModel instanceof PropertyComboBoxModel)
-        return ((PropertyComboBoxModel) boxModel).isNullValueItemSelected() ? null : boxModel.getSelectedItem();
+        return ((PropertyComboBoxModel) boxModel).isNullValueSelected() ? null : boxModel.getSelectedItem();
       else
         return super.getUIValue();
     }

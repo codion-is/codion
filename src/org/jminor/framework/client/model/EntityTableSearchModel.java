@@ -267,7 +267,7 @@ public class EntityTableSearchModel implements FilterCriteria<Entity> {
    * @see #setSearchModelState()
    */
   public State stateSearchStateChanged() {
-    return stSearchStateChanged;
+    return stSearchStateChanged.getLinkedState();
   }
 
   /**

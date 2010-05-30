@@ -34,7 +34,6 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
 
   private FilterCriteria filterCriteria;
   private boolean sortContents = false;
-  private boolean emptyStringIsNull = false;
 
   private final Comparator<? super Object> sortComparator;
 
@@ -51,7 +50,7 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
    * Instantiates a new FilteredComboBoxModel.
    * @param sortContents if true then the contents of this model are sorted on refresh
    * @param nullValueString a string representing a null value, which is shown at the top of the item list
-   * @see #isNullValueItemSelected()
+   * @see #isNullValueSelected()
    */
   public FilteredComboBoxModel(final boolean sortContents, final String nullValueString) {
     this.sortContents = sortContents;
@@ -142,20 +141,6 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
   }
 
   /**
-   * @return true if this combo box model should regard an empty string as representing null
-   */
-  public boolean isEmptyStringIsNull() {
-    return emptyStringIsNull;
-  }
-
-  /**
-   * @param emptyStringIsNull true if this combo box model should regard an empty string as representing null
-   */
-  public void setEmptyStringIsNull(final boolean emptyStringIsNull) {
-    this.emptyStringIsNull = emptyStringIsNull;
-  }
-
-  /**
    * @return the String representing the null value, null if none has been specified
    */
   public String getNullValueString() {
@@ -174,14 +159,8 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
 
   /**
    * @return true if a value representing null is selected
-   * @see #setEmptyStringIsNull(boolean)
-   * @see #isEmptyStringIsNull()
    */
-  public boolean isNullValueItemSelected() {
-    //noinspection SimplifiableIfStatement
-    if (emptyStringIsNull && selectedItem instanceof String && ((String) selectedItem).length() == 0)
-      return true;
-
+  public boolean isNullValueSelected() {
     return selectedItem != null && nullValueString != null && selectedItem.equals(nullValueString);
   }
 
@@ -201,8 +180,8 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
   }
 
   /** {@inheritDoc} */
-  public void addListDataListener(final ListDataListener l) {
-    listDataListeners.add(l);
+  public void addListDataListener(final ListDataListener listener) {
+    listDataListeners.add(listener);
   }
 
   /** {@inheritDoc} */
@@ -217,7 +196,7 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
 
   /** {@inheritDoc} */
   public int getSize() {
-    return visibleItems.size();
+    return nullValueString == null ? visibleItems.size() : visibleItems.size() - 1;
   }
 
   public Event eventSelectionChanged() {
@@ -227,11 +206,13 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
   /**
    * @return a List containing the items to be shown in this combo box model,
    * by default it simply returns a list containing the items currently contained in the model,
-   * excluding the nullValueItem object if one is specified.
+   * excluding the null value string if one is specified.
    */
   protected List<?> getContents() {
-    final List<Object> contents = new ArrayList<Object>(filteredItems);
-    contents.addAll(visibleItems);
+    final List<Object> contents = new ArrayList<Object>(visibleItems);
+    if (nullValueString != null)
+      contents.remove(nullValueString);
+    contents.addAll(filteredItems);
 
     return contents;
   }
@@ -240,8 +221,15 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
     return Collections.unmodifiableList(filteredItems);
   }
 
+    /**
+   * @return a List containing the visibble items in this combo box model,
+   * excluding the null value string if one is specified.
+   */
   protected List<Object> getVisibleItems() {
-    return Collections.unmodifiableList(visibleItems);
+    if (nullValueString == null)
+     return Collections.unmodifiableList(visibleItems);
+
+    return Collections.unmodifiableList(visibleItems.subList(1, visibleItems.size() - 1));
   }
 
   /**

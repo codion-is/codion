@@ -1674,3 +1674,7 @@
   DocumentAdapter added
   EntityTablePanel overrides initializeSearchField()
   EntityPanel.setupKeyboardActions(), search panel is now toggled instead of simply shown
+  PropertyComboBoxModel sets the null value string if property is nullable
+  PropertyComboBoxModel.isNullValueItemSelected() renamed to isNullValueSelected()
+  Methods now return the linked state instead of the actual state (which could then be modified)
+  FilteredComboBoxModel.emptyStringIsNull removed, nullValueString functionality improved

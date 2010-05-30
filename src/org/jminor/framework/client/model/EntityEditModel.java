@@ -60,7 +60,7 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
   private final State stAllowDelete = new State(true);
 
   /**
-   * Indicates whether the panel is active and ready to receive input
+   * Indicates whether the model is active and ready to receive input
    */
   protected final State stActive = new State(Configuration.getBooleanValue(Configuration.ALL_PANELS_ACTIVE));
 
@@ -70,7 +70,7 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
   private final String entityID;
 
   /**
-   * The EntityDbProvider instance to use when populating combo boxes and such
+   * The EntityDbProvider instance to use
    */
   private final EntityDbProvider dbProvider;
 
@@ -92,14 +92,14 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
   private final Map<Property, ComboBoxModel> propertyComboBoxModels = new HashMap<Property, ComboBoxModel>();
 
   /**
-   * The mechanism for restricting a single active EntityPanel at a time
+   * The mechanism for restricting a single active EntityEditModel at a time
    */
   private static final State.StateGroup activeStateGroup = new State.StateGroup();
 
   /**
    * Instantiates a new EntityEditModel based on the entity identified by <code>entityID</code>.
    * @param entityID the ID of the entity to base this EntityEditModel on
-   * @param dbProvider the EntityDbProvider instance used when populating ComboBoxModels
+   * @param dbProvider the EntityDbProvider instance
    */
   public EntityEditModel(final String entityID, final EntityDbProvider dbProvider) {
     super(new Entity(entityID));
@@ -151,7 +151,7 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
    * @see #setInsertAllowed(boolean)
    */
   public State stateAllowInsert() {
-    return stAllowInsert;
+    return stAllowInsert.getLinkedState();
   }
 
   /**
@@ -174,7 +174,7 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
    * @see #setUpdateAllowed(boolean)
    */
   public State stateAllowUpdate() {
-    return stAllowUpdate;
+    return stAllowUpdate.getLinkedState();
   }
 
   /**
@@ -197,7 +197,7 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
    * @see #setDeleteAllowed(boolean)
    */
   public State stateAllowDelete() {
-    return stAllowDelete;
+    return stAllowDelete.getLinkedState();
   }
 
   /**

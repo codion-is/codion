@@ -127,11 +127,11 @@ public abstract class AbstractSearchPanel<K> extends JPanel {
   }
 
   public State stateAdvancedSearch() {
-    return stAdvancedSearch;
+    return stAdvancedSearch.getLinkedState();
   }
 
   public State stateTwoSearchFields() {
-    return stTwoSearchFields;
+    return stTwoSearchFields.getLinkedState();
   }
 
   /**
@@ -176,7 +176,7 @@ public abstract class AbstractSearchPanel<K> extends JPanel {
     final ItemComboBoxModel comboBoxModel = new ItemComboBoxModel();
     for (int i = 0; i < searchTypes.length; i++)
       if (searchTypeAllowed(searchTypes[i]))
-        comboBoxModel.addElement(new ItemComboBoxModel.IconItem(searchTypes[i], Images.loadImage(searchTypeImageNames[i])));
+        comboBoxModel.addElement(new ItemComboBoxModel.IconItem<SearchType>(searchTypes[i], Images.loadImage(searchTypeImageNames[i])));
 
     return comboBoxModel;
   }

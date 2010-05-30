@@ -324,7 +324,7 @@ public abstract class AbstractSearchModel<K> {
   }
 
   public State stateLocked() {
-    return stLocked;
+    return stLocked.getLinkedState();
   }
 
   public Event eventEnabledChanged() {
