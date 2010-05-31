@@ -40,7 +40,7 @@ public class ChinookLoadTest extends EntityLoadTestModel {
 
   @Override
   protected Collection<UsageScenario> initializeUsageScenarios() {
-    final UsageScenario viewGenre = new UsageScenario("selectGenre") {
+    final UsageScenario viewGenre = new UsageScenario("viewGenre") {
       @Override
       protected void performScenario(Object application) throws Exception {
         final EntityApplicationModel model = (EntityApplicationModel) application;

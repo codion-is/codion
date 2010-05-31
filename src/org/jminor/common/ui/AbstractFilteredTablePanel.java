@@ -57,7 +57,7 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
   /**
    * Represents the index of the last search result
    */
-  private Point searchResultIndex = NULL_POINT;
+  private Point lastSearchResultIndex = NULL_POINT;
 
   /**
    * The text field used for entering the search criteria
@@ -151,16 +151,16 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
     txtSearch.getDocument().addDocumentListener(new DocumentAdapter() {
       @Override
       public void insertOrUpdate(final DocumentEvent e) {
-        doSearch(false, searchResultIndex.y == -1 ? 0 : searchResultIndex.y, true, searchField.getText());
+        doSearch(false, lastSearchResultIndex.y == -1 ? 0 : lastSearchResultIndex.y, true, searchField.getText());
       }
     });
     txtSearch.addKeyListener(new KeyAdapter() {
       @Override
       public void keyReleased(final KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_DOWN)
-          doSearch(e.isShiftDown(), searchResultIndex.y + 1, true, searchField.getText());
+          doSearch(e.isShiftDown(), lastSearchResultIndex.y + 1, true, searchField.getText());
         else if (e.getKeyCode() == KeyEvent.VK_UP)
-          doSearch(e.isShiftDown(), searchResultIndex.y - 1, false, searchField.getText());
+          doSearch(e.isShiftDown(), lastSearchResultIndex.y - 1, false, searchField.getText());
       }
     });
 
@@ -172,7 +172,7 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
     if (searchText.length() > 0) {
       final Point viewIndex = getTableModel().findNextItemCoordinate(fromIndex, forward, searchText);
       if (viewIndex != null) {
-        searchResultIndex = viewIndex;
+        lastSearchResultIndex = viewIndex;
         if (addToSelection)
           getTableModel().addSelectedItemIndex(viewIndex.y);
         else {
@@ -182,10 +182,10 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
         scrollToCoordinate(viewIndex.y, viewIndex.x);
       }
       else
-        searchResultIndex = NULL_POINT;
+        lastSearchResultIndex = NULL_POINT;
     }
     else
-      searchResultIndex = NULL_POINT;
+      lastSearchResultIndex = NULL_POINT;
   }
 
   /**
