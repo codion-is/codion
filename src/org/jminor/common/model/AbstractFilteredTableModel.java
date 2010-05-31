@@ -190,7 +190,7 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
       }
     }
     else {
-      for (int row = startRowIndex < 0 ? getRowCount() : startRowIndex; row >= 0; row--) {
+      for (int row = startRowIndex < 0 ? getRowCount() - 1 : startRowIndex; row >= 0; row--) {
         for (int column = 0; column < getColumnCount(); column++) {
           if (criteria.include(getSearchValueAt(row, column)))
             return new Point(column, row);
