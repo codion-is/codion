@@ -847,7 +847,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
   @Override
   protected JTextField initializeSearchField() {
     final JTextField searchField = super.initializeSearchField();
-    searchField.setPreferredSize(new Dimension(searchField.getWidth(), 18));
+    searchField.setPreferredSize(new Dimension(searchField.getWidth(), 16));
     searchField.setBorder(BorderFactory.createLineBorder(searchField.getForeground(), 1));
     searchField.setColumns(8);
     UiUtil.selectAllOnFocusGained(searchField);
@@ -1300,7 +1300,6 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     header.setFocusable(false);
     header.setReorderingAllowed(allowColumnReordering());
 
-    table.setColumnSelectionAllowed(false);
     table.setAutoResizeMode(getAutoResizeMode());
     getTableModel().getTableSorter().setTableHeader(header);
 
@@ -1532,8 +1531,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     getTableModel().eventSelectedIndexChanged().addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent event) {
         if (!getTableModel().stateSelectionEmpty().isActive())
-          getJTable().scrollRectToVisible(getJTable().getCellRect(
-                  getTableModel().getSelectedIndex(), getJTable().getSelectedColumn(), true));
+          scrollToCoordinate(getTableModel().getSelectedIndex(), getJTable().getSelectedColumn());
       }
     });
 

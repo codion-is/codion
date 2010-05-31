@@ -13,6 +13,7 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ import java.util.List;
 import java.util.ListIterator;
 
 /**
- * A TableModel implentation that supports filtering and sorting.
+ * A TableModel implentation that supports filtering, searching and sorting.
  * <pre>
  * AbstractFilteredTableModel tableModel = ...;
  * JTable table = new JTable(tableModel.getTableSorter(),
@@ -156,33 +157,54 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
     return ret;
   }
 
-  public int findNextItemIndex(final int startIdx, final boolean forward, final String searchText) {
-    return findNextItemIndex(startIdx, forward, getSearchCriteria(searchText));
+  /**
+   * Returns a Point denoting the row and column index of the first value to fulfill
+   * a search criteria based on <code>searchText</code>.
+   * @param startRowIndex the row index to start searching at
+   * @param forward if true then the search is forward, backwards otherwise
+   * @param searchText the search text
+   * @return the search result coordinate, null if nothing was found
+   * @see #getSearchCriteria(String)
+   */
+  public Point findNextItemCoordinate(final int startRowIndex, final boolean forward, final String searchText) {
+    return findNextItemCoordinate(startRowIndex, forward, getSearchCriteria(searchText));
   }
 
-  public int findNextItemIndex(final int startIdx, final boolean forward, final FilterCriteria<T> criteria) {
+  /**
+   * Returns a Point denoting the row (point.y) and column index (point.x) of the first value to fulfill
+   * the given search criteria.
+   * @param startRowIndex the row index to start searching at, if this is larger than the size of
+   * the table model or less than 0 the search starts from either 0 or rowCount - 1 depending on search direction.
+   * @param forward if true then the search is forward, backwards otherwise
+   * @param criteria the search criteria
+   * @return the search result coordinate, null if nothing was found
+   * @see FilterCriteria#include(Object)
+   */
+  public Point findNextItemCoordinate(final int startRowIndex, final boolean forward, final FilterCriteria<Object> criteria) {
     if (forward) {
-      int index = startIdx;
-      if (index >= visibleItems.size())
-        index = 0;//wrap around
-      for (int i = index; i < visibleItems.size(); i++) {
-        final T item = getItemAtViewIndex(i);
-        if (criteria.include(item))
-          return i;
+      int row = startRowIndex;
+      if (row >= getRowCount())
+        row = 0;//wrap around
+      for (; row < getRowCount(); row++) {
+        for (int column = 0; column < getColumnCount(); column++) {
+          if (criteria.include(getSearchValueAt(row, column)))
+            return new Point(column, row);
+        }
       }
     }
     else {
-      int index = startIdx;
-      if (index < 0)
-        index = visibleItems.size() - 1;//wrap around
-      for (int i = index; i >= 0; i--) {
-        final T item = getItemAtViewIndex(i);
-        if (criteria.include(item))
-          return i;
+      int row = startRowIndex;
+      if (row < 0)
+        row = getRowCount() - 1;//wrap around
+      for (; row >= 0; row--) {
+        for (int j = 0; j < getColumnCount(); j++) {
+          if (criteria.include(getSearchValueAt(row, j)))
+            return new Point(j, row);
+        }
       }
     }
 
-    return -1;
+    return null;
   }
 
   /**
@@ -665,9 +687,21 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
     return tableSorter.viewIndex(modelIndexOf(item));
   }
 
-  protected FilterCriteria<T> getSearchCriteria(final String searchText) {
-    return new FilterCriteria<T>() {
-      public boolean include(final T item) {
+  /**
+   * Returns the value to use when searching through the table.
+   * @param rowIndex the row index
+   * @param columnIndex the column index
+   * @return the search value
+   */
+  protected String getSearchValueAt(final int rowIndex, final int columnIndex) {
+    final Object value = getValueAt(rowIndex, columnIndex);
+
+    return value == null ? "" : value.toString();
+  }
+
+  protected FilterCriteria<Object> getSearchCriteria(final String searchText) {
+    return new FilterCriteria<Object>() {
+      public boolean include(final Object item) {
         return !(item == null || searchText == null) &&
                 item.toString().toLowerCase().contains(searchText.toLowerCase());
       }

@@ -52,6 +52,14 @@ public class SearchFieldHint {
     return txtField.getText().equals(searchHint);
   }
 
+  public static SearchFieldHint enable(final JTextField txtField) {
+    return new SearchFieldHint(txtField);
+  }
+
+  public static SearchFieldHint enable(final JTextField txtField, final String searchHint) {
+    return new SearchFieldHint(txtField, searchHint);
+  }
+
   private FocusListener initializeFocusListener() {
     return new FocusListener() {
       public void focusGained(final FocusEvent e) {

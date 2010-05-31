@@ -78,7 +78,7 @@ public class EntityLookupField extends JTextField {
     if (model == null)
       throw new IllegalArgumentException("Can not construct a EntityLookupField without a EntityLookupModel");
     this.model = model;
-    this.searchHint = new SearchFieldHint(this, Messages.get(Messages.SEARCH_FIELD_HINT));
+    this.searchHint = SearchFieldHint.enable(this);
     setEnterAction(enterAction);
     setToolTipText(model.getDescription());
     setComponentPopupMenu(initializePopupMenu());

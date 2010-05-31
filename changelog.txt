@@ -1678,3 +1678,7 @@
   PropertyComboBoxModel.isNullValueItemSelected() renamed to isNullValueSelected()
   Methods now return the linked state instead of the actual state (which could then be modified)
   FilteredComboBoxModel.emptyStringIsNull removed, nullValueString functionality improved
+  AbstractFilteredTableModel.findNextItemIndex() renamed to findNextItemCoordinate(), now returns Point
+  AbstractFilteredTableModel.getSearchValueAt() added
+  EntityTableModel overrides getSearchValueAt()
+  AbstractFilteredTablePanel.scrollToCoordinate() added

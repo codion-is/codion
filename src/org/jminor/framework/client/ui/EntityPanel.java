@@ -914,7 +914,10 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
   }
 
   /**
+   * Returns a ControlSet containing the detail panel controls, if no detail
+   * panels exist the resulting ControlSet will be empty.
    * @return the ControlSet on which the table popup menu is based
+   * @see #getDetailPanelControls(int)
    */
   protected ControlSet getTablePopupControlSet() {
     final ControlSet controlSet = new ControlSet("");

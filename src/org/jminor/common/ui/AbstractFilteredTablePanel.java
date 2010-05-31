@@ -21,6 +21,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.table.TableColumn;
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.awt.Point;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.text.Collator;
@@ -36,6 +37,11 @@ import java.util.List;
  */
 public abstract class AbstractFilteredTablePanel<T> extends JPanel {
 
+  private static Point NULL_POINT = new Point(-1, -1);
+
+  /**
+   * The table model
+   */
   private final AbstractFilteredTableModel<T> model;
 
   /**
@@ -51,8 +57,11 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
   /**
    * Represents the index of the last search result
    */
-  private int searchResultIndex = -1;
+  private Point searchResultIndex = NULL_POINT;
 
+  /**
+   * The text field used for entering the search criteria
+   */
   private final JTextField searchField;
 
   public AbstractFilteredTablePanel(final AbstractFilteredTableModel<T> model) {
@@ -79,12 +88,20 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
     return table;
   }
 
+  /**
+   * @return the text field used to enter a search critieria
+   * @see #initializeSearchField()
+   */
   public JTextField getSearchField() {
     return searchField;
   }
 
   public JScrollPane getTableScrollPane() {
     return tableScrollPane;
+  }
+
+  public void scrollToCoordinate(final int row, final int column) {
+    getJTable().scrollRectToVisible(getJTable().getCellRect(row, column, true));
   }
 
   /**
@@ -130,20 +147,20 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
   protected JTextField initializeSearchField() {
     final JTextField txtSearch = new JTextField();
     txtSearch.setBackground((Color) UIManager.getLookAndFeel().getDefaults().get("TextField.inactiveBackground"));
-    new SearchFieldHint(txtSearch);
+    SearchFieldHint.enable(txtSearch);
     txtSearch.getDocument().addDocumentListener(new DocumentAdapter() {
       @Override
       public void insertOrUpdate(final DocumentEvent e) {
-        doSearch(false, searchResultIndex == -1 ? 0 : searchResultIndex, true, searchField.getText());
+        doSearch(false, searchResultIndex.y == -1 ? 0 : searchResultIndex.y, true, searchField.getText());
       }
     });
     txtSearch.addKeyListener(new KeyAdapter() {
       @Override
       public void keyReleased(final KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_DOWN)
-          doSearch(e.isShiftDown(), searchResultIndex + 1, true, searchField.getText());
+          doSearch(e.isShiftDown(), searchResultIndex.y + 1, true, searchField.getText());
         else if (e.getKeyCode() == KeyEvent.VK_UP)
-          doSearch(e.isShiftDown(), searchResultIndex - 1, false, searchField.getText());
+          doSearch(e.isShiftDown(), searchResultIndex.y - 1, false, searchField.getText());
       }
     });
 
@@ -153,19 +170,22 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
   private void doSearch(final boolean addToSelection, final int fromIndex, final boolean forward,
                         final String searchText) {
     if (searchText.length() > 0) {
-      final int viewIndex = getTableModel().findNextItemIndex(fromIndex, forward, searchText);
-      if (viewIndex >= 0) {
+      final Point viewIndex = getTableModel().findNextItemCoordinate(fromIndex, forward, searchText);
+      if (viewIndex != null) {
         searchResultIndex = viewIndex;
         if (addToSelection)
-          getTableModel().addSelectedItemIndex(viewIndex);
-        else
-          getTableModel().setSelectedItemIndex(viewIndex);
+          getTableModel().addSelectedItemIndex(viewIndex.y);
+        else {
+          getTableModel().setSelectedItemIndex(viewIndex.y);
+          getJTable().setColumnSelectionInterval(viewIndex.x, viewIndex.x);
+        }
+        scrollToCoordinate(viewIndex.y, viewIndex.x);
       }
       else
-        searchResultIndex = -1;
+        searchResultIndex = NULL_POINT;
     }
     else
-      searchResultIndex = -1;
+      searchResultIndex = NULL_POINT;
   }
 
   /**
