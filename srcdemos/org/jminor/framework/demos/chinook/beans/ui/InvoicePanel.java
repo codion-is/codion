@@ -4,7 +4,6 @@
 package org.jminor.framework.demos.chinook.beans.ui;
 
 import org.jminor.common.ui.DateInputPanel;
-import org.jminor.common.ui.layout.FlexibleGridLayout;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.ui.EntityEditPanel;
@@ -14,6 +13,7 @@ import org.jminor.framework.demos.chinook.beans.InvoiceLineModel;
 import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 
 import javax.swing.JTextField;
+import java.awt.GridLayout;
 import java.util.Arrays;
 import java.util.List;
 
@@ -51,7 +51,7 @@ public class InvoicePanel extends EntityPanel {
         final JTextField txtTotal = createTextField(INVOICE_TOTAL);
         txtTotal.setColumns(16);
 
-        setLayout(new FlexibleGridLayout(4, 2, 5, 5));
+        setLayout(new GridLayout(4, 2, 5, 5));
         add(createPropertyPanel(INVOICE_CUSTOMERID_FK, txtCustomer));
         add(createPropertyPanel(INVOICE_INVOICEDATE, datePanel));
         add(createPropertyPanel(INVOICE_BILLINGADDRESS, txtAddress));
