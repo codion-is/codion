@@ -1682,3 +1682,5 @@
   AbstractFilteredTableModel.getSearchValueAt() added
   EntityTableModel overrides getSearchValueAt()
   AbstractFilteredTablePanel.scrollToCoordinate() added
+  Configuration.USE_LOOKUP_FIELD_SEARCH_HINT removed
+  EntityLookupField.searchHintEnabled removed

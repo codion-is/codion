@@ -360,14 +360,6 @@ public class Configuration {
   public static final String DEFAULT_LABEL_TEXT_ALIGNMENT = "jminor.client.defaultLabelTextAlignment";
 
   /**
-   * Specifies whether EntityLookupFields should contain a search hint text when empty<br>
-   * Value type: Boolean<br>
-   * Default value: true
-   * @see org.jminor.framework.client.ui.EntityLookupField#setSearchHint(String)
-   */
-  public static final String USE_LOOKUP_FIELD_SEARCH_HINT = "jminor.client.useLookupFieldSearchHint";
-
-  /**
    * Specifies the default foreign key fetch depth<br>
    * Value type: Integer<br>
    * Default value: 1
@@ -417,7 +409,6 @@ public class Configuration {
     setValue(PERFORM_NULL_VALIDATION, true);
     setValue(DEFAULT_LABEL_TEXT_ALIGNMENT, JLabel.LEFT);
     setValue(ALLOW_COLUMN_REORDERING, true);
-    setValue(USE_LOOKUP_FIELD_SEARCH_HINT, true);
     setValue(DEFAULT_FOREIGN_KEY_FETCH_DEPTH, 1);
     setValue(LIMIT_FOREIGN_KEY_FETCH_DEPTH, true);
     parseSystemSettings();
@@ -453,7 +444,6 @@ public class Configuration {
     parseBooleanSetting(ALLOW_COLUMN_REORDERING);
     parseStringSetting(SERVER_DOMAIN_MODEL_JARS);
     parseStringSetting(SERVER_DOMAIN_MODEL_CLASSES);
-    parseBooleanSetting(USE_LOOKUP_FIELD_SEARCH_HINT);
     parseIntegerSetting(DEFAULT_FOREIGN_KEY_FETCH_DEPTH);
     parseBooleanSetting(LIMIT_FOREIGN_KEY_FETCH_DEPTH);
     parseStringSetting(REPORT_PATH);

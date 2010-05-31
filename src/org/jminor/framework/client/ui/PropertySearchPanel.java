@@ -122,8 +122,6 @@ public class PropertySearchPanel extends AbstractSearchPanel<Property> {
     else {
       final EntityLookupField field =
               new EntityLookupField(((PropertySearchModel) getModel()).getEntityLookupModel(), getEnableAction());
-      if (!Configuration.getBooleanValue(Configuration.USE_LOOKUP_FIELD_SEARCH_HINT))
-        field.setSearchHintEnabled(false);
       field.getModel().refreshSearchText();
 
       return field;

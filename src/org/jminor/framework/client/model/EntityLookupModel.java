@@ -49,7 +49,7 @@ public class EntityLookupModel {
   private final EntityDbProvider dbProvider;
 
   private Criteria additionalLookupCriteria;
-  private String searchString;
+  private String searchString = "";
   private boolean multipleSelectionAllowed;
   private boolean caseSensitive;
   private boolean wildcardPrefix;

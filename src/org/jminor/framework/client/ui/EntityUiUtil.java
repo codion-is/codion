@@ -334,8 +334,6 @@ public class EntityUiUtil {
     new LookupValueLink(lookupField.getModel(), editModel, foreignKeyProperty);
     if (foreignKeyProperty.hasDescription())
       lookupField.setToolTipText(foreignKeyProperty.getDescription());
-    if (!Configuration.getBooleanValue(Configuration.USE_LOOKUP_FIELD_SEARCH_HINT))
-      lookupField.setSearchHintEnabled(false);
     UiUtil.selectAllOnFocusGained(lookupField);
 
     return lookupField;

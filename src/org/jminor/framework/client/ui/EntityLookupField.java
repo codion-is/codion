@@ -41,7 +41,6 @@ public class EntityLookupField extends JTextField {
 
   private Action enterAction;
   private Color defaultBackgroundColor = getBackground();
-  private boolean searchHintEnabled = true;
 
   /**
    * Initializes a new EntityLookupField
@@ -102,10 +101,6 @@ public class EntityLookupField extends JTextField {
 
   public void setDefaultBackgroundColor(final Color defaultBackgroundColor) {
     this.defaultBackgroundColor = defaultBackgroundColor;
-  }
-
-  public void setSearchHintEnabled(final boolean searchHintEnabled) {
-    this.searchHintEnabled = searchHintEnabled;
   }
 
   private void selectEntities(final List<Entity> entities) {
@@ -176,8 +171,7 @@ public class EntityLookupField extends JTextField {
       protected void setUIValue(final Object propertyValue) {
         super.setUIValue(propertyValue);
         updateColors();
-        if (searchHintEnabled)
-          searchHint.updateState();
+        searchHint.updateState();
       }
     };
     getModel().eventSearchStringChanged().addListener(new ActionListener() {

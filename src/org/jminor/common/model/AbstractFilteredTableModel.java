@@ -182,10 +182,7 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
    */
   public Point findNextItemCoordinate(final int startRowIndex, final boolean forward, final FilterCriteria<Object> criteria) {
     if (forward) {
-      int row = startRowIndex;
-      if (row >= getRowCount())
-        row = 0;//wrap around
-      for (; row < getRowCount(); row++) {
+      for (int row = startRowIndex >= getRowCount() ? 0 : startRowIndex; row < getRowCount(); row++) {
         for (int column = 0; column < getColumnCount(); column++) {
           if (criteria.include(getSearchValueAt(row, column)))
             return new Point(column, row);
@@ -193,13 +190,10 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
       }
     }
     else {
-      int row = startRowIndex;
-      if (row < 0)
-        row = getRowCount() - 1;//wrap around
-      for (; row >= 0; row--) {
-        for (int j = 0; j < getColumnCount(); j++) {
-          if (criteria.include(getSearchValueAt(row, j)))
-            return new Point(j, row);
+      for (int row = startRowIndex < 0 ? getRowCount() : startRowIndex; row >= 0; row--) {
+        for (int column = 0; column < getColumnCount(); column++) {
+          if (criteria.include(getSearchValueAt(row, column)))
+            return new Point(column, row);
         }
       }
     }
