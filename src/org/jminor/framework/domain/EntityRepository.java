@@ -147,7 +147,7 @@ public class EntityRepository {
    * @return the StringProvider used in case toString() is called for the given entity
    * @throws RuntimeException if none is defined
    */
-  public static ValueMap.ToString<String, Object> getStringProvider(final String entityID) {
+  public static ValueMap.ToString<String> getStringProvider(final String entityID) {
     return getEntityDefinition(entityID).getStringProvider();
   }
 

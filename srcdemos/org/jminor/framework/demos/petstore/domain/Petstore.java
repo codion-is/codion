@@ -90,7 +90,7 @@ public class Petstore {
             new Property(ADDRESS_LONGITUDE, Types.DOUBLE, "Longitude").setNullable(false).setMaximumFractionDigits(2))
             .setIdSource(IdSource.MAX_PLUS_ONE)
             .setOrderByClause(ADDRESS_CITY + ", " + ADDRESS_STREET_1 + ", " + ADDRESS_STREET_2)
-            .setStringProvider(new StringProvider<String, Object>(ADDRESS_STREET_1).addText(" ")
+            .setStringProvider(new StringProvider<String>(ADDRESS_STREET_1).addText(" ")
             .addValue(ADDRESS_STREET_2).addText(", ").addValue(ADDRESS_CITY).addText(" ")
             .addValue(ADDRESS_ZIP).addText(", ").addValue(ADDRESS_STATE)));
 
@@ -101,7 +101,7 @@ public class Petstore {
             new Property(CATEGORY_IMAGE_URL, Types.VARCHAR, "Image URL").setHidden(true))
             .setIdSource(IdSource.MAX_PLUS_ONE)
             .setOrderByClause(CATEGORY_NAME)
-            .setStringProvider(new StringProvider<String, Object>(CATEGORY_NAME)));
+            .setStringProvider(new StringProvider<String>(CATEGORY_NAME)));
 
     EntityRepository.add(new EntityDefinition(T_ITEM, "petstore.item",
             new Property.PrimaryKeyProperty(ITEM_ID),
@@ -119,7 +119,7 @@ public class Petstore {
             new Property(ITEM_DISABLED, Types.BOOLEAN, "Disabled").setDefaultValue(false))
             .setIdSource(IdSource.MAX_PLUS_ONE)
             .setOrderByClause(ITEM_NAME)
-            .setStringProvider(new StringProvider<String, Object>(ITEM_PRODUCT_FK).addText(" - ").addValue(ITEM_NAME)));
+            .setStringProvider(new StringProvider<String>(ITEM_PRODUCT_FK).addText(" - ").addValue(ITEM_NAME)));
 
     EntityRepository.add(new EntityDefinition(T_PRODUCT, "petstore.product",
             new Property.PrimaryKeyProperty(PRODUCT_ID),
@@ -130,7 +130,7 @@ public class Petstore {
             new Property(PRODUCT_IMAGE_URL, Types.VARCHAR, "Image URL").setMaxLength(55).setHidden(true))
             .setIdSource(IdSource.MAX_PLUS_ONE)
             .setOrderByClause(PRODUCT_NAME)
-            .setStringProvider(new StringProvider<String, Object>(PRODUCT_CATEGORY_FK)
+            .setStringProvider(new StringProvider<String>(PRODUCT_CATEGORY_FK)
             .addText(" - ").addValue(PRODUCT_NAME)));
 
     EntityRepository.add(new EntityDefinition(T_SELLER_CONTACT_INFO, "petstore.sellercontactinfo",
@@ -140,7 +140,7 @@ public class Petstore {
             new Property(SELLER_CONTACT_INFO_EMAIL, Types.VARCHAR, "Email").setMaxLength(24).setNullable(false))
             .setIdSource(IdSource.MAX_PLUS_ONE)
             .setOrderByClause(SELLER_CONTACT_INFO_LAST_NAME + ", "+ SELLER_CONTACT_INFO_FIRST_NAME)
-            .setStringProvider(new StringProvider<String, Object>(SELLER_CONTACT_INFO_LAST_NAME)
+            .setStringProvider(new StringProvider<String>(SELLER_CONTACT_INFO_LAST_NAME)
             .addText(", ").addValue(SELLER_CONTACT_INFO_FIRST_NAME)));
 
     EntityRepository.add(new EntityDefinition(T_TAG, "petstore.tag",
@@ -151,13 +151,13 @@ public class Petstore {
             .setIdSource(IdSource.MAX_PLUS_ONE)
             .setOrderByClause(TAG_TAG)
             .setSelectTableName("petstore.tag tag")
-            .setStringProvider(new StringProvider<String, Object>(TAG_TAG)));
+            .setStringProvider(new StringProvider<String>(TAG_TAG)));
 
     EntityRepository.add(new EntityDefinition(T_TAG_ITEM, "petstore.tag_item",
             new Property.ForeignKeyProperty(TAG_ITEM_ITEM_FK, "Item", T_ITEM,
                     new Property.PrimaryKeyProperty(TAG_ITEM_ITEM_ID, Types.INTEGER).setIndex(0)).setNullable(false),
             new Property.ForeignKeyProperty(TAG_ITEM_TAG_FK, "Tag", T_TAG,
                     new Property.PrimaryKeyProperty(TAG_ITEM_TAG_ID, Types.INTEGER).setIndex(1)).setNullable(false))
-            .setStringProvider(new StringProvider<String, Object>(TAG_ITEM_ITEM_FK).addText(" - ").addValue(TAG_ITEM_TAG_FK)));
+            .setStringProvider(new StringProvider<String>(TAG_ITEM_ITEM_FK).addText(" - ").addValue(TAG_ITEM_TAG_FK)));
   }
 }

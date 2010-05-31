@@ -54,7 +54,7 @@ public class SchemaBrowser {
             new Property.PrimaryKeyProperty(SCHEMA_NAME, Types.VARCHAR, "Name"))
             .setOrderByClause(SCHEMA_NAME)
             .setReadOnly(true)
-            .setStringProvider(new StringProvider<String, Object>(SCHEMA_NAME)));
+            .setStringProvider(new StringProvider<String>(SCHEMA_NAME)));
 
     EntityRepository.add(new EntityDefinition(T_TABLE, bundle.getString("t_table"),
             new Property.ForeignKeyProperty(TABLE_SCHEMA_FK, "Schema", T_SCHEMA,
@@ -62,7 +62,7 @@ public class SchemaBrowser {
             new Property.PrimaryKeyProperty(TABLE_NAME, Types.VARCHAR, "Name").setIndex(1))
             .setOrderByClause(TABLE_SCHEMA + ", " + TABLE_NAME)
             .setReadOnly(true)
-            .setStringProvider(new StringProvider<String, Object>(TABLE_SCHEMA_FK).addText(".").addValue(TABLE_NAME)));
+            .setStringProvider(new StringProvider<String>(TABLE_SCHEMA_FK).addText(".").addValue(TABLE_NAME)));
 
     EntityRepository.add(new EntityDefinition(T_COLUMN, bundle.getString("t_column"),
             new Property.ForeignKeyProperty(COLUMN_TABLE_FK, "Table", T_TABLE,
@@ -74,7 +74,7 @@ public class SchemaBrowser {
             new Property(COLUMN_DATA_TYPE, Types.VARCHAR, "Data type"))
             .setOrderByClause(COLUMN_SCHEMA + ", " + COLUMN_TABLE_NAME + ", " + COLUMN_NAME)
             .setReadOnly(true)
-            .setStringProvider(new StringProvider<String, Object>(COLUMN_TABLE_FK).addText(".").addValue(COLUMN_NAME)));
+            .setStringProvider(new StringProvider<String>(COLUMN_TABLE_FK).addText(".").addValue(COLUMN_NAME)));
 
     EntityRepository.add(new EntityDefinition(T_CONSTRAINT, bundle.getString("t_constraint"),
             new Property.ForeignKeyProperty(CONSTRAINT_TABLE_FK, "Table", T_TABLE,
@@ -86,7 +86,7 @@ public class SchemaBrowser {
             new Property(CONSTRAINT_TYPE, Types.VARCHAR, "Type"))
             .setOrderByClause(CONSTRAINT_SCHEMA + ", " + CONSTRAINT_TABLE_NAME + ", " + CONSTRAINT_NAME)
             .setReadOnly(true).setLargeDataset(true)
-            .setStringProvider(new StringProvider<String, Object>(CONSTRAINT_TABLE_FK).addText(".").addValue(CONSTRAINT_NAME)));
+            .setStringProvider(new StringProvider<String>(CONSTRAINT_TABLE_FK).addText(".").addValue(CONSTRAINT_NAME)));
 
     EntityRepository.add(new EntityDefinition(T_COLUMN_CONSTRAINT, bundle.getString("t_column_constraint"),
             new Property.ForeignKeyProperty(COLUMN_CONSTRAINT_CONSTRAINT_FK, "Constraint", T_CONSTRAINT,

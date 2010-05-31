@@ -125,7 +125,7 @@ public class Chinook {
                     .setMaxLength(160)
                     .setPreferredColumnWidth(160))
             .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_ALBUM)
-            .setStringProvider(new StringProvider<String, Object>(ALBUM_TITLE))
+            .setStringProvider(new StringProvider<String>(ALBUM_TITLE))
             .setLargeDataset(true)
             .setSearchPropertyIDs(ALBUM_TITLE)
             .setOrderByClause(ALBUM_ARTISTID + ", " + ALBUM_TITLE));
@@ -136,7 +136,7 @@ public class Chinook {
                     .setMaxLength(120)
                     .setPreferredColumnWidth(160))
             .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_ARTIST)
-            .setStringProvider(new StringProvider<String, Object>(ARTIST_NAME))
+            .setStringProvider(new StringProvider<String>(ARTIST_NAME))
             .setLargeDataset(true)
             .setSearchPropertyIDs(ARTIST_NAME)
             .setOrderByClause(ARTIST_NAME));
@@ -171,7 +171,7 @@ public class Chinook {
             new Property.ForeignKeyProperty(CUSTOMER_SUPPORTREPID_FK, "Support rep", T_EMPLOYEE,
                     new Property(CUSTOMER_SUPPORTREPID)))
             .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_CUSTOMER)
-            .setStringProvider(new StringProvider<String, Object>(CUSTOMER_LASTNAME)
+            .setStringProvider(new StringProvider<String>(CUSTOMER_LASTNAME)
             .addText(", ").addValue(CUSTOMER_FIRSTNAME))
             .setLargeDataset(true)
             .setSearchPropertyIDs(CUSTOMER_FIRSTNAME, CUSTOMER_LASTNAME, CUSTOMER_EMAIL)
@@ -208,7 +208,7 @@ public class Chinook {
             new Property(EMPLOYEE_EMAIL, Types.VARCHAR, "Email")
                     .setMaxLength(60))
             .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_EMPLOYEE)
-            .setStringProvider(new StringProvider<String, Object>(EMPLOYEE_LASTNAME)
+            .setStringProvider(new StringProvider<String>(EMPLOYEE_LASTNAME)
             .addText(", ").addValue(EMPLOYEE_FIRSTNAME))
             .setSearchPropertyIDs(EMPLOYEE_FIRSTNAME, EMPLOYEE_LASTNAME, EMPLOYEE_EMAIL)
             .setOrderByClause(EMPLOYEE_LASTNAME + ", " + EMPLOYEE_FIRSTNAME));
@@ -219,7 +219,7 @@ public class Chinook {
                     .setMaxLength(120)
                     .setPreferredColumnWidth(160))
             .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_GENRE)
-            .setStringProvider(new StringProvider<String, Object>(GENRE_NAME))
+            .setStringProvider(new StringProvider<String>(GENRE_NAME))
             .setSearchPropertyIDs(GENRE_NAME)
             .setOrderByClause(GENRE_NAME));
 
@@ -229,7 +229,7 @@ public class Chinook {
                     .setMaxLength(120)
                     .setPreferredColumnWidth(160))
             .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_MEDIATYPE)
-            .setStringProvider(new StringProvider<String, Object>(MEDIATYPE_NAME))
+            .setStringProvider(new StringProvider<String>(MEDIATYPE_NAME))
             .setOrderByClause(MEDIATYPE_NAME));
 
     EntityRepository.add(new EntityDefinition(T_TRACK,
@@ -261,7 +261,7 @@ public class Chinook {
             new Property(TRACK_UNITPRICE, Types.DOUBLE, "Price")
                     .setNullable(false))
             .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_TRACK)
-            .setStringProvider(new StringProvider<String, Object>(TRACK_NAME))
+            .setStringProvider(new StringProvider<String>(TRACK_NAME))
             .setLargeDataset(true)
             .setSearchPropertyIDs(TRACK_NAME)
             .setOrderByClause(TRACK_NAME));
@@ -290,7 +290,7 @@ public class Chinook {
                     .setMaxLength(120)
                     .setPreferredColumnWidth(160))
             .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_PLAYLIST)
-            .setStringProvider(new StringProvider<String, Object>(PLAYLIST_NAME))
+            .setStringProvider(new StringProvider<String>(PLAYLIST_NAME))
             .setLargeDataset(true)
             .setSearchPropertyIDs(PLAYLIST_NAME)
             .setOrderByClause(PLAYLIST_NAME));
@@ -313,7 +313,7 @@ public class Chinook {
                     EntityRepository.getProperty(T_TRACK, TRACK_ALBUMID_FK), "Album")
                     .setPreferredColumnWidth(160))
             .setIdSource(IdSource.NONE)
-            .setStringProvider(new StringProvider<String, Object>(PLAYLISTTRACK_PLAYLISTID_FK)
+            .setStringProvider(new StringProvider<String>(PLAYLISTTRACK_PLAYLISTID_FK)
             .addText(" - ").addValue(PLAYLISTTRACK_TRACKID_FK))
             .setLargeDataset(true));
 
@@ -340,7 +340,7 @@ public class Chinook {
             new Property(INVOICE_TOTAL, Types.DOUBLE, "Total")
                     .setNullable(false))
             .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_INVOICE)
-            .setStringProvider(new StringProvider<String, Object>(INVOICE_INVOICEID))
+            .setStringProvider(new StringProvider<String>(INVOICE_INVOICEID))
             .setLargeDataset(true).setSearchPropertyIDs(INVOICE_INVOICEID_AS_STRING)
             .setOrderByClause(INVOICE_CUSTOMERID + ", " + INVOICE_INVOICEDATE + " desc"));
 

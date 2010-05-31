@@ -59,7 +59,7 @@ public class EntityDefinition implements Serializable {
    * The StringProvider used when toString() is called for this entity
    * @see org.jminor.common.model.valuemap.ValueMap.ToString
    */
-  private ValueMap.ToString<String, Object> stringProvider;
+  private ValueMap.ToString<String> stringProvider;
   /**
    * A custom sql query used when selecting entities of this type
    */
@@ -191,11 +191,11 @@ public class EntityDefinition implements Serializable {
     return this;
   }
 
-  public ValueMap.ToString<String, Object> getStringProvider() {
+  public ValueMap.ToString<String> getStringProvider() {
     return stringProvider;
   }
 
-  public EntityDefinition setStringProvider(final ValueMap.ToString<String, Object> stringProvider) {
+  public EntityDefinition setStringProvider(final ValueMap.ToString<String> stringProvider) {
     this.stringProvider = stringProvider;
     return this;
   }

@@ -56,26 +56,6 @@ public class ValueChangeMapImpl<K, V> implements ValueChangeMap<K, V>, Serializa
   }
 
   /** {@inheritDoc} */
-  public State stateModified() {
-    final State state = new State(isModified());
-    eventValueChanged().addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        state.setActive(isModified());
-      }
-    });
-
-    return state.getLinkedState();
-  }
-
-  /** {@inheritDoc} */
-  public Event eventValueChanged() {
-    if (evtValueChanged == null)
-      evtValueChanged = new Event();
-
-    return evtValueChanged;
-  }
-
-  /** {@inheritDoc} */
   public String getMapTypeID() {
     return getClass().getSimpleName();
   }
@@ -223,7 +203,7 @@ public class ValueChangeMapImpl<K, V> implements ValueChangeMap<K, V>, Serializa
   public ValueChangeMap<K, V> getOriginalCopy() {
     final ValueChangeMap<K, V> copy = getCopy();
     copy.revertAll();
-    
+
     return copy;
   }
 
@@ -280,6 +260,26 @@ public class ValueChangeMapImpl<K, V> implements ValueChangeMap<K, V>, Serializa
       hash = hash + (value == null ? 0 : value.hashCode());
 
     return hash;
+  }
+
+  /** {@inheritDoc} */
+  public State stateModified() {
+    final State state = new State(isModified());
+    eventValueChanged().addListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        state.setActive(isModified());
+      }
+    });
+
+    return state.getLinkedState();
+  }
+
+  /** {@inheritDoc} */
+  public Event eventValueChanged() {
+    if (evtValueChanged == null)
+      evtValueChanged = new Event();
+
+    return evtValueChanged;
   }
 
   protected boolean valuesEqual(final V valueOne, final V valueTwo) {

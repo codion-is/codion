@@ -1684,3 +1684,4 @@
   AbstractFilteredTablePanel.scrollToCoordinate() added
   Configuration.USE_LOOKUP_FIELD_SEARCH_HINT removed
   EntityLookupField.searchHintEnabled removed
+  ValueMap.ToString<T, V>, removed V type parameter

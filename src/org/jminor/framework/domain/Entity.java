@@ -1132,7 +1132,7 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
 
     public String toString(final Entity entity) {
       final String entityID = entity.getEntityID();
-      final ToString<String, Object> stringProvider = EntityRepository.getStringProvider(entityID);
+      final ToString<String> stringProvider = EntityRepository.getStringProvider(entityID);
 
       return stringProvider == null ? new StringBuilder(entityID).append(": ").append(entity.getPrimaryKey()).toString() : stringProvider.toString(entity);
     }

@@ -45,7 +45,7 @@ public class StringProviderTest {
 
     final DateFormat dateFormat = DateFormats.getDateFormat(DateFormats.SHORT_DOT);
 
-    final StringProvider<String, Object> employeeToString = new StringProvider<String, Object>(EMPLOYEE_NAME)
+    final StringProvider<String> employeeToString = new StringProvider<String>(EMPLOYEE_NAME)
             .addText(" (department: ").addValue(EMPLOYEE_DEPARTMENT_FK).addText(", location: ")
             .addReferencedValue(EMPLOYEE_DEPARTMENT_FK, DEPARTMENT_LOCATION).addText(", hiredate: ")
             .addFormattedValue(EMPLOYEE_HIREDATE, dateFormat).addText(")");
