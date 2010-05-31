@@ -77,8 +77,9 @@ public class EmpDept {
             new Property(DEPARTMENT_NAME, Types.VARCHAR, getString(DEPARTMENT_NAME))
                     .setPreferredColumnWidth(120).setMaxLength(14).setNullable(false),
             new Property(DEPARTMENT_LOCATION, Types.VARCHAR, getString(DEPARTMENT_LOCATION))
-                    .setPreferredColumnWidth(150).setMaxLength(13)).setOrderByClause(DEPARTMENT_NAME)
+                    .setPreferredColumnWidth(150).setMaxLength(13))
             .setIdSource(IdSource.NONE)
+            .setOrderByClause(DEPARTMENT_NAME)
             .setStringProvider(new StringProvider<String, Object>(DEPARTMENT_NAME)));
 
     /*Defining the entity type T_EMPLOYEE*/
