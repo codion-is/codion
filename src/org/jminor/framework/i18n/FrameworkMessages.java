@@ -76,6 +76,7 @@ public class FrameworkMessages {
   public static final String UPDATE_OR_INSERT_TITLE = "update_or_insert_title";
   public static final String CONFIRM_UPDATE = "confirm_update";
   public static final String CONFIRM_DELETE_SELECTED = "confirm_delete_selected";
+  public static final String CONFIRM_DELETE_ENTITY = "confirm_delete_entity";
   public static final String CONFIRM_INSERT = "confirm_insert";
   public static final String REPORT_PRINTER = "report_printer";
   public static final String APPLY = "apply";

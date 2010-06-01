@@ -78,5 +78,6 @@ public class H2Database extends AbstractDatabase {
   }
 
   /** {@inheritDoc} *///todo implement
+  @Override
   public void shutdownEmbedded(final Properties connectionProperties) {}
 }

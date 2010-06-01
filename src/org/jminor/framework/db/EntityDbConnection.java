@@ -481,7 +481,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   }
 
   /** {@inheritDoc} */
-  public byte[] readBlob(final Entity.Key primaryKey, final String blobPropertyID) throws Exception {//todo override
+  public byte[] readBlob(final Entity.Key primaryKey, final String blobPropertyID) throws Exception {//todo does not work as is
     try {
       final Property.BlobProperty property =
               (Property.BlobProperty) EntityRepository.getProperty(primaryKey.getEntityID(), blobPropertyID);
