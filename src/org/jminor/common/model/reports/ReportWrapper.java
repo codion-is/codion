@@ -7,9 +7,8 @@ import java.sql.Connection;
 import java.util.Map;
 
 /**
- * User: Björn Darri
- * Date: 23.5.2010
- * Time: 21:09:45
+ * User: Bjorn Darri<br>
+ * Date: 23.5.2010<br>
  */
 public interface ReportWrapper<R> {
   String getReportName();

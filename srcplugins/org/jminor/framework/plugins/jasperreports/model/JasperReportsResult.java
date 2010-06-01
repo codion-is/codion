@@ -10,8 +10,8 @@ import net.sf.jasperreports.engine.JasperPrint;
 import java.io.Serializable;
 
 /**
- * User: Björn Darri
- * Date: 23.5.2010
+ * User: Bjorn Darri<br>
+ * Date: 23.5.2010<br>
  * Time: 21:20:16
  */
 public class JasperReportsResult implements ReportResult<JasperPrint>, Serializable {

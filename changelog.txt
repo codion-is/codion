@@ -1685,3 +1685,4 @@
   Configuration.USE_LOOKUP_FIELD_SEARCH_HINT removed
   EntityLookupField.searchHintEnabled removed
   ValueMap.ToString<T, V>, removed V type parameter
+  Plugin api doc generation added to build.xml

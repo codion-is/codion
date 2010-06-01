@@ -21,8 +21,8 @@ import java.sql.Connection;
 import java.util.Map;
 
 /**
- * User: Björn Darri
- * Date: 23.5.2010
+ * User: Bjorn Darri<br>
+ * Date: 23.5.2010<br>
  * Time: 21:16:12
  */
 public class JasperReportsWrapper implements ReportWrapper<JasperPrint>, Serializable {

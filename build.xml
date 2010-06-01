@@ -198,17 +198,31 @@
   <target name="javadoc" depends="build"
           description="Generates framework javadocs">
     <delete dir="${docsapi}" includeEmptyDirs="true"/>
+    <delete dir="${pluginsapi}" includeEmptyDirs="true"/>
     <mkdir dir="${docsapi}"/>
+    <mkdir dir="${pluginsapi}"/>
     <javadoc destdir="${docsapi}" sourcepath="${src}" packagenames="org.jminor.*" Encoding="UTF-8"
              docencoding="UTF-8" overview="${src}/overview.html" author="true" version="true" use="true"
              windowtitle="JMinor v${version} API" doctitle="JMinor v${version} API"
-             link="http://java.sun.com/javase/6/docs/api/"
              group="Common org.jminor.common*,
                     Client org.jminor.framework.client*,
                     Db org.jminor.framework.db*,
                     Domain org.jminor.framework.domain*,
                     Server org.jminor.framework.server*">
       <classpath refid="libraries"/>
+      <link href="http://java.sun.com/javase/6/docs/api/"/>
+    </javadoc>
+    <javadoc destdir="${pluginsapi}" sourcepath="${srcplugins}" packagenames="org.jminor.*" Encoding="UTF-8"
+             docencoding="UTF-8" author="true" version="true" use="true"
+             windowtitle="JMinor v${version} Plugin API" doctitle="JMinor v${version} Plugin API"
+             group="JasperReports model org.jminor.framework.plugins.jasperreports.model,
+                    JasperReports UI org.jminor.framework.plugins.jasperreports.ui">
+      <classpath>
+        <path refid="libraries"/>
+        <path location="${build.base}"/>
+      </classpath>
+      <link href="http://java.sun.com/javase/6/docs/api/"/>
+      <link offline="true" href="http://jminor.org/data/media/project/docs/api/" packagelistloc="${docsapi}"/>
     </javadoc>
   </target>
 
