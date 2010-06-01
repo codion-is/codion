@@ -196,7 +196,7 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
 
   /** {@inheritDoc} */
   public int getSize() {
-    return nullValueString == null ? visibleItems.size() : visibleItems.size() - 1;
+    return visibleItems.size();
   }
 
   public Event eventSelectionChanged() {
@@ -229,7 +229,7 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
     if (nullValueString == null)
      return Collections.unmodifiableList(visibleItems);
 
-    return Collections.unmodifiableList(visibleItems.subList(1, visibleItems.size() - 1));
+    return Collections.unmodifiableList(visibleItems.subList(1, getSize() - 1));
   }
 
   /**
