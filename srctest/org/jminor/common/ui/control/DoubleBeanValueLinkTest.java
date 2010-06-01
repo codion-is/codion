@@ -10,7 +10,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import org.junit.Test;
 
-public class DoubleBeanPropertyLinkTest {
+public class DoubleBeanValueLinkTest {
 
   private Double doubleValue;
   private Event evtDoubleValueChanged = new Event();

@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import javax.swing.JCheckBox;
 
-public class ToggleBeanPropertyLinkTest {
+public class ToggleBeanValueLinkTest {
 
   private boolean booleanValue;
   private Event evtBooleanValueChanged = new Event();

@@ -16,7 +16,7 @@ import javax.swing.JComboBox;
  * Date: 13.1.2008
  * Time: 12:15:13
  */
-public class SelectedItemBeanPropertyLinkTest {
+public class SelectedItemBeanValueLinkTest {
 
   private String selectedItem;
   private Event evtSelectedItemChanged = new Event();

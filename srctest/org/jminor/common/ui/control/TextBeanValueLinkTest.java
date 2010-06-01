@@ -11,7 +11,7 @@ import org.junit.Test;
 
 import javax.swing.JTextField;
 
-public class TextBeanPropertyLinkTest {
+public class TextBeanValueLinkTest {
 
   private String stringValue;
   private Event evtStringValueChanged = new Event();

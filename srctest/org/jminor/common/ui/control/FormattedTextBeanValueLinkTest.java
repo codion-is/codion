@@ -13,7 +13,7 @@ import javax.swing.JFormattedTextField;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class FormattedTextBeanPropertyLinkTest {
+public class FormattedTextBeanValueLinkTest {
 
   private Date dateValue;
   private Event evtDateValueChanged = new Event();
