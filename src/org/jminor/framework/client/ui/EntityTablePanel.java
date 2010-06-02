@@ -729,6 +729,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
   private static boolean isImage(final String imagePath) {
     final String lowerCasePath = imagePath.toLowerCase();
     return lowerCasePath.endsWith(".gif")
+            || lowerCasePath.endsWith(".tif")
             || lowerCasePath.endsWith(".jpg")
             || lowerCasePath.endsWith(".jpeg")
             || lowerCasePath.endsWith(".png")
@@ -1053,10 +1054,14 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
    * @return true if the delete action should be performed
    */
   protected boolean confirmDelete() {
-    final String[] messages = FrameworkMessages.getDefaultConfirmDeleteMessages();
+    final String[] messages = getConfirmDeleteMessages();
     final int res = JOptionPane.showConfirmDialog(this, messages[0], messages[1], JOptionPane.OK_CANCEL_OPTION);
 
     return res == JOptionPane.OK_OPTION;
+  }
+
+  protected String[] getConfirmDeleteMessages() {
+    return FrameworkMessages.getDefaultConfirmDeleteMessages();
   }
 
   /**

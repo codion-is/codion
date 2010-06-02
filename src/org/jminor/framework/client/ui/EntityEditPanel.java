@@ -393,9 +393,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    */
   protected boolean confirmDelete() {
     final String[] messages = getConfirmationMessages(CONFIRM_TYPE_DELETE);
-    final int res = JOptionPane.showConfirmDialog(this, messages[0], messages[1], JOptionPane.OK_CANCEL_OPTION);
-
-    return res == JOptionPane.OK_OPTION;
+    return confirm(messages[0], messages[1]);
   }
 
   /**
@@ -404,7 +402,18 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    */
   protected boolean confirmUpdate() {
     final String[] messages = getConfirmationMessages(CONFIRM_TYPE_UPDATE);
-    final int res = JOptionPane.showConfirmDialog(this, messages[0], messages[1], JOptionPane.OK_CANCEL_OPTION);
+    return confirm(messages[0], messages[1]);
+  }
+
+  /**
+   * Presents a OK/Cancel confirm dialog with the given message and title,
+   * returns true if OK was selected.
+   * @param message the message
+   * @param title the dialog title
+   * @return true if OK was selected
+   */
+  protected boolean confirm(final String message, final String title) {
+    final int res = JOptionPane.showConfirmDialog(this, message, title, JOptionPane.OK_CANCEL_OPTION);
 
     return res == JOptionPane.OK_OPTION;
   }

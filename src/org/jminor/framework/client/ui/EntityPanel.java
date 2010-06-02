@@ -660,7 +660,8 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
     editControlPanel = initializeEditControlPanel();
     final EntityTablePanel entityTablePanel = getTablePanel();
     if (entityTablePanel != null) {
-      entityTablePanel.setTableDoubleClickAction(initializeTableDoubleClickAction());
+      if (entityTablePanel.getTableDoubleClickAction() == null)
+        entityTablePanel.setTableDoubleClickAction(initializeTableDoubleClickAction());
       entityTablePanel.setMinimumSize(new Dimension(0,0));
     }
     horizontalSplitPane = detailEntityPanels.size() > 0 ? initializeHorizontalSplitPane() : null;
