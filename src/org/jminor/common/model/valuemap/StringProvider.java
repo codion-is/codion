@@ -115,11 +115,11 @@ public class StringProvider<K> implements ValueMap.ToString<K>, Serializable {
     return false;
   }
 
-  private static interface ValueProvider<T> {
+  private static interface ValueProvider<T> extends Serializable {
     public String toString(final ValueMap<T, ?> valueMap);
   }
 
-  private static class FormattedValueProvider<T> implements ValueProvider<T>, Serializable {
+  private static class FormattedValueProvider<T> implements ValueProvider<T> {
     private final T key;
     private final Format format;
 
@@ -136,7 +136,7 @@ public class StringProvider<K> implements ValueMap.ToString<K>, Serializable {
     }
   }
 
-  private static class ReferencedValueProvider<T> implements ValueProvider<T>, Serializable {
+  private static class ReferencedValueProvider<T> implements ValueProvider<T> {
     private final T referenceKey;
     private final T key;
 
@@ -164,7 +164,7 @@ public class StringProvider<K> implements ValueMap.ToString<K>, Serializable {
     }
   }
 
-  private static class StringValueProvider<T> implements ValueProvider<T>, Serializable {
+  private static class StringValueProvider<T> implements ValueProvider<T> {
     private final T key;
 
     public StringValueProvider(final T key) {
@@ -179,7 +179,7 @@ public class StringProvider<K> implements ValueMap.ToString<K>, Serializable {
     }
   }
 
-  private static class StaticTextProvider<T> implements ValueProvider<T>, Serializable {
+  private static class StaticTextProvider<T> implements ValueProvider<T> {
     private final String text;
 
     public StaticTextProvider(final String text) {

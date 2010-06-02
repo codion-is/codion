@@ -127,11 +127,12 @@ public class ValueChangeMapImpl<K, V> implements ValueChangeMap<K, V>, Serializa
 
   /** {@inheritDoc} */
   public V removeValue(final K key) {
+    final boolean keyExists = containsValue(key);
     final V value = values.get(key);
     values.remove(key);
     removeOriginalValue(key);
 
-    if (evtValueChanged != null)
+    if (keyExists && evtValueChanged != null)//dont notify a non-existant key
       notifyValueChange(key, null, value, false);
 
     return value;

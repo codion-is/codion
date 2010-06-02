@@ -22,6 +22,8 @@ public interface ValueChangeMap<K, V> extends ValueMap<K, V> {
   State stateModified();
 
   /**
+   * Returns an Event fired each time a value changes, with a
+   * ValueChangeEvent as parameter.
    * @return an Event fired when a value changes.
    */
   Event eventValueChanged();
@@ -33,8 +35,10 @@ public interface ValueChangeMap<K, V> extends ValueMap<K, V> {
   String getMapTypeID();
 
   /**
-   * Adds a ActionListener, this listener will be notified each time a value changes.
+   * Adds a ActionListener, this listener will be notified each time a value changes,
+   * by calling actionPerformed() with a ValueChangeEvent as parameter.
    * @param valueListener the ActionListener
+   * @see org.jminor.common.model.valuemap.ValueChangeEvent
    */
   void addValueListener(final ActionListener valueListener);
 
@@ -52,12 +56,12 @@ public interface ValueChangeMap<K, V> extends ValueMap<K, V> {
   V getOriginalValue(final K key);
 
   /**
-   * @return true if a value has been modified since this value map was initialized.
+   * @return true if a value has been modified.
    */
   boolean isModified();
 
   /**
-   * Returns true if the value associated with the given key has been modified since it was initialized.
+   * Returns true if the value associated with the given key has been modified..
    * @param key the key
    * @return true if the value has changed
    */
@@ -78,7 +82,8 @@ public interface ValueChangeMap<K, V> extends ValueMap<K, V> {
   void revertAll();
 
   /**
-   * Saves the value associated with the given key, that is, removes the original value
+   * Saves the value associated with the given key, that is, removes the original value.
+   * If no original value exists calling this method has no effect.
    * @param key the key for which to save the value
    */
   void saveValue(final K key);
@@ -107,7 +112,7 @@ public interface ValueChangeMap<K, V> extends ValueMap<K, V> {
   ValueChangeMap<K, V> getOriginalCopy();
 
   /**
-   * Removes all items and change history from this map.
+   * Removes all values and change history from this map.
    */
   void clear();
 
