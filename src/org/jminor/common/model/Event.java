@@ -6,14 +6,15 @@ package org.jminor.common.model;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * A synchronous event class.
  */
 public class Event implements ActionListener {
 
-  private final Collection<ActionListener> listeners = new ArrayList<ActionListener>();
+  private final Set<ActionListener> listeners = new HashSet<ActionListener>();
   private final ActionEvent defaultActionEvent = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "");
 
   /**
@@ -38,12 +39,16 @@ public class Event implements ActionListener {
   }
 
   /**
-   * Adds <code>listener</code> to this Event
+   * Adds <code>listener</code> to this Event, adding the same listener
+   * a second time has no effect.
    * @param listener the listener to add
+   * @throws IllegalArgumentException in case listener is null
    */
   public void addListener(final ActionListener listener) {
-    if (!listeners.contains(listener))
-      listeners.add(listener);
+    if (listener == null)
+      throw new IllegalArgumentException("Listener is null");
+
+    listeners.add(listener);
   }
 
   /**

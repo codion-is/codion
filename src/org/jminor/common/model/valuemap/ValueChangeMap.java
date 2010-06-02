@@ -22,9 +22,9 @@ public interface ValueChangeMap<K, V> extends ValueMap<K, V> {
   State stateModified();
 
   /**
-   * Returns an Event fired each time a value changes, with a
-   * ValueChangeEvent as parameter.
+   * Returns an Event fired each time a value changes, with a ValueChangeEvent argument.
    * @return an Event fired when a value changes.
+   * @see org.jminor.common.model.valuemap.ValueChangeEvent
    */
   Event eventValueChanged();
 
@@ -36,14 +36,15 @@ public interface ValueChangeMap<K, V> extends ValueMap<K, V> {
 
   /**
    * Adds a ActionListener, this listener will be notified each time a value changes,
-   * by calling actionPerformed() with a ValueChangeEvent as parameter.
+   * by calling actionPerformed() with a ValueChangeEvent argument.
+   * Adding the same listener multiple times has no effect.
    * @param valueListener the ActionListener
    * @see org.jminor.common.model.valuemap.ValueChangeEvent
    */
   void addValueListener(final ActionListener valueListener);
 
   /**
-   * Removes the given value listener.
+   * Removes the given value listener if it has been registered with this value map.
    * @param valueListener the ActionListener to remove
    */
   void removeValueListener(final ActionListener valueListener);
@@ -117,7 +118,7 @@ public interface ValueChangeMap<K, V> extends ValueMap<K, V> {
   void clear();
 
   /**
-   * After a call to this method this ValueMap should contain the same values and original values as the given map.
+   * After a call to this method this ValueMap contains the same values and original values as the given map.
    * A null argument to this method clears the destination map of all values and original values.
    * @param map the map to copy or null for clearing the destination map
    */

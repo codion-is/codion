@@ -99,7 +99,7 @@ public class ValueChangeMapImpl<K, V> implements ValueChangeMap<K, V>, Serializa
   }
 
   /** {@inheritDoc} */
-  public void initializeValue(K key, V value) {
+  public void initializeValue(final K key, final V value) {
     values.put(key, value);
     if (evtValueChanged != null)
       notifyValueChange(key, value, null, true);
