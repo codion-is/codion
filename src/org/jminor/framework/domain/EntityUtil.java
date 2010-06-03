@@ -370,7 +370,7 @@ public class EntityUtil {
     if (entity.isValueNull(property.getPropertyID()))
       return JSONObject.NULL;
     if (property instanceof Property.ForeignKeyProperty)
-      return getJSONObject(Arrays.asList(entity.getEntityValue(property.getPropertyID())), includeForeignKeys);
+      return getJSONObject(Arrays.asList(entity.getForeignKeyValue(property.getPropertyID())), includeForeignKeys);
     if (property.isTime())
       return entity.getFormattedValue(property.getPropertyID(), property.isDate() ? jsonDateFormat : jsonTimestampFormat);
 

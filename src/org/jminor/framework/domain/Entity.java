@@ -292,17 +292,17 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
   }
 
   /**
-   * @param propertyID the ID of the property for which to retrieve the value
+   * @param foreignKeyPropertyID the ID of the property for which to retrieve the value
    * @return the value of the property identified by <code>propertyID</code>,
    * assuming it is an Entity
    * @throws RuntimeException if the property is not a foreign key property
    */
-  public Entity getEntityValue(final String propertyID) {
-    final Property property = getProperty(propertyID);
+  public Entity getForeignKeyValue(final String foreignKeyPropertyID) {
+    final Property property = getProperty(foreignKeyPropertyID);
     if (property instanceof Property.ForeignKeyProperty)
       return foreignKeyValues.getValue(property.getPropertyID());
 
-    throw new RuntimeException(propertyID + " is not a foreign key property");
+    throw new RuntimeException(foreignKeyPropertyID + " is not a foreign key property");
   }
 
   /**

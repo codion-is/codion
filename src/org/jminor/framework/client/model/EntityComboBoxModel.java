@@ -74,7 +74,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
   private final FilterCriteria<Entity> foreignKeyFilterCriteria = new FilterCriteria<Entity>() {
     public boolean include(final Entity item) {
       for (final Map.Entry<String, Set<Entity>> entry : foreignKeyFilterEntities.entrySet()) {
-        final Entity foreignKeyValue = item.getEntityValue(entry.getKey());
+        final Entity foreignKeyValue = item.getForeignKeyValue(entry.getKey());
         final Set<Entity> filterValues = entry.getValue();
         if (filterValues.size() > 0 && !filterValues.contains(foreignKeyValue))
           return false;

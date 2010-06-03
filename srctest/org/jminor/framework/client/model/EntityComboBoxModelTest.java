@@ -8,6 +8,7 @@ import org.jminor.framework.db.EntityDbConnectionTest;
 import org.jminor.framework.db.criteria.EntitySelectCriteria;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.Property;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -79,18 +80,18 @@ public class EntityComboBoxModelTest {
     final Entity sales = comboBoxModel.getDbProvider().getEntityDb().selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "SALES");
     comboBoxModel.setForeignKeyFilterEntities(EmpDept.EMPLOYEE_DEPARTMENT_FK, Arrays.asList(sales));
     for (int i = 0; i < comboBoxModel.getSize(); i++) {
-      assertEquals(((Entity) comboBoxModel.getElementAt(0)).getEntityValue(EmpDept.EMPLOYEE_DEPARTMENT_FK), sales);
+      assertEquals(((Entity) comboBoxModel.getElementAt(0)).getForeignKeyValue(EmpDept.EMPLOYEE_DEPARTMENT_FK), sales);
     }
     final Entity research = comboBoxModel.getDbProvider().getEntityDb().selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "RESEARCH");
     comboBoxModel.createForeignKeyFilterComboBoxModel(EmpDept.EMPLOYEE_DEPARTMENT_FK).setSelectedItem(research);
     for (int i = 0; i < comboBoxModel.getSize(); i++) {
-      assertEquals(((Entity) comboBoxModel.getElementAt(0)).getEntityValue(EmpDept.EMPLOYEE_DEPARTMENT_FK), research);
+      assertEquals(((Entity) comboBoxModel.getElementAt(0)).getForeignKeyValue(EmpDept.EMPLOYEE_DEPARTMENT_FK), research);
     }
 
     comboBoxModel.clear();
     assertTrue(comboBoxModel.getSize() == 0);
 
-    comboBoxModel.setEntitySelectCriteria(new EntitySelectCriteria(EmpDept.T_EMPLOYEE, new SimpleCriteria(" ename = 'CLARK'")));
+    comboBoxModel.setEntitySelectCriteria(new EntitySelectCriteria(EmpDept.T_EMPLOYEE, new SimpleCriteria<Property>(" ename = 'CLARK'")));
     comboBoxModel.setForeignKeyFilterEntities(EmpDept.EMPLOYEE_DEPARTMENT_FK, null);
 
     comboBoxModel.forceRefresh();

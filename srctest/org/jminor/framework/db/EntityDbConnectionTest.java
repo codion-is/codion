@@ -157,7 +157,7 @@ public class EntityDbConnectionTest {
     Entity emp = result.get(0);
     assertTrue(emp.isLoaded(EmpDept.EMPLOYEE_DEPARTMENT_FK));
     assertTrue(emp.isLoaded(EmpDept.EMPLOYEE_MGR_FK));
-    emp = emp.getEntityValue(EmpDept.EMPLOYEE_MGR_FK);
+    emp = emp.getForeignKeyValue(EmpDept.EMPLOYEE_MGR_FK);
     assertFalse(emp.isLoaded(EmpDept.EMPLOYEE_MGR_FK));
 
     result = getConnection().selectMany(criteria.setFetchDepth(EmpDept.EMPLOYEE_DEPARTMENT_FK, 0));
@@ -177,7 +177,7 @@ public class EntityDbConnectionTest {
     emp = result.get(0);
     assertFalse(emp.isLoaded(EmpDept.EMPLOYEE_DEPARTMENT_FK));
     assertTrue(emp.isLoaded(EmpDept.EMPLOYEE_MGR_FK));
-    emp = emp.getEntityValue(EmpDept.EMPLOYEE_MGR_FK);
+    emp = emp.getForeignKeyValue(EmpDept.EMPLOYEE_MGR_FK);
     assertTrue(emp.isLoaded(EmpDept.EMPLOYEE_MGR_FK));
   }
 

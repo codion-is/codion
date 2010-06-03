@@ -1687,3 +1687,4 @@
   ValueMap.ToString<T, V>, removed V type parameter
   Plugin api doc generation added to build.xml
   EntityTablePanel.getConfirmDeleteMessages() added
+  Entity.getEntityValue() renamed to getForeignKeyValue()

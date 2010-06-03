@@ -1640,7 +1640,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
       final boolean fkValueNull = entity.isForeignKeyNull(property);
       if (!fkValueNull) {
         boolean queried = false;
-        Entity referencedEntity = entity.getEntityValue(property.getPropertyID());
+        Entity referencedEntity = entity.getForeignKeyValue(property.getPropertyID());
         if (referencedEntity == null) {
           referencedEntity = dbProvider.getEntityDb().selectSingle(entity.getReferencedPrimaryKey(property));
           entity.removeValue(property.getPropertyID());
@@ -1651,7 +1651,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
                 .append("] ").append(property.getCaption()).append(": ");
         text.append(referencedEntity.toString());
         final JMenu foreignKeyMenu = new JMenu(text.toString());
-        populateEntityMenu(foreignKeyMenu, entity.getEntityValue(property.getPropertyID()), dbProvider);
+        populateEntityMenu(foreignKeyMenu, entity.getForeignKeyValue(property.getPropertyID()), dbProvider);
         rootMenu.add(foreignKeyMenu);
       }
       else {
