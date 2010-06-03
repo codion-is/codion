@@ -50,8 +50,9 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueCollectionProv
 
   /**
    * Describes an object responsible for providing String representations of ValueMap instances
+   * @param <K> the type of the map keys
    */
-  public interface ToString<T> {
-    String toString(final ValueMap<T, ?> valueMap);
+  public interface ToString<K> {
+    String toString(final ValueMap<K, ?> valueMap);
   }
 }

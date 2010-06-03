@@ -14,7 +14,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * A class encapsulating a call log entry.
+ * A class encapsulating a log entry for logging method calls.
  */
 public class LogEntry implements Serializable, Comparable<LogEntry> {
 
@@ -22,7 +22,7 @@ public class LogEntry implements Serializable, Comparable<LogEntry> {
   private static final DateFormat TIMESTAMP_FORMAT = DateFormats.getDateFormat(DateFormats.EXACT_TIMESTAMP);
 
   private String method;
-  private String message;
+  private String entryMessage;
   private String exitMessage;
   private long entryTime;
   private long exitTime;
@@ -34,9 +34,13 @@ public class LogEntry implements Serializable, Comparable<LogEntry> {
     this("", "", 0, null);
   }
 
+  /**
+   * A copy constructor
+   * @param entry the log entry to copy
+   */
   public LogEntry(final LogEntry entry) {
     this.method = entry.method;
-    this.message = entry.message;
+    this.entryMessage = entry.entryMessage;
     this.exitMessage = entry.exitMessage;
     this.entryTime = entry.entryTime;
     this.exitTime = entry.exitTime;
@@ -49,19 +53,36 @@ public class LogEntry implements Serializable, Comparable<LogEntry> {
     }
   }
 
-  public LogEntry(final String method, final String message, final long time, final Throwable exception) {
-    set(method, message, time, exception);
+  /**
+   * Initializes a new LogEntry instance
+   * @param method the method being logged
+   * @param entryMessage a message describing for example the method arguments
+   * @param time the time at which to log the event
+   * @param exception the exception thrown by the method execution if any
+   */
+  public LogEntry(final String method, final String entryMessage, final long time, final Throwable exception) {
+    set(method, entryMessage, time, exception);
   }
 
-  public void set(final String method, final String message, final long time, final Throwable exception) {
+  /**
+   * Initializes this LogEntry instance
+   * @param method the method being logged
+   * @param entryMessage a message describing for example the method arguments
+   * @param time the time at which to log the event
+   * @param exception the exception thrown by the method execution if any
+   */
+  public void set(final String method, final String entryMessage, final long time, final Throwable exception) {
     this.method = method;
-    this.message = message;
+    this.entryMessage = entryMessage;
     this.entryTime = time;
     this.exitTime = 0;
     this.delta = 0;
     setException(exception);
   }
 
+  /**
+   * Clears all info from this entry
+   */
   public void reset() {
     set(null, null, 0, null);
   }
@@ -70,12 +91,30 @@ public class LogEntry implements Serializable, Comparable<LogEntry> {
     return entryTime;
   }
 
+  /**
+   * @param exitTime the exit time
+   * @return the difference between the given exit time and the entry time
+   */
+  public long setExitTime(final long exitTime) {
+    this.exitTime = exitTime;
+    this.delta = this.exitTime - this.entryTime;
+
+    return delta;
+  }
+
   public long getExitTime() {
     return exitTime;
   }
 
-  public String getMessage() {
-    return message;
+  /**
+   * @return the duration of the method call this entry represents
+   */
+  public long getDelta() {
+    return delta;
+  }
+
+  public String getEntryMessage() {
+    return entryMessage;
   }
 
   public String getMethod() {
@@ -84,6 +123,49 @@ public class LogEntry implements Serializable, Comparable<LogEntry> {
 
   public String getStackTrace() {
     return stackTrace;
+  }
+
+  public LogEntry setExitMessage(final String message) {
+    this.exitMessage = message;
+    return this;
+  }
+
+  public String getExitMessage() {
+    return exitMessage;
+  }
+
+  public LogEntry setException(final Throwable exception) {
+    this.stackTrace = getStackTrace(exception);
+    return this;
+  }
+
+  /**
+   * @return a formatted entry time
+   */
+  public String getEntryTimeFormatted() {
+    return TIMESTAMP_FORMAT.format(entryTime);
+  }
+
+  /**
+   * @return a formatted exit time
+   */
+  public String getExitTimeFormatted() {
+    return TIMESTAMP_FORMAT.format(new Date(exitTime));
+  }
+
+  public List<LogEntry> getSubLog() {
+    return subLog;
+  }
+
+  public void setSubLog(List<LogEntry> subLog) {
+    this.subLog = subLog;
+  }
+
+  /**
+   * @return true if this entry is complete, that is, has an exit time
+   */
+  public boolean isComplete() {
+    return exitTime > 0;
   }
 
   public int compareTo(final LogEntry entry) {
@@ -115,7 +197,7 @@ public class LogEntry implements Serializable, Comparable<LogEntry> {
     final StringBuilder stringBuilder = new StringBuilder();
     if (exitTime > 0) {
       stringBuilder.append(indentString).append(getEntryTimeFormatted()).append(" @ ").append(method).append(
-              message != null && message.length() > 0 ? (": " + message) : "").append("\n");
+              entryMessage != null && entryMessage.length() > 0 ? (": " + entryMessage) : "").append("\n");
       stringBuilder.append(indentString).append(getExitTimeFormatted()).append(" > ").append(delta).append(" ms")
               .append(exitMessage == null ? "" : " (" + exitMessage + ")").append("\n");
       if (stackTrace != null)
@@ -123,71 +205,10 @@ public class LogEntry implements Serializable, Comparable<LogEntry> {
     }
     else {
       stringBuilder.append(indentString).append(getEntryTimeFormatted()).append(" @ ").append(method).append(
-              message != null && message.length() > 0 ? (": " + message) : "").append("\n");
+              entryMessage != null && entryMessage.length() > 0 ? (": " + entryMessage) : "").append("\n");
     }
 
     return stringBuilder.toString();
-  }
-
-  /**
-   * @return the log entry key
-   */
-  public String getEntryKey() {
-    return method + (message != null && message.length() > 0 ? ": " + message : "");
-  }
-
-  /**
-   * @param exitTime the exit time
-   * @return the difference between the given exit time and the entry time
-   */
-  public long setExitTime(final long exitTime) {
-    this.exitTime = exitTime;
-    this.delta = this.exitTime - this.entryTime;
-
-    return delta;
-  }
-
-  public LogEntry setExitMessage(final String message) {
-    this.exitMessage = message;
-    return this;
-  }
-
-  public LogEntry setException(final Throwable exception) {
-    this.stackTrace = getStackTrace(exception);
-    return this;
-  }
-
-  /**
-   * @return the duration of the method call this entry represents
-   */
-  public long getDelta() {
-    return delta;
-  }
-
-  /**
-   * @return a formatted entry time
-   */
-  public String getEntryTimeFormatted() {
-    return TIMESTAMP_FORMAT.format(entryTime);
-  }
-
-  /**
-   * @return a formatted exit time
-   */
-  public String getExitTimeFormatted() {
-    return TIMESTAMP_FORMAT.format(new Date(exitTime));
-  }
-
-  public List<LogEntry> getSubLog() {
-    return subLog;
-  }
-
-  public void setSubLog(List<LogEntry> subLog) {
-    this.subLog = subLog;
-  }
-
-  public boolean isValid() {
-    return exitTime > 0;
   }
 
   private String getStackTrace(final Throwable exception) {

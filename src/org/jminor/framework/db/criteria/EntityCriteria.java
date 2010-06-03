@@ -47,7 +47,7 @@ public class EntityCriteria implements Serializable {
   /**
    * @return the values the underlying criteria is based on, if any
    */
-  public List<?> getValues() {
+  public List<Object> getValues() {
     return criteria == null ? null : criteria.getValues();
   }
 

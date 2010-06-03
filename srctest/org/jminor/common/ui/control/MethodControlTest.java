@@ -45,7 +45,7 @@ public class MethodControlTest {
     assertEquals("Action performed should have resulted in a method call", 2, callCount);
     assertEquals("Action performed should have resulted in a action performed count", 1, actionPerformedCount);
     try {
-      new MethodControl("test", this, "none", null);
+      new MethodControl("test", this, "none");
       fail();
     }
     catch (Exception e) {}

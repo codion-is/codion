@@ -124,6 +124,9 @@ public class PropertySearchModel extends AbstractSearchModel<Property> {
     }
   }
 
+  /**
+   * @return a PropertyCriteria based on the values in this search model.
+   */
   public PropertyCriteria getPropertyCriteria() {
     final PropertyCriteria criteria = getValueCount(getSearchType()) == 1 ?
             new PropertyCriteria(getSearchProperty(), getSearchType(), getUpperBound()) :

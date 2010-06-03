@@ -1688,3 +1688,5 @@
   Plugin api doc generation added to build.xml
   EntityTablePanel.getConfirmDeleteMessages() added
   Entity.getEntityValue() renamed to getForeignKeyValue()
+  LogEntry.isValid() renamed to isComplete()
+  LogEntry.message renamed to entryMessage (since we have exitMessage as well)

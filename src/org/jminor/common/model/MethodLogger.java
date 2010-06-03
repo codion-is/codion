@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A class for logging method calls.
+ * A class for logging method calls.<br>
  * User: Björn Darri<br>
  * Date: 24.4.2010<br>
  * Time: 10:10:55<br>
@@ -67,7 +67,7 @@ public class MethodLogger {
       entries.add(new LogEntry("Logging is not enabled", "", System.currentTimeMillis(), null));
     else {
       for (final LogEntry entry : logEntries) {
-        if (entry.isValid())
+        if (entry.isComplete())
           entries.add(new LogEntry(entry));
       }
     }

@@ -101,7 +101,6 @@ public class EntityDbRemoteServerTest {
 
     final LogEntry entry = log.getLog().get(0);
     assertEquals("getConnection", entry.getMethod());
-    assertNotNull(entry.getEntryKey());
     assertNotNull(entry.getDelta());
     assertNotNull(entry.getEntryTimeFormatted());
     assertNotNull(entry.getExitTimeFormatted());
