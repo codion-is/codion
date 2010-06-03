@@ -7,8 +7,10 @@ import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.model.AbstractFilteredTableModel;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Refreshable;
+import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.reports.ReportDataWrapper;
+import org.jminor.framework.client.model.event.DeleteEvent;
 import org.jminor.framework.db.EntityDb;
 import org.jminor.framework.db.criteria.EntitySelectCriteria;
 import org.jminor.framework.db.provider.EntityDbProvider;
@@ -80,6 +82,10 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
    * true while the model data is being refreshed
    */
   private boolean isRefreshing = false;
+
+  private final State stAllowMultipleUpdate = new State(true);
+
+  private final State stAllowDelete = new State(true);
 
   /**
    * Initializes a new EntityTableModel
@@ -209,6 +215,52 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
    */
   public boolean isRefreshing() {
     return isRefreshing;
+  }
+
+  /**
+   * @return true if this model allows multiple entities to be updated at a time
+   */
+  public boolean isMultipleUpdateAllowed() {
+    return true;
+  }
+
+  /**
+   * @return the state used to determine if updating should be enabled
+   * @see #isMultipleUpdateAllowed()
+   */
+  public State stateAllowMultipleUpdate() {
+    return stAllowMultipleUpdate.getLinkedState();
+  }
+
+  /**
+   * @return true if this model should allow records to be deleted
+   */
+  public boolean isDeleteAllowed() {
+    return stAllowDelete.isActive();
+  }
+
+  /**
+   * @param value true if this model should allow records to be deleted
+   */
+  public void setDeleteAllowed(final boolean value) {
+    stAllowDelete.setActive(value);
+  }
+
+  /**
+   * @return the state used to determine if deleting should be enabled
+   * @see #isDeleteAllowed()
+   * @see #setDeleteAllowed(boolean)
+   */
+  public State stateAllowDelete() {
+    return stAllowDelete.getLinkedState();
+  }
+
+  /**
+   * @return true if this model is read only,
+   * by default this returns the isReadOnly value of the underlying entity
+   */
+  public boolean isReadOnly() {
+    return EntityRepository.isReadOnly(getEntityID());
   }
 
   /**
@@ -625,6 +677,10 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
     getSearchModel().setSearchEnabled(property.getPropertyID(), false);
   }
 
+  protected void handleDelete(final DeleteEvent e) {
+    removeItems(e.getDeletedEntities());
+  }
+
   /**
    * Override to add event bindings
    */
@@ -634,6 +690,11 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
     eventColumnHidden().addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         handleColumnHidden((Property) e.getSource());
+      }
+    });
+    editModel.eventAfterDelete().addListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
+        handleDelete((DeleteEvent) e);
       }
     });
     tableSearchModel.eventFilterStateChanged().addListener(new ActionListener() {

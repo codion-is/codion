@@ -458,11 +458,7 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
   }
 
   protected void handleDelete(final DeleteEvent deleteEvent) {
-    final List<Entity> entities = deleteEvent.getDeletedEntities();
-    if (containsTableModel())
-      getTableModel().removeItems(entities);
-
-    refreshDetailModelsAfterDelete(entities);
+    refreshDetailModelsAfterDelete(deleteEvent.getDeletedEntities());
   }
 
   /**

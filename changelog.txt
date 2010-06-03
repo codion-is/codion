@@ -1690,3 +1690,8 @@
   Entity.getEntityValue() renamed to getForeignKeyValue()
   LogEntry.isValid() renamed to isComplete()
   LogEntry.message renamed to entryMessage (since we have exitMessage as well)
+  EntityModel.handleDelete() no longer deals with the table model
+  EntityTableModel.handleDelete() added
+  EntityTableModel.bindEventsInternal() now binds handleDelete() to editModel.eventAfterDelete()
+  EntityTablePanel.delete() added
+  EntityTablePanel.setupControls() now checks if update is allowed, and delete control is now based on EntityTablePanel.delete()

@@ -214,10 +214,6 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     updateStatusMessage();
   }
 
-  public EntityEditModel getEditModel() {
-    return getTableModel().getEditModel();
-  }
-
   /**
    * @param doubleClickAction the action to perform when a double click is performed on the table
    */
@@ -390,12 +386,12 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
   public ControlSet getUpdateSelectedControlSet() {
     final EntityEditModel editModel = getTableModel().getEditModel();
     final State enabled = new AggregateState(AggregateState.Type.AND,
-            editModel.stateAllowUpdate(),
+            getTableModel().stateAllowMultipleUpdate(),
             getTableModel().stateSelectionEmpty().getReversedState());
     final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED),
             (char) 0, Images.loadImage("Modify16.gif"), enabled);
     controlSet.setDescription(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_TIP));
-    for (final Property property : EntityUtil.getUpdateProperties(editModel.getEntityID())) {
+    for (final Property property : EntityUtil.getUpdateProperties(getTableModel().getEntityID())) {
       final String caption = property.getCaption() == null ? property.getPropertyID() : property.getCaption();
       controlSet.add(UiUtil.linkToEnabledState(enabled, new AbstractAction(caption) {
         public void actionPerformed(final ActionEvent event) {
@@ -431,10 +427,9 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
    * @return a control for deleting the selected entities
    */
   public Control getDeleteSelectedControl() {
-    final EntityEditModel editModel = getTableModel().getEditModel();
     return ControlFactory.methodControl(this, "delete", FrameworkMessages.get(FrameworkMessages.DELETE),
             new AggregateState(AggregateState.Type.AND,
-                    editModel.stateAllowDelete(),
+                    getTableModel().stateAllowDelete(),
                     getTableModel().stateSelectionEmpty().getReversedState()),
             FrameworkMessages.get(FrameworkMessages.DELETE_TIP), 0, null,
             Images.loadImage(Images.IMG_DELETE_16));
@@ -485,6 +480,9 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
       return;
 
     final List<Entity> selectedEntities = EntityUtil.copyEntities(getTableModel().getSelectedItems());
+    if (!getTableModel().isMultipleUpdateAllowed() && selectedEntities.size() > 1)
+      throw new RuntimeException("Update of multiple entities is not allowed!");
+
     final InputProviderPanel inputPanel = new InputProviderPanel(propertyToUpdate.getCaption(),
             getInputProvider(propertyToUpdate, selectedEntities, editModel));
     UiUtil.showInDialog(this, inputPanel, true, FrameworkMessages.get(FrameworkMessages.SET_PROPERTY_VALUE),
@@ -493,7 +491,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
       EntityUtil.setPropertyValue(propertyToUpdate.getPropertyID(), inputPanel.getValue(), selectedEntities);
       try {
         UiUtil.setWaitCursor(true, this);
-        editModel.update(selectedEntities);
+        getTableModel().getEditModel().update(selectedEntities);
       }
       catch (RuntimeException re) {
         throw re;
@@ -538,7 +536,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     if (confirmDelete()) {
       try {
         UiUtil.setWaitCursor(true, this);
-        getEditModel().delete(getTableModel().getSelectedItems());
+        getTableModel().getEditModel().delete(getTableModel().getSelectedItems());
       }
       finally {
         UiUtil.setWaitCursor(false, this);
@@ -899,10 +897,9 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
    * @see #getControl(String)
    */
   protected void setupControls(final ControlSet printControls) {
-    final EntityEditModel editModel = getEditModel();
-    if (!editModel.isReadOnly() && editModel.isDeleteAllowed())
+    if (!getTableModel().isReadOnly() && getTableModel().isDeleteAllowed())
       setControl(DELETE_SELECTED, getDeleteSelectedControl());
-    if (!editModel.isReadOnly() && editModel.isMultipleUpdateAllowed())
+    if (!getTableModel().isReadOnly() && getTableModel().isMultipleUpdateAllowed())
       setControl(UPDATE_SELECTED, getUpdateSelectedControlSet());
     if (getTableModel().isQueryConfigurationAllowed()) {
       setControl(CONFIGURE_QUERY, getConfigureQueryControl());
@@ -1483,7 +1480,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
   }
 
   private void bindEventsInternal() {
-    if (!getEditModel().isReadOnly() && getEditModel().isDeleteAllowed()) {
+    if (!getTableModel().isReadOnly() && getTableModel().isDeleteAllowed()) {
       getJTable().addKeyListener(new KeyAdapter() {
         @Override
         public void keyTyped(KeyEvent event) {

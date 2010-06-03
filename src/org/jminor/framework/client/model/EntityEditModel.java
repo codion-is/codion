@@ -125,13 +125,6 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
   }
 
   /**
-   * @return true if this model allows multiple entities to be updated at a time
-   */
-  public boolean isMultipleUpdateAllowed() {
-    return true;
-  }
-
-  /**
    * @return true if this model should allow records to be inserted
    */
   public boolean isInsertAllowed() {
@@ -349,8 +342,6 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
   public final void update(final List<Entity> entities) throws DbException, CancelException, ValidationException {
     if (isReadOnly())
       throw new RuntimeException("This is a read-only model, updating is not allowed!");
-    if (!isMultipleUpdateAllowed() && entities.size() > 1)
-      throw new RuntimeException("Update of multiple entities is not allowed!");
     if (!isUpdateAllowed())
       throw new RuntimeException("This model does not allow updating!");
 
