@@ -1695,3 +1695,8 @@
   EntityTableModel.bindEventsInternal() now binds handleDelete() to editModel.eventAfterDelete()
   EntityTablePanel.delete() added
   EntityTablePanel.setupControls() now checks if update is allowed, and delete control is now based on EntityTablePanel.delete()
+  EntityApplicationModel.login()/logout() added
+  EntityApplicationPanel.login()/logout() added
+  Refreshable.clear() added
+  EntityApplicationModel.refreshAll() renamed to refresh(), now implements Refreshable
+  EntityEditModel.clear() renamed to clearValues(), clear() now part of Refreshable implementation

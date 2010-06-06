@@ -12,4 +12,9 @@ public interface Refreshable {
    * Performs a refresh
    */
   void refresh();
+
+  /**
+   * Clears all data from this refreshable instance
+   */
+  void clear();
 }

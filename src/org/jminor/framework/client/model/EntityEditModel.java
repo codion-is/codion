@@ -461,6 +461,10 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
     }
   }
 
+  public void clear() {
+    clearComboBoxModels();
+  }
+
   /**
    * Refreshes the Refreshable ComboBoxModels associated with this EntityModel
    * @see org.jminor.common.model.Refreshable
@@ -469,6 +473,12 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
     for (final ComboBoxModel comboBoxModel : propertyComboBoxModels.values())
       if (comboBoxModel instanceof Refreshable)
         ((Refreshable) comboBoxModel).refresh();
+  }
+
+  public void clearComboBoxModels() {
+    for (final ComboBoxModel comboBoxModel : propertyComboBoxModels.values())
+      if (comboBoxModel instanceof Refreshable)
+        ((Refreshable) comboBoxModel).clear();
   }
 
   /**
@@ -627,7 +637,7 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
    * Clears the edit model and sets the default state.
    * @see #getDefaultValueMap()
    */
-  public void clear() {
+  public void clearValues() {
     setValueMap(null);
   }
 
@@ -900,13 +910,13 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
     stringBuilder.append(event.getValueOwnerTypeID()).append(" : ").append(property).append(
             property.hasParentProperty() ? " [fk]" : "").append("; ");
     if (!event.isInitialization()) {
-      if (event.getOldValue() != null)
+      if (event.isOldValueNull())
         stringBuilder.append(event.getOldValue().getClass().getSimpleName()).append(" ");
       stringBuilder.append(getValueString(event.getOldValue()));
     }
     if (!event.isInitialization())
       stringBuilder.append(" -> ");
-    if (event.getNewValue() != null)
+    if (event.isNewValueNull())
       stringBuilder.append(event.getNewValue().getClass().getSimpleName()).append(" ");
     stringBuilder.append(getValueString(event.getNewValue()));
 

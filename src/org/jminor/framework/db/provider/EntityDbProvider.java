@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.db.provider;
 
+import org.jminor.common.model.User;
 import org.jminor.framework.db.EntityDb;
 
 /**
@@ -29,4 +30,16 @@ public interface EntityDbProvider {
    * Logs out, disconnects and performs cleanup if required
    */
   void disconnect();
+
+  /**
+   * Sets the user for this db provider, this invalidates and disconnects the previous
+   * connection if any.
+   * @param user the user
+   */
+  void setUser(final User user);
+
+  /**
+   * @return the user used by this db provider
+   */
+  public User getUser();
 }

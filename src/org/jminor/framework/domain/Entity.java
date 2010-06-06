@@ -54,7 +54,7 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
   private transient Map<Property.ForeignKeyProperty, Key> referencedPrimaryKeysCache;
 
   /**
-   * Caching this frequently referenced map
+   * Keep a reference to this frequently referenced map
    */
   private transient Map<String, Property> properties;
 

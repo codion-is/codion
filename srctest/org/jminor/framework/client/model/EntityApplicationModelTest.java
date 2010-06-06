@@ -17,7 +17,7 @@ public class EntityApplicationModelTest {
     final EntityModel deptModel = model.getMainApplicationModel(DepartmentModel.class);
     assertNotNull(deptModel);
     assertEquals(User.UNIT_TEST_USER, model.getUser());
-    model.refreshAll();
+    model.refresh();
     assertTrue(deptModel.getTableModel().getRowCount() > 0);
     assertTrue(deptModel.getDetailModel(EmpDept.T_EMPLOYEE).getTableModel().getRowCount() > 0);
     model.getDbProvider().disconnect();

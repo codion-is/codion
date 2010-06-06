@@ -25,7 +25,7 @@ public class EntityDbLocalProvider implements EntityDbProvider {
   /**
    * The user used by this db provider when connecting to the database server
    */
-  protected final User user;
+  protected User user;
 
   /**
    * The underlying database implementation
@@ -56,6 +56,9 @@ public class EntityDbLocalProvider implements EntityDbProvider {
 
   /** {@inheritDoc} */
   public final EntityDb getEntityDb() {
+    if (user == null)
+      throw new IllegalStateException("Not logged in");
+
     validateDbConnection();
 
     return entityDb;
@@ -67,6 +70,17 @@ public class EntityDbLocalProvider implements EntityDbProvider {
       return database.getHost();
 
     return sid;
+  }
+
+  public User getUser() {
+    return user;
+  }
+
+  public void setUser(final User user) {
+    if (Util.equal(user, this.user))
+      return;
+    disconnect();
+    this.user = user;
   }
 
   /** {@inheritDoc} */

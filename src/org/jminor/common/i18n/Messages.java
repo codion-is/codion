@@ -46,6 +46,7 @@ public class Messages {
   public static final String FILE_EXISTS = "file_exists";
   public static final String OVERWRITE_FILE = "overwrite_file";
   public static final String LOGIN = "login";
+  public static final String LOGOUT = "logout";
   public static final String USERNAME = "username";
   public static final String PASSWORD = "password";
   public static final String CHOOSE_DATE = "choose_date";

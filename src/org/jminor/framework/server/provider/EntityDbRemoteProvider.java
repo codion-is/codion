@@ -29,7 +29,7 @@ public class EntityDbRemoteProvider implements EntityDbProvider {
   private static final Logger log = Util.getLogger(EntityDbRemoteProvider.class);
 
   private final String serverHostName = System.getProperty(Configuration.SERVER_HOST_NAME);
-  private final User user;
+  private User user;
   private final String clientID;
   private final String clientTypeID;
   private RemoteServer server;
@@ -43,6 +43,9 @@ public class EntityDbRemoteProvider implements EntityDbProvider {
   }
 
   public EntityDb getEntityDb() {
+    if (user == null)
+      throw new IllegalStateException("Not logged in");
+
     initializeEntityDb();
 
     return entityDb;
@@ -55,6 +58,17 @@ public class EntityDbRemoteProvider implements EntityDbProvider {
     catch (RemoteException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  public User getUser() {
+    return user;
+  }
+
+  public void setUser(final User user) {
+    if (Util.equal(user, this.user))
+      return;
+    disconnect();
+    this.user = user;
   }
 
   public void disconnect() {

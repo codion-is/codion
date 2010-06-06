@@ -4,6 +4,7 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.User;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.db.provider.EntityDbProviderFactory;
@@ -14,7 +15,7 @@ import java.util.List;
 /**
  * A central application model class.
  */
-public abstract class EntityApplicationModel {
+public abstract class EntityApplicationModel implements Refreshable {
 
   private final Event evtSelectionFiltersDetailChanged = new Event();
   private final Event evtCascadeRefreshChanged = new Event();
@@ -34,6 +35,17 @@ public abstract class EntityApplicationModel {
     this.dbProvider = dbProvider;
     this.mainApplicationModels = initializeMainApplicationModels(dbProvider);
     bindEvents();
+  }
+
+  public void logout() {
+    dbProvider.setUser(null);
+    clear();
+  }
+
+  public void login(final User user) {
+    dbProvider.setUser(user);
+    for (final EntityModel mainApplicationModel : mainApplicationModels)
+      mainApplicationModel.refresh();
   }
 
   /**
@@ -105,7 +117,7 @@ public abstract class EntityApplicationModel {
   /**
    * Refreshes the whole application tree
    */
-  public void refreshAll() {
+  public void refresh() {
     final boolean cascade = isCascadeRefresh();
     try {
       setCascadeRefresh(true);
@@ -115,6 +127,11 @@ public abstract class EntityApplicationModel {
     finally {
       setCascadeRefresh(cascade);
     }
+  }
+
+  public void clear() {
+    for (final EntityModel mainApplicationModel : mainApplicationModels)
+      mainApplicationModel.clear();
   }
 
   public EntityModel getMainApplicationModel(final Class modelClass) {

@@ -92,7 +92,7 @@ public class ChinookLoadTest extends EntityLoadTestModel {
   @Override
   protected EntityApplicationModel initializeApplication() throws CancelException {
     final EntityApplicationModel appModel = new ChinookAppModel(User.UNIT_TEST_USER);
-    appModel.refreshAll();
+    appModel.refresh();
 
     EntityModel model = appModel.getMainApplicationModel(ArtistModel.class);
     model.setLinkedDetailModel(model.getDetailModels().get(0));

@@ -78,6 +78,11 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
     resetContents();
   }
 
+  public void clear() {
+    setSelectedItem(null);
+    setContents(null);
+  }
+
   /**
    * Resets the contents of this model using the values found in <code>contents</code>
    * @param contents the contents to be used by this model

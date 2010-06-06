@@ -54,7 +54,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
   /**
    * true after the data has been fetched for the first time
    */
-  private boolean dataInitialized = false;
+  private boolean dataInitialized = false;//move to superclass, cleared or smth?
 
   /**
    * used to indicate that a refresh is being forced
@@ -166,7 +166,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
    * Clears the contents from this model
    */
   public void clear() {
-    setContents(null);
+    super.clear();
     dataInitialized = false;
   }
 

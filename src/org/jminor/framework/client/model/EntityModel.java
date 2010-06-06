@@ -346,6 +346,13 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
     }
   }
 
+  public void clear() {
+    if (includeTableModel)
+      getTableModel().clear();
+    getEditModel().clear();
+    clearDetailModels();
+  }
+
   /**
    * Updates this EntityModel according to the given master entities,
    * sets the appropriate property value and filters the EntityTableModel
@@ -528,6 +535,12 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
     log.trace(this + " refreshing detail models");
     for (final EntityModel detailModel : detailModels)
       detailModel.refresh();
+  }
+
+  protected void clearDetailModels() {
+    log.trace(this + " clearing detail models");
+    for (final EntityModel detailModel : detailModels)
+      detailModel.clear();
   }
 
   protected void updateDetailModelsByActiveEntity() {
