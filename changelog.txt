@@ -1700,3 +1700,5 @@
   Refreshable.clear() added
   EntityApplicationModel.refreshAll() renamed to refresh(), now implements Refreshable
   EntityEditModel.clear() renamed to clearValues(), clear() now part of Refreshable implementation
+  EntityTableModel.filterByReference() renamed to searchByForeignKeyValues()
+  EntityTableModel.queryFilteredByMaster field renamed to isDetailModel

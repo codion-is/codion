@@ -69,9 +69,9 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
   private final boolean queryConfigurationAllowed;
 
   /**
-   * If true the underlying query should be filtered by the selected master record
+   * If true this table model behaves like a detail model, that is
    */
-  private boolean queryFilteredByMaster = false;
+  private boolean isDetailModel = false;
 
   /**
    * If true then all underlying records should be shown if no master record is selected
@@ -123,13 +123,6 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
   }
 
   /**
-   * @return true if the underlying query is filtered instead of simply hiding filtered table items
-   */
-  public boolean isQueryFilteredByMaster() {
-    return queryFilteredByMaster;
-  }
-
-  /**
    * @return true if the underlying query should be configurable by the user
    */
   public boolean isQueryConfigurationAllowed() {
@@ -137,11 +130,18 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
   }
 
   /**
-   * @param queryFilteredByMaster if set to true then master selection changes affect the underlying query,
+   * @return true if the underlying query is filtered instead of simply hiding filtered table items
+   */
+  public boolean isDetailModel() {
+    return isDetailModel;
+  }
+
+  /**
+   * @param detailModel if set to true then master selection changes affect the underlying query,
    * otherwise filtering is performed by simply hiding filtered items in the table without re-running the query
    */
-  public void setQueryFilteredByMaster(final boolean queryFilteredByMaster) {
-    this.queryFilteredByMaster = queryFilteredByMaster;
+  public void setDetailModel(final boolean detailModel) {
+    this.isDetailModel = detailModel;
   }
 
   /**
@@ -423,20 +423,12 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
    * as the criteria values. If no foreign key property is found this method has no effect.
    * @param referencedEntityID the ID of the master entity
    * @param referenceEntities the entities to use as criteria values
-   * @see #isQueryFilteredByMaster()
+   * @see #isDetailModel()
    */
-  public void filterByReference(final String referencedEntityID, final List<Entity> referenceEntities) {
+  public void searchByForeignKeyValues(final String referencedEntityID, final List<Entity> referenceEntities) {
     final List<Property.ForeignKeyProperty> properties = EntityRepository.getForeignKeyProperties(getEntityID(), referencedEntityID);
-    if (properties.size() > 0) {
-      if (isQueryFilteredByMaster()) {
-        if (tableSearchModel.setSearchValues(properties.get(0).getPropertyID(), referenceEntities))
-          refresh();
-      }
-      else {
-        tableSearchModel.setFilterValue(properties.get(0).getPropertyID(),
-                (referenceEntities == null || referenceEntities.size() == 0) ? null : referenceEntities.get(0).toString());
-      }
-    }
+    if (properties.size() > 0 &&  isDetailModel() && tableSearchModel.setSearchValues(properties.get(0).getPropertyID(), referenceEntities))
+      refresh();
   }
 
   /**
@@ -625,7 +617,7 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
    * @return entities selected from the database according the the query criteria.
    */
   protected List<Entity> performQuery(final Criteria<Property> criteria) {
-    if (isQueryFilteredByMaster() && criteria == null && !isShowAllWhenNotFiltered())
+    if (isDetailModel() && criteria == null && !isShowAllWhenNotFiltered())
       return new ArrayList<Entity>();
 
     try {

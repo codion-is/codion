@@ -90,7 +90,7 @@ public class EntityModelTest {
     final List<Entity> salesEmployees = db.selectMany(EntityCriteriaUtil.selectCriteria(EmpDept.T_EMPLOYEE,
             EmpDept.EMPLOYEE_DEPARTMENT_FK, SearchType.LIKE, department));
     assertTrue("Number of employees for department should not be 0", salesEmployees.size() > 0);
-    departmentModel.getDetailModel(EmployeeModel.class).getTableModel().setQueryFilteredByMaster(true);
+    departmentModel.getDetailModel(EmployeeModel.class).getTableModel().setDetailModel(true);
     departmentModel.getTableModel().setSelectedItem(department);
     final List<Entity> employeesFromDetailModel =
             departmentModel.getDetailModel(EmpDept.T_EMPLOYEE).getTableModel().getAllItems();

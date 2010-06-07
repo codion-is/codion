@@ -60,7 +60,7 @@ public class EntityCriteriaPanel extends JPanel {
 
     tableModel.getSearchModel().refreshSearchComboBoxModels();
 
-    if (tableModel.isQueryFilteredByMaster())
+    if (tableModel.isDetailModel())
       add(initializeShowAllPanel(tableModel), BorderLayout.SOUTH);
   }
 

@@ -172,7 +172,7 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
    * @param value true if selecting a record in this model should filter the detail models
    * @see #masterSelectionChanged
    * @see #masterSelectionChanged
-   * @see EntityTableModel#filterByReference(String, java.util.List)
+   * @see EntityTableModel#searchByForeignKeyValues(String, java.util.List)
    */
   public void setSelectionFiltersDetail(final boolean value) {
     for (final EntityModel detailModel : detailModels)
@@ -361,7 +361,7 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
    */
   public void masterSelectionChanged(final String masterEntityID, final List<Entity> selectedMasterEntities) {
     if (isSelectionFiltersDetail() && containsTableModel())
-      getTableModel().filterByReference(masterEntityID, selectedMasterEntities);
+      getTableModel().searchByForeignKeyValues(masterEntityID, selectedMasterEntities);
 
     for (final Property.ForeignKeyProperty foreignKeyProperty : EntityRepository.getForeignKeyProperties(getEntityID(), masterEntityID))
       getEditModel().setValue(foreignKeyProperty.getPropertyID(), selectedMasterEntities != null && selectedMasterEntities.size() > 0 ? selectedMasterEntities.get(0) : null);
@@ -556,7 +556,7 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
       detailModels.add(detailModel);
       detailModel.setMasterModel(this);
       if (detailModel.containsTableModel())
-        detailModel.getTableModel().setQueryFilteredByMaster(true);
+        detailModel.getTableModel().setDetailModel(true);
     }
   }
 
