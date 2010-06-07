@@ -372,7 +372,7 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
    * @return the selected item, null if none is selected
    */
   public T getSelectedItem() {
-    final int index = getSelectionModel().getMinSelectionIndex();
+    final int index = selectionModel.getSelectedIndex();
     if (index >= 0 && index < getVisibleItemCount())
       return getItemAtViewIndex(index);
     else
@@ -400,7 +400,14 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
    * the lowest index if more than one record is selected
    */
   public int getSelectedIndex() {
-    return selectionModel.getMinSelectedIndex();
+    return selectionModel.getSelectedIndex();
+  }
+
+  /**
+   * @return the number of selected indexes in the underlying selection model.
+   */
+  public int getSelectionCount() {
+    return selectionModel.getSelectionCount();
   }
 
   /**
@@ -563,6 +570,20 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
   }
 
   /**
+   * @return a State active when the selection is empty
+   */
+  public State stateSelectionEmpty() {
+    return selectionModel.stSelectionEmpty.getLinkedState();
+  }
+
+  /**
+   * @return a State active when multiple rows are selected
+   */
+  public State stateMultipleSelection() {
+    return selectionModel.stMultipleSelection.getLinkedState();
+  }
+
+  /**
    * @return an Event fired whenever a column is hidden,
    * the ActionEvent source is the column identifier.
    */
@@ -576,13 +597,6 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
    */
   public Event eventColumnShown() {
     return evtColumnShown;
-  }
-
-  /**
-   * @return a State active when the selection is empty
-   */
-  public State stateSelectionEmpty() {
-    return selectionModel.stSelectionEmpty;
   }
 
   /**
@@ -746,6 +760,7 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
     final Event evtSelectionChanged = new Event();
     final Event evtSelectedIndexChanged = new Event();
     final State stSelectionEmpty = new State(true);
+    final State stMultipleSelection = new State(false);
 
     /**
      * true while the selection is being updated
@@ -754,21 +769,38 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
     /**
      * Holds the topmost (minimum) selected index
      */
-    private int minSelectedIndex = -1;
+    private int selectedIndex = -1;
 
     @Override
     public void fireValueChanged(int min, int max, boolean isAdjusting) {
       super.fireValueChanged(min, max, isAdjusting);
       stSelectionEmpty.setActive(isSelectionEmpty());
+      stMultipleSelection.setActive(getSelectionCount() > 1);
       final int minSelIndex = getMinSelectionIndex();
-      if (minSelectedIndex != minSelIndex) {
-        minSelectedIndex = minSelIndex;
+      if (selectedIndex != minSelIndex) {
+        selectedIndex = minSelIndex;
         evtSelectedIndexChanged.fire();
       }
       if (isAdjusting || isUpdatingSelection || isSorting)
         evtSelectionChangedAdjusting.fire();
       else
         evtSelectionChanged.fire();
+    }
+
+    public int getSelectionCount() {
+      if (isSelectionEmpty())
+        return 0;
+
+      int counter = 0;
+      final int min = getMinSelectionIndex();
+      final int max = getMaxSelectionIndex();
+      if (min >= 0 && max >= 0) {
+        for (int i = min; i <= max; i++)
+          if (isSelectedIndex(i))
+            counter++;
+      }
+
+      return counter;
     }
 
     /**
@@ -796,8 +828,8 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
       return isUpdatingSelection;
     }
 
-    public int getMinSelectedIndex() {
-      return minSelectedIndex;
+    public int getSelectedIndex() {
+      return selectedIndex;
     }
   }
 }

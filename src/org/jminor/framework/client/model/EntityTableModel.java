@@ -341,7 +341,7 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
     final int hiddenCount = getHiddenItemCount();
 
     return new StringBuilder(Integer.toString(getRowCount())).append(" (").append(
-            Integer.toString(getSelectedModelIndexes().size())).append(" ").append(
+            Integer.toString(getSelectionCount())).append(" ").append(
             FrameworkMessages.get(FrameworkMessages.SELECTED)).append(
             hiddenCount > 0 ? ", " + hiddenCount + " "
                     + FrameworkMessages.get(FrameworkMessages.HIDDEN) + ")" : ")").toString();
