@@ -19,7 +19,7 @@ public class ProductModel extends EntityModel {
 
   public ProductModel(final EntityDbProvider dbProvider) {
     super(Petstore.T_PRODUCT, dbProvider);
-    getTableModel().setPreventFullTableFetch(true);
+    getTableModel().setQueryCriteriaRequired(false);
   }
 
   @Override

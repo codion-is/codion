@@ -24,7 +24,7 @@ public class EmployeeModel extends EntityModel {
 
   public EmployeeModel(final EntityDbProvider dbProvider) {
     super(EmpDept.T_EMPLOYEE, dbProvider);
-    getTableModel().setPreventFullTableFetch(true);
+    getTableModel().setQueryCriteriaRequired(false);
     getTableModel().getPropertySummaryModel(EmpDept.EMPLOYEE_SALARY).setSummaryType(PropertySummaryModel.AVERAGE);
   }
 

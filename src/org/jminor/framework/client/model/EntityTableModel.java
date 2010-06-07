@@ -76,7 +76,7 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
   /**
    * If true then querying should be disabled if no criteria is specified
    */
-  private boolean preventFullTableFetch = false;
+  private boolean queryCriteriaRequired = true;
 
   /**
    * true while the model data is being refreshed
@@ -138,7 +138,7 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
 
   /**
    * @param detailModel if set to true then this table model will not run a query unless a query criteria has been specified
-   * @see #setPreventFullTableFetch(boolean)
+   * @see #setQueryCriteriaRequired(boolean)
    */
   public void setDetailModel(final boolean detailModel) {
     this.isDetailModel = detailModel;
@@ -147,16 +147,16 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
   /**
    * @return whether to show all underlying entities when no criteria is applied.
    */
-  public boolean isPreventFullTableFetch() {
-    return preventFullTableFetch;
+  public boolean isQueryCriteriaRequired() {
+    return queryCriteriaRequired;
   }
 
   /**
-   * @param preventFullTableFetch if set to true then all underlying entities are shown
+   * @param queryCriteriaRequired if set to true then all underlying entities are shown
    * when no criteria is applied, which can be problematic in the case of huge datasets.
    */
-  public void setPreventFullTableFetch(final boolean preventFullTableFetch) {
-    this.preventFullTableFetch = preventFullTableFetch;
+  public void setQueryCriteriaRequired(final boolean queryCriteriaRequired) {
+    this.queryCriteriaRequired = queryCriteriaRequired;
   }
 
   /**
@@ -622,7 +622,7 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
    * @return entities selected from the database according the the query criteria.
    */
   protected List<Entity> performQuery(final Criteria<Property> criteria) {
-    if (isDetailModel() && criteria == null && isPreventFullTableFetch())
+    if (isDetailModel() && criteria == null && isQueryCriteriaRequired())
       return new ArrayList<Entity>();
 
     try {

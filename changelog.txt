@@ -1707,4 +1707,4 @@
   AbstractFilteredTableModel.getSelectionCount() added
   EntityModel.getDetailModel(entityID) removed
   EntityModel.includeTableModel field moved to superclass
-  EntityTableModel.showAllWhenNotFiltered renamed to preventFullTableFetch
+  EntityTableModel.showAllWhenNotFiltered renamed to queryCriteriaRequired

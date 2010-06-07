@@ -111,7 +111,7 @@ public class FrameworkMessages {
   public static final String TOGGLE_EDIT_TIP = "toggle_edit";
   public static final String SET_LOOK_AND_FEEL = "set_look_and_feel";
   public static final String FILTER_SETTINGS = "filter_settings";
-  public static final String SHOW_ALL_WHEN_NO_FILTER = "show_all_when_no_filter";
+  public static final String REQUIRE_QUERY_CRITERIA = "require_query_criteria";
   public static final String SELECT_ENTITY = "select_entity";
   public static final String TOGGLE_SUMMARY_TIP = "toggle_summary_tip";
   public static final String NONE = "none";

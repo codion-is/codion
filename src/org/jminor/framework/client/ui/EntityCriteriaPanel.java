@@ -68,7 +68,7 @@ public class EntityCriteriaPanel extends JPanel {
     final JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
     panel.setBorder(BorderFactory.createTitledBorder(FrameworkMessages.get(FrameworkMessages.FILTER_SETTINGS)));
     panel.add(ControlProvider.createCheckBox(ControlFactory.toggleControl(tableModel,
-            "showAllWhenNotFiltered", FrameworkMessages.get(FrameworkMessages.SHOW_ALL_WHEN_NO_FILTER), null)));
+            "queryCriteriaRequired", FrameworkMessages.get(FrameworkMessages.REQUIRE_QUERY_CRITERIA), null)));
 
     return panel;
   }
