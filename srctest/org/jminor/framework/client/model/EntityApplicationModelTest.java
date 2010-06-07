@@ -2,8 +2,8 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.model.User;
 import org.jminor.framework.demos.empdept.beans.DepartmentModel;
+import org.jminor.framework.demos.empdept.beans.EmployeeModel;
 import org.jminor.framework.demos.empdept.client.EmpDeptAppModel;
-import org.jminor.framework.demos.empdept.domain.EmpDept;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -19,7 +19,7 @@ public class EntityApplicationModelTest {
     assertEquals(User.UNIT_TEST_USER, model.getUser());
     model.refresh();
     assertTrue(deptModel.getTableModel().getRowCount() > 0);
-    assertTrue(deptModel.getDetailModel(EmpDept.T_EMPLOYEE).getTableModel().getRowCount() > 0);
+    assertTrue(deptModel.getDetailModel(EmployeeModel.class).getTableModel().getRowCount() > 0);
     model.getDbProvider().disconnect();
   }
 }

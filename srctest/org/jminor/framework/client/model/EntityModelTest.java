@@ -80,7 +80,6 @@ public class EntityModelTest {
     assertTrue("EmployeeModel should be the linked detail model in DepartmentModel",
             departmentModel.getLinkedDetailModel().getClass().equals(EmployeeModel.class));
     assertNotNull(departmentModel.getDetailModel(EmployeeModel.class));
-    assertNotNull(departmentModel.getDetailModel(EmpDept.T_EMPLOYEE));
     departmentModel.refresh();
     departmentModel.refreshDetailModels();
     assertTrue(departmentModel.getDetailModel(EmployeeModel.class).getTableModel().getRowCount() > 0);
@@ -93,7 +92,7 @@ public class EntityModelTest {
     departmentModel.getDetailModel(EmployeeModel.class).getTableModel().setDetailModel(true);
     departmentModel.getTableModel().setSelectedItem(department);
     final List<Entity> employeesFromDetailModel =
-            departmentModel.getDetailModel(EmpDept.T_EMPLOYEE).getTableModel().getAllItems();
+            departmentModel.getDetailModel(EmployeeModel.class).getTableModel().getAllItems();
     assertTrue("Filtered list should contain all employees for department", containsAll(salesEmployees, employeesFromDetailModel));
   }
 

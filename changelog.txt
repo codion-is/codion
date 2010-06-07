@@ -1705,3 +1705,4 @@
   AbstractFilteredTableModel.SelectionModel.stMultipleSelection field added
   AbstractFilteredTableModel.SelectionModel.minSelectedIndex renamed to selectedIndex
   AbstractFilteredTableModel.getSelectionCount() added
+  EntityModel.getDetailModel(entityID) removed
