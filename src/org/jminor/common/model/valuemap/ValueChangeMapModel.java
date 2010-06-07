@@ -28,10 +28,21 @@ public abstract class ValueChangeMapModel<K, V> {
    * The table model
    */
   private AbstractFilteredTableModel<? extends ValueChangeMap<K, V>> tableModel;
+
+  /**
+   * True if this EntityModel should contain a table model
+   */
+  private final boolean includeTableModel;
+
   private final String mapTypeID;
 
   public ValueChangeMapModel(final String mapTypeID) {
+    this(mapTypeID, true);
+  }
+
+  public ValueChangeMapModel(final String mapTypeID, final boolean includeTableModel) {
     this.mapTypeID = mapTypeID;
+    this.includeTableModel = includeTableModel;
   }
 
   public String getMapTypeID() {
@@ -57,7 +68,7 @@ public abstract class ValueChangeMapModel<K, V> {
    * @return the AbstractFilteredTableModel, null if none is specified
    */
   public AbstractFilteredTableModel<? extends ValueChangeMap<K, V>> getTableModel() {
-    if (tableModel == null) {
+    if (includeTableModel && tableModel == null) {
       tableModel = initializeTableModel();
       if (!tableModel.getMapTypeID().equals(getMapTypeID()))
         throw new RuntimeException("Expected table model based on " + getMapTypeID() +

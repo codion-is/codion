@@ -649,18 +649,24 @@ public class DbConnection {
       }, new Date(), 2000);
     }
 
-    public void count(final String sql) {//todo handle uppercase queries
+    public void count(final String sql) {
       queriesPerSecondCounter++;
-      if (sql.startsWith("s"))
-        selectsPerSecondCounter++;
-      else if (sql.startsWith("i"))
-        insertsPerSecondCounter++;
-      else if (sql.startsWith("u"))
-        updatesPerSecondCounter++;
-      else if (sql.startsWith("d"))
-        deletesPerSecondCounter++;
-      else
-        undefinedPerSecondCounter++;
+      switch (Character.toLowerCase(sql.charAt(0))) {
+        case 's':
+          selectsPerSecondCounter++;
+          break;
+        case 'i':
+          insertsPerSecondCounter++;
+          break;
+        case 'u':
+          updatesPerSecondCounter++;
+          break;
+        case 'd':
+          deletesPerSecondCounter++;
+          break;
+        default:
+          undefinedPerSecondCounter++;
+      }
     }
 
     public int getQueriesPerSecond() {

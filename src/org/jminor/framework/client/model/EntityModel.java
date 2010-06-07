@@ -27,6 +27,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -49,11 +51,6 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
    * The EntityDb connection provider
    */
   private final EntityDbProvider dbProvider;
-
-  /**
-   * True if this EntityModel should contain a table model
-   */
-  private final boolean includeTableModel;
 
   /**
    * Holds the detail EntityModels used by this EntityModel
@@ -96,13 +93,12 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
    * @param includeTableModel true if this EntityModel should include a table model
    */
   public EntityModel(final String entityID, final EntityDbProvider dbProvider, final boolean includeTableModel) {
-    super(entityID);
+    super(entityID, includeTableModel);
     if (entityID == null || entityID.length() == 0)
       throw new IllegalArgumentException("entityID must be specified");
     if (dbProvider == null)
       throw new IllegalArgumentException("dbProvider can not be null");
     this.dbProvider = dbProvider;
-    this.includeTableModel = includeTableModel;
     addDetailModels();
     initializeAssociatedModels();
     bindEventsInternal();
@@ -221,7 +217,7 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
    * @return the detail models this model contains
    */
   public List<? extends EntityModel> getDetailModels() {
-    return new ArrayList<EntityModel>(detailModels);
+    return Collections.unmodifiableList(detailModels);
   }
 
   /**
@@ -260,14 +256,14 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
   }
 
   /**
-   * @return a list containing the detail models that are currently linked to this model
+   * @return a collection containing the detail models that are currently linked to this model
    */
-  public List<EntityModel> getLinkedDetailModels() {
-    return new ArrayList<EntityModel>(linkedDetailModels);
+  public Collection<EntityModel> getLinkedDetailModels() {
+    return Collections.unmodifiableCollection(linkedDetailModels);
   }
 
   /**
-   * Returns the detail model of the given type
+   * Returns the first detail model of the given type
    * @param entityModelClass the type of the required EntityModel
    * @return the detail model of type <code>entityModelClass</code>, null if none is found
    */
@@ -331,7 +327,7 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
   }
 
   public void clear() {
-    if (includeTableModel)
+    if (containsTableModel())
       getTableModel().clear();
     getEditModel().clear();
     clearDetailModels();
@@ -398,7 +394,7 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
    */
   @Override
   protected EntityTableModel initializeTableModel() {
-    return includeTableModel ? new EntityTableModel(getEditModel()) : null;
+    return new EntityTableModel(getEditModel());
   }
 
   /**
@@ -498,8 +494,8 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
         }
       }
     }
-    catch (Exception e) {
-      throw new RuntimeException(e);
+    catch (Exception ex) {
+      throw new RuntimeException(ex);
     }
   }
 
@@ -550,18 +546,18 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
 
   private void bindEventsInternal() {
     getEditModel().eventAfterInsert().addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent e) {
-        handleInsert((InsertEvent) e);
+      public void actionPerformed(final ActionEvent event) {
+        handleInsert((InsertEvent) event);
       }
     });
     getEditModel().eventAfterUpdate().addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent e) {
-        handleUpdate((UpdateEvent) e);
+      public void actionPerformed(final ActionEvent event) {
+        handleUpdate((UpdateEvent) event);
       }
     });
     getEditModel().eventAfterDelete().addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent e) {
-        handleDelete((DeleteEvent) e);
+      public void actionPerformed(final ActionEvent event) {
+        handleDelete((DeleteEvent) event);
       }
     });
     evtLinkedDetailModelsChanged.addListener(new ActionListener() {
@@ -584,7 +580,7 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
       return;
 
     getEditModel().eventRefreshDone().addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(ActionEvent event) {
         getTableModel().refresh();
       }
     });

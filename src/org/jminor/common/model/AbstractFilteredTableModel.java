@@ -104,12 +104,18 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
     return mapTypeID;
   }
 
+  /**
+   * @return an unmodifiable view of the visible items
+   */
   public List<T> getVisibleItems() {
-    return new ArrayList<T>(visibleItems);
+    return Collections.unmodifiableList(visibleItems);
   }
 
+  /**
+   * @return an unmodifiable view of the hidden items
+   */
   public List<T> getHiddenItems() {
-    return new ArrayList<T>(hiddenItems);
+    return Collections.unmodifiableList(hiddenItems);
   }
 
   /**

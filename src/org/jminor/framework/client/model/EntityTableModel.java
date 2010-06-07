@@ -74,9 +74,9 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
   private boolean isDetailModel = false;
 
   /**
-   * If true then all underlying records should be shown if no master record is selected
+   * If true then querying should be disabled if no criteria is specified
    */
-  private boolean showAllWhenNotFiltered = false;
+  private boolean preventFullTableFetch = false;
 
   /**
    * true while the model data is being refreshed
@@ -130,33 +130,33 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
   }
 
   /**
-   * @return true if the underlying query is filtered instead of simply hiding filtered table items
+   * @return true if this table model should not run a query unless a query criteria has been specified
    */
   public boolean isDetailModel() {
     return isDetailModel;
   }
 
   /**
-   * @param detailModel if set to true then master selection changes affect the underlying query,
-   * otherwise filtering is performed by simply hiding filtered items in the table without re-running the query
+   * @param detailModel if set to true then this table model will not run a query unless a query criteria has been specified
+   * @see #setPreventFullTableFetch(boolean)
    */
   public void setDetailModel(final boolean detailModel) {
     this.isDetailModel = detailModel;
   }
 
   /**
-   * @return whether to show all underlying entities when no filter is applied.
+   * @return whether to show all underlying entities when no criteria is applied.
    */
-  public boolean isShowAllWhenNotFiltered() {
-    return showAllWhenNotFiltered;
+  public boolean isPreventFullTableFetch() {
+    return preventFullTableFetch;
   }
 
   /**
-   * @param showAllWhenNotFiltered if set to true then all underlying entities are shown
-   * when no filters are applied, which can be problematic in the case of huge datasets.
+   * @param preventFullTableFetch if set to true then all underlying entities are shown
+   * when no criteria is applied, which can be problematic in the case of huge datasets.
    */
-  public void setShowAllWhenNotFiltered(final boolean showAllWhenNotFiltered) {
-    this.showAllWhenNotFiltered = showAllWhenNotFiltered;
+  public void setPreventFullTableFetch(final boolean preventFullTableFetch) {
+    this.preventFullTableFetch = preventFullTableFetch;
   }
 
   /**
@@ -427,7 +427,7 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
    */
   public void searchByForeignKeyValues(final String referencedEntityID, final List<Entity> referenceEntities) {
     final List<Property.ForeignKeyProperty> properties = EntityRepository.getForeignKeyProperties(getEntityID(), referencedEntityID);
-    if (properties.size() > 0 &&  isDetailModel() && tableSearchModel.setSearchValues(properties.get(0).getPropertyID(), referenceEntities))
+    if (properties.size() > 0 && isDetailModel() && tableSearchModel.setSearchValues(properties.get(0).getPropertyID(), referenceEntities))
       refresh();
   }
 
@@ -559,6 +559,11 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
     return propertySummaryModels.get(property.getPropertyID());
   }
 
+  /**
+   * Returns the property the column at the given index is based on
+   * @param columnIndex the column index
+   * @return the column property
+   */
   public Property getColumnProperty(final int columnIndex) {
     return (Property) getColumnModel().getColumn(columnIndex).getIdentifier();
   }
@@ -617,7 +622,7 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
    * @return entities selected from the database according the the query criteria.
    */
   protected List<Entity> performQuery(final Criteria<Property> criteria) {
-    if (isDetailModel() && criteria == null && !isShowAllWhenNotFiltered())
+    if (isDetailModel() && criteria == null && isPreventFullTableFetch())
       return new ArrayList<Entity>();
 
     try {

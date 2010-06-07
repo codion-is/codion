@@ -19,7 +19,7 @@ public class ProductModel extends EntityModel {
 
   public ProductModel(final EntityDbProvider dbProvider) {
     super(Petstore.T_PRODUCT, dbProvider);
-    getTableModel().setShowAllWhenNotFiltered(true);
+    getTableModel().setPreventFullTableFetch(true);
   }
 
   @Override
