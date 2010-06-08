@@ -28,7 +28,7 @@ import java.util.Map;
  */
 public abstract class AbstractRemoteServer<T> extends UnicastRemoteObject implements RemoteServer<T> {
 
-  private static final Logger log = Util.getLogger(AbstractRemoteServer.class);
+  private static final Logger LOG = Util.getLogger(AbstractRemoteServer.class);
 
   private final Map<ClientInfo, T> connections = Collections.synchronizedMap(new HashMap<ClientInfo, T>());
 
@@ -98,13 +98,13 @@ public abstract class AbstractRemoteServer<T> extends UnicastRemoteObject implem
       getRegistry().unbind(getServerName());
     }
     catch (NotBoundException e) {
-      log.error(this, e);
+      LOG.error(this, e);
     }
     try {
       UnicastRemoteObject.unexportObject(this, true);
     }
     catch (NoSuchObjectException e) {
-      log.warn(e);
+      LOG.warn(e);
     }
   }
 

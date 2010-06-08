@@ -12,6 +12,8 @@ import java.util.ResourceBundle;
  */
 public class Messages {
 
+  private Messages() {}
+
   private static final ResourceBundle bundle =
           ResourceBundle.getBundle("org.jminor.common.i18n.Messages", Locale.getDefault());
 

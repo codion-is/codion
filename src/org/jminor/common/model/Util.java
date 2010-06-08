@@ -38,6 +38,8 @@ import java.util.prefs.Preferences;
  */
 public class Util {
 
+  private Util() {}
+
   public static final String VERSION_FILE = "version.txt";
 
   public static final String LOGGING_LEVEL_PROPERTY = "jminor.logging.level";
@@ -313,9 +315,7 @@ public class Util {
         if (input!= null)
           input.close();
       }
-      catch (IOException ex) {
-        ex.printStackTrace();
-      }
+      catch (IOException ex) {/**/}
     }
 
     return contents.toString();
@@ -396,9 +396,7 @@ public class Util {
         if (writer != null)
           writer.close();
       }
-      catch (IOException e) {
-        e.printStackTrace();
-      }
+      catch (IOException e) {/**/}
     }
   }
 
@@ -419,7 +417,6 @@ public class Util {
       return getTextFileContents(Util.class, VERSION_FILE);
     }
     catch (IOException e) {
-      e.printStackTrace();
       return "N/A";
     }
   }
@@ -471,9 +468,7 @@ public class Util {
         if (inputStream != null)
           inputStream.close();
       }
-      catch (IOException e) {
-        e.printStackTrace();
-      }
+      catch (IOException e) {/**/}
     }
   }
 
@@ -499,13 +494,9 @@ public class Util {
             " is " : " = ").append(sqlStringValue).toString();
   }
 
-  public static String sqlEscapeString(final String val) {
-    return val.replaceAll("'", "''");
-  }
-
   public static void collate(final List<?> values) {
     Collections.sort(values, new Comparator<Object>() {
-      final Collator collator = Collator.getInstance();
+      private final Collator collator = Collator.getInstance();
       public int compare(final Object objOne, final Object objTwo) {
         return collator.compare(objOne.toString(), objTwo.toString());
       }

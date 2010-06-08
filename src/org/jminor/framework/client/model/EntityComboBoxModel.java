@@ -32,7 +32,7 @@ import java.util.Set;
  */
 public class EntityComboBoxModel extends FilteredComboBoxModel {
 
-  private static final Logger log = Util.getLogger(EntityComboBoxModel.class);
+  private static final Logger LOG = Util.getLogger(EntityComboBoxModel.class);
 
   private final Event evtRefreshDone = new Event();
 
@@ -54,7 +54,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
   /**
    * true after the data has been fetched for the first time
    */
-  private boolean dataInitialized = false;//move to superclass, cleared or smth?
+  private boolean dataInitialized = false;//todo move to super class, cleared or something?
 
   /**
    * used to indicate that a refresh is being forced
@@ -207,14 +207,15 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
       throw new IllegalArgumentException("Cannot set '" + item + "' [" + item.getClass()
               + "] as selected item in a EntityComboBoxModel (" + this + ")");
 
-    if (item == null || !(item instanceof Entity))
-      super.setSelectedItem(null);
-    else {
-      final int indexOfKey = getIndexOfKey(((Entity)toSelect).getPrimaryKey());
+    if (item instanceof Entity) {
+      final int indexOfKey = getIndexOfKey(((Entity) toSelect).getPrimaryKey());
       if (indexOfKey >= 0)
         super.setSelectedItem(getElementAt(indexOfKey));
       else
         super.setSelectedItem(toSelect);
+    }
+    else {
+      super.setSelectedItem(null);
     }
   }
 
@@ -326,7 +327,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
   protected List<?> getContents() {
     try {
       if (staticData && dataInitialized && !forceRefresh) {
-        log.trace(this + " refresh not required");
+        LOG.trace(this + " refresh not required");
         return super.getContents();
       }
       final List<Entity> entities = performQuery();
@@ -340,7 +341,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
     finally {
       dataInitialized = true;
       evtRefreshDone.fire();
-      log.trace(this + " done refreshing" + (forceRefresh ? " (forced)" : ""));
+      LOG.trace(this + " done refreshing" + (forceRefresh ? " (forced)" : ""));
     }
   }
 
@@ -364,10 +365,8 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
     final int size = getSize();
     for (int index = 0; index < size; index++) {
       final Object item = getElementAt(index);
-      if (item instanceof Entity) {
-        if (((Entity) item).getPrimaryKey().equals(primaryKey)) {
-          return index;
-        }
+      if (item instanceof Entity && ((Entity) item).getPrimaryKey().equals(primaryKey)) {
+        return index;
       }
     }
     return -1;

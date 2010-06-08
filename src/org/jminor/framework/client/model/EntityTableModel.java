@@ -41,7 +41,7 @@ import java.util.Map;
  */
 public class EntityTableModel extends AbstractFilteredTableModel<Entity> implements Refreshable {
 
-  private static final Logger log = Util.getLogger(EntityTableModel.class);
+  private static final Logger LOG = Util.getLogger(EntityTableModel.class);
 
   private final Event evtRefreshStarted = new Event();
   private final Event evtRefreshDone = new Event();
@@ -56,6 +56,9 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
    */
   private final EntityTableSearchModel tableSearchModel;
 
+  /**
+   * The edit model to use when updating/deleting entities
+   */
   private final EntityEditModel editModel;
 
   /**
@@ -357,7 +360,7 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
       return;
 
     try {
-      log.trace(this + " refreshing");
+      LOG.trace(this + " refreshing");
       isRefreshing = true;
       evtRefreshStarted.fire();
       final List<Entity.Key> selectedPrimaryKeys = getPrimaryKeysOfSelectedEntities();
@@ -369,7 +372,7 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
     finally {
       isRefreshing = false;
       evtRefreshDone.fire();
-      log.trace(this + " refreshing done");
+      LOG.trace(this + " refreshing done");
     }
   }
 

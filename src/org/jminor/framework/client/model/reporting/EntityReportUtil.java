@@ -29,7 +29,8 @@ public class EntityReportUtil {
    * @return an initialized ReportResult object
    * @throws ReportException in case of a report exception
    */
-  public static ReportResult fillReport(final ReportWrapper reportWrapper, final EntityDbProvider dbProvider, final Map reportParameters) throws ReportException {
+  public static ReportResult fillReport(final ReportWrapper reportWrapper, final EntityDbProvider dbProvider,
+                                        final Map reportParameters) throws ReportException {
     try {
       return dbProvider.getEntityDb().fillReport(reportWrapper, reportParameters);
     }

@@ -58,7 +58,7 @@ import java.util.TimerTask;
  */
 public class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityDbRemote {
 
-  private static final Logger log = Util.getLogger(EntityDbRemoteAdapter.class);
+  private static final Logger LOG = Util.getLogger(EntityDbRemoteAdapter.class);
   /**
    * Contains information about the client using this connection
    */
@@ -137,9 +137,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     try {
       clientInfo.setClientHost(getClientHost());
     }
-    catch (ServerNotActiveException e) {
-      e.printStackTrace();
-    }
+    catch (ServerNotActiveException e) {/**/}
   }
 
   /** {@inheritDoc} */
@@ -172,7 +170,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
         UnicastRemoteObject.unexportObject(this, true);
       }
       catch (NoSuchObjectException e) {
-        log.error(e);
+        LOG.error(e);
       }
     }
     catch (Exception e) {
@@ -711,7 +709,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
         return method.invoke(connection, arguments);
       }
       catch (InvocationTargetException ie) {
-        log.error(this, ie);
+        LOG.error(this, ie);
         ex = ie.getCause();
         throw ie.getTargetException();
       }
@@ -728,7 +726,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
             remoteAdapter.returnConnection(remoteAdapter.clientInfo.getUser(), connection);
         }
         catch (Exception e) {
-          log.error(this, e);
+          LOG.error(this, e);
         }
       }
     }

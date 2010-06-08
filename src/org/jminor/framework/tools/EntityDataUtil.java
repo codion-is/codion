@@ -8,6 +8,8 @@ import java.util.List;
 
 public class EntityDataUtil {
 
+  private EntityDataUtil() {}
+
   public static void copyEntities(final EntityDb source, final EntityDb destination, final int transactionBatchSize,
                                   final boolean copyPrimaryKeys, final String... entityIDs) throws Exception {
     try {

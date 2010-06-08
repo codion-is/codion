@@ -33,6 +33,8 @@ import java.util.List;
  */
 public class DomainClassGenerator {
 
+  private DomainClassGenerator() {}
+
   public static void main(String[] arguments) {
     final JTextField txtSchemaName = new JTextField();
     UiUtil.makeUpperCase(txtSchemaName);

@@ -59,7 +59,7 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
   private transient Map<String, Property> properties;
 
   private static Map<String, Proxy> proxies;
-  private static Proxy defaultProxy = new Proxy();
+  private static final Proxy defaultProxy = new Proxy();
 
   /**
    * Instantiates a new Entity
@@ -181,7 +181,7 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
       throw new IllegalArgumentException("Can not set the value of a derived property");
     if (property instanceof Property.ValueListProperty && value != null && !((Property.ValueListProperty) property).isValid(value))
       throw new IllegalArgumentException("Invalid value list value: " + value + " for property ");
-    if (value != null && value instanceof Entity && value.equals(this))
+    if (value instanceof Entity && value.equals(this))
       throw new IllegalArgumentException("Circular entity reference detected: " + primaryKey + "->" + property.getPropertyID());
 
     if (validateType)
@@ -617,14 +617,6 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
     return super.containsValue(property.getPropertyID());
   }
 
-  @Override
-  public Event eventValueChanged() {
-    if (evtValueChanged == null)
-      primaryKey.addValueListener(evtValueChanged = new Event());
-
-    return evtValueChanged;
-  }
-
   /**
    * True if the given objects are equal. Both objects being null results in true.
    * @param one the first object
@@ -677,15 +669,6 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
   }
 
   /**
-   * Sets the global default static proxy instance
-   * @param proxy sets the default Entity.Proxy instance used if no entity specific one is specified
-   * @see org.jminor.framework.domain.Entity.Proxy
-   */
-  public static void setDefaultProxy(final Proxy proxy) {
-    defaultProxy = proxy;
-  }
-
-  /**
    * Sets a entity specific proxy instance
    * @param entityID the ID of the entity for which this proxy instance is used
    * @param entityProxy the proxy instance to link to the given entity ID
@@ -725,6 +708,14 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
     }
 
     return entity;
+  }
+
+  @Override
+  protected Event initializeValueChangedEvent() {
+    final Event event = super.initializeValueChangedEvent();
+    primaryKey.addValueListener(event);
+
+    return event;
   }
 
   @Override
@@ -774,7 +765,7 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
   /**
    * Sets the denormalized property values
    * @param entity the entity value owning the denormalized values
-   * @param foreignKeyProperty the foreign key property refering to the value source
+   * @param foreignKeyProperty the foreign key property referring to the value source
    * @param initialization true if the values are being initialized
    */
   private void setDenormalizedValues(final Entity entity, Property.ForeignKeyProperty foreignKeyProperty,
@@ -837,7 +828,7 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
    * @return the value to validate
    * @throws IllegalArgumentException when the value type does not fit the property type
    */
-  private static Object validateType(final Property property, final Object value) throws IllegalArgumentException {
+  private static Object validateType(final Property property, final Object value) {
     if (value == null)
       return value;
 
@@ -1124,7 +1115,7 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
    * in entity specific functionality, such as providing toString() and compareTo() implementations
    */
   public static class Proxy {
-    protected final Collator collator = Collator.getInstance();
+    private final Collator collator = Collator.getInstance();
 
     public int compareTo(final Entity entity, final Entity entityToCompare) {
       return collator.compare(entity.toString(), entityToCompare.toString());

@@ -41,7 +41,7 @@ import java.util.TimerTask;
  */
 public class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
 
-  private static final Logger log = Util.getLogger(EntityDbRemoteServer.class);
+  private static final Logger LOG = Util.getLogger(EntityDbRemoteServer.class);
 
   private static final boolean CLIENT_LOGGING_ENABLED =
           System.getProperty(Configuration.SERVER_CLIENT_LOGGING_ENABLED, "true").equalsIgnoreCase("true");
@@ -101,7 +101,7 @@ public class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
     startConnectionCheckTimer();
     getRegistry().rebind(getServerName(), this);
     final String connectInfo = getServerName() + " bound to registry";
-    log.info(connectInfo);
+    LOG.info(connectInfo);
     System.out.println(connectInfo);
   }
 
@@ -212,7 +212,7 @@ public class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
     super.shutdown();
     removeConnections(false);
     final String connectInfo = getServerName() + " removed from registry";
-    log.info(connectInfo);
+    LOG.info(connectInfo);
     System.out.println(connectInfo);
     if (database.isEmbedded())
       database.shutdownEmbedded(null);//todo does not work when shutdown requires user authentication
@@ -249,7 +249,7 @@ public class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
           IllegalAccessException, InstantiationException {
     final String message = "Server loading domain model class '" + domainClassName + "' from"
             + (locations == null || locations.length == 0 ? " classpath" : " jars: ") + Util.getArrayContentsAsString(locations, false);
-    log.info(message);
+    LOG.info(message);
     AccessController.doPrivileged(new PrivilegedAction<Object>() {
       public Object run() {
         try {
@@ -287,8 +287,8 @@ public class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
   @Override
   protected EntityDbRemoteAdapter doConnect(final ClientInfo client) throws RemoteException {
     final EntityDbRemoteAdapter remoteAdapter = new EntityDbRemoteAdapter(this, database, client, SERVER_DB_PORT, CLIENT_LOGGING_ENABLED);
-    if (log.isDebugEnabled())
-      log.debug("Connection added: " + client);
+    if (LOG.isDebugEnabled())
+      LOG.debug("Connection added: " + client);
 
     return remoteAdapter;
   }
@@ -345,7 +345,7 @@ public class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
       localRegistry.list();
     }
     catch (Exception e) {
-      log.info("Server creating registry on port: " + Registry.REGISTRY_PORT);
+      LOG.info("Server creating registry on port: " + Registry.REGISTRY_PORT);
       LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
     }
   }

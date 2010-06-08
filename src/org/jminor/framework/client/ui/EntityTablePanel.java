@@ -1102,7 +1102,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
    * Initializes a simple search panel, with a single search field, which performs a search based on the default
    * search properties or if none are defined all string based properties
    * @return a simple search panel
-   * @see org.jminor.framework.domain.EntityDefinition#setSearchPropertyIDs(String[])
+   * @see org.jminor.framework.domain.EntityDefinition#setSearchPropertyIDs(String...)
    */
   protected JPanel initializeSimpleSearchPanel() {
     final List<Property> searchableProperties = getSearchProperties();
@@ -1567,9 +1567,8 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
 
   private static void addFilterIndicator(final TableColumn column) {
     String val = (String) column.getHeaderValue();
-    if (val.length() > 0)
-      if (val.charAt(0) != FILTER_INDICATOR)
-        val = FILTER_INDICATOR + val;
+    if (val.length() > 0 && val.charAt(0) != FILTER_INDICATOR)
+      val = FILTER_INDICATOR + val;
 
     column.setHeaderValue(val);
   }

@@ -20,22 +20,22 @@ import java.util.Properties;
  */
 public class EntityDbLocalProvider implements EntityDbProvider {
 
-  private static final Logger log = Util.getLogger(EntityDbLocalProvider.class);
+  private static final Logger LOG = Util.getLogger(EntityDbLocalProvider.class);
 
   /**
    * The user used by this db provider when connecting to the database server
    */
-  protected User user;
+  private User user;
 
   /**
    * The underlying database implementation
    */
-  protected final Database database;
+  private final Database database;
 
   /**
    * The EntityDb instance used by this db provider
    */
-  protected EntityDbConnection entityDb;
+  private EntityDbConnection entityDb;
 
   private final Properties connectionProperties = new Properties();
 
@@ -116,7 +116,7 @@ public class EntityDbLocalProvider implements EntityDbProvider {
   }
 
   private void connect() throws ClassNotFoundException, SQLException {
-    log.debug("Initializing connection for " + user);
+    LOG.debug("Initializing connection for " + user);
     entityDb = new EntityDbConnection(database, user);
   }
 }

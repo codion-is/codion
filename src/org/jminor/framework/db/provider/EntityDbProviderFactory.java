@@ -14,6 +14,8 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class EntityDbProviderFactory {
 
+  private EntityDbProviderFactory() {}
+
   private static String remoteConnectionProviderClassName =
           (String) Configuration.getValue(Configuration.REMOTE_CONNECTION_PROVIDER);
   private static String localConnectionProviderClassName =

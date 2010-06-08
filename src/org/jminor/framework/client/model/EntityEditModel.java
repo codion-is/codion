@@ -44,7 +44,7 @@ import java.util.Map;
  */
 public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
 
-  protected static final Logger log = Util.getLogger(EntityEditModel.class);
+  protected static final Logger LOG = Util.getLogger(EntityEditModel.class);
 
   private final Event evtBeforeInsert = new Event();
   private final Event evtAfterInsert = new Event();
@@ -62,7 +62,7 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
   /**
    * Indicates whether the model is active and ready to receive input
    */
-  protected final State stActive = new State(Configuration.getBooleanValue(Configuration.ALL_PANELS_ACTIVE));
+  private final State stActive = new State(Configuration.getBooleanValue(Configuration.ALL_PANELS_ACTIVE));
 
   /**
    * The ID of the entity this edit model is based on
@@ -307,7 +307,7 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
     if (!isInsertAllowed())
       throw new RuntimeException("This model does not allow inserting!");
 
-    log.debug(toString() + " - insert " + Util.getListContentsAsString(entities, false));
+    LOG.debug(toString() + " - insert " + Util.getListContentsAsString(entities, false));
 
     evtBeforeInsert.fire();
     validateEntities(entities, INSERT);
@@ -345,7 +345,7 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
     if (!isUpdateAllowed())
       throw new RuntimeException("This model does not allow updating!");
 
-    log.debug(toString() + " - update " + Util.getListContentsAsString(entities, false));
+    LOG.debug(toString() + " - update " + Util.getListContentsAsString(entities, false));
 
     final List<Entity> modifiedEntities = EntityUtil.getModifiedEntities(entities);
     if (modifiedEntities.size() == 0)
@@ -384,7 +384,7 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
     if (!isDeleteAllowed())
       throw new RuntimeException("This model does not allow deleting!");
 
-    log.debug(toString() + " - delete " + Util.getListContentsAsString(entities, false));
+    LOG.debug(toString() + " - delete " + Util.getListContentsAsString(entities, false));
 
     evtBeforeDelete.fire();
 
@@ -881,7 +881,7 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
         protected void valueChanged(final ValueChangeEvent<String, Object> event) {
           final String msg = getValueChangeDebugString(event);
           System.out.println(msg);
-          log.trace(msg);
+          LOG.trace(msg);
         }
       });
     }

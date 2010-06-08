@@ -35,14 +35,13 @@ public class SQLServerDatabase extends AbstractDatabase {
 
   /** {@inheritDoc} */
   public String getURL(final Properties connectionProperties) {
-    final String host = getHost();
-    if (host == null || host.length() == 0)
-      throw new RuntimeException(DATABASE_HOST + " is required for database type " + getDatabaseType());
-    final String port = getPort();
-    if (port == null || port.length() == 0)
-      throw new RuntimeException(DATABASE_PORT + " is required for database type " + getDatabaseType());
     final String sid = getSid();
+    return "jdbc:sqlserver://" + getHost() + ":" + getPort() + (sid != null && sid.length() > 0 ? ";databaseName=" + sid : "");
+  }
 
-    return "jdbc:sqlserver://" + host + ":" + port + (sid != null && sid.length() > 0 ? ";databaseName=" + sid : "");
+  @Override
+  protected void validate(final String databaseType, final String host, final String port, final String sid, final boolean embedded) {
+    require(DATABASE_HOST, host);
+    require(DATABASE_PORT, port);
   }
 }

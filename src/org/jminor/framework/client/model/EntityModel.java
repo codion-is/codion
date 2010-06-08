@@ -39,7 +39,7 @@ import java.util.Set;
  */
 public class EntityModel extends ValueChangeMapModel<String, Object> {
 
-  protected static final Logger log = Util.getLogger(EntityModel.class);
+  protected static final Logger LOG = Util.getLogger(EntityModel.class);
 
   private final Event evtEntitiesChanged = new Event();
   private final Event evtRefreshStarted = new Event();
@@ -310,7 +310,7 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
       return;
 
     try {
-      log.trace(this + " refreshing");
+      LOG.trace(this + " refreshing");
       isRefreshing = true;
       evtRefreshStarted.fire();
       getEditModel().refresh();//triggers table model refresh as per bindTableModelEventsInternal()
@@ -322,7 +322,7 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
     finally {
       isRefreshing = false;
       evtRefreshDone.fire();
-      log.trace(this + " done refreshing");
+      LOG.trace(this + " done refreshing");
     }
   }
 
@@ -512,13 +512,13 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
   }
 
   protected void refreshDetailModels() {
-    log.trace(this + " refreshing detail models");
+    LOG.trace(this + " refreshing detail models");
     for (final EntityModel detailModel : detailModels)
       detailModel.refresh();
   }
 
   protected void clearDetailModels() {
-    log.trace(this + " clearing detail models");
+    LOG.trace(this + " clearing detail models");
     for (final EntityModel detailModel : detailModels)
       detailModel.clear();
   }
@@ -534,14 +534,10 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
   private void addDetailModels() {
     for (final EntityModel detailModel : initializeDetailModels()) {
       detailModels.add(detailModel);
-      detailModel.setMasterModel(this);
+      detailModel.masterModel = this;
       if (detailModel.containsTableModel())
         detailModel.getTableModel().setDetailModel(true);
     }
-  }
-
-  private void setMasterModel(final EntityModel masterModel) {
-    this.masterModel = masterModel;
   }
 
   private void bindEventsInternal() {

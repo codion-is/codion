@@ -18,6 +18,8 @@ import java.util.Date;
  */
 public class DateUtil {
 
+  private DateUtil() {}
+
   /**
    * @param date the date to check for validity
    * @param formats the date formats to use for validation

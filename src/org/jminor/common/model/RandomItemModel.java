@@ -4,7 +4,6 @@
 package org.jminor.common.model;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
@@ -32,12 +31,12 @@ public class RandomItemModel<T> {
   /**
    * An Event fired when a weight value has changed
    */
-  protected final Event evtWeightsChanged = new Event();
+  private final Event evtWeightsChanged = new Event();
 
   /**
    * The items contained in this model
    */
-  protected final List<RandomItem<T>> items = new ArrayList<RandomItem<T>>();
+  private final List<RandomItem<T>> items = new ArrayList<RandomItem<T>>();
 
   private final Random random = new Random();
 
@@ -77,7 +76,7 @@ public class RandomItemModel<T> {
   /**
    * @return the items in this model.
    */
-  public Collection<RandomItem<T>> getItems() {
+  public List<RandomItem<T>> getItems() {
     return items;
   }
 

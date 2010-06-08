@@ -107,16 +107,14 @@ public class StringProvider<K> implements ValueMap.ToString<K>, Serializable {
    */
   public boolean references(final K referenceKey) {
     for (final ValueProvider provider : valueProviders) {
-      if (provider instanceof ReferencedValueProvider) {
-        if (((ReferencedValueProvider) provider).getReferenceKey().equals(referenceKey))
-          return true;
-      }
+      if (provider instanceof ReferencedValueProvider && ((ReferencedValueProvider) provider).getReferenceKey().equals(referenceKey))
+        return true;
     }
     return false;
   }
 
   private static interface ValueProvider<T> extends Serializable {
-    public String toString(final ValueMap<T, ?> valueMap);
+    String toString(final ValueMap<T, ?> valueMap);
   }
 
   private static class FormattedValueProvider<T> implements ValueProvider<T> {

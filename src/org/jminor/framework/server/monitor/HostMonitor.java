@@ -26,7 +26,7 @@ import java.util.List;
  */
 public class HostMonitor {
 
-  private static final Logger log = Util.getLogger(HostMonitor.class);
+  private static final Logger LOG = Util.getLogger(HostMonitor.class);
 
   private final Event evtRefreshed = new Event();
   private final Event evtServerMonitorRemoved = new Event();
@@ -93,37 +93,37 @@ public class HostMonitor {
   }
 
   private List<String> getEntityDbRemoteServers(final String serverHostName) {
-    final ArrayList<String> serverNames = new ArrayList<String>();
+    final List<String> serverNames = new ArrayList<String>();
     try {
       String message = "HostMonitor locating registry on host: " + serverHostName;
       System.out.println(message);
-      log.info(message);
+      LOG.info(message);
       final Registry registry = LocateRegistry.getRegistry(serverHostName);
       message = "HostMonitor located registry: " + registry;
       System.out.println(message);
-      log.info(message);
+      LOG.info(message);
       final String[] boundNames = getEntityServers(registry);
       if (boundNames.length == 0) {
         message = "HostMonitor found no server bound in registry: " + registry;
         System.out.println(message);
-        log.info(message);
+        LOG.info(message);
       }
       for (final String name : boundNames) {
         message = "HostMonitor found server '" + name + "'";
         System.out.println(message);
-        log.info(message);
+        LOG.info(message);
         serverNames.add(name);
       }
     }
     catch (RemoteException e) {
-      log.error(this, e);
+      LOG.error(this, e);
     }
 
     return serverNames;
   }
 
   private static String[] getEntityServers(final Registry registry) throws RemoteException {
-    final ArrayList<String> serverNames = new ArrayList<String>();
+    final List<String> serverNames = new ArrayList<String>();
     final String[] boundNames = registry.list();
     for (final String name : boundNames)
       if (name.startsWith((String) Configuration.getValue(Configuration.SERVER_NAME_PREFIX))

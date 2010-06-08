@@ -15,7 +15,7 @@ import java.util.*;
  */
 public class EntityDefinition implements Serializable {
 
-  protected transient final Collator collator = Collator.getInstance();
+  private final transient Collator collator = Collator.getInstance();
 
   private static final long serialVersionUID = 1;
   /**
@@ -29,7 +29,7 @@ public class EntityDefinition implements Serializable {
   /**
    * The name of the underlying table
    */
-  private String tableName;
+  private final String tableName;
   /**
    * The table (view, query) from which to select the entity
    * Used if it differs from the one used for inserts/updates
@@ -116,6 +116,10 @@ public class EntityDefinition implements Serializable {
     return entityID;
   }
 
+  public String getTableName() {
+    return tableName;
+  }
+
   public boolean isLargeDataset() {
     return largeDataset;
   }
@@ -170,15 +174,6 @@ public class EntityDefinition implements Serializable {
 
   public EntityDefinition setSelectTableName(final String selectTableName) {
     this.selectTableName = selectTableName;
-    return this;
-  }
-
-  public String getTableName() {
-    return tableName;
-  }
-
-  public EntityDefinition setTableName(final String tableName) {
-    this.tableName = tableName;
     return this;
   }
 

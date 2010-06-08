@@ -57,17 +57,7 @@ public class OracleDatabase extends AbstractDatabase {
 
   /** {@inheritDoc} */
   public String getURL(final Properties connectionProperties) {
-    final String host = getHost();
-    if (host == null || host.length() == 0)
-      throw new RuntimeException(DATABASE_HOST + " is required for database type " + getDatabaseType());
-    final String port = getPort();
-    if (port == null || port.length() == 0)
-      throw new RuntimeException(DATABASE_PORT + " is required for database type " + getDatabaseType());
-    final String sid = getSid();
-    if (sid == null || sid.length() == 0)
-      throw new RuntimeException(DATABASE_SID + " is required for database type " + getDatabaseType());
-
-    return "jdbc:oracle:thin:@" + host + ":" + port + ":" + sid;
+    return "jdbc:oracle:thin:@" + getHost() + ":" + getPort() + ":" + getSid();
   }
 
   /**
@@ -97,5 +87,12 @@ public class OracleDatabase extends AbstractDatabase {
       return ERROR_CODE_MAP.get(exception.getErrorCode());
 
     return exception.getMessage();
+  }
+
+  @Override
+  protected void validate(final String databaseType, final String host, final String port, final String sid, final boolean embedded) {
+    require(DATABASE_HOST, host);
+    require(DATABASE_PORT, port);
+    require(DATABASE_SID, sid);
   }
 }

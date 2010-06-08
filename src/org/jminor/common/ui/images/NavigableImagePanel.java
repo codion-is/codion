@@ -283,11 +283,8 @@ public class NavigableImagePanel extends JPanel {
     addMouseListener(new MouseAdapter() {
       @Override
       public void mousePressed(MouseEvent e) {
-        if (SwingUtilities.isLeftMouseButton(e)) {
-          if (isInNavigationImage(e.getPoint())) {
-            Point p = e.getPoint();
-            displayImageAt(p);
-          }
+        if (SwingUtilities.isLeftMouseButton(e) &&isInNavigationImage(e.getPoint())) {
+          displayImageAt(e.getPoint());
         }
       }
     });
@@ -296,8 +293,7 @@ public class NavigableImagePanel extends JPanel {
       public void mouseDragged(MouseEvent e) {
         if (SwingUtilities.isLeftMouseButton(e)
                 && !isInNavigationImage(e.getPoint())) {
-          Point p = e.getPoint();
-          moveImage(p);
+          moveImage(e.getPoint());
         }
       }
       public void mouseMoved(MouseEvent e) {

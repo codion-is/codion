@@ -33,16 +33,7 @@ import org.jminor.framework.i18n.FrameworkMessages;
 
 import org.apache.log4j.Logger;
 
-import javax.swing.ComboBoxModel;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.JToolBar;
+import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
@@ -57,7 +48,7 @@ import java.util.Map;
  */
 public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Object> implements ExceptionHandler {
 
-  private static final Logger log = Util.getLogger(EntityEditPanel.class);
+  private static final Logger LOG = Util.getLogger(EntityEditPanel.class);
 
   public static final int CONFIRM_TYPE_INSERT = 1;
   public static final int CONFIRM_TYPE_UPDATE = 2;
@@ -216,7 +207,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @param dialogParent the component to use as exception dialog parent
    */
   public void handleException(final Throwable throwable, final JComponent dialogParent) {
-    log.error(this, throwable);
+    LOG.error(this, throwable);
     DefaultExceptionHandler.get().handleException(throwable, dialogParent);
   }
 

@@ -29,7 +29,7 @@ import java.util.TimerTask;
  */
 public class ServerMonitor {
 
-  private static final Logger log = Util.getLogger(ServerMonitor.class);
+  private static final Logger LOG = Util.getLogger(ServerMonitor.class);
 
   private final Event evtStatsUpdateIntervalChanged = new Event();
   private final Event evtServerShutDown = new Event();
@@ -222,7 +222,7 @@ public class ServerMonitor {
     }
     catch (RemoteException e) {
       System.out.println("Server \"" + serverName + "\" is unreachable");
-      log.error("Server \"" + serverName + "\" is unreachable");
+      LOG.error("Server \"" + serverName + "\" is unreachable");
       throw e;
     }
     catch (NotBoundException e) {
@@ -230,7 +230,7 @@ public class ServerMonitor {
       throw new RemoteException("Server " + serverName + " is not bound", e);
     }
     finally {
-      log.info("Registry.lookup(\"" + serverName + "\"): " + (System.currentTimeMillis() - time));
+      LOG.info("Registry.lookup(\"" + serverName + "\"): " + (System.currentTimeMillis() - time));
     }
   }
 

@@ -54,7 +54,7 @@ import java.util.Map;
  */
 public abstract class EntityApplicationPanel extends JPanel implements ExceptionHandler {
 
-  private static final Logger log = Util.getLogger(EntityApplicationPanel.class);
+  private static final Logger LOG = Util.getLogger(EntityApplicationPanel.class);
 
   public static final String TIPS_AND_TRICKS_FILE = "TipsAndTricks.txt";
 
@@ -91,7 +91,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
 
   /** {@inheritDoc} */
   public void handleException(final Throwable e, final JComponent component) {
-    log.error(this, e);
+    LOG.error(this, e);
     DefaultExceptionHandler.get().handleException(e, component);
   }
 
@@ -151,8 +151,8 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
 
   public void startApplication(final String frameCaption, final String iconName, final boolean maximize,
                                final Dimension frameSize, final User defaultUser, final boolean showFrame) {
-    log.info(frameCaption + " starting");
-    new Messages();//OptionPane messages are statically loaded
+    LOG.info(frameCaption + " starting");
+    Messages.class.getName();//hack to load the class
     final JFrame frame = new JFrame();
     frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
     final ImageIcon applicationIcon = iconName != null ? Images.getImageIcon(getClass(), iconName) :
@@ -173,7 +173,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
         final String frameTitle = getFrameTitle(frameCaption, user);
         prepareFrame(frame, frameTitle, maximize, true, frameSize, showFrame);
 
-        log.info(frameTitle + ", application started successfully " + "(" + (System.currentTimeMillis() - now) + " ms)");
+        LOG.info(frameTitle + ", application started successfully " + "(" + (System.currentTimeMillis() - now) + " ms)");
 
         retry = false;//successful startup
         saveDefaultUser(user);
@@ -217,22 +217,21 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   }
 
   public void exit() throws CancelException {
-    if (Configuration.getBooleanValue(Configuration.CONFIRM_EXIT)) {
-      if (JOptionPane.showConfirmDialog(this, FrameworkMessages.get(FrameworkMessages.CONFIRM_EXIT),
-              FrameworkMessages.get(FrameworkMessages.CONFIRM_EXIT_TITLE), JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION)
+    if (Configuration.getBooleanValue(Configuration.CONFIRM_EXIT) && JOptionPane.showConfirmDialog(this, FrameworkMessages.get(FrameworkMessages.CONFIRM_EXIT),
+            FrameworkMessages.get(FrameworkMessages.CONFIRM_EXIT_TITLE), JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION)
         throw new CancelException();
-    }
+
     try {
       savePreferences();
     }
     catch (Exception e) {
-      log.debug("Exception while saving preferences", e);
+      LOG.debug("Exception while saving preferences", e);
     }
     try {
       applicationModel.getDbProvider().disconnect();
     }
     catch (Exception e) {
-      log.debug("Exception while disconnecting from database", e);
+      LOG.debug("Exception while disconnecting from database", e);
     }
     System.exit(0);
   }
@@ -298,11 +297,11 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   protected ControlSet getFileControlSet() {
     final ControlSet file = new ControlSet(FrameworkMessages.get(FrameworkMessages.FILE));
     file.setMnemonic(FrameworkMessages.get(FrameworkMessages.FILE_MNEMONIC).charAt(0));
-    if (isLoginRequired()) {
-      file.add(ControlFactory.methodControl(this, "logout", Messages.get(Messages.LOGOUT)));
-      file.add(ControlFactory.methodControl(this, "login", Messages.get(Messages.LOGIN)));
-      file.addSeparator();
-    }
+//    if (isLoginRequired()) {
+//      file.add(ControlFactory.methodControl(this, "logout", Messages.get(Messages.LOGOUT)));
+//      file.add(ControlFactory.methodControl(this, "login", Messages.get(Messages.LOGIN)));
+//      file.addSeparator();
+//    }
     file.add(ControlFactory.methodControl(this, "exit", FrameworkMessages.get(FrameworkMessages.EXIT),
             null, FrameworkMessages.get(FrameworkMessages.EXIT_TIP),
             FrameworkMessages.get(FrameworkMessages.EXIT_MNEMONIC).charAt(0)));

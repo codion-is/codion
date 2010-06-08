@@ -10,6 +10,8 @@ package org.jminor.common.db.dbms;
  */
 public class DatabaseProvider {
 
+  private DatabaseProvider() {}
+
   public static Database createInstance() {
     try {
       final String databaseClassName = System.getProperty(Database.DATABASE_IMPLEMENTATION_CLASS, getDatabaseClassName());

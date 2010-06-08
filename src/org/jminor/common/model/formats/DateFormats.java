@@ -10,6 +10,8 @@ import java.text.SimpleDateFormat;
  */
 public class DateFormats {
 
+  private DateFormats() {}
+
   /** dd-MM-yy */
   public static final String COMPACT_DASH = "dd-MM-yy";
   /** ddMMyy */

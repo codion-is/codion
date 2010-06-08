@@ -83,6 +83,7 @@ public abstract class AbstractDatabase implements Database {
    */
   public AbstractDatabase(final String databaseType, final String host, final String port, final String sid,
                           final boolean embedded) {
+    validate(databaseType, host, port, sid, embedded);
     this.databaseType = databaseType;
     this.host = host;
     this.port = port;
@@ -185,5 +186,12 @@ public abstract class AbstractDatabase implements Database {
    */
   public Properties addConnectionProperties(final Properties properties) {
     return properties;
+  }
+
+  protected abstract void validate(final String databaseType, final String host, final String port, final String sid, final boolean embedded);
+
+  protected void require(final String property, final String value) {
+    if (value == null || value.length() == 0)
+      throw new RuntimeException(property + " is required for database type " + databaseType);
   }
 }

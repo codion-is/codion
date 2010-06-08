@@ -41,5 +41,5 @@ public interface EntityDbProvider {
   /**
    * @return the user used by this db provider
    */
-  public User getUser();
+  User getUser();
 }

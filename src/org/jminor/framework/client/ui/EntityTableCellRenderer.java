@@ -165,7 +165,7 @@ public class EntityTableCellRenderer implements TableCellRenderer {
     @Override
     public void setValue(final Object value) {
       String txt = "";
-      if (value != null && value instanceof Date)
+      if (value instanceof Date)
         txt = format.format(value);
       else if (value instanceof String)
         txt = (String) value;
@@ -197,7 +197,7 @@ public class EntityTableCellRenderer implements TableCellRenderer {
     @Override
     public void setValue(final Object value) {
       String txt = "";
-      if (value != null && value instanceof Date)
+      if (value instanceof Date)
         txt = format.format(value);
       else if (value instanceof String)
         txt = (String) value;

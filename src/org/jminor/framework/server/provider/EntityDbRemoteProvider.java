@@ -26,7 +26,7 @@ import java.util.List;
  */
 public class EntityDbRemoteProvider implements EntityDbProvider {
 
-  private static final Logger log = Util.getLogger(EntityDbRemoteProvider.class);
+  private static final Logger LOG = Util.getLogger(EntityDbRemoteProvider.class);
 
   private final String serverHostName = System.getProperty(Configuration.SERVER_HOST_NAME);
   private User user;
@@ -100,7 +100,7 @@ public class EntityDbRemoteProvider implements EntityDbProvider {
       return true;
     }
     catch (Exception e) {
-      log.debug("Remote connection invalid: " + e.getMessage());
+      LOG.debug("Remote connection invalid: " + e.getMessage());
       return false;
     }
   }
@@ -118,13 +118,13 @@ public class EntityDbRemoteProvider implements EntityDbProvider {
     }
     catch (RemoteException e) {
       e.printStackTrace();
-      log.info(serverName + " was unreachable, " + user + " - " + clientID + " reconnecting...");
+      LOG.info(serverName + " was unreachable, " + user + " - " + clientID + " reconnecting...");
       unreachable = true;
     }
     if (server == null || unreachable) {
       //if server is not reachable, try to reconnect once and return
       connectToServer();
-      log.info(serverName + ", " + user + " - " + clientID + " was able to connect");
+      LOG.info(serverName + ", " + user + " - " + clientID + " was able to connect");
     }
 
     return this.server;
@@ -166,7 +166,7 @@ public class EntityDbRemoteProvider implements EntityDbProvider {
           }
           catch (Exception e) {
             e.printStackTrace();
-            log.error("Server \"" + name + "\" is unreachable");
+            LOG.error("Server \"" + name + "\" is unreachable");
           }
         }
       }

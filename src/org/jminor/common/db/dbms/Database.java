@@ -27,83 +27,83 @@ public interface Database {
    * @see Database#POSTGRESQL
    * @see Database#SQLSERVER
    */
-  static final String DATABASE_TYPE = "jminor.db.type";
+  final String DATABASE_TYPE = "jminor.db.type";
 
   /**
    * Specifies the machine hosting the database, in the case of embedded databases
    * this specifies the name of the database
    */
-  static final String DATABASE_HOST = "jminor.db.host";
+  final String DATABASE_HOST = "jminor.db.host";
 
   /**
    * Specifies the database sid (used for dbname for MySQL, SQLServer and Derby server connections)
    */
-  static final String DATABASE_SID = "jminor.db.sid";
+  final String DATABASE_SID = "jminor.db.sid";
 
   /**
    * Specifies the database port
    */
-  static final String DATABASE_PORT = "jminor.db.port";
+  final String DATABASE_PORT = "jminor.db.port";
 
   /**
    * Specifies whether or not the database should be run in embedded mode, if applicable<br>
    * Values: "true"/"false"<br>
    * Default: "false"<br>
    */
-  static final String DATABASE_EMBEDDED = "jminor.db.embedded";
+  final String DATABASE_EMBEDDED = "jminor.db.embedded";
 
   /**
    * Specifies the Database implementation class to use in case of a dbms that is not directly supported
    * @see Database
    */
-  static final String DATABASE_IMPLEMENTATION_CLASS = "jminor.db.implementation";
+  final String DATABASE_IMPLEMENTATION_CLASS = "jminor.db.implementation";
 
   /**
    * Specifies whether or not connection pools should collect fine grained performance/usage statistics by default, true or false
    */
-  public static final String DATABASE_POOL_STATISTICS = "jminor.db.pooling.collectStatistics";
+  final String DATABASE_POOL_STATISTICS = "jminor.db.pooling.collectStatistics";
 
   /**
    * The constant used to denote the Oracle database type
    * @see Database#DATABASE_TYPE
    */
-  static final String ORACLE = "oracle";
+  final String ORACLE = "oracle";
 
   /**
    * The constant used to denote the MySQL database type
    * @see Database#DATABASE_TYPE
    */
-  static final String MYSQL = "mysql";
+  final String MYSQL = "mysql";
 
   /**
    * The constant used to denote the PostgreSQL database type
    * @see Database#DATABASE_TYPE
    */
-  static final String POSTGRESQL = "postgresql";
+  final String POSTGRESQL = "postgresql";
 
   /**
    * The constant used to denote the Microsoft SQL Server database type
    * @see Database#DATABASE_TYPE
    */
-  static final String SQLSERVER = "sqlserver";
+  final String SQLSERVER = "sqlserver";
 
   /**
    * The constant used to denote the Derby database type
    * @see Database#DATABASE_TYPE
    */
-  static final String DERBY = "derby";
+  final String DERBY = "derby";
 
   /**
    * The constant used to denote the H2 database type
    * @see Database#DATABASE_TYPE
    */
-  static final String H2 = "h2";
+  final String H2 = "h2";
 
   /**
    * The constant used to denote the HSQL database type
    * @see Database#DATABASE_TYPE
    */
-  static final String HSQL = "hsql";
+  final String HSQL = "hsql";
 
   /**
    * Loads the database driver

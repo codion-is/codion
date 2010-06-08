@@ -16,7 +16,7 @@ import java.rmi.RemoteException;
  */
 public interface RemoteServer<T> extends Remote {
 
-  public final String SERVER_ADMIN_SUFFIX = "-admin";
+  final String SERVER_ADMIN_SUFFIX = "-admin";
 
   /**
    * Establishes a connection to this RemoteServer

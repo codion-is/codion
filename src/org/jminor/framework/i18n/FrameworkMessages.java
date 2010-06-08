@@ -11,6 +11,8 @@ import java.util.ResourceBundle;
  */
 public class FrameworkMessages {
 
+  private FrameworkMessages() {}
+
   private static final ResourceBundle bundle =
           ResourceBundle.getBundle("org.jminor.framework.i18n.FrameworkMessages", Locale.getDefault());
 

@@ -762,11 +762,11 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
 
   class SelectionModel extends DefaultListSelectionModel {
 
-    final Event evtSelectionChangedAdjusting = new Event();
-    final Event evtSelectionChanged = new Event();
-    final Event evtSelectedIndexChanged = new Event();
-    final State stSelectionEmpty = new State(true);
-    final State stMultipleSelection = new State(false);
+    private final Event evtSelectionChangedAdjusting = new Event();
+    private final Event evtSelectionChanged = new Event();
+    private final Event evtSelectedIndexChanged = new Event();
+    private final State stSelectionEmpty = new State(true);
+    private final State stMultipleSelection = new State(false);
 
     /**
      * true while the selection is being updated
@@ -836,6 +836,26 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
 
     public int getSelectedIndex() {
       return selectedIndex;
+    }
+
+    public Event eventSelectedIndexChanged() {
+      return evtSelectedIndexChanged;
+    }
+
+    public Event eventSelectionChanged() {
+      return evtSelectionChanged;
+    }
+
+    public Event eventSelectionChangedAdjusting() {
+      return evtSelectionChangedAdjusting;
+    }
+
+    public State stateMultipleSelection() {
+      return stMultipleSelection.getLinkedState();
+    }
+
+    public State stateSelectionEmpty() {
+      return stSelectionEmpty.getLinkedState();
     }
   }
 }

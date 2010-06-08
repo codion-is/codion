@@ -49,7 +49,7 @@ import java.util.Set;
  */
 public class EntityDbConnection extends DbConnection implements EntityDb {
 
-  private static final Logger log = Util.getLogger(EntityDbConnection.class);
+  private static final Logger LOG = Util.getLogger(EntityDbConnection.class);
 
   private final Map<String, EntityResultPacker> entityResultPackers = new HashMap<String, EntityResultPacker>();
   private final Map<Integer, ResultPacker> propertyResultPackers = new HashMap<Integer, ResultPacker>();
@@ -133,8 +133,8 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     catch (SQLException e) {
       if (!isTransactionOpen())
         rollbackQuietly();
-      log.info(insertQuery);
-      log.error(this, e);
+      LOG.info(insertQuery);
+      LOG.error(this, e);
       throw new DbException(e, insertQuery, getDatabase().getErrorMessage(e));
     }
     finally {
@@ -188,7 +188,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     catch (SQLException e) {
       if (!isTransactionOpen())
         rollbackQuietly();
-      log.error(this, e);
+      LOG.error(this, e);
       throw new DbException(e, updateQuery, getDatabase().getErrorMessage(e));
     }
     finally {
@@ -214,8 +214,8 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     catch (SQLException e) {
       if (!isTransactionOpen())
         rollbackQuietly();
-      log.info(deleteQuery);
-      log.error(this, e);
+      LOG.info(deleteQuery);
+      LOG.error(this, e);
       throw new DbException(e, deleteQuery, getDatabase().getErrorMessage(e));
     }
     finally {
@@ -255,8 +255,8 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     catch (SQLException e) {
       if (!isTransactionOpen())
         rollbackQuietly();
-      log.info(deleteQuery);
-      log.error(this, e);
+      LOG.info(deleteQuery);
+      LOG.error(this, e);
       throw new DbException(e, deleteQuery, getDatabase().getErrorMessage(e));
     }
     finally {
@@ -319,8 +319,8 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
       return result;
     }
     catch (SQLException exception) {
-      log.info(selectQuery);
-      log.error(this, exception);
+      LOG.info(selectQuery);
+      LOG.error(this, exception);
       throw new DbException(exception, selectQuery, getDatabase().getErrorMessage(exception));
     }
     finally {
@@ -381,8 +381,8 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
       return result.get(0);
     }
     catch (SQLException e) {
-      log.info(selectQuery);
-      log.error(this, e);
+      LOG.info(selectQuery);
+      LOG.error(this, e);
       throw new DbException(e, selectQuery, getDatabase().getErrorMessage(e));
     }
     finally {
@@ -417,8 +417,8 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     catch (SQLException exception) {
       if (!isTransactionOpen())
         rollbackQuietly();
-      log.info(statement);
-      log.error(this, exception);
+      LOG.info(statement);
+      LOG.error(this, exception);
       throw new DbException(exception, statement, getDatabase().getErrorMessage(exception));
     }
   }
@@ -433,8 +433,8 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
       return result;
     }
     catch (SQLException exception) {
-      log.info(statement);
-      log.error(this, exception);
+      LOG.info(statement);
+      LOG.error(this, exception);
       if (!isTransactionOpen())
         rollbackQuietly();
       throw new DbException(exception, statement, getDatabase().getErrorMessage(exception));
@@ -602,8 +602,8 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
                                      final List<?> values, final List<? extends Property> properties) throws SQLException {
     SQLException exception = null;
     try {
-      queryCounter.count(sqlStatement);
-      methodLogger.logAccess("executePreparedUpdate", new Object[] {sqlStatement, values});
+      QUERY_COUNTER.count(sqlStatement);
+      getMethodLogger().logAccess("executePreparedUpdate", new Object[] {sqlStatement, values});
       setParameterValues(statement, values, properties);
       statement.executeUpdate();
       return;
@@ -612,7 +612,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
       exception = e;
     }
     finally {
-      methodLogger.logExit("executePreparedUpdate", exception, null);
+      getMethodLogger().logExit("executePreparedUpdate", exception, null);
     }
 
     throw exception;
@@ -622,8 +622,8 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
                                           final List<?> values, final List<Property> properties) throws SQLException {
     SQLException exception = null;
     try {
-      queryCounter.count(sqlStatement);
-      methodLogger.logAccess("executePreparedSelect", values == null ? new Object[] {sqlStatement} : new Object[] {sqlStatement, values});
+      QUERY_COUNTER.count(sqlStatement);
+      getMethodLogger().logAccess("executePreparedSelect", values == null ? new Object[] {sqlStatement} : new Object[] {sqlStatement, values});
       setParameterValues(statement, values, properties);
       return statement.executeQuery();
     }
@@ -631,7 +631,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
       exception = e;
     }
     finally {
-      methodLogger.logExit("executePreparedSelect", exception, null);
+      getMethodLogger().logExit("executePreparedSelect", exception, null);
     }
 
     throw exception;
@@ -860,22 +860,20 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
    */
   private static void addInsertProperties(final Entity entity, final Collection<Property> properties) {
     for (final Property property : EntityRepository.getDatabaseProperties(entity.getEntityID(),
-            EntityRepository.getIdSource(entity.getEntityID()) != IdSource.AUTO_INCREMENT, false, true)) {
-      if (!(property instanceof Property.ForeignKeyProperty) && !(property instanceof Property.TransientProperty)
-              && !entity.isValueNull(property.getPropertyID())) {
+            EntityRepository.getIdSource(entity.getEntityID()) != IdSource.AUTO_INCREMENT, false, true, false, false)) {
+      if (!entity.isValueNull(property.getPropertyID()))
         properties.add(property);
-      }
     }
   }
 
   /**
    * @param entity the Entity instance
    * @param properties the collection to add the properties to
-   * @return the properties used to update this entity, modified properties that is
+   * @return the properties used to update this entity, properties that have had their values modified that is
    */
   private static Collection<Property> addUpdateProperties(final Entity entity, final Collection<Property> properties) {
-    for (final Property property : EntityRepository.getDatabaseProperties(entity.getEntityID(), true, false, false))
-      if (entity.isModified(property.getPropertyID()) && !(property instanceof Property.ForeignKeyProperty))
+    for (final Property property : EntityRepository.getDatabaseProperties(entity.getEntityID(), true, false, false, false))
+      if (entity.isModified(property.getPropertyID()))
         properties.add(property);
 
     return properties;

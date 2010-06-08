@@ -21,7 +21,6 @@ import org.jminor.framework.domain.Property;
 
 import org.json.JSONException;
 import org.junit.After;
-import static org.junit.Assert.*;
 import org.junit.Before;
 
 import java.util.ArrayList;
@@ -29,6 +28,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.junit.Assert.*;
 
 /**
  * A class for unit testing domain entities.
@@ -345,11 +346,9 @@ public abstract class EntityTestUnit {
   private List<String> addAllReferencedEntityIDs(final String entityID, final List<String> container) {
     for (final Property.ForeignKeyProperty foreignKeyProperty : EntityRepository.getForeignKeyProperties(entityID)) {
       final String referenceEntityID = foreignKeyProperty.getReferencedEntityID();
-      if (referenceEntityID != null) {
-        if (!container.contains(referenceEntityID)) {
-          container.add(referenceEntityID);
-          addAllReferencedEntityIDs(referenceEntityID, container);
-        }
+      if (referenceEntityID != null && !container.contains(referenceEntityID)) {
+        container.add(referenceEntityID);
+        addAllReferencedEntityIDs(referenceEntityID, container);
       }
     }
     return container;

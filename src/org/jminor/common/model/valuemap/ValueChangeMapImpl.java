@@ -38,7 +38,7 @@ public class ValueChangeMapImpl<K, V> implements ValueChangeMap<K, V>, Serializa
   /**
    * Fired when a value changes, null until initialized by a call to eventValueChanged().
    */
-  protected transient Event evtValueChanged;
+  private transient Event evtValueChanged;
 
   /**
    * Instantiate a new ValueChangeMapModel with a default size of 10.
@@ -278,9 +278,16 @@ public class ValueChangeMapImpl<K, V> implements ValueChangeMap<K, V>, Serializa
   /** {@inheritDoc} */
   public Event eventValueChanged() {
     if (evtValueChanged == null)
-      evtValueChanged = new Event();
+      evtValueChanged = initializeValueChangedEvent();
 
     return evtValueChanged;
+  }
+
+  /**
+   * @return a Event to be used as value change event
+   */
+  protected Event initializeValueChangedEvent() {
+    return new Event();
   }
 
   protected boolean valuesEqual(final V valueOne, final V valueTwo) {

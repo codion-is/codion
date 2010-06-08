@@ -43,24 +43,10 @@ public class DerbyDatabase extends AbstractDatabase {
   public String getURL(final Properties connectionProperties) {
     final String authentication = getAuthenticationInfo(connectionProperties);
     if (isEmbedded()) {
-      final String host = getHost();
-      if (host == null || host.length() == 0)
-        throw new RuntimeException(DATABASE_HOST + " is required for database type " + getDatabaseType());
-
-      return "jdbc:derby:" + host + (authentication == null ? "" : ";" + authentication);
+      return "jdbc:derby:" + getHost() + (authentication == null ? "" : ";" + authentication);
     }
     else {
-      final String host = getHost();
-      if (host == null || host.length() == 0)
-        throw new RuntimeException(DATABASE_HOST + " is required for embedded database type " + getDatabaseType());
-      final String port = getPort();
-      if (port == null || port.length() == 0)
-        throw new RuntimeException(DATABASE_PORT + " is required for embedded database type " + getDatabaseType());
-      final String sid = getSid();
-      if (sid == null || sid.length() == 0)
-        throw new RuntimeException(DATABASE_SID + " is required for embedded database type " + getDatabaseType());
-
-      return "jdbc:derby://" + host + ":" + port + "/" + sid + (authentication == null ? "" : ";" + authentication);
+      return "jdbc:derby://" + getHost() + ":" + getPort() + "/" + getSid() + (authentication == null ? "" : ";" + authentication);
     }
   }
 
@@ -90,6 +76,18 @@ public class DerbyDatabase extends AbstractDatabase {
         System.out.println("Embedded Derby database successfully shut down!");
       else
         e.printStackTrace();
+    }
+  }
+
+  @Override
+  protected void validate(final String databaseType, final String host, final String port, final String sid, final boolean embedded) {
+    if (embedded) {
+      require(DATABASE_HOST, host);
+    }
+    else {
+      require(DATABASE_HOST, host);
+      require(DATABASE_PORT, port);
+      require(DATABASE_SID, sid);
     }
   }
 }

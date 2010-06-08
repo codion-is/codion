@@ -17,6 +17,8 @@ import java.util.List;
  */
 public class ControlProvider {
 
+  private ControlProvider() {}
+
   public static void bindItemSelector(final JComboBox combo, final Object owner, final String property,
                                       final Class propertyClass, final Event changedEvent) {
     new SelectedItemBeanValueLink(combo, owner, property, propertyClass, changedEvent, LinkType.READ_WRITE);

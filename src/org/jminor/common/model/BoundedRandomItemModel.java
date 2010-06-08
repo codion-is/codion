@@ -14,6 +14,7 @@ package org.jminor.common.model;
  */
 public class BoundedRandomItemModel<T> extends RandomItemModel<T> {
 
+  private final Object lock = new Object();
   private final int weightBounds;
   private RandomItem<T> lastAffected;
 
@@ -38,7 +39,7 @@ public class BoundedRandomItemModel<T> extends RandomItemModel<T> {
 
     this.weightBounds = boundedWeight;
     initializeItems(items);
-    lastAffected = this.items.get(0);
+    lastAffected = getItems().get(0);
   }
 
   public int getWeightBounds() {
@@ -47,7 +48,7 @@ public class BoundedRandomItemModel<T> extends RandomItemModel<T> {
 
   @Override
   public void increment(final T item) {
-    synchronized (items) {
+    synchronized (lock) {
       final RandomItem randomItem = getRandomItem(item);
       if (randomItem.getWeight() >= weightBounds)
         throw new RuntimeException("Maximum weight reached");
@@ -55,12 +56,12 @@ public class BoundedRandomItemModel<T> extends RandomItemModel<T> {
       decrementWeight(randomItem);
       getRandomItem(item).increment();
     }
-    evtWeightsChanged.fire();
+    eventWeightsChanged().fire();
   }
 
   @Override
   public void decrement(final T item) {
-    synchronized (items) {
+    synchronized (lock) {
       final RandomItem<T> randomItem = getRandomItem(item);
       if (randomItem.getWeight() == 0)
         throw new RuntimeException("No weight to shed");
@@ -68,7 +69,7 @@ public class BoundedRandomItemModel<T> extends RandomItemModel<T> {
       incrementWeight(randomItem);
       randomItem.decrement();
     }
-    evtWeightsChanged.fire();
+    eventWeightsChanged().fire();
   }
 
   @Override
@@ -99,15 +100,15 @@ public class BoundedRandomItemModel<T> extends RandomItemModel<T> {
   }
 
   private RandomItem<T> getNextItem(final RandomItem exclude, final boolean nonEmpty) {
-    int index = items.indexOf(lastAffected);
+    int index = getItems().indexOf(lastAffected);
     RandomItem<T> item = null;
     while (item == null || item == exclude || (nonEmpty ? item.getWeight() == 0 : item.getWeight() == weightBounds)) {
       if (index == 0)
-        index = items.size() - 1;
+        index = getItems().size() - 1;
       else
         index--;
 
-      item = items.get(index);
+      item = getItems().get(index);
     }
 
     return item;

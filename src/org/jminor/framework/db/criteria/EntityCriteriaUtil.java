@@ -4,7 +4,6 @@
 package org.jminor.framework.db.criteria;
 
 import org.jminor.common.model.SearchType;
-import org.jminor.framework.Configuration;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
 
@@ -16,20 +15,7 @@ import java.util.List;
  */
 public class EntityCriteriaUtil {
 
-  public static String getBooleanSQLString(final Boolean value) {
-    String sqlString;
-    if (value == null)
-      sqlString = "null";
-    else if (value) {
-      final Object trueValue = Configuration.getValue(Configuration.SQL_BOOLEAN_VALUE_TRUE);
-      sqlString = trueValue == null ? "null" : trueValue.toString();
-    }
-    else {
-      final Object falseValue = Configuration.getValue(Configuration.SQL_BOOLEAN_VALUE_FALSE);
-      sqlString = falseValue == null ? "null" : falseValue.toString();
-    }
-    return sqlString;
-  }
+  private EntityCriteriaUtil() {}
 
   public static EntitySelectCriteria selectCriteria(final Entity.Key key) {
     return selectCriteria(Arrays.asList(key));

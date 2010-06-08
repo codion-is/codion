@@ -17,6 +17,8 @@ import java.awt.Dimension;
  */
 public class EntityReportUiUtil {
 
+  private EntityReportUiUtil() {}
+
   /**
    * Shows a view for report printing
    * @param report the report result

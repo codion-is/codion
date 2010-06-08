@@ -129,7 +129,7 @@ public class State {
     }
   }
 
-  private static class ReverseState extends LinkedState {
+  private static final class ReverseState extends LinkedState {
 
     private ReverseState(final State referenceState) {
       super(referenceState);

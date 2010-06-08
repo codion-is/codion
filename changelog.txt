@@ -1708,3 +1708,5 @@
   EntityModel.getDetailModel(entityID) removed
   EntityModel.includeTableModel field moved to superclass
   EntityTableModel.showAllWhenNotFiltered renamed to queryCriteriaRequired
+  Sonar/CheckStyle run, with some minor modifications
+  Database.validate() and required() added

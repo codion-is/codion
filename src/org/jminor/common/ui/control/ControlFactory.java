@@ -14,6 +14,8 @@ import javax.swing.KeyStroke;
  */
 public class ControlFactory {
 
+  private ControlFactory() {}
+
   public static ToggleBeanValueLink toggleControl(final Object owner, final String propertyName, final String caption,
                                                   final Event changeEvent) {
     return toggleControl(owner, propertyName, caption, changeEvent, null);

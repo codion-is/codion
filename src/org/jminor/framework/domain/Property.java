@@ -886,7 +886,7 @@ public class Property implements Serializable {
 
     private final String foreignKeyPropertyID;
 
-    public final Property denormalizedProperty;
+    private final Property denormalizedProperty;
 
     /**
      * @param propertyID the property ID, in case of database properties this should be the underlying column name
@@ -938,7 +938,7 @@ public class Property implements Serializable {
    */
   public static class ValueListProperty extends Property {
 
-    final List<Item<Object>> values;
+    private final List<Item<Object>> values;
 
     /**
      * Instantiates a new hidden value list property
@@ -966,6 +966,9 @@ public class Property implements Serializable {
       return values.contains(new Item<Object>(value, ""));
     }
 
+    /**
+     * @return an unmodifiable view of the values
+     */
     public List<Item<Object>> getValues() {
       return values;
     }

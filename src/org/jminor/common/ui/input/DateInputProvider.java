@@ -32,7 +32,7 @@ public class DateInputProvider extends AbstractInputProvider<Date> {
     }
     catch (ParseException e) {
       throw new RuntimeException("Wrong date format "
-              + ((DateInputPanel) getInputComponent()).getFormatPattern() + " expected");
+              + ((DateInputPanel) getInputComponent()).getFormatPattern() + " expected", e);
     }
   }
 }

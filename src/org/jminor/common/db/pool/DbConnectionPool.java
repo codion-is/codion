@@ -30,7 +30,7 @@ import java.util.TimerTask;
  */
 public class DbConnectionPool implements ConnectionPool {
 
-  private static final Logger log = Util.getLogger(DbConnectionPool.class);
+  private static final Logger LOG = Util.getLogger(DbConnectionPool.class);
 
   private final Stack<DbConnection> connectionPool = new Stack<DbConnection>();
   private final Set<DbConnection> connectionsInUse = new HashSet<DbConnection>();
@@ -45,7 +45,6 @@ public class DbConnectionPool implements ConnectionPool {
 
   private final DbConnectionProvider dbConnectionProvider;
   private boolean closed = false;
-  private int poolStatisticsSize = 1000;
 
   private final Counter counter = new Counter();
   private volatile boolean creatingConnection = false;
@@ -71,8 +70,8 @@ public class DbConnectionPool implements ConnectionPool {
           try {
             creatingConnection = true;
             counter.incrementConnectionsCreatedCounter();
-            if (log.isDebugEnabled())
-              log.debug("$$$$ adding a new connection to connection pool " + getConnectionPoolSettings().getUser());
+            if (LOG.isDebugEnabled())
+              LOG.debug("$$$$ adding a new connection to connection pool " + getConnectionPoolSettings().getUser());
             checkInConnection(dbConnectionProvider.createConnection(getConnectionPoolSettings().getUser()));
           }
           finally {
@@ -88,13 +87,11 @@ public class DbConnectionPool implements ConnectionPool {
             connection = getConnectionFromPool();
             retryCount++;
           }
-          if (connection != null && log.isDebugEnabled())
-            log.debug("##### " + getConnectionPoolSettings().getUser() + " got connection"
+          if (connection != null && LOG.isDebugEnabled())
+            LOG.debug("##### " + getConnectionPoolSettings().getUser() + " got connection"
                     + " after " + (System.currentTimeMillis() - time) + "ms (retries: " + retryCount + ")");
         }
-        catch (InterruptedException e) {
-          e.printStackTrace();
-        }
+        catch (InterruptedException e) {/**/}
       }
     }
 
@@ -117,15 +114,15 @@ public class DbConnectionPool implements ConnectionPool {
             connection.rollbackTransaction();
         }
         catch (SQLException e) {
-          log.error(this, e);
+          LOG.error(this, e);
         }
         connection.setPoolTime(System.currentTimeMillis());
         connectionPool.push(connection);
         connectionPool.notify();
       }
       else {
-        if (log.isDebugEnabled())
-          log.debug(getConnectionPoolSettings().getUser() + " connection invalid upon check in");
+        if (LOG.isDebugEnabled())
+          LOG.debug(getConnectionPoolSettings().getUser() + " connection invalid upon check in");
         disconnect(connection);
       }
     }
@@ -225,6 +222,7 @@ public class DbConnectionPool implements ConnectionPool {
 
   private void addInPoolStats(final int size, final int inUse, final long time) {
     synchronized (connectionPoolStatistics) {
+      final int poolStatisticsSize = 1000;
       connectionPoolStatisticsIndex = connectionPoolStatisticsIndex == poolStatisticsSize ? 0 : connectionPoolStatisticsIndex;
       if (connectionPoolStatistics.size() == poolStatisticsSize) //filled already, reuse
         connectionPoolStatistics.get(connectionPoolStatisticsIndex).set(time, size, inUse);
@@ -257,8 +255,8 @@ public class DbConnectionPool implements ConnectionPool {
         final long idleTime = currentTime - connection.getPoolTime();
         if (idleTime > connectionPoolSettings.getPooledConnectionTimeout()) {
           iterator.remove();
-          if (log.isDebugEnabled())
-            log.debug(getConnectionPoolSettings().getUser() + " removing connection from pool, idle for " + idleTime / 1000
+          if (LOG.isDebugEnabled())
+            LOG.debug(getConnectionPoolSettings().getUser() + " removing connection from pool, idle for " + idleTime / 1000
                     + " seconds, " + connectionPool.size() + " available");
           disconnect(connection);
         }

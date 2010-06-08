@@ -226,20 +226,16 @@ public class TableSorter extends AbstractTableModel {
 
   public int modelIndex(int viewIndex) {
     final Row[] model = getViewToModel();
-    if (model != null && model.length > 0) {
-      if (viewIndex >= 0 && viewIndex < model.length)
+    if (model != null && model.length > 0 && viewIndex >= 0 && viewIndex < model.length)
         return model[viewIndex].modelIndex;
-    }
 
     return -1;
   }
 
   public int viewIndex(int modelIndex) {
     final int[] view = getModelToView();
-    if (view != null && view.length > 0) {
-      if (modelIndex >= 0 && modelIndex < view.length)
+    if (view != null && view.length > 0 && modelIndex >= 0 && modelIndex < view.length)
         return view[modelIndex];
-    }
 
     return -1;
   }

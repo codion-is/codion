@@ -5,7 +5,6 @@ package org.jminor.common.ui.valuemap;
 
 import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
 import org.jminor.common.ui.control.LinkType;
-import org.jminor.framework.Configuration;
 
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -151,7 +150,7 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> implements
    * validation message via the components tooltip
    * @param textComponent the text component
    * @param editModel the underlying edit model
-   * @see Configuration#INVALID_VALUE_BACKGROUND_COLOR
+   * @see org.jminor.framework.Configuration#INVALID_VALUE_BACKGROUND_COLOR
    */
   protected void addValidator(final JTextComponent textComponent, final ValueChangeMapEditModel<K, Object> editModel) {
     final Color validBackgroundColor = textComponent.getBackground();

@@ -23,6 +23,8 @@ import java.util.Map;
  */
 public class Configuration {
 
+  private Configuration() {}
+
   /**
    * Indicates a local database connection
    * @see #CLIENT_CONNECTION_TYPE

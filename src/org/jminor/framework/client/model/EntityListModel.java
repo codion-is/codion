@@ -25,7 +25,7 @@ import java.util.List;
  */
 public class EntityListModel extends AbstractListModel implements Refreshable {
 
-  private static final Logger log = Util.getLogger(EntityListModel.class);
+  private static final Logger LOG = Util.getLogger(EntityListModel.class);
 
   private final State stSelectionEmpty = new State();
   private final Event evtRefreshDone = new Event();
@@ -85,7 +85,7 @@ public class EntityListModel extends AbstractListModel implements Refreshable {
     if ((staticData && dataInitialized))
       return;
 
-    log.trace(this + " refreshing");
+    LOG.trace(this + " refreshing");
     data.clear();
     final List<Entity> entities = performQuery();
 

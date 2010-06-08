@@ -41,24 +41,10 @@ public class HSQLDatabase extends AbstractDatabase {
   public String getURL(final Properties connectionProperties) {
     final String authentication = getAuthenticationInfo(connectionProperties);
     if (isEmbedded()) {
-      final String host = getHost();
-      if (host == null || host.length() == 0)
-        throw new RuntimeException(DATABASE_HOST + " is required for database type " + getDatabaseType());
-
-      return "jdbc:hsqldb:file:" + host + (authentication == null ? "" : ";" + authentication);
+      return "jdbc:hsqldb:file:" + getHost() + (authentication == null ? "" : ";" + authentication);
     }
     else {
-      final String host = getHost();
-      if (host == null || host.length() == 0)
-        throw new RuntimeException(DATABASE_HOST + " is required for embedded database type " + getDatabaseType());
-      final String port = getPort();
-      if (port == null || port.length() == 0)
-        throw new RuntimeException(DATABASE_PORT + " is required for embedded database type " + getDatabaseType());
-      final String sid = getSid();
-      if (sid == null || sid.length() == 0)
-        throw new RuntimeException(DATABASE_SID + " is required for embedded database type " + getDatabaseType());
-
-      return "jdbc:hsqldb:hsql//" + host + ":" + port + "/" + sid + (authentication == null ? "" : ";" + authentication);
+      return "jdbc:hsqldb:hsql//" + getHost() + ":" + getPort() + "/" + getSid() + (authentication == null ? "" : ";" + authentication);
     }
   }
 
@@ -78,4 +64,16 @@ public class HSQLDatabase extends AbstractDatabase {
   /** {@inheritDoc} */
   @Override
   public void shutdownEmbedded(final Properties connectionProperties) {}
+
+  @Override
+  protected void validate(final String databaseType, final String host, final String port, final String sid, final boolean embedded) {
+    if (embedded) {
+      require(DATABASE_HOST, host);
+    }
+    else {
+      require(DATABASE_HOST, host);
+      require(DATABASE_PORT, port);
+      require(DATABASE_SID, sid);
+    }
+  }
 }

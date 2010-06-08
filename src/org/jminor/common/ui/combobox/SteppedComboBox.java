@@ -10,10 +10,10 @@ import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.util.Vector;
+import java.util.Collection;
 
 /**
- * A JComboBox which automatically sets the popup widtch according to the largest value in the combo box.
+ * A JComboBox which automatically sets the popup width according to the largest value in the combo box.
  * Slightly modified, automatic popup size according to getDisplaySize().
  * @author Nobuo Tamemasa
  */
@@ -22,7 +22,7 @@ public class SteppedComboBox extends JComboBox {
   private final boolean hidePopupOnFocusLoss;
   private int popupWidth = 0;
 
-  public SteppedComboBox(final Vector items) {
+  public SteppedComboBox(final Collection items) {
     this(items.toArray());
   }
 

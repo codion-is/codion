@@ -294,14 +294,8 @@ public class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements En
     return EntityDbRemoteServer.getEntityDefinitions();
   }
 
-  public static void main(String[] arguments) {
-    try {
-      new EntityDbRemoteServerAdmin(new EntityDbRemoteServer(DatabaseProvider.createInstance()),
-              EntityDbRemoteServer.SSL_CONNECTION_ENABLED);
-    }
-    catch (Exception e) {
-      e.printStackTrace();
-      System.exit(1);
-    }
+  public static void main(String[] arguments) throws Exception {
+    new EntityDbRemoteServerAdmin(new EntityDbRemoteServer(DatabaseProvider.createInstance()),
+            EntityDbRemoteServer.SSL_CONNECTION_ENABLED);
   }
 }
