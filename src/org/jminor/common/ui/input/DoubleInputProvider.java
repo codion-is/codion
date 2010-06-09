@@ -12,8 +12,9 @@ public class DoubleInputProvider extends AbstractInputProvider<Double> {
 
   public DoubleInputProvider(final Double currentValue) {
     super(new DoubleField());
-    if (currentValue != null)
+    if (currentValue != null) {
       ((DoubleField) getInputComponent()).setDouble(currentValue);
+    }
   }
 
   @Override

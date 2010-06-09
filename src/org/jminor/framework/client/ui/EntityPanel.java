@@ -161,8 +161,9 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
   private final PropertyChangeListener focusPropertyListener = new PropertyChangeListener() {
     public void propertyChange(final PropertyChangeEvent event) {
       final Component focusOwner = (Component) event.getNewValue();
-      if (focusOwner != null && isParentPanel(focusOwner) && !isActive())
+      if (focusOwner != null && isParentPanel(focusOwner) && !isActive()) {
         getEditModel().setActive(true);
+      }
     }
   };
 
@@ -289,8 +290,9 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
         bindTablePanelEvents();
         initialize();
 
-        if (refreshOnInit && getModel().containsTableModel())
+        if (refreshOnInit && getModel().containsTableModel()) {
           getModel().getTableModel().refresh();
+        }
       }
       finally {
         panelInitialized = true;
@@ -351,8 +353,9 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
    * If no detail panels are defined a RuntimeException is thrown.
    */
   public EntityPanel getSelectedDetailPanel() {
-    if (detailPanelTabbedPane == null)
+    if (detailPanelTabbedPane == null) {
       throw new RuntimeException("No detail panels available");
+    }
 
     return (EntityPanel) detailPanelTabbedPane.getSelectedComponent();
   }
@@ -364,9 +367,11 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
    * @return the detail panel of the given type
    */
   public EntityPanel getDetailPanel(final Class<? extends EntityPanel> detailPanelClass) {
-    for (final EntityPanel detailPanel : detailEntityPanels)
-      if (detailPanel.getClass().equals(detailPanelClass))
+    for (final EntityPanel detailPanel : detailEntityPanels) {
+      if (detailPanel.getClass().equals(detailPanelClass)) {
         return detailPanel;
+      }
+    }
 
     throw new RuntimeException("Detail panel of type: " + detailPanelClass + " not found in panel: " + getClass());
   }
@@ -404,12 +409,15 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
    */
   public void toggleDetailPanelState() {
     final int state = getDetailPanelState();
-    if (state == DIALOG)
+    if (state == DIALOG) {
       setDetailPanelState(HIDDEN);
-    else if (state == EMBEDDED)
+    }
+    else if (state == EMBEDDED) {
       setDetailPanelState(DIALOG);
-    else
+    }
+    else {
       setDetailPanelState(EMBEDDED);
+    }
   }
 
   /**
@@ -417,12 +425,15 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
    */
   public void toggleEditPanelState() {
     final int state = getEditPanelState();
-    if (state == DIALOG)
+    if (state == DIALOG) {
       setEditPanelState(HIDDEN);
-    else if (state == EMBEDDED)
+    }
+    else if (state == EMBEDDED) {
       setEditPanelState(DIALOG);
-    else
+    }
+    else {
       setEditPanelState(EMBEDDED);
+    }
   }
 
   /**
@@ -443,29 +454,38 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
    * @param state the detail panel state, either HIDDEN, EMBEDDED or DIALOG
    */
   public void setDetailPanelState(final int state) {
-    if (detailPanelTabbedPane == null)
+    if (detailPanelTabbedPane == null) {
       return;
+    }
 
-    if (state != HIDDEN)
+    if (state != HIDDEN) {
       getSelectedDetailPanel().initializePanel();
+    }
 
-    if (detailPanelState == DIALOG)//if we are leaving the DIALOG state, hide all child detail dialogs
-      for (final EntityPanel detailPanel : detailEntityPanels)
-        if (detailPanel.getDetailPanelState() == DIALOG)
+    if (detailPanelState == DIALOG) {//if we are leaving the DIALOG state, hide all child detail dialogs
+      for (final EntityPanel detailPanel : detailEntityPanels) {
+        if (detailPanel.getDetailPanelState() == DIALOG) {
           detailPanel.setDetailPanelState(HIDDEN);
+        }
+      }
+    }
 
     getModel().setLinkedDetailModel(state == HIDDEN ? null : getSelectedDetailPanel().getModel());
 
     detailPanelState = state;
-    if (state != DIALOG)
+    if (state != DIALOG) {
       disposeDetailDialog();
+    }
 
-    if (state == EMBEDDED)
+    if (state == EMBEDDED) {
       horizontalSplitPane.setRightComponent(detailPanelTabbedPane);
-    else if (state == HIDDEN)
+    }
+    else if (state == HIDDEN) {
       horizontalSplitPane.setRightComponent(null);
-    else
+    }
+    else {
       showDetailDialog();
+    }
 
     revalidate();
   }
@@ -474,28 +494,35 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
    * @param state the edit panel state, either HIDDEN, EMBEDDED or DIALOG
    */
   public void setEditPanelState(final int state) {
-    if (editControlPanel == null)
+    if (editControlPanel == null) {
       return;
+    }
 
     editPanelState = state;
-    if (state != DIALOG)
+    if (state != DIALOG) {
       disposeEditDialog();
+    }
 
     if (state == EMBEDDED) {
-      if (compactDetailLayout)
+      if (compactDetailLayout) {
         compactBase.add(editControlPanel, BorderLayout.NORTH);
-      else
+      }
+      else {
         add(editControlPanel, BorderLayout.NORTH);
+      }
       prepareUI(true, false);
     }
     else if (state == HIDDEN) {
-      if (compactDetailLayout)
+      if (compactDetailLayout) {
         compactBase.remove(editControlPanel);
-      else
+      }
+      else {
         remove(editControlPanel);
+      }
     }
-    else
+    else {
       showEditDialog();
+    }
 
     revalidate();
   }
@@ -506,13 +533,16 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
    * @param value true if the active panels should be shown, false if they should be hidden
    */
   public void setFilterPanelsVisible(final boolean value) {
-    if (!isPanelInitialized())
+    if (!isPanelInitialized()) {
       return;
+    }
 
-    if (getTablePanel() != null)
+    if (getTablePanel() != null) {
       getTablePanel().setFilterPanelsVisible(value);
-    for (final EntityPanel detailEntityPanel : detailEntityPanels)
+    }
+    for (final EntityPanel detailEntityPanel : detailEntityPanels) {
       detailEntityPanel.setFilterPanelsVisible(value);
+    }
   }
 
   public void resizePanel(final int direction, final int pixelAmount) {
@@ -525,17 +555,21 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
         break;
       case RIGHT:
         int newPos = horizontalSplitPane.getDividerLocation() + pixelAmount;
-        if (newPos <= horizontalSplitPane.getMaximumDividerLocation())
+        if (newPos <= horizontalSplitPane.getMaximumDividerLocation()) {
           horizontalSplitPane.setDividerLocation(newPos);
-        else
+        }
+        else {
           horizontalSplitPane.setDividerLocation(horizontalSplitPane.getMaximumDividerLocation());
+        }
         break;
       case LEFT:
         newPos = horizontalSplitPane.getDividerLocation() - pixelAmount;
-        if (newPos >= 0)
+        if (newPos >= 0) {
           horizontalSplitPane.setDividerLocation(newPos);
-        else
+        }
+        else {
           horizontalSplitPane.setDividerLocation(0);
+        }
         break;
     }
   }
@@ -555,10 +589,12 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
       editPanel.prepareUI(setInitialFocus, clearUI);
     }
     else if (setInitialFocus) {
-      if (getTablePanel() != null)
+      if (getTablePanel() != null) {
         getTablePanel().getJTable().requestFocus();
-      else if (getComponentCount() > 0)
+      }
+      else if (getComponentCount() > 0) {
         getComponents()[0].requestFocus();
+      }
     }
   }
 
@@ -572,21 +608,24 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
     final Collection<String> componentKeys = editPanel.getComponentKeys();
     final Collection<String> focusableComponentKeys = new ArrayList<String>(componentKeys.size());
     for (final String key : componentKeys) {
-      if (editPanel.getComponent(key).isEnabled())
+      if (editPanel.getComponent(key).isEnabled()) {
         focusableComponentKeys.add(key);
+      }
     }
     return EntityUtil.getSortedProperties(getModel().getEntityID(), focusableComponentKeys);
   }
 
   public static EntityPanel createInstance(final EntityPanelProvider panelProvider, final EntityModel model) {
-    if (model == null)
+    if (model == null) {
       throw new RuntimeException("Can not create a EntityPanel without an EntityModel");
+    }
     try {
-      return (EntityPanel) panelProvider.getEntityPanelClass().getConstructor(EntityModel.class).newInstance(model);
+      return panelProvider.getPanelClass().getConstructor(EntityModel.class).newInstance(model);
     }
     catch (InvocationTargetException ite) {
-      if (ite.getCause() instanceof RuntimeException)
+      if (ite.getCause() instanceof RuntimeException) {
         throw (RuntimeException) ite.getCause();
+      }
 
       throw new RuntimeException(ite.getCause());
     }
@@ -600,12 +639,13 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
 
   public static EntityPanel createInstance(final EntityPanelProvider panelProvider, final EntityDbProvider dbProvider) {
     try {
-      return createInstance(panelProvider, (EntityModel) panelProvider.getEntityModelClass().getConstructor(
+      return createInstance(panelProvider, panelProvider.getModelClass().getConstructor(
               EntityDbProvider.class).newInstance(dbProvider));
     }
     catch (InvocationTargetException ite) {
-      if (ite.getCause() instanceof RuntimeException)
+      if (ite.getCause() instanceof RuntimeException) {
         throw (RuntimeException) ite.getCause();
+      }
 
       throw new RuntimeException(ite.getCause());
     }
@@ -622,8 +662,9 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
    */
   protected void showPanelTab() {
     final JTabbedPane tp = (JTabbedPane) SwingUtilities.getAncestorOfClass(JTabbedPane.class, this);
-    if (tp != null)
+    if (tp != null) {
       tp.setSelectedComponent(this);
+    }
   }
 
   //#############################################################################################
@@ -660,8 +701,9 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
     editControlPanel = initializeEditControlPanel();
     final EntityTablePanel entityTablePanel = getTablePanel();
     if (entityTablePanel != null) {
-      if (entityTablePanel.getTableDoubleClickAction() == null)
+      if (entityTablePanel.getTableDoubleClickAction() == null) {
         entityTablePanel.setTableDoubleClickAction(initializeTableDoubleClickAction());
+      }
       entityTablePanel.setMinimumSize(new Dimension(0,0));
     }
     horizontalSplitPane = detailEntityPanels.size() > 0 ? initializeHorizontalSplitPane() : null;
@@ -686,9 +728,10 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
     setDetailPanelState(detailPanelState);
     setEditPanelState(editPanelState);
     setupKeyboardActions();
-    if (Configuration.getBooleanValue(Configuration.USE_FOCUS_ACTIVATION))
+    if (Configuration.getBooleanValue(Configuration.USE_FOCUS_ACTIVATION)) {
       KeyboardFocusManager.getCurrentKeyboardFocusManager().addPropertyChangeListener("focusOwner",
               new WeakPropertyChangeListener(focusPropertyListener));
+    }
   }
 
   /**
@@ -717,8 +760,9 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
                 true, new AbstractAction("toggleSearchPanel") {
                   public void actionPerformed(ActionEvent event) {
                     getTablePanel().toggleSearchPanel();
-                    if (getTablePanel().isSearchPanelVisible())
+                    if (getTablePanel().isSearchPanelVisible()) {
                       getTablePanel().getSearchPanel().requestFocusInWindow();
+                    }
                   }
                 });
       }
@@ -727,21 +771,24 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
       UiUtil.addKeyEvent(this, KeyEvent.VK_E, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
               true, new AbstractAction("selectEditPanel") {
                 public void actionPerformed(ActionEvent event) {
-                  if (getEditPanelState() == HIDDEN)
+                  if (getEditPanelState() == HIDDEN) {
                     setEditPanelState(EMBEDDED);
+                  }
                   getEditPanel().prepareUI(true, false);
                 }
               });
       UiUtil.addKeyEvent(this, KeyEvent.VK_C, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
               true, new AbstractAction("selectComponent") {
                 public void actionPerformed(ActionEvent event) {
-                  if (getEditPanelState() == HIDDEN)
+                  if (getEditPanelState() == HIDDEN) {
                     setEditPanelState(EMBEDDED);
+                  }
 
                   final Property property = (Property) UiUtil.selectValue(getEditPanel(), getSelectComponentProperties(),
                           Messages.get(Messages.SELECT_INPUT_FIELD));
-                  if (property != null)
+                  if (property != null) {
                     getEditPanel().selectComponent(property.getPropertyID());
+                  }
                 }
               });
     }
@@ -768,8 +815,9 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
    * returns null then by default this method returns null as well
    */
   protected JPanel initializeEditControlPanel() {
-    if (getEditPanel() == null)
+    if (getEditPanel() == null) {
       return null;
+    }
 
     final JPanel panel = new JPanel(new BorderLayout(5,5));
     panel.setMinimumSize(new Dimension(0,0));
@@ -782,10 +830,11 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
     panel.add(propertyBase, BorderLayout.CENTER);
     final JComponent controlPanel = Configuration.getBooleanValue(Configuration.TOOLBAR_BUTTONS) ?
             editPanel.getControlToolBar() : editPanel.getControlPanel(buttonPlacement.equals(BorderLayout.SOUTH));
-    if (controlPanel != null)
+    if (controlPanel != null) {
       panel.add(controlPanel, Configuration.getBooleanValue(Configuration.TOOLBAR_BUTTONS) ?
               (buttonPlacement.equals(BorderLayout.SOUTH) ? BorderLayout.NORTH : BorderLayout.WEST) :
               (buttonPlacement.equals(BorderLayout.SOUTH) ? BorderLayout.SOUTH : BorderLayout.EAST));
+    }
 
     return panel;
   }
@@ -846,8 +895,9 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
     final JTabbedPane tabbedPane = new JTabbedPane();
     tabbedPane.setFocusable(false);
     tabbedPane.setUI(UiUtil.getBorderlessTabbedPaneUI());
-    for (final EntityPanel detailPanel : detailEntityPanels)
+    for (final EntityPanel detailPanel : detailEntityPanels) {
       tabbedPane.addTab(detailPanel.getCaption(), detailPanel);
+    }
 
     tabbedPane.addChangeListener(new ChangeListener() {
       public void stateChanged(final ChangeEvent event) {
@@ -858,10 +908,12 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
     tabbedPane.addMouseListener(new MouseAdapter() {
       @Override
       public void mouseReleased(MouseEvent event) {
-        if (event.getClickCount() == 2 && event.getButton() == MouseEvent.BUTTON1)
+        if (event.getClickCount() == 2 && event.getButton() == MouseEvent.BUTTON1) {
           setDetailPanelState(getDetailPanelState() == DIALOG ? EMBEDDED : DIALOG);
-        else if (event.getButton() == MouseEvent.BUTTON2)
+        }
+        else if (event.getButton() == MouseEvent.BUTTON2) {
           setDetailPanelState(getDetailPanelState() == EMBEDDED ? HIDDEN : EMBEDDED);
+        }
       }
     });
 
@@ -894,10 +946,11 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
   protected List<? extends EntityPanel> initializeDetailPanels() {
     final List<EntityPanel> detailEntityPanels = new ArrayList<EntityPanel>();
     for (final EntityPanelProvider detailPanelProvider : getDetailPanelProviders()) {
-      final EntityModel detailModel = getModel().getDetailModel(detailPanelProvider.getEntityModelClass());
-      if (detailModel == null)
-        throw new RuntimeException("Detail model of type " + detailPanelProvider.getEntityModelClass()
+      final EntityModel detailModel = getModel().getDetailModel(detailPanelProvider.getModelClass());
+      if (detailModel == null) {
+        throw new RuntimeException("Detail model of type " + detailPanelProvider.getModelClass()
                 + " not found in model of type " + getModel().getClass());
+      }
       final EntityPanel detailPanel = createInstance(detailPanelProvider, detailModel);
       detailPanel.setMasterPanel(this);
       detailEntityPanels.add(detailPanel);
@@ -922,8 +975,9 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
    */
   protected ControlSet getTablePopupControlSet() {
     final ControlSet controlSet = new ControlSet("");
-    if (detailEntityPanels.size() > 0)
+    if (detailEntityPanels.size() > 0) {
       controlSet.add(getDetailPanelControls(EMBEDDED));
+    }
 
     return controlSet;
   }
@@ -933,10 +987,12 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
    */
   protected ControlSet getToolbarControlSet() {
     final ControlSet controlSet = new ControlSet("");
-    if (getEditPanel() != null)
+    if (getEditPanel() != null) {
       controlSet.add(getToggleEditPanelControl());
-    if (detailEntityPanels.size() > 0)
+    }
+    if (detailEntityPanels.size() > 0) {
       controlSet.add(getToggleDetailPanelControl());
+    }
 
     return controlSet;
   }
@@ -951,10 +1007,12 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
     return new AbstractAction() {
       public void actionPerformed(final ActionEvent event) {
         if (editControlPanel != null || detailEntityPanels.size() > 0) {
-          if (editControlPanel != null && getEditPanelState() == HIDDEN)
+          if (editControlPanel != null && getEditPanelState() == HIDDEN) {
             setEditPanelState(DIALOG);
-          else if (getDetailPanelState() == HIDDEN)
+          }
+          else if (getDetailPanelState() == HIDDEN) {
             setDetailPanelState(DIALOG);
+          }
         }
       }
     };
@@ -966,8 +1024,9 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
    * @return a ControlSet for controlling the state of the detail panels
    */
   protected ControlSet getDetailPanelControls(final int status) {
-    if (detailEntityPanels.size() == 0)
+    if (detailEntityPanels.size() == 0) {
       return null;
+    }
 
     final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.DETAIL_TABLES));
     for (final EntityPanel detailPanel : detailEntityPanels) {
@@ -1000,8 +1059,9 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
    * this method is called during initialization after the UI is initialized
    */
   protected void bindTablePanelEvents() {
-    if (getTablePanel() == null)
+    if (getTablePanel() == null) {
       return;
+    }
 
     getModel().eventEntitiesChanged().addListener(new ActionListener() {
       public void actionPerformed(ActionEvent event) {
@@ -1102,8 +1162,9 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
   }
 
   private Control getToggleEditPanelControl() {
-    if (editControlPanel == null)
+    if (editControlPanel == null) {
       return null;
+    }
 
     final Control toggle = ControlFactory.methodControl(this, "toggleEditPanelState",
             Images.loadImage("Form16.gif"));
@@ -1113,8 +1174,9 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
   }
 
   private Control getToggleDetailPanelControl() {
-    if (detailEntityPanels.size() == 0)
+    if (detailEntityPanels.size() == 0) {
       return null;
+    }
 
     final Control toggle = ControlFactory.methodControl(this, "toggleDetailPanelState",
             Images.loadImage(Images.IMG_HISTORY_16));
@@ -1162,8 +1224,9 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
    */
   private boolean isParentPanel(final Component component) {
     final EntityPanel parent = (EntityPanel) SwingUtilities.getAncestorOfClass(EntityPanel.class, component);
-    if (parent == this)
+    if (parent == this) {
       return true;
+    }
 
     //is editPanelDialog parent?
     return editPanelDialog != null && SwingUtilities.getWindowAncestor(component) == editPanelDialog;

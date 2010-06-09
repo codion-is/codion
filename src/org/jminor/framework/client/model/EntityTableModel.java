@@ -119,8 +119,9 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
   public List<Property> getTableColumnProperties() {
     final List<Property> propertyList = new ArrayList<Property>(getColumnModel().getColumnCount());
     final Enumeration<TableColumn> columnEnumeration = getColumnModel().getColumns();
-    while (columnEnumeration.hasMoreElements())
+    while (columnEnumeration.hasMoreElements()) {
       propertyList.add((Property) columnEnumeration.nextElement().getIdentifier());
+    }
 
     return propertyList;
   }
@@ -186,8 +187,9 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
    */
   public void setSortingStatus(final String propertyID, final int status) {
     final int columnIndex = getColumnModel().getColumnIndex(EntityRepository.getProperty(getEntityID(), propertyID));
-    if (columnIndex == -1)
+    if (columnIndex == -1) {
       throw new RuntimeException("Column based on property '" + propertyID + " not found");
+    }
 
     super.setSortingStatus(columnIndex, status);
   }
@@ -293,8 +295,9 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
   public Object getValueAt(final int rowIndex, final int columnIndex) {
     final Property property = (Property) getColumnModel().getColumn(convertColumnIndexToView(columnIndex)).getIdentifier();
     final Object value = getItemAt(rowIndex).getValue(property);
-    if (property instanceof Property.ValueListProperty)
+    if (property instanceof Property.ValueListProperty) {
       return ((Property.ValueListProperty) property).getCaption(value);
+    }
 
     return value;
   }
@@ -326,9 +329,11 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
    * @return the entity with the given primary key from the table model, null if it's not found
    */
   public Entity getEntityByPrimaryKey(final Entity.Key primaryKey) {
-    for (final Entity entity : getVisibleItems())
-      if (entity.getPrimaryKey().equals(primaryKey))
+    for (final Entity entity : getVisibleItems()) {
+      if (entity.getPrimaryKey().equals(primaryKey)) {
         return entity;
+      }
+    }
 
     return null;
   }
@@ -356,8 +361,9 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
    * @see #evtRefreshDone
    */
   public void refresh() {
-    if (isRefreshing)
+    if (isRefreshing) {
       return;
+    }
 
     try {
       LOG.trace(this + " refreshing");
@@ -405,18 +411,21 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
   public void replaceEntities(final Entity... entities) {
     for (int i = 0; i < getVisibleItemCount(); i++) {
       final Entity entity = getItemAt(i);
-      for (final Entity newEntity : entities)
+      for (final Entity newEntity : entities) {
         if (entity.getPrimaryKey().equals(newEntity.getPrimaryKey())) {
           entity.setAs(newEntity);
           final int index = indexOf(entity);
           fireTableRowsUpdated(index, index);
         }
+      }
     }
 
     for (final Entity entity : getHiddenItems()) {
-      for (final Entity newEntity : entities)
-        if (entity.getPrimaryKey().equals(newEntity.getPrimaryKey()))
+      for (final Entity newEntity : entities) {
+        if (entity.getPrimaryKey().equals(newEntity.getPrimaryKey())) {
           entity.setAs(newEntity);
+        }
+      }
     }
   }
 
@@ -430,8 +439,9 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
    */
   public void searchByForeignKeyValues(final String referencedEntityID, final List<Entity> referenceEntities) {
     final List<Property.ForeignKeyProperty> properties = EntityRepository.getForeignKeyProperties(getEntityID(), referencedEntityID);
-    if (properties.size() > 0 && isDetailModel() && tableSearchModel.setSearchValues(properties.get(0).getPropertyID(), referenceEntities))
+    if (properties.size() > 0 && isDetailModel() && tableSearchModel.setSearchValues(properties.get(0).getPropertyID(), referenceEntities)) {
       refresh();
+    }
   }
 
   /**
@@ -495,8 +505,9 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
           break;
         }
       }
-      if (equal)
+      if (equal) {
         entities.add(entity);
+      }
     }
 
     return entities.toArray(new Entity[entities.size()]);
@@ -541,7 +552,7 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
    * @return the PropertySummaryModel for the given property
    */
   public PropertySummaryModel getPropertySummaryModel(final Property property) {
-    if (!propertySummaryModels.containsKey(property.getPropertyID()))
+    if (!propertySummaryModels.containsKey(property.getPropertyID())) {
       propertySummaryModels.put(property.getPropertyID(), new PropertySummaryModel(property,
               new PropertySummaryModel.PropertyValueProvider() {
                 public void bindValuesChangedEvent(final Event event) {
@@ -558,6 +569,7 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
                   return !stateSelectionEmpty().isActive();
                 }
               }));
+    }
 
     return propertySummaryModels.get(property.getPropertyID());
   }
@@ -603,8 +615,9 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
       final TableColumn column = new TableColumn(i++);
       column.setIdentifier(property);
       column.setHeaderValue(property.getCaption());
-      if (property.getPreferredColumnWidth() > 0)
+      if (property.getPreferredColumnWidth() > 0) {
         column.setPreferredWidth(property.getPreferredColumnWidth());
+      }
       columnModel.addColumn(column);
     }
 
@@ -625,8 +638,9 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
    * @return entities selected from the database according the the query criteria.
    */
   protected List<Entity> performQuery(final Criteria<Property> criteria) {
-    if (isDetailModel() && criteria == null && isQueryCriteriaRequired())
+    if (isDetailModel() && criteria == null && isQueryCriteriaRequired()) {
       return new ArrayList<Entity>();
+    }
 
     try {
       return getEntityDb().selectMany(new EntitySelectCriteria(getEntityID(), criteria,

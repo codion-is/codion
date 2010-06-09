@@ -126,8 +126,9 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
                                final boolean loggingEnabled) throws RemoteException {
     super(port, SSL_CONNECTION_ENABLED ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
             SSL_CONNECTION_ENABLED ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
-    if (connectionPools.containsKey(clientInfo.getUser()))
+    if (connectionPools.containsKey(clientInfo.getUser())) {
       connectionPools.get(clientInfo.getUser()).getConnectionPoolSettings().getUser().setPassword(clientInfo.getUser().getPassword());
+    }
     this.server = server;
     this.database = database;
     this.clientInfo = clientInfo;
@@ -158,11 +159,13 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   /** {@inheritDoc} */
   public void disconnect() throws RemoteException {
     try {
-      if (!isConnected())
+      if (!isConnected()) {
         return;
+      }
 
-      if (entityDbConnection != null)
+      if (entityDbConnection != null) {
         entityDbConnection.disconnect();
+      }
       entityDbConnection = null;
       connected = false;
       server.disconnect(clientInfo.getClientID());
@@ -558,8 +561,9 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   public static List<ConnectionPoolSettings> getEnabledConnectionPoolSettings() {
     final List<ConnectionPoolSettings> poolSettings = new ArrayList<ConnectionPoolSettings>();
     for (final ConnectionPool pool : connectionPools.values()) {
-      if (pool.getConnectionPoolSettings().isEnabled())
+      if (pool.getConnectionPoolSettings().isEnabled()) {
         poolSettings.add(pool.getConnectionPoolSettings());
+      }
     }
 
     return poolSettings;
@@ -581,8 +585,9 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
         }
       }, settings));
     }
-    else
+    else {
       pool.setConnectionPoolSettings(settings);
+    }
   }
 
   public static ConnectionPoolStatistics getConnectionPoolStatistics(final User user, final long since) {
@@ -696,8 +701,9 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
       final boolean logMethod = shouldMethodBeLogged(methodName);
       try {
         remoteAdapter.setActive();
-        if (logMethod)
-          remoteAdapter.methodLogger.logAccess("getConnection", new Object[] {remoteAdapter.clientInfo.getUser()});
+        if (logMethod) {
+          remoteAdapter.methodLogger.logAccess("getConnection", new Object[]{remoteAdapter.clientInfo.getUser()});
+        }
         connection = remoteAdapter.getConnection(remoteAdapter.clientInfo.getUser());
         if (logMethod) {
           final int retries = connection.getPoolRetryCount();
@@ -719,11 +725,13 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
           if (logMethod) {
             final long time = remoteAdapter.methodLogger.logExit(methodName, ex,
                     connection != null ? connection.getLogEntries() : null);
-            if (time > RequestCounter.warningThreshold)
+            if (time > RequestCounter.warningThreshold) {
               RequestCounter.warningTimeExceededCounter++;
+            }
           }
-          if (connection != null && !connection.isTransactionOpen())
+          if (connection != null && !connection.isTransactionOpen()) {
             remoteAdapter.returnConnection(remoteAdapter.clientInfo.getUser(), connection);
+          }
         }
         catch (Exception e) {
           LOG.error(this, e);
@@ -740,21 +748,28 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
 
     @Override
     protected void appendArgumentAsString(final Object argument, final StringBuilder destination) {
-      if (argument == null)
+      if (argument == null) {
         return;
+      }
 
-      if (argument instanceof EntityCriteria)
+      if (argument instanceof EntityCriteria) {
         appendEntityCriteria((EntityCriteria) argument, destination);
-      else if (argument instanceof Object[] && ((Object[]) argument).length > 0)
+      }
+      else if (argument instanceof Object[] && ((Object[]) argument).length > 0) {
         destination.append("[").append(argumentArrayToString((Object[]) argument)).append("]");
-      else if (argument instanceof Collection && ((Collection) argument).size() > 0)
+      }
+      else if (argument instanceof Collection && ((Collection) argument).size() > 0) {
         destination.append("[").append(argumentArrayToString(((Collection) argument).toArray())).append("]");
-      else if (argument instanceof Entity)
+      }
+      else if (argument instanceof Entity) {
         destination.append(getEntityParameterString((Entity) argument));
-      else if (argument instanceof ReportWrapper)
+      }
+      else if (argument instanceof ReportWrapper) {
         destination.append(((ReportWrapper) argument).getReportName());
-      else
+      }
+      else {
         destination.append(argument.toString());
+      }
     }
 
     private void appendEntityCriteria(final EntityCriteria criteria, StringBuilder destination) {
@@ -777,8 +792,9 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
         final boolean modified = entity.isModified(property.getPropertyID());
         if (property instanceof Property.PrimaryKeyProperty || modified) {
           final StringBuilder valueString = new StringBuilder();
-          if (modified)
+          if (modified) {
             valueString.append(entity.getOriginalValue(property.getPropertyID())).append("->");
+          }
           valueString.append(entity.getValue(property.getPropertyID()));
           builder.append(property.getPropertyID()).append(":").append(valueString).append(",");
         }

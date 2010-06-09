@@ -117,7 +117,7 @@ import java.io.IOException;
  * Author: Slav Boleslawski
  * http://today.java.net/pub/a/today/2007/03/27/navigable-image-panel.html
  */
-public class NavigableImagePanel extends JPanel {
+public final class NavigableImagePanel extends JPanel {
 
   /**
    * <p>Identifies a change to the zoom level.</p>

@@ -4,6 +4,7 @@
 package org.jminor.common.db.dbms;
 
 import org.jminor.common.model.User;
+import org.jminor.common.model.Util;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -118,13 +119,9 @@ public abstract class AbstractDatabase implements Database {
 
   /** {@inheritDoc} */
   public Connection createConnection(final User user) throws ClassNotFoundException, SQLException {
-    if (user == null)
-      throw new IllegalArgumentException("Connection requires a non-null user instance");
-    if (user.getUsername() == null)
-      throw new IllegalArgumentException("Username must be provided");
-    if (user.getPassword() == null)
-      throw new IllegalArgumentException("Password must be provided");
-
+    Util.rejectNullValue(user);
+    Util.rejectNullValue(user.getUsername(), "Username must be provided");
+    Util.rejectNullValue(user.getPassword(), "Password must be provided");
     loadDriver();
     final Properties connectionProperties = new Properties();
     connectionProperties.put("user", user.getUsername());
@@ -191,7 +188,8 @@ public abstract class AbstractDatabase implements Database {
   protected abstract void validate(final String databaseType, final String host, final String port, final String sid, final boolean embedded);
 
   protected void require(final String property, final String value) {
-    if (value == null || value.length() == 0)
+    if (value == null || value.length() == 0) {
       throw new RuntimeException(property + " is required for database type " + databaseType);
+    }
   }
 }

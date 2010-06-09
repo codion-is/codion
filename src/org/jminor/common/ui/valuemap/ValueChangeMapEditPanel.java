@@ -40,10 +40,12 @@ public abstract class ValueChangeMapEditPanel<K, V> extends JPanel {
   }
 
   public void prepareUI(final boolean setInitialFocus, final boolean clearUI) {
-    if (clearUI)
+    if (clearUI) {
       getEditModel().setValueMap(null);
-    if (setInitialFocus && isVisible())
+    }
+    if (setInitialFocus && isVisible()) {
       setInitialFocus();
+    }
   }
 
   /**
@@ -74,10 +76,12 @@ public abstract class ValueChangeMapEditPanel<K, V> extends JPanel {
 
   public void setInitialFocus() {
     final JComponent initialFocusComponent = getInitialFocusComponent();
-    if (initialFocusComponent == null)
+    if (initialFocusComponent == null) {
       requestFocusInWindow();
-    else
+    }
+    else {
       initialFocusComponent.requestFocusInWindow();
+    }
   }
 
   /**
@@ -88,23 +92,27 @@ public abstract class ValueChangeMapEditPanel<K, V> extends JPanel {
   }
 
   public JComponent getComponent(final K key) {
-    if (!components.containsKey(key))
+    if (!components.containsKey(key)) {
       throw new RuntimeException("No component associated with key: " + key);
+    }
 
     return components.get(key);
   }
 
   public void selectComponent(final K key) {
-    if (components.containsKey(key))
+    if (components.containsKey(key)) {
       components.get(key).requestFocusInWindow();
+    }
   }
 
   protected JComponent getInitialFocusComponent() {
-    if (initialFocusComponent != null)
+    if (initialFocusComponent != null) {
       return initialFocusComponent;
+    }
 
-    if (initialFocusComponentKey != null)
+    if (initialFocusComponentKey != null) {
       return components.get(initialFocusComponentKey);
+    }
 
     return null;
   }
@@ -117,8 +125,9 @@ public abstract class ValueChangeMapEditPanel<K, V> extends JPanel {
    * @param component the input component
    */
   protected void setComponent(final K key, final JComponent component) {
-    if (components.containsKey(key))
+    if (components.containsKey(key)) {
       throw new RuntimeException("Component already set for key: " + key);
+    }
     components.put(key, component);
   }
 }

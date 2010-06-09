@@ -62,8 +62,9 @@ public class DatabaseMonitor {
   }
 
   public void shutdown() {
-    if (updateTimer != null)
+    if (updateTimer != null) {
       updateTimer.cancel();
+    }
     poolMonitor.shutdown();
   }
 
@@ -93,11 +94,13 @@ public class DatabaseMonitor {
   }
 
   private void startUpdateTimer(final int delay) {
-    if (delay <= 0)
+    if (delay <= 0) {
       return;
+    }
 
-    if (updateTimer != null)
+    if (updateTimer != null) {
       updateTimer.cancel();
+    }
     updateTimer = new Timer(false);
     updateTimer.schedule(new TimerTask() {
       @Override

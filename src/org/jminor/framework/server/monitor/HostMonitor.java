@@ -85,9 +85,11 @@ public class HostMonitor {
   }
 
   private boolean containsServerMonitor(final String serverName) {
-    for (final ServerMonitor serverMonitor : serverMonitors)
-      if (serverMonitor.getServerName().equals(serverName))
+    for (final ServerMonitor serverMonitor : serverMonitors) {
+      if (serverMonitor.getServerName().equals(serverName)) {
         return true;
+      }
+    }
 
     return false;
   }
@@ -125,10 +127,12 @@ public class HostMonitor {
   private static String[] getEntityServers(final Registry registry) throws RemoteException {
     final List<String> serverNames = new ArrayList<String>();
     final String[] boundNames = registry.list();
-    for (final String name : boundNames)
+    for (final String name : boundNames) {
       if (name.startsWith((String) Configuration.getValue(Configuration.SERVER_NAME_PREFIX))
-              && name.endsWith("-admin"))
+              && name.endsWith("-admin")) {
         serverNames.add(name);
+      }
+    }
 
     return serverNames.toArray(new String[serverNames.size()]);
   }

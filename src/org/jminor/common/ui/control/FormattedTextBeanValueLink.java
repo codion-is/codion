@@ -23,8 +23,9 @@ public class FormattedTextBeanValueLink extends TextBeanValueLink {
                                     final Event valueChangeEvent, final LinkType linkType,
                                     final Format format) {
     super(textComponent, owner, propertyName, valueClass, valueChangeEvent, linkType);
-    if (format == null)
+    if (format == null) {
       throw new RuntimeException("Format is null");
+    }
     this.format = format;
     this.placeholder = Character.toString((((MaskFormatter) textComponent.getFormatter()).getPlaceholderCharacter()));
     updateUI();
@@ -43,8 +44,9 @@ public class FormattedTextBeanValueLink extends TextBeanValueLink {
   @Override
   protected Object getUIValue() {
     final String text = getText();
-    if (text != null && text.contains(placeholder))
+    if (text != null && text.contains(placeholder)) {
       return null;
+    }
 
     try {
       return text != null ? format.parseObject(text) : null;

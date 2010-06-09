@@ -36,7 +36,7 @@ import java.util.prefs.Preferences;
 /**
  * A static utility class.
  */
-public class Util {
+public final class Util {
 
   private Util() {}
 
@@ -59,16 +59,21 @@ public class Util {
   static {
     final String loggingLevel = System.getProperty(LOGGING_LEVEL_PROPERTY, LOGGING_LEVEL_INFO);
     System.out.println("Initial logging level: " + loggingLevel);
-    if (loggingLevel.equals(LOGGING_LEVEL_INFO))
+    if (loggingLevel.equals(LOGGING_LEVEL_INFO)) {
       defaultLoggingLevel = Level.INFO;
-    else if (loggingLevel.equals(LOGGING_LEVEL_DEBUG))
+    }
+    else if (loggingLevel.equals(LOGGING_LEVEL_DEBUG)) {
       defaultLoggingLevel = Level.DEBUG;
-    else if (loggingLevel.equals(LOGGING_LEVEL_WARN))
+    }
+    else if (loggingLevel.equals(LOGGING_LEVEL_WARN)) {
       defaultLoggingLevel = Level.WARN;
-    else if (loggingLevel.equals(LOGGING_LEVEL_FATAL))
+    }
+    else if (loggingLevel.equals(LOGGING_LEVEL_FATAL)) {
       defaultLoggingLevel = Level.FATAL;
-    else if (loggingLevel.equals(LOGGING_LEVEL_TRACE))
+    }
+    else if (loggingLevel.equals(LOGGING_LEVEL_TRACE)) {
       defaultLoggingLevel = Level.TRACE;
+    }
   }
 
   /**
@@ -87,14 +92,16 @@ public class Util {
   }
 
   public static String getUserPreference(final String key, final String defaultValue) {
-    if (userPreferences == null)
+    if (userPreferences == null) {
       userPreferences = Preferences.userRoot();
+    }
     return userPreferences.get(key, defaultValue);
   }
 
   public static void putUserPreference(final String key, final String value) {
-    if (userPreferences == null)
+    if (userPreferences == null) {
       userPreferences = Preferences.userRoot();
+    }
     userPreferences.put(key, value);
   }
 
@@ -107,15 +114,18 @@ public class Util {
   }
 
   public static String padString(final String orig, final int length, final char padChar, final boolean left) {
-    if (orig.length() >= length)
+    if (orig.length() >= length) {
       return orig;
+    }
 
     final StringBuilder stringBuilder = new StringBuilder(orig);
     while (stringBuilder.length() < length) {
-      if (left)
+      if (left) {
         stringBuilder.insert(0, padChar);
-      else
+      }
+      else {
         stringBuilder.append(padChar);
+      }
     }
 
     return stringBuilder.toString();
@@ -125,8 +135,9 @@ public class Util {
    * @return the current logging level
    */
   public static Level getLoggingLevel() {
-    if (loggers.size() == 0)
+    if (loggers.size() == 0) {
       return defaultLoggingLevel;
+    }
 
     return loggers.get(0).getLevel();
   }
@@ -136,8 +147,9 @@ public class Util {
   }
 
   public static void setLoggingLevel(final Level level) {
-    for (final Logger logger : loggers)
+    for (final Logger logger : loggers) {
       logger.setLevel(level);
+    }
   }
 
   public static Logger getLogger(final Class classToLog) {
@@ -157,50 +169,62 @@ public class Util {
   }
 
   public static Integer getInt(final String text) {
-    if (text == null || text.length() == 0)
+    if (text == null || text.length() == 0) {
       return null;
+    }
 
     final String noGrouping = text.replace(".", "");
 
     int value;
-    if ((noGrouping.length() > 0) && (!noGrouping.equals("-")))
+    if ((noGrouping.length() > 0) && (!noGrouping.equals("-"))) {
       value = Integer.parseInt(noGrouping);
-    else if (noGrouping.equals("-"))
+    }
+    else if (noGrouping.equals("-")) {
       value = -1;
-    else
+    }
+    else {
       value = 0;
+    }
 
     return value;
   }
 
   public static Double getDouble(final String text) {
-    if (text == null || text.length() == 0)
+    if (text == null || text.length() == 0) {
       return null;
+    }
 
     double value;
-    if ((text.length() > 0) && (!text.equals("-")))
+    if ((text.length() > 0) && (!text.equals("-"))) {
       value = Double.parseDouble(text.replace(',', '.'));
-    else if (text.equals("-"))
+    }
+    else if (text.equals("-")) {
       value = -1;
-    else
+    }
+    else {
       value = 0;
+    }
 
     return value;
   }
 
   public static Long getLong(final String text) {
-    if (text == null || text.length() == 0)
+    if (text == null || text.length() == 0) {
       return null;
+    }
 
     final String noGrouping = text.replace(".", "");
 
     long value;
-    if ((noGrouping.length() > 0) && (!noGrouping.equals("-")))
+    if ((noGrouping.length() > 0) && (!noGrouping.equals("-"))) {
       value = Long.parseLong(noGrouping);
-    else if (noGrouping.equals("-"))
+    }
+    else if (noGrouping.equals("-")) {
       value = -1;
-    else
+    }
+    else {
       value = 0;
+    }
 
     return value;
   }
@@ -222,18 +246,22 @@ public class Util {
   }
 
   public static String getArrayContentsAsString(Object[] items, boolean onePerLine) {
-    if (items == null)
+    if (items == null) {
       return "";
+    }
 
     final StringBuilder stringBuilder = new StringBuilder();
     for (int i = 0; i < items.length; i++) {
       final Object item = items[i];
-      if (item instanceof Object[])
+      if (item instanceof Object[]) {
         stringBuilder.append(getArrayContentsAsString((Object[]) item, onePerLine));
-      else if (!onePerLine)
+      }
+      else if (!onePerLine) {
         stringBuilder.append(item).append(i < items.length - 1 ? ", " : "");
-      else
+      }
+      else {
         stringBuilder.append(item).append("\n");
+      }
     }
 
     return stringBuilder.toString();
@@ -289,8 +317,9 @@ public class Util {
    */
   public static String getTextFileContents(final Class resourceClass, final String resourceName, final Charset charset) throws IOException {
     final InputStream inputStream = resourceClass.getResourceAsStream(resourceName);
-    if (inputStream == null)
+    if (inputStream == null) {
       throw new FileNotFoundException("Resource not found: '" + resourceName + "'");
+    }
 
     return getTextFileContents(inputStream, charset);
   }
@@ -312,8 +341,9 @@ public class Util {
     }
     finally {
       try {
-        if (input!= null)
+        if (input!= null) {
           input.close();
+        }
       }
       catch (IOException ex) {/**/}
     }
@@ -324,8 +354,9 @@ public class Util {
   public static String getSystemProperties() {
     try {
       final SecurityManager manager = System.getSecurityManager();
-      if (manager != null)
+      if (manager != null) {
         manager.checkPropertiesAccess();
+      }
     }
     catch (SecurityException e) {
       return "";
@@ -333,13 +364,15 @@ public class Util {
     final Properties props = System.getProperties();
     final Enumeration propNames = props.propertyNames();
     final ArrayList<String> orderedPropertyNames = new ArrayList<String>(props.size());
-    while (propNames.hasMoreElements())
+    while (propNames.hasMoreElements()) {
       orderedPropertyNames.add((String) propNames.nextElement());
+    }
 
     Collections.sort(orderedPropertyNames);
     final StringBuilder propsString = new StringBuilder();
-    for (final String key : orderedPropertyNames)
+    for (final String key : orderedPropertyNames) {
       propsString.append(key).append(": ").append(props.getProperty(key)).append("\n");
+    }
 
     return propsString.toString();
   }
@@ -353,8 +386,9 @@ public class Util {
     for (final String[] header : headers) {
       for (int j = 0; j < header.length; j++) {
         contents.append(header[j]);
-        if (j < header.length - 1)
+        if (j < header.length - 1) {
           contents.append(delimiter);
+        }
       }
       contents.append(System.getProperty("line.separator"));
     }
@@ -362,8 +396,9 @@ public class Util {
     for (final String[] someData : data) {
       for (int j = 0; j < someData.length; j++) {
         contents.append(someData[j]);
-        if (j < someData.length - 1)
+        if (j < someData.length - 1) {
           contents.append(delimiter);
+        }
       }
       contents.append(System.getProperty("line.separator"));
     }
@@ -393,8 +428,9 @@ public class Util {
     }
     finally {
       try {
-        if (writer != null)
+        if (writer != null) {
           writer.close();
+        }
       }
       catch (IOException e) {/**/}
     }
@@ -406,8 +442,9 @@ public class Util {
 
   public static String getVersion() {
     final String versionString = getVersionAndBuildNumber();
-    if (versionString.toLowerCase().contains("build"))
+    if (versionString.toLowerCase().contains("build")) {
       return versionString.substring(0, versionString.toLowerCase().indexOf("build") - 1);
+    }
 
     return "N/A";
   }
@@ -431,11 +468,14 @@ public class Util {
    * @return true if none of the given objects is null
    */
   public static boolean notNull(final Object... objects) {
-    if (objects == null)
+    if (objects == null) {
       return false;
-    for (final Object object : objects)
-      if (object == null)
+    }
+    for (final Object object : objects) {
+      if (object == null) {
         return false;
+      }
+    }
 
     return true;
   }
@@ -454,19 +494,22 @@ public class Util {
       // Read in the bytes
       int offset = 0;
       int numRead;
-      while (offset < bytes.length && (numRead = inputStream.read(bytes, offset, bytes.length - offset)) >= 0)
+      while (offset < bytes.length && (numRead = inputStream.read(bytes, offset, bytes.length - offset)) >= 0) {
         offset += numRead;
+      }
 
       // Ensure all the bytes have been read in
-      if (offset < bytes.length)
+      if (offset < bytes.length) {
         throw new IOException("Could not completely read file " + file.getName());
+      }
 
       return bytes;
     }
     finally {
       try {
-        if (inputStream != null)
+        if (inputStream != null) {
           inputStream.close();
+        }
       }
       catch (IOException e) {/**/}
     }
@@ -477,8 +520,9 @@ public class Util {
   public static String createRandomString(final int minLength, final int maxLength) {
     final StringBuilder sb = new StringBuilder();
     final int length = random.nextInt(maxLength - minLength) + minLength;
-    for( int i = 0; i < length; i++ )
+    for( int i = 0; i < length; i++ ) {
       sb.append(AB.charAt(random.nextInt(AB.length())));
+    }
 
     return sb.toString();
   }
@@ -514,10 +558,12 @@ public class Util {
   public static URI[] getURIs(final String[] urlsOrPaths) throws URISyntaxException {
     final URI[] urls = new URI[urlsOrPaths.length];
     for (int i = 0; i < urlsOrPaths.length; i++) {
-      if (urlsOrPaths[i].toLowerCase().startsWith("http"))
+      if (urlsOrPaths[i].toLowerCase().startsWith("http")) {
         urls[i] = new URI(urlsOrPaths[i].trim());
-      else
+      }
+      else {
         urls[i] = new File(urlsOrPaths[i].trim()).toURI();
+      }
     }
 
     return urls;
@@ -530,5 +576,26 @@ public class Util {
         return Collator.getInstance();
       }
     };
+  }
+
+  /**
+   * Throws a IllegalArgumentException with the given message if <code>value</code> is null
+   * @param value the value to check
+   * @throws IllegalArgumentException if value is null
+   */
+  public static void rejectNullValue(final Object value) throws IllegalArgumentException {
+    rejectNullValue(value, "Value is null");
+  }
+
+  /**
+   * Throws a IllegalArgumentException with the given message if <code>value</code> is null
+   * @param value the value to check
+   * @param message the message to use
+   * @throws IllegalArgumentException if value is null
+   */
+  public static void rejectNullValue(final Object value, final String message) throws IllegalArgumentException {
+    if (value == null) {
+      throw new IllegalArgumentException(message);
+    }
   }
 }

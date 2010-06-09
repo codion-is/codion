@@ -62,8 +62,9 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> implements
         }
       });
     }
-    if (linkType == LinkType.READ_ONLY)
+    if (linkType == LinkType.READ_ONLY) {
       textComponent.setEnabled(false);
+    }
     addValidator(textComponent, editModel);
     updateUI();
     this.document.addDocumentListener(this);
@@ -78,14 +79,16 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> implements
 
   /** {@inheritDoc} */
   public void insertUpdate(final DocumentEvent e) {
-    if (isImmediateUpdate())
+    if (isImmediateUpdate()) {
       updateModel();
+    }
   }
 
   /** {@inheritDoc} */
   public void removeUpdate(final DocumentEvent e) {
-    if (isImmediateUpdate())
+    if (isImmediateUpdate()) {
       updateModel();
+    }
   }
 
   /** {@inheritDoc} */
@@ -102,8 +105,9 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> implements
   protected void setUIValue(final Object value) {
     try {
       document.remove(0, document.getLength());
-      if (value != null)
+      if (value != null) {
         document.insertString(0, getValueAsString(value), null);
+      }
     }
     catch (BadLocationException e) {
       throw new RuntimeException(e);
@@ -129,8 +133,9 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> implements
    * @return a value, null if the input text has zero length or if it does not yield a valid value
    */
   protected Object valueFromText(final String text) {
-    if (text != null && text.length() == 0)
+    if (text != null && text.length() == 0) {
       return null;
+    }
 
     return text;
   }

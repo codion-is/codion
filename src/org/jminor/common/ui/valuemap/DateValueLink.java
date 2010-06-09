@@ -3,6 +3,7 @@
  */
 package org.jminor.common.ui.valuemap;
 
+import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
 import org.jminor.common.ui.control.LinkType;
 
@@ -31,8 +32,7 @@ public class DateValueLink<K> extends FormattedValueLink<K> {
                        final K key, final LinkType linkType, final DateFormat dateFormat, final boolean isTimestamp) {
     super(textField, editModel, key, dateFormat, true, linkType);
     this.isTimestamp = isTimestamp;
-    if (dateFormat == null)
-      throw new IllegalArgumentException("DateValueLink must have a date format");
+    Util.rejectNullValue(dateFormat);
   }
 
   /** {@inheritDoc} */

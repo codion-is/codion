@@ -61,15 +61,18 @@ public class ControlSet extends Control {
                     final ImageIcon icon, final Control... controls) {
     super(name, enabledState, icon);
     setMnemonic(mnemonic);
-    for (final Control control : controls)
+    for (final Control control : controls) {
       add(control);
+    }
   }
 
   public List<ControlSet> getControlSets() {
     final List<ControlSet> controlSets = new ArrayList<ControlSet>();
-    for (final Action control : actions)
-      if (control instanceof ControlSet)
+    for (final Action control : actions) {
+      if (control instanceof ControlSet) {
         controlSets.add((ControlSet) control);
+      }
+    }
 
     return controlSets;
   }
@@ -84,8 +87,9 @@ public class ControlSet extends Control {
    * @param action the action to add
    */
   public void add(final Action action) {
-    if (action != null)
+    if (action != null) {
       actions.add(action);
+    }
   }
 
   /**
@@ -95,8 +99,9 @@ public class ControlSet extends Control {
    * @param index the index
    */
   public void addAt(final Action action, final int index) {
-    if (action != null)
+    if (action != null) {
       actions.add(index, action);
+    }
   }
 
   public boolean remove(final Action action) {
@@ -120,13 +125,15 @@ public class ControlSet extends Control {
   }
 
   public void add(final ControlSet controlSet) {
-    if (controlSet != null)
+    if (controlSet != null) {
       actions.add(controlSet);
+    }
   }
 
   public void addAt(final ControlSet controlSet, final int index) {
-    if (controlSet != null)
+    if (controlSet != null) {
       actions.add(index, controlSet);
+    }
   }
 
   public void addSeparator() {

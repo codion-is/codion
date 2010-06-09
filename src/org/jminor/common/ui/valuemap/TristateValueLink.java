@@ -39,8 +39,9 @@ public class TristateValueLink<K> extends AbstractValueMapLink<K, Object>{
   /** {@inheritDoc} */
   @Override
   protected Object getUIValue() {
-    if (buttonModel.isIndeterminate())
+    if (buttonModel.isIndeterminate()) {
       return null;
+    }
 
     return buttonModel.isSelected();
   }
@@ -48,9 +49,11 @@ public class TristateValueLink<K> extends AbstractValueMapLink<K, Object>{
   /** {@inheritDoc} */
   @Override
   protected void setUIValue(final Object propertyValue) {
-    if (propertyValue == null)
+    if (propertyValue == null) {
       buttonModel.setIndeterminate();
-    else
+    }
+    else {
       buttonModel.setSelected((Boolean) propertyValue);
+    }
   }
 }

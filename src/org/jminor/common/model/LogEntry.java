@@ -48,8 +48,9 @@ public class LogEntry implements Serializable, Comparable<LogEntry> {
     this.stackTrace = entry.stackTrace;
     if (entry.subLog != null) {
       this.subLog = new ArrayList<LogEntry>();
-      for (final LogEntry subEntry : entry.subLog)
+      for (final LogEntry subEntry : entry.subLog) {
         this.subLog.add(new LogEntry(subEntry));
+      }
     }
   }
 
@@ -169,12 +170,15 @@ public class LogEntry implements Serializable, Comparable<LogEntry> {
   }
 
   public int compareTo(final LogEntry entry) {
-    if (this.entryTime < entry.entryTime)
+    if (this.entryTime < entry.entryTime) {
       return -1;
-    else if (this.entryTime > entry.entryTime)
+    }
+    else if (this.entryTime > entry.entryTime) {
       return 1;
-    else
+    }
+    else {
       return 0;
+    }
   }
 
   @Override
@@ -200,8 +204,9 @@ public class LogEntry implements Serializable, Comparable<LogEntry> {
               entryMessage != null && entryMessage.length() > 0 ? (": " + entryMessage) : "").append("\n");
       stringBuilder.append(indentString).append(getExitTimeFormatted()).append(" > ").append(delta).append(" ms")
               .append(exitMessage == null ? "" : " (" + exitMessage + ")").append("\n");
-      if (stackTrace != null)
+      if (stackTrace != null) {
         stringBuilder.append(stackTrace);
+      }
     }
     else {
       stringBuilder.append(indentString).append(getEntryTimeFormatted()).append(" @ ").append(method).append(
@@ -212,8 +217,9 @@ public class LogEntry implements Serializable, Comparable<LogEntry> {
   }
 
   private String getStackTrace(final Throwable exception) {
-    if (exception == null)
+    if (exception == null) {
       return null;
+    }
 
     final StringWriter sw = new StringWriter();
     exception.printStackTrace(new PrintWriter(sw));

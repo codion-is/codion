@@ -67,8 +67,9 @@ public class DbConnection {
     this.database = database;
     this.user = user;
     setConnection(connection);
-    if (!isConnectionValid())
+    if (!isConnectionValid()) {
       throw new IllegalArgumentException("Connection invalid during instantiation");
+    }
   }
 
   /**
@@ -127,12 +128,14 @@ public class DbConnection {
    * Disconnects this DbConnection
    */
   public void disconnect() {
-    if (!isConnected())
+    if (!isConnected()) {
       return;
+    }
 
     try {
-      if (checkConnectionStatement != null)
+      if (checkConnectionStatement != null) {
         checkConnectionStatement.close();
+      }
     }
     catch (Exception e) {/**/}
     try {
@@ -160,8 +163,9 @@ public class DbConnection {
    * @throws IllegalStateException in case a transaction is already open
    */
   public void beginTransaction() {
-    if (transactionOpen)
+    if (transactionOpen) {
       throw new IllegalStateException("Transaction already open");
+    }
 
     methodLogger.logAccess("beginTransaction", new Object[0]);
     transactionOpen = true;
@@ -176,8 +180,9 @@ public class DbConnection {
   public void rollbackTransaction() throws SQLException {
     SQLException exception = null;
     try {
-      if (!transactionOpen)
+      if (!transactionOpen) {
         throw new IllegalStateException("Transaction is not open");
+      }
 
       LOG.debug(user.getUsername() + ": rollback transaction;");
       methodLogger.logAccess("rollbackTransaction", new Object[0]);
@@ -199,8 +204,9 @@ public class DbConnection {
    */
   public void commitTransaction() throws SQLException {
     try {
-      if (!transactionOpen)
+      if (!transactionOpen) {
         throw new IllegalStateException("Transaction is not open");
+      }
 
       LOG.debug(user.getUsername() + ": commit transaction;");
       methodLogger.logAccess("commitTransaction", new Object[0]);
@@ -250,10 +256,12 @@ public class DbConnection {
     }
     finally {
       try {
-        if (statement != null)
+        if (statement != null) {
           statement.close();
-        if (resultSet != null)
+        }
+        if (resultSet != null) {
           resultSet.close();
+        }
       }
       catch (SQLException e) {/**/}
       methodLogger.logExit("query", exception, null);
@@ -270,8 +278,9 @@ public class DbConnection {
   public final List<String> queryStrings(final String sql) throws SQLException {
     final List res = query(sql, STRING_PACKER, -1);
     final List<String> strings = new ArrayList<String>(res.size());
-    for (final Object object : res)
+    for (final Object object : res) {
       strings.add((String) object);
+    }
 
     return strings;
   }
@@ -286,8 +295,9 @@ public class DbConnection {
    */
   public final int queryInteger(final String sql) throws SQLException, DbException {
     final List<Integer> integers = queryIntegers(sql);
-    if (integers.size() > 0)
+    if (integers.size() > 0) {
       return integers.get(0);
+    }
 
     throw new DbException("No records returned when querying for an integer", sql);
   }
@@ -322,8 +332,9 @@ public class DbConnection {
     final List result = query(sql, new ResultPacker() {
       public List pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
         final List<Blob> blobs = new ArrayList<Blob>();
-        if (resultSet.next())
+        if (resultSet.next()) {
           blobs.add(resultSet.getBlob(1));
+        }
 
         return blobs;
       }
@@ -356,15 +367,17 @@ public class DbConnection {
     }
     finally {
       try {
-        if (inputStream != null)
+        if (inputStream != null) {
           inputStream.close();
+        }
       }
       catch (IOException e) {
         e.printStackTrace();
       }
       try {
-        if (statement != null)
+        if (statement != null) {
           statement.close();
+        }
       }
       catch (SQLException e) {/**/}
       methodLogger.logExit("writeBlobField", exception, null);
@@ -377,8 +390,9 @@ public class DbConnection {
    * @throws IllegalStateException in case a transaction is open
    */
   public final void commit() throws SQLException {
-    if (isTransactionOpen())
+    if (isTransactionOpen()) {
       throw new IllegalStateException("Can not perform a commit during an open transaction");
+    }
 
     LOG.debug(user.getUsername() + ": " + "commit;");
     methodLogger.logAccess("commit", new Object[0]);
@@ -401,8 +415,9 @@ public class DbConnection {
    * @throws IllegalStateException in case a transaction is open
    */
   public final void rollback() throws SQLException {
-    if (isTransactionOpen())
+    if (isTransactionOpen()) {
       throw new IllegalStateException("Can not perform a rollback during an open transaction");
+    }
 
     LOG.debug(user.getUsername() + ": " + "rollback;");
     methodLogger.logAccess("rollback", new Object[0]);
@@ -429,8 +444,9 @@ public class DbConnection {
     try {
       final boolean hasOutParameter = outParameterType == Types.NULL;
       statement = connection.prepareCall(sqlStatement);
-      if (hasOutParameter)
+      if (hasOutParameter) {
         statement.registerOutParameter(1, outParameterType);
+      }
 
       statement.execute();
 
@@ -445,8 +461,9 @@ public class DbConnection {
     }
     finally {
       try {
-        if (statement != null)
+        if (statement != null) {
           statement.close();
+        }
       }
       catch (SQLException e) {/**/}
       methodLogger.logExit("executeCallableStatement", exception, null);
@@ -476,8 +493,9 @@ public class DbConnection {
     }
     finally {
       try {
-        if (statement != null)
+        if (statement != null) {
           statement.close();
+        }
       }
       catch (SQLException e) {/**/}
       methodLogger.logExit("execute", exception, null);
@@ -490,8 +508,7 @@ public class DbConnection {
    * @throws SQLException thrown if anything goes wrong during execution
    */
   public final void execute(final List<String> statements) throws SQLException {
-    if (statements == null)
-      throw new IllegalArgumentException("No sql statements specified");
+    Util.rejectNullValue(statements);
     if (statements.size() == 1) {
       execute(statements.get(0));
       return;
@@ -518,8 +535,9 @@ public class DbConnection {
     }
     finally {
       try {
-        if (statement != null)
+        if (statement != null) {
           statement.close();
+        }
       }
       catch (SQLException e) {/**/}
       methodLogger.logExit("execute", exception, null);
@@ -530,8 +548,9 @@ public class DbConnection {
    * @return the underlying Connection object
    */
   public Connection getConnection() {
-    if (!isConnected())
+    if (!isConnected()) {
       throw new RuntimeException("Not connected");
+    }
 
     return connection;
   }
@@ -555,8 +574,9 @@ public class DbConnection {
   }
 
   private void setConnection(final Connection connection) throws SQLException {
-    if (isConnected())
+    if (isConnected()) {
       throw new IllegalStateException("Already connected");
+    }
 
     this.connection = connection;
     connection.setAutoCommit(false);
@@ -566,8 +586,9 @@ public class DbConnection {
     ResultSet rs = null;
     if (connection != null) {
       try {
-        if (checkConnectionStatement == null)
+        if (checkConnectionStatement == null) {
           checkConnectionStatement = connection.createStatement();
+        }
         rs = checkConnectionStatement.executeQuery(database.getCheckConnectionQuery());
         return true;
       }
@@ -577,8 +598,9 @@ public class DbConnection {
       }
       finally {
         try {
-          if (rs != null)
+          if (rs != null) {
             rs.close();
+          }
         }
         catch (Exception e) {/**/}
       }
@@ -594,8 +616,9 @@ public class DbConnection {
       int counter = 0;
       while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
         final List<Object> row = new ArrayList<Object>(columnCount);
-        for (int index = 1; index <= columnCount; index++)
+        for (int index = 1; index <= columnCount; index++) {
           row.add(resultSet.getObject(index));
+        }
         result.add(row);
       }
 
@@ -607,8 +630,9 @@ public class DbConnection {
     public List<Integer> pack(final ResultSet rs, final int fetchCount) throws SQLException {
       final List<Integer> integers = new ArrayList<Integer>();
       int counter = 0;
-      while (rs.next() && (fetchCount < 0 || counter++ < fetchCount))
+      while (rs.next() && (fetchCount < 0 || counter++ < fetchCount)) {
         integers.add(rs.getInt(1));
+      }
 
       return integers;
     }
@@ -618,8 +642,9 @@ public class DbConnection {
     public List<String> pack(final ResultSet rs, final int fetchCount) throws SQLException {
       final List<String> strings = new ArrayList<String>();
       int counter = 0;
-      while (rs.next() && (fetchCount < 0 || counter++ < fetchCount))
+      while (rs.next() && (fetchCount < 0 || counter++ < fetchCount)) {
         strings.add(rs.getString(1));
+      }
 
       return strings;
     }

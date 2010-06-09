@@ -4,6 +4,7 @@
 package org.jminor.common.model.valuemap;
 
 import org.jminor.common.model.AbstractFilteredTableModel;
+import org.jminor.common.model.Util;
 
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
@@ -41,6 +42,7 @@ public abstract class ValueChangeMapModel<K, V> {
   }
 
   public ValueChangeMapModel(final String mapTypeID, final boolean includeTableModel) {
+    Util.rejectNullValue(mapTypeID);
     this.mapTypeID = mapTypeID;
     this.includeTableModel = includeTableModel;
   }
@@ -55,9 +57,10 @@ public abstract class ValueChangeMapModel<K, V> {
   public ValueChangeMapEditModel<K, V> getEditModel() {
     if (editModel == null) {
       editModel = initializeEditModel();
-      if (!editModel.getValueMap().getMapTypeID().equals(getMapTypeID()))
+      if (!editModel.getValueMap().getMapTypeID().equals(getMapTypeID())) {
         throw new RuntimeException("Expected edit model based on " + getMapTypeID() +
                 ", got: " + editModel.getValueMap().getMapTypeID());
+      }
       bindEvents();
     }
 
@@ -70,9 +73,10 @@ public abstract class ValueChangeMapModel<K, V> {
   public AbstractFilteredTableModel<? extends ValueChangeMap<K, V>> getTableModel() {
     if (includeTableModel && tableModel == null) {
       tableModel = initializeTableModel();
-      if (!tableModel.getMapTypeID().equals(getMapTypeID()))
+      if (!tableModel.getMapTypeID().equals(getMapTypeID())) {
         throw new RuntimeException("Expected table model based on " + getMapTypeID() +
                 ", got: " + tableModel.getMapTypeID());
+      }
       bindEvents();
     }
 
@@ -80,10 +84,12 @@ public abstract class ValueChangeMapModel<K, V> {
   }
 
   private void bindEvents() {
-    if (editModel == null || tableModel == null)
+    if (editModel == null || tableModel == null) {
       return;
-    if (!containsTableModel())
+    }
+    if (!containsTableModel()) {
       return;
+    }
 
     getTableModel().eventSelectedIndexChanged().addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent event) {

@@ -56,8 +56,9 @@ public class DerbyDatabase extends AbstractDatabase {
     if (connectionProperties != null) {
       final String username = (String) connectionProperties.get("user");
       final String password = (String) connectionProperties.get("password");
-      if (username != null && username.length() > 0 && password != null && password.length() > 0)
+      if (username != null && username.length() > 0 && password != null && password.length() > 0) {
         return "user=" + username + ";" + "password=" + password;
+      }
     }
 
     return null;
@@ -72,10 +73,12 @@ public class DerbyDatabase extends AbstractDatabase {
                + (authentication == null ? "" : ";" + authentication));
     }
     catch (SQLException e) {
-      if (e.getSQLState().equals("08006"))//08006 is expected on Derby shutdown
+      if (e.getSQLState().equals("08006")) {//08006 is expected on Derby shutdown
         System.out.println("Embedded Derby database successfully shut down!");
-      else
+      }
+      else {
         e.printStackTrace();
+      }
     }
   }
 

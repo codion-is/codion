@@ -93,8 +93,9 @@ public class EntityUiUtil {
     final Action okAction = new AbstractAction(Messages.get(Messages.OK)) {
       public void actionPerformed(ActionEvent e) {
         final List<Entity> entities = lookupModel.getSelectedItems();
-        for (final Entity entity : entities)
+        for (final Entity entity : entities) {
           selected.add(entity);
+        }
         dialog.dispose();
       }
     };
@@ -110,8 +111,9 @@ public class EntityUiUtil {
       protected void bindEvents() {
         eventTableDoubleClicked().addListener(new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            if (!getTableModel().getSelectionModel().isSelectionEmpty())
+            if (!getTableModel().getSelectionModel().isSelectionEmpty()) {
               okAction.actionPerformed(e);
+            }
           }
         });
       }
@@ -121,8 +123,9 @@ public class EntityUiUtil {
       }
     };
     entityTablePanel.setSearchPanelVisible(true);
-    if (singleSelection)
+    if (singleSelection) {
       entityTablePanel.getJTable().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    }
 
     final Action searchAction = new AbstractAction(FrameworkMessages.get(FrameworkMessages.SEARCH)) {
       public void actionPerformed(ActionEvent e) {
@@ -152,8 +155,9 @@ public class EntityUiUtil {
             JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
             KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "none");
     dialog.setLayout(new BorderLayout());
-    if (preferredSize != null)
+    if (preferredSize != null) {
       entityTablePanel.setPreferredSize(preferredSize);
+    }
     dialog.add(entityTablePanel, BorderLayout.CENTER);
     final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT,5,5));
     buttonPanel.add(btnSearch);
@@ -167,10 +171,12 @@ public class EntityUiUtil {
     dialog.setResizable(true);
     dialog.setVisible(true);
 
-    if (selected.size() == 1 && selected.contains(null))
+    if (selected.size() == 1 && selected.contains(null)) {
       throw new CancelException();
-    else
+    }
+    else {
       return selected;
+    }
   }
 
   /**
@@ -191,12 +197,11 @@ public class EntityUiUtil {
    */
   public static JLabel createLabel(final Property property, final int horizontalAlignment) {
     final String text = property.getCaption();
-    if (text == null || text.length() == 0)
-      throw new IllegalArgumentException("Cannot create a label for property: " + property + ", no caption");
-
+    Util.rejectNullValue(text);
     final JLabel label = new JLabel(text, horizontalAlignment);
-    if (property.getMnemonic() != null)
+    if (property.getMnemonic() != null) {
       label.setDisplayedMnemonic(property.getMnemonic());
+    }
 
     return label;
   }
@@ -212,36 +217,44 @@ public class EntityUiUtil {
 
   public static JCheckBox createCheckBox(final Property property, final EntityEditModel editModel,
                                          final State enabledState, final boolean includeCaption) {
-    if (!property.isBoolean())
+    if (!property.isBoolean()) {
       throw new RuntimeException("Boolean property required for createCheckBox");
+    }
 
     final JCheckBox checkBox = includeCaption ? new JCheckBox(property.getCaption()) : new JCheckBox();
     new BooleanValueLink<String>(checkBox.getModel(), editModel, property.getPropertyID());
     UiUtil.linkToEnabledState(enabledState, checkBox);
-    if (property.hasDescription())
+    if (property.hasDescription()) {
       checkBox.setToolTipText(property.getDescription());
-    else
+    }
+    else {
       checkBox.setToolTipText(property.getCaption());
-    if (Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER))
+    }
+    if (Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER)) {
       UiUtil.transferFocusOnEnter(checkBox);
+    }
 
     return checkBox;
   }
 
   public static TristateCheckBox createTristateCheckBox(final Property property, final EntityEditModel editModel,
                                                         final State enabledState, final boolean includeCaption) {
-    if (!property.isBoolean() && property.isNullable())
+    if (!property.isBoolean() && property.isNullable()) {
       throw new RuntimeException("Nullable boolean property required for createTristateCheckBox");
+    }
 
     final TristateCheckBox checkBox = new TristateCheckBox(includeCaption ? property.getCaption() : null);
     new TristateValueLink<String>((TristateButtonModel) checkBox.getModel(), editModel, property.getPropertyID());
     UiUtil.linkToEnabledState(enabledState, checkBox);
-    if (property.hasDescription())
+    if (property.hasDescription()) {
       checkBox.setToolTipText(property.getDescription());
-    else
+    }
+    else {
       checkBox.setToolTipText(property.getCaption());
-    if (Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER))
+    }
+    if (Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER)) {
       UiUtil.transferFocusOnEnter(checkBox);
+    }
 
     return checkBox;
   }
@@ -266,16 +279,19 @@ public class EntityUiUtil {
   public static EntityComboBox createEntityComboBox(final Property.ForeignKeyProperty foreignKeyProperty,
                                                     final EntityEditModel editModel, final State enabledState) {
     final EntityComboBoxModel boxModel = editModel.initializeEntityComboBoxModel(foreignKeyProperty);
-    if (!boxModel.isDataInitialized())
+    if (!boxModel.isDataInitialized()) {
       boxModel.refresh();
+    }
     final EntityComboBox comboBox = new EntityComboBox(boxModel);
     new EntityComboBoxValueLink(comboBox, editModel, foreignKeyProperty);
     UiUtil.linkToEnabledState(enabledState, comboBox);
     MaximumMatch.enable(comboBox);
-    if (foreignKeyProperty.hasDescription())
+    if (foreignKeyProperty.hasDescription()) {
       comboBox.setToolTipText(foreignKeyProperty.getDescription());
-    if (Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER))
+    }
+    if (Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER)) {
       UiUtil.transferFocusOnEnter((JComponent) comboBox.getEditor().getEditorComponent());
+    }
 
     return comboBox;
   }
@@ -289,8 +305,9 @@ public class EntityUiUtil {
                                              final EntityEditModel editModel) {
     final JTextField textField = new JTextField();
     textField.setEditable(false);
-    if (foreignKeyProperty.hasDescription())
+    if (foreignKeyProperty.hasDescription()) {
       textField.setToolTipText(foreignKeyProperty.getDescription());
+    }
     editModel.getValueChangeEvent(foreignKeyProperty.getPropertyID()).addListener(new ValueChangeListener() {
       @Override
       public void valueChanged(final ValueChangeEvent e) {
@@ -304,9 +321,10 @@ public class EntityUiUtil {
   public static EntityLookupField createEntityLookupField(final Property.ForeignKeyProperty foreignKeyProperty,
                                                           final EntityEditModel editModel) {
     final String[] searchPropertyIDs = EntityRepository.getEntitySearchPropertyIDs(foreignKeyProperty.getReferencedEntityID());
-    if (searchPropertyIDs == null)
+    if (searchPropertyIDs == null) {
       throw new RuntimeException("No default search properties specified for entity: " + foreignKeyProperty.getReferencedEntityID()
               + ", unable to create EntityLookupField, you must specify the searchPropertyIDs");
+    }
 
     return createEntityLookupField(foreignKeyProperty, editModel, searchPropertyIDs);
   }
@@ -320,20 +338,24 @@ public class EntityUiUtil {
                                                           final EntityEditModel editModel,
                                                           final Criteria additionalSearchCriteria,
                                                           final String... searchPropertyIDs) {
-    if (searchPropertyIDs == null || searchPropertyIDs.length == 0)
+    if (searchPropertyIDs == null || searchPropertyIDs.length == 0) {
       throw new RuntimeException("No search properties specified for entity lookup field: " + foreignKeyProperty.getReferencedEntityID());
+    }
     final List<Property> searchProperties = EntityRepository.getProperties(foreignKeyProperty.getReferencedEntityID(), searchPropertyIDs);
-    for (final Property searchProperty : searchProperties)
-      if (!searchProperty.isString())
+    for (final Property searchProperty : searchProperties) {
+      if (!searchProperty.isString()) {
         throw new IllegalArgumentException("Can only create EntityLookupField with a search property of STRING type");
+      }
+    }
 
     final EntityLookupField lookupField =
             new EntityLookupField(editModel.createEntityLookupModel(foreignKeyProperty.getReferencedEntityID(),
                     additionalSearchCriteria, searchProperties),
                     Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER));
     new LookupValueLink(lookupField.getModel(), editModel, foreignKeyProperty);
-    if (foreignKeyProperty.hasDescription())
+    if (foreignKeyProperty.hasDescription()) {
       lookupField.setToolTipText(foreignKeyProperty.getDescription());
+    }
     UiUtil.selectAllOnFocusGained(lookupField);
 
     return lookupField;
@@ -364,8 +386,9 @@ public class EntityUiUtil {
     comboBox.setEditable(editable);
     new EntityComboBoxValueLink(comboBox, editModel, property);
     UiUtil.linkToEnabledState(enabledState, comboBox);
-    if (property.hasDescription())
+    if (property.hasDescription()) {
       comboBox.setToolTipText(property.getDescription());
+    }
     if (Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER)) {
       UiUtil.transferFocusOnEnter((JComponent) comboBox.getEditor().getEditorComponent());
       UiUtil.transferFocusOnEnter(comboBox);
@@ -383,8 +406,9 @@ public class EntityUiUtil {
   public static DateInputPanel createDateInputPanel(final Property property, final EntityEditModel editModel,
                                                     final SimpleDateFormat dateFormat, final LinkType linkType,
                                                     final boolean includeButton, final State enabledState) {
-    if (!property.isTime())
+    if (!property.isTime()) {
       throw new IllegalArgumentException("Property " + property + " is not a date property");
+    }
 
     final JFormattedTextField field = (JFormattedTextField) createTextField(property, editModel, linkType,
             DateUtil.getDateMask(dateFormat), true, dateFormat, enabledState);
@@ -398,16 +422,18 @@ public class EntityUiUtil {
 
   public static JTextArea createTextArea(final Property property, final EntityEditModel editModel,
                                          final int rows, final int columns) {
-    if (!property.isString())
+    if (!property.isString()) {
       throw new RuntimeException("Cannot create a text area for a non-string property");
+    }
 
     final JTextArea textArea = rows > 0 && columns > 0 ? new JTextArea(rows, columns) : new JTextArea();
     textArea.setLineWrap(true);
     textArea.setWrapStyleWord(true);
 
     new TextValueLink<String>(textArea, editModel, property.getPropertyID(), true, LinkType.READ_WRITE);
-    if (property.hasDescription())
+    if (property.hasDescription()) {
       textArea.setToolTipText(property.getDescription());
+    }
 
     return textArea;
   }
@@ -443,10 +469,12 @@ public class EntityUiUtil {
     final JTextField textField = initTextField(property, editModel, enabledState, formatMaskString, valueContainsLiteralCharacters);
     final String propertyID = property.getPropertyID();
     if (property.isString()) {
-      if (formatMaskString != null)
+      if (formatMaskString != null) {
         new FormattedValueLink<String>((JFormattedTextField) textField, editModel, propertyID, null, immediateUpdate, linkType);
-      else
+      }
+      else {
         new TextValueLink<String>(textField, editModel, propertyID, immediateUpdate, linkType);
+      }
     }
     else if (property.isInteger()) {
       new IntValueLink<String>((IntField) textField, editModel, propertyID, immediateUpdate, linkType);
@@ -460,8 +488,9 @@ public class EntityUiUtil {
     else if (property.isTimestamp()) {
       new DateValueLink<String>((JFormattedTextField) textField, editModel, propertyID, linkType, dateFormat, true);
     }
-    else
+    else {
       throw new IllegalArgumentException("Not a text based property: " + property);
+    }
 
     return textField;
   }
@@ -513,8 +542,9 @@ public class EntityUiUtil {
                                                        final String nullValue, final boolean editable) {
     final SteppedComboBox comboBox = createComboBox(property, editModel,
             editModel.initializePropertyComboBoxModel(property, refreshEvent, nullValue), state, editable);
-    if (!editable)
+    if (!editable) {
       MaximumMatch.enable(comboBox);
+    }
 
     return comboBox;
   }
@@ -569,26 +599,35 @@ public class EntityUiUtil {
                                           final State enabledState, final String formatMaskString,
                                           final boolean valueContainsLiteralCharacters) {
     final JTextField field;
-    if (property.isInteger())
+    if (property.isInteger()) {
       field = new IntField(0);
-    else if (property.isDouble())
+    }
+    else if (property.isDouble()) {
       field = new DoubleField(0);
-    else if (property.isTime())
+    }
+    else if (property.isTime()) {
       field = UiUtil.createFormattedField(formatMaskString, true);
-    else if (property.isString())
+    }
+    else if (property.isString()) {
       field = formatMaskString == null ? new TextFieldPlus() : UiUtil.createFormattedField(formatMaskString, valueContainsLiteralCharacters);
-    else
+    }
+    else {
       throw new RuntimeException("Unable to create text field for property type: " + property.getType());
+    }
 
     UiUtil.linkToEnabledState(enabledState, field);
-    if (Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER))
+    if (Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER)) {
       UiUtil.transferFocusOnEnter(field);
-    if (property.hasDescription())
+    }
+    if (property.hasDescription()) {
       field.setToolTipText(property.getDescription());
-    if (field instanceof TextFieldPlus && property.getMaxLength() > 0)
+    }
+    if (field instanceof TextFieldPlus && property.getMaxLength() > 0) {
       ((TextFieldPlus) field).setMaxLength(property.getMaxLength());
-    if (property.isDatabaseProperty())
+    }
+    if (property.isDatabaseProperty()) {
       UiUtil.addLookupDialog(field, new PropertyValueProvider(editModel.getDbProvider(), editModel.getEntityID(), property.getPropertyID()));
+    }
 
     return field;
   }
@@ -636,8 +675,9 @@ public class EntityUiUtil {
         }
         else {
           final Entity selectedEntity = tableModel.getSelectedItem();
-          if (selectedEntity != null)
+          if (selectedEntity != null) {
             comboBoxModel.setSelectedItem(selectedEntity);
+          }
         }
         dialog.dispose();
       }
@@ -656,12 +696,15 @@ public class EntityUiUtil {
     @Override
     protected Object getUIValue() {
       final ComboBoxModel boxModel = getModel();
-      if (boxModel instanceof EntityComboBoxModel)
+      if (boxModel instanceof EntityComboBoxModel) {
         return ((EntityComboBoxModel) boxModel).getSelectedEntity();
-      else if (boxModel instanceof PropertyComboBoxModel)
+      }
+      else if (boxModel instanceof PropertyComboBoxModel) {
         return ((PropertyComboBoxModel) boxModel).isNullValueSelected() ? null : boxModel.getSelectedItem();
-      else
+      }
+      else {
         return super.getUIValue();
+      }
     }
   }
 
@@ -701,8 +744,9 @@ public class EntityUiUtil {
     @Override
     protected void setUIValue(final Object propertyValue) {
       final List<Entity> value = new ArrayList<Entity>();
-      if (getModelValue() != null)
+      if (getModelValue() != null) {
         value.add((Entity) propertyValue);
+      }
       lookupModel.setSelectedEntities(value);
     }
   }

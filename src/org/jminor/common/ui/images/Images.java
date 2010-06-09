@@ -3,6 +3,8 @@
  */
 package org.jminor.common.ui.images;
 
+import org.jminor.common.model.Util;
+
 import javax.swing.ImageIcon;
 import java.awt.Toolkit;
 import java.net.URL;
@@ -10,7 +12,7 @@ import java.net.URL;
 /**
  * A class serving as resource owner for images.
  */
-public class Images {
+public final class Images {
 
   public static final String IMG_ADD_16 = "Add16.gif";
   public static final String IMG_DELETE_16 = "Delete16.gif";
@@ -39,8 +41,7 @@ public class Images {
 
   public static ImageIcon getImageIcon(final Class resourceOwnerClass, final String resourceName) {
     final URL url = resourceOwnerClass.getResource(resourceName);
-    if (url == null)
-      throw new IllegalArgumentException("Resource: " + resourceName + " for " + resourceOwnerClass + " not found");
+    Util.rejectNullValue(url, "Resource: " + resourceName + " for " + resourceOwnerClass + " not found");
 
     return new ImageIcon(Toolkit.getDefaultToolkit().getImage(url));
   }

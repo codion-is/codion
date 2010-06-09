@@ -43,8 +43,9 @@ public class EntityDbRemoteProvider implements EntityDbProvider {
   }
 
   public EntityDb getEntityDb() {
-    if (user == null)
+    if (user == null) {
       throw new IllegalStateException("Not logged in");
+    }
 
     initializeEntityDb();
 
@@ -65,16 +66,18 @@ public class EntityDbRemoteProvider implements EntityDbProvider {
   }
 
   public void setUser(final User user) {
-    if (Util.equal(user, this.user))
+    if (Util.equal(user, this.user)) {
       return;
+    }
     disconnect();
     this.user = user;
   }
 
   public void disconnect() {
     try {
-      if (entityDb != null && connectionValid())
+      if (entityDb != null && connectionValid()) {
         server.disconnect(clientID);
+      }
       entityDb = null;
     }
     catch (Exception e) {
@@ -84,8 +87,9 @@ public class EntityDbRemoteProvider implements EntityDbProvider {
 
   private void initializeEntityDb() {
     try {
-      if (entityDb == null || !connectionValid())
+      if (entityDb == null || !connectionValid()) {
         entityDb = (EntityDb) getRemoteEntityDbServer().connect(user, clientID, clientTypeID);
+      }
     }
     catch (Exception e) {
       throw new RuntimeException(e);
@@ -113,8 +117,9 @@ public class EntityDbRemoteProvider implements EntityDbProvider {
   private RemoteServer getRemoteEntityDbServer() throws RemoteException, NotBoundException {
     boolean unreachable = false;
     try {
-      if (this.server != null)
-        this.server.getServerPort();//just to check the connection
+      if (this.server != null) {
+        this.server.getServerPort();
+      }//just to check the connection
     }
     catch (RemoteException e) {
       e.printStackTrace();
@@ -146,8 +151,9 @@ public class EntityDbRemoteProvider implements EntityDbProvider {
       this.server = servers.get(0);
       this.serverName = this.server.getServerName();
     }
-    else
+    else {
       throw new NotBoundException("No reachable or suitable entity server found!");
+    }
   }
 
   private static List<RemoteServer> getEntityServers(final String hostNames) throws RemoteException {
@@ -161,8 +167,9 @@ public class EntityDbRemoteProvider implements EntityDbProvider {
                 && name.contains(version) && !name.contains(RemoteServer.SERVER_ADMIN_SUFFIX)) {
           try {
             final RemoteServer server = checkServer((RemoteServer) registry.lookup(name));
-            if (server != null)
+            if (server != null) {
               servers.add(server);
+            }
           }
           catch (Exception e) {
             e.printStackTrace();
@@ -178,8 +185,9 @@ public class EntityDbRemoteProvider implements EntityDbProvider {
   private static RemoteServer checkServer(final RemoteServer server) throws RemoteException {
     final int port = server.getServerPort();
     final String requestedPort = System.getProperty(Configuration.SERVER_PORT);
-    if (requestedPort == null || (requestedPort.length() > 0 && port == Integer.parseInt(requestedPort)))
+    if (requestedPort == null || (requestedPort.length() > 0 && port == Integer.parseInt(requestedPort))) {
       return server;
+    }
 
     return null;
   }

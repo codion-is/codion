@@ -26,32 +26,37 @@ public abstract class EntityLoadTestModel extends LoadTestModel {
   }
 
   public static void selectRandomRow(final EntityTableModel model) {
-    if (model.getRowCount() == 0)
+    if (model.getRowCount() == 0) {
       return;
+    }
 
     model.setSelectedItemIndex(random.nextInt(model.getRowCount()));
   }
 
   public static void selectRandomRows(final EntityTableModel model, final int count) {
-    if (model.getRowCount() == 0)
+    if (model.getRowCount() == 0) {
       return;
+    }
 
     final int startIdx = random.nextInt(model.getRowCount() - count);
     final List<Integer> indexes = new ArrayList<Integer>();
-    for (int i = startIdx; i < count + startIdx; i++)
+    for (int i = startIdx; i < count + startIdx; i++) {
       indexes.add(i);
+    }
 
     model.setSelectedItemIndexes(indexes);
   }
 
   public static void selectRandomRows(final EntityTableModel model, final double ratio) {
-    if (model.getRowCount() == 0)
+    if (model.getRowCount() == 0) {
       return;
+    }
 
     final int toSelect = ratio > 0 ? (int) Math.floor(model.getRowCount() * ratio) : 1;
     final List<Integer> indexes = new ArrayList<Integer>();
-    for (int i = 0; i < toSelect; i++)
+    for (int i = 0; i < toSelect; i++) {
       indexes.add(i);
+    }
 
     model.setSelectedItemIndexes(indexes);
   }

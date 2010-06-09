@@ -83,8 +83,9 @@ public class OracleDatabase extends AbstractDatabase {
       return Messages.get(Messages.VALUE_MISSING) + ": " + columnName;
     }
 
-    if (ERROR_CODE_MAP.containsKey(exception.getErrorCode()))
+    if (ERROR_CODE_MAP.containsKey(exception.getErrorCode())) {
       return ERROR_CODE_MAP.get(exception.getErrorCode());
+    }
 
     return exception.getMessage();
   }

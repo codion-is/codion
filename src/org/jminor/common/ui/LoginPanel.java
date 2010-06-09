@@ -70,10 +70,12 @@ public class LoginPanel extends JPanel {
     dialog.setResizable(false);
     dialog.setVisible(true);
 
-    if (pane.getValue() != null && pane.getValue().equals(0))
+    if (pane.getValue() != null && pane.getValue().equals(0)) {
       return panel.getUser();
-    else
+    }
+    else {
       throw new CancelException();
+    }
   }
 
   public JPasswordField getPasswordField() {
@@ -110,10 +112,12 @@ public class LoginPanel extends JPanel {
 
     setLayout(new BorderLayout());
     add(retBase, BorderLayout.CENTER);
-    if (usernameField.getText().length() == 0)
+    if (usernameField.getText().length() == 0) {
       addInitialFocusHack(usernameField);
-    else
+    }
+    else {
       addInitialFocusHack(passwordField);
+    }
   }
 
   /**

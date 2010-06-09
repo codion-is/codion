@@ -29,10 +29,12 @@ public class EntityDbProviderFactoryTest {
       assertTrue(dbProvider.getClass().getSimpleName().equals("EntityDbRemoteProvider"));
     }
     finally {
-      if (connectionType != null)
+      if (connectionType != null) {
         System.setProperty(Configuration.CLIENT_CONNECTION_TYPE, connectionType);
-      else
+      }
+      else {
         System.clearProperty(Configuration.CLIENT_CONNECTION_TYPE);
+      }
     }
   }
 }

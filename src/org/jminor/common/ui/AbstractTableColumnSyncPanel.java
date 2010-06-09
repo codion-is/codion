@@ -58,8 +58,9 @@ public abstract class AbstractTableColumnSyncPanel extends JPanel {
   protected void resetPanel() {
     removeAll();
     final Enumeration<TableColumn> columnEnumeration = tableColumnModel.getColumns();
-    while (columnEnumeration.hasMoreElements())
+    while (columnEnumeration.hasMoreElements()) {
       add(getColumnPanels().get(columnEnumeration.nextElement()));
+    }
     add(verticalFiller);
 
     syncPanelWidths(tableColumnModel, columnPanels);
@@ -67,8 +68,9 @@ public abstract class AbstractTableColumnSyncPanel extends JPanel {
   }
 
   private void bindColumnAndPanelSizes() {
-    if (tableColumnModel.getColumnCount() != columnPanels.size())
+    if (tableColumnModel.getColumnCount() != columnPanels.size()) {
       throw new IllegalArgumentException("An equal number of columns and panels is required when binding sizes");
+    }
 
     tableColumnModel.addColumnModelListener(new TableColumnModelListener() {
       public void columnAdded(final TableColumnModelEvent e) {

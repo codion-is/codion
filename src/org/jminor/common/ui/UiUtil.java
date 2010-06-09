@@ -97,15 +97,19 @@ public class UiUtil {
     fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
     fileChooser.removeChoosableFileFilter(fileChooser.getFileFilter());
     fileChooser.setMultiSelectionEnabled(false);
-    if (startDir != null && startDir.length() > 0)
+    if (startDir != null && startDir.length() > 0) {
       fileChooser.setCurrentDirectory(new File(startDir));
-    if (dialogTitle != null)
+    }
+    if (dialogTitle != null) {
       fileChooser.setDialogTitle(dialogTitle);
+    }
     final int ret = fileChooser.showOpenDialog(dialogParent);
-    if (ret == JFileChooser.APPROVE_OPTION)
+    if (ret == JFileChooser.APPROVE_OPTION) {
       return fileChooser.getSelectedFile();
-    else
+    }
+    else {
       throw new CancelException();
+    }
   }
 
   public static File selectFile(final JComponent dialogParent, final String startDir) throws CancelException {
@@ -121,8 +125,9 @@ public class UiUtil {
     fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
     fileChooser.removeChoosableFileFilter(fileChooser.getFileFilter());
     fileChooser.setMultiSelectionEnabled(false);
-    if (startDir != null && startDir.length() > 0)
+    if (startDir != null && startDir.length() > 0) {
       fileChooser.setCurrentDirectory(new File(startDir));
+    }
     final int option = fileChooser.showOpenDialog(dialogParent);
     if (option == JFileChooser.APPROVE_OPTION) {
       final File selectedFile = fileChooser.getSelectedFile();
@@ -152,26 +157,32 @@ public class UiUtil {
             + (defaultFileName != null ? (System.getProperty("file.separator") + defaultFileName) : ""));
     boolean fileChosen = false;
     while (!fileChosen) {
-      if (selectedFile.isDirectory())
+      if (selectedFile.isDirectory()) {
         fileChooser.setCurrentDirectory(selectedFile);
-      else
+      }
+      else {
         fileChooser.setSelectedFile(selectedFile);
+      }
       int option = fileChooser.showSaveDialog(dialogParent);
       if (option == JFileChooser.APPROVE_OPTION) {
         selectedFile = fileChooser.getSelectedFile();
         if (selectedFile.exists()) {
           option = JOptionPane.showConfirmDialog(dialogParent, Messages.get(Messages.OVERWRITE_FILE),
                   Messages.get(Messages.FILE_EXISTS), JOptionPane.YES_NO_CANCEL_OPTION);
-          if (option == JOptionPane.YES_OPTION)
+          if (option == JOptionPane.YES_OPTION) {
             fileChosen = true;
-          else if (option == JOptionPane.CANCEL_OPTION)
+          }
+          else if (option == JOptionPane.CANCEL_OPTION) {
             throw new CancelException();
+          }
         }
-        else
+        else {
           fileChosen = true;
+        }
       }
-      else
+      else {
         throw new CancelException();
+      }
     }
 
     return selectedFile;
@@ -179,8 +190,9 @@ public class UiUtil {
 
   public static Date getDateFromUser(final Date startDate, final String message, final Container parent) {
     final Calendar cal = Calendar.getInstance();
-    if (startDate != null)
+    if (startDate != null) {
       cal.setTime(startDate);
+    }
 
     cal.set(Calendar.HOUR_OF_DAY, 0);
     cal.set(Calendar.MINUTE, 0);
@@ -196,8 +208,9 @@ public class UiUtil {
 
   public static JFormattedTextField createFormattedField(final SimpleDateFormat maskFormat, final Object initialValue) {
     final JFormattedTextField txtField = createFormattedField(DateUtil.getDateMask(maskFormat));
-    if (initialValue != null)
+    if (initialValue != null) {
       txtField.setText(maskFormat.format(initialValue));
+    }
 
     return txtField;
   }
@@ -217,8 +230,9 @@ public class UiUtil {
         @Override
         public Object stringToValue(final String value) throws ParseException {
           String ret = value;
-          if (charsAsUpper)
+          if (charsAsUpper) {
             ret = ret.toUpperCase();
+          }
 
           return super.stringToValue(ret);
         }
@@ -266,8 +280,9 @@ public class UiUtil {
 
   public static JFrame createFrame(final Image icon) {
     final JFrame frame = new JFrame();
-    if (icon != null)
+    if (icon != null) {
       frame.setIconImage(icon);
+    }
 
     frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
@@ -301,8 +316,9 @@ public class UiUtil {
   public static void resizeWindow(final Window window, final double screenSizeRatio,
                                   final Dimension minimumSize) {
     final Dimension ratioSize = getScreenSizeRatio(screenSizeRatio);
-    if (minimumSize != null)
+    if (minimumSize != null) {
       ratioSize.setSize(Math.max(minimumSize.width, ratioSize.width), Math.max(minimumSize.height, ratioSize.height));
+    }
 
     window.setSize(ratioSize);
   }
@@ -314,15 +330,17 @@ public class UiUtil {
   }
 
   public static JFrame getParentFrame(Container container) {
-    while (!(container instanceof JFrame) && (container != null))
+    while (!(container instanceof JFrame) && (container != null)) {
       container = container.getParent();
+    }
 
     return (JFrame) container;
   }
 
   public static JDialog getParentDialog(Container container) {
-    while (!(container instanceof JDialog) && (container != null))
+    while (!(container instanceof JDialog) && (container != null)) {
       container = container.getParent();
+    }
 
     return (JDialog) container;
   }
@@ -339,60 +357,73 @@ public class UiUtil {
     final TreeNode node = (TreeNode)parent.getLastPathComponent();
     if (node.getChildCount() >= 0) {
       final Enumeration e = node.children();
-      while (e.hasMoreElements())
+      while (e.hasMoreElements()) {
         expandAll(tree, parent.pathByAddingChild(e.nextElement()), expand);
+      }
     }
     // Expansion or collapse must be done bottom-up
-    if (expand)
+    if (expand) {
       tree.expandPath(parent);
-    else
+    }
+    else {
       tree.collapsePath(parent);
+    }
   }
 
   public static void setWaitCursor(final boolean on, final JComponent component) {
     RootPaneContainer root = getParentDialog(component);
-    if (root == null)
+    if (root == null) {
       root = getParentFrame(component);
-    if (root == null)
+    }
+    if (root == null) {
       return;
+    }
 
     synchronized (waitCursorRequests) {
-      if (!waitCursorRequests.containsKey(root))
+      if (!waitCursorRequests.containsKey(root)) {
         waitCursorRequests.put(root, 0);
+      }
 
       int requests = waitCursorRequests.get(root);
-      if (on)
+      if (on) {
         requests++;
-      else
+      }
+      else {
         requests--;
+      }
 
       if ((requests == 1 && on) || (requests == 0 && !on)) {
         root.getRootPane().setCursor(on ? WAIT_CURSOR : DEFAULT_CURSOR);
       }
-      if (requests == 0)
+      if (requests == 0) {
         waitCursorRequests.remove(root);
-      else
+      }
+      else {
         waitCursorRequests.put(root, requests);
+      }
     }
   }
 
   public static int getPreferredScrollBarWidth() {
-    if (verticalScrollBar == null)
+    if (verticalScrollBar == null) {
       verticalScrollBar = new JScrollBar(JScrollBar.VERTICAL);
+    }
 
     return verticalScrollBar.getPreferredSize().width;
   }
 
   public static Dimension getPreferredTextFieldSize() {
-    if (textField == null)
+    if (textField == null) {
       textField = new JTextField();
+    }
 
     return textField.getPreferredSize();
   }
 
   public static int getPreferredTextFieldHeight() {
-    if (textField == null)
+    if (textField == null) {
       textField = new JTextField();
+    }
 
     return textField.getPreferredSize().height;
   }
@@ -408,8 +439,9 @@ public class UiUtil {
 
   public static void showToolTip(final JComponent component) {
     final Action toolTipAction = component.getActionMap().get("postTip");
-    if (toolTipAction != null)
+    if (toolTipAction != null) {
       toolTipAction.actionPerformed(new ActionEvent(component, ActionEvent.ACTION_PERFORMED, ""));
+    }
   }
 
   /**
@@ -418,8 +450,9 @@ public class UiUtil {
    * @return the text field
    */
   public static JTextComponent makeUpperCase(final JTextComponent textField) {
-    if (textField instanceof TextFieldPlus)
+    if (textField instanceof TextFieldPlus) {
       return makeUpperCase((TextFieldPlus) textField);
+    }
 
     ((PlainDocument) textField.getDocument()).setDocumentFilter(new DocumentFilter() {
       @Override
@@ -478,10 +511,12 @@ public class UiUtil {
       @Override
       public void keyPressed(final KeyEvent evt) {
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-          if (evt.isShiftDown())
+          if (evt.isShiftDown()) {
             component.transferFocusBackward();
-          else
+          }
+          else {
             component.transferFocus();
+          }
         }
       }
     });
@@ -559,8 +594,9 @@ public class UiUtil {
     final String okCaption = okAction != null ? (String) okAction.getValue(Action.NAME) : Messages.get(Messages.OK);
     final Action ok = new AbstractAction(okCaption) {
       public void actionPerformed(ActionEvent e) {
-        if (okAction != null)
+        if (okAction != null) {
           okAction.actionPerformed(e);
+        }
         if (disposeOnOk) {
           dialog.setVisible(false);
           dialog.dispose();
@@ -576,26 +612,33 @@ public class UiUtil {
       final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT,5,5));
       final JButton okButton = new JButton(ok);
       Character okMnemonic;
-      if (okAction != null && okAction.getValue(Action.MNEMONIC_KEY) != null)
+      if (okAction != null && okAction.getValue(Action.MNEMONIC_KEY) != null) {
         okMnemonic = (Character) okAction.getValue(Action.MNEMONIC_KEY);
-      else
+      }
+      else {
         okMnemonic = Messages.get(Messages.OK_MNEMONIC).charAt(0);
+      }
 
-      if (okMnemonic != null)
+      if (okMnemonic != null) {
         okButton.setMnemonic(okMnemonic);
+      }
       buttonPanel.add(okButton);
       dialog.getRootPane().setDefaultButton(okButton);
       dialog.add(buttonPanel, BorderLayout.SOUTH);
     }
     dialog.add(componentToShow, BorderLayout.CENTER);
-    if (size == null)
+    if (size == null) {
       dialog.pack();
-    else
+    }
+    else {
       dialog.setSize(size);
-    if (location == null)
+    }
+    if (location == null) {
       dialog.setLocationRelativeTo(owner);
-    else
+    }
+    else {
       dialog.setLocation(location);
+    }
     dialog.setModal(modal);
     dialog.setResizable(true);
     dialog.setVisible(true);
@@ -609,8 +652,9 @@ public class UiUtil {
     final JDialog dialog = new JDialog(getParentWindow(owner), title);
     dialog.setLayout(new BorderLayout());
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-    if (defaultButton != null)
+    if (defaultButton != null) {
       dialog.getRootPane().setDefaultButton(defaultButton);
+    }
 
     final Action disposeActionListener = new AbstractAction() {
       public void actionPerformed(final ActionEvent e) {
@@ -618,14 +662,17 @@ public class UiUtil {
       }
     };
     addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, disposeActionListener);
-    if (closeEvent != null)
+    if (closeEvent != null) {
       closeEvent.addListener(disposeActionListener);
+    }
 
     dialog.add(componentToShow, BorderLayout.CENTER);
-    if (size == null)
+    if (size == null) {
       dialog.pack();
-    else
+    }
+    else {
       dialog.setSize(size);
+    }
 
     dialog.setLocationRelativeTo(owner);
     dialog.setModal(modal);
@@ -648,9 +695,11 @@ public class UiUtil {
       public boolean canImport(final TransferSupport support) {
         try {
           final DataFlavor nixFileDataFlavor = new DataFlavor("text/uri-list;class=java.lang.String");
-          for (final DataFlavor flavor : support.getDataFlavors())
-            if (flavor.isFlavorJavaFileListType() || flavor.equals(nixFileDataFlavor))
+          for (final DataFlavor flavor : support.getDataFlavors()) {
+            if (flavor.isFlavorJavaFileListType() || flavor.equals(nixFileDataFlavor)) {
               return true;
+            }
+          }
 
           return false;
         }
@@ -666,8 +715,9 @@ public class UiUtil {
           textComponent.setText(path);
           return true;
         }
-        else
+        else {
           return false;
+        }
       }
     });
   }
@@ -687,8 +737,9 @@ public class UiUtil {
       final String data = (String) support.getTransferable().getTransferData(nixFileDataFlavor);
       for (final StringTokenizer st = new StringTokenizer(data, "\r\n"); st.hasMoreTokens();) {
         final String token = st.nextToken().trim();
-        if (token.startsWith("#") || token.isEmpty()) // comment line, by RFC 2483
+        if (token.startsWith("#") || token.isEmpty()) {// comment line, by RFC 2483
           continue;
+        }
 
         return new File(new URI(token)).getAbsolutePath();
       }
@@ -726,8 +777,9 @@ public class UiUtil {
       public void actionPerformed(final ActionEvent e) {
         try {
           final Object value = selectValue(txtField, valueListProvider.getValues());
-          if (value != null)
+          if (value != null) {
             txtField.setText(value.toString());
+          }
         }
         catch (Exception ex) {
           throw new RuntimeException(ex);
@@ -742,8 +794,9 @@ public class UiUtil {
 
   public static Object selectValue(final JComponent dialogOwner, Collection<?> values, final String dialogTitle) {
     final DefaultListModel listModel = new DefaultListModel();
-    for (final Object value : values)
+    for (final Object value : values) {
       listModel.addElement(value);
+    }
 
     final JList list = new JList(new Vector<Object>(values));
     final Window owner = getParentWindow(dialogOwner);
@@ -773,8 +826,9 @@ public class UiUtil {
     list.addMouseListener(new MouseAdapter() {
       @Override
       public void mouseClicked(final MouseEvent e) {
-        if (e.getClickCount() == 2)
+        if (e.getClickCount() == 2) {
           okAction.actionPerformed(null);
+        }
       }
     });
     dialog.setLayout(new BorderLayout());
@@ -809,8 +863,9 @@ public class UiUtil {
   }
 
   public static String getStartDir(final String text) {
-    if (text == null || text.length() == 0)
+    if (text == null || text.length() == 0) {
       return null;
+    }
     try {
       return new File(text).getParentFile().getPath();
     }

@@ -52,8 +52,9 @@ public class FormattedValueLink<K> extends TextValueLink<K> {
   /** {@inheritDoc} */
   @Override
   protected Object valueFromText(final String text) {
-    if (text == null)
+    if (text == null) {
       return null;
+    }
 
     try {
       return format == null ? text : format.parseObject(text);
@@ -66,8 +67,9 @@ public class FormattedValueLink<K> extends TextValueLink<K> {
   /** {@inheritDoc} */
   @Override
   protected String getValueAsString(final Object value) {
-    if (value == null)
+    if (value == null) {
       return null;
+    }
 
     return format == null ? value.toString() : format.format(value);
   }
@@ -76,8 +78,9 @@ public class FormattedValueLink<K> extends TextValueLink<K> {
   @Override
   protected String getText() {
     final String value = super.getText();
-    if (value == null)
+    if (value == null) {
       return null;
+    }
     try {
       return (String) formatter.stringToValue((String) value);
     }

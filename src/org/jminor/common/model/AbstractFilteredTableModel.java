@@ -157,8 +157,9 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
    */
   public boolean contains(final T item, final boolean includeHidden) {
     final boolean ret = viewIndexOf(item) >= 0;
-    if (!ret && includeHidden)
+    if (!ret && includeHidden) {
       return hiddenItems.indexOf(item) >= 0;
+    }
 
     return ret;
   }
@@ -190,16 +191,18 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
     if (forward) {
       for (int row = startRowIndex >= getRowCount() ? 0 : startRowIndex; row < getRowCount(); row++) {
         for (int column = 0; column < getColumnCount(); column++) {
-          if (criteria.include(getSearchValueAt(row, column)))
+          if (criteria.include(getSearchValueAt(row, column))) {
             return new Point(column, row);
+          }
         }
       }
     }
     else {
       for (int row = startRowIndex < 0 ? getRowCount() - 1 : startRowIndex; row >= 0; row--) {
         for (int column = 0; column < getColumnCount(); column++) {
-          if (criteria.include(getSearchValueAt(row, column)))
+          if (criteria.include(getSearchValueAt(row, column))) {
             return new Point(column, row);
+          }
         }
       }
     }
@@ -238,8 +241,9 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
    * @param status the sorting status, use TableSorter.DESCENDING, .NOT_SORTED, .ASCENDING
    */
   public void setSortingStatus(final int columnIndex, final int status) {
-    if (columnIndex == -1)
+    if (columnIndex == -1) {
       throw new RuntimeException("Column index can not be negative");
+    }
 
     tableSorter.setSortingStatus(columnIndex, status);
   }
@@ -264,9 +268,11 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
     final List<Integer> indexes = new ArrayList<Integer>();
     final int min = selectionModel.getMinSelectionIndex();
     final int max = selectionModel.getMaxSelectionIndex();
-    for (int i = min; i <= max; i++)
-      if (selectionModel.isSelectedIndex(i))
+    for (int i = min; i <= max; i++) {
+      if (selectionModel.isSelectedIndex(i)) {
         indexes.add(i);
+      }
+    }
 
     return indexes;
   }
@@ -276,9 +282,11 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
     final int min = selectionModel.getMinSelectionIndex();
     final int max = selectionModel.getMaxSelectionIndex();
     if (min >= 0 && max >= 0) {
-      for (int i = min; i <= max; i++)
-        if (selectionModel.isSelectedIndex(i))
+      for (int i = min; i <= max; i++) {
+        if (selectionModel.isSelectedIndex(i)) {
           indexes.add(tableSorter.modelIndex(i));
+        }
+      }
     }
 
     return indexes;
@@ -290,13 +298,15 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
    */
   public void moveSelectionUp() {
     if (visibleItems.size() > 0) {
-      if (getSelectionModel().isSelectionEmpty())
+      if (getSelectionModel().isSelectionEmpty()) {
         getSelectionModel().setSelectionInterval(visibleItems.size() - 1, visibleItems.size() - 1);
+      }
       else {
         final Collection<Integer> selected = getSelectedViewIndexes();
         final List<Integer> newSelected = new ArrayList<Integer>(selected.size());
-        for (final Integer index : selected)
+        for (final Integer index : selected) {
           newSelected.add(index == 0 ? visibleItems.size() - 1 : index - 1);
+        }
 
         setSelectedItemIndexes(newSelected);
       }
@@ -309,13 +319,15 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
    */
   public void moveSelectionDown() {
     if (visibleItems.size() > 0) {
-      if (getSelectionModel().isSelectionEmpty())
-        getSelectionModel().setSelectionInterval(0,0);
+      if (getSelectionModel().isSelectionEmpty()) {
+        getSelectionModel().setSelectionInterval(0, 0);
+      }
       else {
         final Collection<Integer> selected = getSelectedViewIndexes();
         final List<Integer> newSelected = new ArrayList<Integer>(selected.size());
-        for (final Integer index : selected)
+        for (final Integer index : selected) {
           newSelected.add(index == visibleItems.size() - 1 ? 0 : index + 1);
+        }
 
         setSelectedItemIndexes(newSelected);
       }
@@ -353,8 +365,9 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
   public List<T> getSelectedItems() {
     final Collection<Integer> selectedModelIndexes = getSelectedModelIndexes();
     final List<T> selectedItems = new ArrayList<T>();
-    for (final int modelIndex : selectedModelIndexes)
+    for (final int modelIndex : selectedModelIndexes) {
       selectedItems.add(visibleItems.get(modelIndex));
+    }
 
     return selectedItems;
   }
@@ -367,8 +380,9 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
     final List<Integer> indexes = new ArrayList<Integer>();
     for (final T item : items) {
       final int index = viewIndexOf(item);
-      if (index >= 0)
+      if (index >= 0) {
         indexes.add(index);
+      }
     }
 
     setSelectedItemIndexes(indexes);
@@ -379,10 +393,12 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
    */
   public T getSelectedItem() {
     final int index = selectionModel.getSelectedIndex();
-    if (index >= 0 && index < getVisibleItemCount())
+    if (index >= 0 && index < getVisibleItemCount()) {
       return getItemAtViewIndex(index);
-    else
+    }
+    else {
       return null;
+    }
   }
 
   /**
@@ -421,8 +437,9 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
    * @return the item at <code>index</code>
    */
   public T getItemAtViewIndex(final int index) {
-    if (index >= 0 && index < visibleItems.size())
+    if (index >= 0 && index < visibleItems.size()) {
       return visibleItems.get(tableSorter.modelIndex(index));
+    }
 
     throw new ArrayIndexOutOfBoundsException("No visible item found at index: " + index + ", size: " + getVisibleItemCount());
   }
@@ -476,8 +493,9 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
    */
   public List<T> getAllItems(final boolean includeHidden) {
     final List<T> entities = new ArrayList<T>(visibleItems);
-    if (includeHidden)
+    if (includeHidden) {
       entities.addAll(hiddenItems);
+    }
 
     return entities;
   }
@@ -487,8 +505,9 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
    * @param items the items to remove from the model
    */
   public void removeItems(final List<T> items) {
-    for (final T item : items)
+    for (final T item : items) {
       removeItem(item);
+    }
   }
 
   /**
@@ -503,8 +522,9 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
     }
     else {
       index = hiddenItems.indexOf(item);
-      if (index >= 0)
+      if (index >= 0) {
         hiddenItems.remove(index);
+      }
     }
   }
 
@@ -564,8 +584,9 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
    */
   public boolean isColumnVisible(final Object columnIdentifier) {
     for (final TableColumn column : hiddenColumns) {
-      if (column.getIdentifier().equals(columnIdentifier))
+      if (column.getIdentifier().equals(columnIdentifier)) {
         return false;
+      }
     }
 
     return true;
@@ -658,18 +679,21 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
    * @return the index of the corresponding column in the view
    */
   protected int convertColumnIndexToView(final int modelColumnIndex) {
-    if (modelColumnIndex < 0)
+    if (modelColumnIndex < 0) {
       return modelColumnIndex;
+    }
 
     final int cachedIndex = columnIndexCache[modelColumnIndex];
-    if (cachedIndex > 0)
+    if (cachedIndex > 0) {
       return cachedIndex;
+    }
 
-    for (int index = 0; index < getColumnCount(); index++)
+    for (int index = 0; index < getColumnCount(); index++) {
       if (columnModel.getColumn(index).getModelIndex() == modelColumnIndex) {
         columnIndexCache[modelColumnIndex] = index;
         return index;
       }
+    }
 
     return -1;
   }
@@ -682,13 +706,16 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
   protected void addItems(final List<T> items, final boolean atFront) {
     for (final T item : items) {
       if (include(item)) {
-        if (atFront)
+        if (atFront) {
           visibleItems.add(0, item);
-        else
+        }
+        else {
           visibleItems.add(item);
+        }
       }
-      else
+      else {
         hiddenItems.add(item);
+      }
     }
     fireTableDataChanged();
   }
@@ -787,23 +814,28 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
         selectedIndex = minSelIndex;
         evtSelectedIndexChanged.fire();
       }
-      if (isAdjusting || isUpdatingSelection || isSorting)
+      if (isAdjusting || isUpdatingSelection || isSorting) {
         evtSelectionChangedAdjusting.fire();
-      else
+      }
+      else {
         evtSelectionChanged.fire();
+      }
     }
 
     public int getSelectionCount() {
-      if (isSelectionEmpty())
+      if (isSelectionEmpty()) {
         return 0;
+      }
 
       int counter = 0;
       final int min = getMinSelectionIndex();
       final int max = getMaxSelectionIndex();
       if (min >= 0 && max >= 0) {
-        for (int i = min; i <= max; i++)
-          if (isSelectedIndex(i))
+        for (int i = min; i <= max; i++) {
+          if (isSelectedIndex(i)) {
             counter++;
+          }
+        }
       }
 
       return counter;

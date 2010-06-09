@@ -105,12 +105,10 @@ public class EntityLookupModel {
   public EntityLookupModel(final String entityID, final EntityDbProvider dbProvider, final Criteria additionalLookupCriteria,
                            final boolean caseSensitive, final boolean wildcardPrefix, final boolean wildcardPostfix,
                            final List<Property> lookupProperties) {
-    if (dbProvider == null)
-      throw new IllegalArgumentException("EntityLookupModel requires a non-null EntityDbProvider instance");
-    if (entityID == null)
-      throw new IllegalArgumentException("EntityLookupModel requires a non-null entityID");
-    if (lookupProperties == null)
-      throw new IllegalArgumentException("EntityLookupModel requires non-null lookupProperties");
+
+    Util.rejectNullValue(entityID);
+    Util.rejectNullValue(dbProvider);
+    Util.rejectNullValue(lookupProperties);
     this.dbProvider = dbProvider;
     this.entityID = entityID;
     this.lookupProperties = lookupProperties;
@@ -170,14 +168,17 @@ public class EntityLookupModel {
    * @throws IllegalArgumentException if this lookup model does not allow multiple selections and <code>entities.size() > 1</code>
    */
   public void setSelectedEntities(final List<Entity> entities) {
-    if ((entities == null || entities.size() == 0) && this.selectedEntities.size() == 0)
-      return;//no change
-    if (entities != null && entities.size() > 1 && !isMultipleSelectionAllowed())
+    if ((entities == null || entities.size() == 0) && this.selectedEntities.size() == 0) {
+      return;
+    }//no change
+    if (entities != null && entities.size() > 1 && !isMultipleSelectionAllowed()) {
       throw new IllegalArgumentException("This EntityLookupModel does not allow the selection of multiple entities");
+    }
 
     this.selectedEntities.clear();
-    if (entities != null)
+    if (entities != null) {
       this.selectedEntities.addAll(entities);
+    }
     refreshSearchText();
     evtSelectedEntitiesChanged.fire();
   }
@@ -312,8 +313,9 @@ public class EntityLookupModel {
    * @see #setAdditionalLookupCriteria(org.jminor.common.db.criteria.Criteria)
    */
   public EntitySelectCriteria getEntitySelectCriteria() {
-    if (getSearchString().equals(getWildcard()))
+    if (getSearchString().equals(getWildcard())) {
       return new EntitySelectCriteria(getEntityID());
+    }
 
     final CriteriaSet<Property> baseCriteria = new CriteriaSet<Property>(CriteriaSet.Conjunction.OR);
     final String[] lookupTexts = isMultipleSelectionAllowed() ? getSearchString().split(getMultipleValueSeparator()) : new String[] {getSearchString()};
@@ -360,8 +362,9 @@ public class EntityLookupModel {
     final StringBuilder stringBuilder = new StringBuilder();
     for (int i = 0; i < entityList.size(); i++) {
       stringBuilder.append(entityList.get(i).toString());
-      if (i < entityList.size() - 1)
+      if (i < entityList.size() - 1) {
         stringBuilder.append(getMultipleValueSeparator());
+      }
     }
 
     return stringBuilder.toString();

@@ -188,8 +188,9 @@ public class ConnectionPoolMonitor {
   }
 
   public void shutdown() {
-    if (updateTimer != null)
+    if (updateTimer != null) {
       updateTimer.cancel();
+    }
   }
 
   public Event eventCollectFineGrainedStatsChanged() {
@@ -245,8 +246,9 @@ public class ConnectionPoolMonitor {
     long time = -1;
     for (int i = stats.size()-1; i >= 0; i--) {
       final ConnectionPoolState state = stats.get(i);
-      if (state.getTime() != time)
+      if (state.getTime() != time) {
         poolStates.add(state);
+      }
 
       time = state.getTime();
     }
@@ -255,11 +257,13 @@ public class ConnectionPoolMonitor {
   }
 
   private void startUpdateTimer(final int delay) {
-    if (delay <= 0)
+    if (delay <= 0) {
       return;
+    }
 
-    if (updateTimer != null)
+    if (updateTimer != null) {
       updateTimer.cancel();
+    }
     updateTimer = new Timer(false);
     updateTimer.schedule(new TimerTask() {
       @Override

@@ -32,10 +32,13 @@ public class BoundedRandomItemModel<T> extends RandomItemModel<T> {
    * @param items the items
    */
   public BoundedRandomItemModel(final int boundedWeight, final T... items) {
-    if (boundedWeight <= 0)
+    if (boundedWeight <= 0) {
       throw new IllegalArgumentException("Bounded weight must be a positive integer");
-    if (items == null || items.length == 0)
-      throw new IllegalArgumentException("Items must not be null or empty");
+    }
+    Util.rejectNullValue(items);
+    if (items.length == 0) {
+      throw new IllegalArgumentException("Items must not be empty");
+    }
 
     this.weightBounds = boundedWeight;
     initializeItems(items);
@@ -50,8 +53,9 @@ public class BoundedRandomItemModel<T> extends RandomItemModel<T> {
   public void increment(final T item) {
     synchronized (lock) {
       final RandomItem randomItem = getRandomItem(item);
-      if (randomItem.getWeight() >= weightBounds)
+      if (randomItem.getWeight() >= weightBounds) {
         throw new RuntimeException("Maximum weight reached");
+      }
 
       decrementWeight(randomItem);
       getRandomItem(item).increment();
@@ -63,8 +67,9 @@ public class BoundedRandomItemModel<T> extends RandomItemModel<T> {
   public void decrement(final T item) {
     synchronized (lock) {
       final RandomItem<T> randomItem = getRandomItem(item);
-      if (randomItem.getWeight() == 0)
+      if (randomItem.getWeight() == 0) {
         throw new RuntimeException("No weight to shed");
+      }
 
       incrementWeight(randomItem);
       randomItem.decrement();
@@ -85,8 +90,9 @@ public class BoundedRandomItemModel<T> extends RandomItemModel<T> {
   protected void initializeItems(final T... items) {
     final int rest = weightBounds % items.length;
     final int amountEach = weightBounds / items.length;
-    for (int i = 0; i < items.length; i++)
+    for (int i = 0; i < items.length; i++) {
       super.addItem(items[i], i < items.length - 1 ? amountEach : amountEach + rest);
+    }
   }
 
   private void incrementWeight(final RandomItem exclude) {
@@ -103,10 +109,12 @@ public class BoundedRandomItemModel<T> extends RandomItemModel<T> {
     int index = getItems().indexOf(lastAffected);
     RandomItem<T> item = null;
     while (item == null || item == exclude || (nonEmpty ? item.getWeight() == 0 : item.getWeight() == weightBounds)) {
-      if (index == 0)
+      if (index == 0) {
         index = getItems().size() - 1;
-      else
+      }
+      else {
         index--;
+      }
 
       item = getItems().get(index);
     }

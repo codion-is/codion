@@ -30,12 +30,14 @@ public class PropertyFilterModel extends AbstractSearchModel<Property> {
   }
 
   public boolean include(final Comparable comparable) {
-    if (!isSearchEnabled())
+    if (!isSearchEnabled()) {
       return true;
+    }
 
     Comparable toCompare = comparable;
-    if (comparable instanceof Timestamp)//ignore seconds and milliseconds
+    if (comparable instanceof Timestamp) {//ignore seconds and milliseconds
       toCompare = DateUtil.floorTimestamp((Timestamp) toCompare);
+    }
 
     switch (getSearchType()) {
       case LIKE:
@@ -59,45 +61,55 @@ public class PropertyFilterModel extends AbstractSearchModel<Property> {
     setSearchType(SearchType.LIKE);
     setUpperBound(value);
     final boolean on = value != null;
-    if (isSearchEnabled() != on)
+    if (isSearchEnabled() != on) {
       setSearchEnabled(on);
-    else
+    }
+    else {
       eventUpperBoundChanged().fire();
+    }
   }
 
   protected boolean includeLike(final Comparable comparable) {
-    if (getUpperBound() == null)
+    if (getUpperBound() == null) {
       return true;
+    }
 
-    if (comparable == null)
+    if (comparable == null) {
       return false;
+    }
 
-    if (comparable instanceof String) //for Entity and String values
-        return includeExactWildcard((String) comparable);
+    if (comparable instanceof String) {//for Entity and String values
+      return includeExactWildcard((String) comparable);
+    }
 
     return comparable.compareTo(getUpperBound()) == 0;
   }
 
   protected boolean includeNotLike(final Comparable comparable) {
-    if (getUpperBound() == null)
+    if (getUpperBound() == null) {
       return true;
+    }
 
-    if (comparable == null)
+    if (comparable == null) {
       return false;
+    }
 
     final Property property = getSearchProperty();
-    if (property.isString() || property.isReference())
+    if (property.isString() || property.isReference()) {
       return !includeExactWildcard((String) comparable);
+    }
 
     return comparable.compareTo(getUpperBound()) != 0;
   }
 
   protected boolean includeExactWildcard(final String value) {
     String upperBound = (String) getUpperBound();
-    if (upperBound.equals(getWildcard()))
+    if (upperBound.equals(getWildcard())) {
       return true;
-    if (value == null)
+    }
+    if (value == null) {
       return false;
+    }
 
     String realValue = value;
     if (!isCaseSensitive()) {
@@ -105,8 +117,9 @@ public class PropertyFilterModel extends AbstractSearchModel<Property> {
       realValue = realValue.toUpperCase();
     }
 
-    if (upperBound.indexOf(getWildcard()) < 0)
+    if (upperBound.indexOf(getWildcard()) < 0) {
       return realValue.compareTo(upperBound) == 0;
+    }
 
     return Pattern.matches(prepareForRegex(upperBound), realValue);
   }
@@ -125,17 +138,21 @@ public class PropertyFilterModel extends AbstractSearchModel<Property> {
   }
 
   protected boolean includeMinMaxInside(final Comparable comparable) {
-    if (getLowerBound() == null && getUpperBound() == null)
+    if (getLowerBound() == null && getUpperBound() == null) {
       return true;
+    }
 
-    if (comparable == null)
+    if (comparable == null) {
       return false;
+    }
 
-    if (getLowerBound() == null)
+    if (getLowerBound() == null) {
       return comparable.compareTo(getUpperBound()) <= 0;
+    }
 
-    if (getUpperBound() == null)
+    if (getUpperBound() == null) {
       return comparable.compareTo(getLowerBound()) >= 0;
+    }
 
     final int lowerCompareResult = comparable.compareTo(getLowerBound());
     final int upperCompareResult = comparable.compareTo(getUpperBound());
@@ -144,17 +161,21 @@ public class PropertyFilterModel extends AbstractSearchModel<Property> {
   }
 
   protected boolean includeMinMaxOutside(final Comparable comparable) {
-    if (getLowerBound() == null && getUpperBound() == null)
+    if (getLowerBound() == null && getUpperBound() == null) {
       return true;
+    }
 
-    if (comparable == null)
+    if (comparable == null) {
       return false;
+    }
 
-    if (getLowerBound() == null)
+    if (getLowerBound() == null) {
       return comparable.compareTo(getUpperBound()) >= 0;
+    }
 
-    if (getUpperBound() == null)
+    if (getUpperBound() == null) {
       return comparable.compareTo(getLowerBound()) <= 0;
+    }
 
     final int lowerCompareResult = comparable.compareTo(getLowerBound());
     final int upperCompareResult = comparable.compareTo(getUpperBound());
@@ -164,13 +185,16 @@ public class PropertyFilterModel extends AbstractSearchModel<Property> {
 
   protected Comparable getComparable(final Object object) {
     final Entity entity = (Entity) object;
-    if (entity.isValueNull(getSearchProperty().getPropertyID()))
+    if (entity.isValueNull(getSearchProperty().getPropertyID())) {
       return null;
+    }
 
     final Object value = entity.getValue(getSearchProperty().getPropertyID());
-    if (getSearchProperty().isReference())
+    if (getSearchProperty().isReference()) {
       return value.toString();
-    else
+    }
+    else {
       return (Comparable) value;
+    }
   }
 }

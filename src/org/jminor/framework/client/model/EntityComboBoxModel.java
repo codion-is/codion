@@ -76,8 +76,9 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
       for (final Map.Entry<String, Set<Entity>> entry : foreignKeyFilterEntities.entrySet()) {
         final Entity foreignKeyValue = item.getForeignKeyValue(entry.getKey());
         final Set<Entity> filterValues = entry.getValue();
-        if (filterValues.size() > 0 && !filterValues.contains(foreignKeyValue))
+        if (filterValues.size() > 0 && !filterValues.contains(foreignKeyValue)) {
           return false;
+        }
       }
 
       return true;
@@ -126,10 +127,8 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
   public EntityComboBoxModel(final String entityID, final EntityDbProvider dbProvider,
                              final boolean staticData, final String nullValueItem, final boolean sortContents) {
     super(sortContents, nullValueItem);
-    if (entityID == null)
-      throw new IllegalArgumentException("EntityComboBoxModel requires a non-null entityID");
-    if (dbProvider == null)
-      throw new IllegalArgumentException("EntityComboBoxModel requires a non-null dbProvider");
+    Util.rejectNullValue(entityID);
+    Util.rejectNullValue(dbProvider);
     this.entityID = entityID;
     this.dbProvider = dbProvider;
     this.staticData = staticData;
@@ -179,20 +178,23 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
     final Entity toSelect = new Entity(primaryKey);
     List<Object> items = getVisibleItems();
     int indexOfKey = items.indexOf(toSelect);
-    if (indexOfKey >= 0)
+    if (indexOfKey >= 0) {
       setSelectedItem(items.get(indexOfKey));
+    }
     items = getFilteredItems();
     indexOfKey = items.indexOf(toSelect);
-    if (indexOfKey >= 0)
+    if (indexOfKey >= 0) {
       setSelectedItem(items.get(indexOfKey));
+    }
   }
 
   /**
    * @return the selected entity
    */
   public Entity getSelectedEntity() {
-    if (isNullValueSelected())
+    if (isNullValueSelected()) {
       return null;
+    }
 
     return (Entity) getSelectedItem();
   }
@@ -200,19 +202,23 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
   /** {@inheritDoc} */
   @Override
   public void setSelectedItem(final Object toSelect) {
-    if (getSize() == 0)
+    if (getSize() == 0) {
       return;
+    }
     final Object item = toSelect instanceof String && ((String)toSelect).length() == 0 ? null : toSelect;
-    if (item != null && !item.equals(getNullValueString()) && !(item instanceof Entity))
+    if (item != null && !item.equals(getNullValueString()) && !(item instanceof Entity)) {
       throw new IllegalArgumentException("Cannot set '" + item + "' [" + item.getClass()
               + "] as selected item in a EntityComboBoxModel (" + this + ")");
+    }
 
     if (item instanceof Entity) {
       final int indexOfKey = getIndexOfKey(((Entity) toSelect).getPrimaryKey());
-      if (indexOfKey >= 0)
+      if (indexOfKey >= 0) {
         super.setSelectedItem(getElementAt(indexOfKey));
-      else
+      }
+      else {
         super.setSelectedItem(toSelect);
+      }
     }
     else {
       super.setSelectedItem(null);
@@ -237,16 +243,18 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
    * @param selectCriteria the criteria
    */
   public void setEntitySelectCriteria(final EntitySelectCriteria selectCriteria) {
-    if (selectCriteria != null && !selectCriteria.getEntityID().equals(getEntityID()))
+    if (selectCriteria != null && !selectCriteria.getEntityID().equals(getEntityID())) {
       throw new RuntimeException("EntitySelectCriteria entityID mismatch, " + getEntityID()
               + " expected, got " + selectCriteria.getEntityID());
+    }
     this.selectCriteria = selectCriteria;
   }
 
   public void setForeignKeyFilterEntities(final String foreignKeyPropertyID, final Collection<Entity> entities) {
     final Set<Entity> filterEntities = new HashSet<Entity>();
-    if (entities != null)
+    if (entities != null) {
       filterEntities.addAll(entities);
+    }
     foreignKeyFilterEntities.put(foreignKeyPropertyID, filterEntities);
 
     filterContents();
@@ -254,8 +262,9 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
 
   public Collection<Entity> getForeignKeyFilterEntities(final String foreignKeyPropertyID) {
     final Collection<Entity> filterEntities = new ArrayList<Entity>();
-    if (foreignKeyFilterEntities.containsKey(foreignKeyPropertyID))
+    if (foreignKeyFilterEntities.containsKey(foreignKeyPropertyID)) {
       filterEntities.addAll(foreignKeyFilterEntities.get(foreignKeyPropertyID));
+    }
 
     return filterEntities;
   }
@@ -267,8 +276,9 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
             getDbProvider(), true, "-", true);
     foreignKeyModel.refresh();
     final Collection<Entity> filterEntities = getForeignKeyFilterEntities(foreignKeyPropertyID);
-    if (filterEntities != null && filterEntities.size() > 0)
+    if (filterEntities != null && filterEntities.size() > 0) {
       foreignKeyModel.setSelectedItem(filterEntities.iterator().next());
+    }
     foreignKeyModel.eventSelectionChanged().addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         final Entity selectedEntity = foreignKeyModel.getSelectedEntity();
@@ -279,8 +289,9 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
     eventSelectionChanged().addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         final Entity selected = getSelectedEntity();
-        if (selected != null)
+        if (selected != null) {
           foreignKeyModel.setSelectedEntityByPrimaryKey(selected.getReferencedPrimaryKey(foreignKeyProperty));
+        }
       }
     });
 
@@ -314,10 +325,12 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
 
   @Override
   protected boolean include(final Object object) {
-    if (object instanceof Entity)
+    if (object instanceof Entity) {
       return super.include(object) && foreignKeyFilterCriteria.include((Entity) object);
-    else
+    }
+    else {
       return super.include(object);
+    }
   }
 
   /**
@@ -332,9 +345,11 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
       }
       final List<Entity> entities = performQuery();
       final ListIterator<Entity> iterator = entities.listIterator();
-      while (iterator.hasNext())
-        if (!includeEntity(iterator.next()))
+      while (iterator.hasNext()) {
+        if (!includeEntity(iterator.next())) {
           iterator.remove();
+        }
+      }
 
       return entities;
     }
@@ -351,10 +366,12 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
    */
   protected List<Entity> performQuery() {
     try {
-      if (getEntitySelectCriteria() != null)
+      if (getEntitySelectCriteria() != null) {
         return dbProvider.getEntityDb().selectMany(getEntitySelectCriteria());
-      else
+      }
+      else {
         return dbProvider.getEntityDb().selectAll(getEntityID());
+      }
     }
     catch (Exception e) {
       throw new RuntimeException(e);

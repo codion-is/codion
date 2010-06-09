@@ -34,8 +34,9 @@ public class ValueListInputProvider extends AbstractInputProvider<Object> {
     MaximumMatch.enable(box);
     final Item<Object> currentItem = new Item<Object>(currentValue, "");
     final int currentValueIndex = values.indexOf(currentItem);
-    if (currentValueIndex >= 0)
+    if (currentValueIndex >= 0) {
       boxModel.setSelectedItem(values.get(currentValueIndex));
+    }
 
     return box;
   }

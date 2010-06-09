@@ -4,6 +4,7 @@
 package org.jminor.framework.domain;
 
 import org.jminor.common.model.IdSource;
+import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.ValueMap;
 
 import java.util.ArrayList;
@@ -33,8 +34,9 @@ public final class EntityRepository {
    */
   public static String[] getEntitySearchPropertyIDs(final String entityID) {
     final List<String> searchPropertyIDs = getEntityDefinition(entityID).getSearchPropertyIDs();
-    if (searchPropertyIDs != null)
+    if (searchPropertyIDs != null) {
       return searchPropertyIDs.toArray(new String[searchPropertyIDs.size()]);
+    }
 
     return null;
   }
@@ -55,9 +57,11 @@ public final class EntityRepository {
       final Collection<Property> properties =
               getDatabaseProperties(entityID);
       searchProperties = new ArrayList<Property>();
-      for (final Property property : properties)
-        if (property.isString())
+      for (final Property property : properties) {
+        if (property.isString()) {
           searchProperties.add(property);
+        }
+      }
     }
 
     return searchProperties;
@@ -217,8 +221,9 @@ public final class EntityRepository {
       if (!includeReadOnly && property.isReadOnly() || !includeNonUpdatable && !property.isUpdatable()
               || !includePrimaryKeyProperties && property instanceof Property.PrimaryKeyProperty
               || !includeForeignKeyProperties && property instanceof Property.ForeignKeyProperty
-              || !includeTransientProperties && property instanceof Property.TransientProperty)
+              || !includeTransientProperties && property instanceof Property.TransientProperty) {
         iterator.remove();
+      }
     }
 
     return properties;
@@ -242,8 +247,9 @@ public final class EntityRepository {
    */
   public static Property getProperty(final String entityID, final String propertyID) {
     final Property property = getProperties(entityID).get(propertyID);
-    if (property == null)
+    if (property == null) {
       throw new RuntimeException("Property '" + propertyID + "' not found in entity: " + entityID);
+    }
 
     return property;
   }
@@ -256,8 +262,9 @@ public final class EntityRepository {
    */
   public static List<Property> getProperties(final String entityID, final String... propertyIDs) {
     final List<Property> properties = new ArrayList<Property>();
-    for (final String propertyID : propertyIDs)
+    for (final String propertyID : propertyIDs) {
       properties.add(getProperty(entityID, propertyID));
+    }
 
     return properties;
   }
@@ -358,9 +365,11 @@ public final class EntityRepository {
    */
   public static List<Property.ForeignKeyProperty> getForeignKeyProperties(final String entityID, final String referenceEntityID) {
     final List<Property.ForeignKeyProperty> properties = new ArrayList<Property.ForeignKeyProperty>();
-    for (final Property.ForeignKeyProperty foreignKeyProperty : getForeignKeyProperties(entityID))
-      if (foreignKeyProperty.getReferencedEntityID().equals(referenceEntityID))
+    for (final Property.ForeignKeyProperty foreignKeyProperty : getForeignKeyProperties(entityID)) {
+      if (foreignKeyProperty.getReferencedEntityID().equals(referenceEntityID)) {
         properties.add(foreignKeyProperty);
+      }
+    }
 
     return properties;
   }
@@ -372,9 +381,11 @@ public final class EntityRepository {
    * @throws RuntimeException in case no such property exists
    */
   public static Property.ForeignKeyProperty getForeignKeyProperty(final String entityID, final String propertyID) {
-    for (final Property.ForeignKeyProperty foreignKeyProperty : getForeignKeyProperties(entityID))
-      if (foreignKeyProperty.is(propertyID))
+    for (final Property.ForeignKeyProperty foreignKeyProperty : getForeignKeyProperties(entityID)) {
+      if (foreignKeyProperty.is(propertyID)) {
         return foreignKeyProperty;
+      }
+    }
 
     throw new RuntimeException("Foreign key property with id: " + propertyID + " not found in entity of type: " + entityID);
   }
@@ -422,8 +433,9 @@ public final class EntityRepository {
    * @param entityDefinition the EntityDefinition to add
    */
   public static void add(EntityDefinition entityDefinition) {
-    if (entityDefinitions.containsKey(entityDefinition.getEntityID()))
+    if (entityDefinitions.containsKey(entityDefinition.getEntityID())) {
       throw new RuntimeException("Entity already added: " + entityDefinition.getEntityID());
+    }
 
     entityDefinitions.put(entityDefinition.getEntityID(), entityDefinition);
   }
@@ -436,8 +448,7 @@ public final class EntityRepository {
    */
   public static EntityDefinition getEntityDefinition(final String entityID) {
     final EntityDefinition definition = entityDefinitions.get(entityID);
-    if (definition == null)
-      throw new IllegalArgumentException("Undefined entity: " + entityID);
+    Util.rejectNullValue(definition);
 
     return definition;
   }

@@ -48,8 +48,9 @@ public class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements En
     System.setSecurityManager(new RMISecurityManager());
     final String serverAdminPortProperty = System.getProperty(Configuration.SERVER_ADMIN_PORT);
 
-    if (serverAdminPortProperty == null)
+    if (serverAdminPortProperty == null) {
       throw new RuntimeException("Required server property missing: " + Configuration.SERVER_ADMIN_PORT);
+    }
 
     SERVER_ADMIN_PORT = Integer.parseInt(serverAdminPortProperty);
   }
@@ -124,8 +125,9 @@ public class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements En
 
   public Collection<String> getClientTypes() throws RemoteException {
     final Set<String> clientTypes = new HashSet<String>();
-    for (final ClientInfo client : getClients())
+    for (final ClientInfo client : getClients()) {
       clientTypes.add(client.getClientTypeID());
+    }
 
     return clientTypes;
   }

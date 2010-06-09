@@ -94,10 +94,7 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
    */
   public EntityModel(final String entityID, final EntityDbProvider dbProvider, final boolean includeTableModel) {
     super(entityID, includeTableModel);
-    if (entityID == null || entityID.length() == 0)
-      throw new IllegalArgumentException("entityID must be specified");
-    if (dbProvider == null)
-      throw new IllegalArgumentException("dbProvider can not be null");
+    Util.rejectNullValue(dbProvider);
     this.dbProvider = dbProvider;
     addDetailModels();
     initializeAssociatedModels();
@@ -151,8 +148,9 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
    * @param value true if a refresh in this model should trigger a refresh in its detail models
    */
   public void setCascadeRefresh(final boolean value) {
-    for (final EntityModel detailModel : detailModels)
+    for (final EntityModel detailModel : detailModels) {
       detailModel.setCascadeRefresh(value);
+    }
 
     stCascadeRefresh.setActive(value);
   }
@@ -171,8 +169,9 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
    * @see EntityTableModel#searchByForeignKeyValues(String, java.util.List)
    */
   public void setSelectionFiltersDetail(final boolean value) {
-    for (final EntityModel detailModel : detailModels)
+    for (final EntityModel detailModel : detailModels) {
       detailModel.setSelectionFiltersDetail(value);
+    }
 
     getTableModel().getSelectionModel().clearSelection();
     selectionFiltersDetail = value;
@@ -206,9 +205,11 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
    * @return true if this model contains a detail model of the given class
    */
   public boolean containsDetailModel(final Class<? extends EntityModel> modelClass) {
-    for (final EntityModel detailModel : detailModels)
-      if (detailModel.getClass().equals(modelClass))
+    for (final EntityModel detailModel : detailModels) {
+      if (detailModel.getClass().equals(modelClass)) {
         return true;
+      }
+    }
 
     return false;
   }
@@ -225,8 +226,9 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
    * returns null in case this model contains no detail models
    */
   public EntityModel getLinkedDetailModel() {
-    if (detailModels.size() == 0)
+    if (detailModels.size() == 0) {
       return null;
+    }
 
     return linkedDetailModels.size() > 0 ? linkedDetailModels.iterator().next() : detailModels.get(0);
   }
@@ -248,11 +250,13 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
   public void setLinkedDetailModels(final List<EntityModel> detailModels) {
     final Set<EntityModel> linked = new HashSet<EntityModel>(linkedDetailModels);
     linkedDetailModels.clear();
-    if (detailModels != null)
+    if (detailModels != null) {
       linkedDetailModels.addAll(detailModels);
+    }
 
-    if (!linkedDetailModels.equals(linked))
+    if (!linkedDetailModels.equals(linked)) {
       evtLinkedDetailModelsChanged.fire();
+    }
   }
 
   /**
@@ -268,9 +272,11 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
    * @return the detail model of type <code>entityModelClass</code>, null if none is found
    */
   public EntityModel getDetailModel(final Class<? extends EntityModel> entityModelClass) {
-    for (final EntityModel detailModel : detailModels)
-      if (detailModel.getClass().equals(entityModelClass))
+    for (final EntityModel detailModel : detailModels) {
+      if (detailModel.getClass().equals(entityModelClass)) {
         return detailModel;
+      }
+    }
 
     throw new RuntimeException("No detail model of type " + entityModelClass + " found in model: " + this);
   }
@@ -306,16 +312,18 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
    * @see #isCascadeRefresh
    */
   public void refresh() {
-    if (isRefreshing)
+    if (isRefreshing) {
       return;
+    }
 
     try {
       LOG.trace(this + " refreshing");
       isRefreshing = true;
       evtRefreshStarted.fire();
       getEditModel().refresh();//triggers table model refresh as per bindTableModelEventsInternal()
-      if (isCascadeRefresh())
+      if (isCascadeRefresh()) {
         refreshDetailModels();
+      }
 
       updateDetailModelsByActiveEntity();
     }
@@ -327,8 +335,9 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
   }
 
   public void clear() {
-    if (containsTableModel())
+    if (containsTableModel()) {
       getTableModel().clear();
+    }
     getEditModel().clear();
     clearDetailModels();
   }
@@ -340,11 +349,13 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
    * @param selectedMasterEntities the master entities
    */
   public void masterSelectionChanged(final String masterEntityID, final List<Entity> selectedMasterEntities) {
-    if (isSelectionFiltersDetail() && containsTableModel())
+    if (isSelectionFiltersDetail() && containsTableModel()) {
       getTableModel().searchByForeignKeyValues(masterEntityID, selectedMasterEntities);
+    }
 
-    for (final Property.ForeignKeyProperty foreignKeyProperty : EntityRepository.getForeignKeyProperties(getEntityID(), masterEntityID))
+    for (final Property.ForeignKeyProperty foreignKeyProperty : EntityRepository.getForeignKeyProperties(getEntityID(), masterEntityID)) {
       getEditModel().setValue(foreignKeyProperty.getPropertyID(), selectedMasterEntities != null && selectedMasterEntities.size() > 0 ? selectedMasterEntities.get(0) : null);
+    }
   }
 
   /**
@@ -433,9 +444,11 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
       }
       else {//replace and select the updated entities
         final List<Entity> updated = new ArrayList<Entity>();
-        for (final Entity entity : updatedEntities)
-          if (entity.is(getEntityID()))
+        for (final Entity entity : updatedEntities) {
+          if (entity.is(getEntityID())) {
             updated.add(entity);
+          }
+        }
         getTableModel().replaceEntities(updated);
         getTableModel().setSelectedItems(updated);
       }
@@ -460,12 +473,15 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
           final EntityEditModel detailEditModel = detailModel.getEditModel();
           if (detailEditModel.containsComboBoxModel(foreignKeyProperty)) {
             final EntityComboBoxModel comboModel = detailEditModel.getEntityComboBoxModel(foreignKeyProperty);
-            for (final Entity deletedEntity : deletedEntities)
+            for (final Entity deletedEntity : deletedEntities) {
               comboModel.removeItem(deletedEntity);
-            if (comboModel.getSize() > 0)
+            }
+            if (comboModel.getSize() > 0) {
               comboModel.setSelectedItem(comboModel.getElementAt(0));
-            else
+            }
+            else {
               comboModel.setSelectedItem(null);
+            }
           }
         }
       }
@@ -479,8 +495,9 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
    * @param insertedPrimaryKeys the primary keys of the inserted entities
    */
   protected void refreshDetailModelsAfterInsert(final List<Entity.Key> insertedPrimaryKeys) {
-    if (detailModels.size() == 0)
+    if (detailModels.size() == 0) {
       return;
+    }
 
     try {
       final Entity insertedEntity = getEntityDb().selectSingle(insertedPrimaryKeys.get(0));
@@ -488,8 +505,9 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
         for (final Property.ForeignKeyProperty foreignKeyProperty :
                 EntityRepository.getForeignKeyProperties(detailModel.getEntityID(), getEntityID())) {
           final EntityEditModel detailEditModel = detailModel.getEditModel();
-          if (detailEditModel.containsComboBoxModel(foreignKeyProperty))
+          if (detailEditModel.containsComboBoxModel(foreignKeyProperty)) {
             detailEditModel.getEntityComboBoxModel(foreignKeyProperty).refresh();
+          }
           detailEditModel.setValue(foreignKeyProperty.getPropertyID(), insertedEntity);
         }
       }
@@ -505,38 +523,43 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
       for (final Property.ForeignKeyProperty foreignKeyProperty :
               EntityRepository.getForeignKeyProperties(detailModel.getEntityID(), getEntityID())) {
         final EntityEditModel detailEditModel = detailModel.getEditModel();
-        if (detailEditModel.containsComboBoxModel(foreignKeyProperty))
+        if (detailEditModel.containsComboBoxModel(foreignKeyProperty)) {
           detailEditModel.getEntityComboBoxModel(foreignKeyProperty).refresh();
+        }
       }
     }
   }
 
   protected void refreshDetailModels() {
     LOG.trace(this + " refreshing detail models");
-    for (final EntityModel detailModel : detailModels)
+    for (final EntityModel detailModel : detailModels) {
       detailModel.refresh();
+    }
   }
 
   protected void clearDetailModels() {
     LOG.trace(this + " clearing detail models");
-    for (final EntityModel detailModel : detailModels)
+    for (final EntityModel detailModel : detailModels) {
       detailModel.clear();
+    }
   }
 
   protected void updateDetailModelsByActiveEntity() {
     final List<Entity> activeEntities = containsTableModel() ?
             (getTableModel().stateSelectionEmpty().isActive() ? null : getTableModel().getSelectedItems()) :
             (getEditModel().isEntityNew() ? null : Arrays.asList(getEditModel().getEntityCopy()));
-    for (final EntityModel detailModel : linkedDetailModels)
+    for (final EntityModel detailModel : linkedDetailModels) {
       detailModel.masterSelectionChanged(getEntityID(), activeEntities);
+    }
   }
 
   private void addDetailModels() {
     for (final EntityModel detailModel : initializeDetailModels()) {
       detailModels.add(detailModel);
       detailModel.masterModel = this;
-      if (detailModel.containsTableModel())
+      if (detailModel.containsTableModel()) {
         detailModel.getTableModel().setDetailModel(true);
+      }
     }
   }
 
@@ -558,8 +581,9 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
     });
     evtLinkedDetailModelsChanged.addListener(new ActionListener() {
       public void actionPerformed(ActionEvent event) {
-        if (!getEditModel().isEntityNew())
+        if (!getEditModel().isEntityNew()) {
           updateDetailModelsByActiveEntity();
+        }
       }
     });
     if (!containsTableModel()) {
@@ -572,8 +596,9 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
   }
 
   private void bindTableModelEventsInternal() {
-    if (!containsTableModel())
+    if (!containsTableModel()) {
       return;
+    }
 
     getEditModel().eventRefreshDone().addListener(new ActionListener() {
       public void actionPerformed(ActionEvent event) {

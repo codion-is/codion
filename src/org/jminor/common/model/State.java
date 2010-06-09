@@ -58,8 +58,9 @@ public class State {
   public void setActive(final boolean value) {
     final boolean oldValue = active;
     active = value;
-    if (oldValue != value)
+    if (oldValue != value) {
       evtStateChanged.fire();
+    }
   }
 
   /**
@@ -73,8 +74,9 @@ public class State {
    * @return a State that is always the same as the parent state but can not be directly modified
    */
   public State getLinkedState() {
-    if (linkedState == null)
+    if (linkedState == null) {
       linkedState = new LinkedState(this);
+    }
 
     return linkedState;
   }
@@ -83,8 +85,9 @@ public class State {
    * @return A State object that is always the reverse of the parent state
    */
   public State getReversedState() {
-    if (reversedState == null)
+    if (reversedState == null) {
       reversedState = new ReverseState(this);
+    }
 
     return reversedState;
   }
@@ -173,9 +176,11 @@ public class State {
      */
     public void addState(final State state) {
       synchronized (members) {
-        for (final WeakReference<State> reference : members)
-          if (reference.get() == state)
-            return;//no duplicate states
+        for (final WeakReference<State> reference : members) {
+          if (reference.get() == state) {
+            return;
+          }
+        }//no duplicate states
 
         members.add(new WeakReference<State>(state));
       }
@@ -191,10 +196,12 @@ public class State {
       synchronized (members) {
         for (final WeakReference reference : members.toArray(new WeakReference[members.size()])) {
           final State referredState = (State) reference.get();
-          if (referredState == null) //remove this dead weak reference
+          if (referredState == null) {//remove this dead weak reference
             members.remove(reference);
-          else if (state.isActive() && referredState != state)
+          }
+          else if (state.isActive() && referredState != state) {
             referredState.setActive(false);
+          }
         }
       }
     }

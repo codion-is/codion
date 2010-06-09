@@ -6,6 +6,7 @@ package org.jminor.common.ui;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.AbstractFilteredTableModel;
 import org.jminor.common.model.DocumentAdapter;
+import org.jminor.common.model.Util;
 import org.jminor.common.ui.control.Control;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.textfield.SearchFieldHint;
@@ -65,9 +66,7 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
   private final JTextField searchField;
 
   public AbstractFilteredTablePanel(final AbstractFilteredTableModel<T> model) {
-    if (model == null)
-      throw new IllegalArgumentException("Table model must not be null");
-
+    Util.rejectNullValue(model);
     this.model = model;
     this.table = initializeJTable();
     this.tableScrollPane = new JScrollPane(table);
@@ -157,10 +156,12 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
     txtSearch.addKeyListener(new KeyAdapter() {
       @Override
       public void keyReleased(final KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_DOWN)
+        if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_DOWN) {
           doSearch(e.isShiftDown(), lastSearchResultIndex.y + 1, true, searchField.getText());
-        else if (e.getKeyCode() == KeyEvent.VK_UP)
+        }
+        else if (e.getKeyCode() == KeyEvent.VK_UP) {
           doSearch(e.isShiftDown(), lastSearchResultIndex.y - 1, false, searchField.getText());
+        }
       }
     });
 
@@ -173,19 +174,22 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
       final Point viewIndex = getTableModel().findNextItemCoordinate(fromIndex, forward, searchText);
       if (viewIndex != null) {
         lastSearchResultIndex = viewIndex;
-        if (addToSelection)
+        if (addToSelection) {
           getTableModel().addSelectedItemIndex(viewIndex.y);
+        }
         else {
           getTableModel().setSelectedItemIndex(viewIndex.y);
           getJTable().setColumnSelectionInterval(viewIndex.x, viewIndex.x);
         }
         scrollToCoordinate(viewIndex.y, viewIndex.x);
       }
-      else
+      else {
         lastSearchResultIndex = NULL_POINT;
+      }
     }
-    else
+    else {
       lastSearchResultIndex = NULL_POINT;
+    }
   }
 
   /**

@@ -49,10 +49,12 @@ public class EntityListModel extends AbstractListModel implements Refreshable {
     public void fireValueChanged(int min, int max, boolean isAdjusting) {
       super.fireValueChanged(min, max, isAdjusting);
       stSelectionEmpty.setActive(isSelectionEmpty());
-      if (isAdjusting)
+      if (isAdjusting) {
         evtSelectionChangedAdjusting.fire();
-      else
+      }
+      else {
         evtSelectionChanged.fire();
+      }
     }
   };
 
@@ -61,10 +63,12 @@ public class EntityListModel extends AbstractListModel implements Refreshable {
   }
 
   public EntityListModel(final String entityID, final EntityDbProvider dbProvider, final boolean staticData) {
-    if (entityID == null)
+    if (entityID == null) {
       throw new IllegalArgumentException("EntityListModel requires a non-null entityID");
-    if (dbProvider == null)
+    }
+    if (dbProvider == null) {
       throw new IllegalArgumentException("EntityListModel requires a non-null dbProvider");
+    }
     this.entityID = entityID;
     this.dbProvider = dbProvider;
     this.staticData = staticData;
@@ -82,16 +86,18 @@ public class EntityListModel extends AbstractListModel implements Refreshable {
    * @see #evtRefreshDone
    */
   public void refresh() {
-    if ((staticData && dataInitialized))
+    if ((staticData && dataInitialized)) {
       return;
+    }
 
     LOG.trace(this + " refreshing");
     data.clear();
     final List<Entity> entities = performQuery();
 
     for (final Entity entity : entities) {
-      if (include(entity))
+      if (include(entity)) {
         data.add(entity);
+      }
     }
 
     dataInitialized = true;
@@ -112,8 +118,9 @@ public class EntityListModel extends AbstractListModel implements Refreshable {
     final int min = selectionModel.getMinSelectionIndex();
     final int max = selectionModel.getMaxSelectionIndex();
     for (int index = min; index <= max; index++) {
-      if (selectionModel.isSelectedIndex(index))
+      if (selectionModel.isSelectedIndex(index)) {
         ret.add(getEntityAt(index));
+      }
     }
 
     return ret;
@@ -169,10 +176,12 @@ public class EntityListModel extends AbstractListModel implements Refreshable {
    */
   protected List<Entity> performQuery() {
     try {
-      if (getEntitySelectCriteria() != null)
+      if (getEntitySelectCriteria() != null) {
         return dbProvider.getEntityDb().selectMany(getEntitySelectCriteria());
-      else
+      }
+      else {
         return dbProvider.getEntityDb().selectAll(getEntityID());
+      }
     }
     catch (Exception e) {
       throw new RuntimeException(e);

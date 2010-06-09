@@ -52,8 +52,9 @@ public class ComboBoxValueLink<K> extends AbstractValueMapLink<K, Object> {
     updateUI();
     comboBox.addItemListener(new ItemListener() {
       public void itemStateChanged(ItemEvent e) {
-        if (e.getStateChange() == ItemEvent.SELECTED)
+        if (e.getStateChange() == ItemEvent.SELECTED) {
           updateModel();
+        }
       }
     });
     //this allows editable string based combo boxes to post their edits after each keystroke
@@ -70,8 +71,9 @@ public class ComboBoxValueLink<K> extends AbstractValueMapLink<K, Object> {
   /** {@inheritDoc} */
   @Override
   protected Object getUIValue() {
-    if (boxModel instanceof ItemComboBoxModel)
+    if (boxModel instanceof ItemComboBoxModel) {
       return ((Item) boxModel.getSelectedItem()).getItem();
+    }
 
     return boxModel.getSelectedItem();
   }

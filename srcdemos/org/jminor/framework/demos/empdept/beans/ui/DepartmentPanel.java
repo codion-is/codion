@@ -36,8 +36,9 @@ public class DepartmentPanel extends EntityPanel {
   }
 
   public void viewEmployeeReport() throws Exception {
-    if (getModel().getTableModel().getSelectionModel().isSelectionEmpty())
+    if (getModel().getTableModel().getSelectionModel().isSelectionEmpty()) {
       return;
+    }
 
     final String reportPath = Configuration.getReportPath() + "/empdept_employees.jasper";
     final Collection<Object> departmentNumbers =

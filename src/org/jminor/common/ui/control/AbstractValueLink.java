@@ -4,6 +4,7 @@
 package org.jminor.common.ui.control;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.model.Util;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -43,9 +44,7 @@ public abstract class AbstractValueLink<T, V> extends Control {
    */
   public AbstractValueLink(final T valueOwner, final Event modelValueChangeEvent,
                            final LinkType linkType) {
-    if (valueOwner == null)
-      throw new IllegalArgumentException("Property owner cannot be null");
-
+    Util.rejectNullValue(valueOwner);
     this.valueOwner = valueOwner;
     this.linkType = linkType;
 

@@ -60,8 +60,9 @@ public class SteppedComboBox extends JComboBox {
       @Override
       public void focusLost(FocusEvent e) {
         // Workaround for Bug 5100422 - Hide Popup on focus loss
-        if (hidePopupOnFocusLoss)
+        if (hidePopupOnFocusLoss) {
           setPopupVisible(false);
+        }
       }
     });
   }
@@ -81,10 +82,12 @@ public class SteppedComboBox extends JComboBox {
             scroller.setMinimumSize(popupBounds.getSize());
             getList().invalidate();
             final int selectedIndex = comboBox.getSelectedIndex();
-            if (selectedIndex == -1)
+            if (selectedIndex == -1) {
               getList().clearSelection();
-            else
+            }
+            else {
               getList().setSelectedIndex(selectedIndex);
+            }
             getList().ensureIndexIsVisible(getList().getSelectedIndex());
             setLightWeightPopupEnabled(comboBox.isLightWeightPopupEnabled());
 

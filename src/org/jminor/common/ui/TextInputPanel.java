@@ -89,8 +89,9 @@ public class TextInputPanel extends JPanel {
             return new PlainDocument() {
               @Override
               public void insertString(final int offset, final String string, final AttributeSet a) throws BadLocationException {
-                if (getMaxLength() > 0 && getLength() + (string != null ? string.length() : 0) > getMaxLength())
+                if (getMaxLength() > 0 && getLength() + (string != null ? string.length() : 0) > getMaxLength()) {
                   return;
+                }
 
                 super.insertString(offset, string, a);
               }
@@ -113,8 +114,9 @@ public class TextInputPanel extends JPanel {
 
     final JButton button = new JButton(action);
     button.setFocusable(buttonFocusable);
-    if (buttonSize != null)
+    if (buttonSize != null) {
       button.setPreferredSize(buttonSize);
+    }
 
     return button;
   }

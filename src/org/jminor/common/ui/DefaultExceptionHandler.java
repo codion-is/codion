@@ -23,11 +23,13 @@ public class DefaultExceptionHandler implements ExceptionHandler {
 
   public void handleException(final Throwable exception, final JComponent dialogParent) {
     final Throwable rootCause = unwrapRuntimeException(exception);
-    if (rootCause instanceof CancelException)
+    if (rootCause instanceof CancelException) {
       return;
+    }
 
-    if (rootCause instanceof DbException)
+    if (rootCause instanceof DbException) {
       handleDbException((DbException) rootCause, dialogParent);
+    }
     else {
       ExceptionDialog.showExceptionDialog(UiUtil.getParentWindow(dialogParent), getMessageTitle(rootCause), rootCause.getMessage(), rootCause);
     }
@@ -36,38 +38,44 @@ public class DefaultExceptionHandler implements ExceptionHandler {
   public void handleDbException(final DbException dbException, final JComponent dialogParent) {
     String errMsg = dbException.getMessage();
     if (errMsg == null || errMsg.length() == 0) {
-      if (dbException.getCause() == null)
+      if (dbException.getCause() == null) {
         errMsg = trimMessage(dbException);
-      else
+      }
+      else {
         errMsg = trimMessage(dbException.getCause());
+      }
     }
     ExceptionDialog.showExceptionDialog(UiUtil.getParentWindow(dialogParent),
             Messages.get(Messages.EXCEPTION), errMsg, dbException);
   }
 
   private static Throwable unwrapRuntimeException(final Throwable exception) {
-    if (exception.getCause() == null)
+    if (exception.getCause() == null) {
       return exception;
+    }
 
     final boolean isRuntimeException = exception.getClass().equals(RuntimeException.class);
     final boolean cyclicalCause = exception.getCause() == exception;
-    if (isRuntimeException && !cyclicalCause)
+    if (isRuntimeException && !cyclicalCause) {
       return unwrapRuntimeException(exception.getCause());
+    }
 
     return exception;
   }
 
   private String getMessageTitle(final Throwable e) {
-    if (e instanceof FileNotFoundException)
+    if (e instanceof FileNotFoundException) {
       return Messages.get(Messages.UNABLE_TO_OPEN_FILE);
+    }
 
     return Messages.get(Messages.EXCEPTION);
   }
 
   private String trimMessage(final Throwable e) {
     final String msg = e.getMessage();
-    if (msg.length() > 50)
+    if (msg.length() > 50) {
       return msg.substring(0, 50) + "...";
+    }
 
     return msg;
   }

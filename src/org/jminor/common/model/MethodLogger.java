@@ -56,19 +56,22 @@ public class MethodLogger {
   }
 
   public synchronized void reset() {
-    for (final LogEntry entry : logEntries)
+    for (final LogEntry entry : logEntries) {
       entry.reset();
+    }
     currentLogEntryIndex = 0;
   }
 
   public synchronized List<LogEntry> getLogEntries() {
     final ArrayList<LogEntry> entries = new ArrayList<LogEntry>();
-    if (!enabled)
+    if (!enabled) {
       entries.add(new LogEntry("Logging is not enabled", "", System.currentTimeMillis(), null));
+    }
     else {
       for (final LogEntry entry : logEntries) {
-        if (entry.isComplete())
+        if (entry.isComplete()) {
           entries.add(new LogEntry(entry));
+        }
       }
     }
 
@@ -92,8 +95,9 @@ public class MethodLogger {
                       final String exitMessage) {
     this.lastExitDate = System.currentTimeMillis();
     this.lastExitedMethod = method;
-    if (enabled)
+    if (enabled) {
       return addLogEntry(lastExitedMethod, exitMessage, lastExitDate, true, exception, subLog);
+    }
 
     return -1;
   }
@@ -110,8 +114,9 @@ public class MethodLogger {
   private synchronized long addLogEntry(final String method, final String message, final long time, final boolean isExit,
                                         final Throwable exception, final List<LogEntry> subLog) {
     if (!isExit) {
-      if (currentLogEntryIndex > logEntries.size()-1)
+      if (currentLogEntryIndex > logEntries.size()-1) {
         currentLogEntryIndex = 0;
+      }
 
       logEntries.get(currentLogEntryIndex).set(method, message, time, exception);
 
@@ -128,21 +133,24 @@ public class MethodLogger {
 
   private List<LogEntry> initializeLogEntryList() {
     final List<LogEntry> logEntries = new ArrayList<LogEntry>(logSize);
-    for (int i = 0; i < logSize; i++)
+    for (int i = 0; i < logSize; i++) {
       logEntries.add(new LogEntry());
+    }
 
     return logEntries;
   }
 
   protected String argumentArrayToString(final Object[] arguments) {
-    if (arguments == null)
+    if (arguments == null) {
       return "";
+    }
 
     final StringBuilder stringBuilder = new StringBuilder(arguments.length*40);
     for (int i = 0; i < arguments.length; i++) {
       appendArgumentAsString(arguments[i], stringBuilder);
-      if (i < arguments.length-1)
+      if (i < arguments.length-1) {
         stringBuilder.append(", ");
+      }
     }
 
     return stringBuilder.toString();

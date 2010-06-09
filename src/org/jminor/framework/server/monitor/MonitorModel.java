@@ -23,10 +23,12 @@ public class MonitorModel {
   private final Collection<HostMonitor> hostMonitors = new ArrayList<HostMonitor>();
 
   public MonitorModel(final String hostNames) throws RemoteException {
-    if (hostNames == null || hostNames.length() == 0)
+    if (hostNames == null || hostNames.length() == 0) {
       throw new RuntimeException("No server host names specified for server monitor");
-    for (final String hostname : Arrays.asList(hostNames.split(",")))
+    }
+    for (final String hostname : Arrays.asList(hostNames.split(","))) {
       addHost(hostname);
+    }
   }
 
   public void addHost(final String hostname) throws RemoteException {
@@ -44,7 +46,8 @@ public class MonitorModel {
   }
 
   public void refresh() throws RemoteException {
-    for (final HostMonitor hostMonitor : hostMonitors)
+    for (final HostMonitor hostMonitor : hostMonitors) {
       hostMonitor.refresh();
+    }
   }
 }

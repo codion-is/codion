@@ -44,10 +44,12 @@ public class EntityDbLocalProvider implements EntityDbProvider {
   }
 
   public EntityDbLocalProvider(final User user, final Database database) {
-    if (user == null)
+    if (user == null) {
       throw new RuntimeException("User is null");
-    if (database == null)
+    }
+    if (database == null) {
       throw new RuntimeException("Database is null");
+    }
     this.user = user;
     this.database = database;
     this.connectionProperties.put("user", user.getUsername());
@@ -56,8 +58,9 @@ public class EntityDbLocalProvider implements EntityDbProvider {
 
   /** {@inheritDoc} */
   public final EntityDb getEntityDb() {
-    if (user == null)
+    if (user == null) {
       throw new IllegalStateException("Not logged in");
+    }
 
     validateDbConnection();
 
@@ -66,8 +69,9 @@ public class EntityDbLocalProvider implements EntityDbProvider {
 
   public String getDescription() {
     final String sid = database.getSid();
-    if (sid == null)
+    if (sid == null) {
       return database.getHost();
+    }
 
     return sid;
   }
@@ -77,8 +81,9 @@ public class EntityDbLocalProvider implements EntityDbProvider {
   }
 
   public void setUser(final User user) {
-    if (Util.equal(user, this.user))
+    if (Util.equal(user, this.user)) {
       return;
+    }
     disconnect();
     this.user = user;
   }
@@ -88,8 +93,9 @@ public class EntityDbLocalProvider implements EntityDbProvider {
     try {
       if (entityDb != null && entityDb.isConnectionValid()) {
         entityDb.disconnect();
-        if (entityDb.getDatabase().isEmbedded())
+        if (entityDb.getDatabase().isEmbedded()) {
           entityDb.getDatabase().shutdownEmbedded(connectionProperties);
+        }
         entityDb = null;
       }
     }
@@ -100,8 +106,9 @@ public class EntityDbLocalProvider implements EntityDbProvider {
 
   private void validateDbConnection() {
     try {
-      if (entityDb == null)
+      if (entityDb == null) {
         connect();
+      }
 
       if (!entityDb.isConnectionValid()) {
         //db unreachable

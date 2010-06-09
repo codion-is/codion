@@ -51,8 +51,9 @@ public class RandomItemModel<T> {
    */
   public RandomItemModel(final int defaultWeight, final T... items) {
     if (items != null) {
-      for (final T item : items)
+      for (final T item : items) {
         addItem(item, defaultWeight);
+      }
     }
   }
 
@@ -107,15 +108,17 @@ public class RandomItemModel<T> {
    */
   public T getRandomItem() {
     final int totalWeights = getTotalWeights();
-    if (totalWeights == 0)
+    if (totalWeights == 0) {
       throw new RuntimeException("Can not choose a random item unless total weights exceed 0");
+    }
 
     final int random = getRandom().nextInt(totalWeights + 1);
     int position = 0;
     for (final RandomItem<T> item : items) {
       position += item.getWeight();
-      if (random <= position && item.getWeight() > 0)
+      if (random <= position && item.getWeight() > 0) {
         return item.getItem();
+      }
     }
 
     throw new RuntimeException("getRandomItem did not find an item");
@@ -128,8 +131,9 @@ public class RandomItemModel<T> {
    */
   public double getWeightRatio(final T item) {
     final int totalWeights = getTotalWeights();
-    if (totalWeights == 0)
+    if (totalWeights == 0) {
       return 0;
+    }
 
     return getWeight(item) / (double) totalWeights;
   }
@@ -179,17 +183,20 @@ public class RandomItemModel<T> {
    * @throws RuntimeException in case the item is not found
    */
   protected RandomItem<T> getRandomItem(final T item) {
-    for (final RandomItem<T> randomItem : items)
-      if (randomItem.getItem().equals(item))
+    for (final RandomItem<T> randomItem : items) {
+      if (randomItem.getItem().equals(item)) {
         return randomItem;
+      }
+    }
 
     throw new RuntimeException("Item not found: " + item);
   }
 
   private int getTotalWeights() {
     int sum = 0;
-    for (final RandomItem item : items)
+    for (final RandomItem item : items) {
       sum += item.getWeight();
+    }
 
     return sum;
   }
@@ -203,8 +210,9 @@ public class RandomItemModel<T> {
     private int weight = 0;
 
     public RandomItem(final T item, final int weight) {
-      if (weight < 0)
+      if (weight < 0) {
         throw new IllegalStateException("Weight can not be negative");
+      }
       this.item = item;
       this.weight = weight;
     }
@@ -237,15 +245,17 @@ public class RandomItemModel<T> {
     }
 
     void decrement() {
-      if (weight == 0)
+      if (weight == 0) {
         throw new IllegalStateException("Weight can not be negative");
+      }
 
       weight--;
     }
 
     void setWeight(final int weight) {
-      if (weight < 0)
+      if (weight < 0) {
         throw new IllegalStateException("Weight can not be negative");
+      }
 
       this.weight = weight;
     }

@@ -32,7 +32,7 @@ public class PoolMonitor {
   }
 
   public void refresh() throws RemoteException {
-    for (final ConnectionPoolSettings settings : server.getEnabledConnectionPools())
+    for (final ConnectionPoolSettings settings : server.getEnabledConnectionPools()) {
       connectionPoolMonitors.add(new ConnectionPoolMonitor(settings.getUser(), new ConnectionPool() {
         public ConnectionPoolSettings getConnectionPoolSettings() {
           try {
@@ -83,7 +83,7 @@ public class PoolMonitor {
           }
         }
 
-        public void setConnectionPoolSettings(ConnectionPoolSettings settings)  {
+        public void setConnectionPoolSettings(ConnectionPoolSettings settings) {
           try {
             server.setConnectionPoolSettings(settings);
           }
@@ -91,10 +91,15 @@ public class PoolMonitor {
             throw new RuntimeException(e);
           }
         }
-        public void checkInConnection(DbConnection dbConnection) {}
 
-        public DbConnection checkOutConnection() throws ClassNotFoundException, SQLException {return null;}
+        public void checkInConnection(DbConnection dbConnection) {
+        }
+
+        public DbConnection checkOutConnection() throws ClassNotFoundException, SQLException {
+          return null;
+        }
       }));
+    }
   }
 
   public void setConnectionPoolSettings(final ConnectionPoolSettings settings) throws RemoteException {
@@ -103,8 +108,9 @@ public class PoolMonitor {
   }
 
   public void addConnectionPools(final String[] strings) throws RemoteException {
-    for (final String username : strings)
+    for (final String username : strings) {
       setConnectionPoolSettings(ConnectionPoolSettings.getDefault(new User(username.trim(), null)));
+    }
   }
 
   public Collection<ConnectionPoolMonitor> getConnectionPoolInstanceMonitors() {
@@ -113,7 +119,8 @@ public class PoolMonitor {
 
   public void shutdown() {
     System.out.println("PoolMonitor shutdown");
-    for (final ConnectionPoolMonitor monitor : connectionPoolMonitors)
+    for (final ConnectionPoolMonitor monitor : connectionPoolMonitors) {
       monitor.shutdown();
+    }
   }
 }

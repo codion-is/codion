@@ -5,6 +5,7 @@ package org.jminor.framework.db.criteria;
 
 import org.jminor.common.db.criteria.CriteriaSet;
 import org.jminor.common.model.SearchType;
+import org.jminor.common.model.Util;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
@@ -54,10 +55,13 @@ public class EntityKeyCriteria extends CriteriaSet<Property> {
    */
   public EntityKeyCriteria(final List<Property> properties, final List<Entity.Key> keys) {
     super(Conjunction.OR);
-    if (keys == null || keys.size() == 0)
+    Util.rejectNullValue(keys);
+    if (keys.size() == 0) {
       throw new IllegalArgumentException("EntityKeyCriteria requires at least one key");
-    if (properties != null && properties.size() != keys.get(0).getPropertyCount())
+    }
+    if (properties != null && properties.size() != keys.get(0).getPropertyCount()) {
       throw new IllegalArgumentException("Reference property count mismatch");
+    }
 
     this.keys = keys;
     this.properties = properties;
@@ -65,12 +69,14 @@ public class EntityKeyCriteria extends CriteriaSet<Property> {
   }
 
   public List<String> getColumnNames() {
-    if (properties == null)
+    if (properties == null) {
       return null;
+    }
 
     final List<String> columnNames = new ArrayList<String>(properties.size());
-    for (final Property property : properties)
+    for (final Property property : properties) {
       columnNames.add(property.getColumnName());
+    }
 
     return columnNames;
   }
@@ -90,9 +96,10 @@ public class EntityKeyCriteria extends CriteriaSet<Property> {
       for (final Entity.Key key : keys) {
         final CriteriaSet<Property> andSet = new CriteriaSet<Property>(Conjunction.AND);
         int i = 0;
-        for (final Property property : propertyList)
+        for (final Property property : propertyList) {
           andSet.addCriteria(new PropertyCriteria(property, SearchType.LIKE,
                   key.getOriginalValue(pkProperties.get(i++).getPropertyID())));
+        }
 
         addCriteria(andSet);
       }
@@ -106,7 +113,9 @@ public class EntityKeyCriteria extends CriteriaSet<Property> {
         addCriteria(new PropertyCriteria(property, SearchType.LIKE, key.getOriginalValue(primaryKeyProperty.getPropertyID())));
       }
       else //a in (c, v, d, s)
+      {
         addCriteria(new PropertyCriteria(property, SearchType.LIKE, EntityUtil.getOriginalPropertyValues(keys)));
+      }
     }
   }
 }

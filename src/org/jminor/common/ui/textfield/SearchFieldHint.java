@@ -4,6 +4,7 @@
 package org.jminor.common.ui.textfield;
 
 import org.jminor.common.i18n.Messages;
+import org.jminor.common.model.Util;
 
 import javax.swing.JTextField;
 import java.awt.Color;
@@ -21,10 +22,11 @@ public class SearchFieldHint {
   }
 
   public SearchFieldHint(final JTextField txtField, final String searchHint) {
-    if (txtField == null)
-      throw new IllegalArgumentException("Text field is null");
-    if (searchHint == null || searchHint.length() == 0)
+    Util.rejectNullValue(txtField);
+    Util.rejectNullValue(searchHint);
+    if (searchHint.length() == 0) {
       throw new IllegalArgumentException("Search hint is null or empty");
+    }
     this.txtField = txtField;
     this.searchHint = searchHint;
     this.defaultForegroundColor = txtField.getForeground();
@@ -40,10 +42,12 @@ public class SearchFieldHint {
     final boolean hasFocus = txtField.hasFocus();
     final boolean hideHint = hasFocus && txtField.getText().equals(searchHint);
     final boolean showHint = !hasFocus && txtField.getText().length() == 0;
-    if (hideHint)
+    if (hideHint) {
       txtField.setText("");
-    else if (showHint)
+    }
+    else if (showHint) {
       txtField.setText(searchHint);
+    }
     final boolean specificForeground = !hasFocus && isHintVisible();
     txtField.setForeground(specificForeground ? Color.LIGHT_GRAY : defaultForegroundColor);
   }

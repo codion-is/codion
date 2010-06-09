@@ -59,12 +59,14 @@ public abstract class AbstractRemoteServer<T> extends UnicastRemoteObject implem
   }
 
   public T connect(final User user, final String connectionKey, final String clientTypeID) throws RemoteException {
-    if (connectionKey == null)
+    if (connectionKey == null) {
       return null;
+    }
 
     final ClientInfo client = new ClientInfo(connectionKey, clientTypeID, user);
-    if (connections.containsKey(client))
+    if (connections.containsKey(client)) {
       return connections.get(client);
+    }
 
     final T connection = doConnect(client);
     connections.put(client, connection);
@@ -73,12 +75,14 @@ public abstract class AbstractRemoteServer<T> extends UnicastRemoteObject implem
   }
 
   public void disconnect(final String connectionKey) throws RemoteException {
-    if (connectionKey == null)
+    if (connectionKey == null) {
       return;
+    }
 
     final ClientInfo client = new ClientInfo(connectionKey);
-    if (connections.containsKey(client))
+    if (connections.containsKey(client)) {
       doDisconnect(connections.remove(client));
+    }
   }
 
   public String getServerName() {

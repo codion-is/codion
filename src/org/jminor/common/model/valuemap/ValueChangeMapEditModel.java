@@ -83,8 +83,9 @@ public abstract class ValueChangeMapEditModel<K, V> implements Refreshable {
     final V oldValue = getValue(key);
     final V newValue = doSetValue(key, value);
 
-    if (!Util.equal(newValue, oldValue))
+    if (!Util.equal(newValue, oldValue)) {
       notifyValueSet(key, new ValueChangeEvent<K, V>(this, getValueMap().getMapTypeID(), key, newValue, oldValue, false, initialization));
+    }
   }
 
   /**
@@ -169,8 +170,9 @@ public abstract class ValueChangeMapEditModel<K, V> implements Refreshable {
    * @see #setValue(Object, Object)
    */
   public Event getValueSetEvent(final K key) {
-    if (!valueSetEventMap.containsKey(key))
+    if (!valueSetEventMap.containsKey(key)) {
       valueSetEventMap.put(key, new Event());
+    }
 
     return valueSetEventMap.get(key);
   }
@@ -180,8 +182,9 @@ public abstract class ValueChangeMapEditModel<K, V> implements Refreshable {
    * @return an Event object which fires when the value of <code>key</code> changes
    */
   public Event getValueChangeEvent(final K key) {
-    if (!valueChangeEventMap.containsKey(key))
+    if (!valueChangeEventMap.containsKey(key)) {
       valueChangeEventMap.put(key, new Event());
+    }
 
     return valueChangeEventMap.get(key);
   }
@@ -234,8 +237,9 @@ public abstract class ValueChangeMapEditModel<K, V> implements Refreshable {
       @Override
       protected void valueChanged(final ValueChangeEvent<K, V> event) {
         final Event valueChangeEvent = valueChangeEventMap.get(event.getKey());
-        if (valueChangeEvent != null)
+        if (valueChangeEvent != null) {
           valueChangeEvent.fire(event);
+        }
       }
     });
   }

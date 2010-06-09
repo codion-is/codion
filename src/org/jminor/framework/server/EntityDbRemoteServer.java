@@ -57,10 +57,12 @@ public class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
     final String serverPortProperty = System.getProperty(Configuration.SERVER_PORT);
     final String serverDbPortProperty = System.getProperty(Configuration.SERVER_DB_PORT);
 
-    if (serverPortProperty == null)
+    if (serverPortProperty == null) {
       throw new RuntimeException("Required server property missing: " + Configuration.SERVER_PORT);
-    if (serverDbPortProperty == null)
+    }
+    if (serverDbPortProperty == null) {
       throw new RuntimeException("Required server property missing: " + Configuration.SERVER_DB_PORT);
+    }
 
     SERVER_PORT = Integer.parseInt(serverPortProperty);
     SERVER_DB_PORT = Integer.parseInt(serverDbPortProperty);
@@ -93,10 +95,12 @@ public class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
     EntityDbRemoteAdapter.initConnectionPools(database);
     final String host = database.getHost();
     final String port = database.getPort();
-    if (host == null || host.length() == 0)
+    if (host == null || host.length() == 0) {
       throw new RuntimeException("Database host must be specified (" + Database.DATABASE_HOST + ")");
-    if (!database.isEmbedded() && (port == null || port.length() == 0))
+    }
+    if (!database.isEmbedded() && (port == null || port.length() == 0)) {
       throw new RuntimeException("Database port must be specified (" + Database.DATABASE_PORT + ")");
+    }
 
     startConnectionCheckTimer();
     getRegistry().rebind(getServerName(), this);
@@ -124,34 +128,40 @@ public class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
 
   public Collection<User> getUsers() throws RemoteException {
     final Set<User> users = new HashSet<User>();
-    for (final EntityDbRemote adapter : getConnections().values())
+    for (final EntityDbRemote adapter : getConnections().values()) {
       users.add(((EntityDbRemoteAdapter) adapter).getUser());
+    }
 
     return users;
   }
 
   public Collection<ClientInfo> getClients() throws RemoteException {
     final Collection<ClientInfo> clients = new ArrayList<ClientInfo>();
-    for (final EntityDbRemote adapter : getConnections().values())
+    for (final EntityDbRemote adapter : getConnections().values()) {
       clients.add(((EntityDbRemoteAdapter) adapter).getClientInfo());
+    }
 
     return clients;
   }
 
   public Collection<ClientInfo> getClients(final User user) throws RemoteException {
     final Collection<ClientInfo> clients = new ArrayList<ClientInfo>();
-    for (final EntityDbRemote adapter : getConnections().values())
-      if (user == null || ((EntityDbRemoteAdapter) adapter).getUser().equals(user))
+    for (final EntityDbRemote adapter : getConnections().values()) {
+      if (user == null || ((EntityDbRemoteAdapter) adapter).getUser().equals(user)) {
         clients.add(((EntityDbRemoteAdapter) adapter).getClientInfo());
+      }
+    }
 
     return clients;
   }
 
   public Collection<ClientInfo> getClients(final String clientTypeID) throws RemoteException {
     final Collection<ClientInfo> clients = new ArrayList<ClientInfo>();
-    for (final EntityDbRemote adapter : getConnections().values())
-      if (((EntityDbRemoteAdapter) adapter).getClientInfo().getClientTypeID().equals(clientTypeID))
+    for (final EntityDbRemote adapter : getConnections().values()) {
+      if (((EntityDbRemoteAdapter) adapter).getClientInfo().getClientTypeID().equals(clientTypeID)) {
         clients.add(((EntityDbRemoteAdapter) adapter).getClientInfo());
+      }
+    }
 
     return clients;
   }
@@ -161,8 +171,9 @@ public class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
   }
 
   public void setCheckMaintenanceInterval(final int checkTimerInterval) {
-    if (checkMaintenanceInterval != checkTimerInterval)
+    if (checkMaintenanceInterval != checkTimerInterval) {
       checkMaintenanceInterval = checkTimerInterval <= 0 ? 1 : checkTimerInterval;
+    }
   }
 
   /**
@@ -172,8 +183,9 @@ public class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
    */
   public ServerLog getServerLog(final String connectionKey) {
     final ClientInfo client = new ClientInfo(connectionKey);
-    if (containsConnection(client))
+    if (containsConnection(client)) {
       return ((EntityDbRemoteAdapter) getConnection(client)).getServerLog();
+    }
 
     return null;
   }
@@ -214,8 +226,9 @@ public class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
     final String connectInfo = getServerName() + " removed from registry";
     LOG.info(connectInfo);
     System.out.println(connectInfo);
-    if (database.isEmbedded())
-      database.shutdownEmbedded(null);//todo does not work when shutdown requires user authentication
+    if (database.isEmbedded()) {
+      database.shutdownEmbedded(null);
+    }//todo does not work when shutdown requires user authentication
   }
 
   public void removeConnections(final boolean inactiveOnly) throws RemoteException {
@@ -223,11 +236,13 @@ public class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
     for (final ClientInfo client : clients) {
       final EntityDbRemoteAdapter adapter = (EntityDbRemoteAdapter) getConnection(client);
       if (inactiveOnly) {
-        if (!adapter.isActive() && adapter.hasBeenInactive(getConnectionTimeout() * 1000))
+        if (!adapter.isActive() && adapter.hasBeenInactive(getConnectionTimeout() * 1000)) {
           disconnect(client.getClientID());
+        }
       }
-      else
+      else {
         disconnect(client.getClientID());
+      }
     }
   }
 
@@ -253,13 +268,15 @@ public class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
     AccessController.doPrivileged(new PrivilegedAction<Object>() {
       public Object run() {
         try {
-          if (locations == null || locations.length == 0)
+          if (locations == null || locations.length == 0) {
             Class.forName(domainClassName);
+          }
           else {
             final URL[] locationsURL = new URL[locations.length];
             int i = 0;
-            for (final URI uri : locations)
+            for (final URI uri : locations) {
               locationsURL[i++] = uri.toURL();
+            }
             Class.forName(domainClassName.trim(), true, new URLClassLoader(locationsURL, ClassLoader.getSystemClassLoader()));
           }
 
@@ -276,8 +293,9 @@ public class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
   @Override
   protected void doDisconnect(final EntityDbRemote adapter) throws RemoteException {
     try {
-      if (adapter.isConnected())
+      if (adapter.isConnected()) {
         ((EntityDbRemoteAdapter) adapter).disconnect();
+      }
     }
     catch (Exception e) {
       throw new RemoteException(e.getMessage(), e);
@@ -287,24 +305,27 @@ public class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
   @Override
   protected EntityDbRemoteAdapter doConnect(final ClientInfo client) throws RemoteException {
     final EntityDbRemoteAdapter remoteAdapter = new EntityDbRemoteAdapter(this, database, client, SERVER_DB_PORT, CLIENT_LOGGING_ENABLED);
-    if (LOG.isDebugEnabled())
+    if (LOG.isDebugEnabled()) {
       LOG.debug("Connection added: " + client);
+    }
 
     return remoteAdapter;
   }
 
   private void loadDefaultDomainModels() throws RemoteException {
     final String domainModelClasses = Configuration.getStringValue(Configuration.SERVER_DOMAIN_MODEL_CLASSES);
-    if (domainModelClasses == null || domainModelClasses.length() == 0)
+    if (domainModelClasses == null || domainModelClasses.length() == 0) {
       return;
+    }
 
     final String[] classes = domainModelClasses.split(",");
     final String domainModelJars = Configuration.getStringValue(Configuration.SERVER_DOMAIN_MODEL_JARS);
     final String[] jars = domainModelJars == null || domainModelJars.length() == 0 ? null : domainModelJars.split(",");
     try {
       final URI[] jarURIs = jars == null ? null : Util.getURIs(jars);
-      for (final String classname : classes)
+      for (final String classname : classes) {
         loadDomainModel(jarURIs, classname);
+      }
     }
     catch (Exception e) {
       throw new RemoteException("Exception while loading default domain models", e);
@@ -312,8 +333,9 @@ public class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
   }
 
   private void startConnectionCheckTimer() {
-    if (connectionMaintenanceTimer != null)
+    if (connectionMaintenanceTimer != null) {
       connectionMaintenanceTimer.cancel();
+    }
 
     connectionMaintenanceTimer = new Timer(true);
     connectionMaintenanceTimer.schedule(new TimerTask() {

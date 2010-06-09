@@ -1710,3 +1710,5 @@
   EntityTableModel.showAllWhenNotFiltered renamed to queryCriteriaRequired
   Sonar/CheckStyle run, with some minor modifications
   Database.validate() and required() added
+  Added braces to all control statements
+  EntityPanelProvider generified, which does enlarge the dependency cycle in ui, needs to be resolved somehow

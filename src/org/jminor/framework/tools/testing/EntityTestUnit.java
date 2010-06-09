@@ -21,6 +21,7 @@ import org.jminor.framework.domain.Property;
 
 import org.json.JSONException;
 import org.junit.After;
+import static org.junit.Assert.*;
 import org.junit.Before;
 
 import java.util.ArrayList;
@@ -28,8 +29,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static org.junit.Assert.*;
 
 /**
  * A class for unit testing domain entities.
@@ -50,8 +49,9 @@ public abstract class EntityTestUnit {
 
   @After
   public void tearDown() throws Exception {
-    if (entityDbProvider != null)
+    if (entityDbProvider != null) {
       entityDbProvider.disconnect();
+    }
   }
 
   /**
@@ -97,8 +97,9 @@ public abstract class EntityTestUnit {
     final Entity entity = new Entity(entityID);
     for (final Property.ForeignKeyProperty foreignKeyProperty : EntityRepository.getForeignKeyProperties(entityID)) {
       final Entity referenceEntity = referencedEntities.get(foreignKeyProperty.getReferencedEntityID());
-      if (referenceEntity != null)
+      if (referenceEntity != null) {
         entity.setValue(foreignKeyProperty.getPropertyID(), referenceEntity);
+      }
     }
 
     return entity;
@@ -111,8 +112,9 @@ public abstract class EntityTestUnit {
    */
   protected Entity getReferenceEntity(final String entityID) {
     final Entity entity = referencedEntities.get(entityID);
-    if (entity == null)
+    if (entity == null) {
       throw new RuntimeException("No reference entity available of type " + entityID);
+    }
 
     return entity;
   }
@@ -125,8 +127,9 @@ public abstract class EntityTestUnit {
    * @see #getReferenceEntity(String)
    */
   protected void setReferenceEntity(final String entityID, final Entity entity) throws Exception {
-    if (!entity.is(entityID))
+    if (!entity.is(entityID)) {
       throw new IllegalArgumentException("Reference entity type mismatch: " + entityID + " - " + entity.getEntityID());
+    }
 
     referencedEntities.put(entityID, initialize(entity));
   }
@@ -143,8 +146,9 @@ public abstract class EntityTestUnit {
       Entity testEntity = null;
       if (!EntityRepository.isReadOnly(entityID)) {
         final Entity initialEntity = initializeTestEntity(entityID);
-        if (initialEntity == null)
+        if (initialEntity == null) {
           throw new Exception("No test entity provided " + entityID);
+        }
 
         testEntity = testInsert(initialEntity);
         testUpdate(testEntity);
@@ -217,8 +221,9 @@ public abstract class EntityTestUnit {
   protected void testUpdate(final Entity testEntity) throws Exception {
     try {
       modifyEntity(testEntity);
-      if (!testEntity.isModified())
+      if (!testEntity.isModified()) {
         return;
+      }
 
       getEntityDb().update(Arrays.asList(testEntity));
 
@@ -325,8 +330,9 @@ public abstract class EntityTestUnit {
   private Entity initialize(final Entity entity) throws Exception {
     try {
       final List<Entity> entities = getEntityDb().selectMany(Arrays.asList(entity.getPrimaryKey()));
-      if (entities.size() > 0)
+      if (entities.size() > 0) {
         return entities.get(0);
+      }
 
       return getEntityDb().selectSingle(getEntityDb().insert(Arrays.asList(entity)).get(0));
     }

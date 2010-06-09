@@ -65,10 +65,12 @@ public class PropertySearchPanel extends AbstractSearchPanel<Property> {
   /** {@inheritDoc} */
   @Override
   protected SimpleDateFormat getInputFormat() {
-    if (getModel().getType() == Types.TIMESTAMP)
+    if (getModel().getType() == Types.TIMESTAMP) {
       return Configuration.getDefaultTimestampFormat();
-    if (getModel().getType() == Types.DATE)
+    }
+    if (getModel().getType() == Types.DATE) {
       return Configuration.getDefaultDateFormat();
+    }
 
     return null;
   }
@@ -79,7 +81,9 @@ public class PropertySearchPanel extends AbstractSearchPanel<Property> {
     final JComponent field = initField(format);
     bindField(field, isUpperBound, format);
     if (field instanceof JTextField && !(field instanceof EntityLookupField)) //enter button toggles the filter on/off
+    {
       ((JTextField) field).addActionListener(getEnableAction());
+    }
     field.setToolTipText(isUpperBound ? "a" : "b");
 
     return field;
@@ -87,20 +91,27 @@ public class PropertySearchPanel extends AbstractSearchPanel<Property> {
 
   private JComponent initField(final SimpleDateFormat dateFormat) {
     final Property property = getModel().getSearchProperty();
-    if (property instanceof Property.ValueListProperty)
+    if (property instanceof Property.ValueListProperty) {
       return initValueListField((Property.ValueListProperty) property);
-    if (property.isTime())
+    }
+    if (property.isTime()) {
       return UiUtil.createFormattedField(DateUtil.getDateMask(dateFormat));
-    else if (property.isDouble())
+    }
+    else if (property.isDouble()) {
       return new DoubleField(4);
-    else if (property.isInteger())
+    }
+    else if (property.isInteger()) {
       return new IntField(4);
-    else if (property.isBoolean())
+    }
+    else if (property.isBoolean()) {
       return new JComboBox(new BooleanComboBoxModel());
-    else if (property.isReference())
+    }
+    else if (property.isReference()) {
       return initEntityField();
-    else
+    }
+    else {
       return new JTextField(4);
+    }
   }
 
   private JComponent initValueListField(final Property.ValueListProperty property) {

@@ -189,12 +189,14 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
                 FrameworkMessages.get(FrameworkMessages.RETRY),
                 FrameworkMessages.get(FrameworkMessages.RETRY_TITLE),
                 JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-        if (!retry)
+        if (!retry) {
           System.exit(0);
+        }
       }
       finally {
-        if (startupDialog != null)
+        if (startupDialog != null) {
           startupDialog.dispose();
+        }
       }
     }
   }
@@ -204,8 +206,9 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    * @throws CancelException in case the initialization is cancelled
    */
   public void initialize(final User user) throws CancelException {
-    if (user == null)
+    if (user == null) {
       throw new RuntimeException("Unable to initialize application panel without a user");
+    }
 
     this.applicationModel = initializeApplicationModel(user);
     setUncaughtExceptionHandler();
@@ -218,8 +221,9 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
 
   public void exit() throws CancelException {
     if (Configuration.getBooleanValue(Configuration.CONFIRM_EXIT) && JOptionPane.showConfirmDialog(this, FrameworkMessages.get(FrameworkMessages.CONFIRM_EXIT),
-            FrameworkMessages.get(FrameworkMessages.CONFIRM_EXIT_TITLE), JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION)
-        throw new CancelException();
+            FrameworkMessages.get(FrameworkMessages.CONFIRM_EXIT_TITLE), JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
+      throw new CancelException();
+    }
 
     try {
       savePreferences();
@@ -279,12 +283,14 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     menuControlSets.add(getViewControlSet());
     menuControlSets.add(getToolsControlSet());
     final ControlSet supportTableControlSet = getSupportTableControlSet();
-    if (supportTableControlSet != null)
+    if (supportTableControlSet != null) {
       menuControlSets.add(supportTableControlSet);
+    }
     final List<ControlSet> additionalMenus = getAdditionalMenuControlSet();
     if (additionalMenus != null) {
-      for (final ControlSet set : additionalMenus)
+      for (final ControlSet set : additionalMenus) {
         menuControlSets.add(set);
+      }
     }
     menuControlSets.add(getHelpControlSet());
 
@@ -435,8 +441,9 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
 
   protected EntityPanel getEntityPanel(final Class<? extends EntityPanel> entityPanelClass) {
     for (final EntityPanel entityPanel : mainApplicationPanels) {
-      if (entityPanel.getClass().equals(entityPanelClass))
+      if (entityPanel.getClass().equals(entityPanelClass)) {
         return entityPanel;
+      }
     }
 
     return null;
@@ -489,8 +496,9 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    */
   protected ControlSet getSupportTableControlSet() {
     final List<EntityPanelProvider> supportDetailPanelProviders = getSupportEntityPanelProviders();
-    if (supportDetailPanelProviders == null || supportDetailPanelProviders.size() == 0)
+    if (supportDetailPanelProviders == null || supportDetailPanelProviders.size() == 0) {
       return null;
+    }
 
     Collections.sort(supportDetailPanelProviders);
     final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.SUPPORT_TABLES),
@@ -518,14 +526,16 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
       EntityPanel entityPanel;
       if (persistEntityPanels && persistentEntityPanels.containsKey(panelProvider)) {
         entityPanel = persistentEntityPanels.get(panelProvider);
-        if (entityPanel.isShowing())
+        if (entityPanel.isShowing()) {
           return;
+        }
       }
       else {
         entityPanel = EntityPanel.createInstance(panelProvider, getModel().getDbProvider());
         entityPanel.initializePanel();
-        if (persistEntityPanels)
+        if (persistEntityPanels) {
           persistentEntityPanels.put(panelProvider, entityPanel);
+        }
       }
       dialog = new JDialog(UiUtil.getParentWindow(this), panelProvider.getCaption());
       dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -544,8 +554,9 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
       dialog.add(buttonPanel, BorderLayout.SOUTH);
       dialog.pack();
       dialog.setLocationRelativeTo(this);
-      if (modalDialog)
+      if (modalDialog) {
         dialog.setModal(true);
+      }
       dialog.setResizable(true);
     }
     finally {
@@ -575,10 +586,11 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
       }
     });
     final List<EntityPanelProvider> mainEntityPanelProviders = getMainEntityPanelProviders();
-    if (mainEntityPanelProviders == null || mainEntityPanelProviders.size() == 0)
+    if (mainEntityPanelProviders == null || mainEntityPanelProviders.size() == 0) {
       throw new RuntimeException("No main entity panels provided");
+    }
     for (final EntityPanelProvider provider : mainEntityPanelProviders) {
-      final EntityModel entityModel = applicationModel.getMainApplicationModel(provider.getEntityModelClass());
+      final EntityModel entityModel = applicationModel.getMainApplicationModel(provider.getModelClass());
       final EntityPanel entityPanel = EntityPanel.createInstance(provider, entityModel);
       mainApplicationPanels.add(entityPanel);
       final String caption = (provider.getCaption() == null || provider.getCaption().length() == 0)
@@ -588,8 +600,9 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     add(applicationTabPane, BorderLayout.CENTER);
 
     final JPanel southPanel = initializeSouthPanel();
-    if (southPanel != null)
+    if (southPanel != null) {
       add(southPanel, BorderLayout.SOUTH);
+    }
   }
 
   protected boolean isLoginRequired() {
@@ -657,22 +670,27 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     frame.setTitle(title);
     frame.getContentPane().setLayout(new BorderLayout());
     frame.getContentPane().add(this, BorderLayout.CENTER);
-    if (showMenuBar)
+    if (showMenuBar) {
       frame.setJMenuBar(createMenuBar());
+    }
     final JToolBar toolbar = getNorthToolBar();
-    if (toolbar != null)
+    if (toolbar != null) {
       frame.getContentPane().add(toolbar, BorderLayout.NORTH);
-    if (size != null)
+    }
+    if (size != null) {
       frame.setSize(size);
+    }
     else {
       frame.pack();
       UiUtil.setSizeWithinScreenBounds(frame);
     }
     UiUtil.centerWindow(frame);
-    if (maximize)
+    if (maximize) {
       frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-    if (setVisible)
+    }
+    if (setVisible) {
       frame.setVisible(true);
+    }
 
     return frame;
   }
@@ -688,8 +706,9 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
       final EntityPanel panel = (EntityPanel) ((DefaultMutableTreeNode) enumeration.nextElement()).getUserObject();
       if (panel != null) {
         initializeResizing(panel);
-        if (Configuration.getBooleanValue(Configuration.USE_KEYBOARD_NAVIGATION))
+        if (Configuration.getBooleanValue(Configuration.USE_KEYBOARD_NAVIGATION)) {
           initializeNavigation(panel);
+        }
       }
     }
   }
@@ -712,8 +731,9 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     final User user = LoginPanel.showLoginPanel(null, defaultUser == null ?
             new User(Configuration.getDefaultUsername(applicationIdentifier), null) : defaultUser,
             applicationIcon, frameCaption + " - " + Messages.get(Messages.LOGIN), null, null);
-    if (user.getUsername() == null || user.getUsername().length() == 0)
+    if (user.getUsername() == null || user.getUsername().length() == 0) {
       throw new RuntimeException(FrameworkMessages.get(FrameworkMessages.EMPTY_USERNAME));
+    }
 
     return user;
   }
@@ -751,16 +771,18 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
             new AbstractAction(DIV_LEFT) {
       public void actionPerformed(ActionEvent e) {
         final EntityPanel activePanelParent = panel.getMasterPanel();
-        if (activePanelParent != null)
+        if (activePanelParent != null) {
           activePanelParent.resizePanel(EntityPanel.LEFT, DIVIDER_JUMP);
+        }
       }
     });
     UiUtil.addKeyEvent(panel, KeyEvent.VK_RIGHT, KeyEvent.SHIFT_DOWN_MASK + KeyEvent.ALT_DOWN_MASK,
             new AbstractAction(DIV_RIGHT) {
       public void actionPerformed(ActionEvent e) {
         final EntityPanel activePanelParent = panel.getMasterPanel();
-        if (activePanelParent != null)
+        if (activePanelParent != null) {
           activePanelParent.resizePanel(EntityPanel.RIGHT, DIVIDER_JUMP);
+        }
       }
     });
     UiUtil.addKeyEvent(panel, KeyEvent.VK_DOWN, KeyEvent.SHIFT_DOWN_MASK + KeyEvent.ALT_DOWN_MASK,
@@ -816,12 +838,14 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
           break;
         case EntityPanel.DOWN:
           if (active.getDetailPanels().size() > 0) {
-            if (active.getDetailPanelState() == EntityPanel.HIDDEN)
+            if (active.getDetailPanelState() == EntityPanel.HIDDEN) {
               active.setDetailPanelState(EntityPanel.EMBEDDED);
+            }
             activatePanel(active.getLinkedDetailPanel());
           }
-          else
-            activatePanel((EntityPanel) applicationTabPane.getSelectedComponent());//go to top
+          else {
+            activatePanel((EntityPanel) applicationTabPane.getSelectedComponent());
+          }//go to top
           break;
         case EntityPanel.LEFT:
           activatePanel(getPanelOnLeft(active));
@@ -834,20 +858,24 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   }
 
   private static void activatePanel(final EntityPanel panel) {
-    if (panel != null)
+    if (panel != null) {
       panel.getEditModel().setActive(true);
+    }
   }
 
   private EntityPanel getActivePanel(final List<EntityPanel> panels) {
-    if (panels.size() == 0)
+    if (panels.size() == 0) {
       return null;
+    }
 
     for (final EntityPanel panel : panels) {
       final EntityPanel activeDetailPanel = getActivePanel(panel.getDetailPanels());
-      if (activeDetailPanel != null)
+      if (activeDetailPanel != null) {
         return activeDetailPanel;
-      if (panel.isActive())
+      }
+      if (panel.isActive()) {
         return panel;
+      }
     }
 
     return null;
@@ -858,9 +886,12 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
             mainApplicationPanels : panel.getMasterPanel().getDetailPanels();
     final int index = siblings.indexOf(panel);
     if (index == 0)//leftmost panel
-      return siblings.get(siblings.size()-1);
-    else
-      return siblings.get(index-1);
+    {
+      return siblings.get(siblings.size() - 1);
+    }
+    else {
+      return siblings.get(index - 1);
+    }
   }
 
   private EntityPanel getPanelOnRight(final EntityPanel panel) {
@@ -868,9 +899,12 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
             mainApplicationPanels : panel.getMasterPanel().getDetailPanels();
     final int index = siblings.indexOf(panel);
     if (index == siblings.size()-1)//rightmost panel
+    {
       return siblings.get(0);
-    else
-      return siblings.get(index+1);
+    }
+    else {
+      return siblings.get(index + 1);
+    }
   }
 
   private static DefaultTreeModel createApplicationTree(final Collection<? extends EntityPanel> entityPanels) {
@@ -884,8 +918,9 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     for (final EntityPanel entityPanel : panels) {
       final DefaultMutableTreeNode node = new DefaultMutableTreeNode(entityPanel);
       root.add(node);
-      if (entityPanel.getDetailPanels().size() > 0)
+      if (entityPanel.getDetailPanels().size() > 0) {
         addModelsToTree(node, entityPanel.getDetailPanels());
+      }
     }
   }
 
@@ -895,8 +930,9 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
 
   private static String getUsername(final String username) {
     final String usernamePrefix = (String) Configuration.getValue(Configuration.USERNAME_PREFIX);
-    if (usernamePrefix != null && usernamePrefix.length() > 0 && username.toUpperCase().startsWith(usernamePrefix.toUpperCase()))
+    if (usernamePrefix != null && usernamePrefix.length() > 0 && username.toUpperCase().startsWith(usernamePrefix.toUpperCase())) {
       return username.substring(usernamePrefix.length(), username.length());
+    }
 
     return username;
   }

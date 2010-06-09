@@ -27,8 +27,9 @@ public class TextBeanValueLink extends AbstractBeanValueLink implements Document
                            final Class<?> valueClass, final Event valueChangeEvent, final LinkType linkType) {
     super(owner, propertyName, valueClass, valueChangeEvent, linkType);
     this.document = textComponent.getDocument();
-    if (linkType == LinkType.READ_ONLY)
+    if (linkType == LinkType.READ_ONLY) {
       textComponent.setEditable(false);
+    }
     this.document.addDocumentListener(this);
   }
 
@@ -51,8 +52,9 @@ public class TextBeanValueLink extends AbstractBeanValueLink implements Document
     try {
       synchronized (document) {
         document.remove(0, document.getLength());
-        if (propertyValue != null)
+        if (propertyValue != null) {
           document.insertString(0, getValueAsString(propertyValue), null);
+        }
       }
     }
     catch (BadLocationException e) {

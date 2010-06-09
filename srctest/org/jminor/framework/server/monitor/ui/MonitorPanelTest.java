@@ -37,8 +37,9 @@ public class MonitorPanelTest {
     final ConnectionPoolMonitor poolMonitor = databaseMonitor.getConnectionPoolMonitor().getConnectionPoolInstanceMonitors().iterator().next();
     poolMonitor.setCollectFineGrainedStats(true);
     poolMonitor.setStatsUpdateInterval(350);
-    if (!GraphicsEnvironment.isHeadless())
+    if (!GraphicsEnvironment.isHeadless()) {
       panel.showFrame();
+    }
 
     Thread.sleep(1000);
     poolMonitor.resetStats();

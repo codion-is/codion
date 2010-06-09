@@ -60,8 +60,9 @@ public class EntityCriteriaPanel extends JPanel {
 
     tableModel.getSearchModel().refreshSearchComboBoxModels();
 
-    if (tableModel.isDetailModel())
+    if (tableModel.isDetailModel()) {
       add(initializeShowAllPanel(tableModel), BorderLayout.SOUTH);
+    }
   }
 
   private JPanel initializeShowAllPanel(final EntityTableModel tableModel) {
@@ -102,8 +103,9 @@ public class EntityCriteriaPanel extends JPanel {
         final PropertySearchModel selected = (PropertySearchModel) propertyList.getSelectedValue();
         if (selected != null) {
           PropertySearchPanel panel = panels.get(selected);
-          if (panel == null)
+          if (panel == null) {
             panels.put(selected, panel = new PropertySearchPanel(selected, true, true));
+          }
 
           editorPanel.add(panel, BorderLayout.NORTH);
           revalidate();
@@ -121,10 +123,12 @@ public class EntityCriteriaPanel extends JPanel {
       public int compare(final AbstractSearchModel<Property> searchModelOne, final AbstractSearchModel<Property> searchModelTwo) {
         final Property propertyOne = searchModelOne.getSearchProperty();
         final Property propertyTwo = searchModelTwo.getSearchProperty();
-        if (propertyOne.getCaption() != null && propertyTwo.getCaption() != null)
+        if (propertyOne.getCaption() != null && propertyTwo.getCaption() != null) {
           return propertyOne.getCaption().compareTo(propertyTwo.getCaption());
-        else
+        }
+        else {
           return propertyOne.getPropertyID().compareTo(propertyTwo.getPropertyID());
+        }
       }
     });
 

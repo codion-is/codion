@@ -16,7 +16,7 @@ import java.util.Date;
  * Date: 3.8.2009<br>
  * Time: 00:09:47<br>
  */
-public class DateUtil {
+public final class DateUtil {
 
   private DateUtil() {}
 
@@ -36,10 +36,12 @@ public class DateUtil {
    * @return true if the date is valid, using the given date formats
    */
   public static boolean isDateValid(final String date, final boolean emptyStringOk, final DateFormat... formats) {
-    if (formats == null || formats.length == 0)
+    if (formats == null || formats.length == 0) {
       throw new RuntimeException("Date format is required");
-    if (date == null || date.length() == 0)
+    }
+    if (date == null || date.length() == 0) {
       return emptyStringOk;
+    }
 
     for (final DateFormat format : formats) {
       format.setLenient(false);
@@ -140,8 +142,9 @@ public class DateUtil {
   }
 
   public static Date getFirstDayOfQuarter(final int quarter) {
-    if (quarter < 1 || quarter > 4)
+    if (quarter < 1 || quarter > 4) {
       throw new IllegalArgumentException("Quarter must be between 1 and 4");
+    }
 
     final Calendar c = Calendar.getInstance();
     c.set(Calendar.DAY_OF_MONTH, 1);
@@ -168,8 +171,9 @@ public class DateUtil {
   }
 
   public static Date getLastDayOfQuarter(final int quarter) {
-    if (quarter < 1 || quarter > 4)
+    if (quarter < 1 || quarter > 4) {
       throw new IllegalArgumentException("Quarter must be between 1 and 4");
+    }
 
     final Calendar c = Calendar.getInstance();
     switch (quarter) {
@@ -203,8 +207,9 @@ public class DateUtil {
     fromCalendar.setTime(from);
     final Calendar toCalendar = Calendar.getInstance();
     toCalendar.setTime(to);
-    if (fromCalendar.after(toCalendar))
+    if (fromCalendar.after(toCalendar)) {
       throw new IllegalArgumentException("'To' date should be after 'from' date");
+    }
 
     int numberOfDays = 0;
     while (fromCalendar.before(toCalendar)) {
@@ -234,8 +239,9 @@ public class DateUtil {
   public static String getDateMask(final SimpleDateFormat format) {
     final String datePattern = format.toPattern();
     final StringBuilder stringBuilder = new StringBuilder(datePattern.length());
-    for (final Character character : datePattern.toCharArray())
+    for (final Character character : datePattern.toCharArray()) {
       stringBuilder.append(Character.isLetter(character) ? "#" : character);
+    }
 
     return stringBuilder.toString();
   }

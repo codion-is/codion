@@ -117,15 +117,17 @@ public class ExceptionDialog extends JDialog {
   }
 
   private String truncateMessage(final String message) {
-    if (message.length() > 100)
+    if (message.length() > 100) {
       return message.substring(0, 100) + "...";
+    }
 
     return message;
   }
 
   private String translateExceptionClass(final Class<? extends Throwable> exceptionClass) {
-    if (exceptionClass.equals(DbException.class))
+    if (exceptionClass.equals(DbException.class)) {
       return Messages.get(Messages.DATABASE_EXCEPTION);
+    }
 
     return exceptionClass.getSimpleName();
   }
@@ -188,10 +190,12 @@ public class ExceptionDialog extends JDialog {
   public void emailErrorReport() {
     if (errorReportEmailAddressTo == null) {
       final String address = JOptionPane.showInputDialog(Messages.get(Messages.INPUT_EMAIL_ADDRESS));
-      if (address != null && address.length() > 0)
+      if (address != null && address.length() > 0) {
         setErrorReportEmailTo(address);
-      else
+      }
+      else {
         return;
+      }
     }
     try {
       final String ctr = "ctr.exe /C start mailto:" + errorReportEmailAddressTo +
@@ -265,10 +269,12 @@ public class ExceptionDialog extends JDialog {
     centerPanel.setVisible(show);
     pack();
     detailPanel.revalidate();
-    if (ownerFrame != null && ownerFrame.isVisible())
+    if (ownerFrame != null && ownerFrame.isVisible()) {
       positionOverFrame();
-    else
+    }
+    else {
       UiUtil.centerWindow(this);
+    }
   }
 
   private JPanel createNorthPanel() {
@@ -356,11 +362,13 @@ public class ExceptionDialog extends JDialog {
     p.x += (d.width - getWidth()) >> 1;
     p.y += (d.height - getHeight()) >> 1;
 
-    if (p.x < 0)
+    if (p.x < 0) {
       p.x = 0;
+    }
 
-    if (p.y < 0)
+    if (p.y < 0) {
       p.y = 0;
+    }
 
     setLocation(p);
   }

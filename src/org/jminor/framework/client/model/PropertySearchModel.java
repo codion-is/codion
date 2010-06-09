@@ -139,13 +139,17 @@ public class PropertySearchModel extends AbstractSearchModel<Property> {
 
   private String toString(final Object object) {
     final StringBuilder stringBuilder = new StringBuilder();
-    if (object instanceof Collection)
-      for (final Object obj : ((Collection) object))
+    if (object instanceof Collection) {
+      for (final Object obj : ((Collection) object)) {
         stringBuilder.append(toString(obj));
-    else if (object instanceof Entity)
-      stringBuilder.append(((Entity)object).getPrimaryKey().toString());
-    else
+      }
+    }
+    else if (object instanceof Entity) {
+      stringBuilder.append(((Entity) object).getPrimaryKey().toString());
+    }
+    else {
       stringBuilder.append(object);
+    }
 
     return stringBuilder.toString();
   }
@@ -166,7 +170,9 @@ public class PropertySearchModel extends AbstractSearchModel<Property> {
     eventUpperBoundChanged().addListener(new ActionListener() {
       public void actionPerformed(ActionEvent event) {
         if (!updatingModel)//noinspection unchecked
+        {
           entityLookupModel.setSelectedEntities((List<Entity>) getUpperBound());
+        }
       }
     });
   }
@@ -174,8 +180,9 @@ public class PropertySearchModel extends AbstractSearchModel<Property> {
   private void bindComboBoxEvents() {
     entityComboBoxModel.eventSelectionChanged().addListener(new ActionListener() {
       public void actionPerformed(ActionEvent event) {
-        if (!updatingModel)
+        if (!updatingModel) {
           setUpperBound(entityComboBoxModel.getSelectedEntity());
+        }
       }
     });
     eventUpperBoundChanged().addListener(new ActionListener() {
@@ -183,10 +190,12 @@ public class PropertySearchModel extends AbstractSearchModel<Property> {
         try {
           updatingModel = true;
           final Object upper = getUpperBound();
-          if ((upper instanceof Collection && ((Collection) upper).size() > 0))
+          if ((upper instanceof Collection && ((Collection) upper).size() > 0)) {
             entityComboBoxModel.setSelectedItem(((Collection) upper).iterator().next());
-          else
+          }
+          else {
             entityComboBoxModel.setSelectedItem(upper);
+          }
         }
         finally {
           updatingModel = false;
@@ -197,10 +206,12 @@ public class PropertySearchModel extends AbstractSearchModel<Property> {
     entityComboBoxModel.eventRefreshDone().addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent event) {
         final Object upper = getUpperBound();
-        if ((upper instanceof Collection && ((Collection) upper).size() > 0))
+        if ((upper instanceof Collection && ((Collection) upper).size() > 0)) {
           entityComboBoxModel.setSelectedItem(((Collection) upper).iterator().next());
-        else
+        }
+        else {
           entityComboBoxModel.setSelectedItem(upper);
+        }
       }
     });
   }

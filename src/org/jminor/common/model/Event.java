@@ -29,8 +29,9 @@ public class Event implements ActionListener {
    * @param event the ActionEvent to use when notifying
    */
   public final void fire(final ActionEvent event) {
-    for (final ActionListener listener : new ArrayList<ActionListener>(listeners))
+    for (final ActionListener listener : new ArrayList<ActionListener>(listeners)) {
       listener.actionPerformed(event);
+    }
   }
 
   /** {@inheritDoc} */
@@ -45,9 +46,7 @@ public class Event implements ActionListener {
    * @throws IllegalArgumentException in case listener is null
    */
   public void addListener(final ActionListener listener) {
-    if (listener == null)
-      throw new IllegalArgumentException("Listener is null");
-
+    Util.rejectNullValue(listener);
     listeners.add(listener);
   }
 

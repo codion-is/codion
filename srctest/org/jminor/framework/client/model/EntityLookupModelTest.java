@@ -136,8 +136,9 @@ public class EntityLookupModelTest {
 
   private boolean contains(final List<Entity> result, final String employeeName) {
     for (final Entity entity : result) {
-      if (entity.getStringValue(EmpDept.EMPLOYEE_NAME).equals(employeeName))
+      if (entity.getStringValue(EmpDept.EMPLOYEE_NAME).equals(employeeName)) {
         return true;
+      }
     }
 
     return false;

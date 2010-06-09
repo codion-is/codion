@@ -49,8 +49,9 @@ public class DateInputPanel extends JPanel {
       };
       this.button = new JButton(buttonAction);
       this.button.setPreferredSize(UiUtil.DIMENSION_TEXT_FIELD_SQUARE);
-      if (enabledState != null)
+      if (enabledState != null) {
         UiUtil.linkToEnabledState(enabledState, this.button);
+      }
       add(this.button, BorderLayout.EAST);
     }
   }
@@ -60,8 +61,9 @@ public class DateInputPanel extends JPanel {
   }
 
   public JButton getButton() {
-    if (button == null)
+    if (button == null) {
       throw new RuntimeException("DateInputPanel has no button");
+    }
     return button;
   }
 

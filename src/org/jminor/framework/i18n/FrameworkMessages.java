@@ -9,7 +9,7 @@ import java.util.ResourceBundle;
 /**
  * A class containing i18n message keys used in the framework package.
  */
-public class FrameworkMessages {
+public final class FrameworkMessages {
 
   private FrameworkMessages() {}
 

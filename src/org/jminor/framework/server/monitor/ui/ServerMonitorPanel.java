@@ -74,8 +74,9 @@ public class ServerMonitorPanel extends JPanel {
           IllegalAccessException, InstantiationException, URISyntaxException {
     final String domainModelClass = JOptionPane.showInputDialog("Domain class name");
     final String locationURL = JOptionPane.showInputDialog("Location URL");
-    if (domainModelClass.length() > 0 && locationURL.length() > 0)
+    if (domainModelClass.length() > 0 && locationURL.length() > 0) {
       getModel().loadDomainModel(Util.getURI(locationURL), domainModelClass);
+    }
   }
 
   private void initUI() throws RemoteException {

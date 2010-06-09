@@ -41,24 +41,30 @@ public class EntityTableSearchPanel extends AbstractTableColumnSyncPanel {
    * @param value true if wildcards should automatically be added to strings
    */
   public void setAutomaticWildcard(final boolean value) {
-    for (final JPanel searchPanel : getColumnPanels().values())
-      if (searchPanel instanceof PropertySearchPanel)
+    for (final JPanel searchPanel : getColumnPanels().values()) {
+      if (searchPanel instanceof PropertySearchPanel) {
         ((PropertySearchPanel) searchPanel).getModel().setAutomaticWildcard(value);
+      }
+    }
   }
 
   public void clear() {
-    for (final JPanel searchPanel : getColumnPanels().values())
-      if (searchPanel instanceof PropertySearchPanel)
+    for (final JPanel searchPanel : getColumnPanels().values()) {
+      if (searchPanel instanceof PropertySearchPanel) {
         ((PropertySearchPanel) searchPanel).getModel().clear();
+      }
+    }
   }
 
   /**
    * @param value true if advanced search should be enabled
    */
   public void setAdvanced(final boolean value) {
-    for (final JPanel searchPanel : getColumnPanels().values())
-      if (searchPanel instanceof PropertySearchPanel)
+    for (final JPanel searchPanel : getColumnPanels().values()) {
+      if (searchPanel instanceof PropertySearchPanel) {
         ((PropertySearchPanel) searchPanel).setAdvancedSearchOn(value);
+      }
+    }
 
     evtAdvancedChanged.fire();
   }
@@ -67,9 +73,11 @@ public class EntityTableSearchPanel extends AbstractTableColumnSyncPanel {
    * @return true if advanced search is enabled
    */
   public boolean isAdvanced() {
-    for (final JPanel searchPanel : getColumnPanels().values())
-      if (searchPanel instanceof PropertySearchPanel)
+    for (final JPanel searchPanel : getColumnPanels().values()) {
+      if (searchPanel instanceof PropertySearchPanel) {
         return ((PropertySearchPanel) searchPanel).isAdvancedSearchOn();
+      }
+    }
 
     return false;
   }
@@ -89,8 +97,9 @@ public class EntityTableSearchPanel extends AbstractTableColumnSyncPanel {
     while (columnEnumeration.hasMoreElements()) {
       final TableColumn column = columnEnumeration.nextElement();
       final Property property = (Property) column.getIdentifier();
-      if (property.is(propertyID))
+      if (property.is(propertyID)) {
         return (PropertySearchPanel) getColumnPanels().get(column);
+      }
     }
 
     return null;

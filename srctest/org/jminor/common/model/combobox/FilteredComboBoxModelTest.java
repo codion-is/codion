@@ -99,9 +99,11 @@ public class FilteredComboBoxModelTest {
   }
 
   private boolean modelContains(final String s) {
-    for (int i = 0; i < testModel.getSize(); i++)
-      if (testModel.getElementAt(i).equals(s))
+    for (int i = 0; i < testModel.getSize(); i++) {
+      if (testModel.getElementAt(i).equals(s)) {
         return true;
+      }
+    }
 
     return false;
   }

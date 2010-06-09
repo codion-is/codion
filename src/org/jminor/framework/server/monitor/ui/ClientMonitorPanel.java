@@ -37,13 +37,15 @@ public class ClientMonitorPanel extends JPanel {
 
   public void setModel(final ClientMonitor model) {
     this.model = model;
-    if (model != null)
+    if (model != null) {
       clientInstanceList.setModel(model.getClientInstanceListModel());
+    }
   }
 
   public void refresh() throws RemoteException {
-    if (model != null)
+    if (model != null) {
       model.refresh();
+    }
   }
 
   private void initUI() {

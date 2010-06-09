@@ -6,7 +6,7 @@ import org.jminor.framework.domain.Entity;
 
 import java.util.List;
 
-public class EntityDataUtil {
+public final class EntityDataUtil {
 
   private EntityDataUtil() {}
 
@@ -16,8 +16,9 @@ public class EntityDataUtil {
       for (final String entityID : entityIDs) {
         final List<Entity> entitiesToCopy = source.selectMany(new EntitySelectCriteria(entityID).setFetchDepthForAll(0));
         if (!copyPrimaryKeys) {
-          for (final Entity entity : entitiesToCopy)
+          for (final Entity entity : entitiesToCopy) {
             entity.getPrimaryKey().clear();
+          }
         }
         int fromIndex = 0, toIndex = 0;
         while (fromIndex < entitiesToCopy.size()) {
@@ -33,8 +34,9 @@ public class EntityDataUtil {
     }
     catch (Exception e) {
       try {
-        if (destination.isTransactionOpen())
+        if (destination.isTransactionOpen()) {
           destination.rollbackTransaction();
+        }
       }
       catch (Exception e1) {/**/}
       throw e;

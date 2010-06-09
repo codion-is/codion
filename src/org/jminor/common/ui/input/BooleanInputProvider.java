@@ -15,8 +15,9 @@ public class BooleanInputProvider extends AbstractInputProvider<Boolean> {
 
   public BooleanInputProvider(final Boolean currentValue) {
     super(new JComboBox(new BooleanComboBoxModel()));
-    if (currentValue != null)
+    if (currentValue != null) {
       ((JComboBox) getInputComponent()).getModel().setSelectedItem(currentValue);
+    }
   }
 
   @Override

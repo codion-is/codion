@@ -12,8 +12,9 @@ public class IntInputProvider extends AbstractInputProvider<Integer> {
 
   public IntInputProvider(final Integer currentValue) {
     super(new IntField());
-    if (currentValue != null)
+    if (currentValue != null) {
       ((IntField) getInputComponent()).setInt(currentValue);
+    }
   }
 
   @Override

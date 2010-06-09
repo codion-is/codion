@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.client.ui;
 
+import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.domain.Property;
@@ -34,8 +35,7 @@ public class EntityTableCellRenderer implements TableCellRenderer {
   private static final Color DOUBLE_FILTERED_BACKGROUND = new Color(215, 215, 215);
 
   public EntityTableCellRenderer(final EntityTableModel tableModel, final boolean rowColoring) {
-    if (tableModel == null)
-      throw new IllegalArgumentException("EntityTableCellRenderer requires a EntityTableModel instance");
+    Util.rejectNullValue(tableModel);
     this.rowColoring = rowColoring;
     this.tableModel = tableModel;
   }
@@ -47,8 +47,9 @@ public class EntityTableCellRenderer implements TableCellRenderer {
     final Component component =
             getRenderer(property).getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
-    if (isSelected)
+    if (isSelected) {
       return component;
+    }
 
     final boolean propertySearchEnabled = tableModel.getSearchModel().isSearchEnabled(property.getPropertyID());
     final boolean propertyFilterEnabled = tableModel.getSearchModel().isFilterEnabled(property.getPropertyID());
@@ -58,10 +59,12 @@ public class EntityTableCellRenderer implements TableCellRenderer {
       component.setForeground(table.getForeground());
     }
     else {
-      if (rowColor != null)
+      if (rowColor != null) {
         component.setBackground(rowColor);
-      else
+      }
+      else {
         component.setBackground((propertySearchEnabled && propertyFilterEnabled) ? DOUBLE_FILTERED_BACKGROUND : SINGLE_FILTERED_BACKGROUND);
+      }
     }
 
     return component;
@@ -69,25 +72,32 @@ public class EntityTableCellRenderer implements TableCellRenderer {
 
   protected TableCellRenderer getRenderer(final Property columnProperty) {
     TableCellRenderer renderer = renderers.get(columnProperty.getPropertyID());
-    if (renderer == null)
+    if (renderer == null) {
       renderers.put(columnProperty.getPropertyID(), renderer = initializeRenderer(columnProperty));
+    }
 
     return renderer;
   }
 
   protected TableCellRenderer initializeRenderer(final Property property) {
-    if (property.isBoolean())
+    if (property.isBoolean()) {
       return new BooleanRenderer();
-    if (property.isDouble())
+    }
+    if (property.isDouble()) {
       return new DoubleRenderer(property);
-    if (property.isInteger())
+    }
+    if (property.isInteger()) {
       return new IntegerRenderer(property);
-    if (property.isDate())
+    }
+    if (property.isDate()) {
       return new DateRenderer(property);
-    if (property.isTimestamp())
+    }
+    if (property.isTimestamp()) {
       return new TimestampRenderer(property);
-    else
+    }
+    else {
       return new DefaultTableCellRenderer();
+    }
   }
 
   /**
@@ -107,10 +117,12 @@ public class EntityTableCellRenderer implements TableCellRenderer {
 
     @Override
     public void setValue(final Object value) {
-      if (value instanceof String)
+      if (value instanceof String) {
         setText((String) value);
-      else
+      }
+      else {
         setText((value == null) ? "" : format.format(value));
+      }
     }
 
     private static NumberFormat initNumberFormat(final Property property) {
@@ -135,10 +147,12 @@ public class EntityTableCellRenderer implements TableCellRenderer {
 
     @Override
     public void setValue(final Object value) {
-      if (value instanceof String)
+      if (value instanceof String) {
         setText((String) value);
-      else
+      }
+      else {
         setText((value == null) ? "" : format.format(value));
+      }
     }
 
     private static NumberFormat initNumberFormat(final Property property) {
@@ -165,10 +179,12 @@ public class EntityTableCellRenderer implements TableCellRenderer {
     @Override
     public void setValue(final Object value) {
       String txt = "";
-      if (value instanceof Date)
+      if (value instanceof Date) {
         txt = format.format(value);
-      else if (value instanceof String)
+      }
+      else if (value instanceof String) {
         txt = (String) value;
+      }
 
       setText(txt);
     }
@@ -197,10 +213,12 @@ public class EntityTableCellRenderer implements TableCellRenderer {
     @Override
     public void setValue(final Object value) {
       String txt = "";
-      if (value instanceof Date)
+      if (value instanceof Date) {
         txt = format.format(value);
-      else if (value instanceof String)
+      }
+      else if (value instanceof String) {
         txt = (String) value;
+      }
 
       setText(txt);
     }
@@ -224,8 +242,10 @@ public class EntityTableCellRenderer implements TableCellRenderer {
     public Component getTableCellRendererComponent(final JTable table, final Object value,
                                                    final boolean isSelected, final boolean hasFocus,
                                                    final int row, final int column) {
-      if (value != null && !(value instanceof Boolean))
+      Util.rejectNullValue(value);
+      if (value != null && !(value instanceof Boolean)) {
         throw new IllegalArgumentException("Non boolean value: " + value.getClass());
+      }
 
       setForeground(isSelected ? table.getSelectionForeground() : table.getForeground());
       setBackground(isSelected ? table.getSelectionBackground() : table.getBackground());

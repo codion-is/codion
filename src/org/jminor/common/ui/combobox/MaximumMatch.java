@@ -37,15 +37,17 @@ public class MaximumMatch extends PlainDocument {
     editor.setDocument(this);
     comboBox.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        if (!selecting)
+        if (!selecting) {
           highlightCompletedText(0);
+        }
       }
     });
     editor.addKeyListener(new KeyAdapter() {
       @Override
       public void keyPressed(KeyEvent e) {
-        if (comboBox.isDisplayable() && Character.isLetterOrDigit(e.getKeyChar()))
+        if (comboBox.isDisplayable() && Character.isLetterOrDigit(e.getKeyChar())) {
           comboBox.setPopupVisible(true);
+        }
         hitBackspace=false;
         switch (e.getKeyCode()) {
           // determine if the pressed key is backspace (needed by the remove method)
@@ -72,14 +74,16 @@ public class MaximumMatch extends PlainDocument {
       @Override
       public void focusLost(FocusEvent e) {
         // Workaround for Bug 5100422 - Hide Popup on focus loss
-        if (hidePopupOnFocusLoss)
+        if (hidePopupOnFocusLoss) {
           comboBox.setPopupVisible(false);
+        }
       }
     });
     // Handle initially selected object
     Object selected = comboBox.getSelectedItem();
-    if (selected!=null)
+    if (selected!=null) {
       setText(selected.toString());
+    }
     highlightCompletedText(0);
   }
 
@@ -94,14 +98,16 @@ public class MaximumMatch extends PlainDocument {
   @Override
   public void remove(int offs, int len) throws BadLocationException {
     // return immediately when selecting an item
-    if (selecting)
+    if (selecting) {
       return;
+    }
     if (hitBackspace) {
       // user hit backspace => move the selection backwards
       // old item keeps being selected
       if (offs>0) {
-        if (hitBackspaceOnSelection)
+        if (hitBackspaceOnSelection) {
           offs--;
+        }
       }
       else {
         // User hit backspace with the cursor positioned on the start => beep
@@ -118,8 +124,9 @@ public class MaximumMatch extends PlainDocument {
   @Override
   public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
     // return immediately when selecting an item
-    if (selecting || model.getSize() == 0)
+    if (selecting || model.getSize() == 0) {
       return;
+    }
     // insert the string into the document
     super.insertString(offs, str, a);
     // lookup and select a matching item
@@ -138,10 +145,12 @@ public class MaximumMatch extends PlainDocument {
       UIManager.getLookAndFeel().provideErrorFeedback(comboBox);
     }
 
-    if (match)
+    if (match) {
       offs = getMaximumMatchingOffset(getText(0, getLength()), item);
-    else
-      offs+=str.length();
+    }
+    else {
+      offs += str.length();
+    }
 
     setText(item == null ? "" : item.toString());
     // select the completed part
@@ -213,8 +222,9 @@ public class MaximumMatch extends PlainDocument {
         // current item matches the pattern
         // how many leading characters have the selected and the current item in common?
         int tmpMatch=equalStartLength(itemAsString, selectedAsString);
-        if (tmpMatch < match)
-          match=tmpMatch;
+        if (tmpMatch < match) {
+          match = tmpMatch;
+        }
       }
     }
     return match;
@@ -226,8 +236,9 @@ public class MaximumMatch extends PlainDocument {
     char[] ch2 = str2.toUpperCase().toCharArray();
     int n = ch1.length>ch2.length?ch2.length:ch1.length;
     for (int i=0; i<n; i++) {
-      if (ch1[i]!=ch2[i])
+      if (ch1[i]!=ch2[i]) {
         return i;
+      }
     }
     return n;
   }

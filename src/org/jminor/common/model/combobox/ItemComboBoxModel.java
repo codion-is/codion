@@ -42,10 +42,12 @@ public class ItemComboBoxModel<T> extends DefaultComboBoxModel {
   /** {@inheritDoc} */
   @Override
   public void setSelectedItem(final Object item) {
-    if (!(item instanceof Item))
+    if (!(item instanceof Item)) {
       super.setSelectedItem(getElementAt(indexOf(item)));
-    else
+    }
+    else {
       super.setSelectedItem(item);
+    }
   }
 
   public int getIndexOfItem(final Object item) {
@@ -63,27 +65,32 @@ public class ItemComboBoxModel<T> extends DefaultComboBoxModel {
       Collections.sort(items, new Comparator<Item<T>>() {
         /* Null items at front of list*/
         public int compare(final Item<T> o1, final Item<T> o2) {
-          if (o1.getItem() == null && o2.getItem() == null)
+          if (o1.getItem() == null && o2.getItem() == null) {
             return o1.compareTo(o2);
-          if (o1.getItem() == null)
+          }
+          if (o1.getItem() == null) {
             return -1;
-          if (o2.getItem() == null)
+          }
+          if (o2.getItem() == null) {
             return 1;
+          }
 
           return o1.compareTo(o2);
         }
       });
 
-      for (final Item item : items)
+      for (final Item item : items) {
         super.addElement(item);
+      }
     }
   }
 
   private int indexOf(final Object item) {
     final int size = getSize();
     for (int i = 0; i < size; i++) {
-      if (Util.equal(((Item)getElementAt(i)).getItem(), item))
+      if (Util.equal(((Item)getElementAt(i)).getItem(), item)) {
         return i;
+      }
     }
 
     return -1;
@@ -98,8 +105,7 @@ public class ItemComboBoxModel<T> extends DefaultComboBoxModel {
 
     public IconItem(final T item, final ImageIcon icon) {
       super(item, item == null ? "" : item.toString());
-      if (icon == null)
-        throw new IllegalArgumentException("ItemComboBoxModel.IconItem must have an icon");
+      Util.rejectNullValue(icon);
       this.icon = icon;
     }
 

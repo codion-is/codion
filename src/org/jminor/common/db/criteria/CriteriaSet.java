@@ -60,8 +60,9 @@ public class CriteriaSet<T> implements Criteria<T>, Serializable {
    */
   public CriteriaSet(final Conjunction conjunction, final Criteria<T>... criteria) {
     this.conjunction = conjunction;
-    for (final Criteria<T> criterion : criteria)
+    for (final Criteria<T> criterion : criteria) {
       addCriteria(criterion);
+    }
   }
 
   /**
@@ -69,8 +70,9 @@ public class CriteriaSet<T> implements Criteria<T>, Serializable {
    * @param criteria the Criteria to add
    */
   public void addCriteria(final Criteria<T> criteria) {
-    if (criteria != null)
+    if (criteria != null) {
       this.criteriaList.add(criteria);
+    }
   }
 
   /**
@@ -82,15 +84,17 @@ public class CriteriaSet<T> implements Criteria<T>, Serializable {
 
   /** {@inheritDoc} */
   public String asString() {
-    if (criteriaList.size() == 0)
+    if (criteriaList.size() == 0) {
       return "";
+    }
 
     final StringBuilder criteriaString = new StringBuilder(criteriaList.size() > 1 ? "(" : "");
     int i = 0;
     for (final Criteria criteria : criteriaList) {
       criteriaString.append(criteria.asString());
-      if (i++ < criteriaList.size() - 1)
+      if (i++ < criteriaList.size() - 1) {
         criteriaString.append(conjunction.toString());
+      }
     }
 
     return criteriaString.append(criteriaList.size() > 1 ? ")" : "").toString();
@@ -98,16 +102,18 @@ public class CriteriaSet<T> implements Criteria<T>, Serializable {
 
   public List<Object> getValues() {
     final List<Object> values = new ArrayList<Object>();
-    for (final Criteria<T> criteria : criteriaList)
+    for (final Criteria<T> criteria : criteriaList) {
       values.addAll(criteria.getValues());
+    }
 
     return values;
   }
 
   public List<T> getValueKeys() {
     final List<T> types = new ArrayList<T>();
-    for (final Criteria<T> criteria : criteriaList)
+    for (final Criteria<T> criteria : criteriaList) {
       types.addAll(criteria.getValueKeys());
+    }
 
     return types;
   }

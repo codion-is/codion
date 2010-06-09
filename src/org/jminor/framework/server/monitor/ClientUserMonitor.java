@@ -37,11 +37,13 @@ public class ClientUserMonitor {
 
   public void refresh() throws RemoteException{
     clientTypeListModel.clear();
-    for (final String clientType : server.getClientTypes())
+    for (final String clientType : server.getClientTypes()) {
       clientTypeListModel.addElement(new ClientMonitor(server, clientType, null));
+    }
     userListModel.clear();
-    for (final User user : server.getUsers())
+    for (final User user : server.getUsers()) {
       userListModel.addElement(new ClientMonitor(server, null, user));
+    }
   }
 
   public void disconnectAll() throws RemoteException {
@@ -65,7 +67,8 @@ public class ClientUserMonitor {
   public void shutdown() {
     System.out.println("ClientUserMonitor shutdown");
     final Enumeration enumeration = clientTypeListModel.elements();
-    while (enumeration.hasMoreElements())
+    while (enumeration.hasMoreElements()) {
       ((ClientMonitor) enumeration.nextElement()).shutdown();
+    }
   }
 }

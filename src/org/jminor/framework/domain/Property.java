@@ -168,8 +168,7 @@ public class Property implements Serializable {
    * @param caption the caption of this property, if this is null then this property is defined as hidden
    */
   public Property(final String propertyID, final int type, final String caption) {
-    if (propertyID == null)
-      throw new IllegalArgumentException("Property ID must be specified");
+    Util.rejectNullValue(propertyID);
     this.propertyID = propertyID;
     this.hashCode = propertyID.hashCode();
     this.type = type;
@@ -323,8 +322,9 @@ public class Property implements Serializable {
    * @return this Property instance
    */
   public Property setUpdatable(final boolean updatable) {
-    if (hasParentProperty())
+    if (hasParentProperty()) {
       throw new RuntimeException("Can not set the upatable status of a property with a parent property");
+    }
 
     this.updatable = updatable;
     return this;
@@ -337,8 +337,9 @@ public class Property implements Serializable {
    * @return true if this property is updatable
    */
   public boolean isUpdatable() {
-    if (parentProperty != null)
+    if (parentProperty != null) {
       return parentProperty.isUpdatable();
+    }
 
     return this.updatable;
   }
@@ -348,8 +349,9 @@ public class Property implements Serializable {
    * @return this Property instance
    */
   public Property setReadOnly(final boolean readOnly) {
-    if (hasParentProperty())
+    if (hasParentProperty()) {
       throw new RuntimeException("Can not set the read only status of a property with a parent property");
+    }
 
     this.readOnly = readOnly;
     return this;
@@ -362,8 +364,9 @@ public class Property implements Serializable {
    * @return true if this property is for select only
    */
   public boolean isReadOnly() {
-    if (parentProperty != null)
+    if (parentProperty != null) {
       return parentProperty.isReadOnly();
+    }
 
     return this.readOnly;
   }
@@ -376,8 +379,9 @@ public class Property implements Serializable {
    * @return this Property instance
    */
   public Property setNullable(final boolean nullable) {
-    if (hasParentProperty())
+    if (hasParentProperty()) {
       throw new RuntimeException("Can not set the nullable status of a property with a parent property");
+    }
 
     this.nullable = nullable;
     return this;
@@ -387,8 +391,9 @@ public class Property implements Serializable {
    * @return true if this property accepts a null value
    */
   public boolean isNullable() {
-    if (parentProperty != null)
+    if (parentProperty != null) {
       return parentProperty.isNullable();
+    }
 
     return nullable;
   }
@@ -466,8 +471,9 @@ public class Property implements Serializable {
    * @return this Property instance
    */
   public Property setMaximumFractionDigits(final int maximumFractionDigits) {
-    if (!(format instanceof NumberFormat))
+    if (!(format instanceof NumberFormat)) {
       throw new RuntimeException("Maximum fraction digits only good for number formats");
+    }
 
     ((NumberFormat) format).setMaximumFractionDigits(maximumFractionDigits);
     return this;
@@ -525,8 +531,9 @@ public class Property implements Serializable {
    * @return this Property instance
    */
   public Property setUseNumberFormatGrouping(final boolean useGrouping) {
-    if (!(format instanceof NumberFormat))
+    if (!(format instanceof NumberFormat)) {
       throw new RuntimeException("Grouping only good for number formats");
+    }
 
     ((NumberFormat) format).setGroupingUsed(useGrouping);
     return this;
@@ -625,8 +632,9 @@ public class Property implements Serializable {
    * @return the caption used when the value of this property is presented
    */
   public String getCaption() {
-    if (caption == null && hasParentProperty())
+    if (caption == null && hasParentProperty()) {
       return parentProperty.getCaption();
+    }
 
     return caption;
   }
@@ -672,8 +680,9 @@ public class Property implements Serializable {
    * @return the Class representing this property type
    */
   public Class<?> getTypeClass() {
-    if (typeClass == null)
+    if (typeClass == null) {
       typeClass = getTypeClass(type);
+    }
 
     return typeClass;
   }
@@ -705,10 +714,12 @@ public class Property implements Serializable {
   }
 
   private Format initializeFormat() {
-    if (isTime())
+    if (isTime()) {
       return isDate() ? Configuration.getDefaultDateFormat() : Configuration.getDefaultTimestampFormat();
-    else if (isNumerical())
+    }
+    else if (isNumerical()) {
       return NumberFormat.getInstance();
+    }
 
     return null;
   }
@@ -750,8 +761,9 @@ public class Property implements Serializable {
     }
 
     public PrimaryKeyProperty setIndex(final int primaryKeyIndex) {
-      if (primaryKeyIndex < 0)
+      if (primaryKeyIndex < 0) {
         throw new IllegalArgumentException("Primary key index must be at least 0");
+      }
       this.index = primaryKeyIndex;
       return this;
     }
@@ -795,19 +807,24 @@ public class Property implements Serializable {
     public ForeignKeyProperty(final String propertyID, final String caption, final String referencedEntityID,
                               final Property[] referenceProperties, final String[] referencedPropertyIDs) {
       super(propertyID, Types.REF, caption);
-      for (final Property referenceProperty : referenceProperties)
-        if (referenceProperty.propertyID.equals(propertyID))
+      for (final Property referenceProperty : referenceProperties) {
+        if (referenceProperty.propertyID.equals(propertyID)) {
           throw new IllegalArgumentException(referencedEntityID + ", reference property does not have a unique name: " + propertyID);
-      if (referencedEntityID == null)
+        }
+      }
+      if (referencedEntityID == null) {
         throw new IllegalArgumentException("referencedEntityID is null: " + propertyID);
-      if (referenceProperties.length > 1 && referencedPropertyIDs.length != referenceProperties.length)
+      }
+      if (referenceProperties.length > 1 && referencedPropertyIDs.length != referenceProperties.length) {
         throw new IllegalArgumentException("Reference property count mismatch");
+      }
 
       for (int i = 0; i < referenceProperties.length; i++) {
         final Property referenceProperty = referenceProperties[i];
         referenceProperty.setParentProperty(this);
-        if (referencedPropertyIDs.length > i)
+        if (referencedPropertyIDs.length > i) {
           link(referenceProperty, referencedPropertyIDs[i]);
+        }
       }
       this.referencedEntityID = referencedEntityID;
       this.referenceProperties = Collections.unmodifiableList(Arrays.asList(referenceProperties));
@@ -851,18 +868,21 @@ public class Property implements Serializable {
     }
 
     public String getReferencedPropertyID(final Property referenceProperty) {
-      if (linkedReferenceProperties == null)
+      if (linkedReferenceProperties == null) {
         return null;
+      }
 
-      if (!linkedReferenceProperties.containsKey(referenceProperty))
+      if (!linkedReferenceProperties.containsKey(referenceProperty)) {
         throw new RuntimeException("No referenced property ID associated with reference property: " + referenceProperty);
+      }
 
       return linkedReferenceProperties.get(referenceProperty);
     }
 
     private void link(final Property referenceProperty, final String referencedPropertyID) {
-      if (linkedReferenceProperties == null)
+      if (linkedReferenceProperties == null) {
         linkedReferenceProperties = new HashMap<Property, String>();
+      }
       linkedReferenceProperties.put(referenceProperty, referencedPropertyID);
     }
   }
@@ -976,8 +996,9 @@ public class Property implements Serializable {
     public String getCaption(final Object value) {
       final Item item = new Item<Object>(value, "");
       final int index = values.indexOf(item);
-      if (index >= 0)
+      if (index >= 0) {
         return values.get(index).getCaption();
+      }
 
       return "";
     }
@@ -1070,8 +1091,9 @@ public class Property implements Serializable {
      * @return this TransientProperty instance
      */
     public DerivedProperty addLinkedPropertyIDs(final String... linkedPropertyIDs) {
-      if (this.linkedPropertyIDs == null)
+      if (this.linkedPropertyIDs == null) {
         this.linkedPropertyIDs = new HashSet<String>();
+      }
       this.linkedPropertyIDs.addAll(Arrays.asList(linkedPropertyIDs));
       return this;
     }
@@ -1238,10 +1260,12 @@ public class Property implements Serializable {
      * @return the Boolean value of <code>object</code>
      */
     public Boolean toBoolean(final Object object) {
-      if (Util.equal(trueValue, object))
+      if (Util.equal(trueValue, object)) {
         return true;
-      else if (Util.equal(falseValue, object))
+      }
+      else if (Util.equal(falseValue, object)) {
         return false;
+      }
 
       return null;
     }
@@ -1252,10 +1276,12 @@ public class Property implements Serializable {
      */
     public String toSQLString(final Boolean value) {
       final Object result = toSQLValue(value);
-      if (columnType == Types.VARCHAR)
+      if (columnType == Types.VARCHAR) {
         return "'" + result + "'";
-      else
+      }
+      else {
         return result == null ? "null" : result.toString();
+      }
     }
 
     public Object toSQLValue(final Boolean value) {

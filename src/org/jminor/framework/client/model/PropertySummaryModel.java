@@ -4,6 +4,7 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.model.Util;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 
@@ -56,8 +57,7 @@ public class PropertySummaryModel {
    * @param summaryType the type of summary to show
    */
   public void setSummaryType(final Summary summaryType) {
-    if (summaryType == null)
-      throw new IllegalArgumentException("Use PropertySummaryModel.NONE instead of null");
+    Util.rejectNullValue(summaryType);
     if (!this.summaryType.equals(summaryType)) {
       this.summaryType = summaryType;
       evtSummaryTypeChanged.fire();
@@ -69,8 +69,9 @@ public class PropertySummaryModel {
   }
 
   public List<Summary> getSummaryTypes() {
-    if (property.isNumerical())
+    if (property.isNumerical()) {
       return Arrays.asList(NONE, SUM, AVERAGE, MINIMUM, MAXIMUM, MINIMUM_MAXIMUM);
+    }
 
     return new ArrayList<Summary>();
   }
@@ -143,14 +144,16 @@ public class PropertySummaryModel {
       String txt = "";
       if (property.isInteger()) {
         long sum = 0;
-        for (final Object obj : values)
-          sum += (Integer)obj;
+        for (final Object obj : values) {
+          sum += (Integer) obj;
+        }
         txt = format.format(sum);
       }
       else if (property.isDouble()) {
         double sum = 0;
-        for (final Object obj : values)
-          sum += (Double)obj;
+        for (final Object obj : values) {
+          sum += (Double) obj;
+        }
         txt = format.format(sum);
       }
 
@@ -174,8 +177,9 @@ public class PropertySummaryModel {
           sum += (Integer)obj;
           count++;
         }
-        if (count > 0)
+        if (count > 0) {
           txt = format.format(sum / count);
+        }
       }
       else if (property.isDouble()) {
         double sum = 0;
@@ -184,8 +188,9 @@ public class PropertySummaryModel {
           sum += (Double)obj;
           count++;
         }
-        if (count > 0)
+        if (count > 0) {
           txt = format.format(sum / count);
+        }
       }
 
       return txt;
@@ -203,17 +208,21 @@ public class PropertySummaryModel {
       String txt = "";
       if (property.isInteger()) {
         int min = Integer.MAX_VALUE;
-        for (final Object obj : values)
+        for (final Object obj : values) {
           min = Math.min(min, (Integer) obj);
-        if (min != Integer.MAX_VALUE)
+        }
+        if (min != Integer.MAX_VALUE) {
           txt = format.format(min);
+        }
       }
       else if (property.isDouble()) {
         double min = Double.MAX_VALUE;
-        for (final Object obj : values)
+        for (final Object obj : values) {
           min = Math.min(min, (Double) obj);
-        if (min != Double.MAX_VALUE)
+        }
+        if (min != Double.MAX_VALUE) {
           txt = format.format(min);
+        }
       }
 
       return txt;
@@ -231,17 +240,21 @@ public class PropertySummaryModel {
       String txt = "";
       if (property.isInteger()) {
         int max = Integer.MIN_VALUE;
-        for (final Object obj : values)
+        for (final Object obj : values) {
           max = Math.max(max, (Integer) obj);
-        if (max != Integer.MIN_VALUE)
+        }
+        if (max != Integer.MIN_VALUE) {
           txt = format.format(max);
+        }
       }
       else if (property.isDouble()) {
         double max = Double.MIN_VALUE;
-        for (final Object obj : values)
+        for (final Object obj : values) {
           max = Math.max(max, (Double) obj);
-        if (max != Double.MIN_VALUE)
+        }
+        if (max != Double.MIN_VALUE) {
           txt = format.format(max);
+        }
       }
 
       return txt;
@@ -264,8 +277,9 @@ public class PropertySummaryModel {
           max = Math.max(max, (Integer) obj);
           min = Math.min(min, (Integer) obj);
         }
-        if (max != Integer.MIN_VALUE)
+        if (max != Integer.MIN_VALUE) {
           txt = format.format(min) + "/" + format.format(max);
+        }
       }
       else if (property.isDouble()) {
         double min = Double.MAX_VALUE;
@@ -274,8 +288,9 @@ public class PropertySummaryModel {
           max = Math.max(max, (Double) obj);
           min = Math.min(min, (Double) obj);
         }
-        if (max != Double.MIN_VALUE)
+        if (max != Double.MIN_VALUE) {
           txt = format.format(min) + "/" + format.format(max);
+        }
       }
 
       return txt;

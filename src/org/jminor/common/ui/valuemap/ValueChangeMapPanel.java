@@ -4,6 +4,7 @@
 package org.jminor.common.ui.valuemap;
 
 import org.jminor.common.model.AbstractFilteredTableModel;
+import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.ValueChangeMap;
 import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
 import org.jminor.common.model.valuemap.ValueChangeMapModel;
@@ -35,9 +36,7 @@ public abstract class ValueChangeMapPanel<K, V> extends JPanel {
   private AbstractFilteredTablePanel<? extends ValueChangeMap<K, V>> tablePanel;
 
   public ValueChangeMapPanel(final ValueChangeMapModel<K, V> model) {
-    if (model == null)
-      throw new IllegalArgumentException("Model can not be null");
-
+    Util.rejectNullValue(model);
     this.model = model;
   }
 
@@ -53,8 +52,9 @@ public abstract class ValueChangeMapPanel<K, V> extends JPanel {
   }
 
   public ValueChangeMapEditPanel<K, V> getEditPanel() {
-    if (editPanel == null)
+    if (editPanel == null) {
       editPanel = initializeEditPanel(getModel().getEditModel());
+    }
 
     return editPanel;
   }
@@ -67,8 +67,9 @@ public abstract class ValueChangeMapPanel<K, V> extends JPanel {
   }
 
   public AbstractFilteredTablePanel<? extends ValueChangeMap<K, V>> getTablePanel() {
-    if (getModel().containsTableModel() && tablePanel == null)
+    if (getModel().containsTableModel() && tablePanel == null) {
       tablePanel = initializeTablePanel(getModel().getTableModel());
+    }
 
     return tablePanel;
   }

@@ -99,8 +99,9 @@ public class TextFieldPlus extends JTextField {
     return new PlainDocument() {
       @Override
       public void insertString(final int offset, final String string, final AttributeSet a) throws BadLocationException {
-        if (getMaxLength() > 0 && getLength() + string.length() > getMaxLength())
+        if (getMaxLength() > 0 && getLength() + string.length() > getMaxLength()) {
           return;
+        }
 
         super.insertString(offset, upperCase ? string.toUpperCase() : string, a);
       }

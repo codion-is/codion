@@ -4,6 +4,7 @@
 package org.jminor.framework.client.ui;
 
 import org.jminor.common.i18n.Messages;
+import org.jminor.common.model.Util;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.TextBeanValueLink;
 import org.jminor.common.ui.textfield.SearchFieldHint;
@@ -74,8 +75,7 @@ public class EntityLookupField extends JTextField {
    * the selected entities
    */
   public EntityLookupField(final EntityLookupModel model, final Action enterAction) {
-    if (model == null)
-      throw new IllegalArgumentException("Can not construct a EntityLookupField without a EntityLookupModel");
+    Util.rejectNullValue(model);
     this.model = model;
     this.searchHint = SearchFieldHint.enable(this);
     setEnterAction(enterAction);
@@ -104,10 +104,12 @@ public class EntityLookupField extends JTextField {
   }
 
   private void selectEntities(final List<Entity> entities) {
-    if (entities.size() == 0)
+    if (entities.size() == 0) {
       JOptionPane.showMessageDialog(this, FrameworkMessages.get(FrameworkMessages.NO_RESULTS_FROM_CRITERIA));
-    else if (entities.size() == 1)
+    }
+    else if (entities.size() == 1) {
       getModel().setSelectedEntities(entities);
+    }
     else {
       Collections.sort(entities, new Comparator<Entity>() {
         public int compare(final Entity e1, final Entity e2) {
@@ -143,8 +145,9 @@ public class EntityLookupField extends JTextField {
       list.addMouseListener(new MouseAdapter() {
         @Override
         public void mouseClicked(final MouseEvent e) {
-          if (e.getClickCount() == 2)
+          if (e.getClickCount() == 2) {
             okAction.actionPerformed(null);
+          }
         }
       });
       dialog.setLayout(new BorderLayout());
@@ -196,8 +199,9 @@ public class EntityLookupField extends JTextField {
         updateColors();
       }
       public void focusLost(final FocusEvent e) {
-        if (getText().length() == 0)
+        if (getText().length() == 0) {
           getModel().setSelectedEntity(null);
+        }
 //        else //todo?
 //          performLookup();
         updateColors();
@@ -221,12 +225,14 @@ public class EntityLookupField extends JTextField {
   private void performLookup() {
     if (getModel().getSearchString().length() == 0) {
       getModel().setSelectedEntities(null);
-      if (getEnterAction() != null)
+      if (getEnterAction() != null) {
         getEnterAction().actionPerformed(new ActionEvent(this, 0, "actionPerformed"));
+      }
     }
     else {
-      if (getModel().searchStringRepresentsSelected() && getEnterAction() != null)
+      if (getModel().searchStringRepresentsSelected() && getEnterAction() != null) {
         getEnterAction().actionPerformed(new ActionEvent(this, 0, "actionPerformed"));
+      }
       else if (!getModel().searchStringRepresentsSelected()) {
         List<Entity> queryResult;
         try {
@@ -273,8 +279,9 @@ public class EntityLookupField extends JTextField {
 
   private List<Entity> toEntityList(final Object[] selectedValues) {
     final List<Entity> entityList = new ArrayList<Entity>(selectedValues.length);
-    for (final Object object : selectedValues)
+    for (final Object object : selectedValues) {
       entityList.add((Entity) object);
+    }
 
     return entityList;
   }

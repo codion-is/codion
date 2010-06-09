@@ -12,7 +12,7 @@ import java.lang.reflect.InvocationTargetException;
 /**
  * A factory class for handing out EntityDbProviders according to system properties.
  */
-public class EntityDbProviderFactory {
+public final class EntityDbProviderFactory {
 
   private EntityDbProviderFactory() {}
 
@@ -48,16 +48,19 @@ public class EntityDbProviderFactory {
                                                         final String clientTypeID) {
     try {
       if (System.getProperty(Configuration.CLIENT_CONNECTION_TYPE,
-              Configuration.CONNECTION_TYPE_LOCAL).equals(Configuration.CONNECTION_TYPE_REMOTE))
+              Configuration.CONNECTION_TYPE_LOCAL).equals(Configuration.CONNECTION_TYPE_REMOTE)) {
         return (EntityDbProvider) Class.forName(remoteConnectionProviderClassName).getConstructor(
                 User.class, String.class, String.class).newInstance(user, clientKey, clientTypeID);
-      else
+      }
+      else {
         return (EntityDbProvider) Class.forName(localConnectionProviderClassName).getConstructor(
                 User.class).newInstance(user);
+      }
     }
     catch (InvocationTargetException ite) {
-      if (ite.getTargetException() instanceof RuntimeException)
+      if (ite.getTargetException() instanceof RuntimeException) {
         throw (RuntimeException) ((InvocationTargetException) ite).getTargetException();
+      }
 
       throw new RuntimeException("Exception while initializing db provider", ite);
     }

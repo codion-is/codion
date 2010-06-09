@@ -51,8 +51,9 @@ public class StringProvider<K> implements ValueMap.ToString<K>, Serializable {
   /** {@inheritDoc} */
   public String toString(final ValueMap<K, ?> valueMap) {
     final StringBuilder builder = new StringBuilder();
-    for (final ValueProvider<K> valueProvider : valueProviders)
+    for (final ValueProvider<K> valueProvider : valueProviders) {
       builder.append(valueProvider.toString(valueMap));
+    }
 
     return builder.toString();
   }
@@ -107,13 +108,14 @@ public class StringProvider<K> implements ValueMap.ToString<K>, Serializable {
    */
   public boolean references(final K referenceKey) {
     for (final ValueProvider provider : valueProviders) {
-      if (provider instanceof ReferencedValueProvider && ((ReferencedValueProvider) provider).getReferenceKey().equals(referenceKey))
+      if (provider instanceof ReferencedValueProvider && ((ReferencedValueProvider) provider).getReferenceKey().equals(referenceKey)) {
         return true;
+      }
     }
     return false;
   }
 
-  private static interface ValueProvider<T> extends Serializable {
+  private interface ValueProvider<T> extends Serializable {
     String toString(final ValueMap<T, ?> valueMap);
   }
 
@@ -127,8 +129,9 @@ public class StringProvider<K> implements ValueMap.ToString<K>, Serializable {
     }
 
     public String toString(final ValueMap<T, ?> valueMap) {
-      if (valueMap.isValueNull(key))
+      if (valueMap.isValueNull(key)) {
         return "";
+      }
 
       return format.format(valueMap.getValue(key));
     }
@@ -145,14 +148,17 @@ public class StringProvider<K> implements ValueMap.ToString<K>, Serializable {
 
     @SuppressWarnings({"unchecked"})
     public String toString(final ValueMap<T, ?> valueMap) {
-      if (valueMap.isValueNull(referenceKey))
+      if (valueMap.isValueNull(referenceKey)) {
         return "";
+      }
       final Object referencedValue = valueMap.getValue(referenceKey);
-      if (!(referencedValue instanceof ValueMap))
+      if (!(referencedValue instanceof ValueMap)) {
         throw new RuntimeException(referenceKey + " does not refer to a ValueMap instance");
+      }
       final ValueMap<T, ?> referencedValueMap = (ValueMap<T, ?>) referencedValue;
-      if (referencedValueMap.isValueNull(key))
+      if (referencedValueMap.isValueNull(key)) {
         return "";
+      }
 
       return referencedValueMap.getValue(key).toString();
     }
@@ -170,8 +176,9 @@ public class StringProvider<K> implements ValueMap.ToString<K>, Serializable {
     }
 
     public String toString(final ValueMap<T, ?> valueMap) {
-      if (valueMap.isValueNull(key))
+      if (valueMap.isValueNull(key)) {
         return "";
+      }
 
       return valueMap.getValue(key).toString();
     }

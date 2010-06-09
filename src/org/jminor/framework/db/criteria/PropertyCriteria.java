@@ -6,6 +6,7 @@ package org.jminor.framework.db.criteria;
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.criteria.CriteriaSet;
 import org.jminor.common.model.SearchType;
+import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
@@ -62,12 +63,11 @@ public class PropertyCriteria implements Criteria<Property>, Serializable {
    * @param values the values
    */
   public PropertyCriteria(final Property property, final SearchType searchType, final Object... values) {
-    if (property == null)
-      throw new IllegalArgumentException("Property criteria requires a non-null property");
-    if (searchType == null)
-      throw new IllegalArgumentException("Property criteria requires a non-null search type");
-    if (values != null && values.length == 0)
+    Util.rejectNullValue(property);
+    Util.rejectNullValue(searchType);
+    if (values != null && values.length == 0) {
       throw new RuntimeException("No values specified for PropertyCriteria: " + property);
+    }
     this.property = property;
     this.searchType = searchType;
     this.values = initializeValues(values);
@@ -79,21 +79,25 @@ public class PropertyCriteria implements Criteria<Property>, Serializable {
   }
 
   public List<Object> getValues() {
-    if (isNullCriteria)
-      return new ArrayList<Object>();//null criteria, uses 'x is null', not 'x = ?'
+    if (isNullCriteria) {
+      return new ArrayList<Object>();
+    }//null criteria, uses 'x is null', not 'x = ?'
 
-    if (getProperty() instanceof Property.ForeignKeyProperty)
+    if (getProperty() instanceof Property.ForeignKeyProperty) {
       return getForeignKeyCriteriaValues();
+    }
 
     return values;
   }
 
   public List<Property> getValueKeys() {
-    if (isNullCriteria)
-      return new ArrayList<Property>();//null criteria, uses 'x is null', not 'x = ?'
+    if (isNullCriteria) {
+      return new ArrayList<Property>();
+    }//null criteria, uses 'x is null', not 'x = ?'
 
-    if (getProperty() instanceof Property.ForeignKeyProperty)
+    if (getProperty() instanceof Property.ForeignKeyProperty) {
       return getForeignKeyValueProperties();
+    }
 
     return Collections.nCopies(values.size(), property);
   }
@@ -148,31 +152,38 @@ public class PropertyCriteria implements Criteria<Property>, Serializable {
   @SuppressWarnings({"unchecked"})
   private List<Object> initializeValues(final Object... values) {
     final List<Object> ret = new ArrayList<Object>();
-    if (values == null)
+    if (values == null) {
       ret.add(null);
-    else
+    }
+    else {
       ret.addAll(getValueList(values));
+    }
 
     return ret;
   }
 
   @SuppressWarnings({"unchecked"})
   private Collection getValueList(final Object... values) {
-    if (values.length == 1 && values[0] instanceof Collection)
+    if (values.length == 1 && values[0] instanceof Collection) {
       return getValueList(((Collection) values[0]).toArray());
-    else if (values.length > 0 && values[0] instanceof Entity)
+    }
+    else if (values.length > 0 && values[0] instanceof Entity) {
       return EntityUtil.getPrimaryKeys((Collection) Arrays.asList(values));
-    else
+    }
+    else {
       return Arrays.asList(values);
+    }
   }
 
   private String getConditionString() {
-    if (property instanceof Property.ForeignKeyProperty)
+    if (property instanceof Property.ForeignKeyProperty) {
       return getForeignKeyCriteriaString();
+    }
 
     final String columnIdentifier = initializeColumnIdentifier(property);
-    if (isNullCriteria)
+    if (isNullCriteria) {
       return columnIdentifier + (getSearchType() == SearchType.LIKE ? " is null" : " is not null");
+    }
 
     final String sqlValue = getSqlValue("?");
     final String sqlValue2 = getValueCount() == 2 ? getSqlValue("?") : null;
@@ -200,23 +211,27 @@ public class PropertyCriteria implements Criteria<Property>, Serializable {
   }
 
   private String getForeignKeyCriteriaString() {
-    if (getValueCount() > 1)
+    if (getValueCount() > 1) {
       return getMultipleForeignKeyCriteriaString();
+    }
 
     return createSingleForeignKeyCriteria((Entity.Key) values.get(0)).asString();
   }
 
   private String getMultipleForeignKeyCriteriaString() {
-    if (((Property.ForeignKeyProperty) getProperty()).isCompositeReference())
+    if (((Property.ForeignKeyProperty) getProperty()).isCompositeReference()) {
       return createMultipleCompositeForeignKeyCriteria().asString();
-    else
+    }
+    else {
       return getInList(((Property.ForeignKeyProperty) getProperty()).getReferenceProperties().get(0),
               getSearchType() == SearchType.NOT_LIKE);
+    }
   }
 
   private List<Object> getForeignKeyCriteriaValues() {
-    if (values.size() > 1)
+    if (values.size() > 1) {
       return getCompositeForeignKeyCriteriaValues();
+    }
 
     return createSingleForeignKeyCriteria((Entity.Key) values.get(0)).getValues();
   }
@@ -226,16 +241,18 @@ public class PropertyCriteria implements Criteria<Property>, Serializable {
   }
 
   private List<Property> getForeignKeyValueProperties() {
-    if (values.size() > 1)
+    if (values.size() > 1) {
       return createMultipleCompositeForeignKeyCriteria().getValueKeys();
+    }
 
     return createSingleForeignKeyCriteria((Entity.Key) values.get(0)).getValueKeys();
   }
 
   private Criteria<Property> createMultipleCompositeForeignKeyCriteria() {
     final CriteriaSet<Property> criteriaSet = new CriteriaSet<Property>(CriteriaSet.Conjunction.OR);
-    for (final Object entityKey : values)
+    for (final Object entityKey : values) {
       criteriaSet.addCriteria(createSingleForeignKeyCriteria((Entity.Key) entityKey));
+    }
 
     return criteriaSet;
   }
@@ -266,16 +283,19 @@ public class PropertyCriteria implements Criteria<Property>, Serializable {
     final StringBuilder stringBuilder = new StringBuilder("(").append(initializeColumnIdentifier(property)).append((notIn ? " not in (" : " in ("));
     int cnt = 1;
     for (int i = 0; i < getValueCount(); i++) {
-      if (getProperty().isString() && !isCaseSensitive())
+      if (getProperty().isString() && !isCaseSensitive()) {
         stringBuilder.append("upper(?)");
-      else
+      }
+      else {
         stringBuilder.append("?");
+      }
       if (cnt++ == 1000 && i < getValueCount() - 1) {//Oracle limit
         stringBuilder.append(notIn ? ") and " : ") or ").append(property.getColumnName()).append(" in (");
         cnt = 1;
       }
-      else if (i < getValueCount() - 1)
+      else if (i < getValueCount() - 1) {
         stringBuilder.append(", ");
+      }
     }
     stringBuilder.append("))");
 
@@ -289,13 +309,16 @@ public class PropertyCriteria implements Criteria<Property>, Serializable {
 
   private String initializeColumnIdentifier(final Property property) {
     String columnName;
-    if (property instanceof Property.SubqueryProperty)
+    if (property instanceof Property.SubqueryProperty) {
       columnName = "(" + ((Property.SubqueryProperty) property).getSubQuery() + ")";
-    else
+    }
+    else {
       columnName = property.getColumnName();
+    }
 
-    if (!isNullCriteria && property.isString() && !isCaseSensitive())
+    if (!isNullCriteria && property.isString() && !isCaseSensitive()) {
       columnName = "upper(" + columnName + ")";
+    }
 
     return columnName;
   }

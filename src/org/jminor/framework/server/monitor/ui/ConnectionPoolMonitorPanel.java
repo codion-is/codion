@@ -82,8 +82,9 @@ public class ConnectionPoolMonitorPanel extends JPanel {
     final double prc = (double) stats.getConnectionRequestsDelayed() / (double) stats.getConnectionRequests() * 100;
     txtDelayed.setText(format.format(stats.getConnectionRequestsDelayed())
             + (prc > 0 ? " (" + format.format(prc)+"%)" : ""));
-    if (model.datasetContainsData())
+    if (model.datasetContainsData()) {
       inPoolChart.getXYPlot().setDataset(model.getInPoolDataSet());
+    }
   }
 
   private void initUI() {

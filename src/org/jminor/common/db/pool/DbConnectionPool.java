@@ -56,8 +56,9 @@ public class DbConnectionPool implements ConnectionPool {
   }
 
   public DbConnection checkOutConnection() throws ClassNotFoundException, SQLException {
-    if (closed)
+    if (closed) {
       throw new IllegalStateException("Can not check out a connection from a closed connection pool!");
+    }
 
     final long time = System.nanoTime();
     int retryCount = 0;
@@ -70,8 +71,9 @@ public class DbConnectionPool implements ConnectionPool {
           try {
             creatingConnection = true;
             counter.incrementConnectionsCreatedCounter();
-            if (LOG.isDebugEnabled())
+            if (LOG.isDebugEnabled()) {
               LOG.debug("$$$$ adding a new connection to connection pool " + getConnectionPoolSettings().getUser());
+            }
             checkInConnection(dbConnectionProvider.createConnection(getConnectionPoolSettings().getUser()));
           }
           finally {
@@ -82,14 +84,16 @@ public class DbConnectionPool implements ConnectionPool {
       while (connection == null) {
         try {
           synchronized (connectionPool) {
-            if (connectionPool.size() == 0)
+            if (connectionPool.size() == 0) {
               connectionPool.wait();
+            }
             connection = getConnectionFromPool();
             retryCount++;
           }
-          if (connection != null && LOG.isDebugEnabled())
+          if (connection != null && LOG.isDebugEnabled()) {
             LOG.debug("##### " + getConnectionPoolSettings().getUser() + " got connection"
                     + " after " + (System.currentTimeMillis() - time) + "ms (retries: " + retryCount + ")");
+          }
         }
         catch (InterruptedException e) {/**/}
       }
@@ -101,8 +105,9 @@ public class DbConnectionPool implements ConnectionPool {
   }
 
   public void checkInConnection(final DbConnection connection) {
-    if (closed)
+    if (closed) {
       disconnect(connection);
+    }
 
     synchronized (connectionPool) {
       synchronized (connectionsInUse) {
@@ -110,8 +115,9 @@ public class DbConnectionPool implements ConnectionPool {
       }
       if (connection.isConnectionValid()) {
         try {
-          if (connection.isTransactionOpen())
+          if (connection.isTransactionOpen()) {
             connection.rollbackTransaction();
+          }
         }
         catch (SQLException e) {
           LOG.error(this, e);
@@ -121,8 +127,9 @@ public class DbConnectionPool implements ConnectionPool {
         connectionPool.notify();
       }
       else {
-        if (LOG.isDebugEnabled())
+        if (LOG.isDebugEnabled()) {
           LOG.debug(getConnectionPoolSettings().getUser() + " connection invalid upon check in");
+        }
         disconnect(connection);
       }
     }
@@ -140,10 +147,12 @@ public class DbConnectionPool implements ConnectionPool {
   public void setConnectionPoolSettings(final ConnectionPoolSettings poolSettings) {
     final boolean cleanupIntervalChanged = connectionPoolSettings.getPoolCleanupInterval() != poolSettings.getPoolCleanupInterval();
     connectionPoolSettings.set(poolSettings);
-    if (cleanupIntervalChanged)
+    if (cleanupIntervalChanged) {
       startPoolCleaner(connectionPoolSettings.getPoolCleanupInterval());
-    if (!connectionPoolSettings.isEnabled())
+    }
+    if (!connectionPoolSettings.isEnabled()) {
       close();
+    }
   }
 
   public ConnectionPoolSettings getConnectionPoolSettings() {
@@ -169,8 +178,9 @@ public class DbConnectionPool implements ConnectionPool {
     statistics.setAverageCheckOutTime(counter.getAverageCheckOutTime());
     statistics.setResetDate(counter.getResetDate());
     statistics.setTimestamp(System.currentTimeMillis());
-    if (since >= 0)
+    if (since >= 0) {
       statistics.setPoolStatistics(getPoolStatistics(since));
+    }
 
     return statistics;
   }
@@ -185,8 +195,9 @@ public class DbConnectionPool implements ConnectionPool {
       final ListIterator<ConnectionPoolState> iterator = connectionPoolStatistics.listIterator();
       while (iterator.hasNext()) {//NB. the stat log is circular, result should be sorted
         final ConnectionPoolState state = iterator.next();
-        if (state.getTime() >= since)
+        if (state.getTime() >= since) {
           poolStates.add(state);
+        }
       }
     }
 
@@ -209,11 +220,13 @@ public class DbConnectionPool implements ConnectionPool {
     synchronized (connectionPool) {
       synchronized (connectionsInUse) {
         final int connectionsInPool = connectionPool.size();
-        if (collectFineGrainedStatistics)
+        if (collectFineGrainedStatistics) {
           addInPoolStats(connectionsInPool, connectionsInUse.size(), System.currentTimeMillis());
+        }
         final DbConnection dbConnection = connectionsInPool > 0 ? connectionPool.pop() : null;
-        if (dbConnection != null)
+        if (dbConnection != null) {
           connectionsInUse.add(dbConnection);
+        }
 
         return dbConnection;
       }
@@ -225,17 +238,21 @@ public class DbConnectionPool implements ConnectionPool {
       final int poolStatisticsSize = 1000;
       connectionPoolStatisticsIndex = connectionPoolStatisticsIndex == poolStatisticsSize ? 0 : connectionPoolStatisticsIndex;
       if (connectionPoolStatistics.size() == poolStatisticsSize) //filled already, reuse
+      {
         connectionPoolStatistics.get(connectionPoolStatisticsIndex).set(time, size, inUse);
-      else
+      }
+      else {
         connectionPoolStatistics.add(new ConnectionPoolState(time, size, inUse));
+      }
 
       connectionPoolStatisticsIndex++;
     }
   }
 
   private void startPoolCleaner(final int interval) {
-    if (poolCleaner != null)
+    if (poolCleaner != null) {
       poolCleaner.cancel();
+    }
 
     poolCleaner = new Timer(true);
     poolCleaner.schedule(new TimerTask() {
@@ -255,9 +272,10 @@ public class DbConnectionPool implements ConnectionPool {
         final long idleTime = currentTime - connection.getPoolTime();
         if (idleTime > connectionPoolSettings.getPooledConnectionTimeout()) {
           iterator.remove();
-          if (LOG.isDebugEnabled())
+          if (LOG.isDebugEnabled()) {
             LOG.debug(getConnectionPoolSettings().getUser() + " removing connection from pool, idle for " + idleTime / 1000
                     + " seconds, " + connectionPool.size() + " available");
+          }
           disconnect(connection);
         }
       }
@@ -266,14 +284,16 @@ public class DbConnectionPool implements ConnectionPool {
 
   private void emptyPool() {
     synchronized (connectionPool) {
-      while (connectionPool.size() > 0)
+      while (connectionPool.size() > 0) {
         disconnect(connectionPool.pop());
+      }
     }
   }
 
   private void disconnect(final DbConnection connection) {
-    if (connection == null)
+    if (connection == null) {
       return;
+    }
 
     counter.incrementConnectionsDestroyedCounter();
     dbConnectionProvider.destroyConnection(connection);

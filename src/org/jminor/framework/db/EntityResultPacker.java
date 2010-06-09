@@ -4,6 +4,7 @@
 package org.jminor.framework.db;
 
 import org.jminor.common.db.ResultPacker;
+import org.jminor.common.model.Util;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
@@ -28,10 +29,8 @@ public class EntityResultPacker implements ResultPacker<Entity> {
 
   public EntityResultPacker(final String entityID, final Collection<? extends Property> properties,
                             final Collection<Property.TransientProperty> transientProperties) {
-    if (entityID == null)
-      throw new IllegalArgumentException("EntityResultPacker requires a non-null entityID");
-    if (properties == null)
-      throw new IllegalArgumentException("EntityResultPacker requires non-null properties");
+    Util.rejectNullValue(entityID);
+    Util.rejectNullValue(properties);
     this.entityID = entityID;
     this.properties = properties;
     this.transientProperties = transientProperties;
@@ -47,12 +46,12 @@ public class EntityResultPacker implements ResultPacker<Entity> {
    * @throws SQLException in case of an exception
    */
   public List<Entity> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
-    if (resultSet == null)
-      throw new IllegalArgumentException("Can not pack result from a null ResultSet");
+    Util.rejectNullValue(resultSet);
     final List<Entity> entities = new ArrayList<Entity>();
     int counter = 0;
-    while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount))
+    while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
       entities.add(loadEntity(resultSet));
+    }
 
     return entities;
   }
@@ -86,20 +85,24 @@ public class EntityResultPacker implements ResultPacker<Entity> {
   }
 
   protected Object getValue(final ResultSet resultSet, final Property property) throws SQLException {
-    if (property.isBoolean())
+    if (property.isBoolean()) {
       return getBoolean(resultSet, property);
-    else
+    }
+    else {
       return getValue(resultSet, property.getType(), property.getSelectIndex());
+    }
   }
 
   private Boolean getBoolean(final ResultSet resultSet, final Property property) throws SQLException {
-    if (property instanceof Property.BooleanProperty)
+    if (property instanceof Property.BooleanProperty) {
       return ((Property.BooleanProperty) property).toBoolean(
               getValue(resultSet, ((Property.BooleanProperty) property).getColumnType(), property.getSelectIndex()));
+    }
     else {
       final Integer result = getInteger(resultSet, property.getSelectIndex());
-      if (result == null)
+      if (result == null) {
         return null;
+      }
 
       switch (result) {
         case 0: return false;
@@ -125,10 +128,12 @@ public class EntityResultPacker implements ResultPacker<Entity> {
         return getBoolean(resultSet, selectIndex);
       case Types.CHAR: {
         final String val = getString(resultSet, selectIndex);
-        if (val != null && val.length() > 0)
+        if (val != null && val.length() > 0) {
           return val.charAt(0);
-        else
+        }
+        else {
           return null;
+        }
       }
     }
 

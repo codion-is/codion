@@ -90,8 +90,9 @@ public class ServerMonitor {
 
   public void shutdown() {
     shutdown = true;
-    if (updateTimer != null)
+    if (updateTimer != null) {
       updateTimer.cancel();
+    }
     databaseMonitor.shutdown();
     clientMonitor.shutdown();
   }
@@ -166,8 +167,9 @@ public class ServerMonitor {
 
   public void refreshDomainList() throws RemoteException {
     domainListModel.clear();
-    for (final Map.Entry<String, EntityDefinition> entry : server.getEntityDefinitions().entrySet())
+    for (final Map.Entry<String, EntityDefinition> entry : server.getEntityDefinitions().entrySet()) {
       domainListModel.addElement(entry.getValue());
+    }
   }
 
   public ListModel getDomainListModel() {
@@ -248,18 +250,21 @@ public class ServerMonitor {
   }
 
   private void startUpdateTimer(final int delay) {
-    if (delay <= 0)
+    if (delay <= 0) {
       return;
+    }
 
-    if (updateTimer != null)
+    if (updateTimer != null) {
       updateTimer.cancel();
+    }
     updateTimer = new Timer(false);
     updateTimer.schedule(new TimerTask() {
       @Override
       public void run() {
         try {
-          if (!shutdown)
+          if (!shutdown) {
             updateStats();
+          }
         }
         catch (RemoteException e) {
           e.printStackTrace();

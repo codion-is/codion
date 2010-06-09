@@ -44,8 +44,9 @@ public abstract class EntityApplicationModel implements Refreshable {
 
   public void login(final User user) {
     dbProvider.setUser(user);
-    for (final EntityModel mainApplicationModel : mainApplicationModels)
+    for (final EntityModel mainApplicationModel : mainApplicationModels) {
       mainApplicationModel.refresh();
+    }
   }
 
   /**
@@ -87,8 +88,9 @@ public abstract class EntityApplicationModel implements Refreshable {
    */
   public void setCascadeRefresh(final boolean value) {
     if (mainApplicationModels.size() > 0 && isCascadeRefresh() != value) {
-      for (final EntityModel mainApplicationModel : mainApplicationModels)
+      for (final EntityModel mainApplicationModel : mainApplicationModels) {
         mainApplicationModel.setCascadeRefresh(value);
+      }
 
       evtCascadeRefreshChanged.fire();
     }
@@ -107,8 +109,9 @@ public abstract class EntityApplicationModel implements Refreshable {
    */
   public void setSelectionFiltersDetail(boolean value) {
     if (mainApplicationModels.size() > 0 && isSelectionFiltersDetail() != value) {
-      for (final EntityModel mainApplicationModel : mainApplicationModels)
+      for (final EntityModel mainApplicationModel : mainApplicationModels) {
         mainApplicationModel.setSelectionFiltersDetail(value);
+      }
 
       evtSelectionFiltersDetailChanged.fire();
     }
@@ -121,8 +124,9 @@ public abstract class EntityApplicationModel implements Refreshable {
     final boolean cascade = isCascadeRefresh();
     try {
       setCascadeRefresh(true);
-      for (final EntityModel mainApplicationModel : mainApplicationModels)
+      for (final EntityModel mainApplicationModel : mainApplicationModels) {
         mainApplicationModel.refresh();
+      }
     }
     finally {
       setCascadeRefresh(cascade);
@@ -130,14 +134,17 @@ public abstract class EntityApplicationModel implements Refreshable {
   }
 
   public void clear() {
-    for (final EntityModel mainApplicationModel : mainApplicationModels)
+    for (final EntityModel mainApplicationModel : mainApplicationModels) {
       mainApplicationModel.clear();
+    }
   }
 
   public EntityModel getMainApplicationModel(final Class modelClass) {
-    for (final EntityModel model : mainApplicationModels)
-      if (model.getClass().equals(modelClass))
+    for (final EntityModel model : mainApplicationModels) {
+      if (model.getClass().equals(modelClass)) {
         return model;
+      }
+    }
 
     throw new RuntimeException("Detail model of class: " + modelClass + " not found");
   }
@@ -168,4 +175,8 @@ public abstract class EntityApplicationModel implements Refreshable {
   }
 
   protected void bindEvents() {}
+
+  protected EntityModel createEntityModel(final String entityID) {
+    return new EntityModel(entityID, getDbProvider());
+  }
 }

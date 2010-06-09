@@ -26,8 +26,9 @@ public class AggregateState extends State {
 
   public AggregateState(final Type type, final State... states) {
     this(type);
-    for (final State state : states)
+    for (final State state : states) {
       addState(state);
+    }
   }
 
   /** {@inheritDoc} */
@@ -35,8 +36,9 @@ public class AggregateState extends State {
   public String toString() {
     final StringBuilder stringBuilder = new StringBuilder("Aggregate ");
     stringBuilder.append(type == Type.AND ? "AND " : "OR ").append(isActive() ? "active" : "inactive");
-    for (final State state : states)
+    for (final State state : states) {
       stringBuilder.append(", ").append(state);
+    }
 
     return stringBuilder.toString();
   }
@@ -52,16 +54,18 @@ public class AggregateState extends State {
     final boolean wasActive = isActive();
     states.add(state);
     state.eventStateChanged().addListener(eventStateChanged());
-    if (wasActive != isActive())
+    if (wasActive != isActive()) {
       eventStateChanged().fire();
+    }
   }
 
   public void removeState(final State state) {
     final boolean wasActive = isActive();
     state.eventStateChanged().removeListener(eventStateChanged());
     states.remove(state);
-    if (wasActive != isActive())
+    if (wasActive != isActive()) {
       eventStateChanged().fire();
+    }
   }
 
   /** {@inheritDoc} */
@@ -69,16 +73,18 @@ public class AggregateState extends State {
   public boolean isActive() {
     if (getType() == Type.AND) { //AND, one inactive is enough
       for (final State state : states) {
-        if (!state.isActive())
+        if (!state.isActive()) {
           return false;
+        }
       }
 
       return true;
     }
     else { //OR, one active is enough
       for (final State state : states) {
-        if (state.isActive())
+        if (state.isActive()) {
           return true;
+        }
       }
 
       return false;

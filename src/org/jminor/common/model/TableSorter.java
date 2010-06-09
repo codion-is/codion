@@ -226,16 +226,18 @@ public class TableSorter extends AbstractTableModel {
 
   public int modelIndex(int viewIndex) {
     final Row[] model = getViewToModel();
-    if (model != null && model.length > 0 && viewIndex >= 0 && viewIndex < model.length)
-        return model[viewIndex].modelIndex;
+    if (model != null && model.length > 0 && viewIndex >= 0 && viewIndex < model.length) {
+      return model[viewIndex].modelIndex;
+    }
 
     return -1;
   }
 
   public int viewIndex(int modelIndex) {
     final int[] view = getModelToView();
-    if (view != null && view.length > 0 && modelIndex >= 0 && modelIndex < view.length)
-        return view[modelIndex];
+    if (view != null && view.length > 0 && modelIndex >= 0 && modelIndex < view.length) {
+      return view[modelIndex];
+    }
 
     return -1;
   }
@@ -305,10 +307,12 @@ public class TableSorter extends AbstractTableModel {
 
   protected Comparator getComparator(int column) {
     final Class columnClass = tableModel.getColumnClass(column);
-    if (columnClass.equals(String.class))
+    if (columnClass.equals(String.class)) {
       return LEXICAL_COMPARATOR;
-    if (Comparable.class.isAssignableFrom(columnClass))
+    }
+    if (Comparable.class.isAssignableFrom(columnClass)) {
       return COMPARABLE_COMPARATOR;
+    }
 
     return LEXICAL_COMPARATOR;
   }
@@ -465,8 +469,9 @@ public class TableSorter extends AbstractTableModel {
   private class MouseHandler extends MouseAdapter {
     @Override
     public void mouseClicked(MouseEvent e) {
-      if (e.getButton() != MouseEvent.BUTTON1)
+      if (e.getButton() != MouseEvent.BUTTON1) {
         return;
+      }
 
       JTableHeader h = (JTableHeader) e.getSource();
       TableColumnModel columnModel = h.getColumnModel();

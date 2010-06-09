@@ -45,8 +45,10 @@ public class DoubleField extends IntField {
   }
 
   public void setDecimalSymbol(final String decimalSymbol) {
-    if (decimalSymbol == null || decimalSymbol.length() > 1)
+    Util.rejectNullValue(decimalSymbol);
+    if (decimalSymbol.length() > 1) {
       throw new IllegalArgumentException("Decimal symbols can only be one character long");
+    }
 
     this.decimalSymbol = decimalSymbol;
   }
@@ -79,36 +81,45 @@ public class DoubleField extends IntField {
     return new PlainDocument() {
       @Override
       public void insertString(int offset, String string, AttributeSet a) throws BadLocationException {
-        if (getMaxLength() > 0 && getLength() + (string != null ? string.length() : 0) > getMaxLength())
+        if (getMaxLength() > 0 && getLength() + (string != null ? string.length() : 0) > getMaxLength()) {
           return;
+        }
         if (string == null || string.equals("")) {
           super.insertString(offset, string, a);
           return;
         }
         if (getDecimalSymbol().equals(POINT)) {
-          if (string.contains(COMMA))
+          if (string.contains(COMMA)) {
             string = string.replace(COMMA, POINT);
+          }
         }
-        else if (string.contains(POINT))
+        else if (string.contains(POINT)) {
           string = string.replace(POINT, COMMA);
+        }
 
         //convert "." or "," to "0." before proceeding
-        if (getLength() == 0 && (isDecimalSymbol(string)))
+        if (getLength() == 0 && (isDecimalSymbol(string))) {
           string = "0" + getDecimalSymbol();
+        }
 
         final String text = getText(0, getLength());
         double value = 0;
-        if (text != null && !text.equals("") && !text.equals("-"))
+        if (text != null && !text.equals("") && !text.equals("-")) {
           value = Util.getDouble(text);
+        }
         boolean valueOk = false;
         char c = string.charAt(0);
-        if (offset == 0 && c == '-')
+        if (offset == 0 && c == '-') {
           valueOk = value >= 0;
-        else if (Character.isDigit(c))
+        }
+        else if (Character.isDigit(c)) {
           valueOk = !((offset == 0) && (value < 0));
+        }
         else if (isDecimalSymbol(c) && offset != 0) {
           if (text != null && (text.contains(POINT) || text.contains(COMMA))) //not allow multiple decimal points
+          {
             return;
+          }
           valueOk = true;
           string = getDecimalSymbol();
         }
@@ -119,8 +130,9 @@ public class DoubleField extends IntField {
           valueOk = isWithinRange(Util.getDouble(sb.toString()));
         }
 
-        if (valueOk)
+        if (valueOk) {
           super.insertString(offset, string, a);
+        }
       }
     };
   }

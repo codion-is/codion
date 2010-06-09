@@ -34,8 +34,9 @@ public class ClientMonitor {
   public void refresh() throws RemoteException {
     clientInstanceListModel.clear();
     final Collection<ClientInfo> clients = clientTypeID == null ? server.getClients(user) : server.getClients(clientTypeID);
-    for (final ClientInfo client : clients)
+    for (final ClientInfo client : clients) {
       clientInstanceListModel.addElement(new ClientInstanceMonitor(client, server));
+    }
   }
 
   public DefaultListModel getClientInstanceListModel() {

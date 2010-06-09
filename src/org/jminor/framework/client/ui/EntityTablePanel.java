@@ -242,10 +242,12 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
    */
   public void setFilterPanelsVisible(final boolean value) {
     for (final PropertyFilterPanel columnFilterPanel : propertyFilterPanels.values()) {
-      if (value)
+      if (value) {
         columnFilterPanel.showDialog();
-      else
+      }
+      else {
         columnFilterPanel.hideDialog();
+      }
     }
   }
 
@@ -256,8 +258,9 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
    * @see EntityTableModel#isQueryConfigurationAllowed()
    */
   public void configureQuery() {
-    if (!getTableModel().isQueryConfigurationAllowed())
+    if (!getTableModel().isQueryConfigurationAllowed()) {
       return;
+    }
 
     final EntityCriteriaPanel panel;
     AbstractAction action;
@@ -283,8 +286,9 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
    * @param visible if true then the summary panel is shown, if false it is hidden
    */
   public void setSummaryPanelVisible(final boolean visible) {
-    if (visible && isSummaryPanelVisible())
+    if (visible && isSummaryPanelVisible()) {
       return;
+    }
 
     if (summaryScrollPane != null) {
       summaryScrollPane.setVisible(visible);
@@ -314,13 +318,15 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
    * @param visible if true the search panel is shown, if false it is hidden
    */
   public void setSearchPanelVisible(final boolean visible) {
-    if (visible && isSearchPanelVisible())
+    if (visible && isSearchPanelVisible()) {
       return;
+    }
 
     if (searchScrollPane != null) {
       searchScrollPane.getViewport().setView(visible ? searchPanel : null);
-      if (refreshToolBar != null)
+      if (refreshToolBar != null) {
         refreshToolBar.setVisible(visible);
+      }
       evtSearchPanelVisibilityChanged.fire();
     }
   }
@@ -347,18 +353,21 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     final JPanel searchPanel = getSearchPanel();
     if (searchPanel instanceof EntityTableSearchPanel) {
       if (isSearchPanelVisible()) {
-        if (((EntityTableSearchPanel) searchPanel).isAdvanced())
+        if (((EntityTableSearchPanel) searchPanel).isAdvanced()) {
           setSearchPanelVisible(false);
-        else
+        }
+        else {
           ((EntityTableSearchPanel) searchPanel).setAdvanced(true);
+        }
       }
       else {
         ((EntityTableSearchPanel) searchPanel).setAdvanced(false);
         setSearchPanelVisible(true);
       }
     }
-    else
+    else {
       setSearchPanelVisible(!isSearchPanelVisible());
+    }
   }
 
   /** {@inheritDoc} */
@@ -373,8 +382,9 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
    * @throws RuntimeException in case no control is associated with the given control code
    */
   public final Control getControl(final String controlCode) {
-    if (!controlMap.containsKey(controlCode))
+    if (!controlMap.containsKey(controlCode)) {
       throw new RuntimeException(controlCode + " control not available in panel: " + this);
+    }
 
     return controlMap.get(controlCode);
   }
@@ -476,12 +486,14 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
    * @see #getInputProvider(org.jminor.framework.domain.Property, java.util.List, org.jminor.framework.client.model.EntityEditModel)
    */
   public void updateSelectedEntities(final Property propertyToUpdate, final EntityEditModel editModel) {
-    if (getTableModel().stateSelectionEmpty().isActive())
+    if (getTableModel().stateSelectionEmpty().isActive()) {
       return;
+    }
 
     final List<Entity> selectedEntities = EntityUtil.copyEntities(getTableModel().getSelectedItems());
-    if (!getTableModel().isMultipleUpdateAllowed() && selectedEntities.size() > 1)
+    if (!getTableModel().isMultipleUpdateAllowed() && selectedEntities.size() > 1) {
       throw new RuntimeException("Update of multiple entities is not allowed!");
+    }
 
     final InputProviderPanel inputPanel = new InputProviderPanel(propertyToUpdate.getCaption(),
             getInputProvider(propertyToUpdate, selectedEntities, editModel));
@@ -581,8 +593,9 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
    * @return a search panel toggle button
    */
   public Control getToggleSearchPanelControl() {
-    if (!getTableModel().isQueryConfigurationAllowed())
+    if (!getTableModel().isQueryConfigurationAllowed()) {
       return null;
+    }
 
     final Control ret = new Control() {
       @Override
@@ -649,8 +662,9 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
    * @return a static EntityTablePanel showing the given entities
    */
   public static EntityTablePanel createStaticEntityTablePanel(final Collection<Entity> entities, final EntityDbProvider dbProvider) {
-    if (entities == null || entities.size() == 0)
+    if (entities == null || entities.size() == 0) {
       throw new RuntimeException("Cannot create an EntityPanel without the entities");
+    }
 
     return createStaticEntityTablePanel(entities, dbProvider, entities.iterator().next().getEntityID());
   }
@@ -691,8 +705,9 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
           final EntityTableModel tableModel = getTableModel();
           if (!tableModel.getSelectionModel().isSelectionEmpty()) {
             final Entity selected = tableModel.getSelectedItem();
-            if (!selected.isValueNull(imagePathPropertyID))
+            if (!selected.isValueNull(imagePathPropertyID)) {
               showImage(selected.getStringValue(imagePathPropertyID), EntityTablePanel.this);
+            }
           }
         }
         catch (IOException ex) {
@@ -704,8 +719,9 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
 
   private static void showImage(final String imagePath, final JComponent dialogParent) throws IOException {
     if (imagePath != null && imagePath.length() > 0) {
-      if (!isImage(imagePath))
+      if (!isImage(imagePath)) {
         return;
+      }
       final NavigableImagePanel imagePanel = new NavigableImagePanel();
       final File imageFile = new File(imagePath);
       if (imageFile.exists()) {
@@ -715,8 +731,9 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
 
         dialog.setTitle(imageFile.getName());
 
-        if (!dialog.isShowing())
+        if (!dialog.isShowing()) {
           dialog.setVisible(true);
+        }
       }
       else {
         throw new RuntimeException("Image does not exist: " + imagePath);
@@ -767,8 +784,9 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     if (searchPanel != null) {
       searchScrollPane = new JScrollPane(searchPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER,
               JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-      if (searchPanel instanceof EntityTableSearchPanel)
+      if (searchPanel instanceof EntityTableSearchPanel) {
         searchScrollPane.getHorizontalScrollBar().setModel(getTableScrollPane().getHorizontalScrollBar().getModel());
+      }
       tableSearchAndSummaryPanel.add(searchScrollPane, BorderLayout.NORTH);
     }
 
@@ -803,8 +821,9 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     }
 
     final JPanel southPanel = initializeSouthPanel(toolbarControlSet);
-    if (southPanel != null)
+    if (southPanel != null) {
       add(southPanel, BorderLayout.SOUTH);
+    }
 
     setSearchPanelVisible(Configuration.getBooleanValue(Configuration.DEFAULT_SEARCH_PANEL_STATE));
   }
@@ -827,13 +846,15 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     panel.add(centerPanel, BorderLayout.CENTER);
     panel.setBorder(BorderFactory.createEtchedBorder());
     refreshToolBar = initializeRefreshToolbar();
-    if (refreshToolBar != null)
+    if (refreshToolBar != null) {
       panel.add(refreshToolBar, BorderLayout.WEST);
+    }
 
     if (toolbarControlSet != null) {
       final JToolBar southToolBar = ControlProvider.createToolbar(toolbarControlSet, JToolBar.HORIZONTAL);
-      for (final Component component : southToolBar.getComponents())
+      for (final Component component : southToolBar.getComponents()) {
         component.setPreferredSize(new Dimension(20, 20));
+      }
       southToolBar.setFocusable(false);
       southToolBar.setFloatable(false);
       southToolBar.setRollover(true);
@@ -865,14 +886,16 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
    * @param popupControls a ControlSet specifying the controls in the popup menu
    */
   protected void setTablePopupMenu(final JTable table, final ControlSet popupControls) {
-    if (popupControls.size() == 0)
+    if (popupControls.size() == 0) {
       return;
+    }
 
     final JPopupMenu popupMenu = ControlProvider.createPopupMenu(popupControls);
     table.setComponentPopupMenu(popupMenu);
     table.getTableHeader().setComponentPopupMenu(popupMenu);
-    if (table.getParent() != null)
+    if (table.getParent() != null) {
       ((JComponent) table.getParent()).setComponentPopupMenu(popupMenu);
+    }
     UiUtil.addKeyEvent(table, KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_FOCUSED,
             new AbstractAction("showPopupMenu") {
               public void actionPerformed(ActionEvent event) {
@@ -897,10 +920,12 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
    * @see #getControl(String)
    */
   protected void setupControls(final ControlSet printControls) {
-    if (!getTableModel().isReadOnly() && getTableModel().isDeleteAllowed())
+    if (!getTableModel().isReadOnly() && getTableModel().isDeleteAllowed()) {
       setControl(DELETE_SELECTED, getDeleteSelectedControl());
-    if (!getTableModel().isReadOnly() && getTableModel().isMultipleUpdateAllowed())
+    }
+    if (!getTableModel().isReadOnly() && getTableModel().isMultipleUpdateAllowed()) {
       setControl(UPDATE_SELECTED, getUpdateSelectedControlSet());
+    }
     if (getTableModel().isQueryConfigurationAllowed()) {
       setControl(CONFIGURE_QUERY, getConfigureQueryControl());
       setControl(SEARCH_PANEL_VISIBLE, getSearchPanelControl());
@@ -910,14 +935,17 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     setControl(SELECT_COLUMNS, getSelectColumnsControl());
     setControl(EXPORT_JSON, getExportControl());
     setControl(VIEW_DEPENDENCIES, getViewDependenciesControl());
-    if (summaryPanel != null)
+    if (summaryPanel != null) {
       setControl(TOGGLE_SUMMARY_PANEL, getToggleSummaryPanelControl());
-    if (searchPanel != null)
+    }
+    if (searchPanel != null) {
       setControl(TOGGLE_SEARCH_PANEL, getToggleSearchPanelControl());
+    }
     if (printControls != null) {
       printControls.add(getPrintTableControl());
-      if (!printControls.hasIcon())
+      if (!printControls.hasIcon()) {
         printControls.setIcon(Images.loadImage("Print16.gif"));
+      }
     }
     setControl(PRINT_TABLE, printControls == null ? getPrintTableControl() : printControls);
     setControl(CLEAR_SELECTION, getClearSelectionControl());
@@ -932,18 +960,22 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
    * @param control the control to associate with <code>controlCode</code>
    */
   protected void setControl(final String controlCode, final Control control) {
-    if (control == null)
+    if (control == null) {
       controlMap.remove(controlCode);
-    else
+    }
+    else {
       controlMap.put(controlCode, control);
+    }
   }
 
   protected ControlSet getToolbarControls(final ControlSet additionalToolbarControls) {
     final ControlSet toolbarControls = new ControlSet("");
-    if (controlMap.containsKey(TOGGLE_SUMMARY_PANEL))
+    if (controlMap.containsKey(TOGGLE_SUMMARY_PANEL)) {
       toolbarControls.add(controlMap.get(TOGGLE_SUMMARY_PANEL));
-    if (controlMap.containsKey(TOGGLE_SEARCH_PANEL))
+    }
+    if (controlMap.containsKey(TOGGLE_SEARCH_PANEL)) {
       toolbarControls.add(controlMap.get(TOGGLE_SEARCH_PANEL));
+    }
     if (controlMap.containsKey(CONFIGURE_QUERY)) {
       toolbarControls.add(controlMap.get(CONFIGURE_QUERY));
       toolbarControls.addSeparator();
@@ -961,10 +993,12 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     if (additionalToolbarControls != null) {
       toolbarControls.addSeparator();
       for (final Action action : additionalToolbarControls.getActions()) {
-        if (action == null)
+        if (action == null) {
           toolbarControls.addSeparator();
-        else
+        }
+        else {
           toolbarControls.add(action);
+        }
       }
     }
 
@@ -977,10 +1011,12 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     popupControls.add(controlMap.get(CLEAR));
     popupControls.addSeparator();
     if (additionalPopupControls != null && additionalPopupControls.getActions().size() > 0) {
-      if (additionalPopupControls.hasName())
+      if (additionalPopupControls.hasName()) {
         popupControls.add(additionalPopupControls);
-      else
+      }
+      else {
         popupControls.addAll(additionalPopupControls);
+      }
       popupControls.addSeparator();
     }
     boolean separatorRequired = false;
@@ -1013,8 +1049,9 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
       separatorRequired = true;
     }
     if (controlMap.containsKey(SELECT_COLUMNS)) {
-      if (separatorRequired)
+      if (separatorRequired) {
         popupControls.addSeparator();
+      }
       popupControls.add(controlMap.get(SELECT_COLUMNS));
     }
     if (controlMap.containsKey(CONFIGURE_QUERY)) {
@@ -1025,13 +1062,15 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
       popupControls.add(controlMap.get(CONFIGURE_QUERY));
       if (searchPanel != null) {
         final ControlSet searchControls = ((EntityTableSearchPanel) searchPanel).getControls();
-        if (controlMap.containsKey(SEARCH_PANEL_VISIBLE))
+        if (controlMap.containsKey(SEARCH_PANEL_VISIBLE)) {
           searchControls.add(getControl(SEARCH_PANEL_VISIBLE));
+        }
         popupControls.add(searchControls);
       }
     }
-    if (separatorRequired)
+    if (separatorRequired) {
       popupControls.addSeparator();
+    }
     popupControls.add(controlMap.get(COPY_TABLE_DATA));
 
     return popupControls;
@@ -1106,9 +1145,10 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
    */
   protected JPanel initializeSimpleSearchPanel() {
     final List<Property> searchableProperties = getSearchProperties();
-    if (searchableProperties.size() == 0)
+    if (searchableProperties.size() == 0) {
       throw new RuntimeException("Unable to create a simple search panel for entity: "
               + getTableModel().getEntityID() + ", no STRING based properties found");
+    }
 
     final JTextField searchField = new JTextField();
     final Action action = new AbstractAction(FrameworkMessages.get(FrameworkMessages.SEARCH)) {
@@ -1181,22 +1221,30 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
                                            final EntityEditModel editModel) {
     final Collection<Object> values = EntityUtil.getDistinctPropertyValues(toUpdate, property.getPropertyID());
     final Object currentValue = values.size() == 1 ? values.iterator().next() : null;
-    if (property instanceof Property.ValueListProperty)
+    if (property instanceof Property.ValueListProperty) {
       return new ValueListInputProvider(currentValue, ((Property.ValueListProperty) property).getValues());
-    if (property.isTimestamp())
+    }
+    if (property.isTimestamp()) {
       return new DateInputProvider((Date) currentValue, Configuration.getDefaultTimestampFormat());
-    if (property.isDate())
+    }
+    if (property.isDate()) {
       return new DateInputProvider((Date) currentValue, Configuration.getDefaultDateFormat());
-    if (property.isDouble())
+    }
+    if (property.isDouble()) {
       return new DoubleInputProvider((Double) currentValue);
-    if (property.isInteger())
+    }
+    if (property.isInteger()) {
       return new IntInputProvider((Integer) currentValue);
-    if (property.isBoolean())
+    }
+    if (property.isBoolean()) {
       return new BooleanInputProvider((Boolean) currentValue);
-    if (property.isString())
+    }
+    if (property.isString()) {
       return new TextInputProvider(property.getCaption(), editModel.getValueProvider(property), (String) currentValue);
-    if (property.isReference())
+    }
+    if (property.isReference()) {
       return createEntityInputProvider((Property.ForeignKeyProperty) property, (Entity) currentValue, editModel);
+    }
 
     throw new IllegalArgumentException("Unsupported property type: " + property.getType());
   }
@@ -1215,8 +1263,9 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     }
     else {
       List<Property> searchProperties = EntityRepository.getSearchProperties(foreignKeyProperty.getReferencedEntityID());
-      if (searchProperties.size() == 0)
+      if (searchProperties.size() == 0) {
         throw new RuntimeException("No searchable properties found for entity: " + foreignKeyProperty.getReferencedEntityID());
+      }
 
       return new EntityLookupProvider(editModel.createEntityLookupModel(foreignKeyProperty.getReferencedEntityID(), null, searchProperties), currentValue);
     }
@@ -1254,8 +1303,9 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
       public void mouseClicked(MouseEvent event) {
         if (event.getClickCount() == 2) {
           final Action doubleClickAction = getTableDoubleClickAction();
-          if (doubleClickAction != null)
+          if (doubleClickAction != null) {
             doubleClickAction.actionPerformed(new ActionEvent(getJTable(), -1, "doubleClick"));
+          }
         }
         else if (event.isAltDown()) {
           showEntityMenu(event.getPoint());
@@ -1355,13 +1405,15 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     final List<Property> searchableProperties = new ArrayList<Property>();
     final String[] defaultSearchPropertyIDs = EntityRepository.getEntitySearchPropertyIDs(getTableModel().getEntityID());
     if (defaultSearchPropertyIDs != null) {
-      for (final String propertyID : defaultSearchPropertyIDs)
+      for (final String propertyID : defaultSearchPropertyIDs) {
         searchableProperties.add(EntityRepository.getProperty(getTableModel().getEntityID(), propertyID));
+      }
     }
     else {
       for (final Property property : EntityRepository.getDatabaseProperties(getTableModel().getEntityID())) {
-        if (property.isString() && !property.isHidden())
+        if (property.isString() && !property.isHidden()) {
           searchableProperties.add(property);
+        }
       }
     }
 
@@ -1397,11 +1449,14 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     final List<Property> properties = new ArrayList<Property>(getTableModel().getTableColumnProperties());
     final ListIterator<Property> iterator = properties.listIterator();
     //remove hidden columns
-    while (iterator.hasNext())
-      if (!getTableModel().isColumnVisible(iterator.next()))
+    while (iterator.hasNext()) {
+      if (!getTableModel().isColumnVisible(iterator.next())) {
         iterator.remove();
-    for (final Property property : properties)
+      }
+    }
+    for (final Property property : properties) {
       headerValues.add(property.getCaption());
+    }
 
     final String[][] header = new String[][] {headerValues.toArray(new String[headerValues.size()])};
 
@@ -1411,8 +1466,9 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     final String[][] data = new String[entities.size()][];
     for (int i = 0; i < data.length; i++) {
       final List<String> line = new ArrayList<String>(15);
-      for (final Property property : properties)
+      for (final Property property : properties) {
         line.add(entities.get(i).getValueAsString(property));
+      }
 
       data[i] = line.toArray(new String[line.size()]);
     }
@@ -1439,10 +1495,12 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
             FrameworkMessages.get(FrameworkMessages.SELECT_PROPERTY_FOR_UPDATE),
             JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
 
-    if (ret == JOptionPane.OK_OPTION)
+    if (ret == JOptionPane.OK_OPTION) {
       return (Property) box.getSelectedItem();
-    else
+    }
+    else {
       throw new CancelException();
+    }
   }
 
   private void updateStatusMessage() {
@@ -1462,16 +1520,19 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
       final PropertyFilterModel model = getTableModel().getSearchModel().getPropertyFilterModel(((Property) column.getIdentifier()).getPropertyID());
       model.eventSearchStateChanged().addListener(new ActionListener() {
         public void actionPerformed(final ActionEvent event) {
-          if (model.isSearchEnabled())
+          if (model.isSearchEnabled()) {
             addFilterIndicator(column);
-          else
+          }
+          else {
             removeFilterIndicator(column);
+          }
 
           getJTable().getTableHeader().repaint();
         }
       });
-      if (model.isSearchEnabled())
+      if (model.isSearchEnabled()) {
         addFilterIndicator(column);
+      }
 
       propertyFilterPanels.put(model.getSearchProperty().getPropertyID(), new PropertyFilterPanel(model, true, true));
     }
@@ -1484,7 +1545,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
       getJTable().addKeyListener(new KeyAdapter() {
         @Override
         public void keyTyped(KeyEvent event) {
-          if (event.getKeyChar() == KeyEvent.VK_DELETE && !getTableModel().stateSelectionEmpty().isActive())
+          if (event.getKeyChar() == KeyEvent.VK_DELETE && !getTableModel().stateSelectionEmpty().isActive()) {
             try {
               delete();
             }
@@ -1492,6 +1553,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
               throw new RuntimeException(e);
             }
             catch (CancelException e) {/**/}
+          }
         }
       });
     }
@@ -1525,15 +1587,17 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     getJTable().getTableHeader().addMouseListener(new MouseAdapter() {
       @Override
       public void mouseClicked(final MouseEvent event) {
-        if (event.isShiftDown())
+        if (event.isShiftDown()) {
           toggleColumnFilterPanel(event);
+        }
       }
     });
 
     getTableModel().eventSelectedIndexChanged().addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent event) {
-        if (!getTableModel().stateSelectionEmpty().isActive())
+        if (!getTableModel().stateSelectionEmpty().isActive()) {
           scrollToCoordinate(getTableModel().getSelectedIndex(), getJTable().getSelectedColumn());
+        }
       }
     });
 
@@ -1559,24 +1623,28 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
 
   private static void toggleFilterPanel(final Point position, final PropertyFilterPanel columnFilterPanel,
                                         final Container parent) {
-    if (columnFilterPanel.isDialogActive())
+    if (columnFilterPanel.isDialogActive()) {
       columnFilterPanel.inactivateDialog();
-    else
+    }
+    else {
       columnFilterPanel.activateDialog(parent, position);
+    }
   }
 
   private static void addFilterIndicator(final TableColumn column) {
     String val = (String) column.getHeaderValue();
-    if (val.length() > 0 && val.charAt(0) != FILTER_INDICATOR)
+    if (val.length() > 0 && val.charAt(0) != FILTER_INDICATOR) {
       val = FILTER_INDICATOR + val;
+    }
 
     column.setHeaderValue(val);
   }
 
   private static void removeFilterIndicator(final TableColumn column) {
     String val = (String) column.getHeaderValue();
-    if (val.length() > 0 && val.charAt(0) == FILTER_INDICATOR)
+    if (val.length() > 0 && val.charAt(0) == FILTER_INDICATOR) {
       val = val.substring(1);
+    }
 
     column.setHeaderValue(val);
   }
@@ -1602,8 +1670,9 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     tabPane.setUI(UiUtil.getBorderlessTabbedPaneUI());
     for (final Map.Entry<String, List<Entity>> entry : dependencies.entrySet()) {
       final List<Entity> dependantEntities = entry.getValue();
-      if (dependantEntities.size() > 0)
+      if (dependantEntities.size() > 0) {
         tabPane.addTab(entry.getKey(), createStaticEntityTablePanel(dependantEntities, dbProvider));
+      }
     }
     panel.add(tabPane, BorderLayout.CENTER);
 
@@ -1625,8 +1694,9 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
 
   private static void populatePrimaryKeyMenu(final JComponent rootMenu, final Entity entity, final List<Property.PrimaryKeyProperty> primaryKeyProperties) {
     Util.collate(primaryKeyProperties);
-    for (final Property.PrimaryKeyProperty property : primaryKeyProperties)
+    for (final Property.PrimaryKeyProperty property : primaryKeyProperties) {
       rootMenu.add(new JMenuItem("[PK] " + property.getColumnName() + ": " + entity.getValueAsString(property.getPropertyID())));
+    }
   }
 
   private static void populateForeignKeyMenu(final JComponent rootMenu, final Entity entity, final EntityDbProvider dbProvider,
@@ -1667,8 +1737,9 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
         final String value = entity.isValueNull(property.getPropertyID()) ? "<null>" : entity.getValueAsString(property.getPropertyID());
         final boolean longValue = value != null && value.length() > 20;
         final JMenuItem menuItem = new JMenuItem(prefix + property + ": " + (longValue ? value.substring(0, 20) + "..." : value));
-        if (longValue)
+        if (longValue) {
           menuItem.setToolTipText(value.length() > 1000 ? value.substring(0, 1000) : value);
+        }
         rootMenu.add(menuItem);
       }
     }

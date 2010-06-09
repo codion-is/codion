@@ -102,9 +102,11 @@ public class EntityModelTest {
   }
 
   private boolean containsAll(List<Entity> employees, List<Entity> employeesFromModel) {
-    for (final Entity entity : employeesFromModel)
-      if (!employees.contains(entity))
+    for (final Entity entity : employeesFromModel) {
+      if (!employees.contains(entity)) {
         return false;
+      }
+    }
 
     return true;
   }

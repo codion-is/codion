@@ -26,13 +26,15 @@ public class EntityApplicationPanelTest {
         return User.UNIT_TEST_USER;
       }
     };
-    if (GraphicsEnvironment.isHeadless())
+    if (GraphicsEnvironment.isHeadless()) {
       panel.initialize(User.UNIT_TEST_USER);
-    else
+    }
+    else {
       panel.startApplication("test", null, false, null);
+    }
 
     panel.getEntityPanel(DepartmentPanel.class).getTablePanel().getTableModel().setSelectedItemIndexes(Arrays.asList(0,1,2));
-    if (!GraphicsEnvironment.isHeadless()) {      
+    if (!GraphicsEnvironment.isHeadless()) {
       final JFrame frame = UiUtil.getParentFrame(panel);
       frame.setVisible(false);
       frame.dispose();

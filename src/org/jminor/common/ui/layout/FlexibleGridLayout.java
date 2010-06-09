@@ -196,23 +196,31 @@ public class FlexibleGridLayout extends GridLayout {
   private void arrangeFixedSizes(final int[] columnWidths, final int[] rowHeights) {
     if (fixedColumnWidths) {
       int maxColumnWidth = 0;
-      if (fixedColumnWidth <= 0)
-        for (int columnWidth : columnWidths)
+      if (fixedColumnWidth <= 0) {
+        for (int columnWidth : columnWidths) {
           maxColumnWidth = Math.max(columnWidth, maxColumnWidth);
-      else
+        }
+      }
+      else {
         maxColumnWidth = fixedColumnWidth;
-      for (int i = 0; i < columnWidths.length; i++)
+      }
+      for (int i = 0; i < columnWidths.length; i++) {
         columnWidths[i] = maxColumnWidth;
+      }
     }
     if (fixedRowHeights) {
       int maxRowHeight = 0;
-      if (fixedRowHeight <= 0)
-        for (int rowHeight : rowHeights)
+      if (fixedRowHeight <= 0) {
+        for (int rowHeight : rowHeights) {
           maxRowHeight = Math.max(rowHeight, maxRowHeight);
-      else
+        }
+      }
+      else {
         maxRowHeight = fixedRowHeight;
-      for (int i = 0; i < rowHeights.length; i++)
+      }
+      for (int i = 0; i < rowHeights.length; i++) {
         rowHeights[i] = maxRowHeight;
+      }
     }
   }
 }

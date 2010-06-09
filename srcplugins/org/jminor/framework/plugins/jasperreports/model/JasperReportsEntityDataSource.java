@@ -21,15 +21,17 @@ public class JasperReportsEntityDataSource implements JRDataSource, ReportDataWr
   private Entity currentEntity;
 
   public JasperReportsEntityDataSource(final Iterator<Entity> reportIterator) {
-    if (reportIterator == null)
+    if (reportIterator == null) {
       throw new IllegalArgumentException("JasperReportsEntityDataSource requires a non-null reportIterator");
+    }
     this.reportIterator = reportIterator;
   }
 
   public boolean next() throws JRException {
     final boolean hasNext = reportIterator.hasNext();
-    if (hasNext)
+    if (hasNext) {
       currentEntity = reportIterator.next();
+    }
 
     return hasNext;
   }

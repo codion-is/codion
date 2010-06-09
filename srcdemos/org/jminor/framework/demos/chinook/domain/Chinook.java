@@ -271,8 +271,9 @@ public class Chinook {
       public Object getDerivedValue(final Entity entity, final Property.DerivedProperty property) {
         if (property.is(TRACK_MINUTES_SECONDS_DERIVED)) {
           final Integer milliseconds = (Integer) entity.getValue(TRACK_MILLISECONDS);
-          if (milliseconds == null || milliseconds <= 0)
+          if (milliseconds == null || milliseconds <= 0) {
             return "";
+          }
 
           final int seconds = ((milliseconds / 1000) % 60);
           final int minutes = ((milliseconds / 1000) / 60);

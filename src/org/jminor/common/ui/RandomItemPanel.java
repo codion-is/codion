@@ -4,6 +4,7 @@
 package org.jminor.common.ui;
 
 import org.jminor.common.model.RandomItemModel;
+import org.jminor.common.model.Util;
 import org.jminor.common.ui.control.AbstractValueLink;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
@@ -29,9 +30,7 @@ public class RandomItemPanel<T> extends JPanel {
    * @param model the RandomItemModel to base this panel on
    */
   public RandomItemPanel(final RandomItemModel<T> model) {
-    if (model == null)
-      throw new IllegalArgumentException("Model can not be null");
-
+    Util.rejectNullValue(model);
     this.model = model;
     initializeUI();
   }

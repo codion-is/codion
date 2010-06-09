@@ -29,8 +29,9 @@ public class EntityUtil {
   private EntityUtil() {}
 
   public static List<Entity> parseJSONString(final String jsonString) throws JSONException, ParseException {
-    if (jsonString == null || jsonString.length() == 0)
+    if (jsonString == null || jsonString.length() == 0) {
       return new ArrayList<Entity>(0);
+    }
 
     final JSONObject jsonObject = new JSONObject(jsonString);
     final List<Entity> entities = new ArrayList<Entity>();
@@ -39,8 +40,9 @@ public class EntityUtil {
       final Map<String, Object> propertyValueMap = new HashMap<String, Object>();
       Map<String, Object> originalValueMap = null;
       final String entityID = entityObject.getString("entityID");
-      if (!EntityRepository.isDefined(entityID))
+      if (!EntityRepository.isDefined(entityID)) {
         throw new RuntimeException("Undifined entity type found in JSON file: '" + entityID + "'");
+      }
 
       final JSONObject propertyValues = entityObject.getJSONObject("propertyValues");
       for (int j = 0; j < propertyValues.names().length(); j++) {
@@ -77,8 +79,9 @@ public class EntityUtil {
 
   public static JSONObject getJSONObject(final Collection<Entity> entities, final boolean includeForeignKeys) throws JSONException {
     final JSONObject jsonEntities = new JSONObject();
-    for (final Entity entity : entities)
+    for (final Entity entity : entities) {
       jsonEntities.put(entity.getEntityID() + " PK[" + entity.getPrimaryKey() + "]", toJSONObject(entity, includeForeignKeys));
+    }
 
     return jsonEntities;
   }
@@ -89,17 +92,20 @@ public class EntityUtil {
    */
   public static List<Entity> getModifiedEntities(final Collection<Entity> entities) {
     final List<Entity> modifiedEntities = new ArrayList<Entity>();
-    for (final Entity entity : entities)
-      if (entity.isModified())
+    for (final Entity entity : entities) {
+      if (entity.isModified()) {
         modifiedEntities.add(entity);
+      }
+    }
 
     return modifiedEntities;
   }
 
   public static Map<Entity.Key, Entity> hashByPrimaryKey(final List<Entity> entities) {
     final Map<Entity.Key, Entity> entityMap = new HashMap<Entity.Key, Entity>();
-    for (final Entity entity : entities)
+    for (final Entity entity : entities) {
       entityMap.put(entity.getPrimaryKey(), entity);
+    }
 
     return entityMap;
   }
@@ -110,16 +116,18 @@ public class EntityUtil {
    */
   public static List<Entity.Key> getPrimaryKeys(final Collection<Entity> entities) {
     final List<Entity.Key> keys = new ArrayList<Entity.Key>(entities.size());
-    for (final Entity entity : entities)
+    for (final Entity entity : entities) {
       keys.add(entity.getPrimaryKey());
+    }
 
     return keys;
   }
 
   public static List<Object> getOriginalPropertyValues(final List<Entity.Key> keys) {
     final List<Object> list = new ArrayList<Object>(keys.size());
-    for (final Entity.Key key : keys)
+    for (final Entity.Key key : keys) {
       list.add(key.getOriginalValue(key.getFirstKeyProperty().getPropertyID()));
+    }
 
     return list;
   }
@@ -142,8 +150,9 @@ public class EntityUtil {
    */
   public static List<Object> getPropertyValues(final String propertyID, final List<Entity> entities,
                                                final boolean includeNullValues) {
-    if (entities == null || entities.size() == 0)
+    if (entities == null || entities.size() == 0) {
       return new ArrayList<Object>(0);
+    }
 
     return getPropertyValues(entities.get(0).getProperty(propertyID), entities, includeNullValues);
   }
@@ -168,10 +177,12 @@ public class EntityUtil {
                                                final boolean includeNullValues) {
     final List<Object> values = new ArrayList<Object>(entities.size());
     for (final Entity entity : entities) {
-      if (includeNullValues)
+      if (includeNullValues) {
         values.add(entity.getValue(property));
-      else if (!entity.isValueNull(property))
+      }
+      else if (!entity.isValueNull(property)) {
         values.add(entity.getValue(property));
+      }
     }
 
     return values;
@@ -186,10 +197,12 @@ public class EntityUtil {
    */
   public static Collection<Object> getDistinctPropertyValues(final List<Entity> entities, final String propertyID) {
     final Set<Object> values = new HashSet<Object>();
-    if (entities == null)
+    if (entities == null) {
       return values;
-    for (final Entity entity : entities)
+    }
+    for (final Entity entity : entities) {
       values.add(entity.getValue(propertyID));
+    }
 
     return values;
   }
@@ -205,8 +218,9 @@ public class EntityUtil {
   public static Map<Entity.Key, Object> setPropertyValue(final String propertyID, final Object value,
                                                          final List<Entity> entities) {
     final Map<Entity.Key, Object> oldValues = new HashMap<Entity.Key, Object>(entities.size());
-    for (final Entity entity : entities)
+    for (final Entity entity : entities) {
       oldValues.put(entity.getPrimaryKey(), entity.setValue(propertyID, value));
+    }
 
     return oldValues;
   }
@@ -221,8 +235,9 @@ public class EntityUtil {
     final Map<Object, Collection<Entity>> entityMap = new HashMap<Object, Collection<Entity>>(entities.size());
     for (final Entity entity : entities) {
       final Object key = entity.getValue(propertyID);
-      if (entityMap.containsKey(key))
+      if (entityMap.containsKey(key)) {
         entityMap.get(key).add(entity);
+      }
       else {
         final Collection<Entity> list = new ArrayList<Entity>();
         list.add(entity);
@@ -242,8 +257,9 @@ public class EntityUtil {
     final Map<String, Collection<Entity>> entityMap = new HashMap<String, Collection<Entity>>(entities.size());
     for (final Entity entity : entities) {
       final String entityID = entity.getEntityID();
-      if (entityMap.containsKey(entityID))
+      if (entityMap.containsKey(entityID)) {
         entityMap.get(entityID).add(entity);
+      }
       else {
         final Collection<Entity> list = new ArrayList<Entity>();
         list.add(entity);
@@ -263,8 +279,9 @@ public class EntityUtil {
     final Map<String, Collection<Entity.Key>> entityMap = new HashMap<String, Collection<Entity.Key>>(keys.size());
     for (final Entity.Key key : keys) {
       final String entityID = key.getEntityID();
-      if (entityMap.containsKey(entityID))
+      if (entityMap.containsKey(entityID)) {
         entityMap.get(entityID).add(key);
+      }
       else {
         final Collection<Entity.Key> list = new ArrayList<Entity.Key>();
         list.add(key);
@@ -276,12 +293,14 @@ public class EntityUtil {
   }
 
   public static List<Property> getProperties(final String entityID, final Collection<String> propertyIDs) {
-    if (propertyIDs == null || propertyIDs.size() == 0)
+    if (propertyIDs == null || propertyIDs.size() == 0) {
       return new ArrayList<Property>(0);
+    }
 
     final List<Property> properties = new ArrayList<Property>(propertyIDs.size());
-    for (final String propertyID : propertyIDs)
+    for (final String propertyID : propertyIDs) {
       properties.add(EntityRepository.getProperty(entityID, propertyID));
+    }
 
     return properties;
   }
@@ -307,8 +326,9 @@ public class EntityUtil {
     final ListIterator<Property> iterator = properties.listIterator();
     while(iterator.hasNext()) {
       final Property property = iterator.next();
-      if (property.hasParentProperty() || property.isDenormalized())
+      if (property.hasParentProperty() || property.isDenormalized()) {
         iterator.remove();
+      }
     }
     sort(properties);
 
@@ -317,31 +337,40 @@ public class EntityUtil {
 
   public static List<Entity> copyEntities(final List<Entity> entities) {
     final List<Entity> copies = new ArrayList<Entity>(entities.size());
-    for (final Entity entity : entities)
+    for (final Entity entity : entities) {
       copies.add((Entity) entity.getCopy());
+    }
 
     return copies;
   }
 
   private static Object parseJSONValue(final String entityID, final String propertyID, final JSONObject propertyValues) throws JSONException, ParseException {
     final Property property = EntityRepository.getProperty(entityID, propertyID);
-    if (propertyValues.isNull(propertyID))
+    if (propertyValues.isNull(propertyID)) {
       return null;
+    }
 
-    if (property.isReference())
+    if (property.isReference()) {
       return parseJSONString(propertyValues.getString(propertyID)).get(0);
-    else if (property.isString())
+    }
+    else if (property.isString()) {
       return propertyValues.getString(propertyID);
-    else if (property.isBoolean())
+    }
+    else if (property.isBoolean()) {
       return propertyValues.getBoolean(propertyID);
-    else if (property.isDate())
+    }
+    else if (property.isDate()) {
       return jsonDateFormat.parse(propertyValues.getString(propertyID));
-    else if (property.isTimestamp())
+    }
+    else if (property.isTimestamp()) {
       return jsonTimestampFormat.parse(propertyValues.getString(propertyID));
-    else if (property.isDouble())
+    }
+    else if (property.isDouble()) {
       return propertyValues.getDouble(propertyID);
-    else if (property.isInteger())
+    }
+    else if (property.isInteger()) {
       return propertyValues.getInt(propertyID);
+    }
 
     return propertyValues.getString(propertyID);
   }
@@ -350,27 +379,32 @@ public class EntityUtil {
     final JSONObject jsonEntity = new JSONObject();
     jsonEntity.put("entityID", entity.getEntityID());
     jsonEntity.put("propertyValues", getPropertyValuesJSONObject(entity, includeForeignKeys));
-    if (entity.isModified())
+    if (entity.isModified()) {
       jsonEntity.put("originalValues", getOriginalValuesJSONObject(entity));
+    }
 
     return jsonEntity;
   }
 
   private static JSONObject getPropertyValuesJSONObject(final Entity entity, final boolean includeForeignKeys) throws JSONException {
     final JSONObject propertyValues = new JSONObject();
-    for (final Property property : EntityRepository.getDatabaseProperties(entity.getEntityID(), true, true, true, includeForeignKeys))
+    for (final Property property : EntityRepository.getDatabaseProperties(entity.getEntityID(), true, true, true, includeForeignKeys)) {
       propertyValues.put(property.getPropertyID(), getJSONValue(entity, property, includeForeignKeys));
+    }
 
     return propertyValues;
   }
 
   private static Object getJSONValue(final Entity entity, final Property property, final boolean includeForeignKeys) throws JSONException {
-    if (entity.isValueNull(property.getPropertyID()))
+    if (entity.isValueNull(property.getPropertyID())) {
       return JSONObject.NULL;
-    if (property instanceof Property.ForeignKeyProperty)
+    }
+    if (property instanceof Property.ForeignKeyProperty) {
       return getJSONObject(Arrays.asList(entity.getForeignKeyValue(property.getPropertyID())), includeForeignKeys);
-    if (property.isTime())
+    }
+    if (property.isTime()) {
       return entity.getFormattedValue(property.getPropertyID(), property.isDate() ? jsonDateFormat : jsonTimestampFormat);
+    }
 
     return entity.getValue(property.getPropertyID());
   }
@@ -378,8 +412,9 @@ public class EntityUtil {
   private static JSONObject getOriginalValuesJSONObject(final Entity entity) throws JSONException {
     final JSONObject originalValues = new JSONObject();
     for (final Property property : EntityRepository.getDatabaseProperties(entity.getEntityID(), true, true, true)) {
-      if (entity.isModified(property.getPropertyID()))
+      if (entity.isModified(property.getPropertyID())) {
         originalValues.put(property.getPropertyID(), getJSONOriginalValue(entity, property));
+      }
     }
 
     return originalValues;
@@ -387,10 +422,12 @@ public class EntityUtil {
 
   private static Object getJSONOriginalValue(final Entity entity, final Property property) throws JSONException {
     final Object originalValue = entity.getOriginalValue(property.getPropertyID());
-    if (originalValue == null)
+    if (originalValue == null) {
       return JSONObject.NULL;
-    if (property instanceof Property.ForeignKeyProperty)
+    }
+    if (property instanceof Property.ForeignKeyProperty) {
       return getJSONObject(Arrays.asList((Entity) originalValue), false);
+    }
     if (property.isTime()) {
       final Date date = (Date) originalValue;
       return property.isDate() ? jsonDateFormat.format(date) : jsonTimestampFormat.format(date);
@@ -411,8 +448,9 @@ public class EntityUtil {
     final Entity entity = new Entity(entityID);
     final boolean autoGenID = EntityRepository.isPrimaryKeyAutoGenerated(entityID);
     for (final Property property : EntityRepository.getDatabaseProperties(entityID, !autoGenID, false, true)) {
-      if (!property.hasParentProperty() && !property.isDenormalized())
+      if (!property.hasParentProperty() && !property.isDenormalized()) {
         entity.setValue(property, valueProvider.getValue(property));
+      }
     }
 
     return entity;
@@ -422,11 +460,13 @@ public class EntityUtil {
     for (final Property property : EntityRepository.getDatabaseProperties(entity.getEntityID(), includePrimaryKey, false, true)) {
       if (property instanceof Property.ForeignKeyProperty) {
         final Property.ForeignKeyProperty foreignKeyProperty = (Property.ForeignKeyProperty) property;
-        if (referenceEntities != null && referenceEntities.containsKey(foreignKeyProperty.getReferencedEntityID()))
+        if (referenceEntities != null && referenceEntities.containsKey(foreignKeyProperty.getReferencedEntityID())) {
           entity.setValue(property, getRandomValue(property, referenceEntities));
+        }
       }
-      else if (!property.hasParentProperty() && !property.isDenormalized())
+      else if (!property.hasParentProperty() && !property.isDenormalized()) {
         entity.setValue(property, getRandomValue(property, referenceEntities));
+      }
     }
 
     return entity;
@@ -444,23 +484,29 @@ public class EntityUtil {
 
         return item.getItem();
       }
-      else if (property.isBoolean())
+      else if (property.isBoolean()) {
         return random.nextBoolean();
-      else if (property.isCharacter())
+      }
+      else if (property.isCharacter()) {
         return (char) random.nextInt();
-      else if (property.isDate())
+      }
+      else if (property.isDate()) {
         return DateUtil.floorDate(new Date());
-      else if (property.isTimestamp())
+      }
+      else if (property.isTimestamp()) {
         return DateUtil.floorTimestamp(new Timestamp(System.currentTimeMillis()));
+      }
       else if (property.isDouble()) {
         double min = property.getMin() == null ? -10000000 : property.getMin();
         double max = property.getMax() == null ? 10000000 : property.getMax();
         //Min + (int)(Math.random() * ((Max - Min) + 1))
         final double ret = min + (random.nextDouble() * ((max - min) + 1));
-        if (property.getMaximumFractionDigits() > 0)
+        if (property.getMaximumFractionDigits() > 0) {
           return Util.roundDouble(ret, property.getMaximumFractionDigits());
-        else
+        }
+        else {
           return ret;
+        }
       }
       else if (property.isInteger()) {
         double min = property.getMin() == null ? -10000000 : property.getMin();

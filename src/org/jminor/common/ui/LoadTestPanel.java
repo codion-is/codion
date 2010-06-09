@@ -5,6 +5,7 @@ package org.jminor.common.ui;
 
 import org.jminor.common.model.LoadTestModel;
 import org.jminor.common.model.User;
+import org.jminor.common.model.Util;
 import org.jminor.common.ui.control.Control;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
@@ -54,8 +55,7 @@ public class LoadTestPanel extends JPanel {
    * @param loadTestModel the LoadTestModel to base this panel on
    */
   public LoadTestPanel(final LoadTestModel loadTestModel) {
-    if (loadTestModel == null)
-      throw new IllegalArgumentException("LoadTestPanel requires a LoadTestModel instance");
+    Util.rejectNullValue(loadTestModel);
     this.loadTestModel = loadTestModel;
     initializeUI();
   }
@@ -198,10 +198,12 @@ public class LoadTestPanel extends JPanel {
       @Override
       public void actionPerformed(final ActionEvent e) {
         try {
-          if (add)
+          if (add) {
             getModel().addApplications();
-          else
+          }
+          else {
             getModel().removeApplications();
+          }
         }
         catch (Exception ex) {
           throw new RuntimeException(ex);

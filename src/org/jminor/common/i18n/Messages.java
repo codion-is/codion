@@ -10,7 +10,7 @@ import java.util.ResourceBundle;
 /**
  * A class containing i18n message keys used in the common package.
  */
-public class Messages {
+public final class Messages {
 
   private Messages() {}
 

@@ -7,13 +7,14 @@ import org.h2.tools.RunScript;
 import java.sql.SQLException;
 import java.util.Properties;
 
-public class DbUtil {
+public final class DbUtil {
 
   private DbUtil() {}
 
   public static void createEmbeddedDatabase(final H2Database database, final String scriptPath) throws SQLException {
-    if (!database.isEmbedded())
+    if (!database.isEmbedded()) {
       throw new IllegalArgumentException("Database " + database.getDatabaseType() + " is not embedded");
+    }
 
     final Properties properties = new Properties();
     properties.put("user","sa");

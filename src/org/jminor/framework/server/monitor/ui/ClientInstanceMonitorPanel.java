@@ -44,8 +44,9 @@ public class ClientInstanceMonitorPanel extends JPanel {
 
   public void setModel(final ClientInstanceMonitor model) throws RemoteException {
     this.model = model;
-    if (model != null)
+    if (model != null) {
       chkLoggingEnabled.setModel(model.getLoggingEnabledButtonModel());
+    }
     updateView();
   }
 
@@ -79,8 +80,9 @@ public class ClientInstanceMonitorPanel extends JPanel {
   }
 
   public void setLoggingOn(final boolean status) throws RemoteException {
-    if (model != null)
+    if (model != null) {
       model.setLoggingOn(status);
+    }
   }
 
   private void appendLogEntries(StringBuilder log, List<LogEntry> logEntries, final int indentation) {
@@ -88,8 +90,9 @@ public class ClientInstanceMonitorPanel extends JPanel {
     for (final LogEntry logEntry : logEntries) {
       log.append(logEntry.toString(indentation));
       final List<LogEntry> subLog = logEntry.getSubLog();
-      if (subLog != null)
+      if (subLog != null) {
         appendLogEntries(log, subLog, indentation + 1);
+      }
     }
   }
 

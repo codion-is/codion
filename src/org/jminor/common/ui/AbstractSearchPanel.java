@@ -6,6 +6,7 @@ package org.jminor.common.ui;
 import org.jminor.common.model.AbstractSearchModel;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.State;
+import org.jminor.common.model.Util;
 import org.jminor.common.model.combobox.ItemComboBoxModel;
 import org.jminor.common.ui.combobox.SteppedComboBox;
 import org.jminor.common.ui.control.ControlFactory;
@@ -70,8 +71,7 @@ public abstract class AbstractSearchPanel<K> extends JPanel {
   private final boolean includeToggleSearchAdvancedBtn;
 
   public AbstractSearchPanel(final AbstractSearchModel<K> model, final boolean includeActivateBtn, final boolean includeToggleAdvBtn) {
-    if (model == null)
-      throw new IllegalArgumentException("Can not construct a AbstractSearchPanel without a AbstractSearchModel");
+    Util.rejectNullValue(model);
     this.model = model;
     this.includeToggleSearchEnabledBtn = includeActivateBtn;
     this.includeToggleSearchAdvancedBtn = includeToggleAdvBtn;
@@ -141,10 +141,12 @@ public abstract class AbstractSearchPanel<K> extends JPanel {
     stAdvancedSearch.eventStateChanged().addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         initializePanel();
-        if (toggleSearchAdvanced != null)
+        if (toggleSearchAdvanced != null) {
           toggleSearchAdvanced.requestFocusInWindow();
-        else
+        }
+        else {
           upperBoundField.requestFocusInWindow();
+        }
       }
     });
     model.eventSearchTypeChanged().addListener(new ActionListener() {
@@ -163,10 +165,12 @@ public abstract class AbstractSearchPanel<K> extends JPanel {
   }
 
   protected void initializePanel() {
-    if (stAdvancedSearch.isActive())
+    if (stAdvancedSearch.isActive()) {
       initAdvancedPanel();
-    else
+    }
+    else {
       initSimplePanel();
+    }
   }
 
   /**
@@ -174,9 +178,11 @@ public abstract class AbstractSearchPanel<K> extends JPanel {
    */
   protected ItemComboBoxModel initSearchTypeModel() {
     final ItemComboBoxModel comboBoxModel = new ItemComboBoxModel();
-    for (int i = 0; i < searchTypes.length; i++)
-      if (searchTypeAllowed(searchTypes[i]))
+    for (int i = 0; i < searchTypes.length; i++) {
+      if (searchTypeAllowed(searchTypes[i])) {
         comboBoxModel.addElement(new ItemComboBoxModel.IconItem<SearchType>(searchTypes[i], Images.loadImage(searchTypeImageNames[i])));
+      }
+    }
 
     return comboBoxModel;
   }
@@ -229,13 +235,16 @@ public abstract class AbstractSearchPanel<K> extends JPanel {
       fieldBase.add(lowerBoundField);
       basePanel.add(fieldBase, BorderLayout.CENTER);
     }
-    else
+    else {
       basePanel.add(upperBoundField, BorderLayout.CENTER);
+    }
 
-    if (includeToggleSearchEnabledBtn)
+    if (includeToggleSearchEnabledBtn) {
       basePanel.add(toggleSearchEnabled, BorderLayout.EAST);
-    if (includeToggleSearchAdvancedBtn)
+    }
+    if (includeToggleSearchAdvancedBtn) {
       basePanel.add(toggleSearchAdvanced, BorderLayout.WEST);
+    }
 
     add(basePanel);
 
@@ -254,15 +263,18 @@ public abstract class AbstractSearchPanel<K> extends JPanel {
       fieldBase.add(upperBoundField);
       inputPanel.add(fieldBase, BorderLayout.CENTER);
     }
-    else
+    else {
       inputPanel.add(upperBoundField, BorderLayout.CENTER);
+    }
 
     final JPanel controlPanel = new JPanel(new BorderLayout(1,1));
     controlPanel.add(searchTypeCombo, BorderLayout.CENTER);
-    if (includeToggleSearchEnabledBtn)
+    if (includeToggleSearchEnabledBtn) {
       controlPanel.add(toggleSearchEnabled, BorderLayout.EAST);
-    if (includeToggleSearchAdvancedBtn)
+    }
+    if (includeToggleSearchAdvancedBtn) {
       controlPanel.add(toggleSearchAdvanced, BorderLayout.WEST);
+    }
 
     add(controlPanel);
     add(inputPanel);
@@ -276,8 +288,9 @@ public abstract class AbstractSearchPanel<K> extends JPanel {
     final State stUnlocked = model.stateLocked().getReversedState();
     UiUtil.linkToEnabledState(stUnlocked, searchTypeCombo);
     UiUtil.linkToEnabledState(stUnlocked, upperBoundField);
-    if (lowerBoundField != null)
+    if (lowerBoundField != null) {
       UiUtil.linkToEnabledState(stUnlocked, lowerBoundField);
+    }
     UiUtil.linkToEnabledState(stUnlocked, toggleSearchAdvanced);
     UiUtil.linkToEnabledState(stUnlocked, toggleSearchEnabled);
   }

@@ -4,6 +4,7 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.model.Util;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Property;
@@ -42,17 +43,16 @@ public class PropertyComboBoxModel extends FilteredComboBoxModel {
   public PropertyComboBoxModel(final String entityID, final Property property, final EntityDbProvider dbProvider,
                                final String nullValue, final Event refreshEvent) {
     super(true, nullValue);
-    if (entityID == null)
-      throw new IllegalArgumentException("PropertyComboBoxModel requires a non-null entityID");
-    if (dbProvider == null)
-      throw new IllegalArgumentException("PropertyComboBoxModel requires a non-null dbProvider");
-    if (property == null)
-      throw new IllegalArgumentException("Cannot create a PropertyComboBoxModel without a property");
-    if (property instanceof Property.ForeignKeyProperty)
+    Util.rejectNullValue(entityID);
+    Util.rejectNullValue(dbProvider);
+    Util.rejectNullValue(property);
+    if (property instanceof Property.ForeignKeyProperty) {
       throw new IllegalArgumentException("Cannot create a PropertyComboBoxModel for a reference property "
               + property.getPropertyID() + ",\nuse an EntityComboBoxModel instead!");
-    if (property.isNullable())
+    }
+    if (property.isNullable()) {
       setNullValueString("");
+    }
     this.entityID = entityID;
     this.dbProvider = dbProvider;
     this.property = property;

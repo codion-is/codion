@@ -7,15 +7,12 @@ import org.jminor.common.model.IdSource;
 import org.jminor.common.model.valuemap.ValueMap;
 
 import java.io.Serializable;
-import java.text.Collator;
 import java.util.*;
 
 /**
  * A class encapsulating a entity definition, such as table name, order by clause and properties.
  */
 public class EntityDefinition implements Serializable {
-
-  private final transient Collator collator = Collator.getInstance();
 
   private static final long serialVersionUID = 1;
   /**
@@ -107,8 +104,9 @@ public class EntityDefinition implements Serializable {
     this.selectTableName = tableName;
     this.properties = Collections.unmodifiableMap(initializeProperties(entityID, propertyDefinitions));
     final String[] selectColumnNames = initSelectColumnNames(getDatabaseProperties());
-    for (int idx = 0; idx < selectColumnNames.length; idx++)
+    for (int idx = 0; idx < selectColumnNames.length; idx++) {
       properties.get(selectColumnNames[idx]).setSelectIndex(idx + 1);
+    }
     initializeDerivedPropertyChangeLinks();
   }
 
@@ -144,8 +142,9 @@ public class EntityDefinition implements Serializable {
 
   public EntityDefinition setIdSource(final IdSource idSource) {
     this.idSource = idSource;
-    if ((idSource == IdSource.SEQUENCE || idSource == IdSource.AUTO_INCREMENT) && getIdValueSource() == null)
-      setIdValueSource(getTableName() + "_seq");//todo remove
+    if ((idSource == IdSource.SEQUENCE || idSource == IdSource.AUTO_INCREMENT) && getIdValueSource() == null) {
+      setIdValueSource(getTableName() + "_seq");
+    }//todo remove
 
     return this;
   }
@@ -209,9 +208,11 @@ public class EntityDefinition implements Serializable {
   }
 
   public EntityDefinition setSearchPropertyIDs(final String... searchPropertyIDs) {
-    for (final String propertyID : searchPropertyIDs)
-      if (!properties.get(propertyID).isString())
+    for (final String propertyID : searchPropertyIDs) {
+      if (!properties.get(propertyID).isString()) {
         throw new RuntimeException("Entity search property must be of type String: " + properties.get(propertyID));
+      }
+    }
 
     this.searchPropertyIDs = Arrays.asList(searchPropertyIDs);
     return this;
@@ -230,38 +231,44 @@ public class EntityDefinition implements Serializable {
   }
 
   public List<Property.PrimaryKeyProperty> getPrimaryKeyProperties() {
-    if (primaryKeyProperties == null)
+    if (primaryKeyProperties == null) {
       primaryKeyProperties = Collections.unmodifiableList(getPrimaryKeyProperties(properties.values()));
+    }
     return primaryKeyProperties;
   }
 
   public String getSelectColumnsString() {
-    if (selectColumnsString == null)
+    if (selectColumnsString == null) {
       selectColumnsString = initSelectColumnsString(getDatabaseProperties());
+    }
     return selectColumnsString;
   }
 
   public List<Property> getVisibleProperties() {
-    if (visibleProperties == null)
+    if (visibleProperties == null) {
       visibleProperties = Collections.unmodifiableList(getVisibleProperties(properties.values()));
+    }
     return visibleProperties;
   }
 
   public List<Property> getDatabaseProperties() {
-    if (databaseProperties == null)
+    if (databaseProperties == null) {
       databaseProperties = Collections.unmodifiableList(getDatabaseProperties(properties.values()));
+    }
     return databaseProperties;
   }
 
   public List<Property.TransientProperty> getTransientProperties() {
-    if (transientProperties == null)
+    if (transientProperties == null) {
       transientProperties = Collections.unmodifiableList(getTransientProperties(properties.values()));
+    }
     return transientProperties;
   }
 
   public List<Property.ForeignKeyProperty> getForeignKeyProperties() {
-    if (foreignKeyProperties == null)
+    if (foreignKeyProperties == null) {
       foreignKeyProperties = Collections.unmodifiableList(getForeignKeyProperties(properties.values()));
+    }
     return foreignKeyProperties;
   }
 
@@ -274,14 +281,16 @@ public class EntityDefinition implements Serializable {
   }
 
   public boolean hasDenormalizedProperties(final String foreignKeyPropertyID) {
-    if (denormalizedProperties == null)
+    if (denormalizedProperties == null) {
       denormalizedProperties = Collections.unmodifiableMap(getDenormalizedProperties(properties.values()));
+    }
     return hasDenormalizedProperties && denormalizedProperties.containsKey(foreignKeyPropertyID);
   }
 
   public Collection<Property.DenormalizedProperty> getDenormalizedProperties(final String foreignKeyPropertyID) {
-    if (denormalizedProperties == null)
+    if (denormalizedProperties == null) {
       denormalizedProperties = Collections.unmodifiableMap(getDenormalizedProperties(properties.values()));
+    }
     return denormalizedProperties.get(foreignKeyPropertyID);
   }
 
@@ -293,18 +302,20 @@ public class EntityDefinition implements Serializable {
   private static Map<String, Property> initializeProperties(final String entityID, final Property... propertyDefinitions) {
     final Map<String, Property> properties = new LinkedHashMap<String, Property>(propertyDefinitions.length);
     for (final Property property : propertyDefinitions) {
-      if (properties.containsKey(property.getPropertyID()))
+      if (properties.containsKey(property.getPropertyID())) {
         throw new IllegalArgumentException("Property with ID " + property.getPropertyID()
                 + (property.getCaption() != null ? " (caption: " + property.getCaption() + ")" : "")
                 + " has already been defined as: " + properties.get(property.getPropertyID()) + " in entity: " + entityID);
+      }
       properties.put(property.getPropertyID(), property);
       if (property instanceof Property.ForeignKeyProperty) {
         for (final Property referenceProperty : ((Property.ForeignKeyProperty) property).getReferenceProperties()) {
           if (!(referenceProperty instanceof Property.MirrorProperty)) {
-            if (properties.containsKey(referenceProperty.getPropertyID()))
+            if (properties.containsKey(referenceProperty.getPropertyID())) {
               throw new IllegalArgumentException("Property with ID " + referenceProperty.getPropertyID()
                       + (referenceProperty.getCaption() != null ? " (caption: " + referenceProperty.getCaption() + ")" : "")
                       + " has already been defined as: " + properties.get(referenceProperty.getPropertyID()) + " in entity: " + entityID);
+            }
             properties.put(referenceProperty.getPropertyID(), referenceProperty);
           }
         }
@@ -318,16 +329,18 @@ public class EntityDefinition implements Serializable {
       if (property instanceof Property.DerivedProperty) {
         final Collection<String> linkedProperties = ((Property.DerivedProperty) property).getLinkedPropertyIDs();
         if (linkedProperties != null && linkedProperties.size()  > 0) {
-          for (final String parentLinkPropertyID : linkedProperties)
+          for (final String parentLinkPropertyID : linkedProperties) {
             addDerivedPropertyChangeLink(parentLinkPropertyID, property.getPropertyID());
+          }
         }
       }
     }
   }
 
   private void addDerivedPropertyChangeLink(final String parentPropertyID, final String transientPropertyID) {
-    if (!derivedPropertyChangeLinks.containsKey(parentPropertyID))
+    if (!derivedPropertyChangeLinks.containsKey(parentPropertyID)) {
       derivedPropertyChangeLinks.put(parentPropertyID, new HashSet<String>());
+    }
     derivedPropertyChangeLinks.get(parentPropertyID).add(transientPropertyID);
   }
 
@@ -337,8 +350,9 @@ public class EntityDefinition implements Serializable {
       if (property instanceof Property.DenormalizedProperty) {
         final Property.DenormalizedProperty denormalizedProperty = (Property.DenormalizedProperty) property;
         Collection<Property.DenormalizedProperty> denormalizedProperties = denormalizedPropertiesMap.get(denormalizedProperty.getForeignKeyPropertyID());
-        if (denormalizedProperties == null)
+        if (denormalizedProperties == null) {
           denormalizedPropertiesMap.put(denormalizedProperty.getForeignKeyPropertyID(), denormalizedProperties = new ArrayList<Property.DenormalizedProperty>());
+        }
         denormalizedProperties.add(denormalizedProperty);
       }
     }
@@ -348,45 +362,55 @@ public class EntityDefinition implements Serializable {
 
   private static List<Property.PrimaryKeyProperty> getPrimaryKeyProperties(final Collection<Property> properties) {
     final List<Property.PrimaryKeyProperty> primaryKeyProperties = new ArrayList<Property.PrimaryKeyProperty>(properties.size());
-    for (final Property property : properties)
-      if (property instanceof Property.PrimaryKeyProperty)
+    for (final Property property : properties) {
+      if (property instanceof Property.PrimaryKeyProperty) {
         primaryKeyProperties.add((Property.PrimaryKeyProperty) property);
+      }
+    }
 
     return primaryKeyProperties;
   }
 
   private static List<Property.ForeignKeyProperty> getForeignKeyProperties(final Collection<Property> properties) {
     final List<Property.ForeignKeyProperty> foreignKeyProperties = new ArrayList<Property.ForeignKeyProperty>(properties.size());
-    for (final Property property : properties)
-      if (property instanceof Property.ForeignKeyProperty)
+    for (final Property property : properties) {
+      if (property instanceof Property.ForeignKeyProperty) {
         foreignKeyProperties.add((Property.ForeignKeyProperty) property);
+      }
+    }
 
     return foreignKeyProperties;
   }
 
   private static List<Property> getDatabaseProperties(final Collection<Property> properties) {
     final List<Property> databaseProperties = new ArrayList<Property>(properties.size());
-    for (final Property property : properties)
-      if (property.isDatabaseProperty())
+    for (final Property property : properties) {
+      if (property.isDatabaseProperty()) {
         databaseProperties.add(property);
+      }
+    }
 
     return databaseProperties;
   }
 
   private static List<Property.TransientProperty> getTransientProperties(final Collection<Property> properties) {
     final List<Property.TransientProperty> transientProperties = new ArrayList<Property.TransientProperty>(properties.size());
-    for (final Property property : properties)
-      if (property instanceof Property.TransientProperty)
+    for (final Property property : properties) {
+      if (property instanceof Property.TransientProperty) {
         transientProperties.add((Property.TransientProperty) property);
+      }
+    }
 
     return transientProperties;
   }
 
   private static List<Property> getVisibleProperties(final Collection<Property> properties) {
     final List<Property> visibleProperties = new ArrayList<Property>(properties.size());
-    for (final Property property : properties)
-      if (!property.isHidden())
+    for (final Property property : properties) {
+      if (!property.isHidden()) {
         visibleProperties.add(property);
+      }
+    }
 
     return visibleProperties;
   }
@@ -397,30 +421,37 @@ public class EntityDefinition implements Serializable {
    */
   private static String[] initSelectColumnNames(final Collection<Property> databaseProperties) {
     final List<String> columnNames = new ArrayList<String>();
-    for (final Property property : databaseProperties)
-      if (!(property instanceof Property.ForeignKeyProperty))
+    for (final Property property : databaseProperties) {
+      if (!(property instanceof Property.ForeignKeyProperty)) {
         columnNames.add(property.getPropertyID());
+      }
+    }
 
     return columnNames.toArray(new String[columnNames.size()]);
   }
 
   private static String initSelectColumnsString(final Collection<Property> databaseProperties) {
     final List<Property> selectProperties = new ArrayList<Property>(databaseProperties.size());
-    for (final Property property : databaseProperties)
-      if (!(property instanceof Property.ForeignKeyProperty))
+    for (final Property property : databaseProperties) {
+      if (!(property instanceof Property.ForeignKeyProperty)) {
         selectProperties.add(property);
+      }
+    }
 
     final StringBuilder stringBuilder = new StringBuilder();
     int i = 0;
     for (final Property property : selectProperties) {
-      if (property instanceof Property.SubqueryProperty)
-        stringBuilder.append("(").append(((Property.SubqueryProperty)property).getSubQuery()).append(
+      if (property instanceof Property.SubqueryProperty) {
+        stringBuilder.append("(").append(((Property.SubqueryProperty) property).getSubQuery()).append(
                 ") as ").append(property.getPropertyID());
-      else
+      }
+      else {
         stringBuilder.append(property.getPropertyID());
+      }
 
-      if (i++ < selectProperties.size() - 1)
+      if (i++ < selectProperties.size() - 1) {
         stringBuilder.append(", ");
+      }
     }
 
     return stringBuilder.toString();

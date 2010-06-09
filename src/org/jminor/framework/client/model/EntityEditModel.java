@@ -35,6 +35,7 @@ import javax.swing.ComboBoxModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -103,12 +104,11 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
    */
   public EntityEditModel(final String entityID, final EntityDbProvider dbProvider) {
     super(new Entity(entityID));
-    if (!Configuration.getBooleanValue(Configuration.ALL_PANELS_ACTIVE))
+    Util.rejectNullValue(entityID);
+    Util.rejectNullValue(dbProvider);
+    if (!Configuration.getBooleanValue(Configuration.ALL_PANELS_ACTIVE)) {
       activeStateGroup.addState(stActive);
-    if (entityID == null)
-      throw new IllegalArgumentException("entityID is null");
-    if (dbProvider == null)
-      throw new IllegalArgumentException("dbProvider is null");
+    }
     this.entityID = entityID;
     this.dbProvider = dbProvider;
     setValueMap(null);
@@ -266,8 +266,9 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
    */
   public Entity getEntityCopy(final boolean includePrimaryKeyValues) {
     final Entity copy = (Entity) getEntity().getCopy();
-    if (!includePrimaryKeyValues)
+    if (!includePrimaryKeyValues) {
       copy.getPrimaryKey().clear();
+    }
 
     return copy;
   }
@@ -302,10 +303,12 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
    * @see #validateEntities(java.util.List, int)
    */
   public final void insert(final List<Entity> entities) throws CancelException, DbException, ValidationException {
-    if (isReadOnly())
+    if (isReadOnly()) {
       throw new RuntimeException("This is a read-only model, inserting is not allowed!");
-    if (!isInsertAllowed())
+    }
+    if (!isInsertAllowed()) {
       throw new RuntimeException("This model does not allow inserting!");
+    }
 
     LOG.debug(toString() + " - insert " + Util.getListContentsAsString(entities, false));
 
@@ -340,16 +343,19 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
    * @see #validateEntities(java.util.List, int)
    */
   public final void update(final List<Entity> entities) throws DbException, CancelException, ValidationException {
-    if (isReadOnly())
+    if (isReadOnly()) {
       throw new RuntimeException("This is a read-only model, updating is not allowed!");
-    if (!isUpdateAllowed())
+    }
+    if (!isUpdateAllowed()) {
       throw new RuntimeException("This model does not allow updating!");
+    }
 
     LOG.debug(toString() + " - update " + Util.getListContentsAsString(entities, false));
 
     final List<Entity> modifiedEntities = EntityUtil.getModifiedEntities(entities);
-    if (modifiedEntities.size() == 0)
+    if (modifiedEntities.size() == 0) {
       return;
+    }
 
     evtBeforeUpdate.fire();
     validateEntities(modifiedEntities, UPDATE);
@@ -379,10 +385,12 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
    * @see #evtAfterDelete
    */
   public final void delete(final List<Entity> entities) throws DbException, CancelException {
-    if (isReadOnly())
+    if (isReadOnly()) {
       throw new RuntimeException("This is a read-only model, deleting is not allowed!");
-    if (!isDeleteAllowed())
+    }
+    if (!isDeleteAllowed()) {
       throw new RuntimeException("This model does not allow deleting!");
+    }
 
     LOG.debug(toString() + " - delete " + Util.getListContentsAsString(entities, false));
 
@@ -430,10 +438,12 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
    */
   public void validate(final Entity entity, final String propertyID, final int action) throws ValidationException {
     final Property property = entity.getProperty(propertyID);
-    if (Configuration.getBooleanValue(Configuration.PERFORM_NULL_VALIDATION))
+    if (Configuration.getBooleanValue(Configuration.PERFORM_NULL_VALIDATION)) {
       performNullValidation(entity, property, action);
-    if (property.isNumerical())
+    }
+    if (property.isNumerical()) {
       performRangeValidation(entity, property);
+    }
   }
 
   /**
@@ -470,15 +480,19 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
    * @see org.jminor.common.model.Refreshable
    */
   public void refreshComboBoxModels() {
-    for (final ComboBoxModel comboBoxModel : propertyComboBoxModels.values())
-      if (comboBoxModel instanceof Refreshable)
+    for (final ComboBoxModel comboBoxModel : propertyComboBoxModels.values()) {
+      if (comboBoxModel instanceof Refreshable) {
         ((Refreshable) comboBoxModel).refresh();
+      }
+    }
   }
 
   public void clearComboBoxModels() {
-    for (final ComboBoxModel comboBoxModel : propertyComboBoxModels.values())
-      if (comboBoxModel instanceof Refreshable)
+    for (final ComboBoxModel comboBoxModel : propertyComboBoxModels.values()) {
+      if (comboBoxModel instanceof Refreshable) {
         ((Refreshable) comboBoxModel).clear();
+      }
+    }
   }
 
   /**
@@ -488,8 +502,9 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
    */
   public PropertyComboBoxModel getPropertyComboBoxModel(final Property property) {
     final PropertyComboBoxModel comboBoxModel = (PropertyComboBoxModel) propertyComboBoxModels.get(property);
-    if (comboBoxModel == null)
+    if (comboBoxModel == null) {
       throw new RuntimeException("No PropertyComboBoxModel has been initialized for property: " + property);
+    }
 
     return comboBoxModel;
   }
@@ -537,8 +552,9 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
    */
   public EntityComboBoxModel getEntityComboBoxModel(final String propertyID) {
     final Property property = EntityRepository.getProperty(getEntityID(), propertyID);
-    if (!(property instanceof Property.ForeignKeyProperty))
+    if (!(property instanceof Property.ForeignKeyProperty)) {
       throw new IllegalArgumentException("EntityComboBoxModels are only available for Property.ForeignKeyProperty");
+    }
 
     return getEntityComboBoxModel((Property.ForeignKeyProperty) property);
   }
@@ -550,8 +566,9 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
    */
   public EntityComboBoxModel getEntityComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty) {
     final EntityComboBoxModel comboBoxModel = (EntityComboBoxModel) propertyComboBoxModels.get(foreignKeyProperty);
-    if (comboBoxModel == null)
+    if (comboBoxModel == null) {
       throw new RuntimeException("No EntityComboBoxModel has been initialized for property: " + foreignKeyProperty);
+    }
 
     return comboBoxModel;
   }
@@ -564,8 +581,9 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
    */
   public EntityComboBoxModel initializeEntityComboBoxModel(final String propertyID) {
     final Property property = EntityRepository.getProperty(getEntityID(), propertyID);
-    if (!(property instanceof Property.ForeignKeyProperty))
+    if (!(property instanceof Property.ForeignKeyProperty)) {
       throw new IllegalArgumentException("EntityComboBoxModels are only available for Property.ForeignKeyProperty");
+    }
 
     return initializeEntityComboBoxModel((Property.ForeignKeyProperty) property);
   }
@@ -578,8 +596,9 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
    */
   public EntityComboBoxModel initializeEntityComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty) {
     EntityComboBoxModel comboBoxModel = (EntityComboBoxModel) propertyComboBoxModels.get(foreignKeyProperty);
-    if (comboBoxModel == null)
+    if (comboBoxModel == null) {
       setComboBoxModel(foreignKeyProperty, comboBoxModel = createEntityComboBoxModel(foreignKeyProperty));
+    }
 
     return comboBoxModel;
   }
@@ -644,9 +663,12 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
   @Override
   public final Entity getDefaultValueMap() {
     final Entity defaultEntity = new Entity(getEntityID());
-    for (final Property property : EntityRepository.getDatabaseProperties(getEntityID()))
-      if (!property.hasParentProperty() && !property.isDenormalized())//these are set via their respective parent properties
+    final Collection<Property> databaseProperties = EntityRepository.getDatabaseProperties(getEntityID());
+    for (final Property property : databaseProperties) {
+      if (!property.hasParentProperty() && !property.isDenormalized()) {//these are set via their respective parent properties
         defaultEntity.setValue(property, getDefaultValue(property));
+      }
+    }
 
     return defaultEntity;
   }
@@ -798,26 +820,30 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
   }
 
   protected void performRangeValidation(final Entity entity, final Property property) throws RangeValidationException {
-    if (entity.isValueNull(property.getPropertyID()))
+    if (entity.isValueNull(property.getPropertyID())) {
       return;
+    }
 
     final Double value = property.isDouble() ? (Double) entity.getValue(property.getPropertyID())
             : (Integer) entity.getValue(property.getPropertyID());
-    if (value < (property.getMin() == null ? Double.NEGATIVE_INFINITY : property.getMin()))
+    if (value < (property.getMin() == null ? Double.NEGATIVE_INFINITY : property.getMin())) {
       throw new RangeValidationException(property.getPropertyID(), value, "'" + property + "' " +
               FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_TOO_SMALL) + " " + property.getMin());
-    if (value > (property.getMax() == null ? Double.POSITIVE_INFINITY : property.getMax()))
+    }
+    if (value > (property.getMax() == null ? Double.POSITIVE_INFINITY : property.getMax())) {
       throw new RangeValidationException(property.getPropertyID(), value, "'" + property + "' " +
               FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_TOO_LARGE) + " " + property.getMax());
+    }
   }
 
   protected void performNullValidation(final Entity entity, final Property property, final int action) throws NullValidationException {
     if (!isNullable(entity, property.getPropertyID()) && entity.isValueNull(property.getPropertyID())) {
       if (action == INSERT) {
         if (!property.columnHasDefaultValue() || (property instanceof Property.PrimaryKeyProperty &&
-                !EntityRepository.isPrimaryKeyAutoGenerated(getEntityID())))
+                !EntityRepository.isPrimaryKeyAutoGenerated(getEntityID()))) {
           throw new NullValidationException(property.getPropertyID(),
                   FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_IS_REQUIRED) + ": " + property);
+        }
       }
       else {
         throw new NullValidationException(property.getPropertyID(),
@@ -894,30 +920,36 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
    * @throws RuntimeException in case the ComboBoxModel has already been set for this property
    */
   private void setComboBoxModel(final Property property, final ComboBoxModel model) {
-    if (propertyComboBoxModels.containsKey(property))
+    if (propertyComboBoxModels.containsKey(property)) {
       throw new RuntimeException("ComboBoxModel already associated with property: " + property);
+    }
 
     propertyComboBoxModels.put(property, model);
   }
 
   private static String getValueChangeDebugString(final ValueChangeEvent<String, Object> event) {
     final StringBuilder stringBuilder = new StringBuilder();
-    if (event.getSource() instanceof Entity)
+    if (event.getSource() instanceof Entity) {
       stringBuilder.append("[entity] ");
-    else
+    }
+    else {
       stringBuilder.append(event.isModelChange() ? "[model] " : "[ui] ");
+    }
     final Property property = EntityRepository.getProperty(event.getValueOwnerTypeID(), event.getKey());
     stringBuilder.append(event.getValueOwnerTypeID()).append(" : ").append(property).append(
             property.hasParentProperty() ? " [fk]" : "").append("; ");
     if (!event.isInitialization()) {
-      if (event.isOldValueNull())
+      if (event.isOldValueNull()) {
         stringBuilder.append(event.getOldValue().getClass().getSimpleName()).append(" ");
+      }
       stringBuilder.append(getValueString(event.getOldValue()));
     }
-    if (!event.isInitialization())
+    if (!event.isInitialization()) {
       stringBuilder.append(" -> ");
-    if (event.isNewValueNull())
+    }
+    if (event.isNewValueNull()) {
       stringBuilder.append(event.getNewValue().getClass().getSimpleName()).append(" ");
+    }
     stringBuilder.append(getValueString(event.getNewValue()));
 
     return stringBuilder.toString();
@@ -929,8 +961,9 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
    */
   private static String getValueString(final Object value) {
     final StringBuilder stringBuilder = new StringBuilder("[").append(value == null ? "null value" : value).append("]");
-    if (value instanceof Entity)
-      stringBuilder.append(" PK{").append(((Entity)value).getPrimaryKey()).append("}");
+    if (value instanceof Entity) {
+      stringBuilder.append(" PK{").append(((Entity) value).getPrimaryKey()).append("}");
+    }
 
     return stringBuilder.toString();
   }

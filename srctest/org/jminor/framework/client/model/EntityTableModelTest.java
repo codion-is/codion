@@ -209,8 +209,9 @@ public class EntityTableModelTest {
   private boolean tableModelContainsAll(final Entity[] entities, final boolean includeFiltered,
                                         final EntityTableModel model) {
     for (final Entity entity : entities) {
-      if (!model.contains(entity, includeFiltered))
+      if (!model.contains(entity, includeFiltered)) {
         return false;
+      }
     }
 
     return true;

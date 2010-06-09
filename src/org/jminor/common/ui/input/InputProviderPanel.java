@@ -5,6 +5,7 @@ package org.jminor.common.ui.input;
 
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.Util;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -35,9 +36,7 @@ public class InputProviderPanel extends JPanel implements InputProvider {
    * @param inputProvider the InputProvider to use
    */
   public InputProviderPanel(final String caption, final InputProvider inputProvider) {
-    if (inputProvider == null)
-      throw new IllegalArgumentException("InputProvider must be specified");
-
+    Util.rejectNullValue(inputProvider);
     this.inputProvider = inputProvider;
     initUI(caption);
   }

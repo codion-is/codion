@@ -27,83 +27,83 @@ public interface Database {
    * @see Database#POSTGRESQL
    * @see Database#SQLSERVER
    */
-  final String DATABASE_TYPE = "jminor.db.type";
+  String DATABASE_TYPE = "jminor.db.type";
 
   /**
    * Specifies the machine hosting the database, in the case of embedded databases
    * this specifies the name of the database
    */
-  final String DATABASE_HOST = "jminor.db.host";
+  String DATABASE_HOST = "jminor.db.host";
 
   /**
    * Specifies the database sid (used for dbname for MySQL, SQLServer and Derby server connections)
    */
-  final String DATABASE_SID = "jminor.db.sid";
+  String DATABASE_SID = "jminor.db.sid";
 
   /**
    * Specifies the database port
    */
-  final String DATABASE_PORT = "jminor.db.port";
+  String DATABASE_PORT = "jminor.db.port";
 
   /**
    * Specifies whether or not the database should be run in embedded mode, if applicable<br>
    * Values: "true"/"false"<br>
    * Default: "false"<br>
    */
-  final String DATABASE_EMBEDDED = "jminor.db.embedded";
+  String DATABASE_EMBEDDED = "jminor.db.embedded";
 
   /**
    * Specifies the Database implementation class to use in case of a dbms that is not directly supported
    * @see Database
    */
-  final String DATABASE_IMPLEMENTATION_CLASS = "jminor.db.implementation";
+  String DATABASE_IMPLEMENTATION_CLASS = "jminor.db.implementation";
 
   /**
    * Specifies whether or not connection pools should collect fine grained performance/usage statistics by default, true or false
    */
-  final String DATABASE_POOL_STATISTICS = "jminor.db.pooling.collectStatistics";
+  String DATABASE_POOL_STATISTICS = "jminor.db.pooling.collectStatistics";
 
   /**
    * The constant used to denote the Oracle database type
    * @see Database#DATABASE_TYPE
    */
-  final String ORACLE = "oracle";
+  String ORACLE = "oracle";
 
   /**
    * The constant used to denote the MySQL database type
    * @see Database#DATABASE_TYPE
    */
-  final String MYSQL = "mysql";
+  String MYSQL = "mysql";
 
   /**
    * The constant used to denote the PostgreSQL database type
    * @see Database#DATABASE_TYPE
    */
-  final String POSTGRESQL = "postgresql";
+  String POSTGRESQL = "postgresql";
 
   /**
    * The constant used to denote the Microsoft SQL Server database type
    * @see Database#DATABASE_TYPE
    */
-  final String SQLSERVER = "sqlserver";
+  String SQLSERVER = "sqlserver";
 
   /**
    * The constant used to denote the Derby database type
    * @see Database#DATABASE_TYPE
    */
-  final String DERBY = "derby";
+  String DERBY = "derby";
 
   /**
    * The constant used to denote the H2 database type
    * @see Database#DATABASE_TYPE
    */
-  final String H2 = "h2";
+  String H2 = "h2";
 
   /**
    * The constant used to denote the HSQL database type
    * @see Database#DATABASE_TYPE
    */
-  final String HSQL = "hsql";
+  String HSQL = "hsql";
 
   /**
    * Loads the database driver
@@ -141,20 +141,20 @@ public interface Database {
    * @param idSource the source for the id, for example a sequence name or in the case of Derby, the name of the table
    * @return a query string for retrieving the last auto-increment value from idSource
    */
-  String getAutoIncrementValueSQL(final String idSource);
+  String getAutoIncrementValueSQL(String idSource);
 
   /**
    * @param sequenceName the name of the sequence
    * @return a query for selecting the next value from the given sequence
    */
-  String getSequenceSQL(final String sequenceName);
+  String getSequenceSQL(String sequenceName);
 
   /**
    * @param connectionProperties the connection properties, used primarily to provide
    * embedded databases with user info for authentication purposes
    * @return the database url of the active database, based on system properties
    */
-  String getURL(final Properties connectionProperties);
+  String getURL(Properties connectionProperties);
 
   /**
    * In the case of embedded databases the user login info can be appended
@@ -166,14 +166,14 @@ public interface Database {
    * @return an authentication string to append to the connection url,
    * f.ex. user=scott;password=tiger, null if none is required
    */
-  String getAuthenticationInfo(final Properties connectionProperties);
+  String getAuthenticationInfo(Properties connectionProperties);
 
   /**
    * This should shutdown the database in case it is an embedded one
    * and if that is applicable, such as for Derby.
    * @param connectionProperties the connection properties
    */
-  void shutdownEmbedded(final Properties connectionProperties);
+  void shutdownEmbedded(Properties connectionProperties);
 
   /**
    * @return true if the dbms supports the Java 6 jdbc call Connection.isValid()
@@ -195,14 +195,14 @@ public interface Database {
    * @param exception the underlying SQLException
    * @return the message assigned to the given exception
    */
-  String getErrorMessage(final SQLException exception);
+  String getErrorMessage(SQLException exception);
 
   /**
    * Adds any dbms specific connection properties to the given properties map
    * @param properties the properties map to add to
    * @return the properties map
    */
-  Properties addConnectionProperties(final Properties properties);
+  Properties addConnectionProperties(Properties properties);
 
   /**
    * Creates a connection for the given user.
@@ -211,5 +211,5 @@ public interface Database {
    * @throws ClassNotFoundException in case the driver class was not on the classpath
    * @throws SQLException in case of a connection error
    */
-  Connection createConnection(final User user) throws ClassNotFoundException, SQLException;
+  Connection createConnection(User user) throws ClassNotFoundException, SQLException;
 }

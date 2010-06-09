@@ -17,8 +17,9 @@ public class Item<T> implements Comparable<Item<T>>{
   private final String caption;
 
   public Item(final T item, final String caption) {
-    if (caption == null)
+    if (caption == null) {
       throw new RuntimeException("Caption is null");
+    }
     this.item = item;
     this.caption = caption;
   }

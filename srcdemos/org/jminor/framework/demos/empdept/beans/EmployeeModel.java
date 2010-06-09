@@ -54,8 +54,9 @@ public class EmployeeModel extends EntityModel {
     //Refresh the manager ComboBoxModel when an employee is either added or updated
     eventEntitiesChanged().addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        if (getEditModel().containsComboBoxModel(EmpDept.EMPLOYEE_MGR_FK))
+        if (getEditModel().containsComboBoxModel(EmpDept.EMPLOYEE_MGR_FK)) {
           getEditModel().getEntityComboBoxModel(EmpDept.EMPLOYEE_MGR_FK).refresh();
+        }
       }
     });
     //Filter the manager ComboBoxModel so that only managers from the selected department are shown,

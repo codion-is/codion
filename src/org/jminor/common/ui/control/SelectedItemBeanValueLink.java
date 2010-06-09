@@ -32,8 +32,9 @@ public class SelectedItemBeanValueLink extends AbstractBeanValueLink {
     updateUI();
     box.addItemListener(new ItemListener() {
       public void itemStateChanged(final ItemEvent e) {
-        if (e.getStateChange() == ItemEvent.SELECTED)
+        if (e.getStateChange() == ItemEvent.SELECTED) {
           updateModel();
+        }
       }
     });
   }
@@ -41,10 +42,12 @@ public class SelectedItemBeanValueLink extends AbstractBeanValueLink {
   /** {@inheritDoc} */
   @Override
   protected Object getUIValue() {
-    if (comboBoxModel instanceof ItemComboBoxModel)
+    if (comboBoxModel instanceof ItemComboBoxModel) {
       return ((Item) comboBoxModel.getSelectedItem()).getItem();
-    else
+    }
+    else {
       return comboBoxModel.getSelectedItem();
+    }
   }
 
   /** {@inheritDoc} */

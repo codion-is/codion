@@ -78,21 +78,24 @@ public class HostMonitorPanel extends JPanel {
 
   private void refreshServerTabs() throws RemoteException {
     final Collection<ServerMonitorPanel> serverTabs = new ArrayList<ServerMonitorPanel>();
-    for (int i = 0; i < serverPane.getTabCount(); i++)
+    for (int i = 0; i < serverPane.getTabCount(); i++) {
       serverTabs.add((ServerMonitorPanel) serverPane.getComponentAt(i));
+    }
 
     final Collection<ServerMonitor> serverMonitors = model.getServerMonitors();
     //remove disconnected server tabs and remove server names that already have tabs
     for (final ServerMonitorPanel panel : serverTabs) {
       final ServerMonitor model = panel.getModel();
-      if (!serverMonitors.contains(model))
+      if (!serverMonitors.contains(model)) {
         removeServerTab(panel);
+      }
       serverMonitors.remove(model);
     }
 
     //add the remaining servers
-    for (final ServerMonitor serverMonitor : serverMonitors)
+    for (final ServerMonitor serverMonitor : serverMonitors) {
       addServerTab(serverMonitor);
+    }
   }
 
   private void addServerTab(final ServerMonitor serverMonitor) throws RemoteException {

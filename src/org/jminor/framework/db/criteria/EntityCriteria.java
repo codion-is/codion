@@ -4,6 +4,7 @@
 package org.jminor.framework.db.criteria;
 
 import org.jminor.common.db.criteria.Criteria;
+import org.jminor.common.model.Util;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
 
@@ -38,8 +39,7 @@ public class EntityCriteria implements Serializable {
    * @see org.jminor.framework.db.criteria.EntityKeyCriteria
    */
   public EntityCriteria(final String entityID, final Criteria<Property> criteria) {
-    if (entityID == null)
-      throw new IllegalArgumentException("Can not instantiate EntityCriteria without entityID");
+    Util.rejectNullValue(entityID);
     this.entityID = entityID;
     this.criteria = criteria;
   }

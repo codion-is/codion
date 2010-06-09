@@ -5,6 +5,7 @@ package org.jminor.common.ui.control;
 
 import org.jminor.common.model.Event;
 import org.jminor.common.model.State;
+import org.jminor.common.model.Util;
 
 import javax.swing.*;
 import java.awt.GridLayout;
@@ -15,7 +16,7 @@ import java.util.List;
 /**
  * Provides UI controls based on the Control class and it's descendants.
  */
-public class ControlProvider {
+public final class ControlProvider {
 
   private ControlProvider() {}
 
@@ -88,16 +89,18 @@ public class ControlProvider {
 
   public static JMenuBar createMenuBar(final List<ControlSet> controlSets) {
     final JMenuBar menubar = new JMenuBar();
-    for (final ControlSet set : controlSets)
+    for (final ControlSet set : controlSets) {
       addControlSetToMenuBar(menubar, set);
+    }
 
     return menubar;
   }
 
   public static JMenuBar createMenuBar(final ControlSet controlSet) {
     final JMenuBar menubar = new JMenuBar();
-    for (final ControlSet set : controlSet.getControlSets())
+    for (final ControlSet set : controlSet.getControlSets()) {
       addControlSetToMenuBar(menubar, set);
+    }
 
     return menubar;
   }
@@ -133,10 +136,12 @@ public class ControlProvider {
 
     /** {@inheritDoc} */
     public void handleControlSet(final ControlSet controlSet) {
-      if (vertical)
+      if (vertical) {
         createVerticalButtonPanel(btnPanel, controlSet);
-      else
+      }
+      else {
         createHorizontalButtonPanel(btnPanel, controlSet);
+      }
     }
 
     /** {@inheritDoc} */
@@ -152,8 +157,9 @@ public class ControlProvider {
     public MenuControlIterator(final ControlSet controlSet) {
       menu = new JMenu(controlSet.getName());
       final String description = controlSet.getDescription();
-      if (description != null)
+      if (description != null) {
         menu.setToolTipText(description);
+      }
       final State enabledState = controlSet.getEnabledState();
       if (enabledState != null) {
         menu.setEnabled(enabledState.isActive());
@@ -164,11 +170,13 @@ public class ControlProvider {
         });
       }
       final Icon icon = controlSet.getIcon();
-      if (icon != null)
+      if (icon != null) {
         menu.setIcon(icon);
+      }
       final int mnemonic = controlSet.getMnemonic();
-      if (mnemonic != -1)
+      if (mnemonic != -1) {
         menu.setMnemonic(mnemonic);
+      }
     }
 
     /**
@@ -266,20 +274,23 @@ public class ControlProvider {
   }
 
   public static void iterate(final ControlIterator controlIterator, final ControlSet controlSet) {
-    if (controlIterator == null)
-      throw new IllegalArgumentException("Iterator can't be null");
-
+    Util.rejectNullValue(controlIterator);
     for (final Action action : controlSet.getActions()) {
-      if (action == null)
+      if (action == null) {
         controlIterator.handleSeparator();
-      else if (action instanceof ToggleBeanValueLink)
+      }
+      else if (action instanceof ToggleBeanValueLink) {
         controlIterator.handleToggleControl((ToggleBeanValueLink) action);
-      else if (action instanceof ControlSet)
+      }
+      else if (action instanceof ControlSet) {
         controlIterator.handleControlSet((ControlSet) action);
-      else if (action instanceof Control)
+      }
+      else if (action instanceof Control) {
         controlIterator.handleControl((Control) action);
-      else
+      }
+      else {
         controlIterator.handleAction(action);
+      }
     }
   }
 }

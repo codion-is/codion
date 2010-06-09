@@ -45,18 +45,21 @@ public class EntityDbRemoteServerTest {
     System.setProperty("javax.net.ssl.trustStore", "resources/security/JMinorClientTruststore");
     System.setProperty("javax.net.ssl.keyStore", "resources/security/JMinorServerKeystore");
     System.setProperty("javax.net.ssl.keyStorePassword", "jminor");
-    if (server != null)
+    if (server != null) {
       throw new RuntimeException("Server not torn down after last run");
+    }
     server = new EntityDbRemoteServer(DatabaseProvider.createInstance());
-    if (admin != null)
+    if (admin != null) {
       throw new RuntimeException("Server admin not torn down after last run");
+    }
     admin = new EntityDbRemoteServerAdmin(server, EntityDbRemoteServer.SSL_CONNECTION_ENABLED);
   }
 
   @AfterClass
   public static void tearDown() throws Exception {
-    if (admin != null)
+    if (admin != null) {
       admin.shutdown();
+    }
     Thread.sleep(100);
     admin = null;
     server = null;

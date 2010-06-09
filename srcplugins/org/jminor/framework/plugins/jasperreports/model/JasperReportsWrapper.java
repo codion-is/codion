@@ -66,13 +66,16 @@ public class JasperReportsWrapper implements ReportWrapper<JasperPrint>, Seriali
    * @throws IllegalArgumentException in case the report path is not specified
    */
   public static JasperReport loadJasperReport(final String reportPath) {
-    if (reportPath == null || reportPath.isEmpty())
+    if (reportPath == null || reportPath.isEmpty()) {
       throw new IllegalArgumentException();
+    }
     try {
-      if (reportPath.toLowerCase().startsWith("http"))
+      if (reportPath.toLowerCase().startsWith("http")) {
         return (JasperReport) JRLoader.loadObject(new URL(reportPath));
-      else
+      }
+      else {
         return (JasperReport) JRLoader.loadObject(reportPath);
+      }
     }
     catch (Exception e) {
       throw new RuntimeException(e);

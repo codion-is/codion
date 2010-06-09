@@ -12,7 +12,7 @@ import javax.swing.KeyStroke;
 /**
  * A static utility class for constructing Control objects.
  */
-public class ControlFactory {
+public final class ControlFactory {
 
   private ControlFactory() {}
 

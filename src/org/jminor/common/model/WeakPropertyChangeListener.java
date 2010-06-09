@@ -24,10 +24,12 @@ public class WeakPropertyChangeListener implements PropertyChangeListener {
 
   public void propertyChange(final PropertyChangeEvent event) {
     final PropertyChangeListener listener = listenerReference.get();
-    if (listener == null)
+    if (listener == null) {
       removeListener(event.getSource());
-    else
+    }
+    else {
       listener.propertyChange(event);
+    }
   }
 
   private void removeListener(final Object source) {

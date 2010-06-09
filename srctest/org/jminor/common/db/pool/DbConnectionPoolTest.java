@@ -188,8 +188,9 @@ public class DbConnectionPoolTest {
                 }, 100);
               }
               finally {
-                if (connection != null)
+                if (connection != null) {
                   pool.checkInConnection(connection);
+                }
               }
             }
             catch (ClassNotFoundException e1) {

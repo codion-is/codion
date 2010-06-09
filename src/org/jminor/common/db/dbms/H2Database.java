@@ -41,8 +41,9 @@ public class H2Database extends AbstractDatabase {
   public String getURL(final Properties connectionProperties) {
     final String authentication = getAuthenticationInfo(connectionProperties);
     if (isEmbedded()) {
-      if (connectionProperties != null && (!connectionProperties.containsKey("user") || ((String) connectionProperties.get("user")).length() == 0))
-        connectionProperties.put("user","sa");
+      if (connectionProperties != null && (!connectionProperties.containsKey("user") || ((String) connectionProperties.get("user")).length() == 0)) {
+        connectionProperties.put("user", "sa");
+      }
 
       return "jdbc:h2:" + getHost() + (authentication == null ? "" : ";" + authentication);
     }
@@ -57,8 +58,9 @@ public class H2Database extends AbstractDatabase {
     if (connectionProperties != null) {
       final String username = (String) connectionProperties.get("user");
       final String password = (String) connectionProperties.get("password");
-      if (username != null && username.length() > 0 && password != null && password.length() > 0)
+      if (username != null && username.length() > 0 && password != null && password.length() > 0) {
         return "user=" + username + ";" + "password=" + password;
+      }
     }
 
     return null;

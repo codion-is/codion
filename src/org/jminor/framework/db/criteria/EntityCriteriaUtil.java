@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * A static utility class for constructing query criteria implementations
  */
-public class EntityCriteriaUtil {
+public final class EntityCriteriaUtil {
 
   private EntityCriteriaUtil() {}
 

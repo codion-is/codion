@@ -90,16 +90,21 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    */
   public ControlSet getControlPanelControlSet() {
     final ControlSet controlSet = new ControlSet("Actions");
-    if (controlMap.containsKey(INSERT))
+    if (controlMap.containsKey(INSERT)) {
       controlSet.add(controlMap.get(INSERT));
-    if (controlMap.containsKey(UPDATE))
+    }
+    if (controlMap.containsKey(UPDATE)) {
       controlSet.add(controlMap.get(UPDATE));
-    if (controlMap.containsKey(DELETE))
+    }
+    if (controlMap.containsKey(DELETE)) {
       controlSet.add(controlMap.get(DELETE));
-    if (controlMap.containsKey(CLEAR))
+    }
+    if (controlMap.containsKey(CLEAR)) {
       controlSet.add(controlMap.get(CLEAR));
-    if (controlMap.containsKey(REFRESH))
+    }
+    if (controlMap.containsKey(REFRESH)) {
       controlSet.add(controlMap.get(REFRESH));
+    }
 
     return controlSet;
   }
@@ -110,8 +115,9 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @throws RuntimeException in case no control is associated with the given control code
    */
   public final Control getControl(final String controlCode) {
-    if (!controlMap.containsKey(controlCode))
+    if (!controlMap.containsKey(controlCode)) {
       throw new RuntimeException(controlCode + " control not available in panel: " + this);
+    }
 
     return controlMap.get(controlCode);
   }
@@ -257,9 +263,13 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
                       FrameworkMessages.get(FrameworkMessages.INSERT_NEW), Messages.get(Messages.CANCEL)},
               new String[] {FrameworkMessages.get(FrameworkMessages.UPDATE)});
       if (choiceIdx == 0) //update
+      {
         update(false);
+      }
       else if (choiceIdx == 1) //insert
+      {
         insert(false);
+      }
     }
   }
 
@@ -449,12 +459,15 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    */
   protected void setupControls() {
     if (!getEditModel().isReadOnly()) {
-      if (getEditModel().isInsertAllowed())
+      if (getEditModel().isInsertAllowed()) {
         setControl(INSERT, getInsertControl());
-      if (getEditModel().isUpdateAllowed())
+      }
+      if (getEditModel().isUpdateAllowed()) {
         setControl(UPDATE, getUpdateControl());
-      if (getEditModel().isDeleteAllowed())
+      }
+      if (getEditModel().isDeleteAllowed()) {
         setControl(DELETE, getDeleteControl());
+      }
     }
     setControl(CLEAR, getClearControl());
     setControl(REFRESH, getRefreshControl());
@@ -466,10 +479,12 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @param control the control to associate with <code>controlCode</code>
    */
   protected void setControl(final String controlCode, final Control control) {
-    if (control == null)
+    if (control == null) {
       controlMap.remove(controlCode);
-    else
+    }
+    else {
       controlMap.put(controlCode, control);
+    }
   }
 
   /**
@@ -557,8 +572,9 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
                                              final boolean labelOnTop, final int hgap, final int vgap) {
     final JPanel panel = new JPanel(labelOnTop ?
             new BorderLayout(hgap, vgap) : new FlowLayout(FlowLayout.LEADING, hgap, vgap));
-    if (labelComponent instanceof JLabel)
+    if (labelComponent instanceof JLabel) {
       ((JLabel) labelComponent).setLabelFor(inputComponent);
+    }
     if (labelOnTop) {
       panel.add(labelComponent, BorderLayout.NORTH);
       panel.add(inputComponent, BorderLayout.CENTER);
@@ -1186,8 +1202,9 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   protected final SteppedComboBox createComboBox(final Property property, final ComboBoxModel comboBoxModel,
                                                  final boolean maximumMatch, final State enabledState) {
     final SteppedComboBox comboBox = EntityUiUtil.createComboBox(property, getEditModel(), comboBoxModel, enabledState);
-    if (maximumMatch)
+    if (maximumMatch) {
       MaximumMatch.enable(comboBox);
+    }
     setComponent(property.getPropertyID(), comboBox);
 
     return comboBox;
@@ -1214,8 +1231,9 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    */
   protected final SteppedComboBox createValueListComboBox(final String propertyID, final State enabledState) {
     final Property property = EntityRepository.getProperty(getEditModel().getEntityID(), propertyID);
-    if (!(property instanceof Property.ValueListProperty))
+    if (!(property instanceof Property.ValueListProperty)) {
       throw new IllegalArgumentException("Property identified by '" + propertyID + "' is not a ValueListProperty");
+    }
 
     return createValueListComboBox((Property.ValueListProperty) property, enabledState);
   }

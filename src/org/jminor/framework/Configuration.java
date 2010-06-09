@@ -21,7 +21,7 @@ import java.util.Map;
  * EntityApplicationPanel.initializeSettings() is a convenience method for this purpose,
  * override and use it to set configuration properties.
  */
-public class Configuration {
+public final class Configuration {
 
   private Configuration() {}
 
@@ -453,20 +453,23 @@ public class Configuration {
 
   private static void parseIntegerSetting(final String setting) {
     final String value = System.getProperty(setting);
-    if (value != null)
+    if (value != null) {
       setValue(setting, Integer.parseInt(value));
+    }
   }
 
   private static void parseBooleanSetting(final String setting) {
     final String value = System.getProperty(setting);
-    if (value != null)
+    if (value != null) {
       setValue(setting, value.equalsIgnoreCase("true"));
+    }
   }
 
   private static void parseStringSetting(final String setting) {
     final String value = System.getProperty(setting);
-    if (value != null)
+    if (value != null) {
       setValue(setting, value);
+    }
   }
 
   public static void setValue(final String key, final Object value) {
@@ -517,8 +520,9 @@ public class Configuration {
 
   public static String getReportPath() {
     final String path = getStringValue(REPORT_PATH);
-    if (path == null || path.isEmpty())
+    if (path == null || path.isEmpty()) {
       throw new RuntimeException("jminor.report.path property is not speficied");
+    }
 
     return path;
   }

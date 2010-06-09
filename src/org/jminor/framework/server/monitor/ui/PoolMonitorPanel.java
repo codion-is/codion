@@ -29,16 +29,18 @@ public class PoolMonitorPanel extends JPanel {
 
   public void addConnectionPool() throws RemoteException {
     final String usernames = JOptionPane.showInputDialog("User name(s) (comma separated)");
-    if (usernames != null && usernames.length() > 0)
+    if (usernames != null && usernames.length() > 0) {
       model.addConnectionPools(usernames.split(","));
+    }
   }
 
   private void initUI() throws RemoteException {
     setLayout(new BorderLayout());
     final JTabbedPane connectionPoolPane = new JTabbedPane();
     connectionPoolPane.setUI(UiUtil.getBorderlessTabbedPaneUI());
-    for (final ConnectionPoolMonitor monitor : model.getConnectionPoolInstanceMonitors())
+    for (final ConnectionPoolMonitor monitor : model.getConnectionPoolInstanceMonitors()) {
       connectionPoolPane.addTab(monitor.getUser().getUsername(), new ConnectionPoolMonitorPanel(monitor));
+    }
     add(connectionPoolPane, BorderLayout.CENTER);
   }
 
