@@ -584,18 +584,20 @@ public final class Util {
    * @throws IllegalArgumentException if value is null
    */
   public static void rejectNullValue(final Object value) throws IllegalArgumentException {
-    rejectNullValue(value, "Value is null");
+    if (value == null) {
+      throw new IllegalArgumentException("Value is null");
+    }
   }
 
   /**
    * Throws a IllegalArgumentException with the given message if <code>value</code> is null
    * @param value the value to check
-   * @param message the message to use
+   * @param valueName the name of the null value
    * @throws IllegalArgumentException if value is null
    */
-  public static void rejectNullValue(final Object value, final String message) throws IllegalArgumentException {
+  public static void rejectNullValue(final Object value, final String valueName) throws IllegalArgumentException {
     if (value == null) {
-      throw new IllegalArgumentException(message);
+      throw new IllegalArgumentException(valueName + " is null");
     }
   }
 }

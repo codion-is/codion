@@ -21,7 +21,7 @@ import java.awt.GridLayout;
 public class InvoiceLinePanel extends EntityPanel {
 
   public InvoiceLinePanel(final EntityModel model) {
-    super(model, "Invoice line");
+    super(model);
   }
 
   @Override

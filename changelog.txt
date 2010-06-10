@@ -1712,3 +1712,8 @@
   Database.validate() and required() added
   Added braces to all control statements
   EntityPanelProvider generified, which does enlarge the dependency cycle in ui, needs to be resolved somehow
+  Util.rejectNullValue() added, used throughout
+  DomainClassGenerator improved
+  EntityDefinition.caption field added
+  EntityPanel(model) constructor added, uses the above
+  EmpDept demo uses the above

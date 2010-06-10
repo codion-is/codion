@@ -128,7 +128,8 @@ public class Chinook {
             .setStringProvider(new StringProvider<String>(ALBUM_TITLE))
             .setLargeDataset(true)
             .setSearchPropertyIDs(ALBUM_TITLE)
-            .setOrderByClause(ALBUM_ARTISTID + ", " + ALBUM_TITLE));
+            .setOrderByClause(ALBUM_ARTISTID + ", " + ALBUM_TITLE)
+            .setCaption("Albums"));
 
     EntityRepository.add(new EntityDefinition(T_ARTIST,
             new Property.PrimaryKeyProperty(ARTIST_ARTISTID),
@@ -139,7 +140,8 @@ public class Chinook {
             .setStringProvider(new StringProvider<String>(ARTIST_NAME))
             .setLargeDataset(true)
             .setSearchPropertyIDs(ARTIST_NAME)
-            .setOrderByClause(ARTIST_NAME));
+            .setOrderByClause(ARTIST_NAME)
+            .setCaption("Artists"));
 
     EntityRepository.add(new EntityDefinition(T_CUSTOMER,
             new Property.PrimaryKeyProperty(CUSTOMER_CUSTOMERID),
@@ -175,7 +177,8 @@ public class Chinook {
             .addText(", ").addValue(CUSTOMER_FIRSTNAME))
             .setLargeDataset(true)
             .setSearchPropertyIDs(CUSTOMER_FIRSTNAME, CUSTOMER_LASTNAME, CUSTOMER_EMAIL)
-            .setOrderByClause(CUSTOMER_LASTNAME + ", " + CUSTOMER_FIRSTNAME));
+            .setOrderByClause(CUSTOMER_LASTNAME + ", " + CUSTOMER_FIRSTNAME)
+            .setCaption("Customers"));
 
     EntityRepository.add(new EntityDefinition(T_EMPLOYEE,
             new Property.PrimaryKeyProperty(EMPLOYEE_EMPLOYEEID),
@@ -211,7 +214,8 @@ public class Chinook {
             .setStringProvider(new StringProvider<String>(EMPLOYEE_LASTNAME)
             .addText(", ").addValue(EMPLOYEE_FIRSTNAME))
             .setSearchPropertyIDs(EMPLOYEE_FIRSTNAME, EMPLOYEE_LASTNAME, EMPLOYEE_EMAIL)
-            .setOrderByClause(EMPLOYEE_LASTNAME + ", " + EMPLOYEE_FIRSTNAME));
+            .setOrderByClause(EMPLOYEE_LASTNAME + ", " + EMPLOYEE_FIRSTNAME)
+            .setCaption("Employees"));
 
     EntityRepository.add(new EntityDefinition(T_GENRE,
             new Property.PrimaryKeyProperty(GENRE_GENREID),
@@ -221,7 +225,8 @@ public class Chinook {
             .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_GENRE)
             .setStringProvider(new StringProvider<String>(GENRE_NAME))
             .setSearchPropertyIDs(GENRE_NAME)
-            .setOrderByClause(GENRE_NAME));
+            .setOrderByClause(GENRE_NAME)
+            .setCaption("Genres"));
 
     EntityRepository.add(new EntityDefinition(T_MEDIATYPE,
             new Property.PrimaryKeyProperty(MEDIATYPE_MEDIATYPEID),
@@ -230,7 +235,8 @@ public class Chinook {
                     .setPreferredColumnWidth(160))
             .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_MEDIATYPE)
             .setStringProvider(new StringProvider<String>(MEDIATYPE_NAME))
-            .setOrderByClause(MEDIATYPE_NAME));
+            .setOrderByClause(MEDIATYPE_NAME)
+            .setCaption("Media types"));
 
     EntityRepository.add(new EntityDefinition(T_TRACK,
             new Property.PrimaryKeyProperty(TRACK_TRACKID),
@@ -264,7 +270,8 @@ public class Chinook {
             .setStringProvider(new StringProvider<String>(TRACK_NAME))
             .setLargeDataset(true)
             .setSearchPropertyIDs(TRACK_NAME)
-            .setOrderByClause(TRACK_NAME));
+            .setOrderByClause(TRACK_NAME)
+            .setCaption("Tracks"));
 
     Entity.setProxy(T_TRACK, new Entity.Proxy() {
       @Override
@@ -294,7 +301,8 @@ public class Chinook {
             .setStringProvider(new StringProvider<String>(PLAYLIST_NAME))
             .setLargeDataset(true)
             .setSearchPropertyIDs(PLAYLIST_NAME)
-            .setOrderByClause(PLAYLIST_NAME));
+            .setOrderByClause(PLAYLIST_NAME)
+            .setCaption("Playlists"));
 
     EntityRepository.add(new EntityDefinition(T_PLAYLISTTRACK,
             new Property.ForeignKeyProperty(PLAYLISTTRACK_PLAYLISTID_FK, "Playlist", T_PLAYLIST,
@@ -316,7 +324,8 @@ public class Chinook {
             .setIdSource(IdSource.NONE)
             .setStringProvider(new StringProvider<String>(PLAYLISTTRACK_PLAYLISTID_FK)
             .addText(" - ").addValue(PLAYLISTTRACK_TRACKID_FK))
-            .setLargeDataset(true));
+            .setLargeDataset(true)
+            .setCaption("Playlist tracks"));
 
     EntityRepository.add(new EntityDefinition(T_INVOICE,
             new Property.PrimaryKeyProperty(INVOICE_INVOICEID, Types.INTEGER, "Invoice no."),
@@ -343,7 +352,8 @@ public class Chinook {
             .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_INVOICE)
             .setStringProvider(new StringProvider<String>(INVOICE_INVOICEID))
             .setLargeDataset(true).setSearchPropertyIDs(INVOICE_INVOICEID_AS_STRING)
-            .setOrderByClause(INVOICE_CUSTOMERID + ", " + INVOICE_INVOICEDATE + " desc"));
+            .setOrderByClause(INVOICE_CUSTOMERID + ", " + INVOICE_INVOICEDATE + " desc")
+            .setCaption("Invoices"));
 
     EntityRepository.add(new EntityDefinition(T_INVOICELINE,
             new Property.PrimaryKeyProperty(INVOICELINE_INVOICELINEID),
@@ -360,6 +370,7 @@ public class Chinook {
             new Property(INVOICELINE_QUANTITY, Types.INTEGER, "Quantity")
                     .setNullable(false))
             .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_INVOICELINE)
-            .setLargeDataset(true));
+            .setLargeDataset(true)
+            .setCaption("Invoice lines"));
   }
 }

@@ -10,7 +10,6 @@ import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.ui.EntityEditPanel;
 import org.jminor.framework.client.ui.EntityPanel;
-import org.jminor.framework.demos.empdept.domain.EmpDept;
 import static org.jminor.framework.demos.empdept.domain.EmpDept.*;
 
 import javax.swing.JComboBox;
@@ -20,7 +19,7 @@ import javax.swing.JTextField;
 public class EmployeePanel extends EntityPanel {
 
   public EmployeePanel(final EntityModel model) {
-    super(model, EmpDept.getString(EmpDept.EMPLOYEE));
+    super(model);
   }
 
   @Override

@@ -22,7 +22,7 @@ import java.awt.GridLayout;
 public class PlaylistTrackPanel extends EntityPanel {
 
   public PlaylistTrackPanel(final EntityModel model) {
-    super(model, "Playlist tracks");
+    super(model);
   }
 
   @Override

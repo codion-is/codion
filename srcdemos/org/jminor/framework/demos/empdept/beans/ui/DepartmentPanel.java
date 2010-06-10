@@ -32,7 +32,7 @@ import java.util.List;
 public class DepartmentPanel extends EntityPanel {
 
   public DepartmentPanel(final EntityModel model) {
-    super(model, EmpDept.getString(EmpDept.DEPARTMENT));
+    super(model);
   }
 
   public void viewEmployeeReport() throws Exception {

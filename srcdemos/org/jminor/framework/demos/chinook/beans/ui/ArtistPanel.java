@@ -24,7 +24,7 @@ import java.util.List;
 public class ArtistPanel extends EntityPanel {
 
   public ArtistPanel(final EntityModel model) {
-    super(model, "Artists");
+    super(model);
   }
 
   @Override

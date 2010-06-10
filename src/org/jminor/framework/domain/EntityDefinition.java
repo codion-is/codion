@@ -4,6 +4,7 @@
 package org.jminor.framework.domain;
 
 import org.jminor.common.model.IdSource;
+import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.ValueMap;
 
 import java.io.Serializable;
@@ -27,6 +28,10 @@ public class EntityDefinition implements Serializable {
    * The name of the underlying table
    */
   private final String tableName;
+  /**
+   * The caption to use for the entity type
+   */
+  private String caption;
   /**
    * The table (view, query) from which to select the entity
    * Used if it differs from the one used for inserts/updates
@@ -99,6 +104,9 @@ public class EntityDefinition implements Serializable {
    * @param propertyDefinitions the Property objects this entity should encompass
    */
   public EntityDefinition(final String entityID, final String tableName, final Property... propertyDefinitions) {
+    Util.rejectNullValue(entityID);
+    Util.rejectNullValue(tableName);
+    Util.rejectNullValue(propertyDefinitions);
     this.entityID = entityID;
     this.tableName = tableName;
     this.selectTableName = tableName;
@@ -116,6 +124,16 @@ public class EntityDefinition implements Serializable {
 
   public String getTableName() {
     return tableName;
+  }
+
+  public String getCaption() {
+    return caption;
+  }
+
+  public EntityDefinition setCaption(final String caption) {
+    Util.rejectNullValue(caption);
+    this.caption = caption;
+    return this;
   }
 
   public boolean isLargeDataset() {
@@ -141,6 +159,7 @@ public class EntityDefinition implements Serializable {
   }
 
   public EntityDefinition setIdSource(final IdSource idSource) {
+    Util.rejectNullValue(idSource);
     this.idSource = idSource;
     if ((idSource == IdSource.SEQUENCE || idSource == IdSource.AUTO_INCREMENT) && getIdValueSource() == null) {
       setIdValueSource(getTableName() + "_seq");
@@ -154,6 +173,7 @@ public class EntityDefinition implements Serializable {
   }
 
   public EntityDefinition setIdValueSource(final String idValueSource) {
+    Util.rejectNullValue(idValueSource);
     this.idValueSource = idValueSource;
     return this;
   }
@@ -163,6 +183,7 @@ public class EntityDefinition implements Serializable {
   }
 
   public EntityDefinition setOrderByClause(final String orderByClause) {
+    Util.rejectNullValue(orderByClause);
     this.orderByClause = orderByClause;
     return this;
   }
@@ -172,6 +193,7 @@ public class EntityDefinition implements Serializable {
   }
 
   public EntityDefinition setSelectTableName(final String selectTableName) {
+    Util.rejectNullValue(selectTableName);
     this.selectTableName = selectTableName;
     return this;
   }
@@ -181,6 +203,7 @@ public class EntityDefinition implements Serializable {
   }
 
   public EntityDefinition setSelectQuery(final String selectQuery) {
+    Util.rejectNullValue(selectQuery);
     this.selectQuery = selectQuery;
     return this;
   }
@@ -190,6 +213,7 @@ public class EntityDefinition implements Serializable {
   }
 
   public EntityDefinition setStringProvider(final ValueMap.ToString<String> stringProvider) {
+    Util.rejectNullValue(stringProvider);
     this.stringProvider = stringProvider;
     return this;
   }
@@ -208,6 +232,7 @@ public class EntityDefinition implements Serializable {
   }
 
   public EntityDefinition setSearchPropertyIDs(final String... searchPropertyIDs) {
+    Util.rejectNullValue(searchPropertyIDs);
     for (final String propertyID : searchPropertyIDs) {
       if (!properties.get(propertyID).isString()) {
         throw new RuntimeException("Entity search property must be of type String: " + properties.get(propertyID));

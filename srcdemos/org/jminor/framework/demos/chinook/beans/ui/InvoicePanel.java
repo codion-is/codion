@@ -25,7 +25,7 @@ import java.util.List;
 public class InvoicePanel extends EntityPanel {
 
   public InvoicePanel(final EntityModel model) {
-    super(model, "Invoices");
+    super(model);
   }
 
   @Override

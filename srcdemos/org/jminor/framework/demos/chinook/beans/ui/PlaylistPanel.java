@@ -24,7 +24,7 @@ import java.util.List;
 public class PlaylistPanel extends EntityPanel {
 
   public PlaylistPanel(final EntityModel model) {
-    super(model, "Playlists");
+    super(model);
   }
 
   @Override

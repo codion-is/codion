@@ -939,7 +939,7 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
     stringBuilder.append(event.getValueOwnerTypeID()).append(" : ").append(property).append(
             property.hasParentProperty() ? " [fk]" : "").append("; ");
     if (!event.isInitialization()) {
-      if (event.isOldValueNull()) {
+      if (!event.isOldValueNull()) {
         stringBuilder.append(event.getOldValue().getClass().getSimpleName()).append(" ");
       }
       stringBuilder.append(getValueString(event.getOldValue()));
@@ -947,7 +947,7 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
     if (!event.isInitialization()) {
       stringBuilder.append(" -> ");
     }
-    if (event.isNewValueNull()) {
+    if (!event.isNewValueNull()) {
       stringBuilder.append(event.getNewValue().getClass().getSimpleName()).append(" ");
     }
     stringBuilder.append(getValueString(event.getNewValue()));

@@ -26,7 +26,7 @@ import java.util.List;
 public class CustomerPanel extends EntityPanel {
 
   public CustomerPanel(final EntityModel model) {
-    super(model, "Customers");
+    super(model);
   }
 
   @Override

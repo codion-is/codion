@@ -417,38 +417,42 @@ public final class Configuration {
   }
 
   private static void parseSystemSettings() {
-    parseStringSetting(DEFAULT_TIMESTAMP_FORMAT);
-    parseStringSetting(DEFAULT_DATE_FORMAT);
     parseBooleanSetting(ALL_PANELS_ACTIVE);
-    parseBooleanSetting(COMPACT_ENTITY_PANEL_LAYOUT);
-    parseBooleanSetting(USE_KEYBOARD_NAVIGATION);
-    parseIntegerSetting(TABLE_AUTO_RESIZE_MODE);
-    parseBooleanSetting(CONFIRM_EXIT);
-    parseBooleanSetting(PROPERTY_DEBUG_OUTPUT);
-    parseIntegerSetting(TAB_PLACEMENT);
-    parseBooleanSetting(TOOLBAR_BUTTONS);
-    parseBooleanSetting(PERSIST_FOREIGN_KEY_VALUES);
-    parseStringSetting(USERNAME_PREFIX);
-    parseBooleanSetting(AUTHENTICATION_REQUIRED);
-    parseBooleanSetting(TRANSFER_FOCUS_ON_ENTER);
-    parseBooleanSetting(USE_OPTIMISTIC_LOCKING);
-    parseIntegerSetting(TOOLTIP_DELAY);
-    parseBooleanSetting(PERSIST_ENTITY_PANELS);
-    parseBooleanSetting(DEFAULT_SEARCH_PANEL_STATE);
-    parseStringSetting(SERVER_NAME_PREFIX);
-    parseStringSetting(WILDCARD_CHARACTER);
-    parseBooleanSetting(USE_NUMBER_FORMAT_GROUPING);
-    parseStringSetting(REMOTE_CONNECTION_PROVIDER);
-    parseStringSetting(LOCAL_CONNECTION_PROVIDER);
-    parseStringSetting(DEFAULT_COMBO_BOX_NULL_VALUE_ITEM);
-    parseBooleanSetting(PERFORM_NULL_VALIDATION);
-    parseIntegerSetting(DEFAULT_LABEL_TEXT_ALIGNMENT);
     parseBooleanSetting(ALLOW_COLUMN_REORDERING);
-    parseStringSetting(SERVER_DOMAIN_MODEL_JARS);
-    parseStringSetting(SERVER_DOMAIN_MODEL_CLASSES);
+    parseBooleanSetting(AUTHENTICATION_REQUIRED);
+    parseBooleanSetting(COMPACT_ENTITY_PANEL_LAYOUT);
+    parseBooleanSetting(CONFIRM_EXIT);
+    parseStringSetting(DEFAULT_COMBO_BOX_NULL_VALUE_ITEM);
+    parseStringSetting(DEFAULT_DATE_FORMAT);
     parseIntegerSetting(DEFAULT_FOREIGN_KEY_FETCH_DEPTH);
+    parseIntegerSetting(DEFAULT_LABEL_TEXT_ALIGNMENT);
+    parseBooleanSetting(DEFAULT_SEARCH_PANEL_STATE);
+    parseStringSetting(DEFAULT_USERNAME);
+    parseStringSetting(DEFAULT_TIMESTAMP_FORMAT);
     parseBooleanSetting(LIMIT_FOREIGN_KEY_FETCH_DEPTH);
+    parseStringSetting(LOCAL_CONNECTION_PROVIDER);
+    parseBooleanSetting(PERFORM_NULL_VALIDATION);
+    parseBooleanSetting(PERSIST_ENTITY_PANELS);
+    parseBooleanSetting(PERSIST_FOREIGN_KEY_VALUES);
+    parseBooleanSetting(PROPERTY_DEBUG_OUTPUT);
+    parseStringSetting(REMOTE_CONNECTION_PROVIDER);
     parseStringSetting(REPORT_PATH);
+    parseBooleanSetting(SERVER_CLIENT_LOGGING_ENABLED);
+    parseIntegerSetting(SERVER_CONNECTION_LOG_SIZE);
+    parseStringSetting(SERVER_DOMAIN_MODEL_CLASSES);
+    parseStringSetting(SERVER_DOMAIN_MODEL_JARS);
+    parseStringSetting(SERVER_NAME_PREFIX);
+    parseIntegerSetting(TAB_PLACEMENT);
+    parseIntegerSetting(TABLE_AUTO_RESIZE_MODE);
+    parseBooleanSetting(TOOLBAR_BUTTONS);
+    parseIntegerSetting(TOOLTIP_DELAY);
+    parseBooleanSetting(TRANSFER_FOCUS_ON_ENTER);
+    parseBooleanSetting(USE_FOCUS_ACTIVATION);
+    parseBooleanSetting(USE_KEYBOARD_NAVIGATION);
+    parseBooleanSetting(USE_NUMBER_FORMAT_GROUPING);
+    parseBooleanSetting(USE_OPTIMISTIC_LOCKING);
+    parseStringSetting(USERNAME_PREFIX);
+    parseStringSetting(WILDCARD_CHARACTER);
   }
 
   private static void parseIntegerSetting(final String setting) {

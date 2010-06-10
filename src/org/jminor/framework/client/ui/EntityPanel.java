@@ -5,6 +5,7 @@ package org.jminor.framework.client.ui;
 
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.AbstractFilteredTableModel;
+import org.jminor.common.model.Util;
 import org.jminor.common.model.WeakPropertyChangeListener;
 import org.jminor.common.model.reports.ReportDataWrapper;
 import org.jminor.common.model.reports.ReportException;
@@ -26,6 +27,7 @@ import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.ui.reporting.EntityReportUiUtil;
 import org.jminor.framework.db.provider.EntityDbProvider;
+import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
@@ -169,6 +171,15 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
 
   /**
    * Initializes a new EntityPanel instance. The Panel is not laid out and initialized until initialize() is called.
+   * The default caption of the underlying entity is used.
+   * @param model the EntityModel
+   */
+  public EntityPanel(final EntityModel model) {
+    this(model, EntityRepository.getEntityDefinition(model.getEntityID()).getCaption(), true);
+  }
+
+  /**
+   * Initializes a new EntityPanel instance. The Panel is not laid out and initialized until initialize() is called.
    * @param model the EntityModel
    * @param caption the caption to use when presenting this entity panel
    */
@@ -228,6 +239,7 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
                      final boolean horizontalButtons, final int detailPanelState,
                      final boolean compactDetailLayout) {
     super(model);
+    Util.rejectNullValue(caption);
     this.caption = caption;
     this.refreshOnInit = refreshOnInit;
     this.buttonPlacement = horizontalButtons ? BorderLayout.SOUTH : BorderLayout.EAST;

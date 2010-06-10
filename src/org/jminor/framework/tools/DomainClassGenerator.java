@@ -12,7 +12,9 @@ import org.jminor.common.model.Util;
 import org.jminor.common.ui.LoginPanel;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
+import org.jminor.framework.Configuration;
 
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -42,23 +44,31 @@ public final class DomainClassGenerator {
     UiUtil.makeLowerCase(txtPackageName);
     final JTextArea txtTablesToInclude = new JTextArea(3,10);
     UiUtil.makeUpperCase(txtTablesToInclude);
-    final JPanel panel = new JPanel(new FlexibleGridLayout(6,1,5,5,false,true));
+    final JCheckBox chkClipboard = new JCheckBox("To clipboard", true);
+    final JPanel panel = new JPanel(new FlexibleGridLayout(7,1,5,5,false,true));
     panel.add(new JLabel("Schema name"));
     panel.add(txtSchemaName);
     panel.add(new JLabel("Package name"));
     panel.add(txtPackageName);
     panel.add(new JLabel("Tables to include (comma separated)"));
     panel.add(txtTablesToInclude);
+    panel.add(chkClipboard);
 
     final int option = JOptionPane.showConfirmDialog(null, panel, "Settings", JOptionPane.OK_CANCEL_OPTION);
     if (option == JOptionPane.OK_OPTION) {
       try {
-        final User user = LoginPanel.getUser(null, null);
+        final String username = Configuration.getDefaultUsername("DomainClassGenerator");
+        final User user = LoginPanel.getUser(null, username != null ? new User(username, null) : null);
         final String schemaName = txtSchemaName.getText();
         final String domainClassName = getDomainClassName(schemaName);
-        Util.writeFile(getDomainClass(domainClassName, schemaName, txtPackageName.getText(),
-                user.getUsername(), user.getPassword(), txtTablesToInclude.getText()),
-                UiUtil.chooseFileToSave(null, null, domainClassName + ".java"));
+        final String domainClass = getDomainClass(domainClassName, schemaName, txtPackageName.getText(),
+                user.getUsername(), user.getPassword(), txtTablesToInclude.getText());
+        if (!chkClipboard.isSelected())
+          Util.writeFile(domainClass, UiUtil.chooseFileToSave(null, null, domainClassName + ".java"));
+        else
+          Util.setClipboard(domainClass);
+
+        JOptionPane.showMessageDialog(null, "Domain class has been exported", "Done", JOptionPane.INFORMATION_MESSAGE);
       }
       catch (CancelException uce) {/**/}
       catch (Exception e) {
@@ -77,49 +87,33 @@ public final class DomainClassGenerator {
     Util.rejectNullValue(schema);
     final DbConnection dbConnection = new DbConnection(DatabaseProvider.createInstance(), new User(username, password));
     try {
-      final DatabaseMetaData metaData = dbConnection.getConnection().getMetaData();
-      final List<ForeignKey> foreignKeys = new ArrayList<ForeignKey>();
-      final List<Table> allSchemaTables = new TablePacker(null).pack(metaData.getTables(null, schema, null, null), -1);
-      for (final Table table : allSchemaTables) {
-        foreignKeys.addAll(new ForeignKeyPacker().pack(metaData.getExportedKeys(null, table.schemaName, table.tableName), -1));
-      }
 
       final StringBuilder builder = new StringBuilder("package ").append(packageName).append(";\n\n");
 
       builder.append("import org.jminor.framework.domain.EntityDefinition;\n");
       builder.append("import org.jminor.framework.domain.EntityRepository;\n");
       builder.append("import org.jminor.framework.domain.Property;\n\n");
-      builder.append("import java.sql.Types;");
+      builder.append("import java.sql.Types;\n\n");
 
       builder.append("public class ").append(domainClassName).append(" {\n\n");
 
+      final DatabaseMetaData metaData = dbConnection.getConnection().getMetaData();
+
       final List<Table> tablesToProcess = new TablePacker(tableList).pack(metaData.getTables(null, schema, null, null), -1);
-      final List<PrimaryKey> primaryKeys = new ArrayList<PrimaryKey>();
-      for (final Table table : tablesToProcess) {
-        primaryKeys.addAll(new PrimaryKeyPacker().pack(metaData.getPrimaryKeys(null, table.schemaName, table.tableName), -1));
-      }
+
+      if (tablesToProcess.size() == 0)
+        throw new IllegalArgumentException("No tables to process");
 
       for (final Table table : tablesToProcess) {
-        System.out.println("Processing table: " + table);
-        final List<Column> columns = new ColumnPacker().pack(metaData.getColumns(null, table.schemaName, table.tableName, null), -1);
-        for (final Column column : columns) {
-          column.setForeignKey(getForeignKey(column, foreignKeys));
-          column.setPrimaryKey(getPrimaryKey(column, primaryKeys));
-        }
-        table.setColumns(columns);
-        builder.append(getConstants(table));
-        builder.append("\n");
-        System.out.println("Done processing table: " + table);
+        appendPropertyConstants(builder, table, metaData);
       }
+
       builder.append("  static {\n");
+
       for (final Table table : tablesToProcess) {
-        builder.append("    EntityRepository.add(new EntityDefinition(").append(getEntityID(table)).append(",\n");
-        for (final Column column : table.getColumns()) {
-          builder.append(getPropertyDefinition(table, column))
-                  .append(table.getColumns().indexOf(column) < table.getColumns().size() - 1 ? ", " : "").append("\n");
-        }
-        builder.append("    ));\n\n");
+        appendEntityDefinition(builder, table);
       }
+
       builder.append("  }\n");
 
       builder.append("}");
@@ -129,6 +123,31 @@ public final class DomainClassGenerator {
     finally {
       dbConnection.disconnect();
     }
+  }
+
+  public static void appendEntityDefinition(final StringBuilder builder, final Table table) {
+    builder.append("    EntityRepository.add(new EntityDefinition(").append(getEntityID(table)).append(",\n");
+    for (final Column column : table.getColumns()) {
+      builder.append(getPropertyDefinition(table, column))
+              .append(table.getColumns().indexOf(column) < table.getColumns().size() - 1 ? ", " : "").append("\n");
+    }
+    builder.append("    ));\n\n");
+  }
+
+  public static void appendPropertyConstants(final StringBuilder builder, final Table table,
+                                             final DatabaseMetaData metaData) throws SQLException {
+      System.out.println("Processing table: " + table);
+      final List<ForeignKey> foreignKeys = getForeignKeys(metaData, table.schemaName);
+      final List<PrimaryKey> primaryKeys = getPrimaryKeys(metaData, table.schemaName);
+      final List<Column> columns = new ColumnPacker().pack(metaData.getColumns(null, table.schemaName, table.tableName, null), -1);
+      for (final Column column : columns) {
+        column.setForeignKey(getForeignKey(column, foreignKeys));
+        column.setPrimaryKey(getPrimaryKey(column, primaryKeys));
+      }
+      table.setColumns(columns);
+      builder.append(getConstants(table));
+      builder.append("\n");
+      System.out.println("Done processing table: " + table);
   }
 
   public static String getConstants(final Table table) {
@@ -163,10 +182,16 @@ public final class DomainClassGenerator {
       ret += "\n                .setNullable(false)";
     }
     if (column.hasDefaultValue) {
-      ret += "\n                .setColumnHasDefaultValue(false)";
+      ret += "\n                .setColumnHasDefaultValue(true)";
     }
     if (column.columnType.equals("Types.VARCHAR")) {
       ret += "\n                .setMaxLength(" + column.columnSize + ")";
+    }
+    if (column.decimalDigits >= 1) {
+      ret += "\n                .setMaximumFractionDigits(" + column.decimalDigits + ")";
+    }
+    if (column.comment != null && column.comment.length() > 0) {
+      ret += "\n                .setDescription(" + column.comment + ")";
     }
 
     return ret;
@@ -201,6 +226,24 @@ public final class DomainClassGenerator {
     }
 
     return null;
+  }
+
+  private static List<PrimaryKey> getPrimaryKeys(final DatabaseMetaData metaData, final String schema) throws SQLException {
+    final List<PrimaryKey> primaryKeys = new ArrayList<PrimaryKey>();
+    final List<Table> allSchemaTables = new TablePacker(null).pack(metaData.getTables(null, schema, null, null), -1);
+    for (final Table table : allSchemaTables) {
+      primaryKeys.addAll(new PrimaryKeyPacker().pack(metaData.getPrimaryKeys(null, table.schemaName, table.tableName), -1));
+    }
+    return primaryKeys;
+  }
+
+  private static List<ForeignKey> getForeignKeys(final DatabaseMetaData metaData, final String schema) throws SQLException {
+    final List<ForeignKey> foreignKeys = new ArrayList<ForeignKey>();
+    final List<Table> allSchemaTables = new TablePacker(null).pack(metaData.getTables(null, schema, null, null), -1);
+    for (final Table table : allSchemaTables) {
+      foreignKeys.addAll(new ForeignKeyPacker().pack(metaData.getExportedKeys(null, table.schemaName, table.tableName), -1));
+    }
+    return foreignKeys;
   }
 
   public static String translateType(final int sqlType) {
@@ -322,20 +365,25 @@ public final class DomainClassGenerator {
     final String columnName;
     final String columnType;
     final int columnSize;
+    final int decimalDigits;
     final int nullable;
     final boolean hasDefaultValue;
+    final String comment;
     ForeignKey foreignKey;
     PrimaryKey primaryKey;
 
     public Column(final String schemaName, final String tableName, final String columnName, final String columnType,
-                  final int columnSize, final int nullable, final boolean hasDefaultValue) {
+                  final int columnSize, final int decimalDigits, final int nullable, final boolean hasDefaultValue,
+                  final String comment) {
       this.schemaName = schemaName;
       this.tableName = tableName;
       this.columnName = columnName;
       this.columnType = columnType;
       this.columnSize = columnSize;
+      this.decimalDigits = decimalDigits;
       this.nullable = nullable;
       this.hasDefaultValue = hasDefaultValue;
+      this.comment = comment;
     }
 
     public void setForeignKey(final ForeignKey foreignKeyColumn) {
@@ -359,9 +407,13 @@ public final class DomainClassGenerator {
       while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
         final String translatedType = translateType(resultSet.getInt("DATA_TYPE"));
         if (translatedType != null) {
+          int decimalDigits = resultSet.getInt("DECIMAL_DIGITS");
+          if (resultSet.wasNull())
+            decimalDigits = -1;
           columns.add(new Column(resultSet.getString("TABLE_SCHEM"), resultSet.getString("TABLE_NAME"),
                   resultSet.getString("COLUMN_NAME"), translatedType,
-                  resultSet.getInt("COLUMN_SIZE"), resultSet.getInt("NULLABLE"), resultSet.getObject("COLUMN_DEF") != null));
+                  resultSet.getInt("COLUMN_SIZE"), decimalDigits, resultSet.getInt("NULLABLE"),
+                  resultSet.getObject("COLUMN_DEF") != null, resultSet.getString("REMARKS")));
         }
       }
 

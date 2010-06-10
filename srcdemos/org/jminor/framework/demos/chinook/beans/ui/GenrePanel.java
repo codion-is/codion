@@ -24,7 +24,12 @@ import java.util.List;
 public class GenrePanel extends EntityPanel {
 
   public GenrePanel(final EntityModel model) {
-    super(model, "Genres", true, false, HIDDEN);
+    super(model);
+  }
+
+  @Override
+  protected void initialize() {
+    setDetailPanelState(HIDDEN);
   }
 
   @Override

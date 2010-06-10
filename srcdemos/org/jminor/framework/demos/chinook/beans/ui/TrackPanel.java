@@ -26,7 +26,7 @@ import java.awt.GridLayout;
 public class TrackPanel extends EntityPanel {
 
   public TrackPanel(final EntityModel model) {
-    super(model, "Tracks");
+    super(model);
   }
 
   @Override

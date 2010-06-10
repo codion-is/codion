@@ -80,7 +80,8 @@ public class EmpDept {
                     .setPreferredColumnWidth(150).setMaxLength(13))
             .setIdSource(IdSource.NONE)
             .setOrderByClause(DEPARTMENT_NAME)
-            .setStringProvider(new StringProvider<String>(DEPARTMENT_NAME)));
+            .setStringProvider(new StringProvider<String>(DEPARTMENT_NAME))
+            .setCaption(getString(EMPLOYEE)));
 
     /*Defining the entity type T_EMPLOYEE*/
     EntityRepository.add(new EntityDefinition(T_EMPLOYEE, "scott.emp",
@@ -106,7 +107,8 @@ public class EmpDept {
             .setIdSource(IdSource.MAX_PLUS_ONE)
             .setOrderByClause(EMPLOYEE_DEPARTMENT + ", " + EMPLOYEE_NAME)
             .setStringProvider(new StringProvider<String>(EMPLOYEE_NAME))
-            .setRowColoring(true));
+            .setRowColoring(true)
+            .setCaption(getString(DEPARTMENT)));
 
     /*Set a Proxy implementation to provide a custom background color for managers*/
     Entity.setProxy(T_EMPLOYEE, new Entity.Proxy() {

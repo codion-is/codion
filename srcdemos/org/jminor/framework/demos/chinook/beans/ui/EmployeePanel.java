@@ -27,7 +27,12 @@ import java.util.List;
 public class EmployeePanel extends EntityPanel {
 
   public EmployeePanel(final EntityModel model) {
-    super(model, "Employees", true, false, HIDDEN);
+    super(model);
+  }
+
+  @Override
+  protected void initialize() {    
+    setDetailPanelState(HIDDEN);
   }
 
   @Override
