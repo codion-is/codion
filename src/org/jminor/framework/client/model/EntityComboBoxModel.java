@@ -164,6 +164,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
   /**
    * Clears the contents from this model
    */
+  @Override
   public void clear() {
     super.clear();
     dataInitialized = false;
@@ -275,25 +276,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
     final EntityComboBoxModel foreignKeyModel = new EntityComboBoxModel(foreignKeyProperty.getReferencedEntityID(),
             getDbProvider(), true, "-", true);
     foreignKeyModel.refresh();
-    final Collection<Entity> filterEntities = getForeignKeyFilterEntities(foreignKeyPropertyID);
-    if (filterEntities != null && filterEntities.size() > 0) {
-      foreignKeyModel.setSelectedItem(filterEntities.iterator().next());
-    }
-    foreignKeyModel.eventSelectionChanged().addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent e) {
-        final Entity selectedEntity = foreignKeyModel.getSelectedEntity();
-        setForeignKeyFilterEntities(foreignKeyPropertyID,
-                selectedEntity == null ? new ArrayList<Entity>(0) : Arrays.asList(selectedEntity));
-      }
-    });
-    eventSelectionChanged().addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        final Entity selected = getSelectedEntity();
-        if (selected != null) {
-          foreignKeyModel.setSelectedEntityByPrimaryKey(selected.getReferencedPrimaryKey(foreignKeyProperty));
-        }
-      }
-    });
+    linkForeignKeyComboBoxModel(foreignKeyPropertyID, this, foreignKeyModel);
 
     return foreignKeyModel;
   }
@@ -303,6 +286,34 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
    */
   public Event eventRefreshDone() {
     return evtRefreshDone;
+  }
+
+  public static void linkForeignKeyComboBoxModel(final String foreignKeyPropertyID, final EntityComboBoxModel model, final EntityComboBoxModel foreignKeyModel) {
+    final Collection<Entity> filterEntities = model.getForeignKeyFilterEntities(foreignKeyPropertyID);
+    if (filterEntities != null && filterEntities.size() > 0) {
+      foreignKeyModel.setSelectedItem(filterEntities.iterator().next());
+    }
+    foreignKeyModel.eventSelectionChanged().addListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
+        final Entity selectedEntity = foreignKeyModel.getSelectedEntity();
+        model.setForeignKeyFilterEntities(foreignKeyPropertyID,
+                selectedEntity == null ? new ArrayList<Entity>(0) : Arrays.asList(selectedEntity));
+      }
+    });
+    model.eventSelectionChanged().addListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        final Entity selected = model.getSelectedEntity();
+        if (selected != null) {
+          foreignKeyModel.setSelectedEntityByPrimaryKey(selected.getReferencedPrimaryKey(
+                  EntityRepository.getForeignKeyProperty(model.entityID, foreignKeyPropertyID)));
+        }
+      }
+    });
+    model.eventRefreshDone().addListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
+        foreignKeyModel.forceRefresh();
+      }
+    });
   }
 
   /**

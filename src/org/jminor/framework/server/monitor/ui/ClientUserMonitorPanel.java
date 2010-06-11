@@ -89,6 +89,7 @@ public class ClientUserMonitorPanel extends JPanel {
     setLayout(new BorderLayout());
 
     final JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+    splitPane.setOneTouchExpandable(true);
 
     splitPane.setLeftComponent(clientTypeBase);
 

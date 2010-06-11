@@ -134,12 +134,15 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
   }
 
   /**
+   * Returns true if one or more writable properties have been modified,
+   * read only and non-updatable properties are excluded unless they
+   * are transient.
    * @return true if one or more properties have been modified
    * since the entity was instantiated
    */
   @Override
   public boolean isModified() {
-    return super.isModified() || primaryKey.isModified();
+    return writablePropertiesModified() || primaryKey.isModified();
   }
 
   /**
@@ -872,6 +875,17 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
     }
 
     return primaryKey;
+  }
+
+  private boolean writablePropertiesModified() {
+    for (final String propertyID : getOriginalValueKeys()) {
+      final Property property = getProperty(propertyID);
+      if ((property instanceof Property.TransientProperty) || (!property.isReadOnly() && property.isUpdatable())) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   /**

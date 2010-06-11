@@ -73,6 +73,7 @@ public class ClientMonitorPanel extends JPanel {
     clientInstanceBase.add(ControlProvider.createButton(ControlFactory.methodControl(this, "refresh", "Refresh")), BorderLayout.SOUTH);
 
     final JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+    splitPane.setOneTouchExpandable(true);
     splitPane.setLeftComponent(clientInstanceBase);
     splitPane.setRightComponent(clientInstancePanel);
 

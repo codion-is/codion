@@ -1722,3 +1722,5 @@
   EntityDbConnection.delete() now uses a single statement per entityID
   EntityDbRemoteProvider.setTruststore() added
   Util.closeSilently() added
+  EntityComboBoxModel, createForeignKeyFilterComboBoxModel() now links the model to the refresh event
+  Entity.isModified() changed, writablePropertiesModified() added
