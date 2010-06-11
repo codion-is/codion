@@ -425,6 +425,7 @@ public final class EntityRepository {
    * @return true if any one of the entities in the group have already initialized, hmm?
    */
   public static boolean contains(final Map<String, EntityDefinition> entityGroup) {
+    Util.rejectNullValue(entityGroup);
     return entityGroup.size() == 0 || entityDefinitions.containsKey(entityGroup.keySet().iterator().next());
   }
 
@@ -433,6 +434,7 @@ public final class EntityRepository {
    * @param entityDefinition the EntityDefinition to add
    */
   public static void add(EntityDefinition entityDefinition) {
+    Util.rejectNullValue(entityDefinition);
     if (entityDefinitions.containsKey(entityDefinition.getEntityID())) {
       throw new RuntimeException("Entity already added: " + entityDefinition.getEntityID());
     }
@@ -447,8 +449,11 @@ public final class EntityRepository {
    * @throws IllegalArgumentException in case the entity has not been defined
    */
   public static EntityDefinition getEntityDefinition(final String entityID) {
+    Util.rejectNullValue(entityID);
     final EntityDefinition definition = entityDefinitions.get(entityID);
-    Util.rejectNullValue(definition);
+    if (definition == null) {
+      throw new RuntimeException("Undefined entity: " + entityID);
+    }
 
     return definition;
   }

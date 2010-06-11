@@ -1717,3 +1717,5 @@
   EntityDefinition.caption field added
   EntityPanel(model) constructor added, uses the above
   EmpDept demo uses the above
+  Item is now serializable
+  EntityDbRemoteAdapter now handles db logging correctly when pool is disabled

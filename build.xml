@@ -5,11 +5,56 @@
 
   <property file="build.properties"/>
 
-  <path id="libraries">
+  <path id="lib.build">
     <fileset dir="${lib}">
       <include name="**/*.jar"/>
     </fileset>
   </path>
+
+  <path id="lib.client.remote">
+    <pathelement location="${lib.jasperreports.logging}"/>
+    <pathelement location="${lib.jasperreports.collections}"/>
+    <pathelement location="${lib.jasperreports.base}"/>
+    <pathelement location="${lib.jcalendar}"/>
+    <pathelement location="${lib.json}"/>
+    <pathelement location="${lib.log4j}"/>
+  </path>
+
+  <path id="lib.client.local">
+    <path refid="lib.client.remote"/>
+    <pathelement location="${lib.derby}"/>
+    <pathelement location="${lib.h2}"/>
+  </path>
+
+  <path id="lib.server">
+    <pathelement location="${lib.derby}"/>
+    <pathelement location="${lib.h2}"/>
+    <pathelement location="${lib.json}"/>
+    <pathelement location="${lib.log4j}"/>
+    <pathelement location="${lib.jasperreports.base}"/>
+    <pathelement location="${lib.jasperreports.logging}"/>
+    <pathelement location="${lib.jasperreports.collections}"/>
+  </path>
+
+  <path id="lib.server.monitor">
+        <pathelement location="${lib.derby}"/>
+        <pathelement location="${lib.log4j}"/>
+        <pathelement location="${lib.jcalendar}"/>
+        <pathelement location="${lib.jfreechart.base}"/>
+        <pathelement location="${lib.jfreechart.common}"/>
+  </path>
+
+  <path id="classes.base">
+    <pathelement path="${build.base}"/>
+    <pathelement path="${build.plugins}"/>
+    <pathelement path="${build.demos}"/>
+  </path>
+
+  <path id="classes.test">
+    <pathelement path="${build.test}"/>
+  </path>
+
+  <taskdef resource="emma_ant.properties" classpathref="lib.build" />
 
   <fileset id="common_resources" dir="${src}" includes=
           "org/jminor/common/**/*.gif, org/jminor/common/**/*.png, org/jminor/common/**/*.properties, org/jminor/common/**/*.txt, log4j.properties"/>
@@ -43,13 +88,13 @@
 
     <javac destdir="${build.base}" debug="${build.debuginfo}">
       <src path="${src}"/>
-      <classpath refid="libraries"/>
+      <classpath refid="lib.build"/>
     </javac>
 
     <rmic base="${build.base}" includes="org/jminor/common/server/AbstractRemoteServer.class,
                                          org/jminor/framework/server/EntityDbRemoteAdapter.class,
                                          org/jminor/framework/server/EntityDbRemoteServerAdmin.class">
-      <classpath refid="libraries"/>
+      <classpath refid="lib.build"/>
     </rmic>
 
     <copy todir="${build.base}">
@@ -60,7 +105,7 @@
     <javac destdir="${build.plugins}" debug="{build.debug}">
       <src path="${srcplugins}"/>
       <classpath>
-        <path refid="libraries"/>
+        <path refid="lib.build"/>
         <path location="${build.base}"/>
       </classpath>
     </javac>
@@ -72,7 +117,7 @@
     <javac destdir="${build.demos}" debug="{build.debug}">
       <src path="${srcdemos}"/>
       <classpath>
-        <path refid="libraries"/>
+        <path refid="lib.build"/>
         <path location="${build.base}"/>
         <path location="${build.plugins}"/>
       </classpath>
@@ -85,7 +130,7 @@
     <javac destdir="${build.test}" debug="{build.debug}">
       <src path="${srctest}"/>
       <classpath>
-        <path refid="libraries"/>
+        <path refid="lib.build"/>
         <path location="${build.base}"/>
         <path location="${build.plugins}"/>
         <path location="${build.demos}"/>
@@ -104,9 +149,7 @@
 
   <target name="compile_demo_reports" description="Compile the demo jasper reports">
     <taskdef name="jrc" classname="net.sf.jasperreports.ant.JRAntCompileTask">
-      <classpath>
-        <fileset dir="${lib}" includes="**/*.jar"/>
-      </classpath>
+      <classpath refid="lib.build"/>
     </taskdef>
     <jrc srcdir="${resources.demos}" includes="**/*.jrxml"/>
   </target>
@@ -209,7 +252,7 @@
                     Db org.jminor.framework.db*,
                     Domain org.jminor.framework.domain*,
                     Server org.jminor.framework.server*">
-      <classpath refid="libraries"/>
+      <classpath refid="lib.build"/>
       <link href="http://java.sun.com/javase/6/docs/api/"/>
     </javadoc>
     <javadoc destdir="${pluginsapi}" sourcepath="${srcplugins}" packagenames="org.jminor.*" Encoding="UTF-8"
@@ -218,7 +261,7 @@
              group="JasperReports model org.jminor.framework.plugins.jasperreports.model,
                     JasperReports UI org.jminor.framework.plugins.jasperreports.ui">
       <classpath>
-        <path refid="libraries"/>
+        <path refid="lib.build"/>
         <path location="${build.base}"/>
       </classpath>
       <link href="http://java.sun.com/javase/6/docs/api/"/>
@@ -228,7 +271,6 @@
 
   <target name="deploy_server" depends="recreate_h2_db"
           description="Deploys the rmi server to the path defined by the 'deploy.server.path' property">
-    <mkdir dir="${deploy.server.path}"/>
     <copy file="${dist}/${ant.project.name}-server.jar" todir="${deploy.server.path}/lib"/>
     <copy file="${dist}/${ant.project.name}-common.jar" todir="${deploy.server.path}/lib"/>
     <copy file="${dist}/${ant.project.name}-plugins.jar" todir="${deploy.server.path}/lib"/>
@@ -381,11 +423,9 @@
     <junit printsummary="yes" haltonfailure="true" haltonerror="true" fork="yes">
       <formatter type="xml" usefile="true"/>
       <classpath>
-        <pathelement path="${build.base}"/>
-        <pathelement path="${build.plugins}"/>
-        <pathelement path="${build.demos}"/>
-        <pathelement path="${build.test}"/>
-        <path refid="libraries"/>
+        <path refid="classes.base"/>
+        <path refid="classes.test"/>
+        <path refid="lib.build"/>
       </classpath>
       <jvmarg value="-Djminor.db.type=${junit.db.type}"/>
       <jvmarg value="-Djminor.db.host=${junit.db.host}"/>
@@ -403,17 +443,8 @@
           description="Runs the EmpDept demo application with a local db connection">
     <java classname="org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel" fork="yes">
       <classpath>
-        <pathelement path="${build.base}"/>
-        <pathelement path="${build.plugins}"/>
-        <pathelement path="${build.demos}"/>
-        <pathelement location="${lib.jasperreports.base}"/>
-        <pathelement location="${lib.jasperreports.logging}"/>
-        <pathelement location="${lib.jasperreports.collections}"/>
-        <pathelement location="${lib.jcalendar}"/>
-        <pathelement location="${lib.derby}"/>
-        <pathelement location="${lib.h2}"/>
-        <pathelement location="${lib.json}"/>
-        <pathelement location="${lib.log4j}"/>
+        <path refid="classes.base"/>
+        <path refid="lib.client.local"/>
       </classpath>
       <jvmarg value="-Djminor.db.type=${demo.db.type}"/>
       <jvmarg value="-Djminor.db.host=${demo.db.host}"/>
@@ -428,13 +459,8 @@
           description="Runs the EmpDept demo application with a remote db connection">
     <java classname="org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel" fork="yes">
       <classpath>
-        <pathelement path="${build.base}"/>
-        <pathelement path="${build.plugins}"/>
-        <pathelement path="${build.demos}"/>
-        <pathelement location="${lib.jasperreports.base}"/>
-        <pathelement location="${lib.jcalendar}"/>
-        <pathelement location="${lib.json}"/>
-        <pathelement location="${lib.log4j}"/>
+        <path refid="classes.base"/>
+        <path refid="lib.client.remote"/>
       </classpath>
       <jvmarg value="-Djminor.client.connectionType=remote"/>
       <jvmarg value="-Djminor.server.hostname=localhost"/>
@@ -448,13 +474,8 @@
           description="Runs the EmpDept load testing application with a remote db connection">
     <java classname="org.jminor.framework.demos.empdept.testing.EmpDeptLoadTest" fork="yes">
       <classpath>
-        <pathelement path="${build.base}"/>
-        <pathelement path="${build.plugins}"/>
-        <pathelement path="${build.demos}"/>
-        <pathelement location="${lib.jasperreports.base}"/>
-        <pathelement location="${lib.jcalendar}"/>
-        <pathelement location="${lib.json}"/>
-        <pathelement location="${lib.log4j}"/>
+        <path refid="classes.base"/>
+        <path refid="lib.client.remote"/>
         <pathelement location="${lib.jfreechart.base}"/>
         <pathelement location="${lib.jfreechart.common}"/>
       </classpath>
@@ -470,14 +491,8 @@
           description="Runs the Petstore demo application with a local db connection">
     <java classname="org.jminor.framework.demos.petstore.client.ui.PetstoreAppPanel" fork="yes">
       <classpath>
-        <pathelement path="${build.base}"/>
-        <pathelement path="${build.demos}"/>
-        <pathelement location="${lib.jasperreports.base}"/>
-        <pathelement location="${lib.jcalendar}"/>
-        <pathelement location="${lib.derby}"/>
-        <pathelement location="${lib.h2}"/>
-        <pathelement location="${lib.json}"/>
-        <pathelement location="${lib.log4j}"/>
+        <path refid="classes.base"/>
+        <path refid="lib.client.local"/>
       </classpath>
       <jvmarg value="-Djminor.db.type=${demo.db.type}"/>
       <jvmarg value="-Djminor.db.host=${demo.db.host}"/>
@@ -491,12 +506,8 @@
           description="Runs the Petstore demo application with a remote db connection">
     <java classname="org.jminor.framework.demos.petstore.client.ui.PetstoreAppPanel" fork="yes">
       <classpath>
-        <pathelement path="${build.base}"/>
-        <pathelement path="${build.demos}"/>
-        <pathelement location="${lib.jasperreports.base}"/>
-        <pathelement location="${lib.jcalendar}"/>
-        <pathelement location="${lib.log4j}"/>
-        <pathelement location="${lib.json}"/>
+        <path refid="classes.base"/>
+        <path refid="lib.client.remote"/>
       </classpath>
       <jvmarg value="-Djminor.client.connectionType=remote"/>
       <jvmarg value="-Djminor.server.hostname=localhost"/>
@@ -509,16 +520,8 @@
           description="Runs the RMI server">
     <java classname="org.jminor.framework.server.EntityDbRemoteServerAdmin" fork="yes">
       <classpath>
-        <pathelement path="${build.base}"/>
-        <pathelement path="${build.plugins}"/>
-        <pathelement path="${build.demos}"/>
-        <pathelement location="${lib.derby}"/>
-        <pathelement location="${lib.h2}"/>
-        <pathelement location="${lib.json}"/>
-        <pathelement location="${lib.log4j}"/>
-        <pathelement location="${lib.jasperreports.base}"/>
-        <pathelement location="${lib.jasperreports.logging}"/>
-        <pathelement location="${lib.jasperreports.collections}"/>
+        <path refid="classes.base"/>
+        <path refid="lib.server"/>
       </classpath>
       <jvmarg value="-Djminor.db.type=${demo.db.type}"/>
       <jvmarg value="-Djminor.db.host=${demo.db.host}"/>
@@ -530,7 +533,7 @@
       <jvmarg value="-Djminor.server.port=2222"/>
       <jvmarg value="-Djminor.server.admin.port=4444"/>
       <jvmarg value="-Djminor.server.db.port=3333"/>
-      <jvmarg value="-Djminor.server.domain.classes=org.jminor.framework.demos.empdept.domain.EmpDept,org.jminor.framework.demos.petstore.domain.Petstore, org.jminor.framework.demos.chinook.domain.Chinook, org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser"/>
+      <jvmarg value="-Djminor.server.domain.classes=org.jminor.framework.demos.empdept.domain.EmpDept, org.jminor.framework.demos.petstore.domain.Petstore, org.jminor.framework.demos.chinook.domain.Chinook, org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser"/>
       <jvmarg value="-Djavax.net.ssl.keyStore=${basedir}/resources/security/JMinorServerKeystore"/>
       <jvmarg value="-Djava.security.policy=${basedir}/resources/security/jminor_server.policy"/>
       <jvmarg value="-Djavax.net.ssl.keyStorePassword=jminor"/>
@@ -542,12 +545,8 @@
           description="Runs the RMI server monitor">
     <java classname="org.jminor.framework.server.monitor.ui.MonitorPanel" fork="yes">
       <classpath>
-        <pathelement path="${build.base}"/>
-        <pathelement location="${lib.derby}"/>
-        <pathelement location="${lib.log4j}"/>
-        <pathelement location="${lib.jfreechart.base}"/>
-        <pathelement location="${lib.jfreechart.common}"/>
-        <pathelement location="${lib.jcalendar}"/>
+        <path refid="classes.base"/>
+        <path refid="lib.server.monitor"/>
       </classpath>
       <jvmarg value="-Djminor.server.hostname=localhost"/>
       <jvmarg value="-Djavax.net.ssl.trustStore=${basedir}/resources/security/JMinorServerMonitorTruststore"/>
@@ -559,8 +558,7 @@
           description="Runs the RMI registry with the classpath required for bootstrapping the framework RMI server">
     <java classname="sun.rmi.registry.RegistryImpl" fork="yes">
       <classpath>
-        <pathelement path="${build.base}"/>
-        <pathelement path="${build.plugins}"/>
+        <path refid="classes.base"/>
         <pathelement location="${lib.log4j}"/>
         <pathelement location="${lib.jasperreports.base}"/>
       </classpath>
@@ -569,19 +567,17 @@
   </target>
 
   <target name="recreate_h2_db"
-          description="Recreates the demo h2 database in case it is not already available. The demo database includes
-          the EmpDept schema as well as the Petstore schema, used by unit tests and demo applications">
+          description="Recreates the demo h2 database. The demo database includes the EmpDept, Petstore and Chinook schemas, used by unit tests and demo applications">
     <delete dir="${db.h2.dir}"/>
-    <java fork="true" classname="org.h2.tools.RunScript" classpathref="libraries">
+    <java fork="true" classname="org.h2.tools.RunScript" classpathref="lib.build">
       <arg line="-url jdbc:h2:${db.h2.dir}/${db.h2.name} -showResults -script ${basedir}/resources/db/scripts/create_h2_db.sql"/>
     </java>
   </target>
 
   <target name="recreate_derby_db"
-          description="Recreates the demo derby database in case it is not already available. The demo database includes
-          the EmpDept schema as well as the Petstore schema, used by unit tests and demo applications">
+          description="Recreates the demo derby database. The demo database includes the EmpDept, Petstore and Chinook schemas, used by unit tests and demo applications">
     <delete dir="${db.derby.dir}"/>
-    <java fork="true" classname="org.apache.derby.tools.ij" classpathref="libraries">
+    <java fork="true" classname="org.apache.derby.tools.ij" classpathref="lib.build">
       <sysproperty key="ij.connection.demo" value="jdbc:derby:${db.derby.dir}/${db.derby.name};create=true"/>
       <arg value="${db.sql.dir}/create_derby_db.sql"/>
     </java>

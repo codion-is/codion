@@ -3,13 +3,14 @@
  */
 package org.jminor.common.model;
 
+import java.io.Serializable;
 import java.text.Collator;
 
 /**
  * A class encapsulating an item and caption.
  * @param <T> the type of the actual item
  */
-public class Item<T> implements Comparable<Item<T>>{
+public class Item<T> implements Comparable<Item<T>>, Serializable {
 
   private static final ThreadLocal<Collator> collator = Util.getThreadLocalCollator();
 

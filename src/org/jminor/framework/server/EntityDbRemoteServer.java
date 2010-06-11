@@ -278,11 +278,13 @@ public class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
               locationsURL[i++] = uri.toURL();
             }
             Class.forName(domainClassName.trim(), true, new URLClassLoader(locationsURL, ClassLoader.getSystemClassLoader()));
+            System.out.println("Domain class loaded: " + domainClassName);
           }
 
           return null;
         }
         catch (Exception e) {
+          e.printStackTrace();
           throw new RuntimeException(e);
         }
       }
