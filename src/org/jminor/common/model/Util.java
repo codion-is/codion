@@ -8,15 +8,7 @@ import org.apache.log4j.Logger;
 
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -340,12 +332,7 @@ public final class Util {
       }
     }
     finally {
-      try {
-        if (input!= null) {
-          input.close();
-        }
-      }
-      catch (IOException ex) {/**/}
+      closeSilently(input);
     }
 
     return contents.toString();
@@ -427,12 +414,7 @@ public final class Util {
       throw new RuntimeException(e);
     }
     finally {
-      try {
-        if (writer != null) {
-          writer.close();
-        }
-      }
-      catch (IOException e) {/**/}
+      closeSilently(writer);
     }
   }
 
@@ -506,12 +488,7 @@ public final class Util {
       return bytes;
     }
     finally {
-      try {
-        if (inputStream != null) {
-          inputStream.close();
-        }
-      }
-      catch (IOException e) {/**/}
+      closeSilently(inputStream);
     }
   }
 
@@ -598,6 +575,19 @@ public final class Util {
   public static void rejectNullValue(final Object value, final String valueName) throws IllegalArgumentException {
     if (value == null) {
       throw new IllegalArgumentException(valueName + " is null");
+    }
+  }
+
+  public static void closeSilently(final Closeable... closeables) {
+    if (closeables == null) {
+      return;
+    }
+    for (final Closeable closeable : closeables) {
+      try {
+          if (closeable != null)
+            closeable.close();
+        }
+        catch (Exception e) {/**/}
     }
   }
 }

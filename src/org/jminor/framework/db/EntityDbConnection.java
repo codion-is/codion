@@ -258,18 +258,11 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
         }
       }
 
-      final List<Object> statementValues = new ArrayList<Object>(1);
       for (final Map.Entry<String, Collection<Entity.Key>> entry : hashedEntities.entrySet()) {
-        final List<Property.PrimaryKeyProperty> primaryKeyProperties = EntityRepository.getPrimaryKeyProperties(entry.getKey());
-        deleteQuery = "delete from " + EntityRepository.getTableName(entry.getKey()) + getWhereCondition(primaryKeyProperties);
+        final EntitySelectCriteria criteria = EntityCriteriaUtil.selectCriteria(new ArrayList<Entity.Key>(entry.getValue()));
+        deleteQuery = "delete from " + EntityRepository.getTableName(entry.getKey()) + " " + criteria.getWhereClause();
         statement = getConnection().prepareStatement(deleteQuery);
-        for (final Entity.Key key : entry.getValue()) {
-          for (final Property property : primaryKeyProperties) {
-            statementValues.add(key.getOriginalValue(property.getPropertyID()));
-          }
-          executePreparedUpdate(statement, deleteQuery, statementValues, primaryKeyProperties);
-          statementValues.clear();
-        }
+        executePreparedUpdate(statement, deleteQuery, criteria.getValues(), criteria.getValueProperties());
         statement.close();
       }
       if (!isTransactionOpen()) {

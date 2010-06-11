@@ -12,6 +12,10 @@ import org.jminor.framework.db.provider.EntityDbProvider;
 
 import org.apache.log4j.Logger;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -40,6 +44,7 @@ public class EntityDbRemoteProvider implements EntityDbProvider {
     this.user = user;
     this.clientID = clientID;
     this.clientTypeID = clientTypeID;
+    setTruststore(clientTypeID);
   }
 
   public EntityDb getEntityDb() {
@@ -190,5 +195,37 @@ public class EntityDbRemoteProvider implements EntityDbProvider {
     }
 
     return null;
+  }
+
+  private static void setTruststore(final String clientTypeID) {
+    final String truststore = System.getProperty("javax.net.ssl.trustStore");
+    if (truststore != null) {
+      FileOutputStream out = null;
+      InputStream in = null;
+      try {
+        ClassLoader loader = EntityDbRemoteProvider.class.getClassLoader();
+        in = loader.getResourceAsStream(truststore);
+        if (in == null) {
+          LOG.debug("Truststore resource '" + truststore + "' was not found in classpath");
+          return;
+        }
+        final File trustFile = File.createTempFile(clientTypeID, "ts");
+        trustFile.deleteOnExit();
+        out = new FileOutputStream(trustFile);
+        byte buf[] = new byte[8192];
+        int br;
+        while ((br = in.read(buf)) > 0) {
+          out.write(buf, 0, br);
+        }
+        System.setProperty("javax.net.ssl.trustStore", trustFile.toString());
+        LOG.debug("Truststore set to : " + trustFile.toString() + ", original " + truststore);
+      }
+      catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+      finally {
+        Util.closeSilently(out, in);
+      }
+    }
   }
 }

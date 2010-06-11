@@ -452,7 +452,7 @@ public final class EntityRepository {
     Util.rejectNullValue(entityID);
     final EntityDefinition definition = entityDefinitions.get(entityID);
     if (definition == null) {
-      throw new RuntimeException("Undefined entity: " + entityID);
+      throw new IllegalArgumentException("Undefined entity: " + entityID);
     }
 
     return definition;

@@ -19,6 +19,7 @@ import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 
 import static org.junit.Assert.*;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.awt.event.ActionEvent;
@@ -31,6 +32,11 @@ import java.util.List;
 public class EntityEditModelTest {
 
   private EmployeeModel employeeModel = new EmployeeModel(EntityDbConnectionTest.DB_PROVIDER);
+
+  @Before
+  public void setUp() {
+    new EmpDept();
+  }
 
   @Test
   public void test() throws Exception {

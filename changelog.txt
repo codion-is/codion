@@ -1719,3 +1719,6 @@
   EmpDept demo uses the above
   Item is now serializable
   EntityDbRemoteAdapter now handles db logging correctly when pool is disabled
+  EntityDbConnection.delete() now uses a single statement per entityID
+  EntityDbRemoteProvider.setTruststore() added
+  Util.closeSilently() added
