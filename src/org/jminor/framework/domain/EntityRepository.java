@@ -236,6 +236,7 @@ public final class EntityRepository {
    * @throws RuntimeException if no visible properties are defined for the given entity
    */
   public static List<Property> getVisibleProperties(final String entityID) {
+    Util.rejectNullValue(entityID);
     return getEntityDefinition(entityID).getVisibleProperties();
   }
 
@@ -246,6 +247,8 @@ public final class EntityRepository {
    * @throws RuntimeException in case no such property exists
    */
   public static Property getProperty(final String entityID, final String propertyID) {
+    Util.rejectNullValue(entityID);
+    Util.rejectNullValue(propertyID);
     final Property property = getProperties(entityID).get(propertyID);
     if (property == null) {
       throw new RuntimeException("Property '" + propertyID + "' not found in entity: " + entityID);
@@ -261,6 +264,8 @@ public final class EntityRepository {
    * the entity identified by <code>entityID</code>
    */
   public static List<Property> getProperties(final String entityID, final String... propertyIDs) {
+    Util.rejectNullValue(entityID);
+    Util.rejectNullValue(propertyIDs);
     final List<Property> properties = new ArrayList<Property>();
     for (final String propertyID : propertyIDs) {
       properties.add(getProperty(entityID, propertyID));

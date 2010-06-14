@@ -303,6 +303,7 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
    * @see #validateEntities(java.util.List, int)
    */
   public final void insert(final List<Entity> entities) throws CancelException, DbException, ValidationException {
+    Util.rejectNullValue(entities);
     if (isReadOnly()) {
       throw new RuntimeException("This is a read-only model, inserting is not allowed!");
     }
@@ -343,6 +344,7 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
    * @see #validateEntities(java.util.List, int)
    */
   public final void update(final List<Entity> entities) throws DbException, CancelException, ValidationException {
+    Util.rejectNullValue(entities);
     if (isReadOnly()) {
       throw new RuntimeException("This is a read-only model, updating is not allowed!");
     }
@@ -385,6 +387,7 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
    * @see #evtAfterDelete
    */
   public final void delete(final List<Entity> entities) throws DbException, CancelException {
+    Util.rejectNullValue(entities);
     if (isReadOnly()) {
       throw new RuntimeException("This is a read-only model, deleting is not allowed!");
     }
@@ -410,6 +413,7 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
    */
   @SuppressWarnings({"UnusedDeclaration"})
   public void validateEntities(final List<Entity> entities, final int action) throws ValidationException {
+    Util.rejectNullValue(entities);
     for (final Entity entity : entities) {
       for (final Property property : EntityRepository.getProperties(entity.getEntityID()).values()) {
         validate(entity, property.getPropertyID(), action);
@@ -419,6 +423,7 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
 
   @Override
   public final void validate(final String property, final int action) throws ValidationException {
+    Util.rejectNullValue(property);
     validate(getEntity(), property, action);
   }
 
@@ -437,6 +442,8 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
    * @see org.jminor.framework.Configuration#PERFORM_NULL_VALIDATION
    */
   public void validate(final Entity entity, final String propertyID, final int action) throws ValidationException {
+    Util.rejectNullValue(entity);
+    Util.rejectNullValue(propertyID);
     final Property property = entity.getProperty(propertyID);
     if (Configuration.getBooleanValue(Configuration.PERFORM_NULL_VALIDATION)) {
       performNullValidation(entity, property, action);
@@ -454,6 +461,7 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
    */
   @Override
   public boolean isNullable(final String propertyID) {
+    Util.rejectNullValue(propertyID);
     return isNullable(getEntity(), propertyID);
   }
 
@@ -501,6 +509,7 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
    * @throws RuntimeException if no combo box has been initialized for the given property
    */
   public PropertyComboBoxModel getPropertyComboBoxModel(final Property property) {
+    Util.rejectNullValue(property);
     final PropertyComboBoxModel comboBoxModel = (PropertyComboBoxModel) propertyComboBoxModels.get(property);
     if (comboBoxModel == null) {
       throw new RuntimeException("No PropertyComboBoxModel has been initialized for property: " + property);
@@ -521,6 +530,7 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
    */
   public PropertyComboBoxModel initializePropertyComboBoxModel(final Property property, final Event refreshEvent,
                                                                final String nullValue) {
+    Util.rejectNullValue(property);
     PropertyComboBoxModel comboBoxModel = (PropertyComboBoxModel) propertyComboBoxModels.get(property);
     if (comboBoxModel == null) {
       setComboBoxModel(property, comboBoxModel = createPropertyComboBoxModel(property,
@@ -551,6 +561,7 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
    * @throws RuntimeException if no combo box has been initialized for the given property
    */
   public EntityComboBoxModel getEntityComboBoxModel(final String propertyID) {
+    Util.rejectNullValue(propertyID);
     final Property property = EntityRepository.getProperty(getEntityID(), propertyID);
     if (!(property instanceof Property.ForeignKeyProperty)) {
       throw new IllegalArgumentException("EntityComboBoxModels are only available for Property.ForeignKeyProperty");
@@ -565,6 +576,7 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
    * @throws RuntimeException if no combo box has been initialized for the given property
    */
   public EntityComboBoxModel getEntityComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty) {
+    Util.rejectNullValue(foreignKeyProperty);
     final EntityComboBoxModel comboBoxModel = (EntityComboBoxModel) propertyComboBoxModels.get(foreignKeyProperty);
     if (comboBoxModel == null) {
       throw new RuntimeException("No EntityComboBoxModel has been initialized for property: " + foreignKeyProperty);
@@ -580,6 +592,7 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
    * with the given property
    */
   public EntityComboBoxModel initializeEntityComboBoxModel(final String propertyID) {
+    Util.rejectNullValue(propertyID);
     final Property property = EntityRepository.getProperty(getEntityID(), propertyID);
     if (!(property instanceof Property.ForeignKeyProperty)) {
       throw new IllegalArgumentException("EntityComboBoxModels are only available for Property.ForeignKeyProperty");
@@ -595,6 +608,7 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
    * with the given property
    */
   public EntityComboBoxModel initializeEntityComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty) {
+    Util.rejectNullValue(foreignKeyProperty);
     EntityComboBoxModel comboBoxModel = (EntityComboBoxModel) propertyComboBoxModels.get(foreignKeyProperty);
     if (comboBoxModel == null) {
       setComboBoxModel(foreignKeyProperty, comboBoxModel = createEntityComboBoxModel(foreignKeyProperty));
@@ -618,6 +632,7 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
    * @return true if a ComboBoxModel has been initialized for the given property
    */
   public boolean containsComboBoxModel(final Property property) {
+    Util.rejectNullValue(property);
     return propertyComboBoxModels.containsKey(property);
   }
 
