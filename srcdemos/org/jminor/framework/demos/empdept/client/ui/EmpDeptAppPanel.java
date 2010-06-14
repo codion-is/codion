@@ -18,7 +18,7 @@ import org.jminor.framework.demos.empdept.beans.DepartmentModel;
 import org.jminor.framework.demos.empdept.beans.ui.DepartmentPanel;
 import org.jminor.framework.demos.empdept.client.EmpDeptAppModel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
-import org.jminor.framework.domain.EntityUtil;
+import org.jminor.framework.plugins.json.EntityJSONParser;
 
 import org.apache.log4j.Level;
 
@@ -32,7 +32,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel {
 
   public void importJSON() throws Exception {
     final File file = UiUtil.selectFile(this, null);
-    UiUtil.showInDialog(this, EntityTablePanel.createStaticEntityTablePanel(EntityUtil.parseJSONString(
+    UiUtil.showInDialog(this, EntityTablePanel.createStaticEntityTablePanel(new EntityJSONParser().deserialize(
             Util.getTextFileContents(file.getAbsolutePath(), Charset.defaultCharset())), getModel().getDbProvider()),
             true, "Import", null, null, null);
   }

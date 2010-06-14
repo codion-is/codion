@@ -14,15 +14,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.text.Collator;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Properties;
-import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.prefs.Preferences;
 
 /**
@@ -350,7 +342,7 @@ public final class Util {
     }
     final Properties props = System.getProperties();
     final Enumeration propNames = props.propertyNames();
-    final ArrayList<String> orderedPropertyNames = new ArrayList<String>(props.size());
+    final List<String> orderedPropertyNames = new ArrayList<String>(props.size());
     while (propNames.hasMoreElements()) {
       orderedPropertyNames.add((String) propNames.nextElement());
     }
@@ -556,7 +548,7 @@ public final class Util {
   }
 
   /**
-   * Throws a IllegalArgumentException with the given message if <code>value</code> is null
+   * Throws an IllegalArgumentException if <code>value</code> is null
    * @param value the value to check
    * @throws IllegalArgumentException if value is null
    */
@@ -567,7 +559,7 @@ public final class Util {
   }
 
   /**
-   * Throws a IllegalArgumentException with the given message if <code>value</code> is null
+   * Throws an IllegalArgumentException with the given message if <code>value</code> is null
    * @param value the value to check
    * @param valueName the name of the null value
    * @throws IllegalArgumentException if value is null
@@ -584,10 +576,82 @@ public final class Util {
     }
     for (final Closeable closeable : closeables) {
       try {
-          if (closeable != null)
+          if (closeable != null) {
             closeable.close();
+          }
         }
         catch (Exception e) {/**/}
     }
+  }
+
+  /**
+   * Maps the given values according to the keys provided by the given key provider.
+   * <code>
+   * <pre>
+   * class Person {
+   *   String name;
+   *   Integer age;
+   *   ...
+   * }
+   *
+   * List<Person> persons = ...;
+   * HashKeyProvider ageKeyProvider = new HashKeyProvider<Integer, Person>() {
+   *   public Integer getKey(Person person) {
+   *     return person.getAge();
+   *   }
+   * };
+   * Map<Integer, Collection<Person>> personsByAge = Util.map(persons, ageKeyProvider);
+   * </pre>
+   * </code>
+   * @param values the values to map
+   * @param keyProvider the object providing keys to use when hashing the values
+   * @param <K> the key type
+   * @param <V> the value type
+   * @return a map with the values hashed by their respective key values
+   */
+  public static <K, V> Map<K, Collection<V>> map(final Collection<V> values, final HashKeyProvider<K, V> keyProvider) {
+    rejectNullValue(values);
+    rejectNullValue(keyProvider);
+    final Map<K, Collection<V>> map = new HashMap<K, Collection<V>>(values.size());
+    for (final V value : values) {
+      map(map, value, keyProvider.getKey(value));
+    }
+
+    return map;
+  }
+
+  private static <K, V> void map(final Map<K, Collection<V>> map, final V value, final K key) {
+    rejectNullValue(value);
+    rejectNullValue(key);
+    rejectNullValue(map);
+    if (!map.containsKey(key))
+      map.put(key, new ArrayList<V>());
+
+    map.get(key).add(value);
+  }
+
+  public static boolean onClasspath(final String classname) {
+    rejectNullValue(classname);
+    try {
+      if (classname == null)
+        return false;
+
+      Class.forName(classname);
+    }
+    catch (ClassNotFoundException e) {
+      return false;
+    }
+
+    return true;
+  }
+
+  /**
+   * Provides objects of type K, derived from a value of type V, for hashing said value via .hashCode().
+   * @param <K> the type of the object to use for key generation via .hashCode()
+   * @param <V> the value type
+   * @see Util#map(java.util.Collection, org.jminor.common.model.Util.HashKeyProvider)
+   */
+  public interface HashKeyProvider<K, V> {
+    K getKey(final V value);
   }
 }

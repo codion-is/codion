@@ -3,16 +3,21 @@
  */
 package org.jminor.common.ui.reports;
 
-import org.jminor.common.model.reports.ReportException;
 import org.jminor.common.model.reports.ReportResult;
 
 import javax.swing.JComponent;
 
 /**
- * User: darri
- * Date: 25.5.2010
+ * User: darri<br>
+ * Date: 25.5.2010<br>
  * Time: 14:42:03
  */
 public interface ReportUIWrapper<T> {
-  JComponent createReportComponent(final ReportResult<T> result) throws ReportException;
+
+  /**
+   * Returns a JComponent showing a report based on the given report result.
+   * @param result the report result to base the report on.
+   * @return a JComponent showing a report.
+   */
+  JComponent createReportComponent(final ReportResult<T> result);
 }

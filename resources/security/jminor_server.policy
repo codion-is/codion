@@ -1,13 +1,11 @@
 grant {
   //CodeBase "file:./jminor-server.jar"
-  permission java.io.FilePermission "${user.home}/*", "read,write";
+  permission java.io.FilePermission "${user.home}/logs/*", "read,write";
   permission java.lang.RuntimePermission "createClassLoader";
-  //the following line is for an embedded derby database residing in the server directory
+  //the following line is for an embedded database residing in the server working directory
   permission java.io.FilePermission "-", "read,write,delete";
   //for the JasperReports report generation
   permission java.lang.RuntimePermission "getProtectionDomain";
-
-  //permission java.io.FilePermission "<<ALL FILES>>", "read";
 
   permission java.net.SocketPermission "*", "connect,accept,listen,resolve";
   //permission java.net.SocketPermission "*:2200-2300", "connect,accept,listen,resolve";

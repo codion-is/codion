@@ -321,6 +321,20 @@ public final class Configuration {
   public static final String REMOTE_CONNECTION_PROVIDER = "jminor.client.remoteConnectionProvider";
 
   /**
+   * Specifies the class used for serializing entity instances.<br>
+   * Value type: String, the name of the class implementing org.jminor.common.model.Serializer<Entity><br>
+   * Default value: none
+   */
+  public static final String ENTITY_SERIALIZER_CLASS = "jminor.serialization.entitySerializerClass";
+
+  /**
+   * Specifies the class used for deserializing entity instances.<br>
+   * Value type: String, the name of the class implementing org.jminor.common.model.Deserializer<Entity><br>
+   * Default value: none
+   */
+  public static final String ENTITY_DESERIALIZER_CLASS = "jminor.serialization.entityDeserializerClass";
+
+  /**
    * Specifies the class providing local db connections<br>
    * Value type: String (the name of a class implementing org.jminor.framework.db.provider.EntityDbProvider)<br>
    * Default value: org.jminor.framework.db.provider.EntityDbLocalProvider
@@ -529,5 +543,21 @@ public final class Configuration {
     }
 
     return path;
+  }
+
+  /**
+   * @return true if a entity serializer is specified and available on the classpath
+   */
+  public static boolean entitySerializerAvailable() {
+    final String serializerClass = getStringValue(ENTITY_SERIALIZER_CLASS);
+    return serializerClass != null && Util.onClasspath(serializerClass);
+  }
+
+  /**
+   * @return true if a entity deserializer is specified and available on the classpath
+   */
+  public static boolean entityDeserializerAvailable() {
+    final String deserializerClass = getStringValue(ENTITY_DESERIALIZER_CLASS);
+    return deserializerClass != null && Util.onClasspath(deserializerClass);
   }
 }

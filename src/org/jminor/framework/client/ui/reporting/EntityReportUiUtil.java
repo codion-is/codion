@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.client.ui.reporting;
 
-import org.jminor.common.model.reports.ReportException;
 import org.jminor.common.model.reports.ReportResult;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.reports.ReportUIWrapper;
@@ -24,9 +23,8 @@ public class EntityReportUiUtil {
    * @param report the report result
    * @param uiWrapper the UI wrapper
    * @param frameTitle the title to display on the frame
-   * @throws org.jminor.common.model.reports.ReportException in case of a report exc
    */
-  public static void viewReport(final ReportResult report, final ReportUIWrapper uiWrapper, final String frameTitle) throws ReportException {
+  public static void viewReport(final ReportResult report, final ReportUIWrapper uiWrapper, final String frameTitle) {
     final JFrame frame = new JFrame(frameTitle == null ? FrameworkMessages.get(FrameworkMessages.REPORT_PRINTER) : frameTitle);
     frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     frame.getContentPane().add(uiWrapper.createReportComponent(report));

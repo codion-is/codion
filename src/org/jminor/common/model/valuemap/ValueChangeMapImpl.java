@@ -249,6 +249,9 @@ public class ValueChangeMapImpl<K, V> implements ValueChangeMap<K, V>, Serializa
     }
   }
 
+  /**
+   * Two ValueChangeMapImpl objects are equal if all current property values are equal.
+   */
   @SuppressWarnings({"unchecked"})
   @Override
   public boolean equals(final Object object) {

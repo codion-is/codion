@@ -1724,3 +1724,11 @@
   Util.closeSilently() added
   EntityComboBoxModel, createForeignKeyFilterComboBoxModel() now links the model to the refresh event
   Entity.isModified() changed, writablePropertiesModified() added
+  Util.HashKeyProvider added
+  Util.map() refactored from the EntityUtil.hashBy... methods
+  common.model.Serializer/Deserializer added
+  EntityJSONParser moved to plugins
+  JSON and JasperReports dependencies removed from demo run files where applicable
+  Util.onClasspath() added
+  Configuration.ENTITY_SERIALIZER_CLASS, ENTITY_DESERIALIZER_CLASS added
+  Configuration.entitySerializerAvailable()/entityDeserializerAvailable()

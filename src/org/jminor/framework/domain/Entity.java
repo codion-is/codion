@@ -746,7 +746,14 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
     return defaultProxy;
   }
 
-  static Entity initialize(final String entityID, final Map<String, Object> values, final Map<String, Object> originalValues) {
+  /**
+   * Initializes a new Entity based on the given values.
+   * @param entityID the entityID
+   * @param values the values
+   * @param originalValues the original values
+   * @return an initialized Entity
+   */
+  public static Entity initialize(final String entityID, final Map<String, Object> values, final Map<String, Object> originalValues) {
     final Entity entity = new Entity(entityID);
     for (final Map.Entry<String, Object> entry : values.entrySet()) {
       entity.setValue(entry.getKey(), entry.getValue());

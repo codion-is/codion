@@ -19,7 +19,6 @@ import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 
-import org.json.JSONException;
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -198,8 +197,6 @@ public abstract class EntityTestUnit {
     try {
       if (testEntity != null) {
         final Entity tmp = getEntityDb().selectSingle(testEntity.getPrimaryKey());
-        assertTrue("Entity of type " + testEntity.getEntityID() + " failed property value comparison",
-                propertyValuesEqual(testEntity, tmp));
         assertTrue("Entity of type " + testEntity.getEntityID() + " failed equals comparison",
                 testEntity.equals(tmp));
       }
@@ -358,20 +355,5 @@ public abstract class EntityTestUnit {
       }
     }
     return container;
-  }
-
-  private boolean propertyValuesEqual(final Entity entityOne, final Entity entityTwo) {
-    final boolean equal = entityOne.propertyValuesEqual(entityTwo);
-    if (!equal) {
-      try {
-        System.out.println(EntityUtil.getJSONString(Arrays.asList(entityOne)));
-        System.out.println(EntityUtil.getJSONString(Arrays.asList(entityTwo)));
-      }
-      catch (JSONException e) {
-        e.printStackTrace();
-      }
-    }
-
-    return equal;
   }
 }

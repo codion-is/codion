@@ -11,6 +11,7 @@ import org.jminor.common.model.AggregateState;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.SearchType;
+import org.jminor.common.model.Serializer;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.AbstractFilteredTablePanel;
@@ -42,8 +43,6 @@ import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
-
-import org.json.JSONException;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -557,13 +556,13 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
   }
 
   /**
-   * Exports the selected records as a JSON file
+   * Exports the selected records as a text file
    * @throws CancelException in case the action is cancelled
-   * @throws org.json.JSONException in case of a JSON exception
+   * @throws org.jminor.common.model.Serializer.SerializeException in case of an exception
    */
-  public void exportSelected() throws CancelException, JSONException {
+  public void exportSelected() throws CancelException, Serializer.SerializeException {
     final List<Entity> selected = getTableModel().getSelectedItems();
-    Util.writeFile(EntityUtil.getJSONString(selected, false, 2), UiUtil.chooseFileToSave(this, null, null));
+    Util.writeFile(EntityUtil.getEntitySerializer().serialize(selected), UiUtil.chooseFileToSave(this, null, null));
     JOptionPane.showMessageDialog(this, FrameworkMessages.get(FrameworkMessages.EXPORT_SELECTED_DONE));
   }
 
@@ -933,7 +932,8 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     setControl(CLEAR, getClearControl());
     setControl(REFRESH, getRefreshControl());
     setControl(SELECT_COLUMNS, getSelectColumnsControl());
-    setControl(EXPORT_JSON, getExportControl());
+    if (Configuration.entitySerializerAvailable())
+      setControl(EXPORT_JSON, getExportControl());
     setControl(VIEW_DEPENDENCIES, getViewDependenciesControl());
     if (summaryPanel != null) {
       setControl(TOGGLE_SUMMARY_PANEL, getToggleSummaryPanelControl());
@@ -1141,7 +1141,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
    * Initializes a simple search panel, with a single search field, which performs a search based on the default
    * search properties or if none are defined all string based properties
    * @return a simple search panel
-   * @see org.jminor.framework.domain.EntityDefinition#setSearchPropertyIDs(String...)
+   * @see org.jminor.framework.domain.EntityDefinition#setSearchPropertyIDs(String[])
    */
   protected JPanel initializeSimpleSearchPanel() {
     final List<Property> searchableProperties = getSearchProperties();
