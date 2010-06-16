@@ -98,22 +98,18 @@ public class HostMonitor {
     final List<String> serverNames = new ArrayList<String>();
     try {
       String message = "HostMonitor locating registry on host: " + serverHostName;
-      System.out.println(message);
-      LOG.info(message);
+      LOG.debug(message);
       final Registry registry = LocateRegistry.getRegistry(serverHostName);
       message = "HostMonitor located registry: " + registry;
-      System.out.println(message);
-      LOG.info(message);
+      LOG.debug(message);
       final String[] boundNames = getEntityServers(registry);
       if (boundNames.length == 0) {
         message = "HostMonitor found no server bound in registry: " + registry;
-        System.out.println(message);
-        LOG.info(message);
+        LOG.debug(message);
       }
       for (final String name : boundNames) {
         message = "HostMonitor found server '" + name + "'";
-        System.out.println(message);
-        LOG.info(message);
+        LOG.debug(message);
         serverNames.add(name);
       }
     }

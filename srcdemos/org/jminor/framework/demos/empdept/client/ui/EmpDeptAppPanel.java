@@ -20,8 +20,6 @@ import org.jminor.framework.demos.empdept.client.EmpDeptAppModel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.plugins.json.EntityJSONParser;
 
-import org.apache.log4j.Level;
-
 import javax.swing.UIManager;
 import java.io.File;
 import java.nio.charset.Charset;
@@ -55,7 +53,6 @@ public class EmpDeptAppPanel extends EntityApplicationPanel {
     Configuration.setValue(Configuration.TOOLBAR_BUTTONS, true);
     Configuration.setValue(Configuration.COMPACT_ENTITY_PANEL_LAYOUT, true);
     Configuration.setValue(Configuration.USE_OPTIMISTIC_LOCKING, true);
-    Util.setLoggingLevel(Level.DEBUG);
   }
 
   @Override

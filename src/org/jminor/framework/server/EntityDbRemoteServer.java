@@ -295,9 +295,8 @@ public class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
   @Override
   protected void doDisconnect(final EntityDbRemote adapter) throws RemoteException {
     try {
-      if (adapter.isConnected()) {
-        ((EntityDbRemoteAdapter) adapter).disconnect();
-      }
+      ((EntityDbRemoteAdapter) adapter).disconnect();
+      LOG.debug(((EntityDbRemoteAdapter) adapter).getClientInfo() + " disconnected");
     }
     catch (Exception e) {
       throw new RemoteException(e.getMessage(), e);
@@ -307,9 +306,7 @@ public class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
   @Override
   protected EntityDbRemoteAdapter doConnect(final ClientInfo client) throws RemoteException {
     final EntityDbRemoteAdapter remoteAdapter = new EntityDbRemoteAdapter(this, database, client, SERVER_DB_PORT, CLIENT_LOGGING_ENABLED);
-    if (LOG.isDebugEnabled()) {
-      LOG.debug("Connection added: " + client);
-    }
+    LOG.debug(client + " connected");
 
     return remoteAdapter;
   }

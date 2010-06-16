@@ -134,7 +134,7 @@ public class EntityDbRemoteProvider implements EntityDbProvider {
     if (server == null || unreachable) {
       //if server is not reachable, try to reconnect once and return
       connectToServer();
-      LOG.info(serverName + ", " + user + " - " + clientID + " was able to connect");
+      LOG.debug("ClientID: " + clientID + ", user: " + user + " connected to server: " + serverName);
     }
 
     return this.server;

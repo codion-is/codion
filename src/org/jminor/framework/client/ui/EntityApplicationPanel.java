@@ -151,7 +151,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
 
   public void startApplication(final String frameCaption, final String iconName, final boolean maximize,
                                final Dimension frameSize, final User defaultUser, final boolean showFrame) {
-    LOG.info(frameCaption + " starting");
+    LOG.debug(frameCaption + " application starting");
     Messages.class.getName();//hack to load the class
     final JFrame frame = new JFrame();
     frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);

@@ -5,7 +5,6 @@ package org.jminor.framework.demos.petstore.client.ui;
 
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.User;
-import org.jminor.common.model.Util;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityApplicationModel;
@@ -20,8 +19,6 @@ import org.jminor.framework.demos.petstore.beans.ui.CategoryPanel;
 import org.jminor.framework.demos.petstore.beans.ui.ContactInfoPanel;
 import org.jminor.framework.demos.petstore.beans.ui.TagPanel;
 import org.jminor.framework.demos.petstore.client.PetstoreAppModel;
-
-import org.apache.log4j.Level;
 
 import javax.swing.UIManager;
 import java.util.Arrays;
@@ -48,7 +45,6 @@ public class PetstoreAppPanel extends EntityApplicationPanel {
     Locale.setDefault(new Locale("en"));
     Configuration.setValue(Configuration.TOOLBAR_BUTTONS, true);
     Configuration.setValue(Configuration.PROPERTY_DEBUG_OUTPUT, true);
-    Util.setDefaultLoggingLevel(Level.DEBUG);
   }
 
   @Override

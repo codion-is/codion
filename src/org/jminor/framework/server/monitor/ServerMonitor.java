@@ -219,11 +219,11 @@ public class ServerMonitor {
               (EntityDbServerAdmin) LocateRegistry.getRegistry(hostName).lookup(serverName);
       //call to validate the remote connection
       db.getServerPort();
-      System.out.println("ServerMonitor connected to server: " + serverName);
+//      System.out.println("ServerMonitor connected to server: " + serverName);
       return db;
     }
     catch (RemoteException e) {
-      System.out.println("Server \"" + serverName + "\" is unreachable");
+//      System.out.println("Server \"" + serverName + "\" is unreachable");
       LOG.error("Server \"" + serverName + "\" is unreachable");
       throw e;
     }
@@ -232,7 +232,7 @@ public class ServerMonitor {
       throw new RemoteException("Server " + serverName + " is not bound", e);
     }
     finally {
-      LOG.info("Registry.lookup(\"" + serverName + "\"): " + (System.currentTimeMillis() - time));
+      LOG.debug("Registry.lookup(\"" + serverName + "\"): " + (System.currentTimeMillis() - time));
     }
   }
 

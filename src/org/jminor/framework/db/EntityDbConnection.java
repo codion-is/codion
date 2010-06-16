@@ -340,9 +340,9 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
       return result;
     }
     catch (SQLException exception) {
-      LOG.info(selectQuery);
-      LOG.error(this, exception);
-      throw new DbException(exception, selectQuery, getDatabase().getErrorMessage(exception));
+      final DbException dbException = new DbException(exception, selectQuery, getDatabase().getErrorMessage(exception));
+      LOG.error(this, dbException);
+      throw dbException;
     }
     finally {
       cleanup(statement, resultSet);

@@ -5,7 +5,6 @@ package org.jminor.framework.demos.schemabrowser.client.ui;
 
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.User;
-import org.jminor.common.model.Util;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityApplicationModel;
@@ -14,8 +13,6 @@ import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.demos.schemabrowser.beans.SchemaModel;
 import org.jminor.framework.demos.schemabrowser.beans.ui.SchemaPanel;
 import org.jminor.framework.demos.schemabrowser.client.SchemaBrowserAppModel;
-
-import org.apache.log4j.Level;
 
 import javax.swing.JTable;
 import javax.swing.UIManager;
@@ -31,7 +28,6 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel {
 
   @Override
   protected void configureApplication() {
-    Util.setDefaultLoggingLevel(Level.DEBUG);
     Configuration.setValue(Configuration.TABLE_AUTO_RESIZE_MODE, JTable.AUTO_RESIZE_ALL_COLUMNS);
   }
 

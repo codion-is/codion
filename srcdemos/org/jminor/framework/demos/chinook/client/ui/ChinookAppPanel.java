@@ -5,7 +5,6 @@ package org.jminor.framework.demos.chinook.client.ui;
 
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.User;
-import org.jminor.common.model.Util;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityApplicationModel;
@@ -24,8 +23,6 @@ import org.jminor.framework.demos.chinook.beans.ui.GenrePanel;
 import org.jminor.framework.demos.chinook.beans.ui.MediaTypePanel;
 import org.jminor.framework.demos.chinook.beans.ui.PlaylistPanel;
 import org.jminor.framework.demos.chinook.client.ChinookAppModel;
-
-import org.apache.log4j.Level;
 
 import javax.swing.UIManager;
 import java.util.Arrays;
@@ -66,7 +63,6 @@ public class ChinookAppPanel extends EntityApplicationPanel {
     Configuration.setValue(Configuration.COMPACT_ENTITY_PANEL_LAYOUT, true);
     Configuration.setValue(Configuration.USE_OPTIMISTIC_LOCKING, true);
     Configuration.setValue(Configuration.PROPERTY_DEBUG_OUTPUT, true);
-    Util.setLoggingLevel(Level.DEBUG);
   }
 
   public static void main(final String[] args) {

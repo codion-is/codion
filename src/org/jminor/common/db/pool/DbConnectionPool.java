@@ -71,9 +71,6 @@ public class DbConnectionPool implements ConnectionPool {
           try {
             creatingConnection = true;
             counter.incrementConnectionsCreatedCounter();
-            if (LOG.isDebugEnabled()) {
-              LOG.debug("$$$$ adding a new connection to connection pool " + getConnectionPoolSettings().getUser());
-            }
             checkInConnection(dbConnectionProvider.createConnection(getConnectionPoolSettings().getUser()));
           }
           finally {
@@ -89,10 +86,6 @@ public class DbConnectionPool implements ConnectionPool {
             }
             connection = getConnectionFromPool();
             retryCount++;
-          }
-          if (connection != null && LOG.isDebugEnabled()) {
-            LOG.debug("##### " + getConnectionPoolSettings().getUser() + " got connection"
-                    + " after " + (System.currentTimeMillis() - time) + "ms (retries: " + retryCount + ")");
           }
         }
         catch (InterruptedException e) {/**/}
@@ -127,9 +120,6 @@ public class DbConnectionPool implements ConnectionPool {
         connectionPool.notify();
       }
       else {
-        if (LOG.isDebugEnabled()) {
-          LOG.debug(getConnectionPoolSettings().getUser() + " connection invalid upon check in");
-        }
         disconnect(connection);
       }
     }
@@ -272,10 +262,6 @@ public class DbConnectionPool implements ConnectionPool {
         final long idleTime = currentTime - connection.getPoolTime();
         if (idleTime > connectionPoolSettings.getPooledConnectionTimeout()) {
           iterator.remove();
-          if (LOG.isDebugEnabled()) {
-            LOG.debug(getConnectionPoolSettings().getUser() + " removing connection from pool, idle for " + idleTime / 1000
-                    + " seconds, " + connectionPool.size() + " available");
-          }
           disconnect(connection);
         }
       }
