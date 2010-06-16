@@ -1,16 +1,21 @@
 grant {
-  //CodeBase "file:./jminor-server.jar"
   permission java.io.FilePermission "${user.home}/logs/*", "read,write";
-  permission java.lang.RuntimePermission "createClassLoader";
-  //the following line is for an embedded database residing in the server working directory
+
+  permission java.net.SocketPermission "*", "accept";
+  //Database port
+  permission java.net.SocketPermission "*:1521", "connect";
+  //Client service port
+  permission java.net.SocketPermission "*:2222", "connect,listen";
+  //Server admin port
+  permission java.net.SocketPermission "*:2223", "connect,listen";
+  //RMI Registry
+  permission java.net.SocketPermission "*:1099", "connect,listen";
+
+  permission java.util.PropertyPermission "*", "read, write";
+
+  //for an embedded database residing in the server working directory
   permission java.io.FilePermission "-", "read,write,delete";
-  //for the JasperReports report generation
+  //for JasperReports report generation
+  permission java.lang.RuntimePermission "createClassLoader";
   permission java.lang.RuntimePermission "getProtectionDomain";
-
-  permission java.net.SocketPermission "*", "connect,accept,listen,resolve";
-  //permission java.net.SocketPermission "*:2200-2300", "connect,accept,listen,resolve";
-  //permission java.net.SocketPermission "*:1025-3400", "connect,accept,listen,resolve";
-  //permission java.net.SocketPermission "192.168.1.34:4444", "connect,accept,listen,resolve";
-
-  permission java.util.PropertyPermission "*", "read,write";
 };

@@ -576,11 +576,11 @@ public final class Util {
     }
     for (final Closeable closeable : closeables) {
       try {
-          if (closeable != null) {
-            closeable.close();
-          }
+        if (closeable != null) {
+          closeable.close();
         }
-        catch (Exception e) {/**/}
+      }
+      catch (Exception e) {/**/}
     }
   }
 

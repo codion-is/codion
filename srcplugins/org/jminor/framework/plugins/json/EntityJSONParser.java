@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.plugins.json;
 
+import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.Deserializer;
 import org.jminor.common.model.Serializer;
 import org.jminor.framework.domain.Entity;
@@ -12,8 +13,8 @@ import org.jminor.framework.domain.Property;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -26,8 +27,8 @@ public class EntityJSONParser implements Serializer<Entity>, Deserializer<Entity
 
   private int indentFactor = 2;
 
-  private static final SimpleDateFormat jsonDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-  private static final SimpleDateFormat jsonTimestampFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+  private static final ThreadLocal<DateFormat> jsonDateFormat = DateUtil.getThreadLocalDateFormat("yyyy-MM-dd");
+  private static final ThreadLocal<DateFormat> jsonTimestampFormat = DateUtil.getThreadLocalDateFormat("yyyy-MM-dd HH:mm");
 
   public int getIndentFactor() {
     return indentFactor;
@@ -129,10 +130,10 @@ public class EntityJSONParser implements Serializer<Entity>, Deserializer<Entity
       return propertyValues.getBoolean(propertyID);
     }
     else if (property.isDate()) {
-      return jsonDateFormat.parse(propertyValues.getString(propertyID));
+      return jsonDateFormat.get().parse(propertyValues.getString(propertyID));
     }
     else if (property.isTimestamp()) {
-      return jsonTimestampFormat.parse(propertyValues.getString(propertyID));
+      return jsonTimestampFormat.get().parse(propertyValues.getString(propertyID));
     }
     else if (property.isDouble()) {
       return propertyValues.getDouble(propertyID);
@@ -172,7 +173,7 @@ public class EntityJSONParser implements Serializer<Entity>, Deserializer<Entity
       return getJSONObject(Arrays.asList(entity.getForeignKeyValue(property.getPropertyID())), includeForeignKeys);
     }
     if (property.isTime()) {
-      return entity.getFormattedValue(property.getPropertyID(), property.isDate() ? jsonDateFormat : jsonTimestampFormat);
+      return entity.getFormattedValue(property.getPropertyID(), property.isDate() ? jsonDateFormat.get() : jsonTimestampFormat.get());
     }
 
     return entity.getValue(property.getPropertyID());
@@ -199,7 +200,7 @@ public class EntityJSONParser implements Serializer<Entity>, Deserializer<Entity
     }
     if (property.isTime()) {
       final Date date = (Date) originalValue;
-      return property.isDate() ? jsonDateFormat.format(date) : jsonTimestampFormat.format(date);
+      return property.isDate() ? jsonDateFormat.get().format(date) : jsonTimestampFormat.get().format(date);
     }
 
     return originalValue;
