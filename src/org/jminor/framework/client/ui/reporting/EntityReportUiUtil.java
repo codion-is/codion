@@ -14,7 +14,7 @@ import java.awt.Dimension;
 /**
  * A static utility class for displaying reports.
  */
-public class EntityReportUiUtil {
+public final class EntityReportUiUtil {
 
   private EntityReportUiUtil() {}
 

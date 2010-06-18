@@ -76,18 +76,19 @@ public class PropertyFilterPanel extends AbstractSearchPanel<Property> {
     return stIsDialogShowing.isActive();
   }
 
-  public void activateDialog(Container dialogParent, Point position) {
+  public void activateDialog(final Container dialogParent, final Point position) {
     if (!isDialogActive()) {
       initSearchDlg(dialogParent);
+      Point actualPosition = null;
       if (position == null) {
-        position = lastPosition;
+        actualPosition = lastPosition;
       }
-      if (position == null) {
-        position = new Point(0, 0);
+      if (actualPosition == null) {
+        actualPosition = new Point(0, 0);
       }
 
-      position.y = position.y - dialog.getHeight();
-      dialog.setLocation(position);
+      actualPosition.y = actualPosition.y - dialog.getHeight();
+      dialog.setLocation(actualPosition);
       stIsDialogActive.setActive(true);
     }
 

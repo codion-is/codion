@@ -73,7 +73,8 @@ public class EntityTableCellRenderer implements TableCellRenderer {
   protected TableCellRenderer getRenderer(final Property columnProperty) {
     TableCellRenderer renderer = renderers.get(columnProperty.getPropertyID());
     if (renderer == null) {
-      renderers.put(columnProperty.getPropertyID(), renderer = initializeRenderer(columnProperty));
+      renderer = initializeRenderer(columnProperty);
+      renderers.put(columnProperty.getPropertyID(), renderer);
     }
 
     return renderer;

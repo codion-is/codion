@@ -80,7 +80,8 @@ public class InputProviderPanel extends JPanel implements InputProvider {
 
   private JPanel createButtonPanel() {
     final JPanel panel = new JPanel(new GridLayout(1,2,5,5));
-    panel.add(okButton = createButton(Messages.get(Messages.OK), Messages.get(Messages.OK_MNEMONIC), JOptionPane.OK_OPTION));
+    okButton = createButton(Messages.get(Messages.OK), Messages.get(Messages.OK_MNEMONIC), JOptionPane.OK_OPTION);
+    panel.add(okButton);
     panel.add(createButton(Messages.get(Messages.CANCEL), Messages.get(Messages.CANCEL_MNEMONIC), JOptionPane.CANCEL_OPTION));
 
     return panel;

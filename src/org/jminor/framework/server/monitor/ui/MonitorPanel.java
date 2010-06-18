@@ -136,16 +136,10 @@ public class MonitorPanel extends JPanel {
 
   public static void main(final String[] arguments) {
     try {
-      try {
-        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-      }
-      catch (Exception e) {
-        e.printStackTrace();
-      }
+      UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
       new MonitorPanel().showFrame();
     }
     catch (Exception e) {
-      e.printStackTrace();
       System.exit(1);
     }
   }

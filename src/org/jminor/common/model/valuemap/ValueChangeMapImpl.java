@@ -320,7 +320,10 @@ public class ValueChangeMapImpl<K, V> implements ValueChangeMap<K, V>, Serializa
   }
 
   protected void setOriginalValue(final K key, final V oldValue) {
-    (originalValues == null ? (originalValues = new HashMap<K, V>()) : originalValues).put(key, oldValue);
+    if (originalValues == null) {
+      originalValues = new HashMap<K, V>();
+    }
+    originalValues.put(key, oldValue);
   }
 
   protected void removeOriginalValue(final K key) {

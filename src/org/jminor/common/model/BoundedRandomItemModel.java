@@ -108,7 +108,7 @@ public class BoundedRandomItemModel<T> extends RandomItemModel<T> {
   private RandomItem<T> getNextItem(final RandomItem exclude, final boolean nonEmpty) {
     int index = getItems().indexOf(lastAffected);
     RandomItem<T> item = null;
-    while (item == null || item == exclude || (nonEmpty ? item.getWeight() == 0 : item.getWeight() == weightBounds)) {
+    while (item == null || item.equals(exclude) || (nonEmpty ? item.getWeight() == 0 : item.getWeight() == weightBounds)) {
       if (index == 0) {
         index = getItems().size() - 1;
       }

@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.client.ui;
 
+import org.jminor.common.model.Util;
 import org.jminor.framework.client.model.EntityModel;
 
 /**
@@ -32,8 +33,8 @@ public class EntityPanelProvider implements Comparable {//todo rename
    */
   public EntityPanelProvider(final String caption, final Class<? extends EntityModel> entityModelClass,
                              final Class<? extends EntityPanel> entityPanelClass) {
-    if (entityModelClass == null || entityPanelClass == null)
-      throw new IllegalArgumentException("EntityPanelProvider constructor requires non-null entityModelClass and entityPanelClass parameters");
+    Util.rejectNullValue(entityModelClass);
+    Util.rejectNullValue(entityPanelClass);
     this.caption = caption == null ? "" : caption;
     this.entityModelClass = entityModelClass;
     this.entityPanelClass = entityPanelClass;
@@ -63,10 +64,12 @@ public class EntityPanelProvider implements Comparable {//todo rename
   /** {@inheritDoc} */
   @Override
   public boolean equals(final Object object) {
-    if(this == object)
+    if(this == object) {
       return true;
-    if((object == null) || (object.getClass() != getClass()))
+    }
+    if((object == null) || (object.getClass() != getClass())) {
       return false;
+    }
 
     final EntityPanelProvider panelProvider = (EntityPanelProvider) object;
 

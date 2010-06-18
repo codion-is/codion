@@ -181,9 +181,7 @@ public class ServerMonitor {
     try {
       server.shutdown();
     }
-    catch (RemoteException e) {
-      e.printStackTrace();
-    }
+    catch (RemoteException e) {/**/}
     System.out.println("Shutdown Server done");
     evtServerShutDown.fire();
   }
@@ -228,7 +226,6 @@ public class ServerMonitor {
       throw e;
     }
     catch (NotBoundException e) {
-      e.printStackTrace();
       throw new RemoteException("Server " + serverName + " is not bound", e);
     }
     finally {
@@ -266,9 +263,7 @@ public class ServerMonitor {
             updateStats();
           }
         }
-        catch (RemoteException e) {
-          e.printStackTrace();
-        }
+        catch (RemoteException e) {/**/}
       }
     }, delay, delay);
   }

@@ -1735,3 +1735,4 @@
   EntityTablePanel.initializeViewImageAction() and co. moved to UiUtil/EntityUiUtil
   UiUtil.showImage() overloaded with acceptedFileTypes parameter
   Util.rejectNullValue() added to various methods, relevant code fixed accordingly
+  Sonar run, code cleanup

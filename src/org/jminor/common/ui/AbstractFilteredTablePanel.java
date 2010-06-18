@@ -38,7 +38,7 @@ import java.util.List;
  */
 public abstract class AbstractFilteredTablePanel<T> extends JPanel {
 
-  private static Point NULL_POINT = new Point(-1, -1);
+  private static final Point NULL_POINT = new Point(-1, -1);
 
   /**
    * The table model

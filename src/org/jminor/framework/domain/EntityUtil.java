@@ -18,7 +18,7 @@ import java.util.*;
 /**
  * A static utility class.
  */
-public class EntityUtil {
+public final class EntityUtil {
 
   public static final Random random = new Random();
 
@@ -362,8 +362,9 @@ public class EntityUtil {
 
   @SuppressWarnings({"unchecked"})
   public static Serializer<Entity> getEntitySerializer() {
-    if (!Configuration.entitySerializerAvailable())
+    if (!Configuration.entitySerializerAvailable()) {
       throw new RuntimeException("Required configuration property is missing: " + Configuration.ENTITY_SERIALIZER_CLASS);
+    }
 
     try {
       final String serializerClass = Configuration.getStringValue(Configuration.ENTITY_SERIALIZER_CLASS);
@@ -377,8 +378,9 @@ public class EntityUtil {
 
   @SuppressWarnings({"unchecked"})
   public static Deserializer<Entity> getEntityDeserializer() {
-    if (!Configuration.entityDeserializerAvailable())
+    if (!Configuration.entityDeserializerAvailable()) {
       throw new RuntimeException("Required configuration property is missing: " + Configuration.ENTITY_DESERIALIZER_CLASS);
+    }
 
     try {
       final String deserializerClass = Configuration.getStringValue(Configuration.ENTITY_DESERIALIZER_CLASS);

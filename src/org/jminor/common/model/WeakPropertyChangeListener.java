@@ -38,7 +38,6 @@ public class WeakPropertyChangeListener implements PropertyChangeListener {
     }
     catch (Exception e) {
       System.out.println("Could not remove listener: " + e);
-      e.printStackTrace();
     }
   }
 }

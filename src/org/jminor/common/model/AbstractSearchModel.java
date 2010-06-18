@@ -263,10 +263,11 @@ public abstract class AbstractSearchModel<K> {
    * @throws IllegalStateException in case this model has been locked
    */
   public void setSearchType(final SearchType type) {
+    Util.rejectNullValue(type);
     if (stLocked.isActive()) {
       throw new IllegalStateException("Search model for property " + searchProperty + " is locked");
     }
-    if (type != searchType) {
+    if (!searchType.equals(type)) {
       searchType = type;
       evtSearchTypeChanged.fire();
     }

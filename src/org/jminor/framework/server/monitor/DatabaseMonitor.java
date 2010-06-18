@@ -108,9 +108,7 @@ public class DatabaseMonitor {
         try {
           updateStats();
         }
-        catch (RemoteException e) {
-          e.printStackTrace();
-        }
+        catch (RemoteException e) {/**/}
       }
     }, delay, delay);
   }

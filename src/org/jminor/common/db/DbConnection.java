@@ -13,7 +13,6 @@ import org.jminor.common.model.Util;
 import org.apache.log4j.Logger;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.sql.Blob;
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -366,20 +365,8 @@ public class DbConnection {
       throw e;
     }
     finally {
-      try {
-        if (inputStream != null) {
-          inputStream.close();
-        }
-      }
-      catch (IOException e) {
-        e.printStackTrace();
-      }
-      try {
-        if (statement != null) {
-          statement.close();
-        }
-      }
-      catch (SQLException e) {/**/}
+      Util.closeSilently(inputStream);
+      Util.closeSilently(statement);
       methodLogger.logExit("writeBlobField", exception, null);
     }
   }
@@ -401,8 +388,8 @@ public class DbConnection {
       getConnection().commit();
     }
     catch (SQLException e) {
+      LOG.error("Exception during commit: " + user.getUsername(), e);
       exception = e;
-      e.printStackTrace();
     }
     finally {
       methodLogger.logExit("commit", exception, null);
@@ -426,8 +413,8 @@ public class DbConnection {
       getConnection().rollback();
     }
     catch (SQLException e) {
+      LOG.error("Exception during rollback: " + user.getUsername(), e);
       exception = e;
-      e.printStackTrace();
     }
     finally {
       methodLogger.logExit("rollback", exception, null);
@@ -483,7 +470,8 @@ public class DbConnection {
     Statement statement = null;
     SQLException exception = null;
     try {
-      (statement = connection.createStatement()).executeUpdate(sql);
+      statement = connection.createStatement();
+      statement.executeUpdate(sql);
       LOG.debug(sql + " --(" + Long.toString(System.currentTimeMillis()-time) + "ms)");
     }
     catch (SQLException e) {
@@ -591,10 +579,6 @@ public class DbConnection {
         }
         rs = checkConnectionStatement.executeQuery(database.getCheckConnectionQuery());
         return true;
-      }
-      catch (SQLException exception) {
-        exception.printStackTrace();
-        throw exception;
       }
       finally {
         try {

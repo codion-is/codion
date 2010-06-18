@@ -73,7 +73,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.Vector;
 
 /**
  * The EntityTablePanel class consists of a JTable as well as filtering/searching and summary facilities.
@@ -857,8 +856,9 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     setControl(CLEAR, getClearControl());
     setControl(REFRESH, getRefreshControl());
     setControl(SELECT_COLUMNS, getSelectColumnsControl());
-    if (Configuration.entitySerializerAvailable())
+    if (Configuration.entitySerializerAvailable()) {
       setControl(EXPORT_JSON, getExportControl());
+    }
     setControl(VIEW_DEPENDENCIES, getViewDependenciesControl());
     if (summaryPanel != null) {
       setControl(TOGGLE_SUMMARY_PANEL, getToggleSummaryPanelControl());
@@ -1415,7 +1415,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
   }
 
   private Property getPropertyToUpdate() throws CancelException {
-    final JComboBox box = new JComboBox(new Vector<Property>(EntityUtil.getUpdateProperties(getTableModel().getEntityID())));
+    final JComboBox box = new JComboBox(EntityUtil.getUpdateProperties(getTableModel().getEntityID()).toArray());
     final int ret = JOptionPane.showOptionDialog(this, box,
             FrameworkMessages.get(FrameworkMessages.SELECT_PROPERTY_FOR_UPDATE),
             JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
@@ -1609,9 +1609,8 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
    * @param rootMenu the menu to populate
    * @param entity the entity
    * @param dbProvider if provided then lazy loaded entity references are loaded so that the full object graph can be shown
-   * @throws Exception in case of an exception
    */
-  private static void populateEntityMenu(final JComponent rootMenu, final Entity entity, final EntityDbProvider dbProvider) throws Exception {
+  private static void populateEntityMenu(final JComponent rootMenu, final Entity entity, final EntityDbProvider dbProvider) {
     populatePrimaryKeyMenu(rootMenu, entity, new ArrayList<Property.PrimaryKeyProperty>(EntityRepository.getPrimaryKeyProperties(entity.getEntityID())));
     populateForeignKeyMenu(rootMenu, entity, dbProvider, new ArrayList<Property.ForeignKeyProperty>(EntityRepository.getForeignKeyProperties(entity.getEntityID())));
     populateValueMenu(rootMenu, entity, new ArrayList<Property>(EntityRepository.getProperties(entity.getEntityID(), false)));
@@ -1625,30 +1624,35 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
   }
 
   private static void populateForeignKeyMenu(final JComponent rootMenu, final Entity entity, final EntityDbProvider dbProvider,
-                                             final List<Property.ForeignKeyProperty> fkProperties) throws Exception {
-    Util.collate(fkProperties);
-    for (final Property.ForeignKeyProperty property : fkProperties) {
-      final boolean fkValueNull = entity.isForeignKeyNull(property);
-      if (!fkValueNull) {
-        boolean queried = false;
-        Entity referencedEntity = entity.getForeignKeyValue(property.getPropertyID());
-        if (referencedEntity == null) {
-          referencedEntity = dbProvider.getEntityDb().selectSingle(entity.getReferencedPrimaryKey(property));
-          entity.removeValue(property.getPropertyID());
-          entity.setValue(property, referencedEntity);
-          queried = true;
+                                             final List<Property.ForeignKeyProperty> fkProperties) {
+    try {
+      Util.collate(fkProperties);
+      for (final Property.ForeignKeyProperty property : fkProperties) {
+        final boolean fkValueNull = entity.isForeignKeyNull(property);
+        if (!fkValueNull) {
+          boolean queried = false;
+          Entity referencedEntity = entity.getForeignKeyValue(property.getPropertyID());
+          if (referencedEntity == null) {
+            referencedEntity = dbProvider.getEntityDb().selectSingle(entity.getReferencedPrimaryKey(property));
+            entity.removeValue(property.getPropertyID());
+            entity.setValue(property, referencedEntity);
+            queried = true;
+          }
+          final StringBuilder text = new StringBuilder("[FK").append(queried ? "+" : "")
+                  .append("] ").append(property.getCaption()).append(": ");
+          text.append(referencedEntity.toString());
+          final JMenu foreignKeyMenu = new JMenu(text.toString());
+          populateEntityMenu(foreignKeyMenu, entity.getForeignKeyValue(property.getPropertyID()), dbProvider);
+          rootMenu.add(foreignKeyMenu);
         }
-        final StringBuilder text = new StringBuilder("[FK").append(queried ? "+" : "")
-                .append("] ").append(property.getCaption()).append(": ");
-        text.append(referencedEntity.toString());
-        final JMenu foreignKeyMenu = new JMenu(text.toString());
-        populateEntityMenu(foreignKeyMenu, entity.getForeignKeyValue(property.getPropertyID()), dbProvider);
-        rootMenu.add(foreignKeyMenu);
+        else {
+          final StringBuilder text = new StringBuilder("[FK] ").append(property.getCaption()).append(": <null>");
+          rootMenu.add(new JMenuItem(text.toString()));
+        }
       }
-      else {
-        final StringBuilder text = new StringBuilder("[FK] ").append(property.getCaption()).append(": <null>");
-        rootMenu.add(new JMenuItem(text.toString()));
-      }
+    }
+    catch (Exception e) {
+      throw new RuntimeException(e);
     }
   }
 

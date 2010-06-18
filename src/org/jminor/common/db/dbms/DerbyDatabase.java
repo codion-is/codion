@@ -76,9 +76,6 @@ public class DerbyDatabase extends AbstractDatabase {
       if (e.getSQLState().equals("08006")) {//08006 is expected on Derby shutdown
         System.out.println("Embedded Derby database successfully shut down!");
       }
-      else {
-        e.printStackTrace();
-      }
     }
   }
 

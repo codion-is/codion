@@ -19,11 +19,11 @@ public class MethodLogger {
   private List<LogEntry> logEntries;
   private int currentLogEntryIndex = 0;
 
-  long lastAccessDate = System.currentTimeMillis();
-  long lastExitDate = System.currentTimeMillis();
-  String lastAccessedMethod;
-  String lastAccessMessage;
-  String lastExitedMethod;
+  private long lastAccessDate = System.currentTimeMillis();
+  private long lastExitDate = System.currentTimeMillis();
+  private String lastAccessedMethod;
+  private String lastAccessMessage;
+  private String lastExitedMethod;
 
   public MethodLogger(final int logSize) {
     this(logSize, false);

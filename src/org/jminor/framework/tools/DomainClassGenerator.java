@@ -37,7 +37,7 @@ public final class DomainClassGenerator {
 
   private DomainClassGenerator() {}
 
-  public static void main(String[] arguments) {
+  public static void main(String[] arguments) throws Exception {
     final JTextField txtSchemaName = new JTextField();
     UiUtil.makeUpperCase(txtSchemaName);
     final JTextField txtPackageName = new JTextField();
@@ -63,17 +63,16 @@ public final class DomainClassGenerator {
         final String domainClassName = getDomainClassName(schemaName);
         final String domainClass = getDomainClass(domainClassName, schemaName, txtPackageName.getText(),
                 user.getUsername(), user.getPassword(), txtTablesToInclude.getText());
-        if (!chkClipboard.isSelected())
+        if (!chkClipboard.isSelected()) {
           Util.writeFile(domainClass, UiUtil.chooseFileToSave(null, null, domainClassName + ".java"));
-        else
+        }
+        else {
           Util.setClipboard(domainClass);
+        }
 
         JOptionPane.showMessageDialog(null, "Domain class has been exported", "Done", JOptionPane.INFORMATION_MESSAGE);
       }
       catch (CancelException uce) {/**/}
-      catch (Exception e) {
-        e.printStackTrace();
-      }
     }
     System.exit(0);
   }
@@ -101,8 +100,9 @@ public final class DomainClassGenerator {
 
       final List<Table> tablesToProcess = new TablePacker(tableList).pack(metaData.getTables(null, schema, null, null), -1);
 
-      if (tablesToProcess.size() == 0)
+      if (tablesToProcess.size() == 0) {
         throw new IllegalArgumentException("No tables to process");
+      }
 
       for (final Table table : tablesToProcess) {
         appendPropertyConstants(builder, table, metaData);
@@ -279,7 +279,7 @@ public final class DomainClassGenerator {
   }
 
   static class Schema {
-    final String schemaName;
+    private final String schemaName;
 
     public Schema(final String schemaName) {
       this.schemaName = schemaName;
@@ -304,9 +304,9 @@ public final class DomainClassGenerator {
   }
 
   static class Table {
-    final String schemaName;
-    final String tableName;
-    List<Column> columns;
+    private final String schemaName;
+    private final String tableName;
+    private List<Column> columns;
 
     public Table(final String schemaName, final String tableName) {
       this.schemaName = schemaName;
@@ -360,17 +360,17 @@ public final class DomainClassGenerator {
   }
 
   static class Column {
-    final String schemaName;
-    final String tableName;
-    final String columnName;
-    final String columnType;
-    final int columnSize;
-    final int decimalDigits;
-    final int nullable;
-    final boolean hasDefaultValue;
-    final String comment;
-    ForeignKey foreignKey;
-    PrimaryKey primaryKey;
+    private final String schemaName;
+    private final String tableName;
+    private final String columnName;
+    private final String columnType;
+    private final int columnSize;
+    private final int decimalDigits;
+    private final int nullable;
+    private final boolean hasDefaultValue;
+    private final String comment;
+    private ForeignKey foreignKey;
+    private PrimaryKey primaryKey;
 
     public Column(final String schemaName, final String tableName, final String columnName, final String columnType,
                   final int columnSize, final int decimalDigits, final int nullable, final boolean hasDefaultValue,
@@ -408,8 +408,9 @@ public final class DomainClassGenerator {
         final String translatedType = translateType(resultSet.getInt("DATA_TYPE"));
         if (translatedType != null) {
           int decimalDigits = resultSet.getInt("DECIMAL_DIGITS");
-          if (resultSet.wasNull())
+          if (resultSet.wasNull()) {
             decimalDigits = -1;
+          }
           columns.add(new Column(resultSet.getString("TABLE_SCHEM"), resultSet.getString("TABLE_NAME"),
                   resultSet.getString("COLUMN_NAME"), translatedType,
                   resultSet.getInt("COLUMN_SIZE"), decimalDigits, resultSet.getInt("NULLABLE"),
@@ -422,13 +423,13 @@ public final class DomainClassGenerator {
   }
 
   static class ForeignKey {
-    final String pkSchemaName;
-    final String pkTableName;
-    final String pkColumnName;
-    final String fkSchemaName;
-    final String fkTableName;
-    final String fkColumnName;
-    final short keySeq;
+    private final String pkSchemaName;
+    private final String pkTableName;
+    private final String pkColumnName;
+    private final String fkSchemaName;
+    private final String fkTableName;
+    private final String fkColumnName;
+    private final short keySeq;
 
     public ForeignKey(final String pkSchemaName, final String pkTableName, final String pkColumnName,
                       final String fkSchemaName, final String fkTableName, final String fkColumnName,
@@ -450,6 +451,10 @@ public final class DomainClassGenerator {
     public String toString() {
       return fkSchemaName + "." + fkTableName + "." + fkColumnName + " -> " + pkSchemaName + "." + pkTableName + "." + pkColumnName;
     }
+
+    public short getKeySeq() {
+      return keySeq;
+    }
   }
 
   static class ForeignKeyPacker implements ResultPacker<ForeignKey> {
@@ -468,10 +473,10 @@ public final class DomainClassGenerator {
   }
 
   static class PrimaryKey {
-    final String pkSchemaName;
-    final String pkTableName;
-    final String pkColumnName;
-    final short keySeq;
+    private final String pkSchemaName;
+    private final String pkTableName;
+    private final String pkColumnName;
+    private final short keySeq;
 
     public PrimaryKey(final String pkSchemaName, final String pkTableName, final String pkColumnName, final short keySeq) {
       this.pkSchemaName = pkSchemaName;
@@ -483,6 +488,10 @@ public final class DomainClassGenerator {
     @Override
     public String toString() {
       return pkSchemaName + "." + pkTableName + "." + pkColumnName;
+    }
+
+    public short getKeySeq() {
+      return keySeq;
     }
   }
 

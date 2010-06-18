@@ -95,7 +95,7 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
   /**
    * The mechanism for restricting a single active EntityEditModel at a time
    */
-  private static final State.StateGroup activeStateGroup = new State.StateGroup();
+  private static final State.StateGroup ACTIVE_STATE_GROUP = new State.StateGroup();
 
   /**
    * Instantiates a new EntityEditModel based on the entity identified by <code>entityID</code>.
@@ -107,7 +107,7 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
     Util.rejectNullValue(entityID);
     Util.rejectNullValue(dbProvider);
     if (!Configuration.getBooleanValue(Configuration.ALL_PANELS_ACTIVE)) {
-      activeStateGroup.addState(stActive);
+      ACTIVE_STATE_GROUP.addState(stActive);
     }
     this.entityID = entityID;
     this.dbProvider = dbProvider;
@@ -533,8 +533,8 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
     Util.rejectNullValue(property);
     PropertyComboBoxModel comboBoxModel = (PropertyComboBoxModel) propertyComboBoxModels.get(property);
     if (comboBoxModel == null) {
-      setComboBoxModel(property, comboBoxModel = createPropertyComboBoxModel(property,
-              refreshEvent == null ? evtEntitiesChanged : refreshEvent, nullValue));
+      comboBoxModel = createPropertyComboBoxModel(property, refreshEvent == null ? evtEntitiesChanged : refreshEvent, nullValue);
+      setComboBoxModel(property, comboBoxModel);
       comboBoxModel.refresh();
     }
 
@@ -611,7 +611,8 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
     Util.rejectNullValue(foreignKeyProperty);
     EntityComboBoxModel comboBoxModel = (EntityComboBoxModel) propertyComboBoxModels.get(foreignKeyProperty);
     if (comboBoxModel == null) {
-      setComboBoxModel(foreignKeyProperty, comboBoxModel = createEntityComboBoxModel(foreignKeyProperty));
+      comboBoxModel = createEntityComboBoxModel(foreignKeyProperty);
+      setComboBoxModel(foreignKeyProperty, comboBoxModel);
     }
 
     return comboBoxModel;

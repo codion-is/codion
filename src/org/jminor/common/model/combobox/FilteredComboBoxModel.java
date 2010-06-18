@@ -6,6 +6,7 @@ package org.jminor.common.model.combobox;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.FilterCriteria;
 import org.jminor.common.model.Refreshable;
+import org.jminor.common.model.Util;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.event.ListDataEvent;
@@ -185,7 +186,7 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
 
   /** {@inheritDoc} */
   public void setSelectedItem(final Object item) {
-    if (selectedItem == item) {
+    if (Util.equal(selectedItem, item)) {
       return;
     }
 

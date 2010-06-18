@@ -170,7 +170,7 @@ public class ExceptionDialog extends JDialog {
       detailsArea.print();
     }
     catch (PrinterException e) {
-      e.printStackTrace();
+      throw new RuntimeException(e);
     }
   }
 
@@ -206,7 +206,7 @@ public class ExceptionDialog extends JDialog {
       Runtime.getRuntime().exec(ctr);
     }
     catch (IOException e) {
-      e.printStackTrace();
+      throw new RuntimeException(e);
     }
   }
 
@@ -245,7 +245,8 @@ public class ExceptionDialog extends JDialog {
     final JPanel basePanel = new JPanel(new BorderLayout(5,5));
     basePanel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
     basePanel.add(createNorthPanel(), BorderLayout.NORTH);
-    basePanel.add(centerPanel = createCenterPanel(), BorderLayout.CENTER);
+    centerPanel = createCenterPanel();
+    basePanel.add(centerPanel, BorderLayout.CENTER);
     basePanel.add(createButtonPanel(), BorderLayout.SOUTH);
 
     getContentPane().setLayout(new BorderLayout(5,5));

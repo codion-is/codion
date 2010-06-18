@@ -33,7 +33,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 /**
  * A panel for configuring the PropertySearchModels for a given EntityTableModel.
@@ -76,7 +75,7 @@ public class EntityCriteriaPanel extends JPanel {
 
   private JList initializePropertyList(final EntityTableSearchModel entityModel, final JPanel editorPanel) {
     final List<PropertySearchModel> searchCriteria = getSortedCriteria(entityModel);
-    final JList propertyList = new JList(new Vector<AbstractSearchModel<Property>>(searchCriteria));
+    final JList propertyList = new JList(searchCriteria.toArray());
     for (final AbstractSearchModel<Property> model : searchCriteria) {
       model.eventSearchStateChanged().addListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
@@ -104,7 +103,8 @@ public class EntityCriteriaPanel extends JPanel {
         if (selected != null) {
           PropertySearchPanel panel = panels.get(selected);
           if (panel == null) {
-            panels.put(selected, panel = new PropertySearchPanel(selected, true, true));
+            panel = new PropertySearchPanel(selected, true, true);
+            panels.put(selected, panel);
           }
 
           editorPanel.add(panel, BorderLayout.NORTH);

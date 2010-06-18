@@ -34,7 +34,6 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -145,7 +144,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
       throw new DbException(e, insertQuery, getDatabase().getErrorMessage(e));
     }
     finally {
-      cleanup(statement, null);
+      Util.closeSilently(statement);
     }
   }
 
@@ -208,7 +207,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
       throw new DbException(e, updateQuery, getDatabase().getErrorMessage(e));
     }
     finally {
-      cleanup(statement, null);
+      Util.closeSilently(statement);
     }
   }
 
@@ -238,7 +237,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
       throw new DbException(e, deleteQuery, getDatabase().getErrorMessage(e));
     }
     finally {
-      cleanup(statement, null);
+      Util.closeSilently(statement);
     }
   }
 
@@ -278,7 +277,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
       throw new DbException(e, deleteQuery, getDatabase().getErrorMessage(e));
     }
     finally {
-      cleanup(statement, null);
+      Util.closeSilently(statement);
     }
   }
 
@@ -345,7 +344,8 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
       throw dbException;
     }
     finally {
-      cleanup(statement, resultSet);
+      Util.closeSilently(statement);
+      Util.closeSilently(resultSet);
     }
   }
 
@@ -410,7 +410,8 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
       throw new DbException(e, selectQuery, getDatabase().getErrorMessage(e));
     }
     finally {
-      cleanup(statement, resultSet);
+      Util.closeSilently(statement);
+      Util.closeSilently(resultSet);
     }
   }
 
@@ -530,8 +531,9 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   protected EntityResultPacker getEntityResultPacker(final String entityID) {
     EntityResultPacker packer = entityResultPackers.get(entityID);
     if (packer == null) {
-      entityResultPackers.put(entityID, packer = new EntityResultPacker(entityID,
-              EntityRepository.getDatabaseProperties(entityID), EntityRepository.getTransientProperties(entityID)));
+      packer = new EntityResultPacker(entityID, EntityRepository.getDatabaseProperties(entityID),
+              EntityRepository.getTransientProperties(entityID));
+      entityResultPackers.put(entityID, packer);
     }
 
     return packer;
@@ -540,7 +542,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   protected ResultPacker getPropertyResultPacker(final Property property) {
     ResultPacker packer = propertyResultPackers.get(property.getType());
     if (packer == null) {
-      propertyResultPackers.put(property.getType(), packer = new ResultPacker() {
+      packer  = new ResultPacker() {
         public List pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
           final List<Object> result = new ArrayList<Object>(50);
           int counter = 0;
@@ -557,7 +559,8 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
           }
           return result;
         }
-      });
+      };
+      propertyResultPackers.put(property.getType(), packer);
     }
 
     return packer;
@@ -748,21 +751,6 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     }
 
     return property.getType();
-  }
-
-  private static void cleanup(final Statement statement, final ResultSet resultSet) {
-    try {
-      if (resultSet != null) {
-        resultSet.close();
-      }
-    }
-    catch (SQLException e) {/**/}
-    try {
-      if (statement != null) {
-        statement.close();
-      }
-    }
-    catch (SQLException e) {/**/}
   }
 
   private static List<Entity.Key> getReferencedPrimaryKeys(final List<Entity> entities,

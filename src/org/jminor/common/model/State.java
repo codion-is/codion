@@ -199,7 +199,7 @@ public class State {
           if (referredState == null) {//remove this dead weak reference
             members.remove(reference);
           }
-          else if (state.isActive() && referredState != state) {
+          else if (state.isActive() && !state.equals(referredState)) {
             referredState.setActive(false);
           }
         }

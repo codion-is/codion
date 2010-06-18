@@ -56,7 +56,8 @@ public abstract class ValueChangeMapEditPanel<K, V> extends JPanel {
    * @see #prepareUI(boolean, boolean)
    */
   public JComponent setInitialFocusComponent(final JComponent initialFocusComponent) {
-    return this.initialFocusComponent = initialFocusComponent;
+    this.initialFocusComponent = initialFocusComponent;
+    return initialFocusComponent;
   }
 
   public K getInitialFocusComponentKey() {

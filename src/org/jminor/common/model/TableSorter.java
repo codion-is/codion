@@ -502,7 +502,7 @@ public class TableSorter extends AbstractTableModel {
     private int size;
     private int priority;
 
-    public Arrow(boolean descending, int size, int priority) {
+    private Arrow(boolean descending, int size, int priority) {
       this.descending = descending;
       this.size = size;
       this.priority = priority;
@@ -553,7 +553,7 @@ public class TableSorter extends AbstractTableModel {
   private class SortableHeaderRenderer implements TableCellRenderer {
     private TableCellRenderer tableCellRenderer;
 
-    public SortableHeaderRenderer(TableCellRenderer tableCellRenderer) {
+    private SortableHeaderRenderer(TableCellRenderer tableCellRenderer) {
       this.tableCellRenderer = tableCellRenderer;
     }
 
@@ -575,7 +575,7 @@ public class TableSorter extends AbstractTableModel {
     private int column;
     private int direction;
 
-    public Directive(int column, int direction) {
+    private Directive(int column, int direction) {
       this.column = column;
       this.direction = direction;
     }

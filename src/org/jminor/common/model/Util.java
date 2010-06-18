@@ -13,6 +13,9 @@ import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.Collator;
 import java.util.*;
 import java.util.prefs.Preferences;
@@ -332,10 +335,11 @@ public final class Util {
     BufferedReader input = null;
     try {
       input = new BufferedReader(new InputStreamReader(inputStream, charset));
-      String line;
-      while ((line = input.readLine()) != null) {
+      String line = input.readLine();
+      while (line != null) {
         contents.append(line);
         contents.append(System.getProperty("line.separator"));
+        line = input.readLine();
       }
     }
     finally {
@@ -422,7 +426,6 @@ public final class Util {
       writer.write(contents);
     }
     catch (IOException e) {
-      e.printStackTrace();
       throw new RuntimeException(e);
     }
     finally {
@@ -488,9 +491,10 @@ public final class Util {
 
       // Read in the bytes
       int offset = 0;
-      int numRead;
-      while (offset < bytes.length && (numRead = inputStream.read(bytes, offset, bytes.length - offset)) >= 0) {
+      int numRead = inputStream.read(bytes, offset, bytes.length - offset);
+      while (offset < bytes.length && numRead >= 0) {
         offset += numRead;
+        numRead = inputStream.read(bytes, offset, bytes.length - offset);
       }
 
       // Ensure all the bytes have been read in
@@ -580,6 +584,34 @@ public final class Util {
     }
   }
 
+  public static void closeSilently(final ResultSet... resultSets) {
+    if (resultSets == null) {
+      return;
+    }
+    for (final ResultSet resultSet : resultSets) {
+      try {
+        if (resultSet != null) {
+          resultSet.close();
+        }
+      }
+      catch (SQLException e) {/**/}
+    }
+  }
+
+  public static void closeSilently(final Statement... statements) {
+    if (statements == null) {
+      return;
+    }
+    for (final Statement statement : statements) {
+      try {
+        if (statement != null) {
+          statement.close();
+        }
+      }
+      catch (SQLException e) {/**/}
+    }
+  }
+
   public static void closeSilently(final Closeable... closeables) {
     if (closeables == null) {
       return;
@@ -634,8 +666,9 @@ public final class Util {
     rejectNullValue(value);
     rejectNullValue(key);
     rejectNullValue(map);
-    if (!map.containsKey(key))
+    if (!map.containsKey(key)) {
       map.put(key, new ArrayList<V>());
+    }
 
     map.get(key).add(value);
   }
@@ -643,16 +676,12 @@ public final class Util {
   public static boolean onClasspath(final String classname) {
     rejectNullValue(classname);
     try {
-      if (classname == null)
-        return false;
-
       Class.forName(classname);
+      return true;
     }
     catch (ClassNotFoundException e) {
       return false;
     }
-
-    return true;
   }
 
   /**

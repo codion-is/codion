@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Vector;
 
 /**
  * A UI component based on the EntityLookupModel
@@ -116,7 +115,7 @@ public class EntityLookupField extends JTextField {
           return e1.compareTo(e2);
         }
       });
-      final JList list = new JList(new Vector<Entity>(entities));
+      final JList list = new JList(entities.toArray());
       final Window owner = UiUtil.getParentWindow(EntityLookupField.this);
       final JDialog dialog = new JDialog(owner, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY));
       dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);

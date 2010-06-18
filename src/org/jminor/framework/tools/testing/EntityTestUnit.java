@@ -170,18 +170,12 @@ public abstract class EntityTestUnit {
    * @throws Exception in case of an exception
    */
   protected Entity testInsert(final Entity testEntity) throws Exception {
+    final List<Entity.Key> keys = getEntityDb().insert(Arrays.asList(testEntity));
     try {
-      final List<Entity.Key> keys = getEntityDb().insert(Arrays.asList(testEntity));
-      try {
-        return getEntityDb().selectSingle(keys.get(0));
-      }
-      catch (RecordNotFoundException e) {
-        fail("Inserted entity of type " + testEntity.getEntityID() + " not returned by select after insert");
-        throw e;
-      }
+      return getEntityDb().selectSingle(keys.get(0));
     }
-    catch (Exception e) {
-      e.printStackTrace();
+    catch (RecordNotFoundException e) {
+      fail("Inserted entity of type " + testEntity.getEntityID() + " not returned by select after insert");
       throw e;
     }
   }
@@ -194,19 +188,13 @@ public abstract class EntityTestUnit {
    * @throws Exception in case of an exception
    */
   protected void testSelect(final String entityID, final Entity testEntity) throws Exception {
-    try {
-      if (testEntity != null) {
-        final Entity tmp = getEntityDb().selectSingle(testEntity.getPrimaryKey());
-        assertTrue("Entity of type " + testEntity.getEntityID() + " failed equals comparison",
-                testEntity.equals(tmp));
-      }
-      else {
-        getEntityDb().selectMany(new EntitySelectCriteria(entityID, null, 10));
-      }
+    if (testEntity != null) {
+      final Entity tmp = getEntityDb().selectSingle(testEntity.getPrimaryKey());
+      assertTrue("Entity of type " + testEntity.getEntityID() + " failed equals comparison",
+              testEntity.equals(tmp));
     }
-    catch (Exception e) {
-      e.printStackTrace();
-      throw e;
+    else {
+      getEntityDb().selectMany(new EntitySelectCriteria(entityID, null, 10));
     }
   }
 
@@ -216,31 +204,25 @@ public abstract class EntityTestUnit {
    * @throws Exception in case of an exception
    */
   protected void testUpdate(final Entity testEntity) throws Exception {
-    try {
-      modifyEntity(testEntity);
-      if (!testEntity.isModified()) {
-        return;
-      }
-
-      getEntityDb().update(Arrays.asList(testEntity));
-
-      final Entity tmp = getEntityDb().selectSingle(testEntity.getPrimaryKey());
-      assertEquals("Primary keys of entity and its updated counterpart should be equal",
-              testEntity.getPrimaryKey(), tmp.getPrimaryKey());
-      for (final Property property : EntityRepository.getProperties(testEntity.getEntityID()).values()) {
-        if (!property.isReadOnly() && property.isUpdatable()) {
-          final Object beforeUpdate = testEntity.getValue(property.getPropertyID());
-          final Object afterUpdate = tmp.getValue(property.getPropertyID());
-          assertTrue("Values of property " + property + " should be equal after update ["
-                  + beforeUpdate + (beforeUpdate != null ? (" (" + beforeUpdate.getClass() + ")") : "") + ", "
-                  + afterUpdate + (afterUpdate != null ? (" (" + afterUpdate.getClass() + ")") : "") + "]",
-                  Util.equal(beforeUpdate, afterUpdate));
-        }
-      }
+    modifyEntity(testEntity);
+    if (!testEntity.isModified()) {
+      return;
     }
-    catch (Exception e) {
-      e.printStackTrace();
-      throw e;
+
+    getEntityDb().update(Arrays.asList(testEntity));
+
+    final Entity tmp = getEntityDb().selectSingle(testEntity.getPrimaryKey());
+    assertEquals("Primary keys of entity and its updated counterpart should be equal",
+            testEntity.getPrimaryKey(), tmp.getPrimaryKey());
+    for (final Property property : EntityRepository.getProperties(testEntity.getEntityID()).values()) {
+      if (!property.isReadOnly() && property.isUpdatable()) {
+        final Object beforeUpdate = testEntity.getValue(property.getPropertyID());
+        final Object afterUpdate = tmp.getValue(property.getPropertyID());
+        assertTrue("Values of property " + property + " should be equal after update ["
+                + beforeUpdate + (beforeUpdate != null ? (" (" + beforeUpdate.getClass() + ")") : "") + ", "
+                + afterUpdate + (afterUpdate != null ? (" (" + afterUpdate.getClass() + ")") : "") + "]",
+                Util.equal(beforeUpdate, afterUpdate));
+      }
     }
   }
 
@@ -250,22 +232,16 @@ public abstract class EntityTestUnit {
    * @throws Exception in case of an exception
    */
   protected void testDelete(final Entity testEntity) throws Exception {
-    try {
-      getEntityDb().delete(EntityUtil.getPrimaryKeys(Arrays.asList(testEntity)));
+    getEntityDb().delete(EntityUtil.getPrimaryKeys(Arrays.asList(testEntity)));
 
-      boolean caught = false;
-      try {
-        getEntityDb().selectSingle(testEntity.getPrimaryKey());
-      }
-      catch (DbException e) {
-        caught = true;
-      }
-      assertTrue("Entity of type " + testEntity.getEntityID() + " failed delete test", caught);
+    boolean caught = false;
+    try {
+      getEntityDb().selectSingle(testEntity.getPrimaryKey());
     }
-    catch (Exception e) {
-      e.printStackTrace();
-      throw e;
+    catch (DbException e) {
+      caught = true;
     }
+    assertTrue("Entity of type " + testEntity.getEntityID() + " failed delete test", caught);
   }
 
   /**
@@ -325,19 +301,12 @@ public abstract class EntityTestUnit {
    * @throws Exception in case of an exception
    */
   private Entity initialize(final Entity entity) throws Exception {
-    try {
-      final List<Entity> entities = getEntityDb().selectMany(Arrays.asList(entity.getPrimaryKey()));
-      if (entities.size() > 0) {
-        return entities.get(0);
-      }
+    final List<Entity> entities = getEntityDb().selectMany(Arrays.asList(entity.getPrimaryKey()));
+    if (entities.size() > 0) {
+      return entities.get(0);
+    }
 
-      return getEntityDb().selectSingle(getEntityDb().insert(Arrays.asList(entity)).get(0));
-    }
-    catch (DbException e) {
-      System.out.println(e.getStatement());
-      e.printStackTrace();
-      throw e;
-    }
+    return getEntityDb().selectSingle(getEntityDb().insert(Arrays.asList(entity)).get(0));
   }
 
   /**

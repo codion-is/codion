@@ -8,7 +8,7 @@ import java.text.SimpleDateFormat;
 /**
  * A collection of date format strings.
  */
-public class DateFormats {
+public final class DateFormats {
 
   private DateFormats() {}
 

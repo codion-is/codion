@@ -376,7 +376,8 @@ public class EntityDefinition implements Serializable {
         final Property.DenormalizedProperty denormalizedProperty = (Property.DenormalizedProperty) property;
         Collection<Property.DenormalizedProperty> denormalizedProperties = denormalizedPropertiesMap.get(denormalizedProperty.getForeignKeyPropertyID());
         if (denormalizedProperties == null) {
-          denormalizedPropertiesMap.put(denormalizedProperty.getForeignKeyPropertyID(), denormalizedProperties = new ArrayList<Property.DenormalizedProperty>());
+          denormalizedProperties = new ArrayList<Property.DenormalizedProperty>();
+          denormalizedPropertiesMap.put(denormalizedProperty.getForeignKeyPropertyID(), denormalizedProperties);
         }
         denormalizedProperties.add(denormalizedProperty);
       }

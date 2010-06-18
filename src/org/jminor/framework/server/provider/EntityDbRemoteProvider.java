@@ -127,7 +127,6 @@ public class EntityDbRemoteProvider implements EntityDbProvider {
       }//just to check the connection
     }
     catch (RemoteException e) {
-      e.printStackTrace();
       LOG.info(serverName + " was unreachable, " + user + " - " + clientID + " reconnecting...");
       unreachable = true;
     }
@@ -177,8 +176,7 @@ public class EntityDbRemoteProvider implements EntityDbProvider {
             }
           }
           catch (Exception e) {
-            e.printStackTrace();
-            LOG.error("Server \"" + name + "\" is unreachable");
+            LOG.debug("Server \"" + name + "\" is unreachable", e);
           }
         }
       }
@@ -213,9 +211,10 @@ public class EntityDbRemoteProvider implements EntityDbProvider {
         trustFile.deleteOnExit();
         out = new FileOutputStream(trustFile);
         byte buf[] = new byte[8192];
-        int br;
-        while ((br = in.read(buf)) > 0) {
+        int br = in.read(buf);
+        while (br > 0) {
           out.write(buf, 0, br);
+          br = in.read(buf);
         }
         System.setProperty("javax.net.ssl.trustStore", trustFile.toString());
         LOG.debug("Truststore set to : " + trustFile.toString() + ", original " + truststore);

@@ -3,6 +3,7 @@
  */
 package org.jminor.common.model;
 
+import org.apache.log4j.Logger;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
@@ -20,6 +21,8 @@ import java.util.TimerTask;
  * A class for running multiple application instances for load testing purposes.
  */
 public abstract class LoadTestModel {
+
+  protected static final Logger LOG = Util.getLogger(LoadTestModel.class);
 
   protected static final Random random = new Random();
 
@@ -347,11 +350,13 @@ public abstract class LoadTestModel {
   }
 
   protected void performWork(final Object application) {
+    Util.rejectNullValue(application);
+    final String scenarioName = scenarioChooser.getRandomItem().getName();
     try {
-      runScenario(scenarioChooser.getRandomItem().getName(), application);
+      runScenario(scenarioName, application);
     }
     catch (Exception e) {
-      e.printStackTrace();
+      LOG.debug("Exception while running scenario: " + scenarioName + " with application: " + application, e);
     }
   }
 
@@ -389,7 +394,7 @@ public abstract class LoadTestModel {
         try {
           delayLogin();
           final Object application = initializeApplication();
-          System.out.println("Initialized application: " + application);
+          LOG.debug("LoadTestModel initialized application: " + application);
           applications.push(application);
           evtApplicationtCountChanged.fire();
           while (applications.contains(application)) {
@@ -410,14 +415,13 @@ public abstract class LoadTestModel {
               }
             }
             catch (Exception e) {
-              e.printStackTrace();
+              LOG.debug("Exception during during LoadTestModel.run() with application: " + application, e);
             }
           }
           disconnectApplication(application);
         }
         catch (Exception e) {
-          System.out.println("Exception " + e.getMessage());
-          e.printStackTrace();
+          LOG.error("Exception while initializing application", e);
         }
       }
     };
@@ -425,15 +429,8 @@ public abstract class LoadTestModel {
   }
 
   private synchronized void removeApplication() {
-    Object application = null;
-    try {
-      application = applications.pop();
-      evtApplicationtCountChanged.fire();
-    }
-    catch (Exception e) {
-      System.out.println(application + " exception while logging out");
-      e.printStackTrace();
-    }
+    applications.pop();
+    evtApplicationtCountChanged.fire();
   }
 
   private void delayLogin() {
@@ -443,7 +440,7 @@ public abstract class LoadTestModel {
       Thread.sleep(sleepyTime);// delay login a bit so all do not try to login at the same time
     }
     catch (InterruptedException e) {
-      e.printStackTrace();
+      LOG.error("Delay login sleep interrupted", e);
     }
   }
 
@@ -536,7 +533,8 @@ public abstract class LoadTestModel {
     }
 
     public void resetRunCount() {
-      successfulRunCount = unsuccessfulRunCount = 0;
+      successfulRunCount = 0;
+      unsuccessfulRunCount = 0;
     }
 
     @Override
@@ -555,7 +553,6 @@ public abstract class LoadTestModel {
       }
       catch (Exception e) {
         unsuccessfulRunCount++;
-        e.printStackTrace();
         throw e;
       }
       finally {

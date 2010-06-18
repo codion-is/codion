@@ -271,9 +271,7 @@ public class ConnectionPoolMonitor {
         try {
           updateStats();
         }
-        catch (RemoteException e) {
-          e.printStackTrace();
-        }
+        catch (RemoteException e) {/**/}
       }
     }, delay, delay);
   }

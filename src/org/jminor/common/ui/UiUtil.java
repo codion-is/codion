@@ -48,7 +48,7 @@ public class UiUtil {
   public static final Cursor WAIT_CURSOR = new Cursor(Cursor.WAIT_CURSOR);
   public static final Cursor DEFAULT_CURSOR = new Cursor(Cursor.DEFAULT_CURSOR);
 
-  private static Collection<String> IMAGE_FILE_TYPES = Arrays.asList("gif", "tif", "jpg", "jpeg", "png", "bmp");
+  private static final Collection<String> IMAGE_FILE_TYPES = Arrays.asList("gif", "tif", "jpg", "jpeg", "png", "bmp");
 
   /**
    * A square dimension which sides are the same as the preferred height of a JTextField.
@@ -804,7 +804,7 @@ public class UiUtil {
       listModel.addElement(value);
     }
 
-    final JList list = new JList(new Vector<Object>(values));
+    final JList list = new JList(values.toArray());
     final Window owner = getParentWindow(dialogOwner);
     final JDialog dialog = new JDialog(owner, dialogTitle);
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -904,7 +904,7 @@ public class UiUtil {
       return;
     }
 
-    final int lastDotIndex = imagePath.lastIndexOf(".");
+    final int lastDotIndex = imagePath.lastIndexOf('.');
     if (lastDotIndex != -1) {//if the type is specified check it
       final String type = imagePath.substring(lastDotIndex + 1, imagePath.length()).toLowerCase();
       if (!acceptedFileTypes.contains(type)) {
