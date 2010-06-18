@@ -10,10 +10,12 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.ValueCollectionProvider;
+import org.jminor.common.ui.images.NavigableImagePanel;
 import org.jminor.common.ui.textfield.TextFieldPlus;
 
 import com.toedter.calendar.JCalendar;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.plaf.TabbedPaneUI;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
@@ -28,7 +30,9 @@ import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -43,6 +47,8 @@ public class UiUtil {
 
   public static final Cursor WAIT_CURSOR = new Cursor(Cursor.WAIT_CURSOR);
   public static final Cursor DEFAULT_CURSOR = new Cursor(Cursor.DEFAULT_CURSOR);
+
+  private static Collection<String> IMAGE_FILE_TYPES = Arrays.asList("gif", "tif", "jpg", "jpeg", "png", "bmp");
 
   /**
    * A square dimension which sides are the same as the preferred height of a JTextField.
@@ -872,5 +878,71 @@ public class UiUtil {
     catch (Exception e) {
       return null;
     }
+  }
+
+  /**
+   * @param imagePath the path to the image to show
+   * @param dialogParent the component to use as dialog parent
+   * @throws IOException in case of an IO exception
+   */
+  public static void showImage(final String imagePath, final JComponent dialogParent) throws IOException {
+    showImage(imagePath, dialogParent, IMAGE_FILE_TYPES);
+  }
+
+  /**
+   * @param imagePath the path to the image to show, if the file has a file type suffix it
+   * is checked against the <code>acceptedFileTypes</code> collection.
+   * @param dialogParent the component to use as dialog parent
+   * @param acceptedFileTypes a collection of lower case file type suffixes, "gif", "jpeg"...
+   * @throws IOException in case of an IO exception
+   * @throws IllegalArgumentException in case the file type is not accepted
+   */
+  public static void showImage(final String imagePath, final JComponent dialogParent,
+                               final Collection<String> acceptedFileTypes) throws IOException {
+    Util.rejectNullValue(imagePath);
+    if (imagePath.length() == 0) {
+      return;
+    }
+
+    final int lastDotIndex = imagePath.lastIndexOf(".");
+    if (lastDotIndex != -1) {//if the type is specified check it
+      final String type = imagePath.substring(lastDotIndex + 1, imagePath.length()).toLowerCase();
+      if (!acceptedFileTypes.contains(type)) {
+        throw new IllegalArgumentException(Messages.get(Messages.UNKNOWN_FILE_TYPE) + ": " + type);
+      }
+    }
+    final NavigableImagePanel imagePanel = new NavigableImagePanel();
+    final File imageFile = new File(imagePath);
+    if (imageFile.exists()) {
+      final BufferedImage bufferedImage = ImageIO.read(imageFile);
+      imagePanel.setImage(bufferedImage);
+      final JDialog dialog = initializeDialog(dialogParent, imagePanel);
+
+      dialog.setTitle(imageFile.getName());
+
+      if (!dialog.isShowing()) {
+        dialog.setVisible(true);
+      }
+    }
+    else {
+      throw new RuntimeException(Messages.get(Messages.FILE_NOT_FOUND) + ": " + imagePath);
+    }
+  }
+
+  private static JDialog initializeDialog(final JComponent parent, final NavigableImagePanel panel) {
+    final JDialog ret =  new JDialog(getParentWindow(parent));
+    ret.setLayout(new BorderLayout());
+    ret.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+    addKeyEvent(ret.getRootPane(), KeyEvent.VK_ESCAPE, new AbstractAction("close") {
+      public void actionPerformed(ActionEvent e) {
+        ret.dispose();
+      }
+    });
+    ret.add(panel, BorderLayout.CENTER);
+    ret.setSize(getScreenSizeRatio(0.5));
+    ret.setLocationRelativeTo(parent);
+    ret.setModal(false);
+
+    return ret;
   }
 }

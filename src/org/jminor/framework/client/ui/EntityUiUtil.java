@@ -58,6 +58,7 @@ import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -79,6 +80,27 @@ public class EntityUiUtil {
     Util.setLoggingLevel((Level) model.getSelectedItem());
   }
 
+  public static AbstractAction initializeViewImageAction(final EntityTablePanel tablePanel, final String imagePathPropertyID) {
+    Util.rejectNullValue(tablePanel);
+    Util.rejectNullValue(imagePathPropertyID);
+    return new AbstractAction() {
+      public void actionPerformed(final ActionEvent e) {
+        try {
+          final EntityTableModel tableModel = tablePanel.getTableModel();
+          if (!tableModel.getSelectionModel().isSelectionEmpty()) {
+            final Entity selected = tableModel.getSelectedItem();
+            if (!selected.isValueNull(imagePathPropertyID)) {
+              UiUtil.showImage(selected.getStringValue(imagePathPropertyID), tablePanel);
+            }
+          }
+        }
+        catch (IOException ex) {
+          throw new RuntimeException(ex);
+        }
+      }
+    };
+  }
+
   public static List<Entity> selectEntities(final EntityTableModel lookupModel, final Window owner,
                                             final boolean singleSelection, final String dialogTitle) throws CancelException {
     return selectEntities(lookupModel, owner, singleSelection, dialogTitle, null, false);
@@ -87,6 +109,7 @@ public class EntityUiUtil {
   public static List<Entity> selectEntities(final EntityTableModel lookupModel, final Window owner,
                                             final boolean singleSelection, final String dialogTitle,
                                             final Dimension preferredSize, final boolean simpleSearchPanel) throws CancelException {
+    Util.rejectNullValue(lookupModel);
     final List<Entity> selected = new ArrayList<Entity>();
     final JDialog dialog = new JDialog(owner, dialogTitle);
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -196,6 +219,7 @@ public class EntityUiUtil {
    * @return a JLabel for the given property
    */
   public static JLabel createLabel(final Property property, final int horizontalAlignment) {
+    Util.rejectNullValue(property);
     final String text = property.getCaption();
     Util.rejectNullValue(text);
     final JLabel label = new JLabel(text, horizontalAlignment);
@@ -217,6 +241,8 @@ public class EntityUiUtil {
 
   public static JCheckBox createCheckBox(final Property property, final EntityEditModel editModel,
                                          final State enabledState, final boolean includeCaption) {
+    Util.rejectNullValue(property);
+    Util.rejectNullValue(editModel);
     if (!property.isBoolean()) {
       throw new RuntimeException("Boolean property required for createCheckBox");
     }
@@ -239,6 +265,8 @@ public class EntityUiUtil {
 
   public static TristateCheckBox createTristateCheckBox(final Property property, final EntityEditModel editModel,
                                                         final State enabledState, final boolean includeCaption) {
+    Util.rejectNullValue(property);
+    Util.rejectNullValue(editModel);
     if (!property.isBoolean() && property.isNullable()) {
       throw new RuntimeException("Nullable boolean property required for createTristateCheckBox");
     }
@@ -278,6 +306,8 @@ public class EntityUiUtil {
 
   public static EntityComboBox createEntityComboBox(final Property.ForeignKeyProperty foreignKeyProperty,
                                                     final EntityEditModel editModel, final State enabledState) {
+    Util.rejectNullValue(foreignKeyProperty);
+    Util.rejectNullValue(editModel);
     final EntityComboBoxModel boxModel = editModel.initializeEntityComboBoxModel(foreignKeyProperty);
     if (!boxModel.isDataInitialized()) {
       boxModel.refresh();
@@ -303,6 +333,8 @@ public class EntityUiUtil {
 
   public static JTextField createEntityField(final Property.ForeignKeyProperty foreignKeyProperty,
                                              final EntityEditModel editModel) {
+    Util.rejectNullValue(foreignKeyProperty);
+    Util.rejectNullValue(editModel);
     final JTextField textField = new JTextField();
     textField.setEditable(false);
     if (foreignKeyProperty.hasDescription()) {
@@ -338,6 +370,8 @@ public class EntityUiUtil {
                                                           final EntityEditModel editModel,
                                                           final Criteria additionalSearchCriteria,
                                                           final String... searchPropertyIDs) {
+    Util.rejectNullValue(foreignKeyProperty);
+    Util.rejectNullValue(editModel);
     if (searchPropertyIDs == null || searchPropertyIDs.length == 0) {
       throw new RuntimeException("No search properties specified for entity lookup field: " + foreignKeyProperty.getReferencedEntityID());
     }
@@ -352,7 +386,7 @@ public class EntityUiUtil {
             new EntityLookupField(editModel.createEntityLookupModel(foreignKeyProperty.getReferencedEntityID(),
                     additionalSearchCriteria, searchProperties),
                     Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER));
-    new LookupValueLink(lookupField.getModel(), editModel, foreignKeyProperty);
+    new LookupValueLink(lookupField.getModel(), editModel, foreignKeyProperty.getPropertyID());
     if (foreignKeyProperty.hasDescription()) {
       lookupField.setToolTipText(foreignKeyProperty.getDescription());
     }
@@ -367,8 +401,7 @@ public class EntityUiUtil {
 
   public static SteppedComboBox createValueListComboBox(final Property.ValueListProperty property, final EntityEditModel editModel,
                                                         final State enabledState) {
-    final SteppedComboBox comboBox = createComboBox(property, editModel,
-            new ItemComboBoxModel<Object>(property.getValues()), enabledState);
+    final SteppedComboBox comboBox = createComboBox(property, editModel, new ItemComboBoxModel<Object>(property.getValues()), enabledState);
     MaximumMatch.enable(comboBox);
 
     return comboBox;
@@ -382,6 +415,8 @@ public class EntityUiUtil {
   public static SteppedComboBox createComboBox(final Property property, final EntityEditModel editModel,
                                                final ComboBoxModel model, final State enabledState,
                                                final boolean editable) {
+    Util.rejectNullValue(property);
+    Util.rejectNullValue(editModel);
     final SteppedComboBox comboBox = new SteppedComboBox(model);
     comboBox.setEditable(editable);
     new EntityComboBoxValueLink(comboBox, editModel, property);
@@ -406,6 +441,8 @@ public class EntityUiUtil {
   public static DateInputPanel createDateInputPanel(final Property property, final EntityEditModel editModel,
                                                     final SimpleDateFormat dateFormat, final LinkType linkType,
                                                     final boolean includeButton, final State enabledState) {
+    Util.rejectNullValue(property);
+    Util.rejectNullValue(editModel);
     if (!property.isTime()) {
       throw new IllegalArgumentException("Property " + property + " is not a date property");
     }
@@ -422,6 +459,8 @@ public class EntityUiUtil {
 
   public static JTextArea createTextArea(final Property property, final EntityEditModel editModel,
                                          final int rows, final int columns) {
+    Util.rejectNullValue(property);
+    Util.rejectNullValue(editModel);
     if (!property.isString()) {
       throw new RuntimeException("Cannot create a text area for a non-string property");
     }
@@ -466,6 +505,9 @@ public class EntityUiUtil {
                                            final LinkType linkType, final String formatMaskString,
                                            final boolean immediateUpdate, final SimpleDateFormat dateFormat,//todo dateFormat?
                                            final State enabledState, final boolean valueContainsLiteralCharacters) {
+    Util.rejectNullValue(property);
+    Util.rejectNullValue(editModel);
+    Util.rejectNullValue(linkType);
     final JTextField textField = initTextField(property, editModel, enabledState, formatMaskString, valueContainsLiteralCharacters);
     final String propertyID = property.getPropertyID();
     if (property.isString()) {
@@ -550,6 +592,8 @@ public class EntityUiUtil {
   }
 
   public static JPanel createLookupFieldPanel(final EntityLookupField lookupField, final EntityTableModel tableModel) {
+    Util.rejectNullValue(lookupField);
+    Util.rejectNullValue(tableModel);
     final JButton btn = new JButton(new AbstractAction("...") {
       public void actionPerformed(ActionEvent e) {
         try {
@@ -719,11 +763,11 @@ public class EntityUiUtil {
      * Instantiates a new LookupModelValueLink
      * @param lookupModel the lookup model to link
      * @param editModel the EntityEditModel instance
-     * @param foreignKeyProperty the foreign key property to link
+     * @param foreignKeyPropertyID the foreign key property ID to link
      */
     public LookupValueLink(final EntityLookupModel lookupModel, final ValueChangeMapEditModel<String, Object> editModel,
-                           final Property.ForeignKeyProperty foreignKeyProperty) {
-      super(editModel, foreignKeyProperty.getPropertyID(), LinkType.READ_WRITE);
+                           final String foreignKeyPropertyID) {
+      super(editModel, foreignKeyPropertyID, LinkType.READ_WRITE);
       this.lookupModel = lookupModel;
       updateUI();
       lookupModel.eventSelectedEntitiesChanged().addListener(new ActionListener() {
@@ -758,6 +802,8 @@ public class EntityUiUtil {
     public EntityFieldPanel(final Property.ForeignKeyProperty foreignKeyProperty,
                             final EntityEditModel editModel, final EntityTableModel lookupModel) {
       super(new BorderLayout(5,5));
+      Util.rejectNullValue(editModel);
+      Util.rejectNullValue(lookupModel);
       textField = createEntityField(foreignKeyProperty, editModel);
       initializeUI(foreignKeyProperty, editModel, lookupModel);
     }

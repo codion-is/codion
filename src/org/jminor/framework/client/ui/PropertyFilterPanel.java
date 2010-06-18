@@ -241,7 +241,7 @@ public class PropertyFilterPanel extends AbstractSearchPanel<Property> {
   private void createToggleProperty(final JCheckBox checkBox, final boolean isUpperBound) {
     new ToggleBeanValueLink(checkBox.getModel(), getModel(),
             isUpperBound ? PropertyFilterModel.UPPER_BOUND_PROPERTY : PropertyFilterModel.LOWER_BOUND_PROPERTY,
-            isUpperBound ? getModel().eventUpperBoundChanged() : getModel().eventLowerBoundChanged(), null);
+            isUpperBound ? getModel().eventUpperBoundChanged() : getModel().eventLowerBoundChanged());
   }
 
   private TextBeanValueLink createTextProperty(final JComponent component, boolean isUpper, final SimpleDateFormat format) {
@@ -249,12 +249,12 @@ public class PropertyFilterPanel extends AbstractSearchPanel<Property> {
     if (property.isInteger()) {
       return new IntBeanValueLink((IntField) component, getModel(),
               isUpper ? PropertyFilterModel.UPPER_BOUND_PROPERTY : PropertyFilterModel.LOWER_BOUND_PROPERTY,
-              isUpper ? getModel().eventUpperBoundChanged() : getModel().eventLowerBoundChanged(), null);
+              isUpper ? getModel().eventUpperBoundChanged() : getModel().eventLowerBoundChanged());
     }
     if (property.isDouble()) {
       return new DoubleBeanValueLink((DoubleField) component, getModel(),
               isUpper ? PropertyFilterModel.UPPER_BOUND_PROPERTY : PropertyFilterModel.LOWER_BOUND_PROPERTY,
-              isUpper ? getModel().eventUpperBoundChanged() : getModel().eventLowerBoundChanged(), null);
+              isUpper ? getModel().eventUpperBoundChanged() : getModel().eventLowerBoundChanged());
     }
     if (property.isTime()) {
       return new FormattedTextBeanValueLink((JFormattedTextField) component, getModel(),

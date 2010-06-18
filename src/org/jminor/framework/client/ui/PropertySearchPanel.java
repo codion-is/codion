@@ -152,7 +152,7 @@ public class PropertySearchPanel extends AbstractSearchPanel<Property> {
     if (property instanceof Property.ValueListProperty) {
       new SelectedItemBeanValueLink((JComboBox) field, getModel(),
                 isUpperBound ? PropertySearchModel.UPPER_BOUND_PROPERTY : PropertySearchModel.LOWER_BOUND_PROPERTY,
-                Object.class, isUpperBound ? getModel().eventUpperBoundChanged() : getModel().eventLowerBoundChanged(), LinkType.READ_WRITE);
+                Object.class, isUpperBound ? getModel().eventUpperBoundChanged() : getModel().eventLowerBoundChanged());
     }
     else if (property.isTime()) {
       new FormattedTextBeanValueLink((JFormattedTextField) field, getModel(),
@@ -179,7 +179,7 @@ public class PropertySearchPanel extends AbstractSearchPanel<Property> {
     else if (property.isBoolean()) {
       new SelectedItemBeanValueLink((JComboBox) field, getModel(),
               isUpperBound ? PropertySearchModel.UPPER_BOUND_PROPERTY : PropertySearchModel.LOWER_BOUND_PROPERTY,
-              Object.class, isUpperBound ? getModel().eventUpperBoundChanged() : getModel().eventLowerBoundChanged(), LinkType.READ_WRITE);
+              Object.class, isUpperBound ? getModel().eventUpperBoundChanged() : getModel().eventLowerBoundChanged());
     }
     else if (!property.isReference()) {//entity based properties are bound in the model
       new TextBeanValueLink((JTextField) field, getModel(),

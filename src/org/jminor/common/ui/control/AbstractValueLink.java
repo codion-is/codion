@@ -42,12 +42,11 @@ public abstract class AbstractValueLink<T, V> extends Control {
    * @param modelValueChangeEvent an Event on which the UI should be updated to reflect changes in the model
    * @param linkType the link Type
    */
-  public AbstractValueLink(final T valueOwner, final Event modelValueChangeEvent,
-                           final LinkType linkType) {
+  public AbstractValueLink(final T valueOwner, final Event modelValueChangeEvent, final LinkType linkType) {
     Util.rejectNullValue(valueOwner);
+    Util.rejectNullValue(linkType);
     this.valueOwner = valueOwner;
     this.linkType = linkType;
-
     if (linkType != LinkType.WRITE_ONLY && modelValueChangeEvent != null) {
       modelValueChangeEvent.addListener(new ActionListener() {
         public void actionPerformed(final ActionEvent e) {

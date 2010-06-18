@@ -67,6 +67,7 @@ public final class Util {
    * @return true if the host is reachable
    */
   public static boolean isHostReachable(final String host, final int timeout) {
+    rejectNullValue(host);
     try {
       return InetAddress.getByName(host).isReachable(timeout);
     }
@@ -76,6 +77,7 @@ public final class Util {
   }
 
   public static String getUserPreference(final String key, final String defaultValue) {
+    rejectNullValue(key);
     if (userPreferences == null) {
       userPreferences = Preferences.userRoot();
     }
@@ -83,6 +85,7 @@ public final class Util {
   }
 
   public static void putUserPreference(final String key, final String value) {
+    rejectNullValue(key);
     if (userPreferences == null) {
       userPreferences = Preferences.userRoot();
     }
@@ -90,14 +93,17 @@ public final class Util {
   }
 
   public static String getDefaultUserName(final String applicationIdentifier, final String defaultName) {
+    rejectNullValue(applicationIdentifier);
     return getUserPreference(applicationIdentifier + "." + PREF_DEFAULT_USERNAME, defaultName);
   }
 
   public static void setDefaultUserName(final String applicationClassName, final String username) {
+    rejectNullValue(applicationClassName);
     putUserPreference(applicationClassName + "." + PREF_DEFAULT_USERNAME, username);
   }
 
   public static String padString(final String orig, final int length, final char padChar, final boolean left) {
+    rejectNullValue(orig);
     if (orig.length() >= length) {
       return orig;
     }
@@ -127,16 +133,19 @@ public final class Util {
   }
 
   public static void setDefaultLoggingLevel(final Level defaultLoggingLevel) {
+    rejectNullValue(defaultLoggingLevel);
     Util.defaultLoggingLevel = defaultLoggingLevel;
   }
 
   public static void setLoggingLevel(final Level level) {
+    rejectNullValue(level);
     for (final Logger logger : loggers) {
       logger.setLevel(level);
     }
   }
 
   public static Logger getLogger(final Class classToLog) {
+    rejectNullValue(classToLog);
     final Logger logger = Logger.getLogger(classToLog);
     logger.setLevel(getLoggingLevel());
     loggers.add(logger);
@@ -145,6 +154,7 @@ public final class Util {
   }
 
   public static Logger getLogger(final String name) {
+    rejectNullValue(name);
     final Logger logger = Logger.getLogger(name);
     logger.setLevel(getLoggingLevel());
     loggers.add(logger);
@@ -214,6 +224,7 @@ public final class Util {
   }
 
   public static void printListContents(final List<?> list) {
+    rejectNullValue(list);
     printArrayContents(list.toArray(), false);
   }
 
@@ -300,6 +311,8 @@ public final class Util {
    * @throws IOException in case an IOException occurs
    */
   public static String getTextFileContents(final Class resourceClass, final String resourceName, final Charset charset) throws IOException {
+    rejectNullValue(resourceClass);
+    rejectNullValue(resourceName);
     final InputStream inputStream = resourceClass.getResourceAsStream(resourceName);
     if (inputStream == null) {
       throw new FileNotFoundException("Resource not found: '" + resourceName + "'");
@@ -309,10 +322,12 @@ public final class Util {
   }
 
   public static String getTextFileContents(final String filename, final Charset charset) throws IOException {
+    rejectNullValue(filename);
     return getTextFileContents(new FileInputStream(new File(filename)), charset);
   }
 
   public static String getTextFileContents(final InputStream inputStream, final Charset charset) throws IOException {
+    rejectNullValue(inputStream);
     final StringBuilder contents = new StringBuilder();
     BufferedReader input = null;
     try {
@@ -361,6 +376,9 @@ public final class Util {
   }
 
   public static String getDelimitedString(final String[][] headers, final String[][] data, final String delimiter) {
+    rejectNullValue(headers);
+    rejectNullValue(data);
+    rejectNullValue(delimiter);
     final StringBuilder contents = new StringBuilder();
     for (final String[] header : headers) {
       for (int j = 0; j < header.length; j++) {
@@ -395,6 +413,8 @@ public final class Util {
   }
 
   public static void writeFile(final String contents, final File file, final boolean append) {
+    rejectNullValue(contents);
+    rejectNullValue(file);
     BufferedWriter writer = null;
     try {
       final FileWriter fileWriter = new FileWriter(file, append);
@@ -455,6 +475,7 @@ public final class Util {
   }
 
   public static byte[] getBytesFromFile(final File file) throws IOException {
+    rejectNullValue(file);
     InputStream inputStream = null;
     try {
       inputStream = new FileInputStream(file);
@@ -494,17 +515,6 @@ public final class Util {
     }
 
     return sb.toString();
-  }
-
-  /**
-   * @param columnName the columnName
-   * @param sqlStringValue the sql string value
-   * @return a query comparison string, e.g. "columnName = sqlStringValue"
-   * or "columnName is null" in case sqlStringValue is 'null'
-   */
-  public static String getQueryString(final String columnName, final String sqlStringValue) {
-    return new StringBuilder(columnName).append(sqlStringValue.equalsIgnoreCase("null") ?
-            " is " : " = ").append(sqlStringValue).toString();
   }
 
   public static void collate(final List<?> values) {

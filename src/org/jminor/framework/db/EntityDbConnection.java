@@ -869,13 +869,24 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     final StringBuilder stringBuilder = new StringBuilder(" where (");
     int i = 0;
     for (final Property.PrimaryKeyProperty property : properties) {
-      stringBuilder.append(Util.getQueryString(property.getPropertyID(), "?"));
+      stringBuilder.append(getQueryString(property.getPropertyID(), "?"));
       if (i++ < properties.size() - 1) {
         stringBuilder.append(" and ");
       }
     }
 
     return stringBuilder.append(")").toString();
+  }
+
+  /**
+   * @param columnName the columnName
+   * @param sqlStringValue the sql string value
+   * @return a query comparison string, e.g. "columnName = sqlStringValue"
+   * or "columnName is null" in case sqlStringValue is 'null'
+   */
+  private static String getQueryString(final String columnName, final String sqlStringValue) {
+    return new StringBuilder(columnName).append(sqlStringValue.equalsIgnoreCase("null") ?
+            " is " : " = ").append(sqlStringValue).toString();
   }
 
   /**

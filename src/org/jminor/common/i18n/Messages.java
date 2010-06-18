@@ -46,6 +46,7 @@ public final class Messages {
   public static final String MESSAGE_HAS_BEEN_SENT = "message_has_been_sent";
   public static final String EXC_DLG_EMAIL_INSTRUCTIONS = "exc_dlg_email_instructions";
   public static final String FILE_EXISTS = "file_exists";
+  public static final String FILE_NOT_FOUND = "file_not_found";
   public static final String OVERWRITE_FILE = "overwrite_file";
   public static final String LOGIN = "login";
   public static final String LOGOUT = "logout";
@@ -72,6 +73,7 @@ public final class Messages {
   public static final String SELECT_INPUT_FIELD = "select_input_field";
   public static final String SELECT_COLUMNS = "select_columns";
   public static final String SEARCH_FIELD_HINT = "search_field_hint";
+  public static final String UNKNOWN_FILE_TYPE = "unknown_file_type";
 
   static {
     UIManager.put("OptionPane.yesButtonText", get(YES));

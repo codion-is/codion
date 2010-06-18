@@ -31,7 +31,7 @@ public class LookupValueLinkTest {
     final Property.ForeignKeyProperty fkProperty = EntityRepository.getForeignKeyProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_DEPARTMENT_FK);
     final Property deptName = EntityRepository.getProperty(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME);
     final EntityLookupModel lookupModel = model.createEntityLookupModel(fkProperty.getReferencedEntityID(), null, Arrays.asList(deptName));
-    new EntityUiUtil.LookupValueLink(lookupModel, model, fkProperty);
+    new EntityUiUtil.LookupValueLink(lookupModel, model, fkProperty.getPropertyID());
     assertTrue(lookupModel.getSelectedEntities().size() == 0);
     Entity department = model.getDbProvider().getEntityDb().selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "SALES");
     model.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, department);

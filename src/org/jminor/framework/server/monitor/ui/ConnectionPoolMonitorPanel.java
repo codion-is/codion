@@ -126,10 +126,10 @@ public class ConnectionPoolMonitorPanel extends JPanel {
   private JPanel getPoolConfigPanel() {
     final JPanel configBase = new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
 
-    final JSpinner spnTimeout = new JSpinner(new IntBeanSpinnerValueLink(model, "pooledConnectionTimeout", null, null).getSpinnerModel());
-    final JSpinner spnCleanupInterval = new JSpinner(new IntBeanSpinnerValueLink(model, "poolCleanupInterval", null, null).getSpinnerModel());
-    final JSpinner spnMaximumSize = new JSpinner(new IntBeanSpinnerValueLink(model, "maximumPoolSize", null, null).getSpinnerModel());
-    final JSpinner spnMinimumSize = new JSpinner(new IntBeanSpinnerValueLink(model, "minimumPoolSize", null, null).getSpinnerModel());
+    final JSpinner spnTimeout = new JSpinner(new IntBeanSpinnerValueLink(model, "pooledConnectionTimeout", null).getSpinnerModel());
+    final JSpinner spnCleanupInterval = new JSpinner(new IntBeanSpinnerValueLink(model, "poolCleanupInterval", null).getSpinnerModel());
+    final JSpinner spnMaximumSize = new JSpinner(new IntBeanSpinnerValueLink(model, "maximumPoolSize", null).getSpinnerModel());
+    final JSpinner spnMinimumSize = new JSpinner(new IntBeanSpinnerValueLink(model, "minimumPoolSize", null).getSpinnerModel());
 
     ((JSpinner.DefaultEditor) spnTimeout.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) spnCleanupInterval.getEditor()).getTextField().setEditable(false);
@@ -204,7 +204,7 @@ public class ConnectionPoolMonitorPanel extends JPanel {
   private JPanel getChartPanel() {
     final JPanel chartConfig = new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
     final JSpinner spnUpdateInterval = new JSpinner(new IntBeanSpinnerValueLink(model, "statsUpdateInterval",
-            model.eventStatsUpdateIntervalChanged(), null).getSpinnerModel());
+            model.eventStatsUpdateIntervalChanged()).getSpinnerModel());
 
     ((JSpinner.DefaultEditor) spnUpdateInterval.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) spnUpdateInterval.getEditor()).getTextField().setColumns(3);

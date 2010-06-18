@@ -18,6 +18,10 @@ public class ToggleBeanValueLink extends AbstractBeanValueLink {
 
   private final ButtonModel buttonModel;
 
+  public ToggleBeanValueLink(final Object owner, final String propertyName, final Event valueChangeEvent) {
+    this(owner, propertyName, valueChangeEvent, null);
+  }
+
   public ToggleBeanValueLink(final Object owner, final String propertyName, final Event valueChangeEvent,
                              final String caption) {
     this(owner, propertyName, valueChangeEvent, caption, LinkType.READ_WRITE);
@@ -26,6 +30,11 @@ public class ToggleBeanValueLink extends AbstractBeanValueLink {
   public ToggleBeanValueLink(final Object owner, final String propertyName, final Event valueChangeEvent,
                              final String caption, final LinkType linkType) {
     this(new JToggleButton.ToggleButtonModel(), owner, propertyName, valueChangeEvent, caption, linkType);
+  }
+
+  public ToggleBeanValueLink(final ButtonModel buttonModel, final Object owner, final String propertyName,
+                             final Event valueChangeEvent) {
+    this(buttonModel, owner, propertyName, valueChangeEvent, null);
   }
 
   public ToggleBeanValueLink(final ButtonModel buttonModel, final Object owner, final String propertyName,

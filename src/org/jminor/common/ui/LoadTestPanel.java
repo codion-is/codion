@@ -170,7 +170,7 @@ public class LoadTestPanel extends JPanel {
     applicationPanel.setBorder(BorderFactory.createTitledBorder("Applications"));
 
     final JSpinner spnBatchSize = new JSpinner(new IntBeanSpinnerValueLink(getModel(), "applicationBatchSize",
-            getModel().eventApplicationBatchSizeChanged(), null).getSpinnerModel());
+            getModel().eventApplicationBatchSizeChanged()).getSpinnerModel());
     spnBatchSize.setToolTipText("Application batch size");
     ((JSpinner.DefaultEditor) spnBatchSize.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) spnBatchSize.getEditor()).getTextField().setColumns(3);
@@ -271,19 +271,19 @@ public class LoadTestPanel extends JPanel {
 
   private JPanel initializeActivityPanel() {
     SpinnerNumberModel spinnerModel = new IntBeanSpinnerValueLink(getModel(), "maximumThinkTime",
-            getModel().eventMaximumThinkTimeChanged(), null).getSpinnerModel();
+            getModel().eventMaximumThinkTimeChanged()).getSpinnerModel();
     spinnerModel.setStepSize(10);
     final JSpinner spnMaxThinkTime = new JSpinner(spinnerModel);
     ((JSpinner.DefaultEditor) spnMaxThinkTime.getEditor()).getTextField().setColumns(3);
 
     spinnerModel = new IntBeanSpinnerValueLink(getModel(), "minimumThinkTime",
-            getModel().eventMinimumThinkTimeChanged(), null).getSpinnerModel();
+            getModel().eventMinimumThinkTimeChanged()).getSpinnerModel();
     spinnerModel.setStepSize(10);
     final JSpinner spnMinThinkTimeField = new JSpinner(spinnerModel);
     ((JSpinner.DefaultEditor) spnMinThinkTimeField.getEditor()).getTextField().setColumns(3);
 
     spinnerModel = new IntBeanSpinnerValueLink(getModel(), "warningTime",
-            getModel().eventWarningTimeChanged(), null).getSpinnerModel();
+            getModel().eventWarningTimeChanged()).getSpinnerModel();
     spinnerModel.setStepSize(10);
     final JSpinner spnWarningTime = new JSpinner(spinnerModel);
     ((JSpinner.DefaultEditor) spnWarningTime.getEditor()).getTextField().setColumns(3);

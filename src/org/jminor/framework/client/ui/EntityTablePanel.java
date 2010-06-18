@@ -22,7 +22,6 @@ import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.ControlSet;
 import org.jminor.common.ui.control.ToggleBeanValueLink;
 import org.jminor.common.ui.images.Images;
-import org.jminor.common.ui.images.NavigableImagePanel;
 import org.jminor.common.ui.input.BooleanInputProvider;
 import org.jminor.common.ui.input.DateInputProvider;
 import org.jminor.common.ui.input.DoubleInputProvider;
@@ -44,7 +43,6 @@ import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -66,10 +64,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.image.BufferedImage;
 import java.awt.print.PrinterException;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -695,76 +690,6 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     tablePanel.getTableModel().refresh();
 
     return tablePanel;
-  }
-
-  public AbstractAction initializeViewImageAction(final String imagePathPropertyID) {
-    return new AbstractAction() {
-      public void actionPerformed(final ActionEvent e) {
-        try {
-          final EntityTableModel tableModel = getTableModel();
-          if (!tableModel.getSelectionModel().isSelectionEmpty()) {
-            final Entity selected = tableModel.getSelectedItem();
-            if (!selected.isValueNull(imagePathPropertyID)) {
-              showImage(selected.getStringValue(imagePathPropertyID), EntityTablePanel.this);
-            }
-          }
-        }
-        catch (IOException ex) {
-          throw new RuntimeException(ex);
-        }
-      }
-    };
-  }
-
-  private static void showImage(final String imagePath, final JComponent dialogParent) throws IOException {
-    if (imagePath != null && imagePath.length() > 0) {
-      if (!isImage(imagePath)) {
-        return;
-      }
-      final NavigableImagePanel imagePanel = new NavigableImagePanel();
-      final File imageFile = new File(imagePath);
-      if (imageFile.exists()) {
-        final BufferedImage bufferedImage = ImageIO.read(imageFile);
-        imagePanel.setImage(bufferedImage);
-        final JDialog dialog = initializeDialog(dialogParent, imagePanel);
-
-        dialog.setTitle(imageFile.getName());
-
-        if (!dialog.isShowing()) {
-          dialog.setVisible(true);
-        }
-      }
-      else {
-        throw new RuntimeException("Image does not exist: " + imagePath);
-      }
-    }
-  }
-
-  private static boolean isImage(final String imagePath) {
-    final String lowerCasePath = imagePath.toLowerCase();
-    return lowerCasePath.endsWith(".gif")
-            || lowerCasePath.endsWith(".tif")
-            || lowerCasePath.endsWith(".jpg")
-            || lowerCasePath.endsWith(".jpeg")
-            || lowerCasePath.endsWith(".png")
-            || lowerCasePath.endsWith(".bmp");
-  }
-
-  private static JDialog initializeDialog(final JComponent parent, final NavigableImagePanel panel) {
-    final JDialog ret =  new JDialog(UiUtil.getParentWindow(parent));
-    ret.setLayout(new BorderLayout());
-    ret.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-    UiUtil.addKeyEvent(ret.getRootPane(), KeyEvent.VK_ESCAPE, new AbstractAction("close") {
-      public void actionPerformed(ActionEvent e) {
-        ret.dispose();
-      }
-    });
-    ret.add(panel, BorderLayout.CENTER);
-    ret.setSize(UiUtil.getScreenSizeRatio(0.5));
-    ret.setLocationRelativeTo(parent);
-    ret.setModal(false);
-
-    return ret;
   }
 
   /**
