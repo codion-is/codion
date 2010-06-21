@@ -87,19 +87,19 @@ public class MethodLogger {
     }
   }
 
-  public long logExit(final String method, final Throwable exception, final List<LogEntry> subLog) {
+  public LogEntry logExit(final String method, final Throwable exception, final List<LogEntry> subLog) {
     return logExit(method, exception, subLog, null);
   }
 
-  public long logExit(final String method, final Throwable exception, final List<LogEntry> subLog,
+  public LogEntry logExit(final String method, final Throwable exception, final List<LogEntry> subLog,
                       final String exitMessage) {
     this.lastExitDate = System.currentTimeMillis();
     this.lastExitedMethod = method;
     if (enabled) {
-      return addLogEntry(lastExitedMethod, exitMessage, lastExitDate, true, exception, subLog);
+       return addLogEntry(lastExitedMethod, exitMessage, lastExitDate, true, exception, subLog);
     }
 
-    return -1;
+    return null;
   }
 
   public boolean isEnabled() {
@@ -111,16 +111,17 @@ public class MethodLogger {
     reset();
   }
 
-  private synchronized long addLogEntry(final String method, final String message, final long time, final boolean isExit,
+  private synchronized LogEntry addLogEntry(final String method, final String message, final long time, final boolean isExit,
                                         final Throwable exception, final List<LogEntry> subLog) {
     if (!isExit) {
       if (currentLogEntryIndex > logEntries.size()-1) {
         currentLogEntryIndex = 0;
       }
 
-      logEntries.get(currentLogEntryIndex).set(method, message, time, exception);
+      final LogEntry entry = logEntries.get(currentLogEntryIndex);
+      entry.set(method, message, time, exception);
 
-      return -1;
+      return entry;
     }
     else {//add to last log entry
       final LogEntry lastEntry = logEntries.get(currentLogEntryIndex);

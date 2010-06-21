@@ -1736,3 +1736,7 @@
   UiUtil.showImage() overloaded with acceptedFileTypes parameter
   Util.rejectNullValue() added to various methods, relevant code fixed accordingly
   Sonar run, code cleanup
+  LogEntry.setExitTime() now returns the LogEntry instead of delta
+  LogEntry.toString() no longer appends new line characters
+  EntityDbConnection.executePrepared... uses LogEntry for debug output
+  EntityTestUnit.initializeReferenceEntities() improved, needs some additional testing

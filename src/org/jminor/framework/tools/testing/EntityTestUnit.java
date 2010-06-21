@@ -25,6 +25,9 @@ import org.junit.Before;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -277,10 +280,42 @@ public abstract class EntityTestUnit {
    */
   @SuppressWarnings({"UnusedDeclaration"})
   protected void initializeReferenceEntities(final List<String> referenceEntityIDs) throws Exception {
-    for (int i = referenceEntityIDs.size() - 1; i >= 0; i--) {
-      final String entityID = referenceEntityIDs.get(i);
+    Collections.sort(referenceEntityIDs, new Comparator<String>() {
+      public int compare(final String entityIDOne, final String entityIDTwo) {
+        if (superTreeContains(entityIDOne, entityIDTwo)) {
+          return 1;
+        }
+        else if (superTreeContains(entityIDTwo, entityIDOne)) {
+          return -1;
+        }
+        return 0;
+      }
+    });
+    for (final String entityID : referenceEntityIDs) {
       setReferenceEntity(entityID, createReferenceEntity(entityID));
     }
+  }
+
+  private static boolean superTreeContains(final String root, final String entityID) {
+    Util.rejectNullValue(root);
+    Util.rejectNullValue(entityID);
+    if (root.equals(entityID)) {
+      return true;
+    }
+
+    final Collection<Property.ForeignKeyProperty> foreignKeyProperties = EntityRepository.getForeignKeyProperties(root);
+    if (foreignKeyProperties.size() == 0) {
+      return false;
+    }
+
+    for (final Property.ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
+      final String referencedEntityID = foreignKeyProperty.getReferencedEntityID();
+      if (referencedEntityID.equals(root) || referencedEntityID.equals(entityID) || superTreeContains(referencedEntityID, entityID)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   /**

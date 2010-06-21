@@ -10,6 +10,7 @@ import org.jminor.common.db.exception.DbException;
 import org.jminor.common.db.exception.RecordModifiedException;
 import org.jminor.common.db.exception.RecordNotFoundException;
 import org.jminor.common.model.IdSource;
+import org.jminor.common.model.LogEntry;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
@@ -652,10 +653,12 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
       return;
     }
     catch (SQLException e) {
+      LOG.error(this, e);
       exception = e;
     }
     finally {
-      getMethodLogger().logExit("executePreparedUpdate", exception, null);
+      final LogEntry entry = getMethodLogger().logExit("executePreparedUpdate", exception, null);
+      LOG.debug(createLogMessage(sqlStatement, values, exception, entry));
     }
 
     throw exception;
@@ -671,13 +674,30 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
       return statement.executeQuery();
     }
     catch (SQLException e) {
+      LOG.error(this, e);
       exception = e;
     }
     finally {
-      getMethodLogger().logExit("executePreparedSelect", exception, null);
+      final LogEntry entry = getMethodLogger().logExit("executePreparedSelect", exception, null);
+      LOG.debug(createLogMessage(sqlStatement, values, exception, entry));
     }
 
     throw exception;
+  }
+
+  private String createLogMessage(final String sqlStatement, final List<?> values, final SQLException exception, final LogEntry entry) {
+    final StringBuilder logMessage = new StringBuilder();
+    if (entry == null) {
+      logMessage.append(sqlStatement).append(", ").append(Util.getListContentsAsString(values, false));
+    }
+    else {
+      logMessage.append(entry.toString(2));
+    }
+    if (exception != null) {
+      logMessage.append(" [Exception: ").append(exception.getMessage()).append("]");
+    }
+
+    return logMessage.toString();
   }
 
   private void rollbackQuietly() {

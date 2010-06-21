@@ -96,11 +96,11 @@ public class LogEntry implements Serializable, Comparable<LogEntry> {
    * @param exitTime the exit time
    * @return the difference between the given exit time and the entry time
    */
-  public long setExitTime(final long exitTime) {
+  public LogEntry setExitTime(final long exitTime) {
     this.exitTime = exitTime;
     this.delta = this.exitTime - this.entryTime;
 
-    return delta;
+    return this;
   }
 
   public long getExitTime() {
@@ -203,14 +203,14 @@ public class LogEntry implements Serializable, Comparable<LogEntry> {
       stringBuilder.append(indentString).append(getEntryTimeFormatted()).append(" @ ").append(method).append(
               entryMessage != null && entryMessage.length() > 0 ? (": " + entryMessage) : "").append("\n");
       stringBuilder.append(indentString).append(getExitTimeFormatted()).append(" > ").append(delta).append(" ms")
-              .append(exitMessage == null ? "" : " (" + exitMessage + ")").append("\n");
+              .append(exitMessage == null ? "" : " (" + exitMessage + ")");
       if (stackTrace != null) {
         stringBuilder.append(stackTrace);
       }
     }
     else {
       stringBuilder.append(indentString).append(getEntryTimeFormatted()).append(" @ ").append(method).append(
-              entryMessage != null && entryMessage.length() > 0 ? (": " + entryMessage) : "").append("\n");
+              entryMessage != null && entryMessage.length() > 0 ? (": " + entryMessage) : "");
     }
 
     return stringBuilder.toString();

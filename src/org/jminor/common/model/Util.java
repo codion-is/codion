@@ -240,6 +240,10 @@ public final class Util {
   }
 
   public static String getListContentsAsString(final List<?> list, final boolean onePerLine) {
+    if (list == null) {
+      return "";
+    }
+
     return getArrayContentsAsString(list.toArray(), onePerLine);
   }
 

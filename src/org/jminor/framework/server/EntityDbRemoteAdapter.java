@@ -11,6 +11,7 @@ import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolSettings;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.db.pool.DbConnectionPool;
+import org.jminor.common.model.LogEntry;
 import org.jminor.common.model.MethodLogger;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
@@ -723,9 +724,9 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
         try {
           remoteAdapter.setInactive();
           if (logMethod) {
-            final long time = remoteAdapter.methodLogger.logExit(methodName, ex,
+            final LogEntry entry = remoteAdapter.methodLogger.logExit(methodName, ex,
                     connection != null ? connection.getLogEntries() : null);
-            if (time > RequestCounter.warningThreshold) {
+            if (entry != null && entry.getDelta() > RequestCounter.warningThreshold) {
               RequestCounter.warningTimeExceededCounter++;
             }
           }
