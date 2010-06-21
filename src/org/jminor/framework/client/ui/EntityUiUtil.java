@@ -57,6 +57,8 @@ import java.awt.FlowLayout;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -806,6 +808,12 @@ public class EntityUiUtil {
       Util.rejectNullValue(lookupModel);
       textField = createEntityField(foreignKeyProperty, editModel);
       initializeUI(foreignKeyProperty, editModel, lookupModel);
+      addFocusListener(new FocusAdapter() {
+        @Override
+        public void focusGained(final FocusEvent e) {
+          textField.requestFocusInWindow();
+        }
+      });
     }
 
     public JTextField getTextField() {

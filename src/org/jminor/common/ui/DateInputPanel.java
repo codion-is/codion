@@ -13,6 +13,8 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -55,6 +57,12 @@ public class DateInputPanel extends JPanel {
       if (enabledState != null) {
         UiUtil.linkToEnabledState(enabledState, this.button);
       }
+      addFocusListener(new FocusAdapter() {
+        @Override
+        public void focusGained(final FocusEvent e) {
+          inputField.requestFocusInWindow();
+        }
+      });
       add(this.button, BorderLayout.EAST);
     }
   }
