@@ -14,7 +14,7 @@ public final class Messages {
 
   private Messages() {}
 
-  private static final ResourceBundle bundle =
+  private static final ResourceBundle BUNDLE =
           ResourceBundle.getBundle("org.jminor.common.i18n.Messages", Locale.getDefault());
 
   public static final String CANCEL = "cancel";
@@ -85,6 +85,6 @@ public final class Messages {
   }
 
   public static String get(final String key) {
-    return bundle.getString(key);
+    return BUNDLE.getString(key);
   }
 }

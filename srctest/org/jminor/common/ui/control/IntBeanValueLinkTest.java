@@ -23,9 +23,9 @@ public class IntBeanValueLinkTest {
     setIntValue(2);
     assertEquals("Int value should be 2", 2, txtInt.getInt().intValue());
     txtInt.setText("42");
-    assertEquals("Int value should be 42", 42, getIntValue().intValue());
+    assertEquals("Int value should be 42", 42, intValue.intValue());
     txtInt.setText("");
-    assertNull("Int value should be null", getIntValue());
+    assertNull("Int value should be null", intValue);
   }
 
   public Integer getIntValue() {

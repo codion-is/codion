@@ -86,13 +86,12 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   public EntityApplicationPanel() {
     configureApplication();
     persistEntityPanels = Configuration.getBooleanValue(Configuration.PERSIST_ENTITY_PANELS);
-    ToolTipManager.sharedInstance().setInitialDelay(Configuration.getIntValue(Configuration.TOOLTIP_DELAY));
   }
 
   /** {@inheritDoc} */
-  public void handleException(final Throwable e, final JComponent component) {
-    LOG.error(this, e);
-    DefaultExceptionHandler.get().handleException(e, component);
+  public void handleException(final Throwable exception, final JComponent dialogParent) {
+    LOG.error(this, exception);
+    DefaultExceptionHandler.getInstance().handleException(exception, dialogParent);
   }
 
   /**
@@ -123,11 +122,11 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   }
 
   public void login() throws CancelException {
-    getModel().login(getUser(Messages.get(Messages.LOGIN), null, getClass().getSimpleName(), null));
+    applicationModel.login(getUser(Messages.get(Messages.LOGIN), null, getClass().getSimpleName(), null));
   }
 
   public void logout() {
-    getModel().logout();
+    applicationModel.logout();
   }
 
   public void setLoggingLevel() {
@@ -531,7 +530,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
         }
       }
       else {
-        entityPanel = EntityPanel.createInstance(panelProvider, getModel().getDbProvider());
+        entityPanel = EntityPanel.createInstance(panelProvider, applicationModel.getDbProvider());
         entityPanel.initializePanel();
         if (persistEntityPanels) {
           persistentEntityPanels.put(panelProvider, entityPanel);
@@ -642,7 +641,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   }
 
   protected String getFrameTitle(final String frameCaption, final User user) throws Exception {
-    return frameCaption + " - " + getUserInfo(user, getModel().getDbProvider().getDescription());
+    return frameCaption + " - " + getUserInfo(user, applicationModel.getDbProvider().getDescription());
   }
 
   /**
@@ -718,8 +717,8 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    */
   protected void setUncaughtExceptionHandler() {
     Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-      public void uncaughtException(final Thread thread, final Throwable throwable) {
-        DefaultExceptionHandler.get().handleException(throwable, EntityApplicationPanel.this);
+      public void uncaughtException(final Thread t, final Throwable e) {
+        DefaultExceptionHandler.getInstance().handleException(e, EntityApplicationPanel.this);
       }
     });
   }

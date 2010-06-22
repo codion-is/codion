@@ -77,7 +77,7 @@ public class EntityCriteria implements Serializable {
    * @return a where condition based on this EntityCriteria
    */
   public String asString() {
-    return EntityRepository.getTableName(getEntityID()) + " " + getWhereClause();
+    return EntityRepository.getTableName(entityID) + " " + getWhereClause();
   }
 
   /**

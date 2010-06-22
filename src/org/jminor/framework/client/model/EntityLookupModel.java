@@ -171,7 +171,7 @@ public class EntityLookupModel {
     if ((entities == null || entities.size() == 0) && this.selectedEntities.size() == 0) {
       return;
     }//no change
-    if (entities != null && entities.size() > 1 && !isMultipleSelectionAllowed()) {
+    if (entities != null && entities.size() > 1 && !multipleSelectionAllowed) {
       throw new IllegalArgumentException("This EntityLookupModel does not allow the selection of multiple entities");
     }
 
@@ -304,8 +304,8 @@ public class EntityLookupModel {
    */
   public boolean searchStringRepresentsSelected() {
     final String selectedAsString = toString(getSelectedEntities());
-    return (getSelectedEntities().size() == 0 && getSearchString().length() == 0)
-            || getSelectedEntities().size() > 0 && selectedAsString.equals(getSearchString());
+    return (getSelectedEntities().size() == 0 && searchString.length() == 0)
+            || getSelectedEntities().size() > 0 && selectedAsString.equals(searchString);
   }
 
   /**
@@ -313,21 +313,20 @@ public class EntityLookupModel {
    * @see #setAdditionalLookupCriteria(org.jminor.common.db.criteria.Criteria)
    */
   public EntitySelectCriteria getEntitySelectCriteria() {
-    if (getSearchString().equals(getWildcard())) {
-      return new EntitySelectCriteria(getEntityID());
+    if (searchString.equals(wildcard)) {
+      return new EntitySelectCriteria(entityID);
     }
 
     final CriteriaSet<Property> baseCriteria = new CriteriaSet<Property>(CriteriaSet.Conjunction.OR);
-    final String[] lookupTexts = isMultipleSelectionAllowed() ? getSearchString().split(getMultipleValueSeparator()) : new String[] {getSearchString()};
+    final String[] lookupTexts = multipleSelectionAllowed ? searchString.split(multipleValueSeparator) : new String[] {searchString};
     for (final Property lookupProperty : lookupProperties) {
       for (final String lookupText : lookupTexts) {
-        final String modifiedLookupText = (isWildcardPrefix() ? getWildcard() : "") + lookupText
-                + (isWildcardPostfix() ? getWildcard() : "");
-        baseCriteria.addCriteria(new PropertyCriteria(lookupProperty, SearchType.LIKE, modifiedLookupText).setCaseSensitive(isCaseSensitive()));
+        final String modifiedLookupText = (wildcardPrefix ? wildcard : "") + lookupText + (wildcardPostfix ? wildcard : "");
+        baseCriteria.addCriteria(new PropertyCriteria(lookupProperty, SearchType.LIKE, modifiedLookupText).setCaseSensitive(caseSensitive));
       }
     }
 
-    return new EntitySelectCriteria(getEntityID(), additionalLookupCriteria == null ? baseCriteria :
+    return new EntitySelectCriteria(entityID, additionalLookupCriteria == null ? baseCriteria :
             new CriteriaSet<Property>(CriteriaSet.Conjunction.AND, additionalLookupCriteria, baseCriteria));
   }
 
@@ -363,7 +362,7 @@ public class EntityLookupModel {
     for (int i = 0; i < entityList.size(); i++) {
       stringBuilder.append(entityList.get(i).toString());
       if (i < entityList.size() - 1) {
-        stringBuilder.append(getMultipleValueSeparator());
+        stringBuilder.append(multipleValueSeparator);
       }
     }
 

@@ -25,11 +25,11 @@ public class SelectedItemBeanValueLinkTest {
   public void test() throws Exception {
     final JComboBox box = new JComboBox(new String[] {"b", "d", "s"});
     new SelectedItemBeanValueLink(box, this, "selectedItem", String.class, evtSelectedItemChanged);
-    assertNull("selected item should be null", getSelectedItem());
+    assertNull("selected item should be null", selectedItem);
     setSelectedItem("s");
     assertEquals("selected item should be 's'", "s", box.getSelectedItem());
     box.setSelectedItem("d");
-    assertEquals("selected item should be 'd'", "d", getSelectedItem());
+    assertEquals("selected item should be 'd'", "d", selectedItem);
   }
 
   public String getSelectedItem() {

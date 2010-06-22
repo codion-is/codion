@@ -60,13 +60,8 @@ public class EmpDeptAppPanel extends EntityApplicationPanel {
     return new EmpDeptAppModel(user);
   }
 
-  public static void main(final String[] args) {
-    try {
-      UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-    }
-    catch (Exception e) {
-      e.printStackTrace();
-    }
+  public static void main(final String[] args) throws Exception {
+    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
     new EmpDeptAppPanel().startApplication("Emp-Dept", null, false, UiUtil.getScreenSizeRatio(0.6), new User("scott", "tiger"));
   }
 }

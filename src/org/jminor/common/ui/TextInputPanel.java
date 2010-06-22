@@ -26,13 +26,15 @@ import java.awt.event.ActionEvent;
  */
 public class TextInputPanel extends JPanel {
 
+  private static final double DEFAULT_TEXT_AREA_SCREEN_SIZE_RATIO = 1d/3d;
+
   private final JTextComponent textComponent;
   private final String dialogTitle;
   private final Dimension txtAreaSize;
   private int maxLength = 0;
 
   public TextInputPanel(final JTextComponent textComponent, final String dialogTitle) {
-    this(textComponent, dialogTitle, null);
+    this(textComponent, dialogTitle, UiUtil.getScreenSizeRatio(DEFAULT_TEXT_AREA_SCREEN_SIZE_RATIO));
   }
 
   public TextInputPanel(final JTextComponent textComponent, final String dialogTitle,
@@ -88,22 +90,22 @@ public class TextInputPanel extends JPanel {
           protected Document createDefaultModel() {
             return new PlainDocument() {
               @Override
-              public void insertString(final int offset, final String string, final AttributeSet a) throws BadLocationException {
-                if (getMaxLength() > 0 && getLength() + (string != null ? string.length() : 0) > getMaxLength()) {
+              public void insertString(final int offs, final String str, final AttributeSet a) throws BadLocationException {
+                if (getMaxLength() > 0 && getLength() + (str != null ? str.length() : 0) > getMaxLength()) {
                   return;
                 }
 
-                super.insertString(offset, string, a);
+                super.insertString(offs, str, a);
               }
             };
           }
         };
-        txtArea.setPreferredSize(txtAreaSize == null ? UiUtil.getScreenSizeRatio(0.3) : txtAreaSize);
+        txtArea.setPreferredSize(txtAreaSize);
         txtArea.setLineWrap(true);
         txtArea.setWrapStyleWord(true);
         final JScrollPane scroller = new JScrollPane(txtArea);
         final AbstractAction okAction = new AbstractAction(Messages.get(Messages.OK)) {
-          public void actionPerformed(final ActionEvent e) {
+          public void actionPerformed(final ActionEvent evt) {
             textComponent.setText(txtArea.getText());
           }
         };

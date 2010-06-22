@@ -123,7 +123,7 @@ public class StringProvider<K> implements ValueMap.ToString<K>, Serializable {
     private final T key;
     private final Format format;
 
-    public FormattedValueProvider(final T key, final Format format) {
+    FormattedValueProvider(final T key, final Format format) {
       this.key = key;
       this.format = format;
     }
@@ -141,7 +141,7 @@ public class StringProvider<K> implements ValueMap.ToString<K>, Serializable {
     private final T referenceKey;
     private final T key;
 
-    public ReferencedValueProvider(final T referenceKey, final T key) {
+    ReferencedValueProvider(final T referenceKey, final T key) {
       this.referenceKey = referenceKey;
       this.key = key;
     }
@@ -171,7 +171,7 @@ public class StringProvider<K> implements ValueMap.ToString<K>, Serializable {
   private static class StringValueProvider<T> implements ValueProvider<T> {
     private final T key;
 
-    public StringValueProvider(final T key) {
+    StringValueProvider(final T key) {
       this.key = key;
     }
 
@@ -187,7 +187,7 @@ public class StringProvider<K> implements ValueMap.ToString<K>, Serializable {
   private static class StaticTextProvider<T> implements ValueProvider<T> {
     private final String text;
 
-    public StaticTextProvider(final String text) {
+    StaticTextProvider(final String text) {
       this.text = text;
     }
 

@@ -13,7 +13,7 @@ public interface Serializer<V> {
 
   String serialize(final List<V> values) throws SerializeException;
 
-  public class SerializeException extends Exception {
+  class SerializeException extends Exception {
     public SerializeException(final String message, final Throwable cause) {
       super(message, cause);
     }

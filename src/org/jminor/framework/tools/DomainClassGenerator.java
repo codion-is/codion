@@ -281,7 +281,7 @@ public final class DomainClassGenerator {
   static class Schema {
     private final String schemaName;
 
-    public Schema(final String schemaName) {
+    Schema(final String schemaName) {
       this.schemaName = schemaName;
     }
 
@@ -308,7 +308,7 @@ public final class DomainClassGenerator {
     private final String tableName;
     private List<Column> columns;
 
-    public Table(final String schemaName, final String tableName) {
+    Table(final String schemaName, final String tableName) {
       this.schemaName = schemaName;
       this.tableName = tableName;
     }
@@ -331,7 +331,7 @@ public final class DomainClassGenerator {
 
     private final Collection<String> tablesToInclude;
 
-    public TablePacker(final String tablesToInclude) {
+    TablePacker(final String tablesToInclude) {
       this.tablesToInclude = tablesToInclude != null && tablesToInclude.length() > 0
               ? getTablesToInclude(tablesToInclude) : null;
     }
@@ -372,7 +372,7 @@ public final class DomainClassGenerator {
     private ForeignKey foreignKey;
     private PrimaryKey primaryKey;
 
-    public Column(final String schemaName, final String tableName, final String columnName, final String columnType,
+    Column(final String schemaName, final String tableName, final String columnName, final String columnType,
                   final int columnSize, final int decimalDigits, final int nullable, final boolean hasDefaultValue,
                   final String comment) {
       this.schemaName = schemaName;
@@ -431,7 +431,7 @@ public final class DomainClassGenerator {
     private final String fkColumnName;
     private final short keySeq;
 
-    public ForeignKey(final String pkSchemaName, final String pkTableName, final String pkColumnName,
+    ForeignKey(final String pkSchemaName, final String pkTableName, final String pkColumnName,
                       final String fkSchemaName, final String fkTableName, final String fkColumnName,
                       final short keySeq) {
       this.pkSchemaName = pkSchemaName;
@@ -478,7 +478,7 @@ public final class DomainClassGenerator {
     private final String pkColumnName;
     private final short keySeq;
 
-    public PrimaryKey(final String pkSchemaName, final String pkTableName, final String pkColumnName, final short keySeq) {
+    PrimaryKey(final String pkSchemaName, final String pkTableName, final String pkColumnName, final short keySeq) {
       this.pkSchemaName = pkSchemaName;
       this.pkTableName = pkTableName;
       this.pkColumnName = pkColumnName;

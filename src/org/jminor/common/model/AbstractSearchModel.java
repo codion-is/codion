@@ -161,8 +161,8 @@ public abstract class AbstractSearchModel<K> {
    * @return the upper bound
    */
   public Object getUpperBound() {
-    if (getType() == Types.VARCHAR && automaticWildcard) {
-      return getWildcard() + upperBound + getWildcard();
+    if (type == Types.VARCHAR && automaticWildcard) {
+      return wildcard + upperBound + wildcard;
     }
     else {
       return upperBound;
@@ -243,8 +243,8 @@ public abstract class AbstractSearchModel<K> {
    * @return the lower bound
    */
   public Object getLowerBound() {
-    if (getType() == Types.VARCHAR && automaticWildcard) {
-      return getWildcard() + lowerBound + getWildcard();
+    if (type == Types.VARCHAR && automaticWildcard) {
+      return wildcard + lowerBound + wildcard;
     }
     else {
       return lowerBound;

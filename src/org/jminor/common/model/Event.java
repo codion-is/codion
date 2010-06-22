@@ -35,8 +35,8 @@ public class Event implements ActionListener {
   }
 
   /** {@inheritDoc} */
-  public void actionPerformed(final ActionEvent event) {
-    fire(event);
+  public void actionPerformed(final ActionEvent e) {
+    fire(e);
   }
 
   /**

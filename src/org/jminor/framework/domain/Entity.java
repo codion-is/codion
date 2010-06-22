@@ -60,7 +60,6 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
   private transient Map<String, Property> properties;
 
   private static Map<String, Proxy> proxies;
-  private static final Proxy defaultProxy = new Proxy();
 
   /**
    * Instantiates a new Entity
@@ -125,12 +124,12 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
   }
 
   /**
-   * @param propertyID the property ID
+   * @param key the property ID
    * @return true if the property has been modified since the entity was instantiated
    */
   @Override
-  public boolean isModified(final String propertyID) {
-    return super.isModified(propertyID) || primaryKey.isModified(propertyID);
+  public boolean isModified(final String key) {
+    return super.isModified(key) || primaryKey.isModified(key);
   }
 
   /**
@@ -147,25 +146,25 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
 
   /**
    * Returns the value this property had when the entity was loaded
-   * @param propertyID the property identifier
+   * @param key the property identifier
    * @return the original value of the property
    */
   @Override
-  public Object getOriginalValue(final String propertyID) {
-    final Property property = getProperty(propertyID);
+  public Object getOriginalValue(final String key) {
+    final Property property = getProperty(key);
     if (property instanceof Property.PrimaryKeyProperty) {
-      return primaryKey.getOriginalValue(propertyID);
+      return primaryKey.getOriginalValue(key);
     }
     if (property instanceof Property.ForeignKeyProperty) {
-      return foreignKeyValues.getOriginalValue(propertyID);
+      return foreignKeyValues.getOriginalValue(key);
     }
 
-    return super.getOriginalValue(propertyID);
+    return super.getOriginalValue(key);
   }
 
   @Override
-  public Object setValue(final String propertyID, final Object value) {
-    return setValue(getProperty(propertyID), value);
+  public Object setValue(final String key, final Object value) {
+    return setValue(getProperty(key), value);
   }
 
   public Object setValue(final Property property, final Object value) {
@@ -214,12 +213,12 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
    * Initializes the given value assuming it has no previously set value.
    * This method does not propagate foreign key values but does set denormalized values if any exist.
    * This method should be used with care, if at all.
-   * @param propertyID the ID of the property for which to initialize the value
+   * @param key the ID of the property for which to initialize the value
    * @param value the value
    */
   @Override
-  public void initializeValue(final String propertyID, final Object value) {
-    initializeValue(getProperty(propertyID), value);
+  public void initializeValue(final String key, final Object value) {
+    initializeValue(getProperty(key), value);
   }
 
   /**
@@ -242,12 +241,12 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
   }
 
   /**
-   * @param propertyID the ID of the property for which to retrieve the value
+   * @param key the ID of the property for which to retrieve the value
    * @return the value of the property identified by <code>propertyID</code>
    */
   @Override
-  public Object getValue(final String propertyID) {
-    return getValue(getProperty(propertyID));
+  public Object getValue(final String key) {
+    return getValue(getProperty(key));
   }
 
   /**
@@ -286,24 +285,24 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
   }
 
   @Override
-  public Object removeValue(final String propertyID) {
-    final Property property = getProperty(propertyID);
+  public Object removeValue(final String key) {
+    final Property property = getProperty(key);
     if (property instanceof Property.PrimaryKeyProperty) {
-      return primaryKey.removeValue(propertyID);
+      return primaryKey.removeValue(key);
     }
     if (property instanceof Property.ForeignKeyProperty) {
       for (final Property fkProperty : ((Property.ForeignKeyProperty) property).getReferenceProperties()) {
         removeValue(fkProperty.getPropertyID());
       }
-      return foreignKeyValues.removeValue(propertyID);
+      return foreignKeyValues.removeValue(key);
     }
 
-    return super.removeValue(propertyID);
+    return super.removeValue(key);
   }
 
   @Override
-  public boolean isValueNull(final String propertyID) {
-    return isValueNull(getProperty(propertyID));
+  public boolean isValueNull(final String key) {
+    return isValueNull(getProperty(key));
   }
 
   public boolean isValueNull(final Property property) {
@@ -507,7 +506,7 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
    * @return true if the this entity instance has a null primary key
    */
   public boolean isNull() {
-    return getPrimaryKey().isNull();
+    return primaryKey.isNull();
   }
 
   /**
@@ -532,26 +531,26 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
   @Override
   protected boolean valuesEqual(final Object valueOne, final Object valueTwo) {
     if (valueOne instanceof Entity && valueTwo instanceof Entity) {
-      return ((Entity) valueOne).getPrimaryKey().equals(((Entity) valueTwo).getPrimaryKey());
+      return ((Entity) valueOne).primaryKey.equals(((Entity) valueTwo).primaryKey);
     }
     return super.valuesEqual(valueOne, valueTwo);
   }
 
   /**
-   * @param object the object to compare with
+   * @param obj the object to compare with
    * @return true if the given object is an Entity and it´s primary key is equal to this ones
    */
   @Override
-  public boolean equals(final Object object) {
-    return this == object || object instanceof Entity && ((Entity) object).primaryKey.equals(primaryKey);
+  public boolean equals(final Object obj) {
+    return this == obj || obj instanceof Entity && ((Entity) obj).primaryKey.equals(primaryKey);
   }
 
   /**
-   * @param entity the entity to compare with
+   * @param o the entity to compare with
    * @return the compare result from comparing <code>entity</code> with this Entity instance
    */
-  public int compareTo(final Entity entity) {
-    return getProxy(getEntityID()).compareTo(this, entity);
+  public int compareTo(final Entity o) {
+    return getProxy(getEntityID()).compareTo(this, o);
   }
 
   /**
@@ -587,20 +586,20 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
    * Makes this entity identical to <code>sourceEntity</code>, assuming it
    * is a Entity instance.
    * Reference entity values, which are mutable, are deep copied with getCopy()
-   * @param sourceEntity the Entity to copy
+   * @param sourceMap the Entity to copy
    * @throws IllegalArgumentException in case <code>sourceEntity</code> is not Entity instance.
    */
   @Override
-  public void setAs(final ValueChangeMap<String, Object> sourceEntity) {
-    if (sourceEntity != null && !(sourceEntity instanceof Entity)) {
-      throw new IllegalArgumentException("Not a Entity instance: " + sourceEntity);
+  public void setAs(final ValueChangeMap<String, Object> sourceMap) {
+    if (sourceMap != null && !(sourceMap instanceof Entity)) {
+      throw new IllegalArgumentException("Not a Entity instance: " + sourceMap);
     }
 
-    super.setAs(sourceEntity);
-    final Entity entity = (Entity) sourceEntity;
-    primaryKey.setAs(entity == null ? null : entity.getPrimaryKey());
+    super.setAs(sourceMap);
+    final Entity entity = (Entity) sourceMap;
+    primaryKey.setAs(entity == null ? null : entity.primaryKey);
     foreignKeyValues.setAs(entity == null ? null : entity.foreignKeyValues);
-    toString = sourceEntity == null ? null : sourceEntity.toString();
+    toString = sourceMap == null ? null : sourceMap.toString();
   }
 
   /**
@@ -610,22 +609,26 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
    * @return the primary key of the underlying entity, null if no entity is referenced
    */
   public Key getReferencedPrimaryKey(final Property.ForeignKeyProperty foreignKeyProperty) {
-    Key primaryKey = referencedPrimaryKeysCache == null ? null : referencedPrimaryKeysCache.get(foreignKeyProperty);
-    if (primaryKey != null) {
-      return primaryKey;
+    Key key = referencedPrimaryKeysCache == null ? null : referencedPrimaryKeysCache.get(foreignKeyProperty);
+    if (key != null) {
+      return key;
     }
 
-    primaryKey = foreignKeyProperty.getReferenceProperties().size() == 1 ?
-            initializeSinglePropertyKey(foreignKeyProperty) : initializeMultiPropertyKey(foreignKeyProperty);
+    if (foreignKeyProperty.getReferenceProperties().size() == 1) {
+      key = initializeSinglePropertyKey(foreignKeyProperty);
+    }
+    else {
+      key = initializeMultiPropertyKey(foreignKeyProperty);
+    }
 
-    if (primaryKey != null) {
+    if (key != null) {
       if (referencedPrimaryKeysCache == null) {
         referencedPrimaryKeysCache = new HashMap<Property.ForeignKeyProperty, Key>();
       }
-      referencedPrimaryKeysCache.put(foreignKeyProperty, primaryKey);
+      referencedPrimaryKeysCache.put(foreignKeyProperty, key);
     }
 
-    return primaryKey;
+    return key;
   }
 
   @Override
@@ -643,8 +646,8 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
   }
 
   @Override
-  public boolean containsValue(final String propertyID) {
-    return containsValue(getProperty(propertyID));
+  public boolean containsValue(final String key) {
+    return containsValue(getProperty(key));
   }
 
   public boolean containsValue(final Property property) {
@@ -743,7 +746,7 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
       return proxies.get(entityID);
     }
 
-    return defaultProxy;
+    return Proxy.getInstance();
   }
 
   /**
@@ -868,7 +871,7 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
   }
 
   private Key initializeMultiPropertyKey(final Property.ForeignKeyProperty foreignKeyProperty) {
-    final Key primaryKey = new Entity.Key(foreignKeyProperty.getReferencedEntityID());
+    final Key key = new Entity.Key(foreignKeyProperty.getReferencedEntityID());
     for (final Property referenceKeyProperty : foreignKeyProperty.getReferenceProperties()) {
       final Object value = referenceKeyProperty instanceof Property.PrimaryKeyProperty
               ? this.primaryKey.getValue(referenceKeyProperty.getPropertyID())
@@ -877,11 +880,11 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
         return null;
       }
       else {
-        primaryKey.setValue(foreignKeyProperty.getReferencedPropertyID(referenceKeyProperty), value);
+        key.setValue(foreignKeyProperty.getReferencedPropertyID(referenceKeyProperty), value);
       }
     }
 
-    return primaryKey;
+    return key;
   }
 
   private boolean writablePropertiesModified() {
@@ -992,7 +995,7 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
 
     @Override
     public String getMapTypeID() {
-      return getEntityID();
+      return entityID;
     }
 
     /**
@@ -1032,18 +1035,18 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
     }
 
     @Override
-    public Object setValue(final String propertyID, final Object newValue) {
+    public Object setValue(final String key, final Object value) {
       hashCodeDirty = true;
       if (singleIntegerKey) {
-        if (!(newValue == null || newValue instanceof Integer)) {
+        if (!(value == null || value instanceof Integer)) {
           throw new IllegalArgumentException("Expecting a Integer value for Key: " + entityID + ", "
-                  + propertyID + ", got " + newValue + "; " + newValue.getClass());
+                  + key + ", got " + value + "; " + value.getClass());
         }
-        hashCode = newValue == null ? INTEGER_NULL_VALUE : (Integer) newValue;
+        hashCode = value == null ? INTEGER_NULL_VALUE : (Integer) value;
         hashCodeDirty = false;
       }
 
-      return super.setValue(propertyID, newValue);
+      return super.setValue(key, value);
     }
 
     @Override
@@ -1087,17 +1090,17 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
 
     /**
      * Key objects are equal if the entityIDs match as well as all property values.
-     * @param object the object to compare with
+     * @param obj the object to compare with
      * @return true if object is equal to this key
      */
     @SuppressWarnings({"SimplifiableIfStatement"})
     @Override
-    public boolean equals(final Object object) {
-      if (this == object) {
+    public boolean equals(final Object obj) {
+      if (this == obj) {
         return true;
       }
-      if (object instanceof Key) {
-        final Key key = (Key) object;
+      if (obj instanceof Key) {
+        final Key key = (Key) obj;
         if (singleIntegerKey) {
           return key.singleIntegerKey && hashCode() == key.hashCode() && entityID.equals(key.entityID);
         }
@@ -1162,22 +1165,22 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
     /**
      * Copies the values from <code>valueMap</code> to this entity key,
      * assuming it is a Key instance
-     * @param sourceKey the key to copy
+     * @param sourceMap the key to copy
      * @throws IllegalArgumentException in case the entityIDs don't match or
      * <code>valueMap</code> is not a Key instance.
      */
     @Override
-    public void setAs(final ValueChangeMap<String, Object> sourceKey) {
-      if (sourceKey != null && !(sourceKey instanceof Key)) {
-        throw new IllegalArgumentException("Not a Entity.Key instance: " + sourceKey);
+    public void setAs(final ValueChangeMap<String, Object> sourceMap) {
+      if (sourceMap != null && !(sourceMap instanceof Key)) {
+        throw new IllegalArgumentException("Not a Entity.Key instance: " + sourceMap);
       }
 
-      final Key key = (Key) sourceKey;
-      if (key != null && !key.getEntityID().equals(getEntityID())) {
-        throw new IllegalArgumentException("Entity ID mismatch, expected: " + getEntityID() + ", actual: " + key.getEntityID());
+      final Key key = (Key) sourceMap;
+      if (key != null && !key.entityID.equals(entityID)) {
+        throw new IllegalArgumentException("Entity ID mismatch, expected: " + entityID + ", actual: " + key.entityID);
       }
 
-      super.setAs(sourceKey);
+      super.setAs(sourceMap);
       if (key == null) {
         hashCode = INTEGER_NULL_VALUE;
         hashCodeDirty = false;
@@ -1208,7 +1211,14 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
    * in entity specific functionality, such as providing toString() and compareTo() implementations
    */
   public static class Proxy {
+
+    private static final Proxy INSTANCE = new Proxy();
+
     private final Collator collator = Collator.getInstance();
+
+    static Proxy getInstance() {
+      return INSTANCE;
+    }
 
     public int compareTo(final Entity entity, final Entity entityToCompare) {
       return collator.compare(entity.toString(), entityToCompare.toString());

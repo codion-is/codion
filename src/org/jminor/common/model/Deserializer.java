@@ -13,7 +13,7 @@ public interface Deserializer<V> {
 
   List<V> deserialize(final String values) throws DeserializeException;
 
-  public class DeserializeException extends Exception {
+  class DeserializeException extends Exception {
     public DeserializeException(final String message, final Throwable cause) {
       super(message, cause);
     }

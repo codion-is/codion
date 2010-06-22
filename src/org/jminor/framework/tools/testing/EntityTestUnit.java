@@ -281,11 +281,11 @@ public abstract class EntityTestUnit {
   @SuppressWarnings({"UnusedDeclaration"})
   protected void initializeReferenceEntities(final List<String> referenceEntityIDs) throws Exception {
     Collections.sort(referenceEntityIDs, new Comparator<String>() {
-      public int compare(final String entityIDOne, final String entityIDTwo) {
-        if (superTreeContains(entityIDOne, entityIDTwo)) {
+      public int compare(final String o1, final String o2) {
+        if (superTreeContains(o1, o2)) {
           return 1;
         }
-        else if (superTreeContains(entityIDTwo, entityIDOne)) {
+        else if (superTreeContains(o2, o1)) {
           return -1;
         }
         return 0;
@@ -294,28 +294,6 @@ public abstract class EntityTestUnit {
     for (final String entityID : referenceEntityIDs) {
       setReferenceEntity(entityID, createReferenceEntity(entityID));
     }
-  }
-
-  private static boolean superTreeContains(final String root, final String entityID) {
-    Util.rejectNullValue(root);
-    Util.rejectNullValue(entityID);
-    if (root.equals(entityID)) {
-      return true;
-    }
-
-    final Collection<Property.ForeignKeyProperty> foreignKeyProperties = EntityRepository.getForeignKeyProperties(root);
-    if (foreignKeyProperties.size() == 0) {
-      return false;
-    }
-
-    for (final Property.ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
-      final String referencedEntityID = foreignKeyProperty.getReferencedEntityID();
-      if (referencedEntityID.equals(root) || referencedEntityID.equals(entityID) || superTreeContains(referencedEntityID, entityID)) {
-        return true;
-      }
-    }
-
-    return false;
   }
 
   /**
@@ -359,5 +337,27 @@ public abstract class EntityTestUnit {
       }
     }
     return container;
+  }
+
+  private static boolean superTreeContains(final String root, final String entityID) {
+    Util.rejectNullValue(root);
+    Util.rejectNullValue(entityID);
+    if (root.equals(entityID)) {
+      return true;
+    }
+
+    final Collection<Property.ForeignKeyProperty> foreignKeyProperties = EntityRepository.getForeignKeyProperties(root);
+    if (foreignKeyProperties.size() == 0) {
+      return false;
+    }
+
+    for (final Property.ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
+      final String referencedEntityID = foreignKeyProperty.getReferencedEntityID();
+      if (referencedEntityID.equals(root) || referencedEntityID.equals(entityID) || superTreeContains(referencedEntityID, entityID)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 }

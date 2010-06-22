@@ -53,7 +53,7 @@ public abstract class AbstractValueMapLink<K, V> extends AbstractValueLink<Value
    * @return true if this value is allowed to be null
    */
   protected boolean isNullable() {
-    return getEditModel().isNullable(getKey());
+    return getEditModel().isNullable(key);
   }
 
   /**
@@ -71,7 +71,7 @@ public abstract class AbstractValueMapLink<K, V> extends AbstractValueLink<Value
    */
   protected String getValidationMessage(final ValueChangeMapEditModel<K, V> editModel) {
     try {
-      editModel.validate(getKey(), ValueChangeMapEditModel.UNKNOWN);
+      editModel.validate(key, ValueChangeMapEditModel.UNKNOWN);
       return null;
     }
     catch (ValidationException e) {

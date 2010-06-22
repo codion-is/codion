@@ -253,13 +253,6 @@ public final class Configuration {
   public static final String USE_OPTIMISTIC_LOCKING = "jminor.db.useOptimisticLocking";
 
   /**
-   * Specifies the global tooltip delay in milliseconds<br>
-   * Value type: Integer<br>
-   * Default value: 500
-   */
-  public static final String TOOLTIP_DELAY = "jminor.client.tooltipDelay";
-
-  /**
    * Specifies the value used to denote a boolean false in the database<br>
    * Value type: Any Object<br>
    * Default value: 0
@@ -410,7 +403,6 @@ public final class Configuration {
     setValue(AUTHENTICATION_REQUIRED, true);
     setValue(TRANSFER_FOCUS_ON_ENTER, true);
     setValue(USE_OPTIMISTIC_LOCKING, false);
-    setValue(TOOLTIP_DELAY, 500);
     setValue(SQL_BOOLEAN_VALUE_FALSE, 0);
     setValue(SQL_BOOLEAN_VALUE_TRUE, 1);
     setValue(PERSIST_ENTITY_PANELS, false);
@@ -459,7 +451,6 @@ public final class Configuration {
     parseIntegerSetting(TAB_PLACEMENT);
     parseIntegerSetting(TABLE_AUTO_RESIZE_MODE);
     parseBooleanSetting(TOOLBAR_BUTTONS);
-    parseIntegerSetting(TOOLTIP_DELAY);
     parseBooleanSetting(TRANSFER_FOCUS_ON_ENTER);
     parseBooleanSetting(USE_FOCUS_ACTIVATION);
     parseBooleanSetting(USE_KEYBOARD_NAVIGATION);

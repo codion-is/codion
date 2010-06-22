@@ -33,8 +33,8 @@ public class EmployeeModel extends EntityModel {
     return new EntityEditModel(getEntityID(), getDbProvider()) {
       /** Providing a custom ComboBoxModel for the manager property, which only shows managers and the president */
       @Override
-      public EntityComboBoxModel createEntityComboBoxModel(final Property.ForeignKeyProperty property) {
-        if (property.is(EmpDept.EMPLOYEE_MGR_FK)) {
+      public EntityComboBoxModel createEntityComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty) {
+        if (foreignKeyProperty.is(EmpDept.EMPLOYEE_MGR_FK)) {
           final EntityComboBoxModel managerModel = new EntityComboBoxModel(EmpDept.T_EMPLOYEE,
                   getDbProvider(), false, EmpDept.getString(EmpDept.NONE), true);
           //Only show the president and managers
@@ -44,7 +44,7 @@ public class EmployeeModel extends EntityModel {
           return managerModel;
         }
 
-        return super.createEntityComboBoxModel(property);
+        return super.createEntityComboBoxModel(foreignKeyProperty);
       }
     };
   }

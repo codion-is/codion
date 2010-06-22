@@ -1,5 +1,7 @@
 package org.jminor.common.ui.combobox;
 
+import org.jminor.common.ui.UiUtil;
+
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
@@ -71,12 +73,13 @@ public class SteppedComboBox extends JComboBox {
     setUI(new MetalComboBoxUI() {
       @Override
       protected ComboPopup createPopup() {
-        final BasicComboPopup popup = new BasicComboPopup(comboBox) {
+        final BasicComboPopup basicPopup = new BasicComboPopup(comboBox) {
           @Override
           public void show() {
             final Dimension popupSize = ((SteppedComboBox)comboBox).getPopupSize(getDisplaySize());
             popupSize.setSize(popupSize.width, getPopupHeightForRowCount(comboBox.getMaximumRowCount()));
-            final Rectangle popupBounds = computePopupBounds(0, comboBox.getBounds().height, popupSize.width + 20, popupSize.height);
+            final Rectangle popupBounds = computePopupBounds(0, comboBox.getBounds().height,
+                    popupSize.width + UiUtil.getPreferredScrollBarWidth(), popupSize.height);
             scroller.setMaximumSize(popupBounds.getSize());
             scroller.setPreferredSize(popupBounds.getSize());
             scroller.setMinimumSize(popupBounds.getSize());
@@ -94,9 +97,9 @@ public class SteppedComboBox extends JComboBox {
             show(comboBox, popupBounds.x, popupBounds.y);
           }
         };
-        popup.getAccessibleContext().setAccessibleParent(comboBox);
+        basicPopup.getAccessibleContext().setAccessibleParent(comboBox);
 
-        return popup;
+        return basicPopup;
       }
     });
   }

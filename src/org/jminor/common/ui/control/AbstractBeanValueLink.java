@@ -59,9 +59,9 @@ public abstract class AbstractBeanValueLink extends AbstractValueLink<Object, Ob
 
   /** {@inheritDoc} */
   @Override
-  public void setModelValue(final Object obj) {
+  public void setModelValue(final Object value) {
     try {
-      setMethod.invoke(getValueOwner(), obj);
+      setMethod.invoke(getValueOwner(), value);
     }
     catch (RuntimeException re) {
       throw re;

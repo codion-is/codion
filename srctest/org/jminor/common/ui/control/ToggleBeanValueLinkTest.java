@@ -24,7 +24,7 @@ public class ToggleBeanValueLinkTest {
     setBooleanValue(true);
     assertTrue("Boolean value should be true", checkBox.isSelected());
     checkBox.doClick();
-    assertFalse("Boolean value should be false", isBooleanValue());
+    assertFalse("Boolean value should be false", booleanValue);
   }
 
   public boolean isBooleanValue() {

@@ -1,16 +1,11 @@
 package org.jminor.common.ui.images;
 
-import javax.imageio.ImageIO;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
@@ -22,7 +17,6 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 
 /**
@@ -794,57 +788,5 @@ public final class NavigableImagePanel extends JPanel {
 
   private int getScreenNavImageHeight() {
     return (int)(navScale * navImageHeight);
-  }
-
-//  private static String[] getImageFormatExtensions() {
-//    String[] names = ImageIO.getReaderFormatNames();
-//    for(int i = 0; i < names.length; i++) {
-//      names[i] = names[i].toLowerCase();
-//    }
-//    Arrays.sort(names);
-//    return names;
-//  }
-//
-//  private static boolean endsWithImageFormatExtension(String name) {
-//    int dotIndex = name.lastIndexOf(".");
-//    if (dotIndex == -1) {
-//      return false;
-//    }
-//
-//    String extension = name.substring(dotIndex + 1).toLowerCase();
-//    return (Arrays.binarySearch(getImageFormatExtensions(), extension) >= 0);
-//  }
-
-  public static void main(String[] args) {
-    if (args.length == 0) {
-      System.out.println("Usage: java NavigableImagePanel imageFilename");
-      System.exit(1);
-    }
-
-    final String filename = args[0];
-
-    SwingUtilities.invokeLater(new Runnable() {
-      public void run() {
-        final JFrame frame = new JFrame("Navigable Image Panel");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        NavigableImagePanel panel = new NavigableImagePanel();
-        try {
-          final BufferedImage image = ImageIO.read(new File(filename));
-          panel.setImage(image);
-        } catch (IOException e) {
-          JOptionPane.showMessageDialog(null, e.getMessage(), "",
-                  JOptionPane.ERROR_MESSAGE);
-          System.exit(1);
-        }
-
-        frame.getContentPane().add(panel, BorderLayout.CENTER);
-
-        GraphicsEnvironment ge =
-                GraphicsEnvironment.getLocalGraphicsEnvironment();
-        Rectangle bounds = ge.getMaximumWindowBounds();
-        frame.setSize(new Dimension(bounds.width, bounds.height));
-        frame.setVisible(true);
-      }
-    });
   }
 }

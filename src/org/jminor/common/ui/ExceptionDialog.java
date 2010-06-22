@@ -191,7 +191,7 @@ public class ExceptionDialog extends JDialog {
     if (errorReportEmailAddressTo == null) {
       final String address = JOptionPane.showInputDialog(Messages.get(Messages.INPUT_EMAIL_ADDRESS));
       if (address != null && address.length() > 0) {
-        setErrorReportEmailTo(address);
+        errorReportEmailAddressTo = address;
       }
       else {
         return;
@@ -323,12 +323,12 @@ public class ExceptionDialog extends JDialog {
     detailsArea.setLineWrap(true);
     detailsArea.setWrapStyleWord(true);
 
-    final JScrollPane scr = new JScrollPane(detailsArea);
-    scr.setPreferredSize(new Dimension(500,200));
-    final JPanel centerPanel = new JPanel(new BorderLayout());
-    centerPanel.add(scr, BorderLayout.CENTER);
+    final JScrollPane scrollPane = new JScrollPane(detailsArea);
+    scrollPane.setPreferredSize(new Dimension(500,200));
+    final JPanel center = new JPanel(new BorderLayout());
+    center.add(scrollPane, BorderLayout.CENTER);
 
-    return centerPanel;
+    return center;
   }
 
   private JPanel createButtonPanel() {

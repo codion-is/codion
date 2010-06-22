@@ -74,10 +74,10 @@ public class PropertySummaryPanel extends JPanel {
       });
       model.eventSummaryTypeChanged().addListener(new ActionListener() {
         public void actionPerformed(final ActionEvent e) {
-          item.setSelected(PropertySummaryPanel.this.getModel().getSummaryType() == summaryType);
+          item.setSelected(model.getSummaryType() == summaryType);
         }
       });
-      item.setSelected(PropertySummaryPanel.this.getModel().getSummaryType() == summaryType);
+      item.setSelected(model.getSummaryType() == summaryType);
       group.add(item);
       popupMenu.add(item);
     }

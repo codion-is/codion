@@ -19,7 +19,7 @@ import java.util.List;
 public class LogEntry implements Serializable, Comparable<LogEntry> {
 
   private static final long serialVersionUID = 1;
-  private static final DateFormat TIMESTAMP_FORMAT = DateFormats.getDateFormat(DateFormats.EXACT_TIMESTAMP);
+  private static final ThreadLocal<DateFormat> TIMESTAMP_FORMAT = DateUtil.getThreadLocalDateFormat(DateFormats.EXACT_TIMESTAMP);
 
   private String method;
   private String entryMessage;
@@ -144,14 +144,14 @@ public class LogEntry implements Serializable, Comparable<LogEntry> {
    * @return a formatted entry time
    */
   public String getEntryTimeFormatted() {
-    return TIMESTAMP_FORMAT.format(entryTime);
+    return TIMESTAMP_FORMAT.get().format(entryTime);
   }
 
   /**
    * @return a formatted exit time
    */
   public String getExitTimeFormatted() {
-    return TIMESTAMP_FORMAT.format(new Date(exitTime));
+    return TIMESTAMP_FORMAT.get().format(new Date(exitTime));
   }
 
   public List<LogEntry> getSubLog() {
@@ -169,11 +169,11 @@ public class LogEntry implements Serializable, Comparable<LogEntry> {
     return exitTime > 0;
   }
 
-  public int compareTo(final LogEntry entry) {
-    if (this.entryTime < entry.entryTime) {
+  public int compareTo(final LogEntry o) {
+    if (this.entryTime < o.entryTime) {
       return -1;
     }
-    else if (this.entryTime > entry.entryTime) {
+    else if (this.entryTime > o.entryTime) {
       return 1;
     }
     else {

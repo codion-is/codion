@@ -118,7 +118,6 @@ public class PoolMonitor {
   }
 
   public void shutdown() {
-    System.out.println("PoolMonitor shutdown");
     for (final ConnectionPoolMonitor monitor : connectionPoolMonitors) {
       monitor.shutdown();
     }

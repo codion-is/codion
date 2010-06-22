@@ -134,7 +134,7 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
 
   /** {@inheritDoc} */
   public int getColumnCount() {
-    return getColumnModel().getColumnCount();
+    return columnModel.getColumnCount();
   }
 
   /** {@inheritDoc} */
@@ -158,7 +158,7 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
   public boolean contains(final T item, final boolean includeHidden) {
     final boolean ret = viewIndexOf(item) >= 0;
     if (!ret && includeHidden) {
-      return hiddenItems.indexOf(item) >= 0;
+      return hiddenItems.contains(item);
     }
 
     return ret;
@@ -515,15 +515,14 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
    * @param item the item to remove from the model
    */
   public void removeItem(final T item) {
-    int index = indexOf(item);
-    if (index >= 0) {
-      visibleItems.remove(index);
+    if (visibleItems.contains(item)) {
+      final int index = indexOf(item);
+      visibleItems.remove(item);
       fireTableRowsDeleted(index, index);
     }
     else {
-      index = hiddenItems.indexOf(item);
-      if (index >= 0) {
-        hiddenItems.remove(index);
+      if (hiddenItems.contains(item)) {
+        hiddenItems.remove(item);
       }
     }
   }
@@ -565,7 +564,7 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
       final TableColumn hiddenColumn = hiddenColumnIterator.next();
       if (hiddenColumn.getIdentifier().equals(columnIdentifier)) {
         hiddenColumnIterator.remove();
-        getColumnModel().addColumn(hiddenColumn);
+        columnModel.addColumn(hiddenColumn);
         evtColumnShown.fire(new ActionEvent(hiddenColumn.getIdentifier(), 0, "showColumn"));
       }
     }
@@ -573,7 +572,7 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
 
   public void hideColumn(final Object columnIdentifier) {
     final TableColumn column = getTableColumn(columnIdentifier);
-    getColumnModel().removeColumn(column);
+    columnModel.removeColumn(column);
     hiddenColumns.add(column);
     evtColumnHidden.fire(new ActionEvent(columnIdentifier, 0, "hideColumn"));
   }
@@ -754,19 +753,19 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
   private void bindEventsInternal() {
     final List<T> selectedItems = new ArrayList<T>();
     addTableModelListener(new TableModelListener() {
-      public void tableChanged(TableModelEvent event) {
+      public void tableChanged(TableModelEvent e) {
         evtTableDataChanged.fire();
       }
     });
     tableSorter.eventBeforeSort().addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent event) {
+      public void actionPerformed(final ActionEvent e) {
         isSorting = true;
         selectedItems.clear();
         selectedItems.addAll(getSelectedItems());
       }
     });
     tableSorter.eventAfterSort().addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent event) {
+      public void actionPerformed(final ActionEvent e) {
         isSorting = false;
         setSelectedItems(selectedItems);
         selectedItems.clear();
@@ -805,8 +804,8 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
     private int selectedIndex = -1;
 
     @Override
-    public void fireValueChanged(int min, int max, boolean isAdjusting) {
-      super.fireValueChanged(min, max, isAdjusting);
+    public void fireValueChanged(int firstIndex, int lastIndex, boolean isAdjusting) {
+      super.fireValueChanged(firstIndex, lastIndex, isAdjusting);
       stSelectionEmpty.setActive(isSelectionEmpty());
       stMultipleSelection.setActive(getSelectionCount() > 1);
       final int minSelIndex = getMinSelectionIndex();

@@ -83,7 +83,7 @@ public class PropertyCriteria implements Criteria<Property>, Serializable {
       return new ArrayList<Object>();
     }//null criteria, uses 'x is null', not 'x = ?'
 
-    if (getProperty() instanceof Property.ForeignKeyProperty) {
+    if (property instanceof Property.ForeignKeyProperty) {
       return getForeignKeyCriteriaValues();
     }
 
@@ -95,7 +95,7 @@ public class PropertyCriteria implements Criteria<Property>, Serializable {
       return new ArrayList<Property>();
     }//null criteria, uses 'x is null', not 'x = ?'
 
-    if (getProperty() instanceof Property.ForeignKeyProperty) {
+    if (property instanceof Property.ForeignKeyProperty) {
       return getForeignKeyValueProperties();
     }
 
@@ -182,13 +182,13 @@ public class PropertyCriteria implements Criteria<Property>, Serializable {
 
     final String columnIdentifier = initializeColumnIdentifier(property);
     if (isNullCriteria) {
-      return columnIdentifier + (getSearchType() == SearchType.LIKE ? " is null" : " is not null");
+      return columnIdentifier + (searchType == SearchType.LIKE ? " is null" : " is not null");
     }
 
     final String sqlValue = getSqlValue("?");
     final String sqlValue2 = getValueCount() == 2 ? getSqlValue("?") : null;
 
-    switch(getSearchType()) {
+    switch(searchType) {
       case LIKE:
         return getLikeCondition(property, sqlValue);
       case NOT_LIKE:
@@ -203,7 +203,7 @@ public class PropertyCriteria implements Criteria<Property>, Serializable {
         return "(" + columnIdentifier + " <= " + sqlValue + " or " + columnIdentifier + " >= " + sqlValue2 + ")";
     }
 
-    throw new IllegalArgumentException("Unknown search type" + getSearchType());
+    throw new IllegalArgumentException("Unknown search type" + searchType);
   }
 
   private String getSqlValue(final String sqlStringValue) {
@@ -219,12 +219,12 @@ public class PropertyCriteria implements Criteria<Property>, Serializable {
   }
 
   private String getMultipleForeignKeyCriteriaString() {
-    if (((Property.ForeignKeyProperty) getProperty()).isCompositeReference()) {
+    if (((Property.ForeignKeyProperty) property).isCompositeReference()) {
       return createMultipleCompositeForeignKeyCriteria().asString();
     }
     else {
-      return getInList(((Property.ForeignKeyProperty) getProperty()).getReferenceProperties().get(0),
-              getSearchType() == SearchType.NOT_LIKE);
+      return getInList(((Property.ForeignKeyProperty) property).getReferenceProperties().get(0),
+              searchType == SearchType.NOT_LIKE);
     }
   }
 
@@ -258,19 +258,19 @@ public class PropertyCriteria implements Criteria<Property>, Serializable {
   }
 
   private Criteria<Property> createSingleForeignKeyCriteria(final Entity.Key entityKey) {
-    final Property.ForeignKeyProperty foreignKeyProperty = (Property.ForeignKeyProperty) getProperty();
+    final Property.ForeignKeyProperty foreignKeyProperty = (Property.ForeignKeyProperty) property;
     if (foreignKeyProperty.isCompositeReference()) {
       final CriteriaSet<Property> pkSet = new CriteriaSet<Property>(CriteriaSet.Conjunction.AND);
       for (final Property referencedProperty : foreignKeyProperty.getReferenceProperties()) {
         final String referencedPropertyID = foreignKeyProperty.getReferencedPropertyID(referencedProperty);
         final Object referencedValue = entityKey == null ? null : entityKey.getValue(referencedPropertyID);
-        pkSet.addCriteria(new PropertyCriteria(referencedProperty, getSearchType(), referencedValue));
+        pkSet.addCriteria(new PropertyCriteria(referencedProperty, searchType, referencedValue));
       }
 
       return pkSet;
     }
     else {
-      return new PropertyCriteria(foreignKeyProperty.getReferenceProperties().get(0), getSearchType(), entityKey == null ? null : entityKey.getFirstKeyValue());
+      return new PropertyCriteria(foreignKeyProperty.getReferenceProperties().get(0), searchType, entityKey == null ? null : entityKey.getFirstKeyValue());
     }
   }
 
@@ -283,7 +283,7 @@ public class PropertyCriteria implements Criteria<Property>, Serializable {
     final StringBuilder stringBuilder = new StringBuilder("(").append(initializeColumnIdentifier(property)).append((notIn ? " not in (" : " in ("));
     int cnt = 1;
     for (int i = 0; i < getValueCount(); i++) {
-      if (getProperty().isString() && !isCaseSensitive()) {
+      if (this.property.isString() && !caseSensitive) {
         stringBuilder.append("upper(?)");
       }
       else {
@@ -316,7 +316,7 @@ public class PropertyCriteria implements Criteria<Property>, Serializable {
       columnName = property.getColumnName();
     }
 
-    if (!isNullCriteria && property.isString() && !isCaseSensitive()) {
+    if (!isNullCriteria && property.isString() && !caseSensitive) {
       columnName = "upper(" + columnName + ")";
     }
 

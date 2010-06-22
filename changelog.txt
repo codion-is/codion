@@ -1740,3 +1740,4 @@
   LogEntry.toString() no longer appends new line characters
   EntityDbConnection.executePrepared... uses LogEntry for debug output
   EntityTestUnit.initializeReferenceEntities() improved, needs some additional testing
+  Code inspection/sonar run

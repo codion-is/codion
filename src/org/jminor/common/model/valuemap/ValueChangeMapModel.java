@@ -57,8 +57,8 @@ public abstract class ValueChangeMapModel<K, V> {
   public ValueChangeMapEditModel<K, V> getEditModel() {
     if (editModel == null) {
       editModel = initializeEditModel();
-      if (!editModel.getValueMap().getMapTypeID().equals(getMapTypeID())) {
-        throw new RuntimeException("Expected edit model based on " + getMapTypeID() +
+      if (!editModel.getValueMap().getMapTypeID().equals(mapTypeID)) {
+        throw new RuntimeException("Expected edit model based on " + mapTypeID +
                 ", got: " + editModel.getValueMap().getMapTypeID());
       }
       bindEvents();
@@ -73,8 +73,8 @@ public abstract class ValueChangeMapModel<K, V> {
   public AbstractFilteredTableModel<? extends ValueChangeMap<K, V>> getTableModel() {
     if (includeTableModel && tableModel == null) {
       tableModel = initializeTableModel();
-      if (!tableModel.getMapTypeID().equals(getMapTypeID())) {
-        throw new RuntimeException("Expected table model based on " + getMapTypeID() +
+      if (!tableModel.getMapTypeID().equals(mapTypeID)) {
+        throw new RuntimeException("Expected table model based on " + mapTypeID +
                 ", got: " + tableModel.getMapTypeID());
       }
       bindEvents();
@@ -92,15 +92,15 @@ public abstract class ValueChangeMapModel<K, V> {
     }
 
     getTableModel().eventSelectedIndexChanged().addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent event) {
+      public void actionPerformed(final ActionEvent e) {
         getEditModel().setValueMap(getTableModel().getSelectionModel().isSelectionEmpty() ? null : getTableModel().getSelectedItem());
       }
     });
 
     getTableModel().addTableModelListener(new TableModelListener() {
-      public void tableChanged(final TableModelEvent event) {
+      public void tableChanged(final TableModelEvent e) {
         //if the selected record is being updated via the table model refresh the one in the edit model
-        if (event.getType() == TableModelEvent.UPDATE && event.getFirstRow() == getTableModel().getSelectedIndex()) {
+        if (e.getType() == TableModelEvent.UPDATE && e.getFirstRow() == getTableModel().getSelectedIndex()) {
           getEditModel().setValueMap(null);
           getEditModel().setValueMap(getTableModel().getSelectedItem());
         }

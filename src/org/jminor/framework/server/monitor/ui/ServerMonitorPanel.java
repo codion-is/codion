@@ -139,7 +139,7 @@ public class ServerMonitorPanel extends JPanel {
 
   private JPanel initDomainModelPanel() {
     final JPanel panel = new JPanel(new BorderLayout(5,5));
-    final JScrollPane scroller = new JScrollPane(new JList(getModel().getDomainListModel()));
+    final JScrollPane scroller = new JScrollPane(new JList(model.getDomainListModel()));
 
     final JPanel refreshPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
     refreshPanel.add(ControlProvider.createButton(ControlFactory.methodControl(model, "refreshDomainList", "Refresh")));

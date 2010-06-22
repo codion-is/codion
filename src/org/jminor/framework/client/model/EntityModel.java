@@ -349,7 +349,7 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
    * @param selectedMasterEntities the master entities
    */
   public void masterSelectionChanged(final String masterEntityID, final List<Entity> selectedMasterEntities) {
-    if (isSelectionFiltersDetail() && containsTableModel()) {
+    if (selectionFiltersDetail && containsTableModel()) {
       getTableModel().searchByForeignKeyValues(masterEntityID, selectedMasterEntities);
     }
 
@@ -565,22 +565,22 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
 
   private void bindEventsInternal() {
     getEditModel().eventAfterInsert().addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent event) {
-        handleInsert((InsertEvent) event);
+      public void actionPerformed(final ActionEvent e) {
+        handleInsert((InsertEvent) e);
       }
     });
     getEditModel().eventAfterUpdate().addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent event) {
-        handleUpdate((UpdateEvent) event);
+      public void actionPerformed(final ActionEvent e) {
+        handleUpdate((UpdateEvent) e);
       }
     });
     getEditModel().eventAfterDelete().addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent event) {
-        handleDelete((DeleteEvent) event);
+      public void actionPerformed(final ActionEvent e) {
+        handleDelete((DeleteEvent) e);
       }
     });
     evtLinkedDetailModelsChanged.addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent event) {
+      public void actionPerformed(ActionEvent e) {
         if (!getEditModel().isEntityNew()) {
           updateDetailModelsByActiveEntity();
         }
@@ -588,7 +588,7 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
     });
     if (!containsTableModel()) {
       getEditModel().eventValueMapSet().addListener(new ActionListener() {
-        public void actionPerformed(final ActionEvent event) {
+        public void actionPerformed(final ActionEvent e) {
           updateDetailModelsByActiveEntity();
         }
       });
@@ -601,12 +601,12 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
     }
 
     getEditModel().eventRefreshDone().addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent event) {
+      public void actionPerformed(ActionEvent e) {
         getTableModel().refresh();
       }
     });
     getTableModel().eventSelectionChanged().addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent event) {
+      public void actionPerformed(final ActionEvent e) {
         updateDetailModelsByActiveEntity();
       }
     });

@@ -34,11 +34,11 @@ import java.text.Format;
  */
 public abstract class AbstractSearchPanel<K> extends JPanel {
 
-  private static final SearchType[] searchTypes = new SearchType[] {
+  private static final SearchType[] SEARCH_TYPES = {
           SearchType.LIKE, SearchType.NOT_LIKE, SearchType.AT_LEAST,
           SearchType.AT_MOST, SearchType.WITHIN_RANGE, SearchType.OUTSIDE_RANGE};
 
-  private static final String[] searchTypeImageNames = new String[] {
+  private static final String[] SEARCH_TYPE_IMAGES = {
           "Equals60x16.gif", "NotEquals60x16.gif", "LessThanOrEquals60x16.gif",
           "LargerThanOrEquals60x16.gif", "Inclusive60x16.gif", "Exclusive60x16.gif"};
 
@@ -178,9 +178,9 @@ public abstract class AbstractSearchPanel<K> extends JPanel {
    */
   protected ItemComboBoxModel initSearchTypeModel() {
     final ItemComboBoxModel comboBoxModel = new ItemComboBoxModel();
-    for (int i = 0; i < searchTypes.length; i++) {
-      if (searchTypeAllowed(searchTypes[i])) {
-        comboBoxModel.addElement(new ItemComboBoxModel.IconItem<SearchType>(searchTypes[i], Images.loadImage(searchTypeImageNames[i])));
+    for (int i = 0; i < SEARCH_TYPES.length; i++) {
+      if (searchTypeAllowed(SEARCH_TYPES[i])) {
+        comboBoxModel.addElement(new ItemComboBoxModel.IconItem<SearchType>(SEARCH_TYPES[i], Images.loadImage(SEARCH_TYPE_IMAGES[i])));
       }
     }
 

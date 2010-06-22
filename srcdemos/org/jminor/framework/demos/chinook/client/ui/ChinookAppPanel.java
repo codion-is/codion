@@ -65,13 +65,8 @@ public class ChinookAppPanel extends EntityApplicationPanel {
     Configuration.setValue(Configuration.PROPERTY_DEBUG_OUTPUT, true);
   }
 
-  public static void main(final String[] args) {
-    try {
-      UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-    }
-    catch (Exception e) {
-      e.printStackTrace();
-    }
+  public static void main(final String[] args) throws Exception {
+    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
     Locale.setDefault(new Locale("EN", "en"));
     new ChinookAppPanel().startApplication("Chinook", null, false, UiUtil.getScreenSizeRatio(0.6), new User("scott", "tiger"));
   }

@@ -15,10 +15,10 @@ import java.io.FileNotFoundException;
  */
 public class DefaultExceptionHandler implements ExceptionHandler {
 
-  private static final ExceptionHandler defaultExceptionHandler = new DefaultExceptionHandler();
+  private static final ExceptionHandler INSTANCE = new DefaultExceptionHandler();
 
-  public static ExceptionHandler get() {
-    return defaultExceptionHandler;
+  public static ExceptionHandler getInstance() {
+    return INSTANCE;
   }
 
   public void handleException(final Throwable exception, final JComponent dialogParent) {

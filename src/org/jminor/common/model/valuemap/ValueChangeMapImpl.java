@@ -40,11 +40,13 @@ public class ValueChangeMapImpl<K, V> implements ValueChangeMap<K, V>, Serializa
    */
   private transient Event evtValueChanged;
 
+  private static final int DEFAULT_SIZE = 10;
+
   /**
    * Instantiate a new ValueChangeMapModel with a default size of 10.
    */
   public ValueChangeMapImpl() {
-    this(10);
+    this(DEFAULT_SIZE);
   }
 
   /**
@@ -179,19 +181,19 @@ public class ValueChangeMapImpl<K, V> implements ValueChangeMap<K, V>, Serializa
   }
 
   /** {@inheritDoc} */
-  public void setAs(final ValueChangeMap<K, V> changeValueMap) {
+  public void setAs(final ValueChangeMap<K, V> sourceMap) {
     clear();
-    if (changeValueMap != null) {
-      if (changeValueMap.isModified()) {
+    if (sourceMap != null) {
+      if (sourceMap.isModified()) {
         if (originalValues == null) {
           originalValues = new HashMap<K, V>();
         }
-        for (final K entryKey : changeValueMap.getOriginalValueKeys()) {
-          originalValues.put(entryKey, copyValue(changeValueMap.getOriginalValue(entryKey)));
+        for (final K entryKey : sourceMap.getOriginalValueKeys()) {
+          originalValues.put(entryKey, copyValue(sourceMap.getOriginalValue(entryKey)));
         }
       }
-      for (final K entryKey : changeValueMap.getValueKeys()) {
-        final V value = copyValue(changeValueMap.getValue(entryKey));
+      for (final K entryKey : sourceMap.getValueKeys()) {
+        final V value = copyValue(sourceMap.getValue(entryKey));
         values.put(entryKey, value);
         if (evtValueChanged != null) {
           notifyValueChange(entryKey, value, null, true);
@@ -254,12 +256,12 @@ public class ValueChangeMapImpl<K, V> implements ValueChangeMap<K, V>, Serializa
    */
   @SuppressWarnings({"unchecked"})
   @Override
-  public boolean equals(final Object object) {
-    if (!(object instanceof ValueChangeMapImpl)) {
+  public boolean equals(final Object obj) {
+    if (!(obj instanceof ValueChangeMapImpl)) {
       return false;
     }
 
-    final ValueChangeMapImpl<K, V> otherMap = (ValueChangeMapImpl<K, V>) object;
+    final ValueChangeMapImpl<K, V> otherMap = (ValueChangeMapImpl<K, V>) obj;
     if (values.size() != otherMap.values.size()) {
       return false;
     }

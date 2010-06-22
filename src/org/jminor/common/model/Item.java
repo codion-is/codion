@@ -12,7 +12,7 @@ import java.text.Collator;
  */
 public class Item<T> implements Comparable<Item<T>>, Serializable {
 
-  private static final ThreadLocal<Collator> collator = Util.getThreadLocalCollator();
+  private static final ThreadLocal<Collator> COLLATOR = Util.getThreadLocalCollator();
 
   private final T item;
   private final String caption;
@@ -42,7 +42,7 @@ public class Item<T> implements Comparable<Item<T>>, Serializable {
   /** {@inheritDoc} */
   @Override
   public String toString() {
-    return getCaption();
+    return caption;
   }
 
   @Override
@@ -55,7 +55,7 @@ public class Item<T> implements Comparable<Item<T>>, Serializable {
     return item == null ? 0 : item.hashCode();
   }
 
-  public int compareTo(final Item<T> item) {
-    return collator.get().compare(caption, item.caption);
+  public int compareTo(final Item<T> o) {
+    return COLLATOR.get().compare(caption, o.caption);
   }
 }

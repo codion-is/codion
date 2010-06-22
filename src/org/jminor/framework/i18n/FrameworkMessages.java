@@ -13,11 +13,11 @@ public final class FrameworkMessages {
 
   private FrameworkMessages() {}
 
-  private static final ResourceBundle bundle =
+  private static final ResourceBundle BUNDLE =
           ResourceBundle.getBundle("org.jminor.framework.i18n.FrameworkMessages", Locale.getDefault());
 
-  public static final String OptionPane_inputDialogTitle = "OptionPane.inputDialogTitle";
-  public static final String OptionPane_messageDialogTitle = "OptionPane.messageDialogTitle";
+  public static final String OPTION_PANE_INPUT_DIALOG_TITLE = "OptionPane.inputDialogTitle";
+  public static final String OPTION_PANE_MESSAGE_DIALOG_TITLE = "OptionPane.messageDialogTitle";
 
   public static final String SELECTED = "selected";
   public static final String HIDDEN = "hidden";
@@ -142,7 +142,7 @@ public final class FrameworkMessages {
   public static final String PROPERTY_VALUE_TOO_SMALL = "property_value_too_small";
 
   public static String get(final String key) {
-    return bundle.getString(key);
+    return BUNDLE.getString(key);
   }
 
   public static String[] getDefaultConfirmUpdateMessages() {

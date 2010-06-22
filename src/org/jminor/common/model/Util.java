@@ -8,16 +8,7 @@ import org.apache.log4j.Logger;
 
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.Closeable;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -26,18 +17,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.Collator;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.prefs.Preferences;
 
 /**
@@ -58,14 +38,14 @@ public final class Util {
 
   public static final String PREF_DEFAULT_USERNAME = "jminor.username";
 
-  private static final Random random = new Random();
+  private static final Random RANDOM = new Random();
+
   private static List<Logger> loggers = new ArrayList<Logger>();
   private static Level defaultLoggingLevel;
   private static Preferences userPreferences;
 
   static {
     final String loggingLevel = System.getProperty(LOGGING_LEVEL_PROPERTY, LOGGING_LEVEL_INFO);
-    System.out.println("Initial logging level: " + loggingLevel);
     if (loggingLevel.equals(LOGGING_LEVEL_INFO)) {
       defaultLoggingLevel = Level.INFO;
     }
@@ -537,9 +517,9 @@ public final class Util {
 
   public static String createRandomString(final int minLength, final int maxLength) {
     final StringBuilder sb = new StringBuilder();
-    final int length = random.nextInt(maxLength - minLength) + minLength;
+    final int length = RANDOM.nextInt(maxLength - minLength) + minLength;
     for( int i = 0; i < length; i++ ) {
-      sb.append(AB.charAt(random.nextInt(AB.length())));
+      sb.append(AB.charAt(RANDOM.nextInt(AB.length())));
     }
 
     return sb.toString();
@@ -548,14 +528,14 @@ public final class Util {
   public static void collate(final List<?> values) {
     Collections.sort(values, new Comparator<Object>() {
       private final Collator collator = Collator.getInstance();
-      public int compare(final Object objOne, final Object objTwo) {
-        return collator.compare(objOne.toString(), objTwo.toString());
+      public int compare(final Object o1, final Object o2) {
+        return collator.compare(o1.toString(), o2.toString());
       }
     });
   }
 
   public static Random getRandom() {
-    return random;
+    return RANDOM;
   }
 
   public static URI getURI(final String urlOrPath) throws URISyntaxException {

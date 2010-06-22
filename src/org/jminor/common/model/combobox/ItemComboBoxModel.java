@@ -41,12 +41,12 @@ public class ItemComboBoxModel<T> extends DefaultComboBoxModel {
 
   /** {@inheritDoc} */
   @Override
-  public void setSelectedItem(final Object item) {
-    if (!(item instanceof Item)) {
-      super.setSelectedItem(getElementAt(indexOf(item)));
+  public void setSelectedItem(final Object anObject) {
+    if (!(anObject instanceof Item)) {
+      super.setSelectedItem(getElementAt(indexOf(anObject)));
     }
     else {
-      super.setSelectedItem(item);
+      super.setSelectedItem(anObject);
     }
   }
 

@@ -32,6 +32,7 @@ public class MonitorPanel extends JPanel {
 
   private final Event evtAlwaysOnTopChanged = new Event();
 
+  private static final int MEMORY_USAGE_UPDATE_INTERVAL = 2000;
   private final MonitorModel model;
   private JFrame monitorFrame;
 
@@ -129,7 +130,7 @@ public class MonitorPanel extends JPanel {
   private JPanel initializeSouthPanel() {
     final JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
     southPanel.add(new JLabel("Memory usage:"));
-    southPanel.add(UiUtil.createMemoryUsageField(2000));
+    southPanel.add(UiUtil.createMemoryUsageField(MEMORY_USAGE_UPDATE_INTERVAL));
 
     return southPanel;
   }

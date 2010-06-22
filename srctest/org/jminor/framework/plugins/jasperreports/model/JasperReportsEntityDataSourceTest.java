@@ -36,7 +36,7 @@ public class JasperReportsEntityDataSourceTest {
 
   private static class TestField implements JRField {
     private final String name;
-    public TestField(final String name) {this.name = name;}
+    TestField(final String name) {this.name = name;}
     public String getName() {return name;}
     public String getDescription() {return null;}
     public void setDescription(final String s) {}

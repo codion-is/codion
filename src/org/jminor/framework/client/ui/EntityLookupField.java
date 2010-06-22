@@ -59,11 +59,11 @@ public class EntityLookupField extends JTextField {
   public EntityLookupField(final EntityLookupModel model, final boolean transferFocusOnEnter) {
     this(model, null);
     if (transferFocusOnEnter) {
-      setEnterAction(new AbstractAction() {
+      this.enterAction = new AbstractAction() {
         public void actionPerformed(final ActionEvent e) {
           transferFocus();
         }
-      });
+      };
     }
   }
 
@@ -77,7 +77,7 @@ public class EntityLookupField extends JTextField {
     Util.rejectNullValue(model);
     this.model = model;
     this.searchHint = SearchFieldHint.enable(this);
-    setEnterAction(enterAction);
+    this.enterAction = enterAction;
     setToolTipText(model.getDescription());
     setComponentPopupMenu(initializePopupMenu());
     addActionListener(initializeLookupAction());
@@ -107,12 +107,12 @@ public class EntityLookupField extends JTextField {
       JOptionPane.showMessageDialog(this, FrameworkMessages.get(FrameworkMessages.NO_RESULTS_FROM_CRITERIA));
     }
     else if (entities.size() == 1) {
-      getModel().setSelectedEntities(entities);
+      model.setSelectedEntities(entities);
     }
     else {
       Collections.sort(entities, new Comparator<Entity>() {
-        public int compare(final Entity e1, final Entity e2) {
-          return e1.compareTo(e2);
+        public int compare(final Entity o1, final Entity o2) {
+          return o1.compareTo(o2);
         }
       });
       final JList list = new JList(entities.toArray());
@@ -130,7 +130,7 @@ public class EntityLookupField extends JTextField {
           dialog.dispose();
         }
       };
-      list.setSelectionMode(getModel().isMultipleSelectionAllowed() ?
+      list.setSelectionMode(model.isMultipleSelectionAllowed() ?
               ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);
       final JButton btnOk  = new JButton(okAction);
       final JButton btnCancel = new JButton(cancelAction);
@@ -170,13 +170,13 @@ public class EntityLookupField extends JTextField {
   private void bindProperty() {
     new TextBeanValueLink(this, getModel(), "searchString", String.class, getModel().eventSearchStringChanged()) {
       @Override
-      protected void setUIValue(final Object propertyValue) {
-        super.setUIValue(propertyValue);
+      protected void setUIValue(final Object value) {
+        super.setUIValue(value);
         updateColors();
         searchHint.updateState();
       }
     };
-    getModel().eventSearchStringChanged().addListener(new ActionListener() {
+    model.eventSearchStringChanged().addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         updateColors();
       }
@@ -209,7 +209,7 @@ public class EntityLookupField extends JTextField {
   }
 
   private void updateColors() {
-    final boolean defaultBackground = getModel().searchStringRepresentsSelected() || searchHint.isHintVisible();
+    final boolean defaultBackground = model.searchStringRepresentsSelected() || searchHint.isHintVisible();
     setBackground(defaultBackground ? defaultBackgroundColor : Color.LIGHT_GRAY);
   }
 
@@ -222,21 +222,21 @@ public class EntityLookupField extends JTextField {
   }
 
   private void performLookup() {
-    if (getModel().getSearchString().length() == 0) {
-      getModel().setSelectedEntities(null);
-      if (getEnterAction() != null) {
-        getEnterAction().actionPerformed(new ActionEvent(this, 0, "actionPerformed"));
+    if (model.getSearchString().length() == 0) {
+      model.setSelectedEntities(null);
+      if (enterAction != null) {
+        enterAction.actionPerformed(new ActionEvent(this, 0, "actionPerformed"));
       }
     }
     else {
-      if (getModel().searchStringRepresentsSelected() && getEnterAction() != null) {
-        getEnterAction().actionPerformed(new ActionEvent(this, 0, "actionPerformed"));
+      if (model.searchStringRepresentsSelected() && enterAction != null) {
+        enterAction.actionPerformed(new ActionEvent(this, 0, "actionPerformed"));
       }
-      else if (!getModel().searchStringRepresentsSelected()) {
+      else if (!model.searchStringRepresentsSelected()) {
         List<Entity> queryResult;
         try {
           UiUtil.setWaitCursor(true, this);
-          queryResult = getModel().performQuery();
+          queryResult = model.performQuery();
         }
         finally {
           UiUtil.setWaitCursor(false, this);
@@ -261,7 +261,7 @@ public class EntityLookupField extends JTextField {
         panel.add(boxPrefixWildcard);
         panel.add(boxPostfixWildcard);
         final AbstractAction action = new AbstractAction(Messages.get(Messages.OK)) {
-          public void actionPerformed(final ActionEvent ae) {
+          public void actionPerformed(final ActionEvent evt) {
             getModel().setCaseSensitive(boxCaseSensitive.isSelected());
             getModel().setWildcardPrefix(boxPrefixWildcard.isSelected());
             getModel().setWildcardPostfix(boxPostfixWildcard.isSelected());

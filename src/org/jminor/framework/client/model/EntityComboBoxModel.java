@@ -202,23 +202,23 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
 
   /** {@inheritDoc} */
   @Override
-  public void setSelectedItem(final Object toSelect) {
+  public void setSelectedItem(final Object anItem) {
     if (getSize() == 0) {
       return;
     }
-    final Object item = toSelect instanceof String && ((String)toSelect).length() == 0 ? null : toSelect;
+    final Object item = anItem instanceof String && ((String) anItem).length() == 0 ? null : anItem;
     if (item != null && !item.equals(getNullValueString()) && !(item instanceof Entity)) {
       throw new IllegalArgumentException("Cannot set '" + item + "' [" + item.getClass()
               + "] as selected item in a EntityComboBoxModel (" + this + ")");
     }
 
     if (item instanceof Entity) {
-      final int indexOfKey = getIndexOfKey(((Entity) toSelect).getPrimaryKey());
+      final int indexOfKey = getIndexOfKey(((Entity) anItem).getPrimaryKey());
       if (indexOfKey >= 0) {
         super.setSelectedItem(getElementAt(indexOfKey));
       }
       else {
-        super.setSelectedItem(toSelect);
+        super.setSelectedItem(anItem);
       }
     }
     else {
@@ -229,7 +229,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
   /** {@inheritDoc} */
   @Override
   public String toString() {
-    return getClass().getSimpleName() + " [entityID: " + getEntityID() + "]";
+    return getClass().getSimpleName() + " [entityID: " + entityID + "]";
   }
 
   /**
@@ -244,8 +244,8 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
    * @param selectCriteria the criteria
    */
   public void setEntitySelectCriteria(final EntitySelectCriteria selectCriteria) {
-    if (selectCriteria != null && !selectCriteria.getEntityID().equals(getEntityID())) {
-      throw new RuntimeException("EntitySelectCriteria entityID mismatch, " + getEntityID()
+    if (selectCriteria != null && !selectCriteria.getEntityID().equals(entityID)) {
+      throw new RuntimeException("EntitySelectCriteria entityID mismatch, " + entityID
               + " expected, got " + selectCriteria.getEntityID());
     }
     this.selectCriteria = selectCriteria;
@@ -272,9 +272,9 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
 
   public EntityComboBoxModel createForeignKeyFilterComboBoxModel(final String foreignKeyPropertyID) {
     final Property.ForeignKeyProperty foreignKeyProperty =
-            EntityRepository.getForeignKeyProperty(getEntityID(), foreignKeyPropertyID);
+            EntityRepository.getForeignKeyProperty(entityID, foreignKeyPropertyID);
     final EntityComboBoxModel foreignKeyModel = new EntityComboBoxModel(foreignKeyProperty.getReferencedEntityID(),
-            getDbProvider(), true, "-", true);
+            dbProvider, true, "-", true);
     foreignKeyModel.refresh();
     linkForeignKeyComboBoxModel(foreignKeyPropertyID, this, foreignKeyModel);
 
@@ -377,11 +377,11 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
    */
   protected List<Entity> performQuery() {
     try {
-      if (getEntitySelectCriteria() != null) {
-        return dbProvider.getEntityDb().selectMany(getEntitySelectCriteria());
+      if (selectCriteria != null) {
+        return dbProvider.getEntityDb().selectMany(selectCriteria);
       }
       else {
-        return dbProvider.getEntityDb().selectAll(getEntityID());
+        return dbProvider.getEntityDb().selectAll(entityID);
       }
     }
     catch (Exception e) {

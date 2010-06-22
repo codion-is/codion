@@ -5,6 +5,7 @@ package org.jminor.common.ui.control;
 
 import org.jminor.common.model.Event;
 import org.jminor.common.model.State;
+import org.jminor.common.model.Util;
 
 import java.awt.event.ActionEvent;
 import java.lang.reflect.InvocationTargetException;
@@ -41,19 +42,20 @@ public class MethodControl extends Control {
    */
   public MethodControl(final String name, final Object owner, final String methodName, final State enabledState) {
     super(name, enabledState);
+    Util.rejectNullValue(owner);
+    Util.rejectNullValue(methodName);
     this.owner = owner;
     try {
       this.method = owner.getClass().getMethod(methodName);
     }
     catch (NoSuchMethodException e) {
-      System.out.println("Method " + methodName + " not found in class " + owner.getClass().getName());
-      throw new RuntimeException(e);
+      throw new RuntimeException("Method " + methodName + " not found in class " + owner.getClass().getName(), e);
     }
   }
 
   /** {@inheritDoc} */
   @Override
-  public void actionPerformed(final ActionEvent event) {
+  public void actionPerformed(final ActionEvent e) {
     try {
       method.invoke(owner);
     }

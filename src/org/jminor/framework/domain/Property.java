@@ -662,13 +662,13 @@ public class Property implements Serializable {
   }
 
   /**
-   * @param object the object to compare with
+   * @param obj the object to compare with
    * @return true if object is a Property instance and has a
    * property identifier equal to that of this property
    */
   @Override
-  public boolean equals(final Object object) {
-    return this == object || object instanceof Property && this.propertyID.equals(((Property) object).propertyID);
+  public boolean equals(final Object obj) {
+    return this == obj || obj instanceof Property && this.propertyID.equals(((Property) obj).propertyID);
   }
 
   @Override
@@ -1181,7 +1181,7 @@ public class Property implements Serializable {
     }
 
     @Override
-    public Property setReadOnly(final boolean selectOnly) {
+    public Property setReadOnly(final boolean readOnly) {
       throw new IllegalArgumentException("SubqueryProperty can only be select only");
     }
 

@@ -24,7 +24,7 @@ public abstract class LoadTestModel {
 
   protected static final Logger LOG = Util.getLogger(LoadTestModel.class);
 
-  protected static final Random random = new Random();
+  protected static final Random RANDOM = new Random();
 
   private final Event evtPausedChanged = new Event();
   private final Event evtCollectChartDataChanged = new Event();
@@ -54,7 +54,7 @@ public abstract class LoadTestModel {
 
   private final Counter counter;
   private Timer updateTimer;
-  private int warningTime;
+  private volatile int warningTime;
 
   private final XYSeries workRequestsSeries = new XYSeries("Scenarios run per second");
   private final XYSeries delayedWorkRequestsSeries = new XYSeries("Delayed scenarios per second");
@@ -73,6 +73,8 @@ public abstract class LoadTestModel {
   private final XYSeries usedMemoryCollection = new XYSeries("Used memory");
   private final XYSeries maxMemoryCollection = new XYSeries("Maximum memory");
   private final XYSeriesCollection memoryUsageCollection = new XYSeriesCollection();
+
+  private static final int DEFAULT_UPDATE_INTERVAL = 2000;
 
   /**
    * Constructs a new LoadTestModel.
@@ -99,7 +101,7 @@ public abstract class LoadTestModel {
     this.counter = new Counter(this.usageScenarios);
     initializeChartData();
     initializeContext();
-    setUpdateInterval(2000);
+    setUpdateInterval(DEFAULT_UPDATE_INTERVAL);
   }
 
   public User getUser() {
@@ -384,8 +386,8 @@ public abstract class LoadTestModel {
   }
 
   protected int getThinkTime() {
-    final int time = getMaximumThinkTime() - getMinimumThinkTime();
-    return time > 0 ? random.nextInt(time) + getMinimumThinkTime() : getMinimumThinkTime();
+    final int time = minimumThinkTime - maximumThinkTime;
+    return time > 0 ? RANDOM.nextInt(time) + minimumThinkTime : minimumThinkTime;
   }
 
   private synchronized void addApplication() {
@@ -435,7 +437,7 @@ public abstract class LoadTestModel {
 
   private void delayLogin() {
     try {
-      final int sleepyTime = random.nextInt(maximumThinkTime * (loginDelayFactor <= 0 ? 1 : loginDelayFactor));
+      final int sleepyTime = RANDOM.nextInt(maximumThinkTime * (loginDelayFactor <= 0 ? 1 : loginDelayFactor));
       System.out.println("AppModel delaying login for " + sleepyTime + " ms");
       Thread.sleep(sleepyTime);// delay login a bit so all do not try to login at the same time
     }
@@ -506,7 +508,7 @@ public abstract class LoadTestModel {
   /**
    * Encapsulates a load test usage scenario.
    */
-  public static abstract class UsageScenario {
+  public abstract static class UsageScenario {
 
     private final String name;
     private int successfulRunCount = 0;
@@ -529,7 +531,7 @@ public abstract class LoadTestModel {
     }
 
     public int getTotalRunCount() {
-      return getSuccessfulRunCount() + getUnsuccessfulRunCount();
+      return successfulRunCount + unsuccessfulRunCount;
     }
 
     public void resetRunCount() {
@@ -539,7 +541,7 @@ public abstract class LoadTestModel {
 
     @Override
     public String toString() {
-      return getName();
+      return name;
     }
 
     public void run(final Object application) throws Exception {
@@ -589,7 +591,7 @@ public abstract class LoadTestModel {
     private int delayedWorkRequestCounter = 0;
     private long time = System.currentTimeMillis();
 
-    public Counter(final Collection<UsageScenario> usageScenarios) {
+    Counter(final Collection<UsageScenario> usageScenarios) {
       this.usageScenarios = usageScenarios;
     }
 

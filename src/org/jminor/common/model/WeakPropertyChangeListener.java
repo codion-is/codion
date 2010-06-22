@@ -22,13 +22,13 @@ public class WeakPropertyChangeListener implements PropertyChangeListener {
     listenerReference = new WeakReference<PropertyChangeListener>(listener);
   }
 
-  public void propertyChange(final PropertyChangeEvent event) {
+  public void propertyChange(final PropertyChangeEvent evt) {
     final PropertyChangeListener listener = listenerReference.get();
     if (listener == null) {
-      removeListener(event.getSource());
+      removeListener(evt.getSource());
     }
     else {
-      listener.propertyChange(event);
+      listener.propertyChange(evt);
     }
   }
 
@@ -37,7 +37,7 @@ public class WeakPropertyChangeListener implements PropertyChangeListener {
       source.getClass().getMethod("removePropertyChangeListener", PropertyChangeListener.class).invoke(source, this);
     }
     catch (Exception e) {
-      System.out.println("Could not remove listener: " + e);
+      throw new RuntimeException(e);
     }
   }
 }

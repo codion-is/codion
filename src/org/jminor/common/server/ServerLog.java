@@ -3,6 +3,7 @@
  */
 package org.jminor.common.server;
 
+import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.LogEntry;
 import org.jminor.common.model.formats.DateFormats;
 
@@ -32,7 +33,7 @@ public class ServerLog implements Serializable {
   private final String lastExitedMethod;
   private final long connectionCreationDate;
 
-  private static final DateFormat TIMESTAMP_FORMAT = DateFormats.getDateFormat(DateFormats.EXACT_TIMESTAMP);
+  private static final ThreadLocal<DateFormat> TIMESTAMP_FORMAT = DateUtil.getThreadLocalDateFormat(DateFormats.EXACT_TIMESTAMP);
 
   public ServerLog(final String connectionKey, final long connectionCreationDate, final List<LogEntry> log,
                    final long lastAccessDate, final long lastExitDate, final String lastAccessedMethod,
@@ -114,35 +115,35 @@ public class ServerLog implements Serializable {
    * @return the time since last access
    */
   public long getTimeSinceLastAccess() {
-    return System.currentTimeMillis() - getLastAccessDate();
+    return System.currentTimeMillis() - lastAccessDate;
   }
 
   /**
    * @return the duration of the last method call
    */
   public long getLastDelta() {
-    return getLastExitDate() - getLastAccessDate();
+    return lastExitDate - lastAccessDate;
   }
 
   /**
    * @return a formatted last access date
    */
   public String getLastAccessDateFormatted() {
-    return TIMESTAMP_FORMAT.format(getLastAccessDate());
+    return TIMESTAMP_FORMAT.get().format(lastAccessDate);
   }
 
   /**
    * @return a formatted last exit date
    */
   public String getLastExitDateFormatted() {
-    return TIMESTAMP_FORMAT.format(getLastExitDate());
+    return TIMESTAMP_FORMAT.get().format(lastExitDate);
   }
 
   /** {@inheritDoc} */
   @Override
-  public boolean equals(final Object object) {
-    return this == object || !((object == null) || (object.getClass() != this.getClass()))
-            && connectionKey.equals(((ServerLog) object).connectionKey);
+  public boolean equals(final Object obj) {
+    return this == obj || !((obj == null) || (obj.getClass() != this.getClass()))
+            && connectionKey.equals(((ServerLog) obj).connectionKey);
   }
 
   /** {@inheritDoc} */

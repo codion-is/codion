@@ -12,12 +12,12 @@ public class ValueChangeMapImplTest {
 
   @Test
   public void test() {
-    final String key = "key";
     final ValueChangeMap<String, Integer> model = new ValueChangeMapImpl<String, Integer>();
 
     model.stateModified();
     model.eventValueChanged();
 
+    final String key = "key";
     assertFalse(model.containsValue(key));
 
     model.setValue(key, 1);

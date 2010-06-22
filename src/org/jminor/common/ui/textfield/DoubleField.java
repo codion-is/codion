@@ -80,14 +80,15 @@ public class DoubleField extends IntField {
   protected Document createDefaultModel() {
     return new PlainDocument() {
       @Override
-      public void insertString(int offset, String string, AttributeSet a) throws BadLocationException {
-        if (getMaxLength() > 0 && getLength() + (string != null ? string.length() : 0) > getMaxLength()) {
+      public void insertString(final int offs, final String str, final AttributeSet a) throws BadLocationException {
+        if (getMaxLength() > 0 && getLength() + (str != null ? str.length() : 0) > getMaxLength()) {
           return;
         }
-        if (string == null || string.equals("")) {
-          super.insertString(offset, string, a);
+        if (str == null || str.equals("")) {
+          super.insertString(offs, str, a);
           return;
         }
+        String string = str;
         if (getDecimalSymbol().equals(POINT)) {
           if (string.contains(COMMA)) {
             string = string.replace(COMMA, POINT);
@@ -109,15 +110,14 @@ public class DoubleField extends IntField {
         }
         boolean valueOk = false;
         char c = string.charAt(0);
-        if (offset == 0 && c == '-') {
+        if (offs == 0 && c == '-') {
           valueOk = value >= 0;
         }
         else if (Character.isDigit(c)) {
-          valueOk = !((offset == 0) && (value < 0));
+          valueOk = !((offs == 0) && (value < 0));
         }
-        else if (isDecimalSymbol(c) && offset != 0) {
-          if (text != null && (text.contains(POINT) || text.contains(COMMA))) //not allow multiple decimal points
-          {
+        else if (isDecimalSymbol(c) && offs != 0) {
+          if (text != null && (text.contains(POINT) || text.contains(COMMA))) { //not allow multiple decimal points
             return;
           }
           valueOk = true;
@@ -126,12 +126,12 @@ public class DoubleField extends IntField {
         // Range check
         if (valueOk) {
           final StringBuilder sb = new StringBuilder(text);
-          sb.insert(offset, string);
+          sb.insert(offs, string);
           valueOk = isWithinRange(Util.getDouble(sb.toString()));
         }
 
         if (valueOk) {
-          super.insertString(offset, string, a);
+          super.insertString(offs, string, a);
         }
       }
     };

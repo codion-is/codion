@@ -96,7 +96,7 @@ public class DbConnection {
 
   @Override
   public String toString() {
-    return "DbConnection: " + getUser().getUsername();
+    return "DbConnection: " + user.getUsername();
   }
 
   /**
@@ -347,12 +347,12 @@ public class DbConnection {
   public final void writeBlobField(final byte[] blobData, final String tableName, final String columnName,
                                    final String whereClause) throws SQLException {
     final long time = System.currentTimeMillis();
-    ByteArrayInputStream inputStream = null;
-    PreparedStatement statement = null;
     final String sql = "update " + tableName + " set " + columnName + " = ? where " + whereClause;
     QUERY_COUNTER.count(sql);
     methodLogger.logAccess("writeBlobField", new Object[] {sql});
     SQLException exception = null;
+    ByteArrayInputStream inputStream = null;
+    PreparedStatement statement = null;
     try {
       statement = connection.prepareStatement(sql);
       inputStream = new ByteArrayInputStream(blobData);
@@ -377,7 +377,7 @@ public class DbConnection {
    * @throws IllegalStateException in case a transaction is open
    */
   public final void commit() throws SQLException {
-    if (isTransactionOpen()) {
+    if (transactionOpen) {
       throw new IllegalStateException("Can not perform a commit during an open transaction");
     }
 
@@ -402,7 +402,7 @@ public class DbConnection {
    * @throws IllegalStateException in case a transaction is open
    */
   public final void rollback() throws SQLException {
-    if (isTransactionOpen()) {
+    if (transactionOpen) {
       throw new IllegalStateException("Can not perform a rollback during an open transaction");
     }
 
@@ -571,8 +571,8 @@ public class DbConnection {
   }
 
   private boolean checkConnection() throws SQLException {
-    ResultSet rs = null;
     if (connection != null) {
+      ResultSet rs = null;
       try {
         if (checkConnectionStatement == null) {
           checkConnectionStatement = connection.createStatement();
@@ -611,11 +611,11 @@ public class DbConnection {
   }
 
   public static final ResultPacker<Integer> INT_PACKER = new ResultPacker<Integer>() {
-    public List<Integer> pack(final ResultSet rs, final int fetchCount) throws SQLException {
+    public List<Integer> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       final List<Integer> integers = new ArrayList<Integer>();
       int counter = 0;
-      while (rs.next() && (fetchCount < 0 || counter++ < fetchCount)) {
-        integers.add(rs.getInt(1));
+      while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
+        integers.add(resultSet.getInt(1));
       }
 
       return integers;
@@ -623,11 +623,11 @@ public class DbConnection {
   };
 
   public static final ResultPacker<String> STRING_PACKER = new ResultPacker<String>() {
-    public List<String> pack(final ResultSet rs, final int fetchCount) throws SQLException {
+    public List<String> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       final List<String> strings = new ArrayList<String>();
       int counter = 0;
-      while (rs.next() && (fetchCount < 0 || counter++ < fetchCount)) {
-        strings.add(rs.getString(1));
+      while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
+        strings.add(resultSet.getString(1));
       }
 
       return strings;

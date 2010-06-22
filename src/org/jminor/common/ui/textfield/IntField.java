@@ -55,12 +55,12 @@ public class IntField extends TextFieldPlus {
     return new PlainDocument() {
       /** {@inheritDoc} */
       @Override
-      public void insertString(int offset, String string, AttributeSet a) throws BadLocationException {
-        if (getMaxLength() > 0 && getLength() + (string != null ? string.length() : 0) > getMaxLength()) {
+      public void insertString(final int offs, final String str, final AttributeSet a) throws BadLocationException {
+        if (getMaxLength() > 0 && getLength() + (str != null ? str.length() : 0) > getMaxLength()) {
           return;
         }
-        if (string == null || string.equals("")) {
-          super.insertString(offset, string, a);
+        if (str == null || str.equals("")) {
+          super.insertString(offs, str, a);
           return;
         }
         final String text = getText(0, getLength());
@@ -69,22 +69,22 @@ public class IntField extends TextFieldPlus {
           value = Integer.parseInt(text);
         }
         boolean valueOk = false;
-        char c = string.charAt(0);
-        if (offset == 0 && c == '-') {
+        char c = str.charAt(0);
+        if (offs == 0 && c == '-') {
           valueOk = value >= 0;
         }
         else if (Character.isDigit(c)) {
-          valueOk = !((offset == 0) && (value < 0));
+          valueOk = !((offs == 0) && (value < 0));
         }
         // Range check
         if (valueOk) {
           StringBuilder sb = new StringBuilder(text);
-          sb.insert(offset, string);
+          sb.insert(offs, str);
           valueOk = isWithinRange(Util.getLong(sb.toString()));
         }
 
         if (valueOk) {
-          super.insertString(offset, string, a);
+          super.insertString(offs, str, a);
         }
       }
     };

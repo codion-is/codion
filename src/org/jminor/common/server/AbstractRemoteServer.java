@@ -99,7 +99,7 @@ public abstract class AbstractRemoteServer<T> extends UnicastRemoteObject implem
 
   public void shutdown() throws RemoteException {
     try {
-      getRegistry().unbind(getServerName());
+      getRegistry().unbind(serverName);
     }
     catch (NotBoundException e) {
       LOG.error(this, e);

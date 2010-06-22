@@ -13,12 +13,12 @@ public abstract class ValueChangeListener<K, V> implements ActionListener {
 
   /** {@inheritDoc} */
   @SuppressWarnings({"unchecked"})
-  public final void actionPerformed(final ActionEvent event) {
-    if (!(event instanceof ValueChangeEvent)) {
-      throw new IllegalArgumentException("ValueChangeListener can only be used with ValueChangeEvent, " + event);
+  public final void actionPerformed(final ActionEvent e) {
+    if (!(e instanceof ValueChangeEvent)) {
+      throw new IllegalArgumentException("ValueChangeListener can only be used with ValueChangeEvent, " + e);
     }
 
-    valueChanged((ValueChangeEvent<K, V>) event);
+    valueChanged((ValueChangeEvent<K, V>) e);
   }
 
   protected abstract void valueChanged(final ValueChangeEvent<K, V> event);

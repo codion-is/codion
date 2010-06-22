@@ -18,12 +18,12 @@ import java.util.Date;
  */
 public class StringProviderTest {
 
-  private final static String DEPARTMENT_ID = "dept_id";
-  private final static String DEPARTMENT_LOCATION = "loc";
-  private final static String DEPARTMENT_NAME = "deptname";
-  private final static String EMPLOYEE_DEPARTMENT_FK = "empdeptfk";
-  private final static String EMPLOYEE_NAME = "empname";
-  private final static String EMPLOYEE_HIREDATE = "emphire";
+  private static final String DEPARTMENT_ID = "dept_id";
+  private static final String DEPARTMENT_LOCATION = "loc";
+  private static final String DEPARTMENT_NAME = "deptname";
+  private static final String EMPLOYEE_DEPARTMENT_FK = "empdeptfk";
+  private static final String EMPLOYEE_NAME = "empname";
+  private static final String EMPLOYEE_HIREDATE = "emphire";
 
   @Test
   public void test() {

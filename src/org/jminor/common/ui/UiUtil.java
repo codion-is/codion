@@ -57,7 +57,7 @@ public class UiUtil {
   public static final Dimension DIMENSION_TEXT_FIELD_SQUARE =
           new Dimension(getPreferredTextFieldHeight(), getPreferredTextFieldHeight());
 
-  private static final Map<RootPaneContainer, Integer> waitCursorRequests = new HashMap<RootPaneContainer, Integer>();
+  private static final Map<RootPaneContainer, Integer> WAIT_CURSOR_REQUESTS = new HashMap<RootPaneContainer, Integer>();
   /**
    * Caching the file chooser since the constructor is quite slow, especially on Win. with many mapped network drives
    */
@@ -385,12 +385,12 @@ public class UiUtil {
       return;
     }
 
-    synchronized (waitCursorRequests) {
-      if (!waitCursorRequests.containsKey(root)) {
-        waitCursorRequests.put(root, 0);
+    synchronized (WAIT_CURSOR_REQUESTS) {
+      if (!WAIT_CURSOR_REQUESTS.containsKey(root)) {
+        WAIT_CURSOR_REQUESTS.put(root, 0);
       }
 
-      int requests = waitCursorRequests.get(root);
+      int requests = WAIT_CURSOR_REQUESTS.get(root);
       if (on) {
         requests++;
       }
@@ -402,10 +402,10 @@ public class UiUtil {
         root.getRootPane().setCursor(on ? WAIT_CURSOR : DEFAULT_CURSOR);
       }
       if (requests == 0) {
-        waitCursorRequests.remove(root);
+        WAIT_CURSOR_REQUESTS.remove(root);
       }
       else {
-        waitCursorRequests.put(root, requests);
+        WAIT_CURSOR_REQUESTS.put(root, requests);
       }
     }
   }
@@ -462,8 +462,8 @@ public class UiUtil {
 
     ((PlainDocument) textField.getDocument()).setDocumentFilter(new DocumentFilter() {
       @Override
-      public void insertString(FilterBypass fb, int offset, String text, AttributeSet attr) throws BadLocationException {
-        super.insertString(fb, offset, text == null ? null : text.toUpperCase(), attr);
+      public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
+        super.insertString(fb, offset, string == null ? null : string.toUpperCase(), attr);
       }
       @Override
       public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
@@ -515,9 +515,9 @@ public class UiUtil {
   public static void transferFocusOnEnter(final JComponent component) {
     component.addKeyListener(new KeyAdapter() {
       @Override
-      public void keyPressed(final KeyEvent evt) {
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-          if (evt.isShiftDown()) {
+      public void keyPressed(final KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+          if (e.isShiftDown()) {
             component.transferFocusBackward();
           }
           else {
@@ -592,7 +592,7 @@ public class UiUtil {
     if (closeAction != null) {
       dialog.addWindowListener(new WindowAdapter() {
         @Override
-        public void windowClosing(WindowEvent we) {
+        public void windowClosing(WindowEvent e) {
           closeAction.actionPerformed(new ActionEvent(dialog, -1, null));
         }
       });

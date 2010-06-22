@@ -344,8 +344,8 @@ public class EntityUiUtil {
     }
     editModel.getValueChangeEvent(foreignKeyProperty.getPropertyID()).addListener(new ValueChangeListener() {
       @Override
-      public void valueChanged(final ValueChangeEvent e) {
-        textField.setText(e.getNewValue() == null ? "" : e.getNewValue().toString());
+      public void valueChanged(final ValueChangeEvent event) {
+        textField.setText(event.getNewValue() == null ? "" : event.getNewValue().toString());
       }
     });
 
@@ -685,9 +685,9 @@ public class EntityUiUtil {
         entityPanel.initializePanel();
         final List<Entity.Key> lastInsertedPrimaryKeys = new ArrayList<Entity.Key>();
         entityPanel.getModel().getEditModel().eventAfterInsert().addListener(new ActionListener() {
-          public void actionPerformed(final ActionEvent e) {
+          public void actionPerformed(final ActionEvent evt) {
             lastInsertedPrimaryKeys.clear();
-            lastInsertedPrimaryKeys.addAll(((InsertEvent) e).getInsertedKeys());
+            lastInsertedPrimaryKeys.addAll(((InsertEvent) evt).getInsertedKeys());
           }
         });
         final Window parentWindow = UiUtil.getParentWindow(comboBox);
@@ -788,12 +788,12 @@ public class EntityUiUtil {
 
     /** {@inheritDoc} */
     @Override
-    protected void setUIValue(final Object propertyValue) {
-      final List<Entity> value = new ArrayList<Entity>();
+    protected void setUIValue(final Object value) {
+      final List<Entity> valueList = new ArrayList<Entity>();
       if (getModelValue() != null) {
-        value.add((Entity) propertyValue);
+        valueList.add((Entity) value);
       }
-      lookupModel.setSelectedEntities(value);
+      lookupModel.setSelectedEntities(valueList);
     }
   }
 

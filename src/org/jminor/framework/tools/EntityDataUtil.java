@@ -23,7 +23,6 @@ public final class EntityDataUtil {
         int fromIndex = 0, toIndex = 0;
         while (fromIndex < entitiesToCopy.size()) {
           toIndex = Math.min(toIndex + transactionBatchSize, entitiesToCopy.size());
-          System.out.println("Copying " + entityID + " from " + fromIndex + " to " + toIndex);
           final List<Entity> subList = entitiesToCopy.subList(fromIndex, toIndex);
           fromIndex = toIndex;
           destination.beginTransaction();

@@ -58,7 +58,7 @@ public class PropertyComboBoxModel extends FilteredComboBoxModel {
     this.property = property;
     if (refreshEvent != null) {
       refreshEvent.addListener(new ActionListener() {
-        public void actionPerformed(ActionEvent event) {
+        public void actionPerformed(ActionEvent e) {
           refresh();
         }
       });

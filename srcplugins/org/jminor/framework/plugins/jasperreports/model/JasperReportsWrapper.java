@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.plugins.jasperreports.model;
 
+import org.jminor.common.model.Util;
 import org.jminor.common.model.reports.ReportDataWrapper;
 import org.jminor.common.model.reports.ReportException;
 import org.jminor.common.model.reports.ReportResult;
@@ -66,8 +67,9 @@ public class JasperReportsWrapper implements ReportWrapper<JasperPrint>, Seriali
    * @throws IllegalArgumentException in case the report path is not specified
    */
   public static JasperReport loadJasperReport(final String reportPath) {
-    if (reportPath == null || reportPath.isEmpty()) {
-      throw new IllegalArgumentException();
+    Util.rejectNullValue(reportPath);
+    if (reportPath.isEmpty()) {
+      throw new IllegalArgumentException("Empty report path");
     }
     try {
       if (reportPath.toLowerCase().startsWith("http")) {

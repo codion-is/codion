@@ -156,7 +156,7 @@ public class PropertySearchModel extends AbstractSearchModel<Property> {
 
   private void bindLookupModelEvents() {
     entityLookupModel.eventSelectedEntitiesChanged().addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent event) {
+      public void actionPerformed(ActionEvent e) {
         try {
           updatingModel = true;
           final Collection<Entity> selectedEntities = entityLookupModel.getSelectedEntities();
@@ -168,9 +168,8 @@ public class PropertySearchModel extends AbstractSearchModel<Property> {
       }
     });
     eventUpperBoundChanged().addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent event) {
-        if (!updatingModel)//noinspection unchecked
-        {
+      public void actionPerformed(ActionEvent e) {
+        if (!updatingModel) {//noinspection unchecked
           entityLookupModel.setSelectedEntities((List<Entity>) getUpperBound());
         }
       }
@@ -179,14 +178,14 @@ public class PropertySearchModel extends AbstractSearchModel<Property> {
 
   private void bindComboBoxEvents() {
     entityComboBoxModel.eventSelectionChanged().addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent event) {
+      public void actionPerformed(ActionEvent e) {
         if (!updatingModel) {
           setUpperBound(entityComboBoxModel.getSelectedEntity());
         }
       }
     });
     eventUpperBoundChanged().addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent event) {
+      public void actionPerformed(ActionEvent e) {
         try {
           updatingModel = true;
           final Object upper = getUpperBound();
@@ -204,7 +203,7 @@ public class PropertySearchModel extends AbstractSearchModel<Property> {
     });
 
     entityComboBoxModel.eventRefreshDone().addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent event) {
+      public void actionPerformed(final ActionEvent e) {
         final Object upper = getUpperBound();
         if ((upper instanceof Collection && ((Collection) upper).size() > 0)) {
           entityComboBoxModel.setSelectedItem(((Collection) upper).iterator().next());

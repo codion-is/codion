@@ -37,7 +37,7 @@ public class PropertyValueProvider implements ValueCollectionProvider<Object> {
 
   public Collection<Object> getValues() {
     try {
-      return getDbProvider().getEntityDb().selectPropertyValues(getEntityID(), getPropertyID(), true);
+      return dbProvider.getEntityDb().selectPropertyValues(entityID, propertyID, true);
     }
     catch (Exception e) {
       throw new RuntimeException(e);
@@ -46,8 +46,8 @@ public class PropertyValueProvider implements ValueCollectionProvider<Object> {
 
   public static ValueProvider<Property, Object> getValueProvider(final Entity entity) {
     return new ValueProvider<Property, Object>() {
-      public Object getValue(final Property property) {
-        return entity.getValue(property);
+      public Object getValue(final Property key) {
+        return entity.getValue(key);
       }
     };
   }

@@ -15,7 +15,7 @@ import java.util.List;
 public class MethodLogger {
 
   private int logSize;
-  private boolean enabled = false;
+  private volatile boolean enabled = false;
   private List<LogEntry> logEntries;
   private int currentLogEntryIndex = 0;
 
@@ -133,12 +133,12 @@ public class MethodLogger {
   }
 
   private List<LogEntry> initializeLogEntryList() {
-    final List<LogEntry> logEntries = new ArrayList<LogEntry>(logSize);
+    final List<LogEntry> entries = new ArrayList<LogEntry>(logSize);
     for (int i = 0; i < logSize; i++) {
-      logEntries.add(new LogEntry());
+      entries.add(new LogEntry());
     }
 
-    return logEntries;
+    return entries;
   }
 
   protected String argumentArrayToString(final Object[] arguments) {

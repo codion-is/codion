@@ -8,7 +8,6 @@ import org.jminor.framework.server.EntityDbServerAdmin;
 
 import javax.swing.DefaultListModel;
 import java.rmi.RemoteException;
-import java.util.Enumeration;
 
 /**
  * User: Bjorn Darri<br>
@@ -62,13 +61,5 @@ public class ClientUserMonitor {
 
   public int getCheckMaintenanceInterval() throws RemoteException {
     return server.getCheckMaintenanceInterval();
-  }
-
-  public void shutdown() {
-    System.out.println("ClientUserMonitor shutdown");
-    final Enumeration enumeration = clientTypeListModel.elements();
-    while (enumeration.hasMoreElements()) {
-      ((ClientMonitor) enumeration.nextElement()).shutdown();
-    }
   }
 }

@@ -45,7 +45,7 @@ public class RandomItemPanel<T> extends JPanel {
   protected void initializeUI() {
     final int count = model.getItemCount();
     setLayout(new FlexibleGridLayout(count * 2, 1, 5, 5, true, false));
-    for (final RandomItemModel.RandomItem<T> item : getModel().getItems()) {
+    for (final RandomItemModel.RandomItem<T> item : model.getItems()) {
       add(new JLabel(item.getItem().toString()));
       add(initializeWeightPanel(item));
     }
@@ -71,7 +71,7 @@ public class RandomItemPanel<T> extends JPanel {
    * @return a weight controlling SpinnerModel
    */
   private SpinnerModel createWeightSpinnerModel(final T item) {
-    final SpinnerNumberModel spinnerModel = new SpinnerNumberModel(getModel().getWeight(item), 0, Integer.MAX_VALUE, 1);
+    final SpinnerNumberModel spinnerModel = new SpinnerNumberModel(model.getWeight(item), 0, Integer.MAX_VALUE, 1);
     final AbstractValueLink<RandomItemPanel, Integer> valueLink = new AbstractValueLink<RandomItemPanel, Integer>(this, getModel().eventWeightsChanged(), LinkType.READ_WRITE) {
       @Override
       public Integer getModelValue() {
@@ -86,8 +86,8 @@ public class RandomItemPanel<T> extends JPanel {
         getModel().setWeight(item, value);
       }
       @Override
-      protected void setUIValue(final Integer propertyValue) {
-        spinnerModel.setValue(propertyValue);
+      protected void setUIValue(final Integer value) {
+        spinnerModel.setValue(value);
       }
     };
     valueLink.updateUI();

@@ -114,7 +114,6 @@ public class EntityListModel extends AbstractListModel implements Refreshable {
 
   public List<Entity> getSelectedEntities() {
     final List<Entity> ret = new ArrayList<Entity>();
-    final ListSelectionModel selectionModel = getSelectionModel();
     final int min = selectionModel.getMinSelectionIndex();
     final int max = selectionModel.getMaxSelectionIndex();
     for (int index = min; index <= max; index++) {
@@ -176,11 +175,11 @@ public class EntityListModel extends AbstractListModel implements Refreshable {
    */
   protected List<Entity> performQuery() {
     try {
-      if (getEntitySelectCriteria() != null) {
-        return dbProvider.getEntityDb().selectMany(getEntitySelectCriteria());
+      if (selectCriteria != null) {
+        return dbProvider.getEntityDb().selectMany(selectCriteria);
       }
       else {
-        return dbProvider.getEntityDb().selectAll(getEntityID());
+        return dbProvider.getEntityDb().selectAll(entityID);
       }
     }
     catch (Exception e) {

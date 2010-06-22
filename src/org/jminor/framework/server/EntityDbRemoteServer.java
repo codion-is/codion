@@ -236,7 +236,7 @@ public class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
     for (final ClientInfo client : clients) {
       final EntityDbRemoteAdapter adapter = (EntityDbRemoteAdapter) getConnection(client);
       if (inactiveOnly) {
-        if (!adapter.isActive() && adapter.hasBeenInactive(getConnectionTimeout() * 1000)) {
+        if (!adapter.isActive() && adapter.hasBeenInactive(connectionTimeout * 1000)) {
           disconnect(client.getClientID());
         }
       }
@@ -278,7 +278,7 @@ public class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
               locationsURL[i++] = uri.toURL();
             }
             Class.forName(domainClassName.trim(), true, new URLClassLoader(locationsURL, ClassLoader.getSystemClassLoader()));
-            System.out.println("Domain class loaded: " + domainClassName);
+            LOG.info("Domain class loaded: " + domainClassName);
           }
 
           return null;
@@ -288,14 +288,13 @@ public class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
         }
       }
     });
-    System.out.println(message);
   }
 
   @Override
-  protected void doDisconnect(final EntityDbRemote adapter) throws RemoteException {
+  protected void doDisconnect(final EntityDbRemote connection) throws RemoteException {
     try {
-      ((EntityDbRemoteAdapter) adapter).disconnect();
-      LOG.debug(((EntityDbRemoteAdapter) adapter).getClientInfo() + " disconnected");
+      ((EntityDbRemoteAdapter) connection).disconnect();
+      LOG.debug(((EntityDbRemoteAdapter) connection).getClientInfo() + " disconnected");
     }
     catch (Exception e) {
       throw new RemoteException(e.getMessage(), e);
@@ -303,9 +302,9 @@ public class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
   }
 
   @Override
-  protected EntityDbRemoteAdapter doConnect(final ClientInfo client) throws RemoteException {
-    final EntityDbRemoteAdapter remoteAdapter = new EntityDbRemoteAdapter(this, database, client, SERVER_DB_PORT, CLIENT_LOGGING_ENABLED);
-    LOG.debug(client + " connected");
+  protected EntityDbRemoteAdapter doConnect(final ClientInfo info) throws RemoteException {
+    final EntityDbRemoteAdapter remoteAdapter = new EntityDbRemoteAdapter(this, database, info, SERVER_DB_PORT, CLIENT_LOGGING_ENABLED);
+    LOG.debug(info + " connected");
 
     return remoteAdapter;
   }

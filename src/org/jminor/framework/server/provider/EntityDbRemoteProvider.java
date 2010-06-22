@@ -31,6 +31,7 @@ import java.util.List;
 public class EntityDbRemoteProvider implements EntityDbProvider {
 
   private static final Logger LOG = Util.getLogger(EntityDbRemoteProvider.class);
+  private static final int INPUT_BUFFER_SIZE = 8192;
 
   private final String serverHostName = System.getProperty(Configuration.SERVER_HOST_NAME);
   private User user;
@@ -143,9 +144,9 @@ public class EntityDbRemoteProvider implements EntityDbProvider {
     final List<RemoteServer> servers = getEntityServers(serverHostName);
     if (servers.size() > 0) {
       Collections.sort(servers, new Comparator<RemoteServer>() {
-        public int compare(final RemoteServer serverOne, final RemoteServer serverTwo) {
+        public int compare(final RemoteServer o1, final RemoteServer o2) {
           try {
-            return Integer.valueOf(serverOne.getServerLoad()).compareTo(serverTwo.getServerLoad());
+            return Integer.valueOf(o1.getServerLoad()).compareTo(o2.getServerLoad());
           }
           catch (RemoteException e) {
             return 1;
@@ -210,7 +211,7 @@ public class EntityDbRemoteProvider implements EntityDbProvider {
         final File trustFile = File.createTempFile(clientTypeID, "ts");
         trustFile.deleteOnExit();
         out = new FileOutputStream(trustFile);
-        byte buf[] = new byte[8192];
+        byte buf[] = new byte[INPUT_BUFFER_SIZE];
         int br = in.read(buf);
         while (br > 0) {
           out.write(buf, 0, br);

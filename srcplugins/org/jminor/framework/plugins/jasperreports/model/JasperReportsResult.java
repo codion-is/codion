@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.plugins.jasperreports.model;
 
+import org.jminor.common.model.Util;
 import org.jminor.common.model.reports.ReportResult;
 
 import net.sf.jasperreports.engine.JasperPrint;
@@ -19,6 +20,7 @@ public class JasperReportsResult implements ReportResult<JasperPrint>, Serializa
   private final JasperPrint jasperPrint;
 
   public JasperReportsResult(final JasperPrint jasperPrint) {
+    Util.rejectNullValue(jasperPrint);
     this.jasperPrint = jasperPrint;
   }
 

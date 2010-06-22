@@ -20,7 +20,7 @@ import java.util.*;
  */
 public final class EntityUtil {
 
-  public static final Random random = new Random();
+  private static final Random RANDOM = new Random();
 
   private EntityUtil() {}
 
@@ -235,8 +235,8 @@ public final class EntityUtil {
     Util.rejectNullValue(properties);
     final Collator collator = Collator.getInstance();
     Collections.sort(properties, new Comparator<Property>() {
-      public int compare(final Property propertyOne, final Property propertyTwo) {
-        return collator.compare(propertyOne.toString().toLowerCase(), propertyTwo.toString().toLowerCase());
+      public int compare(final Property o1, final Property o2) {
+        return collator.compare(o1.toString().toLowerCase(), o2.toString().toLowerCase());
       }
     });
 
@@ -272,8 +272,8 @@ public final class EntityUtil {
   public static Entity createRandomEntity(final String entityID, final Map<String, Entity> referenceEntities) {
     Util.rejectNullValue(entityID);
     return createEntity(entityID, new ValueProvider<Property, Object>() {
-      public Object getValue(final Property property) {
-        return getRandomValue(property, referenceEntities);
+      public Object getValue(final Property key) {
+        return getRandomValue(key, referenceEntities);
       }
     });
   }
@@ -314,47 +314,45 @@ public final class EntityUtil {
       final String referenceEntityID = ((Property.ForeignKeyProperty) property).getReferencedEntityID();
       return referenceEntities == null ? null : referenceEntities.get(referenceEntityID);
     }
-    else {
-      if (property instanceof Property.ValueListProperty) {
-        final List<Item<Object>> items = ((Property.ValueListProperty) property).getValues();
-        final Item item = items.get(random.nextInt(items.size()));
+    if (property instanceof Property.ValueListProperty) {
+      final List<Item<Object>> items = ((Property.ValueListProperty) property).getValues();
+      final Item item = items.get(RANDOM.nextInt(items.size()));
 
-        return item.getItem();
+      return item.getItem();
+    }
+    else if (property.isBoolean()) {
+      return RANDOM.nextBoolean();
+    }
+    else if (property.isCharacter()) {
+      return (char) RANDOM.nextInt();
+    }
+    else if (property.isDate()) {
+      return DateUtil.floorDate(new Date());
+    }
+    else if (property.isTimestamp()) {
+      return DateUtil.floorTimestamp(new Timestamp(System.currentTimeMillis()));
+    }
+    else if (property.isDouble()) {
+      double min = property.getMin() == null ? -10000000 : property.getMin();
+      double max = property.getMax() == null ? 10000000 : property.getMax();
+      //Min + (int)(Math.random() * ((Max - Min) + 1))
+      final double ret = min + (RANDOM.nextDouble() * ((max - min) + 1));
+      if (property.getMaximumFractionDigits() > 0) {
+        return Util.roundDouble(ret, property.getMaximumFractionDigits());
       }
-      else if (property.isBoolean()) {
-        return random.nextBoolean();
+      else {
+        return ret;
       }
-      else if (property.isCharacter()) {
-        return (char) random.nextInt();
-      }
-      else if (property.isDate()) {
-        return DateUtil.floorDate(new Date());
-      }
-      else if (property.isTimestamp()) {
-        return DateUtil.floorTimestamp(new Timestamp(System.currentTimeMillis()));
-      }
-      else if (property.isDouble()) {
-        double min = property.getMin() == null ? -10000000 : property.getMin();
-        double max = property.getMax() == null ? 10000000 : property.getMax();
-        //Min + (int)(Math.random() * ((Max - Min) + 1))
-        final double ret = min + (random.nextDouble() * ((max - min) + 1));
-        if (property.getMaximumFractionDigits() > 0) {
-          return Util.roundDouble(ret, property.getMaximumFractionDigits());
-        }
-        else {
-          return ret;
-        }
-      }
-      else if (property.isInteger()) {
-        double min = property.getMin() == null ? -10000000 : property.getMin();
-        double max = property.getMax() == null ? 10000000 : property.getMax();
+    }
+    else if (property.isInteger()) {
+      double min = property.getMin() == null ? -10000000 : property.getMin();
+      double max = property.getMax() == null ? 10000000 : property.getMax();
 
-        return (int) (min + (random.nextDouble() * ((max - min) + 1)));
-      }
-      else if (property.isString()) {
-        final int minLength = property.isNullable() ? 0 : 1;
-        return Util.createRandomString(minLength, property.getMaxLength() < 0 ? 10 : property.getMaxLength());
-      }
+      return (int) (min + (RANDOM.nextDouble() * ((max - min) + 1)));
+    }
+    else if (property.isString()) {
+      final int minLength = property.isNullable() ? 0 : 1;
+      return Util.createRandomString(minLength, property.getMaxLength() < 0 ? 10 : property.getMaxLength());
     }
 
     return null;

@@ -76,12 +76,12 @@ public abstract class ValueChangeMapEditPanel<K, V> extends JPanel {
   }
 
   public void setInitialFocus() {
-    final JComponent initialFocusComponent = getInitialFocusComponent();
-    if (initialFocusComponent == null) {
+    final JComponent focusComponent = getInitialFocusComponent();
+    if (focusComponent == null) {
       requestFocusInWindow();
     }
     else {
-      initialFocusComponent.requestFocusInWindow();
+      focusComponent.requestFocusInWindow();
     }
   }
 

@@ -33,6 +33,6 @@ public class Version implements Serializable {
 
   @Override
   public String toString() {
-    return new StringBuilder().append("@").append(getDomain()).append("-").append(getVersion()).toString();
+    return new StringBuilder().append("@").append(domain).append("-").append(version).toString();
   }
 }

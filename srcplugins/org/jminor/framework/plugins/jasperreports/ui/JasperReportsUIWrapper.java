@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.plugins.jasperreports.ui;
 
+import org.jminor.common.model.Util;
 import org.jminor.common.model.reports.ReportResult;
 import org.jminor.common.ui.reports.ReportUIWrapper;
 
@@ -14,6 +15,7 @@ import javax.swing.JComponent;
 public class JasperReportsUIWrapper implements ReportUIWrapper<JasperPrint> {
 
   public JComponent createReportComponent(final ReportResult<JasperPrint> result) {
+    Util.rejectNullValue(result);
     return new JRViewer(result.getResult());
   }
 }

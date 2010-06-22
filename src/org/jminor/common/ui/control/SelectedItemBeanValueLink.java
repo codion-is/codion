@@ -52,7 +52,7 @@ public class SelectedItemBeanValueLink extends AbstractBeanValueLink {
 
   /** {@inheritDoc} */
   @Override
-  protected void setUIValue(final Object propertyValue) {
-    comboBoxModel.setSelectedItem(propertyValue);
+  protected void setUIValue(final Object value) {
+    comboBoxModel.setSelectedItem(value);
   }
 }

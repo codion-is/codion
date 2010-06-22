@@ -117,14 +117,14 @@ public class TableSorter extends AbstractTableModel {
   private final Event evtAfterSort = new Event();
 
   public static final Comparator COMPARABLE_COMPARATOR = new Comparator() {
-    public int compare(Object objectOne, Object objectTwo) {
-      return ((Comparable) objectOne).compareTo(objectTwo);
+    public int compare(Object o1, Object o2) {
+      return ((Comparable) o1).compareTo(o2);
     }
   };
   public static final Comparator LEXICAL_COMPARATOR = new Comparator() {
     private final Collator collator = Collator.getInstance();
-    public int compare(Object objectOne, Object objectTwo) {
-      return collator.compare(objectOne.toString(), objectTwo.toString());
+    public int compare(Object o1, Object o2) {
+      return collator.compare(o1.toString(), o2.toString());
     }
   };
 
@@ -215,7 +215,7 @@ public class TableSorter extends AbstractTableModel {
 
   public void setSortingStatus(int column, int status) {
     Directive directive = getDirective(column);
-    if (directive != EMPTY_DIRECTIVE) {
+    if (!directive.equals(EMPTY_DIRECTIVE)) {
       sortingColumns.remove(directive);
     }
     if (status != NOT_SORTED) {
@@ -262,25 +262,25 @@ public class TableSorter extends AbstractTableModel {
 
   /** {@inheritDoc} */
   @Override
-  public Class getColumnClass(int column) {
-    return tableModel.getColumnClass(column);
+  public Class getColumnClass(int columnIndex) {
+    return tableModel.getColumnClass(columnIndex);
   }
 
   /** {@inheritDoc} */
   @Override
-  public boolean isCellEditable(int row, int column) {
-    return tableModel.isCellEditable(modelIndex(row), column);
+  public boolean isCellEditable(int rowIndex, int columnIndex) {
+    return tableModel.isCellEditable(modelIndex(rowIndex), columnIndex);
   }
 
   /** {@inheritDoc} */
-  public Object getValueAt(int row, int column) {
-    return tableModel.getValueAt(modelIndex(row), column);
+  public Object getValueAt(int rowIndex, int columnIndex) {
+    return tableModel.getValueAt(modelIndex(rowIndex), columnIndex);
   }
 
   /** {@inheritDoc} */
   @Override
-  public void setValueAt(Object aValue, int row, int column) {
-    tableModel.setValueAt(aValue, modelIndex(row), column);
+  public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+    tableModel.setValueAt(aValue, modelIndex(rowIndex), columnIndex);
   }
 
   /**
@@ -377,13 +377,13 @@ public class TableSorter extends AbstractTableModel {
   private class Row implements Comparable {
     private final int modelIndex;
 
-    public Row(int index) {
+    Row(int index) {
       this.modelIndex = index;
     }
 
-    public int compareTo(Object object) {
+    public int compareTo(Object o) {
       int rowOne = modelIndex;
-      int rowTwo = ((Row) object).modelIndex;
+      int rowTwo = ((Row) o).modelIndex;
 
       for (final Directive directive : sortingColumns) {
         int column = directive.column;

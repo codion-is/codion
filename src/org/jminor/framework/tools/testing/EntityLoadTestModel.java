@@ -18,10 +18,12 @@ import java.util.List;
  */
 public abstract class EntityLoadTestModel extends LoadTestModel {
 
+  private static final int DEFAULT_WARNING_TIME = 200;
+
   public EntityLoadTestModel(final User user) {
     super(user, Integer.parseInt(System.getProperty(Configuration.LOAD_TEST_THINKTIME, "2000")),
             Integer.parseInt(System.getProperty(Configuration.LOAD_TEST_LOGIN_DELAY, "2")),
-            Integer.parseInt(System.getProperty(Configuration.LOAD_TEST_BATCH_SIZE, "10")), 200);
+            Integer.parseInt(System.getProperty(Configuration.LOAD_TEST_BATCH_SIZE, "10")), DEFAULT_WARNING_TIME);
     loadDomainModel();
   }
 
@@ -30,7 +32,7 @@ public abstract class EntityLoadTestModel extends LoadTestModel {
       return;
     }
 
-    model.setSelectedItemIndex(random.nextInt(model.getRowCount()));
+    model.setSelectedItemIndex(RANDOM.nextInt(model.getRowCount()));
   }
 
   public static void selectRandomRows(final EntityTableModel model, final int count) {
@@ -38,7 +40,7 @@ public abstract class EntityLoadTestModel extends LoadTestModel {
       return;
     }
 
-    final int startIdx = random.nextInt(model.getRowCount() - count);
+    final int startIdx = RANDOM.nextInt(model.getRowCount() - count);
     final List<Integer> indexes = new ArrayList<Integer>();
     for (int i = startIdx; i < count + startIdx; i++) {
       indexes.add(i);
@@ -62,8 +64,8 @@ public abstract class EntityLoadTestModel extends LoadTestModel {
   }
 
   @Override
-  protected void disconnectApplication(final Object applicationModel) {
-    ((EntityApplicationModel) applicationModel).getDbProvider().disconnect();
+  protected void disconnectApplication(final Object application) {
+    ((EntityApplicationModel) application).getDbProvider().disconnect();
   }
 
   @Override

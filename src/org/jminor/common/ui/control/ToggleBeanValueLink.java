@@ -78,8 +78,8 @@ public class ToggleBeanValueLink extends AbstractBeanValueLink {
 
   /** {@inheritDoc} */
   @Override
-  protected void setUIValue(final Object propertyValue) {
-    final Boolean value = (Boolean) propertyValue;
-    buttonModel.setSelected(value != null && value);
+  protected void setUIValue(final Object value) {
+    final Boolean booleanValue = (Boolean) value;
+    buttonModel.setSelected(booleanValue != null && booleanValue);
   }
 }

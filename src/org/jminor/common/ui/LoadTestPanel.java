@@ -48,6 +48,7 @@ import java.awt.event.WindowEvent;
  */
 public class LoadTestPanel extends JPanel {
 
+  private static final int MEMORY_USAGE_UPDATE_INTERVAL = 2000;
   private final LoadTestModel loadTestModel;
 
   /**
@@ -67,7 +68,7 @@ public class LoadTestPanel extends JPanel {
   public void showFrame() {
     final JFrame frame = UiUtil.createFrame(Images.loadImage("jminor_logo32.gif").getImage());
     final String title = "JMinor - " + loadTestModel.getClass().getSimpleName();
-    getModel().eventDoneExiting().addListener(new ActionListener() {
+    loadTestModel.eventDoneExiting().addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         if (frame != null) {
           frame.setVisible(false);
@@ -79,7 +80,7 @@ public class LoadTestPanel extends JPanel {
       @Override
       public void windowClosing(WindowEvent e) {
         frame.setTitle(title + " - Closing...");
-        getModel().exit();
+        loadTestModel.exit();
       }
     });
     frame.setTitle(title);
@@ -116,27 +117,27 @@ public class LoadTestPanel extends JPanel {
   private JPanel initializeSouthPanel() {
     final JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
     southPanel.add(new JLabel("Memory usage:"));
-    southPanel.add(UiUtil.createMemoryUsageField(2000));
+    southPanel.add(UiUtil.createMemoryUsageField(MEMORY_USAGE_UPDATE_INTERVAL));
 
     return southPanel;
   }
 
   private JPanel initializeScenarioPanel() {
-    final RandomItemPanel scenarioBase = new RandomItemPanel<LoadTestModel.UsageScenario>(getModel().getScenarioChooser());
+    final RandomItemPanel scenarioBase = new RandomItemPanel<LoadTestModel.UsageScenario>(loadTestModel.getScenarioChooser());
     scenarioBase.setBorder(BorderFactory.createTitledBorder("Usage scenarios"));
 
     return scenarioBase;
   }
 
   private JPanel initializeUserPanel() {
-    final User user = getModel().getUser();
+    final User user = loadTestModel.getUser();
     final JTextField txtUsername = new JTextField(user.getUsername());
     txtUsername.setColumns(8);
     final JTextField txtPassword = new JPasswordField(user.getPassword());
     txtPassword.setColumns(8);
     final ActionListener userInfoListener = new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        getModel().setUser(new User(txtUsername.getText(), txtPassword.getText()));
+        loadTestModel.setUser(new User(txtUsername.getText(), txtPassword.getText()));
       }
     };
     txtUsername.addActionListener(userInfoListener);
@@ -157,20 +158,18 @@ public class LoadTestPanel extends JPanel {
   private JPanel initializeApplicationPanel() {
     final IntField applicationCountField = new IntField();
     applicationCountField.setHorizontalAlignment(JTextField.CENTER);
-    new IntBeanValueLink(applicationCountField, getModel(), "applicationCount", getModel().eventApplicationCountChanged(), LinkType.READ_ONLY) {
+    new IntBeanValueLink(applicationCountField, getModel(), "applicationCount", loadTestModel.eventApplicationCountChanged(), LinkType.READ_ONLY) {
       @Override
-      protected void setUIValue(Object propertyValue) {
-        synchronized (this) {
-          super.setUIValue(propertyValue);
-        }
+      protected synchronized void setUIValue(final Object value) {
+        super.setUIValue(value);
       }
     };
 
     final JPanel applicationPanel = new JPanel(new BorderLayout(5, 5));
     applicationPanel.setBorder(BorderFactory.createTitledBorder("Applications"));
 
-    final JSpinner spnBatchSize = new JSpinner(new IntBeanSpinnerValueLink(getModel(), "applicationBatchSize",
-            getModel().eventApplicationBatchSizeChanged()).getSpinnerModel());
+    final JSpinner spnBatchSize = new JSpinner(new IntBeanSpinnerValueLink(loadTestModel, "applicationBatchSize",
+            loadTestModel.eventApplicationBatchSizeChanged()).getSpinnerModel());
     spnBatchSize.setToolTipText("Application batch size");
     ((JSpinner.DefaultEditor) spnBatchSize.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) spnBatchSize.getEditor()).getTextField().setColumns(3);
@@ -199,10 +198,10 @@ public class LoadTestPanel extends JPanel {
       public void actionPerformed(final ActionEvent e) {
         try {
           if (add) {
-            getModel().addApplications();
+            loadTestModel.addApplications();
           }
           else {
-            getModel().removeApplications();
+            loadTestModel.removeApplications();
           }
         }
         catch (Exception ex) {
@@ -220,40 +219,40 @@ public class LoadTestPanel extends JPanel {
   private JPanel initializeChartControlPanel() {
     final JPanel controlPanel = new JPanel(new FlexibleGridLayout(1, 2, 5, 5, true, false));
     controlPanel.setBorder(BorderFactory.createTitledBorder("Charts"));
-    controlPanel.add(ControlProvider.createCheckBox(ControlFactory.toggleControl(getModel(), "collectChartData",
-            "Collect chart data", getModel().eventCollectChartDataChanged())));
-    controlPanel.add(ControlProvider.createButton(ControlFactory.methodControl(getModel(), "resetChartData", "Reset")));
+    controlPanel.add(ControlProvider.createCheckBox(ControlFactory.toggleControl(loadTestModel, "collectChartData",
+            "Collect chart data", loadTestModel.eventCollectChartDataChanged())));
+    controlPanel.add(ControlProvider.createButton(ControlFactory.methodControl(loadTestModel, "resetChartData", "Reset")));
 
     return controlPanel;
   }
 
   private JPanel initializeChartPanel() {
     final JFreeChart workRequestsChart = ChartFactory.createXYStepChart(null,
-            null, null, getModel().getWorkRequestsDataset(), PlotOrientation.VERTICAL, true, true, false);
+            null, null, loadTestModel.getWorkRequestsDataset(), PlotOrientation.VERTICAL, true, true, false);
     workRequestsChart.getXYPlot().setBackgroundPaint(Color.BLACK);
     final ChartPanel workRequestsChartPanel = new ChartPanel(workRequestsChart);
     workRequestsChartPanel.setBorder(BorderFactory.createEtchedBorder());
 
     final JFreeChart thinkTimeChart = ChartFactory.createXYStepChart(null,
-            null, null, getModel().getThinkTimeDataset(), PlotOrientation.VERTICAL, true, true, false);
+            null, null, loadTestModel.getThinkTimeDataset(), PlotOrientation.VERTICAL, true, true, false);
     thinkTimeChart.getXYPlot().setBackgroundPaint(Color.BLACK);
     final ChartPanel thinkTimeChartPanel = new ChartPanel(thinkTimeChart);
     thinkTimeChartPanel.setBorder(BorderFactory.createEtchedBorder());
 
     final JFreeChart numberOfApplicationsChart = ChartFactory.createXYStepChart(null,
-            null, null, getModel().getNumberOfApplicationsDataset(), PlotOrientation.VERTICAL, true, true, false);
+            null, null, loadTestModel.getNumberOfApplicationsDataset(), PlotOrientation.VERTICAL, true, true, false);
     numberOfApplicationsChart.getXYPlot().setBackgroundPaint(Color.BLACK);
     final ChartPanel numberOfApplicationsChartPanel = new ChartPanel(numberOfApplicationsChart);
     numberOfApplicationsChartPanel.setBorder(BorderFactory.createEtchedBorder());
 
     final JFreeChart usageScenarioChart = ChartFactory.createXYStepChart(null,
-            null, null, getModel().getUsageScenarioDataset(), PlotOrientation.VERTICAL, true, true, false);
+            null, null, loadTestModel.getUsageScenarioDataset(), PlotOrientation.VERTICAL, true, true, false);
     usageScenarioChart.getXYPlot().setBackgroundPaint(Color.BLACK);
     final ChartPanel usageScenarioChartPanel = new ChartPanel(usageScenarioChart);
     usageScenarioChartPanel.setBorder(BorderFactory.createEtchedBorder());
 
     final JFreeChart memoryUsageChart = ChartFactory.createXYStepChart(null,
-            null, null, getModel().getMemoryUsageDataset(), PlotOrientation.VERTICAL, true, true, false);
+            null, null, loadTestModel.getMemoryUsageDataset(), PlotOrientation.VERTICAL, true, true, false);
     memoryUsageChart.getXYPlot().setBackgroundPaint(Color.BLACK);
     final ChartPanel memoryUsageChartPanel = new ChartPanel(memoryUsageChart);
     memoryUsageChartPanel.setBorder(BorderFactory.createEtchedBorder());
@@ -270,28 +269,28 @@ public class LoadTestPanel extends JPanel {
   }
 
   private JPanel initializeActivityPanel() {
-    SpinnerNumberModel spinnerModel = new IntBeanSpinnerValueLink(getModel(), "maximumThinkTime",
-            getModel().eventMaximumThinkTimeChanged()).getSpinnerModel();
+    SpinnerNumberModel spinnerModel = new IntBeanSpinnerValueLink(loadTestModel, "maximumThinkTime",
+            loadTestModel.eventMaximumThinkTimeChanged()).getSpinnerModel();
     spinnerModel.setStepSize(10);
     final JSpinner spnMaxThinkTime = new JSpinner(spinnerModel);
     ((JSpinner.DefaultEditor) spnMaxThinkTime.getEditor()).getTextField().setColumns(3);
 
-    spinnerModel = new IntBeanSpinnerValueLink(getModel(), "minimumThinkTime",
-            getModel().eventMinimumThinkTimeChanged()).getSpinnerModel();
+    spinnerModel = new IntBeanSpinnerValueLink(loadTestModel, "minimumThinkTime",
+            loadTestModel.eventMinimumThinkTimeChanged()).getSpinnerModel();
     spinnerModel.setStepSize(10);
     final JSpinner spnMinThinkTimeField = new JSpinner(spinnerModel);
     ((JSpinner.DefaultEditor) spnMinThinkTimeField.getEditor()).getTextField().setColumns(3);
 
-    spinnerModel = new IntBeanSpinnerValueLink(getModel(), "warningTime",
-            getModel().eventWarningTimeChanged()).getSpinnerModel();
+    spinnerModel = new IntBeanSpinnerValueLink(loadTestModel, "warningTime",
+            loadTestModel.eventWarningTimeChanged()).getSpinnerModel();
     spinnerModel.setStepSize(10);
     final JSpinner spnWarningTime = new JSpinner(spinnerModel);
     ((JSpinner.DefaultEditor) spnWarningTime.getEditor()).getTextField().setColumns(3);
     spnWarningTime.setToolTipText("A work request is considered 'delayed' if the time it takes to process it exceeds this value (ms)");
 
-    final ToggleBeanValueLink pauseControl = ControlFactory.toggleControl(getModel(), "paused", "Pause", getModel().eventPausedChanged());
+    final ToggleBeanValueLink pauseControl = ControlFactory.toggleControl(loadTestModel, "paused", "Pause", loadTestModel.eventPausedChanged());
     pauseControl.setMnemonic('P');
-    final MethodControl gcControl = ControlFactory.methodControl(getModel(), "performGC", "Perform GC");
+    final MethodControl gcControl = ControlFactory.methodControl(loadTestModel, "performGC", "Perform GC");
 
     final FlexibleGridLayout layout = new FlexibleGridLayout(4, 2, 5, 5, true, false);
     layout.setFixedRowHeight(UiUtil.getPreferredTextFieldHeight());

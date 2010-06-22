@@ -55,8 +55,4 @@ public class ClientMonitor {
   public String toString() {
     return clientTypeID == null ? user.toString() : clientTypeID;
   }
-
-  public void shutdown() {
-    System.out.println("ClientMonitor shutdown");
-  }
 }

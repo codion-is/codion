@@ -48,12 +48,12 @@ public class TextBeanValueLink extends AbstractBeanValueLink implements Document
 
   /** {@inheritDoc} */
   @Override
-  protected void setUIValue(final Object propertyValue) {
+  protected void setUIValue(final Object value) {
     try {
       synchronized (document) {
         document.remove(0, document.getLength());
-        if (propertyValue != null) {
-          document.insertString(0, getValueAsString(propertyValue), null);
+        if (value != null) {
+          document.insertString(0, getValueAsString(value), null);
         }
       }
     }

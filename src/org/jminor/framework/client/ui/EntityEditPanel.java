@@ -209,12 +209,12 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
 
   /**
    * Handles the given exception
-   * @param throwable the exception to handle
+   * @param exception the exception to handle
    * @param dialogParent the component to use as exception dialog parent
    */
-  public void handleException(final Throwable throwable, final JComponent dialogParent) {
-    LOG.error(this, throwable);
-    DefaultExceptionHandler.get().handleException(throwable, dialogParent);
+  public void handleException(final Throwable exception, final JComponent dialogParent) {
+    LOG.error(this, exception);
+    DefaultExceptionHandler.getInstance().handleException(exception, dialogParent);
   }
 
   /**
@@ -1558,12 +1558,12 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
 
   private void bindEventsInternal() {
     getEditModel().eventRefreshStarted().addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent event) {
+      public void actionPerformed(ActionEvent e) {
         UiUtil.setWaitCursor(true, EntityEditPanel.this);
       }
     });
     getEditModel().eventRefreshDone().addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent event) {
+      public void actionPerformed(ActionEvent e) {
         UiUtil.setWaitCursor(false, EntityEditPanel.this);
       }
     });

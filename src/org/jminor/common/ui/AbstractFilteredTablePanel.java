@@ -100,7 +100,7 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
   }
 
   public void scrollToCoordinate(final int row, final int column) {
-    getJTable().scrollRectToVisible(getJTable().getCellRect(row, column, true));
+    table.scrollRectToVisible(table.getCellRect(row, column, true));
   }
 
   /**
@@ -119,8 +119,8 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
     final List<TableColumn> allColumns = Collections.list(getTableModel().getColumnModel().getColumns());
     allColumns.addAll(getTableModel().getHiddenColumns());
     Collections.sort(allColumns, new Comparator<TableColumn>() {
-      public int compare(final TableColumn colOne, final TableColumn colTwo) {
-        return Collator.getInstance().compare(colOne.getIdentifier().toString(), colTwo.getIdentifier().toString());
+      public int compare(final TableColumn o1, final TableColumn o2) {
+        return Collator.getInstance().compare(o1.getIdentifier().toString(), o2.getIdentifier().toString());
       }
     });
 
@@ -179,7 +179,7 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
         }
         else {
           getTableModel().setSelectedItemIndex(viewIndex.y);
-          getJTable().setColumnSelectionInterval(viewIndex.x, viewIndex.x);
+          table.setColumnSelectionInterval(viewIndex.x, viewIndex.x);
         }
         scrollToCoordinate(viewIndex.y, viewIndex.x);
       }

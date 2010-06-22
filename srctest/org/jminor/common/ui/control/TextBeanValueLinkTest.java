@@ -20,14 +20,14 @@ public class TextBeanValueLinkTest {
   public void test() throws Exception {
     final JTextField txtString = new JTextField();
     new TextBeanValueLink(txtString, this, "stringValue", String.class, evtStringValueChanged);
-    assertNull("String value should be null", getStringValue());
+    assertNull("String value should be null", stringValue);
     assertEquals("String value should be empty on initialization", "", txtString.getText());
     setStringValue("hello");
     assertEquals("String value should be 'hello'", "hello", txtString.getText());
     txtString.setText("42");
-    assertEquals("String value should be 42", "42", getStringValue());
+    assertEquals("String value should be 42", "42", stringValue);
     txtString.setText("");
-    assertNull("String value should be null", getStringValue());
+    assertNull("String value should be null", stringValue);
   }
 
   public String getStringValue() {

@@ -79,14 +79,14 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> implements
 
   /** {@inheritDoc} */
   public void insertUpdate(final DocumentEvent e) {
-    if (isImmediateUpdate()) {
+    if (immediateUpdate) {
       updateModel();
     }
   }
 
   /** {@inheritDoc} */
   public void removeUpdate(final DocumentEvent e) {
-    if (isImmediateUpdate()) {
+    if (immediateUpdate) {
       updateModel();
     }
   }

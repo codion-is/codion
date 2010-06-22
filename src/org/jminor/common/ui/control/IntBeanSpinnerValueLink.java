@@ -45,7 +45,7 @@ public class IntBeanSpinnerValueLink extends AbstractBeanValueLink {
   }
 
   @Override
-  protected void setUIValue(final Object propertyValue) {
-    spinnerModel.setValue(propertyValue);
+  protected void setUIValue(final Object value) {
+    spinnerModel.setValue(value);
   }
 }

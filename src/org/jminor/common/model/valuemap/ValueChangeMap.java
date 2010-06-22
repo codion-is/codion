@@ -120,9 +120,9 @@ public interface ValueChangeMap<K, V> extends ValueMap<K, V> {
   /**
    * After a call to this method this ValueMap contains the same values and original values as the given map.
    * A null argument to this method clears the destination map of all values and original values.
-   * @param map the map to copy or null for clearing the destination map
+   * @param sourceMap the map to copy or null for clearing the destination map
    */
-  void setAs(final ValueChangeMap<K, V> map);
+  void setAs(final ValueChangeMap<K, V> sourceMap);
 
   /**
    * Returns a deep copy of the given value, immutable values are simply returned.

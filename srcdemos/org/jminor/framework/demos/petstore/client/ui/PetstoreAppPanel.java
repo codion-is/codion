@@ -52,13 +52,8 @@ public class PetstoreAppPanel extends EntityApplicationPanel {
     return new PetstoreAppModel(user);
   }
 
-  public static void main(final String[] args) {
-    try {
-      UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-    }
-    catch (Exception e) {
-      e.printStackTrace();
-    }
+  public static void main(final String[] args) throws Exception {
+    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
     new PetstoreAppPanel().startApplication("The Pet Store", null, false, UiUtil.getScreenSizeRatio(0.8), new User("scott", "tiger"));
   }
 }

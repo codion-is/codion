@@ -173,7 +173,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
           if (!entity.isModified()) {
             throw new DbException("Can not update an unmodified entity: " + entity);
           }
-          if (isOptimisticLocking()) {
+          if (optimisticLocking) {
             checkIfModified(entity);
           }
 
@@ -243,15 +243,15 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   }
 
   /** {@inheritDoc} */
-  public void delete(final List<Entity.Key> entities) throws DbException {
-    if (entities == null || entities.size() == 0) {
+  public void delete(final List<Entity.Key> entityKeys) throws DbException {
+    if (entityKeys == null || entityKeys.size() == 0) {
       return;
     }
 
     PreparedStatement statement = null;
     String deleteQuery = null;
     try {
-      final Map<String, Collection<Entity.Key>> hashedEntities = EntityUtil.hashKeysByEntityID(entities);
+      final Map<String, Collection<Entity.Key>> hashedEntities = EntityUtil.hashKeysByEntityID(entityKeys);
       for (final String entityID : hashedEntities.keySet()) {
         if (EntityRepository.isReadOnly(entityID)) {
           throw new DbException("Can not delete a read only entity: " + entityID);
@@ -288,8 +288,8 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   }
 
   /** {@inheritDoc} */
-  public Entity selectSingle(final Entity.Key primaryKey) throws DbException {
-    return selectSingle(EntityCriteriaUtil.selectCriteria(primaryKey));
+  public Entity selectSingle(final Entity.Key key) throws DbException {
+    return selectSingle(EntityCriteriaUtil.selectCriteria(key));
   }
 
   /** {@inheritDoc} */
@@ -307,12 +307,12 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
 
   /** {@inheritDoc} */
   @SuppressWarnings({"unchecked"})
-  public List<Entity> selectMany(final List<Entity.Key> primaryKeys) throws DbException {
-    if (primaryKeys == null || primaryKeys.size() == 0) {
+  public List<Entity> selectMany(final List<Entity.Key> keys) throws DbException {
+    if (keys == null || keys.size() == 0) {
       return new ArrayList<Entity>(0);
     }
 
-    return selectMany(EntityCriteriaUtil.selectCriteria(primaryKeys));
+    return selectMany(EntityCriteriaUtil.selectCriteria(keys));
   }
 
   /** {@inheritDoc} */
@@ -737,7 +737,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
       }
     }
     catch (SQLException e) {
-      System.out.println("Unable to set parameter: " + property + ", value: " + value + ", value class: " + (value == null ? "null" : value.getClass()));
+      LOG.error("Unable to set parameter: " + property + ", value: " + value + ", value class: " + (value == null ? "null" : value.getClass()), e);
       throw e;
     }
   }
@@ -979,7 +979,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     final String entityID;
     final List<Property> foreignKeyProperties;
 
-    public Dependency(final String entityID, final List<Property> foreignKeyProperties) {
+    Dependency(final String entityID, final List<Property> foreignKeyProperties) {
       this.entityID = entityID;
       this.foreignKeyProperties = foreignKeyProperties;
     }

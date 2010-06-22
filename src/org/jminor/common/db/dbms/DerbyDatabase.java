@@ -3,6 +3,10 @@
  */
 package org.jminor.common.db.dbms;
 
+import org.jminor.common.model.Util;
+
+import org.apache.log4j.Logger;
+
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
@@ -11,6 +15,8 @@ import java.util.Properties;
  * A Database implementation based on the Derby database.
  */
 public class DerbyDatabase extends AbstractDatabase {
+
+  private static final Logger LOG = Util.getLogger(DerbyDatabase.class);
 
   public DerbyDatabase() {
     super(DERBY);
@@ -73,8 +79,8 @@ public class DerbyDatabase extends AbstractDatabase {
                + (authentication == null ? "" : ";" + authentication));
     }
     catch (SQLException e) {
-      if (e.getSQLState().equals("08006")) {//08006 is expected on Derby shutdown
-        System.out.println("Embedded Derby database successfully shut down!");
+      if (!e.getSQLState().equals("08006")) {//08006 is expected on Derby shutdown
+        LOG.error("Embedded Derby database was did not successfully shut down!", e);
       }
     }
   }

@@ -161,8 +161,8 @@ public class EntityDefinition implements Serializable {
   public EntityDefinition setIdSource(final IdSource idSource) {
     Util.rejectNullValue(idSource);
     this.idSource = idSource;
-    if ((idSource == IdSource.SEQUENCE || idSource == IdSource.AUTO_INCREMENT) && getIdValueSource() == null) {
-      setIdValueSource(getTableName() + "_seq");
+    if ((idSource == IdSource.SEQUENCE || idSource == IdSource.AUTO_INCREMENT) && idValueSource == null) {
+      setIdValueSource(tableName + "_seq");
     }//todo remove
 
     return this;

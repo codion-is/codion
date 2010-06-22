@@ -42,7 +42,7 @@ public class BooleanValueLink<K> extends AbstractValueMapLink<K, Object> {
 
   /** {@inheritDoc} */
   @Override
-  protected void setUIValue(final Object propertyValue) {
-    buttonModel.setSelected(propertyValue != null && (Boolean) propertyValue);
+  protected void setUIValue(final Object value) {
+    buttonModel.setSelected(value != null && (Boolean) value);
   }
 }

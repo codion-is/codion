@@ -24,9 +24,9 @@ public class DoubleBeanValueLinkTest {
     setDoubleValue(2.2);
     assertEquals("Double value should be 2.2", new Double(2.2), txtDouble.getDouble());
     txtDouble.setText("42.2");
-    assertEquals("Double value should be 42.2", new Double(42.2), getDoubleValue());
+    assertEquals("Double value should be 42.2", new Double(42.2), doubleValue);
     txtDouble.setText("");
-    assertNull("Double value should be null", getDoubleValue());
+    assertNull("Double value should be null", doubleValue);
   }
 
   public Double getDoubleValue() {

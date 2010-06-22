@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.plugins.jasperreports.model;
 
+import org.jminor.common.model.Util;
 import org.jminor.common.model.reports.ReportDataWrapper;
 import org.jminor.framework.domain.Entity;
 
@@ -21,9 +22,7 @@ public class JasperReportsEntityDataSource implements JRDataSource, ReportDataWr
   private Entity currentEntity;
 
   public JasperReportsEntityDataSource(final Iterator<Entity> reportIterator) {
-    if (reportIterator == null) {
-      throw new IllegalArgumentException("JasperReportsEntityDataSource requires a non-null reportIterator");
-    }
+    Util.rejectNullValue(reportIterator);
     this.reportIterator = reportIterator;
   }
 
@@ -44,8 +43,9 @@ public class JasperReportsEntityDataSource implements JRDataSource, ReportDataWr
    * @see org.jminor.framework.domain.Entity#getValue(String)
    */
   public Object getFieldValue(final JRField jrField) throws JRException {
+    Util.rejectNullValue(jrField);
     try {
-      return getCurrentEntity().getValue(jrField.getName());
+      return currentEntity.getValue(jrField.getName());
     }
     catch (Exception e) {
       throw new JRException("Unable to get field value: " + jrField.getName(), e);

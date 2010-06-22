@@ -185,19 +185,19 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
   }
 
   /** {@inheritDoc} */
-  public void setSelectedItem(final Object item) {
-    if (Util.equal(selectedItem, item)) {
+  public void setSelectedItem(final Object anItem) {
+    if (Util.equal(selectedItem, anItem)) {
       return;
     }
 
-    selectedItem = item == null ? nullValueString : item;
+    selectedItem = anItem == null ? nullValueString : anItem;
     fireContentsChanged();
     evtSelectionChanged.fire();
   }
 
   /** {@inheritDoc} */
-  public void addListDataListener(final ListDataListener listener) {
-    listDataListeners.add(listener);
+  public void addListDataListener(final ListDataListener l) {
+    listDataListeners.add(l);
   }
 
   /** {@inheritDoc} */
@@ -265,20 +265,20 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
     return new Comparator<Object>() {
       private final Collator collator = Collator.getInstance();
       @SuppressWarnings({"unchecked"})
-      public int compare(final Object objectOne, final Object objectTwo) {
+      public int compare(final Object o1, final Object o2) {
         if (nullValueString != null) {
-          if (objectOne.equals(nullValueString)) {
+          if (o1.equals(nullValueString)) {
             return -1;
           }
-          if (objectTwo.equals(nullValueString)) {
+          if (o2.equals(nullValueString)) {
             return 1;
           }
         }
-        if (objectOne instanceof Comparable && objectTwo instanceof Comparable) {
-          return ((Comparable) objectOne).compareTo(objectTwo);
+        if (o1 instanceof Comparable && o2 instanceof Comparable) {
+          return ((Comparable) o1).compareTo(o2);
         }
         else {
-          return collator.compare(objectOne.toString(), objectTwo.toString());
+          return collator.compare(o1.toString(), o2.toString());
         }
       }
     };

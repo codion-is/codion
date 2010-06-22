@@ -94,7 +94,6 @@ public class ServerMonitor {
       updateTimer.cancel();
     }
     databaseMonitor.shutdown();
-    clientMonitor.shutdown();
   }
 
   public EntityDbServerAdmin getServer() {
@@ -182,7 +181,6 @@ public class ServerMonitor {
       server.shutdown();
     }
     catch (RemoteException e) {/**/}
-    System.out.println("Shutdown Server done");
     evtServerShutDown.fire();
   }
 

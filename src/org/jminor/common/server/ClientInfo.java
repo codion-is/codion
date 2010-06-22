@@ -58,12 +58,12 @@ public class ClientInfo implements Serializable {
   }
 
   @Override
-  public boolean equals(final Object object) {
-    return this == object || object instanceof ClientInfo && clientID.equals(((ClientInfo) object).clientID);
+  public boolean equals(final Object obj) {
+    return this == obj || obj instanceof ClientInfo && clientID.equals(((ClientInfo) obj).clientID);
   }
 
   @Override
   public String toString() {
-    return user != null ? user + "@" + getClientHost() + " [" + clientTypeID + "] - " + clientID : clientID;
+    return user != null ? user + "@" + clientHost + " [" + clientTypeID + "] - " + clientID : clientID;
   }
 }

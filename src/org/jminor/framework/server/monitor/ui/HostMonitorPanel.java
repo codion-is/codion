@@ -85,11 +85,11 @@ public class HostMonitorPanel extends JPanel {
     final Collection<ServerMonitor> serverMonitors = model.getServerMonitors();
     //remove disconnected server tabs and remove server names that already have tabs
     for (final ServerMonitorPanel panel : serverTabs) {
-      final ServerMonitor model = panel.getModel();
-      if (!serverMonitors.contains(model)) {
+      final ServerMonitor serverMonitor = panel.getModel();
+      if (!serverMonitors.contains(serverMonitor)) {
         removeServerTab(panel);
       }
-      serverMonitors.remove(model);
+      serverMonitors.remove(serverMonitor);
     }
 
     //add the remaining servers

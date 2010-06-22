@@ -32,8 +32,8 @@ public class FormattedTextBeanValueLink extends TextBeanValueLink {
   }
 
   @Override
-  protected String getValueAsString(final Object propertyValue) {
-    return propertyValue == null ? null : format.format(propertyValue);
+  protected String getValueAsString(final Object value) {
+    return value == null ? null : format.format(value);
   }
 
   /**

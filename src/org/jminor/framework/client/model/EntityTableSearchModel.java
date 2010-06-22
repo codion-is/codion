@@ -112,12 +112,12 @@ public class EntityTableSearchModel implements FilterCriteria<Entity> {
   }
 
   /**
-   * @param entity the entity
+   * @param item the entity
    * @return true if the entity should be included or filtered (hidden)
    */
-  public boolean include(final Entity entity) {
+  public boolean include(final Entity item) {
     for (final AbstractSearchModel columnFilter : propertyFilterModels.values()) {
-      if (columnFilter.isSearchEnabled() && !columnFilter.include(entity)) {
+      if (columnFilter.isSearchEnabled() && !columnFilter.include(item)) {
         return false;
       }
     }
@@ -234,7 +234,7 @@ public class EntityTableSearchModel implements FilterCriteria<Entity> {
    * @return the current criteria based on the state of the search models
    */
   public Criteria<Property> getSearchCriteria() {
-    final CriteriaSet<Property> criteriaSet = new CriteriaSet<Property>(getSearchConjunction());
+    final CriteriaSet<Property> criteriaSet = new CriteriaSet<Property>(searchConjunction);
     for (final AbstractSearchModel criteria : propertySearchModels.values()) {
       if (criteria.isSearchEnabled()) {
         criteriaSet.addCriteria(((PropertySearchModel) criteria).getPropertyCriteria());
@@ -366,7 +366,7 @@ public class EntityTableSearchModel implements FilterCriteria<Entity> {
   private void bindEvents() {
     for (final PropertySearchModel searchModel : propertySearchModels.values()) {
       searchModel.eventSearchStateChanged().addListener(new ActionListener() {
-        public void actionPerformed(final ActionEvent event) {
+        public void actionPerformed(final ActionEvent e) {
           stSearchStateChanged.setActive(!searchStateOnRefresh.equals(getSearchModelState()));
           stSearchStateChanged.eventStateChanged().fire();
         }

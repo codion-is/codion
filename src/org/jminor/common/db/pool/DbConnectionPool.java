@@ -40,8 +40,8 @@ public class DbConnectionPool implements ConnectionPool {
   private Timer poolCleaner;
 
   private int connectionPoolStatisticsIndex = 0;
-  private ConnectionPoolSettings connectionPoolSettings;
-  private boolean collectFineGrainedStatistics = System.getProperty(Database.DATABASE_POOL_STATISTICS, "true").equalsIgnoreCase("true");
+  private volatile ConnectionPoolSettings connectionPoolSettings;
+  private volatile boolean collectFineGrainedStatistics = System.getProperty(Database.DATABASE_POOL_STATISTICS, "true").equalsIgnoreCase("true");
 
   private final DbConnectionProvider dbConnectionProvider;
   private boolean closed = false;
@@ -61,9 +61,9 @@ public class DbConnectionPool implements ConnectionPool {
     }
 
     final long time = System.nanoTime();
-    int retryCount = 0;
     counter.incrementRequestCounter();
     DbConnection connection = getConnectionFromPool();
+    int retryCount = 0;
     if (connection == null) {
       counter.incrementDelayedRequestCounter();
       synchronized (connectionPool) {
@@ -71,7 +71,7 @@ public class DbConnectionPool implements ConnectionPool {
           try {
             creatingConnection = true;
             counter.incrementConnectionsCreatedCounter();
-            checkInConnection(dbConnectionProvider.createConnection(getConnectionPoolSettings().getUser()));
+            checkInConnection(dbConnectionProvider.createConnection(connectionPoolSettings.getUser()));
           }
           finally {
             creatingConnection = false;
@@ -97,36 +97,36 @@ public class DbConnectionPool implements ConnectionPool {
     return connection;
   }
 
-  public void checkInConnection(final DbConnection connection) {
+  public void checkInConnection(final DbConnection dbConnection) {
     if (closed) {
-      disconnect(connection);
+      disconnect(dbConnection);
     }
 
     synchronized (connectionPool) {
       synchronized (connectionsInUse) {
-        connectionsInUse.remove(connection);
+        connectionsInUse.remove(dbConnection);
       }
-      if (connection.isConnectionValid()) {
+      if (dbConnection.isConnectionValid()) {
         try {
-          if (connection.isTransactionOpen()) {
-            connection.rollbackTransaction();
+          if (dbConnection.isTransactionOpen()) {
+            dbConnection.rollbackTransaction();
           }
         }
         catch (SQLException e) {
           LOG.error(this, e);
         }
-        connection.setPoolTime(System.currentTimeMillis());
-        connectionPool.push(connection);
+        dbConnection.setPoolTime(System.currentTimeMillis());
+        connectionPool.push(dbConnection);
         connectionPool.notify();
       }
       else {
-        disconnect(connection);
+        disconnect(dbConnection);
       }
     }
   }
 
   public User getUser() {
-    return getConnectionPoolSettings().getUser();
+    return connectionPoolSettings.getUser();
   }
 
   public void close() {
@@ -134,9 +134,9 @@ public class DbConnectionPool implements ConnectionPool {
     emptyPool();
   }
 
-  public void setConnectionPoolSettings(final ConnectionPoolSettings poolSettings) {
-    final boolean cleanupIntervalChanged = connectionPoolSettings.getPoolCleanupInterval() != poolSettings.getPoolCleanupInterval();
-    connectionPoolSettings.set(poolSettings);
+  public void setConnectionPoolSettings(final ConnectionPoolSettings settings) {
+    final boolean cleanupIntervalChanged = connectionPoolSettings.getPoolCleanupInterval() != settings.getPoolCleanupInterval();
+    connectionPoolSettings.set(settings);
     if (cleanupIntervalChanged) {
       startPoolCleaner(connectionPoolSettings.getPoolCleanupInterval());
     }
@@ -150,7 +150,7 @@ public class DbConnectionPool implements ConnectionPool {
   }
 
   public ConnectionPoolStatistics getConnectionPoolStatistics(final long since) {
-    final ConnectionPoolStatistics statistics = new ConnectionPoolStatistics(getConnectionPoolSettings().getUser());
+    final ConnectionPoolStatistics statistics = new ConnectionPoolStatistics(connectionPoolSettings.getUser());
     synchronized (connectionPool) {
       synchronized (connectionsInUse) {
         statistics.setConnectionsInUse(connectionsInUse.size());
@@ -301,7 +301,7 @@ public class DbConnectionPool implements ConnectionPool {
     private final List<Long> checkOutTimes = new ArrayList<Long>();
     private long requestsPerSecondTime = System.currentTimeMillis();
 
-    public Counter() {
+    Counter() {
       new Timer(true).schedule(new TimerTask() {
         @Override
         public void run() {
@@ -310,39 +310,39 @@ public class DbConnectionPool implements ConnectionPool {
       }, new Date(), 1000);
     }
 
-    public Date getCreationDate() {
+    public synchronized Date getCreationDate() {
       return creationDate;
     }
 
-    public Date getResetDate() {
+    public synchronized Date getResetDate() {
       return resetDate;
     }
 
-    public int getConnectionRequests() {
+    public synchronized int getConnectionRequests() {
       return connectionRequests;
     }
 
-    public int getConnectionRequestsDelayed() {
+    public synchronized int getConnectionRequestsDelayed() {
       return connectionRequestsDelayed;
     }
 
-    public int getConnectionsCreated() {
+    public synchronized int getConnectionsCreated() {
       return connectionsCreated;
     }
 
-    public int getConnectionsDestroyed() {
+    public synchronized int getConnectionsDestroyed() {
       return connectionsDestroyed;
     }
 
-    public int getLiveConnections() {
+    public synchronized int getLiveConnections() {
       return liveConnections;
     }
 
-    public int getRequestsDelayedPerSecond() {
+    public synchronized int getRequestsDelayedPerSecond() {
       return requestsDelayedPerSecond;
     }
 
-    public int getRequestsPerSecond() {
+    public synchronized int getRequestsPerSecond() {
       return requestsPerSecond;
     }
 
@@ -398,7 +398,7 @@ public class DbConnectionPool implements ConnectionPool {
       requestsPerSecondCounter++;
     }
 
-    public long getAverageCheckOutTime() {
+    public synchronized long getAverageCheckOutTime() {
       return averageCheckOutTime;
     }
   }

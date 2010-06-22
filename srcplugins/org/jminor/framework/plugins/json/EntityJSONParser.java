@@ -38,18 +38,18 @@ public class EntityJSONParser implements Serializer<Entity>, Deserializer<Entity
     this.indentFactor = indentFactor;
   }
 
-  public String serialize(final List<Entity> entities) throws SerializeException {
+  public String serialize(final List<Entity> values) throws SerializeException {
     try {
-      return getJSONString(entities, false, getIndentFactor());
+      return getJSONString(values, false, indentFactor);
     }
     catch (JSONException e) {
       throw new SerializeException(e.getMessage(), e);
     }
   }
 
-  public List<Entity> deserialize(final String entities) throws DeserializeException {
+  public List<Entity> deserialize(final String values) throws DeserializeException {
     try {
-      return parseJSONString(entities);
+      return parseJSONString(values);
     }
     catch (Exception e) {
       throw new DeserializeException(e.getMessage(), e);
@@ -66,7 +66,6 @@ public class EntityJSONParser implements Serializer<Entity>, Deserializer<Entity
     for (int i = 0; i < jsonObject.names().length(); i++) {
       final JSONObject entityObject = jsonObject.getJSONObject(jsonObject.names().get(i).toString());
       final Map<String, Object> propertyValueMap = new HashMap<String, Object>();
-      Map<String, Object> originalValueMap = null;
       final String entityID = entityObject.getString("entityID");
       if (!EntityRepository.isDefined(entityID)) {
         throw new RuntimeException("Undifined entity type found in JSON file: '" + entityID + "'");
@@ -77,6 +76,7 @@ public class EntityJSONParser implements Serializer<Entity>, Deserializer<Entity
         final String propertyID = propertyValues.names().get(j).toString();
         propertyValueMap.put(propertyID, parseJSONValue(entityID, propertyID, propertyValues));
       }
+      Map<String, Object> originalValueMap = null;
       if (!entityObject.isNull("originalValues")) {
         originalValueMap = new HashMap<String, Object>();
         final JSONObject originalValues = entityObject.getJSONObject("originalValues");

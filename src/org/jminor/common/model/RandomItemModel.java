@@ -92,7 +92,7 @@ public class RandomItemModel<T> {
    * @return the number of items in this model.
    */
   public int getItemCount() {
-    return getItems().size();
+    return items.size();
   }
 
   /**
@@ -112,11 +112,11 @@ public class RandomItemModel<T> {
       throw new RuntimeException("Can not choose a random item unless total weights exceed 0");
     }
 
-    final int random = getRandom().nextInt(totalWeights + 1);
+    final int randomNumber = random.nextInt(totalWeights + 1);
     int position = 0;
     for (final RandomItem<T> item : items) {
       position += item.getWeight();
-      if (random <= position && item.getWeight() > 0) {
+      if (randomNumber <= position && item.getWeight() > 0) {
         return item.getItem();
       }
     }
@@ -232,7 +232,7 @@ public class RandomItemModel<T> {
 
     @Override
     public boolean equals(final Object obj) {
-      return obj instanceof RandomItem && (((RandomItem) obj).getItem().equals(getItem()));
+      return obj instanceof RandomItem && (((RandomItem) obj).item.equals(item));
     }
 
     @Override

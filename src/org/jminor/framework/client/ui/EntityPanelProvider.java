@@ -63,37 +63,37 @@ public class EntityPanelProvider implements Comparable {//todo rename
 
   /** {@inheritDoc} */
   @Override
-  public boolean equals(final Object object) {
-    if(this == object) {
+  public boolean equals(final Object obj) {
+    if(this == obj) {
       return true;
     }
-    if((object == null) || (object.getClass() != getClass())) {
+    if((obj == null) || (obj.getClass() != getClass())) {
       return false;
     }
 
-    final EntityPanelProvider panelProvider = (EntityPanelProvider) object;
+    final EntityPanelProvider panelProvider = (EntityPanelProvider) obj;
 
-    return getCaption().equals(panelProvider.getCaption())
-            && getModelClass().equals(panelProvider.getModelClass())
-            && getPanelClass().equals(panelProvider.getPanelClass());
+    return caption.equals(panelProvider.caption)
+            && entityModelClass.equals(panelProvider.entityModelClass)
+            && entityPanelClass.equals(panelProvider.entityPanelClass);
   }
 
   /** {@inheritDoc} */
   @Override
   public int hashCode() {
     int hash = 7;
-    hash = 31 * hash + getCaption().hashCode();
-    hash = 31 * hash + getModelClass().hashCode();
-    hash = 31 * hash + getPanelClass().hashCode();
+    hash = 31 * hash + caption.hashCode();
+    hash = 31 * hash + entityModelClass.hashCode();
+    hash = 31 * hash + entityPanelClass.hashCode();
 
     return hash;
   }
 
   /** {@inheritDoc} */
-  public int compareTo(final Object object) {
-    final String thisCompare = getCaption() == null ? entityPanelClass.getSimpleName() : getCaption();
-    final String thatCompare = ((EntityPanelProvider) object).getCaption() == null
-            ? ((EntityPanelProvider) object).entityPanelClass.getSimpleName() : ((EntityPanelProvider) object).getCaption();
+  public int compareTo(final Object o) {
+    final String thisCompare = caption == null ? entityPanelClass.getSimpleName() : caption;
+    final String thatCompare = ((EntityPanelProvider) o).caption == null
+            ? ((EntityPanelProvider) o).entityPanelClass.getSimpleName() : ((EntityPanelProvider) o).caption;
 
     return thisCompare.compareTo(thatCompare);
   }

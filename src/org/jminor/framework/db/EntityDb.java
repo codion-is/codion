@@ -222,13 +222,13 @@ public interface EntityDb {
 
   /**
    * Takes a ReportWrapper object using a JDBC datasource and returns an initialized ReportResult object
-   * @param report the report to fill
+   * @param reportWrapper the wrapper containing the report to fill
    * @param reportParameters the report parameters
    * @return an initialized ReportResult object
    * @throws org.jminor.common.model.reports.ReportException in case of a report exception
    * @see org.jminor.common.model.reports.ReportWrapper#fillReport(java.util.Map, java.sql.Connection)
    */
-  ReportResult fillReport(final ReportWrapper report, final Map reportParameters) throws Exception;
+  ReportResult fillReport(final ReportWrapper reportWrapper, final Map reportParameters) throws Exception;
 
   /**
    * Executes the given statement and returns the result in a List of rows, where each row

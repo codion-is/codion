@@ -85,8 +85,8 @@ public class TextFieldPlus extends JTextField {
 
   /** {@inheritDoc} */
   @Override
-  public void setText(final String string) {
-    super.setText(string == null ? "" : string);
+  public void setText(final String t) {
+    super.setText(t == null ? "" : t);
   }
 
   protected boolean isWithinRange(final double value) {
@@ -98,12 +98,12 @@ public class TextFieldPlus extends JTextField {
   protected Document createDefaultModel() {
     return new PlainDocument() {
       @Override
-      public void insertString(final int offset, final String string, final AttributeSet a) throws BadLocationException {
-        if (getMaxLength() > 0 && getLength() + string.length() > getMaxLength()) {
+      public void insertString(final int offs, final String str, final AttributeSet a) throws BadLocationException {
+        if (getMaxLength() > 0 && getLength() + str.length() > getMaxLength()) {
           return;
         }
 
-        super.insertString(offset, upperCase ? string.toUpperCase() : string, a);
+        super.insertString(offs, upperCase ? str.toUpperCase() : str, a);
       }
     };
   }

@@ -95,15 +95,17 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   /**
    * Contains the active remote connections, that is, those connections that are in the middle of serving a request
    */
-  private static final List<EntityDbRemoteAdapter> active = Collections.synchronizedList(new ArrayList<EntityDbRemoteAdapter>());
+  private static final List<EntityDbRemoteAdapter> ACTIVE_CONNECTIONS = Collections.synchronizedList(new ArrayList<EntityDbRemoteAdapter>());
   /**
    * The available connection pools
    */
-  private static final Map<User, ConnectionPool> connectionPools = Collections.synchronizedMap(new HashMap<User, ConnectionPool>());
+  private static final Map<User, ConnectionPool> CONNECTION_POOLS = Collections.synchronizedMap(new HashMap<User, ConnectionPool>());
   /**
    * The remote server responsible for instantiating this remote adapter
    */
   private final RemoteServer server;
+
+  private static final int DEFAULT_REQUEST_COUNTER_UPDATE_INTERVAL = 2500;
 
   static {
     new Timer(true).schedule(new TimerTask() {
@@ -111,7 +113,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
       public void run() {
         RequestCounter.updateRequestsPerSecond();
       }
-    }, new Date(), 2500);
+    }, new Date(), DEFAULT_REQUEST_COUNTER_UPDATE_INTERVAL);
   }
 
   /**
@@ -127,8 +129,8 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
                                final boolean loggingEnabled) throws RemoteException {
     super(port, SSL_CONNECTION_ENABLED ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
             SSL_CONNECTION_ENABLED ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
-    if (connectionPools.containsKey(clientInfo.getUser())) {
-      connectionPools.get(clientInfo.getUser()).getConnectionPoolSettings().getUser().setPassword(clientInfo.getUser().getPassword());
+    if (CONNECTION_POOLS.containsKey(clientInfo.getUser())) {
+      CONNECTION_POOLS.get(clientInfo.getUser()).getConnectionPoolSettings().getUser().setPassword(clientInfo.getUser().getPassword());
     }
     this.server = server;
     this.database = database;
@@ -196,9 +198,9 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   }
 
   /** {@inheritDoc} */
-  public ReportResult fillReport(final ReportWrapper report, final Map reportParameters) throws ReportException, RemoteException {
+  public ReportResult fillReport(final ReportWrapper reportWrapper, final Map reportParameters) throws ReportException, RemoteException {
     try {
-      return loggingEntityDbProxy.fillReport(report, reportParameters);
+      return loggingEntityDbProxy.fillReport(reportWrapper, reportParameters);
     }
     catch (ReportException re) {
       throw re;
@@ -522,7 +524,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
    * @see Configuration#SERVER_CONNECTION_LOG_SIZE
    */
   public ServerLog getServerLog() {
-    return new ServerLog(getClientInfo().getClientID(), creationDate, methodLogger.getLogEntries(),
+    return new ServerLog(clientInfo.getClientID(), creationDate, methodLogger.getLogEntries(),
             methodLogger.getLastAccessDate(), methodLogger.getLastExitDate(), methodLogger.getLastAccessedMethod(),
             methodLogger.getLastAccessMessage(), methodLogger.getLastExitedMethod());
   }
@@ -546,14 +548,14 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
    * @return true during a remote method call
    */
   public boolean isActive() {
-    return active.contains(this);
+    return ACTIVE_CONNECTIONS.contains(this);
   }
 
   /**
    * @return the number of connections that are active at this moment
    */
   public static int getActiveCount() {
-    return active.size();
+    return ACTIVE_CONNECTIONS.size();
   }
 
   /**
@@ -561,7 +563,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
    */
   public static List<ConnectionPoolSettings> getEnabledConnectionPoolSettings() {
     final List<ConnectionPoolSettings> poolSettings = new ArrayList<ConnectionPoolSettings>();
-    for (final ConnectionPool pool : connectionPools.values()) {
+    for (final ConnectionPool pool : CONNECTION_POOLS.values()) {
       if (pool.getConnectionPoolSettings().isEnabled()) {
         poolSettings.add(pool.getConnectionPoolSettings());
       }
@@ -571,13 +573,13 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   }
 
   public static ConnectionPoolSettings getConnectionPoolSettings(final User user) {
-    return connectionPools.get(user).getConnectionPoolSettings();
+    return CONNECTION_POOLS.get(user).getConnectionPoolSettings();
   }
 
   public static void setConnectionPoolSettings(final Database database, final ConnectionPoolSettings settings) {
-    ConnectionPool pool = connectionPools.get(settings.getUser());
+    ConnectionPool pool = CONNECTION_POOLS.get(settings.getUser());
     if (pool == null) {
-      connectionPools.put(settings.getUser(), new DbConnectionPool(new DbConnectionProvider() {
+      CONNECTION_POOLS.put(settings.getUser(), new DbConnectionPool(new DbConnectionProvider() {
         public DbConnection createConnection(final User user) throws ClassNotFoundException, SQLException {
           return EntityDbRemoteAdapter.createDbConnection(database, user);
         }
@@ -592,19 +594,19 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   }
 
   public static ConnectionPoolStatistics getConnectionPoolStatistics(final User user, final long since) {
-    return connectionPools.get(user).getConnectionPoolStatistics(since);
+    return CONNECTION_POOLS.get(user).getConnectionPoolStatistics(since);
   }
 
   public static void resetConnectionPoolStatistics(final User user) {
-    connectionPools.get(user).resetPoolStatistics();
+    CONNECTION_POOLS.get(user).resetPoolStatistics();
   }
 
   public static boolean isCollectFineGrainedPoolStatistics(final User user) {
-    return connectionPools.get(user).isCollectFineGrainedStatistics();
+    return CONNECTION_POOLS.get(user).isCollectFineGrainedStatistics();
   }
 
   public static void setCollectFineGrainedPoolStatistics(final User user, final boolean value) {
-    connectionPools.get(user).setCollectFineGrainedStatistics(value);
+    CONNECTION_POOLS.get(user).setCollectFineGrainedStatistics(value);
   }
 
   public static int getRequestsPerSecond() {
@@ -634,11 +636,11 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   }
 
   private void setActive() {
-    active.add(this);
+    ACTIVE_CONNECTIONS.add(this);
   }
 
   private void setInactive() {
-    active.remove(this);
+    ACTIVE_CONNECTIONS.remove(this);
   }
 
   private EntityDb initializeProxy() {
@@ -647,7 +649,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   }
 
   private void returnConnection(final User user, final EntityDbConnection connection) {
-    final ConnectionPool connectionPool = connectionPools.get(user);
+    final ConnectionPool connectionPool = CONNECTION_POOLS.get(user);
     connection.setLoggingEnabled(false);
     if (connectionPool != null && connectionPool.getConnectionPoolSettings().isEnabled()) {
       connectionPool.checkInConnection(connection);
@@ -655,7 +657,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   }
 
   private EntityDbConnection getConnection(final User user) throws ClassNotFoundException, SQLException {
-    final ConnectionPool connectionPool = connectionPools.get(user);
+    final ConnectionPool connectionPool = CONNECTION_POOLS.get(user);
     if (connectionPool != null && connectionPool.getConnectionPoolSettings().isEnabled()) {
       final EntityDbConnection pooledDbConnection = (EntityDbConnection) connectionPool.checkOutConnection();
       if (entityDbConnection != null) {//pool has been turned on since this one was created
@@ -690,11 +692,11 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   static class EntityDbRemoteProxy implements InvocationHandler {
     private final EntityDbRemoteAdapter remoteAdapter;
 
-    public EntityDbRemoteProxy(final EntityDbRemoteAdapter remoteAdapter) {
+    EntityDbRemoteProxy(final EntityDbRemoteAdapter remoteAdapter) {
       this.remoteAdapter = remoteAdapter;
     }
 
-    public Object invoke(final Object proxy, final Method method, final Object[] arguments) throws Throwable {
+    public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
       RequestCounter.requestsPerSecondCounter++;
       final String methodName = method.getName();
       Throwable ex = null;
@@ -710,10 +712,10 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
           final int retries = connection.getPoolRetryCount();
           final String message = retries > 0 ? "retries: " + retries : null;
           remoteAdapter.methodLogger.logExit("getConnection", null, null, message);
-          remoteAdapter.methodLogger.logAccess(methodName, arguments);
+          remoteAdapter.methodLogger.logAccess(methodName, args);
         }
 
-        return method.invoke(connection, arguments);
+        return method.invoke(connection, args);
       }
       catch (InvocationTargetException ie) {
         LOG.error(this, ie);
@@ -743,7 +745,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
 
   static class RemoteLogger extends MethodLogger {
 
-    public RemoteLogger() {
+    RemoteLogger() {
       super(Integer.parseInt(System.getProperty(Configuration.SERVER_CONNECTION_LOG_SIZE, "40")));
     }
 

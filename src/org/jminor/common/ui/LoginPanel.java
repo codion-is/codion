@@ -130,7 +130,7 @@ public class LoginPanel extends JPanel {
         if (textField.isShowing() && (e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0) {
           SwingUtilities.getWindowAncestor(textField).addWindowFocusListener(new WindowAdapter() {
             @Override
-            public void windowGainedFocus(WindowEvent e) {
+            public void windowGainedFocus(WindowEvent evt) {
               textField.requestFocusInWindow();
               textField.setCaretPosition(textField.getText().length());
             }

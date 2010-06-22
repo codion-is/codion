@@ -205,7 +205,7 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
    * @return the database connection
    */
   public EntityDb getEntityDb() {
-    return getDbProvider().getEntityDb();
+    return dbProvider.getEntityDb();
   }
 
   /**
@@ -279,7 +279,7 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
 
   /** {@inheritDoc} */
   @Override
-  public boolean isCellEditable(final int row, final int column) {
+  public boolean isCellEditable(final int rowIndex, final int columnIndex) {
     return false;
   }
 
@@ -439,7 +439,7 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
    */
   public void searchByForeignKeyValues(final String referencedEntityID, final List<Entity> referenceEntities) {
     final List<Property.ForeignKeyProperty> properties = EntityRepository.getForeignKeyProperties(getEntityID(), referencedEntityID);
-    if (properties.size() > 0 && isDetailModel() && tableSearchModel.setSearchValues(properties.get(0).getPropertyID(), referenceEntities)) {
+    if (properties.size() > 0 && isDetailModel && tableSearchModel.setSearchValues(properties.get(0).getPropertyID(), referenceEntities)) {
       refresh();
     }
   }
@@ -534,7 +534,7 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
 
   /** {@inheritDoc} */
   public boolean include(final Entity item) {
-    return getSearchModel().include(item);
+    return tableSearchModel.include(item);
   }
 
   /**
@@ -638,7 +638,7 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
    * @return entities selected from the database according the the query criteria.
    */
   protected List<Entity> performQuery(final Criteria<Property> criteria) {
-    if (isDetailModel() && criteria == null && isQueryCriteriaRequired()) {
+    if (isDetailModel && criteria == null && queryCriteriaRequired) {
       return new ArrayList<Entity>();
     }
 
@@ -688,7 +688,7 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
 
   protected void handleColumnHidden(final Property property) {
     //disable the search model for the column to be hidden, to prevent confusion
-    getSearchModel().setSearchEnabled(property.getPropertyID(), false);
+    tableSearchModel.setSearchEnabled(property.getPropertyID(), false);
   }
 
   protected void handleDelete(final DeleteEvent e) {
@@ -712,12 +712,12 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
       }
     });
     tableSearchModel.eventFilterStateChanged().addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent event) {
+      public void actionPerformed(final ActionEvent e) {
         filterTable();
       }
     });
     evtRefreshDone.addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent event) {
+      public void actionPerformed(final ActionEvent e) {
         tableSearchModel.setSearchModelState();
       }
     });

@@ -116,7 +116,7 @@ public final class ControlProvider {
     private final JPanel btnPanel;
     private final boolean vertical;
 
-    public ButtonControlIterator(final JPanel btnPanel, final boolean vertical) {
+    ButtonControlIterator(final JPanel btnPanel, final boolean vertical) {
       this.btnPanel = btnPanel;
       this.vertical = vertical;
     }
@@ -154,7 +154,7 @@ public final class ControlProvider {
 
     private final JMenu menu;
 
-    public MenuControlIterator(final ControlSet controlSet) {
+    MenuControlIterator(final ControlSet controlSet) {
       menu = new JMenu(controlSet.getName());
       final String description = controlSet.getDescription();
       if (description != null) {
@@ -205,7 +205,7 @@ public final class ControlProvider {
     public void handleControlSet(final ControlSet controlSet) {
       final MenuControlIterator mv = new MenuControlIterator(controlSet);
       iterate(mv, controlSet);
-      menu.add(mv.getMenu());
+      menu.add(mv.menu);
     }
 
     /** {@inheritDoc} */
@@ -219,11 +219,11 @@ public final class ControlProvider {
     private boolean includeCaption = true;
     private final JToolBar toolbar;
 
-    public ToolBarControlIterator(final JToolBar owner) {
+    ToolBarControlIterator(final JToolBar owner) {
       this(owner, true);
     }
 
-    public ToolBarControlIterator(final JToolBar owner, boolean includeCaption) {
+    ToolBarControlIterator(final JToolBar owner, boolean includeCaption) {
       this.toolbar = owner;
       this.includeCaption = includeCaption;
     }

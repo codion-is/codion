@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class DbConnectionTest {
 
-  private final Database DATABASE = DatabaseProvider.createInstance();
+  private static final Database DATABASE = DatabaseProvider.createInstance();
   private DbConnection dbConnection;
 
   /*public void testBlob() throws Exception {
@@ -88,9 +88,9 @@ public class DbConnectionTest {
     assertTrue(result.size() == 1);
     final List row = result.get(0);
     assertEquals(row.size(), 3);
-    assertEquals(Integer.class, row.get(0).getClass());
-    assertEquals(String.class, row.get(1).getClass());
-    assertEquals(String.class, row.get(2).getClass());
+    assertSame(Integer.class, row.get(0).getClass());
+    assertSame(String.class, row.get(1).getClass());
+    assertSame(String.class, row.get(2).getClass());
   }
 
   @Test

@@ -118,7 +118,7 @@ public class State {
     }
 
     @Override
-    public void setActive(final boolean isActive) {
+    public void setActive(final boolean value) {
       throw new RuntimeException("Cannot set the state of a linked state");
     }
 
@@ -149,7 +149,7 @@ public class State {
     }
 
     @Override
-    public void setActive(final boolean isActive) {
+    public void setActive(final boolean value) {
       throw new RuntimeException("Cannot set the state of a reversed state");
     }
 

@@ -25,10 +25,10 @@ public class ConnectionPoolSettings implements Serializable {
                                 final int minimumPoolSize, final int poolCleanupInterval) {
     this.user = user;
     this.poolCleanupInterval = poolCleanupInterval;
-    setEnabled(enabled);
-    setPooledConnectionTimeout(pooledConnectionTimeout);
-    setMinimumPoolSize(minimumPoolSize);
-    setMaximumPoolSize(minimumPoolSize * 2);
+    this.enabled = enabled;
+    this.pooledConnectionTimeout = pooledConnectionTimeout;
+    this.minimumPoolSize = minimumPoolSize;
+    this.maximumPoolSize = minimumPoolSize * 2;
   }
 
   public User getUser() {

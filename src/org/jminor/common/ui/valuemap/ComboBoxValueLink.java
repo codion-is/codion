@@ -80,8 +80,8 @@ public class ComboBoxValueLink<K> extends AbstractValueMapLink<K, Object> {
 
   /** {@inheritDoc} */
   @Override
-  protected void setUIValue(final Object propertyValue) {
-    boxModel.setSelectedItem(propertyValue);
+  protected void setUIValue(final Object value) {
+    boxModel.setSelectedItem(value);
   }
 
   protected ComboBoxModel getModel() {

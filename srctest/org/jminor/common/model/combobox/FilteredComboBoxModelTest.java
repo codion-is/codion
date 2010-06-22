@@ -11,7 +11,8 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FilteredComboBoxModelTest {
 
@@ -108,8 +109,8 @@ public class FilteredComboBoxModelTest {
     return false;
   }
 
-  private Vector<String> initContents() {
-    final Vector<String> names = new Vector<String>();
+  private List<String> initContents() {
+    final List<String> names = new ArrayList<String>();
     names.add(ANNA);
     names.add(KALLI);
     names.add(SIGGI);
