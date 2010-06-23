@@ -15,13 +15,11 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
 
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Enumeration;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +38,7 @@ public class EntityTableSearchModel implements FilterCriteria<Entity> {
   private final State stSearchStateChanged = new State();
 
   private final String entityID;
-  private final TableColumnModel columnModel;
+  private final Collection<Property> properties;
   private final Map<String, PropertyFilterModel> propertyFilterModels;
   private final Map<String, PropertySearchModel> propertySearchModels;
   /** When active the search should be simplified */
@@ -51,20 +49,20 @@ public class EntityTableSearchModel implements FilterCriteria<Entity> {
   /**
    * Instantiates a new EntityTableSearchModel
    * @param entityID the ID of the underlying entity
-   * @param columnModel the underlying TableColumnModel
+   * @param properties the underlying properties
    * assumed to belong to the entity identified by <code>entityID</code>
    * @param dbProvider a EntityDbProvider instance, required if <code>searchableProperties</code> include
    * foreign key properties
    * @param simpleSearch if true then search panels based on this search model should implement a simplified search
    */
-  public EntityTableSearchModel(final String entityID, final TableColumnModel columnModel,
+  public EntityTableSearchModel(final String entityID, final Collection<Property> properties,
                                 final EntityDbProvider dbProvider, final boolean simpleSearch) {
     Util.rejectNullValue(entityID);
-    Util.rejectNullValue(columnModel);
+    Util.rejectNullValue(properties);
     this.entityID = entityID;
-    this.columnModel = columnModel;
-    this.propertyFilterModels = initializePropertyFilterModels(columnModel);
-    this.propertySearchModels = initializePropertySearchModels(columnModel, dbProvider);
+    this.properties = properties;
+    this.propertyFilterModels = initializePropertyFilterModels(properties);
+    this.propertySearchModels = initializePropertySearchModels(properties, dbProvider);
     this.searchStateOnRefresh = getSearchModelState();
     this.simpleSearch = simpleSearch;
     bindEvents();
@@ -78,8 +76,8 @@ public class EntityTableSearchModel implements FilterCriteria<Entity> {
     return simpleSearch;
   }
 
-  public TableColumnModel getColumnModel() {
-    return columnModel;
+  public Collection<Property> getProperties() {
+    return Collections.unmodifiableCollection(properties);
   }
 
   /**
@@ -288,16 +286,14 @@ public class EntityTableSearchModel implements FilterCriteria<Entity> {
   }
 
   /**
-   * @param tableColumnModel the TableColumnModel to base the search models on
+   * @param properties the properties to base the search models on
    * @param dbProvider the EntityDbProvider to use for foreign key based fields, such as combo boxes
    * @return a map of PropertySearchModels mapped to their respective propertyIDs
    */
-  protected Map<String, PropertySearchModel> initializePropertySearchModels(final TableColumnModel tableColumnModel,
+  protected Map<String, PropertySearchModel> initializePropertySearchModels(final Collection<Property> properties,
                                                                             final EntityDbProvider dbProvider) {
     final Map<String, PropertySearchModel> searchModels = new HashMap<String, PropertySearchModel>();
-    final Enumeration<TableColumn> columnEnumeration = tableColumnModel.getColumns();
-    while (columnEnumeration.hasMoreElements()) {
-      final Property property = (Property) columnEnumeration.nextElement().getIdentifier();
+    for (final Property property : properties) {
       final PropertySearchModel searchModel = initializePropertySearchModel(property, dbProvider);
       if (searchModel != null) {
         searchModels.put(property.getPropertyID(), searchModel);
@@ -338,14 +334,12 @@ public class EntityTableSearchModel implements FilterCriteria<Entity> {
   }
 
   /**
-   * @param tableColumnModel the TableColumnModel to base the filter models on
+   * @param properties the properties to base the filter models on
    * @return a map of PropertyFilterModels mapped to their respective propertyIDs
    */
-  protected Map<String, PropertyFilterModel> initializePropertyFilterModels(final TableColumnModel tableColumnModel) {
-    final Map<String, PropertyFilterModel> filters = new HashMap<String, PropertyFilterModel>(tableColumnModel.getColumnCount());
-    final Enumeration<TableColumn> columnEnumeration = tableColumnModel.getColumns();
-    while (columnEnumeration.hasMoreElements()) {
-      final Property property = (Property) columnEnumeration.nextElement().getIdentifier();
+  protected Map<String, PropertyFilterModel> initializePropertyFilterModels(final Collection<Property> properties) {
+    final Map<String, PropertyFilterModel> filters = new HashMap<String, PropertyFilterModel>(properties.size());
+    for (final Property property : properties) {
       final PropertyFilterModel filterModel = initializePropertyFilterModel(property);
       filterModel.eventSearchStateChanged().addListener(evtFilterStateChanged);
       filters.put(property.getPropertyID(), filterModel);

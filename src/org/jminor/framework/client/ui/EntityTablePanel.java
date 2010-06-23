@@ -683,11 +683,8 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
       protected List<Entity> performQuery(final Criteria<Property> criteria) {
         return new ArrayList<Entity>(entities);
       }
-      @Override
-      public boolean isQueryConfigurationAllowed() {
-        return false;
-      }
     };
+    tableModel.setQueryConfigurationAllowed(false);
     tableModel.setEditModel(editModel);
     final EntityTablePanel tablePanel = new EntityTablePanel(tableModel, null, null) {
       @Override
@@ -1104,7 +1101,8 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
    * @return an initialized EntityTableSearchPanel
    */
   protected JPanel initializeAdvancedSearchPanel() {
-    final EntityTableSearchPanel advancedSearchPanel = new EntityTableSearchPanel(getTableModel().getSearchModel());
+    final EntityTableSearchPanel advancedSearchPanel =
+            new EntityTableSearchPanel(getTableModel().getSearchModel(), getTableModel().getColumnModel());
     advancedSearchPanel.setVerticalFillerWidth(UiUtil.getPreferredScrollBarWidth());
 
     return advancedSearchPanel;

@@ -90,18 +90,11 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
    */
   private boolean isSorting = false;
 
-  private final String mapTypeID;
-
-  public AbstractFilteredTableModel(final String mapTypeID) {
-    this.mapTypeID = mapTypeID;
+  public AbstractFilteredTableModel(final TableColumnModel columnModel) {
     this.tableSorter = new TableSorter(this);
-    this.columnModel = initializeColumnModel(mapTypeID);
+    this.columnModel = columnModel;
     this.columnIndexCache = new int[columnModel.getColumnCount()];
     bindEventsInternal();
-  }
-
-  public String getMapTypeID() {
-    return mapTypeID;
   }
 
   /**
@@ -747,8 +740,6 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
       }
     };
   }
-
-  protected abstract TableColumnModel initializeColumnModel(final String tableIdentifier);
 
   private void bindEventsInternal() {
     final List<T> selectedItems = new ArrayList<T>();

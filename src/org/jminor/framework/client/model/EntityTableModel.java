@@ -22,9 +22,7 @@ import org.jminor.framework.i18n.FrameworkMessages;
 
 import org.apache.log4j.Logger;
 
-import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -47,6 +45,11 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
   private final Event evtRefreshDone = new Event();
 
   /**
+   * The entity ID
+   */
+  private final String entityID;
+
+  /**
    * The EntityDb connection provider
    */
   private final EntityDbProvider dbProvider;
@@ -64,7 +67,7 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
   /**
    * True if the underlying query should be configurable by the user
    */
-  private final boolean queryConfigurationAllowed;
+  private boolean queryConfigurationAllowed = true;
 
   /**
    * The edit model to use when updating/deleting entities
@@ -91,21 +94,24 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
   private final State stAllowDelete = new State(true);
 
   public EntityTableModel(final String entityID, final EntityDbProvider dbProvider) {
-    this(entityID, dbProvider, true);
+    this(entityID, dbProvider, new EntityTableColumnModel(entityID));
   }
 
-  public EntityTableModel(final String entityID, final EntityDbProvider dbProvider, final boolean queryConfigurationAllowed) {
-    super(entityID);
+  public EntityTableModel(final String entityID, final EntityDbProvider dbProvider, final EntityTableColumnModel columnModel) {
+    super(columnModel);
+    this.entityID = entityID;
     this.dbProvider = dbProvider;
-    this.queryConfigurationAllowed = queryConfigurationAllowed;
     this.tableSearchModel = initializeSearchModel();
     bindEventsInternal();
     bindEvents();
   }
 
   public void setEditModel(final EntityEditModel editModel) {
+    if (this.editModel != null) {
+      throw new RuntimeException("Edit model has already been set for table model: " + this);
+    }
     this.editModel = editModel;
-    editModel.eventAfterDelete().addListener(new ActionListener() {
+    this.editModel.eventAfterDelete().addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         handleDelete((DeleteEvent) e);
       }
@@ -130,6 +136,10 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
    */
   public boolean isQueryConfigurationAllowed() {
     return queryConfigurationAllowed;
+  }
+
+  public void setQueryConfigurationAllowed(final boolean queryConfigurationAllowed) {
+    this.queryConfigurationAllowed = queryConfigurationAllowed;
   }
 
   /**
@@ -166,7 +176,7 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
    * @return the ID of the entity this table model represents
    */
   public String getEntityID() {
-    return getMapTypeID();
+    return entityID;
   }
 
   /**
@@ -185,7 +195,7 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
    * @param status the sorting status, use TableSorter.DESCENDING, .NOT_SORTED, .ASCENDING
    */
   public void setSortingStatus(final String propertyID, final int status) {
-    final int columnIndex = getColumnModel().getColumnIndex(EntityRepository.getProperty(getEntityID(), propertyID));
+    final int columnIndex = getColumnModel().getColumnIndex(EntityRepository.getProperty(entityID, propertyID));
     if (columnIndex == -1) {
       throw new RuntimeException("Column based on property '" + propertyID + " not found");
     }
@@ -265,7 +275,7 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
    * @see #setEditModel(EntityEditModel)
    */
   public boolean isReadOnly() {
-    return editModel == null || EntityRepository.isReadOnly(getEntityID());
+    return editModel == null || EntityRepository.isReadOnly(entityID);
   }
 
   /**
@@ -438,7 +448,7 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
    * @see #isDetailModel()
    */
   public void searchByForeignKeyValues(final String referencedEntityID, final List<Entity> referenceEntities) {
-    final List<Property.ForeignKeyProperty> properties = EntityRepository.getForeignKeyProperties(getEntityID(), referencedEntityID);
+    final List<Property.ForeignKeyProperty> properties = EntityRepository.getForeignKeyProperties(entityID, referencedEntityID);
     if (properties.size() > 0 && isDetailModel && tableSearchModel.setSearchValues(properties.get(0).getPropertyID(), referenceEntities)) {
       refresh();
     }
@@ -529,7 +539,7 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
   /** {@inheritDoc} */
   @Override
   public String toString() {
-    return getEntityID();
+    return entityID;
   }
 
   /** {@inheritDoc} */
@@ -543,7 +553,7 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
    * @return the PropertySummaryModel for the given property ID
    */
   public PropertySummaryModel getPropertySummaryModel(final String propertyID) {
-    return getPropertySummaryModel(EntityRepository.getProperty(getEntityID(), propertyID));
+    return getPropertySummaryModel(EntityRepository.getProperty(entityID, propertyID));
   }
 
   /**
@@ -583,6 +593,11 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
     return (Property) getColumnModel().getColumn(columnIndex).getIdentifier();
   }
 
+  @Override
+  public EntityTableColumnModel getColumnModel() {
+    return (EntityTableColumnModel) super.getColumnModel();
+  }
+
   /**
    * Returns an Iterator which iterates through the selected entities
    * @return the iterator used when generating reports
@@ -607,23 +622,6 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
     return evtRefreshStarted;
   }
 
-  @Override
-  protected TableColumnModel initializeColumnModel(final String tableIdentifier) {
-    final TableColumnModel columnModel = new DefaultTableColumnModel();
-    int i = 0;
-    for (final Property property : initializeColumnProperties(tableIdentifier)) {
-      final TableColumn column = new TableColumn(i++);
-      column.setIdentifier(property);
-      column.setHeaderValue(property.getCaption());
-      if (property.getPreferredColumnWidth() > 0) {
-        column.setPreferredWidth(property.getPreferredColumnWidth());
-      }
-      columnModel.addColumn(column);
-    }
-
-    return columnModel;
-  }
-
   /**
    * @param entityID the ID of the entity the table is based on
    * @return a list of Properties that should be used as basis for this table models column model
@@ -643,8 +641,8 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
     }
 
     try {
-      return getEntityDb().selectMany(new EntitySelectCriteria(getEntityID(), criteria,
-              EntityRepository.getOrderByClause(getEntityID()), getFetchCount()));
+      return getEntityDb().selectMany(new EntitySelectCriteria(entityID, criteria,
+              EntityRepository.getOrderByClause(entityID), getFetchCount()));
     }
     catch (Exception e) {
       throw new RuntimeException(e);
@@ -672,7 +670,7 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
    * @return a EntityTableSearchModel for this EntityTableModel
    */
   protected EntityTableSearchModel initializeSearchModel() {
-    return new EntityTableSearchModel(getEntityID(), getColumnModel(), dbProvider, false);
+    return new EntityTableSearchModel(entityID, getColumnModel().getColumnProperties(), dbProvider, false);
   }
 
   /**

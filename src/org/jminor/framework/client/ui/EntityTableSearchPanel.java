@@ -16,6 +16,7 @@ import org.jminor.framework.i18n.FrameworkMessages;
 
 import javax.swing.JPanel;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import java.awt.Dimension;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -31,8 +32,8 @@ public class EntityTableSearchPanel extends AbstractTableColumnSyncPanel {
 
   private final EntityTableSearchModel searchModel;
 
-  public EntityTableSearchPanel(final EntityTableSearchModel searchModel) {
-    super(searchModel.getColumnModel());
+  public EntityTableSearchPanel(final EntityTableSearchModel searchModel, final TableColumnModel columnModel) {
+    super(columnModel);
     this.searchModel = searchModel;
     resetPanel();
   }
@@ -93,7 +94,7 @@ public class EntityTableSearchPanel extends AbstractTableColumnSyncPanel {
   }
 
   public PropertySearchPanel getSearchPanel(final String propertyID) {
-    final Enumeration<TableColumn> columnEnumeration = searchModel.getColumnModel().getColumns();
+    final Enumeration<TableColumn> columnEnumeration = getColumnModel().getColumns();
     while (columnEnumeration.hasMoreElements()) {
       final TableColumn column = columnEnumeration.nextElement();
       final Property property = (Property) column.getIdentifier();
@@ -112,7 +113,7 @@ public class EntityTableSearchPanel extends AbstractTableColumnSyncPanel {
   @Override
   protected Map<TableColumn, JPanel> initializeColumnPanels() {
     final Map<TableColumn, JPanel> panels = new HashMap<TableColumn, JPanel>();
-    final Enumeration<TableColumn> columnEnumeration = searchModel.getColumnModel().getColumns();
+    final Enumeration<TableColumn> columnEnumeration = getColumnModel().getColumns();
     while (columnEnumeration.hasMoreElements()) {
       final TableColumn column = columnEnumeration.nextElement();
       final Property property = (Property) column.getIdentifier();

@@ -3,18 +3,19 @@ package org.jminor.framework.client.model;
 import org.jminor.common.db.criteria.CriteriaSet;
 import org.jminor.framework.db.EntityDbConnectionTest;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
+import org.jminor.framework.domain.Property;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-import javax.swing.table.DefaultTableColumnModel;
+import java.util.ArrayList;
 
 public class EntityTableSearchModelTest {
 
   @Test
   public void testConstructor() {
     try {
-      new EntityTableSearchModel(null, new DefaultTableColumnModel(), EntityDbConnectionTest.DB_PROVIDER, false);
+      new EntityTableSearchModel(null, new ArrayList<Property>(), EntityDbConnectionTest.DB_PROVIDER, false);
     }
     catch (IllegalArgumentException e) {}
     try {
@@ -29,7 +30,7 @@ public class EntityTableSearchModelTest {
     final EntityTableModel tableModel = new EntityTableModel(EmpDept.T_EMPLOYEE, EntityDbConnectionTest.DB_PROVIDER);
     final EntityTableSearchModel model = tableModel.getSearchModel();
     assertEquals(EmpDept.T_EMPLOYEE, model.getEntityID());
-    assertNotNull(model.getColumnModel());
+    assertNotNull(model.getProperties());
     assertEquals(false, model.isSimpleSearch());
     model.setSearchConjunction(CriteriaSet.Conjunction.OR);
     assertEquals(CriteriaSet.Conjunction.OR, model.getSearchConjunction());

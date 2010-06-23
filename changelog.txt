@@ -1748,3 +1748,12 @@
   EntityModel.initializeTableModel/EditModel() removed
   EntityPanel.addDetailPanel(s)() added
   EntityPanel.initializeDetailPanels() and getDetailPanelProviders() removed
+  EntityTableSearchModel constructor now takes Collection<Property> instead of TableColumnModel
+  EntityTableSearchModel.columnModel field removed, properties field added
+  EntityTableSearchPanel columnModel parameter added to constructor
+  AbstractFilteredTableModel constructor now takes a TableColumnModel as parameter
+  AbstractFilteredTableModel.initializeColumnModel() remove
+  AbstractFilteredTableModel.mapTypeID field removed
+  EntityTableColumnModel added
+  EntityTableModel.entityID field added
+  EntityTableModel queryConfigurationAllowed removed from constructor, added setter
