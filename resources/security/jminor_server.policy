@@ -1,7 +1,7 @@
 grant {
   permission java.io.FilePermission "${user.home}/logs/*", "read,write";
 
-  permission java.net.SocketPermission "*", "accept";
+  permission java.net.SocketPermission "*", "accept,connect";
   //Database port
   permission java.net.SocketPermission "*:1521", "connect";
   //Client service port

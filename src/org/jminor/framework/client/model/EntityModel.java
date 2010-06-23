@@ -10,7 +10,6 @@ import org.jminor.common.model.reports.ReportDataWrapper;
 import org.jminor.common.model.reports.ReportException;
 import org.jminor.common.model.reports.ReportResult;
 import org.jminor.common.model.reports.ReportWrapper;
-import org.jminor.common.model.valuemap.ValueChangeMapModel;
 import org.jminor.framework.client.model.event.DeleteEvent;
 import org.jminor.framework.client.model.event.InsertEvent;
 import org.jminor.framework.client.model.event.UpdateEvent;
@@ -23,6 +22,8 @@ import org.jminor.framework.domain.Property;
 
 import org.apache.log4j.Logger;
 
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -37,7 +38,7 @@ import java.util.Set;
 /**
  * A class responsible for, among other things, coordinating a EntityEditModel and an EntityTableModel.
  */
-public class EntityModel extends ValueChangeMapModel<String, Object> {
+public class EntityModel {
 
   protected static final Logger LOG = Util.getLogger(EntityModel.class);
 
@@ -46,6 +47,26 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
   private final Event evtRefreshDone = new Event();
   private final Event evtLinkedDetailModelsChanged = new Event();
   private final State stCascadeRefresh = new State();
+
+  /**
+   * The entity ID
+   */
+  private final String entityID;
+
+  /**
+   * The EntityEditModel instance
+   */
+  private EntityEditModel editModel;
+
+  /**
+   * The table model
+   */
+  private EntityTableModel tableModel;
+
+  /**
+   * True if this EntityModel should contain a table model
+   */
+  private final boolean includeTableModel;
 
   /**
    * The EntityDb connection provider
@@ -93,8 +114,10 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
    * @param includeTableModel true if this EntityModel should include a table model
    */
   public EntityModel(final String entityID, final EntityDbProvider dbProvider, final boolean includeTableModel) {
-    super(entityID, includeTableModel);
     Util.rejectNullValue(dbProvider);
+    Util.rejectNullValue(entityID);
+    this.entityID = entityID;
+    this.includeTableModel = includeTableModel;
     this.dbProvider = dbProvider;
     addDetailModels();
     initializeAssociatedModels();
@@ -108,7 +131,7 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
    * @return the ID of the entity this model represents
    */
   public String getEntityID() {
-    return getMapTypeID();
+    return entityID;
   }
 
   /**
@@ -185,19 +208,42 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
   }
 
   /**
-   * @return the EntityEditor instance used by this EntityModel
+   * @return the EntityEditModel instance used by this ValueChangeMapModel
    */
-  @Override
   public EntityEditModel getEditModel() {
-    return (EntityEditModel) super.getEditModel();
+    if (editModel == null) {
+      editModel = initializeEditModel();
+      if (!editModel.getEntityID().equals(entityID)) {
+        throw new RuntimeException("Expected edit model based on " + entityID +
+                ", got: " + editModel.getEntityID());
+      }
+      bindEvents();
+    }
+
+    return editModel;
   }
 
   /**
    * @return the EntityTableModel, null if none is specified
    */
-  @Override
   public EntityTableModel getTableModel() {
-    return (EntityTableModel) super.getTableModel();
+    if (includeTableModel && tableModel == null) {
+      tableModel = initializeTableModel();
+      if (!tableModel.getEntityID().equals(entityID)) {
+        throw new RuntimeException("Expected table model based on " + entityID +
+                ", got: " + tableModel.getEntityID());
+      }
+      bindEvents();
+    }
+
+    return tableModel;
+  }
+
+  /**
+   * @return true if this ValueChangeMapModel contains a TableModel
+   */
+  public boolean containsTableModel() {
+    return getTableModel() != null;
   }
 
   /**
@@ -289,7 +335,7 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
    * @throws ReportException in case of a report exception
    */
   public ReportResult fillReport(final ReportWrapper reportWrapper, final Map reportParameters) throws ReportException {
-    return EntityReportUtil.fillReport(reportWrapper, getDbProvider(), reportParameters);
+    return EntityReportUtil.fillReport(reportWrapper, dbProvider, reportParameters);
   }
 
   /**
@@ -353,7 +399,7 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
       getTableModel().searchByForeignKeyValues(masterEntityID, selectedMasterEntities);
     }
 
-    for (final Property.ForeignKeyProperty foreignKeyProperty : EntityRepository.getForeignKeyProperties(getEntityID(), masterEntityID)) {
+    for (final Property.ForeignKeyProperty foreignKeyProperty : EntityRepository.getForeignKeyProperties(entityID, masterEntityID)) {
       getEditModel().setValue(foreignKeyProperty.getPropertyID(), selectedMasterEntities != null && selectedMasterEntities.size() > 0 ? selectedMasterEntities.get(0) : null);
     }
   }
@@ -403,7 +449,6 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
   /**
    * @return the EntityTableModel used by this EntityModel
    */
-  @Override
   protected EntityTableModel initializeTableModel() {
     return new EntityTableModel(getEditModel());
   }
@@ -411,20 +456,9 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
   /**
    * @return the EntityEditModel used by this EntityModel
    */
-  @Override
   protected EntityEditModel initializeEditModel() {
-    return new EntityEditModel(getEntityID(), getDbProvider());
+    return new EntityEditModel(entityID, dbProvider);
   }
-
-  /**
-   * Override to add event bindings
-   */
-  protected void bindEvents() {}
-
-  /**
-   * Override to add specific event bindings that depend on the table model
-   */
-  protected void bindTableModelEvents() {}
 
   protected void handleInsert(final InsertEvent insertEvent) {
     final List<Entity.Key> primaryKeys = insertEvent.getInsertedKeys();
@@ -445,7 +479,7 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
       else {//replace and select the updated entities
         final List<Entity> updated = new ArrayList<Entity>();
         for (final Entity entity : updatedEntities) {
-          if (entity.is(getEntityID())) {
+          if (entity.is(entityID)) {
             updated.add(entity);
           }
         }
@@ -469,7 +503,7 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
     if (deletedEntities.size() > 0) {
       for (final EntityModel detailModel : detailModels) {
         for (final Property.ForeignKeyProperty foreignKeyProperty :
-                EntityRepository.getForeignKeyProperties(detailModel.getEntityID(), getEntityID())) {
+                EntityRepository.getForeignKeyProperties(detailModel.entityID, entityID)) {
           final EntityEditModel detailEditModel = detailModel.getEditModel();
           if (detailEditModel.containsComboBoxModel(foreignKeyProperty)) {
             final EntityComboBoxModel comboModel = detailEditModel.getEntityComboBoxModel(foreignKeyProperty);
@@ -503,7 +537,7 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
       final Entity insertedEntity = getEntityDb().selectSingle(insertedPrimaryKeys.get(0));
       for (final EntityModel detailModel : detailModels) {
         for (final Property.ForeignKeyProperty foreignKeyProperty :
-                EntityRepository.getForeignKeyProperties(detailModel.getEntityID(), getEntityID())) {
+                EntityRepository.getForeignKeyProperties(detailModel.entityID, entityID)) {
           final EntityEditModel detailEditModel = detailModel.getEditModel();
           if (detailEditModel.containsComboBoxModel(foreignKeyProperty)) {
             detailEditModel.getEntityComboBoxModel(foreignKeyProperty).refresh();
@@ -521,7 +555,7 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
   protected void refreshDetailModelsAfterUpdate(final List<Entity> entities) {
     for (final EntityModel detailModel : detailModels) {
       for (final Property.ForeignKeyProperty foreignKeyProperty :
-              EntityRepository.getForeignKeyProperties(detailModel.getEntityID(), getEntityID())) {
+              EntityRepository.getForeignKeyProperties(detailModel.entityID, entityID)) {
         final EntityEditModel detailEditModel = detailModel.getEditModel();
         if (detailEditModel.containsComboBoxModel(foreignKeyProperty)) {
           detailEditModel.getEntityComboBoxModel(foreignKeyProperty).refresh();
@@ -549,9 +583,19 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
             (getTableModel().stateSelectionEmpty().isActive() ? null : getTableModel().getSelectedItems()) :
             (getEditModel().isEntityNew() ? null : Arrays.asList(getEditModel().getEntityCopy()));
     for (final EntityModel detailModel : linkedDetailModels) {
-      detailModel.masterSelectionChanged(getEntityID(), activeEntities);
+      detailModel.masterSelectionChanged(entityID, activeEntities);
     }
   }
+
+  /**
+   * Override to add event bindings
+   */
+  protected void bindEvents() {}
+
+  /**
+   * Override to add specific event bindings that depend on the table model
+   */
+  protected void bindTableModelEvents() {}
 
   private void addDetailModels() {
     for (final EntityModel detailModel : initializeDetailModels()) {
@@ -608,6 +652,21 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
     getTableModel().eventSelectionChanged().addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         updateDetailModelsByActiveEntity();
+      }
+    });
+    getTableModel().eventSelectedIndexChanged().addListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
+        getEditModel().setValueMap(getTableModel().getSelectionModel().isSelectionEmpty() ? null : getTableModel().getSelectedItem());
+      }
+    });
+
+    getTableModel().addTableModelListener(new TableModelListener() {
+      public void tableChanged(final TableModelEvent e) {
+        //if the selected record is being updated via the table model refresh the one in the edit model
+        if (e.getType() == TableModelEvent.UPDATE && e.getFirstRow() == getTableModel().getSelectedIndex()) {
+          getEditModel().setValueMap(null);
+          getEditModel().setValueMap(getTableModel().getSelectedItem());
+        }
       }
     });
   }

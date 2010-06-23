@@ -4,15 +4,11 @@
 package org.jminor.framework.client.ui;
 
 import org.jminor.common.i18n.Messages;
-import org.jminor.common.model.AbstractFilteredTableModel;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.WeakPropertyChangeListener;
 import org.jminor.common.model.reports.ReportDataWrapper;
 import org.jminor.common.model.reports.ReportException;
 import org.jminor.common.model.reports.ReportWrapper;
-import org.jminor.common.model.valuemap.ValueChangeMap;
-import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
-import org.jminor.common.ui.AbstractFilteredTablePanel;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.Control;
 import org.jminor.common.ui.control.ControlFactory;
@@ -20,7 +16,6 @@ import org.jminor.common.ui.control.ControlSet;
 import org.jminor.common.ui.images.Images;
 import org.jminor.common.ui.reports.ReportUIWrapper;
 import org.jminor.common.ui.valuemap.ValueChangeMapEditPanel;
-import org.jminor.common.ui.valuemap.ValueChangeMapPanel;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityModel;
@@ -69,7 +64,7 @@ import java.util.Map;
  * A panel representing a Entity via a EntityModel, which facilitates browsing and editing of records.
  * To lay out the panel components and initialize the panel you must call the method <code>initializePanel()</code>.
  */
-public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
+public abstract class EntityPanel extends JPanel {
 
   public static final int DIALOG = 1;
   public static final int EMBEDDED = 2;
@@ -79,6 +74,11 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
   public static final int DOWN = 1;
   public static final int RIGHT = 2;
   public static final int LEFT = 3;
+
+  /**
+   * The EntityModel instance used by this EntityPanel
+   */
+  private final EntityModel model;
 
   /**
    * true if this panel should be compact
@@ -104,6 +104,16 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
    * A List containing the detail panels, if any
    */
   private final List<EntityPanel> detailEntityPanels;
+
+  /**
+   * The EntityEditPanel instance
+   */
+  private EntityEditPanel editPanel;
+
+  /**
+   * The EntityTablePanel instance used by this EntityPanel
+   */
+  private EntityTablePanel tablePanel;
 
   /**
    * The edit panel which contains the controls required for editing a entity
@@ -238,8 +248,9 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
   public EntityPanel(final EntityModel model, final String caption, final boolean refreshOnInit,
                      final boolean horizontalButtons, final int detailPanelState,
                      final boolean compactDetailLayout) {
-    super(model);
+    Util.rejectNullValue(model);
     Util.rejectNullValue(caption);
+    this.model = model;
     this.caption = caption;
     this.refreshOnInit = refreshOnInit;
     this.buttonPlacement = horizontalButtons ? BorderLayout.SOUTH : BorderLayout.EAST;
@@ -261,16 +272,15 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
   /**
    * @return the EntityModel
    */
-  @Override
   public EntityModel getModel() {
-    return (EntityModel) super.getModel();
+    return model;
   }
 
   /**
    * @return the EntityEditModel
    */
   public EntityEditModel getEditModel() {
-    return getModel().getEditModel();
+    return model.getEditModel();
   }
 
   /**
@@ -302,8 +312,8 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
         bindTablePanelEvents();
         initialize();
 
-        if (refreshOnInit && getModel().containsTableModel()) {
-          getModel().getTableModel().refresh();
+        if (refreshOnInit && model.containsTableModel()) {
+          model.getTableModel().refresh();
         }
       }
       finally {
@@ -323,18 +333,37 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
     return panelInitialized;
   }
 
-  @Override
   public EntityEditPanel getEditPanel() {
-    return (EntityEditPanel) super.getEditPanel();
+    if (editPanel == null) {
+      editPanel = initializeEditPanel(model.getEditModel());
+    }
+
+    return editPanel;
+  }
+
+  /**
+   * @return true if this panel contains a edit panel.
+   */
+  public boolean containsEditPanel() {
+    return getEditPanel() != null;
   }
 
   /**
    * @return the EntityTablePanel used by this EntityPanel
-   * @see org.jminor.common.ui.valuemap.ValueChangeMapPanel#initializeTablePanel(org.jminor.common.model.AbstractFilteredTableModel)
    */
-  @Override
   public EntityTablePanel getTablePanel() {
-    return (EntityTablePanel) super.getTablePanel();
+    if (model.containsTableModel() && (tablePanel == null)) {
+      tablePanel = initializeTablePanel(model.getTableModel());
+    }
+
+    return tablePanel;
+  }
+
+  /**
+   * @return true if this panel contains a table panel.
+   */
+  public boolean containsTablePanel() {
+    return getTablePanel() != null;
   }
 
   /**
@@ -480,7 +509,7 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
       }
     }
 
-    getModel().setLinkedDetailModel(state == HIDDEN ? null : getSelectedDetailPanel().getModel());
+    model.setLinkedDetailModel(state == HIDDEN ? null : getSelectedDetailPanel().model);
 
     detailPanelState = state;
     if (state != DIALOG) {
@@ -594,9 +623,9 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
    * @see EntityEditPanel#setInitialFocusComponent(javax.swing.JComponent)
    */
   public final void prepareUI(final boolean setInitialFocus, final boolean clearUI) {
-    final EntityEditPanel editPanel = getEditPanel();
-    if (editPanel != null) {
-      editPanel.prepareUI(setInitialFocus, clearUI);
+    final EntityEditPanel entityEditPanel = getEditPanel();
+    if (entityEditPanel != null) {
+      entityEditPanel.prepareUI(setInitialFocus, clearUI);
     }
     else if (setInitialFocus) {
       if (getTablePanel() != null) {
@@ -614,15 +643,15 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
    * @see ValueChangeMapEditPanel#setComponent(Object, javax.swing.JComponent)
    */
   protected List<Property> getSelectComponentProperties() {
-    final EntityEditPanel editPanel = getEditPanel();
-    final Collection<String> componentKeys = editPanel.getComponentKeys();
+    final EntityEditPanel entityEditPanel = getEditPanel();
+    final Collection<String> componentKeys = entityEditPanel.getComponentKeys();
     final Collection<String> focusableComponentKeys = new ArrayList<String>(componentKeys.size());
     for (final String key : componentKeys) {
-      if (editPanel.getComponent(key).isEnabled()) {
+      if (entityEditPanel.getComponent(key).isEnabled()) {
         focusableComponentKeys.add(key);
       }
     }
-    return EntityUtil.getSortedProperties(getModel().getEntityID(), focusableComponentKeys);
+    return EntityUtil.getSortedProperties(model.getEntityID(), focusableComponentKeys);
   }
 
   public static EntityPanel createInstance(final EntityPanelProvider panelProvider, final EntityModel model) {
@@ -835,11 +864,11 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
     final JPanel propertyBase =
             new JPanel(new FlowLayout(buttonPlacement.equals(BorderLayout.SOUTH) ? FlowLayout.CENTER : FlowLayout.LEADING,5,5));
     panel.addMouseListener(new ActivationFocusAdapter(propertyBase));
-    final EntityEditPanel editPanel = getEditPanel();
-    propertyBase.add(editPanel);
+    final EntityEditPanel entityEditPanel = getEditPanel();
+    propertyBase.add(entityEditPanel);
     panel.add(propertyBase, BorderLayout.CENTER);
     final JComponent controlPanel = Configuration.getBooleanValue(Configuration.TOOLBAR_BUTTONS) ?
-            editPanel.getControlToolBar() : editPanel.getControlPanel(buttonPlacement.equals(BorderLayout.SOUTH));
+            entityEditPanel.getControlToolBar() : entityEditPanel.getControlPanel(buttonPlacement.equals(BorderLayout.SOUTH));
     if (controlPanel != null) {
       panel.add(controlPanel, Configuration.getBooleanValue(Configuration.TOOLBAR_BUTTONS) ?
               (buttonPlacement.equals(BorderLayout.SOUTH) ? BorderLayout.NORTH : BorderLayout.WEST) :
@@ -849,18 +878,7 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
     return panel;
   }
 
-  @Override
-  protected final ValueChangeMapEditPanel<String, Object> initializeEditPanel(final ValueChangeMapEditModel<String, Object> editModel) {
-    return initializeEditPanel((EntityEditModel) editModel);
-  }
-
   protected abstract EntityEditPanel initializeEditPanel(final EntityEditModel editModel);
-
-  @Override
-  protected final AbstractFilteredTablePanel<? extends ValueChangeMap<String, Object>> initializeTablePanel(
-          final AbstractFilteredTableModel<? extends ValueChangeMap<String, Object>> tableModel) {
-    return initializeTablePanel((EntityTableModel) tableModel);
-  }
 
   protected EntityTablePanel initializeTablePanel(final EntityTableModel tableModel) {
     return new EntityTablePanel(tableModel, getTablePopupControlSet(), getToolbarControlSet(), getPrintControls());
@@ -956,10 +974,10 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
   protected List<? extends EntityPanel> initializeDetailPanels() {
     final List<EntityPanel> detailPanels = new ArrayList<EntityPanel>();
     for (final EntityPanelProvider detailPanelProvider : getDetailPanelProviders()) {
-      final EntityModel detailModel = getModel().getDetailModel(detailPanelProvider.getModelClass());
+      final EntityModel detailModel = model.getDetailModel(detailPanelProvider.getModelClass());
       if (detailModel == null) {
         throw new RuntimeException("Detail model of type " + detailPanelProvider.getModelClass()
-                + " not found in model of type " + getModel().getClass());
+                + " not found in model of type " + model.getClass());
       }
       final EntityPanel detailPanel = createInstance(detailPanelProvider, detailModel);
       detailPanel.masterPanel = this;
@@ -1073,7 +1091,7 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
       return;
     }
 
-    getModel().eventEntitiesChanged().addListener(new ActionListener() {
+    model.eventEntitiesChanged().addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         getTablePanel().getJTable().repaint();
       }
@@ -1138,7 +1156,7 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
                                 final Map<String, Object> reportParameters, final String frameTitle) {
     try {
       UiUtil.setWaitCursor(true, this);
-      EntityReportUiUtil.viewReport(getModel().fillReport(reportWrapper, reportParameters), uiWrapper, frameTitle);
+      EntityReportUiUtil.viewReport(model.fillReport(reportWrapper, reportParameters), uiWrapper, frameTitle);
     }
     catch (ReportException e) {
       throw new RuntimeException(e);
@@ -1161,7 +1179,7 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
                             final String frameTitle) {
     try {
       UiUtil.setWaitCursor(true, this);
-      EntityReportUiUtil.viewReport(getModel().fillReport(reportWrapper, dataSource, reportParameters), uiWrapper, frameTitle);
+      EntityReportUiUtil.viewReport(model.fillReport(reportWrapper, dataSource, reportParameters), uiWrapper, frameTitle);
     }
     catch (ReportException e) {
       throw new RuntimeException(e);
@@ -1216,12 +1234,12 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> {
   }
 
   private void bindModelEvents() {
-    getModel().eventRefreshStarted().addListener(new ActionListener() {
+    model.eventRefreshStarted().addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         UiUtil.setWaitCursor(true, EntityPanel.this);
       }
     });
-    getModel().eventRefreshDone().addListener(new ActionListener() {
+    model.eventRefreshDone().addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         UiUtil.setWaitCursor(false, EntityPanel.this);
       }
