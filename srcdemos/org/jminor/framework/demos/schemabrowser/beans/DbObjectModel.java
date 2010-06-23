@@ -7,18 +7,11 @@ import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser;
 
-import java.util.Arrays;
-import java.util.List;
-
 public class DbObjectModel extends EntityModel {
 
   public DbObjectModel(final EntityDbProvider dbProvider) {
     super(SchemaBrowser.T_TABLE, dbProvider);
-  }
-
-  @Override
-  protected List<? extends EntityModel> initializeDetailModels() {
-    return Arrays.asList(
+    addDetailModels(
             new ColumnModel(getDbProvider()),
             new ConstraintModel(getDbProvider()));
   }

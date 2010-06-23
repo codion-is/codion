@@ -7,9 +7,6 @@ import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.demos.chinook.domain.Chinook;
 
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * User: Björn Darri
  * Date: 18.4.2010
@@ -19,10 +16,6 @@ public class PlaylistModel extends EntityModel {
 
   public PlaylistModel(final EntityDbProvider dbProvider) {
     super(Chinook.T_PLAYLIST, dbProvider);
-  }
-
-  @Override
-  protected List<? extends EntityModel> initializeDetailModels() {
-    return Arrays.asList(new PlaylistTrackModel(getDbProvider()));
+    addDetailModel(new PlaylistTrackModel(getDbProvider()));
   }
 }

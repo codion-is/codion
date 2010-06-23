@@ -56,17 +56,12 @@ public class EntityModel {
   /**
    * The EntityEditModel instance
    */
-  private EntityEditModel editModel;
+  private final EntityEditModel editModel;
 
   /**
    * The table model
    */
-  private EntityTableModel tableModel;
-
-  /**
-   * True if this EntityModel should contain a table model
-   */
-  private final boolean includeTableModel;
+  private final EntityTableModel tableModel;
 
   /**
    * The EntityDb connection provider
@@ -99,7 +94,7 @@ public class EntityModel {
   private boolean isRefreshing = false;
 
   /**
-   * Instantiates a new EntityModel
+   * Instantiates a new EntityModel with default EntityEditModel and EntityTableModel implementations.
    * @param entityID the ID of the Entity this EntityModel represents
    * @param dbProvider a EntityDbProvider
    */
@@ -108,7 +103,7 @@ public class EntityModel {
   }
 
   /**
-   * Instantiates a new EntityModel
+   * Instantiates a new EntityModel with default EntityEditModel and EntityTableModel implementations.
    * @param entityID the ID of the Entity this EntityModel represents
    * @param dbProvider a EntityDbProvider
    * @param includeTableModel true if this EntityModel should include a table model
@@ -117,14 +112,94 @@ public class EntityModel {
     Util.rejectNullValue(dbProvider);
     Util.rejectNullValue(entityID);
     this.entityID = entityID;
-    this.includeTableModel = includeTableModel;
     this.dbProvider = dbProvider;
-    addDetailModels();
+    this.editModel = new EntityEditModel(entityID, dbProvider);
+    if (includeTableModel) {
+      this.tableModel = new EntityTableModel(entityID, dbProvider);
+    }
+    else {
+      this.tableModel = null;
+    }
+    if (tableModel != null) {
+      tableModel.setEditModel(editModel);
+    }
     initializeAssociatedModels();
     bindEventsInternal();
     bindEvents();
     bindTableModelEventsInternal();
     bindTableModelEvents();
+  }
+
+  /**
+   * Instantiates a new EntityModel
+   * @param editModel the edit model
+   */
+  public EntityModel(final EntityEditModel editModel) {
+    this(editModel, true);
+  }
+
+  /**
+   * Instantiates a new EntityModel
+   * @param tableModel the table model
+   */
+  public EntityModel(final EntityTableModel tableModel) {
+    this(new EntityEditModel(tableModel.getEntityID(), tableModel.getDbProvider()), tableModel);
+  }
+
+  /**
+   * Instantiates a new EntityModel
+   * @param editModel the edit model
+   * @param includeTableModel if true then a default EntityTableModel is included
+   */
+  public EntityModel(final EntityEditModel editModel, final boolean includeTableModel) {
+    this(editModel, includeTableModel ? new EntityTableModel(editModel.getEntityID(), editModel.getDbProvider()) : null);
+  }
+
+  /**
+   * Instantiates a new EntityModel
+   * @param editModel the edit model
+   * @param tableModel the table model
+   */
+  public EntityModel(final EntityEditModel editModel, final EntityTableModel tableModel) {
+    Util.rejectNullValue(editModel);
+    this.entityID = editModel.getEntityID();
+    this.dbProvider = editModel.getDbProvider();
+    this.editModel = editModel;
+    this.tableModel = tableModel;
+    if (tableModel != null) {
+      tableModel.setEditModel(editModel);
+    }
+    initializeAssociatedModels();
+    bindEventsInternal();
+    bindEvents();
+    bindTableModelEventsInternal();
+    bindTableModelEvents();
+  }
+
+  /**
+   * Adds the given detail models to this model.
+   * @param detailModels the detail models to add
+   */
+  public void addDetailModels(final EntityModel... detailModels) {
+    Util.rejectNullValue(detailModels);
+    for (final EntityModel detailModel : detailModels) {
+      addDetailModel(detailModel);
+    }
+  }
+
+  /**
+   * Adds the given detail model to this model
+   * @param detailModel the detail model
+   * @return the detail model just added
+   */
+  public EntityModel addDetailModel(final EntityModel detailModel) {
+    this.detailModels.add(detailModel);
+    detailModel.masterModel = this;
+    if (detailModel.containsTableModel()) {
+      detailModel.tableModel.setDetailModel(true);
+    }
+
+    return detailModel;
   }
 
   /**
@@ -195,8 +270,9 @@ public class EntityModel {
     for (final EntityModel detailModel : detailModels) {
       detailModel.setSelectionFiltersDetail(value);
     }
-
-    getTableModel().getSelectionModel().clearSelection();
+    if (containsTableModel()) {
+      tableModel.getSelectionModel().clearSelection();
+    }
     selectionFiltersDetail = value;
   }
 
@@ -211,15 +287,6 @@ public class EntityModel {
    * @return the EntityEditModel instance used by this ValueChangeMapModel
    */
   public EntityEditModel getEditModel() {
-    if (editModel == null) {
-      editModel = initializeEditModel();
-      if (!editModel.getEntityID().equals(entityID)) {
-        throw new RuntimeException("Expected edit model based on " + entityID +
-                ", got: " + editModel.getEntityID());
-      }
-      bindEvents();
-    }
-
     return editModel;
   }
 
@@ -227,15 +294,6 @@ public class EntityModel {
    * @return the EntityTableModel, null if none is specified
    */
   public EntityTableModel getTableModel() {
-    if (includeTableModel && tableModel == null) {
-      tableModel = initializeTableModel();
-      if (!tableModel.getEntityID().equals(entityID)) {
-        throw new RuntimeException("Expected table model based on " + entityID +
-                ", got: " + tableModel.getEntityID());
-      }
-      bindEvents();
-    }
-
     return tableModel;
   }
 
@@ -243,7 +301,7 @@ public class EntityModel {
    * @return true if this ValueChangeMapModel contains a TableModel
    */
   public boolean containsTableModel() {
-    return getTableModel() != null;
+    return tableModel != null;
   }
 
   /**
@@ -366,7 +424,7 @@ public class EntityModel {
       LOG.trace(this + " refreshing");
       isRefreshing = true;
       evtRefreshStarted.fire();
-      getEditModel().refresh();//triggers table model refresh as per bindTableModelEventsInternal()
+      editModel.refresh();//triggers table model refresh as per bindTableModelEventsInternal()
       if (isCascadeRefresh()) {
         refreshDetailModels();
       }
@@ -382,9 +440,9 @@ public class EntityModel {
 
   public void clear() {
     if (containsTableModel()) {
-      getTableModel().clear();
+      tableModel.clear();
     }
-    getEditModel().clear();
+    editModel.clear();
     clearDetailModels();
   }
 
@@ -396,11 +454,11 @@ public class EntityModel {
    */
   public void masterSelectionChanged(final String masterEntityID, final List<Entity> selectedMasterEntities) {
     if (selectionFiltersDetail && containsTableModel()) {
-      getTableModel().searchByForeignKeyValues(masterEntityID, selectedMasterEntities);
+      tableModel.searchByForeignKeyValues(masterEntityID, selectedMasterEntities);
     }
 
     for (final Property.ForeignKeyProperty foreignKeyProperty : EntityRepository.getForeignKeyProperties(entityID, masterEntityID)) {
-      getEditModel().setValue(foreignKeyProperty.getPropertyID(), selectedMasterEntities != null && selectedMasterEntities.size() > 0 ? selectedMasterEntities.get(0) : null);
+      editModel.setValue(foreignKeyProperty.getPropertyID(), selectedMasterEntities != null && selectedMasterEntities.size() > 0 ? selectedMasterEntities.get(0) : null);
     }
   }
 
@@ -434,37 +492,16 @@ public class EntityModel {
   }
 
   /**
-   * @return a List of EntityModels serving as detail models
-   */
-  protected List<? extends EntityModel> initializeDetailModels() {
-    return new ArrayList<EntityModel>(0);
-  }
-
-  /**
    * Override this method to initialize any associated models before bindEvents() is called.
    * An associated model could for example be an EntityModel that is used by this model but is not a detail model.
    */
   protected void initializeAssociatedModels() {}
 
-  /**
-   * @return the EntityTableModel used by this EntityModel
-   */
-  protected EntityTableModel initializeTableModel() {
-    return new EntityTableModel(getEditModel());
-  }
-
-  /**
-   * @return the EntityEditModel used by this EntityModel
-   */
-  protected EntityEditModel initializeEditModel() {
-    return new EntityEditModel(entityID, dbProvider);
-  }
-
   protected void handleInsert(final InsertEvent insertEvent) {
     final List<Entity.Key> primaryKeys = insertEvent.getInsertedKeys();
     if (containsTableModel()) {
-      getTableModel().getSelectionModel().clearSelection();
-      getTableModel().addEntitiesByPrimaryKeys(primaryKeys, true);
+      tableModel.getSelectionModel().clearSelection();
+      tableModel.addEntitiesByPrimaryKeys(primaryKeys, true);
     }
 
     refreshDetailModelsAfterInsert(primaryKeys);
@@ -474,7 +511,7 @@ public class EntityModel {
     final List<Entity> updatedEntities = updateEvent.getUpdatedEntities();
     if (containsTableModel()) {
       if (updateEvent.isPrimaryKeyModified()) {
-        getTableModel().refresh();//best we can do under the circumstances
+        tableModel.refresh();//best we can do under the circumstances
       }
       else {//replace and select the updated entities
         final List<Entity> updated = new ArrayList<Entity>();
@@ -483,8 +520,8 @@ public class EntityModel {
             updated.add(entity);
           }
         }
-        getTableModel().replaceEntities(updated);
-        getTableModel().setSelectedItems(updated);
+        tableModel.replaceEntities(updated);
+        tableModel.setSelectedItems(updated);
       }
     }
 
@@ -504,7 +541,7 @@ public class EntityModel {
       for (final EntityModel detailModel : detailModels) {
         for (final Property.ForeignKeyProperty foreignKeyProperty :
                 EntityRepository.getForeignKeyProperties(detailModel.entityID, entityID)) {
-          final EntityEditModel detailEditModel = detailModel.getEditModel();
+          final EntityEditModel detailEditModel = detailModel.editModel;
           if (detailEditModel.containsComboBoxModel(foreignKeyProperty)) {
             final EntityComboBoxModel comboModel = detailEditModel.getEntityComboBoxModel(foreignKeyProperty);
             for (final Entity deletedEntity : deletedEntities) {
@@ -538,7 +575,7 @@ public class EntityModel {
       for (final EntityModel detailModel : detailModels) {
         for (final Property.ForeignKeyProperty foreignKeyProperty :
                 EntityRepository.getForeignKeyProperties(detailModel.entityID, entityID)) {
-          final EntityEditModel detailEditModel = detailModel.getEditModel();
+          final EntityEditModel detailEditModel = detailModel.editModel;
           if (detailEditModel.containsComboBoxModel(foreignKeyProperty)) {
             detailEditModel.getEntityComboBoxModel(foreignKeyProperty).refresh();
           }
@@ -556,7 +593,7 @@ public class EntityModel {
     for (final EntityModel detailModel : detailModels) {
       for (final Property.ForeignKeyProperty foreignKeyProperty :
               EntityRepository.getForeignKeyProperties(detailModel.entityID, entityID)) {
-        final EntityEditModel detailEditModel = detailModel.getEditModel();
+        final EntityEditModel detailEditModel = detailModel.editModel;
         if (detailEditModel.containsComboBoxModel(foreignKeyProperty)) {
           detailEditModel.getEntityComboBoxModel(foreignKeyProperty).refresh();
         }
@@ -580,8 +617,8 @@ public class EntityModel {
 
   protected void updateDetailModelsByActiveEntity() {
     final List<Entity> activeEntities = containsTableModel() ?
-            (getTableModel().stateSelectionEmpty().isActive() ? null : getTableModel().getSelectedItems()) :
-            (getEditModel().isEntityNew() ? null : Arrays.asList(getEditModel().getEntityCopy()));
+            (tableModel.stateSelectionEmpty().isActive() ? null : tableModel.getSelectedItems()) :
+            (editModel.isEntityNew() ? null : Arrays.asList(editModel.getEntityCopy()));
     for (final EntityModel detailModel : linkedDetailModels) {
       detailModel.masterSelectionChanged(entityID, activeEntities);
     }
@@ -597,28 +634,18 @@ public class EntityModel {
    */
   protected void bindTableModelEvents() {}
 
-  private void addDetailModels() {
-    for (final EntityModel detailModel : initializeDetailModels()) {
-      detailModels.add(detailModel);
-      detailModel.masterModel = this;
-      if (detailModel.containsTableModel()) {
-        detailModel.getTableModel().setDetailModel(true);
-      }
-    }
-  }
-
   private void bindEventsInternal() {
-    getEditModel().eventAfterInsert().addListener(new ActionListener() {
+    editModel.eventAfterInsert().addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         handleInsert((InsertEvent) e);
       }
     });
-    getEditModel().eventAfterUpdate().addListener(new ActionListener() {
+    editModel.eventAfterUpdate().addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         handleUpdate((UpdateEvent) e);
       }
     });
-    getEditModel().eventAfterDelete().addListener(new ActionListener() {
+    editModel.eventAfterDelete().addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         handleDelete((DeleteEvent) e);
       }
@@ -631,7 +658,7 @@ public class EntityModel {
       }
     });
     if (!containsTableModel()) {
-      getEditModel().eventValueMapSet().addListener(new ActionListener() {
+      editModel.eventValueMapSet().addListener(new ActionListener() {
         public void actionPerformed(final ActionEvent e) {
           updateDetailModelsByActiveEntity();
         }
@@ -644,28 +671,28 @@ public class EntityModel {
       return;
     }
 
-    getEditModel().eventRefreshDone().addListener(new ActionListener() {
+    editModel.eventRefreshDone().addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        getTableModel().refresh();
+        tableModel.refresh();
       }
     });
-    getTableModel().eventSelectionChanged().addListener(new ActionListener() {
+    tableModel.eventSelectionChanged().addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         updateDetailModelsByActiveEntity();
       }
     });
-    getTableModel().eventSelectedIndexChanged().addListener(new ActionListener() {
+    tableModel.eventSelectedIndexChanged().addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
-        getEditModel().setValueMap(getTableModel().getSelectionModel().isSelectionEmpty() ? null : getTableModel().getSelectedItem());
+        editModel.setValueMap(tableModel.getSelectionModel().isSelectionEmpty() ? null : tableModel.getSelectedItem());
       }
     });
 
-    getTableModel().addTableModelListener(new TableModelListener() {
+    tableModel.addTableModelListener(new TableModelListener() {
       public void tableChanged(final TableModelEvent e) {
         //if the selected record is being updated via the table model refresh the one in the edit model
-        if (e.getType() == TableModelEvent.UPDATE && e.getFirstRow() == getTableModel().getSelectedIndex()) {
-          getEditModel().setValueMap(null);
-          getEditModel().setValueMap(getTableModel().getSelectedItem());
+        if (e.getType() == TableModelEvent.UPDATE && e.getFirstRow() == tableModel.getSelectedIndex()) {
+          editModel.setValueMap(null);
+          editModel.setValueMap(tableModel.getSelectedItem());
         }
       }
     });

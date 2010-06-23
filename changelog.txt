@@ -1742,3 +1742,7 @@
   EntityTestUnit.initializeReferenceEntities() improved, needs some additional testing
   Code inspection/sonar run
   ValueChangeMapModel/Panel removed
+  EntityModel.addDetailModel(s)() added
+  EntityModel.initializeDetailModels() remove
+  EntityModel constructor overloaded with EntityEditModel/EntityTableModel parameters
+  EntityModel.initializeTableModel/EditModel() removed

@@ -219,7 +219,7 @@ public class EntityTableModelTest {
 
   public static class EntityTableModelTmp extends EntityTableModel {
     public EntityTableModelTmp() {
-      super(new EntityEditModel(EntityTestDomain.T_DETAIL, EntityDbConnectionTest.DB_PROVIDER));
+      super(EntityTestDomain.T_DETAIL, EntityDbConnectionTest.DB_PROVIDER);
     }
 
     @Override

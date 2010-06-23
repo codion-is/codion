@@ -243,7 +243,6 @@ public class EntityTableCellRenderer implements TableCellRenderer {
     public Component getTableCellRendererComponent(final JTable table, final Object value,
                                                    final boolean isSelected, final boolean hasFocus,
                                                    final int row, final int column) {
-      Util.rejectNullValue(value);
       if (value != null && !(value instanceof Boolean)) {
         throw new IllegalArgumentException("Non boolean value: " + value.getClass());
       }

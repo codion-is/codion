@@ -7,9 +7,6 @@ import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.demos.petstore.domain.Petstore;
 
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * User: Bjorn Darri
  * Date: 24.12.2007
@@ -19,10 +16,6 @@ public class ItemModel extends EntityModel {
 
   public ItemModel(final EntityDbProvider dbProvider) {
     super(Petstore.T_ITEM, dbProvider);
-  }
-
-  @Override
-  protected List<? extends EntityModel> initializeDetailModels() {
-    return Arrays.asList(new TagItemModel(getDbProvider()));
+    addDetailModel(new TagItemModel(getDbProvider()));
   }
 }

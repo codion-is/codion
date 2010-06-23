@@ -7,9 +7,6 @@ import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.demos.chinook.domain.Chinook;
 
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * User: Björn Darri
  * Date: 18.4.2010
@@ -19,10 +16,6 @@ public class CustomerModel extends EntityModel {
 
   public CustomerModel(final EntityDbProvider dbProvider) {
     super(Chinook.T_CUSTOMER, dbProvider);
-  }
-
-  @Override
-  protected List<? extends EntityModel> initializeDetailModels() {
-    return Arrays.asList(new InvoiceModel(getDbProvider()));
+    addDetailModel(new InvoiceModel(getDbProvider()));
   }
 }

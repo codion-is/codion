@@ -38,7 +38,7 @@ public class EntityModelTest {
     }
     catch (IllegalArgumentException e) {}
     try {
-      new EntityModel(null, null);
+      new EntityModel((EntityEditModel) null, null);
       fail();
     }
     catch (IllegalArgumentException e) {}

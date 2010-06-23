@@ -23,30 +23,9 @@ import java.awt.event.ActionListener;
 public class EmployeeModel extends EntityModel {
 
   public EmployeeModel(final EntityDbProvider dbProvider) {
-    super(EmpDept.T_EMPLOYEE, dbProvider);
+    super(new EmployeeEditModel(dbProvider));
     getTableModel().setQueryCriteriaRequired(false);
     getTableModel().getPropertySummaryModel(EmpDept.EMPLOYEE_SALARY).setSummaryType(PropertySummaryModel.AVERAGE);
-  }
-
-  @Override
-  protected EntityEditModel initializeEditModel() {
-    return new EntityEditModel(getEntityID(), getDbProvider()) {
-      /** Providing a custom ComboBoxModel for the manager property, which only shows managers and the president */
-      @Override
-      public EntityComboBoxModel createEntityComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty) {
-        if (foreignKeyProperty.is(EmpDept.EMPLOYEE_MGR_FK)) {
-          final EntityComboBoxModel managerModel = new EntityComboBoxModel(EmpDept.T_EMPLOYEE,
-                  getDbProvider(), false, EmpDept.getString(EmpDept.NONE), true);
-          //Only show the president and managers
-          managerModel.setEntitySelectCriteria(EntityCriteriaUtil.selectCriteria(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB,
-                  SearchType.LIKE, "MANAGER", "PRESIDENT"));
-
-          return managerModel;
-        }
-
-        return super.createEntityComboBoxModel(foreignKeyProperty);
-      }
-    };
   }
 
   @Override
@@ -76,5 +55,28 @@ public class EmployeeModel extends EntityModel {
         }
       }
     });
+  }
+
+  static class EmployeeEditModel extends EntityEditModel {
+
+    EmployeeEditModel(final EntityDbProvider dbProvider) {
+      super(EmpDept.T_EMPLOYEE, dbProvider);
+    }
+
+    /** Providing a custom ComboBoxModel for the manager property, which only shows managers and the president */
+    @Override
+    public EntityComboBoxModel createEntityComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty) {
+      if (foreignKeyProperty.is(EmpDept.EMPLOYEE_MGR_FK)) {
+        final EntityComboBoxModel managerModel = new EntityComboBoxModel(EmpDept.T_EMPLOYEE,
+                getDbProvider(), false, EmpDept.getString(EmpDept.NONE), true);
+        //Only show the president and managers
+        managerModel.setEntitySelectCriteria(EntityCriteriaUtil.selectCriteria(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB,
+                SearchType.LIKE, "MANAGER", "PRESIDENT"));
+
+        return managerModel;
+      }
+
+      return super.createEntityComboBoxModel(foreignKeyProperty);
+    }
   }
 }

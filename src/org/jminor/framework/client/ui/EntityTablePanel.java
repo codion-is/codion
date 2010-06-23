@@ -387,6 +387,9 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
    */
   public ControlSet getUpdateSelectedControlSet() {
     final EntityEditModel editModel = getTableModel().getEditModel();
+    if (editModel == null) {
+      throw new RuntimeException("No edit model found in table model: " + getTableModel());
+    }
     final State enabled = new AggregateState(AggregateState.Type.AND,
             getTableModel().stateAllowMultipleUpdate(),
             getTableModel().stateSelectionEmpty().getReversedState());
@@ -495,7 +498,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
       EntityUtil.setPropertyValue(propertyToUpdate.getPropertyID(), inputPanel.getValue(), selectedEntities);
       try {
         UiUtil.setWaitCursor(true, this);
-        getTableModel().getEditModel().update(selectedEntities);
+        editModel.update(selectedEntities);
       }
       catch (RuntimeException re) {
         throw re;
@@ -537,10 +540,14 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
    * @throws org.jminor.common.model.CancelException in the delete action is cancelled
    */
   public void delete() throws DbException, CancelException {
+    final EntityEditModel editModel = getTableModel().getEditModel();
+    if (editModel == null) {
+      throw new RuntimeException("No edit model found in table model: " + getTableModel());
+    }
     if (confirmDelete()) {
       try {
         UiUtil.setWaitCursor(true, this);
-        getTableModel().getEditModel().delete(getTableModel().getSelectedItems());
+        editModel.delete(getTableModel().getSelectedItems());
       }
       finally {
         UiUtil.setWaitCursor(false, this);
@@ -670,7 +677,8 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
    */
   public static EntityTablePanel createStaticEntityTablePanel(final Collection<Entity> entities, final EntityDbProvider dbProvider,
                                                               final String entityID) {
-    final EntityTablePanel tablePanel = new EntityTablePanel(new EntityTableModel(new EntityEditModel(entityID, dbProvider)) {
+    final EntityEditModel editModel = new EntityEditModel(entityID, dbProvider);
+    final EntityTableModel tableModel = new EntityTableModel(entityID, dbProvider) {
       @Override
       protected List<Entity> performQuery(final Criteria<Property> criteria) {
         return new ArrayList<Entity>(entities);
@@ -679,13 +687,15 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
       public boolean isQueryConfigurationAllowed() {
         return false;
       }
-    }, null, null) {
+    };
+    tableModel.setEditModel(editModel);
+    final EntityTablePanel tablePanel = new EntityTablePanel(tableModel, null, null) {
       @Override
       protected JPanel initializeSearchPanel() {
         return null;
       }
     };
-    tablePanel.getTableModel().refresh();
+    tableModel.refresh();
 
     return tablePanel;
   }

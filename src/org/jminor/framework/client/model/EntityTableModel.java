@@ -57,11 +57,6 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
   private final EntityTableSearchModel tableSearchModel;
 
   /**
-   * The edit model to use when updating/deleting entities
-   */
-  private final EntityEditModel editModel;
-
-  /**
    * Maps PropertySummaryModels to their respective properties
    */
   private final Map<String, PropertySummaryModel> propertySummaryModels = new HashMap<String, PropertySummaryModel>();
@@ -70,6 +65,11 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
    * True if the underlying query should be configurable by the user
    */
   private final boolean queryConfigurationAllowed;
+
+  /**
+   * The edit model to use when updating/deleting entities
+   */
+  private EntityEditModel editModel;
 
   /**
    * If true this table model behaves like a detail model, that is
@@ -90,27 +90,26 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
 
   private final State stAllowDelete = new State(true);
 
-  /**
-   * Initializes a new EntityTableModel
-   * @param editModel a EntityEditModel instance
-   */
-  public EntityTableModel(final EntityEditModel editModel) {
-    this(editModel, true);
+  public EntityTableModel(final String entityID, final EntityDbProvider dbProvider) {
+    this(entityID, dbProvider, true);
   }
 
-  /**
-   * Initializes a new EntityTableModel
-   * @param editModel a EntityEditModel instance
-   * @param queryConfigurationAllowed true if the underlying query should be configurable by the user
-   */
-  public EntityTableModel(final EntityEditModel editModel, final boolean queryConfigurationAllowed) {
-    super(editModel.getEntityID());
-    this.editModel = editModel;
-    this.dbProvider = editModel.getDbProvider();
+  public EntityTableModel(final String entityID, final EntityDbProvider dbProvider, final boolean queryConfigurationAllowed) {
+    super(entityID);
+    this.dbProvider = dbProvider;
     this.queryConfigurationAllowed = queryConfigurationAllowed;
     this.tableSearchModel = initializeSearchModel();
     bindEventsInternal();
     bindEvents();
+  }
+
+  public void setEditModel(final EntityEditModel editModel) {
+    this.editModel = editModel;
+    editModel.eventAfterDelete().addListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
+        handleDelete((DeleteEvent) e);
+      }
+    });
   }
 
   /**
@@ -167,7 +166,7 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
    * @return the ID of the entity this table model represents
    */
   public String getEntityID() {
-    return editModel.getEntityID();
+    return getMapTypeID();
   }
 
   /**
@@ -261,11 +260,12 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
   }
 
   /**
-   * @return true if this model is read only,
+   * @return true if this model is read only or if no edit model has been specified.
    * by default this returns the isReadOnly value of the underlying entity
+   * @see #setEditModel(EntityEditModel)
    */
   public boolean isReadOnly() {
-    return EntityRepository.isReadOnly(getEntityID());
+    return editModel == null || EntityRepository.isReadOnly(getEntityID());
   }
 
   /**
@@ -672,7 +672,7 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
    * @return a EntityTableSearchModel for this EntityTableModel
    */
   protected EntityTableSearchModel initializeSearchModel() {
-    return new EntityTableSearchModel(getEntityID(), getColumnModel(), getDbProvider(), false);
+    return new EntityTableSearchModel(getEntityID(), getColumnModel(), dbProvider, false);
   }
 
   /**
@@ -704,11 +704,6 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
     eventColumnHidden().addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         handleColumnHidden((Property) e.getSource());
-      }
-    });
-    editModel.eventAfterDelete().addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent e) {
-        handleDelete((DeleteEvent) e);
       }
     });
     tableSearchModel.eventFilterStateChanged().addListener(new ActionListener() {
