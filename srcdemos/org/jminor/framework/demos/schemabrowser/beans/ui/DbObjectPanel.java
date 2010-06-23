@@ -16,7 +16,9 @@ import java.awt.Dimension;
 public class DbObjectPanel extends EntityPanel {
 
   public DbObjectPanel(final EntityModel model) {
-    super(model, "Tables", false, false, EMBEDDED);
+    super(model, "Tables");
+    setRefreshOnInit(false);
+    setDetailPanelState(EMBEDDED);
     addDetailPanels(
             new EntityPanelProvider(ColumnModel.class, ColumnPanel.class),
             new EntityPanelProvider(ConstraintModel.class, ConstraintPanel.class));

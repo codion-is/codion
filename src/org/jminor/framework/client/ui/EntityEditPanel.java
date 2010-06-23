@@ -222,7 +222,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @param horizontal true if the buttons should be layed out horizontally, false otherwise
    * @return the control panel
    */
-  public JPanel getControlPanel(final boolean horizontal) {
+  public JPanel createControlPanel(final boolean horizontal) {
     if (horizontal) {
       final JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER,5,5));
       panel.add(ControlProvider.createHorizontalButtonPanel(getControlPanelControlSet()));

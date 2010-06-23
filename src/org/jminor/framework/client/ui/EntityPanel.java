@@ -81,21 +81,6 @@ public abstract class EntityPanel extends JPanel {
   private final EntityModel model;
 
   /**
-   * true if this panel should be compact
-   */
-  private final boolean compactDetailLayout;
-
-  /**
-   * true if the data should be refreshed (fetched from the database) during initialization
-   */
-  private final boolean refreshOnInit;
-
-  /**
-   * indicates where the edit panel buttons should be placed, either BorderLayout.SOUTH or BorderLayout.EAST
-   */
-  private final String buttonPlacement;
-
-  /**
    * The caption to use when presenting this entity panel
    */
   private final String caption;
@@ -153,6 +138,21 @@ public abstract class EntityPanel extends JPanel {
   private JDialog editPanelDialog;
 
   /**
+   * true if the data should be refreshed (fetched from the database) during initialization
+   */
+  private boolean refreshOnInit = true;
+
+  /**
+   * true if this panel should be compact
+   */
+  private boolean compactDetailLayout = Configuration.getBooleanValue(Configuration.COMPACT_ENTITY_PANEL_LAYOUT);
+
+  /**
+   * indicates where the control panel should be placed in a BorderLayout
+   */
+  private String controlPanelConstraints = BorderLayout.EAST;
+
+  /**
    * Holds the current state of the edit panel (HIDDEN, EMBEDDED or DIALOG)
    */
   private int editPanelState = EMBEDDED;
@@ -160,7 +160,7 @@ public abstract class EntityPanel extends JPanel {
   /**
    * Holds the current state of the detail panels (HIDDEN, EMBEDDED or DIALOG)
    */
-  private int detailPanelState = HIDDEN;
+  private int detailPanelState = EMBEDDED;
 
   /**
    * True after <code>initializePanel()</code> has been called
@@ -185,77 +185,19 @@ public abstract class EntityPanel extends JPanel {
    * @param model the EntityModel
    */
   public EntityPanel(final EntityModel model) {
-    this(model, EntityRepository.getEntityDefinition(model.getEntityID()).getCaption(), true);
-  }
-
-  /**
-   * Initializes a new EntityPanel instance. The Panel is not laid out and initialized until initialize() is called.
-   * @param model the EntityModel
-   * @param caption the caption to use when presenting this entity panel
-   */
-  public EntityPanel(final EntityModel model, final String caption) {
-    this(model, caption, true);
-  }
-
-  /**
-   * Initializes a new EntityPanel instance. The Panel is not laid out and initialized until initialize() is called.
-   * @param model the EntityModel
-   * @param caption the caption to use when presenting this entity panel
-   * @param refreshOnInit if true then the underlying data model should be refreshed during initialization
-   */
-  public EntityPanel(final EntityModel model, final String caption, final boolean refreshOnInit) {
-    this(model, caption, refreshOnInit, false);
-  }
-
-  /**
-   * Initializes a new EntityPanel instance. The Panel is not laid out and initialized until initialize() is called.
-   * @param model the EntityModel
-   * @param caption the caption to use when presenting this entity panel
-   * @param refreshOnInit if true then the underlying data model should be refreshed during initialization
-   * @param horizontalButtons if true the control panel buttons are laid out horizontally below the edit panel,
-   * otherwise vertically on its right side
-   */
-  public EntityPanel(final EntityModel model, final String caption, final boolean refreshOnInit,
-                     final boolean horizontalButtons) {
-    this(model, caption, refreshOnInit, horizontalButtons, EMBEDDED);//embedded perhaps not default?
-  }
-
-  /**
-   * Initializes a new EntityPanel instance. The Panel is not laid out and initialized until initialize() is called.
-   * @param model the EntityModel
-   * @param caption the caption to use when presenting this entity panel
-   * @param refreshOnInit if true then the underlying data model should be refreshed during initialization
-   * @param horizontalButtons if true the control panel buttons are laid out horizontally below the edit panel,
-   * otherwise vertically on its right side
-   * @param detailPanelState the initial detail panel state (HIDDEN or EMBEDDED, DIALOG is not available upon initialization)
-   */
-  public EntityPanel(final EntityModel model, final String caption, final boolean refreshOnInit,
-                     final boolean horizontalButtons, final int detailPanelState) {
-    this(model, caption, refreshOnInit, horizontalButtons, detailPanelState,
-            Configuration.getBooleanValue(Configuration.COMPACT_ENTITY_PANEL_LAYOUT));
+    this(model, EntityRepository.getEntityDefinition(model.getEntityID()).getCaption());
   }
 
   /**
    * Instantiates a new EntityPanel instance. The Panel is not laid out and initialized until initialize() is called.
    * @param model the EntityModel
    * @param caption the caption to use when presenting this entity panel
-   * @param refreshOnInit if true then the underlying data model should be refreshed during initialization
-   * @param horizontalButtons if true the control panel buttons are laid out horizontally below the edit panel,
-   * otherwise vertically on its right side
-   * @param detailPanelState the initial detail panel state (HIDDEN or EMBEDDED, DIALOG is not available upon initialization)
-   * @param compactDetailLayout true if this panel should be laid out in a compact state
    */
-  public EntityPanel(final EntityModel model, final String caption, final boolean refreshOnInit,
-                     final boolean horizontalButtons, final int detailPanelState,
-                     final boolean compactDetailLayout) {
+  public EntityPanel(final EntityModel model, final String caption) {
     Util.rejectNullValue(model);
     Util.rejectNullValue(caption);
     this.model = model;
     this.caption = caption;
-    this.refreshOnInit = refreshOnInit;
-    this.buttonPlacement = horizontalButtons ? BorderLayout.SOUTH : BorderLayout.EAST;
-    this.detailPanelState = detailPanelState;
-    this.compactDetailLayout = compactDetailLayout && this.detailEntityPanels.size() > 0;
     getEditModel().stateActive().eventStateChanged().addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         if (isActive()) {
@@ -289,10 +231,51 @@ public abstract class EntityPanel extends JPanel {
     return masterPanel;
   }
 
-  public void addDetailPanels(final EntityPanelProvider... detailEntityPanelProviders) {
+  public boolean isCompactDetailLayout() {
+    return compactDetailLayout;
+  }
+
+  public String getControlPanelConstraints() {
+    return controlPanelConstraints;
+  }
+
+  public EntityPanel setControlPanelConstraints(final String controlPanelConstraints) {
+    if (panelInitialized) {
+      throw new RuntimeException("Panel has already been initialized");
+    }
+    this.controlPanelConstraints = controlPanelConstraints;
+    return this;
+  }
+
+  /**
+   * @param compactDetailLayout true if this panel and it's detail panels should be laid out in a compact state
+   * @return this EntityPanel instance
+   */
+  public EntityPanel setCompactDetailLayout(final boolean compactDetailLayout) {
+    if (detailEntityPanels.size() == 0) {
+      throw new RuntimeException("This panel contains no detail panels, compact detail layout not available");
+    }
+    this.compactDetailLayout = compactDetailLayout;
+    return this;
+  }
+
+  public boolean isRefreshOnInit() {
+    return refreshOnInit;
+  }
+
+  public EntityPanel setRefreshOnInit(final boolean refreshOnInit) {
+    if (panelInitialized) {
+      throw new RuntimeException("Panel has already been initialized");
+    }
+    this.refreshOnInit = refreshOnInit;
+    return this;
+  }
+
+  public EntityPanel addDetailPanels(final EntityPanelProvider... detailEntityPanelProviders) {
     for (final EntityPanelProvider detailPanelProvider : detailEntityPanelProviders) {
       addDetailPanel(detailPanelProvider);
     }
+    return this;
   }
 
   public EntityPanel addDetailPanel(final EntityPanelProvider detailPanelProvider) {
@@ -514,10 +497,11 @@ public abstract class EntityPanel extends JPanel {
   }
 
   /**
-   * @param state the detail panel state, either HIDDEN, EMBEDDED or DIALOG
+   * @param state the detail panel state (HIDDEN or EMBEDDED, DIALOG)
    */
   public void setDetailPanelState(final int state) {
     if (detailPanelTabbedPane == null) {
+      this.detailPanelState = state;
       return;
     }
 
@@ -558,6 +542,7 @@ public abstract class EntityPanel extends JPanel {
    */
   public void setEditPanelState(final int state) {
     if (editControlPanel == null) {
+      this.editPanelState = state;
       return;
     }
 
@@ -567,7 +552,7 @@ public abstract class EntityPanel extends JPanel {
     }
 
     if (state == EMBEDDED) {
-      if (compactDetailLayout) {
+      if (compactDetailLayout && detailEntityPanels.size() > 0) {
         compactBase.add(editControlPanel, BorderLayout.NORTH);
       }
       else {
@@ -885,18 +870,16 @@ public abstract class EntityPanel extends JPanel {
     final JPanel panel = new JPanel(new BorderLayout(5,5));
     panel.setMinimumSize(new Dimension(0,0));
     panel.setBorder(BorderFactory.createEtchedBorder());
-    final JPanel propertyBase =
-            new JPanel(new FlowLayout(buttonPlacement.equals(BorderLayout.SOUTH) ? FlowLayout.CENTER : FlowLayout.LEADING,5,5));
+    final int alignment = controlPanelConstraints.equals(BorderLayout.SOUTH) || controlPanelConstraints.equals(BorderLayout.NORTH) ? FlowLayout.CENTER : FlowLayout.LEADING;
+    final JPanel propertyBase = new JPanel(new FlowLayout(alignment, 5, 5));
     panel.addMouseListener(new ActivationFocusAdapter(propertyBase));
     final EntityEditPanel entityEditPanel = getEditPanel();
     propertyBase.add(entityEditPanel);
     panel.add(propertyBase, BorderLayout.CENTER);
     final JComponent controlPanel = Configuration.getBooleanValue(Configuration.TOOLBAR_BUTTONS) ?
-            entityEditPanel.getControlToolBar() : entityEditPanel.getControlPanel(buttonPlacement.equals(BorderLayout.SOUTH));
+            entityEditPanel.getControlToolBar() : entityEditPanel.createControlPanel(alignment == FlowLayout.CENTER);
     if (controlPanel != null) {
-      panel.add(controlPanel, Configuration.getBooleanValue(Configuration.TOOLBAR_BUTTONS) ?
-              (buttonPlacement.equals(BorderLayout.SOUTH) ? BorderLayout.NORTH : BorderLayout.WEST) :
-              (buttonPlacement.equals(BorderLayout.SOUTH) ? BorderLayout.SOUTH : BorderLayout.EAST));
+      panel.add(controlPanel, controlPanelConstraints);
     }
 
     return panel;

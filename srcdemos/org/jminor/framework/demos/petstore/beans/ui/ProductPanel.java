@@ -23,7 +23,9 @@ import javax.swing.JTextField;
 public class ProductPanel extends EntityPanel {
 
   public ProductPanel(final EntityModel model) {
-    super(model, "Product", true, false, EMBEDDED, true);
+    super(model, "Product");
+    setDetailPanelState(EMBEDDED);
+    setCompactDetailLayout(true);
     addDetailPanel(new EntityPanelProvider(ItemModel.class, ItemPanel.class));
   }
 

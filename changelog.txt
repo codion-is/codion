@@ -1757,3 +1757,7 @@
   EntityTableColumnModel added
   EntityTableModel.entityID field added
   EntityTableModel queryConfigurationAllowed removed from constructor, added setter
+  EntityPanel buttonPlacement removed from constructor
+  EntityPanel.controlPanelConstraints field added
+  EntityEditPanel.getControlPanel() renamed to createControlPanel()
+  EntityPanel refreshOnInit removed from constructor, added setter

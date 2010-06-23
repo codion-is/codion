@@ -13,7 +13,7 @@ import org.jminor.framework.demos.schemabrowser.beans.DbObjectModel;
 public class SchemaPanel extends EntityPanel {
 
   public SchemaPanel(final EntityModel model) {
-    super(model, "Schema Users", true);
+    super(model, "Schema Users");
     addDetailPanel(new EntityPanelProvider(DbObjectModel.class, DbObjectPanel.class));
   }
 

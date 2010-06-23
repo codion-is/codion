@@ -13,7 +13,8 @@ import org.jminor.framework.demos.schemabrowser.beans.ColumnConstraintModel;
 public class ConstraintPanel extends EntityPanel {
 
   public ConstraintPanel(final EntityModel model) {
-    super(model, "Constraints", false);
+    super(model, "Constraints");
+    setRefreshOnInit(false);
     addDetailPanel(new EntityPanelProvider(ColumnConstraintModel.class, ColumnConstraintPanel.class));
   }
 

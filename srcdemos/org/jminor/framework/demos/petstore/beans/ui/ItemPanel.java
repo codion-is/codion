@@ -27,7 +27,8 @@ import javax.swing.JTextField;
 public class ItemPanel extends EntityPanel {
 
   public ItemPanel(final EntityModel model) {
-    super(model, "Item", true, false, HIDDEN);
+    super(model, "Item");
+    setDetailPanelState(HIDDEN);
     addDetailPanel(new EntityPanelProvider(TagItemModel.class, TagItemPanel.class));
   }
 
