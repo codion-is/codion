@@ -14,8 +14,6 @@ import static org.jminor.framework.demos.chinook.domain.Chinook.ALBUM_TITLE;
 
 import javax.swing.JTextField;
 import java.awt.GridLayout;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * User: Björn Darri
@@ -26,6 +24,7 @@ public class AlbumPanel extends EntityPanel {
 
   public AlbumPanel(final EntityModel model) {
     super(model);
+    addDetailPanel(new EntityPanelProvider(TrackModel.class, TrackPanel.class));
   }
 
   @Override
@@ -43,10 +42,5 @@ public class AlbumPanel extends EntityPanel {
         add(createPropertyPanel(ALBUM_TITLE, txtTitle));
       }
     };
-  }
-
-  @Override
-  protected List<EntityPanelProvider> getDetailPanelProviders() {
-    return Arrays.asList(new EntityPanelProvider(TrackModel.class, TrackPanel.class));
   }
 }

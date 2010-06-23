@@ -13,8 +13,6 @@ import org.jminor.framework.demos.petstore.beans.ProductModel;
 import static org.jminor.framework.demos.petstore.domain.Petstore.*;
 
 import javax.swing.JTextField;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * User: Bjorn Darri
@@ -25,11 +23,7 @@ public class CategoryPanel extends EntityPanel {
 
   public CategoryPanel(final EntityModel model) {
     super(model, "Category");
-  }
-
-  @Override
-  protected List<EntityPanelProvider> getDetailPanelProviders() {
-    return Arrays.asList(new EntityPanelProvider(ProductModel.class, ProductPanel.class));
+    addDetailPanel(new EntityPanelProvider(ProductModel.class, ProductPanel.class));
   }
 
   @Override

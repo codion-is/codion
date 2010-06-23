@@ -24,15 +24,14 @@ import javax.swing.JTextField;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 
 public class DepartmentPanel extends EntityPanel {
 
   public DepartmentPanel(final EntityModel model) {
     super(model);
+    addDetailPanel(new EntityPanelProvider(EmployeeModel.class, EmployeePanel.class));
   }
 
   public void viewEmployeeReport() throws Exception {
@@ -46,11 +45,6 @@ public class DepartmentPanel extends EntityPanel {
     final HashMap<String, Object> reportParameters = new HashMap<String, Object>();
     reportParameters.put("DEPTNO", departmentNumbers);
     viewJdbcReport(new JasperReportsWrapper(reportPath), new JasperReportsUIWrapper(), reportParameters, null);
-  }
-
-  @Override
-  protected List<EntityPanelProvider> getDetailPanelProviders() {
-    return Arrays.asList(new EntityPanelProvider(EmployeeModel.class, EmployeePanel.class));
   }
 
   @Override

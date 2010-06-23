@@ -13,8 +13,6 @@ import static org.jminor.framework.demos.chinook.domain.Chinook.PLAYLIST_NAME;
 
 import javax.swing.JTextField;
 import java.awt.GridLayout;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * User: Björn Darri
@@ -25,6 +23,7 @@ public class PlaylistPanel extends EntityPanel {
 
   public PlaylistPanel(final EntityModel model) {
     super(model);
+    addDetailPanel(new EntityPanelProvider(PlaylistTrackModel.class, PlaylistTrackPanel.class));
   }
 
   @Override
@@ -39,10 +38,5 @@ public class PlaylistPanel extends EntityPanel {
         add(createPropertyPanel(PLAYLIST_NAME, txtName));
       }
     };
-  }
-
-  @Override
-  protected List<EntityPanelProvider> getDetailPanelProviders() {
-    return Arrays.asList(new EntityPanelProvider(PlaylistTrackModel.class, PlaylistTrackPanel.class));
   }
 }

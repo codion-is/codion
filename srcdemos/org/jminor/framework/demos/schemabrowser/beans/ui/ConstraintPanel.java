@@ -10,23 +10,16 @@ import org.jminor.framework.client.ui.EntityPanel;
 import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.demos.schemabrowser.beans.ColumnConstraintModel;
 
-import java.util.Arrays;
-import java.util.List;
-
 public class ConstraintPanel extends EntityPanel {
 
   public ConstraintPanel(final EntityModel model) {
     super(model, "Constraints", false);
+    addDetailPanel(new EntityPanelProvider(ColumnConstraintModel.class, ColumnConstraintPanel.class));
   }
 
   @Override
   protected void initialize() {
     getTablePanel().setSearchPanelVisible(true);
-  }
-
-  @Override
-  protected List<EntityPanelProvider> getDetailPanelProviders() {
-    return Arrays.asList(new EntityPanelProvider(ColumnConstraintModel.class, ColumnConstraintPanel.class));
   }
 
   @Override

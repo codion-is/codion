@@ -14,8 +14,6 @@ import org.jminor.framework.demos.petstore.beans.ItemModel;
 import static org.jminor.framework.demos.petstore.domain.Petstore.*;
 
 import javax.swing.JTextField;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * User: Bjorn Darri
@@ -26,11 +24,7 @@ public class ProductPanel extends EntityPanel {
 
   public ProductPanel(final EntityModel model) {
     super(model, "Product", true, false, EMBEDDED, true);
-  }
-
-  @Override
-  protected List<EntityPanelProvider> getDetailPanelProviders() {
-    return Arrays.asList(new EntityPanelProvider(ItemModel.class, ItemPanel.class));
+    addDetailPanel(new EntityPanelProvider(ItemModel.class, ItemPanel.class));
   }
 
   @Override

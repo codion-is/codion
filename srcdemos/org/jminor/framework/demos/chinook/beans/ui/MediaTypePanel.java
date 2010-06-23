@@ -13,8 +13,6 @@ import static org.jminor.framework.demos.chinook.domain.Chinook.MEDIATYPE_NAME;
 
 import javax.swing.JTextField;
 import java.awt.GridLayout;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * User: Björn Darri
@@ -25,6 +23,7 @@ public class MediaTypePanel extends EntityPanel {
 
   public MediaTypePanel(final EntityModel model) {
     super(model);
+    addDetailPanel(new EntityPanelProvider(TrackModel.class, TrackPanel.class));
   }
 
   @Override
@@ -44,10 +43,5 @@ public class MediaTypePanel extends EntityPanel {
         add(createPropertyPanel(MEDIATYPE_NAME, txtName));
       }
     };
-  }
-
-  @Override
-  protected List<EntityPanelProvider> getDetailPanelProviders() {
-    return Arrays.asList(new EntityPanelProvider(TrackModel.class, TrackPanel.class));
   }
 }

@@ -13,8 +13,6 @@ import org.jminor.framework.demos.petstore.beans.TagItemModel;
 import static org.jminor.framework.demos.petstore.domain.Petstore.TAG_TAG;
 
 import javax.swing.JTextField;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * User: Bjorn Darri
@@ -25,11 +23,7 @@ public class TagPanel extends EntityPanel {
 
   public TagPanel(final EntityModel model) {
     super(model, "Tags");
-  }
-
-  @Override
-  protected List<EntityPanelProvider> getDetailPanelProviders() {
-    return Arrays.asList(new EntityPanelProvider(TagItemModel.class, TagItemPanel.class));
+    addDetailPanel(new EntityPanelProvider(TagItemModel.class, TagItemPanel.class));
   }
 
   @Override

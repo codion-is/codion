@@ -13,8 +13,6 @@ import static org.jminor.framework.demos.chinook.domain.Chinook.ARTIST_NAME;
 
 import javax.swing.JTextField;
 import java.awt.GridLayout;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * User: Björn Darri
@@ -25,6 +23,7 @@ public class ArtistPanel extends EntityPanel {
 
   public ArtistPanel(final EntityModel model) {
     super(model);
+    addDetailPanel(new EntityPanelProvider(AlbumModel.class, AlbumPanel.class));
   }
 
   @Override
@@ -39,11 +38,6 @@ public class ArtistPanel extends EntityPanel {
         add(createPropertyPanel(ARTIST_NAME, txtName));
       }
     };
-  }
-
-  @Override
-  protected List<EntityPanelProvider> getDetailPanelProviders() {
-    return Arrays.asList(new EntityPanelProvider(AlbumModel.class, AlbumPanel.class));
   }
 
   @Override

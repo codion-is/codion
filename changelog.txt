@@ -1746,3 +1746,5 @@
   EntityModel.initializeDetailModels() remove
   EntityModel constructor overloaded with EntityEditModel/EntityTableModel parameters
   EntityModel.initializeTableModel/EditModel() removed
+  EntityPanel.addDetailPanel(s)() added
+  EntityPanel.initializeDetailPanels() and getDetailPanelProviders() removed

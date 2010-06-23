@@ -18,8 +18,6 @@ import org.jminor.framework.demos.petstore.beans.TagItemModel;
 import static org.jminor.framework.demos.petstore.domain.Petstore.*;
 
 import javax.swing.JTextField;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * User: Bjorn Darri
@@ -30,11 +28,7 @@ public class ItemPanel extends EntityPanel {
 
   public ItemPanel(final EntityModel model) {
     super(model, "Item", true, false, HIDDEN);
-  }
-
-  @Override
-  protected List<EntityPanelProvider> getDetailPanelProviders() {
-    return Arrays.asList(new EntityPanelProvider(TagItemModel.class, TagItemPanel.class));
+    addDetailPanel(new EntityPanelProvider(TagItemModel.class, TagItemPanel.class));
   }
 
   @Override

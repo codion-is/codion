@@ -15,8 +15,6 @@ import org.jminor.framework.demos.chinook.beans.InvoiceModel;
 import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 
 import javax.swing.JTextField;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * User: Björn Darri
@@ -27,6 +25,7 @@ public class CustomerPanel extends EntityPanel {
 
   public CustomerPanel(final EntityModel model) {
     super(model);
+    addDetailPanel(new EntityPanelProvider(InvoiceModel.class, InvoicePanel.class));
   }
 
   @Override
@@ -74,10 +73,5 @@ public class CustomerPanel extends EntityPanel {
         add(createPropertyPanel(CUSTOMER_SUPPORTREPID_FK, boxEmp));
       }
     };
-  }
-
-  @Override
-  protected List<EntityPanelProvider> getDetailPanelProviders() {
-    return Arrays.asList(new EntityPanelProvider(InvoiceModel.class, InvoicePanel.class));
   }
 }

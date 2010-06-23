@@ -12,25 +12,19 @@ import org.jminor.framework.demos.schemabrowser.beans.ColumnModel;
 import org.jminor.framework.demos.schemabrowser.beans.ConstraintModel;
 
 import java.awt.Dimension;
-import java.util.Arrays;
-import java.util.List;
 
 public class DbObjectPanel extends EntityPanel {
 
   public DbObjectPanel(final EntityModel model) {
     super(model, "Tables", false, false, EMBEDDED);
+    addDetailPanels(
+            new EntityPanelProvider(ColumnModel.class, ColumnPanel.class),
+            new EntityPanelProvider(ConstraintModel.class, ConstraintPanel.class));
   }
 
   @Override
   protected void initialize() {
     getTablePanel().setSearchPanelVisible(true);
-  }
-
-  @Override
-  protected List<EntityPanelProvider> getDetailPanelProviders() {
-    return Arrays.asList(
-            new EntityPanelProvider(ColumnModel.class, ColumnPanel.class),
-            new EntityPanelProvider(ConstraintModel.class, ConstraintPanel.class));
   }
 
   @Override

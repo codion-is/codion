@@ -57,6 +57,7 @@ import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -103,7 +104,7 @@ public abstract class EntityPanel extends JPanel {
   /**
    * A List containing the detail panels, if any
    */
-  private final List<EntityPanel> detailEntityPanels;
+  private final List<EntityPanel> detailEntityPanels = new ArrayList<EntityPanel>();
 
   /**
    * The EntityEditPanel instance
@@ -255,7 +256,6 @@ public abstract class EntityPanel extends JPanel {
     this.refreshOnInit = refreshOnInit;
     this.buttonPlacement = horizontalButtons ? BorderLayout.SOUTH : BorderLayout.EAST;
     this.detailPanelState = detailPanelState;
-    this.detailEntityPanels = new ArrayList<EntityPanel>(initializeDetailPanels());
     this.compactDetailLayout = compactDetailLayout && this.detailEntityPanels.size() > 0;
     getEditModel().stateActive().eventStateChanged().addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
@@ -288,6 +288,32 @@ public abstract class EntityPanel extends JPanel {
    */
   public EntityPanel getMasterPanel() {
     return masterPanel;
+  }
+
+  public void addDetailPanels(final EntityPanelProvider... detailEntityPanelProviders) {
+    for (final EntityPanelProvider detailPanelProvider : detailEntityPanelProviders) {
+      addDetailPanel(detailPanelProvider);
+    }
+  }
+
+  public EntityPanel addDetailPanel(final EntityPanelProvider detailPanelProvider) {
+    final EntityModel detailModel = model.getDetailModel(detailPanelProvider.getModelClass());
+    if (detailModel == null) {
+      throw new RuntimeException("Detail model of type " + detailPanelProvider.getModelClass()
+              + " not found in model of type " + model.getClass());
+    }
+
+    return addDetailPanel(createInstance(detailPanelProvider, detailModel));
+  }
+
+  public EntityPanel addDetailPanel(final EntityPanel detailPanel) {
+    if (panelInitialized) {
+      throw new RuntimeException("Can not add detail panel after initialization");
+    }
+    detailPanel.masterPanel = this;
+    detailEntityPanels.add(detailPanel);
+
+    return detailPanel;
   }
 
   /**
@@ -375,11 +401,10 @@ public abstract class EntityPanel extends JPanel {
   }
 
   /**
-   * @return a List containing the detail EntityPanels, if any
-   * @see #initializeDetailPanels()
+   * @return an unmodifiable list containing the detail EntityPanels, if any
    */
   public List<EntityPanel> getDetailPanels() {
-    return new ArrayList<EntityPanel>(detailEntityPanels);
+    return Collections.unmodifiableList(detailEntityPanels);
   }
 
   /**
@@ -963,37 +988,6 @@ public abstract class EntityPanel extends JPanel {
    * Override to add code that should be called during the initialization routine after the UI has been initialized
    */
   protected void initialize() {}
-
-  /**
-   * Instantiates the detail panels according to the result of <code>getDetailPanelProviders</code> method.
-   * This method should return an empty List instead of null if overridden.
-   * This method is responsible for setting the master panel value of the returned detail panels
-   * @return a List containing the detail EntityPanels
-   * @see #setMasterPanel(EntityPanel)
-   */
-  protected List<? extends EntityPanel> initializeDetailPanels() {
-    final List<EntityPanel> detailPanels = new ArrayList<EntityPanel>();
-    for (final EntityPanelProvider detailPanelProvider : getDetailPanelProviders()) {
-      final EntityModel detailModel = model.getDetailModel(detailPanelProvider.getModelClass());
-      if (detailModel == null) {
-        throw new RuntimeException("Detail model of type " + detailPanelProvider.getModelClass()
-                + " not found in model of type " + model.getClass());
-      }
-      final EntityPanel detailPanel = createInstance(detailPanelProvider, detailModel);
-      detailPanel.masterPanel = this;
-      detailPanels.add(detailPanel);
-    }
-
-    return detailPanels;
-  }
-
-  /**
-   * This method should return an empty List instead of null if overridden.
-   * @return a list of EntityPanelProvider objects, specifying the detail panels this panel should contain
-   */
-  protected List<EntityPanelProvider> getDetailPanelProviders() {
-    return new ArrayList<EntityPanelProvider>(0);
-  }
 
   /**
    * Returns a ControlSet containing the detail panel controls, if no detail
