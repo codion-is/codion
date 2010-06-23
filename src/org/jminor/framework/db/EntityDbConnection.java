@@ -425,8 +425,8 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
 
     final Set<Dependency> dependencies = resolveEntityDependencies(entities.get(0).getEntityID());
     for (final Dependency dependency : dependencies) {
-      final List<Entity> dependentEntities = selectMany(new EntitySelectCriteria(dependency.entityID,
-              new EntityKeyCriteria(dependency.foreignKeyProperties, EntityUtil.getPrimaryKeys(entities))));
+      final List<Entity> dependentEntities = selectMany(new EntitySelectCriteria(dependency.getEntityID(),
+              new EntityKeyCriteria(dependency.getForeignKeyProperties(), EntityUtil.getPrimaryKeys(entities))));
       if (dependentEntities.size() > 0) {
         dependencyMap.put(dependency.entityID, dependentEntities);
       }
@@ -976,12 +976,20 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   }
 
   private static class Dependency {
-    final String entityID;
-    final List<Property> foreignKeyProperties;
+    private final String entityID;
+    private final List<Property> foreignKeyProperties;
 
     Dependency(final String entityID, final List<Property> foreignKeyProperties) {
       this.entityID = entityID;
       this.foreignKeyProperties = foreignKeyProperties;
+    }
+
+    public String getEntityID() {
+      return entityID;
+    }
+
+    public List<Property> getForeignKeyProperties() {
+      return foreignKeyProperties;
     }
   }
 }

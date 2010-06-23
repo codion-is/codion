@@ -1,10 +1,9 @@
 package org.jminor.common.ui.combobox;
 
-import org.jminor.common.ui.UiUtil;
-
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
+import javax.swing.JScrollBar;
 import javax.swing.plaf.basic.BasicComboPopup;
 import javax.swing.plaf.basic.ComboPopup;
 import javax.swing.plaf.metal.MetalComboBoxUI;
@@ -79,7 +78,7 @@ public class SteppedComboBox extends JComboBox {
             final Dimension popupSize = ((SteppedComboBox)comboBox).getPopupSize(getDisplaySize());
             popupSize.setSize(popupSize.width, getPopupHeightForRowCount(comboBox.getMaximumRowCount()));
             final Rectangle popupBounds = computePopupBounds(0, comboBox.getBounds().height,
-                    popupSize.width + UiUtil.getPreferredScrollBarWidth(), popupSize.height);
+                    popupSize.width + new JScrollBar(JScrollBar.VERTICAL).getWidth(), popupSize.height);
             scroller.setMaximumSize(popupBounds.getSize());
             scroller.setPreferredSize(popupBounds.getSize());
             scroller.setMinimumSize(popupBounds.getSize());

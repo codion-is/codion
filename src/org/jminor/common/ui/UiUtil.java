@@ -43,7 +43,7 @@ import java.util.Timer;
 /**
  * A static utility class.
  */
-public class UiUtil {
+public final class UiUtil {
 
   public static final Cursor WAIT_CURSOR = new Cursor(Cursor.WAIT_CURSOR);
   public static final Cursor DEFAULT_CURSOR = new Cursor(Cursor.DEFAULT_CURSOR);

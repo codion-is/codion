@@ -260,7 +260,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   }
 
   /** {@inheritDoc} */
-  public void beginTransaction() throws IllegalStateException, RemoteException {
+  public void beginTransaction() throws RemoteException {
     try {
       loggingEntityDbProxy.beginTransaction();
     }
@@ -273,7 +273,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   }
 
   /** {@inheritDoc} */
-  public void commitTransaction() throws IllegalStateException, SQLException, RemoteException {
+  public void commitTransaction() throws SQLException, RemoteException {
     try {
       loggingEntityDbProxy.commitTransaction();
     }
@@ -289,7 +289,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   }
 
   /** {@inheritDoc} */
-  public void rollbackTransaction() throws IllegalStateException, SQLException, RemoteException {
+  public void rollbackTransaction() throws SQLException, RemoteException {
     try {
       loggingEntityDbProxy.rollbackTransaction();
     }
@@ -696,7 +696,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
       this.remoteAdapter = remoteAdapter;
     }
 
-    public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
+    public Object invoke(final Object proxy, final Method method, final Object[] args) throws Exception {
       RequestCounter.requestsPerSecondCounter++;
       final String methodName = method.getName();
       Throwable ex = null;
@@ -720,7 +720,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
       catch (InvocationTargetException ie) {
         LOG.error(this, ie);
         ex = ie.getCause();
-        throw ie.getTargetException();
+        throw (Exception) ie.getTargetException();
       }
       finally {
         try {
@@ -815,6 +815,8 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     static int warningThreshold = 60;
     static int warningTimeExceededPerSecond = 0;
     static int warningTimeExceededCounter = 0;
+
+    private RequestCounter() {}
 
     static void updateRequestsPerSecond() {
       final long current = System.currentTimeMillis();

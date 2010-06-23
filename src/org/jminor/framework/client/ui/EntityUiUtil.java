@@ -69,7 +69,7 @@ import java.util.List;
 /**
  * A static utility class concerned with UI related tasks.
  */
-public class EntityUiUtil {
+public final class EntityUiUtil {
 
   private EntityUiUtil() {}
 
@@ -799,7 +799,7 @@ public class EntityUiUtil {
 
   public static class EntityFieldPanel extends JPanel {
 
-    final JTextField textField;
+    private final JTextField textField;
 
     public EntityFieldPanel(final Property.ForeignKeyProperty foreignKeyProperty,
                             final EntityEditModel editModel, final EntityTableModel lookupModel) {

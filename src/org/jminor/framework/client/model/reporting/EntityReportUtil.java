@@ -17,7 +17,7 @@ import java.util.Map;
  * Date: 30.7.2009<br>
  * Time: 17:58:09<br>
  */
-public class EntityReportUtil {
+public final class EntityReportUtil {
 
   private EntityReportUtil() {}
 

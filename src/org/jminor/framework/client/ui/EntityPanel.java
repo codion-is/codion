@@ -15,7 +15,6 @@ import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlSet;
 import org.jminor.common.ui.images.Images;
 import org.jminor.common.ui.reports.ReportUIWrapper;
-import org.jminor.common.ui.valuemap.ValueChangeMapEditPanel;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityModel;
@@ -665,7 +664,7 @@ public abstract class EntityPanel extends JPanel {
   /**
    * @return a list of properties to use when selecting a input component in the edit panel,
    * by default this returns all the properties that have mapped enabled components in the edit panel.
-   * @see ValueChangeMapEditPanel#setComponent(Object, javax.swing.JComponent)
+   * @see org.jminor.common.ui.valuemap.ValueChangeMapEditPanel#setComponent(Object, javax.swing.JComponent)
    */
   protected List<Property> getSelectComponentProperties() {
     final EntityEditPanel entityEditPanel = getEditPanel();
