@@ -177,32 +177,6 @@ public class EntityModel {
   }
 
   /**
-   * Adds the given detail models to this model.
-   * @param detailModels the detail models to add
-   */
-  public void addDetailModels(final EntityModel... detailModels) {
-    Util.rejectNullValue(detailModels);
-    for (final EntityModel detailModel : detailModels) {
-      addDetailModel(detailModel);
-    }
-  }
-
-  /**
-   * Adds the given detail model to this model
-   * @param detailModel the detail model
-   * @return the detail model just added
-   */
-  public EntityModel addDetailModel(final EntityModel detailModel) {
-    this.detailModels.add(detailModel);
-    detailModel.masterModel = this;
-    if (detailModel.containsTableModel()) {
-      detailModel.tableModel.setDetailModel(true);
-    }
-
-    return detailModel;
-  }
-
-  /**
    * @return the ID of the entity this model represents
    */
   public String getEntityID() {
@@ -302,6 +276,32 @@ public class EntityModel {
    */
   public boolean containsTableModel() {
     return tableModel != null;
+  }
+
+  /**
+   * Adds the given detail models to this model.
+   * @param detailModels the detail models to add
+   */
+  public void addDetailModels(final EntityModel... detailModels) {
+    Util.rejectNullValue(detailModels);
+    for (final EntityModel detailModel : detailModels) {
+      addDetailModel(detailModel);
+    }
+  }
+
+  /**
+   * Adds the given detail model to this model
+   * @param detailModel the detail model
+   * @return the detail model just added
+   */
+  public EntityModel addDetailModel(final EntityModel detailModel) {
+    this.detailModels.add(detailModel);
+    detailModel.masterModel = this;
+    if (detailModel.containsTableModel()) {
+      detailModel.tableModel.setDetailModel(true);
+    }
+
+    return detailModel;
   }
 
   /**
