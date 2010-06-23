@@ -231,10 +231,6 @@ public abstract class EntityPanel extends JPanel {
     return masterPanel;
   }
 
-  public boolean isCompactDetailLayout() {
-    return compactDetailLayout;
-  }
-
   public String getControlPanelConstraints() {
     return controlPanelConstraints;
   }
@@ -245,6 +241,10 @@ public abstract class EntityPanel extends JPanel {
     }
     this.controlPanelConstraints = controlPanelConstraints;
     return this;
+  }
+
+  public boolean isCompactDetailLayout() {
+    return compactDetailLayout;
   }
 
   /**
@@ -278,6 +278,11 @@ public abstract class EntityPanel extends JPanel {
     return this;
   }
 
+  /**
+   * Adds the detail panel provided by the given detail panel provider
+   * @param detailPanelProvider the detail panel provider
+   * @return the detail panel just added
+   */
   public EntityPanel addDetailPanel(final EntityPanelProvider detailPanelProvider) {
     final EntityModel detailModel = model.getDetailModel(detailPanelProvider.getModelClass());
     if (detailModel == null) {
@@ -288,6 +293,11 @@ public abstract class EntityPanel extends JPanel {
     return addDetailPanel(createInstance(detailPanelProvider, detailModel));
   }
 
+  /**
+   * Adds the given detail panel
+   * @param detailPanel the detail panel to add
+   * @return the detail panel just added
+   */
   public EntityPanel addDetailPanel(final EntityPanel detailPanel) {
     if (panelInitialized) {
       throw new RuntimeException("Can not add detail panel after initialization");
