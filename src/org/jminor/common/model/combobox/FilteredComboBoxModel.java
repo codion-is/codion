@@ -154,6 +154,13 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
     fireContentsChanged();
   }
 
+  public boolean containsItem(final Object item) {
+    if (item == null) {
+      return nullValueString != null;
+    }
+    return visibleItems.contains(item);
+  }
+
   /**
    * @return the String representing the null value, null if none has been specified
    */

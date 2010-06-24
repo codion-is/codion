@@ -463,7 +463,7 @@
         <path refid="lib.client.remote"/>
       </classpath>
       <jvmarg value="-Djminor.client.connectionType=remote"/>
-      <jvmarg value="-Djminor.server.hostname=localhost"/>
+      <jvmarg value="-Djminor.server.hostname=stofusofi.fiskistofa.is"/>
       <jvmarg value="-Djminor.report.path=resources/demos/empdept/reports/"/>
       <jvmarg value="-Djavax.net.ssl.trustStore=${basedir}/resources/security/JMinorClientTruststore"/>
       <jvmarg value="-Djava.security.policy=${basedir}/resources/security/jminor_client.policy"/>

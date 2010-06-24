@@ -386,10 +386,6 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
    * underlying entity, for performing an update on the selected entities
    */
   public ControlSet getUpdateSelectedControlSet() {
-    final EntityEditModel editModel = getTableModel().getEditModel();
-    if (editModel == null) {
-      throw new RuntimeException("No edit model found in table model: " + getTableModel());
-    }
     final State enabled = new AggregateState(AggregateState.Type.AND,
             getTableModel().stateAllowMultipleUpdate(),
             getTableModel().stateSelectionEmpty().getReversedState());
@@ -400,7 +396,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
       final String caption = property.getCaption() == null ? property.getPropertyID() : property.getCaption();
       controlSet.add(UiUtil.linkToEnabledState(enabled, new AbstractAction(caption) {
         public void actionPerformed(final ActionEvent e) {
-          updateSelectedEntities(property, editModel);
+          updateSelectedEntities(property);
         }
       }));
     }
@@ -463,13 +459,12 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
   /**
    * Queries the user on which property to update, after which it calls the
    * <code>updateSelectedEntities(property)</code> with that property
-   * @param editModel the edit model for performing the actual update
-   * @see #updateSelectedEntities(org.jminor.framework.domain.Property, org.jminor.framework.client.model.EntityEditModel)
-   * @see #getInputProvider(org.jminor.framework.domain.Property, java.util.List, org.jminor.framework.client.model.EntityEditModel)
+   * @see #updateSelectedEntities(org.jminor.framework.domain.Property)
+   * @see #getInputProvider(org.jminor.framework.domain.Property, java.util.List)
    */
-  public void updateSelectedEntities(final EntityEditModel editModel) {
+  public void updateSelectedEntities() {
     try {
-      updateSelectedEntities(getPropertyToUpdate(), editModel);
+      updateSelectedEntities(getPropertyToUpdate());
     }
     catch (CancelException e) {/**/}
   }
@@ -477,10 +472,9 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
   /**
    * Retrieves a new property value via input dialog and performs an update on the selected entities
    * @param propertyToUpdate the property to update
-   * @param editModel the edit model for performing the actual update
-   * @see #getInputProvider(org.jminor.framework.domain.Property, java.util.List, org.jminor.framework.client.model.EntityEditModel)
+   * @see #getInputProvider(org.jminor.framework.domain.Property, java.util.List)
    */
-  public void updateSelectedEntities(final Property propertyToUpdate, final EntityEditModel editModel) {
+  public void updateSelectedEntities(final Property propertyToUpdate) {
     if (getTableModel().stateSelectionEmpty().isActive()) {
       return;
     }
@@ -491,14 +485,14 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     }
 
     final InputProviderPanel inputPanel = new InputProviderPanel(propertyToUpdate.getCaption(),
-            getInputProvider(propertyToUpdate, selectedEntities, editModel));
+            getInputProvider(propertyToUpdate, selectedEntities));
     UiUtil.showInDialog(this, inputPanel, true, FrameworkMessages.get(FrameworkMessages.SET_PROPERTY_VALUE),
             null, inputPanel.getOkButton(), inputPanel.eventButtonClicked());
     if (inputPanel.isEditAccepted()) {
       EntityUtil.setPropertyValue(propertyToUpdate.getPropertyID(), inputPanel.getValue(), selectedEntities);
       try {
         UiUtil.setWaitCursor(true, this);
-        editModel.update(selectedEntities);
+        getTableModel().update(selectedEntities);
       }
       catch (RuntimeException re) {
         throw re;
@@ -540,14 +534,10 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
    * @throws org.jminor.common.model.CancelException in the delete action is cancelled
    */
   public void delete() throws DbException, CancelException {
-    final EntityEditModel editModel = getTableModel().getEditModel();
-    if (editModel == null) {
-      throw new RuntimeException("No edit model found in table model: " + getTableModel());
-    }
     if (confirmDelete()) {
       try {
         UiUtil.setWaitCursor(true, this);
-        editModel.delete(getTableModel().getSelectedItems());
+        getTableModel().deleteSelected();
       }
       finally {
         UiUtil.setWaitCursor(false, this);
@@ -1144,13 +1134,11 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
    * Remember to return with a call to super.getInputProviderInputProvider().
    * @param property the property for which to get the InputProvider
    * @param toUpdate the entities that are about to be updated
-   * @param editModel the edit model involved in the updating
    * @return the InputProvider handling input for <code>property</code>
    * @see #updateSelectedEntities
    */
   @SuppressWarnings({"UnusedDeclaration"})
-  protected InputProvider getInputProvider(final Property property, final List<Entity> toUpdate,
-                                           final EntityEditModel editModel) {
+  protected InputProvider getInputProvider(final Property property, final List<Entity> toUpdate) {
     final Collection<Object> values = EntityUtil.getDistinctPropertyValues(toUpdate, property.getPropertyID());
     final Object currentValue = values.size() == 1 ? values.iterator().next() : null;
     if (property instanceof Property.ValueListProperty) {
@@ -1172,10 +1160,10 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
       return new BooleanInputProvider((Boolean) currentValue);
     }
     if (property.isString()) {
-      return new TextInputProvider(property.getCaption(), editModel.getValueProvider(property), (String) currentValue);
+      return new TextInputProvider(property.getCaption(), getTableModel().getEditModel().getValueProvider(property), (String) currentValue);
     }
     if (property.isReference()) {
-      return createEntityInputProvider((Property.ForeignKeyProperty) property, (Entity) currentValue, editModel);
+      return createEntityInputProvider((Property.ForeignKeyProperty) property, (Entity) currentValue, getTableModel().getEditModel());
     }
 
     throw new IllegalArgumentException("Unsupported property type: " + property.getType());

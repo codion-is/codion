@@ -69,6 +69,23 @@ public class EntityModelTest {
     departmentModel.refresh();
     assertTrue(departmentModel.getDetailModel(EmployeeModel.class).getTableModel().getRowCount() > 0);
     assertEquals(2, eventCount);
+
+    try {
+      departmentModel.getDbProvider().getEntityDb().beginTransaction();
+      final Entity department = departmentModel.getDbProvider().getEntityDb().selectSingle(
+              EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "OPERATIONS");
+      departmentModel.getTableModel().setSelectedItem(department);
+      final EntityModel employeeModel = departmentModel.getDetailModel(EmployeeModel.class);
+      final EntityComboBoxModel comboBoxModel = employeeModel.getEditModel().initializeEntityComboBoxModel(EmpDept.EMPLOYEE_DEPARTMENT_FK);
+      comboBoxModel.refresh();
+      comboBoxModel.setSelectedItem(department);
+      departmentModel.getTableModel().deleteSelected();
+      assertEquals(3, employeeModel.getEditModel().getEntityComboBoxModel(EmpDept.EMPLOYEE_DEPARTMENT_FK).getSize());
+      assertNotNull(employeeModel.getEditModel().getEntityComboBoxModel(EmpDept.EMPLOYEE_DEPARTMENT_FK).getSelectedEntity());
+    }
+    finally {
+      departmentModel.getDbProvider().getEntityDb().rollbackTransaction();
+    }
   }
 
   @Test

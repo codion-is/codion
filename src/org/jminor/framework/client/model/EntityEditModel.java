@@ -293,7 +293,7 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
   }
 
   /**
-   * Performs an insert on the given entities
+   * Performs an insert on the given entities, returns silently on recieving an empty list
    * @param entities the entities to insert
    * @throws DbException in case of a database exception
    * @throws CancelException in case the user cancels the operation
@@ -304,6 +304,9 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
    */
   public final void insert(final List<Entity> entities) throws CancelException, DbException, ValidationException {
     Util.rejectNullValue(entities);
+    if (entities.size() == 0) {
+      return;
+    }
     if (isReadOnly()) {
       throw new RuntimeException("This is a read-only model, inserting is not allowed!");
     }
@@ -333,7 +336,8 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
   }
 
   /**
-   * Updates the given Entities. If the entities are unmodified this method returns silently.
+   * Updates the given Entities. If the entities are unmodified or the list is empty
+   * this method returns silently.
    * @param entities the Entities to update
    * @throws DbException in case of a database exception
    * @throws CancelException in case the user cancels the operation
@@ -345,6 +349,9 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
    */
   public final void update(final List<Entity> entities) throws DbException, CancelException, ValidationException {
     Util.rejectNullValue(entities);
+    if (entities.size() == 0) {
+      return;
+    }
     if (isReadOnly()) {
       throw new RuntimeException("This is a read-only model, updating is not allowed!");
     }
@@ -379,7 +386,7 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
   }
 
   /**
-   * Deletes the given entities
+   * Deletes the given entities, returns silently on recieving an empty list
    * @param entities the entities to delete
    * @throws DbException in case of a database exception
    * @throws CancelException in case the user cancels the operation
@@ -388,6 +395,9 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
    */
   public final void delete(final List<Entity> entities) throws DbException, CancelException {
     Util.rejectNullValue(entities);
+    if (entities.size() == 0) {
+      return;
+    }
     if (isReadOnly()) {
       throw new RuntimeException("This is a read-only model, deleting is not allowed!");
     }

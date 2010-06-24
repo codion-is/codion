@@ -258,7 +258,7 @@ public class EntityModel {
   }
 
   /**
-   * @return the EntityEditModel instance used by this ValueChangeMapModel
+   * @return the EntityEditModel instance used by this EntityModel
    */
   public EntityEditModel getEditModel() {
     return editModel;
@@ -272,7 +272,7 @@ public class EntityModel {
   }
 
   /**
-   * @return true if this ValueChangeMapModel contains a TableModel
+   * @return true if this EntityModel contains a TableModel
    */
   public boolean containsTableModel() {
     return tableModel != null;
@@ -544,10 +544,14 @@ public class EntityModel {
           final EntityEditModel detailEditModel = detailModel.editModel;
           if (detailEditModel.containsComboBoxModel(foreignKeyProperty)) {
             final EntityComboBoxModel comboModel = detailEditModel.getEntityComboBoxModel(foreignKeyProperty);
+            final Entity selectedEntity = comboModel.getSelectedEntity();
             for (final Entity deletedEntity : deletedEntities) {
               comboModel.removeItem(deletedEntity);
             }
-            if (comboModel.getSize() > 0) {
+            if (comboModel.containsItem(selectedEntity)) {
+              comboModel.setSelectedItem(selectedEntity);
+            }
+            else if (comboModel.getSize() > 0) {
               comboModel.setSelectedItem(comboModel.getElementAt(0));
             }
             else {

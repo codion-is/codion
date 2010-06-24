@@ -4,12 +4,15 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.db.criteria.Criteria;
+import org.jminor.common.db.exception.DbException;
 import org.jminor.common.model.AbstractFilteredTableModel;
+import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.reports.ReportDataWrapper;
+import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.client.model.event.DeleteEvent;
 import org.jminor.framework.db.EntityDb;
 import org.jminor.framework.db.criteria.EntitySelectCriteria;
@@ -106,6 +109,15 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
     bindEvents();
   }
 
+  /**
+   * Associates the given edit model with this table model, this enables delete/update
+   * functionality via this table model as well as enabling it to
+   * react to delete events in the edit model.
+   * Throws a RuntimeException in case the edit model has been previously set
+   * @param editModel the edit model to associate with this table model
+   * @see #deleteSelected()
+   * @see #update(java.util.List)
+   */
   public void setEditModel(final EntityEditModel editModel) {
     if (this.editModel != null) {
       throw new RuntimeException("Edit model has already been set for table model: " + this);
@@ -186,7 +198,16 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
     return tableSearchModel;
   }
 
+  /**
+   * Returns the edit model associated with this table model,
+   * throws a RuntimeExcption in case no edit model has been associated with this table model
+   * @return the edit model associated with this table model
+   * @see #setEditModel(EntityEditModel)
+   */
   public EntityEditModel getEditModel() {
+    if (editModel == null) {
+      throw new RuntimeException("No edit model has been set for table model: " + this);
+    }
     return editModel;
   }
 
@@ -521,6 +542,20 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
     }
 
     return entities.toArray(new Entity[entities.size()]);
+  }
+
+  public void deleteSelected() throws CancelException, DbException {
+    if (editModel == null) {
+      throw new RuntimeException("No edit model has been set for table model: " + this);
+    }
+     editModel.delete(getSelectedItems());
+  }
+
+  public void update(final List<Entity> entitites) throws CancelException, ValidationException, DbException {
+    if (editModel == null) {
+      throw new RuntimeException("No edit model has been set for table model: " + this);
+    }
+     editModel.update(entitites);
   }
 
   /**

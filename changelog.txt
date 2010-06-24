@@ -1761,3 +1761,6 @@
   EntityPanel.controlPanelConstraints field added
   EntityEditPanel.getControlPanel() renamed to createControlPanel()
   EntityPanel refreshOnInit removed from constructor, added setter
+  EntityTableModel.deleteSelected() and update() added, used in EntityTablePanel
+  EntityModel.refreshDetailModelsAfterDelete() keeps the selected entity in combo box models
+  FilteredComboBoxModel.containsItem() added
