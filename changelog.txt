@@ -1764,3 +1764,7 @@
   EntityTableModel.deleteSelected() and update() added, used in EntityTablePanel
   EntityModel.refreshDetailModelsAfterDelete() keeps the selected entity in combo box models
   FilteredComboBoxModel.containsItem() added
+  FilteredComboBoxModel.isVisible() added
+  ValueMap.getMapTypeID() removed
+  EntityTableModel.fetchCount field added
+  EntityPanel.addDetailPanel(s)(EntityPanelProvider) removed

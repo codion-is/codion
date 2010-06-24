@@ -11,6 +11,7 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
 import java.sql.Timestamp;
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 /**
@@ -113,8 +114,8 @@ public class PropertyFilterModel extends AbstractSearchModel<Property> {
 
     String realValue = value;
     if (!isCaseSensitive()) {
-      upperBound = upperBound.toUpperCase();
-      realValue = realValue.toUpperCase();
+      upperBound = upperBound.toUpperCase(Locale.getDefault());
+      realValue = realValue.toUpperCase(Locale.getDefault());
     }
 
     if (upperBound.indexOf(getWildcard()) < 0) {

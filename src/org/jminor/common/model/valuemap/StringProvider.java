@@ -30,6 +30,8 @@ import java.util.List;
  */
 public class StringProvider<K> implements ValueMap.ToString<K>, Serializable {
 
+  private static final long serialVersionUID = 1;
+
   /**
    * Holds the ValueProviders used when constructing the String representation
    */

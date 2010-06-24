@@ -8,6 +8,7 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.PlainDocument;
+import java.util.Locale;
 
 /**
  * A normal text field that allows setting max number of chars and uppercase.
@@ -103,7 +104,7 @@ public class TextFieldPlus extends JTextField {
           return;
         }
 
-        super.insertString(offs, upperCase ? str.toUpperCase() : str, a);
+        super.insertString(offs, upperCase ? str.toUpperCase(Locale.getDefault()) : str, a);
       }
     };
   }

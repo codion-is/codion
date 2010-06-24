@@ -8,7 +8,6 @@ import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.ui.EntityEditPanel;
 import org.jminor.framework.client.ui.EntityPanel;
-import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.demos.petstore.beans.TagItemModel;
 import static org.jminor.framework.demos.petstore.domain.Petstore.TAG_TAG;
 
@@ -23,7 +22,7 @@ public class TagPanel extends EntityPanel {
 
   public TagPanel(final EntityModel model) {
     super(model, "Tags");
-    addDetailPanel(new EntityPanelProvider(TagItemModel.class, TagItemPanel.class));
+    addDetailPanel(new TagItemPanel(model.getDetailModel(TagItemModel.class)));
   }
 
   @Override

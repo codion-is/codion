@@ -117,7 +117,7 @@ public class DbConnectionPool implements ConnectionPool {
         }
         dbConnection.setPoolTime(System.currentTimeMillis());
         connectionPool.push(dbConnection);
-        connectionPool.notify();
+        connectionPool.notifyAll();
       }
       else {
         disconnect(dbConnection);

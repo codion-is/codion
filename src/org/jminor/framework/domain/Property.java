@@ -738,6 +738,8 @@ public class Property implements Serializable {
    */
   public static class PrimaryKeyProperty extends Property {
 
+    private static final long serialVersionUID = 1;
+
     /**
      * This property's index in the primary key
      */
@@ -776,6 +778,8 @@ public class Property implements Serializable {
    * actual name of the column involved in the reference, but "reference_fk" is simply a descriptive property ID
    */
   public static class ForeignKeyProperty extends Property {
+
+    private static final long serialVersionUID = 1;
 
     private final String referencedEntityID;
 
@@ -894,6 +898,8 @@ public class Property implements Serializable {
   //todo better explanation
   public static class MirrorProperty extends Property {
 
+    private static final long serialVersionUID = 1;
+
     public MirrorProperty(final String propertyID) {
       super(propertyID);
     }
@@ -903,6 +909,8 @@ public class Property implements Serializable {
    * A property representing a column that should get its value automatically from a column in a referenced table
    */
   public static class DenormalizedProperty extends Property {
+
+    private static final long serialVersionUID = 1;
 
     private final String foreignKeyPropertyID;
 
@@ -958,6 +966,8 @@ public class Property implements Serializable {
    */
   public static class ValueListProperty extends Property {
 
+    private static final long serialVersionUID = 1;
+
     private final List<Item<Object>> values;
 
     /**
@@ -1012,6 +1022,8 @@ public class Property implements Serializable {
    */
   public static class TransientProperty extends Property {
 
+    private static final long serialVersionUID = 1;
+
     /**
      * @param propertyID the property ID, since TransientProperties do not map to underlying table columns,
      * the property ID should not be column name, only be unique for this entity
@@ -1065,6 +1077,8 @@ public class Property implements Serializable {
    */
   public static class DerivedProperty extends TransientProperty {
 
+    private static final long serialVersionUID = 1;
+
     private Collection<String> linkedPropertyIDs;
 
     public DerivedProperty(final String propertyID, final int type, final String caption) {
@@ -1104,6 +1118,8 @@ public class Property implements Serializable {
    * display only, and does not map to a database column
    */
   public static class DenormalizedViewProperty extends TransientProperty {
+
+    private static final long serialVersionUID = 1;
 
     private final String foreignKeyPropertyID;
 
@@ -1159,6 +1175,8 @@ public class Property implements Serializable {
    */
   public static class SubqueryProperty extends Property {
 
+    private static final long serialVersionUID = 1;
+
     private final String subquery;
 
     /**
@@ -1203,6 +1221,8 @@ public class Property implements Serializable {
    * are used for representing boolean values in different systems
    */
   public static class BooleanProperty extends Property {
+
+    private static final long serialVersionUID = 1;
 
     private final int columnType;
     /**
@@ -1293,6 +1313,8 @@ public class Property implements Serializable {
    * A BLOB property, based on two columns, the actual BLOB column and a column containing the name of the BLOB object.
    */
   public static class BlobProperty extends Property {
+
+    private static final long serialVersionUID = 1;
 
     private final String blobColumnName;
 

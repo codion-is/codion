@@ -29,7 +29,7 @@ public class ItemPanel extends EntityPanel {
   public ItemPanel(final EntityModel model) {
     super(model, "Item");
     setDetailPanelState(HIDDEN);
-    addDetailPanel(new EntityPanelProvider(TagItemModel.class, TagItemPanel.class));
+    addDetailPanel(new TagItemPanel(model.getDetailModel(TagItemModel.class)));
   }
 
   @Override

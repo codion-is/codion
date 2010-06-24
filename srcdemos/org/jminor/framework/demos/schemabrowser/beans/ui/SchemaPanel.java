@@ -7,14 +7,13 @@ import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.ui.EntityEditPanel;
 import org.jminor.framework.client.ui.EntityPanel;
-import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.demos.schemabrowser.beans.DbObjectModel;
 
 public class SchemaPanel extends EntityPanel {
 
   public SchemaPanel(final EntityModel model) {
     super(model, "Schema Users");
-    addDetailPanel(new EntityPanelProvider(DbObjectModel.class, DbObjectPanel.class));
+    addDetailPanel(new DbObjectPanel(model.getDetailModel(DbObjectModel.class)));
   }
 
   @Override

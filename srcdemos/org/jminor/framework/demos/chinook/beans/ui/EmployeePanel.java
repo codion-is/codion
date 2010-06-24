@@ -11,7 +11,6 @@ import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.ui.EntityComboBox;
 import org.jminor.framework.client.ui.EntityEditPanel;
 import org.jminor.framework.client.ui.EntityPanel;
-import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.demos.chinook.beans.CustomerModel;
 import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 
@@ -26,7 +25,7 @@ public class EmployeePanel extends EntityPanel {
 
   public EmployeePanel(final EntityModel model) {
     super(model);
-    addDetailPanel(new EntityPanelProvider(CustomerModel.class, CustomerPanel.class));
+    addDetailPanel(new CustomerPanel(model.getDetailModel(CustomerModel.class)));
   }
 
   @Override

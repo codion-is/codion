@@ -228,7 +228,10 @@ public class EntityDefinition implements Serializable {
   }
 
   public List<String> getSearchPropertyIDs() {
-    return searchPropertyIDs;
+    if (searchPropertyIDs == null) {
+      return Collections.emptyList();
+    }
+    return Collections.unmodifiableList(searchPropertyIDs);
   }
 
   public EntityDefinition setSearchPropertyIDs(final String... searchPropertyIDs) {

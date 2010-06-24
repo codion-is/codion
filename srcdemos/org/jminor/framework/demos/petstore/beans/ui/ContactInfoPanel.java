@@ -8,7 +8,6 @@ import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.ui.EntityEditPanel;
 import org.jminor.framework.client.ui.EntityPanel;
-import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.demos.petstore.beans.ItemModel;
 import static org.jminor.framework.demos.petstore.domain.Petstore.*;
 
@@ -23,7 +22,7 @@ public class ContactInfoPanel extends EntityPanel {
 
   public ContactInfoPanel(final EntityModel model) {
     super(model, "Seller Contact Info");
-    addDetailPanel(new EntityPanelProvider(ItemModel.class, ItemPanel.class));
+    addDetailPanel(new ItemPanel(model.getDetailModel(ItemModel.class)));
   }
 
   @Override

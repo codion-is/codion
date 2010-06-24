@@ -7,7 +7,6 @@ import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.ui.EntityEditPanel;
 import org.jminor.framework.client.ui.EntityPanel;
-import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.demos.chinook.beans.AlbumModel;
 import static org.jminor.framework.demos.chinook.domain.Chinook.ARTIST_NAME;
 
@@ -23,7 +22,7 @@ public class ArtistPanel extends EntityPanel {
 
   public ArtistPanel(final EntityModel model) {
     super(model);
-    addDetailPanel(new EntityPanelProvider(AlbumModel.class, AlbumPanel.class));
+    addDetailPanel(new AlbumPanel(model.getDetailModel(AlbumModel.class)));
   }
 
   @Override

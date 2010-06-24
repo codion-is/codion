@@ -83,6 +83,11 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
   private boolean isDetailModel = false;
 
   /**
+   * the maximum number of records to fetch via the underlying query, -1 meaning all records should be fetched
+   */
+  private int fetchCount = -1;
+
+  /**
    * If true then querying should be disabled if no criteria is specified
    */
   private boolean queryCriteriaRequired = true;
@@ -152,6 +157,26 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
 
   public void setQueryConfigurationAllowed(final boolean queryConfigurationAllowed) {
     this.queryConfigurationAllowed = queryConfigurationAllowed;
+  }
+
+  /**
+   * Returns the maximum number of records to fetch via the underlying query,
+   * by default this returns -1, meaning all records should be fetched
+   * @return the fetch count
+   */
+  public int getFetchCount() {
+    return fetchCount;
+  }
+
+  /**
+   * Sets the maximum number of records to fetch via the underlying query,
+   * a value of -1 means all records should be fetched
+   * @param fetchCount the fetch count
+   * @return this table model
+   */
+  public EntityTableModel setFetchCount(final int fetchCount) {
+    this.fetchCount = fetchCount;
+    return this;
   }
 
   /**
@@ -677,20 +702,11 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
 
     try {
       return getEntityDb().selectMany(new EntitySelectCriteria(entityID, criteria,
-              EntityRepository.getOrderByClause(entityID), getFetchCount()));
+              EntityRepository.getOrderByClause(entityID), fetchCount));
     }
     catch (Exception e) {
       throw new RuntimeException(e);
     }
-  }
-
-  /**
-   * Returns the maximum number of records to fetch via the underlying query,
-   * by default this returns -1, meaning all records should be fetched
-   * @return the fetch count
-   */
-  protected int getFetchCount() {
-    return -1;
   }
 
   @Override

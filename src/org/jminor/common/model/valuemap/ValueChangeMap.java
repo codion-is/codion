@@ -29,12 +29,6 @@ public interface ValueChangeMap<K, V> extends ValueMap<K, V> {
   Event eventValueChanged();
 
   /**
-   * @return a String identifying the map type, for example a table name.
-   * in case this value map represents a table row or a class name.
-   */
-  String getMapTypeID();
-
-  /**
    * Adds a ActionListener, this listener will be notified each time a value changes,
    * by calling actionPerformed() with a ValueChangeEvent argument.
    * Adding the same listener multiple times has no effect.
@@ -96,9 +90,7 @@ public interface ValueChangeMap<K, V> extends ValueMap<K, V> {
   void saveAll();
 
   /**
-   * @return a new ValueChangeMap instance compatible with this instance,
-   * preferably with a matching mapTypeID.
-   * @see #getMapTypeID()
+   * @return a new ValueChangeMap instance compatible with this instance
    */
   ValueChangeMap<K, V> getInstance();
 

@@ -16,6 +16,8 @@ import java.util.Map;
  */
 public class EntitySelectCriteria extends EntityCriteria {
 
+  private static final long serialVersionUID = 1;
+
   private final int fetchCount;
   private final String orderByClause;
   private int currentFetchDepth = 0;

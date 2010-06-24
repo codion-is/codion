@@ -704,7 +704,7 @@ public class DbConnection {
 
     private void updateQueriesPerSecond() {
       final long current = System.currentTimeMillis();
-      final double seconds = (current - queriesPerSecondTime)/ 1000;
+      final double seconds = (current - queriesPerSecondTime) / 1000d;
       if (seconds > 5) {
         queriesPerSecond = (int) (queriesPerSecondCounter / (double) seconds);
         selectsPerSecond = (int) (selectsPerSecondCounter / (double) seconds);

@@ -548,7 +548,7 @@ public class EntityModel {
             for (final Entity deletedEntity : deletedEntities) {
               comboModel.removeItem(deletedEntity);
             }
-            if (comboModel.containsItem(selectedEntity)) {
+            if (comboModel.isVisible(selectedEntity)) {
               comboModel.setSelectedItem(selectedEntity);
             }
             else if (comboModel.getSize() > 0) {
@@ -639,19 +639,22 @@ public class EntityModel {
   protected void bindTableModelEvents() {}
 
   private void bindEventsInternal() {
-    editModel.eventAfterInsert().addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent e) {
-        handleInsert((InsertEvent) e);
+    editModel.eventAfterInsert().addListener(new AbstractListener<InsertEvent>() {
+      @Override
+      public void actionPerformed(final InsertEvent event) {
+        handleInsert(event);
       }
     });
-    editModel.eventAfterUpdate().addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent e) {
-        handleUpdate((UpdateEvent) e);
+    editModel.eventAfterUpdate().addListener(new AbstractListener<UpdateEvent>() {
+      @Override
+      public void actionPerformed(final UpdateEvent event) {
+        handleUpdate(event);
       }
     });
-    editModel.eventAfterDelete().addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent e) {
-        handleDelete((DeleteEvent) e);
+    editModel.eventAfterDelete().addListener(new AbstractListener<DeleteEvent>() {
+      @Override
+      public void actionPerformed(final DeleteEvent event) {
+        handleDelete(event);
       }
     });
     evtLinkedDetailModelsChanged.addListener(new ActionListener() {
@@ -700,5 +703,13 @@ public class EntityModel {
         }
       }
     });
+  }
+
+  abstract static class AbstractListener<T> implements ActionListener {
+    @SuppressWarnings({"unchecked"})
+    public void actionPerformed(final ActionEvent e) {
+      actionPerformed((T) e);
+    }
+    public abstract void actionPerformed(final T event);
   }
 }

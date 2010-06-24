@@ -39,6 +39,7 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -309,7 +310,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   }
 
   /**
-   * Performs a delete on the active entity or if a table model is available, the selected entities
+   * Performs a delete on the active entity
    * @return true if the delete operation was successful
    */
   public final boolean delete() {
@@ -317,7 +318,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   }
 
   /**
-   * Performs a delete on the active entity or if a table model is available, the selected entities
+   * Performs a delete on the active entity
    * @param confirm if true then confirmDelete() is called
    * @return true if the delete operation was successful
    */
@@ -1457,7 +1458,8 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   protected final EntityLookupField createEntityLookupField(final String foreignKeyPropertyID) {
     final Property.ForeignKeyProperty fkProperty = EntityRepository.getForeignKeyProperty(getEditModel().getEntityID(),
             foreignKeyPropertyID);
-    return createEntityLookupField(fkProperty, EntityRepository.getEntitySearchPropertyIDs(fkProperty.getReferencedEntityID()));
+    final Collection<String> searchPropertyIDs = EntityRepository.getEntitySearchPropertyIDs(fkProperty.getReferencedEntityID());
+    return createEntityLookupField(fkProperty, searchPropertyIDs.toArray(new String[searchPropertyIDs.size()]));
   }
 
   /**
@@ -1471,8 +1473,12 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
                                                             final String... searchPropertyIDs) {
     final Property.ForeignKeyProperty fkProperty = EntityRepository.getForeignKeyProperty(getEditModel().getEntityID(),
             foreignKeyPropertyID);
-    return createEntityLookupField(fkProperty, searchPropertyIDs == null || searchPropertyIDs.length == 0 ?
-            EntityRepository.getEntitySearchPropertyIDs(fkProperty.getReferencedEntityID()) : searchPropertyIDs);
+    if (searchPropertyIDs == null || searchPropertyIDs.length == 0) {
+      final Collection<String> propertyIDs = EntityRepository.getEntitySearchPropertyIDs(fkProperty.getReferencedEntityID());
+      return createEntityLookupField(fkProperty, propertyIDs.toArray(new String[propertyIDs.size()]));
+    }
+
+    return createEntityLookupField(fkProperty, searchPropertyIDs);
   }
 
   /**

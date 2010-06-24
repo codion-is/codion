@@ -961,8 +961,9 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
     else {
       stringBuilder.append(event.isModelChange() ? "[model] " : "[ui] ");
     }
-    final Property property = EntityRepository.getProperty(event.getValueOwnerTypeID(), event.getKey());
-    stringBuilder.append(event.getValueOwnerTypeID()).append(" : ").append(property).append(
+    final Entity valueOwner = (Entity) event.getValueOwner();
+    final Property property = EntityRepository.getProperty(valueOwner.getEntityID(), event.getKey());
+    stringBuilder.append(valueOwner.getEntityID()).append(" : ").append(property).append(
             property.hasParentProperty() ? " [fk]" : "").append("; ");
     if (!event.isInitialization()) {
       if (!event.isOldValueNull()) {

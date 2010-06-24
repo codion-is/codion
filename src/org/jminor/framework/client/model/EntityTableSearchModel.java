@@ -381,7 +381,7 @@ public class EntityTableSearchModel implements FilterCriteria<Entity> {
   }
 
   private List<Property> getSearchProperties(final String entityID) {
-    final String[] searchPropertyIDs = EntityRepository.getEntitySearchPropertyIDs(entityID);
+    final Collection<String> searchPropertyIDs = EntityRepository.getEntitySearchPropertyIDs(entityID);
 
     return searchPropertyIDs == null ? getStringProperties(entityID) : EntityRepository.getProperties(entityID, searchPropertyIDs);
   }

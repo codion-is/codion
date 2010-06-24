@@ -621,7 +621,7 @@ public abstract class LoadTestModel {
 
     public void updateRequestsPerSecond() {
       final long current = System.currentTimeMillis();
-      final double seconds = (current - time)/1000;
+      final double seconds = (current - time) / 1000d;
       if (seconds > 5) {
         workRequestsPerSecond = (int) (workRequestCounter / (double) seconds);
         delayedWorkRequestsPerSecond = (int) (delayedWorkRequestCounter / (double) seconds);

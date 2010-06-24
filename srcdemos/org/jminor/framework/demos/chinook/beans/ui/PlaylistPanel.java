@@ -7,7 +7,6 @@ import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.ui.EntityEditPanel;
 import org.jminor.framework.client.ui.EntityPanel;
-import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.demos.chinook.beans.PlaylistTrackModel;
 import static org.jminor.framework.demos.chinook.domain.Chinook.PLAYLIST_NAME;
 
@@ -23,7 +22,7 @@ public class PlaylistPanel extends EntityPanel {
 
   public PlaylistPanel(final EntityModel model) {
     super(model);
-    addDetailPanel(new EntityPanelProvider(PlaylistTrackModel.class, PlaylistTrackPanel.class));
+    addDetailPanel(new PlaylistTrackPanel(model.getDetailModel(PlaylistTrackModel.class)));
   }
 
   @Override

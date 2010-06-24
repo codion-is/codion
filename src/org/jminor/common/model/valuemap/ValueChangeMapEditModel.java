@@ -84,7 +84,7 @@ public abstract class ValueChangeMapEditModel<K, V> implements Refreshable {
     final V newValue = doSetValue(key, value);
 
     if (!Util.equal(newValue, oldValue)) {
-      notifyValueSet(key, new ValueChangeEvent<K, V>(this, valueMap.getMapTypeID(), key, newValue, oldValue, false, initialization));
+      notifyValueSet(key, new ValueChangeEvent<K, V>(this, valueMap, key, newValue, oldValue, false, initialization));
     }
   }
 

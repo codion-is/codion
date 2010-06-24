@@ -540,7 +540,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
    * @param timeout the number of milliseconds
    * @return true if this connection has been inactive for <code>timeout</code> milliseconds or longer
    */
-  public boolean hasBeenInactive(final long timeout) {
+  public boolean hasBeenInactive(final int timeout) {
     return System.currentTimeMillis() - methodLogger.getLastAccessDate() > timeout;
   }
 
@@ -820,10 +820,10 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
 
     static void updateRequestsPerSecond() {
       final long current = System.currentTimeMillis();
-      final double seconds = (current - requestsPerSecondTime)/1000;
+      final double seconds = (current - requestsPerSecondTime) / 1000d;
       if (seconds > 0) {
-        requestsPerSecond = (int) ((double) requestsPerSecondCounter/seconds);
-        warningTimeExceededPerSecond = (int) ((double) warningTimeExceededCounter/seconds);
+        requestsPerSecond = (int) ((double) requestsPerSecondCounter / seconds);
+        warningTimeExceededPerSecond = (int) ((double) warningTimeExceededCounter / seconds);
         warningTimeExceededCounter = 0;
         requestsPerSecondCounter = 0;
         requestsPerSecondTime = current;

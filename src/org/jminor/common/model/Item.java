@@ -12,6 +12,8 @@ import java.text.Collator;
  */
 public class Item<T> implements Comparable<Item<T>>, Serializable {
 
+  private static final long serialVersionUID = 1;
+
   private static final ThreadLocal<Collator> COLLATOR = Util.getThreadLocalCollator();
 
   private final T item;

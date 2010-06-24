@@ -19,7 +19,7 @@ import java.util.Iterator;
 public class JasperReportsEntityDataSource implements JRDataSource, ReportDataWrapper<JRDataSource> {
 
   private final Iterator<Entity> reportIterator;
-  private Entity currentEntity;
+  private Entity currentEntity = null;
 
   public JasperReportsEntityDataSource(final Iterator<Entity> reportIterator) {
     Util.rejectNullValue(reportIterator);

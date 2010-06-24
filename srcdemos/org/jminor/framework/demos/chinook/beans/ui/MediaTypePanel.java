@@ -7,7 +7,6 @@ import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.ui.EntityEditPanel;
 import org.jminor.framework.client.ui.EntityPanel;
-import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.demos.chinook.beans.TrackModel;
 import static org.jminor.framework.demos.chinook.domain.Chinook.MEDIATYPE_NAME;
 
@@ -23,7 +22,7 @@ public class MediaTypePanel extends EntityPanel {
 
   public MediaTypePanel(final EntityModel model) {
     super(model);
-    addDetailPanel(new EntityPanelProvider(TrackModel.class, TrackPanel.class));
+    addDetailPanel(new TrackPanel(model.getDetailModel(TrackModel.class)));
   }
 
   @Override

@@ -32,13 +32,8 @@ public final class EntityRepository {
    * @return a String array containing the IDs of the properties used as default search properties
    * for entities identified by <code>entityID</code>
    */
-  public static String[] getEntitySearchPropertyIDs(final String entityID) {
-    final List<String> searchPropertyIDs = getEntityDefinition(entityID).getSearchPropertyIDs();
-    if (searchPropertyIDs != null) {
-      return searchPropertyIDs.toArray(new String[searchPropertyIDs.size()]);
-    }
-
-    return null;
+  public static Collection<String> getEntitySearchPropertyIDs(final String entityID) {
+    return getEntityDefinition(entityID).getSearchPropertyIDs();
   }
 
   /**
@@ -48,19 +43,15 @@ public final class EntityRepository {
    * @return the search properties to use
    */
   public static List<Property> getSearchProperties(final String entityID) {
-    final String[] searchPropertyIds = getEntitySearchPropertyIDs(entityID);
-    List<Property> searchProperties;
-    if (searchPropertyIds != null) {
-      searchProperties = getProperties(entityID, searchPropertyIds);
+    final Collection<String> searchPropertyIds = getEntitySearchPropertyIDs(entityID);
+    if (searchPropertyIds.size() > 0) {
+      return getProperties(entityID, searchPropertyIds.toArray(new String[searchPropertyIds.size()]));
     }
-    else {//use all string properties
-      final Collection<Property> properties =
-              getDatabaseProperties(entityID);
-      searchProperties = new ArrayList<Property>();
-      for (final Property property : properties) {
-        if (property.isString()) {
-          searchProperties.add(property);
-        }
+    //use all string properties
+    final List<Property> searchProperties = new ArrayList<Property>();
+    for (final Property property : getDatabaseProperties(entityID)) {
+      if (property.isString()) {
+        searchProperties.add(property);
       }
     }
 
@@ -255,6 +246,17 @@ public final class EntityRepository {
     }
 
     return property;
+  }
+
+  /**
+   * @param entityID the entity ID
+   * @param propertyIDs the property IDs of the properties to retrieve
+   * @return a list containing the properties identified by <code>propertyIDs</code>, found in
+   * the entity identified by <code>entityID</code>
+   */
+  public static List<Property> getProperties(final String entityID, final Collection<String> propertyIDs) {
+    Util.rejectNullValue(propertyIDs);
+    return getProperties(entityID, propertyIDs.toArray(new String[propertyIDs.size()]));
   }
 
   /**

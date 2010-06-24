@@ -1323,8 +1323,8 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
 
   private List<Property> getSearchProperties() {
     final List<Property> searchableProperties = new ArrayList<Property>();
-    final String[] defaultSearchPropertyIDs = EntityRepository.getEntitySearchPropertyIDs(getTableModel().getEntityID());
-    if (defaultSearchPropertyIDs != null) {
+    final Collection<String> defaultSearchPropertyIDs = EntityRepository.getEntitySearchPropertyIDs(getTableModel().getEntityID());
+    if (defaultSearchPropertyIDs.size() > 0) {
       for (final String propertyID : defaultSearchPropertyIDs) {
         searchableProperties.add(EntityRepository.getProperty(getTableModel().getEntityID(), propertyID));
       }

@@ -154,11 +154,32 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
     fireContentsChanged();
   }
 
-  public boolean containsItem(final Object item) {
+  /**
+   * Returns true if the given item is visible in this combo box model,
+   * null values are considered visible if a <code>nullValueString</code>
+   * has been specified.
+   * @param item the item
+   * @return true if the given item is visible
+   */
+  public boolean isVisible(final Object item) {
     if (item == null) {
       return nullValueString != null;
     }
     return visibleItems.contains(item);
+  }
+
+  /**
+   * Returns true if this combo box model contains the given item, visible or filtered.
+   * A null value is considered contained in the model if a <code>nullValueString</code>
+   * has been specified.
+   * @param item the item
+   * @return true if this combo box model contains the item
+   */
+  public boolean contains(final Object item) {
+    if (item == null) {
+      return nullValueString != null;
+    }
+    return visibleItems.contains(item) || filteredItems.contains(item);
   }
 
   /**

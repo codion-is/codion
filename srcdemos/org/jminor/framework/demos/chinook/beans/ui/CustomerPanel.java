@@ -10,7 +10,6 @@ import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.ui.EntityComboBox;
 import org.jminor.framework.client.ui.EntityEditPanel;
 import org.jminor.framework.client.ui.EntityPanel;
-import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.demos.chinook.beans.InvoiceModel;
 import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 
@@ -25,7 +24,7 @@ public class CustomerPanel extends EntityPanel {
 
   public CustomerPanel(final EntityModel model) {
     super(model);
-    addDetailPanel(new EntityPanelProvider(InvoiceModel.class, InvoicePanel.class));
+    addDetailPanel(new InvoicePanel(model.getDetailModel(InvoiceModel.class)));
   }
 
   @Override

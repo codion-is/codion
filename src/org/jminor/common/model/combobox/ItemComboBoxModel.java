@@ -101,6 +101,8 @@ public class ItemComboBoxModel<T> extends DefaultComboBoxModel {
    */
   public static class IconItem<T> extends Item<T> implements Icon {
 
+    private static final long serialVersionUID = 1;
+
     private final ImageIcon icon;
 
     public IconItem(final T item, final ImageIcon icon) {

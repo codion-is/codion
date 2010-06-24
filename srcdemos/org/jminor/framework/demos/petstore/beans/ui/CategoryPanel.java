@@ -8,7 +8,6 @@ import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.ui.EntityEditPanel;
 import org.jminor.framework.client.ui.EntityPanel;
-import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.demos.petstore.beans.ProductModel;
 import static org.jminor.framework.demos.petstore.domain.Petstore.*;
 
@@ -23,7 +22,7 @@ public class CategoryPanel extends EntityPanel {
 
   public CategoryPanel(final EntityModel model) {
     super(model, "Category");
-    addDetailPanel(new EntityPanelProvider(ProductModel.class, ProductPanel.class));
+    addDetailPanel(new ProductPanel(model.getDetailModel(ProductModel.class)));
   }
 
   @Override

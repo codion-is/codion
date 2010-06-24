@@ -237,7 +237,7 @@ public final class UiUtil {
         public Object stringToValue(final String value) throws ParseException {
           String ret = value;
           if (charsAsUpper) {
-            ret = ret.toUpperCase();
+            ret = ret.toUpperCase(Locale.getDefault());
           }
 
           return super.stringToValue(ret);
@@ -463,7 +463,7 @@ public final class UiUtil {
     ((PlainDocument) textField.getDocument()).setDocumentFilter(new DocumentFilter() {
       @Override
       public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
-        super.insertString(fb, offset, string == null ? null : string.toUpperCase(), attr);
+        super.insertString(fb, offset, string == null ? null : string.toUpperCase(Locale.getDefault()), attr);
       }
       @Override
       public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
@@ -471,7 +471,7 @@ public final class UiUtil {
       }
       @Override
       public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
-        super.replace(fb, offset, length, text == null ? null : text.toUpperCase(), attrs);
+        super.replace(fb, offset, length, text == null ? null : text.toUpperCase(Locale.getDefault()), attrs);
       }
     });
 

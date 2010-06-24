@@ -340,7 +340,7 @@ public class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
       public void run() {
         maintainConnections();
       }
-    }, new Date(), checkMaintenanceInterval * 1000);
+    }, new Date(), checkMaintenanceInterval * 1000L);
   }
 
   private void maintainConnections() {

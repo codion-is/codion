@@ -598,8 +598,8 @@ public final class NavigableImagePanel extends JPanel {
     originX += (correctedP.getIntX() - (int)panelP.x);
     originY += (correctedP.getIntY() - (int)panelP.y);
 
-    firePropertyChange(ZOOM_LEVEL_CHANGED_PROPERTY, new Double(oldZoom),
-            new Double(getZoom()));
+    firePropertyChange(ZOOM_LEVEL_CHANGED_PROPERTY, Double.valueOf(oldZoom),
+            Double.valueOf(getZoom()));
 
     repaint();
   }
@@ -622,7 +622,7 @@ public final class NavigableImagePanel extends JPanel {
     double oldZoomIncrement = zoomIncrement;
     zoomIncrement = newZoomIncrement;
     firePropertyChange(ZOOM_INCREMENT_CHANGED_PROPERTY,
-            new Double(oldZoomIncrement), new Double(zoomIncrement));
+            Double.valueOf(oldZoomIncrement), Double.valueOf(zoomIncrement));
   }
 
   //Zooms an image in the panel by repainting it at the new zoom level.
@@ -636,8 +636,8 @@ public final class NavigableImagePanel extends JPanel {
     originX += (mousePosition.x - (int)panelP.x);
     originY += (mousePosition.y - (int)panelP.y);
 
-    firePropertyChange(ZOOM_LEVEL_CHANGED_PROPERTY, new Double(oldZoom),
-            new Double(getZoom()));
+    firePropertyChange(ZOOM_LEVEL_CHANGED_PROPERTY, Double.valueOf(oldZoom) ,
+            Double.valueOf(getZoom()));
 
     repaint();
   }

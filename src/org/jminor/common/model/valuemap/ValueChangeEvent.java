@@ -13,9 +13,9 @@ import java.awt.event.ActionEvent;
 public class ValueChangeEvent<K, V> extends ActionEvent {
 
   /**
-   * The ID of the type of object owning the property
+   * The value map owning the value
    */
-  private final String valueOwnerTypeID;
+  private final ValueChangeMap<K, V> valueOwner;
 
   /**
    * The key
@@ -46,17 +46,17 @@ public class ValueChangeEvent<K, V> extends ActionEvent {
   /**
    * Instantiates a new PropertyEvent
    * @param source the source of the value change
-   * @param valueOwnerTypeID the ID of the type of object which owns the value
+   * @param valueOwner the map
    * @param key the key associated with the value
    * @param newValue the new value
    * @param oldValue the old value
    * @param isModelChange true if the value change originates from the model, false if it originates in the UI
    * @param initialization true if the value was being initialized
    */
-  public ValueChangeEvent(final Object source, final String valueOwnerTypeID, final K key, final V newValue,
+  public ValueChangeEvent(final Object source, final ValueChangeMap<K, V> valueOwner, final K key, final V newValue,
                           final V oldValue, final boolean isModelChange, final boolean initialization) {
     super(source, 0, key.toString());
-    this.valueOwnerTypeID = valueOwnerTypeID;
+    this.valueOwner = valueOwner;
     this.key = key;
     this.newValue = newValue;
     this.oldValue = oldValue;
@@ -65,10 +65,10 @@ public class ValueChangeEvent<K, V> extends ActionEvent {
   }
 
   /**
-   * @return the ID of the type of object owning the value
+   * @return the object owning the value
    */
-  public String getValueOwnerTypeID() {
-    return valueOwnerTypeID;
+  public ValueChangeMap<K, V> getValueOwner() {
+    return valueOwner;
   }
 
   /**

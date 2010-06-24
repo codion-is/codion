@@ -64,6 +64,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -354,13 +355,13 @@ public final class EntityUiUtil {
 
   public static EntityLookupField createEntityLookupField(final Property.ForeignKeyProperty foreignKeyProperty,
                                                           final EntityEditModel editModel) {
-    final String[] searchPropertyIDs = EntityRepository.getEntitySearchPropertyIDs(foreignKeyProperty.getReferencedEntityID());
-    if (searchPropertyIDs == null) {
+    final Collection<String> searchPropertyIDs = EntityRepository.getEntitySearchPropertyIDs(foreignKeyProperty.getReferencedEntityID());
+    if (searchPropertyIDs.size() == 0) {
       throw new RuntimeException("No default search properties specified for entity: " + foreignKeyProperty.getReferencedEntityID()
               + ", unable to create EntityLookupField, you must specify the searchPropertyIDs");
     }
 
-    return createEntityLookupField(foreignKeyProperty, editModel, searchPropertyIDs);
+    return createEntityLookupField(foreignKeyProperty, editModel, searchPropertyIDs.toArray(new String[searchPropertyIDs.size()]));
   }
 
   public static EntityLookupField createEntityLookupField(final Property.ForeignKeyProperty foreignKeyProperty,

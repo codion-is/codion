@@ -36,12 +36,7 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
   /**
    * The foreign key values referenced by this entity
    */
-  private final ValueChangeMap<String, Entity> foreignKeyValues = new ValueChangeMapImpl<String, Entity>() {
-    @Override
-    public String getMapTypeID() {
-      return getEntityID();
-    }
-  };
+  private final ValueChangeMap<String, Entity> foreignKeyValues = new ValueChangeMapImpl<String, Entity>();
 
   /**
    * Used to cache the return value of the frequently called toString(),
@@ -59,7 +54,7 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
    */
   private transient Map<String, Property> properties;
 
-  private static Map<String, Proxy> proxies;
+  private static volatile Map<String, Proxy> proxies;
 
   /**
    * Instantiates a new Entity
@@ -83,11 +78,6 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
    */
   public String getEntityID() {
     return primaryKey.getEntityID();
-  }
-
-  @Override
-  public String getMapTypeID() {
-    return getEntityID();
   }
 
   /**
@@ -990,11 +980,6 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
      * @return the entity ID
      */
     public String getEntityID() {
-      return entityID;
-    }
-
-    @Override
-    public String getMapTypeID() {
       return entityID;
     }
 

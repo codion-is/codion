@@ -12,7 +12,6 @@ import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.ui.EntityEditPanel;
 import org.jminor.framework.client.ui.EntityPanel;
-import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.demos.empdept.beans.EmployeeModel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import static org.jminor.framework.demos.empdept.domain.EmpDept.*;
@@ -31,7 +30,7 @@ public class DepartmentPanel extends EntityPanel {
 
   public DepartmentPanel(final EntityModel model) {
     super(model);
-    addDetailPanel(new EntityPanelProvider(EmployeeModel.class, EmployeePanel.class));
+    addDetailPanel(new EmployeePanel(model.getDetailModel(EmployeeModel.class)));
   }
 
   public void viewEmployeeReport() throws Exception {

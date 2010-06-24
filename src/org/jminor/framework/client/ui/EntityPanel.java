@@ -271,32 +271,18 @@ public abstract class EntityPanel extends JPanel {
     return this;
   }
 
-  public EntityPanel addDetailPanels(final EntityPanelProvider... detailEntityPanelProviders) {
-    for (final EntityPanelProvider detailPanelProvider : detailEntityPanelProviders) {
-      addDetailPanel(detailPanelProvider);
+  public EntityPanel addDetailPanels(final EntityPanel... detailPanels) {
+    Util.rejectNullValue(detailPanels);
+    for (final EntityPanel detailPanel : detailPanels) {
+      addDetailPanel(detailPanel);
     }
     return this;
   }
 
   /**
-   * Adds the detail panel provided by the given detail panel provider
-   * @param detailPanelProvider the detail panel provider
-   * @return the detail panel just added
-   */
-  public EntityPanel addDetailPanel(final EntityPanelProvider detailPanelProvider) {
-    final EntityModel detailModel = model.getDetailModel(detailPanelProvider.getModelClass());
-    if (detailModel == null) {
-      throw new RuntimeException("Detail model of type " + detailPanelProvider.getModelClass()
-              + " not found in model of type " + model.getClass());
-    }
-
-    return addDetailPanel(createInstance(detailPanelProvider, detailModel));
-  }
-
-  /**
    * Adds the given detail panel
    * @param detailPanel the detail panel to add
-   * @return the detail panel just added
+   * @return this entity panel
    */
   public EntityPanel addDetailPanel(final EntityPanel detailPanel) {
     if (panelInitialized) {
@@ -305,7 +291,7 @@ public abstract class EntityPanel extends JPanel {
     detailPanel.masterPanel = this;
     detailEntityPanels.add(detailPanel);
 
-    return detailPanel;
+    return this;
   }
 
   /**

@@ -58,11 +58,6 @@ public class ValueChangeMapImpl<K, V> implements ValueChangeMap<K, V>, Serializa
   }
 
   /** {@inheritDoc} */
-  public String getMapTypeID() {
-    return getClass().getSimpleName();
-  }
-
-  /** {@inheritDoc} */
   public boolean containsValue(final K key) {
     return values.containsKey(key);
   }
@@ -318,7 +313,7 @@ public class ValueChangeMapImpl<K, V> implements ValueChangeMap<K, V>, Serializa
   }
 
   protected void notifyValueChange(final K key, final V value, final V oldValue, final boolean initialization) {
-    eventValueChanged().fire(new ValueChangeEvent<K, V>(this, getMapTypeID(), key, value, oldValue, true, initialization));
+    eventValueChanged().fire(new ValueChangeEvent<K, V>(this, this, key, value, oldValue, true, initialization));
   }
 
   protected void setOriginalValue(final K key, final V oldValue) {
