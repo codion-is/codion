@@ -28,7 +28,6 @@ import java.rmi.RemoteException;
 import java.rmi.server.RMISocketFactory;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -84,7 +83,7 @@ public class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements En
   }
 
   /** {@inheritDoc} */
-  public Date getStartDate() {
+  public long getStartDate() {
     return server.getStartDate();
   }
 

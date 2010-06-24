@@ -26,6 +26,7 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.net.URISyntaxException;
 import java.rmi.RemoteException;
+import java.util.Date;
 
 /**
  * User: Bjorn Darri<br>
@@ -75,7 +76,7 @@ public class ServerMonitorPanel extends JPanel {
     final String domainModelClass = JOptionPane.showInputDialog("Domain class name");
     final String locationURL = JOptionPane.showInputDialog("Location URL");
     if (domainModelClass.length() > 0 && locationURL.length() > 0) {
-      getModel().loadDomainModel(Util.getURI(locationURL), domainModelClass);
+      model.loadDomainModel(Util.getURI(locationURL), domainModelClass);
     }
   }
 
@@ -158,7 +159,7 @@ public class ServerMonitorPanel extends JPanel {
     final EntityDbServerAdmin server = model.getServer();
     contents.append("Server info:").append("\n");
     contents.append(server.getServerName()).append(" (").append(
-            DateFormats.getDateFormat(DateFormats.FULL_TIMESTAMP).format(server.getStartDate())).append(")").append(
+            DateFormats.getDateFormat(DateFormats.FULL_TIMESTAMP).format(new Date(server.getStartDate()))).append(")").append(
             " server/db port: ").append(server.getServerPort()).append("/").append(
             server.getServerDbPort()).append("\n").append("\n");
     contents.append("Database URL:").append("\n");

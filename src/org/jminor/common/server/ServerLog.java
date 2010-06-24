@@ -10,7 +10,6 @@ import org.jminor.common.model.formats.DateFormats;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -23,7 +22,7 @@ public class ServerLog implements Serializable {
 
   private static final long serialVersionUID = 1;
 
-  private final Date logCreationDate = new Date();
+  private final long logCreationDate = System.currentTimeMillis();
   private final List<LogEntry> log;
   private final String connectionKey;
   private final long lastAccessDate;
@@ -58,7 +57,7 @@ public class ServerLog implements Serializable {
   /**
    * @return the date this log was created
    */
-  public Date getLogCreationDate() {
+  public long getLogCreationDate() {
     return logCreationDate;
   }
 

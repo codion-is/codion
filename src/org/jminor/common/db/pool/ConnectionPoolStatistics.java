@@ -6,7 +6,6 @@ package org.jminor.common.db.pool;
 import org.jminor.common.model.User;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -23,10 +22,10 @@ public class ConnectionPoolStatistics implements Serializable {
 
   private int connectionsCreated;
   private int connectionsDestroyed;
-  private Date creationDate;
+  private long creationDate;
 
   private List<ConnectionPoolState> poolStatistics;
-  private Date resetDate;
+  private long resetDate;
   private int connectionRequests;
   private int connectionRequestsDelayed;
   private int requestsDelayedPerSecond;
@@ -74,11 +73,11 @@ public class ConnectionPoolStatistics implements Serializable {
     this.timestamp = timestamp;
   }
 
-  public void setCreationDate(final Date time) {
+  public void setCreationDate(final long time) {
     this.creationDate = time;
   }
 
-  public Date getCreationDate() {
+  public long getCreationDate() {
     return this.creationDate;
   }
 
@@ -146,11 +145,11 @@ public class ConnectionPoolStatistics implements Serializable {
     return liveConnectionCount;
   }
 
-  public void setResetDate(Date resetDate) {
+  public void setResetDate(final long resetDate) {
     this.resetDate = resetDate;
   }
 
-  public Date getResetDate() {
+  public long getResetDate() {
     return resetDate;
   }
 }

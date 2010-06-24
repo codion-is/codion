@@ -17,7 +17,6 @@ import java.net.URI;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -39,7 +38,7 @@ public interface EntityDbServerAdmin extends Remote {
    * @return the server startup date
    * @throws RemoteException in case of a communication error
    */
-  Date getStartDate() throws RemoteException;
+  long getStartDate() throws RemoteException;
 
   /**
    * @return the database URL

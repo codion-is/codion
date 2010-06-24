@@ -286,8 +286,8 @@ public class DbConnectionPool implements ConnectionPool {
   }
 
   private static class Counter {
-    private final Date creationDate = new Date();
-    private Date resetDate = new Date();
+    private final long creationDate = System.currentTimeMillis();
+    private long resetDate = creationDate;
     private int liveConnections = 0;
     private int connectionsCreated = 0;
     private int connectionsDestroyed = 0;
@@ -299,7 +299,7 @@ public class DbConnectionPool implements ConnectionPool {
     private int requestsPerSecondCounter = 0;
     private long averageCheckOutTime = 0;
     private final List<Long> checkOutTimes = new ArrayList<Long>();
-    private long requestsPerSecondTime = System.currentTimeMillis();
+    private long requestsPerSecondTime = creationDate;
 
     Counter() {
       new Timer(true).schedule(new TimerTask() {
@@ -310,11 +310,11 @@ public class DbConnectionPool implements ConnectionPool {
       }, new Date(), 1000);
     }
 
-    public synchronized Date getCreationDate() {
+    public synchronized long getCreationDate() {
       return creationDate;
     }
 
-    public synchronized Date getResetDate() {
+    public synchronized long getResetDate() {
       return resetDate;
     }
 
@@ -356,7 +356,7 @@ public class DbConnectionPool implements ConnectionPool {
       connectionRequests = 0;
       connectionRequestsDelayed = 0;
       checkOutTimes.clear();
-      resetDate = new Date();
+      resetDate = System.currentTimeMillis();
     }
 
     public synchronized void updateStatistics() {

@@ -75,7 +75,7 @@ public class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
     }
   }
 
-  private final Date startDate = new Date();
+  private final long startDate = System.currentTimeMillis();
 
   private Timer connectionMaintenanceTimer;
   private int checkMaintenanceInterval = 30; //seconds
@@ -215,7 +215,7 @@ public class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
     return SERVER_DB_PORT;
   }
 
-  public Date getStartDate() {
+  public long getStartDate() {
     return startDate;
   }
 
