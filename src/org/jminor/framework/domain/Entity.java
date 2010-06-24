@@ -846,7 +846,6 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
    */
   private void setDenormalizedValues(final Entity entity, Property.ForeignKeyProperty foreignKeyProperty,
                                      final boolean initialization) {
-    Util.rejectNullValue(entity);
     Util.rejectNullValue(foreignKeyProperty);
     final Collection<Property.DenormalizedProperty> denormalizedProperties =
             EntityRepository.getDenormalizedProperties(getEntityID(), foreignKeyProperty.getPropertyID());
