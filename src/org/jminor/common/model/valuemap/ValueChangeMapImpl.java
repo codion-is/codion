@@ -59,6 +59,7 @@ public class ValueChangeMapImpl<K, V> implements ValueChangeMap<K, V>, Serializa
 
   /** {@inheritDoc} */
   public boolean containsValue(final K key) {
+    Util.rejectNullValue(key);
     return values.containsKey(key);
   }
 
@@ -69,6 +70,7 @@ public class ValueChangeMapImpl<K, V> implements ValueChangeMap<K, V>, Serializa
 
   /** {@inheritDoc} */
   public V getValue(final K key) {
+    Util.rejectNullValue(key);
     return values.get(key);
   }
 
@@ -79,6 +81,7 @@ public class ValueChangeMapImpl<K, V> implements ValueChangeMap<K, V>, Serializa
 
   /** {@inheritDoc} */
   public V getOriginalValue(final K key) {
+    Util.rejectNullValue(key);
     if (isModified(key)) {
       return originalValues.get(key);
     }
@@ -93,11 +96,13 @@ public class ValueChangeMapImpl<K, V> implements ValueChangeMap<K, V>, Serializa
 
   /** {@inheritDoc} */
   public boolean isModified(final K key) {
+    Util.rejectNullValue(key);
     return originalValues != null && originalValues.containsKey(key);
   }
 
   /** {@inheritDoc} */
   public void initializeValue(final K key, final V value) {
+    Util.rejectNullValue(key);
     values.put(key, value);
     if (evtValueChanged != null) {
       notifyValueChange(key, value, null, true);
@@ -106,6 +111,7 @@ public class ValueChangeMapImpl<K, V> implements ValueChangeMap<K, V>, Serializa
 
   /** {@inheritDoc} */
   public V setValue(final K key, final V value) {
+    Util.rejectNullValue(key);
     final boolean initialization = !containsValue(key);
     V previousValue = null;
     if (!initialization) {
@@ -143,6 +149,7 @@ public class ValueChangeMapImpl<K, V> implements ValueChangeMap<K, V>, Serializa
 
   /** {@inheritDoc} */
   public void revertValue(final K key) {
+    Util.rejectNullValue(key);
     if (isModified(key)) {
       setValue(key, getOriginalValue(key));
     }
@@ -157,6 +164,7 @@ public class ValueChangeMapImpl<K, V> implements ValueChangeMap<K, V>, Serializa
 
   /** {@inheritDoc} */
   public void saveValue(final K key) {
+    Util.rejectNullValue(key);
     removeOriginalValue(key);
   }
 

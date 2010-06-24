@@ -60,6 +60,7 @@ public abstract class ValueChangeMapEditModel<K, V> implements Refreshable {
    * @param initialMap the value map to edit
    */
   public ValueChangeMapEditModel(final ValueChangeMap<K, V> initialMap) {
+    Util.rejectNullValue(initialMap);
     this.valueMap = initialMap;
     bindEventsInternal();
   }
@@ -170,6 +171,7 @@ public abstract class ValueChangeMapEditModel<K, V> implements Refreshable {
    * @see #setValue(Object, Object)
    */
   public Event getValueSetEvent(final K key) {
+    Util.rejectNullValue(key);
     if (!valueSetEventMap.containsKey(key)) {
       valueSetEventMap.put(key, new Event());
     }
@@ -182,6 +184,7 @@ public abstract class ValueChangeMapEditModel<K, V> implements Refreshable {
    * @return an Event object which fires when the value of <code>key</code> changes
    */
   public Event getValueChangeEvent(final K key) {
+    Util.rejectNullValue(key);
     if (!valueChangeEventMap.containsKey(key)) {
       valueChangeEventMap.put(key, new Event());
     }
