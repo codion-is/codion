@@ -183,7 +183,11 @@ public class Property implements Serializable {
    */
   @Override
   public String toString() {
-    return caption != null ? caption : propertyID;
+    if (caption == null) {
+      return propertyID;
+    }
+
+    return caption;
   }
 
   /**
@@ -715,7 +719,12 @@ public class Property implements Serializable {
 
   private Format initializeFormat() {
     if (isTime()) {
-      return isDate() ? Configuration.getDefaultDateFormat() : Configuration.getDefaultTimestampFormat();
+      if (isDate()) {
+        return Configuration.getDefaultDateFormat();
+      }
+      else {
+        return Configuration.getDefaultTimestampFormat();
+      }
     }
     else if (isNumerical()) {
       return NumberFormat.getInstance();
@@ -1300,12 +1309,24 @@ public class Property implements Serializable {
         return "'" + result + "'";
       }
       else {
-        return result == null ? "null" : result.toString();
+        if (result == null) {
+          return "null";
+        }
+
+        return result.toString();
       }
     }
 
     public Object toSQLValue(final Boolean value) {
-      return value == null ? null : (value ? trueValue : falseValue);
+      if (value == null) {
+        return null;
+      }
+
+      if (value) {
+        return trueValue;
+      }
+
+      return falseValue;
     }
   }
 

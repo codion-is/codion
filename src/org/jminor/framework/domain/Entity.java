@@ -596,9 +596,20 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
 
     super.setAs(sourceMap);
     final Entity entity = (Entity) sourceMap;
-    primaryKey.setAs(entity == null ? null : entity.primaryKey);
-    foreignKeyValues.setAs(entity == null ? null : entity.foreignKeyValues);
-    toString = sourceMap == null ? null : sourceMap.toString();
+    if (entity == null) {
+      primaryKey.setAs(null);
+      foreignKeyValues.setAs(null);
+    }
+    else {
+      primaryKey.setAs(entity.primaryKey);
+      foreignKeyValues.setAs(entity.foreignKeyValues);
+    }
+    if (sourceMap == null) {
+      toString = null;
+    }
+    else {
+      toString = sourceMap.toString();
+    }
   }
 
   /**
@@ -609,26 +620,21 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
    */
   public Key getReferencedPrimaryKey(final Property.ForeignKeyProperty foreignKeyProperty) {
     Util.rejectNullValue(foreignKeyProperty);
-    Key key = referencedPrimaryKeysCache == null ? null : referencedPrimaryKeysCache.get(foreignKeyProperty);
-    if (key != null) {
-      return key;
+    Key referencedPrimaryKey = getCachedReferenceKey(foreignKeyProperty);
+    if (referencedPrimaryKey != null) {
+      return referencedPrimaryKey;
     }
 
-    if (foreignKeyProperty.getReferenceProperties().size() == 1) {
-      key = initializeSinglePropertyKey(foreignKeyProperty);
+    if (foreignKeyProperty.isCompositeReference()) {
+      referencedPrimaryKey = initializeCompositeKey(foreignKeyProperty);
     }
     else {
-      key = initializeMultiPropertyKey(foreignKeyProperty);
+      referencedPrimaryKey = initializeSingleValueKey(foreignKeyProperty);
     }
 
-    if (key != null) {
-      if (referencedPrimaryKeysCache == null) {
-        referencedPrimaryKeysCache = new HashMap<Property.ForeignKeyProperty, Key>();
-      }
-      referencedPrimaryKeysCache.put(foreignKeyProperty, key);
-    }
+    cacheReferencedKey(foreignKeyProperty, referencedPrimaryKey);
 
-    return key;
+    return referencedPrimaryKey;
   }
 
   @Override
@@ -700,7 +706,11 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
    * @return a copy of <code>value</code>
    */
   public static Object copyPropertyValue(final Object value) {
-    return value instanceof Entity ? ((Entity) value).getCopy() : value;
+    if (value instanceof Entity) {
+      return ((Entity) value).getCopy();
+    }
+
+    return value;
   }
 
   /**
@@ -805,7 +815,7 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
     referencedPrimaryKeysCache = null;
     setForeignKeyValues(foreignKeyProperty, newValue, initialization);
     if (EntityRepository.hasDenormalizedProperties(getEntityID())) {
-      setDenormalizedValues(newValue, foreignKeyProperty, initialization);
+      setDenormalizedValues(foreignKeyProperty, newValue, initialization);
     }
   }
 
@@ -821,13 +831,23 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
   private void setForeignKeyValues(final Property.ForeignKeyProperty foreignKeyProperty, final Entity referencedEntity,
                                    final boolean initialization) {
     Util.rejectNullValue(foreignKeyProperty);
-    final Collection<Property.PrimaryKeyProperty> referenceEntityPKProperties =
-            referencedEntity != null ? referencedEntity.primaryKey.getProperties()
-                    : EntityRepository.getPrimaryKeyProperties(foreignKeyProperty.getReferencedEntityID());
+    final Collection<Property.PrimaryKeyProperty> referenceEntityPKProperties;
+    if (referencedEntity == null) {
+      referenceEntityPKProperties = EntityRepository.getPrimaryKeyProperties(foreignKeyProperty.getReferencedEntityID());
+    }
+    else {
+      referenceEntityPKProperties = referencedEntity.primaryKey.getProperties();
+    }
     for (final Property.PrimaryKeyProperty primaryKeyProperty : referenceEntityPKProperties) {
       final Property referenceProperty = foreignKeyProperty.getReferenceProperties().get(primaryKeyProperty.getIndex());
       if (!(referenceProperty instanceof Property.MirrorProperty)) {
-        final Object value = referencedEntity != null ? referencedEntity.getValue(primaryKeyProperty) : null;
+        final Object value;
+        if (referencedEntity == null) {
+          value = null;
+        }
+        else {
+          value = referencedEntity.getValue(primaryKeyProperty);
+        }
         if (initialization) {
           initializeValue(referenceProperty, value);
         }
@@ -840,18 +860,24 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
 
   /**
    * Sets the denormalized property values
-   * @param entity the entity value owning the denormalized values
    * @param foreignKeyProperty the foreign key property referring to the value source
+   * @param referencedEntity the entity value owning the denormalized values
    * @param initialization true if the values are being initialized
    */
-  private void setDenormalizedValues(final Entity entity, Property.ForeignKeyProperty foreignKeyProperty,
+  private void setDenormalizedValues(Property.ForeignKeyProperty foreignKeyProperty, final Entity referencedEntity,
                                      final boolean initialization) {
     Util.rejectNullValue(foreignKeyProperty);
     final Collection<Property.DenormalizedProperty> denormalizedProperties =
             EntityRepository.getDenormalizedProperties(getEntityID(), foreignKeyProperty.getPropertyID());
     if (denormalizedProperties != null) {
       for (final Property.DenormalizedProperty denormalizedProperty : denormalizedProperties) {
-        final Object value = entity == null ? null : entity.getValue(denormalizedProperty.getDenormalizedProperty());
+        final Object value;
+        if (referencedEntity == null) {
+          value = null;
+        }
+        else {
+          value = referencedEntity.getValue(denormalizedProperty.getDenormalizedProperty());
+        }
         if (initialization) {
           initializeValue(denormalizedProperty, value);
         }
@@ -865,34 +891,51 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
   private Object getDenormalizedViewValue(final Property.DenormalizedViewProperty denormalizedViewProperty) {
     Util.rejectNullValue(denormalizedViewProperty);
     final Entity valueOwner = (Entity) getValue(denormalizedViewProperty.getForeignKeyPropertyID());
+    if (valueOwner == null) {
+      return null;
+    }
 
-    return valueOwner != null ? valueOwner.getValue(denormalizedViewProperty.getDenormalizedProperty().getPropertyID()) : null;
+    return valueOwner.getValue(denormalizedViewProperty.getDenormalizedProperty().getPropertyID());
   }
 
   private String getDenormalizedViewValueFormatted(final Property.DenormalizedViewProperty denormalizedViewProperty) {
     Util.rejectNullValue(denormalizedViewProperty);
     final Entity valueOwner = (Entity) getValue(denormalizedViewProperty.getForeignKeyPropertyID());
+    if (valueOwner == null) {
+      return null;
+    }
 
-    return valueOwner != null ? valueOwner.getFormattedValue(denormalizedViewProperty.getDenormalizedProperty()) : null;
+    return valueOwner.getFormattedValue(denormalizedViewProperty.getDenormalizedProperty());
   }
 
-  private Key initializeSinglePropertyKey(final Property.ForeignKeyProperty foreignKeyProperty) {
+  private Key initializeSingleValueKey(final Property.ForeignKeyProperty foreignKeyProperty) {
     Util.rejectNullValue(foreignKeyProperty);
     final Property referenceKeyProperty = foreignKeyProperty.getReferenceProperties().get(0);
-    final Object value = referenceKeyProperty instanceof Property.PrimaryKeyProperty
-            ? this.primaryKey.getValue(referenceKeyProperty.getPropertyID())
-            : super.getValue(referenceKeyProperty.getPropertyID());
+    final Object value;
+    if (referenceKeyProperty instanceof Property.PrimaryKeyProperty) {
+      value = this.primaryKey.getValue(referenceKeyProperty.getPropertyID());
+    }
+    else {
+      value = super.getValue(referenceKeyProperty.getPropertyID());
+    }
+    if (value == null) {
+      return null;
+    }
 
-    return value == null ? null : new Entity.Key(foreignKeyProperty.getReferencedEntityID(), value);
+    return new Entity.Key(foreignKeyProperty.getReferencedEntityID(), value);
   }
 
-  private Key initializeMultiPropertyKey(final Property.ForeignKeyProperty foreignKeyProperty) {
+  private Key initializeCompositeKey(final Property.ForeignKeyProperty foreignKeyProperty) {
     Util.rejectNullValue(foreignKeyProperty);
     final Key key = new Entity.Key(foreignKeyProperty.getReferencedEntityID());
     for (final Property referenceKeyProperty : foreignKeyProperty.getReferenceProperties()) {
-      final Object value = referenceKeyProperty instanceof Property.PrimaryKeyProperty
-              ? this.primaryKey.getValue(referenceKeyProperty.getPropertyID())
-              : super.getValue(referenceKeyProperty.getPropertyID());
+      final Object value;
+      if (referenceKeyProperty instanceof Property.PrimaryKeyProperty) {
+        value = this.primaryKey.getValue(referenceKeyProperty.getPropertyID());
+      }
+      else {
+        value = super.getValue(referenceKeyProperty.getPropertyID());
+      }
       if (value == null) {
         return null;
       }
@@ -913,6 +956,23 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
     }
 
     return false;
+  }
+
+  private void cacheReferencedKey(final Property.ForeignKeyProperty foreignKeyProperty, final Key referencedPrimaryKey) {
+    if (referencedPrimaryKey != null) {
+      if (referencedPrimaryKeysCache == null) {
+        referencedPrimaryKeysCache = new HashMap<Property.ForeignKeyProperty, Key>();
+      }
+      referencedPrimaryKeysCache.put(foreignKeyProperty, referencedPrimaryKey);
+    }
+  }
+
+  private Key getCachedReferenceKey(final Property.ForeignKeyProperty foreignKeyProperty) {
+    if (referencedPrimaryKeysCache == null) {
+      return null;
+    }
+
+    return referencedPrimaryKeysCache.get(foreignKeyProperty);
   }
 
   /**
@@ -999,8 +1059,7 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
       final Property property = properties.get(0);
       initializeValue(property.getPropertyID(), value);
       if (singleIntegerKey) {
-        hashCode = value == null ? INTEGER_NULL_VALUE : (Integer) value;
-        hashCodeDirty = false;
+        setHashcode(value);
       }
     }
 
@@ -1056,8 +1115,7 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
           throw new IllegalArgumentException("Expecting a Integer value for Key: " + entityID + ", "
                   + key + ", got " + value + "; " + value.getClass());
         }
-        hashCode = value == null ? INTEGER_NULL_VALUE : (Integer) value;
-        hashCodeDirty = false;
+        setHashcode(value);
       }
 
       return super.setValue(key, value);
@@ -1099,7 +1157,11 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
      * @return the number of properties comprising this key
      */
     public int getPropertyCount() {
-      return singleIntegerKey ? 1 : getProperties().size();
+      if (singleIntegerKey) {
+        return 1;
+      }
+
+      return getProperties().size();
     }
 
     /**
@@ -1148,7 +1210,12 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
           }
         }
 
-        hashCode = nullValue ? INTEGER_NULL_VALUE : hash;
+        if (nullValue) {
+          hashCode = INTEGER_NULL_VALUE;
+        }
+        else {
+          hashCode = hash;
+        }
         hashCodeDirty = false;
       }
 
@@ -1219,6 +1286,16 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
 
       return copies;
     }
+
+    private void setHashcode(final Object value) {
+      if (value == null) {
+        hashCode = INTEGER_NULL_VALUE;
+      }
+      else {
+        hashCode = (Integer) value;
+      }
+      hashCodeDirty = false;
+    }
   }
 
   /**
@@ -1246,7 +1323,11 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
       final String entityID = entity.getEntityID();
       final ToString<String> stringProvider = EntityRepository.getStringProvider(entityID);
 
-      return stringProvider == null ? new StringBuilder(entityID).append(": ").append(entity.getPrimaryKey()).toString() : stringProvider.toString(entity);
+      if (stringProvider == null) {
+        return new StringBuilder(entityID).append(": ").append(entity.getPrimaryKey()).toString();
+      }
+
+      return stringProvider.toString(entity);
     }
 
     public Object getDerivedValue(final Entity entity, final Property.DerivedProperty property) {
@@ -1256,7 +1337,15 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
     public String getFormattedValue(final Entity entity, final Property property, final Format format) {
       Util.rejectNullValue(entity);
       final Object value = entity.getValue(property);
-      return value == null ? "" : (format != null ? format.format(value) : value.toString());
+      if (value == null) {
+        return "";
+      }
+
+      if (format == null) {
+        return value.toString();
+      }
+
+      return format.format(value);
     }
 
     @SuppressWarnings({"UnusedDeclaration"})

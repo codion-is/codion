@@ -1768,3 +1768,4 @@
   ValueMap.getMapTypeID() removed
   EntityTableModel.fetchCount field added
   EntityPanel.addDetailPanel(s)(EntityPanelProvider) removed
+  Entity, replaced ? : with if else
