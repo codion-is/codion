@@ -237,7 +237,8 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
    */
   public boolean isEntityNew() {
     final Entity.Key key = ((Entity) getValueMap()).getPrimaryKey();
-    return key.isNull() || ((Entity.Key) key.getOriginalCopy()).isNull();
+    final Entity.Key originalkey = ((Entity) getValueMap()).getOriginalPrimaryKey();
+    return key.isNull() || originalkey.isNull();
   }
 
   /**

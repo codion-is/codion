@@ -101,8 +101,12 @@ public class EntityJSONParser implements Serializer<Entity>, Deserializer<Entity
 
   public static String getJSONString(final Collection<Entity> entities, final boolean includeForeignKeys,
                                      final int indentFactor) throws JSONException {
-    return indentFactor > 0 ? getJSONObject(entities, includeForeignKeys).toString(indentFactor) :
-            getJSONObject(entities, includeForeignKeys).toString();
+    final JSONObject jsonObject = getJSONObject(entities, includeForeignKeys);
+    if (indentFactor > 0) {
+      return jsonObject.toString(indentFactor);
+    }
+
+    return jsonObject.toString();
   }
 
   public static JSONObject getJSONObject(final Collection<Entity> entities, final boolean includeForeignKeys) throws JSONException {
@@ -150,7 +154,7 @@ public class EntityJSONParser implements Serializer<Entity>, Deserializer<Entity
     jsonEntity.put("entityID", entity.getEntityID());
     jsonEntity.put("propertyValues", getPropertyValuesJSONObject(entity, includeForeignKeys));
     if (entity.isModified()) {
-      jsonEntity.put("originalValues", getOriginalValuesJSONObject(entity));
+      jsonEntity.put("originalValues", getOriginalValuesJSONObject(entity, includeForeignKeys));
     }
 
     return jsonEntity;
@@ -179,9 +183,9 @@ public class EntityJSONParser implements Serializer<Entity>, Deserializer<Entity
     return entity.getValue(property.getPropertyID());
   }
 
-  private static JSONObject getOriginalValuesJSONObject(final Entity entity) throws JSONException {
+  private static JSONObject getOriginalValuesJSONObject(final Entity entity, final boolean includeForeignKeys) throws JSONException {
     final JSONObject originalValues = new JSONObject();
-    for (final Property property : EntityRepository.getDatabaseProperties(entity.getEntityID(), true, true, true)) {
+    for (final Property property : EntityRepository.getDatabaseProperties(entity.getEntityID(), true, true, true, includeForeignKeys)) {
       if (entity.isModified(property.getPropertyID())) {
         originalValues.put(property.getPropertyID(), getJSONOriginalValue(entity, property));
       }

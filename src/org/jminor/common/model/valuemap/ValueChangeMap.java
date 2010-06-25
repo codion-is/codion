@@ -44,6 +44,14 @@ public interface ValueChangeMap<K, V> extends ValueMap<K, V> {
   void removeValueListener(final ActionListener valueListener);
 
   /**
+   * Initializes the value associated with the given key. This method assumes
+   * no value has been associated with the key prior to this call, use with care.
+   * @param key the key with which to associate the given value
+   * @param value the value to associate with the given key
+   */
+  void initializeValue(final K key, final V value);
+
+  /**
    * Returns the original value associated with the given key or the current value if it has not been changed.
    * @param key the key for which to retrieve the original value
    * @return the original value
@@ -90,48 +98,9 @@ public interface ValueChangeMap<K, V> extends ValueMap<K, V> {
   void saveAll();
 
   /**
-   * @return a new ValueChangeMap instance compatible with this instance
-   */
-  ValueChangeMap<K, V> getInstance();
-
-  /**
-   * @return a deep copy of this value map
-   */
-  ValueChangeMap<K, V> getCopy();
-
-  /**
    * @return a deep copy of this value map in it's original state
    */
   ValueChangeMap<K, V> getOriginalCopy();
-
-  /**
-   * Removes all values and change history from this map.
-   */
-  void clear();
-
-  /**
-   * After a call to this method this ValueMap contains the same values and original values as the given map.
-   * A null argument to this method clears the destination map of all values and original values.
-   * @param sourceMap the map to copy or null for clearing the destination map
-   */
-  void setAs(final ValueChangeMap<K, V> sourceMap);
-
-  /**
-   * Returns a deep copy of the given value, immutable values are simply returned.
-   * @param value the value to copy
-   * @return a deep copy of the given value, or the same instance in case the value is immutable
-   */
-  V copyValue(final V value);
-
-  /**
-   * @return an unmodifiable view of the values in this map.
-   */
-  Collection<V> getValues();
-
-  /**
-   * @return an unmodifiable view of the keys mapping the values in this ValueChangeMap
-   */
-  Collection<K> getValueKeys();
 
 /**
    * @return an unmodifiable view of the keys mapping the original values in this ValueChangeMap

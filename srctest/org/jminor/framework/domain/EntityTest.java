@@ -187,7 +187,7 @@ public class EntityTest {
     assertEquals(testEntity.getValue(EntityTestDomain.DETAIL_MASTER_CODE),
             referencedEntityValue.getValue(EntityTestDomain.MASTER_CODE));
 
-    testEntity.getPrimaryKey().clear();
+    testEntity.clear();
     assertTrue(testEntity.getPrimaryKey().isNull());
     assertTrue(testEntity.isNull());
   }

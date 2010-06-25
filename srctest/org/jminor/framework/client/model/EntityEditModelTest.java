@@ -24,7 +24,6 @@ import org.junit.Test;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -130,7 +129,7 @@ public class EntityEditModelTest {
     try {
       editModel.getDbProvider().getEntityDb().beginTransaction();
       editModel.setValue(EmpDept.EMPLOYEE_COMMISSION, 1000d);
-      editModel.setValue(EmpDept.EMPLOYEE_HIREDATE, new Timestamp(DateUtil.floorDate(new Date()).getTime()));
+      editModel.setValue(EmpDept.EMPLOYEE_HIREDATE, DateUtil.floorDate(new Date()));
       editModel.setValue(EmpDept.EMPLOYEE_JOB, "A Jobby");
       editModel.setValue(EmpDept.EMPLOYEE_NAME, "Björn");
       editModel.setValue(EmpDept.EMPLOYEE_SALARY, 1000d);
@@ -148,8 +147,8 @@ public class EntityEditModelTest {
       editModel.eventAfterInsert().addListener(new ActionListener() {
         public void actionPerformed(final ActionEvent e) {
           try {
-            final InsertEvent de = (InsertEvent) e;
-            final Entity inserted = editModel.getDbProvider().getEntityDb().selectSingle(de.getInsertedKeys().get(0));
+            final InsertEvent insertEvent = (InsertEvent) e;
+            final Entity inserted = editModel.getDbProvider().getEntityDb().selectSingle(insertEvent.getInsertedKeys().get(0));
             toInsert.setValue(EmpDept.EMPLOYEE_ID, inserted.getValue(EmpDept.EMPLOYEE_ID));
             assertTrue(toInsert.propertyValuesEqual(inserted));
           }

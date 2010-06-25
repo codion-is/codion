@@ -214,7 +214,7 @@ public abstract class EntityTestUnit {
 
     getEntityDb().update(Arrays.asList(testEntity));
 
-    final Entity tmp = getEntityDb().selectSingle(testEntity.getPrimaryKey());
+    final Entity tmp = getEntityDb().selectSingle(testEntity.getOriginalPrimaryKey());
     assertEquals("Primary keys of entity and its updated counterpart should be equal",
             testEntity.getPrimaryKey(), tmp.getPrimaryKey());
     for (final Property property : EntityRepository.getProperties(testEntity.getEntityID()).values()) {

@@ -34,7 +34,7 @@ public class EntityTestDomain {
             new Property(MASTER_CODE, Types.INTEGER)));
 
     EntityRepository.add(new EntityDefinition(T_DETAIL,
-            new Property.PrimaryKeyProperty(DETAIL_ID).setDefaultValue(42),
+            new Property.PrimaryKeyProperty(DETAIL_ID),
             new Property(DETAIL_INT, Types.INTEGER, DETAIL_INT),
             new Property(DETAIL_DOUBLE, Types.DOUBLE, DETAIL_DOUBLE),
             new Property(DETAIL_STRING, Types.VARCHAR, DETAIL_STRING),

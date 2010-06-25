@@ -184,7 +184,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
           }
           statementProperties.addAll(primaryKeyProperties);
           for (final Property.PrimaryKeyProperty primaryKeyProperty : primaryKeyProperties) {
-            statementValues.add(entity.getPrimaryKey().getOriginalValue(primaryKeyProperty.getPropertyID()));
+            statementValues.add(entity.getOriginalValue(primaryKeyProperty.getPropertyID()));
           }
 
           statement = getConnection().prepareStatement(updateQuery);
@@ -251,14 +251,14 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     PreparedStatement statement = null;
     String deleteQuery = null;
     try {
-      final Map<String, Collection<Entity.Key>> hashedEntities = EntityUtil.hashKeysByEntityID(entityKeys);
-      for (final String entityID : hashedEntities.keySet()) {
+      final Map<String, Collection<Entity.Key>> hashedKeys = EntityUtil.hashKeysByEntityID(entityKeys);
+      for (final String entityID : hashedKeys.keySet()) {
         if (EntityRepository.isReadOnly(entityID)) {
           throw new DbException("Can not delete a read only entity: " + entityID);
         }
       }
 
-      for (final Map.Entry<String, Collection<Entity.Key>> entry : hashedEntities.entrySet()) {
+      for (final Map.Entry<String, Collection<Entity.Key>> entry : hashedKeys.entrySet()) {
         final EntitySelectCriteria criteria = EntityCriteriaUtil.selectCriteria(new ArrayList<Entity.Key>(entry.getValue()));
         deleteQuery = "delete from " + EntityRepository.getTableName(entry.getKey()) + " " + criteria.getWhereClause();
         statement = getConnection().prepareStatement(deleteQuery);
@@ -575,13 +575,8 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
    * @throws RecordModifiedException in case the entity has been modified
    */
   protected void checkIfModified(final Entity entity) throws DbException {
-    final Entity current = selectSingle(EntityCriteriaUtil.selectCriteria(
-            entity.getPrimaryKey()).setFetchDepthForAll(0));
-
-    if (!current.getPrimaryKey().equals(entity.getPrimaryKey().getOriginalCopy())) {
-      throw new RecordModifiedException(entity, current);
-    }
-
+    final Entity.Key originalKey = entity.getOriginalPrimaryKey();
+    final Entity current = selectSingle(EntityCriteriaUtil.selectCriteria(originalKey).setFetchDepthForAll(0));
     for (final String propertyID : current.getValueKeys()) {
       if (!entity.containsValue(propertyID) || !Util.equal(current.getValue(propertyID), entity.getOriginalValue(propertyID))) {
         throw new RecordModifiedException(entity, current);

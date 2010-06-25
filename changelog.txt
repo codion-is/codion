@@ -1769,3 +1769,9 @@
   EntityTableModel.fetchCount field added
   EntityPanel.addDetailPanel(s)(EntityPanelProvider) removed
   Entity, replaced ? : with if else
+  ValueMapImpl refactored out of ValueChangeMapImpl
+  Entity.primaryKey field removed
+  Entity.entityID field added
+  Entity.foreignKeyValues field removed
+  Entity, removed lots and lots of overridden stuff due to the above changes
+  Entity.Key now extends ValueMapImpl instead of ValueChangeMapImpl

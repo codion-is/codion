@@ -93,13 +93,14 @@ public class EntityJSONParserTest {
     emp2.setValue(EmpDept.EMPLOYEE_SALARY, 3500.5);
 
     final List<Entity> entityList = Arrays.asList(emp1, emp2);
-    jsonString = EntityJSONParser.getJSONString(entityList);
+    jsonString = EntityJSONParser.getJSONString(entityList, true);
     final List<Entity> parsedEntities = EntityJSONParser.parseJSONString(jsonString);
     for (final Entity entity : entityList) {
       final Entity parsed = parsedEntities.get(parsedEntities.indexOf(entity));
       assertTrue(parsed.propertyValuesEqual(entity));
     }
 
+    emp1JSON = EntityJSONParser.getJSONString(Arrays.asList(emp1), true);
     final List<Entity> entities = EntityJSONParser.parseJSONString(emp1JSON);
     assertEquals(1, entities.size());
     final Entity parsedEntity = entities.iterator().next();

@@ -3,6 +3,8 @@
  */
 package org.jminor.common.model.valuemap;
 
+import java.util.Collection;
+
 /**
  * An interface describing an object mapping values to keys, null values are allowed.
  * @param <K> the type of the map keys
@@ -19,20 +21,17 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueCollectionProv
   V setValue(final K key, final V value);
 
   /**
-   * Initializes the value associated with the given key. This method assumes
-   * no value has been associated with the key prior to this call, use with care.
-   * @param key the key with which to associate the given value
-   * @param value the value to associate with the given key
-   */
-  void initializeValue(final K key, final V value);
-
-  /**
    * Removes the given key and value from this value map along with the original value if any.
    * If no value is mapped to the given key, this method has no effect.
    * @param key the key to remove
    * @return the value that was removed
    */
   V removeValue(final K key);
+
+  /**
+   * Removes all values from this map.
+   */
+  void clear();
 
   /**
    * Returns true if a null value is mapped to the given key.
@@ -47,6 +46,45 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueCollectionProv
    * @return true if a value is mapped to this key
    */
   boolean containsValue(final K key);
+
+  /**
+   * @return an unmodifiable view of the values in this map.
+   */
+  Collection<V> getValues();
+
+  /**
+   * @return an unmodifiable view of the keys mapping the values in this ValueChangeMap
+   */
+  Collection<K> getValueKeys();
+
+  /**
+   * @return the number of keys in this map
+   */
+  int size();
+
+  /**
+   * @return a new ValueMap instance compatible with this instance
+   */
+  ValueMap<K, V> getInstance();
+
+  /**
+   * @return a deep copy of this value map
+   */
+  ValueMap<K, V> getCopy();
+
+  /**
+   * After a call to this method this ValueMap contains the same values and original values as the given map.
+   * A null argument to this method clears the destination map of all values and original values.
+   * @param sourceMap the map to copy or null for clearing the destination map
+   */
+  void setAs(final ValueMap<K, V> sourceMap);
+
+  /**
+   * Returns a deep copy of the given value, immutable values are simply returned.
+   * @param value the value to copy
+   * @return a deep copy of the given value, or the same instance in case the value is immutable
+   */
+  V copyValue(final V value);
 
   /**
    * Describes an object responsible for providing String representations of ValueMap instances

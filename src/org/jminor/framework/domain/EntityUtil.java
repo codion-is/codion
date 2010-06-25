@@ -64,11 +64,16 @@ public final class EntityUtil {
     return keys;
   }
 
-  public static List<Object> getOriginalPropertyValues(final List<Entity.Key> keys) {
+  /**
+   * Retrieves the values of the given keys, assuming they are single column keys.
+   * @param keys the keys
+   * @return the actual property values of the given keys
+   */
+  public static List<Object> getPropertyValues(final List<Entity.Key> keys) {
     Util.rejectNullValue(keys);
     final List<Object> list = new ArrayList<Object>(keys.size());
     for (final Entity.Key key : keys) {
-      list.add(key.getOriginalValue(key.getFirstKeyProperty().getPropertyID()));
+      list.add(key.getValue(key.getFirstKeyProperty().getPropertyID()));
     }
 
     return list;
