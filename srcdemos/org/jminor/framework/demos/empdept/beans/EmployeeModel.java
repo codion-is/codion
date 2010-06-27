@@ -67,8 +67,8 @@ public class EmployeeModel extends EntityModel {
     @Override
     public EntityComboBoxModel createEntityComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty) {
       if (foreignKeyProperty.is(EmpDept.EMPLOYEE_MGR_FK)) {
-        final EntityComboBoxModel managerModel = new EntityComboBoxModel(EmpDept.T_EMPLOYEE,
-                getDbProvider(), false, EmpDept.getString(EmpDept.NONE), true);
+        final EntityComboBoxModel managerModel = new EntityComboBoxModel(EmpDept.T_EMPLOYEE, getDbProvider());
+        managerModel.setNullValueString(EmpDept.getString(EmpDept.NONE));
         //Only show the president and managers
         managerModel.setEntitySelectCriteria(EntityCriteriaUtil.selectCriteria(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB,
                 SearchType.LIKE, "MANAGER", "PRESIDENT"));

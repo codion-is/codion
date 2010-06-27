@@ -54,6 +54,8 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
   private final Event evtBeforeDelete = new Event();
   private final Event evtAfterDelete = new Event();
   private final Event evtEntitiesChanged = new Event();
+  private final Event evtRefreshStarted = new Event();
+  private final Event evtRefreshDone = new Event();
 
   private final State stEntityNull = new State(true);
   private final State stAllowInsert = new State(true);
@@ -74,16 +76,6 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
    * The EntityDbProvider instance to use
    */
   private final EntityDbProvider dbProvider;
-
-  /**
-   * Fired before a refresh
-   */
-  private final Event evtRefreshStarted = new Event();
-
-  /**
-   * Fired after a refresh has been performed
-   */
-  private final Event evtRefreshDone = new Event();
 
   /**
    * Holds the ComboBoxModels used by this EntityModel, those that implement Refreshable
@@ -555,13 +547,13 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
   /**
    * @param property the property for which to get the ComboBoxModel
    * @param refreshEvent the combo box model is refreshed when this event fires
-   * @param nullValue the value to use for representing the null item at the top of the list,
+   * @param nullValueString the value to use for representing the null item at the top of the list,
    * if this value is null then no such item is included
    * @return a new PropertyComboBoxModel based on the given property
    */
   public PropertyComboBoxModel createPropertyComboBoxModel(final Property property, final Event refreshEvent,
-                                                           final String nullValue) {
-    return new PropertyComboBoxModel(entityID, property, dbProvider, nullValue, refreshEvent);
+                                                           final String nullValueString) {
+    return new PropertyComboBoxModel(entityID, dbProvider, property, nullValueString, refreshEvent);
   }
 
   /**
@@ -662,21 +654,27 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
    * @see org.jminor.framework.domain.Property#isNullable()
    */
   public EntityComboBoxModel createEntityComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty) {
-    return new EntityComboBoxModel(foreignKeyProperty.getReferencedEntityID(), dbProvider, false,
-            isNullable(getEntity(), foreignKeyProperty.getPropertyID()) ?
-                    (String) Configuration.getValue(Configuration.DEFAULT_COMBO_BOX_NULL_VALUE_ITEM) : null, true);
+    Util.rejectNullValue(foreignKeyProperty);
+    final EntityComboBoxModel model = new EntityComboBoxModel(foreignKeyProperty.getReferencedEntityID(), dbProvider);
+    model.setNullValueString(isNullable(getEntity(), foreignKeyProperty.getPropertyID()) ?
+            (String) Configuration.getValue(Configuration.DEFAULT_COMBO_BOX_NULL_VALUE_ITEM) : null);
+
+    return model;
   }
 
   /**
    * Creates a EntityLookupModel for the given entityID
    * @param entityID the ID of the entity
-   * @param additionalSearchCriteria an additional search criteria applied when performing the lookup
    * @param lookupProperties the properties involved in the lookup
+   * @param additionalSearchCriteria an additional search criteria applied when performing the lookup
    * @return a EntityLookupModel
    */
-  public EntityLookupModel createEntityLookupModel(final String entityID, final Criteria additionalSearchCriteria,
-                                                   final List<Property> lookupProperties) {
-    return new EntityLookupModel(entityID, dbProvider, additionalSearchCriteria, lookupProperties);
+  public EntityLookupModel createEntityLookupModel(final String entityID, final List<Property> lookupProperties,
+                                                   final Criteria additionalSearchCriteria) {
+    final EntityLookupModel model = new EntityLookupModel(entityID, dbProvider, lookupProperties);
+    model.setAdditionalLookupCriteria(additionalSearchCriteria);
+
+    return model;
   }
 
   /**

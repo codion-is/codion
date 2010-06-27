@@ -387,8 +387,10 @@ public final class EntityUiUtil {
 
     final EntityLookupField lookupField =
             new EntityLookupField(editModel.createEntityLookupModel(foreignKeyProperty.getReferencedEntityID(),
-                    additionalSearchCriteria, searchProperties),
-                    Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER));
+                    searchProperties, additionalSearchCriteria));
+    if (Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER)) {
+      lookupField.setTransferFocusOnEnter();
+    }
     new LookupValueLink(lookupField.getModel(), editModel, foreignKeyProperty.getPropertyID());
     if (foreignKeyProperty.hasDescription()) {
       lookupField.setToolTipText(foreignKeyProperty.getDescription());

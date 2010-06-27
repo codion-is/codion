@@ -12,7 +12,20 @@ import org.jminor.framework.client.model.EntityLookupModel;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.i18n.FrameworkMessages;
 
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.KeyStroke;
+import javax.swing.ListSelectionModel;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
@@ -47,37 +60,9 @@ public class EntityLookupField extends JTextField {
    * @param model the model
    */
   public EntityLookupField(final EntityLookupModel model) {
-    this(model, false);
-  }
-
-  /**
-   * Initializes a new EntityLookupField
-   * @param model the model
-   * @param transferFocusOnEnter if true then the field transfers focus on enter if the field text
-   * represents the selected entities
-   */
-  public EntityLookupField(final EntityLookupModel model, final boolean transferFocusOnEnter) {
-    this(model, null);
-    if (transferFocusOnEnter) {
-      this.enterAction = new AbstractAction() {
-        public void actionPerformed(final ActionEvent e) {
-          transferFocus();
-        }
-      };
-    }
-  }
-
-  /**
-   * Initializes a new EntityLookupField
-   * @param model the model
-   * @param enterAction the action that is performed if enter is pressed while the field text represents
-   * the selected entities
-   */
-  public EntityLookupField(final EntityLookupModel model, final Action enterAction) {
     Util.rejectNullValue(model);
     this.model = model;
     this.searchHint = SearchFieldHint.enable(this);
-    this.enterAction = enterAction;
     setToolTipText(model.getDescription());
     setComponentPopupMenu(initializePopupMenu());
     addActionListener(initializeLookupAction());
@@ -94,12 +79,21 @@ public class EntityLookupField extends JTextField {
     return enterAction;
   }
 
-  public void setEnterAction(final Action enterAction) {
+  public EntityLookupField setEnterAction(final Action enterAction) {
     this.enterAction = enterAction;
+    return this;
   }
 
   public void setDefaultBackgroundColor(final Color defaultBackgroundColor) {
     this.defaultBackgroundColor = defaultBackgroundColor;
+  }
+
+  public EntityLookupField setTransferFocusOnEnter() {
+    return setEnterAction(new AbstractAction() {
+      public void actionPerformed(final ActionEvent e) {
+        transferFocus();
+      }
+    });
   }
 
   private void selectEntities(final List<Entity> entities) {

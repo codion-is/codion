@@ -90,6 +90,11 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
    */
   private boolean isSorting = false;
 
+  /**
+   * true if searching the table model should be done via regular expressions
+   */
+  private boolean regularExpressionSearch = false;
+
   public AbstractFilteredTableModel(final TableColumnModel columnModel) {
     this.tableSorter = new TableSorter(this);
     this.columnModel = columnModel;
@@ -239,6 +244,14 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
     }
 
     tableSorter.setSortingStatus(columnIndex, status);
+  }
+
+  public boolean isRegularExpressionSearch() {
+    return regularExpressionSearch;
+  }
+
+  public void setRegularExpressionSearch(final boolean regularExpressionSearch) {
+    this.regularExpressionSearch = regularExpressionSearch;
   }
 
   /**
@@ -733,10 +746,17 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
   }
 
   protected FilterCriteria<Object> getSearchCriteria(final String searchText) {
+    if (regularExpressionSearch) {
+      return new RegexFilterCriteria(searchText);
+    }
+
     return new FilterCriteria<Object>() {
       public boolean include(final Object item) {
-        return !(item == null || searchText == null) &&
-                item.toString().toLowerCase().contains(searchText.toLowerCase());
+        if (item == null || searchText == null) {
+          return false;
+        }
+
+        return item.toString().toLowerCase().contains(searchText.toLowerCase());
       }
     };
   }

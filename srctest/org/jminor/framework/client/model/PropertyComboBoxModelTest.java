@@ -24,8 +24,8 @@ public class PropertyComboBoxModelTest {
   public PropertyComboBoxModelTest() {
     new EmpDept();
     comboBoxModel = new PropertyComboBoxModel(EmpDept.T_DEPARTMENT,
-            EntityRepository.getProperty(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME),
-            EntityDbConnectionTest.DB_PROVIDER, null, refreshEvent);
+            EntityDbConnectionTest.DB_PROVIDER, EntityRepository.getProperty(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME),
+            null, refreshEvent);
   }
 
   @Test

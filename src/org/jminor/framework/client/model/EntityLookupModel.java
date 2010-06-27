@@ -50,10 +50,10 @@ public class EntityLookupModel {
 
   private Criteria additionalLookupCriteria;
   private String searchString = "";
-  private boolean multipleSelectionAllowed;
-  private boolean caseSensitive;
-  private boolean wildcardPrefix;
-  private boolean wildcardPostfix;
+  private boolean multipleSelectionAllowed = true;
+  private boolean caseSensitive = false;
+  private boolean wildcardPrefix = true;
+  private boolean wildcardPostfix = true;
   private String wildcard = (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER);
   private String multipleValueSeparator = ",";
 
@@ -64,58 +64,12 @@ public class EntityLookupModel {
    * @param lookupProperties the properties to search by, these must be string based
    */
   public EntityLookupModel(final String entityID, final EntityDbProvider dbProvider, final List<Property> lookupProperties) {
-    this(entityID, dbProvider, null, lookupProperties);
-  }
-
-  /**
-   * Instantiates a new EntityLookupModel
-   * @param entityID the ID of the entity to lookup
-   * @param dbProvider the EntityDbProvider to use when performing the lookup
-   * @param additionalLookupCriteria an additional lookup criteria
-   * @param lookupProperties the properties to search by, these must be string based
-   */
-  public EntityLookupModel(final String entityID, final EntityDbProvider dbProvider, final Criteria additionalLookupCriteria,
-                           final List<Property> lookupProperties) {
-    this(entityID, dbProvider, additionalLookupCriteria, false, lookupProperties);
-  }
-
-  /**
-   * Instantiates a new EntityLookupModel
-   * @param entityID the ID of the entity to lookup
-   * @param dbProvider the EntityDbProvider to use when performing the lookup
-   * @param additionalLookupCriteria an additional lookup criteria
-   * @param caseSensitive if true then this lookup model is case sensitive, defaults to false
-   * @param lookupProperties the properties to search by, these must be string based
-   */
-  public EntityLookupModel(final String entityID, final EntityDbProvider dbProvider, final Criteria additionalLookupCriteria,
-                           final boolean caseSensitive, final List<Property> lookupProperties) {
-    this(entityID, dbProvider, additionalLookupCriteria, caseSensitive, true, true, lookupProperties);
-  }
-
-  /**
-   * Instantiates a new EntityLookupModel
-   * @param entityID the ID of the entity to lookup
-   * @param dbProvider the EntityDbProvider to use when performing the lookup
-   * @param additionalLookupCriteria an additional lookup criteria
-   * @param caseSensitive if true then this lookup model is case sensitive, defaults to false
-   * @param wildcardPrefix if true then a wildcard is automatically prefixed to the search string
-   * @param wildcardPostfix if true then a wildcard is automatically appended to the search string
-   * @param lookupProperties the properties to search by, these must be string based
-   */
-  public EntityLookupModel(final String entityID, final EntityDbProvider dbProvider, final Criteria additionalLookupCriteria,
-                           final boolean caseSensitive, final boolean wildcardPrefix, final boolean wildcardPostfix,
-                           final List<Property> lookupProperties) {
-
     Util.rejectNullValue(entityID);
     Util.rejectNullValue(dbProvider);
     Util.rejectNullValue(lookupProperties);
     this.dbProvider = dbProvider;
     this.entityID = entityID;
     this.lookupProperties = lookupProperties;
-    this.additionalLookupCriteria = additionalLookupCriteria;
-    this.caseSensitive = caseSensitive;
-    this.wildcardPrefix = wildcardPrefix;
-    this.wildcardPostfix = wildcardPostfix;
   }
 
   /**
@@ -200,9 +154,11 @@ public class EntityLookupModel {
   /**
    * Specifies whether or not this lookup model should be case sensitive
    * @param caseSensitive if true then this lookup model is case sensitive
+   * @return this EntityLookupModel instance
    */
-  public void setCaseSensitive(final boolean caseSensitive) {
+  public EntityLookupModel setCaseSensitive(final boolean caseSensitive) {
     this.caseSensitive = caseSensitive;
+    return this;
   }
 
   /**
@@ -215,9 +171,11 @@ public class EntityLookupModel {
   /**
    * Specifies whether or not to automatically append a wildcard to the search string
    * @param wildcardPostfix if true then a wildcard is automatically appended to the search string
+   * @return this EntityLookupModel instance
    */
-  public void setWildcardPostfix(final boolean wildcardPostfix) {
+  public EntityLookupModel setWildcardPostfix(final boolean wildcardPostfix) {
     this.wildcardPostfix = wildcardPostfix;
+    return this;
   }
 
   /**
@@ -230,9 +188,11 @@ public class EntityLookupModel {
   /**
    * Specifies whether or not to automatically prefix the search string with a wildcard
    * @param wildcardPrefix if true then a wildcard is automatically prefixed to the search string
+   * @return this EntityLookupModel instance
    */
-  public void setWildcardPrefix(final boolean wildcardPrefix) {
+  public EntityLookupModel setWildcardPrefix(final boolean wildcardPrefix) {
     this.wildcardPrefix = wildcardPrefix;
+    return this;
   }
 
   /**
@@ -245,9 +205,11 @@ public class EntityLookupModel {
   /**
    * Sets the wildcard to use
    * @param wildcard the wildcard
+   * @return this EntityLookupModel instance
    */
-  public void setWildcard(final String wildcard) {
+  public EntityLookupModel setWildcard(final String wildcard) {
     this.wildcard = wildcard;
+    return this;
   }
 
   /**
@@ -260,20 +222,24 @@ public class EntityLookupModel {
   /**
    * Sets the string to use to separate multiple values when shown as a string
    * @param multipleValueSeparator the separator string
+   * @return this EntityLookupModel instance
    */
-  public void setMultipleValueSeparator(final String multipleValueSeparator) {
+  public EntityLookupModel setMultipleValueSeparator(final String multipleValueSeparator) {
     this.multipleValueSeparator = multipleValueSeparator;
     refreshSearchText();
+    return this;
   }
 
   /**
    * Sets the additional lookup criteria to use when performing the lookup.
    * This criteria is AND'ed to the actual lookup criteria.
    * @param additionalLookupCriteria the additional lookup criteria
+   * @return this EntityLookupModel instance
    */
-  public void setAdditionalLookupCriteria(final Criteria additionalLookupCriteria) {
+  public EntityLookupModel setAdditionalLookupCriteria(final Criteria additionalLookupCriteria) {
     this.additionalLookupCriteria = additionalLookupCriteria;
     setSelectedEntities(null);
+    return this;
   }
 
   /**

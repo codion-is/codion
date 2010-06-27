@@ -1187,7 +1187,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
         throw new RuntimeException("No searchable properties found for entity: " + foreignKeyProperty.getReferencedEntityID());
       }
 
-      return new EntityLookupProvider(editModel.createEntityLookupModel(foreignKeyProperty.getReferencedEntityID(), null, searchProperties), currentValue);
+      return new EntityLookupProvider(editModel.createEntityLookupModel(foreignKeyProperty.getReferencedEntityID(), searchProperties, null), currentValue);
     }
   }
 

@@ -35,13 +35,13 @@ public class EntityListModel extends AbstractListModel implements Refreshable {
   private final String entityID;
   private final EntityDbProvider dbProvider;
   private final List<Entity> data = new ArrayList<Entity>();
-  private final boolean staticData;
 
   /**
    * the EntitySelectCriteria used to filter the data
    */
   private EntitySelectCriteria selectCriteria;
 
+  private boolean staticData = false;
   private boolean dataInitialized = false;
 
   private final DefaultListSelectionModel selectionModel = new DefaultListSelectionModel() {
@@ -59,19 +59,10 @@ public class EntityListModel extends AbstractListModel implements Refreshable {
   };
 
   public EntityListModel(final String entityID, final EntityDbProvider dbProvider) {
-    this(entityID, dbProvider, false);
-  }
-
-  public EntityListModel(final String entityID, final EntityDbProvider dbProvider, final boolean staticData) {
-    if (entityID == null) {
-      throw new IllegalArgumentException("EntityListModel requires a non-null entityID");
-    }
-    if (dbProvider == null) {
-      throw new IllegalArgumentException("EntityListModel requires a non-null dbProvider");
-    }
+    Util.rejectNullValue(entityID);
+    Util.rejectNullValue(dbProvider);
     this.entityID = entityID;
     this.dbProvider = dbProvider;
-    this.staticData = staticData;
   }
 
   /**
@@ -102,6 +93,15 @@ public class EntityListModel extends AbstractListModel implements Refreshable {
 
     dataInitialized = true;
     evtRefreshDone.fire();
+  }
+
+  public boolean isStaticData() {
+    return staticData;
+  }
+
+  public EntityListModel setStaticData(final boolean staticData) {
+    this.staticData = staticData;
+    return this;
   }
 
   public void clear() {

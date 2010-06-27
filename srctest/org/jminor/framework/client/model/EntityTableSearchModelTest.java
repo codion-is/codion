@@ -15,11 +15,11 @@ public class EntityTableSearchModelTest {
   @Test
   public void testConstructor() {
     try {
-      new EntityTableSearchModel(null, new ArrayList<Property>(), EntityDbConnectionTest.DB_PROVIDER, false);
+      new EntityTableSearchModel(null, EntityDbConnectionTest.DB_PROVIDER, new ArrayList<Property>(), false);
     }
     catch (IllegalArgumentException e) {}
     try {
-      new EntityTableSearchModel("entityID", null, EntityDbConnectionTest.DB_PROVIDER, false);
+      new EntityTableSearchModel("entityID", EntityDbConnectionTest.DB_PROVIDER, null, false);
     }
     catch (IllegalArgumentException e) {}
   }

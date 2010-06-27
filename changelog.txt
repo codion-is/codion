@@ -1775,3 +1775,9 @@
   Entity.foreignKeyValues field removed
   Entity, removed lots and lots of overridden stuff due to the above changes
   Entity.Key now extends ValueMapImpl instead of ValueChangeMapImpl
+  RegexpFilterCriteria added
+  AbstractFilteredTableModel/Panel added regular expression search
+  EntityComboBoxModel replaced overloaded constructor with setters
+  EntityLookupModel replaced overloaded constructor with setters
+  EntityLookupField replaced overloaded constructor with setters
+  EntityTableModel replaced overloaded constructor with setters

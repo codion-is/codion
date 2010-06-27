@@ -10,10 +10,14 @@ import org.jminor.common.model.Util;
 import org.jminor.common.ui.control.Control;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.textfield.SearchFieldHint;
+import org.jminor.framework.i18n.FrameworkMessages;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -23,6 +27,7 @@ import javax.swing.table.TableColumn;
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.text.Collator;
@@ -165,6 +170,8 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
       }
     });
 
+    txtSearch.setComponentPopupMenu(initializeSearchPopupMenu());
+
     return txtSearch;
   }
 
@@ -197,4 +204,26 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
    * @return the JTable instance
    */
   protected abstract JTable initializeJTable();
+
+  private JPopupMenu initializeSearchPopupMenu() {
+    final JPopupMenu popupMenu = new JPopupMenu();
+    popupMenu.add(new AbstractAction(FrameworkMessages.get(FrameworkMessages.SETTINGS)) {
+      public void actionPerformed(ActionEvent e) {
+        final JPanel panel = new JPanel(new GridLayout(1,1,5,5));
+        final JCheckBox boxRegexp =
+                new JCheckBox(Messages.get(Messages.REGULAR_EXPRESSION_SEARCH), getTableModel().isRegularExpressionSearch());
+        panel.add(boxRegexp);
+        final AbstractAction action = new AbstractAction(Messages.get(Messages.OK)) {
+          public void actionPerformed(final ActionEvent evt) {
+            getTableModel().setRegularExpressionSearch(boxRegexp.isSelected());
+          }
+        };
+        action.putValue(Action.MNEMONIC_KEY, Messages.get(Messages.OK_MNEMONIC).charAt(0));
+        UiUtil.showInDialog(UiUtil.getParentWindow(AbstractFilteredTablePanel.this), panel, true,
+                FrameworkMessages.get(FrameworkMessages.SETTINGS), true, true, action);
+      }
+    });
+
+    return popupMenu;
+  }
 }

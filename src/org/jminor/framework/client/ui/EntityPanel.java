@@ -150,7 +150,7 @@ public abstract class EntityPanel extends JPanel {
   /**
    * indicates where the control panel should be placed in a BorderLayout
    */
-  private String controlPanelConstraints = BorderLayout.EAST;
+  private String controlPanelConstraints = Configuration.getBooleanValue(Configuration.TOOLBAR_BUTTONS) ? BorderLayout.WEST : BorderLayout.EAST;
 
   /**
    * Holds the current state of the edit panel (HIDDEN, EMBEDDED or DIALOG)

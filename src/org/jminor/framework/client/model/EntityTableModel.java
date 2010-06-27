@@ -105,11 +105,17 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
     this(entityID, dbProvider, new EntityTableColumnModel(entityID));
   }
 
-  public EntityTableModel(final String entityID, final EntityDbProvider dbProvider, final EntityTableColumnModel columnModel) {
-    super(columnModel);
+  public EntityTableModel(final String entityID, final EntityDbProvider dbProvider,
+                          final EntityTableColumnModel columnModel) {
+    this(entityID, dbProvider, new EntityTableSearchModel(entityID, dbProvider, columnModel.getColumnProperties(), false));
+  }
+
+  public EntityTableModel(final String entityID, final EntityDbProvider dbProvider,
+                          final EntityTableSearchModel tableSearchModel) {
+    super(new EntityTableColumnModel(entityID, tableSearchModel.getProperties()));
     this.entityID = entityID;
     this.dbProvider = dbProvider;
-    this.tableSearchModel = initializeSearchModel();
+    this.tableSearchModel = tableSearchModel;
     bindEventsInternal();
     bindEvents();
   }
@@ -573,14 +579,14 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
     if (editModel == null) {
       throw new RuntimeException("No edit model has been set for table model: " + this);
     }
-     editModel.delete(getSelectedItems());
+    editModel.delete(getSelectedItems());
   }
 
   public void update(final List<Entity> entitites) throws CancelException, ValidationException, DbException {
     if (editModel == null) {
       throw new RuntimeException("No edit model has been set for table model: " + this);
     }
-     editModel.update(entitites);
+    editModel.update(entitites);
   }
 
   /**
@@ -714,14 +720,6 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
     final Property property = (Property) getColumnModel().getColumn(convertColumnIndexToView(columnIndex)).getIdentifier();
 
     return getItemAt(rowIndex).getValueAsString(property);
-  }
-
-  /**
-   * Initializes a EntityTableSearchModel based on the properties constituting this EntityTableModel
-   * @return a EntityTableSearchModel for this EntityTableModel
-   */
-  protected EntityTableSearchModel initializeSearchModel() {
-    return new EntityTableSearchModel(entityID, getColumnModel().getColumnProperties(), dbProvider, false);
   }
 
   /**

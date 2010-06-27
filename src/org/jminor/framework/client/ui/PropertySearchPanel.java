@@ -131,8 +131,8 @@ public class PropertySearchPanel extends AbstractSearchPanel<Property> {
       return field;
     }
     else {
-      final EntityLookupField field =
-              new EntityLookupField(((PropertySearchModel) getModel()).getEntityLookupModel(), getEnableAction());
+      final EntityLookupField field = new EntityLookupField(((PropertySearchModel) getModel()).getEntityLookupModel());
+      field.setEnterAction(getEnableAction());
       field.getModel().refreshSearchText();
 
       return field;

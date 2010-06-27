@@ -34,7 +34,7 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
   private String nullValueString;
 
   private FilterCriteria filterCriteria;
-  private boolean sortContents = false;
+  private boolean sortContents = true;
 
   private final Comparator<? super Object> sortComparator;
 

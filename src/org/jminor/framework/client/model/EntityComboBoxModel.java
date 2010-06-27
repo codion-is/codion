@@ -13,8 +13,6 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
 
-import org.apache.log4j.Logger;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -32,8 +30,6 @@ import java.util.Set;
  */
 public class EntityComboBoxModel extends FilteredComboBoxModel {
 
-  private static final Logger LOG = Util.getLogger(EntityComboBoxModel.class);
-
   private final Event evtRefreshDone = new Event();
 
   /**
@@ -49,7 +45,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
   /**
    * true if the data should only be fetched once, unless <code>forceRefresh()</code> is called
    */
-  private final boolean staticData;
+  private boolean staticData = false;
 
   /**
    * true after the data has been fetched for the first time
@@ -90,48 +86,10 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
    * @param dbProvider a EntityDbProvider instance
    */
   public EntityComboBoxModel(final String entityID, final EntityDbProvider dbProvider) {
-    this(entityID, dbProvider, false);
-  }
-
-  /**
-   * @param entityID the ID of the entity this combo box model should represent
-   * @param dbProvider a EntityDbProvider instance
-   * @param staticData if true this combo box model is refreshed only on initialization
-   * and on subsequent calls to <code>forceRefresh</code>
-   */
-  public EntityComboBoxModel(final String entityID, final EntityDbProvider dbProvider,
-                             final boolean staticData) {
-    this(entityID, dbProvider, staticData, null);
-  }
-
-  /**
-   * @param entityID the ID of the entity this combo box model should represent
-   * @param dbProvider a EntityDbProvider instance
-   * @param staticData if true this combo box model is refreshed only on initialization
-   * and on subsequent calls to <code>forceRefresh</code>
-   * @param nullValueItem the item to used to represent a null value
-   */
-  public EntityComboBoxModel(final String entityID, final EntityDbProvider dbProvider,
-                             final boolean staticData, final String nullValueItem) {
-    this(entityID, dbProvider, staticData, nullValueItem, true);
-  }
-
-  /**
-   * @param entityID the ID of the entity this combo box model should represent
-   * @param dbProvider a EntityDbProvider instance
-   * @param staticData if true this combo box model is refreshed only on initialization
-   * and on subsequent calls to <code>forceRefresh</code>
-   * @param nullValueItem the item to used to represent a null value
-   * @param sortContents if true, the contents are sorted
-   */
-  public EntityComboBoxModel(final String entityID, final EntityDbProvider dbProvider,
-                             final boolean staticData, final String nullValueItem, final boolean sortContents) {
-    super(sortContents, nullValueItem);
     Util.rejectNullValue(entityID);
     Util.rejectNullValue(dbProvider);
     this.entityID = entityID;
     this.dbProvider = dbProvider;
-    this.staticData = staticData;
   }
 
   /**
@@ -159,6 +117,15 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
     finally  {
       forceRefresh = false;
     }
+  }
+
+  public boolean isStaticData() {
+    return staticData;
+  }
+
+  public EntityComboBoxModel setStaticData(boolean staticData) {
+    this.staticData = staticData;
+    return this;
   }
 
   /**
@@ -273,8 +240,9 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
   public EntityComboBoxModel createForeignKeyFilterComboBoxModel(final String foreignKeyPropertyID) {
     final Property.ForeignKeyProperty foreignKeyProperty =
             EntityRepository.getForeignKeyProperty(entityID, foreignKeyPropertyID);
-    final EntityComboBoxModel foreignKeyModel = new EntityComboBoxModel(foreignKeyProperty.getReferencedEntityID(),
-            dbProvider, true, "-", true);
+    final EntityComboBoxModel foreignKeyModel
+            = new EntityComboBoxModel(foreignKeyProperty.getReferencedEntityID(), dbProvider);
+    foreignKeyModel.setNullValueString("-");
     foreignKeyModel.refresh();
     linkForeignKeyComboBoxModel(foreignKeyPropertyID, this, foreignKeyModel);
 
@@ -351,7 +319,6 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
   protected List<?> getContents() {
     try {
       if (staticData && dataInitialized && !forceRefresh) {
-        LOG.trace(this + " refresh not required");
         return super.getContents();
       }
       final List<Entity> entities = performQuery();
@@ -367,7 +334,6 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
     finally {
       dataInitialized = true;
       evtRefreshDone.fire();
-      LOG.trace(this + " done refreshing" + (forceRefresh ? " (forced)" : ""));
     }
   }
 

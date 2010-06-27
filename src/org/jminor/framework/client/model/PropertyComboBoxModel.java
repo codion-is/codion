@@ -35,12 +35,12 @@ public class PropertyComboBoxModel extends FilteredComboBoxModel {
 
   /**
    * @param entityID the ID of the underlying entity
-   * @param property the underlying property
    * @param dbProvider a EntityDbProvider instance
+   * @param property the underlying property
    * @param nullValue the value to use to represent a null value
    * @param refreshEvent triggers a refresh
    */
-  public PropertyComboBoxModel(final String entityID, final Property property, final EntityDbProvider dbProvider,
+  public PropertyComboBoxModel(final String entityID, final EntityDbProvider dbProvider, final Property property,
                                final String nullValue, final Event refreshEvent) {
     super(true, nullValue);
     Util.rejectNullValue(entityID);
