@@ -18,6 +18,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -58,7 +59,7 @@ public class EntityJSONParser implements Serializer<Entity>, Deserializer<Entity
 
   public static List<Entity> parseJSONString(final String jsonString) throws JSONException, ParseException {
     if (jsonString == null || jsonString.length() == 0) {
-      return new ArrayList<Entity>(0);
+      return Collections.emptyList();
     }
 
     final JSONObject jsonObject = new JSONObject(jsonString);

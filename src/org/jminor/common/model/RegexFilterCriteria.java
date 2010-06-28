@@ -7,19 +7,27 @@ import java.util.regex.Pattern;
  * Date: 27.6.2010<br>
  * Time: 20:11:27
  */
-public class RegexFilterCriteria implements FilterCriteria<Object> {
+public class RegexFilterCriteria implements FilterCriteria {
 
   private final Pattern pattern;
 
-  public RegexFilterCriteria(final String pattern) {
-    this(pattern, true);
+  public RegexFilterCriteria(final String patternString) {
+    this(patternString, true);
   }
 
   public RegexFilterCriteria(final String patternString, final boolean caseSensitive) {
-    pattern = getPattern(patternString, caseSensitive);
+    pattern = initializePattern(patternString, caseSensitive);
   }
 
-  private Pattern getPattern(String patternString, boolean caseSensitive) {
+  public boolean include(final Object item) {
+    if (item == null || pattern == null) {
+      return false;
+    }
+
+    return pattern.matcher(item.toString()).find();
+  }
+
+  private Pattern initializePattern(final String patternString, final boolean caseSensitive) {
     try {
       if (caseSensitive) {
         return Pattern.compile(patternString);
@@ -30,19 +38,6 @@ public class RegexFilterCriteria implements FilterCriteria<Object> {
     }
     catch (Exception e) {
       return null;
-    }
-  }
-
-  public boolean include(final Object item) {
-    if (item == null || pattern == null) {
-      return false;
-    }
-
-    try {
-      return pattern.matcher(item.toString()).find();
-    }
-    catch (Exception e) {
-      return false;
     }
   }
 }
