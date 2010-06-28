@@ -40,7 +40,6 @@ public class EntityTableCellRenderer implements TableCellRenderer {
     this.tableModel = tableModel;
   }
 
-  /** {@inheritDoc} */
   public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
                                                  final boolean hasFocus, final int row, final int column) {
     final Property property = tableModel.getColumnProperty(column);
@@ -176,7 +175,6 @@ public class EntityTableCellRenderer implements TableCellRenderer {
       setHorizontalAlignment(JLabel.RIGHT);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void setValue(final Object value) {
       String txt = "";
@@ -210,7 +208,6 @@ public class EntityTableCellRenderer implements TableCellRenderer {
       setHorizontalAlignment(JLabel.RIGHT);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void setValue(final Object value) {
       String txt = "";
@@ -239,7 +236,6 @@ public class EntityTableCellRenderer implements TableCellRenderer {
       setHorizontalAlignment(JLabel.CENTER);
     }
 
-    /** {@inheritDoc} */
     public Component getTableCellRendererComponent(final JTable table, final Object value,
                                                    final boolean isSelected, final boolean hasFocus,
                                                    final int row, final int column) {

@@ -87,7 +87,6 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     this.limitForeignKeyFetchDepth = limitForeignKeyFetchDepth;
   }
 
-  /** {@inheritDoc} */
   public List<Entity.Key> insert(final List<Entity> entities) throws DbException {
     if (entities == null || entities.size() == 0) {
       return new ArrayList<Entity.Key>();
@@ -149,7 +148,6 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     }
   }
 
-  /** {@inheritDoc} */
   public List<Entity> update(List<Entity> entities) throws DbException {
     if (entities == null || entities.size() == 0) {
       return entities;
@@ -212,7 +210,6 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     }
   }
 
-  /** {@inheritDoc} */
   public void delete(final EntityCriteria criteria) throws DbException {
     PreparedStatement statement = null;
     String deleteQuery = null;
@@ -242,7 +239,6 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     }
   }
 
-  /** {@inheritDoc} */
   public void delete(final List<Entity.Key> entityKeys) throws DbException {
     if (entityKeys == null || entityKeys.size() == 0) {
       return;
@@ -282,17 +278,14 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     }
   }
 
-  /** {@inheritDoc} */
   public Entity selectSingle(final String entityID, final String propertyID, final Object value) throws DbException {
     return selectSingle(EntityCriteriaUtil.selectCriteria(entityID, propertyID, SearchType.LIKE, value));
   }
 
-  /** {@inheritDoc} */
   public Entity selectSingle(final Entity.Key key) throws DbException {
     return selectSingle(EntityCriteriaUtil.selectCriteria(key));
   }
 
-  /** {@inheritDoc} */
   public Entity selectSingle(final EntitySelectCriteria criteria) throws DbException {
     final List<Entity> entities = selectMany(criteria);
     if (entities.size() == 0) {
@@ -305,7 +298,6 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     return entities.get(0);
   }
 
-  /** {@inheritDoc} */
   @SuppressWarnings({"unchecked"})
   public List<Entity> selectMany(final List<Entity.Key> keys) throws DbException {
     if (keys == null || keys.size() == 0) {
@@ -315,17 +307,14 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     return selectMany(EntityCriteriaUtil.selectCriteria(keys));
   }
 
-  /** {@inheritDoc} */
   public List<Entity> selectMany(final String entityID, final String propertyID, final Object... values) throws DbException {
     return selectMany(EntityCriteriaUtil.selectCriteria(entityID, propertyID, SearchType.LIKE, values));
   }
 
-  /** {@inheritDoc} */
   public List<Entity> selectAll(final String entityID) throws DbException {
     return selectMany(new EntitySelectCriteria(entityID, null, EntityRepository.getOrderByClause(entityID)));
   }
 
-  /** {@inheritDoc} */
   public List<Entity> selectMany(final EntitySelectCriteria criteria) throws DbException {
     PreparedStatement statement = null;
     ResultSet resultSet = null;
@@ -350,7 +339,6 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     }
   }
 
-  /** {@inheritDoc} */
   public List<Object> selectPropertyValues(final String entityID, final String propertyID, final boolean order) throws DbException {
     String sql = null;
     try {
@@ -372,7 +360,6 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     }
   }
 
-  /** {@inheritDoc} */
   public List<List> selectRows(final String statement, final int fetchCount) throws DbException {
     try {
       return queryObjects(statement, fetchCount);
@@ -382,7 +369,6 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     }
   }
 
-  /** {@inheritDoc} */
   public int selectRowCount(final EntityCriteria criteria) throws DbException {
     PreparedStatement statement = null;
     ResultSet resultSet = null;
@@ -416,7 +402,6 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     }
   }
 
-  /** {@inheritDoc} */
   public Map<String, List<Entity>> selectDependentEntities(final List<Entity> entities) throws DbException {
     final Map<String, List<Entity>> dependencyMap = new HashMap<String, List<Entity>>();
     if (entities == null || entities.size() == 0) {
@@ -435,7 +420,6 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     return dependencyMap;
   }
 
-  /** {@inheritDoc} */
   public void executeStatement(final String statement) throws DbException {
     try {
       execute(statement);
@@ -453,7 +437,6 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     }
   }
 
-  /** {@inheritDoc} */
   public Object executeStatement(final String statement, final int outParameterType) throws DbException {
     try {
       final Object result = executeCallableStatement(statement, outParameterType);
@@ -473,12 +456,10 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     }
   }
 
-  /** {@inheritDoc} */
   public ReportResult fillReport(final ReportWrapper reportWrapper, final Map reportParameters) throws ReportException {
     return reportWrapper.fillReport(reportParameters, getConnection());
   }
 
-  /** {@inheritDoc} */
   public void writeBlob(final Entity.Key primaryKey, final String blobPropertyID, final String dataDescription,
                         final byte[] blobData) throws DbException {
     if (isTransactionOpen()) {
@@ -515,7 +496,6 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     }
   }
 
-  /** {@inheritDoc} */
   public byte[] readBlob(final Entity.Key primaryKey, final String blobPropertyID) throws Exception {//todo does not work as is
     try {
       final Property.BlobProperty property =

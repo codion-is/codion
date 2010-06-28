@@ -15,7 +15,6 @@ import org.jminor.common.model.combobox.BooleanComboBoxModel;
 import org.jminor.common.model.combobox.ItemComboBoxModel;
 import org.jminor.common.model.valuemap.ValueChangeEvent;
 import org.jminor.common.model.valuemap.ValueChangeListener;
-import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
 import org.jminor.common.ui.DateInputPanel;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.checkbox.TristateCheckBox;
@@ -90,7 +89,7 @@ public final class EntityUiUtil {
       public void actionPerformed(final ActionEvent e) {
         try {
           final EntityTableModel tableModel = tablePanel.getTableModel();
-          if (!tableModel.getSelectionModel().isSelectionEmpty()) {
+          if (!tableModel.isSelectionEmpty()) {
             final Entity selected = tableModel.getSelectedItem();
             if (!selected.isValueNull(imagePathPropertyID)) {
               UiUtil.showImage(selected.getStringValue(imagePathPropertyID), tablePanel);
@@ -137,7 +136,7 @@ public final class EntityUiUtil {
       protected void bindEvents() {
         eventTableDoubleClicked().addListener(new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            if (!getTableModel().getSelectionModel().isSelectionEmpty()) {
+            if (!getTableModel().isSelectionEmpty()) {
               okAction.actionPerformed(e);
             }
           }
@@ -737,7 +736,7 @@ public final class EntityUiUtil {
   }
 
   public static class EntityComboBoxValueLink extends ComboBoxValueLink<String> {
-    public EntityComboBoxValueLink(final JComboBox comboBox, final ValueChangeMapEditModel<String, Object> editModel,
+    public EntityComboBoxValueLink(final JComboBox comboBox, final EntityEditModel editModel,
                                    final Property property) {
       super(comboBox, editModel, property.getPropertyID(), LinkType.READ_WRITE, property.isString());
     }
@@ -770,7 +769,7 @@ public final class EntityUiUtil {
      * @param editModel the EntityEditModel instance
      * @param foreignKeyPropertyID the foreign key property ID to link
      */
-    public LookupValueLink(final EntityLookupModel lookupModel, final ValueChangeMapEditModel<String, Object> editModel,
+    public LookupValueLink(final EntityLookupModel lookupModel, final EntityEditModel editModel,
                            final String foreignKeyPropertyID) {
       super(editModel, foreignKeyPropertyID, LinkType.READ_WRITE);
       this.lookupModel = lookupModel;
@@ -782,14 +781,12 @@ public final class EntityUiUtil {
       });
     }
 
-    /** {@inheritDoc} */
     @Override
     protected Object getUIValue() {
       final List<Entity> selectedEntities = lookupModel.getSelectedEntities();
       return selectedEntities.size() == 0 ? null : selectedEntities.get(0);
     }
 
-    /** {@inheritDoc} */
     @Override
     protected void setUIValue(final Object value) {
       final List<Entity> valueList = new ArrayList<Entity>();

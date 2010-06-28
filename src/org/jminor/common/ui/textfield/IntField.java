@@ -29,7 +29,6 @@ public class IntField extends TextFieldPlus {
     setRange(min, max);
   }
 
-  /** {@inheritDoc} */
   @Override
   public Object getValue() {
     return this.getInt();
@@ -49,11 +48,9 @@ public class IntField extends TextFieldPlus {
     setText(value == null ? "" : value.toString());
   }
 
-  /** {@inheritDoc} */
   @Override
   protected Document createDefaultModel() {
     return new PlainDocument() {
-      /** {@inheritDoc} */
       @Override
       public void insertString(final int offs, final String str, final AttributeSet a) throws BadLocationException {
         if (getMaxLength() > 0 && getLength() + (str != null ? str.length() : 0) > getMaxLength()) {

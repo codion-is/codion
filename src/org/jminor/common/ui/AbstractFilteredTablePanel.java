@@ -4,9 +4,9 @@
 package org.jminor.common.ui;
 
 import org.jminor.common.i18n.Messages;
-import org.jminor.common.model.AbstractFilteredTableModel;
 import org.jminor.common.model.DocumentAdapter;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.FilteredTableModel;
 import org.jminor.common.ui.control.Control;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.textfield.SearchFieldHint;
@@ -48,7 +48,7 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
   /**
    * The table model
    */
-  private final AbstractFilteredTableModel<T> model;
+  private final FilteredTableModel<T> tableModel;
 
   /**
    * the JTable for showing the underlying entities
@@ -70,9 +70,9 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
    */
   private final JTextField searchField;
 
-  public AbstractFilteredTablePanel(final AbstractFilteredTableModel<T> model) {
-    Util.rejectNullValue(model);
-    this.model = model;
+  public AbstractFilteredTablePanel(final FilteredTableModel<T> tableModel) {
+    Util.rejectNullValue(tableModel);
+    this.tableModel = tableModel;
     this.table = initializeJTable();
     this.tableScrollPane = new JScrollPane(table);
     this.searchField = initializeSearchField();
@@ -81,8 +81,8 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
   /**
    * @return the TableModel used by this TablePanel
    */
-  public AbstractFilteredTableModel<T> getTableModel() {
-    return model;
+  public FilteredTableModel<T> getTableModel() {
+    return tableModel;
   }
 
   /**
@@ -121,8 +121,8 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
    * Shows a dialog for selecting which columns to show/hide
    */
   public void selectTableColumns() {
-    final List<TableColumn> allColumns = Collections.list(getTableModel().getColumnModel().getColumns());
-    allColumns.addAll(getTableModel().getHiddenColumns());
+    final List<TableColumn> allColumns = Collections.list(tableModel.getColumnModel().getColumns());
+    allColumns.addAll(tableModel.getHiddenColumns());
     Collections.sort(allColumns, new Comparator<TableColumn>() {
       public int compare(final TableColumn o1, final TableColumn o2) {
         return Collator.getInstance().compare(o1.getIdentifier().toString(), o2.getIdentifier().toString());
@@ -132,7 +132,7 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
     final JPanel togglePanel = new JPanel(new GridLayout(Math.min(15, allColumns.size()), 0));
     final List<JCheckBox> buttonList = new ArrayList<JCheckBox>();
     for (final TableColumn column : allColumns) {
-      final JCheckBox chkColumn = new JCheckBox(column.getHeaderValue().toString(), getTableModel().isColumnVisible(column.getIdentifier()));
+      final JCheckBox chkColumn = new JCheckBox(column.getHeaderValue().toString(), tableModel.isColumnVisible(column.getIdentifier()));
       buttonList.add(chkColumn);
       togglePanel.add(chkColumn);
     }
@@ -143,7 +143,7 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
     if (result == JOptionPane.OK_OPTION) {
       for (final JCheckBox chkButton : buttonList) {
         final TableColumn column = allColumns.get(buttonList.indexOf(chkButton));
-        getTableModel().setColumnVisible(column.getIdentifier(), chkButton.isSelected());
+        tableModel.setColumnVisible(column.getIdentifier(), chkButton.isSelected());
       }
     }
   }
@@ -178,14 +178,14 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
   private void doSearch(final boolean addToSelection, final int fromIndex, final boolean forward,
                         final String searchText) {
     if (searchText.length() > 0) {
-      final Point viewIndex = getTableModel().findNextItemCoordinate(fromIndex, forward, searchText);
+      final Point viewIndex = tableModel.findNextItemCoordinate(fromIndex, forward, searchText);
       if (viewIndex != null) {
         lastSearchResultIndex = viewIndex;
         if (addToSelection) {
-          getTableModel().addSelectedItemIndex(viewIndex.y);
+          tableModel.addSelectedItemIndex(viewIndex.y);
         }
         else {
-          getTableModel().setSelectedItemIndex(viewIndex.y);
+          tableModel.setSelectedItemIndex(viewIndex.y);
           table.setColumnSelectionInterval(viewIndex.x, viewIndex.x);
         }
         scrollToCoordinate(viewIndex.y, viewIndex.x);
@@ -211,11 +211,11 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
       public void actionPerformed(ActionEvent e) {
         final JPanel panel = new JPanel(new GridLayout(1,1,5,5));
         final JCheckBox boxRegexp =
-                new JCheckBox(Messages.get(Messages.REGULAR_EXPRESSION_SEARCH), getTableModel().isRegularExpressionSearch());
+                new JCheckBox(Messages.get(Messages.REGULAR_EXPRESSION_SEARCH), tableModel.isRegularExpressionSearch());
         panel.add(boxRegexp);
         final AbstractAction action = new AbstractAction(Messages.get(Messages.OK)) {
           public void actionPerformed(final ActionEvent evt) {
-            getTableModel().setRegularExpressionSearch(boxRegexp.isSelected());
+            tableModel.setRegularExpressionSearch(boxRegexp.isSelected());
           }
         };
         action.putValue(Action.MNEMONIC_KEY, Messages.get(Messages.OK_MNEMONIC).charAt(0));

@@ -34,7 +34,6 @@ public class DoubleField extends IntField {
     setRange(min, max);
   }
 
-  /** {@inheritDoc} */
   @Override
   public Object getValue() {
     return getDouble();
@@ -75,7 +74,6 @@ public class DoubleField extends IntField {
     return POINT.equals(string) || COMMA.equals(string);
   }
 
-  /** {@inheritDoc} */
   @Override
   protected Document createDefaultModel() {
     return new PlainDocument() {

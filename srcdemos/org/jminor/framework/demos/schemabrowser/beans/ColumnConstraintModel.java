@@ -3,11 +3,11 @@
  */
 package org.jminor.framework.demos.schemabrowser.beans;
 
-import org.jminor.framework.client.model.EntityModel;
+import org.jminor.framework.client.model.DefaultEntityModel;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser;
 
-public class ColumnConstraintModel extends EntityModel {
+public class ColumnConstraintModel extends DefaultEntityModel {
 
   public ColumnConstraintModel(final EntityDbProvider dbProvider) {
     super(SchemaBrowser.T_COLUMN_CONSTRAINT, dbProvider);

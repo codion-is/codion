@@ -56,7 +56,6 @@ public class EntityDbLocalProvider implements EntityDbProvider {
     this.connectionProperties.put("password", user.getPassword());
   }
 
-  /** {@inheritDoc} */
   public final EntityDb getEntityDb() {
     if (user == null) {
       throw new IllegalStateException("Not logged in");
@@ -88,7 +87,6 @@ public class EntityDbLocalProvider implements EntityDbProvider {
     this.user = user;
   }
 
-  /** {@inheritDoc} */
   public void disconnect() {
     try {
       if (entityDb != null && entityDb.isConnectionValid()) {

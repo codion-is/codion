@@ -4,6 +4,7 @@
 package org.jminor.common.model;
 
 import javax.swing.DefaultListSelectionModel;
+import javax.swing.ListSelectionModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.TableColumnModelEvent;
@@ -36,8 +37,7 @@ import java.util.ListIterator;
  * Time: 09:48:07<br>
  * @param <T> the type of the values in this table model
  */
-public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
-        implements FilterCriteria<T>, Refreshable {
+public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel implements FilteredTableModel<T> {
 
   private final Event evtFilteringStarted = new Event();
   private final Event evtFilteringDone = new Event();
@@ -102,40 +102,26 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
     bindEventsInternal();
   }
 
-  /**
-   * @return an unmodifiable view of the visible items
-   */
   public List<T> getVisibleItems() {
     return Collections.unmodifiableList(visibleItems);
   }
 
-  /**
-   * @return an unmodifiable view of the hidden items
-   */
   public List<T> getHiddenItems() {
     return Collections.unmodifiableList(hiddenItems);
   }
 
-  /**
-   * @return the number of currently visible items
-   */
   public int getVisibleItemCount() {
     return visibleItems.size();
   }
 
-  /**
-   * @return the number of currently filtered (hidden) items
-   */
   public int getHiddenItemCount() {
     return hiddenItems.size();
   }
 
-  /** {@inheritDoc} */
   public int getColumnCount() {
     return columnModel.getColumnCount();
   }
 
-  /** {@inheritDoc} */
   public int getRowCount() {
     return visibleItems.size();
   }
@@ -148,11 +134,6 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
     return isSorting;
   }
 
-  /**
-   * @param item the object to search for
-   * @param includeHidden set to true if the search should include hidden entities
-   * @return true if this table model contains the given object
-   */
   public boolean contains(final T item, final boolean includeHidden) {
     final boolean ret = viewIndexOf(item) >= 0;
     if (!ret && includeHidden) {
@@ -162,32 +143,13 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
     return ret;
   }
 
-  /**
-   * Returns a Point denoting the row and column index of the first value to fulfill
-   * a search criteria based on <code>searchText</code>.
-   * @param startRowIndex the row index to start searching at
-   * @param forward if true then the search is forward, backwards otherwise
-   * @param searchText the search text
-   * @return the search result coordinate, null if nothing was found
-   * @see #getSearchCriteria(String)
-   */
-  public Point findNextItemCoordinate(final int startRowIndex, final boolean forward, final String searchText) {
-    return findNextItemCoordinate(startRowIndex, forward, getSearchCriteria(searchText));
+  public Point findNextItemCoordinate(final int fromIndex, final boolean forward, final String searchText) {
+    return findNextItemCoordinate(fromIndex, forward, getSearchCriteria(searchText));
   }
 
-  /**
-   * Returns a Point denoting the row (point.y) and column index (point.x) of the first value to fulfill
-   * the given search criteria.
-   * @param startRowIndex the row index to start searching at, if this is larger than the size of
-   * the table model or less than 0 the search starts from either 0 or rowCount - 1 depending on search direction.
-   * @param forward if true then the search is forward, backwards otherwise
-   * @param criteria the search criteria
-   * @return the search result coordinate, null if nothing was found
-   * @see FilterCriteria#include(Object)
-   */
-  public Point findNextItemCoordinate(final int startRowIndex, final boolean forward, final FilterCriteria<Object> criteria) {
+  public Point findNextItemCoordinate(final int fromIndex, final boolean forward, final FilterCriteria<Object> criteria) {
     if (forward) {
-      for (int row = startRowIndex >= getRowCount() ? 0 : startRowIndex; row < getRowCount(); row++) {
+      for (int row = fromIndex >= getRowCount() ? 0 : fromIndex; row < getRowCount(); row++) {
         for (int column = 0; column < getColumnCount(); column++) {
           if (criteria.include(getSearchValueAt(row, column))) {
             return new Point(column, row);
@@ -196,7 +158,7 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
       }
     }
     else {
-      for (int row = startRowIndex < 0 ? getRowCount() - 1 : startRowIndex; row >= 0; row--) {
+      for (int row = fromIndex < 0 ? getRowCount() - 1 : fromIndex; row >= 0; row--) {
         for (int column = 0; column < getColumnCount(); column++) {
           if (criteria.include(getSearchValueAt(row, column))) {
             return new Point(column, row);
@@ -208,9 +170,6 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
     return null;
   }
 
-  /**
-   * Clears all entities from this TableModel
-   */
   public void clear() {
     hiddenItems.clear();
     final int size = getRowCount();
@@ -220,24 +179,14 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
     }
   }
 
-  /**
-   * @return the TableSorter used by this TableModel
-   */
   public TableSorter getTableSorter() {
     return tableSorter;
   }
 
-  /**
-   * @return the ListSelectionModel this TableModel uses
-   */
-  public DefaultListSelectionModel getSelectionModel() {
+  public ListSelectionModel getSelectionModel() {
     return selectionModel;
   }
 
-  /**
-   * @param columnIndex the index of the column to sort by
-   * @param status the sorting status, use TableSorter.DESCENDING, .NOT_SORTED, .ASCENDING
-   */
   public void setSortingStatus(final int columnIndex, final int status) {
     if (columnIndex == -1) {
       throw new RuntimeException("Column index can not be negative");
@@ -250,22 +199,14 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
     return regularExpressionSearch;
   }
 
-  public void setRegularExpressionSearch(final boolean regularExpressionSearch) {
-    this.regularExpressionSearch = regularExpressionSearch;
+  public void setRegularExpressionSearch(final boolean value) {
+    this.regularExpressionSearch = value;
   }
 
-  /**
-   * Selects all visible entities
-   * @see #eventSelectionChanged()
-   */
   public void selectAll() {
     getSelectionModel().setSelectionInterval(0, getVisibleItemCount() - 1);
   }
 
-  /**
-   * Clears the selection
-   * @see #eventSelectionChanged()
-   */
   public void clearSelection() {
     getSelectionModel().clearSelection();
   }
@@ -298,10 +239,6 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
     return indexes;
   }
 
-  /**
-   * Moves all selected indexes up one index, wraps around
-   * @see #eventSelectionChanged()
-   */
   public void moveSelectionUp() {
     if (visibleItems.size() > 0) {
       if (getSelectionModel().isSelectionEmpty()) {
@@ -319,10 +256,6 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
     }
   }
 
-  /**
-   * Moves all selected indexes down one index, wraps around
-   * @see #eventSelectionChanged()
-   */
   public void moveSelectionDown() {
     if (visibleItems.size() > 0) {
       if (getSelectionModel().isSelectionEmpty()) {
@@ -340,34 +273,19 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
     }
   }
 
-  /**
-   * Clears the selection and selects the item at <code>index</code>
-   * @param index the index
-   */
   public void setSelectedItemIndex(final int index) {
     selectionModel.setSelectionInterval(index, index);
   }
 
-  /**
-   * Selects the item at <code>index</code>
-   * @param index the index
-   */
   public void addSelectedItemIndex(final int index) {
     selectionModel.addSelectionInterval(index, index);
   }
 
-  /**
-   * Selects the given indexes
-   * @param indexes the indexes to select
-   */
   public void setSelectedItemIndexes(final List<Integer> indexes) {
     selectionModel.clearSelection();
     selectionModel.addSelectedItemIndexes(indexes);
   }
 
-  /**
-   * @return a list containing the selected items
-   */
   public List<T> getSelectedItems() {
     final Collection<Integer> selectedModelIndexes = getSelectedModelIndexes();
     final List<T> selectedItems = new ArrayList<T>();
@@ -378,10 +296,6 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
     return selectedItems;
   }
 
-  /**
-   * Selects the given items
-   * @param items the items to select
-   */
   public void setSelectedItems(final List<T> items) {
     final List<Integer> indexes = new ArrayList<Integer>();
     for (final T item : items) {
@@ -394,9 +308,6 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
     setSelectedItemIndexes(indexes);
   }
 
-  /**
-   * @return the selected item, null if none is selected
-   */
   public T getSelectedItem() {
     final int index = selectionModel.getSelectedIndex();
     if (index >= 0 && index < getVisibleItemCount()) {
@@ -407,10 +318,6 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
     }
   }
 
-  /**
-   * Sets the selected item
-   * @param item the item to select
-   */
   public void setSelectedItem(final T item) {
     setSelectedItems(Arrays.asList(item));
   }
@@ -423,25 +330,22 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
     selectionModel.addSelectedItemIndexes(indexes);
   }
 
-  /**
-   * @return the index of the selected record, -1 if none is selected and
-   * the lowest index if more than one record is selected
-   */
   public int getSelectedIndex() {
     return selectionModel.getSelectedIndex();
   }
 
-  /**
-   * @return the number of selected indexes in the underlying selection model.
-   */
   public int getSelectionCount() {
     return selectionModel.getSelectionCount();
   }
 
-  /**
-   * @param index the index
-   * @return the item at <code>index</code>
-   */
+  public boolean isSelectionEmpty() {
+    return selectionModel.isSelectionEmpty();
+  }
+
+  public ListSelectionModel getSelectionModel2() {
+    return selectionModel;
+  }
+
   public T getItemAtViewIndex(final int index) {
     if (index >= 0 && index < visibleItems.size()) {
       return visibleItems.get(tableSorter.modelIndex(index));
@@ -486,17 +390,10 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
     }
   }
 
-  /**
-   * @return all visible and hidden items in this table model
-   */
   public List<T> getAllItems() {
     return getAllItems(true);
   }
 
-  /**
-   * @param includeHidden if true then filtered items are included
-   * @return all items in this table model
-   */
   public List<T> getAllItems(final boolean includeHidden) {
     final List<T> entities = new ArrayList<T>(visibleItems);
     if (includeHidden) {
@@ -546,11 +443,6 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
     return columnModel.getColumn(columnModel.getColumnIndex(identifier));
   }
 
-  /**
-   * Toggles the visibility of the column representing the given columnIdentifier.<br>
-   * @param columnIdentifier the column identifier
-   * @param visible if true the column is shown, otherwise it is hidden
-   */
   public void setColumnVisible(final Object columnIdentifier, final boolean visible) {
     if (visible) {
       if (!isColumnVisible(columnIdentifier)) {
@@ -583,10 +475,6 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
     evtColumnHidden.fire(new ActionEvent(columnIdentifier, 0, "hideColumn"));
   }
 
-  /**
-   * @param columnIdentifier the key for which to query if its column is visible
-   * @return true if the column is visible, false if it is hidden
-   */
   public boolean isColumnVisible(final Object columnIdentifier) {
     for (final TableColumn column : hiddenColumns) {
       if (column.getIdentifier().equals(columnIdentifier)) {
@@ -601,9 +489,6 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
     return Collections.unmodifiableList(hiddenColumns);
   }
 
-  /**
-   * @return a State active when the selection is empty
-   */
   public State stateSelectionEmpty() {
     return selectionModel.stSelectionEmpty.getLinkedState();
   }
@@ -631,9 +516,6 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
     return evtColumnShown;
   }
 
-  /**
-   * @return an Event fired when the model has been filtered
-   */
   public Event eventFilteringDone() {
     return evtFilteringDone;
   }
@@ -645,16 +527,10 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
     return evtFilteringStarted;
   }
 
-  /**
-   * @return an event fired when the minimum (topmost) selected index changes (minSelectionIndex property in ListSelectionModel)
-   */
   public Event eventSelectedIndexChanged() {
     return selectionModel.evtSelectedIndexChanged;
   }
 
-  /**
-   * @return an Event fired after the selection has changed
-   */
   public Event eventSelectionChanged() {
     return selectionModel.evtSelectionChanged;
   }
@@ -666,9 +542,6 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
     return selectionModel.evtSelectionChangedAdjusting;
   }
 
-  /**
-   * @return an Event fired after the table data has changed
-   */
   public Event eventTableDataChanged() {
     return evtTableDataChanged;
   }
@@ -747,7 +620,7 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
 
   protected FilterCriteria<Object> getSearchCriteria(final String searchText) {
     if (regularExpressionSearch) {
-      return new RegexFilterCriteria(searchText);
+      return new RegexFilterCriteria<Object>(searchText);
     }
 
     return new FilterCriteria<Object>() {

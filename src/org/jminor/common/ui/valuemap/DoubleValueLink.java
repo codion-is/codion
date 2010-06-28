@@ -18,7 +18,6 @@ public class DoubleValueLink<K> extends TextValueLink<K> {
     super(textField, editModel, key, immediateUpdate, linkType);
   }
 
-  /** {@inheritDoc} */
   @Override
   protected Object valueFromText(final String text) {
     try {

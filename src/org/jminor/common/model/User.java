@@ -52,7 +52,6 @@ public class User implements Serializable {
     return password;
   }
 
-  /** {@inheritDoc} */
   @Override
   public String toString() {
     return "User: " + username;

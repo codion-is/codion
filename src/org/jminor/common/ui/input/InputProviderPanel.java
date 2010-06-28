@@ -55,12 +55,10 @@ public class InputProviderPanel extends JPanel implements InputProvider {
     return okButton;
   }
 
-  /** {@inheritDoc} */
   public Object getValue() {
     return inputProvider.getValue();
   }
 
-  /** {@inheritDoc} */
   public JComponent getInputComponent() {
     return inputProvider.getInputComponent();
   }

@@ -39,7 +39,6 @@ public class ItemComboBoxModel<T> extends DefaultComboBoxModel {
     initializeItems(new ArrayList<Item<T>>(items));
   }
 
-  /** {@inheritDoc} */
   @Override
   public void setSelectedItem(final Object anObject) {
     if (!(anObject instanceof Item)) {
@@ -111,22 +110,18 @@ public class ItemComboBoxModel<T> extends DefaultComboBoxModel {
       this.icon = icon;
     }
 
-    /** {@inheritDoc} */
     public int getIconHeight() {
       return icon.getIconHeight();
     }
 
-    /** {@inheritDoc} */
     public int getIconWidth() {
       return icon.getIconWidth();
     }
 
-    /** {@inheritDoc} */
     public void paintIcon(Component c, Graphics g, int x, int y) {
       icon.paintIcon(c, g, x, y);
     }
 
-    /** {@inheritDoc} */
     @Override
     public String toString() {
       return getItem().toString();

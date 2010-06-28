@@ -9,7 +9,7 @@ import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.textfield.IntField;
 
 /**
- * A class for linking a IntField to a ValueChangeMapEditModel int key value.
+ * A class for linking a IntField to a ValueChangeMapEditor int key value.
  */
 public class IntValueLink<K> extends TextValueLink<K> {
 
@@ -18,7 +18,6 @@ public class IntValueLink<K> extends TextValueLink<K> {
     super(textField, editModel, key, immediateUpdate, linkType);
   }
 
-  /** {@inheritDoc} */
   @Override
   protected Object valueFromText(final String text) {
     try {

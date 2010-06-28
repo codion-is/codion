@@ -139,19 +139,16 @@ public class PropertyFilterPanel extends AbstractSearchPanel<Property> {
     return stIsDialogShowing.getLinkedState();
   }
 
-  /** {@inheritDoc} */
   @Override
   protected boolean isLowerBoundFieldRequired(final Property property) {
     return property.isBoolean();
   }
 
-  /** {@inheritDoc} */
   @Override
   protected boolean searchTypeAllowed(final SearchType searchType) {
     return true;
   }
 
-  /** {@inheritDoc} */
   @Override
   protected SimpleDateFormat getInputFormat() {
     if (getModel().getType() == Types.TIMESTAMP) {
@@ -164,7 +161,6 @@ public class PropertyFilterPanel extends AbstractSearchPanel<Property> {
     return null;
   }
 
-  /** {@inheritDoc} */
   @Override
   protected JComponent getInputField(final boolean isUpperBound) {
     final SimpleDateFormat format = getInputFormat();

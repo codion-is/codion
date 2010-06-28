@@ -21,7 +21,6 @@ public class CriteriaSet<T> implements Criteria<T>, Serializable {
   public enum Conjunction {
     AND, OR;
 
-    /** {@inheritDoc} */
     @Override
     public String toString() {
       switch (this) {
@@ -82,7 +81,6 @@ public class CriteriaSet<T> implements Criteria<T>, Serializable {
     return criteriaList.size();
   }
 
-  /** {@inheritDoc} */
   public String asString() {
     if (criteriaList.size() == 0) {
       return "";

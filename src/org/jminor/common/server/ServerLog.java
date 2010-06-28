@@ -138,14 +138,12 @@ public class ServerLog implements Serializable {
     return TIMESTAMP_FORMAT.get().format(lastExitDate);
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean equals(final Object obj) {
     return this == obj || !((obj == null) || (obj.getClass() != this.getClass()))
             && connectionKey.equals(((ServerLog) obj).connectionKey);
   }
 
-  /** {@inheritDoc} */
   @Override
   public int hashCode() {
     return connectionKey.hashCode();

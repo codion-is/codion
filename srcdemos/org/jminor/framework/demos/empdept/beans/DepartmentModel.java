@@ -3,11 +3,11 @@
  */
 package org.jminor.framework.demos.empdept.beans;
 
-import org.jminor.framework.client.model.EntityModel;
+import org.jminor.framework.client.model.DefaultEntityModel;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 
-public class DepartmentModel extends EntityModel {
+public class DepartmentModel extends DefaultEntityModel {
 
   public DepartmentModel(final EntityDbProvider dbProvider) {
     super(EmpDept.T_DEPARTMENT, dbProvider);

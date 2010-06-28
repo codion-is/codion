@@ -167,7 +167,6 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
     return (Entity) getSelectedItem();
   }
 
-  /** {@inheritDoc} */
   @Override
   public void setSelectedItem(final Object anItem) {
     if (getSize() == 0) {
@@ -193,7 +192,6 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public String toString() {
     return getClass().getSimpleName() + " [entityID: " + entityID + "]";

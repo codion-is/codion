@@ -53,7 +53,6 @@ public class MethodControl extends Control {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public void actionPerformed(final ActionEvent e) {
     try {

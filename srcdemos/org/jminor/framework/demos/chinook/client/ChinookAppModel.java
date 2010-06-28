@@ -28,7 +28,7 @@ public class ChinookAppModel extends EntityApplicationModel {
 
   @Override
   protected List<? extends EntityModel> initializeMainApplicationModels(final EntityDbProvider dbProvider) {
-    return Arrays.asList(new ArtistModel(getDbProvider()), new PlaylistModel(getDbProvider()), 
+    return Arrays.asList(new ArtistModel(getDbProvider()), new PlaylistModel(getDbProvider()),
             new CustomerModel(getDbProvider()));
   }
 

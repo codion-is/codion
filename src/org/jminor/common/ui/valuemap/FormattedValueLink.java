@@ -49,7 +49,6 @@ public class FormattedValueLink<K> extends TextValueLink<K> {
     return format;
   }
 
-  /** {@inheritDoc} */
   @Override
   protected Object valueFromText(final String text) {
     if (text == null) {
@@ -64,7 +63,6 @@ public class FormattedValueLink<K> extends TextValueLink<K> {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   protected String getValueAsString(final Object value) {
     if (value == null) {
@@ -74,7 +72,6 @@ public class FormattedValueLink<K> extends TextValueLink<K> {
     return format == null ? value.toString() : format.format(value);
   }
 
-  /** {@inheritDoc} */
   @Override
   protected String getText() {
     final String value = super.getText();
@@ -89,7 +86,6 @@ public class FormattedValueLink<K> extends TextValueLink<K> {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   protected void addValidator(final JTextComponent textComponent, final ValueChangeMapEditModel<K, Object> editModel) {
     final Color defaultTextFieldBackground = textComponent.getBackground();

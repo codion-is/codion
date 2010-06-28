@@ -37,8 +37,8 @@ public class PetstoreLoadTest extends EntityLoadTestModel {
   protected Collection<UsageScenario> initializeUsageScenarios() {
     final UsageScenario scenario = new UsageScenario("selectRecords") {
       @Override
-      protected void performScenario(final Object applicationModel) throws Exception {
-        final EntityModel categoryModel = ((EntityApplicationModel) applicationModel).getMainApplicationModels().iterator().next();
+      protected void performScenario(final Object application) throws Exception {
+        final EntityModel categoryModel = ((EntityApplicationModel) application).getMainApplicationModels().iterator().next();
         categoryModel.getTableModel().clearSelection();
         categoryModel.refresh();
         selectRandomRow(categoryModel.getTableModel());

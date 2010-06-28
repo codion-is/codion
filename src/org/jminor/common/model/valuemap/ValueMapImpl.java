@@ -32,52 +32,42 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V>, Serializable {
     values = new HashMap<K, V>(initialSize);
   }
 
-  /** {@inheritDoc} */
   public boolean containsValue(final K key) {
     return values.containsKey(key);
   }
 
-  /** {@inheritDoc} */
   public boolean isValueNull(final K key) {
     return getValue(key) == null;
   }
 
-  /** {@inheritDoc} */
   public V removeValue(final K key) {
     return values.remove(key);
   }
 
-  /** {@inheritDoc} */
   public V setValue(final K key, final V value) {
     return values.put(key, value);
   }
 
-  /** {@inheritDoc} */
   public V getValue(final K key) {
     return values.get(key);
   }
 
-  /** {@inheritDoc} */
   public Collection<K> getValueKeys() {
     return Collections.unmodifiableCollection(values.keySet());
   }
 
-  /** {@inheritDoc} */
   public void clear() {
     values.clear();
   }
 
-  /** {@inheritDoc} */
   public int size() {
     return values.size();
   }
 
-  /** {@inheritDoc} */
   public ValueMap<K, V> getInstance() {
     return new ValueMapImpl<K, V>();
   }
 
-  /** {@inheritDoc} */
   public ValueMap<K, V> getCopy() {
     final ValueMap<K, V> copy = getInstance();
     copy.setAs(this);
@@ -85,7 +75,6 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V>, Serializable {
     return copy;
   }
 
-  /** {@inheritDoc} */
   public void setAs(final ValueMap<K, V> sourceMap) {
     clear();
     if (sourceMap != null) {
@@ -96,12 +85,10 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V>, Serializable {
     }
   }
 
-  /** {@inheritDoc} */
   public V copyValue(final V value) {
     return value;
   }
 
-  /** {@inheritDoc} */
   public Collection<V> getValues() {
     return Collections.unmodifiableCollection(values.values());
   }

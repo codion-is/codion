@@ -11,7 +11,6 @@ import java.awt.event.ActionListener;
  */
 public abstract class ValueChangeListener<K, V> implements ActionListener {
 
-  /** {@inheritDoc} */
   @SuppressWarnings({"unchecked"})
   public final void actionPerformed(final ActionEvent e) {
     if (!(e instanceof ValueChangeEvent)) {

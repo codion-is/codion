@@ -7,9 +7,9 @@ import org.jminor.common.model.FilterCriteria;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.valuemap.ValueChangeEvent;
 import org.jminor.common.model.valuemap.ValueChangeListener;
+import org.jminor.framework.client.model.DefaultEntityEditModel;
+import org.jminor.framework.client.model.DefaultEntityModel;
 import org.jminor.framework.client.model.EntityComboBoxModel;
-import org.jminor.framework.client.model.EntityEditModel;
-import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.PropertySummaryModel;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.db.provider.EntityDbProvider;
@@ -20,7 +20,7 @@ import org.jminor.framework.domain.Property;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class EmployeeModel extends EntityModel {
+public class EmployeeModel extends DefaultEntityModel {
 
   public EmployeeModel(final EntityDbProvider dbProvider) {
     super(new EmployeeEditModel(dbProvider));
@@ -31,7 +31,7 @@ public class EmployeeModel extends EntityModel {
   @Override
   protected void bindEvents() {
     //Refresh the manager ComboBoxModel when an employee is either added or updated
-    eventEntitiesChanged().addListener(new ActionListener() {
+    getEditModel().eventEntitiesChanged().addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         if (getEditModel().containsComboBoxModel(EmpDept.EMPLOYEE_MGR_FK)) {
           getEditModel().getEntityComboBoxModel(EmpDept.EMPLOYEE_MGR_FK).refresh();
@@ -57,7 +57,7 @@ public class EmployeeModel extends EntityModel {
     });
   }
 
-  static class EmployeeEditModel extends EntityEditModel {
+  static class EmployeeEditModel extends DefaultEntityEditModel {
 
     EmployeeEditModel(final EntityDbProvider dbProvider) {
       super(EmpDept.T_EMPLOYEE, dbProvider);

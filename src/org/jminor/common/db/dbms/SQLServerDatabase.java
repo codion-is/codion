@@ -18,22 +18,18 @@ public class SQLServerDatabase extends AbstractDatabase {
     super(SQLSERVER, host, port, databaseName, false);
   }
 
-  /** {@inheritDoc} */
   public void loadDriver() throws ClassNotFoundException {
     Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
   }
 
-  /** {@inheritDoc} */
   public String getAutoIncrementValueSQL(final String idSource) {
     return "SELECT SCOPE_IDENTITY()";
   }
 
-  /** {@inheritDoc} */
   public String getSequenceSQL(final String sequenceName) {
     throw new RuntimeException("Sequence support is not implemented for database type: " + getDatabaseType());
   }
 
-  /** {@inheritDoc} */
   public String getURL(final Properties connectionProperties) {
     final String sid = getSid();
     return "jdbc:sqlserver://" + getHost() + ":" + getPort() + (sid != null && sid.length() > 0 ? ";databaseName=" + sid : "");

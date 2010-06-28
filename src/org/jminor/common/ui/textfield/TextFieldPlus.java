@@ -84,7 +84,6 @@ public class TextFieldPlus extends JTextField {
     return max;
   }
 
-  /** {@inheritDoc} */
   @Override
   public void setText(final String t) {
     super.setText(t == null ? "" : t);
@@ -94,7 +93,6 @@ public class TextFieldPlus extends JTextField {
     return ((value <= max) && (value >= min));
   }
 
-  /** {@inheritDoc} */
   @Override
   protected Document createDefaultModel() {
     return new PlainDocument() {

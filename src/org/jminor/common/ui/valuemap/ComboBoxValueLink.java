@@ -5,8 +5,8 @@ package org.jminor.common.ui.valuemap;
 
 import org.jminor.common.model.DocumentAdapter;
 import org.jminor.common.model.Item;
-import org.jminor.common.model.combobox.ItemComboBoxModel;
 import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
+import org.jminor.common.model.combobox.ItemComboBoxModel;
 import org.jminor.common.ui.control.LinkType;
 
 import javax.swing.ComboBoxModel;
@@ -68,7 +68,6 @@ public class ComboBoxValueLink<K> extends AbstractValueMapLink<K, Object> {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   protected Object getUIValue() {
     if (boxModel instanceof ItemComboBoxModel) {
@@ -78,7 +77,6 @@ public class ComboBoxValueLink<K> extends AbstractValueMapLink<K, Object> {
     return boxModel.getSelectedItem();
   }
 
-  /** {@inheritDoc} */
   @Override
   protected void setUIValue(final Object value) {
     boxModel.setSelectedItem(value);

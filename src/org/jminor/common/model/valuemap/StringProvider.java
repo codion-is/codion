@@ -50,7 +50,6 @@ public class StringProvider<K> implements ValueMap.ToString<K>, Serializable {
     addValue(key);
   }
 
-  /** {@inheritDoc} */
   public String toString(final ValueMap<K, ?> valueMap) {
     final StringBuilder builder = new StringBuilder();
     for (final ValueProvider<K> valueProvider : valueProviders) {

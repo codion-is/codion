@@ -49,7 +49,6 @@ public class FlexibleGridLayout extends GridLayout {
     fixedColumnWidth = width;
   }
 
-  /** {@inheritDoc} */
   @Override
   public Dimension preferredLayoutSize(Container parent) {
     synchronized (parent.getTreeLock()) {
@@ -93,7 +92,6 @@ public class FlexibleGridLayout extends GridLayout {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public Dimension minimumLayoutSize(final Container parent) {
     synchronized (parent.getTreeLock()) {
@@ -137,7 +135,6 @@ public class FlexibleGridLayout extends GridLayout {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public void layoutContainer(final Container parent) {
     synchronized (parent.getTreeLock()) {

@@ -30,13 +30,11 @@ public abstract class AbstractValueMapLink<K, V> extends AbstractValueLink<Value
     this.key = key;
   }
 
-  /** {@inheritDoc} */
   @Override
   public V getModelValue() {
     return isModelValueNull() ? null : getEditModel().getValue(key);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void setModelValue(final V value) {
     getEditModel().setValue(key, value);
@@ -80,7 +78,7 @@ public abstract class AbstractValueMapLink<K, V> extends AbstractValueLink<Value
   }
 
   /**
-   * @return the value owner, in this case a ValueChangeMapEditModel
+   * @return the value owner, in this case a ValueChangeMapEditor
    */
   protected ValueChangeMapEditModel<K, V> getEditModel() {
     return super.getValueOwner();

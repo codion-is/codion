@@ -33,20 +33,16 @@ public class TextBeanValueLink extends AbstractBeanValueLink implements Document
     this.document.addDocumentListener(this);
   }
 
-  /** {@inheritDoc} */
   public void insertUpdate(final DocumentEvent e) {
     updateModel();
   }
 
-  /** {@inheritDoc} */
   public void removeUpdate(final DocumentEvent e) {
     updateModel();
   }
 
-  /** {@inheritDoc} */
   public void changedUpdate(final DocumentEvent e) {}
 
-  /** {@inheritDoc} */
   @Override
   protected void setUIValue(final Object value) {
     try {

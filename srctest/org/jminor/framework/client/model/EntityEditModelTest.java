@@ -5,7 +5,7 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.State;
-import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
+import org.jminor.common.model.valuemap.AbstractValueChangeMapEditModel;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.client.model.event.DeleteEvent;
 import org.jminor.framework.client.model.event.InsertEvent;
@@ -40,17 +40,17 @@ public class EntityEditModelTest {
   @Test
   public void test() throws Exception {
     try {
-      new EntityEditModel(null, EntityDbConnectionTest.DB_PROVIDER);
+      new DefaultEntityEditModel(null, EntityDbConnectionTest.DB_PROVIDER);
       fail();
     }
     catch (IllegalArgumentException e) {}
     try {
-      new EntityEditModel("entityID", null);
+      new DefaultEntityEditModel("entityID", null);
       fail();
     }
     catch (IllegalArgumentException e) {}
     try {
-      new EntityEditModel(null, null);
+      new DefaultEntityEditModel(null, null);
       fail();
     }
     catch (IllegalArgumentException e) {}
@@ -73,7 +73,7 @@ public class EntityEditModelTest {
 
     assertFalse("Active entity is new after an entity is selected", editModel.isEntityNew());
     assertFalse(editModel.stateModified().isActive());
-    employeeModel.getTableModel().getSelectionModel().clearSelection();
+    employeeModel.getTableModel().clearSelection();
     assertTrue("Active entity is new null after selection is cleared", editModel.isEntityNew());
     assertFalse(editModel.stateModified().isActive());
     assertTrue("Active entity is not null after selection is cleared", editModel.getEntityCopy().isNull());
@@ -108,7 +108,7 @@ public class EntityEditModelTest {
     //test validation
     try {
       editModel.setValue(EmpDept.EMPLOYEE_COMMISSION, 50d);
-      editModel.validate(EmpDept.EMPLOYEE_COMMISSION, ValueChangeMapEditModel.INSERT);
+      editModel.validate(EmpDept.EMPLOYEE_COMMISSION, AbstractValueChangeMapEditModel.INSERT);
       fail("Validation should fail on invalid commission value");
     }
     catch (ValidationException e) {

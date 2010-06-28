@@ -177,6 +177,6 @@ public abstract class EntityApplicationModel implements Refreshable {
   protected void bindEvents() {}
 
   protected EntityModel createEntityModel(final String entityID) {
-    return new EntityModel(entityID, dbProvider);
+    return new DefaultEntityModel(entityID, dbProvider);
   }
 }

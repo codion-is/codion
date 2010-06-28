@@ -34,7 +34,7 @@ public class DepartmentPanel extends EntityPanel {
   }
 
   public void viewEmployeeReport() throws Exception {
-    if (getModel().getTableModel().getSelectionModel().isSelectionEmpty()) {
+    if (getModel().getTableModel().isSelectionEmpty()) {
       return;
     }
 

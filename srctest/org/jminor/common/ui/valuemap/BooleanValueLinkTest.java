@@ -3,10 +3,10 @@
  */
 package org.jminor.common.ui.valuemap;
 
-import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
 import org.jminor.framework.db.EntityDbConnectionTest;
 import org.jminor.framework.demos.petstore.beans.ItemModel;
 import org.jminor.framework.demos.petstore.domain.Petstore;
+import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

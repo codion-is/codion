@@ -45,19 +45,16 @@ public class Control extends AbstractAction {
     setIcon(icon);
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isEnabled() {
     return enabledState.isActive();
   }
 
-  /** {@inheritDoc} */
   @Override
   public void setEnabled(final boolean newValue) {
     enabledState.setActive(newValue);
   }
 
-  /** {@inheritDoc} */
   public void actionPerformed(final ActionEvent e) {}
 
   /**

@@ -18,22 +18,18 @@ public class PostgreSQLDatabase extends AbstractDatabase {
     super(POSTGRESQL, host, port, database, false);
   }
 
-  /** {@inheritDoc} */
   public void loadDriver() throws ClassNotFoundException {
     Class.forName("org.postgresql.Driver");
   }
 
-  /** {@inheritDoc} */
   public String getAutoIncrementValueSQL(final String idSource) {
     return "select currval(" + idSource + ")";
   }
 
-  /** {@inheritDoc} */
   public String getSequenceSQL(final String sequenceName) {
     return "select nextval(" + sequenceName + ")";
   }
 
-  /** {@inheritDoc} */
   public String getURL(final Properties connectionProperties) {
     return "jdbc:postgresql://" + getHost() + ":" + getPort() + "/" + getSid();
   }

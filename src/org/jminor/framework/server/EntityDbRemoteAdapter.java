@@ -144,12 +144,10 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     catch (ServerNotActiveException e) {/**/}
   }
 
-  /** {@inheritDoc} */
   public User getUser() throws RemoteException {
     return clientInfo.getUser();
   }
 
-  /** {@inheritDoc} */
   public boolean isConnected() throws RemoteException {
     try {
       return entityDbConnection == null ? connected : entityDbConnection.isConnected();
@@ -159,7 +157,6 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     }
   }
 
-  /** {@inheritDoc} */
   public void disconnect() throws RemoteException {
     try {
       if (!isConnected()) {
@@ -184,7 +181,6 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     }
   }
 
-  /** {@inheritDoc} */
   public int selectRowCount(final EntityCriteria criteria) throws DbException, RemoteException {
     try {
       return loggingEntityDbProxy.selectRowCount(criteria);
@@ -197,7 +193,6 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     }
   }
 
-  /** {@inheritDoc} */
   public ReportResult fillReport(final ReportWrapper reportWrapper, final Map reportParameters) throws ReportException, RemoteException {
     try {
       return loggingEntityDbProxy.fillReport(reportWrapper, reportParameters);
@@ -210,7 +205,6 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     }
   }
 
-  /** {@inheritDoc} */
   public void executeStatement(final String statement) throws DbException, RemoteException {
     try {
       loggingEntityDbProxy.executeStatement(statement);
@@ -223,7 +217,6 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     }
   }
 
-  /** {@inheritDoc} */
   public List<List> selectRows(final String statement, final int fetchCount) throws DbException, RemoteException {
     try {
       return loggingEntityDbProxy.selectRows(statement, fetchCount);
@@ -236,7 +229,6 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     }
   }
 
-  /** {@inheritDoc} */
   public Object executeStatement(final String statement, final int outParameterType) throws DbException, RemoteException {
     try {
       return loggingEntityDbProxy.executeStatement(statement, outParameterType);
@@ -249,7 +241,6 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     }
   }
 
-  /** {@inheritDoc} */
   public boolean isConnectionValid() throws RemoteException {
     try {
       return loggingEntityDbProxy.isConnectionValid();
@@ -259,7 +250,6 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     }
   }
 
-  /** {@inheritDoc} */
   public void beginTransaction() throws RemoteException {
     try {
       loggingEntityDbProxy.beginTransaction();
@@ -272,7 +262,6 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     }
   }
 
-  /** {@inheritDoc} */
   public void commitTransaction() throws SQLException, RemoteException {
     try {
       loggingEntityDbProxy.commitTransaction();
@@ -288,7 +277,6 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     }
   }
 
-  /** {@inheritDoc} */
   public void rollbackTransaction() throws SQLException, RemoteException {
     try {
       loggingEntityDbProxy.rollbackTransaction();
@@ -304,7 +292,6 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     }
   }
 
-  /** {@inheritDoc} */
   public boolean isTransactionOpen() throws RemoteException {
     try {
       return loggingEntityDbProxy.isTransactionOpen();
@@ -314,7 +301,6 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     }
   }
 
-  /** {@inheritDoc} */
   public List<Entity.Key> insert(final List<Entity> entities) throws DbException, RemoteException {
     try {
       return loggingEntityDbProxy.insert(entities);
@@ -327,7 +313,6 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     }
   }
 
-  /** {@inheritDoc} */
   public List<Entity> update(final List<Entity> entities) throws DbException, RemoteException {
     try {
       return loggingEntityDbProxy.update(entities);
@@ -340,7 +325,6 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     }
   }
 
-  /** {@inheritDoc} */
   public void delete(final List<Entity.Key> entityKeys) throws DbException, RemoteException {
     try {
       loggingEntityDbProxy.delete(entityKeys);
@@ -353,7 +337,6 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     }
   }
 
-  /** {@inheritDoc} */
   public void delete(final EntityCriteria criteria) throws DbException, RemoteException {
     try {
       loggingEntityDbProxy.delete(criteria);
@@ -366,7 +349,6 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     }
   }
 
-  /** {@inheritDoc} */
   public List<Object> selectPropertyValues(final String entityID, final String propertyID,
                                            final boolean order) throws DbException, RemoteException {
     try {
@@ -380,7 +362,6 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     }
   }
 
-  /** {@inheritDoc} */
   public Entity selectSingle(final String entityID, final String propertyID, final Object value) throws DbException, RemoteException {
     try {
       return loggingEntityDbProxy.selectSingle(entityID, propertyID, value);
@@ -393,7 +374,6 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     }
   }
 
-  /** {@inheritDoc} */
   public Entity selectSingle(final Entity.Key key) throws DbException, RemoteException {
     try {
       return loggingEntityDbProxy.selectSingle(key);
@@ -406,7 +386,6 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     }
   }
 
-  /** {@inheritDoc} */
   public Entity selectSingle(final EntitySelectCriteria criteria) throws DbException, RemoteException {
     try {
       return loggingEntityDbProxy.selectSingle(criteria);
@@ -419,7 +398,6 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     }
   }
 
-  /** {@inheritDoc} */
   public List<Entity> selectMany(final List<Entity.Key> keys) throws DbException, RemoteException {
     try {
       return loggingEntityDbProxy.selectMany(keys);
@@ -432,7 +410,6 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     }
   }
 
-  /** {@inheritDoc} */
   public List<Entity> selectMany(final EntitySelectCriteria criteria) throws DbException, RemoteException {
     try {
       return loggingEntityDbProxy.selectMany(criteria);
@@ -445,7 +422,6 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     }
   }
 
-  /** {@inheritDoc} */
   public List<Entity> selectMany(final String entityID, final String propertyID,
                                  final Object... values) throws DbException, RemoteException {
     try {
@@ -459,7 +435,6 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     }
   }
 
-  /** {@inheritDoc} */
   public List<Entity> selectAll(final String entityID) throws DbException, RemoteException {
     try {
       return loggingEntityDbProxy.selectAll(entityID);
@@ -472,7 +447,6 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     }
   }
 
-  /** {@inheritDoc} */
   public Map<String, List<Entity>> selectDependentEntities(final List<Entity> entities) throws DbException, RemoteException {
     try {
       return loggingEntityDbProxy.selectDependentEntities(entities);
@@ -485,7 +459,6 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     }
   }
 
-  /** {@inheritDoc} */
   public void writeBlob(final Entity.Key primaryKey, final String blobPropertyID, final String dataDescription,
                         final byte[] blobData) throws DbException, RemoteException{
     try {
@@ -499,7 +472,6 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     }
   }
 
-  /** {@inheritDoc} */
   public byte[] readBlob(final Entity.Key primaryKey, final String blobPropertyID) throws DbException, RemoteException {
     try {
       return loggingEntityDbProxy.readBlob(primaryKey, blobPropertyID);

@@ -45,7 +45,7 @@ import java.util.Map;
 
 /**
  * A UI component based on the EntityEditModel.
- * @see EntityEditModel
+ * @see org.jminor.framework.client.model.EntityEditModel
  */
 public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Object> implements ExceptionHandler {
 

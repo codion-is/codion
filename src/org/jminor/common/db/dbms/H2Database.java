@@ -22,22 +22,18 @@ public class H2Database extends AbstractDatabase {
     super(H2, host, port, databaseName, false);
   }
 
-  /** {@inheritDoc} */
   public void loadDriver() throws ClassNotFoundException {
     Class.forName("org.h2.Driver");
   }
 
-  /** {@inheritDoc} */
   public String getAutoIncrementValueSQL(final String idSource) {
     return "CALL IDENTITY()";
   }
 
-  /** {@inheritDoc} */
   public String getSequenceSQL(final String sequenceName) {
     return "select next value for " + sequenceName;
   }
 
-  /** {@inheritDoc} */
   public String getURL(final Properties connectionProperties) {
     final String authentication = getAuthenticationInfo(connectionProperties);
     if (isEmbedded()) {
@@ -52,7 +48,6 @@ public class H2Database extends AbstractDatabase {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getAuthenticationInfo(final Properties connectionProperties) {
     if (connectionProperties != null) {
@@ -66,7 +61,6 @@ public class H2Database extends AbstractDatabase {
     return null;
   }
 
-  /** {@inheritDoc} *///todo implement
   @Override
   public void shutdownEmbedded(final Properties connectionProperties) {}
 

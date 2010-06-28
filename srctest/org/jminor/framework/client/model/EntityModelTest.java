@@ -28,17 +28,17 @@ public class EntityModelTest {
   @Test
   public void testConstructor() {
     try {
-      new EntityModel(null, EntityDbConnectionTest.DB_PROVIDER);
+      new DefaultEntityModel(null, EntityDbConnectionTest.DB_PROVIDER);
       fail();
     }
     catch (IllegalArgumentException e) {}
     try {
-      new EntityModel(EmpDept.T_EMPLOYEE, null);
+      new DefaultEntityModel(EmpDept.T_EMPLOYEE, null);
       fail();
     }
     catch (IllegalArgumentException e) {}
     try {
-      new EntityModel((EntityEditModel) null, null);
+      new DefaultEntityModel((DefaultEntityEditModel) null, null);
       fail();
     }
     catch (IllegalArgumentException e) {}

@@ -30,22 +30,18 @@ public class DerbyDatabase extends AbstractDatabase {
     super(DERBY, host, port, sid, false);
   }
 
-  /** {@inheritDoc} */
   public void loadDriver() throws ClassNotFoundException {
     Class.forName(isEmbedded() ? "org.apache.derby.jdbc.EmbeddedDriver" : "org.apache.derby.jdbc.ClientDriver");
   }
 
-  /** {@inheritDoc} */
   public String getAutoIncrementValueSQL(final String idSource) {
     return "select IDENTITY_VAL_LOCAL() from " + idSource;
   }
 
-  /** {@inheritDoc} */
   public String getSequenceSQL(final String sequenceName) {
     throw new RuntimeException("Sequence support is not implemented for database type: " + getDatabaseType());
   }
 
-  /** {@inheritDoc} */
   public String getURL(final Properties connectionProperties) {
     final String authentication = getAuthenticationInfo(connectionProperties);
     if (isEmbedded()) {
@@ -56,7 +52,6 @@ public class DerbyDatabase extends AbstractDatabase {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getAuthenticationInfo(final Properties connectionProperties) {
     if (connectionProperties != null) {
@@ -70,7 +65,6 @@ public class DerbyDatabase extends AbstractDatabase {
     return null;
   }
 
-  /** {@inheritDoc} */
   @Override
   public void shutdownEmbedded(final Properties connectionProperties) {
     try {

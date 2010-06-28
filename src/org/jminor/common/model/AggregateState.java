@@ -31,7 +31,6 @@ public class AggregateState extends State {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public String toString() {
     final StringBuilder stringBuilder = new StringBuilder("Aggregate ");
@@ -68,7 +67,6 @@ public class AggregateState extends State {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isActive() {
     if (type == Type.AND) { //AND, one inactive is enough
@@ -91,7 +89,6 @@ public class AggregateState extends State {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public void setActive(final boolean value) {
     throw new RuntimeException("The state of aggregate states can't be set");

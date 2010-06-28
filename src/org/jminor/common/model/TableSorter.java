@@ -244,40 +244,33 @@ public class TableSorter extends AbstractTableModel {
 
   // TableModel interface methods
 
-  /** {@inheritDoc} */
   public int getRowCount() {
     return (tableModel == null) ? 0 : tableModel.getRowCount();
   }
 
-  /** {@inheritDoc} */
   public int getColumnCount() {
     return (tableModel == null) ? 0 : tableModel.getColumnCount();
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getColumnName(int column) {
     return tableModel.getColumnName(column);
   }
 
-  /** {@inheritDoc} */
   @Override
   public Class getColumnClass(int columnIndex) {
     return tableModel.getColumnClass(columnIndex);
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isCellEditable(int rowIndex, int columnIndex) {
     return tableModel.isCellEditable(modelIndex(rowIndex), columnIndex);
   }
 
-  /** {@inheritDoc} */
   public Object getValueAt(int rowIndex, int columnIndex) {
     return tableModel.getValueAt(modelIndex(rowIndex), columnIndex);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
     tableModel.setValueAt(aValue, modelIndex(rowIndex), columnIndex);

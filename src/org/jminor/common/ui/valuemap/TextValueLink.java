@@ -77,30 +77,25 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> implements
     return immediateUpdate;
   }
 
-  /** {@inheritDoc} */
   public void insertUpdate(final DocumentEvent e) {
     if (immediateUpdate) {
       updateModel();
     }
   }
 
-  /** {@inheritDoc} */
   public void removeUpdate(final DocumentEvent e) {
     if (immediateUpdate) {
       updateModel();
     }
   }
 
-  /** {@inheritDoc} */
   public void changedUpdate(final DocumentEvent e) {}
 
-  /** {@inheritDoc} */
   @Override
   protected Object getUIValue() {
     return valueFromText(getText());
   }
 
-  /** {@inheritDoc} */
   @Override
   protected void setUIValue(final Object value) {
     try {

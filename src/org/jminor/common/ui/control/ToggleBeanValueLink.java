@@ -59,7 +59,6 @@ public class ToggleBeanValueLink extends AbstractBeanValueLink {
     return buttonModel;
   }
 
-  /** {@inheritDoc} */
   @Override
   protected Method getGetMethod() throws NoSuchMethodException {
     try {
@@ -70,13 +69,11 @@ public class ToggleBeanValueLink extends AbstractBeanValueLink {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   protected Object getUIValue() {
     return buttonModel.isSelected();
   }
 
-  /** {@inheritDoc} */
   @Override
   protected void setUIValue(final Object value) {
     final Boolean booleanValue = (Boolean) value;

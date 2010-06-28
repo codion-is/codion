@@ -41,7 +41,6 @@ public class Item<T> implements Comparable<Item<T>>, Serializable {
     return item;
   }
 
-  /** {@inheritDoc} */
   @Override
   public String toString() {
     return caption;

@@ -24,7 +24,6 @@ public class PropertyFilterModel extends AbstractSearchModel<Property> {
     super(property, property.getType(), (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER));
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean include(final Object object) {
     return include(getComparable(object));

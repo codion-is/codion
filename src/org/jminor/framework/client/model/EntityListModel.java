@@ -133,12 +133,10 @@ public class EntityListModel extends AbstractListModel implements Refreshable {
     return (Entity) getElementAt(index);
   }
 
-  /** {@inheritDoc} */
   public Object getElementAt(final int index) {
     return data.get(index);
   }
 
-  /** {@inheritDoc} */
   public int getSize() {
     return data.size();
   }

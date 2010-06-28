@@ -1,13 +1,17 @@
+/*
+ * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
+ */
 package org.jminor.common.model;
 
 import java.util.regex.Pattern;
 
 /**
+ * A FilterCriteria implementation based on a regular expression.<br>
  * User: Björn Darri<br>
  * Date: 27.6.2010<br>
  * Time: 20:11:27
  */
-public class RegexFilterCriteria implements FilterCriteria {
+public class RegexFilterCriteria<T> implements FilterCriteria<T> {
 
   private final Pattern pattern;
 
@@ -19,7 +23,19 @@ public class RegexFilterCriteria implements FilterCriteria {
     pattern = initializePattern(patternString, caseSensitive);
   }
 
-  public boolean include(final Object item) {
+  /**
+   * @return true if the pattern is valid.
+   */
+  public boolean isPatternValid() {
+    return pattern != null;
+  }
+
+  /**
+   * Returns true if the regex pattern is valid and the given item passes the criteria.
+   * @param item the item
+   * @return true if the item should be included
+   */
+  public boolean include(final T item) {
     if (item == null || pattern == null) {
       return false;
     }

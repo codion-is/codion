@@ -62,7 +62,6 @@ public class PropertySearchModel extends AbstractSearchModel<Property> {
     bindComboBoxEvents();
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean include(final Object object) {
     return true;

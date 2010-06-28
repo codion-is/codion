@@ -420,7 +420,6 @@ public abstract class EntityPanel extends JPanel {
     throw new RuntimeException("Detail panel of type: " + detailPanelClass + " not found in panel: " + getClass());
   }
 
-  /** {@inheritDoc} */
   @Override
   public String toString() {
     return caption;
@@ -1063,7 +1062,7 @@ public abstract class EntityPanel extends JPanel {
       return;
     }
 
-    model.eventEntitiesChanged().addListener(new ActionListener() {
+    model.getEditModel().eventEntitiesChanged().addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         getTablePanel().getJTable().repaint();
       }

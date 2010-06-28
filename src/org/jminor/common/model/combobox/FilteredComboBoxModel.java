@@ -74,7 +74,6 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
     }
   }
 
-  /** {@inheritDoc} */
   public void refresh() {
     resetContents();
   }
@@ -207,12 +206,10 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
     return selectedItem != null && nullValueString != null && selectedItem.equals(nullValueString);
   }
 
-  /** {@inheritDoc} */
   public Object getSelectedItem() {
     return selectedItem;
   }
 
-  /** {@inheritDoc} */
   public void setSelectedItem(final Object anItem) {
     if (Util.equal(selectedItem, anItem)) {
       return;
@@ -223,22 +220,18 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
     evtSelectionChanged.fire();
   }
 
-  /** {@inheritDoc} */
   public void addListDataListener(final ListDataListener l) {
     listDataListeners.add(l);
   }
 
-  /** {@inheritDoc} */
   public void removeListDataListener(final ListDataListener l) {
     listDataListeners.remove(l);
   }
 
-  /** {@inheritDoc} */
   public Object getElementAt(final int index) {
     return visibleItems.get(index);
   }
 
-  /** {@inheritDoc} */
   public int getSize() {
     return visibleItems.size();
   }

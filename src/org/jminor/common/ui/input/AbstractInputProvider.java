@@ -16,11 +16,9 @@ public abstract class AbstractInputProvider<T> implements InputProvider<T> {
     this.inputComponent = inputComponent;
   }
 
-  /** {@inheritDoc} */
   public JComponent getInputComponent() {
     return this.inputComponent;
   }
 
-  /** {@inheritDoc} */
   public abstract T getValue();
 }

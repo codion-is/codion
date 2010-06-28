@@ -123,7 +123,6 @@ public class PropertyCriteria implements Criteria<Property>, Serializable {
     return wildcard;
   }
 
-  /** {@inheritDoc} */
   public String asString() {
     return getConditionString();
   }

@@ -1781,3 +1781,4 @@
   EntityLookupModel replaced overloaded constructor with setters
   EntityLookupField replaced overloaded constructor with setters
   EntityTableModel replaced overloaded constructor with setters
+  Major refactoring of framework.client.model

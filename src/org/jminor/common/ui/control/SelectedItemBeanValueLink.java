@@ -39,7 +39,6 @@ public class SelectedItemBeanValueLink extends AbstractBeanValueLink {
     });
   }
 
-  /** {@inheritDoc} */
   @Override
   protected Object getUIValue() {
     if (comboBoxModel instanceof ItemComboBoxModel) {
@@ -50,7 +49,6 @@ public class SelectedItemBeanValueLink extends AbstractBeanValueLink {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   protected void setUIValue(final Object value) {
     comboBoxModel.setSelectedItem(value);

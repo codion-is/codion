@@ -18,22 +18,18 @@ public class MySQLDatabase extends AbstractDatabase {
     super(MYSQL, host, port, dbname);
   }
 
-  /** {@inheritDoc} */
   public void loadDriver() throws ClassNotFoundException {
     Class.forName("com.mysql.jdbc.Driver");
   }
 
-  /** {@inheritDoc} */
   public String getAutoIncrementValueSQL(final String idSource) {
     return "select last_insert_id() from dual";
   }
 
-  /** {@inheritDoc} */
   public String getSequenceSQL(final String sequenceName) {
     throw new RuntimeException("Sequence support is not implemented for database type: " + getDatabaseType());
   }
 
-  /** {@inheritDoc} */
   public String getURL(final Properties connectionProperties) {
     return "jdbc:mysql://" + getHost() + ":" + getPort() + "/" + getSid();
   }

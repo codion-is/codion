@@ -31,8 +31,10 @@ import org.jminor.common.ui.input.IntInputProvider;
 import org.jminor.common.ui.input.TextInputProvider;
 import org.jminor.common.ui.input.ValueListInputProvider;
 import org.jminor.framework.Configuration;
+import org.jminor.framework.client.model.DefaultEntityEditModel;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityTableModel;
+import org.jminor.framework.client.model.DefaultEntityTableModel;
 import org.jminor.framework.client.model.EntityTableSearchModel;
 import org.jminor.framework.client.model.PropertyFilterModel;
 import org.jminor.framework.client.model.PropertySearchModel;
@@ -248,7 +250,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
    * Shows a dialog for configuring the underlying EntityTableModel query.
    * If the underlying table model does not allow query configuration this
    * method returns silently
-   * @see EntityTableModel#isQueryConfigurationAllowed()
+   * @see org.jminor.framework.client.model.EntityTableModel#isQueryConfigurationAllowed()
    */
   public void configureQuery() {
     if (!getTableModel().isQueryConfigurationAllowed()) {
@@ -362,7 +364,6 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public String toString() {
     return "EntityTablePanel: " + getTableModel().getEntityID();
@@ -667,8 +668,8 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
    */
   public static EntityTablePanel createStaticEntityTablePanel(final Collection<Entity> entities, final EntityDbProvider dbProvider,
                                                               final String entityID) {
-    final EntityEditModel editModel = new EntityEditModel(entityID, dbProvider);
-    final EntityTableModel tableModel = new EntityTableModel(entityID, dbProvider) {
+    final EntityEditModel editModel = new DefaultEntityEditModel(entityID, dbProvider);
+    final EntityTableModel tableModel = new DefaultEntityTableModel(entityID, dbProvider) {
       @Override
       protected List<Entity> performQuery(final Criteria<Property> criteria) {
         return new ArrayList<Entity>(entities);
@@ -1380,7 +1381,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
 
     final String[][] header = {headerValues.toArray(new String[headerValues.size()])};
 
-    final List<Entity> entities = getTableModel().getSelectionModel().isSelectionEmpty()
+    final List<Entity> entities = getTableModel().isSelectionEmpty()
             ? getTableModel().getAllItems(false) : getTableModel().getSelectedItems();
 
     final String[][] data = new String[entities.size()][];

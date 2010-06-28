@@ -121,20 +121,16 @@ public final class ControlProvider {
       this.vertical = vertical;
     }
 
-    /** {@inheritDoc} */
     public void handleSeparator() {}
 
-    /** {@inheritDoc} */
     public void handleControl(final Control control) {
       btnPanel.add(createButton(control));
     }
 
-    /** {@inheritDoc} */
     public void handleToggleControl(final ToggleBeanValueLink control) {
       btnPanel.add(createCheckBox(control));
     }
 
-    /** {@inheritDoc} */
     public void handleControlSet(final ControlSet controlSet) {
       if (vertical) {
         createVerticalButtonPanel(btnPanel, controlSet);
@@ -144,7 +140,6 @@ public final class ControlProvider {
       }
     }
 
-    /** {@inheritDoc} */
     public void handleAction(final Action action) {
       btnPanel.add(new JButton(action));
     }
@@ -186,29 +181,24 @@ public final class ControlProvider {
       return menu;
     }
 
-    /** {@inheritDoc} */
     public void handleSeparator() {
       menu.addSeparator();
     }
 
-    /** {@inheritDoc} */
     public void handleControl(final Control control) {
       menu.add(control);
     }
 
-    /** {@inheritDoc} */
     public void handleToggleControl(final ToggleBeanValueLink control) {
       menu.add(createCheckBoxMenuItem(control));
     }
 
-    /** {@inheritDoc} */
     public void handleControlSet(final ControlSet controlSet) {
       final MenuControlIterator mv = new MenuControlIterator(controlSet);
       iterate(mv, controlSet);
       menu.add(mv.menu);
     }
 
-    /** {@inheritDoc} */
     public void handleAction(final Action action) {
       menu.add(action);
     }
@@ -228,27 +218,22 @@ public final class ControlProvider {
       this.includeCaption = includeCaption;
     }
 
-    /** {@inheritDoc} */
     public void handleSeparator() {
       toolbar.addSeparator();
     }
 
-    /** {@inheritDoc} */
     public void handleControl(final Control control) {
       toolbar.add(control);
     }
 
-    /** {@inheritDoc} */
     public void handleToggleControl(final ToggleBeanValueLink control) {
       toolbar.add(createToggleButton(control, includeCaption));
     }
 
-    /** {@inheritDoc} */
     public void handleControlSet(final ControlSet controlSet) {
       iterate(new ToolBarControlIterator(toolbar), controlSet);
     }
 
-    /** {@inheritDoc} */
     public void handleAction(final Action action) {
       toolbar.add(action);
     }

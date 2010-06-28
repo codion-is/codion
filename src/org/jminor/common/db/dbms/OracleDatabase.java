@@ -40,22 +40,18 @@ public class OracleDatabase extends AbstractDatabase {
     super(ORACLE, host, port, sid);
   }
 
-  /** {@inheritDoc} */
   public void loadDriver() throws ClassNotFoundException {
     Class.forName("oracle.jdbc.OracleDriver");
   }
 
-  /** {@inheritDoc} */
   public String getAutoIncrementValueSQL(final String idSource) {
     return "select " + idSource + ".currval from dual";
   }
 
-  /** {@inheritDoc} */
   public String getSequenceSQL(final String sequenceName) {
     return "select " + sequenceName + ".nextval from dual";
   }
 
-  /** {@inheritDoc} */
   public String getURL(final Properties connectionProperties) {
     return "jdbc:oracle:thin:@" + getHost() + ":" + getPort() + ":" + getSid();
   }
@@ -68,7 +64,6 @@ public class OracleDatabase extends AbstractDatabase {
     return false;
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getCheckConnectionQuery() {
     return "select 1 from dual";

@@ -85,7 +85,6 @@ public class TextInputPanel extends JPanel {
     final AbstractAction action = new AbstractAction("...") {
       public void actionPerformed(final ActionEvent e) {
         final JTextArea txtArea = new JTextArea(textComponent.getText()) {
-          /** {@inheritDoc} */
           @Override
           protected Document createDefaultModel() {
             return new PlainDocument() {

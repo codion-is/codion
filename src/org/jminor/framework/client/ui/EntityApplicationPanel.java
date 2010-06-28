@@ -88,7 +88,6 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     persistEntityPanels = Configuration.getBooleanValue(Configuration.PERSIST_ENTITY_PANELS);
   }
 
-  /** {@inheritDoc} */
   public void handleException(final Throwable exception, final JComponent dialogParent) {
     LOG.error(this, exception);
     DefaultExceptionHandler.getInstance().handleException(exception, dialogParent);

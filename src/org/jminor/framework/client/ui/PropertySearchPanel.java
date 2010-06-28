@@ -48,13 +48,11 @@ public class PropertySearchPanel extends AbstractSearchPanel<Property> {
     model.initialize();
   }
 
-  /** {@inheritDoc} */
   @Override
   protected boolean isLowerBoundFieldRequired(final Property property) {
     return !property.isReference() && !property.isBoolean();
   }
 
-  /** {@inheritDoc} */
   @Override
   protected boolean searchTypeAllowed(final SearchType searchType) {
     final Property property = getModel().getSearchProperty();
@@ -62,7 +60,6 @@ public class PropertySearchPanel extends AbstractSearchPanel<Property> {
             || searchType == SearchType.LIKE || searchType == SearchType.NOT_LIKE;
   }
 
-  /** {@inheritDoc} */
   @Override
   protected SimpleDateFormat getInputFormat() {
     if (getModel().getType() == Types.TIMESTAMP) {

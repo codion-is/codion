@@ -3,8 +3,8 @@
  */
 package org.jminor.common.ui.valuemap;
 
-import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
 import org.jminor.common.ui.control.LinkType;
+import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
 
 import javax.swing.ButtonModel;
 import java.awt.event.ItemEvent;
@@ -34,13 +34,11 @@ public class BooleanValueLink<K> extends AbstractValueMapLink<K, Object> {
     updateUI();
   }
 
-  /** {@inheritDoc} */
   @Override
   protected Object getUIValue() {
     return buttonModel.isSelected();
   }
 
-  /** {@inheritDoc} */
   @Override
   protected void setUIValue(final Object value) {
     buttonModel.setSelected(value != null && (Boolean) value);

@@ -22,22 +22,18 @@ public class HSQLDatabase extends AbstractDatabase {
     super(HSQL, host, port, sid, false);
   }
 
-  /** {@inheritDoc} */
   public void loadDriver() throws ClassNotFoundException {
     Class.forName("org.hsqldb.jdbcDriver");
   }
 
-  /** {@inheritDoc} */
   public String getAutoIncrementValueSQL(final String idSource) {
     return "IDENTITY()";
   }
 
-  /** {@inheritDoc} */
   public String getSequenceSQL(final String sequenceName) {
     return "select next value for " + sequenceName;
   }
 
-  /** {@inheritDoc} */
   public String getURL(final Properties connectionProperties) {
     final String authentication = getAuthenticationInfo(connectionProperties);
     if (isEmbedded()) {
@@ -48,7 +44,6 @@ public class HSQLDatabase extends AbstractDatabase {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getAuthenticationInfo(final Properties connectionProperties) {
     if (connectionProperties != null) {
@@ -62,7 +57,6 @@ public class HSQLDatabase extends AbstractDatabase {
     return null;
   }
 
-  /** {@inheritDoc} */
   @Override
   public void shutdownEmbedded(final Properties connectionProperties) {}
 

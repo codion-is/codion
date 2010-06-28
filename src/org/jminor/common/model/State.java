@@ -37,7 +37,6 @@ public class State {
     this.active = initialState;
   }
 
-  /** {@inheritDoc} */
   @Override
   public String toString() {
     return active ? "active" : "inactive";

@@ -93,8 +93,8 @@ public class EntityTableModelTest {
 
     final Map<String, Object> propValues = new HashMap<String, Object>();
     propValues.put(EntityTestDomain.DETAIL_STRING, "b");
-    final Entity[] entityArray = testModel.getEntitiesByPropertyValues(propValues);
-    assertEquals(1, entityArray.length);
+    final Collection<Entity> byPropertyValues = testModel.getEntitiesByPropertyValues(propValues);
+    assertEquals(1, byPropertyValues.size());
   }
 
   @Test
@@ -188,14 +188,14 @@ public class EntityTableModelTest {
     assertEquals("current index should fit", 3, testModel.getSelectionModel().getMinSelectionIndex());
     assertEquals("current selected item should fit", testEntities[2], testModel.getSelectedItem());
 
-    testModel.getTableSorter().setSortingStatus(2, TableSorter.ASCENDING);
+    testModel.setSortingStatus(2, TableSorter.ASCENDING);
     assertEquals("current selected item should fit", testEntities[2], testModel.getSelectedItem());
     assertEquals("current index should fit", 2,
             testModel.getSelectionModel().getMinSelectionIndex());
 
     testModel.setSelectedItemIndexes(Arrays.asList(0));
     assertEquals("current selected item should fit", testEntities[0], testModel.getSelectedItem());
-    testModel.getTableSorter().setSortingStatus(2, TableSorter.DESCENDING);
+    testModel.setSortingStatus(2, TableSorter.DESCENDING);
     assertEquals("current index should fit", 4,
             testModel.getSelectionModel().getMinSelectionIndex());
 
@@ -217,7 +217,7 @@ public class EntityTableModelTest {
     return true;
   }
 
-  public static class EntityTableModelTmp extends EntityTableModel {
+  public static class EntityTableModelTmp extends DefaultEntityTableModel {
     public EntityTableModelTmp() {
       super(EntityTestDomain.T_DETAIL, EntityDbConnectionTest.DB_PROVIDER);
     }

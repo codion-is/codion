@@ -43,7 +43,6 @@ public abstract class AbstractBeanValueLink extends AbstractValueLink<Object, Ob
     return propertyName;
   }
 
-  /** {@inheritDoc} */
   @Override
   public Object getModelValue() {
     try {
@@ -57,7 +56,6 @@ public abstract class AbstractBeanValueLink extends AbstractValueLink<Object, Ob
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public void setModelValue(final Object value) {
     try {

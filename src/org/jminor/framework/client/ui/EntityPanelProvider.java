@@ -61,7 +61,6 @@ public class EntityPanelProvider implements Comparable {//todo rename
     return entityPanelClass;
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean equals(final Object obj) {
     if(this == obj) {
@@ -78,7 +77,6 @@ public class EntityPanelProvider implements Comparable {//todo rename
             && entityPanelClass.equals(panelProvider.entityPanelClass);
   }
 
-  /** {@inheritDoc} */
   @Override
   public int hashCode() {
     int hash = 7;
@@ -89,7 +87,6 @@ public class EntityPanelProvider implements Comparable {//todo rename
     return hash;
   }
 
-  /** {@inheritDoc} */
   public int compareTo(final Object o) {
     final String thisCompare = caption == null ? entityPanelClass.getSimpleName() : caption;
     final String thatCompare = ((EntityPanelProvider) o).caption == null
