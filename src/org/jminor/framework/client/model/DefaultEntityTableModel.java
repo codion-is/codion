@@ -101,7 +101,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
   private final State stAllowDelete = new State(true);
 
   public DefaultEntityTableModel(final String entityID, final EntityDbProvider dbProvider) {
-    this(entityID, dbProvider, new EntityTableColumnModel(entityID));
+    this(entityID, dbProvider, new DefaultEntityTableColumnModel(entityID));
   }
 
   public DefaultEntityTableModel(final String entityID, final EntityDbProvider dbProvider,
@@ -111,7 +111,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
 
   public DefaultEntityTableModel(final String entityID, final EntityDbProvider dbProvider,
                                  final EntityTableSearchModel tableSearchModel) {
-    super(new EntityTableColumnModel(entityID, tableSearchModel.getProperties()));
+    super(new DefaultEntityTableColumnModel(entityID, tableSearchModel.getProperties()));
     this.entityID = entityID;
     this.dbProvider = dbProvider;
     this.tableSearchModel = tableSearchModel;

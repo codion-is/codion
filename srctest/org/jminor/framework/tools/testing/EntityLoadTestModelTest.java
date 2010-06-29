@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
+ */
 package org.jminor.framework.tools.testing;
 
 import org.jminor.common.model.User;
@@ -8,7 +11,6 @@ import org.jminor.framework.demos.empdept.beans.DepartmentModel;
 import org.jminor.framework.demos.empdept.client.EmpDeptAppModel;
 import org.jminor.framework.demos.empdept.testing.EmpDeptLoadTest;
 import org.jminor.framework.server.EntityDbRemoteServerTest;
-import org.jminor.framework.server.provider.EntityDbRemoteProvider;
 
 import org.junit.AfterClass;
 import static org.junit.Assert.*;
@@ -94,7 +96,7 @@ public class EntityLoadTestModelTest {
 
   @Test
   public void testMethods() {
-    final EntityApplicationModel model = new EmpDeptAppModel(new EntityDbRemoteProvider(User.UNIT_TEST_USER, "clientID", "EntityLoadTestModelTest"));
+    final EntityApplicationModel model = new EmpDeptAppModel(User.UNIT_TEST_USER);
     model.refresh();
     final EntityTableModel tableModel = model.getMainApplicationModel(DepartmentModel.class).getTableModel();
 

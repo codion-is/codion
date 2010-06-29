@@ -106,6 +106,19 @@ public interface EntityModel extends Refreshable {
   void setMasterModel(EntityModel entityModel);
 
   /**
+   * Adds the given detail models to this model.
+   * @param detailModels the detail models to add
+   */
+  void addDetailModels(final EntityModel... detailModels);
+
+  /**
+   * Adds the given detail model to this model
+   * @param detailModel the detail model
+   * @return the detail model just added
+   */
+  EntityModel addDetailModel(final EntityModel detailModel);
+
+  /**
    * @param modelClass the detail model class
    * @return true if this model contains a detail model of the given class
    */

@@ -125,6 +125,14 @@ public abstract class AbstractDatabase implements Database {
   }
 
   /**
+   * Returns true if the dbms supports the select for update NOWAIT option
+   * @return true if NOWAIT is supported for select for update
+   */
+  public boolean supportsNowait() {
+    return true;
+  }
+
+  /**
    * This default implementation returns true
    * @return true if the dbms supports the Java 6 jdbc call Connection.isValid()
    */

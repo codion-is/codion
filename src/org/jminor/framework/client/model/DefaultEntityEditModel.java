@@ -479,7 +479,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
 
   public EntityComboBoxModel createEntityComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty) {
     Util.rejectNullValue(foreignKeyProperty);
-    final EntityComboBoxModel model = new EntityComboBoxModel(foreignKeyProperty.getReferencedEntityID(), dbProvider);
+    final EntityComboBoxModel model = new DefaultEntityComboBoxModel(foreignKeyProperty.getReferencedEntityID(), dbProvider);
     model.setNullValueString(isNullable(getEntity(), foreignKeyProperty.getPropertyID()) ?
             (String) Configuration.getValue(Configuration.DEFAULT_COMBO_BOX_NULL_VALUE_ITEM) : null);
 
@@ -488,7 +488,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
 
   public EntityLookupModel createEntityLookupModel(final String entityID, final List<Property> lookupProperties,
                                                    final Criteria additionalSearchCriteria) {
-    final EntityLookupModel model = new EntityLookupModel(entityID, dbProvider, lookupProperties);
+    final EntityLookupModel model = new DefaultEntityLookupModel(entityID, dbProvider, lookupProperties);
     model.setAdditionalLookupCriteria(additionalSearchCriteria);
 
     return model;

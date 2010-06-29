@@ -565,6 +565,19 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @param inputComponent a component bound to the property with id <code>propertyID</code>
    * @param labelOnTop if true then the label is positioned above <code>inputComponent</code>,
    * otherwise it uses FlowLayout.LEADING in a FlowLayout.
+   * @return a panel containing a label and a component
+   */
+  protected final JPanel createPropertyPanel(final JComponent labelComponent, final JComponent inputComponent,
+                                             final boolean labelOnTop) {
+    return createPropertyPanel(labelComponent, inputComponent, labelOnTop, 5, 5);
+  }
+
+  /**
+   * Creates a panel containing a label component and the <code>inputComponent</code>.
+   * @param labelComponent the label component
+   * @param inputComponent a component bound to the property with id <code>propertyID</code>
+   * @param labelOnTop if true then the label is positioned above <code>inputComponent</code>,
+   * otherwise it uses FlowLayout.LEADING in a FlowLayout.
    * @param hgap the horizontal gap between components
    * @param vgap the vertical gap between components
    * @return a panel containing a label and a component

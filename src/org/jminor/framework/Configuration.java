@@ -246,7 +246,7 @@ public final class Configuration {
 
   /**
    * Specifies whether optimistic locking should be performed, that is, if entities should
-   * be checked for modification before being updated<br>
+   * be selected for update and checked for modification before being updated<br>
    * Value type: Boolean<br>
    * Default value: false
    */

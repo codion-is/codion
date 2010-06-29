@@ -14,7 +14,6 @@ import org.jminor.framework.demos.empdept.client.EmpDeptAppModel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
-import org.jminor.framework.server.provider.EntityDbRemoteProvider;
 import org.jminor.framework.tools.testing.EntityLoadTestModel;
 
 import javax.swing.UIManager;
@@ -117,8 +116,7 @@ public class EmpDeptLoadTest extends EntityLoadTestModel {
 
   @Override
   protected EntityApplicationModel initializeApplication() throws CancelException {
-    final EntityApplicationModel applicationModel =
-            new EmpDeptAppModel(new EntityDbRemoteProvider(getUser(), "scott@"+new Object(), getClass().getSimpleName()));
+    final EntityApplicationModel applicationModel = new EmpDeptAppModel(getUser());
 
     final EntityModel model = applicationModel.getMainApplicationModels().iterator().next();
     model.setLinkedDetailModel(model.getDetailModels().get(0));

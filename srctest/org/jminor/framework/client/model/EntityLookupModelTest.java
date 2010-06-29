@@ -28,22 +28,22 @@ public class EntityLookupModelTest {
   @Test
   public void testConstructor() {
     try {
-      new EntityLookupModel(null, EntityDbConnectionTest.DB_PROVIDER, new ArrayList<Property>());
+      new DefaultEntityLookupModel(null, EntityDbConnectionTest.DB_PROVIDER, new ArrayList<Property>());
       fail();
     }
     catch (IllegalArgumentException e) {}
     try {
-      new EntityLookupModel(EmpDept.T_EMPLOYEE, null, new ArrayList<Property>());
+      new DefaultEntityLookupModel(EmpDept.T_EMPLOYEE, null, new ArrayList<Property>());
       fail();
     }
     catch (IllegalArgumentException e) {}
     try {
-      new EntityLookupModel(EmpDept.T_EMPLOYEE, EntityDbConnectionTest.DB_PROVIDER, null);
+      new DefaultEntityLookupModel(EmpDept.T_EMPLOYEE, EntityDbConnectionTest.DB_PROVIDER, null);
       fail();
     }
     catch (IllegalArgumentException e) {}
     try {
-      new EntityLookupModel(null, null, null);
+      new DefaultEntityLookupModel(null, null, null);
       fail();
     }
     catch (IllegalArgumentException e) {}
@@ -121,7 +121,7 @@ public class EntityLookupModelTest {
 
   @Before
   public void setUp() throws Exception {
-    lookupModel = new EntityLookupModel(EmpDept.T_EMPLOYEE, EntityDbConnectionTest.DB_PROVIDER,
+    lookupModel = new DefaultEntityLookupModel(EmpDept.T_EMPLOYEE, EntityDbConnectionTest.DB_PROVIDER,
             Arrays.asList(EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME),
                     EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB)));
 

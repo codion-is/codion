@@ -181,6 +181,12 @@ public interface Database {
   boolean supportsIsValid();
 
   /**
+   * Returns true if the dbms supports the select for update NOWAIT option
+   * @return true if NOWAIT is supported for select for update
+   */
+  boolean supportsNowait();
+
+  /**
    * Returns a query to use when checking if the connection is valid,
    * this is used in cases where the dbms does not support the isValid() call.
    * Returning null is safe if isValid() is supported.

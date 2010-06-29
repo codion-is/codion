@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.client.ui;
 
+import org.jminor.framework.client.model.DefaultEntityComboBoxModel;
 import org.jminor.framework.client.model.EntityComboBoxModel;
 import org.jminor.framework.db.EntityDbConnectionTest;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
@@ -21,7 +22,7 @@ public class EntityComboProviderTest {
 
   @Test
   public void test() throws Exception {
-    final EntityComboBoxModel model = new EntityComboBoxModel(EmpDept.T_DEPARTMENT, EntityDbConnectionTest.DB_PROVIDER);
+    final EntityComboBoxModel model = new DefaultEntityComboBoxModel(EmpDept.T_DEPARTMENT, EntityDbConnectionTest.DB_PROVIDER);
     final EntityComboProvider provider = new EntityComboProvider(model, null);
 
     assertNull(provider.getValue());

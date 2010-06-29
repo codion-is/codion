@@ -668,6 +668,30 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     throw exception;
   }
 
+  private String initializeSelectQuery(final EntitySelectCriteria criteria, final String columnsString, final String orderByClause) {
+    String selectQuery = EntityRepository.getSelectQuery(criteria.getEntityID());
+    if (selectQuery == null) {
+      selectQuery = getSelectSQL(EntityRepository.getSelectTableName(criteria.getEntityID()), columnsString, null, null);
+    }
+
+    final StringBuilder queryBuilder = new StringBuilder(selectQuery);
+    final String whereClause = criteria.getWhereClause(!containsWhereKeyword(selectQuery));
+    if (whereClause.length() > 0) {
+      queryBuilder.append(" ").append(whereClause);
+    }
+    if (orderByClause != null) {
+      queryBuilder.append(" order by ").append(orderByClause);
+    }
+    if (criteria.isSelectForUpdate()) {
+      queryBuilder.append(" for update");
+      if (getDatabase().supportsNowait()) {
+        queryBuilder.append(" nowait");
+      }
+    }
+
+    return queryBuilder.toString();
+  }
+
   private String createLogMessage(final String sqlStatement, final List<?> values, final SQLException exception, final LogEntry entry) {
     final StringBuilder logMessage = new StringBuilder();
     if (entry == null) {
@@ -767,27 +791,6 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     }
 
     return new ArrayList<Entity.Key>(keySet);
-  }
-
-  private static String initializeSelectQuery(final EntitySelectCriteria criteria, final String columnsString, final String orderByClause) {
-    String selectQuery = EntityRepository.getSelectQuery(criteria.getEntityID());
-    if (selectQuery == null) {
-      selectQuery = getSelectSQL(EntityRepository.getSelectTableName(criteria.getEntityID()), columnsString, null, null);
-    }
-
-    final StringBuilder queryBuilder = new StringBuilder(selectQuery);
-    final String whereClause = criteria.getWhereClause(!containsWhereKeyword(selectQuery));
-    if (whereClause.length() > 0) {
-      queryBuilder.append(" ").append(whereClause);
-    }
-    if (orderByClause != null) {
-      queryBuilder.append(" order by ").append(orderByClause);
-    }
-    if (criteria.isSelectForUpdate()) {
-      queryBuilder.append(" for update");
-    }
-
-    return queryBuilder.toString();
   }
 
   /**

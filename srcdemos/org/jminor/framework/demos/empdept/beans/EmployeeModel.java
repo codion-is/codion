@@ -7,6 +7,7 @@ import org.jminor.common.model.FilterCriteria;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.valuemap.ValueChangeEvent;
 import org.jminor.common.model.valuemap.ValueChangeListener;
+import org.jminor.framework.client.model.DefaultEntityComboBoxModel;
 import org.jminor.framework.client.model.DefaultEntityEditModel;
 import org.jminor.framework.client.model.DefaultEntityModel;
 import org.jminor.framework.client.model.EntityComboBoxModel;
@@ -67,7 +68,7 @@ public class EmployeeModel extends DefaultEntityModel {
     @Override
     public EntityComboBoxModel createEntityComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty) {
       if (foreignKeyProperty.is(EmpDept.EMPLOYEE_MGR_FK)) {
-        final EntityComboBoxModel managerModel = new EntityComboBoxModel(EmpDept.T_EMPLOYEE, getDbProvider());
+        final EntityComboBoxModel managerModel = new DefaultEntityComboBoxModel(EmpDept.T_EMPLOYEE, getDbProvider());
         managerModel.setNullValueString(EmpDept.getString(EmpDept.NONE));
         //Only show the president and managers
         managerModel.setEntitySelectCriteria(EntityCriteriaUtil.selectCriteria(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB,

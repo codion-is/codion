@@ -1783,4 +1783,7 @@
   EntityTableModel replaced overloaded constructor with setters
   Major refactoring of framework.client.model
   EntitySelectCriteria.selectForUpdate field added
-  EntityDbConnection.checkIfModified() renamed to lockAndCheckForUpdate(), now selects for update
+  EntityDbConnection.checkIfModified() renamed to lockAndCheckForUpdate(), now selects for update, with nowait if supported by the dbms
+  Database.supportsNowait() added
+  EntityApplicationPanel.initializeMainApplicationModels() removed
+  EntityApplicationPanel.addMainApplicationModel(s)() added

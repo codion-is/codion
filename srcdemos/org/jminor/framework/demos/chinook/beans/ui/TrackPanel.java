@@ -52,7 +52,7 @@ public class TrackPanel extends EntityPanel {
         final JTextField txtDuration = createTextField(TRACK_MINUTES_SECONDS_DERIVED, LinkType.READ_ONLY);
         final JPanel durationPanel = new JPanel(new GridLayout(1, 2, 5, 5));
         durationPanel.add(createPropertyPanel(TRACK_MILLISECONDS, txtMilliseconds));
-        durationPanel.add(createPropertyPanel(new JLabel("(min/sec)"), txtDuration, true, 5, 5));
+        durationPanel.add(createPropertyPanel(new JLabel("(min/sec)"), txtDuration, true));
 
         add(createPropertyPanel(TRACK_ALBUMID_FK, txtAlbum));
         add(createPropertyPanel(TRACK_NAME, txtName));

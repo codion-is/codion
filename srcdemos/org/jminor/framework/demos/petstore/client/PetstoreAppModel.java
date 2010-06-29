@@ -5,13 +5,9 @@ package org.jminor.framework.demos.petstore.client;
 
 import org.jminor.common.model.User;
 import org.jminor.framework.client.model.EntityApplicationModel;
-import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.demos.petstore.beans.CategoryModel;
 import org.jminor.framework.demos.petstore.domain.Petstore;
-
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * User: Bjorn Darri
@@ -22,15 +18,11 @@ public class PetstoreAppModel extends EntityApplicationModel {
 
   public PetstoreAppModel(final EntityDbProvider dbProvider) {
     super(dbProvider);
+    addMainApplicationModel(new CategoryModel(dbProvider));
   }
 
   public PetstoreAppModel (final User user) {
     super(user, PetstoreAppModel.class.getSimpleName());
-  }
-
-  @Override
-  protected List<? extends EntityModel> initializeMainApplicationModels(final EntityDbProvider dbProvider) {
-    return Arrays.asList(new CategoryModel(dbProvider));
   }
 
   @Override

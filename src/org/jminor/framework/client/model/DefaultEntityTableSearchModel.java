@@ -195,13 +195,13 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
     return searchConjunction;
   }
 
-  public void setSearchConjunction(final CriteriaSet.Conjunction searchConjunction) {
-    this.searchConjunction = searchConjunction;
+  public void setSearchConjunction(final CriteriaSet.Conjunction conjunction) {
+    this.searchConjunction = conjunction;
   }
 
-  public void setSearchEnabled(final String propertyID, final boolean value) {
+  public void setSearchEnabled(final String propertyID, final boolean enabled) {
     if (containsPropertySearchModel(propertyID)) {
-      getPropertySearchModel(propertyID).setSearchEnabled(value);
+      getPropertySearchModel(propertyID).setSearchEnabled(enabled);
     }
   }
 
@@ -244,13 +244,13 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
 
     if (property instanceof Property.ForeignKeyProperty) {
       if (EntityRepository.isLargeDataset(((Property.ForeignKeyProperty) property).getReferencedEntityID())) {
-        final EntityLookupModel lookupModel = new EntityLookupModel(((Property.ForeignKeyProperty) property).getReferencedEntityID(),
+        final EntityLookupModel lookupModel = new DefaultEntityLookupModel(((Property.ForeignKeyProperty) property).getReferencedEntityID(),
                 dbProvider, getSearchProperties(((Property.ForeignKeyProperty) property).getReferencedEntityID()));
         lookupModel.setMultipleSelectionAllowed(true);
         return new PropertySearchModel(property, lookupModel);
       }
       else {
-        final EntityComboBoxModel comboBoxModel = new EntityComboBoxModel(((Property.ForeignKeyProperty)
+        final EntityComboBoxModel comboBoxModel = new DefaultEntityComboBoxModel(((Property.ForeignKeyProperty)
                 property).getReferencedEntityID(), dbProvider);
         comboBoxModel.setNullValueString("");
         return new PropertySearchModel(property, comboBoxModel);

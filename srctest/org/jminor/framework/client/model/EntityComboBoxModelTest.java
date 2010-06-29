@@ -26,23 +26,23 @@ public class EntityComboBoxModelTest {
 
   public EntityComboBoxModelTest() {
     new EmpDept();
-    comboBoxModel = new EntityComboBoxModel(EmpDept.T_EMPLOYEE, EntityDbConnectionTest.DB_PROVIDER);
+    comboBoxModel = new DefaultEntityComboBoxModel(EmpDept.T_EMPLOYEE, EntityDbConnectionTest.DB_PROVIDER);
   }
 
   @Test
   public void testConstructor() {
     try {
-      new EntityComboBoxModel(null, EntityDbConnectionTest.DB_PROVIDER);
+      new DefaultEntityComboBoxModel(null, EntityDbConnectionTest.DB_PROVIDER);
       fail();
     }
     catch (IllegalArgumentException e) {}
     try {
-      new EntityComboBoxModel(EmpDept.T_EMPLOYEE, null);
+      new DefaultEntityComboBoxModel(EmpDept.T_EMPLOYEE, null);
       fail();
     }
     catch (IllegalArgumentException e) {}
     try {
-      new EntityComboBoxModel(null, null);
+      new DefaultEntityComboBoxModel(null, null);
       fail();
     }
     catch (IllegalArgumentException e) {}

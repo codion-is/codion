@@ -6,10 +6,12 @@ package org.jminor.framework.client.model;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.User;
+import org.jminor.common.model.Util;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.db.provider.EntityDbProviderFactory;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -21,19 +23,17 @@ public abstract class EntityApplicationModel implements Refreshable {
   private final Event evtCascadeRefreshChanged = new Event();
 
   private final EntityDbProvider dbProvider;
-  private final List<? extends EntityModel> mainApplicationModels;
+  private final List<EntityModel> mainApplicationModels = new ArrayList<EntityModel>();
 
   public EntityApplicationModel(final User user, final String applicationID) {
     loadDomainModel();
     this.dbProvider = initializeDbProvider(user, applicationID);
-    this.mainApplicationModels = initializeMainApplicationModels(dbProvider);
     bindEvents();
   }
 
   public EntityApplicationModel(final EntityDbProvider dbProvider) {
     loadDomainModel();
     this.dbProvider = dbProvider;
-    this.mainApplicationModels = initializeMainApplicationModels(dbProvider);
     bindEvents();
   }
 
@@ -69,10 +69,32 @@ public abstract class EntityApplicationModel implements Refreshable {
   }
 
   /**
-   * @return a List containing the main application models
+   * Adds the given detail models to this model.
+   * @param detailModels the detail models to add
+   */
+  public void addMainApplicationModels(final EntityModel... detailModels) {
+    Util.rejectNullValue(detailModels);
+    for (final EntityModel detailModel : detailModels) {
+      addMainApplicationModel(detailModel);
+    }
+  }
+
+  /**
+   * Adds the given detail model to this model
+   * @param detailModel the detail model
+   * @return the detail model just added
+   */
+  public EntityModel addMainApplicationModel(final EntityModel detailModel) {
+    this.mainApplicationModels.add(detailModel);
+
+    return detailModel;
+  }
+
+  /**
+   * @return an unmodifiable List containing the main application models
    */
   public List<? extends EntityModel> getMainApplicationModels() {
-    return new ArrayList<EntityModel>(mainApplicationModels);
+    return Collections.unmodifiableList(mainApplicationModels);
   }
 
   /**
@@ -162,13 +184,6 @@ public abstract class EntityApplicationModel implements Refreshable {
    * class or simply loading it by name
    */
   protected abstract void loadDomainModel();
-
-  /**
-   * Returns the main EntityModel instances
-   * @param dbProvider the EntityDbProvider instance
-   * @return a list containing the main application models
-   */
-  protected abstract List<? extends EntityModel> initializeMainApplicationModels(final EntityDbProvider dbProvider);
 
   protected EntityDbProvider initializeDbProvider(final User user, final String applicationID) {
     return EntityDbProviderFactory.createEntityDbProvider(user, applicationID);
