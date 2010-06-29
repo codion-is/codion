@@ -147,7 +147,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     }
   }
 
-  public List<Entity> update(List<Entity> entities) throws DbException {
+  public List<Entity> update(final List<Entity> entities) throws DbException {
     if (entities == null || entities.size() == 0) {
       return entities;
     }

@@ -886,8 +886,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     final List<EntityPanel> siblings = panel.getMasterPanel() == null ?
             mainApplicationPanels : panel.getMasterPanel().getDetailPanels();
     final int index = siblings.indexOf(panel);
-    if (index == 0)//leftmost panel
-    {
+    if (index == 0) {//leftmost panel
       return siblings.get(siblings.size() - 1);
     }
     else {
@@ -899,8 +898,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     final List<EntityPanel> siblings = panel.getMasterPanel() == null ?
             mainApplicationPanels : panel.getMasterPanel().getDetailPanels();
     final int index = siblings.indexOf(panel);
-    if (index == siblings.size()-1)//rightmost panel
-    {
+    if (index == siblings.size()-1) {//rightmost panel
       return siblings.get(0);
     }
     else {
