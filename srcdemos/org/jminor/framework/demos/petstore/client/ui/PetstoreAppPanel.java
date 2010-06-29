@@ -21,20 +21,13 @@ import org.jminor.framework.demos.petstore.beans.ui.TagPanel;
 import org.jminor.framework.demos.petstore.client.PetstoreAppModel;
 
 import javax.swing.UIManager;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Locale;
 
 public class PetstoreAppPanel extends EntityApplicationPanel {
 
-  @Override
-  protected List<EntityPanelProvider> getMainEntityPanelProviders() {
-    return Arrays.asList(new EntityPanelProvider(CategoryModel.class, CategoryPanel.class));
-  }
-
-  @Override
-  protected List<EntityPanelProvider> getSupportEntityPanelProviders() {
-    return Arrays.asList(
+  public PetstoreAppPanel() {
+    addMainApplicationPanelProvider(new EntityPanelProvider(CategoryModel.class, CategoryPanel.class));
+    addSupportPanelProviders(
             new EntityPanelProvider("Addresses", AddressModel.class, AddressPanel.class),
             new EntityPanelProvider("Seller info", ContactInfoModel.class, ContactInfoPanel.class),
             new EntityPanelProvider("Tags", TagModel.class, TagPanel.class));

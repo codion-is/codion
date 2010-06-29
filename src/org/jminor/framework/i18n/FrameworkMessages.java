@@ -26,7 +26,6 @@ public final class FrameworkMessages {
   public static final String EXIT = "exit";
   public static final String EXIT_MNEMONIC = "exit_mnemonic";
   public static final String EXIT_TIP = "exit_tip";
-  public static final String SETTINGS = "settings";
   public static final String TOOLS = "tools";
   public static final String TOOLS_MNEMONIC = "tools_mnemonic";
   public static final String VIEW = "view";

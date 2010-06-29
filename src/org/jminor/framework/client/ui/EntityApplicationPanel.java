@@ -58,6 +58,8 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
 
   public static final String TIPS_AND_TRICKS_FILE = "TipsAndTricks.txt";
 
+  private final List<EntityPanelProvider> mainApplicationPanelProviders = new ArrayList<EntityPanelProvider>();
+  private final List<EntityPanelProvider> supportPanelProviders = new ArrayList<EntityPanelProvider>();
   private final List<EntityPanel> mainApplicationPanels = new ArrayList<EntityPanel>();
 
   private EntityApplicationModel applicationModel;
@@ -67,7 +69,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   private final Event evtSelectedEntityPanelChanged = new Event();
   private final Event evtAlwaysOnTopChanged = new Event();
 
-  private final boolean persistEntityPanels;
+  private final boolean persistEntityPanels = Configuration.getBooleanValue(Configuration.PERSIST_ENTITY_PANELS);
   private Map<EntityPanelProvider, EntityPanel> persistentEntityPanels = new HashMap<EntityPanelProvider, EntityPanel>();
 
   private static final int DIVIDER_JUMP = 30;
@@ -82,10 +84,10 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   private static final String DIV_UP = "divUp";
   private static final String DIV_DOWN = "divDown";
 
-  /** Constructs a new EntityApplicationPanel. */
+  /** Constructs a new EntityApplicationPanel.
+   */
   public EntityApplicationPanel() {
     configureApplication();
-    persistEntityPanels = Configuration.getBooleanValue(Configuration.PERSIST_ENTITY_PANELS);
   }
 
   public void handleException(final Throwable exception, final JComponent dialogParent) {
@@ -93,11 +95,32 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     DefaultExceptionHandler.getInstance().handleException(exception, dialogParent);
   }
 
-  /**
-   * @return the application model this application panel uses
-   */
   public EntityApplicationModel getModel() {
-    return this.applicationModel;
+    return applicationModel;
+  }
+
+  public void addMainApplicationPanelProviders(final EntityPanelProvider... panelProviders) {
+    Util.rejectNullValue(panelProviders);
+    for (final EntityPanelProvider panelProvider : panelProviders) {
+      addMainApplicationPanelProvider(panelProvider);
+    }
+  }
+
+  public EntityApplicationPanel addMainApplicationPanelProvider(final EntityPanelProvider panelProvider) {
+    mainApplicationPanelProviders.add(panelProvider);
+    return this;
+  }
+
+  public void addSupportPanelProviders(final EntityPanelProvider... panelProviders) {
+    Util.rejectNullValue(panelProviders);
+    for (final EntityPanelProvider panelProvider : panelProviders) {
+      addSupportPanelProvider(panelProvider);
+    }
+  }
+
+  public EntityApplicationPanel addSupportPanelProvider(final EntityPanelProvider panelProvider) {
+    supportPanelProviders.add(panelProvider);
+    return this;
   }
 
   /**
@@ -335,7 +358,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     ctrSetLoggingLevel.setDescription(FrameworkMessages.get(FrameworkMessages.SET_LOG_LEVEL_DESC));
     ctrSetLoggingLevel.setIcon(setLoggingIcon);
 
-    final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.SETTINGS));
+    final ControlSet controlSet = new ControlSet(Messages.get(Messages.SETTINGS));
 
     controlSet.add(ctrSelectDetail);
     controlSet.add(ctrCascadeRefresh);
@@ -465,24 +488,6 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   protected void bindEvents() {}
 
   /**
-   * @return a List containing EntityPanelProvider objects specifying the main EntityPanels,
-   * that is, the panels shown when the application frame is initialized
-   */
-  protected abstract List<EntityPanelProvider> getMainEntityPanelProviders();
-
-  /**
-   * @return a List containing EntityPanelProvider objects specifying the entity panels
-   * that should be accessible via the Support Tables menu bar item.
-   * The corresponding EntityModel objects should be returned by the
-   * EntityApplicationModel.initializeMainApplicationModels() method
-   * N.B. these EntityPanelProvider objects should be constructed with a <code>caption</code> parameter.
-   * @see org.jminor.framework.client.model.EntityApplicationModel#initializeMainApplicationModels(org.jminor.framework.db.provider.EntityDbProvider) ()
-   */
-  protected List<EntityPanelProvider> getSupportEntityPanelProviders() {
-    return new ArrayList<EntityPanelProvider>(0);
-  }
-
-  /**
    * @return a List of ControlSet objects which are to be added to the main menu bar
    */
   protected List<ControlSet> getAdditionalMenuControlSet() {
@@ -493,15 +498,14 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    * @return the ControlSet on which the Support Tables menu item is based on
    */
   protected ControlSet getSupportTableControlSet() {
-    final List<EntityPanelProvider> supportDetailPanelProviders = getSupportEntityPanelProviders();
-    if (supportDetailPanelProviders == null || supportDetailPanelProviders.size() == 0) {
+    if (supportPanelProviders.size() == 0) {
       return null;
     }
 
-    Collections.sort(supportDetailPanelProviders);
+    Collections.sort(supportPanelProviders);
     final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.SUPPORT_TABLES),
             FrameworkMessages.get(FrameworkMessages.SUPPORT_TABLES_MNEMONIC).charAt(0));
-    for (final EntityPanelProvider panelProvider : supportDetailPanelProviders) {
+    for (final EntityPanelProvider panelProvider : supportPanelProviders) {
       controlSet.add(new Control(panelProvider.getCaption()) {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -583,11 +587,10 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
         evtSelectedEntityPanelChanged.fire();
       }
     });
-    final List<EntityPanelProvider> mainEntityPanelProviders = getMainEntityPanelProviders();
-    if (mainEntityPanelProviders == null || mainEntityPanelProviders.size() == 0) {
+    if (mainApplicationPanelProviders.size() == 0) {
       throw new RuntimeException("No main entity panels provided");
     }
-    for (final EntityPanelProvider provider : mainEntityPanelProviders) {
+    for (final EntityPanelProvider provider : mainApplicationPanelProviders) {
       final EntityModel entityModel = applicationModel.getMainApplicationModel(provider.getModelClass());
       final EntityPanel entityPanel = EntityPanel.createInstance(provider, entityModel);
       mainApplicationPanels.add(entityPanel);

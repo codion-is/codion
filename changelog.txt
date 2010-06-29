@@ -1788,3 +1788,4 @@
   EntityApplicationPanel.initializeMainApplicationModels() removed
   EntityApplicationPanel.addMainApplicationModel(s)() added
   framework.db.criteria refactored
+  EntityApplicationPanel.initializeMain/SupportEntityPanelProviders() removed, addMain... and addSupport... added

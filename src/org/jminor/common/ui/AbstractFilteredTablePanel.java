@@ -5,23 +5,13 @@ package org.jminor.common.ui;
 
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.DocumentAdapter;
-import org.jminor.common.model.Util;
 import org.jminor.common.model.FilteredTableModel;
+import org.jminor.common.model.Util;
 import org.jminor.common.ui.control.Control;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.textfield.SearchFieldHint;
-import org.jminor.framework.i18n.FrameworkMessages;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.JCheckBox;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.UIManager;
+import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.TableColumn;
 import java.awt.Color;
@@ -207,7 +197,7 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
 
   private JPopupMenu initializeSearchPopupMenu() {
     final JPopupMenu popupMenu = new JPopupMenu();
-    popupMenu.add(new AbstractAction(FrameworkMessages.get(FrameworkMessages.SETTINGS)) {
+    popupMenu.add(new AbstractAction(Messages.get(Messages.SETTINGS)) {
       public void actionPerformed(ActionEvent e) {
         final JPanel panel = new JPanel(new GridLayout(1,1,5,5));
         final JCheckBox boxRegexp =
@@ -220,7 +210,7 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
         };
         action.putValue(Action.MNEMONIC_KEY, Messages.get(Messages.OK_MNEMONIC).charAt(0));
         UiUtil.showInDialog(UiUtil.getParentWindow(AbstractFilteredTablePanel.this), panel, true,
-                FrameworkMessages.get(FrameworkMessages.SETTINGS), true, true, action);
+                Messages.get(Messages.SETTINGS), true, true, action);
       }
     });
 

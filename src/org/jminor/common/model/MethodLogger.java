@@ -92,11 +92,11 @@ public class MethodLogger {
   }
 
   public LogEntry logExit(final String method, final Throwable exception, final List<LogEntry> subLog,
-                      final String exitMessage) {
+                          final String exitMessage) {
     this.lastExitDate = System.currentTimeMillis();
     this.lastExitedMethod = method;
     if (enabled) {
-       return addLogEntry(lastExitedMethod, exitMessage, lastExitDate, true, exception, subLog);
+      return addLogEntry(lastExitedMethod, exitMessage, lastExitDate, true, exception, subLog);
     }
 
     return null;
@@ -112,7 +112,7 @@ public class MethodLogger {
   }
 
   private synchronized LogEntry addLogEntry(final String method, final String message, final long time, final boolean isExit,
-                                        final Throwable exception, final List<LogEntry> subLog) {
+                                            final Throwable exception, final List<LogEntry> subLog) {
     if (!isExit) {
       if (currentLogEntryIndex > logEntries.size()-1) {
         currentLogEntryIndex = 0;

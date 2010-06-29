@@ -16,14 +16,11 @@ import org.jminor.framework.demos.schemabrowser.client.SchemaBrowserAppModel;
 
 import javax.swing.JTable;
 import javax.swing.UIManager;
-import java.util.Arrays;
-import java.util.List;
 
 public class SchemaBrowserAppPanel extends EntityApplicationPanel {
 
-  @Override
-  protected List<EntityPanelProvider> getMainEntityPanelProviders() {
-    return Arrays.asList(new EntityPanelProvider(SchemaModel.class, SchemaPanel.class));
+  public SchemaBrowserAppPanel() {
+    addMainApplicationPanelProvider(new EntityPanelProvider(SchemaModel.class, SchemaPanel.class));
   }
 
   @Override

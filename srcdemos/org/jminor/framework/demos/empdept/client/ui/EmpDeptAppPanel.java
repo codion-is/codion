@@ -23,10 +23,12 @@ import org.jminor.framework.plugins.json.EntityJSONParser;
 import javax.swing.UIManager;
 import java.io.File;
 import java.nio.charset.Charset;
-import java.util.Arrays;
-import java.util.List;
 
 public class EmpDeptAppPanel extends EntityApplicationPanel {
+
+  public EmpDeptAppPanel() {
+    addMainApplicationPanelProvider(new EntityPanelProvider(DepartmentModel.class, DepartmentPanel.class));
+  }
 
   public void importJSON() throws Exception {
     final File file = UiUtil.selectFile(this, null);
@@ -41,11 +43,6 @@ public class EmpDeptAppPanel extends EntityApplicationPanel {
     toolsSet.add(ControlFactory.methodControl(this, "importJSON", EmpDept.getString(EmpDept.IMPORT_JSON)));
 
     return toolsSet;
-  }
-
-  @Override
-  protected List<EntityPanelProvider> getMainEntityPanelProviders() {
-    return Arrays.asList(new EntityPanelProvider(DepartmentModel.class, DepartmentPanel.class));
   }
 
   @Override

@@ -12,20 +12,7 @@ import org.jminor.framework.client.model.EntityLookupModel;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.i18n.FrameworkMessages;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.KeyStroke;
-import javax.swing.ListSelectionModel;
+import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
@@ -242,7 +229,7 @@ public class EntityLookupField extends JTextField {
 
   private JPopupMenu initializePopupMenu() {
     final JPopupMenu popupMenu = new JPopupMenu();
-    popupMenu.add(new AbstractAction(FrameworkMessages.get(FrameworkMessages.SETTINGS)) {
+    popupMenu.add(new AbstractAction(Messages.get(Messages.SETTINGS)) {
       public void actionPerformed(ActionEvent e) {
         final JPanel panel = new JPanel(new GridLayout(3,1,5,5));
         final JCheckBox boxCaseSensitive =
@@ -263,7 +250,7 @@ public class EntityLookupField extends JTextField {
         };
         action.putValue(Action.MNEMONIC_KEY, Messages.get(Messages.OK_MNEMONIC).charAt(0));
         UiUtil.showInDialog(UiUtil.getParentWindow(EntityLookupField.this), panel, true,
-                FrameworkMessages.get(FrameworkMessages.SETTINGS), true, true, action);
+                Messages.get(Messages.SETTINGS), true, true, action);
       }
     });
 

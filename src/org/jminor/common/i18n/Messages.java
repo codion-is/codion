@@ -75,6 +75,7 @@ public final class Messages {
   public static final String SEARCH_FIELD_HINT = "search_field_hint";
   public static final String UNKNOWN_FILE_TYPE = "unknown_file_type";
   public static final String REGULAR_EXPRESSION_SEARCH = "regular_expression_search";
+  public static final String SETTINGS = "settings";
 
   static {
     UIManager.put("OptionPane.yesButtonText", get(YES));

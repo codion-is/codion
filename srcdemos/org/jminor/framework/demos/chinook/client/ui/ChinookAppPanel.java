@@ -25,8 +25,6 @@ import org.jminor.framework.demos.chinook.beans.ui.PlaylistPanel;
 import org.jminor.framework.demos.chinook.client.ChinookAppModel;
 
 import javax.swing.UIManager;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Locale;
 
 /**
@@ -36,17 +34,12 @@ import java.util.Locale;
  */
 public class ChinookAppPanel extends EntityApplicationPanel {
 
-  @Override
-  protected List<EntityPanelProvider> getMainEntityPanelProviders() {
-    return Arrays.asList(
+  public ChinookAppPanel() {
+    addMainApplicationPanelProviders(
             new EntityPanelProvider(ArtistModel.class, ArtistPanel.class),
             new EntityPanelProvider(PlaylistModel.class, PlaylistPanel.class),
             new EntityPanelProvider(CustomerModel.class, CustomerPanel.class));
-  }
-
-  @Override
-  protected List<EntityPanelProvider> getSupportEntityPanelProviders() {
-    return Arrays.asList(
+    addSupportPanelProviders(
             new EntityPanelProvider("Genres", GenreModel.class, GenrePanel.class),
             new EntityPanelProvider("Media types", MediaTypeModel.class, MediaTypePanel.class),
             new EntityPanelProvider("Employees", EmployeeModel.class, EmployeePanel.class));
