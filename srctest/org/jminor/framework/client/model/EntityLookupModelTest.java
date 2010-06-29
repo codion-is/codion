@@ -5,7 +5,7 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.model.SearchType;
 import org.jminor.framework.db.EntityDbConnectionTest;
-import org.jminor.framework.db.criteria.PropertyCriteria;
+import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
@@ -112,7 +112,7 @@ public class EntityLookupModelTest {
     lookupModel.setCaseSensitive(true);
     lookupModel.setWildcardPostfix(true);
     lookupModel.setAdditionalLookupCriteria(
-            new PropertyCriteria(EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB),
+            EntityCriteriaUtil.propertyCriteria(EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB),
                     SearchType.NOT_LIKE, "ajob"));
     result = lookupModel.performQuery();
     assertTrue("Result should contain john", contains(result, "John"));

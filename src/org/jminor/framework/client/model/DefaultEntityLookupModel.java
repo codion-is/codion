@@ -3,22 +3,22 @@
  */
 package org.jminor.framework.client.model;
 
-import org.jminor.common.model.Event;
-import org.jminor.common.model.Util;
-import org.jminor.common.model.SearchType;
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.criteria.CriteriaSet;
-import org.jminor.framework.domain.Property;
-import org.jminor.framework.domain.Entity;
-import org.jminor.framework.db.provider.EntityDbProvider;
-import org.jminor.framework.db.criteria.EntitySelectCriteria;
-import org.jminor.framework.db.criteria.PropertyCriteria;
+import org.jminor.common.model.Event;
+import org.jminor.common.model.SearchType;
+import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
+import org.jminor.framework.db.criteria.EntityCriteriaUtil;
+import org.jminor.framework.db.criteria.EntitySelectCriteria;
+import org.jminor.framework.db.provider.EntityDbProvider;
+import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.Property;
 
-import java.util.List;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * User: darri
@@ -207,7 +207,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
    */
   public EntitySelectCriteria getEntitySelectCriteria() {
     if (searchString.equals(wildcard)) {
-      return new EntitySelectCriteria(entityID);
+      return EntityCriteriaUtil.selectCriteria(entityID);
     }
 
     final CriteriaSet<Property> baseCriteria = new CriteriaSet<Property>(CriteriaSet.Conjunction.OR);
@@ -215,11 +215,11 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
     for (final Property lookupProperty : lookupProperties) {
       for (final String lookupText : lookupTexts) {
         final String modifiedLookupText = (wildcardPrefix ? wildcard : "") + lookupText + (wildcardPostfix ? wildcard : "");
-        baseCriteria.addCriteria(new PropertyCriteria(lookupProperty, SearchType.LIKE, modifiedLookupText).setCaseSensitive(caseSensitive));
+        baseCriteria.addCriteria(EntityCriteriaUtil.propertyCriteria(lookupProperty, caseSensitive, SearchType.LIKE, modifiedLookupText));
       }
     }
 
-    return new EntitySelectCriteria(entityID, additionalLookupCriteria == null ? baseCriteria :
+    return EntityCriteriaUtil.selectCriteria(entityID, additionalLookupCriteria == null ? baseCriteria :
             new CriteriaSet<Property>(CriteriaSet.Conjunction.AND, additionalLookupCriteria, baseCriteria));
   }
 

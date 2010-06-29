@@ -14,7 +14,7 @@ import org.jminor.common.model.reports.ReportDataWrapper;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.client.model.event.DeleteEvent;
 import org.jminor.framework.db.EntityDb;
-import org.jminor.framework.db.criteria.EntitySelectCriteria;
+import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
@@ -545,6 +545,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
    * Queries for the data used to populate this EntityTableModel when it is refreshed
    * @param criteria a criteria
    * @return entities selected from the database according the the query criteria.
+   * @see #getQueryCriteria()
    */
   protected List<Entity> performQuery(final Criteria<Property> criteria) {
     if (isDetailModel && criteria == null && queryCriteriaRequired) {
@@ -552,7 +553,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
     }
 
     try {
-      return getEntityDb().selectMany(new EntitySelectCriteria(entityID, criteria,
+      return getEntityDb().selectMany(EntityCriteriaUtil.selectCriteria(entityID, criteria,
               EntityRepository.getOrderByClause(entityID), fetchCount));
     }
     catch (Exception e) {

@@ -1,7 +1,7 @@
 package org.jminor.framework.tools;
 
 import org.jminor.framework.db.EntityDb;
-import org.jminor.framework.db.criteria.EntitySelectCriteria;
+import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.domain.Entity;
 
 import java.util.List;
@@ -14,7 +14,7 @@ public final class EntityDataUtil {
                                   final boolean copyPrimaryKeys, final String... entityIDs) throws Exception {
     try {
       for (final String entityID : entityIDs) {
-        final List<Entity> entitiesToCopy = source.selectMany(new EntitySelectCriteria(entityID).setFetchDepthForAll(0));
+        final List<Entity> entitiesToCopy = source.selectMany(EntityCriteriaUtil.selectCriteria(entityID).setFetchDepthForAll(0));
         if (!copyPrimaryKeys) {
           for (final Entity entity : entitiesToCopy) {
             entity.getPrimaryKey().clear();

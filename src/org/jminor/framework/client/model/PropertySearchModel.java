@@ -3,9 +3,10 @@
  */
 package org.jminor.framework.client.model;
 
+import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.model.AbstractSearchModel;
 import org.jminor.framework.Configuration;
-import org.jminor.framework.db.criteria.PropertyCriteria;
+import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
@@ -124,16 +125,12 @@ public class PropertySearchModel extends AbstractSearchModel<Property> {
   }
 
   /**
-   * @return a PropertyCriteria based on the values in this search model.
+   * @return a Criteria based on the values in this search model.
    */
-  public PropertyCriteria getPropertyCriteria() {
-    final PropertyCriteria criteria = getValueCount(getSearchType()) == 1 ?
-            new PropertyCriteria(getSearchProperty(), getSearchType(), getUpperBound()) :
-            new PropertyCriteria(getSearchProperty(), getSearchType(), getLowerBound(), getUpperBound());
-
-    criteria.setCaseSensitive(isCaseSensitive());
-
-    return criteria;
+  public Criteria<Property> getPropertyCriteria() {
+    return getValueCount(getSearchType()) == 1 ?
+            EntityCriteriaUtil.propertyCriteria(getSearchProperty(), isCaseSensitive(), getSearchType(), getUpperBound()) :
+            EntityCriteriaUtil.propertyCriteria(getSearchProperty(), isCaseSensitive(), getSearchType(), getLowerBound(), getUpperBound());
   }
 
   private String toString(final Object object) {

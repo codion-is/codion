@@ -10,7 +10,6 @@ import org.jminor.common.db.exception.RecordModifiedException;
 import org.jminor.common.db.exception.RecordNotFoundException;
 import org.jminor.common.model.User;
 import org.jminor.common.model.reports.ReportResult;
-import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.db.criteria.EntitySelectCriteria;
 import org.jminor.framework.db.provider.EntityDbProvider;
@@ -77,32 +76,32 @@ public class EntityDbConnectionTest {
   @Test
   public void delete() throws Exception {
     try {
-      getConnection().beginTransaction();
+      connection.beginTransaction();
       final Entity.Key key = new Entity.Key(EmpDept.T_DEPARTMENT);
       key.setValue(EmpDept.DEPARTMENT_ID, 40);
-      getConnection().delete(Arrays.asList(key));
+      connection.delete(Arrays.asList(key));
       try {
-        getConnection().selectSingle(key);
+        connection.selectSingle(key);
         fail();
       }
       catch (DbException e) {}
     }
     finally {
-      getConnection().rollbackTransaction();
+      connection.rollbackTransaction();
     }
     try {
-      getConnection().beginTransaction();
+      connection.beginTransaction();
       final Entity.Key key = new Entity.Key(EmpDept.T_DEPARTMENT);
       key.setValue(EmpDept.DEPARTMENT_ID, 40);
-      getConnection().delete(EntityCriteriaUtil.criteria(key));
+      connection.delete(EntityCriteriaUtil.criteria(key));
       try {
-        getConnection().selectSingle(key);
+        connection.selectSingle(key);
         fail();
       }
       catch (DbException e) {}
     }
     finally {
-      getConnection().rollbackTransaction();
+      connection.rollbackTransaction();
     }
   }
 
@@ -110,69 +109,69 @@ public class EntityDbConnectionTest {
   public void fillReport() throws Exception {
     final Map<String, Object> reportParameters = new HashMap<String, Object>();
     reportParameters.put("DEPTNO", Arrays.asList(10, 20));
-    final ReportResult print = getConnection().fillReport(
+    final ReportResult print = connection.fillReport(
             new JasperReportsWrapper("resources/demos/empdept/reports/empdept_employees.jasper"), reportParameters);
     assertNotNull(print.getResult());
   }
 
   @Test
   public void selectAll() throws Exception {
-    final List<Entity> depts = getConnection().selectAll(EmpDept.T_DEPARTMENT);
+    final List<Entity> depts = connection.selectAll(EmpDept.T_DEPARTMENT);
     assertEquals(depts.size(), 4);
-    List<Entity> emps = getConnection().selectAll(COMBINED_ENTITY_ID);
+    List<Entity> emps = connection.selectAll(COMBINED_ENTITY_ID);
     assertTrue(emps.size() > 0);
   }
 
   @Test
   public void selectDependentEntities() throws Exception {
-    final List<Entity> accounting = getConnection().selectMany(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "ACCOUNTING");
-    final Map<String, List<Entity>> emps = getConnection().selectDependentEntities(accounting);
+    final List<Entity> accounting = connection.selectMany(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "ACCOUNTING");
+    final Map<String, List<Entity>> emps = connection.selectDependentEntities(accounting);
     assertEquals(1, emps.size());
     assertTrue(emps.containsKey(EmpDept.T_EMPLOYEE));
     assertEquals(7, emps.get(EmpDept.T_EMPLOYEE).size());
 
-    Entity emp = getConnection().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "KING");
-    Map<String, List<Entity>> deps = getConnection().selectDependentEntities(Arrays.asList(emp));
+    Entity emp = connection.selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "KING");
+    Map<String, List<Entity>> deps = connection.selectDependentEntities(Arrays.asList(emp));
     assertTrue(deps.containsKey(EmpDept.T_EMPLOYEE));
     assertTrue(deps.get(EmpDept.T_EMPLOYEE).size() == 2);
 
-    emp = getConnection().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "MILLER");
-    deps = getConnection().selectDependentEntities(Arrays.asList(emp));
+    emp = connection.selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "MILLER");
+    deps = connection.selectDependentEntities(Arrays.asList(emp));
     assertFalse(deps.containsKey(EmpDept.T_EMPLOYEE));
   }
 
   @Test
   public void selectMany() throws Exception {
-    List<Entity> result = getConnection().selectMany(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_ID, 10, 20);
+    List<Entity> result = connection.selectMany(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_ID, 10, 20);
     assertEquals(2, result.size());
-    result = getConnection().selectMany(EntityUtil.getPrimaryKeys(result));
+    result = connection.selectMany(EntityUtil.getPrimaryKeys(result));
     assertEquals(2, result.size());
-    result = getConnection().selectMany(new EntitySelectCriteria(EmpDept.T_DEPARTMENT, new SimpleCriteria<Property>("deptno in (10, 20)")));
+    result = connection.selectMany(EntityCriteriaUtil.selectCriteria(EmpDept.T_DEPARTMENT, new SimpleCriteria<Property>("deptno in (10, 20)")));
     assertEquals(2, result.size());
-    result = getConnection().selectMany(new EntitySelectCriteria(COMBINED_ENTITY_ID, new SimpleCriteria<Property>("d.deptno = 10")));
+    result = connection.selectMany(EntityCriteriaUtil.selectCriteria(COMBINED_ENTITY_ID, new SimpleCriteria<Property>("d.deptno = 10")));
     assertTrue(result.size() > 0);
 
-    final EntitySelectCriteria criteria = new EntitySelectCriteria(EmpDept.T_EMPLOYEE, new SimpleCriteria<Property>("ename = 'BLAKE'"));
-    result = getConnection().selectMany(criteria);
+    final EntitySelectCriteria criteria = EntityCriteriaUtil.selectCriteria(EmpDept.T_EMPLOYEE, new SimpleCriteria<Property>("ename = 'BLAKE'"));
+    result = connection.selectMany(criteria);
     Entity emp = result.get(0);
     assertTrue(emp.isLoaded(EmpDept.EMPLOYEE_DEPARTMENT_FK));
     assertTrue(emp.isLoaded(EmpDept.EMPLOYEE_MGR_FK));
     emp = emp.getForeignKeyValue(EmpDept.EMPLOYEE_MGR_FK);
     assertFalse(emp.isLoaded(EmpDept.EMPLOYEE_MGR_FK));
 
-    result = getConnection().selectMany(criteria.setFetchDepth(EmpDept.EMPLOYEE_DEPARTMENT_FK, 0));
+    result = connection.selectMany(criteria.setFetchDepth(EmpDept.EMPLOYEE_DEPARTMENT_FK, 0));
     assertEquals(1, result.size());
     emp = result.get(0);
     assertFalse(emp.isLoaded(EmpDept.EMPLOYEE_DEPARTMENT_FK));
     assertTrue(emp.isLoaded(EmpDept.EMPLOYEE_MGR_FK));
 
-    result = getConnection().selectMany(criteria.setFetchDepth(EmpDept.EMPLOYEE_MGR_FK, 0));
+    result = connection.selectMany(criteria.setFetchDepth(EmpDept.EMPLOYEE_MGR_FK, 0));
     assertEquals(1, result.size());
     emp = result.get(0);
     assertFalse(emp.isLoaded(EmpDept.EMPLOYEE_DEPARTMENT_FK));
     assertFalse(emp.isLoaded(EmpDept.EMPLOYEE_MGR_FK));
 
-    result = getConnection().selectMany(criteria.setFetchDepth(EmpDept.EMPLOYEE_MGR_FK, 2));
+    result = connection.selectMany(criteria.setFetchDepth(EmpDept.EMPLOYEE_MGR_FK, 2));
     assertEquals(1, result.size());
     emp = result.get(0);
     assertFalse(emp.isLoaded(EmpDept.EMPLOYEE_DEPARTMENT_FK));
@@ -183,40 +182,40 @@ public class EntityDbConnectionTest {
 
   @Test(expected = DbException.class)
   public void selectManyInvalidColumn() throws Exception {
-    getConnection().selectMany(new EntitySelectCriteria(EmpDept.T_DEPARTMENT, new SimpleCriteria<Property>("no_column is null")));
+    connection.selectMany(EntityCriteriaUtil.selectCriteria(EmpDept.T_DEPARTMENT, new SimpleCriteria<Property>("no_column is null")));
   }
 
   @Test
   public void selectRowCount() throws Exception {
-    int rowCount = getConnection().selectRowCount(new EntityCriteria(EmpDept.T_DEPARTMENT));
+    int rowCount = connection.selectRowCount(EntityCriteriaUtil.criteria(EmpDept.T_DEPARTMENT));
     assertEquals(4, rowCount);
-    rowCount = getConnection().selectRowCount(new EntityCriteria(COMBINED_ENTITY_ID));
+    rowCount = connection.selectRowCount(EntityCriteriaUtil.criteria(COMBINED_ENTITY_ID));
     assertEquals(16, rowCount);
   }
 
   @Test
   public void selectSingle() throws Exception {
-    Entity sales = getConnection().selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "SALES");
+    Entity sales = connection.selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "SALES");
     assertEquals(sales.getStringValue(EmpDept.DEPARTMENT_NAME), "SALES");
-    sales = getConnection().selectSingle(sales.getPrimaryKey());
+    sales = connection.selectSingle(sales.getPrimaryKey());
     assertEquals(sales.getStringValue(EmpDept.DEPARTMENT_NAME), "SALES");
-    sales = getConnection().selectSingle(new EntitySelectCriteria(EmpDept.T_DEPARTMENT, new SimpleCriteria<Property>("dname = 'SALES'")));
+    sales = connection.selectSingle(EntityCriteriaUtil.selectCriteria(EmpDept.T_DEPARTMENT, new SimpleCriteria<Property>("dname = 'SALES'")));
     assertEquals(sales.getStringValue(EmpDept.DEPARTMENT_NAME), "SALES");
   }
 
   @Test(expected = RecordNotFoundException.class)
   public void selectSingleNotFound() throws Exception {
-    getConnection().selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "NO_NAME");
+    connection.selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "NO_NAME");
   }
 
   @Test(expected = DbException.class)
   public void selectSingleManyFound() throws Exception {
-    getConnection().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB, "MANAGER");
+    connection.selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB, "MANAGER");
   }
 
   @Test
   public void selectPropertyValues() throws Exception {
-    final List<Object> result = getConnection().selectPropertyValues(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, false);
+    final List<Object> result = connection.selectPropertyValues(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, false);
     assertTrue(result.contains("ACCOUNTING"));
     assertTrue(result.contains("SALES"));
     assertTrue(result.contains("RESEARCH"));
@@ -225,11 +224,11 @@ public class EntityDbConnectionTest {
 
   @Test
   public void optimisticLocking() throws Exception {
-    String oldLocation = null;
-    Entity updatedDepartment = null;
     final EntityDbConnection baseDb = initializeConnection();
     final EntityDbConnection optimisticDb = initializeConnection();
     optimisticDb.setOptimisticLocking(true);
+    String oldLocation = null;
+    Entity updatedDepartment = null;
     try {
       final Entity department = baseDb.selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "SALES");
       oldLocation = (String) department.setValue(EmpDept.DEPARTMENT_LOCATION, "NEWLOC");

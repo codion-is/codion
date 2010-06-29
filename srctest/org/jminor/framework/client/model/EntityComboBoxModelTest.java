@@ -5,7 +5,7 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.db.criteria.SimpleCriteria;
 import org.jminor.framework.db.EntityDbConnectionTest;
-import org.jminor.framework.db.criteria.EntitySelectCriteria;
+import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
@@ -64,7 +64,7 @@ public class EntityComboBoxModelTest {
     catch (IllegalArgumentException e) {}
 
     try {
-      comboBoxModel.setEntitySelectCriteria(new EntitySelectCriteria(EmpDept.T_DEPARTMENT));
+      comboBoxModel.setEntitySelectCriteria(EntityCriteriaUtil.selectCriteria(EmpDept.T_DEPARTMENT));
       fail("Criteria entityID mismatch");
     }
     catch (RuntimeException e) {}
@@ -91,7 +91,7 @@ public class EntityComboBoxModelTest {
     comboBoxModel.clear();
     assertTrue(comboBoxModel.getSize() == 0);
 
-    comboBoxModel.setEntitySelectCriteria(new EntitySelectCriteria(EmpDept.T_EMPLOYEE, new SimpleCriteria<Property>(" ename = 'CLARK'")));
+    comboBoxModel.setEntitySelectCriteria(EntityCriteriaUtil.selectCriteria(EmpDept.T_EMPLOYEE, new SimpleCriteria<Property>(" ename = 'CLARK'")));
     comboBoxModel.setForeignKeyFilterEntities(EmpDept.EMPLOYEE_DEPARTMENT_FK, null);
 
     comboBoxModel.forceRefresh();

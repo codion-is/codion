@@ -1787,3 +1787,4 @@
   Database.supportsNowait() added
   EntityApplicationPanel.initializeMainApplicationModels() removed
   EntityApplicationPanel.addMainApplicationModel(s)() added
+  framework.db.criteria refactored

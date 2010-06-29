@@ -20,7 +20,6 @@ import org.jminor.common.model.reports.ReportWrapper;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
-import org.jminor.framework.db.criteria.EntityKeyCriteria;
 import org.jminor.framework.db.criteria.EntitySelectCriteria;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
@@ -319,7 +318,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   }
 
   public List<Entity> selectAll(final String entityID) throws DbException {
-    return selectMany(new EntitySelectCriteria(entityID, null, EntityRepository.getOrderByClause(entityID)));
+    return selectMany(EntityCriteriaUtil.selectCriteria(entityID, EntityRepository.getOrderByClause(entityID)));
   }
 
   public List<Entity> selectMany(final EntitySelectCriteria criteria) throws DbException {
@@ -417,8 +416,8 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
 
     final Set<Dependency> dependencies = resolveEntityDependencies(entities.get(0).getEntityID());
     for (final Dependency dependency : dependencies) {
-      final List<Entity> dependentEntities = selectMany(new EntitySelectCriteria(dependency.getEntityID(),
-              new EntityKeyCriteria(dependency.getForeignKeyProperties(), EntityUtil.getPrimaryKeys(entities))));
+      final List<Entity> dependentEntities = selectMany(EntityCriteriaUtil.selectCriteria(dependency.getEntityID(),
+              dependency.getForeignKeyProperties(), EntityUtil.getPrimaryKeys(entities)));
       if (dependentEntities.size() > 0) {
         dependencyMap.put(dependency.entityID, dependentEntities);
       }
