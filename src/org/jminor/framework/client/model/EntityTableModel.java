@@ -67,13 +67,13 @@ public interface EntityTableModel extends FilteredTableModel<Entity> {
    * @see #deleteSelected()
    * @see #update(java.util.List)
    */
-  void setEditModel(EntityEditModel editModel);
+  void setEditModel(final EntityEditModel editModel);
 
   /**
    * @param detailModel if set to true then this table model will not run a query unless a query criteria has been specified
    * @see #setQueryCriteriaRequired(boolean)
    */
-  void setDetailModel(boolean detailModel);
+  void setDetailModel(final boolean detailModel);
 
   /**
    * Filters this table model according the the given values by finding the first foreign key property
@@ -90,13 +90,13 @@ public interface EntityTableModel extends FilteredTableModel<Entity> {
    * @param primaryKeys the primary keys
    * @param atFront if true the entities are added to the front
    */
-  void addEntitiesByPrimaryKeys(List<Entity.Key> primaryKeys, boolean atFront);
+  void addEntitiesByPrimaryKeys(final List<Entity.Key> primaryKeys, final boolean atFront);
 
   /**
    * Replaces the given entities in this table model
    * @param entities the entities to replace
    */
-  void replaceEntities(List<Entity> entities);
+  void replaceEntities(final List<Entity> entities);
 
   /**
    * @return true if the underlying query should be configurable
@@ -107,7 +107,7 @@ public interface EntityTableModel extends FilteredTableModel<Entity> {
    * Specifies whether or not the underlying query should be configurable
    * @param value the value
    */
-  void setQueryConfigurationAllowed(boolean value);
+  void setQueryConfigurationAllowed(final boolean value);
 
   /**
    * @return the EntityTableSearcher instance used by this table model
@@ -146,14 +146,14 @@ public interface EntityTableModel extends FilteredTableModel<Entity> {
    * @param property the property
    * @return the PropertySummaryModel for the given property
    */
-  PropertySummaryModel getPropertySummaryModel(Property property);
+  PropertySummaryModel getPropertySummaryModel(final Property property);
 
   /**
    * Returns the property the column at the given index is based on
    * @param columnIndex the column index
    * @return the column property
    */
-  Property getColumnProperty(int columnIndex);
+  Property getColumnProperty(final int columnIndex);
 
   /**
    * @param row the row for which to retrieve the background color
@@ -161,7 +161,7 @@ public interface EntityTableModel extends FilteredTableModel<Entity> {
    * @see org.jminor.framework.domain.Entity.Proxy#getBackgroundColor(org.jminor.framework.domain.Entity)
    * @see org.jminor.framework.client.ui.EntityTableCellRenderer
    */
-  Color getRowBackgroundColor(int row);
+  Color getRowBackgroundColor(final int row);
 
   /**
    * @return the underlying table column properties
@@ -179,7 +179,7 @@ public interface EntityTableModel extends FilteredTableModel<Entity> {
    */
   Map<String, List<Entity>> getSelectionDependencies();
 
-  void update(List<Entity> entities) throws CancelException, ValidationException, DbException;
+  void update(final List<Entity> entities) throws CancelException, ValidationException, DbException;
 
   void deleteSelected() throws CancelException, DbException;
 
@@ -187,27 +187,27 @@ public interface EntityTableModel extends FilteredTableModel<Entity> {
    * @param value if set to true then all underlying entities are shown
    * when no criteria is applied, which can be problematic in the case of huge datasets.
    */
-  void setQueryCriteriaRequired(boolean value);
+  void setQueryCriteriaRequired(final boolean value);
 
   /**
    * Returns the PropertySummaryModel associated with the property identified by <code>propertyID</code>
    * @param propertyID the ID of the property
    * @return the PropertySummaryModel for the given property ID
    */
-  PropertySummaryModel getPropertySummaryModel(String propertyID);
+  PropertySummaryModel getPropertySummaryModel(final String propertyID);
 
   /**
    * Finds entities according to the values in <code>keys</code>
    * @param keys the primary key values to use as condition
    * @return the entities having the primary key values as in <code>keys</code>
    */
-  List<Entity> getEntitiesByPrimaryKeys(List<Entity.Key> keys);
+  List<Entity> getEntitiesByPrimaryKeys(final List<Entity.Key> keys);
 
   /**
    * Sets the selected entities according to the primary keys in <code>primaryKeys</code>
    * @param keys the primary keys of the entities to select
    */
-  void setSelectedByPrimaryKeys(List<Entity.Key> keys);
+  void setSelectedByPrimaryKeys(final List<Entity.Key> keys);
 
   /**
    * Finds entities according to the values of <code>propertyValues</code>
@@ -215,7 +215,7 @@ public interface EntityTableModel extends FilteredTableModel<Entity> {
    * to their respective propertyIDs
    * @return the entities having the exact same property values as in <code>properties</properties>
    */
-  Collection<Entity> getEntitiesByPropertyValues(Map<String, Object> values);
+  Collection<Entity> getEntitiesByPropertyValues(final Map<String, Object> values);
 
   /**
    * Returns an Iterator which iterates through the selected entities
@@ -242,5 +242,5 @@ public interface EntityTableModel extends FilteredTableModel<Entity> {
    * @param primaryKey the primary key to search by
    * @return the entity with the given primary key from the table model, null if it's not found
    */
-  Entity getEntityByPrimaryKey(Entity.Key primaryKey);
+  Entity getEntityByPrimaryKey(final Entity.Key primaryKey);
 }

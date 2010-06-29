@@ -51,7 +51,7 @@ public interface EntityModel extends Refreshable {
    * updated according to the selected item
    * @param entityModel the detail model to link
    */
-  void setLinkedDetailModel(EntityModel entityModel);
+  void setLinkedDetailModel(final EntityModel entityModel);
 
   /**
    * Returns an initialized ReportResult object from the given report wrapper
@@ -60,7 +60,7 @@ public interface EntityModel extends Refreshable {
    * @return an initialized ReportResult object
    * @throws ReportException in case of a report exception
    */
-  ReportResult fillReport(ReportWrapper reportWrapper, Map<String, Object> reportParameters) throws ReportException;
+  ReportResult fillReport(final ReportWrapper reportWrapper, final Map<String, Object> reportParameters) throws ReportException;
 
   /**
    * Returns an initialized ReportResult object from the given report wrapper and data wrapper
@@ -70,12 +70,12 @@ public interface EntityModel extends Refreshable {
    * @return an initialized ReportResult object
    * @throws ReportException in case of a report exception
    */
-  ReportResult fillReport(ReportWrapper reportWrapper, ReportDataWrapper dataSource, Map<String, Object> reportParameters) throws ReportException;
+  ReportResult fillReport(final ReportWrapper reportWrapper, final ReportDataWrapper dataSource, final Map<String, Object> reportParameters) throws ReportException;
 
   /**
    * @param value true if a refresh in this model should trigger a refresh in its detail models
    */
-  void setCascadeRefresh(boolean value);
+  void setCascadeRefresh(final boolean value);
 
   /**
    * @return true if a refresh on this model should trigger a refresh in its detail models
@@ -93,7 +93,7 @@ public interface EntityModel extends Refreshable {
    * @see #masterSelectionChanged
    * @see DefaultEntityTableModel#searchByForeignKeyValues(String, java.util.List)
    */
-  void setSelectionFiltersDetail(boolean value);
+  void setSelectionFiltersDetail(final boolean value);
 
   /**
    * Updates this EntityModel according to the given master entities,
@@ -103,7 +103,7 @@ public interface EntityModel extends Refreshable {
    */
   void masterSelectionChanged(final String masterEntityID, final List<Entity> selectedMasterEntities);
 
-  void setMasterModel(EntityModel entityModel);
+  void setMasterModel(final EntityModel entityModel);
 
   /**
    * Adds the given detail models to this model.
@@ -122,14 +122,14 @@ public interface EntityModel extends Refreshable {
    * @param modelClass the detail model class
    * @return true if this model contains a detail model of the given class
    */
-  boolean containsDetailModel(Class<? extends EntityModel> modelClass);
+  boolean containsDetailModel(final Class<? extends EntityModel> modelClass);
 
   /**
    * Returns the first detail model of the given type
    * @param modelClass the type of the required EntityModel
    * @return the detail model of type <code>entityModelClass</code>, null if none is found
    */
-  EntityModel getDetailModel(Class<? extends EntityModel> modelClass);
+  EntityModel getDetailModel(final Class<? extends EntityModel> modelClass);
 
   /**
    * @return the detail models this model contains

@@ -33,14 +33,14 @@ public interface EntityLookupModel {
    * Sets the given entity as the selected entity
    * @param entity the entity to set as the selected entity
    */
-  void setSelectedEntity(Entity entity);
+  void setSelectedEntity(final Entity entity);
 
   /**
    * Sets the selected entities
    * @param entities the entities to set as selected
    * @throws IllegalArgumentException if this lookup model does not allow multiple selections and <code>entities.size() > 1</code>
    */
-  void setSelectedEntities(List<Entity> entities);
+  void setSelectedEntities(final List<Entity> entities);
 
   /**
    * @return a string describing this lookup model, by default a comma separated list of search property names
@@ -56,7 +56,7 @@ public interface EntityLookupModel {
    * Specifies whether or not this lookup model should allow selection of multiple entities
    * @param multipleSelectionAllowed if true then selection of multiple entities is allowed
    */
-  void setMultipleSelectionAllowed(boolean multipleSelectionAllowed);
+  void setMultipleSelectionAllowed(final boolean multipleSelectionAllowed);
 
   /**
    * Refreshes the search text so that is represents the selected entities
@@ -67,7 +67,7 @@ public interface EntityLookupModel {
    * Sets the search string to use when performing the next lookup
    * @param searchString the search string
    */
-  void setSearchString(String searchString);
+  void setSearchString(final String searchString);
 
   /**
    * @return the current search string value

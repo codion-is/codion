@@ -43,7 +43,7 @@ public interface EntityTableSearchModel extends FilterCriteria<Entity> {
    * @param values the search criteria values
    * @return true if the search state changed as a result of this method call, false otherwise
    */
-  boolean setSearchValues(String propertyID, Collection<?> values);
+  boolean setSearchValues(final String propertyID, final Collection<?> values);
 
   /**
    * @return the current criteria based on the state of the search models
@@ -54,14 +54,14 @@ public interface EntityTableSearchModel extends FilterCriteria<Entity> {
    * @param propertyID the column propertyID
    * @return true if the PropertySearchModel behind column with index <code>columnIndex</code> is enabled
    */
-  boolean isSearchEnabled(String propertyID);
+  boolean isSearchEnabled(final String propertyID);
 
   /**
    * Enables/disables the search for the given property
    * @param propertyID the ID of the property for which to enable/disable the search
    * @param enabled if true the search is enabled, otherwise it is disabled
    */
-  void setSearchEnabled(String propertyID, boolean enabled);
+  void setSearchEnabled(final String propertyID, final boolean enabled);
 
   /**
    * Sets the current search model state
@@ -82,14 +82,14 @@ public interface EntityTableSearchModel extends FilterCriteria<Entity> {
    * @param conjunction the conjunction to be used when more than one column search criteria is active
    * @see org.jminor.common.db.criteria.CriteriaSet.Conjunction
    */
-  void setSearchConjunction(CriteriaSet.Conjunction conjunction);
+  void setSearchConjunction(final CriteriaSet.Conjunction conjunction);
 
   /**
    * @param propertyID the id of the property for which to check for the PropertySearchModel
    * @return true if this EntityTableSearchModel contains a PropertySearchModel associated
    * with the property identified by <code>propertyID</code>
    */
-  boolean containsPropertySearchModel(String propertyID);
+  boolean containsPropertySearchModel(final String propertyID);
 
   /**
    * @return a list containing the PropertySearchModels configured in this table search model
@@ -100,7 +100,7 @@ public interface EntityTableSearchModel extends FilterCriteria<Entity> {
    * @param propertyID the id of the property for which to retrieve the PropertySearchModel
    * @return the PropertySearchModel associated with the property identified by <code>propertyID</code>
    */
-  PropertySearchModel getPropertySearchModel(String propertyID);
+  PropertySearchModel getPropertySearchModel(final String propertyID);
 
   /**
    * Clears the state of all PropertySearchModels
@@ -117,7 +117,7 @@ public interface EntityTableSearchModel extends FilterCriteria<Entity> {
    * @param propertyID the id of the property for which to retrieve the PropertyFilterModel
    * @return the PropertyFilterModel for the property with id <code>propertyID</code>
    */
-  PropertyFilterModel getPropertyFilterModel(String propertyID);
+  PropertyFilterModel getPropertyFilterModel(final String propertyID);
 
   /**
    * Refreshes all combo box models associated with PropertySearchModels
@@ -128,7 +128,7 @@ public interface EntityTableSearchModel extends FilterCriteria<Entity> {
    * @param propertyID column propertyID
    * @return true if the PropertyFilterModel behind column with index <code>columnIndex</code> is enabled
    */
-  boolean isFilterEnabled(String propertyID);
+  boolean isFilterEnabled(final String propertyID);
 
   /**
    * Clears the contents from all combo box models associated with PropertySearchModels
