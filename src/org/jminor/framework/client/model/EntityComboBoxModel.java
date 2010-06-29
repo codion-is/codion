@@ -18,10 +18,10 @@ import java.util.Collection;
  * Date: 29.6.2010
  * Time: 10:10:25
  */
-public interface EntityComboBoxModel extends ComboBoxModel, Refreshable {
+public interface EntityComboBoxModel extends ComboBoxModel, Refreshable, FilterCriteria<Object> {
 
   /**
-   * @return the selected entity
+   * @return the selected entity or null if none is selected
    */
   Entity getSelectedEntity();
 
@@ -56,10 +56,22 @@ public interface EntityComboBoxModel extends ComboBoxModel, Refreshable {
    */
   void forceRefresh();
 
+  /**
+   * Specifies whether or not this model's data should be considered static,
+   * that is, only fetched once.
+   * @param staticData the value
+   * @return this EntityComboBoxModel instance
+   */
   public EntityComboBoxModel setStaticData(final boolean staticData);
 
   /**
-   * @return true if the data has been initialized
+   * @return true if the data for this model should only be fetched once
+   * @see #forceRefresh()
+   */
+  boolean isStaticData();
+
+  /**
+   * @return true if the underlying data has been fetched and not cleared since
    */
   boolean isDataInitialized();
 
@@ -89,10 +101,15 @@ public interface EntityComboBoxModel extends ComboBoxModel, Refreshable {
    */
   boolean isVisible(final Object item);
 
+  /**
+   * Removes the given item from this model
+   * @param item the item to remove
+   */
   void removeItem(final Object item);
 
   /**
    * Filters the contents of this model according to the <code>include</code> method
+   * @see #include(Object)
    */
   void filterContents();
 

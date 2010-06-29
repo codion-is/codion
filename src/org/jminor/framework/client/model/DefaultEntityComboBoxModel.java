@@ -223,6 +223,16 @@ public class DefaultEntityComboBoxModel extends FilteredComboBoxModel implements
     return foreignKeyModel;
   }
 
+  @Override
+  public boolean include(final Object object) {
+    if (object instanceof Entity) {
+      return super.include(object) && foreignKeyFilterCriteria.include((Entity) object);
+    }
+    else {
+      return super.include(object);
+    }
+  }
+
   public Event eventRefreshDone() {
     return evtRefreshDone;
   }
@@ -272,16 +282,6 @@ public class DefaultEntityComboBoxModel extends FilteredComboBoxModel implements
   @SuppressWarnings({"UnusedDeclaration"})
   protected boolean includeEntity(final Entity entity) {
     return true;
-  }
-
-  @Override
-  protected boolean include(final Object object) {
-    if (object instanceof Entity) {
-      return super.include(object) && foreignKeyFilterCriteria.include((Entity) object);
-    }
-    else {
-      return super.include(object);
-    }
   }
 
   /**
