@@ -171,9 +171,6 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
           if (!entity.isModified()) {
             throw new DbException("Can not update an unmodified entity: " + entity);
           }
-          if (optimisticLocking) {
-            checkIfModified(entity);
-          }
 
           addUpdateProperties(entity, statementProperties);
           updateQuery = getUpdateSQL(entity, statementProperties, primaryKeyProperties);
@@ -185,6 +182,9 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
             statementValues.add(entity.getOriginalValue(primaryKeyProperty.getPropertyID()));
           }
 
+          if (optimisticLocking) {
+            lockAndCheckForUpdate(entity);
+          }
           statement = getConnection().prepareStatement(updateQuery);
           executePreparedUpdate(statement, updateQuery, statementValues, statementProperties);
           statement.close();
@@ -197,6 +197,13 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
       }
 
       return selectMany(EntityUtil.getPrimaryKeys(entities));
+    }
+    catch (RecordModifiedException e) {
+      if (optimisticLocking && !isTransactionOpen()) {
+        rollbackQuietly();//releasing the select for update lock
+      }
+      LOG.error(this, e);
+      throw e;
     }
     catch (SQLException e) {
       if (!isTransactionOpen()) {
@@ -548,15 +555,16 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   }
 
   /**
-   * Checks if the given entity has been modified by comparing the property values to the values in the database
+   * Selects the given entity for update and checks if the it has been modified by comparing
+   * the property values to the current values in the database
    * @param entity the entity to check
    * @throws DbException in case of a database exception
    * @throws RecordNotFoundException in case the entity has been deleted
    * @throws RecordModifiedException in case the entity has been modified
    */
-  protected void checkIfModified(final Entity entity) throws DbException {
+  protected void lockAndCheckForUpdate(final Entity entity) throws DbException {
     final Entity.Key originalKey = entity.getOriginalPrimaryKey();
-    final Entity current = selectSingle(EntityCriteriaUtil.selectCriteria(originalKey).setFetchDepthForAll(0));
+    final Entity current = selectSingle(EntityCriteriaUtil.selectCriteria(originalKey).setSelectForUpdate(true).setFetchDepthForAll(0));
     for (final String propertyID : current.getValueKeys()) {
       if (!entity.containsValue(propertyID) || !Util.equal(current.getValue(propertyID), entity.getOriginalValue(propertyID))) {
         throw new RecordModifiedException(entity, current);
@@ -761,7 +769,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     return new ArrayList<Entity.Key>(keySet);
   }
 
-  private static String initializeSelectQuery(final EntityCriteria criteria, final String columnsString, final String orderByClause) {
+  private static String initializeSelectQuery(final EntitySelectCriteria criteria, final String columnsString, final String orderByClause) {
     String selectQuery = EntityRepository.getSelectQuery(criteria.getEntityID());
     if (selectQuery == null) {
       selectQuery = getSelectSQL(EntityRepository.getSelectTableName(criteria.getEntityID()), columnsString, null, null);
@@ -774,6 +782,9 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     }
     if (orderByClause != null) {
       queryBuilder.append(" order by ").append(orderByClause);
+    }
+    if (criteria.isSelectForUpdate()) {
+      queryBuilder.append(" for update");
     }
 
     return queryBuilder.toString();

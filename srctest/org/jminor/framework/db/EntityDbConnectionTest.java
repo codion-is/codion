@@ -226,28 +226,33 @@ public class EntityDbConnectionTest {
   @Test
   public void optimisticLocking() throws Exception {
     String oldLocation = null;
-    Entity updatedDeparment = null;
+    Entity updatedDepartment = null;
     final EntityDbConnection baseDb = initializeConnection();
     final EntityDbConnection optimisticDb = initializeConnection();
     optimisticDb.setOptimisticLocking(true);
     try {
       final Entity department = baseDb.selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "SALES");
       oldLocation = (String) department.setValue(EmpDept.DEPARTMENT_LOCATION, "NEWLOC");
-      updatedDeparment = baseDb.update(Arrays.asList(department)).get(0);
+      updatedDepartment = baseDb.update(Arrays.asList(department)).get(0);
       try {
         optimisticDb.update(Arrays.asList(department));
         fail("RecordModifiedException should have been thrown");
       }
       catch (RecordModifiedException e) {
-        assertTrue(((Entity) e.getModifiedRow()).propertyValuesEqual(updatedDeparment));
+        assertTrue(((Entity) e.getModifiedRow()).propertyValuesEqual(updatedDepartment));
         assertTrue(((Entity) e.getRow()).propertyValuesEqual(department));
       }
     }
     finally {
       try {
-        if (updatedDeparment != null && oldLocation != null) {
-          updatedDeparment.setValue(EmpDept.DEPARTMENT_LOCATION, oldLocation);
-          baseDb.update(Arrays.asList(updatedDeparment));
+        try {
+          if (updatedDepartment != null && oldLocation != null) {
+            updatedDepartment.setValue(EmpDept.DEPARTMENT_LOCATION, oldLocation);
+            baseDb.update(Arrays.asList(updatedDepartment));
+          }
+        }
+        catch (DbException e) {
+          e.printStackTrace();
         }
         baseDb.disconnect();
         optimisticDb.disconnect();

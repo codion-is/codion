@@ -1782,3 +1782,5 @@
   EntityLookupField replaced overloaded constructor with setters
   EntityTableModel replaced overloaded constructor with setters
   Major refactoring of framework.client.model
+  EntitySelectCriteria.selectForUpdate field added
+  EntityDbConnection.checkIfModified() renamed to lockAndCheckForUpdate(), now selects for update

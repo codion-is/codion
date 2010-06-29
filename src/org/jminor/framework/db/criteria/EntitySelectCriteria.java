@@ -23,6 +23,7 @@ public class EntitySelectCriteria extends EntityCriteria {
   private int currentFetchDepth = 0;
   private Map<String, Integer> foreignKeyFetchDepths;
   private int fetchDepth;
+  private boolean selectForUpdate;
 
   /**
    * Instantiates a new EntityCriteria, which includes all the underlying entities
@@ -148,6 +149,15 @@ public class EntitySelectCriteria extends EntityCriteria {
       foreignKeyFetchDepths.put(property.getPropertyID(), fetchDepth);
     }
 
+    return this;
+  }
+
+  public boolean isSelectForUpdate() {
+    return selectForUpdate;
+  }
+
+  public EntitySelectCriteria setSelectForUpdate(final boolean selectForUpdate) {
+    this.selectForUpdate = selectForUpdate;
     return this;
   }
 
