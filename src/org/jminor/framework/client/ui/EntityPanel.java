@@ -302,7 +302,7 @@ public abstract class EntityPanel extends JPanel {
    * @see #initialize()
    * @see #isPanelInitialized()
    */
-  public EntityPanel initializePanel() {
+  public final EntityPanel initializePanel() {
     if (!panelInitialized) {
       try {
         UiUtil.setWaitCursor(true, this);
@@ -793,11 +793,11 @@ public abstract class EntityPanel extends JPanel {
                 }
               });
       UiUtil.addKeyEvent(this, KeyEvent.VK_F, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
-                true, new AbstractAction("selectSearchField") {
-                  public void actionPerformed(ActionEvent e) {
-                    getTablePanel().getSearchField().requestFocusInWindow();
-                  }
-                });
+              true, new AbstractAction("selectSearchField") {
+                public void actionPerformed(ActionEvent e) {
+                  getTablePanel().getSearchField().requestFocusInWindow();
+                }
+              });
       if (getTablePanel().getSearchPanel() != null) {
         UiUtil.addKeyEvent(this, KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
                 true, new AbstractAction("toggleSearchPanel") {

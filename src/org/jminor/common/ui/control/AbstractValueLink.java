@@ -6,6 +6,7 @@ package org.jminor.common.ui.control;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Util;
 
+import javax.swing.SwingUtilities;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -79,7 +80,16 @@ public abstract class AbstractValueLink<T, V> extends Control {
     if (linkType != LinkType.READ_ONLY && !isUpdatingModel && !isUpdatingUI) {
       try {
         isUpdatingModel = true;
-        setModelValue(getUIValue());
+        if (!SwingUtilities.isEventDispatchThread()) {
+          SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+              setModelValue(getUIValue());
+            }
+          });
+        }
+        else {
+          setModelValue(getUIValue());
+        }
       }
       finally {
         isUpdatingModel = false;
@@ -91,7 +101,16 @@ public abstract class AbstractValueLink<T, V> extends Control {
     if (linkType != LinkType.WRITE_ONLY && !isUpdatingModel) {
       try {
         isUpdatingUI = true;
-        setUIValue(getModelValue());
+        if (!SwingUtilities.isEventDispatchThread()) {
+          SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+              setUIValue(getModelValue());
+            }
+          });
+        }
+        else {
+          setUIValue(getModelValue());
+        }
       }
       finally {
         isUpdatingUI = false;

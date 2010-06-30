@@ -1789,3 +1789,8 @@
   EntityApplicationPanel.addMainApplicationModel(s)() added
   framework.db.criteria refactored
   EntityApplicationPanel.initializeMain/SupportEntityPanelProviders() removed, addMain... and addSupport... added
+  AbstractValueLink now uses SwingUtilities.invokeLater() when applicable
+  EntityApplicationPanel.showStartupDialog() renamed to createStartupDialog()
+  EntityApplicationPanel.startApplication() refactored, uses
+  FilteredComboBoxModel sets the selected item on filtering
+  Property.Audit... properties added

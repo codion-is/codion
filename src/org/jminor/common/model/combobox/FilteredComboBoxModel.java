@@ -119,6 +119,9 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
     if (sortContents) {
       Collections.sort(visibleItems, sortComparator);
     }
+    if (selectedItem != null && !visibleItems.contains(selectedItem)) {
+     setSelectedItem(null);
+    }
 
     fireContentsChanged();
   }

@@ -1349,4 +1349,94 @@ public class Property implements Serializable {
       return blobColumnName;
     }
   }
+
+  public static class AuditInsertUserProperty extends Property {
+
+    public AuditInsertUserProperty(final String propertyID) {
+      this(propertyID, null);
+    }
+
+    public AuditInsertUserProperty(final String propertyID, final String caption) {
+      super(propertyID, Types.VARCHAR, caption);
+      super.setReadOnly(true);
+      super.setUpdatable(false);
+    }
+
+    @Override
+    public Property setUpdatable(final boolean updatable) {
+      throw new IllegalArgumentException("AuditInsertUserProperty can not be updatable");
+    }
+
+    @Override
+    public Property setReadOnly(final boolean readOnly) {
+      throw new IllegalArgumentException("AuditInsertUserProperty can only be select only");
+    }
+  }
+
+  public static class AuditInsertTimeProperty extends Property {
+    public AuditInsertTimeProperty(final String propertyID) {
+      this(propertyID, null);
+    }
+
+    public AuditInsertTimeProperty(final String propertyID, final String caption) {
+      super(propertyID, Types.TIMESTAMP, caption);
+      super.setReadOnly(true);
+      super.setUpdatable(false);
+    }
+
+    @Override
+    public Property setUpdatable(final boolean updatable) {
+      throw new IllegalArgumentException("AuditInsertTimeProperty can not be updatable");
+    }
+
+    @Override
+    public Property setReadOnly(final boolean readOnly) {
+      throw new IllegalArgumentException("AuditInsertTimeProperty can only be select only");
+    }
+  }
+
+  public static class AuditUpdateUserProperty extends Property {
+
+    public AuditUpdateUserProperty(final String propertyID) {
+      this(propertyID, null);
+    }
+
+    public AuditUpdateUserProperty(final String propertyID, final String caption) {
+      super(propertyID, Types.VARCHAR, caption);
+      super.setReadOnly(true);
+      super.setUpdatable(false);
+    }
+
+    @Override
+    public Property setUpdatable(final boolean updatable) {
+      throw new IllegalArgumentException("AuditUpdateUserProperty can not be updatable");
+    }
+
+    @Override
+    public Property setReadOnly(final boolean readOnly) {
+      throw new IllegalArgumentException("AuditUpdateUserProperty can only be select only");
+    }
+  }
+
+  public static class AuditUpdateTimeProperty extends Property {
+    public AuditUpdateTimeProperty(final String propertyID) {
+      this(propertyID, null);
+    }
+
+    public AuditUpdateTimeProperty(final String propertyID, final String caption) {
+      super(propertyID, Types.TIMESTAMP, caption);
+      super.setReadOnly(true);
+      super.setUpdatable(false);
+    }
+
+    @Override
+    public Property setUpdatable(final boolean updatable) {
+      throw new IllegalArgumentException("AuditUpdateTimeProperty can not be updatable");
+    }
+
+    @Override
+    public Property setReadOnly(final boolean readOnly) {
+      throw new IllegalArgumentException("AuditUpdateTimeProperty can only be select only");
+    }
+  }
 }
