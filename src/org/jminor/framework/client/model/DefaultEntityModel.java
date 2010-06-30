@@ -277,36 +277,15 @@ public class DefaultEntityModel implements EntityModel {
     return false;
   }
 
-  public List<? extends EntityModel> getDetailModels() {
-    return Collections.unmodifiableList(detailModels);
+  public Collection<? extends EntityModel> getDetailModels() {
+    return Collections.unmodifiableCollection(detailModels);
   }
 
-  /**
-   * @return the linked detail model or the first detail model if none is linked,
-   * returns null in case this model contains no detail models
-   */
-  public EntityModel getLinkedDetailModel() {
-    if (detailModels.size() == 0) {
-      return null;
-    }
-
-    return linkedDetailModels.size() > 0 ? linkedDetailModels.iterator().next() : detailModels.get(0);
-  }
-
-  public void setLinkedDetailModel(final EntityModel entityModel) {
-    setLinkedDetailModels(entityModel == null ? null : Arrays.asList(entityModel));
-  }
-
-  /**
-   * Sets the currently linked detail models. Linked models are updated and filtered according
-   * to the entity/entities selected in this (the master) model
-   * @param detailModels the detail models to link
-   */
-  public void setLinkedDetailModels(final List<EntityModel> detailModels) {
+  public void setLinkedDetailModels(final EntityModel... detailModels) {
     final Set<EntityModel> linked = new HashSet<EntityModel>(linkedDetailModels);
     linkedDetailModels.clear();
     if (detailModels != null) {
-      linkedDetailModels.addAll(detailModels);
+      linkedDetailModels.addAll(Arrays.asList(detailModels));
     }
 
     if (!linkedDetailModels.equals(linked)) {
@@ -314,9 +293,6 @@ public class DefaultEntityModel implements EntityModel {
     }
   }
 
-  /**
-   * @return a collection containing the detail models that are currently linked to this model
-   */
   public Collection<EntityModel> getLinkedDetailModels() {
     return Collections.unmodifiableCollection(linkedDetailModels);
   }

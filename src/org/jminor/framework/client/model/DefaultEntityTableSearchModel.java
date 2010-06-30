@@ -92,8 +92,8 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
     return null;
   }
 
-  public List<PropertyFilterModel> getPropertyFilterModels() {
-    return new ArrayList<PropertyFilterModel>(propertyFilterModels.values());
+  public Collection<PropertyFilterModel> getPropertyFilterModels() {
+    return Collections.unmodifiableCollection(propertyFilterModels.values());
   }
 
   /**
@@ -132,8 +132,8 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
     }
   }
 
-  public List<PropertySearchModel> getPropertySearchModels() {
-    return new ArrayList<PropertySearchModel>(propertySearchModels.values());
+  public Collection<PropertySearchModel> getPropertySearchModels() {
+    return Collections.unmodifiableCollection(propertySearchModels.values());
   }
 
   public boolean containsPropertySearchModel(final String propertyID) {

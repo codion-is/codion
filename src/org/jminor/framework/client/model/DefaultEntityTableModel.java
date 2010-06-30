@@ -363,15 +363,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
     }
   }
 
-  public void replaceEntities(final List<Entity> entities) {
-    replaceEntities(entities.toArray(new Entity[entities.size()]));
-  }
-
-  /**
-   * Replaces the given entities in this table model
-   * @param entities the entities to replace
-   */
-  public void replaceEntities(final Entity... entities) {
+  public void replaceEntities(final Collection<Entity> entities) {
     for (int i = 0; i < getVisibleItemCount(); i++) {
       final Entity entity = getItemAt(i);
       for (final Entity newEntity : entities) {
@@ -467,7 +459,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
     editModel.update(entities);
   }
 
-  public final Map<String, List<Entity>> getSelectionDependencies() {
+  public final Map<String, Collection<Entity>> getSelectionDependencies() {
     try {
       return getEntityDb().selectDependentEntities(getSelectedItems());
     }

@@ -80,16 +80,7 @@ public abstract class AbstractValueLink<T, V> extends Control {
     if (linkType != LinkType.READ_ONLY && !isUpdatingModel && !isUpdatingUI) {
       try {
         isUpdatingModel = true;
-        if (!SwingUtilities.isEventDispatchThread()) {
-          SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-              setModelValue(getUIValue());
-            }
-          });
-        }
-        else {
-          setModelValue(getUIValue());
-        }
+        setModelValue(getUIValue());
       }
       finally {
         isUpdatingModel = false;
@@ -102,11 +93,16 @@ public abstract class AbstractValueLink<T, V> extends Control {
       try {
         isUpdatingUI = true;
         if (!SwingUtilities.isEventDispatchThread()) {
-          SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-              setUIValue(getModelValue());
-            }
-          });
+          try {
+            SwingUtilities.invokeAndWait(new Runnable() {
+              public void run() {
+                setUIValue(getModelValue());
+              }
+            });
+          }
+          catch (Exception e) {
+            throw new RuntimeException(e);
+          }
         }
         else {
           setUIValue(getModelValue());

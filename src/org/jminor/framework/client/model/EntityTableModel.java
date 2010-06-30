@@ -96,7 +96,7 @@ public interface EntityTableModel extends FilteredTableModel<Entity> {
    * Replaces the given entities in this table model
    * @param entities the entities to replace
    */
-  void replaceEntities(final List<Entity> entities);
+  void replaceEntities(final Collection<Entity> entities);
 
   /**
    * @return true if the underlying query should be configurable
@@ -177,7 +177,7 @@ public interface EntityTableModel extends FilteredTableModel<Entity> {
    * @return a Map containing all entities which depend on the selected entities,
    * where the keys are entityIDs and the value is an array of entities of that type
    */
-  Map<String, List<Entity>> getSelectionDependencies();
+  Map<String, Collection<Entity>> getSelectionDependencies();
 
   void update(final List<Entity> entities) throws CancelException, ValidationException, DbException;
 

@@ -32,6 +32,7 @@ import org.junit.Test;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -125,13 +126,13 @@ public class EntityDbConnectionTest {
   @Test
   public void selectDependentEntities() throws Exception {
     final List<Entity> accounting = connection.selectMany(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "ACCOUNTING");
-    final Map<String, List<Entity>> emps = connection.selectDependentEntities(accounting);
+    final Map<String, Collection<Entity>> emps = connection.selectDependentEntities(accounting);
     assertEquals(1, emps.size());
     assertTrue(emps.containsKey(EmpDept.T_EMPLOYEE));
     assertEquals(7, emps.get(EmpDept.T_EMPLOYEE).size());
 
     Entity emp = connection.selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "KING");
-    Map<String, List<Entity>> deps = connection.selectDependentEntities(Arrays.asList(emp));
+    Map<String, Collection<Entity>> deps = connection.selectDependentEntities(Arrays.asList(emp));
     assertTrue(deps.containsKey(EmpDept.T_EMPLOYEE));
     assertTrue(deps.get(EmpDept.T_EMPLOYEE).size() == 2);
 

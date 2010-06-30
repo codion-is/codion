@@ -408,13 +408,13 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     }
   }
 
-  public Map<String, List<Entity>> selectDependentEntities(final List<Entity> entities) throws DbException {
-    final Map<String, List<Entity>> dependencyMap = new HashMap<String, List<Entity>>();
+  public Map<String, Collection<Entity>> selectDependentEntities(final Collection<Entity> entities) throws DbException {
+    final Map<String, Collection<Entity>> dependencyMap = new HashMap<String, Collection<Entity>>();
     if (entities == null || entities.size() == 0) {
       return dependencyMap;
     }
 
-    final Set<Dependency> dependencies = resolveEntityDependencies(entities.get(0).getEntityID());
+    final Set<Dependency> dependencies = resolveEntityDependencies(entities.iterator().next().getEntityID());
     for (final Dependency dependency : dependencies) {
       final List<Entity> dependentEntities = selectMany(EntityCriteriaUtil.selectCriteria(dependency.getEntityID(),
               dependency.getForeignKeyProperties(), EntityUtil.getPrimaryKeys(entities)));

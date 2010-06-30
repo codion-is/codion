@@ -1796,3 +1796,4 @@
   Property.Audit... properties added
   EntityDb.fill(Jdbc)Report(), removed report parameters parameter
   JasperReportsWrapper.reportParameters field added
+  Replaced List with Collection in a few places

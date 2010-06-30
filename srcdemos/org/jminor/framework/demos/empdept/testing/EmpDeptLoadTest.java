@@ -119,7 +119,7 @@ public class EmpDeptLoadTest extends EntityLoadTestModel {
     final EntityApplicationModel applicationModel = new EmpDeptAppModel(getUser());
 
     final EntityModel model = applicationModel.getMainApplicationModels().iterator().next();
-    model.setLinkedDetailModel(model.getDetailModels().get(0));
+    model.setLinkedDetailModels(model.getDetailModels().iterator().next());
     model.refresh();
 
     return applicationModel;

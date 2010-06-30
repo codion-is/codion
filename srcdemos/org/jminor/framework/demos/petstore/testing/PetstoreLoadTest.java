@@ -42,8 +42,8 @@ public class PetstoreLoadTest extends EntityLoadTestModel {
         categoryModel.getTableModel().clearSelection();
         categoryModel.refresh();
         selectRandomRow(categoryModel.getTableModel());
-        selectRandomRow(categoryModel.getDetailModels().get(0).getTableModel());
-        selectRandomRow(categoryModel.getDetailModels().get(0).getDetailModels().get(0).getTableModel());
+        selectRandomRow(categoryModel.getDetailModels().iterator().next().getTableModel());
+        selectRandomRow(categoryModel.getDetailModels().iterator().next().getDetailModels().iterator().next().getTableModel());
       }
     };
     return Arrays.asList(scenario);
@@ -54,11 +54,11 @@ public class PetstoreLoadTest extends EntityLoadTestModel {
     final EntityApplicationModel applicationModel =
             new PetstoreAppModel(new EntityDbRemoteProvider(getUser(), "scott@"+new Object(), getClass().getSimpleName()));
     final EntityModel categoryModel = applicationModel.getMainApplicationModels().iterator().next();
-    categoryModel.setLinkedDetailModel(categoryModel.getDetailModels().get(0));
-    final EntityModel productModel = categoryModel.getDetailModels().get(0);
-    productModel.setLinkedDetailModel(productModel.getDetailModels().get(0));
-    final EntityModel itemModel = productModel.getDetailModels().get(0);
-    itemModel.setLinkedDetailModel(itemModel.getDetailModels().get(0));
+    categoryModel.setLinkedDetailModels(categoryModel.getDetailModels().iterator().next());
+    final EntityModel productModel = categoryModel.getDetailModels().iterator().next();
+    productModel.setLinkedDetailModels(productModel.getDetailModels().iterator().next());
+    final EntityModel itemModel = productModel.getDetailModels().iterator().next();
+    itemModel.setLinkedDetailModels(itemModel.getDetailModels().iterator().next());
 
     return applicationModel;
   }

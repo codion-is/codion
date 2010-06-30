@@ -223,7 +223,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
    * @throws ValidationException in case validation fails
    * @see #evtBeforeInsert
    * @see #evtAfterInsert
-   * @see #validateEntities(java.util.List, int)
+   * @see #validateEntities(java.util.Collection, int)
    */
   public final void insert(final List<Entity> entities) throws CancelException, DbException, ValidationException {
     Util.rejectNullValue(entities);
@@ -303,7 +303,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
   }
 
   @SuppressWarnings({"UnusedDeclaration"})
-  public void validateEntities(final List<Entity> entities, final int action) throws ValidationException {
+  public void validateEntities(final Collection<Entity> entities, final int action) throws ValidationException {
     Util.rejectNullValue(entities);
     for (final Entity entity : entities) {
       for (final Property property : EntityRepository.getProperties(entity.getEntityID()).values()) {

@@ -511,7 +511,7 @@ public abstract class EntityPanel extends JPanel {
       }
     }
 
-    model.setLinkedDetailModel(state == HIDDEN ? null : getSelectedDetailPanel().model);
+    model.setLinkedDetailModels(state == HIDDEN ? null : getSelectedDetailPanel().model);
 
     detailPanelState = state;
     if (state != DIALOG) {
@@ -930,7 +930,7 @@ public abstract class EntityPanel extends JPanel {
 
     tabbedPane.addChangeListener(new ChangeListener() {
       public void stateChanged(final ChangeEvent e) {
-        getModel().setLinkedDetailModel(getDetailPanelState() != HIDDEN ? getSelectedDetailPanel().getModel() : null);
+        getModel().setLinkedDetailModels(getDetailPanelState() != HIDDEN ? getSelectedDetailPanel().getModel() : null);
         getSelectedDetailPanel().initializePanel();
       }
     });
@@ -1137,7 +1137,6 @@ public abstract class EntityPanel extends JPanel {
 
   /**
    * Shows a JRViewer for report printing
-   * @param reportParameters a map containing the parameters required for the report
    * @param reportWrapper the report wrapper
    * @param uiWrapper the ui wrapper
    * @param dataSource the JRDataSource used to provide the report data

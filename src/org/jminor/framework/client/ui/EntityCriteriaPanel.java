@@ -28,6 +28,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -118,7 +119,7 @@ public class EntityCriteriaPanel extends JPanel {
   }
 
   private List<PropertySearchModel> getSortedCriteria(final EntityTableSearchModel searchModel) {
-    final List<PropertySearchModel> searchCriteria = searchModel.getPropertySearchModels();
+    final List<PropertySearchModel> searchCriteria = new ArrayList<PropertySearchModel>(searchModel.getPropertySearchModels());
     Collections.sort(searchCriteria, new Comparator<AbstractSearchModel<Property>>() {
       public int compare(final AbstractSearchModel<Property> o1, final AbstractSearchModel<Property> o2) {
         final Property propertyOne = o1.getSearchProperty();

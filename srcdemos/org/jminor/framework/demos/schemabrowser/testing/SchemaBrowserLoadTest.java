@@ -36,8 +36,8 @@ public class SchemaBrowserLoadTest extends EntityLoadTestModel {
     final EntityModel schemaModel = ((EntityApplicationModel) applicationModel).getMainApplicationModels().iterator().next();
     schemaModel.getTableModel().refresh();
     selectRandomRow(schemaModel.getTableModel());
-    selectRandomRow(schemaModel.getDetailModels().get(0).getTableModel());
-    selectRandomRow(schemaModel.getDetailModels().get(0).getDetailModels().get(0).getTableModel());
+    selectRandomRow(schemaModel.getDetailModels().iterator().next().getTableModel());
+    selectRandomRow(schemaModel.getDetailModels().iterator().next().getDetailModels().iterator().next().getTableModel());
   }
 
   @Override
@@ -45,9 +45,9 @@ public class SchemaBrowserLoadTest extends EntityLoadTestModel {
     final EntityApplicationModel applicationModel =
             new SchemaBrowserAppModel(new EntityDbRemoteProvider(getUser(), User.UNIT_TEST_USER +"@"+new Object(), getClass().getSimpleName()));
     final EntityModel schemaModel = applicationModel.getMainApplicationModels().iterator().next();
-    schemaModel.setLinkedDetailModel(schemaModel.getDetailModels().get(0));
-    final EntityModel dbObjectModel = schemaModel.getDetailModels().get(0);
-    dbObjectModel.setLinkedDetailModel(dbObjectModel.getDetailModels().get(0));
+    schemaModel.setLinkedDetailModels(schemaModel.getDetailModels().iterator().next());
+    final EntityModel dbObjectModel = schemaModel.getDetailModels().iterator().next();
+    dbObjectModel.setLinkedDetailModels(dbObjectModel.getDetailModels().iterator().next());
 
     return applicationModel;
   }

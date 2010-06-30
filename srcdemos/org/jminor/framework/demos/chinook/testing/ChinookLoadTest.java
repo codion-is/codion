@@ -45,7 +45,7 @@ public class ChinookLoadTest extends EntityLoadTestModel {
       protected void performScenario(Object application) throws Exception {
         final EntityApplicationModel model = (EntityApplicationModel) application;
         final EntityModel genreModel = new GenreModel(model.getDbProvider());
-        genreModel.setLinkedDetailModel(genreModel.getDetailModels().get(0));
+        genreModel.setLinkedDetailModels(genreModel.getDetailModels().iterator().next());
         genreModel.refresh();
         selectRandomRow(genreModel.getTableModel());
       }
@@ -95,15 +95,15 @@ public class ChinookLoadTest extends EntityLoadTestModel {
     appModel.refresh();
 
     EntityModel model = appModel.getMainApplicationModel(ArtistModel.class);
-    model.setLinkedDetailModel(model.getDetailModels().get(0));
+    model.setLinkedDetailModels(model.getDetailModels().iterator().next());
 
     model = appModel.getMainApplicationModel(CustomerModel.class);
-    model.setLinkedDetailModel(model.getDetailModels().get(0));
+    model.setLinkedDetailModels(model.getDetailModels().iterator().next());
     model = model.getDetailModel(InvoiceModel.class);
-    model.setLinkedDetailModel(model.getDetailModels().get(0));
+    model.setLinkedDetailModels(model.getDetailModels().iterator().next());
 
     model = appModel.getMainApplicationModel(PlaylistModel.class);
-    model.setLinkedDetailModel(model.getDetailModels().get(0));
+    model.setLinkedDetailModels(model.getDetailModels().iterator().next());
 
     return appModel;
   }

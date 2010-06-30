@@ -12,6 +12,7 @@ import org.jminor.common.model.reports.ReportWrapper;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface EntityModel extends Refreshable {
@@ -46,11 +47,16 @@ public interface EntityModel extends Refreshable {
   boolean containsTableModel();
 
   /**
-   * Sets the currently linked detail model, that is, the one that should be
-   * updated according to the selected item
-   * @param entityModel the detail model to link
+   * @return an unmodifiable collection containing the detail models that are currently linked to this model
    */
-  void setLinkedDetailModel(final EntityModel entityModel);
+  Collection<EntityModel> getLinkedDetailModels();
+
+  /**
+   * Sets the currently linked detail models. Linked models are updated and filtered according
+   * to the entity/entities selected in this (the master) model
+   * @param detailModels the detail models to link
+   */
+  void setLinkedDetailModels(final EntityModel... detailModels);
 
   /**
    * Returns an initialized ReportResult object from the given report wrapper
@@ -129,7 +135,7 @@ public interface EntityModel extends Refreshable {
   EntityModel getDetailModel(final Class<? extends EntityModel> modelClass);
 
   /**
-   * @return the detail models this model contains
+   * @return an unmodifiable collection containing the detail models this model contains
    */
-  List<? extends EntityModel> getDetailModels();
+  Collection<? extends EntityModel> getDetailModels();
 }

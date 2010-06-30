@@ -447,7 +447,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     }
   }
 
-  public Map<String, List<Entity>> selectDependentEntities(final List<Entity> entities) throws DbException, RemoteException {
+  public Map<String, Collection<Entity>> selectDependentEntities(final Collection<Entity> entities) throws DbException, RemoteException {
     try {
       return loggingEntityDbProxy.selectDependentEntities(entities);
     }

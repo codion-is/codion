@@ -92,10 +92,10 @@ public class EntityModelTest {
   public void detailModel() throws Exception {
     assertTrue("DepartmentModel should contain EmployeeModel detail", departmentModel.containsDetailModel(EmployeeModel.class));
     assertEquals("Only one detail model should be in DepartmentModel", 1, departmentModel.getDetailModels().size());
-    departmentModel.setLinkedDetailModel(departmentModel.getDetailModels().get(0));
+    departmentModel.setLinkedDetailModels(departmentModel.getDetailModels().iterator().next());
     assertTrue(departmentModel.getLinkedDetailModels().size() == 1);
     assertTrue("EmployeeModel should be the linked detail model in DepartmentModel",
-            departmentModel.getLinkedDetailModel().getClass().equals(EmployeeModel.class));
+            departmentModel.getLinkedDetailModels().contains(departmentModel.getDetailModel(EmployeeModel.class)));
     assertNotNull(departmentModel.getDetailModel(EmployeeModel.class));
     departmentModel.refresh();
     departmentModel.refreshDetailModels();

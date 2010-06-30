@@ -10,6 +10,7 @@ import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.db.criteria.EntitySelectCriteria;
 import org.jminor.framework.domain.Entity;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -210,7 +211,7 @@ public interface EntityDb {
    * @return the entities that depend on <code>entities</code>
    * @throws org.jminor.common.db.exception.DbException in case of a db exception
    */
-  Map<String, List<Entity>> selectDependentEntities(final List<Entity> entities) throws Exception;
+  Map<String, Collection<Entity>> selectDependentEntities(final Collection<Entity> entities) throws Exception;
 
   /**
    * Selects the number of rows returned according to the given criteria

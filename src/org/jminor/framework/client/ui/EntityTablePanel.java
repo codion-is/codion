@@ -512,7 +512,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
    * @throws org.jminor.common.db.exception.DbException in case of a database exception
    */
   public void viewSelectionDependencies() throws DbException {
-    final Map<String, List<Entity>> dependencies;
+    final Map<String, Collection<Entity>> dependencies;
     try {
       UiUtil.setWaitCursor(true, this);
       dependencies = getTableModel().getSelectionDependencies();
@@ -1570,7 +1570,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     column.setHeaderValue(val);
   }
 
-  private static void showDependenciesDialog(final Map<String, List<Entity>> dependencies, final EntityDbProvider dbProvider,
+  private static void showDependenciesDialog(final Map<String, Collection<Entity>> dependencies, final EntityDbProvider dbProvider,
                                              final JComponent dialogParent) {
     JPanel dependenciesPanel;
     try {
@@ -1584,13 +1584,13 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
             true, FrameworkMessages.get(FrameworkMessages.DEPENDENT_RECORDS_FOUND), true, true, null);
   }
 
-  private static JPanel createDependenciesPanel(final Map<String, List<Entity>> dependencies,
+  private static JPanel createDependenciesPanel(final Map<String, Collection<Entity>> dependencies,
                                                 final EntityDbProvider dbProvider) {
     final JPanel panel = new JPanel(new BorderLayout());
     final JTabbedPane tabPane = new JTabbedPane(JTabbedPane.TOP);
     tabPane.setUI(UiUtil.getBorderlessTabbedPaneUI());
-    for (final Map.Entry<String, List<Entity>> entry : dependencies.entrySet()) {
-      final List<Entity> dependantEntities = entry.getValue();
+    for (final Map.Entry<String, Collection<Entity>> entry : dependencies.entrySet()) {
+      final Collection<Entity> dependantEntities = entry.getValue();
       if (dependantEntities.size() > 0) {
         tabPane.addTab(entry.getKey(), createStaticEntityTablePanel(dependantEntities, dbProvider));
       }

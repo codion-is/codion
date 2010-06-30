@@ -94,7 +94,7 @@ public interface EntityTableSearchModel extends FilterCriteria<Entity> {
   /**
    * @return a list containing the PropertySearchModels configured in this table search model
    */
-  List<PropertySearchModel> getPropertySearchModels();
+  Collection<PropertySearchModel> getPropertySearchModels();
 
   /**
    * @param propertyID the id of the property for which to retrieve the PropertySearchModel
@@ -110,7 +110,7 @@ public interface EntityTableSearchModel extends FilterCriteria<Entity> {
   /**
    * @return the property filters configured in this table search model
    */
-  List<PropertyFilterModel> getPropertyFilterModels();
+  Collection<PropertyFilterModel> getPropertyFilterModels();
 
   /**
    * The PropertyFilterModel associated with the property identified by <code>propertyID</code>
