@@ -9,8 +9,6 @@ import org.jminor.common.model.reports.ReportResult;
 import org.jminor.common.model.reports.ReportWrapper;
 import org.jminor.framework.db.provider.EntityDbProvider;
 
-import java.util.Map;
-
 /**
  * A static utility class for working with reports.<br>
  * User: Bjorn Darri<br>
@@ -25,14 +23,12 @@ public final class EntityReportUtil {
    * Takes a ReportWrapper which uses a JDBC datasource and returns an initialized ReportResult object
    * @param reportWrapper the report wrapper
    * @param dbProvider the EntityDbProvider instance to use when filling the report
-   * @param reportParameters the report parameters
    * @return an initialized ReportResult object
    * @throws ReportException in case of a report exception
    */
-  public static ReportResult fillReport(final ReportWrapper reportWrapper, final EntityDbProvider dbProvider,
-                                        final Map reportParameters) throws ReportException {
+  public static ReportResult fillReport(final ReportWrapper reportWrapper, final EntityDbProvider dbProvider) throws ReportException {
     try {
-      return dbProvider.getEntityDb().fillReport(reportWrapper, reportParameters);
+      return dbProvider.getEntityDb().fillReport(reportWrapper);
     }
     catch (ReportException e) {
       throw e;
@@ -46,12 +42,10 @@ public final class EntityReportUtil {
    * Takes a ReportWrapper object and returns an initialized ReportResult object
    * @param reportWrapper the report wrapper
    * @param dataSource the ReportDataWrapper to use
-   * @param reportParameters the report parameters
    * @return an initialized ReportResult object
    * @throws ReportException in case of a report exception
    */
-  public static ReportResult fillReport(final ReportWrapper reportWrapper, final ReportDataWrapper dataSource,
-                                        final Map reportParameters) throws ReportException {
-    return reportWrapper.fillReport(reportParameters, dataSource);
+  public static ReportResult fillReport(final ReportWrapper reportWrapper, final ReportDataWrapper dataSource) throws ReportException {
+    return reportWrapper.fillReport(dataSource);
   }
 }

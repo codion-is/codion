@@ -43,7 +43,7 @@ public class DepartmentPanel extends EntityPanel {
             EntityUtil.getDistinctPropertyValues(getModel().getTableModel().getSelectedItems(), EmpDept.DEPARTMENT_ID);
     final HashMap<String, Object> reportParameters = new HashMap<String, Object>();
     reportParameters.put("DEPTNO", departmentNumbers);
-    viewJdbcReport(new JasperReportsWrapper(reportPath), new JasperReportsUIWrapper(), reportParameters, null);
+    viewJdbcReport(new JasperReportsWrapper(reportPath, reportParameters), new JasperReportsUIWrapper(), null);
   }
 
   @Override

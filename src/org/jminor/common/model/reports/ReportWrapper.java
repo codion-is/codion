@@ -4,7 +4,6 @@
 package org.jminor.common.model.reports;
 
 import java.sql.Connection;
-import java.util.Map;
 
 /**
  * User: Bjorn Darri<br>
@@ -13,7 +12,7 @@ import java.util.Map;
 public interface ReportWrapper<R> {
   String getReportName();
 
-  ReportResult<R> fillReport(final Map reportParameters, final Connection connection) throws ReportException;
+  ReportResult<R> fillReport(final Connection connection) throws ReportException;
 
-  ReportResult<R> fillReport(final Map reportParameters, final ReportDataWrapper dataWrapper) throws ReportException;
+  ReportResult<R> fillReport(final ReportDataWrapper dataWrapper) throws ReportException;
 }

@@ -32,7 +32,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -102,10 +101,10 @@ public class DefaultEntityModel implements EntityModel {
   }
 
   /**
-   * Instantiates a new EntityModel with default EntityEditModel and EntityTableModel implementations.
-   * @param entityID the ID of the Entity this EntityModel represents
+   * Instantiates a new DefaultEntityModel with default EntityEditModel and EntityTableModel implementations.
+   * @param entityID the ID of the Entity this DefaultEntityModel represents
    * @param dbProvider a EntityDbProvider
-   * @param includeTableModel true if this EntityModel should include a table model
+   * @param includeTableModel true if this DefaultEntityModel should include a table model
    */
   public DefaultEntityModel(final String entityID, final EntityDbProvider dbProvider, final boolean includeTableModel) {
     Util.rejectNullValue(dbProvider);
@@ -130,7 +129,7 @@ public class DefaultEntityModel implements EntityModel {
   }
 
   /**
-   * Instantiates a new EntityModel
+   * Instantiates a new DefaultEntityModel
    * @param editModel the edit model
    */
   public DefaultEntityModel(final EntityEditModel editModel) {
@@ -138,7 +137,7 @@ public class DefaultEntityModel implements EntityModel {
   }
 
   /**
-   * Instantiates a new EntityModel
+   * Instantiates a new DefaultEntityModel
    * @param tableModel the table model
    */
   public DefaultEntityModel(final EntityTableModel tableModel) {
@@ -146,7 +145,7 @@ public class DefaultEntityModel implements EntityModel {
   }
 
   /**
-   * Instantiates a new EntityModel
+   * Instantiates a new DefaultEntityModel
    * @param editModel the edit model
    * @param includeTableModel if true then a default EntityTableModel is included
    */
@@ -155,7 +154,7 @@ public class DefaultEntityModel implements EntityModel {
   }
 
   /**
-   * Instantiates a new EntityModel
+   * Instantiates a new DefaultEntityModel
    * @param editModel the edit model
    * @param tableModel the table model
    */
@@ -332,13 +331,12 @@ public class DefaultEntityModel implements EntityModel {
     throw new RuntimeException("No detail model of type " + modelClass + " found in model: " + this);
   }
 
-  public ReportResult fillReport(final ReportWrapper reportWrapper, final Map reportParameters) throws ReportException {
-    return EntityReportUtil.fillReport(reportWrapper, dbProvider, reportParameters);
+  public ReportResult fillReport(final ReportWrapper reportWrapper) throws ReportException {
+    return EntityReportUtil.fillReport(reportWrapper, dbProvider);
   }
 
-  public ReportResult fillReport(final ReportWrapper reportWrapper, final ReportDataWrapper dataSource,
-                                 final Map reportParameters) throws ReportException {
-    return EntityReportUtil.fillReport(reportWrapper, dataSource, reportParameters);
+  public ReportResult fillReport(final ReportWrapper reportWrapper, final ReportDataWrapper dataSource) throws ReportException {
+    return EntityReportUtil.fillReport(reportWrapper, dataSource);
   }
 
   /**

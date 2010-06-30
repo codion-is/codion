@@ -29,20 +29,24 @@ import java.util.Map;
 public class JasperReportsWrapper implements ReportWrapper<JasperPrint>, Serializable {
   private static final long serialVersionUID = 1;
   private final JasperReport report;
+  private final Map reportParameters;
 
-  public JasperReportsWrapper(final String reportPath) {
-    this(loadJasperReport(reportPath));
+  public JasperReportsWrapper(final String reportPath, final Map reportParameters) {
+    this(loadJasperReport(reportPath), reportParameters);
   }
 
-  public JasperReportsWrapper(final JasperReport report) {
+  public JasperReportsWrapper(final JasperReport report, final Map reportParameters) {
+    Util.rejectNullValue(report);
     this.report = report;
+    this.reportParameters = reportParameters;
   }
 
   public String getReportName() {
     return report.getName();
   }
 
-  public ReportResult<JasperPrint> fillReport(final Map reportParameters, final Connection connection) throws ReportException {
+  public ReportResult<JasperPrint> fillReport(final Connection connection) throws ReportException {
+    Util.rejectNullValue(connection);
     try {
       return new JasperReportsResult(JasperFillManager.fillReport(report, reportParameters, connection));
     }
@@ -51,7 +55,8 @@ public class JasperReportsWrapper implements ReportWrapper<JasperPrint>, Seriali
     }
   }
 
-  public ReportResult<JasperPrint> fillReport(final Map reportParameters, final ReportDataWrapper dataWrapper) throws ReportException {
+  public ReportResult<JasperPrint> fillReport(final ReportDataWrapper dataWrapper) throws ReportException {
+    Util.rejectNullValue(dataWrapper);
     try {
       return new JasperReportsResult(JasperFillManager.fillReport(report, reportParameters, (JRDataSource) dataWrapper.getDataSource()));
     }

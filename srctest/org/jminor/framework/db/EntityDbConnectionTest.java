@@ -110,7 +110,7 @@ public class EntityDbConnectionTest {
     final Map<String, Object> reportParameters = new HashMap<String, Object>();
     reportParameters.put("DEPTNO", Arrays.asList(10, 20));
     final ReportResult print = connection.fillReport(
-            new JasperReportsWrapper("resources/demos/empdept/reports/empdept_employees.jasper"), reportParameters);
+            new JasperReportsWrapper("resources/demos/empdept/reports/empdept_employees.jasper", reportParameters));
     assertNotNull(print.getResult());
   }
 

@@ -462,8 +462,8 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     }
   }
 
-  public ReportResult fillReport(final ReportWrapper reportWrapper, final Map reportParameters) throws ReportException {
-    return reportWrapper.fillReport(reportParameters, getConnection());
+  public ReportResult fillReport(final ReportWrapper reportWrapper) throws ReportException {
+    return reportWrapper.fillReport(getConnection());
   }
 
   public void writeBlob(final Entity.Key primaryKey, final String blobPropertyID, final String dataDescription,

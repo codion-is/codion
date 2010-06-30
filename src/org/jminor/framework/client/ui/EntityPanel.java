@@ -58,7 +58,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 /**
  * A panel representing a Entity via a EntityModel, which facilitates browsing and editing of records.
@@ -1120,14 +1119,13 @@ public abstract class EntityPanel extends JPanel {
    * Shows a JRViewer for report printing
    * @param reportWrapper the report wrapper
    * @param uiWrapper the ui wrapper
-   * @param reportParameters a map containing the parameters required for the report
-   * @param frameTitle the title to display on the frame
+   * @param reportTitle the title to display on the frame
    */
   protected void viewJdbcReport(final ReportWrapper reportWrapper, final ReportUIWrapper uiWrapper,
-                                final Map<String, Object> reportParameters, final String frameTitle) {
+                                final String reportTitle) {
     try {
       UiUtil.setWaitCursor(true, this);
-      EntityReportUiUtil.viewReport(model.fillReport(reportWrapper, reportParameters), uiWrapper, frameTitle);
+      EntityReportUiUtil.viewReport(model.fillReport(reportWrapper), uiWrapper, reportTitle);
     }
     catch (ReportException e) {
       throw new RuntimeException(e);
@@ -1143,14 +1141,13 @@ public abstract class EntityPanel extends JPanel {
    * @param reportWrapper the report wrapper
    * @param uiWrapper the ui wrapper
    * @param dataSource the JRDataSource used to provide the report data
-   * @param frameTitle the title to display on the frame
+   * @param reportTitle the title to display on the frame
    */
   protected void viewReport(final ReportWrapper reportWrapper, final ReportUIWrapper uiWrapper,
-                            final ReportDataWrapper dataSource, final Map<String, Object> reportParameters,
-                            final String frameTitle) {
+                            final ReportDataWrapper dataSource, final String reportTitle) {
     try {
       UiUtil.setWaitCursor(true, this);
-      EntityReportUiUtil.viewReport(model.fillReport(reportWrapper, dataSource, reportParameters), uiWrapper, frameTitle);
+      EntityReportUiUtil.viewReport(model.fillReport(reportWrapper, dataSource), uiWrapper, reportTitle);
     }
     catch (ReportException e) {
       throw new RuntimeException(e);

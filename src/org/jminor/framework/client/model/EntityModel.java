@@ -13,7 +13,6 @@ import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
 
 import java.util.List;
-import java.util.Map;
 
 public interface EntityModel extends Refreshable {
 
@@ -56,21 +55,19 @@ public interface EntityModel extends Refreshable {
   /**
    * Returns an initialized ReportResult object from the given report wrapper
    * @param reportWrapper the report wrapper
-   * @param reportParameters the report parameters
    * @return an initialized ReportResult object
    * @throws ReportException in case of a report exception
    */
-  ReportResult fillReport(final ReportWrapper reportWrapper, final Map<String, Object> reportParameters) throws ReportException;
+  ReportResult fillReport(final ReportWrapper reportWrapper) throws ReportException;
 
   /**
    * Returns an initialized ReportResult object from the given report wrapper and data wrapper
    * @param reportWrapper the report wrapper
    * @param dataSource the ReportDataWrapper used to provide the report data
-   * @param reportParameters the report parameters
    * @return an initialized ReportResult object
    * @throws ReportException in case of a report exception
    */
-  ReportResult fillReport(final ReportWrapper reportWrapper, final ReportDataWrapper dataSource, final Map<String, Object> reportParameters) throws ReportException;
+  ReportResult fillReport(final ReportWrapper reportWrapper, final ReportDataWrapper dataSource) throws ReportException;
 
   /**
    * @param value true if a refresh in this model should trigger a refresh in its detail models

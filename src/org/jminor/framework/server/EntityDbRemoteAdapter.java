@@ -193,9 +193,9 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     }
   }
 
-  public ReportResult fillReport(final ReportWrapper reportWrapper, final Map reportParameters) throws ReportException, RemoteException {
+  public ReportResult fillReport(final ReportWrapper reportWrapper) throws ReportException, RemoteException {
     try {
-      return loggingEntityDbProxy.fillReport(reportWrapper, reportParameters);
+      return loggingEntityDbProxy.fillReport(reportWrapper);
     }
     catch (ReportException re) {
       throw re;

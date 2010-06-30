@@ -1794,3 +1794,5 @@
   EntityApplicationPanel.startApplication() refactored, uses
   FilteredComboBoxModel sets the selected item on filtering
   Property.Audit... properties added
+  EntityDb.fill(Jdbc)Report(), removed report parameters parameter
+  JasperReportsWrapper.reportParameters field added
