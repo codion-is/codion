@@ -1114,7 +1114,7 @@ public abstract class EntityPanel extends JPanel {
   }
 
   /**
-   * Shows a JRViewer for report printing
+   * Shows a report viewer for report printing
    * @param reportWrapper the report wrapper
    * @param uiWrapper the ui wrapper
    * @param reportTitle the title to display on the frame
@@ -1135,10 +1135,10 @@ public abstract class EntityPanel extends JPanel {
   }
 
   /**
-   * Shows a JRViewer for report printing
+   * Shows a report viewer for report printing
    * @param reportWrapper the report wrapper
    * @param uiWrapper the ui wrapper
-   * @param dataSource the JRDataSource used to provide the report data
+   * @param dataSource the datasource used to provide the report data
    * @param reportTitle the title to display on the frame
    */
   @SuppressWarnings({"unchecked"})

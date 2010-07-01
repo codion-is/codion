@@ -18,6 +18,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -136,12 +137,16 @@ public class MonitorPanel extends JPanel {
   }
 
   public static void main(final String[] arguments) {
-    try {
-      UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-      new MonitorPanel().showFrame();
-    }
-    catch (Exception e) {
-      System.exit(1);
-    }
+    SwingUtilities.invokeLater(new Runnable() {
+      public void run() {
+        try {
+          UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+          new MonitorPanel().showFrame();
+        }
+        catch (Exception e) {
+          System.exit(1);
+        }
+      }
+    });
   }
 }

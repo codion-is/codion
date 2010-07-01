@@ -17,6 +17,7 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.tools.testing.EntityLoadTestModel;
 
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import java.util.Arrays;
 import java.util.Collection;
@@ -127,7 +128,16 @@ public class EmpDeptLoadTest extends EntityLoadTestModel {
   }
 
   public static void main(String[] args) throws Exception {
-    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-    new LoadTestPanel(new EmpDeptLoadTest()).showFrame();
+    SwingUtilities.invokeLater(new Runnable() {
+      public void run() {
+        try {
+          UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+          new LoadTestPanel(new EmpDeptLoadTest()).showFrame();
+        }
+        catch (Exception e) {
+          e.printStackTrace();
+        }
+      }
+    });
   }
 }

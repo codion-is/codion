@@ -13,6 +13,7 @@ import org.jminor.framework.demos.petstore.domain.Petstore;
 import org.jminor.framework.server.provider.EntityDbRemoteProvider;
 import org.jminor.framework.tools.testing.EntityLoadTestModel;
 
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import java.util.Arrays;
 import java.util.Collection;
@@ -64,7 +65,16 @@ public class PetstoreLoadTest extends EntityLoadTestModel {
   }
 
   public static void main(String[] args) throws Exception {
-    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-    new LoadTestPanel(new PetstoreLoadTest()).showFrame();
+    SwingUtilities.invokeLater(new Runnable() {
+      public void run() {
+        try {
+          UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+          new LoadTestPanel(new PetstoreLoadTest()).showFrame();
+        }
+        catch (Exception e) {
+          e.printStackTrace();
+        }
+      }
+    });
   }
 }

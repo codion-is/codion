@@ -19,6 +19,7 @@ import org.jminor.framework.demos.chinook.client.ChinookAppModel;
 import org.jminor.framework.demos.chinook.domain.Chinook;
 import org.jminor.framework.tools.testing.EntityLoadTestModel;
 
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import java.util.Arrays;
 import java.util.Collection;
@@ -110,7 +111,16 @@ public class ChinookLoadTest extends EntityLoadTestModel {
   }
 
   public static void main(String[] args) throws Exception {
-    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-    new LoadTestPanel(new ChinookLoadTest()).showFrame();
+    SwingUtilities.invokeLater(new Runnable() {
+      public void run() {
+        try {
+          UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+          new LoadTestPanel(new ChinookLoadTest()).showFrame();
+        }
+        catch (Exception e) {
+          e.printStackTrace();
+        }
+      }
+    });
   }
 }

@@ -174,68 +174,11 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
 
   public void startApplication(final String frameCaption, final String iconName, final boolean maximize,
                                final Dimension frameSize, final User defaultUser, final boolean showFrame) {
-    LOG.debug(frameCaption + " application starting");
-    Messages.class.getName();//hack to load the class
-    final ImageIcon applicationIcon = iconName != null ? Images.getImageIcon(getClass(), iconName) :
-            Images.loadImage("jminor_logo32.gif");
-    final Collection<Object> retry = new ArrayList<Object>();
-    retry.add(new Object());
-    while (!retry.isEmpty()) {
-      try {
-        UIManager.setLookAndFeel(getDefaultLookAndFeelClassName());
-        final User user = isLoginRequired() ? getUser(frameCaption, defaultUser, getClass().getSimpleName(), applicationIcon) :
-                new User("", "");
-
-        final long now = System.currentTimeMillis();
-
-        final JDialog startupDialog = createStartupDialog(applicationIcon, frameCaption);
-        final JFrame frame = new JFrame();
-        final SwingWorker worker = new SwingWorker<EntityApplicationModel, Object>() {
-          @Override
-          protected EntityApplicationModel doInBackground() throws Exception {
-            return initializeApplicationModel(initializeDbProvider(user, frameCaption));
-          }
-
-          @Override
-          protected void done() {
-            try {
-              initialize(get());
-              retry.clear();//successful startup
-              if (startupDialog != null) {
-                startupDialog.dispose();
-              }
-              final String frameTitle = getFrameTitle(frameCaption, user);
-              prepareFrame(frame, frameTitle, maximize, true, frameSize, applicationIcon, showFrame);
-
-              LOG.info(frameTitle + ", application started successfully " + "(" + (System.currentTimeMillis() - now) + " ms)");
-
-              saveDefaultUser(user);
-              evtApplicationStarted.fire();
-            }
-            catch (Exception e) {
-              throw new RuntimeException(e);
-            }
-          }
-        };
-        worker.execute();
-        startupDialog.setVisible(true);
+    SwingUtilities.invokeLater(new Runnable() {
+      public void run() {
+        startApplicationInternal(frameCaption, iconName, maximize, frameSize, defaultUser, showFrame);
       }
-      catch (CancelException uce) {
-        System.exit(0);
-      }
-      catch (Exception ue) {
-        ExceptionDialog.showExceptionDialog(null, Messages.get(Messages.EXCEPTION), ue);
-        if (JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(null,
-                FrameworkMessages.get(FrameworkMessages.RETRY),
-                FrameworkMessages.get(FrameworkMessages.RETRY_TITLE),
-                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
-          retry.clear();
-        }
-        if (retry.isEmpty()) {
-          System.exit(0);
-        }
-      }
-    }
+    });
   }
 
   /**
@@ -778,6 +721,71 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    * Called during the exit() method, override to save user preferences on program exit
    */
   protected void savePreferences() {}
+
+  private void startApplicationInternal(final String frameCaption, final String iconName, final boolean maximize, final Dimension frameSize, final User defaultUser, final boolean showFrame) {
+    LOG.debug(frameCaption + " application starting");
+    Messages.class.getName();//hack to load the class
+    final ImageIcon applicationIcon = iconName != null ? Images.getImageIcon(getClass(), iconName) :
+            Images.loadImage("jminor_logo32.gif");
+    final Collection<Object> retry = new ArrayList<Object>();
+    retry.add(new Object());
+    while (!retry.isEmpty()) {
+      try {
+        UIManager.setLookAndFeel(getDefaultLookAndFeelClassName());
+        final User user = isLoginRequired() ? getUser(frameCaption, defaultUser, getClass().getSimpleName(), applicationIcon) :
+                new User("", "");
+
+        final long now = System.currentTimeMillis();
+
+        final JDialog startupDialog = createStartupDialog(applicationIcon, frameCaption);
+        final JFrame frame = new JFrame();
+        final SwingWorker worker = new SwingWorker<EntityApplicationModel, Object>() {
+          @Override
+          protected EntityApplicationModel doInBackground() throws Exception {
+            return initializeApplicationModel(initializeDbProvider(user, frameCaption));
+          }
+
+          @Override
+          protected void done() {
+            try {
+              initialize(get());
+              retry.clear();//successful startup
+              if (startupDialog != null) {
+                startupDialog.dispose();
+              }
+              final String frameTitle = getFrameTitle(frameCaption, user);
+              prepareFrame(frame, frameTitle, maximize, true, frameSize, applicationIcon, showFrame);
+
+              LOG.info(frameTitle + ", application started successfully " + "(" + (System.currentTimeMillis() - now) + " ms)");
+
+              saveDefaultUser(user);
+              evtApplicationStarted.fire();
+            }
+            catch (Exception e) {
+              throw new RuntimeException(e);
+            }
+          }
+        };
+        worker.execute();
+        startupDialog.setVisible(true);
+      }
+      catch (CancelException uce) {
+        System.exit(0);
+      }
+      catch (Exception ue) {
+        ExceptionDialog.showExceptionDialog(null, Messages.get(Messages.EXCEPTION), ue);
+        if (JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(null,
+                FrameworkMessages.get(FrameworkMessages.RETRY),
+                FrameworkMessages.get(FrameworkMessages.RETRY_TITLE),
+                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+          retry.clear();
+        }
+        if (retry.isEmpty()) {
+          System.exit(0);
+        }
+      }
+    }
+  }
 
   private JScrollPane initializeApplicationTree() {
     final JTree tree = new JTree(createApplicationTree(mainApplicationPanels));

@@ -13,6 +13,7 @@ import org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser;
 import org.jminor.framework.server.provider.EntityDbRemoteProvider;
 import org.jminor.framework.tools.testing.EntityLoadTestModel;
 
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 /**
@@ -53,8 +54,16 @@ public class SchemaBrowserLoadTest extends EntityLoadTestModel {
   }
 
   public static void main(String[] args) throws Exception {
-    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-
-    new LoadTestPanel(new SchemaBrowserLoadTest()).showFrame();
+    SwingUtilities.invokeLater(new Runnable() {
+      public void run() {
+        try {
+          UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+          new LoadTestPanel(new SchemaBrowserLoadTest()).showFrame();
+        }
+        catch (Exception e) {
+          e.printStackTrace();
+        }
+      }
+    });
   }
 }

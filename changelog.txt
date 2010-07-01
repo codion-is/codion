@@ -1803,3 +1803,4 @@
   EntityApplicationPanel.getSupportTableControlSet() now uses SwingUtilities.invokeLater()
   SwingUtilities.invokeLater() usages added
   EntityApplicationPanel.startApplication() refactored some more
+  EntityApplicationPanel.startApplication() now uses SwingUtilities.invokeLater()
