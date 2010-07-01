@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.client.ui;
 
-import org.jminor.common.model.Util;
+import org.jminor.framework.client.model.DefaultEntityModel;
 import org.jminor.framework.client.model.EntityModel;
 
 /**
@@ -12,8 +12,13 @@ import org.jminor.framework.client.model.EntityModel;
 public class EntityPanelProvider implements Comparable {//todo rename
 
   private final String caption;
-  private final Class<? extends EntityPanel> entityPanelClass;
-  private final Class<? extends EntityModel> entityModelClass;
+
+  private Class<? extends EntityModel> modelClass = DefaultEntityModel.class;
+  private Class<? extends EntityPanel> panelClass = EntityPanel.class;
+
+  public EntityPanelProvider(final String caption) {
+    this.caption = caption;
+  }
 
   /**
    * Instantiates a new EntityPanelProvider
@@ -33,11 +38,9 @@ public class EntityPanelProvider implements Comparable {//todo rename
    */
   public EntityPanelProvider(final String caption, final Class<? extends EntityModel> entityModelClass,
                              final Class<? extends EntityPanel> entityPanelClass) {
-    Util.rejectNullValue(entityModelClass);
-    Util.rejectNullValue(entityPanelClass);
     this.caption = caption == null ? "" : caption;
-    this.entityModelClass = entityModelClass;
-    this.entityPanelClass = entityPanelClass;
+    this.modelClass = entityModelClass;
+    this.panelClass = entityPanelClass;
   }
 
   /**
@@ -47,50 +50,34 @@ public class EntityPanelProvider implements Comparable {//todo rename
     return caption;
   }
 
+  public EntityPanelProvider setModelClass(final Class<? extends EntityModel> modelClass) {
+    this.modelClass = modelClass;
+    return this;
+  }
+
+  public EntityPanelProvider setPanelClass(final Class<? extends EntityPanel> panelClass) {
+    this.panelClass = panelClass;
+    return this;
+  }
+
   /**
    * @return the EntityModel Class to use when instantiating an EntityPanel
    */
   public Class<? extends EntityModel> getModelClass() {
-    return entityModelClass;
+    return modelClass;
   }
 
   /**
    * @return the EntityPanel Class to instantiate
    */
   public Class<? extends EntityPanel> getPanelClass() {
-    return entityPanelClass;
-  }
-
-  @Override
-  public boolean equals(final Object obj) {
-    if(this == obj) {
-      return true;
-    }
-    if((obj == null) || (obj.getClass() != getClass())) {
-      return false;
-    }
-
-    final EntityPanelProvider panelProvider = (EntityPanelProvider) obj;
-
-    return caption.equals(panelProvider.caption)
-            && entityModelClass.equals(panelProvider.entityModelClass)
-            && entityPanelClass.equals(panelProvider.entityPanelClass);
-  }
-
-  @Override
-  public int hashCode() {
-    int hash = 7;
-    hash = 31 * hash + caption.hashCode();
-    hash = 31 * hash + entityModelClass.hashCode();
-    hash = 31 * hash + entityPanelClass.hashCode();
-
-    return hash;
+    return panelClass;
   }
 
   public int compareTo(final Object o) {
-    final String thisCompare = caption == null ? entityPanelClass.getSimpleName() : caption;
+    final String thisCompare = caption == null ? modelClass.getSimpleName() : caption;
     final String thatCompare = ((EntityPanelProvider) o).caption == null
-            ? ((EntityPanelProvider) o).entityPanelClass.getSimpleName() : ((EntityPanelProvider) o).caption;
+            ? ((EntityPanelProvider) o).panelClass.getSimpleName() : ((EntityPanelProvider) o).caption;
 
     return thisCompare.compareTo(thatCompare);
   }

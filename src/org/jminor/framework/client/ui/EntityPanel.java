@@ -63,7 +63,7 @@ import java.util.List;
  * A panel representing a Entity via a EntityModel, which facilitates browsing and editing of records.
  * To lay out the panel components and initialize the panel you must call the method <code>initializePanel()</code>.
  */
-public abstract class EntityPanel extends JPanel {
+public class EntityPanel extends JPanel {
 
   public static final int DIALOG = 1;
   public static final int EMBEDDED = 2;
@@ -166,6 +166,8 @@ public abstract class EntityPanel extends JPanel {
    */
   private boolean panelInitialized = false;
 
+  private double detailSplitPanelResizeWeight = 0.5;
+
   /**
    * Hold a reference to this PropertyChangeListener so that it will be garbage collected along with this EntityPanel instance
    */
@@ -187,16 +189,43 @@ public abstract class EntityPanel extends JPanel {
     this(model, EntityRepository.getEntityDefinition(model.getEntityID()).getCaption());
   }
 
+    public EntityPanel(final EntityModel model, final String caption) {
+      this(model, caption, null, null);
+    }
+
+  /**
+   * Instantiates a new EntityPanel instance. The Panel is not laid out and initialized until initialize() is called.
+   * @param model the EntityModel
+   * @param editPanel the edit panel
+   */
+  public EntityPanel(final EntityModel model, final EntityEditPanel editPanel) {
+    this(model, EntityRepository.getEntityDefinition(model.getEntityID()).getCaption(), editPanel, null);
+  }
+
+  /**
+   * Instantiates a new EntityPanel instance. The Panel is not laid out and initialized until initialize() is called.
+   * @param model the EntityModel
+   * @param tablePanel the table panel
+   */
+  public EntityPanel(final EntityModel model, final EntityTablePanel tablePanel) {
+    this(model, EntityRepository.getEntityDefinition(model.getEntityID()).getCaption(), null, tablePanel);
+  }
+
   /**
    * Instantiates a new EntityPanel instance. The Panel is not laid out and initialized until initialize() is called.
    * @param model the EntityModel
    * @param caption the caption to use when presenting this entity panel
+   * @param editPanel the edit panel
+   * @param tablePanel the table panel
    */
-  public EntityPanel(final EntityModel model, final String caption) {
+  public EntityPanel(final EntityModel model, final String caption, final EntityEditPanel editPanel,
+                     final EntityTablePanel tablePanel) {
     Util.rejectNullValue(model);
     Util.rejectNullValue(caption, "caption");
     this.model = model;
     this.caption = caption;
+    this.editPanel = editPanel;
+    this.tablePanel = tablePanel;
     getEditModel().stateActive().eventStateChanged().addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         if (isActive()) {
@@ -448,6 +477,20 @@ public abstract class EntityPanel extends JPanel {
    */
   public boolean isActive() {
     return getEditModel().stateActive().isActive();
+  }
+
+  /**
+   * @return the resize weight value to use when initializing the left/right split pane, which
+   * controls the initial divider placement (0 - 1).
+   * Override to control the initial divider placement
+   */
+  public double getDetailSplitPaneResizeWeight() {
+    return detailSplitPanelResizeWeight;
+  }
+
+  public EntityPanel setDetailSplitPanelResizeWeight(double detailSplitPanelResizeWeight) {
+    this.detailSplitPanelResizeWeight = detailSplitPanelResizeWeight;
+    return this;
   }
 
   /**
@@ -883,7 +926,12 @@ public abstract class EntityPanel extends JPanel {
     return panel;
   }
 
-  protected abstract EntityEditPanel initializeEditPanel(final EntityEditModel editModel);
+  protected EntityEditPanel initializeEditPanel(final EntityEditModel editModel) {
+    return new EntityEditPanel(editModel) {
+      protected void initializeUI() {
+      }
+    };
+  }
 
   protected EntityTablePanel initializeTablePanel(final EntityTableModel tableModel) {
     return new EntityTablePanel(tableModel, getTablePopupControlSet(), getToolbarControlSet(), getPrintControls());
@@ -909,15 +957,6 @@ public abstract class EntityPanel extends JPanel {
     splitPane.setDividerSize(18);
 
     return splitPane;
-  }
-
-  /**
-   * @return the resize weight value to use when initializing the left/right split pane, which
-   * controls the initial divider placement (0 - 1).
-   * Override to control the initial divider placement
-   */
-  protected double getDetailSplitPaneResizeWeight() {
-    return 0.5;
   }
 
   /**

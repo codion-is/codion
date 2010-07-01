@@ -24,6 +24,7 @@ public class ProductPanel extends EntityPanel {
   public ProductPanel(final EntityModel model) {
     super(model, "Product");
     setDetailPanelState(EMBEDDED);
+    setDetailSplitPanelResizeWeight(0.3);
     setCompactDetailLayout(true);
     addDetailPanel(new ItemPanel(model.getDetailModel(ItemModel.class)));
   }
@@ -43,10 +44,5 @@ public class ProductPanel extends EntityPanel {
         add(createPropertyPanel(PRODUCT_DESCRIPTION, txt));
       }
     };
-  }
-
-  @Override
-  protected double getDetailSplitPaneResizeWeight() {
-    return 0.3;
   }
 }

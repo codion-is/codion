@@ -21,26 +21,24 @@ import java.awt.GridLayout;
 public class ArtistPanel extends EntityPanel {
 
   public ArtistPanel(final EntityModel model) {
-    super(model);
+    super(model, new ArtistEditPanel(model.getEditModel()));
     addDetailPanel(new AlbumPanel(model.getDetailModel(AlbumModel.class)));
+    setDetailSplitPanelResizeWeight(0.3);
   }
 
-  @Override
-  protected EntityEditPanel initializeEditPanel(final EntityEditModel editModel) {
-    return new EntityEditPanel(editModel) {
-      @Override
-      protected void initializeUI() {
-        setLayout(new GridLayout(1, 1, 5, 5));
-        final JTextField txtName = createTextField(ARTIST_NAME);
-        txtName.setColumns(18);
-        setInitialFocusComponent(txtName);
-        add(createPropertyPanel(ARTIST_NAME, txtName));
-      }
-    };
-  }
+  static class ArtistEditPanel extends EntityEditPanel {
 
-  @Override
-  protected double getDetailSplitPaneResizeWeight() {
-    return 0.3;
+    public ArtistEditPanel(final EntityEditModel editModel) {
+      super(editModel);
+    }
+
+    @Override
+    protected void initializeUI() {
+      setLayout(new GridLayout(1, 1, 5, 5));
+      final JTextField txtName = createTextField(ARTIST_NAME);
+      txtName.setColumns(18);
+      setInitialFocusComponent(txtName);
+      add(createPropertyPanel(ARTIST_NAME, txtName));
+    }
   }
 }

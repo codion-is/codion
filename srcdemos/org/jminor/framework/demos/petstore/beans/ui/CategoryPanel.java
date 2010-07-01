@@ -22,6 +22,7 @@ public class CategoryPanel extends EntityPanel {
 
   public CategoryPanel(final EntityModel model) {
     super(model, "Category");
+    setDetailSplitPanelResizeWeight(0.3);
     addDetailPanel(new ProductPanel(model.getDetailModel(ProductModel.class)));
   }
 
@@ -41,10 +42,5 @@ public class CategoryPanel extends EntityPanel {
         add(createPropertyPanel(CATEGORY_IMAGE_URL, createTextField(CATEGORY_IMAGE_URL)));
       }
     };
-  }
-
-  @Override
-  protected double getDetailSplitPaneResizeWeight() {
-    return 0.2;
   }
 }

@@ -13,17 +13,13 @@ public class SchemaPanel extends EntityPanel {
 
   public SchemaPanel(final EntityModel model) {
     super(model, "Schema Users");
+    setDetailSplitPanelResizeWeight(0.3);
     addDetailPanel(new DbObjectPanel(model.getDetailModel(DbObjectModel.class)));
   }
 
   @Override
   protected void initialize() {
     getTablePanel().setSearchPanelVisible(true);
-  }
-
-  @Override
-  protected double getDetailSplitPaneResizeWeight() {
-    return 0.3;
   }
 
   @Override
