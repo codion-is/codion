@@ -5,7 +5,6 @@ package org.jminor.framework.client.ui;
 
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.User;
-import org.jminor.common.ui.UiUtil;
 import org.jminor.framework.db.EntityDbConnectionTest;
 import org.jminor.framework.demos.empdept.beans.ui.DepartmentPanel;
 import org.jminor.framework.demos.empdept.client.EmpDeptAppModel;
@@ -14,8 +13,6 @@ import org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel;
 import org.junit.Test;
 
 import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import java.awt.GraphicsEnvironment;
 import java.util.Arrays;
 
 public class EntityApplicationPanelTest {
@@ -28,19 +25,8 @@ public class EntityApplicationPanelTest {
         return User.UNIT_TEST_USER;
       }
     };
-    if (GraphicsEnvironment.isHeadless()) {
-      panel.initialize(new EmpDeptAppModel(EntityDbConnectionTest.DB_PROVIDER));
-    }
-    else {
-      panel.startApplication("test", null, false, null);
-    }
-
+    panel.initialize(new EmpDeptAppModel(EntityDbConnectionTest.DB_PROVIDER));
     panel.getEntityPanel(DepartmentPanel.class).getTablePanel().getTableModel().setSelectedItemIndexes(Arrays.asList(0,1,2));
-    if (!GraphicsEnvironment.isHeadless()) {
-      final JFrame frame = UiUtil.getParentFrame(panel);
-      frame.setVisible(false);
-      frame.dispose();
-    }
     panel.getModel().getDbProvider().disconnect();
   }
 }
