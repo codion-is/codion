@@ -8,6 +8,7 @@ import org.jminor.common.model.User;
 import org.jminor.common.ui.LoadTestPanel;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
+import org.jminor.framework.db.provider.EntityDbProviderFactory;
 import org.jminor.framework.demos.chinook.beans.AlbumModel;
 import org.jminor.framework.demos.chinook.beans.ArtistModel;
 import org.jminor.framework.demos.chinook.beans.CustomerModel;
@@ -91,7 +92,7 @@ public class ChinookLoadTest extends EntityLoadTestModel {
 
   @Override
   protected EntityApplicationModel initializeApplication() throws CancelException {
-    final EntityApplicationModel appModel = new ChinookAppModel(User.UNIT_TEST_USER);
+    final EntityApplicationModel appModel = new ChinookAppModel(EntityDbProviderFactory.createEntityDbProvider(getUser(), ChinookLoadTest.class.getSimpleName()));
     appModel.refresh();
 
     EntityModel model = appModel.getMainApplicationModel(ArtistModel.class);
@@ -108,14 +109,8 @@ public class ChinookLoadTest extends EntityLoadTestModel {
     return appModel;
   }
 
-  public static void main(String[] args) {
-    try {
-      UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-    }
-    catch (Exception e) {
-      e.printStackTrace();
-    }
-
+  public static void main(String[] args) throws Exception {
+    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
     new LoadTestPanel(new ChinookLoadTest()).showFrame();
   }
 }

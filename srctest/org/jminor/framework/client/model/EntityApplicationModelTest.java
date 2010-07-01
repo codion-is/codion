@@ -1,6 +1,7 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.model.User;
+import org.jminor.framework.db.EntityDbConnectionTest;
 import org.jminor.framework.demos.empdept.beans.DepartmentModel;
 import org.jminor.framework.demos.empdept.beans.EmployeeModel;
 import org.jminor.framework.demos.empdept.client.EmpDeptAppModel;
@@ -12,7 +13,7 @@ public class EntityApplicationModelTest {
 
   @Test
   public void test() {
-    final EntityApplicationModel model = new EmpDeptAppModel(User.UNIT_TEST_USER);
+    final EntityApplicationModel model = new EmpDeptAppModel(EntityDbConnectionTest.DB_PROVIDER);
     assertEquals(1, model.getMainApplicationModels().size());
     final EntityModel deptModel = model.getMainApplicationModel(DepartmentModel.class);
     assertNotNull(deptModel);

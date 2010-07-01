@@ -32,8 +32,8 @@ public class SchemaBrowserLoadTest extends EntityLoadTestModel {
   }
 
   @Override
-  protected void performWork(final Object applicationModel) {
-    final EntityModel schemaModel = ((EntityApplicationModel) applicationModel).getMainApplicationModels().iterator().next();
+  protected void performWork(final Object application) {
+    final EntityModel schemaModel = ((EntityApplicationModel) application).getMainApplicationModels().iterator().next();
     schemaModel.getTableModel().refresh();
     selectRandomRow(schemaModel.getTableModel());
     selectRandomRow(schemaModel.getDetailModels().iterator().next().getTableModel());
@@ -52,13 +52,8 @@ public class SchemaBrowserLoadTest extends EntityLoadTestModel {
     return applicationModel;
   }
 
-  public static void main(String[] args) {
-    try {
-      UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-    }
-    catch (Exception e) {
-      e.printStackTrace();
-    }
+  public static void main(String[] args) throws Exception {
+    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 
     new LoadTestPanel(new SchemaBrowserLoadTest()).showFrame();
   }

@@ -10,6 +10,7 @@ import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.ui.EntityApplicationPanel;
 import org.jminor.framework.client.ui.EntityPanelProvider;
+import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.demos.petstore.beans.AddressModel;
 import org.jminor.framework.demos.petstore.beans.CategoryModel;
 import org.jminor.framework.demos.petstore.beans.ContactInfoModel;
@@ -20,7 +21,6 @@ import org.jminor.framework.demos.petstore.beans.ui.ContactInfoPanel;
 import org.jminor.framework.demos.petstore.beans.ui.TagPanel;
 import org.jminor.framework.demos.petstore.client.PetstoreAppModel;
 
-import javax.swing.UIManager;
 import java.util.Locale;
 
 public class PetstoreAppPanel extends EntityApplicationPanel {
@@ -41,12 +41,11 @@ public class PetstoreAppPanel extends EntityApplicationPanel {
   }
 
   @Override
-  protected EntityApplicationModel initializeApplicationModel(final User user) throws CancelException {
-    return new PetstoreAppModel(user);
+  protected EntityApplicationModel initializeApplicationModel(final EntityDbProvider dbProvider) throws CancelException {
+    return new PetstoreAppModel(dbProvider);
   }
 
-  public static void main(final String[] args) throws Exception {
-    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+  public static void main(final String[] args) {
     new PetstoreAppPanel().startApplication("The Pet Store", null, false, UiUtil.getScreenSizeRatio(0.8), new User("scott", "tiger"));
   }
 }

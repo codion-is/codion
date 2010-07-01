@@ -9,6 +9,7 @@ import org.jminor.common.model.formats.DateFormats;
 import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.UIManager;
 import java.awt.Color;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
@@ -383,6 +384,13 @@ public final class Configuration {
    */
   public static final String LIMIT_FOREIGN_KEY_FETCH_DEPTH = "jminor.db.limitForeignKeyFetchDepth";
 
+  /**
+   * Specifies the default look and feel classname
+   * Value type: String<br>
+   * Default value: UIManager.getSystemLookAndFeelClassName()
+   */
+  public static final String DEFAULT_LOOK_AND_FEEL_CLASSNAME = "jminor.client.defaultLookAndFeelClassName";
+
   private static Map<String, Object> settings = new HashMap<String, Object>();
 
   static {
@@ -419,6 +427,7 @@ public final class Configuration {
     setValue(ALLOW_COLUMN_REORDERING, true);
     setValue(DEFAULT_FOREIGN_KEY_FETCH_DEPTH, 1);
     setValue(LIMIT_FOREIGN_KEY_FETCH_DEPTH, true);
+    setValue(DEFAULT_LOOK_AND_FEEL_CLASSNAME, UIManager.getSystemLookAndFeelClassName());
     parseSystemSettings();
   }
 
@@ -458,6 +467,7 @@ public final class Configuration {
     parseBooleanSetting(USE_OPTIMISTIC_LOCKING);
     parseStringSetting(USERNAME_PREFIX);
     parseStringSetting(WILDCARD_CHARACTER);
+    parseStringSetting(DEFAULT_LOOK_AND_FEEL_CLASSNAME);
   }
 
   private static void parseIntegerSetting(final String setting) {

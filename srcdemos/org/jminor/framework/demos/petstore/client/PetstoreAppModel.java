@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.demos.petstore.client;
 
-import org.jminor.common.model.User;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.demos.petstore.beans.CategoryModel;
@@ -19,10 +18,6 @@ public class PetstoreAppModel extends EntityApplicationModel {
   public PetstoreAppModel(final EntityDbProvider dbProvider) {
     super(dbProvider);
     addMainApplicationModel(new CategoryModel(dbProvider));
-  }
-
-  public PetstoreAppModel (final User user) {
-    super(user, PetstoreAppModel.class.getSimpleName());
   }
 
   @Override

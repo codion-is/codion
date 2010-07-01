@@ -200,10 +200,14 @@ public abstract class EntityPanel extends JPanel {
     getEditModel().stateActive().eventStateChanged().addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         if (isActive()) {
-          initializePanel();
-          showPanelTab();
-          //do not try to grab the initial focus when a child component already has the focus, for example the table
-          prepareUI(!isParentPanel(KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner()), false);
+          SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+              initializePanel();
+              showPanelTab();
+              //do not try to grab the initial focus when a child component already has the focus, for example the table
+              prepareUI(!isParentPanel(KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner()), false);
+            }
+          });
         }
       }
     });
@@ -579,7 +583,7 @@ public abstract class EntityPanel extends JPanel {
       return;
     }
 
-    if (getTablePanel() != null) {
+    if (containsTablePanel()) {
       getTablePanel().setFilterPanelsVisible(value);
     }
     for (final EntityPanel detailEntityPanel : detailEntityPanels) {
@@ -1056,17 +1060,7 @@ public abstract class EntityPanel extends JPanel {
    * Binds events associated with the EntityTablePanel
    * this method is called during initialization after the UI is initialized
    */
-  protected void bindTablePanelEvents() {
-    if (getTablePanel() == null) {
-      return;
-    }
-
-    model.getEditModel().eventEntitiesChanged().addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        getTablePanel().getJTable().repaint();
-      }
-    });
-  }
+  protected void bindTablePanelEvents() {}
 
   //#############################################################################################
   // End - initialization methods
@@ -1082,13 +1076,17 @@ public abstract class EntityPanel extends JPanel {
     final Point parentLocation = parent.getLocation();
     final Point location = new Point(parentLocation.x+(parentSize.width-size.width),
             parentLocation.y+(parentSize.height-size.height)-29);
-    detailPanelDialog = UiUtil.showInDialog(UiUtil.getParentWindow(this), detailPanelTabbedPane, false,
-            caption + " - " + FrameworkMessages.get(FrameworkMessages.DETAIL_TABLES), false, true,
-            null, size, location, new AbstractAction() {
-              public void actionPerformed(ActionEvent e) {
-                setDetailPanelState(HIDDEN);
-              }
-            });
+    SwingUtilities.invokeLater(new Runnable() {
+      public void run() {
+        detailPanelDialog = UiUtil.showInDialog(UiUtil.getParentWindow(EntityPanel.this), detailPanelTabbedPane, false,
+                caption + " - " + FrameworkMessages.get(FrameworkMessages.DETAIL_TABLES), false, true,
+                null, size, location, new AbstractAction() {
+                  public void actionPerformed(ActionEvent e) {
+                    setDetailPanelState(HIDDEN);
+                  }
+                });
+      }
+    });
   }
 
   /**
@@ -1142,6 +1140,7 @@ public abstract class EntityPanel extends JPanel {
    * @param dataSource the JRDataSource used to provide the report data
    * @param reportTitle the title to display on the frame
    */
+  @SuppressWarnings({"unchecked"})
   protected void viewReport(final ReportWrapper reportWrapper, final ReportUIWrapper uiWrapper,
                             final ReportDataWrapper dataSource, final String reportTitle) {
     try {
@@ -1231,11 +1230,19 @@ public abstract class EntityPanel extends JPanel {
     addComponentListener(new ComponentAdapter() {
       @Override
       public void componentHidden(ComponentEvent e) {
-        setFilterPanelsVisible(false);
+        SwingUtilities.invokeLater(new Runnable() {
+          public void run() {
+            setFilterPanelsVisible(false);
+          }
+        });
       }
       @Override
       public void componentShown(ComponentEvent e) {
-        setFilterPanelsVisible(true);
+        SwingUtilities.invokeLater(new Runnable() {
+          public void run() {
+            setFilterPanelsVisible(true);
+          }
+        });
       }
     });
   }

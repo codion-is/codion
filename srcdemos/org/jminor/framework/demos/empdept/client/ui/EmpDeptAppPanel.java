@@ -14,13 +14,13 @@ import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.ui.EntityApplicationPanel;
 import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.client.ui.EntityTablePanel;
+import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.demos.empdept.beans.DepartmentModel;
 import org.jminor.framework.demos.empdept.beans.ui.DepartmentPanel;
 import org.jminor.framework.demos.empdept.client.EmpDeptAppModel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.plugins.json.EntityJSONParser;
 
-import javax.swing.UIManager;
 import java.io.File;
 import java.nio.charset.Charset;
 
@@ -53,12 +53,11 @@ public class EmpDeptAppPanel extends EntityApplicationPanel {
   }
 
   @Override
-  protected EntityApplicationModel initializeApplicationModel(final User user) throws CancelException {
-    return new EmpDeptAppModel(user);
+  protected EntityApplicationModel initializeApplicationModel(final EntityDbProvider dbProvider) throws CancelException {
+    return new EmpDeptAppModel(dbProvider);
   }
 
-  public static void main(final String[] args) throws Exception {
-    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+  public static void main(final String[] args) {
     new EmpDeptAppPanel().startApplication("Emp-Dept", null, false, UiUtil.getScreenSizeRatio(0.6), new User("scott", "tiger"));
   }
 }

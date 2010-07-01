@@ -3,10 +3,9 @@
  */
 package org.jminor.framework.tools.testing;
 
-import org.jminor.common.model.User;
-import org.jminor.common.ui.LoadTestPanel;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityTableModel;
+import org.jminor.framework.db.EntityDbConnectionTest;
 import org.jminor.framework.demos.empdept.beans.DepartmentModel;
 import org.jminor.framework.demos.empdept.client.EmpDeptAppModel;
 import org.jminor.framework.demos.empdept.testing.EmpDeptLoadTest;
@@ -32,8 +31,6 @@ public class EntityLoadTestModelTest {
   @Test
   public void testLoadTesting() throws Exception {
     final EmpDeptLoadTest loadTest = new EmpDeptLoadTest();
-
-    new LoadTestPanel(loadTest).showFrame();
 
     loadTest.setCollectChartData(true);
     loadTest.setUpdateInterval(350);
@@ -96,7 +93,7 @@ public class EntityLoadTestModelTest {
 
   @Test
   public void testMethods() {
-    final EntityApplicationModel model = new EmpDeptAppModel(User.UNIT_TEST_USER);
+    final EntityApplicationModel model = new EmpDeptAppModel(EntityDbConnectionTest.DB_PROVIDER);
     model.refresh();
     final EntityTableModel tableModel = model.getMainApplicationModel(DepartmentModel.class).getTableModel();
 

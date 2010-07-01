@@ -4,18 +4,17 @@
 package org.jminor.framework.demos.schemabrowser.client.ui;
 
 import org.jminor.common.model.CancelException;
-import org.jminor.common.model.User;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.ui.EntityApplicationPanel;
 import org.jminor.framework.client.ui.EntityPanelProvider;
+import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.demos.schemabrowser.beans.SchemaModel;
 import org.jminor.framework.demos.schemabrowser.beans.ui.SchemaPanel;
 import org.jminor.framework.demos.schemabrowser.client.SchemaBrowserAppModel;
 
 import javax.swing.JTable;
-import javax.swing.UIManager;
 
 public class SchemaBrowserAppPanel extends EntityApplicationPanel {
 
@@ -29,12 +28,11 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel {
   }
 
   @Override
-  protected EntityApplicationModel initializeApplicationModel(final User user) throws CancelException {
-    return new SchemaBrowserAppModel(user);
+  protected EntityApplicationModel initializeApplicationModel(final EntityDbProvider dbProvider) throws CancelException {
+    return new SchemaBrowserAppModel(dbProvider);
   }
 
-  public static void main(final String[] args) throws Exception {
-    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+  public static void main(final String[] args) {
     new SchemaBrowserAppPanel().startApplication("Schema Browser", null, false, UiUtil.getScreenSizeRatio(0.5));
   }
 }

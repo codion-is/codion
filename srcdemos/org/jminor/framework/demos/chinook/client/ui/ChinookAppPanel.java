@@ -10,6 +10,7 @@ import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.ui.EntityApplicationPanel;
 import org.jminor.framework.client.ui.EntityPanelProvider;
+import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.demos.chinook.beans.ArtistModel;
 import org.jminor.framework.demos.chinook.beans.CustomerModel;
 import org.jminor.framework.demos.chinook.beans.EmployeeModel;
@@ -24,7 +25,6 @@ import org.jminor.framework.demos.chinook.beans.ui.MediaTypePanel;
 import org.jminor.framework.demos.chinook.beans.ui.PlaylistPanel;
 import org.jminor.framework.demos.chinook.client.ChinookAppModel;
 
-import javax.swing.UIManager;
 import java.util.Locale;
 
 /**
@@ -46,8 +46,8 @@ public class ChinookAppPanel extends EntityApplicationPanel {
   }
 
   @Override
-  protected EntityApplicationModel initializeApplicationModel(final User user) throws CancelException {
-    return new ChinookAppModel(user);
+  protected EntityApplicationModel initializeApplicationModel(final EntityDbProvider dbProvider) throws CancelException {
+    return new ChinookAppModel(dbProvider);
   }
 
   @Override
@@ -58,8 +58,7 @@ public class ChinookAppPanel extends EntityApplicationPanel {
     Configuration.setValue(Configuration.PROPERTY_DEBUG_OUTPUT, true);
   }
 
-  public static void main(final String[] args) throws Exception {
-    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+  public static void main(final String[] args) {
     Locale.setDefault(new Locale("EN", "en"));
     new ChinookAppPanel().startApplication("Chinook", null, false, UiUtil.getScreenSizeRatio(0.6), new User("scott", "tiger"));
   }

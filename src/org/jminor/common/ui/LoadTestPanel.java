@@ -65,7 +65,7 @@ public class LoadTestPanel extends JPanel {
     return loadTestModel;
   }
 
-  public void showFrame() {
+  public JFrame showFrame() {
     final JFrame frame = UiUtil.createFrame(Images.loadImage("jminor_logo32.gif").getImage());
     final String title = "JMinor - " + loadTestModel.getClass().getSimpleName();
     loadTestModel.eventDoneExiting().addListener(new ActionListener() {
@@ -88,6 +88,8 @@ public class LoadTestPanel extends JPanel {
     UiUtil.resizeWindow(frame, 0.75);
     UiUtil.centerWindow(frame);
     frame.setVisible(true);
+
+    return frame;
   }
 
   protected void initializeUI() {

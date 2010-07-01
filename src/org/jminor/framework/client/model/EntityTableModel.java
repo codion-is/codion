@@ -174,6 +174,21 @@ public interface EntityTableModel extends FilteredTableModel<Entity> {
   String getStatusMessage();
 
   /**
+   * Returns the maximum number of records to fetch via the underlying query,
+   * by default this returns -1, meaning all records should be fetched
+   * @return the fetch count
+   */
+  int getFetchCount();
+
+  /**
+   * Sets the maximum number of records to fetch via the underlying query,
+   * a value of -1 means all records should be fetched
+   * @param fetchCount the fetch count
+   * @return this table model
+   */
+  EntityTableModel setFetchCount(final int fetchCount);
+
+  /**
    * @return a Map containing all entities which depend on the selected entities,
    * where the keys are entityIDs and the value is an array of entities of that type
    */
@@ -182,6 +197,11 @@ public interface EntityTableModel extends FilteredTableModel<Entity> {
   void update(final List<Entity> entities) throws CancelException, ValidationException, DbException;
 
   void deleteSelected() throws CancelException, DbException;
+
+  /**
+   * @return whether to show all underlying entities when no criteria is applied.
+   */
+  boolean isQueryCriteriaRequired();
 
   /**
    * @param value if set to true then all underlying entities are shown
@@ -225,6 +245,12 @@ public interface EntityTableModel extends FilteredTableModel<Entity> {
   Iterator<Entity> getSelectedEntitiesIterator();
 
   /**
+   * @return a list containing the primary keys of the selected entities,
+   * if none are selected an empty list is returned
+   */
+  List<Entity.Key> getPrimaryKeysOfSelectedEntities();
+
+  /**
    * Returns an initialized ReportDataWrapper instance, the default implementation returns null.
    * @return an initialized ReportDataWrapper
    * @see #getSelectedEntitiesIterator()
@@ -243,4 +269,6 @@ public interface EntityTableModel extends FilteredTableModel<Entity> {
    * @return the entity with the given primary key from the table model, null if it's not found
    */
   Entity getEntityByPrimaryKey(final Entity.Key primaryKey);
+
+  int getViewIndexByPrimaryKey(final Entity.Key primaryKey);
 }

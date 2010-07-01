@@ -13,7 +13,6 @@ import org.jminor.common.model.Util;
 import org.jminor.common.model.reports.ReportDataWrapper;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.client.model.event.DeleteEvent;
-import org.jminor.framework.db.EntityDb;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
@@ -149,21 +148,10 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
     this.queryConfigurationAllowed = value;
   }
 
-  /**
-   * Returns the maximum number of records to fetch via the underlying query,
-   * by default this returns -1, meaning all records should be fetched
-   * @return the fetch count
-   */
   public int getFetchCount() {
     return fetchCount;
   }
 
-  /**
-   * Sets the maximum number of records to fetch via the underlying query,
-   * a value of -1 means all records should be fetched
-   * @param fetchCount the fetch count
-   * @return this table model
-   */
   public DefaultEntityTableModel setFetchCount(final int fetchCount) {
     this.fetchCount = fetchCount;
     return this;
@@ -214,13 +202,6 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
 
   public EntityDbProvider getDbProvider() {
     return dbProvider;
-  }
-
-  /**
-   * @return the database connection
-   */
-  public EntityDb getEntityDb() {
-    return dbProvider.getEntityDb();
   }
 
   /**
@@ -356,7 +337,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
 
   public void addEntitiesByPrimaryKeys(final List<Entity.Key> primaryKeys, boolean atFront) {
     try {
-      addItems(getEntityDb().selectMany(primaryKeys), atFront);
+      addItems(dbProvider.getEntityDb().selectMany(primaryKeys), atFront);
     }
     catch (Exception e) {
       throw new RuntimeException(e);
@@ -391,10 +372,6 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
     }
   }
 
-  /**
-   * @return a list containing the primary keys of the selected entities,
-   * if none are selected an empty list is returned
-   */
   public List<Entity.Key> getPrimaryKeysOfSelectedEntities() {
     return EntityUtil.getPrimaryKeys(getSelectedItems());
   }
@@ -461,7 +438,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
 
   public final Map<String, Collection<Entity>> getSelectionDependencies() {
     try {
-      return getEntityDb().selectDependentEntities(getSelectedItems());
+      return dbProvider.getEntityDb().selectDependentEntities(getSelectedItems());
     }
     catch (Exception e) {
       throw new RuntimeException(e);
@@ -545,7 +522,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
     }
 
     try {
-      return getEntityDb().selectMany(EntityCriteriaUtil.selectCriteria(entityID, criteria,
+      return dbProvider.getEntityDb().selectMany(EntityCriteriaUtil.selectCriteria(entityID, criteria,
               EntityRepository.getOrderByClause(entityID), fetchCount));
     }
     catch (Exception e) {

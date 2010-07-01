@@ -8,7 +8,6 @@ import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.framework.db.provider.EntityDbProvider;
-import org.jminor.framework.db.provider.EntityDbProviderFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,15 +24,9 @@ public abstract class EntityApplicationModel implements Refreshable {
   private final EntityDbProvider dbProvider;
   private final List<EntityModel> mainApplicationModels = new ArrayList<EntityModel>();
 
-  public EntityApplicationModel(final User user, final String applicationID) {
-    loadDomainModel();
-    this.dbProvider = initializeDbProvider(user, applicationID);
-    bindEvents();
-  }
-
   public EntityApplicationModel(final EntityDbProvider dbProvider) {
-    loadDomainModel();
     this.dbProvider = dbProvider;
+    loadDomainModel();
     bindEvents();
   }
 
@@ -184,10 +177,6 @@ public abstract class EntityApplicationModel implements Refreshable {
    * class or simply loading it by name
    */
   protected abstract void loadDomainModel();
-
-  protected EntityDbProvider initializeDbProvider(final User user, final String applicationID) {
-    return EntityDbProviderFactory.createEntityDbProvider(user, applicationID);
-  }
 
   protected void bindEvents() {}
 

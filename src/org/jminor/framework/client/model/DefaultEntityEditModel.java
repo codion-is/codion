@@ -10,10 +10,10 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.valuemap.AbstractValueChangeMapEditModel;
 import org.jminor.common.model.valuemap.ValueChangeEvent;
 import org.jminor.common.model.valuemap.ValueChangeListener;
 import org.jminor.common.model.valuemap.ValueChangeMap;
-import org.jminor.common.model.valuemap.AbstractValueChangeMapEditModel;
 import org.jminor.common.model.valuemap.ValueCollectionProvider;
 import org.jminor.common.model.valuemap.exception.NullValidationException;
 import org.jminor.common.model.valuemap.exception.RangeValidationException;
@@ -178,13 +178,6 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
     return key.isNull() || originalkey.isNull();
   }
 
-  /**
-   * Returns the value associated with the given propertyID assuming it
-   * is an Entity instance
-   * @param foreignKeyPropertyID the ID of the property
-   * @return the value assuming it is an Entity
-   * @throws ClassCastException in case the value was not an Entity
-   */
   public Entity getEntityValue(final String foreignKeyPropertyID) {
     return (Entity) getValue(foreignKeyPropertyID);
   }
@@ -387,11 +380,6 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
     }
   }
 
-  /**
-   * @param property the property for which to get the ComboBoxModel
-   * @return a PropertyComboBoxModel representing <code>property</code>
-   * @throws RuntimeException if no combo box has been initialized for the given property
-   */
   public PropertyComboBoxModel getPropertyComboBoxModel(final Property property) {
     Util.rejectNullValue(property);
     final PropertyComboBoxModel comboBoxModel = (PropertyComboBoxModel) propertyComboBoxModels.get(property);

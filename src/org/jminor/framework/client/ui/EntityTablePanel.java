@@ -32,9 +32,9 @@ import org.jminor.common.ui.input.TextInputProvider;
 import org.jminor.common.ui.input.ValueListInputProvider;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.DefaultEntityEditModel;
+import org.jminor.framework.client.model.DefaultEntityTableModel;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityTableModel;
-import org.jminor.framework.client.model.DefaultEntityTableModel;
 import org.jminor.framework.client.model.EntityTableSearchModel;
 import org.jminor.framework.client.model.PropertyFilterModel;
 import org.jminor.framework.client.model.PropertySearchModel;
@@ -1528,6 +1528,14 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
         getJTable().repaint();
       }
     });
+
+    if (getTableModel().getEditModel() != null) {
+      getTableModel().getEditModel().eventEntitiesChanged().addListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          getJTable().repaint();
+        }
+      });
+    }
   }
 
   private void toggleColumnFilterPanel(final MouseEvent event) {

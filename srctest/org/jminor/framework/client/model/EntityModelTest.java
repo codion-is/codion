@@ -101,7 +101,7 @@ public class EntityModelTest {
     departmentModel.refreshDetailModels();
     assertTrue(departmentModel.getDetailModel(EmployeeModel.class).getTableModel().getRowCount() > 0);
 
-    final EntityDb db = departmentModel.getEntityDb();
+    final EntityDb db = departmentModel.getDbProvider().getEntityDb();
     final Entity department = db.selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "SALES");
     final List<Entity> salesEmployees = db.selectMany(EntityCriteriaUtil.selectCriteria(EmpDept.T_EMPLOYEE,
             EmpDept.EMPLOYEE_DEPARTMENT_FK, SearchType.LIKE, department));

@@ -22,6 +22,8 @@ import org.jminor.common.ui.images.Images;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
+import org.jminor.framework.db.provider.EntityDbProvider;
+import org.jminor.framework.db.provider.EntityDbProviderFactory;
 import org.jminor.framework.i18n.FrameworkMessages;
 
 import org.apache.log4j.Logger;
@@ -180,36 +182,42 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     retry.add(new Object());
     while (!retry.isEmpty()) {
       try {
+        UIManager.setLookAndFeel(getDefaultLookAndFeelClassName());
         final User user = isLoginRequired() ? getUser(frameCaption, defaultUser, getClass().getSimpleName(), applicationIcon) :
                 new User("", "");
 
         final long now = System.currentTimeMillis();
 
-        final JDialog startupDialog =  createStartupDialog(applicationIcon, frameCaption);
-
-        new SwingWorker() {
+        final JDialog startupDialog = createStartupDialog(applicationIcon, frameCaption);
+        final JFrame frame = new JFrame();
+        final SwingWorker worker = new SwingWorker<EntityApplicationModel, Object>() {
           @Override
-          protected Object doInBackground() throws Exception {
-            initialize(user);
-            return null;
+          protected EntityApplicationModel doInBackground() throws Exception {
+            return initializeApplicationModel(initializeDbProvider(user, frameCaption));
           }
 
           @Override
           protected void done() {
-            retry.clear();//successful startup
-            if (startupDialog != null) {
-              startupDialog.dispose();
+            try {
+              initialize(get());
+              retry.clear();//successful startup
+              if (startupDialog != null) {
+                startupDialog.dispose();
+              }
+              final String frameTitle = getFrameTitle(frameCaption, user);
+              prepareFrame(frame, frameTitle, maximize, true, frameSize, applicationIcon, showFrame);
+
+              LOG.info(frameTitle + ", application started successfully " + "(" + (System.currentTimeMillis() - now) + " ms)");
+
+              saveDefaultUser(user);
+              evtApplicationStarted.fire();
             }
-            final String frameTitle = getFrameTitle(frameCaption, user);
-            prepareFrame(frameTitle, maximize, true, frameSize, applicationIcon, showFrame);
-
-            LOG.info(frameTitle + ", application started successfully " + "(" + (System.currentTimeMillis() - now) + " ms)");
-
-            saveDefaultUser(user);
-            evtApplicationStarted.fire();
+            catch (Exception e) {
+              throw new RuntimeException(e);
+            }
           }
-        }.execute();
-
+        };
+        worker.execute();
         startupDialog.setVisible(true);
       }
       catch (CancelException uce) {
@@ -231,14 +239,13 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   }
 
   /**
-   * @param user the user used when initializing the application model
-   * @throws CancelException in case the initialization is cancelled
+   * @param model the application model
    */
-  public void initialize(final User user) throws CancelException {
-    if (user == null) {
-      throw new RuntimeException("Unable to initialize application panel without a user");
+  public void initialize(final EntityApplicationModel model) {
+    if (model == null) {
+      throw new RuntimeException("Unable to initialize application panel without a model");
     }
-    this.applicationModel = initializeApplicationModel(user);
+    this.applicationModel = model;
     setUncaughtExceptionHandler();
     initializeUI();
     initializeActiveEntityPanel();
@@ -477,6 +484,10 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     return null;
   }
 
+  protected EntityDbProvider initializeDbProvider(final User user, final String frameCaption) throws CancelException {
+    return EntityDbProviderFactory.createEntityDbProvider(user, frameCaption);
+  }
+
   /**
    * A convenience method for overriding, so that system wide configuration parameters can be set
    * before the application is initialized
@@ -516,7 +527,11 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
       controlSet.add(new Control(panelProvider.getCaption()) {
         @Override
         public void actionPerformed(ActionEvent e) {
-          showEntityPanelDialog(panelProvider);
+          SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+              showEntityPanelDialog(panelProvider);
+            }
+          });
         }
       });
     }
@@ -617,6 +632,10 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     return Configuration.getBooleanValue(Configuration.AUTHENTICATION_REQUIRED);
   }
 
+  protected String getDefaultLookAndFeelClassName() {
+    return Configuration.getStringValue(Configuration.DEFAULT_LOOK_AND_FEEL_CLASSNAME);
+  }
+
   protected JPanel initializeSouthPanel() {
     return null;
   }
@@ -652,6 +671,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
 
   /**
    * Initializes a JFrame according to the given parameters, containing this EntityApplicationPanel
+   * @param frame the frame to prepare
    * @param title the title string for the JFrame
    * @param maximize if true then the JFrame is maximized, overrides the prefSeizeAsRatioOfScreen parameter
    * @param showMenuBar true if a menubar should be created
@@ -661,10 +681,9 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    * @return an initialized, but non-visible JFrame
    * @see #getNorthToolBar()
    */
-  protected JFrame prepareFrame(final String title, final boolean maximize,
+  protected JFrame prepareFrame(final JFrame frame, final String title, final boolean maximize,
                                 final boolean showMenuBar, final Dimension size,
                                 final ImageIcon applicationIcon, final boolean setVisible) {
-    final JFrame frame = new JFrame();
     frame.setIconImage(applicationIcon.getImage());
     frame.addWindowListener(new WindowAdapter() {
       @Override
@@ -732,7 +751,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     });
   }
 
-  protected abstract EntityApplicationModel initializeApplicationModel(final User user) throws CancelException;
+  protected abstract EntityApplicationModel initializeApplicationModel(final EntityDbProvider dbProvider) throws CancelException;
 
   protected User getUser(final String frameCaption, final User defaultUser, final String applicationIdentifier,
                          final ImageIcon applicationIcon) throws CancelException {
@@ -771,6 +790,9 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   }
 
   private void initializeActiveEntityPanel() {
+    if (applicationTabPane.getComponentCount() == 0) {
+      throw new RuntimeException("No application panel has been added to the application tab pane");
+    }
     ((EntityPanel) applicationTabPane.getSelectedComponent()).initializePanel();
   }
 

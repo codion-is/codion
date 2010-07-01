@@ -14,7 +14,6 @@ import org.jminor.framework.client.model.event.DeleteEvent;
 import org.jminor.framework.client.model.event.InsertEvent;
 import org.jminor.framework.client.model.event.UpdateEvent;
 import org.jminor.framework.client.model.reporting.EntityReportUtil;
-import org.jminor.framework.db.EntityDb;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
@@ -183,16 +182,6 @@ public class DefaultEntityModel implements EntityModel {
   }
 
   /**
-   * Returns the EntityDb connection, the instance returned by this
-   * method should not be viewed as long lived since it does not survive
-   * network connection outages for example
-   * @return the database connection
-   */
-  public EntityDb getEntityDb() {
-    return dbProvider.getEntityDb();
-  }
-
-  /**
    * @return a String representation of this EntityModel,
    * returns the model class name by default
    */
@@ -285,7 +274,11 @@ public class DefaultEntityModel implements EntityModel {
     final Set<EntityModel> linked = new HashSet<EntityModel>(linkedDetailModels);
     linkedDetailModels.clear();
     if (detailModels != null) {
-      linkedDetailModels.addAll(Arrays.asList(detailModels));
+      for (final EntityModel detailModel : detailModels) {
+        if (detailModel != null) {
+          linkedDetailModels.add(detailModel);
+        }
+      }
     }
 
     if (!linkedDetailModels.equals(linked)) {
@@ -362,24 +355,14 @@ public class DefaultEntityModel implements EntityModel {
     }
   }
 
-  /**
-   * @return an Event fired when detail models are linked or unlinked
-   */
   public Event eventLinkedDetailModelsChanged() {
     return evtLinkedDetailModelsChanged;
   }
 
-  /**
-   * @return an Event fired when the model has been refreshed, N.B. this event
-   * is fired even if the refresh results in an exception
-   */
   public Event eventRefreshDone() {
     return evtRefreshDone;
   }
 
-  /**
-   * @return an Event fired when the model is about to be refreshed
-   */
   public Event eventRefreshStarted() {
     return evtRefreshStarted;
   }
@@ -468,7 +451,7 @@ public class DefaultEntityModel implements EntityModel {
     }
 
     try {
-      final Entity insertedEntity = getEntityDb().selectSingle(insertedPrimaryKeys.get(0));
+      final Entity insertedEntity = dbProvider.getEntityDb().selectSingle(insertedPrimaryKeys.get(0));
       for (final EntityModel detailModel : detailModels) {
         for (final Property.ForeignKeyProperty foreignKeyProperty :
                 EntityRepository.getForeignKeyProperties(detailModel.getEntityID(), entityID)) {
@@ -513,12 +496,31 @@ public class DefaultEntityModel implements EntityModel {
   }
 
   protected void updateDetailModelsByActiveEntity() {
-    final List<Entity> activeEntities = containsTableModel() ?
-            (tableModel.stateSelectionEmpty().isActive() ? null : tableModel.getSelectedItems()) :
-            (editModel.isEntityNew() ? null : Arrays.asList(editModel.getEntityCopy()));
+    final List<Entity> activeEntities = getActiveEntities();
     for (final EntityModel detailModel : linkedDetailModels) {
       detailModel.masterSelectionChanged(entityID, activeEntities);
     }
+  }
+
+  protected List<Entity> getActiveEntities() {
+    final List<Entity> activeEntities;
+    if (containsTableModel()) {
+      if (tableModel.stateSelectionEmpty().isActive()) {
+        activeEntities = null;
+      }
+      else {
+        activeEntities = tableModel.getSelectedItems();
+      }
+    }
+    else {
+      if (editModel.isEntityNew()) {
+        activeEntities = null;
+      }
+      else {
+        activeEntities = Arrays.asList(editModel.getEntityCopy());
+      }
+    }
+    return activeEntities;
   }
 
   /**

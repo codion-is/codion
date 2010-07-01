@@ -8,6 +8,7 @@ import org.jminor.common.model.User;
 import org.jminor.common.ui.LoadTestPanel;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
+import org.jminor.framework.db.provider.EntityDbProviderFactory;
 import org.jminor.framework.demos.empdept.beans.DepartmentModel;
 import org.jminor.framework.demos.empdept.beans.EmployeeModel;
 import org.jminor.framework.demos.empdept.client.EmpDeptAppModel;
@@ -38,8 +39,8 @@ public class EmpDeptLoadTest extends EntityLoadTestModel {
   protected Collection<UsageScenario> initializeUsageScenarios() {
     final UsageScenario selectDepartment = new UsageScenario("selectDepartment") {
       @Override
-      protected void performScenario(final Object applicationModel) throws Exception {
-        selectRandomRow(((EntityApplicationModel) applicationModel).getMainApplicationModel(DepartmentModel.class).getTableModel());
+      protected void performScenario(final Object application) throws Exception {
+        selectRandomRow(((EntityApplicationModel) application).getMainApplicationModel(DepartmentModel.class).getTableModel());
       }
       @Override
       protected int getDefaultWeight() {
@@ -48,8 +49,8 @@ public class EmpDeptLoadTest extends EntityLoadTestModel {
     };
     final UsageScenario updateEmployee = new UsageScenario("updateEmployee") {
       @Override
-      protected void performScenario(final Object applicationModel) throws Exception {
-        final EntityModel departmentModel = ((EntityApplicationModel) applicationModel).getMainApplicationModel(DepartmentModel.class);
+      protected void performScenario(final Object application) throws Exception {
+        final EntityModel departmentModel = ((EntityApplicationModel) application).getMainApplicationModel(DepartmentModel.class);
         selectRandomRow(departmentModel.getTableModel());
         final EntityModel employeeModel = departmentModel.getDetailModel(EmployeeModel.class);
         if (employeeModel.getTableModel().getRowCount() > 0) {
@@ -67,8 +68,8 @@ public class EmpDeptLoadTest extends EntityLoadTestModel {
     };
     final UsageScenario insertEmployee = new UsageScenario("insertEmployee") {
       @Override
-      protected void performScenario(final Object applicationModel) throws Exception {
-        final EntityModel departmentModel = ((EntityApplicationModel) applicationModel).getMainApplicationModel(DepartmentModel.class);
+      protected void performScenario(final Object application) throws Exception {
+        final EntityModel departmentModel = ((EntityApplicationModel) application).getMainApplicationModel(DepartmentModel.class);
         selectRandomRow(departmentModel.getTableModel());
         final EntityModel employeeModel = departmentModel.getDetailModel(EmployeeModel.class);
         final Map<String, Entity> references = new HashMap<String, Entity>();
@@ -83,8 +84,8 @@ public class EmpDeptLoadTest extends EntityLoadTestModel {
     };
     final UsageScenario insertDepartment = new UsageScenario("insertDepartment") {
       @Override
-      protected void performScenario(final Object applicationModel) throws Exception {
-        final EntityModel departmentModel = ((EntityApplicationModel) applicationModel).getMainApplicationModel(DepartmentModel.class);
+      protected void performScenario(final Object application) throws Exception {
+        final EntityModel departmentModel = ((EntityApplicationModel) application).getMainApplicationModel(DepartmentModel.class);
         departmentModel.getEditModel().setValueMap(EntityUtil.createRandomEntity(EmpDept.T_DEPARTMENT, null));
         departmentModel.getEditModel().insert();
       }
@@ -95,10 +96,10 @@ public class EmpDeptLoadTest extends EntityLoadTestModel {
     };
     final UsageScenario logoutLogin = new UsageScenario("logoutLogin") {
       @Override
-      protected void performScenario(final Object applicationModel) throws Exception {
-        ((EntityApplicationModel) applicationModel).getDbProvider().disconnect();
+      protected void performScenario(final Object application) throws Exception {
+        ((EntityApplicationModel) application).getDbProvider().disconnect();
         think();
-        ((EntityApplicationModel) applicationModel).getDbProvider().getEntityDb();
+        ((EntityApplicationModel) application).getDbProvider().getEntityDb();
       }
       @Override
       protected int getDefaultWeight() {
@@ -116,7 +117,7 @@ public class EmpDeptLoadTest extends EntityLoadTestModel {
 
   @Override
   protected EntityApplicationModel initializeApplication() throws CancelException {
-    final EntityApplicationModel applicationModel = new EmpDeptAppModel(getUser());
+    final EntityApplicationModel applicationModel = new EmpDeptAppModel(EntityDbProviderFactory.createEntityDbProvider(getUser(), EmpDeptLoadTest.class.getSimpleName()));
 
     final EntityModel model = applicationModel.getMainApplicationModels().iterator().next();
     model.setLinkedDetailModels(model.getDetailModels().iterator().next());
@@ -125,14 +126,8 @@ public class EmpDeptLoadTest extends EntityLoadTestModel {
     return applicationModel;
   }
 
-  public static void main(String[] args) {
-    try {
-      UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-    }
-    catch (Exception e) {
-      e.printStackTrace();
-    }
-
+  public static void main(String[] args) throws Exception {
+    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
     new LoadTestPanel(new EmpDeptLoadTest()).showFrame();
   }
 }

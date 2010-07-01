@@ -135,6 +135,13 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
   Entity getEntityCopy();
 
   /**
+   * @param includePrimaryKeyValues if false then the primary key values are excluded
+   * @return a deep copy of the active entity
+   * @see org.jminor.framework.domain.Entity#getCopy()
+   */
+  Entity getEntityCopy(final boolean includePrimaryKeyValues);
+
+  /**
    * @return true if the active entity is new, that is, has a primary key with null value
    * or a original null value
    * @see org.jminor.framework.domain.Entity#isNull()
@@ -152,6 +159,13 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
 
   void setActive(final boolean active);
 
+  /**
+   * Returns the value associated with the given propertyID assuming it
+   * is an Entity instance
+   * @param foreignKeyPropertyID the ID of the property
+   * @return the value assuming it is an Entity
+   * @throws ClassCastException in case the value was not an Entity
+   */
   Entity getEntityValue(final String foreignKeyPropertyID);
 
   ValueCollectionProvider getValueProvider(final Property property);
@@ -228,6 +242,13 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * the property, to be returned the next time this method is called
    */
   ComboBoxModel initializePropertyComboBoxModel(final Property property, final Event refreshEvent, final String nullValueString);
+
+  /**
+   * @param property the property for which to get the ComboBoxModel
+   * @return a PropertyComboBoxModel representing <code>property</code>
+   * @throws RuntimeException if no combo box has been initialized for the given property
+   */
+  PropertyComboBoxModel getPropertyComboBoxModel(final Property property);
 
   /**
    * Returns true if this edit model contains a ComboBoxModel for the given property

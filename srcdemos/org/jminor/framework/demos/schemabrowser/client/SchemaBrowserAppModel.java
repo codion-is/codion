@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.demos.schemabrowser.client;
 
-import org.jminor.common.model.User;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.demos.schemabrowser.beans.SchemaModel;
@@ -14,10 +13,6 @@ public class SchemaBrowserAppModel extends EntityApplicationModel {
   public SchemaBrowserAppModel(final EntityDbProvider dbProvider) {
     super(dbProvider);
     addMainApplicationModel(new SchemaModel(dbProvider));
-  }
-
-  public SchemaBrowserAppModel(final User user) {
-    super(user, SchemaBrowserAppModel.class.getSimpleName());
   }
 
   @Override

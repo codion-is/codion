@@ -9,6 +9,7 @@ import org.jminor.common.ui.reports.ReportUIWrapper;
 import org.jminor.framework.i18n.FrameworkMessages;
 
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 import java.awt.Dimension;
 
 /**
@@ -20,16 +21,20 @@ public final class EntityReportUiUtil {
 
   /**
    * Shows a view for report printing
-   * @param report the report result
+   * @param reportResult the report result
    * @param uiWrapper the UI wrapper
    * @param frameTitle the title to display on the frame
    */
-  public static void viewReport(final ReportResult report, final ReportUIWrapper uiWrapper, final String frameTitle) {
-    final JFrame frame = new JFrame(frameTitle == null ? FrameworkMessages.get(FrameworkMessages.REPORT_PRINTER) : frameTitle);
-    frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-    frame.getContentPane().add(uiWrapper.createReportComponent(report));
-    UiUtil.resizeWindow(frame, 0.8, new Dimension(800, 600));
-    UiUtil.centerWindow(frame);
-    frame.setVisible(true);
+  public static <T> void viewReport(final ReportResult<T> reportResult, final ReportUIWrapper<T> uiWrapper, final String frameTitle) {
+    SwingUtilities.invokeLater(new Runnable() {
+      public void run() {
+        final JFrame frame = new JFrame(frameTitle == null ? FrameworkMessages.get(FrameworkMessages.REPORT_PRINTER) : frameTitle);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.getContentPane().add(uiWrapper.createReportComponent(reportResult));
+        UiUtil.resizeWindow(frame, 0.8, new Dimension(800, 600));
+        UiUtil.centerWindow(frame);
+        frame.setVisible(true);
+      }
+    });
   }
 }

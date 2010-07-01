@@ -12,12 +12,12 @@ import javax.swing.JComponent;
  * Date: 25.5.2010<br>
  * Time: 14:42:03
  */
-public interface ReportUIWrapper<T> {
+public interface ReportUIWrapper<R> {
 
   /**
    * Returns a JComponent showing a report based on the given report result.
    * @param result the report result to base the report on.
    * @return a JComponent showing a report.
    */
-  JComponent createReportComponent(final ReportResult<T> result);
+  JComponent createReportComponent(final ReportResult<R> result);
 }

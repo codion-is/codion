@@ -17,9 +17,21 @@ import java.util.List;
 
 public interface EntityModel extends Refreshable {
 
+  /**
+   * @return an Event fired when the model is about to be refreshed
+   */
   Event eventRefreshStarted();
 
+  /**
+   * @return an Event fired when the model has been refreshed, N.B. this event
+   * is fired even if the refresh results in an exception
+   */
   Event eventRefreshDone();
+
+  /**
+   * @return an Event fired when detail models are linked or unlinked
+   */
+  Event eventLinkedDetailModelsChanged();
 
   /**
    * @return the ID of the entity this model represents
@@ -40,6 +52,11 @@ public interface EntityModel extends Refreshable {
    * @return the EntityTableModel, null if none is specified
    */
   EntityTableModel getTableModel();
+
+  /**
+   * @return the master model, if any
+   */
+  EntityModel getMasterModel();
 
   /**
    * @return true if this EntityModel contains a TableModel

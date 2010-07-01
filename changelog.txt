@@ -1791,9 +1791,15 @@
   EntityApplicationPanel.initializeMain/SupportEntityPanelProviders() removed, addMain... and addSupport... added
   AbstractValueLink now uses SwingUtilities.invokeLater() when applicable
   EntityApplicationPanel.showStartupDialog() renamed to createStartupDialog()
-  EntityApplicationPanel.startApplication() refactored, uses
+  EntityApplicationPanel.startApplication() refactored, uses SwingUtilities.invokeLater()/SwingWorker
   FilteredComboBoxModel sets the selected item on filtering
   Property.Audit... properties added
   EntityDb.fill(Jdbc)Report(), removed report parameters parameter
   JasperReportsWrapper.reportParameters field added
   Replaced List with Collection in a few places
+  EntityApplicationModel(User) constructor removed
+  EntityApplicationModel.initializeDbProvider() moved to EntityApplicationPanel
+  EntityApplicationPanel.getLookAndFeelClassName() added, called during startApplication()
+  EntityApplicationPanel.getSupportTableControlSet() now uses SwingUtilities.invokeLater()
+  SwingUtilities.invokeLater() usages added
+  EntityApplicationPanel.startApplication() refactored some more
