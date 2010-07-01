@@ -194,7 +194,7 @@ public abstract class EntityPanel extends JPanel {
    */
   public EntityPanel(final EntityModel model, final String caption) {
     Util.rejectNullValue(model);
-    Util.rejectNullValue(caption);
+    Util.rejectNullValue(caption, "caption");
     this.model = model;
     this.caption = caption;
     getEditModel().stateActive().eventStateChanged().addListener(new ActionListener() {

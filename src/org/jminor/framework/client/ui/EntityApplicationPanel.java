@@ -739,7 +739,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
 
         final JDialog startupDialog = createStartupDialog(applicationIcon, frameCaption);
         final JFrame frame = new JFrame();
-        final SwingWorker worker = new SwingWorker<EntityApplicationModel, Object>() {
+        final SwingWorker worker = new SwingWorker<EntityApplicationModel, Void>() {
           @Override
           protected EntityApplicationModel doInBackground() throws Exception {
             return initializeApplicationModel(initializeDbProvider(user, frameCaption));
