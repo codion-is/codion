@@ -1119,6 +1119,7 @@ public abstract class EntityPanel extends JPanel {
    * @param uiWrapper the ui wrapper
    * @param reportTitle the title to display on the frame
    */
+  @SuppressWarnings({"unchecked"})
   protected void viewJdbcReport(final ReportWrapper reportWrapper, final ReportUIWrapper uiWrapper,
                                 final String reportTitle) {
     try {
