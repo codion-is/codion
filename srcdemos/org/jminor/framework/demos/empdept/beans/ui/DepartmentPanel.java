@@ -29,7 +29,7 @@ import java.util.HashMap;
 public class DepartmentPanel extends EntityPanel {
 
   public DepartmentPanel(final EntityModel model) {
-    super(model);
+    super(model, new DepartmentEditPanel(model.getEditModel()));
     addDetailPanel(new EmployeePanel(model.getDetailModel(EmployeeModel.class)));
   }
 
@@ -47,44 +47,46 @@ public class DepartmentPanel extends EntityPanel {
   }
 
   @Override
-  protected EntityEditPanel initializeEditPanel(final EntityEditModel editModel) {
-    return new EntityEditPanel(editModel) {
-      @Override
-      protected void initializeUI() {
-        final JTextField txtDepartmentNumber = createTextField(DEPARTMENT_ID);
-        final JTextField txtDepartmentName = (JTextField) UiUtil.makeUpperCase(createTextField(DEPARTMENT_NAME));
-        final JTextField txtDepartmentLocation = (JTextField) UiUtil.makeUpperCase(createTextField(DEPARTMENT_LOCATION));
-
-        setInitialFocusComponent(txtDepartmentNumber);
-        txtDepartmentNumber.setColumns(10);
-
-        //we don't allow editing of the department number since it's a primary key
-        getEditModel().stateEntityNull().eventStateChanged().addListener(new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            if (getEditModel().isEntityNew()) {
-              txtDepartmentNumber.setEnabled(true);
-              setInitialFocusComponent(txtDepartmentNumber);
-            }
-            else {
-              txtDepartmentNumber.setEnabled(false);
-              setInitialFocusComponent(txtDepartmentName);
-            }
-          }
-        });
-
-        setLayout(new GridLayout(3,1,5,5));
-        add(createPropertyPanel(DEPARTMENT_ID, txtDepartmentNumber));
-        add(createPropertyPanel(DEPARTMENT_NAME, txtDepartmentName));
-        add(createPropertyPanel(DEPARTMENT_LOCATION, txtDepartmentLocation));
-      }
-    };
-  }
-
-  @Override
   protected ControlSet getPrintControls() {
     final ControlSet controlSet = new ControlSet(Messages.get(Messages.PRINT));
     controlSet.add(ControlFactory.methodControl(this, "viewEmployeeReport", EmpDept.getString(EmpDept.EMPLOYEE_REPORT)));
 
     return controlSet;
+  }
+
+  static class DepartmentEditPanel extends EntityEditPanel {
+
+    DepartmentEditPanel(final EntityEditModel editModel) {
+      super(editModel);
+    }
+
+    @Override
+    protected void initializeUI() {
+      final JTextField txtDepartmentNumber = createTextField(DEPARTMENT_ID);
+      final JTextField txtDepartmentName = (JTextField) UiUtil.makeUpperCase(createTextField(DEPARTMENT_NAME));
+      final JTextField txtDepartmentLocation = (JTextField) UiUtil.makeUpperCase(createTextField(DEPARTMENT_LOCATION));
+
+      setInitialFocusComponent(txtDepartmentNumber);
+      txtDepartmentNumber.setColumns(10);
+
+      //we don't allow editing of the department number since it's a primary key
+      getEditModel().stateEntityNull().eventStateChanged().addListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          if (getEditModel().isEntityNew()) {
+            txtDepartmentNumber.setEnabled(true);
+            setInitialFocusComponent(txtDepartmentNumber);
+          }
+          else {
+            txtDepartmentNumber.setEnabled(false);
+            setInitialFocusComponent(txtDepartmentName);
+          }
+        }
+      });
+
+      setLayout(new GridLayout(3,1,5,5));
+      add(createPropertyPanel(DEPARTMENT_ID, txtDepartmentNumber));
+      add(createPropertyPanel(DEPARTMENT_NAME, txtDepartmentName));
+      add(createPropertyPanel(DEPARTMENT_LOCATION, txtDepartmentLocation));
+    }
   }
 }

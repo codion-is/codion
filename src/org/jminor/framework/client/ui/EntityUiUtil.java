@@ -683,7 +683,7 @@ public final class EntityUiUtil {
   private static AbstractAction initializeNewRecordAction(final EntityComboBox comboBox, final EntityPanelProvider panelProvider) {
     return new AbstractAction("", Images.loadImage(Images.IMG_ADD_16)) {
       public void actionPerformed(ActionEvent e) {
-        final EntityPanel entityPanel = EntityPanel.createInstance(panelProvider, comboBox.getModel().getDbProvider());
+        final EntityPanel entityPanel = panelProvider.createInstance(comboBox.getModel().getDbProvider());
         entityPanel.initializePanel();
         final List<Entity.Key> lastInsertedPrimaryKeys = new ArrayList<Entity.Key>();
         entityPanel.getModel().getEditModel().eventAfterInsert().addListener(new ActionListener() {

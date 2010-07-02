@@ -7,9 +7,7 @@ import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.ui.EntityEditPanel;
 import org.jminor.framework.client.ui.EntityPanel;
-import org.jminor.framework.demos.chinook.beans.TrackModel;
-import static org.jminor.framework.demos.chinook.domain.Chinook.ALBUM_ARTISTID_FK;
-import static org.jminor.framework.demos.chinook.domain.Chinook.ALBUM_TITLE;
+import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 
 import javax.swing.JTextField;
 import java.awt.GridLayout;
@@ -22,24 +20,26 @@ import java.awt.GridLayout;
 public class AlbumPanel extends EntityPanel {
 
   public AlbumPanel(final EntityModel model) {
-    super(model);
-    addDetailPanel(new TrackPanel(model.getDetailModel(TrackModel.class)));
+    super(model, new AlbumEditPanel(model.getEditModel()));
+    addDetailPanel(new TrackPanel(model.getDetailModel(T_TRACK)));
   }
 
-  @Override
-  protected EntityEditPanel initializeEditPanel(final EntityEditModel editModel) {
-    return new EntityEditPanel(editModel) {
-      @Override
-      protected void initializeUI() {
-        setLayout(new GridLayout(2, 1, 5, 5));
-        final JTextField txtArtists = createEntityLookupField(ALBUM_ARTISTID_FK);
-        txtArtists.setColumns(18);
-        setInitialFocusComponent(txtArtists);
-        final JTextField txtTitle = createTextField(ALBUM_TITLE);
-        txtTitle.setColumns(18);
-        add(createPropertyPanel(ALBUM_ARTISTID_FK, txtArtists));
-        add(createPropertyPanel(ALBUM_TITLE, txtTitle));
-      }
-    };
+  static class AlbumEditPanel extends EntityEditPanel {
+
+    AlbumEditPanel(final EntityEditModel editModel) {
+      super(editModel);
+    }
+
+    @Override
+    protected void initializeUI() {
+      setLayout(new GridLayout(2, 1, 5, 5));
+      final JTextField txtArtists = createEntityLookupField(ALBUM_ARTISTID_FK);
+      txtArtists.setColumns(18);
+      setInitialFocusComponent(txtArtists);
+      final JTextField txtTitle = createTextField(ALBUM_TITLE);
+      txtTitle.setColumns(18);
+      add(createPropertyPanel(ALBUM_ARTISTID_FK, txtArtists));
+      add(createPropertyPanel(ALBUM_TITLE, txtTitle));
+    }
   }
 }

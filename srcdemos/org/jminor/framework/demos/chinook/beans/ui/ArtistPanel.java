@@ -7,8 +7,8 @@ import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.ui.EntityEditPanel;
 import org.jminor.framework.client.ui.EntityPanel;
-import org.jminor.framework.demos.chinook.beans.AlbumModel;
 import static org.jminor.framework.demos.chinook.domain.Chinook.ARTIST_NAME;
+import static org.jminor.framework.demos.chinook.domain.Chinook.T_ALBUM;
 
 import javax.swing.JTextField;
 import java.awt.GridLayout;
@@ -22,13 +22,13 @@ public class ArtistPanel extends EntityPanel {
 
   public ArtistPanel(final EntityModel model) {
     super(model, new ArtistEditPanel(model.getEditModel()));
-    addDetailPanel(new AlbumPanel(model.getDetailModel(AlbumModel.class)));
+    addDetailPanel(new AlbumPanel(model.getDetailModel(T_ALBUM)));
     setDetailSplitPanelResizeWeight(0.3);
   }
 
   static class ArtistEditPanel extends EntityEditPanel {
 
-    public ArtistEditPanel(final EntityEditModel editModel) {
+    ArtistEditPanel(final EntityEditModel editModel) {
       super(editModel);
     }
 

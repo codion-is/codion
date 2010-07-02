@@ -16,6 +16,5 @@ public class InvoiceModel extends DefaultEntityModel {
 
   public InvoiceModel(final EntityDbProvider dbProvider) {
     super(Chinook.T_INVOICE, dbProvider);
-    addDetailModel(new InvoiceLineModel(getDbProvider()));
   }
 }

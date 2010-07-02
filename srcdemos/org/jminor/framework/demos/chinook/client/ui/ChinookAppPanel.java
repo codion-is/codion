@@ -11,12 +11,6 @@ import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.ui.EntityApplicationPanel;
 import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.db.provider.EntityDbProvider;
-import org.jminor.framework.demos.chinook.beans.ArtistModel;
-import org.jminor.framework.demos.chinook.beans.CustomerModel;
-import org.jminor.framework.demos.chinook.beans.EmployeeModel;
-import org.jminor.framework.demos.chinook.beans.GenreModel;
-import org.jminor.framework.demos.chinook.beans.MediaTypeModel;
-import org.jminor.framework.demos.chinook.beans.PlaylistModel;
 import org.jminor.framework.demos.chinook.beans.ui.ArtistPanel;
 import org.jminor.framework.demos.chinook.beans.ui.CustomerPanel;
 import org.jminor.framework.demos.chinook.beans.ui.EmployeePanel;
@@ -24,6 +18,7 @@ import org.jminor.framework.demos.chinook.beans.ui.GenrePanel;
 import org.jminor.framework.demos.chinook.beans.ui.MediaTypePanel;
 import org.jminor.framework.demos.chinook.beans.ui.PlaylistPanel;
 import org.jminor.framework.demos.chinook.client.ChinookAppModel;
+import org.jminor.framework.demos.chinook.domain.Chinook;
 
 import java.util.Locale;
 
@@ -36,13 +31,13 @@ public class ChinookAppPanel extends EntityApplicationPanel {
 
   public ChinookAppPanel() {
     addMainApplicationPanelProviders(
-            new EntityPanelProvider(ArtistModel.class, ArtistPanel.class),
-            new EntityPanelProvider(PlaylistModel.class, PlaylistPanel.class),
-            new EntityPanelProvider(CustomerModel.class, CustomerPanel.class));
+            new EntityPanelProvider(Chinook.T_ARTIST).setPanelClass(ArtistPanel.class),
+            new EntityPanelProvider(Chinook.T_PLAYLIST).setPanelClass(PlaylistPanel.class),
+            new EntityPanelProvider(Chinook.T_CUSTOMER).setPanelClass(CustomerPanel.class));
     addSupportPanelProviders(
-            new EntityPanelProvider("Genres", GenreModel.class, GenrePanel.class),
-            new EntityPanelProvider("Media types", MediaTypeModel.class, MediaTypePanel.class),
-            new EntityPanelProvider("Employees", EmployeeModel.class, EmployeePanel.class));
+            new EntityPanelProvider(Chinook.T_GENRE, "Genres").setPanelClass(GenrePanel.class),
+            new EntityPanelProvider(Chinook.T_MEDIATYPE, "Media types").setPanelClass(MediaTypePanel.class),
+            new EntityPanelProvider(Chinook.T_EMPLOYEE, "Employees").setPanelClass(EmployeePanel.class));
   }
 
   @Override
@@ -56,6 +51,7 @@ public class ChinookAppPanel extends EntityApplicationPanel {
     Configuration.setValue(Configuration.COMPACT_ENTITY_PANEL_LAYOUT, true);
     Configuration.setValue(Configuration.USE_OPTIMISTIC_LOCKING, true);
     Configuration.setValue(Configuration.PROPERTY_DEBUG_OUTPUT, true);
+    Configuration.setValue(Configuration.AUTO_CREATE_ENTITY_MODELS, true);
   }
 
   public static void main(final String[] args) {

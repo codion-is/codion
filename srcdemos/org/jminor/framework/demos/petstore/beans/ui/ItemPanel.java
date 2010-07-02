@@ -15,6 +15,7 @@ import org.jminor.framework.client.ui.EntityUiUtil;
 import org.jminor.framework.demos.petstore.beans.AddressModel;
 import org.jminor.framework.demos.petstore.beans.ContactInfoModel;
 import org.jminor.framework.demos.petstore.beans.TagItemModel;
+import org.jminor.framework.demos.petstore.domain.Petstore;
 import static org.jminor.framework.demos.petstore.domain.Petstore.*;
 
 import javax.swing.JTextField;
@@ -52,12 +53,12 @@ public class ItemPanel extends EntityPanel {
         box.setPopupWidth(200);
         box.setPreferredSize(UiUtil.getPreferredTextFieldSize());
         add(createPropertyPanel(ITEM_C0NTACT_INFO_FK, EntityUiUtil.createEntityComboBoxNewRecordPanel(box,
-                new EntityPanelProvider(ContactInfoModel.class, ContactInfoPanel.class), false)));
+                new EntityPanelProvider(Petstore.T_SELLER_CONTACT_INFO, ContactInfoModel.class, ContactInfoPanel.class), false)));
         box = createEntityComboBox(ITEM_ADDRESS_FK);
         box.setPopupWidth(200);
         box.setPreferredSize(UiUtil.getPreferredTextFieldSize());
         add(createPropertyPanel(ITEM_ADDRESS_FK, EntityUiUtil.createEntityComboBoxNewRecordPanel(box,
-                new EntityPanelProvider(AddressModel.class, AddressPanel.class), false)));
+                new EntityPanelProvider(Petstore.T_ADDRESS, AddressModel.class, AddressPanel.class), false)));
         add(createPropertyPanel(ITEM_IMAGE_URL, createTextField(ITEM_IMAGE_URL)));
         add(createPropertyPanel(ITEM_IMAGE_THUMB_URL, createTextField(ITEM_IMAGE_THUMB_URL)));
         add(createPropertyPanel(ITEM_DISABLED, createTristateCheckBox(ITEM_DISABLED, null, false)));

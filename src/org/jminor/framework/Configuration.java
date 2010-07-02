@@ -391,6 +391,13 @@ public final class Configuration {
    */
   public static final String DEFAULT_LOOK_AND_FEEL_CLASSNAME = "jminor.client.defaultLookAndFeelClassName";
 
+  /**
+   * Specifies whether entity models should be automatically created if not specified.
+   * Value type: Boolean<br>
+   * Default value: false<br>
+   */
+  public static final String AUTO_CREATE_ENTITY_MODELS = "jminor.client.autoCreateEntityModels";
+
   private static Map<String, Object> settings = new HashMap<String, Object>();
 
   static {
@@ -428,6 +435,7 @@ public final class Configuration {
     setValue(DEFAULT_FOREIGN_KEY_FETCH_DEPTH, 1);
     setValue(LIMIT_FOREIGN_KEY_FETCH_DEPTH, true);
     setValue(DEFAULT_LOOK_AND_FEEL_CLASSNAME, UIManager.getSystemLookAndFeelClassName());
+    setValue(AUTO_CREATE_ENTITY_MODELS, false);
     parseSystemSettings();
   }
 
@@ -468,6 +476,7 @@ public final class Configuration {
     parseStringSetting(USERNAME_PREFIX);
     parseStringSetting(WILDCARD_CHARACTER);
     parseStringSetting(DEFAULT_LOOK_AND_FEEL_CLASSNAME);
+    parseBooleanSetting(AUTO_CREATE_ENTITY_MODELS);
   }
 
   private static void parseIntegerSetting(final String setting) {

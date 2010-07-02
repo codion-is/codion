@@ -16,6 +16,5 @@ public class MediaTypeModel extends DefaultEntityModel {
 
   public MediaTypeModel(final EntityDbProvider dbProvider) {
     super(Chinook.T_MEDIATYPE, dbProvider);
-    addDetailModel(new TrackModel(getDbProvider()));
   }
 }

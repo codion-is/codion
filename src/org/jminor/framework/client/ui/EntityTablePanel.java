@@ -181,6 +181,23 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
   /**
    * Initializes a new EntityTablePanel instance
    * @param tableModel the EntityTableModel instance
+   */
+  public EntityTablePanel(final EntityTableModel tableModel) {
+    this(tableModel, null);
+  }
+
+  /**
+   * Initializes a new EntityTablePanel instance
+   * @param tableModel the EntityTableModel instance
+   * @param additionalPopupControls a ControlSet which will be added to the popup control set
+   */
+  public EntityTablePanel(final EntityTableModel tableModel, final ControlSet additionalPopupControls) {
+    this(tableModel, additionalPopupControls, null);
+  }
+
+  /**
+   * Initializes a new EntityTablePanel instance
+   * @param tableModel the EntityTableModel instance
    * @param additionalPopupControls a ControlSet which will be added to the popup control set
    * @param additionalToolbarControls a ControlSet which will be added to the toolbar control set
    */

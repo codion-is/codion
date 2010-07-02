@@ -20,17 +20,18 @@ import org.jminor.framework.demos.petstore.beans.ui.CategoryPanel;
 import org.jminor.framework.demos.petstore.beans.ui.ContactInfoPanel;
 import org.jminor.framework.demos.petstore.beans.ui.TagPanel;
 import org.jminor.framework.demos.petstore.client.PetstoreAppModel;
+import org.jminor.framework.demos.petstore.domain.Petstore;
 
 import java.util.Locale;
 
 public class PetstoreAppPanel extends EntityApplicationPanel {
 
   public PetstoreAppPanel() {
-    addMainApplicationPanelProvider(new EntityPanelProvider(CategoryModel.class, CategoryPanel.class));
+    addMainApplicationPanelProvider(new EntityPanelProvider(Petstore.T_CATEGORY, CategoryModel.class, CategoryPanel.class));
     addSupportPanelProviders(
-            new EntityPanelProvider("Addresses", AddressModel.class, AddressPanel.class),
-            new EntityPanelProvider("Seller info", ContactInfoModel.class, ContactInfoPanel.class),
-            new EntityPanelProvider("Tags", TagModel.class, TagPanel.class));
+            new EntityPanelProvider(Petstore.T_ADDRESS, "Addresses", AddressModel.class, AddressPanel.class),
+            new EntityPanelProvider(Petstore.T_SELLER_CONTACT_INFO, "Seller info", ContactInfoModel.class, ContactInfoPanel.class),
+            new EntityPanelProvider(Petstore.T_TAG, "Tags", TagModel.class, TagPanel.class));
   }
 
   @Override

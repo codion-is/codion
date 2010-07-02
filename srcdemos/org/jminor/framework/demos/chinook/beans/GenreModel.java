@@ -16,6 +16,5 @@ public class GenreModel extends DefaultEntityModel {
 
   public GenreModel(final EntityDbProvider dbProvider) {
     super(Chinook.T_GENRE, dbProvider);
-    addDetailModel(new TrackModel(getDbProvider()));
   }
 }

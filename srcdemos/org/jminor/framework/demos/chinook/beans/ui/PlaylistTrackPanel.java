@@ -22,22 +22,24 @@ import java.awt.GridLayout;
 public class PlaylistTrackPanel extends EntityPanel {
 
   public PlaylistTrackPanel(final EntityModel model) {
-    super(model);
+    super(model, new PlaylistTrackEditPanel(model.getEditModel()));
   }
 
-  @Override
-  protected EntityEditPanel initializeEditPanel(final EntityEditModel editModel) {
-    return new EntityEditPanel(editModel) {
-      @Override
-      protected void initializeUI() {
-        setLayout(new GridLayout(2, 1, 5, 5));
-        final JComboBox boxPlaylist = createEntityComboBox(PLAYLISTTRACK_PLAYLISTID_FK);
-        setInitialFocusComponent(boxPlaylist);
-        final JTextField txtTrack = createEntityLookupField(PLAYLISTTRACK_TRACKID_FK);
-        txtTrack.setColumns(30);
-        add(createPropertyPanel(PLAYLISTTRACK_PLAYLISTID_FK, boxPlaylist));
-        add(createPropertyPanel(PLAYLISTTRACK_TRACKID_FK, txtTrack));
-      }
-    };
+  static class PlaylistTrackEditPanel extends EntityEditPanel {
+
+    PlaylistTrackEditPanel(final EntityEditModel editModel) {
+      super(editModel);
+    }
+
+    @Override
+    protected void initializeUI() {
+      setLayout(new GridLayout(2, 1, 5, 5));
+      final JComboBox boxPlaylist = createEntityComboBox(PLAYLISTTRACK_PLAYLISTID_FK);
+      setInitialFocusComponent(boxPlaylist);
+      final JTextField txtTrack = createEntityLookupField(PLAYLISTTRACK_TRACKID_FK);
+      txtTrack.setColumns(30);
+      add(createPropertyPanel(PLAYLISTTRACK_PLAYLISTID_FK, boxPlaylist));
+      add(createPropertyPanel(PLAYLISTTRACK_TRACKID_FK, txtTrack));
+    }
   }
 }

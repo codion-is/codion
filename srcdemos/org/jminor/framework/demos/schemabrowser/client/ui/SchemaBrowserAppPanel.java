@@ -13,13 +13,14 @@ import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.demos.schemabrowser.beans.SchemaModel;
 import org.jminor.framework.demos.schemabrowser.beans.ui.SchemaPanel;
 import org.jminor.framework.demos.schemabrowser.client.SchemaBrowserAppModel;
+import org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser;
 
 import javax.swing.JTable;
 
 public class SchemaBrowserAppPanel extends EntityApplicationPanel {
 
   public SchemaBrowserAppPanel() {
-    addMainApplicationPanelProvider(new EntityPanelProvider(SchemaModel.class, SchemaPanel.class));
+    addMainApplicationPanelProvider(new EntityPanelProvider(SchemaBrowser.T_SCHEMA, SchemaModel.class, SchemaPanel.class));
   }
 
   @Override

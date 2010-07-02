@@ -27,7 +27,7 @@ import java.nio.charset.Charset;
 public class EmpDeptAppPanel extends EntityApplicationPanel {
 
   public EmpDeptAppPanel() {
-    addMainApplicationPanelProvider(new EntityPanelProvider(DepartmentModel.class, DepartmentPanel.class));
+    addMainApplicationPanelProvider(new EntityPanelProvider(EmpDept.T_DEPARTMENT, DepartmentModel.class, DepartmentPanel.class));
   }
 
   public void importJSON() throws Exception {

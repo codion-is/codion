@@ -16,6 +16,5 @@ public class CustomerModel extends DefaultEntityModel {
 
   public CustomerModel(final EntityDbProvider dbProvider) {
     super(Chinook.T_CUSTOMER, dbProvider);
-    addDetailModel(new InvoiceModel(getDbProvider()));
   }
 }

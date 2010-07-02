@@ -3,9 +3,7 @@
  */
 package org.jminor.framework.demos.schemabrowser.beans.ui;
 
-import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityModel;
-import org.jminor.framework.client.ui.EntityEditPanel;
 import org.jminor.framework.client.ui.EntityPanel;
 import org.jminor.framework.demos.schemabrowser.beans.DbObjectModel;
 
@@ -15,15 +13,6 @@ public class SchemaPanel extends EntityPanel {
     super(model, "Schema Users");
     setDetailSplitPanelResizeWeight(0.3);
     addDetailPanel(new DbObjectPanel(model.getDetailModel(DbObjectModel.class)));
-  }
-
-  @Override
-  protected void initialize() {
     getTablePanel().setSearchPanelVisible(true);
-  }
-
-  @Override
-  protected EntityEditPanel initializeEditPanel(final EntityEditModel editModel) {
-    return null;
   }
 }

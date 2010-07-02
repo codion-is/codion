@@ -1804,3 +1804,9 @@
   SwingUtilities.invokeLater() usages added
   EntityApplicationPanel.startApplication() refactored some more
   EntityApplicationPanel.startApplication() now uses SwingUtilities.invokeLater()
+  EntityPanelProvider.entityID, editPanelClass and tablePanelClass fields added
+  EntityPanel.refreshOnInit field removed
+  EntityPanelProvider.refreshOnInit field added
+  Configuration.AUTO_CREATE_ENTITY_MODELS added
+  EntityModel.getDetailModel() now creates a default entity model depending on the above configuration parameter
+  EntityPanel.createInstance() moved to EntityPanelProvider

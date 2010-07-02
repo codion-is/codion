@@ -10,6 +10,7 @@ import org.jminor.common.model.reports.ReportDataWrapper;
 import org.jminor.common.model.reports.ReportException;
 import org.jminor.common.model.reports.ReportResult;
 import org.jminor.common.model.reports.ReportWrapper;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.event.DeleteEvent;
 import org.jminor.framework.client.model.event.InsertEvent;
 import org.jminor.framework.client.model.event.UpdateEvent;
@@ -297,7 +298,32 @@ public class DefaultEntityModel implements EntityModel {
       }
     }
 
+    if (Configuration.getBooleanValue(Configuration.AUTO_CREATE_ENTITY_MODELS)) {
+      try {
+        final EntityModel detailModel = modelClass.getConstructor(EntityDbProvider.class).newInstance(dbProvider);
+        addDetailModel(detailModel);
+        return detailModel;
+      }
+      catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+    }
     throw new RuntimeException("No detail model of type " + modelClass + " found in model: " + this);
+  }
+
+  public EntityModel getDetailModel(final String entityID) {
+    for (final EntityModel detailModel : detailModels) {
+      if (detailModel.getEntityID().equals(entityID)) {
+        return detailModel;
+      }
+    }
+
+    if (Configuration.getBooleanValue(Configuration.AUTO_CREATE_ENTITY_MODELS)) {
+      final EntityModel detailModel = new DefaultEntityModel(entityID, dbProvider);
+      addDetailModel(detailModel);
+      return detailModel;
+    }
+    throw new RuntimeException("No detail model for type " + entityID + " found in model: " + this);
   }
 
   public ReportResult fillReport(final ReportWrapper reportWrapper) throws ReportException {

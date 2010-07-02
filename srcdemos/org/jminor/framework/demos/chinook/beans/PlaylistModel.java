@@ -16,6 +16,5 @@ public class PlaylistModel extends DefaultEntityModel {
 
   public PlaylistModel(final EntityDbProvider dbProvider) {
     super(Chinook.T_PLAYLIST, dbProvider);
-    addDetailModel(new PlaylistTrackModel(getDbProvider()));
   }
 }

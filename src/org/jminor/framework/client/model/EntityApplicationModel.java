@@ -7,6 +7,7 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.db.provider.EntityDbProvider;
 
 import java.util.ArrayList;
@@ -162,6 +163,26 @@ public abstract class EntityApplicationModel implements Refreshable {
     }
 
     throw new RuntimeException("Detail model of class: " + modelClass + " not found");
+  }
+
+  public EntityModel getMainApplicationModel(final String entityID) {
+    for (final EntityModel detailModel : mainApplicationModels) {
+      if (detailModel.getEntityID().equals(entityID)) {
+        return detailModel;
+      }
+    }
+
+    if (Configuration.getBooleanValue(Configuration.AUTO_CREATE_ENTITY_MODELS)) {
+      try {
+        final EntityModel detailModel = new DefaultEntityModel(entityID, dbProvider);
+        addMainApplicationModel(detailModel);
+        return detailModel;
+      }
+      catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+    }
+    throw new RuntimeException("No detail model for type " + entityID + " found in model: " + this);
   }
 
   public Event eventCascadeRefreshChanged() {

@@ -11,7 +11,6 @@ import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.ui.EntityComboBox;
 import org.jminor.framework.client.ui.EntityEditPanel;
 import org.jminor.framework.client.ui.EntityPanel;
-import org.jminor.framework.demos.chinook.beans.CustomerModel;
 import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 
 import javax.swing.JTextField;
@@ -24,65 +23,63 @@ import javax.swing.JTextField;
 public class EmployeePanel extends EntityPanel {
 
   public EmployeePanel(final EntityModel model) {
-    super(model);
-    addDetailPanel(new CustomerPanel(model.getDetailModel(CustomerModel.class)));
-  }
-
-  @Override
-  protected void initialize() {
+    super(model, new EmployeeEditPanel(model.getEditModel()));
+    addDetailPanel(new CustomerPanel(model.getDetailModel(T_CUSTOMER)));
     setDetailPanelState(HIDDEN);
   }
 
-  @Override
-  protected EntityEditPanel initializeEditPanel(final EntityEditModel editModel) {
-    return new EntityEditPanel(editModel) {
-      @Override
-      protected void initializeUI() {
-        final JTextField txtFirstName = createTextField(EMPLOYEE_FIRSTNAME);
-        txtFirstName.setColumns(16);
-        setInitialFocusComponent(txtFirstName);
-        final JTextField txtLastName = createTextField(EMPLOYEE_LASTNAME);
-        txtLastName.setColumns(16);
-        final DateInputPanel birthdateInputPanel = createDateInputPanel(EMPLOYEE_BIRTHDATE);
-        birthdateInputPanel.getInputField().setColumns(16);
-        final JTextField txtAddress = createTextField(EMPLOYEE_ADDRESS);
-        txtAddress.setColumns(16);
-        final JTextField txtCity = createTextField(EMPLOYEE_CITY);
-        txtCity.setColumns(16);
-        final JTextField txtState = (JTextField) UiUtil.makeUpperCase(createTextField(EMPLOYEE_STATE));
-        txtState.setColumns(16);
-        final JTextField txtCountry = createTextField(EMPLOYEE_COUNTRY);
-        txtCountry.setColumns(16);
-        final JTextField txtPostalcode = createTextField(EMPLOYEE_POSTALCODE);
-        txtPostalcode.setColumns(16);
-        final JTextField txtPhone = createTextField(EMPLOYEE_PHONE);
-        txtPhone.setColumns(16);
-        final JTextField txtFax = createTextField(EMPLOYEE_FAX);
-        txtFax.setColumns(16);
-        final JTextField txtEmail = createTextField(EMPLOYEE_EMAIL);
-        txtEmail.setColumns(16);
-        final EntityComboBox boxEmp = createEntityComboBox(EMPLOYEE_REPORTSTO_FK);
-        final DateInputPanel hiredateInputPanel = createDateInputPanel(EMPLOYEE_HIREDATE);
-        hiredateInputPanel.getInputField().setColumns(16);
-        final JTextField txtTitle = createTextField(EMPLOYEE_TITLE);
-        txtTitle.setColumns(16);
+  static class EmployeeEditPanel extends EntityEditPanel {
 
-        setLayout(new FlexibleGridLayout(4, 4, 5, 5));
-        add(createPropertyPanel(EMPLOYEE_FIRSTNAME, txtFirstName));
-        add(createPropertyPanel(EMPLOYEE_LASTNAME, txtLastName));
-        add(createPropertyPanel(EMPLOYEE_BIRTHDATE, birthdateInputPanel));
-        add(createPropertyPanel(EMPLOYEE_ADDRESS, txtAddress));
-        add(createPropertyPanel(EMPLOYEE_CITY, txtCity));
-        add(createPropertyPanel(EMPLOYEE_STATE, txtState));
-        add(createPropertyPanel(EMPLOYEE_COUNTRY, txtCountry));
-        add(createPropertyPanel(EMPLOYEE_POSTALCODE, txtPostalcode));
-        add(createPropertyPanel(EMPLOYEE_PHONE, txtPhone));
-        add(createPropertyPanel(EMPLOYEE_FAX, txtFax));
-        add(createPropertyPanel(EMPLOYEE_EMAIL, txtEmail));
-        add(createPropertyPanel(EMPLOYEE_REPORTSTO_FK, boxEmp));
-        add(createPropertyPanel(EMPLOYEE_HIREDATE, hiredateInputPanel));
-        add(createPropertyPanel(EMPLOYEE_TITLE, txtTitle));
-      }
-    };
+    EmployeeEditPanel(final EntityEditModel editModel) {
+      super(editModel);
+    }
+
+    @Override
+    protected void initializeUI() {
+      final JTextField txtFirstName = createTextField(EMPLOYEE_FIRSTNAME);
+      txtFirstName.setColumns(16);
+      setInitialFocusComponent(txtFirstName);
+      final JTextField txtLastName = createTextField(EMPLOYEE_LASTNAME);
+      txtLastName.setColumns(16);
+      final DateInputPanel birthdateInputPanel = createDateInputPanel(EMPLOYEE_BIRTHDATE);
+      birthdateInputPanel.getInputField().setColumns(16);
+      final JTextField txtAddress = createTextField(EMPLOYEE_ADDRESS);
+      txtAddress.setColumns(16);
+      final JTextField txtCity = createTextField(EMPLOYEE_CITY);
+      txtCity.setColumns(16);
+      final JTextField txtState = (JTextField) UiUtil.makeUpperCase(createTextField(EMPLOYEE_STATE));
+      txtState.setColumns(16);
+      final JTextField txtCountry = createTextField(EMPLOYEE_COUNTRY);
+      txtCountry.setColumns(16);
+      final JTextField txtPostalcode = createTextField(EMPLOYEE_POSTALCODE);
+      txtPostalcode.setColumns(16);
+      final JTextField txtPhone = createTextField(EMPLOYEE_PHONE);
+      txtPhone.setColumns(16);
+      final JTextField txtFax = createTextField(EMPLOYEE_FAX);
+      txtFax.setColumns(16);
+      final JTextField txtEmail = createTextField(EMPLOYEE_EMAIL);
+      txtEmail.setColumns(16);
+      final EntityComboBox boxEmp = createEntityComboBox(EMPLOYEE_REPORTSTO_FK);
+      final DateInputPanel hiredateInputPanel = createDateInputPanel(EMPLOYEE_HIREDATE);
+      hiredateInputPanel.getInputField().setColumns(16);
+      final JTextField txtTitle = createTextField(EMPLOYEE_TITLE);
+      txtTitle.setColumns(16);
+
+      setLayout(new FlexibleGridLayout(4, 4, 5, 5));
+      add(createPropertyPanel(EMPLOYEE_FIRSTNAME, txtFirstName));
+      add(createPropertyPanel(EMPLOYEE_LASTNAME, txtLastName));
+      add(createPropertyPanel(EMPLOYEE_BIRTHDATE, birthdateInputPanel));
+      add(createPropertyPanel(EMPLOYEE_ADDRESS, txtAddress));
+      add(createPropertyPanel(EMPLOYEE_CITY, txtCity));
+      add(createPropertyPanel(EMPLOYEE_STATE, txtState));
+      add(createPropertyPanel(EMPLOYEE_COUNTRY, txtCountry));
+      add(createPropertyPanel(EMPLOYEE_POSTALCODE, txtPostalcode));
+      add(createPropertyPanel(EMPLOYEE_PHONE, txtPhone));
+      add(createPropertyPanel(EMPLOYEE_FAX, txtFax));
+      add(createPropertyPanel(EMPLOYEE_EMAIL, txtEmail));
+      add(createPropertyPanel(EMPLOYEE_REPORTSTO_FK, boxEmp));
+      add(createPropertyPanel(EMPLOYEE_HIREDATE, hiredateInputPanel));
+      add(createPropertyPanel(EMPLOYEE_TITLE, txtTitle));
+    }
   }
 }

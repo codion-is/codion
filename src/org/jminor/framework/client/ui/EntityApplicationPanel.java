@@ -498,7 +498,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
         }
       }
       else {
-        entityPanel = EntityPanel.createInstance(panelProvider, applicationModel.getDbProvider());
+        entityPanel = panelProvider.createInstance(applicationModel.getDbProvider());
         entityPanel.initializePanel();
         if (persistEntityPanels) {
           persistentEntityPanels.put(panelProvider, entityPanel);
@@ -556,8 +556,14 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
       throw new RuntimeException("No main entity panels provided");
     }
     for (final EntityPanelProvider provider : mainApplicationPanelProviders) {
-      final EntityModel entityModel = applicationModel.getMainApplicationModel(provider.getModelClass());
-      final EntityPanel entityPanel = EntityPanel.createInstance(provider, entityModel);
+      final EntityModel entityModel;
+      if (provider.getEntityID() == null) {
+        entityModel = applicationModel.getMainApplicationModel(provider.getModelClass());
+      }
+      else {
+        entityModel = applicationModel.getMainApplicationModel(provider.getEntityID());
+      }
+      final EntityPanel entityPanel = provider.createInstance(entityModel);
       mainApplicationPanels.add(entityPanel);
       final String caption = (provider.getCaption() == null || provider.getCaption().length() == 0)
               ? entityPanel.getCaption() : provider.getCaption();

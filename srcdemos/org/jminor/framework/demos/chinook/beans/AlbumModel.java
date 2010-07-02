@@ -16,6 +16,5 @@ public class AlbumModel extends DefaultEntityModel {
 
   public AlbumModel(final EntityDbProvider dbProvider) {
     super(Chinook.T_ALBUM, dbProvider);
-    addDetailModel(new TrackModel(getDbProvider()));
   }
 }

@@ -20,7 +20,6 @@ import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.ui.reporting.EntityReportUiUtil;
-import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
@@ -53,7 +52,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -137,11 +135,6 @@ public class EntityPanel extends JPanel {
   private JDialog editPanelDialog;
 
   /**
-   * true if the data should be refreshed (fetched from the database) during initialization
-   */
-  private boolean refreshOnInit = true;
-
-  /**
    * true if this panel should be compact
    */
   private boolean compactDetailLayout = Configuration.getBooleanValue(Configuration.COMPACT_ENTITY_PANEL_LAYOUT);
@@ -189,9 +182,9 @@ public class EntityPanel extends JPanel {
     this(model, EntityRepository.getEntityDefinition(model.getEntityID()).getCaption());
   }
 
-    public EntityPanel(final EntityModel model, final String caption) {
-      this(model, caption, null, null);
-    }
+  public EntityPanel(final EntityModel model, final String caption) {
+    this(model, caption, null, null);
+  }
 
   /**
    * Instantiates a new EntityPanel instance. The Panel is not laid out and initialized until initialize() is called.
@@ -291,18 +284,6 @@ public class EntityPanel extends JPanel {
     return this;
   }
 
-  public boolean isRefreshOnInit() {
-    return refreshOnInit;
-  }
-
-  public EntityPanel setRefreshOnInit(final boolean refreshOnInit) {
-    if (panelInitialized) {
-      throw new RuntimeException("Panel has already been initialized");
-    }
-    this.refreshOnInit = refreshOnInit;
-    return this;
-  }
-
   public EntityPanel addDetailPanels(final EntityPanel... detailPanels) {
     Util.rejectNullValue(detailPanels);
     for (final EntityPanel detailPanel : detailPanels) {
@@ -347,10 +328,6 @@ public class EntityPanel extends JPanel {
         initializeUI();
         bindTablePanelEvents();
         initialize();
-
-        if (refreshOnInit && model.containsTableModel()) {
-          model.getTableModel().refresh();
-        }
       }
       finally {
         panelInitialized = true;
@@ -377,6 +354,13 @@ public class EntityPanel extends JPanel {
     return editPanel;
   }
 
+  public void setEditPanel(final EntityEditPanel editPanel) {
+    if (panelInitialized) {
+      throw new RuntimeException("Can not set edit panel after initialization");
+    }
+    this.editPanel = editPanel;
+  }
+
   /**
    * @return true if this panel contains a edit panel.
    */
@@ -393,6 +377,13 @@ public class EntityPanel extends JPanel {
     }
 
     return tablePanel;
+  }
+
+  public void setTablePanel(final EntityTablePanel tablePanel) {
+    if (panelInitialized) {
+      throw new RuntimeException("Can not set table panel after initialization");
+    }
+    this.tablePanel = tablePanel;
   }
 
   /**
@@ -489,6 +480,9 @@ public class EntityPanel extends JPanel {
   }
 
   public EntityPanel setDetailSplitPanelResizeWeight(double detailSplitPanelResizeWeight) {
+    if (panelInitialized) {
+      throw new RuntimeException("Can not set edit detailSplitPanelResizeWeight after initialization");
+    }
     this.detailSplitPanelResizeWeight = detailSplitPanelResizeWeight;
     return this;
   }
@@ -704,48 +698,6 @@ public class EntityPanel extends JPanel {
     return EntityUtil.getSortedProperties(model.getEntityID(), focusableComponentKeys);
   }
 
-  public static EntityPanel createInstance(final EntityPanelProvider panelProvider, final EntityModel model) {
-    if (model == null) {
-      throw new RuntimeException("Can not create a EntityPanel without an EntityModel");
-    }
-    try {
-      return panelProvider.getPanelClass().getConstructor(EntityModel.class).newInstance(model);
-    }
-    catch (InvocationTargetException ite) {
-      if (ite.getCause() instanceof RuntimeException) {
-        throw (RuntimeException) ite.getCause();
-      }
-
-      throw new RuntimeException(ite.getCause());
-    }
-    catch (RuntimeException e) {
-      throw e;
-    }
-    catch (Exception e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  public static EntityPanel createInstance(final EntityPanelProvider panelProvider, final EntityDbProvider dbProvider) {
-    try {
-      return createInstance(panelProvider, panelProvider.getModelClass().getConstructor(
-              EntityDbProvider.class).newInstance(dbProvider));
-    }
-    catch (InvocationTargetException ite) {
-      if (ite.getCause() instanceof RuntimeException) {
-        throw (RuntimeException) ite.getCause();
-      }
-
-      throw new RuntimeException(ite.getCause());
-    }
-    catch (RuntimeException e) {
-      throw e;
-    }
-    catch (Exception e) {
-      throw new RuntimeException(e);
-    }
-  }
-
   /**
    * Finds the next JTabbedPane ancestor and sets the selected component to be this EntityPanel instance
    */
@@ -927,10 +879,7 @@ public class EntityPanel extends JPanel {
   }
 
   protected EntityEditPanel initializeEditPanel(final EntityEditModel editModel) {
-    return new EntityEditPanel(editModel) {
-      protected void initializeUI() {
-      }
-    };
+    return null;
   }
 
   protected EntityTablePanel initializeTablePanel(final EntityTableModel tableModel) {
@@ -953,7 +902,7 @@ public class EntityPanel extends JPanel {
     final JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true);
     splitPane.setBorder(BorderFactory.createEmptyBorder());
     splitPane.setOneTouchExpandable(true);
-    splitPane.setResizeWeight(getDetailSplitPaneResizeWeight());
+    splitPane.setResizeWeight(detailSplitPanelResizeWeight);
     splitPane.setDividerSize(18);
 
     return splitPane;

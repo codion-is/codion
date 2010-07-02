@@ -16,6 +16,5 @@ public class EmployeeModel extends DefaultEntityModel {
 
   public EmployeeModel(final EntityDbProvider dbProvider) {
     super(Chinook.T_EMPLOYEE, dbProvider);
-    addDetailModel(new CustomerModel(getDbProvider()));
   }
 }

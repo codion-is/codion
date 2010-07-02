@@ -13,6 +13,7 @@ import org.jminor.framework.client.ui.EntityPanel;
 import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.client.ui.EntityUiUtil;
 import org.jminor.framework.demos.petstore.beans.TagModel;
+import org.jminor.framework.demos.petstore.domain.Petstore;
 import static org.jminor.framework.demos.petstore.domain.Petstore.TAG_ITEM_ITEM_FK;
 import static org.jminor.framework.demos.petstore.domain.Petstore.TAG_ITEM_TAG_FK;
 
@@ -42,7 +43,7 @@ public class TagItemPanel extends EntityPanel {
         add(createPropertyPanel(TAG_ITEM_ITEM_FK, box));
         box = createEntityComboBox(TAG_ITEM_TAG_FK);
         add(createPropertyPanel(TAG_ITEM_TAG_FK, EntityUiUtil.createEntityComboBoxNewRecordPanel(box,
-                new EntityPanelProvider("Tags", TagModel.class, TagPanel.class), false)));
+                new EntityPanelProvider(Petstore.T_TAG, "Tags", TagModel.class, TagPanel.class), false)));
       }
     };
   }

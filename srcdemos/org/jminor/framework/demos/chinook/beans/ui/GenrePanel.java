@@ -7,8 +7,8 @@ import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.ui.EntityEditPanel;
 import org.jminor.framework.client.ui.EntityPanel;
-import org.jminor.framework.demos.chinook.beans.TrackModel;
 import static org.jminor.framework.demos.chinook.domain.Chinook.GENRE_NAME;
+import static org.jminor.framework.demos.chinook.domain.Chinook.T_TRACK;
 
 import javax.swing.JTextField;
 import java.awt.GridLayout;
@@ -21,26 +21,24 @@ import java.awt.GridLayout;
 public class GenrePanel extends EntityPanel {
 
   public GenrePanel(final EntityModel model) {
-    super(model);
-    addDetailPanel(new TrackPanel(model.getDetailModel(TrackModel.class)));
-  }
-
-  @Override
-  protected void initialize() {
+    super(model, new GenreEditPanel(model.getEditModel()));
+    addDetailPanel(new TrackPanel(model.getDetailModel(T_TRACK)));
     setDetailPanelState(HIDDEN);
   }
 
-  @Override
-  protected EntityEditPanel initializeEditPanel(final EntityEditModel editModel) {
-    return new EntityEditPanel(editModel) {
-      @Override
-      protected void initializeUI() {
-        setLayout(new GridLayout(1, 1, 5, 5));
-        final JTextField txtName = createTextField(GENRE_NAME);
-        txtName.setColumns(12);
-        setInitialFocusComponent(txtName);
-        add(createPropertyPanel(GENRE_NAME, txtName));
-      }
-    };
+  static class GenreEditPanel extends EntityEditPanel {
+
+    GenreEditPanel(final EntityEditModel editModel) {
+      super(editModel);
+    }
+
+    @Override
+    protected void initializeUI() {
+      setLayout(new GridLayout(1, 1, 5, 5));
+      final JTextField txtName = createTextField(GENRE_NAME);
+      txtName.setColumns(12);
+      setInitialFocusComponent(txtName);
+      add(createPropertyPanel(GENRE_NAME, txtName));
+    }
   }
 }
