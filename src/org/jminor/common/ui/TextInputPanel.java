@@ -35,7 +35,7 @@ public class TextInputPanel extends JPanel {
   private int maxLength = 0;
 
   public TextInputPanel(final JTextComponent textComponent, final String dialogTitle) {
-    this(textComponent, dialogTitle, UiUtil.getScreenSizeRatio(DEFAULT_TEXT_AREA_SCREEN_SIZE_RATIO));
+    this(textComponent, dialogTitle, null);
   }
 
   public TextInputPanel(final JTextComponent textComponent, final String dialogTitle,
@@ -47,7 +47,7 @@ public class TextInputPanel extends JPanel {
                         final Dimension txtAreaSize, final boolean buttonFocusable) {
     this.dialogTitle = dialogTitle;
     this.textComponent = textComponent;
-    this.txtAreaSize = txtAreaSize;
+    this.txtAreaSize = txtAreaSize == null ? UiUtil.getScreenSizeRatio(DEFAULT_TEXT_AREA_SCREEN_SIZE_RATIO) : txtAreaSize;
     this.button = createButton(textComponent, buttonFocusable, UiUtil.DIMENSION_TEXT_FIELD_SQUARE);
     initializeUI(textComponent, button);
   }
