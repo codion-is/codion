@@ -29,35 +29,6 @@ public class EmployeeModel extends DefaultEntityModel {
     getTableModel().getPropertySummaryModel(EmpDept.EMPLOYEE_SALARY).setSummaryType(PropertySummaryModel.AVERAGE);
   }
 
-  @Override
-  protected void bindEvents() {
-    //Refresh the manager ComboBoxModel when an employee is either added or updated
-    getEditModel().eventEntitiesChanged().addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        if (getEditModel().containsComboBoxModel(EmpDept.EMPLOYEE_MGR_FK)) {
-          getEditModel().getEntityComboBoxModel(EmpDept.EMPLOYEE_MGR_FK).refresh();
-        }
-      }
-    });
-    //Filter the manager ComboBoxModel so that only managers from the selected department are shown,
-    //this filtering happens each time the department value is changed
-    getEditModel().getValueChangeEvent(EmpDept.EMPLOYEE_DEPARTMENT_FK).addListener(new ValueChangeListener() {
-      @Override
-      public void valueChanged(final ValueChangeEvent e) {
-        //only show managers in the same department as the active entity
-        if (getEditModel().containsComboBoxModel(EmpDept.EMPLOYEE_MGR_FK)) {
-          getEditModel().getEntityComboBoxModel(EmpDept.EMPLOYEE_MGR_FK).setFilterCriteria(new FilterCriteria<Object>() {
-            public boolean include(final Object item) {
-              return item instanceof String //the item representing null
-                      || (Entity.isEqual(((Entity) item).getForeignKeyValue(EmpDept.EMPLOYEE_DEPARTMENT_FK), e.getNewValue())
-                      && !Entity.isEqual(item, getEditModel().getEntityCopy()));
-            }
-          });
-        }
-      }
-    });
-  }
-
   static class EmployeeEditModel extends DefaultEntityEditModel {
 
     EmployeeEditModel(final EntityDbProvider dbProvider) {
@@ -78,6 +49,35 @@ public class EmployeeModel extends DefaultEntityModel {
       }
 
       return super.createEntityComboBoxModel(foreignKeyProperty);
+    }
+
+    @Override
+    protected void bindEvents() {
+      //Refresh the manager ComboBoxModel when an employee is either added or updated
+      eventEntitiesChanged().addListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          if (containsComboBoxModel(EmpDept.EMPLOYEE_MGR_FK)) {
+            getEntityComboBoxModel(EmpDept.EMPLOYEE_MGR_FK).refresh();
+          }
+        }
+      });
+      //Filter the manager ComboBoxModel so that only managers from the selected department are shown,
+      //this filtering happens each time the department value is changed
+      getValueChangeEvent(EmpDept.EMPLOYEE_DEPARTMENT_FK).addListener(new ValueChangeListener() {
+        @Override
+        public void valueChanged(final ValueChangeEvent event) {
+          //only show managers in the same department as the active entity
+          if (containsComboBoxModel(EmpDept.EMPLOYEE_MGR_FK)) {
+            getEntityComboBoxModel(EmpDept.EMPLOYEE_MGR_FK).setFilterCriteria(new FilterCriteria<Object>() {
+              public boolean include(final Object item) {
+                return item instanceof String //the item representing null
+                        || (Entity.isEqual(((Entity) item).getForeignKeyValue(EmpDept.EMPLOYEE_DEPARTMENT_FK), event.getNewValue())
+                        && !Entity.isEqual(item, getEntityCopy()));
+              }
+            });
+          }
+        }
+      });
     }
   }
 }
