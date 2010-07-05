@@ -19,13 +19,14 @@ public class InvoiceLinePanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setLayout(new GridLayout(4, 1, 5, 5));
+    setInitialFocusComponentKey(INVOICELINE_INVOICEID_FK);
     final JTextField txtInvoice = createEntityLookupField(INVOICELINE_INVOICEID_FK);
-    setInitialFocusComponent(txtInvoice);
     final JTextField txtTrack = createEntityLookupField(INVOICELINE_TRACKID_FK);
     txtTrack.setColumns(25);
     final JTextField txtQuantity = createTextField(INVOICELINE_QUANTITY);
     final JTextField txtUnitPrice = createTextField(INVOICELINE_UNITPRICE, LinkType.READ_ONLY);
+
+    setLayout(new GridLayout(4, 1, 5, 5));
     add(createPropertyPanel(INVOICELINE_INVOICEID_FK, txtInvoice));
     add(createPropertyPanel(INVOICELINE_TRACKID_FK, txtTrack));
     add(createPropertyPanel(INVOICELINE_QUANTITY, txtQuantity));

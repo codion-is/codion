@@ -44,13 +44,13 @@ public class ChinookAppPanel extends EntityApplicationPanel {
             .setEditPanelClass(InvoiceLinePanel.class).register();
     invoiceProvider.addDetailPanelProvider(invoiceLineProvider);
 
-    final EntityPanelProvider genreProvider = new EntityPanelProvider(Chinook.T_GENRE, "Genres")
+    final EntityPanelProvider genreProvider = new EntityPanelProvider(Chinook.T_GENRE)
             .setEditPanelClass(GenrePanel.class).register();
     genreProvider.addDetailPanelProvider(trackProvider).setDetailPanelState(EntityPanel.HIDDEN);
-    final EntityPanelProvider mediaTypeProvider = new EntityPanelProvider(Chinook.T_MEDIATYPE, "Media types")
+    final EntityPanelProvider mediaTypeProvider = new EntityPanelProvider(Chinook.T_MEDIATYPE)
             .setEditPanelClass(MediaTypePanel.class).register();
     mediaTypeProvider.addDetailPanelProvider(trackProvider).setDetailPanelState(EntityPanel.HIDDEN);
-    final EntityPanelProvider employeeProvider = new EntityPanelProvider(Chinook.T_EMPLOYEE, "Employees")
+    final EntityPanelProvider employeeProvider = new EntityPanelProvider(Chinook.T_EMPLOYEE)
             .setEditPanelClass(EmployeePanel.class).register();
     employeeProvider.addDetailPanelProvider(customerProvider).setDetailPanelState(EntityPanel.HIDDEN);
 

@@ -18,10 +18,11 @@ public class GenrePanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setLayout(new GridLayout(1, 1, 5, 5));
+    setInitialFocusComponentKey(GENRE_NAME);
     final JTextField txtName = createTextField(GENRE_NAME);
     txtName.setColumns(12);
-    setInitialFocusComponent(txtName);
+
+    setLayout(new GridLayout(1, 1, 5, 5));
     add(createPropertyPanel(GENRE_NAME, txtName));
   }
 }

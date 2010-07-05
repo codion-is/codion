@@ -20,9 +20,9 @@ public class CustomerPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
+    setInitialFocusComponentKey(CUSTOMER_FIRSTNAME);
     final JTextField txtFirstName = createTextField(CUSTOMER_FIRSTNAME);
     txtFirstName.setColumns(16);
-    setInitialFocusComponent(txtFirstName);
     final JTextField txtLastName = createTextField(CUSTOMER_LASTNAME);
     txtLastName.setColumns(16);
     final JTextField txtCompany = createTextField(CUSTOMER_COMPANY);

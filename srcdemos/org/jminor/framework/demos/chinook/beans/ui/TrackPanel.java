@@ -24,10 +24,9 @@ public class TrackPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setLayout(new FlexibleGridLayout(4, 2, 5, 5, true, false));
+    setInitialFocusComponentKey(TRACK_ALBUMID_FK);
     final JTextField txtAlbum = createEntityLookupField(TRACK_ALBUMID_FK);
     txtAlbum.setColumns(18);
-    setInitialFocusComponent(txtAlbum);
     final JTextField txtName = createTextField(TRACK_NAME);
     txtName.setColumns(18);
     final JComboBox cmbMediaType = createEntityComboBox(TRACK_MEDIATYPEID_FK);
@@ -44,6 +43,7 @@ public class TrackPanel extends EntityEditPanel {
     durationPanel.add(createPropertyPanel(TRACK_MILLISECONDS, txtMilliseconds));
     durationPanel.add(createPropertyPanel(new JLabel("(min/sec)"), txtDuration, true));
 
+    setLayout(new FlexibleGridLayout(4, 2, 5, 5, true, false));
     add(createPropertyPanel(TRACK_ALBUMID_FK, txtAlbum));
     add(createPropertyPanel(TRACK_NAME, txtName));
     add(createPropertyPanel(TRACK_GENREID_FK, cmbGenre));

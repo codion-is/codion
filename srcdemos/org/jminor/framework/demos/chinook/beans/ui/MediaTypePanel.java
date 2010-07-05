@@ -18,10 +18,11 @@ public class MediaTypePanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setLayout(new GridLayout(1, 1, 5, 5));
+    setInitialFocusComponentKey(MEDIATYPE_NAME);
     final JTextField txtName = createTextField(MEDIATYPE_NAME);
     txtName.setColumns(12);
-    setInitialFocusComponent(txtName);
+
+    setLayout(new GridLayout(1, 1, 5, 5));
     add(createPropertyPanel(MEDIATYPE_NAME, txtName));
   }
 }

@@ -21,9 +21,9 @@ public class EmployeePanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
+    setInitialFocusComponentKey(EMPLOYEE_FIRSTNAME);
     final JTextField txtFirstName = createTextField(EMPLOYEE_FIRSTNAME);
     txtFirstName.setColumns(16);
-    setInitialFocusComponent(txtFirstName);
     final JTextField txtLastName = createTextField(EMPLOYEE_LASTNAME);
     txtLastName.setColumns(16);
     final DateInputPanel birthdateInputPanel = createDateInputPanel(EMPLOYEE_BIRTHDATE);

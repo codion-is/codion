@@ -43,10 +43,7 @@ public class EntityDbRemoteProvider implements EntityDbProvider {
 
   public EntityDbRemoteProvider(final User user, final String clientID, final String clientTypeID) {
     Util.rejectNullValue(user);
-    serverHostName = System.getProperty(Configuration.SERVER_HOST_NAME);
-    if (serverHostName == null) {
-      throw new RuntimeException("Required runtime property required: " + Configuration.SERVER_HOST_NAME);
-    }
+    serverHostName = System.getProperty(Configuration.SERVER_HOST_NAME, "localhost");
     this.user = user;
     this.clientID = clientID;
     this.clientTypeID = clientTypeID;

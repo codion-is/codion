@@ -18,10 +18,11 @@ public class ArtistPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setLayout(new GridLayout(1, 1, 5, 5));
+    setInitialFocusComponentKey(ARTIST_NAME);
     final JTextField txtName = createTextField(ARTIST_NAME);
     txtName.setColumns(18);
-    setInitialFocusComponent(txtName);
+
+    setLayout(new GridLayout(1, 1, 5, 5));
     add(createPropertyPanel(ARTIST_NAME, txtName));
   }
 }

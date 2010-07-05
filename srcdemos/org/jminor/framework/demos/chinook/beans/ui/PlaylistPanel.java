@@ -18,10 +18,11 @@ public class PlaylistPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setLayout(new GridLayout(1, 1, 5, 5));
+    setInitialFocusComponentKey(PLAYLIST_NAME);
     final JTextField txtName = createTextField(PLAYLIST_NAME);
     txtName.setColumns(12);
-    setInitialFocusComponent(txtName);
+
+    setLayout(new GridLayout(1, 1, 5, 5));
     add(createPropertyPanel(PLAYLIST_NAME, txtName));
   }
 }

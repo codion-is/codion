@@ -19,9 +19,9 @@ public class InvoicePanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
+    setInitialFocusComponentKey(INVOICE_CUSTOMERID_FK);
     final JTextField txtCustomer = createEntityLookupField(INVOICE_CUSTOMERID_FK);
     txtCustomer.setColumns(16);
-    setInitialFocusComponent(txtCustomer);
     final DateInputPanel datePanel = createDateInputPanel(INVOICE_INVOICEDATE);
     datePanel.getInputField().setColumns(16);
     final JTextField txtAddress = createTextField(INVOICE_BILLINGADDRESS);

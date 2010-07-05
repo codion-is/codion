@@ -19,12 +19,13 @@ public class AlbumPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setLayout(new GridLayout(2, 1, 5, 5));
+    setInitialFocusComponentKey(ALBUM_ARTISTID_FK);
     final JTextField txtArtists = createEntityLookupField(ALBUM_ARTISTID_FK);
     txtArtists.setColumns(18);
-    setInitialFocusComponent(txtArtists);
     final JTextField txtTitle = createTextField(ALBUM_TITLE);
     txtTitle.setColumns(18);
+
+    setLayout(new GridLayout(2, 1, 5, 5));
     add(createPropertyPanel(ALBUM_ARTISTID_FK, txtArtists));
     add(createPropertyPanel(ALBUM_TITLE, txtTitle));
   }
