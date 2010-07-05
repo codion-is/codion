@@ -454,7 +454,6 @@ public final class EntityUiUtil {
 
     final JFormattedTextField field = (JFormattedTextField) createTextField(property, editModel, linkType,
             DateUtil.getDateMask(dateFormat), true, dateFormat, enabledState);
-
     final DateInputPanel panel = new DateInputPanel(field, dateFormat, includeButton, enabledState);
     if (panel.getButton() != null && Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER)) {
       UiUtil.transferFocusOnEnter(panel.getButton());
@@ -466,8 +465,10 @@ public final class EntityUiUtil {
   public static TextInputPanel createTextInputPanel(final Property property, final EntityEditModel editModel,
                                                     final LinkType linkType, final boolean immediateUpdate,
                                                     final boolean buttonFocusable) {
-    final TextInputPanel panel = new TextInputPanel(createTextField(property, editModel, linkType, null, immediateUpdate),
-            property.getCaption(), null, buttonFocusable);
+    Util.rejectNullValue(property);
+    Util.rejectNullValue(editModel);
+    final JTextField field = createTextField(property, editModel, linkType, null, immediateUpdate);
+    final TextInputPanel panel = new TextInputPanel(field, property.getCaption(), null, buttonFocusable);
     panel.setMaxLength(property.getMaxLength());
     if (panel.getButton() != null && Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER)) {
       UiUtil.transferFocusOnEnter(panel.getButton());
