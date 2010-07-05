@@ -1816,3 +1816,7 @@
   EntityUiUtil.createText/DateInputPanel now adds focus transfer to the panel button
   Chinook demo application changed according to the latest changes
   Configuration.SEARCH_PANELS_VISIBLE added
+  EntityPanelProvider refactored
+  EntityModel.fillReport() removed
+  EntityPanel.viewReport() removed
+  EmpDept demo application changed to reflect bootstrapping changes

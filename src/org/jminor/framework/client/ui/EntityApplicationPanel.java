@@ -21,7 +21,6 @@ import org.jminor.common.ui.control.ToggleBeanValueLink;
 import org.jminor.common.ui.images.Images;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityApplicationModel;
-import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.db.provider.EntityDbProviderFactory;
 import org.jminor.framework.i18n.FrameworkMessages;
@@ -123,6 +122,20 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   public EntityApplicationPanel addSupportPanelProvider(final EntityPanelProvider panelProvider) {
     supportPanelProviders.add(panelProvider);
     return this;
+  }
+
+  public EntityPanel getMainApplicationPanel(final String entityID) {
+    for (final EntityPanel panel : mainApplicationPanels) {
+      if (panel.getModel().getEntityID().equals(entityID)) {
+        return panel;
+      }
+    }
+
+    return null;
+  }
+
+  public List<EntityPanel> getMainApplicationPanels() {
+    return Collections.unmodifiableList(mainApplicationPanels);
   }
 
   /**
@@ -427,6 +440,16 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     return null;
   }
 
+  protected EntityPanel getEntityPanel(final String entityID) {
+    for (final EntityPanel entityPanel : mainApplicationPanels) {
+      if (entityPanel.getModel().getEntityID().equals(entityID)) {
+        return entityPanel;
+      }
+    }
+
+    return null;
+  }
+
   protected EntityDbProvider initializeDbProvider(final User user, final String frameCaption) throws CancelException {
     return EntityDbProviderFactory.createEntityDbProvider(user, frameCaption);
   }
@@ -556,14 +579,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
       throw new RuntimeException("No main entity panels provided");
     }
     for (final EntityPanelProvider provider : mainApplicationPanelProviders) {
-      final EntityModel entityModel;
-      if (provider.getEntityID() == null) {
-        entityModel = applicationModel.getMainApplicationModel(provider.getModelClass());
-      }
-      else {
-        entityModel = applicationModel.getMainApplicationModel(provider.getEntityID());
-      }
-      final EntityPanel entityPanel = provider.createInstance(entityModel);
+      final EntityPanel entityPanel = provider.createInstance(applicationModel.getDbProvider());
       mainApplicationPanels.add(entityPanel);
       final String caption = (provider.getCaption() == null || provider.getCaption().length() == 0)
               ? entityPanel.getCaption() : provider.getCaption();

@@ -7,8 +7,6 @@ import org.jminor.common.model.SearchType;
 import org.jminor.framework.db.EntityDb;
 import org.jminor.framework.db.EntityDbConnectionTest;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
-import org.jminor.framework.demos.empdept.beans.DepartmentModel;
-import org.jminor.framework.demos.empdept.beans.EmployeeModel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entity;
 
@@ -22,7 +20,7 @@ import java.util.List;
 
 public class EntityModelTest {
 
-  private DepartmentModel departmentModel;
+  private EntityModel departmentModel;
   private int eventCount = 0;
 
   @Test
@@ -46,7 +44,6 @@ public class EntityModelTest {
 
   @Test
   public void test() throws Exception {
-    assertEquals("DepartmentModel", departmentModel.toString());
     departmentModel.setCascadeRefresh(true);
     assertTrue(departmentModel.isCascadeRefresh());
     departmentModel.setSelectionFiltersDetail(true);
@@ -67,7 +64,7 @@ public class EntityModelTest {
       }
     });
     departmentModel.refresh();
-    assertTrue(departmentModel.getDetailModel(EmployeeModel.class).getTableModel().getRowCount() > 0);
+    assertTrue(departmentModel.getDetailModel(EmpDept.T_EMPLOYEE).getTableModel().getRowCount() > 0);
     assertEquals(2, eventCount);
 
     try {
@@ -75,7 +72,7 @@ public class EntityModelTest {
       final Entity department = departmentModel.getDbProvider().getEntityDb().selectSingle(
               EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "OPERATIONS");
       departmentModel.getTableModel().setSelectedItem(department);
-      final EntityModel employeeModel = departmentModel.getDetailModel(EmployeeModel.class);
+      final EntityModel employeeModel = departmentModel.getDetailModel(EmpDept.T_EMPLOYEE);
       final EntityComboBoxModel comboBoxModel = employeeModel.getEditModel().initializeEntityComboBoxModel(EmpDept.EMPLOYEE_DEPARTMENT_FK);
       comboBoxModel.refresh();
       comboBoxModel.setSelectedItem(department);
@@ -90,32 +87,34 @@ public class EntityModelTest {
 
   @Test
   public void detailModel() throws Exception {
-    assertTrue("DepartmentModel should contain EmployeeModel detail", departmentModel.containsDetailModel(EmployeeModel.class));
+    departmentModel.getDetailModel(EmpDept.T_EMPLOYEE);
+    assertTrue("DepartmentModel should contain Employee detail", departmentModel.containsDetailModel(EmpDept.T_EMPLOYEE));
     assertEquals("Only one detail model should be in DepartmentModel", 1, departmentModel.getDetailModels().size());
     departmentModel.setLinkedDetailModels(departmentModel.getDetailModels().iterator().next());
     assertTrue(departmentModel.getLinkedDetailModels().size() == 1);
-    assertTrue("EmployeeModel should be the linked detail model in DepartmentModel",
-            departmentModel.getLinkedDetailModels().contains(departmentModel.getDetailModel(EmployeeModel.class)));
-    assertNotNull(departmentModel.getDetailModel(EmployeeModel.class));
+    assertTrue("Employee model should be the linked detail model in DepartmentModel",
+            departmentModel.getLinkedDetailModels().contains(departmentModel.getDetailModel(EmpDept.T_EMPLOYEE)));
+    assertNotNull(departmentModel.getDetailModel(EmpDept.T_EMPLOYEE));
     departmentModel.refresh();
     departmentModel.refreshDetailModels();
-    assertTrue(departmentModel.getDetailModel(EmployeeModel.class).getTableModel().getRowCount() > 0);
+    assertTrue(departmentModel.getDetailModel(EmpDept.T_EMPLOYEE).getTableModel().getRowCount() > 0);
 
     final EntityDb db = departmentModel.getDbProvider().getEntityDb();
     final Entity department = db.selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "SALES");
     final List<Entity> salesEmployees = db.selectMany(EntityCriteriaUtil.selectCriteria(EmpDept.T_EMPLOYEE,
             EmpDept.EMPLOYEE_DEPARTMENT_FK, SearchType.LIKE, department));
     assertTrue("Number of employees for department should not be 0", salesEmployees.size() > 0);
-    departmentModel.getDetailModel(EmployeeModel.class).getTableModel().setDetailModel(true);
+    departmentModel.getDetailModel(EmpDept.T_EMPLOYEE).getTableModel().setDetailModel(true);
     departmentModel.getTableModel().setSelectedItem(department);
     final List<Entity> employeesFromDetailModel =
-            departmentModel.getDetailModel(EmployeeModel.class).getTableModel().getAllItems();
+            departmentModel.getDetailModel(EmpDept.T_EMPLOYEE).getTableModel().getAllItems();
     assertTrue("Filtered list should contain all employees for department", containsAll(salesEmployees, employeesFromDetailModel));
   }
 
   @Before
   public void setUp() throws Exception {
-    departmentModel = new DepartmentModel(EntityDbConnectionTest.DB_PROVIDER);
+    departmentModel = new DefaultEntityModel(EmpDept.T_DEPARTMENT, EntityDbConnectionTest.DB_PROVIDER);
+    departmentModel.getDetailModel(EmpDept.T_EMPLOYEE).getTableModel().setQueryCriteriaRequired(false);
   }
 
   private boolean containsAll(List<Entity> employees, List<Entity> employeesFromModel) {

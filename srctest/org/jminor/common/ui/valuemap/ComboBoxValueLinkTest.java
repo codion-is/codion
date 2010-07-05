@@ -3,11 +3,11 @@
  */
 package org.jminor.common.ui.valuemap;
 
+import org.jminor.framework.client.model.DefaultEntityEditModel;
 import org.jminor.framework.client.model.EntityComboBoxModel;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.ui.EntityComboBox;
 import org.jminor.framework.db.EntityDbConnectionTest;
-import org.jminor.framework.demos.empdept.beans.EmployeeModel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
@@ -22,7 +22,7 @@ public class ComboBoxValueLinkTest {
   private EntityEditModel model;
 
   public ComboBoxValueLinkTest() {
-    model = new EmployeeModel(EntityDbConnectionTest.DB_PROVIDER).getEditModel();
+    model = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityDbConnectionTest.DB_PROVIDER);
   }
 
   @Test

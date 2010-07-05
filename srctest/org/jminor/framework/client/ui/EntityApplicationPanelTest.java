@@ -5,10 +5,10 @@ package org.jminor.framework.client.ui;
 
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.User;
+import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.db.EntityDbConnectionTest;
-import org.jminor.framework.demos.empdept.beans.ui.DepartmentPanel;
-import org.jminor.framework.demos.empdept.client.EmpDeptAppModel;
 import org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel;
+import org.jminor.framework.demos.empdept.domain.EmpDept;
 
 import org.junit.Test;
 
@@ -25,8 +25,13 @@ public class EntityApplicationPanelTest {
         return User.UNIT_TEST_USER;
       }
     };
-    panel.initialize(new EmpDeptAppModel(EntityDbConnectionTest.DB_PROVIDER));
-    panel.getEntityPanel(DepartmentPanel.class).getTablePanel().getTableModel().setSelectedItemIndexes(Arrays.asList(0,1,2));
+    panel.initialize(new EntityApplicationModel(EntityDbConnectionTest.DB_PROVIDER) {
+      @Override
+      protected void loadDomainModel() {
+        new EmpDept();
+      }
+    });
+    panel.getEntityPanel(EmpDept.T_DEPARTMENT).getTablePanel().getTableModel().setSelectedItemIndexes(Arrays.asList(0,1,2));
     panel.getModel().getDbProvider().disconnect();
   }
 }

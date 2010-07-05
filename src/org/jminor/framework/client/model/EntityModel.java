@@ -5,10 +5,6 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Refreshable;
-import org.jminor.common.model.reports.ReportDataWrapper;
-import org.jminor.common.model.reports.ReportException;
-import org.jminor.common.model.reports.ReportResult;
-import org.jminor.common.model.reports.ReportWrapper;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
 
@@ -76,23 +72,6 @@ public interface EntityModel extends Refreshable {
   void setLinkedDetailModels(final EntityModel... detailModels);
 
   /**
-   * Returns an initialized ReportResult object from the given report wrapper
-   * @param reportWrapper the report wrapper
-   * @return an initialized ReportResult object
-   * @throws ReportException in case of a report exception
-   */
-  ReportResult fillReport(final ReportWrapper reportWrapper) throws ReportException;
-
-  /**
-   * Returns an initialized ReportResult object from the given report wrapper and data wrapper
-   * @param reportWrapper the report wrapper
-   * @param dataSource the ReportDataWrapper used to provide the report data
-   * @return an initialized ReportResult object
-   * @throws ReportException in case of a report exception
-   */
-  ReportResult fillReport(final ReportWrapper reportWrapper, final ReportDataWrapper dataSource) throws ReportException;
-
-  /**
    * @param value true if a refresh in this model should trigger a refresh in its detail models
    */
   void setCascadeRefresh(final boolean value);
@@ -145,6 +124,12 @@ public interface EntityModel extends Refreshable {
   boolean containsDetailModel(final Class<? extends EntityModel> modelClass);
 
   /**
+   * @param entityID the entity ID
+   * @return true if this model contains a detail model for the given entity ID
+   */
+  boolean containsDetailModel(final String entityID);
+
+  /**
    * Returns the first detail model of the given type
    * @param modelClass the type of the required EntityModel
    * @return the detail model of type <code>entityModelClass</code>, null if none is found
@@ -163,4 +148,14 @@ public interface EntityModel extends Refreshable {
    * @return an unmodifiable collection containing the detail models this model contains
    */
   Collection<? extends EntityModel> getDetailModels();
+
+  /**
+   * Refreshes the detail models.
+   */
+  void refreshDetailModels();
+
+  /**
+   * Clears the detail models.
+   */
+  void clearDetailModels();
 }

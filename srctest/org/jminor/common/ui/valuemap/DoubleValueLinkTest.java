@@ -3,11 +3,11 @@
  */
 package org.jminor.common.ui.valuemap;
 
+import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.textfield.DoubleField;
-import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
+import org.jminor.framework.client.model.DefaultEntityEditModel;
 import org.jminor.framework.db.EntityDbConnectionTest;
-import org.jminor.framework.demos.empdept.beans.EmployeeModel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 
 import static org.junit.Assert.*;
@@ -18,7 +18,7 @@ public class DoubleValueLinkTest {
   private ValueChangeMapEditModel<String, Object> model;
 
   public DoubleValueLinkTest() {
-    model = new EmployeeModel(EntityDbConnectionTest.DB_PROVIDER).getEditModel();
+    model = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityDbConnectionTest.DB_PROVIDER);
   }
 
   @Test

@@ -3,10 +3,10 @@
  */
 package org.jminor.framework.client.ui;
 
+import org.jminor.framework.client.model.DefaultEntityEditModel;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityLookupModel;
 import org.jminor.framework.db.EntityDbConnectionTest;
-import org.jminor.framework.demos.empdept.beans.EmployeeModel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
@@ -23,7 +23,7 @@ public class LookupValueLinkTest {
   private EntityEditModel model;
 
   public LookupValueLinkTest() {
-    model = new EmployeeModel(EntityDbConnectionTest.DB_PROVIDER).getEditModel();
+    model = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityDbConnectionTest.DB_PROVIDER);
   }
 
   @Test

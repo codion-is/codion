@@ -9,9 +9,6 @@ import org.jminor.common.ui.LoadTestPanel;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.db.provider.EntityDbProviderFactory;
-import org.jminor.framework.demos.empdept.beans.DepartmentModel;
-import org.jminor.framework.demos.empdept.beans.EmployeeModel;
-import org.jminor.framework.demos.empdept.client.EmpDeptAppModel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
@@ -41,7 +38,7 @@ public class EmpDeptLoadTest extends EntityLoadTestModel {
     final UsageScenario selectDepartment = new UsageScenario("selectDepartment") {
       @Override
       protected void performScenario(final Object application) throws Exception {
-        selectRandomRow(((EntityApplicationModel) application).getMainApplicationModel(DepartmentModel.class).getTableModel());
+        selectRandomRow(((EntityApplicationModel) application).getMainApplicationModel(EmpDept.T_DEPARTMENT).getTableModel());
       }
       @Override
       protected int getDefaultWeight() {
@@ -51,9 +48,9 @@ public class EmpDeptLoadTest extends EntityLoadTestModel {
     final UsageScenario updateEmployee = new UsageScenario("updateEmployee") {
       @Override
       protected void performScenario(final Object application) throws Exception {
-        final EntityModel departmentModel = ((EntityApplicationModel) application).getMainApplicationModel(DepartmentModel.class);
+        final EntityModel departmentModel = ((EntityApplicationModel) application).getMainApplicationModel(EmpDept.T_DEPARTMENT);
         selectRandomRow(departmentModel.getTableModel());
-        final EntityModel employeeModel = departmentModel.getDetailModel(EmployeeModel.class);
+        final EntityModel employeeModel = departmentModel.getDetailModel(EmpDept.T_EMPLOYEE);
         if (employeeModel.getTableModel().getRowCount() > 0) {
           selectRandomRow(employeeModel.getTableModel());
           final Entity selected = employeeModel.getTableModel().getSelectedItem();
@@ -70,9 +67,9 @@ public class EmpDeptLoadTest extends EntityLoadTestModel {
     final UsageScenario insertEmployee = new UsageScenario("insertEmployee") {
       @Override
       protected void performScenario(final Object application) throws Exception {
-        final EntityModel departmentModel = ((EntityApplicationModel) application).getMainApplicationModel(DepartmentModel.class);
+        final EntityModel departmentModel = ((EntityApplicationModel) application).getMainApplicationModel(EmpDept.T_DEPARTMENT);
         selectRandomRow(departmentModel.getTableModel());
-        final EntityModel employeeModel = departmentModel.getDetailModel(EmployeeModel.class);
+        final EntityModel employeeModel = departmentModel.getDetailModel(EmpDept.T_EMPLOYEE);
         final Map<String, Entity> references = new HashMap<String, Entity>();
         references.put(EmpDept.T_DEPARTMENT, departmentModel.getTableModel().getSelectedItem());
         employeeModel.getEditModel().setValueMap(EntityUtil.createRandomEntity(EmpDept.T_EMPLOYEE, references));
@@ -86,7 +83,7 @@ public class EmpDeptLoadTest extends EntityLoadTestModel {
     final UsageScenario insertDepartment = new UsageScenario("insertDepartment") {
       @Override
       protected void performScenario(final Object application) throws Exception {
-        final EntityModel departmentModel = ((EntityApplicationModel) application).getMainApplicationModel(DepartmentModel.class);
+        final EntityModel departmentModel = ((EntityApplicationModel) application).getMainApplicationModel(EmpDept.T_DEPARTMENT);
         departmentModel.getEditModel().setValueMap(EntityUtil.createRandomEntity(EmpDept.T_DEPARTMENT, null));
         departmentModel.getEditModel().insert();
       }
@@ -118,7 +115,12 @@ public class EmpDeptLoadTest extends EntityLoadTestModel {
 
   @Override
   protected EntityApplicationModel initializeApplication() throws CancelException {
-    final EntityApplicationModel applicationModel = new EmpDeptAppModel(EntityDbProviderFactory.createEntityDbProvider(getUser(), EmpDeptLoadTest.class.getSimpleName()));
+    final EntityApplicationModel applicationModel = new EntityApplicationModel(EntityDbProviderFactory.createEntityDbProvider(getUser(), EmpDeptLoadTest.class.getSimpleName())) {
+      @Override
+      protected void loadDomainModel() {
+        new EmpDept();
+      }
+    };
 
     final EntityModel model = applicationModel.getMainApplicationModels().iterator().next();
     model.setLinkedDetailModels(model.getDetailModels().iterator().next());

@@ -45,7 +45,7 @@ public final class EntityReportUtil {
    * @return an initialized ReportResult object
    * @throws ReportException in case of a report exception
    */
-  public static ReportResult fillReport(final ReportWrapper reportWrapper, final ReportDataWrapper dataSource) throws ReportException {
+  public static  ReportResult fillReport(final ReportWrapper reportWrapper, final ReportDataWrapper dataSource) throws ReportException {
     return reportWrapper.fillReport(dataSource);
   }
 }

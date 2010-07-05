@@ -1,8 +1,17 @@
+/*
+ * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
+ */
 package org.jminor.framework.demos.empdept.client.ui;
 
+import org.jminor.framework.client.model.EntityTableModel;
+import org.jminor.framework.client.model.PropertySummaryModel;
 import org.jminor.framework.client.ui.EntityApplet;
 import org.jminor.framework.client.ui.EntityPanelProvider;
-import org.jminor.framework.demos.empdept.beans.ui.DepartmentPanel;
+import org.jminor.framework.client.ui.EntityTablePanel;
+import org.jminor.framework.demos.empdept.beans.EmployeeEditModel;
+import org.jminor.framework.demos.empdept.beans.ui.DepartmentEditPanel;
+import org.jminor.framework.demos.empdept.beans.ui.DepartmentTablePanel;
+import org.jminor.framework.demos.empdept.beans.ui.EmployeeEditPanel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 
 /**
@@ -13,6 +22,18 @@ import org.jminor.framework.demos.empdept.domain.EmpDept;
 public class EmpDeptApplet extends EntityApplet {
 
   public EmpDeptApplet() {
-    super(new EntityPanelProvider(EmpDept.T_DEPARTMENT).setPanelClass(DepartmentPanel.class));
+    super(new EntityPanelProvider(EmpDept.T_DEPARTMENT).setEditPanelClass(DepartmentEditPanel.class)
+            .setTablePanelClass(DepartmentTablePanel.class).addDetailPanelProvider(new EntityPanelProvider(EmpDept.T_EMPLOYEE) {
+      @Override
+      protected void configureTableModel(final EntityTableModel tableModel) {
+        tableModel.setQueryCriteriaRequired(true);
+        tableModel.getPropertySummaryModel(EmpDept.EMPLOYEE_SALARY).setSummaryType(PropertySummaryModel.AVERAGE);
+      }
+
+      @Override
+      protected void configureTablePanel(final EntityTablePanel tablePanel) {
+        tablePanel.setSummaryPanelVisible(true);
+      }
+    }.setEditModelClass(EmployeeEditModel.class).setEditPanelClass(EmployeeEditPanel.class)));
   }
 }

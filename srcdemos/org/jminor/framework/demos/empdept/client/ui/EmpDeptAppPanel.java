@@ -11,13 +11,16 @@ import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlSet;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityApplicationModel;
+import org.jminor.framework.client.model.EntityTableModel;
+import org.jminor.framework.client.model.PropertySummaryModel;
 import org.jminor.framework.client.ui.EntityApplicationPanel;
 import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.client.ui.EntityTablePanel;
 import org.jminor.framework.db.provider.EntityDbProvider;
-import org.jminor.framework.demos.empdept.beans.DepartmentModel;
-import org.jminor.framework.demos.empdept.beans.ui.DepartmentPanel;
-import org.jminor.framework.demos.empdept.client.EmpDeptAppModel;
+import org.jminor.framework.demos.empdept.beans.EmployeeEditModel;
+import org.jminor.framework.demos.empdept.beans.ui.DepartmentEditPanel;
+import org.jminor.framework.demos.empdept.beans.ui.DepartmentTablePanel;
+import org.jminor.framework.demos.empdept.beans.ui.EmployeeEditPanel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.plugins.json.EntityJSONParser;
 
@@ -27,7 +30,27 @@ import java.nio.charset.Charset;
 public class EmpDeptAppPanel extends EntityApplicationPanel {
 
   public EmpDeptAppPanel() {
-    addMainApplicationPanelProvider(new EntityPanelProvider(EmpDept.T_DEPARTMENT, DepartmentModel.class, DepartmentPanel.class));
+    final EntityPanelProvider employeePanelProvider = new EntityPanelProvider(EmpDept.T_EMPLOYEE) {
+      @Override
+      protected void configureTableModel(final EntityTableModel tableModel) {
+        tableModel.setQueryCriteriaRequired(true);
+        tableModel.getPropertySummaryModel(EmpDept.EMPLOYEE_SALARY).setSummaryType(PropertySummaryModel.AVERAGE);
+      }
+
+      @Override
+      protected void configureTablePanel(final EntityTablePanel tablePanel) {
+        tablePanel.setSummaryPanelVisible(true);
+      }
+    };
+    employeePanelProvider.setEditModelClass(EmployeeEditModel.class);
+    employeePanelProvider.setEditPanelClass(EmployeeEditPanel.class);
+
+    final EntityPanelProvider departmentPanelProvider = new EntityPanelProvider(EmpDept.T_DEPARTMENT);
+    departmentPanelProvider.setEditPanelClass(DepartmentEditPanel.class);
+    departmentPanelProvider.setTablePanelClass(DepartmentTablePanel.class);
+    departmentPanelProvider.addDetailPanelProvider(employeePanelProvider);
+
+    addMainApplicationPanelProvider(departmentPanelProvider);
   }
 
   public void importJSON() throws Exception {
@@ -54,7 +77,12 @@ public class EmpDeptAppPanel extends EntityApplicationPanel {
 
   @Override
   protected EntityApplicationModel initializeApplicationModel(final EntityDbProvider dbProvider) throws CancelException {
-    return new EmpDeptAppModel(dbProvider);
+    return new EntityApplicationModel(dbProvider) {
+      @Override
+      protected void loadDomainModel() {
+        new EmpDept();
+      }
+    };
   }
 
   public static void main(final String[] args) {

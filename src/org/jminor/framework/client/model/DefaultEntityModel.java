@@ -6,15 +6,10 @@ package org.jminor.framework.client.model;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
-import org.jminor.common.model.reports.ReportDataWrapper;
-import org.jminor.common.model.reports.ReportException;
-import org.jminor.common.model.reports.ReportResult;
-import org.jminor.common.model.reports.ReportWrapper;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.event.DeleteEvent;
 import org.jminor.framework.client.model.event.InsertEvent;
 import org.jminor.framework.client.model.event.UpdateEvent;
-import org.jminor.framework.client.model.reporting.EntityReportUtil;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
@@ -267,6 +262,16 @@ public class DefaultEntityModel implements EntityModel {
     return false;
   }
 
+  public boolean containsDetailModel(final String entityID) {
+    for (final EntityModel detailModel : detailModels) {
+      if (detailModel.getEntityID().equals(entityID)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   public Collection<? extends EntityModel> getDetailModels() {
     return Collections.unmodifiableCollection(detailModels);
   }
@@ -326,14 +331,6 @@ public class DefaultEntityModel implements EntityModel {
     throw new RuntimeException("No detail model for type " + entityID + " found in model: " + this);
   }
 
-  public ReportResult fillReport(final ReportWrapper reportWrapper) throws ReportException {
-    return EntityReportUtil.fillReport(reportWrapper, dbProvider);
-  }
-
-  public ReportResult fillReport(final ReportWrapper reportWrapper, final ReportDataWrapper dataSource) throws ReportException {
-    return EntityReportUtil.fillReport(reportWrapper, dataSource);
-  }
-
   /**
    * Refreshes this EntityModel
    * @see #evtRefreshStarted
@@ -363,12 +360,24 @@ public class DefaultEntityModel implements EntityModel {
     }
   }
 
+  public void refreshDetailModels() {
+    for (final EntityModel detailModel : detailModels) {
+      detailModel.refresh();
+    }
+  }
+
   public void clear() {
     if (containsTableModel()) {
       tableModel.clear();
     }
     editModel.clear();
     clearDetailModels();
+  }
+
+  public void clearDetailModels() {
+    for (final EntityModel detailModel : detailModels) {
+      detailModel.clear();
+    }
   }
 
   public void masterSelectionChanged(final String masterEntityID, final List<Entity> selectedMasterEntities) {
@@ -504,20 +513,6 @@ public class DefaultEntityModel implements EntityModel {
           detailEditModel.getEntityComboBoxModel(foreignKeyProperty).refresh();
         }
       }
-    }
-  }
-
-  protected void refreshDetailModels() {
-    LOG.trace(this + " refreshing detail models");
-    for (final EntityModel detailModel : detailModels) {
-      detailModel.refresh();
-    }
-  }
-
-  protected void clearDetailModels() {
-    LOG.trace(this + " clearing detail models");
-    for (final EntityModel detailModel : detailModels) {
-      detailModel.clear();
     }
   }
 

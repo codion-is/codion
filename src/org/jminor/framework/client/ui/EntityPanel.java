@@ -6,20 +6,15 @@ package org.jminor.framework.client.ui;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.WeakPropertyChangeListener;
-import org.jminor.common.model.reports.ReportDataWrapper;
-import org.jminor.common.model.reports.ReportException;
-import org.jminor.common.model.reports.ReportWrapper;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.Control;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlSet;
 import org.jminor.common.ui.images.Images;
-import org.jminor.common.ui.reports.ReportUIWrapper;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.EntityTableModel;
-import org.jminor.framework.client.ui.reporting.EntityReportUiUtil;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
@@ -1099,49 +1094,6 @@ public class EntityPanel extends JPanel {
               }
             });
     getEditPanel().prepareUI(true, false);
-  }
-
-  /**
-   * Shows a report viewer for report printing
-   * @param reportWrapper the report wrapper
-   * @param uiWrapper the ui wrapper
-   * @param reportTitle the title to display on the frame
-   */
-  @SuppressWarnings({"unchecked"})
-  protected void viewJdbcReport(final ReportWrapper reportWrapper, final ReportUIWrapper uiWrapper,
-                                final String reportTitle) {
-    try {
-      UiUtil.setWaitCursor(true, this);
-      EntityReportUiUtil.viewReport(model.fillReport(reportWrapper), uiWrapper, reportTitle);
-    }
-    catch (ReportException e) {
-      throw new RuntimeException(e);
-    }
-    finally {
-      UiUtil.setWaitCursor(false, this);
-    }
-  }
-
-  /**
-   * Shows a report viewer for report printing
-   * @param reportWrapper the report wrapper
-   * @param uiWrapper the ui wrapper
-   * @param dataSource the datasource used to provide the report data
-   * @param reportTitle the title to display on the frame
-   */
-  @SuppressWarnings({"unchecked"})
-  protected void viewReport(final ReportWrapper reportWrapper, final ReportUIWrapper uiWrapper,
-                            final ReportDataWrapper dataSource, final String reportTitle) {
-    try {
-      UiUtil.setWaitCursor(true, this);
-      EntityReportUiUtil.viewReport(model.fillReport(reportWrapper, dataSource), uiWrapper, reportTitle);
-    }
-    catch (ReportException e) {
-      throw new RuntimeException(e);
-    }
-    finally {
-      UiUtil.setWaitCursor(false, this);
-    }
   }
 
   protected void setMasterPanel(final EntityPanel masterPanel) {
