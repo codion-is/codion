@@ -30,10 +30,27 @@ import java.util.Locale;
 public class ChinookAppPanel extends EntityApplicationPanel {
 
   public ChinookAppPanel() {
+    new EntityPanelProvider(Chinook.T_ARTIST).setEditPanelClass(ArtistPanel.class)
+            .addDetailEntityID(Chinook.T_ALBUM).register();
+    new EntityPanelProvider(Chinook.T_PLAYLIST).setPanelClass(PlaylistPanel.class)
+            .addDetailEntityID(Chinook.T_PLAYLISTTRACK).register();
+    new EntityPanelProvider(Chinook.T_CUSTOMER).setPanelClass(CustomerPanel.class)
+            .addDetailEntityID(Chinook.T_INVOICE).register();
+
+    new EntityPanelProvider(Chinook.T_GENRE, "Genres").setPanelClass(GenrePanel.class)
+            .addDetailEntityID(Chinook.T_TRACK).register();
+    new EntityPanelProvider(Chinook.T_MEDIATYPE, "Media types").setPanelClass(MediaTypePanel.class)
+            .addDetailEntityID(Chinook.T_TRACK).register();
+    new EntityPanelProvider(Chinook.T_EMPLOYEE, "Employees").setPanelClass(EmployeePanel.class)
+            .addDetailEntityID(Chinook.T_CUSTOMER).register();
+    
     addMainApplicationPanelProviders(
-            new EntityPanelProvider(Chinook.T_ARTIST).setPanelClass(ArtistPanel.class),
-            new EntityPanelProvider(Chinook.T_PLAYLIST).setPanelClass(PlaylistPanel.class),
-            new EntityPanelProvider(Chinook.T_CUSTOMER).setPanelClass(CustomerPanel.class));
+            new EntityPanelProvider(Chinook.T_ARTIST).setEditPanelClass(ArtistPanel.class)
+                    .addDetailEntityID(Chinook.T_ALBUM),
+            new EntityPanelProvider(Chinook.T_PLAYLIST).setPanelClass(PlaylistPanel.class)
+                    .addDetailEntityID(Chinook.T_PLAYLISTTRACK),
+            new EntityPanelProvider(Chinook.T_CUSTOMER).setPanelClass(CustomerPanel.class)
+                    .addDetailEntityID(Chinook.T_INVOICE));
     addSupportPanelProviders(
             new EntityPanelProvider(Chinook.T_GENRE, "Genres").setPanelClass(GenrePanel.class),
             new EntityPanelProvider(Chinook.T_MEDIATYPE, "Media types").setPanelClass(MediaTypePanel.class),

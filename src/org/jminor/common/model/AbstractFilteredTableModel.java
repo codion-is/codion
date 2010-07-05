@@ -135,7 +135,7 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
   }
 
   public boolean contains(final T item, final boolean includeHidden) {
-    final boolean ret = viewIndexOf(item) >= 0;
+    final boolean ret = visibleItems.contains(item);
     if (!ret && includeHidden) {
       return hiddenItems.contains(item);
     }

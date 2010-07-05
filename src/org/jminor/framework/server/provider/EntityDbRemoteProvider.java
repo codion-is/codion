@@ -33,7 +33,7 @@ public class EntityDbRemoteProvider implements EntityDbProvider {
   private static final Logger LOG = Util.getLogger(EntityDbRemoteProvider.class);
   private static final int INPUT_BUFFER_SIZE = 8192;
 
-  private final String serverHostName = System.getProperty(Configuration.SERVER_HOST_NAME);
+  private final String serverHostName;
   private User user;
   private final String clientID;
   private final String clientTypeID;
@@ -42,6 +42,11 @@ public class EntityDbRemoteProvider implements EntityDbProvider {
   private String serverName;
 
   public EntityDbRemoteProvider(final User user, final String clientID, final String clientTypeID) {
+    Util.rejectNullValue(user);
+    serverHostName = System.getProperty(Configuration.SERVER_HOST_NAME);
+    if (serverHostName == null) {
+      throw new RuntimeException("Required runtime property required: " + Configuration.SERVER_HOST_NAME);
+    }
     this.user = user;
     this.clientID = clientID;
     this.clientTypeID = clientTypeID;

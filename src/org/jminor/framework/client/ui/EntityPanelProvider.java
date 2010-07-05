@@ -12,6 +12,11 @@ import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.EntityRepository;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A class providing EntityPanel instances.
@@ -28,6 +33,12 @@ public class EntityPanelProvider implements Comparable {//todo rename
   private Class<? extends EntityPanel> panelClass;
   private Class<? extends EntityEditPanel> editPanelClass;
   private Class<? extends EntityTablePanel> tablePanelClass;
+
+  private List<String> detailEntityIDs = new ArrayList<String>();
+
+  private static final Map<String, EntityPanelProvider> panelProviders = Collections.synchronizedMap(new HashMap<String, EntityPanelProvider>());
+
+  private EntityPanel instance;
 
   public EntityPanelProvider(final String entityID) {
     this(entityID, null);
@@ -64,6 +75,15 @@ public class EntityPanelProvider implements Comparable {//todo rename
     this.panelClass = entityPanelClass;
   }
 
+  public void register() {
+    synchronized (panelProviders) {
+      if (panelProviders.containsKey(entityID)) {
+        throw new RuntimeException("Panel provider has already been set for entity: " + entityID);
+      }
+      panelProviders.put(entityID, this);
+    }
+  }
+
   public String getEntityID() {
     return entityID;
   }
@@ -77,6 +97,18 @@ public class EntityPanelProvider implements Comparable {//todo rename
     }
 
     return caption;
+  }
+
+  public EntityPanelProvider addDetailEntityID(final String detailEntityID) {
+    if (!detailEntityIDs.contains(detailEntityID)) {
+      detailEntityIDs.add(detailEntityID);
+    }
+
+    return this;
+  }
+
+  public List<String> getDetailEntityIDs() {
+    return Collections.unmodifiableList(detailEntityIDs);
   }
 
   public boolean isRefreshOnInit() {
@@ -237,5 +269,17 @@ public class EntityPanelProvider implements Comparable {//todo rename
     catch (Exception e) {
       throw new RuntimeException(e);
     }
+  }
+
+  public void setInstance(final EntityPanel instance) {
+    this.instance = instance;
+  }
+
+  public EntityPanel getInstance() {
+    return instance;
+  }
+
+  public static EntityPanelProvider getProvider(final String entityID) {
+    return panelProviders.get(entityID);
   }
 }

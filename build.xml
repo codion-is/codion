@@ -54,7 +54,9 @@
     <pathelement path="${build.test}"/>
   </path>
 
-  <taskdef resource="emma_ant.properties" classpathref="lib.build" />
+  <path id="classes.demos">
+    <pathelement path="${build.demos}"/>
+  </path>
 
   <fileset id="common_resources" dir="${src}" includes=
           "org/jminor/common/**/*.gif, org/jminor/common/**/*.png, org/jminor/common/**/*.properties, org/jminor/common/**/*.txt, log4j.properties"/>
@@ -225,6 +227,12 @@
          manifest="${build.base}/META-INF/MANIFEST.MF"/>
 
     <copy file="${basedir}/changelog.txt" todir="${dist}"/>
+  </target>
+
+  <target name="signjars">
+    <signjar alias="${jar.sign.alias}" storepass="${jar.sign.storepass}" keystore="${jar.sign.keystoreloc}">
+      <fileset dir="${deploy.demos.path}/lib" />
+    </signjar>
   </target>
 
   <target name="manifest"
@@ -521,6 +529,7 @@
     <java classname="org.jminor.framework.server.EntityDbRemoteServerAdmin" fork="yes">
       <classpath>
         <path refid="classes.base"/>
+        <path refid="classes.demos"/>
         <path refid="lib.server"/>
       </classpath>
       <jvmarg value="-Djminor.db.type=${demo.db.type}"/>

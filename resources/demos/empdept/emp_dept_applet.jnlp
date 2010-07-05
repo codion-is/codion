@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jnlp spec="1.0+" codebase="" href="">
+  <information>
+    <title>EmpDept Applet</title>
+    <vendor>JMinor.org</vendor>
+  </information>
+  <security>
+    <all-permissions/>
+  </security>
+
+  <resources>
+
+    <!-- Specify the versions of the Java
+         Runtime Environment (JRE) that are
+         supported by the application.
+         Multiple entries of this kind are
+         allowed, in which case they are
+         considered to be in order of
+         preference -->
+    <j2se version="1.6+"/>
+
+    <!-- Specify the relative URL of a .jar
+         file containing code or data.
+         Specifying lazy tells the JAWS
+         system that the file does not need
+         to be downloaded before the
+         application can be run -->
+    <!-- Application Resources -->
+    <j2se version="1.6+"
+          href="http://java.sun.com/products/autodl/j2se" />
+    <jar href="jminor-demos.jar" main="true" />
+
+    <!--  libraries-->
+    <jar href="jminor-client-remote.jar"/>
+    <jar href="jminor-common.jar"/>
+    <jar href="jcalendar-1.3.2.jar"/>
+    <jar href="log4j-1.2.15.jar"/>
+    <jar href="jasperreports-3.0.0.jar"/>
+
+    <property name="jminor.client.connectionType" value="remote"/>
+    <property name="javax.net.ssl.trustStore" value="JMinorClientTruststore"/>
+    <property name="jminor.server.hostname" value="localhost" />
+
+
+  </resources>
+  <applet-desc
+          name="JMinor EmpDept AppletDemo"
+          main-class="org.jminor.framework.demos.empdept.client.ui.EmpDeptApplet"
+          width="600"
+          height="400">
+  </applet-desc>
+  <update check="background"/>
+</jnlp>

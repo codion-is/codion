@@ -1810,3 +1810,5 @@
   Configuration.AUTO_CREATE_ENTITY_MODELS added
   EntityModel.getDetailModel() now creates a default entity model depending on the above configuration parameter
   EntityPanel.createInstance() moved to EntityPanelProvider
+  EntityApplet added
+  EmpDeptApplet added
