@@ -6,15 +6,10 @@ package org.jminor.framework.demos.petstore.beans.ui;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
 import org.jminor.framework.client.model.EntityEditModel;
-import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.ui.EntityComboBox;
 import org.jminor.framework.client.ui.EntityEditPanel;
-import org.jminor.framework.client.ui.EntityPanel;
 import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.client.ui.EntityUiUtil;
-import org.jminor.framework.demos.petstore.beans.AddressModel;
-import org.jminor.framework.demos.petstore.beans.ContactInfoModel;
-import org.jminor.framework.demos.petstore.beans.TagItemModel;
 import org.jminor.framework.demos.petstore.domain.Petstore;
 import static org.jminor.framework.demos.petstore.domain.Petstore.*;
 
@@ -25,44 +20,37 @@ import javax.swing.JTextField;
  * Date: 24.12.2007
  * Time: 14:05:58
  */
-public class ItemPanel extends EntityPanel {
+public class ItemPanel extends EntityEditPanel {
 
-  public ItemPanel(final EntityModel model) {
-    super(model, "Item");
-    setDetailPanelState(HIDDEN);
-    addDetailPanel(new TagItemPanel(model.getDetailModel(TagItemModel.class)));
+  public ItemPanel(final EntityEditModel model) {
+    super(model);
   }
 
   @Override
-  protected EntityEditPanel initializeEditPanel(final EntityEditModel editModel) {
-    return new EntityEditPanel(editModel) {
-      @Override
-      protected void initializeUI() {
-        setLayout(new FlexibleGridLayout(3,3,5,5));
-        EntityComboBox box = createEntityComboBox(ITEM_PRODUCT_FK);
-        setInitialFocusComponent(box);
-        add(createPropertyPanel(ITEM_PRODUCT_FK, box));
-        JTextField txt = createTextField(ITEM_NAME);
-        txt.setColumns(12);
-        add(createPropertyPanel(ITEM_NAME, txt));
-        txt = createTextField(ITEM_DESCRIPTION);
-        txt.setColumns(16);
-        add(createPropertyPanel(ITEM_DESCRIPTION, txt));
-        add(createPropertyPanel(ITEM_PRICE, createTextField(ITEM_PRICE)));
-        box = createEntityComboBox(ITEM_C0NTACT_INFO_FK);
-        box.setPopupWidth(200);
-        box.setPreferredSize(UiUtil.getPreferredTextFieldSize());
-        add(createPropertyPanel(ITEM_C0NTACT_INFO_FK, EntityUiUtil.createEntityComboBoxNewRecordPanel(box,
-                new EntityPanelProvider(Petstore.T_SELLER_CONTACT_INFO, ContactInfoModel.class, ContactInfoPanel.class), false)));
-        box = createEntityComboBox(ITEM_ADDRESS_FK);
-        box.setPopupWidth(200);
-        box.setPreferredSize(UiUtil.getPreferredTextFieldSize());
-        add(createPropertyPanel(ITEM_ADDRESS_FK, EntityUiUtil.createEntityComboBoxNewRecordPanel(box,
-                new EntityPanelProvider(Petstore.T_ADDRESS, AddressModel.class, AddressPanel.class), false)));
-        add(createPropertyPanel(ITEM_IMAGE_URL, createTextField(ITEM_IMAGE_URL)));
-        add(createPropertyPanel(ITEM_IMAGE_THUMB_URL, createTextField(ITEM_IMAGE_THUMB_URL)));
-        add(createPropertyPanel(ITEM_DISABLED, createTristateCheckBox(ITEM_DISABLED, null, false)));
-      }
-    };
+  protected void initializeUI() {
+    setLayout(new FlexibleGridLayout(3,3,5,5));
+    EntityComboBox box = createEntityComboBox(ITEM_PRODUCT_FK);
+    setInitialFocusComponent(box);
+    add(createPropertyPanel(ITEM_PRODUCT_FK, box));
+    JTextField txt = createTextField(ITEM_NAME);
+    txt.setColumns(12);
+    add(createPropertyPanel(ITEM_NAME, txt));
+    txt = createTextField(ITEM_DESCRIPTION);
+    txt.setColumns(16);
+    add(createPropertyPanel(ITEM_DESCRIPTION, txt));
+    add(createPropertyPanel(ITEM_PRICE, createTextField(ITEM_PRICE)));
+    box = createEntityComboBox(ITEM_C0NTACT_INFO_FK);
+    box.setPopupWidth(200);
+    box.setPreferredSize(UiUtil.getPreferredTextFieldSize());
+    add(createPropertyPanel(ITEM_C0NTACT_INFO_FK, EntityUiUtil.createEntityComboBoxNewRecordPanel(box,
+            new EntityPanelProvider(Petstore.T_SELLER_CONTACT_INFO).setEditPanelClass(ContactInfoPanel.class), false)));
+    box = createEntityComboBox(ITEM_ADDRESS_FK);
+    box.setPopupWidth(200);
+    box.setPreferredSize(UiUtil.getPreferredTextFieldSize());
+    add(createPropertyPanel(ITEM_ADDRESS_FK, EntityUiUtil.createEntityComboBoxNewRecordPanel(box,
+            new EntityPanelProvider(Petstore.T_ADDRESS).setEditPanelClass(AddressPanel.class), false)));
+    add(createPropertyPanel(ITEM_IMAGE_URL, createTextField(ITEM_IMAGE_URL)));
+    add(createPropertyPanel(ITEM_IMAGE_THUMB_URL, createTextField(ITEM_IMAGE_THUMB_URL)));
+    add(createPropertyPanel(ITEM_DISABLED, createTristateCheckBox(ITEM_DISABLED, null, false)));
   }
 }

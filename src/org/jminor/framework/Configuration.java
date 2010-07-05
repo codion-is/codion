@@ -394,9 +394,16 @@ public final class Configuration {
   /**
    * Specifies whether entity models should be automatically created if not specified.
    * Value type: Boolean<br>
-   * Default value: false<br>
+   * Default value: true<br>
    */
   public static final String AUTO_CREATE_ENTITY_MODELS = "jminor.client.autoCreateEntityModels";
+
+  /**
+   * Specifies whether search panels should be visible by default in table panels.
+   * Value type: Boolean<br>
+   * Default value: false<br>
+   */
+  public static final String SEARCH_PANELS_VISIBLE = "jminor.client.searchPanelsVisible";
 
   private static Map<String, Object> settings = new HashMap<String, Object>();
 
@@ -435,7 +442,8 @@ public final class Configuration {
     setValue(DEFAULT_FOREIGN_KEY_FETCH_DEPTH, 1);
     setValue(LIMIT_FOREIGN_KEY_FETCH_DEPTH, true);
     setValue(DEFAULT_LOOK_AND_FEEL_CLASSNAME, UIManager.getSystemLookAndFeelClassName());
-    setValue(AUTO_CREATE_ENTITY_MODELS, false);
+    setValue(AUTO_CREATE_ENTITY_MODELS, true);
+    setValue(SEARCH_PANELS_VISIBLE, false);
     parseSystemSettings();
   }
 
@@ -477,6 +485,7 @@ public final class Configuration {
     parseStringSetting(WILDCARD_CHARACTER);
     parseStringSetting(DEFAULT_LOOK_AND_FEEL_CLASSNAME);
     parseBooleanSetting(AUTO_CREATE_ENTITY_MODELS);
+    parseBooleanSetting(SEARCH_PANELS_VISIBLE);
   }
 
   private static void parseIntegerSetting(final String setting) {

@@ -8,7 +8,6 @@ import org.jminor.common.model.User;
 import org.jminor.common.ui.LoadTestPanel;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
-import org.jminor.framework.demos.petstore.client.PetstoreAppModel;
 import org.jminor.framework.demos.petstore.domain.Petstore;
 import org.jminor.framework.server.provider.EntityDbRemoteProvider;
 import org.jminor.framework.tools.testing.EntityLoadTestModel;
@@ -52,8 +51,12 @@ public class PetstoreLoadTest extends EntityLoadTestModel {
 
   @Override
   protected EntityApplicationModel initializeApplication() throws CancelException {
-    final EntityApplicationModel applicationModel =
-            new PetstoreAppModel(new EntityDbRemoteProvider(getUser(), "scott@"+new Object(), getClass().getSimpleName()));
+    final EntityApplicationModel applicationModel = new EntityApplicationModel(new EntityDbRemoteProvider(getUser(), "scott@"+new Object(), getClass().getSimpleName())) {
+      @Override
+      protected void loadDomainModel() {
+        new Petstore();
+      }
+    };
     final EntityModel categoryModel = applicationModel.getMainApplicationModels().iterator().next();
     categoryModel.setLinkedDetailModels(categoryModel.getDetailModels().iterator().next());
     final EntityModel productModel = categoryModel.getDetailModels().iterator().next();

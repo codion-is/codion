@@ -1815,3 +1815,4 @@
   TextInputPanel.button field added
   EntityUiUtil.createText/DateInputPanel now adds focus transfer to the panel button
   Chinook demo application changed according to the latest changes
+  Configuration.SEARCH_PANELS_VISIBLE added

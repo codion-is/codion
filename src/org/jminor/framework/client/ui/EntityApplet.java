@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
+ */
 package org.jminor.framework.client.ui;
 
 import org.jminor.common.model.User;
@@ -38,23 +41,19 @@ public class EntityApplet extends JApplet {
   }
 
   @Override
-  public void start() {
-//    SwingUtilities.invokeLater(new Runnable() {
-//      public void run() {
-//      }
-//    });
-  }
-
-  @Override
-  public void stop() {
-  }
-
-  @Override
   public void destroy() {
     SwingUtilities.invokeLater(new Runnable() {
       public void run() {
         entityPanelProvider.getInstance().getModel().getDbProvider().disconnect();
       }
     });
+  }
+
+  @Override
+  public void start() {
+  }
+
+  @Override
+  public void stop() {
   }
 }

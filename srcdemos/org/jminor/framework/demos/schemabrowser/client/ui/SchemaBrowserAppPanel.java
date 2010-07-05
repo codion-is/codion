@@ -4,15 +4,13 @@
 package org.jminor.framework.demos.schemabrowser.client.ui;
 
 import org.jminor.common.model.CancelException;
+import org.jminor.common.model.User;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.ui.EntityApplicationPanel;
 import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.db.provider.EntityDbProvider;
-import org.jminor.framework.demos.schemabrowser.beans.SchemaModel;
-import org.jminor.framework.demos.schemabrowser.beans.ui.SchemaPanel;
-import org.jminor.framework.demos.schemabrowser.client.SchemaBrowserAppModel;
 import org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser;
 
 import javax.swing.JTable;
@@ -20,20 +18,35 @@ import javax.swing.JTable;
 public class SchemaBrowserAppPanel extends EntityApplicationPanel {
 
   public SchemaBrowserAppPanel() {
-    addMainApplicationPanelProvider(new EntityPanelProvider(SchemaBrowser.T_SCHEMA, SchemaModel.class, SchemaPanel.class));
+    final EntityPanelProvider columnConstraintProvider = new EntityPanelProvider(SchemaBrowser.T_COLUMN_CONSTRAINT);
+    final EntityPanelProvider constraintProvider = new EntityPanelProvider(SchemaBrowser.T_CONSTRAINT);
+    constraintProvider.addDetailPanelProvider(columnConstraintProvider);
+    final EntityPanelProvider columnProvider = new EntityPanelProvider(SchemaBrowser.T_COLUMN);
+    final EntityPanelProvider dbObjectProvider = new EntityPanelProvider(SchemaBrowser.T_TABLE);
+    dbObjectProvider.addDetailPanelProvider(columnProvider);
+    dbObjectProvider.addDetailPanelProvider(constraintProvider);
+    final EntityPanelProvider schemaProvider = new EntityPanelProvider(SchemaBrowser.T_SCHEMA);
+    schemaProvider.addDetailPanelProvider(dbObjectProvider).setDetailSplitPanelResizeWeight(0.3);
+    addMainApplicationPanelProvider(schemaProvider);
   }
 
   @Override
   protected void configureApplication() {
     Configuration.setValue(Configuration.TABLE_AUTO_RESIZE_MODE, JTable.AUTO_RESIZE_ALL_COLUMNS);
+    Configuration.setValue(Configuration.SEARCH_PANELS_VISIBLE, true);
   }
 
   @Override
   protected EntityApplicationModel initializeApplicationModel(final EntityDbProvider dbProvider) throws CancelException {
-    return new SchemaBrowserAppModel(dbProvider);
+    return new EntityApplicationModel(dbProvider) {
+      @Override
+      protected void loadDomainModel() {
+        new SchemaBrowser();
+      }
+    };
   }
 
   public static void main(final String[] args) {
-    new SchemaBrowserAppPanel().startApplication("Schema Browser", null, false, UiUtil.getScreenSizeRatio(0.5));
+    new SchemaBrowserAppPanel().startApplication("Schema Browser", null, false, UiUtil.getScreenSizeRatio(0.5), new User("scott", "tiger"));
   }
 }

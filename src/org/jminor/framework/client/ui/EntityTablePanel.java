@@ -224,6 +224,9 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     bindEventsInternal();
     bindEvents();
     updateStatusMessage();
+    if (Configuration.getBooleanValue(Configuration.SEARCH_PANELS_VISIBLE)) {
+      setSearchPanelVisible(true);
+    }
   }
 
   /**

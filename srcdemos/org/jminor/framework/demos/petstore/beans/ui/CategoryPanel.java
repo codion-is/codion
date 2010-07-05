@@ -5,10 +5,7 @@ package org.jminor.framework.demos.petstore.beans.ui;
 
 import org.jminor.common.ui.layout.FlexibleGridLayout;
 import org.jminor.framework.client.model.EntityEditModel;
-import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.ui.EntityEditPanel;
-import org.jminor.framework.client.ui.EntityPanel;
-import org.jminor.framework.demos.petstore.beans.ProductModel;
 import static org.jminor.framework.demos.petstore.domain.Petstore.*;
 
 import javax.swing.JTextField;
@@ -18,29 +15,22 @@ import javax.swing.JTextField;
  * Date: 24.12.2007
  * Time: 14:05:58
  */
-public class CategoryPanel extends EntityPanel {
+public class CategoryPanel extends EntityEditPanel {
 
-  public CategoryPanel(final EntityModel model) {
-    super(model, "Category");
-    setDetailSplitPanelResizeWeight(0.3);
-    addDetailPanel(new ProductPanel(model.getDetailModel(ProductModel.class)));
+  public CategoryPanel(final EntityEditModel model) {
+    super(model);
   }
 
   @Override
-  protected EntityEditPanel initializeEditPanel(final EntityEditModel editModel) {
-    return new EntityEditPanel(editModel) {
-      @Override
-      protected void initializeUI() {
-        setLayout(new FlexibleGridLayout(2,2,5,5));
-        final JTextField txtName = createTextField(CATEGORY_NAME);
-        setInitialFocusComponent(txtName);
-        txtName.setColumns(10);
-        add(createPropertyPanel(CATEGORY_NAME, txtName));
-        final JTextField txtDesc = createTextField(CATEGORY_DESCRIPTION);
-        txtDesc.setColumns(18);
-        add(createPropertyPanel(CATEGORY_DESCRIPTION, txtDesc));
-        add(createPropertyPanel(CATEGORY_IMAGE_URL, createTextField(CATEGORY_IMAGE_URL)));
-      }
-    };
+  protected void initializeUI() {
+    setLayout(new FlexibleGridLayout(2,2,5,5));
+    final JTextField txtName = createTextField(CATEGORY_NAME);
+    setInitialFocusComponent(txtName);
+    txtName.setColumns(10);
+    add(createPropertyPanel(CATEGORY_NAME, txtName));
+    final JTextField txtDesc = createTextField(CATEGORY_DESCRIPTION);
+    txtDesc.setColumns(18);
+    add(createPropertyPanel(CATEGORY_DESCRIPTION, txtDesc));
+    add(createPropertyPanel(CATEGORY_IMAGE_URL, createTextField(CATEGORY_IMAGE_URL)));
   }
 }

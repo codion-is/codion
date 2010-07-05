@@ -8,7 +8,6 @@ import org.jminor.common.model.User;
 import org.jminor.common.ui.LoadTestPanel;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
-import org.jminor.framework.demos.schemabrowser.client.SchemaBrowserAppModel;
 import org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser;
 import org.jminor.framework.server.provider.EntityDbRemoteProvider;
 import org.jminor.framework.tools.testing.EntityLoadTestModel;
@@ -43,8 +42,13 @@ public class SchemaBrowserLoadTest extends EntityLoadTestModel {
 
   @Override
   protected EntityApplicationModel initializeApplication() throws CancelException {
-    final EntityApplicationModel applicationModel =
-            new SchemaBrowserAppModel(new EntityDbRemoteProvider(getUser(), User.UNIT_TEST_USER +"@"+new Object(), getClass().getSimpleName()));
+    final EntityApplicationModel applicationModel = new EntityApplicationModel(new EntityDbRemoteProvider(getUser(),
+            User.UNIT_TEST_USER +"@"+new Object(), getClass().getSimpleName())) {
+      @Override
+      protected void loadDomainModel() {
+        new SchemaBrowser();
+      }
+    };
     final EntityModel schemaModel = applicationModel.getMainApplicationModels().iterator().next();
     schemaModel.setLinkedDetailModels(schemaModel.getDetailModels().iterator().next());
     final EntityModel dbObjectModel = schemaModel.getDetailModels().iterator().next();
