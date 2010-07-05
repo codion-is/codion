@@ -72,9 +72,6 @@ public class DateInputPanel extends JPanel {
   }
 
   public JButton getButton() {
-    if (button == null) {
-      throw new RuntimeException("DateInputPanel has no button");
-    }
     return button;
   }
 

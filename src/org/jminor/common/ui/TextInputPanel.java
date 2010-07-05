@@ -29,6 +29,7 @@ public class TextInputPanel extends JPanel {
   private static final double DEFAULT_TEXT_AREA_SCREEN_SIZE_RATIO = 1d/3d;
 
   private final JTextComponent textComponent;
+  private final JButton button;
   private final String dialogTitle;
   private final Dimension txtAreaSize;
   private int maxLength = 0;
@@ -47,7 +48,8 @@ public class TextInputPanel extends JPanel {
     this.dialogTitle = dialogTitle;
     this.textComponent = textComponent;
     this.txtAreaSize = txtAreaSize;
-    initializeUI(textComponent, createButton(textComponent, buttonFocusable, UiUtil.DIMENSION_TEXT_FIELD_SQUARE));
+    this.button = createButton(textComponent, buttonFocusable, UiUtil.DIMENSION_TEXT_FIELD_SQUARE);
+    initializeUI(textComponent, button);
   }
 
   /**
@@ -72,6 +74,10 @@ public class TextInputPanel extends JPanel {
 
   public JTextComponent getTextComponent() {
     return textComponent;
+  }
+
+  public JButton getButton() {
+    return button;
   }
 
   protected void initializeUI(final JTextComponent textComponent, final JButton button) {
@@ -113,12 +119,12 @@ public class TextInputPanel extends JPanel {
       }
     };
 
-    final JButton button = new JButton(action);
-    button.setFocusable(buttonFocusable);
+    final JButton jButton = new JButton(action);
+    jButton.setFocusable(buttonFocusable);
     if (buttonSize != null) {
-      button.setPreferredSize(buttonSize);
+      jButton.setPreferredSize(buttonSize);
     }
 
-    return button;
+    return jButton;
   }
 }

@@ -16,6 +16,7 @@ import org.jminor.common.model.combobox.ItemComboBoxModel;
 import org.jminor.common.model.valuemap.ValueChangeEvent;
 import org.jminor.common.model.valuemap.ValueChangeListener;
 import org.jminor.common.ui.DateInputPanel;
+import org.jminor.common.ui.TextInputPanel;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.checkbox.TristateCheckBox;
 import org.jminor.common.ui.combobox.MaximumMatch;
@@ -454,7 +455,25 @@ public final class EntityUiUtil {
     final JFormattedTextField field = (JFormattedTextField) createTextField(property, editModel, linkType,
             DateUtil.getDateMask(dateFormat), true, dateFormat, enabledState);
 
-    return new DateInputPanel(field, dateFormat, includeButton, enabledState);
+    final DateInputPanel panel = new DateInputPanel(field, dateFormat, includeButton, enabledState);
+    if (panel.getButton() != null && Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER)) {
+      UiUtil.transferFocusOnEnter(panel.getButton());
+    }
+
+    return panel;
+  }
+
+  public static TextInputPanel createTextInputPanel(final Property property, final EntityEditModel editModel,
+                                                    final LinkType linkType, final boolean immediateUpdate,
+                                                    final boolean buttonFocusable) {
+    final TextInputPanel panel = new TextInputPanel(createTextField(property, editModel, linkType, null, immediateUpdate),
+            property.getCaption(), null, buttonFocusable);
+    panel.setMaxLength(property.getMaxLength());
+    if (panel.getButton() != null && Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER)) {
+      UiUtil.transferFocusOnEnter(panel.getButton());
+    }
+
+    return panel;
   }
 
   public static JTextArea createTextArea(final Property property, final EntityEditModel editModel) {

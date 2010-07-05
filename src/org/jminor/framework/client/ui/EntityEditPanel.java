@@ -696,9 +696,8 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    */
   protected final TextInputPanel createTextInputPanel(final Property property, final LinkType linkType,
                                                       final boolean immediateUpdate, final boolean buttonFocusable) {
-    final TextInputPanel ret = new TextInputPanel(createTextField(property, linkType, null, immediateUpdate),
-            property.getCaption(), null, buttonFocusable);
-    ret.setMaxLength(property.getMaxLength());
+    final TextInputPanel ret = EntityUiUtil.createTextInputPanel(property, getEditModel(), linkType, immediateUpdate, buttonFocusable);
+    setComponent(property.getPropertyID(), ret.getTextComponent());
 
     return ret;
   }

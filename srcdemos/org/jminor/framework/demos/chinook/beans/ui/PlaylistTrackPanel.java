@@ -4,9 +4,7 @@
 package org.jminor.framework.demos.chinook.beans.ui;
 
 import org.jminor.framework.client.model.EntityEditModel;
-import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.ui.EntityEditPanel;
-import org.jminor.framework.client.ui.EntityPanel;
 import static org.jminor.framework.demos.chinook.domain.Chinook.PLAYLISTTRACK_PLAYLISTID_FK;
 import static org.jminor.framework.demos.chinook.domain.Chinook.PLAYLISTTRACK_TRACKID_FK;
 
@@ -14,32 +12,20 @@ import javax.swing.JComboBox;
 import javax.swing.JTextField;
 import java.awt.GridLayout;
 
-/**
- * User: Björn Darri
- * Date: 18.4.2010
- * Time: 20:05:39
- */
-public class PlaylistTrackPanel extends EntityPanel {
+public class PlaylistTrackPanel extends EntityEditPanel {
 
-  public PlaylistTrackPanel(final EntityModel model) {
-    super(model, new PlaylistTrackEditPanel(model.getEditModel()));
+  public PlaylistTrackPanel(final EntityEditModel editModel) {
+    super(editModel);
   }
 
-  static class PlaylistTrackEditPanel extends EntityEditPanel {
-
-    PlaylistTrackEditPanel(final EntityEditModel editModel) {
-      super(editModel);
-    }
-
-    @Override
-    protected void initializeUI() {
-      setLayout(new GridLayout(2, 1, 5, 5));
-      final JComboBox boxPlaylist = createEntityComboBox(PLAYLISTTRACK_PLAYLISTID_FK);
-      setInitialFocusComponent(boxPlaylist);
-      final JTextField txtTrack = createEntityLookupField(PLAYLISTTRACK_TRACKID_FK);
-      txtTrack.setColumns(30);
-      add(createPropertyPanel(PLAYLISTTRACK_PLAYLISTID_FK, boxPlaylist));
-      add(createPropertyPanel(PLAYLISTTRACK_TRACKID_FK, txtTrack));
-    }
+  @Override
+  protected void initializeUI() {
+    setLayout(new GridLayout(2, 1, 5, 5));
+    final JComboBox boxPlaylist = createEntityComboBox(PLAYLISTTRACK_PLAYLISTID_FK);
+    setInitialFocusComponent(boxPlaylist);
+    final JTextField txtTrack = createEntityLookupField(PLAYLISTTRACK_TRACKID_FK);
+    txtTrack.setColumns(30);
+    add(createPropertyPanel(PLAYLISTTRACK_PLAYLISTID_FK, boxPlaylist));
+    add(createPropertyPanel(PLAYLISTTRACK_TRACKID_FK, txtTrack));
   }
 }

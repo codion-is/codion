@@ -6,16 +6,10 @@ package org.jminor.framework.demos.chinook.testing;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.User;
 import org.jminor.common.ui.LoadTestPanel;
+import org.jminor.framework.client.model.DefaultEntityModel;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.db.provider.EntityDbProviderFactory;
-import org.jminor.framework.demos.chinook.beans.AlbumModel;
-import org.jminor.framework.demos.chinook.beans.ArtistModel;
-import org.jminor.framework.demos.chinook.beans.CustomerModel;
-import org.jminor.framework.demos.chinook.beans.GenreModel;
-import org.jminor.framework.demos.chinook.beans.InvoiceModel;
-import org.jminor.framework.demos.chinook.beans.PlaylistModel;
-import org.jminor.framework.demos.chinook.client.ChinookAppModel;
 import org.jminor.framework.demos.chinook.domain.Chinook;
 import org.jminor.framework.tools.testing.EntityLoadTestModel;
 
@@ -24,11 +18,6 @@ import javax.swing.UIManager;
 import java.util.Arrays;
 import java.util.Collection;
 
-/**
- * User: Björn Darri
- * Date: 18.4.2010
- * Time: 21:32:40
- */
 public class ChinookLoadTest extends EntityLoadTestModel {
 
   public ChinookLoadTest() {
@@ -46,7 +35,7 @@ public class ChinookLoadTest extends EntityLoadTestModel {
       @Override
       protected void performScenario(Object application) throws Exception {
         final EntityApplicationModel model = (EntityApplicationModel) application;
-        final EntityModel genreModel = new GenreModel(model.getDbProvider());
+        final EntityModel genreModel = new DefaultEntityModel(Chinook.T_GENRE, model.getDbProvider());
         genreModel.setLinkedDetailModels(genreModel.getDetailModels().iterator().next());
         genreModel.refresh();
         selectRandomRow(genreModel.getTableModel());
@@ -61,9 +50,9 @@ public class ChinookLoadTest extends EntityLoadTestModel {
       @Override
       protected void performScenario(Object application) throws Exception {
         final EntityApplicationModel model = (EntityApplicationModel) application;
-        final EntityModel customerModel = model.getMainApplicationModel(CustomerModel.class);
+        final EntityModel customerModel = model.getMainApplicationModel(Chinook.T_CUSTOMER);
         selectRandomRow(customerModel.getTableModel());
-        final EntityModel invoiceModel = customerModel.getDetailModel(InvoiceModel.class);
+        final EntityModel invoiceModel = customerModel.getDetailModel(Chinook.T_INVOICE);
         selectRandomRow(invoiceModel.getTableModel());
       }
 
@@ -76,9 +65,9 @@ public class ChinookLoadTest extends EntityLoadTestModel {
       @Override
       protected void performScenario(Object application) throws Exception {
         final EntityApplicationModel model = (EntityApplicationModel) application;
-        final EntityModel artistModel = model.getMainApplicationModel(ArtistModel.class);
+        final EntityModel artistModel = model.getMainApplicationModel(Chinook.T_ARTIST);
         selectRandomRow(artistModel.getTableModel());
-        final EntityModel albumModel = artistModel.getDetailModel(AlbumModel.class);
+        final EntityModel albumModel = artistModel.getDetailModel(Chinook.T_ALBUM);
         selectRandomRow(albumModel.getTableModel());
       }
 
@@ -93,18 +82,23 @@ public class ChinookLoadTest extends EntityLoadTestModel {
 
   @Override
   protected EntityApplicationModel initializeApplication() throws CancelException {
-    final EntityApplicationModel appModel = new ChinookAppModel(EntityDbProviderFactory.createEntityDbProvider(getUser(), ChinookLoadTest.class.getSimpleName()));
+    final EntityApplicationModel appModel = new EntityApplicationModel(EntityDbProviderFactory.createEntityDbProvider(getUser(), ChinookLoadTest.class.getSimpleName())) {
+      @Override
+      protected void loadDomainModel() {
+        new Chinook();
+      }
+    };
     appModel.refresh();
 
-    EntityModel model = appModel.getMainApplicationModel(ArtistModel.class);
+    EntityModel model = appModel.getMainApplicationModel(Chinook.T_ARTIST);
     model.setLinkedDetailModels(model.getDetailModels().iterator().next());
 
-    model = appModel.getMainApplicationModel(CustomerModel.class);
+    model = appModel.getMainApplicationModel(Chinook.T_CUSTOMER);
     model.setLinkedDetailModels(model.getDetailModels().iterator().next());
-    model = model.getDetailModel(InvoiceModel.class);
+    model = model.getDetailModel(Chinook.T_INVOICE);
     model.setLinkedDetailModels(model.getDetailModels().iterator().next());
 
-    model = appModel.getMainApplicationModel(PlaylistModel.class);
+    model = appModel.getMainApplicationModel(Chinook.T_PLAYLIST);
     model.setLinkedDetailModels(model.getDetailModels().iterator().next());
 
     return appModel;

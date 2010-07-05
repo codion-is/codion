@@ -21,11 +21,13 @@ import java.util.Map;
 /**
  * A class providing EntityPanel instances.
  */
-public class EntityPanelProvider implements Comparable {//todo rename
+public class EntityPanelProvider implements Comparable {
 
   private final String entityID;
-  private final String caption;
+  private String caption;
   private boolean refreshOnInit = true;
+  private int detailPanelState = EntityPanel.EMBEDDED;
+  private double detailSplitPanelResizeWeight = 0.5;
 
   private Class<? extends EntityModel> modelClass;
   private Class<? extends EntityEditModel> editModelClass;
@@ -34,7 +36,7 @@ public class EntityPanelProvider implements Comparable {//todo rename
   private Class<? extends EntityEditPanel> editPanelClass;
   private Class<? extends EntityTablePanel> tablePanelClass;
 
-  private List<String> detailEntityIDs = new ArrayList<String>();
+  private List<EntityPanelProvider> detailPanelProviders = new ArrayList<EntityPanelProvider>();
 
   private static final Map<String, EntityPanelProvider> panelProviders = Collections.synchronizedMap(new HashMap<String, EntityPanelProvider>());
 
@@ -75,13 +77,15 @@ public class EntityPanelProvider implements Comparable {//todo rename
     this.panelClass = entityPanelClass;
   }
 
-  public void register() {
+  public EntityPanelProvider register() {
     synchronized (panelProviders) {
       if (panelProviders.containsKey(entityID)) {
         throw new RuntimeException("Panel provider has already been set for entity: " + entityID);
       }
       panelProviders.put(entityID, this);
     }
+
+    return this;
   }
 
   public String getEntityID() {
@@ -92,23 +96,27 @@ public class EntityPanelProvider implements Comparable {//todo rename
    * @return the caption to use when this EntityPanelProvider is shown in f.x. menus
    */
   public String getCaption() {
+    if (caption == null || caption.length() == 0) {
+      this.caption = EntityRepository.getEntityDefinition(entityID).getCaption();
+    }
+
     if (caption == null) {
-      return EntityRepository.getEntityDefinition(entityID).getCaption();
+      return "<no caption>";
     }
 
     return caption;
   }
 
-  public EntityPanelProvider addDetailEntityID(final String detailEntityID) {
-    if (!detailEntityIDs.contains(detailEntityID)) {
-      detailEntityIDs.add(detailEntityID);
+  public EntityPanelProvider addDetailPanelProvider(final EntityPanelProvider panelProvider) {
+    if (!detailPanelProviders.contains(panelProvider)) {
+      detailPanelProviders.add(panelProvider);
     }
 
     return this;
   }
 
-  public List<String> getDetailEntityIDs() {
-    return Collections.unmodifiableList(detailEntityIDs);
+  public List<EntityPanelProvider> getDetailPanelProviders() {
+    return Collections.unmodifiableList(detailPanelProviders);
   }
 
   public boolean isRefreshOnInit() {
@@ -117,6 +125,24 @@ public class EntityPanelProvider implements Comparable {//todo rename
 
   public EntityPanelProvider setRefreshOnInit(final boolean refreshOnInit) {
     this.refreshOnInit = refreshOnInit;
+    return this;
+  }
+
+  public int getDetailPanelState() {
+    return detailPanelState;
+  }
+
+  public EntityPanelProvider setDetailPanelState(final int detailPanelState) {
+    this.detailPanelState = detailPanelState;
+    return this;
+  }
+
+  public double getDetailSplitPanelResizeWeight() {
+    return detailSplitPanelResizeWeight;
+  }
+
+  public EntityPanelProvider setDetailSplitPanelResizeWeight(final double detailSplitPanelResizeWeight) {
+    this.detailSplitPanelResizeWeight = detailSplitPanelResizeWeight;
     return this;
   }
 
@@ -220,6 +246,13 @@ public class EntityPanelProvider implements Comparable {//todo rename
       if (tablePanel != null) {
         entityPanel.setTablePanel(tablePanel);
       }
+      if (detailPanelProviders.size() > 0) {
+        entityPanel.setDetailPanelState(detailPanelState);
+        entityPanel.setDetailSplitPanelResizeWeight(detailSplitPanelResizeWeight);
+        for (final EntityPanelProvider detailProvider : detailPanelProviders) {
+          entityPanel.addDetailPanel(detailProvider.createInstance(model.getDetailModel(detailProvider.entityID)));
+        }
+      }
       if (refreshOnInit) {
         model.refresh();
       }
@@ -272,6 +305,9 @@ public class EntityPanelProvider implements Comparable {//todo rename
   }
 
   public void setInstance(final EntityPanel instance) {
+    if (this.instance != null) {
+      throw new RuntimeException("EntityPanel instance has already been set for this provider: " + this.instance);
+    }
     this.instance = instance;
   }
 
