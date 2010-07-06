@@ -219,6 +219,7 @@ public class EntityPanelProvider implements Comparable {
   }
 
   public EntityPanel createInstance(final EntityDbProvider dbProvider) {
+    Util.rejectNullValue(dbProvider);
     try {
       final EntityModel entityModel = initializeModel(this, dbProvider);
       if (refreshOnInit) {
