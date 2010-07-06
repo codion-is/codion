@@ -10,9 +10,9 @@ import static org.jminor.framework.demos.chinook.domain.Chinook.PLAYLIST_NAME;
 import javax.swing.JTextField;
 import java.awt.GridLayout;
 
-public class PlaylistPanel extends EntityEditPanel {
+public class PlaylistEditPanel extends EntityEditPanel {
 
-  public PlaylistPanel(final EntityEditModel editModel) {
+  public PlaylistEditPanel(final EntityEditModel editModel) {
     super(editModel);
   }
 

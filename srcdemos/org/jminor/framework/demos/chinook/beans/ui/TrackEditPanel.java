@@ -16,9 +16,9 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import java.awt.GridLayout;
 
-public class TrackPanel extends EntityEditPanel {
+public class TrackEditPanel extends EntityEditPanel {
 
-  public TrackPanel(final EntityEditModel editModel) {
+  public TrackEditPanel(final EntityEditModel editModel) {
     super(editModel);
   }
 

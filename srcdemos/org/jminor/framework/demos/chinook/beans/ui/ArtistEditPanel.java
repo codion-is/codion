@@ -5,24 +5,24 @@ package org.jminor.framework.demos.chinook.beans.ui;
 
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.ui.EntityEditPanel;
-import static org.jminor.framework.demos.chinook.domain.Chinook.MEDIATYPE_NAME;
+import static org.jminor.framework.demos.chinook.domain.Chinook.ARTIST_NAME;
 
 import javax.swing.JTextField;
 import java.awt.GridLayout;
 
-public class MediaTypePanel extends EntityEditPanel {
+public class ArtistEditPanel extends EntityEditPanel {
 
-  public MediaTypePanel(final EntityEditModel editModel) {
+  public ArtistEditPanel(final EntityEditModel editModel) {
     super(editModel);
   }
 
   @Override
   protected void initializeUI() {
-    setInitialFocusComponentKey(MEDIATYPE_NAME);
-    final JTextField txtName = createTextField(MEDIATYPE_NAME);
-    txtName.setColumns(12);
+    setInitialFocusComponentKey(ARTIST_NAME);
+    final JTextField txtName = createTextField(ARTIST_NAME);
+    txtName.setColumns(18);
 
     setLayout(new GridLayout(1, 1, 5, 5));
-    add(createPropertyPanel(MEDIATYPE_NAME, txtName));
+    add(createPropertyPanel(ARTIST_NAME, txtName));
   }
 }

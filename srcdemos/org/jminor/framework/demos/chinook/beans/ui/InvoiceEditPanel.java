@@ -11,9 +11,9 @@ import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 import javax.swing.JTextField;
 import java.awt.GridLayout;
 
-public class InvoicePanel extends EntityEditPanel {
+public class InvoiceEditPanel extends EntityEditPanel {
 
-  public InvoicePanel(final EntityEditModel editModel) {
+  public InvoiceEditPanel(final EntityEditModel editModel) {
     super(editModel);
   }
 

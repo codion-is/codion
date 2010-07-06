@@ -11,9 +11,9 @@ import static org.jminor.framework.demos.chinook.domain.Chinook.ALBUM_TITLE;
 import javax.swing.JTextField;
 import java.awt.GridLayout;
 
-public class AlbumPanel extends EntityEditPanel {
+public class AlbumEditPanel extends EntityEditPanel {
 
-  public AlbumPanel(final EntityEditModel editModel) {
+  public AlbumEditPanel(final EntityEditModel editModel) {
     super(editModel);
   }
 

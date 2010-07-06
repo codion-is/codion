@@ -13,9 +13,9 @@ import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 
 import javax.swing.JTextField;
 
-public class EmployeePanel extends EntityEditPanel {
+public class EmployeeEditPanel extends EntityEditPanel {
 
-  public EmployeePanel(final EntityEditModel editModel) {
+  public EmployeeEditPanel(final EntityEditModel editModel) {
     super(editModel);
   }
 

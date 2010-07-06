@@ -14,44 +14,54 @@ import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.demos.chinook.beans.ui.*;
 import org.jminor.framework.demos.chinook.domain.Chinook;
+import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 
 import java.util.Locale;
 
 public class ChinookAppPanel extends EntityApplicationPanel {
 
   public ChinookAppPanel() {
-    final EntityPanelProvider trackProvider = new EntityPanelProvider(Chinook.T_TRACK)
-            .setEditPanelClass(TrackPanel.class).register();
-    final EntityPanelProvider albumProvider = new EntityPanelProvider(Chinook.T_ALBUM)
-            .setEditPanelClass(AlbumPanel.class).register();
+    final EntityPanelProvider trackProvider = new EntityPanelProvider(T_TRACK);
+    trackProvider.setEditPanelClass(TrackEditPanel.class);
+
+    final EntityPanelProvider albumProvider = new EntityPanelProvider(T_ALBUM);
+    albumProvider.setEditPanelClass(AlbumEditPanel.class);
     albumProvider.addDetailPanelProvider(trackProvider);
-    final EntityPanelProvider  artistProvider = new EntityPanelProvider(Chinook.T_ARTIST)
-            .setEditPanelClass(ArtistPanel.class).register();
-    artistProvider.addDetailPanelProvider(albumProvider).setDetailSplitPanelResizeWeight(0.3);
 
-    final EntityPanelProvider playlistTrackProvider = new EntityPanelProvider(Chinook.T_PLAYLISTTRACK)
-            .setEditPanelClass(PlaylistTrackPanel.class).register();
-    final EntityPanelProvider playlistProvider = new EntityPanelProvider(Chinook.T_PLAYLIST)
-            .setEditPanelClass(PlaylistPanel.class).register();
-    playlistProvider.addDetailPanelProvider(playlistTrackProvider).setDetailSplitPanelResizeWeight(0.3);
+    final EntityPanelProvider  artistProvider = new EntityPanelProvider(T_ARTIST);
+    artistProvider.setEditPanelClass(ArtistEditPanel.class);
+    artistProvider.addDetailPanelProvider(albumProvider);
+    artistProvider.setDetailSplitPanelResizeWeight(0.3);
 
-    final EntityPanelProvider customerProvider = new EntityPanelProvider(Chinook.T_CUSTOMER)
-            .setEditPanelClass(CustomerPanel.class).register();
-    final EntityPanelProvider invoiceProvider = new EntityPanelProvider(Chinook.T_INVOICE)
-            .setEditPanelClass(InvoicePanel.class).register();
+    final EntityPanelProvider playlistTrackProvider = new EntityPanelProvider(T_PLAYLISTTRACK);
+    playlistTrackProvider.setEditPanelClass(PlaylistTrackEditPanel.class);
+
+    final EntityPanelProvider playlistProvider = new EntityPanelProvider(Chinook.T_PLAYLIST);
+    playlistProvider.setEditPanelClass(PlaylistEditPanel.class);
+    playlistProvider.addDetailPanelProvider(playlistTrackProvider);
+    playlistProvider.setDetailSplitPanelResizeWeight(0.3);
+
+    final EntityPanelProvider invoiceProvider = new EntityPanelProvider(T_INVOICE);
+    invoiceProvider.setEditPanelClass(InvoiceEditPanel.class);
+
+    final EntityPanelProvider customerProvider = new EntityPanelProvider(T_CUSTOMER);
+    customerProvider.setEditPanelClass(CustomerEditPanel.class);
     customerProvider.addDetailPanelProvider(invoiceProvider);
-    final EntityPanelProvider invoiceLineProvider = new EntityPanelProvider(Chinook.T_INVOICELINE)
-            .setEditPanelClass(InvoiceLinePanel.class).register();
+
+    final EntityPanelProvider invoiceLineProvider = new EntityPanelProvider(T_INVOICELINE);
+    invoiceLineProvider.setEditPanelClass(InvoiceLineEditPanel.class);
     invoiceProvider.addDetailPanelProvider(invoiceLineProvider);
 
-    final EntityPanelProvider genreProvider = new EntityPanelProvider(Chinook.T_GENRE)
-            .setEditPanelClass(GenrePanel.class).register();
+    final EntityPanelProvider genreProvider = new EntityPanelProvider(T_GENRE);
+    genreProvider.setEditPanelClass(GenreEditPanel.class);
     genreProvider.addDetailPanelProvider(trackProvider).setDetailPanelState(EntityPanel.HIDDEN);
-    final EntityPanelProvider mediaTypeProvider = new EntityPanelProvider(Chinook.T_MEDIATYPE)
-            .setEditPanelClass(MediaTypePanel.class).register();
+
+    final EntityPanelProvider mediaTypeProvider = new EntityPanelProvider(T_MEDIATYPE);
+    mediaTypeProvider.setEditPanelClass(MediaTypeEditPanel.class);
     mediaTypeProvider.addDetailPanelProvider(trackProvider).setDetailPanelState(EntityPanel.HIDDEN);
-    final EntityPanelProvider employeeProvider = new EntityPanelProvider(Chinook.T_EMPLOYEE)
-            .setEditPanelClass(EmployeePanel.class).register();
+
+    final EntityPanelProvider employeeProvider = new EntityPanelProvider(T_EMPLOYEE);
+    employeeProvider.setEditPanelClass(EmployeeEditPanel.class);
     employeeProvider.addDetailPanelProvider(customerProvider).setDetailPanelState(EntityPanel.HIDDEN);
 
     addMainApplicationPanelProviders(artistProvider, playlistProvider, customerProvider);

@@ -369,7 +369,7 @@ public class EntityPanelProvider implements Comparable {
         model = panelProvider.initializeDefaultModel(dbProvider);
       }
       else {
-        model = panelProvider.modelClass.getConstructor(String.class, EntityDbProvider.class).newInstance(panelProvider.entityID, dbProvider);
+        model = panelProvider.modelClass.getConstructor(EntityDbProvider.class).newInstance(dbProvider);
       }
       panelProvider.configureModel(model);
 
@@ -411,7 +411,7 @@ public class EntityPanelProvider implements Comparable {
         tableModel = initializeDefaultTableModel(dbProvider);
       }
       else {
-        tableModel = tableModelClass.getConstructor(String.class, EntityDbProvider.class).newInstance(entityID, dbProvider);
+        tableModel = tableModelClass.getConstructor(EntityDbProvider.class).newInstance(dbProvider);
       }
       configureTableModel(tableModel);
 

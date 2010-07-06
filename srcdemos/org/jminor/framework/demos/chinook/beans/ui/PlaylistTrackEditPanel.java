@@ -12,9 +12,9 @@ import javax.swing.JComboBox;
 import javax.swing.JTextField;
 import java.awt.GridLayout;
 
-public class PlaylistTrackPanel extends EntityEditPanel {
+public class PlaylistTrackEditPanel extends EntityEditPanel {
 
-  public PlaylistTrackPanel(final EntityEditModel editModel) {
+  public PlaylistTrackEditPanel(final EntityEditModel editModel) {
     super(editModel);
   }
 

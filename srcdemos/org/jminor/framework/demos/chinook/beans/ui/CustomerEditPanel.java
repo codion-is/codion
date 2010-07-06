@@ -12,9 +12,9 @@ import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 
 import javax.swing.JTextField;
 
-public class CustomerPanel extends EntityEditPanel {
+public class CustomerEditPanel extends EntityEditPanel {
 
-  public CustomerPanel(final EntityEditModel editModel) {
+  public CustomerEditPanel(final EntityEditModel editModel) {
     super(editModel);
   }
 

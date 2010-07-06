@@ -10,9 +10,9 @@ import static org.jminor.framework.demos.chinook.domain.Chinook.GENRE_NAME;
 import javax.swing.JTextField;
 import java.awt.GridLayout;
 
-public class GenrePanel extends EntityEditPanel {
+public class GenreEditPanel extends EntityEditPanel {
 
-  public GenrePanel(final EntityEditModel editModel) {
+  public GenreEditPanel(final EntityEditModel editModel) {
     super(editModel);
   }
 
