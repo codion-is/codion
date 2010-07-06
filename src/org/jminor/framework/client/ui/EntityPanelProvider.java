@@ -315,7 +315,9 @@ public class EntityPanelProvider implements Comparable {
     try {
       final EntityPanel panel = panelClass.getConstructor(EntityModel.class).newInstance(model);
       configurePanel(panel);
-      panel.setEditPanel(initializeEditPanel(model.getEditModel()));
+      if (editPanelClass != null) {
+        panel.setEditPanel(initializeEditPanel(model.getEditModel()));
+      }
       if (model.containsTableModel()) {
         panel.setTablePanel(initializeTablePanel(model.getTableModel()));
       }
