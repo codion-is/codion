@@ -44,7 +44,7 @@ public class DepartmentTablePanel extends EntityTablePanel {
   protected ControlSet getPopupControls(final ControlSet additionalPopupControls) {
     final ControlSet controlSet = super.getPopupControls(additionalPopupControls);
     final ControlSet printControlSet = new ControlSet(Messages.get(Messages.PRINT));
-    controlSet.add(ControlFactory.methodControl(this, "viewEmployeeReport", EmpDept.getString(EMPLOYEE_REPORT)));
+    printControlSet.add(ControlFactory.methodControl(this, "viewEmployeeReport", EmpDept.getString(EMPLOYEE_REPORT)));
     controlSet.addAt(printControlSet, 0);
 
     return controlSet;
