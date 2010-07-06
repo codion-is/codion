@@ -13,6 +13,7 @@ import org.jminor.framework.client.model.EntityComboBoxModel;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
+import static org.jminor.framework.demos.empdept.domain.EmpDept.*;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
@@ -22,17 +23,17 @@ import java.awt.event.ActionListener;
 public class EmployeeEditModel extends DefaultEntityEditModel {
 
   public EmployeeEditModel(final EntityDbProvider dbProvider) {
-    super(EmpDept.T_EMPLOYEE, dbProvider);
+    super(T_EMPLOYEE, dbProvider);
   }
 
   /** Providing a custom ComboBoxModel for the manager property, which only shows managers and the president */
   @Override
   public EntityComboBoxModel createEntityComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty) {
     if (foreignKeyProperty.is(EmpDept.EMPLOYEE_MGR_FK)) {
-      final EntityComboBoxModel managerModel = new DefaultEntityComboBoxModel(EmpDept.T_EMPLOYEE, getDbProvider());
+      final EntityComboBoxModel managerModel = new DefaultEntityComboBoxModel(T_EMPLOYEE, getDbProvider());
       managerModel.setNullValueString(EmpDept.getString(EmpDept.NONE));
       //Only show the president and managers
-      managerModel.setEntitySelectCriteria(EntityCriteriaUtil.selectCriteria(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB,
+      managerModel.setEntitySelectCriteria(EntityCriteriaUtil.selectCriteria(T_EMPLOYEE, EMPLOYEE_JOB,
               SearchType.LIKE, "MANAGER", "PRESIDENT"));
 
       return managerModel;
@@ -46,22 +47,22 @@ public class EmployeeEditModel extends DefaultEntityEditModel {
     //Refresh the manager ComboBoxModel when an employee is either added or updated
     eventEntitiesChanged().addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        if (containsComboBoxModel(EmpDept.EMPLOYEE_MGR_FK)) {
-          getEntityComboBoxModel(EmpDept.EMPLOYEE_MGR_FK).refresh();
+        if (containsComboBoxModel(EMPLOYEE_MGR_FK)) {
+          getEntityComboBoxModel(EMPLOYEE_MGR_FK).refresh();
         }
       }
     });
     //Filter the manager ComboBoxModel so that only managers from the selected department are shown,
     //this filtering happens each time the department value is changed
-    getValueChangeEvent(EmpDept.EMPLOYEE_DEPARTMENT_FK).addListener(new ValueChangeListener() {
+    getValueChangeEvent(EMPLOYEE_DEPARTMENT_FK).addListener(new ValueChangeListener() {
       @Override
       public void valueChanged(final ValueChangeEvent event) {
         //only show managers in the same department as the active entity
-        if (containsComboBoxModel(EmpDept.EMPLOYEE_MGR_FK)) {
-          getEntityComboBoxModel(EmpDept.EMPLOYEE_MGR_FK).setFilterCriteria(new FilterCriteria<Object>() {
+        if (containsComboBoxModel(EMPLOYEE_MGR_FK)) {
+          getEntityComboBoxModel(EMPLOYEE_MGR_FK).setFilterCriteria(new FilterCriteria<Object>() {
             public boolean include(final Object item) {
               return item instanceof String //the item representing null
-                      || (Entity.isEqual(((Entity) item).getForeignKeyValue(EmpDept.EMPLOYEE_DEPARTMENT_FK), event.getNewValue())
+                      || (Entity.isEqual(((Entity) item).getForeignKeyValue(EMPLOYEE_DEPARTMENT_FK), event.getNewValue())
                       && !Entity.isEqual(item, getEntityCopy()));
             }
           });

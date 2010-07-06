@@ -11,6 +11,8 @@ import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.ui.EntityTablePanel;
 import org.jminor.framework.client.ui.reporting.EntityReportUiUtil;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
+import static org.jminor.framework.demos.empdept.domain.EmpDept.DEPARTMENT_ID;
+import static org.jminor.framework.demos.empdept.domain.EmpDept.EMPLOYEE_REPORT;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.plugins.jasperreports.model.JasperReportsWrapper;
 import org.jminor.framework.plugins.jasperreports.ui.JasperReportsUIWrapper;
@@ -31,7 +33,7 @@ public class DepartmentTablePanel extends EntityTablePanel {
 
     final String reportPath = Configuration.getReportPath() + "/empdept_employees.jasper";
     final Collection<Object> departmentNumbers =
-            EntityUtil.getDistinctPropertyValues(getTableModel().getSelectedItems(), EmpDept.DEPARTMENT_ID);
+            EntityUtil.getDistinctPropertyValues(getTableModel().getSelectedItems(), DEPARTMENT_ID);
     final HashMap<String, Object> reportParameters = new HashMap<String, Object>();
     reportParameters.put("DEPTNO", departmentNumbers);
     EntityReportUiUtil.viewJdbcReport(this, new JasperReportsWrapper(reportPath, reportParameters),
@@ -42,7 +44,7 @@ public class DepartmentTablePanel extends EntityTablePanel {
   protected ControlSet getPopupControls(final ControlSet additionalPopupControls) {
     final ControlSet controlSet = super.getPopupControls(additionalPopupControls);
     final ControlSet printControlSet = new ControlSet(Messages.get(Messages.PRINT));
-    controlSet.add(ControlFactory.methodControl(this, "viewEmployeeReport", EmpDept.getString(EmpDept.EMPLOYEE_REPORT)));
+    controlSet.add(ControlFactory.methodControl(this, "viewEmployeeReport", EmpDept.getString(EMPLOYEE_REPORT)));
     controlSet.addAt(printControlSet, 0);
 
     return controlSet;

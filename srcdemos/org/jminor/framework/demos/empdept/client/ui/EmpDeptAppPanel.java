@@ -22,6 +22,7 @@ import org.jminor.framework.demos.empdept.beans.ui.DepartmentEditPanel;
 import org.jminor.framework.demos.empdept.beans.ui.DepartmentTablePanel;
 import org.jminor.framework.demos.empdept.beans.ui.EmployeeEditPanel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
+import static org.jminor.framework.demos.empdept.domain.EmpDept.*;
 import org.jminor.framework.plugins.json.EntityJSONParser;
 
 import java.io.File;
@@ -30,11 +31,11 @@ import java.nio.charset.Charset;
 public class EmpDeptAppPanel extends EntityApplicationPanel {
 
   public EmpDeptAppPanel() {
-    final EntityPanelProvider employeePanelProvider = new EntityPanelProvider(EmpDept.T_EMPLOYEE) {
+    final EntityPanelProvider employeePanelProvider = new EntityPanelProvider(T_EMPLOYEE) {
       @Override
       protected void configureTableModel(final EntityTableModel tableModel) {
         tableModel.setQueryCriteriaRequired(true);
-        tableModel.getPropertySummaryModel(EmpDept.EMPLOYEE_SALARY).setSummaryType(PropertySummaryModel.AVERAGE);
+        tableModel.getPropertySummaryModel(EMPLOYEE_SALARY).setSummaryType(PropertySummaryModel.AVERAGE);
       }
 
       @Override
@@ -45,7 +46,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel {
     employeePanelProvider.setEditModelClass(EmployeeEditModel.class);
     employeePanelProvider.setEditPanelClass(EmployeeEditPanel.class);
 
-    final EntityPanelProvider departmentPanelProvider = new EntityPanelProvider(EmpDept.T_DEPARTMENT);
+    final EntityPanelProvider departmentPanelProvider = new EntityPanelProvider(T_DEPARTMENT);
     departmentPanelProvider.setEditPanelClass(DepartmentEditPanel.class);
     departmentPanelProvider.setTablePanelClass(DepartmentTablePanel.class);
     departmentPanelProvider.addDetailPanelProvider(employeePanelProvider);
@@ -63,7 +64,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel {
   @Override
   protected ControlSet getToolsControlSet() {
     final ControlSet toolsSet = super.getToolsControlSet();
-    toolsSet.add(ControlFactory.methodControl(this, "importJSON", EmpDept.getString(EmpDept.IMPORT_JSON)));
+    toolsSet.add(ControlFactory.methodControl(this, "importJSON", EmpDept.getString(IMPORT_JSON)));
 
     return toolsSet;
   }
