@@ -212,22 +212,15 @@ public class EntityPanel extends JPanel {
     Util.rejectNullValue(caption, "caption");
     this.model = model;
     this.caption = caption;
-    this.editPanel = editPanel;
-    this.tablePanel = tablePanel;
-    getEditModel().stateActive().eventStateChanged().addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent e) {
-        if (isActive()) {
-          SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-              initializePanel();
-              showPanelTab();
-              //do not try to grab the initial focus when a child component already has the focus, for example the table
-              prepareUI(!isParentPanel(KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner()), false);
-            }
-          });
-        }
-      }
-    });
+    if (editPanel != null) {
+      setEditPanel(editPanel);
+    }
+    if (tablePanel != null) {
+      setTablePanel(tablePanel);
+    }
+    bindModelEvents();
+    bindTableModelEvents();
+    addActivationInitializer();
   }
 
   /**
@@ -242,6 +235,13 @@ public class EntityPanel extends JPanel {
    */
   public EntityEditModel getEditModel() {
     return model.getEditModel();
+  }
+
+  /**
+   * @return the EntityTableModel, null if none is available
+   */
+  public EntityTableModel getTableModel() {
+    return model.getTableModel();
   }
 
   /**
@@ -318,8 +318,6 @@ public class EntityPanel extends JPanel {
         initializeControlPanels();
         bindEventsInternal();
         bindEvents();
-        bindModelEvents();
-        bindTableModelEvents();
         initializeUI();
         bindTablePanelEvents();
         initialize();
@@ -353,6 +351,9 @@ public class EntityPanel extends JPanel {
     if (panelInitialized) {
       throw new RuntimeException("Can not set edit panel after initialization");
     }
+    if (model.getEditModel() != editPanel.getEditModel()) {
+      throw new RuntimeException("The edit model must match the edit panel model");
+    }
     this.editPanel = editPanel;
   }
 
@@ -377,6 +378,11 @@ public class EntityPanel extends JPanel {
   public void setTablePanel(final EntityTablePanel tablePanel) {
     if (panelInitialized) {
       throw new RuntimeException("Can not set table panel after initialization");
+    }
+    if (model.containsTableModel() && tablePanel != null) {
+      if (model.getTableModel() != tablePanel.getTableModel()) {
+        throw new RuntimeException("The table model must match the table panel model");
+      }
     }
     this.tablePanel = tablePanel;
   }
@@ -1149,6 +1155,35 @@ public class EntityPanel extends JPanel {
     model.eventRefreshDone().addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         UiUtil.setWaitCursor(false, EntityPanel.this);
+      }
+    });
+  }
+
+  private void addActivationInitializer() {
+    getEditModel().stateActive().eventStateChanged().addListener(new ActionListener() {
+      final Runnable initializer = new Runnable() {
+        public void run() {
+          initializePanel();
+          showPanelTab();
+          //do not try to grab the initial focus when a child component already has the focus, for example the table
+          final boolean grabInitialFocus = !isParentPanel(KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner());
+          prepareUI(grabInitialFocus, false);
+        }
+      };
+      public void actionPerformed(final ActionEvent e) {
+        if (isActive()) {
+          try {
+            if (SwingUtilities.isEventDispatchThread()) {
+              initializer.run();
+            }
+            else {
+              SwingUtilities.invokeAndWait(initializer);
+            }
+          }
+          catch (Exception ex) {
+            throw new RuntimeException(ex);
+          }
+        }
       }
     });
   }

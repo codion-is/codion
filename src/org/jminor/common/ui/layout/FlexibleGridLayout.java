@@ -37,16 +37,20 @@ public class FlexibleGridLayout extends GridLayout {
 
   /**
    * @param height the fixed row height to use in this layout
+   * @return this layout instance
    */
-  public void setFixedRowHeight(final int height) {
+  public FlexibleGridLayout setFixedRowHeight(final int height) {
     fixedRowHeight = height;
+    return this;
   }
 
   /**
    * @param width the fixed column width to use in this layout
+   * @return this layout instance
    */
-  public void setFixedColumnWidth(final int width) {
+  public FlexibleGridLayout setFixedColumnWidth(final int width) {
     fixedColumnWidth = width;
+    return this;
   }
 
   @Override
