@@ -26,6 +26,11 @@ import java.util.Locale;
 public class PetstoreAppPanel extends EntityApplicationPanel {
 
   public PetstoreAppPanel() {
+   /* CATEGORY
+    *   PRODUCT
+    *     ITEM
+    *       ITEMTAG
+    */
     final EntityPanelProvider tagItemProvider = new EntityPanelProvider(Petstore.T_TAG_ITEM).setEditPanelClass(TagItemPanel.class);
     final EntityPanelProvider itemProvider = new EntityPanelProvider(Petstore.T_ITEM).setEditPanelClass(ItemPanel.class);
     itemProvider.addDetailPanelProvider(tagItemProvider).setDetailPanelState(EntityPanel.HIDDEN);

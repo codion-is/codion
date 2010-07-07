@@ -1820,3 +1820,7 @@
   EntityModel.fillReport() removed
   EntityPanel.viewReport() removed
   EmpDept demo application changed to reflect bootstrapping changes
+  EntityPanel.getToggleEdit/DetailPanelControl() is now public
+  EntityTablePanel.southPanel field added
+  EntityTablePanel.initializePopupMenu() and initializeToolbar() added
+  EntityPanelProvider takes advantage of the above changes

@@ -13,7 +13,6 @@ import org.jminor.framework.server.EntityDbRemoteServerTest;
 import org.junit.AfterClass;
 import static org.junit.Assert.*;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class EntityLoadTestModelTest {
@@ -29,7 +28,6 @@ public class EntityLoadTestModelTest {
   }
 
   @Test
-  @Ignore
   public void testLoadTesting() throws Exception {
     final EmpDeptLoadTest loadTest = new EmpDeptLoadTest();
 

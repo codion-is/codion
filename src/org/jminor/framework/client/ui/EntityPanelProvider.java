@@ -4,6 +4,7 @@
 package org.jminor.framework.client.ui;
 
 import org.jminor.common.model.Util;
+import org.jminor.common.ui.control.ControlSet;
 import org.jminor.framework.client.model.DefaultEntityEditModel;
 import org.jminor.framework.client.model.DefaultEntityModel;
 import org.jminor.framework.client.model.DefaultEntityTableModel;
@@ -268,6 +269,7 @@ public class EntityPanelProvider implements Comparable {
       throw new RuntimeException("Can not create a EntityPanel without an EntityModel");
     }
     try {
+      final EntityPanel entityPanel= initializePanel(model);
       final EntityEditPanel editPanel;
       if (editPanelClass != null) {
         editPanel = initializeEditPanel(model.getEditModel());
@@ -277,12 +279,11 @@ public class EntityPanelProvider implements Comparable {
       }
       final EntityTablePanel tablePanel;
       if (model.containsTableModel()) {
-        tablePanel = initializeTablePanel(model.getTableModel());
+        tablePanel = initializeTablePanel(entityPanel);
       }
       else {
         tablePanel = null;
       }
-      final EntityPanel entityPanel= initializePanel(model);
       if (editPanel != null) {
         entityPanel.setEditPanel(editPanel);
       }
@@ -320,7 +321,7 @@ public class EntityPanelProvider implements Comparable {
         panel.setEditPanel(initializeEditPanel(model.getEditModel()));
       }
       if (model.containsTableModel()) {
-        panel.setTablePanel(initializeTablePanel(model.getTableModel()));
+        panel.setTablePanel(initializeTablePanel(panel));
       }
 
       return panel;
@@ -348,9 +349,18 @@ public class EntityPanelProvider implements Comparable {
     }
   }
 
-  private EntityTablePanel initializeTablePanel(final EntityTableModel tableModel) {
+  private EntityTablePanel initializeTablePanel(final EntityPanel entityPanel) {
     try {
-      final EntityTablePanel tablePanel = tablePanelClass.getConstructor(EntityTableModel.class).newInstance(tableModel);
+      final EntityTablePanel tablePanel = tablePanelClass.getConstructor(EntityTableModel.class).newInstance(entityPanel.getModel().getTableModel());
+      final ControlSet toolbarControls = new ControlSet("");
+      if (editPanelClass != null) {
+        toolbarControls.add(entityPanel.getToggleEditPanelControl());
+      }
+      if (detailPanelProviders.size() > 0) {
+        toolbarControls.add(entityPanel.getToggleDetailPanelControl());
+      }
+      tablePanel.initializeToolbar(toolbarControls);
+      tablePanel.initializePopupMenu(entityPanel.getTablePopupControlSet(), entityPanel.getPrintControls());
       configureTablePanel(tablePanel);
 
       return tablePanel;

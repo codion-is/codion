@@ -229,12 +229,6 @@
     <copy file="${basedir}/changelog.txt" todir="${dist}"/>
   </target>
 
-  <target name="signjars">
-    <signjar alias="${jar.sign.alias}" storepass="${jar.sign.storepass}" keystore="${jar.sign.keystoreloc}">
-      <fileset dir="${deploy.demos.path}/lib" />
-    </signjar>
-  </target>
-
   <target name="manifest"
           description="Generates a MANIFEST.MF file for inclusion in jars">
     <mkdir dir="${build.base}/META-INF"/>
@@ -368,22 +362,14 @@
     </zip>
   </target>
 
-  <target name="deploy_to_wiki" depends="javadoc, run_and_report"
+  <target name="deploy_to_wiki" depends="javadoc, run_and_report, deploy_src_to_wiki"
           description="Publishes the relevant files to the documentation wiki">
-    <delete dir="${wiki.media.project}"/>
-    <mkdir dir="${wiki.media.project}"/>
-    <copy todir="${wiki.media.project}/src">
-      <fileset dir="${src}" excludes="*.svn*"/>
-    </copy>
-    <copy todir="${wiki.media.project}/src">
-      <fileset dir="${srctest}"/>
-    </copy>
-    <copy todir="${wiki.media.project}/src">
-      <fileset dir="${srcplugins}"/>
-    </copy>
-    <copy todir="${wiki.media.project}/src">
-      <fileset dir="${srcdemos}"/>
-    </copy>
+    <delete dir="${wiki.media.project}/docs"/>
+    <delete dir="${wiki.media.project}/resources"/>
+    <delete dir="${wiki.media.project}/test"/>
+    <mkdir dir="${wiki.media.project}/docs"/>
+    <mkdir dir="${wiki.media.project}/resources"/>
+    <mkdir dir="${wiki.media.project}/test"/>
     <copy todir="${wiki.media.project}/docs">
       <fileset dir="${docs}"/>
     </copy>
@@ -396,6 +382,22 @@
     <chmod dir="${wiki.media.project}" perm="ugo+r" type="file" includes="**/*"/>
     <chmod dir="${wiki.media.project}" perm="ugo+rx" type="dir" includes="**/*"/>
     <chmod file="${wiki.media.project}" perm="ugo+rx" type="dir"/>
+  </target>
+
+  <target name="deploy_src_to_wiki" >
+    <delete dir="${wiki.media.project}/src"/>
+    <copy todir="${wiki.media.project}/src">
+      <fileset dir="${src}" />
+    </copy>
+    <copy todir="${wiki.media.project}/src">
+      <fileset dir="${srcplugins}"/>
+    </copy>
+    <copy todir="${wiki.media.project}/src">
+      <fileset dir="${srcdemos}"/>
+    </copy>
+    <chmod dir="${wiki.media.project}/src" perm="ugo+r" type="file" includes="**/*"/>
+    <chmod dir="${wiki.media.project}/src" perm="ugo+rx" type="dir" includes="**/*"/>
+    <chmod file="${wiki.media.project}/src" perm="ugo+rx" type="dir"/>
   </target>
 
   <target name="deploy_project"

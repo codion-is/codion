@@ -21,6 +21,15 @@ import java.util.Locale;
 public class ChinookAppPanel extends EntityApplicationPanel {
 
   public ChinookAppPanel() {
+   /* ARTIST
+    *   ALBUM
+    *     TRACK
+    * PLAYLIST
+    *   PLAYLISTTRACK
+    * CUSTOMER
+    *   INVOICE
+    *     INVOICELINE
+    */
     final EntityPanelProvider trackProvider = new EntityPanelProvider(T_TRACK);
     trackProvider.setEditPanelClass(TrackEditPanel.class);
 

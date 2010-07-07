@@ -6,7 +6,6 @@ package org.jminor.framework.demos.chinook.testing;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.User;
 import org.jminor.common.ui.LoadTestPanel;
-import org.jminor.framework.client.model.DefaultEntityModel;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.db.provider.EntityDbProviderFactory;
@@ -35,8 +34,7 @@ public class ChinookLoadTest extends EntityLoadTestModel {
       @Override
       protected void performScenario(Object application) throws Exception {
         final EntityApplicationModel model = (EntityApplicationModel) application;
-        final EntityModel genreModel = new DefaultEntityModel(Chinook.T_GENRE, model.getDbProvider());
-        genreModel.setLinkedDetailModels(genreModel.getDetailModels().iterator().next());
+        final EntityModel genreModel = model.getMainApplicationModel(Chinook.T_GENRE);
         genreModel.refresh();
         selectRandomRow(genreModel.getTableModel());
       }
@@ -88,18 +86,32 @@ public class ChinookLoadTest extends EntityLoadTestModel {
         new Chinook();
       }
     };
+    /* ARTIST
+    *   ALBUM
+    *     TRACK
+    * PLAYLIST
+    *   PLAYLISTTRACK
+    * CUSTOMER
+    *   INVOICE
+    *     INVOICELINE
+    */
+    final EntityModel artistModel = appModel.getMainApplicationModel(Chinook.T_ARTIST);
+    final EntityModel albumModel = artistModel.getDetailModel(Chinook.T_ALBUM);
+    final EntityModel trackModel = albumModel.getDetailModel(Chinook.T_TRACK);
+    artistModel.setLinkedDetailModels(albumModel);
+    albumModel.setLinkedDetailModels(trackModel);
+
+    final EntityModel playlistModel = appModel.getMainApplicationModel(Chinook.T_PLAYLIST);
+    final EntityModel playlistTrackModel = playlistModel.getDetailModel(Chinook.T_PLAYLISTTRACK);
+    playlistModel.setLinkedDetailModels(playlistTrackModel);
+
+    final EntityModel customerModel = appModel.getMainApplicationModel(Chinook.T_CUSTOMER);
+    final EntityModel invoiceModel = customerModel.getDetailModel(Chinook.T_INVOICE);
+    final EntityModel invoicelineModel = invoiceModel.getDetailModel(Chinook.T_INVOICELINE);
+    customerModel.setLinkedDetailModels(invoiceModel);
+    invoiceModel.setLinkedDetailModels(invoicelineModel);
+
     appModel.refresh();
-
-    EntityModel model = appModel.getMainApplicationModel(Chinook.T_ARTIST);
-    model.setLinkedDetailModels(model.getDetailModels().iterator().next());
-
-    model = appModel.getMainApplicationModel(Chinook.T_CUSTOMER);
-    model.setLinkedDetailModels(model.getDetailModels().iterator().next());
-    model = model.getDetailModel(Chinook.T_INVOICE);
-    model.setLinkedDetailModels(model.getDetailModels().iterator().next());
-
-    model = appModel.getMainApplicationModel(Chinook.T_PLAYLIST);
-    model.setLinkedDetailModels(model.getDetailModels().iterator().next());
 
     return appModel;
   }

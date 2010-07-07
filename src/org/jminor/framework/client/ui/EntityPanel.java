@@ -456,6 +456,45 @@ public class EntityPanel extends JPanel {
     return caption;
   }
 
+  public Control getToggleEditPanelControl() {
+    final Control toggle = ControlFactory.methodControl(this, "toggleEditPanelState",
+            Images.loadImage("Form16.gif"));
+    toggle.setDescription(FrameworkMessages.get(FrameworkMessages.TOGGLE_EDIT_TIP));
+
+    return toggle;
+  }
+
+  public Control getToggleDetailPanelControl() {
+    final Control toggle = ControlFactory.methodControl(this, "toggleDetailPanelState",
+            Images.loadImage(Images.IMG_HISTORY_16));
+    toggle.setDescription(FrameworkMessages.get(FrameworkMessages.TOGGLE_DETAIL_TIP));
+
+    return toggle;
+  }
+
+  /**
+   * Returns a ControlSet containing the detail panel controls, if no detail
+   * panels exist the resulting ControlSet will be empty.
+   * @return the ControlSet on which the table popup menu is based
+   * @see #getDetailPanelControls(int)
+   */
+  public ControlSet getTablePopupControlSet() {
+    final ControlSet controlSet = new ControlSet("");
+    if (detailEntityPanels.size() > 0) {
+      controlSet.add(getDetailPanelControls(EMBEDDED));
+    }
+
+    return controlSet;
+  }
+
+  /**
+   * Override to provide additional print controls to display in the table popup menu.
+   * @return a ControlSet containing the print controls
+   */
+  public ControlSet getPrintControls() {
+    return null;
+  }
+
   /**
    * By default this delegates to the edit panel
    * @param exception the exception to handle
@@ -888,14 +927,6 @@ public class EntityPanel extends JPanel {
   }
 
   /**
-   * Override to provide additional print controls to display in the table popup menu.
-   * @return a ControlSet containing the print controls
-   */
-  protected ControlSet getPrintControls() {
-    return null;
-  }
-
-  /**
    * Initializes the horizontal split pane, used in the case of detail panel(s)
    * @return the horizontal split pane
    */
@@ -957,21 +988,6 @@ public class EntityPanel extends JPanel {
    * Override to add code that should be called during the initialization routine after the UI has been initialized
    */
   protected void initialize() {}
-
-  /**
-   * Returns a ControlSet containing the detail panel controls, if no detail
-   * panels exist the resulting ControlSet will be empty.
-   * @return the ControlSet on which the table popup menu is based
-   * @see #getDetailPanelControls(int)
-   */
-  protected ControlSet getTablePopupControlSet() {
-    final ControlSet controlSet = new ControlSet("");
-    if (detailEntityPanels.size() > 0) {
-      controlSet.add(getDetailPanelControls(EMBEDDED));
-    }
-
-    return controlSet;
-  }
 
   /**
    * @return the ControlSet on which the table popup menu is based
@@ -1104,30 +1120,6 @@ public class EntityPanel extends JPanel {
 
   protected void setMasterPanel(final EntityPanel masterPanel) {
     this.masterPanel = masterPanel;
-  }
-
-  private Control getToggleEditPanelControl() {
-    if (editControlPanel == null) {
-      return null;
-    }
-
-    final Control toggle = ControlFactory.methodControl(this, "toggleEditPanelState",
-            Images.loadImage("Form16.gif"));
-    toggle.setDescription(FrameworkMessages.get(FrameworkMessages.TOGGLE_EDIT_TIP));
-
-    return toggle;
-  }
-
-  private Control getToggleDetailPanelControl() {
-    if (detailEntityPanels.size() == 0) {
-      return null;
-    }
-
-    final Control toggle = ControlFactory.methodControl(this, "toggleDetailPanelState",
-            Images.loadImage(Images.IMG_HISTORY_16));
-    toggle.setDescription(FrameworkMessages.get(FrameworkMessages.TOGGLE_DETAIL_TIP));
-
-    return toggle;
   }
 
   private void disposeEditDialog() {

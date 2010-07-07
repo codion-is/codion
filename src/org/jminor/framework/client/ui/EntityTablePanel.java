@@ -144,6 +144,11 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
   private JScrollPane searchScrollPane;
 
   /**
+   * the south panel
+   */
+  private JPanel southPanel;
+
+  /**
    * the summary panel
    */
   private final EntityTableSummaryPanel summaryPanel;
@@ -220,13 +225,36 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     this.summaryPanel = initializeSummaryPanel();
     this.propertyFilterPanels = initializeFilterPanels();
     setupControls(printControls);
-    initializeUI(getPopupControls(additionalPopupControls), getToolbarControls(additionalToolbarControls));
+    initializeUI();
+    initializePopupMenu(additionalPopupControls, printControls);
+    initializeToolbar(additionalToolbarControls);
     bindEventsInternal();
     bindEvents();
     updateStatusMessage();
     if (Configuration.getBooleanValue(Configuration.SEARCH_PANELS_VISIBLE)) {
       setSearchPanelVisible(true);
     }
+  }
+
+  public EntityTablePanel initializePopupMenu(final ControlSet additionalPopupControls, final ControlSet printControls) {
+    final ControlSet tablePopupControls = getPopupControls(additionalPopupControls, printControls);
+    setTablePopupMenu(getJTable(), tablePopupControls == null ? new ControlSet() : tablePopupControls);
+    return this;
+  }
+
+  public EntityTablePanel initializeToolbar(final ControlSet additionalToolbarControls) {
+    final ControlSet toolbarControlSet = getToolbarControls(additionalToolbarControls);
+    if (toolbarControlSet != null) {
+      final JToolBar southToolBar = ControlProvider.createToolbar(toolbarControlSet, JToolBar.HORIZONTAL);
+      for (final Component component : southToolBar.getComponents()) {
+        component.setPreferredSize(new Dimension(20, 20));
+      }
+      southToolBar.setFocusable(false);
+      southToolBar.setFloatable(false);
+      southToolBar.setRollover(true);
+      southPanel.add(southToolBar, BorderLayout.EAST);
+    }
+    return this;
   }
 
   /**
@@ -715,10 +743,8 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
 
   /**
    * Initializes the UI
-   * @param tablePopupControls the ControlSet on which to base the table's popup menu
-   * @param toolbarControlSet the ControlSet on which to base the south toolbar
    */
-  protected void initializeUI(final ControlSet tablePopupControls, final ControlSet toolbarControlSet) {
+  protected void initializeUI() {
     final JPanel tableSearchAndSummaryPanel = new JPanel(new BorderLayout());
     setLayout(new BorderLayout());
     if (searchPanel != null) {
@@ -739,7 +765,6 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
         }
       });
     }
-    setTablePopupMenu(getJTable(), tablePopupControls == null ? new ControlSet() : tablePopupControls);
 
     final JScrollPane tableScrollPane = getTableScrollPane();
     tableSearchAndSummaryPanel.add(tableScrollPane, BorderLayout.CENTER);
@@ -760,7 +785,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
       tableSearchAndSummaryPanel.add(summaryBasePanel, BorderLayout.SOUTH);
     }
 
-    final JPanel southPanel = initializeSouthPanel(toolbarControlSet);
+    southPanel = initializeSouthPanel();
     if (southPanel != null) {
       add(southPanel, BorderLayout.SOUTH);
     }
@@ -770,10 +795,9 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
 
   /**
    * Initializes the south panel, override and return null for no south panel.
-   * @param toolbarControlSet the control set from which to create the toolbar
    * @return the south panel, or null if no south panel should be used
    */
-  protected JPanel initializeSouthPanel(final ControlSet toolbarControlSet) {
+  protected JPanel initializeSouthPanel() {
     statusMessageLabel = new JLabel("", JLabel.CENTER);
     statusMessageLabel.setFont(new Font(statusMessageLabel.getFont().getName(), Font.PLAIN, 12));
     final JPanel centerPanel = new JPanel(new BorderLayout(5, 5));
@@ -788,17 +812,6 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     refreshToolBar = initializeRefreshToolbar();
     if (refreshToolBar != null) {
       panel.add(refreshToolBar, BorderLayout.WEST);
-    }
-
-    if (toolbarControlSet != null) {
-      final JToolBar southToolBar = ControlProvider.createToolbar(toolbarControlSet, JToolBar.HORIZONTAL);
-      for (final Component component : southToolBar.getComponents()) {
-        component.setPreferredSize(new Dimension(20, 20));
-      }
-      southToolBar.setFocusable(false);
-      southToolBar.setFloatable(false);
-      southToolBar.setRollover(true);
-      panel.add(southToolBar, BorderLayout.EAST);
     }
 
     return panel;
@@ -932,7 +945,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     toolbarControls.addSeparator();
     toolbarControls.add(controlMap.get(MOVE_SELECTION_UP));
     toolbarControls.add(controlMap.get(MOVE_SELECTION_DOWN));
-    if (additionalToolbarControls != null) {
+    if (additionalToolbarControls != null && additionalToolbarControls.size() > 0) {
       toolbarControls.addSeparator();
       for (final Action action : additionalToolbarControls.getActions()) {
         if (action == null) {
@@ -947,7 +960,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     return toolbarControls;
   }
 
-  protected ControlSet getPopupControls(final ControlSet additionalPopupControls) {
+  protected ControlSet getPopupControls(final ControlSet additionalPopupControls, final ControlSet printControls) {
     final ControlSet popupControls = new ControlSet("");
     popupControls.add(controlMap.get(REFRESH));
     popupControls.add(controlMap.get(CLEAR));
@@ -986,8 +999,14 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
       popupControls.addSeparator();
       separatorRequired = false;
     }
-    if (controlMap.containsKey(PRINT_TABLE)) {
-      popupControls.add(controlMap.get(PRINT_TABLE));
+    if (printControls == null) {
+      if (controlMap.containsKey(PRINT_TABLE)) {
+        popupControls.add(controlMap.get(PRINT_TABLE));
+        separatorRequired = true;
+      }
+    }
+    else {
+      popupControls.add(printControls);
       separatorRequired = true;
     }
     if (controlMap.containsKey(SELECT_COLUMNS)) {
