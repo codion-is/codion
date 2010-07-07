@@ -81,6 +81,15 @@ public class EntityDbRemoteProvider implements EntityDbProvider {
     this.user = user;
   }
 
+  public boolean isConnected() {
+    try {
+      return entityDb != null && entityDb.isConnected();
+    }
+    catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
   public void disconnect() {
     try {
       if (entityDb != null && connectionValid()) {

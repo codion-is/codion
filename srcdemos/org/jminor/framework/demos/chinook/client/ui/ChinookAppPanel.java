@@ -95,7 +95,7 @@ public class ChinookAppPanel extends EntityApplicationPanel {
     Configuration.setValue(Configuration.PROPERTY_DEBUG_OUTPUT, true);
   }
 
-  public static void main(final String[] args) {
+  public static void main(final String[] args) throws CancelException {
     Locale.setDefault(new Locale("EN", "en"));
     new ChinookAppPanel().startApplication("Chinook", null, false, UiUtil.getScreenSizeRatio(0.6), new User("scott", "tiger"));
   }

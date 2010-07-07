@@ -42,8 +42,8 @@ public class MethodControl extends Control {
    */
   public MethodControl(final String name, final Object owner, final String methodName, final State enabledState) {
     super(name, enabledState);
-    Util.rejectNullValue(owner);
-    Util.rejectNullValue(methodName);
+    Util.rejectNullValue(owner, "owner");
+    Util.rejectNullValue(methodName, "methodName");
     this.owner = owner;
     try {
       this.method = owner.getClass().getMethod(methodName);

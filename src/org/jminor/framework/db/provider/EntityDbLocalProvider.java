@@ -87,6 +87,10 @@ public class EntityDbLocalProvider implements EntityDbProvider {
     this.user = user;
   }
 
+  public boolean isConnected() {
+    return entityDb != null && entityDb.isConnected();
+  }
+
   public void disconnect() {
     try {
       if (entityDb != null && entityDb.isConnectionValid()) {

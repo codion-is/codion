@@ -27,6 +27,11 @@ public interface EntityDbProvider {
   String getDescription();
 
   /**
+   * @return true if a connection has been established
+   */
+  boolean isConnected();
+
+  /**
    * Logs out, disconnects and performs cleanup if required
    */
   void disconnect();

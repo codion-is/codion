@@ -187,11 +187,15 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
 
   public void startApplication(final String frameCaption, final String iconName, final boolean maximize,
                                final Dimension frameSize, final User defaultUser, final boolean showFrame) {
-    SwingUtilities.invokeLater(new Runnable() {
-      public void run() {
-        startApplicationInternal(frameCaption, iconName, maximize, frameSize, defaultUser, showFrame);
-      }
-    });
+    try {
+      startApplicationInternal(frameCaption, iconName, maximize, frameSize, defaultUser, showFrame);
+    }
+    catch (CancelException e) {
+      System.exit(0);
+    }
+    catch (Exception e) {
+      System.exit(1);
+    }
   }
 
   /**
@@ -607,7 +611,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
 
   protected JDialog createStartupDialog(final Icon icon, final String startupMessage) {
     final String message = startupMessage == null ? "Initializing Application" : startupMessage;
-    final JDialog initializationDialog = new JDialog((JFrame) null, message, true);
+    final JDialog initializationDialog = new JDialog((JFrame) null, message, false);
     initializationDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     initializationDialog.getContentPane().add(initializeStartupProgressPanel(icon), BorderLayout.CENTER);
     initializationDialog.pack();
@@ -636,7 +640,6 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
 
   /**
    * Initializes a JFrame according to the given parameters, containing this EntityApplicationPanel
-   * @param frame the frame to prepare
    * @param title the title string for the JFrame
    * @param maximize if true then the JFrame is maximized, overrides the prefSeizeAsRatioOfScreen parameter
    * @param showMenuBar true if a menubar should be created
@@ -646,9 +649,10 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    * @return an initialized, but non-visible JFrame
    * @see #getNorthToolBar()
    */
-  protected JFrame prepareFrame(final JFrame frame, final String title, final boolean maximize,
+  protected JFrame prepareFrame(final String title, final boolean maximize,
                                 final boolean showMenuBar, final Dimension size,
                                 final ImageIcon applicationIcon, final boolean setVisible) {
+    final JFrame frame = new JFrame();
     frame.setIconImage(applicationIcon.getImage());
     frame.addWindowListener(new WindowAdapter() {
       @Override
@@ -659,12 +663,8 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
         catch(CancelException uc) {/**/}
       }
     });
-    frame.setTitle(title);
     frame.getContentPane().setLayout(new BorderLayout());
     frame.getContentPane().add(this, BorderLayout.CENTER);
-    if (showMenuBar) {
-      frame.setJMenuBar(createMenuBar());
-    }
     final JToolBar toolbar = getNorthToolBar();
     if (toolbar != null) {
       frame.getContentPane().add(toolbar, BorderLayout.NORTH);
@@ -679,6 +679,10 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     UiUtil.centerWindow(frame);
     if (maximize) {
       frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+    }
+    frame.setTitle(title);
+    if (showMenuBar) {
+      frame.setJMenuBar(createMenuBar());
     }
     if (setVisible) {
       frame.setVisible(true);
@@ -744,68 +748,49 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    */
   protected void savePreferences() {}
 
-  private void startApplicationInternal(final String frameCaption, final String iconName, final boolean maximize, final Dimension frameSize, final User defaultUser, final boolean showFrame) {
+  private void startApplicationInternal(final String frameCaption, final String iconName, final boolean maximize,
+                                        final Dimension frameSize, final User defaultUser, final boolean showFrame) throws Exception {
     LOG.debug(frameCaption + " application starting");
     Messages.class.getName();//hack to load the class
+    UIManager.setLookAndFeel(getDefaultLookAndFeelClassName());
     final ImageIcon applicationIcon = iconName != null ? Images.getImageIcon(getClass(), iconName) :
             Images.loadImage("jminor_logo32.gif");
-    final Collection<Object> retry = new ArrayList<Object>();
-    retry.add(new Object());
-    while (!retry.isEmpty()) {
+    final JDialog startupDialog = createStartupDialog(applicationIcon, frameCaption);
+    EntityDbProvider entityDbProvider;
+    while (true) {
+      final User user = isLoginRequired() ? getUser(frameCaption, defaultUser, getClass().getSimpleName(), applicationIcon) : new User("", "");
+      startupDialog.setVisible(true);
+      entityDbProvider = initializeDbProvider(user, frameCaption);
       try {
-        UIManager.setLookAndFeel(getDefaultLookAndFeelClassName());
-        final User user = isLoginRequired() ? getUser(frameCaption, defaultUser, getClass().getSimpleName(), applicationIcon) :
-                new User("", "");
-
-        final long now = System.currentTimeMillis();
-
-        final JDialog startupDialog = createStartupDialog(applicationIcon, frameCaption);
-        final JFrame frame = new JFrame();
-        final SwingWorker worker = new SwingWorker<EntityApplicationModel, Void>() {
-          @Override
-          protected EntityApplicationModel doInBackground() throws Exception {
-            return initializeApplicationModel(initializeDbProvider(user, frameCaption));
-          }
-
-          @Override
-          protected void done() {
-            try {
-              initialize(get());
-              retry.clear();//successful startup
-              if (startupDialog != null) {
-                startupDialog.dispose();
-              }
-              final String frameTitle = getFrameTitle(frameCaption, user);
-              prepareFrame(frame, frameTitle, maximize, true, frameSize, applicationIcon, showFrame);
-
-              LOG.info(frameTitle + ", application started successfully " + "(" + (System.currentTimeMillis() - now) + " ms)");
-
-              saveDefaultUser(user);
-              evtApplicationStarted.fire();
-            }
-            catch (Exception e) {
-              throw new RuntimeException(e);
-            }
-          }
-        };
-        worker.execute();
-        startupDialog.setVisible(true);
+        entityDbProvider.getEntityDb();
+        break;//success
       }
-      catch (CancelException uce) {
-        System.exit(0);
-      }
-      catch (Exception ue) {
-        ExceptionDialog.showExceptionDialog(null, Messages.get(Messages.EXCEPTION), ue);
+      catch (Exception e) {
+        ExceptionDialog.showExceptionDialog(startupDialog, Messages.get(Messages.EXCEPTION), e);
         if (JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(null,
                 FrameworkMessages.get(FrameworkMessages.RETRY),
                 FrameworkMessages.get(FrameworkMessages.RETRY_TITLE),
                 JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
-          retry.clear();
-        }
-        if (retry.isEmpty()) {
-          System.exit(0);
+          startupDialog.dispose();
+          throw new CancelException();
         }
       }
+    }
+    try {
+      final long now = System.currentTimeMillis();
+      initialize(initializeApplicationModel(entityDbProvider));
+
+      saveDefaultUser(entityDbProvider.getUser());
+      startupDialog.dispose();
+      final JFrame frame = prepareFrame(getFrameTitle(frameCaption, entityDbProvider.getUser()), maximize, true,
+              frameSize, applicationIcon, showFrame);
+      evtApplicationStarted.fire();
+      LOG.info(frame.getTitle() + ", application started successfully, " + entityDbProvider.getUser().getUsername()
+              + ": " + (System.currentTimeMillis() - now) + " ms");
+    }
+    catch (Exception e) {
+      LOG.error(frameCaption + " application failed starting", e);
+      throw e;
     }
   }
 

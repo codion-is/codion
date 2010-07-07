@@ -1824,3 +1824,5 @@
   EntityTablePanel.southPanel field added
   EntityTablePanel.initializePopupMenu() and initializeToolbar() added
   EntityPanelProvider takes advantage of the above changes
+  EntityApplicationPanel.startApplication() refactored
+  EntityDbProvider.isConnected() added
