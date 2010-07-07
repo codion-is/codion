@@ -353,10 +353,10 @@ public class EntityPanelProvider implements Comparable {
     try {
       final EntityTablePanel tablePanel = tablePanelClass.getConstructor(EntityTableModel.class).newInstance(entityPanel.getModel().getTableModel());
       final ControlSet toolbarControls = new ControlSet("");
-      if (editPanelClass != null) {
+      if (editPanelClass != null || entityPanel.getEditPanel() != null) {
         toolbarControls.add(entityPanel.getToggleEditPanelControl());
       }
-      if (detailPanelProviders.size() > 0) {
+      if (detailPanelProviders.size() > 0 || entityPanel.getDetailPanels().size() > 0) {
         toolbarControls.add(entityPanel.getToggleDetailPanelControl());
       }
       tablePanel.initializeToolbar(toolbarControls);
