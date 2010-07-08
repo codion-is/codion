@@ -14,7 +14,7 @@ import javax.swing.ComboBoxModel;
  * @see org.jminor.common.model.FilterCriteria
  * @see #setFilterCriteria(org.jminor.common.model.FilterCriteria)
  */
-public interface FilteredComboBoxModel extends ComboBoxModel, Refreshable, FilteredModel {
+public interface FilteredComboBoxModel<T> extends ComboBoxModel, Refreshable, FilteredModel<T> {
 
   Event eventSelectionChanged();
 
@@ -25,13 +25,13 @@ public interface FilteredComboBoxModel extends ComboBoxModel, Refreshable, Filte
    * @param item the item
    * @return true if the given item is visible
    */
-  boolean isVisible(final Object item);
+  boolean isVisible(final T item);
 
   /**
    * Removes the given item from this model
    * @param item the item to remove
    */
-  void removeItem(final Object item);
+  void removeItem(final T item);
 
   /**
    * Returns true if this combo box model contains the given item, visible or filtered.
@@ -40,7 +40,7 @@ public interface FilteredComboBoxModel extends ComboBoxModel, Refreshable, Filte
    * @param item the item
    * @return true if this combo box model contains the item
    */
-  boolean contains(final Object item);
+  boolean contains(final T item);
 
   boolean isSortContents();
 

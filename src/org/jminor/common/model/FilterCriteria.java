@@ -15,20 +15,20 @@ public interface FilterCriteria<T> {
   boolean include(T item);
 
   /**
-   * A convenience criteria which always returns true
+   * A convenience criteria class which always returns true
    */
-  static FilterCriteria ACCEPT_ALL_CRITERIA = new FilterCriteria() {
-    public boolean include(final Object item) {
+  static class AcceptAllCriteria<T> implements FilterCriteria<T> {
+    public boolean include(final T item) {
       return true;
     }
-  };
+  }
 
   /**
-   * A convenience criteria which always returns false
+   * A convenience criteria class which always returns false
    */
-  static FilterCriteria REJECT_ALL_CRITERIA = new FilterCriteria() {
-    public boolean include(final Object item) {
-      return true;
+  static class RejectAllCriteria<T> implements FilterCriteria<T> {
+    public boolean include(final T item) {
+      return false;
     }
-  };
+  }
 }

@@ -374,12 +374,13 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
   }
 
   /**
-   * @param propertyID the ID of the property for which to retrieve the value
+   * @param key the ID of the property for which to retrieve the value
    * @return a String representation of the value of the property identified by <code>propertyID</code>
    * @see #getFormattedValue(Property, java.text.Format)
    */
-  public String getValueAsString(final String propertyID) {
-    return getValueAsString(getProperty(propertyID));
+  @Override
+  public String getValueAsString(final String key) {
+    return getValueAsString(getProperty(key));
   }
 
   /**

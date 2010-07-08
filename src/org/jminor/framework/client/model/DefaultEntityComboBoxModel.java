@@ -28,7 +28,7 @@ import java.util.Set;
 /**
  * A ComboBoxModel based on an Entity, showing by default all the entities in the underlying table.
  */
-public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel implements EntityComboBoxModel {
+public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Entity> implements EntityComboBoxModel {
 
   private final Event evtRefreshDone = new Event();
 
@@ -130,7 +130,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel imp
 
   public void setSelectedEntityByPrimaryKey(final Entity.Key primaryKey) {
     final Entity toSelect = new Entity(primaryKey);
-    List<Object> items = getVisibleItems();
+    List<Entity> items = getVisibleItems();
     int indexOfKey = items.indexOf(toSelect);
     if (indexOfKey >= 0) {
       setSelectedItem(items.get(indexOfKey));
@@ -176,18 +176,15 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel imp
   }
 
   @Override
-  public FilterCriteria getFilterCriteria() {
+  public FilterCriteria<Entity> getFilterCriteria() {
     final FilterCriteria superCriteria = super.getFilterCriteria();
-    return new FilterCriteria() {
-      public boolean include(final Object item) {
+    return new FilterCriteria<Entity>() {
+      public boolean include(final Entity item) {
         if (!superCriteria.include(item)) {
           return false;
         }
-        if (item instanceof Entity) {
-          return foreignKeyFilterCriteria.include((Entity) item);
-        }
 
-        return true;
+        return foreignKeyFilterCriteria.include(item);
       }
     };
   }
@@ -284,7 +281,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel imp
    * @return the data to be presented in this EntityComboBoxModel, called when the data is refreshed
    */
   @Override
-  protected List<?> getContents() {
+  protected List<Entity> getContents() {
     try {
       if (staticData && dataInitialized && !forceRefresh) {
         return super.getContents();

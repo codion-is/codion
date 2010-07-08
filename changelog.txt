@@ -1831,3 +1831,8 @@
   FilteredModel added
   FilteredTableModel and FilteredComboBoxModel extends the above
   Renamed a few tests in client.model
+  MaximumMatch handles null items
+  FilteredComboBoxModel and descendants generified
+  common.model.valuemap.ValueStringProvider interface added
+  ValueMap implements the above
+  StringProvider now leverages the above paradigm

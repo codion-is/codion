@@ -59,10 +59,9 @@ public class EmployeeEditModel extends DefaultEntityEditModel {
       public void valueChanged(final ValueChangeEvent event) {
         //only show managers in the same department as the active entity
         if (containsComboBoxModel(EMPLOYEE_MGR_FK)) {
-          getEntityComboBoxModel(EMPLOYEE_MGR_FK).setFilterCriteria(new FilterCriteria<Object>() {
-            public boolean include(final Object item) {
-              return item instanceof String //the item representing null
-                      || (Entity.isEqual(((Entity) item).getForeignKeyValue(EMPLOYEE_DEPARTMENT_FK), event.getNewValue())
+          getEntityComboBoxModel(EMPLOYEE_MGR_FK).setFilterCriteria(new FilterCriteria<Entity>() {
+            public boolean include(final Entity item) {
+              return (Entity.isEqual(item.getForeignKeyValue(EMPLOYEE_DEPARTMENT_FK), event.getNewValue())
                       && !Entity.isEqual(item, getEntityCopy()));
             }
           });

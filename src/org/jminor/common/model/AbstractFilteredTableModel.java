@@ -45,6 +45,8 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
   private final Event evtColumnHidden = new Event();
   private final Event evtColumnShown = new Event();
 
+  private final FilterCriteria<T> acceptAllCriteria = new FilterCriteria.AcceptAllCriteria<T>();
+
   /**
    * Holds visible items
    */
@@ -83,7 +85,7 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
   /**
    * the filter criteria used by this model
    */
-  private FilterCriteria<T> filterCriteria = FilterCriteria.ACCEPT_ALL_CRITERIA;
+  private FilterCriteria<T> filterCriteria = acceptAllCriteria;
 
   /**
    * true while the model data is being filtered
@@ -401,7 +403,7 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
 
   public void setFilterCriteria(final FilterCriteria filterCriteria) {
     if (filterCriteria == null) {
-      this.filterCriteria = FilterCriteria.ACCEPT_ALL_CRITERIA;
+      this.filterCriteria = acceptAllCriteria;
     }
     else {
       this.filterCriteria = filterCriteria;

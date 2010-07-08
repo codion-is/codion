@@ -213,6 +213,9 @@ public class MaximumMatch extends PlainDocument {
     // look for items that match the given pattern
     for (int i=0, n=model.getSize(); i < n; i++) {
       Object currentItem = model.getElementAt(i);
+      if (currentItem == null) {
+        return 0;
+      }
       String itemAsString = currentItem.toString();
       if (startsWithIgnoreCase(itemAsString, pattern)) {
         // current item matches the pattern

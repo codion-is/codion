@@ -181,7 +181,7 @@ public class StringProvider<K> implements ValueMap.ToString<K>, Serializable {
         return "";
       }
 
-      return valueMap.getValue(key).toString();
+      return valueMap.getValueAsString(key);
     }
   }
 

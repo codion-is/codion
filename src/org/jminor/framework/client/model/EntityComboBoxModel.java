@@ -16,7 +16,7 @@ import java.util.Collection;
  * Date: 29.6.2010
  * Time: 10:10:25
  */
-public interface EntityComboBoxModel extends FilteredComboBoxModel {
+public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 
   /**
    * @return the selected entity or null if none is selected
