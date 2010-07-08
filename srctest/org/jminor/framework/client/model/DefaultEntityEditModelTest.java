@@ -27,9 +27,9 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-public class EntityEditModelTest {
+public class DefaultEntityEditModelTest {
 
-  private EntityEditModel editModel = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityDbConnectionTest.DB_PROVIDER);
+  private DefaultEntityEditModel editModel = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityDbConnectionTest.DB_PROVIDER);
 
   @Before
   public void setUp() {

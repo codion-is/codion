@@ -21,9 +21,9 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-public class EntityLookupModelTest {
+public class DefaultEntityLookupModelTest {
 
-  private EntityLookupModel lookupModel;
+  private DefaultEntityLookupModel lookupModel;
 
   @Test
   public void testConstructor() {

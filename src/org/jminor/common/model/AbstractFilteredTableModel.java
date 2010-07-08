@@ -81,6 +81,11 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
   private final int[] columnIndexCache;
 
   /**
+   * the filter criteria used by this model
+   */
+  private FilterCriteria<T> filterCriteria = FilterCriteria.ACCEPT_ALL_CRITERIA;
+
+  /**
    * true while the model data is being filtered
    */
   private boolean isFiltering = false;
@@ -367,7 +372,7 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
    * @see #eventFilteringStarted()
    * @see #eventFilteringDone()
    */
-  public void filterTable() {
+  public void filterContents() {
     try {
       isFiltering = true;
       evtFilteringStarted.fire();
@@ -376,7 +381,7 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
       hiddenItems.clear();
       for (final ListIterator<T> iterator = visibleItems.listIterator(); iterator.hasNext();) {
         final T item = iterator.next();
-        if (!include(item)) {
+        if (!getFilterCriteria().include(item)) {
           hiddenItems.add(item);
           iterator.remove();
         }
@@ -388,6 +393,20 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
       isFiltering = false;
       evtFilteringDone.fire();
     }
+  }
+
+  public FilterCriteria<T> getFilterCriteria() {
+    return filterCriteria;
+  }
+
+  public void setFilterCriteria(final FilterCriteria filterCriteria) {
+    if (filterCriteria == null) {
+      this.filterCriteria = FilterCriteria.ACCEPT_ALL_CRITERIA;
+    }
+    else {
+      this.filterCriteria = filterCriteria;
+    }
+    filterContents();
   }
 
   public List<T> getAllItems() {
@@ -520,9 +539,6 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
     return evtFilteringDone;
   }
 
-  /**
-   * @return an Event fired when the model is about to be filtered
-   */
   public Event eventFilteringStarted() {
     return evtFilteringStarted;
   }
@@ -583,7 +599,7 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
    */
   protected void addItems(final List<T> items, final boolean atFront) {
     for (final T item : items) {
-      if (include(item)) {
+      if (getFilterCriteria().include(item)) {
         if (atFront) {
           visibleItems.add(0, item);
         }

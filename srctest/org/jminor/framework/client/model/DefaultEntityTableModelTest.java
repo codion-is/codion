@@ -22,11 +22,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class EntityTableModelTest {
+public class DefaultEntityTableModelTest {
 
   private static final Entity[] testEntities;
 
-  private final EntityTableModel testModel = new EntityTableModelTmp();
+  private final DefaultEntityTableModel testModel = new EntityTableModelTmp();
 
   static {
     new EntityTestDomain();

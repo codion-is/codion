@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 
-public class EntityTableSearchModelTest {
+public class DefaultEntityTableSearchModelTest {
 
   @Test
   public void testConstructor() {

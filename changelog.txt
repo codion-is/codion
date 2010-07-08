@@ -1826,3 +1826,8 @@
   EntityPanelProvider takes advantage of the above changes
   EntityApplicationPanel.startApplication() refactored
   EntityDbProvider.isConnected() added
+  FilteredComboBoxModel intarface added
+  DefaultFilteredComboBoxModel added
+  FilteredModel added
+  FilteredTableModel and FilteredComboBoxModel extends the above
+  Renamed a few tests in client.model

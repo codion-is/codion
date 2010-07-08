@@ -8,6 +8,7 @@ import org.jminor.common.db.exception.DbException;
 import org.jminor.common.model.AbstractFilteredTableModel;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.FilterCriteria;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.reports.ReportDataWrapper;
@@ -58,7 +59,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
   /**
    * The search model
    */
-  private final EntityTableSearchModel tableSearchModel;
+  private final EntityTableSearchModel searchModel;
 
   /**
    * Maps PropertySummaryModels to their respective properties
@@ -109,11 +110,11 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
   }
 
   public DefaultEntityTableModel(final String entityID, final EntityDbProvider dbProvider,
-                                 final EntityTableSearchModel tableSearchModel) {
-    super(new DefaultEntityTableColumnModel(entityID, tableSearchModel.getProperties()));
+                                 final EntityTableSearchModel searchModel) {
+    super(new DefaultEntityTableColumnModel(entityID, searchModel.getProperties()));
     this.entityID = entityID;
     this.dbProvider = dbProvider;
-    this.tableSearchModel = tableSearchModel;
+    this.searchModel = searchModel;
     bindEventsInternal();
     bindEvents();
   }
@@ -181,7 +182,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
   }
 
   public EntityTableSearchModel getSearchModel() {
-    return tableSearchModel;
+    return searchModel;
   }
 
   public EntityEditModel getEditModel() {
@@ -240,6 +241,11 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
 
   public boolean isReadOnly() {
     return editModel == null || EntityRepository.isReadOnly(entityID);
+  }
+
+  @Override
+  public FilterCriteria<Entity> getFilterCriteria() {
+    return searchModel;
   }
 
   /**
@@ -367,7 +373,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
 
   public void searchByForeignKeyValues(final String referencedEntityID, final List<Entity> referenceEntities) {
     final List<Property.ForeignKeyProperty> properties = EntityRepository.getForeignKeyProperties(entityID, referencedEntityID);
-    if (properties.size() > 0 && isDetailModel && tableSearchModel.setSearchValues(properties.get(0).getPropertyID(), referenceEntities)) {
+    if (properties.size() > 0 && isDetailModel && searchModel.setSearchValues(properties.get(0).getPropertyID(), referenceEntities)) {
       refresh();
     }
   }
@@ -451,7 +457,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
   }
 
   public boolean include(final Entity item) {
-    return tableSearchModel.include(item);
+    return searchModel.include(item);
   }
 
   public PropertySummaryModel getPropertySummaryModel(final String propertyID) {
@@ -545,12 +551,12 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
    * @see DefaultEntityTableSearchModel#getSearchCriteria()
    */
   protected Criteria<Property> getQueryCriteria() {
-    return tableSearchModel.getSearchCriteria();
+    return searchModel.getSearchCriteria();
   }
 
   protected void handleColumnHidden(final Property property) {
     //disable the search model for the column to be hidden, to prevent confusion
-    tableSearchModel.setSearchEnabled(property.getPropertyID(), false);
+    searchModel.setSearchEnabled(property.getPropertyID(), false);
   }
 
   protected void handleDelete(final DeleteEvent e) {
@@ -568,14 +574,14 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
         handleColumnHidden((Property) e.getSource());
       }
     });
-    tableSearchModel.eventFilterStateChanged().addListener(new ActionListener() {
+    searchModel.eventFilterStateChanged().addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
-        filterTable();
+        filterContents();
       }
     });
     evtRefreshDone.addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
-        tableSearchModel.setSearchModelState();
+        searchModel.setSearchModelState();
       }
     });
   }

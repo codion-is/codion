@@ -20,11 +20,11 @@ import java.util.Arrays;
  * Date: 11.10.2009
  * Time: 21:44:41
  */
-public class EntityComboBoxModelTest {
+public class DefaultEntityComboBoxModelTest {
 
-  private final EntityComboBoxModel comboBoxModel;
+  private final DefaultEntityComboBoxModel comboBoxModel;
 
-  public EntityComboBoxModelTest() {
+  public DefaultEntityComboBoxModelTest() {
     new EmpDept();
     comboBoxModel = new DefaultEntityComboBoxModel(EmpDept.T_EMPLOYEE, EntityDbConnectionTest.DB_PROVIDER);
   }

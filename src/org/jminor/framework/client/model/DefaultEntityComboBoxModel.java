@@ -6,7 +6,7 @@ package org.jminor.framework.client.model;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.FilterCriteria;
 import org.jminor.common.model.Util;
-import org.jminor.common.model.combobox.FilteredComboBoxModel;
+import org.jminor.common.model.combobox.DefaultFilteredComboBoxModel;
 import org.jminor.framework.db.criteria.EntitySelectCriteria;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
@@ -28,7 +28,7 @@ import java.util.Set;
 /**
  * A ComboBoxModel based on an Entity, showing by default all the entities in the underlying table.
  */
-public class DefaultEntityComboBoxModel extends FilteredComboBoxModel implements EntityComboBoxModel {
+public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel implements EntityComboBoxModel {
 
   private final Event evtRefreshDone = new Event();
 
@@ -176,6 +176,23 @@ public class DefaultEntityComboBoxModel extends FilteredComboBoxModel implements
   }
 
   @Override
+  public FilterCriteria getFilterCriteria() {
+    final FilterCriteria superCriteria = super.getFilterCriteria();
+    return new FilterCriteria() {
+      public boolean include(final Object item) {
+        if (!superCriteria.include(item)) {
+          return false;
+        }
+        if (item instanceof Entity) {
+          return foreignKeyFilterCriteria.include((Entity) item);
+        }
+
+        return true;
+      }
+    };
+  }
+
+  @Override
   public String toString() {
     return getClass().getSimpleName() + " [entityID: " + entityID + "]";
   }
@@ -223,16 +240,6 @@ public class DefaultEntityComboBoxModel extends FilteredComboBoxModel implements
     return foreignKeyModel;
   }
 
-  @Override
-  public boolean include(final Object object) {
-    if (object instanceof Entity) {
-      return super.include(object) && foreignKeyFilterCriteria.include((Entity) object);
-    }
-    else {
-      return super.include(object);
-    }
-  }
-
   public Event eventRefreshDone() {
     return evtRefreshDone;
   }
@@ -274,17 +281,6 @@ public class DefaultEntityComboBoxModel extends FilteredComboBoxModel implements
   }
 
   /**
-   * Returns true if the given Entity should be included in this ComboBoxModel.
-   * To be overridden in subclasses wishing to exclude some entities
-   * @param entity the Entity object to check
-   * @return true if the Entity should be included, false otherwise
-   */
-  @SuppressWarnings({"UnusedDeclaration"})
-  protected boolean includeEntity(final Entity entity) {
-    return true;
-  }
-
-  /**
    * @return the data to be presented in this EntityComboBoxModel, called when the data is refreshed
    */
   @Override
@@ -296,7 +292,7 @@ public class DefaultEntityComboBoxModel extends FilteredComboBoxModel implements
       final List<Entity> entities = performQuery();
       final ListIterator<Entity> iterator = entities.listIterator();
       while (iterator.hasNext()) {
-        if (!includeEntity(iterator.next())) {
+        if (!getFilterCriteria().include(iterator.next())) {
           iterator.remove();
         }
       }

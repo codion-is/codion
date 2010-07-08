@@ -3,15 +3,15 @@
  */
 package org.jminor.common.model;
 
+import javax.swing.ListSelectionModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
-import javax.swing.ListSelectionModel;
 import java.awt.Point;
 import java.util.Collection;
 import java.util.List;
 
-public interface FilteredTableModel<T> extends TableModel, Refreshable, FilterCriteria<T> {
+public interface FilteredTableModel<T> extends TableModel, Refreshable, FilteredModel {
 
   /**
    * @return a State active when the selection is empty
@@ -45,11 +45,6 @@ public interface FilteredTableModel<T> extends TableModel, Refreshable, FilterCr
   Event eventRefreshDone();
 
   /**
-   * @return an Event fired when the model has been filtered
-   */
-  Event eventFilteringDone();
-
-  /**
    * @return an Event fired whenever a column is hidden,
    * the ActionEvent source is the column identifier.
    */
@@ -60,11 +55,6 @@ public interface FilteredTableModel<T> extends TableModel, Refreshable, FilterCr
    * the ActionEvent source is the column identifier.
    */
   Event eventColumnShown();
-
-  /**
-   * @return an Event fired when the model is about to be filtered
-   */
-  Event eventFilteringStarted();
 
   /**
    * @return an Event fired when the selection is changing
@@ -120,11 +110,6 @@ public interface FilteredTableModel<T> extends TableModel, Refreshable, FilterCr
    * @return the index of the given item or -1 if it was not found
    */
   int indexOf(final T item);
-
-  /**
-   * Filters the table
-   */
-  void filterTable();
 
   /**
    * Removes the given items from this table model

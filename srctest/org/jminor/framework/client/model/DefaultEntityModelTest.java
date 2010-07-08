@@ -18,9 +18,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
-public class EntityModelTest {
+public class DefaultEntityModelTest {
 
-  private EntityModel departmentModel;
+  private DefaultEntityModel departmentModel;
   private int eventCount = 0;
 
   @Test

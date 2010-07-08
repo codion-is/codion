@@ -5,7 +5,7 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Util;
-import org.jminor.common.model.combobox.FilteredComboBoxModel;
+import org.jminor.common.model.combobox.DefaultFilteredComboBoxModel;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Property;
 
@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * A combo box model based on a single entity property.
  */
-public class PropertyComboBoxModel extends FilteredComboBoxModel {
+public class PropertyComboBoxModel extends DefaultFilteredComboBoxModel {
 
   /**
    * The ID of the entity

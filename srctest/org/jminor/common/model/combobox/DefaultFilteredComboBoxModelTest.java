@@ -14,9 +14,9 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FilteredComboBoxModelTest {
+public class DefaultFilteredComboBoxModelTest {
 
-  private FilteredComboBoxModel testModel;
+  private DefaultFilteredComboBoxModel testModel;
 
   private static final String ANNA = "anna";
   private static final String KALLI = "kalli";
@@ -90,7 +90,7 @@ public class FilteredComboBoxModelTest {
 
   @Before
   public void setUp() throws Exception {
-    testModel = new FilteredComboBoxModel();
+    testModel = new DefaultFilteredComboBoxModel();
     testModel.setContents(initContents());
   }
 

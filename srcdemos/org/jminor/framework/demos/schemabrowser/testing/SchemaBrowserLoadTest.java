@@ -49,10 +49,16 @@ public class SchemaBrowserLoadTest extends EntityLoadTestModel {
         new SchemaBrowser();
       }
     };
-    final EntityModel schemaModel = applicationModel.getMainApplicationModels().iterator().next();
-    schemaModel.setLinkedDetailModels(schemaModel.getDetailModels().iterator().next());
-    final EntityModel dbObjectModel = schemaModel.getDetailModels().iterator().next();
-    dbObjectModel.setLinkedDetailModels(dbObjectModel.getDetailModels().iterator().next());
+    final EntityModel schemaModel = applicationModel.getMainApplicationModel(SchemaBrowser.T_SCHEMA);
+    final EntityModel dbObjectModel = schemaModel.getDetailModel(SchemaBrowser.T_TABLE);
+    schemaModel.setLinkedDetailModels(dbObjectModel);
+    final EntityModel columnModel = dbObjectModel.getDetailModel(SchemaBrowser.T_COLUMN);
+    final EntityModel constraintModel = dbObjectModel.getDetailModel(SchemaBrowser.T_CONSTRAINT);
+    dbObjectModel.addDetailModel(columnModel);
+    dbObjectModel.addDetailModel(constraintModel);
+    final EntityModel columnConstraintModel = dbObjectModel.getDetailModel(SchemaBrowser.T_COLUMN_CONSTRAINT);
+    constraintModel.addDetailModel(columnConstraintModel);
+    dbObjectModel.setLinkedDetailModels(columnModel);
 
     return applicationModel;
   }
