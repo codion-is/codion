@@ -279,6 +279,11 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
     return value;
   }
 
+  @Override
+  public void setValueAt(final Object aValue, final int rowIndex, final int columnIndex) {
+    throw new RuntimeException("setValueAt is not supported");
+  }
+
   public Color getRowBackgroundColor(final int row) {
     final Entity rowEntity = getItemAtViewIndex(row);
 
