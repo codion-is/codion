@@ -3,7 +3,9 @@
  */
 package org.jminor.framework.server.monitor.ui;
 
+import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.Util;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.Control;
 import org.jminor.common.ui.control.ControlFactory;
@@ -14,6 +16,7 @@ import org.jminor.framework.Configuration;
 import org.jminor.framework.server.monitor.HostMonitor;
 import org.jminor.framework.server.monitor.MonitorModel;
 
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -22,6 +25,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.io.IOException;
 import java.rmi.RemoteException;
 
 /**
@@ -31,8 +35,10 @@ import java.rmi.RemoteException;
  */
 public class MonitorPanel extends JPanel {
 
-  private final Event evtAlwaysOnTopChanged = new Event();
+  private static final String JDK_PREFERENCE_KEY = MonitorPanel.class.getName() + ".jdkPathPreferenceKey";
+  private static String jdkDir;
 
+  private final Event evtAlwaysOnTopChanged = new Event();
   private static final int MEMORY_USAGE_UPDATE_INTERVAL = 2000;
   private final MonitorModel model;
   private JFrame monitorFrame;
@@ -65,6 +71,19 @@ public class MonitorPanel extends JPanel {
     evtAlwaysOnTopChanged.fire();
   }
 
+  public void runJConsole() throws IOException {
+    if (jdkDir == null) {
+      throw new RuntimeException("No JDK home directory has been set");
+    }
+    final String separator = System.getProperty("file.separator");
+    ProcessBuilder builder = new ProcessBuilder(jdkDir + separator + "bin"  + separator + "jconsole");
+    builder.start();
+  }
+
+  public void setJDKDir() {
+    setJDKDir(this);
+  }
+
   public void exit() {
     System.exit(0);
   }
@@ -82,6 +101,14 @@ public class MonitorPanel extends JPanel {
     UiUtil.resizeWindow(monitorFrame, 0.75);
     UiUtil.centerWindow(monitorFrame);
     monitorFrame.setVisible(true);
+  }
+
+  public static void setJDKDir(final JComponent dialogParent) {
+    try {
+      jdkDir = UiUtil.selectDirectory(dialogParent, jdkDir).getAbsolutePath();
+      Util.putUserPreference(JDK_PREFERENCE_KEY, jdkDir);
+    }
+    catch (CancelException e) {/**/}
   }
 
   private void initUI() throws RemoteException {
@@ -105,6 +132,10 @@ public class MonitorPanel extends JPanel {
     view.addSeparator();
     view.add(initAlwaysOnTopControl());
     controlSet.add(view);
+    final ControlSet tools = new ControlSet("Tools", 'T');
+    tools.add(initSetJDKDirControl());
+    tools.add(initJConsoleControl());
+    controlSet.add(tools);
 
     return controlSet;
   }
@@ -120,6 +151,22 @@ public class MonitorPanel extends JPanel {
     final Control control =
             ControlFactory.toggleControl(this, "alwaysOnTop", "Always on Top", evtAlwaysOnTopChanged);
     control.setMnemonic('A');
+
+    return control;
+  }
+
+  private Control initSetJDKDirControl() {
+    final Control control =
+            ControlFactory.methodControl(this, "setJDKDir", "Set JDK path...");
+    control.setMnemonic('S');
+
+    return control;
+  }
+
+  private Control initJConsoleControl() {
+    final Control control =
+            ControlFactory.methodControl(this, "runJConsole", "Run JConsole");
+    control.setMnemonic('J');
 
     return control;
   }

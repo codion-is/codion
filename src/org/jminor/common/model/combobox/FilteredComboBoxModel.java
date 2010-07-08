@@ -44,7 +44,7 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
    * Instantiates a new FilteredComboBoxModel that does not sort its contents and does not include a nullValueItem.
    */
   public FilteredComboBoxModel() {
-    this(false, null);
+    this(true, null);
   }
 
   /**
