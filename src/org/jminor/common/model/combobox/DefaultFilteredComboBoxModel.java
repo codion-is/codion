@@ -30,6 +30,11 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   private final List<T> visibleItems = new ArrayList<T>();
   private final List<T> filteredItems = new ArrayList<T>();
 
+  /**
+   * set during setContents
+   */
+  private boolean clear = true;
+
   private T selectedItem = null;
   private String nullValueString;
   private FilterCriteria<T> filterCriteria = acceptAllCriteria;
@@ -78,6 +83,10 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     setContents(null);
   }
 
+  public boolean isClear() {
+    return clear;
+  }
+
   /**
    * Resets the contents of this model using the values found in <code>contents</code>
    * @param contents the contents to be used by this model
@@ -91,6 +100,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     if (contents != null) {
       visibleItems.addAll(contents);
     }
+    clear = contents == null;
     filterContents();
   }
 

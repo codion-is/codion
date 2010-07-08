@@ -26,7 +26,7 @@ public class EntityComboProvider extends AbstractInputProvider<Entity> {
   }
 
   private static JComboBox createEntityField(final EntityComboBoxModel model, final Object currentValue) {
-    if (!model.isDataInitialized()) {
+    if (model.isClear()) {
       model.refresh();
     }
     if (currentValue != null) {

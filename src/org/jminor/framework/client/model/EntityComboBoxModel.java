@@ -69,11 +69,6 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   boolean isStaticData();
 
   /**
-   * @return true if the underlying data has been fetched and not cleared since
-   */
-  boolean isDataInitialized();
-
-  /**
    * Sets the criteria to use when querying data
    * @param entitySelectCriteria the criteria
    */

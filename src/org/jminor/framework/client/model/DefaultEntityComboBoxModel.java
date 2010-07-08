@@ -48,11 +48,6 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
   private boolean staticData = false;
 
   /**
-   * true after the data has been fetched for the first time
-   */
-  private boolean dataInitialized = false;//todo move to super class, cleared or something?
-
-  /**
    * used to indicate that a refresh is being forced
    */
   private boolean forceRefresh = false;
@@ -119,15 +114,6 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     return this;
   }
 
-  /**
-   * Clears the contents from this model
-   */
-  @Override
-  public void clear() {
-    super.clear();
-    dataInitialized = false;
-  }
-
   public void setSelectedEntityByPrimaryKey(final Entity.Key primaryKey) {
     final Entity toSelect = new Entity(primaryKey);
     List<Entity> items = getVisibleItems();
@@ -192,10 +178,6 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
   @Override
   public String toString() {
     return getClass().getSimpleName() + " [entityID: " + entityID + "]";
-  }
-
-  public boolean isDataInitialized() {
-    return dataInitialized;
   }
 
   public void setEntitySelectCriteria(final EntitySelectCriteria entitySelectCriteria) {
@@ -283,7 +265,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
   @Override
   protected List<Entity> getContents() {
     try {
-      if (staticData && dataInitialized && !forceRefresh) {
+      if (staticData && !isClear() && !forceRefresh) {
         return super.getContents();
       }
       final List<Entity> entities = performQuery();
@@ -297,7 +279,6 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
       return entities;
     }
     finally {
-      dataInitialized = true;
       evtRefreshDone.fire();
     }
   }

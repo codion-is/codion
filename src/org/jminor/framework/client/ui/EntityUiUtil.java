@@ -312,7 +312,7 @@ public final class EntityUiUtil {
     Util.rejectNullValue(foreignKeyProperty);
     Util.rejectNullValue(editModel);
     final EntityComboBoxModel boxModel = editModel.initializeEntityComboBoxModel(foreignKeyProperty);
-    if (!boxModel.isDataInitialized()) {
+    if (boxModel.isClear()) {
       boxModel.refresh();
     }
     final EntityComboBox comboBox = new EntityComboBox(boxModel);

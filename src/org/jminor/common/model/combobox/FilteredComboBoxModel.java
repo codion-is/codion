@@ -42,6 +42,11 @@ public interface FilteredComboBoxModel<T> extends ComboBoxModel, Refreshable, Fi
    */
   boolean contains(final T item);
 
+  /**
+   * @return true if the model data needs to be refreshed
+   */
+  boolean isClear();
+
   boolean isSortContents();
 
   /**
