@@ -201,28 +201,6 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
             || getSelectedEntities().size() > 0 && selectedAsString.equals(searchString);
   }
 
-  /**
-   * @return a criteria based on this lookup model including any additional lookup criteria
-   * @see #setAdditionalLookupCriteria(org.jminor.common.db.criteria.Criteria)
-   */
-  public EntitySelectCriteria getEntitySelectCriteria() {
-    if (searchString.equals(wildcard)) {
-      return EntityCriteriaUtil.selectCriteria(entityID);
-    }
-
-    final CriteriaSet<Property> baseCriteria = new CriteriaSet<Property>(CriteriaSet.Conjunction.OR);
-    final String[] lookupTexts = multipleSelectionAllowed ? searchString.split(multipleValueSeparator) : new String[] {searchString};
-    for (final Property lookupProperty : lookupProperties) {
-      for (final String lookupText : lookupTexts) {
-        final String modifiedLookupText = (wildcardPrefix ? wildcard : "") + lookupText + (wildcardPostfix ? wildcard : "");
-        baseCriteria.addCriteria(EntityCriteriaUtil.propertyCriteria(lookupProperty, caseSensitive, SearchType.LIKE, modifiedLookupText));
-      }
-    }
-
-    return EntityCriteriaUtil.selectCriteria(entityID, additionalLookupCriteria == null ? baseCriteria :
-            new CriteriaSet<Property>(CriteriaSet.Conjunction.AND, additionalLookupCriteria, baseCriteria));
-  }
-
   public List<Entity> performQuery() {
     try {
       return dbProvider.getEntityDb().selectMany(getEntitySelectCriteria());
@@ -238,6 +216,28 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
 
   public Event eventSelectedEntitiesChanged() {
     return evtSelectedEntitiesChanged;
+  }
+
+  /**
+   * @return a criteria based on this lookup model including any additional lookup criteria
+   * @see #setAdditionalLookupCriteria(org.jminor.common.db.criteria.Criteria)
+   */
+  private EntitySelectCriteria getEntitySelectCriteria() {
+    if (searchString.equals(wildcard)) {
+      return EntityCriteriaUtil.selectCriteria(entityID);
+    }
+
+    final CriteriaSet<Property> baseCriteria = new CriteriaSet<Property>(CriteriaSet.Conjunction.OR);
+    final String[] lookupTexts = multipleSelectionAllowed ? searchString.split(multipleValueSeparator) : new String[] {searchString};
+    for (final Property lookupProperty : lookupProperties) {
+      for (final String lookupText : lookupTexts) {
+        final String modifiedLookupText = (wildcardPrefix ? wildcard : "") + lookupText + (wildcardPostfix ? wildcard : "");
+        baseCriteria.addCriteria(EntityCriteriaUtil.propertyCriteria(lookupProperty, caseSensitive, SearchType.LIKE, modifiedLookupText));
+      }
+    }
+
+    return EntityCriteriaUtil.selectCriteria(entityID, additionalLookupCriteria == null ? baseCriteria :
+            new CriteriaSet<Property>(CriteriaSet.Conjunction.AND, additionalLookupCriteria, baseCriteria));
   }
 
   private String toString(final List<Entity> entityList) {

@@ -20,9 +20,7 @@ public class Item<T> implements Comparable<Item<T>>, Serializable {
   private final String caption;
 
   public Item(final T item, final String caption) {
-    if (caption == null) {
-      throw new RuntimeException("Caption is null");
-    }
+    Util.rejectNullValue(caption, "caption");
     this.item = item;
     this.caption = caption;
   }

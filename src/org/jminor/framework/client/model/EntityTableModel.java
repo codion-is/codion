@@ -106,8 +106,9 @@ public interface EntityTableModel extends FilteredTableModel<Entity> {
   /**
    * Specifies whether or not the underlying query should be configurable
    * @param value the value
+   * @return this table model instance
    */
-  void setQueryConfigurationAllowed(final boolean value);
+  EntityTableModel setQueryConfigurationAllowed(final boolean value);
 
   /**
    * @return the EntityTableSearcher instance used by this table model
@@ -206,8 +207,9 @@ public interface EntityTableModel extends FilteredTableModel<Entity> {
   /**
    * @param value if set to true then all underlying entities are shown
    * when no criteria is applied, which can be problematic in the case of huge datasets.
+   * @return this table model instance
    */
-  void setQueryCriteriaRequired(final boolean value);
+  EntityTableModel setQueryCriteriaRequired(final boolean value);
 
   /**
    * Returns the PropertySummaryModel associated with the property identified by <code>propertyID</code>

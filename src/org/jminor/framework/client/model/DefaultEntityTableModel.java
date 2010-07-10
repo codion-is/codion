@@ -145,8 +145,9 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
     return queryConfigurationAllowed;
   }
 
-  public void setQueryConfigurationAllowed(final boolean value) {
+  public EntityTableModel setQueryConfigurationAllowed(final boolean value) {
     this.queryConfigurationAllowed = value;
+    return this;
   }
 
   public int getFetchCount() {
@@ -173,8 +174,9 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
     return queryCriteriaRequired;
   }
 
-  public void setQueryCriteriaRequired(final boolean value) {
+  public EntityTableModel setQueryCriteriaRequired(final boolean value) {
     this.queryCriteriaRequired = value;
+    return this;
   }
 
   public String getEntityID() {

@@ -55,6 +55,7 @@ public abstract class AbstractValueChangeMapEditModel<K, V> implements ValueChan
   }
 
   public void setValue(final K key, final V value) {
+    Util.rejectNullValue(key, "key");
     final boolean initialization = valueMap.containsValue(key);
     final V oldValue = getValue(key);
     final V newValue = doSetValue(key, value);
@@ -74,6 +75,7 @@ public abstract class AbstractValueChangeMapEditModel<K, V> implements ValueChan
   }
 
   public boolean isValid(final K key, final int action) {
+    Util.rejectNullValue(key, "key");
     try {
       validate(key, action);
       return true;
@@ -84,7 +86,7 @@ public abstract class AbstractValueChangeMapEditModel<K, V> implements ValueChan
   }
 
   public Event getValueSetEvent(final K key) {
-    Util.rejectNullValue(key);
+    Util.rejectNullValue(key, "key");
     if (!valueSetEventMap.containsKey(key)) {
       valueSetEventMap.put(key, new Event());
     }
@@ -93,7 +95,7 @@ public abstract class AbstractValueChangeMapEditModel<K, V> implements ValueChan
   }
 
   public Event getValueChangeEvent(final K key) {
-    Util.rejectNullValue(key);
+    Util.rejectNullValue(key, "key");
     if (!valueChangeEventMap.containsKey(key)) {
       valueChangeEventMap.put(key, new Event());
     }

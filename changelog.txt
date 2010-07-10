@@ -1837,3 +1837,4 @@
   ValueMap implements the above
   StringProvider now leverages the above paradigm
   DefaultEntityComboBoxModel.dataInitialized moved to DefaultFilteredComboBoxModel as clear, interfaces changed accordingly
+  AbstractSearchModel.autoEnable field added plus functionality

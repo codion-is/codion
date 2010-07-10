@@ -3,6 +3,8 @@
  */
 package org.jminor.common.model;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.Date;
@@ -33,6 +35,7 @@ public abstract class AbstractSearchModel<K> {
 
   private SearchType searchType = SearchType.LIKE;
   private boolean enabled = false;
+  private boolean autoEnable = true;
   private boolean automaticWildcard = false;
   private boolean caseSensitive = true;
   private Object upperBound = null;
@@ -288,6 +291,14 @@ public abstract class AbstractSearchModel<K> {
     this.wildcard = wildcard;
   }
 
+  public boolean isAutoEnable() {
+    return autoEnable;
+  }
+
+  public void setAutoEnable(final boolean autoEnable) {
+    this.autoEnable = autoEnable;
+  }
+
   /**
    * @return true if this search model is enabled
    */
@@ -375,6 +386,22 @@ public abstract class AbstractSearchModel<K> {
   }
 
   private void bindEvents() {
+    final ActionListener autoEnableListener = new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        if (autoEnable) {
+          final boolean upperBoundNull = upperBound == null;
+          final boolean lowerBoundNull = lowerBound == null;
+          if (getValueCount(searchType) == 2) {
+            setSearchEnabled(!lowerBoundNull && !upperBoundNull);
+          }
+          else {
+            setSearchEnabled(!upperBoundNull);
+          }
+        }
+      }
+    };
+    evtUpperBoundChanged.addListener(autoEnableListener);
+    evtLowerBoundChanged.addListener(autoEnableListener);
     evtUpperBoundChanged.addListener(evtSearchStateChanged);
     evtLowerBoundChanged.addListener(evtSearchStateChanged);
     evtSearchTypeChanged.addListener(evtSearchStateChanged);
