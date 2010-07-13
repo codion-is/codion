@@ -9,6 +9,7 @@ import org.jminor.common.model.AbstractFilteredTableModel;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.FilterCriteria;
+import org.jminor.common.model.SortingDirective;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.reports.ReportDataWrapper;
@@ -28,8 +29,10 @@ import javax.swing.table.TableColumn;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -45,6 +48,18 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
 
   private final Event evtRefreshStarted = new Event();
   private final Event evtRefreshDone = new Event();
+
+  public static final Comparator COMPARABLE_COMPARATOR = new Comparator<Comparable>() {
+    public int compare(Comparable o1, Comparable o2) {
+      return (o1.compareTo(o2));
+    }
+  };
+  public static final Comparator LEXICAL_COMPARATOR = new Comparator<Object>() {
+    private final Collator collator = Collator.getInstance();
+    public int compare(Object o1, Object o2) {
+      return collator.compare(o1.toString(), o2.toString());
+    }
+  };
 
   /**
    * The entity ID
@@ -194,13 +209,38 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
     return editModel;
   }
 
-  public void setSortingStatus(final String propertyID, final int status) {
+  public void setSortingStatus(final String propertyID, final SortingDirective directive) {
     final int columnIndex = getColumnModel().getColumnIndex(EntityRepository.getProperty(entityID, propertyID));
     if (columnIndex == -1) {
       throw new RuntimeException("Column based on property '" + propertyID + " not found");
     }
 
-    super.setSortingStatus(columnIndex, status);
+    super.setSortingDirective(columnIndex, directive);
+  }
+
+  public int compare(final Entity objectOne, final Entity objectTwo, final int columnIndex, final SortingDirective directive) {
+    final Property property = getColumnProperty(columnIndex);
+    final Object valueOne = objectOne.getValue(property);
+    final Object valueTwo = objectTwo.getValue(property);
+    int comparison;
+    // Define null less than everything, except null.
+    if (valueOne == null && valueTwo == null) {
+      comparison = 0;
+    }
+    else if (valueOne == null) {
+      comparison = -1;
+    }
+    else if (valueTwo == null) {
+      comparison = 1;
+    }
+    else {
+      comparison = getComparator(columnIndex).compare(valueOne, valueTwo);
+    }
+    if (comparison != 0) {
+      return directive == SortingDirective.DESCENDING ? -comparison : comparison;
+    }
+
+    return 0;
   }
 
   public EntityDbProvider getDbProvider() {
@@ -287,7 +327,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
   }
 
   public Color getRowBackgroundColor(final int row) {
-    final Entity rowEntity = getItemAtViewIndex(row);
+    final Entity rowEntity = getItemAt(row);
 
     return Entity.getProxy(rowEntity.getEntityID()).getBackgroundColor(rowEntity);
   }
@@ -307,8 +347,8 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
     return null;
   }
 
-  public int getViewIndexByPrimaryKey(final Entity.Key primaryKey) {
-    return viewIndexOf(getEntityByPrimaryKey(primaryKey));
+  public int indexOf(final Entity.Key primaryKey) {
+    return indexOf(getEntityByPrimaryKey(primaryKey));
   }
 
   public String getStatusMessage() {
@@ -394,7 +434,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
     for (final Entity visibleEntity : getVisibleItems()) {
       final int index = keys.indexOf(visibleEntity.getPrimaryKey());
       if (index >= 0) {
-        indexes.add(viewIndexOf(visibleEntity));
+        indexes.add(indexOf(visibleEntity));
         keys.remove(index);
       }
     }
@@ -548,6 +588,18 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
     final Property property = (Property) getColumnModel().getColumn(convertColumnIndexToView(columnIndex)).getIdentifier();
 
     return getItemAt(rowIndex).getValueAsString(property);
+  }
+
+  protected Comparator getComparator(final int column) {
+    final Class columnClass = getColumnClass(column);
+    if (columnClass.equals(String.class)) {
+      return LEXICAL_COMPARATOR;
+    }
+    if (Comparable.class.isAssignableFrom(columnClass)) {
+      return COMPARABLE_COMPARATOR;
+    }
+
+    return LEXICAL_COMPARATOR;
   }
 
   /**

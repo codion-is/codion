@@ -6,6 +6,7 @@ package org.jminor.common.ui;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.DocumentAdapter;
 import org.jminor.common.model.FilteredTableModel;
+import org.jminor.common.model.SortingDirective;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.control.Control;
 import org.jminor.common.ui.control.ControlFactory;
@@ -13,13 +14,21 @@ import org.jminor.common.ui.textfield.SearchFieldHint;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -66,6 +75,8 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
     this.table = initializeJTable();
     this.tableScrollPane = new JScrollPane(table);
     this.searchField = initializeSearchField();
+    setupTableHeader();
+    bindEvents();
   }
 
   /**
@@ -215,5 +226,156 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
     });
 
     return popupMenu;
+  }
+
+  private void setupTableHeader() {
+    table.getTableHeader().addMouseListener(new MouseSortHandler());
+    table.getTableHeader().setDefaultRenderer(new SortableHeaderRenderer(table.getTableHeader().getDefaultRenderer()));
+  }
+
+  private void bindEvents() {
+    this.tableModel.eventSortingDone().addListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
+        getJTable().getTableHeader().repaint();
+      }
+    });
+  }
+
+  private class MouseSortHandler extends MouseAdapter {
+    @Override
+    public void mouseClicked(MouseEvent e) {
+      if (e.getButton() != MouseEvent.BUTTON1) {
+        return;
+      }
+
+      JTableHeader h = (JTableHeader) e.getSource();
+      TableColumnModel columnModel = h.getColumnModel();
+      int viewColumn = columnModel.getColumnIndexAtX(e.getX());
+      int column;
+      try {
+        column = columnModel.getColumn(viewColumn).getModelIndex();
+      }
+      catch (ArrayIndexOutOfBoundsException ex) {
+        return;
+      }
+      if (column != -1) {
+        SortingDirective status = tableModel.getSortingDirective(column);
+        if (!e.isControlDown()) {
+          tableModel.clearSortingState();
+        }
+        // Cycle the sorting states through {NOT_SORTED, ASCENDING, DESCENDING} or
+        // {NOT_SORTED, DESCENDING, ASCENDING} depending on whether shift is pressed.
+        if (e.isShiftDown()) {
+          switch (status) {
+            case UNSORTED:
+              status = SortingDirective.DESCENDING;
+              break;
+            case ASCENDING:
+              status = SortingDirective.UNSORTED;
+              break;
+            case DESCENDING:
+              status = SortingDirective.ASCENDING;
+              break;
+          }
+        }
+        else {
+          switch (status) {
+            case UNSORTED:
+              status = SortingDirective.ASCENDING;
+              break;
+            case ASCENDING:
+              status = SortingDirective.DESCENDING;
+              break;
+            case DESCENDING:
+              status = SortingDirective.UNSORTED;
+              break;
+          }
+        }
+        tableModel.setSortingDirective(column, status);
+      }
+    }
+  }
+
+  private static class Arrow implements Icon {
+    private boolean descending;
+    private int size;
+    private int priority;
+
+    private Arrow(boolean descending, int size, int priority) {
+      this.descending = descending;
+      this.size = size;
+      this.priority = priority;
+    }
+
+    public void paintIcon(Component c, Graphics g, int x, int y) {
+      Color color = c == null ? Color.GRAY : c.getBackground();
+      // In a compound sort, make each succesive triangle 20%
+      // smaller than the previous one.
+      int dx = (int)(size/2*Math.pow(0.8, priority));
+      int dy = descending ? dx : -dx;
+      // Align icon (roughly) with font baseline.
+      y = y + 5*size/6 + (descending ? -dy : 0);
+      int shift = descending ? 1 : -1;
+      g.translate(x, y);
+
+      // Right diagonal.
+      g.setColor(color.darker());
+      g.drawLine(dx / 2, dy, 0, 0);
+      g.drawLine(dx / 2, dy + shift, 0, shift);
+
+      // Left diagonal.
+      g.setColor(color.brighter());
+      g.drawLine(dx / 2, dy, dx, 0);
+      g.drawLine(dx / 2, dy + shift, dx, shift);
+
+      // Horizontal line.
+      if (descending) {
+        g.setColor(color.darker().darker());
+      } else {
+        g.setColor(color.brighter().brighter());
+      }
+      g.drawLine(dx, 0, 0, 0);
+
+      g.setColor(color);
+      g.translate(-x, -y);
+    }
+
+    public int getIconWidth() {
+      return size;
+    }
+
+    public int getIconHeight() {
+      return size;
+    }
+  }
+
+  private class SortableHeaderRenderer implements TableCellRenderer {
+    private TableCellRenderer tableCellRenderer;
+
+    private SortableHeaderRenderer(TableCellRenderer tableCellRenderer) {
+      this.tableCellRenderer = tableCellRenderer;
+    }
+
+    public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
+                                                   final boolean hasFocus, final int row, final int column) {
+      final Component component = tableCellRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+      if (component instanceof JLabel) {
+        JLabel l = (JLabel) component;
+        l.setHorizontalTextPosition(JLabel.LEFT);
+        int modelColumn = table.convertColumnIndexToModel(column);
+        l.setIcon(getHeaderRendererIcon(modelColumn, l.getFont().getSize()));
+      }
+
+      return component;
+    }
+
+    protected Icon getHeaderRendererIcon(final int column, final int size) {
+      SortingDirective directive = tableModel.getSortingDirective(column);
+      if (directive == SortingDirective.UNSORTED) {
+        return null;
+      }
+
+      return new Arrow(directive == SortingDirective.DESCENDING, size, tableModel.getSortPriority(column));
+    }
   }
 }

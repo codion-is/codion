@@ -1283,7 +1283,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
   @Override
   protected JTable initializeJTable() {
     final TableColumnModel columnModel = getTableModel().getColumnModel();
-    final JTable jTable = new JTable(getTableModel().getTableSorter(), columnModel, getTableModel().getSelectionModel());
+    final JTable jTable = new JTable(getTableModel(), columnModel, getTableModel().getSelectionModel());
     final TableCellRenderer tableCellRenderer = initializeTableCellRenderer();
     final Enumeration<TableColumn> columnEnumeration = columnModel.getColumns();
     while (columnEnumeration.hasMoreElements()) {
@@ -1313,7 +1313,6 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     header.setReorderingAllowed(allowColumnReordering());
 
     jTable.setAutoResizeMode(getAutoResizeMode());
-    getTableModel().getTableSorter().setTableHeader(header);
 
     return jTable;
   }

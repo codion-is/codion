@@ -6,6 +6,7 @@ package org.jminor.framework.client.model;
 import org.jminor.common.db.exception.DbException;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.FilteredTableModel;
+import org.jminor.common.model.SortingDirective;
 import org.jminor.common.model.State;
 import org.jminor.common.model.reports.ReportDataWrapper;
 import org.jminor.common.model.valuemap.exception.ValidationException;
@@ -46,9 +47,9 @@ public interface EntityTableModel extends FilteredTableModel<Entity> {
 
   /**
    * @param propertyID the ID of the property to sort by
-   * @param status the sorting status, use TableSorter.DESCENDING, .NOT_SORTED, .ASCENDING
+   * @param directive the sorting directive
    */
-  void setSortingStatus(final String propertyID, final int status);
+  void setSortingStatus(final String propertyID, final SortingDirective directive);
 
   /**
    * Returns the edit model associated with this table model,
@@ -272,5 +273,5 @@ public interface EntityTableModel extends FilteredTableModel<Entity> {
    */
   Entity getEntityByPrimaryKey(final Entity.Key primaryKey);
 
-  int getViewIndexByPrimaryKey(final Entity.Key primaryKey);
+  int indexOf(final Entity.Key primaryKey);
 }

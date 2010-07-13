@@ -33,6 +33,7 @@ import java.util.ListIterator;
  *                           tableModel.getSelectionModel());
  * </pre><br>
  * User: Björn Darri<br>
+ * Sorting functionality based on TableSorter by Philip Milne, Brendon McLean, Dan van Enckevort and Parwinder Sekhon<br>
  * Date: 18.4.2010<br>
  * Time: 09:48:07<br>
  * @param <T> the type of the values in this table model
@@ -41,9 +42,13 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
 
   private final Event evtFilteringStarted = new Event();
   private final Event evtFilteringDone = new Event();
+  private final Event evtSortingStarted = new Event();
+  private final Event evtSortingDone = new Event();
   private final Event evtTableDataChanged = new Event();
   private final Event evtColumnHidden = new Event();
   private final Event evtColumnShown = new Event();
+
+  private static final SortingState EMPTY_DIRECTIVE = new SortingStateImpl(-1, SortingDirective.UNSORTED);
 
   private final FilterCriteria<T> acceptAllCriteria = new FilterCriteria.AcceptAllCriteria<T>();
 
@@ -66,11 +71,6 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
    * Contains columns that have been hidden
    */
   private final List<TableColumn> hiddenColumns = new ArrayList<TableColumn>();
-
-  /**
-   * The sorter model
-   */
-  private final TableSorter tableSorter;
 
   /**
    * The selection model
@@ -97,15 +97,19 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
    */
   private boolean isSorting = false;
 
+  private Object[] viewToModel;
+  private int[] modelToView;
+  private final List<SortingState> sortingStates = new ArrayList<SortingState>();
+
   /**
    * true if searching the table model should be done via regular expressions
    */
   private boolean regularExpressionSearch = false;
 
   public AbstractFilteredTableModel(final TableColumnModel columnModel) {
-    this.tableSorter = new TableSorter(this);
     this.columnModel = columnModel;
     this.columnIndexCache = new int[columnModel.getColumnCount()];
+    addTableModelListener(new SortHandler());
     bindEventsInternal();
   }
 
@@ -186,20 +190,35 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
     }
   }
 
-  public TableSorter getTableSorter() {
-    return tableSorter;
-  }
-
   public ListSelectionModel getSelectionModel() {
     return selectionModel;
   }
 
-  public void setSortingStatus(final int columnIndex, final int status) {
-    if (columnIndex == -1) {
-      throw new RuntimeException("Column index can not be negative");
+  public SortingDirective getSortingDirective(final int columnIndex) {
+    return getSortingState(columnIndex).getDirective();
+  }
+
+  public int getSortPriority(final int columnIndex) {
+    int i = 0;
+    for (final SortingState state : sortingStates) {
+      if (state.getColumnIndex() == columnIndex) {
+        return i;
+      }
+      i++;
     }
 
-    tableSorter.setSortingStatus(columnIndex, status);
+    return -1;
+  }
+
+  public void setSortingDirective(final int columnIndex, final SortingDirective status) {
+    final SortingState directive = getSortingState(columnIndex);
+    if (!directive.equals(EMPTY_DIRECTIVE)) {
+      sortingStates.remove(directive);
+    }
+    if (status != SortingDirective.UNSORTED) {
+      sortingStates.add(new SortingStateImpl(columnIndex, status));
+    }
+    sortingStatusChanged();
   }
 
   public boolean isRegularExpressionSearch() {
@@ -218,7 +237,7 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
     getSelectionModel().clearSelection();
   }
 
-  public Collection<Integer> getSelectedViewIndexes() {
+  public Collection<Integer> getSelectedIndexes() {
     final List<Integer> indexes = new ArrayList<Integer>();
     final int min = selectionModel.getMinSelectionIndex();
     final int max = selectionModel.getMaxSelectionIndex();
@@ -231,28 +250,13 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
     return indexes;
   }
 
-  public Collection<Integer> getSelectedModelIndexes() {
-    final Collection<Integer> indexes = new ArrayList<Integer>();
-    final int min = selectionModel.getMinSelectionIndex();
-    final int max = selectionModel.getMaxSelectionIndex();
-    if (min >= 0 && max >= 0) {
-      for (int i = min; i <= max; i++) {
-        if (selectionModel.isSelectedIndex(i)) {
-          indexes.add(tableSorter.modelIndex(i));
-        }
-      }
-    }
-
-    return indexes;
-  }
-
   public void moveSelectionUp() {
     if (visibleItems.size() > 0) {
       if (getSelectionModel().isSelectionEmpty()) {
         getSelectionModel().setSelectionInterval(visibleItems.size() - 1, visibleItems.size() - 1);
       }
       else {
-        final Collection<Integer> selected = getSelectedViewIndexes();
+        final Collection<Integer> selected = getSelectedIndexes();
         final List<Integer> newSelected = new ArrayList<Integer>(selected.size());
         for (final Integer index : selected) {
           newSelected.add(index == 0 ? visibleItems.size() - 1 : index - 1);
@@ -269,7 +273,7 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
         getSelectionModel().setSelectionInterval(0, 0);
       }
       else {
-        final Collection<Integer> selected = getSelectedViewIndexes();
+        final Collection<Integer> selected = getSelectedIndexes();
         final List<Integer> newSelected = new ArrayList<Integer>(selected.size());
         for (final Integer index : selected) {
           newSelected.add(index == visibleItems.size() - 1 ? 0 : index + 1);
@@ -294,10 +298,10 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
   }
 
   public List<T> getSelectedItems() {
-    final Collection<Integer> selectedModelIndexes = getSelectedModelIndexes();
+    final Collection<Integer> selectedModelIndexes = getSelectedIndexes();
     final List<T> selectedItems = new ArrayList<T>();
     for (final int modelIndex : selectedModelIndexes) {
-      selectedItems.add(visibleItems.get(modelIndex));
+      selectedItems.add(getItemAt(modelIndex));
     }
 
     return selectedItems;
@@ -306,7 +310,7 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
   public void setSelectedItems(final List<T> items) {
     final List<Integer> indexes = new ArrayList<Integer>();
     for (final T item : items) {
-      final int index = viewIndexOf(item);
+      final int index = indexOf(item);
       if (index >= 0) {
         indexes.add(index);
       }
@@ -318,7 +322,7 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
   public T getSelectedItem() {
     final int index = selectionModel.getSelectedIndex();
     if (index >= 0 && index < getVisibleItemCount()) {
-      return getItemAtViewIndex(index);
+      return getItemAt(index);
     }
     else {
       return null;
@@ -353,20 +357,26 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
     return selectionModel;
   }
 
-  public T getItemAtViewIndex(final int index) {
-    if (index >= 0 && index < visibleItems.size()) {
-      return visibleItems.get(tableSorter.modelIndex(index));
-    }
-
-    throw new ArrayIndexOutOfBoundsException("No visible item found at index: " + index + ", size: " + getVisibleItemCount());
-  }
-
   public T getItemAt(final int index) {
-    return visibleItems.get(index);
+    return visibleItems.get(modelIndex(index));
   }
 
   public int indexOf(final T item) {
-    return visibleItems.indexOf(item);
+    return viewIndex(visibleItems.indexOf(item));
+  }
+
+  private int modelIndex(int viewIndex) {
+    final Object[] model = getViewToModel();
+    if (model != null && model.length > 0 && viewIndex >= 0 && viewIndex < model.length) {
+      return ((Row) model[viewIndex]).modelIndex;
+    }
+
+    return -1;
+  }
+
+  public void clearSortingState() {
+    sortingStates.clear();
+    sortingStatusChanged();
   }
 
   /**
@@ -545,6 +555,14 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
     return evtFilteringStarted;
   }
 
+  public Event eventSortingDone() {
+    return evtSortingDone;
+  }
+
+  public Event eventSortingStarted() {
+    return evtSortingStarted;
+  }
+
   public Event eventSelectedIndexChanged() {
     return selectionModel.evtSelectedIndexChanged;
   }
@@ -616,14 +634,6 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
     fireTableDataChanged();
   }
 
-  protected int modelIndexOf(final T item) {
-    return visibleItems.indexOf(item);
-  }
-
-  protected int viewIndexOf(final T item) {
-    return tableSorter.viewIndex(modelIndexOf(item));
-  }
-
   /**
    * Returns the value to use when searching through the table.
    * @param rowIndex the row index
@@ -659,14 +669,14 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
         evtTableDataChanged.fire();
       }
     });
-    tableSorter.eventBeforeSort().addListener(new ActionListener() {
+    evtSortingStarted.addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         isSorting = true;
         selectedItems.clear();
         selectedItems.addAll(getSelectedItems());
       }
     });
-    tableSorter.eventAfterSort().addListener(new ActionListener() {
+    evtSortingDone.addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         isSorting = false;
         setSelectedItems(selectedItems);
@@ -688,7 +698,129 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
     });
   }
 
-  class SelectionModel extends DefaultListSelectionModel {
+  private int viewIndex(int modelIndex) {
+    final int[] view = getModelToView();
+    if (view != null && view.length > 0 && modelIndex >= 0 && modelIndex < view.length) {
+      return view[modelIndex];
+    }
+
+    return -1;
+  }
+
+  private Object[] getViewToModel() {
+    if (viewToModel == null) {
+      final int tableModelRowCount = getRowCount();
+      viewToModel = new Object[tableModelRowCount];
+      for (int row = 0; row < tableModelRowCount; row++) {
+        viewToModel[row] = new Row(row);
+      }
+
+      if (isSorted()) {
+        Arrays.sort(viewToModel);
+      }
+    }
+    return viewToModel;
+  }
+
+  private boolean isSorted() {
+    return sortingStates.size() > 0;
+  }
+
+  private SortingState getSortingState(final int column) {
+    for (final SortingState sortingColumn : sortingStates) {
+      if (sortingColumn.getColumnIndex() == column) {
+        return sortingColumn;
+      }
+    }
+    return EMPTY_DIRECTIVE;
+  }
+
+  private void sortingStatusChanged() {
+    evtSortingStarted.fire();
+    clearSorting();
+    fireTableDataChanged();
+    evtSortingDone.fire();
+  }
+
+  private int[] getModelToView() {
+    if (modelToView == null) {
+      int n = getViewToModel().length;
+      modelToView = new int[n];
+      for (int i = 0; i < n; i++) {
+        modelToView[modelIndex(i)] = i;
+      }
+    }
+    return modelToView;
+  }
+
+  private void clearSorting() {
+    viewToModel = null;
+    modelToView = null;
+  }
+
+  private static class SortingStateImpl implements SortingState {
+    private int column;
+    private SortingDirective direction;
+
+    private SortingStateImpl(final int column, final SortingDirective direction) {
+      this.column = column;
+      this.direction = direction;
+    }
+
+    public int getColumnIndex() {
+      return column;
+    }
+
+    public SortingDirective getDirective() {
+      return direction;
+    }
+  }
+
+  private class SortHandler implements TableModelListener {
+    public void tableChanged(TableModelEvent e) {
+      // If we're not sorting by anything, just pass the event along.
+      if (!isSorted()) {
+        clearSorting();
+        return;
+      }
+
+      // If the table structure has changed, cancel the sorting; the
+      // sorting columns may have been either moved or deleted from
+      // the model.
+      if (e.getFirstRow() == TableModelEvent.HEADER_ROW) {
+        clearSortingState();
+        return;
+      }
+
+      // Something has happened to the data that may have invalidated the row order.
+      clearSorting();
+    }
+  }
+
+  private class Row implements Comparable {
+
+    private final int modelIndex;
+
+    Row(int modelIndex) {
+      this.modelIndex = modelIndex;
+    }
+
+    public int compareTo(final Object o) {
+      final T one = visibleItems.get(modelIndex);
+      final T two = visibleItems.get(((Row) o).modelIndex);
+
+      for (final SortingState directive : sortingStates) {
+        final int comparison = compare(one, two, directive.getColumnIndex(), directive.getDirective());
+        if (comparison != 0) {
+          return comparison;
+        }
+      }
+
+      return 0;
+    }
+  }
+
+  private class SelectionModel extends DefaultListSelectionModel {
 
     private final Event evtSelectionChangedAdjusting = new Event();
     private final Event evtSelectionChanged = new Event();

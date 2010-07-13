@@ -45,6 +45,16 @@ public interface FilteredTableModel<T> extends TableModel, Refreshable, Filtered
   Event eventRefreshDone();
 
   /**
+   * @return an Event fired when the model is about to be sorted
+   */
+  Event eventSortingStarted();
+
+  /**
+   * @return an Event fired when the model has been sorted
+   */
+  Event eventSortingDone();
+
+  /**
    * @return an Event fired whenever a column is hidden,
    * the ActionEvent source is the column identifier.
    */
@@ -131,11 +141,6 @@ public interface FilteredTableModel<T> extends TableModel, Refreshable, Filtered
   boolean contains(final T item, final boolean includeHidden);
 
   /**
-   * @return the TableSorter used by this TableModel
-   */
-  TableSorter getTableSorter();
-
-  /**
    * @return the TableColumnModel used by this TableModel
    */
   TableColumnModel getColumnModel();
@@ -183,7 +188,33 @@ public interface FilteredTableModel<T> extends TableModel, Refreshable, Filtered
    * @param columnIndex the index of the column to sort by
    * @param status the sorting status, use TableSorter.DESCENDING, .NOT_SORTED, .ASCENDING
    */
-  void setSortingStatus(final int columnIndex, final int status);
+  void setSortingDirective(final int columnIndex, final SortingDirective status);
+
+  /**
+   * @param columnIndex the column index
+   * @return the sorting directive assigned to the given column
+   */
+  SortingDirective getSortingDirective(final int columnIndex);
+
+  /**
+   * @param columnIndex the column index
+   * @return the sort priority for the given column
+   */
+  int getSortPriority(final int columnIndex);
+
+  /**
+   * @param objectOne the first item to compare
+   * @param objectTwo the second item to compare
+   * @param columnIndex the index of the column on which to base the comparison
+   * @param directive the sorting directive
+   * @return the compare result
+   */
+  int compare(final T objectOne, final T objectTwo, final int columnIndex, final SortingDirective directive);
+
+  /**
+   * Clears all sorting states from the columns in this model
+   */
+  void clearSortingState();
 
   /**
    * Returns a Point denoting the row (point.y) and column index (point.x) of the first value to fulfill
@@ -272,15 +303,7 @@ public interface FilteredTableModel<T> extends TableModel, Refreshable, Filtered
    */
   T getSelectedItem();
 
-  /**
-   * @param index the index
-   * @return the item at <code>index</code>
-   */
-  T getItemAtViewIndex(int index);
-
-  Collection<Integer> getSelectedViewIndexes();
-
-  Collection<Integer> getSelectedModelIndexes();
+  Collection<Integer> getSelectedIndexes();
 
   /**
    * Sets the selected item
@@ -321,4 +344,9 @@ public interface FilteredTableModel<T> extends TableModel, Refreshable, Filtered
    * @return the selection model used by this table model
    */
   ListSelectionModel getSelectionModel();
+
+  interface SortingState {
+    int getColumnIndex();
+    SortingDirective getDirective();
+  }
 }

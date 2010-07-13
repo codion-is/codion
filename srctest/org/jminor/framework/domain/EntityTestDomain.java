@@ -3,6 +3,8 @@
  */
 package org.jminor.framework.domain;
 
+import org.jminor.common.model.valuemap.StringProvider;
+
 import java.sql.Types;
 
 public class EntityTestDomain {
@@ -31,7 +33,8 @@ public class EntityTestDomain {
     EntityRepository.add(new EntityDefinition(T_MASTER,
             new Property.PrimaryKeyProperty(MASTER_ID),
             new Property(MASTER_NAME, Types.VARCHAR),
-            new Property(MASTER_CODE, Types.INTEGER)));
+            new Property(MASTER_CODE, Types.INTEGER))
+            .setStringProvider(new StringProvider<String>(MASTER_NAME)));
 
     EntityRepository.add(new EntityDefinition(T_DETAIL,
             new Property.PrimaryKeyProperty(DETAIL_ID),
@@ -47,6 +50,7 @@ public class EntityTestDomain {
                     EntityRepository.getProperty(T_MASTER, MASTER_NAME), DETAIL_MASTER_NAME),
             new Property.DenormalizedViewProperty(DETAIL_MASTER_CODE, DETAIL_ENTITY_FK,
                     EntityRepository.getProperty(T_MASTER, MASTER_CODE), DETAIL_MASTER_CODE))
-            .setOrderByClause(DETAIL_STRING).setSelectTableName(DETAIL_SELECT_TABLE_NAME));
+            .setOrderByClause(DETAIL_STRING).setSelectTableName(DETAIL_SELECT_TABLE_NAME)
+            .setStringProvider(new StringProvider<String>(DETAIL_STRING)));
   }
 }
