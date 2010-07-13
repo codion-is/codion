@@ -48,7 +48,7 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
   private final Event evtColumnHidden = new Event();
   private final Event evtColumnShown = new Event();
 
-  private static final SortingState EMPTY_DIRECTIVE = new SortingStateImpl(-1, SortingDirective.UNSORTED);
+  private static final SortingState EMPTY_SORTING_STATE = new SortingStateImpl(-1, SortingDirective.UNSORTED);
 
   private final FilterCriteria<T> acceptAllCriteria = new FilterCriteria.AcceptAllCriteria<T>();
 
@@ -194,10 +194,6 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
     return selectionModel;
   }
 
-  public SortingDirective getSortingDirective(final int columnIndex) {
-    return getSortingState(columnIndex).getDirective();
-  }
-
   public int getSortPriority(final int columnIndex) {
     int i = 0;
     for (final SortingState state : sortingStates) {
@@ -210,13 +206,17 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
     return -1;
   }
 
-  public void setSortingDirective(final int columnIndex, final SortingDirective status) {
-    final SortingState directive = getSortingState(columnIndex);
-    if (!directive.equals(EMPTY_DIRECTIVE)) {
-      sortingStates.remove(directive);
+  public SortingDirective getSortingDirective(final int columnIndex) {
+    return getSortingState(columnIndex).getDirective();
+  }
+
+  public void setSortingDirective(final int columnIndex, final SortingDirective directive) {
+    final SortingState state = getSortingState(columnIndex);
+    if (!state.equals(EMPTY_SORTING_STATE)) {
+      sortingStates.remove(state);
     }
-    if (status != SortingDirective.UNSORTED) {
-      sortingStates.add(new SortingStateImpl(columnIndex, status));
+    if (directive != SortingDirective.UNSORTED) {
+      sortingStates.add(new SortingStateImpl(columnIndex, directive));
     }
     sortingStatusChanged();
   }
@@ -732,7 +732,7 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
         return sortingColumn;
       }
     }
-    return EMPTY_DIRECTIVE;
+    return EMPTY_SORTING_STATE;
   }
 
   private void sortingStatusChanged() {

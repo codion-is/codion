@@ -186,9 +186,9 @@ public interface FilteredTableModel<T> extends TableModel, Refreshable, Filtered
 
   /**
    * @param columnIndex the index of the column to sort by
-   * @param status the sorting status, use TableSorter.DESCENDING, .NOT_SORTED, .ASCENDING
+   * @param directive the sorting directive
    */
-  void setSortingDirective(final int columnIndex, final SortingDirective status);
+  void setSortingDirective(final int columnIndex, final SortingDirective directive);
 
   /**
    * @param columnIndex the column index
