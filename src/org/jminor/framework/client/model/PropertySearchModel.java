@@ -112,7 +112,7 @@ public class PropertySearchModel extends AbstractSearchModel<Property> {
    * Ensures that the data this PropertySearchModel relies on (in ComboBoxModels f.ex) has been initialized
    */
   public void initialize() {
-    if (entityComboBoxModel != null && entityComboBoxModel.isClear()) {
+    if (entityComboBoxModel != null && entityComboBoxModel.isCleared()) {
       entityComboBoxModel.refresh();
       try {
         updatingModel = true;//to prevent a round trip to setUpperBound()

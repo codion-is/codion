@@ -28,12 +28,12 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   private final FilterCriteria<T> acceptAllCriteria = new FilterCriteria.AcceptAllCriteria<T>();
 
   private final List<T> visibleItems = new ArrayList<T>();
-  private final List<T> filteredItems = new ArrayList<T>();
+  private final List<T> hiddenItems = new ArrayList<T>();
 
   /**
    * set during setContents
    */
-  private boolean clear = true;
+  private boolean cleared = true;
 
   private T selectedItem = null;
   private String nullValueString;
@@ -83,8 +83,8 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     setContents(null);
   }
 
-  public boolean isClear() {
-    return clear;
+  public boolean isCleared() {
+    return cleared;
   }
 
   /**
@@ -92,7 +92,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
    * @param contents the contents to be used by this model
    */
   public final void setContents(final Collection<T> contents) {
-    filteredItems.clear();
+    hiddenItems.clear();
     visibleItems.clear();
     if (nullValueString != null) {
       visibleItems.add(null);
@@ -100,21 +100,21 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     if (contents != null) {
       visibleItems.addAll(contents);
     }
-    clear = contents == null;
+    cleared = contents == null;
     filterContents();
   }
 
   public void filterContents() {
     final List<T> allItems = new ArrayList<T>(visibleItems);
-    allItems.addAll(filteredItems);
+    allItems.addAll(hiddenItems);
     visibleItems.clear();
-    filteredItems.clear();
+    hiddenItems.clear();
     for (final T item : allItems) {
       if (item == null || getFilterCriteria().include(item)) {
         visibleItems.add(item);
       }
       else {
-        filteredItems.add(item);
+        hiddenItems.add(item);
       }
     }
     if (sortContents) {
@@ -128,7 +128,19 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   }
 
   public void resetContents() {
-    setContents(getContents());
+    setContents(initializeContents());
+  }
+
+  public List<T> getHiddenItems() {
+    return Collections.unmodifiableList(hiddenItems);
+  }
+
+  public List<T> getVisibleItems() {
+    if (nullValueString == null) {
+      return Collections.unmodifiableList(visibleItems);
+    }
+
+    return Collections.unmodifiableList(visibleItems.subList(1, getSize() - 1));
   }
 
   public void setFilterCriteria(final FilterCriteria filterCriteria) {
@@ -139,6 +151,27 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
       this.filterCriteria = filterCriteria;
     }
     filterContents();
+  }
+
+  public List<T> getAllItems() {
+    return getAllItems(true);
+  }
+
+  public List<T> getAllItems(final boolean includeHidden) {
+    final List<T> entities = new ArrayList<T>(visibleItems);
+    if (includeHidden) {
+      entities.addAll(hiddenItems);
+    }
+
+    return entities;
+  }
+
+  public int getHiddenItemCount() {
+    return hiddenItems.size();
+  }
+
+  public int getVisibleItemCount() {
+    return visibleItems.size();
   }
 
   public FilterCriteria<T> getFilterCriteria() {
@@ -164,8 +197,8 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     if (visibleItems.contains(item)) {
       visibleItems.remove(item);
     }
-    if (filteredItems.contains(item)) {
-      filteredItems.remove(item);
+    if (hiddenItems.contains(item)) {
+      hiddenItems.remove(item);
     }
 
     fireContentsChanged();
@@ -182,7 +215,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     if (item == null) {
       return nullValueString != null;
     }
-    return visibleItems.contains(item) || filteredItems.contains(item);
+    return visibleItems.contains(item) || hiddenItems.contains(item);
   }
 
   public String getNullValueString() {
@@ -253,30 +286,14 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
    * by default it simply returns a list containing the items currently contained in the model,
    * excluding the null value string if one is specified.
    */
-  protected List<T> getContents() {
+  protected List<T> initializeContents() {
     final List<T> contents = new ArrayList<T>(visibleItems);
     if (nullValueString != null) {
       contents.remove(null);
     }
-    contents.addAll(filteredItems);
+    contents.addAll(hiddenItems);
 
     return contents;
-  }
-
-  protected List<T> getFilteredItems() {
-    return Collections.unmodifiableList(filteredItems);
-  }
-
-    /**
-   * @return a List containing the visibble items in this combo box model,
-   * excluding the null value string if one is specified.
-   */
-  protected List<T> getVisibleItems() {
-    if (nullValueString == null) {
-      return Collections.unmodifiableList(visibleItems);
-    }
-
-    return Collections.unmodifiableList(visibleItems.subList(1, getSize() - 1));
   }
 
   protected Comparator<T> initializeComparator() {

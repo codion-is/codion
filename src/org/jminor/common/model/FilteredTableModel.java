@@ -77,37 +77,6 @@ public interface FilteredTableModel<T> extends TableModel, Refreshable, Filtered
   Event eventTableDataChanged();
 
   /**
-   * @return all visible and hidden items in this table model
-   */
-  List<T> getAllItems();
-
-  /**
-   * @param includeHidden if true then filtered items are included
-   * @return all items in this table model
-   */
-  List<T> getAllItems(boolean includeHidden);
-
-  /**
-   * @return an unmodifiable view of the visible items
-   */
-  List<T> getVisibleItems();
-
-  /**
-   * @return an unmodifiable view of the hidden items
-   */
-  List<T> getHiddenItems();
-
-  /**
-   * @return the number of currently visible items
-   */
-  int getVisibleItemCount();
-
-  /**
-   * @return the number of currently filtered (hidden) items
-   */
-  int getHiddenItemCount();
-
-  /**
    * Returns the item found at the given index
    * @param index the index
    * @return the item at the given row index
@@ -155,7 +124,7 @@ public interface FilteredTableModel<T> extends TableModel, Refreshable, Filtered
   /**
    * @return an unmodifiable view of hidden table columns
    */
-  Collection<? extends TableColumn> getHiddenColumns();
+  Collection<TableColumn> getHiddenColumns();
 
   /**
    * Shows the column identified by the given identifier,
@@ -175,14 +144,14 @@ public interface FilteredTableModel<T> extends TableModel, Refreshable, Filtered
    * @param columnIdentifier the key for which to query if its column is visible
    * @return true if the column is visible, false if it is hidden
    */
-  boolean isColumnVisible(Object columnIdentifier);
+  boolean isColumnVisible(final Object columnIdentifier);
 
   /**
    * Toggles the visibility of the column representing the given columnIdentifier.<br>
    * @param columnIdentifier the column identifier
    * @param visible if true the column is shown, otherwise it is hidden
    */
-  void setColumnVisible(Object columnIdentifier, boolean visible);
+  void setColumnVisible(final Object columnIdentifier, final boolean visible);
 
   /**
    * @param columnIndex the index of the column to sort by
@@ -250,7 +219,7 @@ public interface FilteredTableModel<T> extends TableModel, Refreshable, Filtered
    * Specifies whether or not to use regular expressions when searching this table model
    * @param value the value
    */
-  void setRegularExpressionSearch(boolean value);
+  void setRegularExpressionSearch(final boolean value);
 
   /**
    * @return true if no rows are selected in this table model
@@ -267,13 +236,13 @@ public interface FilteredTableModel<T> extends TableModel, Refreshable, Filtered
    * Selects the item at <code>index</code>
    * @param index the index
    */
-  void addSelectedItemIndex(int index);
+  void addSelectedItemIndex(final int index);
 
   /**
    * Clears the selection and selects the item at <code>index</code>
    * @param index the index
    */
-  void setSelectedItemIndex(int index);
+  void setSelectedItemIndex(final int index);
 
   /**
    * Clears the selection
@@ -285,13 +254,13 @@ public interface FilteredTableModel<T> extends TableModel, Refreshable, Filtered
    * Selects the given indexes
    * @param indexes the indexes to select
    */
-  void setSelectedItemIndexes(List<Integer> indexes);
+  void setSelectedItemIndexes(final List<Integer> indexes);
 
   /**
    * Selects the given items
    * @param items the items to select
    */
-  void setSelectedItems(List<T> items);
+  void setSelectedItems(final List<T> items);
 
   /**
    * @return a list containing the selected items
@@ -309,7 +278,7 @@ public interface FilteredTableModel<T> extends TableModel, Refreshable, Filtered
    * Sets the selected item
    * @param item the item to select
    */
-  void setSelectedItem(T item);
+  void setSelectedItem(final T item);
 
   /**
    * Selects all visible entities

@@ -3,6 +3,8 @@
  */
 package org.jminor.common.model;
 
+import java.util.List;
+
 /**
  * User: darri
  * Date: 8.7.2010
@@ -34,4 +36,35 @@ public interface FilteredModel<T> {
    * @param filterCriteria the FilterCriteria to use
    */
   void setFilterCriteria(final FilterCriteria<T> filterCriteria);
+
+  /**
+   * @return an unmodifiable view of the visible items
+   */
+  List<T> getVisibleItems();
+
+  /**
+   * @return an unmodifiable view of the hidden items
+   */
+  List<T> getHiddenItems();
+
+  /**
+   * @return all visible and hidden items in this table model
+   */
+  List<T> getAllItems();
+
+  /**
+   * @param includeHidden if true then filtered items are included
+   * @return all items in this table model
+   */
+  List<T> getAllItems(final boolean includeHidden);
+
+  /**
+   * @return the number of currently visible items
+   */
+  int getVisibleItemCount();
+
+  /**
+   * @return the number of currently filtered (hidden) items
+   */
+  int getHiddenItemCount();
 }

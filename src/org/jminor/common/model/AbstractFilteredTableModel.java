@@ -21,8 +21,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 
 /**
  * A TableModel implentation that supports filtering, searching and sorting.
@@ -97,8 +99,8 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
    */
   private boolean isSorting = false;
 
-  private Object[] viewToModel;
-  private int[] modelToView;
+  private final List<Row> viewToModel = new ArrayList<Row>();
+  private final Map<Integer, Integer> modelToView = new HashMap<Integer, Integer>();
   private final List<SortingState> sortingStates = new ArrayList<SortingState>();
 
   /**
@@ -366,9 +368,9 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
   }
 
   private int modelIndex(int viewIndex) {
-    final Object[] model = getViewToModel();
-    if (model != null && model.length > 0 && viewIndex >= 0 && viewIndex < model.length) {
-      return ((Row) model[viewIndex]).modelIndex;
+    final List<Row> model = getViewToModel();
+    if (model.size() > 0 && viewIndex >= 0 && viewIndex < model.size()) {
+      return model.get(viewIndex).getModelIndex();
     }
 
     return -1;
@@ -653,11 +655,7 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
 
     return new FilterCriteria<Object>() {
       public boolean include(final Object item) {
-        if (item == null || searchText == null) {
-          return false;
-        }
-
-        return item.toString().toLowerCase().contains(searchText.toLowerCase());
+        return !(item == null || searchText == null) && item.toString().toLowerCase().contains(searchText.toLowerCase());
       }
     };
   }
@@ -698,25 +696,24 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
     });
   }
 
-  private int viewIndex(int modelIndex) {
-    final int[] view = getModelToView();
-    if (view != null && view.length > 0 && modelIndex >= 0 && modelIndex < view.length) {
-      return view[modelIndex];
+  private int viewIndex(final int modelIndex) {
+    final Map<Integer, Integer> view = getModelToView();
+    if (view.size() > 0 && modelIndex >= 0 && modelIndex < view.size()) {
+      return view.get(modelIndex);
     }
 
     return -1;
   }
 
-  private Object[] getViewToModel() {
-    if (viewToModel == null) {
+  private List<Row> getViewToModel() {
+    if (visibleItems.size() > 0 && viewToModel.size() == 0) {
       final int tableModelRowCount = getRowCount();
-      viewToModel = new Object[tableModelRowCount];
       for (int row = 0; row < tableModelRowCount; row++) {
-        viewToModel[row] = new Row(row);
+        viewToModel.add(new Row(row));
       }
 
       if (isSorted()) {
-        Arrays.sort(viewToModel);
+        Collections.sort(viewToModel);
       }
     }
     return viewToModel;
@@ -742,20 +739,19 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
     evtSortingDone.fire();
   }
 
-  private int[] getModelToView() {
-    if (modelToView == null) {
-      int n = getViewToModel().length;
-      modelToView = new int[n];
+  private Map<Integer, Integer> getModelToView() {
+    if (visibleItems.size() > 0 && modelToView.size() == 0) {
+      final int n = getViewToModel().size();
       for (int i = 0; i < n; i++) {
-        modelToView[modelIndex(i)] = i;
+        modelToView.put(modelIndex(i), i);
       }
     }
     return modelToView;
   }
 
   private void clearSorting() {
-    viewToModel = null;
-    modelToView = null;
+    viewToModel.clear();
+    modelToView.clear();
   }
 
   private static class SortingStateImpl implements SortingState {
@@ -797,17 +793,21 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
     }
   }
 
-  private class Row implements Comparable {
+  private class Row implements Comparable<Row> {
 
     private final int modelIndex;
 
-    Row(int modelIndex) {
+    Row(final int modelIndex) {
       this.modelIndex = modelIndex;
     }
 
-    public int compareTo(final Object o) {
+    public int getModelIndex() {
+      return modelIndex;
+    }
+
+    public int compareTo(final Row o) {
       final T one = visibleItems.get(modelIndex);
-      final T two = visibleItems.get(((Row) o).modelIndex);
+      final T two = visibleItems.get(o.modelIndex);
 
       for (final SortingState directive : sortingStates) {
         final int comparison = compare(one, two, directive.getColumnIndex(), directive.getDirective());

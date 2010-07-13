@@ -121,7 +121,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     if (indexOfKey >= 0) {
       setSelectedItem(items.get(indexOfKey));
     }
-    items = getFilteredItems();
+    items = getHiddenItems();
     indexOfKey = items.indexOf(toSelect);
     if (indexOfKey >= 0) {
       setSelectedItem(items.get(indexOfKey));
@@ -263,10 +263,10 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
    * @return the data to be presented in this EntityComboBoxModel, called when the data is refreshed
    */
   @Override
-  protected List<Entity> getContents() {
+  protected List<Entity> initializeContents() {
     try {
-      if (staticData && !isClear() && !forceRefresh) {
-        return super.getContents();
+      if (staticData && !isCleared() && !forceRefresh) {
+        return super.initializeContents();
       }
       final List<Entity> entities = performQuery();
       final ListIterator<Entity> iterator = entities.listIterator();

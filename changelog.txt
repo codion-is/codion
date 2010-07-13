@@ -1839,3 +1839,4 @@
   DefaultEntityComboBoxModel.dataInitialized moved to DefaultFilteredComboBoxModel as clear, interfaces changed accordingly
   AbstractSearchModel.autoEnable field added plus functionality
   TableSorter removed, functionality moved to FilteredTableModel/Panel
+  DefaultFilteredComboBoxModel.getContents() renamed to initializeContents()

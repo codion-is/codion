@@ -55,7 +55,7 @@ public class DefaultEntityComboBoxModelTest {
     assertNull(comboBoxModel.getSelectedItem());
     comboBoxModel.refresh();
     assertTrue(comboBoxModel.getSize() > 0);
-    assertFalse(comboBoxModel.isClear());
+    assertFalse(comboBoxModel.isCleared());
 
     try {
       comboBoxModel.setSelectedItem("test");
