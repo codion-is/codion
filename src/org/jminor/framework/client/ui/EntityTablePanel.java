@@ -1420,7 +1420,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     final String[][] header = {headerValues.toArray(new String[headerValues.size()])};
 
     final List<Entity> entities = getTableModel().isSelectionEmpty()
-            ? getTableModel().getAllItems(false) : getTableModel().getSelectedItems();
+            ? getTableModel().getVisibleItems() : getTableModel().getSelectedItems();
 
     final String[][] data = new String[entities.size()][];
     for (int i = 0; i < data.length; i++) {

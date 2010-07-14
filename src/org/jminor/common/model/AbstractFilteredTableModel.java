@@ -430,14 +430,8 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
   }
 
   public List<T> getAllItems() {
-    return getAllItems(true);
-  }
-
-  public List<T> getAllItems(final boolean includeFiltered) {
     final List<T> entities = new ArrayList<T>(visibleItems);
-    if (includeFiltered) {
-      entities.addAll(filteredItems);
-    }
+    entities.addAll(filteredItems);
 
     return entities;
   }
@@ -626,8 +620,9 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
    * @param atFront if true then the items are added at the front
    */
   protected void addItems(final List<T> items, final boolean atFront) {
+    final FilterCriteria<T> criteria = getFilterCriteria();
     for (final T item : items) {
-      if (getFilterCriteria().include(item)) {
+      if (criteria.include(item)) {
         if (atFront) {
           visibleItems.add(0, item);
         }

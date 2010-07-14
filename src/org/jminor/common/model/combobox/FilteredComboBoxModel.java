@@ -21,6 +21,8 @@ public interface FilteredComboBoxModel<T> extends FilteredModel<T>, ComboBoxMode
 
   void setContents(final Collection<T> contents);
 
+  void addItem(final T item);
+
   /**
    * Removes the given item from this model
    * @param item the item to remove
@@ -28,25 +30,9 @@ public interface FilteredComboBoxModel<T> extends FilteredModel<T>, ComboBoxMode
   void removeItem(final T item);
 
   /**
-   * Returns true if this combo box model contains the given item, visible or filtered.
-   * A null value is considered contained in the model if a <code>nullValueString</code>
-   * has been specified.
-   * @param item the item
-   * @return true if this combo box model contains the item
-   */
-  boolean contains(final T item);
-
-  /**
    * @return true if the model data needs to be refreshed
    */
   boolean isCleared();
-
-  boolean isSortContents();
-
-  /**
-   * @param sort true if the contents of this FilteredComboBoxModel should be sorted
-   */
-  void setSortContents(final boolean sort);
 
   /**
    * @return true if a value representing null is selected

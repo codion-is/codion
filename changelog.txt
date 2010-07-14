@@ -1847,3 +1847,7 @@
   Util.rejectNullValue() version taking only the value as parameter removed
   AbstractEntityDbProvider added
 0.5.6
+  AbstractFilteredTableModel/DefaultFilteredComboBoxModel/DefaultEntityComboBoxModel improved/refactored filtering
+  FilteredComboBoxModel.addItem() added
+  DefaultFilteredComboBoxModel.sortContents field removed
+  FilteredModel.getAllItems(includeHidden) removed

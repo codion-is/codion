@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -268,15 +267,8 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
       if (staticData && !isCleared() && !forceRefresh) {
         return super.initializeContents();
       }
-      final List<Entity> entities = performQuery();
-      final ListIterator<Entity> iterator = entities.listIterator();
-      while (iterator.hasNext()) {
-        if (!getFilterCriteria().include(iterator.next())) {
-          iterator.remove();
-        }
-      }
 
-      return entities;
+      return performQuery();
     }
     finally {
       evtRefreshDone.fire();

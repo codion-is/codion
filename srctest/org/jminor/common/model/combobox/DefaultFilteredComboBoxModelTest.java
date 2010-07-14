@@ -25,9 +25,7 @@ public class DefaultFilteredComboBoxModelTest {
   private static final String BJORN = "björn";
 
   @Test
-  public void setSortContents() {
-    testModel.setSortContents(true);
-    assertTrue(testModel.isSortContents());
+  public void testSorting() {
     assertTrue(ANNA + " should be at index 0, got " + testModel.getElementAt(0), testModel.getElementAt(0).equals(ANNA));
     assertTrue(BJORN + " should be at index 1, got " + testModel.getElementAt(1), testModel.getElementAt(1).equals(BJORN));
     assertTrue(KALLI + " should be at index 2, got " + testModel.getElementAt(2), testModel.getElementAt(2).equals(KALLI));

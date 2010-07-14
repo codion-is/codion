@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.ListIterator;
 
 /**
  * A default FilteredComboBoxModel implementation.
@@ -38,7 +39,6 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   private T selectedItem = null;
   private String nullValueString;
   private FilterCriteria<T> filterCriteria = acceptAllCriteria;
-  private boolean sortContents = true;
 
   private final Comparator<? super T> sortComparator;
 
@@ -48,29 +48,17 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
    * Instantiates a new DefaultFilteredComboBoxModel that does not sort its contents and does not include a nullValueItem.
    */
   public DefaultFilteredComboBoxModel() {
-    this(true, null);
+    this(null);
   }
 
   /**
    * Instantiates a new FilteredComboBoxModel.
-   * @param sortContents if true then the contents of this model should be sorted
    * @param nullValueString a string representing a null value, which is shown at the top of the item list
    * @see #isNullValueSelected()
    */
-  public DefaultFilteredComboBoxModel(final boolean sortContents, final String nullValueString) {
-    this.sortContents = sortContents;
+  public DefaultFilteredComboBoxModel(final String nullValueString) {
     this.nullValueString = nullValueString;
     this.sortComparator = initializeComparator();
-  }
-
-  public boolean isSortContents() {
-    return this.sortContents;
-  }
-
-  public void setSortContents(final boolean sort) {
-    if (this.sortContents != sort) {
-      this.sortContents = sort;
-    }
   }
 
   public void refresh() {
@@ -95,31 +83,29 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     visibleItems.clear();
     if (contents != null) {
       visibleItems.addAll(contents);
-      if (sortContents) {
-        Collections.sort(visibleItems, sortComparator);
-      }
+      filterContents();
       if (nullValueString != null) {
         visibleItems.add(0, null);
       }
     }
+    else {
+      fireContentsChanged();
+    }
     cleared = contents == null;
-    filterContents();
   }
 
   public void filterContents() {
-    final List<T> allItems = new ArrayList<T>(visibleItems);
-    allItems.addAll(filteredItems);
-    visibleItems.clear();
+    visibleItems.addAll(filteredItems);
     filteredItems.clear();
-    for (final T item : allItems) {
-      if (item == null || getFilterCriteria().include(item)) {
-        visibleItems.add(item);
-      }
-      else {
+    final FilterCriteria<T> criteria = getFilterCriteria();
+    for (final ListIterator<T> itemIterator = visibleItems.listIterator(); itemIterator.hasNext();) {
+      final T item = itemIterator.next();
+      if (item != null && !criteria.include(item)) {
         filteredItems.add(item);
+        itemIterator.remove();
       }
     }
-    if (sortContents) {
+    if (sortComparator != null) {
       Collections.sort(visibleItems, sortComparator);
     }
     if (selectedItem != null && !visibleItems.contains(selectedItem)) {
@@ -156,14 +142,8 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   }
 
   public List<T> getAllItems() {
-    return getAllItems(true);
-  }
-
-  public List<T> getAllItems(final boolean includeFiltered) {
     final List<T> entities = new ArrayList<T>(visibleItems);
-    if (includeFiltered) {
-      entities.addAll(filteredItems);
-    }
+    entities.addAll(filteredItems);
 
     return entities;
   }
@@ -207,6 +187,15 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     }
   }
 
+  public void addItem(final T item) {
+    if (getFilterCriteria().include(item)) {
+      visibleItems.add(item);
+    }
+    else {
+      filteredItems.add(item);
+    }
+  }
+
   public void removeItem(final T item) {
     if (visibleItems.contains(item)) {
       visibleItems.remove(item);
@@ -216,14 +205,6 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     }
 
     fireContentsChanged();
-  }
-
-  public boolean contains(final T item) {
-    if (item == null) {
-      return nullValueString != null;
-    }
-
-    return contains(item, false);
   }
 
   public boolean contains(final T item, final boolean includeFiltered) {
@@ -314,8 +295,9 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   }
 
   /**
-   * @return the Comparator to use when sorting the contents of this model
-   * @see #setSortContents(boolean)
+   * Initializes the comparator to use when sorting this model,
+   *  if the model should not be sorted override and return null.
+   * @return the Comparator to use when sorting the contents of this model.
    */
   protected Comparator<T> initializeComparator() {
     return new Comparator<T>() {

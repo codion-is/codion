@@ -12,15 +12,19 @@ import java.util.List;
  */
 public interface FilteredModel<T> {
 
-  Event eventFilteringDone();
-
   /**
    * @return an Event fired when the model is about to be filtered
    */
   Event eventFilteringStarted();
 
   /**
-   * Filters the table according to the criteria returned by <code>getFilterCriteria()</code>
+   * @return an Event fired when the model has just been filtered
+   */
+  Event eventFilteringDone();
+
+  /**
+   * Filters the table according to the criteria returned by <code>getFilterCriteria()</code>.
+   * This method does not interfere with the internal ordering of the visible items.
    * @see #getFilterCriteria()
    */
   void filterContents();
@@ -51,12 +55,6 @@ public interface FilteredModel<T> {
    * @return all visible and filtered items in this table model
    */
   List<T> getAllItems();
-
-  /**
-   * @param includeFiltered if true then filtered items are included
-   * @return all items in this table model
-   */
-  List<T> getAllItems(final boolean includeFiltered);
 
   /**
    * @return the number of currently visible items
