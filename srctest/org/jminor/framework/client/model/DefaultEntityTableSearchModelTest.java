@@ -40,7 +40,7 @@ public class DefaultEntityTableSearchModelTest {
     model.refreshSearchComboBoxModels();
     assertTrue(model.getPropertySearchModel(EmpDept.EMPLOYEE_DEPARTMENT_FK).getEntityComboBoxModel().getSize() > 1);
     model.clearSearchComboBoxModels();
-    assertTrue(model.getPropertySearchModel(EmpDept.EMPLOYEE_DEPARTMENT_FK).getEntityComboBoxModel().getSize() == 1);
+    assertTrue(model.getPropertySearchModel(EmpDept.EMPLOYEE_DEPARTMENT_FK).getEntityComboBoxModel().getSize() == 0);
 
     assertFalse(model.isFilterEnabled(EmpDept.EMPLOYEE_DEPARTMENT_FK));
     assertFalse(model.isSearchEnabled(EmpDept.EMPLOYEE_DEPARTMENT_FK));

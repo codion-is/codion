@@ -46,7 +46,7 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
   public ValueChangeMapImpl() {}
 
   public V getOriginalValue(final K key) {
-    Util.rejectNullValue(key);
+    Util.rejectNullValue(key, "key");
     if (isModified(key)) {
       return originalValues.get(key);
     }

@@ -89,7 +89,7 @@ public class EntityCriteriaPanel extends JPanel {
       public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
         final Component cellRenderer = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
         final PropertySearchModel selected = (PropertySearchModel) value;
-        ((JLabel)cellRenderer).setText(selected.getSearchProperty().toString());
+        ((JLabel)cellRenderer).setText(selected.getSearchKey().toString());
         cellRenderer.setForeground(selected.isSearchEnabled() ? Color.red : Color.black);
 
         return cellRenderer;
@@ -122,8 +122,8 @@ public class EntityCriteriaPanel extends JPanel {
     final List<PropertySearchModel> searchCriteria = new ArrayList<PropertySearchModel>(searchModel.getPropertySearchModels());
     Collections.sort(searchCriteria, new Comparator<AbstractSearchModel<Property>>() {
       public int compare(final AbstractSearchModel<Property> o1, final AbstractSearchModel<Property> o2) {
-        final Property propertyOne = o1.getSearchProperty();
-        final Property propertyTwo = o2.getSearchProperty();
+        final Property propertyOne = o1.getSearchKey();
+        final Property propertyTwo = o2.getSearchKey();
         if (propertyOne.getCaption() != null && propertyTwo.getCaption() != null) {
           return propertyOne.getCaption().compareTo(propertyTwo.getCaption());
         }

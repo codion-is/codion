@@ -157,6 +157,11 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    */
   void validateEntities(final Collection<Entity> entities, final int action) throws ValidationException;
 
+  /**
+   * Sets the active state of this edit model, an active edit model should be
+   * ready to recieve input, this is relevant when a UI is based on the model
+   * @param active the active state
+   */
   void setActive(final boolean active);
 
   /**
@@ -168,6 +173,10 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    */
   Entity getEntityValue(final String foreignKeyPropertyID);
 
+  /**
+   * @param property the property
+   * @return a value provider providing the values of the given property
+   */
   ValueCollectionProvider getValueProvider(final Property property);
 
   /**
@@ -296,6 +305,13 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    */
   EntityComboBoxModel initializeEntityComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty);
 
+  /**
+   * Creates a combo box model providing the values of the given property
+   * @param property the property
+   * @param refreshEvent the combo box model is refreshed each time this event is fired
+   * @param nullValueString the string to use as a null value caption
+   * @return a combo box model based on the given property
+   */
   PropertyComboBoxModel createPropertyComboBoxModel(final Property property, final Event refreshEvent,
                                                     final String nullValueString);
 
@@ -305,6 +321,9 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    */
   void refreshComboBoxModels();
 
+  /**
+   * Clears the data from all combo boxe models
+   */
   void clearComboBoxModels();
 
   /**

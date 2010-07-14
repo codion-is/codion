@@ -44,8 +44,8 @@ public abstract class AbstractValueLink<T, V> extends Control {
    * @param linkType the link Type
    */
   public AbstractValueLink(final T valueOwner, final Event modelValueChangeEvent, final LinkType linkType) {
-    Util.rejectNullValue(valueOwner);
-    Util.rejectNullValue(linkType);
+    Util.rejectNullValue(valueOwner, "valueOwner");
+    Util.rejectNullValue(linkType, "linkType");
     this.valueOwner = valueOwner;
     this.linkType = linkType;
     if (linkType != LinkType.WRITE_ONLY && modelValueChangeEvent != null) {

@@ -20,7 +20,7 @@ public class JasperReportsResult implements ReportResult<JasperPrint>, Serializa
   private final JasperPrint jasperPrint;
 
   public JasperReportsResult(final JasperPrint jasperPrint) {
-    Util.rejectNullValue(jasperPrint);
+    Util.rejectNullValue(jasperPrint, "jasperPrint");
     this.jasperPrint = jasperPrint;
   }
 

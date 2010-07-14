@@ -55,7 +55,7 @@ public class PropertySearchPanel extends AbstractSearchPanel<Property> {
 
   @Override
   protected boolean searchTypeAllowed(final SearchType searchType) {
-    final Property property = getModel().getSearchProperty();
+    final Property property = getModel().getSearchKey();
     return !(property instanceof Property.ForeignKeyProperty || property.isBoolean())
             || searchType == SearchType.LIKE || searchType == SearchType.NOT_LIKE;
   }
@@ -87,7 +87,7 @@ public class PropertySearchPanel extends AbstractSearchPanel<Property> {
   }
 
   private JComponent initField(final SimpleDateFormat dateFormat) {
-    final Property property = getModel().getSearchProperty();
+    final Property property = getModel().getSearchKey();
     if (property instanceof Property.ValueListProperty) {
       return initValueListField((Property.ValueListProperty) property);
     }
@@ -145,7 +145,7 @@ public class PropertySearchPanel extends AbstractSearchPanel<Property> {
   }
 
   private void bindField(final JComponent field, final boolean isUpperBound, final SimpleDateFormat format) {
-    final Property property = getModel().getSearchProperty();
+    final Property property = getModel().getSearchKey();
     if (property instanceof Property.ValueListProperty) {
       new SelectedItemBeanValueLink((JComboBox) field, getModel(),
                 isUpperBound ? PropertySearchModel.UPPER_BOUND_PROPERTY : PropertySearchModel.LOWER_BOUND_PROPERTY,

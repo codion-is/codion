@@ -185,7 +185,7 @@ public class PropertyFilterPanel extends AbstractSearchPanel<Property> {
   }
 
   private JComponent initField(final SimpleDateFormat format) {
-    final Property property = getModel().getSearchProperty();
+    final Property property = getModel().getSearchKey();
     if (property.isTime()) {
       return UiUtil.createFormattedField(DateUtil.getDateMask(format));
     }
@@ -210,10 +210,10 @@ public class PropertyFilterPanel extends AbstractSearchPanel<Property> {
 
     final JDialog dlgParent = UiUtil.getParentDialog(parent);
     if (dlgParent != null) {
-      dialog = new JDialog(dlgParent, getModel().getSearchProperty().getCaption(), false);
+      dialog = new JDialog(dlgParent, getModel().getSearchKey().getCaption(), false);
     }
     else {
-      dialog = new JDialog(UiUtil.getParentFrame(parent), getModel().getSearchProperty().getCaption(), false);
+      dialog = new JDialog(UiUtil.getParentFrame(parent), getModel().getSearchKey().getCaption(), false);
     }
 
     final JPanel searchPanel = new JPanel(new BorderLayout());
@@ -242,7 +242,7 @@ public class PropertyFilterPanel extends AbstractSearchPanel<Property> {
   }
 
   private TextBeanValueLink createTextProperty(final JComponent component, boolean isUpper, final SimpleDateFormat format) {
-    final Property property = getModel().getSearchProperty();
+    final Property property = getModel().getSearchKey();
     if (property.isInteger()) {
       return new IntBeanValueLink((IntField) component, getModel(),
               isUpper ? PropertyFilterModel.UPPER_BOUND_PROPERTY : PropertyFilterModel.LOWER_BOUND_PROPERTY,

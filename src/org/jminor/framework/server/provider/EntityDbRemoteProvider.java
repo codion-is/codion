@@ -8,7 +8,7 @@ import org.jminor.common.model.Util;
 import org.jminor.common.server.RemoteServer;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityDb;
-import org.jminor.framework.db.provider.EntityDbProvider;
+import org.jminor.framework.db.provider.AbstractEntityDbProvider;
 
 import org.apache.log4j.Logger;
 
@@ -28,36 +28,24 @@ import java.util.List;
 /**
  * A class responsible for managing a remote db connection.
  */
-public class EntityDbRemoteProvider implements EntityDbProvider {
+public class EntityDbRemoteProvider extends AbstractEntityDbProvider {
 
   private static final Logger LOG = Util.getLogger(EntityDbRemoteProvider.class);
   private static final int INPUT_BUFFER_SIZE = 8192;
 
   private final String serverHostName;
-  private User user;
   private final String clientID;
   private final String clientTypeID;
   private RemoteServer server;
-  private EntityDb entityDb;
   private String serverName;
 
   public EntityDbRemoteProvider(final User user, final String clientID, final String clientTypeID) {
-    Util.rejectNullValue(user);
+    super(user);
+    Util.rejectNullValue(user, "user");
     serverHostName = System.getProperty(Configuration.SERVER_HOST_NAME, "localhost");
-    this.user = user;
     this.clientID = clientID;
     this.clientTypeID = clientTypeID;
     setTruststore(clientTypeID);
-  }
-
-  public EntityDb getEntityDb() {
-    if (user == null) {
-      throw new IllegalStateException("Not logged in");
-    }
-
-    initializeEntityDb();
-
-    return entityDb;
   }
 
   public String getDescription() {
@@ -69,30 +57,9 @@ public class EntityDbRemoteProvider implements EntityDbProvider {
     }
   }
 
-  public User getUser() {
-    return user;
-  }
-
-  public void setUser(final User user) {
-    if (Util.equal(user, this.user)) {
-      return;
-    }
-    disconnect();
-    this.user = user;
-  }
-
-  public boolean isConnected() {
-    try {
-      return entityDb != null && entityDb.isConnected();
-    }
-    catch (Exception e) {
-      throw new RuntimeException(e);
-    }
-  }
-
   public void disconnect() {
     try {
-      if (entityDb != null && connectionValid()) {
+      if (entityDb != null && isConnectionValid()) {
         server.disconnect(clientID);
       }
       entityDb = null;
@@ -102,18 +69,19 @@ public class EntityDbRemoteProvider implements EntityDbProvider {
     }
   }
 
-  private void initializeEntityDb() {
+  @Override
+  protected EntityDb connect() {
     try {
-      if (entityDb == null || !connectionValid()) {
-        entityDb = (EntityDb) getRemoteEntityDbServer().connect(user, clientID, clientTypeID);
-      }
+      LOG.debug("Initializing connection for " + getUser());
+      return (EntityDb) getRemoteEntityDbServer().connect(getUser(), clientID, clientTypeID);
     }
     catch (Exception e) {
       throw new RuntimeException(e);
     }
   }
 
-  private boolean connectionValid() {
+  @Override
+  protected boolean isConnectionValid() {
     try {
       //could be a call to any method, simply checking if remote connection is valid
       entityDb.isConnected();
@@ -139,13 +107,13 @@ public class EntityDbRemoteProvider implements EntityDbProvider {
       }//just to check the connection
     }
     catch (RemoteException e) {
-      LOG.info(serverName + " was unreachable, " + user + " - " + clientID + " reconnecting...");
+      LOG.info(serverName + " was unreachable, " + getUser() + " - " + clientID + " reconnecting...");
       unreachable = true;
     }
     if (server == null || unreachable) {
       //if server is not reachable, try to reconnect once and return
       connectToServer();
-      LOG.debug("ClientID: " + clientID + ", user: " + user + " connected to server: " + serverName);
+      LOG.debug("ClientID: " + clientID + ", user: " + getUser() + " connected to server: " + serverName);
     }
 
     return this.server;

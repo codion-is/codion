@@ -168,7 +168,7 @@ public class Property implements Serializable {
    * @param caption the caption of this property, if this is null then this property is defined as hidden
    */
   public Property(final String propertyID, final int type, final String caption) {
-    Util.rejectNullValue(propertyID);
+    Util.rejectNullValue(propertyID, "propertyID");
     this.propertyID = propertyID;
     this.hashCode = propertyID.hashCode();
     this.type = type;

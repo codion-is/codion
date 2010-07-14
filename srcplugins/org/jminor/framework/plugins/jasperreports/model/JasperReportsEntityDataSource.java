@@ -22,7 +22,7 @@ public class JasperReportsEntityDataSource implements JRDataSource, ReportDataWr
   private Entity currentEntity = null;
 
   public JasperReportsEntityDataSource(final Iterator<Entity> reportIterator) {
-    Util.rejectNullValue(reportIterator);
+    Util.rejectNullValue(reportIterator, "reportIterator");
     this.reportIterator = reportIterator;
   }
 
@@ -43,7 +43,7 @@ public class JasperReportsEntityDataSource implements JRDataSource, ReportDataWr
    * @see org.jminor.framework.domain.Entity#getValue(String)
    */
   public Object getFieldValue(final JRField jrField) throws JRException {
-    Util.rejectNullValue(jrField);
+    Util.rejectNullValue(jrField, "jrField");
     try {
       return currentEntity.getValue(jrField.getName());
     }

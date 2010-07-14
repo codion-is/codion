@@ -96,8 +96,8 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
    */
   public DefaultEntityEditModel(final String entityID, final EntityDbProvider dbProvider) {
     super(new Entity(entityID));
-    Util.rejectNullValue(entityID);
-    Util.rejectNullValue(dbProvider);
+    Util.rejectNullValue(entityID, "entityID");
+    Util.rejectNullValue(dbProvider, "dbProvider");
     if (!Configuration.getBooleanValue(Configuration.ALL_PANELS_ACTIVE)) {
       ACTIVE_STATE_GROUP.addState(stActive);
     }
@@ -219,7 +219,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
    * @see #validateEntities(java.util.Collection, int)
    */
   public final void insert(final List<Entity> entities) throws CancelException, DbException, ValidationException {
-    Util.rejectNullValue(entities);
+    Util.rejectNullValue(entities, "entities");
     if (entities.size() == 0) {
       return;
     }
@@ -244,7 +244,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
   }
 
   public final void update(final List<Entity> entities) throws DbException, CancelException, ValidationException {
-    Util.rejectNullValue(entities);
+    Util.rejectNullValue(entities, "entities");
     if (entities.size() == 0) {
       return;
     }
@@ -275,7 +275,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
   }
 
   public final void delete(final List<Entity> entities) throws DbException, CancelException {
-    Util.rejectNullValue(entities);
+    Util.rejectNullValue(entities, "entities");
     if (entities.size() == 0) {
       return;
     }
@@ -297,7 +297,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
 
   @SuppressWarnings({"UnusedDeclaration"})
   public void validateEntities(final Collection<Entity> entities, final int action) throws ValidationException {
-    Util.rejectNullValue(entities);
+    Util.rejectNullValue(entities, "entities");
     for (final Entity entity : entities) {
       for (final Property property : EntityRepository.getProperties(entity.getEntityID()).values()) {
         validate(entity, property.getPropertyID(), action);
@@ -306,7 +306,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
   }
 
   public final void validate(final String key, final int action) throws ValidationException {
-    Util.rejectNullValue(key);
+    Util.rejectNullValue(key, "key");
     validate(getEntity(), key, action);
   }
 
@@ -324,8 +324,8 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
    * @see org.jminor.framework.Configuration#PERFORM_NULL_VALIDATION
    */
   public void validate(final Entity entity, final String propertyID, final int action) throws ValidationException {
-    Util.rejectNullValue(entity);
-    Util.rejectNullValue(propertyID);
+    Util.rejectNullValue(entity, "entity");
+    Util.rejectNullValue(propertyID, "propertyID");
     final Property property = entity.getProperty(propertyID);
     if (Configuration.getBooleanValue(Configuration.PERFORM_NULL_VALIDATION)) {
       performNullValidation(entity, property, action);
@@ -342,7 +342,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
    * @return true if the property accepts a null value
    */
   public boolean isNullable(final String key) {
-    Util.rejectNullValue(key);
+    Util.rejectNullValue(key, "key");
     return isNullable(getEntity(), key);
   }
 
@@ -381,7 +381,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
   }
 
   public PropertyComboBoxModel getPropertyComboBoxModel(final Property property) {
-    Util.rejectNullValue(property);
+    Util.rejectNullValue(property, "property");
     final PropertyComboBoxModel comboBoxModel = (PropertyComboBoxModel) propertyComboBoxModels.get(property);
     if (comboBoxModel == null) {
       throw new RuntimeException("No PropertyComboBoxModel has been initialized for property: " + property);
@@ -392,7 +392,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
 
   public PropertyComboBoxModel initializePropertyComboBoxModel(final Property property, final Event refreshEvent,
                                                                final String nullValueString) {
-    Util.rejectNullValue(property);
+    Util.rejectNullValue(property, "property");
     PropertyComboBoxModel comboBoxModel = (PropertyComboBoxModel) propertyComboBoxModels.get(property);
     if (comboBoxModel == null) {
       comboBoxModel = createPropertyComboBoxModel(property, refreshEvent == null ? evtEntitiesChanged : refreshEvent, nullValueString);
@@ -416,7 +416,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
   }
 
   public EntityComboBoxModel getEntityComboBoxModel(final String propertyID) {
-    Util.rejectNullValue(propertyID);
+    Util.rejectNullValue(propertyID, "propertyID");
     final Property property = EntityRepository.getProperty(entityID, propertyID);
     if (!(property instanceof Property.ForeignKeyProperty)) {
       throw new IllegalArgumentException("EntityComboBoxModels are only available for Property.ForeignKeyProperty");
@@ -426,7 +426,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
   }
 
   public EntityComboBoxModel getEntityComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty) {
-    Util.rejectNullValue(foreignKeyProperty);
+    Util.rejectNullValue(foreignKeyProperty, "foreignKeyProperty");
     final EntityComboBoxModel comboBoxModel = (EntityComboBoxModel) propertyComboBoxModels.get(foreignKeyProperty);
     if (comboBoxModel == null) {
       throw new RuntimeException("No EntityComboBoxModel has been initialized for property: " + foreignKeyProperty);
@@ -436,7 +436,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
   }
 
   public EntityComboBoxModel initializeEntityComboBoxModel(final String propertyID) {
-    Util.rejectNullValue(propertyID);
+    Util.rejectNullValue(propertyID, "propertyID");
     final Property property = EntityRepository.getProperty(entityID, propertyID);
     if (!(property instanceof Property.ForeignKeyProperty)) {
       throw new IllegalArgumentException("EntityComboBoxModels are only available for Property.ForeignKeyProperty");
@@ -446,7 +446,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
   }
 
   public EntityComboBoxModel initializeEntityComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty) {
-    Util.rejectNullValue(foreignKeyProperty);
+    Util.rejectNullValue(foreignKeyProperty, "foreignKeyProperty");
     EntityComboBoxModel comboBoxModel = (EntityComboBoxModel) propertyComboBoxModels.get(foreignKeyProperty);
     if (comboBoxModel == null) {
       comboBoxModel = createEntityComboBoxModel(foreignKeyProperty);
@@ -461,12 +461,12 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
   }
 
   public boolean containsComboBoxModel(final Property property) {
-    Util.rejectNullValue(property);
+    Util.rejectNullValue(property, "property");
     return propertyComboBoxModels.containsKey(property);
   }
 
   public EntityComboBoxModel createEntityComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty) {
-    Util.rejectNullValue(foreignKeyProperty);
+    Util.rejectNullValue(foreignKeyProperty, "foreignKeyProperty");
     final EntityComboBoxModel model = new DefaultEntityComboBoxModel(foreignKeyProperty.getReferencedEntityID(), dbProvider);
     model.setNullValueString(isNullable(getEntity(), foreignKeyProperty.getPropertyID()) ?
             (String) Configuration.getValue(Configuration.DEFAULT_COMBO_BOX_NULL_VALUE_ITEM) : null);

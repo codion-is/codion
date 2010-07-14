@@ -43,9 +43,9 @@ public class PropertyComboBoxModel extends DefaultFilteredComboBoxModel {
   public PropertyComboBoxModel(final String entityID, final EntityDbProvider dbProvider, final Property property,
                                final String nullValue, final Event refreshEvent) {
     super(true, nullValue);
-    Util.rejectNullValue(entityID);
-    Util.rejectNullValue(dbProvider);
-    Util.rejectNullValue(property);
+    Util.rejectNullValue(entityID, "entityID");
+    Util.rejectNullValue(dbProvider, "dbProvider");
+    Util.rejectNullValue(property, "property");
     if (property instanceof Property.ForeignKeyProperty) {
       throw new IllegalArgumentException("Cannot create a PropertyComboBoxModel for a reference property "
               + property.getPropertyID() + ",\nuse an EntityComboBoxModel instead!");

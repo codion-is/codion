@@ -35,7 +35,7 @@ public class EntityTableCellRenderer implements TableCellRenderer {
   private static final Color DOUBLE_FILTERED_BACKGROUND = new Color(215, 215, 215);
 
   public EntityTableCellRenderer(final EntityTableModel tableModel, final boolean rowColoring) {
-    Util.rejectNullValue(tableModel);
+    Util.rejectNullValue(tableModel, "tableModel");
     this.rowColoring = rowColoring;
     this.tableModel = tableModel;
   }

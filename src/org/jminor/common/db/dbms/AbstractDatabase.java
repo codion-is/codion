@@ -113,7 +113,7 @@ public abstract class AbstractDatabase implements Database {
   }
 
   public Connection createConnection(final User user) throws ClassNotFoundException, SQLException {
-    Util.rejectNullValue(user);
+    Util.rejectNullValue(user, "user");
     Util.rejectNullValue(user.getUsername(), "Username must be provided");
     Util.rejectNullValue(user.getPassword(), "Password must be provided");
     loadDriver();

@@ -94,7 +94,7 @@ public class PropertyFilterModel extends AbstractSearchModel<Property> {
       return false;
     }
 
-    final Property property = getSearchProperty();
+    final Property property = getSearchKey();
     if (property.isString() || property.isReference()) {
       return !includeExactWildcard((String) comparable);
     }
@@ -185,12 +185,12 @@ public class PropertyFilterModel extends AbstractSearchModel<Property> {
 
   protected Comparable getComparable(final Object object) {
     final Entity entity = (Entity) object;
-    if (entity.isValueNull(getSearchProperty().getPropertyID())) {
+    if (entity.isValueNull(getSearchKey().getPropertyID())) {
       return null;
     }
 
-    final Object value = entity.getValue(getSearchProperty().getPropertyID());
-    if (getSearchProperty().isReference()) {
+    final Object value = entity.getValue(getSearchKey().getPropertyID());
+    if (getSearchKey().isReference()) {
       return value.toString();
     }
     else {

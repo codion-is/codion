@@ -106,7 +106,7 @@ public class ItemComboBoxModel<T> extends DefaultComboBoxModel {
 
     public IconItem(final T item, final ImageIcon icon) {
       super(item, item == null ? "" : item.toString());
-      Util.rejectNullValue(icon);
+      Util.rejectNullValue(icon, "icon");
       this.icon = icon;
     }
 

@@ -15,7 +15,7 @@ import javax.swing.JComponent;
 public class JasperReportsUIWrapper implements ReportUIWrapper<JasperPrint> {
 
   public JComponent createReportComponent(final ReportResult<JasperPrint> result) {
-    Util.rejectNullValue(result);
+    Util.rejectNullValue(result, "result");
     return new JRViewer(result.getResult());
   }
 }

@@ -352,12 +352,12 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
   }
 
   public String getStatusMessage() {
-    final int hiddenCount = getHiddenItemCount();
+    final int filteredItemCount = getFilteredItemCount();
 
     return new StringBuilder(Integer.toString(getRowCount())).append(" (").append(
             Integer.toString(getSelectionCount())).append(" ").append(
             FrameworkMessages.get(FrameworkMessages.SELECTED)).append(
-            hiddenCount > 0 ? ", " + hiddenCount + " "
+            filteredItemCount > 0 ? ", " + filteredItemCount + " "
                     + FrameworkMessages.get(FrameworkMessages.HIDDEN) + ")" : ")").toString();
   }
 
@@ -409,7 +409,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
       }
     }
 
-    for (final Entity entity : getHiddenItems()) {
+    for (final Entity entity : getFilteredItems()) {
       for (final Entity newEntity : entities) {
         if (entity.getPrimaryKey().equals(newEntity.getPrimaryKey())) {
           entity.setAs(newEntity);

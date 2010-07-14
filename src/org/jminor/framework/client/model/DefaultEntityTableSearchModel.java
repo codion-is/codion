@@ -55,9 +55,9 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
    * @param simpleSearch if true then search panels based on this search model should implement a simplified search
    */
   public DefaultEntityTableSearchModel(final String entityID, final EntityDbProvider dbProvider,
-                                final List<Property> properties, final boolean simpleSearch) {
-    Util.rejectNullValue(entityID);
-    Util.rejectNullValue(properties);
+                                       final List<Property> properties, final boolean simpleSearch) {
+    Util.rejectNullValue(entityID, "entityID");
+    Util.rejectNullValue(properties, "properties");
     this.entityID = entityID;
     this.properties = properties;
     this.propertyFilterModels = initializePropertyFilterModels();
@@ -98,7 +98,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
 
   /**
    * @param item the entity
-   * @return true if the entity should be included or filtered (hidden)
+   * @return true if the entity should be included or filtered
    */
   public boolean include(final Entity item) {
     for (final AbstractSearchModel columnFilter : propertyFilterModels.values()) {

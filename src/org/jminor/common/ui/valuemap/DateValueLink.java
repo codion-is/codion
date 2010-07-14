@@ -32,7 +32,7 @@ public class DateValueLink<K> extends FormattedValueLink<K> {
                        final K key, final LinkType linkType, final DateFormat dateFormat, final boolean isTimestamp) {
     super(textField, editModel, key, dateFormat, true, linkType);
     this.isTimestamp = isTimestamp;
-    Util.rejectNullValue(dateFormat);
+    Util.rejectNullValue(dateFormat, "dateFormat");
   }
 
   @Override

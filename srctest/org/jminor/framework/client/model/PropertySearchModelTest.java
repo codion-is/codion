@@ -29,7 +29,7 @@ public class PropertySearchModelTest {
   public void propertySearchModel() throws Exception {
     final Property property = EntityRepository.getProperty(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME);
     final PropertySearchModel model = new PropertySearchModel(property);
-    assertEquals(property, model.getSearchProperty());
+    assertEquals(property, model.getSearchKey());
     model.setSearchType(SearchType.LIKE);
     model.setUpperBound("upper");
     assertEquals(property.getPropertyID() + " like ?", model.getPropertyCriteria().asString());

@@ -84,7 +84,7 @@ public class PropertySearchModel extends AbstractSearchModel<Property> {
 
   @Override
   public String toString() {
-    final StringBuilder stringBuilder = new StringBuilder(getSearchProperty().getPropertyID());
+    final StringBuilder stringBuilder = new StringBuilder(getSearchKey().getPropertyID());
     if (isSearchEnabled()) {
       stringBuilder.append(getSearchType());
       stringBuilder.append(getUpperBound() != null ? toString(getUpperBound()) : "null");
@@ -129,8 +129,8 @@ public class PropertySearchModel extends AbstractSearchModel<Property> {
    */
   public Criteria<Property> getPropertyCriteria() {
     return getValueCount(getSearchType()) == 1 ?
-            EntityCriteriaUtil.propertyCriteria(getSearchProperty(), isCaseSensitive(), getSearchType(), getUpperBound()) :
-            EntityCriteriaUtil.propertyCriteria(getSearchProperty(), isCaseSensitive(), getSearchType(), getLowerBound(), getUpperBound());
+            EntityCriteriaUtil.propertyCriteria(getSearchKey(), isCaseSensitive(), getSearchType(), getUpperBound()) :
+            EntityCriteriaUtil.propertyCriteria(getSearchKey(), isCaseSensitive(), getSearchType(), getLowerBound(), getUpperBound());
   }
 
   private String toString(final Object object) {

@@ -101,7 +101,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   }
 
   public void addMainApplicationPanelProviders(final EntityPanelProvider... panelProviders) {
-    Util.rejectNullValue(panelProviders);
+    Util.rejectNullValue(panelProviders, "panelProviders");
     for (final EntityPanelProvider panelProvider : panelProviders) {
       addMainApplicationPanelProvider(panelProvider);
     }
@@ -113,7 +113,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   }
 
   public void addSupportPanelProviders(final EntityPanelProvider... panelProviders) {
-    Util.rejectNullValue(panelProviders);
+    Util.rejectNullValue(panelProviders, "panelProviders");
     for (final EntityPanelProvider panelProvider : panelProviders) {
       addSupportPanelProvider(panelProvider);
     }

@@ -36,7 +36,7 @@ public class JasperReportsWrapper implements ReportWrapper<JasperPrint>, Seriali
   }
 
   public JasperReportsWrapper(final JasperReport report, final Map reportParameters) {
-    Util.rejectNullValue(report);
+    Util.rejectNullValue(report, "report");
     this.report = report;
     this.reportParameters = reportParameters;
   }
@@ -46,7 +46,7 @@ public class JasperReportsWrapper implements ReportWrapper<JasperPrint>, Seriali
   }
 
   public ReportResult<JasperPrint> fillReport(final Connection connection) throws ReportException {
-    Util.rejectNullValue(connection);
+    Util.rejectNullValue(connection, "connection");
     try {
       return new JasperReportsResult(JasperFillManager.fillReport(report, reportParameters, connection));
     }
@@ -56,7 +56,7 @@ public class JasperReportsWrapper implements ReportWrapper<JasperPrint>, Seriali
   }
 
   public ReportResult<JasperPrint> fillReport(final ReportDataWrapper dataWrapper) throws ReportException {
-    Util.rejectNullValue(dataWrapper);
+    Util.rejectNullValue(dataWrapper, "dataWrapper");
     try {
       return new JasperReportsResult(JasperFillManager.fillReport(report, reportParameters, (JRDataSource) dataWrapper.getDataSource()));
     }
@@ -72,7 +72,7 @@ public class JasperReportsWrapper implements ReportWrapper<JasperPrint>, Seriali
    * @throws IllegalArgumentException in case the report path is not specified
    */
   public static JasperReport loadJasperReport(final String reportPath) {
-    Util.rejectNullValue(reportPath);
+    Util.rejectNullValue(reportPath, "reportPath");
     if (reportPath.isEmpty()) {
       throw new IllegalArgumentException("Empty report path");
     }

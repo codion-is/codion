@@ -263,12 +263,10 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
               new String[] {FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_RECORD),
                       FrameworkMessages.get(FrameworkMessages.INSERT_NEW), Messages.get(Messages.CANCEL)},
               new String[] {FrameworkMessages.get(FrameworkMessages.UPDATE)});
-      if (choiceIdx == 0) //update
-      {
+      if (choiceIdx == 0) {//update
         update(false);
       }
-      else if (choiceIdx == 1) //insert
-      {
+      else if (choiceIdx == 1) {//insert
         insert(false);
       }
     }
@@ -981,7 +979,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
                                              final String maskString, final boolean immediateUpdate,
                                              final State enabledState, final boolean valueIncludesLiteralCharacters) {
     final JTextField txt = EntityUiUtil.createTextField(property, getEditModel(), linkType, maskString, immediateUpdate,
-            null, enabledState, valueIncludesLiteralCharacters);
+            Configuration.getDefaultDateFormat(), enabledState, valueIncludesLiteralCharacters);
     setComponent(property.getPropertyID(), txt);
 
     return txt;

@@ -70,17 +70,17 @@ public abstract class AbstractSearchPanel<K> extends JPanel {
   private final boolean includeToggleSearchEnabledBtn;
   private final boolean includeToggleSearchAdvancedBtn;
 
-  public AbstractSearchPanel(final AbstractSearchModel<K> model, final boolean includeActivateBtn, final boolean includeToggleAdvBtn) {
-    Util.rejectNullValue(model);
-    this.model = model;
+  public AbstractSearchPanel(final AbstractSearchModel<K> searchModel, final boolean includeActivateBtn, final boolean includeToggleAdvBtn) {
+    Util.rejectNullValue(searchModel, "searchModel");
+    this.model = searchModel;
     this.includeToggleSearchEnabledBtn = includeActivateBtn;
     this.includeToggleSearchAdvancedBtn = includeToggleAdvBtn;
     this.searchTypeCombo = initSearchTypeComboBox();
     this.upperBoundField = getInputField(true);
-    this.lowerBoundField = isLowerBoundFieldRequired(model.getSearchProperty()) ? getInputField(false) : null;
+    this.lowerBoundField = isLowerBoundFieldRequired(searchModel.getSearchKey()) ? getInputField(false) : null;
 
     this.toggleSearchEnabled = ControlProvider.createToggleButton(
-            ControlFactory.toggleControl(model, "searchEnabled", null, model.eventEnabledChanged()));
+            ControlFactory.toggleControl(searchModel, "searchEnabled", null, searchModel.eventEnabledChanged()));
     toggleSearchEnabled.setIcon(Images.loadImage(Images.IMG_FILTER_16));
     this.toggleSearchAdvanced = ControlProvider.createToggleButton(
             ControlFactory.toggleControl(this, "advancedSearchOn", null, stAdvancedSearch.eventStateChanged()));

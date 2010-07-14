@@ -64,12 +64,12 @@ public abstract class EntityApplicationModel implements Refreshable {
 
   /**
    * Adds the given detail models to this model.
-   * @param detailModels the detail models to add
+   * @param mainApplicationModels the detail models to add
    */
-  public void addMainApplicationModels(final EntityModel... detailModels) {
-    Util.rejectNullValue(detailModels);
-    for (final EntityModel detailModel : detailModels) {
-      addMainApplicationModel(detailModel);
+  public void addMainApplicationModels(final EntityModel... mainApplicationModels) {
+    Util.rejectNullValue(mainApplicationModels, "mainApplicationModels");
+    for (final EntityModel model : mainApplicationModels) {
+      addMainApplicationModel(model);
     }
   }
 

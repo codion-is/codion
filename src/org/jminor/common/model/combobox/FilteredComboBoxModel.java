@@ -8,24 +8,18 @@ import org.jminor.common.model.FilteredModel;
 import org.jminor.common.model.Refreshable;
 
 import javax.swing.ComboBoxModel;
+import java.util.Collection;
 
 /**
  * A ComboBoxModel extension that allows filtering via FilterCriteria objects.
  * @see org.jminor.common.model.FilterCriteria
  * @see #setFilterCriteria(org.jminor.common.model.FilterCriteria)
  */
-public interface FilteredComboBoxModel<T> extends ComboBoxModel, Refreshable, FilteredModel<T> {
+public interface FilteredComboBoxModel<T> extends FilteredModel<T>, ComboBoxModel, Refreshable {
 
   Event eventSelectionChanged();
 
-  /**
-   * Returns true if the given item is visible in this combo box model,
-   * null values are considered visible if a <code>nullValueString</code>
-   * has been specified.
-   * @param item the item
-   * @return true if the given item is visible
-   */
-  boolean isVisible(final T item);
+  void setContents(final Collection<T> contents);
 
   /**
    * Removes the given item from this model

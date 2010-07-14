@@ -13,7 +13,7 @@ public class JasperReportsDataWrapper implements ReportDataWrapper<JRDataSource>
   private final JRDataSource dataSource;
 
   public JasperReportsDataWrapper(final JRDataSource dataSource) {
-    Util.rejectNullValue(dataSource);
+    Util.rejectNullValue(dataSource, "dataSource");
     this.dataSource = dataSource;
   }
 

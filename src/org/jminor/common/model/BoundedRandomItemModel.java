@@ -35,7 +35,7 @@ public class BoundedRandomItemModel<T> extends RandomItemModel<T> {
     if (boundedWeight <= 0) {
       throw new IllegalArgumentException("Bounded weight must be a positive integer");
     }
-    Util.rejectNullValue(items);
+    Util.rejectNullValue(items, "items");
     if (items.length == 0) {
       throw new IllegalArgumentException("Items must not be empty");
     }

@@ -70,7 +70,7 @@ public final class Util {
    * @return true if the host is reachable
    */
   public static boolean isHostReachable(final String host, final int timeout) {
-    rejectNullValue(host);
+    rejectNullValue(host, "host");
     try {
       return InetAddress.getByName(host).isReachable(timeout);
     }
@@ -80,7 +80,7 @@ public final class Util {
   }
 
   public static String getUserPreference(final String key, final String defaultValue) {
-    rejectNullValue(key);
+    rejectNullValue(key, "key");
     if (userPreferences == null) {
       userPreferences = Preferences.userRoot();
     }
@@ -88,7 +88,7 @@ public final class Util {
   }
 
   public static void putUserPreference(final String key, final String value) {
-    rejectNullValue(key);
+    rejectNullValue(key, "key");
     if (userPreferences == null) {
       userPreferences = Preferences.userRoot();
     }
@@ -96,22 +96,22 @@ public final class Util {
   }
 
   public static String getDefaultUserName(final String applicationIdentifier, final String defaultName) {
-    rejectNullValue(applicationIdentifier);
+    rejectNullValue(applicationIdentifier, "applicationIdentifier");
     return getUserPreference(applicationIdentifier + "." + PREF_DEFAULT_USERNAME, defaultName);
   }
 
   public static void setDefaultUserName(final String applicationClassName, final String username) {
-    rejectNullValue(applicationClassName);
+    rejectNullValue(applicationClassName, "applicationClassName");
     putUserPreference(applicationClassName + "." + PREF_DEFAULT_USERNAME, username);
   }
 
-  public static String padString(final String orig, final int length, final char padChar, final boolean left) {
-    rejectNullValue(orig);
-    if (orig.length() >= length) {
-      return orig;
+  public static String padString(final String string, final int length, final char padChar, final boolean left) {
+    rejectNullValue(string, "string");
+    if (string.length() >= length) {
+      return string;
     }
 
-    final StringBuilder stringBuilder = new StringBuilder(orig);
+    final StringBuilder stringBuilder = new StringBuilder(string);
     while (stringBuilder.length() < length) {
       if (left) {
         stringBuilder.insert(0, padChar);
@@ -136,19 +136,19 @@ public final class Util {
   }
 
   public static void setDefaultLoggingLevel(final Level defaultLoggingLevel) {
-    rejectNullValue(defaultLoggingLevel);
+    rejectNullValue(defaultLoggingLevel, "defaultLoggingLevel");
     Util.defaultLoggingLevel = defaultLoggingLevel;
   }
 
   public static void setLoggingLevel(final Level level) {
-    rejectNullValue(level);
+    rejectNullValue(level, "level");
     for (final Logger logger : loggers) {
       logger.setLevel(level);
     }
   }
 
   public static Logger getLogger(final Class classToLog) {
-    rejectNullValue(classToLog);
+    rejectNullValue(classToLog, "classToLog");
     final Logger logger = Logger.getLogger(classToLog);
     logger.setLevel(getLoggingLevel());
     loggers.add(logger);
@@ -157,7 +157,7 @@ public final class Util {
   }
 
   public static Logger getLogger(final String name) {
-    rejectNullValue(name);
+    rejectNullValue(name, "name");
     final Logger logger = Logger.getLogger(name);
     logger.setLevel(getLoggingLevel());
     loggers.add(logger);
@@ -227,7 +227,7 @@ public final class Util {
   }
 
   public static void printListContents(final List<?> list) {
-    rejectNullValue(list);
+    rejectNullValue(list, "list");
     printArrayContents(list.toArray(), false);
   }
 
@@ -318,8 +318,8 @@ public final class Util {
    * @throws IOException in case an IOException occurs
    */
   public static String getTextFileContents(final Class resourceClass, final String resourceName, final Charset charset) throws IOException {
-    rejectNullValue(resourceClass);
-    rejectNullValue(resourceName);
+    rejectNullValue(resourceClass, "resourceClass");
+    rejectNullValue(resourceName, "resourceName");
     final InputStream inputStream = resourceClass.getResourceAsStream(resourceName);
     if (inputStream == null) {
       throw new FileNotFoundException("Resource not found: '" + resourceName + "'");
@@ -329,12 +329,12 @@ public final class Util {
   }
 
   public static String getTextFileContents(final String filename, final Charset charset) throws IOException {
-    rejectNullValue(filename);
+    rejectNullValue(filename, "filename");
     return getTextFileContents(new FileInputStream(new File(filename)), charset);
   }
 
   public static String getTextFileContents(final InputStream inputStream, final Charset charset) throws IOException {
-    rejectNullValue(inputStream);
+    rejectNullValue(inputStream, "inputStream");
     final StringBuilder contents = new StringBuilder();
     BufferedReader input = null;
     try {
@@ -384,9 +384,9 @@ public final class Util {
   }
 
   public static String getDelimitedString(final String[][] headers, final String[][] data, final String delimiter) {
-    rejectNullValue(headers);
-    rejectNullValue(data);
-    rejectNullValue(delimiter);
+    rejectNullValue(headers, "headers");
+    rejectNullValue(data, "data");
+    rejectNullValue(delimiter, "delimiter");
     final StringBuilder contents = new StringBuilder();
     for (final String[] header : headers) {
       for (int j = 0; j < header.length; j++) {
@@ -421,8 +421,8 @@ public final class Util {
   }
 
   public static void writeFile(final String contents, final File file, final boolean append) {
-    rejectNullValue(contents);
-    rejectNullValue(file);
+    rejectNullValue(contents, "contents");
+    rejectNullValue(file, "file");
     BufferedWriter writer = null;
     try {
       final FileWriter fileWriter = new FileWriter(file, append);
@@ -482,7 +482,7 @@ public final class Util {
   }
 
   public static byte[] getBytesFromFile(final File file) throws IOException {
-    rejectNullValue(file);
+    rejectNullValue(file, "file");
     InputStream inputStream = null;
     try {
       inputStream = new FileInputStream(file);
@@ -566,20 +566,9 @@ public final class Util {
   }
 
   /**
-   * Throws an IllegalArgumentException if <code>value</code> is null
+   * Throws an IllegalArgumentException complaining about <code>valueName</code> being null
    * @param value the value to check
-   * @throws IllegalArgumentException if value is null
-   */
-  public static void rejectNullValue(final Object value) {
-    if (value == null) {
-      throw new IllegalArgumentException("Value is null");
-    }
-  }
-
-  /**
-   * Throws an IllegalArgumentException with the given message if <code>value</code> is null
-   * @param value the value to check
-   * @param valueName the name of the null value
+   * @param valueName the name of the value being checked
    * @throws IllegalArgumentException if value is null
    */
   public static void rejectNullValue(final Object value, final String valueName) {
@@ -656,8 +645,8 @@ public final class Util {
    * @return a map with the values hashed by their respective key values
    */
   public static <K, V> Map<K, Collection<V>> map(final Collection<V> values, final HashKeyProvider<K, V> keyProvider) {
-    rejectNullValue(values);
-    rejectNullValue(keyProvider);
+    rejectNullValue(values, "values");
+    rejectNullValue(keyProvider, "keyProvider");
     final Map<K, Collection<V>> map = new HashMap<K, Collection<V>>(values.size());
     for (final V value : values) {
       map(map, value, keyProvider.getKey(value));
@@ -667,9 +656,9 @@ public final class Util {
   }
 
   private static <K, V> void map(final Map<K, Collection<V>> map, final V value, final K key) {
-    rejectNullValue(value);
-    rejectNullValue(key);
-    rejectNullValue(map);
+    rejectNullValue(value, "value");
+    rejectNullValue(key, "key");
+    rejectNullValue(map, "map");
     if (!map.containsKey(key)) {
       map.put(key, new ArrayList<V>());
     }
@@ -678,7 +667,7 @@ public final class Util {
   }
 
   public static boolean onClasspath(final String classname) {
-    rejectNullValue(classname);
+    rejectNullValue(classname, "classname");
     try {
       Class.forName(classname);
       return true;

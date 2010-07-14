@@ -259,7 +259,7 @@ public final class ControlProvider {
   }
 
   public static void iterate(final ControlIterator controlIterator, final ControlSet controlSet) {
-    Util.rejectNullValue(controlIterator);
+    Util.rejectNullValue(controlIterator, "controlIterator");
     for (final Action action : controlSet.getActions()) {
       if (action == null) {
         controlIterator.handleSeparator();

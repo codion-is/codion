@@ -899,7 +899,7 @@ public final class UiUtil {
    */
   public static void showImage(final String imagePath, final JComponent dialogParent,
                                final Collection<String> acceptedFileTypes) throws IOException {
-    Util.rejectNullValue(imagePath);
+    Util.rejectNullValue(imagePath, "imagePath");
     if (imagePath.length() == 0) {
       return;
     }
