@@ -12,30 +12,19 @@ import org.jminor.framework.db.EntityDbConnection;
 
 import org.apache.log4j.Logger;
 
-import java.sql.SQLException;
 import java.util.Properties;
 
 /**
  * A class responsible for managing a local db connection.
  */
-public class EntityDbLocalProvider implements EntityDbProvider {
+public class EntityDbLocalProvider extends AbstractEntityDbProvider {
 
   private static final Logger LOG = Util.getLogger(EntityDbLocalProvider.class);
-
-  /**
-   * The user used by this db provider when connecting to the database server
-   */
-  private User user;
 
   /**
    * The underlying database implementation
    */
   private final Database database;
-
-  /**
-   * The EntityDb instance used by this db provider
-   */
-  private EntityDbConnection entityDb;
 
   private final Properties connectionProperties = new Properties();
 
@@ -44,26 +33,11 @@ public class EntityDbLocalProvider implements EntityDbProvider {
   }
 
   public EntityDbLocalProvider(final User user, final Database database) {
-    if (user == null) {
-      throw new RuntimeException("User is null");
-    }
-    if (database == null) {
-      throw new RuntimeException("Database is null");
-    }
-    this.user = user;
+    super(user);
+    Util.rejectNullValue(database, "database");
     this.database = database;
     this.connectionProperties.put("user", user.getUsername());
     this.connectionProperties.put("password", user.getPassword());
-  }
-
-  public final EntityDb getEntityDb() {
-    if (user == null) {
-      throw new IllegalStateException("Not logged in");
-    }
-
-    validateDbConnection();
-
-    return entityDb;
   }
 
   public String getDescription() {
@@ -75,28 +49,12 @@ public class EntityDbLocalProvider implements EntityDbProvider {
     return sid;
   }
 
-  public User getUser() {
-    return user;
-  }
-
-  public void setUser(final User user) {
-    if (Util.equal(user, this.user)) {
-      return;
-    }
-    disconnect();
-    this.user = user;
-  }
-
-  public boolean isConnected() {
-    return entityDb != null && entityDb.isConnected();
-  }
-
   public void disconnect() {
     try {
       if (entityDb != null && entityDb.isConnectionValid()) {
         entityDb.disconnect();
-        if (entityDb.getDatabase().isEmbedded()) {
-          entityDb.getDatabase().shutdownEmbedded(connectionProperties);
+        if (((EntityDbConnection) entityDb).getDatabase().isEmbedded()) {
+          ((EntityDbConnection) entityDb).getDatabase().shutdownEmbedded(connectionProperties);
         }
         entityDb = null;
       }
@@ -106,26 +64,24 @@ public class EntityDbLocalProvider implements EntityDbProvider {
     }
   }
 
-  private void validateDbConnection() {
+  @Override
+  protected EntityDb connect() {
     try {
-      if (entityDb == null) {
-        connect();
-      }
-
-      if (!entityDb.isConnectionValid()) {
-        //db unreachable
-        //try to reconnect once in case db has become reachable
-        entityDb = null;
-        connect();
-      }
+      LOG.debug("Initializing connection for " + getUser());
+      return new EntityDbConnection(database, getUser());
     }
     catch (Exception e) {
       throw new RuntimeException(e);
     }
   }
 
-  private void connect() throws ClassNotFoundException, SQLException {
-    LOG.debug("Initializing connection for " + user);
-    entityDb = new EntityDbConnection(database, user);
+  @Override
+  protected boolean isConnectionValid() {
+    try {
+      return !entityDb.isConnectionValid();
+    }
+    catch (Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 }
