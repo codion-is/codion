@@ -28,7 +28,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   private final FilterCriteria<T> acceptAllCriteria = new FilterCriteria.AcceptAllCriteria<T>();
 
   private final List<T> visibleItems = new ArrayList<T>();
-  private final List<T> hiddenItems = new ArrayList<T>();
+  private final List<T> filteredItems = new ArrayList<T>();
 
   /**
    * set during setContents
@@ -53,14 +53,14 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
 
   /**
    * Instantiates a new FilteredComboBoxModel.
-   * @param sortContents if true then the contents of this model are sorted on refresh
+   * @param sortContents if true then the contents of this model should be sorted
    * @param nullValueString a string representing a null value, which is shown at the top of the item list
    * @see #isNullValueSelected()
    */
   public DefaultFilteredComboBoxModel(final boolean sortContents, final String nullValueString) {
     this.sortContents = sortContents;
     this.nullValueString = nullValueString;
-    this.sortComparator = sortContents ? initializeComparator() : null;
+    this.sortComparator = initializeComparator();
   }
 
   public boolean isSortContents() {
@@ -70,7 +70,6 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   public void setSortContents(final boolean sort) {
     if (this.sortContents != sort) {
       this.sortContents = sort;
-      resetContents();
     }
   }
 
@@ -92,13 +91,16 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
    * @param contents the contents to be used by this model
    */
   public final void setContents(final Collection<T> contents) {
-    hiddenItems.clear();
+    filteredItems.clear();
     visibleItems.clear();
-    if (nullValueString != null) {
-      visibleItems.add(null);
-    }
     if (contents != null) {
       visibleItems.addAll(contents);
+      if (sortContents) {
+        Collections.sort(visibleItems, sortComparator);
+      }
+      if (nullValueString != null) {
+        visibleItems.add(0, null);
+      }
     }
     cleared = contents == null;
     filterContents();
@@ -106,22 +108,22 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
 
   public void filterContents() {
     final List<T> allItems = new ArrayList<T>(visibleItems);
-    allItems.addAll(hiddenItems);
+    allItems.addAll(filteredItems);
     visibleItems.clear();
-    hiddenItems.clear();
+    filteredItems.clear();
     for (final T item : allItems) {
       if (item == null || getFilterCriteria().include(item)) {
         visibleItems.add(item);
       }
       else {
-        hiddenItems.add(item);
+        filteredItems.add(item);
       }
     }
     if (sortContents) {
       Collections.sort(visibleItems, sortComparator);
     }
     if (selectedItem != null && !visibleItems.contains(selectedItem)) {
-     setSelectedItem(null);
+      setSelectedItem(null);
     }
 
     fireContentsChanged();
@@ -131,8 +133,8 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     setContents(initializeContents());
   }
 
-  public List<T> getHiddenItems() {
-    return Collections.unmodifiableList(hiddenItems);
+  public List<T> getFilteredItems() {
+    return Collections.unmodifiableList(filteredItems);
   }
 
   public List<T> getVisibleItems() {
@@ -157,21 +159,33 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     return getAllItems(true);
   }
 
-  public List<T> getAllItems(final boolean includeHidden) {
+  public List<T> getAllItems(final boolean includeFiltered) {
     final List<T> entities = new ArrayList<T>(visibleItems);
-    if (includeHidden) {
-      entities.addAll(hiddenItems);
+    if (includeFiltered) {
+      entities.addAll(filteredItems);
     }
 
     return entities;
   }
 
-  public int getHiddenItemCount() {
-    return hiddenItems.size();
+  public int getFilteredItemCount() {
+    return filteredItems.size();
   }
 
   public int getVisibleItemCount() {
     return visibleItems.size();
+  }
+
+  public boolean isVisible(final T item) {
+    if (item == null) {
+      return nullValueString != null;
+    }
+
+    return visibleItems.contains(item);
+  }
+
+  public boolean isFiltered(final T item) {
+    return filteredItems.contains(item);
   }
 
   public FilterCriteria<T> getFilterCriteria() {
@@ -197,25 +211,28 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     if (visibleItems.contains(item)) {
       visibleItems.remove(item);
     }
-    if (hiddenItems.contains(item)) {
-      hiddenItems.remove(item);
+    if (filteredItems.contains(item)) {
+      filteredItems.remove(item);
     }
 
     fireContentsChanged();
-  }
-
-  public boolean isVisible(final T item) {
-    if (item == null) {
-      return nullValueString != null;
-    }
-    return visibleItems.contains(item);
   }
 
   public boolean contains(final T item) {
     if (item == null) {
       return nullValueString != null;
     }
-    return visibleItems.contains(item) || hiddenItems.contains(item);
+
+    return contains(item, false);
+  }
+
+  public boolean contains(final T item, final boolean includeFiltered) {
+    final boolean ret = visibleItems.contains(item);
+    if (!ret && includeFiltered) {
+      return filteredItems.contains(item);
+    }
+
+    return ret;
   }
 
   public String getNullValueString() {
@@ -284,18 +301,22 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   /**
    * @return a List containing the items to be shown in this combo box model,
    * by default it simply returns a list containing the items currently contained in the model,
-   * excluding the null value string if one is specified.
+   * both filtered and visible, excluding the null value.
    */
   protected List<T> initializeContents() {
     final List<T> contents = new ArrayList<T>(visibleItems);
     if (nullValueString != null) {
       contents.remove(null);
     }
-    contents.addAll(hiddenItems);
+    contents.addAll(filteredItems);
 
     return contents;
   }
 
+  /**
+   * @return the Comparator to use when sorting the contents of this model
+   * @see #setSortContents(boolean)
+   */
   protected Comparator<T> initializeComparator() {
     return new Comparator<T>() {
       private final Collator collator = Collator.getInstance();

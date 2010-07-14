@@ -11,7 +11,7 @@ import java.awt.Point;
 import java.util.Collection;
 import java.util.List;
 
-public interface FilteredTableModel<T> extends TableModel, Refreshable, FilteredModel {
+public interface FilteredTableModel<T> extends FilteredModel<T>, TableModel, Refreshable {
 
   /**
    * @return a State active when the selection is empty
@@ -101,13 +101,6 @@ public interface FilteredTableModel<T> extends TableModel, Refreshable, Filtered
    * @param item the item to remove from the model
    */
   void removeItem(final T item);
-
-  /**
-   * @param item the object to search for
-   * @param includeHidden set to true if the search should include hidden entities
-   * @return true if this table model contains the given object
-   */
-  boolean contains(final T item, final boolean includeHidden);
 
   /**
    * @return the TableColumnModel used by this TableModel

@@ -60,9 +60,9 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
   private final List<T> visibleItems = new ArrayList<T>();
 
   /**
-   * Holds items that are hidden
+   * Holds items that are filtered
    */
-  private final List<T> hiddenItems = new ArrayList<T>();
+  private final List<T> filteredItems = new ArrayList<T>();
 
   /**
    * The TableColumnModel
@@ -119,16 +119,16 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
     return Collections.unmodifiableList(visibleItems);
   }
 
-  public List<T> getHiddenItems() {
-    return Collections.unmodifiableList(hiddenItems);
+  public List<T> getFilteredItems() {
+    return Collections.unmodifiableList(filteredItems);
   }
 
   public int getVisibleItemCount() {
     return visibleItems.size();
   }
 
-  public int getHiddenItemCount() {
-    return hiddenItems.size();
+  public int getFilteredItemCount() {
+    return filteredItems.size();
   }
 
   public int getColumnCount() {
@@ -147,13 +147,21 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
     return isSorting;
   }
 
-  public boolean contains(final T item, final boolean includeHidden) {
+  public boolean contains(final T item, final boolean includeFiltered) {
     final boolean ret = visibleItems.contains(item);
-    if (!ret && includeHidden) {
-      return hiddenItems.contains(item);
+    if (!ret && includeFiltered) {
+      return filteredItems.contains(item);
     }
 
     return ret;
+  }
+
+  public boolean isVisible(final T item) {
+    return visibleItems.contains(item);
+  }
+
+  public boolean isFiltered(final T item) {
+    return filteredItems.contains(item);
   }
 
   public Point findNextItemCoordinate(final int fromIndex, final boolean forward, final String searchText) {
@@ -184,7 +192,7 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
   }
 
   public void clear() {
-    hiddenItems.clear();
+    filteredItems.clear();
     final int size = getRowCount();
     if (size > 0) {
       visibleItems.clear();
@@ -391,12 +399,12 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
       isFiltering = true;
       evtFilteringStarted.fire();
       final List<T> selectedItems = getSelectedItems();
-      visibleItems.addAll(hiddenItems);
-      hiddenItems.clear();
+      visibleItems.addAll(filteredItems);
+      filteredItems.clear();
       for (final ListIterator<T> iterator = visibleItems.listIterator(); iterator.hasNext();) {
         final T item = iterator.next();
         if (!getFilterCriteria().include(item)) {
-          hiddenItems.add(item);
+          filteredItems.add(item);
           iterator.remove();
         }
       }
@@ -427,10 +435,10 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
     return getAllItems(true);
   }
 
-  public List<T> getAllItems(final boolean includeHidden) {
+  public List<T> getAllItems(final boolean includeFiltered) {
     final List<T> entities = new ArrayList<T>(visibleItems);
-    if (includeHidden) {
-      entities.addAll(hiddenItems);
+    if (includeFiltered) {
+      entities.addAll(filteredItems);
     }
 
     return entities;
@@ -457,8 +465,8 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
       fireTableRowsDeleted(index, index);
     }
     else {
-      if (hiddenItems.contains(item)) {
-        hiddenItems.remove(item);
+      if (filteredItems.contains(item)) {
+        filteredItems.remove(item);
       }
     }
   }
@@ -630,7 +638,7 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
         }
       }
       else {
-        hiddenItems.add(item);
+        filteredItems.add(item);
       }
     }
     fireTableDataChanged();

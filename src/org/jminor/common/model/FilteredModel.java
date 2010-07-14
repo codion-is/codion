@@ -43,20 +43,20 @@ public interface FilteredModel<T> {
   List<T> getVisibleItems();
 
   /**
-   * @return an unmodifiable view of the hidden items
+   * @return an unmodifiable view of the filtered items
    */
-  List<T> getHiddenItems();
+  List<T> getFilteredItems();
 
   /**
-   * @return all visible and hidden items in this table model
+   * @return all visible and filtered items in this table model
    */
   List<T> getAllItems();
 
   /**
-   * @param includeHidden if true then filtered items are included
+   * @param includeFiltered if true then filtered items are included
    * @return all items in this table model
    */
-  List<T> getAllItems(final boolean includeHidden);
+  List<T> getAllItems(final boolean includeFiltered);
 
   /**
    * @return the number of currently visible items
@@ -64,7 +64,29 @@ public interface FilteredModel<T> {
   int getVisibleItemCount();
 
   /**
-   * @return the number of currently filtered (hidden) items
+   * @return the number of currently filtered items
    */
-  int getHiddenItemCount();
+  int getFilteredItemCount();
+
+  /**
+   * Returns true if this model contains the given item, visible or filtered.
+   * @param item the item
+   * @param includeFiltered if true then the filtered items are included
+   * @return true if this combo box model contains the item
+   */
+  boolean contains(final T item, final boolean includeFiltered);
+
+  /**
+   * Returns true if the given item is visible in this combo box model
+   * @param item the item
+   * @return true if the given item is visible
+   */
+  boolean isVisible(final T item);
+
+  /**
+   * Returns true if the given item is filtered in this combo box model
+   * @param item the item
+   * @return true if the given item is filtered
+   */
+  boolean isFiltered(final T item);
 }

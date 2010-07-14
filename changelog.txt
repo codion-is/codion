@@ -1840,3 +1840,6 @@
   AbstractSearchModel.autoEnable field added plus functionality
   TableSorter removed, functionality moved to FilteredTableModel/Panel
   DefaultFilteredComboBoxModel.getContents() renamed to initializeContents()
+  FilteredComboBoxModel.isVisible() moved to FilteredModel
+  FilteredComboBoxModel.setContents() added
+  FilteredModel hidden replaced with filtered

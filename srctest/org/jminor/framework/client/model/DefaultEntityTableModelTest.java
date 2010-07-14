@@ -105,10 +105,10 @@ public class DefaultEntityTableModelTest {
     //test filters
     testModel.getSearchModel().getPropertyFilterModel(EntityTestDomain.DETAIL_STRING).setLikeValue("a");
     assertTrue("filter should be enabled", testModel.getSearchModel().getPropertyFilterModel(EntityTestDomain.DETAIL_STRING).isSearchEnabled());
-    assertEquals("4 entities should be hidden", 4, testModel.getHiddenItemCount());
+    assertEquals("4 entities should be filtered", 4, testModel.getFilteredItemCount());
     assertFalse("Model should not contain all entities",
             tableModelContainsAll(testEntities, false, testModel));
-    assertTrue("Model should contain all entities, including hidden",
+    assertTrue("Model should contain all entities, including filtered",
             tableModelContainsAll(testEntities, true, testModel));
     testModel.getSearchModel().getPropertyFilterModel(EntityTestDomain.DETAIL_STRING).setSearchEnabled(false);
     assertFalse("filter should not be enabled", testModel.getSearchModel().getPropertyFilterModel(EntityTestDomain.DETAIL_STRING).isSearchEnabled());
@@ -117,10 +117,10 @@ public class DefaultEntityTableModelTest {
 
     testModel.getSearchModel().getPropertyFilterModel(EntityTestDomain.DETAIL_STRING).setLikeValue("t"); // ekki til
     assertTrue("filter should be enabled", testModel.getSearchModel().getPropertyFilterModel(EntityTestDomain.DETAIL_STRING).isSearchEnabled());
-    assertEquals("all 5 entities should be hidden", 5, testModel.getHiddenItemCount());
+    assertEquals("all 5 entities should be filtered", 5, testModel.getFilteredItemCount());
     assertFalse("Model should not contain all entities",
             tableModelContainsAll(testEntities, false, testModel));
-    assertTrue("Model should contain all entities, including hidden",
+    assertTrue("Model should contain all entities, including filtered",
             tableModelContainsAll(testEntities, true, testModel));
     testModel.getSearchModel().getPropertyFilterModel(EntityTestDomain.DETAIL_STRING).setSearchEnabled(false);
     assertTrue("Model should contain all entities", tableModelContainsAll(testEntities, false, testModel));

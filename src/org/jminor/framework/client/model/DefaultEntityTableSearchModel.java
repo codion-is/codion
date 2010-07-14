@@ -98,7 +98,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
 
   /**
    * @param item the entity
-   * @return true if the entity should be included or filtered (hidden)
+   * @return true if the entity should be included or filtered
    */
   public boolean include(final Entity item) {
     for (final AbstractSearchModel columnFilter : propertyFilterModels.values()) {
