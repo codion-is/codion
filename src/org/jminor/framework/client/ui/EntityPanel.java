@@ -858,7 +858,7 @@ public class EntityPanel extends JPanel {
                   getEditPanel().prepareUI(true, false);
                 }
               });
-      UiUtil.addKeyEvent(this, KeyEvent.VK_C, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
+      UiUtil.addKeyEvent(this, KeyEvent.VK_I, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
               true, new AbstractAction("selectComponent") {
                 public void actionPerformed(ActionEvent e) {
                   if (getEditPanelState() == HIDDEN) {
