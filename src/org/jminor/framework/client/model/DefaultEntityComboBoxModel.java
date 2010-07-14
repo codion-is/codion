@@ -81,8 +81,8 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
    * @param dbProvider a EntityDbProvider instance
    */
   public DefaultEntityComboBoxModel(final String entityID, final EntityDbProvider dbProvider) {
-    Util.rejectNullValue(entityID);
-    Util.rejectNullValue(dbProvider);
+    Util.rejectNullValue(entityID, "entityID");
+    Util.rejectNullValue(dbProvider, "dbProvider");
     this.entityID = entityID;
     this.dbProvider = dbProvider;
   }

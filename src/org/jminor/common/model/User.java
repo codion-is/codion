@@ -28,7 +28,7 @@ public class User implements Serializable {
   }
 
   public User(final String username, final String password) {
-    Util.rejectNullValue(username);
+    Util.rejectNullValue(username, "username");
     this.username = username;
     this.password = password;
     this.hashCode = username.hashCode();

@@ -1844,4 +1844,5 @@
   FilteredComboBoxModel.setContents() added
   FilteredModel hidden replaced with filtered
   EntityPanel CTR-I is now used to select input component instead of CTR-C which conflicted a bit with the default copy function
+  Util.rejectNullValue() version taking only the value as parameter removed
 0.5.6

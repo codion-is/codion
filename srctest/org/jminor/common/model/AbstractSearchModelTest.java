@@ -15,7 +15,7 @@ public class AbstractSearchModelTest {
         return false;
       }
     };
-    assertEquals("test", model.getSearchProperty());
+    assertEquals("test", model.getSearchKey());
 
     model.setCaseSensitive(true);
     assertTrue(model.isCaseSensitive());

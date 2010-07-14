@@ -104,9 +104,9 @@ public class EntityDefinition implements Serializable {
    * @param propertyDefinitions the Property objects this entity should encompass
    */
   public EntityDefinition(final String entityID, final String tableName, final Property... propertyDefinitions) {
-    Util.rejectNullValue(entityID);
-    Util.rejectNullValue(tableName);
-    Util.rejectNullValue(propertyDefinitions);
+    Util.rejectNullValue(entityID, "entityID");
+    Util.rejectNullValue(tableName, "tableName");
+    Util.rejectNullValue(propertyDefinitions, "entityDefinitions");
     this.entityID = entityID;
     this.tableName = tableName;
     this.selectTableName = tableName;
@@ -131,7 +131,7 @@ public class EntityDefinition implements Serializable {
   }
 
   public EntityDefinition setCaption(final String caption) {
-    Util.rejectNullValue(caption);
+    Util.rejectNullValue(caption, "caption");
     this.caption = caption;
     return this;
   }
@@ -159,7 +159,7 @@ public class EntityDefinition implements Serializable {
   }
 
   public EntityDefinition setIdSource(final IdSource idSource) {
-    Util.rejectNullValue(idSource);
+    Util.rejectNullValue(idSource, "idSource");
     this.idSource = idSource;
     if ((idSource == IdSource.SEQUENCE || idSource == IdSource.AUTO_INCREMENT) && idValueSource == null) {
       setIdValueSource(tableName + "_seq");
@@ -173,7 +173,7 @@ public class EntityDefinition implements Serializable {
   }
 
   public EntityDefinition setIdValueSource(final String idValueSource) {
-    Util.rejectNullValue(idValueSource);
+    Util.rejectNullValue(idValueSource, "idValueSource");
     this.idValueSource = idValueSource;
     return this;
   }
@@ -183,7 +183,7 @@ public class EntityDefinition implements Serializable {
   }
 
   public EntityDefinition setOrderByClause(final String orderByClause) {
-    Util.rejectNullValue(orderByClause);
+    Util.rejectNullValue(orderByClause, "orderByClause");
     this.orderByClause = orderByClause;
     return this;
   }
@@ -193,7 +193,7 @@ public class EntityDefinition implements Serializable {
   }
 
   public EntityDefinition setSelectTableName(final String selectTableName) {
-    Util.rejectNullValue(selectTableName);
+    Util.rejectNullValue(selectTableName, "selectTableName");
     this.selectTableName = selectTableName;
     return this;
   }
@@ -203,7 +203,7 @@ public class EntityDefinition implements Serializable {
   }
 
   public EntityDefinition setSelectQuery(final String selectQuery) {
-    Util.rejectNullValue(selectQuery);
+    Util.rejectNullValue(selectQuery, "selectQuery");
     this.selectQuery = selectQuery;
     return this;
   }
@@ -213,7 +213,7 @@ public class EntityDefinition implements Serializable {
   }
 
   public EntityDefinition setStringProvider(final ValueMap.ToString<String> stringProvider) {
-    Util.rejectNullValue(stringProvider);
+    Util.rejectNullValue(stringProvider, "stringProvider");
     this.stringProvider = stringProvider;
     return this;
   }
@@ -235,7 +235,7 @@ public class EntityDefinition implements Serializable {
   }
 
   public EntityDefinition setSearchPropertyIDs(final String... searchPropertyIDs) {
-    Util.rejectNullValue(searchPropertyIDs);
+    Util.rejectNullValue(searchPropertyIDs, "searchPropertyIDs");
     for (final String propertyID : searchPropertyIDs) {
       if (!properties.get(propertyID).isString()) {
         throw new RuntimeException("Entity search property must be of type String: " + properties.get(propertyID));

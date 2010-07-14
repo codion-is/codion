@@ -496,7 +496,7 @@ public class DbConnection {
    * @throws SQLException thrown if anything goes wrong during execution
    */
   public final void execute(final List<String> statements) throws SQLException {
-    Util.rejectNullValue(statements);
+    Util.rejectNullValue(statements, "statements");
     if (statements.size() == 1) {
       execute(statements.get(0));
       return;

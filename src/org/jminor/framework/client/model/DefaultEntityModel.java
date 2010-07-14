@@ -102,8 +102,8 @@ public class DefaultEntityModel implements EntityModel {
    * @param includeTableModel true if this DefaultEntityModel should include a table model
    */
   public DefaultEntityModel(final String entityID, final EntityDbProvider dbProvider, final boolean includeTableModel) {
-    Util.rejectNullValue(dbProvider);
-    Util.rejectNullValue(entityID);
+    Util.rejectNullValue(dbProvider, "dbProvider");
+    Util.rejectNullValue(entityID, "entityID");
     this.entityID = entityID;
     this.dbProvider = dbProvider;
     this.editModel = new DefaultEntityEditModel(entityID, dbProvider);
@@ -154,7 +154,7 @@ public class DefaultEntityModel implements EntityModel {
    * @param tableModel the table model
    */
   public DefaultEntityModel(final EntityEditModel editModel, final EntityTableModel tableModel) {
-    Util.rejectNullValue(editModel);
+    Util.rejectNullValue(editModel, "editModel");
     this.entityID = editModel.getEntityID();
     this.dbProvider = editModel.getDbProvider();
     this.editModel = editModel;
@@ -236,7 +236,7 @@ public class DefaultEntityModel implements EntityModel {
   }
 
   public void addDetailModels(final EntityModel... detailModels) {
-    Util.rejectNullValue(detailModels);
+    Util.rejectNullValue(detailModels, "detailModels");
     for (final EntityModel detailModel : detailModels) {
       addDetailModel(detailModel);
     }

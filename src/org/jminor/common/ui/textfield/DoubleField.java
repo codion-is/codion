@@ -44,7 +44,7 @@ public class DoubleField extends IntField {
   }
 
   public void setDecimalSymbol(final String decimalSymbol) {
-    Util.rejectNullValue(decimalSymbol);
+    Util.rejectNullValue(decimalSymbol, "decimalSymbol");
     if (decimalSymbol.length() > 1) {
       throw new IllegalArgumentException("Decimal symbols can only be one character long");
     }

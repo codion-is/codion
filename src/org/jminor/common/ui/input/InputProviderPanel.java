@@ -36,7 +36,7 @@ public class InputProviderPanel extends JPanel implements InputProvider {
    * @param inputProvider the InputProvider to use
    */
   public InputProviderPanel(final String caption, final InputProvider inputProvider) {
-    Util.rejectNullValue(inputProvider);
+    Util.rejectNullValue(inputProvider, "inputProvider");
     this.inputProvider = inputProvider;
     initUI(caption);
   }

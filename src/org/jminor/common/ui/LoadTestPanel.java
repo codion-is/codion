@@ -56,7 +56,7 @@ public class LoadTestPanel extends JPanel {
    * @param loadTestModel the LoadTestModel to base this panel on
    */
   public LoadTestPanel(final LoadTestModel loadTestModel) {
-    Util.rejectNullValue(loadTestModel);
+    Util.rejectNullValue(loadTestModel, "loadTestModel");
     this.loadTestModel = loadTestModel;
     initializeUI();
   }

@@ -73,9 +73,9 @@ public class EntityPanelProvider implements Comparable {
    */
   public EntityPanelProvider(final String entityID, final String caption, final Class<? extends EntityModel> entityModelClass,
                              final Class<? extends EntityPanel> entityPanelClass) {
-    Util.rejectNullValue(entityID);
-    Util.rejectNullValue(entityModelClass);
-    Util.rejectNullValue(entityPanelClass);
+    Util.rejectNullValue(entityID, "entityID");
+    Util.rejectNullValue(entityModelClass, "entityModelClass");
+    Util.rejectNullValue(entityPanelClass, "entityPanelClass");
     this.entityID = entityID;
     this.caption = caption == null ? "" : caption;
     this.modelClass = entityModelClass;
@@ -220,7 +220,7 @@ public class EntityPanelProvider implements Comparable {
   }
 
   public EntityPanel createInstance(final EntityDbProvider dbProvider) {
-    Util.rejectNullValue(dbProvider);
+    Util.rejectNullValue(dbProvider, "dbProvider");
     try {
       final EntityModel entityModel = initializeModel(this, dbProvider);
       if (refreshOnInit) {

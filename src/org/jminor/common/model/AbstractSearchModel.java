@@ -30,7 +30,7 @@ public abstract class AbstractSearchModel<K> {
 
   private final State stLocked = new State();
 
-  private final K searchProperty;
+  private final K searchKey;
   private final int type;
 
   private SearchType searchType = SearchType.LIKE;
@@ -42,16 +42,16 @@ public abstract class AbstractSearchModel<K> {
   private Object lowerBound = null;
   private String wildcard;
 
-  public AbstractSearchModel(final K searchProperty, final int type, final String wildcard) {
-    Util.rejectNullValue(searchProperty);
-    this.searchProperty = searchProperty;
+  public AbstractSearchModel(final K searchKey, final int type, final String wildcard) {
+    Util.rejectNullValue(searchKey, "searchKey");
+    this.searchKey = searchKey;
     this.type = type;
     this.wildcard = wildcard;
     bindEvents();
   }
 
-  public K getSearchProperty() {
-    return searchProperty;
+  public K getSearchKey() {
+    return searchKey;
   }
 
   /**
@@ -144,7 +144,7 @@ public abstract class AbstractSearchModel<K> {
    */
   public void setUpperBound(final Object upper) {
     if (stLocked.isActive()) {
-      throw new IllegalStateException("Search model for property " + searchProperty + " is locked");
+      throw new IllegalStateException("Search model for key " + searchKey + " is locked");
     }
     if (!Util.equal(upperBound, upper)) {
       upperBound = upper;
@@ -234,7 +234,7 @@ public abstract class AbstractSearchModel<K> {
    */
   public void setLowerBound(final Object value) {
     if (stLocked.isActive()) {
-      throw new IllegalStateException("Search model for property " + searchProperty + " is locked");
+      throw new IllegalStateException("Search model for key " + searchKey + " is locked");
     }
     if (!Util.equal(lowerBound, value)) {
       lowerBound = value;
@@ -262,16 +262,16 @@ public abstract class AbstractSearchModel<K> {
   }
 
   /**
-   * @param type the search type
+   * @param searchType the search type
    * @throws IllegalStateException in case this model has been locked
    */
-  public void setSearchType(final SearchType type) {
-    Util.rejectNullValue(type);
+  public void setSearchType(final SearchType searchType) {
+    Util.rejectNullValue(searchType, "searchType");
     if (stLocked.isActive()) {
-      throw new IllegalStateException("Search model for property " + searchProperty + " is locked");
+      throw new IllegalStateException("Search model for key " + searchKey + " is locked");
     }
-    if (!searchType.equals(type)) {
-      searchType = type;
+    if (!this.searchType.equals(searchType)) {
+      this.searchType = searchType;
       evtSearchTypeChanged.fire();
     }
   }
@@ -312,7 +312,7 @@ public abstract class AbstractSearchModel<K> {
    */
   public void setSearchEnabled(final boolean value) {
     if (stLocked.isActive()) {
-      throw new IllegalStateException("Search model for property " + searchProperty + " is locked");
+      throw new IllegalStateException("Search model for key " + searchKey + " is locked");
     }
     if (enabled != value) {
       enabled = value;

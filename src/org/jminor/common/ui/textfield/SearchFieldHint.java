@@ -22,8 +22,8 @@ public class SearchFieldHint {
   }
 
   public SearchFieldHint(final JTextField txtField, final String searchHint) {
-    Util.rejectNullValue(txtField);
-    Util.rejectNullValue(searchHint);
+    Util.rejectNullValue(txtField, "txtField");
+    Util.rejectNullValue(searchHint, "searchHint");
     if (searchHint.length() == 0) {
       throw new IllegalArgumentException("Search hint is null or empty");
     }

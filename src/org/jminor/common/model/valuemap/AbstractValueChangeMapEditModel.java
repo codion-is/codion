@@ -45,7 +45,7 @@ public abstract class AbstractValueChangeMapEditModel<K, V> implements ValueChan
    * @param initialMap the value map to edit
    */
   public AbstractValueChangeMapEditModel(final ValueChangeMap<K, V> initialMap) {
-    Util.rejectNullValue(initialMap);
+    Util.rejectNullValue(initialMap, "initialMap");
     this.valueMap = initialMap;
     bindEventsInternal();
   }

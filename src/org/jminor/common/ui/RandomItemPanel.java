@@ -27,11 +27,11 @@ public class RandomItemPanel<T> extends JPanel {
 
   /**
    * Instantiates a new RandomItemPanel.
-   * @param model the RandomItemModel to base this panel on
+   * @param randomItemModel the RandomItemModel to base this panel on
    */
-  public RandomItemPanel(final RandomItemModel<T> model) {
-    Util.rejectNullValue(model);
-    this.model = model;
+  public RandomItemPanel(final RandomItemModel<T> randomItemModel) {
+    Util.rejectNullValue(randomItemModel, "model");
+    this.model = randomItemModel;
     initializeUI();
   }
 

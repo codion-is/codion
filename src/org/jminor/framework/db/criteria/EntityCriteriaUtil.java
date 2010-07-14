@@ -158,7 +158,7 @@ public final class EntityCriteriaUtil {
      * @see EntityKeyCriteria
      */
     DefaultEntityCriteria(final String entityID, final Criteria<Property> criteria) {
-      Util.rejectNullValue(entityID);
+      Util.rejectNullValue(entityID, "entityID");
       this.entityID = entityID;
       this.criteria = criteria;
     }
@@ -391,7 +391,7 @@ public final class EntityCriteriaUtil {
      */
     EntityKeyCriteria(final List<Property> properties, final List<Entity.Key> keys) {
       super(Conjunction.OR);
-      Util.rejectNullValue(keys);
+      Util.rejectNullValue(keys, "keys");
       if (keys.size() == 0) {
         throw new IllegalArgumentException("EntityKeyCriteria requires at least one key");
       }
@@ -498,8 +498,8 @@ public final class EntityCriteriaUtil {
      * @param values the values
      */
     PropertyCriteria(final Property property, final SearchType searchType, final Object... values) {
-      Util.rejectNullValue(property);
-      Util.rejectNullValue(searchType);
+      Util.rejectNullValue(property, "property");
+      Util.rejectNullValue(searchType, "searchType");
       if (values != null && values.length == 0) {
         throw new RuntimeException("No values specified for PropertyCriteria: " + property);
       }

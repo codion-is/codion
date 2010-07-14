@@ -12,20 +12,7 @@ import org.jminor.framework.client.model.EntityLookupModel;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.i18n.FrameworkMessages;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.KeyStroke;
-import javax.swing.ListSelectionModel;
+import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
@@ -57,13 +44,13 @@ public class EntityLookupField extends JTextField {
 
   /**
    * Initializes a new EntityLookupField
-   * @param model the model
+   * @param lookupModel the model
    */
-  public EntityLookupField(final EntityLookupModel model) {
-    Util.rejectNullValue(model);
-    this.model = model;
+  public EntityLookupField(final EntityLookupModel lookupModel) {
+    Util.rejectNullValue(lookupModel, "lookupModel");
+    this.model = lookupModel;
     this.searchHint = SearchFieldHint.enable(this);
-    setToolTipText(model.getDescription());
+    setToolTipText(lookupModel.getDescription());
     setComponentPopupMenu(initializePopupMenu());
     addActionListener(initializeLookupAction());
     addFocusListener(initializeFocusListener());

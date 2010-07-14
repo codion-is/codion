@@ -45,7 +45,7 @@ public class Event implements ActionListener {
    * @throws IllegalArgumentException in case listener is null
    */
   public void addListener(final ActionListener listener) {
-    Util.rejectNullValue(listener);
+    Util.rejectNullValue(listener, "listener");
     listeners.add(listener);
   }
 

@@ -208,7 +208,7 @@ public class EntityPanel extends JPanel {
    */
   public EntityPanel(final EntityModel model, final String caption, final EntityEditPanel editPanel,
                      final EntityTablePanel tablePanel) {
-    Util.rejectNullValue(model);
+    Util.rejectNullValue(model, "model");
     Util.rejectNullValue(caption, "caption");
     this.model = model;
     this.caption = caption;
@@ -280,7 +280,7 @@ public class EntityPanel extends JPanel {
   }
 
   public EntityPanel addDetailPanels(final EntityPanel... detailPanels) {
-    Util.rejectNullValue(detailPanels);
+    Util.rejectNullValue(detailPanels, "detailPanels");
     for (final EntityPanel detailPanel : detailPanels) {
       addDetailPanel(detailPanel);
     }

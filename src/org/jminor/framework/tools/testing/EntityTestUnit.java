@@ -340,8 +340,8 @@ public abstract class EntityTestUnit {
   }
 
   private static boolean superTreeContains(final String root, final String entityID) {
-    Util.rejectNullValue(root);
-    Util.rejectNullValue(entityID);
+    Util.rejectNullValue(root, "root");
+    Util.rejectNullValue(entityID, "entityID");
     if (root.equals(entityID)) {
       return true;
     }

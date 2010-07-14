@@ -352,7 +352,7 @@ public abstract class LoadTestModel {
   }
 
   protected void performWork(final Object application) {
-    Util.rejectNullValue(application);
+    Util.rejectNullValue(application, "application");
     final String scenarioName = scenarioChooser.getRandomItem().getName();
     try {
       runScenario(scenarioName, application);

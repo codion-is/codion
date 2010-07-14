@@ -57,7 +57,7 @@ public class PropertySummaryModel {
    * @param summaryType the type of summary to show
    */
   public void setSummaryType(final Summary summaryType) {
-    Util.rejectNullValue(summaryType);
+    Util.rejectNullValue(summaryType, "summaryType");
     if (!this.summaryType.equals(summaryType)) {
       this.summaryType = summaryType;
       evtSummaryTypeChanged.fire();

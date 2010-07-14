@@ -70,7 +70,7 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
   private final JTextField searchField;
 
   public AbstractFilteredTablePanel(final FilteredTableModel<T> tableModel) {
-    Util.rejectNullValue(tableModel);
+    Util.rejectNullValue(tableModel, "tableModel");
     this.tableModel = tableModel;
     this.table = initializeJTable();
     this.tableScrollPane = new JScrollPane(table);

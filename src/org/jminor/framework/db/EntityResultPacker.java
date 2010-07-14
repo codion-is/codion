@@ -29,8 +29,8 @@ public class EntityResultPacker implements ResultPacker<Entity> {
 
   public EntityResultPacker(final String entityID, final Collection<? extends Property> properties,
                             final Collection<Property.TransientProperty> transientProperties) {
-    Util.rejectNullValue(entityID);
-    Util.rejectNullValue(properties);
+    Util.rejectNullValue(entityID, "entityID");
+    Util.rejectNullValue(properties, "properties");
     this.entityID = entityID;
     this.properties = properties;
     this.transientProperties = transientProperties;
@@ -46,7 +46,7 @@ public class EntityResultPacker implements ResultPacker<Entity> {
    * @throws SQLException in case of an exception
    */
   public List<Entity> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
-    Util.rejectNullValue(resultSet);
+    Util.rejectNullValue(resultSet, "resultSet");
     final List<Entity> entities = new ArrayList<Entity>();
     int counter = 0;
     while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {

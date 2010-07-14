@@ -82,6 +82,11 @@ public interface EntityLookupModel {
   EntityLookupModel setWildcard(final String wildcard);
 
   /**
+   * @return the wildcard being used by this model
+   */
+  String getWildcard();
+
+  /**
    * @return true if the current search string represents the selected entities
    */
   boolean searchStringRepresentsSelected();

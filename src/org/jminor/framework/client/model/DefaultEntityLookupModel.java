@@ -66,9 +66,9 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
    * @param lookupProperties the properties to search by, these must be string based
    */
   public DefaultEntityLookupModel(final String entityID, final EntityDbProvider dbProvider, final List<Property> lookupProperties) {
-    Util.rejectNullValue(entityID);
-    Util.rejectNullValue(dbProvider);
-    Util.rejectNullValue(lookupProperties);
+    Util.rejectNullValue(entityID, "entityID");
+    Util.rejectNullValue(dbProvider, "dbProvider");
+    Util.rejectNullValue(lookupProperties, "lookupProperties");
     this.dbProvider = dbProvider;
     this.entityID = entityID;
     this.lookupProperties = lookupProperties;

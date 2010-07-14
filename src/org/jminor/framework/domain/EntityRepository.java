@@ -227,7 +227,7 @@ public final class EntityRepository {
    * @throws RuntimeException if no visible properties are defined for the given entity
    */
   public static List<Property> getVisibleProperties(final String entityID) {
-    Util.rejectNullValue(entityID);
+    Util.rejectNullValue(entityID, "entityID");
     return getEntityDefinition(entityID).getVisibleProperties();
   }
 
@@ -238,8 +238,8 @@ public final class EntityRepository {
    * @throws RuntimeException in case no such property exists
    */
   public static Property getProperty(final String entityID, final String propertyID) {
-    Util.rejectNullValue(entityID);
-    Util.rejectNullValue(propertyID);
+    Util.rejectNullValue(entityID, "entityID");
+    Util.rejectNullValue(propertyID, "propertyID");
     final Property property = getProperties(entityID).get(propertyID);
     if (property == null) {
       throw new RuntimeException("Property '" + propertyID + "' not found in entity: " + entityID);
@@ -255,7 +255,7 @@ public final class EntityRepository {
    * the entity identified by <code>entityID</code>
    */
   public static List<Property> getProperties(final String entityID, final Collection<String> propertyIDs) {
-    Util.rejectNullValue(propertyIDs);
+    Util.rejectNullValue(propertyIDs, "propertyIDs");
     return getProperties(entityID, propertyIDs.toArray(new String[propertyIDs.size()]));
   }
 
@@ -266,8 +266,8 @@ public final class EntityRepository {
    * the entity identified by <code>entityID</code>
    */
   public static List<Property> getProperties(final String entityID, final String... propertyIDs) {
-    Util.rejectNullValue(entityID);
-    Util.rejectNullValue(propertyIDs);
+    Util.rejectNullValue(entityID, "entityID");
+    Util.rejectNullValue(propertyIDs, "propertyIDs");
     final List<Property> properties = new ArrayList<Property>();
     for (final String propertyID : propertyIDs) {
       properties.add(getProperty(entityID, propertyID));
@@ -427,21 +427,11 @@ public final class EntityRepository {
   }
 
   /**
-   * @param entityGroup a group of related entities (from the same domain fx), for which
-   * we can deduce that if one has been initialized all have.
-   * @return true if any one of the entities in the group have already initialized, hmm?
-   */
-  public static boolean contains(final Map<String, EntityDefinition> entityGroup) {
-    Util.rejectNullValue(entityGroup);
-    return entityGroup.size() == 0 || entityDefinitions.containsKey(entityGroup.keySet().iterator().next());
-  }
-
-  /**
    * Adds the given entityDefinition to this EntityRepository
    * @param entityDefinition the EntityDefinition to add
    */
   public static void add(EntityDefinition entityDefinition) {
-    Util.rejectNullValue(entityDefinition);
+    Util.rejectNullValue(entityDefinition, "entityDefinition");
     if (entityDefinitions.containsKey(entityDefinition.getEntityID())) {
       throw new RuntimeException("Entity already added: " + entityDefinition.getEntityID());
     }
@@ -456,7 +446,7 @@ public final class EntityRepository {
    * @throws IllegalArgumentException in case the entity has not been defined
    */
   public static EntityDefinition getEntityDefinition(final String entityID) {
-    Util.rejectNullValue(entityID);
+    Util.rejectNullValue(entityID, "entityID");
     final EntityDefinition definition = entityDefinitions.get(entityID);
     if (definition == null) {
       throw new IllegalArgumentException("Undefined entity: " + entityID);

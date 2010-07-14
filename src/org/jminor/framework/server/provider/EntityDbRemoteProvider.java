@@ -42,7 +42,7 @@ public class EntityDbRemoteProvider implements EntityDbProvider {
   private String serverName;
 
   public EntityDbRemoteProvider(final User user, final String clientID, final String clientTypeID) {
-    Util.rejectNullValue(user);
+    Util.rejectNullValue(user, "user");
     serverHostName = System.getProperty(Configuration.SERVER_HOST_NAME, "localhost");
     this.user = user;
     this.clientID = clientID;

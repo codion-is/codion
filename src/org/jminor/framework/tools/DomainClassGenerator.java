@@ -83,7 +83,7 @@ public final class DomainClassGenerator {
 
   public static String getDomainClass(final String domainClassName, final String schema, final String packageName,
                                       final String username, final String password, final String tableList) throws Exception {
-    Util.rejectNullValue(schema);
+    Util.rejectNullValue(schema, "schema");
     final DbConnection dbConnection = new DbConnection(DatabaseProvider.createInstance(), new User(username, password));
     try {
 
