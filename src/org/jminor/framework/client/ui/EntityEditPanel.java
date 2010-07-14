@@ -981,7 +981,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
                                              final String maskString, final boolean immediateUpdate,
                                              final State enabledState, final boolean valueIncludesLiteralCharacters) {
     final JTextField txt = EntityUiUtil.createTextField(property, getEditModel(), linkType, maskString, immediateUpdate,
-            null, enabledState, valueIncludesLiteralCharacters);
+            Configuration.getDefaultDateFormat(), enabledState, valueIncludesLiteralCharacters);
     setComponent(property.getPropertyID(), txt);
 
     return txt;
