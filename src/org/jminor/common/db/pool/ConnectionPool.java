@@ -31,17 +31,6 @@ public interface ConnectionPool {
   DbConnection checkOutConnection() throws ClassNotFoundException, SQLException;
 
   /**
-   * @return the connection pool settings
-   */
-  ConnectionPoolSettings getConnectionPoolSettings();
-
-  /**
-   * Sets the connection pool settings.
-   * @param settings the connection pool settings
-   */
-  void setConnectionPoolSettings(final ConnectionPoolSettings settings);
-
-  /**
    * @return the user this connection pool is based on.
    */
   User getUser();
@@ -68,4 +57,24 @@ public interface ConnectionPool {
    * @param value the value
    */
   void setCollectFineGrainedStatistics(final boolean value);
+
+  void setEnabled(final boolean enabled);
+
+  boolean isEnabled();
+
+  void setPoolCleanupInterval(final int poolCleanupInterval);
+
+  int getPooledConnectionTimeout();
+
+  void setPooledConnectionTimeout(final int timeout);
+
+  int getPoolCleanupInterval();
+
+  int getMinimumPoolSize();
+
+  void setMinimumPoolSize(final int value);
+
+  int getMaximumPoolSize();
+
+  void setMaximumPoolSize(final int value);
 }

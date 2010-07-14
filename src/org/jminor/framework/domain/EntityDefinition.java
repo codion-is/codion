@@ -8,7 +8,16 @@ import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.ValueMap;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * A class encapsulating a entity definition, such as table name, order by clause and properties.
@@ -77,7 +86,7 @@ public class EntityDefinition implements Serializable {
   /**
    * Links a set of derived property ids to a parent property id
    */
-  private Map<String, Set<String>> derivedPropertyChangeLinks = new HashMap<String, Set<String>>();
+  private Map<String, Set<String>> linkedProperties = new HashMap<String, Set<String>>();
 
   private transient List<Property.PrimaryKeyProperty> primaryKeyProperties;
   private transient List<Property.ForeignKeyProperty> foreignKeyProperties;
@@ -251,11 +260,11 @@ public class EntityDefinition implements Serializable {
   }
 
   public boolean hasLinkedProperties(final String propertyID) {
-    return derivedPropertyChangeLinks.containsKey(propertyID);
+    return linkedProperties.containsKey(propertyID);
   }
 
   public Collection<String> getLinkedPropertyIDs(final String propertyID) {
-    return derivedPropertyChangeLinks.get(propertyID);
+    return linkedProperties.get(propertyID);
   }
 
   public List<Property.PrimaryKeyProperty> getPrimaryKeyProperties() {
@@ -366,10 +375,10 @@ public class EntityDefinition implements Serializable {
   }
 
   private void addDerivedPropertyChangeLink(final String parentPropertyID, final String transientPropertyID) {
-    if (!derivedPropertyChangeLinks.containsKey(parentPropertyID)) {
-      derivedPropertyChangeLinks.put(parentPropertyID, new HashSet<String>());
+    if (!linkedProperties.containsKey(parentPropertyID)) {
+      linkedProperties.put(parentPropertyID, new HashSet<String>());
     }
-    derivedPropertyChangeLinks.get(parentPropertyID).add(transientPropertyID);
+    linkedProperties.get(parentPropertyID).add(transientPropertyID);
   }
 
   private static Map<String, Collection<Property.DenormalizedProperty>> getDenormalizedProperties(final Collection<Property> properties) {

@@ -8,7 +8,6 @@ import org.jminor.common.db.DbConnectionProvider;
 import org.jminor.common.db.dbms.Database;
 import org.jminor.common.db.exception.DbException;
 import org.jminor.common.db.pool.ConnectionPool;
-import org.jminor.common.db.pool.ConnectionPoolSettings;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.db.pool.DbConnectionPool;
 import org.jminor.common.model.LogEntry;
@@ -130,7 +129,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     super(port, SSL_CONNECTION_ENABLED ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
             SSL_CONNECTION_ENABLED ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
     if (CONNECTION_POOLS.containsKey(clientInfo.getUser())) {
-      CONNECTION_POOLS.get(clientInfo.getUser()).getConnectionPoolSettings().getUser().setPassword(clientInfo.getUser().getPassword());
+      CONNECTION_POOLS.get(clientInfo.getUser()).getUser().setPassword(clientInfo.getUser().getPassword());
     }
     this.server = server;
     this.database = database;
@@ -533,36 +532,55 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   /**
    * @return a List containing the settings of the enabled connection pools
    */
-  public static List<ConnectionPoolSettings> getEnabledConnectionPoolSettings() {
-    final List<ConnectionPoolSettings> poolSettings = new ArrayList<ConnectionPoolSettings>();
+  public static List<User> getEnabledConnectionPoolSettings() {
+    final List<User> enabledPoolUsers = new ArrayList<User>();
     for (final ConnectionPool pool : CONNECTION_POOLS.values()) {
-      if (pool.getConnectionPoolSettings().isEnabled()) {
-        poolSettings.add(pool.getConnectionPoolSettings());
+      if (pool.isEnabled()) {
+        enabledPoolUsers.add(pool.getUser());
       }
     }
 
-    return poolSettings;
+    return enabledPoolUsers;
   }
 
-  public static ConnectionPoolSettings getConnectionPoolSettings(final User user) {
-    return CONNECTION_POOLS.get(user).getConnectionPoolSettings();
+  public static boolean isConnectionPoolEnabled(final User user) throws RemoteException {
+    return CONNECTION_POOLS.get(user).isEnabled();
   }
 
-  public static void setConnectionPoolSettings(final Database database, final ConnectionPoolSettings settings) {
-    ConnectionPool pool = CONNECTION_POOLS.get(settings.getUser());
-    if (pool == null) {
-      CONNECTION_POOLS.put(settings.getUser(), new DbConnectionPool(new DbConnectionProvider() {
-        public DbConnection createConnection(final User user) throws ClassNotFoundException, SQLException {
-          return EntityDbRemoteAdapter.createDbConnection(database, user);
-        }
-        public void destroyConnection(final DbConnection connection) {
-          connection.disconnect();
-        }
-      }, settings));
-    }
-    else {
-      pool.setConnectionPoolSettings(settings);
-    }
+  public static void setConnectionPoolEnabled(final User user, final boolean enabled) throws RemoteException {
+    CONNECTION_POOLS.get(user).setEnabled(enabled);
+  }
+
+  public static void setConnectionPoolCleanupInterval(final User user, final int poolCleanupInterval) throws RemoteException {
+    CONNECTION_POOLS.get(user).setPoolCleanupInterval(poolCleanupInterval);
+  }
+
+  public static int getConnectionPoolCleanupInterval(User user) {
+    return CONNECTION_POOLS.get(user).getPoolCleanupInterval();
+  }
+
+  public static int getMaximumConnectionPoolSize(final User user) {
+    return CONNECTION_POOLS.get(user).getMaximumPoolSize();
+  }
+
+  public static int getMinimumConnectionPoolSize(final User user) {
+    return CONNECTION_POOLS.get(user).getMinimumPoolSize();
+  }
+
+  public static int getPooledConnectionTimeout(final User user) {
+    return CONNECTION_POOLS.get(user).getPooledConnectionTimeout();
+  }
+
+  public static void setMaximumConnectionPoolSize(final User user, final int value) {
+    CONNECTION_POOLS.get(user).setMaximumPoolSize(value);
+  }
+
+  public static void setMinimumConnectionPoolSize(User user, final int value) {
+    CONNECTION_POOLS.get(user).setMinimumPoolSize(value);
+  }
+
+  public static void setPooledConnectionTimeout(final User user, final int timeout) {
+    CONNECTION_POOLS.get(user).setPooledConnectionTimeout(timeout);
   }
 
   public static ConnectionPoolStatistics getConnectionPoolStatistics(final User user, final long since) {
@@ -602,7 +620,14 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     if (initialPoolUsers != null && initialPoolUsers.length() > 0) {
       for (final String username : initialPoolUsers.split(",")) {
         final User user = new User(username.trim(), null);
-        setConnectionPoolSettings(database, ConnectionPoolSettings.getDefault(user));
+        CONNECTION_POOLS.put(user, new DbConnectionPool(new DbConnectionProvider() {
+          public DbConnection createConnection(final User user) throws ClassNotFoundException, SQLException {
+            return EntityDbRemoteAdapter.createDbConnection(database, user);
+          }
+          public void destroyConnection(final DbConnection connection) {
+            connection.disconnect();
+          }
+        }, user));
       }
     }
   }
@@ -623,14 +648,14 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   private void returnConnection(final User user, final EntityDbConnection connection) {
     final ConnectionPool connectionPool = CONNECTION_POOLS.get(user);
     connection.setLoggingEnabled(false);
-    if (connectionPool != null && connectionPool.getConnectionPoolSettings().isEnabled()) {
+    if (connectionPool != null && connectionPool.isEnabled()) {
       connectionPool.checkInConnection(connection);
     }
   }
 
   private EntityDbConnection getConnection(final User user) throws ClassNotFoundException, SQLException {
     final ConnectionPool connectionPool = CONNECTION_POOLS.get(user);
-    if (connectionPool != null && connectionPool.getConnectionPoolSettings().isEnabled()) {
+    if (connectionPool != null && connectionPool.isEnabled()) {
       final EntityDbConnection pooledDbConnection = (EntityDbConnection) connectionPool.checkOutConnection();
       if (entityDbConnection != null) {//pool has been turned on since this one was created
         entityDbConnection.disconnect();//discard

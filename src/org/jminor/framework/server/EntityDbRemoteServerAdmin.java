@@ -5,7 +5,6 @@ package org.jminor.framework.server;
 
 import org.jminor.common.db.DatabaseStatistics;
 import org.jminor.common.db.dbms.DatabaseProvider;
-import org.jminor.common.db.pool.ConnectionPoolSettings;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
@@ -180,10 +179,6 @@ public class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements En
     return EntityDbRemoteAdapter.getWarningTimeExceededPerSecond();
   }
 
-  public ConnectionPoolSettings getConnectionPoolSettings(final User user) throws RemoteException {
-    return EntityDbRemoteAdapter.getConnectionPoolSettings(user);
-  }
-
   public ConnectionPoolStatistics getConnectionPoolStatistics(final User user, final long since) throws RemoteException {
     return EntityDbRemoteAdapter.getConnectionPoolStatistics(user, since);
   }
@@ -192,12 +187,48 @@ public class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements En
     return EntityDbConnection.getDatabaseStatistics();
   }
 
-  public List<ConnectionPoolSettings> getEnabledConnectionPools() throws RemoteException {
+  public List<User> getEnabledConnectionPools() throws RemoteException {
     return EntityDbRemoteAdapter.getEnabledConnectionPoolSettings();
   }
 
-  public void setConnectionPoolSettings(final ConnectionPoolSettings settings) throws RemoteException {
-    EntityDbRemoteAdapter.setConnectionPoolSettings(server.getDatabase(), settings);
+  public boolean isConnectionPoolEnabled(final User user) throws RemoteException {
+    return EntityDbRemoteAdapter.isConnectionPoolEnabled(user);
+  }
+
+  public void setConnectionPoolCleanupInterval(final User user, final int poolCleanupInterval) throws RemoteException {
+    EntityDbRemoteAdapter.setConnectionPoolCleanupInterval(user, poolCleanupInterval);
+  }
+
+  public void setConnectionPoolEnabled(final User user, final boolean enabled) throws RemoteException {
+    EntityDbRemoteAdapter.setConnectionPoolEnabled(user, enabled);
+  }
+
+  public int getConnectionPoolCleanupInterval(final User user) throws RemoteException {
+    return EntityDbRemoteAdapter.getConnectionPoolCleanupInterval(user);
+  }
+
+  public int getMaximumConnectionPoolSize(final User user) throws RemoteException {
+    return EntityDbRemoteAdapter.getMaximumConnectionPoolSize(user);
+  }
+
+  public int getMinimumConnectionPoolSize(final User user) throws RemoteException {
+    return EntityDbRemoteAdapter.getMinimumConnectionPoolSize(user);
+  }
+
+  public int getPooledConnectionTimeout(final User user) throws RemoteException {
+    return EntityDbRemoteAdapter.getPooledConnectionTimeout(user);
+  }
+
+  public void setMaximumConnectionPoolSize(final User user, final int value) throws RemoteException {
+    EntityDbRemoteAdapter.setMaximumConnectionPoolSize(user, value);
+  }
+
+  public void setMinimumConnectionPoolSize(final User user, final int value) throws RemoteException {
+    EntityDbRemoteAdapter.setMinimumConnectionPoolSize(user, value);
+  }
+
+  public void setPooledConnectionTimeout(final User user, final int timeout) throws RemoteException {
+    EntityDbRemoteAdapter.setPooledConnectionTimeout(user, timeout);
   }
 
   public String getMemoryUsage() throws RemoteException {

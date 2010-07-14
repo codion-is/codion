@@ -4,7 +4,6 @@
 package org.jminor.framework.server;
 
 import org.jminor.common.db.DatabaseStatistics;
-import org.jminor.common.db.pool.ConnectionPoolSettings;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.model.User;
 import org.jminor.common.server.ClientInfo;
@@ -205,11 +204,7 @@ public interface EntityDbServerAdmin extends Remote {
 
   Collection<String> getClientTypes() throws RemoteException;
 
-  List<ConnectionPoolSettings> getEnabledConnectionPools() throws RemoteException;
-
-  void setConnectionPoolSettings(final ConnectionPoolSettings settings) throws RemoteException;
-
-  ConnectionPoolSettings getConnectionPoolSettings(final User user) throws RemoteException;
+  List<User> getEnabledConnectionPools() throws RemoteException;
 
   ConnectionPoolStatistics getConnectionPoolStatistics(final User user, final long since) throws RemoteException;
 
@@ -237,4 +232,24 @@ public interface EntityDbServerAdmin extends Remote {
           IllegalAccessException, InstantiationException;
 
   Map<String, EntityDefinition> getEntityDefinitions() throws RemoteException;
+
+  void setConnectionPoolCleanupInterval(final User user, final int poolCleanupInterval) throws RemoteException;
+
+  int getConnectionPoolCleanupInterval(final User user) throws RemoteException;
+
+  void setConnectionPoolEnabled(final User user, final boolean enabled) throws RemoteException;
+
+  boolean isConnectionPoolEnabled(final User user) throws RemoteException;
+
+  void setPooledConnectionTimeout(final User user, final int timeout) throws RemoteException;
+
+  int getPooledConnectionTimeout(final User user) throws RemoteException;
+
+  void setMaximumConnectionPoolSize(final User user, final int value) throws RemoteException;
+
+  int getMaximumConnectionPoolSize(final User user) throws RemoteException;
+
+  void setMinimumConnectionPoolSize(final User user, final int value) throws RemoteException;
+
+  int getMinimumConnectionPoolSize(final User user) throws RemoteException;
 }

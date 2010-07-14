@@ -23,12 +23,12 @@ public class ValueChangeEvent<K, V> extends ActionEvent {
   private final K key;
 
   /**
-   * The new property value
+   * The new value
    */
   private final V newValue;
 
   /**
-   * The old property value
+   * The old value
    */
   private final V oldValue;
 
@@ -56,6 +56,7 @@ public class ValueChangeEvent<K, V> extends ActionEvent {
   public ValueChangeEvent(final Object source, final ValueChangeMap<K, V> valueOwner, final K key, final V newValue,
                           final V oldValue, final boolean isModelChange, final boolean initialization) {
     super(source, 0, key.toString());
+    Util.rejectNullValue(key, "key");
     this.valueOwner = valueOwner;
     this.key = key;
     this.newValue = newValue;

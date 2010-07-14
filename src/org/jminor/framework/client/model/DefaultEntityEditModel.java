@@ -670,7 +670,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
    * a default entity for this EntityModel.
    * Override for selective reset of field values when the model is cleared.
    * For Property.ForeignKeyProperty values this method by default returns the value of the
-   * property <code>Configuration.PERSIST_ENTITY_REFERENCE_VALUES</code>.
+   * property <code>Configuration.PERSIST_FOREIGN_KEY_VALUES</code>.
    * @param property the property
    * @return true if the given entity field value should be reset when the model is cleared
    * @see org.jminor.framework.Configuration#PERSIST_FOREIGN_KEY_VALUES

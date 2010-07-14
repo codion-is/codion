@@ -5,7 +5,6 @@ package org.jminor.framework.server.monitor;
 
 import org.jminor.common.db.DbConnection;
 import org.jminor.common.db.pool.ConnectionPool;
-import org.jminor.common.db.pool.ConnectionPoolSettings;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.model.User;
 import org.jminor.framework.server.EntityDbServerAdmin;
@@ -32,11 +31,92 @@ public class PoolMonitor {
   }
 
   public void refresh() throws RemoteException {
-    for (final ConnectionPoolSettings settings : server.getEnabledConnectionPools()) {
-      connectionPoolMonitors.add(new ConnectionPoolMonitor(settings.getUser(), new ConnectionPool() {
-        public ConnectionPoolSettings getConnectionPoolSettings() {
+    for (final User user : server.getEnabledConnectionPools()) {
+      connectionPoolMonitors.add(new ConnectionPoolMonitor(user, new ConnectionPool() {
+        public int getMaximumPoolSize() {
           try {
-            return server.getConnectionPoolSettings(settings.getUser());
+            return server.getMaximumConnectionPoolSize(user);
+          }
+          catch (RemoteException e) {
+            throw new RuntimeException(e);
+          }
+        }
+
+        public int getMinimumPoolSize() {
+          try {
+            return server.getMinimumConnectionPoolSize(user);
+          }
+          catch (RemoteException e) {
+            throw new RuntimeException(e);
+          }
+        }
+
+        public int getPoolCleanupInterval() {
+          try {
+            return server.getConnectionPoolCleanupInterval(user);
+          }
+          catch (RemoteException e) {
+            throw new RuntimeException(e);
+          }
+        }
+
+        public int getPooledConnectionTimeout() {
+          try {
+            return server.getPooledConnectionTimeout(user);
+          }
+          catch (RemoteException e) {
+            throw new RuntimeException(e);
+          }
+        }
+
+        public void setMaximumPoolSize(final int value) {
+          try {
+            server.setMaximumConnectionPoolSize(user, value);
+          }
+          catch (RemoteException e) {
+            throw new RuntimeException(e);
+          }
+        }
+
+        public void setMinimumPoolSize(final int value) {
+          try {
+            server.setMinimumConnectionPoolSize(user, value);
+          }
+          catch (RemoteException e) {
+            throw new RuntimeException(e);
+          }
+        }
+
+        public void setPooledConnectionTimeout(final int timeout) {
+          try {
+            server.setPooledConnectionTimeout(user, timeout);
+          }
+          catch (RemoteException e) {
+            throw new RuntimeException(e);
+          }
+        }
+
+        public boolean isEnabled() {
+          try {
+            return server.isConnectionPoolEnabled(user);
+          }
+          catch (RemoteException e) {
+            throw new RuntimeException(e);
+          }
+        }
+
+        public void setEnabled(boolean enabled) {
+          try {
+            server.setConnectionPoolEnabled(user, enabled);
+          }
+          catch (RemoteException e) {
+            throw new RuntimeException(e);
+          }
+        }
+
+        public void setPoolCleanupInterval(int poolCleanupInterval) {
+          try {
+            server.setConnectionPoolCleanupInterval(user, poolCleanupInterval);
           }
           catch (RemoteException e) {
             throw new RuntimeException(e);
@@ -45,7 +125,7 @@ public class PoolMonitor {
 
         public ConnectionPoolStatistics getConnectionPoolStatistics(long since) {
           try {
-            return server.getConnectionPoolStatistics(settings.getUser(), since);
+            return server.getConnectionPoolStatistics(user, since);
           }
           catch (RemoteException e) {
             throw new RuntimeException(e);
@@ -53,12 +133,12 @@ public class PoolMonitor {
         }
 
         public User getUser() {
-          return settings.getUser();
+          return user;
         }
 
         public boolean isCollectFineGrainedStatistics() {
           try {
-            return server.isCollectFineGrainedPoolStatistics(settings.getUser());
+            return server.isCollectFineGrainedPoolStatistics(user);
           }
           catch (RemoteException e) {
             throw new RuntimeException(e);
@@ -67,7 +147,7 @@ public class PoolMonitor {
 
         public void resetPoolStatistics() {
           try {
-            server.resetConnectionPoolStatistics(settings.getUser());
+            server.resetConnectionPoolStatistics(user);
           }
           catch (RemoteException e) {
             throw new RuntimeException(e);
@@ -76,40 +156,17 @@ public class PoolMonitor {
 
         public void setCollectFineGrainedStatistics(boolean value) {
           try {
-            server.setCollectFineGrainedPoolStatistics(settings.getUser(), value);
+            server.setCollectFineGrainedPoolStatistics(user, value);
           }
           catch (RemoteException e) {
             throw new RuntimeException(e);
           }
         }
 
-        public void setConnectionPoolSettings(ConnectionPoolSettings settings) {
-          try {
-            server.setConnectionPoolSettings(settings);
-          }
-          catch (RemoteException e) {
-            throw new RuntimeException(e);
-          }
-        }
+        public void checkInConnection(DbConnection dbConnection) {}
 
-        public void checkInConnection(DbConnection dbConnection) {
-        }
-
-        public DbConnection checkOutConnection() throws ClassNotFoundException, SQLException {
-          return null;
-        }
+        public DbConnection checkOutConnection() throws ClassNotFoundException, SQLException {return null;}
       }));
-    }
-  }
-
-  public void setConnectionPoolSettings(final ConnectionPoolSettings settings) throws RemoteException {
-    server.setConnectionPoolSettings(settings);
-    refresh();
-  }
-
-  public void addConnectionPools(final String[] strings) throws RemoteException {
-    for (final String username : strings) {
-      setConnectionPoolSettings(ConnectionPoolSettings.getDefault(new User(username.trim(), null)));
     }
   }
 
@@ -121,5 +178,9 @@ public class PoolMonitor {
     for (final ConnectionPoolMonitor monitor : connectionPoolMonitors) {
       monitor.shutdown();
     }
+  }
+
+  public void addConnectionPools(String[] usernames) {
+    throw new RuntimeException("Not implemented");
   }
 }

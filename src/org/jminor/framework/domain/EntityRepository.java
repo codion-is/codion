@@ -343,24 +343,24 @@ public final class EntityRepository {
 
   /**
    * Returns true if the property identified by <code>propertyID</code> in the entity identified
-   * by <code>entityID</code> has any linked derived properties, that is derived properties which
+   * by <code>entityID</code> has any linked properties, that is properties which
    * values depend on the value of the given property
    * @param entityID the entityID
    * @param propertyID the propertyID
    * @return true if any derived properties are linked to the given property
    */
-  public static boolean hasLinkedDerivedProperties(final String entityID, final String propertyID) {
+  public static boolean hasLinkedProperties(final String entityID, final String propertyID) {
     return getEntityDefinition(entityID).hasLinkedProperties(propertyID);
   }
 
   /**
-   * Returns the IDs of any derived properties linked to the property identified by <code>propertyID</code>
+   * Returns the IDs of any properties which values are linked to the property identified by <code>propertyID</code>
    * in the entity identified by <code>entityID</code>
    * @param entityID the entityID
    * @param propertyID the propertyID
-   * @return the IDs of any derived properties that are linked to the given property
+   * @return the IDs of any properties which values are linked to the given property
    */
-  public static Collection<String> getLinkedDerivedPropertyIDs(final String entityID, final String propertyID) {
+  public static Collection<String> getLinkedPropertyIDs(final String entityID, final String propertyID) {
     return getEntityDefinition(entityID).getLinkedPropertyIDs(propertyID);
   }
 

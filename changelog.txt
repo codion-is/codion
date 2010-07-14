@@ -1851,3 +1851,6 @@
   FilteredComboBoxModel.addItem() added
   DefaultFilteredComboBoxModel.sortContents field removed
   FilteredModel.getAllItems(includeHidden) removed
+  EntityRepository.has/getLinkedDerivedPropertyIDs() renamed to has/getLinkePropertyIDs()
+  Removed a few Util.rejectNullValue() calls from private methods
+  ConnectionPoolSettings removed

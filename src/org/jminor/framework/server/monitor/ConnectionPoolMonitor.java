@@ -4,7 +4,6 @@
 package org.jminor.framework.server.monitor;
 
 import org.jminor.common.db.pool.ConnectionPool;
-import org.jminor.common.db.pool.ConnectionPoolSettings;
 import org.jminor.common.db.pool.ConnectionPoolState;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.model.Event;
@@ -36,7 +35,6 @@ public class ConnectionPoolMonitor {
 
   private final User user;
   private final ConnectionPool pool;
-  private ConnectionPoolSettings poolSettings;
   private ConnectionPoolStatistics poolStats;
 
   private final XYSeries poolSizeSeries = new XYSeries("Pool size");
@@ -60,7 +58,6 @@ public class ConnectionPoolMonitor {
   public ConnectionPoolMonitor(final User user, final ConnectionPool pool) throws RemoteException {
     this.user = user;
     this.pool = pool;
-    this.poolSettings = pool.getConnectionPoolSettings();
     this.macroStatsCollection.addSeries(inPoolSeriesMacro);
     this.macroStatsCollection.addSeries(inUseSeriesMacro);
     this.macroStatsCollection.addSeries(poolSizeSeries);
@@ -82,47 +79,35 @@ public class ConnectionPoolMonitor {
   }
 
   public int getPooledConnectionTimeout() throws RemoteException {
-    return pool.getConnectionPoolSettings().getPooledConnectionTimeout() / 1000;
+    return pool.getPooledConnectionTimeout() / 1000;
   }
 
   public void setPooledConnectionTimeout(final int value) throws RemoteException {
-    final ConnectionPoolSettings settings = pool.getConnectionPoolSettings();
-    settings.setPooledConnectionTimeout(value * 1000);
-    pool.setConnectionPoolSettings(settings);
-    poolSettings = settings;
+    pool.setPooledConnectionTimeout(value * 1000);
   }
 
   public int getPoolCleanupInterval() throws RemoteException {
-    return pool.getConnectionPoolSettings().getPoolCleanupInterval() / 1000;
+    return pool.getPoolCleanupInterval() / 1000;
   }
 
   public void setPoolCleanupInterval(final int value) throws RemoteException {
-    final ConnectionPoolSettings settings = pool.getConnectionPoolSettings();
-    settings.setPoolCleanupInterval(value * 1000);
-    pool.setConnectionPoolSettings(settings);
-    poolSettings = settings;
+    pool.setPoolCleanupInterval(value);
   }
 
   public int getMinimumPoolSize() {
-    return poolSettings.getMinimumPoolSize();
+    return pool.getMinimumPoolSize();
   }
 
   public void setMinimumPoolSize(final int value) throws RemoteException {
-    final ConnectionPoolSettings settings = pool.getConnectionPoolSettings();
-    settings.setMinimumPoolSize(value);
-    pool.setConnectionPoolSettings(settings);
-    poolSettings = settings;
+    pool.setMinimumPoolSize(value);
   }
 
   public int getMaximumPoolSize() {
-    return poolSettings.getMaximumPoolSize();
+    return pool.getMaximumPoolSize();
   }
 
   public void setMaximumPoolSize(final int value) throws RemoteException {
-    final ConnectionPoolSettings settings = pool.getConnectionPoolSettings();
-    settings.setMaximumPoolSize(value);
-    pool.setConnectionPoolSettings(settings);
-    poolSettings = settings;
+    pool.setMaximumPoolSize(value);
   }
 
   public boolean datasetContainsData() {
@@ -213,8 +198,8 @@ public class ConnectionPoolMonitor {
     poolStats = pool.getConnectionPoolStatistics(lastStatsUpdateTime);
     lastStatsUpdateTime = poolStats.getTimestamp();
     poolSizeSeries.add(poolStats.getTimestamp(), poolStats.getLiveConnectionCount());
-    minimumPoolSizeSeries.add(poolStats.getTimestamp(), poolSettings.getMinimumPoolSize());
-    maximumPoolSizeSeries.add(poolStats.getTimestamp(), poolSettings.getMaximumPoolSize());
+    minimumPoolSizeSeries.add(poolStats.getTimestamp(), pool.getMinimumPoolSize());
+    maximumPoolSizeSeries.add(poolStats.getTimestamp(), pool.getMaximumPoolSize());
     inPoolSeriesMacro.add(poolStats.getTimestamp(), poolStats.getAvailableInPool());
     inUseSeriesMacro.add(poolStats.getTimestamp(), poolStats.getConnectionsInUse());
     connectionRequestsPerSecond.add(poolStats.getTimestamp(), poolStats.getRequestsPerSecond());

@@ -57,10 +57,8 @@ public class DbConnectionPoolTest {
   public void test() throws Exception {
     final Date startDate = new Date();
     final User user = User.UNIT_TEST_USER;
-    final ConnectionPoolSettings settings = ConnectionPoolSettings.getDefault(user);
-    assertEquals(60000, settings.getPooledConnectionTimeout());
-    final DbConnectionPool pool = new DbConnectionPool(createConnectionProvider(), settings);
-    pool.getConnectionPoolSettings().getUser().setPassword(User.UNIT_TEST_USER.getPassword());
+    final DbConnectionPool pool = new DbConnectionPool(createConnectionProvider(), user);
+    pool.getUser().setPassword(User.UNIT_TEST_USER.getPassword());
     assertEquals(user, pool.getUser());
     pool.setCollectFineGrainedStatistics(true);
     assertTrue(pool.isCollectFineGrainedStatistics());
@@ -152,8 +150,7 @@ public class DbConnectionPoolTest {
     assertEquals(0, statistics.getConnectionsCreated());
     assertNotNull(statistics.getResetDate());
 
-    settings.setEnabled(false);
-    pool.setConnectionPoolSettings(settings);
+    pool.setEnabled(false);
     assertEquals(0, pool.getConnectionPoolStatistics(System.currentTimeMillis()).getAvailableInPool());
     pool.checkInConnection(dbConnectionThree);
     try {
@@ -211,8 +208,12 @@ public class DbConnectionPoolTest {
   }
 
   private DbConnectionPool initializeLoadTestPool() {
-    return new DbConnectionPool(createConnectionProvider(),
-            new ConnectionPoolSettings(User.UNIT_TEST_USER, true, 70, 1, 200));
+    final DbConnectionPool pool = new DbConnectionPool(createConnectionProvider(), User.UNIT_TEST_USER);
+    pool.setPooledConnectionTimeout(70);
+    pool.setMinimumPoolSize(1);
+    pool.setPoolCleanupInterval(200);
+
+    return pool;
   }
 
   private static DbConnectionProvider createConnectionProvider() {

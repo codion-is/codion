@@ -196,7 +196,7 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
 
     toString = null;
     if (property instanceof Property.ForeignKeyProperty && (value == null || value instanceof Entity)) {
-      propagateReferenceValues((Property.ForeignKeyProperty) property, (Entity) value, false);
+      propagateForeignKeyValues((Property.ForeignKeyProperty) property, (Entity) value, false);
     }
 
     return super.setValue(property.getPropertyID(), value);
@@ -674,20 +674,18 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
 
   @Override
   protected void notifyValueChange(final String key, final Object value, final Object oldValue, final boolean initialization) {
-    Util.rejectNullValue(key, "key");
-    if (EntityRepository.hasLinkedDerivedProperties(entityID, key)) {
-      final Collection<String> linkedPropertyIDs = EntityRepository.getLinkedDerivedPropertyIDs(entityID, key);
+    if (EntityRepository.hasLinkedProperties(entityID, key)) {
+      final Collection<String> linkedPropertyIDs = EntityRepository.getLinkedPropertyIDs(entityID, key);
       for (final String propertyID : linkedPropertyIDs) {
-        super.notifyValueChange(propertyID, getValue(propertyID), null, false);
+        final Object linkedValue = getValue(propertyID);
+        super.notifyValueChange(propertyID, linkedValue, linkedValue, false);
       }
     }
     super.notifyValueChange(key, value, oldValue, initialization);
   }
 
-  private void propagateReferenceValues(final Property.ForeignKeyProperty foreignKeyProperty, final Entity newValue,
-                                        final boolean initialization) {
-    Util.rejectNullValue(foreignKeyProperty, "foreignKeyProperty");
-    referencedPrimaryKeysCache = null;
+  private void propagateForeignKeyValues(final Property.ForeignKeyProperty foreignKeyProperty, final Entity newValue,
+                                         final boolean initialization) {
     setForeignKeyValues(foreignKeyProperty, newValue, initialization);
     if (EntityRepository.hasDenormalizedProperties(entityID)) {
       setDenormalizedValues(foreignKeyProperty, newValue, initialization);
@@ -705,7 +703,7 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
    */
   private void setForeignKeyValues(final Property.ForeignKeyProperty foreignKeyProperty, final Entity referencedEntity,
                                    final boolean initialization) {
-    Util.rejectNullValue(foreignKeyProperty, "foreignKeyProperty");
+    referencedPrimaryKeysCache = null;
     final Collection<Property.PrimaryKeyProperty> referenceEntityPKProperties =
             EntityRepository.getPrimaryKeyProperties(foreignKeyProperty.getReferencedEntityID());
     for (final Property.PrimaryKeyProperty primaryKeyProperty : referenceEntityPKProperties) {
@@ -736,7 +734,6 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
    */
   private void setDenormalizedValues(Property.ForeignKeyProperty foreignKeyProperty, final Entity referencedEntity,
                                      final boolean initialization) {
-    Util.rejectNullValue(foreignKeyProperty, "foreignKeyProperty");
     final Collection<Property.DenormalizedProperty> denormalizedProperties =
             EntityRepository.getDenormalizedProperties(entityID, foreignKeyProperty.getPropertyID());
     if (denormalizedProperties != null) {
@@ -759,7 +756,6 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
   }
 
   private Object getDenormalizedViewValue(final Property.DenormalizedViewProperty denormalizedViewProperty) {
-    Util.rejectNullValue(denormalizedViewProperty, "denormalizedViewProperty");
     final Entity valueOwner = (Entity) getValue(denormalizedViewProperty.getForeignKeyPropertyID());
     if (valueOwner == null) {
       return null;
@@ -769,7 +765,6 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
   }
 
   private String getDenormalizedViewValueFormatted(final Property.DenormalizedViewProperty denormalizedViewProperty) {
-    Util.rejectNullValue(denormalizedViewProperty, "denormalizedViewProperty");
     final Entity valueOwner = (Entity) getValue(denormalizedViewProperty.getForeignKeyPropertyID());
     if (valueOwner == null) {
       return null;
@@ -779,7 +774,6 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
   }
 
   private Key initializeSingleValueKey(final Property.ForeignKeyProperty foreignKeyProperty) {
-    Util.rejectNullValue(foreignKeyProperty, "foreignKeyProperty");
     final Property referenceKeyProperty = foreignKeyProperty.getReferenceProperties().get(0);
     final Object value = getValue(referenceKeyProperty);
     if (value == null) {
@@ -790,7 +784,6 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
   }
 
   private Key initializeCompositeKey(final Property.ForeignKeyProperty foreignKeyProperty) {
-    Util.rejectNullValue(foreignKeyProperty, "foreignKeyProperty");
     final Key key = new Entity.Key(foreignKeyProperty.getReferencedEntityID());
     for (final Property referenceKeyProperty : foreignKeyProperty.getReferenceProperties()) {
       final Object value = getValue(referenceKeyProperty);
@@ -845,7 +838,6 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
    * @throws IllegalArgumentException when the value type does not fit the property type
    */
   private static Object validateType(final Property property, final Object value) {
-    Util.rejectNullValue(property, "property");
     if (value == null) {
       return value;
     }
