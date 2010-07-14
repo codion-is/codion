@@ -187,7 +187,7 @@ public class DbConnectionPool implements ConnectionPool {
   }
 
   public ConnectionPoolStatistics getConnectionPoolStatistics(final long since) {
-    final ConnectionPoolStatistics statistics = new ConnectionPoolStatistics(getUser());
+    final ConnectionPoolStatistics statistics = new DbConnectionPoolStatistics(getUser());
     synchronized (connectionPool) {
       synchronized (connectionsInUse) {
         statistics.setConnectionsInUse(connectionsInUse.size());
@@ -269,7 +269,7 @@ public class DbConnectionPool implements ConnectionPool {
         connectionPoolStatistics.get(connectionPoolStatisticsIndex).set(time, size, inUse);
       }
       else {
-        connectionPoolStatistics.add(new ConnectionPoolState(time, size, inUse));
+        connectionPoolStatistics.add(new DbConnectionPoolState(time, size, inUse));
       }
 
       connectionPoolStatisticsIndex++;

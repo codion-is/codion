@@ -3,41 +3,19 @@
  */
 package org.jminor.common.db.pool;
 
-import java.io.Serializable;
-
 /**
-* A class containing the state of a connection pool at a given time.<br>
+* An interface encapsulating the state of a connection pool at a given time.<br>
 * User: Bjorn Darri<br>
 * Date: 8.12.2007<br>
 * Time: 16:17:01<br>
 */
-public class ConnectionPoolState implements Serializable {
+public interface ConnectionPoolState {
 
-  private static final long serialVersionUID = 1;
+  void set(final long time, final int connectionCount, final int connectionsInUse);
 
-  private long time;
-  private int connectionCount;
-  private int connectionsInUse;
+  int getConnectionCount();
 
-  public ConnectionPoolState(final long time, final int connectionCount, final int connectionsInUse) {
-    set(time, connectionCount, connectionsInUse);
-  }
+  int getConnectionsInUse();
 
-  public void set(final long time, final int connectionCount, final int connectionsInUse) {
-    this.time = time;
-    this.connectionCount = connectionCount;
-    this.connectionsInUse = connectionsInUse;
-  }
-
-  public int getConnectionCount() {
-    return connectionCount;
-  }
-
-  public int getConnectionsInUse() {
-    return connectionsInUse;
-  }
-
-  public long getTime() {
-    return time;
-  }
+  long getTime();
 }

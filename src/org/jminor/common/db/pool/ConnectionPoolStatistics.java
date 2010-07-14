@@ -5,151 +5,68 @@ package org.jminor.common.db.pool;
 
 import org.jminor.common.model.User;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
- * A class encapsulating database connection pool statistics
+ * An interface encapsulating database connection pool statistics
  */
-public class ConnectionPoolStatistics implements Serializable {
+public interface ConnectionPoolStatistics {
 
-  private static final long serialVersionUID = 1;
+  User getUser();
 
-  private final User user;
-  private long timestamp;
-  private int connectionsInUse;
-  private int availableInPool;
+  void setPoolStatistics(final List<ConnectionPoolState> stats);
 
-  private int connectionsCreated;
-  private int connectionsDestroyed;
-  private long creationDate;
+  List<ConnectionPoolState> getPoolStatistics();
 
-  private List<ConnectionPoolState> poolStatistics;
-  private long resetDate;
-  private int connectionRequests;
-  private int connectionRequestsDelayed;
-  private int requestsDelayedPerSecond;
-  private int requestsPerSecond;
-  private int liveConnectionCount;
-  private long averageCheckOutTime;
+  int getAvailableInPool();
 
-  public ConnectionPoolStatistics(final User user) {
-    this.user = user;
-  }
+  void setAvailableInPool(final int availableInPool);
 
-  public User getUser() {
-    return user;
-  }
+  int getConnectionsInUse();
 
-  public void setPoolStatistics(final List<ConnectionPoolState> stats) {
-    this.poolStatistics = stats;
-  }
+  void setConnectionsInUse(final int connectionsInUse);
 
-  public List<ConnectionPoolState> getPoolStatistics() {
-    return poolStatistics;
-  }
+  long getTimestamp();
 
-  public int getAvailableInPool() {
-    return availableInPool;
-  }
+  void setTimestamp(final long timestamp);
 
-  public void setAvailableInPool(final int availableInPool) {
-    this.availableInPool = availableInPool;
-  }
+  void setCreationDate(final long time);
 
-  public int getConnectionsInUse() {
-    return connectionsInUse;
-  }
+  long getCreationDate();
 
-  public void setConnectionsInUse(final int connectionsInUse) {
-    this.connectionsInUse = connectionsInUse;
-  }
+  void setConnectionsCreated(final int connectionsCreated);
 
-  public long getTimestamp() {
-    return timestamp;
-  }
+  int getConnectionsCreated();
 
-  public void setTimestamp(final long timestamp) {
-    this.timestamp = timestamp;
-  }
+  void setConnectionsDestroyed(final int connectionsDestroyed);
 
-  public void setCreationDate(final long time) {
-    this.creationDate = time;
-  }
+  int getConnectionsDestroyed();
 
-  public long getCreationDate() {
-    return this.creationDate;
-  }
+  int getConnectionRequestsDelayed();
 
-  public void setConnectionsCreated(final int connectionsCreated) {
-    this.connectionsCreated = connectionsCreated;
-  }
+  void setConnectionRequestsDelayed(final int connectionRequestsDelayed);
 
-  public int getConnectionsCreated() {
-    return connectionsCreated;
-  }
+  int getConnectionRequests();
 
-  public void setConnectionsDestroyed(final int connectionsDestroyed) {
-    this.connectionsDestroyed = connectionsDestroyed;
-  }
+  void setConnectionRequests(final int connectionRequests);
 
-  public int getConnectionsDestroyed() {
-    return connectionsDestroyed;
-  }
+  int getRequestsDelayedPerSecond();
 
-  public int getConnectionRequestsDelayed() {
-    return connectionRequestsDelayed;
-  }
+  void setRequestsDelayedPerSecond(final int requestsDelayedPerSecond);
 
-  public void setConnectionRequestsDelayed(final int connectionRequestsDelayed) {
-    this.connectionRequestsDelayed = connectionRequestsDelayed;
-  }
+  void setRequestsPerSecond(int requestsPerSecond);
 
-  public int getConnectionRequests() {
-    return connectionRequests;
-  }
+  int getRequestsPerSecond();
 
-  public void setConnectionRequests(final int connectionRequests) {
-    this.connectionRequests = connectionRequests;
-  }
+  long getAverageCheckOutTime();
 
-  public int getRequestsDelayedPerSecond() {
-    return requestsDelayedPerSecond;
-  }
+  void setAverageCheckOutTime(final long averageCheckOutTime);
 
-  public void setRequestsDelayedPerSecond(final int requestsDelayedPerSecond) {
-    this.requestsDelayedPerSecond = requestsDelayedPerSecond;
-  }
+  void setLiveConnectionCount(final int liveConnectionCount);
 
-  public void setRequestsPerSecond(int requestsPerSecond) {
-    this.requestsPerSecond = requestsPerSecond;
-  }
+  int getLiveConnectionCount();
 
-  public int getRequestsPerSecond() {
-    return requestsPerSecond;
-  }
+  void setResetDate(final long resetDate);
 
-  public long getAverageCheckOutTime() {
-    return averageCheckOutTime;
-  }
-
-  public void setAverageCheckOutTime(final long averageCheckOutTime) {
-    this.averageCheckOutTime = averageCheckOutTime;
-  }
-
-  public void setLiveConnectionCount(final int liveConnectionCount) {
-    this.liveConnectionCount = liveConnectionCount;
-  }
-
-  public int getLiveConnectionCount() {
-    return liveConnectionCount;
-  }
-
-  public void setResetDate(final long resetDate) {
-    this.resetDate = resetDate;
-  }
-
-  public long getResetDate() {
-    return resetDate;
-  }
+  long getResetDate();
 }

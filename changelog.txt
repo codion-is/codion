@@ -1854,3 +1854,5 @@
   EntityRepository.has/getLinkedDerivedPropertyIDs() renamed to has/getLinkePropertyIDs()
   Removed a few Util.rejectNullValue() calls from private methods
   ConnectionPoolSettings removed
+  ConnectionPoolState is now an interface with DbConnectionPoolState as the implementation
+  ConnectionPoolStatistics is now an interface with DbConnectionPoolStatistics as the implementation
