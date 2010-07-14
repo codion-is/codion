@@ -30,9 +30,7 @@ import java.util.Map;
  * A TableModel implentation that supports filtering, searching and sorting.
  * <pre>
  * AbstractFilteredTableModel tableModel = ...;
- * JTable table = new JTable(tableModel.getTableSorter(),
- *                           tableModel.getColumnModel(),
- *                           tableModel.getSelectionModel());
+ * JTable table = new JTable(tableModel, tableModel.getColumnModel(), tableModel.getSelectionModel());
  * </pre><br>
  * User: Björn Darri<br>
  * Sorting functionality based on TableSorter by Philip Milne, Brendon McLean, Dan van Enckevort and Parwinder Sekhon<br>

@@ -1843,3 +1843,4 @@
   FilteredComboBoxModel.isVisible() moved to FilteredModel
   FilteredComboBoxModel.setContents() added
   FilteredModel hidden replaced with filtered
+0.5.6
