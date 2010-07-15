@@ -1856,3 +1856,5 @@
   ConnectionPoolSettings removed
   ConnectionPoolState is now an interface with DbConnectionPoolState as the implementation
   ConnectionPoolStatistics is now an interface with DbConnectionPoolStatistics as the implementation
+  EntityDbServerAdmin.getEntityDefinitions() now returns a Collection instead of a Map
+  ServerMonitor now sorts the entity definition list

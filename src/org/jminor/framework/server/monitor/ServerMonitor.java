@@ -18,7 +18,10 @@ import java.net.URI;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -166,8 +169,14 @@ public class ServerMonitor {
 
   public void refreshDomainList() throws RemoteException {
     domainListModel.clear();
-    for (final Map.Entry<String, EntityDefinition> entry : server.getEntityDefinitions().entrySet()) {
-      domainListModel.addElement(entry.getValue());
+    final List<EntityDefinition> definitions = new ArrayList<EntityDefinition>(server.getEntityDefinitions());
+    Collections.sort(definitions, new Comparator<EntityDefinition>() {
+      public int compare(final EntityDefinition o1, final EntityDefinition o2) {
+        return o1.getTableName().compareTo(o2.getTableName());
+      }
+    });
+    for (final EntityDefinition definition : definitions) {
+      domainListModel.addElement(definition);
     }
   }
 

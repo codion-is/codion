@@ -11,8 +11,6 @@ package org.jminor.common.db.pool;
 */
 public interface ConnectionPoolState {
 
-  void set(final long time, final int connectionCount, final int connectionsInUse);
-
   int getConnectionCount();
 
   int getConnectionsInUse();

@@ -29,7 +29,6 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -280,7 +279,7 @@ public class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements En
     EntityDbRemoteServer.loadDomainModel(location, domainClassName);
   }
 
-  public Map<String, EntityDefinition> getEntityDefinitions() throws RemoteException {
+  public Collection<EntityDefinition> getEntityDefinitions() throws RemoteException {
     return EntityDbRemoteServer.getEntityDefinitions();
   }
 

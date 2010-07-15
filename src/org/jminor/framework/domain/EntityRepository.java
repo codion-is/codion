@@ -9,6 +9,7 @@ import org.jminor.common.model.valuemap.ValueMap;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
@@ -423,7 +424,7 @@ public final class EntityRepository {
   }
 
   public static Map<String, EntityDefinition> getEntityDefinitions() {
-    return entityDefinitions;
+    return Collections.unmodifiableMap(entityDefinitions);
   }
 
   /**

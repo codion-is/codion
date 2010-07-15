@@ -6,6 +6,7 @@ package org.jminor.framework.server.monitor.ui;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Util;
+import org.jminor.common.ui.DefaultExceptionHandler;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.Control;
 import org.jminor.common.ui.control.ControlFactory;
@@ -31,12 +32,12 @@ import java.rmi.RemoteException;
 /**
  * User: Bjorn Darri<br>
  * Date: 4.12.2007<br>
- * Time: 18:11:06<br>
+ * Time: 18:11:06
  */
 public class MonitorPanel extends JPanel {
 
   private static final String JDK_PREFERENCE_KEY = MonitorPanel.class.getName() + ".jdkPathPreferenceKey";
-  private static String jdkDir;
+  private static String jdkDir = Util.getUserPreference(JDK_PREFERENCE_KEY, null);
 
   private final Event evtAlwaysOnTopChanged = new Event();
   private static final int MEMORY_USAGE_UPDATE_INTERVAL = 2000;
@@ -45,6 +46,11 @@ public class MonitorPanel extends JPanel {
 
   public MonitorPanel() throws RemoteException {
     this(new MonitorModel(System.getProperty(Configuration.SERVER_HOST_NAME)));
+    Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+      public void uncaughtException(final Thread t, final Throwable e) {
+        DefaultExceptionHandler.getInstance().handleException(e, MonitorPanel.this);
+      }
+    });
   }
 
   public MonitorPanel(final MonitorModel model) throws RemoteException {
@@ -73,7 +79,10 @@ public class MonitorPanel extends JPanel {
 
   public void runJConsole() throws IOException {
     if (jdkDir == null) {
-      throw new RuntimeException("No JDK home directory has been set");
+      setJDKDir();
+      if (jdkDir == null) {
+        throw new RuntimeException("No JDK home directory has been specified");
+      }
     }
     final String separator = System.getProperty("file.separator");
     ProcessBuilder builder = new ProcessBuilder(jdkDir + separator + "bin"  + separator + "jconsole");
@@ -105,7 +114,7 @@ public class MonitorPanel extends JPanel {
 
   public static void setJDKDir(final JComponent dialogParent) {
     try {
-      jdkDir = UiUtil.selectDirectory(dialogParent, jdkDir).getAbsolutePath();
+      jdkDir = UiUtil.selectDirectory(dialogParent, jdkDir, "Set JDK home").getAbsolutePath();
       Util.putUserPreference(JDK_PREFERENCE_KEY, jdkDir);
     }
     catch (CancelException e) {/**/}
@@ -157,7 +166,7 @@ public class MonitorPanel extends JPanel {
 
   private Control initSetJDKDirControl() {
     final Control control =
-            ControlFactory.methodControl(this, "setJDKDir", "Set JDK path...");
+            ControlFactory.methodControl(this, "setJDKDir", "Set JDK home...");
     control.setMnemonic('S');
 
     return control;
@@ -191,6 +200,7 @@ public class MonitorPanel extends JPanel {
           new MonitorPanel().showFrame();
         }
         catch (Exception e) {
+          e.printStackTrace();
           System.exit(1);
         }
       }

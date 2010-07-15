@@ -35,7 +35,7 @@ public class DbConnectionPool implements ConnectionPool {
   private final Stack<DbConnection> connectionPool = new Stack<DbConnection>();
   private final Set<DbConnection> connectionsInUse = new HashSet<DbConnection>();
 
-  private final List<ConnectionPoolState> connectionPoolStatistics = new ArrayList<ConnectionPoolState>(1000);
+  private final List<DbConnectionPoolState> connectionPoolStatistics = new ArrayList<DbConnectionPoolState>(1000);
 
   private Timer poolCleaner;
 
@@ -218,7 +218,7 @@ public class DbConnectionPool implements ConnectionPool {
   public List<ConnectionPoolState> getPoolStatistics(final long since) {
     final List<ConnectionPoolState> poolStates = new ArrayList<ConnectionPoolState>();
     synchronized (connectionPoolStatistics) {
-      final ListIterator<ConnectionPoolState> iterator = connectionPoolStatistics.listIterator();
+      final ListIterator<DbConnectionPoolState> iterator = connectionPoolStatistics.listIterator();
       while (iterator.hasNext()) {//NB. the stat log is circular, result should be sorted
         final ConnectionPoolState state = iterator.next();
         if (state.getTime() >= since) {
@@ -263,8 +263,7 @@ public class DbConnectionPool implements ConnectionPool {
     synchronized (connectionPoolStatistics) {
       final int poolStatisticsSize = 1000;
       connectionPoolStatisticsIndex = connectionPoolStatisticsIndex == poolStatisticsSize ? 0 : connectionPoolStatisticsIndex;
-      if (connectionPoolStatistics.size() == poolStatisticsSize) //filled already, reuse
-      {
+      if (connectionPoolStatistics.size() == poolStatisticsSize) {//filled already, reuse
         connectionPoolStatistics.get(connectionPoolStatisticsIndex).set(time, size, inUse);
       }
       else {

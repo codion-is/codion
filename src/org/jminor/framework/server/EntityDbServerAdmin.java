@@ -17,7 +17,6 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Defines the server admin service methods.<br>
@@ -231,7 +230,7 @@ public interface EntityDbServerAdmin extends Remote {
   void loadDomainModel(final URI location, final String domainClassName) throws RemoteException, ClassNotFoundException,
           IllegalAccessException, InstantiationException;
 
-  Map<String, EntityDefinition> getEntityDefinitions() throws RemoteException;
+  Collection<EntityDefinition> getEntityDefinitions() throws RemoteException;
 
   void setConnectionPoolCleanupInterval(final User user, final int poolCleanupInterval) throws RemoteException;
 
