@@ -115,16 +115,17 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
 
   public void setSelectedEntityByPrimaryKey(final Entity.Key primaryKey) {
     final Entity toSelect = new Entity(primaryKey);
-    final List<Entity> items = getVisibleItems();
-    int indexOfKey = items.indexOf(toSelect);
+    final List<Entity> visibleItems = getVisibleItems();
+    int indexOfKey = visibleItems.indexOf(toSelect);
     if (indexOfKey >= 0) {
-      setSelectedItem(items.get(indexOfKey));
+      setSelectedItem(visibleItems.get(indexOfKey));
     }
-    items.clear();
-    items.addAll(getFilteredItems());
-    indexOfKey = items.indexOf(toSelect);
-    if (indexOfKey >= 0) {
-      setSelectedItem(items.get(indexOfKey));
+    else {
+      final List<Entity> filteredItems = getVisibleItems();
+      final int filteredIndexOfKey = filteredItems.indexOf(toSelect);
+      if (filteredIndexOfKey >= 0) {
+        setSelectedItem(filteredItems.get(filteredIndexOfKey));
+      }
     }
   }
 
@@ -163,14 +164,10 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
 
   @Override
   public FilterCriteria<Entity> getFilterCriteria() {
-    final FilterCriteria superCriteria = super.getFilterCriteria();
+    final FilterCriteria<Entity> superCriteria = super.getFilterCriteria();
     return new FilterCriteria<Entity>() {
       public boolean include(final Entity item) {
-        if (!superCriteria.include(item)) {
-          return false;
-        }
-
-        return foreignKeyFilterCriteria.include(item);
+        return superCriteria.include(item) && foreignKeyFilterCriteria.include(item);
       }
     };
   }

@@ -144,7 +144,7 @@ public final class EntityUiUtil {
         });
       }
       @Override
-      protected JPanel initializeSearchPanel() {
+      protected EntityTableSearchPanel initializeSearchPanel() {
         return simpleSearchPanel ? initializeSimpleSearchPanel() : initializeAdvancedSearchPanel();
       }
     };

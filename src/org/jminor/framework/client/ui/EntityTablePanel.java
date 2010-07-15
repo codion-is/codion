@@ -4,13 +4,11 @@
 package org.jminor.framework.client.ui;
 
 import org.jminor.common.db.criteria.Criteria;
-import org.jminor.common.db.criteria.CriteriaSet;
 import org.jminor.common.db.exception.DbException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.AggregateState;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
-import org.jminor.common.model.SearchType;
 import org.jminor.common.model.Serializer;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
@@ -35,9 +33,7 @@ import org.jminor.framework.client.model.DefaultEntityEditModel;
 import org.jminor.framework.client.model.DefaultEntityTableModel;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityTableModel;
-import org.jminor.framework.client.model.EntityTableSearchModel;
 import org.jminor.framework.client.model.PropertyFilterModel;
-import org.jminor.framework.client.model.PropertySearchModel;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
@@ -136,7 +132,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
   /**
    * the search panel
    */
-  private final JPanel searchPanel;
+  private final EntityTableSearchPanel searchPanel;
 
   /**
    * the scroll pane used for the search panel
@@ -366,7 +362,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     }
 
     if (searchScrollPane != null) {
-      searchScrollPane.getViewport().setView(visible ? searchPanel : null);
+      searchScrollPane.getViewport().setView(visible ? (JPanel) searchPanel : null);
       if (refreshToolBar != null) {
         refreshToolBar.setVisible(visible);
       }
@@ -382,9 +378,9 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
   }
 
   /**
-   * @return the column search panel being used by this EntityTablePanel
+   * @return the search panel being used by this EntityTablePanel
    */
-  public JPanel getSearchPanel() {
+  public EntityTableSearchPanel getSearchPanel() {
     return searchPanel;
   }
 
@@ -393,17 +389,17 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
    * in case it is a EntityTableSearchPanel advanced
    */
   public void toggleSearchPanel() {
-    if (searchPanel instanceof EntityTableSearchPanel) {
+    if (searchPanel instanceof EntityTableSearchAdvancedPanel) {
       if (isSearchPanelVisible()) {
-        if (((EntityTableSearchPanel) searchPanel).isAdvanced()) {
+        if (((EntityTableSearchAdvancedPanel) searchPanel).isAdvanced()) {
           setSearchPanelVisible(false);
         }
         else {
-          ((EntityTableSearchPanel) searchPanel).setAdvanced(true);
+          ((EntityTableSearchAdvancedPanel) searchPanel).setAdvanced(true);
         }
       }
       else {
-        ((EntityTableSearchPanel) searchPanel).setAdvanced(false);
+        ((EntityTableSearchAdvancedPanel) searchPanel).setAdvanced(false);
         setSearchPanelVisible(true);
       }
     }
@@ -727,7 +723,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     tableModel.setEditModel(editModel);
     final EntityTablePanel tablePanel = new EntityTablePanel(tableModel, null, null) {
       @Override
-      protected JPanel initializeSearchPanel() {
+      protected EntityTableSearchPanel initializeSearchPanel() {
         return null;
       }
     };
@@ -748,16 +744,16 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     final JPanel tableSearchAndSummaryPanel = new JPanel(new BorderLayout());
     setLayout(new BorderLayout());
     if (searchPanel != null) {
-      searchScrollPane = new JScrollPane(searchPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER,
+      searchScrollPane = new JScrollPane((JPanel) searchPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER,
               JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-      if (searchPanel instanceof EntityTableSearchPanel) {
+      if (searchPanel instanceof EntityTableSearchAdvancedPanel) {
         searchScrollPane.getHorizontalScrollBar().setModel(getTableScrollPane().getHorizontalScrollBar().getModel());
       }
       tableSearchAndSummaryPanel.add(searchScrollPane, BorderLayout.NORTH);
     }
 
-    if (searchPanel instanceof EntityTableSearchPanel) {
-      ((EntityTableSearchPanel)searchPanel).eventAdvancedChanged().addListener(new ActionListener() {
+    if (searchPanel instanceof EntityTableSearchAdvancedPanel) {
+      ((EntityTableSearchAdvancedPanel) searchPanel).eventAdvancedChanged().addListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           if (isSearchPanelVisible()) {
             revalidateAndShowSearchPanel();
@@ -1022,11 +1018,13 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
       }
       popupControls.add(controlMap.get(CONFIGURE_QUERY));
       if (searchPanel != null) {
-        final ControlSet searchControls = ((EntityTableSearchPanel) searchPanel).getControls();
+        final ControlSet searchControls = searchPanel.getControls();
         if (controlMap.containsKey(SEARCH_PANEL_VISIBLE)) {
           searchControls.add(getControl(SEARCH_PANEL_VISIBLE));
         }
-        popupControls.add(searchControls);
+        if (searchControls != null) {
+          popupControls.add(searchControls);
+        }
       }
     }
     if (separatorRequired) {
@@ -1094,7 +1092,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
   /**
    * @return an initialized search panel
    */
-  protected JPanel initializeSearchPanel() {
+  protected EntityTableSearchPanel initializeSearchPanel() {
     return getTableModel().getSearchModel().isSimpleSearch() ? initializeSimpleSearchPanel() : initializeAdvancedSearchPanel();
   }
 
@@ -1104,38 +1102,15 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
    * @return a simple search panel
    * @see org.jminor.framework.domain.EntityDefinition#setSearchPropertyIDs(String[])
    */
-  protected JPanel initializeSimpleSearchPanel() {
-    final List<Property> searchableProperties = getSearchProperties();
-    if (searchableProperties.size() == 0) {
-      throw new RuntimeException("Unable to create a simple search panel for entity: "
-              + getTableModel().getEntityID() + ", no STRING based properties found");
-    }
-
-    final JTextField searchField = new JTextField();
-    final Action action = new AbstractAction(FrameworkMessages.get(FrameworkMessages.SEARCH)) {
-      public void actionPerformed(final ActionEvent e) {
-        performSimpleSearch(searchField.getText(), searchableProperties);
-      }
-    };
-
-    searchField.addActionListener(action);
-    final JPanel simpleSearchPanel = new JPanel(new BorderLayout(5,5));
-    simpleSearchPanel.setBorder(BorderFactory.createTitledBorder(FrameworkMessages.get(FrameworkMessages.CONDITION)));
-    simpleSearchPanel.add(searchField, BorderLayout.CENTER);
-    simpleSearchPanel.add(new JButton(action), BorderLayout.EAST);
-
-    return simpleSearchPanel;
+  protected EntityTableSearchPanel initializeSimpleSearchPanel() {
+    return new EntityTableSearchSimplePanel(getTableModel().getSearchModel(), getTableModel());
   }
 
   /**
    * @return an initialized EntityTableSearchPanel
    */
-  protected JPanel initializeAdvancedSearchPanel() {
-    final EntityTableSearchPanel advancedSearchPanel =
-            new EntityTableSearchPanel(getTableModel().getSearchModel(), getTableModel().getColumnModel());
-    advancedSearchPanel.setVerticalFillerWidth(UiUtil.getPreferredScrollBarWidth());
-
-    return advancedSearchPanel;
+  protected EntityTableSearchPanel initializeAdvancedSearchPanel() {
+    return new EntityTableSearchAdvancedPanel(getTableModel().getSearchModel(), getTableModel().getColumnModel());
   }
 
   /**
@@ -1333,50 +1308,6 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
    */
   protected boolean allowColumnReordering() {
     return Configuration.getBooleanValue(Configuration.ALLOW_COLUMN_REORDERING);
-  }
-
-  private void performSimpleSearch(final String searchText, final List<Property> searchProperties) {
-    final EntityTableSearchModel tableSearchModel = getTableModel().getSearchModel();
-    final CriteriaSet.Conjunction conjunction = tableSearchModel.getSearchConjunction();
-    try {
-      tableSearchModel.clearPropertySearchModels();
-      tableSearchModel.setSearchConjunction(CriteriaSet.Conjunction.OR);
-      if (searchText.length() > 0) {
-        final String wildcard = (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER);
-        final String searchTextWithWildcards = wildcard + searchText + wildcard;
-        for (final Property searchProperty : searchProperties) {
-          final PropertySearchModel propertySearchModel = tableSearchModel.getPropertySearchModel(searchProperty.getPropertyID());
-          propertySearchModel.setCaseSensitive(false);
-          propertySearchModel.setUpperBound(searchTextWithWildcards);
-          propertySearchModel.setSearchType(SearchType.LIKE);
-          propertySearchModel.setSearchEnabled(true);
-        }
-      }
-
-      getTableModel().refresh();
-    }
-    finally {
-      tableSearchModel.setSearchConjunction(conjunction);
-    }
-  }
-
-  private List<Property> getSearchProperties() {
-    final List<Property> searchableProperties = new ArrayList<Property>();
-    final Collection<String> defaultSearchPropertyIDs = EntityRepository.getEntitySearchPropertyIDs(getTableModel().getEntityID());
-    if (defaultSearchPropertyIDs.size() > 0) {
-      for (final String propertyID : defaultSearchPropertyIDs) {
-        searchableProperties.add(EntityRepository.getProperty(getTableModel().getEntityID(), propertyID));
-      }
-    }
-    else {
-      for (final Property property : EntityRepository.getDatabaseProperties(getTableModel().getEntityID())) {
-        if (property.isString() && !property.isHidden()) {
-          searchableProperties.add(property);
-        }
-      }
-    }
-
-    return searchableProperties;
   }
 
   private Control getCopyCellControl() {
@@ -1584,7 +1515,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
 
   private void revalidateAndShowSearchPanel() {
     searchScrollPane.getViewport().setView(null);
-    searchScrollPane.getViewport().setView(searchPanel);
+    searchScrollPane.getViewport().setView((JPanel) searchPanel);
     revalidate();
   }
 

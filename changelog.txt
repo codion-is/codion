@@ -1861,3 +1861,6 @@
   EntityModel.selectionFiltersDetail field removed
   EntityTableModel.setSortingStatus() renamed to setSortingDirective()
   EntityDataProvider interface added
+  EntityTableSearchPanel is now an interface
+  EntityTableSearchSimplePanel added
+  EntityTableSearchAdvancedPanel added
