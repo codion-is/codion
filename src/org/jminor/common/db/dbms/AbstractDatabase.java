@@ -120,8 +120,8 @@ public abstract class AbstractDatabase implements Database {
     final Properties connectionProperties = new Properties();
     connectionProperties.put("user", user.getUsername());
     connectionProperties.put("password", user.getPassword());
-    return DriverManager.getConnection(getURL(connectionProperties),
-            addConnectionProperties(connectionProperties));
+
+    return DriverManager.getConnection(getURL(connectionProperties), addConnectionProperties(connectionProperties));
   }
 
   /**
@@ -187,6 +187,26 @@ public abstract class AbstractDatabase implements Database {
     return properties;
   }
 
+  /**
+   * Validates that the given parameters suffice to connect to the given database type.
+   * <pre>
+   * <code>if (embedded) {
+   *   require(DATABASE_HOST, host);
+   * }
+   * else {
+   *   require(DATABASE_HOST, host);
+   *   require(DATABASE_PORT, port);
+   *   require(DATABASE_SID, sid);
+   * }
+   * </code>
+   * </pre>
+   * @param databaseType the database type
+   * @param host the database host name
+   * @param port the database port
+   * @param sid the database sid
+   * @param embedded true if the database being connected to is an embedded one
+   * @see #require(String, String)
+   */
   protected abstract void validate(final String databaseType, final String host, final String port, final String sid, final boolean embedded);
 
   protected void require(final String property, final String value) {

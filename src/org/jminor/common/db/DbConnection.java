@@ -548,7 +548,7 @@ public class DbConnection {
   }
 
   public static DatabaseStatistics getDatabaseStatistics() {
-    return new DatabaseStatistics(QUERY_COUNTER.getQueriesPerSecond(),
+    return new DbStatistics(QUERY_COUNTER.getQueriesPerSecond(),
             QUERY_COUNTER.getSelectsPerSecond(), QUERY_COUNTER.getInsertsPerSecond(),
             QUERY_COUNTER.getDeletesPerSecond(), QUERY_COUNTER.getUpdatesPerSecond());
   }

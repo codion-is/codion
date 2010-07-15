@@ -3,52 +3,20 @@
  */
 package org.jminor.common.db;
 
-import java.io.Serializable;
-
 /**
  * Encapsulates basic database usage statistics.
  */
-public class DatabaseStatistics implements Serializable {
+public interface DatabaseStatistics {
 
-  private static final long serialVersionUID = 1;
+  int getQueriesPerSecond();
 
-  private final long timestamp = System.currentTimeMillis();
-  private final int queriesPerSecond;
-  private final int selectsPerSecond;
-  private final int insertsPerSecond;
-  private final int deletesPerSecond;
-  private final int updatesPerSecond;
+  int getDeletesPerSecond();
 
-  public DatabaseStatistics(final int queriesPerSecond, final int selectsPerSecond, final int insertsPerSecond,
-                            final int deletesPerSecond, final int updatesPerSecond) {
-    this.queriesPerSecond = queriesPerSecond;
-    this.selectsPerSecond = selectsPerSecond;
-    this.insertsPerSecond = insertsPerSecond;
-    this.deletesPerSecond = deletesPerSecond;
-    this.updatesPerSecond = updatesPerSecond;
-  }
+  int getInsertsPerSecond();
 
-  public int getQueriesPerSecond() {
-    return queriesPerSecond;
-  }
+  int getSelectsPerSecond();
 
-  public int getDeletesPerSecond() {
-    return deletesPerSecond;
-  }
+  int getUpdatesPerSecond();
 
-  public int getInsertsPerSecond() {
-    return insertsPerSecond;
-  }
-
-  public int getSelectsPerSecond() {
-    return selectsPerSecond;
-  }
-
-  public int getUpdatesPerSecond() {
-    return updatesPerSecond;
-  }
-
-  public long getTimestamp() {
-    return timestamp;
-  }
+  long getTimestamp();
 }

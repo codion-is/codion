@@ -1864,3 +1864,5 @@
   EntityTableSearchPanel is now an interface
   EntityTableSearchSimplePanel added
   EntityTableSearchAdvancedPanel added
+  DatabaseStatistics is now an interface
+  DbStatistics added as an implementation of the above
