@@ -57,7 +57,7 @@ public class DbConnectionPool implements ConnectionPool {
   public DbConnectionPool(final DbConnectionProvider dbConnectionProvider, final User user) {
     this.dbConnectionProvider = dbConnectionProvider;
     this.user = user;
-    startPoolCleaner(pooledConnectionTimeout);
+    startPoolCleaner();
   }
 
   public DbConnection checkOutConnection() throws ClassNotFoundException, SQLException {
@@ -72,11 +72,11 @@ public class DbConnectionPool implements ConnectionPool {
     if (connection == null) {
       counter.incrementDelayedRequestCounter();
       synchronized (connectionPool) {
-        if (counter.getLiveConnections() < getMaximumPoolSize() && !creatingConnection) {
+        if (counter.getLiveConnections() < maximumPoolSize && !creatingConnection) {
           try {
             creatingConnection = true;
             counter.incrementConnectionsCreatedCounter();
-            checkInConnection(dbConnectionProvider.createConnection(getUser()));
+            checkInConnection(dbConnectionProvider.createConnection(user));
           }
           finally {
             creatingConnection = false;
@@ -139,27 +139,27 @@ public class DbConnectionPool implements ConnectionPool {
     emptyPool();
   }
 
-  public int getPooledConnectionTimeout() {
+  public synchronized int getPooledConnectionTimeout() {
     return pooledConnectionTimeout;
   }
 
-  public void setPooledConnectionTimeout(final int timeout) {
+  public synchronized void setPooledConnectionTimeout(final int timeout) {
     this.pooledConnectionTimeout = timeout;
   }
 
-  public int getMinimumPoolSize() {
+  public synchronized int getMinimumPoolSize() {
     return minimumPoolSize;
   }
 
-  public void setMinimumPoolSize(final int value) {
+  public synchronized void setMinimumPoolSize(final int value) {
     this.minimumPoolSize = value;
   }
 
-  public int getMaximumPoolSize() {
+  public synchronized int getMaximumPoolSize() {
     return maximumPoolSize;
   }
 
-  public void setMaximumPoolSize(final int value) {
+  public synchronized void setMaximumPoolSize(final int value) {
     this.maximumPoolSize = value;
   }
 
@@ -175,10 +175,9 @@ public class DbConnectionPool implements ConnectionPool {
   }
 
   public void setPoolCleanupInterval(final int poolCleanupInterval) {
-    final boolean cleanupIntervalChanged = this.poolCleanupInterval != poolCleanupInterval;
-    this.poolCleanupInterval = poolCleanupInterval;
-    if (cleanupIntervalChanged) {
-      startPoolCleaner(poolCleanupInterval);
+    if (this.poolCleanupInterval != poolCleanupInterval) {
+      this.poolCleanupInterval = poolCleanupInterval;
+      startPoolCleaner();
     }
   }
 
@@ -187,7 +186,7 @@ public class DbConnectionPool implements ConnectionPool {
   }
 
   public ConnectionPoolStatistics getConnectionPoolStatistics(final long since) {
-    final ConnectionPoolStatistics statistics = new DbConnectionPoolStatistics(getUser());
+    final DbConnectionPoolStatistics statistics = new DbConnectionPoolStatistics(user);
     synchronized (connectionPool) {
       synchronized (connectionsInUse) {
         statistics.setConnectionsInUse(connectionsInUse.size());
@@ -276,7 +275,7 @@ public class DbConnectionPool implements ConnectionPool {
     }
   }
 
-  private void startPoolCleaner(final int interval) {
+  private void startPoolCleaner() {
     if (poolCleaner != null) {
       poolCleaner.cancel();
     }
@@ -287,17 +286,17 @@ public class DbConnectionPool implements ConnectionPool {
       public void run() {
         cleanPool();
       }
-    }, new Date(), interval);
+    }, new Date(), poolCleanupInterval);
   }
 
   private void cleanPool() {
     synchronized (connectionPool) {
       final long currentTime = System.currentTimeMillis();
       final ListIterator<DbConnection> iterator = connectionPool.listIterator();
-      while (iterator.hasNext() && connectionPool.size() > getMinimumPoolSize()) {
+      while (iterator.hasNext() && connectionPool.size() > minimumPoolSize) {
         final DbConnection connection = iterator.next();
         final long idleTime = currentTime - connection.getPoolTime();
-        if (idleTime > getPooledConnectionTimeout()) {
+        if (idleTime > pooledConnectionTimeout) {
           iterator.remove();
           disconnect(connection);
         }
