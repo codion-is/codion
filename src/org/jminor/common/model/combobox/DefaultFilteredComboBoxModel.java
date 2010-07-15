@@ -58,7 +58,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
    */
   public DefaultFilteredComboBoxModel(final String nullValueString) {
     this.nullValueString = nullValueString;
-    this.sortComparator = initializeComparator();
+    this.sortComparator = initializeItemSortComparator();
   }
 
   public void refresh() {
@@ -141,6 +141,10 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     filterContents();
   }
 
+  public FilterCriteria<T> getFilterCriteria() {
+    return filterCriteria;
+  }
+
   public List<T> getAllItems() {
     final List<T> entities = new ArrayList<T>(visibleItems);
     entities.addAll(filteredItems);
@@ -166,25 +170,6 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
 
   public boolean isFiltered(final T item) {
     return filteredItems.contains(item);
-  }
-
-  public FilterCriteria<T> getFilterCriteria() {
-    return filterCriteria;
-  }
-
-  public Event eventFilteringDone() {
-    return evtFilteringDone;
-  }
-
-  public Event eventFilteringStarted() {
-    return evtFilteringStarted;
-  }
-
-  public void fireContentsChanged() {
-    final ListDataEvent event = new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0, Integer.MAX_VALUE);
-    for (final ListDataListener dataListener : listDataListeners) {
-      dataListener.contentsChanged(event);
-    }
   }
 
   public void addItem(final T item) {
@@ -275,6 +260,21 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     return visibleItems.size();
   }
 
+  public void fireContentsChanged() {
+    final ListDataEvent event = new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0, Integer.MAX_VALUE);
+    for (final ListDataListener dataListener : listDataListeners) {
+      dataListener.contentsChanged(event);
+    }
+  }
+
+  public Event eventFilteringDone() {
+    return evtFilteringDone;
+  }
+
+  public Event eventFilteringStarted() {
+    return evtFilteringStarted;
+  }
+
   public Event eventSelectionChanged() {
     return evtSelectionChanged;
   }
@@ -295,11 +295,11 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   }
 
   /**
-   * Initializes the comparator to use when sorting this model,
-   *  if the model should not be sorted override and return null.
+   * Initializes the comparator to use when sorting the items in this model,
+   * if the model should not be sorted simply override and return null.
    * @return the Comparator to use when sorting the contents of this model.
    */
-  protected Comparator<T> initializeComparator() {
+  protected Comparator<T> initializeItemSortComparator() {
     return new Comparator<T>() {
       private final Collator collator = Collator.getInstance();
       @SuppressWarnings({"unchecked"})

@@ -15,7 +15,7 @@ public interface ValueStringProvider<K> {
   /**
    * Retrieves the value mapped to the given key as a String
    * @param key the key
-   * @return the value mapped to the given key as a string, "null" if no such mapping exists
+   * @return the value mapped to the given key as a string, an empty string if no such mapping exists
    */
   String getValueAsString(final K key);
 }

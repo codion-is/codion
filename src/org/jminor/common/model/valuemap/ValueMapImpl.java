@@ -55,7 +55,7 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V>, Serializable {
   public String getValueAsString(final K key) {
     final V value = values.get(key);
     if (value == null) {
-      return "null";
+      return "";
     }
 
     return value.toString();
