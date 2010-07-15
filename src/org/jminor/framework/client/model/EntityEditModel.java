@@ -1,6 +1,3 @@
-/*
- * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
- */
 package org.jminor.framework.client.model;
 
 import org.jminor.common.db.criteria.Criteria;
@@ -11,7 +8,6 @@ import org.jminor.common.model.State;
 import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
 import org.jminor.common.model.valuemap.ValueCollectionProvider;
 import org.jminor.common.model.valuemap.exception.ValidationException;
-import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
@@ -19,7 +15,7 @@ import javax.swing.ComboBoxModel;
 import java.util.Collection;
 import java.util.List;
 
-public interface EntityEditModel extends ValueChangeMapEditModel<String, Object> {
+public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>, EntityDataProvider {
 
   /**
    * Code for the insert action, used during validation
@@ -111,16 +107,6 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * such as insert, update or delete
    */
   Event eventEntitiesChanged();
-
-  /**
-   * @return the ID of the entity this EntityEditModel is based on
-   */
-  String getEntityID();
-
-  /**
-   * @return the EntityDbProvider instance used by this EntityEditModel
-   */
-  EntityDbProvider getDbProvider();
 
   /**
    * Sets the Entity instance to edit

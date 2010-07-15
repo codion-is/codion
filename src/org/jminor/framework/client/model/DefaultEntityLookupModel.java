@@ -74,11 +74,12 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
     this.lookupProperties = lookupProperties;
   }
 
-  /**
-   * @return the ID of the entity this lookup model is based on
-   */
   public String getEntityID() {
     return entityID;
+  }
+
+  public EntityDbProvider getDbProvider() {
+    return dbProvider;
   }
 
   /**

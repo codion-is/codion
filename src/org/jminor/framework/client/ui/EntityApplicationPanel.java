@@ -314,12 +314,6 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    * @return the ControlSet specifying the items in the 'Settings' menu
    */
   protected ControlSet getSettingsControlSet() {
-    final ImageIcon selectionFiltersDetailIcon = Images.loadImage(Images.ICON_SELECTION_FILTERS_DETAIL);
-    final Control ctrSelectDetail = ControlFactory.toggleControl(applicationModel, "selectionFiltersDetail",
-            FrameworkMessages.get(FrameworkMessages.SELECTION_FILTER), applicationModel.eventSelectionFiltersDetailChanged());
-    ctrSelectDetail.setDescription(FrameworkMessages.get(FrameworkMessages.SELECTION_FILTER_DESC));
-    ctrSelectDetail.setIcon(selectionFiltersDetailIcon);
-
     final ImageIcon cascadeRefreshIcon = Images.loadImage(Images.ICON_CASCADE_REFRESH);
     final Control ctrCascadeRefresh = ControlFactory.toggleControl(applicationModel, "cascadeRefresh",
             FrameworkMessages.get(FrameworkMessages.CASCADE_REFRESH), applicationModel.eventCascadeRefreshChanged());
@@ -334,7 +328,6 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
 
     final ControlSet controlSet = new ControlSet(Messages.get(Messages.SETTINGS));
 
-    controlSet.add(ctrSelectDetail);
     controlSet.add(ctrCascadeRefresh);
     controlSet.addSeparator();
     controlSet.add(ctrSetLoggingLevel);

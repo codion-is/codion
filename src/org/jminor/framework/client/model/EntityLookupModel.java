@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * A interface responsible for doing entity lookups based on a set of criteria properties.
  */
-public interface EntityLookupModel {
+public interface EntityLookupModel extends EntityDataProvider {
 
   /**
    * @return an Event fired each time the selected entities change

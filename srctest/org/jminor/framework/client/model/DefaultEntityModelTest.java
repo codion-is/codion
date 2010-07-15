@@ -46,8 +46,6 @@ public class DefaultEntityModelTest {
   public void test() throws Exception {
     departmentModel.setCascadeRefresh(true);
     assertTrue(departmentModel.isCascadeRefresh());
-    departmentModel.setSelectionFiltersDetail(true);
-    assertTrue(departmentModel.isSelectionFiltersDetail());
     assertNull(departmentModel.getMasterModel());
     assertNotNull(departmentModel.getEditModel());
     assertNotNull(departmentModel.getTableModel());

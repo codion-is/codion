@@ -209,7 +209,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
     return editModel;
   }
 
-  public void setSortingStatus(final String propertyID, final SortingDirective directive) {
+  public void setSortingDirective(final String propertyID, final SortingDirective directive) {
     final int columnIndex = getColumnModel().getColumnIndex(EntityRepository.getProperty(entityID, propertyID));
     if (columnIndex == -1) {
       throw new RuntimeException("Column based on property '" + propertyID + " not found");

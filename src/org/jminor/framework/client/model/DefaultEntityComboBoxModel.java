@@ -115,12 +115,13 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
 
   public void setSelectedEntityByPrimaryKey(final Entity.Key primaryKey) {
     final Entity toSelect = new Entity(primaryKey);
-    List<Entity> items = getVisibleItems();
+    final List<Entity> items = getVisibleItems();
     int indexOfKey = items.indexOf(toSelect);
     if (indexOfKey >= 0) {
       setSelectedItem(items.get(indexOfKey));
     }
-    items = getFilteredItems();
+    items.clear();
+    items.addAll(getFilteredItems());
     indexOfKey = items.indexOf(toSelect);
     if (indexOfKey >= 0) {
       setSelectedItem(items.get(indexOfKey));

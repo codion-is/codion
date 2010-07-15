@@ -19,7 +19,6 @@ import java.util.List;
  */
 public abstract class EntityApplicationModel implements Refreshable {
 
-  private final Event evtSelectionFiltersDetailChanged = new Event();
   private final Event evtCascadeRefreshChanged = new Event();
 
   private final EntityDbProvider dbProvider;
@@ -113,27 +112,6 @@ public abstract class EntityApplicationModel implements Refreshable {
   }
 
   /**
-   * @return true if selection filters detail is active
-   */
-  public boolean isSelectionFiltersDetail() {
-    return mainApplicationModels.size() > 0 && mainApplicationModels.iterator().next().isSelectionFiltersDetail();
-  }
-
-  /**
-   * fires: evtSelectionFiltersDetailChanged
-   * @param value the new value
-   */
-  public void setSelectionFiltersDetail(boolean value) {
-    if (mainApplicationModels.size() > 0 && isSelectionFiltersDetail() != value) {
-      for (final EntityModel mainApplicationModel : mainApplicationModels) {
-        mainApplicationModel.setSelectionFiltersDetail(value);
-      }
-
-      evtSelectionFiltersDetailChanged.fire();
-    }
-  }
-
-  /**
    * Refreshes the whole application tree
    */
   public void refresh() {
@@ -187,10 +165,6 @@ public abstract class EntityApplicationModel implements Refreshable {
 
   public Event eventCascadeRefreshChanged() {
     return evtCascadeRefreshChanged;
-  }
-
-  public Event eventSelectionFiltersDetailChanged() {
-    return evtSelectionFiltersDetailChanged;
   }
 
   /**

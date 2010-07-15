@@ -10,7 +10,6 @@ import org.jminor.common.model.SortingDirective;
 import org.jminor.common.model.State;
 import org.jminor.common.model.reports.ReportDataWrapper;
 import org.jminor.common.model.valuemap.exception.ValidationException;
-import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
@@ -20,7 +19,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public interface EntityTableModel extends FilteredTableModel<Entity> {
+public interface EntityTableModel extends FilteredTableModel<Entity>, EntityDataProvider {
 
   /**
    * @return the state used to determine if updating should be enabled
@@ -36,20 +35,10 @@ public interface EntityTableModel extends FilteredTableModel<Entity> {
   State stateAllowDelete();
 
   /**
-   * @return the ID of the entity this table model represents
-   */
-  String getEntityID();
-
-  /**
-   * @return the EntityDbConnection provider
-   */
-  EntityDbProvider getDbProvider();
-
-  /**
    * @param propertyID the ID of the property to sort by
    * @param directive the sorting directive
    */
-  void setSortingStatus(final String propertyID, final SortingDirective directive);
+  void setSortingDirective(final String propertyID, final SortingDirective directive);
 
   /**
    * Returns the edit model associated with this table model,
@@ -117,7 +106,7 @@ public interface EntityTableModel extends FilteredTableModel<Entity> {
   EntityTableSearchModel getSearchModel();
 
   /**
-   * @return true if this table model should not run a query unless a query criteria has been specified
+   * @return true if this table model has a master model
    */
   boolean isDetailModel();
 
@@ -142,6 +131,13 @@ public interface EntityTableModel extends FilteredTableModel<Entity> {
    * @return true if this model allows multiple entities to be updated at a time
    */
   boolean isMultipleUpdateAllowed();
+
+  /**
+   * Returns the PropertySummaryModel associated with the property identified by <code>propertyID</code>
+   * @param propertyID the ID of the property
+   * @return the PropertySummaryModel for the given property ID
+   */
+  PropertySummaryModel getPropertySummaryModel(final String propertyID);
 
   /**
    * Returns the PropertySummaryModel associated with the given property
@@ -211,13 +207,6 @@ public interface EntityTableModel extends FilteredTableModel<Entity> {
    * @return this table model instance
    */
   EntityTableModel setQueryCriteriaRequired(final boolean value);
-
-  /**
-   * Returns the PropertySummaryModel associated with the property identified by <code>propertyID</code>
-   * @param propertyID the ID of the property
-   * @return the PropertySummaryModel for the given property ID
-   */
-  PropertySummaryModel getPropertySummaryModel(final String propertyID);
 
   /**
    * Finds entities according to the values in <code>keys</code>

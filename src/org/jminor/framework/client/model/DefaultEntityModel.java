@@ -72,11 +72,6 @@ public class DefaultEntityModel implements EntityModel {
   private final Set<EntityModel> linkedDetailModels = new HashSet<EntityModel>();
 
   /**
-   * Indicates whether selection in a master model triggers the filtering of this model
-   */
-  private boolean selectionFiltersDetail = true;
-
-  /**
    * The master model, if any, so that detail models can refer to their masters
    */
   private EntityModel masterModel;
@@ -196,20 +191,6 @@ public class DefaultEntityModel implements EntityModel {
     }
 
     stCascadeRefresh.setActive(value);
-  }
-
-  public boolean isSelectionFiltersDetail() {
-    return selectionFiltersDetail;
-  }
-
-  public void setSelectionFiltersDetail(final boolean value) {
-    for (final EntityModel detailModel : detailModels) {
-      detailModel.setSelectionFiltersDetail(value);
-    }
-    if (containsTableModel()) {
-      tableModel.clearSelection();
-    }
-    selectionFiltersDetail = value;
   }
 
   /**
@@ -381,7 +362,7 @@ public class DefaultEntityModel implements EntityModel {
   }
 
   public void masterSelectionChanged(final String masterEntityID, final List<Entity> selectedMasterEntities) {
-    if (selectionFiltersDetail && containsTableModel()) {
+    if (containsTableModel()) {
       tableModel.searchByForeignKeyValues(masterEntityID, selectedMasterEntities);
     }
 

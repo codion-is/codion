@@ -6,7 +6,6 @@ package org.jminor.framework.client.model;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
 import org.jminor.framework.db.criteria.EntitySelectCriteria;
-import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
 
 import java.util.Collection;
@@ -16,7 +15,7 @@ import java.util.Collection;
  * Date: 29.6.2010
  * Time: 10:10:25
  */
-public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
+public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity>, EntityDataProvider {
 
   /**
    * @return the selected entity or null if none is selected
@@ -27,16 +26,6 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * @return an Event fired when a refresh has been performed
    */
   Event eventRefreshDone();
-
-  /**
-   * @return the ID of the underlying entity
-   */
-  String getEntityID();
-
-  /**
-   * @return the EntityDbProvider instance used by this EntityComboBoxModel
-   */
-  EntityDbProvider getDbProvider();
 
   Collection<Entity> getForeignKeyFilterEntities(final String foreignKeyPropertyID);
 

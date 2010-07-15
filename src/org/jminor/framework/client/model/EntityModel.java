@@ -5,13 +5,12 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Refreshable;
-import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
 
 import java.util.Collection;
 import java.util.List;
 
-public interface EntityModel extends Refreshable {
+public interface EntityModel extends Refreshable, EntityDataProvider {
 
   /**
    * @return an Event fired when the model is about to be refreshed
@@ -28,16 +27,6 @@ public interface EntityModel extends Refreshable {
    * @return an Event fired when detail models are linked or unlinked
    */
   Event eventLinkedDetailModelsChanged();
-
-  /**
-   * @return the ID of the entity this model represents
-   */
-  String getEntityID();
-
-  /**
-   * @return the database connection provider
-   */
-  EntityDbProvider getDbProvider();
 
   /**
    * @return the EntityEditModel instance used by this EntityModel
@@ -82,19 +71,6 @@ public interface EntityModel extends Refreshable {
   boolean isCascadeRefresh();
 
   /**
-   * @return true if the selecting a record in this model should filter the detail models
-   */
-  boolean isSelectionFiltersDetail();
-
-  /**
-   * @param value true if selecting a record in this model should filter the detail models
-   * @see #masterSelectionChanged
-   * @see #masterSelectionChanged
-   * @see DefaultEntityTableModel#searchByForeignKeyValues(String, java.util.List)
-   */
-  void setSelectionFiltersDetail(final boolean value);
-
-  /**
    * Updates this EntityModel according to the given master entities,
    * sets the appropriate property value and filters the EntityTableModel
    * @param masterEntityID the ID of the master entity
@@ -132,7 +108,7 @@ public interface EntityModel extends Refreshable {
   /**
    * Returns the first detail model of the given type
    * @param modelClass the type of the required EntityModel
-   * @return the detail model of type <code>entityModelClass</code>, null if none is found
+   * @return the detail model of type <code>entityModelClass</code>
    * @see org.jminor.framework.Configuration#AUTO_CREATE_ENTITY_MODELS
    */
   EntityModel getDetailModel(final Class<? extends EntityModel> modelClass);
@@ -140,7 +116,8 @@ public interface EntityModel extends Refreshable {
   /**
    * Returns a detail model of the given type
    * @param entityID the entity ID of the required EntityModel
-   * @return the detail model of type <code>entityModelClass</code>, null if none is found
+   * @return the detail model of type <code>entityModelClass</code>
+   * @see org.jminor.framework.Configuration#AUTO_CREATE_ENTITY_MODELS
    */
   EntityModel getDetailModel(final String entityID);
 

@@ -49,7 +49,7 @@ public class DefaultEntityTableModelTest {
     assertEquals(testModel.getColumnCount(), columnProperties.size());
     assertTrue(testModel.isQueryConfigurationAllowed());
     testModel.refresh();
-    testModel.setSortingStatus(EntityTestDomain.DETAIL_STRING, SortingDirective.DESCENDING);
+    testModel.setSortingDirective(EntityTestDomain.DETAIL_STRING, SortingDirective.DESCENDING);
     assertEquals("e", testModel.getItemAt(0).getValue(EntityTestDomain.DETAIL_STRING));
     testModel.setSelectedItemIndex(2);
     assertEquals(2, testModel.getSelectedIndex());
