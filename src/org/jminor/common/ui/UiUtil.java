@@ -524,6 +524,9 @@ public final class UiUtil {
             component.transferFocus();
           }
         }
+        else if (component.getParent() != null) {
+          component.getParent().dispatchEvent(e);
+        }
       }
     });
   }

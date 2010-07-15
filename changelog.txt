@@ -1866,3 +1866,4 @@
   EntityTableSearchAdvancedPanel added
   DatabaseStatistics is now an interface
   DbStatistics added as an implementation of the above
+  KeyListeners now dispatch the event to their parent if not consumed

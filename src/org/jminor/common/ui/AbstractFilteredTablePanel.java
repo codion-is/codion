@@ -168,6 +168,9 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
         else if (e.getKeyCode() == KeyEvent.VK_UP) {
           doSearch(e.isShiftDown(), lastSearchResultIndex.y - 1, false, searchField.getText());
         }
+        else if (txtSearch.getParent() != null) {
+          txtSearch.getParent().dispatchEvent(e);
+        }
       }
     });
 

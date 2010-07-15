@@ -54,13 +54,14 @@ public class MaximumMatch extends PlainDocument {
           case KeyEvent.VK_BACK_SPACE:
             hitBackspace=true;
             hitBackspaceOnSelection=editor.getSelectionStart()!=editor.getSelectionEnd();
-            break;
+            return;
             // ignore delete key
           case KeyEvent.VK_DELETE:
             e.consume();
             comboBox.getToolkit().beep();
-            break;
+            return;
         }
+        editor.getParent().dispatchEvent(e);
       }
     });
     // Bug 5100422 on Java 1.5: Editable JComboBox won't hide popup when tabbing out

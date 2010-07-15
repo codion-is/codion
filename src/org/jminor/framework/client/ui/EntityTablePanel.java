@@ -1444,6 +1444,9 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
             }
             catch (CancelException ce) {/**/}
           }
+          else if (getJTable().getParent() != null) {
+            getJTable().getParent().dispatchEvent(e);
+          }
         }
       });
     }
