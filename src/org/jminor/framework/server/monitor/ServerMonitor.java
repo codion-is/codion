@@ -38,7 +38,6 @@ public class ServerMonitor {
   private final Event evtServerShutDown = new Event();
   private final Event evtStatsUpdated = new Event();
   private final Event evtWarningThresholdChanged = new Event();
-  private final Event evtConnectionTimeoutChanged = new Event();
 
   private final String hostName;
   private final String serverName;
@@ -128,15 +127,6 @@ public class ServerMonitor {
     evtWarningThresholdChanged.fire();
   }
 
-  public int getConnectionTimeout() throws RemoteException {
-    return server.getConnectionTimeout();
-  }
-
-  public void setConnectionTimeout(final int timeout) throws RemoteException {
-    server.setConnectionTimeout(timeout);
-    evtConnectionTimeoutChanged.fire();
-  }
-
   public XYSeriesCollection getConnectionRequestsDataSet() {
     return connectionRequestsPerSecondCollection;
   }
@@ -195,10 +185,6 @@ public class ServerMonitor {
 
   public String getServerName() {
     return serverName;
-  }
-
-  public Event eventConnectionTimeoutChanged() {
-    return evtConnectionTimeoutChanged;
   }
 
   public Event eventServerShutDown() {

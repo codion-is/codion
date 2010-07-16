@@ -8,18 +8,11 @@ import org.jminor.common.ui.ExceptionDialog;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
+import org.jminor.common.ui.control.IntBeanSpinnerValueLink;
 import org.jminor.framework.server.monitor.ClientMonitor;
 import org.jminor.framework.server.monitor.ClientUserMonitor;
 
-import javax.swing.BorderFactory;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.ListSelectionModel;
+import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.BorderLayout;
@@ -44,6 +37,14 @@ public class ClientUserMonitorPanel extends JPanel {
   public ClientUserMonitorPanel(final ClientUserMonitor model) throws RemoteException {
     this.model = model;
     initUI();
+  }
+
+  public void disconnectAll() throws RemoteException {
+    if (JOptionPane.showConfirmDialog(this, "Are you sure you want to disconnect all clients?", "Disconnect all",
+            JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
+      System.out.println("disco");
+      model.disconnectAll();
+    }
   }
 
   private void initUI() throws RemoteException {
@@ -80,10 +81,18 @@ public class ClientUserMonitorPanel extends JPanel {
     final JPanel actionBase = new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
     actionBase.add(new JLabel("Reaper interval (s)", JLabel.RIGHT));
     actionBase.add(initCheckIntervalComponent());
+
+    actionBase.add(new JLabel("Connection timeout (s)"));
+    final JSpinner spnConnectionTimeout = new JSpinner(
+            new IntBeanSpinnerValueLink(model, "connectionTimeout", model.eventConnectionTimeoutChanged()).getSpinnerModel());
+    ((JSpinner.DefaultEditor) spnConnectionTimeout.getEditor()).getTextField().setEditable(false);
+    ((JSpinner.DefaultEditor) spnConnectionTimeout.getEditor()).getTextField().setColumns(7);
+    actionBase.add(spnConnectionTimeout);
+
     actionBase.setBorder(BorderFactory.createTitledBorder("Remote connection controls"));
     actionBase.add(ControlProvider.createButton(ControlFactory.methodControl(model, "disconnectTimedOut",
             "Disconnect idle", null, "Disconnect those that have exceeded the allowed idle time")));
-    actionBase.add(ControlProvider.createButton(ControlFactory.methodControl(model, "disconnectAll",
+    actionBase.add(ControlProvider.createButton(ControlFactory.methodControl(this, "disconnectAll",
             "Disconnect all", null, "Disconnect all")));
 
     setLayout(new BorderLayout());

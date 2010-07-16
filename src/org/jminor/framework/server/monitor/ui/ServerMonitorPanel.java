@@ -97,12 +97,6 @@ public class ServerMonitorPanel extends JPanel {
     ((JSpinner.DefaultEditor) spnWarningThreshold.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) spnWarningThreshold.getEditor()).getTextField().setColumns(3);
     controlPanel.add(spnWarningThreshold);
-    controlPanel.add(new JLabel("Connection timeout (ms)"));
-    final JSpinner spnConnectionTimeout = new JSpinner(
-            new IntBeanSpinnerValueLink(model, "connectionTimeout", model.eventConnectionTimeoutChanged()).getSpinnerModel());
-    ((JSpinner.DefaultEditor) spnConnectionTimeout.getEditor()).getTextField().setEditable(false);
-    ((JSpinner.DefaultEditor) spnConnectionTimeout.getEditor()).getTextField().setColumns(7);
-    controlPanel.add(spnConnectionTimeout);
 
     final JPanel controlPanelBase = new JPanel(new BorderLayout(5, 5));
     controlPanelBase.add(controlPanel, BorderLayout.WEST);

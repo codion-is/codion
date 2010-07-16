@@ -1872,3 +1872,4 @@
   AbstractRemoteServer.shuttingDown field added, used to prevent shutdown hook from repeating the shutdown sequence
   RemoteServer connectionKey is now a UUID
   connectionKey renamed to clientID throughout
+  ServerMonitorPanel, moved connection timeout control to ClientUserMonitorPanel

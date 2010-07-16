@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.server.monitor;
 
+import org.jminor.common.model.Event;
 import org.jminor.common.model.User;
 import org.jminor.framework.server.EntityDbServerAdmin;
 
@@ -17,6 +18,7 @@ import java.rmi.RemoteException;
 public class ClientUserMonitor {
 
   private final EntityDbServerAdmin server;
+  private final Event evtConnectionTimeoutChanged = new Event();
 
   private final DefaultListModel clientTypeListModel = new DefaultListModel();
   private final DefaultListModel userListModel = new DefaultListModel();
@@ -61,5 +63,18 @@ public class ClientUserMonitor {
 
   public int getCheckMaintenanceInterval() throws RemoteException {
     return server.getCheckMaintenanceInterval();
+  }
+
+  public int getConnectionTimeout() throws RemoteException {
+    return server.getConnectionTimeout();
+  }
+
+  public void setConnectionTimeout(final int timeout) throws RemoteException {
+    server.setConnectionTimeout(timeout);
+    evtConnectionTimeoutChanged.fire();
+  }
+
+  public Event eventConnectionTimeoutChanged() {
+    return evtConnectionTimeoutChanged;
   }
 }
