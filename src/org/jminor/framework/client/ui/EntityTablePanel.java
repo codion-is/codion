@@ -813,22 +813,6 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     return panel;
   }
 
-  @Override
-  protected JTextField initializeSearchField() {
-    final JTextField searchField = super.initializeSearchField();
-    searchField.setPreferredSize(new Dimension(searchField.getWidth(), 16));
-    searchField.setBorder(BorderFactory.createLineBorder(searchField.getForeground(), 1));
-    searchField.setColumns(8);
-    UiUtil.selectAllOnFocusGained(searchField);
-    UiUtil.addKeyEvent(searchField, KeyEvent.VK_ESCAPE, new AbstractAction("selectTablePanel") {
-      public void actionPerformed(ActionEvent e) {
-        getJTable().requestFocusInWindow();
-      }
-    });
-
-    return searchField;
-  }
-
   /**
    * Adds a popup menu to <code>table</code>
    * @param table the table

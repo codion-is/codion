@@ -152,29 +152,37 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
   protected JTextField initializeSearchField() {
     final JTextField txtSearch = new JTextField();
     txtSearch.setBackground((Color) UIManager.getLookAndFeel().getDefaults().get("TextField.inactiveBackground"));
+    txtSearch.setBorder(BorderFactory.createLineBorder(txtSearch.getForeground(), 1));
+    txtSearch.setColumns(8);
     SearchFieldHint.enable(txtSearch);
     txtSearch.getDocument().addDocumentListener(new DocumentAdapter() {
       @Override
       public void insertOrUpdate(final DocumentEvent e) {
-        doSearch(false, lastSearchResultIndex.y == -1 ? 0 : lastSearchResultIndex.y, true, searchField.getText());
+        doSearch(false, lastSearchResultIndex.y == -1 ? 0 : lastSearchResultIndex.y, true, txtSearch.getText());
       }
     });
     txtSearch.addKeyListener(new KeyAdapter() {
       @Override
       public void keyReleased(final KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_DOWN) {
-          doSearch(e.isShiftDown(), lastSearchResultIndex.y + 1, true, searchField.getText());
+          doSearch(e.isShiftDown(), lastSearchResultIndex.y + 1, true, txtSearch.getText());
         }
         else if (e.getKeyCode() == KeyEvent.VK_UP) {
-          doSearch(e.isShiftDown(), lastSearchResultIndex.y - 1, false, searchField.getText());
+          doSearch(e.isShiftDown(), lastSearchResultIndex.y - 1, false, txtSearch.getText());
         }
         else if (txtSearch.getParent() != null) {
           txtSearch.getParent().dispatchEvent(e);
         }
       }
     });
+    UiUtil.selectAllOnFocusGained(txtSearch);
+    UiUtil.addKeyEvent(txtSearch, KeyEvent.VK_ESCAPE, new AbstractAction("requestJTableFocus") {
+      public void actionPerformed(ActionEvent e) {
+        getJTable().requestFocusInWindow();
+      }
+    });
 
-    txtSearch.setComponentPopupMenu(initializeSearchPopupMenu());
+    txtSearch.setComponentPopupMenu(initializeSearchFieldPopupMenu());
 
     return txtSearch;
   }
@@ -209,7 +217,7 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
    */
   protected abstract JTable initializeJTable();
 
-  private JPopupMenu initializeSearchPopupMenu() {
+  private JPopupMenu initializeSearchFieldPopupMenu() {
     final JPopupMenu popupMenu = new JPopupMenu();
     popupMenu.add(new AbstractAction(Messages.get(Messages.SETTINGS)) {
       public void actionPerformed(ActionEvent e) {
