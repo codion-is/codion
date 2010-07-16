@@ -90,7 +90,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
   }
 
   public String getDescription() {
-    return Util.getListContentsAsString(getLookupProperties(), false);
+    return Util.getCollectionContentsAsString(getLookupProperties(), false);
   }
 
   public boolean isMultipleSelectionAllowed() {

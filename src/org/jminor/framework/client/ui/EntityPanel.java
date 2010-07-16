@@ -488,14 +488,6 @@ public class EntityPanel extends JPanel {
   }
 
   /**
-   * Override to provide additional print controls to display in the table popup menu.
-   * @return a ControlSet containing the print controls
-   */
-  public ControlSet getPrintControls() {
-    return null;
-  }
-
-  /**
    * By default this delegates to the edit panel
    * @param exception the exception to handle
    */
@@ -923,7 +915,7 @@ public class EntityPanel extends JPanel {
   }
 
   protected EntityTablePanel initializeTablePanel(final EntityTableModel tableModel) {
-    return new EntityTablePanel(tableModel, getTablePopupControlSet(), getToolbarControlSet(), getPrintControls());
+    return new EntityTablePanel(tableModel, getTablePopupControlSet(), getToolbarControlSet());
   }
 
   /**

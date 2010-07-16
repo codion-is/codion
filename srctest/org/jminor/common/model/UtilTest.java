@@ -65,7 +65,7 @@ public class UtilTest {
     list.add(2);
     list.add(3);
     list.add(4);
-    final String res = Util.getListContentsAsString(list, false);
+    final String res = Util.getCollectionContentsAsString(list, false);
     assertEquals("Integer list as string should work", "1, 2, 3, 4", res);
   }
 

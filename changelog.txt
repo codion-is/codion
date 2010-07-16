@@ -1874,3 +1874,5 @@
   connectionKey renamed to clientID throughout
   ServerMonitorPanel, moved connection timeout control to ClientUserMonitorPanel
   AbstractDatabase.require() moved to Util
+  JasperReportsWrapper.toString() implemented, returns report name and parameters, if any
+  EntityPanel.getPrintControls() removed

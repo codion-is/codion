@@ -694,7 +694,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   private String createLogMessage(final String sqlStatement, final List<?> values, final SQLException exception, final LogEntry entry) {
     final StringBuilder logMessage = new StringBuilder();
     if (entry == null) {
-      logMessage.append(sqlStatement).append(", ").append(Util.getListContentsAsString(values, false));
+      logMessage.append(sqlStatement).append(", ").append(Util.getCollectionContentsAsString(values, false));
     }
     else {
       logMessage.append(entry.toString(2));

@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.demos.empdept.beans.ui;
 
-import org.jminor.common.i18n.Messages;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlSet;
 import org.jminor.framework.Configuration;
@@ -41,12 +40,10 @@ public class DepartmentTablePanel extends EntityTablePanel {
   }
 
   @Override
-  protected ControlSet getPopupControls(final ControlSet additionalPopupControls, final ControlSet printControls) {
-    final ControlSet controlSet = super.getPopupControls(additionalPopupControls, printControls);
-    final ControlSet printControlSet = new ControlSet(Messages.get(Messages.PRINT));
+  protected ControlSet getPrintControls() {
+    final ControlSet printControlSet = super.getPrintControls();
     printControlSet.add(ControlFactory.methodControl(this, "viewEmployeeReport", EmpDept.getString(EMPLOYEE_REPORT)));
-    controlSet.addAt(printControlSet, 0);
 
-    return controlSet;
+    return printControlSet;
   }
 }

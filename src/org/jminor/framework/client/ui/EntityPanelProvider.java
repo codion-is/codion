@@ -360,7 +360,7 @@ public class EntityPanelProvider implements Comparable {
         toolbarControls.add(entityPanel.getToggleDetailPanelControl());
       }
       tablePanel.initializeToolbar(toolbarControls);
-      tablePanel.initializePopupMenu(entityPanel.getTablePopupControlSet(), entityPanel.getPrintControls());
+      tablePanel.initializePopupMenu(entityPanel.getTablePopupControlSet());
       configureTablePanel(tablePanel);
 
       return tablePanel;

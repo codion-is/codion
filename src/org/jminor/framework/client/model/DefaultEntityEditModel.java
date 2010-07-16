@@ -230,7 +230,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
       throw new RuntimeException("This model does not allow inserting!");
     }
 
-    LOG.debug(toString() + " - insert " + Util.getListContentsAsString(entities, false));
+    LOG.debug(toString() + " - insert " + Util.getCollectionContentsAsString(entities, false));
 
     evtBeforeInsert.fire();
     validateEntities(entities, EntityEditModel.INSERT);
@@ -255,7 +255,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
       throw new RuntimeException("This model does not allow updating!");
     }
 
-    LOG.debug(toString() + " - update " + Util.getListContentsAsString(entities, false));
+    LOG.debug(toString() + " - update " + Util.getCollectionContentsAsString(entities, false));
 
     final List<Entity> modifiedEntities = EntityUtil.getModifiedEntities(entities);
     if (modifiedEntities.size() == 0) {
@@ -286,7 +286,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
       throw new RuntimeException("This model does not allow deleting!");
     }
 
-    LOG.debug(toString() + " - delete " + Util.getListContentsAsString(entities, false));
+    LOG.debug(toString() + " - delete " + Util.getCollectionContentsAsString(entities, false));
 
     evtBeforeDelete.fire();
 

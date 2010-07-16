@@ -769,9 +769,6 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
       else if (argument instanceof Entity) {
         destination.append(getEntityParameterString((Entity) argument));
       }
-      else if (argument instanceof ReportWrapper) {
-        destination.append(((ReportWrapper) argument).getReportName());
-      }
       else {
         destination.append(argument.toString());
       }

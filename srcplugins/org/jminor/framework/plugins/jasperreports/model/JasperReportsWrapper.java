@@ -65,6 +65,16 @@ public class JasperReportsWrapper implements ReportWrapper<JasperPrint>, Seriali
     }
   }
 
+  @Override
+  public String toString() {
+    final StringBuilder builder = new StringBuilder(report.getName());
+    if (reportParameters != null && reportParameters.size() > 0) {
+      builder.append(", parameters: ").append(reportParameters.toString());
+    }
+
+    return builder.toString();
+  }
+
   /**
    * Loads a JasperReport file from the path given, it can be a URL or a file path
    * @param reportPath the path to the report file to load

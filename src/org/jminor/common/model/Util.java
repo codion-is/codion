@@ -239,12 +239,12 @@ public final class Util {
     System.out.println(getArrayContentsAsString(objects, onePerLine));
   }
 
-  public static String getListContentsAsString(final List<?> list, final boolean onePerLine) {
-    if (list == null) {
+  public static String getCollectionContentsAsString(final Collection<?> collection, final boolean onePerLine) {
+    if (collection == null) {
       return "";
     }
 
-    return getArrayContentsAsString(list.toArray(), onePerLine);
+    return getArrayContentsAsString(collection.toArray(), onePerLine);
   }
 
   public static String getArrayContentsAsString(Object[] items, boolean onePerLine) {
