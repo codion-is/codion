@@ -120,8 +120,8 @@ public class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements En
     return clientTypes;
   }
 
-  public void disconnect(final UUID connectionKey) throws RemoteException {
-    server.disconnect(connectionKey);
+  public void disconnect(final UUID clientID) throws RemoteException {
+    server.disconnect(clientID);
   }
 
   public void shutdown() throws RemoteException {
@@ -256,16 +256,16 @@ public class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements En
     return server.getConnectionCount();
   }
 
-  public ServerLog getServerLog(final UUID connectionKey) {
-    return server.getServerLog(connectionKey);
+  public ServerLog getServerLog(final UUID clientID) {
+    return server.getServerLog(clientID);
   }
 
-  public boolean isLoggingOn(final UUID connectionKey) throws RemoteException {
-    return server.isLoggingOn(connectionKey);
+  public boolean isLoggingOn(final UUID clientID) throws RemoteException {
+    return server.isLoggingOn(clientID);
   }
 
-  public void setLoggingOn(final UUID connectionKey, final boolean status) {
-    server.setLoggingOn(connectionKey, status);
+  public void setLoggingOn(final UUID clientID, final boolean status) {
+    server.setLoggingOn(clientID, status);
   }
 
   public int getConnectionTimeout() throws RemoteException {

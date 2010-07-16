@@ -22,19 +22,19 @@ public interface RemoteServer<T> extends Remote {
   /**
    * Establishes a connection to this RemoteServer
    * @param user the user
-   * @param connectionKey a String identifying the connection
+   * @param clientID a UUID identifying the client
    * @param clientTypeID a String identifying the client
    * @return a remote connection instance
    * @throws RemoteException in case of a RemoteException
    */
-  T connect(final User user, final UUID connectionKey, final String clientTypeID) throws RemoteException;
+  T connect(final User user, final UUID clientID, final String clientTypeID) throws RemoteException;
 
   /**
    * Disconnects the connection identified by the given key.
-   * @param connectionKey the key identifying the connection that should be disconnected
+   * @param clientID the UUID identifying the client that should be disconnected
    * @throws RemoteException in case of a communication error
    */
-  void disconnect(final UUID connectionKey) throws RemoteException;
+  void disconnect(final UUID clientID) throws RemoteException;
 
   /**
    * @return the server name

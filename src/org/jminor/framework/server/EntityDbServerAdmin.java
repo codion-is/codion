@@ -84,11 +84,11 @@ public interface EntityDbServerAdmin extends Remote {
   void setCheckMaintenanceInterval(final int interval) throws RemoteException;
 
   /**
-   * @param connectionKey the key of the connection for which to retrieve the log
+   * @param clientID the ID of the client for which to retrieve the log
    * @return the log for the given connection
    * @throws RemoteException in case of a communication error
    */
-  ServerLog getServerLog(final UUID connectionKey) throws RemoteException;
+  ServerLog getServerLog(final UUID clientID) throws RemoteException;
 
   /**
    * @return the number of active connections
@@ -98,19 +98,19 @@ public interface EntityDbServerAdmin extends Remote {
 
   /**
    * Returns true if logging is enabled for the given connection
-   * @param connectionKey the key of the clint
+   * @param clientID the ID of the client
    * @return true if logging is on for the given connection
    * @throws RemoteException in case of a communication error
    */
-  boolean isLoggingOn(final UUID connectionKey) throws RemoteException;
+  boolean isLoggingOn(final UUID clientID) throws RemoteException;
 
   /**
    * Sets the logging status for the given connection
-   * @param connectionKey the key of the connection
+   * @param clientID the ID of the client
    * @param status the new logging status
    * @throws RemoteException in case of a communication error
    */
-  void setLoggingOn(final UUID connectionKey, final boolean status) throws RemoteException;
+  void setLoggingOn(final UUID clientID, final boolean status) throws RemoteException;
 
   /**
    * @return a string containing memory usage information
@@ -145,10 +145,10 @@ public interface EntityDbServerAdmin extends Remote {
   /**
    * Unregisters the connection from the server, if connection pooling is enabled
    * for the user the connection is pooled.
-   * @param connectionKey the key of the connection
+   * @param clientID the ID of the client
    * @throws RemoteException in case of a communication error
    */
-  void disconnect(final UUID connectionKey) throws RemoteException;
+  void disconnect(final UUID clientID) throws RemoteException;
 
   /**
    * @return the server logging level

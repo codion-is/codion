@@ -35,7 +35,7 @@ public final class EntityDbProviderFactory {
    * Returns a remote or local EntityDbProvider according to system properties.
    * Loads classes by name, so these need to available on the classpath
    * @param user the user for the connection
-   * @param clientKey a unique client key
+   * @param clientID a unique client ID
    * @param clientTypeID the client type id
    * @return a EntityDbProvider
    * @see org.jminor.framework.Configuration#CLIENT_CONNECTION_TYPE
@@ -44,13 +44,13 @@ public final class EntityDbProviderFactory {
    * @see EntityDbLocalProvider
    * @see org.jminor.framework.server.provider.EntityDbRemoteProvider
    */
-  public static EntityDbProvider createEntityDbProvider(final User user, final UUID clientKey,
+  public static EntityDbProvider createEntityDbProvider(final User user, final UUID clientID,
                                                         final String clientTypeID) {
     try {
       if (System.getProperty(Configuration.CLIENT_CONNECTION_TYPE,
               Configuration.CONNECTION_TYPE_LOCAL).equals(Configuration.CONNECTION_TYPE_REMOTE)) {
         return (EntityDbProvider) Class.forName(remoteConnectionProviderClassName).getConstructor(
-                User.class, UUID.class, String.class).newInstance(user, clientKey, clientTypeID);
+                User.class, UUID.class, String.class).newInstance(user, clientID, clientTypeID);
       }
       else {
         return (EntityDbProvider) Class.forName(localConnectionProviderClassName).getConstructor(

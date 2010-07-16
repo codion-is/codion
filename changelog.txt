@@ -1871,3 +1871,4 @@
   Bugs fixed in EntityDbProvider classes
   AbstractRemoteServer.shuttingDown field added, used to prevent shutdown hook from repeating the shutdown sequence
   RemoteServer connectionKey is now a UUID
+  connectionKey renamed to clientID throughout

@@ -177,11 +177,11 @@ public class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
 
   /**
    * Returns the server log for the connection identified by the given key.
-   * @param connectionKey the connection key
+   * @param clientID the UUID identifying the client
    * @return the server log for the given connection
    */
-  public ServerLog getServerLog(final UUID connectionKey) {
-    final ClientInfo client = new ClientInfo(connectionKey);
+  public ServerLog getServerLog(final UUID clientID) {
+    final ClientInfo client = new ClientInfo(clientID);
     if (containsConnection(client)) {
       return ((EntityDbRemoteAdapter) getConnection(client)).getServerLog();
     }
@@ -189,8 +189,8 @@ public class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
     return null;
   }
 
-  public boolean isLoggingOn(final UUID connectionKey) {
-    final ClientInfo client = new ClientInfo(connectionKey);
+  public boolean isLoggingOn(final UUID clientID) {
+    final ClientInfo client = new ClientInfo(clientID);
     for (final EntityDbRemote connection : getConnections().values()) {
       if (((EntityDbRemoteAdapter) connection).getClientInfo().equals(client)) {
         return ((EntityDbRemoteAdapter) connection).getMethodLogger().isEnabled();
@@ -200,8 +200,8 @@ public class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
     return false;
   }
 
-  public void setLoggingOn(final UUID connectionKey, final boolean status) {
-    final ClientInfo client = new ClientInfo(connectionKey);
+  public void setLoggingOn(final UUID clientID, final boolean status) {
+    final ClientInfo client = new ClientInfo(clientID);
     for (final EntityDbRemote adapter : getConnections().values()) {
       if (((EntityDbRemoteAdapter) adapter).getClientInfo().equals(client)) {
         ((EntityDbRemoteAdapter) adapter).getMethodLogger().setEnabled(status);

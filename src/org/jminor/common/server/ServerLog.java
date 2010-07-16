@@ -25,7 +25,7 @@ public class ServerLog implements Serializable {
 
   private final long logCreationDate = System.currentTimeMillis();
   private final List<LogEntry> log;
-  private final UUID connectionKey;
+  private final UUID clientID;
   private final long lastAccessDate;
   private final long lastExitDate;
   private final String lastAccessedMethod;
@@ -35,10 +35,10 @@ public class ServerLog implements Serializable {
 
   private static final ThreadLocal<DateFormat> TIMESTAMP_FORMAT = DateUtil.getThreadLocalDateFormat(DateFormats.EXACT_TIMESTAMP);
 
-  public ServerLog(final UUID connectionKey, final long connectionCreationDate, final List<LogEntry> log,
+  public ServerLog(final UUID clientID, final long connectionCreationDate, final List<LogEntry> log,
                    final long lastAccessDate, final long lastExitDate, final String lastAccessedMethod,
                    final String lastAccessedMessage, final String lastExitedMethod) {
-    this.connectionKey = connectionKey;
+    this.clientID = clientID;
     this.connectionCreationDate = connectionCreationDate;
     this.log = log == null ? new ArrayList<LogEntry>(0) : log;
     this.lastAccessDate = lastAccessDate;
@@ -63,10 +63,10 @@ public class ServerLog implements Serializable {
   }
 
   /**
-   * @return the connection key identifying this log
+   * @return the UUID identifying this log's client
    */
-  public UUID getConnectionKey() {
-    return connectionKey;
+  public UUID getClientID() {
+    return clientID;
   }
 
   /**
@@ -142,11 +142,11 @@ public class ServerLog implements Serializable {
   @Override
   public boolean equals(final Object obj) {
     return this == obj || !((obj == null) || (obj.getClass() != this.getClass()))
-            && connectionKey.equals(((ServerLog) obj).connectionKey);
+            && clientID.equals(((ServerLog) obj).clientID);
   }
 
   @Override
   public int hashCode() {
-    return connectionKey.hashCode();
+    return clientID.hashCode();
   }
 }
