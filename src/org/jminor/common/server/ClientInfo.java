@@ -6,6 +6,7 @@ package org.jminor.common.server;
 import org.jminor.common.model.User;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 /**
  * Contains basic information about a remote client.<br>
@@ -17,16 +18,16 @@ public class ClientInfo implements Serializable {
 
   private static final long serialVersionUID = 1;
 
-  private final String clientID;
+  private final UUID clientID;
   private final String clientTypeID;
   private final User user;
   private String clientHost = "unknown host";
 
-  public ClientInfo(final String clientID) {
+  public ClientInfo(final UUID clientID) {
     this(clientID, null, null);
   }
 
-  public ClientInfo(final String clientID, final String clientTypeID, final User user) {
+  public ClientInfo(final UUID clientID, final String clientTypeID, final User user) {
     this.clientID = clientID;
     this.clientTypeID = clientTypeID;
     this.user = user;
@@ -36,7 +37,7 @@ public class ClientInfo implements Serializable {
     return user;
   }
 
-  public String getClientID() {
+  public UUID getClientID() {
     return clientID;
   }
 
@@ -54,7 +55,7 @@ public class ClientInfo implements Serializable {
 
   @Override
   public int hashCode() {
-    return getClass().hashCode() + clientID.hashCode();
+    return clientID.hashCode();
   }
 
   @Override
@@ -64,6 +65,6 @@ public class ClientInfo implements Serializable {
 
   @Override
   public String toString() {
-    return user != null ? user + "@" + clientHost + " [" + clientTypeID + "] - " + clientID : clientID;
+    return user != null ? user + "@" + clientHost + " [" + clientTypeID + "] - " + clientID : clientID.toString();
   }
 }

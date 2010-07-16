@@ -16,6 +16,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.UUID;
 
 /**
  * User: Bjorn Darri
@@ -51,7 +52,8 @@ public class PetstoreLoadTest extends EntityLoadTestModel {
 
   @Override
   protected EntityApplicationModel initializeApplication() throws CancelException {
-    final EntityApplicationModel applicationModel = new EntityApplicationModel(new EntityDbRemoteProvider(getUser(), "scott@"+new Object(), getClass().getSimpleName())) {
+    final EntityApplicationModel applicationModel = new EntityApplicationModel(new EntityDbRemoteProvider(getUser(),
+            UUID.randomUUID(), getClass().getSimpleName())) {
       @Override
       protected void loadDomainModel() {
         new Petstore();

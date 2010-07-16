@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * A class responsible for managing a remote db connection.
@@ -34,12 +35,12 @@ public class EntityDbRemoteProvider extends AbstractEntityDbProvider {
   private static final int INPUT_BUFFER_SIZE = 8192;
 
   private final String serverHostName;
-  private final String clientID;
+  private final UUID clientID;
   private final String clientTypeID;
   private RemoteServer server;
   private String serverName;
 
-  public EntityDbRemoteProvider(final User user, final String clientID, final String clientTypeID) {
+  public EntityDbRemoteProvider(final User user, final UUID clientID, final String clientTypeID) {
     super(user);
     Util.rejectNullValue(user, "user");
     serverHostName = System.getProperty(Configuration.SERVER_HOST_NAME, "localhost");
@@ -67,6 +68,10 @@ public class EntityDbRemoteProvider extends AbstractEntityDbProvider {
     catch (Exception e) {
       throw new RuntimeException(e);
     }
+  }
+
+  public UUID getClientID() {
+    return clientID;
   }
 
   @Override

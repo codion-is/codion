@@ -8,6 +8,7 @@ import org.jminor.framework.server.provider.EntityDbRemoteProvider;
 
 import javax.swing.JApplet;
 import javax.swing.SwingUtilities;
+import java.util.UUID;
 
 /**
  * User: Björn Darri
@@ -28,7 +29,7 @@ public class EntityApplet extends JApplet {
       SwingUtilities.invokeAndWait(new Runnable() {
         public void run() {
           final EntityPanel panel = entityPanelProvider.createInstance(new EntityDbRemoteProvider(new User("scott", "tiger"),
-                  entityPanelProvider.getCaption(), entityPanelProvider.toString()));
+                  UUID.randomUUID(), entityPanelProvider.toString()));
           entityPanelProvider.setInstance(panel);
           panel.initializeUI();
           getContentPane().add(panel);

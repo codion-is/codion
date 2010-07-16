@@ -11,6 +11,7 @@ import java.io.Serializable;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * A class encapsulating a simple collection of server access log entries and basic connection access info.<br>
@@ -24,7 +25,7 @@ public class ServerLog implements Serializable {
 
   private final long logCreationDate = System.currentTimeMillis();
   private final List<LogEntry> log;
-  private final String connectionKey;
+  private final UUID connectionKey;
   private final long lastAccessDate;
   private final long lastExitDate;
   private final String lastAccessedMethod;
@@ -34,7 +35,7 @@ public class ServerLog implements Serializable {
 
   private static final ThreadLocal<DateFormat> TIMESTAMP_FORMAT = DateUtil.getThreadLocalDateFormat(DateFormats.EXACT_TIMESTAMP);
 
-  public ServerLog(final String connectionKey, final long connectionCreationDate, final List<LogEntry> log,
+  public ServerLog(final UUID connectionKey, final long connectionCreationDate, final List<LogEntry> log,
                    final long lastAccessDate, final long lastExitDate, final String lastAccessedMethod,
                    final String lastAccessedMessage, final String lastExitedMethod) {
     this.connectionKey = connectionKey;
@@ -64,7 +65,7 @@ public class ServerLog implements Serializable {
   /**
    * @return the connection key identifying this log
    */
-  public String getConnectionKey() {
+  public UUID getConnectionKey() {
     return connectionKey;
   }
 

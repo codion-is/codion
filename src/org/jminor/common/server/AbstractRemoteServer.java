@@ -19,6 +19,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * A default RemoteServer implementation.<br>
@@ -59,7 +60,7 @@ public abstract class AbstractRemoteServer<T> extends UnicastRemoteObject implem
     return connections.size();
   }
 
-  public T connect(final User user, final String connectionKey, final String clientTypeID) throws RemoteException {
+  public T connect(final User user, final UUID connectionKey, final String clientTypeID) throws RemoteException {
     if (connectionKey == null) {
       return null;
     }
@@ -75,7 +76,7 @@ public abstract class AbstractRemoteServer<T> extends UnicastRemoteObject implem
     return connection;
   }
 
-  public void disconnect(final String connectionKey) throws RemoteException {
+  public void disconnect(final UUID connectionKey) throws RemoteException {
     if (connectionKey == null) {
       return;
     }

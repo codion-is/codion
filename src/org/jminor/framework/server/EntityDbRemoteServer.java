@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.UUID;
 
 /**
  * The remote server class, responsible for handling remote db connection requests.
@@ -179,7 +180,7 @@ public class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
    * @param connectionKey the connection key
    * @return the server log for the given connection
    */
-  public ServerLog getServerLog(final String connectionKey) {
+  public ServerLog getServerLog(final UUID connectionKey) {
     final ClientInfo client = new ClientInfo(connectionKey);
     if (containsConnection(client)) {
       return ((EntityDbRemoteAdapter) getConnection(client)).getServerLog();
@@ -188,7 +189,7 @@ public class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
     return null;
   }
 
-  public boolean isLoggingOn(final String connectionKey) {
+  public boolean isLoggingOn(final UUID connectionKey) {
     final ClientInfo client = new ClientInfo(connectionKey);
     for (final EntityDbRemote connection : getConnections().values()) {
       if (((EntityDbRemoteAdapter) connection).getClientInfo().equals(client)) {
@@ -199,7 +200,7 @@ public class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
     return false;
   }
 
-  public void setLoggingOn(final String connectionKey, final boolean status) {
+  public void setLoggingOn(final UUID connectionKey, final boolean status) {
     final ClientInfo client = new ClientInfo(connectionKey);
     for (final EntityDbRemote adapter : getConnections().values()) {
       if (((EntityDbRemoteAdapter) adapter).getClientInfo().equals(client)) {

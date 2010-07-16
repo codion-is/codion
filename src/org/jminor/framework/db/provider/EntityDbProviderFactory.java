@@ -4,10 +4,10 @@
 package org.jminor.framework.db.provider;
 
 import org.jminor.common.model.User;
-import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.UUID;
 
 /**
  * A factory class for handing out EntityDbProviders according to system properties.
@@ -28,7 +28,7 @@ public final class EntityDbProviderFactory {
    * @return a EntityDbProvider
    */
   public static EntityDbProvider createEntityDbProvider(final User user, final String clientTypeID) {
-    return createEntityDbProvider(user, Long.toOctalString(Util.getRandom().nextLong()), clientTypeID);
+    return createEntityDbProvider(user, UUID.randomUUID(), clientTypeID);
   }
 
   /**
@@ -44,13 +44,13 @@ public final class EntityDbProviderFactory {
    * @see EntityDbLocalProvider
    * @see org.jminor.framework.server.provider.EntityDbRemoteProvider
    */
-  public static EntityDbProvider createEntityDbProvider(final User user, final String clientKey,
+  public static EntityDbProvider createEntityDbProvider(final User user, final UUID clientKey,
                                                         final String clientTypeID) {
     try {
       if (System.getProperty(Configuration.CLIENT_CONNECTION_TYPE,
               Configuration.CONNECTION_TYPE_LOCAL).equals(Configuration.CONNECTION_TYPE_REMOTE)) {
         return (EntityDbProvider) Class.forName(remoteConnectionProviderClassName).getConstructor(
-                User.class, String.class, String.class).newInstance(user, clientKey, clientTypeID);
+                User.class, UUID.class, String.class).newInstance(user, clientKey, clientTypeID);
       }
       else {
         return (EntityDbProvider) Class.forName(localConnectionProviderClassName).getConstructor(

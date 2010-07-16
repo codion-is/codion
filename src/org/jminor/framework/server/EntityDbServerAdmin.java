@@ -17,6 +17,7 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Defines the server admin service methods.<br>
@@ -87,7 +88,7 @@ public interface EntityDbServerAdmin extends Remote {
    * @return the log for the given connection
    * @throws RemoteException in case of a communication error
    */
-  ServerLog getServerLog(final String connectionKey) throws RemoteException;
+  ServerLog getServerLog(final UUID connectionKey) throws RemoteException;
 
   /**
    * @return the number of active connections
@@ -101,7 +102,7 @@ public interface EntityDbServerAdmin extends Remote {
    * @return true if logging is on for the given connection
    * @throws RemoteException in case of a communication error
    */
-  boolean isLoggingOn(final String connectionKey) throws RemoteException;
+  boolean isLoggingOn(final UUID connectionKey) throws RemoteException;
 
   /**
    * Sets the logging status for the given connection
@@ -109,7 +110,7 @@ public interface EntityDbServerAdmin extends Remote {
    * @param status the new logging status
    * @throws RemoteException in case of a communication error
    */
-  void setLoggingOn(final String connectionKey, final boolean status) throws RemoteException;
+  void setLoggingOn(final UUID connectionKey, final boolean status) throws RemoteException;
 
   /**
    * @return a string containing memory usage information
@@ -147,7 +148,7 @@ public interface EntityDbServerAdmin extends Remote {
    * @param connectionKey the key of the connection
    * @throws RemoteException in case of a communication error
    */
-  void disconnect(final String connectionKey) throws RemoteException;
+  void disconnect(final UUID connectionKey) throws RemoteException;
 
   /**
    * @return the server logging level

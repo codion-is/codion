@@ -30,6 +30,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * Implements the EntityDbServerAdmin interface, providing admin access to a EntityDbRemoteServer instance.<br>
@@ -119,7 +120,7 @@ public class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements En
     return clientTypes;
   }
 
-  public void disconnect(final String connectionKey) throws RemoteException {
+  public void disconnect(final UUID connectionKey) throws RemoteException {
     server.disconnect(connectionKey);
   }
 
@@ -255,15 +256,15 @@ public class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements En
     return server.getConnectionCount();
   }
 
-  public ServerLog getServerLog(final String connectionKey) {
+  public ServerLog getServerLog(final UUID connectionKey) {
     return server.getServerLog(connectionKey);
   }
 
-  public boolean isLoggingOn(final String connectionKey) throws RemoteException {
+  public boolean isLoggingOn(final UUID connectionKey) throws RemoteException {
     return server.isLoggingOn(connectionKey);
   }
 
-  public void setLoggingOn(final String connectionKey, final boolean status) {
+  public void setLoggingOn(final UUID connectionKey, final boolean status) {
     server.setLoggingOn(connectionKey, status);
   }
 

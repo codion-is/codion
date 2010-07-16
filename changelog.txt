@@ -1870,3 +1870,4 @@
   EntityDbRemoteServerAdmin added shutdown hook, server security policy updated accordingly
   Bugs fixed in EntityDbProvider classes
   AbstractRemoteServer.shuttingDown field added, used to prevent shutdown hook from repeating the shutdown sequence
+  RemoteServer connectionKey is now a UUID

@@ -21,6 +21,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.Collection;
+import java.util.UUID;
 
 public class EntityDbRemoteServerTest {
 
@@ -69,16 +70,16 @@ public class EntityDbRemoteServerTest {
   @Test
   public void test() throws Exception {
     final EntityDbRemoteProvider providerOne = new EntityDbRemoteProvider(User.UNIT_TEST_USER,
-            "UnitTestConnection0", "EntityDbRemoteServerTest");
+            UUID.randomUUID(), "EntityDbRemoteServerTest");
     final EntityDb remoteDbOne = providerOne.getEntityDb();
     assertTrue(remoteDbOne.isConnectionValid());
     assertEquals(1, server.getConnectionCount());
 
     final EntityDbRemoteProvider providerTwo = new EntityDbRemoteProvider(User.UNIT_TEST_USER,
-            "UnitTestConnection1", "EntityDbRemoteServerTest");
+            UUID.randomUUID(), "EntityDbRemoteServerTest");
     final EntityDb remoteDbTwo = providerTwo.getEntityDb();
-    server.setLoggingOn("UnitTestConnection1", true);
-    assertTrue(server.isLoggingOn("UnitTestConnection1"));
+    server.setLoggingOn(providerTwo.getClientID(), true);
+    assertTrue(server.isLoggingOn(providerTwo.getClientID()));
     assertTrue(remoteDbTwo.isConnectionValid());
     assertEquals(2, server.getConnectionCount());
 
@@ -91,7 +92,7 @@ public class EntityDbRemoteServerTest {
     assertNotNull(stats.getTimestamp());
     assertNotNull(stats.getQueriesPerSecond());
 
-    final ServerLog log = server.getServerLog("UnitTestConnection1");
+    final ServerLog log = server.getServerLog(providerTwo.getClientID());
     assertEquals("selectAll", log.getLastAccessedMethod());
     assertEquals("selectAll", log.getLastExitedMethod());
     assertTrue(log.getLastDelta() >= 0);

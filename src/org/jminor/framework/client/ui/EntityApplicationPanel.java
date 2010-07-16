@@ -194,6 +194,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
       System.exit(0);
     }
     catch (Exception e) {
+      LOG.error("Exception on startup", e);
       System.exit(1);
     }
   }

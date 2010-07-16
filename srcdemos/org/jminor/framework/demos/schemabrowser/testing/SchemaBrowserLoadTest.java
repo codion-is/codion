@@ -14,6 +14,7 @@ import org.jminor.framework.tools.testing.EntityLoadTestModel;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import java.util.UUID;
 
 /**
  * User: Bjorn Darri
@@ -43,7 +44,7 @@ public class SchemaBrowserLoadTest extends EntityLoadTestModel {
   @Override
   protected EntityApplicationModel initializeApplication() throws CancelException {
     final EntityApplicationModel applicationModel = new EntityApplicationModel(new EntityDbRemoteProvider(getUser(),
-            User.UNIT_TEST_USER +"@"+new Object(), getClass().getSimpleName())) {
+           UUID.randomUUID(), getClass().getSimpleName())) {
       @Override
       protected void loadDomainModel() {
         new SchemaBrowser();

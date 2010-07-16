@@ -7,6 +7,7 @@ import org.jminor.common.model.User;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.UUID;
 
 /**
  * Defines the methods available to remote clients.<br>
@@ -26,14 +27,14 @@ public interface RemoteServer<T> extends Remote {
    * @return a remote connection instance
    * @throws RemoteException in case of a RemoteException
    */
-  T connect(final User user, final String connectionKey, final String clientTypeID) throws RemoteException;
+  T connect(final User user, final UUID connectionKey, final String clientTypeID) throws RemoteException;
 
   /**
    * Disconnects the connection identified by the given key.
    * @param connectionKey the key identifying the connection that should be disconnected
    * @throws RemoteException in case of a communication error
    */
-  void disconnect(final String connectionKey) throws RemoteException;
+  void disconnect(final UUID connectionKey) throws RemoteException;
 
   /**
    * @return the server name
