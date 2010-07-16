@@ -261,7 +261,7 @@ public class ServerMonitor {
     if (updateTimer != null) {
       updateTimer.cancel();
     }
-    updateTimer = new Timer(false);
+    updateTimer = new Timer(true);
     updateTimer.schedule(new TimerTask() {
       @Override
       public void run() {
