@@ -1876,3 +1876,5 @@
   AbstractDatabase.require() moved to Util
   JasperReportsWrapper.toString() implemented, returns report name and parameters, if any
   EntityPanel.getPrintControls() removed
+  Util.rejectNullValue() now returns the value if it isn't null
+  Removed redundant Util.rejectNullValue() calls

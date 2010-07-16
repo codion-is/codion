@@ -96,7 +96,6 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
    */
   public DefaultEntityEditModel(final String entityID, final EntityDbProvider dbProvider) {
     super(new Entity(entityID));
-    Util.rejectNullValue(entityID, "entityID");
     Util.rejectNullValue(dbProvider, "dbProvider");
     if (!Configuration.getBooleanValue(Configuration.ALL_PANELS_ACTIVE)) {
       ACTIVE_STATE_GROUP.addState(stActive);
@@ -325,7 +324,6 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
    */
   public void validate(final Entity entity, final String propertyID, final int action) throws ValidationException {
     Util.rejectNullValue(entity, "entity");
-    Util.rejectNullValue(propertyID, "propertyID");
     final Property property = entity.getProperty(propertyID);
     if (Configuration.getBooleanValue(Configuration.PERFORM_NULL_VALIDATION)) {
       performNullValidation(entity, property, action);
@@ -342,7 +340,6 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
    * @return true if the property accepts a null value
    */
   public boolean isNullable(final String key) {
-    Util.rejectNullValue(key, "key");
     return isNullable(getEntity(), key);
   }
 

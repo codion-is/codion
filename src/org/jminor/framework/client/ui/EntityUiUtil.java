@@ -245,7 +245,6 @@ public final class EntityUiUtil {
   public static JCheckBox createCheckBox(final Property property, final EntityEditModel editModel,
                                          final State enabledState, final boolean includeCaption) {
     Util.rejectNullValue(property, "property");
-    Util.rejectNullValue(editModel, "editModel");
     if (!property.isBoolean()) {
       throw new RuntimeException("Boolean property required for createCheckBox");
     }
@@ -421,7 +420,6 @@ public final class EntityUiUtil {
                                                final ComboBoxModel model, final State enabledState,
                                                final boolean editable) {
     Util.rejectNullValue(property, "property");
-    Util.rejectNullValue(editModel, "editModel");
     final SteppedComboBox comboBox = new SteppedComboBox(model);
     comboBox.setEditable(editable);
     new EntityComboBoxValueLink(comboBox, editModel, property);
@@ -447,7 +445,6 @@ public final class EntityUiUtil {
                                                     final SimpleDateFormat dateFormat, final LinkType linkType,
                                                     final boolean includeButton, final State enabledState) {
     Util.rejectNullValue(property, "property");
-    Util.rejectNullValue(editModel, "editModel");
     if (!property.isTime()) {
       throw new IllegalArgumentException("Property " + property + " is not a date property");
     }
@@ -758,7 +755,8 @@ public final class EntityUiUtil {
   public static class EntityComboBoxValueLink extends ComboBoxValueLink<String> {
     public EntityComboBoxValueLink(final JComboBox comboBox, final EntityEditModel editModel,
                                    final Property property) {
-      super(comboBox, editModel, property.getPropertyID(), LinkType.READ_WRITE, property.isString());
+      super(comboBox, editModel, property.getPropertyID(), LinkType.READ_WRITE,
+              Util.rejectNullValue(property, "property").isString());
     }
 
     @Override
@@ -824,7 +822,6 @@ public final class EntityUiUtil {
     public EntityFieldPanel(final Property.ForeignKeyProperty foreignKeyProperty,
                             final EntityEditModel editModel, final EntityTableModel lookupModel) {
       super(new BorderLayout(5,5));
-      Util.rejectNullValue(editModel, "editModel");
       Util.rejectNullValue(lookupModel, "lookupModel");
       textField = createEntityField(foreignKeyProperty, editModel);
       initializeUI(foreignKeyProperty, editModel, lookupModel);

@@ -69,9 +69,7 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
    * @param primaryKey the primary key
    */
   public Entity(final Key primaryKey) {
-    Util.rejectNullValue(primaryKey, "primaryKey");
-    this.entityID = primaryKey.getEntityID();
-    this.properties = EntityRepository.getProperties(entityID);
+    this(Util.rejectNullValue(primaryKey, "primaryKey").getEntityID());
     for (final Property.PrimaryKeyProperty property : primaryKey.getProperties()) {
       setValue(property, primaryKey.getValue(property.getPropertyID()));
     }
@@ -274,9 +272,7 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
   }
 
   public boolean isValueNull(final Property property) {
-    Util.rejectNullValue(property, "property");
-
-    return super.isValueNull(property.getPropertyID());
+    return super.isValueNull(Util.rejectNullValue(property, "property").getPropertyID());
   }
 
   /**
@@ -454,7 +450,6 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
    * @return true if the given value is equal to the value identified by the given property ID
    */
   public boolean valueEquals(final String propertyID, final Object value) {
-    Util.rejectNullValue(propertyID, "propertyID");
     return valuesEqual(getValue(propertyID), value);
   }
 
@@ -546,9 +541,7 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
   }
 
   public boolean containsValue(final Property property) {
-    Util.rejectNullValue(property, "property");
-
-    return containsValue(property.getPropertyID());
+    return containsValue(Util.rejectNullValue(property, "property").getPropertyID());
   }
 
   /**
@@ -657,7 +650,6 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
    * @return an initialized Entity
    */
   public static Entity initialize(final String entityID, final Map<String, Object> values, final Map<String, Object> originalValues) {
-    Util.rejectNullValue(entityID, "entityID");
     Util.rejectNullValue(values, "values");
     final Entity entity = new Entity(entityID);
     for (final Map.Entry<String, Object> entry : values.entrySet()) {
@@ -890,7 +882,6 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
      */
     public Key(final String entityID) {
       super(1);
-      Util.rejectNullValue(entityID, "entityID");
       this.entityID = entityID;
       this.properties = EntityRepository.getPrimaryKeyProperties(entityID);
       this.singleIntegerKey = properties.size() == 1 && properties.get(0).isInteger();

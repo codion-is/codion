@@ -14,6 +14,8 @@ import static org.junit.Assert.assertTrue;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.util.UUID;
+
 /**
  * User: Bjorn Darri
  * Date: 1.4.2010
@@ -33,7 +35,7 @@ public class EntityDbRemoteProviderTest {
 
   @Test
   public void test() throws Exception {
-    final EntityDbRemoteProvider provider = new EntityDbRemoteProvider(User.UNIT_TEST_USER, "TestClientID", "TestClient");
+    final EntityDbRemoteProvider provider = new EntityDbRemoteProvider(User.UNIT_TEST_USER, UUID.randomUUID(), "TestClient");
     final EntityDb db = provider.getEntityDb();
     assertNotNull(db);
     assertTrue(db.isConnected());

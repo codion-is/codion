@@ -8,7 +8,16 @@ import org.apache.log4j.Logger;
 
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.Closeable;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -17,7 +26,18 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.Collator;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.prefs.Preferences;
 
 /**
@@ -570,11 +590,14 @@ public final class Util {
    * @param value the value to check
    * @param valueName the name of the value being checked
    * @throws IllegalArgumentException if value is null
+   * @return the value in case it was not null
    */
-  public static void rejectNullValue(final Object value, final String valueName) {
+  public static <T> T rejectNullValue(final T value, final String valueName) {
     if (value == null) {
       throw new IllegalArgumentException(valueName + " is null");
     }
+
+    return value;
   }
 
   public static void closeSilently(final ResultSet... resultSets) {
