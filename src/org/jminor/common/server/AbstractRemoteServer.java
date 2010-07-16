@@ -34,6 +34,7 @@ public abstract class AbstractRemoteServer<T> extends UnicastRemoteObject implem
 
   private final String serverName;
   private final int serverPort;
+  private volatile boolean shuttingDown = false;
 
   public AbstractRemoteServer(final int serverPort, final String serverName, final RMIClientSocketFactory clientSocketFactory,
                               final RMIServerSocketFactory serverSocketFactory) throws RemoteException {
@@ -97,7 +98,15 @@ public abstract class AbstractRemoteServer<T> extends UnicastRemoteObject implem
     return LocateRegistry.getRegistry(Registry.REGISTRY_PORT);
   }
 
+  public boolean isShuttingDown() {
+    return shuttingDown;
+  }
+
   public void shutdown() throws RemoteException {
+    if (shuttingDown) {
+      return;
+    }
+    shuttingDown = true;
     try {
       getRegistry().unbind(serverName);
     }

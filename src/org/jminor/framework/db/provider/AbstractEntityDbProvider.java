@@ -37,7 +37,7 @@ public abstract class AbstractEntityDbProvider implements EntityDbProvider {
       return entityDb != null && entityDb.isConnected();
     }
     catch (Exception e) {
-      throw new RuntimeException(e);
+      return false;
     }
   }
 
@@ -57,7 +57,7 @@ public abstract class AbstractEntityDbProvider implements EntityDbProvider {
 
   private void validateConnection() {
     try {
-      if (entityDb == null || isConnectionValid()) {
+      if (entityDb == null || !isConnectionValid()) {
         entityDb = connect();
       }
     }

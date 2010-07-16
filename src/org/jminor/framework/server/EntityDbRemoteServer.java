@@ -40,7 +40,7 @@ import java.util.TimerTask;
  */
 public class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
 
-  private static final Logger LOG = Util.getLogger(EntityDbRemoteServer.class);
+  static final Logger LOG = Util.getLogger(EntityDbRemoteServer.class);
 
   private static final boolean CLIENT_LOGGING_ENABLED =
           System.getProperty(Configuration.SERVER_CLIENT_LOGGING_ENABLED, "true").equalsIgnoreCase("true");
@@ -219,6 +219,9 @@ public class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
 
   @Override
   public void shutdown() throws RemoteException {
+    if (isShuttingDown()) {
+      return;
+    }
     super.shutdown();
     removeConnections(false);
     final String connectInfo = getServerName() + " removed from registry";

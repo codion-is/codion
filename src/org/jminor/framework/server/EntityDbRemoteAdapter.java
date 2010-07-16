@@ -719,6 +719,11 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
         ex = ie.getCause();
         throw (Exception) ie.getTargetException();
       }
+      catch (Exception ie) {
+        LOG.error(this, ie);
+        ex = ie;
+        throw ie;
+      }
       finally {
         try {
           remoteAdapter.setInactive();

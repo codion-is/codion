@@ -14,6 +14,7 @@ grant {
 
   permission java.util.PropertyPermission "*", "read, write";
 
+  permission java.lang.RuntimePermission "shutdownHooks";
   //for an embedded database residing in the server working directory
   permission java.io.FilePermission "-", "read,write,delete";
   //for JasperReports report generation

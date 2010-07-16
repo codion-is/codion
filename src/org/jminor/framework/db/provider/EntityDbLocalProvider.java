@@ -78,7 +78,7 @@ public class EntityDbLocalProvider extends AbstractEntityDbProvider {
   @Override
   protected boolean isConnectionValid() {
     try {
-      return !entityDb.isConnectionValid();
+      return entityDb.isConnectionValid();
     }
     catch (Exception e) {
       throw new RuntimeException(e);

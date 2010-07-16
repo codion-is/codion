@@ -1867,3 +1867,6 @@
   DatabaseStatistics is now an interface
   DbStatistics added as an implementation of the above
   KeyListeners now dispatch the event to their parent if not consumed
+  EntityDbRemoteServerAdmin added shutdown hook, server security policy updated accordingly
+  Bugs fixed in EntityDbProvider classes
+  AbstractRemoteServer.shuttingDown field added, used to prevent shutdown hook from repeating the shutdown sequence

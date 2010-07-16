@@ -59,6 +59,7 @@ public class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements En
             useSecureConnection ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
     this.server = server;
     server.getRegistry().rebind(server.getServerName() + RemoteServer.SERVER_ADMIN_SUFFIX, this);
+    Runtime.getRuntime().addShutdownHook(new Thread(getShutdownHook()));
   }
 
   public String getServerName() {
@@ -281,6 +282,23 @@ public class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements En
 
   public Collection<EntityDefinition> getEntityDefinitions() throws RemoteException {
     return EntityDbRemoteServer.getEntityDefinitions();
+  }
+
+  private Runnable getShutdownHook() {
+    return new Runnable() {
+      public void run() {
+        if (server.isShuttingDown()) {
+          return;
+        }
+        try {
+          EntityDbRemoteServer.LOG.info("Shuting down server on VM shutdown");
+          server.shutdown();
+        }
+        catch (RemoteException e) {
+          EntityDbRemoteServer.LOG.error("Exception on shutdown", e);
+        }
+      }
+    };
   }
 
   public static void main(String[] arguments) throws Exception {
