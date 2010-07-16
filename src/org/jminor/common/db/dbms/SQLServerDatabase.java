@@ -3,6 +3,8 @@
  */
 package org.jminor.common.db.dbms;
 
+import org.jminor.common.model.Util;
+
 import java.util.Properties;
 
 /**
@@ -37,7 +39,7 @@ public class SQLServerDatabase extends AbstractDatabase {
 
   @Override
   protected void validate(final String databaseType, final String host, final String port, final String sid, final boolean embedded) {
-    require(DATABASE_HOST, host);
-    require(DATABASE_PORT, port);
+    Util.require(DATABASE_HOST, host);
+    Util.require(DATABASE_PORT, port);
   }
 }

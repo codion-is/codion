@@ -82,12 +82,12 @@ public class DerbyDatabase extends AbstractDatabase {
   @Override
   protected void validate(final String databaseType, final String host, final String port, final String sid, final boolean embedded) {
     if (embedded) {
-      require(DATABASE_HOST, host);
+      Util.require(DATABASE_HOST, host);
     }
     else {
-      require(DATABASE_HOST, host);
-      require(DATABASE_PORT, port);
-      require(DATABASE_SID, sid);
+      Util.require(DATABASE_HOST, host);
+      Util.require(DATABASE_PORT, port);
+      Util.require(DATABASE_SID, sid);
     }
   }
 }

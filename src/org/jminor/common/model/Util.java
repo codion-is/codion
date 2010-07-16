@@ -677,6 +677,12 @@ public final class Util {
     }
   }
 
+  public static void require(final String propertyName, final String value) {
+    if (value == null || value.length() == 0) {
+      throw new RuntimeException(propertyName + " is required");
+    }
+  }
+
   /**
    * Provides objects of type K, derived from a value of type V, for hashing said value via .hashCode().
    * @param <K> the type of the object to use for key generation via .hashCode()

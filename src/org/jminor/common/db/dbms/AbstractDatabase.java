@@ -205,13 +205,7 @@ public abstract class AbstractDatabase implements Database {
    * @param port the database port
    * @param sid the database sid
    * @param embedded true if the database being connected to is an embedded one
-   * @see #require(String, String)
+   * @see org.jminor.common.model.Util#require(String, String)
    */
   protected abstract void validate(final String databaseType, final String host, final String port, final String sid, final boolean embedded);
-
-  protected void require(final String property, final String value) {
-    if (value == null || value.length() == 0) {
-      throw new RuntimeException(property + " is required for database type " + databaseType);
-    }
-  }
 }

@@ -4,6 +4,7 @@
 package org.jminor.common.db.dbms;
 
 import org.jminor.common.i18n.Messages;
+import org.jminor.common.model.Util;
 
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -87,8 +88,8 @@ public class OracleDatabase extends AbstractDatabase {
 
   @Override
   protected void validate(final String databaseType, final String host, final String port, final String sid, final boolean embedded) {
-    require(DATABASE_HOST, host);
-    require(DATABASE_PORT, port);
-    require(DATABASE_SID, sid);
+    Util.require(DATABASE_HOST, host);
+    Util.require(DATABASE_PORT, port);
+    Util.require(DATABASE_SID, sid);
   }
 }

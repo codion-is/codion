@@ -1873,3 +1873,4 @@
   RemoteServer connectionKey is now a UUID
   connectionKey renamed to clientID throughout
   ServerMonitorPanel, moved connection timeout control to ClientUserMonitorPanel
+  AbstractDatabase.require() moved to Util

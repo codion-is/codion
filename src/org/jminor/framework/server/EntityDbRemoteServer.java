@@ -57,12 +57,8 @@ public class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
     final String serverPortProperty = System.getProperty(Configuration.SERVER_PORT);
     final String serverDbPortProperty = System.getProperty(Configuration.SERVER_DB_PORT);
 
-    if (serverPortProperty == null) {
-      throw new RuntimeException("Required server property missing: " + Configuration.SERVER_PORT);
-    }
-    if (serverDbPortProperty == null) {
-      throw new RuntimeException("Required server property missing: " + Configuration.SERVER_DB_PORT);
-    }
+    Util.require(Configuration.SERVER_PORT, serverPortProperty);
+    Util.require(Configuration.SERVER_DB_PORT, serverDbPortProperty);
 
     SERVER_PORT = Integer.parseInt(serverPortProperty);
     SERVER_DB_PORT = Integer.parseInt(serverDbPortProperty);
