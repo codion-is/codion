@@ -136,7 +136,12 @@ public class LogEntry implements Serializable, Comparable<LogEntry> {
   }
 
   public LogEntry setException(final Throwable exception) {
-    this.stackTrace = getStackTrace(exception);
+    if (exception == null) {
+      this.stackTrace = null;
+    }
+    else {
+      this.stackTrace = getStackTrace(exception);
+    }
     return this;
   }
 
@@ -217,10 +222,6 @@ public class LogEntry implements Serializable, Comparable<LogEntry> {
   }
 
   private String getStackTrace(final Throwable exception) {
-    if (exception == null) {
-      return null;
-    }
-
     final StringWriter sw = new StringWriter();
     exception.printStackTrace(new PrintWriter(sw));
 

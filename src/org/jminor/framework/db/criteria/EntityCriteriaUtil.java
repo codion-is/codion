@@ -500,8 +500,7 @@ public final class EntityCriteriaUtil {
     PropertyCriteria(final Property property, final SearchType searchType, final Object... values) {
       Util.rejectNullValue(property, "property");
       Util.rejectNullValue(searchType, "searchType");
-      Util.rejectNullValue(values, "values");
-      if (values.length == 0) {
+      if (values != null && values.length == 0) {
         throw new RuntimeException("No values specified for PropertyCriteria: " + property);
       }
       this.property = property;
