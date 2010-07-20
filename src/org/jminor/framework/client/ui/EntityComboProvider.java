@@ -20,7 +20,7 @@ public class EntityComboProvider extends AbstractInputProvider<Entity> {
   }
 
   @Override
-  public Entity getValue() {
+  public final Entity getValue() {
     final EntityComboBoxModel model = (EntityComboBoxModel) ((JComboBox) getInputComponent()).getModel();
     return model.getSelectedEntity();
   }

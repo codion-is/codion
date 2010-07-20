@@ -13,7 +13,7 @@ import java.util.List;
  * Date: 14.7.2010<br>
  * Time: 23:16:34
  */
-public class ConnectionPoolStatisticsImpl implements ConnectionPoolStatistics, Serializable {
+public final class ConnectionPoolStatisticsImpl implements ConnectionPoolStatistics, Serializable {
   private static final long serialVersionUID = 1;
 
   private final User user;

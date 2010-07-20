@@ -139,9 +139,9 @@ public interface Property extends Attribute {
 
   /**
    * @return the preferred column width of this property when
-   * presented in a table, null if none has been specified
+   * presented in a table, 0 if none has been specified
    */
-  Integer getPreferredColumnWidth();
+  int getPreferredColumnWidth();
 
   /**
    * @return the mnemonic to use when creating a label for this property
@@ -166,8 +166,6 @@ public interface Property extends Attribute {
     ColumnProperty setUpdatable(boolean updatable);
 
     void setSelectIndex(final int selectIndex);
-
-    ColumnProperty setNullable(boolean nullable);
   }
 
   /**

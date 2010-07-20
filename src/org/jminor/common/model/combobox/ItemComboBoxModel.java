@@ -40,7 +40,7 @@ public class ItemComboBoxModel<T> extends DefaultComboBoxModel {
   }
 
   @Override
-  public void setSelectedItem(final Object anObject) {
+  public final void setSelectedItem(final Object anObject) {
     if (!(anObject instanceof Item)) {
       super.setSelectedItem(getElementAt(indexOf(anObject)));
     }
@@ -49,38 +49,40 @@ public class ItemComboBoxModel<T> extends DefaultComboBoxModel {
     }
   }
 
-  public int getIndexOfItem(final Object item) {
+  public final int getIndexOfItem(final Object item) {
     return indexOf(item);
   }
 
   @SuppressWarnings({"unchecked"})
   @Override
-  public Item<T> getSelectedItem() {
+  public final Item<T> getSelectedItem() {
     return (Item<T>) super.getSelectedItem();
   }
 
-  protected void initializeItems(final List<Item<T>> items) {
-    if (items != null) {
-      Collections.sort(items, new Comparator<Item<T>>() {
-        /* Null items at front of list*/
-        public int compare(final Item<T> o1, final Item<T> o2) {
-          if (o1.getItem() == null && o2.getItem() == null) {
-            return o1.compareTo(o2);
-          }
-          if (o1.getItem() == null) {
-            return -1;
-          }
-          if (o2.getItem() == null) {
-            return 1;
-          }
+  protected final void initializeItems(final List<Item<T>> items) {
+    if (items == null) {
+      return;
+    }
 
+    Collections.sort(items, new Comparator<Item<T>>() {
+      /* Null items at front of list*/
+      public int compare(final Item<T> o1, final Item<T> o2) {
+        if (o1.getItem() == null && o2.getItem() == null) {
           return o1.compareTo(o2);
         }
-      });
+        if (o1.getItem() == null) {
+          return -1;
+        }
+        if (o2.getItem() == null) {
+          return 1;
+        }
 
-      for (final Item item : items) {
-        super.addElement(item);
+        return o1.compareTo(o2);
       }
+    });
+
+    for (final Item item : items) {
+      super.addElement(item);
     }
   }
 
@@ -98,7 +100,7 @@ public class ItemComboBoxModel<T> extends DefaultComboBoxModel {
   /**
    * An IconItem to use in a ItemComboBoxModel.
    */
-  public static class IconItem<T> extends Item<T> implements Icon {
+  public static final class IconItem<T> extends Item<T> implements Icon {
 
     private static final long serialVersionUID = 1;
 

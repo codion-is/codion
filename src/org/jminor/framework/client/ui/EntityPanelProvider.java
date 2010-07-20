@@ -82,7 +82,7 @@ public class EntityPanelProvider implements Comparable {
     this.panelClass = entityPanelClass;
   }
 
-  public EntityPanelProvider register() {
+  public final EntityPanelProvider register() {
     synchronized (panelProviders) {
       if (panelProviders.containsKey(entityID)) {
         throw new RuntimeException("Panel provider has already been set for entity: " + entityID);
@@ -93,14 +93,14 @@ public class EntityPanelProvider implements Comparable {
     return this;
   }
 
-  public String getEntityID() {
+  public final String getEntityID() {
     return entityID;
   }
 
   /**
    * @return the caption to use when this EntityPanelProvider is shown in f.x. menus
    */
-  public String getCaption() {
+  public final String getCaption() {
     if (caption == null || caption.length() == 0) {
       this.caption = EntityRepository.getEntityDefinition(entityID).getCaption();
     }
@@ -112,7 +112,7 @@ public class EntityPanelProvider implements Comparable {
     return caption;
   }
 
-  public EntityPanelProvider addDetailPanelProvider(final EntityPanelProvider panelProvider) {
+  public final EntityPanelProvider addDetailPanelProvider(final EntityPanelProvider panelProvider) {
     if (!detailPanelProviders.contains(panelProvider)) {
       detailPanelProviders.add(panelProvider);
     }
@@ -120,63 +120,63 @@ public class EntityPanelProvider implements Comparable {
     return this;
   }
 
-  public List<EntityPanelProvider> getDetailPanelProviders() {
+  public final List<EntityPanelProvider> getDetailPanelProviders() {
     return Collections.unmodifiableList(detailPanelProviders);
   }
 
-  public boolean isRefreshOnInit() {
+  public final boolean isRefreshOnInit() {
     return refreshOnInit;
   }
 
-  public EntityPanelProvider setRefreshOnInit(final boolean refreshOnInit) {
+  public final EntityPanelProvider setRefreshOnInit(final boolean refreshOnInit) {
     this.refreshOnInit = refreshOnInit;
     return this;
   }
 
-  public int getDetailPanelState() {
+  public final int getDetailPanelState() {
     return detailPanelState;
   }
 
-  public EntityPanelProvider setDetailPanelState(final int detailPanelState) {
+  public final EntityPanelProvider setDetailPanelState(final int detailPanelState) {
     this.detailPanelState = detailPanelState;
     return this;
   }
 
-  public double getDetailSplitPanelResizeWeight() {
+  public final double getDetailSplitPanelResizeWeight() {
     return detailSplitPanelResizeWeight;
   }
 
-  public EntityPanelProvider setDetailSplitPanelResizeWeight(final double detailSplitPanelResizeWeight) {
+  public final EntityPanelProvider setDetailSplitPanelResizeWeight(final double detailSplitPanelResizeWeight) {
     this.detailSplitPanelResizeWeight = detailSplitPanelResizeWeight;
     return this;
   }
 
-  public EntityPanelProvider setModelClass(final Class<? extends EntityModel> modelClass) {
+  public final EntityPanelProvider setModelClass(final Class<? extends EntityModel> modelClass) {
     this.modelClass = modelClass;
     return this;
   }
 
-  public EntityPanelProvider setPanelClass(final Class<? extends EntityPanel> panelClass) {
+  public final EntityPanelProvider setPanelClass(final Class<? extends EntityPanel> panelClass) {
     this.panelClass = panelClass;
     return this;
   }
 
-  public EntityPanelProvider setEditPanelClass(final Class<? extends EntityEditPanel> editPanelClass) {
+  public final EntityPanelProvider setEditPanelClass(final Class<? extends EntityEditPanel> editPanelClass) {
     this.editPanelClass = editPanelClass;
     return this;
   }
 
-  public EntityPanelProvider setTablePanelClass(final Class<? extends EntityTablePanel> tablePanelClass) {
+  public final EntityPanelProvider setTablePanelClass(final Class<? extends EntityTablePanel> tablePanelClass) {
     this.tablePanelClass = tablePanelClass;
     return this;
   }
 
-  public EntityPanelProvider setEditModelClass(final Class<? extends EntityEditModel> editModelClass) {
+  public final EntityPanelProvider setEditModelClass(final Class<? extends EntityEditModel> editModelClass) {
     this.editModelClass = editModelClass;
     return this;
   }
 
-  public EntityPanelProvider setTableModelClass(final Class<? extends EntityTableModel> tableModelClass) {
+  public final EntityPanelProvider setTableModelClass(final Class<? extends EntityTableModel> tableModelClass) {
     this.tableModelClass = tableModelClass;
     return this;
   }
@@ -184,34 +184,34 @@ public class EntityPanelProvider implements Comparable {
   /**
    * @return the EntityModel Class to use when instantiating an EntityPanel
    */
-  public Class<? extends EntityModel> getModelClass() {
+  public final Class<? extends EntityModel> getModelClass() {
     return modelClass;
   }
 
   /**
    * @return the EntityPanel Class to instantiate
    */
-  public Class<? extends EntityPanel> getPanelClass() {
+  public final Class<? extends EntityPanel> getPanelClass() {
     return panelClass;
   }
 
-  public Class<? extends EntityEditPanel> getEditPanelClass() {
+  public final Class<? extends EntityEditPanel> getEditPanelClass() {
     return editPanelClass;
   }
 
-  public Class<? extends EntityTablePanel> getTablePanelClass() {
+  public final Class<? extends EntityTablePanel> getTablePanelClass() {
     return tablePanelClass;
   }
 
-  public Class<? extends EntityEditModel> getEditModelClass() {
+  public final Class<? extends EntityEditModel> getEditModelClass() {
     return editModelClass;
   }
 
-  public Class<? extends EntityTableModel> getTableModelClass() {
+  public final Class<? extends EntityTableModel> getTableModelClass() {
     return tableModelClass;
   }
 
-  public int compareTo(final Object o) {
+  public final int compareTo(final Object o) {
     final String thisCompare = caption == null ? modelClass.getSimpleName() : caption;
     final String thatCompare = ((EntityPanelProvider) o).caption == null
             ? ((EntityPanelProvider) o).panelClass.getSimpleName() : ((EntityPanelProvider) o).caption;
@@ -219,11 +219,11 @@ public class EntityPanelProvider implements Comparable {
     return thisCompare.compareTo(thatCompare);
   }
 
-  public EntityPanel createInstance(final EntityDbProvider dbProvider) {
+  public final EntityPanel createInstance(final EntityDbProvider dbProvider) {
     return createInstance(dbProvider, false);
   }
 
-  public EntityPanel createInstance(final EntityDbProvider dbProvider, final boolean detailPanel) {
+  public final EntityPanel createInstance(final EntityDbProvider dbProvider, final boolean detailPanel) {
     Util.rejectNullValue(dbProvider, "dbProvider");
     try {
       final EntityModel entityModel = initializeModel(this, dbProvider);
@@ -244,14 +244,14 @@ public class EntityPanelProvider implements Comparable {
     }
   }
 
-  public void setInstance(final EntityPanel instance) {
+  public final void setInstance(final EntityPanel instance) {
     if (this.instance != null) {
       throw new RuntimeException("EntityPanel instance has already been set for this provider: " + this.instance);
     }
     this.instance = instance;
   }
 
-  public EntityPanel getInstance() {
+  public final EntityPanel getInstance() {
     return instance;
   }
 

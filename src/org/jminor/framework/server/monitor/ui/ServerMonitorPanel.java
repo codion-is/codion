@@ -42,7 +42,7 @@ import java.util.Date;
  * Date: 4.12.2007<br>
  * Time: 18:14:35<br>
  */
-public class ServerMonitorPanel extends JPanel {
+public final class ServerMonitorPanel extends JPanel {
 
   private ServerMonitor model;
 

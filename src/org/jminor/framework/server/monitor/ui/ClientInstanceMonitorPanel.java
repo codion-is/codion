@@ -29,7 +29,7 @@ import java.util.List;
  * Date: 4.12.2007<br>
  * Time: 22:49:42<br>
  */
-public class ClientInstanceMonitorPanel extends JPanel {
+public final class ClientInstanceMonitorPanel extends JPanel {
 
   private final JTextField txtCreationDate = new JTextField();
   private final JTextArea txtLog = new JTextArea();

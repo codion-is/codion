@@ -73,31 +73,31 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> implements
   /**
    * @return true if the underlying property should be updated on each keystroke
    */
-  public boolean isImmediateUpdate() {
+  public final boolean isImmediateUpdate() {
     return immediateUpdate;
   }
 
-  public void insertUpdate(final DocumentEvent e) {
+  public final void insertUpdate(final DocumentEvent e) {
     if (immediateUpdate) {
       updateModel();
     }
   }
 
-  public void removeUpdate(final DocumentEvent e) {
+  public final void removeUpdate(final DocumentEvent e) {
     if (immediateUpdate) {
       updateModel();
     }
   }
 
-  public void changedUpdate(final DocumentEvent e) {}
+  public final void changedUpdate(final DocumentEvent e) {}
 
   @Override
-  protected Object getUIValue() {
+  protected final Object getUIValue() {
     return valueFromText(getText());
   }
 
   @Override
-  protected void setUIValue(final Object value) {
+  protected final void setUIValue(final Object value) {
     try {
       document.remove(0, document.getLength());
       if (value != null) {

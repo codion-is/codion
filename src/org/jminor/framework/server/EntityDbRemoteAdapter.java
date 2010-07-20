@@ -56,7 +56,7 @@ import java.util.TimerTask;
 /**
  * An adapter for handling logging and database connection pooling.
  */
-public class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityDbRemote {
+public final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityDbRemote {
 
   private static final Logger LOG = Util.getLogger(EntityDbRemoteAdapter.class);
   /**
@@ -600,19 +600,19 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   }
 
   public static int getRequestsPerSecond() {
-    return RequestCounter.requestsPerSecond;
+    return RequestCounter.getRequestsPerSecond();
   }
 
   public static int getWarningTimeExceededPerSecond() {
-    return RequestCounter.warningTimeExceededPerSecond;
+    return RequestCounter.getWarningTimeExceededPerSecond();
   }
 
   public static int getWarningThreshold() {
-    return RequestCounter.warningThreshold;
+    return RequestCounter.getWarningThreshold();
   }
 
   public static void setWarningThreshold(final int threshold) {
-    RequestCounter.warningThreshold = threshold;
+    RequestCounter.setWarningThreshold(threshold);
   }
 
   static void initConnectionPools(final Database database) {
@@ -694,7 +694,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     }
 
     public Object invoke(final Object proxy, final Method method, final Object[] args) throws Exception {
-      RequestCounter.requestsPerSecondCounter++;
+      RequestCounter.incrementRequestsPerSecondCounter();
       final String methodName = method.getName();
       Throwable ex = null;
       EntityDbConnection connection = null;
@@ -731,7 +731,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
             final LogEntry entry = remoteAdapter.methodLogger.logExit(methodName, ex,
                     connection != null ? connection.getLogEntries() : null);
             if (entry != null && entry.getDelta() > RequestCounter.warningThreshold) {
-              RequestCounter.warningTimeExceededCounter++;
+              RequestCounter.incrementWarningTimeExceededCounter();
             }
           }
           if (connection != null && !connection.isTransactionOpen()) {
@@ -790,7 +790,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     private static String getEntityParameterString(final Entity entity) {
       final StringBuilder builder = new StringBuilder();
       builder.append(entity.getEntityID()).append(" {");
-      for (final Property property : EntityRepository.getDatabaseProperties(entity.getEntityID(), true, true, true)) {
+      for (final Property property : EntityRepository.getColumnProperties(entity.getEntityID(), true, true, true)) {
         final boolean modified = entity.isModified(property.getPropertyID());
         if (property instanceof Property.PrimaryKeyProperty || modified) {
           final StringBuilder valueString = new StringBuilder();
@@ -807,13 +807,14 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     }
   }
 
-  private static class RequestCounter {
-    static long requestsPerSecondTime = System.currentTimeMillis();
-    static int requestsPerSecond = 0;
-    static int requestsPerSecondCounter = 0;
-    static int warningThreshold = 60;
-    static int warningTimeExceededPerSecond = 0;
-    static int warningTimeExceededCounter = 0;
+  private static final class RequestCounter {//todo should I bother to synchronize this?
+    
+    private static long requestsPerSecondTime = System.currentTimeMillis();
+    private static int requestsPerSecond = 0;
+    private static int requestsPerSecondCounter = 0;
+    private static int warningThreshold = 60;
+    private static int warningTimeExceededPerSecond = 0;
+    private static int warningTimeExceededCounter = 0;
 
     private RequestCounter() {}
 
@@ -827,6 +828,30 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
         requestsPerSecondCounter = 0;
         requestsPerSecondTime = current;
       }
+    }
+
+    public static int getRequestsPerSecond() {
+      return requestsPerSecond;
+    }
+
+    public static int getWarningTimeExceededPerSecond() {
+      return warningTimeExceededPerSecond;
+    }
+
+    public static int getWarningThreshold() {
+      return warningThreshold;
+    }
+
+    public static void setWarningThreshold(final int warningThreshold) {
+      RequestCounter.warningThreshold = warningThreshold;
+    }
+
+    public static void incrementRequestsPerSecondCounter() {
+      requestsPerSecondCounter++;
+    }
+
+    public static void incrementWarningTimeExceededCounter() {
+      warningTimeExceededCounter++;
     }
   }
 }

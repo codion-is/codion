@@ -61,16 +61,16 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     this.sortComparator = initializeItemSortComparator();
   }
 
-  public void refresh() {
+  public final void refresh() {
     resetContents();
   }
 
-  public void clear() {
+  public final void clear() {
     setSelectedItem(null);
     setContents(null);
   }
 
-  public boolean isCleared() {
+  public final boolean isCleared() {
     return cleared;
   }
 
@@ -94,7 +94,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     cleared = contents == null;
   }
 
-  public void filterContents() {
+  public final void filterContents() {
     visibleItems.addAll(filteredItems);
     filteredItems.clear();
     final FilterCriteria<T> criteria = getFilterCriteria();
@@ -119,11 +119,11 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     setContents(initializeContents());
   }
 
-  public List<T> getFilteredItems() {
+  public final List<T> getFilteredItems() {
     return Collections.unmodifiableList(filteredItems);
   }
 
-  public List<T> getVisibleItems() {
+  public final List<T> getVisibleItems() {
     if (nullValueString == null) {
       return Collections.unmodifiableList(visibleItems);
     }
@@ -131,7 +131,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     return Collections.unmodifiableList(visibleItems.subList(1, getSize() - 1));
   }
 
-  public void setFilterCriteria(final FilterCriteria filterCriteria) {
+  public final void setFilterCriteria(final FilterCriteria filterCriteria) {
     if (filterCriteria == null) {
       this.filterCriteria = acceptAllCriteria;
     }
@@ -145,22 +145,22 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     return filterCriteria;
   }
 
-  public List<T> getAllItems() {
+  public final List<T> getAllItems() {
     final List<T> entities = new ArrayList<T>(visibleItems);
     entities.addAll(filteredItems);
 
     return entities;
   }
 
-  public int getFilteredItemCount() {
+  public final int getFilteredItemCount() {
     return filteredItems.size();
   }
 
-  public int getVisibleItemCount() {
+  public final int getVisibleItemCount() {
     return visibleItems.size();
   }
 
-  public boolean isVisible(final T item) {
+  public final boolean isVisible(final T item) {
     if (item == null) {
       return nullValueString != null;
     }
@@ -168,11 +168,11 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     return visibleItems.contains(item);
   }
 
-  public boolean isFiltered(final T item) {
+  public final boolean isFiltered(final T item) {
     return filteredItems.contains(item);
   }
 
-  public void addItem(final T item) {
+  public final void addItem(final T item) {
     if (getFilterCriteria().include(item)) {
       visibleItems.add(item);
     }
@@ -181,7 +181,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     }
   }
 
-  public void removeItem(final T item) {
+  public final void removeItem(final T item) {
     if (visibleItems.contains(item)) {
       visibleItems.remove(item);
     }
@@ -192,7 +192,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     fireContentsChanged();
   }
 
-  public boolean contains(final T item, final boolean includeFiltered) {
+  public final boolean contains(final T item, final boolean includeFiltered) {
     final boolean ret = visibleItems.contains(item);
     if (!ret && includeFiltered) {
       return filteredItems.contains(item);
@@ -201,22 +201,22 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     return ret;
   }
 
-  public String getNullValueString() {
+  public final String getNullValueString() {
     return nullValueString;
   }
 
-  public void setNullValueString(final String nullValueString) {
+  public final void setNullValueString(final String nullValueString) {
     this.nullValueString = nullValueString;
     if (selectedItem == null) {
       setSelectedItem(null);
     }
   }
 
-  public boolean isNullValueSelected() {
+  public final boolean isNullValueSelected() {
     return selectedItem == null && nullValueString != null;
   }
 
-  public Object getSelectedItem() {
+  public final Object getSelectedItem() {
     if (selectedItem == null && nullValueString != null) {
       return nullValueString;
     }
@@ -239,15 +239,15 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     evtSelectionChanged.fire();
   }
 
-  public void addListDataListener(final ListDataListener l) {
+  public final void addListDataListener(final ListDataListener l) {
     listDataListeners.add(l);
   }
 
-  public void removeListDataListener(final ListDataListener l) {
+  public final void removeListDataListener(final ListDataListener l) {
     listDataListeners.remove(l);
   }
 
-  public Object getElementAt(final int index) {
+  public final Object getElementAt(final int index) {
     final Object element = visibleItems.get(index);
     if (element == null) {
       return nullValueString;
@@ -256,26 +256,19 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     return element;
   }
 
-  public int getSize() {
+  public final int getSize() {
     return visibleItems.size();
   }
 
-  public void fireContentsChanged() {
-    final ListDataEvent event = new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0, Integer.MAX_VALUE);
-    for (final ListDataListener dataListener : listDataListeners) {
-      dataListener.contentsChanged(event);
-    }
-  }
-
-  public Event eventFilteringDone() {
+  public final Event eventFilteringDone() {
     return evtFilteringDone;
   }
 
-  public Event eventFilteringStarted() {
+  public final Event eventFilteringStarted() {
     return evtFilteringStarted;
   }
 
-  public Event eventSelectionChanged() {
+  public final Event eventSelectionChanged() {
     return evtSelectionChanged;
   }
 
@@ -329,5 +322,12 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
         }
       }
     };
+  }
+
+  private void fireContentsChanged() {
+    final ListDataEvent event = new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0, Integer.MAX_VALUE);
+    for (final ListDataListener dataListener : listDataListeners) {
+      dataListener.contentsChanged(event);
+    }
   }
 }

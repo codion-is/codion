@@ -18,7 +18,7 @@ public class EntityLookupProvider extends AbstractInputProvider<Entity> {
   }
 
   @Override
-  public Entity getValue() {
+  public final Entity getValue() {
     final EntityLookupField lookupField = (EntityLookupField) getInputComponent();
     if (lookupField.getModel().getSelectedEntities().isEmpty()) {
       return null;

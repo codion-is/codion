@@ -27,7 +27,7 @@ import java.rmi.RemoteException;
 /**
  * User: Bjorn Darri<br>
  */
-public class DatabaseMonitorPanel extends JPanel {
+public final class DatabaseMonitorPanel extends JPanel {
 
   private final DatabaseMonitor model;
 

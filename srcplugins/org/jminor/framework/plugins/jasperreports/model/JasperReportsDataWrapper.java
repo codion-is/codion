@@ -8,7 +8,7 @@ import org.jminor.common.model.reports.ReportDataWrapper;
 
 import net.sf.jasperreports.engine.JRDataSource;
 
-public class JasperReportsDataWrapper implements ReportDataWrapper<JRDataSource> {
+public final class JasperReportsDataWrapper implements ReportDataWrapper<JRDataSource> {
 
   private final JRDataSource dataSource;
 

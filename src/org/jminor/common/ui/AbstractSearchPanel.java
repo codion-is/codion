@@ -94,50 +94,73 @@ public abstract class AbstractSearchPanel<K> extends JPanel {
   /**
    * @return the search model this panel uses
    */
-  public SearchModel<K> getModel() {
+  public final SearchModel<K> getModel() {
     return this.model;
   }
 
   /**
    * @param value true if advanced search should be enabled
    */
-  public void setAdvancedSearchOn(final boolean value) {
+  public final void setAdvancedSearchOn(final boolean value) {
     stAdvancedSearch.setActive(value);
   }
 
   /**
    * @return true if the advanced search is enabled
    */
-  public boolean isAdvancedSearchOn() {
+  public final boolean isAdvancedSearchOn() {
     return stAdvancedSearch.isActive();
   }
 
   /**
    * @return the JComponent used to specify the upper bound
    */
-  public JComponent getUpperBoundField() {
+  public final JComponent getUpperBoundField() {
     return upperBoundField;
   }
 
   /**
    * @return the JComponent used to specify the lower bound
    */
-  public JComponent getLowerBoundField() {
+  public final JComponent getLowerBoundField() {
     return lowerBoundField;
   }
 
-  public State stateAdvancedSearch() {
+  public final State stateAdvancedSearch() {
     return stAdvancedSearch.getLinkedState();
   }
 
-  public State stateTwoSearchFields() {
+  public final State stateTwoSearchFields() {
     return stTwoSearchFields.getLinkedState();
   }
 
   /**
+   * @param searchType the search type
+   * @return true if the given search type is allowed given the underlying property
+   */
+  protected abstract boolean searchTypeAllowed(final SearchType searchType);
+
+  /**
+   * @param isUpperBound true if the field should represent the upper bound, otherwise it should be the lower bound field
+   * @return an input field for either the upper or lower bound
+   */
+  protected abstract JComponent getInputField(final boolean isUpperBound);
+
+  /**
+   * @param property the Property
+   * @return true if a lower bound field is required given the property
+   */
+  protected abstract boolean isLowerBoundFieldRequired(final K property);
+
+  /**
+   * @return the Format object to use when formatting input, is any
+   */
+  protected abstract Format getInputFormat();
+
+  /**
    * Binds events to relevant GUI actions
    */
-  protected void bindEvents() {
+  private void bindEvents() {
     stAdvancedSearch.eventStateChanged().addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         initializePanel();
@@ -164,7 +187,7 @@ public abstract class AbstractSearchPanel<K> extends JPanel {
     });
   }
 
-  protected void initializePanel() {
+  private void initializePanel() {
     if (stAdvancedSearch.isActive()) {
       initAdvancedPanel();
     }
@@ -176,7 +199,7 @@ public abstract class AbstractSearchPanel<K> extends JPanel {
   /**
    * @return an ItemComboBoxModel containing the available search types
    */
-  protected ItemComboBoxModel initSearchTypeModel() {
+  private ItemComboBoxModel initSearchTypeModel() {
     final ItemComboBoxModel comboBoxModel = new ItemComboBoxModel();
     for (int i = 0; i < SEARCH_TYPES.length; i++) {
       if (searchTypeAllowed(SEARCH_TYPES[i])) {
@@ -186,29 +209,6 @@ public abstract class AbstractSearchPanel<K> extends JPanel {
 
     return comboBoxModel;
   }
-
-  /**
-   * @param searchType the search type
-   * @return true if the given search type is allowed given the underlying property
-   */
-  protected abstract boolean searchTypeAllowed(final SearchType searchType);
-
-  /**
-   * @param isUpperBound true if the field should represent the upper bound, otherwise it should be the lower bound field
-   * @return an input field for either the upper or lower bound
-   */
-  protected abstract JComponent getInputField(final boolean isUpperBound);
-
-  /**
-   * @param property the Property
-   * @return true if a lower bound field is required given the property
-   */
-  protected abstract boolean isLowerBoundFieldRequired(final K property);
-
-  /**
-   * @return the Format object to use when formatting input, is any
-   */
-  protected abstract Format getInputFormat();
 
   private JComboBox initSearchTypeComboBox() {
     final JComboBox comboBox = new SteppedComboBox(initSearchTypeModel());

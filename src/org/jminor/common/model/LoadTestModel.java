@@ -104,27 +104,27 @@ public abstract class LoadTestModel {
     setUpdateInterval(DEFAULT_UPDATE_INTERVAL);
   }
 
-  public User getUser() {
+  public final User getUser() {
     return user;
   }
 
-  public void setUser(User user) {
+  public final void setUser(User user) {
     this.user = user;
   }
 
-  public void performGC() {
+  public final void performGC() {
     System.gc();
   }
 
-  public RandomItemModel<UsageScenario> getScenarioChooser() {
+  public final RandomItemModel<UsageScenario> getScenarioChooser() {
     return scenarioChooser;
   }
 
-  public Collection<UsageScenario> getUsageScenarios() {
+  public final Collection<UsageScenario> getUsageScenarios() {
     return usageScenarios;
   }
 
-  public UsageScenario getUsageScenario(final String usageScenarioName) {
+  public final UsageScenario getUsageScenario(final String usageScenarioName) {
     for (final UsageScenario scenario : usageScenarios) {
       if (scenario.getName().equals(usageScenarioName)) {
         return scenario;
@@ -134,30 +134,30 @@ public abstract class LoadTestModel {
     throw new RuntimeException("UsageScenario not found: " + usageScenarioName);
   }
 
-  public XYSeriesCollection getWorkRequestsDataset() {
+  public final XYSeriesCollection getWorkRequestsDataset() {
     return workRequestsCollection;
   }
 
-  public XYSeriesCollection getThinkTimeDataset() {
+  public final XYSeriesCollection getThinkTimeDataset() {
     return thinkTimeCollection;
   }
 
-  public XYSeriesCollection getNumberOfApplicationsDataset() {
+  public final XYSeriesCollection getNumberOfApplicationsDataset() {
     return numberOfApplicationsCollection;
   }
 
-  public XYSeriesCollection getUsageScenarioDataset() {
+  public final XYSeriesCollection getUsageScenarioDataset() {
     return usageScenarioCollection;
   }
 
-  public XYSeriesCollection getMemoryUsageDataset() {
+  public final XYSeriesCollection getMemoryUsageDataset() {
     return memoryUsageCollection;
   }
 
   /**
    * Resets the accumulated chart data
    */
-  public void resetChartData() {
+  public final void resetChartData() {
     workRequestsSeries.clear();
     delayedWorkRequestsSeries.clear();
     minimumThinkTimeSeries.clear();
@@ -171,11 +171,11 @@ public abstract class LoadTestModel {
     }
   }
 
-  public int getWarningTime() {
+  public final int getWarningTime() {
     return warningTime;
   }
 
-  public void setWarningTime(int warningTime) {
+  public final void setWarningTime(int warningTime) {
     if (warningTime <= 0) {
       throw new IllegalArgumentException("Warning time must be a positive integer");
     }
@@ -186,11 +186,11 @@ public abstract class LoadTestModel {
     }
   }
 
-  public int getUpdateInterval() {
+  public final int getUpdateInterval() {
     return updateInterval;
   }
 
-  public void setUpdateInterval(final int updateInterval) {
+  public final void setUpdateInterval(final int updateInterval) {
     if (updateInterval < 0) {
       throw new IllegalArgumentException("Update interval must be a positive integer");
     }
@@ -205,15 +205,15 @@ public abstract class LoadTestModel {
   /**
    * @return the number of active applications
    */
-  public int getApplicationCount() {
+  public final int getApplicationCount() {
     return applications.size();
   }
 
-  public int getApplicationBatchSize() {
+  public final int getApplicationBatchSize() {
     return applicationBatchSize;
   }
 
-  public void setApplicationBatchSize(int applicationBatchSize) {
+  public final void setApplicationBatchSize(int applicationBatchSize) {
     if (applicationBatchSize <= 0) {
       throw new IllegalArgumentException("Application batch size must be a positive integer");
     }
@@ -222,13 +222,13 @@ public abstract class LoadTestModel {
     evtApplicationBatchSizeChanged.fire();
   }
 
-  public void addApplications() throws Exception {
+  public final void addApplications() throws Exception {
     for (int i = 0; i < applicationBatchSize; i++) {
       addApplication();
     }
   }
 
-  public void removeApplications() throws Exception {
+  public final void removeApplications() throws Exception {
     for (int i = 0; i < applicationBatchSize && !applications.isEmpty(); i++) {
       removeApplication();
     }
@@ -237,28 +237,28 @@ public abstract class LoadTestModel {
   /**
    * @return true if the load testing is paused
    */
-  public boolean isPaused() {
+  public final boolean isPaused() {
     return this.paused;
   }
 
   /**
    * @param value true if load testing should be paused
    */
-  public void setPaused(final boolean value) {
+  public final void setPaused(final boolean value) {
     this.paused = value;
     evtPausedChanged.fire();
   }
 
-  public boolean isCollectChartData() {
+  public final boolean isCollectChartData() {
     return collectChartData;
   }
 
-  public void setCollectChartData(final boolean value) {
+  public final void setCollectChartData(final boolean value) {
     this.collectChartData = value;
     evtCollectChartDataChanged.fire();
   }
 
-  public void exit() {
+  public final void exit() {
     paused = false;
     stopped = true;
     synchronized (applications) {
@@ -271,14 +271,14 @@ public abstract class LoadTestModel {
   /**
    * @return the maximum number of milliseconds that should pass between work requests
    */
-  public int getMaximumThinkTime() {
+  public final int getMaximumThinkTime() {
     return this.maximumThinkTime;
   }
 
   /**
    * @param maximumThinkTime the maximum number of milliseconds that should pass between work requests
    */
-  public void setMaximumThinkTime(int maximumThinkTime) {
+  public final void setMaximumThinkTime(int maximumThinkTime) {
     if (maximumThinkTime <= 0) {
       throw new IllegalArgumentException("Maximum think time must be a positive integer");
     }
@@ -290,14 +290,14 @@ public abstract class LoadTestModel {
   /**
    * @return the minimum number of milliseconds that should pass between work requests
    */
-  public int getMinimumThinkTime() {
+  public final int getMinimumThinkTime() {
     return this.minimumThinkTime;
   }
 
   /**
    * @param minimumThinkTime the minimum number of milliseconds that should pass between work requests
    */
-  public void setMinimumThinkTime(int minimumThinkTime) {
+  public final void setMinimumThinkTime(int minimumThinkTime) {
     if (minimumThinkTime < 0) {
       throw new IllegalArgumentException("Minimum think time must be a positive integer");
     }
@@ -306,11 +306,11 @@ public abstract class LoadTestModel {
     evtMinimumThinkTimeChanged.fire();
   }
 
-  public int getLoginDelayFactor() {
+  public final int getLoginDelayFactor() {
     return this.loginDelayFactor;
   }
 
-  public void setLoginDelayFactor(final int loginDelayFactor) {
+  public final void setLoginDelayFactor(final int loginDelayFactor) {
     if (loginDelayFactor < 0) {
       throw new IllegalArgumentException("Login delay factor must be a positive integer");
     }
@@ -319,35 +319,35 @@ public abstract class LoadTestModel {
     evtLoginDelayFactorChanged.fire();
   }
 
-  public Event eventApplicationBatchSizeChanged() {
+  public final Event eventApplicationBatchSizeChanged() {
     return evtApplicationBatchSizeChanged;
   }
 
-  public Event eventApplicationCountChanged() {
+  public final Event eventApplicationCountChanged() {
     return evtApplicationtCountChanged;
   }
 
-  public Event eventDoneExiting() {
+  public final Event eventDoneExiting() {
     return evtDoneExiting;
   }
 
-  public Event eventMaximumThinkTimeChanged() {
+  public final Event eventMaximumThinkTimeChanged() {
     return evtMaximumThinkTimeChanged;
   }
 
-  public Event eventMinimumThinkTimeChanged() {
+  public final Event eventMinimumThinkTimeChanged() {
     return evtMinimumThinkTimeChanged;
   }
 
-  public Event eventPausedChanged() {
+  public final Event eventPausedChanged() {
     return evtPausedChanged;
   }
 
-  public Event eventCollectChartDataChanged() {
+  public final Event eventCollectChartDataChanged() {
     return evtCollectChartDataChanged;
   }
 
-  public Event eventWarningTimeChanged() {
+  public final Event eventWarningTimeChanged() {
     return evtWarningTimeChanged;
   }
 
@@ -381,11 +381,11 @@ public abstract class LoadTestModel {
    * @throws InterruptedException in case the sleep is interrupted
    * @see #getThinkTime()
    */
-  protected void think() throws InterruptedException {
+  protected final void think() throws InterruptedException {
     Thread.sleep(getThinkTime());
   }
 
-  protected int getThinkTime() {
+  protected final int getThinkTime() {
     final int time = minimumThinkTime - maximumThinkTime;
     return time > 0 ? RANDOM.nextInt(time) + minimumThinkTime : minimumThinkTime;
   }

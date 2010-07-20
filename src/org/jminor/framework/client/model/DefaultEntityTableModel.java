@@ -8,7 +8,6 @@ import org.jminor.common.db.exception.DbException;
 import org.jminor.common.model.AbstractFilteredTableModel;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
-import org.jminor.common.model.FilterCriteria;
 import org.jminor.common.model.SortingDirective;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
@@ -131,6 +130,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
     this.entityID = entityID;
     this.dbProvider = dbProvider;
     this.searchModel = searchModel;
+    setFilterCriteria(searchModel);
     bindEventsInternal();
     bindEvents();
   }
@@ -284,11 +284,6 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
 
   public boolean isReadOnly() {
     return editModel == null || EntityRepository.isReadOnly(entityID);
-  }
-
-  @Override
-  public FilterCriteria<Entity> getFilterCriteria() {
-    return searchModel;
   }
 
   /**
@@ -537,11 +532,6 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
 
   public Property getColumnProperty(final int columnIndex) {
     return (Property) getColumnModel().getColumn(columnIndex).getIdentifier();
-  }
-
-  @Override
-  public EntityTableColumnModel getColumnModel() {
-    return (EntityTableColumnModel) super.getColumnModel();
   }
 
   public Iterator<Entity> getSelectedEntitiesIterator() {

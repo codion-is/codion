@@ -10,7 +10,7 @@ import java.util.Properties;
 /**
  * A Database implementation based on the HSQL database.
  */
-public class HSQLDatabase extends AbstractDatabase {
+public final class HSQLDatabase extends AbstractDatabase {
 
   public HSQLDatabase() {
     super(HSQL);

@@ -19,7 +19,7 @@ import java.util.UUID;
  * Date: 7.12.2007<br>
  * Time: 12:07:44<br>
  */
-public class ServerLog implements Serializable {
+public final class ServerLog implements Serializable {
 
   private static final long serialVersionUID = 1;
 

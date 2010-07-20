@@ -34,11 +34,11 @@ public abstract class AbstractTableColumnSyncPanel extends JPanel {
     this.verticalFiller = new Box.Filler(fillerSize, fillerSize, fillerSize);
   }
 
-  public TableColumnModel getColumnModel() {
+  public final TableColumnModel getColumnModel() {
     return columnModel;
   }
 
-  public Map<TableColumn, JPanel> getColumnPanels() {
+  public final Map<TableColumn, JPanel> getColumnPanels() {
     if (columnPanels == null) {
       columnPanels = initializeColumnPanels();
       bindColumnAndPanelSizes();
@@ -51,7 +51,7 @@ public abstract class AbstractTableColumnSyncPanel extends JPanel {
    * Sets the width of the rightmost vertical filler
    * @param width the required width
    */
-  public void setVerticalFillerWidth(final int width) {
+  public final void setVerticalFillerWidth(final int width) {
     final Dimension dimension = new Dimension(width, verticalFiller.getHeight());
     verticalFiller.changeShape(dimension, dimension, dimension);
     resetPanel();
@@ -59,7 +59,7 @@ public abstract class AbstractTableColumnSyncPanel extends JPanel {
 
   protected abstract Map<TableColumn, JPanel> initializeColumnPanels();
 
-  protected void resetPanel() {
+  protected final void resetPanel() {
     removeAll();
     final Enumeration<TableColumn> columnEnumeration = columnModel.getColumns();
     while (columnEnumeration.hasMoreElements()) {

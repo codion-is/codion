@@ -695,7 +695,7 @@ public final class EntityCriteriaUtil {
     }
   }
 
-  private static class ForeignKeyCriteria implements Criteria<Property.ColumnProperty>, Serializable {
+  private static final class ForeignKeyCriteria implements Criteria<Property.ColumnProperty>, Serializable {
 
     private static final long serialVersionUID = 1;
 

@@ -10,7 +10,7 @@ import java.io.Serializable;
  * Date: 14.7.2010<br>
  * Time: 23:12:21
  */
-public class ConnectionPoolStateImpl implements ConnectionPoolState, Serializable {
+public final class ConnectionPoolStateImpl implements ConnectionPoolState, Serializable {
 
   private static final long serialVersionUID = 1;
 

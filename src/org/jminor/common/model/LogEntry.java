@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * A class encapsulating a log entry for logging method calls.
  */
-public class LogEntry implements Serializable, Comparable<LogEntry> {
+public final class LogEntry implements Serializable, Comparable<LogEntry> {
 
   private static final long serialVersionUID = 1;
   private static final ThreadLocal<DateFormat> TIMESTAMP_FORMAT = DateUtil.getThreadLocalDateFormat(DateFormats.EXACT_TIMESTAMP);

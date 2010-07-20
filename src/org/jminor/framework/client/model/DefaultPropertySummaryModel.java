@@ -33,14 +33,12 @@ public class DefaultPropertySummaryModel implements PropertySummaryModel {
 
   private final Property property;
   private final PropertyValueProvider valueProvider;
-  private final Format format;
 
   private SummaryType summaryType = SummaryType.NONE;
 
   public DefaultPropertySummaryModel(final Property property, final PropertyValueProvider valueProvider) {
     this.property = property;
     this.valueProvider = valueProvider;
-    this.format = initializeFormat(property);
     this.valueProvider.bindValuesChangedEvent(evtSummaryChanged);
     evtSummaryTypeChanged.addListener(evtSummaryChanged);
   }
@@ -48,14 +46,14 @@ public class DefaultPropertySummaryModel implements PropertySummaryModel {
   /**
    * @return the Property this summary model is based on
    */
-  public Property getProperty() {
+  public final Property getProperty() {
     return property;
   }
 
   /**
    * @param summaryType the type of summary to show
    */
-  public void setSummaryType(final SummaryType summaryType) {
+  public final void setSummaryType(final SummaryType summaryType) {
     Util.rejectNullValue(summaryType, "summaryType");
     if (!this.summaryType.equals(summaryType)) {
       this.summaryType = summaryType;
@@ -63,11 +61,11 @@ public class DefaultPropertySummaryModel implements PropertySummaryModel {
     }
   }
 
-  public SummaryType getSummaryType() {
+  public final SummaryType getSummaryType() {
     return summaryType;
   }
 
-  public List<SummaryType> getSummaryTypes() {
+  public final List<SummaryType> getSummaryTypes() {
     if (property.isNumerical()) {
       return Arrays.asList(SummaryType.NONE, SummaryType.SUM, SummaryType.AVERAGE, SummaryType.MINIMUM, SummaryType.MAXIMUM, SummaryType.MINIMUM_MAXIMUM);
     }
@@ -75,42 +73,38 @@ public class DefaultPropertySummaryModel implements PropertySummaryModel {
     return new ArrayList<SummaryType>();
   }
 
-  public String getSummaryText() {
+  public final String getSummaryText() {
     switch (summaryType) {
       case NONE:
-        return NONE.getSummary(valueProvider, property, format);
+        return NONE.getSummary(valueProvider, property);
       case AVERAGE:
-        return AVERAGE.getSummary(valueProvider, property, format);
+        return AVERAGE.getSummary(valueProvider, property);
       case MAXIMUM:
-        return MAXIMUM.getSummary(valueProvider, property, format);
+        return MAXIMUM.getSummary(valueProvider, property);
       case MINIMUM:
-        return MINIMUM.getSummary(valueProvider, property, format);
+        return MINIMUM.getSummary(valueProvider, property);
       case MINIMUM_MAXIMUM:
-        return MINIMUM_MAXIMUM.getSummary(valueProvider, property, format);
+        return MINIMUM_MAXIMUM.getSummary(valueProvider, property);
       case SUM:
-        return SUM.getSummary(valueProvider, property, format);
+        return SUM.getSummary(valueProvider, property);
       default:
         throw new RuntimeException("Unknown SummaryType: " + summaryType);
     }
   }
 
-  public Event eventSummaryChanged() {
+  public final Event eventSummaryChanged() {
     return evtSummaryChanged;
   }
 
-  public Event eventSummaryTypeChanged() {
+  public final Event eventSummaryTypeChanged() {
     return evtSummaryTypeChanged;
-  }
-
-  public Format initializeFormat(final Property property) {
-    return property.getFormat();
   }
 
   /**
    * Provides a String containing a summary value based on a collection of values.
    */
   private abstract static class Summary {
-    abstract String getSummary(final PropertyValueProvider valueProvider, final Property property, final Format format);
+    abstract String getSummary(final PropertyValueProvider valueProvider, final Property property);
 
     String addSubsetIndicator(final String txt, final PropertyValueProvider valueProvider) {
       return txt.length() > 0 ? txt + (valueProvider.isValueSubset() ? "*" : "") : txt;
@@ -124,7 +118,7 @@ public class DefaultPropertySummaryModel implements PropertySummaryModel {
       return FrameworkMessages.get(FrameworkMessages.NONE);
     }
 
-    public String getSummary(final PropertyValueProvider valueProvider, final Property property, final Format format) {
+    public String getSummary(final PropertyValueProvider valueProvider, final Property property) {
       return "";
     }
   }
@@ -136,7 +130,8 @@ public class DefaultPropertySummaryModel implements PropertySummaryModel {
       return FrameworkMessages.get(FrameworkMessages.SUM);
     }
 
-    public String getSummary(final PropertyValueProvider valueProvider, final Property property, final Format format) {
+    public String getSummary(final PropertyValueProvider valueProvider, final Property property) {
+      final Format format = property.getFormat();
       String txt = "";
       if (property.isInteger()) {
         long sum = 0;
@@ -164,7 +159,8 @@ public class DefaultPropertySummaryModel implements PropertySummaryModel {
       return FrameworkMessages.get(FrameworkMessages.AVERAGE);
     }
 
-    public String getSummary(final PropertyValueProvider valueProvider, final Property property, final Format format) {
+    public String getSummary(final PropertyValueProvider valueProvider, final Property property) {
+      final Format format = property.getFormat();
       String txt = "";
       if (property.isInteger()) {
         double sum = 0;
@@ -200,7 +196,8 @@ public class DefaultPropertySummaryModel implements PropertySummaryModel {
       return FrameworkMessages.get(FrameworkMessages.MINIMUM);
     }
 
-    public String getSummary(final PropertyValueProvider valueProvider, final Property property, final Format format) {
+    public String getSummary(final PropertyValueProvider valueProvider, final Property property) {
+      final Format format = property.getFormat();
       String txt = "";
       if (property.isInteger()) {
         int min = Integer.MAX_VALUE;
@@ -232,7 +229,8 @@ public class DefaultPropertySummaryModel implements PropertySummaryModel {
       return FrameworkMessages.get(FrameworkMessages.MAXIMUM);
     }
 
-    public String getSummary(final PropertyValueProvider valueProvider, final Property property, final Format format) {
+    public String getSummary(final PropertyValueProvider valueProvider, final Property property) {
+      final Format format = property.getFormat();
       String txt = "";
       if (property.isInteger()) {
         int max = Integer.MIN_VALUE;
@@ -264,7 +262,8 @@ public class DefaultPropertySummaryModel implements PropertySummaryModel {
       return FrameworkMessages.get(FrameworkMessages.MINIMUM_AND_MAXIMUM);
     }
 
-    public String getSummary(final PropertyValueProvider valueProvider, final Property property, final Format format) {
+    public String getSummary(final PropertyValueProvider valueProvider, final Property property) {
+      final Format format = property.getFormat();
       String txt = "";
       if (property.isInteger()) {
         int min = Integer.MAX_VALUE;

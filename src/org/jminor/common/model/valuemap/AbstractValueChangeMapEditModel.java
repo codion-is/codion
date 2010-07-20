@@ -50,31 +50,31 @@ public abstract class AbstractValueChangeMapEditModel<K, V> implements ValueChan
     bindEventsInternal();
   }
 
-  public V getValue(final K key) {
+  public final V getValue(final K key) {
     return valueMap.getValue(key);
   }
 
-  public void setValue(final K key, final V value) {
+  public final void setValue(final K key, final V value) {
     Util.rejectNullValue(key, "key");
     final boolean initialization = valueMap.containsValue(key);
-    final V oldValue = getValue(key);
-    final V newValue = doSetValue(key, value);
+    final V oldValue = valueMap.getValue(key);
+    valueMap.setValue(key, value);
 
-    if (!Util.equal(newValue, oldValue)) {
-      notifyValueSet(key, new ValueChangeEvent<K, V>(this, valueMap, key, newValue, oldValue, false, initialization));
+    if (!Util.equal(value, oldValue)) {
+      notifyValueSet(key, new ValueChangeEvent<K, V>(this, valueMap, key, value, oldValue, false, initialization));
     }
   }
 
-  public boolean isValueNull(final K key) {
+  public final boolean isValueNull(final K key) {
     return valueMap.isValueNull(key);
   }
 
-  public void setValueMap(final ValueMap<K, V> valueMap) {
+  public final void setValueMap(final ValueMap<K, V> valueMap) {
     this.valueMap.setAs(valueMap == null ? getDefaultValueMap() : valueMap);
     evtValueMapSet.fire();
   }
 
-  public boolean isValid(final K key, final int action) {
+  public final boolean isValid(final K key, final int action) {
     Util.rejectNullValue(key, "key");
     try {
       validate(key, action);
@@ -85,7 +85,7 @@ public abstract class AbstractValueChangeMapEditModel<K, V> implements ValueChan
     }
   }
 
-  public Event getValueSetEvent(final K key) {
+  public final Event getValueSetEvent(final K key) {
     Util.rejectNullValue(key, "key");
     if (!valueSetEventMap.containsKey(key)) {
       valueSetEventMap.put(key, new Event());
@@ -94,7 +94,7 @@ public abstract class AbstractValueChangeMapEditModel<K, V> implements ValueChan
     return valueSetEventMap.get(key);
   }
 
-  public Event getValueChangeEvent(final K key) {
+  public final Event getValueChangeEvent(final K key) {
     Util.rejectNullValue(key, "key");
     if (!valueChangeEventMap.containsKey(key)) {
       valueChangeEventMap.put(key, new Event());
@@ -103,30 +103,18 @@ public abstract class AbstractValueChangeMapEditModel<K, V> implements ValueChan
     return valueChangeEventMap.get(key);
   }
 
-  public Event eventValueMapSet() {
+  public final Event eventValueMapSet() {
     return evtValueMapSet;
   }
 
-  public State stateModified() {
+  public final State stateModified() {
     return valueMap.stateModified();
-  }
-
-  /**
-   * Sets the value in the underlying value map
-   * @param key the key for which to set the value
-   * @param value the value
-   * @return the value that was just set
-   */
-  protected V doSetValue(final K key, final V value) {
-    valueMap.setValue(key, value);
-
-    return value;
   }
 
   /**
    * @return the value map instance being edited
    */
-  protected ValueChangeMap<K, V> getValueMap() {
+  protected final ValueChangeMap<K, V> getValueMap() {
     return valueMap;
   }
 
@@ -135,7 +123,7 @@ public abstract class AbstractValueChangeMapEditModel<K, V> implements ValueChan
    * @param key the key
    * @param event the event describing the value change
    */
-  protected void notifyValueSet(final K key, final ValueChangeEvent event) {
+  private void notifyValueSet(final K key, final ValueChangeEvent event) {
     getValueSetEvent(key).fire(event);
   }
 

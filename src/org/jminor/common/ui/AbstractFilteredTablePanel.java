@@ -101,7 +101,7 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
   /**
    * @return the JTable instance
    */
-  public JTable getJTable() {
+  public final JTable getJTable() {
     return table;
   }
 
@@ -109,22 +109,22 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
    * @return the text field used to enter a search critieria
    * @see #initializeSearchField()
    */
-  public JTextField getSearchField() {
+  public final JTextField getSearchField() {
     return searchField;
   }
 
-  public JScrollPane getTableScrollPane() {
+  public final JScrollPane getTableScrollPane() {
     return tableScrollPane;
   }
 
-  public void scrollToCoordinate(final int row, final int column) {
+  public final void scrollToCoordinate(final int row, final int column) {
     table.scrollRectToVisible(table.getCellRect(row, column, true));
   }
 
   /**
    * @return a control for showing the column selection dialog
    */
-  public Control getSelectColumnsControl() {
+  public final Control getSelectColumnsControl() {
     return ControlFactory.methodControl(this, "selectTableColumns",
             Messages.get(Messages.SELECT_COLUMNS) + "...", null,
             Messages.get(Messages.SELECT_COLUMNS));
@@ -133,7 +133,7 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
   /**
    * Shows a dialog for selecting which columns to show/hide
    */
-  public void selectTableColumns() {
+  public final void selectTableColumns() {
     final List<TableColumn> allColumns = Collections.list(tableModel.getColumnModel().getColumns());
     allColumns.addAll(tableModel.getHiddenColumns());
     Collections.sort(allColumns, new Comparator<TableColumn>() {
@@ -161,7 +161,13 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
     }
   }
 
-  protected JTextField initializeSearchField() {
+  /**
+   * Initializes the JTable instance
+   * @return the JTable instance
+   */
+  protected abstract JTable initializeJTable();
+
+  private JTextField initializeSearchField() {
     final JTextField txtSearch = new JTextField();
     txtSearch.setBackground((Color) UIManager.getLookAndFeel().getDefaults().get("TextField.inactiveBackground"));
     txtSearch.setBorder(BorderFactory.createLineBorder(txtSearch.getForeground(), 1));
@@ -223,12 +229,6 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
     }
   }
 
-  /**
-   * Initializes the JTable instance
-   * @return the JTable instance
-   */
-  protected abstract JTable initializeJTable();
-
   private JPopupMenu initializeSearchFieldPopupMenu() {
     final JPopupMenu popupMenu = new JPopupMenu();
     popupMenu.add(new AbstractAction(Messages.get(Messages.SETTINGS)) {
@@ -264,7 +264,7 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
     });
   }
 
-  private class MouseSortHandler extends MouseAdapter {
+  private final class MouseSortHandler extends MouseAdapter {
     @Override
     public void mouseClicked(MouseEvent e) {
       if (e.getButton() != MouseEvent.BUTTON1) {
@@ -319,7 +319,7 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
     }
   }
 
-  private static class Arrow implements Icon {
+  private static final class Arrow implements Icon {
     private boolean descending;
     private int size;
     private int priority;
@@ -372,7 +372,7 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
     }
   }
 
-  private class SortableHeaderRenderer implements TableCellRenderer {
+  private final class SortableHeaderRenderer implements TableCellRenderer {
     private TableCellRenderer tableCellRenderer;
 
     private SortableHeaderRenderer(TableCellRenderer tableCellRenderer) {

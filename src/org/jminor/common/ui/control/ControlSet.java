@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * A set of Actions/Controls, includes separators.
  */
-public class ControlSet extends Control {
+public final class ControlSet extends Control {
 
   private final List<Action> actions = new ArrayList<Action>();
 

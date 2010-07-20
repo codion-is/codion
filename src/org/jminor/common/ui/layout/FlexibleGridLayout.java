@@ -13,7 +13,7 @@ import java.awt.Insets;
  * Grid Layout which allows components of different sizes.
  * @author unknown
  */
-public class FlexibleGridLayout extends GridLayout {
+public final class FlexibleGridLayout extends GridLayout {
 
   private boolean fixedRowHeights = false;
   private boolean fixedColumnWidths = false;

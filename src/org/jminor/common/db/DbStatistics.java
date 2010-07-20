@@ -5,7 +5,7 @@ package org.jminor.common.db;
 
 import java.io.Serializable;
 
-public class DbStatistics implements DatabaseStatistics, Serializable {
+public final class DbStatistics implements DatabaseStatistics, Serializable {
 
   private static final long serialVersionUID = 1;
 

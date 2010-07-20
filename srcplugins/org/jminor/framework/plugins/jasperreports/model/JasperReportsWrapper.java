@@ -26,7 +26,7 @@ import java.util.Map;
  * Date: 23.5.2010<br>
  * Time: 21:16:12
  */
-public class JasperReportsWrapper implements ReportWrapper<JasperPrint>, Serializable {
+public final class JasperReportsWrapper implements ReportWrapper<JasperPrint>, Serializable {
   private static final long serialVersionUID = 1;
   private final JasperReport report;
   private final Map reportParameters;

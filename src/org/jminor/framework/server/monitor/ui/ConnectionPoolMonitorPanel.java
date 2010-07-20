@@ -37,7 +37,7 @@ import java.text.NumberFormat;
  * Date: 4.12.2007<br>
  * Time: 22:49:27<br>
  */
-public class ConnectionPoolMonitorPanel extends JPanel {
+public final class ConnectionPoolMonitorPanel extends JPanel {
 
   private final ConnectionPoolMonitor model;
 

@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
  * Date: 27.6.2010<br>
  * Time: 20:11:27
  */
-public class RegexFilterCriteria<T> implements FilterCriteria<T> {
+public final class RegexFilterCriteria<T> implements FilterCriteria<T> {
 
   private final Pattern pattern;
 

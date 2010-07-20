@@ -17,7 +17,7 @@ import java.util.Properties;
 /**
  * A class responsible for managing a local db connection.
  */
-public class EntityDbLocalProvider extends AbstractEntityDbProvider {
+public final class EntityDbLocalProvider extends AbstractEntityDbProvider {
 
   private static final Logger LOG = Util.getLogger(EntityDbLocalProvider.class);
 
@@ -51,12 +51,12 @@ public class EntityDbLocalProvider extends AbstractEntityDbProvider {
 
   public void disconnect() {
     try {
-      if (entityDb != null && entityDb.isConnectionValid()) {
-        entityDb.disconnect();
-        if (((EntityDbConnection) entityDb).getDatabase().isEmbedded()) {
-          ((EntityDbConnection) entityDb).getDatabase().shutdownEmbedded(connectionProperties);
+      if (getEntityDbInternal() != null && getEntityDbInternal().isConnectionValid()) {
+        getEntityDbInternal().disconnect();
+        if (((EntityDbConnection) getEntityDbInternal()).getDatabase().isEmbedded()) {
+          ((EntityDbConnection) getEntityDbInternal()).getDatabase().shutdownEmbedded(connectionProperties);
         }
-        entityDb = null;
+        setEntityDb(null);
       }
     }
     catch (Exception e) {
@@ -78,7 +78,7 @@ public class EntityDbLocalProvider extends AbstractEntityDbProvider {
   @Override
   protected boolean isConnectionValid() {
     try {
-      return entityDb.isConnectionValid();
+      return getEntityDbInternal().isConnectionValid();
     }
     catch (Exception e) {
       throw new RuntimeException(e);

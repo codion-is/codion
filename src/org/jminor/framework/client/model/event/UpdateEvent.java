@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * An event describing a update action.
  */
-public class UpdateEvent extends ActionEvent {
+public final class UpdateEvent extends ActionEvent {
 
   private final List<Entity> updatedEntities;
   private final boolean primaryKeyModified;

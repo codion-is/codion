@@ -5,11 +5,14 @@ package org.jminor.common.db;
 
 import org.jminor.common.db.exception.DbException;
 import org.jminor.common.db.pool.PoolableConnection;
+import org.jminor.common.model.User;
 
 import java.sql.SQLException;
 import java.util.List;
 
 public interface DbConnection extends PoolableConnection {
+
+  User getUser();
 
   List query(final String sql, final ResultPacker resultPacker, final int fetchCount) throws SQLException;
 

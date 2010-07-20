@@ -77,18 +77,18 @@ public class DbConnectionImpl implements DbConnection {
    * Sets the time this connection was checked into a connection pool
    * @param time the time this connection was pooled
    */
-  public void setPoolTime(final long time) {
+  public final void setPoolTime(final long time) {
     this.poolTime = time;
   }
 
   /**
    * @return the time at which this connection was pooled
    */
-  public long getPoolTime() {
+  public final long getPoolTime() {
     return poolTime;
   }
 
-  public void setPoolRetryCount(final int poolRetryCount) {
+  public final void setPoolRetryCount(final int poolRetryCount) {
     this.poolRetryCount = poolRetryCount;
   }
 
@@ -104,18 +104,18 @@ public class DbConnectionImpl implements DbConnection {
   /**
    * @return the connection user
    */
-  public User getUser() {
+  public final User getUser() {
     return user;
   }
 
-  public void setLoggingEnabled(final boolean enabled) {
+  public final void setLoggingEnabled(final boolean enabled) {
     methodLogger.setEnabled(enabled);
   }
 
   /**
    * @return true if the connection is valid
    */
-  public boolean isConnectionValid() {
+  public final boolean isConnectionValid() {
     try {
       return connection != null && database.supportsIsValid() ? connection.isValid(0) : checkConnection();
     }
@@ -128,7 +128,7 @@ public class DbConnectionImpl implements DbConnection {
   /**
    * Disconnects this DbConnection
    */
-  public void disconnect() {
+  public final void disconnect() {
     if (!isConnected()) {
       return;
     }
@@ -155,7 +155,7 @@ public class DbConnectionImpl implements DbConnection {
   /**
    * @return true if the connection is connected
    */
-  public boolean isConnected() {
+  public final boolean isConnected() {
     return connection != null;
   }
 
@@ -163,7 +163,7 @@ public class DbConnectionImpl implements DbConnection {
    * Begins a transaction on this connection
    * @throws IllegalStateException in case a transaction is already open
    */
-  public void beginTransaction() {
+  public final void beginTransaction() {
     if (transactionOpen) {
       throw new IllegalStateException("Transaction already open");
     }
@@ -178,7 +178,7 @@ public class DbConnectionImpl implements DbConnection {
    * @throws SQLException in case anything goes wrong during the rollback action
    * @throws IllegalStateException in case transaction is not open
    */
-  public void rollbackTransaction() throws SQLException {
+  public final void rollbackTransaction() throws SQLException {
     SQLException exception = null;
     try {
       if (!transactionOpen) {
@@ -203,7 +203,7 @@ public class DbConnectionImpl implements DbConnection {
    * @throws SQLException in case anything goes wrong during the commit action
    * @throws IllegalStateException in case transaction is not open
    */
-  public void commitTransaction() throws SQLException {
+  public final void commitTransaction() throws SQLException {
     try {
       if (!transactionOpen) {
         throw new IllegalStateException("Transaction is not open");
@@ -423,7 +423,7 @@ public class DbConnectionImpl implements DbConnection {
     }
   }
 
-  public Object executeCallableStatement(final String sqlStatement, final int outParameterType) throws SQLException {
+  public final Object executeCallableStatement(final String sqlStatement, final int outParameterType) throws SQLException {
     QUERY_COUNTER.count(sqlStatement);
     methodLogger.logAccess("executeCallableStatement", new Object[] {sqlStatement, outParameterType});
     final long time = System.currentTimeMillis();
@@ -537,7 +537,7 @@ public class DbConnectionImpl implements DbConnection {
   /**
    * @return the underlying Connection object
    */
-  public Connection getConnection() {
+  public final Connection getConnection() {
     if (!isConnected()) {
       throw new RuntimeException("Not connected");
     }
@@ -545,22 +545,22 @@ public class DbConnectionImpl implements DbConnection {
     return connection;
   }
 
-  public Database getDatabase() {
+  public final Database getDatabase() {
     return database;
+  }
+
+  public final List<LogEntry> getLogEntries() {
+    return methodLogger.getLogEntries();
+  }
+
+  protected final MethodLogger getMethodLogger() {
+    return methodLogger;
   }
 
   public static DatabaseStatistics getDatabaseStatistics() {
     return new DbStatistics(QUERY_COUNTER.getQueriesPerSecond(),
             QUERY_COUNTER.getSelectsPerSecond(), QUERY_COUNTER.getInsertsPerSecond(),
             QUERY_COUNTER.getDeletesPerSecond(), QUERY_COUNTER.getUpdatesPerSecond());
-  }
-
-  public List<LogEntry> getLogEntries() {
-    return methodLogger.getLogEntries();
-  }
-
-  protected MethodLogger getMethodLogger() {
-    return methodLogger;
   }
 
   private void setConnection(final Connection connection) throws SQLException {

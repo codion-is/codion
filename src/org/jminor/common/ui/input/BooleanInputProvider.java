@@ -11,7 +11,7 @@ import javax.swing.JComboBox;
 /**
  * A InputProvider implementation for boolean values.
  */
-public class BooleanInputProvider extends AbstractInputProvider<Boolean> {
+public final class BooleanInputProvider extends AbstractInputProvider<Boolean> {
 
   public BooleanInputProvider(final Boolean currentValue) {
     super(new JComboBox(new BooleanComboBoxModel()));

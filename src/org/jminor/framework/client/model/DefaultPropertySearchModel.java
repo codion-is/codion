@@ -47,6 +47,10 @@ public class DefaultPropertySearchModel extends AbstractSearchModel<Property.Col
             EntityCriteriaUtil.propertyCriteria(getSearchKey(), isCaseSensitive(), getSearchType(), getLowerBound(), getUpperBound());
   }
 
+  public boolean include(final Object object) {
+    return true;
+  }
+
   public void initialize() {}
 
   private String toString(final Object object) {

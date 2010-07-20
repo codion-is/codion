@@ -224,12 +224,6 @@ public class DefaultEntityTableModelTest {
     }
 
     @Override
-    public void refresh() {
-      clear();
-      addItems(performQuery(null), false);
-    }
-
-    @Override
     protected List<Entity> performQuery(final Criteria criteria) {
       return Arrays.asList(testEntities);
     }

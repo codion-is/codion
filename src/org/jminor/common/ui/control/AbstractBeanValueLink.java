@@ -39,12 +39,12 @@ public abstract class AbstractBeanValueLink extends AbstractValueLink<Object, Ob
   /**
    * @return the name of the linked property
    */
-  public String getPropertyName() {
+  public final String getPropertyName() {
     return propertyName;
   }
 
   @Override
-  public Object getModelValue() {
+  public final Object getModelValue() {
     try {
       return getMethod.invoke(getValueOwner());
     }
@@ -57,7 +57,7 @@ public abstract class AbstractBeanValueLink extends AbstractValueLink<Object, Ob
   }
 
   @Override
-  public void setModelValue(final Object value) {
+  public final void setModelValue(final Object value) {
     try {
       setMethod.invoke(getValueOwner(), value);
     }

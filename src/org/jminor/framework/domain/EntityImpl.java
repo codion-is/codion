@@ -289,8 +289,8 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
 
   public boolean propertyValuesEqual(final Entity entity) {
     Util.rejectNullValue(entity, "entity");
-    for (final Property property : EntityRepository.getDatabaseProperties(entity.getEntityID(), true, true, true, false)) {
-      if (!valuesEqual(getValue(property), entity.getValue(property))) {
+    for (final Property property : EntityRepository.getColumnProperties(entity.getEntityID(), true, true, true, false)) {
+      if (!Util.equal(getValue(property), entity.getValue(property))) {
         return false;
       }
     }
@@ -640,7 +640,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
   /**
    * A class representing column key objects for entities, contains the values for those columns.
    */
-  static class KeyImpl extends ValueMapImpl<String, Object> implements Entity.Key, Serializable {
+  static final class KeyImpl extends ValueMapImpl<String, Object> implements Entity.Key, Serializable {
 
     private static final long serialVersionUID = 1;
 

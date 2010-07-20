@@ -22,7 +22,7 @@ import java.util.List;
  * Handles packing Entity query results.
  * Loads all database property values except for foreign key properties (Property.ForeignKeyProperty).
  */
-public class EntityResultPacker implements ResultPacker<Entity> {
+public final class EntityResultPacker implements ResultPacker<Entity> {
 
   private final String entityID;
   private final Collection<Property.ColumnProperty> properties;

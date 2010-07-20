@@ -13,7 +13,7 @@ import javax.swing.text.PlainDocument;
 /**
  * A text field for doubles.
  */
-public class DoubleField extends IntField {
+public final class DoubleField extends IntField {
 
   public static final String POINT = ".";
   public static final String COMMA = ",";

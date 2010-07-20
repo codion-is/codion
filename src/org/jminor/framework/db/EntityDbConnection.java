@@ -46,7 +46,7 @@ import java.util.Set;
 /**
  * Implements the database layer accessible to the client.
  */
-public class EntityDbConnection extends DbConnectionImpl implements EntityDb {
+public final class EntityDbConnection extends DbConnectionImpl implements EntityDb {
 
   private static final Logger LOG = Util.getLogger(EntityDbConnection.class);
 
@@ -108,12 +108,9 @@ public class EntityDbConnection extends DbConnectionImpl implements EntityDb {
           entity.setValue(firstPrimaryKeyProperty, queryNewIdValue(entity.getEntityID(), idSource, firstPrimaryKeyProperty));
         }
 
-        addInsertProperties(entity, insertProperties);
+        addInsertProperties(entity, insertProperties, statementValues);
         insertQuery = getInsertSQL(entity.getEntityID(), insertProperties);
         statement = getConnection().prepareStatement(insertQuery);
-        for (final Property property : insertProperties) {
-          statementValues.add(entity.getValue(property));
-        }
 
         executePreparedUpdate(statement, insertQuery, statementValues, insertProperties);
 
@@ -171,11 +168,9 @@ public class EntityDbConnection extends DbConnectionImpl implements EntityDb {
             throw new DbException("Can not update an unmodified entity: " + entity);
           }
 
-          addUpdateProperties(entity, statementProperties);
+          addUpdateProperties(entity, statementProperties, statementValues);
           updateQuery = getUpdateSQL(entity, statementProperties, primaryKeyProperties);
-          for (final Property property : statementProperties) {
-            statementValues.add(entity.getValue(property.getPropertyID()));
-          }
+
           statementProperties.addAll(primaryKeyProperties);
           for (final Property.PrimaryKeyProperty primaryKeyProperty : primaryKeyProperties) {
             statementValues.add(entity.getOriginalValue(primaryKeyProperty.getPropertyID()));
@@ -515,7 +510,7 @@ public class EntityDbConnection extends DbConnectionImpl implements EntityDb {
     }
   }
 
-  protected EntityResultPacker getEntityResultPacker(final String entityID) {
+  private EntityResultPacker getEntityResultPacker(final String entityID) {
     EntityResultPacker packer = entityResultPackers.get(entityID);
     if (packer == null) {
       packer = new EntityResultPacker(entityID, EntityRepository.getColumnProperties(entityID),
@@ -526,7 +521,7 @@ public class EntityDbConnection extends DbConnectionImpl implements EntityDb {
     return packer;
   }
 
-  protected ResultPacker getPropertyResultPacker(final Property property) {
+  private ResultPacker getPropertyResultPacker(final Property property) {
     ResultPacker packer = propertyResultPackers.get(property.getType());
     if (packer == null) {
       packer  = new ResultPacker() {
@@ -561,7 +556,7 @@ public class EntityDbConnection extends DbConnectionImpl implements EntityDb {
    * @throws RecordNotFoundException in case the entity has been deleted
    * @throws RecordModifiedException in case the entity has been modified
    */
-  protected void lockAndCheckForUpdate(final Entity entity) throws DbException {
+  private void lockAndCheckForUpdate(final Entity entity) throws DbException {
     final Entity.Key originalKey = entity.getOriginalPrimaryKey();
     final Entity current = selectSingle(EntityCriteriaUtil.selectCriteria(originalKey).setSelectForUpdate(true).setFetchDepthForAll(0));
     for (final String propertyID : current.getValueKeys()) {
@@ -576,7 +571,7 @@ public class EntityDbConnection extends DbConnectionImpl implements EntityDb {
    * @param criteria the criteria
    * @throws DbException in case of a database exception
    */
-  protected void setForeignKeyValues(final List<Entity> entities, final EntitySelectCriteria criteria) throws DbException {
+  private void setForeignKeyValues(final List<Entity> entities, final EntitySelectCriteria criteria) throws DbException {
     if (entities == null || entities.isEmpty()) {
       return;
     }
@@ -600,7 +595,7 @@ public class EntityDbConnection extends DbConnectionImpl implements EntityDb {
     }
   }
 
-  protected int queryNewIdValue(final String entityID, final IdSource idSource, final Property.PrimaryKeyProperty primaryKeyProperty) throws DbException {
+  private int queryNewIdValue(final String entityID, final IdSource idSource, final Property.PrimaryKeyProperty primaryKeyProperty) throws DbException {
     String sql;
     switch (idSource) {
       case MAX_PLUS_ONE:
@@ -625,7 +620,7 @@ public class EntityDbConnection extends DbConnectionImpl implements EntityDb {
   }
 
   private void executePreparedUpdate(final PreparedStatement statement, final String sqlStatement,
-                                     final List<?> values, final List<? extends Property> properties) throws SQLException {
+                                     final List<?> values, final List<Property.ColumnProperty> properties) throws SQLException {
     SQLException exception = null;
     try {
       QUERY_COUNTER.count(sqlStatement);
@@ -714,7 +709,7 @@ public class EntityDbConnection extends DbConnectionImpl implements EntityDb {
   }
 
   private static void setParameterValues(final PreparedStatement statement, final List<?> values,
-                                         final List<? extends Property> parameterProperties) throws SQLException {
+                                         final List<Property.ColumnProperty> parameterProperties) throws SQLException {
     if (values == null || values.isEmpty() || statement.getParameterMetaData().getParameterCount() == 0) {
       return;
     }
@@ -924,12 +919,15 @@ public class EntityDbConnection extends DbConnectionImpl implements EntityDb {
    * Returns the properties used when inserting an instance of this entity, leaving out properties with null values
    * @param entity the entity
    * @param properties the properties are added to this collection
+   * @param values the values are added to this collection
    */
-  private static void addInsertProperties(final Entity entity, final Collection<Property.ColumnProperty> properties) {
-    for (final Property.ColumnProperty property : EntityRepository.getDatabaseProperties(entity.getEntityID(),
+  private static void addInsertProperties(final Entity entity, final Collection<Property.ColumnProperty> properties,
+                                          final Collection<Object> values) {
+    for (final Property.ColumnProperty property : EntityRepository.getColumnProperties(entity.getEntityID(),
             EntityRepository.getIdSource(entity.getEntityID()) != IdSource.AUTO_INCREMENT, false, true, false, false)) {
       if (!entity.isValueNull(property.getPropertyID())) {
         properties.add(property);
+        values.add(entity.getValue(property));
       }
     }
   }
@@ -938,11 +936,15 @@ public class EntityDbConnection extends DbConnectionImpl implements EntityDb {
    * @param entity the Entity instance
    * @param properties the collection to add the properties to
    * @return the properties used to update this entity, properties that have had their values modified that is
+   * @param values the values are added to this collection
    */
-  private static Collection<Property.ColumnProperty> addUpdateProperties(final Entity entity, final Collection<Property.ColumnProperty> properties) {
-    for (final Property.ColumnProperty property : EntityRepository.getDatabaseProperties(entity.getEntityID(), true, false, false, false)) {
+  private static Collection<Property.ColumnProperty> addUpdateProperties(final Entity entity,
+                                                                         final Collection<Property.ColumnProperty> properties,
+                                                                         final Collection<Object> values) {
+    for (final Property.ColumnProperty property : EntityRepository.getColumnProperties(entity.getEntityID(), true, false, false, false)) {
       if (entity.isModified(property.getPropertyID())) {
         properties.add(property);
+        values.add(entity.getValue(property));
       }
     }
 

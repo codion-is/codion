@@ -32,7 +32,7 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V>, Serializable {
     values = new HashMap<K, V>(initialSize);
   }
 
-  public boolean containsValue(final K key) {
+  public final boolean containsValue(final K key) {
     return values.containsKey(key);
   }
 
@@ -61,7 +61,7 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V>, Serializable {
     return value.toString();
   }
 
-  public Collection<K> getValueKeys() {
+  public final Collection<K> getValueKeys() {
     return Collections.unmodifiableCollection(values.keySet());
   }
 
@@ -69,7 +69,7 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V>, Serializable {
     values.clear();
   }
 
-  public int size() {
+  public final int size() {
     return values.size();
   }
 
@@ -77,7 +77,7 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V>, Serializable {
     return new ValueMapImpl<K, V>();
   }
 
-  public ValueMap<K, V> getCopy() {
+  public final ValueMap<K, V> getCopy() {
     final ValueMap<K, V> copy = getInstance();
     copy.setAs(this);
 
@@ -94,11 +94,11 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V>, Serializable {
     }
   }
 
-  public V copyValue(final V value) {
+  public final V copyValue(final V value) {
     return value;
   }
 
-  public Collection<V> getValues() {
+  public final Collection<V> getValues() {
     return Collections.unmodifiableCollection(values.values());
   }
 
@@ -118,7 +118,7 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V>, Serializable {
     }
 
     for (final K key : otherMap.getValueKeys()) {
-      if (!containsValue(key) || !valuesEqual(otherMap.getValue(key), getValue(key))) {
+      if (!containsValue(key) || !Util.equal(otherMap.getValue(key), getValue(key))) {
         return false;
       }
     }
@@ -134,9 +134,5 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V>, Serializable {
     }
 
     return hash;
-  }
-
-  protected boolean valuesEqual(final V valueOne, final V valueTwo) {
-    return Util.equal(valueOne, valueTwo);
   }
 }

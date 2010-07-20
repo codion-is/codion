@@ -157,7 +157,7 @@ public final class NavigableImagePanel extends JPanel {
   /**
    * <p>Defines zoom devices.</p>
    */
-  public static class ZoomDevice {
+  public static final class ZoomDevice {
     /**
      * <p>Identifies that the panel does not implement zooming,
      * but the component using the panel does (programmatic zooming method).</p>

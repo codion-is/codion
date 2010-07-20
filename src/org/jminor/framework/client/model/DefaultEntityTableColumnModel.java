@@ -26,15 +26,15 @@ public class DefaultEntityTableColumnModel extends DefaultTableColumnModel imple
     initializeColumns();
   }
 
-  public String getEntityID() {
+  public final String getEntityID() {
     return entityID;
   }
 
-  public List<Property> getColumnProperties() {
+  public final List<Property> getColumnProperties() {
     return columnProperties;
   }
 
-  protected void initializeColumns() {
+  private void initializeColumns() {
     int i = 0;
     for (final Property property : columnProperties) {
       final TableColumn column = new TableColumn(i++);

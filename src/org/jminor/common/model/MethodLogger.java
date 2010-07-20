@@ -35,34 +35,34 @@ public class MethodLogger {
     setEnabled(enabled);
   }
 
-  public long getLastAccessDate() {
+  public final long getLastAccessDate() {
     return lastAccessDate;
   }
 
-  public String getLastAccessedMethod() {
+  public final String getLastAccessedMethod() {
     return lastAccessedMethod;
   }
 
-  public String getLastAccessMessage() {
+  public final String getLastAccessMessage() {
     return lastAccessMessage;
   }
 
-  public long getLastExitDate() {
+  public final long getLastExitDate() {
     return lastExitDate;
   }
 
-  public String getLastExitedMethod() {
+  public final String getLastExitedMethod() {
     return lastExitedMethod;
   }
 
-  public synchronized void reset() {
+  public final synchronized void reset() {
     for (final LogEntry entry : logEntries) {
       entry.reset();
     }
     currentLogEntryIndex = 0;
   }
 
-  public synchronized List<LogEntry> getLogEntries() {
+  public final synchronized List<LogEntry> getLogEntries() {
     final ArrayList<LogEntry> entries = new ArrayList<LogEntry>();
     if (!enabled) {
       entries.add(new LogEntry("Logging is not enabled", "", System.currentTimeMillis(), null));
@@ -78,7 +78,7 @@ public class MethodLogger {
     return entries;
   }
 
-  public void logAccess(final String method, final Object[] arguments) {
+  public final void logAccess(final String method, final Object[] arguments) {
     this.lastAccessDate = System.currentTimeMillis();
     this.lastAccessedMethod = method;
     if (enabled) {
@@ -87,11 +87,11 @@ public class MethodLogger {
     }
   }
 
-  public LogEntry logExit(final String method, final Throwable exception, final List<LogEntry> subLog) {
+  public final LogEntry logExit(final String method, final Throwable exception, final List<LogEntry> subLog) {
     return logExit(method, exception, subLog, null);
   }
 
-  public LogEntry logExit(final String method, final Throwable exception, final List<LogEntry> subLog,
+  public final LogEntry logExit(final String method, final Throwable exception, final List<LogEntry> subLog,
                           final String exitMessage) {
     this.lastExitDate = System.currentTimeMillis();
     this.lastExitedMethod = method;
@@ -102,11 +102,11 @@ public class MethodLogger {
     return null;
   }
 
-  public boolean isEnabled() {
+  public final boolean isEnabled() {
     return enabled;
   }
 
-  public void setEnabled(final boolean enabled) {
+  public final void setEnabled(final boolean enabled) {
     this.enabled = enabled;
     reset();
   }
@@ -141,7 +141,7 @@ public class MethodLogger {
     return entries;
   }
 
-  protected String argumentArrayToString(final Object[] arguments) {
+  protected final String argumentArrayToString(final Object[] arguments) {
     if (arguments == null) {
       return "";
     }

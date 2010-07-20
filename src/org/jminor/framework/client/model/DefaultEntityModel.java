@@ -164,11 +164,11 @@ public class DefaultEntityModel implements EntityModel {
     bindTableModelEvents();
   }
 
-  public String getEntityID() {
+  public final String getEntityID() {
     return entityID;
   }
 
-  public EntityDbProvider getDbProvider() {
+  public final EntityDbProvider getDbProvider() {
     return dbProvider;
   }
 
@@ -181,11 +181,11 @@ public class DefaultEntityModel implements EntityModel {
     return getClass().getSimpleName();
   }
 
-  public boolean isCascadeRefresh() {
+  public final boolean isCascadeRefresh() {
     return stCascadeRefresh.isActive();
   }
 
-  public void setCascadeRefresh(final boolean value) {
+  public final void setCascadeRefresh(final boolean value) {
     for (final EntityModel detailModel : detailModels) {
       detailModel.setCascadeRefresh(value);
     }
@@ -196,34 +196,34 @@ public class DefaultEntityModel implements EntityModel {
   /**
    * @return the master model, if any
    */
-  public EntityModel getMasterModel() {
+  public final EntityModel getMasterModel() {
     return masterModel;
   }
 
-  public void setMasterModel(final EntityModel entityModel) {
+  public final void setMasterModel(final EntityModel entityModel) {
     this.masterModel = entityModel;
   }
 
-  public EntityEditModel getEditModel() {
+  public final EntityEditModel getEditModel() {
     return editModel;
   }
 
-  public EntityTableModel getTableModel() {
+  public final EntityTableModel getTableModel() {
     return tableModel;
   }
 
-  public boolean containsTableModel() {
+  public final boolean containsTableModel() {
     return tableModel != null;
   }
 
-  public void addDetailModels(final EntityModel... detailModels) {
+  public final void addDetailModels(final EntityModel... detailModels) {
     Util.rejectNullValue(detailModels, "detailModels");
     for (final EntityModel detailModel : detailModels) {
       addDetailModel(detailModel);
     }
   }
 
-  public EntityModel addDetailModel(final EntityModel detailModel) {
+  public final EntityModel addDetailModel(final EntityModel detailModel) {
     this.detailModels.add(detailModel);
     detailModel.setMasterModel(this);
     if (detailModel.containsTableModel()) {
@@ -233,7 +233,7 @@ public class DefaultEntityModel implements EntityModel {
     return detailModel;
   }
 
-  public boolean containsDetailModel(final Class<? extends EntityModel> modelClass) {
+  public final boolean containsDetailModel(final Class<? extends EntityModel> modelClass) {
     for (final EntityModel detailModel : detailModels) {
       if (detailModel.getClass().equals(modelClass)) {
         return true;
@@ -243,7 +243,7 @@ public class DefaultEntityModel implements EntityModel {
     return false;
   }
 
-  public boolean containsDetailModel(final String entityID) {
+  public final boolean containsDetailModel(final String entityID) {
     for (final EntityModel detailModel : detailModels) {
       if (detailModel.getEntityID().equals(entityID)) {
         return true;
@@ -253,11 +253,11 @@ public class DefaultEntityModel implements EntityModel {
     return false;
   }
 
-  public Collection<? extends EntityModel> getDetailModels() {
+  public final Collection<? extends EntityModel> getDetailModels() {
     return Collections.unmodifiableCollection(detailModels);
   }
 
-  public void setLinkedDetailModels(final EntityModel... detailModels) {
+  public final void setLinkedDetailModels(final EntityModel... detailModels) {
     final Set<EntityModel> linked = new HashSet<EntityModel>(linkedDetailModels);
     linkedDetailModels.clear();
     if (detailModels != null) {
@@ -273,11 +273,11 @@ public class DefaultEntityModel implements EntityModel {
     }
   }
 
-  public Collection<EntityModel> getLinkedDetailModels() {
+  public final Collection<EntityModel> getLinkedDetailModels() {
     return Collections.unmodifiableCollection(linkedDetailModels);
   }
 
-  public EntityModel getDetailModel(final Class<? extends EntityModel> modelClass) {
+  public final EntityModel getDetailModel(final Class<? extends EntityModel> modelClass) {
     for (final EntityModel detailModel : detailModels) {
       if (detailModel.getClass().equals(modelClass)) {
         return detailModel;
@@ -297,7 +297,7 @@ public class DefaultEntityModel implements EntityModel {
     throw new RuntimeException("No detail model of type " + modelClass + " found in model: " + this);
   }
 
-  public EntityModel getDetailModel(final String entityID) {
+  public final EntityModel getDetailModel(final String entityID) {
     for (final EntityModel detailModel : detailModels) {
       if (detailModel.getEntityID().equals(entityID)) {
         return detailModel;
@@ -318,7 +318,7 @@ public class DefaultEntityModel implements EntityModel {
    * @see #evtRefreshDone
    * @see #isCascadeRefresh
    */
-  public void refresh() {
+  public final void refresh() {
     if (isRefreshing) {
       return;
     }
@@ -341,13 +341,13 @@ public class DefaultEntityModel implements EntityModel {
     }
   }
 
-  public void refreshDetailModels() {
+  public final void refreshDetailModels() {
     for (final EntityModel detailModel : detailModels) {
       detailModel.refresh();
     }
   }
 
-  public void clear() {
+  public final void clear() {
     if (containsTableModel()) {
       tableModel.clear();
     }
@@ -355,7 +355,7 @@ public class DefaultEntityModel implements EntityModel {
     clearDetailModels();
   }
 
-  public void clearDetailModels() {
+  public final void clearDetailModels() {
     for (final EntityModel detailModel : detailModels) {
       detailModel.clear();
     }
@@ -372,15 +372,15 @@ public class DefaultEntityModel implements EntityModel {
     }
   }
 
-  public Event eventLinkedDetailModelsChanged() {
+  public final Event eventLinkedDetailModelsChanged() {
     return evtLinkedDetailModelsChanged;
   }
 
-  public Event eventRefreshDone() {
+  public final Event eventRefreshDone() {
     return evtRefreshDone;
   }
 
-  public Event eventRefreshStarted() {
+  public final Event eventRefreshStarted() {
     return evtRefreshStarted;
   }
 
@@ -390,7 +390,17 @@ public class DefaultEntityModel implements EntityModel {
    */
   protected void initializeAssociatedModels() {}
 
-  protected void handleInsert(final InsertEvent insertEvent) {
+  /**
+   * Override to add event bindings
+   */
+  protected void bindEvents() {}
+
+  /**
+   * Override to add specific event bindings that depend on the table model
+   */
+  protected void bindTableModelEvents() {}
+
+  private void handleInsert(final InsertEvent insertEvent) {
     final List<Entity.Key> primaryKeys = insertEvent.getInsertedKeys();
     if (containsTableModel()) {
       tableModel.clearSelection();
@@ -400,7 +410,7 @@ public class DefaultEntityModel implements EntityModel {
     refreshDetailModelsAfterInsert(primaryKeys);
   }
 
-  protected void handleUpdate(final UpdateEvent updateEvent) {
+  private void handleUpdate(final UpdateEvent updateEvent) {
     final List<Entity> updatedEntities = updateEvent.getUpdatedEntities();
     if (containsTableModel()) {
       if (updateEvent.isPrimaryKeyModified()) {
@@ -418,10 +428,10 @@ public class DefaultEntityModel implements EntityModel {
       }
     }
 
-    refreshDetailModelsAfterUpdate(updatedEntities);
+    refreshDetailModelsAfterUpdate();
   }
 
-  protected void handleDelete(final DeleteEvent deleteEvent) {
+  private void handleDelete(final DeleteEvent deleteEvent) {
     refreshDetailModelsAfterDelete(deleteEvent.getDeletedEntities());
   }
 
@@ -429,7 +439,7 @@ public class DefaultEntityModel implements EntityModel {
    * Removes the deleted entities from combobox models
    * @param deletedEntities the deleted entities
    */
-  protected void refreshDetailModelsAfterDelete(final List<Entity> deletedEntities) {
+  private void refreshDetailModelsAfterDelete(final List<Entity> deletedEntities) {
     if (deletedEntities.isEmpty()) {
       return;
     }
@@ -464,7 +474,7 @@ public class DefaultEntityModel implements EntityModel {
    * at index 0 in <code>insertedPrimaryKeys</code>
    * @param insertedPrimaryKeys the primary keys of the inserted entities
    */
-  protected void refreshDetailModelsAfterInsert(final List<Entity.Key> insertedPrimaryKeys) {
+  private void refreshDetailModelsAfterInsert(final List<Entity.Key> insertedPrimaryKeys) {
     if (detailModels.isEmpty()) {
       return;
     }
@@ -488,7 +498,7 @@ public class DefaultEntityModel implements EntityModel {
   }
 
   @SuppressWarnings({"UnusedDeclaration"})
-  protected void refreshDetailModelsAfterUpdate(final List<Entity> entities) {
+  private void refreshDetailModelsAfterUpdate() {
     for (final EntityModel detailModel : detailModels) {
       for (final Property.ForeignKeyProperty foreignKeyProperty :
               EntityRepository.getForeignKeyProperties(detailModel.getEntityID(), entityID)) {
@@ -500,14 +510,14 @@ public class DefaultEntityModel implements EntityModel {
     }
   }
 
-  protected void updateDetailModelsByActiveEntity() {
+  private void updateDetailModelsByActiveEntity() {
     final List<Entity> activeEntities = getActiveEntities();
     for (final EntityModel detailModel : linkedDetailModels) {
       detailModel.masterSelectionChanged(entityID, activeEntities);
     }
   }
 
-  protected List<Entity> getActiveEntities() {
+  private List<Entity> getActiveEntities() {
     final List<Entity> activeEntities;
     if (containsTableModel()) {
       if (tableModel.stateSelectionEmpty().isActive()) {
@@ -527,16 +537,6 @@ public class DefaultEntityModel implements EntityModel {
     }
     return activeEntities;
   }
-
-  /**
-   * Override to add event bindings
-   */
-  protected void bindEvents() {}
-
-  /**
-   * Override to add specific event bindings that depend on the table model
-   */
-  protected void bindTableModelEvents() {}
 
   private void bindEventsInternal() {
     editModel.eventAfterInsert().addListener(new AbstractListener<InsertEvent>() {

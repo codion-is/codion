@@ -44,7 +44,7 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
   /**
    * @return the current user
    */
-  public User getUser() {
+  public final User getUser() {
     try {
       return dbProvider.getEntityDb().getUser();
     }
@@ -56,7 +56,7 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
   /**
    * @return the EntityDbProvider instance being used by this EntityApplicationModel
    */
-  public EntityDbProvider getDbProvider() {
+  public final EntityDbProvider getDbProvider() {
     return dbProvider;
   }
 
@@ -64,7 +64,7 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
    * Adds the given detail models to this model.
    * @param mainApplicationModels the detail models to add
    */
-  public void addMainApplicationModels(final EntityModel... mainApplicationModels) {
+  public final void addMainApplicationModels(final EntityModel... mainApplicationModels) {
     Util.rejectNullValue(mainApplicationModels, "mainApplicationModels");
     for (final EntityModel model : mainApplicationModels) {
       addMainApplicationModel(model);
@@ -76,7 +76,7 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
    * @param detailModel the detail model
    * @return the detail model just added
    */
-  public EntityModel addMainApplicationModel(final EntityModel detailModel) {
+  public final EntityModel addMainApplicationModel(final EntityModel detailModel) {
     this.mainApplicationModels.add(detailModel);
 
     return detailModel;
@@ -85,14 +85,14 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
   /**
    * @return an unmodifiable List containing the main application models
    */
-  public List<? extends EntityModel> getMainApplicationModels() {
+  public final List<? extends EntityModel> getMainApplicationModels() {
     return Collections.unmodifiableList(mainApplicationModels);
   }
 
   /**
    * @return true if cascade refresh is active
    */
-  public boolean isCascadeRefresh() {
+  public final boolean isCascadeRefresh() {
     return !mainApplicationModels.isEmpty() && mainApplicationModels.iterator().next().isCascadeRefresh();
   }
 
@@ -100,7 +100,7 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
    * fires: evtCascadeRefreshChanged
    * @param value the new value
    */
-  public void setCascadeRefresh(final boolean value) {
+  public final void setCascadeRefresh(final boolean value) {
     if (!mainApplicationModels.isEmpty() && isCascadeRefresh() != value) {
       for (final EntityModel mainApplicationModel : mainApplicationModels) {
         mainApplicationModel.setCascadeRefresh(value);
@@ -113,7 +113,7 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
   /**
    * Refreshes the whole application tree
    */
-  public void refresh() {
+  public final void refresh() {
     final boolean cascade = isCascadeRefresh();
     try {
       setCascadeRefresh(true);
@@ -126,13 +126,13 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
     }
   }
 
-  public void clear() {
+  public final void clear() {
     for (final EntityModel mainApplicationModel : mainApplicationModels) {
       mainApplicationModel.clear();
     }
   }
 
-  public EntityModel getMainApplicationModel(final Class<? extends EntityModel> modelClass) {
+  public final EntityModel getMainApplicationModel(final Class<? extends EntityModel> modelClass) {
     for (final EntityModel model : mainApplicationModels) {
       if (model.getClass().equals(modelClass)) {
         return model;
@@ -142,7 +142,7 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
     throw new RuntimeException("Detail model of class: " + modelClass + " not found");
   }
 
-  public EntityModel getMainApplicationModel(final String entityID) {
+  public final EntityModel getMainApplicationModel(final String entityID) {
     for (final EntityModel detailModel : mainApplicationModels) {
       if (detailModel.getEntityID().equals(entityID)) {
         return detailModel;
@@ -162,7 +162,7 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
     throw new RuntimeException("No detail model for type " + entityID + " found in model: " + this);
   }
 
-  public Event eventCascadeRefreshChanged() {
+  public final Event eventCascadeRefreshChanged() {
     return evtCascadeRefreshChanged;
   }
 

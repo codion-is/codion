@@ -24,7 +24,7 @@ import java.rmi.RemoteException;
  * Date: 11.12.2007<br>
  * Time: 12:58:29<br>
  */
-public class ClientMonitorPanel extends JPanel {
+public final class ClientMonitorPanel extends JPanel {
 
   private ClientMonitor model;
   private final ClientInstanceMonitorPanel clientInstancePanel;

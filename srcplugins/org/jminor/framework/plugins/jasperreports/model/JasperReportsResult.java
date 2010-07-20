@@ -15,7 +15,7 @@ import java.io.Serializable;
  * Date: 23.5.2010<br>
  * Time: 21:20:16
  */
-public class JasperReportsResult implements ReportResult<JasperPrint>, Serializable {
+public final class JasperReportsResult implements ReportResult<JasperPrint>, Serializable {
   private static final long serialVersionUID = 1;
   private final JasperPrint jasperPrint;
 

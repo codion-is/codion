@@ -24,7 +24,7 @@ import java.awt.event.ActionEvent;
  * A panel that includes a JTextComponent in a BorderLayout.CENTER position and a button in BorderLayout.EAST
  * which opens a JTextArea for editing long strings.
  */
-public class TextInputPanel extends JPanel {
+public final class TextInputPanel extends JPanel {
 
   private static final double DEFAULT_TEXT_AREA_SCREEN_SIZE_RATIO = 1d/4d;
 

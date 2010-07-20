@@ -15,7 +15,7 @@ import java.util.Collection;
  * Date: 4.12.2007<br>
  * Time: 17:31:09<br>
  */
-public class MonitorModel {
+public final class MonitorModel {
 
   private final Event evtHostAdded = new Event();
   private final Event evtHostRemoved = new Event();

@@ -13,7 +13,7 @@ import java.io.FileNotFoundException;
 /**
  * A default ExcptionHandler implementation.
  */
-public class DefaultExceptionHandler implements ExceptionHandler {
+public final class DefaultExceptionHandler implements ExceptionHandler {
 
   private static final ExceptionHandler INSTANCE = new DefaultExceptionHandler();
 

@@ -157,7 +157,7 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * @return the value assuming it is an Entity
    * @throws ClassCastException in case the value was not an Entity
    */
-  Entity getEntityValue(final String foreignKeyPropertyID);
+  Entity getForeignKeyValue(final String foreignKeyPropertyID);
 
   /**
    * @param property the property

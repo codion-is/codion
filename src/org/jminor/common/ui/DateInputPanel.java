@@ -22,7 +22,7 @@ import java.util.Date;
 /**
  * A panel for displaying a formatted text field and a button activating a calendar for date input.
  */
-public class DateInputPanel extends JPanel {
+public final class DateInputPanel extends JPanel {
 
   private final JFormattedTextField inputField;
   private final SimpleDateFormat dateFormat;

@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Encapsulates a simple free-form query criteria.
  */
-public class SimpleCriteria<T> implements Criteria<T> {
+public final class SimpleCriteria<T> implements Criteria<T> {
 
   private final String criteriaString;
   private List<Object> values;

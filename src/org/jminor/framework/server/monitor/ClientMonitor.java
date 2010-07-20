@@ -16,7 +16,7 @@ import java.util.Collection;
  * Date: 11.12.2007<br>
  * Time: 11:42:18<br>
  */
-public class ClientMonitor {
+public final class ClientMonitor {
 
   private final EntityDbServerAdmin server;
   private final String clientTypeID;

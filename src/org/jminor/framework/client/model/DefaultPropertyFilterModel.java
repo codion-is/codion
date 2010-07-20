@@ -11,7 +11,6 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
 import java.sql.Timestamp;
-import java.util.Date;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
@@ -25,119 +24,6 @@ public class DefaultPropertyFilterModel extends AbstractSearchModel<Property> im
     super(property, property.getType(), (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER));
   }
 
-  /**
-   * @param value the upper bound
-   */
-  public void setUpperBound(final String value) {
-    setUpperBound((Object) value);
-  }
-
-  /**
-   * @param value the upper bound
-   */
-  public void setUpperBound(final Double value) {
-    setUpperBound((Object) value);
-  }
-
-  /**
-   * @param value the upper bound
-   */
-  public void setUpperBound(final Integer value) {
-    setUpperBound((Object) value);
-  }
-
-  /**
-   * @param value the upper bound
-   */
-  public void setUpperBound(final boolean value) {
-    setUpperBound(Boolean.valueOf(value));
-  }
-
-  /**
-   * @param value the upper bound
-   */
-  public void setUpperBound(final char value) {
-    setUpperBound(Character.valueOf(value));
-  }
-
-  /**
-   * @param value the upper bound
-   */
-  public void setUpperBound(final Boolean value) {
-    setUpperBound((Object) value);
-  }
-
-  /**
-   * @param value the upper bound
-   */
-  public void setUpperBound(final Timestamp value) {
-    setUpperBound((Object) value);
-  }
-
-  /**
-   * @param value the upper bound
-   */
-  public void setUpperBound(final Date value) {
-    setUpperBound((Object) value);
-  }
-
-  /**
-   * @param value the Lower bound
-   */
-  public void setLowerBound(final String value) {
-    setLowerBound((Object) value);
-  }
-
-  /**
-   * @param value the Lower bound
-   */
-  public void setLowerBound(final Double value) {
-    setLowerBound((Object) value);
-  }
-
-  /**
-   * @param value the Lower bound
-   */
-  public void setLowerBound(final Integer value) {
-    setLowerBound((Object) value);
-  }
-
-  /**
-   * @param value the Lower bound
-   */
-  public void setLowerBound(final boolean value) {
-    setLowerBound(Boolean.valueOf(value));
-  }
-
-  /**
-   * @param value the Lower bound
-   */
-  public void setLowerBound(final char value) {
-    setLowerBound(Character.valueOf(value));
-  }
-
-  /**
-   * @param value the Lower bound
-   */
-  public void setLowerBound(final Boolean value) {
-    setLowerBound((Object) value);
-  }
-
-  /**
-   * @param value the Lower bound
-   */
-  public void setLowerBound(final Timestamp value) {
-    setLowerBound((Object) value);
-  }
-
-  /**
-   * @param value the Lower bound
-   */
-  public void setLowerBound(final Date value) {
-    setLowerBound((Object) value);
-  }
-
-  @Override
   public boolean include(final Object object) {
     return include(getComparable(object));
   }

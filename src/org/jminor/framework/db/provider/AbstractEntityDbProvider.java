@@ -13,18 +13,18 @@ public abstract class AbstractEntityDbProvider implements EntityDbProvider {
    * The user used by this db provider when connecting to the database server
    */
   private User user;
-  protected EntityDb entityDb;
+  private EntityDb entityDb;
 
   public AbstractEntityDbProvider(final User user) {
     Util.rejectNullValue(user, "user");
     this.user = user;
   }
 
-  public User getUser() {
+  public final User getUser() {
     return user;
   }
 
-  public void setUser(final User user) {
+  public final void setUser(final User user) {
     if (Util.equal(user, this.user)) {
       return;
     }
@@ -32,7 +32,7 @@ public abstract class AbstractEntityDbProvider implements EntityDbProvider {
     this.user = user;
   }
 
-  public boolean isConnected() {
+  public final boolean isConnected() {
     try {
       return entityDb != null && entityDb.isConnected();
     }
@@ -41,7 +41,7 @@ public abstract class AbstractEntityDbProvider implements EntityDbProvider {
     }
   }
 
-  public EntityDb getEntityDb() {
+  public final EntityDb getEntityDb() {
     if (user == null) {
       throw new IllegalStateException("No user set");
     }
@@ -54,6 +54,14 @@ public abstract class AbstractEntityDbProvider implements EntityDbProvider {
   protected abstract boolean isConnectionValid();
 
   protected abstract EntityDb connect();
+
+  protected EntityDb getEntityDbInternal() {
+    return entityDb;
+  }
+
+  protected void setEntityDb(final EntityDb entityDb) {
+    this.entityDb = entityDb;
+  }
 
   private void validateConnection() {
     try {

@@ -17,7 +17,7 @@ import java.util.TimerTask;
 /**
  * User: Bjorn Darri<br>
  */
-public class DatabaseMonitor {
+public final class DatabaseMonitor {
 
   private final Event evtStatsUpdateIntervalChanged = new Event();
 

@@ -30,7 +30,7 @@ import java.util.TimerTask;
  * Date: 4.12.2007<br>
  * Time: 17:53:50<br>
  */
-public class ServerMonitor {
+public final class ServerMonitor {
 
   private static final Logger LOG = Util.getLogger(ServerMonitor.class);
 

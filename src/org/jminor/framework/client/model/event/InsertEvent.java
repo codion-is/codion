@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * An event describing a insert action.
  */
-public class InsertEvent extends ActionEvent {
+public final class InsertEvent extends ActionEvent {
 
   private final List<Entity.Key> insertedKeys;
 

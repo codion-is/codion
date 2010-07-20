@@ -7,7 +7,7 @@ package org.jminor.common.model.checkbox;
 import javax.swing.JToggleButton.ToggleButtonModel;
 import java.awt.event.ItemEvent;
 
-public class TristateButtonModel extends ToggleButtonModel {
+public final class TristateButtonModel extends ToggleButtonModel {
   private TristateState state = TristateState.DESELECTED;
 
   public TristateButtonModel(TristateState state) {

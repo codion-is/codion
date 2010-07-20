@@ -31,33 +31,33 @@ public abstract class AbstractValueMapLink<K, V> extends AbstractValueLink<Value
   }
 
   @Override
-  public V getModelValue() {
+  public final V getModelValue() {
     return isModelValueNull() ? null : getEditModel().getValue(key);
   }
 
   @Override
-  public void setModelValue(final V value) {
+  public final void setModelValue(final V value) {
     getEditModel().setValue(key, value);
   }
 
   /**
    * @return true if the underlying model value associated with this key is null
    */
-  protected boolean isModelValueNull() {
+  protected final boolean isModelValueNull() {
     return getEditModel().isValueNull(key);
   }
 
   /**
    * @return true if this value is allowed to be null
    */
-  protected boolean isNullable() {
+  protected final boolean isNullable() {
     return getEditModel().isNullable(key);
   }
 
   /**
    * @return the linked key
    */
-  protected K getKey() {
+  protected final K getKey() {
     return key;
   }
 
@@ -67,7 +67,7 @@ public abstract class AbstractValueMapLink<K, V> extends AbstractValueLink<Value
    * @param editModel the underlying ValueChangeMapEditModel
    * @return a validation string if the value is invalid, null otherwise
    */
-  protected String getValidationMessage(final ValueChangeMapEditModel<K, V> editModel) {
+  protected final String getValidationMessage(final ValueChangeMapEditModel<K, V> editModel) {
     try {
       editModel.validate(key, ValueChangeMapEditModel.UNKNOWN);
       return null;
@@ -80,7 +80,7 @@ public abstract class AbstractValueMapLink<K, V> extends AbstractValueLink<Value
   /**
    * @return the value owner, in this case a ValueChangeMapEditor
    */
-  protected ValueChangeMapEditModel<K, V> getEditModel() {
+  protected final ValueChangeMapEditModel<K, V> getEditModel() {
     return super.getValueOwner();
   }
 }

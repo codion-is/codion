@@ -67,8 +67,6 @@ public interface PropertySummaryModel {
 
   List<SummaryType> getSummaryTypes();
 
-  Format initializeFormat(final Property property);
-
   String getSummaryText();
 
   Event eventSummaryChanged();

@@ -26,7 +26,7 @@ import java.util.TimerTask;
  * Date: 4.12.2007<br>
  * Time: 18:20:24<br>
  */
-public class ConnectionPoolMonitor {
+public final class ConnectionPoolMonitor {
 
   private final Event evtStatsUpdated = new Event();
   private final Event evtStatsUpdateIntervalChanged = new Event();

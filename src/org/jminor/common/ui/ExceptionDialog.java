@@ -35,7 +35,7 @@ import java.io.StringWriter;
  * ExceptionDialog.setErrorReportEmailFrom() and ExceptionDialog.setErrorReportEmailTo(),
  * to prefix a string to the subject field call ExceptionDialog.setErrorReportEmailSubjectPrefix()
  */
-public class ExceptionDialog extends JDialog {
+public final class ExceptionDialog extends JDialog {
 
   //ui components
   private JTextField exceptionField;

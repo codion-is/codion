@@ -34,7 +34,7 @@ import java.rmi.RemoteException;
  * Date: 4.12.2007<br>
  * Time: 18:11:06
  */
-public class MonitorPanel extends JPanel {
+public final class MonitorPanel extends JPanel {
 
   private static final String JDK_PREFERENCE_KEY = MonitorPanel.class.getName() + ".jdkPathPreferenceKey";
   private static String jdkDir = Util.getUserPreference(JDK_PREFERENCE_KEY, null);

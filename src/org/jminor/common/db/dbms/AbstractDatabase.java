@@ -92,27 +92,27 @@ public abstract class AbstractDatabase implements Database {
     this.embedded = embedded;
   }
 
-  public String getDatabaseType() {
+  public final String getDatabaseType() {
     return databaseType;
   }
 
-  public String getHost() {
+  public final String getHost() {
     return host;
   }
 
-  public String getPort() {
+  public final String getPort() {
     return port;
   }
 
-  public String getSid() {
+  public final String getSid() {
     return sid;
   }
 
-  public boolean isEmbedded() {
+  public final boolean isEmbedded() {
     return embedded;
   }
 
-  public Connection createConnection(final User user) throws ClassNotFoundException, SQLException {
+  public final Connection createConnection(final User user) throws ClassNotFoundException, SQLException {
     Util.rejectNullValue(user, "user");
     Util.rejectNullValue(user.getUsername(), "Username must be provided");
     Util.rejectNullValue(user.getPassword(), "Password must be provided");

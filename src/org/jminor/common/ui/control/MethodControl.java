@@ -14,7 +14,7 @@ import java.lang.reflect.Method;
 /**
  * A Control class for binding an action to a parameterless method via reflection.
  */
-public class MethodControl extends Control {
+public final class MethodControl extends Control {
 
   private final Event evtActionPerformed = new Event();
 

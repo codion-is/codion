@@ -21,7 +21,7 @@ import java.awt.BorderLayout;
 /**
  * A default UI for the RandomItemModel.
  */
-public class RandomItemPanel<T> extends JPanel {
+public final class RandomItemPanel<T> extends JPanel {
 
   private final RandomItemModel<T> model;
 

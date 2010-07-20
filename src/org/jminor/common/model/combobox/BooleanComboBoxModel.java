@@ -9,7 +9,7 @@ import org.jminor.common.model.Item;
 /**
  * A ComboBoxModel for boolean values, true, false and null.
  */
-public class BooleanComboBoxModel extends ItemComboBoxModel<Boolean> {
+public final class BooleanComboBoxModel extends ItemComboBoxModel<Boolean> {
 
   /**
    * Constructs a new BooleanComboBoxModel.

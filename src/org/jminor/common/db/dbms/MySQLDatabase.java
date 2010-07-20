@@ -10,7 +10,7 @@ import java.util.Properties;
 /**
  * A Database implementation based on the MySQL database.
  */
-public class MySQLDatabase extends AbstractDatabase {
+public final class MySQLDatabase extends AbstractDatabase {
 
   public MySQLDatabase() {
     super(MYSQL);

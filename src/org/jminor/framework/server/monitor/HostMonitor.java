@@ -24,7 +24,7 @@ import java.util.List;
  * Date: 4.12.2007<br>
  * Time: 17:46:40<br>
  */
-public class HostMonitor {
+public final class HostMonitor {
 
   private static final Logger LOG = Util.getLogger(HostMonitor.class);
 

@@ -33,6 +33,7 @@ import org.jminor.framework.client.model.DefaultEntityEditModel;
 import org.jminor.framework.client.model.DefaultEntityTableModel;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityTableModel;
+import org.jminor.framework.client.model.EntityTableSearchModel;
 import org.jminor.framework.client.model.PropertyFilterModel;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
@@ -1078,7 +1079,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
    * @return an initialized EntityTableSearchPanel
    */
   protected EntityTableSearchPanel initializeAdvancedSearchPanel() {
-    return new EntityTableSearchAdvancedPanel(getTableModel().getSearchModel(), getTableModel().getColumnModel());
+    return new EntityTableSearchAdvancedPanel((EntityTableSearchModel) getTableModel().getSearchModel(), getTableModel().getColumnModel());
   }
 
   /**

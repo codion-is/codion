@@ -86,15 +86,15 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     this.dbProvider = dbProvider;
   }
 
-  public EntityDbProvider getDbProvider() {
+  public final EntityDbProvider getDbProvider() {
     return dbProvider;
   }
 
-  public String getEntityID() {
+  public final String getEntityID() {
     return entityID;
   }
 
-  public void forceRefresh() {
+  public final void forceRefresh() {
     try {
       forceRefresh = true;
       refresh();
@@ -104,16 +104,16 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     }
   }
 
-  public boolean isStaticData() {
+  public final boolean isStaticData() {
     return staticData;
   }
 
-  public EntityComboBoxModel setStaticData(boolean staticData) {
+  public final EntityComboBoxModel setStaticData(boolean staticData) {
     this.staticData = staticData;
     return this;
   }
 
-  public void setSelectedEntityByPrimaryKey(final Entity.Key primaryKey) {
+  public final void setSelectedEntityByPrimaryKey(final Entity.Key primaryKey) {
     final int indexOfKey = getIndexOfKey(primaryKey);
     if (indexOfKey >= 0) {
       setSelectedItem(getElementAt(indexOfKey));
@@ -126,7 +126,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     }
   }
 
-  public Entity getSelectedEntity() {
+  public final Entity getSelectedEntity() {
     if (isNullValueSelected()) {
       return null;
     }
@@ -135,7 +135,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
   }
 
   @Override
-  public void setSelectedItem(final Object anItem) {
+  public final void setSelectedItem(final Object anItem) {
     if (getSize() == 0) {
       return;
     }
@@ -160,7 +160,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
   }
 
   @Override
-  public FilterCriteria<Entity> getFilterCriteria() {
+  public final FilterCriteria<Entity> getFilterCriteria() {
     final FilterCriteria<Entity> superCriteria = super.getFilterCriteria();
     return new FilterCriteria<Entity>() {
       public boolean include(final Entity item) {
@@ -174,7 +174,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     return getClass().getSimpleName() + " [entityID: " + entityID + "]";
   }
 
-  public void setEntitySelectCriteria(final EntitySelectCriteria entitySelectCriteria) {
+  public final void setEntitySelectCriteria(final EntitySelectCriteria entitySelectCriteria) {
     if (entitySelectCriteria != null && !entitySelectCriteria.getEntityID().equals(entityID)) {
       throw new RuntimeException("EntitySelectCriteria entityID mismatch, " + entityID
               + " expected, got " + entitySelectCriteria.getEntityID());
@@ -182,7 +182,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     this.selectCriteria = entitySelectCriteria;
   }
 
-  public void setForeignKeyFilterEntities(final String foreignKeyPropertyID, final Collection<Entity> entities) {
+  public final void setForeignKeyFilterEntities(final String foreignKeyPropertyID, final Collection<Entity> entities) {
     final Set<Entity> filterEntities = new HashSet<Entity>();
     if (entities != null) {
       filterEntities.addAll(entities);
@@ -192,7 +192,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     filterContents();
   }
 
-  public Collection<Entity> getForeignKeyFilterEntities(final String foreignKeyPropertyID) {
+  public final Collection<Entity> getForeignKeyFilterEntities(final String foreignKeyPropertyID) {
     final Collection<Entity> filterEntities = new ArrayList<Entity>();
     if (foreignKeyFilterEntities.containsKey(foreignKeyPropertyID)) {
       filterEntities.addAll(foreignKeyFilterEntities.get(foreignKeyPropertyID));
@@ -201,7 +201,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     return filterEntities;
   }
 
-  public EntityComboBoxModel createForeignKeyFilterComboBoxModel(final String foreignKeyPropertyID) {
+  public final EntityComboBoxModel createForeignKeyFilterComboBoxModel(final String foreignKeyPropertyID) {
     final Property.ForeignKeyProperty foreignKeyProperty =
             EntityRepository.getForeignKeyProperty(entityID, foreignKeyPropertyID);
     final EntityComboBoxModel foreignKeyModel
@@ -213,7 +213,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     return foreignKeyModel;
   }
 
-  public Event eventRefreshDone() {
+  public final Event eventRefreshDone() {
     return evtRefreshDone;
   }
 
@@ -247,17 +247,10 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
   }
 
   /**
-   * @return the EntitySelectCriteria used by this EntityComboBoxModel
-   */
-  protected EntitySelectCriteria getEntitySelectCriteria() {
-    return selectCriteria;
-  }
-
-  /**
    * @return the data to be presented in this EntityComboBoxModel, called when the data is refreshed
    */
   @Override
-  protected List<Entity> initializeContents() {
+  protected final List<Entity> initializeContents() {
     try {
       if (staticData && !isCleared() && !forceRefresh) {
         return super.initializeContents();
@@ -274,7 +267,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
    * Retrieves the entities to present in this EntityComboBoxModel
    * @return the entities to present in this EntityComboBoxModel
    */
-  protected List<Entity> performQuery() {
+  private List<Entity> performQuery() {
     try {
       if (selectCriteria != null) {
         return dbProvider.getEntityDb().selectMany(selectCriteria);
@@ -288,7 +281,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     }
   }
 
-  protected int getIndexOfKey(final Entity.Key primaryKey) {
+  private int getIndexOfKey(final Entity.Key primaryKey) {
     final int size = getSize();
     for (int index = 0; index < size; index++) {
       final Object item = getElementAt(index);
@@ -299,7 +292,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     return -1;
   }
 
-  protected int getFilteredIndexOfKey(final Entity.Key primaryKey) {
+  private int getFilteredIndexOfKey(final Entity.Key primaryKey) {
     final List<Entity> filteredItems = getFilteredItems();
     for (int index = 0; index < filteredItems.size(); index++) {
       final Object item = filteredItems.get(0);

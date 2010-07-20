@@ -64,7 +64,7 @@ public abstract class EntityLoadTestModel extends LoadTestModel {
   }
 
   @Override
-  protected void disconnectApplication(final Object application) {
+  protected final void disconnectApplication(final Object application) {
     ((EntityApplicationModel) application).getDbProvider().disconnect();
   }
 

@@ -61,7 +61,7 @@ public class RandomItemModel<T> {
    * Adds the given item to this model with default weight of 0.
    * @param item the item to add
    */
-  public void addItem(final T item) {
+  public final void addItem(final T item) {
     addItem(item, 0);
   }
 
@@ -77,28 +77,28 @@ public class RandomItemModel<T> {
   /**
    * @return the items in this model.
    */
-  public List<RandomItem<T>> getItems() {
+  public final List<RandomItem<T>> getItems() {
     return items;
   }
 
   /**
    * @return a Random instance.
    */
-  public Random getRandom() {
+  public final Random getRandom() {
     return random;
   }
 
   /**
    * @return the number of items in this model.
    */
-  public int getItemCount() {
+  public final int getItemCount() {
     return items.size();
   }
 
   /**
    * @return an Event which fires each time a weight has been changed.
    */
-  public Event eventWeightsChanged() {
+  public final Event eventWeightsChanged() {
     return evtWeightsChanged;
   }
 
@@ -106,7 +106,7 @@ public class RandomItemModel<T> {
    * Fetches a random item from this model based on the item weights.
    * @return a randomly chosen item.
    */
-  public T getRandomItem() {
+  public final T getRandomItem() {
     final int totalWeights = getTotalWeights();
     if (totalWeights == 0) {
       throw new RuntimeException("Can not choose a random item unless total weights exceed 0");
@@ -129,7 +129,7 @@ public class RandomItemModel<T> {
    * @param item the item
    * @return the ratio of the total weights held by the given item
    */
-  public double getWeightRatio(final T item) {
+  public final double getWeightRatio(final T item) {
     final int totalWeights = getTotalWeights();
     if (totalWeights == 0) {
       return 0;
@@ -172,7 +172,7 @@ public class RandomItemModel<T> {
    * @param item the item
    * @return the item weight
    */
-  public int getWeight(final T item) {
+  public final int getWeight(final T item) {
     return getRandomItem(item).getWeight();
   }
 

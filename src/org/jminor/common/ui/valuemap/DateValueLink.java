@@ -15,7 +15,7 @@ import java.util.Date;
 /**
  * A class for linking a formatted text field to a ValueChangeMapEditModel date property value.
  */
-public class DateValueLink<K> extends FormattedValueLink<K> {
+public final class DateValueLink<K> extends FormattedValueLink<K> {
 
   private final boolean isTimestamp;
 

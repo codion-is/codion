@@ -47,21 +47,21 @@ public abstract class AbstractSearchModel<K> implements SearchModel<K> {
     bindEvents();
   }
 
-  public K getSearchKey() {
+  public final K getSearchKey() {
     return searchKey;
   }
 
   /**
    * @return true if this filter is be case sensitive
    */
-  public boolean isCaseSensitive() {
+  public final boolean isCaseSensitive() {
     return caseSensitive;
   }
 
   /**
    * @param caseSensitive true if this search model should be case sensitive when working with strings
    */
-  public void setCaseSensitive(final boolean caseSensitive) {
+  public final void setCaseSensitive(final boolean caseSensitive) {
     this.caseSensitive = caseSensitive;
   }
 
@@ -69,7 +69,7 @@ public abstract class AbstractSearchModel<K> implements SearchModel<K> {
    * Locks/unlocks this search model, thus preventing changes to either values or search type
    * @param value the value
    */
-  public void setLocked(final boolean value) {
+  public final void setLocked(final boolean value) {
     stLocked.setActive(value);
   }
 
@@ -77,7 +77,7 @@ public abstract class AbstractSearchModel<K> implements SearchModel<K> {
    * @return the data type of the underlying search property.
    * @see Types
    */
-  public int getType() {
+  public final int getType() {
     return type;
   }
 
@@ -85,10 +85,8 @@ public abstract class AbstractSearchModel<K> implements SearchModel<K> {
    * @param upper the upper bound
    * @throws IllegalStateException in case this model has been locked
    */
-  public void setUpperBound(final Object upper) {
-    if (stLocked.isActive()) {
-      throw new IllegalStateException("Search model for key " + searchKey + " is locked");
-    }
+  public final void setUpperBound(final Object upper) {
+    checkLock();
     if (!Util.equal(upperBound, upper)) {
       upperBound = upper;
       evtUpperBoundChanged.fire();
@@ -98,7 +96,7 @@ public abstract class AbstractSearchModel<K> implements SearchModel<K> {
   /**
    * @return the upper bound
    */
-  public Object getUpperBound() {
+  public final Object getUpperBound() {
     if (type == Types.VARCHAR && automaticWildcard) {
       return wildcard + upperBound + wildcard;
     }
@@ -111,10 +109,8 @@ public abstract class AbstractSearchModel<K> implements SearchModel<K> {
    * @param value the lower bound
    * @throws IllegalStateException in case this model has been locked
    */
-  public void setLowerBound(final Object value) {
-    if (stLocked.isActive()) {
-      throw new IllegalStateException("Search model for key " + searchKey + " is locked");
-    }
+  public final void setLowerBound(final Object value) {
+    checkLock();
     if (!Util.equal(lowerBound, value)) {
       lowerBound = value;
       evtLowerBoundChanged.fire();
@@ -124,7 +120,7 @@ public abstract class AbstractSearchModel<K> implements SearchModel<K> {
   /**
    * @return the lower bound
    */
-  public Object getLowerBound() {
+  public final Object getLowerBound() {
     if (type == Types.VARCHAR && automaticWildcard) {
       return wildcard + lowerBound + wildcard;
     }
@@ -136,119 +132,119 @@ public abstract class AbstractSearchModel<K> implements SearchModel<K> {
   /**
    * @param value the upper bound
    */
-  public void setUpperBound(final String value) {
+  public final void setUpperBound(final String value) {
     setUpperBound((Object) value);
   }
 
   /**
    * @param value the upper bound
    */
-  public void setUpperBound(final Double value) {
+  public final void setUpperBound(final Double value) {
     setUpperBound((Object) value);
   }
 
   /**
    * @param value the upper bound
    */
-  public void setUpperBound(final Integer value) {
+  public final void setUpperBound(final Integer value) {
     setUpperBound((Object) value);
   }
 
   /**
    * @param value the upper bound
    */
-  public void setUpperBound(final boolean value) {
+  public final void setUpperBound(final boolean value) {
     setUpperBound(Boolean.valueOf(value));
   }
 
   /**
    * @param value the upper bound
    */
-  public void setUpperBound(final char value) {
+  public final void setUpperBound(final char value) {
     setUpperBound(Character.valueOf(value));
   }
 
   /**
    * @param value the upper bound
    */
-  public void setUpperBound(final Boolean value) {
+  public final void setUpperBound(final Boolean value) {
     setUpperBound((Object) value);
   }
 
   /**
    * @param value the upper bound
    */
-  public void setUpperBound(final Timestamp value) {
+  public final void setUpperBound(final Timestamp value) {
     setUpperBound((Object) value);
   }
 
   /**
    * @param value the upper bound
    */
-  public void setUpperBound(final Date value) {
+  public final void setUpperBound(final Date value) {
     setUpperBound((Object) value);
   }
 
   /**
    * @param value the Lower bound
    */
-  public void setLowerBound(final String value) {
+  public final void setLowerBound(final String value) {
     setLowerBound((Object) value);
   }
 
   /**
    * @param value the Lower bound
    */
-  public void setLowerBound(final Double value) {
+  public final void setLowerBound(final Double value) {
     setLowerBound((Object) value);
   }
 
   /**
    * @param value the Lower bound
    */
-  public void setLowerBound(final Integer value) {
+  public final void setLowerBound(final Integer value) {
     setLowerBound((Object) value);
   }
 
   /**
    * @param value the Lower bound
    */
-  public void setLowerBound(final boolean value) {
+  public final void setLowerBound(final boolean value) {
     setLowerBound(Boolean.valueOf(value));
   }
 
   /**
    * @param value the Lower bound
    */
-  public void setLowerBound(final char value) {
+  public final void setLowerBound(final char value) {
     setLowerBound(Character.valueOf(value));
   }
 
   /**
    * @param value the Lower bound
    */
-  public void setLowerBound(final Boolean value) {
+  public final void setLowerBound(final Boolean value) {
     setLowerBound((Object) value);
   }
 
   /**
    * @param value the Lower bound
    */
-  public void setLowerBound(final Timestamp value) {
+  public final void setLowerBound(final Timestamp value) {
     setLowerBound((Object) value);
   }
 
   /**
    * @param value the Lower bound
    */
-  public void setLowerBound(final Date value) {
+  public final void setLowerBound(final Date value) {
     setLowerBound((Object) value);
   }
 
   /**
    * @return the search type
    */
-  public SearchType getSearchType() {
+  public final SearchType getSearchType() {
     return searchType;
   }
 
@@ -256,11 +252,9 @@ public abstract class AbstractSearchModel<K> implements SearchModel<K> {
    * @param searchType the search type
    * @throws IllegalStateException in case this model has been locked
    */
-  public void setSearchType(final SearchType searchType) {
+  public final void setSearchType(final SearchType searchType) {
     Util.rejectNullValue(searchType, "searchType");
-    if (stLocked.isActive()) {
-      throw new IllegalStateException("Search model for key " + searchKey + " is locked");
-    }
+    checkLock();
     if (!this.searchType.equals(searchType)) {
       this.searchType = searchType;
       evtSearchTypeChanged.fire();
@@ -270,7 +264,7 @@ public abstract class AbstractSearchModel<K> implements SearchModel<K> {
   /**
    * @return the wildcard
    */
-  public String getWildcard() {
+  public final String getWildcard() {
     return wildcard;
   }
 
@@ -278,22 +272,22 @@ public abstract class AbstractSearchModel<K> implements SearchModel<K> {
    * Sets the wildcard to use
    * @param wildcard the wildcard
    */
-  public void setWildcard(final String wildcard) {
+  public final void setWildcard(final String wildcard) {
     this.wildcard = wildcard;
   }
 
-  public boolean isAutoEnable() {
+  public final boolean isAutoEnable() {
     return autoEnable;
   }
 
-  public void setAutoEnable(final boolean autoEnable) {
+  public final void setAutoEnable(final boolean autoEnable) {
     this.autoEnable = autoEnable;
   }
 
   /**
    * @return true if this search model is enabled
    */
-  public boolean isSearchEnabled() {
+  public final boolean isSearchEnabled() {
     return enabled;
   }
 
@@ -301,10 +295,8 @@ public abstract class AbstractSearchModel<K> implements SearchModel<K> {
    * @param value true if this search model should be enabled
    * @throws IllegalStateException in case this model has been locked
    */
-  public void setSearchEnabled(final boolean value) {
-    if (stLocked.isActive()) {
-      throw new IllegalStateException("Search model for key " + searchKey + " is locked");
-    }
+  public final void setSearchEnabled(final boolean value) {
+    checkLock();
     if (enabled != value) {
       enabled = value;
       evtEnabledChanged.fire();
@@ -314,22 +306,18 @@ public abstract class AbstractSearchModel<K> implements SearchModel<K> {
   /**
    * @param value true if wildcard should automatically be added to strings
    */
-  public void setAutomaticWildcard(final boolean value) {
+  public final void setAutomaticWildcard(final boolean value) {
     automaticWildcard = value;
   }
 
   /**
    * @return true if wildcard is automatically be added to strings
    */
-  public boolean isAutomaticWildcard() {
+  public final boolean isAutomaticWildcard() {
     return automaticWildcard;
   }
 
-  public boolean include(final Object object) {
-    return true;
-  }
-
-  public void clearSearch() {
+  public final void clearSearch() {
     setSearchEnabled(false);
     setUpperBound((Object) null);
     setLowerBound((Object) null);
@@ -337,31 +325,31 @@ public abstract class AbstractSearchModel<K> implements SearchModel<K> {
     evtSearchModelCleared.fire();
   }
 
-  public State stateLocked() {
+  public final State stateLocked() {
     return stLocked.getLinkedState();
   }
 
-  public Event eventEnabledChanged() {
+  public final Event eventEnabledChanged() {
     return evtEnabledChanged;
   }
 
-  public Event eventLowerBoundChanged() {
+  public final Event eventLowerBoundChanged() {
     return evtLowerBoundChanged;
   }
 
-  public Event eventSearchModelCleared() {
+  public final Event eventSearchModelCleared() {
     return evtSearchModelCleared;
   }
 
-  public Event eventSearchStateChanged() {
+  public final Event eventSearchStateChanged() {
     return evtSearchStateChanged;
   }
 
-  public Event eventSearchTypeChanged() {
+  public final Event eventSearchTypeChanged() {
     return evtSearchTypeChanged;
   }
 
-  public Event eventUpperBoundChanged() {
+  public final Event eventUpperBoundChanged() {
     return evtUpperBoundChanged;
   }
 
@@ -401,5 +389,11 @@ public abstract class AbstractSearchModel<K> implements SearchModel<K> {
     evtLowerBoundChanged.addListener(evtSearchStateChanged);
     evtSearchTypeChanged.addListener(evtSearchStateChanged);
     evtEnabledChanged.addListener(evtSearchStateChanged);
+  }
+
+  private void checkLock() {
+    if (stLocked.isActive()) {
+      throw new IllegalStateException("Search model for key " + searchKey + " is locked");
+    }
   }
 }

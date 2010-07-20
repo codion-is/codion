@@ -62,11 +62,11 @@ public class DefaultPropertyComboBoxModel extends DefaultFilteredComboBoxModel i
     }
   }
 
-  public Property.ColumnProperty getProperty() {
+  public final Property.ColumnProperty getProperty() {
     return property;
   }
 
-  public EntityDbProvider getDbProvider() {
+  public final EntityDbProvider getDbProvider() {
     return dbProvider;
   }
 

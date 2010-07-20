@@ -78,14 +78,14 @@ public abstract class EntityTestUnit {
   /**
    * @return the EntityDbProvider instance used by this EntityTestUnit
    */
-  protected EntityDbProvider getDbProvider() {
+  protected final EntityDbProvider getDbProvider() {
     return entityDbProvider;
   }
 
   /**
    * @return the EntityDb instance used by this EntityTestUnit
    */
-  protected EntityDb getEntityDb() {
+  protected final EntityDb getEntityDb() {
     return entityDbProvider.getEntityDb();
   }
 
@@ -129,7 +129,7 @@ public abstract class EntityTestUnit {
    * @throws Exception in case of an exception
    * @see #getReferenceEntity(String)
    */
-  protected void setReferenceEntity(final String entityID, final Entity entity) throws Exception {
+  protected final void setReferenceEntity(final String entityID, final Entity entity) throws Exception {
     if (!entity.is(entityID)) {
       throw new IllegalArgumentException("Reference entity type mismatch: " + entityID + " - " + entity.getEntityID());
     }
@@ -142,7 +142,7 @@ public abstract class EntityTestUnit {
    * @param entityID the ID of the entity to test
    * @throws Exception in case of an exception
    */
-  protected void testEntity(final String entityID) throws Exception {
+  protected final void testEntity(final String entityID) throws Exception {
     try {
       getEntityDb().beginTransaction();
       initializeReferenceEntities(addAllReferencedEntityIDs(entityID, new ArrayList<String>()));
@@ -165,87 +165,6 @@ public abstract class EntityTestUnit {
       referencedEntities.clear();
       getEntityDb().rollbackTransaction();
     }
-  }
-
-  /**
-   * Tests inserting the given entity
-   * @param testEntity the entity to test insert for
-   * @return the same entity retrieved from the database after the insert
-   * @throws Exception in case of an exception
-   */
-  protected Entity testInsert(final Entity testEntity) throws Exception {
-    final List<Entity.Key> keys = getEntityDb().insert(Arrays.asList(testEntity));
-    try {
-      return getEntityDb().selectSingle(keys.get(0));
-    }
-    catch (RecordNotFoundException e) {
-      fail("Inserted entity of type " + testEntity.getEntityID() + " not returned by select after insert");
-      throw e;
-    }
-  }
-
-  /**
-   * Tests selecting the given entity, if <code>testEntity</code> is null
-   * then selecting many entities is tested.
-   * @param entityID the entityID in case <code>testEntity</code> is null
-   * @param testEntity the entity to test selecting
-   * @throws Exception in case of an exception
-   */
-  protected void testSelect(final String entityID, final Entity testEntity) throws Exception {
-    if (testEntity != null) {
-      final Entity tmp = getEntityDb().selectSingle(testEntity.getPrimaryKey());
-      assertTrue("Entity of type " + testEntity.getEntityID() + " failed equals comparison",
-              testEntity.equals(tmp));
-    }
-    else {
-      getEntityDb().selectMany(EntityCriteriaUtil.selectCriteria(entityID, 10));
-    }
-  }
-
-  /**
-   * Test updating the given entity, if the entity is not modified this test does nothing
-   * @param testEntity the entity to test updating
-   * @throws Exception in case of an exception
-   */
-  protected void testUpdate(final Entity testEntity) throws Exception {
-    modifyEntity(testEntity);
-    if (!testEntity.isModified()) {
-      return;
-    }
-
-    getEntityDb().update(Arrays.asList(testEntity));
-
-    final Entity tmp = getEntityDb().selectSingle(testEntity.getOriginalPrimaryKey());
-    assertEquals("Primary keys of entity and its updated counterpart should be equal",
-            testEntity.getPrimaryKey(), tmp.getPrimaryKey());
-    for (final Property.ColumnProperty property : EntityRepository.getColumnProperties(testEntity.getEntityID())) {
-      if (!property.isReadOnly() && property.isUpdatable()) {
-        final Object beforeUpdate = testEntity.getValue(property.getPropertyID());
-        final Object afterUpdate = tmp.getValue(property.getPropertyID());
-        assertTrue("Values of property " + property + " should be equal after update ["
-                + beforeUpdate + (beforeUpdate != null ? (" (" + beforeUpdate.getClass() + ")") : "") + ", "
-                + afterUpdate + (afterUpdate != null ? (" (" + afterUpdate.getClass() + ")") : "") + "]",
-                Util.equal(beforeUpdate, afterUpdate));
-      }
-    }
-  }
-
-  /**
-   * Test deleting the given entity
-   * @param testEntity the entity to test deleting
-   * @throws Exception in case of an exception
-   */
-  protected void testDelete(final Entity testEntity) throws Exception {
-    getEntityDb().delete(EntityUtil.getPrimaryKeys(Arrays.asList(testEntity)));
-
-    boolean caught = false;
-    try {
-      getEntityDb().selectSingle(testEntity.getPrimaryKey());
-    }
-    catch (DbException e) {
-      caught = true;
-    }
-    assertTrue("Entity of type " + testEntity.getEntityID() + " failed delete test", caught);
   }
 
   /**
@@ -305,6 +224,87 @@ public abstract class EntityTestUnit {
    */
   protected Entity createReferenceEntity(final String entityID) throws Exception {
     return EntityUtil.createRandomEntity(entityID, referencedEntities);
+  }
+
+  /**
+   * Tests inserting the given entity
+   * @param testEntity the entity to test insert for
+   * @return the same entity retrieved from the database after the insert
+   * @throws Exception in case of an exception
+   */
+  private Entity testInsert(final Entity testEntity) throws Exception {
+    final List<Entity.Key> keys = getEntityDb().insert(Arrays.asList(testEntity));
+    try {
+      return getEntityDb().selectSingle(keys.get(0));
+    }
+    catch (RecordNotFoundException e) {
+      fail("Inserted entity of type " + testEntity.getEntityID() + " not returned by select after insert");
+      throw e;
+    }
+  }
+
+  /**
+   * Tests selecting the given entity, if <code>testEntity</code> is null
+   * then selecting many entities is tested.
+   * @param entityID the entityID in case <code>testEntity</code> is null
+   * @param testEntity the entity to test selecting
+   * @throws Exception in case of an exception
+   */
+  private void testSelect(final String entityID, final Entity testEntity) throws Exception {
+    if (testEntity != null) {
+      final Entity tmp = getEntityDb().selectSingle(testEntity.getPrimaryKey());
+      assertTrue("Entity of type " + testEntity.getEntityID() + " failed equals comparison",
+              testEntity.equals(tmp));
+    }
+    else {
+      getEntityDb().selectMany(EntityCriteriaUtil.selectCriteria(entityID, 10));
+    }
+  }
+
+  /**
+   * Test updating the given entity, if the entity is not modified this test does nothing
+   * @param testEntity the entity to test updating
+   * @throws Exception in case of an exception
+   */
+  private void testUpdate(final Entity testEntity) throws Exception {
+    modifyEntity(testEntity);
+    if (!testEntity.isModified()) {
+      return;
+    }
+
+    getEntityDb().update(Arrays.asList(testEntity));
+
+    final Entity tmp = getEntityDb().selectSingle(testEntity.getOriginalPrimaryKey());
+    assertEquals("Primary keys of entity and its updated counterpart should be equal",
+            testEntity.getPrimaryKey(), tmp.getPrimaryKey());
+    for (final Property.ColumnProperty property : EntityRepository.getColumnProperties(testEntity.getEntityID())) {
+      if (!property.isReadOnly() && property.isUpdatable()) {
+        final Object beforeUpdate = testEntity.getValue(property.getPropertyID());
+        final Object afterUpdate = tmp.getValue(property.getPropertyID());
+        assertTrue("Values of property " + property + " should be equal after update ["
+                + beforeUpdate + (beforeUpdate != null ? (" (" + beforeUpdate.getClass() + ")") : "") + ", "
+                + afterUpdate + (afterUpdate != null ? (" (" + afterUpdate.getClass() + ")") : "") + "]",
+                Util.equal(beforeUpdate, afterUpdate));
+      }
+    }
+  }
+
+  /**
+   * Test deleting the given entity
+   * @param testEntity the entity to test deleting
+   * @throws Exception in case of an exception
+   */
+  private void testDelete(final Entity testEntity) throws Exception {
+    getEntityDb().delete(EntityUtil.getPrimaryKeys(Arrays.asList(testEntity)));
+
+    boolean caught = false;
+    try {
+      getEntityDb().selectSingle(testEntity.getPrimaryKey());
+    }
+    catch (DbException e) {
+      caught = true;
+    }
+    assertTrue("Entity of type " + testEntity.getEntityID() + " failed delete test", caught);
   }
 
   /**

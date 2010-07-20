@@ -46,12 +46,12 @@ public class Control extends AbstractAction {
   }
 
   @Override
-  public boolean isEnabled() {
+  public final boolean isEnabled() {
     return enabledState.isActive();
   }
 
   @Override
-  public void setEnabled(final boolean newValue) {
+  public final void setEnabled(final boolean newValue) {
     enabledState.setActive(newValue);
   }
 
@@ -60,7 +60,7 @@ public class Control extends AbstractAction {
   /**
    * @return the description
    */
-  public String getDescription() {
+  public final String getDescription() {
     return (String) this.getValue(Action.SHORT_DESCRIPTION);
   }
 
@@ -68,7 +68,7 @@ public class Control extends AbstractAction {
    * @param description the description string
    * @return this control instance
    */
-  public Control setDescription(final String description) {
+  public final Control setDescription(final String description) {
     this.putValue(Action.SHORT_DESCRIPTION, description);
     return this;
   }
@@ -76,7 +76,7 @@ public class Control extends AbstractAction {
   /**
    * @return the name
    */
-  public String getName() {
+  public final String getName() {
     return (String) this.getValue(Action.NAME);
   }
 
@@ -84,7 +84,7 @@ public class Control extends AbstractAction {
    * @param name the name of this Control instance
    * @return this Control instance
    */
-  public Control setName(final String name) {
+  public final Control setName(final String name) {
     this.putValue(NAME, name);
     return this;
   }
@@ -92,7 +92,7 @@ public class Control extends AbstractAction {
   /**
    * @return the state which controls whether this Control instance is enabled
    */
-  public State getEnabledState() {
+  public final State getEnabledState() {
     return enabledState;
   }
 
@@ -100,7 +100,7 @@ public class Control extends AbstractAction {
    * @param key the mnemonic to associate with this Control instance
    * @return this Control instance
    */
-  public Control setMnemonic(final int key) {
+  public final Control setMnemonic(final int key) {
     this.putValue(MNEMONIC_KEY, key);
     return this;
   }
@@ -108,7 +108,7 @@ public class Control extends AbstractAction {
   /**
    * @return the mnemonic
    */
-  public int getMnemonic() {
+  public final int getMnemonic() {
     return (Integer) this.getValue(MNEMONIC_KEY);
   }
 
@@ -116,7 +116,7 @@ public class Control extends AbstractAction {
    * @param ks the KeyStroke to associate with this Control
    * @return this Control instance
    */
-  public Control setKeyStroke(final KeyStroke ks) {
+  public final Control setKeyStroke(final KeyStroke ks) {
     this.putValue(ACCELERATOR_KEY, ks);
     return this;
   }
@@ -125,7 +125,7 @@ public class Control extends AbstractAction {
    * @param icon the icon to associate with this Control
    * @return this Control instance
    */
-  public Control setIcon(final Icon icon) {
+  public final Control setIcon(final Icon icon) {
     this.putValue(SMALL_ICON, icon);
     return this;
   }
@@ -133,7 +133,7 @@ public class Control extends AbstractAction {
   /**
    * @return the icon
    */
-  public Icon getIcon() {
+  public final Icon getIcon() {
     return (Icon) getValue(SMALL_ICON);
   }
 }

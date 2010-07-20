@@ -90,6 +90,10 @@ public class DefaultForeignKeySearchModel extends AbstractSearchModel<Property.F
     }
   }
 
+  public boolean include(final Object object) {
+    return true;
+  }
+
   /**
    * @return the EntityComboBoxModel used by this PropertySearchModel, if any
    */

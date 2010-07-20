@@ -21,7 +21,7 @@ import java.awt.event.ActionEvent;
 /**
  * A panel for presenting a InputProvider.
  */
-public class InputProviderPanel extends JPanel implements InputProvider {
+public final class InputProviderPanel extends JPanel implements InputProvider {
 
   private final Event evtButtonClicked = new Event();
 

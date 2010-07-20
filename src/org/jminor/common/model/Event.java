@@ -12,7 +12,7 @@ import java.util.Set;
 /**
  * A synchronous event class.
  */
-public class Event implements ActionListener {
+public final class Event implements ActionListener {
 
   private final Set<ActionListener> listeners = new HashSet<ActionListener>();
   private final ActionEvent defaultActionEvent = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "");
@@ -28,7 +28,7 @@ public class Event implements ActionListener {
    * Notifies all listeners
    * @param event the ActionEvent to use when notifying
    */
-  public final void fire(final ActionEvent event) {
+  public void fire(final ActionEvent event) {
     for (final ActionListener listener : new ArrayList<ActionListener>(listeners)) {
       listener.actionPerformed(event);
     }

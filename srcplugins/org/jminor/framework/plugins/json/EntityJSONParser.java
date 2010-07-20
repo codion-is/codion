@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class EntityJSONParser implements Serializer<Entity>, Deserializer<Entity> {
+public final class EntityJSONParser implements Serializer<Entity>, Deserializer<Entity> {
 
   private int indentFactor = 2;
 
@@ -164,7 +164,7 @@ public class EntityJSONParser implements Serializer<Entity>, Deserializer<Entity
 
   private static JSONObject getPropertyValuesJSONObject(final Entity entity, final boolean includeForeignKeys) throws JSONException {
     final JSONObject propertyValues = new JSONObject();
-    for (final Property property : EntityRepository.getDatabaseProperties(entity.getEntityID(), true, true, true, includeForeignKeys)) {
+    for (final Property property : EntityRepository.getColumnProperties(entity.getEntityID(), true, true, true, includeForeignKeys)) {
       propertyValues.put(property.getPropertyID(), getJSONValue(entity, property, includeForeignKeys));
     }
 
@@ -187,7 +187,7 @@ public class EntityJSONParser implements Serializer<Entity>, Deserializer<Entity
 
   private static JSONObject getOriginalValuesJSONObject(final Entity entity, final boolean includeForeignKeys) throws JSONException {
     final JSONObject originalValues = new JSONObject();
-    for (final Property property : EntityRepository.getDatabaseProperties(entity.getEntityID(), true, true, true, includeForeignKeys)) {
+    for (final Property property : EntityRepository.getColumnProperties(entity.getEntityID(), true, true, true, includeForeignKeys)) {
       if (entity.isModified(property.getPropertyID())) {
         originalValues.put(property.getPropertyID(), getJSONOriginalValue(entity, property));
       }

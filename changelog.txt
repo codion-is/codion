@@ -1895,3 +1895,4 @@
   EntityDefinitionImpl added
   Entities.define() added
   Collections.size() == 0 replaced with isEmpty() throughout
+  Finalized a bunch of classes and methods

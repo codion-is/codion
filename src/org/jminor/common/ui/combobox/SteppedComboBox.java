@@ -42,7 +42,7 @@ public class SteppedComboBox extends JComboBox {
   /**
    * @param width the width of the popup
    */
-  public void setPopupWidth(int width) {
+  public final void setPopupWidth(int width) {
     popupWidth = width;
   }
 
@@ -50,7 +50,7 @@ public class SteppedComboBox extends JComboBox {
    * @param displaySize the display size provided by the UI
    * @return Value for property 'popupSize'.
    */
-  public Dimension getPopupSize(final Dimension displaySize) {
+  public final Dimension getPopupSize(final Dimension displaySize) {
     final Dimension size = getSize();
 
     return new Dimension(Math.max(size.width, popupWidth <= 0 ? displaySize.width : popupWidth), size.height);

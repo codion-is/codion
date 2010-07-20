@@ -28,14 +28,14 @@ public class Item<T> implements Comparable<Item<T>>, Serializable {
   /**
    * @return the caption
    */
-  public String getCaption() {
+  public final String getCaption() {
     return caption;
   }
 
   /**
    * @return the actual item
    */
-  public T getItem() {
+  public final T getItem() {
     return item;
   }
 

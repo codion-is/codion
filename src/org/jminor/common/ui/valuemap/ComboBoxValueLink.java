@@ -5,8 +5,8 @@ package org.jminor.common.ui.valuemap;
 
 import org.jminor.common.model.DocumentAdapter;
 import org.jminor.common.model.Item;
-import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
 import org.jminor.common.model.combobox.ItemComboBoxModel;
+import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
 import org.jminor.common.ui.control.LinkType;
 
 import javax.swing.ComboBoxModel;
@@ -78,11 +78,11 @@ public class ComboBoxValueLink<K> extends AbstractValueMapLink<K, Object> {
   }
 
   @Override
-  protected void setUIValue(final Object value) {
+  protected final void setUIValue(final Object value) {
     boxModel.setSelectedItem(value);
   }
 
-  protected ComboBoxModel getModel() {
+  protected final ComboBoxModel getModel() {
     return boxModel;
   }
 }

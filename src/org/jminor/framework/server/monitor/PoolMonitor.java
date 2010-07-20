@@ -19,7 +19,7 @@ import java.util.Collection;
  * Date: 10.12.2007<br>
  * Time: 15:27:24<br>
  */
-public class PoolMonitor {
+public final class PoolMonitor {
 
   private final EntityDbServerAdmin server;
 

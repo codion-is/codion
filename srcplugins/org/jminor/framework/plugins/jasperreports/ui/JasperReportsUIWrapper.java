@@ -12,7 +12,7 @@ import net.sf.jasperreports.view.JRViewer;
 
 import javax.swing.JComponent;
 
-public class JasperReportsUIWrapper implements ReportUIWrapper<JasperPrint> {
+public final class JasperReportsUIWrapper implements ReportUIWrapper<JasperPrint> {
 
   public JComponent createReportComponent(final ReportResult<JasperPrint> result) {
     Util.rejectNullValue(result, "result");

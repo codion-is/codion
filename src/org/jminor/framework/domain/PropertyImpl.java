@@ -158,7 +158,7 @@ class PropertyImpl implements Property, Serializable {
    * @return a String representation of this property
    */
   @Override
-  public String toString() {
+  public final String toString() {
     if (caption == null) {
       return propertyID;
     }
@@ -170,77 +170,77 @@ class PropertyImpl implements Property, Serializable {
    * @param property the property
    * @return true if this property is of the given type
    */
-  public boolean is(final Property property) {
+  public final boolean is(final Property property) {
     return is(property.getPropertyID());
   }
 
   /**
    * @return true if this is a numerical Property, that is, Integer or Double
    */
-  public boolean isNumerical() {
+  public final boolean isNumerical() {
     return isInteger() || isDouble();
   }
 
   /**
    * @return true if this is a time based property, Date or Timestamp
    */
-  public boolean isTime() {
+  public final boolean isTime() {
     return isDate() || isTimestamp();
   }
 
   /**
    * @return true if this is a date property
    */
-  public boolean isDate() {
+  public final boolean isDate() {
     return isType(Types.DATE);
   }
 
   /**
    * @return true if this is a timestamp property
    */
-  public boolean isTimestamp() {
+  public final boolean isTimestamp() {
     return isType(Types.TIMESTAMP);
   }
 
   /**
    * @return true if this is a character property
    */
-  public boolean isCharacter() {
+  public final boolean isCharacter() {
     return isType(Types.CHAR);
   }
 
   /**
    * @return true if this is a string property
    */
-  public boolean isString() {
+  public final boolean isString() {
     return isType(Types.VARCHAR);
   }
 
   /**
    * @return true if this is a integer property
    */
-  public boolean isInteger() {
+  public final boolean isInteger() {
     return isType(Types.INTEGER);
   }
 
   /**
    * @return true if this is a double property
    */
-  public boolean isDouble() {
+  public final boolean isDouble() {
     return isType(Types.DOUBLE);
   }
 
   /**
    * @return true if this is a boolean property
    */
-  public boolean isBoolean() {
+  public final boolean isBoolean() {
     return isType(Types.BOOLEAN);
   }
 
   /**
    * @return true if this is a reference property
    */
-  public boolean isReference() {
+  public final boolean isReference() {
     return isType(Types.REF);
   }
 
@@ -248,21 +248,21 @@ class PropertyImpl implements Property, Serializable {
    * @param propertyID the property ID
    * @return true if this property is of the given type
    */
-  public boolean is(final String propertyID) {
+  public final boolean is(final String propertyID) {
     return this.propertyID.equals(propertyID);
   }
 
   /**
    * @return the property identifier of this property
    */
-  public String getPropertyID() {
+  public final String getPropertyID() {
     return this.propertyID;
   }
 
   /**
    * @return the data type of the value of this property
    */
-  public int getType() {
+  public final int getType() {
     return type;
   }
 
@@ -270,7 +270,7 @@ class PropertyImpl implements Property, Serializable {
    * @param type the type to check
    * @return true if the type of this property is the one given
    */
-  public boolean isType(final int type) {
+  public final boolean isType(final int type) {
     return this.type == type;
   }
 
@@ -278,7 +278,7 @@ class PropertyImpl implements Property, Serializable {
    * @param hidden specifies whether this property should not be visible to the user
    * @return this Property instance
    */
-  public Property setHidden(final boolean hidden) {
+  public final Property setHidden(final boolean hidden) {
     this.hidden = hidden;
     return this;
   }
@@ -286,7 +286,7 @@ class PropertyImpl implements Property, Serializable {
   /**
    * @return true if this property should be hidden in table views
    */
-  public boolean isHidden() {
+  public final boolean isHidden() {
     return hidden;
   }
 
@@ -294,7 +294,7 @@ class PropertyImpl implements Property, Serializable {
    * @param readOnly specifies whether this property should be included during insert/update operations
    * @return this Property instance
    */
-  public Property setReadOnly(final boolean readOnly) {
+  public final Property setReadOnly(final boolean readOnly) {
     if (hasParentProperty()) {
       throw new RuntimeException("Can not set the read only status of a property with a parent property");
     }
@@ -309,7 +309,7 @@ class PropertyImpl implements Property, Serializable {
    * inherit the read only state of the parent property.
    * @return true if this property is for select only
    */
-  public boolean isReadOnly() {
+  public final boolean isReadOnly() {
     if (parentProperty != null) {
       return parentProperty.isReadOnly();
     }
@@ -322,7 +322,7 @@ class PropertyImpl implements Property, Serializable {
    * @param defaultValue the value to use as default
    * @return the property
    */
-  public Property setDefaultValue(final Object defaultValue) {
+  public final Property setDefaultValue(final Object defaultValue) {
     this.defaultValue = defaultValue;
     return this;
   }
@@ -330,7 +330,7 @@ class PropertyImpl implements Property, Serializable {
   /**
    * @return the default value for this property
    */
-  public Object getDefaultValue() {
+  public final Object getDefaultValue() {
     return this.defaultValue;
   }
 
@@ -341,7 +341,7 @@ class PropertyImpl implements Property, Serializable {
    * @param nullable specifies whether or not this property accepts a null value
    * @return this Property instance
    */
-  public Property setNullable(final boolean nullable) {
+  public final Property setNullable(final boolean nullable) {
     if (hasParentProperty()) {
       throw new RuntimeException("Can not set the nullable status of a property with a parent property");
     }
@@ -353,7 +353,7 @@ class PropertyImpl implements Property, Serializable {
   /**
    * @return true if this property accepts a null value
    */
-  public boolean isNullable() {
+  public final boolean isNullable() {
     return nullable;
   }
 
@@ -362,7 +362,7 @@ class PropertyImpl implements Property, Serializable {
    * @param maxLength the maximum length
    * @return this Property instance
    */
-  public Property setMaxLength(final int maxLength) {
+  public final Property setMaxLength(final int maxLength) {
     this.maxLength = maxLength;
     return this;
   }
@@ -370,7 +370,7 @@ class PropertyImpl implements Property, Serializable {
   /**
    * @return the maximum length of this property value, -1 is returned if the max length is undefined
    */
-  public int getMaxLength() {
+  public final int getMaxLength() {
     return maxLength;
   }
 
@@ -378,7 +378,7 @@ class PropertyImpl implements Property, Serializable {
    * @return the maximum allowed value for this property, null if none is defined,
    * only applicable to numerical properties
    */
-  public Double getMax() {
+  public final Double getMax() {
     return max;
   }
 
@@ -387,7 +387,7 @@ class PropertyImpl implements Property, Serializable {
    * @param max the maximum allowed value
    * @return this Property instance
    */
-  public Property setMax(final double max) {
+  public final Property setMax(final double max) {
     this.max = max;
     return this;
   }
@@ -396,7 +396,7 @@ class PropertyImpl implements Property, Serializable {
    * @return the minimum allowed value for this property, null if none is defined,
    * only applicable to numerical properties
    */
-  public Double getMin() {
+  public final Double getMin() {
     return min;
   }
 
@@ -405,7 +405,7 @@ class PropertyImpl implements Property, Serializable {
    * @param min the minimum allowed value
    * @return this Property instance
    */
-  public Property setMin(final double min) {
+  public final Property setMin(final double min) {
     this.min = min;
     return this;
   }
@@ -418,7 +418,7 @@ class PropertyImpl implements Property, Serializable {
    * @param useGrouping if true then number grouping is used
    * @return this Property instance
    */
-  public Property setUseNumberFormatGrouping(final boolean useGrouping) {
+  public final Property setUseNumberFormatGrouping(final boolean useGrouping) {
     if (!(format instanceof NumberFormat)) {
       throw new RuntimeException("Grouping only good for number formats");
     }
@@ -431,7 +431,7 @@ class PropertyImpl implements Property, Serializable {
    * @param preferredColumnWidth the preferred column width to be used when this property is shown in a table
    * @return this Property instance
    */
-  public Property setPreferredColumnWidth(final int preferredColumnWidth) {
+  public final Property setPreferredColumnWidth(final int preferredColumnWidth) {
     this.preferredColumnWidth = preferredColumnWidth;
     return this;
   }
@@ -440,14 +440,14 @@ class PropertyImpl implements Property, Serializable {
    * @return the preferred column width of this property when
    * presented in a table, null if none has been specified
    */
-  public Integer getPreferredColumnWidth() {
+  public final int getPreferredColumnWidth() {
     return preferredColumnWidth;
   }
 
   /**
    * @return a String describing this property
    */
-  public String getDescription() {
+  public final String getDescription() {
     return description;
   }
 
@@ -455,7 +455,7 @@ class PropertyImpl implements Property, Serializable {
    * @param description a String describing this property
    * @return this Property instance
    */
-  public Property setDescription(final String description) {
+  public final Property setDescription(final String description) {
     this.description = description;
     return this;
   }
@@ -463,14 +463,14 @@ class PropertyImpl implements Property, Serializable {
   /**
    * @return true if this property has a description
    */
-  public boolean hasDescription() {
+  public final boolean hasDescription() {
     return description != null;
   }
 
   /**
    * @return the mnemonic to use when creating a label for this property
    */
-  public Character getMnemonic() {
+  public final Character getMnemonic() {
     return mnemonic;
   }
 
@@ -479,7 +479,7 @@ class PropertyImpl implements Property, Serializable {
    * @param mnemonic the mnemonic character
    * @return this Property instance
    */
-  public Property setMnemonic(final Character mnemonic) {
+  public final Property setMnemonic(final Character mnemonic) {
     this.mnemonic = mnemonic;
     return this;
   }
@@ -487,7 +487,7 @@ class PropertyImpl implements Property, Serializable {
   /**
    * @return the Format object used to format the value of properties when being presented
    */
-  public Format getFormat() {
+  public final Format getFormat() {
     return format;
   }
 
@@ -496,7 +496,7 @@ class PropertyImpl implements Property, Serializable {
    * @param format the format to use
    * @return this Property instance
    */
-  public Property setFormat(final Format format) {
+  public final Property setFormat(final Format format) {
     this.format = format;
     return this;
   }
@@ -507,7 +507,7 @@ class PropertyImpl implements Property, Serializable {
    * @param maximumFractionDigits the maximum fraction digits
    * @return this Property instance
    */
-  public Property setMaximumFractionDigits(final int maximumFractionDigits) {
+  public final Property setMaximumFractionDigits(final int maximumFractionDigits) {
     if (!(format instanceof NumberFormat)) {
       throw new RuntimeException("Maximum fraction digits only good for number formats");
     }
@@ -519,29 +519,21 @@ class PropertyImpl implements Property, Serializable {
   /**
    * @return the maximum number of fraction digits to show for this property value
    */
-  public int getMaximumFractionDigits() {
+  public final int getMaximumFractionDigits() {
     return ((NumberFormat) getFormat()).getMaximumFractionDigits();
   }
 
   /**
    * @return true if this property has a parent property
    */
-  public boolean hasParentProperty() {
+  public final boolean hasParentProperty() {
     return this.parentProperty != null;
-  }
-
-  /**
-   * @return true if this property is a denormalized one which should get
-   * its value from a parent foreign key property
-   */
-  public boolean isDenormalized() {
-    return false;
   }
 
   /**
    * @return the caption used when the value of this property is presented
    */
-  public String getCaption() {
+  public final String getCaption() {
     if (caption == null && hasParentProperty()) {
       return parentProperty.getCaption();
     }
@@ -553,14 +545,14 @@ class PropertyImpl implements Property, Serializable {
    * Sets the select column index
    * @param index the index
    */
-  public void setSelectIndex(final int index) {
+  public final void setSelectIndex(final int index) {
     this.selectIndex = index;
   }
 
   /**
    * @return the index of this property in a select query
    */
-  public int getSelectIndex() {
+  public final int getSelectIndex() {
     return selectIndex;
   }
 
@@ -575,14 +567,14 @@ class PropertyImpl implements Property, Serializable {
   }
 
   @Override
-  public int hashCode() {
+  public final int hashCode() {
     return hashCode;
   }
 
   /**
    * @return the Class representing this property type
    */
-  public Class<?> getTypeClass() {
+  public final Class<?> getTypeClass() {
     if (typeClass == null) {
       typeClass = Util.getTypeClass(type);
     }
@@ -590,11 +582,11 @@ class PropertyImpl implements Property, Serializable {
     return typeClass;
   }
 
-  public void setParentProperty(final ForeignKeyProperty parentProperty) {
+  public final void setParentProperty(final ForeignKeyProperty parentProperty) {
     this.parentProperty = parentProperty;
   }
 
-  public ForeignKeyProperty getParentProperty() {
+  public final ForeignKeyProperty getParentProperty() {
     return this.parentProperty;
   }
 
@@ -640,14 +632,14 @@ class PropertyImpl implements Property, Serializable {
     /**
      * @return the name of the underlying column
      */
-    public String getColumnName() {
+    public final String getColumnName() {
       return this.columnName;
     }
 
     /**
      * @return true if the underlying column has a default value
      */
-    public boolean columnHasDefaultValue() {
+    public final boolean columnHasDefaultValue() {
       return columnHasDefaultValue;
     }
 
@@ -655,7 +647,7 @@ class PropertyImpl implements Property, Serializable {
      * @param columnHasDefaultValue specifies whether or not the underlying column has a default value
      * @return this Property instance
      */
-    public Property setColumnHasDefaultValue(final boolean columnHasDefaultValue) {
+    public final Property setColumnHasDefaultValue(final boolean columnHasDefaultValue) {
       this.columnHasDefaultValue = columnHasDefaultValue;
       return this;
     }
@@ -664,7 +656,7 @@ class PropertyImpl implements Property, Serializable {
      * Specifies whether or not this property is updatable
      * @return true if this property is updatable
      */
-    public boolean isUpdatable() {
+    public final boolean isUpdatable() {
       return this.updatable;
     }
 
@@ -672,13 +664,13 @@ class PropertyImpl implements Property, Serializable {
      * @param updatable specifies whether this property is updatable
      * @return this Property instance
      */
-    public ColumnProperty setUpdatable(final boolean updatable) {
+    public final ColumnProperty setUpdatable(final boolean updatable) {
       this.updatable = updatable;
       return this;
     }
 
-    public ColumnProperty setNullable(final boolean nullable) {
-      return (ColumnProperty) super.setNullable(nullable);
+    public boolean isDenormalized() {
+      return false;
     }
   }
 
@@ -708,11 +700,11 @@ class PropertyImpl implements Property, Serializable {
       setUpdatable(false);
     }
 
-    public int getIndex() {
+    public final int getIndex() {
       return index;
     }
 
-    public PrimaryKeyProperty setIndex(final int primaryKeyIndex) {
+    public final PrimaryKeyProperty setIndex(final int primaryKeyIndex) {
       if (primaryKeyIndex < 0) {
         throw new IllegalArgumentException("Primary key index must be at least 0");
       }
@@ -787,7 +779,7 @@ class PropertyImpl implements Property, Serializable {
     /**
      * @return the ID of the referenced entity
      */
-    public String getReferencedEntityID() {
+    public final String getReferencedEntityID() {
       return referencedEntityID;
     }
 
@@ -796,27 +788,27 @@ class PropertyImpl implements Property, Serializable {
      * N.B. this list should not be modified.
      * @return the reference properties
      */
-    public List<ColumnProperty> getReferenceProperties() {
+    public final List<ColumnProperty> getReferenceProperties() {
       return referenceProperties;
     }
 
     /**
      * @return true if this reference is based on more than on column
      */
-    public boolean isCompositeReference() {
+    public final boolean isCompositeReference() {
       return this.referenceProperties.size() > 1;
     }
 
-    public int getFetchDepth() {
+    public final int getFetchDepth() {
       return fetchDepth;
     }
 
-    public ForeignKeyProperty setFetchDepth(final int fetchDepth) {
+    public final ForeignKeyProperty setFetchDepth(final int fetchDepth) {
       this.fetchDepth = fetchDepth;
       return this;
     }
 
-    public String getReferencedPropertyID(final Property referenceProperty) {
+    public final String getReferencedPropertyID(final Property referenceProperty) {
       if (linkedReferenceProperties == null) {
         return null;
       }
@@ -889,19 +881,19 @@ class PropertyImpl implements Property, Serializable {
     /**
      * @return the id of the foreign key property (entity) from which this property should retrieve its value
      */
-    public String getForeignKeyPropertyID() {
+    public final String getForeignKeyPropertyID() {
       return foreignKeyPropertyID;
     }
 
     /**
      * @return the property from which this property gets its value
      */
-    public Property getDenormalizedProperty() {
+    public final Property getDenormalizedProperty() {
       return denormalizedProperty;
     }
 
     @Override
-    public boolean isDenormalized() {
+    public final boolean isDenormalized() {
       return true;
     }
   }
@@ -937,18 +929,18 @@ class PropertyImpl implements Property, Serializable {
       this.values = Collections.unmodifiableList(values);
     }
 
-    public boolean isValid(final Object value) {
+    public final boolean isValid(final Object value) {
       return values.contains(new Item<Object>(value, ""));
     }
 
     /**
      * @return an unmodifiable view of the values
      */
-    public List<Item<Object>> getValues() {
+    public final List<Item<Object>> getValues() {
       return values;
     }
 
-    public String getCaption(final Object value) {
+    public final String getCaption(final Object value) {
       final Item item = new Item<Object>(value, "");
       final int index = values.indexOf(item);
       if (index >= 0) {
@@ -1003,18 +995,13 @@ class PropertyImpl implements Property, Serializable {
 
     public DerivedPropertyImpl(final String propertyID, final int type, final String caption) {
       super(propertyID, type, caption);
-      super.setReadOnly(true);
-    }
-
-    @Override
-    public Property setReadOnly(final boolean readOnly) {
-      throw new RuntimeException("Derived properties are read only by definition");
+      setReadOnly(true);
     }
 
     /**
      * @return the IDs of properties that trigger a change event for this property
      */
-    public Collection<String> getLinkedPropertyIDs() {
+    public final Collection<String> getLinkedPropertyIDs() {
       return linkedPropertyIDs;
     }
 
@@ -1024,7 +1011,7 @@ class PropertyImpl implements Property, Serializable {
      * @param linkedPropertyIDs the IDs of the properties on which to link
      * @return this TransientProperty instance
      */
-    public DerivedProperty addLinkedPropertyIDs(final String... linkedPropertyIDs) {
+    public final DerivedProperty addLinkedPropertyIDs(final String... linkedPropertyIDs) {
       if (this.linkedPropertyIDs == null) {
         this.linkedPropertyIDs = new HashSet<String>();
       }
@@ -1073,20 +1060,15 @@ class PropertyImpl implements Property, Serializable {
     /**
      * @return the id of the foreign key property (entity) from which this property should retrieve its value
      */
-    public String getForeignKeyPropertyID() {
+    public final String getForeignKeyPropertyID() {
       return foreignKeyPropertyID;
     }
 
     /**
      * @return the property from which this property gets its value
      */
-    public Property getDenormalizedProperty() {
+    public final Property getDenormalizedProperty() {
       return denormalizedProperty;
-    }
-
-    @Override
-    public boolean isDenormalized() {
-      return true;
     }
   }
 
@@ -1108,31 +1090,16 @@ class PropertyImpl implements Property, Serializable {
      */
     public SubqueryPropertyImpl(final String propertyID, final int type, final String caption, final String subquery) {
       super(propertyID, type, caption);
-      super.setReadOnly(true);
-      super.setUpdatable(false);
+      setReadOnly(true);
+      setUpdatable(false);
       this.subquery = subquery;
-    }
-
-    @Override
-    public ColumnProperty setUpdatable(final boolean updatable) {
-      throw new IllegalArgumentException("SubqueryProperty can not be updatable");
-    }
-
-    @Override
-    public Property setReadOnly(final boolean readOnly) {
-      throw new IllegalArgumentException("SubqueryProperty can only be select only");
     }
 
     /**
      * @return the subquery string
      */
-    public String getSubQuery() {
+    public final String getSubQuery() {
       return subquery;
-    }
-
-    @Override
-    public final String getColumnName() {
-      throw new RuntimeException("Subquery properties do not have column names");
     }
   }
 
@@ -1191,7 +1158,7 @@ class PropertyImpl implements Property, Serializable {
     /**
      * @return the data type of the underlying column
      */
-    public int getColumnType() {
+    public final int getColumnType() {
       return columnType;
     }
 
@@ -1199,7 +1166,7 @@ class PropertyImpl implements Property, Serializable {
      * @param object the Object value to translate into a Boolean value
      * @return the Boolean value of <code>object</code>
      */
-    public Boolean toBoolean(final Object object) {
+    public final Boolean toBoolean(final Object object) {
       if (Util.equal(trueValue, object)) {
         return true;
       }
@@ -1214,7 +1181,7 @@ class PropertyImpl implements Property, Serializable {
      * @param value the Boolean value to translate into a sql string value
      * @return the sql string value of <code>value</code>
      */
-    public String toSQLString(final Boolean value) {
+    public final String toSQLString(final Boolean value) {
       final Object result = toSQLValue(value);
       if (columnType == Types.VARCHAR) {
         return "'" + result + "'";
@@ -1228,7 +1195,7 @@ class PropertyImpl implements Property, Serializable {
       }
     }
 
-    public Object toSQLValue(final Boolean value) {
+    public final Object toSQLValue(final Boolean value) {
       if (value == null) {
         return null;
       }
@@ -1256,7 +1223,7 @@ class PropertyImpl implements Property, Serializable {
       this.blobColumnName = blobColumnName;
     }
 
-    public String getBlobColumnName() {
+    public final String getBlobColumnName() {
       return blobColumnName;
     }
   }
@@ -1273,7 +1240,7 @@ class PropertyImpl implements Property, Serializable {
       this.auditAction = auditAction;
     }
 
-    public AuditAction getAuditAction() {
+    public final AuditAction getAuditAction() {
       return auditAction;
     }
   }

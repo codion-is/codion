@@ -42,7 +42,7 @@ public class State {
     return active ? "active" : "inactive";
   }
 
-  public void addListeningAction(final Action action) {
+  public final void addListeningAction(final Action action) {
     action.setEnabled(isActive());
     evtStateChanged.addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -72,7 +72,7 @@ public class State {
   /**
    * @return a State that is always the same as the parent state but can not be directly modified
    */
-  public State getLinkedState() {
+  public final State getLinkedState() {
     if (linkedState == null) {
       linkedState = new LinkedState(this);
     }
@@ -94,7 +94,7 @@ public class State {
   /**
    * @return an Event fired each time the state changes
    */
-  public Event eventStateChanged() {
+  public final Event eventStateChanged() {
     return evtStateChanged;
   }
 
@@ -131,7 +131,7 @@ public class State {
     }
   }
 
-  private static final class ReverseState extends LinkedState {
+  private static class ReverseState extends LinkedState {
 
     private ReverseState(final State referenceState) {
       super(referenceState);

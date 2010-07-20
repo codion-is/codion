@@ -26,7 +26,7 @@ import java.util.TimerTask;
  * Date: 7.12.2007<br>
  * Time: 00:04:08<br>
  */
-public class ConnectionPoolImpl implements ConnectionPool {
+public final class ConnectionPoolImpl implements ConnectionPool {
 
   private static final Logger LOG = Util.getLogger(ConnectionPoolImpl.class);
 

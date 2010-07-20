@@ -38,7 +38,7 @@ import java.util.UUID;
  * Date: 28.6.2009<br>
  * Time: 16:17:14<br>
  */
-public class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements EntityDbServerAdmin {
+public final class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements EntityDbServerAdmin {
 
   private static final int SERVER_ADMIN_PORT;
 

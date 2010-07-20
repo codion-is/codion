@@ -1144,7 +1144,7 @@ public class EntityPanel extends JPanel {
 
   private void addActivationInitializer() {
     getEditModel().stateActive().eventStateChanged().addListener(new ActionListener() {
-      final Runnable initializer = new Runnable() {
+      private final Runnable initializer = new Runnable() {
         public void run() {
           initializePanel();
           showPanelTab();

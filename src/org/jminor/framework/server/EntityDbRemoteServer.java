@@ -39,7 +39,7 @@ import java.util.UUID;
 /**
  * The remote server class, responsible for handling remote db connection requests.
  */
-public class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
+public final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
 
   static final Logger LOG = Util.getLogger(EntityDbRemoteServer.class);
 
@@ -289,7 +289,7 @@ public class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
   }
 
   @Override
-  protected void doDisconnect(final EntityDbRemote connection) throws RemoteException {
+  protected final void doDisconnect(final EntityDbRemote connection) throws RemoteException {
     try {
       ((EntityDbRemoteAdapter) connection).disconnect();
       LOG.debug(((EntityDbRemoteAdapter) connection).getClientInfo() + " disconnected");
@@ -300,7 +300,7 @@ public class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
   }
 
   @Override
-  protected EntityDbRemoteAdapter doConnect(final ClientInfo info) throws RemoteException {
+  protected final EntityDbRemoteAdapter doConnect(final ClientInfo info) throws RemoteException {
     final EntityDbRemoteAdapter remoteAdapter = new EntityDbRemoteAdapter(this, database, info, SERVER_DB_PORT, CLIENT_LOGGING_ENABLED);
     LOG.debug(info + " connected");
 

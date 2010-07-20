@@ -39,7 +39,7 @@ public abstract class ValueChangeMapEditPanel<K, V> extends JPanel {
     return model;
   }
 
-  public void prepareUI(final boolean setInitialFocus, final boolean clearUI) {
+  public final void prepareUI(final boolean setInitialFocus, final boolean clearUI) {
     if (clearUI) {
       getEditModel().setValueMap(null);
     }
@@ -75,7 +75,7 @@ public abstract class ValueChangeMapEditPanel<K, V> extends JPanel {
     this.initialFocusComponentKey = initialFocusComponentKey;
   }
 
-  public void setInitialFocus() {
+  public final void setInitialFocus() {
     final JComponent focusComponent = getInitialFocusComponent();
     if (focusComponent == null) {
       requestFocusInWindow();
@@ -88,11 +88,11 @@ public abstract class ValueChangeMapEditPanel<K, V> extends JPanel {
   /**
    * @return the keys that have been associated with components.
    */
-  public Collection<K> getComponentKeys() {
+  public final Collection<K> getComponentKeys() {
     return new ArrayList<K>(components.keySet());
   }
 
-  public JComponent getComponent(final K key) {
+  public final JComponent getComponent(final K key) {
     if (!components.containsKey(key)) {
       throw new RuntimeException("No component associated with key: " + key);
     }
@@ -100,13 +100,13 @@ public abstract class ValueChangeMapEditPanel<K, V> extends JPanel {
     return components.get(key);
   }
 
-  public void selectComponent(final K key) {
+  public final void selectComponent(final K key) {
     if (components.containsKey(key)) {
       components.get(key).requestFocusInWindow();
     }
   }
 
-  protected JComponent getInitialFocusComponent() {
+  protected final JComponent getInitialFocusComponent() {
     if (initialFocusComponent != null) {
       return initialFocusComponent;
     }
@@ -125,7 +125,7 @@ public abstract class ValueChangeMapEditPanel<K, V> extends JPanel {
    * @param key the propertyID
    * @param component the input component
    */
-  protected void setComponent(final K key, final JComponent component) {
+  protected final void setComponent(final K key, final JComponent component) {
     if (components.containsKey(key)) {
       throw new RuntimeException("Component already set for key: " + key);
     }

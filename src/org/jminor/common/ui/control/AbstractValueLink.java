@@ -58,21 +58,21 @@ public abstract class AbstractValueLink<T, V> extends Control {
   }
 
   @Override
-  public void actionPerformed(final ActionEvent e) {
+  public final void actionPerformed(final ActionEvent e) {
     updateModel();
   }
 
   /**
    * @return the owner of the linked property, the model
    */
-  public T getValueOwner() {
+  public final T getValueOwner() {
     return valueOwner;
   }
 
   /**
    * @return the type of this link
    */
-  public LinkType getLinkType() {
+  public final LinkType getLinkType() {
     return linkType;
   }
 

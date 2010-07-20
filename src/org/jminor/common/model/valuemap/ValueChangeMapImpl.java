@@ -45,7 +45,7 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
 
   public ValueChangeMapImpl() {}
 
-  public V getOriginalValue(final K key) {
+  public final V getOriginalValue(final K key) {
     Util.rejectNullValue(key, "key");
     if (isModified(key)) {
       return originalValues.get(key);
@@ -58,7 +58,7 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
     return originalValues != null && !originalValues.isEmpty();
   }
 
-  public boolean isModified(final K key) {
+  public final boolean isModified(final K key) {
     return originalValues != null && originalValues.containsKey(key);
   }
 
@@ -106,23 +106,23 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
     return value;
   }
 
-  public void revertValue(final K key) {
+  public final void revertValue(final K key) {
     if (isModified(key)) {
       setValue(key, getOriginalValue(key));
     }
   }
 
-  public void revertAll() {
+  public final void revertAll() {
     for (final K key : getValueKeys()) {
       revertValue(key);
     }
   }
 
-  public void saveValue(final K key) {
+  public final void saveValue(final K key) {
     removeOriginalValue(key);
   }
 
-  public void saveAll() {
+  public final void saveAll() {
     for (final K key : getValueKeys()) {
       saveValue(key);
     }
@@ -157,29 +157,29 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
     return new ValueChangeMapImpl<K, V>();
   }
 
-  public ValueChangeMap<K, V> getOriginalCopy() {
+  public final ValueChangeMap<K, V> getOriginalCopy() {
     final ValueChangeMap<K, V> copy = (ValueChangeMap<K, V>) getCopy();
     copy.revertAll();
 
     return copy;
   }
 
-  public Collection<K> getOriginalValueKeys() {
+  public final Collection<K> getOriginalValueKeys() {
     return originalValues == null ? new ArrayList<K>() :
             Collections.unmodifiableCollection(originalValues.keySet());
   }
 
-  public void addValueListener(final ActionListener valueListener) {
+  public final void addValueListener(final ActionListener valueListener) {
     eventValueChanged().addListener(valueListener);
   }
 
-  public void removeValueListener(final ActionListener valueListener) {
+  public final void removeValueListener(final ActionListener valueListener) {
     if (evtValueChanged != null) {
       evtValueChanged.removeListener(valueListener);
     }
   }
 
-  public State stateModified() {
+  public final State stateModified() {
     final State state = new State(isModified());
     eventValueChanged().addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -190,7 +190,7 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
     return state.getLinkedState();
   }
 
-  public Event eventValueChanged() {
+  public final Event eventValueChanged() {
     if (evtValueChanged == null) {
       evtValueChanged = new Event();
     }
@@ -202,14 +202,14 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
     eventValueChanged().fire(new ValueChangeEvent<K, V>(this, this, key, value, oldValue, true, initialization));
   }
 
-  protected void setOriginalValue(final K key, final V oldValue) {
+  protected final void setOriginalValue(final K key, final V oldValue) {
     if (originalValues == null) {
       originalValues = new HashMap<K, V>();
     }
     originalValues.put(key, oldValue);
   }
 
-  protected void removeOriginalValue(final K key) {
+  protected final void removeOriginalValue(final K key) {
     if (originalValues != null && originalValues.containsKey(key)) {
       originalValues.remove(key);
       if (evtValueChanged != null) {
@@ -218,7 +218,7 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
     }
   }
 
-  protected void updateModifiedState(final K key, final V value, final V previousValue) {
+  private void updateModifiedState(final K key, final V value, final V previousValue) {
     final boolean modified = isModified(key);
     if (modified && Util.equal(getOriginalValue(key), value)) {
       removeOriginalValue(key);//we're back to the original value

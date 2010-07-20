@@ -68,7 +68,7 @@ public class CriteriaSet<T> implements Criteria<T>, Serializable {
    * Adds a new Criteria object to this set
    * @param criteria the Criteria to add
    */
-  public void addCriteria(final Criteria<T> criteria) {
+  public final void addCriteria(final Criteria<T> criteria) {
     if (criteria != null) {
       this.criteriaList.add(criteria);
     }
@@ -77,11 +77,11 @@ public class CriteriaSet<T> implements Criteria<T>, Serializable {
   /**
    * @return the number of criteria in this set
    */
-  public int getCriteriaCount() {
+  public final int getCriteriaCount() {
     return criteriaList.size();
   }
 
-  public String asString() {
+  public final String asString() {
     if (criteriaList.isEmpty()) {
       return "";
     }
@@ -98,7 +98,7 @@ public class CriteriaSet<T> implements Criteria<T>, Serializable {
     return criteriaString.append(criteriaList.size() > 1 ? ")" : "").toString();
   }
 
-  public List<Object> getValues() {
+  public final List<Object> getValues() {
     final List<Object> values = new ArrayList<Object>();
     for (final Criteria<T> criteria : criteriaList) {
       values.addAll(criteria.getValues());
@@ -107,7 +107,7 @@ public class CriteriaSet<T> implements Criteria<T>, Serializable {
     return values;
   }
 
-  public List<T> getValueKeys() {
+  public final List<T> getValueKeys() {
     final List<T> types = new ArrayList<T>();
     for (final Criteria<T> criteria : criteriaList) {
       types.addAll(criteria.getValueKeys());

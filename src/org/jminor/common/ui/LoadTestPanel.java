@@ -46,7 +46,7 @@ import java.awt.event.WindowEvent;
  * A default UI component for the LoadTestModel class.
  * @see org.jminor.common.model.LoadTestModel
  */
-public class LoadTestPanel extends JPanel {
+public final class LoadTestPanel extends JPanel {
 
   private static final int MEMORY_USAGE_UPDATE_INTERVAL = 2000;
   private final LoadTestModel loadTestModel;

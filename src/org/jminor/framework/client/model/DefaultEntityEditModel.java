@@ -165,12 +165,23 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
     setValueMap(entity);
   }
 
-  public String getEntityID() {
+  public final String getEntityID() {
     return entityID;
   }
 
-  public EntityDbProvider getDbProvider() {
+  public final EntityDbProvider getDbProvider() {
     return dbProvider;
+  }
+
+  /**
+   * Returns true if the given property accepts a null value for the given entity,
+   * by default this method simply returns <code>property.isNullable()</code>
+   * @param valueMap the entity being validated
+   * @param key the property ID
+   * @return true if the property accepts a null value
+   */
+  public boolean isNullable(final ValueChangeMap<String, Object> valueMap, final String key) {
+    return EntityRepository.getProperty(entityID, key).isNullable();
   }
 
   public boolean isEntityNew() {
@@ -179,11 +190,11 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
     return key.isNull() || originalkey.isNull();
   }
 
-  public Entity getEntityValue(final String foreignKeyPropertyID) {
+  public final Entity getForeignKeyValue(final String foreignKeyPropertyID) {
     return (Entity) getValue(foreignKeyPropertyID);
   }
 
-  public Entity getEntityCopy() {
+  public final Entity getEntityCopy() {
     return getEntityCopy(true);
   }
 
@@ -192,7 +203,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
    * @return a deep copy of the active entity
    * @see org.jminor.framework.domain.Entity#getCopy()
    */
-  public Entity getEntityCopy(final boolean includePrimaryKeyValues) {
+  public final Entity getEntityCopy(final boolean includePrimaryKeyValues) {
     final Entity copy = (Entity) getEntity().getCopy();
     if (!includePrimaryKeyValues) {
       copy.getPrimaryKey().clear();
@@ -201,7 +212,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
     return copy;
   }
 
-  public boolean isEntityModified() {
+  public final boolean isEntityModified() {
     return stateModified().isActive();
   }
 
@@ -297,7 +308,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
   }
 
   @SuppressWarnings({"UnusedDeclaration"})
-  public void validateEntities(final Collection<Entity> entities, final int action) throws ValidationException {
+  public final void validateEntities(final Collection<Entity> entities, final int action) throws ValidationException {
     Util.rejectNullValue(entities, "entities");
     for (final Entity entity : entities) {
       for (final Property property : EntityRepository.getProperties(entity.getEntityID()).values()) {
@@ -349,7 +360,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
    * Refreshes any data aware control models found in the edit model,
    * such as combo box models.
    */
-  public void refresh() {
+  public final void refresh() {
     try {
       evtRefreshStarted.fire();
       refreshComboBoxModels();
@@ -363,7 +374,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
     clearComboBoxModels();
   }
 
-  public void refreshComboBoxModels() {
+  public final void refreshComboBoxModels() {
     for (final ComboBoxModel comboBoxModel : propertyComboBoxModels.values()) {
       if (comboBoxModel instanceof Refreshable) {
         ((Refreshable) comboBoxModel).refresh();
@@ -371,7 +382,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
     }
   }
 
-  public void clearComboBoxModels() {
+  public final void clearComboBoxModels() {
     for (final ComboBoxModel comboBoxModel : propertyComboBoxModels.values()) {
       if (comboBoxModel instanceof Refreshable) {
         ((Refreshable) comboBoxModel).clear();
@@ -379,7 +390,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
     }
   }
 
-  public PropertyComboBoxModel getPropertyComboBoxModel(final Property.ColumnProperty property) {
+  public final PropertyComboBoxModel getPropertyComboBoxModel(final Property.ColumnProperty property) {
     Util.rejectNullValue(property, "property");
     final PropertyComboBoxModel comboBoxModel = (PropertyComboBoxModel) propertyComboBoxModels.get(property);
     if (comboBoxModel == null) {
@@ -389,7 +400,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
     return comboBoxModel;
   }
 
-  public PropertyComboBoxModel initializePropertyComboBoxModel(final Property.ColumnProperty property, final Event refreshEvent,
+  public final PropertyComboBoxModel initializePropertyComboBoxModel(final Property.ColumnProperty property, final Event refreshEvent,
                                                                final String nullValueString) {
     Util.rejectNullValue(property, "property");
     PropertyComboBoxModel comboBoxModel = (PropertyComboBoxModel) propertyComboBoxModels.get(property);
@@ -414,7 +425,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
     return new DefaultPropertyComboBoxModel(entityID, dbProvider, property, nullValueString, refreshEvent);
   }
 
-  public EntityComboBoxModel getEntityComboBoxModel(final String propertyID) {
+  public final EntityComboBoxModel getEntityComboBoxModel(final String propertyID) {
     Util.rejectNullValue(propertyID, "propertyID");
     final Property property = EntityRepository.getProperty(entityID, propertyID);
     if (!(property instanceof Property.ForeignKeyProperty)) {
@@ -424,7 +435,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
     return getEntityComboBoxModel((Property.ForeignKeyProperty) property);
   }
 
-  public EntityComboBoxModel getEntityComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty) {
+  public final EntityComboBoxModel getEntityComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty) {
     Util.rejectNullValue(foreignKeyProperty, "foreignKeyProperty");
     final EntityComboBoxModel comboBoxModel = (EntityComboBoxModel) propertyComboBoxModels.get(foreignKeyProperty);
     if (comboBoxModel == null) {
@@ -434,7 +445,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
     return comboBoxModel;
   }
 
-  public EntityComboBoxModel initializeEntityComboBoxModel(final String propertyID) {
+  public final EntityComboBoxModel initializeEntityComboBoxModel(final String propertyID) {
     Util.rejectNullValue(propertyID, "propertyID");
     final Property property = EntityRepository.getProperty(entityID, propertyID);
     if (!(property instanceof Property.ForeignKeyProperty)) {
@@ -444,7 +455,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
     return initializeEntityComboBoxModel((Property.ForeignKeyProperty) property);
   }
 
-  public EntityComboBoxModel initializeEntityComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty) {
+  public final EntityComboBoxModel initializeEntityComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty) {
     Util.rejectNullValue(foreignKeyProperty, "foreignKeyProperty");
     EntityComboBoxModel comboBoxModel = (EntityComboBoxModel) propertyComboBoxModels.get(foreignKeyProperty);
     if (comboBoxModel == null) {
@@ -455,11 +466,11 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
     return comboBoxModel;
   }
 
-  public boolean containsComboBoxModel(final String propertyID) {
+  public final boolean containsComboBoxModel(final String propertyID) {
     return containsComboBoxModel(EntityRepository.getProperty(entityID, propertyID));
   }
 
-  public boolean containsComboBoxModel(final Property property) {
+  public final boolean containsComboBoxModel(final Property property) {
     Util.rejectNullValue(property, "property");
     return propertyComboBoxModels.containsKey(property);
   }
@@ -486,7 +497,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
    * Clears the edit model and sets the default state.
    * @see #getDefaultValueMap()
    */
-  public void clearValues() {
+  public final void clearValues() {
     setValueMap(null);
   }
 
@@ -508,7 +519,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
    * @param property the property
    * @return a value provider for the given property
    */
-  public ValueCollectionProvider<Object> getValueProvider(final Property property) {
+  public final ValueCollectionProvider<Object> getValueProvider(final Property property) {
     return new PropertyValueProvider(dbProvider, entityID, property.getPropertyID());
   }
 
@@ -528,39 +539,39 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
     return persistValueOnClear(property) ? getValue(property.getPropertyID()) : property.getDefaultValue();
   }
 
-  public Event eventAfterDelete() {
+  public final Event eventAfterDelete() {
     return evtAfterDelete;
   }
 
-  public Event eventAfterInsert() {
+  public final Event eventAfterInsert() {
     return evtAfterInsert;
   }
 
-  public Event eventAfterUpdate() {
+  public final Event eventAfterUpdate() {
     return evtAfterUpdate;
   }
 
-  public Event eventBeforeDelete() {
+  public final Event eventBeforeDelete() {
     return evtBeforeDelete;
   }
 
-  public Event eventBeforeInsert() {
+  public final Event eventBeforeInsert() {
     return evtBeforeInsert;
   }
 
-  public Event eventBeforeUpdate() {
+  public final Event eventBeforeUpdate() {
     return evtBeforeUpdate;
   }
 
-  public Event eventEntitiesChanged() {
+  public final Event eventEntitiesChanged() {
     return evtEntitiesChanged;
   }
 
-  public Event eventRefreshStarted() {
+  public final Event eventRefreshStarted() {
     return evtRefreshStarted;
   }
 
-  public Event eventRefreshDone() {
+  public final Event eventRefreshDone() {
     return evtRefreshDone;
   }
 
@@ -620,52 +631,6 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
     }
   }
 
-  protected void performRangeValidation(final Entity entity, final Property property) throws RangeValidationException {
-    if (entity.isValueNull(property.getPropertyID())) {
-      return;
-    }
-
-    final Double value = property.isDouble() ? (Double) entity.getValue(property.getPropertyID())
-            : (Integer) entity.getValue(property.getPropertyID());
-    if (value < (property.getMin() == null ? Double.NEGATIVE_INFINITY : property.getMin())) {
-      throw new RangeValidationException(property.getPropertyID(), value, "'" + property + "' " +
-              FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_TOO_SMALL) + " " + property.getMin());
-    }
-    if (value > (property.getMax() == null ? Double.POSITIVE_INFINITY : property.getMax())) {
-      throw new RangeValidationException(property.getPropertyID(), value, "'" + property + "' " +
-              FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_TOO_LARGE) + " " + property.getMax());
-    }
-  }
-
-  protected void performNullValidation(final Entity entity, final Property property, final int action) throws NullValidationException {
-    if (!isNullable(entity, property.getPropertyID()) && entity.isValueNull(property.getPropertyID())) {
-      if (action == EntityEditModel.INSERT) {
-        if ((property instanceof Property.ColumnProperty && !((Property.ColumnProperty) property).columnHasDefaultValue())
-                || (property instanceof Property.PrimaryKeyProperty
-                && !EntityRepository.isPrimaryKeyAutoGenerated(entityID))) {
-          throw new NullValidationException(property.getPropertyID(),
-                  FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_IS_REQUIRED) + ": " + property);
-        }
-      }
-      else {
-        throw new NullValidationException(property.getPropertyID(),
-                FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_IS_REQUIRED) + ": " + property);
-
-      }
-    }
-  }
-
-  /**
-   * Returns true if the given property accepts a null value for the given entity,
-   * by default this method simply returns <code>property.isNullable()</code>
-   * @param valueMap the entity being validated
-   * @param key the property ID
-   * @return true if the property accepts a null value
-   */
-  public boolean isNullable(final ValueChangeMap<String, Object> valueMap, final String key) {
-    return EntityRepository.getProperty(entityID, key).isNullable();
-  }
-
   /**
    * Returns true if the last available value for this property should be used when initializing
    * a default entity for this EntityModel.
@@ -684,7 +649,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
   /**
    * @return the Entity instance being edited
    */
-  protected Entity getEntity() {
+  protected final Entity getEntity() {
     return (Entity) getValueMap();
   }
 
@@ -711,6 +676,41 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
           LOG.trace(msg);
         }
       });
+    }
+  }
+
+  private void performRangeValidation(final Entity entity, final Property property) throws RangeValidationException {
+    if (entity.isValueNull(property.getPropertyID())) {
+      return;
+    }
+
+    final Double value = property.isDouble() ? (Double) entity.getValue(property.getPropertyID())
+            : (Integer) entity.getValue(property.getPropertyID());
+    if (value < (property.getMin() == null ? Double.NEGATIVE_INFINITY : property.getMin())) {
+      throw new RangeValidationException(property.getPropertyID(), value, "'" + property + "' " +
+              FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_TOO_SMALL) + " " + property.getMin());
+    }
+    if (value > (property.getMax() == null ? Double.POSITIVE_INFINITY : property.getMax())) {
+      throw new RangeValidationException(property.getPropertyID(), value, "'" + property + "' " +
+              FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_TOO_LARGE) + " " + property.getMax());
+    }
+  }
+
+  private void performNullValidation(final Entity entity, final Property property, final int action) throws NullValidationException {
+    if (!isNullable(entity, property.getPropertyID()) && entity.isValueNull(property.getPropertyID())) {
+      if (action == EntityEditModel.INSERT) {
+        if ((property instanceof Property.ColumnProperty && !((Property.ColumnProperty) property).columnHasDefaultValue())
+                || (property instanceof Property.PrimaryKeyProperty
+                && !EntityRepository.isPrimaryKeyAutoGenerated(entityID))) {
+          throw new NullValidationException(property.getPropertyID(),
+                  FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_IS_REQUIRED) + ": " + property);
+        }
+      }
+      else {
+        throw new NullValidationException(property.getPropertyID(),
+                FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_IS_REQUIRED) + ": " + property);
+
+      }
     }
   }
 

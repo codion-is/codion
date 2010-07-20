@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * An event describing a delete action.
  */
-public class DeleteEvent extends ActionEvent {
+public final class DeleteEvent extends ActionEvent {
 
   private final List<Entity> deletedEntities;
 

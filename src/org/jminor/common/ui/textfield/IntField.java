@@ -37,14 +37,14 @@ public class IntField extends TextFieldPlus {
   /**
    * @return the value
    */
-  public Integer getInt() {
+  public final Integer getInt() {
     return Util.getInt(getText());
   }
 
   /**
    * @param value the value to set
    */
-  public void setInt(final Integer value) {
+  public final void setInt(final Integer value) {
     setText(value == null ? "" : value.toString());
   }
 

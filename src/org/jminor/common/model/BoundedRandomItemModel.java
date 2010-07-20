@@ -12,7 +12,7 @@ package org.jminor.common.model;
  * Time: 21:26:00<br>
  * @param <T> the type of item this random item model returns
  */
-public class BoundedRandomItemModel<T> extends RandomItemModel<T> {
+public final class BoundedRandomItemModel<T> extends RandomItemModel<T> {
 
   private final Object lock = new Object();
   private final int weightBounds;

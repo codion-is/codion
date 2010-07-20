@@ -18,7 +18,7 @@ import java.rmi.RemoteException;
  * Date: 10.12.2007<br>
  * Time: 15:54:36<br>
  */
-public class PoolMonitorPanel extends JPanel {
+public final class PoolMonitorPanel extends JPanel {
 
   private final PoolMonitor model;
 

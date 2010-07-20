@@ -10,7 +10,7 @@ import java.util.Properties;
 /**
  * A Database implementation based on the SQL Server (2000 or higher) database.
  */
-public class SQLServerDatabase extends AbstractDatabase {
+public final class SQLServerDatabase extends AbstractDatabase {
 
   public SQLServerDatabase() {
     super(SQLSERVER);

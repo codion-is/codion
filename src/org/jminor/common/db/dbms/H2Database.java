@@ -10,7 +10,7 @@ import java.util.Properties;
 /**
  * A Database implementation based on the H2 database.
  */
-public class H2Database extends AbstractDatabase {
+public final class H2Database extends AbstractDatabase {
 
   public H2Database() {
     super(H2);

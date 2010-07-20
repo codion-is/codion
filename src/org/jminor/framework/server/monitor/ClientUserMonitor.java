@@ -15,7 +15,7 @@ import java.rmi.RemoteException;
  * Date: 11.12.2007<br>
  * Time: 12:58:44<br>
  */
-public class ClientUserMonitor {
+public final class ClientUserMonitor {
 
   private final EntityDbServerAdmin server;
   private final Event evtConnectionTimeoutChanged = new Event();

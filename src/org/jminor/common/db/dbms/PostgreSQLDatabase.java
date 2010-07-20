@@ -10,7 +10,7 @@ import java.util.Properties;
 /**
  * A Database implementation based on the PostgreSQL database.
  */
-public class PostgreSQLDatabase extends AbstractDatabase {
+public final class PostgreSQLDatabase extends AbstractDatabase {
 
   public PostgreSQLDatabase() {
     super(POSTGRESQL);

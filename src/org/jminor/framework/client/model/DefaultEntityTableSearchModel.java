@@ -80,15 +80,15 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
     bindEvents();
   }
 
-  public String getEntityID() {
+  public final String getEntityID() {
     return entityID;
   }
 
-  public boolean isSimpleSearch() {
+  public final boolean isSimpleSearch() {
     return simpleSearch;
   }
 
-  public List<Property.SearchableProperty> getSearchableProperties() {
+  public final List<Property.SearchableProperty> getSearchableProperties() {
     final List<Property.SearchableProperty> searchProperties = new ArrayList<Property.SearchableProperty>();
     for (final Property property : properties) {
       if (property instanceof Property.SearchableProperty) {
@@ -99,12 +99,12 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
     return searchProperties;
   }
 
-  public void setSearchModelState() {
+  public final void setSearchModelState() {
     searchStateOnRefresh = getSearchModelState();
     stSearchStateChanged.setActive(false);
   }
 
-  public PropertyFilterModel getPropertyFilterModel(final String propertyID) {
+  public final PropertyFilterModel getPropertyFilterModel(final String propertyID) {
     if (propertyFilterModels.containsKey(propertyID)) {
       return propertyFilterModels.get(propertyID);
     }
@@ -112,7 +112,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
     return null;
   }
 
-  public Collection<PropertyFilterModel> getPropertyFilterModels() {
+  public final Collection<PropertyFilterModel> getPropertyFilterModels() {
     return Collections.unmodifiableCollection(propertyFilterModels.values());
   }
 
@@ -120,7 +120,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
    * @param item the entity
    * @return true if the entity should be included or filtered
    */
-  public boolean include(final Entity item) {
+  public final boolean include(final Entity item) {
     for (final SearchModel<Property> columnFilter : propertyFilterModels.values()) {
       if (columnFilter.isSearchEnabled() && !columnFilter.include(item)) {
         return false;
@@ -130,7 +130,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
     return true;
   }
 
-  public void refresh() {
+  public final void refresh() {
     for (final PropertySearchModel model : propertySearchModels.values()) {
       if (model instanceof Refreshable) {
         ((Refreshable) model).refresh();
@@ -138,7 +138,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
     }
   }
 
-  public void clear() {
+  public final void clear() {
     for (final PropertySearchModel model : propertySearchModels.values()) {
       if (model instanceof Refreshable) {
         ((Refreshable) model).clear();
@@ -146,21 +146,21 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
     }
   }
 
-  public void clearPropertySearchModels() {
+  public final void clearPropertySearchModels() {
     for (final PropertySearchModel searchModel : propertySearchModels.values()) {
       searchModel.clearSearch();
     }
   }
 
-  public Collection<PropertySearchModel> getPropertySearchModels() {
+  public final Collection<PropertySearchModel> getPropertySearchModels() {
     return Collections.unmodifiableCollection(propertySearchModels.values());
   }
 
-  public boolean containsPropertySearchModel(final String propertyID) {
+  public final boolean containsPropertySearchModel(final String propertyID) {
     return propertySearchModels.containsKey(propertyID);
   }
 
-  public PropertySearchModel getPropertySearchModel(final String propertyID) {
+  public final PropertySearchModel getPropertySearchModel(final String propertyID) {
     if (propertySearchModels.containsKey(propertyID)) {
       return propertySearchModels.get(propertyID);
     }
@@ -168,15 +168,15 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
     throw new RuntimeException("SearchModel not found for property with ID: " + propertyID);
   }
 
-  public boolean isSearchEnabled(final String propertyID) {
+  public final boolean isSearchEnabled(final String propertyID) {
     return containsPropertySearchModel(propertyID) && getPropertySearchModel(propertyID).isSearchEnabled();
   }
 
-  public boolean isFilterEnabled(final String propertyID) {
+  public final boolean isFilterEnabled(final String propertyID) {
     return getPropertyFilterModel(propertyID).isSearchEnabled();
   }
 
-  public boolean setSearchValues(final String propertyID, final Collection<?> values) {
+  public final boolean setSearchValues(final String propertyID, final Collection<?> values) {
     final String searchState = getSearchModelState();
     if (containsPropertySearchModel(propertyID)) {
       final PropertySearchModel searchModel = getPropertySearchModel(propertyID);
@@ -195,14 +195,14 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
    * @param propertyID the id of the property
    * @param value the criteria value
    */
-  public void setFilterValue(final String propertyID, final Comparable value) {
+  public final void setFilterValue(final String propertyID, final Comparable value) {
     final PropertyFilterModel filterModel = getPropertyFilterModel(propertyID);
     if (filterModel != null) {
       filterModel.setLikeValue(value);
     }
   }
 
-  public Criteria<Property.ColumnProperty> getSearchCriteria() {
+  public final Criteria<Property.ColumnProperty> getSearchCriteria() {
     final CriteriaSet<Property.ColumnProperty> criteriaSet = new CriteriaSet<Property.ColumnProperty>(searchConjunction);
     for (final PropertySearchModel criteria : propertySearchModels.values()) {
       if (criteria.isSearchEnabled()) {
@@ -213,25 +213,25 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
     return criteriaSet.getCriteriaCount() > 0 ? criteriaSet : null;
   }
 
-  public CriteriaSet.Conjunction getSearchConjunction() {
+  public final CriteriaSet.Conjunction getSearchConjunction() {
     return searchConjunction;
   }
 
-  public void setSearchConjunction(final CriteriaSet.Conjunction conjunction) {
+  public final void setSearchConjunction(final CriteriaSet.Conjunction conjunction) {
     this.searchConjunction = conjunction;
   }
 
-  public void setSearchEnabled(final String propertyID, final boolean enabled) {
+  public final void setSearchEnabled(final String propertyID, final boolean enabled) {
     if (containsPropertySearchModel(propertyID)) {
       getPropertySearchModel(propertyID).setSearchEnabled(enabled);
     }
   }
 
-  public State stateSearchStateChanged() {
+  public final State stateSearchStateChanged() {
     return stSearchStateChanged.getLinkedState();
   }
 
-  public Event eventFilterStateChanged() {
+  public final Event eventFilterStateChanged() {
     return evtFilterStateChanged;
   }
 
@@ -239,7 +239,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
    * @param dbProvider the EntityDbProvider to use for foreign key based fields, such as combo boxes
    * @return a map of PropertySearchModels mapped to their respective propertyIDs
    */
-  protected Map<String, PropertySearchModel> initializePropertySearchModels(final EntityDbProvider dbProvider) {
+  private Map<String, PropertySearchModel> initializePropertySearchModels(final EntityDbProvider dbProvider) {
     final Map<String, PropertySearchModel> searchModels = new HashMap<String, PropertySearchModel>();
     for (final Property.SearchableProperty property : getSearchableProperties()) {
       final PropertySearchModel<? extends Property> searchModel = initializePropertySearchModel(property, dbProvider);
@@ -284,7 +284,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
   /**
    * @return a map of PropertyFilterModels mapped to their respective propertyIDs
    */
-  protected Map<String, PropertyFilterModel> initializePropertyFilterModels() {
+  private Map<String, PropertyFilterModel> initializePropertyFilterModels() {
     final Map<String, PropertyFilterModel> filters = new HashMap<String, PropertyFilterModel>(properties.size());
     for (final Property property : properties) {
       final PropertyFilterModel filterModel = initializePropertyFilterModel(property);

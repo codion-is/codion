@@ -11,7 +11,7 @@ import java.awt.Color;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
-public class SearchFieldHint {
+public final class SearchFieldHint {
 
   private final JTextField txtField;
   private final String searchHint;

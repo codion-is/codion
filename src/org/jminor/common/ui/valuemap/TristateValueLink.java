@@ -15,7 +15,7 @@ import java.awt.event.ItemListener;
  * Date: 10.5.2010
  * Time: 19:32:44
  */
-public class TristateValueLink<K> extends AbstractValueMapLink<K, Object>{
+public final class TristateValueLink<K> extends AbstractValueMapLink<K, Object>{
 
   private final TristateButtonModel buttonModel;
 

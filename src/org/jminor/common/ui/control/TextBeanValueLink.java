@@ -33,15 +33,15 @@ public class TextBeanValueLink extends AbstractBeanValueLink implements Document
     this.document.addDocumentListener(this);
   }
 
-  public void insertUpdate(final DocumentEvent e) {
+  public final void insertUpdate(final DocumentEvent e) {
     updateModel();
   }
 
-  public void removeUpdate(final DocumentEvent e) {
+  public final void removeUpdate(final DocumentEvent e) {
     updateModel();
   }
 
-  public void changedUpdate(final DocumentEvent e) {}
+  public final void changedUpdate(final DocumentEvent e) {}
 
   @Override
   protected void setUIValue(final Object value) {
@@ -72,7 +72,7 @@ public class TextBeanValueLink extends AbstractBeanValueLink implements Document
     return value != null ? value.toString() : null;
   }
 
-  protected String getText() {
+  protected final String getText() {
     try {
       synchronized (document) {
         return document.getText(0, document.getLength());

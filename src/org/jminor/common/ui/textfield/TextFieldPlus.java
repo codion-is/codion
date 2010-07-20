@@ -43,29 +43,29 @@ public class TextFieldPlus extends JTextField {
   /**
    * @param maxLength the maximum number of characters this text field should allow
    */
-  public void setMaxLength(final int maxLength) {
+  public final void setMaxLength(final int maxLength) {
     this.maxLength = maxLength;
   }
 
   /**
    * @return the maximum number of characters this text field allows
    */
-  public int getMaxLength() {
+  public final int getMaxLength() {
     return maxLength;
   }
 
   /**
    * @param upperCase true if this text field should automatically convert text to uppercase
    */
-  public void setUpperCase(final boolean upperCase) {
+  public final void setUpperCase(final boolean upperCase) {
     this.upperCase = upperCase;
   }
 
-  public void setRange(final int min, final int max) {
+  public final void setRange(final int min, final int max) {
     setRange((double) min, (double) max);
   }
 
-  public void setRange(final double min, final double max) {
+  public final void setRange(final double min, final double max) {
     this.min = min;
     this.max = max;
   }
@@ -73,23 +73,23 @@ public class TextFieldPlus extends JTextField {
   /**
    * @return the minimum value this field should accept
    */
-  public double getMinimumValue() {
+  public final double getMinimumValue() {
     return min;
   }
 
   /**
    * @return the maximum value this field should accept
    */
-  public double getMaximumValue() {
+  public final double getMaximumValue() {
     return max;
   }
 
   @Override
-  public void setText(final String t) {
+  public final void setText(final String t) {
     super.setText(t == null ? "" : t);
   }
 
-  protected boolean isWithinRange(final double value) {
+  protected final boolean isWithinRange(final double value) {
     return ((value <= max) && (value >= min));
   }
 

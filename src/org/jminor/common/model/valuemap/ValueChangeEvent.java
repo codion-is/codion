@@ -10,7 +10,7 @@ import java.awt.event.ActionEvent;
 /**
  * Used when value change events are fired
  */
-public class ValueChangeEvent<K, V> extends ActionEvent {
+public final class ValueChangeEvent<K, V> extends ActionEvent {
 
   /**
    * The value map owning the value

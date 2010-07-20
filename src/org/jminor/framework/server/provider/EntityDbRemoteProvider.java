@@ -29,7 +29,7 @@ import java.util.UUID;
 /**
  * A class responsible for managing a remote db connection.
  */
-public class EntityDbRemoteProvider extends AbstractEntityDbProvider {
+public final class EntityDbRemoteProvider extends AbstractEntityDbProvider {
 
   private static final Logger LOG = Util.getLogger(EntityDbRemoteProvider.class);
   private static final int INPUT_BUFFER_SIZE = 8192;
@@ -60,10 +60,10 @@ public class EntityDbRemoteProvider extends AbstractEntityDbProvider {
 
   public void disconnect() {
     try {
-      if (entityDb != null && isConnectionValid()) {
+      if (getEntityDbInternal() != null && isConnectionValid()) {
         server.disconnect(clientID);
       }
-      entityDb = null;
+      setEntityDb(null);
     }
     catch (Exception e) {
       throw new RuntimeException(e);
@@ -89,7 +89,7 @@ public class EntityDbRemoteProvider extends AbstractEntityDbProvider {
   protected boolean isConnectionValid() {
     try {
       //could be a call to any method, simply checking if remote connection is valid
-      entityDb.isConnected();
+      getEntityDbInternal().isConnected();
 
       return true;
     }

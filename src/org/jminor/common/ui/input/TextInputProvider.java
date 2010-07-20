@@ -12,7 +12,7 @@ import javax.swing.JTextField;
 /**
  * A InputProvider implementation for String values.
  */
-public class TextInputProvider extends AbstractInputProvider<String> {
+public final class TextInputProvider extends AbstractInputProvider<String> {
 
   private static final int DEFAULT_COLUMNS = 16;
 

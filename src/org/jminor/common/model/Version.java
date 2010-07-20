@@ -11,7 +11,7 @@ import java.io.Serializable;
  * Date: 4.4.2010<br>
  * Time: 14:32:05<br>
  */
-public class Version implements Serializable {
+public final class Version implements Serializable {
 
   private static final long serialVersionUID = 1;
 

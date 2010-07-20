@@ -3,8 +3,8 @@
  */
 package org.jminor.common.ui.valuemap;
 
-import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
+import org.jminor.common.ui.control.LinkType;
 
 import javax.swing.ButtonModel;
 import java.awt.event.ItemEvent;
@@ -13,7 +13,7 @@ import java.awt.event.ItemListener;
 /**
  * A class for linking a UI component to a boolean value.
  */
-public class BooleanValueLink<K> extends AbstractValueMapLink<K, Object> {
+public final class BooleanValueLink<K> extends AbstractValueMapLink<K, Object> {
 
   private final ButtonModel buttonModel;
 

@@ -14,7 +14,7 @@ import java.util.UUID;
  * Date: 11.12.2007<br>
  * Time: 13:19:13<br>
  */
-public class ClientInfo implements Serializable {
+public final class ClientInfo implements Serializable {
 
   private static final long serialVersionUID = 1;
 

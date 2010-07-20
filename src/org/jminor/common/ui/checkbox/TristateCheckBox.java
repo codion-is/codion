@@ -24,7 +24,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-public class TristateCheckBox extends JCheckBox {
+public final class TristateCheckBox extends JCheckBox {
   // Listener on model changes to maintain correct focusability
   private final ChangeListener enableListener = new ChangeListener() {
     public void stateChanged(ChangeEvent e) {

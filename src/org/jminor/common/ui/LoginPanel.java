@@ -26,7 +26,7 @@ import java.awt.event.WindowEvent;
 /**
  * A JPanel for retrieving login information.
  */
-public class LoginPanel extends JPanel {
+public final class LoginPanel extends JPanel {
 
   private final JTextField usernameField = new JTextField(8);
   private final JPasswordField passwordField = new JPasswordField(8);

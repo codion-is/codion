@@ -17,7 +17,7 @@ import java.rmi.RemoteException;
  * Date: 4.12.2007<br>
  * Time: 18:22:24<br>
  */
-public class ClientInstanceMonitor {
+public final class ClientInstanceMonitor {
 
   private final Event evtLogginStatusChanged = new Event();
 

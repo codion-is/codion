@@ -28,7 +28,7 @@ import java.util.List;
  * <code>key1=value1, key3='value3' referenced value=refValue</code>
  * @param <K> the type of the map keys
  */
-public class StringProvider<K> implements ValueMap.ToString<K>, Serializable {
+public final class StringProvider<K> implements ValueMap.ToString<K>, Serializable {
 
   private static final long serialVersionUID = 1;
 

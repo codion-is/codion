@@ -14,7 +14,7 @@ import java.lang.ref.WeakReference;
  * Date: 12.4.2009<br>
  * Time: 16:34:25<br>
  */
-public class WeakPropertyChangeListener implements PropertyChangeListener {
+public final class WeakPropertyChangeListener implements PropertyChangeListener {
 
   private final WeakReference<PropertyChangeListener> listenerReference;
 

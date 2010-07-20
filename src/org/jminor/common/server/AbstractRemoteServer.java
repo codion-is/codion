@@ -44,23 +44,23 @@ public abstract class AbstractRemoteServer<T> extends UnicastRemoteObject implem
     this.serverPort = serverPort;
   }
 
-  public Map<ClientInfo, T> getConnections() {
+  public final Map<ClientInfo, T> getConnections() {
     return new HashMap<ClientInfo, T>(connections);
   }
 
-  public boolean containsConnection(final ClientInfo client) {
+  public final boolean containsConnection(final ClientInfo client) {
     return connections.containsKey(client);
   }
 
-  public T getConnection(final ClientInfo client) {
+  public final T getConnection(final ClientInfo client) {
     return connections.get(client);
   }
 
-  public int getConnectionCount() {
+  public final int getConnectionCount() {
     return connections.size();
   }
 
-  public T connect(final User user, final UUID clientID, final String clientTypeID) throws RemoteException {
+  public final T connect(final User user, final UUID clientID, final String clientTypeID) throws RemoteException {
     if (clientID == null) {
       return null;
     }
@@ -76,7 +76,7 @@ public abstract class AbstractRemoteServer<T> extends UnicastRemoteObject implem
     return connection;
   }
 
-  public void disconnect(final UUID clientID) throws RemoteException {
+  public final void disconnect(final UUID clientID) throws RemoteException {
     if (clientID == null) {
       return;
     }
@@ -87,19 +87,19 @@ public abstract class AbstractRemoteServer<T> extends UnicastRemoteObject implem
     }
   }
 
-  public String getServerName() {
+  public final String getServerName() {
     return serverName;
   }
 
-  public int getServerPort() {
+  public final int getServerPort() {
     return serverPort;
   }
 
-  public Registry getRegistry() throws RemoteException {
+  public final Registry getRegistry() throws RemoteException {
     return LocateRegistry.getRegistry(Registry.REGISTRY_PORT);
   }
 
-  public boolean isShuttingDown() {
+  public final boolean isShuttingDown() {
     return shuttingDown;
   }
 

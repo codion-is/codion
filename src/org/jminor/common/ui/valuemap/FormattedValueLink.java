@@ -45,7 +45,7 @@ public class FormattedValueLink<K> extends TextValueLink<K> {
   /**
    * @return the format, if any
    */
-  public Format getFormat() {
+  public final Format getFormat() {
     return format;
   }
 
@@ -64,7 +64,7 @@ public class FormattedValueLink<K> extends TextValueLink<K> {
   }
 
   @Override
-  protected String getValueAsString(final Object value) {
+  protected final String getValueAsString(final Object value) {
     if (value == null) {
       return null;
     }
@@ -73,7 +73,7 @@ public class FormattedValueLink<K> extends TextValueLink<K> {
   }
 
   @Override
-  protected String getText() {
+  protected final String getText() {
     final String value = super.getText();
     if (value == null) {
       return null;

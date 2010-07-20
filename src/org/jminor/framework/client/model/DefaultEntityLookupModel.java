@@ -74,18 +74,18 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
     this.lookupProperties = lookupProperties;
   }
 
-  public String getEntityID() {
+  public final String getEntityID() {
     return entityID;
   }
 
-  public EntityDbProvider getDbProvider() {
+  public final EntityDbProvider getDbProvider() {
     return dbProvider;
   }
 
   /**
    * @return a list containing the properties used when performing a lookup
    */
-  public List<Property.ColumnProperty> getLookupProperties() {
+  public final List<Property.ColumnProperty> getLookupProperties() {
     return Collections.unmodifiableList(lookupProperties);
   }
 
@@ -93,19 +93,19 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
     return Util.getCollectionContentsAsString(getLookupProperties(), false);
   }
 
-  public boolean isMultipleSelectionAllowed() {
+  public final boolean isMultipleSelectionAllowed() {
     return multipleSelectionAllowed;
   }
 
-  public void setMultipleSelectionAllowed(final boolean multipleSelectionAllowed) {
+  public final void setMultipleSelectionAllowed(final boolean multipleSelectionAllowed) {
     this.multipleSelectionAllowed = multipleSelectionAllowed;
   }
 
-  public void setSelectedEntity(final Entity entity) {
+  public final void setSelectedEntity(final Entity entity) {
     setSelectedEntities(entity != null ? Arrays.asList(entity) : null);
   }
 
-  public void setSelectedEntities(final List<Entity> entities) {
+  public final void setSelectedEntities(final List<Entity> entities) {
     if ((entities == null || entities.isEmpty()) && this.selectedEntities.isEmpty()) {
       return;
     }//no change
@@ -121,24 +121,24 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
     evtSelectedEntitiesChanged.fire();
   }
 
-  public List<Entity> getSelectedEntities() {
+  public final List<Entity> getSelectedEntities() {
     return Collections.unmodifiableList(selectedEntities);
   }
 
-  public boolean isCaseSensitive() {
+  public final boolean isCaseSensitive() {
     return caseSensitive;
   }
 
-  public EntityLookupModel setCaseSensitive(final boolean caseSensitive) {
+  public final EntityLookupModel setCaseSensitive(final boolean caseSensitive) {
     this.caseSensitive = caseSensitive;
     return this;
   }
 
-  public boolean isWildcardPostfix() {
+  public final boolean isWildcardPostfix() {
     return wildcardPostfix;
   }
 
-  public EntityLookupModel setWildcardPostfix(final boolean wildcardPostfix) {
+  public final EntityLookupModel setWildcardPostfix(final boolean wildcardPostfix) {
     this.wildcardPostfix = wildcardPostfix;
     return this;
   }
@@ -146,11 +146,11 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
   /**
    * @return whether or not to automatically prefix the the search string with a wildcard
    */
-  public boolean isWildcardPrefix() {
+  public final boolean isWildcardPrefix() {
     return wildcardPrefix;
   }
 
-  public EntityLookupModel setWildcardPrefix(final boolean wildcardPrefix) {
+  public final EntityLookupModel setWildcardPrefix(final boolean wildcardPrefix) {
     this.wildcardPrefix = wildcardPrefix;
     return this;
   }
@@ -158,51 +158,51 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
   /**
    * @return the wildcard
    */
-  public String getWildcard() {
+  public final String getWildcard() {
     return wildcard;
   }
 
-  public EntityLookupModel setWildcard(final String wildcard) {
+  public final EntityLookupModel setWildcard(final String wildcard) {
     this.wildcard = wildcard;
     return this;
   }
 
-  public String getMultipleValueSeparator() {
+  public final String getMultipleValueSeparator() {
     return multipleValueSeparator;
   }
 
-  public EntityLookupModel setMultipleValueSeparator(final String multipleValueSeparator) {
+  public final EntityLookupModel setMultipleValueSeparator(final String multipleValueSeparator) {
     this.multipleValueSeparator = multipleValueSeparator;
     refreshSearchText();
     return this;
   }
 
-  public EntityLookupModel setAdditionalLookupCriteria(final Criteria additionalLookupCriteria) {
+  public final EntityLookupModel setAdditionalLookupCriteria(final Criteria additionalLookupCriteria) {
     this.additionalLookupCriteria = additionalLookupCriteria;
     setSelectedEntities(null);
     return this;
   }
 
-  public void refreshSearchText() {
+  public final void refreshSearchText() {
     setSearchString(selectedEntities.isEmpty() ? "" : toString(getSelectedEntities()));
   }
 
-  public void setSearchString(final String searchString) {
+  public final void setSearchString(final String searchString) {
     this.searchString = searchString == null ? "" : searchString;
     evtSearchStringChanged.fire();
   }
 
-  public String getSearchString() {
+  public final String getSearchString() {
     return this.searchString;
   }
 
-  public boolean searchStringRepresentsSelected() {
+  public final boolean searchStringRepresentsSelected() {
     final String selectedAsString = toString(getSelectedEntities());
     return (selectedEntities.isEmpty() && searchString.length() == 0)
             || !selectedEntities.isEmpty() && selectedAsString.equals(searchString);
   }
 
-  public List<Entity> performQuery() {
+  public final List<Entity> performQuery() {
     try {
       return dbProvider.getEntityDb().selectMany(getEntitySelectCriteria());
     }
@@ -211,11 +211,11 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
     }
   }
 
-  public Event eventSearchStringChanged() {
+  public final Event eventSearchStringChanged() {
     return evtSearchStringChanged;
   }
 
-  public Event eventSelectedEntitiesChanged() {
+  public final Event eventSelectedEntitiesChanged() {
     return evtSelectedEntitiesChanged;
   }
 

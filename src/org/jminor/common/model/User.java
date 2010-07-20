@@ -8,7 +8,7 @@ import java.io.Serializable;
 /**
  * A class encapsulating a username and password.
  */
-public class User implements Serializable {
+public final class User implements Serializable {
 
   private static final long serialVersionUID = 1;
 
