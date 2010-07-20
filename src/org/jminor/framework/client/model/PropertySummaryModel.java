@@ -7,7 +7,6 @@ import org.jminor.common.model.Event;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 
-import java.text.Format;
 import java.util.Collection;
 import java.util.List;
 
