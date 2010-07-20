@@ -3,13 +3,13 @@
  */
 package org.jminor.framework.server;
 
-import org.jminor.common.db.DbConnection;
-import org.jminor.common.db.DbConnectionProvider;
 import org.jminor.common.db.dbms.Database;
 import org.jminor.common.db.exception.DbException;
 import org.jminor.common.db.pool.ConnectionPool;
+import org.jminor.common.db.pool.ConnectionPoolImpl;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
-import org.jminor.common.db.pool.DbConnectionPool;
+import org.jminor.common.db.pool.PoolableConnection;
+import org.jminor.common.db.pool.PoolableConnectionProvider;
 import org.jminor.common.model.LogEntry;
 import org.jminor.common.model.MethodLogger;
 import org.jminor.common.model.User;
@@ -620,11 +620,11 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     if (initialPoolUsers != null && initialPoolUsers.length() > 0) {
       for (final String username : initialPoolUsers.split(",")) {
         final User user = new User(username.trim(), null);
-        CONNECTION_POOLS.put(user, new DbConnectionPool(new DbConnectionProvider() {
-          public DbConnection createConnection(final User user) throws ClassNotFoundException, SQLException {
+        CONNECTION_POOLS.put(user, new ConnectionPoolImpl(new PoolableConnectionProvider() {
+          public PoolableConnection createConnection(final User user) throws ClassNotFoundException, SQLException {
             return EntityDbRemoteAdapter.createDbConnection(database, user);
           }
-          public void destroyConnection(final DbConnection connection) {
+          public void destroyConnection(final PoolableConnection connection) {
             connection.disconnect();
           }
         }, user));
@@ -763,7 +763,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
       else if (argument instanceof Object[] && ((Object[]) argument).length > 0) {
         destination.append("[").append(argumentArrayToString((Object[]) argument)).append("]");
       }
-      else if (argument instanceof Collection && ((Collection) argument).size() > 0) {
+      else if (argument instanceof Collection && !((Collection) argument).isEmpty()) {
         destination.append("[").append(argumentArrayToString(((Collection) argument).toArray())).append("]");
       }
       else if (argument instanceof Entity) {

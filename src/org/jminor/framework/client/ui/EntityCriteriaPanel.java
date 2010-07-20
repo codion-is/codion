@@ -3,11 +3,12 @@
  */
 package org.jminor.framework.client.ui;
 
-import org.jminor.common.model.AbstractSearchModel;
+import org.jminor.common.ui.AbstractSearchPanel;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.model.EntityTableSearchModel;
+import org.jminor.framework.client.model.ForeignKeySearchModel;
 import org.jminor.framework.client.model.PropertySearchModel;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
@@ -40,7 +41,7 @@ import java.util.Map;
  */
 public class EntityCriteriaPanel extends JPanel {
 
-  private final Map<PropertySearchModel, PropertySearchPanel> panels = new HashMap<PropertySearchModel, PropertySearchPanel>();
+  private final Map<PropertySearchModel, AbstractSearchPanel> panels = new HashMap<PropertySearchModel, AbstractSearchPanel>();
 
   public EntityCriteriaPanel(final EntityTableModel tableModel) {
     setLayout(new BorderLayout(5,5));
@@ -58,7 +59,7 @@ public class EntityCriteriaPanel extends JPanel {
     propertyBase.add(editPanel, BorderLayout.CENTER);
     add(propertyBase, BorderLayout.CENTER);
 
-    tableModel.getSearchModel().refreshSearchComboBoxModels();
+    tableModel.getSearchModel().refresh();
 
     if (tableModel.isDetailModel()) {
       add(initializeShowAllPanel(tableModel), BorderLayout.SOUTH);
@@ -77,7 +78,7 @@ public class EntityCriteriaPanel extends JPanel {
   private JList initializePropertyList(final EntityTableSearchModel searchModel, final JPanel editorPanel) {
     final List<PropertySearchModel> searchCriteria = getSortedCriteria(searchModel);
     final JList propertyList = new JList(searchCriteria.toArray());
-    for (final AbstractSearchModel<Property> model : searchCriteria) {
+    for (final PropertySearchModel model : searchCriteria) {
       model.eventSearchStateChanged().addListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           propertyList.repaint();
@@ -102,9 +103,14 @@ public class EntityCriteriaPanel extends JPanel {
         editorPanel.removeAll();
         final PropertySearchModel selected = (PropertySearchModel) propertyList.getSelectedValue();
         if (selected != null) {
-          PropertySearchPanel panel = panels.get(selected);
+          AbstractSearchPanel panel = panels.get(selected);
           if (panel == null) {
-            panel = new PropertySearchPanel(selected, true, true);
+            if (selected instanceof ForeignKeySearchModel) {
+              panel = new ForeignKeySearchPanel((ForeignKeySearchModel) selected, true, true);
+            }
+            else {
+              panel = new PropertySearchPanel(selected, true, true);
+            }
             panels.put(selected, panel);
           }
 
@@ -119,11 +125,12 @@ public class EntityCriteriaPanel extends JPanel {
   }
 
   private List<PropertySearchModel> getSortedCriteria(final EntityTableSearchModel searchModel) {
-    final List<PropertySearchModel> searchCriteria = new ArrayList<PropertySearchModel>(searchModel.getPropertySearchModels());
-    Collections.sort(searchCriteria, new Comparator<AbstractSearchModel<Property>>() {
-      public int compare(final AbstractSearchModel<Property> o1, final AbstractSearchModel<Property> o2) {
-        final Property propertyOne = o1.getSearchKey();
-        final Property propertyTwo = o2.getSearchKey();
+    final List<PropertySearchModel> searchCriteria =
+            new ArrayList<PropertySearchModel>(searchModel.getPropertySearchModels());
+    Collections.sort(searchCriteria, new Comparator<PropertySearchModel>() {
+      public int compare(final PropertySearchModel o1, final PropertySearchModel o2) {
+        final Property propertyOne = (Property) o1.getSearchKey();
+        final Property propertyTwo = (Property) o2.getSearchKey();
         if (propertyOne.getCaption() != null && propertyTwo.getCaption() != null) {
           return propertyOne.getCaption().compareTo(propertyTwo.getCaption());
         }

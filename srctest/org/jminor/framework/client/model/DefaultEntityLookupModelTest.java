@@ -7,6 +7,7 @@ import org.jminor.common.model.SearchType;
 import org.jminor.framework.db.EntityDbConnectionTest;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
@@ -28,12 +29,12 @@ public class DefaultEntityLookupModelTest {
   @Test
   public void testConstructor() {
     try {
-      new DefaultEntityLookupModel(null, EntityDbConnectionTest.DB_PROVIDER, new ArrayList<Property>());
+      new DefaultEntityLookupModel(null, EntityDbConnectionTest.DB_PROVIDER, new ArrayList<Property.ColumnProperty>());
       fail();
     }
     catch (IllegalArgumentException e) {}
     try {
-      new DefaultEntityLookupModel(EmpDept.T_EMPLOYEE, null, new ArrayList<Property>());
+      new DefaultEntityLookupModel(EmpDept.T_EMPLOYEE, null, new ArrayList<Property.ColumnProperty>());
       fail();
     }
     catch (IllegalArgumentException e) {}
@@ -112,7 +113,7 @@ public class DefaultEntityLookupModelTest {
     lookupModel.setCaseSensitive(true);
     lookupModel.setWildcardPostfix(true);
     lookupModel.setAdditionalLookupCriteria(
-            EntityCriteriaUtil.propertyCriteria(EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB),
+            EntityCriteriaUtil.propertyCriteria(EntityRepository.getColumnProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB),
                     SearchType.NOT_LIKE, "ajob"));
     result = lookupModel.performQuery();
     assertTrue("Result should contain john", contains(result, "John"));
@@ -122,8 +123,8 @@ public class DefaultEntityLookupModelTest {
   @Before
   public void setUp() throws Exception {
     lookupModel = new DefaultEntityLookupModel(EmpDept.T_EMPLOYEE, EntityDbConnectionTest.DB_PROVIDER,
-            Arrays.asList(EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME),
-                    EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB)));
+            Arrays.asList(EntityRepository.getColumnProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME),
+                    EntityRepository.getColumnProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB)));
 
     EntityDbConnectionTest.DB_PROVIDER.getEntityDb().beginTransaction();
     setupData();
@@ -145,12 +146,12 @@ public class DefaultEntityLookupModelTest {
   }
 
   private void setupData() throws Exception {
-    final Entity dept = new Entity(EmpDept.T_DEPARTMENT);
+    final Entity dept = Entities.entityInstance(EmpDept.T_DEPARTMENT);
     dept.setValue(EmpDept.DEPARTMENT_ID, 88);
     dept.setValue(EmpDept.DEPARTMENT_LOCATION, "TestLoc");
     dept.setValue(EmpDept.DEPARTMENT_NAME, "TestDept");
 
-    final Entity emp = new Entity(EmpDept.T_EMPLOYEE);
+    final Entity emp = Entities.entityInstance(EmpDept.T_EMPLOYEE);
     emp.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, dept);
     emp.setValue(EmpDept.EMPLOYEE_COMMISSION, 1000d);
     emp.setValue(EmpDept.EMPLOYEE_HIREDATE, new Date());
@@ -158,7 +159,7 @@ public class DefaultEntityLookupModelTest {
     emp.setValue(EmpDept.EMPLOYEE_NAME, "John");
     emp.setValue(EmpDept.EMPLOYEE_SALARY, 1000d);
 
-    final Entity emp2 = new Entity(EmpDept.T_EMPLOYEE);
+    final Entity emp2 = Entities.entityInstance(EmpDept.T_EMPLOYEE);
     emp2.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, dept);
     emp2.setValue(EmpDept.EMPLOYEE_COMMISSION, 1000d);
     emp2.setValue(EmpDept.EMPLOYEE_HIREDATE, new Date());
@@ -166,7 +167,7 @@ public class DefaultEntityLookupModelTest {
     emp2.setValue(EmpDept.EMPLOYEE_NAME, "johnson");
     emp2.setValue(EmpDept.EMPLOYEE_SALARY, 1000d);
 
-    final Entity emp3 = new Entity(EmpDept.T_EMPLOYEE);
+    final Entity emp3 = Entities.entityInstance(EmpDept.T_EMPLOYEE);
     emp3.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, dept);
     emp3.setValue(EmpDept.EMPLOYEE_COMMISSION, 1000d);
     emp3.setValue(EmpDept.EMPLOYEE_HIREDATE, new Date());
@@ -174,7 +175,7 @@ public class DefaultEntityLookupModelTest {
     emp3.setValue(EmpDept.EMPLOYEE_NAME, "Andy");
     emp3.setValue(EmpDept.EMPLOYEE_SALARY, 1000d);
 
-    final Entity emp4 = new Entity(EmpDept.T_EMPLOYEE);
+    final Entity emp4 = Entities.entityInstance(EmpDept.T_EMPLOYEE);
     emp4.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, dept);
     emp4.setValue(EmpDept.EMPLOYEE_COMMISSION, 1000d);
     emp4.setValue(EmpDept.EMPLOYEE_HIREDATE, new Date());

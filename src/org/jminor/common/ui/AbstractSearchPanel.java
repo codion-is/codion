@@ -3,7 +3,7 @@
  */
 package org.jminor.common.ui;
 
-import org.jminor.common.model.AbstractSearchModel;
+import org.jminor.common.model.SearchModel;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
@@ -43,9 +43,9 @@ public abstract class AbstractSearchPanel<K> extends JPanel {
           "LargerThanOrEquals60x16.gif", "Inclusive60x16.gif", "Exclusive60x16.gif"};
 
   /**
-   * The AbstractSearchModel this AbstractSearchPanel represents
+   * The SearchModel this AbstractSearchPanel represents
    */
-  private final AbstractSearchModel<K> model;
+  private final SearchModel<K> model;
 
   /**
    * A JToggleButton for enabling/disabling the filter
@@ -70,7 +70,7 @@ public abstract class AbstractSearchPanel<K> extends JPanel {
   private final boolean includeToggleSearchEnabledBtn;
   private final boolean includeToggleSearchAdvancedBtn;
 
-  public AbstractSearchPanel(final AbstractSearchModel<K> searchModel, final boolean includeActivateBtn, final boolean includeToggleAdvBtn) {
+  public AbstractSearchPanel(final SearchModel<K> searchModel, final boolean includeActivateBtn, final boolean includeToggleAdvBtn) {
     Util.rejectNullValue(searchModel, "searchModel");
     this.model = searchModel;
     this.includeToggleSearchEnabledBtn = includeActivateBtn;
@@ -94,7 +94,7 @@ public abstract class AbstractSearchPanel<K> extends JPanel {
   /**
    * @return the search model this panel uses
    */
-  public AbstractSearchModel<K> getModel() {
+  public SearchModel<K> getModel() {
     return this.model;
   }
 

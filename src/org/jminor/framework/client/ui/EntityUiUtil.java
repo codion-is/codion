@@ -41,7 +41,6 @@ import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityLookupModel;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.model.PropertyComboBoxModel;
-import org.jminor.framework.client.model.PropertyValueProvider;
 import org.jminor.framework.client.model.event.InsertEvent;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
@@ -355,7 +354,7 @@ public final class EntityUiUtil {
   public static EntityLookupField createEntityLookupField(final Property.ForeignKeyProperty foreignKeyProperty,
                                                           final EntityEditModel editModel) {
     final Collection<String> searchPropertyIDs = EntityRepository.getEntitySearchPropertyIDs(foreignKeyProperty.getReferencedEntityID());
-    if (searchPropertyIDs.size() == 0) {
+    if (searchPropertyIDs.isEmpty()) {
       throw new RuntimeException("No default search properties specified for entity: " + foreignKeyProperty.getReferencedEntityID()
               + ", unable to create EntityLookupField, you must specify the searchPropertyIDs");
     }
@@ -377,8 +376,9 @@ public final class EntityUiUtil {
     if (searchPropertyIDs == null || searchPropertyIDs.length == 0) {
       throw new RuntimeException("No search properties specified for entity lookup field: " + foreignKeyProperty.getReferencedEntityID());
     }
-    final List<Property> searchProperties = EntityRepository.getProperties(foreignKeyProperty.getReferencedEntityID(), searchPropertyIDs);
-    for (final Property searchProperty : searchProperties) {
+    final List<Property.ColumnProperty> searchProperties = EntityRepository.getSearchProperties(
+            foreignKeyProperty.getReferencedEntityID(), Arrays.asList(searchPropertyIDs));
+    for (final Property.ColumnProperty searchProperty : searchProperties) {
       if (!searchProperty.isString()) {
         throw new IllegalArgumentException("Can only create EntityLookupField with a search property of STRING type");
       }
@@ -468,7 +468,7 @@ public final class EntityUiUtil {
     final TextInputPanel panel = new TextInputPanel(field, property.getCaption(), null, buttonFocusable);
     panel.setMaxLength(property.getMaxLength());
     if (panel.getButton() != null && Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER)) {
-      UiUtil.transferFocusOnEnter(panel.getButton());
+      UiUtil.transferFocusOnEnter(panel.getButton());//todo
     }
 
     return panel;
@@ -575,32 +575,32 @@ public final class EntityUiUtil {
   public static SteppedComboBox createPropertyComboBox(final String propertyID, final EntityEditModel editModel,
                                                        final Event refreshEvent, final State state,
                                                        final String nullValue) {
-    return createPropertyComboBox(EntityRepository.getProperty(editModel.getEntityID(), propertyID),
+    return createPropertyComboBox(EntityRepository.getColumnProperty(editModel.getEntityID(), propertyID),
             editModel, refreshEvent, state, nullValue);
   }
 
-  public static SteppedComboBox createPropertyComboBox(final Property property, final EntityEditModel editModel) {
+  public static SteppedComboBox createPropertyComboBox(final Property.ColumnProperty property, final EntityEditModel editModel) {
     return createPropertyComboBox(property, editModel, null);
   }
 
-  public static SteppedComboBox createPropertyComboBox(final Property property, final EntityEditModel editModel,
+  public static SteppedComboBox createPropertyComboBox(final Property.ColumnProperty property, final EntityEditModel editModel,
                                                        final Event refreshEvent) {
     return createPropertyComboBox(property, editModel, refreshEvent, null);
   }
 
-  public static SteppedComboBox createPropertyComboBox(final Property property, final EntityEditModel editModel,
+  public static SteppedComboBox createPropertyComboBox(final Property.ColumnProperty property, final EntityEditModel editModel,
                                                        final Event refreshEvent, final State state) {
     return createPropertyComboBox(property, editModel, refreshEvent, state, null);
   }
 
-  public static SteppedComboBox createPropertyComboBox(final Property property, final EntityEditModel editModel,
+  public static SteppedComboBox createPropertyComboBox(final Property.ColumnProperty property, final EntityEditModel editModel,
                                                        final Event refreshEvent, final State state,
                                                        final String nullValue) {
     return createPropertyComboBox(property, editModel, refreshEvent, state, nullValue, false);
   }
 
 
-  public static SteppedComboBox createPropertyComboBox(final Property property, final EntityEditModel editModel,
+  public static SteppedComboBox createPropertyComboBox(final Property.ColumnProperty property, final EntityEditModel editModel,
                                                        final Event refreshEvent, final State state,
                                                        final String nullValue, final boolean editable) {
     final SteppedComboBox comboBox = createComboBox(property, editModel,
@@ -690,8 +690,8 @@ public final class EntityUiUtil {
     if (field instanceof TextFieldPlus && property.getMaxLength() > 0) {
       ((TextFieldPlus) field).setMaxLength(property.getMaxLength());
     }
-    if (property.isDatabaseProperty()) {
-      UiUtil.addLookupDialog(field, new PropertyValueProvider(editModel.getDbProvider(), editModel.getEntityID(), property.getPropertyID()));
+    if (property instanceof Property.ColumnProperty) {
+      UiUtil.addLookupDialog(field, editModel.getValueProvider(property));
     }
 
     return field;
@@ -735,7 +735,7 @@ public final class EntityUiUtil {
     final JButton button = new JButton(new AbstractAction(Messages.get(Messages.OK)) {
       public void actionPerformed(ActionEvent e) {
         comboBoxModel.refresh();
-        if (lastInsertedPrimaryKeys != null && lastInsertedPrimaryKeys.size() > 0) {
+        if (lastInsertedPrimaryKeys != null && !lastInsertedPrimaryKeys.isEmpty()) {
           comboBoxModel.setSelectedEntityByPrimaryKey(lastInsertedPrimaryKeys.get(0));
         }
         else {
@@ -802,7 +802,7 @@ public final class EntityUiUtil {
     @Override
     protected Object getUIValue() {
       final List<Entity> selectedEntities = lookupModel.getSelectedEntities();
-      return selectedEntities.size() == 0 ? null : selectedEntities.get(0);
+      return selectedEntities.isEmpty() ? null : selectedEntities.get(0);
     }
 
     @Override
@@ -844,7 +844,7 @@ public final class EntityUiUtil {
           try {
             final List<Entity> selected = EntityUiUtil.selectEntities(lookupModel, UiUtil.getParentWindow(textField),
                     true, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY), null, false);
-            editModel.setValue(foreignKeyProperty.getPropertyID(), selected.size() > 0 ? selected.get(0) : null);
+            editModel.setValue(foreignKeyProperty.getPropertyID(), !selected.isEmpty() ? selected.get(0) : null);
           }
           catch (CancelException ex) {/**/}
         }

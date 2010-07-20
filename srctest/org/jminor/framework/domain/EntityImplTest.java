@@ -14,12 +14,12 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.Date;
 
-public class EntityTest {
+public class EntityImplTest {
 
   public static Entity getDetailEntity(final int id, final Integer intValue, final Double doubleValue,
                                        final String stringValue, final Date dateValue, final Timestamp timestampValue,
                                        final Boolean booleanValue, final Entity entityValue) {
-    final Entity entity = new Entity(EntityTestDomain.T_DETAIL);
+    final Entity entity = new EntityImpl(EntityTestDomain.T_DETAIL);
     entity.setValue(EntityTestDomain.DETAIL_ID, id);
     entity.setValue(EntityTestDomain.DETAIL_INT, intValue);
     entity.setValue(EntityTestDomain.DETAIL_DOUBLE, doubleValue);
@@ -32,7 +32,7 @@ public class EntityTest {
     return entity;
   }
 
-  public EntityTest() {
+  public EntityImplTest() {
     new EntityTestDomain();
     new EmpDept();
   }
@@ -51,7 +51,7 @@ public class EntityTest {
     final String masterName = "master";
     final int masterCode = 7;
 
-    Entity referencedEntityValue = new Entity(EntityTestDomain.T_MASTER);
+    Entity referencedEntityValue = new EntityImpl(EntityTestDomain.T_MASTER);
 
     referencedEntityValue.setValue(EntityTestDomain.MASTER_ID, masterId);
     referencedEntityValue.setValue(EntityTestDomain.MASTER_NAME, masterName);
@@ -62,7 +62,7 @@ public class EntityTest {
     referencedEntityValue.saveValue(EntityTestDomain.MASTER_ID);
     assertFalse(referencedEntityValue.stateModified().isActive());
 
-    referencedEntityValue = new Entity(EntityTestDomain.T_MASTER);
+    referencedEntityValue = new EntityImpl(EntityTestDomain.T_MASTER);
 
     referencedEntityValue.setValue(EntityTestDomain.MASTER_ID, masterId);
     referencedEntityValue.setValue(EntityTestDomain.MASTER_NAME, masterName);
@@ -73,7 +73,7 @@ public class EntityTest {
     referencedEntityValue.revertValue(EntityTestDomain.MASTER_ID);
     assertFalse(referencedEntityValue.stateModified().isActive());
 
-    Entity test = new Entity(EntityTestDomain.T_DETAIL);
+    Entity test = new EntityImpl(EntityTestDomain.T_DETAIL);
     //assert not modified
     assertFalse(test.isModified());
 
@@ -156,7 +156,7 @@ public class EntityTest {
     }
     catch (IllegalArgumentException e) {}
     //test setAs()
-    test = new Entity(EntityTestDomain.T_DETAIL);
+    test = new EntityImpl(EntityTestDomain.T_DETAIL);
     test.setAs(testEntity);
     assertTrue("Entities should be equal after .setAs()", Util.equal(test, testEntity));
     assertTrue("Entity property values should be equal after .setAs()", test.propertyValuesEqual(testEntity));
@@ -194,10 +194,10 @@ public class EntityTest {
 
   @Test
   public void setValue() {
-    final Entity department = new Entity(EmpDept.T_DEPARTMENT);
+    final Entity department = new EntityImpl(EmpDept.T_DEPARTMENT);
     department.setValue(EmpDept.DEPARTMENT_ID, -10);
 
-    final Entity employee = new Entity(EmpDept.T_EMPLOYEE);
+    final Entity employee = new EntityImpl(EmpDept.T_EMPLOYEE);
     try {
       employee.setValue(EmpDept.EMPLOYEE_NAME, 1);
       fail();

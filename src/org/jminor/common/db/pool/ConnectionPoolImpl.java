@@ -3,8 +3,6 @@
  */
 package org.jminor.common.db.pool;
 
-import org.jminor.common.db.DbConnection;
-import org.jminor.common.db.DbConnectionProvider;
 import org.jminor.common.db.dbms.Database;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
@@ -28,21 +26,21 @@ import java.util.TimerTask;
  * Date: 7.12.2007<br>
  * Time: 00:04:08<br>
  */
-public class DbConnectionPool implements ConnectionPool {
+public class ConnectionPoolImpl implements ConnectionPool {
 
-  private static final Logger LOG = Util.getLogger(DbConnectionPool.class);
+  private static final Logger LOG = Util.getLogger(ConnectionPoolImpl.class);
 
-  private final Stack<DbConnection> connectionPool = new Stack<DbConnection>();
-  private final Set<DbConnection> connectionsInUse = new HashSet<DbConnection>();
+  private final Stack<PoolableConnection> connectionPool = new Stack<PoolableConnection>();
+  private final Set<PoolableConnection> connectionsInUse = new HashSet<PoolableConnection>();
 
-  private final List<DbConnectionPoolState> connectionPoolStatistics = new ArrayList<DbConnectionPoolState>(1000);
+  private final List<ConnectionPoolStateImpl> connectionPoolStatistics = new ArrayList<ConnectionPoolStateImpl>(1000);
 
   private Timer poolCleaner;
 
   private int connectionPoolStatisticsIndex = 0;
   private volatile boolean collectFineGrainedStatistics = System.getProperty(Database.DATABASE_POOL_STATISTICS, "true").equalsIgnoreCase("true");
 
-  private final DbConnectionProvider dbConnectionProvider;
+  private final PoolableConnectionProvider poolableConnectionProvider;
   private boolean closed = false;
 
   private final Counter counter = new Counter();
@@ -54,20 +52,20 @@ public class DbConnectionPool implements ConnectionPool {
   private int poolCleanupInterval = 20000;
   private boolean enabled = true;
 
-  public DbConnectionPool(final DbConnectionProvider dbConnectionProvider, final User user) {
-    this.dbConnectionProvider = dbConnectionProvider;
+  public ConnectionPoolImpl(final PoolableConnectionProvider poolableConnectionProvider, final User user) {
+    this.poolableConnectionProvider = poolableConnectionProvider;
     this.user = user;
     startPoolCleaner();
   }
 
-  public DbConnection checkOutConnection() throws ClassNotFoundException, SQLException {
+  public PoolableConnection checkOutConnection() throws ClassNotFoundException, SQLException {
     if (closed) {
       throw new IllegalStateException("Can not check out a connection from a closed connection pool!");
     }
 
     final long time = System.nanoTime();
     counter.incrementRequestCounter();
-    DbConnection connection = getConnectionFromPool();
+    PoolableConnection connection = getConnectionFromPool();
     int retryCount = 0;
     if (connection == null) {
       counter.incrementDelayedRequestCounter();
@@ -76,7 +74,7 @@ public class DbConnectionPool implements ConnectionPool {
           try {
             creatingConnection = true;
             counter.incrementConnectionsCreatedCounter();
-            checkInConnection(dbConnectionProvider.createConnection(user));
+            checkInConnection(poolableConnectionProvider.createConnection(user));
           }
           finally {
             creatingConnection = false;
@@ -86,7 +84,7 @@ public class DbConnectionPool implements ConnectionPool {
       while (connection == null) {
         try {
           synchronized (connectionPool) {
-            if (connectionPool.size() == 0) {
+            if (connectionPool.isEmpty()) {
               connectionPool.wait();
             }
             connection = getConnectionFromPool();
@@ -102,7 +100,7 @@ public class DbConnectionPool implements ConnectionPool {
     return connection;
   }
 
-  public void checkInConnection(final DbConnection dbConnection) {
+  public void checkInConnection(final PoolableConnection dbConnection) {
     if (closed) {
       disconnect(dbConnection);
     }
@@ -186,7 +184,7 @@ public class DbConnectionPool implements ConnectionPool {
   }
 
   public ConnectionPoolStatistics getConnectionPoolStatistics(final long since) {
-    final DbConnectionPoolStatistics statistics = new DbConnectionPoolStatistics(user);
+    final ConnectionPoolStatisticsImpl statistics = new ConnectionPoolStatisticsImpl(user);
     synchronized (connectionPool) {
       synchronized (connectionsInUse) {
         statistics.setConnectionsInUse(connectionsInUse.size());
@@ -218,7 +216,7 @@ public class DbConnectionPool implements ConnectionPool {
   public List<ConnectionPoolState> getPoolStatistics(final long since) {
     final List<ConnectionPoolState> poolStates = new ArrayList<ConnectionPoolState>();
     synchronized (connectionPoolStatistics) {
-      final ListIterator<DbConnectionPoolState> iterator = connectionPoolStatistics.listIterator();
+      final ListIterator<ConnectionPoolStateImpl> iterator = connectionPoolStatistics.listIterator();
       while (iterator.hasNext()) {//NB. the stat log is circular, result should be sorted
         final ConnectionPoolState state = iterator.next();
         if (state.getTime() >= since) {
@@ -242,14 +240,14 @@ public class DbConnectionPool implements ConnectionPool {
     counter.resetPoolStatistics();
   }
 
-  private DbConnection getConnectionFromPool() {
+  private PoolableConnection getConnectionFromPool() {
     synchronized (connectionPool) {
       synchronized (connectionsInUse) {
         final int connectionsInPool = connectionPool.size();
         if (collectFineGrainedStatistics) {
           addInPoolStats(connectionsInPool, connectionsInUse.size(), System.currentTimeMillis());
         }
-        final DbConnection dbConnection = connectionsInPool > 0 ? connectionPool.pop() : null;
+        final PoolableConnection dbConnection = connectionsInPool > 0 ? connectionPool.pop() : null;
         if (dbConnection != null) {
           connectionsInUse.add(dbConnection);
         }
@@ -267,7 +265,7 @@ public class DbConnectionPool implements ConnectionPool {
         connectionPoolStatistics.get(connectionPoolStatisticsIndex).set(time, size, inUse);
       }
       else {
-        connectionPoolStatistics.add(new DbConnectionPoolState(time, size, inUse));
+        connectionPoolStatistics.add(new ConnectionPoolStateImpl(time, size, inUse));
       }
 
       connectionPoolStatisticsIndex++;
@@ -291,9 +289,9 @@ public class DbConnectionPool implements ConnectionPool {
   private void cleanPool() {
     synchronized (connectionPool) {
       final long currentTime = System.currentTimeMillis();
-      final ListIterator<DbConnection> iterator = connectionPool.listIterator();
+      final ListIterator<PoolableConnection> iterator = connectionPool.listIterator();
       while (iterator.hasNext() && connectionPool.size() > minimumPoolSize) {
-        final DbConnection connection = iterator.next();
+        final PoolableConnection connection = iterator.next();
         final long idleTime = currentTime - connection.getPoolTime();
         if (idleTime > pooledConnectionTimeout) {
           iterator.remove();
@@ -305,19 +303,19 @@ public class DbConnectionPool implements ConnectionPool {
 
   private void emptyPool() {
     synchronized (connectionPool) {
-      while (connectionPool.size() > 0) {
+      while (!connectionPool.isEmpty()) {
         disconnect(connectionPool.pop());
       }
     }
   }
 
-  private void disconnect(final DbConnection connection) {
+  private void disconnect(final PoolableConnection connection) {
     if (connection == null) {
       return;
     }
 
     counter.incrementConnectionsDestroyedCounter();
-    dbConnectionProvider.destroyConnection(connection);
+    poolableConnectionProvider.destroyConnection(connection);
   }
 
   private static class Counter {
@@ -403,7 +401,7 @@ public class DbConnectionPool implements ConnectionPool {
       requestsDelayedPerSecondCounter = 0;
       requestsPerSecondTime = current;
       averageCheckOutTime = 0;
-      if (checkOutTimes.size() > 0) {
+      if (!checkOutTimes.isEmpty()) {
         long total = 0;
         for (final Long time : checkOutTimes) {
           total += time;

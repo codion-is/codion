@@ -5,6 +5,7 @@ package org.jminor.framework.demos.empdept.beans;
 
 import org.jminor.common.model.FilterCriteria;
 import org.jminor.common.model.SearchType;
+import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.ValueChangeEvent;
 import org.jminor.common.model.valuemap.ValueChangeListener;
 import org.jminor.framework.client.model.DefaultEntityComboBoxModel;
@@ -61,8 +62,8 @@ public class EmployeeEditModel extends DefaultEntityEditModel {
         if (containsComboBoxModel(EMPLOYEE_MGR_FK)) {
           getEntityComboBoxModel(EMPLOYEE_MGR_FK).setFilterCriteria(new FilterCriteria<Entity>() {
             public boolean include(final Entity item) {
-              return (Entity.isEqual(item.getForeignKeyValue(EMPLOYEE_DEPARTMENT_FK), event.getNewValue())
-                      && !Entity.isEqual(item, getEntityCopy()));
+              return (Util.isEqual(item.getForeignKeyValue(EMPLOYEE_DEPARTMENT_FK), event.getNewValue())
+                      && !Util.isEqual(item, getEntityCopy()));
             }
           });
         }

@@ -82,7 +82,7 @@ public class CriteriaSet<T> implements Criteria<T>, Serializable {
   }
 
   public String asString() {
-    if (criteriaList.size() == 0) {
+    if (criteriaList.isEmpty()) {
       return "";
     }
 

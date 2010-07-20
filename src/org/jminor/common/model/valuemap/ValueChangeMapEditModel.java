@@ -12,15 +12,15 @@ public interface ValueChangeMapEditModel<K, V> extends Refreshable {
   /**
    * Code for the insert action, used during validation
    */
-  public static final int INSERT = 1;
+  int INSERT = 1;
   /**
    * Code for the update action, used during validation
    */
-  public static final int UPDATE = 2;
+  int UPDATE = 2;
   /**
    * Code for an unknown action, used during validation
    */
-  public static final int UNKNOWN = 3;
+  int UNKNOWN = 3;
 
   /**
    * @return a State indicating the modified status of this value map

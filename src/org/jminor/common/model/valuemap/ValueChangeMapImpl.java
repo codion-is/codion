@@ -55,7 +55,7 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
   }
 
   public boolean isModified() {
-    return originalValues != null && originalValues.size() > 0;
+    return originalValues != null && !originalValues.isEmpty();
   }
 
   public boolean isModified(final K key) {

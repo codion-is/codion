@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.tools.testing;
 
+import org.jminor.framework.client.model.DefaultEntityApplicationModel;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.db.EntityDbConnectionTest;
@@ -92,7 +93,7 @@ public class EntityLoadTestModelTest {
 
   @Test
   public void testMethods() {
-    final EntityApplicationModel model = new EntityApplicationModel(EntityDbConnectionTest.DB_PROVIDER) {
+    final EntityApplicationModel model = new DefaultEntityApplicationModel(EntityDbConnectionTest.DB_PROVIDER) {
       @Override
       protected void loadDomainModel() {
         new EmpDept();

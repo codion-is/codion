@@ -15,6 +15,7 @@ import org.jminor.common.model.valuemap.ValueChangeEvent;
 import org.jminor.common.model.valuemap.ValueChangeListener;
 import org.jminor.common.model.valuemap.ValueChangeMap;
 import org.jminor.common.model.valuemap.ValueCollectionProvider;
+import org.jminor.common.model.valuemap.ValueProvider;
 import org.jminor.common.model.valuemap.exception.NullValidationException;
 import org.jminor.common.model.valuemap.exception.RangeValidationException;
 import org.jminor.common.model.valuemap.exception.ValidationException;
@@ -23,6 +24,7 @@ import org.jminor.framework.client.model.event.DeleteEvent;
 import org.jminor.framework.client.model.event.InsertEvent;
 import org.jminor.framework.client.model.event.UpdateEvent;
 import org.jminor.framework.db.provider.EntityDbProvider;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.EntityUtil;
@@ -95,7 +97,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
    * @param dbProvider the EntityDbProvider instance
    */
   public DefaultEntityEditModel(final String entityID, final EntityDbProvider dbProvider) {
-    super(new Entity(entityID));
+    super(Entities.entityInstance(entityID));
     Util.rejectNullValue(dbProvider, "dbProvider");
     if (!Configuration.getBooleanValue(Configuration.ALL_PANELS_ACTIVE)) {
       ACTIVE_STATE_GROUP.addState(stActive);
@@ -219,7 +221,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
    */
   public final void insert(final List<Entity> entities) throws CancelException, DbException, ValidationException {
     Util.rejectNullValue(entities, "entities");
-    if (entities.size() == 0) {
+    if (entities.isEmpty()) {
       return;
     }
     if (isReadOnly()) {
@@ -234,7 +236,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
     evtBeforeInsert.fire();
     validateEntities(entities, EntityEditModel.INSERT);
 
-    final List<Entity.Key> primaryKeys = Entity.Key.copy(doInsert(entities));
+    final List<Entity.Key> primaryKeys = EntityUtil.copy(doInsert(entities));
     evtAfterInsert.fire(new InsertEvent(this, primaryKeys));
   }
 
@@ -244,7 +246,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
 
   public final void update(final List<Entity> entities) throws DbException, CancelException, ValidationException {
     Util.rejectNullValue(entities, "entities");
-    if (entities.size() == 0) {
+    if (entities.isEmpty()) {
       return;
     }
     if (isReadOnly()) {
@@ -257,7 +259,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
     LOG.debug(toString() + " - update " + Util.getCollectionContentsAsString(entities, false));
 
     final List<Entity> modifiedEntities = EntityUtil.getModifiedEntities(entities);
-    if (modifiedEntities.size() == 0) {
+    if (modifiedEntities.isEmpty()) {
       return;
     }
 
@@ -266,7 +268,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
 
     final List<Entity> updatedEntities = doUpdate(modifiedEntities);
 
-    evtAfterUpdate.fire(new UpdateEvent(this, updatedEntities, Entity.isPrimaryKeyModified(modifiedEntities)));
+    evtAfterUpdate.fire(new UpdateEvent(this, updatedEntities, EntityUtil.isPrimaryKeyModified(modifiedEntities)));
   }
 
   public final void delete() throws DbException, CancelException {
@@ -275,7 +277,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
 
   public final void delete(final List<Entity> entities) throws DbException, CancelException {
     Util.rejectNullValue(entities, "entities");
-    if (entities.size() == 0) {
+    if (entities.isEmpty()) {
       return;
     }
     if (isReadOnly()) {
@@ -377,7 +379,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
     }
   }
 
-  public PropertyComboBoxModel getPropertyComboBoxModel(final Property property) {
+  public PropertyComboBoxModel getPropertyComboBoxModel(final Property.ColumnProperty property) {
     Util.rejectNullValue(property, "property");
     final PropertyComboBoxModel comboBoxModel = (PropertyComboBoxModel) propertyComboBoxModels.get(property);
     if (comboBoxModel == null) {
@@ -387,7 +389,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
     return comboBoxModel;
   }
 
-  public PropertyComboBoxModel initializePropertyComboBoxModel(final Property property, final Event refreshEvent,
+  public PropertyComboBoxModel initializePropertyComboBoxModel(final Property.ColumnProperty property, final Event refreshEvent,
                                                                final String nullValueString) {
     Util.rejectNullValue(property, "property");
     PropertyComboBoxModel comboBoxModel = (PropertyComboBoxModel) propertyComboBoxModels.get(property);
@@ -407,9 +409,9 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
    * if this value is null then no such item is included
    * @return a new PropertyComboBoxModel based on the given property
    */
-  public PropertyComboBoxModel createPropertyComboBoxModel(final Property property, final Event refreshEvent,
+  public PropertyComboBoxModel createPropertyComboBoxModel(final Property.ColumnProperty property, final Event refreshEvent,
                                                            final String nullValueString) {
-    return new PropertyComboBoxModel(entityID, dbProvider, property, nullValueString, refreshEvent);
+    return new DefaultPropertyComboBoxModel(entityID, dbProvider, property, nullValueString, refreshEvent);
   }
 
   public EntityComboBoxModel getEntityComboBoxModel(final String propertyID) {
@@ -471,7 +473,8 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
     return model;
   }
 
-  public EntityLookupModel createEntityLookupModel(final String entityID, final List<Property> lookupProperties,
+  public EntityLookupModel createEntityLookupModel(final String entityID,
+                                                   final List<Property.ColumnProperty> lookupProperties,
                                                    final Criteria additionalSearchCriteria) {
     final EntityLookupModel model = new DefaultEntityLookupModel(entityID, dbProvider, lookupProperties);
     model.setAdditionalLookupCriteria(additionalSearchCriteria);
@@ -488,9 +491,9 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
   }
 
   public final Entity getDefaultValueMap() {
-    final Entity defaultEntity = new Entity(entityID);
-    final Collection<Property> databaseProperties = EntityRepository.getDatabaseProperties(entityID);
-    for (final Property property : databaseProperties) {
+    final Entity defaultEntity = Entities.entityInstance(entityID);
+    final Collection<Property.ColumnProperty> databaseProperties = EntityRepository.getColumnProperties(entityID);
+    for (final Property.ColumnProperty property : databaseProperties) {
       if (!property.hasParentProperty() && !property.isDenormalized()) {//these are set via their respective parent properties
         defaultEntity.setValue(property, getDefaultValue(property));
       }
@@ -637,8 +640,9 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
   protected void performNullValidation(final Entity entity, final Property property, final int action) throws NullValidationException {
     if (!isNullable(entity, property.getPropertyID()) && entity.isValueNull(property.getPropertyID())) {
       if (action == EntityEditModel.INSERT) {
-        if (!property.columnHasDefaultValue() || (property instanceof Property.PrimaryKeyProperty &&
-                !EntityRepository.isPrimaryKeyAutoGenerated(entityID))) {
+        if ((property instanceof Property.ColumnProperty && !((Property.ColumnProperty) property).columnHasDefaultValue())
+                || (property instanceof Property.PrimaryKeyProperty
+                && !EntityRepository.isPrimaryKeyAutoGenerated(entityID))) {
           throw new NullValidationException(property.getPropertyID(),
                   FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_IS_REQUIRED) + ": " + property);
         }
@@ -764,5 +768,47 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
     }
 
     return stringBuilder.toString();
+  }
+
+  static class PropertyValueProvider implements ValueCollectionProvider<Object> {
+
+    private final EntityDbProvider dbProvider;
+    private final String entityID;
+    private final String propertyID;
+
+    public PropertyValueProvider(final EntityDbProvider dbProvider, final String entityID, final String propertyID) {
+      this.dbProvider = dbProvider;
+      this.entityID = entityID;
+      this.propertyID = propertyID;
+    }
+
+    public String getEntityID() {
+      return entityID;
+    }
+
+    public String getPropertyID() {
+      return propertyID;
+    }
+
+    public EntityDbProvider getDbProvider() {
+      return dbProvider;
+    }
+
+    public Collection<Object> getValues() {
+      try {
+        return dbProvider.getEntityDb().selectPropertyValues(entityID, propertyID, true);
+      }
+      catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+    }
+
+    public static ValueProvider<Property, Object> getValueProvider(final Entity entity) {
+      return new ValueProvider<Property, Object>() {
+        public Object getValue(final Property key) {
+          return entity.getValue(key);
+        }
+      };
+    }
   }
 }

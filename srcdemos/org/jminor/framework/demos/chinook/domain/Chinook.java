@@ -2,9 +2,10 @@ package org.jminor.framework.demos.chinook.domain;
 
 import org.jminor.common.model.IdSource;
 import org.jminor.common.model.valuemap.StringProvider;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityDefinition;
 import org.jminor.framework.domain.EntityRepository;
+import org.jminor.framework.domain.Properties;
 import org.jminor.framework.domain.Property;
 
 import java.sql.Types;
@@ -114,13 +115,13 @@ public class Chinook {
   public static final String TRACK_UNITPRICE = "unitprice";
 
   static {
-    EntityRepository.add(new EntityDefinition(T_ALBUM,
-            new Property.PrimaryKeyProperty(ALBUM_ALBUMID),
-            new Property.ForeignKeyProperty(ALBUM_ARTISTID_FK, "Artist", T_ARTIST,
-                    new Property(ALBUM_ARTISTID))
+    EntityRepository.add(Entities.define(T_ALBUM,
+            Properties.primaryKeyProperty(ALBUM_ALBUMID),
+            Properties.foreignKeyProperty(ALBUM_ARTISTID_FK, "Artist", T_ARTIST,
+                    Properties.columnProperty(ALBUM_ARTISTID))
                     .setNullable(false)
                     .setPreferredColumnWidth(160),
-            new Property(ALBUM_TITLE, Types.VARCHAR, "Title")
+            Properties.columnProperty(ALBUM_TITLE, Types.VARCHAR, "Title")
                     .setNullable(false)
                     .setMaxLength(160)
                     .setPreferredColumnWidth(160))
@@ -131,9 +132,9 @@ public class Chinook {
             .setOrderByClause(ALBUM_ARTISTID + ", " + ALBUM_TITLE)
             .setCaption("Albums"));
 
-    EntityRepository.add(new EntityDefinition(T_ARTIST,
-            new Property.PrimaryKeyProperty(ARTIST_ARTISTID),
-            new Property(ARTIST_NAME, Types.VARCHAR, "Name")
+    EntityRepository.add(Entities.define(T_ARTIST,
+            Properties.primaryKeyProperty(ARTIST_ARTISTID),
+            Properties.columnProperty(ARTIST_NAME, Types.VARCHAR, "Name")
                     .setMaxLength(120)
                     .setPreferredColumnWidth(160))
             .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_ARTIST)
@@ -143,35 +144,35 @@ public class Chinook {
             .setOrderByClause(ARTIST_NAME)
             .setCaption("Artists"));
 
-    EntityRepository.add(new EntityDefinition(T_CUSTOMER,
-            new Property.PrimaryKeyProperty(CUSTOMER_CUSTOMERID),
-            new Property(CUSTOMER_LASTNAME, Types.VARCHAR, "Last name")
+    EntityRepository.add(Entities.define(T_CUSTOMER,
+            Properties.primaryKeyProperty(CUSTOMER_CUSTOMERID),
+            Properties.columnProperty(CUSTOMER_LASTNAME, Types.VARCHAR, "Last name")
                     .setNullable(false)
                     .setMaxLength(20),
-            new Property(CUSTOMER_FIRSTNAME, Types.VARCHAR, "First name")
+            Properties.columnProperty(CUSTOMER_FIRSTNAME, Types.VARCHAR, "First name")
                     .setNullable(false)
                     .setMaxLength(40),
-            new Property(CUSTOMER_COMPANY, Types.VARCHAR, "Company")
+            Properties.columnProperty(CUSTOMER_COMPANY, Types.VARCHAR, "Company")
                     .setMaxLength(80),
-            new Property(CUSTOMER_ADDRESS, Types.VARCHAR, "Address")
+            Properties.columnProperty(CUSTOMER_ADDRESS, Types.VARCHAR, "Address")
                     .setMaxLength(70),
-            new Property(CUSTOMER_CITY, Types.VARCHAR, "City")
+            Properties.columnProperty(CUSTOMER_CITY, Types.VARCHAR, "City")
                     .setMaxLength(40),
-            new Property(CUSTOMER_STATE, Types.VARCHAR, "State")
+            Properties.columnProperty(CUSTOMER_STATE, Types.VARCHAR, "State")
                     .setMaxLength(40),
-            new Property(CUSTOMER_COUNTRY, Types.VARCHAR, "Country")
+            Properties.columnProperty(CUSTOMER_COUNTRY, Types.VARCHAR, "Country")
                     .setMaxLength(40),
-            new Property(CUSTOMER_POSTALCODE, Types.VARCHAR, "Postal code")
+            Properties.columnProperty(CUSTOMER_POSTALCODE, Types.VARCHAR, "Postal code")
                     .setMaxLength(10),
-            new Property(CUSTOMER_PHONE, Types.VARCHAR, "Phone")
+            Properties.columnProperty(CUSTOMER_PHONE, Types.VARCHAR, "Phone")
                     .setMaxLength(24),
-            new Property(CUSTOMER_FAX, Types.VARCHAR, "Fax")
+            Properties.columnProperty(CUSTOMER_FAX, Types.VARCHAR, "Fax")
                     .setMaxLength(24),
-            new Property(CUSTOMER_EMAIL, Types.VARCHAR, "Email")
+            Properties.columnProperty(CUSTOMER_EMAIL, Types.VARCHAR, "Email")
                     .setNullable(false)
                     .setMaxLength(60),
-            new Property.ForeignKeyProperty(CUSTOMER_SUPPORTREPID_FK, "Support rep", T_EMPLOYEE,
-                    new Property(CUSTOMER_SUPPORTREPID)))
+            Properties.foreignKeyProperty(CUSTOMER_SUPPORTREPID_FK, "Support rep", T_EMPLOYEE,
+                    Properties.columnProperty(CUSTOMER_SUPPORTREPID)))
             .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_CUSTOMER)
             .setStringProvider(new StringProvider<String>(CUSTOMER_LASTNAME)
             .addText(", ").addValue(CUSTOMER_FIRSTNAME))
@@ -180,35 +181,35 @@ public class Chinook {
             .setOrderByClause(CUSTOMER_LASTNAME + ", " + CUSTOMER_FIRSTNAME)
             .setCaption("Customers"));
 
-    EntityRepository.add(new EntityDefinition(T_EMPLOYEE,
-            new Property.PrimaryKeyProperty(EMPLOYEE_EMPLOYEEID),
-            new Property(EMPLOYEE_LASTNAME, Types.VARCHAR, "Last name")
+    EntityRepository.add(Entities.define(T_EMPLOYEE,
+            Properties.primaryKeyProperty(EMPLOYEE_EMPLOYEEID),
+            Properties.columnProperty(EMPLOYEE_LASTNAME, Types.VARCHAR, "Last name")
                     .setNullable(false)
                     .setMaxLength(20),
-            new Property(EMPLOYEE_FIRSTNAME, Types.VARCHAR, "First name")
+            Properties.columnProperty(EMPLOYEE_FIRSTNAME, Types.VARCHAR, "First name")
                     .setNullable(false)
                     .setMaxLength(20),
-            new Property(EMPLOYEE_TITLE, Types.VARCHAR, "Title")
+            Properties.columnProperty(EMPLOYEE_TITLE, Types.VARCHAR, "Title")
                     .setMaxLength(30),
-            new Property.ForeignKeyProperty(EMPLOYEE_REPORTSTO_FK, "Reports to", T_EMPLOYEE,
-                    new Property(EMPLOYEE_REPORTSTO)),
-            new Property(EMPLOYEE_BIRTHDATE, Types.DATE, "Birthdate"),
-            new Property(EMPLOYEE_HIREDATE, Types.DATE, "Hiredate"),
-            new Property(EMPLOYEE_ADDRESS, Types.VARCHAR, "Address")
+            Properties.foreignKeyProperty(EMPLOYEE_REPORTSTO_FK, "Reports to", T_EMPLOYEE,
+                    Properties.columnProperty(EMPLOYEE_REPORTSTO)),
+            Properties.columnProperty(EMPLOYEE_BIRTHDATE, Types.DATE, "Birthdate"),
+            Properties.columnProperty(EMPLOYEE_HIREDATE, Types.DATE, "Hiredate"),
+            Properties.columnProperty(EMPLOYEE_ADDRESS, Types.VARCHAR, "Address")
                     .setMaxLength(70),
-            new Property(EMPLOYEE_CITY, Types.VARCHAR, "City")
+            Properties.columnProperty(EMPLOYEE_CITY, Types.VARCHAR, "City")
                     .setMaxLength(40),
-            new Property(EMPLOYEE_STATE, Types.VARCHAR, "State")
+            Properties.columnProperty(EMPLOYEE_STATE, Types.VARCHAR, "State")
                     .setMaxLength(40),
-            new Property(EMPLOYEE_COUNTRY, Types.VARCHAR, "Country")
+            Properties.columnProperty(EMPLOYEE_COUNTRY, Types.VARCHAR, "Country")
                     .setMaxLength(40),
-            new Property(EMPLOYEE_POSTALCODE, Types.VARCHAR, "Postal code")
+            Properties.columnProperty(EMPLOYEE_POSTALCODE, Types.VARCHAR, "Postal code")
                     .setMaxLength(10),
-            new Property(EMPLOYEE_PHONE, Types.VARCHAR, "Phone")
+            Properties.columnProperty(EMPLOYEE_PHONE, Types.VARCHAR, "Phone")
                     .setMaxLength(24),
-            new Property(EMPLOYEE_FAX, Types.VARCHAR, "Fax")
+            Properties.columnProperty(EMPLOYEE_FAX, Types.VARCHAR, "Fax")
                     .setMaxLength(24),
-            new Property(EMPLOYEE_EMAIL, Types.VARCHAR, "Email")
+            Properties.columnProperty(EMPLOYEE_EMAIL, Types.VARCHAR, "Email")
                     .setMaxLength(60))
             .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_EMPLOYEE)
             .setStringProvider(new StringProvider<String>(EMPLOYEE_LASTNAME)
@@ -217,9 +218,9 @@ public class Chinook {
             .setOrderByClause(EMPLOYEE_LASTNAME + ", " + EMPLOYEE_FIRSTNAME)
             .setCaption("Employees"));
 
-    EntityRepository.add(new EntityDefinition(T_GENRE,
-            new Property.PrimaryKeyProperty(GENRE_GENREID),
-            new Property(GENRE_NAME, Types.VARCHAR, "Name")
+    EntityRepository.add(Entities.define(T_GENRE,
+            Properties.primaryKeyProperty(GENRE_GENREID),
+            Properties.columnProperty(GENRE_NAME, Types.VARCHAR, "Name")
                     .setMaxLength(120)
                     .setPreferredColumnWidth(160))
             .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_GENRE)
@@ -228,9 +229,9 @@ public class Chinook {
             .setOrderByClause(GENRE_NAME)
             .setCaption("Genres"));
 
-    EntityRepository.add(new EntityDefinition(T_MEDIATYPE,
-            new Property.PrimaryKeyProperty(MEDIATYPE_MEDIATYPEID),
-            new Property(MEDIATYPE_NAME, Types.VARCHAR, "Name")
+    EntityRepository.add(Entities.define(T_MEDIATYPE,
+            Properties.primaryKeyProperty(MEDIATYPE_MEDIATYPEID),
+            Properties.columnProperty(MEDIATYPE_NAME, Types.VARCHAR, "Name")
                     .setMaxLength(120)
                     .setPreferredColumnWidth(160))
             .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_MEDIATYPE)
@@ -238,33 +239,33 @@ public class Chinook {
             .setOrderByClause(MEDIATYPE_NAME)
             .setCaption("Media types"));
 
-    EntityRepository.add(new EntityDefinition(T_TRACK,
-            new Property.PrimaryKeyProperty(TRACK_TRACKID),
-            new Property.DenormalizedViewProperty(TRACK_ARTIST_DENORM, TRACK_ALBUMID_FK,
+    EntityRepository.add(Entities.define(T_TRACK,
+            Properties.primaryKeyProperty(TRACK_TRACKID),
+            Properties.denormalizedViewProperty(TRACK_ARTIST_DENORM, TRACK_ALBUMID_FK,
                     EntityRepository.getProperty(T_ALBUM, ALBUM_ARTISTID_FK), "Artist")
                     .setPreferredColumnWidth(160),
-            new Property.ForeignKeyProperty(TRACK_ALBUMID_FK, "Album", T_ALBUM,
-                    new Property(TRACK_ALBUMID))
+            Properties.foreignKeyProperty(TRACK_ALBUMID_FK, "Album", T_ALBUM,
+                    Properties.columnProperty(TRACK_ALBUMID))
                     .setFetchDepth(2)
                     .setPreferredColumnWidth(160),
-            new Property(TRACK_NAME, Types.VARCHAR, "Name")
+            Properties.columnProperty(TRACK_NAME, Types.VARCHAR, "Name")
                     .setNullable(false)
                     .setMaxLength(200)
                     .setPreferredColumnWidth(160),
-            new Property.ForeignKeyProperty(TRACK_GENREID_FK, "Genre", T_GENRE,
-                    new Property(TRACK_GENREID)),
-            new Property(TRACK_COMPOSER, Types.VARCHAR, "Composer")
+            Properties.foreignKeyProperty(TRACK_GENREID_FK, "Genre", T_GENRE,
+                    Properties.columnProperty(TRACK_GENREID)),
+            Properties.columnProperty(TRACK_COMPOSER, Types.VARCHAR, "Composer")
                     .setMaxLength(220)
                     .setPreferredColumnWidth(160),
-            new Property.ForeignKeyProperty(TRACK_MEDIATYPEID_FK, "Media type", T_MEDIATYPE,
-                    new Property(TRACK_MEDIATYPEID))
+            Properties.foreignKeyProperty(TRACK_MEDIATYPEID_FK, "Media type", T_MEDIATYPE,
+                    Properties.columnProperty(TRACK_MEDIATYPEID))
                     .setNullable(false),
-            new Property(TRACK_MILLISECONDS, Types.INTEGER, "Duration (ms)")
+            Properties.columnProperty(TRACK_MILLISECONDS, Types.INTEGER, "Duration (ms)")
                     .setNullable(false),
-            new Property.DerivedProperty(TRACK_MINUTES_SECONDS_DERIVED, Types.VARCHAR, "Duration (min/sec)")
+            Properties.derivedProperty(TRACK_MINUTES_SECONDS_DERIVED, Types.VARCHAR, "Duration (min/sec)")
                     .addLinkedPropertyIDs(TRACK_MILLISECONDS),
-            new Property(TRACK_BYTES, Types.INTEGER, "Bytes"),
-            new Property(TRACK_UNITPRICE, Types.DOUBLE, "Price")
+            Properties.columnProperty(TRACK_BYTES, Types.INTEGER, "Bytes"),
+            Properties.columnProperty(TRACK_UNITPRICE, Types.DOUBLE, "Price")
                     .setNullable(false))
             .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_TRACK)
             .setStringProvider(new StringProvider<String>(TRACK_NAME))
@@ -273,7 +274,7 @@ public class Chinook {
             .setOrderByClause(TRACK_NAME)
             .setCaption("Tracks"));
 
-    Entity.setProxy(T_TRACK, new Entity.Proxy() {
+    EntityRepository.setProxy(T_TRACK, new EntityRepository.Proxy() {
       @Override
       public Object getDerivedValue(final Entity entity, final Property.DerivedProperty property) {
         if (property.is(TRACK_MINUTES_SECONDS_DERIVED)) {
@@ -292,9 +293,9 @@ public class Chinook {
       }
     });
 
-    EntityRepository.add(new EntityDefinition(T_PLAYLIST,
-            new Property.PrimaryKeyProperty(PLAYLIST_PLAYLISTID),
-            new Property(PLAYLIST_NAME, Types.VARCHAR, "Name")
+    EntityRepository.add(Entities.define(T_PLAYLIST,
+            Properties.primaryKeyProperty(PLAYLIST_PLAYLISTID),
+            Properties.columnProperty(PLAYLIST_NAME, Types.VARCHAR, "Name")
                     .setMaxLength(120)
                     .setPreferredColumnWidth(160))
             .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_PLAYLIST)
@@ -304,21 +305,21 @@ public class Chinook {
             .setOrderByClause(PLAYLIST_NAME)
             .setCaption("Playlists"));
 
-    EntityRepository.add(new EntityDefinition(T_PLAYLISTTRACK,
-            new Property.ForeignKeyProperty(PLAYLISTTRACK_PLAYLISTID_FK, "Playlist", T_PLAYLIST,
-                    new Property.PrimaryKeyProperty(PLAYLISTTRACK_PLAYLISTID))
+    EntityRepository.add(Entities.define(T_PLAYLISTTRACK,
+            Properties.foreignKeyProperty(PLAYLISTTRACK_PLAYLISTID_FK, "Playlist", T_PLAYLIST,
+                    Properties.primaryKeyProperty(PLAYLISTTRACK_PLAYLISTID))
                     .setNullable(false)
                     .setPreferredColumnWidth(120),
-            new Property.DenormalizedViewProperty(PLAYLISTTRACK_ARTIST_DENORM, PLAYLISTTRACK_ALBUM_DENORM,
+            Properties.denormalizedViewProperty(PLAYLISTTRACK_ARTIST_DENORM, PLAYLISTTRACK_ALBUM_DENORM,
                     EntityRepository.getProperty(T_ALBUM, ALBUM_ARTISTID_FK), "Artist")
                     .setPreferredColumnWidth(160),
-            new Property.ForeignKeyProperty(PLAYLISTTRACK_TRACKID_FK, "Track", T_TRACK,
-                    new Property.PrimaryKeyProperty(PLAYLISTTRACK_TRACKID, Types.INTEGER)
+            Properties.foreignKeyProperty(PLAYLISTTRACK_TRACKID_FK, "Track", T_TRACK,
+                    Properties.primaryKeyProperty(PLAYLISTTRACK_TRACKID, Types.INTEGER)
                             .setIndex(1))
                     .setFetchDepth(3)
                     .setNullable(false)
                     .setPreferredColumnWidth(160),
-            new Property.DenormalizedViewProperty(PLAYLISTTRACK_ALBUM_DENORM, PLAYLISTTRACK_TRACKID_FK,
+            Properties.denormalizedViewProperty(PLAYLISTTRACK_ALBUM_DENORM, PLAYLISTTRACK_TRACKID_FK,
                     EntityRepository.getProperty(T_TRACK, TRACK_ALBUMID_FK), "Album")
                     .setPreferredColumnWidth(160))
             .setIdSource(IdSource.NONE)
@@ -327,27 +328,27 @@ public class Chinook {
             .setLargeDataset(true)
             .setCaption("Playlist tracks"));
 
-    EntityRepository.add(new EntityDefinition(T_INVOICE,
-            new Property.PrimaryKeyProperty(INVOICE_INVOICEID, Types.INTEGER, "Invoice no."),
-            new Property(INVOICE_INVOICEID_AS_STRING, Types.VARCHAR, "Invoice no.")
+    EntityRepository.add(Entities.define(T_INVOICE,
+            Properties.primaryKeyProperty(INVOICE_INVOICEID, Types.INTEGER, "Invoice no."),
+            Properties.columnProperty(INVOICE_INVOICEID_AS_STRING, Types.VARCHAR, "Invoice no.")
                     .setReadOnly(true)
                     .setHidden(true),
-            new Property.ForeignKeyProperty(INVOICE_CUSTOMERID_FK, "Customer", T_CUSTOMER,
-                    new Property(INVOICE_CUSTOMERID))
+            Properties.foreignKeyProperty(INVOICE_CUSTOMERID_FK, "Customer", T_CUSTOMER,
+                    Properties.columnProperty(INVOICE_CUSTOMERID))
                     .setNullable(false),
-            new Property(INVOICE_INVOICEDATE, Types.DATE, "Date")
+            Properties.columnProperty(INVOICE_INVOICEDATE, Types.DATE, "Date")
                     .setNullable(false),
-            new Property(INVOICE_BILLINGADDRESS, Types.VARCHAR, "Billing address")
+            Properties.columnProperty(INVOICE_BILLINGADDRESS, Types.VARCHAR, "Billing address")
                     .setMaxLength(70),
-            new Property(INVOICE_BILLINGCITY, Types.VARCHAR, "Billing city")
+            Properties.columnProperty(INVOICE_BILLINGCITY, Types.VARCHAR, "Billing city")
                     .setMaxLength(40),
-            new Property(INVOICE_BILLINGSTATE, Types.VARCHAR, "Billing state")
+            Properties.columnProperty(INVOICE_BILLINGSTATE, Types.VARCHAR, "Billing state")
                     .setMaxLength(40),
-            new Property(INVOICE_BILLINGCOUNTRY, Types.VARCHAR, "Billing country")
+            Properties.columnProperty(INVOICE_BILLINGCOUNTRY, Types.VARCHAR, "Billing country")
                     .setMaxLength(40),
-            new Property(INVOICE_BILLINGPOSTALCODE, Types.VARCHAR, "Billing postal code")
+            Properties.columnProperty(INVOICE_BILLINGPOSTALCODE, Types.VARCHAR, "Billing postal code")
                     .setMaxLength(10),
-            new Property(INVOICE_TOTAL, Types.DOUBLE, "Total")
+            Properties.columnProperty(INVOICE_TOTAL, Types.DOUBLE, "Total")
                     .setNullable(false))
             .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_INVOICE)
             .setStringProvider(new StringProvider<String>(INVOICE_INVOICEID))
@@ -355,19 +356,19 @@ public class Chinook {
             .setOrderByClause(INVOICE_CUSTOMERID + ", " + INVOICE_INVOICEDATE + " desc")
             .setCaption("Invoices"));
 
-    EntityRepository.add(new EntityDefinition(T_INVOICELINE,
-            new Property.PrimaryKeyProperty(INVOICELINE_INVOICELINEID),
-            new Property.ForeignKeyProperty(INVOICELINE_INVOICEID_FK, "Invoice", T_INVOICE,
-                    new Property(INVOICELINE_INVOICEID))
+    EntityRepository.add(Entities.define(T_INVOICELINE,
+            Properties.primaryKeyProperty(INVOICELINE_INVOICELINEID),
+            Properties.foreignKeyProperty(INVOICELINE_INVOICEID_FK, "Invoice", T_INVOICE,
+                    Properties.columnProperty(INVOICELINE_INVOICEID))
                     .setNullable(false),
-            new Property.ForeignKeyProperty(INVOICELINE_TRACKID_FK, "Track", T_TRACK,
-                    new Property(INVOICELINE_TRACKID))
+            Properties.foreignKeyProperty(INVOICELINE_TRACKID_FK, "Track", T_TRACK,
+                    Properties.columnProperty(INVOICELINE_TRACKID))
                     .setNullable(false)
                     .setPreferredColumnWidth(160),
-            new Property.DenormalizedProperty(INVOICELINE_UNITPRICE, INVOICELINE_TRACKID_FK,
+            Properties.denormalizedProperty(INVOICELINE_UNITPRICE, INVOICELINE_TRACKID_FK,
                     EntityRepository.getProperty(T_TRACK, TRACK_UNITPRICE), "Unit price")
                     .setNullable(false),
-            new Property(INVOICELINE_QUANTITY, Types.INTEGER, "Quantity")
+            Properties.columnProperty(INVOICELINE_QUANTITY, Types.INTEGER, "Quantity")
                     .setNullable(false))
             .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_INVOICELINE)
             .setLargeDataset(true)

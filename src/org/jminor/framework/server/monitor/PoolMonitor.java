@@ -3,9 +3,9 @@
  */
 package org.jminor.framework.server.monitor;
 
-import org.jminor.common.db.DbConnection;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
+import org.jminor.common.db.pool.PoolableConnection;
 import org.jminor.common.model.User;
 import org.jminor.framework.server.EntityDbServerAdmin;
 
@@ -163,9 +163,9 @@ public class PoolMonitor {
           }
         }
 
-        public void checkInConnection(DbConnection dbConnection) {}
+        public void checkInConnection(PoolableConnection dbConnection) {}
 
-        public DbConnection checkOutConnection() throws ClassNotFoundException, SQLException {return null;}
+        public PoolableConnection checkOutConnection() throws ClassNotFoundException, SQLException {return null;}
       }));
     }
   }

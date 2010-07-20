@@ -4,7 +4,7 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.model.Event;
-import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.Properties;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -18,9 +18,9 @@ import java.util.Collection;
  * Date: 6.9.2009
  * Time: 16:47:57
  */
-public class PropertySummaryModelTest {
+public class DefaultPropertySummaryModelTest {
 
-  final PropertySummaryModel testIntModel = new PropertySummaryModel(new Property("TestProperty", Types.INTEGER),
+  final PropertySummaryModel testIntModel = new DefaultPropertySummaryModel(Properties.columnProperty("TestProperty", Types.INTEGER),
           new PropertySummaryModel.PropertyValueProvider() {
     public Collection<?> getValues() {
       return Arrays.asList(1,2,3,4,5);
@@ -31,7 +31,7 @@ public class PropertySummaryModelTest {
     public void bindValuesChangedEvent(Event event) {}
   });
 
-  final PropertySummaryModel testDoubleModel = new PropertySummaryModel(new Property("TestProperty", Types.DOUBLE),
+  final PropertySummaryModel testDoubleModel = new DefaultPropertySummaryModel(Properties.columnProperty("TestProperty", Types.DOUBLE),
           new PropertySummaryModel.PropertyValueProvider() {
     public Collection<?> getValues() {
       return Arrays.asList(1.1, 2.2, 3.3, 4.4, 5.5);
@@ -44,9 +44,9 @@ public class PropertySummaryModelTest {
 
   @Test
   public void test() {
-    testIntModel.setSummaryType(PropertySummaryModel.SUM);
+    testIntModel.setSummaryType(PropertySummaryModel.SummaryType.SUM);
     assertEquals("TestProperty", testIntModel.getProperty().getPropertyID());
-    assertEquals(PropertySummaryModel.SUM, testIntModel.getSummaryType());
+    assertEquals(PropertySummaryModel.SummaryType.SUM, testIntModel.getSummaryType());
     assertTrue(testIntModel.getSummaryTypes().size() > 0);
     assertNotNull(testIntModel.eventSummaryChanged());
     assertNotNull(testIntModel.eventSummaryTypeChanged());
@@ -54,61 +54,61 @@ public class PropertySummaryModelTest {
 
   @Test
   public void intSum() {
-    testIntModel.setSummaryType(PropertySummaryModel.SUM);
+    testIntModel.setSummaryType(PropertySummaryModel.SummaryType.SUM);
     assertEquals("15", testIntModel.getSummaryText());
   }
 
   @Test
   public void intAverage() {
-    testIntModel.setSummaryType(PropertySummaryModel.AVERAGE);
+    testIntModel.setSummaryType(PropertySummaryModel.SummaryType.AVERAGE);
     assertEquals("3", testIntModel.getSummaryText());
   }
 
   @Test
   public void intMininum() {
-    testIntModel.setSummaryType(PropertySummaryModel.MINIMUM);
+    testIntModel.setSummaryType(PropertySummaryModel.SummaryType.MINIMUM);
     assertEquals("1", testIntModel.getSummaryText());
   }
 
   @Test
   public void intMaximum() {
-    testIntModel.setSummaryType(PropertySummaryModel.MAXIMUM);
+    testIntModel.setSummaryType(PropertySummaryModel.SummaryType.MAXIMUM);
     assertEquals("5", testIntModel.getSummaryText());
   }
 
   @Test
   public void intMininumMaximum() {
-    testIntModel.setSummaryType(PropertySummaryModel.MINIMUM_MAXIMUM);
+    testIntModel.setSummaryType(PropertySummaryModel.SummaryType.MINIMUM_MAXIMUM);
     assertEquals("1/5", testIntModel.getSummaryText());
   }
 
   @Test
   public void doubleSum() {
-    testDoubleModel.setSummaryType(PropertySummaryModel.SUM);
+    testDoubleModel.setSummaryType(PropertySummaryModel.SummaryType.SUM);
     assertEquals("16,5", testDoubleModel.getSummaryText());
   }
 
   @Test
   public void doubleAverage() {
-    testDoubleModel.setSummaryType(PropertySummaryModel.AVERAGE);
+    testDoubleModel.setSummaryType(PropertySummaryModel.SummaryType.AVERAGE);
     assertEquals("3,3", testDoubleModel.getSummaryText());
   }
 
   @Test
   public void doubleMininum() {
-    testDoubleModel.setSummaryType(PropertySummaryModel.MINIMUM);
+    testDoubleModel.setSummaryType(PropertySummaryModel.SummaryType.MINIMUM);
     assertEquals("1,1", testDoubleModel.getSummaryText());
   }
 
   @Test
   public void doubleMaximum() {
-    testDoubleModel.setSummaryType(PropertySummaryModel.MAXIMUM);
+    testDoubleModel.setSummaryType(PropertySummaryModel.SummaryType.MAXIMUM);
     assertEquals("5,5", testDoubleModel.getSummaryText());
   }
 
   @Test
   public void doubleMininumMaximum() {
-    testDoubleModel.setSummaryType(PropertySummaryModel.MINIMUM_MAXIMUM);
+    testDoubleModel.setSummaryType(PropertySummaryModel.SummaryType.MINIMUM_MAXIMUM);
     assertEquals("1,1/5,5", testDoubleModel.getSummaryText());
   }
 }

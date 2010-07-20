@@ -5,6 +5,7 @@ package org.jminor.framework.db;
 
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.model.Util;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
@@ -24,10 +25,10 @@ import java.util.List;
 public class EntityResultPacker implements ResultPacker<Entity> {
 
   private final String entityID;
-  private final Collection<? extends Property> properties;
+  private final Collection<Property.ColumnProperty> properties;
   private final Collection<Property.TransientProperty> transientProperties;
 
-  public EntityResultPacker(final String entityID, final Collection<? extends Property> properties,
+  public EntityResultPacker(final String entityID, final Collection<Property.ColumnProperty> properties,
                             final Collection<Property.TransientProperty> transientProperties) {
     Util.rejectNullValue(entityID, "entityID");
     Util.rejectNullValue(properties, "properties");
@@ -61,8 +62,8 @@ public class EntityResultPacker implements ResultPacker<Entity> {
   }
 
   protected Entity loadEntity(final ResultSet resultSet) throws SQLException {
-    final Entity entity = new Entity(entityID);
-    if (transientProperties != null && transientProperties.size() > 0) {
+    final Entity entity = Entities.entityInstance(entityID);
+    if (transientProperties != null && !transientProperties.isEmpty()) {
       for (final Property.TransientProperty transientProperty : transientProperties) {
         if (!(transientProperty instanceof Property.DenormalizedViewProperty)
                 && !(transientProperty instanceof Property.DerivedProperty)) {
@@ -70,21 +71,19 @@ public class EntityResultPacker implements ResultPacker<Entity> {
         }
       }
     }
-    for (final Property property : properties) {
-      if (!(property instanceof Property.ForeignKeyProperty) && !(property instanceof Property.TransientProperty)) {
-        try {
-          entity.initializeValue(property, getValue(resultSet, property));
-        }
-        catch (Exception e) {
-          throw new SQLException("Unable to load property: " + property, e);
-        }
+    for (final Property.ColumnProperty property : properties) {
+      try {
+        entity.initializeValue(property, getValue(resultSet, property));
+      }
+      catch (Exception e) {
+        throw new SQLException("Unable to load property: " + property, e);
       }
     }
 
     return entity;
   }
 
-  protected Object getValue(final ResultSet resultSet, final Property property) throws SQLException {
+  protected Object getValue(final ResultSet resultSet, final Property.ColumnProperty property) throws SQLException {
     if (property.isBoolean()) {
       return getBoolean(resultSet, property);
     }
@@ -93,7 +92,7 @@ public class EntityResultPacker implements ResultPacker<Entity> {
     }
   }
 
-  private Boolean getBoolean(final ResultSet resultSet, final Property property) throws SQLException {
+  private Boolean getBoolean(final ResultSet resultSet, final Property.ColumnProperty property) throws SQLException {
     if (property instanceof Property.BooleanProperty) {
       return ((Property.BooleanProperty) property).toBoolean(
               getValue(resultSet, ((Property.BooleanProperty) property).getColumnType(), property.getSelectIndex()));

@@ -3,7 +3,6 @@
  */
 package org.jminor.common.db.pool;
 
-import org.jminor.common.db.DbConnection;
 import org.jminor.common.model.User;
 
 import java.sql.SQLException;
@@ -20,7 +19,7 @@ public interface ConnectionPool {
    * Return the given connection to the pool.
    * @param dbConnection the database connection to return to the pool
    */
-  void checkInConnection(final DbConnection dbConnection);
+  void checkInConnection(final PoolableConnection dbConnection);
 
   /**
    * Fetches a connection from the pool.
@@ -28,7 +27,7 @@ public interface ConnectionPool {
    * @throws ClassNotFoundException in case the JDBC driver class is not found
    * @throws SQLException in case of a database exception
    */
-  DbConnection checkOutConnection() throws ClassNotFoundException, SQLException;
+  PoolableConnection checkOutConnection() throws ClassNotFoundException, SQLException;
 
   /**
    * @return the user this connection pool is based on.

@@ -367,7 +367,8 @@ public class DefaultEntityModel implements EntityModel {
     }
 
     for (final Property.ForeignKeyProperty foreignKeyProperty : EntityRepository.getForeignKeyProperties(entityID, masterEntityID)) {
-      editModel.setValue(foreignKeyProperty.getPropertyID(), selectedMasterEntities != null && selectedMasterEntities.size() > 0 ? selectedMasterEntities.get(0) : null);
+      editModel.setValue(foreignKeyProperty.getPropertyID(), selectedMasterEntities != null
+              && !selectedMasterEntities.isEmpty() ? selectedMasterEntities.get(0) : null);
     }
   }
 
@@ -429,26 +430,28 @@ public class DefaultEntityModel implements EntityModel {
    * @param deletedEntities the deleted entities
    */
   protected void refreshDetailModelsAfterDelete(final List<Entity> deletedEntities) {
-    if (deletedEntities.size() > 0) {
-      for (final EntityModel detailModel : detailModels) {
-        for (final Property.ForeignKeyProperty foreignKeyProperty :
-                EntityRepository.getForeignKeyProperties(detailModel.getEntityID(), entityID)) {
-          final EntityEditModel detailEditModel = detailModel.getEditModel();
-          if (detailEditModel.containsComboBoxModel(foreignKeyProperty)) {
-            final EntityComboBoxModel comboModel = detailEditModel.getEntityComboBoxModel(foreignKeyProperty);
-            final Entity selectedEntity = comboModel.getSelectedEntity();
-            for (final Entity deletedEntity : deletedEntities) {
-              comboModel.removeItem(deletedEntity);
-            }
-            if (comboModel.isVisible(selectedEntity)) {
-              comboModel.setSelectedItem(selectedEntity);
-            }
-            else if (comboModel.getSize() > 0) {
-              comboModel.setSelectedItem(comboModel.getElementAt(0));
-            }
-            else {
-              comboModel.setSelectedItem(null);
-            }
+    if (deletedEntities.isEmpty()) {
+      return;
+    }
+
+    for (final EntityModel detailModel : detailModels) {
+      for (final Property.ForeignKeyProperty foreignKeyProperty :
+              EntityRepository.getForeignKeyProperties(detailModel.getEntityID(), entityID)) {
+        final EntityEditModel detailEditModel = detailModel.getEditModel();
+        if (detailEditModel.containsComboBoxModel(foreignKeyProperty)) {
+          final EntityComboBoxModel comboModel = detailEditModel.getEntityComboBoxModel(foreignKeyProperty);
+          final Entity selectedEntity = comboModel.getSelectedEntity();
+          for (final Entity deletedEntity : deletedEntities) {
+            comboModel.removeItem(deletedEntity);
+          }
+          if (comboModel.isVisible(selectedEntity)) {
+            comboModel.setSelectedItem(selectedEntity);
+          }
+          else if (comboModel.getSize() > 0) {
+            comboModel.setSelectedItem(comboModel.getElementAt(0));
+          }
+          else {
+            comboModel.setSelectedItem(null);
           }
         }
       }
@@ -462,7 +465,7 @@ public class DefaultEntityModel implements EntityModel {
    * @param insertedPrimaryKeys the primary keys of the inserted entities
    */
   protected void refreshDetailModelsAfterInsert(final List<Entity.Key> insertedPrimaryKeys) {
-    if (detailModels.size() == 0) {
+    if (detailModels.isEmpty()) {
       return;
     }
 

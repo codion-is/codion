@@ -10,6 +10,7 @@ import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlSet;
 import org.jminor.framework.Configuration;
+import org.jminor.framework.client.model.DefaultEntityApplicationModel;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.model.PropertySummaryModel;
@@ -35,7 +36,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel {
       @Override
       protected void configureTableModel(final EntityTableModel tableModel) {
         tableModel.setQueryCriteriaRequired(true);
-        tableModel.getPropertySummaryModel(EMPLOYEE_SALARY).setSummaryType(PropertySummaryModel.AVERAGE);
+        tableModel.getPropertySummaryModel(EMPLOYEE_SALARY).setSummaryType(PropertySummaryModel.SummaryType.AVERAGE);
       }
 
       @Override
@@ -78,7 +79,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel {
 
   @Override
   protected EntityApplicationModel initializeApplicationModel(final EntityDbProvider dbProvider) throws CancelException {
-    return new EntityApplicationModel(dbProvider) {
+    return new DefaultEntityApplicationModel(dbProvider) {
       @Override
       protected void loadDomainModel() {
         new EmpDept();

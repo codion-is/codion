@@ -480,7 +480,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    * @return the ControlSet on which the Support Tables menu item is based on
    */
   protected ControlSet getSupportTableControlSet() {
-    if (supportPanelProviders.size() == 0) {
+    if (supportPanelProviders.isEmpty()) {
       return null;
     }
 
@@ -573,7 +573,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
         evtSelectedEntityPanelChanged.fire();
       }
     });
-    if (mainApplicationPanelProviders.size() == 0) {
+    if (mainApplicationPanelProviders.isEmpty()) {
       throw new RuntimeException("No main entity panels provided");
     }
     for (final EntityPanelProvider provider : mainApplicationPanelProviders) {
@@ -876,7 +876,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
           activatePanel(active.getMasterPanel());
           break;
         case EntityPanel.DOWN:
-          if (active.getDetailPanels().size() > 0) {
+          if (!active.getDetailPanels().isEmpty()) {
             if (active.getDetailPanelState() == EntityPanel.HIDDEN) {
               active.setDetailPanelState(EntityPanel.EMBEDDED);
             }
@@ -903,7 +903,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   }
 
   private EntityPanel getActivePanel(final List<EntityPanel> panels) {
-    if (panels.size() == 0) {
+    if (panels.isEmpty()) {
       return null;
     }
 
@@ -955,7 +955,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     for (final EntityPanel entityPanel : panels) {
       final DefaultMutableTreeNode node = new DefaultMutableTreeNode(entityPanel);
       root.add(node);
-      if (entityPanel.getDetailPanels().size() > 0) {
+      if (!entityPanel.getDetailPanels().isEmpty()) {
         addModelsToTree(node, entityPanel.getDetailPanels());
       }
     }

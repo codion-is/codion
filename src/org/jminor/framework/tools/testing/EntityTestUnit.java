@@ -14,6 +14,7 @@ import org.jminor.framework.db.EntityDb;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.db.provider.EntityDbProviderFactory;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.EntityUtil;
@@ -96,7 +97,7 @@ public abstract class EntityTestUnit {
    * @see #setReferenceEntity(String, org.jminor.framework.domain.Entity)
    */
   protected Entity createEntity(final String entityID) {
-    final Entity entity = new Entity(entityID);
+    final Entity entity = Entities.entityInstance(entityID);
     for (final Property.ForeignKeyProperty foreignKeyProperty : EntityRepository.getForeignKeyProperties(entityID)) {
       final Entity referenceEntity = referencedEntities.get(foreignKeyProperty.getReferencedEntityID());
       if (referenceEntity != null) {
@@ -217,7 +218,7 @@ public abstract class EntityTestUnit {
     final Entity tmp = getEntityDb().selectSingle(testEntity.getOriginalPrimaryKey());
     assertEquals("Primary keys of entity and its updated counterpart should be equal",
             testEntity.getPrimaryKey(), tmp.getPrimaryKey());
-    for (final Property property : EntityRepository.getProperties(testEntity.getEntityID()).values()) {
+    for (final Property.ColumnProperty property : EntityRepository.getColumnProperties(testEntity.getEntityID())) {
       if (!property.isReadOnly() && property.isUpdatable()) {
         final Object beforeUpdate = testEntity.getValue(property.getPropertyID());
         final Object afterUpdate = tmp.getValue(property.getPropertyID());
@@ -315,7 +316,7 @@ public abstract class EntityTestUnit {
    */
   private Entity initialize(final Entity entity) throws Exception {
     final List<Entity> entities = getEntityDb().selectMany(Arrays.asList(entity.getPrimaryKey()));
-    if (entities.size() > 0) {
+    if (!entities.isEmpty()) {
       return entities.get(0);
     }
 
@@ -347,7 +348,7 @@ public abstract class EntityTestUnit {
     }
 
     final Collection<Property.ForeignKeyProperty> foreignKeyProperties = EntityRepository.getForeignKeyProperties(root);
-    if (foreignKeyProperties.size() == 0) {
+    if (foreignKeyProperties.isEmpty()) {
       return false;
     }
 

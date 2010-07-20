@@ -16,11 +16,12 @@ import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.db.provider.EntityDbProviderFactory;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.demos.petstore.domain.Petstore;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityDefinition;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.EntityTestDomain;
 import org.jminor.framework.domain.EntityUtil;
+import org.jminor.framework.domain.Properties;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.plugins.jasperreports.model.JasperReportsWrapper;
 
@@ -54,9 +55,9 @@ public class EntityDbConnectionTest {
   static {
     new Petstore();
     new EmpDept();
-    EntityRepository.add(new EntityDefinition(COMBINED_ENTITY_ID,
-            new Property.PrimaryKeyProperty("empno"),
-            new Property("deptno", Types.INTEGER))
+    EntityRepository.add(Entities.define(COMBINED_ENTITY_ID,
+            Properties.primaryKeyProperty("empno"),
+            Properties.columnProperty("deptno", Types.INTEGER))
             .setSelectQuery("select e.empno, d.deptno from scott.emp e, scott.dept d where e.deptno = d.deptno"));
   }
 
@@ -78,7 +79,7 @@ public class EntityDbConnectionTest {
   public void delete() throws Exception {
     try {
       connection.beginTransaction();
-      final Entity.Key key = new Entity.Key(EmpDept.T_DEPARTMENT);
+      final Entity.Key key = Entities.keyInstance(EmpDept.T_DEPARTMENT);
       key.setValue(EmpDept.DEPARTMENT_ID, 40);
       connection.delete(Arrays.asList(key));
       try {
@@ -92,7 +93,7 @@ public class EntityDbConnectionTest {
     }
     try {
       connection.beginTransaction();
-      final Entity.Key key = new Entity.Key(EmpDept.T_DEPARTMENT);
+      final Entity.Key key = Entities.keyInstance(EmpDept.T_DEPARTMENT);
       key.setValue(EmpDept.DEPARTMENT_ID, 40);
       connection.delete(EntityCriteriaUtil.criteria(key));
       try {
@@ -147,12 +148,12 @@ public class EntityDbConnectionTest {
     assertEquals(2, result.size());
     result = connection.selectMany(EntityUtil.getPrimaryKeys(result));
     assertEquals(2, result.size());
-    result = connection.selectMany(EntityCriteriaUtil.selectCriteria(EmpDept.T_DEPARTMENT, new SimpleCriteria<Property>("deptno in (10, 20)")));
+    result = connection.selectMany(EntityCriteriaUtil.selectCriteria(EmpDept.T_DEPARTMENT, new SimpleCriteria<Property.ColumnProperty>("deptno in (10, 20)")));
     assertEquals(2, result.size());
-    result = connection.selectMany(EntityCriteriaUtil.selectCriteria(COMBINED_ENTITY_ID, new SimpleCriteria<Property>("d.deptno = 10")));
+    result = connection.selectMany(EntityCriteriaUtil.selectCriteria(COMBINED_ENTITY_ID, new SimpleCriteria<Property.ColumnProperty>("d.deptno = 10")));
     assertTrue(result.size() > 0);
 
-    final EntitySelectCriteria criteria = EntityCriteriaUtil.selectCriteria(EmpDept.T_EMPLOYEE, new SimpleCriteria<Property>("ename = 'BLAKE'"));
+    final EntitySelectCriteria criteria = EntityCriteriaUtil.selectCriteria(EmpDept.T_EMPLOYEE, new SimpleCriteria<Property.ColumnProperty>("ename = 'BLAKE'"));
     result = connection.selectMany(criteria);
     Entity emp = result.get(0);
     assertTrue(emp.isLoaded(EmpDept.EMPLOYEE_DEPARTMENT_FK));
@@ -183,7 +184,7 @@ public class EntityDbConnectionTest {
 
   @Test(expected = DbException.class)
   public void selectManyInvalidColumn() throws Exception {
-    connection.selectMany(EntityCriteriaUtil.selectCriteria(EmpDept.T_DEPARTMENT, new SimpleCriteria<Property>("no_column is null")));
+    connection.selectMany(EntityCriteriaUtil.selectCriteria(EmpDept.T_DEPARTMENT, new SimpleCriteria<Property.ColumnProperty>("no_column is null")));
   }
 
   @Test
@@ -200,7 +201,7 @@ public class EntityDbConnectionTest {
     assertEquals(sales.getStringValue(EmpDept.DEPARTMENT_NAME), "SALES");
     sales = connection.selectSingle(sales.getPrimaryKey());
     assertEquals(sales.getStringValue(EmpDept.DEPARTMENT_NAME), "SALES");
-    sales = connection.selectSingle(EntityCriteriaUtil.selectCriteria(EmpDept.T_DEPARTMENT, new SimpleCriteria<Property>("dname = 'SALES'")));
+    sales = connection.selectSingle(EntityCriteriaUtil.selectCriteria(EmpDept.T_DEPARTMENT, new SimpleCriteria<Property.ColumnProperty>("dname = 'SALES'")));
     assertEquals(sales.getStringValue(EmpDept.DEPARTMENT_NAME), "SALES");
   }
 

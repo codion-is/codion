@@ -229,7 +229,7 @@ public abstract class LoadTestModel {
   }
 
   public void removeApplications() throws Exception {
-    for (int i = 0; i < applicationBatchSize && applications.size() > 0; i++) {
+    for (int i = 0; i < applicationBatchSize && !applications.isEmpty(); i++) {
       removeApplication();
     }
   }
@@ -262,7 +262,7 @@ public abstract class LoadTestModel {
     paused = false;
     stopped = true;
     synchronized (applications) {
-      while (applications.size() > 0) {
+      while (!applications.isEmpty()) {
         removeApplication();
       }
     }
@@ -468,7 +468,7 @@ public abstract class LoadTestModel {
         if (collectChartData && !paused) {
           updateChartData();
         }
-        if (stopped && applications.size() == 0) {
+        if (stopped && applications.isEmpty()) {
           evtDoneExiting.fire();
         }
       }

@@ -6,6 +6,7 @@ package org.jminor.framework.client.model;
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.model.SortingDirective;
 import org.jminor.framework.db.EntityDbConnectionTest;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.EntityTestDomain;
@@ -35,7 +36,7 @@ public class DefaultEntityTableModelTest {
 
   private static Entity[] initTestEntities(final Entity[] testEntities) {
     for (int i = 0; i < testEntities.length; i++) {
-      testEntities[i] = new Entity(EntityTestDomain.T_DETAIL);
+      testEntities[i] = Entities.entityInstance(EntityTestDomain.T_DETAIL);
       testEntities[i].setValue(EntityTestDomain.DETAIL_ID, i+1);
       testEntities[i].setValue(EntityTestDomain.DETAIL_STRING, new String[]{"a", "b", "c", "d", "e"}[i]);
     }
@@ -76,15 +77,15 @@ public class DefaultEntityTableModelTest {
     assertTrue(values.contains("d"));
     assertTrue(values.contains("e"));
 
-    Entity tmpEnt = new Entity(EntityTestDomain.T_DETAIL);
+    Entity tmpEnt = Entities.entityInstance(EntityTestDomain.T_DETAIL);
     tmpEnt.setValue(EntityTestDomain.DETAIL_ID, 3);
     assertEquals("c", testModel.getEntityByPrimaryKey(tmpEnt.getPrimaryKey()).getValue(EntityTestDomain.DETAIL_STRING));
     final List<Entity.Key> keys = new ArrayList<Entity.Key>();
     keys.add(tmpEnt.getPrimaryKey());
-    tmpEnt = new Entity(EntityTestDomain.T_DETAIL);
+    tmpEnt = Entities.entityInstance(EntityTestDomain.T_DETAIL);
     tmpEnt.setValue(EntityTestDomain.DETAIL_ID, 2);
     keys.add(tmpEnt.getPrimaryKey());
-    tmpEnt = new Entity(EntityTestDomain.T_DETAIL);
+    tmpEnt = Entities.entityInstance(EntityTestDomain.T_DETAIL);
     tmpEnt.setValue(EntityTestDomain.DETAIL_ID, 1);
     keys.add(tmpEnt.getPrimaryKey());
 

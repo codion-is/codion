@@ -3,198 +3,99 @@
  */
 package org.jminor.framework.client.model;
 
-import org.jminor.common.model.AbstractSearchModel;
-import org.jminor.common.model.DateUtil;
-import org.jminor.common.model.SearchType;
-import org.jminor.framework.Configuration;
-import org.jminor.framework.domain.Entity;
+import org.jminor.common.model.SearchModel;
 import org.jminor.framework.domain.Property;
 
 import java.sql.Timestamp;
-import java.util.Locale;
-import java.util.regex.Pattern;
+import java.util.Date;
 
 /**
  * A class for filtering a set of entities based on a property.
  */
 @SuppressWarnings({"unchecked"})
-public class PropertyFilterModel extends AbstractSearchModel<Property> {
+public interface PropertyFilterModel extends SearchModel<Property> {
 
-  public PropertyFilterModel(final Property property) {
-    super(property, property.getType(), (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER));
-  }
+  /**
+   * @param value the upper bound
+   */
+  void setUpperBound(final String value);
 
-  @Override
-  public boolean include(final Object object) {
-    return include(getComparable(object));
-  }
+  /**
+   * @param value the upper bound
+   */
+  void setUpperBound(final Double value);
 
-  public boolean include(final Comparable comparable) {
-    if (!isSearchEnabled()) {
-      return true;
-    }
+  /**
+   * @param value the upper bound
+   */
+  void setUpperBound(final Integer value);
 
-    Comparable toCompare = comparable;
-    if (comparable instanceof Timestamp) {//ignore seconds and milliseconds
-      toCompare = DateUtil.floorTimestamp((Timestamp) toCompare);
-    }
+  /**
+   * @param value the upper bound
+   */
+  void setUpperBound(final boolean value);
 
-    switch (getSearchType()) {
-      case LIKE:
-        return includeLike(toCompare);
-      case NOT_LIKE:
-        return includeNotLike(toCompare);
-      case AT_LEAST:
-        return includeMax(toCompare);
-      case AT_MOST:
-        return includeMin(toCompare);
-      case WITHIN_RANGE:
-        return includeMinMaxInside(toCompare);
-      case OUTSIDE_RANGE:
-        return includeMinMaxOutside(toCompare);
-    }
+  /**
+   * @param value the upper bound
+   */
+  void setUpperBound(final char value);
 
-    throw new RuntimeException("Undefined search type: " + getSearchType());
-  }
+  /**
+   * @param value the upper bound
+   */
+  void setUpperBound(final Boolean value);
 
-  public void setLikeValue(final Comparable value) {
-    setSearchType(SearchType.LIKE);
-    setUpperBound(value);
-    final boolean on = value != null;
-    if (isSearchEnabled() != on) {
-      setSearchEnabled(on);
-    }
-    else {
-      eventUpperBoundChanged().fire();
-    }
-  }
+  /**
+   * @param value the upper bound
+   */
+  void setUpperBound(final Timestamp value);
 
-  protected boolean includeLike(final Comparable comparable) {
-    if (getUpperBound() == null) {
-      return true;
-    }
+  /**
+   * @param value the upper bound
+   */
+  void setUpperBound(final Date value);
 
-    if (comparable == null) {
-      return false;
-    }
+  /**
+   * @param value the Lower bound
+   */
+  void setLowerBound(final String value);
 
-    if (comparable instanceof String) {//for Entity and String values
-      return includeExactWildcard((String) comparable);
-    }
+  /**
+   * @param value the Lower bound
+   */
+  void setLowerBound(final Double value);
 
-    return comparable.compareTo(getUpperBound()) == 0;
-  }
+  /**
+   * @param value the Lower bound
+   */
+  void setLowerBound(final Integer value);
 
-  protected boolean includeNotLike(final Comparable comparable) {
-    if (getUpperBound() == null) {
-      return true;
-    }
+  /**
+   * @param value the Lower bound
+   */
+  void setLowerBound(final boolean value);
 
-    if (comparable == null) {
-      return false;
-    }
+  /**
+   * @param value the Lower bound
+   */
+  void setLowerBound(final char value);
 
-    final Property property = getSearchKey();
-    if (property.isString() || property.isReference()) {
-      return !includeExactWildcard((String) comparable);
-    }
+  /**
+   * @param value the Lower bound
+   */
+  void setLowerBound(final Boolean value);
 
-    return comparable.compareTo(getUpperBound()) != 0;
-  }
+  /**
+   * @param value the Lower bound
+   */
+  void setLowerBound(final Timestamp value);
 
-  protected boolean includeExactWildcard(final String value) {
-    String upperBound = (String) getUpperBound();
-    if (upperBound.equals(getWildcard())) {
-      return true;
-    }
-    if (value == null) {
-      return false;
-    }
+  /**
+   * @param value the Lower bound
+   */
+  void setLowerBound(final Date value);
 
-    String realValue = value;
-    if (!isCaseSensitive()) {
-      upperBound = upperBound.toUpperCase(Locale.getDefault());
-      realValue = realValue.toUpperCase(Locale.getDefault());
-    }
+  boolean include(final Comparable comparable);
 
-    if (upperBound.indexOf(getWildcard()) < 0) {
-      return realValue.compareTo(upperBound) == 0;
-    }
-
-    return Pattern.matches(prepareForRegex(upperBound), realValue);
-  }
-
-  protected String prepareForRegex(final String string) {
-    //a somewhat dirty fix to get rid of the '$' sign from the pattern, since it interferes with the regular expression parsing
-    return string.replaceAll(getWildcard(), ".*").replaceAll("\\$", ".").replaceAll("\\]", "\\\\]").replaceAll("\\[", "\\\\[");
-  }
-
-  protected boolean includeMax(final Comparable comparable) {
-    return getUpperBound() == null || comparable != null && comparable.compareTo(getUpperBound()) <= 0;
-  }
-
-  protected boolean includeMin(final Comparable comparable) {
-    return getUpperBound() == null || comparable != null && comparable.compareTo(getUpperBound()) >= 0;
-  }
-
-  protected boolean includeMinMaxInside(final Comparable comparable) {
-    if (getLowerBound() == null && getUpperBound() == null) {
-      return true;
-    }
-
-    if (comparable == null) {
-      return false;
-    }
-
-    if (getLowerBound() == null) {
-      return comparable.compareTo(getUpperBound()) <= 0;
-    }
-
-    if (getUpperBound() == null) {
-      return comparable.compareTo(getLowerBound()) >= 0;
-    }
-
-    final int lowerCompareResult = comparable.compareTo(getLowerBound());
-    final int upperCompareResult = comparable.compareTo(getUpperBound());
-
-    return lowerCompareResult >= 0 && upperCompareResult <= 0;
-  }
-
-  protected boolean includeMinMaxOutside(final Comparable comparable) {
-    if (getLowerBound() == null && getUpperBound() == null) {
-      return true;
-    }
-
-    if (comparable == null) {
-      return false;
-    }
-
-    if (getLowerBound() == null) {
-      return comparable.compareTo(getUpperBound()) >= 0;
-    }
-
-    if (getUpperBound() == null) {
-      return comparable.compareTo(getLowerBound()) <= 0;
-    }
-
-    final int lowerCompareResult = comparable.compareTo(getLowerBound());
-    final int upperCompareResult = comparable.compareTo(getUpperBound());
-
-    return lowerCompareResult <= 0 || upperCompareResult >= 0;
-  }
-
-  protected Comparable getComparable(final Object object) {
-    final Entity entity = (Entity) object;
-    if (entity.isValueNull(getSearchKey().getPropertyID())) {
-      return null;
-    }
-
-    final Object value = entity.getValue(getSearchKey().getPropertyID());
-    if (getSearchKey().isReference()) {
-      return value.toString();
-    }
-    else {
-      return (Comparable) value;
-    }
-  }
+  void setLikeValue(final Comparable value);
 }

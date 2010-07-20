@@ -49,7 +49,7 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity>, Enti
    * @param staticData the value
    * @return this EntityComboBoxModel instance
    */
-  public EntityComboBoxModel setStaticData(final boolean staticData);
+  EntityComboBoxModel setStaticData(final boolean staticData);
 
   /**
    * @return true if the data for this model should only be fetched once

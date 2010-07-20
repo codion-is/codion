@@ -272,7 +272,7 @@ public class EntityPanel extends JPanel {
    * @return this EntityPanel instance
    */
   public EntityPanel setCompactDetailLayout(final boolean compactDetailLayout) {
-    if (detailEntityPanels.size() == 0) {
+    if (detailEntityPanels.isEmpty()) {
       throw new RuntimeException("This panel contains no detail panels, compact detail layout not available");
     }
     this.compactDetailLayout = compactDetailLayout;
@@ -379,10 +379,8 @@ public class EntityPanel extends JPanel {
     if (panelInitialized) {
       throw new RuntimeException("Can not set table panel after initialization");
     }
-    if (model.containsTableModel() && tablePanel != null) {
-      if (model.getTableModel() != tablePanel.getTableModel()) {
-        throw new RuntimeException("The table model must match the table panel model");
-      }
+    if (model.containsTableModel() && tablePanel != null && model.getTableModel() != tablePanel.getTableModel()) {
+      throw new RuntimeException("The table model must match the table panel model");
     }
     this.tablePanel = tablePanel;
   }
@@ -480,7 +478,7 @@ public class EntityPanel extends JPanel {
    */
   public ControlSet getTablePopupControlSet() {
     final ControlSet controlSet = new ControlSet("");
-    if (detailEntityPanels.size() > 0) {
+    if (!detailEntityPanels.isEmpty()) {
       controlSet.add(getDetailPanelControls(EMBEDDED));
     }
 
@@ -619,7 +617,7 @@ public class EntityPanel extends JPanel {
     }
 
     if (state == EMBEDDED) {
-      if (compactDetailLayout && detailEntityPanels.size() > 0) {
+      if (compactDetailLayout && !detailEntityPanels.isEmpty()) {
         compactBase.add(editControlPanel, BorderLayout.NORTH);
       }
       else {
@@ -779,8 +777,8 @@ public class EntityPanel extends JPanel {
       }
       entityTablePanel.setMinimumSize(new Dimension(0,0));
     }
-    horizontalSplitPane = detailEntityPanels.size() > 0 ? initializeHorizontalSplitPane() : null;
-    detailPanelTabbedPane = detailEntityPanels.size() > 0 ? initializeDetailTabPane() : null;
+    horizontalSplitPane = !detailEntityPanels.isEmpty() ? initializeHorizontalSplitPane() : null;
+    detailPanelTabbedPane = !detailEntityPanels.isEmpty() ? initializeDetailTabPane() : null;
 
     setLayout(new BorderLayout(5,5));
     if (detailPanelTabbedPane == null) { //no left right split pane
@@ -910,6 +908,7 @@ public class EntityPanel extends JPanel {
     return panel;
   }
 
+  @SuppressWarnings({"UnusedDeclaration"})
   protected EntityEditPanel initializeEditPanel(final EntityEditModel editModel) {
     return null;
   }
@@ -989,7 +988,7 @@ public class EntityPanel extends JPanel {
     if (getEditPanel() != null) {
       controlSet.add(getToggleEditPanelControl());
     }
-    if (detailEntityPanels.size() > 0) {
+    if (!detailEntityPanels.isEmpty()) {
       controlSet.add(getToggleDetailPanelControl());
     }
 
@@ -1005,7 +1004,7 @@ public class EntityPanel extends JPanel {
   protected Action initializeTableDoubleClickAction() {
     return new AbstractAction() {
       public void actionPerformed(final ActionEvent e) {
-        if (editControlPanel != null || detailEntityPanels.size() > 0) {
+        if (editControlPanel != null || !detailEntityPanels.isEmpty()) {
           if (editControlPanel != null && getEditPanelState() == HIDDEN) {
             setEditPanelState(DIALOG);
           }
@@ -1023,7 +1022,7 @@ public class EntityPanel extends JPanel {
    * @return a ControlSet for controlling the state of the detail panels
    */
   protected ControlSet getDetailPanelControls(final int status) {
-    if (detailEntityPanels.size() == 0) {
+    if (detailEntityPanels.isEmpty()) {
       return null;
     }
 

@@ -5,16 +5,17 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.criteria.CriteriaSet;
-import org.jminor.common.model.FilterCriteria;
-import org.jminor.common.model.State;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.FilterCriteria;
+import org.jminor.common.model.Refreshable;
+import org.jminor.common.model.State;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
 import java.util.Collection;
 import java.util.List;
 
-public interface EntityTableSearchModel extends FilterCriteria<Entity> {
+public interface EntityTableSearchModel extends FilterCriteria<Entity>, Refreshable {
 
   /**
    * @return a State activated each time the search state differs from the state at last reset
@@ -35,7 +36,7 @@ public interface EntityTableSearchModel extends FilterCriteria<Entity> {
   /**
    * @return the properties that are searchable via this searcher
    */
-  List<Property> getProperties();
+  List<Property.SearchableProperty> getSearchableProperties();
 
   /**
    * Sets the search criteria values of the search model associated with the property identified by <code>propertyID</code>
@@ -48,7 +49,7 @@ public interface EntityTableSearchModel extends FilterCriteria<Entity> {
   /**
    * @return the current criteria based on the state of the search models
    */
-  Criteria<Property> getSearchCriteria();
+  Criteria<Property.ColumnProperty> getSearchCriteria();
 
   /**
    * @param propertyID the column propertyID
@@ -120,18 +121,8 @@ public interface EntityTableSearchModel extends FilterCriteria<Entity> {
   PropertyFilterModel getPropertyFilterModel(final String propertyID);
 
   /**
-   * Refreshes all combo box models associated with PropertySearchModels
-   */
-  void refreshSearchComboBoxModels();
-
-  /**
    * @param propertyID column propertyID
    * @return true if the PropertyFilterModel behind column with index <code>columnIndex</code> is enabled
    */
   boolean isFilterEnabled(final String propertyID);
-
-  /**
-   * Clears the contents from all combo box models associated with PropertySearchModels
-   */
-  void clearSearchComboBoxModels();
 }

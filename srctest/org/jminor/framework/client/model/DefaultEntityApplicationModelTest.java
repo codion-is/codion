@@ -10,11 +10,11 @@ import org.jminor.framework.demos.empdept.domain.EmpDept;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-public class EntityApplicationModelTest {
+public class DefaultEntityApplicationModelTest {
 
   @Test
   public void test() {
-    final EntityApplicationModel model = new EntityApplicationModel(EntityDbConnectionTest.DB_PROVIDER) {
+    final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(EntityDbConnectionTest.DB_PROVIDER) {
       @Override
       protected void loadDomainModel() {
         new EmpDept();

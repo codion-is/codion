@@ -189,7 +189,7 @@ public interface FilteredTableModel<T> extends FilteredModel<T>, TableModel, Ref
    * @see #isRegularExpressionSearch()
    * @see FilterCriteria#include(Object)
    */
-  public Point findNextItemCoordinate(final int fromIndex, final boolean forward, final String searchText);
+  Point findNextItemCoordinate(final int fromIndex, final boolean forward, final String searchText);
 
   /**
    * Returns a Point denoting the row (point.y) and column index (point.x) of the first value to fulfill
@@ -201,7 +201,7 @@ public interface FilteredTableModel<T> extends FilteredModel<T>, TableModel, Ref
    * @return the search result coordinate, null if nothing was found
    * @see FilterCriteria#include(Object)
    */
-  public Point findNextItemCoordinate(final int fromIndex, final boolean forward, final FilterCriteria<Object> criteria);
+  Point findNextItemCoordinate(final int fromIndex, final boolean forward, final FilterCriteria<Object> criteria);
 
   /**
    * @return true if regular expressions should be used when searching this table model
@@ -288,19 +288,19 @@ public interface FilteredTableModel<T> extends FilteredModel<T>, TableModel, Ref
   /**
    * @return the number of selected indexes in the underlying selection model.
    */
-  public int getSelectionCount();
+  int getSelectionCount();
 
   /**
    * Moves all selected indexes down one index, wraps around
    * @see #eventSelectionChanged()
    */
-  public void moveSelectionDown();
+  void moveSelectionDown();
 
   /**
    * Moves all selected indexes up one index, wraps around
    * @see #eventSelectionChanged()
    */
-  public void moveSelectionUp();
+  void moveSelectionUp();
 
   /**
    * @return the selection model used by this table model

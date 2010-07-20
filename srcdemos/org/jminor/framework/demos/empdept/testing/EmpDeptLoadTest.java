@@ -6,6 +6,7 @@ package org.jminor.framework.demos.empdept.testing;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.User;
 import org.jminor.common.ui.LoadTestPanel;
+import org.jminor.framework.client.model.DefaultEntityApplicationModel;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.db.provider.EntityDbProviderFactory;
@@ -115,7 +116,8 @@ public class EmpDeptLoadTest extends EntityLoadTestModel {
 
   @Override
   protected EntityApplicationModel initializeApplication() throws CancelException {
-    final EntityApplicationModel applicationModel = new EntityApplicationModel(EntityDbProviderFactory.createEntityDbProvider(getUser(), EmpDeptLoadTest.class.getSimpleName())) {
+    final EntityApplicationModel applicationModel = new DefaultEntityApplicationModel(
+            EntityDbProviderFactory.createEntityDbProvider(getUser(), EmpDeptLoadTest.class.getSimpleName())) {
       @Override
       protected void loadDomainModel() {
         new EmpDept();

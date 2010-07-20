@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.db;
+package org.jminor.common.db.pool;
 
 import org.jminor.common.model.User;
 
@@ -13,7 +13,7 @@ import java.sql.SQLException;
  * Date: 28.3.2010<br>
  * Time: 13:19:41<br>
  */
-public interface DbConnectionProvider {
+public interface PoolableConnectionProvider {
 
   /**
    * Creates a new DbConnection instance based on the given user.
@@ -22,11 +22,11 @@ public interface DbConnectionProvider {
    * @throws ClassNotFoundException in case the JDBC driver class was not found
    * @throws SQLException in case of a database exception
    */
-  DbConnection createConnection(final User user) throws ClassNotFoundException, SQLException;
+  PoolableConnection createConnection(final User user) throws ClassNotFoundException, SQLException;
 
   /**
    * Disconnects the given connection and disposes of any resources it holds.
    * @param connection the connection to destroy
    */
-  void destroyConnection(final DbConnection connection);
+  void destroyConnection(final PoolableConnection connection);
 }

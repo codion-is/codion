@@ -8,7 +8,7 @@ import org.jminor.common.db.criteria.CriteriaSet;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.formats.DateFormats;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
-import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.Properties;
 import org.jminor.framework.domain.Property;
 
 import static org.junit.Assert.assertEquals;
@@ -25,30 +25,13 @@ public class PropertyCriteriaTest {
   }
 
   @Test
-  public void conditionEntity() {
-    final Property property = new Property.ForeignKeyProperty("colName", "entity", EmpDept.T_DEPARTMENT,
-            new Property("entityId", Types.INTEGER));
-    Criteria<Property> testCrit = EntityCriteriaUtil.propertyCriteria(property, SearchType.LIKE, new Object[] {null});
-    assertEquals("Condition should fit", "entityId is null", testCrit.asString());
-
-    final Entity dept = new Entity(EmpDept.T_DEPARTMENT);
-    dept.setValue(EmpDept.DEPARTMENT_ID, 42);
-
-    testCrit = EntityCriteriaUtil.propertyCriteria(property, SearchType.LIKE, dept);
-    assertEquals("Condition should fit", "entityId = ?", testCrit.asString());
-
-    testCrit = EntityCriteriaUtil.propertyCriteria(property, SearchType.NOT_LIKE, dept);
-    assertEquals("Condition should fit", "entityId <> ?", testCrit.asString());
-  }
-
-  @Test
   public void conditionString() {
     //string, is null
-    final Property property = new Property("colName", Types.VARCHAR);
-    Criteria<Property> testCrit = EntityCriteriaUtil.propertyCriteria(property, SearchType.LIKE, new Object[] {null});
+    final Property.ColumnProperty property = Properties.columnProperty("colName", Types.VARCHAR);
+    Criteria<Property.ColumnProperty> testCrit = EntityCriteriaUtil.propertyCriteria(property, SearchType.LIKE, new Object[] {null});
     assertEquals("Condition should fit", "colName is null", testCrit.asString());
 
-    testCrit = EntityCriteriaUtil.propertyCriteria(property, SearchType.LIKE, null);
+    testCrit = EntityCriteriaUtil.propertyCriteria(property, SearchType.LIKE, (Object) null);
     assertEquals("Condition should fit", "colName is null", testCrit.asString());
 
     //string, =
@@ -98,7 +81,7 @@ public class PropertyCriteriaTest {
     testCrit = EntityCriteriaUtil.propertyCriteria(property, false, SearchType.LIKE, new Object[] {null});
     assertEquals("Condition should fit", "colName is null", testCrit.asString());
 
-    testCrit = EntityCriteriaUtil.propertyCriteria(property, false, SearchType.LIKE, null);
+    testCrit = EntityCriteriaUtil.propertyCriteria(property, false, SearchType.LIKE, (Object) null);
     assertEquals("Condition should fit", "colName is null", testCrit.asString());
 
     //string, =
@@ -144,8 +127,8 @@ public class PropertyCriteriaTest {
   @Test
   public void conditionInt() {
     //int, =
-    final Property property = new Property("colName", Types.INTEGER);
-    Criteria<Property> testCrit = EntityCriteriaUtil.propertyCriteria(property, SearchType.LIKE, new Object[] {null});
+    final Property.ColumnProperty property = Properties.columnProperty("colName", Types.INTEGER);
+    Criteria<Property.ColumnProperty> testCrit = EntityCriteriaUtil.propertyCriteria(property, SearchType.LIKE, new Object[] {null});
     assertEquals("Condition should fit", "colName is null", testCrit.asString());
 
     //int, =
@@ -172,8 +155,8 @@ public class PropertyCriteriaTest {
   @Test
   public void conditionDouble() {
     //int, =
-    final Property property = new Property("colName", Types.DOUBLE);
-    Criteria<Property> testCrit = EntityCriteriaUtil.propertyCriteria(property, SearchType.LIKE, new Object[] {null});
+    final Property.ColumnProperty property = Properties.columnProperty("colName", Types.DOUBLE);
+    Criteria<Property.ColumnProperty> testCrit = EntityCriteriaUtil.propertyCriteria(property, SearchType.LIKE, new Object[] {null});
     assertEquals("Condition should fit", "colName is null", testCrit.asString());
 
     //int, =
@@ -199,8 +182,8 @@ public class PropertyCriteriaTest {
 
   @Test
   public void conditionChar() {
-    final Property property = new Property("colName", Types.CHAR);
-    Criteria<Property> testCrit = EntityCriteriaUtil.propertyCriteria(property, SearchType.LIKE, new Object[] {null});
+    final Property.ColumnProperty property = Properties.columnProperty("colName", Types.CHAR);
+    Criteria<Property.ColumnProperty> testCrit = EntityCriteriaUtil.propertyCriteria(property, SearchType.LIKE, new Object[] {null});
     assertEquals("Condition should fit", "colName is null", testCrit.asString());
 
     //int, =
@@ -227,8 +210,8 @@ public class PropertyCriteriaTest {
   @Test
   public void conditionBoolean() {
     //string, =
-    final Property property = new Property("colName", Types.BOOLEAN);
-    Criteria<Property> testCrit = EntityCriteriaUtil.propertyCriteria(property, SearchType.LIKE, new Object[] {null});
+    final Property.ColumnProperty property = Properties.columnProperty("colName", Types.BOOLEAN);
+    Criteria<Property.ColumnProperty> testCrit = EntityCriteriaUtil.propertyCriteria(property, SearchType.LIKE, new Object[] {null});
     assertEquals("Condition should fit", "colName is null", testCrit.asString());
 
     //string, =
@@ -245,8 +228,8 @@ public class PropertyCriteriaTest {
     final DateFormat dateFormat = DateFormats.getDateFormat(DateFormats.SHORT_DASH);
 
     //string, =
-    final Property property = new Property("colName", Types.DATE);
-    Criteria<Property> testCrit = EntityCriteriaUtil.propertyCriteria(property, SearchType.LIKE, new Object[] {null});
+    final Property.ColumnProperty property = Properties.columnProperty("colName", Types.DATE);
+    Criteria<Property.ColumnProperty> testCrit = EntityCriteriaUtil.propertyCriteria(property, SearchType.LIKE, new Object[] {null});
     assertEquals("Condition should fit", "colName is null", testCrit.asString());
 
     testCrit = EntityCriteriaUtil.propertyCriteria(property, SearchType.LIKE, (Object[]) null);
@@ -283,22 +266,22 @@ public class PropertyCriteriaTest {
 
   @Test
   public void conditionSet() {
-    final Property property1 = new Property("colName1", Types.VARCHAR);
-    final Property property2 = new Property("colName2", Types.INTEGER);
-    final Criteria<Property> criteria1 = EntityCriteriaUtil.propertyCriteria(property1, SearchType.LIKE, "value");
-    final Criteria<Property> criteria2 = EntityCriteriaUtil.propertyCriteria(property2, SearchType.AT_LEAST, 10);
-    final CriteriaSet set = new CriteriaSet<Property>(CriteriaSet.Conjunction.OR, criteria1, criteria2);
+    final Property.ColumnProperty property1 = Properties.columnProperty("colName1", Types.VARCHAR);
+    final Property.ColumnProperty property2 = Properties.columnProperty("colName2", Types.INTEGER);
+    final Criteria<Property.ColumnProperty> criteria1 = EntityCriteriaUtil.propertyCriteria(property1, SearchType.LIKE, "value");
+    final Criteria<Property.ColumnProperty> criteria2 = EntityCriteriaUtil.propertyCriteria(property2, SearchType.AT_LEAST, 10);
+    final CriteriaSet set = new CriteriaSet<Property.ColumnProperty>(CriteriaSet.Conjunction.OR, criteria1, criteria2);
     assertEquals("Set condition should fit", "(colName1 like ? or colName2 <= ?)", set.asString());
 
-    final Property property3 = new Property("colName3", Types.DOUBLE);
-    final Criteria<Property> criteria3 = EntityCriteriaUtil.propertyCriteria(property3, SearchType.NOT_LIKE, 34.5);
-    final CriteriaSet set2 = new CriteriaSet<Property>(CriteriaSet.Conjunction.AND, set, criteria3);
+    final Property.ColumnProperty property3 = Properties.columnProperty("colName3", Types.DOUBLE);
+    final Criteria<Property.ColumnProperty> criteria3 = EntityCriteriaUtil.propertyCriteria(property3, SearchType.NOT_LIKE, 34.5);
+    final CriteriaSet set2 = new CriteriaSet<Property.ColumnProperty>(CriteriaSet.Conjunction.AND, set, criteria3);
     assertEquals("Set condition should fit", "((colName1 like ? or colName2 <= ?) and colName3 <> ?)",
             set2.asString());
 
-    final Property property4 = new Property("colName4", Types.CHAR);
-    final Criteria<Property> criteria4 = EntityCriteriaUtil.propertyCriteria(property4, SearchType.LIKE, 'a', 'b', 'c');
-    final CriteriaSet set3 = new CriteriaSet<Property>(CriteriaSet.Conjunction.OR, set2, criteria4);
+    final Property.ColumnProperty property4 = Properties.columnProperty("colName4", Types.CHAR);
+    final Criteria<Property.ColumnProperty> criteria4 = EntityCriteriaUtil.propertyCriteria(property4, SearchType.LIKE, 'a', 'b', 'c');
+    final CriteriaSet set3 = new CriteriaSet<Property.ColumnProperty>(CriteriaSet.Conjunction.OR, set2, criteria4);
     assertEquals("Set condition should fit", "(((colName1 like ? or colName2 <= ?) and colName3 <> ?)"
             + " or (colName4 in (?, ?, ?)))", set3.asString());
   }

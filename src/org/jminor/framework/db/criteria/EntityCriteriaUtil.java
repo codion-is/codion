@@ -40,40 +40,47 @@ public final class EntityCriteriaUtil {
 
   public static EntitySelectCriteria selectCriteria(final String entityID, final String propertyID,
                                                     final SearchType searchType, final Object... values) {
-    return new DefaultEntitySelectCriteria(entityID, new PropertyCriteria(EntityRepository.getProperty(entityID, propertyID),
-            searchType, values));
+    return selectCriteria(entityID, propertyID, searchType, -1, values);
   }
 
   public static EntitySelectCriteria selectCriteria(final String entityID, final String propertyID,
                                                     final SearchType searchType, final int fetchCount,
                                                     final Object... values) {
-    return new DefaultEntitySelectCriteria(entityID, new PropertyCriteria(EntityRepository.getProperty(entityID, propertyID),
-            searchType, values), fetchCount);
+    return selectCriteria(entityID, propertyID, searchType, null, fetchCount, values);
   }
 
   public static EntitySelectCriteria selectCriteria(final String entityID, final String propertyID,
                                                     final SearchType searchType, final String orderByClause,
                                                     final int fetchCount, final Object... values) {
-    return new DefaultEntitySelectCriteria(entityID, new PropertyCriteria(EntityRepository.getProperty(entityID, propertyID),
-            searchType, values), orderByClause, fetchCount);
+
+    final Property property = EntityRepository.getProperty(entityID, propertyID);
+    Criteria<Property.ColumnProperty> criteria;
+    if (property instanceof Property.ForeignKeyProperty) {
+      criteria = new ForeignKeyCriteria((Property.ForeignKeyProperty) property, searchType, values);
+    }
+    else {
+      criteria = new PropertyCriteria((Property.ColumnProperty) property, searchType, values);
+    }
+
+    return new DefaultEntitySelectCriteria(entityID, criteria, orderByClause, fetchCount);
   }
 
   public static EntitySelectCriteria selectCriteria(final String entityID, final String orderByClause) {
     return new DefaultEntitySelectCriteria(entityID, null, orderByClause);
   }
 
-  public static EntitySelectCriteria selectCriteria(final String entityID, final List<Property> foreignKeyProperties,
+  public static EntitySelectCriteria selectCriteria(final String entityID, final List<Property.ColumnProperty> foreignKeyProperties,
                                                     final List<Entity.Key> primaryKeys) {
     final EntityKeyCriteria entityKeyCriteria = new EntityKeyCriteria(foreignKeyProperties, primaryKeys);
     return new DefaultEntitySelectCriteria(entityID, entityKeyCriteria);
   }
 
-  public static EntitySelectCriteria selectCriteria(final String entityID, final Criteria<Property> criteria,
+  public static EntitySelectCriteria selectCriteria(final String entityID, final Criteria<Property.ColumnProperty> criteria,
                                                     final String orderByClause) {
     return selectCriteria(entityID, criteria, orderByClause, -1);
   }
 
-  public static EntitySelectCriteria selectCriteria(final String entityID, final Criteria<Property> criteria,
+  public static EntitySelectCriteria selectCriteria(final String entityID, final Criteria<Property.ColumnProperty> criteria,
                                                     final String orderByClause, final int fetchCount) {
     return new DefaultEntitySelectCriteria(entityID, criteria, orderByClause, fetchCount);
   }
@@ -86,7 +93,7 @@ public final class EntityCriteriaUtil {
     return new DefaultEntitySelectCriteria(entityID, null, fetchCount);
   }
 
-  public static EntitySelectCriteria selectCriteria(final String entityID, final Criteria<Property> propertyCriteria) {
+  public static EntitySelectCriteria selectCriteria(final String entityID, final Criteria<Property.ColumnProperty> propertyCriteria) {
     return new DefaultEntitySelectCriteria(entityID, propertyCriteria);
   }
 
@@ -105,31 +112,38 @@ public final class EntityCriteriaUtil {
 
   public static EntityCriteria criteria(final String entityID, final String propertyID,
                                         final SearchType searchType, final Object... values) {
-    return new DefaultEntityCriteria(entityID, new PropertyCriteria(EntityRepository.getProperty(entityID, propertyID),
+    return new DefaultEntityCriteria(entityID, new PropertyCriteria((Property.ColumnProperty) EntityRepository.getProperty(entityID, propertyID),
             searchType, values));
   }
 
-  public static Criteria<Property> propertyCriteria(final String entityID, final String propertyID, final SearchType searchType,
-                                                    final Object... values) {
+  public static Criteria<Property.ColumnProperty> propertyCriteria(final String entityID, final String propertyID, final SearchType searchType,
+                                                                   final Object... values) {
     return propertyCriteria(entityID, propertyID, true, searchType, values);
   }
 
-  public static Criteria<Property> propertyCriteria(final String entityID, final String propertyID, final boolean caseSensitive,
-                                                    final SearchType searchType, final Object... values) {
-    return propertyCriteria(EntityRepository.getProperty(entityID, propertyID), caseSensitive, searchType, values);
+  public static Criteria<Property.ColumnProperty> propertyCriteria(final String entityID, final String propertyID, final boolean caseSensitive,
+                                                                   final SearchType searchType, final Object... values) {
+    return propertyCriteria((Property.ColumnProperty) EntityRepository.getProperty(entityID, propertyID), caseSensitive, searchType, values);
   }
 
-  public static Criteria<Property> propertyCriteria(final Property property, final SearchType searchType,
-                                                    final Object... values) {
+  public static Criteria<Property.ColumnProperty> propertyCriteria(final Property.ColumnProperty property,
+                                                                   final SearchType searchType,
+                                                                   final Object... values) {
     return propertyCriteria(property, true, searchType, values);
   }
 
-  public static Criteria<Property> propertyCriteria(final Property property, final boolean caseSensitive, final SearchType searchType,
-                                                    final Object... values) {
+  public static Criteria<Property.ColumnProperty> propertyCriteria(final Property.ColumnProperty property,
+                                                                   final boolean caseSensitive, final SearchType searchType,
+                                                                   final Object... values) {
     return new PropertyCriteria(property, searchType, values).setCaseSensitive(caseSensitive);
   }
 
-  public static EntityCriteria criteria(final String entityID, final Criteria<Property> criteria) {
+  public static Criteria<Property.ColumnProperty> foreignKeyCriteria(final Property.ForeignKeyProperty foreignKeyProperty,
+                                                                     final SearchType searchType, final Object... values) {
+    return new ForeignKeyCriteria(foreignKeyProperty, searchType, values);
+  }
+
+  public static EntityCriteria criteria(final String entityID, final Criteria<Property.ColumnProperty> criteria) {
     return new DefaultEntityCriteria(entityID, criteria);
   }
 
@@ -138,7 +152,7 @@ public final class EntityCriteriaUtil {
     private static final long serialVersionUID = 1;
 
     private final String entityID;
-    private final Criteria<Property> criteria;
+    private final Criteria<Property.ColumnProperty> criteria;
 
     /**
      * Instantiates a new empty EntityCriteria.
@@ -157,7 +171,7 @@ public final class EntityCriteriaUtil {
      * @see PropertyCriteria
      * @see EntityKeyCriteria
      */
-    DefaultEntityCriteria(final String entityID, final Criteria<Property> criteria) {
+    DefaultEntityCriteria(final String entityID, final Criteria<Property.ColumnProperty> criteria) {
       Util.rejectNullValue(entityID, "entityID");
       this.entityID = entityID;
       this.criteria = criteria;
@@ -167,7 +181,7 @@ public final class EntityCriteriaUtil {
       return criteria == null ? null : criteria.getValues();
     }
 
-    public List<Property> getValueProperties() {
+    public List<Property.ColumnProperty> getValueProperties() {
       return criteria == null ? null : criteria.getValueKeys();
     }
 
@@ -175,7 +189,7 @@ public final class EntityCriteriaUtil {
       return entityID;
     }
 
-    public Criteria<Property> getCriteria() {
+    public Criteria<Property.ColumnProperty> getCriteria() {
       return criteria;
     }
 
@@ -225,7 +239,7 @@ public final class EntityCriteriaUtil {
      * @see PropertyCriteria
      * @see EntityKeyCriteria
      */
-    DefaultEntitySelectCriteria(final String entityID, final Criteria<Property> criteria) {
+    DefaultEntitySelectCriteria(final String entityID, final Criteria<Property.ColumnProperty> criteria) {
       this(entityID, criteria, null);
     }
 
@@ -238,7 +252,7 @@ public final class EntityCriteriaUtil {
      * @see PropertyCriteria
      * @see EntityKeyCriteria
      */
-    DefaultEntitySelectCriteria(final String entityID, final Criteria<Property> criteria, final String orderByClause) {
+    DefaultEntitySelectCriteria(final String entityID, final Criteria<Property.ColumnProperty> criteria, final String orderByClause) {
       this(entityID, criteria, orderByClause, -1);
     }
 
@@ -251,7 +265,7 @@ public final class EntityCriteriaUtil {
      * @see PropertyCriteria
      * @see EntityKeyCriteria
      */
-    DefaultEntitySelectCriteria(final String entityID, final Criteria<Property> criteria, final int fetchCount) {
+    DefaultEntitySelectCriteria(final String entityID, final Criteria<Property.ColumnProperty> criteria, final int fetchCount) {
       this(entityID, criteria, null, fetchCount);
     }
 
@@ -265,7 +279,7 @@ public final class EntityCriteriaUtil {
      * @see PropertyCriteria
      * @see EntityKeyCriteria
      */
-    DefaultEntitySelectCriteria(final String entityID, final Criteria<Property> criteria, final String orderByClause,
+    DefaultEntitySelectCriteria(final String entityID, final Criteria<Property.ColumnProperty> criteria, final String orderByClause,
                                 final int fetchCount) {
       super(entityID, criteria);
       this.fetchCount = fetchCount;
@@ -353,7 +367,7 @@ public final class EntityCriteriaUtil {
   /**
    * A class encapsulating a query criteria with Entity.Key objects as values.
    */
-  private static class EntityKeyCriteria extends CriteriaSet<Property> {
+  private static class EntityKeyCriteria extends CriteriaSet<Property.ColumnProperty> {
 
     private static final long serialVersionUID = 1;
 
@@ -365,7 +379,7 @@ public final class EntityCriteriaUtil {
     /**
      * The properties to use for column names when constructing the criteria string
      */
-    private final List<Property> properties;
+    private final List<Property.ColumnProperty> properties;
 
     /**
      * Instantiates a new EntityKeyCriteria comprised of the given keys
@@ -389,10 +403,10 @@ public final class EntityCriteriaUtil {
      * @param properties the properties to use for column names when constructing the criteria string
      * @param keys the keys
      */
-    EntityKeyCriteria(final List<Property> properties, final List<Entity.Key> keys) {
+    EntityKeyCriteria(final List<Property.ColumnProperty> properties, final List<Entity.Key> keys) {
       super(Conjunction.OR);
       Util.rejectNullValue(keys, "keys");
-      if (keys.size() == 0) {
+      if (keys.isEmpty()) {
         throw new IllegalArgumentException("EntityKeyCriteria requires at least one key");
       }
       if (properties != null && properties.size() != keys.get(0).getPropertyCount()) {
@@ -410,7 +424,7 @@ public final class EntityCriteriaUtil {
       }
 
       final List<String> columnNames = new ArrayList<String>(properties.size());
-      for (final Property property : properties) {
+      for (final Property.ColumnProperty property : properties) {
         columnNames.add(property.getColumnName());
       }
 
@@ -427,12 +441,12 @@ public final class EntityCriteriaUtil {
     private void setupCriteria() {
       if (keys.get(0).isCompositeKey()) {//multiple column key
         final List<Property.PrimaryKeyProperty> pkProperties = keys.get(0).getProperties();
-        final List<? extends Property> propertyList = properties == null ? pkProperties : properties;
+        final List<? extends Property.ColumnProperty> propertyList = properties == null ? pkProperties : properties;
         //(a = b and c = d) or (a = g and c = d)
         for (final Entity.Key key : keys) {
-          final CriteriaSet<Property> andSet = new CriteriaSet<Property>(Conjunction.AND);
+          final CriteriaSet<Property.ColumnProperty> andSet = new CriteriaSet<Property.ColumnProperty>(Conjunction.AND);
           int i = 0;
-          for (final Property property : propertyList) {
+          for (final Property.ColumnProperty property : propertyList) {
             andSet.addCriteria(new PropertyCriteria(property, SearchType.LIKE, key.getValue(pkProperties.get(i++).getPropertyID())));
           }
 
@@ -440,7 +454,7 @@ public final class EntityCriteriaUtil {
         }
       }
       else {
-        final Property property = properties == null ? keys.get(0).getFirstKeyProperty() : properties.get(0);
+        final Property.ColumnProperty property = properties == null ? keys.get(0).getFirstKeyProperty() : properties.get(0);
         final Property primaryKeyProperty = properties == null ? property : keys.get(0).getFirstKeyProperty();
         //a = b
         if (keys.size() == 1) {
@@ -457,14 +471,14 @@ public final class EntityCriteriaUtil {
   /**
    * A object for encapsulating a query criteria with a single property and one or more values.
    */
-  private static class PropertyCriteria implements Criteria<Property>, Serializable {
+  private static class PropertyCriteria implements Criteria<Property.ColumnProperty>, Serializable {
 
     private static final long serialVersionUID = 1;
 
     /**
      * The property used in this criteria
      */
-    private final Property property;
+    private final Property.ColumnProperty property;
 
     /**
      * The values used in this criteria
@@ -497,7 +511,7 @@ public final class EntityCriteriaUtil {
      * @param searchType the search type
      * @param values the values
      */
-    PropertyCriteria(final Property property, final SearchType searchType, final Object... values) {
+    PropertyCriteria(final Property.ColumnProperty property, final SearchType searchType, final Object... values) {
       Util.rejectNullValue(property, "property");
       Util.rejectNullValue(searchType, "searchType");
       if (values != null && values.length == 0) {
@@ -518,21 +532,13 @@ public final class EntityCriteriaUtil {
         return new ArrayList<Object>();
       }//null criteria, uses 'x is null', not 'x = ?'
 
-      if (property instanceof Property.ForeignKeyProperty) {
-        return getForeignKeyCriteriaValues();
-      }
-
       return values;
     }
 
-    public List<Property> getValueKeys() {
+    public List<Property.ColumnProperty> getValueKeys() {
       if (isNullCriteria) {
-        return new ArrayList<Property>();
+        return new ArrayList<Property.ColumnProperty>();
       }//null criteria, uses 'x is null', not 'x = ?'
-
-      if (property instanceof Property.ForeignKeyProperty) {
-        return getForeignKeyValueProperties();
-      }
 
       return Collections.nCopies(values.size(), property);
     }
@@ -601,19 +607,12 @@ public final class EntityCriteriaUtil {
       if (values.length == 1 && values[0] instanceof Collection) {
         return getValueList(((Collection) values[0]).toArray());
       }
-      else if (values.length > 0 && values[0] instanceof Entity) {
-        return EntityUtil.getPrimaryKeys((Collection) Arrays.asList(values));
-      }
       else {
         return Arrays.asList(values);
       }
     }
 
     private String getConditionString() {
-      if (property instanceof Property.ForeignKeyProperty) {
-        return getForeignKeyCriteriaString();
-      }
-
       final String columnIdentifier = initializeColumnIdentifier(property);
       if (isNullCriteria) {
         return columnIdentifier + (searchType == SearchType.LIKE ? " is null" : " is not null");
@@ -644,76 +643,14 @@ public final class EntityCriteriaUtil {
       return property.isString() && !caseSensitive ? "upper(" + sqlStringValue + ")" : sqlStringValue;
     }
 
-    private String getForeignKeyCriteriaString() {
-      if (getValueCount() > 1) {
-        return getMultipleForeignKeyCriteriaString();
-      }
 
-      return createSingleForeignKeyCriteria((Entity.Key) values.get(0)).asString();
-    }
 
-    private String getMultipleForeignKeyCriteriaString() {
-      if (((Property.ForeignKeyProperty) property).isCompositeReference()) {
-        return createMultipleCompositeForeignKeyCriteria().asString();
-      }
-      else {
-        return getInList(((Property.ForeignKeyProperty) property).getReferenceProperties().get(0),
-                searchType == SearchType.NOT_LIKE);
-      }
-    }
-
-    private List<Object> getForeignKeyCriteriaValues() {
-      if (values.size() > 1) {
-        return getCompositeForeignKeyCriteriaValues();
-      }
-
-      return createSingleForeignKeyCriteria((Entity.Key) values.get(0)).getValues();
-    }
-
-    private List<Object> getCompositeForeignKeyCriteriaValues() {
-      return createMultipleCompositeForeignKeyCriteria().getValues();
-    }
-
-    private List<Property> getForeignKeyValueProperties() {
-      if (values.size() > 1) {
-        return createMultipleCompositeForeignKeyCriteria().getValueKeys();
-      }
-
-      return createSingleForeignKeyCriteria((Entity.Key) values.get(0)).getValueKeys();
-    }
-
-    private Criteria<Property> createMultipleCompositeForeignKeyCriteria() {
-      final CriteriaSet<Property> criteriaSet = new CriteriaSet<Property>(CriteriaSet.Conjunction.OR);
-      for (final Object entityKey : values) {
-        criteriaSet.addCriteria(createSingleForeignKeyCriteria((Entity.Key) entityKey));
-      }
-
-      return criteriaSet;
-    }
-
-    private Criteria<Property> createSingleForeignKeyCriteria(final Entity.Key entityKey) {
-      final Property.ForeignKeyProperty foreignKeyProperty = (Property.ForeignKeyProperty) property;
-      if (foreignKeyProperty.isCompositeReference()) {
-        final CriteriaSet<Property> pkSet = new CriteriaSet<Property>(CriteriaSet.Conjunction.AND);
-        for (final Property referencedProperty : foreignKeyProperty.getReferenceProperties()) {
-          final String referencedPropertyID = foreignKeyProperty.getReferencedPropertyID(referencedProperty);
-          final Object referencedValue = entityKey == null ? null : entityKey.getValue(referencedPropertyID);
-          pkSet.addCriteria(new PropertyCriteria(referencedProperty, searchType, referencedValue));
-        }
-
-        return pkSet;
-      }
-      else {
-        return new PropertyCriteria(foreignKeyProperty.getReferenceProperties().get(0), searchType, entityKey == null ? null : entityKey.getFirstKeyValue());
-      }
-    }
-
-    private String getNotLikeCondition(final Property property, final String likeValue) {
+    private String getNotLikeCondition(final Property.ColumnProperty property, final String likeValue) {
       return getValueCount() > 1 ? getInList(property, true) :
               initializeColumnIdentifier(property) + (property.isString() ? " not like "  + likeValue: " <> " + likeValue);
     }
 
-    private String getInList(final Property property, final boolean notIn) {
+    private String getInList(final Property.ColumnProperty property, final boolean notIn) {
       final StringBuilder stringBuilder = new StringBuilder("(").append(initializeColumnIdentifier(property)).append((notIn ? " not in (" : " in ("));
       int cnt = 1;
       for (int i = 0; i < getValueCount(); i++) {
@@ -736,12 +673,12 @@ public final class EntityCriteriaUtil {
       return stringBuilder.toString();
     }
 
-    private String getLikeCondition(final Property property, final String likeValue) {
+    private String getLikeCondition(final Property.ColumnProperty property, final String likeValue) {
       return getValueCount() > 1 ? getInList(property, false) : initializeColumnIdentifier(property) +
               (property.isString() ? " like " + likeValue : " = " + likeValue);
     }
 
-    private String initializeColumnIdentifier(final Property property) {
+    private String initializeColumnIdentifier(final Property.ColumnProperty property) {
       String columnName;
       if (property instanceof Property.SubqueryProperty) {
         columnName = "(" + ((Property.SubqueryProperty) property).getSubQuery() + ")";
@@ -755,6 +692,185 @@ public final class EntityCriteriaUtil {
       }
 
       return columnName;
+    }
+  }
+
+  private static class ForeignKeyCriteria implements Criteria<Property.ColumnProperty>, Serializable {
+
+    private static final long serialVersionUID = 1;
+
+    /**
+     * The property used in this criteria
+     */
+    private final Property.ForeignKeyProperty property;
+
+    /**
+     * The values used in this criteria
+     */
+    private final List<Entity.Key> values;
+    private final SearchType searchType;
+    private final boolean isNullCriteria;
+
+    private ForeignKeyCriteria(final Property.ForeignKeyProperty property, final SearchType searchType, final Object... values) {
+      Util.rejectNullValue(property, "property");
+      Util.rejectNullValue(searchType, "searchType");
+      if (values != null && values.length == 0) {
+        throw new RuntimeException("No values specified for ForeignKeyPropertyCriteria: " + property);
+      }
+      this.property = property;
+      this.searchType = searchType;
+      this.values = initializeValues(values);
+      this.isNullCriteria = this.values.size() == 1 && this.values.get(0) == null;
+    }
+
+    public String asString() {
+      return getConditionString();
+    }
+
+    private String getConditionString() {
+      return getForeignKeyCriteriaString();
+    }
+
+    public List<Property.ColumnProperty> getValueKeys() {
+      if (isNullCriteria) {
+        return new ArrayList<Property.ColumnProperty>();
+      }//null criteria, uses 'x is null', not 'x = ?'
+
+      return getForeignKeyValueProperties();
+    }
+
+    public List<Object> getValues() {
+      if (isNullCriteria) {
+        return new ArrayList<Object>();
+      }//null criteria, uses 'x is null', not 'x = ?'
+
+      return getForeignKeyCriteriaValues();
+    }
+
+    /**
+     * @return the number values contained in this criteria.
+     */
+    public int getValueCount() {
+      return getValues().size();
+    }
+
+    private String getForeignKeyCriteriaString() {
+      if (getValueCount() > 1) {
+        return getMultipleForeignKeyCriteriaString();
+      }
+
+      return createSingleForeignKeyCriteria(values.get(0)).asString();
+    }
+
+    private String getMultipleForeignKeyCriteriaString() {
+      if (property.isCompositeReference()) {
+        return createMultipleCompositeForeignKeyCriteria().asString();
+      }
+      else {
+        return getInList(property.getReferenceProperties().get(0), searchType == SearchType.NOT_LIKE);
+      }
+    }
+
+    private List<Object> getForeignKeyCriteriaValues() {
+      if (values.size() > 1) {
+        return getCompositeForeignKeyCriteriaValues();
+      }
+
+      return createSingleForeignKeyCriteria(values.get(0)).getValues();
+    }
+
+    private List<Object> getCompositeForeignKeyCriteriaValues() {
+      return createMultipleCompositeForeignKeyCriteria().getValues();
+    }
+
+    private List<Property.ColumnProperty> getForeignKeyValueProperties() {
+      if (values.size() > 1) {
+        return createMultipleCompositeForeignKeyCriteria().getValueKeys();
+      }
+
+      return createSingleForeignKeyCriteria(values.get(0)).getValueKeys();
+    }
+
+    private Criteria<Property.ColumnProperty> createMultipleCompositeForeignKeyCriteria() {
+      final CriteriaSet<Property.ColumnProperty> criteriaSet = new CriteriaSet<Property.ColumnProperty>(CriteriaSet.Conjunction.OR);
+      for (final Object entityKey : values) {
+        criteriaSet.addCriteria(createSingleForeignKeyCriteria((Entity.Key) entityKey));
+      }
+
+      return criteriaSet;
+    }
+
+    private Criteria<Property.ColumnProperty> createSingleForeignKeyCriteria(final Entity.Key entityKey) {
+      final Property.ForeignKeyProperty foreignKeyProperty = property;
+      if (foreignKeyProperty.isCompositeReference()) {
+        final CriteriaSet<Property.ColumnProperty> pkSet = new CriteriaSet<Property.ColumnProperty>(CriteriaSet.Conjunction.AND);
+        for (final Property.ColumnProperty referencedProperty : foreignKeyProperty.getReferenceProperties()) {
+          final String referencedPropertyID = foreignKeyProperty.getReferencedPropertyID(referencedProperty);
+          final Object referencedValue = entityKey == null ? null : entityKey.getValue(referencedPropertyID);
+          pkSet.addCriteria(new PropertyCriteria(referencedProperty, searchType, referencedValue));
+        }
+
+        return pkSet;
+      }
+      else {
+        return new PropertyCriteria(foreignKeyProperty.getReferenceProperties().get(0), searchType, entityKey == null ? null : entityKey.getFirstKeyValue());
+      }
+    }
+
+    /**
+     * @param values the values to use in this criteria
+     * @return a list containing the values
+     */
+    @SuppressWarnings({"unchecked"})
+    private List<Entity.Key> initializeValues(final Object... values) {
+      final List<Entity.Key> ret = new ArrayList<Entity.Key>();
+      if (values == null) {
+        ret.add(null);
+      }
+      else {
+        if (values.length == 1 && values[0] instanceof Collection) {
+          ret.addAll(getValueList(((Collection) values[0]).toArray()));
+        }
+        else {
+          ret.addAll(getValueList(values));
+        }
+      }
+
+      return ret;
+    }
+
+    @SuppressWarnings({"unchecked"})
+    private Collection getValueList(final Object... values) {
+      if (values.length == 0) {
+        return new ArrayList();
+      }
+      if (values[0] instanceof Entity.Key) {
+        return Arrays.asList(values);
+      }
+      else {
+        final List entities = new ArrayList();
+        entities.addAll(Arrays.asList(values));
+
+        return EntityUtil.getPrimaryKeys(entities);
+      }
+    }
+
+    private String getInList(final Property.ColumnProperty property, final boolean notIn) {
+      final StringBuilder stringBuilder = new StringBuilder("(").append(property.getColumnName()).append((notIn ? " not in (" : " in ("));
+      int cnt = 1;
+      for (int i = 0; i < getValueCount(); i++) {
+        stringBuilder.append("?");
+        if (cnt++ == 1000 && i < getValueCount() - 1) {//Oracle limit
+          stringBuilder.append(notIn ? ") and " : ") or ").append(property.getColumnName()).append(" in (");
+          cnt = 1;
+        }
+        else if (i < getValueCount() - 1) {
+          stringBuilder.append(", ");
+        }
+      }
+      stringBuilder.append("))");
+
+      return stringBuilder.toString();
     }
   }
 }

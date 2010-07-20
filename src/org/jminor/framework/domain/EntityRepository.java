@@ -7,6 +7,9 @@ import org.jminor.common.model.IdSource;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.ValueMap;
 
+import java.awt.Color;
+import java.text.Collator;
+import java.text.Format;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -21,6 +24,7 @@ import java.util.Map;
 public final class EntityRepository {
 
   private static Map<String, EntityDefinition> entityDefinitions = new HashMap<String, EntityDefinition>();
+  private static volatile Map<String, Proxy> proxies;
 
   private EntityRepository() {}
 
@@ -43,15 +47,21 @@ public final class EntityRepository {
    * @param entityID the entity ID
    * @return the search properties to use
    */
-  public static List<Property> getSearchProperties(final String entityID) {
-    final Collection<String> searchPropertyIds = getEntitySearchPropertyIDs(entityID);
-    if (searchPropertyIds.size() > 0) {
-      return getProperties(entityID, searchPropertyIds.toArray(new String[searchPropertyIds.size()]));
-    }
-    //use all string properties
-    final List<Property> searchProperties = new ArrayList<Property>();
-    for (final Property property : getDatabaseProperties(entityID)) {
-      if (property.isString()) {
+  public static List<Property.ColumnProperty> getSearchProperties(final String entityID) {
+    return getSearchProperties(entityID, getEntitySearchPropertyIDs(entityID));
+  }
+
+  /**
+   * Retrieves the properties used when searching for a entity of the given type,
+   * if no search property IDs are defined all STRING based properties are returned.
+   * @param entityID the entity ID
+   * @param searchPropertyIds the IDs of the properties to use as search properties
+   * @return the search properties to use
+   */
+  public static List<Property.ColumnProperty> getSearchProperties(final String entityID, final Collection<String> searchPropertyIds) {
+    final List<Property.ColumnProperty> searchProperties = new ArrayList<Property.ColumnProperty>();
+    for (final Property.ColumnProperty property : getColumnProperties(entityID)) {
+      if (!searchPropertyIds.isEmpty() && searchPropertyIds.contains(property.getPropertyID()) || property.isString()) {
         searchProperties.add(property);
       }
     }
@@ -164,10 +174,10 @@ public final class EntityRepository {
    * @return a list containing the database properties (properties that map to database columns) comprising
    * the entity identified by <code>entityID</code>
    */
-  public static List<Property> getDatabaseProperties(final String entityID,
-                                                     final boolean includePrimaryKeyProperties,
-                                                     final boolean includeReadOnly,
-                                                     final boolean includeNonUpdatable) {
+  public static List<Property.ColumnProperty> getDatabaseProperties(final String entityID,
+                                                                    final boolean includePrimaryKeyProperties,
+                                                                    final boolean includeReadOnly,
+                                                                    final boolean includeNonUpdatable) {
     return getDatabaseProperties(entityID, includePrimaryKeyProperties, includeReadOnly, includeNonUpdatable, true);
   }
 
@@ -181,11 +191,11 @@ public final class EntityRepository {
    * @return a list containing the database properties (properties that map to database columns) comprising
    * the entity identified by <code>entityID</code>
    */
-  public static List<Property> getDatabaseProperties(final String entityID,
-                                                     final boolean includePrimaryKeyProperties,
-                                                     final boolean includeReadOnly,
-                                                     final boolean includeNonUpdatable,
-                                                     final boolean includeForeignKeyProperties) {
+  public static List<Property.ColumnProperty> getDatabaseProperties(final String entityID,
+                                                                    final boolean includePrimaryKeyProperties,
+                                                                    final boolean includeReadOnly,
+                                                                    final boolean includeNonUpdatable,
+                                                                    final boolean includeForeignKeyProperties) {
     return getDatabaseProperties(entityID, includePrimaryKeyProperties, includeReadOnly, includeNonUpdatable, includeForeignKeyProperties, true);
   }
 
@@ -200,16 +210,16 @@ public final class EntityRepository {
    * @return a list containing the database properties (properties that map to database columns) comprising
    * the entity identified by <code>entityID</code>
    */
-  public static List<Property> getDatabaseProperties(final String entityID,
-                                                     final boolean includePrimaryKeyProperties,
-                                                     final boolean includeReadOnly,
-                                                     final boolean includeNonUpdatable,
-                                                     final boolean includeForeignKeyProperties,
-                                                     final boolean includeTransientProperties) {
-    final List<Property> properties = new ArrayList<Property>(getDatabaseProperties(entityID));
-    final ListIterator<Property> iterator = properties.listIterator();
+  public static List<Property.ColumnProperty> getDatabaseProperties(final String entityID,
+                                                                    final boolean includePrimaryKeyProperties,
+                                                                    final boolean includeReadOnly,
+                                                                    final boolean includeNonUpdatable,
+                                                                    final boolean includeForeignKeyProperties,
+                                                                    final boolean includeTransientProperties) {
+    final List<Property.ColumnProperty> properties = new ArrayList<Property.ColumnProperty>(getColumnProperties(entityID));
+    final ListIterator<Property.ColumnProperty> iterator = properties.listIterator();
     while (iterator.hasNext()) {
-      final Property property = iterator.next();
+      final Property.ColumnProperty property = iterator.next();
       if (!includeReadOnly && property.isReadOnly() || !includeNonUpdatable && !property.isUpdatable()
               || !includePrimaryKeyProperties && property instanceof Property.PrimaryKeyProperty
               || !includeForeignKeyProperties && property instanceof Property.ForeignKeyProperty
@@ -230,6 +240,15 @@ public final class EntityRepository {
   public static List<Property> getVisibleProperties(final String entityID) {
     Util.rejectNullValue(entityID, "entityID");
     return getEntityDefinition(entityID).getVisibleProperties();
+  }
+
+  public static Property.ColumnProperty getColumnProperty(final String entityID, final String propertyID) {
+    final Property property = getProperty(entityID, propertyID);
+    if (!(property instanceof Property.ColumnProperty)) {
+      throw new RuntimeException(propertyID + ", " + property.getClass() + " does not implement Property.ColumnProperty");
+    }
+
+    return (Property.ColumnProperty) property;
   }
 
   /**
@@ -291,8 +310,8 @@ public final class EntityRepository {
    * @return a collection containing all database properties found in the entity identified by <code>entityID</code>,
    * that is, properties that map to database columns
    */
-  public static Collection<Property> getDatabaseProperties(final String entityID) {
-    return getEntityDefinition(entityID).getDatabaseProperties();
+  public static Collection<Property.ColumnProperty> getColumnProperties(final String entityID) {
+    return getEntityDefinition(entityID).getColumnProperties();
   }
 
   /**
@@ -454,5 +473,96 @@ public final class EntityRepository {
     }
 
     return definition;
+  }
+
+  /**
+   * Sets a entity specific proxy instance
+   * @param entityID the ID of the entity for which this proxy instance is used
+   * @param entityProxy the proxy instance to link to the given entity ID
+   * @see Proxy
+   */
+  public static void setProxy(final String entityID, final Proxy entityProxy) {
+    Util.rejectNullValue(entityID, "entityID");
+    Util.rejectNullValue(entityProxy, "entityProxy");
+    if (proxies == null) {
+      proxies = new HashMap<String, Proxy>();
+    }
+
+    if (proxies.containsKey(entityID)) {
+      throw new RuntimeException("Proxy already set for: " + entityID);
+    }
+
+    proxies.put(entityID, entityProxy);
+  }
+
+  /**
+   * Returns the proxy instance assigned to the given entity ID or the default proxy if none has been assigned
+   * @param entityID the entity ID for which to retrieve the proxy
+   * @return the proxy instance assigned to the given entity ID
+   * @see Proxy
+   */
+  public static Proxy getProxy(final String entityID) {
+    Util.rejectNullValue(entityID, "entityID");
+    if (proxies != null && proxies.containsKey(entityID)) {
+      return proxies.get(entityID);
+    }
+
+    return Proxy.getInstance();
+  }
+
+  /**
+   * Acts as a proxy for retrieving values from Entity objects, allowing for plugged
+   * in entity specific functionality, such as providing toString() and compareTo() implementations
+   */
+  public static class Proxy {
+
+    private static final Proxy INSTANCE = new Proxy();
+
+    private final Collator collator = Collator.getInstance();
+
+    static Proxy getInstance() {
+      return INSTANCE;
+    }
+
+    public int compareTo(final Entity entity, final Entity entityToCompare) {
+      Util.rejectNullValue(entity, "entity");
+      Util.rejectNullValue(entityToCompare, "entityToCompare");
+      return collator.compare(entity.toString(), entityToCompare.toString());
+    }
+
+    public String toString(final Entity entity) {
+      Util.rejectNullValue(entity, "entity");
+      final String entityID = entity.getEntityID();
+      final ValueMap.ToString<String> stringProvider = getStringProvider(entityID);
+
+      if (stringProvider == null) {
+        return new StringBuilder(entityID).append(": ").append(entity.getPrimaryKey()).toString();
+      }
+
+      return stringProvider.toString(entity);
+    }
+
+    public Object getDerivedValue(final Entity entity, final Property.DerivedProperty property) {
+      throw new RuntimeException("getDerivedValue() has not been overriden in Entity.Proxy for: " + entity + ", " + property);
+    }
+
+    public String getFormattedValue(final Entity entity, final Property property, final Format format) {
+      Util.rejectNullValue(entity, "entity");
+      final Object value = entity.getValue(property);
+      if (value == null) {
+        return "";
+      }
+
+      if (format == null) {
+        return value.toString();
+      }
+
+      return format.format(value);
+    }
+
+    @SuppressWarnings({"UnusedDeclaration"})
+    public Color getBackgroundColor(final Entity entity) {
+      return null;
+    }
   }
 }

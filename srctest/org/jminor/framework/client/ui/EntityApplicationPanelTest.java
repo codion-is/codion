@@ -5,7 +5,7 @@ package org.jminor.framework.client.ui;
 
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.User;
-import org.jminor.framework.client.model.EntityApplicationModel;
+import org.jminor.framework.client.model.DefaultEntityApplicationModel;
 import org.jminor.framework.db.EntityDbConnectionTest;
 import org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
@@ -25,7 +25,7 @@ public class EntityApplicationPanelTest {
         return User.UNIT_TEST_USER;
       }
     };
-    panel.initialize(new EntityApplicationModel(EntityDbConnectionTest.DB_PROVIDER) {
+    panel.initialize(new DefaultEntityApplicationModel(EntityDbConnectionTest.DB_PROVIDER) {
       @Override
       protected void loadDomainModel() {
         new EmpDept();

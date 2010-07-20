@@ -13,8 +13,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.awt.GraphicsEnvironment;
-
 public class MonitorPanelTest {
 
   @BeforeClass
@@ -37,9 +35,6 @@ public class MonitorPanelTest {
     final ConnectionPoolMonitor poolMonitor = databaseMonitor.getConnectionPoolMonitor().getConnectionPoolInstanceMonitors().iterator().next();
     poolMonitor.setCollectFineGrainedStats(true);
     poolMonitor.setStatsUpdateInterval(350);
-    if (!GraphicsEnvironment.isHeadless()) {
-      panel.showFrame();
-    }
 
     Thread.sleep(1000);
     poolMonitor.resetStats();

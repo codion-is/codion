@@ -4,7 +4,7 @@
 package org.jminor.common.db.pool;
 
 import org.jminor.common.db.DbConnection;
-import org.jminor.common.db.DbConnectionProvider;
+import org.jminor.common.db.DbConnectionImpl;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.dbms.Database;
 import org.jminor.common.db.dbms.DatabaseProvider;
@@ -25,12 +25,12 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class DbConnectionPoolTest {
+public class ConnectionPoolImplTest {
 
   @Test
   public void loadTest() throws Exception {
     final Date startTime = new Date();
-    final DbConnectionPool pool = initializeLoadTestPool();
+    final ConnectionPoolImpl pool = initializeLoadTestPool();
     final LoadTestModel model = initializeLoadTestModel(pool);
 
     new Timer(true).schedule(new TimerTask() {
@@ -57,7 +57,7 @@ public class DbConnectionPoolTest {
   public void test() throws Exception {
     final Date startDate = new Date();
     final User user = User.UNIT_TEST_USER;
-    final DbConnectionPool pool = new DbConnectionPool(createConnectionProvider(), user);
+    final ConnectionPoolImpl pool = new ConnectionPoolImpl(createConnectionProvider(), user);
     pool.getUser().setPassword(User.UNIT_TEST_USER.getPassword());
     assertEquals(user, pool.getUser());
     pool.setCollectFineGrainedStatistics(true);
@@ -71,7 +71,7 @@ public class DbConnectionPoolTest {
     assertEquals(0, statistics.getAvailableInPool());
     assertEquals(0, statistics.getConnectionsInUse());
 
-    final DbConnection dbConnectionOne = pool.checkOutConnection();
+    final PoolableConnection dbConnectionOne = pool.checkOutConnection();
     assertTrue(dbConnectionOne.isConnectionValid());
     statistics = pool.getConnectionPoolStatistics(startDate.getTime());
     assertEquals(1, statistics.getConnectionRequests());
@@ -80,7 +80,7 @@ public class DbConnectionPoolTest {
     assertEquals(1, statistics.getConnectionsInUse());
     assertEquals(1, statistics.getLiveConnectionCount());
 
-    final DbConnection dbConnectionTwo = pool.checkOutConnection();
+    final PoolableConnection dbConnectionTwo = pool.checkOutConnection();
     assertTrue(dbConnectionTwo.isConnectionValid());
     statistics = pool.getConnectionPoolStatistics(startDate.getTime());
     assertEquals(2, statistics.getConnectionRequests());
@@ -97,7 +97,7 @@ public class DbConnectionPoolTest {
     assertEquals(1, statistics.getConnectionsInUse());
     assertEquals(2, statistics.getLiveConnectionCount());
 
-    final DbConnection dbConnectionThree = pool.checkOutConnection();
+    final PoolableConnection dbConnectionThree = pool.checkOutConnection();
     assertTrue(dbConnectionThree.isConnectionValid());
     statistics = pool.getConnectionPoolStatistics(startDate.getTime());
     assertEquals(3, statistics.getConnectionRequests());
@@ -124,7 +124,7 @@ public class DbConnectionPoolTest {
 
     assertTrue(statistics.getPoolStatistics().size() > 0);
 
-    final DbConnection dbConnectionFour = pool.checkOutConnection();
+    final PoolableConnection dbConnectionFour = pool.checkOutConnection();
     statistics = pool.getConnectionPoolStatistics(startDate.getTime());
     assertEquals(4, statistics.getConnectionRequests());
     assertEquals(2, statistics.getConnectionsCreated());
@@ -160,7 +160,7 @@ public class DbConnectionPoolTest {
     catch (IllegalStateException e) {}
   }
 
-  private LoadTestModel initializeLoadTestModel(final DbConnectionPool pool) {
+  private LoadTestModel initializeLoadTestModel(final ConnectionPoolImpl pool) {
     return new LoadTestModel(User.UNIT_TEST_USER, 200, 1, 20, 20) {
       @Override
       protected void disconnectApplication(Object application) {}
@@ -172,7 +172,7 @@ public class DbConnectionPoolTest {
             try {
               DbConnection connection = null;
               try {
-                connection = pool.checkOutConnection();
+                connection = (DbConnection) pool.checkOutConnection();
                 connection.query("select * from scott.emp", new ResultPacker() {
                   public List pack(ResultSet resultSet, int fetchCount) throws SQLException {
                     while (resultSet.next()) {
@@ -207,8 +207,8 @@ public class DbConnectionPoolTest {
     };
   }
 
-  private DbConnectionPool initializeLoadTestPool() {
-    final DbConnectionPool pool = new DbConnectionPool(createConnectionProvider(), User.UNIT_TEST_USER);
+  private ConnectionPoolImpl initializeLoadTestPool() {
+    final ConnectionPoolImpl pool = new ConnectionPoolImpl(createConnectionProvider(), User.UNIT_TEST_USER);
     pool.setPooledConnectionTimeout(70);
     pool.setMinimumPoolSize(1);
     pool.setPoolCleanupInterval(200);
@@ -216,13 +216,13 @@ public class DbConnectionPoolTest {
     return pool;
   }
 
-  private static DbConnectionProvider createConnectionProvider() {
-    return new DbConnectionProvider() {
+  private static PoolableConnectionProvider createConnectionProvider() {
+    return new PoolableConnectionProvider() {
       final Database database = DatabaseProvider.createInstance();
-      public DbConnection createConnection(final User user) throws ClassNotFoundException, SQLException {
-        return new DbConnection(database, user);
+      public PoolableConnection createConnection(final User user) throws ClassNotFoundException, SQLException {
+        return new DbConnectionImpl(database, user);
       }
-      public void destroyConnection(final DbConnection connection) {
+      public void destroyConnection(final PoolableConnection connection) {
         connection.disconnect();
       }
     };

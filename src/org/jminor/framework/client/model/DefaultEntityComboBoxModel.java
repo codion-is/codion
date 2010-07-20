@@ -66,7 +66,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
       for (final Map.Entry<String, Set<Entity>> entry : foreignKeyFilterEntities.entrySet()) {
         final Entity foreignKeyValue = item.getForeignKeyValue(entry.getKey());
         final Set<Entity> filterValues = entry.getValue();
-        if (filterValues.size() > 0 && !filterValues.contains(foreignKeyValue)) {
+        if (!filterValues.isEmpty() && !filterValues.contains(foreignKeyValue)) {
           return false;
         }
       }
@@ -114,17 +114,14 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
   }
 
   public void setSelectedEntityByPrimaryKey(final Entity.Key primaryKey) {
-    final Entity toSelect = new Entity(primaryKey);
-    final List<Entity> visibleItems = getVisibleItems();
-    int indexOfKey = visibleItems.indexOf(toSelect);
+    final int indexOfKey = getIndexOfKey(primaryKey);
     if (indexOfKey >= 0) {
-      setSelectedItem(visibleItems.get(indexOfKey));
+      setSelectedItem(getElementAt(indexOfKey));
     }
     else {
-      final List<Entity> filteredItems = getVisibleItems();
-      final int filteredIndexOfKey = filteredItems.indexOf(toSelect);
+      final int filteredIndexOfKey = getFilteredIndexOfKey(primaryKey);
       if (filteredIndexOfKey >= 0) {
-        setSelectedItem(filteredItems.get(filteredIndexOfKey));
+        setSelectedItem(getFilteredItems().get(filteredIndexOfKey));
       }
     }
   }
@@ -223,7 +220,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
   //todo move somewhere else?
   public static void linkForeignKeyComboBoxModel(final String foreignKeyPropertyID, final EntityComboBoxModel model, final EntityComboBoxModel foreignKeyModel) {
     final Collection<Entity> filterEntities = model.getForeignKeyFilterEntities(foreignKeyPropertyID);
-    if (filterEntities != null && filterEntities.size() > 0) {
+    if (filterEntities != null && !filterEntities.isEmpty()) {
       foreignKeyModel.setSelectedItem(filterEntities.iterator().next());
     }
     foreignKeyModel.eventSelectionChanged().addListener(new ActionListener() {
@@ -295,6 +292,17 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     final int size = getSize();
     for (int index = 0; index < size; index++) {
       final Object item = getElementAt(index);
+      if (item instanceof Entity && ((Entity) item).getPrimaryKey().equals(primaryKey)) {
+        return index;
+      }
+    }
+    return -1;
+  }
+
+  protected int getFilteredIndexOfKey(final Entity.Key primaryKey) {
+    final List<Entity> filteredItems = getFilteredItems();
+    for (int index = 0; index < filteredItems.size(); index++) {
+      final Object item = filteredItems.get(0);
       if (item instanceof Entity && ((Entity) item).getPrimaryKey().equals(primaryKey)) {
         return index;
       }

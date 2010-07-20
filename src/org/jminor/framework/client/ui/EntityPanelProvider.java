@@ -220,9 +220,16 @@ public class EntityPanelProvider implements Comparable {
   }
 
   public EntityPanel createInstance(final EntityDbProvider dbProvider) {
+    return createInstance(dbProvider, false);
+  }
+
+  public EntityPanel createInstance(final EntityDbProvider dbProvider, final boolean detailPanel) {
     Util.rejectNullValue(dbProvider, "dbProvider");
     try {
       final EntityModel entityModel = initializeModel(this, dbProvider);
+      if (detailPanel && entityModel.containsTableModel()) {
+        entityModel.getTableModel().setDetailModel(true);
+      }
       if (refreshOnInit) {
         entityModel.refresh();
       }
@@ -290,11 +297,11 @@ public class EntityPanelProvider implements Comparable {
       if (tablePanel != null) {
         entityPanel.setTablePanel(tablePanel);
       }
-      if (detailPanelProviders.size() > 0) {
+      if (!detailPanelProviders.isEmpty()) {
         entityPanel.setDetailPanelState(detailPanelState);
         entityPanel.setDetailSplitPanelResizeWeight(detailSplitPanelResizeWeight);
         for (final EntityPanelProvider detailProvider : detailPanelProviders) {
-          final EntityPanel detailPanel = detailProvider.createInstance(model.getDbProvider());
+          final EntityPanel detailPanel = detailProvider.createInstance(model.getDbProvider(), true);
           model.addDetailModel(detailPanel.getModel());
           entityPanel.addDetailPanel(detailPanel);
         }
@@ -356,7 +363,7 @@ public class EntityPanelProvider implements Comparable {
       if (editPanelClass != null || entityPanel.getEditPanel() != null) {
         toolbarControls.add(entityPanel.getToggleEditPanelControl());
       }
-      if (detailPanelProviders.size() > 0 || entityPanel.getDetailPanels().size() > 0) {
+      if (!detailPanelProviders.isEmpty() || !entityPanel.getDetailPanels().isEmpty()) {
         toolbarControls.add(entityPanel.getToggleDetailPanelControl());
       }
       tablePanel.initializeToolbar(toolbarControls);

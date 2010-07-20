@@ -33,7 +33,16 @@ import org.jminor.framework.i18n.FrameworkMessages;
 
 import org.apache.log4j.Logger;
 
-import javax.swing.*;
+import javax.swing.ComboBoxModel;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.JToolBar;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
@@ -1356,7 +1365,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    */
   protected final SteppedComboBox createPropertyComboBox(final String propertyID, final State enabledState,
                                                          final String nullValueString, final boolean editable) {
-    return createPropertyComboBox(EntityRepository.getProperty(getEditModel().getEntityID(), propertyID),
+    return createPropertyComboBox(EntityRepository.getColumnProperty(getEditModel().getEntityID(), propertyID),
             enabledState, nullValueString, editable);
   }
 
@@ -1366,7 +1375,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @param property the property to bind
    * @return a SteppedComboBox bound to the property
    */
-  protected final SteppedComboBox createPropertyComboBox(final Property property) {
+  protected final SteppedComboBox createPropertyComboBox(final Property.ColumnProperty property) {
     return createPropertyComboBox(property, null);
   }
 
@@ -1377,7 +1386,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @param enabledState a state for controlling the enabled state of the component
    * @return a SteppedComboBox bound to the property
    */
-  protected final SteppedComboBox createPropertyComboBox(final Property property, final State enabledState) {
+  protected final SteppedComboBox createPropertyComboBox(final Property.ColumnProperty property, final State enabledState) {
     return createPropertyComboBox(property, enabledState, null);
   }
 
@@ -1389,7 +1398,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @param nullValueString the value used to represent a null value, shown at the top of the combo box value list
    * @return a SteppedComboBox bound to the property
    */
-  protected final SteppedComboBox createPropertyComboBox(final Property property, final State enabledState,
+  protected final SteppedComboBox createPropertyComboBox(final Property.ColumnProperty property, final State enabledState,
                                                          final String nullValueString) {
     return createPropertyComboBox(property, enabledState, nullValueString, false);
   }
@@ -1403,7 +1412,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @param editable true if the combo box should be editable, only works with combo boxes based on String.class properties
    * @return a SteppedComboBox bound to the property
    */
-  protected final SteppedComboBox createPropertyComboBox(final Property property, final State enabledState,
+  protected final SteppedComboBox createPropertyComboBox(final Property.ColumnProperty property, final State enabledState,
                                                          final String nullValueString, final boolean editable) {
     final SteppedComboBox ret = EntityUiUtil.createPropertyComboBox(property, getEditModel(), null, enabledState, nullValueString, editable);
     setComponent(property.getPropertyID(), ret);

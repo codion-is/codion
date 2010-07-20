@@ -13,7 +13,7 @@ import java.util.List;
  * Date: 14.7.2010<br>
  * Time: 23:16:34
  */
-public class DbConnectionPoolStatistics implements ConnectionPoolStatistics, Serializable {
+public class ConnectionPoolStatisticsImpl implements ConnectionPoolStatistics, Serializable {
   private static final long serialVersionUID = 1;
 
   private final User user;
@@ -34,7 +34,7 @@ public class DbConnectionPoolStatistics implements ConnectionPoolStatistics, Ser
   private int liveConnectionCount;
   private long averageCheckOutTime;
 
-  public DbConnectionPoolStatistics(final User user) {
+  public ConnectionPoolStatisticsImpl(final User user) {
     this.user = user;
   }
 

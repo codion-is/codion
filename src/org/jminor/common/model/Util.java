@@ -25,11 +25,14 @@ import java.nio.charset.Charset;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.sql.Types;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -81,6 +84,19 @@ public final class Util {
     else if (loggingLevel.equals(LOGGING_LEVEL_TRACE)) {
       defaultLoggingLevel = Level.TRACE;
     }
+  }
+
+  /**
+   * True if the given objects are equal. Both objects being null results in true.
+   * @param one the first object
+   * @param two the second object
+   * @return true if the given objects are equal
+   */
+  public static boolean isEqual(final Object one, final Object two) {
+    final boolean oneNull = one == null;
+    final boolean twoNull = two == null;
+
+    return oneNull && twoNull || !(oneNull ^ twoNull) && one.equals(two);
   }
 
   /**
@@ -148,7 +164,7 @@ public final class Util {
    * @return the current logging level
    */
   public static Level getLoggingLevel() {
-    if (loggers.size() == 0) {
+    if (loggers.isEmpty()) {
       return defaultLoggingLevel;
     }
 
@@ -703,6 +719,32 @@ public final class Util {
   public static void require(final String propertyName, final String value) {
     if (value == null || value.length() == 0) {
       throw new RuntimeException(propertyName + " is required");
+    }
+  }
+
+  /**
+   * @param sqlType the type
+   * @return the Class representing the given type
+   */
+  public static Class<?> getTypeClass(final int sqlType) {
+    switch (sqlType) {
+      case Types.INTEGER:
+        return Integer.class;
+      case Types.DOUBLE:
+        return Double.class;
+      case Types.DATE:
+        return Date.class;
+      case Types.TIMESTAMP:
+        return Timestamp.class;
+      case Types.VARCHAR:
+        return String.class;
+      case Types.BOOLEAN:
+        return Boolean.class;
+      case Types.CHAR:
+        return Character.class;
+
+      default:
+        return Object.class;
     }
   }
 

@@ -126,7 +126,7 @@ public class EntityDbRemoteProvider extends AbstractEntityDbProvider {
 
   private void connectToServer() throws RemoteException, NotBoundException {
     final List<RemoteServer> servers = getEntityServers(serverHostName);
-    if (servers.size() > 0) {
+    if (!servers.isEmpty()) {
       Collections.sort(servers, new Comparator<RemoteServer>() {
         public int compare(final RemoteServer o1, final RemoteServer o2) {
           try {

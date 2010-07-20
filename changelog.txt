@@ -1878,3 +1878,20 @@
   EntityPanel.getPrintControls() removed
   Util.rejectNullValue() now returns the value if it isn't null
   Removed redundant Util.rejectNullValue() calls
+  Entity and Entity.Key are now an interfaces
+  EntityImpl and EntityImpl.KeyImpl added
+  Entities factory class added
+  DbConnection is now an interface
+  DbConnectionImpl added
+  DbConnectionPool renamed to ConnectionPoolImpl
+  PoolableConnection added, DbConnection implements it, ConnectionPool uses it
+  Column interface added to common.db
+  Property is now an interface
+  PropertyImpl added, package protected
+  Properties factory class added
+  Major refactoring of PropertySearchModel and co
+  Finished the interfacing of client.model
+  EntityDefinition is now an interface
+  EntityDefinitionImpl added
+  Entities.define() added
+  Collections.size() == 0 replaced with isEmpty() throughout

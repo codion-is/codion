@@ -7,12 +7,23 @@ import org.jminor.common.model.CancelException;
 import org.jminor.common.model.User;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.framework.Configuration;
+import org.jminor.framework.client.model.DefaultEntityApplicationModel;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.ui.EntityApplicationPanel;
 import org.jminor.framework.client.ui.EntityPanel;
 import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.db.provider.EntityDbProvider;
-import org.jminor.framework.demos.chinook.beans.ui.*;
+import org.jminor.framework.demos.chinook.beans.ui.AlbumEditPanel;
+import org.jminor.framework.demos.chinook.beans.ui.ArtistEditPanel;
+import org.jminor.framework.demos.chinook.beans.ui.CustomerEditPanel;
+import org.jminor.framework.demos.chinook.beans.ui.EmployeeEditPanel;
+import org.jminor.framework.demos.chinook.beans.ui.GenreEditPanel;
+import org.jminor.framework.demos.chinook.beans.ui.InvoiceEditPanel;
+import org.jminor.framework.demos.chinook.beans.ui.InvoiceLineEditPanel;
+import org.jminor.framework.demos.chinook.beans.ui.MediaTypeEditPanel;
+import org.jminor.framework.demos.chinook.beans.ui.PlaylistEditPanel;
+import org.jminor.framework.demos.chinook.beans.ui.PlaylistTrackEditPanel;
+import org.jminor.framework.demos.chinook.beans.ui.TrackEditPanel;
 import org.jminor.framework.demos.chinook.domain.Chinook;
 import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 
@@ -79,7 +90,7 @@ public class ChinookAppPanel extends EntityApplicationPanel {
 
   @Override
   protected EntityApplicationModel initializeApplicationModel(final EntityDbProvider dbProvider) throws CancelException {
-    return new EntityApplicationModel(dbProvider) {
+    return new DefaultEntityApplicationModel(dbProvider) {
       @Override
       protected void loadDomainModel() {
         new Chinook();

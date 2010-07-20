@@ -5,8 +5,9 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.criteria.CriteriaSet;
-import org.jminor.common.model.AbstractSearchModel;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.Refreshable;
+import org.jminor.common.model.SearchModel;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
 import org.jminor.framework.db.provider.EntityDbProvider;
@@ -46,7 +47,19 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
   private String searchStateOnRefresh;
 
   /**
-   * Instantiates a new EntityTableSearchModel
+   * Instantiates a new DefaultEntityTableSearchModel
+   * @param entityID the ID of the underlying entity
+   * @param dbProvider a EntityDbProvider instance, required if <code>searchableProperties</code> include
+   * foreign key properties
+   * assumed to belong to the entity identified by <code>entityID</code>
+   * @param simpleSearch if true then search panels based on this search model should implement a simplified search
+   */
+  public DefaultEntityTableSearchModel(final String entityID, final EntityDbProvider dbProvider, final boolean simpleSearch) {
+    this(entityID, dbProvider, new ArrayList<Property>(EntityRepository.getVisibleProperties(entityID)), simpleSearch);
+  }
+
+  /**
+   * Instantiates a new DefaultEntityTableSearchModel
    * @param entityID the ID of the underlying entity
    * @param dbProvider a EntityDbProvider instance, required if <code>searchableProperties</code> include
    * foreign key properties
@@ -75,8 +88,15 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
     return simpleSearch;
   }
 
-  public List<Property> getProperties() {
-    return Collections.unmodifiableList(properties);
+  public List<Property.SearchableProperty> getSearchableProperties() {
+    final List<Property.SearchableProperty> searchProperties = new ArrayList<Property.SearchableProperty>();
+    for (final Property property : properties) {
+      if (property instanceof Property.SearchableProperty) {
+        searchProperties.add((Property.SearchableProperty) property);
+      }
+    }
+
+    return searchProperties;
   }
 
   public void setSearchModelState() {
@@ -101,7 +121,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
    * @return true if the entity should be included or filtered
    */
   public boolean include(final Entity item) {
-    for (final AbstractSearchModel columnFilter : propertyFilterModels.values()) {
+    for (final SearchModel<Property> columnFilter : propertyFilterModels.values()) {
       if (columnFilter.isSearchEnabled() && !columnFilter.include(item)) {
         return false;
       }
@@ -110,25 +130,25 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
     return true;
   }
 
-  public void refreshSearchComboBoxModels() {
+  public void refresh() {
     for (final PropertySearchModel model : propertySearchModels.values()) {
-      if (model.getEntityComboBoxModel() != null) {
-        model.getEntityComboBoxModel().refresh();
+      if (model instanceof Refreshable) {
+        ((Refreshable) model).refresh();
       }
     }
   }
 
-  public void clearSearchComboBoxModels() {
+  public void clear() {
     for (final PropertySearchModel model : propertySearchModels.values()) {
-      if (model.getEntityComboBoxModel() != null) {
-        model.getEntityComboBoxModel().clear();
+      if (model instanceof Refreshable) {
+        ((Refreshable) model).clear();
       }
     }
   }
 
   public void clearPropertySearchModels() {
-    for (final AbstractSearchModel searchModel : propertySearchModels.values()) {
-      searchModel.clear();
+    for (final PropertySearchModel searchModel : propertySearchModels.values()) {
+      searchModel.clearSearch();
     }
   }
 
@@ -145,7 +165,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
       return propertySearchModels.get(propertyID);
     }
 
-    throw new RuntimeException("PropertySearchModel not found for property with ID: " + propertyID);
+    throw new RuntimeException("SearchModel not found for property with ID: " + propertyID);
   }
 
   public boolean isSearchEnabled(final String propertyID) {
@@ -160,10 +180,12 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
     final String searchState = getSearchModelState();
     if (containsPropertySearchModel(propertyID)) {
       final PropertySearchModel searchModel = getPropertySearchModel(propertyID);
-      searchModel.initialize();
-      searchModel.setSearchEnabled(values != null && values.size() > 0);
+      if (searchModel instanceof ForeignKeySearchModel) {
+        ((ForeignKeySearchModel) searchModel).initialize();
+      }
+      searchModel.setSearchEnabled(values != null && !values.isEmpty());
       searchModel.setUpperBound((Object) null);//because the upperBound could be a reference to the active entity which changes accordingly
-      searchModel.setUpperBound(values != null && values.size() == 0 ? null : values);//this then fails to register a changed upper bound
+      searchModel.setUpperBound(values != null && values.isEmpty() ? null : values);//this then fails to register a changed upper bound
     }
     return !searchState.equals(getSearchModelState());
   }
@@ -180,11 +202,11 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
     }
   }
 
-  public Criteria<Property> getSearchCriteria() {
-    final CriteriaSet<Property> criteriaSet = new CriteriaSet<Property>(searchConjunction);
-    for (final AbstractSearchModel criteria : propertySearchModels.values()) {
+  public Criteria<Property.ColumnProperty> getSearchCriteria() {
+    final CriteriaSet<Property.ColumnProperty> criteriaSet = new CriteriaSet<Property.ColumnProperty>(searchConjunction);
+    for (final PropertySearchModel criteria : propertySearchModels.values()) {
       if (criteria.isSearchEnabled()) {
-        criteriaSet.addCriteria(((PropertySearchModel) criteria).getPropertyCriteria());
+        criteriaSet.addCriteria(criteria.getCriteria());
       }
     }
 
@@ -219,8 +241,8 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
    */
   protected Map<String, PropertySearchModel> initializePropertySearchModels(final EntityDbProvider dbProvider) {
     final Map<String, PropertySearchModel> searchModels = new HashMap<String, PropertySearchModel>();
-    for (final Property property : properties) {
-      final PropertySearchModel searchModel = initializePropertySearchModel(property, dbProvider);
+    for (final Property.SearchableProperty property : getSearchableProperties()) {
+      final PropertySearchModel<? extends Property> searchModel = initializePropertySearchModel(property, dbProvider);
       if (searchModel != null) {
         searchModels.put(property.getPropertyID(), searchModel);
       }
@@ -235,30 +257,28 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
    * @param dbProvider the EntityDbProvider instance to use in case the property is a ForeignKeyProperty
    * @return a PropertySearchModel for the given property, null if this property is not searchable or if searching
    * should not be allowed for this property
-   * @see org.jminor.framework.domain.Property#isSearchable()
    */
-  protected PropertySearchModel initializePropertySearchModel(final Property property, final EntityDbProvider dbProvider) {
-    if (!property.isSearchable()) {
-      return null;
-    }
-
+  protected PropertySearchModel<? extends Property> initializePropertySearchModel(
+          final Property.SearchableProperty property, final EntityDbProvider dbProvider) {
     if (property instanceof Property.ForeignKeyProperty) {
-      if (EntityRepository.isLargeDataset(((Property.ForeignKeyProperty) property).getReferencedEntityID())) {
-        final EntityLookupModel lookupModel = new DefaultEntityLookupModel(((Property.ForeignKeyProperty) property).getReferencedEntityID(),
-                dbProvider, getSearchProperties(((Property.ForeignKeyProperty) property).getReferencedEntityID()));
+      final Property.ForeignKeyProperty fkProperty = (Property.ForeignKeyProperty) property;
+      if (EntityRepository.isLargeDataset(fkProperty.getReferencedEntityID())) {
+        final EntityLookupModel lookupModel = new DefaultEntityLookupModel(fkProperty.getReferencedEntityID(),
+                dbProvider, getSearchProperties(fkProperty.getReferencedEntityID()));
         lookupModel.setMultipleSelectionAllowed(true);
-        return new PropertySearchModel(property, lookupModel);
+        return new DefaultForeignKeySearchModel(fkProperty, lookupModel);
       }
       else {
-        final EntityComboBoxModel comboBoxModel = new DefaultEntityComboBoxModel(((Property.ForeignKeyProperty)
-                property).getReferencedEntityID(), dbProvider);
+        final EntityComboBoxModel comboBoxModel = new DefaultEntityComboBoxModel(fkProperty.getReferencedEntityID(), dbProvider);
         comboBoxModel.setNullValueString("");
-        return new PropertySearchModel(property, comboBoxModel);
+        return new DefaultForeignKeySearchModel(fkProperty, comboBoxModel);
       }
     }
-    else {
-      return new PropertySearchModel(property);
+    else if (property instanceof Property.ColumnProperty) {
+      return new DefaultPropertySearchModel((Property.ColumnProperty) property);
     }
+
+    throw new RuntimeException("Not a searchable property (Property.ColumnProperty or PropertyForeignKeyProperty): " + property);
   }
 
   /**
@@ -281,7 +301,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
    * @return a PropertyFilterModel for the given property
    */
   protected PropertyFilterModel initializePropertyFilterModel(final Property property) {
-    return new PropertyFilterModel(property);
+    return new DefaultPropertyFilterModel(property);
   }
 
   private void bindEvents() {
@@ -307,16 +327,16 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
     return stringBuilder.toString();
   }
 
-  private List<Property> getSearchProperties(final String entityID) {
+  private List<Property.ColumnProperty> getSearchProperties(final String entityID) {
     final Collection<String> searchPropertyIDs = EntityRepository.getEntitySearchPropertyIDs(entityID);
 
-    return searchPropertyIDs == null ? getStringProperties(entityID) : EntityRepository.getProperties(entityID, searchPropertyIDs);
+    return searchPropertyIDs == null ? getStringProperties(entityID) : EntityRepository.getSearchProperties(entityID, searchPropertyIDs);
   }
 
-  private List<Property> getStringProperties(final String entityID) {
-    final Collection<Property> databaseProperties = EntityRepository.getDatabaseProperties(entityID);
-    final List<Property> stringProperties = new ArrayList<Property>();
-    for (final Property property : databaseProperties) {
+  private List<Property.ColumnProperty> getStringProperties(final String entityID) {
+    final Collection<Property.ColumnProperty> databaseProperties = EntityRepository.getColumnProperties(entityID);
+    final List<Property.ColumnProperty> stringProperties = new ArrayList<Property.ColumnProperty>();
+    for (final Property.ColumnProperty property : databaseProperties) {
       if (property.isString()) {
         stringProperties.add(property);
       }

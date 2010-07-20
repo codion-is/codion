@@ -38,7 +38,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
   /**
    * The properties to use when doing the lookup
    */
-  private final List<Property> lookupProperties;
+  private final List<Property.ColumnProperty> lookupProperties;
 
   /**
    * The selected entities
@@ -65,7 +65,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
    * @param dbProvider the EntityDbProvider to use when performing the lookup
    * @param lookupProperties the properties to search by, these must be string based
    */
-  public DefaultEntityLookupModel(final String entityID, final EntityDbProvider dbProvider, final List<Property> lookupProperties) {
+  public DefaultEntityLookupModel(final String entityID, final EntityDbProvider dbProvider, final List<Property.ColumnProperty> lookupProperties) {
     Util.rejectNullValue(entityID, "entityID");
     Util.rejectNullValue(dbProvider, "dbProvider");
     Util.rejectNullValue(lookupProperties, "lookupProperties");
@@ -85,7 +85,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
   /**
    * @return a list containing the properties used when performing a lookup
    */
-  public List<Property> getLookupProperties() {
+  public List<Property.ColumnProperty> getLookupProperties() {
     return Collections.unmodifiableList(lookupProperties);
   }
 
@@ -106,7 +106,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
   }
 
   public void setSelectedEntities(final List<Entity> entities) {
-    if ((entities == null || entities.size() == 0) && this.selectedEntities.size() == 0) {
+    if ((entities == null || entities.isEmpty()) && this.selectedEntities.isEmpty()) {
       return;
     }//no change
     if (entities != null && entities.size() > 1 && !multipleSelectionAllowed) {
@@ -184,7 +184,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
   }
 
   public void refreshSearchText() {
-    setSearchString(getSelectedEntities().size() == 0 ? "" : toString(getSelectedEntities()));
+    setSearchString(selectedEntities.isEmpty() ? "" : toString(getSelectedEntities()));
   }
 
   public void setSearchString(final String searchString) {
@@ -198,8 +198,8 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
 
   public boolean searchStringRepresentsSelected() {
     final String selectedAsString = toString(getSelectedEntities());
-    return (getSelectedEntities().size() == 0 && searchString.length() == 0)
-            || getSelectedEntities().size() > 0 && selectedAsString.equals(searchString);
+    return (selectedEntities.isEmpty() && searchString.length() == 0)
+            || !selectedEntities.isEmpty() && selectedAsString.equals(searchString);
   }
 
   public List<Entity> performQuery() {
@@ -228,9 +228,9 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
       return EntityCriteriaUtil.selectCriteria(entityID);
     }
 
-    final CriteriaSet<Property> baseCriteria = new CriteriaSet<Property>(CriteriaSet.Conjunction.OR);
+    final CriteriaSet<Property.ColumnProperty> baseCriteria = new CriteriaSet<Property.ColumnProperty>(CriteriaSet.Conjunction.OR);
     final String[] lookupTexts = multipleSelectionAllowed ? searchString.split(multipleValueSeparator) : new String[] {searchString};
-    for (final Property lookupProperty : lookupProperties) {
+    for (final Property.ColumnProperty lookupProperty : lookupProperties) {
       for (final String lookupText : lookupTexts) {
         final String modifiedLookupText = (wildcardPrefix ? wildcard : "") + lookupText + (wildcardPostfix ? wildcard : "");
         baseCriteria.addCriteria(EntityCriteriaUtil.propertyCriteria(lookupProperty, caseSensitive, SearchType.LIKE, modifiedLookupText));
@@ -238,7 +238,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
     }
 
     return EntityCriteriaUtil.selectCriteria(entityID, additionalLookupCriteria == null ? baseCriteria :
-            new CriteriaSet<Property>(CriteriaSet.Conjunction.AND, additionalLookupCriteria, baseCriteria));
+            new CriteriaSet<Property.ColumnProperty>(CriteriaSet.Conjunction.AND, additionalLookupCriteria, baseCriteria));
   }
 
   private String toString(final List<Entity> entityList) {

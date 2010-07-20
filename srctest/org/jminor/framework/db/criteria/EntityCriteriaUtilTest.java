@@ -2,6 +2,7 @@ package org.jminor.framework.db.criteria;
 
 import org.jminor.common.model.SearchType;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 
 import static org.junit.Assert.assertEquals;
@@ -19,7 +20,7 @@ public class EntityCriteriaUtilTest {
 
   @Test
   public void criteria() {
-    final Entity entity = new Entity(EmpDept.T_DEPARTMENT);
+    final Entity entity = Entities.entityInstance(EmpDept.T_DEPARTMENT);
     entity.setValue(EmpDept.DEPARTMENT_ID, 10);
 
     EntityCriteria criteria = EntityCriteriaUtil.criteria(entity.getPrimaryKey());
@@ -37,7 +38,7 @@ public class EntityCriteriaUtilTest {
 
   @Test
   public void selectCriteria() {
-    final Entity entity = new Entity(EmpDept.T_DEPARTMENT);
+    final Entity entity = Entities.entityInstance(EmpDept.T_DEPARTMENT);
     entity.setValue(EmpDept.DEPARTMENT_ID, 10);
 
     EntitySelectCriteria criteria = EntityCriteriaUtil.selectCriteria(entity.getPrimaryKey());

@@ -16,15 +16,15 @@ import org.junit.Test;
  * Date: 11.10.2009
  * Time: 21:44:41
  */
-public class PropertyComboBoxModelTest {
+public class DefaultPropertyComboBoxModelTest {
 
   private final PropertyComboBoxModel comboBoxModel;
   private final Event refreshEvent = new Event();
 
-  public PropertyComboBoxModelTest() {
+  public DefaultPropertyComboBoxModelTest() {
     new EmpDept();
-    comboBoxModel = new PropertyComboBoxModel(EmpDept.T_DEPARTMENT,
-            EntityDbConnectionTest.DB_PROVIDER, EntityRepository.getProperty(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME),
+    comboBoxModel = new DefaultPropertyComboBoxModel(EmpDept.T_DEPARTMENT,
+            EntityDbConnectionTest.DB_PROVIDER, EntityRepository.getColumnProperty(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME),
             null, refreshEvent);
   }
 

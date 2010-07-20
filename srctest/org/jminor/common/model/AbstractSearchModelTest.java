@@ -16,9 +16,7 @@ public class AbstractSearchModelTest {
       }
     };
     assertEquals("test", model.getSearchKey());
-
-    model.setCaseSensitive(true);
-    assertTrue(model.isCaseSensitive());
+    
     model.setAutomaticWildcard(true);
     assertTrue(model.isAutomaticWildcard());
 

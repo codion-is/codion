@@ -223,7 +223,7 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * @param additionalSearchCriteria an additional search criteria applied when performing the lookup
    * @return a EntityLookupModel
    */
-  EntityLookupModel createEntityLookupModel(final String entityID, final List<Property> lookupProperties,
+  EntityLookupModel createEntityLookupModel(final String entityID, final List<Property.ColumnProperty> lookupProperties,
                                             final Criteria additionalSearchCriteria);
 
   /**
@@ -236,14 +236,14 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * has been initialized for the given property, a new one is created and associated with
    * the property, to be returned the next time this method is called
    */
-  ComboBoxModel initializePropertyComboBoxModel(final Property property, final Event refreshEvent, final String nullValueString);
+  ComboBoxModel initializePropertyComboBoxModel(final Property.ColumnProperty property, final Event refreshEvent, final String nullValueString);
 
   /**
    * @param property the property for which to get the ComboBoxModel
    * @return a PropertyComboBoxModel representing <code>property</code>
    * @throws RuntimeException if no combo box has been initialized for the given property
    */
-  PropertyComboBoxModel getPropertyComboBoxModel(final Property property);
+  PropertyComboBoxModel getPropertyComboBoxModel(final Property.ColumnProperty property);
 
   /**
    * Returns true if this edit model contains a ComboBoxModel for the given property
@@ -298,7 +298,7 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * @param nullValueString the string to use as a null value caption
    * @return a combo box model based on the given property
    */
-  PropertyComboBoxModel createPropertyComboBoxModel(final Property property, final Event refreshEvent,
+  PropertyComboBoxModel createPropertyComboBoxModel(final Property.ColumnProperty property, final Event refreshEvent,
                                                     final String nullValueString);
 
   /**

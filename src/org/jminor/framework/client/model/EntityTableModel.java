@@ -73,7 +73,7 @@ public interface EntityTableModel extends FilteredTableModel<Entity>, EntityData
    * @param referenceEntities the entities to use as criteria values
    * @see #isDetailModel()
    */
-  public void searchByForeignKeyValues(final String referencedEntityID, final List<Entity> referenceEntities);
+  void searchByForeignKeyValues(final String referencedEntityID, final List<Entity> referenceEntities);
 
   /**
    * Retrieves the entities identified by the given primary keys and adds them to this table model
@@ -156,7 +156,7 @@ public interface EntityTableModel extends FilteredTableModel<Entity>, EntityData
   /**
    * @param row the row for which to retrieve the background color
    * @return the background color for this row, specified by the row entity
-   * @see org.jminor.framework.domain.Entity.Proxy#getBackgroundColor(org.jminor.framework.domain.Entity)
+   * @see org.jminor.framework.domain.EntityRepository.Proxy#getBackgroundColor(org.jminor.framework.domain.Entity)
    * @see org.jminor.framework.client.ui.EntityTableCellRenderer
    */
   Color getRowBackgroundColor(final int row);
@@ -254,7 +254,7 @@ public interface EntityTableModel extends FilteredTableModel<Entity>, EntityData
    * @param selectedOnly if true only values from the selected entities are returned
    * @return the values of <code>property</code> from the entities in the table model
    */
-  public Collection<Object> getValues(final Property property, final boolean selectedOnly);
+  Collection<Object> getValues(final Property property, final boolean selectedOnly);
 
   /**
    * @param primaryKey the primary key to search by

@@ -121,12 +121,13 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
 
   public DefaultEntityTableModel(final String entityID, final EntityDbProvider dbProvider,
                                  final EntityTableColumnModel columnModel) {
-    this(entityID, dbProvider, new DefaultEntityTableSearchModel(entityID, dbProvider, columnModel.getColumnProperties(), false));
+    this(entityID, dbProvider, columnModel, new DefaultEntityTableSearchModel(entityID, dbProvider, false));
   }
 
   public DefaultEntityTableModel(final String entityID, final EntityDbProvider dbProvider,
+                                 final EntityTableColumnModel columnModel,
                                  final EntityTableSearchModel searchModel) {
-    super(new DefaultEntityTableColumnModel(entityID, searchModel.getProperties()));
+    super(columnModel);
     this.entityID = entityID;
     this.dbProvider = dbProvider;
     this.searchModel = searchModel;
@@ -329,7 +330,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
   public Color getRowBackgroundColor(final int row) {
     final Entity rowEntity = getItemAt(row);
 
-    return Entity.getProxy(rowEntity.getEntityID()).getBackgroundColor(rowEntity);
+    return EntityRepository.getProxy(rowEntity.getEntityID()).getBackgroundColor(rowEntity);
   }
 
   public Collection<Object> getValues(final Property property, final boolean selectedOnly) {
@@ -420,7 +421,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
 
   public void searchByForeignKeyValues(final String referencedEntityID, final List<Entity> referenceEntities) {
     final List<Property.ForeignKeyProperty> properties = EntityRepository.getForeignKeyProperties(entityID, referencedEntityID);
-    if (properties.size() > 0 && isDetailModel && searchModel.setSearchValues(properties.get(0).getPropertyID(), referenceEntities)) {
+    if (!properties.isEmpty() && isDetailModel && searchModel.setSearchValues(properties.get(0).getPropertyID(), referenceEntities)) {
       refresh();
     }
   }
@@ -513,22 +514,22 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
 
   public PropertySummaryModel getPropertySummaryModel(final Property property) {
     if (!propertySummaryModels.containsKey(property.getPropertyID())) {
-      propertySummaryModels.put(property.getPropertyID(), new PropertySummaryModel(property,
-              new PropertySummaryModel.PropertyValueProvider() {
-                public void bindValuesChangedEvent(final Event event) {
-                  eventFilteringDone().addListener(event);//todo summary is updated twice per refresh and should update on insert
-                  eventRefreshDone().addListener(event);
-                  eventSelectionChanged().addListener(event);
-                }
+      final PropertySummaryModel.PropertyValueProvider valueProvider = new PropertySummaryModel.PropertyValueProvider() {
+        public void bindValuesChangedEvent(final Event event) {
+          eventFilteringDone().addListener(event);//todo summary is updated twice per refresh and should update on insert
+          eventRefreshDone().addListener(event);
+          eventSelectionChanged().addListener(event);
+        }
 
-                public Collection<?> getValues() {
-                  return DefaultEntityTableModel.this.getValues(property, isValueSubset());
-                }
+        public Collection<?> getValues() {
+          return DefaultEntityTableModel.this.getValues(property, isValueSubset());
+        }
 
-                public boolean isValueSubset() {
-                  return !stateSelectionEmpty().isActive();
-                }
-              }));
+        public boolean isValueSubset() {
+          return !stateSelectionEmpty().isActive();
+        }
+      };
+      propertySummaryModels.put(property.getPropertyID(), new DefaultPropertySummaryModel(property, valueProvider));
     }
 
     return propertySummaryModels.get(property.getPropertyID());
@@ -569,7 +570,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
    * @return entities selected from the database according the the query criteria.
    * @see #getQueryCriteria()
    */
-  protected List<Entity> performQuery(final Criteria<Property> criteria) {
+  protected List<Entity> performQuery(final Criteria<Property.ColumnProperty> criteria) {
     if (isDetailModel && criteria == null && queryCriteriaRequired) {
       return new ArrayList<Entity>();
     }
@@ -607,9 +608,9 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
    * table models data is queried, the default implementation returns
    * the result retrieved via the <code>getSearchCriteria()</code> method
    * found in the underlying EntityTableSearchModel
-   * @see DefaultEntityTableSearchModel#getSearchCriteria()
+   * @see EntityTableSearchModel#getSearchCriteria()
    */
-  protected Criteria<Property> getQueryCriteria() {
+  protected Criteria<Property.ColumnProperty> getQueryCriteria() {
     return searchModel.getSearchCriteria();
   }
 

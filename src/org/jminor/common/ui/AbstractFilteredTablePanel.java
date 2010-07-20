@@ -12,7 +12,19 @@ import org.jminor.common.ui.control.Control;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.textfield.SearchFieldHint;
 
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.BorderFactory;
+import javax.swing.Icon;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.UIManager;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
@@ -318,16 +330,16 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
       this.priority = priority;
     }
 
-    public void paintIcon(Component c, Graphics g, int x, int y) {
+    public void paintIcon(final Component c, final Graphics g, final int x, final int y) {
       Color color = c == null ? Color.GRAY : c.getBackground();
       // In a compound sort, make each succesive triangle 20%
       // smaller than the previous one.
       int dx = (int)(size/2*Math.pow(0.8, priority));
       int dy = descending ? dx : -dx;
       // Align icon (roughly) with font baseline.
-      y = y + 5*size/6 + (descending ? -dy : 0);
+      int theY = y + 5*size/6 + (descending ? -dy : 0);
       int shift = descending ? 1 : -1;
-      g.translate(x, y);
+      g.translate(x, theY);
 
       // Right diagonal.
       g.setColor(color.darker());
@@ -348,7 +360,7 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
       g.drawLine(dx, 0, 0, 0);
 
       g.setColor(color);
-      g.translate(-x, -y);
+      g.translate(-x, -theY);
     }
 
     public int getIconWidth() {

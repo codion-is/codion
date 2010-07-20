@@ -10,7 +10,7 @@ import java.io.Serializable;
  * Date: 14.7.2010<br>
  * Time: 23:12:21
  */
-public class DbConnectionPoolState implements ConnectionPoolState, Serializable {
+public class ConnectionPoolStateImpl implements ConnectionPoolState, Serializable {
 
   private static final long serialVersionUID = 1;
 
@@ -18,7 +18,7 @@ public class DbConnectionPoolState implements ConnectionPoolState, Serializable 
   private int connectionCount;
   private int connectionsInUse;
 
-  public DbConnectionPoolState(final long time, final int connectionCount, final int connectionsInUse) {
+  public ConnectionPoolStateImpl(final long time, final int connectionCount, final int connectionsInUse) {
     set(time, connectionCount, connectionsInUse);
   }
 

@@ -27,7 +27,7 @@ public class EmpDeptApplet extends EntityApplet {
       @Override
       protected void configureTableModel(final EntityTableModel tableModel) {
         tableModel.setQueryCriteriaRequired(true);
-        tableModel.getPropertySummaryModel(EmpDept.EMPLOYEE_SALARY).setSummaryType(PropertySummaryModel.AVERAGE);
+        tableModel.getPropertySummaryModel(EmpDept.EMPLOYEE_SALARY).setSummaryType(PropertySummaryModel.SummaryType.AVERAGE);
       }
 
       @Override

@@ -92,19 +92,19 @@ public class EntityTableSearchSimplePanel extends JPanel implements EntityTableS
   private Collection<Property> getSearchableProperties() {
     final Collection<Property> searchableProperties = new ArrayList<Property>();
     final Collection<String> defaultSearchPropertyIDs = EntityRepository.getEntitySearchPropertyIDs(searchModel.getEntityID());
-    if (defaultSearchPropertyIDs.size() > 0) {
+    if (!defaultSearchPropertyIDs.isEmpty()) {
       for (final String propertyID : defaultSearchPropertyIDs) {
         searchableProperties.add(EntityRepository.getProperty(searchModel.getEntityID(), propertyID));
       }
     }
     else {
-      for (final Property property : EntityRepository.getDatabaseProperties(searchModel.getEntityID())) {
+      for (final Property property : EntityRepository.getColumnProperties(searchModel.getEntityID())) {
         if (property.isString() && !property.isHidden()) {
           searchableProperties.add(property);
         }
       }
     }
-    if (searchableProperties.size() == 0) {
+    if (searchableProperties.isEmpty()) {
       throw new RuntimeException("Unable to create a simple search panel for entity: "
               + searchModel.getEntityID() + ", no STRING based properties found");
     }

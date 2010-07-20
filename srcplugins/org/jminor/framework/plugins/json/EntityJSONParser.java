@@ -6,6 +6,7 @@ package org.jminor.framework.plugins.json;
 import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.Deserializer;
 import org.jminor.common.model.Serializer;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
@@ -86,7 +87,7 @@ public class EntityJSONParser implements Serializer<Entity>, Deserializer<Entity
           originalValueMap.put(propertyID, parseJSONValue(entityID, propertyID, originalValues));
         }
       }
-      entities.add(Entity.initialize(entityID, propertyValueMap, originalValueMap));
+      entities.add(Entities.entityInstance(entityID, propertyValueMap, originalValueMap));
     }
 
     return entities;

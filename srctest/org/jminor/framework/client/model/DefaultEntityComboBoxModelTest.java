@@ -91,7 +91,8 @@ public class DefaultEntityComboBoxModelTest {
     comboBoxModel.clear();
     assertTrue(comboBoxModel.getSize() == 0);
 
-    comboBoxModel.setEntitySelectCriteria(EntityCriteriaUtil.selectCriteria(EmpDept.T_EMPLOYEE, new SimpleCriteria<Property>(" ename = 'CLARK'")));
+    comboBoxModel.setEntitySelectCriteria(EntityCriteriaUtil.selectCriteria(EmpDept.T_EMPLOYEE,
+            new SimpleCriteria<Property.ColumnProperty>(" ename = 'CLARK'")));
     comboBoxModel.setForeignKeyFilterEntities(EmpDept.EMPLOYEE_DEPARTMENT_FK, null);
 
     comboBoxModel.forceRefresh();

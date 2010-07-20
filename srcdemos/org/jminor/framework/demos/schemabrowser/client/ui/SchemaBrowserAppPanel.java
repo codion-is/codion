@@ -7,6 +7,7 @@ import org.jminor.common.model.CancelException;
 import org.jminor.common.model.User;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.framework.Configuration;
+import org.jminor.framework.client.model.DefaultEntityApplicationModel;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.ui.EntityApplicationPanel;
 import org.jminor.framework.client.ui.EntityPanelProvider;
@@ -38,7 +39,7 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel {
 
   @Override
   protected EntityApplicationModel initializeApplicationModel(final EntityDbProvider dbProvider) throws CancelException {
-    return new EntityApplicationModel(dbProvider) {
+    return new DefaultEntityApplicationModel(dbProvider) {
       @Override
       protected void loadDomainModel() {
         new SchemaBrowser();

@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.tools;
 
-import org.jminor.common.db.DbConnection;
+import org.jminor.common.db.DbConnectionImpl;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.dbms.DatabaseProvider;
 import org.jminor.common.model.CancelException;
@@ -84,13 +84,14 @@ public final class DomainClassGenerator {
   public static String getDomainClass(final String domainClassName, final String schema, final String packageName,
                                       final String username, final String password, final String tableList) throws Exception {
     Util.rejectNullValue(schema, "schema");
-    final DbConnection dbConnection = new DbConnection(DatabaseProvider.createInstance(), new User(username, password));
+    final DbConnectionImpl dbConnection = new DbConnectionImpl(DatabaseProvider.createInstance(), new User(username, password));
     try {
 
       final StringBuilder builder = new StringBuilder("package ").append(packageName).append(";\n\n");
 
       builder.append("import org.jminor.framework.domain.EntityDefinition;\n");
       builder.append("import org.jminor.framework.domain.EntityRepository;\n");
+      builder.append("import org.jminor.framework.domain.Properties;\n\n");
       builder.append("import org.jminor.framework.domain.Property;\n\n");
       builder.append("import java.sql.Types;\n\n");
 
@@ -100,7 +101,7 @@ public final class DomainClassGenerator {
 
       final List<Table> tablesToProcess = new TablePacker(tableList).pack(metaData.getTables(null, schema, null, null), -1);
 
-      if (tablesToProcess.size() == 0) {
+      if (tablesToProcess.isEmpty()) {
         throw new IllegalArgumentException("No tables to process");
       }
 
@@ -168,14 +169,14 @@ public final class DomainClassGenerator {
   private static String getPropertyDefinition(final Table table, final Column column) {
     String ret;
     if (column.foreignKey != null) {
-      ret = "        new Property.ForeignKeyProperty(" + getPropertyID(table, column, true) + ", \"Caption\", " + getEntityID(column.foreignKey.getReferencedTable()) + ",\n"
-              + "                new Property(" + getPropertyID(table, column, false) + ", " + column.columnType + "))";
+      ret = "        Properties.foreignKeyProperty(" + getPropertyID(table, column, true) + ", \"Caption\", " + getEntityID(column.foreignKey.getReferencedTable()) + ",\n"
+              + "                Properties.columnProperty(" + getPropertyID(table, column, false) + ", " + column.columnType + "))";
     }
     else if (column.primaryKey != null) {
-      ret = "        new Property.PrimaryKeyProperty(" + getPropertyID(table, column, false) + ", " + column.columnType + ")";
+      ret = "        Properties.primaryKeyProperty(" + getPropertyID(table, column, false) + ", " + column.columnType + ")";
     }
     else {
-      ret = "        new Property(" + getPropertyID(table, column, false) + ", " + column.columnType + ", \"Caption\")";
+      ret = "        Properties.columnProperty(" + getPropertyID(table, column, false) + ", " + column.columnType + ", \"Caption\")";
     }
 
     if (column.nullable == DatabaseMetaData.columnNoNulls && column.primaryKey == null) {

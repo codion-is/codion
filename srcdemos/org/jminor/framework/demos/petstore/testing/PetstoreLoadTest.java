@@ -6,6 +6,7 @@ package org.jminor.framework.demos.petstore.testing;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.User;
 import org.jminor.common.ui.LoadTestPanel;
+import org.jminor.framework.client.model.DefaultEntityApplicationModel;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.demos.petstore.domain.Petstore;
@@ -52,7 +53,7 @@ public class PetstoreLoadTest extends EntityLoadTestModel {
 
   @Override
   protected EntityApplicationModel initializeApplication() throws CancelException {
-    final EntityApplicationModel applicationModel = new EntityApplicationModel(new EntityDbRemoteProvider(getUser(),
+    final EntityApplicationModel applicationModel = new DefaultEntityApplicationModel(new EntityDbRemoteProvider(getUser(),
             UUID.randomUUID(), getClass().getSimpleName())) {
       @Override
       protected void loadDomainModel() {

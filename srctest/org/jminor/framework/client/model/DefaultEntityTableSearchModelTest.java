@@ -30,17 +30,17 @@ public class DefaultEntityTableSearchModelTest {
     final EntityTableModel tableModel = new DefaultEntityTableModel(EmpDept.T_EMPLOYEE, EntityDbConnectionTest.DB_PROVIDER);
     final EntityTableSearchModel model = tableModel.getSearchModel();
     assertEquals(EmpDept.T_EMPLOYEE, model.getEntityID());
-    assertNotNull(model.getProperties());
+    assertNotNull(model.getSearchableProperties());
     assertEquals(false, model.isSimpleSearch());
     model.setSearchConjunction(CriteriaSet.Conjunction.OR);
     assertEquals(CriteriaSet.Conjunction.OR, model.getSearchConjunction());
     assertEquals(9, model.getPropertyFilterModels().size());
     assertEquals(8, model.getPropertySearchModels().size());
 
-    model.refreshSearchComboBoxModels();
-    assertTrue(model.getPropertySearchModel(EmpDept.EMPLOYEE_DEPARTMENT_FK).getEntityComboBoxModel().getSize() > 1);
-    model.clearSearchComboBoxModels();
-    assertTrue(model.getPropertySearchModel(EmpDept.EMPLOYEE_DEPARTMENT_FK).getEntityComboBoxModel().getSize() == 0);
+    model.refresh();
+    assertTrue(((ForeignKeySearchModel) model.getPropertySearchModel(EmpDept.EMPLOYEE_DEPARTMENT_FK)).getEntityComboBoxModel().getSize() > 1);
+    model.clear();
+    assertTrue(((ForeignKeySearchModel) model.getPropertySearchModel(EmpDept.EMPLOYEE_DEPARTMENT_FK)).getEntityComboBoxModel().getSize() == 0);
 
     assertFalse(model.isFilterEnabled(EmpDept.EMPLOYEE_DEPARTMENT_FK));
     assertFalse(model.isSearchEnabled(EmpDept.EMPLOYEE_DEPARTMENT_FK));

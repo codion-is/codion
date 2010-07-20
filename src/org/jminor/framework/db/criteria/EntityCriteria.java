@@ -22,7 +22,7 @@ public interface EntityCriteria extends Serializable {
   /**
    * @return the Criteria object
    */
-  Criteria<Property> getCriteria();
+  Criteria<Property.ColumnProperty> getCriteria();
 
   /**
    * @return the where clause
@@ -43,5 +43,5 @@ public interface EntityCriteria extends Serializable {
   /**
    * @return the properties of the values the underlying criteria is based on, if any
    */
-  List<Property> getValueProperties();
+  List<Property.ColumnProperty> getValueProperties();
 }

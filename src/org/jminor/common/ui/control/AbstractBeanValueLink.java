@@ -32,7 +32,7 @@ public abstract class AbstractBeanValueLink extends AbstractValueLink<Object, Ob
       this.getMethod = getGetMethod();
     }
     catch (NoSuchMethodException e) {
-      throw new RuntimeException("Bean property methods for " + propertyName + " not found in class " + owner.getClass().getName(), e);
+      throw new RuntimeException("Bean property methods for " + propertyName + ", type: " + propertyClass + " not found in class " + owner.getClass().getName(), e);
     }
   }
 

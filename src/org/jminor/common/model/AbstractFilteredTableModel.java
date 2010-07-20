@@ -259,7 +259,7 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
   }
 
   public void moveSelectionUp() {
-    if (visibleItems.size() > 0) {
+    if (!visibleItems.isEmpty()) {
       if (getSelectionModel().isSelectionEmpty()) {
         getSelectionModel().setSelectionInterval(visibleItems.size() - 1, visibleItems.size() - 1);
       }
@@ -276,7 +276,7 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
   }
 
   public void moveSelectionDown() {
-    if (visibleItems.size() > 0) {
+    if (!visibleItems.isEmpty()) {
       if (getSelectionModel().isSelectionEmpty()) {
         getSelectionModel().setSelectionInterval(0, 0);
       }
@@ -375,7 +375,7 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
 
   private int modelIndex(int viewIndex) {
     final List<Row> model = getViewToModel();
-    if (model.size() > 0 && viewIndex >= 0 && viewIndex < model.size()) {
+    if (!model.isEmpty() && viewIndex >= 0 && viewIndex < model.size()) {
       return model.get(viewIndex).getModelIndex();
     }
 
@@ -419,7 +419,7 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
     return filterCriteria;
   }
 
-  public void setFilterCriteria(final FilterCriteria filterCriteria) {
+  public void setFilterCriteria(final FilterCriteria<T> filterCriteria) {
     if (filterCriteria == null) {
       this.filterCriteria = acceptAllCriteria;
     }
@@ -699,7 +699,7 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
 
   private int viewIndex(final int modelIndex) {
     final Map<Integer, Integer> view = getModelToView();
-    if (view.size() > 0 && modelIndex >= 0 && modelIndex < view.size()) {
+    if (!view.isEmpty() && modelIndex >= 0 && modelIndex < view.size()) {
       return view.get(modelIndex);
     }
 
@@ -707,7 +707,7 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
   }
 
   private List<Row> getViewToModel() {
-    if (visibleItems.size() > 0 && viewToModel.size() == 0) {
+    if (!visibleItems.isEmpty() && viewToModel.isEmpty()) {
       final int tableModelRowCount = getRowCount();
       for (int row = 0; row < tableModelRowCount; row++) {
         viewToModel.add(new Row(row));
@@ -721,7 +721,7 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
   }
 
   private boolean isSorted() {
-    return sortingStates.size() > 0;
+    return !sortingStates.isEmpty();
   }
 
   private SortingState getSortingState(final int column) {
@@ -741,7 +741,7 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
   }
 
   private Map<Integer, Integer> getModelToView() {
-    if (visibleItems.size() > 0 && modelToView.size() == 0) {
+    if (!visibleItems.isEmpty() && modelToView.isEmpty()) {
       final int n = getViewToModel().size();
       for (int i = 0; i < n; i++) {
         modelToView.put(modelIndex(i), i);
@@ -889,7 +889,7 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
       }
       finally {
         isUpdatingSelection = false;
-        if (indexes.size() > 0) {
+        if (!indexes.isEmpty()) {
           final int lastIndex = indexes.get(indexes.size()-1);
           addSelectionInterval(lastIndex, lastIndex);
         }

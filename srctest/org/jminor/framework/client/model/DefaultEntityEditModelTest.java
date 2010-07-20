@@ -12,6 +12,7 @@ import org.jminor.framework.client.model.event.InsertEvent;
 import org.jminor.framework.client.model.event.UpdateEvent;
 import org.jminor.framework.db.EntityDbConnectionTest;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
@@ -132,7 +133,7 @@ public class DefaultEntityEditModelTest {
       editModel.setValue(EmpDept.EMPLOYEE_NAME, "Björn");
       editModel.setValue(EmpDept.EMPLOYEE_SALARY, 1000d);
 
-      Entity department = new Entity(EmpDept.T_DEPARTMENT);
+      Entity department = Entities.entityInstance(EmpDept.T_DEPARTMENT);
       department.setValue(EmpDept.DEPARTMENT_ID, 99);
       department.setValue(EmpDept.DEPARTMENT_LOCATION, "Limbo");
       department.setValue(EmpDept.DEPARTMENT_NAME, "Judgment");

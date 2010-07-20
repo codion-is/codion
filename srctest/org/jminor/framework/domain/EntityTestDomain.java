@@ -30,25 +30,25 @@ public class EntityTestDomain {
   public static final String DETAIL_SELECT_TABLE_NAME = "test.entity_test_select";
 
   static {
-    EntityRepository.add(new EntityDefinition(T_MASTER,
-            new Property.PrimaryKeyProperty(MASTER_ID),
-            new Property(MASTER_NAME, Types.VARCHAR),
-            new Property(MASTER_CODE, Types.INTEGER))
+    EntityRepository.add(Entities.define(T_MASTER,
+            Properties.primaryKeyProperty(MASTER_ID),
+            Properties.columnProperty(MASTER_NAME, Types.VARCHAR),
+            Properties.columnProperty(MASTER_CODE, Types.INTEGER))
             .setStringProvider(new StringProvider<String>(MASTER_NAME)));
 
-    EntityRepository.add(new EntityDefinition(T_DETAIL,
-            new Property.PrimaryKeyProperty(DETAIL_ID),
-            new Property(DETAIL_INT, Types.INTEGER, DETAIL_INT),
-            new Property(DETAIL_DOUBLE, Types.DOUBLE, DETAIL_DOUBLE),
-            new Property(DETAIL_STRING, Types.VARCHAR, DETAIL_STRING),
-            new Property(DETAIL_DATE, Types.DATE, DETAIL_DATE),
-            new Property(DETAIL_TIMESTAMP, Types.TIMESTAMP, DETAIL_TIMESTAMP),
-            new Property(DETAIL_BOOLEAN, Types.BOOLEAN, DETAIL_BOOLEAN).setDefaultValue(true),
-            new Property.ForeignKeyProperty(DETAIL_ENTITY_FK, DETAIL_ENTITY_FK, T_MASTER,
-                    new Property(DETAIL_ENTITY_ID)),
-            new Property.DenormalizedViewProperty(DETAIL_MASTER_NAME, DETAIL_ENTITY_FK,
+    EntityRepository.add(Entities.define(T_DETAIL,
+            Properties.primaryKeyProperty(DETAIL_ID),
+            Properties.columnProperty(DETAIL_INT, Types.INTEGER, DETAIL_INT),
+            Properties.columnProperty(DETAIL_DOUBLE, Types.DOUBLE, DETAIL_DOUBLE),
+            Properties.columnProperty(DETAIL_STRING, Types.VARCHAR, DETAIL_STRING),
+            Properties.columnProperty(DETAIL_DATE, Types.DATE, DETAIL_DATE),
+            Properties.columnProperty(DETAIL_TIMESTAMP, Types.TIMESTAMP, DETAIL_TIMESTAMP),
+            Properties.columnProperty(DETAIL_BOOLEAN, Types.BOOLEAN, DETAIL_BOOLEAN).setDefaultValue(true),
+            Properties.foreignKeyProperty(DETAIL_ENTITY_FK, DETAIL_ENTITY_FK, T_MASTER,
+                    Properties.columnProperty(DETAIL_ENTITY_ID)),
+            Properties.denormalizedViewProperty(DETAIL_MASTER_NAME, DETAIL_ENTITY_FK,
                     EntityRepository.getProperty(T_MASTER, MASTER_NAME), DETAIL_MASTER_NAME),
-            new Property.DenormalizedViewProperty(DETAIL_MASTER_CODE, DETAIL_ENTITY_FK,
+            Properties.denormalizedViewProperty(DETAIL_MASTER_CODE, DETAIL_ENTITY_FK,
                     EntityRepository.getProperty(T_MASTER, MASTER_CODE), DETAIL_MASTER_CODE))
             .setOrderByClause(DETAIL_STRING).setSelectTableName(DETAIL_SELECT_TABLE_NAME)
             .setStringProvider(new StringProvider<String>(DETAIL_STRING)));

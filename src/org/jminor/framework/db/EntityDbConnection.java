@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.db;
 
-import org.jminor.common.db.DbConnection;
+import org.jminor.common.db.DbConnectionImpl;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.dbms.Database;
 import org.jminor.common.db.exception.DbException;
@@ -46,7 +46,7 @@ import java.util.Set;
 /**
  * Implements the database layer accessible to the client.
  */
-public class EntityDbConnection extends DbConnection implements EntityDb {
+public class EntityDbConnection extends DbConnectionImpl implements EntityDb {
 
   private static final Logger LOG = Util.getLogger(EntityDbConnection.class);
 
@@ -87,7 +87,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   }
 
   public List<Entity.Key> insert(final List<Entity> entities) throws DbException {
-    if (entities == null || entities.size() == 0) {
+    if (entities == null || entities.isEmpty()) {
       return new ArrayList<Entity.Key>();
     }
 
@@ -95,7 +95,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     PreparedStatement statement = null;
     String insertQuery = null;
     try {
-      final List<Property> insertProperties = new ArrayList<Property>();
+      final List<Property.ColumnProperty> insertProperties = new ArrayList<Property.ColumnProperty>();
       final List<Object> statementValues = new ArrayList<Object>();
       for (final Entity entity : entities) {
         if (EntityRepository.isReadOnly(entity.getEntityID())) {
@@ -148,7 +148,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   }
 
   public List<Entity> update(final List<Entity> entities) throws DbException {
-    if (entities == null || entities.size() == 0) {
+    if (entities == null || entities.isEmpty()) {
       return entities;
     }
 
@@ -163,7 +163,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
       }
 
       final List<Object> statementValues = new ArrayList<Object>();
-      final List<Property> statementProperties = new ArrayList<Property>();
+      final List<Property.ColumnProperty> statementProperties = new ArrayList<Property.ColumnProperty>();
       for (final Map.Entry<String, Collection<Entity>> entry : hashedEntities.entrySet()) {
         final List<Property.PrimaryKeyProperty> primaryKeyProperties = EntityRepository.getPrimaryKeyProperties(entry.getKey());
         for (final Entity entity : entry.getValue()) {
@@ -246,7 +246,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   }
 
   public void delete(final List<Entity.Key> entityKeys) throws DbException {
-    if (entityKeys == null || entityKeys.size() == 0) {
+    if (entityKeys == null || entityKeys.isEmpty()) {
       return;
     }
 
@@ -294,7 +294,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
 
   public Entity selectSingle(final EntitySelectCriteria criteria) throws DbException {
     final List<Entity> entities = selectMany(criteria);
-    if (entities.size() == 0) {
+    if (entities.isEmpty()) {
       throw new RecordNotFoundException(FrameworkMessages.get(FrameworkMessages.RECORD_NOT_FOUND));
     }
     if (entities.size() > 1) {
@@ -306,7 +306,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
 
   @SuppressWarnings({"unchecked"})
   public List<Entity> selectMany(final List<Entity.Key> keys) throws DbException {
-    if (keys == null || keys.size() == 0) {
+    if (keys == null || keys.isEmpty()) {
       return new ArrayList<Entity>(0);
     }
 
@@ -352,7 +352,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
         throw new RuntimeException("selectPropertyValues is not implemented for entities with custom select queries");
       }
 
-      final Property property = EntityRepository.getProperty(entityID, propertyID);
+      final Property.ColumnProperty property = (Property.ColumnProperty) EntityRepository.getProperty(entityID, propertyID);
       final String columnName = property.getColumnName();
       sql = getSelectSQL(EntityRepository.getSelectTableName(entityID),
               new StringBuilder("distinct ").append(columnName).toString(),
@@ -388,7 +388,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
       resultSet = executePreparedSelect(statement, selectQuery, criteria.getValues(), criteria.getValueProperties());
       final List<Integer> result = INT_PACKER.pack(resultSet, -1);
 
-      if (result.size() == 0) {
+      if (result.isEmpty()) {
         throw new RecordNotFoundException("Record count query returned no value");
       }
       else if (result.size() > 1) {
@@ -410,7 +410,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
 
   public Map<String, Collection<Entity>> selectDependentEntities(final Collection<Entity> entities) throws DbException {
     final Map<String, Collection<Entity>> dependencyMap = new HashMap<String, Collection<Entity>>();
-    if (entities == null || entities.size() == 0) {
+    if (entities == null || entities.isEmpty()) {
       return dependencyMap;
     }
 
@@ -418,7 +418,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     for (final Dependency dependency : dependencies) {
       final List<Entity> dependentEntities = selectMany(EntityCriteriaUtil.selectCriteria(dependency.getEntityID(),
               dependency.getForeignKeyProperties(), EntityUtil.getPrimaryKeys(entities)));
-      if (dependentEntities.size() > 0) {
+      if (!dependentEntities.isEmpty()) {
         dependencyMap.put(dependency.entityID, dependentEntities);
       }
     }
@@ -518,7 +518,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   protected EntityResultPacker getEntityResultPacker(final String entityID) {
     EntityResultPacker packer = entityResultPackers.get(entityID);
     if (packer == null) {
-      packer = new EntityResultPacker(entityID, EntityRepository.getDatabaseProperties(entityID),
+      packer = new EntityResultPacker(entityID, EntityRepository.getColumnProperties(entityID),
               EntityRepository.getTransientProperties(entityID));
       entityResultPackers.put(entityID, packer);
     }
@@ -577,7 +577,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
    * @throws DbException in case of a database exception
    */
   protected void setForeignKeyValues(final List<Entity> entities, final EntitySelectCriteria criteria) throws DbException {
-    if (entities == null || entities.size() == 0) {
+    if (entities == null || entities.isEmpty()) {
       return;
     }
     //Any sufficiently complex algorithm is indistinguishable from evil
@@ -586,7 +586,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
       final int maxFetchDepth = criteria.getCurrentFetchDepth() == 0 ? criteria.getFetchDepth(property.getPropertyID()) : criteria.getFetchDepth();
       if (!limitForeignKeyFetchDepth || criteria.getCurrentFetchDepth() < maxFetchDepth) {
         final List<Entity.Key> referencedKeys = getReferencedPrimaryKeys(entities, property);
-        if (referencedKeys.size() > 0) {
+        if (!referencedKeys.isEmpty()) {
           final EntitySelectCriteria referenceCriteria = EntityCriteriaUtil.selectCriteria(referencedKeys)
                   .setCurrentFetchDepth(criteria.getCurrentFetchDepth() + 1)
                   .setFetchDepth(maxFetchDepth);
@@ -647,7 +647,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   }
 
   private ResultSet executePreparedSelect(final PreparedStatement statement, final String sqlStatement,
-                                          final List<?> values, final List<Property> properties) throws SQLException {
+                                          final List<?> values, final List<Property.ColumnProperty> properties) throws SQLException {
     SQLException exception = null;
     try {
       QUERY_COUNTER.count(sqlStatement);
@@ -715,7 +715,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
 
   private static void setParameterValues(final PreparedStatement statement, final List<?> values,
                                          final List<? extends Property> parameterProperties) throws SQLException {
-    if (values == null || values.size() == 0 || statement.getParameterMetaData().getParameterCount() == 0) {
+    if (values == null || values.isEmpty() || statement.getParameterMetaData().getParameterCount() == 0) {
       return;
     }
     if (parameterProperties == null || parameterProperties.size() != values.size()) {
@@ -813,7 +813,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
    * @return a query for updating this entity instance
    * @throws DbException in case the entity is unmodified or it contains no modified updatable properties
    */
-  private static String getUpdateSQL(final Entity entity, final Collection<Property> properties,
+  private static String getUpdateSQL(final Entity entity, final Collection<Property.ColumnProperty> properties,
                                      final List<Property.PrimaryKeyProperty> primaryKeyProperties) throws DbException {
     if (!entity.isModified()) {
       throw new DbException("Can not get update sql for an unmodified entity");
@@ -822,7 +822,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     final StringBuilder sql = new StringBuilder("update ");
     sql.append(EntityRepository.getTableName(entity.getEntityID())).append(" set ");
     int columnIndex = 0;
-    for (final Property property : properties) {
+    for (final Property.ColumnProperty property : properties) {
       sql.append(property.getColumnName()).append(" = ?");
       if (columnIndex++ < properties.size() - 1) {
         sql.append(", ");
@@ -837,12 +837,12 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
    * @param insertProperties the properties used to insert the given entity type
    * @return a query for inserting this entity instance
    */
-  private static String getInsertSQL(final String entityID, final Collection<Property> insertProperties) {
+  private static String getInsertSQL(final String entityID, final Collection<Property.ColumnProperty> insertProperties) {
     final StringBuilder sql = new StringBuilder("insert into ");
     sql.append(EntityRepository.getTableName(entityID)).append("(");
     final StringBuilder columnValues = new StringBuilder(") values(");
     int columnIndex = 0;
-    for (final Property property : insertProperties) {
+    for (final Property.ColumnProperty property : insertProperties) {
       sql.append(property.getColumnName());
       columnValues.append("?");
       if (columnIndex++ < insertProperties.size() - 1) {
@@ -925,8 +925,8 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
    * @param entity the entity
    * @param properties the properties are added to this collection
    */
-  private static void addInsertProperties(final Entity entity, final Collection<Property> properties) {
-    for (final Property property : EntityRepository.getDatabaseProperties(entity.getEntityID(),
+  private static void addInsertProperties(final Entity entity, final Collection<Property.ColumnProperty> properties) {
+    for (final Property.ColumnProperty property : EntityRepository.getDatabaseProperties(entity.getEntityID(),
             EntityRepository.getIdSource(entity.getEntityID()) != IdSource.AUTO_INCREMENT, false, true, false, false)) {
       if (!entity.isValueNull(property.getPropertyID())) {
         properties.add(property);
@@ -939,8 +939,8 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
    * @param properties the collection to add the properties to
    * @return the properties used to update this entity, properties that have had their values modified that is
    */
-  private static Collection<Property> addUpdateProperties(final Entity entity, final Collection<Property> properties) {
-    for (final Property property : EntityRepository.getDatabaseProperties(entity.getEntityID(), true, false, false, false)) {
+  private static Collection<Property.ColumnProperty> addUpdateProperties(final Entity entity, final Collection<Property.ColumnProperty> properties) {
+    for (final Property.ColumnProperty property : EntityRepository.getDatabaseProperties(entity.getEntityID(), true, false, false, false)) {
       if (entity.isModified(property.getPropertyID())) {
         properties.add(property);
       }
@@ -965,9 +965,9 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
 
   private static class Dependency {
     private final String entityID;
-    private final List<Property> foreignKeyProperties;
+    private final List<Property.ColumnProperty> foreignKeyProperties;
 
-    Dependency(final String entityID, final List<Property> foreignKeyProperties) {
+    Dependency(final String entityID, final List<Property.ColumnProperty> foreignKeyProperties) {
       this.entityID = entityID;
       this.foreignKeyProperties = foreignKeyProperties;
     }
@@ -976,7 +976,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
       return entityID;
     }
 
-    public List<Property> getForeignKeyProperties() {
+    public List<Property.ColumnProperty> getForeignKeyProperties() {
       return foreignKeyProperties;
     }
   }

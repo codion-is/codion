@@ -206,7 +206,7 @@ public class ConnectionPoolMonitor {
     delayedRequestsPerSecond.add(poolStats.getTimestamp(), poolStats.getRequestsDelayedPerSecond());
     averageCheckOutTime.add(poolStats.getTimestamp(), poolStats.getAverageCheckOutTime());
     final List<ConnectionPoolState> stats = sortAndRemoveDuplicates(poolStats.getPoolStatistics());
-    if (stats.size() > 0) {
+    if (!stats.isEmpty()) {
       final XYSeries inPoolSeries = new XYSeries("Connections available in pool");
       final XYSeries inUseSeries = new XYSeries("Connections in active use");
       for (final ConnectionPoolState inPool : stats) {

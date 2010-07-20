@@ -19,7 +19,16 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
@@ -38,15 +47,15 @@ public class ServerMonitorPanel extends JPanel {
   private ServerMonitor model;
 
   private final JFreeChart requestsPerSecondChart = ChartFactory.createXYStepChart(null,
-        null, null, null, PlotOrientation.VERTICAL, true, true, false);
+          null, null, null, PlotOrientation.VERTICAL, true, true, false);
   private final ChartPanel requestsPerSecondChartPanel = new ChartPanel(requestsPerSecondChart);
 
   private final JFreeChart memoryUsageChart = ChartFactory.createXYStepChart(null,
-        null, null, null, PlotOrientation.VERTICAL, true, true, false);
+          null, null, null, PlotOrientation.VERTICAL, true, true, false);
   private final ChartPanel memoryUsageChartPanel = new ChartPanel(memoryUsageChart);
 
   private final JFreeChart connectionCountChart = ChartFactory.createXYStepChart(null,
-        null, null, null, PlotOrientation.VERTICAL, true, true, false);
+          null, null, null, PlotOrientation.VERTICAL, true, true, false);
   private final ChartPanel connectionCountChartPanel = new ChartPanel(connectionCountChart);
 
   public ServerMonitorPanel(final ServerMonitor model) throws RemoteException {
@@ -120,6 +129,7 @@ public class ServerMonitorPanel extends JPanel {
     pane.addTab("Environment", initEnvironmentPanel());
     pane.addTab("Database", new DatabaseMonitorPanel(model.getDatabaseMonitor()));
     pane.addTab("Clients/Users", new ClientUserMonitorPanel(model.getClientMonitor()));
+//    pane.addTab("JConsole", getJConsolePanel());
 
     add(pane, BorderLayout.CENTER);
   }
@@ -181,9 +191,28 @@ public class ServerMonitorPanel extends JPanel {
     final JTextField txtMemory = new JTextField(8);
     txtMemory.setEditable(false);
     txtMemory.setHorizontalAlignment(JLabel.CENTER);
-    new TextBeanValueLink(txtMemory, model, "memoryUsage", String.class, model.eventStatsUpdated(),
-            LinkType.READ_ONLY);
+    new TextBeanValueLink(txtMemory, model, "memoryUsage", String.class, model.eventStatsUpdated(), LinkType.READ_ONLY);
 
     return txtMemory;
   }
+
+//  private JComponent getJConsolePanel() {
+  //permission java.lang.reflect.ReflectPermission;
+//    try {
+//      final Map<Integer, LocalVirtualMachine> localMachines = LocalVirtualMachine.getAllVirtualMachines();
+//      for (final LocalVirtualMachine vm : localMachines.values()) {
+//        System.out.println(vm.displayName());
+//        if (vm.displayName().endsWith("EntityDbRemoteServerAdmin")) {
+//          final ProxyClient proxyClient = ProxyClient.getProxyClient(vm);
+//          Constructor constructor = VMPanel.class.getDeclaredConstructor(ProxyClient.class, int.class);
+//          constructor.setAccessible(true);
+//          return (VMPanel) constructor.newInstance(proxyClient, 2000);
+//        }
+//      }
+//      return null;
+//    }
+//    catch (Exception e) {
+//      throw new RuntimeException(e);
+//    }
+//  }
 }

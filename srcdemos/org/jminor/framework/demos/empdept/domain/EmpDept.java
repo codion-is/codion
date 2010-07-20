@@ -6,10 +6,10 @@ package org.jminor.framework.demos.empdept.domain;
 import org.jminor.common.model.IdSource;
 import org.jminor.common.model.Version;
 import org.jminor.common.model.valuemap.StringProvider;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityDefinition;
 import org.jminor.framework.domain.EntityRepository;
-import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.Properties;
 
 import java.awt.Color;
 import java.sql.Types;
@@ -71,12 +71,12 @@ public class EmpDept {
 
   static {
     /*Defining the entity type T_DEPARTMENT*/
-    EntityRepository.add(new EntityDefinition(T_DEPARTMENT, "scott.dept",
-            new Property.PrimaryKeyProperty(DEPARTMENT_ID, Types.INTEGER, getString(DEPARTMENT_ID))
+    EntityRepository.add(Entities.define(T_DEPARTMENT, "scott.dept",
+            Properties.primaryKeyProperty(DEPARTMENT_ID, Types.INTEGER, getString(DEPARTMENT_ID))
                     .setNullable(false),
-            new Property(DEPARTMENT_NAME, Types.VARCHAR, getString(DEPARTMENT_NAME))
+            Properties.columnProperty(DEPARTMENT_NAME, Types.VARCHAR, getString(DEPARTMENT_NAME))
                     .setPreferredColumnWidth(120).setMaxLength(14).setNullable(false),
-            new Property(DEPARTMENT_LOCATION, Types.VARCHAR, getString(DEPARTMENT_LOCATION))
+            Properties.columnProperty(DEPARTMENT_LOCATION, Types.VARCHAR, getString(DEPARTMENT_LOCATION))
                     .setPreferredColumnWidth(150).setMaxLength(13))
             .setIdSource(IdSource.NONE)
             .setOrderByClause(DEPARTMENT_NAME)
@@ -84,24 +84,24 @@ public class EmpDept {
             .setCaption(getString(EMPLOYEE)));
 
     /*Defining the entity type T_EMPLOYEE*/
-    EntityRepository.add(new EntityDefinition(T_EMPLOYEE, "scott.emp",
-            new Property.PrimaryKeyProperty(EMPLOYEE_ID, Types.INTEGER, getString(EMPLOYEE_ID)),
-            new Property(EMPLOYEE_NAME, Types.VARCHAR, getString(EMPLOYEE_NAME))
+    EntityRepository.add(Entities.define(T_EMPLOYEE, "scott.emp",
+            Properties.primaryKeyProperty(EMPLOYEE_ID, Types.INTEGER, getString(EMPLOYEE_ID)),
+            Properties.columnProperty(EMPLOYEE_NAME, Types.VARCHAR, getString(EMPLOYEE_NAME))
                     .setMaxLength(10).setNullable(false),
-            new Property.ForeignKeyProperty(EMPLOYEE_DEPARTMENT_FK, getString(EMPLOYEE_DEPARTMENT_FK), T_DEPARTMENT,
-                    new Property(EMPLOYEE_DEPARTMENT))
+            Properties.foreignKeyProperty(EMPLOYEE_DEPARTMENT_FK, getString(EMPLOYEE_DEPARTMENT_FK), T_DEPARTMENT,
+                    Properties.columnProperty(EMPLOYEE_DEPARTMENT))
                     .setNullable(false),
-            new Property(EMPLOYEE_JOB, Types.VARCHAR, getString(EMPLOYEE_JOB))
+            Properties.columnProperty(EMPLOYEE_JOB, Types.VARCHAR, getString(EMPLOYEE_JOB))
                     .setMaxLength(9),
-            new Property(EMPLOYEE_SALARY, Types.DOUBLE, getString(EMPLOYEE_SALARY))
+            Properties.columnProperty(EMPLOYEE_SALARY, Types.DOUBLE, getString(EMPLOYEE_SALARY))
                     .setNullable(false).setMin(1000).setMax(10000).setMaximumFractionDigits(2),
-            new Property(EMPLOYEE_COMMISSION, Types.DOUBLE, getString(EMPLOYEE_COMMISSION))
+            Properties.columnProperty(EMPLOYEE_COMMISSION, Types.DOUBLE, getString(EMPLOYEE_COMMISSION))
                     .setMin(100).setMax(2000).setMaximumFractionDigits(2),
-            new Property.ForeignKeyProperty(EMPLOYEE_MGR_FK, getString(EMPLOYEE_MGR_FK), T_EMPLOYEE,
-                    new Property(EMPLOYEE_MGR)),
-            new Property(EMPLOYEE_HIREDATE, Types.DATE, getString(EMPLOYEE_HIREDATE))
+            Properties.foreignKeyProperty(EMPLOYEE_MGR_FK, getString(EMPLOYEE_MGR_FK), T_EMPLOYEE,
+                    Properties.columnProperty(EMPLOYEE_MGR)),
+            Properties.columnProperty(EMPLOYEE_HIREDATE, Types.DATE, getString(EMPLOYEE_HIREDATE))
                     .setNullable(false),
-            new Property.DenormalizedViewProperty(EMPLOYEE_DEPARTMENT_LOCATION, EMPLOYEE_DEPARTMENT_FK,
+            Properties.denormalizedViewProperty(EMPLOYEE_DEPARTMENT_LOCATION, EMPLOYEE_DEPARTMENT_FK,
                     EntityRepository.getProperty(T_DEPARTMENT, DEPARTMENT_LOCATION),
                     getString(DEPARTMENT_LOCATION)).setPreferredColumnWidth(100))
             .setIdSource(IdSource.MAX_PLUS_ONE)
@@ -111,7 +111,7 @@ public class EmpDept {
             .setCaption(getString(DEPARTMENT)));
 
     /*Set a Proxy implementation to provide a custom background color for managers*/
-    Entity.setProxy(T_EMPLOYEE, new Entity.Proxy() {
+    EntityRepository.setProxy(T_EMPLOYEE, new EntityRepository.Proxy() {
       @Override
       public Color getBackgroundColor(final Entity entity) {
         if (!entity.isValueNull(EMPLOYEE_JOB) && entity.getStringValue(EMPLOYEE_JOB).equals("MANAGER")) {

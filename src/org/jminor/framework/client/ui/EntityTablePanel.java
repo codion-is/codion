@@ -552,7 +552,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     finally {
       UiUtil.setWaitCursor(false, this);
     }
-    if (dependencies.size() > 0) {
+    if (!dependencies.isEmpty()) {
       showDependenciesDialog(dependencies, getTableModel().getDbProvider(), this);
     }
     else {
@@ -684,7 +684,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
    * @return a static EntityTablePanel showing the given entities
    */
   public static EntityTablePanel createStaticEntityTablePanel(final Collection<Entity> entities, final EntityDbProvider dbProvider) {
-    if (entities == null || entities.size() == 0) {
+    if (entities == null || entities.isEmpty()) {
       throw new RuntimeException("Cannot create an EntityPanel without the entities");
     }
 
@@ -703,7 +703,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     final EntityEditModel editModel = new DefaultEntityEditModel(entityID, dbProvider);
     final EntityTableModel tableModel = new DefaultEntityTableModel(entityID, dbProvider) {
       @Override
-      protected List<Entity> performQuery(final Criteria<Property> criteria) {
+      protected List<Entity> performQuery(final Criteria<Property.ColumnProperty> criteria) {
         return new ArrayList<Entity>(entities);
       }
     };
@@ -926,7 +926,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     popupControls.add(controlMap.get(REFRESH));
     popupControls.add(controlMap.get(CLEAR));
     popupControls.addSeparator();
-    if (additionalPopupControls != null && additionalPopupControls.getActions().size() > 0) {
+    if (additionalPopupControls != null && !additionalPopupControls.getActions().isEmpty()) {
       if (additionalPopupControls.hasName()) {
         popupControls.add(additionalPopupControls);
       }
@@ -1165,8 +1165,8 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
       return new EntityComboProvider(editModel.createEntityComboBoxModel(foreignKeyProperty), currentValue);
     }
     else {
-      List<Property> searchProperties = EntityRepository.getSearchProperties(foreignKeyProperty.getReferencedEntityID());
-      if (searchProperties.size() == 0) {
+      final List<Property.ColumnProperty> searchProperties = EntityRepository.getSearchProperties(foreignKeyProperty.getReferencedEntityID());
+      if (searchProperties.isEmpty()) {
         throw new RuntimeException("No searchable properties found for entity: " + foreignKeyProperty.getReferencedEntityID());
       }
 
@@ -1221,7 +1221,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
    * Initializes the JTable instance
    * @return the JTable instance
    * @see org.jminor.framework.domain.EntityDefinition#setRowColoring(boolean)
-   * @see org.jminor.framework.domain.Entity.Proxy#getBackgroundColor(org.jminor.framework.domain.Entity)
+   * @see org.jminor.framework.domain.EntityRepository.Proxy#getBackgroundColor(org.jminor.framework.domain.Entity)
    */
   @Override
   protected JTable initializeJTable() {
@@ -1539,7 +1539,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     tabPane.setUI(UiUtil.getBorderlessTabbedPaneUI());
     for (final Map.Entry<String, Collection<Entity>> entry : dependencies.entrySet()) {
       final Collection<Entity> dependantEntities = entry.getValue();
-      if (dependantEntities.size() > 0) {
+      if (!dependantEntities.isEmpty()) {
         tabPane.addTab(entry.getKey(), createStaticEntityTablePanel(dependantEntities, dbProvider));
       }
     }
@@ -1604,7 +1604,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     Util.collate(properties);
     for (final Property property : properties) {
       if (!property.hasParentProperty() && !(property instanceof Property.ForeignKeyProperty)) {
-        final String prefix = "[" + Property.getTypeClass(property.getType()).getSimpleName().substring(0, 1)
+        final String prefix = "[" + Util.getTypeClass(property.getType()).getSimpleName().substring(0, 1)
                 + (property instanceof Property.DenormalizedViewProperty ? "*" : "")
                 + (property instanceof Property.DenormalizedProperty ? "+" : "") + "] ";
         final String value = entity.isValueNull(property.getPropertyID()) ? "<null>" : entity.getValueAsString(property.getPropertyID());
