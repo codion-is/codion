@@ -61,7 +61,8 @@ public final class EntityRepository {
   public static List<Property.ColumnProperty> getSearchProperties(final String entityID, final Collection<String> searchPropertyIds) {
     final List<Property.ColumnProperty> searchProperties = new ArrayList<Property.ColumnProperty>();
     for (final Property.ColumnProperty property : getColumnProperties(entityID)) {
-      if (!searchPropertyIds.isEmpty() && searchPropertyIds.contains(property.getPropertyID()) || property.isString()) {
+      if (!searchPropertyIds.isEmpty() && searchPropertyIds.contains(property.getPropertyID()) ||
+              (property.isString() && property.isSearchable())) {
         searchProperties.add(property);
       }
     }

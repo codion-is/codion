@@ -148,11 +148,15 @@ public interface Property extends Attribute {
    */
   Character getMnemonic();
 
+  Property setDescription(final String description);
+
   /**
    * @return the Format object used to format the value of properties when being presented
    */
   Format getFormat();
 
+  Property setFormat(final Format format);
+  
   boolean hasParentProperty();
 
   void setParentProperty(final ForeignKeyProperty foreignKeyProperty);
@@ -166,6 +170,10 @@ public interface Property extends Attribute {
     ColumnProperty setUpdatable(boolean updatable);
 
     void setSelectIndex(final int selectIndex);
+
+    ColumnProperty setColumnHasDefaultValue(final boolean columnHasDefaultValue);
+
+    ColumnProperty setSearchable(final boolean searchable);
   }
 
   /**
@@ -209,6 +217,8 @@ public interface Property extends Attribute {
     String getReferencedPropertyID(final Property referenceProperty);
 
     ForeignKeyProperty setFetchDepth(final int fetchDepth);
+
+
   }
 
   /**

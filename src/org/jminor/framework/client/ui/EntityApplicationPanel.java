@@ -91,40 +91,40 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     configureApplication();
   }
 
-  public void handleException(final Throwable exception, final JComponent dialogParent) {
+  public final void handleException(final Throwable exception, final JComponent dialogParent) {
     LOG.error(this, exception);
     DefaultExceptionHandler.getInstance().handleException(exception, dialogParent);
   }
 
-  public EntityApplicationModel getModel() {
+  public final EntityApplicationModel getModel() {
     return applicationModel;
   }
 
-  public void addMainApplicationPanelProviders(final EntityPanelProvider... panelProviders) {
+  public final void addMainApplicationPanelProviders(final EntityPanelProvider... panelProviders) {
     Util.rejectNullValue(panelProviders, "panelProviders");
     for (final EntityPanelProvider panelProvider : panelProviders) {
       addMainApplicationPanelProvider(panelProvider);
     }
   }
 
-  public EntityApplicationPanel addMainApplicationPanelProvider(final EntityPanelProvider panelProvider) {
+  public final EntityApplicationPanel addMainApplicationPanelProvider(final EntityPanelProvider panelProvider) {
     mainApplicationPanelProviders.add(panelProvider);
     return this;
   }
 
-  public void addSupportPanelProviders(final EntityPanelProvider... panelProviders) {
+  public final void addSupportPanelProviders(final EntityPanelProvider... panelProviders) {
     Util.rejectNullValue(panelProviders, "panelProviders");
     for (final EntityPanelProvider panelProvider : panelProviders) {
       addSupportPanelProvider(panelProvider);
     }
   }
 
-  public EntityApplicationPanel addSupportPanelProvider(final EntityPanelProvider panelProvider) {
+  public final EntityApplicationPanel addSupportPanelProvider(final EntityPanelProvider panelProvider) {
     supportPanelProviders.add(panelProvider);
     return this;
   }
 
-  public EntityPanel getMainApplicationPanel(final String entityID) {
+  public final EntityPanel getMainApplicationPanel(final String entityID) {
     for (final EntityPanel panel : mainApplicationPanels) {
       if (panel.getModel().getEntityID().equals(entityID)) {
         return panel;
@@ -134,14 +134,14 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     return null;
   }
 
-  public List<EntityPanel> getMainApplicationPanels() {
+  public final List<EntityPanel> getMainApplicationPanels() {
     return Collections.unmodifiableList(mainApplicationPanels);
   }
 
   /**
    * @return true if the frame this application panel is shown in should be 'alwaysOnTop'
    */
-  public boolean isAlwaysOnTop() {
+  public final boolean isAlwaysOnTop() {
     final JFrame parent = UiUtil.getParentFrame(this);
     return parent != null && parent.isAlwaysOnTop();
   }
@@ -150,7 +150,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    * fires: evtAlwaysOnTopChanged
    * @param value the new value
    */
-  public void setAlwaysOnTop(final boolean value) {
+  public final void setAlwaysOnTop(final boolean value) {
     final JFrame parent = UiUtil.getParentFrame(this);
     if (parent != null) {
       parent.setAlwaysOnTop(value);
@@ -158,34 +158,34 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     }
   }
 
-  public void login() throws CancelException {
+  public final void login() throws CancelException {
     applicationModel.login(getUser(Messages.get(Messages.LOGIN), null, getClass().getSimpleName(), null));
   }
 
-  public void logout() {
+  public final void logout() {
     applicationModel.logout();
   }
 
-  public void setLoggingLevel() {
+  public final void setLoggingLevel() {
     EntityUiUtil.setLoggingLevel(this);
   }
 
-  public void viewApplicationTree() {
+  public final void viewApplicationTree() {
     UiUtil.showInDialog(UiUtil.getParentWindow(this), initializeApplicationTree(), false,
             FrameworkMessages.get(FrameworkMessages.APPLICATION_TREE), false, true, null);
   }
 
-  public void startApplication(final String frameCaption, final String iconName, final boolean maximize,
+  public final void startApplication(final String frameCaption, final String iconName, final boolean maximize,
                                final Dimension frameSize) {
     startApplication(frameCaption, iconName, maximize, frameSize, null);
   }
 
-  public void startApplication(final String frameCaption, final String iconName, final boolean maximize,
+  public final void startApplication(final String frameCaption, final String iconName, final boolean maximize,
                                final Dimension frameSize, final User defaultUser) {
     startApplication(frameCaption, iconName, maximize, frameSize, defaultUser, true);
   }
 
-  public void startApplication(final String frameCaption, final String iconName, final boolean maximize,
+  public final void startApplication(final String frameCaption, final String iconName, final boolean maximize,
                                final Dimension frameSize, final User defaultUser, final boolean showFrame) {
     try {
       startApplicationInternal(frameCaption, iconName, maximize, frameSize, defaultUser, showFrame);
@@ -202,7 +202,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   /**
    * @param model the application model
    */
-  public void initialize(final EntityApplicationModel model) {
+  public final void initialize(final EntityApplicationModel model) {
     if (model == null) {
       throw new RuntimeException("Unable to initialize application panel without a model");
     }
@@ -215,7 +215,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     bindEvents();
   }
 
-  public void exit() throws CancelException {
+  public final void exit() throws CancelException {
     if (Configuration.getBooleanValue(Configuration.CONFIRM_EXIT) && JOptionPane.showConfirmDialog(this, FrameworkMessages.get(FrameworkMessages.CONFIRM_EXIT),
             FrameworkMessages.get(FrameworkMessages.CONFIRM_EXIT_TITLE), JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
       throw new CancelException();
@@ -236,7 +236,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     System.exit(0);
   }
 
-  public void showHelp() {
+  public final void showHelp() {
     final JOptionPane pane = new JOptionPane(getHelpPanel(), JOptionPane.PLAIN_MESSAGE,
             JOptionPane.NO_OPTION, null, new String[] {Messages.get(Messages.CLOSE)});
     final JDialog dialog = pane.createDialog(EntityApplicationPanel.this,
@@ -249,7 +249,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     dialog.setVisible(true);
   }
 
-  public void showAbout() {
+  public final void showAbout() {
     final JOptionPane pane = new JOptionPane(getAboutPanel(), JOptionPane.PLAIN_MESSAGE,
             JOptionPane.NO_OPTION, null, new String[] {Messages.get(Messages.CLOSE)});
     final JDialog dialog = pane.createDialog(EntityApplicationPanel.this,
@@ -261,15 +261,15 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     dialog.setVisible(true);
   }
 
-  public Event eventAlwaysOnTopChanged() {
+  public final Event eventAlwaysOnTopChanged() {
     return evtAlwaysOnTopChanged;
   }
 
-  public Event eventApplicationStarted() {
+  public final Event eventApplicationStarted() {
     return evtApplicationStarted;
   }
 
-  public Event eventSelectedEntityPanelChanged() {
+  public final Event eventSelectedEntityPanelChanged() {
     return evtSelectedEntityPanelChanged;
   }
 
@@ -428,7 +428,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     return panel;
   }
 
-  protected EntityPanel getEntityPanel(final Class<? extends EntityPanel> entityPanelClass) {
+  protected final EntityPanel getEntityPanel(final Class<? extends EntityPanel> entityPanelClass) {
     for (final EntityPanel entityPanel : mainApplicationPanels) {
       if (entityPanel.getClass().equals(entityPanelClass)) {
         return entityPanel;
@@ -438,7 +438,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     return null;
   }
 
-  protected EntityPanel getEntityPanel(final String entityID) {
+  protected final EntityPanel getEntityPanel(final String entityID) {
     for (final EntityPanel entityPanel : mainApplicationPanels) {
       if (entityPanel.getModel().getEntityID().equals(entityID)) {
         return entityPanel;
@@ -458,14 +458,6 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    * @see org.jminor.framework.Configuration
    */
   protected void configureApplication() {}
-
-  protected void bindEventsInternal() {
-    evtSelectedEntityPanelChanged.addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent e) {
-        initializeActiveEntityPanel();
-      }
-    });
-  }
 
   protected void bindEvents() {}
 
@@ -503,11 +495,11 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     return controlSet;
   }
 
-  protected void showEntityPanelDialog(final EntityPanelProvider panelProvider) {
+  protected final void showEntityPanelDialog(final EntityPanelProvider panelProvider) {
     showEntityPanelDialog(panelProvider, false);
   }
 
-  protected void showEntityPanelDialog(final EntityPanelProvider panelProvider, final boolean modalDialog) {
+  protected final void showEntityPanelDialog(final EntityPanelProvider panelProvider, final boolean modalDialog) {
     final JDialog dialog;
     try {
       UiUtil.setWaitCursor(true, this);
@@ -603,7 +595,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     return null;
   }
 
-  protected JDialog createStartupDialog(final Icon icon, final String startupMessage) {
+  protected final JDialog createStartupDialog(final Icon icon, final String startupMessage) {
     final String message = startupMessage == null ? "Initializing Application" : startupMessage;
     final JDialog initializationDialog = new JDialog((JFrame) null, message, false);
     initializationDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -643,7 +635,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    * @return an initialized, but non-visible JFrame
    * @see #getNorthToolBar()
    */
-  protected JFrame prepareFrame(final String title, final boolean maximize,
+  protected final JFrame prepareFrame(final String title, final boolean maximize,
                                 final boolean showMenuBar, final Dimension size,
                                 final ImageIcon applicationIcon, final boolean setVisible) {
     final JFrame frame = new JFrame();
@@ -685,11 +677,11 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     return frame;
   }
 
-  protected JMenuBar createMenuBar() {
+  protected final JMenuBar createMenuBar() {
     return ControlProvider.createMenuBar(getMainMenuControlSet());
   }
 
-  protected void initializeResizingAndNavigation() {
+  protected final void initializeResizingAndNavigation() {
     final DefaultTreeModel panelTree = createApplicationTree(mainApplicationPanels);
     final Enumeration enumeration = ((DefaultMutableTreeNode) panelTree.getRoot()).breadthFirstEnumeration();
     while (enumeration.hasMoreElements()) {
@@ -741,6 +733,14 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    * Called during the exit() method, override to save user preferences on program exit
    */
   protected void savePreferences() {}
+
+  private void bindEventsInternal() {
+    evtSelectedEntityPanelChanged.addListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
+        initializeActiveEntityPanel();
+      }
+    });
+  }
 
   private void startApplicationInternal(final String frameCaption, final String iconName, final boolean maximize,
                                         final Dimension frameSize, final User defaultUser, final boolean showFrame) throws Exception {

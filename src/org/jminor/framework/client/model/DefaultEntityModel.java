@@ -400,6 +400,13 @@ public class DefaultEntityModel implements EntityModel {
    */
   protected void bindTableModelEvents() {}
 
+  protected void updateDetailModelsByActiveEntity() {
+    final List<Entity> activeEntities = getActiveEntities();
+    for (final EntityModel detailModel : linkedDetailModels) {
+      detailModel.masterSelectionChanged(entityID, activeEntities);
+    }
+  }
+
   private void handleInsert(final InsertEvent insertEvent) {
     final List<Entity.Key> primaryKeys = insertEvent.getInsertedKeys();
     if (containsTableModel()) {
@@ -507,13 +514,6 @@ public class DefaultEntityModel implements EntityModel {
           detailEditModel.getEntityComboBoxModel(foreignKeyProperty).refresh();
         }
       }
-    }
-  }
-
-  private void updateDetailModelsByActiveEntity() {
-    final List<Entity> activeEntities = getActiveEntities();
-    for (final EntityModel detailModel : linkedDetailModels) {
-      detailModel.masterSelectionChanged(entityID, activeEntities);
     }
   }
 

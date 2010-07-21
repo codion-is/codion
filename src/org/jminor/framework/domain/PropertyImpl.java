@@ -624,6 +624,8 @@ class PropertyImpl implements Property, Serializable {
      */
     private boolean updatable = true;
 
+    private boolean searchable = true;
+
     public ColumnPropertyImpl(final String propertyID, final int type, final String caption) {
       super(propertyID, type, caption);
       this.columnName = propertyID;
@@ -647,7 +649,7 @@ class PropertyImpl implements Property, Serializable {
      * @param columnHasDefaultValue specifies whether or not the underlying column has a default value
      * @return this Property instance
      */
-    public final Property setColumnHasDefaultValue(final boolean columnHasDefaultValue) {
+    public final ColumnProperty setColumnHasDefaultValue(final boolean columnHasDefaultValue) {
       this.columnHasDefaultValue = columnHasDefaultValue;
       return this;
     }
@@ -667,6 +669,15 @@ class PropertyImpl implements Property, Serializable {
     public final ColumnProperty setUpdatable(final boolean updatable) {
       this.updatable = updatable;
       return this;
+    }
+
+    public ColumnProperty setSearchable(final boolean searchable) {
+      this.searchable = searchable;
+      return this;
+    }
+
+    public boolean isSearchable() {
+      return searchable;
     }
 
     public boolean isDenormalized() {
@@ -832,7 +843,6 @@ class PropertyImpl implements Property, Serializable {
    * Represents a child foreign key property that is already included as part of another reference foreign key property,
    * and should not handle updating the underlying property
    */
-  //todo better explanation
   static class MirrorPropertyImpl extends ColumnPropertyImpl implements MirrorProperty, Serializable {
 
     private static final long serialVersionUID = 1;

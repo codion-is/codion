@@ -91,7 +91,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   }
 
   @Override
-  public EntityEditModel getEditModel() {
+  public final EntityEditModel getEditModel() {
     return (EntityEditModel) super.getEditModel();
   }
 
@@ -135,7 +135,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   /**
    * @return a control for refreshing the model data
    */
-  public Control getRefreshControl() {
+  public final Control getRefreshControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.REFRESH_MNEMONIC);
     return ControlFactory.methodControl(getEditModel(), "refresh", FrameworkMessages.get(FrameworkMessages.REFRESH),
             getEditModel().stateActive(), FrameworkMessages.get(FrameworkMessages.REFRESH_TIP) + " (ALT-" + mnemonic + ")",
@@ -145,7 +145,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   /**
    * @return a control for deleting the active entity
    */
-  public Control getDeleteControl() {
+  public final Control getDeleteControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.DELETE_MNEMONIC);
     return ControlFactory.methodControl(this, "delete", FrameworkMessages.get(FrameworkMessages.DELETE),
             new AggregateState(AggregateState.Type.AND,
@@ -159,7 +159,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   /**
    * @return a control for clearing the UI controls
    */
-  public Control getClearControl() {
+  public final Control getClearControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.CLEAR_MNEMONIC);
     return ControlFactory.methodControl(getEditModel(), "clearValues", FrameworkMessages.get(FrameworkMessages.CLEAR),
             getEditModel().stateActive(), FrameworkMessages.get(FrameworkMessages.CLEAR_ALL_TIP) + " (ALT-" + mnemonic + ")",
@@ -169,7 +169,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   /**
    * @return a control for performing an update on the active entity
    */
-  public Control getUpdateControl() {
+  public final Control getUpdateControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.UPDATE_MNEMONIC);
     return ControlFactory.methodControl(this, "update", FrameworkMessages.get(FrameworkMessages.UPDATE),
             new AggregateState(AggregateState.Type.AND,
@@ -184,7 +184,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   /**
    * @return a control for performing an insert on the active entity
    */
-  public Control getInsertControl() {
+  public final Control getInsertControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.INSERT_MNEMONIC);
     return ControlFactory.methodControl(this, "save", FrameworkMessages.get(FrameworkMessages.INSERT),
             new AggregateState(AggregateState.Type.AND, getEditModel().stateActive(), getEditModel().stateAllowInsert()),
@@ -195,7 +195,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   /**
    * @return a control for performing a save on the active entity
    */
-  public Control getSaveControl() {
+  public final Control getSaveControl() {
     final String insertCaption = FrameworkMessages.get(FrameworkMessages.INSERT_UPDATE);
     final State stInsertUpdate = new AggregateState(AggregateState.Type.OR, getEditModel().stateAllowInsert(),
             new AggregateState(AggregateState.Type.AND, getEditModel().stateAllowUpdate(),
@@ -206,7 +206,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
             insertCaption.charAt(0), null, Images.loadImage(Images.IMG_PROPERTIES_16));
   }
 
-  public void handleException(final Throwable throwable) {
+  public final void handleException(final Throwable throwable) {
     if (throwable instanceof ValidationException) {
       JOptionPane.showMessageDialog(this, throwable.getMessage(), Messages.get(Messages.EXCEPTION),
               JOptionPane.ERROR_MESSAGE);
@@ -222,7 +222,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @param exception the exception to handle
    * @param dialogParent the component to use as exception dialog parent
    */
-  public void handleException(final Throwable exception, final JComponent dialogParent) {
+  public final void handleException(final Throwable exception, final JComponent dialogParent) {
     LOG.error(this, exception);
     DefaultExceptionHandler.getInstance().handleException(exception, dialogParent);
   }
@@ -232,7 +232,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @param horizontal true if the buttons should be layed out horizontally, false otherwise
    * @return the control panel
    */
-  public JPanel createControlPanel(final boolean horizontal) {
+  public final JPanel createControlPanel(final boolean horizontal) {
     if (horizontal) {
       final JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER,5,5));
       panel.add(ControlProvider.createHorizontalButtonPanel(getControlPanelControlSet()));
@@ -249,7 +249,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * Initializes the control toolbar, that is, the toolbar containing buttons for editing entities (Insert, Update...)
    * @return the control toolbar
    */
-  public JToolBar getControlToolBar() {
+  public final JToolBar getControlToolBar() {
     return ControlProvider.createToolbar(getControlPanelControlSet(), JToolBar.VERTICAL);
   }
 
@@ -486,7 +486,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @param controlCode the control code
    * @param control the control to associate with <code>controlCode</code>
    */
-  protected void setControl(final String controlCode, final Control control) {
+  protected final void setControl(final String controlCode, final Control control) {
     if (control == null) {
       controlMap.remove(controlCode);
     }

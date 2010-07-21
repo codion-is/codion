@@ -67,7 +67,7 @@ public class DefaultForeignKeySearchModel extends AbstractSearchModel<Property.F
   }
 
   @Override
-  public String toString() {
+  public final String toString() {
     final StringBuilder stringBuilder = new StringBuilder(getSearchKey().getPropertyID());
     if (isSearchEnabled()) {
       stringBuilder.append(getSearchType());
@@ -78,13 +78,13 @@ public class DefaultForeignKeySearchModel extends AbstractSearchModel<Property.F
     return stringBuilder.toString();
   }
 
-  public void refresh() {
+  public final void refresh() {
     if (entityComboBoxModel != null) {
       entityComboBoxModel.refresh();
     }
   }
 
-  public void clear() {
+  public final void clear() {
     if (entityComboBoxModel != null) {
       entityComboBoxModel.clear();
     }
@@ -97,21 +97,21 @@ public class DefaultForeignKeySearchModel extends AbstractSearchModel<Property.F
   /**
    * @return the EntityComboBoxModel used by this PropertySearchModel, if any
    */
-  public EntityComboBoxModel getEntityComboBoxModel() {
+  public final EntityComboBoxModel getEntityComboBoxModel() {
     return entityComboBoxModel;
   }
 
   /**
    * @return the EntityLookupModel used by this PropertySearchModel, if any
    */
-  public EntityLookupModel getEntityLookupModel() {
+  public final EntityLookupModel getEntityLookupModel() {
     return entityLookupModel;
   }
 
   /**
    * Ensures that the data this PropertySearchModel relies on (in ComboBoxModels f.ex) has been initialized
    */
-  public void initialize() {
+  public final void initialize() {
     if (entityComboBoxModel != null && entityComboBoxModel.isCleared()) {
       entityComboBoxModel.refresh();
       try {
@@ -127,7 +127,7 @@ public class DefaultForeignKeySearchModel extends AbstractSearchModel<Property.F
   /**
    * @return a Criteria based on the values in this search model.
    */
-  public Criteria<Property.ColumnProperty> getCriteria() {
+  public final Criteria<Property.ColumnProperty> getCriteria() {
     return EntityCriteriaUtil.foreignKeyCriteria(getSearchKey(), getSearchType(), getUpperBound());
   }
 

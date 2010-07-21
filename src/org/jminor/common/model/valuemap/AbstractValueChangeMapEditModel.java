@@ -58,7 +58,7 @@ public abstract class AbstractValueChangeMapEditModel<K, V> implements ValueChan
     Util.rejectNullValue(key, "key");
     final boolean initialization = valueMap.containsValue(key);
     final V oldValue = valueMap.getValue(key);
-    valueMap.setValue(key, value);
+    valueMap.setValue(key, prepareNewValue(key, value));
 
     if (!Util.equal(value, oldValue)) {
       notifyValueSet(key, new ValueChangeEvent<K, V>(this, valueMap, key, value, oldValue, false, initialization));
@@ -116,6 +116,10 @@ public abstract class AbstractValueChangeMapEditModel<K, V> implements ValueChan
    */
   protected final ValueChangeMap<K, V> getValueMap() {
     return valueMap;
+  }
+
+  protected V prepareNewValue(final K key, final V value) {
+    return value;
   }
 
   /**

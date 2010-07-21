@@ -16,7 +16,7 @@ import java.util.Iterator;
 /**
  * A default JRDataSource implementation which iterates through the iterator received via the constructor.
  */
-public final class JasperReportsEntityDataSource implements JRDataSource, ReportDataWrapper<JRDataSource> {
+public class JasperReportsEntityDataSource implements JRDataSource, ReportDataWrapper<JRDataSource> {
 
   private final Iterator<Entity> reportIterator;
   private Entity currentEntity = null;
@@ -26,7 +26,7 @@ public final class JasperReportsEntityDataSource implements JRDataSource, Report
     this.reportIterator = reportIterator;
   }
 
-  public boolean next() throws JRException {
+  public final boolean next() throws JRException {
     final boolean hasNext = reportIterator.hasNext();
     if (hasNext) {
       currentEntity = reportIterator.next();
@@ -40,7 +40,7 @@ public final class JasperReportsEntityDataSource implements JRDataSource, Report
    * @param jrField the report field which value to retrieve
    * @return the value of the property identified by <code>jrField.getName()</code>
    * @throws net.sf.jasperreports.engine.JRException in case of an exception
-   * @see org.jminor.framework.domain.Entity#getValue(String)
+   * @see org.jminor.framework.domain.Entity#getValue(org.jminor.framework.domain.Property)
    */
   public Object getFieldValue(final JRField jrField) throws JRException {
     Util.rejectNullValue(jrField, "jrField");
@@ -52,11 +52,11 @@ public final class JasperReportsEntityDataSource implements JRDataSource, Report
     }
   }
 
-  protected Entity getCurrentEntity() {
+  protected final Entity getCurrentEntity() {
     return currentEntity;
   }
 
-  public JRDataSource getDataSource() {
+  public final JRDataSource getDataSource() {
     return this;
   }
 }

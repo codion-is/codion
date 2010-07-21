@@ -135,7 +135,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
   }
 
   @Override
-  public final void setSelectedItem(final Object anItem) {
+  public void setSelectedItem(final Object anItem) {
     if (getSize() == 0) {
       return;
     }
@@ -267,7 +267,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
    * Retrieves the entities to present in this EntityComboBoxModel
    * @return the entities to present in this EntityComboBoxModel
    */
-  private List<Entity> performQuery() {
+  protected List<Entity> performQuery() {
     try {
       if (selectCriteria != null) {
         return dbProvider.getEntityDb().selectMany(selectCriteria);

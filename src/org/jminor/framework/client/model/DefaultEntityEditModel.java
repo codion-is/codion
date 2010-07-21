@@ -117,8 +117,8 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
     return stAllowInsert.isActive();
   }
 
-  public void setInsertAllowed(final boolean value) {
-    stAllowInsert.setActive(value);
+  public final void setInsertAllowed(final boolean value) {
+    stateAllowInsert().setActive(value);
   }
 
   public State stateAllowInsert() {
@@ -129,8 +129,8 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
     return stAllowUpdate.isActive();
   }
 
-  public void setUpdateAllowed(final boolean value) {
-    stAllowUpdate.setActive(value);
+  public final void setUpdateAllowed(final boolean value) {
+    stateAllowUpdate().setActive(value);
   }
 
   public State stateAllowUpdate() {
@@ -141,27 +141,27 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
     return stAllowDelete.isActive();
   }
 
-  public void setDeleteAllowed(final boolean value) {
-    stAllowDelete.setActive(value);
+  public final void setDeleteAllowed(final boolean value) {
+    stateAllowDelete().setActive(value);
   }
 
   public State stateAllowDelete() {
     return stAllowDelete.getLinkedState();
   }
 
-  public State stateEntityNull() {
+  public final State stateEntityNull() {
     return stEntityNull.getLinkedState();
   }
 
-  public State stateActive() {
+  public final State stateActive() {
     return stActive.getLinkedState();
   }
 
-  public void setActive(boolean active) {
+  public final void setActive(boolean active) {
     stActive.setActive(active);
   }
 
-  public void setEntity(final Entity entity) {
+  public final void setEntity(final Entity entity) {
     setValueMap(entity);
   }
 
@@ -308,7 +308,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
   }
 
   @SuppressWarnings({"UnusedDeclaration"})
-  public final void validateEntities(final Collection<Entity> entities, final int action) throws ValidationException {
+  public void validateEntities(final Collection<Entity> entities, final int action) throws ValidationException {
     Util.rejectNullValue(entities, "entities");
     for (final Entity entity : entities) {
       for (final Property property : EntityRepository.getProperties(entity.getEntityID()).values()) {

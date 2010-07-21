@@ -71,25 +71,25 @@ public class EntityLookupField extends JTextField {
     bindProperty();
   }
 
-  public EntityLookupModel getModel() {
+  public final EntityLookupModel getModel() {
     return model;
   }
 
-  public Action getEnterAction() {
+  public final Action getEnterAction() {
     return enterAction;
   }
 
-  public EntityLookupField setEnterAction(final Action enterAction) {
+  public final EntityLookupField setEnterAction(final Action enterAction) {
     this.enterAction = enterAction;
     return this;
   }
 
-  public EntityLookupField setDefaultBackgroundColor(final Color defaultBackgroundColor) {
+  public final EntityLookupField setDefaultBackgroundColor(final Color defaultBackgroundColor) {
     this.defaultBackgroundColor = defaultBackgroundColor;
     return this;
   }
 
-  public EntityLookupField setTransferFocusOnEnter() {
+  public final EntityLookupField setTransferFocusOnEnter() {
     return setEnterAction(new AbstractAction() {
       public void actionPerformed(final ActionEvent e) {
         transferFocus();

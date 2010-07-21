@@ -12,6 +12,8 @@ import java.util.Properties;
  */
 public final class H2Database extends AbstractDatabase {
 
+  private String urlAppend = "";
+
   public H2Database() {
     super(H2);
   }
@@ -22,6 +24,11 @@ public final class H2Database extends AbstractDatabase {
 
   public H2Database(final String host, final String port, final String databaseName) {
     super(H2, host, port, databaseName, false);
+  }
+
+  public H2Database setUrlAppend(final String urlAppend) {
+    this.urlAppend = urlAppend;
+    return this;
   }
 
   public void loadDriver() throws ClassNotFoundException {
@@ -43,10 +50,10 @@ public final class H2Database extends AbstractDatabase {
         connectionProperties.put("user", "sa");
       }
 
-      return "jdbc:h2:" + getHost() + (authentication == null ? "" : ";" + authentication);
+      return "jdbc:h2:" + getHost() + (authentication == null ? "" : ";" + authentication) + urlAppend;
     }
     else {
-      return "jdbc:h2://" + getHost() + ":" + getPort() + "/" + getSid() + (authentication == null ? "" : ";" + authentication);
+      return "jdbc:h2://" + getHost() + ":" + getPort() + "/" + getSid() + (authentication == null ? "" : ";" + authentication) + urlAppend;
     }
   }
 

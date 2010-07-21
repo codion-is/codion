@@ -28,7 +28,7 @@ public class DefaultPropertyFilterModel extends AbstractSearchModel<Property> im
     return include(getComparable(object));
   }
 
-  public boolean include(final Comparable comparable) {
+  public final boolean include(final Comparable comparable) {
     if (!isSearchEnabled()) {
       return true;
     }
@@ -68,7 +68,7 @@ public class DefaultPropertyFilterModel extends AbstractSearchModel<Property> im
     }
   }
 
-  protected boolean includeLike(final Comparable comparable) {
+  private boolean includeLike(final Comparable comparable) {
     if (getUpperBound() == null) {
       return true;
     }
@@ -84,7 +84,7 @@ public class DefaultPropertyFilterModel extends AbstractSearchModel<Property> im
     return comparable.compareTo(getUpperBound()) == 0;
   }
 
-  protected boolean includeNotLike(final Comparable comparable) {
+  private boolean includeNotLike(final Comparable comparable) {
     if (getUpperBound() == null) {
       return true;
     }
@@ -101,7 +101,7 @@ public class DefaultPropertyFilterModel extends AbstractSearchModel<Property> im
     return comparable.compareTo(getUpperBound()) != 0;
   }
 
-  protected boolean includeExactWildcard(final String value) {
+  private boolean includeExactWildcard(final String value) {
     String upperBound = (String) getUpperBound();
     if (upperBound.equals(getWildcard())) {
       return true;
@@ -123,20 +123,20 @@ public class DefaultPropertyFilterModel extends AbstractSearchModel<Property> im
     return Pattern.matches(prepareForRegex(upperBound), realValue);
   }
 
-  protected String prepareForRegex(final String string) {
+  private String prepareForRegex(final String string) {
     //a somewhat dirty fix to get rid of the '$' sign from the pattern, since it interferes with the regular expression parsing
     return string.replaceAll(getWildcard(), ".*").replaceAll("\\$", ".").replaceAll("\\]", "\\\\]").replaceAll("\\[", "\\\\[");
   }
 
-  protected boolean includeMax(final Comparable comparable) {
+  private boolean includeMax(final Comparable comparable) {
     return getUpperBound() == null || comparable != null && comparable.compareTo(getUpperBound()) <= 0;
   }
 
-  protected boolean includeMin(final Comparable comparable) {
+  private boolean includeMin(final Comparable comparable) {
     return getUpperBound() == null || comparable != null && comparable.compareTo(getUpperBound()) >= 0;
   }
 
-  protected boolean includeMinMaxInside(final Comparable comparable) {
+  private boolean includeMinMaxInside(final Comparable comparable) {
     if (getLowerBound() == null && getUpperBound() == null) {
       return true;
     }
@@ -159,7 +159,7 @@ public class DefaultPropertyFilterModel extends AbstractSearchModel<Property> im
     return lowerCompareResult >= 0 && upperCompareResult <= 0;
   }
 
-  protected boolean includeMinMaxOutside(final Comparable comparable) {
+  private boolean includeMinMaxOutside(final Comparable comparable) {
     if (getLowerBound() == null && getUpperBound() == null) {
       return true;
     }
@@ -182,7 +182,7 @@ public class DefaultPropertyFilterModel extends AbstractSearchModel<Property> im
     return lowerCompareResult <= 0 || upperCompareResult >= 0;
   }
 
-  protected Comparable getComparable(final Object object) {
+  private Comparable getComparable(final Object object) {
     final Entity entity = (Entity) object;
     if (entity.isValueNull(getSearchKey().getPropertyID())) {
       return null;

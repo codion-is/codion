@@ -58,25 +58,25 @@ public class PropertyFilterPanel extends AbstractSearchPanel<Property> {
   /**
    * @return the last screen position
    */
-  public Point getLastPosition() {
+  public final Point getLastPosition() {
     return lastPosition;
   }
 
   /**
    * @return true if the dialog is active
    */
-  public boolean isDialogActive() {
+  public final boolean isDialogActive() {
     return stIsDialogActive.isActive();
   }
 
   /**
    * @return true if the dialog is being shown
    */
-  public boolean isDialogShowing() {
+  public final boolean isDialogShowing() {
     return stIsDialogShowing.isActive();
   }
 
-  public void activateDialog(final Container dialogParent, final Point position) {
+  public final void activateDialog(final Container dialogParent, final Point position) {
     if (!isDialogActive()) {
       initSearchDlg(dialogParent);
       Point actualPosition = null;
@@ -95,7 +95,7 @@ public class PropertyFilterPanel extends AbstractSearchPanel<Property> {
     showDialog();
   }
 
-  public void inactivateDialog() {
+  public final void inactivateDialog() {
     if (isDialogActive()) {
       if (isDialogShowing()) {
         hideDialog();
@@ -109,7 +109,7 @@ public class PropertyFilterPanel extends AbstractSearchPanel<Property> {
     }
   }
 
-  public void showDialog() {
+  public final void showDialog() {
     if (isDialogActive() && !isDialogShowing()) {
       dialog.setVisible(true);
       getUpperBoundField().requestFocusInWindow();
@@ -117,7 +117,7 @@ public class PropertyFilterPanel extends AbstractSearchPanel<Property> {
     }
   }
 
-  public void hideDialog() {
+  public final void hideDialog() {
     if (isDialogShowing()) {
       dialog.setVisible(false);
       stIsDialogShowing.setActive(false);
@@ -127,30 +127,30 @@ public class PropertyFilterPanel extends AbstractSearchPanel<Property> {
   /**
    * @return the dialog used to show this filter panel
    */
-  public JDialog getDialog() {
+  public final JDialog getDialog() {
     return dialog;
   }
 
-  public State stateIsDialogActive() {
+  public final State stateIsDialogActive() {
     return stIsDialogActive.getLinkedState();
   }
 
-  public State stateIsDialogShowing() {
+  public final State stateIsDialogShowing() {
     return stIsDialogShowing.getLinkedState();
   }
 
   @Override
-  protected boolean isLowerBoundFieldRequired(final Property property) {
+  protected final boolean isLowerBoundFieldRequired(final Property property) {
     return property.isBoolean();
   }
 
   @Override
-  protected boolean searchTypeAllowed(final SearchType searchType) {
+  protected final boolean searchTypeAllowed(final SearchType searchType) {
     return true;
   }
 
   @Override
-  protected SimpleDateFormat getInputFormat() {
+  protected final SimpleDateFormat getInputFormat() {
     if (getModel().getType() == Types.TIMESTAMP) {
       return Configuration.getDefaultTimestampFormat();
     }
@@ -162,7 +162,7 @@ public class PropertyFilterPanel extends AbstractSearchPanel<Property> {
   }
 
   @Override
-  protected JComponent getInputField(final boolean isUpperBound) {
+  protected final JComponent getInputField(final boolean isUpperBound) {
     final SimpleDateFormat format = getInputFormat();
     final JComponent field = initField(format);
     if (getModel().getType() == Types.BOOLEAN) {
