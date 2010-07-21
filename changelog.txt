@@ -1897,3 +1897,4 @@
   Collections.size() == 0 replaced with isEmpty() throughout
   Finalized a bunch of classes and methods
   More of the same
+0.5.8

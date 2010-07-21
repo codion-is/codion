@@ -35,7 +35,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel {
     final EntityPanelProvider employeePanelProvider = new EntityPanelProvider(T_EMPLOYEE) {
       @Override
       protected void configureTableModel(final EntityTableModel tableModel) {
-        tableModel.setQueryCriteriaRequired(true);
+        tableModel.setQueryCriteriaRequired(false);
         tableModel.getPropertySummaryModel(EMPLOYEE_SALARY).setSummaryType(PropertySummaryModel.SummaryType.AVERAGE);
       }
 

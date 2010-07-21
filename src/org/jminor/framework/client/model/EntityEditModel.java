@@ -178,8 +178,9 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
 
   /**
    * @param value true if this model should allow inserts
+   * @return this edit model instance
    */
-  void setInsertAllowed(final boolean value);
+  EntityEditModel setInsertAllowed(final boolean value);
 
   /**
    * @return true if this model should allow records to be updated
@@ -188,8 +189,9 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
 
   /**
    * @param value true if this model should allow records to be updated
+   * @return this edit model instance
    */
-  void setUpdateAllowed(final boolean value);
+  EntityEditModel setUpdateAllowed(final boolean value);
 
   /**
    * @return true if this model should allow records to be deleted
@@ -198,8 +200,9 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
 
   /**
    * @param value true if this model should allow records to be deleted
+   * @return this edit model instance
    */
-  void setDeleteAllowed(final boolean value);
+  EntityEditModel setDeleteAllowed(final boolean value);
 
   /**
    * Creates a default EntityComboBoxModel for the given property, override to provide

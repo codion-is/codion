@@ -113,39 +113,42 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
     return EntityRepository.isReadOnly(entityID);
   }
 
-  public boolean isInsertAllowed() {
+  public final boolean isInsertAllowed() {
     return stAllowInsert.isActive();
   }
 
-  public final void setInsertAllowed(final boolean value) {
-    stateAllowInsert().setActive(value);
+  public final EntityEditModel setInsertAllowed(final boolean value) {
+    stAllowInsert.setActive(value);
+    return this;
   }
 
-  public State stateAllowInsert() {
+  public final State stateAllowInsert() {
     return stAllowInsert.getLinkedState();
   }
 
-  public boolean isUpdateAllowed() {
+  public final boolean isUpdateAllowed() {
     return stAllowUpdate.isActive();
   }
 
-  public final void setUpdateAllowed(final boolean value) {
-    stateAllowUpdate().setActive(value);
+  public final EntityEditModel setUpdateAllowed(final boolean value) {
+    stAllowUpdate.setActive(value);
+    return this;
   }
 
-  public State stateAllowUpdate() {
+  public final State stateAllowUpdate() {
     return stAllowUpdate.getLinkedState();
   }
 
-  public boolean isDeleteAllowed() {
+  public final boolean isDeleteAllowed() {
     return stAllowDelete.isActive();
   }
 
-  public final void setDeleteAllowed(final boolean value) {
-    stateAllowDelete().setActive(value);
+  public final EntityEditModel setDeleteAllowed(final boolean value) {
+    stAllowDelete.setActive(value);
+    return this;
   }
 
-  public State stateAllowDelete() {
+  public final State stateAllowDelete() {
     return stAllowDelete.getLinkedState();
   }
 
