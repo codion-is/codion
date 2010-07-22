@@ -34,7 +34,8 @@ public class EntityTestDomain {
             Properties.primaryKeyProperty(MASTER_ID),
             Properties.columnProperty(MASTER_NAME, Types.VARCHAR),
             Properties.columnProperty(MASTER_CODE, Types.INTEGER))
-            .setStringProvider(new StringProvider<String>(MASTER_NAME)));
+            .setStringProvider(new StringProvider<String>(MASTER_NAME))
+            .setLargeDataset(true));
 
     EntityRepository.add(Entities.define(T_DETAIL,
             Properties.primaryKeyProperty(DETAIL_ID),
