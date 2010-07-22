@@ -24,13 +24,11 @@ import java.text.Format;
 public class ForeignKeySearchPanel extends AbstractSearchPanel<Property.ForeignKeyProperty> {
 
   public ForeignKeySearchPanel(final ForeignKeySearchModel model) {
-    this(model, false, false);
+    this(model, false);
   }
 
-  public ForeignKeySearchPanel(final ForeignKeySearchModel model, final boolean includeActivateBtn,
-                               final boolean includeToggleAdvBtn) {
-    super(model, includeActivateBtn, includeToggleAdvBtn);
-    model.initialize();
+  public ForeignKeySearchPanel(final ForeignKeySearchModel model, final boolean includeToggleAdvBtn) {
+    super(model, true, includeToggleAdvBtn);
   }
 
   @Override

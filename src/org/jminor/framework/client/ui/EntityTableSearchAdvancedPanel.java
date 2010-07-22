@@ -142,7 +142,7 @@ public class EntityTableSearchAdvancedPanel extends AbstractTableColumnSyncPanel
    */
   protected AbstractSearchPanel initializeSearchPanel(final PropertySearchModel propertySearchModel) {
     if (propertySearchModel instanceof ForeignKeySearchModel) {
-      return new ForeignKeySearchPanel((ForeignKeySearchModel) propertySearchModel, true, false);
+      return new ForeignKeySearchPanel((ForeignKeySearchModel) propertySearchModel, false);
     }
 
     return new PropertySearchPanel(propertySearchModel, true, false);

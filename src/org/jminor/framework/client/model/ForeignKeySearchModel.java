@@ -13,7 +13,6 @@ import org.jminor.framework.domain.Property;
  */
 public interface ForeignKeySearchModel extends PropertySearchModel<Property.ForeignKeyProperty>, Refreshable {
   
-  void initialize();
   /**
    * @return the EntityComboBoxModel used by this PropertySearchModel, if any
    */

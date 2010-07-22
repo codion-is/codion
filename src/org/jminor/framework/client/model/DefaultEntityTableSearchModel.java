@@ -40,7 +40,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
   private final String entityID;
   private final List<Property> properties;
   private final Map<String, PropertyFilterModel> propertyFilterModels;
-  private final Map<String, PropertySearchModel> propertySearchModels;
+  private final Map<String, PropertySearchModel<? extends Property.SearchableProperty>> propertySearchModels;
   /** When active the search should be simplified */
   private final boolean simpleSearch;
   private CriteriaSet.Conjunction searchConjunction = CriteriaSet.Conjunction.AND;
@@ -152,7 +152,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
     }
   }
 
-  public final Collection<PropertySearchModel> getPropertySearchModels() {
+  public final Collection<PropertySearchModel<? extends Property.SearchableProperty>> getPropertySearchModels() {
     return Collections.unmodifiableCollection(propertySearchModels.values());
   }
 
@@ -160,7 +160,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
     return propertySearchModels.containsKey(propertyID);
   }
 
-  public final PropertySearchModel getPropertySearchModel(final String propertyID) {
+  public final PropertySearchModel<? extends Property.SearchableProperty> getPropertySearchModel(final String propertyID) {
     if (propertySearchModels.containsKey(propertyID)) {
       return propertySearchModels.get(propertyID);
     }
@@ -180,9 +180,6 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
     final String searchState = getSearchModelState();
     if (containsPropertySearchModel(propertyID)) {
       final PropertySearchModel searchModel = getPropertySearchModel(propertyID);
-      if (searchModel instanceof ForeignKeySearchModel) {
-        ((ForeignKeySearchModel) searchModel).initialize();
-      }
       searchModel.setSearchEnabled(values != null && !values.isEmpty());
       searchModel.setUpperBound((Object) null);//because the upperBound could be a reference to the active entity which changes accordingly
       searchModel.setUpperBound(values != null && values.isEmpty() ? null : values);//this then fails to register a changed upper bound
@@ -204,7 +201,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
 
   public final Criteria<Property.ColumnProperty> getSearchCriteria() {
     final CriteriaSet<Property.ColumnProperty> criteriaSet = new CriteriaSet<Property.ColumnProperty>(searchConjunction);
-    for (final PropertySearchModel criteria : propertySearchModels.values()) {
+    for (final PropertySearchModel<? extends Property.SearchableProperty> criteria : propertySearchModels.values()) {
       if (criteria.isSearchEnabled()) {
         criteriaSet.addCriteria(criteria.getCriteria());
       }
@@ -236,29 +233,13 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
   }
 
   /**
-   * @param dbProvider the EntityDbProvider to use for foreign key based fields, such as combo boxes
-   * @return a map of PropertySearchModels mapped to their respective propertyIDs
-   */
-  private Map<String, PropertySearchModel> initializePropertySearchModels(final EntityDbProvider dbProvider) {
-    final Map<String, PropertySearchModel> searchModels = new HashMap<String, PropertySearchModel>();
-    for (final Property.SearchableProperty property : getSearchableProperties()) {
-      final PropertySearchModel<? extends Property> searchModel = initializePropertySearchModel(property, dbProvider);
-      if (searchModel != null) {
-        searchModels.put(property.getPropertyID(), searchModel);
-      }
-    }
-
-    return searchModels;
-  }
-
-  /**
    * Initializes a PropertySearchModel for the given property
    * @param property the Property for which to create a PropertySearchModel
    * @param dbProvider the EntityDbProvider instance to use in case the property is a ForeignKeyProperty
    * @return a PropertySearchModel for the given property, null if this property is not searchable or if searching
    * should not be allowed for this property
    */
-  protected PropertySearchModel<? extends Property> initializePropertySearchModel(
+  protected PropertySearchModel<? extends Property.SearchableProperty> initializePropertySearchModel(
           final Property.SearchableProperty property, final EntityDbProvider dbProvider) {
     if (property instanceof Property.ForeignKeyProperty) {
       final Property.ForeignKeyProperty fkProperty = (Property.ForeignKeyProperty) property;
@@ -282,6 +263,32 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
   }
 
   /**
+   * Initializes a PropertyFilterModel for the given property
+   * @param property the Property for which to initialize a PropertyFilterModel
+   * @return a PropertyFilterModel for the given property
+   */
+  protected PropertyFilterModel initializePropertyFilterModel(final Property property) {
+    return new DefaultPropertyFilterModel(property);
+  }
+
+  /**
+   * @param dbProvider the EntityDbProvider to use for foreign key based fields, such as combo boxes
+   * @return a map of PropertySearchModels mapped to their respective propertyIDs
+   */
+  private Map<String, PropertySearchModel<? extends Property.SearchableProperty>> initializePropertySearchModels(final EntityDbProvider dbProvider) {
+    final Map<String, PropertySearchModel<? extends Property.SearchableProperty>> searchModels =
+            new HashMap<String, PropertySearchModel<? extends Property.SearchableProperty>>();
+    for (final Property.SearchableProperty property : getSearchableProperties()) {
+      final PropertySearchModel<? extends Property.SearchableProperty> searchModel = initializePropertySearchModel(property, dbProvider);
+      if (searchModel != null) {
+        searchModels.put(property.getPropertyID(), searchModel);
+      }
+    }
+
+    return searchModels;
+  }
+
+  /**
    * @return a map of PropertyFilterModels mapped to their respective propertyIDs
    */
   private Map<String, PropertyFilterModel> initializePropertyFilterModels() {
@@ -293,15 +300,6 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
     }
 
     return filters;
-  }
-
-  /**
-   * Initializes a PropertyFilterModel for the given property
-   * @param property the Property for which to initialize a PropertyFilterModel
-   * @return a PropertyFilterModel for the given property
-   */
-  protected PropertyFilterModel initializePropertyFilterModel(final Property property) {
-    return new DefaultPropertyFilterModel(property);
   }
 
   private void bindEvents() {

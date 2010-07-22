@@ -32,17 +32,6 @@ public class DefaultForeignKeySearchModel extends AbstractSearchModel<Property.F
   /**
    * Constructs a DefaultPropertySearchModel instance
    * @param property the property
-   * @throws IllegalArgumentException if an illegal constant is used
-   */
-  public DefaultForeignKeySearchModel(final Property.ForeignKeyProperty property) {
-    super(property, property.getType(), (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER));
-    this.entityLookupModel = null;
-    this.entityComboBoxModel = null;
-  }
-
-  /**
-   * Constructs a DefaultPropertySearchModel instance
-   * @param property the property
    * @param entityLookupModel a EntityLookupModel
    * @throws IllegalArgumentException if an illegal constant is used
    */
@@ -62,6 +51,10 @@ public class DefaultForeignKeySearchModel extends AbstractSearchModel<Property.F
   public DefaultForeignKeySearchModel(final Property.ForeignKeyProperty property, final EntityComboBoxModel entityComboBoxModel) {
     super(property, property.getType(), (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER));
     this.entityComboBoxModel = entityComboBoxModel;
+    if (entityComboBoxModel != null && entityComboBoxModel.isCleared()) {
+      entityComboBoxModel.refresh();
+      entityComboBoxModel.setSelectedItem(getUpperBound());
+    }
     this.entityLookupModel = null;
     bindComboBoxEvents();
   }
@@ -109,22 +102,6 @@ public class DefaultForeignKeySearchModel extends AbstractSearchModel<Property.F
   }
 
   /**
-   * Ensures that the data this PropertySearchModel relies on (in ComboBoxModels f.ex) has been initialized
-   */
-  public final void initialize() {
-    if (entityComboBoxModel != null && entityComboBoxModel.isCleared()) {
-      entityComboBoxModel.refresh();
-      try {
-        updatingModel = true;//to prevent a round trip to setUpperBound()
-        entityComboBoxModel.setSelectedItem(getUpperBound());
-      }
-      finally {
-        updatingModel = false;
-      }
-    }
-  }
-
-  /**
    * @return a Criteria based on the values in this search model.
    */
   public final Criteria<Property.ColumnProperty> getCriteria() {
@@ -150,9 +127,9 @@ public class DefaultForeignKeySearchModel extends AbstractSearchModel<Property.F
       public void actionPerformed(ActionEvent e) {
         try {
           updatingModel = true;
-          final Collection<Entity> selectedEntities = entityLookupModel.getSelectedEntities();
-          setUpperBound(selectedEntities.isEmpty() ? null : new ArrayList<Entity>(selectedEntities));
-        }
+        final Collection<Entity> selectedEntities = entityLookupModel.getSelectedEntities();
+        setUpperBound(selectedEntities.isEmpty() ? null : new ArrayList<Entity>(selectedEntities));
+      }
         finally {
           updatingModel = false;
         }
@@ -161,8 +138,8 @@ public class DefaultForeignKeySearchModel extends AbstractSearchModel<Property.F
     eventUpperBoundChanged().addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         if (!updatingModel) {//noinspection unchecked
-          entityLookupModel.setSelectedEntities((List<Entity>) getUpperBound());
-        }
+        entityLookupModel.setSelectedEntities((List<Entity>) getUpperBound());
+      }
       }
     });
   }
@@ -171,22 +148,22 @@ public class DefaultForeignKeySearchModel extends AbstractSearchModel<Property.F
     entityComboBoxModel.eventSelectionChanged().addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         if (!updatingModel) {
-          setUpperBound(entityComboBoxModel.getSelectedEntity());
-        }
+        setUpperBound(entityComboBoxModel.getSelectedEntity());
+      }
       }
     });
     eventUpperBoundChanged().addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         try {
           updatingModel = true;
-          final Object upper = getUpperBound();
-          if ((upper instanceof Collection && !((Collection) upper).isEmpty())) {
-            entityComboBoxModel.setSelectedItem(((Collection) upper).iterator().next());
-          }
-          else {
-            entityComboBoxModel.setSelectedItem(upper);
-          }
+        final Object upper = getUpperBound();
+        if ((upper instanceof Collection && !((Collection) upper).isEmpty())) {
+          entityComboBoxModel.setSelectedItem(((Collection) upper).iterator().next());
         }
+        else {
+          entityComboBoxModel.setSelectedItem(upper);
+        }
+      }
         finally {
           updatingModel = false;
         }

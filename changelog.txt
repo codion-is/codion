@@ -1902,3 +1902,4 @@
   ValueChangeMapEditModel.clearValues() removed, setValueMap(null) serves that purpose
   ValueChangeMapEditPanel.clearModelValues() added for clear action
   AbstractValueChangeMapEditModel, added default implementations for abstract methods, renamed to DefaultValueChangeMapEditModel
+  ForeignKeySearchModel.initialize() removed

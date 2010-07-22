@@ -95,13 +95,13 @@ public interface EntityTableSearchModel extends FilterCriteria<Entity>, Refresha
   /**
    * @return a list containing the PropertySearchModels configured in this table search model
    */
-  Collection<PropertySearchModel> getPropertySearchModels();
+  Collection<PropertySearchModel<? extends Property.SearchableProperty>> getPropertySearchModels();
 
   /**
    * @param propertyID the id of the property for which to retrieve the PropertySearchModel
    * @return the PropertySearchModel associated with the property identified by <code>propertyID</code>
    */
-  PropertySearchModel getPropertySearchModel(final String propertyID);
+  PropertySearchModel<? extends Property.SearchableProperty> getPropertySearchModel(final String propertyID);
 
   /**
    * Clears the state of all PropertySearchModels

@@ -106,7 +106,7 @@ public class EntityCriteriaPanel extends JPanel {
           AbstractSearchPanel panel = panels.get(selected);
           if (panel == null) {
             if (selected instanceof ForeignKeySearchModel) {
-              panel = new ForeignKeySearchPanel((ForeignKeySearchModel) selected, true, true);
+              panel = new ForeignKeySearchPanel((ForeignKeySearchModel) selected, true);
             }
             else {
               panel = new PropertySearchPanel(selected, true, true);

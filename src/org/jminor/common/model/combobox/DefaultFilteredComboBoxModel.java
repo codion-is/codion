@@ -131,7 +131,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     return Collections.unmodifiableList(visibleItems.subList(1, getSize() - 1));
   }
 
-  public final void setFilterCriteria(final FilterCriteria filterCriteria) {
+  public final void setFilterCriteria(final FilterCriteria<T> filterCriteria) {
     if (filterCriteria == null) {
       this.filterCriteria = acceptAllCriteria;
     }
@@ -233,6 +233,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
       selectedItem = null;
     }
     else {
+      //noinspection unchecked
       selectedItem = (T) anItem;
     }
     fireContentsChanged();
@@ -324,7 +325,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     };
   }
 
-  private void fireContentsChanged() {
+  protected final void fireContentsChanged() {
     final ListDataEvent event = new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0, Integer.MAX_VALUE);
     for (final ListDataListener dataListener : listDataListeners) {
       dataListener.contentsChanged(event);
