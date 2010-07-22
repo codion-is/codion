@@ -15,6 +15,11 @@ import org.jminor.framework.domain.Property;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * This interface defines filtering functionality, which refers to showing/hiding entities already available
+ * in a table model and searching functionality, which refers to configuring the underlying query,
+ * which then needs to be re-run.<br>
+ */
 public interface EntityTableSearchModel extends FilterCriteria<Entity>, Refreshable {
 
   /**
@@ -45,6 +50,13 @@ public interface EntityTableSearchModel extends FilterCriteria<Entity>, Refresha
    * @return true if the search state changed as a result of this method call, false otherwise
    */
   boolean setSearchValues(final String propertyID, final Collection<?> values);
+
+  /**
+   * Sets the criteria value of the PropertyFilterModel associated with the property identified by <code>propertyID</code>.
+   * @param propertyID the id of the property
+   * @param value the criteria value
+   */
+  void setFilterValue(final String propertyID, final Comparable value);
 
   /**
    * @return the current criteria based on the state of the search models

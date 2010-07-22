@@ -11,10 +11,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * A class for providing summaries of numerical table columns: sum, average, minimum, maximum and minimum & maximum.<br>
- * User: Bjorn Darri<br>
- * Date: 5.9.2009<br>
- * Time: 21:47:06<br>
+ * A interface defining a class for providing summaries of numerical table columns: sum, average, minimum, maximum and minimum & maximum.<br>
  */
 public interface PropertySummaryModel {
 

@@ -39,11 +39,6 @@ public interface EntityModel extends Refreshable, EntityDataProvider {
   EntityTableModel getTableModel();
 
   /**
-   * @return the master model, if any
-   */
-  EntityModel getMasterModel();
-
-  /**
    * @return true if this EntityModel contains a TableModel
    */
   boolean containsTableModel();
@@ -78,7 +73,16 @@ public interface EntityModel extends Refreshable, EntityDataProvider {
    */
   void masterSelectionChanged(final String masterEntityID, final List<Entity> selectedMasterEntities);
 
+  /**
+   * Sets the model serving as master model
+   * @param entityModel the master entity model
+   */
   void setMasterModel(final EntityModel entityModel);
+
+  /**
+   * @return the master model, if any
+   */
+  EntityModel getMasterModel();
 
   /**
    * Adds the given detail models to this model.

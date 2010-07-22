@@ -8,7 +8,7 @@ import org.jminor.common.model.SearchModel;
 import org.jminor.framework.domain.Property;
 
 /**
- * A class for searching a set of entities based on a property.
+ * A base interface for searching a set of entities based on a property.
  */
-public interface PropertySearchModel<T extends Property.SearchableProperty> 
+public interface PropertySearchModel<T extends Property.SearchableProperty>
         extends SearchModel<T>, CriteriaProvider<Property.ColumnProperty> {}

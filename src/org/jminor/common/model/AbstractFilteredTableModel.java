@@ -137,14 +137,6 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
     return visibleItems.size();
   }
 
-  public final boolean isFiltering() {
-    return isFiltering;
-  }
-
-  public final boolean isSorting() {
-    return isSorting;
-  }
-
   public final boolean contains(final T item, final boolean includeFiltered) {
     final boolean ret = visibleItems.contains(item);
     if (!ret && includeFiltered) {
@@ -361,10 +353,6 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
     return selectionModel.isSelectionEmpty();
   }
 
-  public final ListSelectionModel getSelectionModel2() {
-    return selectionModel;
-  }
-
   public final T getItemAt(final int index) {
     return visibleItems.get(modelIndex(index));
   }
@@ -392,7 +380,7 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
       filteredItems.clear();
       for (final ListIterator<T> iterator = visibleItems.listIterator(); iterator.hasNext();) {
         final T item = iterator.next();
-        if (!getFilterCriteria().include(item)) {
+        if (!filterCriteria.include(item)) {
           filteredItems.add(item);
           iterator.remove();
         }
@@ -611,9 +599,8 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
    * @param atFront if true then the items are added at the front
    */
   protected final void addItems(final List<T> items, final boolean atFront) {
-    final FilterCriteria<T> criteria = getFilterCriteria();
     for (final T item : items) {
-      if (criteria.include(item)) {
+      if (filterCriteria.include(item)) {
         if (atFront) {
           visibleItems.add(0, item);
         }
@@ -650,6 +637,14 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
         return !(item == null || searchText == null) && item.toString().toLowerCase().contains(searchText.toLowerCase());
       }
     };
+  }
+
+  protected final boolean isFiltering() {
+    return isFiltering;
+  }
+
+  protected final boolean isSorting() {
+    return isSorting;
   }
 
   private void bindEventsInternal() {

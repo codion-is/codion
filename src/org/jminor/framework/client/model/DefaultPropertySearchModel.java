@@ -38,9 +38,6 @@ public class DefaultPropertySearchModel extends AbstractSearchModel<Property.Col
     return stringBuilder.toString();
   }
 
-  /**
-   * @return a Criteria based on the values in this search model.
-   */
   public Criteria<Property.ColumnProperty> getCriteria() {
     return getValueCount(getSearchType()) == 1 ?
             EntityCriteriaUtil.propertyCriteria(getSearchKey(), isCaseSensitive(), getSearchType(), getUpperBound()) :
@@ -50,8 +47,6 @@ public class DefaultPropertySearchModel extends AbstractSearchModel<Property.Col
   public boolean include(final Object object) {
     return true;
   }
-
-  public void initialize() {}
 
   private String toString(final Object object) {
     final StringBuilder stringBuilder = new StringBuilder();

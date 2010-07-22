@@ -41,7 +41,7 @@ public class EntityPanelProvider implements Comparable {
 
   private List<EntityPanelProvider> detailPanelProviders = new ArrayList<EntityPanelProvider>();
 
-  private static final Map<String, EntityPanelProvider> panelProviders = Collections.synchronizedMap(new HashMap<String, EntityPanelProvider>());
+  private static final Map<String, EntityPanelProvider> PANEL_PROVIDERS = Collections.synchronizedMap(new HashMap<String, EntityPanelProvider>());
 
   private EntityPanel instance;
 
@@ -83,11 +83,11 @@ public class EntityPanelProvider implements Comparable {
   }
 
   public final EntityPanelProvider register() {
-    synchronized (panelProviders) {
-      if (panelProviders.containsKey(entityID)) {
+    synchronized (PANEL_PROVIDERS) {
+      if (PANEL_PROVIDERS.containsKey(entityID)) {
         throw new RuntimeException("Panel provider has already been set for entity: " + entityID);
       }
-      panelProviders.put(entityID, this);
+      PANEL_PROVIDERS.put(entityID, this);
     }
 
     return this;
@@ -256,7 +256,7 @@ public class EntityPanelProvider implements Comparable {
   }
 
   public static EntityPanelProvider getProvider(final String entityID) {
-    return panelProviders.get(entityID);
+    return PANEL_PROVIDERS.get(entityID);
   }
 
   protected void configurePanel(final EntityPanel panel) {}

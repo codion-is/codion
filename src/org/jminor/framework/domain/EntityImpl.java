@@ -54,7 +54,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
    * Instantiates a new Entity
    * @param entityID the ID of the entity type
    */
-  public EntityImpl(final String entityID) {
+  EntityImpl(final String entityID) {
     this.entityID = entityID;
     properties = EntityRepository.getProperties(entityID);
   }
@@ -63,7 +63,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
    * Instantiates a new Entity
    * @param primaryKey the primary key
    */
-  public EntityImpl(final Key primaryKey) {
+  EntityImpl(final Key primaryKey) {
     this(Util.rejectNullValue(primaryKey, "primaryKey").getEntityID());
     for (final Property.PrimaryKeyProperty property : primaryKey.getProperties()) {
       setValue(property, primaryKey.getValue(property.getPropertyID()));
@@ -675,7 +675,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
      * Instantiates a new Key for the given entity type
      * @param entityID the entity ID
      */
-    public KeyImpl(final String entityID) {
+    KeyImpl(final String entityID) {
       super(1);
       this.entityID = entityID;
       this.properties = EntityRepository.getPrimaryKeyProperties(entityID);
@@ -688,7 +688,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
      * @param value the value
      * @throws RuntimeException in case this key is a multi value key
      */
-    public KeyImpl(final String entityID, final Object value) {
+    KeyImpl(final String entityID, final Object value) {
       this(entityID);
       if (isCompositeKey()) {
         throw new RuntimeException("Not a single value key");

@@ -143,9 +143,6 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
     return this;
   }
 
-  /**
-   * @return whether or not to automatically prefix the the search string with a wildcard
-   */
   public final boolean isWildcardPrefix() {
     return wildcardPrefix;
   }
@@ -155,9 +152,6 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
     return this;
   }
 
-  /**
-   * @return the wildcard
-   */
   public final String getWildcard() {
     return wildcard;
   }

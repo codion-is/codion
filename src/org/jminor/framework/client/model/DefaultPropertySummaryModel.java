@@ -13,12 +13,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * A class for providing summaries of numerical table columns: sum, average, minimum, maximum and minimum & maximum.<br>
- * User: Bjorn Darri<br>
- * Date: 5.9.2009<br>
- * Time: 21:47:06
- */
 public class DefaultPropertySummaryModel implements PropertySummaryModel {
 
   private static final Summary NONE = new None();
@@ -118,6 +112,7 @@ public class DefaultPropertySummaryModel implements PropertySummaryModel {
       return FrameworkMessages.get(FrameworkMessages.NONE);
     }
 
+    @Override
     public String getSummary(final PropertyValueProvider valueProvider, final Property property) {
       return "";
     }
@@ -130,6 +125,7 @@ public class DefaultPropertySummaryModel implements PropertySummaryModel {
       return FrameworkMessages.get(FrameworkMessages.SUM);
     }
 
+    @Override
     public String getSummary(final PropertyValueProvider valueProvider, final Property property) {
       final Format format = property.getFormat();
       String txt = "";
@@ -159,6 +155,7 @@ public class DefaultPropertySummaryModel implements PropertySummaryModel {
       return FrameworkMessages.get(FrameworkMessages.AVERAGE);
     }
 
+    @Override
     public String getSummary(final PropertyValueProvider valueProvider, final Property property) {
       final Format format = property.getFormat();
       String txt = "";
@@ -196,6 +193,7 @@ public class DefaultPropertySummaryModel implements PropertySummaryModel {
       return FrameworkMessages.get(FrameworkMessages.MINIMUM);
     }
 
+    @Override
     public String getSummary(final PropertyValueProvider valueProvider, final Property property) {
       final Format format = property.getFormat();
       String txt = "";
@@ -229,6 +227,7 @@ public class DefaultPropertySummaryModel implements PropertySummaryModel {
       return FrameworkMessages.get(FrameworkMessages.MAXIMUM);
     }
 
+    @Override
     public String getSummary(final PropertyValueProvider valueProvider, final Property property) {
       final Format format = property.getFormat();
       String txt = "";
@@ -262,6 +261,7 @@ public class DefaultPropertySummaryModel implements PropertySummaryModel {
       return FrameworkMessages.get(FrameworkMessages.MINIMUM_AND_MAXIMUM);
     }
 
+    @Override
     public String getSummary(final PropertyValueProvider valueProvider, final Property property) {
       final Format format = property.getFormat();
       String txt = "";

@@ -9,9 +9,7 @@ import java.sql.Types;
 import java.util.List;
 
 /**
- * User: Björn Darri
- * Date: 18.7.2010
- * Time: 21:53:53
+ * A Property factory class.
  */
 public final class Properties {
 
@@ -75,7 +73,7 @@ public final class Properties {
     return new PropertyImpl.SubqueryPropertyImpl(propertyID, type, caption, subquery);
   }
 
-  public static Property.ValueListProperty valueListProperty(final String propertyID, final int type, final String caption, 
+  public static Property.ValueListProperty valueListProperty(final String propertyID, final int type, final String caption,
                                                              final List<Item<Object>> values) {
     return new PropertyImpl.ValueListPropertyImpl(propertyID, type, caption, values);
   }

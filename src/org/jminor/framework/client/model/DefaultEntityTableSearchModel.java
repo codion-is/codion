@@ -25,12 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This class encapsulates filtering functionality, which refers to showing/hiding entities already available
- * in a table model and searching functionality, which refers to configuring the underlying query,
- * which then needs to be re-run.<br>
- * User: Bjorn Darri<br>
- * Date: 24.7.2008<br>
- * Time: 21:29:55<br>
+ * A default EntityTableSearchModel implementation
  */
 public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
 
@@ -116,10 +111,6 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
     return Collections.unmodifiableCollection(propertyFilterModels.values());
   }
 
-  /**
-   * @param item the entity
-   * @return true if the entity should be included or filtered
-   */
   public final boolean include(final Entity item) {
     for (final SearchModel<Property> columnFilter : propertyFilterModels.values()) {
       if (columnFilter.isSearchEnabled() && !columnFilter.include(item)) {
@@ -187,11 +178,6 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
     return !searchState.equals(getSearchModelState());
   }
 
-  /**
-   * Sets the criteria value of the PropertyFilterModel associated with the property identified by <code>propertyID</code>.
-   * @param propertyID the id of the property
-   * @param value the criteria value
-   */
   public final void setFilterValue(final String propertyID, final Comparable value) {
     final PropertyFilterModel filterModel = getPropertyFilterModel(propertyID);
     if (filterModel != null) {

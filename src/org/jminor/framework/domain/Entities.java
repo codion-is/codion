@@ -6,26 +6,46 @@ package org.jminor.framework.domain;
 import java.util.Map;
 
 /**
- * User: Björn Darri<br>
- * Date: 17.7.2010<br>
- * Time: 12:11:29
+ * A Entity factory class
  */
 public final class Entities {
 
   private Entities() {}
 
+  /**
+   * Creates a new Entity instance with the given entityID
+   * @param entityID the entity ID
+   * @return a new Entity instance
+   */
   public static Entity entityInstance(final String entityID) {
     return new EntityImpl(entityID);
   }
 
+  /**
+   * Creates a new Entity instance with the given primary key
+   * @param key the primary key
+   * @return a new Entity instance
+   */
   public static Entity entityInstance(final Entity.Key key) {
     return new EntityImpl(key);
   }
 
+  /**
+   * Creates a new Entity instance with the given entityID and the given values/originalValues
+   * @param entityID the entity ID
+   * @param values the values
+   * @param originalValues the original values
+   * @return a new Entity instance
+   */
   public static Entity entityInstance(final String entityID, final Map<String, Object> values, final Map<String, Object> originalValues) {
     return EntityImpl.entityInstance(entityID, values, originalValues);
   }
 
+  /**
+   * Creates a new Entity.Key instance with the given entityID
+   * @param entityID the entity ID
+   * @return a new Entity.Key instance
+   */
   public static Entity.Key keyInstance(final String entityID) {
     return new EntityImpl.KeyImpl(entityID);
   }

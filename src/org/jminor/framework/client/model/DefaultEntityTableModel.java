@@ -183,9 +183,6 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
     this.isDetailModel = detailModel;
   }
 
-  /**
-   * @return whether to show all underlying entities when no criteria is applied.
-   */
   public final boolean isQueryCriteriaRequired() {
     return queryCriteriaRequired;
   }
@@ -246,20 +243,6 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
 
   public final EntityDbProvider getDbProvider() {
     return dbProvider;
-  }
-
-  /**
-   * @return true if the model is either refreshing, filtering or sorting
-   */
-  public final boolean isChangingState() {
-    return isRefreshing || isFiltering() || isSorting();
-  }
-
-  /**
-   * @return true if the model data is being refreshed
-   */
-  public final boolean isRefreshing() {
-    return isRefreshing;
   }
 
   public boolean isMultipleUpdateAllowed() {
@@ -357,11 +340,6 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
                     + FrameworkMessages.get(FrameworkMessages.HIDDEN) + ")" : ")").toString();
   }
 
-  /**
-   * Refreshes the data in this table model, keeping the selected items
-   * @see #evtRefreshStarted
-   * @see #evtRefreshDone
-   */
   public final void refresh() {
     if (isRefreshing) {
       return;

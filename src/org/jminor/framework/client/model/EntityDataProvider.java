@@ -6,9 +6,7 @@ package org.jminor.framework.client.model;
 import org.jminor.framework.db.provider.EntityDbProvider;
 
 /**
- * User: darri<br>
- * Date: 15.7.2010<br>
- * Time: 11:28:45
+ * The base interface for model objects responsible for reading and writing entities to and from a database. 
  */
 public interface EntityDataProvider {
 

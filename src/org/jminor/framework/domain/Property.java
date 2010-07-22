@@ -19,6 +19,10 @@ public interface Property extends Attribute {
    */
   boolean is(final Property property);
 
+
+  /**
+   * @return true if this is a numerical Property, that is, Integer or Double
+   */
   boolean isNumerical();
 
   /**
@@ -73,8 +77,12 @@ public interface Property extends Attribute {
   boolean is(final String propertyID);
 
   /**
-   * @return the property identifier of this property
+   * The property identifier, should be unique within an Entity.
+   * By default this ID serves as column name for database properties.
+   * @see #getPropertyID()
+   * @return the ID of this property
    */
+
   String getPropertyID();
 
   /**
@@ -88,14 +96,28 @@ public interface Property extends Attribute {
    */
   boolean isType(final int type);
 
+  /**
+   * Sets the default value for this property, overrides the underlying column default value, if any
+   * @param defaultValue the value to use as default
+   * @return the property
+   */
   Property setDefaultValue(final Object defaultValue);
+
+  /**
+   * @return the default value for this property, if any
+   */
+  Object getDefaultValue();
 
   /**
    * @return true if this property should be hidden in table views
    */
   boolean isHidden();
 
-  Property setHidden(boolean hidden);
+  /**
+   * @param hidden specifies whether this property should not be visible to the user
+   * @return this Property instance
+   */
+  Property setHidden(final boolean hidden);
 
   /**
    * @return the maximum allowed value for this property, null if none is defined,
@@ -103,7 +125,12 @@ public interface Property extends Attribute {
    */
   Double getMax();
 
-  Property setMax(double max);
+  /**
+   * Sets the maximum allowed value for this property, only applicable to numerical properties
+   * @param max the maximum allowed value
+   * @return this Property instance
+   */
+  Property setMax(final double max);
 
   /**
    * @return the minimum allowed value for this property, null if none is defined,
@@ -111,9 +138,25 @@ public interface Property extends Attribute {
    */
   Double getMin();
 
-  Property setMin(double min);
+  /**
+   * Only applicable to numerical properties
+   * @param min the minimum allowed value for this property
+   * @return this Property instance
+   */
+  Property setMin(final double min);
 
-  Property setMaximumFractionDigits(int maximumFractionDigits);
+  /**
+   * Sets the maximum fraction digits to show for this property, only applicable to DOUBLE properties
+   * This setting is overridden during subsquence calls to <code>setFormat</code>
+   * @param maximumFractionDigits the maximum fraction digits
+   * @return this Property instance
+   */
+  Property setMaximumFractionDigits(final int maximumFractionDigits);
+
+  /**
+   * @return the maximum number of fraction digits to show for this property value
+   */
+  int getMaximumFractionDigits();
 
   /**
    * Specifies whether to use number grouping when presenting this value.
@@ -126,28 +169,65 @@ public interface Property extends Attribute {
   Property setUseNumberFormatGrouping(final boolean useGrouping);
 
   /**
-   * @param preferredColumnWidth the preferred column width to be used when this property is shown in a table
-   * @return this Property instance
-   */
-  Property setPreferredColumnWidth(final int preferredColumnWidth);
-
-  Property setReadOnly(boolean readOnly);
-
-  Property setNullable(boolean nullable);
-
-  Property setMaxLength(int maxLength);
-
-  /**
    * @return the preferred column width of this property when
    * presented in a table, 0 if none has been specified
    */
   int getPreferredColumnWidth();
 
   /**
+   * @param preferredColumnWidth the preferred column width to be used when this property is shown in a table
+   * @return this Property instance
+   */
+  Property setPreferredColumnWidth(final int preferredColumnWidth);
+
+  /**
+   * @param readOnly specifies whether this property should be included during insert/update operations
+   * @return this Property instance
+   */
+  Property setReadOnly(final boolean readOnly);
+
+  /**
+   * Specifies whether or not this property is nullable, in case of
+   * properties that have parent properties (properties which comprise a fk property fx)
+   * inherit the nullable state of the parent property.
+   * @param nullable specifies whether or not this property accepts a null value
+   * @return this Property instance
+   */
+  Property setNullable(final boolean nullable);
+
+  /**
+   * @return true if this property accepts a null value
+   */
+  boolean isNullable();
+
+  /**
+   * Sets the maximum length of this property value
+   * @param maxLength the maximum length
+   * @return this Property instance
+   */
+  Property setMaxLength(final int maxLength);
+
+  /**
+   * @return the maximum length of this property value, -1 is returned if the max length is undefined
+   */
+  int getMaxLength();
+
+  /**
    * @return the mnemonic to use when creating a label for this property
    */
   Character getMnemonic();
 
+  /**
+   * Sets the mnemonic to use when creating a label for this property
+   * @param mnemonic the mnemonic character
+   * @return this Property instance
+   */
+  Property setMnemonic(final Character mnemonic);
+
+  /**
+   * @param description a String describing this property
+   * @return this Property instance
+   */
   Property setDescription(final String description);
 
   /**
@@ -155,8 +235,22 @@ public interface Property extends Attribute {
    */
   Format getFormat();
 
+  /**
+   * Sets the Format to use when presenting property values
+   * @param format the format to use
+   * @return this Property instance
+   */
   Property setFormat(final Format format);
-  
+
+  /**
+   * Specifies whether or not this attribute is read only
+   * @return true if this attribute is read only
+   */
+  boolean isReadOnly();
+
+  /**
+   * @return true if this property has a parent property
+   */
   boolean hasParentProperty();
 
   void setParentProperty(final ForeignKeyProperty foreignKeyProperty);
@@ -167,10 +261,22 @@ public interface Property extends Attribute {
 
   interface ColumnProperty extends SearchableProperty, Column {
 
+    /**
+     * @param updatable specifies whether this property is updatable
+     * @return this Property instance
+     */
     ColumnProperty setUpdatable(boolean updatable);
 
+    /**
+     * Sets the select column index
+     * @param selectIndex the index
+     */
     void setSelectIndex(final int selectIndex);
 
+    /**
+     * @param columnHasDefaultValue specifies whether or not the underlying column has a default value
+     * @return this Property instance
+     */
     ColumnProperty setColumnHasDefaultValue(final boolean columnHasDefaultValue);
 
     ColumnProperty setSearchable(final boolean searchable);
@@ -181,9 +287,16 @@ public interface Property extends Attribute {
    * A primary key property is by default non-updatable.
    */
   interface PrimaryKeyProperty extends ColumnProperty {
-
+    /**
+     * @return this property's index in the primary key
+     */
     int getIndex();
 
+    /**
+     * Sets the primary key index of this property
+     * @param index the index
+     * @return this PrimaryKeyProperty instance
+     */
     PrimaryKeyProperty setIndex(final int index);
   }
 
@@ -254,7 +367,7 @@ public interface Property extends Attribute {
     boolean isValid(final Object value);
 
     /**
-     * @return an unmodifiable view of the values
+     * @return an unmodifiable view of the available values
      */
     List<Item<Object>> getValues();
 
@@ -284,6 +397,12 @@ public interface Property extends Attribute {
      */
     Collection<String> getLinkedPropertyIDs();
 
+    /**
+     * Adds a property change link on the property identified by <code>linkedPropertyID</code>,
+     * so that changes in that property trigger a change in this property
+     * @param linkedPropertyIDs the IDs of the properties on which to link
+     * @return this TransientProperty instance
+     */
     DerivedProperty addLinkedPropertyIDs(final String... linkedPropertyIDs);
   }
 

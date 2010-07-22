@@ -12,7 +12,13 @@ import org.jminor.framework.domain.Property;
  */
 public interface PropertyComboBoxModel extends FilteredComboBoxModel {
 
+  /**
+   * @return the column property this combo box model is based on
+   */
   Property.ColumnProperty getProperty();
 
+  /**
+   * @return the db provider instance used by this combo box model
+   */
   EntityDbProvider getDbProvider();
 }

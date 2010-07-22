@@ -193,9 +193,6 @@ public class DefaultEntityModel implements EntityModel {
     stCascadeRefresh.setActive(value);
   }
 
-  /**
-   * @return the master model, if any
-   */
   public final EntityModel getMasterModel() {
     return masterModel;
   }
@@ -312,12 +309,6 @@ public class DefaultEntityModel implements EntityModel {
     throw new RuntimeException("No detail model for type " + entityID + " found in model: " + this);
   }
 
-  /**
-   * Refreshes this EntityModel
-   * @see #evtRefreshStarted
-   * @see #evtRefreshDone
-   * @see #isCascadeRefresh
-   */
   public final void refresh() {
     if (isRefreshing) {
       return;

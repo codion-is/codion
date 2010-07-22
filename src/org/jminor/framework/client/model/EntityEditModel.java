@@ -160,8 +160,10 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
   Entity getForeignKeyValue(final String foreignKeyPropertyID);
 
   /**
+   * Initializes a value provider for the given property, used for adding lookup
+   * functionality to input fields for example.
    * @param property the property
-   * @return a value provider providing the values of the given property
+   * @return a value provider for the given property
    */
   ValueCollectionProvider getValueProvider(final Property property);
 
@@ -322,6 +324,32 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
   boolean isEntityModified();
 
   /**
+   * Returns the default value for the given property, used when initializing a new
+   * default entity for this edit model. This does not apply to denormalized properties
+   * (Property.DenormalizedProperty) nor properties that are wrapped in foreign key properties
+   * (Property.ForeignKeyProperty)
+   * If the default value of a property should be the last value used <code>persistValueOnClear</code>
+   * should be overridden so that it returns <code>true</code> for that property.
+   * @param property the property
+   * @return the default value for the property
+   * @see Property#setDefaultValue(Object)
+   * @see #persistValueOnClear(org.jminor.framework.domain.Property)
+   */
+  Object getDefaultValue(final Property property);
+
+  /**
+   * Returns true if the last available value for this property should be used when initializing
+   * a default entity for this EntityModel.
+   * Override for selective reset of field values when the model is cleared.
+   * For Property.ForeignKeyProperty values this method by default returns the value of the
+   * property <code>Configuration.PERSIST_FOREIGN_KEY_VALUES</code>.
+   * @param property the property
+   * @return true if the given entity field value should be reset when the model is cleared
+   * @see org.jminor.framework.Configuration#PERSIST_FOREIGN_KEY_VALUES
+   */
+  boolean persistValueOnClear(final Property property);
+
+  /**
    * Performs a insert on the active entity
    * @throws DbException in case of a database exception
    * @throws CancelException in case the user cancels the operation
@@ -331,11 +359,13 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
   void insert() throws CancelException, DbException, ValidationException;
 
   /**
-   * Performs a insert on the given entities
+   * Performs an insert on the given entities, returns silently on recieving an empty list
    * @param entities the entities to insert
    * @throws DbException in case of a database exception
    * @throws CancelException in case the user cancels the operation
-   * @throws org.jminor.common.model.valuemap.exception.ValidationException in case validation fails
+   * @throws ValidationException in case validation fails
+   * @see #eventBeforeInsert()
+   * @see #eventAfterInsert()
    * @see #validateEntities(java.util.Collection, int)
    */
   void insert(List<Entity> entities) throws CancelException, DbException, ValidationException;

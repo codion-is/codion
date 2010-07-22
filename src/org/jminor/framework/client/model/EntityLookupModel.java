@@ -6,6 +6,7 @@ package org.jminor.framework.client.model;
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.model.Event;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.Property;
 
 import java.util.List;
 
@@ -46,6 +47,11 @@ public interface EntityLookupModel extends EntityDataProvider {
    * @return a string describing this lookup model, by default a comma separated list of search property names
    */
   String getDescription();
+
+  /**
+   * @return a list containing the properties used when performing a lookup
+   */
+  List<Property.ColumnProperty> getLookupProperties();
 
   /**
    * @return true if this lookup model allows selection of multiple entities

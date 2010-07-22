@@ -41,9 +41,6 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
     }
   }
 
-  /**
-   * @return the current user
-   */
   public final User getUser() {
     try {
       return dbProvider.getEntityDb().getUser();
@@ -53,17 +50,10 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
     }
   }
 
-  /**
-   * @return the EntityDbProvider instance being used by this EntityApplicationModel
-   */
   public final EntityDbProvider getDbProvider() {
     return dbProvider;
   }
 
-  /**
-   * Adds the given detail models to this model.
-   * @param mainApplicationModels the detail models to add
-   */
   public final void addMainApplicationModels(final EntityModel... mainApplicationModels) {
     Util.rejectNullValue(mainApplicationModels, "mainApplicationModels");
     for (final EntityModel model : mainApplicationModels) {
@@ -71,35 +61,20 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
     }
   }
 
-  /**
-   * Adds the given detail model to this model
-   * @param detailModel the detail model
-   * @return the detail model just added
-   */
   public final EntityModel addMainApplicationModel(final EntityModel detailModel) {
     this.mainApplicationModels.add(detailModel);
 
     return detailModel;
   }
 
-  /**
-   * @return an unmodifiable List containing the main application models
-   */
   public final List<? extends EntityModel> getMainApplicationModels() {
     return Collections.unmodifiableList(mainApplicationModels);
   }
 
-  /**
-   * @return true if cascade refresh is active
-   */
   public final boolean isCascadeRefresh() {
     return !mainApplicationModels.isEmpty() && mainApplicationModels.iterator().next().isCascadeRefresh();
   }
 
-  /**
-   * fires: evtCascadeRefreshChanged
-   * @param value the new value
-   */
   public final void setCascadeRefresh(final boolean value) {
     if (!mainApplicationModels.isEmpty() && isCascadeRefresh() != value) {
       for (final EntityModel mainApplicationModel : mainApplicationModels) {
@@ -110,9 +85,6 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
     }
   }
 
-  /**
-   * Refreshes the whole application tree
-   */
   public final void refresh() {
     final boolean cascade = isCascadeRefresh();
     try {

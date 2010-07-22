@@ -49,7 +49,7 @@ public class PropertySearchPanel extends AbstractSearchPanel<Property.ColumnProp
 
   @Override
   protected boolean isLowerBoundFieldRequired(final Property.ColumnProperty property) {
-    return !property.isReference() && !property.isBoolean();
+    return !property.isBoolean();
   }
 
   @Override
