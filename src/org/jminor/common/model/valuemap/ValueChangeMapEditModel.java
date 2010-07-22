@@ -122,10 +122,4 @@ public interface ValueChangeMapEditModel<K, V> extends Refreshable {
    * @see #validate(ValueChangeMap, Object, int)
    */
   boolean isValid(final K key, final int action);
-
-  /**
-   * Clears the edit model and sets the default state.
-   * @see #getDefaultValueMap()
-   */
-  void clearValues();
 }

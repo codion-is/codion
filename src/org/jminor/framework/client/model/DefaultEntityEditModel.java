@@ -10,7 +10,7 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
-import org.jminor.common.model.valuemap.AbstractValueChangeMapEditModel;
+import org.jminor.common.model.valuemap.DefaultValueChangeMapEditModel;
 import org.jminor.common.model.valuemap.ValueChangeEvent;
 import org.jminor.common.model.valuemap.ValueChangeListener;
 import org.jminor.common.model.valuemap.ValueChangeMap;
@@ -45,7 +45,7 @@ import java.util.Map;
 /**
  * A class for editing a Entity instance, providing property change events and combobox models.
  */
-public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<String, Object> implements EntityEditModel {
+public class DefaultEntityEditModel extends DefaultValueChangeMapEditModel<String, Object> implements EntityEditModel {
 
   protected static final Logger LOG = Util.getLogger(DefaultEntityEditModel.class);
 
@@ -494,14 +494,6 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
     model.setAdditionalLookupCriteria(additionalSearchCriteria);
 
     return model;
-  }
-
-  /**
-   * Clears the edit model and sets the default state.
-   * @see #getDefaultValueMap()
-   */
-  public final void clearValues() {
-    setValueMap(null);
   }
 
   public final Entity getDefaultValueMap() {

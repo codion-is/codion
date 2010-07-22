@@ -1898,3 +1898,7 @@
   Finalized a bunch of classes and methods
   More of the same
 0.5.8
+  Distribution jars are now package-sealed by default
+  ValueChangeMapEditModel.clearValues() removed, setValueMap(null) serves that purpose
+  ValueChangeMapEditPanel.clearModelValues() added for clear action
+  AbstractValueChangeMapEditModel, added default implementations for abstract methods, renamed to DefaultValueChangeMapEditModel

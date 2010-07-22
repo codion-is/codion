@@ -237,6 +237,7 @@
       <attribute name="Implementation-Version" value="${version}"/>
       <attribute name="Implementation-URL" value="http://jminor.org"/>
       <attribute name="Build-Jdk" value="${java.specification.version}"/>
+      <attribute name="Sealed" value="true"/>
     </manifest>
   </target>
 
@@ -427,7 +428,7 @@
     </junitreport>
   </target>
 
-  <target name="run_unit_tests" depends="build, recreate_h2_db"
+  <target name="run_unit_tests" depends="build, compile_demo_reports, recreate_h2_db"
           description="Runs the framework unit tests">
     <mkdir dir="${test.reports}"/>
     <junit printsummary="yes" haltonfailure="true" haltonerror="true" fork="yes">

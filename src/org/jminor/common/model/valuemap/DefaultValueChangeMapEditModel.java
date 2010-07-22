@@ -17,7 +17,7 @@ import java.util.Map;
  * @param <K> the type of the keys in the value map
  * @param <V> the type of the values in the value map
  */
-public abstract class AbstractValueChangeMapEditModel<K, V> implements ValueChangeMapEditModel<K, V> {
+public class DefaultValueChangeMapEditModel<K, V> implements ValueChangeMapEditModel<K, V> {
 
   /**
    * The value map instance edited by this edit model.
@@ -44,11 +44,33 @@ public abstract class AbstractValueChangeMapEditModel<K, V> implements ValueChan
    * Instantiates a new edit model instance for the given value map.
    * @param initialMap the value map to edit
    */
-  public AbstractValueChangeMapEditModel(final ValueChangeMap<K, V> initialMap) {
+  public DefaultValueChangeMapEditModel(final ValueChangeMap<K, V> initialMap) {
     Util.rejectNullValue(initialMap, "initialMap");
     this.valueMap = initialMap;
     bindEventsInternal();
   }
+
+  public void clear() {}
+
+  public void refresh() {}
+
+  public ValueMap<K, V> getDefaultValueMap() {
+    return new ValueMapImpl<K, V>();
+  }
+
+  public boolean isNullable(final K key) {
+    return isNullable(valueMap, key);
+  }
+
+  public boolean isNullable(final ValueChangeMap<K, V> valueMap, final K key) {
+    return true;
+  }
+
+  public void validate(final K key, final int action) throws ValidationException {
+    validate(valueMap, key, action);
+  }
+
+  public void validate(final ValueChangeMap<K, V> valueMap, final K key, final int action) throws ValidationException {}
 
   public final V getValue(final K key) {
     return valueMap.getValue(key);

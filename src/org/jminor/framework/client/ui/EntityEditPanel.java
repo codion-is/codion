@@ -161,7 +161,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    */
   public final Control getClearControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.CLEAR_MNEMONIC);
-    return ControlFactory.methodControl(getEditModel(), "clearValues", FrameworkMessages.get(FrameworkMessages.CLEAR),
+    return ControlFactory.methodControl(this, "clearModelValues", FrameworkMessages.get(FrameworkMessages.CLEAR),
             getEditModel().stateActive(), FrameworkMessages.get(FrameworkMessages.CLEAR_ALL_TIP) + " (ALT-" + mnemonic + ")",
             mnemonic.charAt(0), null, Images.loadImage(Images.IMG_NEW_16));
   }

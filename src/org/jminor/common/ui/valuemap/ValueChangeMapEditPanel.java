@@ -41,11 +41,15 @@ public abstract class ValueChangeMapEditPanel<K, V> extends JPanel {
 
   public final void prepareUI(final boolean setInitialFocus, final boolean clearUI) {
     if (clearUI) {
-      getEditModel().setValueMap(null);
+      clearModelValues();
     }
     if (setInitialFocus && isVisible()) {
       setInitialFocus();
     }
+  }
+
+  public final void clearModelValues() {
+    getEditModel().setValueMap(null);
   }
 
   /**
