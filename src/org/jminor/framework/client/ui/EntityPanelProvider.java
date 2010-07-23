@@ -230,9 +230,6 @@ public class EntityPanelProvider implements Comparable {
       if (detailPanel && entityModel.containsTableModel()) {
         entityModel.getTableModel().setDetailModel(true);
       }
-      if (refreshOnInit) {
-        entityModel.refresh();
-      }
 
       return createInstance(entityModel);
     }
