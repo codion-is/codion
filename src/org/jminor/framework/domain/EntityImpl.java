@@ -8,6 +8,7 @@ import org.jminor.common.model.valuemap.ValueChangeMapImpl;
 import org.jminor.common.model.valuemap.ValueMap;
 import org.jminor.common.model.valuemap.ValueMapImpl;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.text.Format;
@@ -27,7 +28,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
   /**
    * The entity ID
    */
-  private final String entityID;
+  private String entityID;
 
   /**
    * Used to cache the return value of the frequently called toString(),
@@ -576,6 +577,32 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
     }
 
     return referencedPrimaryKeysCache.get(foreignKeyProperty);
+  }
+
+  private void writeObject(final java.io.ObjectOutputStream out) throws IOException {
+    out.writeObject(entityID);
+    for (final Property property : properties.values()) {
+      if (!(property instanceof Property.DenormalizedViewProperty)) {
+        out.writeObject(getValue(property));
+      }
+    }
+    out.writeObject(getOriginalValues());
+  }
+
+  private void readObject(final java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
+    entityID = (String) in.readObject();
+    properties = EntityRepository.getProperties(entityID);
+    for (final Property property : properties.values()) {
+      if (!(property instanceof Property.DenormalizedViewProperty)) {
+        setValue(property, in.readObject());
+      }
+    }
+    final Map<String, Object> originalValues = (Map<String, Object>) in.readObject();
+    if (originalValues != null) {
+      for (final String propertyID : originalValues.keySet()) {
+        setOriginalValue(propertyID, originalValues.get(propertyID));
+      }
+    }
   }
 
   /**

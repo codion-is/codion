@@ -54,8 +54,8 @@ public class DefaultValueChangeMapEditModel<K, V> implements ValueChangeMapEditM
 
   public void refresh() {}
 
-  public ValueMap<K, V> getDefaultValueMap() {
-    return new ValueMapImpl<K, V>();
+  public ValueChangeMap<K, V> getDefaultValueMap() {
+    return new ValueChangeMapImpl<K, V>(valueMap.size());
   }
 
   public boolean isNullable(final K key) {

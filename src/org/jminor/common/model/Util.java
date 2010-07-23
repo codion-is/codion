@@ -8,16 +8,7 @@ import org.apache.log4j.Logger;
 
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.Closeable;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -28,19 +19,7 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.text.Collator;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.prefs.Preferences;
 
 /**
@@ -470,6 +449,22 @@ public final class Util {
     }
     finally {
       closeSilently(writer);
+    }
+  }
+
+  public static void serializeToFile(final Collection objects, final File file) {
+    ObjectOutputStream outputStream = null;
+    try {
+      outputStream = new ObjectOutputStream(new FileOutputStream(file));
+      for (final Object object : objects) {
+        outputStream.writeObject(object);
+      }
+    }
+    catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+    finally {
+      closeSilently(outputStream);
     }
   }
 

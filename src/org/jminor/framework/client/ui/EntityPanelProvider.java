@@ -277,26 +277,6 @@ public class EntityPanelProvider implements Comparable {
     }
     try {
       final EntityPanel entityPanel= initializePanel(model);
-      final EntityEditPanel editPanel;
-      if (editPanelClass != null) {
-        editPanel = initializeEditPanel(model.getEditModel());
-      }
-      else {
-        editPanel = null;
-      }
-      final EntityTablePanel tablePanel;
-      if (model.containsTableModel()) {
-        tablePanel = initializeTablePanel(entityPanel);
-      }
-      else {
-        tablePanel = null;
-      }
-      if (editPanel != null) {
-        entityPanel.setEditPanel(editPanel);
-      }
-      if (tablePanel != null) {
-        entityPanel.setTablePanel(tablePanel);
-      }
       if (!detailPanelProviders.isEmpty()) {
         entityPanel.setDetailPanelState(detailPanelState);
         entityPanel.setDetailSplitPanelResizeWeight(detailSplitPanelResizeWeight);
@@ -322,16 +302,30 @@ public class EntityPanelProvider implements Comparable {
 
   private EntityPanel initializePanel(final EntityModel model) {
     try {
-      final EntityPanel panel = panelClass.getConstructor(EntityModel.class).newInstance(model);
-      configurePanel(panel);
+      final EntityPanel entityPanel = panelClass.getConstructor(EntityModel.class).newInstance(model);
+      configurePanel(entityPanel);
+      final EntityEditPanel editPanel;
       if (editPanelClass != null) {
-        panel.setEditPanel(initializeEditPanel(model.getEditModel()));
+        editPanel = initializeEditPanel(model.getEditModel());
       }
+      else {
+        editPanel = null;
+      }
+      final EntityTablePanel tablePanel;
       if (model.containsTableModel()) {
-        panel.setTablePanel(initializeTablePanel(panel));
+        tablePanel = initializeTablePanel(entityPanel);
+      }
+      else {
+        tablePanel = null;
+      }
+      if (editPanel != null) {
+        entityPanel.setEditPanel(editPanel);
+      }
+      if (tablePanel != null) {
+        entityPanel.setTablePanel(tablePanel);
       }
 
-      return panel;
+      return entityPanel;
     }
     catch (RuntimeException e) {
       throw e;
