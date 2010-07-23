@@ -257,10 +257,6 @@ public interface Property extends Attribute {
 
   ForeignKeyProperty getParentProperty();
 
-  int getAttributeIndex();
-
-  Property setAttributeIndex(final int index);
-
   interface SearchableProperty extends Property {}
 
   interface ColumnProperty extends SearchableProperty, Column {
