@@ -95,20 +95,36 @@ public final class Properties {
   }
 
   public static Property.BooleanProperty booleanProperty(final String propertyID, final int columnType, final String caption,
-                               final Object trueValue, final Object falseValue) {
+                                                         final Object trueValue, final Object falseValue) {
     return new PropertyImpl.BooleanPropertyImpl(propertyID, columnType, caption, trueValue, falseValue);
+  }
+
+  public static Property.AuditTimeProperty auditInsertTimeProperty(final String propertyID) {
+    return auditInsertTimeProperty(propertyID, null);
   }
 
   public static Property.AuditTimeProperty auditInsertTimeProperty(final String propertyID, final String caption) {
     return new PropertyImpl.AuditTimePropertyImpl(propertyID, Property.AuditProperty.AuditAction.INSERT, caption);
   }
 
+  public static Property.AuditTimeProperty auditUpdateTimeProperty(final String propertyID) {
+    return auditUpdateTimeProperty(propertyID, null);
+  }
+
   public static Property.AuditTimeProperty auditUpdateTimeProperty(final String propertyID, final String caption) {
     return new PropertyImpl.AuditTimePropertyImpl(propertyID, Property.AuditProperty.AuditAction.UPDATE, caption);
   }
 
+  public static Property.AuditUserProperty auditInsertUserProperty(final String propertyID) {
+    return auditInsertUserProperty(propertyID, null);
+  }
+
   public static Property.AuditUserProperty auditInsertUserProperty(final String propertyID, final String caption) {
     return new PropertyImpl.AuditUserPropertyImpl(propertyID, Property.AuditProperty.AuditAction.INSERT, caption);
+  }
+
+  public static Property.AuditUserProperty auditUpdateUserProperty(final String propertyID) {
+    return auditUpdateUserProperty(propertyID, null);
   }
 
   public static Property.AuditUserProperty auditUpdateUserProperty(final String propertyID, final String caption) {
