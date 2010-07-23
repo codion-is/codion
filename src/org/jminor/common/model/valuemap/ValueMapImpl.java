@@ -2,12 +2,13 @@ package org.jminor.common.model.valuemap;
 
 import org.jminor.common.model.Util;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ValueMapImpl<K, V> implements ValueMap<K, V> {
+public class ValueMapImpl<K, V> implements ValueMap<K, V>, Serializable {
 
   /**
    * Holds the values contained in this value map.

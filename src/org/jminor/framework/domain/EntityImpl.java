@@ -582,7 +582,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
   private void writeObject(final java.io.ObjectOutputStream out) throws IOException {
     out.writeObject(entityID);
     for (final Property property : properties.values()) {
-      if (!(property instanceof Property.DenormalizedViewProperty)) {
+      if (!(property instanceof Property.DenormalizedViewProperty) && !(property instanceof Property.DerivedProperty)) {
         out.writeObject(getValue(property));
       }
     }
@@ -593,7 +593,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
     entityID = (String) in.readObject();
     properties = EntityRepository.getProperties(entityID);
     for (final Property property : properties.values()) {
-      if (!(property instanceof Property.DenormalizedViewProperty)) {
+      if (!(property instanceof Property.DenormalizedViewProperty) && !(property instanceof Property.DerivedProperty)) {
         setValue(property, in.readObject());
       }
     }
