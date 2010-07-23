@@ -1903,3 +1903,4 @@
   ValueChangeMapEditPanel.clearModelValues() added for clear action
   AbstractValueChangeMapEditModel, added default implementations for abstract methods, renamed to DefaultValueChangeMapEditModel
   ForeignKeySearchModel.initialize() removed
+  AbstractInputProvider overgenerified?

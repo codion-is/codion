@@ -8,15 +8,15 @@ import javax.swing.JComponent;
 /**
  * A default InputProvider implementation.
  */
-public abstract class AbstractInputProvider<T> implements InputProvider<T> {
+public abstract class AbstractInputProvider<T, K extends JComponent> implements InputProvider<T, K> {
 
-  private final JComponent inputComponent;
+  private final K inputComponent;
 
-  public AbstractInputProvider(final JComponent inputComponent) {
+  public AbstractInputProvider(final K inputComponent) {
     this.inputComponent = inputComponent;
   }
 
-  public final JComponent getInputComponent() {
+  public final K getInputComponent() {
     return this.inputComponent;
   }
 
