@@ -141,7 +141,7 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * EntityEditor.INSERT, EntityEditor.UPDATE or EntityEditor.UNKNOWN
    * @throws ValidationException in case the validation fails
    */
-  void validateEntities(final Collection<Entity> entities, final int action) throws ValidationException;
+  void validateEntities(final Collection<Entity> entities, final int action) throws ValidationException;//todo Validator interface?
 
   /**
    * Sets the active state of this edit model, an active edit model should be
@@ -172,6 +172,8 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * by default this returns the isReadOnly value of the underlying entity
    */
   boolean isReadOnly();
+
+  EntityEditModel setReadOnly(final boolean readOnly);
 
   /**
    * @return true if this model should allow records to be inserted

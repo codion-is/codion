@@ -60,7 +60,7 @@ public class CriteriaSet<T> implements Criteria<T>, Serializable {
   public CriteriaSet(final Conjunction conjunction, final Criteria<T>... criteria) {
     this.conjunction = conjunction;
     for (final Criteria<T> criterion : criteria) {
-      addCriteria(criterion);
+      add(criterion);
     }
   }
 
@@ -68,7 +68,7 @@ public class CriteriaSet<T> implements Criteria<T>, Serializable {
    * Adds a new Criteria object to this set
    * @param criteria the Criteria to add
    */
-  public final void addCriteria(final Criteria<T> criteria) {
+  public final void add(final Criteria<T> criteria) {
     if (criteria != null) {
       this.criteriaList.add(criteria);
     }

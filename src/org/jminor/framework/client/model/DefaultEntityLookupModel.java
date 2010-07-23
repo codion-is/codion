@@ -227,7 +227,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
     for (final Property.ColumnProperty lookupProperty : lookupProperties) {
       for (final String lookupText : lookupTexts) {
         final String modifiedLookupText = (wildcardPrefix ? wildcard : "") + lookupText + (wildcardPostfix ? wildcard : "");
-        baseCriteria.addCriteria(EntityCriteriaUtil.propertyCriteria(lookupProperty, caseSensitive, SearchType.LIKE, modifiedLookupText));
+        baseCriteria.add(EntityCriteriaUtil.propertyCriteria(lookupProperty, caseSensitive, SearchType.LIKE, modifiedLookupText));
       }
     }
 

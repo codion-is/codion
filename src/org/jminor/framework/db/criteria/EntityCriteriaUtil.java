@@ -447,10 +447,10 @@ public final class EntityCriteriaUtil {
           final CriteriaSet<Property.ColumnProperty> andSet = new CriteriaSet<Property.ColumnProperty>(Conjunction.AND);
           int i = 0;
           for (final Property.ColumnProperty property : propertyList) {
-            andSet.addCriteria(new PropertyCriteria(property, SearchType.LIKE, key.getValue(pkProperties.get(i++).getPropertyID())));
+            andSet.add(new PropertyCriteria(property, SearchType.LIKE, key.getValue(pkProperties.get(i++).getPropertyID())));
           }
 
-          addCriteria(andSet);
+          add(andSet);
         }
       }
       else {
@@ -459,10 +459,10 @@ public final class EntityCriteriaUtil {
         //a = b
         if (keys.size() == 1) {
           final Entity.Key key = keys.get(0);
-          addCriteria(new PropertyCriteria(property, SearchType.LIKE, key.getValue(primaryKeyProperty.getPropertyID())));
+          add(new PropertyCriteria(property, SearchType.LIKE, key.getValue(primaryKeyProperty.getPropertyID())));
         }
         else { //a in (c, v, d, s)
-          addCriteria(new PropertyCriteria(property, SearchType.LIKE, EntityUtil.getPropertyValues(keys)));
+          add(new PropertyCriteria(property, SearchType.LIKE, EntityUtil.getPropertyValues(keys)));
         }
       }
     }
@@ -794,7 +794,7 @@ public final class EntityCriteriaUtil {
     private Criteria<Property.ColumnProperty> createMultipleCompositeForeignKeyCriteria() {
       final CriteriaSet<Property.ColumnProperty> criteriaSet = new CriteriaSet<Property.ColumnProperty>(CriteriaSet.Conjunction.OR);
       for (final Object entityKey : values) {
-        criteriaSet.addCriteria(createSingleForeignKeyCriteria((Entity.Key) entityKey));
+        criteriaSet.add(createSingleForeignKeyCriteria((Entity.Key) entityKey));
       }
 
       return criteriaSet;
@@ -807,7 +807,7 @@ public final class EntityCriteriaUtil {
         for (final Property.ColumnProperty referencedProperty : foreignKeyProperty.getReferenceProperties()) {
           final String referencedPropertyID = foreignKeyProperty.getReferencedPropertyID(referencedProperty);
           final Object referencedValue = entityKey == null ? null : entityKey.getValue(referencedPropertyID);
-          pkSet.addCriteria(new PropertyCriteria(referencedProperty, searchType, referencedValue));
+          pkSet.add(new PropertyCriteria(referencedProperty, searchType, referencedValue));
         }
 
         return pkSet;

@@ -63,6 +63,10 @@ public interface EntityTableSearchModel extends FilterCriteria<Entity>, Refresha
    */
   Criteria<Property.ColumnProperty> getSearchCriteria();
 
+  Criteria<Property.ColumnProperty> getAdditionalSearchCriteria();
+
+  EntityTableSearchModel setAdditionalSearchCriteria(final Criteria<Property.ColumnProperty> criteria);
+
   /**
    * @param propertyID the column propertyID
    * @return true if the PropertySearchModel behind column with index <code>columnIndex</code> is enabled

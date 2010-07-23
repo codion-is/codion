@@ -383,10 +383,10 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
                                                    final boolean hasFocus, final int row, final int column) {
       final Component component = tableCellRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
       if (component instanceof JLabel) {
-        JLabel l = (JLabel) component;
-        l.setHorizontalTextPosition(JLabel.LEFT);
-        int modelColumn = table.convertColumnIndexToModel(column);
-        l.setIcon(getHeaderRendererIcon(modelColumn, l.getFont().getSize()));
+        final JLabel label = (JLabel) component;
+        label.setHorizontalTextPosition(JLabel.LEFT);
+        final int modelColumn = table.convertColumnIndexToModel(column);
+        label.setIcon(getHeaderRendererIcon(modelColumn, label.getFont().getSize()+4));
       }
 
       return component;

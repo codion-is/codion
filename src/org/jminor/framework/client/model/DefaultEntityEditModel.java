@@ -91,6 +91,8 @@ public class DefaultEntityEditModel extends DefaultValueChangeMapEditModel<Strin
    */
   private static final State.StateGroup ACTIVE_STATE_GROUP = new State.StateGroup();
 
+  private boolean readOnly;
+
   /**
    * Instantiates a new EntityEditModel based on the entity identified by <code>entityID</code>.
    * @param entityID the ID of the entity to base this EntityEditModel on
@@ -104,13 +106,19 @@ public class DefaultEntityEditModel extends DefaultValueChangeMapEditModel<Strin
     }
     this.entityID = entityID;
     this.dbProvider = dbProvider;
+    this.readOnly = EntityRepository.isReadOnly(entityID);
     setValueMap(null);
     bindEventsInternal();
     bindEvents();
   }
 
-  public boolean isReadOnly() {
-    return EntityRepository.isReadOnly(entityID);
+  public final boolean isReadOnly() {
+    return readOnly;
+  }
+
+  public final EntityEditModel setReadOnly(final boolean readOnly) {
+    this.readOnly = readOnly;
+    return this;
   }
 
   public final boolean isInsertAllowed() {
@@ -360,7 +368,7 @@ public class DefaultEntityEditModel extends DefaultValueChangeMapEditModel<Strin
   }
 
   @Override
-  public void clear() {
+  public final void clear() {
     clearComboBoxModels();
   }
 

@@ -38,6 +38,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
   private final Map<String, PropertySearchModel<? extends Property.SearchableProperty>> propertySearchModels;
   /** When active the search should be simplified */
   private final boolean simpleSearch;
+  private Criteria<Property.ColumnProperty> additionalSearchCriteria;
   private CriteriaSet.Conjunction searchConjunction = CriteriaSet.Conjunction.AND;
   private String searchStateOnRefresh;
 
@@ -189,11 +190,23 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
     final CriteriaSet<Property.ColumnProperty> criteriaSet = new CriteriaSet<Property.ColumnProperty>(searchConjunction);
     for (final PropertySearchModel<? extends Property.SearchableProperty> criteria : propertySearchModels.values()) {
       if (criteria.isSearchEnabled()) {
-        criteriaSet.addCriteria(criteria.getCriteria());
+        criteriaSet.add(criteria.getCriteria());
       }
+    }
+    if (additionalSearchCriteria != null) {
+      criteriaSet.add(additionalSearchCriteria);
     }
 
     return criteriaSet.getCriteriaCount() > 0 ? criteriaSet : null;
+  }
+
+  public final Criteria<Property.ColumnProperty> getAdditionalSearchCriteria() {
+    return additionalSearchCriteria;
+  }
+
+  public final EntityTableSearchModel setAdditionalSearchCriteria(final Criteria<Property.ColumnProperty> criteria) {
+    this.additionalSearchCriteria = criteria;
+    return this;
   }
 
   public final CriteriaSet.Conjunction getSearchConjunction() {

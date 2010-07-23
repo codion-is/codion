@@ -111,18 +111,18 @@ public interface EntityTableModel extends FilteredTableModel<Entity>, EntityData
   boolean isDetailModel();
 
   /**
-   * @param value true if this model should allow records to be deleted
+   * @param deleteAllowed true if this model should allow records to be deleted
+   * @return this EntityTableModel instance
    */
-  void setDeleteAllowed(final boolean value);
+  EntityTableModel setDeleteAllowed(final boolean deleteAllowed);
 
   /**
-   * @return true if this model should allow records to be deleted
+   * @return true if this model allows records to be deleted
    */
   boolean isDeleteAllowed();
 
   /**
    * @return true if this model is read only or if no edit model has been specified.
-   * by default this returns the isReadOnly value of the underlying entity
    * @see #setEditModel(EntityEditModel)
    */
   boolean isReadOnly();
@@ -131,6 +131,12 @@ public interface EntityTableModel extends FilteredTableModel<Entity>, EntityData
    * @return true if this model allows multiple entities to be updated at a time
    */
   boolean isMultipleUpdateAllowed();
+
+  /**
+   * @param multipleUpdateAllowed true if this model should multiple entities to be updated at a time
+   * @return this EntityTableModel instance
+   */
+  EntityTableModel setMultipleUpdateAllowed(final boolean multipleUpdateAllowed);
 
   /**
    * Returns the PropertySummaryModel associated with the property identified by <code>propertyID</code>
@@ -248,6 +254,8 @@ public interface EntityTableModel extends FilteredTableModel<Entity>, EntityData
    * @see #getSelectedEntitiesIterator()
    */
   ReportDataWrapper getReportDataSource();
+
+  EntityTableModel setReportDataSource(final ReportDataWrapper reportDataSource);
 
   /**
    * @param property the property for which to retrieve the values

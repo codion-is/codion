@@ -114,6 +114,8 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
 
   private final State stAllowDelete = new State(true);
 
+  private ReportDataWrapper reportDataSource;
+
   public DefaultEntityTableModel(final String entityID, final EntityDbProvider dbProvider) {
     this(entityID, dbProvider, new DefaultEntityTableColumnModel(entityID));
   }
@@ -142,7 +144,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
     this.editModel = editModel;
     this.editModel.eventAfterDelete().addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
-        handleDelete((DeleteEvent) e);
+        handleDeleteInternal((DeleteEvent) e);
       }
     });
   }
@@ -245,37 +247,48 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
     return dbProvider;
   }
 
-  public boolean isMultipleUpdateAllowed() {
-    return true;
+  public final boolean isMultipleUpdateAllowed() {
+    return stAllowMultipleUpdate.isActive();
+  }
+
+  public EntityTableModel setMultipleUpdateAllowed(final boolean multipleUpdateAllowed) {
+    stAllowMultipleUpdate.setActive(multipleUpdateAllowed);
+    return this;
   }
 
   public final State stateAllowMultipleUpdate() {
     return stAllowMultipleUpdate.getLinkedState();
   }
 
-  public boolean isDeleteAllowed() {
+  public final boolean isDeleteAllowed() {
     return stAllowDelete.isActive();
   }
 
-  public final void setDeleteAllowed(final boolean value) {
+  public final EntityTableModel setDeleteAllowed(final boolean value) {
     stAllowDelete.setActive(value);
+    return this;
   }
 
   public final State stateAllowDelete() {
     return stAllowDelete.getLinkedState();
   }
 
-  public boolean isReadOnly() {
-    return editModel == null || EntityRepository.isReadOnly(entityID);
+  public final boolean isReadOnly() {
+    return editModel != null && editModel.isReadOnly();
   }
 
   /**
-   * Returns an initialized ReportDataWrapper instance, the default implementation returns null.
+   * Returns an initialized ReportDataWrapper instance.
    * @return an initialized ReportDataWrapper
    * @see #getSelectedEntitiesIterator()
    */
-  public ReportDataWrapper getReportDataSource() {
-    return null;
+  public final ReportDataWrapper getReportDataSource() {
+    return reportDataSource;
+  }
+
+  public EntityTableModel setReportDataSource(final ReportDataWrapper reportDataSource) {
+    this.reportDataSource = reportDataSource;
+    return this;
   }
 
   @Override
@@ -330,7 +343,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
     return indexOf(getEntityByPrimaryKey(primaryKey));
   }
 
-  public String getStatusMessage() {
+  public final String getStatusMessage() {
     final int filteredItemCount = getFilteredItemCount();
 
     return new StringBuilder(Integer.toString(getRowCount())).append(" (").append(
@@ -477,10 +490,6 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
     return entityID;
   }
 
-  public boolean include(final Entity item) {
-    return searchModel.include(item);
-  }
-
   public final PropertySummaryModel getPropertySummaryModel(final String propertyID) {
     return getPropertySummaryModel(EntityRepository.getProperty(entityID, propertyID));
   }
@@ -522,14 +531,6 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
 
   public final Event eventRefreshStarted() {
     return evtRefreshStarted;
-  }
-
-  /**
-   * @param entityID the ID of the entity the table is based on
-   * @return a list of Properties that should be used as basis for this table models column model
-   */
-  protected List<Property> initializeColumnProperties(final String entityID) {
-    return new ArrayList<Property>(EntityRepository.getVisibleProperties(entityID));
   }
 
   /**
@@ -578,18 +579,11 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
    * found in the underlying EntityTableSearchModel
    * @see EntityTableSearchModel#getSearchCriteria()
    */
-  protected Criteria<Property.ColumnProperty> getQueryCriteria() {
+  protected final Criteria<Property.ColumnProperty> getQueryCriteria() {
     return searchModel.getSearchCriteria();
   }
 
-  protected final void handleColumnHidden(final Property property) {
-    //disable the search model for the column to be hidden, to prevent confusion
-    searchModel.setSearchEnabled(property.getPropertyID(), false);
-  }
-
-  protected void handleDelete(final DeleteEvent e) {
-    removeItems(e.getDeletedEntities());
-  }
+  protected void handleDelete(final DeleteEvent e) {}
 
   /**
    * Override to add event bindings
@@ -612,5 +606,15 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
         searchModel.setSearchModelState();
       }
     });
+  }
+
+  private void handleDeleteInternal(final DeleteEvent e) {
+    removeItems(e.getDeletedEntities());
+    handleDelete(e);
+  }
+
+  private void handleColumnHidden(final Property property) {
+    //disable the search model for the column to be hidden, to prevent confusion
+    searchModel.setSearchEnabled(property.getPropertyID(), false);
   }
 }
