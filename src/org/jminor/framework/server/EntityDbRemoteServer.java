@@ -214,21 +214,6 @@ public final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRem
     return startDate;
   }
 
-  @Override
-  public void shutdown() throws RemoteException {
-    if (isShuttingDown()) {
-      return;
-    }
-    super.shutdown();
-    removeConnections(false);
-    final String connectInfo = getServerName() + " removed from registry";
-    LOG.info(connectInfo);
-    System.out.println(connectInfo);
-    if (database.isEmbedded()) {
-      database.shutdownEmbedded(null);
-    }//todo does not work when shutdown requires user authentication
-  }
-
   public void removeConnections(final boolean inactiveOnly) throws RemoteException {
     final List<ClientInfo> clients = new ArrayList<ClientInfo>(getConnections().keySet());
     for (final ClientInfo client : clients) {
@@ -286,6 +271,17 @@ public final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRem
         }
       }
     });
+  }
+
+  @Override
+  protected void handleShutdown() throws RemoteException {
+    removeConnections(false);
+    final String connectInfo = getServerName() + " removed from registry";
+    LOG.info(connectInfo);
+    System.out.println(connectInfo);
+    if (database.isEmbedded()) {
+      database.shutdownEmbedded(null);
+    }//todo does not work when shutdown requires user authentication
   }
 
   @Override

@@ -49,6 +49,7 @@ import java.awt.event.WindowEvent;
 public final class LoadTestPanel extends JPanel {
 
   private static final int MEMORY_USAGE_UPDATE_INTERVAL = 2000;
+  private static final double SCREEN_SIZE_RATIO = 0.75;
   private final LoadTestModel loadTestModel;
 
   /**
@@ -85,7 +86,7 @@ public final class LoadTestPanel extends JPanel {
     });
     frame.setTitle(title);
     frame.getContentPane().add(this);
-    UiUtil.resizeWindow(frame, 0.75);
+    UiUtil.resizeWindow(frame, SCREEN_SIZE_RATIO);
     UiUtil.centerWindow(frame);
     frame.setVisible(true);
 
@@ -160,12 +161,7 @@ public final class LoadTestPanel extends JPanel {
   private JPanel initializeApplicationPanel() {
     final IntField applicationCountField = new IntField();
     applicationCountField.setHorizontalAlignment(JTextField.CENTER);
-    new IntBeanValueLink(applicationCountField, getModel(), "applicationCount", loadTestModel.eventApplicationCountChanged(), LinkType.READ_ONLY) {
-      @Override
-      protected synchronized void setUIValue(final Object value) {
-        super.setUIValue(value);
-      }
-    };
+    new IntBeanValueLink(applicationCountField, getModel(), "applicationCount", loadTestModel.eventApplicationCountChanged(), LinkType.READ_ONLY);
 
     final JPanel applicationPanel = new JPanel(new BorderLayout(5, 5));
     applicationPanel.setBorder(BorderFactory.createTitledBorder("Applications"));

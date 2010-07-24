@@ -11,6 +11,13 @@
     </fileset>
   </path>
 
+  <path id="cobertura.classpath">
+    <fileset dir="${cobertura.dir}">
+      <include name="cobertura.jar" />
+      <include name="lib/**/*.jar" />
+    </fileset>
+  </path>
+
   <path id="lib.client.remote">
     <pathelement location="${lib.jasperreports.logging}"/>
     <pathelement location="${lib.jasperreports.collections}"/>
@@ -58,6 +65,8 @@
     <pathelement path="${build.demos}"/>
   </path>
 
+  <taskdef classpathref="cobertura.classpath" resource="tasks.properties" />
+
   <fileset id="common_resources" dir="${src}" includes=
           "org/jminor/common/**/*.gif, org/jminor/common/**/*.png, org/jminor/common/**/*.properties, org/jminor/common/**/*.txt, log4j.properties"/>
   <fileset id="framework_resources" dir="${src}" includes=
@@ -77,7 +86,9 @@
     <delete dir="${build.test}" includeEmptyDirs="true"/>
     <delete dir="${build.root}" includeEmptyDirs="true"/>
     <delete dir="${test.reports}" includeEmptyDirs="true"/>
-    <delete dir="${test.htmlreports}" includeEmptyDirs="true"/>
+    <delete dir="${test.reports.html}" includeEmptyDirs="true"/>
+    <delete dir="${test.coveragereport.xml}" includeEmptyDirs="true"/>
+    <delete dir="${test.coveragereport.html}" includeEmptyDirs="true"/>
     <delete dir="${test}" includeEmptyDirs="true"/>
   </target>
 
@@ -104,7 +115,7 @@
       <fileset refid="framework_resources"/>
     </copy>
 
-    <javac destdir="${build.plugins}" debug="{build.debug}">
+    <javac destdir="${build.plugins}" debug="${build.debuginfo}">
       <src path="${srcplugins}"/>
       <classpath>
         <path refid="lib.build"/>
@@ -116,7 +127,7 @@
       <fileset refid="plugins_resources"/>
     </copy>
 
-    <javac destdir="${build.demos}" debug="{build.debug}">
+    <javac destdir="${build.demos}" debug="${build.debuginfo}">
       <src path="${srcdemos}"/>
       <classpath>
         <path refid="lib.build"/>
@@ -129,7 +140,7 @@
       <fileset refid="demos_resources"/>
     </copy>
 
-    <javac destdir="${build.test}" debug="{build.debug}">
+    <javac destdir="${build.test}" debug="${build.debuginfo}">
       <src path="${srctest}"/>
       <classpath>
         <path refid="lib.build"/>
@@ -412,26 +423,26 @@
 
   <target name="run_and_report" depends="run_unit_tests"
           description="Creates a unit test html report">
-    <mkdir dir="${test.htmlreports}"/>
+    <mkdir dir="${test.reports.html}"/>
     <junitreport todir="${test.reports}">
       <fileset dir="${test.reports}" includes="TEST-*.xml"/>
-      <report format="frames" todir="${test.htmlreports}"/>
+      <report format="frames" todir="${test.reports.html}"/>
     </junitreport>
   </target>
 
   <target name="report"
           description="Creates a unit test html report on a previously run test">
-    <mkdir dir="${test.htmlreports}"/>
+    <mkdir dir="${test.reports.html}"/>
     <junitreport todir="${test.reports}">
       <fileset dir="${test.reports}" includes="TEST-*.xml"/>
-      <report format="frames" todir="${test.htmlreports}"/>
+      <report format="frames" todir="${test.reports.html}"/>
     </junitreport>
   </target>
 
   <target name="run_unit_tests" depends="build, compile_demo_reports, recreate_h2_db"
           description="Runs the framework unit tests">
     <mkdir dir="${test.reports}"/>
-    <junit printsummary="yes" haltonfailure="true" haltonerror="true" fork="yes">
+    <junit printsummary="yes" haltonfailure="false" haltonerror="false" fork="yes">
       <formatter type="xml" usefile="true"/>
       <classpath>
         <path refid="classes.base"/>
@@ -448,6 +459,86 @@
         <fileset dir="${srcdemos}" includes="**/*Test.java" excludes="**/*LoadTest.java"/>
       </batchtest>
     </junit>
+  </target>
+
+  <target name="instrument" depends="clean, build">
+    <delete file="cobertura.ser" />
+    <delete dir="${instrumented.dir}" includeEmptyDirs="true"/>
+    <mkdir dir="${instrumented.dir}"/>
+    <cobertura-instrument todir="${instrumented.dir}" classpathref="lib.build">
+      <fileset dir="${build.base}">
+        <include name="**/*.class"/>
+        <exclude name="**/*Stub.class"/>
+        <exclude name="**/*Skel.class"/>
+      </fileset>
+      <fileset dir="${build.demos}">
+        <include name="**/*.class" />
+      </fileset>
+    </cobertura-instrument>
+  </target>
+
+  <target name="unit_test_coverage" depends="instrument, compile_demo_reports, recreate_h2_db"
+          description="Runs the framework unit tests with coverage reporting">
+    <mkdir dir="${test.reports}"/>
+
+    <junit printsummary="yes" haltonfailure="false" haltonerror="false" fork="yes">
+      <formatter type="xml" usefile="true"/>
+      <sysproperty key="net.sourceforge.cobertura.datafile" file="${basedir}/cobertura.ser" />
+
+      <classpath location="${instrumented.dir}" />
+      <classpath refid="cobertura.classpath" />
+      <classpath>
+        <path refid="classes.base"/>
+        <path refid="classes.test"/>
+        <path refid="classes.demos"/>
+        <path refid="lib.build"/>
+      </classpath>
+      <jvmarg value="-Djminor.db.type=${junit.db.type}"/>
+      <jvmarg value="-Djminor.db.host=${junit.db.host}"/>
+      <jvmarg value="-Djminor.db.port=${junit.db.port}"/>
+      <jvmarg value="-Djminor.db.sid=${junit.db.sid}"/>
+      <jvmarg value="-Djminor.db.embedded=${junit.db.embedded}"/>
+      <batchtest todir="${test.reports}">
+        <fileset dir="${srctest}" includes="**/*Test.java"/>
+        <fileset dir="${srcdemos}" includes="**/*Test.java" excludes="**/*LoadTest.java"/>
+      </batchtest>
+    </junit>
+    <antcall target="unit_test_coverage_report_xml"/>
+    <antcall target="unit_test_coverage_report_html"/>
+  </target>
+
+  <target name="unit_test_coverage_report_xml">
+    <delete dir="${test.coveragereport.xml}" includeEmptyDirs="true"/>
+    <mkdir dir="${test.coveragereport.xml}"/>
+    <cobertura-report format="xml" destdir="${test.coveragereport.xml}" >
+      <fileset dir="${src}">
+          <include name="**/*.java" />
+          <exclude name="**/*Stub.java" />
+      </fileset>
+      <fileset dir="${srcdemos}">
+          <include name="**/*.java" />
+      </fileset>
+      <fileset dir="${srcplugins}">
+          <include name="**/*.java" />
+      </fileset>
+    </cobertura-report>
+  </target>
+
+  <target name="unit_test_coverage_report_html">
+    <delete dir="${test.coveragereport.html}" includeEmptyDirs="true"/>
+    <mkdir dir="${test.coveragereport.html}"/>
+    <cobertura-report format="html" destdir="${test.coveragereport.html}" >
+      <fileset dir="${src}">
+          <include name="**/*.java" />
+          <exclude name="**/*Stub.java" />
+      </fileset>
+      <fileset dir="${srcdemos}">
+          <include name="**/*.java" />
+      </fileset>
+      <fileset dir="${srcplugins}">
+          <include name="**/*.java" />
+      </fileset>
+    </cobertura-report>
   </target>
 
   <target name="run_demo_empdept_local" depends="build, recreate_h2_db"

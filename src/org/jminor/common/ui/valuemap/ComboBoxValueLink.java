@@ -69,7 +69,7 @@ public class ComboBoxValueLink<K> extends AbstractValueMapLink<K, Object> {
   }
 
   @Override
-  protected Object getUIValue() {
+  protected final Object getUIValue() {
     if (boxModel instanceof ItemComboBoxModel) {
       return ((Item) boxModel.getSelectedItem()).getItem();
     }

@@ -1,0 +1,33 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <!--Incomplete and unusable as a Maven script, used only for Sonar analysis (http://www.sonarsource.org/)-->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>JMinor</groupId>
+  <artifactId>jminor</artifactId>
+  <name>JMinor</name>
+  <version>0.5.8</version>
+  <build>
+    <sourceDirectory>src</sourceDirectory>
+    <outputDirectory>classes/base</outputDirectory>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+          <excludes>
+            <exclude>**/*.*</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <properties>
+    <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+    <sonar.cobertura.reportPath >test/coveragereport/xml/coverage.xml</sonar.cobertura.reportPath>
+    <sonar.surefire.reportsPath>test/report</sonar.surefire.reportsPath>
+    <sonar.artifact.path>dist/jminor.jar</sonar.artifact.path>
+  </properties>
+</project>

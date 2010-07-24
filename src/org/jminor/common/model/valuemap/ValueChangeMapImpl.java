@@ -28,12 +28,16 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
   /**
    * Holds the original value for keys which values have changed.
    */
-  private Map<K, V> originalValues;
+  private Map<K, V> originalValues = null;
 
   /**
    * Fired when a value changes, null until initialized by a call to eventValueChanged().
    */
   private transient Event evtValueChanged;
+
+  public ValueChangeMapImpl() {
+    this(10);
+  }
 
   /**
    * Instantiates a new ValueChangeMapImpl with a size of <code>initialSize</code>.
@@ -43,7 +47,13 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
     super(initialSize);
   }
 
-  public ValueChangeMapImpl() {}
+  public void initializeValue(final K key, final V value) {
+    super.setValue(key, value);
+    if (evtValueChanged != null) {
+      notifyValueChange(key, value, null, true);
+    }
+    handleInitializeValue(key, value);
+  }
 
   public final V getOriginalValue(final K key) {
     Util.rejectNullValue(key, "key");
@@ -58,52 +68,13 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
     return originalValues != null && !originalValues.isEmpty();
   }
 
+  @Override
+  public ValueChangeMap<K, V> getInstance() {
+    return new ValueChangeMapImpl<K, V>(size());
+  }
+
   public final boolean isModified(final K key) {
     return originalValues != null && originalValues.containsKey(key);
-  }
-
-  public void initializeValue(final K key, final V value) {
-    super.setValue(key, value);
-    if (evtValueChanged != null) {
-      notifyValueChange(key, value, null, true);
-    }
-  }
-
-  @Override
-  public V setValue(final K key, final V value) {
-    final boolean initialization = !containsValue(key);
-    V previousValue = null;
-    if (!initialization) {
-      previousValue = getValue(key);
-      if (Util.equal(previousValue, value)) {
-        return previousValue;
-      }
-    }
-
-    if (!initialization) {
-      updateModifiedState(key, value, previousValue);
-    }
-
-    super.setValue(key, value);
-    if (evtValueChanged != null) {
-      notifyValueChange(key, value, previousValue, initialization);
-    }
-
-    return previousValue;
-  }
-
-  @Override
-  public V removeValue(final K key) {
-    final boolean keyExists = containsValue(key);
-    final V value = getValue(key);
-    super.removeValue(key);
-    removeOriginalValue(key);
-
-    if (keyExists && evtValueChanged != null) {//dont notify a non-existant key
-      notifyValueChange(key, null, value, false);
-    }
-
-    return value;
   }
 
   public final void revertValue(final K key) {
@@ -126,35 +97,6 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
     for (final K key : getValueKeys()) {
       saveValue(key);
     }
-  }
-
-  @Override
-  public void clear() {
-    super.clear();
-    if (originalValues != null) {
-      originalValues.clear();
-    }
-  }
-
-  @Override
-  public void setAs(final ValueMap<K, V> sourceMap) {
-    super.setAs(sourceMap);
-    if (sourceMap instanceof ValueChangeMap) {
-      final ValueChangeMap<K, V> sourceChangeMap = (ValueChangeMap<K, V>) sourceMap;
-      if (sourceChangeMap.isModified()) {
-        if (originalValues == null) {
-          originalValues = new HashMap<K, V>();
-        }
-        for (final K entryKey : sourceChangeMap.getOriginalValueKeys()) {
-          originalValues.put(entryKey, copyValue(sourceChangeMap.getOriginalValue(entryKey)));
-        }
-      }
-    }
-  }
-
-  @Override
-  public ValueChangeMap<K, V> getInstance() {
-    return new ValueChangeMapImpl<K, V>(size());
   }
 
   public final ValueChangeMap<K, V> getOriginalCopy() {
@@ -193,12 +135,13 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
   public final Event eventValueChanged() {
     if (evtValueChanged == null) {
       evtValueChanged = new Event();
+      handleInitializeValueChangedEvent();
     }
 
     return evtValueChanged;
   }
 
-  protected void notifyValueChange(final K key, final V value, final V oldValue, final boolean initialization) {
+  protected final void notifyValueChange(final K key, final V value, final V oldValue, final boolean initialization) {
     eventValueChanged().fire(new ValueChangeEvent<K, V>(this, this, key, value, oldValue, true, initialization));
   }
 
@@ -222,6 +165,56 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
       originalValues.remove(key);
       if (evtValueChanged != null) {
         notifyValueChange(key, getValue(key), null, true);
+      }
+    }
+  }
+
+  @SuppressWarnings({"UnusedDeclaration"})
+  protected void handleInitializeValue(final K key, final V value) {}
+
+  protected void handleInitializeValueChangedEvent() {}
+
+  @Override
+  protected void handleValueRemoved(final K key, final V value) {
+    removeOriginalValue(key);
+    if (evtValueChanged != null) {
+      notifyValueChange(key, null, value, false);
+    }
+  }
+
+  @Override
+  protected void handleValueSet(final K key, final V value, final V previousValue, final boolean initialization) {
+    if (!initialization && Util.equal(previousValue, value)) {
+      return;
+    }
+
+    if (!initialization) {
+      updateModifiedState(key, value, previousValue);
+    }
+
+    if (evtValueChanged != null) {
+      notifyValueChange(key, value, previousValue, initialization);
+    }
+  }
+
+  @Override
+  protected void handleClear() {
+    if (originalValues != null) {
+      originalValues.clear();
+    }
+  }
+
+  @Override
+  protected void handleSetAs(final ValueMap<K, V> sourceMap) {
+    if (sourceMap instanceof ValueChangeMap) {
+      final ValueChangeMap<K, V> sourceChangeMap = (ValueChangeMap<K, V>) sourceMap;
+      if (sourceChangeMap.isModified()) {
+        if (originalValues == null) {
+          originalValues = new HashMap<K, V>();
+        }
+        for (final K entryKey : sourceChangeMap.getOriginalValueKeys()) {
+          originalValues.put(entryKey, copyValue(sourceChangeMap.getOriginalValue(entryKey)));
+        }
       }
     }
   }

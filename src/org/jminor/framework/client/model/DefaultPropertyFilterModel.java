@@ -56,7 +56,7 @@ public class DefaultPropertyFilterModel extends AbstractSearchModel<Property> im
     throw new RuntimeException("Undefined search type: " + getSearchType());
   }
 
-  public void setLikeValue(final Comparable value) {
+  public final void setLikeValue(final Comparable value) {
     setSearchType(SearchType.LIKE);
     setUpperBound(value);
     final boolean on = value != null;

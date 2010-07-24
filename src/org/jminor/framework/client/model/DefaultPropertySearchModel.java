@@ -26,6 +26,10 @@ public class DefaultPropertySearchModel extends AbstractSearchModel<Property.Col
     super(property, property.getType(), (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER));
   }
 
+  public boolean include(final Object object) {
+    return true;
+  }
+
   @Override
   public String toString() {
     final StringBuilder stringBuilder = new StringBuilder(getSearchKey().getPropertyID());
@@ -38,14 +42,10 @@ public class DefaultPropertySearchModel extends AbstractSearchModel<Property.Col
     return stringBuilder.toString();
   }
 
-  public Criteria<Property.ColumnProperty> getCriteria() {
+  public final Criteria<Property.ColumnProperty> getCriteria() {
     return getValueCount(getSearchType()) == 1 ?
             EntityCriteriaUtil.propertyCriteria(getSearchKey(), isCaseSensitive(), getSearchType(), getUpperBound()) :
             EntityCriteriaUtil.propertyCriteria(getSearchKey(), isCaseSensitive(), getSearchType(), getLowerBound(), getUpperBound());
-  }
-
-  public boolean include(final Object object) {
-    return true;
   }
 
   private String toString(final Object object) {

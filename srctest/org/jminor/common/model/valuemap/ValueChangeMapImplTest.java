@@ -48,7 +48,7 @@ public class ValueChangeMapImplTest {
     assertTrue(model.isModified());
     assertTrue(model.isModified(key));
 
-    model.revertValue(key);
+    model.revertAll();
     assertEquals(Integer.valueOf(1), model.getValue(key));
     assertFalse(model.isModified());
     assertFalse(model.isModified(key));
@@ -66,9 +66,11 @@ public class ValueChangeMapImplTest {
   @Test
   public void equals() {
     final ValueChangeMap<String, Integer> mapOne = new ValueChangeMapImpl<String, Integer>();
-    final ValueChangeMap<String, Integer> mapTwo = new ValueChangeMapImpl<String, Integer>();
+    final ValueChangeMap<String, Integer> mapTwo = (ValueChangeMap) mapOne.getInstance();
+    mapOne.eventValueChanged();
+    mapTwo.eventValueChanged();
 
-    mapOne.setValue("keyOne", 1);
+    mapOne.initializeValue("keyOne", 1);
     mapOne.setValue("keyTwo", 2);
 
     assertFalse(mapOne.equals(mapTwo));

@@ -164,14 +164,6 @@ public class DefaultEntityModel implements EntityModel {
     bindTableModelEvents();
   }
 
-  public final String getEntityID() {
-    return entityID;
-  }
-
-  public final EntityDbProvider getDbProvider() {
-    return dbProvider;
-  }
-
   /**
    * @return a String representation of this EntityModel,
    * returns the model class name by default
@@ -179,6 +171,14 @@ public class DefaultEntityModel implements EntityModel {
   @Override
   public String toString() {
     return getClass().getSimpleName();
+  }
+
+  public final String getEntityID() {
+    return entityID;
+  }
+
+  public final EntityDbProvider getDbProvider() {
+    return dbProvider;
   }
 
   public final boolean isCascadeRefresh() {
@@ -315,7 +315,7 @@ public class DefaultEntityModel implements EntityModel {
     }
 
     try {
-      LOG.trace(this + " refreshing");
+      LOG.debug(this + " refreshing");
       isRefreshing = true;
       evtRefreshStarted.fire();
       editModel.refresh();//triggers table model refresh as per bindTableModelEventsInternal()
@@ -328,7 +328,7 @@ public class DefaultEntityModel implements EntityModel {
     finally {
       isRefreshing = false;
       evtRefreshDone.fire();
-      LOG.trace(this + " done refreshing");
+      LOG.debug(this + " done refreshing");
     }
   }
 

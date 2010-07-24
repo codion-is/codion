@@ -137,6 +137,16 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
     bindEvents();
   }
 
+  @Override
+  public String toString() {
+    return entityID;
+  }
+
+  @Override
+  public boolean isCellEditable(final int rowIndex, final int columnIndex) {
+    return false;
+  }
+
   public final void setEditModel(final EntityEditModel editModel) {
     if (this.editModel != null) {
       throw new RuntimeException("Edit model has already been set for table model: " + this);
@@ -251,7 +261,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
     return stAllowMultipleUpdate.isActive();
   }
 
-  public EntityTableModel setMultipleUpdateAllowed(final boolean multipleUpdateAllowed) {
+  public final EntityTableModel setMultipleUpdateAllowed(final boolean multipleUpdateAllowed) {
     stAllowMultipleUpdate.setActive(multipleUpdateAllowed);
     return this;
   }
@@ -286,14 +296,9 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
     return reportDataSource;
   }
 
-  public EntityTableModel setReportDataSource(final ReportDataWrapper reportDataSource) {
+  public final EntityTableModel setReportDataSource(final ReportDataWrapper reportDataSource) {
     this.reportDataSource = reportDataSource;
     return this;
-  }
-
-  @Override
-  public boolean isCellEditable(final int rowIndex, final int columnIndex) {
-    return false;
   }
 
   @Override
@@ -329,7 +334,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
             selectedOnly ? getSelectedItems() : getVisibleItems(), false);
   }
 
-  public Entity getEntityByPrimaryKey(final Entity.Key primaryKey) {
+  public final Entity getEntityByPrimaryKey(final Entity.Key primaryKey) {
     for (final Entity entity : getVisibleItems()) {
       if (entity.getPrimaryKey().equals(primaryKey)) {
         return entity;
@@ -359,7 +364,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
     }
 
     try {
-      LOG.trace(this + " refreshing");
+      LOG.debug(this + " refreshing");
       isRefreshing = true;
       evtRefreshStarted.fire();
       final List<Entity.Key> selectedPrimaryKeys = getPrimaryKeysOfSelectedEntities();
@@ -371,7 +376,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
     finally {
       isRefreshing = false;
       evtRefreshDone.fire();
-      LOG.trace(this + " refreshing done");
+      LOG.debug(this + " refreshing done");
     }
   }
 
@@ -483,11 +488,6 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
     catch (Exception e) {
       throw new RuntimeException(e);
     }
-  }
-
-  @Override
-  public String toString() {
-    return entityID;
   }
 
   public final PropertySummaryModel getPropertySummaryModel(final String propertyID) {

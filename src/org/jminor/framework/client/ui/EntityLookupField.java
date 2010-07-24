@@ -165,8 +165,7 @@ public class EntityLookupField extends JTextField {
   private void bindProperty() {
     new TextBeanValueLink(this, getModel(), "searchString", String.class, getModel().eventSearchStringChanged()) {
       @Override
-      protected void setUIValue(final Object value) {
-        super.setUIValue(value);
+      protected void handleSetUIValue(final Object value) {
         updateColors();
         searchHint.updateState();
       }

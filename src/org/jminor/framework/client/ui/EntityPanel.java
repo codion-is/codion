@@ -67,6 +67,13 @@ public class EntityPanel extends JPanel {
   public static final int RIGHT = 2;
   public static final int LEFT = 3;
 
+  private static final double DEFAULT_SPLIT_PANEL_RESIZE_WEIGHT = 0.5;
+  private static final int SPLIT_PANE_DIVIDER_SIZE = 18;
+  private static final int DETAIL_DIALOG_OFFSET = 29;
+  private static final double DETAIL_DIALOG_SIZE_RATIO = 1.5;
+  private static final int DETAIL_DIALOG_HEIGHT_OFFSET = 54;
+  private static final int EDIT_DIALOG_LOCATION_OFFSET = 98;
+
   /**
    * The EntityModel instance used by this EntityPanel
    */
@@ -154,7 +161,7 @@ public class EntityPanel extends JPanel {
    */
   private boolean panelInitialized = false;
 
-  private double detailSplitPanelResizeWeight = 0.5;
+  private double detailSplitPanelResizeWeight = DEFAULT_SPLIT_PANEL_RESIZE_WEIGHT;
 
   /**
    * Hold a reference to this PropertyChangeListener so that it will be garbage collected along with this EntityPanel instance
@@ -926,7 +933,7 @@ public class EntityPanel extends JPanel {
     splitPane.setBorder(BorderFactory.createEmptyBorder());
     splitPane.setOneTouchExpandable(true);
     splitPane.setResizeWeight(detailSplitPanelResizeWeight);
-    splitPane.setDividerSize(18);
+    splitPane.setDividerSize(SPLIT_PANE_DIVIDER_SIZE);
 
     return splitPane;
   }
@@ -1071,7 +1078,7 @@ public class EntityPanel extends JPanel {
     final Dimension size = getDetailDialogSize(parentSize);
     final Point parentLocation = parent.getLocation();
     final Point location = new Point(parentLocation.x+(parentSize.width-size.width),
-            parentLocation.y+(parentSize.height-size.height)-29);
+            parentLocation.y+(parentSize.height-size.height)- DETAIL_DIALOG_OFFSET);
     SwingUtilities.invokeLater(new Runnable() {
       public void run() {
         detailPanelDialog = UiUtil.showInDialog(UiUtil.getParentWindow(EntityPanel.this), detailPanelTabbedPane, false,
@@ -1090,8 +1097,8 @@ public class EntityPanel extends JPanel {
    * @return the size to use when showing the detail dialog
    */
   protected final Dimension getDetailDialogSize(final Dimension parentSize) {
-    return new Dimension((int) (parentSize.width/1.5),
-            (editControlPanel != null) ? (int) (parentSize.height/1.5) : parentSize.height-54);
+    return new Dimension((int) (parentSize.width/ DETAIL_DIALOG_SIZE_RATIO), (editControlPanel != null) ?
+            (int) (parentSize.height/ DETAIL_DIALOG_SIZE_RATIO) : parentSize.height- DETAIL_DIALOG_HEIGHT_OFFSET);
   }
 
   /**
@@ -1099,7 +1106,7 @@ public class EntityPanel extends JPanel {
    */
   protected final void showEditDialog() {
     final Point location = getLocationOnScreen();
-    location.setLocation(location.x+1, location.y + getSize().height- editControlPanel.getSize().height-98);
+    location.setLocation(location.x+1, location.y + getSize().height- editControlPanel.getSize().height- EDIT_DIALOG_LOCATION_OFFSET);
     editPanelDialog = UiUtil.showInDialog(UiUtil.getParentWindow(this), editControlPanel, false,
             caption, false, true, null, null, location, new AbstractAction() {
               public void actionPerformed(ActionEvent e) {

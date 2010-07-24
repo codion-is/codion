@@ -18,19 +18,32 @@ public final class OracleDatabase extends AbstractDatabase {
 
   private static final Map<Integer, String> ERROR_CODE_MAP = new HashMap<Integer, String>();
 
+  private static final int UNIQUE_KEY_ERROR = 1;
+  private static final int CHILD_RECORD_ERROR = 2292;
+  private static final int NULL_VALUE_ERROR = 1400;
+  private static final int INTEGRITY_CONSTRAINT_ERROR = 2291;
+  private static final int NULL_VALU_ERROR_2 = 1407;
+  private static final int CHECK_CONSTRAINT_ERROR = 2290;
+  private static final int MISSING_PRIVS_ERROR = 1031;
+  private static final int LOGIN_CREDS_ERROR = 1017;
+  private static final int TABLE_NOT_FOUND_ERROR = 942;
+  private static final int UNABLE_TO_CONNECT_ERROR = 1045;
+  private static final int VALUE_TOO_LARGE_ERROR = 1401;
+  private static final int VIEW_HAS_ERRORS_ERROR = 4063;
+
   static {
-    ERROR_CODE_MAP.put(1, Messages.get(Messages.UNIQUE_KEY_ERROR));
-    ERROR_CODE_MAP.put(2292, Messages.get(Messages.CHILD_RECORD_ERROR));
-    ERROR_CODE_MAP.put(1400, Messages.get(Messages.NULL_VALUE_ERROR));
-    ERROR_CODE_MAP.put(2291, Messages.get(Messages.INTEGRITY_CONSTRAINT_ERROR));
-    ERROR_CODE_MAP.put(1407, Messages.get(Messages.NULL_VALUE_ERROR));
-    ERROR_CODE_MAP.put(2290, Messages.get(Messages.CHECK_CONSTRAINT_ERROR));
-    ERROR_CODE_MAP.put(1031, Messages.get(Messages.MISSING_PRIVILEGES_ERROR));
-    ERROR_CODE_MAP.put(1017, Messages.get(Messages.LOGIN_CREDENTIALS_ERROR));
-    ERROR_CODE_MAP.put(942, Messages.get(Messages.TABLE_NOT_FOUND_ERROR));
-    ERROR_CODE_MAP.put(1045, Messages.get(Messages.USER_UNABLE_TO_CONNECT_ERROR));
-    ERROR_CODE_MAP.put(1401, Messages.get(Messages.VALUE_TOO_LARGE_FOR_COLUMN_ERROR));
-    ERROR_CODE_MAP.put(4063, Messages.get(Messages.VIEW_HAS_ERRORS_ERROR));
+    ERROR_CODE_MAP.put(UNIQUE_KEY_ERROR, Messages.get(Messages.UNIQUE_KEY_ERROR));
+    ERROR_CODE_MAP.put(CHILD_RECORD_ERROR, Messages.get(Messages.CHILD_RECORD_ERROR));
+    ERROR_CODE_MAP.put(NULL_VALUE_ERROR, Messages.get(Messages.NULL_VALUE_ERROR));
+    ERROR_CODE_MAP.put(INTEGRITY_CONSTRAINT_ERROR, Messages.get(Messages.INTEGRITY_CONSTRAINT_ERROR));
+    ERROR_CODE_MAP.put(NULL_VALU_ERROR_2, Messages.get(Messages.NULL_VALUE_ERROR));
+    ERROR_CODE_MAP.put(CHECK_CONSTRAINT_ERROR, Messages.get(Messages.CHECK_CONSTRAINT_ERROR));
+    ERROR_CODE_MAP.put(MISSING_PRIVS_ERROR, Messages.get(Messages.MISSING_PRIVILEGES_ERROR));
+    ERROR_CODE_MAP.put(LOGIN_CREDS_ERROR, Messages.get(Messages.LOGIN_CREDENTIALS_ERROR));
+    ERROR_CODE_MAP.put(TABLE_NOT_FOUND_ERROR, Messages.get(Messages.TABLE_NOT_FOUND_ERROR));
+    ERROR_CODE_MAP.put(UNABLE_TO_CONNECT_ERROR, Messages.get(Messages.USER_UNABLE_TO_CONNECT_ERROR));
+    ERROR_CODE_MAP.put(VALUE_TOO_LARGE_ERROR, Messages.get(Messages.VALUE_TOO_LARGE_FOR_COLUMN_ERROR));
+    ERROR_CODE_MAP.put(VIEW_HAS_ERRORS_ERROR, Messages.get(Messages.VIEW_HAS_ERRORS_ERROR));
   }
 
   public OracleDatabase() {
@@ -72,7 +85,7 @@ public final class OracleDatabase extends AbstractDatabase {
 
   @Override
   public String getErrorMessage(final SQLException exception) {
-    if (exception.getErrorCode() == 1400 || exception.getErrorCode() == 1407) {
+    if (exception.getErrorCode() == NULL_VALUE_ERROR || exception.getErrorCode() == NULL_VALU_ERROR_2) {
       final String errorMsg = exception.getMessage();
       final String columnName = errorMsg.substring(errorMsg.lastIndexOf('.') + 2, errorMsg.lastIndexOf(')') - 1);
 

@@ -43,21 +43,6 @@ public class TextBeanValueLink extends AbstractBeanValueLink implements Document
 
   public final void changedUpdate(final DocumentEvent e) {}
 
-  @Override
-  protected void setUIValue(final Object value) {
-    try {
-      synchronized (document) {
-        document.remove(0, document.getLength());
-        if (value != null) {
-          document.insertString(0, getValueAsString(value), null);
-        }
-      }
-    }
-    catch (BadLocationException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
   /**
    * @return the value from the UI component
    */
@@ -72,6 +57,22 @@ public class TextBeanValueLink extends AbstractBeanValueLink implements Document
     return value != null ? value.toString() : null;
   }
 
+  @Override
+  protected final void setUIValue(final Object value) {
+    try {
+      synchronized (document) {
+        document.remove(0, document.getLength());
+        if (value != null) {
+          document.insertString(0, getValueAsString(value), null);
+        }
+      }
+      handleSetUIValue(value);
+    }
+    catch (BadLocationException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
   protected final String getText() {
     try {
       synchronized (document) {
@@ -82,4 +83,6 @@ public class TextBeanValueLink extends AbstractBeanValueLink implements Document
       throw new RuntimeException(e);
     }
   }
+
+  protected void handleSetUIValue(final Object value) {}
 }

@@ -134,8 +134,8 @@ public class PropertySearchPanel extends AbstractSearchPanel<Property.ColumnProp
               property.isTimestamp() ? Timestamp.class : Date.class, isUpperBound ? getModel().eventUpperBoundChanged() : getModel().eventLowerBoundChanged(),
               LinkType.READ_WRITE, format) {
         @Override
-        protected Object getUIValue() {
-          final Date date = (Date) super.getUIValue();
+        protected Object translate(final Object parsedValue) {
+          final Date date = (Date) parsedValue;
           return date == null ? null : property.isTimestamp() ? new Timestamp(date.getTime()) : date;
         }
       };

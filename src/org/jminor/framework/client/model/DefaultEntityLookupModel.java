@@ -74,6 +74,10 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
     this.lookupProperties = lookupProperties;
   }
 
+  public String getDescription() {
+    return Util.getCollectionContentsAsString(getLookupProperties(), false);
+  }
+
   public final String getEntityID() {
     return entityID;
   }
@@ -87,10 +91,6 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
    */
   public final List<Property.ColumnProperty> getLookupProperties() {
     return Collections.unmodifiableList(lookupProperties);
-  }
-
-  public String getDescription() {
-    return Util.getCollectionContentsAsString(getLookupProperties(), false);
   }
 
   public final boolean isMultipleSelectionAllowed() {

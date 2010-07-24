@@ -24,7 +24,7 @@ public class IntBeanValueLink extends TextBeanValueLink {
   }
 
   @Override
-  protected Object getUIValue() {
+  protected final Object getUIValue() {
     try {
       return Util.getInt(getText());
     }

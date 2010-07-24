@@ -1904,3 +1904,6 @@
   AbstractValueChangeMapEditModel, added default implementations for abstract methods, renamed to DefaultValueChangeMapEditModel
   ForeignKeySearchModel.initialize() removed
   AbstractInputProvider overgenerified?
+  More finalization/inheritance work
+  Coberture coverage added to build.xml
+  ValueMapImplTest added

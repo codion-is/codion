@@ -18,6 +18,9 @@ import java.util.Date;
  */
 public final class DateUtil {
 
+  private static final int THIRTY_FIRST = 31;
+  private static final int THIRTIETH = 30;
+
   private DateUtil() {}
 
   /**
@@ -136,7 +139,7 @@ public final class DateUtil {
   public static Date getLastDayOfYear() {
     final Calendar c = Calendar.getInstance();
     c.set(Calendar.MONTH, Calendar.DECEMBER);
-    c.set(Calendar.DAY_OF_MONTH, 31);
+    c.set(Calendar.DAY_OF_MONTH, THIRTY_FIRST);
 
     return c.getTime();
   }
@@ -179,22 +182,22 @@ public final class DateUtil {
     switch (quarter) {
       case 1: {
         c.set(Calendar.MONTH, Calendar.MARCH);
-        c.set(Calendar.DAY_OF_MONTH, 31);
+        c.set(Calendar.DAY_OF_MONTH, THIRTY_FIRST);
         return c.getTime();
       }
       case 2: {
         c.set(Calendar.MONTH, Calendar.JUNE);
-        c.set(Calendar.DAY_OF_MONTH, 30);
+        c.set(Calendar.DAY_OF_MONTH, THIRTIETH);
         return c.getTime();
       }
       case 3: {
         c.set(Calendar.MONTH, Calendar.SEPTEMBER);
-        c.set(Calendar.DAY_OF_MONTH, 30);
+        c.set(Calendar.DAY_OF_MONTH, THIRTIETH);
         return c.getTime();
       }
       case 4: {
         c.set(Calendar.MONTH, Calendar.DECEMBER);
-        c.set(Calendar.DAY_OF_MONTH, 31);
+        c.set(Calendar.DAY_OF_MONTH, THIRTY_FIRST);
         return c.getTime();
       }
     }

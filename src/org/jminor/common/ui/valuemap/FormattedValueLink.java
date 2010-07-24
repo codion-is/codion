@@ -50,13 +50,13 @@ public class FormattedValueLink<K> extends TextValueLink<K> {
   }
 
   @Override
-  protected Object valueFromText(final String text) {
+  protected final Object valueFromText(final String text) {
     if (text == null) {
       return null;
     }
 
     try {
-      return format == null ? text : format.parseObject(text);
+      return format == null ? text : translate(format.parseObject(text));
     }
     catch (ParseException nf) {
       return null;
@@ -73,17 +73,17 @@ public class FormattedValueLink<K> extends TextValueLink<K> {
   }
 
   @Override
-  protected final String getText() {
-    final String value = super.getText();
-    if (value == null) {
-      return null;
-    }
+  protected String translate(final String text) {
     try {
-      return (String) formatter.stringToValue((String) value);
+      return (String) formatter.stringToValue(text);
     }
     catch (ParseException e) {
       return null;
     }
+  }
+
+  protected Object translate(final Object parsedValue) {
+    return parsedValue;
   }
 
   @Override

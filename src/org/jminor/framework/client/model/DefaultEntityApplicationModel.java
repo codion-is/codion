@@ -29,16 +29,18 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
     bindEvents();
   }
 
-  public void logout() {
+  public final void logout() {
     dbProvider.setUser(null);
     clear();
+    handleLogout();
   }
 
-  public void login(final User user) {
+  public final void login(final User user) {
     dbProvider.setUser(user);
     for (final EntityModel mainApplicationModel : mainApplicationModels) {
       mainApplicationModel.refresh();
     }
+    handleLogin();
   }
 
   public final User getUser() {
@@ -143,6 +145,10 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
    * class or simply loading it by name
    */
   protected abstract void loadDomainModel();
+
+  protected void handleLogout() {}
+
+  protected void handleLogin() {}
 
   protected void bindEvents() {}
 

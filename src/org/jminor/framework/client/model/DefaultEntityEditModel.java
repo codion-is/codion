@@ -112,6 +112,67 @@ public class DefaultEntityEditModel extends DefaultValueChangeMapEditModel<Strin
     bindEvents();
   }
 
+  /**
+   * Returns true if the given property accepts a null value, by default this
+   * method simply returns <code>property.isNullable()</code>
+   * @param key the property ID
+   * @return true if the property accepts a null value
+   */
+  @Override
+  public boolean isNullable(final String key) {
+    return isNullable(getEntity(), key);
+  }
+
+  public Object getDefaultValue(final Property property) {
+    return persistValueOnClear(property) ? getValue(property.getPropertyID()) : property.getDefaultValue();
+  }
+
+  public boolean persistValueOnClear(final Property property) {
+    return property instanceof Property.ForeignKeyProperty
+            && Configuration.getBooleanValue(Configuration.PERSIST_FOREIGN_KEY_VALUES);
+  }
+
+  /**
+   * Returns true if the given property accepts a null value for the given entity,
+   * by default this method simply returns <code>property.isNullable()</code>
+   * @param valueMap the entity being validated
+   * @param key the property ID
+   * @return true if the property accepts a null value
+   */
+  @Override
+  public boolean isNullable(final ValueChangeMap<String, Object> valueMap, final String key) {
+    return EntityRepository.getProperty(entityID, key).isNullable();
+  }
+
+  public boolean isEntityNew() {
+    final Entity.Key key = ((Entity) getValueMap()).getPrimaryKey();
+    final Entity.Key originalkey = ((Entity) getValueMap()).getOriginalPrimaryKey();
+    return key.isNull() || originalkey.isNull();
+  }
+
+  public PropertyComboBoxModel createPropertyComboBoxModel(final Property.ColumnProperty property, final Event refreshEvent,
+                                                           final String nullValueString) {
+    return new DefaultPropertyComboBoxModel(entityID, dbProvider, property, nullValueString, refreshEvent);
+  }
+
+  public EntityComboBoxModel createEntityComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty) {
+    Util.rejectNullValue(foreignKeyProperty, "foreignKeyProperty");
+    final EntityComboBoxModel model = new DefaultEntityComboBoxModel(foreignKeyProperty.getReferencedEntityID(), dbProvider);
+    model.setNullValueString(isNullable(getEntity(), foreignKeyProperty.getPropertyID()) ?
+            (String) Configuration.getValue(Configuration.DEFAULT_COMBO_BOX_NULL_VALUE_ITEM) : null);
+
+    return model;
+  }
+
+  public EntityLookupModel createEntityLookupModel(final String entityID,
+                                                   final List<Property.ColumnProperty> lookupProperties,
+                                                   final Criteria additionalSearchCriteria) {
+    final EntityLookupModel model = new DefaultEntityLookupModel(entityID, dbProvider, lookupProperties);
+    model.setAdditionalLookupCriteria(additionalSearchCriteria);
+
+    return model;
+  }
+
   public final boolean isReadOnly() {
     return readOnly;
   }
@@ -182,24 +243,6 @@ public class DefaultEntityEditModel extends DefaultValueChangeMapEditModel<Strin
 
   public final EntityDbProvider getDbProvider() {
     return dbProvider;
-  }
-
-  /**
-   * Returns true if the given property accepts a null value for the given entity,
-   * by default this method simply returns <code>property.isNullable()</code>
-   * @param valueMap the entity being validated
-   * @param key the property ID
-   * @return true if the property accepts a null value
-   */
-  @Override
-  public boolean isNullable(final ValueChangeMap<String, Object> valueMap, final String key) {
-    return EntityRepository.getProperty(entityID, key).isNullable();
-  }
-
-  public boolean isEntityNew() {
-    final Entity.Key key = ((Entity) getValueMap()).getPrimaryKey();
-    final Entity.Key originalkey = ((Entity) getValueMap()).getOriginalPrimaryKey();
-    return key.isNull() || originalkey.isNull();
   }
 
   public final Entity getForeignKeyValue(final String foreignKeyPropertyID) {
@@ -345,17 +388,6 @@ public class DefaultEntityEditModel extends DefaultValueChangeMapEditModel<Strin
     }
   }
 
-  /**
-   * Returns true if the given property accepts a null value, by default this
-   * method simply returns <code>property.isNullable()</code>
-   * @param key the property ID
-   * @return true if the property accepts a null value
-   */
-  @Override
-  public boolean isNullable(final String key) {
-    return isNullable(getEntity(), key);
-  }
-
   @Override
   public final void refresh() {
     try {
@@ -411,11 +443,6 @@ public class DefaultEntityEditModel extends DefaultValueChangeMapEditModel<Strin
     return comboBoxModel;
   }
 
-  public PropertyComboBoxModel createPropertyComboBoxModel(final Property.ColumnProperty property, final Event refreshEvent,
-                                                           final String nullValueString) {
-    return new DefaultPropertyComboBoxModel(entityID, dbProvider, property, nullValueString, refreshEvent);
-  }
-
   public final EntityComboBoxModel getEntityComboBoxModel(final String propertyID) {
     Util.rejectNullValue(propertyID, "propertyID");
     final Property property = EntityRepository.getProperty(entityID, propertyID);
@@ -466,24 +493,6 @@ public class DefaultEntityEditModel extends DefaultValueChangeMapEditModel<Strin
     return propertyComboBoxModels.containsKey(property);
   }
 
-  public EntityComboBoxModel createEntityComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty) {
-    Util.rejectNullValue(foreignKeyProperty, "foreignKeyProperty");
-    final EntityComboBoxModel model = new DefaultEntityComboBoxModel(foreignKeyProperty.getReferencedEntityID(), dbProvider);
-    model.setNullValueString(isNullable(getEntity(), foreignKeyProperty.getPropertyID()) ?
-            (String) Configuration.getValue(Configuration.DEFAULT_COMBO_BOX_NULL_VALUE_ITEM) : null);
-
-    return model;
-  }
-
-  public EntityLookupModel createEntityLookupModel(final String entityID,
-                                                   final List<Property.ColumnProperty> lookupProperties,
-                                                   final Criteria additionalSearchCriteria) {
-    final EntityLookupModel model = new DefaultEntityLookupModel(entityID, dbProvider, lookupProperties);
-    model.setAdditionalLookupCriteria(additionalSearchCriteria);
-
-    return model;
-  }
-
   @Override
   public final Entity getDefaultValueMap() {
     final Entity defaultEntity = Entities.entityInstance(entityID);
@@ -499,14 +508,6 @@ public class DefaultEntityEditModel extends DefaultValueChangeMapEditModel<Strin
 
   public final ValueCollectionProvider<Object> getValueProvider(final Property property) {
     return new PropertyValueProvider(dbProvider, entityID, property.getPropertyID());
-  }
-  public Object getDefaultValue(final Property property) {
-    return persistValueOnClear(property) ? getValue(property.getPropertyID()) : property.getDefaultValue();
-  }
-
-  public boolean persistValueOnClear(final Property property) {
-    return property instanceof Property.ForeignKeyProperty
-            && Configuration.getBooleanValue(Configuration.PERSIST_FOREIGN_KEY_VALUES);
   }
 
   public final Event eventAfterDelete() {
@@ -628,7 +629,7 @@ public class DefaultEntityEditModel extends DefaultValueChangeMapEditModel<Strin
         protected void valueChanged(final ValueChangeEvent<String, Object> event) {
           final String msg = getValueChangeDebugString(event);
           System.out.println(msg);
-          LOG.trace(msg);
+          LOG.debug(msg);
         }
       });
     }

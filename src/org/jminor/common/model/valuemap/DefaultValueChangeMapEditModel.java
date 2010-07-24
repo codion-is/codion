@@ -133,15 +133,15 @@ public class DefaultValueChangeMapEditModel<K, V> implements ValueChangeMapEditM
     return valueMap.stateModified();
   }
 
+  protected V prepareNewValue(final K key, final V value) {
+    return value;
+  }
+
   /**
    * @return the value map instance being edited
    */
   protected final ValueChangeMap<K, V> getValueMap() {
     return valueMap;
-  }
-
-  protected V prepareNewValue(final K key, final V value) {
-    return value;
   }
 
   /**

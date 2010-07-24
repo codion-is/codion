@@ -40,7 +40,6 @@ import org.jminor.framework.client.model.EntityComboBoxModel;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityLookupModel;
 import org.jminor.framework.client.model.EntityTableModel;
-import org.jminor.framework.client.model.PropertyComboBoxModel;
 import org.jminor.framework.client.model.event.InsertEvent;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
@@ -757,20 +756,6 @@ public final class EntityUiUtil {
                                    final Property property) {
       super(comboBox, editModel, property.getPropertyID(), LinkType.READ_WRITE,
               Util.rejectNullValue(property, "property").isString());
-    }
-
-    @Override
-    protected Object getUIValue() {
-      final ComboBoxModel boxModel = getModel();
-      if (boxModel instanceof EntityComboBoxModel) {
-        return ((EntityComboBoxModel) boxModel).getSelectedEntity();
-      }
-      else if (boxModel instanceof PropertyComboBoxModel) {
-        return ((PropertyComboBoxModel) boxModel).isNullValueSelected() ? null : boxModel.getSelectedItem();
-      }
-      else {
-        return super.getUIValue();
-      }
     }
   }
 

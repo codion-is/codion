@@ -59,6 +59,10 @@ public class DefaultForeignKeySearchModel extends AbstractSearchModel<Property.F
     bindComboBoxEvents();
   }
 
+  public boolean include(final Object object) {
+    return true;
+  }
+
   @Override
   public final String toString() {
     final StringBuilder stringBuilder = new StringBuilder(getSearchKey().getPropertyID());
@@ -81,10 +85,6 @@ public class DefaultForeignKeySearchModel extends AbstractSearchModel<Property.F
     if (entityComboBoxModel != null) {
       entityComboBoxModel.clear();
     }
-  }
-
-  public boolean include(final Object object) {
-    return true;
   }
 
   /**

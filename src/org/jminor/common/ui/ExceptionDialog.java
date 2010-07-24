@@ -14,7 +14,19 @@ import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.ToggleBeanValueLink;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
 
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -36,6 +48,11 @@ import java.io.StringWriter;
  * to prefix a string to the subject field call ExceptionDialog.setErrorReportEmailSubjectPrefix()
  */
 public final class ExceptionDialog extends JDialog {
+
+  private static final int DESCRIPTION_LABEL_WIDTH = 250;
+  private static final int MESSAGE_LABEL_WIDTH = 50;
+  private static final int SCROLL_PANE_WIDTH = 500;
+  private static final int SCROLL_PANE_HEIGHT = 200;
 
   //ui components
   private JTextField exceptionField;
@@ -287,7 +304,7 @@ public final class ExceptionDialog extends JDialog {
     layout.setFixedRowHeight(new JTextField().getPreferredSize().height);
     detailPanel = new JPanel(layout);
     descriptionLabel = new JLabel(UIManager.getIcon("OptionPane.errorIcon"), SwingConstants.CENTER);
-    descriptionLabel.setMaximumSize(new Dimension(250, descriptionLabel.getMaximumSize().height));
+    descriptionLabel.setMaximumSize(new Dimension(DESCRIPTION_LABEL_WIDTH, descriptionLabel.getMaximumSize().height));
     descriptionLabel.setIconTextGap(10);
     final JLabel exceptionLabel = new JLabel(
             Messages.get(Messages.EXCEPTION) + ": ", SwingConstants.LEFT);
@@ -295,7 +312,7 @@ public final class ExceptionDialog extends JDialog {
     exceptionField.setEnabled(false);
     final JLabel messageLabel = new JLabel(
             Messages.get(Messages.MESSAGE) + ": ", SwingConstants.LEFT);
-    messageLabel.setPreferredSize(new Dimension(50, messageLabel.getPreferredSize().height));
+    messageLabel.setPreferredSize(new Dimension(MESSAGE_LABEL_WIDTH, messageLabel.getPreferredSize().height));
     messageArea = new JTextArea();
     messageArea.setEnabled(false);
     messageArea.setLineWrap(true);
@@ -328,7 +345,7 @@ public final class ExceptionDialog extends JDialog {
     detailsArea.setWrapStyleWord(true);
 
     final JScrollPane scrollPane = new JScrollPane(detailsArea);
-    scrollPane.setPreferredSize(new Dimension(500,200));
+    scrollPane.setPreferredSize(new Dimension(SCROLL_PANE_WIDTH, SCROLL_PANE_HEIGHT));
     final JPanel center = new JPanel(new BorderLayout());
     center.add(scrollPane, BorderLayout.CENTER);
 

@@ -86,6 +86,11 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     this.dbProvider = dbProvider;
   }
 
+  @Override
+  public String toString() {
+    return getClass().getSimpleName() + " [entityID: " + entityID + "]";
+  }
+
   public final EntityDbProvider getDbProvider() {
     return dbProvider;
   }
@@ -167,11 +172,6 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
         return superCriteria.include(item) && foreignKeyFilterCriteria.include(item);
       }
     };
-  }
-
-  @Override
-  public String toString() {
-    return getClass().getSimpleName() + " [entityID: " + entityID + "]";
   }
 
   public final void setEntitySelectCriteria(final EntitySelectCriteria entitySelectCriteria) {

@@ -112,13 +112,17 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> implements
   /**
    * @return the text from the linked text component
    */
-  protected String getText() {
+  protected final String getText() {
     try {
-      return document.getText(0, document.getLength());
+      return translate(document.getText(0, document.getLength()));
     }
     catch (BadLocationException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  protected String translate(final String text) {
+    return text;
   }
 
   /**

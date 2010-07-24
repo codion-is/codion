@@ -42,17 +42,21 @@ public class FormattedTextBeanValueLink extends TextBeanValueLink {
    * @return the value, if a formatter is present, the formatted value is returned
    */
   @Override
-  protected Object getUIValue() {
+  protected final Object getUIValue() {
     final String text = getText();
     if (text != null && text.contains(placeholder)) {
       return null;
     }
 
     try {
-      return text != null ? format.parseObject(text) : null;
+      return text != null ? translate(format.parseObject(text)) : null;
     }
     catch (ParseException nf) {
       return null;
     }
+  }
+
+  protected Object translate(final Object parsedValue) {
+    return parsedValue;
   }
 }

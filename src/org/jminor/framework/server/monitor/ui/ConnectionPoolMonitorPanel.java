@@ -41,8 +41,9 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
 
   private final ConnectionPoolMonitor model;
 
-  private final NumberFormat format = NumberFormat.getInstance();
+  private static final int RESET_FIELD_COLUMNS = 14;
 
+  private final NumberFormat format = NumberFormat.getInstance();
   private final JFreeChart inPoolChart = ChartFactory.createXYStepChart(null,
         null, null, null, PlotOrientation.VERTICAL, true, true, false);
   private final JFreeChart inPoolMacroChart = ChartFactory.createXYStepChart(null,
@@ -51,7 +52,6 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
         null, null, null, PlotOrientation.VERTICAL, true, true, false);
   private final JFreeChart checkOutTimeChart = ChartFactory.createXYStepChart(null,
         null, null, null, PlotOrientation.VERTICAL, true, true, false);
-
   private final ChartPanel inPoolChartPanel = new ChartPanel(inPoolChart);
   private final ChartPanel inPoolChartPanelMacro = new ChartPanel(inPoolMacroChart);
   private final ChartPanel requestsPerSecondChartPanel = new ChartPanel(requestsPerSecondChart);
@@ -60,7 +60,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   private final JTextField txtPoolSize = new JTextField();
   private final JTextField txtCreated = new JTextField();
   private final JTextField txtDestroyed = new JTextField();
-  private final JTextField txtCreatedDestroyedResetTime = new JTextField(14);
+  private final JTextField txtCreatedDestroyedResetTime = new JTextField(RESET_FIELD_COLUMNS);
   private final JTextField txtRequested = new JTextField();
   private final JTextField txtDelayed = new JTextField();
 
