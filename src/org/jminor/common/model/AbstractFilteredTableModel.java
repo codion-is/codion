@@ -42,12 +42,12 @@ import java.util.Map;
  */
 public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableModel implements FilteredTableModel<T, C> {
 
-  public static final Comparator COMPARABLE_COMPARATOR = new Comparator<Comparable>() {
-    public int compare(Comparable o1, Comparable o2) {
+  public static final Comparator<Comparable<Object>> COMPARABLE_COMPARATOR = new Comparator<Comparable<Object>>() {
+    public int compare(final Comparable<Object> o1, final Comparable<Object> o2) {
       return (o1.compareTo(o2));
     }
   };
-  public static final Comparator LEXICAL_COMPARATOR = new Comparator<Object>() {
+  public static final Comparator<Object> LEXICAL_COMPARATOR = new Comparator<Object>() {
     private final Collator collator = Collator.getInstance();
     public int compare(Object o1, Object o2) {
       return collator.compare(o1.toString(), o2.toString());
@@ -287,6 +287,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
       comparison = 1;
     }
     else {
+      //noinspection unchecked
       comparison = getComparator(columnIndex).compare(valueOne, valueTwo);
     }
     if (comparison != 0) {
