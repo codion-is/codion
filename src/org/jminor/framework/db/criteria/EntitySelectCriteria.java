@@ -13,26 +13,26 @@ public interface EntitySelectCriteria extends EntityCriteria {
      */
   String getOrderByClause();
 
-    /**
+  boolean isSelectForUpdate();
+
+  /**
      * @return the maximum number of records to fetch from the result
      */
   int getFetchCount();
 
-  EntitySelectCriteria setSelectForUpdate(final boolean selectForUpdate);
-
-  boolean isSelectForUpdate();
-
-  EntitySelectCriteria setFetchDepthForAll(final int fetchDepth);
-
   int getCurrentFetchDepth();
-
-  EntitySelectCriteria setCurrentFetchDepth(final int currentFetchDepth);
 
   int getFetchDepth();
 
   int getFetchDepth(final String foreignKeyPropertyID);
 
+  EntitySelectCriteria setCurrentFetchDepth(final int currentFetchDepth);
+
   EntitySelectCriteria setFetchDepth(final int maxFetchDepth);
 
   EntitySelectCriteria setFetchDepth(final String foreignKeyPropertyID, final int maxFetchDepth);
+
+  EntitySelectCriteria setFetchDepthForAll(final int fetchDepth);
+
+  EntitySelectCriteria setSelectForUpdate(final boolean selectForUpdate);
 }

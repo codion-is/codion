@@ -1907,3 +1907,4 @@
   More finalization/inheritance work
   Coberture coverage added to build.xml
   ValueMapImplTest added
+  EntityDbConnection.insert() minor optimzation change

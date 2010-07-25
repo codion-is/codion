@@ -249,7 +249,7 @@ public interface Entity extends ValueChangeMap<String, Object>, Comparable<Entit
     boolean isCompositeKey();
 
     /**
-     * @return the first key property
+     * @return the first key property, useful for single property keys
      */
     Property.PrimaryKeyProperty getFirstKeyProperty();
 

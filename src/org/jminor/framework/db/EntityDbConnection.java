@@ -114,12 +114,13 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
 
         executePreparedUpdate(statement, insertQuery, statementValues, insertProperties);
 
+        final Entity.Key primaryKey = entity.getPrimaryKey();
         if (idSource.isAutoIncrement() && entity.getPrimaryKey().isNull()) {
-          entity.setValue(firstPrimaryKeyProperty, queryInteger(getDatabase().getAutoIncrementValueSQL(
+          primaryKey.setValue(firstPrimaryKeyProperty.getPropertyID(), queryInteger(getDatabase().getAutoIncrementValueSQL(
                   EntityRepository.getEntityIdSource(entity.getEntityID()))));
         }
 
-        keys.add(entity.getPrimaryKey());
+        keys.add(primaryKey);
 
         statement.close();
         insertProperties.clear();
@@ -810,10 +811,6 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
    */
   private static String getUpdateSQL(final Entity entity, final Collection<Property.ColumnProperty> properties,
                                      final List<Property.PrimaryKeyProperty> primaryKeyProperties) throws DbException {
-    if (!entity.isModified()) {
-      throw new DbException("Can not get update sql for an unmodified entity");
-    }
-
     final StringBuilder sql = new StringBuilder("update ");
     sql.append(EntityRepository.getTableName(entity.getEntityID())).append(" set ");
     int columnIndex = 0;

@@ -110,7 +110,7 @@ public interface ValueChangeMapEditModel<K, V> extends Refreshable {
    * ValueChangeMapEditModel.INSERT, ValueChangeMapEditModel.UPDATE or ValueChangeMapEditModel.UNKNOWN
    * @throws org.jminor.common.model.valuemap.exception.ValidationException if the given value is not valid for the given key
    */
-  void validate(K key, int action) throws ValidationException;
+  void validate(final K key, final int action) throws ValidationException;
 
   /**
    * Returns true if the given value is valid for the given key, using the <code>validate</code> method
