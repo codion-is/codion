@@ -60,8 +60,6 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueStringProvider
   /**
    * @return the number of values in this map
    */
-  int getValueCount();
-
   int size();
 
   /**

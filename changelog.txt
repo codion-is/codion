@@ -1916,3 +1916,4 @@
   PropertyFilterPanel stuff moved to AbstractSearchPanel
   AbstractFilteredTablePanel now contains the column search panels
   DateBeanValueLink and TimestampBeanValueLink added
+  ValueMap.getValueCount() removed

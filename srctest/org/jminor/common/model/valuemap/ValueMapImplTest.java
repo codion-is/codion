@@ -47,7 +47,7 @@ public class ValueMapImplTest {
 
     final String keyTwo = "key2";
     mapCopy.setValue(keyTwo, keyTwo);
-    assertEquals(2, mapCopy.getValueCount());
+    assertEquals(2, mapCopy.size());
     assertFalse(map.equals(mapCopy));
 
     final Collection<Object> values = mapCopy.getValues();

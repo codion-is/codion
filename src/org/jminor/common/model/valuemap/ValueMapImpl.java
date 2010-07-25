@@ -123,10 +123,6 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V>, Serializable {
     handleClear();
   }
 
-  public final int getValueCount() {
-    return size();
-  }
-
   public final int size() {
     return values.size();
   }
