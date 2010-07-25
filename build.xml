@@ -470,9 +470,7 @@
         <include name="**/*.class"/>
         <exclude name="**/*Stub.class"/>
         <exclude name="**/*Skel.class"/>
-      </fileset>
-      <fileset dir="${build.demos}">
-        <include name="**/*.class" />
+        <exclude name="**/package-info.class"/>
       </fileset>
     </cobertura-instrument>
   </target>
@@ -513,13 +511,11 @@
     <cobertura-report format="xml" destdir="${test.coveragereport.xml}" >
       <fileset dir="${src}">
           <include name="**/*.java" />
-          <exclude name="**/*Stub.java" />
-      </fileset>
-      <fileset dir="${srcdemos}">
-          <include name="**/*.java" />
+          <exclude name="**/package-info.java"/>
       </fileset>
       <fileset dir="${srcplugins}">
           <include name="**/*.java" />
+        <exclude name="**/package-info.java"/>
       </fileset>
     </cobertura-report>
   </target>
@@ -530,13 +526,11 @@
     <cobertura-report format="html" destdir="${test.coveragereport.html}" >
       <fileset dir="${src}">
           <include name="**/*.java" />
-          <exclude name="**/*Stub.java" />
-      </fileset>
-      <fileset dir="${srcdemos}">
-          <include name="**/*.java" />
+          <exclude name="**/package-info.java"/>
       </fileset>
       <fileset dir="${srcplugins}">
           <include name="**/*.java" />
+        <exclude name="**/package-info.java"/>
       </fileset>
     </cobertura-report>
   </target>
