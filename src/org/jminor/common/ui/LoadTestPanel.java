@@ -70,7 +70,7 @@ public final class LoadTestPanel extends JPanel {
     final JFrame frame = UiUtil.createFrame(Images.loadImage("jminor_logo32.gif").getImage());
     final String title = "JMinor - " + loadTestModel.getClass().getSimpleName();
     loadTestModel.eventDoneExiting().addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         if (frame != null) {
           frame.setVisible(false);
           frame.dispose();
@@ -79,7 +79,7 @@ public final class LoadTestPanel extends JPanel {
     });
     frame.addWindowListener(new WindowAdapter() {
       @Override
-      public void windowClosing(WindowEvent e) {
+      public void windowClosing(final WindowEvent e) {
         frame.setTitle(title + " - Closing...");
         loadTestModel.exit();
       }
@@ -139,7 +139,7 @@ public final class LoadTestPanel extends JPanel {
     final JTextField txtPassword = new JPasswordField(user.getPassword());
     txtPassword.setColumns(8);
     final ActionListener userInfoListener = new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         loadTestModel.setUser(new User(txtUsername.getText(), txtPassword.getText()));
       }
     };

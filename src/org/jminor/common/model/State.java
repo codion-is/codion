@@ -45,7 +45,7 @@ public class State {
   public final void addListeningAction(final Action action) {
     action.setEnabled(isActive());
     evtStateChanged.addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         action.setEnabled(isActive());
       }
     });
@@ -105,7 +105,7 @@ public class State {
     private LinkedState(final State referenceState) {
       this.referenceState = referenceState;
       this.referenceState.eventStateChanged().addListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(final ActionEvent e) {
           eventStateChanged().actionPerformed(e);
         }
       });
@@ -185,7 +185,7 @@ public class State {
       }
       updateAccordingToState(state);
       state.evtStateChanged.addListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(final ActionEvent e) {
           updateAccordingToState(state);
         }
       });

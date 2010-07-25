@@ -405,7 +405,7 @@ public final class Configuration {
    */
   public static final String SEARCH_PANELS_VISIBLE = "jminor.client.searchPanelsVisible";
 
-  private static Map<String, Object> settings = new HashMap<String, Object>();
+  private static final Map<String, Object> settings = new HashMap<String, Object>();
 
   static {
     //default settings

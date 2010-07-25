@@ -1583,12 +1583,12 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
 
   private void bindEventsInternal() {
     getEditModel().eventRefreshStarted().addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         UiUtil.setWaitCursor(true, EntityEditPanel.this);
       }
     });
     getEditModel().eventRefreshDone().addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         UiUtil.setWaitCursor(false, EntityEditPanel.this);
       }
     });

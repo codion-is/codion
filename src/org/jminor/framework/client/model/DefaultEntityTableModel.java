@@ -310,7 +310,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
                     + FrameworkMessages.get(FrameworkMessages.HIDDEN) + ")" : ")").toString();
   }
 
-  public final void addEntitiesByPrimaryKeys(final List<Entity.Key> primaryKeys, boolean atFront) {
+  public final void addEntitiesByPrimaryKeys(final List<Entity.Key> primaryKeys, final boolean atFront) {
     try {
       addItems(dbProvider.getEntityDb().selectMany(primaryKeys), atFront);
     }
@@ -522,7 +522,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   private void bindEventsInternal() {
     eventColumnHidden().addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         handleColumnHidden((Property) e.getSource());
       }
     });

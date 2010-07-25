@@ -88,7 +88,7 @@ public final class DateUtil {
     return new Timestamp(cal.getTimeInMillis());
   }
 
-  public static Date getDate(int year, int month, int day) {
+  public static Date getDate(final int year, final int month, final int day) {
     final Calendar cal = Calendar.getInstance();
     cal.set(Calendar.YEAR, year);
     cal.set(Calendar.MONTH, month);

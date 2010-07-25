@@ -159,7 +159,7 @@ public final class ControlProvider {
       if (enabledState != null) {
         menu.setEnabled(enabledState.isActive());
         enabledState.eventStateChanged().addListener(new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
+          public void actionPerformed(final ActionEvent e) {
             menu.setEnabled(enabledState.isActive());
           }
         });
@@ -213,7 +213,7 @@ public final class ControlProvider {
       this(owner, true);
     }
 
-    ToolBarControlIterator(final JToolBar owner, boolean includeCaption) {
+    ToolBarControlIterator(final JToolBar owner, final boolean includeCaption) {
       this.toolbar = owner;
       this.includeCaption = includeCaption;
     }

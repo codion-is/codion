@@ -163,7 +163,7 @@ public final class LogEntry implements Serializable, Comparable<LogEntry> {
     return subLog;
   }
 
-  public void setSubLog(List<LogEntry> subLog) {
+  public void setSubLog(final List<LogEntry> subLog) {
     this.subLog = subLog;
   }
 

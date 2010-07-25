@@ -478,7 +478,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
    * @param referencedEntity the entity value owning the denormalized values
    * @param initialization true if the values are being initialized
    */
-  private void setDenormalizedValues(Property.ForeignKeyProperty foreignKeyProperty, final Entity referencedEntity,
+  private void setDenormalizedValues(final Property.ForeignKeyProperty foreignKeyProperty, final Entity referencedEntity,
                                      final boolean initialization) {
     final Collection<Property.DenormalizedProperty> denormalizedProperties =
             EntityRepository.getDenormalizedProperties(entityID, foreignKeyProperty.getPropertyID());

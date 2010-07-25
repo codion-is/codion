@@ -555,7 +555,7 @@ public final class EntityDbRemoteAdapter extends UnicastRemoteObject implements 
     CONNECTION_POOLS.get(user).setPoolCleanupInterval(poolCleanupInterval);
   }
 
-  public static int getConnectionPoolCleanupInterval(User user) {
+  public static int getConnectionPoolCleanupInterval(final User user) {
     return CONNECTION_POOLS.get(user).getPoolCleanupInterval();
   }
 
@@ -575,7 +575,7 @@ public final class EntityDbRemoteAdapter extends UnicastRemoteObject implements 
     CONNECTION_POOLS.get(user).setMaximumPoolSize(value);
   }
 
-  public static void setMinimumConnectionPoolSize(User user, final int value) {
+  public static void setMinimumConnectionPoolSize(final User user, final int value) {
     CONNECTION_POOLS.get(user).setMinimumPoolSize(value);
   }
 
@@ -774,7 +774,7 @@ public final class EntityDbRemoteAdapter extends UnicastRemoteObject implements 
       }
     }
 
-    private void appendEntityCriteria(final EntityCriteria criteria, StringBuilder destination) {
+    private void appendEntityCriteria(final EntityCriteria criteria, final StringBuilder destination) {
       destination.append(criteria.getEntityID());
       final String whereClause = criteria.getWhereClause(true);
       if (whereClause != null && whereClause.length() > 0) {

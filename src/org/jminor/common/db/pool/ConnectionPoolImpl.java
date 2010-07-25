@@ -30,6 +30,9 @@ public final class ConnectionPoolImpl implements ConnectionPool {
 
   private static final Logger LOG = Util.getLogger(ConnectionPoolImpl.class);
 
+  private static final int DEFAULT_TIMEOUT = 60000;
+  private static final int DEFAULT_CLEANUP_INTERVAL = 20000;
+
   private final Stack<PoolableConnection> connectionPool = new Stack<PoolableConnection>();
   private final Set<PoolableConnection> connectionsInUse = new HashSet<PoolableConnection>();
 
@@ -46,10 +49,10 @@ public final class ConnectionPoolImpl implements ConnectionPool {
   private final Counter counter = new Counter();
   private volatile boolean creatingConnection = false;
   private final User user;
-  private int pooledConnectionTimeout = 60000;
+  private int pooledConnectionTimeout = DEFAULT_TIMEOUT;
   private int minimumPoolSize = 4;
   private int maximumPoolSize = 8;
-  private int poolCleanupInterval = 20000;
+  private int poolCleanupInterval = DEFAULT_CLEANUP_INTERVAL;
   private boolean enabled = true;
 
   public ConnectionPoolImpl(final PoolableConnectionProvider poolableConnectionProvider, final User user) {
@@ -319,6 +322,8 @@ public final class ConnectionPoolImpl implements ConnectionPool {
   }
 
   private static class Counter {
+    private static final double THOUSAND = 1000d;
+    
     private final long creationDate = System.currentTimeMillis();
     private long resetDate = creationDate;
     private int liveConnections = 0;
@@ -394,7 +399,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
 
     public synchronized void updateStatistics() {
       final long current = System.currentTimeMillis();
-      final double seconds = (current - requestsPerSecondTime) / 1000d;
+      final double seconds = (current - requestsPerSecondTime) / THOUSAND;
       requestsPerSecond = (int) ((double) requestsPerSecondCounter / seconds);
       requestsPerSecondCounter = 0;
       requestsDelayedPerSecond = (int) ((double) requestsDelayedPerSecondCounter / seconds);

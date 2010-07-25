@@ -99,7 +99,7 @@ public abstract class AbstractTableColumnSyncPanel extends JPanel {
       final JPanel panel = columnPanels.get(column);
       panel.setPreferredSize(new Dimension(column.getWidth(), panel.getPreferredSize().height));
       column.addPropertyChangeListener(new PropertyChangeListener() {
-        public void propertyChange(PropertyChangeEvent evt) {
+        public void propertyChange(final PropertyChangeEvent evt) {
           if (evt.getPropertyName().equals("width")) {
             syncPanelWidth(panel, column);
           }

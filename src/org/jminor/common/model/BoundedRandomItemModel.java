@@ -87,7 +87,7 @@ public final class BoundedRandomItemModel<T> extends RandomItemModel<T> {
     throw new RuntimeException("addItem is not implemented in " + getClass().getSimpleName());
   }
 
-  protected void initializeItems(final T... items) {
+  private void initializeItems(final T... items) {
     final int rest = weightBounds % items.length;
     final int amountEach = weightBounds / items.length;
     for (int i = 0; i < items.length; i++) {

@@ -114,7 +114,7 @@ public class PropertySearchPanel extends AbstractSearchPanel<Property.ColumnProp
 
   private Action getEnableAction() {
     return new AbstractAction() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         getModel().setSearchEnabled(!getModel().isSearchEnabled());
       }
     };

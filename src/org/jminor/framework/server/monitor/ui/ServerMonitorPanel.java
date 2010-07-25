@@ -44,7 +44,7 @@ import java.util.Date;
  */
 public final class ServerMonitorPanel extends JPanel {
 
-  private ServerMonitor model;
+  private final ServerMonitor model;
 
   private final JFreeChart requestsPerSecondChart = ChartFactory.createXYStepChart(null,
           null, null, null, PlotOrientation.VERTICAL, true, true, false);

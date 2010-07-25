@@ -269,7 +269,7 @@ public abstract class AbstractSearchPanel<K> extends JPanel {
 
     if (field instanceof JTextField) {//enter button toggles the filter on/off
       ((JTextField) field).addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(final ActionEvent e) {
           getModel().setSearchEnabled(!getModel().isSearchEnabled());
         }
       });
@@ -295,7 +295,7 @@ public abstract class AbstractSearchPanel<K> extends JPanel {
    */
   private void bindEvents() {
     stAdvancedSearch.eventStateChanged().addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         initializePanel();
         if (toggleSearchAdvanced != null) {
           toggleSearchAdvanced.requestFocusInWindow();
@@ -306,13 +306,13 @@ public abstract class AbstractSearchPanel<K> extends JPanel {
       }
     });
     model.eventSearchTypeChanged().addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         stTwoSearchFields.setActive(model.getSearchType() == SearchType.WITHIN_RANGE
                 || model.getSearchType() == SearchType.OUTSIDE_RANGE);
       }
     });
     stTwoSearchFields.eventStateChanged().addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         initializePanel();
         revalidate();
         searchTypeCombo.requestFocusInWindow();
@@ -428,7 +428,7 @@ public abstract class AbstractSearchPanel<K> extends JPanel {
     UiUtil.linkToEnabledState(stUnlocked, toggleSearchEnabled);
   }
 
-  private void initSearchDlg(Container parent) {
+  private void initSearchDlg(final Container parent) {
     if (dialog != null) {
       return;
     }
@@ -447,14 +447,14 @@ public abstract class AbstractSearchPanel<K> extends JPanel {
     dialog.pack();
 
     stateAdvancedSearch().eventStateChanged().addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         dialog.pack();
       }
     });
 
     dialog.addWindowListener(new WindowAdapter() {
       @Override
-      public void windowClosing(WindowEvent e) {
+      public void windowClosing(final WindowEvent e) {
         inactivateDialog();
       }
     });
@@ -484,7 +484,7 @@ public abstract class AbstractSearchPanel<K> extends JPanel {
             isUpperBound ? getModel().eventUpperBoundChanged() : getModel().eventLowerBoundChanged());
   }
 
-  private TextBeanValueLink createTextProperty(final JComponent component, boolean isUpper, final DateFormat format) {
+  private TextBeanValueLink createTextProperty(final JComponent component, final boolean isUpper, final DateFormat format) {
     if (getModel().getType() == Types.INTEGER) {
       return new IntBeanValueLink((IntField) component, getModel(),
               isUpper ? SearchModel.UPPER_BOUND_PROPERTY : SearchModel.LOWER_BOUND_PROPERTY,

@@ -80,14 +80,14 @@ public class EntityCriteriaPanel extends JPanel {
     final JList propertyList = new JList(searchCriteria.toArray());
     for (final PropertySearchModel model : searchCriteria) {
       model.eventSearchStateChanged().addListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(final ActionEvent e) {
           propertyList.repaint();
         }
       });
     }
     propertyList.setCellRenderer(new DefaultListCellRenderer() {
       @Override
-      public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+      public Component getListCellRendererComponent(final JList list, final Object value, final int index, final boolean isSelected, final boolean cellHasFocus) {
         final Component cellRenderer = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
         final PropertySearchModel selected = (PropertySearchModel) value;
         ((JLabel)cellRenderer).setText(selected.getSearchKey().toString());
@@ -99,7 +99,7 @@ public class EntityCriteriaPanel extends JPanel {
     propertyList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
     propertyList.addListSelectionListener(new ListSelectionListener() {
-      public void valueChanged(ListSelectionEvent e) {
+      public void valueChanged(final ListSelectionEvent e) {
         editorPanel.removeAll();
         final PropertySearchModel selected = (PropertySearchModel) propertyList.getSelectedValue();
         if (selected != null) {

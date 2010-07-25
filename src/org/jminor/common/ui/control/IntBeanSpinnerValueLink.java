@@ -28,7 +28,7 @@ public final class IntBeanSpinnerValueLink extends AbstractBeanValueLink {
     super(owner, propertyName, int.class, propertyChangeEvent, linkType);
     spinnerModel = new SpinnerNumberModel();
     spinnerModel.addChangeListener(new ChangeListener() {
-      public void stateChanged(ChangeEvent e) {
+      public void stateChanged(final ChangeEvent e) {
         updateModel();
       }
     });

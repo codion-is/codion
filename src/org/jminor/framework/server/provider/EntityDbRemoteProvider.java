@@ -186,7 +186,7 @@ public final class EntityDbRemoteProvider extends AbstractEntityDbProvider {
       FileOutputStream out = null;
       InputStream in = null;
       try {
-        ClassLoader loader = EntityDbRemoteProvider.class.getClassLoader();
+        final ClassLoader loader = EntityDbRemoteProvider.class.getClassLoader();
         in = loader.getResourceAsStream(truststore);
         if (in == null) {
           LOG.debug("Truststore resource '" + truststore + "' was not found in classpath");
@@ -195,7 +195,7 @@ public final class EntityDbRemoteProvider extends AbstractEntityDbProvider {
         final File trustFile = File.createTempFile(clientTypeID, "ts");
         trustFile.deleteOnExit();
         out = new FileOutputStream(trustFile);
-        byte buf[] = new byte[INPUT_BUFFER_SIZE];
+        final byte[] buf = new byte[INPUT_BUFFER_SIZE];
         int br = in.read(buf);
         while (br > 0) {
           out.write(buf, 0, br);

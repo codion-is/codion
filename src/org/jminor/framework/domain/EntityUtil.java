@@ -344,8 +344,8 @@ public final class EntityUtil {
       return DateUtil.floorTimestamp(new Timestamp(System.currentTimeMillis()));
     }
     else if (property.isDouble()) {
-      double min = property.getMin() == null ? -10000000 : property.getMin();
-      double max = property.getMax() == null ? 10000000 : property.getMax();
+      final double min = property.getMin() == null ? -10000000 : property.getMin();
+      final double max = property.getMax() == null ? 10000000 : property.getMax();
       //Min + (int)(Math.random() * ((Max - Min) + 1))
       final double ret = min + (RANDOM.nextDouble() * ((max - min) + 1));
       if (property.getMaximumFractionDigits() > 0) {
@@ -356,8 +356,8 @@ public final class EntityUtil {
       }
     }
     else if (property.isInteger()) {
-      double min = property.getMin() == null ? -10000000 : property.getMin();
-      double max = property.getMax() == null ? 10000000 : property.getMax();
+      final double min = property.getMin() == null ? -10000000 : property.getMin();
+      final double max = property.getMax() == null ? 10000000 : property.getMax();
 
       return (int) (min + (RANDOM.nextDouble() * ((max - min) + 1)));
     }

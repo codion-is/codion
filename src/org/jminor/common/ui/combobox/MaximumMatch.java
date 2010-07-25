@@ -21,12 +21,12 @@ import java.awt.event.KeyEvent;
 public class MaximumMatch extends PlainDocument {
 
   private final JComboBox comboBox;
-  private ComboBoxModel model;
-  private JTextComponent editor;
+  private final ComboBoxModel model;
+  private final JTextComponent editor;
   // flag to indicate if setSelectedItem has been called
   // subsequent calls to remove/insertString should be ignored
   private boolean selecting = false;
-  private boolean hidePopupOnFocusLoss;
+  private final boolean hidePopupOnFocusLoss;
   private boolean hitBackspace = false;
   private boolean hitBackspaceOnSelection;
 
@@ -36,7 +36,7 @@ public class MaximumMatch extends PlainDocument {
     editor = (JTextComponent) comboBox.getEditor().getEditorComponent();
     editor.setDocument(this);
     comboBox.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         if (!selecting) {
           highlightCompletedText(0);
         }
@@ -44,7 +44,7 @@ public class MaximumMatch extends PlainDocument {
     });
     editor.addKeyListener(new KeyAdapter() {
       @Override
-      public void keyPressed(KeyEvent e) {
+      public void keyPressed(final KeyEvent e) {
         if (comboBox.isDisplayable() && Character.isLetterOrDigit(e.getKeyChar())) {
           comboBox.setPopupVisible(true);
         }
@@ -69,11 +69,11 @@ public class MaximumMatch extends PlainDocument {
     // Highlight whole text when gaining focus
     editor.addFocusListener(new FocusAdapter() {
       @Override
-      public void focusGained(FocusEvent e) {
+      public void focusGained(final FocusEvent e) {
         highlightCompletedText(0);
       }
       @Override
-      public void focusLost(FocusEvent e) {
+      public void focusLost(final FocusEvent e) {
         // Workaround for Bug 5100422 - Hide Popup on focus loss
         if (hidePopupOnFocusLoss) {
           comboBox.setPopupVisible(false);
@@ -81,14 +81,14 @@ public class MaximumMatch extends PlainDocument {
       }
     });
     // Handle initially selected object
-    Object selected = comboBox.getSelectedItem();
+    final Object selected = comboBox.getSelectedItem();
     if (selected!=null) {
       setText(selected.toString());
     }
     highlightCompletedText(0);
   }
 
-  public static void enable(JComboBox comboBox) {
+  public static void enable(final JComboBox comboBox) {
     // has to be editable
     comboBox.setEditable(true);
     // change the editor's document
@@ -96,7 +96,7 @@ public class MaximumMatch extends PlainDocument {
   }
 
   @Override
-  public void remove(int offs, int len) throws BadLocationException {
+  public void remove(int offs, final int len) throws BadLocationException {
     // return immediately when selecting an item
     if (selecting) {
       return;
@@ -121,7 +121,7 @@ public class MaximumMatch extends PlainDocument {
   }
 
   @Override
-  public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
+  public void insertString(int offs, final String str, final AttributeSet a) throws BadLocationException {
     // return immediately when selecting an item
     if (selecting || model.getSize() == 0) {
       return;
@@ -170,7 +170,7 @@ public class MaximumMatch extends PlainDocument {
     }
   }
 
-  private void highlightCompletedText(int start) {
+  private void highlightCompletedText(final int start) {
     editor.setCaretPosition(getLength());
     editor.moveCaretPosition(start);
   }
@@ -184,15 +184,15 @@ public class MaximumMatch extends PlainDocument {
     selecting = false;
   }
 
-  private Object lookupItem(String pattern) {
-    Object selectedItem = model.getSelectedItem();
+  private Object lookupItem(final String pattern) {
+    final Object selectedItem = model.getSelectedItem();
     // only search for a different item if the currently selected does not match
     if (selectedItem != null && startsWithIgnoreCase(selectedItem.toString(), pattern)) {
       return selectedItem;
     }
     // iterate over all items
     for (int i=0, n=model.getSize(); i < n; i++) {
-      Object currentItem = model.getElementAt(i);
+      final Object currentItem = model.getElementAt(i);
       // current item starts with the pattern?
       if (startsWithIgnoreCase(currentItem.toString(), pattern)) {
         return currentItem;
@@ -203,25 +203,25 @@ public class MaximumMatch extends PlainDocument {
   }
 
   // checks if str1 starts with str2 - ignores case
-  private boolean startsWithIgnoreCase(String str1, String str2) {
+  private boolean startsWithIgnoreCase(final String str1, final String str2) {
     return str1.toLowerCase().startsWith(str2.toLowerCase());
   }
 
   // calculates how many characters are predetermined by the given pattern.
-  private int getMaximumMatchingOffset(String pattern, Object selectedItem) {
-    String selectedAsString=selectedItem.toString();
+  private int getMaximumMatchingOffset(final String pattern, final Object selectedItem) {
+    final String selectedAsString=selectedItem.toString();
     int match=selectedAsString.length();
     // look for items that match the given pattern
     for (int i=0, n=model.getSize(); i < n; i++) {
-      Object currentItem = model.getElementAt(i);
+      final Object currentItem = model.getElementAt(i);
       if (currentItem == null) {
         return 0;
       }
-      String itemAsString = currentItem.toString();
+      final String itemAsString = currentItem.toString();
       if (startsWithIgnoreCase(itemAsString, pattern)) {
         // current item matches the pattern
         // how many leading characters have the selected and the current item in common?
-        int tmpMatch=equalStartLength(itemAsString, selectedAsString);
+        final int tmpMatch=equalStartLength(itemAsString, selectedAsString);
         if (tmpMatch < match) {
           match = tmpMatch;
         }
@@ -231,10 +231,10 @@ public class MaximumMatch extends PlainDocument {
   }
 
   // returns how many leading characters two strings have in common?
-  private static int equalStartLength(String str1, String str2) {
-    char[] ch1 = str1.toUpperCase().toCharArray();
-    char[] ch2 = str2.toUpperCase().toCharArray();
-    int n = ch1.length>ch2.length?ch2.length:ch1.length;
+  private static int equalStartLength(final String str1, final String str2) {
+    final char[] ch1 = str1.toUpperCase().toCharArray();
+    final char[] ch2 = str2.toUpperCase().toCharArray();
+    final int n = ch1.length>ch2.length?ch2.length:ch1.length;
     for (int i=0; i<n; i++) {
       if (ch1[i]!=ch2[i]) {
         return i;

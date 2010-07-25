@@ -549,7 +549,7 @@ public class DefaultEntityModel implements EntityModel {
       }
     });
     evtLinkedDetailModelsChanged.addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         if (!getEditModel().isEntityNew()) {
           updateDetailModelsByActiveEntity();
         }
@@ -570,7 +570,7 @@ public class DefaultEntityModel implements EntityModel {
     }
 
     editModel.eventRefreshDone().addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         tableModel.refresh();
       }
     });

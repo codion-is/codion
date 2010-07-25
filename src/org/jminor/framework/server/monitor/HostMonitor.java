@@ -33,7 +33,7 @@ public final class HostMonitor {
 
   private final State stLiveUpdate = new State();
   private final String hostName;
-  private Collection<ServerMonitor> serverMonitors = new ArrayList<ServerMonitor>();
+  private final Collection<ServerMonitor> serverMonitors = new ArrayList<ServerMonitor>();
 
   public HostMonitor(final String hostName) throws RemoteException {
     this.hostName = hostName;

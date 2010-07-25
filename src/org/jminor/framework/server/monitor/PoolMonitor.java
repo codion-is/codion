@@ -23,7 +23,7 @@ public final class PoolMonitor {
 
   private final EntityDbServerAdmin server;
 
-  private Collection<ConnectionPoolMonitor> connectionPoolMonitors = new ArrayList<ConnectionPoolMonitor>();
+  private final Collection<ConnectionPoolMonitor> connectionPoolMonitors = new ArrayList<ConnectionPoolMonitor>();
 
   public PoolMonitor(final EntityDbServerAdmin server) throws RemoteException {
     this.server = server;
@@ -105,7 +105,7 @@ public final class PoolMonitor {
           }
         }
 
-        public void setEnabled(boolean enabled) {
+        public void setEnabled(final boolean enabled) {
           try {
             server.setConnectionPoolEnabled(user, enabled);
           }
@@ -114,7 +114,7 @@ public final class PoolMonitor {
           }
         }
 
-        public void setPoolCleanupInterval(int poolCleanupInterval) {
+        public void setPoolCleanupInterval(final int poolCleanupInterval) {
           try {
             server.setConnectionPoolCleanupInterval(user, poolCleanupInterval);
           }
@@ -123,7 +123,7 @@ public final class PoolMonitor {
           }
         }
 
-        public ConnectionPoolStatistics getConnectionPoolStatistics(long since) {
+        public ConnectionPoolStatistics getConnectionPoolStatistics(final long since) {
           try {
             return server.getConnectionPoolStatistics(user, since);
           }
@@ -154,7 +154,7 @@ public final class PoolMonitor {
           }
         }
 
-        public void setCollectFineGrainedStatistics(boolean value) {
+        public void setCollectFineGrainedStatistics(final boolean value) {
           try {
             server.setCollectFineGrainedPoolStatistics(user, value);
           }
@@ -163,7 +163,7 @@ public final class PoolMonitor {
           }
         }
 
-        public void checkInConnection(PoolableConnection dbConnection) {}
+        public void checkInConnection(final PoolableConnection dbConnection) {}
 
         public PoolableConnection checkOutConnection() throws ClassNotFoundException, SQLException {return null;}
       }));
@@ -180,7 +180,7 @@ public final class PoolMonitor {
     }
   }
 
-  public void addConnectionPools(String[] usernames) {
+  public void addConnectionPools(final String[] usernames) {
     throw new RuntimeException("Not implemented");
   }
 }

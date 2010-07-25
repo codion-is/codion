@@ -39,7 +39,7 @@ public class EntityPanelProvider implements Comparable {
 
   private Class<? extends EntityEditPanel> editPanelClass;
 
-  private List<EntityPanelProvider> detailPanelProviders = new ArrayList<EntityPanelProvider>();
+  private final List<EntityPanelProvider> detailPanelProviders = new ArrayList<EntityPanelProvider>();
 
   private static final Map<String, EntityPanelProvider> PANEL_PROVIDERS = Collections.synchronizedMap(new HashMap<String, EntityPanelProvider>());
 

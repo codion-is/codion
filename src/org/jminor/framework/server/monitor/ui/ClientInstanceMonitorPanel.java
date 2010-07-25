@@ -85,7 +85,7 @@ public final class ClientInstanceMonitorPanel extends JPanel {
     }
   }
 
-  private void appendLogEntries(StringBuilder log, List<LogEntry> logEntries, final int indentation) {
+  private void appendLogEntries(final StringBuilder log, final List<LogEntry> logEntries, final int indentation) {
     Collections.sort(logEntries);
     for (final LogEntry logEntry : logEntries) {
       log.append(logEntry.toString(indentation)).append("\n");

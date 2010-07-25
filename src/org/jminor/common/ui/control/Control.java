@@ -30,11 +30,11 @@ public class Control extends AbstractAction {
     this(name, null);
   }
 
-  public Control(String name, final State enabledState) {
+  public Control(final String name, final State enabledState) {
     this(name, enabledState,  null);
   }
 
-  public Control(String name, final State enabledState, final Icon icon) {
+  public Control(final String name, final State enabledState, final Icon icon) {
     super(name);
     this.enabledState = enabledState == null ? new State(true) : enabledState;
     this.enabledState.eventStateChanged().addListener(new ActionListener() {

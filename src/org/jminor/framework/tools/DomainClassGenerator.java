@@ -37,7 +37,7 @@ public final class DomainClassGenerator {
 
   private DomainClassGenerator() {}
 
-  public static void main(String[] arguments) throws Exception {
+  public static void main(final String[] arguments) throws Exception {
     final JTextField txtSchemaName = new JTextField();
     UiUtil.makeUpperCase(txtSchemaName);
     final JTextField txtPackageName = new JTextField();

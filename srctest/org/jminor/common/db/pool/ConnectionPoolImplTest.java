@@ -172,7 +172,7 @@ public class ConnectionPoolImplTest {
       @Override
       protected Object initializeApplication() throws CancelException {
         return new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
+          public void actionPerformed(final ActionEvent e) {
             try {
               DbConnection connection = null;
               try {

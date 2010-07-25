@@ -120,7 +120,7 @@ public class DefaultForeignKeySearchModel extends DefaultSearchModel<Property.Fo
 
   private void bindLookupModelEvents() {
     entityLookupModel.eventSelectedEntitiesChanged().addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         try {
           updatingModel = true;
         final Collection<Entity> selectedEntities = entityLookupModel.getSelectedEntities();
@@ -132,7 +132,7 @@ public class DefaultForeignKeySearchModel extends DefaultSearchModel<Property.Fo
       }
     });
     eventUpperBoundChanged().addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         if (!updatingModel) {//noinspection unchecked
         entityLookupModel.setSelectedEntities((List<Entity>) getUpperBound());
       }
@@ -142,14 +142,14 @@ public class DefaultForeignKeySearchModel extends DefaultSearchModel<Property.Fo
 
   private void bindComboBoxEvents() {
     entityComboBoxModel.eventSelectionChanged().addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         if (!updatingModel) {
         setUpperBound(entityComboBoxModel.getSelectedEntity());
       }
       }
     });
     eventUpperBoundChanged().addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         try {
           updatingModel = true;
         final Object upper = getUpperBound();

@@ -58,7 +58,7 @@ public final class ExceptionDialog extends JDialog {
   private JTextField exceptionField;
   private JTextArea messageArea;
   private JPanel detailPanel;
-  private Window ownerFrame;
+  private final Window ownerFrame;
   private JPanel centerPanel;
   private JTextArea detailsArea;
   private JLabel descriptionLabel;
@@ -74,7 +74,7 @@ public final class ExceptionDialog extends JDialog {
   private Control ctrCopy;
   private Control ctrEmail;
 
-  private Event evtShowDetailsChanged = new Event();
+  private final Event evtShowDetailsChanged = new Event();
   private boolean showDetails = false;
 
   private static String errorReportEmailAddressTo;
@@ -276,7 +276,7 @@ public final class ExceptionDialog extends JDialog {
 
   private void bindEvents() {
     evtShowDetailsChanged.addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         initDetailView(isShowDetails());
       }
     });

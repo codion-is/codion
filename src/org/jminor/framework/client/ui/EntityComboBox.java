@@ -69,7 +69,7 @@ public class EntityComboBox extends SteppedComboBox {
   private JPopupMenu initializePopupMenu() {
     final JPopupMenu popupMenu = new JPopupMenu();
     popupMenu.add(new AbstractAction(FrameworkMessages.get(FrameworkMessages.REFRESH)) {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         getModel().forceRefresh();
       }
     });

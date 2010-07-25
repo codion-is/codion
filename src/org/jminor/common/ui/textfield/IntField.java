@@ -66,7 +66,7 @@ public class IntField extends TextFieldPlus {
           value = Integer.parseInt(text);
         }
         boolean valueOk = false;
-        char c = str.charAt(0);
+        final char c = str.charAt(0);
         if (offs == 0 && c == '-') {
           valueOk = value >= 0;
         }
@@ -75,7 +75,7 @@ public class IntField extends TextFieldPlus {
         }
         // Range check
         if (valueOk) {
-          StringBuilder sb = new StringBuilder(text);
+          final StringBuilder sb = new StringBuilder(text);
           sb.insert(offs, str);
           valueOk = isWithinRange(Util.getLong(sb.toString()));
         }

@@ -275,7 +275,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
       UiUtil.setWaitCursor(true, this);
       panel = new EntityCriteriaPanel(getTableModel());
       action = new AbstractAction(FrameworkMessages.get(FrameworkMessages.APPLY)) {
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(final ActionEvent e) {
           getTableModel().refresh();
         }
       };
@@ -601,7 +601,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
 
     final Control ret = new Control() {
       @Override
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         toggleSearchPanel();
       }
     };
@@ -722,7 +722,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
 
     if (searchPanel instanceof EntityTableSearchAdvancedPanel) {
       ((EntityTableSearchAdvancedPanel) searchPanel).eventAdvancedChanged().addListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(final ActionEvent e) {
           if (isSearchPanelVisible()) {
             revalidateAndShowSearchPanel();
           }
@@ -803,13 +803,13 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     }
     UiUtil.addKeyEvent(table, KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_FOCUSED,
             new AbstractAction("showPopupMenu") {
-              public void actionPerformed(ActionEvent e) {
+              public void actionPerformed(final ActionEvent e) {
                 popupMenu.show(table, 100, table.getSelectedRow() * table.getRowHeight());
               }
             });
     UiUtil.addKeyEvent(table, KeyEvent.VK_V, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_FOCUSED,
             new AbstractAction("showEntityMenu") {
-              public void actionPerformed(ActionEvent e) {
+              public void actionPerformed(final ActionEvent e) {
                 showEntityMenu(new Point(100, table.getSelectedRow() * table.getRowHeight()));
               }
             });
@@ -1187,7 +1187,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
   protected final MouseListener initializeTableMouseListener() {
     return new MouseAdapter() {
       @Override
-      public void mouseClicked(MouseEvent e) {
+      public void mouseClicked(final MouseEvent e) {
         if (e.getClickCount() == 2) {
           final Action doubleClickAction = getTableDoubleClickAction();
           if (doubleClickAction != null) {
@@ -1357,7 +1357,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     if (!getTableModel().isReadOnly() && getTableModel().isDeleteAllowed()) {
       getJTable().addKeyListener(new KeyAdapter() {
         @Override
-        public void keyTyped(KeyEvent e) {
+        public void keyTyped(final KeyEvent e) {
           if (e.getKeyChar() == KeyEvent.VK_DELETE && !getTableModel().stateSelectionEmpty().isActive()) {
             try {
               delete();
@@ -1374,25 +1374,25 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
       });
     }
     getTableModel().eventRefreshStarted().addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         UiUtil.setWaitCursor(true, EntityTablePanel.this);
       }
     });
     getTableModel().eventRefreshDone().addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         UiUtil.setWaitCursor(false, EntityTablePanel.this);
       }
     });
     getJTable().addMouseListener(new MouseAdapter() {
       @Override
-      public void mouseClicked(MouseEvent e) {
+      public void mouseClicked(final MouseEvent e) {
         if(e.getClickCount() == 2) {
           evtTableDoubleClicked.fire();
         }
       }
     });
     final ActionListener statusListener = new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         updateStatusMessage();
       }
     };
@@ -1401,7 +1401,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     getTableModel().eventTableDataChanged().addListener(statusListener);
 
     getTableModel().eventSelectedIndexChanged().addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         if (!getTableModel().stateSelectionEmpty().isActive()) {
           scrollToCoordinate(getTableModel().getSelectedIndex(), getJTable().getSelectedColumn());
         }
@@ -1409,7 +1409,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     });
 
     getTableModel().getSearchModel().stateSearchStateChanged().eventStateChanged().addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         getJTable().getTableHeader().repaint();
         getJTable().repaint();
       }
@@ -1417,7 +1417,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
 
     if (getTableModel().getEditModel() != null) {
       getTableModel().getEditModel().eventEntitiesChanged().addListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(final ActionEvent e) {
           getJTable().repaint();
         }
       });

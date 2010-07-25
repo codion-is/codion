@@ -30,7 +30,7 @@ public class DepartmentEditPanel extends EntityEditPanel {
 
     //we don't allow editing of the department number since it's a primary key
     getEditModel().stateEntityNull().eventStateChanged().addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         if (getEditModel().isEntityNew()) {
           txtDepartmentNumber.setEnabled(true);
           setInitialFocusComponent(txtDepartmentNumber);

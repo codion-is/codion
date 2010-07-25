@@ -108,7 +108,7 @@ public abstract class LoadTestModel {
     return user;
   }
 
-  public final void setUser(User user) {
+  public final void setUser(final User user) {
     this.user = user;
   }
 
@@ -175,7 +175,7 @@ public abstract class LoadTestModel {
     return warningTime;
   }
 
-  public final void setWarningTime(int warningTime) {
+  public final void setWarningTime(final int warningTime) {
     if (warningTime <= 0) {
       throw new IllegalArgumentException("Warning time must be a positive integer");
     }
@@ -213,7 +213,7 @@ public abstract class LoadTestModel {
     return applicationBatchSize;
   }
 
-  public final void setApplicationBatchSize(int applicationBatchSize) {
+  public final void setApplicationBatchSize(final int applicationBatchSize) {
     if (applicationBatchSize <= 0) {
       throw new IllegalArgumentException("Application batch size must be a positive integer");
     }
@@ -278,7 +278,7 @@ public abstract class LoadTestModel {
   /**
    * @param maximumThinkTime the maximum number of milliseconds that should pass between work requests
    */
-  public final void setMaximumThinkTime(int maximumThinkTime) {
+  public final void setMaximumThinkTime(final int maximumThinkTime) {
     if (maximumThinkTime <= 0) {
       throw new IllegalArgumentException("Maximum think time must be a positive integer");
     }
@@ -297,7 +297,7 @@ public abstract class LoadTestModel {
   /**
    * @param minimumThinkTime the minimum number of milliseconds that should pass between work requests
    */
-  public final void setMinimumThinkTime(int minimumThinkTime) {
+  public final void setMinimumThinkTime(final int minimumThinkTime) {
     if (minimumThinkTime < 0) {
       throw new IllegalArgumentException("Minimum think time must be a positive integer");
     }

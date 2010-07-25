@@ -597,7 +597,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
   }
 
   private int queryNewIdValue(final String entityID, final IdSource idSource, final Property.PrimaryKeyProperty primaryKeyProperty) throws DbException {
-    String sql;
+    final String sql;
     switch (idSource) {
       case MAX_PLUS_ONE:
         sql = new StringBuilder("select max(").append(primaryKeyProperty.getColumnName())

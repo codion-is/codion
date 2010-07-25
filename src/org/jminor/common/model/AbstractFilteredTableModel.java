@@ -49,7 +49,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
   };
   public static final Comparator<Object> LEXICAL_COMPARATOR = new Comparator<Object>() {
     private final Collator collator = Collator.getInstance();
-    public int compare(Object o1, Object o2) {
+    public int compare(final Object o1, final Object o2) {
       return collator.compare(o1.toString(), o2.toString());
     }
   };
@@ -104,8 +104,8 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
   /**
    * the filter criteria used by this model
    */
-  private FilterCriteria<T> filterCriteria = new FilterCriteria<T>() {
-    public boolean include(T item) {
+  private final FilterCriteria<T> filterCriteria = new FilterCriteria<T>() {
+    public boolean include(final T item) {
       for (final SearchModel columnFilter : columnFilterModels) {
         if (columnFilter.isSearchEnabled() && !columnFilter.include(item)) {
           return false;
@@ -275,7 +275,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
   public final int compare(final T one, final T two, final int columnIndex, final SortingDirective directive) {
     final Comparable valueOne = getComparable(one, columnIndex);
     final Comparable valueTwo = getComparable(two, columnIndex);
-    int comparison;
+    final int comparison;
     // Define null less than everything, except null.
     if (valueOne == null && valueTwo == null) {
       comparison = 0;
@@ -739,7 +739,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
   private void bindEventsInternal() {
     final List<T> selectedItems = new ArrayList<T>();
     addTableModelListener(new TableModelListener() {
-      public void tableChanged(TableModelEvent e) {
+      public void tableChanged(final TableModelEvent e) {
         evtTableDataChanged.fire();
       }
     });
@@ -759,7 +759,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     });
     for (final SearchModel searchModel : columnFilterModels) {
       searchModel.eventSearchStateChanged().addListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(final ActionEvent e) {
           filterContents();
         }
       });
@@ -800,7 +800,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     return -1;
   }
 
-  private int modelIndex(int viewIndex) {
+  private int modelIndex(final int viewIndex) {
     final List<Row> model = getViewToModel();
     if (!model.isEmpty() && viewIndex >= 0 && viewIndex < model.size()) {
       return model.get(viewIndex).getModelIndex();
@@ -859,8 +859,8 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
   }
 
   private static final class SortingStateImpl implements SortingState {
-    private int column;
-    private SortingDirective direction;
+    private final int column;
+    private final SortingDirective direction;
 
     private SortingStateImpl(final int column, final SortingDirective direction) {
       this.column = column;
@@ -877,7 +877,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
   }
 
   private class SortHandler implements TableModelListener {
-    public void tableChanged(TableModelEvent e) {
+    public void tableChanged(final TableModelEvent e) {
       // If we're not sorting by anything, just pass the event along.
       if (!isSorted()) {
         clearSorting();
@@ -942,7 +942,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     private int selectedIndex = -1;
 
     @Override
-    public void fireValueChanged(int firstIndex, int lastIndex, boolean isAdjusting) {
+    public void fireValueChanged(final int firstIndex, final int lastIndex, final boolean isAdjusting) {
       super.fireValueChanged(firstIndex, lastIndex, isAdjusting);
       stSelectionEmpty.setActive(isSelectionEmpty());
       stMultipleSelection.setActive(getSelectionCount() > 1);

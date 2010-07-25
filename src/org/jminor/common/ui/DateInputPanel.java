@@ -42,7 +42,7 @@ public final class DateInputPanel extends JPanel {
     add(inputField, BorderLayout.CENTER);
     if (includeButton) {
       final AbstractAction buttonAction = new AbstractAction("...") {
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(final ActionEvent e) {
           Date currentValue = null;
           try {
             currentValue = getDate();

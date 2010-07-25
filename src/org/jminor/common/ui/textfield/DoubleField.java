@@ -107,7 +107,7 @@ public final class DoubleField extends IntField {
           value = Util.getDouble(text);
         }
         boolean valueOk = false;
-        char c = string.charAt(0);
+        final char c = string.charAt(0);
         if (offs == 0 && c == '-') {
           valueOk = value >= 0;
         }

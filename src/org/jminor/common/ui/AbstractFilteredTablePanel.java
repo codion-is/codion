@@ -228,7 +228,7 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
     });
     UiUtil.selectAllOnFocusGained(txtSearch);
     UiUtil.addKeyEvent(txtSearch, KeyEvent.VK_ESCAPE, new AbstractAction("requestJTableFocus") {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         getJTable().requestFocusInWindow();
       }
     });
@@ -265,7 +265,7 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
   private JPopupMenu initializeSearchFieldPopupMenu() {
     final JPopupMenu popupMenu = new JPopupMenu();
     popupMenu.add(new AbstractAction(Messages.get(Messages.SETTINGS)) {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         final JPanel panel = new JPanel(new GridLayout(1,1,5,5));
         final JCheckBox boxRegexp =
                 new JCheckBox(Messages.get(Messages.REGULAR_EXPRESSION_SEARCH), tableModel.isRegularExpressionSearch());
@@ -380,7 +380,7 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
       final JTableHeader h = (JTableHeader) e.getSource();
       final TableColumnModel columnModel = h.getColumnModel();
       final int viewColumn = columnModel.getColumnIndexAtX(e.getX());
-      int column;
+      final int column;
       try {
         column = columnModel.getColumn(viewColumn).getModelIndex();
       }
@@ -427,9 +427,9 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
 
   private static final class Arrow implements Icon {
     private static final double PRIORITY_SIZE_RATIO = 0.8;
-    private boolean descending;
-    private int size;
-    private int priority;
+    private final boolean descending;
+    private final int size;
+    private final int priority;
 
     private Arrow(final boolean descending, final int size, final int priority) {
       this.descending = descending;
@@ -438,14 +438,14 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
     }
 
     public void paintIcon(final Component c, final Graphics g, final int x, final int y) {
-      Color color = c == null ? Color.GRAY : c.getBackground();
+      final Color color = c == null ? Color.GRAY : c.getBackground();
       // In a compound sort, make each succesive triangle 20%
       // smaller than the previous one.
-      int dx = (int)(size/2*Math.pow(PRIORITY_SIZE_RATIO, priority));
-      int dy = descending ? dx : -dx;
+      final int dx = (int)(size/2*Math.pow(PRIORITY_SIZE_RATIO, priority));
+      final int dy = descending ? dx : -dx;
       // Align icon (roughly) with font baseline.
-      int theY = y + 5*size/6 + (descending ? -dy : 0);
-      int shift = descending ? 1 : -1;
+      final int theY = y + 5*size/6 + (descending ? -dy : 0);
+      final int shift = descending ? 1 : -1;
       g.translate(x, theY);
 
       // Right diagonal.
@@ -480,9 +480,9 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
   }
 
   private final class SortableHeaderRenderer implements TableCellRenderer {
-    private TableCellRenderer tableCellRenderer;
+    private final TableCellRenderer tableCellRenderer;
 
-    private SortableHeaderRenderer(TableCellRenderer tableCellRenderer) {
+    private SortableHeaderRenderer(final TableCellRenderer tableCellRenderer) {
       this.tableCellRenderer = tableCellRenderer;
     }
 
@@ -499,8 +499,8 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
       return component;
     }
 
-    protected Icon getHeaderRendererIcon(final int column, final int size) {
-      SortingDirective directive = tableModel.getSortingDirective(column);
+    private Icon getHeaderRendererIcon(final int column, final int size) {
+      final SortingDirective directive = tableModel.getSortingDirective(column);
       if (directive == SortingDirective.UNSORTED) {
         return null;
       }

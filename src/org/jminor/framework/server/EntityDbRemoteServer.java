@@ -346,14 +346,14 @@ public final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRem
     }
   }
 
-  private static String initializeServerName(String host, String sid) {
+  private static String initializeServerName(final String host, final String sid) {
     return Configuration.getValue(Configuration.SERVER_NAME_PREFIX)
             + " " + Util.getVersion() + " @ " + (sid != null ? sid.toUpperCase() : host.toUpperCase())
             + " [id:" + Long.toHexString(System.currentTimeMillis()) + "]";
   }
 
   private static void initializeRegistry() throws RemoteException {
-    Registry localRegistry = LocateRegistry.getRegistry(Registry.REGISTRY_PORT);
+    final Registry localRegistry = LocateRegistry.getRegistry(Registry.REGISTRY_PORT);
     try {
       localRegistry.list();
     }

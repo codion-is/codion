@@ -27,8 +27,6 @@ import java.util.prefs.Preferences;
  */
 public final class Util {
 
-  private Util() {}
-
   public static final String VERSION_FILE = "version.txt";
 
   public static final String LOGGING_LEVEL_PROPERTY = "jminor.logging.level";
@@ -41,8 +39,8 @@ public final class Util {
   public static final String PREF_DEFAULT_USERNAME = "jminor.username";
 
   private static final Random RANDOM = new Random();
-
-  private static List<Logger> loggers = new ArrayList<Logger>();
+  private static final int K = 1024;
+  private static final List<Logger> loggers = new ArrayList<Logger>();
   private static Level defaultLoggingLevel;
   private static Preferences userPreferences;
 
@@ -64,6 +62,8 @@ public final class Util {
       defaultLoggingLevel = Level.TRACE;
     }
   }
+
+  private Util() {}
 
   /**
    * True if the given objects are equal. Both objects being null results in true.
@@ -187,7 +187,7 @@ public final class Util {
 
     final String noGrouping = text.replace(".", "");
 
-    int value;
+    final int value;
     if ((noGrouping.length() > 0) && (!noGrouping.equals("-"))) {
       value = Integer.parseInt(noGrouping);
     }
@@ -206,7 +206,7 @@ public final class Util {
       return null;
     }
 
-    double value;
+    final double value;
     if ((text.length() > 0) && (!text.equals("-"))) {
       value = Double.parseDouble(text.replace(',', '.'));
     }
@@ -227,7 +227,7 @@ public final class Util {
 
     final String noGrouping = text.replace(".", "");
 
-    long value;
+    final long value;
     if ((noGrouping.length() > 0) && (!noGrouping.equals("-"))) {
       value = Long.parseLong(noGrouping);
     }
@@ -250,7 +250,7 @@ public final class Util {
     printArrayContents(objects, false);
   }
 
-  public static void printArrayContents(final Object[] objects, boolean onePerLine) {
+  public static void printArrayContents(final Object[] objects, final boolean onePerLine) {
     System.out.println(getArrayContentsAsString(objects, onePerLine));
   }
 
@@ -262,7 +262,7 @@ public final class Util {
     return getArrayContentsAsString(collection.toArray(), onePerLine);
   }
 
-  public static String getArrayContentsAsString(Object[] items, boolean onePerLine) {
+  public static String getArrayContentsAsString(final Object[] items, final boolean onePerLine) {
     if (items == null) {
       return "";
     }
@@ -294,15 +294,15 @@ public final class Util {
   }
 
   public static long getAllocatedMemory() {
-    return Runtime.getRuntime().totalMemory() / 1024;
+    return Runtime.getRuntime().totalMemory() / K;
   }
 
   public static long getFreeMemory() {
-    return Runtime.getRuntime().freeMemory() / 1024;
+    return Runtime.getRuntime().freeMemory() / K;
   }
 
   public static long getMaxMemory() {
-    return Runtime.getRuntime().maxMemory() / 1024;
+    return Runtime.getRuntime().maxMemory() / K;
   }
 
   public static long getUsedMemory() {

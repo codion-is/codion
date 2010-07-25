@@ -57,7 +57,7 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> implements
     if (!this.immediateUpdate) {
       textComponent.addFocusListener(new FocusAdapter() {
         @Override
-        public void focusLost(FocusEvent e) {
+        public void focusLost(final FocusEvent e) {
           updateModel();
         }
       });

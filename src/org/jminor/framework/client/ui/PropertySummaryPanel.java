@@ -33,7 +33,7 @@ public class PropertySummaryPanel extends JPanel {
   public PropertySummaryPanel(final PropertySummaryModel model) {
     this.model = model;
     model.eventSummaryChanged().addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         final String summaryText = model.getSummaryText();
         lblSummary.setText(summaryText);
         lblSummary.setToolTipText(summaryText.length() > 0 ? (model.getSummaryType() + ": " + summaryText) : summaryText);
@@ -68,7 +68,7 @@ public class PropertySummaryPanel extends JPanel {
     final ButtonGroup group = new ButtonGroup();
     for (final PropertySummaryModel.SummaryType summaryType : model.getSummaryTypes()) {
       final JRadioButtonMenuItem item = new JRadioButtonMenuItem(new AbstractAction(summaryType.toString()) {
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(final ActionEvent e) {
           model.setSummaryType(summaryType);
         }
       });

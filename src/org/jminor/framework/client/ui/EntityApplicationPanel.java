@@ -71,7 +71,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   private final Event evtAlwaysOnTopChanged = new Event();
 
   private final boolean persistEntityPanels = Configuration.getBooleanValue(Configuration.PERSIST_ENTITY_PANELS);
-  private Map<EntityPanelProvider, EntityPanel> persistentEntityPanels = new HashMap<EntityPanelProvider, EntityPanel>();
+  private final Map<EntityPanelProvider, EntityPanel> persistentEntityPanels = new HashMap<EntityPanelProvider, EntityPanel>();
 
   private static final int DIVIDER_JUMP = 30;
 
@@ -482,7 +482,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     for (final EntityPanelProvider panelProvider : supportPanelProviders) {
       controlSet.add(new Control(panelProvider.getCaption()) {
         @Override
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(final ActionEvent e) {
           SwingUtilities.invokeLater(new Runnable() {
             public void run() {
               showEntityPanelDialog(panelProvider);
@@ -503,7 +503,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     final JDialog dialog;
     try {
       UiUtil.setWaitCursor(true, this);
-      EntityPanel entityPanel;
+      final EntityPanel entityPanel;
       if (persistEntityPanels && persistentEntityPanels.containsKey(panelProvider)) {
         entityPanel = persistentEntityPanels.get(panelProvider);
         if (entityPanel.isShowing()) {
@@ -521,11 +521,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
       dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
       dialog.setLayout(new BorderLayout());
       dialog.add(entityPanel, BorderLayout.CENTER);
-      final Action closeAction = new AbstractAction(Messages.get(Messages.CLOSE)) {
-        public void actionPerformed(ActionEvent e) {
-          dialog.dispose();
-        }
-      };
+      final Action closeAction = new UiUtil.DialogDisposeAction(dialog, Messages.get(Messages.CLOSE));
       final JButton btnClose = new JButton(closeAction);
       btnClose.setMnemonic('L');
       UiUtil.addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, closeAction);
@@ -561,7 +557,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     applicationTabPane.setFocusable(false);
     applicationTabPane.setUI(UiUtil.getBorderlessTabbedPaneUI());
     applicationTabPane.addChangeListener(new ChangeListener() {
-      public void stateChanged(ChangeEvent e) {
+      public void stateChanged(final ChangeEvent e) {
         evtSelectedEntityPanelChanged.fire();
       }
     });
@@ -642,7 +638,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     frame.setIconImage(applicationIcon.getImage());
     frame.addWindowListener(new WindowAdapter() {
       @Override
-      public void windowClosing(WindowEvent e) {
+      public void windowClosing(final WindowEvent e) {
         try {
           exit();
         }
@@ -808,7 +804,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   private void initializeResizing(final EntityPanel panel) {
     UiUtil.addKeyEvent(panel, KeyEvent.VK_LEFT, KeyEvent.SHIFT_DOWN_MASK + KeyEvent.ALT_DOWN_MASK,
             new AbstractAction(DIV_LEFT) {
-              public void actionPerformed(ActionEvent e) {
+              public void actionPerformed(final ActionEvent e) {
                 final EntityPanel activePanelParent = panel.getMasterPanel();
                 if (activePanelParent != null) {
                   activePanelParent.resizePanel(EntityPanel.LEFT, DIVIDER_JUMP);
@@ -817,7 +813,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
             });
     UiUtil.addKeyEvent(panel, KeyEvent.VK_RIGHT, KeyEvent.SHIFT_DOWN_MASK + KeyEvent.ALT_DOWN_MASK,
             new AbstractAction(DIV_RIGHT) {
-              public void actionPerformed(ActionEvent e) {
+              public void actionPerformed(final ActionEvent e) {
                 final EntityPanel activePanelParent = panel.getMasterPanel();
                 if (activePanelParent != null) {
                   activePanelParent.resizePanel(EntityPanel.RIGHT, DIVIDER_JUMP);
@@ -826,13 +822,13 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
             });
     UiUtil.addKeyEvent(panel, KeyEvent.VK_DOWN, KeyEvent.SHIFT_DOWN_MASK + KeyEvent.ALT_DOWN_MASK,
             new AbstractAction(DIV_DOWN) {
-              public void actionPerformed(ActionEvent e) {
+              public void actionPerformed(final ActionEvent e) {
                 panel.resizePanel(EntityPanel.DOWN, DIVIDER_JUMP);
               }
             });
     UiUtil.addKeyEvent(panel, KeyEvent.VK_UP, KeyEvent.SHIFT_DOWN_MASK + KeyEvent.ALT_DOWN_MASK,
             new AbstractAction(DIV_UP) {
-              public void actionPerformed(ActionEvent e) {
+              public void actionPerformed(final ActionEvent e) {
                 panel.resizePanel(EntityPanel.UP, DIVIDER_JUMP);
               }
             });
@@ -847,22 +843,22 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK, true), NAV_LEFT);
 
     actionMap.put(NAV_UP, new AbstractAction() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         navigate(EntityPanel.UP);
       }
     });
     actionMap.put(NAV_DOWN, new AbstractAction() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         navigate(EntityPanel.DOWN);
       }
     });
     actionMap.put(NAV_RIGHT, new AbstractAction() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         navigate(EntityPanel.RIGHT);
       }
     });
     actionMap.put(NAV_LEFT, new AbstractAction() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         navigate(EntityPanel.LEFT);
       }
     });

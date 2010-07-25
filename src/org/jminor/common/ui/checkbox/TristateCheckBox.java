@@ -27,16 +27,16 @@ import java.awt.event.MouseListener;
 public final class TristateCheckBox extends JCheckBox {
   // Listener on model changes to maintain correct focusability
   private final ChangeListener enableListener = new ChangeListener() {
-    public void stateChanged(ChangeEvent e) {
+    public void stateChanged(final ChangeEvent e) {
       TristateCheckBox.this.setFocusable(getModel().isEnabled());
     }
   };
 
-  public TristateCheckBox(String text) {
+  public TristateCheckBox(final String text) {
     this(text, null, TristateState.DESELECTED);
   }
 
-  public TristateCheckBox(String text, Icon icon, TristateState initial) {
+  public TristateCheckBox(final String text, final Icon icon, final TristateState initial) {
     super(text, icon);
 
     //Set default single model
@@ -45,13 +45,13 @@ public final class TristateCheckBox extends JCheckBox {
     // override action behaviour
     super.addMouseListener(new MouseAdapter() {
       @Override
-      public void mousePressed(MouseEvent e) {
+      public void mousePressed(final MouseEvent e) {
         TristateCheckBox.this.iterateState();
       }
     });
-    ActionMap actions = new ActionMapUIResource();
+    final ActionMap actions = new ActionMapUIResource();
     actions.put("pressed", new AbstractAction() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         TristateCheckBox.this.iterateState();
       }
     });
@@ -74,7 +74,7 @@ public final class TristateCheckBox extends JCheckBox {
 
   //Overrides super class method
   @Override
-  public void setModel(ButtonModel newModel) {
+  public void setModel(final ButtonModel newModel) {
     super.setModel(newModel);
 
     //Listen for enable changes
@@ -85,7 +85,7 @@ public final class TristateCheckBox extends JCheckBox {
 
   //Empty override of super class method
   @Override
-  public synchronized void addMouseListener(MouseListener l) {}
+  public synchronized void addMouseListener(final MouseListener l) {}
 
   // Mostly delegates to model
   private void iterateState() {
@@ -101,7 +101,7 @@ public final class TristateCheckBox extends JCheckBox {
 
     // Fire ActionEvent
     int modifiers = 0;
-    AWTEvent currentEvent = EventQueue.getCurrentEvent();
+    final AWTEvent currentEvent = EventQueue.getCurrentEvent();
     if (currentEvent instanceof InputEvent) {
       modifiers = ((InputEvent) currentEvent).getModifiers();
     }

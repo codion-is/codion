@@ -16,9 +16,9 @@ public final class EntityDbProviderFactory {
 
   private EntityDbProviderFactory() {}
 
-  private static String remoteConnectionProviderClassName =
+  private static final String remoteConnectionProviderClassName =
           (String) Configuration.getValue(Configuration.REMOTE_CONNECTION_PROVIDER);
-  private static String localConnectionProviderClassName =
+  private static final String localConnectionProviderClassName =
           (String) Configuration.getValue(Configuration.LOCAL_CONNECTION_PROVIDER);
 
   /**

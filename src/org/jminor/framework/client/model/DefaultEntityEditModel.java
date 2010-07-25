@@ -229,7 +229,7 @@ public class DefaultEntityEditModel extends DefaultValueChangeMapEditModel<Strin
     return stActive.getLinkedState();
   }
 
-  public final void setActive(boolean active) {
+  public final void setActive(final boolean active) {
     stActive.setActive(active);
   }
 

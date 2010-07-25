@@ -85,8 +85,7 @@ public final class MonitorPanel extends JPanel {
       }
     }
     final String separator = System.getProperty("file.separator");
-    ProcessBuilder builder = new ProcessBuilder(jdkDir + separator + "bin"  + separator + "jconsole");
-    builder.start();
+    new ProcessBuilder(jdkDir + separator + "bin"  + separator + "jconsole").start();
   }
 
   public void setJDKDir() {

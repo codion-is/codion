@@ -55,7 +55,7 @@ public class DefaultPropertyComboBoxModel extends DefaultFilteredComboBoxModel i
     this.property = property;
     if (refreshEvent != null) {
       refreshEvent.addListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(final ActionEvent e) {
           refresh();
         }
       });

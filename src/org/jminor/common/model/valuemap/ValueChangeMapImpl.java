@@ -124,7 +124,7 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
   public final State stateModified() {
     final State state = new State(isModified());
     eventValueChanged().addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         state.setActive(isModified());
       }
     });

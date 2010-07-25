@@ -516,7 +516,7 @@ public class EntityPanel extends JPanel {
     return detailSplitPanelResizeWeight;
   }
 
-  public final EntityPanel setDetailSplitPanelResizeWeight(double detailSplitPanelResizeWeight) {
+  public final EntityPanel setDetailSplitPanelResizeWeight(final double detailSplitPanelResizeWeight) {
     if (panelInitialized) {
       throw new RuntimeException("Can not set edit detailSplitPanelResizeWeight after initialization");
     }
@@ -823,20 +823,20 @@ public class EntityPanel extends JPanel {
     if (containsTablePanel()) {
       UiUtil.addKeyEvent(this, KeyEvent.VK_T, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
               true, new AbstractAction("selectTablePanel") {
-                public void actionPerformed(ActionEvent e) {
+                public void actionPerformed(final ActionEvent e) {
                   getTablePanel().getJTable().requestFocusInWindow();
                 }
               });
       UiUtil.addKeyEvent(this, KeyEvent.VK_F, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
               true, new AbstractAction("selectSearchField") {
-                public void actionPerformed(ActionEvent e) {
+                public void actionPerformed(final ActionEvent e) {
                   getTablePanel().getSearchField().requestFocusInWindow();
                 }
               });
       if (getTablePanel().getSearchPanel() != null) {
         UiUtil.addKeyEvent(this, KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
                 true, new AbstractAction("toggleSearchPanel") {
-                  public void actionPerformed(ActionEvent e) {
+                  public void actionPerformed(final ActionEvent e) {
                     getTablePanel().toggleSearchPanel();
                     if (getTablePanel().isSearchPanelVisible()) {
                       getTablePanel().getSearchPanel().requestFocusInWindow();
@@ -848,7 +848,7 @@ public class EntityPanel extends JPanel {
     if (containsEditPanel()) {
       UiUtil.addKeyEvent(this, KeyEvent.VK_E, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
               true, new AbstractAction("selectEditPanel") {
-                public void actionPerformed(ActionEvent e) {
+                public void actionPerformed(final ActionEvent e) {
                   if (getEditPanelState() == HIDDEN) {
                     setEditPanelState(EMBEDDED);
                   }
@@ -857,7 +857,7 @@ public class EntityPanel extends JPanel {
               });
       UiUtil.addKeyEvent(this, KeyEvent.VK_I, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
               true, new AbstractAction("selectComponent") {
-                public void actionPerformed(ActionEvent e) {
+                public void actionPerformed(final ActionEvent e) {
                   if (getEditPanelState() == HIDDEN) {
                     setEditPanelState(EMBEDDED);
                   }
@@ -958,7 +958,7 @@ public class EntityPanel extends JPanel {
     });
     tabbedPane.addMouseListener(new MouseAdapter() {
       @Override
-      public void mouseReleased(MouseEvent e) {
+      public void mouseReleased(final MouseEvent e) {
         if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
           setDetailPanelState(getDetailPanelState() == DIALOG ? EMBEDDED : DIALOG);
         }
@@ -1037,7 +1037,7 @@ public class EntityPanel extends JPanel {
     for (final EntityPanel detailPanel : detailEntityPanels) {
       controlSet.add(new Control(detailPanel.getCaption()) {
         @Override
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(final ActionEvent e) {
           detailPanelTabbedPane.setSelectedComponent(detailPanel);
           setDetailPanelState(status);
         }
@@ -1084,7 +1084,7 @@ public class EntityPanel extends JPanel {
         detailPanelDialog = UiUtil.showInDialog(UiUtil.getParentWindow(EntityPanel.this), detailPanelTabbedPane, false,
                 caption + " - " + FrameworkMessages.get(FrameworkMessages.DETAIL_TABLES), false, true,
                 null, size, location, new AbstractAction() {
-                  public void actionPerformed(ActionEvent e) {
+                  public void actionPerformed(final ActionEvent e) {
                     setDetailPanelState(HIDDEN);
                   }
                 });
@@ -1109,7 +1109,7 @@ public class EntityPanel extends JPanel {
     location.setLocation(location.x+1, location.y + getSize().height- editControlPanel.getSize().height- EDIT_DIALOG_LOCATION_OFFSET);
     editPanelDialog = UiUtil.showInDialog(UiUtil.getParentWindow(this), editControlPanel, false,
             caption, false, true, null, null, location, new AbstractAction() {
-              public void actionPerformed(ActionEvent e) {
+              public void actionPerformed(final ActionEvent e) {
                 setEditPanelState(HIDDEN);
               }
             });
@@ -1138,12 +1138,12 @@ public class EntityPanel extends JPanel {
 
   private void bindModelEvents() {
     model.eventRefreshStarted().addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         UiUtil.setWaitCursor(true, EntityPanel.this);
       }
     });
     model.eventRefreshDone().addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         UiUtil.setWaitCursor(false, EntityPanel.this);
       }
     });
@@ -1195,7 +1195,7 @@ public class EntityPanel extends JPanel {
   private void bindEventsInternal() {
     addComponentListener(new ComponentAdapter() {
       @Override
-      public void componentHidden(ComponentEvent e) {
+      public void componentHidden(final ComponentEvent e) {
         SwingUtilities.invokeLater(new Runnable() {
           public void run() {
             setFilterPanelsVisible(false);
@@ -1203,7 +1203,7 @@ public class EntityPanel extends JPanel {
         });
       }
       @Override
-      public void componentShown(ComponentEvent e) {
+      public void componentShown(final ComponentEvent e) {
         SwingUtilities.invokeLater(new Runnable() {
           public void run() {
             setFilterPanelsVisible(true);
@@ -1222,7 +1222,7 @@ public class EntityPanel extends JPanel {
     }
 
     @Override
-    public void mouseReleased(MouseEvent e) {
+    public void mouseReleased(final MouseEvent e) {
       target.requestFocusInWindow();//activates this EntityPanel
     }
   }

@@ -115,7 +115,7 @@ public final class EntityUiUtil {
     final JDialog dialog = new JDialog(owner, dialogTitle);
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     final Action okAction = new AbstractAction(Messages.get(Messages.OK)) {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         final List<Entity> entities = lookupModel.getSelectedItems();
         for (final Entity entity : entities) {
           selected.add(entity);
@@ -124,7 +124,7 @@ public final class EntityUiUtil {
       }
     };
     final Action cancelAction = new AbstractAction(Messages.get(Messages.CANCEL)) {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         selected.add(null);//hack to indicate cancel
         dialog.dispose();
       }
@@ -134,7 +134,7 @@ public final class EntityUiUtil {
       @Override
       protected void bindEvents() {
         eventTableDoubleClicked().addListener(new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
+          public void actionPerformed(final ActionEvent e) {
             if (!getTableModel().isSelectionEmpty()) {
               okAction.actionPerformed(e);
             }
@@ -152,7 +152,7 @@ public final class EntityUiUtil {
     }
 
     final Action searchAction = new AbstractAction(FrameworkMessages.get(FrameworkMessages.SEARCH)) {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         lookupModel.refresh();
         if (lookupModel.getRowCount() > 0) {
           lookupModel.setSelectedItemIndexes(Arrays.asList(0));
@@ -615,7 +615,7 @@ public final class EntityUiUtil {
     Util.rejectNullValue(lookupField, "lookupField");
     Util.rejectNullValue(tableModel, "tableModel");
     final JButton btn = new JButton(new AbstractAction("...") {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         try {
           lookupField.getModel().setSelectedEntities(selectEntities(tableModel, UiUtil.getParentWindow(lookupField),
                   true, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY), null, false));
@@ -698,7 +698,7 @@ public final class EntityUiUtil {
 
   private static AbstractAction initializeNewRecordAction(final EntityComboBox comboBox, final EntityPanelProvider panelProvider) {
     return new AbstractAction("", Images.loadImage(Images.IMG_ADD_16)) {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         final EntityPanel entityPanel = panelProvider.createInstance(comboBox.getModel().getDbProvider());
         entityPanel.initializePanel();
         final List<Entity.Key> lastInsertedPrimaryKeys = new ArrayList<Entity.Key>();
@@ -732,7 +732,7 @@ public final class EntityUiUtil {
   private static JButton initializeOkButton(final EntityComboBoxModel comboBoxModel, final EntityTableModel tableModel,
                                             final JDialog dialog, final List<Entity.Key> lastInsertedPrimaryKeys) {
     final JButton button = new JButton(new AbstractAction(Messages.get(Messages.OK)) {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         comboBoxModel.refresh();
         if (lastInsertedPrimaryKeys != null && !lastInsertedPrimaryKeys.isEmpty()) {
           comboBoxModel.setSelectedEntityByPrimaryKey(lastInsertedPrimaryKeys.get(0));
@@ -825,7 +825,7 @@ public final class EntityUiUtil {
     private void initializeUI(final Property.ForeignKeyProperty foreignKeyProperty,
                               final EntityEditModel editModel, final EntityTableModel lookupModel) {
       final JButton btn = new JButton(new AbstractAction("...") {
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(final ActionEvent e) {
           try {
             final List<Entity> selected = EntityUiUtil.selectEntities(lookupModel, UiUtil.getParentWindow(textField),
                     true, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY), null, false);

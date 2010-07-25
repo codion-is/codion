@@ -42,7 +42,7 @@ public class SteppedComboBox extends JComboBox {
   /**
    * @param width the width of the popup
    */
-  public final void setPopupWidth(int width) {
+  public final void setPopupWidth(final int width) {
     popupWidth = width;
   }
 
@@ -59,7 +59,7 @@ public class SteppedComboBox extends JComboBox {
   private void bindEvents() {
     getEditor().getEditorComponent().addFocusListener(new FocusAdapter() {
       @Override
-      public void focusLost(FocusEvent e) {
+      public void focusLost(final FocusEvent e) {
         // Workaround for Bug 5100422 - Hide Popup on focus loss
         if (hidePopupOnFocusLoss) {
           setPopupVisible(false);

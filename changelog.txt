@@ -1917,3 +1917,4 @@
   AbstractFilteredTablePanel now contains the column search panels
   DateBeanValueLink and TimestampBeanValueLink added
   ValueMap.getValueCount() removed
+  Field and parameter finalization (automatic)

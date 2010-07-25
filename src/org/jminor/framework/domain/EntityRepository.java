@@ -23,7 +23,7 @@ import java.util.Map;
  */
 public final class EntityRepository {
 
-  private static Map<String, EntityDefinition> entityDefinitions = new HashMap<String, EntityDefinition>();
+  private static final Map<String, EntityDefinition> entityDefinitions = new HashMap<String, EntityDefinition>();
   private static volatile Map<String, Proxy> proxies;
 
   private EntityRepository() {}
@@ -453,7 +453,7 @@ public final class EntityRepository {
    * Adds the given entityDefinition to this EntityRepository
    * @param entityDefinition the EntityDefinition to add
    */
-  public static void add(EntityDefinition entityDefinition) {
+  public static void add(final EntityDefinition entityDefinition) {
     Util.rejectNullValue(entityDefinition, "entityDefinition");
     if (entityDefinitions.containsKey(entityDefinition.getEntityID())) {
       throw new RuntimeException("Entity already added: " + entityDefinition.getEntityID());

@@ -533,7 +533,7 @@ public class DefaultSearchModel<K> implements SearchModel<K> {
 
   private void bindEvents() {
     final ActionListener autoEnableListener = new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         if (autoEnable) {
           final boolean upperBoundNull = upperBound == null;
           final boolean lowerBoundNull = lowerBound == null;

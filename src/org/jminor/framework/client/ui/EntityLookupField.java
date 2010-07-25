@@ -105,26 +105,18 @@ public class EntityLookupField extends JTextField {
       model.setSelectedEntities(entities);
     }
     else {
-      Collections.sort(entities, new Comparator<Entity>() {
-        public int compare(final Entity o1, final Entity o2) {
-          return o1.compareTo(o2);
-        }
-      });
+      Collections.sort(entities, new EntityComparator());
       final JList list = new JList(entities.toArray());
       final Window owner = UiUtil.getParentWindow(EntityLookupField.this);
       final JDialog dialog = new JDialog(owner, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY));
       dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
       final Action okAction = new AbstractAction(Messages.get(Messages.OK)) {
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(final ActionEvent e) {
           getModel().setSelectedEntities(toEntityList(list.getSelectedValues()));
           dialog.dispose();
         }
       };
-      final Action cancelAction = new AbstractAction(Messages.get(Messages.CANCEL)) {
-        public void actionPerformed(ActionEvent e) {
-          dialog.dispose();
-        }
-      };
+      final Action cancelAction = new UiUtil.DialogDisposeAction(dialog, Messages.get(Messages.CANCEL));
       list.setSelectionMode(model.isMultipleSelectionAllowed() ?
               ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);
       final JButton btnOk  = new JButton(okAction);
@@ -136,14 +128,7 @@ public class EntityLookupField extends JTextField {
       UiUtil.addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, cancelAction);
       list.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
               KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "none");
-      list.addMouseListener(new MouseAdapter() {
-        @Override
-        public void mouseClicked(final MouseEvent e) {
-          if (e.getClickCount() == 2) {
-            okAction.actionPerformed(null);
-          }
-        }
-      });
+      list.addMouseListener(new LookupFieldMouseListener(okAction));
       dialog.setLayout(new BorderLayout());
       final JScrollPane scroller = new JScrollPane(list);
       dialog.add(scroller, BorderLayout.CENTER);
@@ -171,7 +156,7 @@ public class EntityLookupField extends JTextField {
       }
     };
     model.eventSearchStringChanged().addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         updateColors();
       }
     });
@@ -179,7 +164,7 @@ public class EntityLookupField extends JTextField {
 
   private void addEscapeListener() {
     UiUtil.addKeyEvent(this, KeyEvent.VK_ESCAPE, new AbstractAction("cancel") {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         getModel().refreshSearchText();
         selectAll();
       }
@@ -243,7 +228,7 @@ public class EntityLookupField extends JTextField {
   private JPopupMenu initializePopupMenu() {
     final JPopupMenu popupMenu = new JPopupMenu();
     popupMenu.add(new AbstractAction(Messages.get(Messages.SETTINGS)) {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         final JPanel panel = new JPanel(new GridLayout(3,1,5,5));
         final JCheckBox boxCaseSensitive =
                 new JCheckBox(FrameworkMessages.get(FrameworkMessages.CASE_SENSITIVE), getModel().isCaseSensitive());
@@ -277,5 +262,26 @@ public class EntityLookupField extends JTextField {
     }
 
     return entityList;
+  }
+
+  private static class EntityComparator implements Comparator<Entity> {
+    public int compare(final Entity o1, final Entity o2) {
+      return o1.compareTo(o2);
+    }
+  }
+
+  private static class LookupFieldMouseListener extends MouseAdapter {
+    private final Action okAction;
+
+    public LookupFieldMouseListener(final Action okAction) {
+      this.okAction = okAction;
+    }
+
+    @Override
+    public void mouseClicked(final MouseEvent e) {
+      if (e.getClickCount() == 2) {
+        okAction.actionPerformed(null);
+      }
+    }
   }
 }

@@ -149,7 +149,7 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V>, Serializable {
     return Collections.unmodifiableCollection(values.values());
   }
 
-  protected void handleValueSet(final K key, final V value, final V previousValue, boolean initialization) {}
+  protected void handleValueSet(final K key, final V value, final V previousValue, final boolean initialization) {}
 
   protected void handleValueRemoved(final K key, final V value) {}
 

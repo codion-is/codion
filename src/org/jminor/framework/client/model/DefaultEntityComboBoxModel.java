@@ -59,7 +59,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
   /**
    * A map of entities used to filter the contents of this model
    */
-  private Map<String, Set<Entity>> foreignKeyFilterEntities = new HashMap<String, Set<Entity>>();
+  private final Map<String, Set<Entity>> foreignKeyFilterEntities = new HashMap<String, Set<Entity>>();
 
   private final FilterCriteria<Entity> foreignKeyFilterCriteria = new FilterCriteria<Entity>() {
     public boolean include(final Entity item) {
@@ -113,7 +113,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     return staticData;
   }
 
-  public final EntityComboBoxModel setStaticData(boolean staticData) {
+  public final EntityComboBoxModel setStaticData(final boolean staticData) {
     this.staticData = staticData;
     return this;
   }
@@ -231,7 +231,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
       }
     });
     model.eventSelectionChanged().addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         final Entity selected = model.getSelectedEntity();
         if (selected != null) {
           foreignKeyModel.setSelectedEntityByPrimaryKey(selected.getReferencedPrimaryKey(

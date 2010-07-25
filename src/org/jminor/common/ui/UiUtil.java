@@ -291,7 +291,7 @@ public final class UiUtil {
     if (enabledState != null) {
       action.setEnabled(enabledState.isActive());
       enabledState.eventStateChanged().addListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(final ActionEvent e) {
           action.setEnabled(enabledState.isActive());
         }
       });
@@ -304,7 +304,7 @@ public final class UiUtil {
     if (enabledState != null) {
       component.setEnabled(enabledState.isActive());
       enabledState.eventStateChanged().addListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(final ActionEvent e) {
           component.setEnabled(enabledState.isActive());
         }
       });
@@ -338,7 +338,7 @@ public final class UiUtil {
     final Dimension screenSize = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getSize();
     final Dimension frameSize = window.getSize();
     if (frameSize.getHeight() > screenSize.getHeight() || frameSize.getWidth() > screenSize.getWidth()) {
-      Dimension newFrameSize = new Dimension((int) Math.min(frameSize.getWidth(), screenSize.getWidth()),
+      final Dimension newFrameSize = new Dimension((int) Math.min(frameSize.getWidth(), screenSize.getWidth()),
               (int) Math.min(frameSize.getHeight(), screenSize.getHeight()));
       window.setSize(newFrameSize);
     }
@@ -491,15 +491,15 @@ public final class UiUtil {
 
     ((PlainDocument) textField.getDocument()).setDocumentFilter(new DocumentFilter() {
       @Override
-      public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
+      public void insertString(final FilterBypass fb, final int offset, final String string, final AttributeSet attr) throws BadLocationException {
         super.insertString(fb, offset, string == null ? null : string.toUpperCase(Locale.getDefault()), attr);
       }
       @Override
-      public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
+      public void remove(final FilterBypass fb, final int offset, final int length) throws BadLocationException {
         super.remove(fb, offset, length);
       }
       @Override
-      public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
+      public void replace(final FilterBypass fb, final int offset, final int length, final String text, final AttributeSet attrs) throws BadLocationException {
         super.replace(fb, offset, length, text == null ? null : text.toUpperCase(Locale.getDefault()), attrs);
       }
     });
@@ -520,15 +520,15 @@ public final class UiUtil {
   public static JTextComponent makeLowerCase(final JTextComponent textField) {
     ((PlainDocument) textField.getDocument()).setDocumentFilter(new DocumentFilter() {
       @Override
-      public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
+      public void insertString(final FilterBypass fb, final int offset, final String string, final AttributeSet attr) throws BadLocationException {
         super.insertString(fb, offset, string.toLowerCase(), attr);
       }
       @Override
-      public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
+      public void remove(final FilterBypass fb, final int offset, final int length) throws BadLocationException {
         super.remove(fb, offset, length);
       }
       @Override
-      public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
+      public void replace(final FilterBypass fb, final int offset, final int length, final String text, final AttributeSet attrs) throws BadLocationException {
         super.replace(fb, offset, length, text.toLowerCase(), attrs);
       }
     });
@@ -624,14 +624,14 @@ public final class UiUtil {
     if (closeAction != null) {
       dialog.addWindowListener(new WindowAdapter() {
         @Override
-        public void windowClosing(WindowEvent e) {
+        public void windowClosing(final WindowEvent e) {
           closeAction.actionPerformed(new ActionEvent(dialog, -1, null));
         }
       });
     }
     final String okCaption = okAction != null ? (String) okAction.getValue(Action.NAME) : Messages.get(Messages.OK);
     final Action ok = new AbstractAction(okCaption) {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         if (okAction != null) {
           okAction.actionPerformed(e);
         }
@@ -641,15 +641,11 @@ public final class UiUtil {
         }
       }
     };
-    addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, new AbstractAction("close") {
-      public void actionPerformed(ActionEvent e) {
-        dialog.dispose();
-      }
-    });
+    addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, new DialogDisposeAction(dialog, "close"));
     if (includeButtonPanel) {
       final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT,5,5));
       final JButton okButton = new JButton(ok);
-      Character okMnemonic;
+      final Character okMnemonic;
       if (okAction != null && okAction.getValue(Action.MNEMONIC_KEY) != null) {
         okMnemonic = (Character) okAction.getValue(Action.MNEMONIC_KEY);
       }
@@ -694,11 +690,7 @@ public final class UiUtil {
       dialog.getRootPane().setDefaultButton(defaultButton);
     }
 
-    final Action disposeActionListener = new AbstractAction() {
-      public void actionPerformed(final ActionEvent e) {
-        dialog.dispose();
-      }
-    };
+    final Action disposeActionListener = new DialogDisposeAction(dialog, null);
     addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, disposeActionListener);
     if (closeEvent != null) {
       closeEvent.addListener(disposeActionListener);
@@ -826,11 +818,11 @@ public final class UiUtil {
     });
   }
 
-  public static Object selectValue(final JComponent dialogOwner, Collection<?> values) {
+  public static Object selectValue(final JComponent dialogOwner, final Collection<?> values) {
     return selectValue(dialogOwner, values, Messages.get(Messages.SELECT_VALUE));
   }
 
-  public static Object selectValue(final JComponent dialogOwner, Collection<?> values, final String dialogTitle) {
+  public static Object selectValue(final JComponent dialogOwner, final Collection<?> values, final String dialogTitle) {
     final DefaultListModel listModel = new DefaultListModel();
     for (final Object value : values) {
       listModel.addElement(value);
@@ -840,13 +832,9 @@ public final class UiUtil {
     final Window owner = getParentWindow(dialogOwner);
     final JDialog dialog = new JDialog(owner, dialogTitle);
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-    final Action okAction = new AbstractAction(Messages.get(Messages.OK)) {
-      public void actionPerformed(ActionEvent e) {
-        dialog.dispose();
-      }
-    };
+    final Action okAction = new DialogDisposeAction(dialog, Messages.get(Messages.OK));
     final Action cancelAction = new AbstractAction(Messages.get(Messages.CANCEL)) {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         list.clearSelection();
         dialog.dispose();
       }
@@ -962,19 +950,28 @@ public final class UiUtil {
   }
 
   private static JDialog initializeDialog(final JComponent parent, final NavigableImagePanel panel) {
-    final JDialog ret =  new JDialog(getParentWindow(parent));
-    ret.setLayout(new BorderLayout());
-    ret.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-    addKeyEvent(ret.getRootPane(), KeyEvent.VK_ESCAPE, new AbstractAction("close") {
-      public void actionPerformed(ActionEvent e) {
-        ret.dispose();
-      }
-    });
-    ret.add(panel, BorderLayout.CENTER);
-    ret.setSize(getScreenSizeRatio(0.5));
-    ret.setLocationRelativeTo(parent);
-    ret.setModal(false);
+    final JDialog dialog =  new JDialog(getParentWindow(parent));
+    dialog.setLayout(new BorderLayout());
+    dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+    addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, new DialogDisposeAction(dialog, "close"));
+    dialog.add(panel, BorderLayout.CENTER);
+    dialog.setSize(getScreenSizeRatio(0.5));
+    dialog.setLocationRelativeTo(parent);
+    dialog.setModal(false);
 
-    return ret;
+    return dialog;
+  }
+
+  public static final class DialogDisposeAction extends AbstractAction {
+    private final JDialog dialog;
+
+    public DialogDisposeAction(final JDialog dialog, final String name) {
+      super(name);
+      this.dialog = dialog;
+    }
+
+    public void actionPerformed(final ActionEvent e) {
+      dialog.dispose();
+    }
   }
 }

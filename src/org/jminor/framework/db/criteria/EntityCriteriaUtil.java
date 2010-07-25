@@ -54,7 +54,7 @@ public final class EntityCriteriaUtil {
                                                     final int fetchCount, final Object... values) {
 
     final Property property = EntityRepository.getProperty(entityID, propertyID);
-    Criteria<Property.ColumnProperty> criteria;
+    final Criteria<Property.ColumnProperty> criteria;
     if (property instanceof Property.ForeignKeyProperty) {
       criteria = new ForeignKeyCriteria((Property.ForeignKeyProperty) property, searchType, values);
     }

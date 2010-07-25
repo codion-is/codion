@@ -126,11 +126,11 @@ public final class LoginPanel extends JPanel {
    */
   private static void addInitialFocusHack(final JTextField textField) {
     textField.addHierarchyListener(new HierarchyListener() {
-      public void hierarchyChanged(HierarchyEvent e) {
+      public void hierarchyChanged(final HierarchyEvent e) {
         if (textField.isShowing() && (e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0) {
           SwingUtilities.getWindowAncestor(textField).addWindowFocusListener(new WindowAdapter() {
             @Override
-            public void windowGainedFocus(WindowEvent evt) {
+            public void windowGainedFocus(final WindowEvent evt) {
               textField.requestFocusInWindow();
               textField.setCaretPosition(textField.getText().length());
             }
