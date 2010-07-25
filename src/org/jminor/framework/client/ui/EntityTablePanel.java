@@ -9,10 +9,12 @@ import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.AggregateState;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.SearchModel;
 import org.jminor.common.model.Serializer;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.AbstractFilteredTablePanel;
+import org.jminor.common.ui.AbstractSearchPanel;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.Control;
 import org.jminor.common.ui.control.ControlFactory;
@@ -33,7 +35,6 @@ import org.jminor.framework.client.model.DefaultEntityEditModel;
 import org.jminor.framework.client.model.DefaultEntityTableModel;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityTableModel;
-import org.jminor.framework.client.model.PropertyFilterModel;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
@@ -50,7 +51,6 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -97,9 +97,7 @@ import java.util.Map;
  * </pre>
  * The search and summary panels can be hidden
  */
-public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
-
-  public static final char FILTER_INDICATOR = '*';
+public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Property> {
 
   public static final String PRINT_TABLE = "printTable";
   public static final String DELETE_SELECTED = "deleteSelected";
@@ -117,6 +115,9 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
   public static final String MOVE_SELECTION_UP = "moveSelectionUp";
   public static final String MOVE_SELECTION_DOWN = "moveSelectionDown";
   public static final String COPY_TABLE_DATA = "copyTableData";
+
+  private static final int TOOLBAR_BUTTON_SIZE = 20;
+  private static final int STATUS_MESSAGE_FONT_SIZE = 12;
 
   private final Event evtTableDoubleClicked = new Event();
   private final Event evtSearchPanelVisibilityChanged = new Event();
@@ -158,11 +159,6 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
    * the scroll pane used for the summary panel
    */
   private JScrollPane summaryScrollPane;
-
-  /**
-   * the property filter panels
-   */
-  private final Map<String, PropertyFilterPanel> propertyFilterPanels;
 
   /**
    * the toolbar containing the refresh button
@@ -207,7 +203,6 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     super(tableModel);
     this.searchPanel = initializeSearchPanel();
     this.summaryPanel = initializeSummaryPanel();
-    this.propertyFilterPanels = initializeFilterPanels();
     setupControls();
     initializeUI();
     initializePopupMenu(additionalPopupControls);
@@ -231,7 +226,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     if (toolbarControlSet != null) {
       final JToolBar southToolBar = ControlProvider.createToolbar(toolbarControlSet, JToolBar.HORIZONTAL);
       for (final Component component : southToolBar.getComponents()) {
-        component.setPreferredSize(new Dimension(20, 20));
+        component.setPreferredSize(new Dimension(TOOLBAR_BUTTON_SIZE, TOOLBAR_BUTTON_SIZE));
       }
       southToolBar.setFocusable(false);
       southToolBar.setFloatable(false);
@@ -261,21 +256,6 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
   @Override
   public final EntityTableModel getTableModel() {
     return (EntityTableModel) super.getTableModel();
-  }
-
-  /**
-   * Hides or shows the active filter panels for this table panel
-   * @param value true if the active filter panels should be shown, false if they should be hidden
-   */
-  public final void setFilterPanelsVisible(final boolean value) {
-    for (final PropertyFilterPanel columnFilterPanel : propertyFilterPanels.values()) {
-      if (value) {
-        columnFilterPanel.showDialog();
-      }
-      else {
-        columnFilterPanel.hideDialog();
-      }
-    }
   }
 
   /**
@@ -783,7 +763,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
    */
   protected JPanel initializeSouthPanel() {
     statusMessageLabel = new JLabel("", JLabel.CENTER);
-    statusMessageLabel.setFont(new Font(statusMessageLabel.getFont().getName(), Font.PLAIN, 12));
+    statusMessageLabel.setFont(new Font(statusMessageLabel.getFont().getName(), Font.PLAIN, STATUS_MESSAGE_FONT_SIZE));
     final JPanel centerPanel = new JPanel(new BorderLayout(5, 5));
     final JTextField searchField = getSearchField();
     final JPanel searchFieldPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -799,6 +779,10 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     }
 
     return panel;
+  }
+
+  protected AbstractSearchPanel<Property> initializeFilterPanel(final SearchModel<Property> model) {
+    return new PropertyFilterPanel(model, true, true);
   }
 
   /**
@@ -1098,7 +1082,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     actionMap.put("refreshControl", refresh);
 
     final AbstractButton button = ControlProvider.createButton(refresh);
-    button.setPreferredSize(new Dimension(20,20));
+    button.setPreferredSize(new Dimension(TOOLBAR_BUTTON_SIZE, TOOLBAR_BUTTON_SIZE));
     button.setFocusable(false);
 
     final JToolBar toolBar = new JToolBar(JToolBar.HORIZONTAL);
@@ -1160,7 +1144,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
    * @return a Entity InputProvider
    */
   protected final InputProvider createEntityInputProvider(final Property.ForeignKeyProperty foreignKeyProperty, final Entity currentValue,
-                                                    final EntityEditModel editModel) {
+                                                          final EntityEditModel editModel) {
     if (!EntityRepository.isLargeDataset(foreignKeyProperty.getReferencedEntityID())) {
       return new EntityComboProvider(editModel.createEntityComboBoxModel(foreignKeyProperty), currentValue);
     }
@@ -1323,7 +1307,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
 
     final String[][] data = new String[entities.size()][];
     for (int i = 0; i < data.length; i++) {
-      final List<String> line = new ArrayList<String>(15);
+      final List<String> line = new ArrayList<String>();
       for (final Property property : properties) {
         line.add(entities.get(i).getValueAsString(property));
       }
@@ -1367,35 +1351,6 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
       statusMessageLabel.setText(status);
       statusMessageLabel.setToolTipText(status);
     }
-  }
-
-  private Map<String, PropertyFilterPanel> initializeFilterPanels() {
-    final Map<String, PropertyFilterPanel> filterPanels =
-            new HashMap<String, PropertyFilterPanel>(getTableModel().getSearchModel().getPropertyFilterModels().size());
-    final Enumeration<TableColumn> columns = getJTable().getColumnModel().getColumns();
-    while (columns.hasMoreElements()) {
-      final TableColumn column = columns.nextElement();
-      final PropertyFilterModel model = getTableModel().getSearchModel().getPropertyFilterModel(((Property) column.getIdentifier()).getPropertyID());
-      model.eventSearchStateChanged().addListener(new ActionListener() {
-        public void actionPerformed(final ActionEvent e) {
-          if (model.isSearchEnabled()) {
-            addFilterIndicator(column);
-          }
-          else {
-            removeFilterIndicator(column);
-          }
-
-          getJTable().getTableHeader().repaint();
-        }
-      });
-      if (model.isSearchEnabled()) {
-        addFilterIndicator(column);
-      }
-
-      filterPanels.put(model.getSearchKey().getPropertyID(), new PropertyFilterPanel(model, true, true));
-    }
-
-    return filterPanels;
   }
 
   private void bindEventsInternal() {
@@ -1445,15 +1400,6 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     getTableModel().eventFilteringDone().addListener(statusListener);
     getTableModel().eventTableDataChanged().addListener(statusListener);
 
-    getJTable().getTableHeader().addMouseListener(new MouseAdapter() {
-      @Override
-      public void mouseClicked(MouseEvent e) {
-        if (e.isShiftDown()) {
-          toggleColumnFilterPanel(e);
-        }
-      }
-    });
-
     getTableModel().eventSelectedIndexChanged().addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         if (!getTableModel().stateSelectionEmpty().isActive()) {
@@ -1478,44 +1424,10 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
     }
   }
 
-  private void toggleColumnFilterPanel(final MouseEvent event) {
-    final Property property = getTableModel().getColumnProperty(getTableModel().getColumnModel().getColumnIndexAtX(event.getX()));
-
-    toggleFilterPanel(event.getLocationOnScreen(), propertyFilterPanels.get(property.getPropertyID()), getJTable());
-  }
-
   private void revalidateAndShowSearchPanel() {
     searchScrollPane.getViewport().setView(null);
     searchScrollPane.getViewport().setView((JPanel) searchPanel);
     revalidate();
-  }
-
-  private static void toggleFilterPanel(final Point position, final PropertyFilterPanel columnFilterPanel,
-                                        final Container parent) {
-    if (columnFilterPanel.isDialogActive()) {
-      columnFilterPanel.inactivateDialog();
-    }
-    else {
-      columnFilterPanel.activateDialog(parent, position);
-    }
-  }
-
-  private static void addFilterIndicator(final TableColumn column) {
-    String val = (String) column.getHeaderValue();
-    if (val.length() > 0 && val.charAt(0) != FILTER_INDICATOR) {
-      val = FILTER_INDICATOR + val;
-    }
-
-    column.setHeaderValue(val);
-  }
-
-  private static void removeFilterIndicator(final TableColumn column) {
-    String val = (String) column.getHeaderValue();
-    if (val.length() > 0 && val.charAt(0) == FILTER_INDICATOR) {
-      val = val.substring(1);
-    }
-
-    column.setHeaderValue(val);
   }
 
   private static void showDependenciesDialog(final Map<String, Collection<Entity>> dependencies, final EntityDbProvider dbProvider,
@@ -1608,8 +1520,8 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
                 + (property instanceof Property.DenormalizedViewProperty ? "*" : "")
                 + (property instanceof Property.DenormalizedProperty ? "+" : "") + "] ";
         final String value = entity.isValueNull(property.getPropertyID()) ? "<null>" : entity.getValueAsString(property.getPropertyID());
-        final boolean longValue = value != null && value.length() > 20;
-        final JMenuItem menuItem = new JMenuItem(prefix + property + ": " + (longValue ? value.substring(0, 20) + "..." : value));
+        final boolean longValue = value != null && value.length() > TOOLBAR_BUTTON_SIZE;
+        final JMenuItem menuItem = new JMenuItem(prefix + property + ": " + (longValue ? value.substring(0, TOOLBAR_BUTTON_SIZE) + "..." : value));
         if (longValue) {
           menuItem.setToolTipText(value.length() > 1000 ? value.substring(0, 1000) : value);
         }

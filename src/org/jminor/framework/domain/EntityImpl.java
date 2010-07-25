@@ -423,6 +423,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
 
   @Override
   protected void handleSetAs(final ValueMap<String, Object> sourceMap) {
+    super.handleSetAs(sourceMap);
     toString = null;
     if (sourceMap instanceof Entity) {
       toString = sourceMap.toString();

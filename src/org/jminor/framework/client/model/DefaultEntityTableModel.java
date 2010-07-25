@@ -28,10 +28,8 @@ import javax.swing.table.TableColumn;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -41,24 +39,9 @@ import java.util.Map;
 /**
  * A TableModel implementation for displaying and working with entities.
  */
-public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> implements EntityTableModel {
+public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, Property> implements EntityTableModel {
 
   private static final Logger LOG = Util.getLogger(DefaultEntityTableModel.class);
-
-  private final Event evtRefreshStarted = new Event();
-  private final Event evtRefreshDone = new Event();
-
-  public static final Comparator COMPARABLE_COMPARATOR = new Comparator<Comparable>() {
-    public int compare(Comparable o1, Comparable o2) {
-      return (o1.compareTo(o2));
-    }
-  };
-  public static final Comparator LEXICAL_COMPARATOR = new Comparator<Object>() {
-    private final Collator collator = Collator.getInstance();
-    public int compare(Object o1, Object o2) {
-      return collator.compare(o1.toString(), o2.toString());
-    }
-  };
 
   /**
    * The entity ID
@@ -105,11 +88,6 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
    */
   private boolean queryCriteriaRequired = true;
 
-  /**
-   * true while the model data is being refreshed
-   */
-  private boolean isRefreshing = false;
-
   private final State stAllowMultipleUpdate = new State(true);
 
   private final State stAllowDelete = new State(true);
@@ -128,11 +106,10 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
   public DefaultEntityTableModel(final String entityID, final EntityDbProvider dbProvider,
                                  final EntityTableColumnModel columnModel,
                                  final EntityTableSearchModel searchModel) {
-    super(columnModel);
+    super(columnModel, searchModel.getPropertyFilterModelsOrdered());
     this.entityID = entityID;
     this.dbProvider = dbProvider;
     this.searchModel = searchModel;
-    setFilterCriteria(searchModel);
     bindEventsInternal();
     bindEvents();
   }
@@ -222,35 +199,10 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
   public final void setSortingDirective(final String propertyID, final SortingDirective directive) {
     final int columnIndex = getColumnModel().getColumnIndex(EntityRepository.getProperty(entityID, propertyID));
     if (columnIndex == -1) {
-      throw new RuntimeException("Column based on property '" + propertyID + " not found");
+      throw new IllegalArgumentException("Column based on property '" + propertyID + " not found");
     }
 
     super.setSortingDirective(columnIndex, directive);
-  }
-
-  public final int compare(final Entity objectOne, final Entity objectTwo, final int columnIndex, final SortingDirective directive) {
-    final Property property = getColumnProperty(columnIndex);
-    final Object valueOne = objectOne.getValue(property);
-    final Object valueTwo = objectTwo.getValue(property);
-    int comparison;
-    // Define null less than everything, except null.
-    if (valueOne == null && valueTwo == null) {
-      comparison = 0;
-    }
-    else if (valueOne == null) {
-      comparison = -1;
-    }
-    else if (valueTwo == null) {
-      comparison = 1;
-    }
-    else {
-      comparison = getComparator(columnIndex).compare(valueOne, valueTwo);
-    }
-    if (comparison != 0) {
-      return directive == SortingDirective.DESCENDING ? -comparison : comparison;
-    }
-
-    return 0;
   }
 
   public final EntityDbProvider getDbProvider() {
@@ -356,28 +308,6 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
             FrameworkMessages.get(FrameworkMessages.SELECTED)).append(
             filteredItemCount > 0 ? ", " + filteredItemCount + " "
                     + FrameworkMessages.get(FrameworkMessages.HIDDEN) + ")" : ")").toString();
-  }
-
-  public final void refresh() {
-    if (isRefreshing) {
-      return;
-    }
-
-    try {
-      LOG.debug(this + " refreshing");
-      isRefreshing = true;
-      evtRefreshStarted.fire();
-      final List<Entity.Key> selectedPrimaryKeys = getPrimaryKeysOfSelectedEntities();
-      final List<Entity> queryResult = performQuery(getQueryCriteria());
-      clear();
-      addItems(queryResult, false);
-      setSelectedByPrimaryKeys(selectedPrimaryKeys);
-    }
-    finally {
-      isRefreshing = false;
-      evtRefreshDone.fire();
-      LOG.debug(this + " refreshing done");
-    }
   }
 
   public final void addEntitiesByPrimaryKeys(final List<Entity.Key> primaryKeys, boolean atFront) {
@@ -525,12 +455,18 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
     return getSelectedItems().iterator();
   }
 
-  public final Event eventRefreshDone() {
-    return evtRefreshDone;
-  }
-
-  public final Event eventRefreshStarted() {
-    return evtRefreshStarted;
+  protected final void doRefresh() {
+    try {
+      LOG.debug(this + " refreshing");
+      final List<Entity.Key> selectedPrimaryKeys = getPrimaryKeysOfSelectedEntities();
+      final List<Entity> queryResult = performQuery(getQueryCriteria());
+      clear();
+      addItems(queryResult, false);
+      setSelectedByPrimaryKeys(selectedPrimaryKeys);
+    }
+    finally {
+      LOG.debug(this + " refreshing done");
+    }
   }
 
   /**
@@ -554,22 +490,16 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
   }
 
   @Override
+  protected Comparable getComparable(final Object object, final int columnIndex) {
+    final Property property = getColumnProperty(columnIndex);
+    return (Comparable) ((Entity) object).getValue(property);
+  }
+
+  @Override
   protected final String getSearchValueAt(final int rowIndex, final int columnIndex) {
     final Property property = (Property) getColumnModel().getColumn(convertColumnIndexToView(columnIndex)).getIdentifier();
 
     return getItemAt(rowIndex).getValueAsString(property);
-  }
-
-  protected final Comparator getComparator(final int column) {
-    final Class columnClass = getColumnClass(column);
-    if (columnClass.equals(String.class)) {
-      return LEXICAL_COMPARATOR;
-    }
-    if (Comparable.class.isAssignableFrom(columnClass)) {
-      return COMPARABLE_COMPARATOR;
-    }
-
-    return LEXICAL_COMPARATOR;
   }
 
   /**
@@ -601,7 +531,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
         filterContents();
       }
     });
-    evtRefreshDone.addListener(new ActionListener() {
+    eventRefreshDone().addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         searchModel.setSearchModelState();
       }

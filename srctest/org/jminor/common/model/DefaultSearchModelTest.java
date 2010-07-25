@@ -5,16 +5,11 @@ import org.junit.Test;
 
 import java.sql.Types;
 
-public class AbstractSearchModelTest {
+public class DefaultSearchModelTest {
 
   @Test
   public void test() throws Exception {
-    final AbstractSearchModel<String> model = new AbstractSearchModel<String>("test", Types.VARCHAR, "%") {
-      @Override
-      public boolean include(final Object object) {
-        return false;
-      }
-    };
+    final DefaultSearchModel<String> model = new DefaultSearchModel<String>("test", Types.VARCHAR, "%");
     assertEquals("test", model.getSearchKey());
     
     model.setAutomaticWildcard(true);

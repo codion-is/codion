@@ -1908,3 +1908,11 @@
   Coberture coverage added to build.xml
   ValueMapImplTest added
   EntityDbConnection.insert() minor optimzation change
+  EntityImpl.handleSetAs() did not call super
+  DefaultEntityEditModel.update() now sets the active entity after update
+  PropertyFilterModel, most of it pushed up into SearchModel
+  AbstractSearchModel renamed to DefaultSearchModel
+  AbstractFilteredTableModel now contains the column search models, filterCriteria implemented accordingly
+  PropertyFilterPanel stuff moved to AbstractSearchPanel
+  AbstractFilteredTablePanel now contains the column search panels
+  DateBeanValueLink and TimestampBeanValueLink added

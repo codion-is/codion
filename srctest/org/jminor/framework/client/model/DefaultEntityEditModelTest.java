@@ -197,6 +197,7 @@ public class DefaultEntityEditModelTest {
       assertTrue(editModel.isUpdateAllowed());
 
       editModel.update();
+      assertFalse(editModel.stateModified().isActive());
     }
     finally {
       editModel.getDbProvider().getEntityDb().rollbackTransaction();

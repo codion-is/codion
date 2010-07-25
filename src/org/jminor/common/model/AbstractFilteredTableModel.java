@@ -17,10 +17,12 @@ import javax.swing.table.TableColumnModel;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
@@ -38,19 +40,31 @@ import java.util.Map;
  * Time: 09:48:07<br>
  * @param <T> the type of the values in this table model
  */
-public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel implements FilteredTableModel<T> {
+public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableModel implements FilteredTableModel<T, C> {
+
+  public static final Comparator COMPARABLE_COMPARATOR = new Comparator<Comparable>() {
+    public int compare(Comparable o1, Comparable o2) {
+      return (o1.compareTo(o2));
+    }
+  };
+  public static final Comparator LEXICAL_COMPARATOR = new Comparator<Object>() {
+    private final Collator collator = Collator.getInstance();
+    public int compare(Object o1, Object o2) {
+      return collator.compare(o1.toString(), o2.toString());
+    }
+  };
 
   private final Event evtFilteringStarted = new Event();
   private final Event evtFilteringDone = new Event();
   private final Event evtSortingStarted = new Event();
   private final Event evtSortingDone = new Event();
+  private final Event evtRefreshStarted = new Event();
+  private final Event evtRefreshDone = new Event();
   private final Event evtTableDataChanged = new Event();
   private final Event evtColumnHidden = new Event();
   private final Event evtColumnShown = new Event();
 
   private static final SortingState EMPTY_SORTING_STATE = new SortingStateImpl(-1, SortingDirective.UNSORTED);
-
-  private final FilterCriteria<T> acceptAllCriteria = new FilterCriteria.AcceptAllCriteria<T>();
 
   /**
    * Holds visible items
@@ -66,6 +80,11 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
    * The TableColumnModel
    */
   private final TableColumnModel columnModel;
+
+  /**
+   * The SearchModels used for filtering
+   */
+  private final List<? extends SearchModel<C>> columnFilterModels;
 
   /**
    * Contains columns that have been hidden
@@ -85,7 +104,22 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
   /**
    * the filter criteria used by this model
    */
-  private FilterCriteria<T> filterCriteria = acceptAllCriteria;
+  private FilterCriteria<T> filterCriteria = new FilterCriteria<T>() {
+    public boolean include(T item) {
+      for (final SearchModel columnFilter : columnFilterModels) {
+        if (columnFilter.isSearchEnabled() && !columnFilter.include(item)) {
+          return false;
+        }
+      }
+
+      return true;
+    }
+  };
+
+  /**
+   * true while the model data is being refreshed
+   */
+  private boolean isRefreshing = false;
 
   /**
    * true while the model data is being filtered
@@ -106,9 +140,11 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
    */
   private boolean regularExpressionSearch = false;
 
-  public AbstractFilteredTableModel(final TableColumnModel columnModel) {
+  public AbstractFilteredTableModel(final TableColumnModel columnModel,
+                                    final List<? extends SearchModel<C>> columnFilterModels) {
     this.columnModel = columnModel;
     this.columnIndexCache = new int[columnModel.getColumnCount()];
+    this.columnFilterModels = columnFilterModels;
     addTableModelListener(new SortHandler());
     bindEventsInternal();
   }
@@ -181,6 +217,21 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
     return null;
   }
 
+  public final void refresh() {
+    if (isRefreshing) {
+      return;
+    }
+    try {
+      isRefreshing = true;
+      evtRefreshStarted.fire();
+      doRefresh();
+    }
+    finally {
+      isRefreshing = false;
+      evtRefreshDone.fire();
+    }
+  }
+
   public final void clear() {
     filteredItems.clear();
     final int size = getRowCount();
@@ -221,12 +272,44 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
     sortingStatusChanged();
   }
 
+  public final int compare(final T one, final T two, final int columnIndex, final SortingDirective directive) {
+    final Comparable valueOne = getComparable(one, columnIndex);
+    final Comparable valueTwo = getComparable(two, columnIndex);
+    int comparison;
+    // Define null less than everything, except null.
+    if (valueOne == null && valueTwo == null) {
+      comparison = 0;
+    }
+    else if (valueOne == null) {
+      comparison = -1;
+    }
+    else if (valueTwo == null) {
+      comparison = 1;
+    }
+    else {
+      comparison = getComparator(columnIndex).compare(valueOne, valueTwo);
+    }
+    if (comparison != 0) {
+      return directive == SortingDirective.DESCENDING ? -comparison : comparison;
+    }
+
+    return 0;
+  }
+
   public final boolean isRegularExpressionSearch() {
     return regularExpressionSearch;
   }
 
   public final void setRegularExpressionSearch(final boolean value) {
     this.regularExpressionSearch = value;
+  }
+
+  public final SearchModel<C> getFilterModel(final int columnIndex) {
+    return columnFilterModels.get(columnIndex);
+  }
+
+  public List<SearchModel<C>> getFilterModels() {
+    return Collections.unmodifiableList(columnFilterModels);
   }
 
   public final void selectAll() {
@@ -399,13 +482,7 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
   }
 
   public final void setFilterCriteria(final FilterCriteria<T> filterCriteria) {
-    if (filterCriteria == null) {
-      this.filterCriteria = acceptAllCriteria;
-    }
-    else {
-      this.filterCriteria = filterCriteria;
-    }
-    filterContents();
+    throw new UnsupportedOperationException("AbstractFilteredTableModel.setFilterCriteria(FilterCriteria)");
   }
 
   public final List<T> getAllItems() {
@@ -528,6 +605,14 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
     return evtColumnShown;
   }
 
+  public Event eventRefreshStarted() {
+    return evtRefreshStarted;
+  }
+
+  public Event eventRefreshDone() {
+    return evtRefreshDone;
+  }
+
   public final Event eventFilteringDone() {
     return evtFilteringDone;
   }
@@ -552,15 +637,18 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
     return selectionModel.evtSelectionChanged;
   }
 
-  /**
-   * @return an Event fired when the selection is changing
-   */
   public final Event eventSelectionChangedAdjusting() {
     return selectionModel.evtSelectionChangedAdjusting;
   }
 
   public final Event eventTableDataChanged() {
     return evtTableDataChanged;
+  }
+
+  protected abstract void doRefresh();
+
+  protected Comparable getComparable(final Object object, final int columnIndex) {
+    return (Comparable) object;
   }
 
   /**
@@ -668,6 +756,13 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
         selectedItems.clear();
       }
     });
+    for (final SearchModel searchModel : columnFilterModels) {
+      searchModel.eventSearchStateChanged().addListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          filterContents();
+        }
+      });
+    }
     columnModel.addColumnModelListener(new TableColumnModelListener() {
       public void columnAdded(final TableColumnModelEvent e) {
         Arrays.fill(columnIndexCache, -1);
@@ -681,6 +776,18 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
       public void columnMarginChanged(final ChangeEvent e) {}
       public void columnSelectionChanged(final ListSelectionEvent e) {}
     });
+  }
+
+  private Comparator getComparator(final int column) {
+    final Class columnClass = getColumnClass(column);
+    if (columnClass.equals(String.class)) {
+      return LEXICAL_COMPARATOR;
+    }
+    if (Comparable.class.isAssignableFrom(columnClass)) {
+      return COMPARABLE_COMPARATOR;
+    }
+
+    return LEXICAL_COMPARATOR;
   }
 
   private int viewIndex(final int modelIndex) {

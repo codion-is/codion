@@ -6,6 +6,7 @@ package org.jminor.common.ui;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.DocumentAdapter;
 import org.jminor.common.model.FilteredTableModel;
+import org.jminor.common.model.SearchModel;
 import org.jminor.common.model.SortingDirective;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.control.Control;
@@ -32,6 +33,7 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Point;
@@ -45,6 +47,7 @@ import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Enumeration;
 import java.util.List;
 
 /**
@@ -52,14 +55,22 @@ import java.util.List;
  * Date: 25.4.2010<br>
  * Time: 12:47:55<br>
  */
-public abstract class AbstractFilteredTablePanel<T> extends JPanel {
+public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
+
+  public static final char FILTER_INDICATOR = '*';
 
   private static final Point NULL_POINT = new Point(-1, -1);
+  private static final int SELECT_COLUMNS_GRID_ROWS = 15;
 
   /**
    * The table model
    */
-  private final FilteredTableModel<T> tableModel;
+  private final FilteredTableModel<T, C> tableModel;
+
+  /**
+   * the property filter panels
+   */
+  private final List<AbstractSearchPanel<C>> columnFilterPanels;
 
   /**
    * the JTable for showing the underlying entities
@@ -81,20 +92,42 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
    */
   private final JTextField searchField;
 
-  public AbstractFilteredTablePanel(final FilteredTableModel<T> tableModel) {
+  public AbstractFilteredTablePanel(final FilteredTableModel<T, C> tableModel) {
     Util.rejectNullValue(tableModel, "tableModel");
     this.tableModel = tableModel;
     this.table = initializeJTable();
     this.tableScrollPane = new JScrollPane(table);
     this.searchField = initializeSearchField();
+    this.columnFilterPanels = initializeFilterPanels();
     setupTableHeader();
     bindEvents();
   }
 
+  public List<AbstractSearchPanel<C>> getColumnFilterPanels() {
+    return Collections.unmodifiableList(columnFilterPanels);
+  }
+
+  /**
+   * Hides or shows the active filter panels for this table panel
+   * @param value true if the active filter panels should be shown, false if they should be hidden
+   */
+  public final void setFilterPanelsVisible(final boolean value) {
+    for (final AbstractSearchPanel columnFilterPanel : getColumnFilterPanels()) {
+      if (value) {
+        columnFilterPanel.showDialog();
+      }
+      else {
+        columnFilterPanel.hideDialog();
+      }
+    }
+  }
+
+  protected abstract AbstractSearchPanel<C> initializeFilterPanel(final SearchModel<C> model);
+
   /**
    * @return the TableModel used by this TablePanel
    */
-  public FilteredTableModel<T> getTableModel() {
+  public FilteredTableModel<T, C> getTableModel() {
     return tableModel;
   }
 
@@ -142,7 +175,7 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
       }
     });
 
-    final JPanel togglePanel = new JPanel(new GridLayout(Math.min(15, allColumns.size()), 0));
+    final JPanel togglePanel = new JPanel(new GridLayout(Math.min(SELECT_COLUMNS_GRID_ROWS, allColumns.size()), 0));
     final List<JCheckBox> buttonList = new ArrayList<JCheckBox>();
     for (final TableColumn column : allColumns) {
       final JCheckBox chkColumn = new JCheckBox(column.getHeaderValue().toString(), tableModel.isColumnVisible(column.getIdentifier()));
@@ -251,9 +284,28 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
     return popupMenu;
   }
 
+  private List<AbstractSearchPanel<C>> initializeFilterPanels() {
+    final List<AbstractSearchPanel<C>> filterPanels = new ArrayList<AbstractSearchPanel<C>>(getTableModel().getFilterModels().size());
+    final Enumeration<TableColumn> columns = getJTable().getColumnModel().getColumns();
+    while (columns.hasMoreElements()) {
+      final SearchModel<C> model = getTableModel().getFilterModel(columns.nextElement().getModelIndex());
+      filterPanels.add(initializeFilterPanel(model));
+    }
+
+    return filterPanels;
+  }
+
   private void setupTableHeader() {
     table.getTableHeader().addMouseListener(new MouseSortHandler());
     table.getTableHeader().setDefaultRenderer(new SortableHeaderRenderer(table.getTableHeader().getDefaultRenderer()));
+    table.getTableHeader().addMouseListener(new MouseAdapter() {
+      @Override
+      public void mouseClicked(final MouseEvent e) {
+        if (e.isAltDown()) {
+          toggleColumnFilterPanel(e);
+        }
+      }
+    });
   }
 
   private void bindEvents() {
@@ -262,18 +314,72 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
         getJTable().getTableHeader().repaint();
       }
     });
+    final Enumeration<TableColumn> columns = tableModel.getColumnModel().getColumns();
+    while (columns.hasMoreElements()) {
+      final TableColumn column = columns.nextElement();
+      final SearchModel model = getTableModel().getFilterModel(column.getModelIndex());
+      model.eventSearchStateChanged().addListener(new ActionListener() {
+        public void actionPerformed(final ActionEvent e) {
+          if (model.isSearchEnabled()) {
+            addFilterIndicator(column);
+          }
+          else {
+            removeFilterIndicator(column);
+          }
+
+          getJTable().getTableHeader().repaint();
+        }
+      });
+      if (model.isSearchEnabled()) {
+        addFilterIndicator(column);
+      }
+    }
+  }
+
+  private void toggleColumnFilterPanel(final MouseEvent event) {
+    final int index = getTableModel().getColumnModel().getColumnIndexAtX(event.getX());
+
+    toggleFilterPanel(event.getLocationOnScreen(), columnFilterPanels.get(index), getJTable());
+  }
+
+  private static void toggleFilterPanel(final Point position, final AbstractSearchPanel columnFilterPanel,
+                                        final Container parent) {
+    if (columnFilterPanel.isDialogActive()) {
+      columnFilterPanel.inactivateDialog();
+    }
+    else {
+      columnFilterPanel.activateDialog(parent, position);
+    }
+  }
+
+  private static void addFilterIndicator(final TableColumn column) {
+    String val = (String) column.getHeaderValue();
+    if (val.length() > 0 && val.charAt(0) != FILTER_INDICATOR) {
+      val = FILTER_INDICATOR + val;
+    }
+
+    column.setHeaderValue(val);
+  }
+
+  private static void removeFilterIndicator(final TableColumn column) {
+    String val = (String) column.getHeaderValue();
+    if (val.length() > 0 && val.charAt(0) == FILTER_INDICATOR) {
+      val = val.substring(1);
+    }
+
+    column.setHeaderValue(val);
   }
 
   private final class MouseSortHandler extends MouseAdapter {
     @Override
-    public void mouseClicked(MouseEvent e) {
-      if (e.getButton() != MouseEvent.BUTTON1) {
+    public void mouseClicked(final MouseEvent e) {
+      if (e.getButton() != MouseEvent.BUTTON1 || e.isAltDown()) {
         return;
       }
 
-      JTableHeader h = (JTableHeader) e.getSource();
-      TableColumnModel columnModel = h.getColumnModel();
-      int viewColumn = columnModel.getColumnIndexAtX(e.getX());
+      final JTableHeader h = (JTableHeader) e.getSource();
+      final TableColumnModel columnModel = h.getColumnModel();
+      final int viewColumn = columnModel.getColumnIndexAtX(e.getX());
       int column;
       try {
         column = columnModel.getColumn(viewColumn).getModelIndex();
@@ -320,11 +426,12 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
   }
 
   private static final class Arrow implements Icon {
+    private static final double PRIORITY_SIZE_RATIO = 0.8;
     private boolean descending;
     private int size;
     private int priority;
 
-    private Arrow(boolean descending, int size, int priority) {
+    private Arrow(final boolean descending, final int size, final int priority) {
       this.descending = descending;
       this.size = size;
       this.priority = priority;
@@ -334,7 +441,7 @@ public abstract class AbstractFilteredTablePanel<T> extends JPanel {
       Color color = c == null ? Color.GRAY : c.getBackground();
       // In a compound sort, make each succesive triangle 20%
       // smaller than the previous one.
-      int dx = (int)(size/2*Math.pow(0.8, priority));
+      int dx = (int)(size/2*Math.pow(PRIORITY_SIZE_RATIO, priority));
       int dy = descending ? dx : -dx;
       // Align icon (roughly) with font baseline.
       int theY = y + 5*size/6 + (descending ? -dy : 0);

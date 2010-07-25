@@ -27,6 +27,10 @@ import java.util.TimerTask;
 
 public class ConnectionPoolImplTest {
 
+  private static final int PRINT_PERIOD = 860;
+  private static final int SLEEP_MILLIS = 4200;
+  private static final int CLOSE_SLEEP_MILLIS = 2500;
+
   @Test
   public void loadTest() throws Exception {
     final Date startTime = new Date();
@@ -42,13 +46,13 @@ public class ConnectionPoolImplTest {
         System.out.println("destroyed: " + pool.getConnectionPoolStatistics(startTime.getTime()).getConnectionsDestroyed());
         System.out.println("####################################");
       }
-    }, startTime, 500);
+    }, startTime, PRINT_PERIOD);
     model.addApplications();
     model.setCollectChartData(true);
-    Thread.sleep(4200);
+    Thread.sleep(SLEEP_MILLIS);
     model.exit();
     pool.close();
-    Thread.sleep(1000);
+    Thread.sleep(CLOSE_SLEEP_MILLIS);
     final ConnectionPoolStatistics statistics = pool.getConnectionPoolStatistics(startTime.getTime());
     assertEquals(statistics.getConnectionsCreated(), statistics.getConnectionsDestroyed());
   }

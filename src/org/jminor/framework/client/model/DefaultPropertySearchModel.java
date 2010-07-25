@@ -4,7 +4,7 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.db.criteria.Criteria;
-import org.jminor.common.model.AbstractSearchModel;
+import org.jminor.common.model.DefaultSearchModel;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.domain.Property;
@@ -14,7 +14,7 @@ import java.util.Collection;
 /**
  * A class for searching a set of entities based on a property.
  */
-public class DefaultPropertySearchModel extends AbstractSearchModel<Property.ColumnProperty>
+public class DefaultPropertySearchModel extends DefaultSearchModel<Property.ColumnProperty>
         implements PropertySearchModel<Property.ColumnProperty> {
 
   /**
@@ -24,10 +24,6 @@ public class DefaultPropertySearchModel extends AbstractSearchModel<Property.Col
    */
   public DefaultPropertySearchModel(final Property.ColumnProperty property) {
     super(property, property.getType(), (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER));
-  }
-
-  public boolean include(final Object object) {
-    return true;
   }
 
   @Override

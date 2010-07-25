@@ -3,6 +3,7 @@
  */
 package org.jminor.common.ui;
 
+import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.SearchModel;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.State;
@@ -11,20 +12,39 @@ import org.jminor.common.model.combobox.ItemComboBoxModel;
 import org.jminor.common.ui.combobox.SteppedComboBox;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
+import org.jminor.common.ui.control.DateBeanValueLink;
+import org.jminor.common.ui.control.DoubleBeanValueLink;
+import org.jminor.common.ui.control.IntBeanValueLink;
+import org.jminor.common.ui.control.LinkType;
+import org.jminor.common.ui.control.TextBeanValueLink;
+import org.jminor.common.ui.control.TimestampBeanValueLink;
+import org.jminor.common.ui.control.ToggleBeanValueLink;
 import org.jminor.common.ui.images.Images;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
+import org.jminor.common.ui.textfield.DoubleField;
+import org.jminor.common.ui.textfield.IntField;
 
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JFormattedTextField;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import java.awt.BorderLayout;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.sql.Types;
+import java.text.DateFormat;
 import java.text.Format;
+import java.text.SimpleDateFormat;
 
 /**
  * An abstract panel for showing search/filter configuration.<br>
@@ -42,6 +62,8 @@ public abstract class AbstractSearchPanel<K> extends JPanel {
           "Equals60x16.gif", "NotEquals60x16.gif", "LessThanOrEquals60x16.gif",
           "LargerThanOrEquals60x16.gif", "Inclusive60x16.gif", "Exclusive60x16.gif"};
 
+  private static final int ENABLED_BUTTON_SIZE = 20;
+
   /**
    * The SearchModel this AbstractSearchPanel represents
    */
@@ -56,17 +78,22 @@ public abstract class AbstractSearchPanel<K> extends JPanel {
    * A JToggleButton for toggling advanced/simple search
    */
   private final JToggleButton toggleSearchAdvanced;
+  private final State stIsDialogActive = new State();
 
+  private final State stIsDialogShowing = new State();
+  private JDialog dialog;
+
+  private Point lastPosition;
   /**
    * A JComboBox for selecting the search type
    */
   private final JComboBox searchTypeCombo;
   private final JComponent upperBoundField;
+
   private final JComponent lowerBoundField;
-
   private final State stAdvancedSearch = new State();
-  private final State stTwoSearchFields = new State();
 
+  private final State stTwoSearchFields = new State();
   private final boolean includeToggleSearchEnabledBtn;
   private final boolean includeToggleSearchAdvancedBtn;
 
@@ -96,6 +123,90 @@ public abstract class AbstractSearchPanel<K> extends JPanel {
    */
   public final SearchModel<K> getModel() {
     return this.model;
+  }
+
+  /**
+   * @return the last screen position
+   */
+  public final Point getLastPosition() {
+    return lastPosition;
+  }
+
+  /**
+   * @return true if the dialog is active
+   */
+  public final boolean isDialogActive() {
+    return stIsDialogActive.isActive();
+  }
+
+  /**
+   * @return true if the dialog is being shown
+   */
+  public final boolean isDialogShowing() {
+    return stIsDialogShowing.isActive();
+  }
+
+  public final void activateDialog(final Container dialogParent, final Point position) {
+    if (!isDialogActive()) {
+      initSearchDlg(dialogParent);
+      Point actualPosition = position;
+      if (position == null) {
+        actualPosition = lastPosition;
+      }
+      if (actualPosition == null) {
+        actualPosition = new Point(0, 0);
+      }
+
+      actualPosition.y = actualPosition.y - dialog.getHeight();
+      dialog.setLocation(actualPosition);
+      stIsDialogActive.setActive(true);
+    }
+
+    showDialog();
+  }
+
+  public final void inactivateDialog() {
+    if (isDialogActive()) {
+      if (isDialogShowing()) {
+        hideDialog();
+      }
+      lastPosition = dialog.getLocation();
+      lastPosition.y = lastPosition.y + dialog.getHeight();
+      dialog.dispose();
+      dialog = null;
+
+      stIsDialogActive.setActive(false);
+    }
+  }
+
+  public final void showDialog() {
+    if (isDialogActive() && !isDialogShowing()) {
+      dialog.setVisible(true);
+      getUpperBoundField().requestFocusInWindow();
+      stIsDialogShowing.setActive(true);
+    }
+  }
+
+  public final void hideDialog() {
+    if (isDialogShowing()) {
+      dialog.setVisible(false);
+      stIsDialogShowing.setActive(false);
+    }
+  }
+
+  /**
+   * @return the dialog used to show this filter panel
+   */
+  public final JDialog getDialog() {
+    return dialog;
+  }
+
+  public final State stateIsDialogActive() {
+    return stIsDialogActive.getLinkedState();
+  }
+
+  public final State stateIsDialogShowing() {
+    return stIsDialogShowing.getLinkedState();
   }
 
   /**
@@ -138,13 +249,35 @@ public abstract class AbstractSearchPanel<K> extends JPanel {
    * @param searchType the search type
    * @return true if the given search type is allowed given the underlying property
    */
-  protected abstract boolean searchTypeAllowed(final SearchType searchType);
+  protected boolean searchTypeAllowed(final SearchType searchType) {
+    return true;
+  }
 
   /**
    * @param isUpperBound true if the field should represent the upper bound, otherwise it should be the lower bound field
    * @return an input field for either the upper or lower bound
    */
-  protected abstract JComponent getInputField(final boolean isUpperBound);
+  protected JComponent getInputField(final boolean isUpperBound) {
+    final DateFormat format = getDateFormat();
+    final JComponent field = initField(format);
+    if (getModel().getType() == Types.BOOLEAN) {
+      createToggleProperty((JCheckBox) field, isUpperBound);
+    }
+    else {
+      createTextProperty(field, isUpperBound, format);
+    }
+
+    if (field instanceof JTextField) {//enter button toggles the filter on/off
+      ((JTextField) field).addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          getModel().setSearchEnabled(!getModel().isSearchEnabled());
+        }
+      });
+    }
+    field.setToolTipText(isUpperBound ? "a" : "b");
+
+    return field;
+  }
 
   /**
    * @param property the Property
@@ -155,7 +288,7 @@ public abstract class AbstractSearchPanel<K> extends JPanel {
   /**
    * @return the Format object to use when formatting input, is any
    */
-  protected abstract Format getInputFormat();
+  protected abstract DateFormat getDateFormat();
 
   /**
    * Binds events to relevant GUI actions
@@ -221,8 +354,8 @@ public abstract class AbstractSearchPanel<K> extends JPanel {
     setLayout(new FlexibleGridLayout(2,1,1,1,true,false));
     ((FlexibleGridLayout)getLayout()).setFixedRowHeight(new JTextField().getSize().height);
 
-    this.toggleSearchEnabled.setPreferredSize(new Dimension(20,20));
-    this.toggleSearchAdvanced.setPreferredSize(new Dimension(20,20));
+    this.toggleSearchEnabled.setPreferredSize(new Dimension(ENABLED_BUTTON_SIZE, ENABLED_BUTTON_SIZE));
+    this.toggleSearchAdvanced.setPreferredSize(new Dimension(ENABLED_BUTTON_SIZE, ENABLED_BUTTON_SIZE));
   }
 
   private void initSimplePanel() {
@@ -293,5 +426,90 @@ public abstract class AbstractSearchPanel<K> extends JPanel {
     }
     UiUtil.linkToEnabledState(stUnlocked, toggleSearchAdvanced);
     UiUtil.linkToEnabledState(stUnlocked, toggleSearchEnabled);
+  }
+
+  private void initSearchDlg(Container parent) {
+    if (dialog != null) {
+      return;
+    }
+
+    final JDialog dlgParent = UiUtil.getParentDialog(parent);
+    if (dlgParent != null) {
+      dialog = new JDialog(dlgParent, getModel().getSearchKey().toString(), false);
+    }
+    else {
+      dialog = new JDialog(UiUtil.getParentFrame(parent), getModel().getSearchKey().toString(), false);
+    }
+
+    final JPanel searchPanel = new JPanel(new BorderLayout());
+    searchPanel.add(this, BorderLayout.NORTH);
+    dialog.getContentPane().add(searchPanel);
+    dialog.pack();
+
+    stateAdvancedSearch().eventStateChanged().addListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        dialog.pack();
+      }
+    });
+
+    dialog.addWindowListener(new WindowAdapter() {
+      @Override
+      public void windowClosing(WindowEvent e) {
+        inactivateDialog();
+      }
+    });
+  }
+
+  private JComponent initField(final Format format) {
+    if (getModel().getType() == Types.DATE || getModel().getType() == Types.TIMESTAMP) {
+      return UiUtil.createFormattedField(DateUtil.getDateMask((SimpleDateFormat) format));
+    }
+    else if (getModel().getType() == Types.DOUBLE) {
+      return new DoubleField(4);
+    }
+    else if (getModel().getType() == Types.INTEGER) {
+      return new IntField(4);
+    }
+    else if (getModel().getType() == Types.BOOLEAN) {
+      return new JCheckBox();
+    }
+    else {
+      return new JTextField(4);
+    }
+  }
+
+  private void createToggleProperty(final JCheckBox checkBox, final boolean isUpperBound) {
+    new ToggleBeanValueLink(checkBox.getModel(), getModel(),
+            isUpperBound ? SearchModel.UPPER_BOUND_PROPERTY : SearchModel.LOWER_BOUND_PROPERTY,
+            isUpperBound ? getModel().eventUpperBoundChanged() : getModel().eventLowerBoundChanged());
+  }
+
+  private TextBeanValueLink createTextProperty(final JComponent component, boolean isUpper, final DateFormat format) {
+    if (getModel().getType() == Types.INTEGER) {
+      return new IntBeanValueLink((IntField) component, getModel(),
+              isUpper ? SearchModel.UPPER_BOUND_PROPERTY : SearchModel.LOWER_BOUND_PROPERTY,
+              isUpper ? getModel().eventUpperBoundChanged() : getModel().eventLowerBoundChanged());
+    }
+    if (getModel().getType() == Types.DOUBLE) {
+      return new DoubleBeanValueLink((DoubleField) component, getModel(),
+              isUpper ? SearchModel.UPPER_BOUND_PROPERTY : SearchModel.LOWER_BOUND_PROPERTY,
+              isUpper ? getModel().eventUpperBoundChanged() : getModel().eventLowerBoundChanged());
+    }
+    if (getModel().getType() == Types.DATE) {
+      return new DateBeanValueLink((JFormattedTextField) component, getModel(),
+              isUpper ? SearchModel.UPPER_BOUND_PROPERTY : SearchModel.LOWER_BOUND_PROPERTY,
+              isUpper ? getModel().eventUpperBoundChanged() : getModel().eventLowerBoundChanged(),
+              LinkType.READ_WRITE, format);
+    }
+    if (getModel().getType() == Types.TIMESTAMP) {
+      return new TimestampBeanValueLink((JFormattedTextField) component, getModel(),
+              isUpper ? SearchModel.UPPER_BOUND_PROPERTY : SearchModel.LOWER_BOUND_PROPERTY,
+              isUpper ? getModel().eventUpperBoundChanged() : getModel().eventLowerBoundChanged(),
+              LinkType.READ_WRITE, format);
+    }
+
+    return new TextBeanValueLink((JTextField) component, getModel(),
+            isUpper ? SearchModel.UPPER_BOUND_PROPERTY : SearchModel.LOWER_BOUND_PROPERTY,
+            String.class, isUpper ? getModel().eventUpperBoundChanged() : getModel().eventLowerBoundChanged());
   }
 }

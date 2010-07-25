@@ -14,7 +14,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JComponent;
 import java.awt.event.ActionEvent;
-import java.text.Format;
+import java.text.DateFormat;
 
 /**
  * User: Björn Darri
@@ -49,7 +49,7 @@ public class ForeignKeySearchPanel extends AbstractSearchPanel<Property.ForeignK
     return field;
   }
 
-  protected Format getInputFormat() {
+  protected DateFormat getDateFormat() {
     return null;
   }
 

@@ -8,6 +8,8 @@ import java.awt.event.ActionListener;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.Date;
+import java.util.Locale;
+import java.util.regex.Pattern;
 
 /**
  * Encapsulates the property search parameters search type, upper bound and lower bound,
@@ -16,7 +18,7 @@ import java.util.Date;
  * Date: 26.12.2007<br>
  * Time: 14:48:22<br>
  */
-public abstract class AbstractSearchModel<K> implements SearchModel<K> {
+public class DefaultSearchModel<K> implements SearchModel<K> {
 
   private final Event evtUpperBoundChanged = new Event();
   private final Event evtLowerBoundChanged = new Event();
@@ -39,7 +41,7 @@ public abstract class AbstractSearchModel<K> implements SearchModel<K> {
   private Object lowerBound = null;
   private String wildcard;
 
-  public AbstractSearchModel(final K searchKey, final int type, final String wildcard) {
+  public DefaultSearchModel(final K searchKey, final int type, final String wildcard) {
     Util.rejectNullValue(searchKey, "searchKey");
     this.searchKey = searchKey;
     this.type = type;
@@ -79,6 +81,18 @@ public abstract class AbstractSearchModel<K> implements SearchModel<K> {
    */
   public final int getType() {
     return type;
+  }
+
+  public final void setLikeValue(final Comparable value) {
+    setSearchType(SearchType.LIKE);
+    setUpperBound(value);
+    final boolean on = value != null;
+    if (isSearchEnabled() != on) {
+      setSearchEnabled(on);
+    }
+    else {
+      eventUpperBoundChanged().fire();
+    }
   }
 
   /**
@@ -353,6 +367,38 @@ public abstract class AbstractSearchModel<K> implements SearchModel<K> {
     return evtUpperBoundChanged;
   }
 
+  public final boolean include(final Object object) {
+    return include(getComparable(object));
+  }
+
+  public final boolean include(final Comparable comparable) {
+    if (!isSearchEnabled()) {
+      return true;
+    }
+
+    Comparable toCompare = comparable;
+    if (comparable instanceof Timestamp) {//ignore seconds and milliseconds
+      toCompare = DateUtil.floorTimestamp((Timestamp) toCompare);
+    }
+
+    switch (getSearchType()) {
+      case LIKE:
+        return includeLike(toCompare);
+      case NOT_LIKE:
+        return includeNotLike(toCompare);
+      case AT_LEAST:
+        return includeMax(toCompare);
+      case AT_MOST:
+        return includeMin(toCompare);
+      case WITHIN_RANGE:
+        return includeMinMaxInside(toCompare);
+      case OUTSIDE_RANGE:
+        return includeMinMaxOutside(toCompare);
+    }
+
+    throw new RuntimeException("Undefined search type: " + getSearchType());
+  }
+
   public static int getValueCount(final SearchType searchType) {
     switch(searchType) {
       case LIKE:
@@ -366,6 +412,123 @@ public abstract class AbstractSearchModel<K> implements SearchModel<K> {
     }
 
     throw new IllegalArgumentException("Undefined search type " + searchType);
+  }
+
+  protected Comparable getComparable(final Object object) {
+    return (Comparable) object;
+  }
+
+  private boolean includeLike(final Comparable comparable) {
+    if (getUpperBound() == null) {
+      return true;
+    }
+
+    if (comparable == null) {
+      return false;
+    }
+
+    if (comparable instanceof String) {//for Entity and String values
+      return includeExactWildcard((String) comparable);
+    }
+
+    return comparable.compareTo(getUpperBound()) == 0;
+  }
+
+  private boolean includeNotLike(final Comparable comparable) {
+    if (getUpperBound() == null) {
+      return true;
+    }
+
+    if (comparable == null) {
+      return false;
+    }
+
+    if (comparable instanceof String && ((String) comparable).contains(getWildcard())) {
+      return !includeExactWildcard((String) comparable);
+    }
+
+    return comparable.compareTo(getUpperBound()) != 0;
+  }
+
+  private boolean includeExactWildcard(final String value) {
+    String upperBound = (String) getUpperBound();
+    if (upperBound.equals(getWildcard())) {
+      return true;
+    }
+    if (value == null) {
+      return false;
+    }
+
+    String realValue = value;
+    if (!isCaseSensitive()) {
+      upperBound = upperBound.toUpperCase(Locale.getDefault());
+      realValue = realValue.toUpperCase(Locale.getDefault());
+    }
+
+    if (upperBound.indexOf(getWildcard()) < 0) {
+      return realValue.compareTo(upperBound) == 0;
+    }
+
+    return Pattern.matches(prepareForRegex(upperBound), realValue);
+  }
+
+  private String prepareForRegex(final String string) {
+    //a somewhat dirty fix to get rid of the '$' sign from the pattern, since it interferes with the regular expression parsing
+    return string.replaceAll(getWildcard(), ".*").replaceAll("\\$", ".").replaceAll("\\]", "\\\\]").replaceAll("\\[", "\\\\[");
+  }
+
+  private boolean includeMax(final Comparable comparable) {
+    return getUpperBound() == null || comparable != null && comparable.compareTo(getUpperBound()) <= 0;
+  }
+
+  private boolean includeMin(final Comparable comparable) {
+    return getUpperBound() == null || comparable != null && comparable.compareTo(getUpperBound()) >= 0;
+  }
+
+  private boolean includeMinMaxInside(final Comparable comparable) {
+    if (getLowerBound() == null && getUpperBound() == null) {
+      return true;
+    }
+
+    if (comparable == null) {
+      return false;
+    }
+
+    if (getLowerBound() == null) {
+      return comparable.compareTo(getUpperBound()) <= 0;
+    }
+
+    if (getUpperBound() == null) {
+      return comparable.compareTo(getLowerBound()) >= 0;
+    }
+
+    final int lowerCompareResult = comparable.compareTo(getLowerBound());
+    final int upperCompareResult = comparable.compareTo(getUpperBound());
+
+    return lowerCompareResult >= 0 && upperCompareResult <= 0;
+  }
+
+  private boolean includeMinMaxOutside(final Comparable comparable) {
+    if (getLowerBound() == null && getUpperBound() == null) {
+      return true;
+    }
+
+    if (comparable == null) {
+      return false;
+    }
+
+    if (getLowerBound() == null) {
+      return comparable.compareTo(getUpperBound()) >= 0;
+    }
+
+    if (getUpperBound() == null) {
+      return comparable.compareTo(getLowerBound()) <= 0;
+    }
+
+    final int lowerCompareResult = comparable.compareTo(getLowerBound());
+    final int upperCompareResult = comparable.compareTo(getUpperBound());
+
+    return lowerCompareResult <= 0 || upperCompareResult >= 0;
   }
 
   private void bindEvents() {

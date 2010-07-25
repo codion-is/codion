@@ -4,7 +4,7 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.db.criteria.Criteria;
-import org.jminor.common.model.AbstractSearchModel;
+import org.jminor.common.model.DefaultSearchModel;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.domain.Entity;
@@ -21,7 +21,7 @@ import java.util.List;
  * Date: 19.7.2010<br>
  * Time: 13:53:07
  */
-public class DefaultForeignKeySearchModel extends AbstractSearchModel<Property.ForeignKeyProperty>
+public class DefaultForeignKeySearchModel extends DefaultSearchModel<Property.ForeignKeyProperty>
         implements ForeignKeySearchModel {
 
   private final EntityComboBoxModel entityComboBoxModel;
@@ -57,10 +57,6 @@ public class DefaultForeignKeySearchModel extends AbstractSearchModel<Property.F
     }
     this.entityLookupModel = null;
     bindComboBoxEvents();
-  }
-
-  public boolean include(final Object object) {
-    return true;
   }
 
   @Override

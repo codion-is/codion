@@ -318,6 +318,10 @@ public class DefaultEntityEditModel extends DefaultValueChangeMapEditModel<Strin
     validateEntities(modifiedEntities, EntityEditModel.UPDATE);
 
     final List<Entity> updatedEntities = doUpdate(modifiedEntities);
+    final int index = updatedEntities.indexOf(getEntity());
+    if (index >= 0) {
+      setEntity(updatedEntities.get(index));
+    }
 
     evtAfterUpdate.fire(new UpdateEvent(this, updatedEntities, EntityUtil.isPrimaryKeyModified(modifiedEntities)));
   }

@@ -34,7 +34,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
 
   private final String entityID;
   private final List<Property> properties;
-  private final Map<String, PropertyFilterModel> propertyFilterModels;
+  private final Map<String, SearchModel<Property>> propertyFilterModels;
   private final Map<String, PropertySearchModel<? extends Property.SearchableProperty>> propertySearchModels;
   /** When active the search should be simplified */
   private final boolean simpleSearch;
@@ -100,7 +100,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
     stSearchStateChanged.setActive(false);
   }
 
-  public final PropertyFilterModel getPropertyFilterModel(final String propertyID) {
+  public final SearchModel<Property> getPropertyFilterModel(final String propertyID) {
     if (propertyFilterModels.containsKey(propertyID)) {
       return propertyFilterModels.get(propertyID);
     }
@@ -108,8 +108,17 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
     return null;
   }
 
-  public final Collection<PropertyFilterModel> getPropertyFilterModels() {
+  public final Collection<SearchModel<Property>> getPropertyFilterModels() {
     return Collections.unmodifiableCollection(propertyFilterModels.values());
+  }
+
+  public List<SearchModel<Property>> getPropertyFilterModelsOrdered() {
+    final List<SearchModel<Property>> models = new ArrayList<SearchModel<Property>>(properties.size());
+    for (final Property property : properties) {
+      models.add(getPropertyFilterModel(property.getPropertyID()));
+    }
+
+    return models;
   }
 
   public final boolean include(final Entity item) {
@@ -180,7 +189,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
   }
 
   public final void setFilterValue(final String propertyID, final Comparable value) {
-    final PropertyFilterModel filterModel = getPropertyFilterModel(propertyID);
+    final SearchModel<Property> filterModel = getPropertyFilterModel(propertyID);
     if (filterModel != null) {
       filterModel.setLikeValue(value);
     }
@@ -266,7 +275,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
    * @param property the Property for which to initialize a PropertyFilterModel
    * @return a PropertyFilterModel for the given property
    */
-  protected PropertyFilterModel initializePropertyFilterModel(final Property property) {
+  protected SearchModel<Property> initializePropertyFilterModel(final Property property) {
     return new DefaultPropertyFilterModel(property);
   }
 
@@ -290,10 +299,10 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
   /**
    * @return a map of PropertyFilterModels mapped to their respective propertyIDs
    */
-  private Map<String, PropertyFilterModel> initializePropertyFilterModels() {
-    final Map<String, PropertyFilterModel> filters = new HashMap<String, PropertyFilterModel>(properties.size());
+  private Map<String, SearchModel<Property>> initializePropertyFilterModels() {
+    final Map<String, SearchModel<Property>> filters = new HashMap<String, SearchModel<Property>>(properties.size());
     for (final Property property : properties) {
-      final PropertyFilterModel filterModel = initializePropertyFilterModel(property);
+      final SearchModel<Property> filterModel = initializePropertyFilterModel(property);
       filterModel.eventSearchStateChanged().addListener(evtFilterStateChanged);
       filters.put(property.getPropertyID(), filterModel);
     }

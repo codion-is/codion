@@ -19,7 +19,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public interface EntityTableModel extends FilteredTableModel<Entity>, EntityDataProvider {
+public interface EntityTableModel extends FilteredTableModel<Entity, Property>, EntityDataProvider {
 
   /**
    * @return the state used to determine if updating should be enabled

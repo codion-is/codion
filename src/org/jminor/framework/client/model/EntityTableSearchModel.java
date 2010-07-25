@@ -8,6 +8,7 @@ import org.jminor.common.db.criteria.CriteriaSet;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.FilterCriteria;
 import org.jminor.common.model.Refreshable;
+import org.jminor.common.model.SearchModel;
 import org.jminor.common.model.State;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
@@ -127,14 +128,19 @@ public interface EntityTableSearchModel extends FilterCriteria<Entity>, Refresha
   /**
    * @return the property filters configured in this table search model
    */
-  Collection<PropertyFilterModel> getPropertyFilterModels();
+  Collection<SearchModel<Property>> getPropertyFilterModels();
+
+  /**
+   * @return the PropertyFilterModels in the same order as the columns they represent
+   */
+  List<SearchModel<Property>> getPropertyFilterModelsOrdered();
 
   /**
    * The PropertyFilterModel associated with the property identified by <code>propertyID</code>
    * @param propertyID the id of the property for which to retrieve the PropertyFilterModel
    * @return the PropertyFilterModel for the property with id <code>propertyID</code>
    */
-  PropertyFilterModel getPropertyFilterModel(final String propertyID);
+  SearchModel<Property> getPropertyFilterModel(final String propertyID);
 
   /**
    * @param propertyID column propertyID

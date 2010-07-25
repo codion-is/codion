@@ -44,11 +44,15 @@ public interface SearchModel<K> {
    */
   boolean isAutomaticWildcard();
 
+  boolean include(final Comparable comparable);
+
   void setLocked(boolean value);
 
   void setUpperBound(Object upper);
 
   int getType();
+
+  void setLikeValue(final Comparable value);
 
   Object getUpperBound();
 

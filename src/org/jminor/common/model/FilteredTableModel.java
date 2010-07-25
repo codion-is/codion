@@ -11,7 +11,7 @@ import java.awt.Point;
 import java.util.Collection;
 import java.util.List;
 
-public interface FilteredTableModel<T> extends FilteredModel<T>, TableModel, Refreshable {
+public interface FilteredTableModel<T, C> extends FilteredModel<T>, TableModel, Refreshable {
 
   /**
    * @return a State active when the selection is empty
@@ -213,6 +213,17 @@ public interface FilteredTableModel<T> extends FilteredModel<T>, TableModel, Ref
    * @param value the value
    */
   void setRegularExpressionSearch(final boolean value);
+
+  /**
+   * @param columnIndex the column index
+   * @return the SearchModel at the given column index
+   */
+  SearchModel<C> getFilterModel(final int columnIndex);
+
+  /**
+   * @return an unmodifiable list view of the column filter models
+   */
+  List<SearchModel<C>> getFilterModels();
 
   /**
    * @return true if no rows are selected in this table model
