@@ -20,6 +20,7 @@ import javax.rmi.ssl.SslRMIServerSocketFactory;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.net.MalformedURLException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -48,6 +49,9 @@ public final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRem
   static final boolean SSL_CONNECTION_ENABLED =
           System.getProperty(Configuration.SERVER_CONNECTION_SSL_ENABLED, "true").equalsIgnoreCase("true");
 
+  private static final int DEFAULT_CHECK_INTERVAL = 30;
+  private static final int DEFAULT_TIMEOUT = 120;
+
   private static final int SERVER_PORT;
   private static final int SERVER_DB_PORT;
 
@@ -74,8 +78,8 @@ public final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRem
   private final long startDate = System.currentTimeMillis();
 
   private Timer connectionMaintenanceTimer;
-  private int checkMaintenanceInterval = 30; //seconds
-  private int connectionTimeout = 120; //seconds
+  private int checkMaintenanceInterval = DEFAULT_CHECK_INTERVAL; //seconds
+  private int connectionTimeout = DEFAULT_TIMEOUT; //seconds
 
   /**
    * Constructs a new EntityDbRemoteServer and binds it to the given registry
@@ -266,7 +270,10 @@ public final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRem
 
           return null;
         }
-        catch (Exception e) {
+        catch (MalformedURLException e) {
+          throw new RuntimeException(e);
+        }
+        catch (ClassNotFoundException e) {
           throw new RuntimeException(e);
         }
       }

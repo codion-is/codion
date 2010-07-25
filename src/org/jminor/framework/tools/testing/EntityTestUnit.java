@@ -148,12 +148,7 @@ public abstract class EntityTestUnit {
       initializeReferenceEntities(addAllReferencedEntityIDs(entityID, new ArrayList<String>()));
       Entity testEntity = null;
       if (!EntityRepository.isReadOnly(entityID)) {
-        final Entity initialEntity = initializeTestEntity(entityID);
-        if (initialEntity == null) {
-          throw new Exception("No test entity provided " + entityID);
-        }
-
-        testEntity = testInsert(initialEntity);
+        testEntity = testInsert(Util.rejectNullValue(initializeTestEntity(entityID), "test entity"));
         testUpdate(testEntity);
       }
       testSelect(entityID, testEntity);

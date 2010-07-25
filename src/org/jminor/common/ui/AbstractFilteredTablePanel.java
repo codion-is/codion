@@ -426,7 +426,8 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
   }
 
   private static final class Arrow implements Icon {
-    private static final double PRIORITY_SIZE_RATIO = 0.8;
+    private static final double PRIORITY_SIZE_RATIO = 2d;
+    private static final double PRIORITY_SIZE_CONST = 0.8;
     private final boolean descending;
     private final int size;
     private final int priority;
@@ -441,7 +442,7 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
       final Color color = c == null ? Color.GRAY : c.getBackground();
       // In a compound sort, make each succesive triangle 20%
       // smaller than the previous one.
-      final int dx = (int)(size/2*Math.pow(PRIORITY_SIZE_RATIO, priority));
+      final int dx = (int)(size/PRIORITY_SIZE_CONST * Math.pow(PRIORITY_SIZE_RATIO, priority));
       final int dy = descending ? dx : -dx;
       // Align icon (roughly) with font baseline.
       final int theY = y + 5*size/6 + (descending ? -dy : 0);

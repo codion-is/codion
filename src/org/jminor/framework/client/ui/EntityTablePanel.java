@@ -216,8 +216,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
   }
 
   public final EntityTablePanel initializePopupMenu(final ControlSet additionalPopupControls) {
-    final ControlSet tablePopupControls = getPopupControls(additionalPopupControls);
-    setTablePopupMenu(getJTable(), tablePopupControls == null ? new ControlSet() : tablePopupControls);
+    setTablePopupMenu(getJTable(), getPopupControls(additionalPopupControls));
     return this;
   }
 
