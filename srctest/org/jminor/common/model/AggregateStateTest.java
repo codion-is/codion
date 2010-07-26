@@ -19,6 +19,7 @@ public class AggregateStateTest {
     orState.addState(stateThree);
 
     AggregateState andState = new AggregateState(AggregateState.Type.AND, stateOne, stateTwo, stateThree);
+    assertEquals(AggregateState.Type.AND, andState.getType());
     assertEquals("Aggregate AND inactive, inactive, inactive, inactive", andState.toString());
 
     assertFalse("Or state should be inactive", orState.isActive());
@@ -95,7 +96,7 @@ public class AggregateStateTest {
     assertFalse("Or state should be inactive when no component state is active", orState.isActive());
     stateTwo.setActive(true);
     assertTrue("Or state should be active when one component state is active", orState.isActive());
-    
+
     try {
       andState.setActive(false);
       fail("Can not set active on an aggregate state");

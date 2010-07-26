@@ -66,19 +66,6 @@ public final class Util {
   private Util() {}
 
   /**
-   * True if the given objects are equal. Both objects being null results in true.
-   * @param one the first object
-   * @param two the second object
-   * @return true if the given objects are equal
-   */
-  public static boolean isEqual(final Object one, final Object two) {
-    final boolean oneNull = one == null;
-    final boolean twoNull = two == null;
-
-    return oneNull && twoNull || !(oneNull ^ twoNull) && one.equals(two);
-  }
-
-  /**
    * Returns true if the given host is reachable, false if it is not or an exception is thrown while trying
    * @param host the hostname
    * @param timeout the timeout in milliseconds
@@ -468,6 +455,12 @@ public final class Util {
     }
   }
 
+  /**
+   * True if the given objects are equal. Both objects being null results in true.
+   * @param one the first object
+   * @param two the second object
+   * @return true if the given objects are equal
+   */
   public static boolean equal(final Object one, final Object two) {
     return one == null && two == null || !(one == null ^ two == null) && one.equals(two);
   }
@@ -563,10 +556,6 @@ public final class Util {
         return collator.compare(o1.toString(), o2.toString());
       }
     });
-  }
-
-  public static Random getRandom() {
-    return RANDOM;
   }
 
   public static URI getURI(final String urlOrPath) throws URISyntaxException {

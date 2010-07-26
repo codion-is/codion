@@ -89,6 +89,15 @@ public abstract class LoadTestModel {
     if (maximumThinkTime <= 0) {
       throw new IllegalArgumentException("Maximum think time must be a positive integer");
     }
+    if (loginDelayFactor <= 0) {
+      throw new IllegalArgumentException("Login delay factor must be a positive integer");
+    }
+    if (applicationBatchSize <= 0) {
+      throw new IllegalArgumentException("Application batch size must be a positive integer");
+    }
+    if (warningTime <= 0) {
+      throw new IllegalArgumentException("Warning time must be a positive integer");
+    }
 
     this.user = user;
     this.maximumThinkTime = maximumThinkTime;

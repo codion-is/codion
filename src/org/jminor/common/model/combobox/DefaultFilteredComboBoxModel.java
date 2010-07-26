@@ -95,24 +95,30 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   }
 
   public final void filterContents() {
-    visibleItems.addAll(filteredItems);
-    filteredItems.clear();
-    final FilterCriteria<T> criteria = getFilterCriteria();
-    for (final ListIterator<T> itemIterator = visibleItems.listIterator(); itemIterator.hasNext();) {
-      final T item = itemIterator.next();
-      if (item != null && !criteria.include(item)) {
-        filteredItems.add(item);
-        itemIterator.remove();
+    try {
+      evtFilteringStarted.fire();
+      visibleItems.addAll(filteredItems);
+      filteredItems.clear();
+      final FilterCriteria<T> criteria = getFilterCriteria();
+      for (final ListIterator<T> itemIterator = visibleItems.listIterator(); itemIterator.hasNext();) {
+        final T item = itemIterator.next();
+        if (item != null && !criteria.include(item)) {
+          filteredItems.add(item);
+          itemIterator.remove();
+        }
       }
-    }
-    if (sortComparator != null) {
-      Collections.sort(visibleItems, sortComparator);
-    }
-    if (selectedItem != null && !visibleItems.contains(selectedItem)) {
-      setSelectedItem(null);
-    }
+      if (sortComparator != null) {
+        Collections.sort(visibleItems, sortComparator);
+      }
+      if (selectedItem != null && !visibleItems.contains(selectedItem)) {
+        setSelectedItem(null);
+      }
 
-    fireContentsChanged();
+      fireContentsChanged();
+    }
+    finally {
+      evtFilteringDone.fire();
+    }
   }
 
   public void resetContents() {

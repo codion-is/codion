@@ -18,13 +18,15 @@ public class ToggleBeanValueLinkTest {
   @Test
   public void test() throws Exception {
     final JCheckBox checkBox = new JCheckBox();
-    final ToggleBeanValueLink link = new ToggleBeanValueLink(checkBox.getModel(), this, "booleanValue", evtBooleanValueChanged, "");
+    final ToggleBeanValueLink link = new ToggleBeanValueLink(checkBox.getModel(), this, "booleanValue", evtBooleanValueChanged);
     assertEquals(checkBox.getModel(), link.getButtonModel());
     assertFalse("Boolean value should be false on initialization", checkBox.isSelected());
     setBooleanValue(true);
     assertTrue("Boolean value should be true", checkBox.isSelected());
     checkBox.doClick();
     assertFalse("Boolean value should be false", booleanValue);
+
+    new ToggleBeanValueLink(this, "booleanValue", evtBooleanValueChanged);
   }
 
   public boolean isBooleanValue() {

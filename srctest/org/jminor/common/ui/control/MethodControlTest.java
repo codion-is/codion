@@ -49,5 +49,6 @@ public class MethodControlTest {
       fail();
     }
     catch (Exception e) {}
+    new MethodControl("test", this, "method");
   }
 }

@@ -10,12 +10,12 @@ import static org.junit.Assert.assertNull;
 import org.junit.Test;
 
 import javax.swing.JFormattedTextField;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
-public class FormattedTextBeanValueLinkTest {
+public class TimestampBeanValueLinkTest {
 
-  private Date dateValue;
+  private Timestamp timestamp;
   private Event evtDateValueChanged = new Event();
 
   @Test
@@ -23,25 +23,25 @@ public class FormattedTextBeanValueLinkTest {
     final SimpleDateFormat format = DateFormats.getDateFormat(DateFormats.SHORT_DOT);
 
     final JFormattedTextField txtString = UiUtil.createFormattedField(DateUtil.getDateMask(format));
-    new FormattedTextBeanValueLink(txtString, this, "dateValue", Date.class, evtDateValueChanged, LinkType.READ_WRITE, format);
+    new TimestampBeanValueLink(txtString, this, "dateValue", evtDateValueChanged, LinkType.READ_WRITE, format);
     assertEquals("String value should be empty on initialization", "__.__.____", txtString.getText());
 
-    final Date date = format.parse("03.10.1975");
+    final Timestamp date = new Timestamp(format.parse("03.10.1975").getTime());
 
     setDateValue(date);
     assertEquals("String value should be '03.10.1975'", "03.10.1975", txtString.getText());
     txtString.setText("03.03.1983");
-    assertEquals("String value should be 03.03.1983", format.parse("03.03.1983"), getDateValue());
+    assertEquals("String value should be 03.03.1983", new Timestamp(format.parse("03.03.1983").getTime()), timestamp);
     txtString.setText("");
-    assertNull("String value should be empty", getDateValue());
+    assertNull("String value should be empty", timestamp);
   }
 
-  public Date getDateValue() {
-    return dateValue;
+  public Timestamp getDateValue() {
+    return timestamp;
   }
 
-  public void setDateValue(final Date dateValue) {
-    this.dateValue = dateValue;
+  public void setDateValue(final Timestamp timestamp) {
+    this.timestamp = timestamp;
     evtDateValueChanged.fire();
   }
 }

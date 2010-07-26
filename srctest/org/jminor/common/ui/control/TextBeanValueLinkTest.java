@@ -5,8 +5,7 @@ package org.jminor.common.ui.control;
 
 import org.jminor.common.model.Event;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 import javax.swing.JTextField;
@@ -28,6 +27,9 @@ public class TextBeanValueLinkTest {
     assertEquals("String value should be 42", "42", stringValue);
     txtString.setText("");
     assertNull("String value should be null", stringValue);
+
+    new TextBeanValueLink(txtString, this, "stringValue", String.class, evtStringValueChanged, LinkType.READ_ONLY);
+    assertFalse(txtString.isEditable());
   }
 
   public String getStringValue() {

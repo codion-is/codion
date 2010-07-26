@@ -86,12 +86,9 @@ public class DefaultSearchModel<K> implements SearchModel<K> {
   public final void setLikeValue(final Comparable value) {
     setSearchType(SearchType.LIKE);
     setUpperBound(value);
-    final boolean on = value != null;
-    if (isSearchEnabled() != on) {
-      setSearchEnabled(on);
-    }
-    else {
-      eventUpperBoundChanged().fire();
+    final boolean enableSearch = value != null;
+    if (enabled != enableSearch) {
+      setSearchEnabled(enableSearch);
     }
   }
 
@@ -372,7 +369,7 @@ public class DefaultSearchModel<K> implements SearchModel<K> {
   }
 
   public final boolean include(final Comparable comparable) {
-    if (!isSearchEnabled()) {
+    if (!enabled) {
       return true;
     }
 
@@ -381,7 +378,7 @@ public class DefaultSearchModel<K> implements SearchModel<K> {
       toCompare = DateUtil.floorTimestamp((Timestamp) toCompare);
     }
 
-    switch (getSearchType()) {
+    switch (searchType) {
       case LIKE:
         return includeLike(toCompare);
       case NOT_LIKE:
@@ -396,7 +393,7 @@ public class DefaultSearchModel<K> implements SearchModel<K> {
         return includeMinMaxOutside(toCompare);
     }
 
-    throw new RuntimeException("Undefined search type: " + getSearchType());
+    throw new RuntimeException("Undefined search type: " + searchType);
   }
 
   public static int getValueCount(final SearchType searchType) {
@@ -418,6 +415,7 @@ public class DefaultSearchModel<K> implements SearchModel<K> {
     return (Comparable) object;
   }
 
+  @SuppressWarnings({"unchecked"})
   private boolean includeLike(final Comparable comparable) {
     if (getUpperBound() == null) {
       return true;
@@ -434,6 +432,7 @@ public class DefaultSearchModel<K> implements SearchModel<K> {
     return comparable.compareTo(getUpperBound()) == 0;
   }
 
+  @SuppressWarnings({"unchecked"})
   private boolean includeNotLike(final Comparable comparable) {
     if (getUpperBound() == null) {
       return true;
@@ -443,7 +442,7 @@ public class DefaultSearchModel<K> implements SearchModel<K> {
       return false;
     }
 
-    if (comparable instanceof String && ((String) comparable).contains(getWildcard())) {
+    if (comparable instanceof String && ((String) comparable).contains(wildcard)) {
       return !includeExactWildcard((String) comparable);
     }
 
@@ -451,8 +450,8 @@ public class DefaultSearchModel<K> implements SearchModel<K> {
   }
 
   private boolean includeExactWildcard(final String value) {
-    String upperBound = (String) getUpperBound();
-    if (upperBound.equals(getWildcard())) {
+    String upperBoundString = (String) getUpperBound();
+    if (upperBoundString.equals(wildcard)) {
       return true;
     }
     if (value == null) {
@@ -460,31 +459,34 @@ public class DefaultSearchModel<K> implements SearchModel<K> {
     }
 
     String realValue = value;
-    if (!isCaseSensitive()) {
-      upperBound = upperBound.toUpperCase(Locale.getDefault());
+    if (!caseSensitive) {
+      upperBoundString = upperBoundString.toUpperCase(Locale.getDefault());
       realValue = realValue.toUpperCase(Locale.getDefault());
     }
 
-    if (upperBound.indexOf(getWildcard()) < 0) {
-      return realValue.compareTo(upperBound) == 0;
+    if (upperBoundString.indexOf(wildcard) < 0) {
+      return realValue.compareTo(upperBoundString) == 0;
     }
 
-    return Pattern.matches(prepareForRegex(upperBound), realValue);
+    return Pattern.matches(prepareForRegex(upperBoundString), realValue);
   }
 
   private String prepareForRegex(final String string) {
     //a somewhat dirty fix to get rid of the '$' sign from the pattern, since it interferes with the regular expression parsing
-    return string.replaceAll(getWildcard(), ".*").replaceAll("\\$", ".").replaceAll("\\]", "\\\\]").replaceAll("\\[", "\\\\[");
+    return string.replaceAll(wildcard, ".*").replaceAll("\\$", ".").replaceAll("\\]", "\\\\]").replaceAll("\\[", "\\\\[");
   }
 
+  @SuppressWarnings({"unchecked"})
   private boolean includeMax(final Comparable comparable) {
     return getUpperBound() == null || comparable != null && comparable.compareTo(getUpperBound()) <= 0;
   }
 
+  @SuppressWarnings({"unchecked"})
   private boolean includeMin(final Comparable comparable) {
     return getUpperBound() == null || comparable != null && comparable.compareTo(getUpperBound()) >= 0;
   }
 
+  @SuppressWarnings({"unchecked"})
   private boolean includeMinMaxInside(final Comparable comparable) {
     if (getLowerBound() == null && getUpperBound() == null) {
       return true;
@@ -508,6 +510,7 @@ public class DefaultSearchModel<K> implements SearchModel<K> {
     return lowerCompareResult >= 0 && upperCompareResult <= 0;
   }
 
+  @SuppressWarnings({"unchecked"})
   private boolean includeMinMaxOutside(final Comparable comparable) {
     if (getLowerBound() == null && getUpperBound() == null) {
       return true;

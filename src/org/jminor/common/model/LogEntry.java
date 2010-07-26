@@ -86,6 +86,8 @@ public final class LogEntry implements Serializable, Comparable<LogEntry> {
    */
   public void reset() {
     set(null, null, 0, null);
+    this.exitMessage = null;
+    this.subLog = null;
   }
 
   public long getEntryTime() {
