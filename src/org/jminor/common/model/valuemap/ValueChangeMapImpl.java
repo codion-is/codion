@@ -145,14 +145,6 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
     eventValueChanged().fire(new ValueChangeEvent<K, V>(this, this, key, value, oldValue, true, initialization));
   }
 
-  protected final Map<K, V> getOriginalValues() {
-    if (originalValues == null) {
-      return null;
-    }
-
-    return Collections.unmodifiableMap(originalValues);
-  }
-
   protected final void setOriginalValue(final K key, final V oldValue) {
     if (originalValues == null) {
       originalValues = new HashMap<K, V>();

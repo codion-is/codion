@@ -6,6 +6,7 @@ package org.jminor.common.model.valuemap;
 import org.jminor.common.model.formats.DateFormats;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import org.junit.Test;
 
 import java.text.DateFormat;
@@ -45,11 +46,39 @@ public class StringProviderTest {
 
     final DateFormat dateFormat = DateFormats.getDateFormat(DateFormats.SHORT_DOT);
 
-    final StringProvider<String> employeeToString = new StringProvider<String>(EMPLOYEE_NAME)
+    StringProvider<String> employeeToString = new StringProvider<String>(EMPLOYEE_NAME)
             .addText(" (department: ").addValue(EMPLOYEE_DEPARTMENT_FK).addText(", location: ")
             .addReferencedValue(EMPLOYEE_DEPARTMENT_FK, DEPARTMENT_LOCATION).addText(", hiredate: ")
             .addFormattedValue(EMPLOYEE_HIREDATE, dateFormat).addText(")");
 
     assertEquals("Darri (department: Sales, location: Reykjavik, hiredate: " + dateFormat.format(hiredate) + ")", employeeToString.toString(employee));
+
+
+    department.setValue(DEPARTMENT_LOCATION, null);
+    department.setValue(DEPARTMENT_NAME, null);
+
+    employee.setValue(EMPLOYEE_DEPARTMENT_FK, null);
+    employee.setValue(EMPLOYEE_DEPARTMENT_FK, department);
+    employee.setValue(EMPLOYEE_NAME, null);
+    employee.setValue(EMPLOYEE_HIREDATE, null);
+
+    employeeToString = new StringProvider<String>(EMPLOYEE_NAME)
+            .addText(" (department: ").addValue(EMPLOYEE_DEPARTMENT_FK).addText(", location: ")
+            .addReferencedValue(EMPLOYEE_DEPARTMENT_FK, DEPARTMENT_LOCATION).addText(", hiredate: ")
+            .addFormattedValue(EMPLOYEE_HIREDATE, dateFormat).addText(")");
+
+    assertEquals(" (department: null, location: , hiredate: )", employeeToString.toString(employee));
+
+    employee.setValue(EMPLOYEE_DEPARTMENT_FK, null);
+    assertEquals(" (department: , location: , hiredate: )", employeeToString.toString(employee));
+
+    employee.setValue(EMPLOYEE_DEPARTMENT_FK, "hello");
+    try {
+      employeeToString.toString(employee);
+      fail();
+    }
+    catch (RuntimeException e) {}
+
+    new StringProvider();
   }
 }

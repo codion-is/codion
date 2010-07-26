@@ -102,20 +102,6 @@ public final class StringProvider<K> implements ValueMap.ToString<K>, Serializab
     return this;
   }
 
-  /**
-   * Returns true if the given key is referenced
-   * @param referenceKey the key
-   * @return true if the given key is referenced
-   */
-  public boolean references(final K referenceKey) {
-    for (final ValueProvider provider : valueProviders) {
-      if (provider instanceof ReferencedValueProvider && ((ReferencedValueProvider) provider).getReferenceKey().equals(referenceKey)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
   private interface ValueProvider<T> extends Serializable {
     String toString(final ValueMap<T, ?> valueMap);
   }
@@ -162,10 +148,6 @@ public final class StringProvider<K> implements ValueMap.ToString<K>, Serializab
       }
 
       return referencedValueMap.getValue(key).toString();
-    }
-
-    public T getReferenceKey() {
-      return referenceKey;
     }
   }
 

@@ -503,6 +503,7 @@
     </junit>
     <antcall target="unit_test_coverage_report_xml"/>
     <antcall target="unit_test_coverage_report_html"/>
+    <delete dir="${instrumented.dir}" includeEmptyDirs="true"/>
   </target>
 
   <target name="unit_test_coverage_report_xml">

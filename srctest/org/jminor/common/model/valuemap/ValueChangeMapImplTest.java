@@ -6,6 +6,7 @@ package org.jminor.common.model.valuemap;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
+import java.awt.event.ActionEvent;
 import java.util.HashMap;
 
 public class ValueChangeMapImplTest {
@@ -13,11 +14,34 @@ public class ValueChangeMapImplTest {
   @Test
   public void test() {
     final ValueChangeMap<String, Integer> model = new ValueChangeMapImpl<String, Integer>();
+    final String key = "key";
+
+    final ValueChangeListener<String, Integer> valueListener = new ValueChangeListener<String, Integer>() {
+      @Override
+      protected void valueChanged(final ValueChangeEvent<String, Integer> event) {
+        assertEquals(key, event.getKey());
+        assertEquals(model, event.getValueOwner());
+        event.getOldValue();
+        event.getNewValue();
+        event.isInitialization();
+        event.isModelChange();
+        event.isNewValueEqual(null);
+        event.isNewValueNull();
+        event.isOldValueEqual(null);
+        event.isOldValueNull();
+        event.isUIChange();
+      }
+    };
+    try {
+      valueListener.actionPerformed(new ActionEvent(null, -1, null));
+      fail("ValueChangeListener only works with ValueChangeEvent");
+    }
+    catch (IllegalArgumentException e) {}
+    model.addValueListener(valueListener);
 
     model.stateModified();
     model.eventValueChanged();
 
-    final String key = "key";
     assertFalse(model.containsValue(key));
 
     model.setValue(key, 1);
@@ -61,6 +85,18 @@ public class ValueChangeMapImplTest {
     model.removeValue(key);
     assertFalse(model.containsValue(key));
     assertFalse(model.isModified());
+
+    model.setValue(key, 0);
+    model.setValue(key, 1);
+    assertTrue(model.isModified());
+    assertTrue(model.isModified(key));
+    assertEquals(Integer.valueOf(0), model.getOriginalValue(key));
+    assertEquals(Integer.valueOf(0), model.getOriginalCopy().getValue(key));
+    model.saveAll();
+    assertFalse(model.isModified());
+    assertFalse(model.isModified(key));
+
+    model.removeValueListener(valueListener);
   }
 
   @Test

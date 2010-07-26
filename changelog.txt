@@ -1918,3 +1918,4 @@
   DateBeanValueLink and TimestampBeanValueLink added
   ValueMap.getValueCount() removed
   Field and parameter finalization (automatic)
+  common.model.valuemap improved unit tests
