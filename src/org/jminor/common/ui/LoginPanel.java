@@ -90,7 +90,7 @@ public final class LoginPanel extends JPanel {
     return showLoginPanel(parent, defaultUser);
   }
 
-  protected void initUI(final boolean labelsOnTop, final String userLabel, final String passLabel) {
+  private void initUI(final boolean labelsOnTop, final String userLabel, final String passLabel) {
     final JPanel retBase = new JPanel(new FlexibleGridLayout(labelsOnTop ? 4 : 2, labelsOnTop ? 1 : 2,5,5,true,false));
     lblUser.setHorizontalAlignment(labelsOnTop ? JLabel.LEADING : JLabel.RIGHT);
     lblPass.setHorizontalAlignment(labelsOnTop ? JLabel.LEADING : JLabel.RIGHT);

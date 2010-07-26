@@ -1921,3 +1921,4 @@
   common.model.valuemap improved unit tests
   common.model improved unit tests
   common.ui.control improved unit tests
+  common.ui improved and added unit tests

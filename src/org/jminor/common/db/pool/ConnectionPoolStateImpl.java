@@ -15,8 +15,8 @@ public final class ConnectionPoolStateImpl implements ConnectionPoolState, Seria
   private static final long serialVersionUID = 1;
 
   private long time;
-  private int connectionCount;
-  private int connectionsInUse;
+  private int connectionCount = -1;
+  private int connectionsInUse = -1;
 
   public ConnectionPoolStateImpl(final long time, final int connectionCount, final int connectionsInUse) {
     set(time, connectionCount, connectionsInUse);

@@ -148,6 +148,12 @@ public class ConnectionPoolImplTest {
     assertNotNull(statistics.getRequestsDelayedPerSecond());
     assertNotNull(statistics.getConnectionRequestsDelayed());
 
+    final List<ConnectionPoolState> states = statistics.getPoolStatistics();
+    assertFalse(states.isEmpty());
+    final ConnectionPoolState state = states.get(0);
+    assertTrue(state.getConnectionCount() != -1);
+    assertTrue(state.getConnectionsInUse() != -1);
+
     pool.resetPoolStatistics();
     statistics = pool.getConnectionPoolStatistics(startDate.getTime());
     assertEquals(0, statistics.getConnectionRequests());

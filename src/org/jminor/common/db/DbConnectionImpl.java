@@ -88,8 +88,8 @@ public class DbConnectionImpl implements DbConnection {
     return poolTime;
   }
 
-  public final void setPoolRetryCount(final int poolRetryCount) {
-    this.poolRetryCount = poolRetryCount;
+  public final void setPoolRetryCount(final int retryCount) {
+    this.poolRetryCount = retryCount;
   }
 
   public int getPoolRetryCount() {

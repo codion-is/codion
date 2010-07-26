@@ -80,7 +80,7 @@ public final class TextInputPanel extends JPanel {
     return button;
   }
 
-  protected void initializeUI(final JTextComponent textComponent, final JButton button) {
+  private void initializeUI(final JTextComponent textComponent, final JButton button) {
     setLayout(new BorderLayout());
     add(textComponent, BorderLayout.CENTER);
     add(button, BorderLayout.EAST);

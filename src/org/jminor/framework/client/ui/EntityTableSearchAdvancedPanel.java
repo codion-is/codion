@@ -21,8 +21,6 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import java.awt.Dimension;
 import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * A UI component based on the EntityTableSearchModel
@@ -115,24 +113,17 @@ public class EntityTableSearchAdvancedPanel extends AbstractTableColumnSyncPanel
   }
 
   @Override
-  protected Map<TableColumn, JPanel> initializeColumnPanels() {
-    final Map<TableColumn, JPanel> panels = new HashMap<TableColumn, JPanel>();
-    final Enumeration<TableColumn> columnEnumeration = getColumnModel().getColumns();
-    while (columnEnumeration.hasMoreElements()) {
-      final TableColumn column = columnEnumeration.nextElement();
-      final Property property = (Property) column.getIdentifier();
-      if (searchModel.containsPropertySearchModel(property.getPropertyID())) {
-        final PropertySearchModel propertySearchModel = searchModel.getPropertySearchModel(property.getPropertyID());
-        panels.put(column, initializeSearchPanel(propertySearchModel));
-      }
-      else {
-        final JPanel panel = new JPanel();
-        panel.setPreferredSize(new Dimension(panel.getPreferredSize().width, UiUtil.getPreferredTextFieldHeight()));
-        panels.put(column, panel);
-      }
+  protected JPanel initializeColumnPanel(final TableColumn column) {
+    final Property property = (Property) column.getIdentifier();
+    if (searchModel.containsPropertySearchModel(property.getPropertyID())) {
+      final PropertySearchModel propertySearchModel = searchModel.getPropertySearchModel(property.getPropertyID());
+      return initializeSearchPanel(propertySearchModel);
     }
-
-    return panels;
+    else {
+      final JPanel panel = new JPanel();
+      panel.setPreferredSize(new Dimension(panel.getPreferredSize().width, UiUtil.getPreferredTextFieldHeight()));
+      return panel;
+    }
   }
 
   /**

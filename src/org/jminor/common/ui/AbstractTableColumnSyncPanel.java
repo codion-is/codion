@@ -16,6 +16,7 @@ import java.awt.FlowLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -57,7 +58,7 @@ public abstract class AbstractTableColumnSyncPanel extends JPanel {
     resetPanel();
   }
 
-  protected abstract Map<TableColumn, JPanel> initializeColumnPanels();
+  protected abstract JPanel initializeColumnPanel(final TableColumn column);
 
   protected final void resetPanel() {
     removeAll();
@@ -106,6 +107,17 @@ public abstract class AbstractTableColumnSyncPanel extends JPanel {
         }
       });
     }
+  }
+
+  private Map<TableColumn, JPanel> initializeColumnPanels() {
+    final Map<TableColumn, JPanel> panels = new HashMap<TableColumn, JPanel>();
+    final Enumeration<TableColumn> columns = columnModel.getColumns();
+    while (columns.hasMoreElements()) {
+      final TableColumn column = columns.nextElement();
+      panels.put(column, initializeColumnPanel(column));
+    }
+
+    return panels;
   }
 
   private static void syncPanelWidths(final TableColumnModel columnModel, final Map<TableColumn, JPanel> panelMap) {
