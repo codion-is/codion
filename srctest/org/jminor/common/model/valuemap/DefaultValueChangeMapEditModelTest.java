@@ -16,9 +16,15 @@ import java.util.Collection;
 public class DefaultValueChangeMapEditModelTest {
 
   private final ValueChangeMap<String, Integer> valueMap = new ValueChangeMapImpl<String, Integer>();
-  private final DefaultValueChangeMapEditModel<String, Integer> model = new DefaultValueChangeMapEditModel<String, Integer>(valueMap,
-          new DefaultValueMapValidator<String, Integer>() {
+  private final DefaultValueChangeMapEditModel<String, Integer> model =
+          new DefaultValueChangeMapEditModel<String, Integer>(valueMap, new DefaultValueMapValidator<String, Integer>() {
+    @Override
+    public boolean isNullable(final ValueMap<String, Integer> valueMap, final String key) {
+      return super.isNullable(valueMap, key) && false;
+    }
+
     public void validate(final ValueMap<String, Integer> valueMap, final String key, final int action) throws ValidationException {
+      super.validate(valueMap, key, action);
       final Object value = valueMap.getValue(key);
       if (value.equals(-1)) {
         throw new ValidationException(key, -1, "nono");
@@ -62,7 +68,7 @@ public class DefaultValueChangeMapEditModelTest {
     assertTrue(valueSetCounter.size() == 1);
     assertTrue(valueChangeCounter.size() == 1);
 
-    assertTrue(model.isNullable(key));
+    assertFalse(model.isNullable(key));
     assertTrue(!model.isValueNull(key));
     assertEquals(Integer.valueOf(1), valueMap.getValue(key));
     assertEquals(Integer.valueOf(1), model.getValue(key));
@@ -88,6 +94,9 @@ public class DefaultValueChangeMapEditModelTest {
     assertTrue(valueMapSetCounter.size() == 1);
 
     model.setValue(key, -1);
+    assertFalse(model.isValid(key, -1));
+
+    model.setValue(key, null);
     assertFalse(model.isValid(key, -1));
 
     model.setValue(key, 2);
