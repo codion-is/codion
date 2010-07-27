@@ -1922,3 +1922,8 @@
   common.model improved unit tests
   common.ui.control improved unit tests
   common.ui improved and added unit tests
+  common.model.valuemap.Validator added
+  DefaultValidator added
+  DefaultValueChangeMapEditModel.getValidator() added
+  EntityValidator added
+  DefaultEntityValidator added

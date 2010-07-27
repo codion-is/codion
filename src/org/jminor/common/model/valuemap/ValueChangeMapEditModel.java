@@ -9,18 +9,6 @@ import org.jminor.common.model.State;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 
 public interface ValueChangeMapEditModel<K, V> extends Refreshable {
-  /**
-   * Code for the insert action, used during validation
-   */
-  int INSERT = 1;
-  /**
-   * Code for the update action, used during validation
-   */
-  int UPDATE = 2;
-  /**
-   * Code for an unknown action, used during validation
-   */
-  int UNKNOWN = 3;
 
   /**
    * @return a State indicating the modified status of this value map
@@ -46,6 +34,8 @@ public interface ValueChangeMapEditModel<K, V> extends Refreshable {
    * @return an Event object which fires when the value of <code>key</code> changes
    */
   Event getValueChangeEvent(K key);
+
+  ValueMapValidator<K, V> getValidator();
 
   /**
    * Sets the active value map, that is, deep copies the value from the source map into the underlying map
@@ -87,23 +77,6 @@ public interface ValueChangeMapEditModel<K, V> extends Refreshable {
   ValueMap<K, V> getDefaultValueMap();
 
   /**
-   * @param valueMap the value map
-   * @param key the key
-   * @return true if this value is allowed to be null in the given value map
-   */
-  boolean isNullable(final ValueChangeMap<K, V> valueMap, final K key);
-
-  /**
-   * Checks if the value associated with the give key is valid, throws a ValidationException if not
-   * @param valueMap the value map to validate
-   * @param key the key the value is associated with
-   * @param action describes the action requiring validation,
-   * ValueChangeMapEditModel.INSERT, ValueChangeMapEditModel.UPDATE or ValueChangeMapEditModel.UNKNOWN
-   * @throws org.jminor.common.model.valuemap.exception.ValidationException if the given value is not valid for the given key
-   */
-  void validate(final ValueChangeMap<K, V> valueMap, final K key, final int action) throws ValidationException;
-
-  /**
    * Checks if the value associated with the give key is valid, throws a ValidationException if not
    * @param key the key
    * @param action describes the action requiring validation,
@@ -119,7 +92,7 @@ public interface ValueChangeMapEditModel<K, V> extends Refreshable {
    * ValueChangeMapEditModel.INSERT, ValueChangeMapEditModel.UPDATE or ValueChangeMapEditModel.UNKNOWN
    * @return true if the value is valid
    * @see #validate(Object, int)
-   * @see #validate(ValueChangeMap, Object, int)
+   * @see ValueMapValidator#validate(ValueMap
    */
   boolean isValid(final K key, final int action);
 }

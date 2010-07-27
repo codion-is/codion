@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
+ */
 package org.jminor.framework.client.model;
 
 import org.jminor.common.db.criteria.Criteria;
@@ -12,23 +15,9 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
 import javax.swing.ComboBoxModel;
-import java.util.Collection;
 import java.util.List;
 
 public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>, EntityDataProvider {
-
-  /**
-   * Code for the insert action, used during validation
-   */
-  int INSERT = 1;
-  /**
-   * Code for the update action, used during validation
-   */
-  int UPDATE = 2;
-  /**
-   * Code for an unknown action, used during validation
-   */
-  int UNKNOWN = 3;
 
   /**
    * Indicates whether the model is active and ready to receive input
@@ -133,15 +122,6 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * @see org.jminor.framework.domain.Entity#isNull()
    */
   boolean isEntityNew();
-
-  /**
-   * Validates the given Entity objects.
-   * @param entities the entities to validate
-   * @param action describes the action requiring validation,
-   * EntityEditor.INSERT, EntityEditor.UPDATE or EntityEditor.UNKNOWN
-   * @throws ValidationException in case the validation fails
-   */
-  void validateEntities(final Collection<Entity> entities, final int action) throws ValidationException;//todo Validator interface?
 
   /**
    * Sets the active state of this edit model, an active edit model should be
@@ -356,7 +336,7 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * @throws DbException in case of a database exception
    * @throws CancelException in case the user cancels the operation
    * @throws org.jminor.common.model.valuemap.exception.ValidationException in case validation fails
-   * @see #validateEntities(java.util.Collection, int)
+   * @see org.jminor.framework.domain.EntityValidator#validate(java.util.Collection, int)
    */
   void insert() throws CancelException, DbException, ValidationException;
 
@@ -368,7 +348,7 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * @throws ValidationException in case validation fails
    * @see #eventBeforeInsert()
    * @see #eventAfterInsert()
-   * @see #validateEntities(java.util.Collection, int)
+   * @see org.jminor.framework.domain.EntityValidator#validate(java.util.Collection, int)
    */
   void insert(List<Entity> entities) throws CancelException, DbException, ValidationException;
 
@@ -378,7 +358,7 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * @throws CancelException in case the user cancels the operation
    * @throws org.jminor.common.db.exception.RecordModifiedException in case an entity was modified by another user
    * @throws org.jminor.common.model.valuemap.exception.ValidationException in case validation fails
-   * @see #validateEntities(java.util.Collection, int)
+   * @see org.jminor.framework.domain.EntityValidator#validate(java.util.Collection, int)
    */
   void update() throws CancelException, DbException, ValidationException;
 
@@ -392,7 +372,7 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * @throws ValidationException in case validation fails
    * @see #eventBeforeUpdate
    * @see #eventAfterUpdate
-   * @see #validateEntities(java.util.Collection, int)
+   * @see org.jminor.framework.domain.EntityValidator#validate(java.util.Collection, int)
    */
   void update(final List<Entity> entities) throws DbException, CancelException, ValidationException;
 

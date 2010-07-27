@@ -52,17 +52,9 @@ public class RandomItemModel<T> {
   public RandomItemModel(final int defaultWeight, final T... items) {
     if (items != null) {
       for (final T item : items) {
-        addItem(item, defaultWeight);
+        this.items.add(new RandomItem<T>(item, defaultWeight));
       }
     }
-  }
-
-  /**
-   * Adds the given item to this model with default weight of 0.
-   * @param item the item to add
-   */
-  public final void addItem(final T item) {
-    addItem(item, 0);
   }
 
   /**
@@ -72,6 +64,43 @@ public class RandomItemModel<T> {
    */
   public void addItem(final T item, final int weight) {
     items.add(new RandomItem<T>(item, weight));
+  }
+
+  /**
+   * Increments the weight of the given item by one
+   * @param item the item
+   */
+  public void increment(final T item) {
+    getRandomItem(item).increment();
+    eventWeightsChanged().fire();
+  }
+
+  /**
+   * Decrements the weight of the given item by one
+   * @param item the item
+   * @throws IllegalStateException in case the weight is 0
+   */
+  public void decrement(final T item) {
+    getRandomItem(item).decrement();
+    eventWeightsChanged().fire();
+  }
+
+  /**
+   * Sets the weight of the given item
+   * @param item the item
+   * @param weight the value
+   */
+  public void setWeight(final T item, final int weight) {
+    getRandomItem(item).setWeight(weight);
+    eventWeightsChanged().fire();
+  }
+
+  /**
+   * Adds the given item to this model with default weight of 0.
+   * @param item the item to add
+   */
+  public final void addItem(final T item) {
+    addItem(item, 0);
   }
 
   /**
@@ -139,35 +168,6 @@ public class RandomItemModel<T> {
   }
 
   /**
-   * Increments the weight of the given item by one
-   * @param item the item
-   */
-  public void increment(final T item) {
-    getRandomItem(item).increment();
-    eventWeightsChanged().fire();
-  }
-
-  /**
-   * Decrements the weight of the given item by one
-   * @param item the item
-   * @throws IllegalStateException in case the weight is 0
-   */
-  public void decrement(final T item) {
-    getRandomItem(item).decrement();
-    eventWeightsChanged().fire();
-  }
-
-  /**
-   * Sets the weight of the given item
-   * @param item the item
-   * @param weight the value
-   */
-  public void setWeight(final T item, final int weight) {
-    getRandomItem(item).setWeight(weight);
-    eventWeightsChanged().fire();
-  }
-
-  /**
    * Returns the weight of the given item.
    * @param item the item
    * @return the item weight
@@ -217,11 +217,11 @@ public class RandomItemModel<T> {
       this.weight = weight;
     }
 
-    public int getWeight() {
+    public final int getWeight() {
       return weight;
     }
 
-    public T getItem() {
+    public final T getItem() {
       return item;
     }
 
@@ -231,20 +231,20 @@ public class RandomItemModel<T> {
     }
 
     @Override
-    public boolean equals(final Object obj) {
+    public final boolean equals(final Object obj) {
       return obj instanceof RandomItem && (((RandomItem) obj).item.equals(item));
     }
 
     @Override
-    public int hashCode() {
+    public final int hashCode() {
       return item.hashCode();
     }
 
-    void increment() {
+    final void increment() {
       weight++;
     }
 
-    void decrement() {
+    final void decrement() {
       if (weight == 0) {
         throw new IllegalStateException("Weight can not be negative");
       }
@@ -252,7 +252,7 @@ public class RandomItemModel<T> {
       weight--;
     }
 
-    void setWeight(final int weight) {
+    final void setWeight(final int weight) {
       if (weight < 0) {
         throw new IllegalStateException("Weight can not be negative");
       }

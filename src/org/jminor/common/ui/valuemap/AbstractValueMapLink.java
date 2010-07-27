@@ -4,6 +4,7 @@
 package org.jminor.common.ui.valuemap;
 
 import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
+import org.jminor.common.model.valuemap.ValueMapValidator;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.common.ui.control.AbstractValueLink;
 import org.jminor.common.ui.control.LinkType;
@@ -69,7 +70,7 @@ public abstract class AbstractValueMapLink<K, V> extends AbstractValueLink<Value
    */
   protected final String getValidationMessage(final ValueChangeMapEditModel<K, V> editModel) {
     try {
-      editModel.validate(key, ValueChangeMapEditModel.UNKNOWN);
+      editModel.validate(key, ValueMapValidator.UNKNOWN);
       return null;
     }
     catch (ValidationException e) {

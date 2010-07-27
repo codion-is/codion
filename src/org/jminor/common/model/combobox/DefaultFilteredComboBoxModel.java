@@ -58,7 +58,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
    */
   public DefaultFilteredComboBoxModel(final String nullValueString) {
     this.nullValueString = nullValueString;
-    this.sortComparator = initializeItemSortComparator();
+    this.sortComparator = new SortComparator<T>(nullValueString);
   }
 
   public final void refresh() {
@@ -294,47 +294,46 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     return contents;
   }
 
-  /**
-   * Initializes the comparator to use when sorting the items in this model,
-   * if the model should not be sorted simply override and return null.
-   * @return the Comparator to use when sorting the contents of this model.
-   */
-  protected Comparator<T> initializeItemSortComparator() {
-    return new Comparator<T>() {
-      private final Collator collator = Collator.getInstance();
-      @SuppressWarnings({"unchecked"})
-      public int compare(final T o1, final T o2) {
-        if (o1 == null && o2 == null) {
-          return 0;
-        }
-        if (o1 == null) {
-          return -1;
-        }
-        if (o2 == null) {
-          return 1;
-        }
-        if (nullValueString != null) {
-          if (o1.equals(nullValueString)) {
-            return -1;
-          }
-          if (o2.equals(nullValueString)) {
-            return 1;
-          }
-        }
-        if (o1 instanceof Comparable && o2 instanceof Comparable) {
-          return ((Comparable) o1).compareTo(o2);
-        }
-        else {
-          return collator.compare(o1.toString(), o2.toString());
-        }
-      }
-    };
-  }
-
   protected final void fireContentsChanged() {
     final ListDataEvent event = new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0, Integer.MAX_VALUE);
     for (final ListDataListener dataListener : listDataListeners) {
       dataListener.contentsChanged(event);
+    }
+  }
+
+  private static final class SortComparator<T> implements Comparator<T> {
+    final String nullValueString;
+
+    SortComparator(final String nullValueString) {
+      this.nullValueString = nullValueString;
+    }
+
+    private final Collator collator = Collator.getInstance();
+    @SuppressWarnings({"unchecked"})
+    public int compare(final T o1, final T o2) {
+      if (o1 == null && o2 == null) {
+        return 0;
+      }
+      if (o1 == null) {
+        return -1;
+      }
+      if (o2 == null) {
+        return 1;
+      }
+      if (nullValueString != null) {
+        if (o1.equals(nullValueString)) {
+          return -1;
+        }
+        if (o2.equals(nullValueString)) {
+          return 1;
+        }
+      }
+      if (o1 instanceof Comparable && o2 instanceof Comparable) {
+        return ((Comparable) o1).compareTo(o2);
+      }
+      else {
+        return collator.compare(o1.toString(), o2.toString());
+      }
     }
   }
 }

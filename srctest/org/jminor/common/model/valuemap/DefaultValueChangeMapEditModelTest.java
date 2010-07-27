@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
+ */
 package org.jminor.common.model.valuemap;
 
 import org.jminor.common.model.valuemap.exception.ValidationException;
@@ -13,16 +16,15 @@ import java.util.Collection;
 public class DefaultValueChangeMapEditModelTest {
 
   private final ValueChangeMap<String, Integer> valueMap = new ValueChangeMapImpl<String, Integer>();
-  private final DefaultValueChangeMapEditModel<String, Integer> model = new DefaultValueChangeMapEditModel<String, Integer>(valueMap) {
-    @Override
-    public void validate(final ValueChangeMap<String, Integer> valueMap, final String key, final int action) throws ValidationException {
-      super.validate(valueMap, key, action);
+  private final DefaultValueChangeMapEditModel<String, Integer> model = new DefaultValueChangeMapEditModel<String, Integer>(valueMap,
+          new DefaultValueMapValidator<String, Integer>() {
+    public void validate(final ValueMap<String, Integer> valueMap, final String key, final int action) throws ValidationException {
       final Object value = valueMap.getValue(key);
       if (value.equals(-1)) {
         throw new ValidationException(key, -1, "nono");
       }
     }
-  };
+  });
 
   private final Collection<Object> valueChangeCounter = new ArrayList<Object>();
   private final Collection<Object> valueSetCounter = new ArrayList<Object>();
@@ -34,12 +36,12 @@ public class DefaultValueChangeMapEditModelTest {
       valueChangeCounter.add(new Object());
     }
   };
-  private ActionListener valueSetListener = new ActionListener() {
+  private final ActionListener valueSetListener = new ActionListener() {
     public void actionPerformed(final ActionEvent e) {
       valueSetCounter.add(new Object());
     }
   };
-  private ActionListener valueMapSetListener = new ActionListener() {
+  private final ActionListener valueMapSetListener = new ActionListener() {
     public void actionPerformed(final ActionEvent e) {
       valueMapSetCounter.add(new Object());
     }

@@ -10,6 +10,8 @@ import java.util.Map;
 
 public class ValueMapImpl<K, V> implements ValueMap<K, V>, Serializable {
 
+  private static final long serialVersionUID = 1;
+
   /**
    * Holds the values contained in this value map.
    */

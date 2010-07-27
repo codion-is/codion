@@ -107,6 +107,7 @@ public final class StringProvider<K> implements ValueMap.ToString<K>, Serializab
   }
 
   private static class FormattedValueProvider<T> implements ValueProvider<T> {
+    private static final long serialVersionUID = 1;
     private final T key;
     private final Format format;
 
@@ -125,6 +126,7 @@ public final class StringProvider<K> implements ValueMap.ToString<K>, Serializab
   }
 
   private static class ReferencedValueProvider<T> implements ValueProvider<T> {
+    private static final long serialVersionUID = 1;
     private final T referenceKey;
     private final T key;
 
@@ -152,6 +154,7 @@ public final class StringProvider<K> implements ValueMap.ToString<K>, Serializab
   }
 
   private static class StringValueProvider<T> implements ValueProvider<T> {
+    private static final long serialVersionUID = 1;
     private final T key;
 
     StringValueProvider(final T key) {
@@ -168,6 +171,7 @@ public final class StringProvider<K> implements ValueMap.ToString<K>, Serializab
   }
 
   private static class StaticTextProvider<T> implements ValueProvider<T> {
+    private static final long serialVersionUID = 1;
     private final String text;
 
     StaticTextProvider(final String text) {

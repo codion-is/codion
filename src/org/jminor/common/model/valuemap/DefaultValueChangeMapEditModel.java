@@ -40,13 +40,17 @@ public class DefaultValueChangeMapEditModel<K, V> implements ValueChangeMapEditM
    */
   private final Map<K, Event> valueChangeEventMap = new HashMap<K, Event>();
 
+  private final ValueMapValidator<K, V> validator;
+
   /**
    * Instantiates a new edit model instance for the given value map.
    * @param initialMap the value map to edit
+   * @param validator the validator
    */
-  public DefaultValueChangeMapEditModel(final ValueChangeMap<K, V> initialMap) {
+  public DefaultValueChangeMapEditModel(final ValueChangeMap<K, V> initialMap, final ValueMapValidator<K, V> validator) {
     Util.rejectNullValue(initialMap, "initialMap");
     this.valueMap = initialMap;
+    this.validator = validator;
     bindEventsInternal();
   }
 
@@ -58,19 +62,17 @@ public class DefaultValueChangeMapEditModel<K, V> implements ValueChangeMapEditM
     return new ValueChangeMapImpl<K, V>(valueMap.size());
   }
 
-  public boolean isNullable(final K key) {
-    return isNullable(valueMap, key);
+  public final ValueMapValidator<K, V> getValidator() {
+    return validator;
   }
 
-  public boolean isNullable(final ValueChangeMap<K, V> valueMap, final K key) {
-    return true;
+  public final boolean isNullable(final K key) {
+    return validator.isNullable(valueMap, key);
   }
 
-  public void validate(final K key, final int action) throws ValidationException {
-    validate(valueMap, key, action);
+  public final void validate(final K key, final int action) throws ValidationException {
+    validator.validate(valueMap, key, action);
   }
-
-  public void validate(final ValueChangeMap<K, V> valueMap, final K key, final int action) throws ValidationException {}
 
   public final V getValue(final K key) {
     return valueMap.getValue(key);
@@ -99,7 +101,7 @@ public class DefaultValueChangeMapEditModel<K, V> implements ValueChangeMapEditM
   public final boolean isValid(final K key, final int action) {
     Util.rejectNullValue(key, "key");
     try {
-      validate(key, action);
+      validator.validate(getValueMap(), key, action);
       return true;
     }
     catch (ValidationException e) {

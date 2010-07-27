@@ -13,11 +13,8 @@ import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.DefaultValueChangeMapEditModel;
 import org.jminor.common.model.valuemap.ValueChangeEvent;
 import org.jminor.common.model.valuemap.ValueChangeListener;
-import org.jminor.common.model.valuemap.ValueChangeMap;
 import org.jminor.common.model.valuemap.ValueCollectionProvider;
 import org.jminor.common.model.valuemap.ValueProvider;
-import org.jminor.common.model.valuemap.exception.NullValidationException;
-import org.jminor.common.model.valuemap.exception.RangeValidationException;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.event.DeleteEvent;
@@ -28,8 +25,8 @@ import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.EntityUtil;
+import org.jminor.framework.domain.EntityValidator;
 import org.jminor.framework.domain.Property;
-import org.jminor.framework.i18n.FrameworkMessages;
 
 import org.apache.log4j.Logger;
 
@@ -99,7 +96,17 @@ public class DefaultEntityEditModel extends DefaultValueChangeMapEditModel<Strin
    * @param dbProvider the EntityDbProvider instance
    */
   public DefaultEntityEditModel(final String entityID, final EntityDbProvider dbProvider) {
-    super(Entities.entityInstance(entityID));
+    this(entityID, dbProvider, new DefaultEntityValidator(entityID));
+  }
+
+  /**
+   * Instantiates a new EntityEditModel based on the entity identified by <code>entityID</code>.
+   * @param entityID the ID of the entity to base this EntityEditModel on
+   * @param dbProvider the EntityDbProvider instance
+   * @param validator the validator to use
+   */
+  public DefaultEntityEditModel(final String entityID, final EntityDbProvider dbProvider, final EntityValidator validator) {
+    super(Entities.entityInstance(entityID), validator);
     Util.rejectNullValue(dbProvider, "dbProvider");
     if (!Configuration.getBooleanValue(Configuration.ALL_PANELS_ACTIVE)) {
       ACTIVE_STATE_GROUP.addState(stActive);
@@ -112,17 +119,6 @@ public class DefaultEntityEditModel extends DefaultValueChangeMapEditModel<Strin
     bindEvents();
   }
 
-  /**
-   * Returns true if the given property accepts a null value, by default this
-   * method simply returns <code>property.isNullable()</code>
-   * @param key the property ID
-   * @return true if the property accepts a null value
-   */
-  @Override
-  public boolean isNullable(final String key) {
-    return isNullable(getEntity(), key);
-  }
-
   public Object getDefaultValue(final Property property) {
     return persistValueOnClear(property) ? getValue(property.getPropertyID()) : property.getDefaultValue();
   }
@@ -130,24 +126,6 @@ public class DefaultEntityEditModel extends DefaultValueChangeMapEditModel<Strin
   public boolean persistValueOnClear(final Property property) {
     return property instanceof Property.ForeignKeyProperty
             && Configuration.getBooleanValue(Configuration.PERSIST_FOREIGN_KEY_VALUES);
-  }
-
-  /**
-   * Returns true if the given property accepts a null value for the given entity,
-   * by default this method simply returns <code>property.isNullable()</code>
-   * @param valueMap the entity being validated
-   * @param key the property ID
-   * @return true if the property accepts a null value
-   */
-  @Override
-  public boolean isNullable(final ValueChangeMap<String, Object> valueMap, final String key) {
-    return EntityRepository.getProperty(entityID, key).isNullable();
-  }
-
-  public boolean isEntityNew() {
-    final Entity.Key key = ((Entity) getValueMap()).getPrimaryKey();
-    final Entity.Key originalkey = ((Entity) getValueMap()).getOriginalPrimaryKey();
-    return key.isNull() || originalkey.isNull();
   }
 
   public PropertyComboBoxModel createPropertyComboBoxModel(final Property.ColumnProperty property, final Event refreshEvent,
@@ -158,7 +136,7 @@ public class DefaultEntityEditModel extends DefaultValueChangeMapEditModel<Strin
   public EntityComboBoxModel createEntityComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty) {
     Util.rejectNullValue(foreignKeyProperty, "foreignKeyProperty");
     final EntityComboBoxModel model = new DefaultEntityComboBoxModel(foreignKeyProperty.getReferencedEntityID(), dbProvider);
-    model.setNullValueString(isNullable(getEntity(), foreignKeyProperty.getPropertyID()) ?
+    model.setNullValueString(getValidator().isNullable(getEntity(), foreignKeyProperty.getPropertyID()) ?
             (String) Configuration.getValue(Configuration.DEFAULT_COMBO_BOX_NULL_VALUE_ITEM) : null);
 
     return model;
@@ -266,6 +244,12 @@ public class DefaultEntityEditModel extends DefaultValueChangeMapEditModel<Strin
     return stateModified().isActive();
   }
 
+  public final boolean isEntityNew() {
+    final Entity.Key key = ((Entity) getValueMap()).getPrimaryKey();
+    final Entity.Key originalkey = ((Entity) getValueMap()).getOriginalPrimaryKey();
+    return key.isNull() || originalkey.isNull();
+  }
+
   public final void insert() throws CancelException, DbException, ValidationException {
     insert(Arrays.asList(getEntityCopy(!EntityRepository.isPrimaryKeyAutoGenerated(entityID))));
   }
@@ -285,7 +269,7 @@ public class DefaultEntityEditModel extends DefaultValueChangeMapEditModel<Strin
     LOG.debug(toString() + " - insert " + Util.getCollectionContentsAsString(entities, false));
 
     evtBeforeInsert.fire();
-    validateEntities(entities, EntityEditModel.INSERT);
+    ((EntityValidator) getValidator()).validate(entities, EntityValidator.INSERT);
 
     final List<Entity.Key> primaryKeys = EntityUtil.copy(doInsert(entities));
     evtAfterInsert.fire(new InsertEvent(this, primaryKeys));
@@ -315,7 +299,7 @@ public class DefaultEntityEditModel extends DefaultValueChangeMapEditModel<Strin
     }
 
     evtBeforeUpdate.fire();
-    validateEntities(modifiedEntities, EntityEditModel.UPDATE);
+    ((EntityValidator) getValidator()).validate(modifiedEntities, EntityValidator.UPDATE);
 
     final List<Entity> updatedEntities = doUpdate(modifiedEntities);
     final int index = updatedEntities.indexOf(getEntity());
@@ -349,47 +333,6 @@ public class DefaultEntityEditModel extends DefaultValueChangeMapEditModel<Strin
     doDelete(entities);
 
     evtAfterDelete.fire(new DeleteEvent(this, entities));
-  }
-
-  @SuppressWarnings({"UnusedDeclaration"})
-  public void validateEntities(final Collection<Entity> entities, final int action) throws ValidationException {
-    Util.rejectNullValue(entities, "entities");
-    for (final Entity entity : entities) {
-      for (final Property property : EntityRepository.getProperties(entity.getEntityID()).values()) {
-        validate(entity, property.getPropertyID(), action);
-      }
-    }
-  }
-
-  @Override
-  public final void validate(final String key, final int action) throws ValidationException {
-    Util.rejectNullValue(key, "key");
-    validate(getEntity(), key, action);
-  }
-
-  @Override
-  public final void validate(final ValueChangeMap<String, Object> valueMap, final String key, final int action) throws ValidationException {
-    validate((Entity) valueMap, key, action);
-  }
-
-  /**
-   * Validates the given property in the given entity
-   * @param entity the entity to validate
-   * @param propertyID the ID of the property to validate
-   * @param action the action requiring validation
-   * @throws ValidationException in case the validation fails
-   * @see org.jminor.framework.domain.Property#setNullable(boolean)
-   * @see org.jminor.framework.Configuration#PERFORM_NULL_VALIDATION
-   */
-  public void validate(final Entity entity, final String propertyID, final int action) throws ValidationException {
-    Util.rejectNullValue(entity, "entity");
-    final Property property = entity.getProperty(propertyID);
-    if (Configuration.getBooleanValue(Configuration.PERFORM_NULL_VALIDATION)) {
-      performNullValidation(entity, property, action);
-    }
-    if (property.isNumerical()) {
-      performRangeValidation(entity, property);
-    }
   }
 
   @Override
@@ -636,41 +579,6 @@ public class DefaultEntityEditModel extends DefaultValueChangeMapEditModel<Strin
           LOG.debug(msg);
         }
       });
-    }
-  }
-
-  private void performRangeValidation(final Entity entity, final Property property) throws RangeValidationException {
-    if (entity.isValueNull(property.getPropertyID())) {
-      return;
-    }
-
-    final Double value = property.isDouble() ? (Double) entity.getValue(property.getPropertyID())
-            : (Integer) entity.getValue(property.getPropertyID());
-    if (value < (property.getMin() == null ? Double.NEGATIVE_INFINITY : property.getMin())) {
-      throw new RangeValidationException(property.getPropertyID(), value, "'" + property + "' " +
-              FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_TOO_SMALL) + " " + property.getMin());
-    }
-    if (value > (property.getMax() == null ? Double.POSITIVE_INFINITY : property.getMax())) {
-      throw new RangeValidationException(property.getPropertyID(), value, "'" + property + "' " +
-              FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_TOO_LARGE) + " " + property.getMax());
-    }
-  }
-
-  private void performNullValidation(final Entity entity, final Property property, final int action) throws NullValidationException {
-    if (!isNullable(entity, property.getPropertyID()) && entity.isValueNull(property.getPropertyID())) {
-      if (action == EntityEditModel.INSERT) {
-        if ((property instanceof Property.ColumnProperty && !((Property.ColumnProperty) property).columnHasDefaultValue())
-                || (property instanceof Property.PrimaryKeyProperty
-                && !EntityRepository.isPrimaryKeyAutoGenerated(entityID))) {
-          throw new NullValidationException(property.getPropertyID(),
-                  FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_IS_REQUIRED) + ": " + property);
-        }
-      }
-      else {
-        throw new NullValidationException(property.getPropertyID(),
-                FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_IS_REQUIRED) + ": " + property);
-
-      }
     }
   }
 

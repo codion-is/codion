@@ -920,6 +920,8 @@ class PropertyImpl implements Property, Serializable {
   }
 
   static class AuditPropertyImpl extends ColumnPropertyImpl implements AuditProperty, Serializable {
+
+    private static final long serialVersionUID = 1;
     private final AuditAction auditAction;
 
     AuditPropertyImpl(final String propertyID, final int type, final AuditAction auditAction) {
@@ -938,6 +940,8 @@ class PropertyImpl implements Property, Serializable {
 
   static class AuditTimePropertyImpl extends AuditPropertyImpl implements AuditTimeProperty, Serializable {
 
+    private static final long serialVersionUID = 1;
+
     AuditTimePropertyImpl(final String propertyID, final AuditAction auditAction) {
       this(propertyID, auditAction, null);
     }
@@ -948,6 +952,8 @@ class PropertyImpl implements Property, Serializable {
   }
 
   static class AuditUserPropertyImpl extends AuditPropertyImpl implements AuditUserProperty, Serializable {
+
+    private static final long serialVersionUID = 1;
 
     AuditUserPropertyImpl(final String propertyID, final AuditAction auditAction) {
       this(propertyID, auditAction, null);
