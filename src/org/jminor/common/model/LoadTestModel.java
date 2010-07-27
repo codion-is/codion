@@ -22,6 +22,8 @@ import java.util.TimerTask;
  */
 public abstract class LoadTestModel {
 
+  public static final int DEFAULT_UPDATE_INTERVAL = 2000;
+
   protected static final Logger LOG = Util.getLogger(LoadTestModel.class);
 
   protected static final Random RANDOM = new Random();
@@ -73,8 +75,6 @@ public abstract class LoadTestModel {
   private final XYSeries usedMemoryCollection = new XYSeries("Used memory");
   private final XYSeries maxMemoryCollection = new XYSeries("Maximum memory");
   private final XYSeriesCollection memoryUsageCollection = new XYSeriesCollection();
-
-  private static final int DEFAULT_UPDATE_INTERVAL = 2000;
 
   /**
    * Constructs a new LoadTestModel.
@@ -251,8 +251,8 @@ public abstract class LoadTestModel {
     }
   }
 
-  public final void removeApplications() throws Exception {
-    for (int i = 0; i < applicationBatchSize && !applications.isEmpty(); i++) {
+  public final void removeApplications() {
+    while (!applications.isEmpty()) {
       removeApplication();
     }
   }
@@ -285,9 +285,7 @@ public abstract class LoadTestModel {
     paused = false;
     stopped = true;
     synchronized (applications) {
-      while (!applications.isEmpty()) {
-        removeApplication();
-      }
+      removeApplications();
     }
   }
 
@@ -569,7 +567,7 @@ public abstract class LoadTestModel {
 
     public final void run(final Object application) throws Exception {
       if (application == null) {
-        throw new RuntimeException("Can not run without an application model");
+        throw new RuntimeException("Can not run without an application");
       }
       try {
         prepare(application);

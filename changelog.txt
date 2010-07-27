@@ -1938,3 +1938,5 @@
   AbstractBeanValueLink.getSet/GetMethod() now private
   LoadTestModel.usageScenarios now final, initializeUsageScenarios() removed
   More finalization of classes, fields and methods
+  LoadTestModelTest improved
+  AbstractFilteredTableModelTest improved
