@@ -96,7 +96,7 @@ public class DefaultEntityEditModel extends DefaultValueChangeMapEditModel<Strin
    * @param dbProvider the EntityDbProvider instance
    */
   public DefaultEntityEditModel(final String entityID, final EntityDbProvider dbProvider) {
-    this(entityID, dbProvider, new DefaultEntityValidator(entityID));
+    this(entityID, dbProvider, new DefaultEntityValidator(entityID, dbProvider));
   }
 
   /**

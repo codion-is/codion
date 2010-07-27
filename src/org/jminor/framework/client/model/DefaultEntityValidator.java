@@ -7,6 +7,7 @@ import org.jminor.common.model.valuemap.exception.NullValidationException;
 import org.jminor.common.model.valuemap.exception.RangeValidationException;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.Configuration;
+import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.EntityValidator;
@@ -23,13 +24,33 @@ import java.util.Collection;
 public class DefaultEntityValidator extends DefaultValueMapValidator<String, Object> implements EntityValidator {
 
   private final String entityID;
+  private final EntityDbProvider dbProvider;
 
+  /**
+   * Instantiates a new DefaultEntityValidator
+   * @param entityID the ID of the entities to validate
+   */
   public DefaultEntityValidator(final String entityID) {
-    this.entityID = entityID;
+    this(entityID, null);
   }
 
-  public String getEntityID() {
+  /**
+   * Instantiates a new DefaultEntityValidator
+   * @param entityID the ID of the entities to validate
+   * @param dbProvider the dbProvider in case the validation requires db access, null if not
+   */
+  public DefaultEntityValidator(final String entityID, final EntityDbProvider dbProvider) {
+    Util.rejectNullValue(entityID, "entityID");
+    this.entityID = entityID;
+    this.dbProvider = dbProvider;
+  }
+
+  public final String getEntityID() {
     return entityID;
+  }
+
+  public final EntityDbProvider getDbProvider() {
+    return dbProvider;
   }
 
   /**
@@ -42,6 +63,10 @@ public class DefaultEntityValidator extends DefaultValueMapValidator<String, Obj
   @Override
   public boolean isNullable(final ValueMap<String,Object> valueMap, final String key) {
     return EntityRepository.getProperty(entityID, key).isNullable();
+  }
+
+  public void validate(final Entity entity, final int action) throws ValidationException {
+    validate((ValueMap<String, Object>) entity, action);
   }
 
   public final void validate(final Collection<Entity> entities, final int action) throws ValidationException {

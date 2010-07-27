@@ -7,6 +7,7 @@ import org.jminor.common.model.valuemap.ValueMapValidator;
 import org.jminor.common.model.valuemap.exception.NullValidationException;
 import org.jminor.common.model.valuemap.exception.RangeValidationException;
 import org.jminor.common.model.valuemap.exception.ValidationException;
+import org.jminor.framework.db.provider.EntityDbProvider;
 
 import java.util.Collection;
 
@@ -17,7 +18,25 @@ import java.util.Collection;
  */
 public interface EntityValidator extends ValueMapValidator<String, Object> {
 
+  /**
+   * @return the ID of the entity this validator validates
+   */
   String getEntityID();
+
+  /**
+   * @return the db provider associated with this validator, null if none is available
+   */
+  EntityDbProvider getDbProvider();
+
+  /**
+   * Validates the values in the given entity
+   * @param entity the entity to validate
+   * @param action the action requiring validation
+   * @throws ValidationException in case the validation fails
+   * @see org.jminor.framework.domain.Property#setNullable(boolean)
+   * @see org.jminor.framework.Configuration#PERFORM_NULL_VALIDATION
+   */
+  void validate(final Entity entity, final int action) throws ValidationException;
 
   /**
    * Validates the given property in the given entity

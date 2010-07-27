@@ -8,11 +8,13 @@ import org.jminor.common.ui.control.ControlSet;
 import org.jminor.framework.client.model.DefaultEntityEditModel;
 import org.jminor.framework.client.model.DefaultEntityModel;
 import org.jminor.framework.client.model.DefaultEntityTableModel;
+import org.jminor.framework.client.model.DefaultEntityValidator;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.EntityRepository;
+import org.jminor.framework.domain.EntityValidator;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,10 +35,10 @@ public class EntityPanelProvider implements Comparable {
 
   private Class<? extends EntityModel> modelClass = DefaultEntityModel.class;
   private Class<? extends EntityEditModel> editModelClass = DefaultEntityEditModel.class;
+  private Class<? extends EntityValidator> validatorClass = DefaultEntityValidator.class;
   private Class<? extends EntityTableModel> tableModelClass = DefaultEntityTableModel.class;
   private Class<? extends EntityPanel> panelClass = EntityPanel.class;
   private Class<? extends EntityTablePanel> tablePanelClass = EntityTablePanel.class;
-
   private Class<? extends EntityEditPanel> editPanelClass;
 
   private final List<EntityPanelProvider> detailPanelProviders = new ArrayList<EntityPanelProvider>();
@@ -413,6 +415,26 @@ public class EntityPanelProvider implements Comparable {
     }
   }
 
+  private EntityValidator initializeValidator(final EntityDbProvider dbProvider) {
+    try {
+      final EntityValidator validator;
+      if (validatorClass.equals(DefaultEntityValidator.class)) {
+        validator = initializeDefaultValidator(dbProvider);
+      }
+      else {
+        validator = validatorClass.getConstructor(EntityDbProvider.class).newInstance(dbProvider);
+      }
+
+      return validator;
+    }
+    catch (RuntimeException re) {
+      throw re;
+    }
+    catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
   private EntityTableModel initializeTableModel(final EntityDbProvider dbProvider) {
     try {
       final EntityTableModel tableModel;
@@ -442,10 +464,15 @@ public class EntityPanelProvider implements Comparable {
   }
 
   private EntityEditModel initializeDefaultEditModel(final EntityDbProvider dbProvider) {
-    return new DefaultEntityEditModel(entityID, dbProvider);
+    final EntityValidator validator = initializeValidator(dbProvider);
+    return new DefaultEntityEditModel(entityID, dbProvider, validator);
   }
 
   private EntityTableModel initializeDefaultTableModel(final EntityDbProvider dbProvider) {
     return new DefaultEntityTableModel(entityID, dbProvider);
+  }
+
+  private EntityValidator initializeDefaultValidator(final EntityDbProvider dbProvider) {
+    return new DefaultEntityValidator(entityID, dbProvider);
   }
 }

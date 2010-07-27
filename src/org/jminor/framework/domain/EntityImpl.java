@@ -409,9 +409,10 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
   @Override
   protected void handleInitializeValueChangedEvent() {
     eventValueChanged().addListener(new ValueChangeListener<String, Object>() {
-      protected void valueChanged(final ValueChangeEvent<String, Object> valueChangeEvent) {
-        if (EntityRepository.hasLinkedProperties(entityID, valueChangeEvent.getKey())) {
-          final Collection<String> linkedPropertyIDs = EntityRepository.getLinkedPropertyIDs(entityID, valueChangeEvent.getKey());
+      @Override
+      protected void valueChanged(final ValueChangeEvent<String, Object> event) {
+        if (EntityRepository.hasLinkedProperties(entityID, event.getKey())) {
+          final Collection<String> linkedPropertyIDs = EntityRepository.getLinkedPropertyIDs(entityID, event.getKey());
           for (final String propertyID : linkedPropertyIDs) {
             final Object linkedValue = getValue(propertyID);
             notifyValueChange(propertyID, linkedValue, linkedValue, false);

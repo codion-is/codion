@@ -85,7 +85,6 @@ public class DefaultValueChangeMapEditModel<K, V> implements ValueChangeMapEditM
     final boolean initialization = valueMap.containsValue(key);
     final V oldValue = valueMap.getValue(key);
     valueMap.setValue(key, prepareNewValue(key, value));
-
     if (!Util.equal(value, oldValue)) {
       notifyValueSet(key, new ValueChangeEvent<K, V>(this, valueMap, key, value, oldValue, false, initialization));
     }

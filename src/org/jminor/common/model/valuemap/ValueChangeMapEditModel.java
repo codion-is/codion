@@ -42,6 +42,9 @@ public interface ValueChangeMapEditModel<K, V> extends Refreshable {
    */
   Event getValueChangeEvent(K key);
 
+  /**
+   * @return the validator
+   */
   ValueMapValidator<K, V> getValidator();
 
   /**
