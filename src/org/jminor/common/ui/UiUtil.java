@@ -364,20 +364,22 @@ public final class UiUtil {
     return window == null ? getParentFrame(container) : window;
   }
 
-  public static JFrame getParentFrame(Container container) {
-    while (!(container instanceof JFrame) && (container != null)) {
-      container = container.getParent();
+  public static JFrame getParentFrame(final Container container) {
+    Container parent = container;
+    while (!(parent instanceof JFrame) && (parent != null)) {
+      parent = parent.getParent();
     }
 
-    return (JFrame) container;
+    return (JFrame) parent;
   }
 
-  public static JDialog getParentDialog(Container container) {
-    while (!(container instanceof JDialog) && (container != null)) {
-      container = container.getParent();
+  public static JDialog getParentDialog(final Container container) {
+    Container parent = container;
+    while (!(parent instanceof JDialog) && (parent != null)) {
+      parent = parent.getParent();
     }
 
-    return (JDialog) container;
+    return (JDialog) parent;
   }
 
   public static void centerWindow(final Window window) {

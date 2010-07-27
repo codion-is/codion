@@ -40,21 +40,21 @@ public class Item<T> implements Comparable<Item<T>>, Serializable {
   }
 
   @Override
-  public String toString() {
+  public final String toString() {
     return caption;
   }
 
   @Override
-  public boolean equals(final Object obj) {
+  public final boolean equals(final Object obj) {
     return obj instanceof Item && Util.equal(item, ((Item) obj).item);
   }
 
   @Override
-  public int hashCode() {
+  public final int hashCode() {
     return item == null ? 0 : item.hashCode();
   }
 
-  public int compareTo(final Item<T> o) {
+  public final int compareTo(final Item<T> o) {
     return COLLATOR.get().compare(caption, o.caption);
   }
 }

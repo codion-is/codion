@@ -26,7 +26,7 @@ import java.util.Enumeration;
  * A UI component based on the EntityTableSearchModel
  * @see EntityTableSearchModel
  */
-public class EntityTableSearchAdvancedPanel extends AbstractTableColumnSyncPanel implements EntityTableSearchPanel {
+public final class EntityTableSearchAdvancedPanel extends AbstractTableColumnSyncPanel implements EntityTableSearchPanel {
 
   private final Event evtAdvancedChanged = new Event();
 
@@ -131,7 +131,7 @@ public class EntityTableSearchAdvancedPanel extends AbstractTableColumnSyncPanel
    * @param propertySearchModel the PropertySearchModel for which to create a search panel
    * @return a PropertySearchPanel based on the given model
    */
-  protected AbstractSearchPanel initializeSearchPanel(final PropertySearchModel propertySearchModel) {
+  private AbstractSearchPanel initializeSearchPanel(final PropertySearchModel propertySearchModel) {
     if (propertySearchModel instanceof ForeignKeySearchModel) {
       return new ForeignKeySearchPanel((ForeignKeySearchModel) propertySearchModel, false);
     }

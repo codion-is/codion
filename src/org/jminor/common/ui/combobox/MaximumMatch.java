@@ -18,7 +18,7 @@ import java.awt.event.KeyEvent;
  * Selects an item in a JComboBox based values typed in on the keyboard.
  * @author Thomas Bierhance
  */
-public class MaximumMatch extends PlainDocument {
+public final class MaximumMatch extends PlainDocument {
 
   private final JComboBox comboBox;
   private final ComboBoxModel model;
@@ -96,7 +96,8 @@ public class MaximumMatch extends PlainDocument {
   }
 
   @Override
-  public void remove(int offs, final int len) throws BadLocationException {
+  public void remove(final int offset, final int len) throws BadLocationException {
+    int offs = offset;
     // return immediately when selecting an item
     if (selecting) {
       return;
@@ -121,7 +122,8 @@ public class MaximumMatch extends PlainDocument {
   }
 
   @Override
-  public void insertString(int offs, final String str, final AttributeSet a) throws BadLocationException {
+  public void insertString(final int offset, final String str, final AttributeSet a) throws BadLocationException {
+    int offs = offset;
     // return immediately when selecting an item
     if (selecting || model.getSize() == 0) {
       return;

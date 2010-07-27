@@ -35,7 +35,7 @@ import java.awt.event.ActionEvent;
 import java.sql.Types;
 import java.text.SimpleDateFormat;
 
-public class PropertySearchPanel extends AbstractSearchPanel<Property.ColumnProperty> {
+public final class PropertySearchPanel extends AbstractSearchPanel<Property.ColumnProperty> {
 
   public PropertySearchPanel(final PropertySearchModel<Property.ColumnProperty> model) {
     this(model, false, false);
@@ -58,7 +58,7 @@ public class PropertySearchPanel extends AbstractSearchPanel<Property.ColumnProp
   }
 
   @Override
-  protected final SimpleDateFormat getDateFormat() {
+  protected SimpleDateFormat getDateFormat() {
     if (getModel().getType() == Types.TIMESTAMP) {
       return Configuration.getDefaultTimestampFormat();
     }

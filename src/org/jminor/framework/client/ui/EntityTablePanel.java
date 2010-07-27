@@ -181,7 +181,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
    * @param tableModel the EntityTableModel instance
    */
   public EntityTablePanel(final EntityTableModel tableModel) {
-    this(tableModel, null);
+    this(tableModel, (ControlSet) null);
   }
 
   /**
@@ -190,7 +190,28 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
    * @param additionalPopupControls a ControlSet which will be added to the popup control set
    */
   public EntityTablePanel(final EntityTableModel tableModel, final ControlSet additionalPopupControls) {
-    this(tableModel, additionalPopupControls, null);
+    this(tableModel, additionalPopupControls, null, tableModel.getSearchModel().isSimpleSearch() ?
+            new EntityTableSearchSimplePanel(tableModel.getSearchModel(), tableModel) :
+            new EntityTableSearchAdvancedPanel(tableModel.getSearchModel(), tableModel.getColumnModel()),
+            new EntityTableSummaryPanel(tableModel));
+  }
+
+  /**
+   * Initializes a new EntityTablePanel instance
+   * @param tableModel the EntityTableModel instance
+   * @param searchPanel the search panel
+   */
+  public EntityTablePanel(final EntityTableModel tableModel, final EntityTableSearchPanel searchPanel) {
+    this(tableModel, null, null, searchPanel);
+  }
+
+  /**
+   * Initializes a new EntityTablePanel instance
+   * @param tableModel the EntityTableModel instance
+   * @param summaryPanel the summary panel
+   */
+  public EntityTablePanel(final EntityTableModel tableModel, final EntityTableSummaryPanel summaryPanel) {
+    this(tableModel, null, null, summaryPanel);
   }
 
   /**
@@ -198,12 +219,45 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
    * @param tableModel the EntityTableModel instance
    * @param additionalPopupControls a ControlSet which will be added to the popup control set
    * @param additionalToolbarControls a ControlSet which will be added to the toolbar control set
+   * @param searchPanel the search panel
    */
   public EntityTablePanel(final EntityTableModel tableModel, final ControlSet additionalPopupControls,
-                          final ControlSet additionalToolbarControls) {
+                          final ControlSet additionalToolbarControls,
+                          final EntityTableSearchPanel searchPanel) {
+    this(tableModel, additionalPopupControls, additionalToolbarControls, searchPanel, new EntityTableSummaryPanel(tableModel));
+  }
+
+  /**
+   * Initializes a new EntityTablePanel instance
+   * @param tableModel the EntityTableModel instance
+   * @param additionalPopupControls a ControlSet which will be added to the popup control set
+   * @param additionalToolbarControls a ControlSet which will be added to the toolbar control set
+   * @param summaryPanel the summary panel
+   */
+  public EntityTablePanel(final EntityTableModel tableModel, final ControlSet additionalPopupControls,
+                          final ControlSet additionalToolbarControls,
+                          final EntityTableSummaryPanel summaryPanel) {
+    this(tableModel, additionalPopupControls, additionalToolbarControls, tableModel.getSearchModel().isSimpleSearch() ?
+            new EntityTableSearchSimplePanel(tableModel.getSearchModel(), tableModel) :
+            new EntityTableSearchAdvancedPanel(tableModel.getSearchModel(), tableModel.getColumnModel()),
+            summaryPanel);
+  }
+
+  /**
+   * Initializes a new EntityTablePanel instance
+   * @param tableModel the EntityTableModel instance
+   * @param additionalPopupControls a ControlSet which will be added to the popup control set
+   * @param additionalToolbarControls a ControlSet which will be added to the toolbar control set
+   * @param searchPanel the search panel
+   * @param summaryPanel the summary panel
+   */
+  public EntityTablePanel(final EntityTableModel tableModel, final ControlSet additionalPopupControls,
+                          final ControlSet additionalToolbarControls,
+                          final EntityTableSearchPanel searchPanel,
+                          final EntityTableSummaryPanel summaryPanel) {
     super(tableModel);
-    this.searchPanel = initializeSearchPanel();
-    this.summaryPanel = initializeSummaryPanel();
+    this.searchPanel = searchPanel;
+    this.summaryPanel = summaryPanel;
     setupControls();
     initializeUI();
     initializePopupMenu(additionalPopupControls);
@@ -377,8 +431,8 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
   }
 
   @Override
-  public String toString() {
-    return "EntityTablePanel: " + getTableModel().getEntityID();
+  public final String toString() {
+    return getClass().getSimpleName() + ": " + getTableModel().getEntityID();
   }
 
   /**
@@ -697,12 +751,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     };
     tableModel.setQueryConfigurationAllowed(false);
     tableModel.setEditModel(editModel);
-    final EntityTablePanel tablePanel = new EntityTablePanel(tableModel, null, null) {
-      @Override
-      protected EntityTableSearchPanel initializeSearchPanel() {
-        return null;
-      }
-    };
+    final EntityTablePanel tablePanel = new EntityTablePanel(tableModel, null, null, null, null);
     tableModel.refresh();
 
     return tablePanel;
@@ -1048,30 +1097,6 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     panel.setVerticalFillerWidth(UiUtil.getPreferredScrollBarWidth());
 
     return panel;
-  }
-
-  /**
-   * @return an initialized search panel
-   */
-  protected EntityTableSearchPanel initializeSearchPanel() {
-    return getTableModel().getSearchModel().isSimpleSearch() ? initializeSimpleSearchPanel() : initializeAdvancedSearchPanel();
-  }
-
-  /**
-   * Initializes a simple search panel, with a single search field, which performs a search based on the default
-   * search properties or if none are defined all string based properties
-   * @return a simple search panel
-   * @see org.jminor.framework.domain.EntityDefinition#setSearchPropertyIDs(String[])
-   */
-  protected EntityTableSearchPanel initializeSimpleSearchPanel() {
-    return new EntityTableSearchSimplePanel(getTableModel().getSearchModel(), getTableModel());
-  }
-
-  /**
-   * @return an initialized EntityTableSearchPanel
-   */
-  protected EntityTableSearchPanel initializeAdvancedSearchPanel() {
-    return new EntityTableSearchAdvancedPanel(getTableModel().getSearchModel(), getTableModel().getColumnModel());
   }
 
   /**

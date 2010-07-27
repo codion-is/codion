@@ -25,7 +25,7 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class EntityTableSearchSimplePanel extends JPanel implements EntityTableSearchPanel {
+public final class EntityTableSearchSimplePanel extends JPanel implements EntityTableSearchPanel {
 
   private final EntityTableSearchModel searchModel;
   private final Refreshable refreshable;

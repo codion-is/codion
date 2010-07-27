@@ -309,7 +309,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     return columnFilterModels.get(columnIndex);
   }
 
-  public List<SearchModel<C>> getFilterModels() {
+  public final List<SearchModel<C>> getFilterModels() {
     return Collections.unmodifiableList(columnFilterModels);
   }
 
@@ -606,11 +606,11 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     return evtColumnShown;
   }
 
-  public Event eventRefreshStarted() {
+  public final Event eventRefreshStarted() {
     return evtRefreshStarted;
   }
 
-  public Event eventRefreshDone() {
+  public final Event eventRefreshDone() {
     return evtRefreshDone;
   }
 
@@ -858,25 +858,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     modelToView.clear();
   }
 
-  private static final class SortingStateImpl implements SortingState {
-    private final int column;
-    private final SortingDirective direction;
-
-    private SortingStateImpl(final int column, final SortingDirective direction) {
-      this.column = column;
-      this.direction = direction;
-    }
-
-    public int getColumnIndex() {
-      return column;
-    }
-
-    public SortingDirective getDirective() {
-      return direction;
-    }
-  }
-
-  private class SortHandler implements TableModelListener {
+  private final class SortHandler implements TableModelListener {
     public void tableChanged(final TableModelEvent e) {
       // If we're not sorting by anything, just pass the event along.
       if (!isSorted()) {
@@ -897,7 +879,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     }
   }
 
-  private class Row implements Comparable<Row> {
+  private final class Row implements Comparable<Row> {
 
     private final int modelIndex;
 
@@ -935,7 +917,25 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     }
   }
 
-  private class SelectionModel extends DefaultListSelectionModel {
+  private static final class SortingStateImpl implements SortingState {
+    private final int column;
+    private final SortingDirective direction;
+
+    private SortingStateImpl(final int column, final SortingDirective direction) {
+      this.column = column;
+      this.direction = direction;
+    }
+
+    public int getColumnIndex() {
+      return column;
+    }
+
+    public SortingDirective getDirective() {
+      return direction;
+    }
+  }
+
+  private final class SelectionModel extends DefaultListSelectionModel {
 
     private final Event evtSelectionChangedAdjusting = new Event();
     private final Event evtSelectionChanged = new Event();
@@ -955,7 +955,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     @Override
     public void fireValueChanged(final int firstIndex, final int lastIndex, final boolean isAdjusting) {
       super.fireValueChanged(firstIndex, lastIndex, isAdjusting);
-      stSelectionEmpty.setActive(isSelectionEmpty());
+      stSelectionEmpty.setActive(SelectionModel.this.isSelectionEmpty());
       stMultipleSelection.setActive(getSelectionCount() > 1);
       final int minSelIndex = getMinSelectionIndex();
       if (selectedIndex != minSelIndex) {

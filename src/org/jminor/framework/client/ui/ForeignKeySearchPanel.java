@@ -21,7 +21,7 @@ import java.text.DateFormat;
  * Date: 19.7.2010
  * Time: 14:15:36
  */
-public class ForeignKeySearchPanel extends AbstractSearchPanel<Property.ForeignKeyProperty> {
+public final class ForeignKeySearchPanel extends AbstractSearchPanel<Property.ForeignKeyProperty> {
 
   public ForeignKeySearchPanel(final ForeignKeySearchModel model) {
     this(model, false);

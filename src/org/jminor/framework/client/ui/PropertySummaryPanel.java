@@ -22,7 +22,7 @@ import java.awt.event.MouseEvent;
 /**
  * A panel that shows a summary value for a numerical column property in a EntityTableModel.
  */
-public class PropertySummaryPanel extends JPanel {
+public final class PropertySummaryPanel extends JPanel {
 
   private final PropertySummaryModel model;
   private final JLabel lblSummary = new JLabel("", JLabel.RIGHT);

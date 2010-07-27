@@ -1932,3 +1932,9 @@
   EntityPanelProvider.validatorClass added
   EntityValidator moved to client.model
   Insert/Update/DeleteListener added
+  EntityTablePanel.initializeSearchPanel() and initializeSummaryPanel() removed to constructor
+  DefaultFilteredComboBoxModel.setSelectedItem() now final, translateSelectionItem() and vetoSelectionChange() added
+  DefaultFilteredComboBoxModel.resetContents() removed
+  AbstractBeanValueLink.getSet/GetMethod() now private
+  LoadTestModel.usageScenarios now final, initializeUsageScenarios() removed
+  More finalization of classes, fields and methods

@@ -123,10 +123,5 @@ public class ItemComboBoxModel<T> extends DefaultComboBoxModel {
     public void paintIcon(final Component c, final Graphics g, final int x, final int y) {
       icon.paintIcon(c, g, x, y);
     }
-
-    @Override
-    public String toString() {
-      return getItem().toString();
-    }
   }
 }

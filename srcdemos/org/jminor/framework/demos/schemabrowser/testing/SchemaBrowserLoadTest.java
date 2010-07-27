@@ -22,7 +22,7 @@ import java.util.UUID;
  * Date: 30.11.2007
  * Time: 04:00:43
  */
-public class SchemaBrowserLoadTest extends EntityLoadTestModel {
+public final class SchemaBrowserLoadTest extends EntityLoadTestModel {
 
   public SchemaBrowserLoadTest() {
     super(User.UNIT_TEST_USER);
@@ -65,7 +65,7 @@ public class SchemaBrowserLoadTest extends EntityLoadTestModel {
     return applicationModel;
   }
 
-  public static void main(String[] args) throws Exception {
+  public static void main(final String[] args) throws Exception {
     SwingUtilities.invokeLater(new Runnable() {
       public void run() {
         try {

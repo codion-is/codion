@@ -13,14 +13,14 @@ import javax.swing.JComboBox;
  * A InputProvider implementation for Entity values based on a JComboBox.
  * @see EntityComboBoxModel
  */
-public class EntityComboProvider extends AbstractInputProvider<Entity, JComboBox> {
+public final class EntityComboProvider extends AbstractInputProvider<Entity, JComboBox> {
 
   public EntityComboProvider(final EntityComboBoxModel model, final Entity currentValue) {
     super(createEntityField(model, currentValue));
   }
 
   @Override
-  public final Entity getValue() {
+  public Entity getValue() {
     final EntityComboBoxModel model = (EntityComboBoxModel) getInputComponent().getModel();
     return model.getSelectedEntity();
   }

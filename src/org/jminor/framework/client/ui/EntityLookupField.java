@@ -47,7 +47,7 @@ import java.util.List;
  * A UI component based on the EntityLookupModel
  * @see EntityLookupModel
  */
-public class EntityLookupField extends JTextField {
+public final class EntityLookupField extends JTextField {
 
   private final EntityLookupModel model;
   private final SearchFieldHint searchHint;
@@ -71,7 +71,7 @@ public class EntityLookupField extends JTextField {
     bindProperty();
   }
 
-  public final EntityLookupModel getModel() {
+  public EntityLookupModel getModel() {
     return model;
   }
 
@@ -79,17 +79,17 @@ public class EntityLookupField extends JTextField {
     return enterAction;
   }
 
-  public final EntityLookupField setEnterAction(final Action enterAction) {
+  public EntityLookupField setEnterAction(final Action enterAction) {
     this.enterAction = enterAction;
     return this;
   }
 
-  public final EntityLookupField setDefaultBackgroundColor(final Color defaultBackgroundColor) {
+  public EntityLookupField setDefaultBackgroundColor(final Color defaultBackgroundColor) {
     this.defaultBackgroundColor = defaultBackgroundColor;
     return this;
   }
 
-  public final EntityLookupField setTransferFocusOnEnter() {
+  public EntityLookupField setTransferFocusOnEnter() {
     return setEnterAction(new AbstractAction() {
       public void actionPerformed(final ActionEvent e) {
         transferFocus();
@@ -264,13 +264,13 @@ public class EntityLookupField extends JTextField {
     return entityList;
   }
 
-  private static class EntityComparator implements Comparator<Entity> {
+  private static final class EntityComparator implements Comparator<Entity> {
     public int compare(final Entity o1, final Entity o2) {
       return o1.compareTo(o2);
     }
   }
 
-  private static class LookupFieldMouseListener extends MouseAdapter {
+  private static final class LookupFieldMouseListener extends MouseAdapter {
     private final Action okAction;
 
     public LookupFieldMouseListener(final Action okAction) {

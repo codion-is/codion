@@ -3,8 +3,7 @@ package org.jminor.common.model;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Arrays;
 
 public class LoadTestModelTest {
 
@@ -54,11 +53,11 @@ public class LoadTestModelTest {
     assertEquals(0, model.getApplicationCount());
   }
 
-  private static class TestLoadTestModel extends LoadTestModel {
+  private static final class TestLoadTestModel extends LoadTestModel {
 
     TestLoadTestModel(final User user, final int maximumThinkTime, final int loginDelayFactor, final int applicationBatchSize,
                       final int warningTime) {
-      super(user, maximumThinkTime, loginDelayFactor, applicationBatchSize, warningTime);
+      super(user, Arrays.asList(SCENARIO), maximumThinkTime, loginDelayFactor, applicationBatchSize, warningTime);
     }
     @Override
     protected Object initializeApplication() throws CancelException {
@@ -67,12 +66,5 @@ public class LoadTestModelTest {
 
     @Override
     protected void disconnectApplication(final Object application) {}
-
-    @Override
-    protected Collection<UsageScenario> initializeUsageScenarios() {
-      final Collection<UsageScenario> ret = new ArrayList<UsageScenario>();
-      ret.add(SCENARIO);
-      return ret;
-    }
   }
 }

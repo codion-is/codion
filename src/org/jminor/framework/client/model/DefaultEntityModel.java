@@ -113,12 +113,10 @@ public class DefaultEntityModel implements EntityModel {
     }
     if (tableModel != null) {
       tableModel.setEditModel(editModel);
+      bindTableModelEvents();
     }
-    initializeAssociatedModels();
     bindEventsInternal();
     bindEvents();
-    bindTableModelEventsInternal();
-    bindTableModelEvents();
   }
 
   /**
@@ -159,12 +157,10 @@ public class DefaultEntityModel implements EntityModel {
     this.tableModel = tableModel;
     if (tableModel != null) {
       tableModel.setEditModel(editModel);
+      bindTableModelEvents();
     }
-    initializeAssociatedModels();
     bindEventsInternal();
     bindEvents();
-    bindTableModelEventsInternal();
-    bindTableModelEvents();
   }
 
   /**
@@ -172,8 +168,8 @@ public class DefaultEntityModel implements EntityModel {
    * returns the model class name by default
    */
   @Override
-  public String toString() {
-    return getClass().getSimpleName();
+  public final String toString() {
+    return getClass().getSimpleName() + ": " + getEntityID();
   }
 
   public final String getEntityID() {
@@ -316,16 +312,14 @@ public class DefaultEntityModel implements EntityModel {
     if (isRefreshing) {
       return;
     }
-
     try {
       LOG.debug(this + " refreshing");
       isRefreshing = true;
       evtRefreshStarted.fire();
-      editModel.refresh();//triggers table model refresh as per bindTableModelEventsInternal()
+      editModel.refresh();//triggers table model refresh as per bindTableModelEvents()
       if (isCascadeRefresh()) {
         refreshDetailModels();
       }
-
       updateDetailModelsByActiveEntity();
     }
     finally {
@@ -379,20 +373,9 @@ public class DefaultEntityModel implements EntityModel {
   }
 
   /**
-   * Override this method to initialize any associated models before bindEvents() is called.
-   * An associated model could for example be an EntityModel that is used by this model but is not a detail model.
-   */
-  protected void initializeAssociatedModels() {}
-
-  /**
    * Override to add event bindings
    */
   protected void bindEvents() {}
-
-  /**
-   * Override to add specific event bindings that depend on the table model
-   */
-  protected void bindTableModelEvents() {}
 
   protected void updateDetailModelsByActiveEntity() {
     final List<Entity> activeEntities = getActiveEntities();
@@ -567,7 +550,7 @@ public class DefaultEntityModel implements EntityModel {
     }
   }
 
-  private void bindTableModelEventsInternal() {
+  private void bindTableModelEvents() {
     if (!containsTableModel()) {
       return;
     }
@@ -597,13 +580,5 @@ public class DefaultEntityModel implements EntityModel {
         }
       }
     });
-  }
-
-  abstract static class AbstractListener<T> implements ActionListener {
-    @SuppressWarnings({"unchecked"})
-    public void actionPerformed(final ActionEvent e) {
-      actionPerformed((T) e);
-    }
-    public abstract void actionPerformed(final T event);
   }
 }

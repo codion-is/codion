@@ -9,7 +9,6 @@ import javax.swing.ButtonModel;
 import javax.swing.JToggleButton;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.lang.reflect.Method;
 
 /**
  * Binds a ButtonModel to a boolean based bean property.
@@ -57,16 +56,6 @@ public final class ToggleBeanValueLink extends AbstractBeanValueLink {
 
   public ButtonModel getButtonModel() {
     return buttonModel;
-  }
-
-  @Override
-  protected Method getGetMethod() throws NoSuchMethodException {
-    try {
-      return getValueOwner().getClass().getMethod("is" + getPropertyName());
-    }
-    catch (NoSuchMethodException e) {
-      return super.getGetMethod();
-    }
   }
 
   @Override

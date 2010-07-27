@@ -131,7 +131,7 @@ public final class EntityUiUtil {
       }
     };
 
-    final EntityTablePanel entityTablePanel = new EntityTablePanel(lookupModel, null, null) {
+    final EntityTablePanel entityTablePanel = new EntityTablePanel(lookupModel) {
       @Override
       protected void bindEvents() {
         eventTableDoubleClicked().addListener(new ActionListener() {
@@ -141,10 +141,6 @@ public final class EntityUiUtil {
             }
           }
         });
-      }
-      @Override
-      protected EntityTableSearchPanel initializeSearchPanel() {
-        return simpleSearchPanel ? initializeSimpleSearchPanel() : initializeAdvancedSearchPanel();
       }
     };
     entityTablePanel.setSearchPanelVisible(true);
@@ -764,7 +760,7 @@ public final class EntityUiUtil {
   /**
    * A class for linking an EntityLookupModel to a EntityEditModel foreign key property value.
    */
-  public static class LookupValueLink extends AbstractValueMapLink<String, Object> {
+  public static final class LookupValueLink extends AbstractValueMapLink<String, Object> {
 
     private final EntityLookupModel lookupModel;
 
@@ -802,7 +798,7 @@ public final class EntityUiUtil {
     }
   }
 
-  public static class EntityFieldPanel extends JPanel {
+  public static final class EntityFieldPanel extends JPanel {
 
     private final JTextField textField;
 

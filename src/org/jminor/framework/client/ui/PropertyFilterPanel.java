@@ -11,7 +11,7 @@ import org.jminor.framework.domain.Property;
 import java.sql.Types;
 import java.text.SimpleDateFormat;
 
-public class PropertyFilterPanel extends AbstractSearchPanel<Property> {
+public final class PropertyFilterPanel extends AbstractSearchPanel<Property> {
 
   public PropertyFilterPanel(final SearchModel<Property> model) {
     this(model, false, false);

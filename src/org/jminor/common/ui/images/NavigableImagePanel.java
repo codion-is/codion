@@ -185,7 +185,7 @@ public final class NavigableImagePanel extends JPanel {
   }
 
   //This class is required for high precision image coordinates translation.
-  private static class Coords {
+  private static final class Coords {
     private double x;
     private double y;
     private Coords(final double x, final double y) {
@@ -204,7 +204,7 @@ public final class NavigableImagePanel extends JPanel {
     }
   }
 
-  private class WheelZoomDevice implements MouseWheelListener {
+  private final class WheelZoomDevice implements MouseWheelListener {
     public void mouseWheelMoved(final MouseWheelEvent e) {
       final Point p = e.getPoint();
       final boolean zoomIn = (e.getWheelRotation() < 0);
@@ -226,7 +226,7 @@ public final class NavigableImagePanel extends JPanel {
     }
   }
 
-  private class ButtonZoomDevice extends MouseAdapter {
+  private final class ButtonZoomDevice extends MouseAdapter {
     @Override
     public void mouseClicked(final MouseEvent e) {
       final Point p = e.getPoint();

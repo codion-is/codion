@@ -15,8 +15,6 @@ import org.jminor.framework.tools.testing.EntityLoadTestModel;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.UUID;
 
 /**
@@ -24,20 +22,10 @@ import java.util.UUID;
  * Date: 30.11.2007
  * Time: 03:33:10
  */
-public class PetstoreLoadTest extends EntityLoadTestModel {
+public final class PetstoreLoadTest extends EntityLoadTestModel {
 
   public PetstoreLoadTest() {
-    super(User.UNIT_TEST_USER);
-  }
-
-  @Override
-  protected void loadDomainModel() {
-    new Petstore();
-  }
-
-  @Override
-  protected Collection<UsageScenario> initializeUsageScenarios() {
-    final UsageScenario scenario = new UsageScenario("selectRecords") {
+    super(User.UNIT_TEST_USER, new UsageScenario("selectRecords") {
       @Override
       protected void performScenario(final Object application) throws Exception {
         final EntityModel categoryModel = ((EntityApplicationModel) application).getMainApplicationModels().iterator().next();
@@ -47,8 +35,12 @@ public class PetstoreLoadTest extends EntityLoadTestModel {
         selectRandomRow(categoryModel.getDetailModels().iterator().next().getTableModel());
         selectRandomRow(categoryModel.getDetailModels().iterator().next().getDetailModels().iterator().next().getTableModel());
       }
-    };
-    return Arrays.asList(scenario);
+    });
+  }
+
+  @Override
+  protected void loadDomainModel() {
+    new Petstore();
   }
 
   @Override
@@ -70,7 +62,7 @@ public class PetstoreLoadTest extends EntityLoadTestModel {
     return applicationModel;
   }
 
-  public static void main(String[] args) throws Exception {
+  public static void main(final String[] args) throws Exception {
     SwingUtilities.invokeLater(new Runnable() {
       public void run() {
         try {

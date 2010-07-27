@@ -62,7 +62,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   }
 
   public final void refresh() {
-    resetContents();
+    setContents(initializeContents());
   }
 
   public final void clear() {
@@ -121,10 +121,6 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     }
   }
 
-  public void resetContents() {
-    setContents(initializeContents());
-  }
-
   public final List<T> getFilteredItems() {
     return Collections.unmodifiableList(filteredItems);
   }
@@ -147,7 +143,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     filterContents();
   }
 
-  public FilterCriteria<T> getFilterCriteria() {
+  public final FilterCriteria<T> getFilterCriteria() {
     return filterCriteria;
   }
 
@@ -230,17 +226,21 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     return selectedItem;
   }
 
-  public void setSelectedItem(final Object anItem) {
-    if (Util.equal(selectedItem, anItem)) {
+  public final void setSelectedItem(final Object anItem) {
+    final Object toSelect = translateSelectionItem(anItem);
+    if (vetoSelectionChange(toSelect)) {
+      return;
+    }
+    if (Util.equal(selectedItem, toSelect)) {
       return;
     }
 
-    if (nullValueString != null && nullValueString.equals(anItem)) {
+    if (nullValueString != null && nullValueString.equals(toSelect)) {
       selectedItem = null;
     }
     else {
       //noinspection unchecked
-      selectedItem = (T) anItem;
+      selectedItem = (T) toSelect;
     }
     fireContentsChanged();
     evtSelectionChanged.fire();
@@ -294,6 +294,14 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     return contents;
   }
 
+  protected boolean vetoSelectionChange(final Object item) {
+    return false;
+  }
+
+  protected Object translateSelectionItem(final Object item) {
+    return item;
+  }
+
   protected final void fireContentsChanged() {
     final ListDataEvent event = new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0, Integer.MAX_VALUE);
     for (final ListDataListener dataListener : listDataListeners) {
@@ -302,7 +310,8 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   }
 
   private static final class SortComparator<T> implements Comparator<T> {
-    final String nullValueString;
+
+    private final String nullValueString;
 
     SortComparator(final String nullValueString) {
       this.nullValueString = nullValueString;

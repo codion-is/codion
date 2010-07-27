@@ -34,8 +34,9 @@ public class DbConnectionImpl implements DbConnection {
 
   private static final Logger LOG = Util.getLogger(DbConnection.class);
 
-  protected static final QueryCounter QUERY_COUNTER = new QueryCounter();
+  private static final String EXECUTE = "execute";
 
+  protected static final QueryCounter QUERY_COUNTER = new QueryCounter();
   private final User user;
   private final Database database;
 
@@ -92,13 +93,13 @@ public class DbConnectionImpl implements DbConnection {
     this.poolRetryCount = retryCount;
   }
 
-  public int getPoolRetryCount() {
+  public final int getPoolRetryCount() {
     return poolRetryCount;
   }
 
   @Override
-  public String toString() {
-    return "DbConnection: " + user.getUsername();
+  public final String toString() {
+    return getClass().getSimpleName() + ": " + user.getUsername();
   }
 
   /**
@@ -466,7 +467,7 @@ public class DbConnectionImpl implements DbConnection {
    */
   public final void execute(final String sql) throws SQLException {
     QUERY_COUNTER.count(sql);
-    methodLogger.logAccess("execute", new Object[] {sql});
+    methodLogger.logAccess(EXECUTE, new Object[] {sql});
     final long time = System.currentTimeMillis();
     LOG.debug(sql);
     Statement statement = null;
@@ -488,7 +489,7 @@ public class DbConnectionImpl implements DbConnection {
         }
       }
       catch (SQLException e) {/**/}
-      methodLogger.logExit("execute", exception, null);
+      methodLogger.logExit(EXECUTE, exception, null);
     }
   }
 
@@ -504,7 +505,7 @@ public class DbConnectionImpl implements DbConnection {
       return;
     }
 
-    methodLogger.logAccess("execute", statements.toArray());
+    methodLogger.logAccess(EXECUTE, statements.toArray());
     final long time = System.currentTimeMillis();
     Statement statement = null;
     SQLException exception = null;
@@ -530,7 +531,7 @@ public class DbConnectionImpl implements DbConnection {
         }
       }
       catch (SQLException e) {/**/}
-      methodLogger.logExit("execute", exception, null);
+      methodLogger.logExit(EXECUTE, exception, null);
     }
   }
 
@@ -636,7 +637,7 @@ public class DbConnectionImpl implements DbConnection {
     }
   };
 
-  public static class QueryCounter {
+  public static final class QueryCounter {
     private long queriesPerSecondTime = System.currentTimeMillis();
     private int queriesPerSecond = 0;
     private int queriesPerSecondCounter = 0;

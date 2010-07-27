@@ -84,8 +84,22 @@ public abstract class LoadTestModel {
    * @param applicationBatchSize the number of applications to add in a batch
    * @param warningTime a work request is considered 'delayed' if the time it takes to process it exceeds this value (ms)
    */
-  public LoadTestModel(final User user, final int maximumThinkTime, final int loginDelayFactor, final int applicationBatchSize,
-                       final int warningTime) {
+  public LoadTestModel(final User user, final int maximumThinkTime, final int loginDelayFactor,
+                       final int applicationBatchSize, final int warningTime) {
+    this(user, new ArrayList<UsageScenario>(), maximumThinkTime, loginDelayFactor, applicationBatchSize, warningTime);
+  }
+
+  /**
+   * Constructs a new LoadTestModel.
+   * @param user the default user to use when initializing applications
+   * @param usageScenarios the usage scenarios to use
+   * @param maximumThinkTime the maximum think time, by default the minimum think time is max / 2
+   * @param loginDelayFactor the value with which to multiply the think time when delaying login
+   * @param applicationBatchSize the number of applications to add in a batch
+   * @param warningTime a work request is considered 'delayed' if the time it takes to process it exceeds this value (ms)
+   */
+  public LoadTestModel(final User user, final Collection<UsageScenario> usageScenarios, final int maximumThinkTime,
+                       final int loginDelayFactor, final int applicationBatchSize, final int warningTime) {
     if (maximumThinkTime <= 0) {
       throw new IllegalArgumentException("Maximum think time must be a positive integer");
     }
@@ -105,7 +119,7 @@ public abstract class LoadTestModel {
     this.loginDelayFactor = loginDelayFactor;
     this.applicationBatchSize = applicationBatchSize;
     this.warningTime = warningTime;
-    this.usageScenarios = initializeUsageScenarios();
+    this.usageScenarios = usageScenarios;
     this.scenarioChooser = initializeScenarioChooser();
     this.counter = new Counter(this.usageScenarios);
     initializeChartData();
@@ -375,10 +389,6 @@ public abstract class LoadTestModel {
     getUsageScenario(usageScenarioName).run(application);
   }
 
-  protected Collection<UsageScenario> initializeUsageScenarios() {
-    return new ArrayList<UsageScenario>();
-  }
-
   protected abstract Object initializeApplication() throws CancelException;
 
   protected abstract void disconnectApplication(final Object application);
@@ -523,37 +533,41 @@ public abstract class LoadTestModel {
     private int successfulRunCount = 0;
     private int unsuccessfulRunCount = 0;
 
+    public UsageScenario() {
+      this.name = getClass().getSimpleName();
+    }
+
     public UsageScenario(final String name) {
       this.name = name;
     }
 
-    public String getName() {
+    public final String getName() {
       return this.name;
     }
 
-    public int getSuccessfulRunCount() {
+    public final int getSuccessfulRunCount() {
       return successfulRunCount;
     }
 
-    public int getUnsuccessfulRunCount() {
+    public final int getUnsuccessfulRunCount() {
       return unsuccessfulRunCount;
     }
 
-    public int getTotalRunCount() {
+    public final int getTotalRunCount() {
       return successfulRunCount + unsuccessfulRunCount;
     }
 
-    public void resetRunCount() {
+    public final void resetRunCount() {
       successfulRunCount = 0;
       unsuccessfulRunCount = 0;
     }
 
     @Override
-    public String toString() {
+    public final String toString() {
       return name;
     }
 
-    public void run(final Object application) throws Exception {
+    public final void run(final Object application) throws Exception {
       if (application == null) {
         throw new RuntimeException("Can not run without an application model");
       }
@@ -589,7 +603,7 @@ public abstract class LoadTestModel {
     protected void cleanup(final Object application) {}
   }
 
-  private static class Counter {
+  private static final class Counter {
 
     private final Collection<UsageScenario> usageScenarios;
     private final Map<String, Integer> usageScenarioRates = new HashMap<String, Integer>();

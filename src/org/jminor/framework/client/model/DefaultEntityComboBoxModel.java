@@ -84,10 +84,16 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     Util.rejectNullValue(dbProvider, "dbProvider");
     this.entityID = entityID;
     this.dbProvider = dbProvider;
+    final FilterCriteria<Entity> superCriteria = super.getFilterCriteria();
+    setFilterCriteria(new FilterCriteria<Entity>() {
+      public boolean include(final Entity item) {
+        return superCriteria.include(item) && foreignKeyFilterCriteria.include(item);
+      }
+    });
   }
 
   @Override
-  public String toString() {
+  public final String toString() {
     return getClass().getSimpleName() + " [entityID: " + entityID + "]";
   }
 
@@ -137,41 +143,6 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     }
 
     return (Entity) getSelectedItem();
-  }
-
-  @Override
-  public void setSelectedItem(final Object anItem) {
-    if (getSize() == 0) {
-      return;
-    }
-    final Object item = anItem instanceof String && ((String) anItem).length() == 0 ? null : anItem;
-    if (item != null && !item.equals(getNullValueString()) && !(item instanceof Entity)) {
-      throw new IllegalArgumentException("Cannot set '" + item + "' [" + item.getClass()
-              + "] as selected item in a EntityComboBoxModel (" + this + ")");
-    }
-
-    if (item instanceof Entity) {
-      final int indexOfKey = getIndexOfKey(((Entity) anItem).getPrimaryKey());
-      if (indexOfKey >= 0) {
-        super.setSelectedItem(getElementAt(indexOfKey));
-      }
-      else {
-        super.setSelectedItem(anItem);
-      }
-    }
-    else {
-      super.setSelectedItem(null);
-    }
-  }
-
-  @Override
-  public final FilterCriteria<Entity> getFilterCriteria() {
-    final FilterCriteria<Entity> superCriteria = super.getFilterCriteria();
-    return new FilterCriteria<Entity>() {
-      public boolean include(final Entity item) {
-        return superCriteria.include(item) && foreignKeyFilterCriteria.include(item);
-      }
-    };
   }
 
   public final void setEntitySelectCriteria(final EntitySelectCriteria entitySelectCriteria) {
@@ -247,23 +218,6 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
   }
 
   /**
-   * @return the data to be presented in this EntityComboBoxModel, called when the data is refreshed
-   */
-  @Override
-  protected final List<Entity> initializeContents() {
-    try {
-      if (staticData && !isCleared() && !forceRefresh) {
-        return super.initializeContents();
-      }
-
-      return performQuery();
-    }
-    finally {
-      evtRefreshDone.fire();
-    }
-  }
-
-  /**
    * Retrieves the entities to present in this EntityComboBoxModel
    * @return the entities to present in this EntityComboBoxModel
    */
@@ -278,6 +232,49 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     }
     catch (Exception e) {
       throw new RuntimeException(e);
+    }
+  }
+
+  @Override
+  protected Object translateSelectionItem(final Object item) {
+    if (item instanceof Entity) {
+      final int indexOfKey = getIndexOfKey(((Entity) item).getPrimaryKey());
+      if (indexOfKey >= 0) {
+        return getElementAt(indexOfKey);
+      }
+      else {
+        return item;
+      }
+    }
+    else {
+      return item;
+    }
+  }
+
+  @Override
+  protected final boolean vetoSelectionChange(final Object item) {
+    if (getSize() == 0) {
+      return true;
+    }
+    final Object theItem = item instanceof String && ((String) item).length() == 0 ? null : item;
+
+    return theItem != null && !theItem.equals(getNullValueString()) && !(theItem instanceof Entity);
+  }
+
+  /**
+   * @return the data to be presented in this EntityComboBoxModel, called when the data is refreshed
+   */
+  @Override
+  protected final List<Entity> initializeContents() {
+    try {
+      if (staticData && !isCleared() && !forceRefresh) {
+        return super.initializeContents();
+      }
+
+      return performQuery();
+    }
+    finally {
+      evtRefreshDone.fire();
     }
   }
 

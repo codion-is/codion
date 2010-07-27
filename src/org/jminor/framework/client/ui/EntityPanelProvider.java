@@ -227,7 +227,7 @@ public class EntityPanelProvider implements Comparable {
   }
 
   @Override
-  public int hashCode() {
+  public final int hashCode() {
     return entityID.hashCode();
   }
 

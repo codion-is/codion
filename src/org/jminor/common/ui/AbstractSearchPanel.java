@@ -105,7 +105,6 @@ public abstract class AbstractSearchPanel<K> extends JPanel {
     this.searchTypeCombo = initSearchTypeComboBox();
     this.upperBoundField = getInputField(true);
     this.lowerBoundField = isLowerBoundFieldRequired(searchModel.getSearchKey()) ? getInputField(false) : null;
-
     this.toggleSearchEnabled = ControlProvider.createToggleButton(
             ControlFactory.toggleControl(searchModel, "searchEnabled", null, searchModel.eventEnabledChanged()));
     toggleSearchEnabled.setIcon(Images.loadImage(Images.IMG_FILTER_16));

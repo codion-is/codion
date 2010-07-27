@@ -14,7 +14,7 @@ import javax.swing.table.TableColumn;
 /**
  * A UI component for showing summary panels for numerical properties in a EntityTableModel.
  */
-public class EntityTableSummaryPanel extends AbstractTableColumnSyncPanel {
+public final class EntityTableSummaryPanel extends AbstractTableColumnSyncPanel {
 
   private final EntityTableModel tableModel;
 
@@ -25,7 +25,7 @@ public class EntityTableSummaryPanel extends AbstractTableColumnSyncPanel {
   }
 
   @Override
-  protected JPanel initializeColumnPanel(final TableColumn column) {
+  protected final JPanel initializeColumnPanel(final TableColumn column) {
     final Property property = (Property) column.getIdentifier();
     final PropertySummaryModel summaryModel = tableModel.getPropertySummaryModel(property);
 
@@ -37,7 +37,7 @@ public class EntityTableSummaryPanel extends AbstractTableColumnSyncPanel {
    * @param propertySummaryModel the PropertySummaryModel for which to create a summary panel
    * @return a PropertySummaryPanel based on the given model
    */
-  protected PropertySummaryPanel initializePropertySummaryPanel(final PropertySummaryModel propertySummaryModel) {
+  private PropertySummaryPanel initializePropertySummaryPanel(final PropertySummaryModel propertySummaryModel) {
     return new PropertySummaryPanel(propertySummaryModel);
   }
 }

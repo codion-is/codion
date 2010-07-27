@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.client.ui;
 
+import org.jminor.common.db.exception.DbException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.AggregateState;
 import org.jminor.common.model.CancelException;
@@ -33,7 +34,16 @@ import org.jminor.framework.i18n.FrameworkMessages;
 
 import org.apache.log4j.Logger;
 
-import javax.swing.*;
+import javax.swing.ComboBoxModel;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.JToolBar;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
@@ -300,7 +310,13 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
         return true;
       }
     }
-    catch (Exception ex) {
+    catch (CancelException c) {
+      return false;
+    }
+    catch (ValidationException v) {
+      handleException(v);
+    }
+    catch (DbException ex) {
       handleException(ex);
     }
 
@@ -334,8 +350,11 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
         return true;
       }
     }
-    catch (Exception e) {
-      handleException(e);
+    catch (CancelException c) {
+      return false;
+    }
+    catch (DbException ex) {
+      handleException(ex);
     }
 
     return false;
@@ -370,8 +389,14 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
         return true;
       }
     }
-    catch (Exception e) {
-      handleException(e);
+    catch (CancelException c) {
+      return false;
+    }
+    catch (ValidationException v) {
+      handleException(v);
+    }
+    catch (DbException ex) {
+      handleException(ex);
     }
 
     return false;

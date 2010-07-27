@@ -39,7 +39,10 @@ import java.util.Map;
 /**
  * A panel for configuring the PropertySearchModels for a given EntityTableModel.
  */
-public class EntityCriteriaPanel extends JPanel {
+public final class EntityCriteriaPanel extends JPanel {
+
+  private static final int DEFAULT_WIDTH = 200;
+  private static final int DEFAULT_HEIGHT = 40;
 
   private final Map<PropertySearchModel, AbstractSearchPanel> panels = new HashMap<PropertySearchModel, AbstractSearchPanel>();
 
@@ -47,7 +50,7 @@ public class EntityCriteriaPanel extends JPanel {
     setLayout(new BorderLayout(5,5));
 
     final JPanel editPanel = new JPanel(new BorderLayout());
-    editPanel.setPreferredSize(new Dimension(200,40));
+    editPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
 
     final JList propertyList = initializePropertyList(tableModel.getSearchModel(), editPanel);
     final JScrollPane scroller = new JScrollPane(propertyList);

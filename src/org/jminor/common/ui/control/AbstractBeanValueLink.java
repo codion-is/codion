@@ -13,26 +13,31 @@ import java.lang.reflect.Method;
 public abstract class AbstractBeanValueLink extends AbstractValueLink<Object, Object> {
 
   private final String propertyName;
-  private final Class<?> propertyClass;
+  private final Class<?> valueClass;
   private final Method getMethod;
   private final Method setMethod;
 
-  public AbstractBeanValueLink(final Object owner, final String propertyName, final Class<?> propertyClass,
+  public AbstractBeanValueLink(final Object owner, final String propertyName, final Class<?> valueClass,
                                final Event valueChangeEvent) {
-    this(owner, propertyName, propertyClass, valueChangeEvent, LinkType.READ_WRITE);
+    this(owner, propertyName, valueClass, valueChangeEvent, LinkType.READ_WRITE);
   }
 
-  public AbstractBeanValueLink(final Object owner, final String propertyName, final Class<?> propertyClass,
+  public AbstractBeanValueLink(final Object owner, final String propertyName, final Class<?> valueClass,
                                final Event valueChangeEvent, final LinkType linkType) {
     super(owner, valueChangeEvent, linkType);
     try {
       this.propertyName = Character.toUpperCase(propertyName.charAt(0)) + propertyName.substring(1);
-      this.propertyClass = propertyClass;
-      this.setMethod = linkType != LinkType.READ_ONLY ? getSetMethod() : null;
+      this.valueClass = valueClass;
       this.getMethod = getGetMethod();
+      if (linkType == LinkType.READ_ONLY) {
+        this.setMethod = null;
+      }
+      else {
+        this.setMethod = getSetMethod();
+      }
     }
     catch (NoSuchMethodException e) {
-      throw new RuntimeException("Bean property methods for " + propertyName + ", type: " + propertyClass + " not found in class " + owner.getClass().getName(), e);
+      throw new RuntimeException("Bean property methods for " + propertyName + ", type: " + valueClass + " not found in class " + owner.getClass().getName(), e);
     }
   }
 
@@ -73,15 +78,19 @@ public abstract class AbstractBeanValueLink extends AbstractValueLink<Object, Ob
    * @return the method used to set the value of the linked property
    * @throws NoSuchMethodException if the method does not exist in the owner class
    */
-  protected Method getSetMethod() throws NoSuchMethodException {
-    return getValueOwner().getClass().getMethod("set" + propertyName, propertyClass);
+  private Method getSetMethod() throws NoSuchMethodException {
+    return getValueOwner().getClass().getMethod("set" + propertyName, valueClass);
   }
 
   /**
    * @return the method used to get the value of the linked property
    * @throws NoSuchMethodException if the method does not exist in the owner class
    */
-  protected Method getGetMethod() throws NoSuchMethodException {
+  private Method getGetMethod() throws NoSuchMethodException {
+    if (valueClass.equals(boolean.class) || valueClass.equals(Boolean.class)) {
+      return getValueOwner().getClass().getMethod("is" + propertyName);
+    }
+
     return getValueOwner().getClass().getMethod("get" + propertyName);
   }
 }
