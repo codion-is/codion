@@ -64,24 +64,21 @@ public class DefaultEntityEditModelTest {
     assertTrue(editModel.isEntityNew());
     assertFalse(editModel.stateModified().isActive());
 
-
-    //todo
-/*  final Entity employee = editModel.getDbProvider().getEntityDb().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "MARTIN");
+    final Entity employee = editModel.getDbProvider().getEntityDb().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "MARTIN");
     editModel.setEntity(employee);
     assertFalse(entityNullState.isActive());
 
-    assertTrue("Active entity is not equal to the selected entity", editModel.getEntityCopy().propertyValuesEqual(employee));
-
-    assertFalse("Active entity is new after an entity is selected", editModel.isEntityNew());
+    assertTrue("Active entity is not equal to the entity just set", editModel.getEntityCopy().propertyValuesEqual(employee));
+    assertFalse("Active entity is new after an entity is set", editModel.isEntityNew());
     assertFalse(editModel.stateModified().isActive());
-    editModel.clear();
-    assertTrue("Active entity is new null after selection is cleared", editModel.isEntityNew());
+    editModel.setEntity(null);
+    assertTrue("Active entity is new null after entity is set to null", editModel.isEntityNew());
     assertFalse(editModel.stateModified().isActive());
-    assertTrue("Active entity is not null after selection is cleared", editModel.getEntityCopy().isNull());
+    assertTrue("Active entity is not null after entity is set to null", editModel.getEntityCopy().isNull());
 
     editModel.setEntity(employee);
     assertTrue("Active entity is null after selection is made", !editModel.getEntityCopy().isNull());
-    editModel.clear();*/
+    editModel.setEntity(null);
 
     final Double originalCommission = (Double) editModel.getValue(EmpDept.EMPLOYEE_COMMISSION);
     final double commission = 1500.5;
