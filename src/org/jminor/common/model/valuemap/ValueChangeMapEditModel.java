@@ -12,8 +12,15 @@ public interface ValueChangeMapEditModel<K, V> extends Refreshable {
 
   /**
    * @return a State indicating the modified status of this value map
+   * @see #isModified()
    */
   State stateModified();
+  /**
+   * @return a State indicating the valid status of this value map
+   * @see #getValidator()
+   * @see #isValid()
+   */
+  State stateValid();
 
   /**
    * @param key the key for which to retrieve the event
@@ -92,7 +99,19 @@ public interface ValueChangeMapEditModel<K, V> extends Refreshable {
    * ValueChangeMapEditModel.INSERT, ValueChangeMapEditModel.UPDATE or ValueChangeMapEditModel.UNKNOWN
    * @return true if the value is valid
    * @see #validate(Object, int)
-   * @see ValueMapValidator#validate(ValueMap
+   * @see ValueMapValidator#validate(ValueMap, Object, int)
    */
   boolean isValid(final K key, final int action);
+
+  /**
+   * @return true if the underlying value map contains only valid values
+   * @see #stateValid() ()
+   */
+  boolean isValid();
+
+  /**
+   * @return true if the underlying value map is modified
+   * @see #stateModified()
+   */
+  boolean isModified();
 }

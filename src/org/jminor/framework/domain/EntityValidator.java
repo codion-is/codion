@@ -39,9 +39,23 @@ public interface EntityValidator extends ValueMapValidator<String, Object> {
    */
   void validate(final Collection<Entity> entities, final int action) throws ValidationException;
 
-  void validate(final Entity entity, final int action) throws ValidationException;
-
+  /**
+   * Performs a null validation on the given property
+   * @param entity the entity
+   * @param property the property
+   * @param action the action requiring validation
+   * @throws NullValidationException in case the proerty value is null and the property is not nullable
+   * @see Property#isNullable()
+   */
   void performNullValidation(final Entity entity, final Property property, final int action) throws NullValidationException;
 
+  /**
+   * Performs a range validation on the given property
+   * @param entity the entity
+   * @param property the property
+   * @throws RangeValidationException in case the value of the given property is outside the legal range
+   * @see Property#setMax(double)
+   * @see Property#setMin(double)
+   */
   void performRangeValidation(final Entity entity, final Property property) throws RangeValidationException;
 }

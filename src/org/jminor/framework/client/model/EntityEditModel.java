@@ -300,12 +300,6 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
   void clearComboBoxModels();
 
   /**
-   * @return true if the active entity has been modified
-   * @see org.jminor.framework.domain.Entity#isModified()
-   */
-  boolean isEntityModified();
-
-  /**
    * Returns the default value for the given property, used when initializing a new
    * default entity for this edit model. This does not apply to denormalized properties
    * (Property.DenormalizedProperty) nor properties that are wrapped in foreign key properties

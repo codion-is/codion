@@ -188,7 +188,7 @@ public final class NavigableImagePanel extends JPanel {
   private static class Coords {
     private double x;
     private double y;
-    public Coords(final double x, final double y) {
+    private Coords(final double x, final double y) {
       this.x = x;
       this.y = y;
     }
@@ -380,7 +380,7 @@ public final class NavigableImagePanel extends JPanel {
 
     //An image is initially centered
     centerImage();
-    if (isNavigationImageEnabled()) {
+    if (navigationImageEnabled) {
       createNavigationImage();
     }
   }
@@ -467,7 +467,7 @@ public final class NavigableImagePanel extends JPanel {
   //Tests whether a given point in the panel falls within the navigation image
   //boundaries.
   private boolean isInNavigationImage(final Point p) {
-    return (isNavigationImageEnabled() && p.x < getScreenNavImageWidth()
+    return (navigationImageEnabled && p.x < getScreenNavImageWidth()
             && p.y < getScreenNavImageHeight());
   }
 
@@ -747,14 +747,12 @@ public final class NavigableImagePanel extends JPanel {
               Math.min((int)(subimage.getWidth() * scale), getWidth()),
               Math.min((int)(subimage.getHeight() * scale), getHeight()), null);
     } else {
-      g.drawImage(image, originX, originY, getScreenImageWidth(),
-              getScreenImageHeight(), null);
+      g.drawImage(image, originX, originY, getScreenImageWidth(), getScreenImageHeight(), null);
     }
 
     //Draw navigation image
-    if (isNavigationImageEnabled()) {
-      g.drawImage(navigationImage, 0, 0, getScreenNavImageWidth(),
-              getScreenNavImageHeight(), null);
+    if (navigationImageEnabled) {
+      g.drawImage(navigationImage, 0, 0, getScreenNavImageWidth(), getScreenNavImageHeight(), null);
       drawZoomAreaOutline(g);
     }
   }

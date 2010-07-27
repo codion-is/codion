@@ -33,16 +33,7 @@ import org.jminor.framework.i18n.FrameworkMessages;
 
 import org.apache.log4j.Logger;
 
-import javax.swing.ComboBoxModel;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.JToolBar;
+import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
@@ -262,7 +253,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * is asked whether to update the selected entity or insert a new one
    */
   public final void save() {
-    if (getEditModel().isEntityNew() || !getEditModel().isEntityModified() || !getEditModel().isUpdateAllowed()) {
+    if (getEditModel().isEntityNew() || !getEditModel().isModified() || !getEditModel().isUpdateAllowed()) {
       //no entity selected, selected entity is unmodified or update is not allowed, can only insert
       insert();
     }

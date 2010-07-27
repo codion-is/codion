@@ -13,19 +13,7 @@ import org.jminor.common.ui.control.Control;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.textfield.SearchFieldHint;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.BorderFactory;
-import javax.swing.Icon;
-import javax.swing.JCheckBox;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.UIManager;
+import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
@@ -286,7 +274,7 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
 
   private List<AbstractSearchPanel<C>> initializeFilterPanels() {
     final List<AbstractSearchPanel<C>> filterPanels = new ArrayList<AbstractSearchPanel<C>>(getTableModel().getFilterModels().size());
-    final Enumeration<TableColumn> columns = getJTable().getColumnModel().getColumns();
+    final Enumeration<TableColumn> columns = table.getColumnModel().getColumns();
     while (columns.hasMoreElements()) {
       final SearchModel<C> model = getTableModel().getFilterModel(columns.nextElement().getModelIndex());
       filterPanels.add(initializeFilterPanel(model));
@@ -339,7 +327,7 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
   private void toggleColumnFilterPanel(final MouseEvent event) {
     final int index = getTableModel().getColumnModel().getColumnIndexAtX(event.getX());
 
-    toggleFilterPanel(event.getLocationOnScreen(), columnFilterPanels.get(index), getJTable());
+    toggleFilterPanel(event.getLocationOnScreen(), columnFilterPanels.get(index), table);
   }
 
   private static void toggleFilterPanel(final Point position, final AbstractSearchPanel columnFilterPanel,

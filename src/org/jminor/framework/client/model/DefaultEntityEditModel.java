@@ -240,10 +240,6 @@ public class DefaultEntityEditModel extends DefaultValueChangeMapEditModel<Strin
     return copy;
   }
 
-  public final boolean isEntityModified() {
-    return stateModified().isActive();
-  }
-
   public final boolean isEntityNew() {
     final Entity.Key key = ((Entity) getValueMap()).getPrimaryKey();
     final Entity.Key originalkey = ((Entity) getValueMap()).getOriginalPrimaryKey();
@@ -259,7 +255,7 @@ public class DefaultEntityEditModel extends DefaultValueChangeMapEditModel<Strin
     if (entities.isEmpty()) {
       return;
     }
-    if (isReadOnly()) {
+    if (readOnly) {
       throw new RuntimeException("This is a read-only model, inserting is not allowed!");
     }
     if (!isInsertAllowed()) {
@@ -284,7 +280,7 @@ public class DefaultEntityEditModel extends DefaultValueChangeMapEditModel<Strin
     if (entities.isEmpty()) {
       return;
     }
-    if (isReadOnly()) {
+    if (readOnly) {
       throw new RuntimeException("This is a read-only model, updating is not allowed!");
     }
     if (!isUpdateAllowed()) {
@@ -319,7 +315,7 @@ public class DefaultEntityEditModel extends DefaultValueChangeMapEditModel<Strin
     if (entities.isEmpty()) {
       return;
     }
-    if (isReadOnly()) {
+    if (readOnly) {
       throw new RuntimeException("This is a read-only model, deleting is not allowed!");
     }
     if (!isDeleteAllowed()) {

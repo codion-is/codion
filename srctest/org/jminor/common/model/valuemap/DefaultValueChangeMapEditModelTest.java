@@ -23,6 +23,7 @@ public class DefaultValueChangeMapEditModelTest {
       return super.isNullable(valueMap, key) && false;
     }
 
+    @Override
     public void validate(final ValueMap<String, Integer> valueMap, final String key, final int action) throws ValidationException {
       super.validate(valueMap, key, action);
       final Object value = valueMap.getValue(key);
@@ -93,13 +94,24 @@ public class DefaultValueChangeMapEditModelTest {
     assertEquals(Integer.valueOf(1), model.getValue(key));
     assertTrue(valueMapSetCounter.size() == 1);
 
+    assertNotNull(model.getValidator());
+
     model.setValue(key, -1);
+    try {
+      model.validate(key, ValueMapValidator.UNKNOWN);
+      fail();
+    }
+    catch (ValidationException e) {}
+
     assertFalse(model.isValid(key, -1));
+    assertFalse(model.isValid());
 
     model.setValue(key, null);
     assertFalse(model.isValid(key, -1));
+    assertFalse(model.isValid());
 
     model.setValue(key, 2);
     assertTrue(model.isValid(key, -1));
+    assertTrue(model.isValid());
   }
 }

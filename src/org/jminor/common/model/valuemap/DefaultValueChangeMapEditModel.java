@@ -42,6 +42,8 @@ public class DefaultValueChangeMapEditModel<K, V> implements ValueChangeMapEditM
 
   private final ValueMapValidator<K, V> validator;
 
+  private final State stValid = new State();
+
   /**
    * Instantiates a new edit model instance for the given value map.
    * @param initialMap the value map to edit
@@ -101,12 +103,20 @@ public class DefaultValueChangeMapEditModel<K, V> implements ValueChangeMapEditM
   public final boolean isValid(final K key, final int action) {
     Util.rejectNullValue(key, "key");
     try {
-      validator.validate(getValueMap(), key, action);
+      validator.validate(valueMap, key, action);
       return true;
     }
     catch (ValidationException e) {
       return false;
     }
+  }
+
+  public final boolean isModified() {
+    return stateModified().isActive();
+  }
+
+  public final boolean isValid() {
+    return stateValid().isActive();
   }
 
   public final Event getValueSetEvent(final K key) {
@@ -133,6 +143,10 @@ public class DefaultValueChangeMapEditModel<K, V> implements ValueChangeMapEditM
 
   public final State stateModified() {
     return valueMap.stateModified();
+  }
+
+  public final State stateValid() {
+    return stValid.getLinkedState();
   }
 
   protected V prepareNewValue(final K key, final V value) {
@@ -163,6 +177,7 @@ public class DefaultValueChangeMapEditModel<K, V> implements ValueChangeMapEditM
         if (valueChangeEvent != null) {
           valueChangeEvent.fire(event);
         }
+        stValid.setActive(validator.isValid(valueMap, ValueMapValidator.UNKNOWN));
       }
     });
   }

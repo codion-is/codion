@@ -93,7 +93,7 @@ public final class LoadTestPanel extends JPanel {
     return frame;
   }
 
-  protected void initializeUI() {
+  private void initializeUI() {
     final JPanel chartBase = initializeChartPanel();
     final JPanel activityPanel = initializeActivityPanel();
     final JPanel applicationPanel = initializeApplicationPanel();
@@ -161,7 +161,7 @@ public final class LoadTestPanel extends JPanel {
   private JPanel initializeApplicationPanel() {
     final IntField applicationCountField = new IntField();
     applicationCountField.setHorizontalAlignment(JTextField.CENTER);
-    new IntBeanValueLink(applicationCountField, getModel(), "applicationCount", loadTestModel.eventApplicationCountChanged(), LinkType.READ_ONLY);
+    new IntBeanValueLink(applicationCountField, loadTestModel, "applicationCount", loadTestModel.eventApplicationCountChanged(), LinkType.READ_ONLY);
 
     final JPanel applicationPanel = new JPanel(new BorderLayout(5, 5));
     applicationPanel.setBorder(BorderFactory.createTitledBorder("Applications"));

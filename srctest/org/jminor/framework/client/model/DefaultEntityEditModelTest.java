@@ -98,12 +98,12 @@ public class DefaultEntityEditModelTest {
     assertEquals("Name does not fit", editModel.getValue(EmpDept.EMPLOYEE_NAME), name);
 
     editModel.setValue(EmpDept.EMPLOYEE_COMMISSION, originalCommission);
-    assertTrue(editModel.isEntityModified());
+    assertTrue(editModel.isModified());
     assertTrue(editModel.stateModified().isActive());
     editModel.setValue(EmpDept.EMPLOYEE_HIREDATE, originalHiredate);
-    assertTrue(editModel.isEntityModified());
+    assertTrue(editModel.isModified());
     editModel.setValue(EmpDept.EMPLOYEE_NAME, originalName);
-    assertFalse(editModel.isEntityModified());
+    assertFalse(editModel.isModified());
 
     //test validation
     try {
