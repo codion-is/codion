@@ -1,13 +1,15 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.domain;
+package org.jminor.framework.client.model;
 
 import org.jminor.common.model.valuemap.ValueMapValidator;
 import org.jminor.common.model.valuemap.exception.NullValidationException;
 import org.jminor.common.model.valuemap.exception.RangeValidationException;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.db.provider.EntityDbProvider;
+import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.Property;
 
 import java.util.Collection;
 
@@ -64,7 +66,7 @@ public interface EntityValidator extends ValueMapValidator<String, Object> {
    * @param property the property
    * @param action the action requiring validation
    * @throws NullValidationException in case the proerty value is null and the property is not nullable
-   * @see Property#isNullable()
+   * @see org.jminor.framework.domain.Property#isNullable()
    */
   void performNullValidation(final Entity entity, final Property property, final int action) throws NullValidationException;
 

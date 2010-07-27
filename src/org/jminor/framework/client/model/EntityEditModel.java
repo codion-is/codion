@@ -330,7 +330,7 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * @throws DbException in case of a database exception
    * @throws CancelException in case the user cancels the operation
    * @throws org.jminor.common.model.valuemap.exception.ValidationException in case validation fails
-   * @see org.jminor.framework.domain.EntityValidator#validate(java.util.Collection, int)
+   * @see EntityValidator#validate(java.util.Collection, int)
    */
   void insert() throws CancelException, DbException, ValidationException;
 
@@ -342,7 +342,7 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * @throws ValidationException in case validation fails
    * @see #eventBeforeInsert()
    * @see #eventAfterInsert()
-   * @see org.jminor.framework.domain.EntityValidator#validate(java.util.Collection, int)
+   * @see EntityValidator#validate(java.util.Collection, int)
    */
   void insert(List<Entity> entities) throws CancelException, DbException, ValidationException;
 
@@ -352,7 +352,7 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * @throws CancelException in case the user cancels the operation
    * @throws org.jminor.common.db.exception.RecordModifiedException in case an entity was modified by another user
    * @throws org.jminor.common.model.valuemap.exception.ValidationException in case validation fails
-   * @see org.jminor.framework.domain.EntityValidator#validate(java.util.Collection, int)
+   * @see EntityValidator#validate(java.util.Collection, int)
    */
   void update() throws CancelException, DbException, ValidationException;
 
@@ -366,7 +366,7 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * @throws ValidationException in case validation fails
    * @see #eventBeforeUpdate
    * @see #eventAfterUpdate
-   * @see org.jminor.framework.domain.EntityValidator#validate(java.util.Collection, int)
+   * @see EntityValidator#validate(java.util.Collection, int)
    */
   void update(final List<Entity> entities) throws DbException, CancelException, ValidationException;
 

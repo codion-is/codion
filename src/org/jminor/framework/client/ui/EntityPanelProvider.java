@@ -12,9 +12,9 @@ import org.jminor.framework.client.model.DefaultEntityValidator;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.EntityTableModel;
+import org.jminor.framework.client.model.EntityValidator;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.EntityRepository;
-import org.jminor.framework.domain.EntityValidator;
 
 import java.util.ArrayList;
 import java.util.Collections;

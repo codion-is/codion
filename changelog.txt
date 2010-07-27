@@ -1930,3 +1930,4 @@
   EntityValidator.getDbProvider() added
   DefaultEntityValidator.dbProvider field added
   EntityPanelProvider.validatorClass added
+  EntityValidator moved to client.model
