@@ -15,6 +15,7 @@ import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.AbstractFilteredTablePanel;
 import org.jminor.common.ui.AbstractSearchPanel;
+import org.jminor.common.ui.DefaultExceptionHandler;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.Control;
 import org.jminor.common.ui.control.ControlFactory;
@@ -580,6 +581,14 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     }
   }
 
+  /**
+   * By default this delegates to the edit panel
+   * @param exception the exception to handle
+   */
+  public final void handleException(final Exception exception) {
+    DefaultExceptionHandler.getInstance().handleException(exception, this);
+  }
+
   public final Control getToggleSummaryPanelControl() {
     final ToggleBeanValueLink toggle = ControlFactory.toggleControl(this, "summaryPanelVisible", null,
             evtSummaryPanelVisibilityChanged);
@@ -780,6 +789,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     return panel;
   }
 
+  @Override
   protected AbstractSearchPanel<Property> initializeFilterPanel(final SearchModel<Property> model) {
     return new PropertyFilterPanel(model, true, true);
   }

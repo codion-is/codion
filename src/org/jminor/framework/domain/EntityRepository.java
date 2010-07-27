@@ -23,13 +23,13 @@ import java.util.Map;
  */
 public final class EntityRepository {
 
-  private static final Map<String, EntityDefinition> entityDefinitions = new HashMap<String, EntityDefinition>();
+  private static final Map<String, EntityDefinition> ENTITY_DEFINITIONS = new HashMap<String, EntityDefinition>();
   private static volatile Map<String, Proxy> proxies;
 
   private EntityRepository() {}
 
   public static boolean isDefined(final String entityID) {
-    return entityDefinitions.containsKey(entityID);
+    return ENTITY_DEFINITIONS.containsKey(entityID);
   }
 
   /**
@@ -442,11 +442,11 @@ public final class EntityRepository {
   }
 
   public static Collection<String> getDefinedEntities() {
-    return new ArrayList<String>(entityDefinitions.keySet());
+    return new ArrayList<String>(ENTITY_DEFINITIONS.keySet());
   }
 
   public static Map<String, EntityDefinition> getEntityDefinitions() {
-    return Collections.unmodifiableMap(entityDefinitions);
+    return Collections.unmodifiableMap(ENTITY_DEFINITIONS);
   }
 
   /**
@@ -455,11 +455,11 @@ public final class EntityRepository {
    */
   public static void add(final EntityDefinition entityDefinition) {
     Util.rejectNullValue(entityDefinition, "entityDefinition");
-    if (entityDefinitions.containsKey(entityDefinition.getEntityID())) {
+    if (ENTITY_DEFINITIONS.containsKey(entityDefinition.getEntityID())) {
       throw new RuntimeException("Entity already added: " + entityDefinition.getEntityID());
     }
 
-    entityDefinitions.put(entityDefinition.getEntityID(), entityDefinition);
+    ENTITY_DEFINITIONS.put(entityDefinition.getEntityID(), entityDefinition);
   }
 
   /**
@@ -470,7 +470,7 @@ public final class EntityRepository {
    */
   public static EntityDefinition getEntityDefinition(final String entityID) {
     Util.rejectNullValue(entityID, "entityID");
-    final EntityDefinition definition = entityDefinitions.get(entityID);
+    final EntityDefinition definition = ENTITY_DEFINITIONS.get(entityID);
     if (definition == null) {
       throw new IllegalArgumentException("Undefined entity: " + entityID);
     }

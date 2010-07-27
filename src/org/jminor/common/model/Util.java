@@ -38,9 +38,9 @@ public final class Util {
 
   public static final String PREF_DEFAULT_USERNAME = "jminor.username";
 
+  private static final List<Logger> LOGGERS = new ArrayList<Logger>();
   private static final Random RANDOM = new Random();
   private static final int K = 1024;
-  private static final List<Logger> loggers = new ArrayList<Logger>();
   private static Level defaultLoggingLevel;
   private static Preferences userPreferences;
 
@@ -130,11 +130,11 @@ public final class Util {
    * @return the current logging level
    */
   public static Level getLoggingLevel() {
-    if (loggers.isEmpty()) {
+    if (LOGGERS.isEmpty()) {
       return defaultLoggingLevel;
     }
 
-    return loggers.get(0).getLevel();
+    return LOGGERS.get(0).getLevel();
   }
 
   public static void setDefaultLoggingLevel(final Level defaultLoggingLevel) {
@@ -144,7 +144,7 @@ public final class Util {
 
   public static void setLoggingLevel(final Level level) {
     rejectNullValue(level, "level");
-    for (final Logger logger : loggers) {
+    for (final Logger logger : LOGGERS) {
       logger.setLevel(level);
     }
   }
@@ -153,7 +153,7 @@ public final class Util {
     rejectNullValue(classToLog, "classToLog");
     final Logger logger = Logger.getLogger(classToLog);
     logger.setLevel(getLoggingLevel());
-    loggers.add(logger);
+    LOGGERS.add(logger);
 
     return logger;
   }
@@ -162,7 +162,7 @@ public final class Util {
     rejectNullValue(name, "name");
     final Logger logger = Logger.getLogger(name);
     logger.setLevel(getLoggingLevel());
-    loggers.add(logger);
+    LOGGERS.add(logger);
 
     return logger;
   }

@@ -16,10 +16,10 @@ public final class EntityDbProviderFactory {
 
   private EntityDbProviderFactory() {}
 
-  private static final String remoteConnectionProviderClassName =
-          (String) Configuration.getValue(Configuration.REMOTE_CONNECTION_PROVIDER);
-  private static final String localConnectionProviderClassName =
-          (String) Configuration.getValue(Configuration.LOCAL_CONNECTION_PROVIDER);
+  private static final String REMOTE_CONNECTION_PROVIDER =
+          Configuration.getStringValue(Configuration.REMOTE_CONNECTION_PROVIDER);
+  private static final String LOCAL_CONNECTION_PROVIDER =
+          Configuration.getStringValue(Configuration.LOCAL_CONNECTION_PROVIDER);
 
   /**
    * Returns a EntityDbProvider according to system properties
@@ -49,11 +49,11 @@ public final class EntityDbProviderFactory {
     try {
       if (System.getProperty(Configuration.CLIENT_CONNECTION_TYPE,
               Configuration.CONNECTION_TYPE_LOCAL).equals(Configuration.CONNECTION_TYPE_REMOTE)) {
-        return (EntityDbProvider) Class.forName(remoteConnectionProviderClassName).getConstructor(
+        return (EntityDbProvider) Class.forName(REMOTE_CONNECTION_PROVIDER).getConstructor(
                 User.class, UUID.class, String.class).newInstance(user, clientID, clientTypeID);
       }
       else {
-        return (EntityDbProvider) Class.forName(localConnectionProviderClassName).getConstructor(
+        return (EntityDbProvider) Class.forName(LOCAL_CONNECTION_PROVIDER).getConstructor(
                 User.class).newInstance(user);
       }
     }

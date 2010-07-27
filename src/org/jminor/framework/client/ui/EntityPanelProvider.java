@@ -4,7 +4,6 @@
 package org.jminor.framework.client.ui;
 
 import org.jminor.common.model.Util;
-import org.jminor.common.ui.control.ControlSet;
 import org.jminor.framework.client.model.DefaultEntityEditModel;
 import org.jminor.framework.client.model.DefaultEntityModel;
 import org.jminor.framework.client.model.DefaultEntityTableModel;
@@ -275,7 +274,7 @@ public class EntityPanelProvider implements Comparable {
       throw new RuntimeException("Can not create a EntityPanel without an EntityModel");
     }
     try {
-      final EntityPanel entityPanel= initializePanel(model);
+      final EntityPanel entityPanel = initializePanel(model);
       if (!detailPanelProviders.isEmpty()) {
         entityPanel.setDetailPanelState(detailPanelState);
         entityPanel.setDetailSplitPanelResizeWeight(detailSplitPanelResizeWeight);
@@ -301,28 +300,24 @@ public class EntityPanelProvider implements Comparable {
 
   private EntityPanel initializePanel(final EntityModel model) {
     try {
-      final EntityPanel entityPanel = panelClass.getConstructor(EntityModel.class).newInstance(model);
+      final EntityPanel entityPanel;
+      if (panelClass.equals(EntityPanel.class)) {
+        final EntityTablePanel tablePanel;
+        if (model.containsTableModel()) {
+          tablePanel = initializeTablePanel(model.getTableModel());
+        }
+        else {
+          tablePanel = null;
+        }
+
+        entityPanel = panelClass.getConstructor(EntityModel.class, EntityEditPanel.class, EntityTablePanel.class)
+                .newInstance(model, initializeEditPanel(model.getEditModel()), tablePanel);
+      }
+      else {
+        entityPanel = panelClass.getConstructor(EntityModel.class).newInstance(model);
+      }
+
       configurePanel(entityPanel);
-      final EntityEditPanel editPanel;
-      if (editPanelClass != null) {
-        editPanel = initializeEditPanel(model.getEditModel());
-      }
-      else {
-        editPanel = null;
-      }
-      final EntityTablePanel tablePanel;
-      if (model.containsTableModel()) {
-        tablePanel = initializeTablePanel(entityPanel);
-      }
-      else {
-        tablePanel = null;
-      }
-      if (editPanel != null) {
-        entityPanel.setEditPanel(editPanel);
-      }
-      if (tablePanel != null) {
-        entityPanel.setTablePanel(tablePanel);
-      }
 
       return entityPanel;
     }
@@ -349,18 +344,9 @@ public class EntityPanelProvider implements Comparable {
     }
   }
 
-  private EntityTablePanel initializeTablePanel(final EntityPanel entityPanel) {
+  private EntityTablePanel initializeTablePanel(final EntityTableModel tableModel) {
     try {
-      final EntityTablePanel tablePanel = tablePanelClass.getConstructor(EntityTableModel.class).newInstance(entityPanel.getModel().getTableModel());
-      final ControlSet toolbarControls = new ControlSet("");
-      if (editPanelClass != null || entityPanel.getEditPanel() != null) {
-        toolbarControls.add(entityPanel.getToggleEditPanelControl());
-      }
-      if (!detailPanelProviders.isEmpty() || !entityPanel.getDetailPanels().isEmpty()) {
-        toolbarControls.add(entityPanel.getToggleDetailPanelControl());
-      }
-      tablePanel.initializeToolbar(toolbarControls);
-      tablePanel.initializePopupMenu(entityPanel.getTablePopupControlSet());
+      final EntityTablePanel tablePanel = tablePanelClass.getConstructor(EntityTableModel.class).newInstance(tableModel);
       configureTablePanel(tablePanel);
 
       return tablePanel;
