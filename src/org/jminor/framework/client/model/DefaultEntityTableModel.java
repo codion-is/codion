@@ -14,6 +14,7 @@ import org.jminor.common.model.Util;
 import org.jminor.common.model.reports.ReportDataWrapper;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.client.model.event.DeleteEvent;
+import org.jminor.framework.client.model.event.DeleteListener;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
@@ -129,9 +130,10 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
       throw new RuntimeException("Edit model has already been set for table model: " + this);
     }
     this.editModel = editModel;
-    this.editModel.eventAfterDelete().addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent e) {
-        handleDeleteInternal((DeleteEvent) e);
+    this.editModel.eventAfterDelete().addListener(new DeleteListener() {
+      @Override
+      protected void deleted(final DeleteEvent event) {
+        handleDeleteInternal(event);
       }
     });
   }
@@ -455,6 +457,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     return getSelectedItems().iterator();
   }
 
+  @Override
   protected final void doRefresh() {
     try {
       LOG.debug(this + " refreshing");
@@ -513,7 +516,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     return searchModel.getSearchCriteria();
   }
 
-  protected void handleDelete(final DeleteEvent e) {}
+  protected void handleDelete(final DeleteEvent event) {}
 
   /**
    * Override to add event bindings

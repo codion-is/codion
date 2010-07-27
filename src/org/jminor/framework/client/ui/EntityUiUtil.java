@@ -41,6 +41,7 @@ import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityLookupModel;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.model.event.InsertEvent;
+import org.jminor.framework.client.model.event.InsertListener;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
@@ -702,10 +703,11 @@ public final class EntityUiUtil {
         final EntityPanel entityPanel = panelProvider.createInstance(comboBox.getModel().getDbProvider());
         entityPanel.initializePanel();
         final List<Entity.Key> lastInsertedPrimaryKeys = new ArrayList<Entity.Key>();
-        entityPanel.getModel().getEditModel().eventAfterInsert().addListener(new ActionListener() {
-          public void actionPerformed(final ActionEvent evt) {
+        entityPanel.getModel().getEditModel().eventAfterInsert().addListener(new InsertListener() {
+          @Override
+          protected void inserted(final InsertEvent event) {
             lastInsertedPrimaryKeys.clear();
-            lastInsertedPrimaryKeys.addAll(((InsertEvent) evt).getInsertedKeys());
+            lastInsertedPrimaryKeys.addAll(event.getInsertedKeys());
           }
         });
         final Window parentWindow = UiUtil.getParentWindow(comboBox);

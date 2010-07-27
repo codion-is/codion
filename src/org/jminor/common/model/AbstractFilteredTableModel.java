@@ -272,9 +272,9 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     sortingStatusChanged();
   }
 
-  public final int compare(final T one, final T two, final int columnIndex, final SortingDirective directive) {
-    final Comparable valueOne = getComparable(one, columnIndex);
-    final Comparable valueTwo = getComparable(two, columnIndex);
+  public final int compare(final T objectOne, final T objectTwo, final int columnIndex, final SortingDirective directive) {
+    final Comparable valueOne = getComparable(objectOne, columnIndex);
+    final Comparable valueTwo = getComparable(objectTwo, columnIndex);
     final int comparison;
     // Define null less than everything, except null.
     if (valueOne == null && valueTwo == null) {
@@ -921,6 +921,17 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
       }
 
       return 0;
+    }
+
+//    @Override
+//    public boolean equals(final Object obj) {
+//      //noinspection unchecked
+//      return obj instanceof Row && ((Row) obj).modelIndex == modelIndex;
+//    }
+
+    @Override
+    public int hashCode() {
+      return modelIndex;
     }
   }
 

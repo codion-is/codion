@@ -8,8 +8,11 @@ import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.event.DeleteEvent;
+import org.jminor.framework.client.model.event.DeleteListener;
 import org.jminor.framework.client.model.event.InsertEvent;
+import org.jminor.framework.client.model.event.InsertListener;
 import org.jminor.framework.client.model.event.UpdateEvent;
+import org.jminor.framework.client.model.event.UpdateListener;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
@@ -530,21 +533,21 @@ public class DefaultEntityModel implements EntityModel {
   }
 
   private void bindEventsInternal() {
-    editModel.eventAfterInsert().addListener(new AbstractListener<InsertEvent>() {
+    editModel.eventAfterInsert().addListener(new InsertListener() {
       @Override
-      public void actionPerformed(final InsertEvent event) {
+      public void inserted(final InsertEvent event) {
         handleInsert(event);
       }
     });
-    editModel.eventAfterUpdate().addListener(new AbstractListener<UpdateEvent>() {
+    editModel.eventAfterUpdate().addListener(new UpdateListener() {
       @Override
-      public void actionPerformed(final UpdateEvent event) {
+      protected void updated(final UpdateEvent event) {
         handleUpdate(event);
       }
     });
-    editModel.eventAfterDelete().addListener(new AbstractListener<DeleteEvent>() {
+    editModel.eventAfterDelete().addListener(new DeleteListener() {
       @Override
-      public void actionPerformed(final DeleteEvent event) {
+      protected void deleted(final DeleteEvent event) {
         handleDelete(event);
       }
     });

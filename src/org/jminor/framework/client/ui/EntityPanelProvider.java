@@ -23,6 +23,7 @@ import java.util.Map;
 
 /**
  * A class providing EntityPanel instances.
+ * Note: this class has a natural ordering based on the caption which is inconsistent with equals.
  */
 public class EntityPanelProvider implements Comparable {
 
@@ -218,6 +219,16 @@ public class EntityPanelProvider implements Comparable {
             ? ((EntityPanelProvider) o).panelClass.getSimpleName() : ((EntityPanelProvider) o).caption;
 
     return thisCompare.compareTo(thatCompare);
+  }
+
+  @Override
+  public final boolean equals(final Object obj) {
+    return obj instanceof EntityPanelProvider && ((EntityPanelProvider) obj).entityID.equals(entityID);
+  }
+
+  @Override
+  public int hashCode() {
+    return entityID.hashCode();
   }
 
   public final EntityPanel createInstance(final EntityDbProvider dbProvider) {

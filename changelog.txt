@@ -1931,3 +1931,4 @@
   DefaultEntityValidator.dbProvider field added
   EntityPanelProvider.validatorClass added
   EntityValidator moved to client.model
+  Insert/Update/DeleteListener added

@@ -8,8 +8,11 @@ import org.jminor.common.model.State;
 import org.jminor.common.model.valuemap.ValueMapValidator;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.client.model.event.DeleteEvent;
+import org.jminor.framework.client.model.event.DeleteListener;
 import org.jminor.framework.client.model.event.InsertEvent;
+import org.jminor.framework.client.model.event.InsertListener;
 import org.jminor.framework.client.model.event.UpdateEvent;
+import org.jminor.framework.client.model.event.UpdateListener;
 import org.jminor.framework.db.EntityDbConnectionTest;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entities;
@@ -22,8 +25,6 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -63,23 +64,24 @@ public class DefaultEntityEditModelTest {
     assertTrue(editModel.isEntityNew());
     assertFalse(editModel.stateModified().isActive());
 
+
     //todo
-//    employeeModel.getTableModel().setSelectedItemIndex(0);
-//
-//    assertFalse(entityNullState.isActive());
-//
-//    assertTrue("Active entity is not equal to the selected entity",
-//            editModel.getEntityCopy().propertyValuesEqual(employeeModel.getTableModel().getItemAtViewIndex(0)));
-//
-//    assertFalse("Active entity is new after an entity is selected", editModel.isEntityNew());
-//    assertFalse(editModel.stateModified().isActive());
-//    employeeModel.getTableModel().clearSelection();
-//    assertTrue("Active entity is new null after selection is cleared", editModel.isEntityNew());
-//    assertFalse(editModel.stateModified().isActive());
-//    assertTrue("Active entity is not null after selection is cleared", editModel.getEntityCopy().isNull());
-//
-//    employeeModel.getTableModel().setSelectedItemIndex(0);
-//    assertTrue("Active entity is null after selection is made", !editModel.getEntityCopy().isNull());
+/*  final Entity employee = editModel.getDbProvider().getEntityDb().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "MARTIN");
+    editModel.setEntity(employee);
+    assertFalse(entityNullState.isActive());
+
+    assertTrue("Active entity is not equal to the selected entity", editModel.getEntityCopy().propertyValuesEqual(employee));
+
+    assertFalse("Active entity is new after an entity is selected", editModel.isEntityNew());
+    assertFalse(editModel.stateModified().isActive());
+    editModel.clear();
+    assertTrue("Active entity is new null after selection is cleared", editModel.isEntityNew());
+    assertFalse(editModel.stateModified().isActive());
+    assertTrue("Active entity is not null after selection is cleared", editModel.getEntityCopy().isNull());
+
+    editModel.setEntity(employee);
+    assertTrue("Active entity is null after selection is made", !editModel.getEntityCopy().isNull());
+    editModel.clear();*/
 
     final Double originalCommission = (Double) editModel.getValue(EmpDept.EMPLOYEE_COMMISSION);
     final double commission = 1500.5;
@@ -143,11 +145,11 @@ public class DefaultEntityEditModelTest {
       editModel.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, department);
 
       final Entity toInsert = editModel.getEntityCopy();
-      editModel.eventAfterInsert().addListener(new ActionListener() {
-        public void actionPerformed(final ActionEvent e) {
+      editModel.eventAfterInsert().addListener(new InsertListener() {
+        @Override
+        protected void inserted(final InsertEvent event) {
           try {
-            final InsertEvent insertEvent = (InsertEvent) e;
-            final Entity inserted = editModel.getDbProvider().getEntityDb().selectSingle(insertEvent.getInsertedKeys().get(0));
+            final Entity inserted = editModel.getDbProvider().getEntityDb().selectSingle(event.getInsertedKeys().get(0));
             toInsert.setValue(EmpDept.EMPLOYEE_ID, inserted.getValue(EmpDept.EMPLOYEE_ID));
             assertTrue(toInsert.propertyValuesEqual(inserted));
           }
@@ -180,10 +182,10 @@ public class DefaultEntityEditModelTest {
       editModel.setEntity(editModel.getDbProvider().getEntityDb().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "MILLER"));
       editModel.setValue(EmpDept.EMPLOYEE_NAME, "BJORN");
       final List<Entity> toUpdate = Arrays.asList(editModel.getEntityCopy());
-      editModel.eventAfterUpdate().addListener(new ActionListener() {
-        public void actionPerformed(final ActionEvent e) {
-          final UpdateEvent de = (UpdateEvent) e;
-          assertEquals(toUpdate, de.getUpdatedEntities());
+      editModel.eventAfterUpdate().addListener(new UpdateListener() {
+        @Override
+        protected void updated(final UpdateEvent event) {
+          assertEquals(toUpdate, event.getUpdatedEntities());
         }
       });
       editModel.setUpdateAllowed(false);
@@ -210,10 +212,10 @@ public class DefaultEntityEditModelTest {
       editModel.getDbProvider().getEntityDb().beginTransaction();
       editModel.setEntity(editModel.getDbProvider().getEntityDb().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "MILLER"));
       final List<Entity> toDelete = Arrays.asList(editModel.getEntityCopy());
-      editModel.eventAfterDelete().addListener(new ActionListener() {
-        public void actionPerformed(final ActionEvent e) {
-          final DeleteEvent de = (DeleteEvent) e;
-          assertEquals(toDelete, de.getDeletedEntities());
+      editModel.eventAfterDelete().addListener(new DeleteListener() {
+        @Override
+        protected void deleted(final DeleteEvent event) {
+          assertEquals(toDelete, event.getDeletedEntities());
         }
       });
       editModel.setDeleteAllowed(false);

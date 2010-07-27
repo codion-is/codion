@@ -423,6 +423,7 @@
 
   <target name="run_and_report" depends="run_unit_tests"
           description="Creates a unit test html report">
+    <delete dir="${test.reports.html}"/>
     <mkdir dir="${test.reports.html}"/>
     <junitreport todir="${test.reports}">
       <fileset dir="${test.reports}" includes="TEST-*.xml"/>
