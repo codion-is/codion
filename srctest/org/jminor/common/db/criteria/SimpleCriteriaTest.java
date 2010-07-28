@@ -14,5 +14,6 @@ public class SimpleCriteriaTest {
     assertEquals(crit, criteria.asString());
     assertEquals(0, criteria.getValueKeys().size());
     assertEquals(0, criteria.getValues().size());
+    new SimpleCriteria("hello");
   }
 }

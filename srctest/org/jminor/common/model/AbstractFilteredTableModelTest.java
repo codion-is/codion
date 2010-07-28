@@ -26,28 +26,32 @@ import java.util.List;
  */
 public final class AbstractFilteredTableModelTest {
 
-  private String[] testEntities = {"a", "b", "c", "d", "e"};
+  private static final String[] ITEMS = {"a", "b", "c", "d", "e"};
 
   private AbstractFilteredTableModel<String, Integer> tableModel;
 
-  @Before
-  public void setUp() {
+  public static AbstractFilteredTableModel<String, Integer> createTestModel() {
     final TableColumnModel columnModel = new DefaultTableColumnModel();
     final TableColumn column = new TableColumn(0);
     column.setIdentifier(0);
     columnModel.addColumn(column);
-    tableModel = new AbstractFilteredTableModel<String, Integer>(columnModel,
-            Arrays.asList(new DefaultSearchModel<Integer>(0, Types.VARCHAR, "%"))) {
+    final SearchModel<Integer> filterModel = new DefaultSearchModel<Integer>(0, Types.VARCHAR, "%");
+    return new AbstractFilteredTableModel<String, Integer>(columnModel, Arrays.asList(filterModel)) {
       @Override
       protected void doRefresh() {
         clear();
-        addItems(Arrays.asList(testEntities), false);
+        addItems(Arrays.asList(ITEMS), false);
       }
 
       public Object getValueAt(final int rowIndex, final int columnIndex) {
         return getItemAt(rowIndex);
       }
     };
+  }
+
+  @Before
+  public void setUp() {
+    tableModel = createTestModel();
   }
 
   @Test
@@ -273,15 +277,15 @@ public final class AbstractFilteredTableModelTest {
     assertFalse(tableModel.stateMultipleSelection().isActive());
     assertEquals(0, tableModel.getSelectedItems().size());
 
-    tableModel.setSelectedItem(testEntities[0]);
+    tableModel.setSelectedItem(ITEMS[0]);
     assertFalse(tableModel.stateMultipleSelection().isActive());
-    assertEquals("selected item should fit", testEntities[0], tableModel.getSelectedItem());
+    assertEquals("selected item should fit", ITEMS[0], tableModel.getSelectedItem());
     assertEquals("current index should fit", 0, tableModel.getSelectedIndex());
     assertEquals(1, tableModel.getSelectionCount());
     assertFalse(tableModel.isSelectionEmpty());
     tableModel.addSelectedItemIndex(1);
     assertTrue(tableModel.stateMultipleSelection().isActive());
-    assertEquals("selected item should fit", testEntities[0], tableModel.getSelectedItem());
+    assertEquals("selected item should fit", ITEMS[0], tableModel.getSelectedItem());
     assertEquals("selected indexes should fit", Arrays.asList(0, 1), tableModel.getSelectedIndexes());
     assertEquals("current index should fit", 0, tableModel.getSelectedIndex());
     tableModel.addSelectedItemIndex(4);
@@ -326,7 +330,7 @@ public final class AbstractFilteredTableModelTest {
   @Test
   public void testSelectionAndSorting() {
     tableModel.refresh();
-    assertTrue("Model should contain all entities", tableModelContainsAll(testEntities, false, tableModel));
+    assertTrue("Model should contain all entities", tableModelContainsAll(ITEMS, false, tableModel));
 
     //test selection and filtering together
     tableModel.addSelectedItemIndexes(Arrays.asList(3));
@@ -337,24 +341,24 @@ public final class AbstractFilteredTableModelTest {
 
     tableModel.setSelectedItemIndexes(Arrays.asList(3));
     assertEquals("current index should fit", 3, tableModel.getSelectionModel().getMinSelectionIndex());
-    assertEquals("current selected item should fit", testEntities[2], tableModel.getSelectedItem());
+    assertEquals("current selected item should fit", ITEMS[2], tableModel.getSelectedItem());
 
     tableModel.setSortingDirective(2, SortingDirective.ASCENDING);
-    assertEquals("current selected item should fit", testEntities[2], tableModel.getSelectedItem());
+    assertEquals("current selected item should fit", ITEMS[2], tableModel.getSelectedItem());
     assertEquals("current index should fit", 2,
             tableModel.getSelectionModel().getMinSelectionIndex());
 
     tableModel.setSelectedItemIndexes(Arrays.asList(0));
-    assertEquals("current selected item should fit", testEntities[0], tableModel.getSelectedItem());
+    assertEquals("current selected item should fit", ITEMS[0], tableModel.getSelectedItem());
     tableModel.setSortingDirective(2, SortingDirective.DESCENDING);
     assertEquals("current index should fit", 4,
             tableModel.getSelectionModel().getMinSelectionIndex());
 
     assertEquals("selected indexes should fit", Arrays.asList(4), tableModel.getSelectedIndexes());
-    assertEquals("current selected item should fit", testEntities[0], tableModel.getSelectedItem());
+    assertEquals("current selected item should fit", ITEMS[0], tableModel.getSelectedItem());
     assertEquals("current index should fit", 4,
             tableModel.getSelectionModel().getMinSelectionIndex());
-    assertEquals("selected item should fit", testEntities[0], tableModel.getSelectedItem());
+    assertEquals("selected item should fit", ITEMS[0], tableModel.getSelectedItem());
   }
 
   @Test
@@ -370,7 +374,7 @@ public final class AbstractFilteredTableModelTest {
     tableModel.getFilterModel(0).setSearchEnabled(false);
     assertEquals("current index should fit", 0,
             tableModel.getSelectionModel().getMinSelectionIndex());
-    assertEquals("selected item should fit", testEntities[3], tableModel.getSelectedItem());
+    assertEquals("selected item should fit", ITEMS[3], tableModel.getSelectedItem());
   }
 
   @Test
@@ -389,7 +393,7 @@ public final class AbstractFilteredTableModelTest {
     });
 
     tableModel.refresh();
-    assertTrue("Model should contain all entities", tableModelContainsAll(testEntities, false, tableModel));
+    assertTrue("Model should contain all entities", tableModelContainsAll(ITEMS, false, tableModel));
     assertNotNull(tableModel.getFilterCriteria());
     assertEquals(1, tableModel.getFilterModels().size());
 
@@ -413,9 +417,9 @@ public final class AbstractFilteredTableModelTest {
     assertTrue("filter should be enabled", tableModel.getFilterModel(0).isSearchEnabled());
     assertEquals("4 entities should be filtered", 4, tableModel.getFilteredItemCount());
     assertFalse("Model should not contain all entities",
-            tableModelContainsAll(testEntities, false, tableModel));
+            tableModelContainsAll(ITEMS, false, tableModel));
     assertTrue("Model should contain all entities, including filtered",
-            tableModelContainsAll(testEntities, true, tableModel));
+            tableModelContainsAll(ITEMS, true, tableModel));
 
     assertTrue(tableModel.getVisibleItems().size() > 0);
     assertTrue(tableModel.getFilteredItems().size() > 0);
@@ -426,17 +430,17 @@ public final class AbstractFilteredTableModelTest {
     assertEquals(3, done.size());
     assertFalse("filter should not be enabled", tableModel.getFilterModel(0).isSearchEnabled());
 
-    assertTrue("Model should contain all entities", tableModelContainsAll(testEntities, false, tableModel));
+    assertTrue("Model should contain all entities", tableModelContainsAll(ITEMS, false, tableModel));
 
     tableModel.getFilterModel(0).setLikeValue("t"); // ekki til
     assertTrue("filter should be enabled", tableModel.getFilterModel(0).isSearchEnabled());
     assertEquals("all 5 entities should be filtered", 5, tableModel.getFilteredItemCount());
     assertFalse("Model should not contain all entities",
-            tableModelContainsAll(testEntities, false, tableModel));
+            tableModelContainsAll(ITEMS, false, tableModel));
     assertTrue("Model should contain all entities, including filtered",
-            tableModelContainsAll(testEntities, true, tableModel));
+            tableModelContainsAll(ITEMS, true, tableModel));
     tableModel.getFilterModel(0).setSearchEnabled(false);
-    assertTrue("Model should contain all entities", tableModelContainsAll(testEntities, false, tableModel));
+    assertTrue("Model should contain all entities", tableModelContainsAll(ITEMS, false, tableModel));
     assertFalse("filter should not be enabled", tableModel.getFilterModel(0).isSearchEnabled());
 
     tableModel.getFilterModel(0).setLikeValue("b");

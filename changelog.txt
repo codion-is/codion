@@ -1941,3 +1941,4 @@
   LoadTestModelTest improved
   AbstractFilteredTableModelTest improved
   AbstractFilteredTableModelTest improved some more
+  Added tests to common

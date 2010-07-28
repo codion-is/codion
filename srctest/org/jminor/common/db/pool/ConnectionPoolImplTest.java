@@ -54,6 +54,7 @@ public class ConnectionPoolImplTest {
     pool.close();
     Thread.sleep(CLOSE_SLEEP_MILLIS);
     final ConnectionPoolStatistics statistics = pool.getConnectionPoolStatistics(startTime.getTime());
+    assertTrue(statistics.getAverageCheckOutTime() == 0);
     assertEquals(statistics.getConnectionsCreated(), statistics.getConnectionsDestroyed());
   }
 
@@ -62,8 +63,40 @@ public class ConnectionPoolImplTest {
     final Date startDate = new Date();
     final User user = User.UNIT_TEST_USER;
     final ConnectionPoolImpl pool = new ConnectionPoolImpl(createConnectionProvider(), user);
+    assertTrue(pool.isEnabled());
     pool.getUser().setPassword(User.UNIT_TEST_USER.getPassword());
     assertEquals(user, pool.getUser());
+    assertEquals(ConnectionPoolImpl.DEFAULT_CLEANUP_INTERVAL, pool.getPoolCleanupInterval());
+    assertEquals(ConnectionPoolImpl.DEFAULT_TIMEOUT, pool.getPooledConnectionTimeout());
+    assertEquals(ConnectionPoolImpl.DEFAULT_MAXIMUM_POOL_SIZE, pool.getMaximumPoolSize());
+    assertEquals(ConnectionPoolImpl.DEFAULT_MAXIMUM_POOL_SIZE / 2, pool.getMinimumPoolSize());
+
+    try {
+      pool.setMaximumPoolSize(3);
+      fail();
+    }
+    catch (Exception e) {}
+    try {
+      pool.setMaximumPoolSize(-1);
+      fail();
+    }
+    catch (Exception e) {}
+    pool.setMaximumPoolSize(6);
+    assertEquals(6, pool.getMaximumPoolSize());
+
+    try {
+      pool.setMinimumPoolSize(8);
+      fail();
+    }
+    catch (Exception e) {}
+    try {
+      pool.setMinimumPoolSize(-1);
+      fail();
+    }
+    catch (Exception e) {}
+    pool.setMinimumPoolSize(3);
+    assertEquals(3, pool.getMinimumPoolSize());
+
     pool.setCollectFineGrainedStatistics(true);
     assertTrue(pool.isCollectFineGrainedStatistics());
     ConnectionPoolStatistics statistics = pool.getConnectionPoolStatistics(startDate.getTime());

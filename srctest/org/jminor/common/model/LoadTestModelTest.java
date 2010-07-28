@@ -135,9 +135,9 @@ public class LoadTestModelTest {
     assertEquals(0, model.getApplicationCount());
   }
 
-  private static final class TestLoadTestModel extends LoadTestModel {
+  public static final class TestLoadTestModel extends LoadTestModel {
 
-    TestLoadTestModel(final User user, final int maximumThinkTime, final int loginDelayFactor, final int applicationBatchSize,
+    public TestLoadTestModel(final User user, final int maximumThinkTime, final int loginDelayFactor, final int applicationBatchSize,
                       final int warningTime) {
       super(user, Arrays.asList(SCENARIO), maximumThinkTime, loginDelayFactor, applicationBatchSize, warningTime);
     }

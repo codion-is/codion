@@ -28,10 +28,11 @@ import java.util.TimerTask;
  */
 public final class ConnectionPoolImpl implements ConnectionPool {
 
-  private static final Logger LOG = Util.getLogger(ConnectionPoolImpl.class);
+  public static final int DEFAULT_TIMEOUT = 60000;
+  public static final int DEFAULT_CLEANUP_INTERVAL = 20000;
+  public static final int DEFAULT_MAXIMUM_POOL_SIZE = 8;
 
-  private static final int DEFAULT_TIMEOUT = 60000;
-  private static final int DEFAULT_CLEANUP_INTERVAL = 20000;
+  private static final Logger LOG = Util.getLogger(ConnectionPoolImpl.class);
 
   private final Stack<PoolableConnection> connectionPool = new Stack<PoolableConnection>();
   private final Set<PoolableConnection> connectionsInUse = new HashSet<PoolableConnection>();
@@ -50,8 +51,8 @@ public final class ConnectionPoolImpl implements ConnectionPool {
   private volatile boolean creatingConnection = false;
   private final User user;
   private int pooledConnectionTimeout = DEFAULT_TIMEOUT;
-  private int minimumPoolSize = 4;
-  private int maximumPoolSize = 8;
+  private int minimumPoolSize = DEFAULT_MAXIMUM_POOL_SIZE / 2;
+  private int maximumPoolSize = DEFAULT_MAXIMUM_POOL_SIZE;
   private int poolCleanupInterval = DEFAULT_CLEANUP_INTERVAL;
   private boolean enabled = true;
 
@@ -153,6 +154,9 @@ public final class ConnectionPoolImpl implements ConnectionPool {
   }
 
   public synchronized void setMinimumPoolSize(final int value) {
+    if (value > maximumPoolSize || value < 0) {
+      throw new IllegalArgumentException("Minimum pool size must be a positive integer an be less than maximum pool size");
+    }
     this.minimumPoolSize = value;
   }
 
@@ -161,6 +165,9 @@ public final class ConnectionPoolImpl implements ConnectionPool {
   }
 
   public synchronized void setMaximumPoolSize(final int value) {
+    if (value < minimumPoolSize || value < 1) {
+      throw new IllegalArgumentException("Maximum pool size must be larger than 1 and larger than minimum pool size");
+    }
     this.maximumPoolSize = value;
   }
 
@@ -323,7 +330,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
 
   private static class Counter {
     private static final double THOUSAND = 1000d;
-    
+
     private final long creationDate = System.currentTimeMillis();
     private long resetDate = creationDate;
     private int liveConnections = 0;

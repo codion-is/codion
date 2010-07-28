@@ -1274,7 +1274,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     header.setReorderingAllowed(allowColumnReordering());
 
     jTable.setAutoResizeMode(getAutoResizeMode());
-
+    
     return jTable;
   }
 
