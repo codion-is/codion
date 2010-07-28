@@ -1940,3 +1940,4 @@
   More finalization of classes, fields and methods
   LoadTestModelTest improved
   AbstractFilteredTableModelTest improved
+  AbstractFilteredTableModelTest improved some more

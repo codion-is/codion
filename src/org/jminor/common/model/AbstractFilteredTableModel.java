@@ -131,7 +131,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
    */
   private boolean isSorting = false;
 
-  private final List<Row> viewToModel = new ArrayList<Row>();
+  private final List<Row<T>> viewToModel = new ArrayList<Row<T>>();
   private final Map<Integer, Integer> modelToView = new HashMap<Integer, Integer>();
   private final List<SortingState> sortingStates = new ArrayList<SortingState>();
 
@@ -580,14 +580,14 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
   }
 
   public final State stateSelectionEmpty() {
-    return selectionModel.stSelectionEmpty.getLinkedState();
+    return selectionModel.stateSelectionEmpty().getLinkedState();
   }
 
   /**
    * @return a State active when multiple rows are selected
    */
   public final State stateMultipleSelection() {
-    return selectionModel.stMultipleSelection.getLinkedState();
+    return selectionModel.stateMultipleSelection().getLinkedState();
   }
 
   /**
@@ -631,15 +631,15 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
   }
 
   public final Event eventSelectedIndexChanged() {
-    return selectionModel.evtSelectedIndexChanged;
+    return selectionModel.eventSelectedIndexChanged();
   }
 
   public final Event eventSelectionChanged() {
-    return selectionModel.evtSelectionChanged;
+    return selectionModel.eventSelectionChanged();
   }
 
   public final Event eventSelectionChangedAdjusting() {
-    return selectionModel.evtSelectionChangedAdjusting;
+    return selectionModel.eventSelectionChangedAdjusting();
   }
 
   public final Event eventTableDataChanged() {
@@ -801,7 +801,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
   }
 
   private int modelIndex(final int viewIndex) {
-    final List<Row> model = getViewToModel();
+    final List<Row<T>> model = getViewToModel();
     if (!model.isEmpty() && viewIndex >= 0 && viewIndex < model.size()) {
       return model.get(viewIndex).getModelIndex();
     }
@@ -809,11 +809,11 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     return -1;
   }
 
-  private List<Row> getViewToModel() {
+  private List<Row<T>> getViewToModel() {
     if (!visibleItems.isEmpty() && viewToModel.isEmpty()) {
       final int tableModelRowCount = getRowCount();
       for (int row = 0; row < tableModelRowCount; row++) {
-        viewToModel.add(new Row(row));
+        viewToModel.add(new Row<T>(row, this));
       }
 
       if (isSorted()) {
@@ -858,6 +858,10 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     modelToView.clear();
   }
 
+  private List<SortingState> getSortingStates() {
+    return sortingStates;
+  }
+
   private final class SortHandler implements TableModelListener {
     public void tableChanged(final TableModelEvent e) {
       // If we're not sorting by anything, just pass the event along.
@@ -879,24 +883,26 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     }
   }
 
-  private final class Row implements Comparable<Row> {
+  private static final class Row<T> implements Comparable<Row<T>> {
 
+    private final AbstractFilteredTableModel<T, ?> tableModel;
     private final int modelIndex;
 
-    Row(final int modelIndex) {
+    private Row(final int modelIndex, final AbstractFilteredTableModel<T, ?> tableModel) {
       this.modelIndex = modelIndex;
+      this.tableModel = tableModel;
     }
 
     public int getModelIndex() {
       return modelIndex;
     }
 
-    public int compareTo(final Row o) {
-      final T one = visibleItems.get(modelIndex);
-      final T two = visibleItems.get(o.modelIndex);
+    public int compareTo(final Row<T> o) {
+      final T one = tableModel.getItemAt(modelIndex);
+      final T two = tableModel.getItemAt(o.modelIndex);
 
-      for (final SortingState directive : sortingStates) {
-        final int comparison = compare(one, two, directive.getColumnIndex(), directive.getDirective());
+      for (final SortingState directive : tableModel.getSortingStates()) {
+        final int comparison = tableModel.compare(one, two, directive.getColumnIndex(), directive.getDirective());
         if (comparison != 0) {
           return comparison;
         }
@@ -905,11 +911,11 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
       return 0;
     }
 
-//    @Override
-//    public boolean equals(final Object obj) {
-//      //noinspection unchecked
-//      return obj instanceof Row && ((Row) obj).modelIndex == modelIndex;
-//    }
+    @Override
+    public boolean equals(final Object obj) {
+      //noinspection unchecked
+      return obj instanceof Row && ((Row) obj).modelIndex == modelIndex;
+    }
 
     @Override
     public int hashCode() {
