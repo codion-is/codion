@@ -245,14 +245,14 @@ public abstract class LoadTestModel {
     evtApplicationBatchSizeChanged.fire();
   }
 
-  public final void addApplications() throws Exception {
+  public final void addApplicationBatch() throws Exception {
     for (int i = 0; i < applicationBatchSize; i++) {
       addApplication();
     }
   }
 
-  public final void removeApplications() {
-    while (!applications.isEmpty()) {
+  public final void removeApplicationBatch() {
+    for (int i = 0; i < applicationBatchSize && !applications.isEmpty(); i++) {
       removeApplication();
     }
   }
@@ -285,7 +285,9 @@ public abstract class LoadTestModel {
     paused = false;
     stopped = true;
     synchronized (applications) {
-      removeApplications();
+      while (!applications.isEmpty()) {
+        removeApplication();
+      }
     }
   }
 

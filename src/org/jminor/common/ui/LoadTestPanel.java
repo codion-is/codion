@@ -196,10 +196,10 @@ public final class LoadTestPanel extends JPanel {
       public void actionPerformed(final ActionEvent e) {
         try {
           if (add) {
-            loadTestModel.addApplications();
+            loadTestModel.addApplicationBatch();
           }
           else {
-            loadTestModel.removeApplications();
+            loadTestModel.removeApplicationBatch();
           }
         }
         catch (Exception ex) {

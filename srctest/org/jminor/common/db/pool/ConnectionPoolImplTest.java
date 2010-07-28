@@ -47,7 +47,7 @@ public class ConnectionPoolImplTest {
         System.out.println("####################################");
       }
     }, startTime, PRINT_PERIOD);
-    model.addApplications();
+    model.addApplicationBatch();
     model.setCollectChartData(true);
     Thread.sleep(SLEEP_MILLIS);
     model.exit();

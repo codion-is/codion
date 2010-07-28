@@ -115,7 +115,7 @@ public class LoadTestModelTest {
     model.setUser(USER);
     assertEquals(USER, model.getUser());
     assertNotNull(model.getScenarioChooser());
-    model.addApplications();
+    model.addApplicationBatch();
     Thread.sleep(500);
     model.setPaused(true);
     assertTrue(model.isPaused());
