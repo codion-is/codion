@@ -6,6 +6,7 @@ package org.jminor.common.db.criteria;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CriteriaSetTest {
@@ -15,16 +16,25 @@ public class CriteriaSetTest {
     final CriteriaSet<Object> andSet = new CriteriaSet<Object>(CriteriaSet.Conjunction.AND,
             new Criteria(), new Criteria());
     assertEquals("AND criteria set should be working", "(criteria and criteria)", andSet.asString());
+    assertEquals(2, andSet.getCriteriaCount());
 
     final CriteriaSet<Object> orSet = new CriteriaSet<Object>(CriteriaSet.Conjunction.OR,
             new Criteria(), new Criteria());
     assertEquals("OR criteria set should be working", "(criteria or criteria)", orSet.asString());
+
+    final List<Object> values = orSet.getValues();
+    assertEquals(2, values.size());
+    final List<Object> keys = orSet.getValueKeys();
+    assertEquals(2, keys.size());
 
     final CriteriaSet<Object> andOrAndSet = new CriteriaSet<Object>(CriteriaSet.Conjunction.AND, andSet, orSet);
     assertEquals("AND OR AND critera set should be working", "((criteria and criteria) and (criteria or criteria))", andOrAndSet.asString());
 
     final CriteriaSet<Object> andOrOrSet = new CriteriaSet<Object>(CriteriaSet.Conjunction.OR, andSet, orSet);
     assertEquals("AND OR OR critera set should be working", "((criteria and criteria) or (criteria or criteria))", andOrOrSet.asString());
+
+    final CriteriaSet<Object> set = new CriteriaSet<Object>(CriteriaSet.Conjunction.OR);
+    assertEquals(0, set.getCriteriaCount());
   }
 
   private static class Criteria implements org.jminor.common.db.criteria.Criteria {
@@ -33,11 +43,15 @@ public class CriteriaSetTest {
     }
 
     public List<Object> getValues() {
-      return null;
+      final List<Object> values =  new ArrayList<Object>();
+      values.add(1);
+      return values;
     }
 
     public List<?> getValueKeys() {
-      return null;
+      final List<Object> keys =  new ArrayList<Object>();
+      keys.add("key");
+      return keys;
     }
   }
 }
