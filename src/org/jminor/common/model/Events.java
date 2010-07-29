@@ -24,7 +24,7 @@ public final class Events {
 
   final static class EventImpl implements Event {
     private final ActionEvent defaultActionEvent = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "");
-    private EventObserverImpl observer;
+    private volatile EventObserverImpl observer;
 
     /**
      * Notifies all listeners
@@ -38,8 +38,10 @@ public final class Events {
      * @param event the ActionEvent to use when notifying
      */
     public void fire(final ActionEvent event) {
-      for (final ActionListener listener : new ArrayList<ActionListener>(observer.getListeners())) {
-        listener.actionPerformed(event);
+      if (observer != null) {
+        for (final ActionListener listener : new ArrayList<ActionListener>(observer.getListeners())) {
+          listener.actionPerformed(event);
+        }
       }
     }
 
@@ -49,7 +51,9 @@ public final class Events {
 
     public EventObserverImpl getObserver() {
       if (observer == null) {
-        observer = new EventObserverImpl();
+        synchronized (this) {
+          observer = new EventObserverImpl();
+        }
       }
 
       return observer;
@@ -70,7 +74,9 @@ public final class Events {
      * @param listener the listener to remove
      */
     public void removeListener(final ActionListener listener) {
-      observer.removeListener(listener);
+      if (observer != null) {
+        observer.removeListener(listener);
+      }
     }
 
     public Collection<? extends ActionListener> getListeners() {
@@ -88,7 +94,7 @@ public final class Events {
      * @param listener the listener to add
      * @throws IllegalArgumentException in case listener is null
      */
-    public void addListener(final ActionListener listener) {
+    public synchronized void addListener(final ActionListener listener) {
       Util.rejectNullValue(listener, "listener");
       listeners.add(listener);
     }
@@ -97,11 +103,11 @@ public final class Events {
      * Removes <code>listener</code> from this Event
      * @param listener the listener to remove
      */
-    public void removeListener(final ActionListener listener) {
+    public synchronized void removeListener(final ActionListener listener) {
       listeners.remove(listener);
     }
 
-    private Collection<? extends ActionListener> getListeners() {
+    private synchronized Collection<? extends ActionListener> getListeners() {
       return Collections.unmodifiableCollection(listeners);
     }
   }

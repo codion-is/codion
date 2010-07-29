@@ -129,7 +129,7 @@ public final class States {
       evtStateChanged.fire();
     }
 
-    protected Event evtStateChanged() {
+    protected final Event evtStateChanged() {
       return evtStateChanged;
     }
 
@@ -137,7 +137,7 @@ public final class States {
 
       private final State referenceState;
 
-      private LinkedState(final State referenceState) {
+      LinkedState(final State referenceState) {
         this.referenceState = referenceState;
         this.referenceState.addStateListener(new ActionListener() {
           public void actionPerformed(final ActionEvent e) {
@@ -168,7 +168,7 @@ public final class States {
 
     private final class ReverseState extends LinkedState {
 
-      private ReverseState(final State referenceState) {
+      ReverseState(final State referenceState) {
         super(referenceState);
       }
 
