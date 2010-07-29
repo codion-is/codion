@@ -178,19 +178,19 @@ public final class EntityCriteriaUtil {
       this.criteria = criteria;
     }
 
-    public List<Object> getValues() {
+    public final List<Object> getValues() {
       return criteria == null ? null : criteria.getValues();
     }
 
-    public List<Property.ColumnProperty> getValueProperties() {
+    public final List<Property.ColumnProperty> getValueProperties() {
       return criteria == null ? null : criteria.getValueKeys();
     }
 
-    public String getEntityID() {
+    public final String getEntityID() {
       return entityID;
     }
 
-    public Criteria<Property.ColumnProperty> getCriteria() {
+    public final Criteria<Property.ColumnProperty> getCriteria() {
       return criteria;
     }
 
@@ -202,18 +202,18 @@ public final class EntityCriteriaUtil {
       return EntityRepository.getTableName(entityID) + " " + getWhereClause();
     }
 
-    public String getWhereClause() {
+    public final String getWhereClause() {
       return getWhereClause(true);
     }
 
-    public String getWhereClause(final boolean includeWhereKeyword) {
+    public final String getWhereClause(final boolean includeWhereKeyword) {
       final String criteriaString = criteria == null ? "" : criteria.asString();
 
       return criteriaString.length() > 0 ? (includeWhereKeyword ? "where " : "and ") + criteriaString : "";
     }
   }
 
-  private static class DefaultEntitySelectCriteria extends DefaultEntityCriteria implements EntitySelectCriteria {
+  private static final class DefaultEntitySelectCriteria extends DefaultEntityCriteria implements EntitySelectCriteria {
 
     private static final long serialVersionUID = 1;
 
@@ -368,7 +368,7 @@ public final class EntityCriteriaUtil {
   /**
    * A class encapsulating a query criteria with Entity.Key objects as values.
    */
-  private static class EntityKeyCriteria extends CriteriaSet<Property.ColumnProperty> {
+  private static final class EntityKeyCriteria extends CriteriaSet<Property.ColumnProperty> {
 
     private static final long serialVersionUID = 1;
 
@@ -472,7 +472,7 @@ public final class EntityCriteriaUtil {
   /**
    * A object for encapsulating a query criteria with a single property and one or more values.
    */
-  private static class PropertyCriteria implements Criteria<Property.ColumnProperty>, Serializable {
+  private static final class PropertyCriteria implements Criteria<Property.ColumnProperty>, Serializable {
 
     private static final long serialVersionUID = 1;
 
@@ -748,15 +748,8 @@ public final class EntityCriteriaUtil {
       return getForeignKeyCriteriaValues();
     }
 
-    /**
-     * @return the number values contained in this criteria.
-     */
-    public int getValueCount() {
-      return getValues().size();
-    }
-
     private String getForeignKeyCriteriaString() {
-      if (getValueCount() > 1) {
+      if (getValues().size() > 1) {
         return getMultipleForeignKeyCriteriaString();
       }
 
@@ -859,13 +852,13 @@ public final class EntityCriteriaUtil {
     private String getInList(final Property.ColumnProperty property, final boolean notIn) {
       final StringBuilder stringBuilder = new StringBuilder("(").append(property.getColumnName()).append((notIn ? " not in (" : " in ("));
       int cnt = 1;
-      for (int i = 0; i < getValueCount(); i++) {
+      for (int i = 0; i < getValues().size(); i++) {
         stringBuilder.append("?");
-        if (cnt++ == 1000 && i < getValueCount() - 1) {//Oracle limit
+        if (cnt++ == 1000 && i < getValues().size() - 1) {//Oracle limit
           stringBuilder.append(notIn ? ") and " : ") or ").append(property.getColumnName()).append(" in (");
           cnt = 1;
         }
-        else if (i < getValueCount() - 1) {
+        else if (i < getValues().size() - 1) {
           stringBuilder.append(", ");
         }
       }
