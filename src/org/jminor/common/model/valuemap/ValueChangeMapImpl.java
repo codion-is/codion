@@ -136,7 +136,7 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
   }
 
   public final EventObserver valueChangeObserver() {
-    return getValueChangedEvent();
+    return getValueChangedEvent().getObserver();
   }
 
   protected final void notifyValueChange(final K key, final V value, final V oldValue, final boolean initialization) {

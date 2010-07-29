@@ -136,7 +136,7 @@ public class DefaultValueChangeMapEditModel<K, V> implements ValueChangeMapEditM
       valueChangeEventMap.put(key, Events.event());
     }
 
-    return valueChangeEventMap.get(key);
+    return valueChangeEventMap.get(key).getObserver();
   }
 
   public final void addValueListener(final K key, final ActionListener listener) {

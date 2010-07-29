@@ -114,7 +114,7 @@ public final class States {
      * @return an EventObserver notified each time the state changes
      */
     public final EventObserver stateObserver() {
-      return evtStateChanged;
+      return evtStateChanged.getObserver();
     }
 
     public final void addStateListener(final ActionListener listener) {

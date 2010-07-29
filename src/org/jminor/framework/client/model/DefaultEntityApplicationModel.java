@@ -138,7 +138,7 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
   }
 
   public final EventObserver cascadeRefreshObserver() {
-    return evtCascadeRefreshChanged;
+    return evtCascadeRefreshChanged.getObserver();
   }
 
   /**

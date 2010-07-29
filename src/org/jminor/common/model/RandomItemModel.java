@@ -128,7 +128,7 @@ public class RandomItemModel<T> {
    * @return an Event which fires each time a weight has been changed.
    */
   public final EventObserver weightsObserver() {
-    return evtWeightsChanged;
+    return evtWeightsChanged.getObserver();
   }
 
   /**

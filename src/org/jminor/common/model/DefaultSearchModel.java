@@ -345,11 +345,11 @@ public class DefaultSearchModel<K> implements SearchModel<K> {
   }
 
   public final EventObserver lowerBoundObserver() {
-    return evtLowerBoundChanged;
+    return evtLowerBoundChanged.getObserver();
   }
 
   public final EventObserver upperBoundObserver() {
-    return evtUpperBoundChanged;
+    return evtUpperBoundChanged.getObserver();
   }
 
   public final void addEnabledListener(final ActionListener listener) {
@@ -401,7 +401,7 @@ public class DefaultSearchModel<K> implements SearchModel<K> {
   }
 
   public final EventObserver searchTypeObserver() {
-    return evtSearchTypeChanged;
+    return evtSearchTypeChanged.getObserver();
   }
 
   public final boolean include(final Object object) {

@@ -209,7 +209,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
   }
 
   public final EventObserver searchStringObserver() {
-    return evtSearchStringChanged;
+    return evtSearchStringChanged.getObserver();
   }
 
   public final void addSearchStringListener(final ActionListener listener) {

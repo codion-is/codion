@@ -348,31 +348,31 @@ public abstract class LoadTestModel {
   }
 
   public final EventObserver applicationBatchSizeObserver() {
-    return evtApplicationBatchSizeChanged;
+    return evtApplicationBatchSizeChanged.getObserver();
   }
 
   public final EventObserver applicationCountObserver() {
-    return evtApplicationtCountChanged;
+    return evtApplicationtCountChanged.getObserver();
   }
 
   public final EventObserver maximumThinkTimeObserver() {
-    return evtMaximumThinkTimeChanged;
+    return evtMaximumThinkTimeChanged.getObserver();
   }
 
   public final EventObserver minimumThinkTimeObserver() {
-    return evtMinimumThinkTimeChanged;
+    return evtMinimumThinkTimeChanged.getObserver();
   }
 
   public final EventObserver pauseObserver() {
-    return evtPausedChanged;
+    return evtPausedChanged.getObserver();
   }
 
   public final EventObserver collectChartDataObserver() {
-    return evtCollectChartDataChanged;
+    return evtCollectChartDataChanged.getObserver();
   }
 
   public final EventObserver warningTimeObserver() {
-    return evtWarningTimeChanged;
+    return evtWarningTimeChanged.getObserver();
   }
 
   protected void performWork(final Object application) {

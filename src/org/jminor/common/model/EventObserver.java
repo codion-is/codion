@@ -4,7 +4,6 @@
 package org.jminor.common.model;
 
 import java.awt.event.ActionListener;
-import java.util.Collection;
 
 /**
  * User: darri
@@ -20,6 +19,4 @@ public interface EventObserver {
    * @param listener the listener to remove
    */
   void removeListener(final ActionListener listener);
-
-  Collection<? extends ActionListener> getListeners();
 }

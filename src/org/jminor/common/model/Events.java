@@ -24,7 +24,7 @@ public final class Events {
 
   final static class EventImpl implements Event {
     private final ActionEvent defaultActionEvent = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "");
-    private EventObserver observer;
+    private EventObserverImpl observer;
 
     /**
      * Notifies all listeners
@@ -47,7 +47,7 @@ public final class Events {
       fire(e);
     }
 
-    public EventObserver getObserver() {
+    public EventObserverImpl getObserver() {
       if (observer == null) {
         observer = new EventObserverImpl();
       }
@@ -101,7 +101,7 @@ public final class Events {
       listeners.remove(listener);
     }
 
-    public Collection<? extends ActionListener> getListeners() {
+    private Collection<? extends ActionListener> getListeners() {
       return Collections.unmodifiableCollection(listeners);
     }
   }
