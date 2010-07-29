@@ -20,14 +20,14 @@ import java.util.regex.Pattern;
  */
 public class DefaultSearchModel<K> implements SearchModel<K> {
 
-  private final Event evtUpperBoundChanged = new Event();
-  private final Event evtLowerBoundChanged = new Event();
-  private final Event evtSearchTypeChanged = new Event();
-  private final Event evtSearchStateChanged = new Event();
-  private final Event evtSearchModelCleared = new Event();
-  private final Event evtEnabledChanged = new Event();
+  private final Event evtUpperBoundChanged = Events.event();
+  private final Event evtLowerBoundChanged = Events.event();
+  private final Event evtSearchTypeChanged = Events.event();
+  private final Event evtSearchStateChanged = Events.event();
+  private final Event evtSearchModelCleared = Events.event();
+  private final Event evtEnabledChanged = Events.event();
 
-  private final State stLocked = new State();
+  private final State stLocked = States.state();
 
   private final K searchKey;
   private final int type;

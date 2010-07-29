@@ -4,6 +4,7 @@
 package org.jminor.framework.client.ui;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.model.Events;
 import org.jminor.common.ui.AbstractSearchPanel;
 import org.jminor.common.ui.AbstractTableColumnSyncPanel;
 import org.jminor.common.ui.UiUtil;
@@ -28,7 +29,7 @@ import java.util.Enumeration;
  */
 public final class EntityTableSearchAdvancedPanel extends AbstractTableColumnSyncPanel implements EntityTableSearchPanel {
 
-  private final Event evtAdvancedChanged = new Event();
+  private final Event evtAdvancedChanged = Events.event();
 
   private final EntityTableSearchModel searchModel;
 

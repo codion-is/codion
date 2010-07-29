@@ -4,6 +4,7 @@
 package org.jminor.common.ui.control;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.model.Events;
 import org.jminor.common.ui.textfield.DoubleField;
 
 import static org.junit.Assert.assertEquals;
@@ -13,7 +14,7 @@ import org.junit.Test;
 public class DoubleBeanValueLinkTest {
 
   private Double doubleValue;
-  private Event evtDoubleValueChanged = new Event();
+  private Event evtDoubleValueChanged = Events.event();
 
   @Test
   public void test() throws Exception {

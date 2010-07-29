@@ -4,6 +4,7 @@
 package org.jminor.framework.server.monitor;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.model.Events;
 import org.jminor.common.model.Util;
 import org.jminor.framework.domain.EntityDefinition;
 import org.jminor.framework.server.EntityDbServerAdmin;
@@ -34,10 +35,10 @@ public final class ServerMonitor {
 
   private static final Logger LOG = Util.getLogger(ServerMonitor.class);
 
-  private final Event evtStatsUpdateIntervalChanged = new Event();
-  private final Event evtServerShutDown = new Event();
-  private final Event evtStatsUpdated = new Event();
-  private final Event evtWarningThresholdChanged = new Event();
+  private final Event evtStatsUpdateIntervalChanged = Events.event();
+  private final Event evtServerShutDown = Events.event();
+  private final Event evtStatsUpdated = Events.event();
+  private final Event evtWarningThresholdChanged = Events.event();
 
   private final String hostName;
   private final String serverName;

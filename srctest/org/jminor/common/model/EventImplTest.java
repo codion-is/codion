@@ -11,11 +11,11 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EventTest {
+public class EventImplTest {
 
   @Test
   public void test() throws Exception {
-    final Event event = new Event();
+    final Event event = new Events.EventImpl();
     final List<Object> res = new ArrayList<Object>();
     final ActionListener listener = new ActionListener() {
       public void actionPerformed(final ActionEvent e) {

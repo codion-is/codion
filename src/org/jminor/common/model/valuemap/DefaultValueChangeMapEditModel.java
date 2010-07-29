@@ -5,7 +5,9 @@ package org.jminor.common.model.valuemap;
 
 import org.jminor.common.model.Event;
 import org.jminor.common.model.EventObserver;
+import org.jminor.common.model.Events;
 import org.jminor.common.model.State;
+import org.jminor.common.model.States;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 
@@ -30,7 +32,7 @@ public class DefaultValueChangeMapEditModel<K, V> implements ValueChangeMapEditM
    * Fired when the active value map is set.
    * @see #setValueMap(ValueMap)
    */
-  private final Event evtValueMapSet = new Event();
+  private final Event evtValueMapSet = Events.event();
 
   /**
    * Holds events signaling value changes made via the ui
@@ -44,7 +46,7 @@ public class DefaultValueChangeMapEditModel<K, V> implements ValueChangeMapEditM
 
   private final ValueMapValidator<K, V> validator;
 
-  private final State stValid = new State();
+  private final State stValid = States.state();
 
   /**
    * Instantiates a new edit model instance for the given value map.
@@ -131,7 +133,7 @@ public class DefaultValueChangeMapEditModel<K, V> implements ValueChangeMapEditM
   public final EventObserver getValueChangeObserver(final K key) {
     Util.rejectNullValue(key, "key");
     if (!valueChangeEventMap.containsKey(key)) {
-      valueChangeEventMap.put(key, new Event());
+      valueChangeEventMap.put(key, Events.event());
     }
 
     return valueChangeEventMap.get(key);
@@ -184,7 +186,7 @@ public class DefaultValueChangeMapEditModel<K, V> implements ValueChangeMapEditM
   private Event getValueSetEvent(final K key) {
     Util.rejectNullValue(key, "key");
     if (!valueSetEventMap.containsKey(key)) {
-      valueSetEventMap.put(key, new Event());
+      valueSetEventMap.put(key, Events.event());
     }
 
     return valueSetEventMap.get(key);
@@ -193,7 +195,7 @@ public class DefaultValueChangeMapEditModel<K, V> implements ValueChangeMapEditM
   private Event getValueChangeEvent(final K key) {
     Util.rejectNullValue(key, "key");
     if (!valueChangeEventMap.containsKey(key)) {
-      valueChangeEventMap.put(key, new Event());
+      valueChangeEventMap.put(key, Events.event());
     }
 
     return valueChangeEventMap.get(key);

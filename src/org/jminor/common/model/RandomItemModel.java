@@ -31,7 +31,7 @@ public class RandomItemModel<T> {
   /**
    * An Event fired when a weight value has changed
    */
-  protected final Event evtWeightsChanged = new Event();
+  protected final Event evtWeightsChanged = Events.event();
 
   /**
    * The items contained in this model

@@ -10,6 +10,7 @@ import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.SortingDirective;
 import org.jminor.common.model.State;
+import org.jminor.common.model.States;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.reports.ReportDataWrapper;
 import org.jminor.common.model.valuemap.exception.ValidationException;
@@ -89,9 +90,9 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
    */
   private boolean queryCriteriaRequired = true;
 
-  private final State stAllowMultipleUpdate = new State(true);
+  private final State stAllowMultipleUpdate = States.state(true);
 
-  private final State stAllowDelete = new State(true);
+  private final State stAllowDelete = States.state(true);
 
   private ReportDataWrapper reportDataSource;
 

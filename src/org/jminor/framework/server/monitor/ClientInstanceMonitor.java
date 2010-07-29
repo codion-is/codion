@@ -4,6 +4,7 @@
 package org.jminor.framework.server.monitor;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.model.Events;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ServerLog;
 import org.jminor.common.ui.control.ToggleBeanValueLink;
@@ -19,7 +20,7 @@ import java.rmi.RemoteException;
  */
 public final class ClientInstanceMonitor {
 
-  private final Event evtLogginStatusChanged = new Event();
+  private final Event evtLogginStatusChanged = Events.event();
 
   private final ClientInfo client;
   private final EntityDbServerAdmin server;

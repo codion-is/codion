@@ -2,6 +2,7 @@ package org.jminor.common.ui.control;
 
 import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.Events;
 import org.jminor.common.model.formats.DateFormats;
 import org.jminor.common.ui.UiUtil;
 
@@ -16,7 +17,7 @@ import java.text.SimpleDateFormat;
 public class TimestampBeanValueLinkTest {
 
   private Timestamp timestamp;
-  private Event evtDateValueChanged = new Event();
+  private Event evtDateValueChanged = Events.event();
 
   @Test
   public void test() throws Exception {

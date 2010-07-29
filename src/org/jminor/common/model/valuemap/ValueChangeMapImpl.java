@@ -5,7 +5,9 @@ package org.jminor.common.model.valuemap;
 
 import org.jminor.common.model.Event;
 import org.jminor.common.model.EventObserver;
+import org.jminor.common.model.Events;
 import org.jminor.common.model.State;
+import org.jminor.common.model.States;
 import org.jminor.common.model.Util;
 
 import java.awt.event.ActionEvent;
@@ -123,7 +125,7 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
   }
 
   public final State stateModified() {
-    final State state = new State(isModified());
+    final State state = States.state(isModified());
     valueChangeObserver().addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         state.setActive(isModified());
@@ -219,7 +221,7 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
 
   private Event getValueChangedEvent() {
     if (evtValueChanged == null) {
-      evtValueChanged = new Event();
+      evtValueChanged = Events.event();
       handleInitializeValueChangedEvent();
     }
 

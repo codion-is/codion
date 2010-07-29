@@ -6,9 +6,11 @@ package org.jminor.framework.client.model;
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.criteria.CriteriaSet;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.Events;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.SearchModel;
 import org.jminor.common.model.State;
+import org.jminor.common.model.States;
 import org.jminor.common.model.Util;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
@@ -29,8 +31,8 @@ import java.util.Map;
  */
 public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
 
-  private final Event evtFilterStateChanged = new Event();
-  private final State stSearchStateChanged = new State();
+  private final Event evtFilterStateChanged = Events.event();
+  private final State stSearchStateChanged = States.state();
 
   private final String entityID;
   private final List<Property> properties;

@@ -5,38 +5,24 @@ package org.jminor.common.model;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * A synchronous event class.
  */
-public final class Event implements ActionListener, EventObserver {
-
-  private final Set<ActionListener> listeners = new HashSet<ActionListener>();
-  private final ActionEvent defaultActionEvent = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "");
+public interface Event extends ActionListener, EventObserver {
 
   /**
    * Notifies all listeners
    */
-  public void fire() {
-    fire(defaultActionEvent);
-  }
+  void fire();
 
   /**
    * Notifies all listeners
    * @param event the ActionEvent to use when notifying
    */
-  public void fire(final ActionEvent event) {
-    for (final ActionListener listener : new ArrayList<ActionListener>(listeners)) {
-      listener.actionPerformed(event);
-    }
-  }
+  void fire(final ActionEvent event);
 
-  public void actionPerformed(final ActionEvent e) {
-    fire(e);
-  }
+  void actionPerformed(final ActionEvent e);
 
   /**
    * Adds <code>listener</code> to this Event, adding the same listener
@@ -44,16 +30,11 @@ public final class Event implements ActionListener, EventObserver {
    * @param listener the listener to add
    * @throws IllegalArgumentException in case listener is null
    */
-  public void addListener(final ActionListener listener) {
-    Util.rejectNullValue(listener, "listener");
-    listeners.add(listener);
-  }
+  void addListener(final ActionListener listener);
 
   /**
    * Removes <code>listener</code> from this Event
    * @param listener the listener to remove
    */
-  public void removeListener(final ActionListener listener) {
-    listeners.remove(listener);
-  }
+  void removeListener(final ActionListener listener);
 }

@@ -4,6 +4,7 @@
 package org.jminor.common.ui.control;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.model.Events;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -13,7 +14,7 @@ import javax.swing.JTextField;
 public class TextBeanValueLinkTest {
 
   private String stringValue;
-  private Event evtStringValueChanged = new Event();
+  private Event evtStringValueChanged = Events.event();
 
   @Test
   public void test() throws Exception {

@@ -4,6 +4,7 @@
 package org.jminor.common.model.combobox;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.model.Events;
 import org.jminor.common.model.FilterCriteria;
 import org.jminor.common.model.Util;
 
@@ -23,8 +24,8 @@ import java.util.ListIterator;
  */
 public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T> {
 
-  private final Event evtSelectionChanged = new Event();
-  private final Event evtFilteringDone = new Event();
+  private final Event evtSelectionChanged = Events.event();
+  private final Event evtFilteringDone = Events.event();
 
   private final FilterCriteria<T> acceptAllCriteria = new FilterCriteria.AcceptAllCriteria<T>();
 

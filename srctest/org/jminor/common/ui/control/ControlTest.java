@@ -1,6 +1,7 @@
 package org.jminor.common.ui.control;
 
 import org.jminor.common.model.State;
+import org.jminor.common.model.States;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -17,7 +18,7 @@ public class ControlTest {
     assertNull(test.getIcon());
     test.setKeyStroke(null);
 
-    final State enabledState = new State();
+    final State enabledState = States.state();
     final Control control = new Control("control", enabledState);
     assertEquals("control", control.getName());
     assertEquals(enabledState, control.getEnabledState());

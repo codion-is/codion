@@ -4,7 +4,9 @@
 package org.jminor.framework.server.monitor;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.model.Events;
 import org.jminor.common.model.State;
+import org.jminor.common.model.States;
 import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
 
@@ -28,10 +30,10 @@ public final class HostMonitor {
 
   private static final Logger LOG = Util.getLogger(HostMonitor.class);
 
-  private final Event evtRefreshed = new Event();
-  private final Event evtServerMonitorRemoved = new Event();
+  private final Event evtRefreshed = Events.event();
+  private final Event evtServerMonitorRemoved = Events.event();
 
-  private final State stLiveUpdate = new State();
+  private final State stLiveUpdate = States.state();
   private final String hostName;
   private final Collection<ServerMonitor> serverMonitors = new ArrayList<ServerMonitor>();
 

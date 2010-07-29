@@ -4,6 +4,7 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.model.Events;
 import org.jminor.framework.db.EntityDbConnectionTest;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.EntityRepository;
@@ -21,7 +22,7 @@ public final class DefaultPropertyComboBoxModelTest {
 
   private final PropertyComboBoxModel comboBoxModel;
   private final Property.ColumnProperty property;
-  private final Event refreshEvent = new Event();
+  private final Event refreshEvent = Events.event();
 
   public DefaultPropertyComboBoxModelTest() {
     new EmpDept();

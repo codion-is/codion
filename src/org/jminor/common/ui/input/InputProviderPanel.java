@@ -6,6 +6,7 @@ package org.jminor.common.ui.input;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.EventObserver;
+import org.jminor.common.model.Events;
 import org.jminor.common.model.Util;
 
 import javax.swing.AbstractAction;
@@ -25,7 +26,7 @@ import java.awt.event.ActionListener;
  */
 public final class InputProviderPanel extends JPanel implements InputProvider {
 
-  private final Event evtButtonClicked = new Event();
+  private final Event evtButtonClicked = Events.event();
 
   private final InputProvider inputProvider;
 

@@ -54,14 +54,14 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     }
   };
 
-  private final Event evtFilteringDone = new Event();
-  private final Event evtSortingStarted = new Event();
-  private final Event evtSortingDone = new Event();
-  private final Event evtRefreshStarted = new Event();
-  private final Event evtRefreshDone = new Event();
-  private final Event evtTableDataChanged = new Event();
-  private final Event evtColumnHidden = new Event();
-  private final Event evtColumnShown = new Event();
+  private final Event evtFilteringDone = Events.event();
+  private final Event evtSortingStarted = Events.event();
+  private final Event evtSortingDone = Events.event();
+  private final Event evtRefreshStarted = Events.event();
+  private final Event evtRefreshDone = Events.event();
+  private final Event evtTableDataChanged = Events.event();
+  private final Event evtColumnHidden = Events.event();
+  private final Event evtColumnShown = Events.event();
 
   private static final SortingState EMPTY_SORTING_STATE = new SortingStateImpl(-1, SortingDirective.UNSORTED);
 
@@ -956,10 +956,10 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
 
   private final class SelectionModel extends DefaultListSelectionModel {
 
-    private final Event evtSelectionChanged = new Event();
-    private final Event evtSelectedIndexChanged = new Event();
-    private final State stSelectionEmpty = new State(true);
-    private final State stMultipleSelection = new State(false);
+    private final Event evtSelectionChanged = Events.event();
+    private final Event evtSelectedIndexChanged = Events.event();
+    private final State stSelectionEmpty = States.state(true);
+    private final State stMultipleSelection = States.state(false);
 
     /**
      * true while the selection is being updated

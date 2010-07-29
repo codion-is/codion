@@ -7,6 +7,7 @@ import org.jminor.common.db.exception.DbException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.Events;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.control.Control;
 import org.jminor.common.ui.control.ControlFactory;
@@ -74,7 +75,7 @@ public final class ExceptionDialog extends JDialog {
   private Control ctrCopy;
   private Control ctrEmail;
 
-  private final Event evtShowDetailsChanged = new Event();
+  private final Event evtShowDetailsChanged = Events.event();
   private boolean showDetails = false;
 
   private static String errorReportEmailAddressTo;

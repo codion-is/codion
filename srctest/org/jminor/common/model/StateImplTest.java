@@ -11,7 +11,7 @@ import javax.swing.Action;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class StateTest {
+public class StateImplTest {
 
   private int stateChanged = 0;
 
@@ -20,7 +20,7 @@ public class StateTest {
     final Action listeningAction = new AbstractAction("test") {
       public void actionPerformed(final ActionEvent e) {}
     };
-    final State state = new State();
+    final State state = new States.StateImpl();
     state.addListeningAction(listeningAction);
     final ActionListener listener = new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
@@ -67,10 +67,10 @@ public class StateTest {
 
   @Test
   public void stateGroup() throws Exception {
-    final State stateOne = new State(true);
-    final State stateTwo = new State(true);
-    final State stateThree = new State(true);
-    final State.StateGroup stateGroup = new State.StateGroup();
+    final State stateOne = new States.StateImpl(true);
+    final State stateTwo = new States.StateImpl(true);
+    final State stateThree = new States.StateImpl(true);
+    final State.StateGroup stateGroup = new States.StateGroupImpl();
 
     stateGroup.addState(stateOne);
     stateGroup.addState(stateTwo);

@@ -7,6 +7,7 @@ import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.criteria.CriteriaSet;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.EventObserver;
+import org.jminor.common.model.Events;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
@@ -29,8 +30,8 @@ import java.util.List;
  */
 public class DefaultEntityLookupModel implements EntityLookupModel {
 
-  private final Event evtSelectedEntitiesChanged = new Event();
-  private final Event evtSearchStringChanged = new Event();
+  private final Event evtSelectedEntitiesChanged = Events.event();
+  private final Event evtSearchStringChanged = Events.event();
 
   /**
    * The ID of the entity this lookup model is based on

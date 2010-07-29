@@ -4,6 +4,7 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.model.Events;
 import org.jminor.common.model.FilterCriteria;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.combobox.DefaultFilteredComboBoxModel;
@@ -29,7 +30,7 @@ import java.util.Set;
  */
 public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Entity> implements EntityComboBoxModel {
 
-  private final Event evtRefreshDone = new Event();
+  private final Event evtRefreshDone = Events.event();
 
   /**
    * the ID of the underlying entity

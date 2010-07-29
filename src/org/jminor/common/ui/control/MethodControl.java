@@ -4,6 +4,7 @@
 package org.jminor.common.ui.control;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.model.Events;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
 
@@ -17,7 +18,7 @@ import java.lang.reflect.Method;
  */
 public final class MethodControl extends Control {
 
-  private final Event evtActionPerformed = new Event();
+  private final Event evtActionPerformed = Events.event();
 
   private final Object owner;
   private final Method method;

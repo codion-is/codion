@@ -1,6 +1,7 @@
 package org.jminor.common.ui;
 
 import org.jminor.common.model.State;
+import org.jminor.common.model.States;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -18,7 +19,7 @@ public class UiUtilTest {
     final Action action = new AbstractAction("test") {
       public void actionPerformed(final ActionEvent e) {}
     };
-    State state = new State();
+    State state = States.state();
 
     UiUtil.linkToEnabledState(state, action);
     assertFalse(action.isEnabled());
@@ -28,7 +29,7 @@ public class UiUtilTest {
     assertFalse(action.isEnabled());
 
     final JComponent comp = new JTextField();
-    state = new State();
+    state = States.state();
 
     UiUtil.linkToEnabledState(state, comp);
     assertFalse(comp.isEnabled());

@@ -4,6 +4,7 @@
 package org.jminor.common.ui.control;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.model.Events;
 import org.jminor.common.ui.textfield.IntField;
 
 import static org.junit.Assert.assertEquals;
@@ -13,7 +14,7 @@ import org.junit.Test;
 public class IntBeanValueLinkTest {
 
   private Integer intValue;
-  private Event evtIntValueChanged = new Event();
+  private Event evtIntValueChanged = Events.event();
 
   @Test
   public void test() throws Exception {

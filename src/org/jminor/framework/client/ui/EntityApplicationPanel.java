@@ -6,6 +6,7 @@ package org.jminor.framework.client.ui;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.Events;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.DefaultExceptionHandler;
@@ -66,9 +67,9 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   private EntityApplicationModel applicationModel;
   private JTabbedPane applicationTabPane;
 
-  private final Event evtApplicationStarted = new Event();
-  private final Event evtSelectedEntityPanelChanged = new Event();
-  private final Event evtAlwaysOnTopChanged = new Event();
+  private final Event evtApplicationStarted = Events.event();
+  private final Event evtSelectedEntityPanelChanged = Events.event();
+  private final Event evtAlwaysOnTopChanged = Events.event();
 
   private final boolean persistEntityPanels = Configuration.getBooleanValue(Configuration.PERSIST_ENTITY_PANELS);
   private final Map<EntityPanelProvider, EntityPanel> persistentEntityPanels = new HashMap<EntityPanelProvider, EntityPanel>();

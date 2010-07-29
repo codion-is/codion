@@ -7,6 +7,7 @@ import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolState;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.Events;
 import org.jminor.common.model.User;
 
 import org.jfree.data.xy.XYDataset;
@@ -28,10 +29,10 @@ import java.util.TimerTask;
  */
 public final class ConnectionPoolMonitor {
 
-  private final Event evtStatsUpdated = new Event();
-  private final Event evtStatsUpdateIntervalChanged = new Event();
-  private final Event evtCollectFineGrainedStatsChanged = new Event();
-  private final Event evtRefresh = new Event();
+  private final Event evtStatsUpdated = Events.event();
+  private final Event evtStatsUpdateIntervalChanged = Events.event();
+  private final Event evtCollectFineGrainedStatsChanged = Events.event();
+  private final Event evtRefresh = Events.event();
 
   private final User user;
   private final ConnectionPool pool;

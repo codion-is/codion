@@ -6,12 +6,13 @@ package org.jminor.framework.client.ui;
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.exception.DbException;
 import org.jminor.common.i18n.Messages;
-import org.jminor.common.model.AggregateState;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.Events;
 import org.jminor.common.model.SearchModel;
 import org.jminor.common.model.Serializer;
 import org.jminor.common.model.State;
+import org.jminor.common.model.States;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.AbstractFilteredTablePanel;
 import org.jminor.common.ui.AbstractSearchPanel;
@@ -120,9 +121,9 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
   private static final int TOOLBAR_BUTTON_SIZE = 20;
   private static final int STATUS_MESSAGE_FONT_SIZE = 12;
 
-  private final Event evtTableDoubleClicked = new Event();
-  private final Event evtSearchPanelVisibilityChanged = new Event();
-  private final Event evtSummaryPanelVisibilityChanged = new Event();
+  private final Event evtTableDoubleClicked = Events.event();
+  private final Event evtSearchPanelVisibilityChanged = Events.event();
+  private final Event evtSummaryPanelVisibilityChanged = Events.event();
 
   private final Map<String, Control> controlMap = new HashMap<String, Control>();
 
@@ -452,7 +453,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
    * underlying entity, for performing an update on the selected entities
    */
   public ControlSet getUpdateSelectedControlSet() {
-    final State enabled = new AggregateState(AggregateState.Type.AND,
+    final State enabled = States.aggregateState(State.AggregateState.Type.AND,
             getTableModel().stateAllowMultipleUpdate(),
             getTableModel().stateSelectionEmpty().getReversedState());
     final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED),
@@ -495,7 +496,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
    */
   public final Control getDeleteSelectedControl() {
     return ControlFactory.methodControl(this, "delete", FrameworkMessages.get(FrameworkMessages.DELETE),
-            new AggregateState(AggregateState.Type.AND,
+            States.aggregateState(State.AggregateState.Type.AND,
                     getTableModel().stateAllowDelete(),
                     getTableModel().stateSelectionEmpty().getReversedState()),
             FrameworkMessages.get(FrameworkMessages.DELETE_TIP), 0, null,

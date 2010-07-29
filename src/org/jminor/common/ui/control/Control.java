@@ -4,6 +4,7 @@
 package org.jminor.common.ui.control;
 
 import org.jminor.common.model.State;
+import org.jminor.common.model.States;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -36,7 +37,7 @@ public class Control extends AbstractAction {
 
   public Control(final String name, final State enabledState, final Icon icon) {
     super(name);
-    this.enabledState = enabledState == null ? new State(true) : enabledState;
+    this.enabledState = enabledState == null ? States.state(true) : enabledState;
     this.enabledState.addStateListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         firePropertyChange("enabled", !Control.this.enabledState.isActive(), Control.this.enabledState.isActive());

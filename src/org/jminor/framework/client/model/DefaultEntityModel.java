@@ -4,7 +4,9 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.model.Events;
 import org.jminor.common.model.State;
+import org.jminor.common.model.States;
 import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.event.DeleteEvent;
@@ -39,10 +41,10 @@ public class DefaultEntityModel implements EntityModel {
 
   protected static final Logger LOG = Util.getLogger(DefaultEntityModel.class);
 
-  private final Event evtRefreshStarted = new Event();
-  private final Event evtRefreshDone = new Event();
-  private final Event evtLinkedDetailModelsChanged = new Event();
-  private final State stCascadeRefresh = new State();
+  private final Event evtRefreshStarted = Events.event();
+  private final Event evtRefreshDone = Events.event();
+  private final Event evtLinkedDetailModelsChanged = Events.event();
+  private final State stCascadeRefresh = States.state();
 
   /**
    * The entity ID

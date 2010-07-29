@@ -5,6 +5,7 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.model.Event;
 import org.jminor.common.model.EventObserver;
+import org.jminor.common.model.Events;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
@@ -19,7 +20,7 @@ import java.util.List;
  */
 public abstract class DefaultEntityApplicationModel implements EntityApplicationModel {
 
-  private final Event evtCascadeRefreshChanged = new Event();
+  private final Event evtCascadeRefreshChanged = Events.event();
 
   private final EntityDbProvider dbProvider;
   private final List<EntityModel> mainApplicationModels = new ArrayList<EntityModel>();

@@ -4,6 +4,7 @@
 package org.jminor.common.ui.control;
 
 import org.jminor.common.model.State;
+import org.jminor.common.model.States;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -28,7 +29,7 @@ public class MethodControlTest {
 
   @Test
   public void test() throws Exception {
-    final State stEnabled = new State();
+    final State stEnabled = States.state();
     final MethodControl control = new MethodControl("test", this, "method", stEnabled);
     final JButton btn = ControlProvider.createButton(control);
     assertFalse("Button should be disabled", btn.isEnabled());

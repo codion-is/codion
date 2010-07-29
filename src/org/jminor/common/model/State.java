@@ -4,221 +4,76 @@
 package org.jminor.common.model;
 
 import javax.swing.Action;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * A class encapsulating a simple boolean state, providing a change event.
  */
-public class State {
+public interface State {
 
-  private final Event evtStateChanged = new Event();
-
-  private LinkedState linkedState = null;
-  private ReverseState reversedState = null;
-  private boolean active = false;
-
-  /**
-   * Constructs a new State instance initialized as inactive
-   */
-  public State() {
-    this(false);
-  }
-
-  /**
-   * Constructs a new State instance
-   * @param initialState the initial state
-   */
-  public State(final boolean initialState) {
-    this.active = initialState;
-  }
-
-  @Override
-  public String toString() {
-    return active ? "active" : "inactive";
-  }
-
-  public final void addListeningAction(final Action action) {
-    action.setEnabled(isActive());
-    evtStateChanged.addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent e) {
-        action.setEnabled(isActive());
-      }
-    });
-  }
+  void addListeningAction(final Action action);
 
   /**
    * @param value the new active state of this State instance
    */
-  public void setActive(final boolean value) {
-    final boolean oldValue = active;
-    active = value;
-    if (oldValue != value) {
-      evtStateChanged.fire();
-    }
-  }
+  void setActive(final boolean value);
 
   /**
    * @return true if this state is active, false otherwise
    */
-  public boolean isActive() {
-    return active;
-  }
+  boolean isActive();
 
   /**
    * @return a State that is always the same as the parent state but can not be directly modified
    */
-  public final State getLinkedState() {
-    if (linkedState == null) {
-      linkedState = new LinkedState(this);
-    }
-
-    return linkedState;
-  }
+  State getLinkedState();
 
   /**
    * @return A State object that is always the reverse of the parent state
    */
-  public State getReversedState() {
-    if (reversedState == null) {
-      reversedState = new ReverseState(this);
-    }
-
-    return reversedState;
-  }
+  State getReversedState();
 
   /**
    * @return an EventObserver notified each time the state changes
    */
-  public final EventObserver stateObserver() {
-    return evtStateChanged;
-  }
+  EventObserver stateObserver();
 
-  public final void addStateListener(final ActionListener listener) {
-    evtStateChanged.addListener(listener);
-  }
+  void addStateListener(final ActionListener listener);
 
-  public final void removeStateListener(final ActionListener listener) {
-    evtStateChanged.removeListener(listener);
-  }
+  void removeStateListener(final ActionListener listener);
 
-  public final void notifyStateObserver() {
-    evtStateChanged.fire();
-  }
+  void notifyStateObserver();
 
-  protected Event evtStateChanged() {
-    return evtStateChanged;
-  }
+  interface AggregateState extends State {
 
-  private static class LinkedState extends State {
+      /**
+       * The conjunction types used in AggregateState.
+       */
+      enum Type {AND, OR}
 
-    private final State referenceState;
+      /**
+       * @return the type of this aggregate state
+       */
+      public Type getType();
 
-    private LinkedState(final State referenceState) {
-      this.referenceState = referenceState;
-      this.referenceState.addStateListener(new ActionListener() {
-        public void actionPerformed(final ActionEvent e) {
-          evtStateChanged().actionPerformed(e);
-        }
-      });
+      void addState(final State state);
+
+      void removeState(final State state);
     }
-
-    @Override
-    public boolean isActive() {
-      return referenceState.isActive();
-    }
-
-    @Override
-    public void setActive(final boolean value) {
-      throw new RuntimeException("Cannot set the state of a linked state");
-    }
-
-    @Override
-    public String toString() {
-      return referenceState + " linked";
-    }
-
-    public State getReferenceState() {
-      return referenceState;
-    }
-  }
-
-  private static class ReverseState extends LinkedState {
-
-    private ReverseState(final State referenceState) {
-      super(referenceState);
-    }
-
-    @Override
-    public boolean isActive() {
-      return !getReferenceState().isActive();
-    }
-
-    @Override
-    public State getReversedState() {
-      return getReferenceState();
-    }
-
-    @Override
-    public void setActive(final boolean value) {
-      throw new RuntimeException("Cannot set the state of a reversed state");
-    }
-
-    @Override
-    public String toString() {
-      return isActive() ? "active reversed" : "inactive reversed";
-    }
-  }
-
-  /**
-   * A StateGroup deactivates all other states when a state in the group is activated.
-   * StateGroup works with WeakReference so adding states does not prevent
-   * them from being garbage collected.
-   */
-  public static class StateGroup {
-
-    private final List<WeakReference<State>> members = Collections.synchronizedList(new ArrayList<WeakReference<State>>());
 
     /**
-     * Adds a state to this state group via a WeakReference,
-     * so it does not prevent it from being garbage collected.
-     * Adding an active state deactivates all other states in the group.
-     * @param state the State to add
+     * A StateGroup deactivates all other states when a state in the group is activated.
+     * StateGroup works with WeakReference so adding states does not prevent
+     * them from being garbage collected.
      */
-    public void addState(final State state) {
-      synchronized (members) {
-        for (final WeakReference<State> reference : members) {
-          if (reference.get() == state) {
-            return;
-          }
-        }//no duplicate states
+    interface StateGroup {
 
-        members.add(new WeakReference<State>(state));
-      }
-      updateAccordingToState(state);
-      state.evtStateChanged.addListener(new ActionListener() {
-        public void actionPerformed(final ActionEvent e) {
-          updateAccordingToState(state);
-        }
-      });
-    }
-
-    private void updateAccordingToState(final State state) {
-      synchronized (members) {
-        for (final WeakReference reference : members.toArray(new WeakReference[members.size()])) {
-          final State referredState = (State) reference.get();
-          if (referredState == null) {//remove this dead weak reference
-            members.remove(reference);
-          }
-          else if (state.isActive() && !state.equals(referredState)) {
-            referredState.setActive(false);
-          }
-        }
-      }
+      /**
+       * Adds a state to this state group via a WeakReference,
+       * so it does not prevent it from being garbage collected.
+       * Adding an active state deactivates all other states in the group.
+       * @param state the State to add
+       */
+      void addState(final State state);
     }
   }
-}

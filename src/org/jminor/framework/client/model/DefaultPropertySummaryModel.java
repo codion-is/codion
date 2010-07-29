@@ -4,6 +4,7 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.model.Events;
 import org.jminor.common.model.Util;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
@@ -23,8 +24,8 @@ public class DefaultPropertySummaryModel implements PropertySummaryModel {
   private static final Summary MAXIMUM = new Maximum();
   private static final Summary MINIMUM_MAXIMUM = new MinimumMaximum();
 
-  private final Event evtSummaryTypeChanged = new Event();
-  private final Event evtSummaryChanged = new Event();
+  private final Event evtSummaryTypeChanged = Events.event();
+  private final Event evtSummaryChanged = Events.event();
 
   private final Property property;
   private final PropertyValueProvider valueProvider;

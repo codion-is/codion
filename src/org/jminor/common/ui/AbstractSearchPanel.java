@@ -7,6 +7,7 @@ import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.SearchModel;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.State;
+import org.jminor.common.model.States;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.combobox.ItemComboBoxModel;
 import org.jminor.common.ui.combobox.SteppedComboBox;
@@ -78,9 +79,9 @@ public abstract class AbstractSearchPanel<K> extends JPanel {
    * A JToggleButton for toggling advanced/simple search
    */
   private final JToggleButton toggleSearchAdvanced;
-  private final State stIsDialogActive = new State();
+  private final State stIsDialogActive = States.state();
 
-  private final State stIsDialogShowing = new State();
+  private final State stIsDialogShowing = States.state();
   private JDialog dialog;
 
   private Point lastPosition;
@@ -91,9 +92,9 @@ public abstract class AbstractSearchPanel<K> extends JPanel {
   private final JComponent upperBoundField;
 
   private final JComponent lowerBoundField;
-  private final State stAdvancedSearch = new State();
+  private final State stAdvancedSearch = States.state();
 
-  private final State stTwoSearchFields = new State();
+  private final State stTwoSearchFields = States.state();
   private final boolean includeToggleSearchEnabledBtn;
   private final boolean includeToggleSearchAdvancedBtn;
 

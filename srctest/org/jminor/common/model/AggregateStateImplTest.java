@@ -6,20 +6,20 @@ package org.jminor.common.model;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-public class AggregateStateTest {
+public final class AggregateStateImplTest {
 
   @Test
   public void test() {
-    AggregateState orState = new AggregateState(AggregateState.Type.OR);
-    final State stateOne = new State();
-    final State stateTwo = new State();
-    final State stateThree = new State();
+    State.AggregateState orState = States.aggregateState(State.AggregateState.Type.OR);
+    final State stateOne = States.state();
+    final State stateTwo = States.state();
+    final State stateThree = States.state();
     orState.addState(stateOne);
     orState.addState(stateTwo);
     orState.addState(stateThree);
 
-    AggregateState andState = new AggregateState(AggregateState.Type.AND, stateOne, stateTwo, stateThree);
-    assertEquals(AggregateState.Type.AND, andState.getType());
+    State.AggregateState andState = States.aggregateState(State.AggregateState.Type.AND, stateOne, stateTwo, stateThree);
+    assertEquals(State.AggregateState.Type.AND, andState.getType());
     assertEquals("Aggregate AND inactive, inactive, inactive, inactive", andState.toString());
 
     assertFalse("Or state should be inactive", orState.isActive());
@@ -57,11 +57,11 @@ public class AggregateStateTest {
     stateOne.setActive(false);
     stateTwo.setActive(false);
     stateThree.setActive(false);
-    orState = new AggregateState(AggregateState.Type.OR);
+    orState = States.aggregateState(State.AggregateState.Type.OR);
     orState.addState(stateOne.getLinkedState());
     orState.addState(stateTwo);
     orState.addState(stateThree.getLinkedState().getLinkedState());
-    andState = new AggregateState(AggregateState.Type.AND, stateOne.getLinkedState(), stateTwo.getLinkedState(), stateThree.getLinkedState());
+    andState = States.aggregateState(State.AggregateState.Type.AND, stateOne.getLinkedState(), stateTwo.getLinkedState(), stateThree.getLinkedState());
     assertEquals("Aggregate AND inactive, inactive linked, inactive linked, inactive linked", andState.toString());
 
     assertFalse("Or state should be inactive", orState.isActive());

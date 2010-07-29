@@ -4,6 +4,7 @@
 package org.jminor.framework.server.monitor;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.model.Events;
 import org.jminor.common.model.User;
 import org.jminor.framework.server.EntityDbServerAdmin;
 
@@ -18,7 +19,7 @@ import java.rmi.RemoteException;
 public final class ClientUserMonitor {
 
   private final EntityDbServerAdmin server;
-  private final Event evtConnectionTimeoutChanged = new Event();
+  private final Event evtConnectionTimeoutChanged = Events.event();
 
   private final DefaultListModel clientTypeListModel = new DefaultListModel();
   private final DefaultListModel userListModel = new DefaultListModel();

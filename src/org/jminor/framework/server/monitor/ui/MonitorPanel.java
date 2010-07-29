@@ -5,6 +5,7 @@ package org.jminor.framework.server.monitor.ui;
 
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.Events;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.DefaultExceptionHandler;
 import org.jminor.common.ui.UiUtil;
@@ -39,7 +40,7 @@ public final class MonitorPanel extends JPanel {
   private static final String JDK_PREFERENCE_KEY = MonitorPanel.class.getName() + ".jdkPathPreferenceKey";
   private static String jdkDir = Util.getUserPreference(JDK_PREFERENCE_KEY, null);
 
-  private final Event evtAlwaysOnTopChanged = new Event();
+  private final Event evtAlwaysOnTopChanged = Events.event();
   private static final int MEMORY_USAGE_UPDATE_INTERVAL = 2000;
   private final MonitorModel model;
   private JFrame monitorFrame;

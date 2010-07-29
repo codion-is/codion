@@ -8,8 +8,10 @@ import org.jminor.common.db.exception.DbException;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.EventObserver;
+import org.jminor.common.model.Events;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.State;
+import org.jminor.common.model.States;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.DefaultValueChangeMapEditModel;
 import org.jminor.common.model.valuemap.ValueChangeEvent;
@@ -46,25 +48,25 @@ public class DefaultEntityEditModel extends DefaultValueChangeMapEditModel<Strin
 
   protected static final Logger LOG = Util.getLogger(DefaultEntityEditModel.class);
 
-  private final Event evtBeforeInsert = new Event();
-  private final Event evtAfterInsert = new Event();
-  private final Event evtBeforeUpdate = new Event();
-  private final Event evtAfterUpdate = new Event();
-  private final Event evtBeforeDelete = new Event();
-  private final Event evtAfterDelete = new Event();
-  private final Event evtEntitiesChanged = new Event();
-  private final Event evtRefreshStarted = new Event();
-  private final Event evtRefreshDone = new Event();
+  private final Event evtBeforeInsert = Events.event();
+  private final Event evtAfterInsert = Events.event();
+  private final Event evtBeforeUpdate = Events.event();
+  private final Event evtAfterUpdate = Events.event();
+  private final Event evtBeforeDelete = Events.event();
+  private final Event evtAfterDelete = Events.event();
+  private final Event evtEntitiesChanged = Events.event();
+  private final Event evtRefreshStarted = Events.event();
+  private final Event evtRefreshDone = Events.event();
 
-  private final State stEntityNull = new State(true);
-  private final State stAllowInsert = new State(true);
-  private final State stAllowUpdate = new State(true);
-  private final State stAllowDelete = new State(true);
+  private final State stEntityNull = States.state(true);
+  private final State stAllowInsert = States.state(true);
+  private final State stAllowUpdate = States.state(true);
+  private final State stAllowDelete = States.state(true);
 
   /**
    * Indicates whether the model is active and ready to receive input
    */
-  private final State stActive = new State(Configuration.getBooleanValue(Configuration.ALL_PANELS_ACTIVE));
+  private final State stActive = States.state(Configuration.getBooleanValue(Configuration.ALL_PANELS_ACTIVE));
 
   /**
    * The ID of the entity this edit model is based on
@@ -86,7 +88,7 @@ public class DefaultEntityEditModel extends DefaultValueChangeMapEditModel<Strin
   /**
    * The mechanism for restricting a single active EntityEditModel at a time
    */
-  private static final State.StateGroup ACTIVE_STATE_GROUP = new State.StateGroup();
+  private static final State.StateGroup ACTIVE_STATE_GROUP = States.stateGroup();
 
   private boolean readOnly;
 

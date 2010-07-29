@@ -29,16 +29,16 @@ public abstract class LoadTestModel {
 
   protected static final Random RANDOM = new Random();
 
-  private final Event evtPausedChanged = new Event();
-  private final Event evtCollectChartDataChanged = new Event();
-  private final Event evtMaximumThinkTimeChanged = new Event();
-  private final Event evtMinimumThinkTimeChanged = new Event();
-  private final Event evtWarningTimeChanged = new Event();
-  private final Event evtLoginDelayFactorChanged = new Event();
-  private final Event evtApplicationtCountChanged = new Event();
-  private final Event evtApplicationBatchSizeChanged = new Event();
-  private final Event evtDoneExiting = new Event();
-  private final Event evtUpdateIntervalChanged = new Event();
+  private final Event evtPausedChanged = Events.event();
+  private final Event evtCollectChartDataChanged = Events.event();
+  private final Event evtMaximumThinkTimeChanged = Events.event();
+  private final Event evtMinimumThinkTimeChanged = Events.event();
+  private final Event evtWarningTimeChanged = Events.event();
+  private final Event evtLoginDelayFactorChanged = Events.event();
+  private final Event evtApplicationtCountChanged = Events.event();
+  private final Event evtApplicationBatchSizeChanged = Events.event();
+  private final Event evtDoneExiting = Events.event();
+  private final Event evtUpdateIntervalChanged = Events.event();
 
   private int maximumThinkTime;
   private int minimumThinkTime;
