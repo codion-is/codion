@@ -25,7 +25,7 @@ public final class EntityTableSummaryPanel extends AbstractTableColumnSyncPanel 
   }
 
   @Override
-  protected final JPanel initializeColumnPanel(final TableColumn column) {
+  protected JPanel initializeColumnPanel(final TableColumn column) {
     final Property property = (Property) column.getIdentifier();
     final PropertySummaryModel summaryModel = tableModel.getPropertySummaryModel(property);
 

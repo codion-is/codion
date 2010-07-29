@@ -267,8 +267,6 @@ public class EntityPanel extends JPanel {
       this.tablePanel.initializeToolbar(toolbarControls);
       this.tablePanel.initializePopupMenu(getTablePopupControlSet());
     }
-    bindModelEvents();
-    bindTableModelEvents();
     addActivationInitializer();
   }
 
@@ -365,10 +363,8 @@ public class EntityPanel extends JPanel {
         UiUtil.setWaitCursor(true, this);
         initializeAssociatedPanels();
         initializeControlPanels();
-        bindEventsInternal();
         bindEvents();
         initializeUI();
-        bindTablePanelEvents();
         initialize();
       }
       finally {
@@ -1049,24 +1045,6 @@ public class EntityPanel extends JPanel {
     return controlSet;
   }
 
-  /**
-   * Override to keep event bindings in one place,
-   * this method is called during initialization before the UI is initialized
-   */
-  protected void bindEvents() {}
-
-  /**
-   * Override to keep table model event bindings in one place,
-   * this method is called during initialization before the UI is initialized
-   */
-  protected void bindTableModelEvents() {}
-
-  /**
-   * Binds events associated with the EntityTablePanel
-   * this method is called during initialization after the UI is initialized
-   */
-  protected void bindTablePanelEvents() {}
-
   //#############################################################################################
   // End - initialization methods
   //#############################################################################################
@@ -1194,7 +1172,7 @@ public class EntityPanel extends JPanel {
     return editPanelDialog != null && SwingUtilities.getWindowAncestor(component) == editPanelDialog;
   }
 
-  private void bindEventsInternal() {
+  private void bindEvents() {
     addComponentListener(new ComponentAdapter() {
       @Override
       public void componentHidden(final ComponentEvent e) {

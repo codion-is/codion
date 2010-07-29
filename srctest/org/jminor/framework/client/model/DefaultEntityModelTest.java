@@ -7,6 +7,7 @@ import org.jminor.common.model.SearchType;
 import org.jminor.framework.db.EntityDb;
 import org.jminor.framework.db.EntityDbConnectionTest;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
+import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entity;
 
@@ -18,10 +19,27 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
-public class DefaultEntityModelTest {
+public final class DefaultEntityModelTest {
 
   private DefaultEntityModel departmentModel;
   private int eventCount = 0;
+
+  private static class EmpModel extends DefaultEntityModel {
+    private EmpModel(final EntityDbProvider dbProvider) {
+      super(new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, dbProvider),
+              new DefaultEntityTableModel(EmpDept.T_EMPLOYEE, dbProvider));
+    }
+  }
+
+  @Test
+  public void testDetailModels() {
+    departmentModel.addDetailModels(new EmpModel(departmentModel.getDbProvider()));
+    assertTrue(departmentModel.containsDetailModel(EmpModel.class));
+    final EntityModel empModel = departmentModel.getDetailModel(EmpModel.class);
+    assertNotNull(empModel);
+    departmentModel.setLinkedDetailModels(empModel);
+    assertTrue(departmentModel.getLinkedDetailModels().contains(empModel));
+  }
 
   @Test
   public void testConstructor() {
@@ -40,6 +58,9 @@ public class DefaultEntityModelTest {
       fail();
     }
     catch (IllegalArgumentException e) {}
+    new DefaultEntityModel(new DefaultEntityEditModel(EmpDept.T_DEPARTMENT, EntityDbConnectionTest.DB_PROVIDER));
+    new DefaultEntityModel(new DefaultEntityTableModel(EmpDept.T_DEPARTMENT, EntityDbConnectionTest.DB_PROVIDER));
+    new DefaultEntityModel(new DefaultEntityEditModel(EmpDept.T_DEPARTMENT, EntityDbConnectionTest.DB_PROVIDER), true);
   }
 
   @Test
@@ -50,6 +71,7 @@ public class DefaultEntityModelTest {
     assertNotNull(departmentModel.getEditModel());
     assertNotNull(departmentModel.getTableModel());
     assertTrue(departmentModel.containsTableModel());
+    assertNotNull(departmentModel.eventLinkedDetailModelsChanged());
 
     departmentModel.eventRefreshStarted().addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {

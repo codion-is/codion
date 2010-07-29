@@ -49,6 +49,7 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -84,40 +85,23 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @param editModel the EntityEditModel instance to base this EntityEditPanel on
    */
   public EntityEditPanel(final EntityEditModel editModel) {
+    this(editModel, new String[0]);
+  }
+  /**
+   * Instantiates a new EntityEditPanel based on the provided EntityEditModel
+   * @param editModel the EntityEditModel instance to base this EntityEditPanel on
+   * @param controlKeys if specified only controls with those keys are initialized
+   */
+  public EntityEditPanel(final EntityEditModel editModel, final String... controlKeys) {
     super(editModel);
-    setupControls();
+    setupControls(controlKeys);
     initializeUI();
-    bindEventsInternal();
     bindEvents();
   }
 
   @Override
   public final EntityEditModel getEditModel() {
     return (EntityEditModel) super.getEditModel();
-  }
-
-  /**
-   * @return the ControlSet on which to base the control panel
-   */
-  public ControlSet getControlPanelControlSet() {
-    final ControlSet controlSet = new ControlSet("Actions");
-    if (controlMap.containsKey(INSERT)) {
-      controlSet.add(controlMap.get(INSERT));
-    }
-    if (controlMap.containsKey(UPDATE)) {
-      controlSet.add(controlMap.get(UPDATE));
-    }
-    if (controlMap.containsKey(DELETE)) {
-      controlSet.add(controlMap.get(DELETE));
-    }
-    if (controlMap.containsKey(CLEAR)) {
-      controlSet.add(controlMap.get(CLEAR));
-    }
-    if (controlMap.containsKey(REFRESH)) {
-      controlSet.add(controlMap.get(REFRESH));
-    }
-
-    return controlSet;
   }
 
   /**
@@ -477,24 +461,30 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * Initializes the controls available to this EntityEditPanel by mapping them to their respective
    * control codes (EntityEditPanel.INSERT, UPDATE etc) via the <code>setControl(String, Control) method,
    * these can then be retrieved via the <code>getControl(String)</code> method.
+   * @param controlKeys if specified only controls with those keys are initialized
    * @see org.jminor.common.ui.control.Control
    * @see #setControl(String, org.jminor.common.ui.control.Control)
    * @see #getControl(String)
    */
-  protected void setupControls() {
+  private void setupControls(final String... controlKeys) {
+    final Collection<String> keys = Arrays.asList(controlKeys);
     if (!getEditModel().isReadOnly()) {
-      if (getEditModel().isInsertAllowed()) {
+      if (getEditModel().isInsertAllowed() && keys.size() > 0 && keys.contains(INSERT)) {
         setControl(INSERT, getInsertControl());
       }
-      if (getEditModel().isUpdateAllowed()) {
+      if (getEditModel().isUpdateAllowed() && keys.size() > 0 && keys.contains(UPDATE)) {
         setControl(UPDATE, getUpdateControl());
       }
-      if (getEditModel().isDeleteAllowed()) {
+      if (getEditModel().isDeleteAllowed() && keys.size() > 0 && keys.contains(DELETE)) {
         setControl(DELETE, getDeleteControl());
       }
     }
-    setControl(CLEAR, getClearControl());
-    setControl(REFRESH, getRefreshControl());
+    if (keys.size() > 0 && keys.contains(CLEAR)) {
+      setControl(CLEAR, getClearControl());
+    }
+    if (keys.size() > 0 && keys.contains(REFRESH)) {
+      setControl(REFRESH, getRefreshControl());
+    }
   }
 
   /**
@@ -512,14 +502,33 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   }
 
   /**
+   * @return the ControlSet on which to base the control panel
+   */
+  private ControlSet getControlPanelControlSet() {
+    final ControlSet controlSet = new ControlSet("Actions");
+    if (controlMap.containsKey(INSERT)) {
+      controlSet.add(controlMap.get(INSERT));
+    }
+    if (controlMap.containsKey(UPDATE)) {
+      controlSet.add(controlMap.get(UPDATE));
+    }
+    if (controlMap.containsKey(DELETE)) {
+      controlSet.add(controlMap.get(DELETE));
+    }
+    if (controlMap.containsKey(CLEAR)) {
+      controlSet.add(controlMap.get(CLEAR));
+    }
+    if (controlMap.containsKey(REFRESH)) {
+      controlSet.add(controlMap.get(REFRESH));
+    }
+
+    return controlSet;
+  }
+
+  /**
    * Initializes this EntityEditPanel UI
    */
   protected abstract void initializeUI();
-
-  /**
-   * Performs event binding, for overriding
-   */
-  protected void bindEvents() {}
 
   /**
    * Creates a panel containing a label and the given component.
@@ -1597,7 +1606,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
     return EntityUiUtil.createLabel(EntityRepository.getProperty(getEditModel().getEntityID(), propertyID), horizontalAlignment);
   }
 
-  private void bindEventsInternal() {
+  private void bindEvents() {
     getEditModel().eventRefreshStarted().addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         UiUtil.setWaitCursor(true, EntityEditPanel.this);

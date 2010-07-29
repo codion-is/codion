@@ -176,17 +176,17 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   }
 
   public final void startApplication(final String frameCaption, final String iconName, final boolean maximize,
-                               final Dimension frameSize) {
+                                     final Dimension frameSize) {
     startApplication(frameCaption, iconName, maximize, frameSize, null);
   }
 
   public final void startApplication(final String frameCaption, final String iconName, final boolean maximize,
-                               final Dimension frameSize, final User defaultUser) {
+                                     final Dimension frameSize, final User defaultUser) {
     startApplication(frameCaption, iconName, maximize, frameSize, defaultUser, true);
   }
 
   public final void startApplication(final String frameCaption, final String iconName, final boolean maximize,
-                               final Dimension frameSize, final User defaultUser, final boolean showFrame) {
+                                     final Dimension frameSize, final User defaultUser, final boolean showFrame) {
     try {
       startApplicationInternal(frameCaption, iconName, maximize, frameSize, defaultUser, showFrame);
     }
@@ -632,8 +632,8 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    * @see #getNorthToolBar()
    */
   protected final JFrame prepareFrame(final String title, final boolean maximize,
-                                final boolean showMenuBar, final Dimension size,
-                                final ImageIcon applicationIcon, final boolean setVisible) {
+                                      final boolean showMenuBar, final Dimension size,
+                                      final ImageIcon applicationIcon, final boolean setVisible) {
     final JFrame frame = new JFrame();
     frame.setIconImage(applicationIcon.getImage());
     frame.addWindowListener(new WindowAdapter() {
@@ -842,26 +842,10 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK, true), NAV_RIGHT);
     inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK, true), NAV_LEFT);
 
-    actionMap.put(NAV_UP, new AbstractAction() {
-      public void actionPerformed(final ActionEvent e) {
-        navigate(EntityPanel.UP);
-      }
-    });
-    actionMap.put(NAV_DOWN, new AbstractAction() {
-      public void actionPerformed(final ActionEvent e) {
-        navigate(EntityPanel.DOWN);
-      }
-    });
-    actionMap.put(NAV_RIGHT, new AbstractAction() {
-      public void actionPerformed(final ActionEvent e) {
-        navigate(EntityPanel.RIGHT);
-      }
-    });
-    actionMap.put(NAV_LEFT, new AbstractAction() {
-      public void actionPerformed(final ActionEvent e) {
-        navigate(EntityPanel.LEFT);
-      }
-    });
+    actionMap.put(NAV_UP, new NavigateAction(EntityPanel.UP));
+    actionMap.put(NAV_DOWN, new NavigateAction(EntityPanel.DOWN));
+    actionMap.put(NAV_RIGHT, new NavigateAction(EntityPanel.RIGHT));
+    actionMap.put(NAV_LEFT, new NavigateAction(EntityPanel.LEFT));
   }
 
   private void navigate(final int direction) {
@@ -968,5 +952,15 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     }
 
     return username;
+  }
+
+  private final class NavigateAction extends AbstractAction {
+    private final int direction;
+    private NavigateAction(final int direction) {
+      this.direction = direction;
+    }
+    public void actionPerformed(final ActionEvent e) {
+      navigate(direction);
+    }
   }
 }

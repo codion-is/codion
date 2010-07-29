@@ -63,16 +63,18 @@ public final class PetstoreLoadTest extends EntityLoadTestModel {
   }
 
   public static void main(final String[] args) throws Exception {
-    SwingUtilities.invokeLater(new Runnable() {
-      public void run() {
-        try {
-          UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-          new LoadTestPanel(new PetstoreLoadTest()).showFrame();
-        }
-        catch (Exception e) {
-          e.printStackTrace();
-        }
+    SwingUtilities.invokeLater(new Runner());
+  }
+
+  private static final class Runner implements Runnable {
+    public void run() {
+      try {
+        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        new LoadTestPanel(new PetstoreLoadTest()).showFrame();
       }
-    });
+      catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
   }
 }

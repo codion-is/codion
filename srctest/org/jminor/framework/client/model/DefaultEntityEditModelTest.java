@@ -7,6 +7,7 @@ import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.State;
 import org.jminor.common.model.valuemap.ValueMapValidator;
 import org.jminor.common.model.valuemap.exception.ValidationException;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.event.DeleteEvent;
 import org.jminor.framework.client.model.event.DeleteListener;
 import org.jminor.framework.client.model.event.InsertEvent;
@@ -21,6 +22,7 @@ import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 
+import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,13 +31,54 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-public class DefaultEntityEditModelTest {
+public final class DefaultEntityEditModelTest {
 
-  private final DefaultEntityEditModel editModel = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityDbConnectionTest.DB_PROVIDER);
+  private DefaultEntityEditModel editModel;
+  private Property.ColumnProperty jobProperty;
+  private Property.ForeignKeyProperty deptProperty;
+  private boolean debugOutput;
 
   @Before
   public void setUp() {
     new EmpDept();
+    jobProperty = EntityRepository.getColumnProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB);
+    deptProperty = EntityRepository.getForeignKeyProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_DEPARTMENT_FK);
+    debugOutput = Configuration.getBooleanValue(Configuration.PROPERTY_DEBUG_OUTPUT);
+    Configuration.setValue(Configuration.PROPERTY_DEBUG_OUTPUT, true);
+    editModel = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityDbConnectionTest.DB_PROVIDER);
+  }
+
+  @After
+  public void tearDown() {
+    Configuration.setValue(Configuration.PROPERTY_DEBUG_OUTPUT, debugOutput);
+  }
+
+  @Test
+  public void initializePropertyComboBoxModel() {
+    final PropertyComboBoxModel model = editModel.initializePropertyComboBoxModel(jobProperty, null, "null");
+    assertNotNull(model);
+    assertTrue(editModel.containsComboBoxModel(jobProperty.getPropertyID()));
+    assertEquals(jobProperty, model.getProperty());
+    assertEquals(model, editModel.getPropertyComboBoxModel(jobProperty));
+    editModel.refreshComboBoxModels();
+    editModel.clearComboBoxModels();
+  }
+
+  @Test
+  public void createEntityComboBoxModel() {
+    final EntityComboBoxModel model = editModel.createEntityComboBoxModel(deptProperty);
+    assertNotNull(model);
+    assertEquals(deptProperty.getReferencedEntityID(), model.getEntityID());
+    editModel.refreshComboBoxModels();
+    editModel.clearComboBoxModels();
+  }
+
+  @Test
+  public void createEntityLookupModel() {
+    final EntityLookupModel model = editModel.createEntityLookupModel(EmpDept.T_DEPARTMENT,
+            EntityRepository.getSearchProperties(EmpDept.T_DEPARTMENT), null);
+    assertNotNull(model);
+    assertEquals(EmpDept.T_DEPARTMENT, model.getEntityID());
   }
 
   @Test
@@ -59,6 +102,29 @@ public class DefaultEntityEditModelTest {
     final State entityNullState = editModel.stateEntityNull();
 
     assertTrue(entityNullState.isActive());
+
+    editModel.setReadOnly(false);
+    assertFalse(editModel.isReadOnly());
+    assertTrue(editModel.stateAllowInsert().isActive());
+    assertTrue(editModel.stateAllowUpdate().isActive());
+    assertTrue(editModel.stateAllowDelete().isActive());
+
+    assertNotNull(editModel.eventAfterDelete());
+    assertNotNull(editModel.eventAfterInsert());
+    assertNotNull(editModel.eventAfterUpdate());
+    assertNotNull(editModel.eventBeforeDelete());
+    assertNotNull(editModel.eventBeforeInsert());
+    assertNotNull(editModel.eventBeforeUpdate());
+    assertNotNull(editModel.eventEntitiesChanged());
+    assertNotNull(editModel.eventRefreshDone());
+    assertNotNull(editModel.eventRefreshStarted());
+
+    assertEquals(EmpDept.T_EMPLOYEE, editModel.getEntityID());
+    assertEquals(editModel.getDbProvider().getEntityDb().selectPropertyValues(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB, true),
+            editModel.getValueProvider(jobProperty).getValues());
+
+    editModel.setActive(true);
+    assertTrue(editModel.stateActive().isActive());
 
     editModel.refresh();
     assertTrue(editModel.isEntityNew());

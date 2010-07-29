@@ -22,9 +22,10 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-public class DefaultEntityLookupModelTest {
+public final class DefaultEntityLookupModelTest {
 
   private DefaultEntityLookupModel lookupModel;
+  private List<Property.ColumnProperty> properties;
 
   @Test
   public void testConstructor() {
@@ -48,6 +49,22 @@ public class DefaultEntityLookupModelTest {
       fail();
     }
     catch (IllegalArgumentException e) {}
+  }
+
+  @Test
+  public void theRest() {
+    assertNotNull(lookupModel.getDescription());
+    assertNotNull(lookupModel.getDbProvider());
+    assertEquals(properties, lookupModel.getLookupProperties());
+    assertTrue(lookupModel.isMultipleSelectionAllowed());
+    lookupModel.setMultipleSelectionAllowed(false);
+    assertFalse(lookupModel.isMultipleSelectionAllowed());
+    assertFalse(lookupModel.isCaseSensitive());
+    assertTrue(lookupModel.isWildcardPostfix());
+    assertTrue(lookupModel.isWildcardPrefix());
+    assertNotNull(lookupModel.getWildcard());
+    assertNotNull(lookupModel.eventSearchStringChanged());
+    assertNotNull(lookupModel.eventSelectedEntitiesChanged());
   }
 
   @Test
@@ -122,9 +139,9 @@ public class DefaultEntityLookupModelTest {
 
   @Before
   public void setUp() throws Exception {
-    lookupModel = new DefaultEntityLookupModel(EmpDept.T_EMPLOYEE, EntityDbConnectionTest.DB_PROVIDER,
-            Arrays.asList(EntityRepository.getColumnProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME),
-                    EntityRepository.getColumnProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB)));
+    properties = Arrays.asList(EntityRepository.getColumnProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME),
+                    EntityRepository.getColumnProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB));
+    lookupModel = new DefaultEntityLookupModel(EmpDept.T_EMPLOYEE, EntityDbConnectionTest.DB_PROVIDER, properties);
 
     EntityDbConnectionTest.DB_PROVIDER.getEntityDb().beginTransaction();
     setupData();

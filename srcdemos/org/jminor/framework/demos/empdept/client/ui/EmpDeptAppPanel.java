@@ -32,18 +32,7 @@ import java.nio.charset.Charset;
 public class EmpDeptAppPanel extends EntityApplicationPanel {
 
   public EmpDeptAppPanel() {
-    final EntityPanelProvider employeePanelProvider = new EntityPanelProvider(T_EMPLOYEE) {
-      @Override
-      protected void configureTableModel(final EntityTableModel tableModel) {
-        tableModel.setQueryCriteriaRequired(false);
-        tableModel.getPropertySummaryModel(EMPLOYEE_SALARY).setSummaryType(PropertySummaryModel.SummaryType.AVERAGE);
-      }
-
-      @Override
-      protected void configureTablePanel(final EntityTablePanel tablePanel) {
-        tablePanel.setSummaryPanelVisible(true);
-      }
-    };
+    final EntityPanelProvider employeePanelProvider = new EmployeePanelProvider();
     employeePanelProvider.setEditModelClass(EmployeeEditModel.class);
     employeePanelProvider.setEditPanelClass(EmployeeEditPanel.class);
 
@@ -79,15 +68,38 @@ public class EmpDeptAppPanel extends EntityApplicationPanel {
 
   @Override
   protected EntityApplicationModel initializeApplicationModel(final EntityDbProvider dbProvider) throws CancelException {
-    return new DefaultEntityApplicationModel(dbProvider) {
-      @Override
-      protected void loadDomainModel() {
-        new EmpDept();
-      }
-    };
+    return new EmpDeptApplicationModel(dbProvider);
   }
 
   public static void main(final String[] args) {
     new EmpDeptAppPanel().startApplication("Emp-Dept", null, false, UiUtil.getScreenSizeRatio(0.6), new User("scott", "tiger"));
+  }
+
+  private static final class EmpDeptApplicationModel extends DefaultEntityApplicationModel {
+    public EmpDeptApplicationModel(final EntityDbProvider dbProvider) {
+      super(dbProvider);
+    }
+
+    @Override
+    protected void loadDomainModel() {
+      new EmpDept();
+    }
+  }
+
+  private static final class EmployeePanelProvider extends EntityPanelProvider {
+    public EmployeePanelProvider() {
+      super(EmpDept.T_EMPLOYEE);
+    }
+
+    @Override
+    protected void configureTableModel(final EntityTableModel tableModel) {
+      tableModel.setQueryCriteriaRequired(false);
+      tableModel.getPropertySummaryModel(EMPLOYEE_SALARY).setSummaryType(PropertySummaryModel.SummaryType.AVERAGE);
+    }
+
+    @Override
+    protected void configureTablePanel(final EntityTablePanel tablePanel) {
+      tablePanel.setSummaryPanelVisible(true);
+    }
   }
 }

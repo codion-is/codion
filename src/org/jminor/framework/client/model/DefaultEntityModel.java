@@ -115,7 +115,6 @@ public class DefaultEntityModel implements EntityModel {
       tableModel.setEditModel(editModel);
       bindTableModelEvents();
     }
-    bindEventsInternal();
     bindEvents();
   }
 
@@ -159,7 +158,6 @@ public class DefaultEntityModel implements EntityModel {
       tableModel.setEditModel(editModel);
       bindTableModelEvents();
     }
-    bindEventsInternal();
     bindEvents();
   }
 
@@ -372,11 +370,6 @@ public class DefaultEntityModel implements EntityModel {
     return evtRefreshStarted;
   }
 
-  /**
-   * Override to add event bindings
-   */
-  protected void bindEvents() {}
-
   protected void updateDetailModelsByActiveEntity() {
     final List<Entity> activeEntities = getActiveEntities();
     for (final EntityModel detailModel : linkedDetailModels) {
@@ -515,7 +508,7 @@ public class DefaultEntityModel implements EntityModel {
     return activeEntities;
   }
 
-  private void bindEventsInternal() {
+  private void bindEvents() {
     editModel.eventAfterInsert().addListener(new InsertListener() {
       @Override
       public void inserted(final InsertEvent event) {

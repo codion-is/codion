@@ -111,18 +111,17 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     this.entityID = entityID;
     this.dbProvider = dbProvider;
     this.searchModel = searchModel;
-    bindEventsInternal();
     bindEvents();
-  }
-
-  @Override
-  public String toString() {
-    return entityID;
   }
 
   @Override
   public boolean isCellEditable(final int rowIndex, final int columnIndex) {
     return false;
+  }
+
+  @Override
+  public final String toString() {
+    return getClass().getSimpleName() + ": " + entityID;
   }
 
   public final void setEditModel(final EntityEditModel editModel) {
@@ -518,12 +517,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   protected void handleDelete(final DeleteEvent event) {}
 
-  /**
-   * Override to add event bindings
-   */
-  protected void bindEvents() {}
-
-  private void bindEventsInternal() {
+  private void bindEvents() {
     eventColumnHidden().addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         handleColumnHidden((Property) e.getSource());

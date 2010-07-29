@@ -26,7 +26,6 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
   public DefaultEntityApplicationModel(final EntityDbProvider dbProvider) {
     this.dbProvider = dbProvider;
     loadDomainModel();
-    bindEvents();
   }
 
   public final void logout() {
@@ -149,8 +148,6 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
   protected void handleLogout() {}
 
   protected void handleLogin() {}
-
-  protected void bindEvents() {}
 
   protected EntityModel createEntityModel(final String entityID) {
     return new DefaultEntityModel(entityID, dbProvider);

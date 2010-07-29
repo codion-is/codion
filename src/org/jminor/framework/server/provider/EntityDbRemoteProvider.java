@@ -127,16 +127,7 @@ public final class EntityDbRemoteProvider extends AbstractEntityDbProvider {
   private void connectToServer() throws RemoteException, NotBoundException {
     final List<RemoteServer> servers = getEntityServers(serverHostName);
     if (!servers.isEmpty()) {
-      Collections.sort(servers, new Comparator<RemoteServer>() {
-        public int compare(final RemoteServer o1, final RemoteServer o2) {
-          try {
-            return Integer.valueOf(o1.getServerLoad()).compareTo(o2.getServerLoad());
-          }
-          catch (RemoteException e) {
-            return 1;
-          }
-        }
-      });
+      Collections.sort(servers, new ServerComparator());
       this.server = servers.get(0);
       this.serverName = this.server.getServerName();
     }
@@ -209,6 +200,17 @@ public final class EntityDbRemoteProvider extends AbstractEntityDbProvider {
       }
       finally {
         Util.closeSilently(out, in);
+      }
+    }
+  }
+
+  private static final class ServerComparator implements Comparator<RemoteServer> {
+    public int compare(final RemoteServer o1, final RemoteServer o2) {
+      try {
+        return Integer.valueOf(o1.getServerLoad()).compareTo(o2.getServerLoad());
+      }
+      catch (RemoteException e) {
+        return 1;
       }
     }
   }

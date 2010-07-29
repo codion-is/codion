@@ -262,7 +262,6 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     initializeUI();
     initializePopupMenu(additionalPopupControls);
     initializeToolbar(additionalToolbarControls);
-    bindEventsInternal();
     bindEvents();
     updateStatusMessage();
     if (Configuration.getBooleanValue(Configuration.SEARCH_PANELS_VISIBLE)) {
@@ -758,11 +757,6 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
   }
 
   /**
-   * Override to add event bindings
-   */
-  protected void bindEvents() {}
-
-  /**
    * Initializes the UI
    */
   protected void initializeUI() {
@@ -860,56 +854,13 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
       ((JComponent) table.getParent()).setComponentPopupMenu(popupMenu);
     }
     UiUtil.addKeyEvent(table, KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_FOCUSED,
-            new AbstractAction("showPopupMenu") {
-              public void actionPerformed(final ActionEvent e) {
-                popupMenu.show(table, 100, table.getSelectedRow() * table.getRowHeight());
-              }
-            });
+            new PopupMenuAction(popupMenu, table));
     UiUtil.addKeyEvent(table, KeyEvent.VK_V, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_FOCUSED,
             new AbstractAction("showEntityMenu") {
               public void actionPerformed(final ActionEvent e) {
                 showEntityMenu(new Point(100, table.getSelectedRow() * table.getRowHeight()));
               }
             });
-  }
-
-  /**
-   * Initializes the controls available to this EntityTablePanel by mapping them to their respective
-   * control codes (EntityTablePanel.UPDATE_SELECTED, DELETE_SELECTED etc) via the <code>setControl(String, Control) method,
-   * these can then be retrieved via the <code>getControl(String)</code> method.
-   * @see org.jminor.common.ui.control.Control
-   * @see #setControl(String, org.jminor.common.ui.control.Control)
-   * @see #getControl(String)
-   */
-  protected void setupControls() {
-    if (!getTableModel().isReadOnly() && getTableModel().isDeleteAllowed()) {
-      setControl(DELETE_SELECTED, getDeleteSelectedControl());
-    }
-    if (!getTableModel().isReadOnly() && getTableModel().isMultipleUpdateAllowed()) {
-      setControl(UPDATE_SELECTED, getUpdateSelectedControlSet());
-    }
-    if (getTableModel().isQueryConfigurationAllowed()) {
-      setControl(CONFIGURE_QUERY, getConfigureQueryControl());
-      setControl(SEARCH_PANEL_VISIBLE, getSearchPanelControl());
-    }
-    setControl(CLEAR, getClearControl());
-    setControl(REFRESH, getRefreshControl());
-    setControl(SELECT_COLUMNS, getSelectColumnsControl());
-    if (Configuration.entitySerializerAvailable()) {
-      setControl(EXPORT_JSON, getExportControl());
-    }
-    setControl(VIEW_DEPENDENCIES, getViewDependenciesControl());
-    if (summaryPanel != null) {
-      setControl(TOGGLE_SUMMARY_PANEL, getToggleSummaryPanelControl());
-    }
-    if (searchPanel != null) {
-      setControl(TOGGLE_SEARCH_PANEL, getToggleSearchPanelControl());
-    }
-    setControl(PRINT_TABLE, getPrintTableControl());
-    setControl(CLEAR_SELECTION, getClearSelectionControl());
-    setControl(MOVE_SELECTION_UP, getMoveSelectionDownControl());
-    setControl(MOVE_SELECTION_DOWN, getMoveSelectionUpControl());
-    setControl(COPY_TABLE_DATA, getCopyControlSet());
   }
 
   /**
@@ -1274,7 +1225,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     header.setReorderingAllowed(allowColumnReordering());
 
     jTable.setAutoResizeMode(getAutoResizeMode());
-    
+
     return jTable;
   }
 
@@ -1294,6 +1245,45 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
    */
   protected boolean allowColumnReordering() {
     return Configuration.getBooleanValue(Configuration.ALLOW_COLUMN_REORDERING);
+  }
+
+  /**
+   * Initializes the controls available to this EntityTablePanel by mapping them to their respective
+   * control codes (EntityTablePanel.UPDATE_SELECTED, DELETE_SELECTED etc) via the <code>setControl(String, Control) method,
+   * these can then be retrieved via the <code>getControl(String)</code> method.
+   * @see org.jminor.common.ui.control.Control
+   * @see #setControl(String, org.jminor.common.ui.control.Control)
+   * @see #getControl(String)
+   */
+  private void setupControls() {
+    if (!getTableModel().isReadOnly() && getTableModel().isDeleteAllowed()) {
+      setControl(DELETE_SELECTED, getDeleteSelectedControl());
+    }
+    if (!getTableModel().isReadOnly() && getTableModel().isMultipleUpdateAllowed()) {
+      setControl(UPDATE_SELECTED, getUpdateSelectedControlSet());
+    }
+    if (getTableModel().isQueryConfigurationAllowed()) {
+      setControl(CONFIGURE_QUERY, getConfigureQueryControl());
+      setControl(SEARCH_PANEL_VISIBLE, getSearchPanelControl());
+    }
+    setControl(CLEAR, getClearControl());
+    setControl(REFRESH, getRefreshControl());
+    setControl(SELECT_COLUMNS, getSelectColumnsControl());
+    if (Configuration.entitySerializerAvailable()) {
+      setControl(EXPORT_JSON, getExportControl());
+    }
+    setControl(VIEW_DEPENDENCIES, getViewDependenciesControl());
+    if (summaryPanel != null) {
+      setControl(TOGGLE_SUMMARY_PANEL, getToggleSummaryPanelControl());
+    }
+    if (searchPanel != null) {
+      setControl(TOGGLE_SEARCH_PANEL, getToggleSearchPanelControl());
+    }
+    setControl(PRINT_TABLE, getPrintTableControl());
+    setControl(CLEAR_SELECTION, getClearSelectionControl());
+    setControl(MOVE_SELECTION_UP, getMoveSelectionDownControl());
+    setControl(MOVE_SELECTION_DOWN, getMoveSelectionUpControl());
+    setControl(COPY_TABLE_DATA, getCopyControlSet());
   }
 
   private Control getCopyCellControl() {
@@ -1387,7 +1377,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     }
   }
 
-  private void bindEventsInternal() {
+  private void bindEvents() {
     if (!getTableModel().isReadOnly() && getTableModel().isDeleteAllowed()) {
       getJTable().addKeyListener(new KeyAdapter() {
         @Override
@@ -1561,6 +1551,21 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
         }
         rootMenu.add(menuItem);
       }
+    }
+  }
+
+  private static final class PopupMenuAction extends AbstractAction {
+    private final JPopupMenu popupMenu;
+    private final JTable table;
+
+    public PopupMenuAction(final JPopupMenu popupMenu, final JTable table) {
+      super("showPopupMenu");
+      this.popupMenu = popupMenu;
+      this.table = table;
+    }
+
+    public void actionPerformed(final ActionEvent e) {
+      popupMenu.show(table, 100, table.getSelectedRow() * table.getRowHeight());
     }
   }
 }

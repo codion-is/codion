@@ -335,16 +335,7 @@ public class DbConnectionImpl implements DbConnection {
     //http://www.idevelopment.info/data/Programming/java/jdbc/LOBS/BLOBFileExample.java
     final String sql = "select " + columnName + " from " + tableName + " where " + whereClause;
 
-    final List result = query(sql, new ResultPacker() {
-      public List pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
-        final List<Blob> blobs = new ArrayList<Blob>();
-        if (resultSet.next()) {
-          blobs.add(resultSet.getBlob(1));
-        }
-
-        return blobs;
-      }
-    }, 1);
+    final List result = query(sql, new BlobResultPacker(), 1);
 
     final Blob blob = (Blob) result.get(0);
 
@@ -727,6 +718,17 @@ public class DbConnectionImpl implements DbConnection {
         undefinedPerSecondCounter = 0;
         queriesPerSecondTime = current;
       }
+    }
+  }
+
+  private static final class BlobResultPacker implements ResultPacker {
+    public List pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
+      final List<Blob> blobs = new ArrayList<Blob>();
+      if (resultSet.next()) {
+        blobs.add(resultSet.getBlob(1));
+      }
+
+      return blobs;
     }
   }
 }

@@ -82,23 +82,9 @@ public final class EntityCriteriaPanel extends JPanel {
     final List<PropertySearchModel> searchCriteria = getSortedCriteria(searchModel);
     final JList propertyList = new JList(searchCriteria.toArray());
     for (final PropertySearchModel model : searchCriteria) {
-      model.eventSearchStateChanged().addListener(new ActionListener() {
-        public void actionPerformed(final ActionEvent e) {
-          propertyList.repaint();
-        }
-      });
+      model.eventSearchStateChanged().addListener(new RepaintListener(propertyList));
     }
-    propertyList.setCellRenderer(new DefaultListCellRenderer() {
-      @Override
-      public Component getListCellRendererComponent(final JList list, final Object value, final int index, final boolean isSelected, final boolean cellHasFocus) {
-        final Component cellRenderer = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-        final PropertySearchModel selected = (PropertySearchModel) value;
-        ((JLabel)cellRenderer).setText(selected.getSearchKey().toString());
-        cellRenderer.setForeground(selected.isSearchEnabled() ? Color.red : Color.black);
-
-        return cellRenderer;
-      }
-    });
+    propertyList.setCellRenderer(new CriteriaListCellRenderer());
     propertyList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
     propertyList.addListSelectionListener(new ListSelectionListener() {
@@ -130,19 +116,46 @@ public final class EntityCriteriaPanel extends JPanel {
   private List<PropertySearchModel> getSortedCriteria(final EntityTableSearchModel searchModel) {
     final List<PropertySearchModel> searchCriteria =
             new ArrayList<PropertySearchModel>(searchModel.getPropertySearchModels());
-    Collections.sort(searchCriteria, new Comparator<PropertySearchModel>() {
-      public int compare(final PropertySearchModel o1, final PropertySearchModel o2) {
-        final Property propertyOne = (Property) o1.getSearchKey();
-        final Property propertyTwo = (Property) o2.getSearchKey();
-        if (propertyOne.getCaption() != null && propertyTwo.getCaption() != null) {
-          return propertyOne.getCaption().compareTo(propertyTwo.getCaption());
-        }
-        else {
-          return propertyOne.getPropertyID().compareTo(propertyTwo.getPropertyID());
-        }
-      }
-    });
+    Collections.sort(searchCriteria, new SearchModelComparator());
 
     return searchCriteria;
+  }
+
+  private static final class RepaintListener implements ActionListener {
+    private final JList propertyList;
+
+    public RepaintListener(final JList propertyList) {
+      this.propertyList = propertyList;
+    }
+
+    public void actionPerformed(final ActionEvent e) {
+      propertyList.repaint();
+    }
+  }
+
+  private static final class CriteriaListCellRenderer extends DefaultListCellRenderer {
+    @Override
+    public Component getListCellRendererComponent(final JList list, final Object value, final int index,
+                                                  final boolean isSelected, final boolean cellHasFocus) {
+      final Component cellRenderer = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+      final PropertySearchModel selected = (PropertySearchModel) value;
+      ((JLabel)cellRenderer).setText(selected.getSearchKey().toString());
+      cellRenderer.setForeground(selected.isSearchEnabled() ? Color.red : Color.black);
+
+      return cellRenderer;
+    }
+  }
+
+  private static final class SearchModelComparator implements Comparator<PropertySearchModel> {
+    public int compare(final PropertySearchModel o1, final PropertySearchModel o2) {
+      final Property propertyOne = (Property) o1.getSearchKey();
+      final Property propertyTwo = (Property) o2.getSearchKey();
+      if (propertyOne.getCaption() != null && propertyTwo.getCaption() != null) {
+        return propertyOne.getCaption().compareTo(propertyTwo.getCaption());
+      }
+      else {
+        return propertyOne.getPropertyID().compareTo(propertyTwo.getPropertyID());
+      }
+    }
   }
 }

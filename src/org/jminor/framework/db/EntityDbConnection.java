@@ -525,24 +525,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
   private ResultPacker getPropertyResultPacker(final Property property) {
     ResultPacker packer = propertyResultPackers.get(property.getType());
     if (packer == null) {
-      packer  = new ResultPacker() {
-        public List pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
-          final List<Object> result = new ArrayList<Object>(50);
-          int counter = 0;
-          while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
-            if (property.isInteger()) {
-              result.add(resultSet.getInt(1));
-            }
-            else if (property.isDouble()) {
-              result.add(resultSet.getDouble(1));
-            }
-            else {
-              result.add(resultSet.getObject(1));
-            }
-          }
-          return result;
-        }
-      };
+      packer  = new PropertyResultPacker(property);
       propertyResultPackers.put(property.getType(), packer);
     }
 
@@ -977,6 +960,31 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
 
     public List<Property.ColumnProperty> getForeignKeyProperties() {
       return foreignKeyProperties;
+    }
+  }
+
+  private static final class PropertyResultPacker implements ResultPacker {
+    private final Property property;
+
+    public PropertyResultPacker(final Property property) {
+      this.property = property;
+    }
+
+    public List pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
+      final List<Object> result = new ArrayList<Object>(50);
+      int counter = 0;
+      while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
+        if (property.isInteger()) {
+          result.add(resultSet.getInt(1));
+        }
+        else if (property.isDouble()) {
+          result.add(resultSet.getDouble(1));
+        }
+        else {
+          result.add(resultSet.getObject(1));
+        }
+      }
+      return result;
     }
   }
 }

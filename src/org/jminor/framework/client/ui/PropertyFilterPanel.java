@@ -23,12 +23,12 @@ public final class PropertyFilterPanel extends AbstractSearchPanel<Property> {
   }
 
   @Override
-  protected final boolean isLowerBoundFieldRequired(final Property property) {
+  protected boolean isLowerBoundFieldRequired(final Property property) {
     return !property.isBoolean();
   }
 
   @Override
-  protected final SimpleDateFormat getDateFormat() {
+  protected SimpleDateFormat getDateFormat() {
     if (getModel().getType() == Types.TIMESTAMP) {
       return Configuration.getDefaultTimestampFormat();
     }

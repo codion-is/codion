@@ -20,7 +20,7 @@ import java.util.Arrays;
  * Date: 11.10.2009
  * Time: 21:44:41
  */
-public class DefaultEntityComboBoxModelTest {
+public final class DefaultEntityComboBoxModelTest {
 
   private final DefaultEntityComboBoxModel comboBoxModel;
 
@@ -50,6 +50,9 @@ public class DefaultEntityComboBoxModelTest {
 
   @Test
   public void test() throws Exception {
+    assertEquals(EmpDept.T_EMPLOYEE, comboBoxModel.getEntityID());
+    comboBoxModel.setStaticData(false);
+    comboBoxModel.toString();
     assertTrue(comboBoxModel.getSize() == 0);
     assertNull(comboBoxModel.getSelectedItem());
     comboBoxModel.refresh();

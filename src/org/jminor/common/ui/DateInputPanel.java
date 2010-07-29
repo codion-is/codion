@@ -57,12 +57,7 @@ public final class DateInputPanel extends JPanel {
       if (enabledState != null) {
         UiUtil.linkToEnabledState(enabledState, this.button);
       }
-      addFocusListener(new FocusAdapter() {
-        @Override
-        public void focusGained(final FocusEvent e) {
-          inputField.requestFocusInWindow();
-        }
-      });
+      addFocusListener(new InputFocusAdapter(inputField));
       add(this.button, BorderLayout.EAST);
     }
   }
@@ -81,5 +76,18 @@ public final class DateInputPanel extends JPanel {
 
   public String getFormatPattern() {
     return dateFormat.toPattern();
+  }
+
+  private final static class InputFocusAdapter extends FocusAdapter {
+    private final JFormattedTextField inputField;
+
+    public InputFocusAdapter(final JFormattedTextField inputField) {
+      this.inputField = inputField;
+    }
+
+    @Override
+    public void focusGained(final FocusEvent e) {
+      inputField.requestFocusInWindow();
+    }
   }
 }

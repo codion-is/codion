@@ -131,18 +131,14 @@ public final class EntityUiUtil {
       }
     };
 
-    final EntityTablePanel entityTablePanel = new EntityTablePanel(lookupModel) {
-      @Override
-      protected void bindEvents() {
-        eventTableDoubleClicked().addListener(new ActionListener() {
-          public void actionPerformed(final ActionEvent e) {
-            if (!getTableModel().isSelectionEmpty()) {
-              okAction.actionPerformed(e);
-            }
-          }
-        });
+    final EntityTablePanel entityTablePanel = new EntityTablePanel(lookupModel);
+    entityTablePanel.eventTableDoubleClicked().addListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
+        if (!entityTablePanel.getTableModel().isSelectionEmpty()) {
+          okAction.actionPerformed(e);
+        }
       }
-    };
+    });
     entityTablePanel.setSearchPanelVisible(true);
     if (singleSelection) {
       entityTablePanel.getJTable().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);

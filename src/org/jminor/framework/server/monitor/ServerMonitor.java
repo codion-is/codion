@@ -160,11 +160,7 @@ public final class ServerMonitor {
   public void refreshDomainList() throws RemoteException {
     domainListModel.clear();
     final List<EntityDefinition> definitions = new ArrayList<EntityDefinition>(server.getEntityDefinitions());
-    Collections.sort(definitions, new Comparator<EntityDefinition>() {
-      public int compare(final EntityDefinition o1, final EntityDefinition o2) {
-        return o1.getTableName().compareTo(o2.getTableName());
-      }
-    });
+    Collections.sort(definitions, new DefinitionComparator());
     for (final EntityDefinition definition : definitions) {
       domainListModel.addElement(definition);
     }
@@ -259,5 +255,11 @@ public final class ServerMonitor {
         catch (RemoteException e) {/**/}
       }
     }, delay, delay);
+  }
+
+  private static final class DefinitionComparator implements Comparator<EntityDefinition> {
+    public int compare(final EntityDefinition o1, final EntityDefinition o2) {
+      return o1.getTableName().compareTo(o2.getTableName());
+    }
   }
 }

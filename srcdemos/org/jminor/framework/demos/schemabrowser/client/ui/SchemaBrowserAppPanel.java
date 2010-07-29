@@ -39,15 +39,21 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel {
 
   @Override
   protected EntityApplicationModel initializeApplicationModel(final EntityDbProvider dbProvider) throws CancelException {
-    return new DefaultEntityApplicationModel(dbProvider) {
-      @Override
-      protected void loadDomainModel() {
-        new SchemaBrowser();
-      }
-    };
+    return new SchemaBrowserApplicationModel(dbProvider);
   }
 
   public static void main(final String[] args) {
     new SchemaBrowserAppPanel().startApplication("Schema Browser", null, false, UiUtil.getScreenSizeRatio(0.5), new User("scott", "tiger"));
+  }
+
+  private static final class SchemaBrowserApplicationModel extends DefaultEntityApplicationModel {
+    public SchemaBrowserApplicationModel(final EntityDbProvider dbProvider) {
+      super(dbProvider);
+    }
+
+    @Override
+    protected void loadDomainModel() {
+      new SchemaBrowser();
+    }
   }
 }

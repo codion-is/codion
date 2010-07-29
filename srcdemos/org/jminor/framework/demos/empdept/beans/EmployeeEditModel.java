@@ -21,10 +21,11 @@ import org.jminor.framework.domain.Property;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class EmployeeEditModel extends DefaultEntityEditModel {
+public final class EmployeeEditModel extends DefaultEntityEditModel {
 
   public EmployeeEditModel(final EntityDbProvider dbProvider) {
     super(T_EMPLOYEE, dbProvider);
+    bindEvents();
   }
 
   /** Providing a custom ComboBoxModel for the manager property, which only shows managers and the president */
@@ -43,8 +44,8 @@ public class EmployeeEditModel extends DefaultEntityEditModel {
     return super.createEntityComboBoxModel(foreignKeyProperty);
   }
 
-  @Override
-  protected void bindEvents() {
+  //keep event bindings in one place
+  private void bindEvents() {
     //Refresh the manager ComboBoxModel when an employee is either added or updated
     eventEntitiesChanged().addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {

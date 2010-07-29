@@ -99,13 +99,7 @@ public abstract class AbstractTableColumnSyncPanel extends JPanel {
       final TableColumn column = columnEnumeration.nextElement();
       final JPanel panel = columnPanels.get(column);
       panel.setPreferredSize(new Dimension(column.getWidth(), panel.getPreferredSize().height));
-      column.addPropertyChangeListener(new PropertyChangeListener() {
-        public void propertyChange(final PropertyChangeEvent evt) {
-          if (evt.getPropertyName().equals("width")) {
-            syncPanelWidth(panel, column);
-          }
-        }
-      });
+      column.addPropertyChangeListener(new SyncListener(panel, column));
     }
   }
 
@@ -132,5 +126,21 @@ public abstract class AbstractTableColumnSyncPanel extends JPanel {
   private static void syncPanelWidth(final JPanel panel, final TableColumn column) {
     panel.setPreferredSize(new Dimension(column.getWidth(), panel.getPreferredSize().height));
     panel.revalidate();
+  }
+
+  private static final class SyncListener implements PropertyChangeListener {
+    private final JPanel panel;
+    private final TableColumn column;
+
+    public SyncListener(final JPanel panel, final TableColumn column) {
+      this.panel = panel;
+      this.column = column;
+    }
+
+    public void propertyChange(final PropertyChangeEvent evt) {
+      if (evt.getPropertyName().equals("width")) {
+        syncPanelWidth(panel, column);
+      }
+    }
   }
 }

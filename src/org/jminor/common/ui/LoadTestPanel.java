@@ -69,14 +69,7 @@ public final class LoadTestPanel extends JPanel {
   public JFrame showFrame() {
     final JFrame frame = UiUtil.createFrame(Images.loadImage("jminor_logo32.gif").getImage());
     final String title = "JMinor - " + loadTestModel.getClass().getSimpleName();
-    loadTestModel.eventDoneExiting().addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent e) {
-        if (frame != null) {
-          frame.setVisible(false);
-          frame.dispose();
-        }
-      }
-    });
+    loadTestModel.eventDoneExiting().addListener(new ExitListener(frame));
     frame.addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosing(final WindowEvent e) {
@@ -306,5 +299,20 @@ public final class LoadTestPanel extends JPanel {
     thinkTimePanel.setBorder(BorderFactory.createTitledBorder("Activity"));
 
     return thinkTimePanel;
+  }
+
+  private static final class ExitListener implements ActionListener {
+    private final JFrame frame;
+
+    public ExitListener(final JFrame frame) {
+      this.frame = frame;
+    }
+
+    public void actionPerformed(final ActionEvent e) {
+      if (frame != null) {
+        frame.setVisible(false);
+        frame.dispose();
+      }
+    }
   }
 }

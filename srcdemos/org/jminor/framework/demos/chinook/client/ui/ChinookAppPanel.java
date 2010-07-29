@@ -29,10 +29,10 @@ import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 
 import java.util.Locale;
 
-public class ChinookAppPanel extends EntityApplicationPanel {
+public final class ChinookAppPanel extends EntityApplicationPanel {
 
   public ChinookAppPanel() {
-   /* ARTIST
+    /* ARTIST
     *   ALBUM
     *     TRACK
     * PLAYLIST
@@ -90,12 +90,7 @@ public class ChinookAppPanel extends EntityApplicationPanel {
 
   @Override
   protected EntityApplicationModel initializeApplicationModel(final EntityDbProvider dbProvider) throws CancelException {
-    return new DefaultEntityApplicationModel(dbProvider) {
-      @Override
-      protected void loadDomainModel() {
-        new Chinook();
-      }
-    };
+    return new ChinookApplicationModel(dbProvider);
   }
 
   @Override
@@ -109,5 +104,16 @@ public class ChinookAppPanel extends EntityApplicationPanel {
   public static void main(final String[] args) throws CancelException {
     Locale.setDefault(new Locale("EN", "en"));
     new ChinookAppPanel().startApplication("Chinook", null, false, UiUtil.getScreenSizeRatio(0.6), new User("scott", "tiger"));
+  }
+
+  private static final class ChinookApplicationModel extends DefaultEntityApplicationModel {
+    public ChinookApplicationModel(EntityDbProvider dbProvider) {
+      super(dbProvider);
+    }
+
+    @Override
+    protected void loadDomainModel() {
+      new Chinook();
+    }
   }
 }

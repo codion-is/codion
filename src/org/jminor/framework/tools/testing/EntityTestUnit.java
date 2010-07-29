@@ -195,17 +195,7 @@ public abstract class EntityTestUnit {
    */
   @SuppressWarnings({"UnusedDeclaration"})
   protected void initializeReferenceEntities(final List<String> referenceEntityIDs) throws Exception {
-    Collections.sort(referenceEntityIDs, new Comparator<String>() {
-      public int compare(final String o1, final String o2) {
-        if (superTreeContains(o1, o2)) {
-          return 1;
-        }
-        else if (superTreeContains(o2, o1)) {
-          return -1;
-        }
-        return 0;
-      }
-    });
+    Collections.sort(referenceEntityIDs, new ReferenceComparator());
     for (final String entityID : referenceEntityIDs) {
       setReferenceEntity(entityID, createReferenceEntity(entityID));
     }
@@ -355,5 +345,17 @@ public abstract class EntityTestUnit {
     }
 
     return false;
+  }
+
+  private static final class ReferenceComparator implements Comparator<String> {
+    public int compare(final String o1, final String o2) {
+      if (superTreeContains(o1, o2)) {
+        return 1;
+      }
+      else if (superTreeContains(o2, o1)) {
+        return -1;
+      }
+      return 0;
+    }
   }
 }

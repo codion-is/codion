@@ -115,7 +115,6 @@ public class DefaultEntityEditModel extends DefaultValueChangeMapEditModel<Strin
     this.readOnly = EntityRepository.isReadOnly(entityID);
     setValueMap(null);
     bindEventsInternal();
-    bindEvents();
   }
 
   public Object getDefaultValue(final Property property) {
@@ -551,11 +550,6 @@ public class DefaultEntityEditModel extends DefaultValueChangeMapEditModel<Strin
     return (Entity) getValueMap();
   }
 
-  /**
-   * Override to add event bindings
-   */
-  protected void bindEvents() {}
-
   private void bindEventsInternal() {
     evtAfterDelete.addListener(evtEntitiesChanged);
     evtAfterInsert.addListener(evtEntitiesChanged);
@@ -566,14 +560,7 @@ public class DefaultEntityEditModel extends DefaultValueChangeMapEditModel<Strin
       }
     });
     if (Configuration.getBooleanValue(Configuration.PROPERTY_DEBUG_OUTPUT)) {
-      getEntity().addValueListener(new ValueChangeListener<String, Object>() {
-        @Override
-        protected void valueChanged(final ValueChangeEvent<String, Object> event) {
-          final String msg = getValueChangeDebugString(event);
-          System.out.println(msg);
-          LOG.debug(msg);
-        }
-      });
+      getEntity().addValueListener(new StatusMessageListener());
     }
   }
 
@@ -672,6 +659,15 @@ public class DefaultEntityEditModel extends DefaultValueChangeMapEditModel<Strin
           return entity.getValue(key);
         }
       };
+    }
+  }
+
+  private static class StatusMessageListener extends ValueChangeListener<String, Object> {
+    @Override
+    protected void valueChanged(final ValueChangeEvent<String, Object> event) {
+      final String msg = getValueChangeDebugString(event);
+      System.out.println(msg);
+      LOG.debug(msg);
     }
   }
 }

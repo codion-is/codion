@@ -69,37 +69,39 @@ public class SteppedComboBox extends JComboBox {
   }
 
   private void initUI() {
-    setUI(new MetalComboBoxUI() {
-      @Override
-      protected ComboPopup createPopup() {
-        final BasicComboPopup basicPopup = new BasicComboPopup(comboBox) {
-          @Override
-          public void show() {
-            final Dimension popupSize = ((SteppedComboBox)comboBox).getPopupSize(getDisplaySize());
-            popupSize.setSize(popupSize.width, getPopupHeightForRowCount(comboBox.getMaximumRowCount()));
-            final Rectangle popupBounds = computePopupBounds(0, comboBox.getBounds().height,
-                    popupSize.width + new JScrollBar(JScrollBar.VERTICAL).getWidth(), popupSize.height);
-            scroller.setMaximumSize(popupBounds.getSize());
-            scroller.setPreferredSize(popupBounds.getSize());
-            scroller.setMinimumSize(popupBounds.getSize());
-            getList().invalidate();
-            final int selectedIndex = comboBox.getSelectedIndex();
-            if (selectedIndex == -1) {
-              getList().clearSelection();
-            }
-            else {
-              getList().setSelectedIndex(selectedIndex);
-            }
-            getList().ensureIndexIsVisible(getList().getSelectedIndex());
-            setLightWeightPopupEnabled(comboBox.isLightWeightPopupEnabled());
+    setUI(new SteppedComboBoxUI());
+  }
 
-            show(comboBox, popupBounds.x, popupBounds.y);
+  private static final class SteppedComboBoxUI extends MetalComboBoxUI {
+    @Override
+    protected ComboPopup createPopup() {
+      final BasicComboPopup basicPopup = new BasicComboPopup(comboBox) {
+        @Override
+        public void show() {
+          final Dimension popupSize = ((SteppedComboBox)comboBox).getPopupSize(getDisplaySize());
+          popupSize.setSize(popupSize.width, getPopupHeightForRowCount(comboBox.getMaximumRowCount()));
+          final Rectangle popupBounds = computePopupBounds(0, comboBox.getBounds().height,
+                  popupSize.width + new JScrollBar(JScrollBar.VERTICAL).getWidth(), popupSize.height);
+          scroller.setMaximumSize(popupBounds.getSize());
+          scroller.setPreferredSize(popupBounds.getSize());
+          scroller.setMinimumSize(popupBounds.getSize());
+          getList().invalidate();
+          final int selectedIndex = comboBox.getSelectedIndex();
+          if (selectedIndex == -1) {
+            getList().clearSelection();
           }
-        };
-        basicPopup.getAccessibleContext().setAccessibleParent(comboBox);
+          else {
+            getList().setSelectedIndex(selectedIndex);
+          }
+          getList().ensureIndexIsVisible(getList().getSelectedIndex());
+          setLightWeightPopupEnabled(comboBox.isLightWeightPopupEnabled());
 
-        return basicPopup;
-      }
-    });
+          show(comboBox, popupBounds.x, popupBounds.y);
+        }
+      };
+      basicPopup.getAccessibleContext().setAccessibleParent(comboBox);
+
+      return basicPopup;
+    }
   }
 }

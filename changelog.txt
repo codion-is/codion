@@ -1942,3 +1942,4 @@
   AbstractFilteredTableModelTest improved
   AbstractFilteredTableModelTest improved some more
   Added tests to common
+  More finalization/refactoring

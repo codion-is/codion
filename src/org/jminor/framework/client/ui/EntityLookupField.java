@@ -75,7 +75,7 @@ public final class EntityLookupField extends JTextField {
     return model;
   }
 
-  public final Action getEnterAction() {
+  public Action getEnterAction() {
     return enterAction;
   }
 

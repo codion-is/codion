@@ -4,6 +4,9 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.db.criteria.Criteria;
+import org.jminor.common.model.SearchModel;
+import org.jminor.common.model.SortingDirective;
+import org.jminor.common.model.reports.ReportDataWrapper;
 import org.jminor.framework.db.EntityDbConnectionTest;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
@@ -22,7 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class DefaultEntityTableModelTest {
+public final class DefaultEntityTableModelTest {
 
   private static final Entity[] testEntities;
 
@@ -34,12 +37,48 @@ public class DefaultEntityTableModelTest {
   }
 
   @Test
+  public void testFiltering() {
+    testModel.refresh();
+    final SearchModel<Property> filterModel = testModel.getSearchModel().getPropertyFilterModel(EntityTestDomain.DETAIL_STRING);
+    filterModel.setLikeValue("a");
+    testModel.filterContents();
+  }
+
+  @Test
+  public void testSorting() {
+    testModel.setSortingDirective(EntityTestDomain.DETAIL_STRING, SortingDirective.DESCENDING);
+    testModel.setSortingDirective(EntityTestDomain.DETAIL_STRING, SortingDirective.ASCENDING);
+  }
+
+  @Test
   public void testTheRest() {
     final List<Property> columnProperties = testModel.getTableColumnProperties();
     assertEquals(testModel.getColumnCount(), columnProperties.size());
+    testModel.setQueryConfigurationAllowed(false);
+    assertFalse(testModel.isQueryConfigurationAllowed());
+    testModel.setFetchCount(10);
+    assertEquals(10, testModel.getFetchCount());
+    assertFalse(testModel.isDetailModel());
+    assertNotNull(testModel.getEditModel());
+    assertNotNull(testModel.stateAllowDelete());
+    assertNotNull(testModel.stateAllowMultipleUpdate());
+    assertFalse(testModel.isReadOnly());
+    testModel.setMultipleUpdateAllowed(true).setQueryConfigurationAllowed(true).setDeleteAllowed(true);
+    assertTrue(testModel.isMultipleUpdateAllowed());
+    assertTrue(testModel.isDeleteAllowed());
     assertTrue(testModel.isQueryConfigurationAllowed());
     testModel.refresh();
     assertFalse(testModel.isCellEditable(0,0));
+
+    final ReportDataWrapper wrapper = new ReportDataWrapper() {
+      public Object getDataSource() {
+        return null;
+      }
+    };
+    testModel.setReportDataSource(wrapper);
+    assertNotNull(testModel.getReportDataSource());
+
+    assertEquals(Integer.class, testModel.getColumnClass(0));
 
     final Property property = EntityRepository.getProperty(EntityTestDomain.T_DETAIL, EntityTestDomain.DETAIL_STRING);
     final TableColumn column = testModel.getTableColumn(property);
@@ -72,11 +111,18 @@ public class DefaultEntityTableModelTest {
     propValues.put(EntityTestDomain.DETAIL_STRING, "b");
     final Collection<Entity> byPropertyValues = testModel.getEntitiesByPropertyValues(propValues);
     assertEquals(1, byPropertyValues.size());
+
+    try {
+      testModel.setValueAt("hello", 0, 0);
+      fail();
+    }
+    catch (Exception e) {}
   }
 
-  public static class EntityTableModelTmp extends DefaultEntityTableModel {
+  public static final class EntityTableModelTmp extends DefaultEntityTableModel {
     public EntityTableModelTmp() {
       super(EntityTestDomain.T_DETAIL, EntityDbConnectionTest.DB_PROVIDER);
+      setEditModel(new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, EntityDbConnectionTest.DB_PROVIDER));
     }
     @Override
     protected List<Entity> performQuery(final Criteria criteria) {

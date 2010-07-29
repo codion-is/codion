@@ -223,11 +223,7 @@ public final class ConnectionPoolMonitor {
 
   private List<ConnectionPoolState> sortAndRemoveDuplicates(final List<ConnectionPoolState> stats) {
     final List<ConnectionPoolState> poolStates = new ArrayList<ConnectionPoolState>(stats.size());
-    Collections.sort(poolStates, new Comparator<ConnectionPoolState>() {
-      public int compare(final ConnectionPoolState o1, final ConnectionPoolState o2) {
-        return ((Long) o1.getTime()).compareTo(o2.getTime());
-      }
-    });
+    Collections.sort(poolStates, new StateComparator());
     long time = -1;
     for (int i = stats.size()-1; i >= 0; i--) {
       final ConnectionPoolState state = stats.get(i);
@@ -259,5 +255,11 @@ public final class ConnectionPoolMonitor {
         catch (RemoteException e) {/**/}
       }
     }, delay, delay);
+  }
+
+  private static final class StateComparator implements Comparator<ConnectionPoolState> {
+    public int compare(final ConnectionPoolState o1, final ConnectionPoolState o2) {
+      return ((Long) o1.getTime()).compareTo(o2.getTime());
+    }
   }
 }
