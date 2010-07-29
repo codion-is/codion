@@ -6,6 +6,8 @@ package org.jminor.common.model;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,8 +23,8 @@ public final class Events {
   }
 
   final static class EventImpl implements Event {
-    private final Set<ActionListener> listeners = new HashSet<ActionListener>();
     private final ActionEvent defaultActionEvent = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "");
+    private EventObserver observer;
 
     /**
      * Notifies all listeners
@@ -36,7 +38,7 @@ public final class Events {
      * @param event the ActionEvent to use when notifying
      */
     public void fire(final ActionEvent event) {
-      for (final ActionListener listener : new ArrayList<ActionListener>(listeners)) {
+      for (final ActionListener listener : new ArrayList<ActionListener>(observer.getListeners())) {
         listener.actionPerformed(event);
       }
     }
@@ -44,6 +46,41 @@ public final class Events {
     public void actionPerformed(final ActionEvent e) {
       fire(e);
     }
+
+    public EventObserver getObserver() {
+      if (observer == null) {
+        observer = new EventObserverImpl();
+      }
+
+      return observer;
+    }
+
+    /**
+     * Adds <code>listener</code> to this Event, adding the same listener
+     * a second time has no effect.
+     * @param listener the listener to add
+     * @throws IllegalArgumentException in case listener is null
+     */
+    public void addListener(final ActionListener listener) {
+      getObserver().addListener(listener);
+    }
+
+    /**
+     * Removes <code>listener</code> from this Event
+     * @param listener the listener to remove
+     */
+    public void removeListener(final ActionListener listener) {
+      observer.removeListener(listener);
+    }
+
+    public Collection<? extends ActionListener> getListeners() {
+      return getObserver().getListeners();
+    }
+  }
+
+  private static final class EventObserverImpl implements EventObserver {
+
+    private final Set<ActionListener> listeners = new HashSet<ActionListener>();
 
     /**
      * Adds <code>listener</code> to this Event, adding the same listener
@@ -62,6 +99,10 @@ public final class Events {
      */
     public void removeListener(final ActionListener listener) {
       listeners.remove(listener);
+    }
+
+    public Collection<? extends ActionListener> getListeners() {
+      return Collections.unmodifiableCollection(listeners);
     }
   }
 }

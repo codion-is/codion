@@ -4,6 +4,7 @@
 package org.jminor.common.model;
 
 import java.awt.event.ActionListener;
+import java.util.Collection;
 
 /**
  * User: darri
@@ -13,4 +14,12 @@ import java.awt.event.ActionListener;
 public interface EventObserver {
 
   void addListener(final ActionListener listener);
+
+  /**
+   * Removes <code>listener</code> from this Event
+   * @param listener the listener to remove
+   */
+  void removeListener(final ActionListener listener);
+
+  Collection<? extends ActionListener> getListeners();
 }

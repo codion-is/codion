@@ -1947,3 +1947,4 @@
   Event model improved, event...() methods replaced with ...Observer() and add...Listener() methods
   Event and State now interfaces
   Events and States factory classes added
+  EventObserver fleshed out

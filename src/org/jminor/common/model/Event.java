@@ -24,17 +24,5 @@ public interface Event extends ActionListener, EventObserver {
 
   void actionPerformed(final ActionEvent e);
 
-  /**
-   * Adds <code>listener</code> to this Event, adding the same listener
-   * a second time has no effect.
-   * @param listener the listener to add
-   * @throws IllegalArgumentException in case listener is null
-   */
-  void addListener(final ActionListener listener);
-
-  /**
-   * Removes <code>listener</code> from this Event
-   * @param listener the listener to remove
-   */
-  void removeListener(final ActionListener listener);
+  EventObserver getObserver();
 }
