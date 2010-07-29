@@ -92,9 +92,25 @@ public class State {
   }
 
   /**
-   * @return an Event fired each time the state changes
+   * @return an EventObserver notified each time the state changes
    */
-  public final Event eventStateChanged() {
+  public final EventObserver stateObserver() {
+    return evtStateChanged;
+  }
+
+  public final void addStateListener(final ActionListener listener) {
+    evtStateChanged.addListener(listener);
+  }
+
+  public final void removeStateListener(final ActionListener listener) {
+    evtStateChanged.removeListener(listener);
+  }
+
+  public final void notifyStateObserver() {
+    evtStateChanged.fire();
+  }
+
+  protected Event evtStateChanged() {
     return evtStateChanged;
   }
 
@@ -104,9 +120,9 @@ public class State {
 
     private LinkedState(final State referenceState) {
       this.referenceState = referenceState;
-      this.referenceState.eventStateChanged().addListener(new ActionListener() {
+      this.referenceState.addStateListener(new ActionListener() {
         public void actionPerformed(final ActionEvent e) {
-          eventStateChanged().actionPerformed(e);
+          evtStateChanged().actionPerformed(e);
         }
       });
     }

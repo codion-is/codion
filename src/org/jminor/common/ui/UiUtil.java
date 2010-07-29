@@ -6,7 +6,7 @@ package org.jminor.common.ui;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.DateUtil;
-import org.jminor.common.model.Event;
+import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.ValueCollectionProvider;
@@ -27,47 +27,18 @@ import javax.swing.text.MaskFormatter;
 import javax.swing.text.PlainDocument;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
-import java.awt.BorderLayout;
-import java.awt.Container;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.GraphicsEnvironment;
-import java.awt.GridLayout;
-import java.awt.Image;
-import java.awt.Insets;
-import java.awt.Point;
-import java.awt.Window;
+import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.StringTokenizer;
 import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * A static utility class.
@@ -290,7 +261,7 @@ public final class UiUtil {
   public static Action linkToEnabledState(final State enabledState, final Action action) {
     if (enabledState != null) {
       action.setEnabled(enabledState.isActive());
-      enabledState.eventStateChanged().addListener(new ActionListener() {
+      enabledState.addStateListener(new ActionListener() {
         public void actionPerformed(final ActionEvent e) {
           action.setEnabled(enabledState.isActive());
         }
@@ -303,7 +274,7 @@ public final class UiUtil {
   public static JComponent linkToEnabledState(final State enabledState, final JComponent component) {
     if (enabledState != null) {
       component.setEnabled(enabledState.isActive());
-      enabledState.eventStateChanged().addListener(new ActionListener() {
+      enabledState.addStateListener(new ActionListener() {
         public void actionPerformed(final ActionEvent e) {
           component.setEnabled(enabledState.isActive());
         }
@@ -684,7 +655,7 @@ public final class UiUtil {
 
   public static JDialog showInDialog(final Container owner, final JComponent componentToShow, final boolean modal,
                                      final String title, final Dimension size, final JButton defaultButton,
-                                     final Event closeEvent) {
+                                     final EventObserver closeEvent) {
     final JDialog dialog = new JDialog(getParentWindow(owner), title);
     dialog.setLayout(new BorderLayout());
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);

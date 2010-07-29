@@ -40,7 +40,7 @@ public class ValueChangeMapImplTest {
     model.addValueListener(valueListener);
 
     model.stateModified();
-    model.eventValueChanged();
+    model.valueChangeObserver();
 
     assertFalse(model.containsValue(key));
 
@@ -103,8 +103,8 @@ public class ValueChangeMapImplTest {
   public void equals() {
     final ValueChangeMap<String, Integer> mapOne = new ValueChangeMapImpl<String, Integer>();
     final ValueChangeMap<String, Integer> mapTwo = (ValueChangeMap) mapOne.getInstance();
-    mapOne.eventValueChanged();
-    mapTwo.eventValueChanged();
+    mapOne.valueChangeObserver();
+    mapTwo.valueChangeObserver();
 
     mapOne.initializeValue("keyOne", 1);
     mapOne.setValue("keyTwo", 2);

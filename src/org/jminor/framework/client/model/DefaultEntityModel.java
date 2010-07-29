@@ -358,16 +358,28 @@ public class DefaultEntityModel implements EntityModel {
     }
   }
 
-  public final Event eventLinkedDetailModelsChanged() {
-    return evtLinkedDetailModelsChanged;
+  public final void addLinkedDetailModelsListener(final ActionListener listener) {
+    evtLinkedDetailModelsChanged.addListener(listener);
   }
 
-  public final Event eventRefreshDone() {
-    return evtRefreshDone;
+  public final void removeLinkedDetailModelsListener(final ActionListener listener) {
+    evtLinkedDetailModelsChanged.removeListener(listener);
   }
 
-  public final Event eventRefreshStarted() {
-    return evtRefreshStarted;
+  public final void addBeforeRefreshListener(final ActionListener listener) {
+    evtRefreshStarted.addListener(listener);
+  }
+
+  public final void removeBeforeRefreshListener(final ActionListener listener) {
+    evtRefreshStarted.removeListener(listener);
+  }
+
+  public final void addAfterRefreshListener(final ActionListener listener) {
+    evtRefreshDone.addListener(listener);
+  }
+
+  public final void removeAfterRefreshListener(final ActionListener listener) {
+    evtRefreshDone.removeListener(listener);
   }
 
   protected void updateDetailModelsByActiveEntity() {
@@ -509,19 +521,19 @@ public class DefaultEntityModel implements EntityModel {
   }
 
   private void bindEvents() {
-    editModel.eventAfterInsert().addListener(new InsertListener() {
+    editModel.addAfterInsertListener(new InsertListener() {
       @Override
       public void inserted(final InsertEvent event) {
         handleInsert(event);
       }
     });
-    editModel.eventAfterUpdate().addListener(new UpdateListener() {
+    editModel.addAfterUpdateListener(new UpdateListener() {
       @Override
       protected void updated(final UpdateEvent event) {
         handleUpdate(event);
       }
     });
-    editModel.eventAfterDelete().addListener(new DeleteListener() {
+    editModel.addAfterDeleteListener(new DeleteListener() {
       @Override
       protected void deleted(final DeleteEvent event) {
         handleDelete(event);
@@ -535,7 +547,7 @@ public class DefaultEntityModel implements EntityModel {
       }
     });
     if (!containsTableModel()) {
-      editModel.eventValueMapSet().addListener(new ActionListener() {
+      editModel.addValueMapSetListener(new ActionListener() {
         public void actionPerformed(final ActionEvent e) {
           updateDetailModelsByActiveEntity();
         }
@@ -548,17 +560,17 @@ public class DefaultEntityModel implements EntityModel {
       return;
     }
 
-    editModel.eventRefreshDone().addListener(new ActionListener() {
+    editModel.addAfterRefreshListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         tableModel.refresh();
       }
     });
-    tableModel.eventSelectionChanged().addListener(new ActionListener() {
+    tableModel.addSelectionChangedListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         updateDetailModelsByActiveEntity();
       }
     });
-    tableModel.eventSelectedIndexChanged().addListener(new ActionListener() {
+    tableModel.addSelectedIndexListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         editModel.setEntity(tableModel.isSelectionEmpty() ? null : tableModel.getSelectedItem());
       }

@@ -3,6 +3,7 @@
  */
 package org.jminor.common.model;
 
+import java.awt.event.ActionListener;
 import java.util.List;
 
 /**
@@ -12,15 +13,9 @@ import java.util.List;
  */
 public interface FilteredModel<T> {
 
-  /**
-   * @return an Event fired when the model is about to be filtered
-   */
-  Event eventFilteringStarted();
+  void addFilteringListener(final ActionListener listener);
 
-  /**
-   * @return an Event fired when the model has just been filtered
-   */
-  Event eventFilteringDone();
+  void removeFilteringListener(final ActionListener listener);
 
   /**
    * Filters the table according to the criteria returned by <code>getFilterCriteria()</code>.

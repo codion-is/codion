@@ -236,8 +236,12 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
     return stSearchStateChanged.getLinkedState();
   }
 
-  public final Event eventFilterStateChanged() {
-    return evtFilterStateChanged;
+  public final void addFilterStateListener(final ActionListener listener) {
+    evtFilterStateChanged.addListener(listener);
+  }
+
+  public final void removeFilterStateListener(final ActionListener listener) {
+    evtFilterStateChanged.removeListener(listener);
   }
 
   /**
@@ -303,7 +307,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
     final Map<String, SearchModel<Property>> filters = new HashMap<String, SearchModel<Property>>(properties.size());
     for (final Property property : properties) {
       final SearchModel<Property> filterModel = initializePropertyFilterModel(property);
-      filterModel.eventSearchStateChanged().addListener(evtFilterStateChanged);
+      filterModel.addSearchStateListener(evtFilterStateChanged);
       filters.put(property.getPropertyID(), filterModel);
     }
 
@@ -312,10 +316,10 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
 
   private void bindEvents() {
     for (final PropertySearchModel searchModel : propertySearchModels.values()) {
-      searchModel.eventSearchStateChanged().addListener(new ActionListener() {
+      searchModel.addSearchStateListener(new ActionListener() {
         public void actionPerformed(final ActionEvent e) {
           stSearchStateChanged.setActive(!searchStateOnRefresh.equals(getSearchModelState()));
-          stSearchStateChanged.eventStateChanged().fire();
+          stSearchStateChanged.notifyStateObserver();
         }
       });
     }

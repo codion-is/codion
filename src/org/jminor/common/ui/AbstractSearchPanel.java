@@ -106,10 +106,10 @@ public abstract class AbstractSearchPanel<K> extends JPanel {
     this.upperBoundField = getInputField(true);
     this.lowerBoundField = isLowerBoundFieldRequired(searchModel.getSearchKey()) ? getInputField(false) : null;
     this.toggleSearchEnabled = ControlProvider.createToggleButton(
-            ControlFactory.toggleControl(searchModel, "searchEnabled", null, searchModel.eventEnabledChanged()));
+            ControlFactory.toggleControl(searchModel, "searchEnabled", null, searchModel.enabledObserver()));
     toggleSearchEnabled.setIcon(Images.loadImage(Images.IMG_FILTER_16));
     this.toggleSearchAdvanced = ControlProvider.createToggleButton(
-            ControlFactory.toggleControl(this, "advancedSearchOn", null, stAdvancedSearch.eventStateChanged()));
+            ControlFactory.toggleControl(this, "advancedSearchOn", null, stAdvancedSearch.stateObserver()));
     toggleSearchAdvanced.setIcon(Images.loadImage(Images.IMG_PREFERENCES_16));
     linkComponentsToLockedState();
     initUI();
@@ -293,7 +293,7 @@ public abstract class AbstractSearchPanel<K> extends JPanel {
    * Binds events to relevant GUI actions
    */
   private void bindEvents() {
-    stAdvancedSearch.eventStateChanged().addListener(new ActionListener() {
+    stAdvancedSearch.addStateListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         initializePanel();
         if (toggleSearchAdvanced != null) {
@@ -304,13 +304,13 @@ public abstract class AbstractSearchPanel<K> extends JPanel {
         }
       }
     });
-    model.eventSearchTypeChanged().addListener(new ActionListener() {
+    model.addSearchTypeListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         stTwoSearchFields.setActive(model.getSearchType() == SearchType.WITHIN_RANGE
                 || model.getSearchType() == SearchType.OUTSIDE_RANGE);
       }
     });
-    stTwoSearchFields.eventStateChanged().addListener(new ActionListener() {
+    stTwoSearchFields.addStateListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         initializePanel();
         revalidate();
@@ -344,7 +344,7 @@ public abstract class AbstractSearchPanel<K> extends JPanel {
 
   private JComboBox initSearchTypeComboBox() {
     final JComboBox comboBox = new SteppedComboBox(initSearchTypeModel());
-    ControlProvider.bindItemSelector(comboBox, model, "searchType", SearchType.class, model.eventSearchTypeChanged());
+    ControlProvider.bindItemSelector(comboBox, model, "searchType", SearchType.class, model.searchTypeObserver());
 
     return comboBox;
   }
@@ -445,7 +445,7 @@ public abstract class AbstractSearchPanel<K> extends JPanel {
     dialog.getContentPane().add(searchPanel);
     dialog.pack();
 
-    stateAdvancedSearch().eventStateChanged().addListener(new ActionListener() {
+    stateAdvancedSearch().addStateListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         dialog.pack();
       }
@@ -480,35 +480,35 @@ public abstract class AbstractSearchPanel<K> extends JPanel {
   private void createToggleProperty(final JCheckBox checkBox, final boolean isUpperBound) {
     new ToggleBeanValueLink(checkBox.getModel(), model,
             isUpperBound ? SearchModel.UPPER_BOUND_PROPERTY : SearchModel.LOWER_BOUND_PROPERTY,
-            isUpperBound ? model.eventUpperBoundChanged() : model.eventLowerBoundChanged());
+            isUpperBound ? model.upperBoundObserver() : model.lowerBoundObserver());
   }
 
   private TextBeanValueLink createTextProperty(final JComponent component, final boolean isUpper, final DateFormat format) {
     if (model.getType() == Types.INTEGER) {
       return new IntBeanValueLink((IntField) component, model,
               isUpper ? SearchModel.UPPER_BOUND_PROPERTY : SearchModel.LOWER_BOUND_PROPERTY,
-              isUpper ? model.eventUpperBoundChanged() : model.eventLowerBoundChanged());
+              isUpper ? model.upperBoundObserver() : model.lowerBoundObserver());
     }
     if (model.getType() == Types.DOUBLE) {
       return new DoubleBeanValueLink((DoubleField) component, model,
               isUpper ? SearchModel.UPPER_BOUND_PROPERTY : SearchModel.LOWER_BOUND_PROPERTY,
-              isUpper ? model.eventUpperBoundChanged() : model.eventLowerBoundChanged());
+              isUpper ? model.upperBoundObserver() : model.lowerBoundObserver());
     }
     if (model.getType() == Types.DATE) {
       return new DateBeanValueLink((JFormattedTextField) component, model,
               isUpper ? SearchModel.UPPER_BOUND_PROPERTY : SearchModel.LOWER_BOUND_PROPERTY,
-              isUpper ? model.eventUpperBoundChanged() : model.eventLowerBoundChanged(),
+              isUpper ? model.upperBoundObserver() : model.lowerBoundObserver(),
               LinkType.READ_WRITE, format);
     }
     if (model.getType() == Types.TIMESTAMP) {
       return new TimestampBeanValueLink((JFormattedTextField) component, model,
               isUpper ? SearchModel.UPPER_BOUND_PROPERTY : SearchModel.LOWER_BOUND_PROPERTY,
-              isUpper ? model.eventUpperBoundChanged() : model.eventLowerBoundChanged(),
+              isUpper ? model.upperBoundObserver() : model.lowerBoundObserver(),
               LinkType.READ_WRITE, format);
     }
 
     return new TextBeanValueLink((JTextField) component, model,
             isUpper ? SearchModel.UPPER_BOUND_PROPERTY : SearchModel.LOWER_BOUND_PROPERTY,
-            String.class, isUpper ? model.eventUpperBoundChanged() : model.eventLowerBoundChanged());
+            String.class, isUpper ? model.upperBoundObserver() : model.lowerBoundObserver());
   }
 }

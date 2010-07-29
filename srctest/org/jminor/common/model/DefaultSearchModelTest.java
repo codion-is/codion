@@ -55,10 +55,10 @@ public class DefaultSearchModelTest {
     final DefaultSearchModel<String> model = new DefaultSearchModel<String>("test", Types.VARCHAR, "%");
     model.setAutoEnable(false);
     assertFalse(model.isAutoEnable());
-    model.eventUpperBoundChanged().addListener(upperBoundListener);
-    model.eventLowerBoundChanged().addListener(lowerBoundListener);
-    model.eventSearchStateChanged().addListener(searchStateListener);
-    model.eventSearchModelCleared().addListener(clearListener);
+    model.addUpperBoundListener(upperBoundListener);
+    model.addLowerBoundListener(lowerBoundListener);
+    model.addSearchStateListener(searchStateListener);
+    model.addClearedListener(clearListener);
 
     model.setUpperBound("hello");
     assertEquals(1, searchStateCounter.size());
@@ -99,12 +99,17 @@ public class DefaultSearchModelTest {
 
     model.clearSearch();
     assertEquals(1, clearCounter.size());
+
+    model.removeUpperBoundListener(upperBoundListener);
+    model.removeLowerBoundListener(lowerBoundListener);
+    model.removeSearchStateListener(searchStateListener);
+    model.removeClearedListener(clearListener);
   }
 
   @Test
   public void testSearchType() {
     final DefaultSearchModel<String> model = new DefaultSearchModel<String>("test", Types.VARCHAR, "%");
-    model.eventSearchTypeChanged().addListener(searchTypeListener);
+    model.addSearchTypeListener(searchTypeListener);
     assertEquals(SearchType.LIKE, model.getSearchType());
     model.setSearchType(SearchType.AT_LEAST);
     assertEquals(1, searchTypeCounter.size());
@@ -116,6 +121,7 @@ public class DefaultSearchModelTest {
     catch (IllegalArgumentException e) {}
     model.setSearchType(SearchType.OUTSIDE_RANGE);
     assertEquals(2, searchTypeCounter.size());
+    model.removeSearchTypeListener(searchTypeListener);
   }
 
   @Test
@@ -136,11 +142,13 @@ public class DefaultSearchModelTest {
     model.setAutomaticWildcard(true);
     assertTrue(model.isAutomaticWildcard());
 
-    model.eventEnabledChanged().addListener(enabledListener);
+    model.addEnabledListener(enabledListener);
     model.setSearchEnabled(false);
     assertEquals(1, enabledCounter.size());
     model.setSearchEnabled(true);
     assertEquals(2, enabledCounter.size());
+
+    model.removeEnabledListener(enabledListener);
 
     model.setLocked(true);
     assertTrue(model.stateLocked().isActive());

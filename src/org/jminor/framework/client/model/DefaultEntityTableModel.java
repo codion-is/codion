@@ -129,7 +129,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
       throw new RuntimeException("Edit model has already been set for table model: " + this);
     }
     this.editModel = editModel;
-    this.editModel.eventAfterDelete().addListener(new DeleteListener() {
+    this.editModel.addAfterDeleteListener(new DeleteListener() {
       @Override
       protected void deleted(final DeleteEvent event) {
         handleDeleteInternal(event);
@@ -429,9 +429,9 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     if (!propertySummaryModels.containsKey(property.getPropertyID())) {
       final PropertySummaryModel.PropertyValueProvider valueProvider = new PropertySummaryModel.PropertyValueProvider() {
         public void bindValuesChangedEvent(final Event event) {
-          eventFilteringDone().addListener(event);//todo summary is updated twice per refresh and should update on insert
-          eventRefreshDone().addListener(event);
-          eventSelectionChanged().addListener(event);
+          addFilteringListener(event);//todo summary is updated twice per refresh and should update on insert
+          addRefreshDoneListener(event);
+          addSelectionChangedListener(event);
         }
 
         public Collection<?> getValues() {
@@ -518,19 +518,19 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   protected void handleDelete(final DeleteEvent event) {}
 
   private void bindEvents() {
-    eventColumnHidden().addListener(new ActionListener() {
+    addColumnHiddenListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         handleColumnHidden((Property) e.getSource());
       }
     });
-    searchModel.eventFilterStateChanged().addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent e) {
-        filterContents();
-      }
-    });
-    eventRefreshDone().addListener(new ActionListener() {
+    addRefreshDoneListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         searchModel.setSearchModelState();
+      }
+    });
+    searchModel.addFilterStateListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
+        filterContents();
       }
     });
   }

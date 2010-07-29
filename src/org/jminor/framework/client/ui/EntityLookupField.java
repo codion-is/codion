@@ -12,20 +12,7 @@ import org.jminor.framework.client.model.EntityLookupModel;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.i18n.FrameworkMessages;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.KeyStroke;
-import javax.swing.ListSelectionModel;
+import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
@@ -148,14 +135,14 @@ public final class EntityLookupField extends JTextField {
   }
 
   private void bindProperty() {
-    new TextBeanValueLink(this, getModel(), "searchString", String.class, getModel().eventSearchStringChanged()) {
+    new TextBeanValueLink(this, getModel(), "searchString", String.class, getModel().searchStringObserver()) {
       @Override
       protected void handleSetUIValue(final Object value) {
         updateColors();
         searchHint.updateState();
       }
     };
-    model.eventSearchStringChanged().addListener(new ActionListener() {
+    model.addSearchStringListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         updateColors();
       }

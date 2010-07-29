@@ -119,54 +119,54 @@ public class DefaultForeignKeySearchModel extends DefaultSearchModel<Property.Fo
   }
 
   private void bindLookupModelEvents() {
-    entityLookupModel.eventSelectedEntitiesChanged().addListener(new ActionListener() {
+    entityLookupModel.addSelectedEntitiesListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         try {
           updatingModel = true;
-        final Collection<Entity> selectedEntities = entityLookupModel.getSelectedEntities();
-        setUpperBound(selectedEntities.isEmpty() ? null : new ArrayList<Entity>(selectedEntities));
-      }
+          final Collection<Entity> selectedEntities = entityLookupModel.getSelectedEntities();
+          setUpperBound(selectedEntities.isEmpty() ? null : new ArrayList<Entity>(selectedEntities));
+        }
         finally {
           updatingModel = false;
         }
       }
     });
-    eventUpperBoundChanged().addListener(new ActionListener() {
+    addUpperBoundListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         if (!updatingModel) {//noinspection unchecked
-        entityLookupModel.setSelectedEntities((List<Entity>) getUpperBound());
-      }
+          entityLookupModel.setSelectedEntities((List<Entity>) getUpperBound());
+        }
       }
     });
   }
 
   private void bindComboBoxEvents() {
-    entityComboBoxModel.eventSelectionChanged().addListener(new ActionListener() {
+    entityComboBoxModel.addSelectionListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         if (!updatingModel) {
-        setUpperBound(entityComboBoxModel.getSelectedEntity());
-      }
+          setUpperBound(entityComboBoxModel.getSelectedEntity());
+        }
       }
     });
-    eventUpperBoundChanged().addListener(new ActionListener() {
+    addUpperBoundListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         try {
           updatingModel = true;
-        final Object upper = getUpperBound();
-        if ((upper instanceof Collection && !((Collection) upper).isEmpty())) {
-          entityComboBoxModel.setSelectedItem(((Collection) upper).iterator().next());
+          final Object upper = getUpperBound();
+          if ((upper instanceof Collection && !((Collection) upper).isEmpty())) {
+            entityComboBoxModel.setSelectedItem(((Collection) upper).iterator().next());
+          }
+          else {
+            entityComboBoxModel.setSelectedItem(upper);
+          }
         }
-        else {
-          entityComboBoxModel.setSelectedItem(upper);
-        }
-      }
         finally {
           updatingModel = false;
         }
       }
     });
 
-    entityComboBoxModel.eventRefreshDone().addListener(new ActionListener() {
+    entityComboBoxModel.addRefreshListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         final Object upper = getUpperBound();
         if ((upper instanceof Collection && !((Collection) upper).isEmpty())) {

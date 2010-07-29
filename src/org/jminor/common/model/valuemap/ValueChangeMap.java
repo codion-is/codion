@@ -3,7 +3,7 @@
  */
 package org.jminor.common.model.valuemap;
 
-import org.jminor.common.model.Event;
+import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.State;
 
 import java.awt.event.ActionListener;
@@ -26,7 +26,7 @@ public interface ValueChangeMap<K, V> extends ValueMap<K, V> {
    * @return an Event fired when a value changes.
    * @see org.jminor.common.model.valuemap.ValueChangeEvent
    */
-  Event eventValueChanged();
+  EventObserver valueChangeObserver();
 
   /**
    * Adds a ActionListener, this listener will be notified each time a value changes,

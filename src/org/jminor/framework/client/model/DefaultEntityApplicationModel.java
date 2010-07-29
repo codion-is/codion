@@ -4,6 +4,7 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
@@ -135,7 +136,7 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
     throw new RuntimeException("No detail model for type " + entityID + " found in model: " + this);
   }
 
-  public final Event eventCascadeRefreshChanged() {
+  public final EventObserver cascadeRefreshObserver() {
     return evtCascadeRefreshChanged;
   }
 

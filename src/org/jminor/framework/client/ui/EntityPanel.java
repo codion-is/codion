@@ -267,6 +267,7 @@ public class EntityPanel extends JPanel {
       this.tablePanel.initializeToolbar(toolbarControls);
       this.tablePanel.initializePopupMenu(getTablePopupControlSet());
     }
+    bindModelEvents();
     addActivationInitializer();
   }
 
@@ -1117,12 +1118,12 @@ public class EntityPanel extends JPanel {
   }
 
   private void bindModelEvents() {
-    model.eventRefreshStarted().addListener(new ActionListener() {
+    model.addBeforeRefreshListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         UiUtil.setWaitCursor(true, EntityPanel.this);
       }
     });
-    model.eventRefreshDone().addListener(new ActionListener() {
+    model.addAfterRefreshListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         UiUtil.setWaitCursor(false, EntityPanel.this);
       }
@@ -1130,7 +1131,7 @@ public class EntityPanel extends JPanel {
   }
 
   private void addActivationInitializer() {
-    getEditModel().stateActive().eventStateChanged().addListener(new ActionListener() {
+    getEditModel().stateActive().addStateListener(new ActionListener() {
       private final Runnable initializer = new Runnable() {
         public void run() {
           initializePanel();

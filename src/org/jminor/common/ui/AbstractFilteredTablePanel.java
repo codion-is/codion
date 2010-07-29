@@ -297,7 +297,7 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
   }
 
   private void bindEvents() {
-    this.tableModel.eventSortingDone().addListener(new ActionListener() {
+    this.tableModel.addSortingListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         getJTable().getTableHeader().repaint();
       }
@@ -306,7 +306,7 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
     while (columns.hasMoreElements()) {
       final TableColumn column = columns.nextElement();
       final SearchModel model = getTableModel().getFilterModel(column.getModelIndex());
-      model.eventSearchStateChanged().addListener(new ActionListener() {
+      model.addSearchStateListener(new ActionListener() {
         public void actionPerformed(final ActionEvent e) {
           if (model.isSearchEnabled()) {
             addFilterIndicator(column);

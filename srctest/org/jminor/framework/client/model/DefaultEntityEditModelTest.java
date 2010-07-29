@@ -27,6 +27,8 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -109,15 +111,19 @@ public final class DefaultEntityEditModelTest {
     assertTrue(editModel.stateAllowUpdate().isActive());
     assertTrue(editModel.stateAllowDelete().isActive());
 
-    assertNotNull(editModel.eventAfterDelete());
-    assertNotNull(editModel.eventAfterInsert());
-    assertNotNull(editModel.eventAfterUpdate());
-    assertNotNull(editModel.eventBeforeDelete());
-    assertNotNull(editModel.eventBeforeInsert());
-    assertNotNull(editModel.eventBeforeUpdate());
-    assertNotNull(editModel.eventEntitiesChanged());
-    assertNotNull(editModel.eventRefreshDone());
-    assertNotNull(editModel.eventRefreshStarted());
+    final ActionListener listener = new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
+      }
+    };
+    editModel.addAfterDeleteListener(listener);
+    editModel.addAfterInsertListener(listener);
+    editModel.addAfterUpdateListener(listener);
+    editModel.addBeforeDeleteListener(listener);
+    editModel.addBeforeInsertListener(listener);
+    editModel.addBeforeUpdateListener(listener);
+    editModel.addEntitiesChangedListener(listener);
+    editModel.addBeforeRefreshListener(listener);
+    editModel.addAfterRefreshListener(listener);
 
     assertEquals(EmpDept.T_EMPLOYEE, editModel.getEntityID());
     assertEquals(editModel.getDbProvider().getEntityDb().selectPropertyValues(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB, true),
@@ -186,6 +192,16 @@ public final class DefaultEntityEditModelTest {
 
     editModel.setValueMap(null);
     assertTrue("Active entity is not null after model is cleared", editModel.getEntityCopy().isNull());
+
+    editModel.removeAfterDeleteListener(listener);
+    editModel.removeAfterInsertListener(listener);
+    editModel.removeAfterUpdateListener(listener);
+    editModel.removeBeforeDeleteListener(listener);
+    editModel.removeBeforeInsertListener(listener);
+    editModel.removeBeforeUpdateListener(listener);
+    editModel.removeEntitiesChangedListener(listener);
+    editModel.removeBeforeRefreshListener(listener);
+    editModel.removeAfterRefreshListener(listener);
   }
 
   @Test
@@ -208,7 +224,7 @@ public final class DefaultEntityEditModelTest {
       editModel.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, department);
 
       final Entity toInsert = editModel.getEntityCopy();
-      editModel.eventAfterInsert().addListener(new InsertListener() {
+      editModel.addAfterInsertListener(new InsertListener() {
         @Override
         protected void inserted(final InsertEvent event) {
           try {
@@ -245,12 +261,13 @@ public final class DefaultEntityEditModelTest {
       editModel.setEntity(editModel.getDbProvider().getEntityDb().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "MILLER"));
       editModel.setValue(EmpDept.EMPLOYEE_NAME, "BJORN");
       final List<Entity> toUpdate = Arrays.asList(editModel.getEntityCopy());
-      editModel.eventAfterUpdate().addListener(new UpdateListener() {
+      final UpdateListener listener = new UpdateListener() {
         @Override
         protected void updated(final UpdateEvent event) {
           assertEquals(toUpdate, event.getUpdatedEntities());
         }
-      });
+      };
+      editModel.addAfterUpdateListener(listener);
       editModel.setUpdateAllowed(false);
       assertFalse(editModel.isUpdateAllowed());
       try {
@@ -263,6 +280,7 @@ public final class DefaultEntityEditModelTest {
 
       editModel.update();
       assertFalse(editModel.stateModified().isActive());
+      editModel.removeAfterUpdateListener(listener);
     }
     finally {
       editModel.getDbProvider().getEntityDb().rollbackTransaction();
@@ -275,7 +293,7 @@ public final class DefaultEntityEditModelTest {
       editModel.getDbProvider().getEntityDb().beginTransaction();
       editModel.setEntity(editModel.getDbProvider().getEntityDb().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "MILLER"));
       final List<Entity> toDelete = Arrays.asList(editModel.getEntityCopy());
-      editModel.eventAfterDelete().addListener(new DeleteListener() {
+      editModel.addAfterDeleteListener(new DeleteListener() {
         @Override
         protected void deleted(final DeleteEvent event) {
           assertEquals(toDelete, event.getDeletedEntities());

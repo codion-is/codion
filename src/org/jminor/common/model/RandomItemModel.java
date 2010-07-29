@@ -31,7 +31,7 @@ public class RandomItemModel<T> {
   /**
    * An Event fired when a weight value has changed
    */
-  private final Event evtWeightsChanged = new Event();
+  protected final Event evtWeightsChanged = new Event();
 
   /**
    * The items contained in this model
@@ -72,7 +72,7 @@ public class RandomItemModel<T> {
    */
   public void increment(final T item) {
     getRandomItem(item).increment();
-    eventWeightsChanged().fire();
+    evtWeightsChanged.fire();
   }
 
   /**
@@ -82,7 +82,7 @@ public class RandomItemModel<T> {
    */
   public void decrement(final T item) {
     getRandomItem(item).decrement();
-    eventWeightsChanged().fire();
+    evtWeightsChanged.fire();
   }
 
   /**
@@ -92,7 +92,7 @@ public class RandomItemModel<T> {
    */
   public void setWeight(final T item, final int weight) {
     getRandomItem(item).setWeight(weight);
-    eventWeightsChanged().fire();
+    evtWeightsChanged.fire();
   }
 
   /**
@@ -127,7 +127,7 @@ public class RandomItemModel<T> {
   /**
    * @return an Event which fires each time a weight has been changed.
    */
-  public final Event eventWeightsChanged() {
+  public final EventObserver weightsObserver() {
     return evtWeightsChanged;
   }
 

@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -342,35 +343,35 @@ public abstract class LoadTestModel {
     evtLoginDelayFactorChanged.fire();
   }
 
-  public final Event eventApplicationBatchSizeChanged() {
+  public final void addExitListener(final ActionListener listener) {
+    evtDoneExiting.addListener(listener);
+  }
+
+  public final EventObserver applicationBatchSizeObserver() {
     return evtApplicationBatchSizeChanged;
   }
 
-  public final Event eventApplicationCountChanged() {
+  public final EventObserver applicationCountObserver() {
     return evtApplicationtCountChanged;
   }
 
-  public final Event eventDoneExiting() {
-    return evtDoneExiting;
-  }
-
-  public final Event eventMaximumThinkTimeChanged() {
+  public final EventObserver maximumThinkTimeObserver() {
     return evtMaximumThinkTimeChanged;
   }
 
-  public final Event eventMinimumThinkTimeChanged() {
+  public final EventObserver minimumThinkTimeObserver() {
     return evtMinimumThinkTimeChanged;
   }
 
-  public final Event eventPausedChanged() {
+  public final EventObserver pauseObserver() {
     return evtPausedChanged;
   }
 
-  public final Event eventCollectChartDataChanged() {
+  public final EventObserver collectChartDataObserver() {
     return evtCollectChartDataChanged;
   }
 
-  public final Event eventWarningTimeChanged() {
+  public final EventObserver warningTimeObserver() {
     return evtWarningTimeChanged;
   }
 

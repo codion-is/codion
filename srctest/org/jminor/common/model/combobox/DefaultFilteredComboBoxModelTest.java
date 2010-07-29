@@ -66,48 +66,40 @@ public class DefaultFilteredComboBoxModelTest {
         selectionChangedCounter.add(new Object());
       }
     };
-    testModel.eventSelectionChanged().addListener(selectionListener);
+    testModel.addSelectionListener(selectionListener);
     testModel.setSelectedItem(BJORN);
     assertEquals(1, selectionChangedCounter.size());
     assertEquals(BJORN, testModel.getSelectedItem());
     testModel.setSelectedItem(null);
     assertEquals(2, selectionChangedCounter.size());
     assertNull(testModel.getSelectedItem());
+    testModel.removeSelectionListener(selectionListener);
   }
 
   @Test
   public void setFilterCriteria() {
-    final Collection<Object> filteringStartedCounter = new ArrayList<Object>();
     final Collection<Object> filteringEndedCounter = new ArrayList<Object>();
-    final ActionListener filteringStartedListener = new ActionListener() {
-      public void actionPerformed(final ActionEvent e) {
-        filteringStartedCounter.add(new Object());
-      }
-    };
     final ActionListener filteringEndedListener = new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         filteringEndedCounter.add(new Object());
       }
     };
     testModel.addListDataListener(listDataListener);
-    testModel.eventFilteringStarted().addListener(filteringStartedListener);
-    testModel.eventFilteringDone().addListener(filteringEndedListener);
+    testModel.addFilteringListener(filteringEndedListener);
 
     testModel.setFilterCriteria(new FilterCriteria<String>() {
       public boolean include(String item) {
         return false;
       }
     });
-    assertEquals(1, filteringStartedCounter.size());
-    assertEquals(1, filteringStartedCounter.size());
+    assertEquals(1, filteringEndedCounter.size());
     assertTrue("The model should be empty", testModel.getSize() == 0);
     testModel.setFilterCriteria(new FilterCriteria<String>() {
       public boolean include(String item) {
         return true;
       }
     });
-    assertEquals(2, filteringStartedCounter.size());
-    assertEquals(2, filteringStartedCounter.size());
+    assertEquals(2, filteringEndedCounter.size());
     assertTrue("The model should be full", testModel.getSize() == 5);
     testModel.setFilterCriteria(new FilterCriteria<String>() {
       public boolean include(String item) {
@@ -136,6 +128,9 @@ public class DefaultFilteredComboBoxModelTest {
 
     assertFalse(testModel.contains(BJORN, false));
     assertTrue(testModel.contains(BJORN, true));
+
+    testModel.removeListDataListener(listDataListener);
+    testModel.removeFilteringListener(filteringEndedListener);
   }
 
   @Test

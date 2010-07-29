@@ -3,7 +3,7 @@
  */
 package org.jminor.common.ui.control;
 
-import org.jminor.common.model.Event;
+import org.jminor.common.model.EventObserver;
 
 import javax.swing.JFormattedTextField;
 import java.sql.Timestamp;
@@ -18,7 +18,7 @@ import java.util.Date;
 public final class TimestampBeanValueLink extends FormattedTextBeanValueLink {
 
   public TimestampBeanValueLink(final JFormattedTextField textComponent, final Object owner,
-                                final String propertyName, final Event valueChangeEvent,
+                                final String propertyName, final EventObserver valueChangeEvent,
                                 final LinkType linkType, final DateFormat format) {
     super(textComponent, owner, propertyName, Timestamp.class, valueChangeEvent, linkType, format);
   }

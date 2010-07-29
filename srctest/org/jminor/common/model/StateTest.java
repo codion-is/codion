@@ -22,11 +22,13 @@ public class StateTest {
     };
     final State state = new State();
     state.addListeningAction(listeningAction);
-    state.eventStateChanged().addListener(new ActionListener() {
+    final ActionListener listener = new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         stateChanged++;
       }
-    });
+    };
+    state.addStateListener(listener);
+
     assertFalse("State should be inactive when initialized", state.isActive());
     state.setActive(true);
     assertTrue("State should be active after activation", state.isActive());
@@ -59,6 +61,8 @@ public class StateTest {
       fail("should not be able to set the state of a reversed state");
     }
     catch (Exception e) {}
+
+    state.removeStateListener(listener);
   }
 
   @Test

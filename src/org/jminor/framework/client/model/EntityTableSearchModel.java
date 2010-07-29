@@ -5,7 +5,6 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.criteria.CriteriaSet;
-import org.jminor.common.model.Event;
 import org.jminor.common.model.FilterCriteria;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.SearchModel;
@@ -13,6 +12,7 @@ import org.jminor.common.model.State;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
+import java.awt.event.ActionListener;
 import java.util.Collection;
 import java.util.List;
 
@@ -29,10 +29,9 @@ public interface EntityTableSearchModel extends FilterCriteria<Entity>, Refresha
    */
   State stateSearchStateChanged();
 
-  /**
-   * @return an Event fired when the state of a filter model changes
-   */
-  Event eventFilterStateChanged();
+  void addFilterStateListener(final ActionListener listener);
+
+  void removeFilterStateListener(final ActionListener listener);
 
   /**
    * @return the ID of the entity this table searcher is based on

@@ -60,7 +60,7 @@ public final class BoundedRandomItemModel<T> extends RandomItemModel<T> {
       decrementWeight(randomItem);
       getRandomItem(item).increment();
     }
-    eventWeightsChanged().fire();
+    evtWeightsChanged.fire();
   }
 
   @Override
@@ -74,7 +74,7 @@ public final class BoundedRandomItemModel<T> extends RandomItemModel<T> {
       incrementWeight(randomItem);
       randomItem.decrement();
     }
-    eventWeightsChanged().fire();
+    evtWeightsChanged.fire();
   }
 
   @Override

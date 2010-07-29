@@ -132,7 +132,7 @@ public final class EntityUiUtil {
     };
 
     final EntityTablePanel entityTablePanel = new EntityTablePanel(lookupModel);
-    entityTablePanel.eventTableDoubleClicked().addListener(new ActionListener() {
+    entityTablePanel.addTableDoubleClickListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         if (!entityTablePanel.getTableModel().isSelectionEmpty()) {
           okAction.actionPerformed(e);
@@ -333,7 +333,7 @@ public final class EntityUiUtil {
     if (foreignKeyProperty.hasDescription()) {
       textField.setToolTipText(foreignKeyProperty.getDescription());
     }
-    editModel.getValueChangeEvent(foreignKeyProperty.getPropertyID()).addListener(new ValueChangeListener() {
+    editModel.addValueListener(foreignKeyProperty.getPropertyID(), new ValueChangeListener() {
       @Override
       public void valueChanged(final ValueChangeEvent event) {
         textField.setText(event.getNewValue() == null ? "" : event.getNewValue().toString());
@@ -695,7 +695,7 @@ public final class EntityUiUtil {
         final EntityPanel entityPanel = panelProvider.createInstance(comboBox.getModel().getDbProvider());
         entityPanel.initializePanel();
         final List<Entity.Key> lastInsertedPrimaryKeys = new ArrayList<Entity.Key>();
-        entityPanel.getModel().getEditModel().eventAfterInsert().addListener(new InsertListener() {
+        entityPanel.getModel().getEditModel().addAfterInsertListener(new InsertListener() {
           @Override
           protected void inserted(final InsertEvent event) {
             lastInsertedPrimaryKeys.clear();
@@ -771,7 +771,7 @@ public final class EntityUiUtil {
       super(editModel, foreignKeyPropertyID, LinkType.READ_WRITE);
       this.lookupModel = lookupModel;
       updateUI();
-      lookupModel.eventSelectedEntitiesChanged().addListener(new ActionListener() {
+      lookupModel.addSelectedEntitiesListener(new ActionListener() {
         public void actionPerformed(final ActionEvent e) {
           updateModel();
         }

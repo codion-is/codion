@@ -28,13 +28,15 @@ public class InputProviderPanelTest {
     assertEquals("hello", panel.getValue());
     assertFalse(panel.isEditAccepted());
     final Collection<Object> event = new ArrayList<Object>();
-    panel.eventButtonClicked().addListener(new ActionListener() {
+    final ActionListener listener = new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         event.add(new Object());
       }
-    });
+    };
+    panel.addButtonClickListener(listener);
     panel.getOkButton().doClick();
     assertTrue(panel.isEditAccepted());
     assertEquals(1, event.size());
+    panel.removeButtonClickListener(listener);
   }
 }

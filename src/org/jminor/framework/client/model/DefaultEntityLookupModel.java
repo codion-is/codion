@@ -6,6 +6,7 @@ package org.jminor.framework.client.model;
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.criteria.CriteriaSet;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
@@ -15,6 +16,7 @@ import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -205,12 +207,24 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
     }
   }
 
-  public final Event eventSearchStringChanged() {
+  public final EventObserver searchStringObserver() {
     return evtSearchStringChanged;
   }
 
-  public final Event eventSelectedEntitiesChanged() {
-    return evtSelectedEntitiesChanged;
+  public final void addSearchStringListener(final ActionListener listener) {
+    evtSearchStringChanged.addListener(listener);
+  }
+
+  public final void addSelectedEntitiesListener(final ActionListener listener) {
+    evtSelectedEntitiesChanged.addListener(listener);
+  }
+
+  public final void removeSearchStringListener(final ActionListener listener) {
+    evtSearchStringChanged.removeListener(listener);
+  }
+
+  public final void removeSelectedEntitiesListener(final ActionListener listener) {
+    evtSelectedEntitiesChanged.removeListener(listener);
   }
 
   /**

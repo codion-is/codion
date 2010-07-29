@@ -18,6 +18,7 @@ public class DefaultPropertyFilterModel extends DefaultSearchModel<Property> {
     super(property, property.getType(), (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER));
   }
 
+  @Override
   protected Comparable getComparable(final Object object) {
     final Entity entity = (Entity) object;
     if (entity.isValueNull(getSearchKey().getPropertyID())) {

@@ -3,10 +3,12 @@
  */
 package org.jminor.common.model.valuemap;
 
-import org.jminor.common.model.Event;
+import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.State;
 import org.jminor.common.model.valuemap.exception.ValidationException;
+
+import java.awt.event.ActionListener;
 
 public interface ValueChangeMapEditModel<K, V> extends Refreshable {
 
@@ -22,28 +24,26 @@ public interface ValueChangeMapEditModel<K, V> extends Refreshable {
    */
   State stateValid();
 
-  /**
-   * @param key the key for which to retrieve the event
-   * @return an Event object which fires when the value of <code>key</code> is changed via
-   * the <code>setValue()</code> methods
-   * @see #setValue(Object, Object)
-   */
-  Event getValueSetEvent(final K key);
+  void addValueSetListener(final K key, final ActionListener listener);
 
-  /**
-   * @return an Event fired when the active value map has been changed
-   * @see #setValueMap(org.jminor.common.model.valuemap.ValueMap)
-   */
-  Event eventValueMapSet();
+  void removeValueSetListener(final K key, final ActionListener listener);
+
+  void addValueMapSetListener(final ActionListener listener);
+
+  void removeValueMapSetListener(final ActionListener listener);
+
+  void addValueListener(final K key, final ActionListener listener);
+
+  void removeValueListener(final K key, final ActionListener listener);
 
   /**
    * @param key the key for which to retrieve the event
    * @return an Event object which fires when the value of <code>key</code> changes
    */
-  Event getValueChangeEvent(K key);
+  EventObserver getValueChangeObserver(K key);
 
   /**
-   * @return the validator
+   * @return the validatorAFTM
    */
   ValueMapValidator<K, V> getValidator();
 
@@ -51,7 +51,7 @@ public interface ValueChangeMapEditModel<K, V> extends Refreshable {
    * Sets the active value map, that is, deep copies the value from the source map into the underlying map
    * @param valueMap the map to set as active, if null then the default map value is set as active
    * @see #getDefaultValueMap()
-   * @see #eventValueMapSet()
+   * @see #addValueMapSetListener(java.awt.event.ActionListener)
    */
   void setValueMap(final ValueMap<K, V> valueMap);
 

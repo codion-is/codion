@@ -184,8 +184,12 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     return foreignKeyModel;
   }
 
-  public final Event eventRefreshDone() {
-    return evtRefreshDone;
+  public final void addRefreshListener(final ActionListener listener) {
+    evtRefreshDone.addListener(listener);
+  }
+
+  public final void removeRefreshListener(final ActionListener listener) {
+    evtRefreshDone.removeListener(listener);
   }
 
   //todo move somewhere else?
@@ -194,14 +198,14 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     if (filterEntities != null && !filterEntities.isEmpty()) {
       foreignKeyModel.setSelectedItem(filterEntities.iterator().next());
     }
-    foreignKeyModel.eventSelectionChanged().addListener(new ActionListener() {
+    foreignKeyModel.addSelectionListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         final Entity selectedEntity = foreignKeyModel.getSelectedEntity();
         model.setForeignKeyFilterEntities(foreignKeyPropertyID,
                 selectedEntity == null ? new ArrayList<Entity>(0) : Arrays.asList(selectedEntity));
       }
     });
-    model.eventSelectionChanged().addListener(new ActionListener() {
+    model.addSelectionListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         final Entity selected = model.getSelectedEntity();
         if (selected != null) {
@@ -210,7 +214,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
         }
       }
     });
-    model.eventRefreshDone().addListener(new ActionListener() {
+    model.addRefreshListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         foreignKeyModel.forceRefresh();
       }

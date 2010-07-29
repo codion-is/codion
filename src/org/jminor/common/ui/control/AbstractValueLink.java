@@ -3,7 +3,7 @@
  */
 package org.jminor.common.ui.control;
 
-import org.jminor.common.model.Event;
+import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Util;
 
 import javax.swing.SwingUtilities;
@@ -43,7 +43,7 @@ public abstract class AbstractValueLink<T, V> extends Control {
    * @param modelValueChangeEvent an Event on which the UI should be updated to reflect changes in the model
    * @param linkType the link Type
    */
-  public AbstractValueLink(final T valueOwner, final Event modelValueChangeEvent, final LinkType linkType) {
+  public AbstractValueLink(final T valueOwner, final EventObserver modelValueChangeEvent, final LinkType linkType) {
     Util.rejectNullValue(valueOwner, "valueOwner");
     Util.rejectNullValue(linkType, "linkType");
     this.valueOwner = valueOwner;

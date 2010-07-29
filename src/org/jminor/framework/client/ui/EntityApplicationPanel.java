@@ -261,16 +261,28 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     dialog.setVisible(true);
   }
 
-  public final Event eventAlwaysOnTopChanged() {
-    return evtAlwaysOnTopChanged;
+  public final void addAlwaysOnTopListener(final ActionListener listener) {
+    evtAlwaysOnTopChanged.addListener(listener);
   }
 
-  public final Event eventApplicationStarted() {
-    return evtApplicationStarted;
+  public final void removeAlwaysOnTopListener(final ActionListener listener) {
+    evtAlwaysOnTopChanged.removeListener(listener);
   }
 
-  public final Event eventSelectedEntityPanelChanged() {
-    return evtSelectedEntityPanelChanged;
+  public final void addApplicationStartedListener(final ActionListener listener) {
+    evtApplicationStarted.addListener(listener);
+  }
+
+  public final void removeApplicationStartedListener(final ActionListener listener) {
+    evtApplicationStarted.removeListener(listener);
+  }
+
+  public final void addSelectedPanelListener(final ActionListener listener) {
+    evtSelectedEntityPanelChanged.addListener(listener);
+  }
+
+  public final void removeSelectedPanelListener(final ActionListener listener) {
+    evtSelectedEntityPanelChanged.removeListener(listener);
   }
 
   protected ControlSet getMainMenuControlSet() {
@@ -317,7 +329,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   protected ControlSet getSettingsControlSet() {
     final ImageIcon cascadeRefreshIcon = Images.loadImage(Images.ICON_CASCADE_REFRESH);
     final Control ctrCascadeRefresh = ControlFactory.toggleControl(applicationModel, "cascadeRefresh",
-            FrameworkMessages.get(FrameworkMessages.CASCADE_REFRESH), applicationModel.eventCascadeRefreshChanged());
+            FrameworkMessages.get(FrameworkMessages.CASCADE_REFRESH), applicationModel.cascadeRefreshObserver());
     ctrCascadeRefresh.setDescription(FrameworkMessages.get(FrameworkMessages.CASCADE_REFRESH_DESC));
     ctrCascadeRefresh.setIcon(cascadeRefreshIcon);
 
@@ -803,35 +815,13 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
 
   private void initializeResizing(final EntityPanel panel) {
     UiUtil.addKeyEvent(panel, KeyEvent.VK_LEFT, KeyEvent.SHIFT_DOWN_MASK + KeyEvent.ALT_DOWN_MASK,
-            new AbstractAction(DIV_LEFT) {
-              public void actionPerformed(final ActionEvent e) {
-                final EntityPanel activePanelParent = panel.getMasterPanel();
-                if (activePanelParent != null) {
-                  activePanelParent.resizePanel(EntityPanel.LEFT, DIVIDER_JUMP);
-                }
-              }
-            });
+            new ResizeHorizontallyAction(panel, DIV_LEFT, EntityPanel.LEFT));
     UiUtil.addKeyEvent(panel, KeyEvent.VK_RIGHT, KeyEvent.SHIFT_DOWN_MASK + KeyEvent.ALT_DOWN_MASK,
-            new AbstractAction(DIV_RIGHT) {
-              public void actionPerformed(final ActionEvent e) {
-                final EntityPanel activePanelParent = panel.getMasterPanel();
-                if (activePanelParent != null) {
-                  activePanelParent.resizePanel(EntityPanel.RIGHT, DIVIDER_JUMP);
-                }
-              }
-            });
+            new ResizeHorizontallyAction(panel, DIV_RIGHT, EntityPanel.RIGHT));
     UiUtil.addKeyEvent(panel, KeyEvent.VK_DOWN, KeyEvent.SHIFT_DOWN_MASK + KeyEvent.ALT_DOWN_MASK,
-            new AbstractAction(DIV_DOWN) {
-              public void actionPerformed(final ActionEvent e) {
-                panel.resizePanel(EntityPanel.DOWN, DIVIDER_JUMP);
-              }
-            });
+            new ResizeVerticallyAction(panel, DIV_DOWN, EntityPanel.DOWN));
     UiUtil.addKeyEvent(panel, KeyEvent.VK_UP, KeyEvent.SHIFT_DOWN_MASK + KeyEvent.ALT_DOWN_MASK,
-            new AbstractAction(DIV_UP) {
-              public void actionPerformed(final ActionEvent e) {
-                panel.resizePanel(EntityPanel.UP, DIVIDER_JUMP);
-              }
-            });
+            new ResizeVerticallyAction(panel, DIV_UP, EntityPanel.UP));
   }
 
   private void initializeNavigation(final EntityPanel panel) {
@@ -961,6 +951,41 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     }
     public void actionPerformed(final ActionEvent e) {
       navigate(direction);
+    }
+  }
+
+  private static final class ResizeHorizontallyAction extends AbstractAction {
+
+    private final EntityPanel panel;
+    private final int direction;
+
+    private ResizeHorizontallyAction(final EntityPanel panel, final String action, final int direction) {
+      super(action);
+      this.panel = panel;
+      this.direction = direction;
+    }
+
+    public void actionPerformed(final ActionEvent e) {
+      final EntityPanel activePanelParent = panel.getMasterPanel();
+      if (activePanelParent != null) {
+        activePanelParent.resizePanel(direction, DIVIDER_JUMP);
+      }
+    }
+  }
+
+  private static final class ResizeVerticallyAction extends AbstractAction {
+
+    private final EntityPanel panel;
+    private final int direction;
+
+    private ResizeVerticallyAction(final EntityPanel panel, final String action, final int direction) {
+      super(action);
+      this.panel = panel;
+      this.direction = direction;
+    }
+
+    public void actionPerformed(final ActionEvent e) {
+      panel.resizePanel(direction, DIVIDER_JUMP);
     }
   }
 }

@@ -3,11 +3,11 @@
  */
 package org.jminor.common.model.combobox;
 
-import org.jminor.common.model.Event;
 import org.jminor.common.model.FilteredModel;
 import org.jminor.common.model.Refreshable;
 
 import javax.swing.ComboBoxModel;
+import java.awt.event.ActionListener;
 import java.util.Collection;
 
 /**
@@ -17,7 +17,9 @@ import java.util.Collection;
  */
 public interface FilteredComboBoxModel<T> extends FilteredModel<T>, ComboBoxModel, Refreshable {
 
-  Event eventSelectionChanged();
+  void addSelectionListener(final ActionListener listener);
+
+  void removeSelectionListener(final ActionListener listener);
 
   void setContents(final Collection<T> contents);
 

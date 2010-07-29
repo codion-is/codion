@@ -3,7 +3,7 @@
  */
 package org.jminor.common.ui.control;
 
-import org.jminor.common.model.Event;
+import org.jminor.common.model.EventObserver;
 
 import javax.swing.JFormattedTextField;
 import java.text.DateFormat;
@@ -17,7 +17,7 @@ import java.util.Date;
 public final class DateBeanValueLink extends FormattedTextBeanValueLink {
 
   public DateBeanValueLink(final JFormattedTextField textComponent, final Object owner,
-                           final String propertyName, final Event valueChangeEvent,
+                           final String propertyName, final EventObserver valueChangeEvent,
                            final LinkType linkType, final DateFormat format) {
     super(textComponent, owner, propertyName, Date.class, valueChangeEvent, linkType, format);
   }

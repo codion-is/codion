@@ -8,6 +8,7 @@ import org.jminor.common.model.Util;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 
+import java.awt.event.ActionListener;
 import java.text.Format;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -86,12 +87,20 @@ public class DefaultPropertySummaryModel implements PropertySummaryModel {
     }
   }
 
-  public final Event eventSummaryChanged() {
-    return evtSummaryChanged;
+  public final void addSummaryListener(final ActionListener listener) {
+    evtSummaryChanged.addListener(listener);
   }
 
-  public final Event eventSummaryTypeChanged() {
-    return evtSummaryTypeChanged;
+  public final void addSummaryTypeListener(final ActionListener listener) {
+    evtSummaryTypeChanged.addListener(listener);
+  }
+
+  public final void removeSummaryListener(final ActionListener listener) {
+    evtSummaryChanged.removeListener(listener);
+  }
+
+  public final void removeSummaryTypeListener(final ActionListener listener) {
+    evtSummaryTypeChanged.removeListener(listener);
   }
 
   /**

@@ -161,7 +161,7 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> implements
     final Color invalidBackgroundColor = Color.LIGHT_GRAY;
     final String defaultToolTip = textComponent.getToolTipText();
     updateValidityInfo(textComponent, editModel, validBackgroundColor, invalidBackgroundColor, defaultToolTip);
-    editModel.getValueChangeEvent(getKey()).addListener(new ActionListener() {
+    editModel.addValueListener(getKey(), new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         updateValidityInfo(textComponent, editModel, validBackgroundColor, invalidBackgroundColor, defaultToolTip);
       }

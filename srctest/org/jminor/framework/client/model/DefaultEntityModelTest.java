@@ -71,18 +71,19 @@ public final class DefaultEntityModelTest {
     assertNotNull(departmentModel.getEditModel());
     assertNotNull(departmentModel.getTableModel());
     assertTrue(departmentModel.containsTableModel());
-    assertNotNull(departmentModel.eventLinkedDetailModelsChanged());
 
-    departmentModel.eventRefreshStarted().addListener(new ActionListener() {
+    final ActionListener linkedListener = new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
+      }
+    };
+    final ActionListener listener = new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         eventCount++;
       }
-    });
-    departmentModel.eventRefreshDone().addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent e) {
-        eventCount++;
-      }
-    });
+    };
+    departmentModel.addLinkedDetailModelsListener(linkedListener);
+    departmentModel.addBeforeRefreshListener(listener);
+    departmentModel.addAfterRefreshListener(listener);
     departmentModel.refresh();
     assertTrue(departmentModel.getDetailModel(EmpDept.T_EMPLOYEE).getTableModel().getRowCount() > 0);
     assertEquals(2, eventCount);
@@ -93,9 +94,9 @@ public final class DefaultEntityModelTest {
               EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "OPERATIONS");
       departmentModel.getTableModel().setSelectedItem(department);
       final EntityModel employeeModel = departmentModel.getDetailModel(EmpDept.T_EMPLOYEE);
-      final EntityComboBoxModel comboBoxModel = employeeModel.getEditModel().initializeEntityComboBoxModel(EmpDept.EMPLOYEE_DEPARTMENT_FK);
-      comboBoxModel.refresh();
-      comboBoxModel.setSelectedItem(department);
+      final EntityComboBoxModel deptComboBoxModel = employeeModel.getEditModel().initializeEntityComboBoxModel(EmpDept.EMPLOYEE_DEPARTMENT_FK);
+      deptComboBoxModel.refresh();
+      deptComboBoxModel.setSelectedItem(department);
       departmentModel.getTableModel().deleteSelected();
       assertEquals(3, employeeModel.getEditModel().getEntityComboBoxModel(EmpDept.EMPLOYEE_DEPARTMENT_FK).getSize());
       assertNotNull(employeeModel.getEditModel().getEntityComboBoxModel(EmpDept.EMPLOYEE_DEPARTMENT_FK).getSelectedEntity());
@@ -103,6 +104,9 @@ public final class DefaultEntityModelTest {
     finally {
       departmentModel.getDbProvider().getEntityDb().rollbackTransaction();
     }
+    departmentModel.removeBeforeRefreshListener(listener);
+    departmentModel.removeAfterRefreshListener(listener);
+    departmentModel.removeLinkedDetailModelsListener(linkedListener);
   }
 
   @Test

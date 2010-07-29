@@ -553,7 +553,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     final InputProviderPanel inputPanel = new InputProviderPanel(propertyToUpdate.getCaption(),
             getInputProvider(propertyToUpdate, selectedEntities));
     UiUtil.showInDialog(this, inputPanel, true, FrameworkMessages.get(FrameworkMessages.SET_PROPERTY_VALUE),
-            null, inputPanel.getOkButton(), inputPanel.eventButtonClicked());
+            null, inputPanel.getOkButton(), inputPanel.buttonClickObserver());
     if (inputPanel.isEditAccepted()) {
       EntityUtil.setPropertyValue(propertyToUpdate.getPropertyID(), inputPanel.getValue(), selectedEntities);
       try {
@@ -697,25 +697,28 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     return selectionUp;
   }
 
-  /**
-   * @return an Event fired when the search panel state is changed
-   */
-  public final Event eventSearchPanelVisibilityChanged() {
-    return evtSearchPanelVisibilityChanged;
+  public final void addSearchPanelVisibleListener(final ActionListener listener) {
+    evtSearchPanelVisibilityChanged.addListener(listener);
   }
 
-  /**
-   * @return an Event fired when the summary panel state is changed
-   */
-  public final Event eventSummaryPanelVisibilityChanged() {
-    return evtSummaryPanelVisibilityChanged;
+  public final void removeSearchPanelVisibleListener(final ActionListener listener) {
+    evtSearchPanelVisibilityChanged.removeListener(listener);
   }
 
-  /**
-   * @return an Event fired when the table is double clicked
-   */
-  public final Event eventTableDoubleClicked() {
-    return evtTableDoubleClicked;
+  public final void addSummaryPanelVisibleListener(final ActionListener listener) {
+    evtSummaryPanelVisibilityChanged.addListener(listener);
+  }
+
+  public final void removeSummaryPanelVisibleListener(final ActionListener listener) {
+    evtSummaryPanelVisibilityChanged.removeListener(listener);
+  }
+
+  public final void addTableDoubleClickListener(final ActionListener listener) {
+    evtTableDoubleClicked.addListener(listener);
+  }
+
+  public final void removeTableDoubleClickListener(final ActionListener listener) {
+    evtTableDoubleClicked.removeListener(listener);
   }
 
   /**
@@ -1397,12 +1400,12 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
         }
       });
     }
-    getTableModel().eventRefreshStarted().addListener(new ActionListener() {
+    getTableModel().addRefreshStartedListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         UiUtil.setWaitCursor(true, EntityTablePanel.this);
       }
     });
-    getTableModel().eventRefreshDone().addListener(new ActionListener() {
+    getTableModel().addRefreshDoneListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         UiUtil.setWaitCursor(false, EntityTablePanel.this);
       }
@@ -1420,11 +1423,11 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
         updateStatusMessage();
       }
     };
-    getTableModel().eventSelectionChanged().addListener(statusListener);
-    getTableModel().eventFilteringDone().addListener(statusListener);
-    getTableModel().eventTableDataChanged().addListener(statusListener);
+    getTableModel().addSelectionChangedListener(statusListener);
+    getTableModel().addFilteringListener(statusListener);
+    getTableModel().addTableDataChangedListener(statusListener);
 
-    getTableModel().eventSelectedIndexChanged().addListener(new ActionListener() {
+    getTableModel().addSelectedIndexListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         if (!getTableModel().stateSelectionEmpty().isActive()) {
           scrollToCoordinate(getTableModel().getSelectedIndex(), getJTable().getSelectedColumn());
@@ -1432,7 +1435,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
       }
     });
 
-    getTableModel().getSearchModel().stateSearchStateChanged().eventStateChanged().addListener(new ActionListener() {
+    getTableModel().getSearchModel().stateSearchStateChanged().addStateListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         getJTable().getTableHeader().repaint();
         getJTable().repaint();
@@ -1440,7 +1443,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     });
 
     if (getTableModel().getEditModel() != null) {
-      getTableModel().getEditModel().eventEntitiesChanged().addListener(new ActionListener() {
+      getTableModel().getEditModel().addEntitiesChangedListener(new ActionListener() {
         public void actionPerformed(final ActionEvent e) {
           getJTable().repaint();
         }
@@ -1558,7 +1561,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     private final JPopupMenu popupMenu;
     private final JTable table;
 
-    public PopupMenuAction(final JPopupMenu popupMenu, final JTable table) {
+    private PopupMenuAction(final JPopupMenu popupMenu, final JTable table) {
       super("showPopupMenu");
       this.popupMenu = popupMenu;
       this.table = table;

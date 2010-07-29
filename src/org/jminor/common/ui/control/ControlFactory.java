@@ -3,7 +3,7 @@
  */
 package org.jminor.common.ui.control;
 
-import org.jminor.common.model.Event;
+import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.State;
 
 import javax.swing.Icon;
@@ -17,12 +17,12 @@ public final class ControlFactory {
   private ControlFactory() {}
 
   public static ToggleBeanValueLink toggleControl(final Object owner, final String propertyName, final String caption,
-                                                  final Event changeEvent) {
+                                                  final EventObserver changeEvent) {
     return toggleControl(owner, propertyName, caption, changeEvent, null);
   }
 
   public static ToggleBeanValueLink toggleControl(final Object owner, final String propertyName, final String caption,
-                                                  final Event changeEvent, final String description) {
+                                                  final EventObserver changeEvent, final String description) {
     return (ToggleBeanValueLink) new ToggleBeanValueLink(owner, propertyName, changeEvent, caption,
             LinkType.READ_WRITE).setDescription(description);
   }

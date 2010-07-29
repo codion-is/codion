@@ -3,30 +3,26 @@
  */
 package org.jminor.framework.client.model;
 
-import org.jminor.common.model.Event;
 import org.jminor.common.model.Refreshable;
 import org.jminor.framework.domain.Entity;
 
+import java.awt.event.ActionListener;
 import java.util.Collection;
 import java.util.List;
 
 public interface EntityModel extends Refreshable, EntityDataProvider {
 
-  /**
-   * @return an Event fired when the model is about to be refreshed
-   */
-  Event eventRefreshStarted();
+  void addBeforeRefreshListener(final ActionListener listener);
 
-  /**
-   * @return an Event fired when the model has been refreshed, N.B. this event
-   * is fired even if the refresh results in an exception
-   */
-  Event eventRefreshDone();
+  void removeBeforeRefreshListener(final ActionListener listener);
 
-  /**
-   * @return an Event fired when detail models are linked or unlinked
-   */
-  Event eventLinkedDetailModelsChanged();
+  void addAfterRefreshListener(final ActionListener listener);
+
+  void removeAfterRefreshListener(final ActionListener listener);
+
+  void addLinkedDetailModelsListener(final ActionListener listener);
+
+  void removeLinkedDetailModelsListener(final ActionListener listener);
 
   /**
    * @return the EntityEditModel instance used by this EntityModel

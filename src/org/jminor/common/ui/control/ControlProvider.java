@@ -3,7 +3,7 @@
  */
 package org.jminor.common.ui.control;
 
-import org.jminor.common.model.Event;
+import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
 
@@ -21,7 +21,7 @@ public final class ControlProvider {
   private ControlProvider() {}
 
   public static void bindItemSelector(final JComboBox combo, final Object owner, final String property,
-                                      final Class propertyClass, final Event changedEvent) {
+                                      final Class propertyClass, final EventObserver changedEvent) {
     new SelectedItemBeanValueLink(combo, owner, property, propertyClass, changedEvent, LinkType.READ_WRITE);
   }
 
@@ -158,7 +158,7 @@ public final class ControlProvider {
       final State enabledState = controlSet.getEnabledState();
       if (enabledState != null) {
         menu.setEnabled(enabledState.isActive());
-        enabledState.eventStateChanged().addListener(new ActionListener() {
+        enabledState.stateObserver().addListener(new ActionListener() {
           public void actionPerformed(final ActionEvent e) {
             menu.setEnabled(enabledState.isActive());
           }

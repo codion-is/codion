@@ -3,6 +3,7 @@
  */
 package org.jminor.common.model;
 
+import java.awt.event.ActionListener;
 import java.sql.Timestamp;
 import java.util.Date;
 
@@ -156,15 +157,35 @@ public interface SearchModel<K> {
 
   State stateLocked();
 
-  Event eventEnabledChanged();
+  EventObserver enabledObserver();
 
-  Event eventLowerBoundChanged();
+  EventObserver lowerBoundObserver();
 
-  Event eventSearchModelCleared();
+  EventObserver upperBoundObserver();
 
-  Event eventSearchStateChanged();
+  EventObserver searchTypeObserver();
 
-  Event eventSearchTypeChanged();
+  void addEnabledListener(final ActionListener listener);
 
-  Event eventUpperBoundChanged();
+  void removeEnabledListener(final ActionListener listener);
+
+  void addSearchTypeListener(final ActionListener listener);
+
+  void removeSearchTypeListener(final ActionListener listener);
+
+  void addLowerBoundListener(final ActionListener listener);
+
+  void removeLowerBoundListener(final ActionListener listener);
+
+  void addUpperBoundListener(final ActionListener listener);
+
+  void removeUpperBoundListener(final ActionListener listener);
+
+  void addClearedListener(final ActionListener listener);
+
+  void removeClearedListener(final ActionListener listener);
+
+  void addSearchStateListener(final ActionListener listener);
+
+  void removeSearchStateListener(final ActionListener listener);
 }

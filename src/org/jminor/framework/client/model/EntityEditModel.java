@@ -6,7 +6,7 @@ package org.jminor.framework.client.model;
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.exception.DbException;
 import org.jminor.common.model.CancelException;
-import org.jminor.common.model.Event;
+import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.State;
 import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
 import org.jminor.common.model.valuemap.ValueCollectionProvider;
@@ -15,6 +15,7 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
 import javax.swing.ComboBoxModel;
+import java.awt.event.ActionListener;
 import java.util.List;
 
 public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>, EntityDataProvider {
@@ -51,51 +52,41 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    */
   State stateAllowInsert();
 
-  /**
-   * @return an Event fired after a successful insert
-   */
-  Event eventAfterInsert();
+  void addBeforeInsertListener(final ActionListener listener);
 
-  /**
-   * @return an Event fired after a successful update
-   */
-  Event eventAfterUpdate();
+  void removeBeforeInsertListener(final ActionListener listener);
 
-  /**
-   * @return an Event fired after a successful delete
-   */
-  Event eventAfterDelete();
+  void addAfterInsertListener(final ActionListener listener);
 
-  /**
-   * @return an event fired before a refresh
-   */
-  Event eventRefreshStarted();
+  void removeAfterInsertListener(final ActionListener listener);
 
-  /**
-   * @return an event fired after a refresh has been performed
-   */
-  Event eventRefreshDone();
+  void addBeforeUpdateListener(final ActionListener listener);
 
-  /**
-   * @return an Event fired before a delete
-   */
-  Event eventBeforeDelete();
+  void removeBeforeUpdateListener(final ActionListener listener);
 
-  /**
-   * @return an Event fired before a insert
-   */
-  Event eventBeforeInsert();
+  void addAfterUpdateListener(final ActionListener listener);
 
-  /**
-   * @return an Event fired before a update
-   */
-  Event eventBeforeUpdate();
+  void removeAfterUpdateListener(final ActionListener listener);
 
-  /**
-   * @return an Event fired when the underlying table has undergone changes,
-   * such as insert, update or delete
-   */
-  Event eventEntitiesChanged();
+  void addBeforeDeleteListener(final ActionListener listener);
+
+  void removeBeforeDeleteListener(final ActionListener listener);
+
+  void addAfterDeleteListener(final ActionListener listener);
+
+  void removeAfterDeleteListener(final ActionListener listener);
+
+  void addBeforeRefreshListener(final ActionListener listener);
+
+  void removeBeforeRefreshListener(final ActionListener listener);
+
+  void addAfterRefreshListener(final ActionListener listener);
+
+  void removeAfterRefreshListener(final ActionListener listener);
+
+  void addEntitiesChangedListener(final ActionListener listener);
+
+  void removeEntitiesChangedListener(final ActionListener listener);
 
   /**
    * Sets the Entity instance to edit
@@ -223,7 +214,8 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * has been initialized for the given property, a new one is created and associated with
    * the property, to be returned the next time this method is called
    */
-  ComboBoxModel initializePropertyComboBoxModel(final Property.ColumnProperty property, final Event refreshEvent, final String nullValueString);
+  ComboBoxModel initializePropertyComboBoxModel(final Property.ColumnProperty property, final EventObserver refreshEvent,
+                                                final String nullValueString);
 
   /**
    * @param property the property for which to get the ComboBoxModel
@@ -285,7 +277,7 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * @param nullValueString the string to use as a null value caption
    * @return a combo box model based on the given property
    */
-  PropertyComboBoxModel createPropertyComboBoxModel(final Property.ColumnProperty property, final Event refreshEvent,
+  PropertyComboBoxModel createPropertyComboBoxModel(final Property.ColumnProperty property, final EventObserver refreshEvent,
                                                     final String nullValueString);
 
   /**
@@ -340,8 +332,8 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * @throws DbException in case of a database exception
    * @throws CancelException in case the user cancels the operation
    * @throws ValidationException in case validation fails
-   * @see #eventBeforeInsert()
-   * @see #eventAfterInsert()
+   * @see #addBeforeInsertListener(java.awt.event.ActionListener)
+   * @see #addAfterInsertListener(java.awt.event.ActionListener)
    * @see EntityValidator#validate(java.util.Collection, int)
    */
   void insert(List<Entity> entities) throws CancelException, DbException, ValidationException;
@@ -364,8 +356,8 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * @throws CancelException in case the user cancels the operation
    * @throws org.jminor.common.db.exception.RecordModifiedException in case an entity was modified by another user
    * @throws ValidationException in case validation fails
-   * @see #eventBeforeUpdate
-   * @see #eventAfterUpdate
+   * @see #addBeforeUpdateListener(java.awt.event.ActionListener)
+   * @see #addAfterUpdateListener(java.awt.event.ActionListener)
    * @see EntityValidator#validate(java.util.Collection, int)
    */
   void update(final List<Entity> entities) throws DbException, CancelException, ValidationException;
@@ -374,8 +366,8 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * Deletes the active entity
    * @throws DbException in case of a database exception
    * @throws CancelException in case the user cancels the operation
-   * @see #eventBeforeDelete
-   * @see #eventAfterDelete
+   * @see #addBeforeDeleteListener(java.awt.event.ActionListener)
+   * @see #addAfterDeleteListener(java.awt.event.ActionListener)
    */
   void delete() throws DbException, CancelException;
 
@@ -384,8 +376,8 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * @param entities the entities to delete
    * @throws DbException in case of a database exception
    * @throws CancelException in case the user cancels the operation
-   * @see #eventBeforeDelete
-   * @see #eventAfterDelete
+   * @see #addBeforeDeleteListener(java.awt.event.ActionListener)
+   * @see #addAfterDeleteListener(java.awt.event.ActionListener)
    */
   void delete(final List<Entity> entities) throws DbException, CancelException;
 }

@@ -1943,3 +1943,5 @@
   AbstractFilteredTableModelTest improved some more
   Added tests to common
   More finalization/refactoring
+  EventObserver interface added
+  Event model improved, event...() methods replaced with ...Observer() and add...Listener() methods

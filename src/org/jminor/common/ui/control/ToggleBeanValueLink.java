@@ -4,6 +4,7 @@
 package org.jminor.common.ui.control;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventObserver;
 
 import javax.swing.ButtonModel;
 import javax.swing.JToggleButton;
@@ -21,28 +22,28 @@ public final class ToggleBeanValueLink extends AbstractBeanValueLink {
     this(owner, propertyName, valueChangeEvent, null);
   }
 
-  public ToggleBeanValueLink(final Object owner, final String propertyName, final Event valueChangeEvent,
+  public ToggleBeanValueLink(final Object owner, final String propertyName, final EventObserver valueChangeEvent,
                              final String caption) {
     this(owner, propertyName, valueChangeEvent, caption, LinkType.READ_WRITE);
   }
 
-  public ToggleBeanValueLink(final Object owner, final String propertyName, final Event valueChangeEvent,
+  public ToggleBeanValueLink(final Object owner, final String propertyName, final EventObserver valueChangeEvent,
                              final String caption, final LinkType linkType) {
     this(new JToggleButton.ToggleButtonModel(), owner, propertyName, valueChangeEvent, caption, linkType);
   }
 
   public ToggleBeanValueLink(final ButtonModel buttonModel, final Object owner, final String propertyName,
-                             final Event valueChangeEvent) {
+                             final EventObserver valueChangeEvent) {
     this(buttonModel, owner, propertyName, valueChangeEvent, null);
   }
 
   public ToggleBeanValueLink(final ButtonModel buttonModel, final Object owner, final String propertyName,
-                             final Event valueChangeEvent, final String caption) {
+                             final EventObserver valueChangeEvent, final String caption) {
     this(buttonModel, owner, propertyName, valueChangeEvent, caption, LinkType.READ_WRITE);
   }
 
   public ToggleBeanValueLink(final ButtonModel buttonModel, final Object owner, final String propertyName,
-                             final Event valueChangeEvent, final String caption, final LinkType linkType) {
+                             final EventObserver valueChangeEvent, final String caption, final LinkType linkType) {
     super(owner, propertyName, boolean.class, valueChangeEvent, linkType);
     this.buttonModel = buttonModel;
     this.buttonModel.addItemListener(new ItemListener() {

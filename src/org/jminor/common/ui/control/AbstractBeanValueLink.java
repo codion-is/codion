@@ -3,7 +3,7 @@
  */
 package org.jminor.common.ui.control;
 
-import org.jminor.common.model.Event;
+import org.jminor.common.model.EventObserver;
 
 import java.lang.reflect.Method;
 
@@ -18,12 +18,12 @@ public abstract class AbstractBeanValueLink extends AbstractValueLink<Object, Ob
   private final Method setMethod;
 
   public AbstractBeanValueLink(final Object owner, final String propertyName, final Class<?> valueClass,
-                               final Event valueChangeEvent) {
+                               final EventObserver valueChangeEvent) {
     this(owner, propertyName, valueClass, valueChangeEvent, LinkType.READ_WRITE);
   }
 
   public AbstractBeanValueLink(final Object owner, final String propertyName, final Class<?> valueClass,
-                               final Event valueChangeEvent, final LinkType linkType) {
+                               final EventObserver valueChangeEvent, final LinkType linkType) {
     super(owner, valueChangeEvent, linkType);
     try {
       this.propertyName = Character.toUpperCase(propertyName.charAt(0)) + propertyName.substring(1);
@@ -88,7 +88,10 @@ public abstract class AbstractBeanValueLink extends AbstractValueLink<Object, Ob
    */
   private Method getGetMethod() throws NoSuchMethodException {
     if (valueClass.equals(boolean.class) || valueClass.equals(Boolean.class)) {
-      return getValueOwner().getClass().getMethod("is" + propertyName);
+      try {
+        return getValueOwner().getClass().getMethod("is" + propertyName);
+      }
+      catch (NoSuchMethodException e) {/**/}
     }
 
     return getValueOwner().getClass().getMethod("get" + propertyName);

@@ -69,7 +69,7 @@ public final class LoadTestPanel extends JPanel {
   public JFrame showFrame() {
     final JFrame frame = UiUtil.createFrame(Images.loadImage("jminor_logo32.gif").getImage());
     final String title = "JMinor - " + loadTestModel.getClass().getSimpleName();
-    loadTestModel.eventDoneExiting().addListener(new ExitListener(frame));
+    loadTestModel.addExitListener(new ExitListener(frame));
     frame.addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosing(final WindowEvent e) {
@@ -154,13 +154,13 @@ public final class LoadTestPanel extends JPanel {
   private JPanel initializeApplicationPanel() {
     final IntField applicationCountField = new IntField();
     applicationCountField.setHorizontalAlignment(JTextField.CENTER);
-    new IntBeanValueLink(applicationCountField, loadTestModel, "applicationCount", loadTestModel.eventApplicationCountChanged(), LinkType.READ_ONLY);
+    new IntBeanValueLink(applicationCountField, loadTestModel, "applicationCount", loadTestModel.applicationCountObserver(), LinkType.READ_ONLY);
 
     final JPanel applicationPanel = new JPanel(new BorderLayout(5, 5));
     applicationPanel.setBorder(BorderFactory.createTitledBorder("Applications"));
 
     final JSpinner spnBatchSize = new JSpinner(new IntBeanSpinnerValueLink(loadTestModel, "applicationBatchSize",
-            loadTestModel.eventApplicationBatchSizeChanged()).getSpinnerModel());
+            loadTestModel.applicationBatchSizeObserver()).getSpinnerModel());
     spnBatchSize.setToolTipText("Application batch size");
     ((JSpinner.DefaultEditor) spnBatchSize.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) spnBatchSize.getEditor()).getTextField().setColumns(3);
@@ -211,7 +211,7 @@ public final class LoadTestPanel extends JPanel {
     final JPanel controlPanel = new JPanel(new FlexibleGridLayout(1, 2, 5, 5, true, false));
     controlPanel.setBorder(BorderFactory.createTitledBorder("Charts"));
     controlPanel.add(ControlProvider.createCheckBox(ControlFactory.toggleControl(loadTestModel, "collectChartData",
-            "Collect chart data", loadTestModel.eventCollectChartDataChanged())));
+            "Collect chart data", loadTestModel.collectChartDataObserver())));
     controlPanel.add(ControlProvider.createButton(ControlFactory.methodControl(loadTestModel, "resetChartData", "Reset")));
 
     return controlPanel;
@@ -261,25 +261,25 @@ public final class LoadTestPanel extends JPanel {
 
   private JPanel initializeActivityPanel() {
     SpinnerNumberModel spinnerModel = new IntBeanSpinnerValueLink(loadTestModel, "maximumThinkTime",
-            loadTestModel.eventMaximumThinkTimeChanged()).getSpinnerModel();
+            loadTestModel.maximumThinkTimeObserver()).getSpinnerModel();
     spinnerModel.setStepSize(10);
     final JSpinner spnMaxThinkTime = new JSpinner(spinnerModel);
     ((JSpinner.DefaultEditor) spnMaxThinkTime.getEditor()).getTextField().setColumns(3);
 
     spinnerModel = new IntBeanSpinnerValueLink(loadTestModel, "minimumThinkTime",
-            loadTestModel.eventMinimumThinkTimeChanged()).getSpinnerModel();
+            loadTestModel.minimumThinkTimeObserver()).getSpinnerModel();
     spinnerModel.setStepSize(10);
     final JSpinner spnMinThinkTimeField = new JSpinner(spinnerModel);
     ((JSpinner.DefaultEditor) spnMinThinkTimeField.getEditor()).getTextField().setColumns(3);
 
     spinnerModel = new IntBeanSpinnerValueLink(loadTestModel, "warningTime",
-            loadTestModel.eventWarningTimeChanged()).getSpinnerModel();
+            loadTestModel.warningTimeObserver()).getSpinnerModel();
     spinnerModel.setStepSize(10);
     final JSpinner spnWarningTime = new JSpinner(spinnerModel);
     ((JSpinner.DefaultEditor) spnWarningTime.getEditor()).getTextField().setColumns(3);
     spnWarningTime.setToolTipText("A work request is considered 'delayed' if the time it takes to process it exceeds this value (ms)");
 
-    final ToggleBeanValueLink pauseControl = ControlFactory.toggleControl(loadTestModel, "paused", "Pause", loadTestModel.eventPausedChanged());
+    final ToggleBeanValueLink pauseControl = ControlFactory.toggleControl(loadTestModel, "paused", "Pause", loadTestModel.pauseObserver());
     pauseControl.setMnemonic('P');
     final MethodControl gcControl = ControlFactory.methodControl(loadTestModel, "performGC", "Perform GC");
 

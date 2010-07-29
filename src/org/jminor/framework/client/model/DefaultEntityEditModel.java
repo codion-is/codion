@@ -7,6 +7,7 @@ import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.exception.DbException;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
@@ -126,7 +127,7 @@ public class DefaultEntityEditModel extends DefaultValueChangeMapEditModel<Strin
             && Configuration.getBooleanValue(Configuration.PERSIST_FOREIGN_KEY_VALUES);
   }
 
-  public PropertyComboBoxModel createPropertyComboBoxModel(final Property.ColumnProperty property, final Event refreshEvent,
+  public PropertyComboBoxModel createPropertyComboBoxModel(final Property.ColumnProperty property, final EventObserver refreshEvent,
                                                            final String nullValueString) {
     return new DefaultPropertyComboBoxModel(entityID, dbProvider, property, nullValueString, refreshEvent);
   }
@@ -371,7 +372,7 @@ public class DefaultEntityEditModel extends DefaultValueChangeMapEditModel<Strin
     return comboBoxModel;
   }
 
-  public final PropertyComboBoxModel initializePropertyComboBoxModel(final Property.ColumnProperty property, final Event refreshEvent,
+  public final PropertyComboBoxModel initializePropertyComboBoxModel(final Property.ColumnProperty property, final EventObserver refreshEvent,
                                                                      final String nullValueString) {
     Util.rejectNullValue(property, "property");
     PropertyComboBoxModel comboBoxModel = (PropertyComboBoxModel) propertyComboBoxModels.get(property);
@@ -451,40 +452,76 @@ public class DefaultEntityEditModel extends DefaultValueChangeMapEditModel<Strin
     return new PropertyValueProvider(dbProvider, entityID, property.getPropertyID());
   }
 
-  public final Event eventAfterDelete() {
-    return evtAfterDelete;
+  public final void removeBeforeInsertListener(final ActionListener listener) {
+    evtBeforeInsert.removeListener(listener);
   }
 
-  public final Event eventAfterInsert() {
-    return evtAfterInsert;
+  public final void addBeforeInsertListener(final ActionListener listener) {
+    evtBeforeInsert.addListener(listener);
   }
 
-  public final Event eventAfterUpdate() {
-    return evtAfterUpdate;
+  public final void removeAfterInsertListener(final ActionListener listener) {
+    evtAfterInsert.removeListener(listener);
   }
 
-  public final Event eventBeforeDelete() {
-    return evtBeforeDelete;
+  public final void addAfterInsertListener(final ActionListener listener) {
+    evtAfterInsert.addListener(listener);
   }
 
-  public final Event eventBeforeInsert() {
-    return evtBeforeInsert;
+  public final void removeBeforeUpdateListener(final ActionListener listener) {
+    evtBeforeUpdate.removeListener(listener);
   }
 
-  public final Event eventBeforeUpdate() {
-    return evtBeforeUpdate;
+  public final void addBeforeUpdateListener(final ActionListener listener) {
+    evtBeforeUpdate.addListener(listener);
   }
 
-  public final Event eventEntitiesChanged() {
-    return evtEntitiesChanged;
+  public final void removeAfterUpdateListener(final ActionListener listener) {
+    evtAfterUpdate.removeListener(listener);
   }
 
-  public final Event eventRefreshStarted() {
-    return evtRefreshStarted;
+  public final void addAfterUpdateListener(final ActionListener listener) {
+    evtAfterUpdate.addListener(listener);
   }
 
-  public final Event eventRefreshDone() {
-    return evtRefreshDone;
+  public final void addBeforeDeleteListener(final ActionListener listener) {
+    evtBeforeDelete.addListener(listener);
+  }
+
+  public final void removeBeforeDeleteListener(final ActionListener listener) {
+    evtBeforeDelete.removeListener(listener);
+  }
+
+  public final void removeAfterDeleteListener(final ActionListener listener) {
+    evtAfterDelete.removeListener(listener);
+  }
+
+  public final void addAfterDeleteListener(final ActionListener listener) {
+    evtAfterDelete.addListener(listener);
+  }
+
+  public final void removeEntitiesChangedListener(final ActionListener listener) {
+    evtAfterInsert.removeListener(listener);
+  }
+
+  public final void addEntitiesChangedListener(final ActionListener listener) {
+    evtAfterInsert.addListener(listener);
+  }
+
+  public final void addBeforeRefreshListener(final ActionListener listener) {
+    evtRefreshStarted.addListener(listener);
+  }
+
+  public final void removeBeforeRefreshListener(final ActionListener listener) {
+    evtRefreshStarted.removeListener(listener);
+  }
+
+  public final void addAfterRefreshListener(final ActionListener listener) {
+    evtRefreshDone.addListener(listener);
+  }
+
+  public final void removeAfterRefreshListener(final ActionListener listener) {
+    evtRefreshDone.removeListener(listener);
   }
 
   /**
@@ -554,7 +591,7 @@ public class DefaultEntityEditModel extends DefaultValueChangeMapEditModel<Strin
     evtAfterDelete.addListener(evtEntitiesChanged);
     evtAfterInsert.addListener(evtEntitiesChanged);
     evtAfterUpdate.addListener(evtEntitiesChanged);
-    eventValueMapSet().addListener(new ActionListener() {
+    addValueMapSetListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         stEntityNull.setActive(getEntity().isNull());
       }

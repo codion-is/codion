@@ -63,8 +63,6 @@ public final class DefaultEntityLookupModelTest {
     assertTrue(lookupModel.isWildcardPostfix());
     assertTrue(lookupModel.isWildcardPrefix());
     assertNotNull(lookupModel.getWildcard());
-    assertNotNull(lookupModel.eventSearchStringChanged());
-    assertNotNull(lookupModel.eventSelectedEntitiesChanged());
   }
 
   @Test

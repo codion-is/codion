@@ -34,16 +34,7 @@ import org.jminor.framework.i18n.FrameworkMessages;
 
 import org.apache.log4j.Logger;
 
-import javax.swing.ComboBoxModel;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.JToolBar;
+import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
@@ -1607,12 +1598,12 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   }
 
   private void bindEvents() {
-    getEditModel().eventRefreshStarted().addListener(new ActionListener() {
+    getEditModel().addBeforeRefreshListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         UiUtil.setWaitCursor(true, EntityEditPanel.this);
       }
     });
-    getEditModel().eventRefreshDone().addListener(new ActionListener() {
+    getEditModel().addAfterRefreshListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         UiUtil.setWaitCursor(false, EntityEditPanel.this);
       }

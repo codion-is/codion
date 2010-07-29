@@ -5,6 +5,7 @@ package org.jminor.common.ui.input;
 
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Util;
 
 import javax.swing.AbstractAction;
@@ -17,6 +18,7 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * A panel for presenting a InputProvider.
@@ -63,8 +65,16 @@ public final class InputProviderPanel extends JPanel implements InputProvider {
     return inputProvider.getInputComponent();
   }
 
-  public Event eventButtonClicked() {
+  public EventObserver buttonClickObserver() {
     return evtButtonClicked;
+  }
+
+  public void addButtonClickListener(final ActionListener listener) {
+    evtButtonClicked.addListener(listener);
+  }
+
+  public void removeButtonClickListener(final ActionListener listener) {
+    evtButtonClicked.removeListener(listener);
   }
 
   private void initUI(final String caption) {

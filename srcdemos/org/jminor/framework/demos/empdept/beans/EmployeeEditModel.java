@@ -47,7 +47,7 @@ public final class EmployeeEditModel extends DefaultEntityEditModel {
   //keep event bindings in one place
   private void bindEvents() {
     //Refresh the manager ComboBoxModel when an employee is either added or updated
-    eventEntitiesChanged().addListener(new ActionListener() {
+    addEntitiesChangedListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         if (containsComboBoxModel(EMPLOYEE_MGR_FK)) {
           getEntityComboBoxModel(EMPLOYEE_MGR_FK).refresh();
@@ -56,7 +56,7 @@ public final class EmployeeEditModel extends DefaultEntityEditModel {
     });
     //Filter the manager ComboBoxModel so that only managers from the selected department are shown,
     //this filtering happens each time the department value is changed
-    getValueChangeEvent(EMPLOYEE_DEPARTMENT_FK).addListener(new ValueChangeListener() {
+    addValueListener(EMPLOYEE_DEPARTMENT_FK, new ValueChangeListener() {
       @Override
       public void valueChanged(final ValueChangeEvent event) {
         //only show managers in the same department as the active entity

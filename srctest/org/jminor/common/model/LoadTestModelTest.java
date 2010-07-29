@@ -47,14 +47,13 @@ public class LoadTestModelTest {
 
     model.setCollectChartData(true);
 
-    assertNotNull(model.eventApplicationBatchSizeChanged());
-    assertNotNull(model.eventApplicationCountChanged());
-    assertNotNull(model.eventCollectChartDataChanged());
-    assertNotNull(model.eventDoneExiting());
-    assertNotNull(model.eventMaximumThinkTimeChanged());
-    assertNotNull(model.eventMinimumThinkTimeChanged());
-    assertNotNull(model.eventPausedChanged());
-    assertNotNull(model.eventWarningTimeChanged());
+    assertNotNull(model.applicationBatchSizeObserver());
+    assertNotNull(model.applicationCountObserver());
+    assertNotNull(model.collectChartDataObserver());
+    assertNotNull(model.maximumThinkTimeObserver());
+    assertNotNull(model.minimumThinkTimeObserver());
+    assertNotNull(model.pauseObserver());
+    assertNotNull(model.warningTimeObserver());
 
     assertNotNull(model.getMemoryUsageDataset());
     assertNotNull(model.getNumberOfApplicationsDataset());

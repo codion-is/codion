@@ -8,6 +8,7 @@ import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -72,10 +73,11 @@ public final class MethodControl extends Control {
     }
   }
 
-  /**
-   * @return an Event fired after each call to actionPerformed
-   */
-  public Event eventActionPerformed() {
-    return evtActionPerformed;
+  public void addActionPerformedListener(final ActionListener listener) {
+    evtActionPerformed.addListener(listener);
+  }
+
+  public void removeActionPerformedListener(final ActionListener listener) {
+    evtActionPerformed.removeListener(listener);
   }
 }

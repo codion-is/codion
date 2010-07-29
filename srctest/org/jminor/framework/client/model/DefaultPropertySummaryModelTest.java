@@ -6,9 +6,12 @@ package org.jminor.framework.client.model;
 import org.jminor.common.model.Event;
 import org.jminor.framework.domain.Properties;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.Types;
 import java.util.Arrays;
 import java.util.Collection;
@@ -48,8 +51,13 @@ public class DefaultPropertySummaryModelTest {
     assertEquals("TestProperty", testIntModel.getProperty().getPropertyID());
     assertEquals(PropertySummaryModel.SummaryType.SUM, testIntModel.getSummaryType());
     assertTrue(testIntModel.getSummaryTypes().size() > 0);
-    assertNotNull(testIntModel.eventSummaryChanged());
-    assertNotNull(testIntModel.eventSummaryTypeChanged());
+    final ActionListener listener = new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {}
+    };
+    testIntModel.addSummaryListener(listener);
+    testIntModel.addSummaryTypeListener(listener);
+    testIntModel.removeSummaryListener(listener);
+    testIntModel.removeSummaryTypeListener(listener);
   }
 
   @Test

@@ -7,6 +7,7 @@ import org.jminor.common.model.Event;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 
+import java.awt.event.ActionListener;
 import java.util.Collection;
 import java.util.List;
 
@@ -65,9 +66,13 @@ public interface PropertySummaryModel {
 
   String getSummaryText();
 
-  Event eventSummaryChanged();
+  void addSummaryListener(final ActionListener listener);
 
-  Event eventSummaryTypeChanged();
+  void removeSummaryListener(final ActionListener listener);
+
+  void addSummaryTypeListener(final ActionListener listener);
+
+  void removeSummaryTypeListener(final ActionListener listener);
 
   /**
    * Provides the values used when creating the summary value.

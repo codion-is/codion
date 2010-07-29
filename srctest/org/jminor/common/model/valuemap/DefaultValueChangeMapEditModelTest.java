@@ -57,9 +57,9 @@ public class DefaultValueChangeMapEditModelTest {
   @Test
   public void test() throws Exception {
     final String key = "key";
-    model.getValueChangeEvent(key).addListener(valueChangeListener);
-    model.getValueSetEvent(key).addListener(valueSetListener);
-    model.eventValueMapSet().addListener(valueMapSetListener);
+    model.addValueListener(key, valueChangeListener);
+    model.addValueSetListener(key, valueSetListener);
+    model.addValueMapSetListener(valueMapSetListener);
 
     model.setValue(key, 1);
     assertTrue(valueSetCounter.size() == 1);
@@ -113,5 +113,9 @@ public class DefaultValueChangeMapEditModelTest {
     model.setValue(key, 2);
     assertTrue(model.isValid(key, -1));
     assertTrue(model.isValid());
+
+    model.removeValueListener(key, valueChangeListener);
+    model.removeValueSetListener(key, valueSetListener);
+    model.removeValueMapSetListener(valueMapSetListener);
   }
 }

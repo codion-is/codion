@@ -82,7 +82,7 @@ public final class EntityCriteriaPanel extends JPanel {
     final List<PropertySearchModel> searchCriteria = getSortedCriteria(searchModel);
     final JList propertyList = new JList(searchCriteria.toArray());
     for (final PropertySearchModel model : searchCriteria) {
-      model.eventSearchStateChanged().addListener(new RepaintListener(propertyList));
+      model.addSearchStateListener(new RepaintListener(propertyList));
     }
     propertyList.setCellRenderer(new CriteriaListCellRenderer());
     propertyList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);

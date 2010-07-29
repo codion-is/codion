@@ -8,6 +8,7 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import java.awt.Point;
+import java.awt.event.ActionListener;
 import java.util.Collection;
 import java.util.List;
 
@@ -23,58 +24,37 @@ public interface FilteredTableModel<T, C> extends FilteredModel<T>, TableModel, 
    */
   State stateMultipleSelection();
 
-  /**
-   * @return an Event fired after the selection has changed
-   */
-  Event eventSelectionChanged();
+  void addSelectionChangedListener(final ActionListener listener);
 
-  /**
-   * @return an event fired when the minimum (topmost) selected index changes (minSelectionIndex property in ListSelectionModel)
-   */
-  Event eventSelectedIndexChanged();
+  void removeSelectionChangedListener(final ActionListener listener);
 
-  /**
-   * @return an Event fired when the model is about to be refreshed
-   */
-  Event eventRefreshStarted();
+  void addSelectedIndexListener(final ActionListener listener);
 
-  /**
-   * @return an Event fired when the model has been refreshed, N.B. this event
-   * is fired even if the refresh results in an exception
-   */
-  Event eventRefreshDone();
+  void removeSelectedIndexListener(final ActionListener listener);
 
-  /**
-   * @return an Event fired when the model is about to be sorted
-   */
-  Event eventSortingStarted();
+  void addRefreshStartedListener(final ActionListener listener);
 
-  /**
-   * @return an Event fired when the model has been sorted
-   */
-  Event eventSortingDone();
+  void removeRefreshStartedListener(final ActionListener listener);
 
-  /**
-   * @return an Event fired whenever a column is hidden,
-   * the ActionEvent source is the column identifier.
-   */
-  Event eventColumnHidden();
+  void addRefreshDoneListener(final ActionListener listener);
 
-  /**
-   * @return an Event fired whenever a column is shown,
-   * the ActionEvent source is the column identifier.
-   */
-  Event eventColumnShown();
+  void removeRefreshDoneListener(final ActionListener listener);
 
-  /**
-   * @return an Event fired when the selection is changing
-   */
-  Event eventSelectionChangedAdjusting();
+  void addSortingListener(final ActionListener listener);
 
-  /**
-   * @return an Event fired after the table data has changed
-   */
-  Event eventTableDataChanged();
+  void removeSortingListener(final ActionListener listener);
+
+  void addColumnHiddenListener(final ActionListener listener);
+
+  void removeColumnHiddenListener(final ActionListener listener);
+
+  void addColumnShownListener(final ActionListener listener);
+
+  void removeColumnShownListener(final ActionListener listener);
+
+  void addTableDataChangedListener(final ActionListener listener);
+
+  void removeTableDataChangedListener(final ActionListener listener);
 
   /**
    * Returns the item found at the given index
@@ -250,7 +230,7 @@ public interface FilteredTableModel<T, C> extends FilteredModel<T>, TableModel, 
 
   /**
    * Clears the selection
-   * @see #eventSelectionChanged()
+   * @see #addSelectionChangedListener(java.awt.event.ActionListener)
    */
   void clearSelection();
 
@@ -286,7 +266,7 @@ public interface FilteredTableModel<T, C> extends FilteredModel<T>, TableModel, 
 
   /**
    * Selects all visible entities
-   * @see #eventSelectionChanged()
+   * @see #addSelectionChangedListener(java.awt.event.ActionListener)
    */
   void selectAll();
 
@@ -303,13 +283,13 @@ public interface FilteredTableModel<T, C> extends FilteredModel<T>, TableModel, 
 
   /**
    * Moves all selected indexes down one index, wraps around
-   * @see #eventSelectionChanged()
+   * @see #addSelectionChangedListener(java.awt.event.ActionListener)
    */
   void moveSelectionDown();
 
   /**
    * Moves all selected indexes up one index, wraps around
-   * @see #eventSelectionChanged()
+   * @see #addSelectionChangedListener(java.awt.event.ActionListener)
    */
   void moveSelectionUp();
 

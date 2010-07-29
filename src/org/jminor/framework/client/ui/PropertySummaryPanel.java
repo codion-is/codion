@@ -32,7 +32,7 @@ public final class PropertySummaryPanel extends JPanel {
    */
   public PropertySummaryPanel(final PropertySummaryModel model) {
     this.model = model;
-    model.eventSummaryChanged().addListener(new ActionListener() {
+    model.addSummaryListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         final String summaryText = model.getSummaryText();
         lblSummary.setText(summaryText);
@@ -72,7 +72,7 @@ public final class PropertySummaryPanel extends JPanel {
           model.setSummaryType(summaryType);
         }
       });
-      model.eventSummaryTypeChanged().addListener(new ActionListener() {
+      model.addSummaryTypeListener(new ActionListener() {
         public void actionPerformed(final ActionEvent e) {
           item.setSelected(model.getSummaryType() == summaryType);
         }

@@ -52,18 +52,18 @@ public final class AggregateState extends State {
   public void addState(final State state) {
     final boolean wasActive = isActive();
     states.add(state);
-    state.eventStateChanged().addListener(eventStateChanged());
+    state.addStateListener(evtStateChanged());
     if (wasActive != isActive()) {
-      eventStateChanged().fire();
+      evtStateChanged().fire();
     }
   }
 
   public void removeState(final State state) {
     final boolean wasActive = isActive();
-    state.eventStateChanged().removeListener(eventStateChanged());
+    state.removeStateListener(evtStateChanged());
     states.remove(state);
     if (wasActive != isActive()) {
-      eventStateChanged().fire();
+      evtStateChanged().fire();
     }
   }
 

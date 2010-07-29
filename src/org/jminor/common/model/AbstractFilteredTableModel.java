@@ -54,7 +54,6 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     }
   };
 
-  private final Event evtFilteringStarted = new Event();
   private final Event evtFilteringDone = new Event();
   private final Event evtSortingStarted = new Event();
   private final Event evtSortingDone = new Event();
@@ -452,13 +451,11 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
 
   /**
    * Filters this table model
-   * @see #eventFilteringStarted()
-   * @see #eventFilteringDone()
+   * @see #addFilteringListener(java.awt.event.ActionListener)
    */
   public final void filterContents() {
     try {
       isFiltering = true;
-      evtFilteringStarted.fire();
       final List<T> selectedItems = getSelectedItems();
       visibleItems.addAll(filteredItems);
       filteredItems.clear();
@@ -590,60 +587,76 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     return selectionModel.stateMultipleSelection().getLinkedState();
   }
 
-  /**
-   * @return an Event fired whenever a column is hidden,
-   * the ActionEvent source is the column identifier.
-   */
-  public final Event eventColumnHidden() {
-    return evtColumnHidden;
+  public final void addColumnHiddenListener(final ActionListener listener) {
+    evtColumnHidden.addListener(listener);
   }
 
-  /**
-   * @return an Event fired whenever a column is shown,
-   * the ActionEvent source is the column identifier.
-   */
-  public final Event eventColumnShown() {
-    return evtColumnShown;
+  public final void removeColumnHiddenListener(final ActionListener listener) {
+    evtColumnHidden.removeListener(listener);
   }
 
-  public final Event eventRefreshStarted() {
-    return evtRefreshStarted;
+  public final void addColumnShownListener(final ActionListener listener) {
+    evtColumnShown.addListener(listener);
   }
 
-  public final Event eventRefreshDone() {
-    return evtRefreshDone;
+  public final void removeColumnShownListener(final ActionListener listener) {
+    evtColumnShown.removeListener(listener);
   }
 
-  public final Event eventFilteringDone() {
-    return evtFilteringDone;
+  public final void addRefreshStartedListener(final ActionListener listener) {
+    evtRefreshStarted.addListener(listener);
   }
 
-  public final Event eventFilteringStarted() {
-    return evtFilteringStarted;
+  public final void removeRefreshStartedListener(final ActionListener listener) {
+    evtRefreshStarted.removeListener(listener);
   }
 
-  public final Event eventSortingDone() {
-    return evtSortingDone;
+  public final void addRefreshDoneListener(final ActionListener listener) {
+    evtRefreshDone.addListener(listener);
   }
 
-  public final Event eventSortingStarted() {
-    return evtSortingStarted;
+  public final void removeRefreshDoneListener(final ActionListener listener) {
+    evtRefreshDone.removeListener(listener);
   }
 
-  public final Event eventSelectedIndexChanged() {
-    return selectionModel.eventSelectedIndexChanged();
+  public final void addFilteringListener(final ActionListener listener) {
+    evtFilteringDone.addListener(listener);
   }
 
-  public final Event eventSelectionChanged() {
-    return selectionModel.eventSelectionChanged();
+  public final void removeFilteringListener(final ActionListener listener) {
+    evtFilteringDone.removeListener(listener);
   }
 
-  public final Event eventSelectionChangedAdjusting() {
-    return selectionModel.eventSelectionChangedAdjusting();
+  public final void addSortingListener(final ActionListener listener) {
+    evtSortingDone.addListener(listener);
   }
 
-  public final Event eventTableDataChanged() {
-    return evtTableDataChanged;
+  public final void removeSortingListener(final ActionListener listener) {
+    evtSortingDone.removeListener(listener);
+  }
+
+  public final void addSelectedIndexListener(final ActionListener listener) {
+    selectionModel.addSelectedIndexListener(listener);
+  }
+
+  public final void removeSelectedIndexListener(final ActionListener listener) {
+    selectionModel.removeSelectedIndexListener(listener);
+  }
+
+  public final void addSelectionChangedListener(final ActionListener listener) {
+    selectionModel.addSelectionChangedListener(listener);
+  }
+
+  public final void removeSelectionChangedListener(final ActionListener listener) {
+    selectionModel.removeSelectionChangedListener(listener);
+  }
+
+  public final void addTableDataChangedListener(final ActionListener listener) {
+    evtTableDataChanged.addListener(listener);
+  }
+
+  public final void removeTableDataChangedListener(final ActionListener listener) {
+    evtTableDataChanged.removeListener(listener);
   }
 
   protected abstract void doRefresh();
@@ -758,7 +771,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
       }
     });
     for (final SearchModel searchModel : columnFilterModels) {
-      searchModel.eventSearchStateChanged().addListener(new ActionListener() {
+      searchModel.addSearchStateListener(new ActionListener() {
         public void actionPerformed(final ActionEvent e) {
           filterContents();
         }
@@ -943,7 +956,6 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
 
   private final class SelectionModel extends DefaultListSelectionModel {
 
-    private final Event evtSelectionChangedAdjusting = new Event();
     private final Event evtSelectionChanged = new Event();
     private final Event evtSelectedIndexChanged = new Event();
     private final State stSelectionEmpty = new State(true);
@@ -968,10 +980,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
         selectedIndex = minSelIndex;
         evtSelectedIndexChanged.fire();
       }
-      if (isAdjusting || isUpdatingSelection || isSorting) {
-        evtSelectionChangedAdjusting.fire();
-      }
-      else {
+      if (!(isAdjusting || isUpdatingSelection || isSorting)) {
         evtSelectionChanged.fire();
       }
     }
@@ -1024,16 +1033,20 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
       return selectedIndex;
     }
 
-    public Event eventSelectedIndexChanged() {
-      return evtSelectedIndexChanged;
+    public void addSelectedIndexListener(final ActionListener listener) {
+      evtSelectedIndexChanged.addListener(listener);
     }
 
-    public Event eventSelectionChanged() {
-      return evtSelectionChanged;
+    public void removeSelectedIndexListener(final ActionListener listener) {
+      evtSelectedIndexChanged.addListener(listener);
     }
 
-    public Event eventSelectionChangedAdjusting() {
-      return evtSelectionChangedAdjusting;
+    public void addSelectionChangedListener(final ActionListener listener) {
+      evtSelectionChanged.addListener(listener);
+    }
+
+    public void removeSelectionChangedListener(final ActionListener listener) {
+      evtSelectionChanged.addListener(listener);
     }
 
     public State stateMultipleSelection() {

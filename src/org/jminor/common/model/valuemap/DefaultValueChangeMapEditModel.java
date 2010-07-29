@@ -4,10 +4,12 @@
 package org.jminor.common.model.valuemap;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 
+import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -118,16 +120,15 @@ public class DefaultValueChangeMapEditModel<K, V> implements ValueChangeMapEditM
     return stateValid().isActive();
   }
 
-  public final Event getValueSetEvent(final K key) {
-    Util.rejectNullValue(key, "key");
-    if (!valueSetEventMap.containsKey(key)) {
-      valueSetEventMap.put(key, new Event());
-    }
-
-    return valueSetEventMap.get(key);
+  public final void addValueSetListener(final K key, final ActionListener listener) {
+    getValueSetEvent(key).addListener(listener);
   }
 
-  public final Event getValueChangeEvent(final K key) {
+  public final void removeValueSetListener(final K key, final ActionListener listener) {
+    getValueSetEvent(key).removeListener(listener);
+  }
+
+  public final EventObserver getValueChangeObserver(final K key) {
     Util.rejectNullValue(key, "key");
     if (!valueChangeEventMap.containsKey(key)) {
       valueChangeEventMap.put(key, new Event());
@@ -136,8 +137,20 @@ public class DefaultValueChangeMapEditModel<K, V> implements ValueChangeMapEditM
     return valueChangeEventMap.get(key);
   }
 
-  public final Event eventValueMapSet() {
-    return evtValueMapSet;
+  public final void addValueListener(final K key, final ActionListener listener) {
+    getValueChangeObserver(key).addListener(listener);
+  }
+
+  public final void removeValueListener(final K key, final ActionListener listener) {
+    getValueChangeEvent(key).removeListener(listener);
+  }
+
+  public final void addValueMapSetListener(final ActionListener listener) {
+    evtValueMapSet.addListener(listener);
+  }
+
+  public final void removeValueMapSetListener(final ActionListener listener) {
+    evtValueMapSet.removeListener(listener);
   }
 
   public final State stateModified() {
@@ -166,6 +179,24 @@ public class DefaultValueChangeMapEditModel<K, V> implements ValueChangeMapEditM
    */
   private void notifyValueSet(final K key, final ValueChangeEvent event) {
     getValueSetEvent(key).fire(event);
+  }
+
+  private Event getValueSetEvent(final K key) {
+    Util.rejectNullValue(key, "key");
+    if (!valueSetEventMap.containsKey(key)) {
+      valueSetEventMap.put(key, new Event());
+    }
+
+    return valueSetEventMap.get(key);
+  }
+
+  private Event getValueChangeEvent(final K key) {
+    Util.rejectNullValue(key, "key");
+    if (!valueChangeEventMap.containsKey(key)) {
+      valueChangeEventMap.put(key, new Event());
+    }
+
+    return valueChangeEventMap.get(key);
   }
 
   private void bindEventsInternal() {

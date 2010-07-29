@@ -9,6 +9,7 @@ import org.jminor.common.model.Util;
 
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
+import java.awt.event.ActionListener;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,7 +24,6 @@ import java.util.ListIterator;
 public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T> {
 
   private final Event evtSelectionChanged = new Event();
-  private final Event evtFilteringStarted = new Event();
   private final Event evtFilteringDone = new Event();
 
   private final FilterCriteria<T> acceptAllCriteria = new FilterCriteria.AcceptAllCriteria<T>();
@@ -96,13 +96,11 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
 
   public final void filterContents() {
     try {
-      evtFilteringStarted.fire();
       visibleItems.addAll(filteredItems);
       filteredItems.clear();
-      final FilterCriteria<T> criteria = getFilterCriteria();
       for (final ListIterator<T> itemIterator = visibleItems.listIterator(); itemIterator.hasNext();) {
         final T item = itemIterator.next();
-        if (item != null && !criteria.include(item)) {
+        if (item != null && !filterCriteria.include(item)) {
           filteredItems.add(item);
           itemIterator.remove();
         }
@@ -175,7 +173,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   }
 
   public final void addItem(final T item) {
-    if (getFilterCriteria().include(item)) {
+    if (filterCriteria.include(item)) {
       visibleItems.add(item);
     }
     else {
@@ -267,16 +265,20 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     return visibleItems.size();
   }
 
-  public final Event eventFilteringDone() {
-    return evtFilteringDone;
+  public final void addFilteringListener(final ActionListener listener) {
+    evtFilteringDone.addListener(listener);
   }
 
-  public final Event eventFilteringStarted() {
-    return evtFilteringStarted;
+  public final void removeFilteringListener(final ActionListener listener) {
+    evtFilteringDone.removeListener(listener);
   }
 
-  public final Event eventSelectionChanged() {
-    return evtSelectionChanged;
+  public final void addSelectionListener(final ActionListener listener) {
+    evtSelectionChanged.addListener(listener);
+  }
+
+  public final void removeSelectionListener(final ActionListener listener) {
+    evtSelectionChanged.removeListener(listener);
   }
 
   /**

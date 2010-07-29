@@ -340,28 +340,68 @@ public class DefaultSearchModel<K> implements SearchModel<K> {
     return stLocked.getLinkedState();
   }
 
-  public final Event eventEnabledChanged() {
+  public final Event enabledObserver() {
     return evtEnabledChanged;
   }
 
-  public final Event eventLowerBoundChanged() {
+  public final EventObserver lowerBoundObserver() {
     return evtLowerBoundChanged;
   }
 
-  public final Event eventSearchModelCleared() {
-    return evtSearchModelCleared;
-  }
-
-  public final Event eventSearchStateChanged() {
-    return evtSearchStateChanged;
-  }
-
-  public final Event eventSearchTypeChanged() {
-    return evtSearchTypeChanged;
-  }
-
-  public final Event eventUpperBoundChanged() {
+  public final EventObserver upperBoundObserver() {
     return evtUpperBoundChanged;
+  }
+
+  public final void addEnabledListener(final ActionListener listener) {
+    evtEnabledChanged.addListener(listener);
+  }
+
+  public final void removeEnabledListener(final ActionListener listener) {
+    evtEnabledChanged.removeListener(listener);
+  }
+
+  public final void addUpperBoundListener(final ActionListener listener) {
+    evtUpperBoundChanged.addListener(listener);
+  }
+
+  public final void removeUpperBoundListener(final ActionListener listener) {
+    evtUpperBoundChanged.removeListener(listener);
+  }
+
+  public final void addLowerBoundListener(final ActionListener listener) {
+    evtLowerBoundChanged.addListener(listener);
+  }
+
+  public final void removeLowerBoundListener(final ActionListener listener) {
+    evtLowerBoundChanged.removeListener(listener);
+  }
+
+  public final void addClearedListener(final ActionListener listener) {
+    evtSearchModelCleared.addListener(listener);
+  }
+
+  public final void removeClearedListener(final ActionListener listener) {
+    evtSearchModelCleared.removeListener(listener);
+  }
+
+  public final void addSearchStateListener(final ActionListener listener) {
+    evtSearchStateChanged.addListener(listener);
+  }
+
+  public final void removeSearchStateListener(final ActionListener listener) {
+    evtSearchStateChanged.removeListener(listener);
+  }
+
+  public final void addSearchTypeListener(final ActionListener listener) {
+    evtSearchTypeChanged.addListener(listener);
+  }
+
+  public final void removeSearchTypeListener(final ActionListener listener) {
+    evtSearchTypeChanged.removeListener(listener);
+  }
+
+  public final EventObserver searchTypeObserver() {
+    return evtSearchTypeChanged;
   }
 
   public final boolean include(final Object object) {

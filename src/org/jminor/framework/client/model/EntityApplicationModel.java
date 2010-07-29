@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.client.model;
 
-import org.jminor.common.model.Event;
+import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.User;
 import org.jminor.framework.db.provider.EntityDbProvider;
@@ -80,5 +80,5 @@ public interface EntityApplicationModel extends Refreshable {
   /**
    * @return an Event fired when the cascadeRefresh property has changed
    */
-  Event eventCascadeRefreshChanged();
+  EventObserver cascadeRefreshObserver();
 }

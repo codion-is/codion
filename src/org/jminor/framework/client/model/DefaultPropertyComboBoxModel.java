@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.client.model;
 
-import org.jminor.common.model.Event;
+import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.combobox.DefaultFilteredComboBoxModel;
 import org.jminor.framework.db.provider.EntityDbProvider;
@@ -42,7 +42,7 @@ public class DefaultPropertyComboBoxModel extends DefaultFilteredComboBoxModel i
    */
   public DefaultPropertyComboBoxModel(final String entityID, final EntityDbProvider dbProvider,
                                       final Property.ColumnProperty property, final String nullValueString,
-                                      final Event refreshEvent) {
+                                      final EventObserver refreshEvent) {
     super(nullValueString);
     Util.rejectNullValue(entityID, "entityID");
     Util.rejectNullValue(dbProvider, "dbProvider");

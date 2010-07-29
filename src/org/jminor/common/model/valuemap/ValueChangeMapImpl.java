@@ -4,6 +4,7 @@
 package org.jminor.common.model.valuemap;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
 
@@ -112,7 +113,7 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
   }
 
   public final void addValueListener(final ActionListener valueListener) {
-    eventValueChanged().addListener(valueListener);
+    valueChangeObserver().addListener(valueListener);
   }
 
   public final void removeValueListener(final ActionListener valueListener) {
@@ -123,7 +124,7 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
 
   public final State stateModified() {
     final State state = new State(isModified());
-    eventValueChanged().addListener(new ActionListener() {
+    valueChangeObserver().addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         state.setActive(isModified());
       }
@@ -132,17 +133,12 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
     return state.getLinkedState();
   }
 
-  public final Event eventValueChanged() {
-    if (evtValueChanged == null) {
-      evtValueChanged = new Event();
-      handleInitializeValueChangedEvent();
-    }
-
-    return evtValueChanged;
+  public final EventObserver valueChangeObserver() {
+    return getValueChangedEvent();
   }
 
   protected final void notifyValueChange(final K key, final V value, final V oldValue, final boolean initialization) {
-    eventValueChanged().fire(new ValueChangeEvent<K, V>(this, this, key, value, oldValue, true, initialization));
+    getValueChangedEvent().fire(new ValueChangeEvent<K, V>(this, this, key, value, oldValue, true, initialization));
   }
 
   protected final void setOriginalValue(final K key, final V oldValue) {
@@ -219,5 +215,14 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
     else if (!modified) {
       setOriginalValue(key, previousValue);
     }
+  }
+
+  private Event getValueChangedEvent() {
+    if (evtValueChanged == null) {
+      evtValueChanged = new Event();
+      handleInitializeValueChangedEvent();
+    }
+
+    return evtValueChanged;
   }
 }

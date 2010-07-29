@@ -36,14 +36,16 @@ public class MethodControlTest {
     assertTrue("Button should be enabled", btn.isEnabled());
     btn.doClick();
     assertEquals("Button click should have resulted in a method call", 1, callCount);
-    control.eventActionPerformed().addListener(new ActionListener() {
+    final ActionListener listener = new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         actionPerformedCount++;
       }
-    });
+    };
+    control.addActionPerformedListener(listener);
     control.actionPerformed(null);
     assertEquals("Action performed should have resulted in a method call", 2, callCount);
     assertEquals("Action performed should have resulted in a action performed count", 1, actionPerformedCount);
+    control.removeActionPerformedListener(listener);
     try {
       new MethodControl("test", this, "none");
       fail();

@@ -125,40 +125,40 @@ public final class PropertySearchPanel extends AbstractSearchPanel<Property.Colu
     if (property instanceof Property.ValueListProperty) {
       new SelectedItemBeanValueLink((JComboBox) field, getModel(),
                 isUpper ? SearchModel.UPPER_BOUND_PROPERTY : SearchModel.LOWER_BOUND_PROPERTY,
-                Object.class, isUpper ? getModel().eventUpperBoundChanged() : getModel().eventLowerBoundChanged());
+                Object.class, isUpper ? getModel().upperBoundObserver() : getModel().lowerBoundObserver());
     }
     else if (property.isDate()) {
       new DateBeanValueLink((JFormattedTextField) field, getModel(),
               isUpper ? SearchModel.UPPER_BOUND_PROPERTY : SearchModel.LOWER_BOUND_PROPERTY,
-              isUpper ? getModel().eventUpperBoundChanged() : getModel().eventLowerBoundChanged(),
+              isUpper ? getModel().upperBoundObserver() : getModel().lowerBoundObserver(),
               LinkType.READ_WRITE, format);
 
     }
     else if (property.isTimestamp()) {
       new TimestampBeanValueLink((JFormattedTextField) field, getModel(),
               isUpper ? SearchModel.UPPER_BOUND_PROPERTY : SearchModel.LOWER_BOUND_PROPERTY,
-              isUpper ? getModel().eventUpperBoundChanged() : getModel().eventLowerBoundChanged(),
+              isUpper ? getModel().upperBoundObserver() : getModel().lowerBoundObserver(),
               LinkType.READ_WRITE, format);
     }
     else if (property.isDouble()) {
       new DoubleBeanValueLink((DoubleField) field, getModel(),
               isUpper ? SearchModel.UPPER_BOUND_PROPERTY : SearchModel.LOWER_BOUND_PROPERTY,
-              isUpper ? getModel().eventUpperBoundChanged() : getModel().eventLowerBoundChanged());
+              isUpper ? getModel().upperBoundObserver() : getModel().lowerBoundObserver());
     }
     else if (property.isInteger()) {
       new IntBeanValueLink((IntField) field, getModel(),
               isUpper ? PropertySearchModel.UPPER_BOUND_PROPERTY : PropertySearchModel.LOWER_BOUND_PROPERTY,
-              isUpper ? getModel().eventUpperBoundChanged() : getModel().eventLowerBoundChanged());
+              isUpper ? getModel().upperBoundObserver() : getModel().lowerBoundObserver());
     }
     else if (property.isBoolean()) {
       new SelectedItemBeanValueLink((JComboBox) field, getModel(),
               isUpper ? PropertySearchModel.UPPER_BOUND_PROPERTY : PropertySearchModel.LOWER_BOUND_PROPERTY,
-              Object.class, isUpper ? getModel().eventUpperBoundChanged() : getModel().eventLowerBoundChanged());
+              Object.class, isUpper ? getModel().upperBoundObserver() : getModel().lowerBoundObserver());
     }
     else if (!property.isReference()) {//entity based properties are bound in the model
       new TextBeanValueLink((JTextField) field, getModel(),
               isUpper ? SearchModel.UPPER_BOUND_PROPERTY : SearchModel.LOWER_BOUND_PROPERTY, String.class,
-              isUpper ? getModel().eventUpperBoundChanged() : getModel().eventLowerBoundChanged());
+              isUpper ? getModel().upperBoundObserver() : getModel().lowerBoundObserver());
     }
   }
 }

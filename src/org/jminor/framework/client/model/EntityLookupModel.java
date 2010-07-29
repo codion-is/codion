@@ -4,10 +4,11 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.db.criteria.Criteria;
-import org.jminor.common.model.Event;
+import org.jminor.common.model.EventObserver;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
+import java.awt.event.ActionListener;
 import java.util.List;
 
 /**
@@ -15,15 +16,18 @@ import java.util.List;
  */
 public interface EntityLookupModel extends EntityDataProvider {
 
-  /**
-   * @return an Event fired each time the selected entities change
-   */
-  Event eventSelectedEntitiesChanged();
+  void addSelectedEntitiesListener(final ActionListener listener);
+
+  void removeSelectedEntitiesListener(final ActionListener listener);
 
   /**
    * @return an Event fired each time the search string changes
    */
-  Event eventSearchStringChanged();
+  EventObserver searchStringObserver();
+
+  void addSearchStringListener(final ActionListener listener);
+
+  void removeSearchStringListener(final ActionListener listener);
 
   /**
    * @return an unmodifiable view of the selected entities
