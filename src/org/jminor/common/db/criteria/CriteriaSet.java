@@ -3,6 +3,8 @@
  */
 package org.jminor.common.db.criteria;
 
+import org.jminor.common.model.Conjunction;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,25 +16,6 @@ import java.util.List;
 public class CriteriaSet<T> implements Criteria<T>, Serializable {
 
   private static final long serialVersionUID = 1;
-
-  /**
-   * Represents two possible conjunctions, AND and OR
-   */
-  public enum Conjunction {
-    AND, OR;
-
-    @Override
-    public String toString() {
-      switch (this) {
-        case AND:
-          return " and ";
-        case OR:
-          return " or ";
-        default:
-          throw new IllegalArgumentException("Unknown CriteriaSet.Conjunction enum");
-      }
-    }
-  }
 
   /**
    * The conjunction used by this CriteriaSet

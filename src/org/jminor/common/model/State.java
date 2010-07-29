@@ -47,19 +47,14 @@ public interface State {
   interface AggregateState extends State {
 
       /**
-       * The conjunction types used in AggregateState.
-       */
-      enum Type {AND, OR}
-
-      /**
        * @return the type of this aggregate state
        */
-      public Type getType();
+      public Conjunction getConjunction();
 
       void addState(final State state);
 
       void removeState(final State state);
-    }
+  }
 
     /**
      * A StateGroup deactivates all other states when a state in the group is activated.

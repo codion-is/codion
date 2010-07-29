@@ -26,7 +26,7 @@ public final class States {
     return new StateImpl(initialState);
   }
 
-  public static State.AggregateState aggregateState(final State.AggregateState.Type type, final State... states) {
+  public static State.AggregateState aggregateState(final Conjunction type, final State... states) {
     return new AggregateStateImpl(type, states);
   }
 
@@ -132,65 +132,65 @@ public final class States {
     protected final Event evtStateChanged() {
       return evtStateChanged;
     }
+  }
 
-    private class LinkedState extends StateImpl {
+  private static class LinkedState extends StateImpl {
 
-      private final State referenceState;
+    private final State referenceState;
 
-      LinkedState(final State referenceState) {
-        this.referenceState = referenceState;
-        this.referenceState.addStateListener(new ActionListener() {
-          public void actionPerformed(final ActionEvent e) {
-            evtStateChanged().actionPerformed(e);
-          }
-        });
-      }
-
-      @Override
-      public boolean isActive() {
-        return referenceState.isActive();
-      }
-
-      @Override
-      public void setActive(final boolean value) {
-        throw new RuntimeException("Cannot set the state of a linked state");
-      }
-
-      @Override
-      public String toString() {
-        return referenceState + " linked";
-      }
-
-      public final State getReferenceState() {
-        return referenceState;
-      }
+    LinkedState(final StateImpl referenceState) {
+      this.referenceState = referenceState;
+      this.referenceState.addStateListener(new ActionListener() {
+        public void actionPerformed(final ActionEvent e) {
+          evtStateChanged().actionPerformed(e);
+        }
+      });
     }
 
-    private final class ReverseState extends LinkedState {
+    @Override
+    public boolean isActive() {
+      return referenceState.isActive();
+    }
 
-      ReverseState(final State referenceState) {
-        super(referenceState);
-      }
+    @Override
+    public void setActive(final boolean value) {
+      throw new RuntimeException("Cannot set the state of a linked state");
+    }
 
-      @Override
-      public boolean isActive() {
-        return !getReferenceState().isActive();
-      }
+    @Override
+    public String toString() {
+      return referenceState + " linked";
+    }
 
-      @Override
-      public State getReversedState() {
-        return getReferenceState();
-      }
+    public final State getReferenceState() {
+      return referenceState;
+    }
+  }
 
-      @Override
-      public void setActive(final boolean value) {
-        throw new RuntimeException("Cannot set the state of a reversed state");
-      }
+  private static final class ReverseState extends LinkedState {
 
-      @Override
-      public String toString() {
-        return isActive() ? "active reversed" : "inactive reversed";
-      }
+    ReverseState(final StateImpl referenceState) {
+      super(referenceState);
+    }
+
+    @Override
+    public boolean isActive() {
+      return !getReferenceState().isActive();
+    }
+
+    @Override
+    public State getReversedState() {
+      return getReferenceState();
+    }
+
+    @Override
+    public void setActive(final boolean value) {
+      throw new RuntimeException("Cannot set the state of a reversed state");
+    }
+
+    @Override
+    public String toString() {
+      return isActive() ? "active reversed" : "inactive reversed";
     }
   }
 
@@ -206,13 +206,13 @@ public final class States {
     public enum Type {AND, OR}
 
     private final List<State> states = new ArrayList<State>();
-    private final AggregateState.Type type;
+    private final Conjunction type;
 
-    private AggregateStateImpl(final AggregateState.Type type) {
+    private AggregateStateImpl(final Conjunction type) {
       this.type = type;
     }
 
-    private AggregateStateImpl(final AggregateState.Type type, final State... states) {
+    private AggregateStateImpl(final Conjunction type, final State... states) {
       this(type);
       for (final State state : states) {
         addState(state);
@@ -222,7 +222,7 @@ public final class States {
     @Override
     public String toString() {
       final StringBuilder stringBuilder = new StringBuilder("Aggregate ");
-      stringBuilder.append(type == AggregateState.Type.AND ? "AND " : "OR ").append(isActive() ? "active" : "inactive");
+      stringBuilder.append(type == Conjunction.AND ? "AND " : "OR ").append(isActive() ? "active" : "inactive");
       for (final State state : states) {
         stringBuilder.append(", ").append(state);
       }
@@ -233,7 +233,7 @@ public final class States {
     /**
      * @return the type of this aggregate state
      */
-    public State.AggregateState.Type getType() {
+    public Conjunction getConjunction() {
       return type;
     }
 
@@ -257,7 +257,7 @@ public final class States {
 
     @Override
     public boolean isActive() {
-      if (type == AggregateState.Type.AND) { //AND, one inactive is enough
+      if (type == Conjunction.AND) { //AND, one inactive is enough
         for (final State state : states) {
           if (!state.isActive()) {
             return false;

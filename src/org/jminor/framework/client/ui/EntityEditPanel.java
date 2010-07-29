@@ -6,6 +6,7 @@ package org.jminor.framework.client.ui;
 import org.jminor.common.db.exception.DbException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
+import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.State;
 import org.jminor.common.model.States;
 import org.jminor.common.model.Util;
@@ -133,7 +134,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   public final Control getDeleteControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.DELETE_MNEMONIC);
     return ControlFactory.methodControl(this, "delete", FrameworkMessages.get(FrameworkMessages.DELETE),
-            States.aggregateState(State.AggregateState.Type.AND,
+            States.aggregateState(Conjunction.AND,
                     getEditModel().stateActive(),
                     getEditModel().stateAllowDelete(),
                     getEditModel().stateEntityNull().getReversedState()),
@@ -157,7 +158,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   public final Control getUpdateControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.UPDATE_MNEMONIC);
     return ControlFactory.methodControl(this, "update", FrameworkMessages.get(FrameworkMessages.UPDATE),
-            States.aggregateState(State.AggregateState.Type.AND,
+            States.aggregateState(Conjunction.AND,
                     getEditModel().stateActive(),
                     getEditModel().stateAllowUpdate(),
                     getEditModel().stateEntityNull().getReversedState(),
@@ -172,7 +173,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   public final Control getInsertControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.INSERT_MNEMONIC);
     return ControlFactory.methodControl(this, "save", FrameworkMessages.get(FrameworkMessages.INSERT),
-            States.aggregateState(State.AggregateState.Type.AND, getEditModel().stateActive(), getEditModel().stateAllowInsert()),
+            States.aggregateState(Conjunction.AND, getEditModel().stateActive(), getEditModel().stateAllowInsert()),
             FrameworkMessages.get(FrameworkMessages.INSERT_TIP) + " (ALT-" + mnemonic + ")",
             mnemonic.charAt(0), null, Images.loadImage("Add16.gif"));
   }
@@ -182,11 +183,11 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    */
   public final Control getSaveControl() {
     final String insertCaption = FrameworkMessages.get(FrameworkMessages.INSERT_UPDATE);
-    final State stInsertUpdate = States.aggregateState(State.AggregateState.Type.OR, getEditModel().stateAllowInsert(),
-            States.aggregateState(State.AggregateState.Type.AND, getEditModel().stateAllowUpdate(),
+    final State stInsertUpdate = States.aggregateState(Conjunction.OR, getEditModel().stateAllowInsert(),
+            States.aggregateState(Conjunction.AND, getEditModel().stateAllowUpdate(),
                     getEditModel().stateModified()));
     return ControlFactory.methodControl(this, "save", insertCaption,
-            States.aggregateState(State.AggregateState.Type.AND, getEditModel().stateActive(), stInsertUpdate),
+            States.aggregateState(Conjunction.AND, getEditModel().stateActive(), stInsertUpdate),
             FrameworkMessages.get(FrameworkMessages.INSERT_UPDATE_TIP),
             insertCaption.charAt(0), null, Images.loadImage(Images.IMG_PROPERTIES_16));
   }

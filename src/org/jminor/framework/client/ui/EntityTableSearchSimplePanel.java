@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.client.ui;
 
-import org.jminor.common.db.criteria.CriteriaSet;
+import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.ui.control.ControlSet;
@@ -66,10 +66,10 @@ public final class EntityTableSearchSimplePanel extends JPanel implements Entity
   }
 
   private void performSimpleSearch(final String searchText, final Collection<Property> searchProperties) {
-    final CriteriaSet.Conjunction conjunction = searchModel.getSearchConjunction();
+    final Conjunction conjunction = searchModel.getSearchConjunction();
     try {
       searchModel.clearPropertySearchModels();
-      searchModel.setSearchConjunction(CriteriaSet.Conjunction.OR);
+      searchModel.setSearchConjunction(Conjunction.OR);
       if (searchText.length() > 0) {
         final String wildcard = (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER);
         final String searchTextWithWildcards = wildcard + searchText + wildcard;

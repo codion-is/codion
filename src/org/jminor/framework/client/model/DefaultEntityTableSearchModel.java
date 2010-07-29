@@ -5,6 +5,7 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.criteria.CriteriaSet;
+import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.Refreshable;
@@ -41,7 +42,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
   /** When active the search should be simplified */
   private final boolean simpleSearch;
   private Criteria<Property.ColumnProperty> additionalSearchCriteria;
-  private CriteriaSet.Conjunction searchConjunction = CriteriaSet.Conjunction.AND;
+  private Conjunction searchConjunction = Conjunction.AND;
   private String searchStateOnRefresh;
 
   /**
@@ -220,11 +221,11 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
     return this;
   }
 
-  public final CriteriaSet.Conjunction getSearchConjunction() {
+  public final org.jminor.common.model.Conjunction getSearchConjunction() {
     return searchConjunction;
   }
 
-  public final void setSearchConjunction(final CriteriaSet.Conjunction conjunction) {
+  public final void setSearchConjunction(final org.jminor.common.model.Conjunction conjunction) {
     this.searchConjunction = conjunction;
   }
 

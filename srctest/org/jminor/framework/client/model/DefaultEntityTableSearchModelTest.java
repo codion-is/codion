@@ -1,6 +1,6 @@
 package org.jminor.framework.client.model;
 
-import org.jminor.common.db.criteria.CriteriaSet;
+import org.jminor.common.model.Conjunction;
 import org.jminor.framework.db.EntityDbConnectionTest;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Property;
@@ -32,8 +32,8 @@ public class DefaultEntityTableSearchModelTest {
     assertEquals(EmpDept.T_EMPLOYEE, model.getEntityID());
     assertNotNull(model.getSearchableProperties());
     assertEquals(false, model.isSimpleSearch());
-    model.setSearchConjunction(CriteriaSet.Conjunction.OR);
-    assertEquals(CriteriaSet.Conjunction.OR, model.getSearchConjunction());
+    model.setSearchConjunction(Conjunction.OR);
+    assertEquals(Conjunction.OR, model.getSearchConjunction());
     assertEquals(9, model.getPropertyFilterModels().size());
     assertEquals(8, model.getPropertySearchModels().size());
 

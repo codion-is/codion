@@ -7,6 +7,7 @@ import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.exception.DbException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
+import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.SearchModel;
@@ -453,7 +454,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
    * underlying entity, for performing an update on the selected entities
    */
   public ControlSet getUpdateSelectedControlSet() {
-    final State enabled = States.aggregateState(State.AggregateState.Type.AND,
+    final State enabled = States.aggregateState(Conjunction.AND,
             getTableModel().stateAllowMultipleUpdate(),
             getTableModel().stateSelectionEmpty().getReversedState());
     final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED),
@@ -496,7 +497,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
    */
   public final Control getDeleteSelectedControl() {
     return ControlFactory.methodControl(this, "delete", FrameworkMessages.get(FrameworkMessages.DELETE),
-            States.aggregateState(State.AggregateState.Type.AND,
+            States.aggregateState(Conjunction.AND,
                     getTableModel().stateAllowDelete(),
                     getTableModel().stateSelectionEmpty().getReversedState()),
             FrameworkMessages.get(FrameworkMessages.DELETE_TIP), 0, null,

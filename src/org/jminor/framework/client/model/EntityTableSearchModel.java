@@ -4,7 +4,7 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.db.criteria.Criteria;
-import org.jminor.common.db.criteria.CriteriaSet;
+import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.FilterCriteria;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.SearchModel;
@@ -90,16 +90,16 @@ public interface EntityTableSearchModel extends FilterCriteria<Entity>, Refresha
 
   /**
    * @return the conjunction to be used when more than one column search criteria is active,
-   * the default is <code>CriteriaSet.Conjunction.AND</code>
-   * @see org.jminor.common.db.criteria.CriteriaSet.Conjunction
+   * the default is <code>Conjunction.AND</code>
+   * @see Conjunction
    */
-  CriteriaSet.Conjunction getSearchConjunction();
+  Conjunction getSearchConjunction();
 
   /**
    * @param conjunction the conjunction to be used when more than one column search criteria is active
-   * @see org.jminor.common.db.criteria.CriteriaSet.Conjunction
+   * @see Conjunction
    */
-  void setSearchConjunction(final CriteriaSet.Conjunction conjunction);
+  void setSearchConjunction(final Conjunction conjunction);
 
   /**
    * @param propertyID the id of the property for which to check for the PropertySearchModel

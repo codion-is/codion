@@ -10,7 +10,7 @@ public final class AggregateStateImplTest {
 
   @Test
   public void test() {
-    State.AggregateState orState = States.aggregateState(State.AggregateState.Type.OR);
+    State.AggregateState orState = States.aggregateState(Conjunction.OR);
     final State stateOne = States.state();
     final State stateTwo = States.state();
     final State stateThree = States.state();
@@ -18,8 +18,8 @@ public final class AggregateStateImplTest {
     orState.addState(stateTwo);
     orState.addState(stateThree);
 
-    State.AggregateState andState = States.aggregateState(State.AggregateState.Type.AND, stateOne, stateTwo, stateThree);
-    assertEquals(State.AggregateState.Type.AND, andState.getType());
+    State.AggregateState andState = States.aggregateState(Conjunction.AND, stateOne, stateTwo, stateThree);
+    assertEquals(Conjunction.AND, andState.getConjunction());
     assertEquals("Aggregate AND inactive, inactive, inactive, inactive", andState.toString());
 
     assertFalse("Or state should be inactive", orState.isActive());
@@ -57,11 +57,11 @@ public final class AggregateStateImplTest {
     stateOne.setActive(false);
     stateTwo.setActive(false);
     stateThree.setActive(false);
-    orState = States.aggregateState(State.AggregateState.Type.OR);
+    orState = States.aggregateState(Conjunction.OR);
     orState.addState(stateOne.getLinkedState());
     orState.addState(stateTwo);
     orState.addState(stateThree.getLinkedState().getLinkedState());
-    andState = States.aggregateState(State.AggregateState.Type.AND, stateOne.getLinkedState(), stateTwo.getLinkedState(), stateThree.getLinkedState());
+    andState = States.aggregateState(Conjunction.AND, stateOne.getLinkedState(), stateTwo.getLinkedState(), stateThree.getLinkedState());
     assertEquals("Aggregate AND inactive, inactive linked, inactive linked, inactive linked", andState.toString());
 
     assertFalse("Or state should be inactive", orState.isActive());

@@ -5,6 +5,7 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.criteria.CriteriaSet;
+import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
@@ -237,7 +238,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
       return EntityCriteriaUtil.selectCriteria(entityID);
     }
 
-    final CriteriaSet<Property.ColumnProperty> baseCriteria = new CriteriaSet<Property.ColumnProperty>(CriteriaSet.Conjunction.OR);
+    final CriteriaSet<Property.ColumnProperty> baseCriteria = new CriteriaSet<Property.ColumnProperty>(org.jminor.common.model.Conjunction.OR);
     final String[] lookupTexts = multipleSelectionAllowed ? searchString.split(multipleValueSeparator) : new String[] {searchString};
     for (final Property.ColumnProperty lookupProperty : lookupProperties) {
       for (final String lookupText : lookupTexts) {
@@ -247,7 +248,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
     }
 
     return EntityCriteriaUtil.selectCriteria(entityID, additionalLookupCriteria == null ? baseCriteria :
-            new CriteriaSet<Property.ColumnProperty>(CriteriaSet.Conjunction.AND, additionalLookupCriteria, baseCriteria));
+            new CriteriaSet<Property.ColumnProperty>(Conjunction.AND, additionalLookupCriteria, baseCriteria));
   }
 
   private String toString(final List<Entity> entityList) {
