@@ -72,7 +72,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
     Util.rejectNullValue(properties, "properties");
     this.entityID = entityID;
     this.properties = properties;
-    this.propertyFilterModels = initializePropertyFilterModels();
+    this.propertyFilterModels = initializePropertyFilterModels();//todo lazy init
     this.propertySearchModels = initializePropertySearchModels(dbProvider);
     this.searchStateOnRefresh = getSearchModelState();
     this.simpleSearch = simpleSearch;

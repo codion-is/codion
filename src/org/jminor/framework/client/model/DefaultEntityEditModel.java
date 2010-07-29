@@ -659,7 +659,7 @@ public class DefaultEntityEditModel extends DefaultValueChangeMapEditModel<Strin
     return stringBuilder.toString();
   }
 
-  static class PropertyValueProvider implements ValueCollectionProvider<Object> {
+  static final class PropertyValueProvider implements ValueCollectionProvider<Object> {
 
     private final EntityDbProvider dbProvider;
     private final String entityID;
@@ -701,7 +701,7 @@ public class DefaultEntityEditModel extends DefaultValueChangeMapEditModel<Strin
     }
   }
 
-  private static class StatusMessageListener extends ValueChangeListener<String, Object> {
+  private static final class StatusMessageListener extends ValueChangeListener<String, Object> {
     @Override
     protected void valueChanged(final ValueChangeEvent<String, Object> event) {
       final String msg = getValueChangeDebugString(event);

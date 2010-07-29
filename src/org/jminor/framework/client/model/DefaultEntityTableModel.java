@@ -493,7 +493,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   @Override
-  protected Comparable getComparable(final Object object, final int columnIndex) {
+  protected final Comparable getComparable(final Object object, final int columnIndex) {
     final Property property = getColumnProperty(columnIndex);
     return (Comparable) ((Entity) object).getValue(property);
   }
