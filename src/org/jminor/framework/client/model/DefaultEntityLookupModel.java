@@ -238,7 +238,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
       return EntityCriteriaUtil.selectCriteria(entityID);
     }
 
-    final CriteriaSet<Property.ColumnProperty> baseCriteria = new CriteriaSet<Property.ColumnProperty>(org.jminor.common.model.Conjunction.OR);
+    final CriteriaSet<Property.ColumnProperty> baseCriteria = new CriteriaSet<Property.ColumnProperty>(Conjunction.OR);
     final String[] lookupTexts = multipleSelectionAllowed ? searchString.split(multipleValueSeparator) : new String[] {searchString};
     for (final Property.ColumnProperty lookupProperty : lookupProperties) {
       for (final String lookupText : lookupTexts) {

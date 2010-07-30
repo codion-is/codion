@@ -30,15 +30,16 @@ import java.util.Map;
 /**
  * A default EntityTableSearchModel implementation
  */
-public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
+public class DefaultEntityTableSearchModel implements EntityTableSearchModel, EntityDataProvider {
 
   private final Event evtFilterStateChanged = Events.event();
   private final State stSearchStateChanged = States.state();
 
   private final String entityID;
+  private final EntityDbProvider dbProvider;
   private final List<Property> properties;
-  private final Map<String, SearchModel<Property>> propertyFilterModels;
-  private final Map<String, PropertySearchModel<? extends Property.SearchableProperty>> propertySearchModels;
+  private Map<String, SearchModel<Property>> propertyFilterModels;
+  private Map<String, PropertySearchModel<? extends Property.SearchableProperty>> propertySearchModels;
   /** When active the search should be simplified */
   private final boolean simpleSearch;
   private Criteria<Property.ColumnProperty> additionalSearchCriteria;
@@ -71,9 +72,8 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
     Util.rejectNullValue(entityID, "entityID");
     Util.rejectNullValue(properties, "properties");
     this.entityID = entityID;
+    this.dbProvider = dbProvider;
     this.properties = properties;
-    this.propertyFilterModels = initializePropertyFilterModels();//todo lazy init
-    this.propertySearchModels = initializePropertySearchModels(dbProvider);
     this.searchStateOnRefresh = getSearchModelState();
     this.simpleSearch = simpleSearch;
     bindEvents();
@@ -81,6 +81,10 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
 
   public final String getEntityID() {
     return entityID;
+  }
+
+  public EntityDbProvider getDbProvider() {
+    return dbProvider;
   }
 
   public final boolean isSimpleSearch() {
@@ -104,6 +108,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
   }
 
   public final SearchModel<Property> getPropertyFilterModel(final String propertyID) {
+    initialize();
     if (propertyFilterModels.containsKey(propertyID)) {
       return propertyFilterModels.get(propertyID);
     }
@@ -112,6 +117,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
   }
 
   public final Collection<SearchModel<Property>> getPropertyFilterModels() {
+    initialize();
     return Collections.unmodifiableCollection(propertyFilterModels.values());
   }
 
@@ -125,6 +131,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
   }
 
   public final boolean include(final Entity item) {
+    initialize();
     for (final SearchModel<Property> columnFilter : propertyFilterModels.values()) {
       if (columnFilter.isSearchEnabled() && !columnFilter.include(item)) {
         return false;
@@ -135,6 +142,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
   }
 
   public final void refresh() {
+    initialize();
     for (final PropertySearchModel model : propertySearchModels.values()) {
       if (model instanceof Refreshable) {
         ((Refreshable) model).refresh();
@@ -143,6 +151,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
   }
 
   public final void clear() {
+    initialize();
     for (final PropertySearchModel model : propertySearchModels.values()) {
       if (model instanceof Refreshable) {
         ((Refreshable) model).clear();
@@ -151,20 +160,24 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
   }
 
   public final void clearPropertySearchModels() {
+    initialize();
     for (final PropertySearchModel searchModel : propertySearchModels.values()) {
       searchModel.clearSearch();
     }
   }
 
   public final Collection<PropertySearchModel<? extends Property.SearchableProperty>> getPropertySearchModels() {
+    initialize();
     return Collections.unmodifiableCollection(propertySearchModels.values());
   }
 
   public final boolean containsPropertySearchModel(final String propertyID) {
+    initialize();
     return propertySearchModels.containsKey(propertyID);
   }
 
   public final PropertySearchModel<? extends Property.SearchableProperty> getPropertySearchModel(final String propertyID) {
+    initialize();
     if (propertySearchModels.containsKey(propertyID)) {
       return propertySearchModels.get(propertyID);
     }
@@ -199,6 +212,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
   }
 
   public final Criteria<Property.ColumnProperty> getSearchCriteria() {
+    initialize();
     final CriteriaSet<Property.ColumnProperty> criteriaSet = new CriteriaSet<Property.ColumnProperty>(searchConjunction);
     for (final PropertySearchModel<? extends Property.SearchableProperty> criteria : propertySearchModels.values()) {
       if (criteria.isSearchEnabled()) {
@@ -221,11 +235,11 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
     return this;
   }
 
-  public final org.jminor.common.model.Conjunction getSearchConjunction() {
+  public final Conjunction getSearchConjunction() {
     return searchConjunction;
   }
 
-  public final void setSearchConjunction(final org.jminor.common.model.Conjunction conjunction) {
+  public final void setSearchConjunction(final Conjunction conjunction) {
     this.searchConjunction = conjunction;
   }
 
@@ -284,6 +298,15 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
    */
   protected SearchModel<Property> initializePropertyFilterModel(final Property property) {
     return new DefaultPropertyFilterModel(property);
+  }
+
+  private void initialize() {
+    if (propertyFilterModels == null) {
+      propertyFilterModels = initializePropertyFilterModels();
+    }
+    if (propertySearchModels == null) {
+      propertySearchModels = initializePropertySearchModels(dbProvider);
+    }
   }
 
   /**
