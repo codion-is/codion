@@ -49,7 +49,7 @@ public interface State {
       /**
        * @return the type of this aggregate state
        */
-      public Conjunction getConjunction();
+      Conjunction getConjunction();
 
       void addState(final State state);
 
