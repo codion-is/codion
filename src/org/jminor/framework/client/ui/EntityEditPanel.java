@@ -461,20 +461,20 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   private void setupControls(final String... controlKeys) {
     final Collection<String> keys = Arrays.asList(controlKeys);
     if (!getEditModel().isReadOnly()) {
-      if (getEditModel().isInsertAllowed() && keys.size() > 0 && keys.contains(INSERT)) {
+      if (getEditModel().isInsertAllowed() && (keys.size() == 0 || keys.contains(INSERT))) {
         setControl(INSERT, getInsertControl());
       }
-      if (getEditModel().isUpdateAllowed() && keys.size() > 0 && keys.contains(UPDATE)) {
+      if (getEditModel().isUpdateAllowed() && (keys.size() == 0 || keys.contains(UPDATE))) {
         setControl(UPDATE, getUpdateControl());
       }
-      if (getEditModel().isDeleteAllowed() && keys.size() > 0 && keys.contains(DELETE)) {
+      if (getEditModel().isDeleteAllowed() && (keys.size() == 0 || keys.contains(DELETE))) {
         setControl(DELETE, getDeleteControl());
       }
     }
-    if (keys.size() > 0 && keys.contains(CLEAR)) {
+    if ((keys.size() == 0 || keys.contains(CLEAR))) {
       setControl(CLEAR, getClearControl());
     }
-    if (keys.size() > 0 && keys.contains(REFRESH)) {
+    if ((keys.size() == 0 || keys.contains(REFRESH))) {
       setControl(REFRESH, getRefreshControl());
     }
   }
