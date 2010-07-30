@@ -12,6 +12,12 @@ import java.awt.event.ActionListener;
  */
 public interface EventObserver {
 
+  /**
+   * Adds <code>listener</code> to this EventObserver, adding the same listener
+   * a second time has no effect.
+   * @param listener the listener to add
+   * @throws IllegalArgumentException in case listener is null
+   */
   void addListener(final ActionListener listener);
 
   /**

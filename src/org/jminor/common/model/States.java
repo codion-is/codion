@@ -26,8 +26,9 @@ public final class States {
     return new StateImpl(initialState);
   }
 
-  public static State.AggregateState aggregateState(final Conjunction type, final StateObserver... states) {
-    return new AggregateStateImpl(type, states);
+  public static State.AggregateState aggregateState(final Conjunction conjunction, final StateObserver... states) {
+    Util.rejectNullValue(conjunction, "conjunction");
+    return new AggregateStateImpl(conjunction, states);
   }
 
   public static State.StateGroup stateGroup() {
@@ -41,17 +42,10 @@ public final class States {
     private volatile StateObserver observer;
     private volatile boolean active = false;
 
-    /**
-     * Constructs a new State instance initialized as inactive
-     */
     StateImpl() {
       this(false);
     }
 
-    /**
-     * Constructs a new State instance
-     * @param initialState the initial state
-     */
     StateImpl(final boolean initialState) {
       this.active = initialState;
     }
@@ -70,9 +64,6 @@ public final class States {
       return observer;
     }
 
-    /**
-     * @param value the new active state of this State instance
-     */
     public synchronized void setActive(final boolean value) {
       final boolean oldValue = active;
       active = value;
@@ -81,26 +72,23 @@ public final class States {
       }
     }
 
-    /**
-     * @return true if this state is active, false otherwise
-     */
     public boolean isActive() {
       return active;
     }
 
-    public void addListeningAction(final Action action) {
+    public final void addListeningAction(final Action action) {
       getObserver().addListeningAction(action);
     }
 
-    public void addListener(final ActionListener listener) {
+    public final void addListener(final ActionListener listener) {
       getObserver().addListener(listener);
     }
 
-    public void notifyObserver() {
+    public final void notifyObserver() {
       getObserver().notifyObserver();
     }
 
-    public void removeListener(final ActionListener listener) {
+    public final void removeListener(final ActionListener listener) {
       getObserver().removeListener(listener);
     }
 
@@ -143,16 +131,7 @@ public final class States {
     }
   }
 
-  /**
-   * A state which behaves according to a set of states, either ANDing or ORing those together
-   * when determining its own state.
-   */
   private static final class AggregateStateImpl extends StateImpl implements State.AggregateState {
-
-    /**
-     * The conjunction types used in AggregateState.
-     */
-    public enum Type {AND, OR}
 
     private final List<StateObserver> states = new ArrayList<StateObserver>();
     private final ActionListener linkAction = new ActionListener() {
@@ -160,23 +139,25 @@ public final class States {
         getObserver().notifyObserver();
       }
     };
-    private final Conjunction type;
+    private final Conjunction conjunction;
 
-    private AggregateStateImpl(final Conjunction type) {
-      this.type = type;
+    private AggregateStateImpl(final Conjunction conjunction) {
+      this.conjunction = conjunction;
     }
 
-    private AggregateStateImpl(final Conjunction type, final StateObserver... states) {
-      this(type);
-      for (final StateObserver state : states) {
-        addState(state);
+    private AggregateStateImpl(final Conjunction conjunction, final StateObserver... states) {
+      this(conjunction);
+      if (states != null) {
+        for (final StateObserver state : states) {
+          addState(state);
+        }
       }
     }
 
     @Override
-    public String toString() {
+    public synchronized String toString() {
       final StringBuilder stringBuilder = new StringBuilder("Aggregate ");
-      stringBuilder.append(type == Conjunction.AND ? "AND " : "OR ").append(isActive() ? "active" : "inactive");
+      stringBuilder.append(conjunction.toString()).append(isActive() ? "active" : "inactive");
       for (final StateObserver state : states) {
         stringBuilder.append(", ").append(state);
       }
@@ -184,14 +165,12 @@ public final class States {
       return stringBuilder.toString();
     }
 
-    /**
-     * @return the type of this aggregate state
-     */
     public Conjunction getConjunction() {
-      return type;
+      return conjunction;
     }
 
-    public void addState(final StateObserver state) {
+    public synchronized void addState(final StateObserver state) {
+      Util.rejectNullValue(state, "state");
       final boolean wasActive = isActive();
       states.add(state);
       state.addListener(linkAction);
@@ -200,7 +179,8 @@ public final class States {
       }
     }
 
-    public void removeState(final StateObserver state) {
+    public synchronized void removeState(final StateObserver state) {
+      Util.rejectNullValue(state, "state");
       final boolean wasActive = isActive();
       state.removeListener(linkAction);
       states.remove(state);
@@ -210,8 +190,8 @@ public final class States {
     }
 
     @Override
-    public boolean isActive() {
-      if (type == Conjunction.AND) { //AND, one inactive is enough
+    public synchronized boolean isActive() {
+      if (conjunction == Conjunction.AND) { //AND, one inactive is enough
         for (final StateObserver state : states) {
           if (!state.isActive()) {
             return false;
@@ -238,10 +218,11 @@ public final class States {
   }
 
   static final class StateObserverImpl implements StateObserver {
+
     private final Event evtStateChanged = Events.event();
     private final State state;
 
-    private ReverseState reversedState = null;
+    private volatile ReverseState reversedState = null;
 
     private StateObserverImpl(final State state) {
       this.state = state;
@@ -251,31 +232,23 @@ public final class States {
       return state.isActive();
     }
 
-    /**
-     * @return A State object that is always the reverse of the parent state
-     */
     public StateObserver getReversedState() {
       if (reversedState == null) {
-        reversedState = new ReverseState(this);
+        synchronized (evtStateChanged) {
+          reversedState = new ReverseState(this);
+        }
       }
-
       return reversedState.getObserver();
     }
 
     public final void addListeningAction(final Action action) {
+      Util.rejectNullValue(action, "action");
       action.setEnabled(state.isActive());
       evtStateChanged.addListener(new ActionListener() {
         public void actionPerformed(final ActionEvent e) {
           action.setEnabled(state.isActive());
         }
       });
-    }
-
-    /**
-     * @return an EventObserver notified each time the state changes
-     */
-    public final EventObserver stateObserver() {
-      return evtStateChanged.getObserver();
     }
 
     public final void addListener(final ActionListener listener) {
@@ -291,21 +264,10 @@ public final class States {
     }
   }
 
-  /**
-   * A StateGroup deactivates all other states when a state in the group is activated.
-   * StateGroup works with WeakReference so adding states does not prevent
-   * them from being garbage collected.
-   */
   static final class StateGroupImpl implements State.StateGroup {
 
     private final List<WeakReference<State>> members = Collections.synchronizedList(new ArrayList<WeakReference<State>>());
 
-    /**
-     * Adds a state to this state group via a WeakReference,
-     * so it does not prevent it from being garbage collected.
-     * Adding an active state deactivates all other states in the group.
-     * @param state the State to add
-     */
     public void addState(final State state) {
       synchronized (members) {
         for (final WeakReference<State> reference : members) {

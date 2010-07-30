@@ -18,6 +18,10 @@ public interface State extends StateObserver {
    */
   StateObserver getObserver();
 
+  /**
+   * A state which behaves according to a set of states, either ANDing or ORing those together
+   * when determining its own state.
+   */  
   interface AggregateState extends State {
 
     /**

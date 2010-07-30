@@ -27,17 +27,10 @@ public final class Events {
     private final ActionEvent defaultActionEvent = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "");
     private volatile EventObserverImpl observer;
 
-    /**
-     * Notifies all listeners
-     */
     public void fire() {
       fire(defaultActionEvent);
     }
 
-    /**
-     * Notifies all listeners
-     * @param event the ActionEvent to use when notifying
-     */
     public void fire(final ActionEvent event) {
       if (observer != null) {
         for (final ActionListener listener : new ArrayList<ActionListener>(observer.getListeners())) {
@@ -60,20 +53,10 @@ public final class Events {
       return observer;
     }
 
-    /**
-     * Adds <code>listener</code> to this Event, adding the same listener
-     * a second time has no effect.
-     * @param listener the listener to add
-     * @throws IllegalArgumentException in case listener is null
-     */
     public void addListener(final ActionListener listener) {
       getObserver().addListener(listener);
     }
 
-    /**
-     * Removes <code>listener</code> from this Event
-     * @param listener the listener to remove
-     */
     public void removeListener(final ActionListener listener) {
       if (observer != null) {
         observer.removeListener(listener);
@@ -89,21 +72,11 @@ public final class Events {
 
     private final Set<ActionListener> listeners = new HashSet<ActionListener>();
 
-    /**
-     * Adds <code>listener</code> to this Event, adding the same listener
-     * a second time has no effect.
-     * @param listener the listener to add
-     * @throws IllegalArgumentException in case listener is null
-     */
     public synchronized void addListener(final ActionListener listener) {
       Util.rejectNullValue(listener, "listener");
       listeners.add(listener);
     }
 
-    /**
-     * Removes <code>listener</code> from this Event
-     * @param listener the listener to remove
-     */
     public synchronized void removeListener(final ActionListener listener) {
       listeners.remove(listener);
     }
