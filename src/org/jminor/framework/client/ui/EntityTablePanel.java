@@ -460,7 +460,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED),
             (char) 0, Images.loadImage("Modify16.gif"), enabled);
     controlSet.setDescription(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_TIP));
-    for (final Property property : EntityUtil.getUpdateProperties(getTableModel().getEntityID())) {
+    for (final Property property : EntityUtil.getUpdatableProperties(getTableModel().getEntityID())) {
       final String caption = property.getCaption() == null ? property.getPropertyID() : property.getCaption();
       controlSet.add(UiUtil.linkToEnabledState(enabled, new AbstractAction(caption) {
         public void actionPerformed(final ActionEvent e) {
@@ -1361,7 +1361,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
   }
 
   private Property getPropertyToUpdate() throws CancelException {
-    final JComboBox box = new JComboBox(EntityUtil.getUpdateProperties(getTableModel().getEntityID()).toArray());
+    final JComboBox box = new JComboBox(EntityUtil.getUpdatableProperties(getTableModel().getEntityID()).toArray());
     final int ret = JOptionPane.showOptionDialog(this, box,
             FrameworkMessages.get(FrameworkMessages.SELECT_PROPERTY_FOR_UPDATE),
             JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);

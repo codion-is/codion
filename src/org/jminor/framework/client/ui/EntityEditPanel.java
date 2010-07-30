@@ -79,6 +79,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   public EntityEditPanel(final EntityEditModel editModel) {
     this(editModel, new String[0]);
   }
+
   /**
    * Instantiates a new EntityEditPanel based on the provided EntityEditModel
    * @param editModel the EntityEditModel instance to base this EntityEditPanel on

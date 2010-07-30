@@ -75,6 +75,10 @@ public class DefaultSearchModel<K> implements SearchModel<K> {
     stLocked.setActive(value);
   }
 
+  public final boolean isLocked() {
+    return stLocked.isActive();
+  }
+
   /**
    * @return the data type of the underlying search property.
    * @see Types

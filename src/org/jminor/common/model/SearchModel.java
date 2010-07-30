@@ -49,6 +49,8 @@ public interface SearchModel<K> {
 
   void setLocked(boolean value);
 
+  boolean isLocked();
+
   void setUpperBound(Object upper);
 
   int getType();
