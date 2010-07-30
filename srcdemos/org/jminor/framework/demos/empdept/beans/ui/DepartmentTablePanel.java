@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.demos.empdept.beans.ui;
 
-import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlSet;
+import org.jminor.common.ui.control.Controls;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.ui.EntityTablePanel;
@@ -42,7 +42,7 @@ public class DepartmentTablePanel extends EntityTablePanel {
   @Override
   protected ControlSet getPrintControls() {
     final ControlSet printControlSet = super.getPrintControls();
-    printControlSet.add(ControlFactory.methodControl(this, "viewEmployeeReport", EmpDept.getString(EMPLOYEE_REPORT)));
+    printControlSet.add(Controls.methodControl(this, "viewEmployeeReport", EmpDept.getString(EMPLOYEE_REPORT)));
 
     return printControlSet;
   }

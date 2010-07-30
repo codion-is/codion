@@ -12,9 +12,9 @@ import javax.swing.KeyStroke;
 /**
  * A static utility class for constructing Control objects.
  */
-public final class ControlFactory {
+public final class Controls {
 
-  private ControlFactory() {}
+  private Controls() {}
 
   public static ToggleBeanValueLink toggleControl(final Object owner, final String propertyName, final String caption,
                                                   final EventObserver changeEvent) {

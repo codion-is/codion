@@ -4,9 +4,9 @@
 package org.jminor.framework.server.monitor.ui;
 
 import org.jminor.common.ui.UiUtil;
-import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.ControlSet;
+import org.jminor.common.ui.control.Controls;
 import org.jminor.framework.server.monitor.HostMonitor;
 import org.jminor.framework.server.monitor.ServerMonitor;
 
@@ -48,7 +48,7 @@ public final class HostMonitorPanel extends JPanel {
 
   private ControlSet getControls() {
     final ControlSet controlSet = new ControlSet();
-    controlSet.add(ControlFactory.methodControl(model, "refresh", "Refresh"));
+    controlSet.add(Controls.methodControl(model, "refresh", "Refresh"));
 
     return controlSet;
   }

@@ -10,24 +10,12 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.control.Control;
-import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
+import org.jminor.common.ui.control.Controls;
 import org.jminor.common.ui.control.ToggleBeanValueLink;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
 
-import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
+import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -233,26 +221,26 @@ public final class ExceptionDialog extends JDialog {
   }
 
   private void setupControls() {
-    ctrDetails = ControlFactory.toggleControl(this, "showDetails",
+    ctrDetails = Controls.toggleControl(this, "showDetails",
             Messages.get(Messages.DETAILS), null,
             Messages.get(Messages.SHOW_DETAILS));
-    ctrPrint = ControlFactory.methodControl(this, "printErrorReport",
+    ctrPrint = Controls.methodControl(this, "printErrorReport",
             Messages.get(Messages.PRINT), null,
             Messages.get(Messages.PRINT_ERROR_REPORT),
             Messages.get(Messages.PRINT_ERROR_REPORT_MNEMONIC).charAt(0));
-    ctrClose = ControlFactory.methodControl(this, "close",
+    ctrClose = Controls.methodControl(this, "close",
             Messages.get(Messages.CLOSE), null,
             Messages.get(Messages.CLOSE_DIALOG),
             Messages.get(Messages.CLOSE_MNEMONIC).charAt(0));
-    ctrSave = ControlFactory.methodControl(this, "saveErrorReport",
+    ctrSave = Controls.methodControl(this, "saveErrorReport",
             Messages.get(Messages.SAVE), null,
             Messages.get(Messages.SAVE_ERROR_LOG),
             Messages.get(Messages.SAVE_MNEMONIC).charAt(0));
-    ctrCopy = ControlFactory.methodControl(this,"copyErrorReport",
+    ctrCopy = Controls.methodControl(this,"copyErrorReport",
             Messages.get(Messages.COPY), null,
             Messages.get(Messages.COPY_TO_CLIPBOARD),
             Messages.get(Messages.COPY_MNEMONIC).charAt(0));
-    ctrEmail = ControlFactory.methodControl(this,"emailErrorReport",
+    ctrEmail = Controls.methodControl(this,"emailErrorReport",
             Messages.get(Messages.SEND), null,
             Messages.get(Messages.SEND_EMAIL),
             Messages.get(Messages.SEND_MNEMONIC).charAt(0));

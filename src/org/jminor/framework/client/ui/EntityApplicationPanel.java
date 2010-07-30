@@ -15,9 +15,9 @@ import org.jminor.common.ui.ExceptionHandler;
 import org.jminor.common.ui.LoginPanel;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.Control;
-import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.ControlSet;
+import org.jminor.common.ui.control.Controls;
 import org.jminor.common.ui.control.ToggleBeanValueLink;
 import org.jminor.common.ui.images.Images;
 import org.jminor.framework.Configuration;
@@ -313,11 +313,11 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     final ControlSet file = new ControlSet(FrameworkMessages.get(FrameworkMessages.FILE));
     file.setMnemonic(FrameworkMessages.get(FrameworkMessages.FILE_MNEMONIC).charAt(0));
 //    if (isLoginRequired()) {
-//      file.add(ControlFactory.methodControl(this, "logout", Messages.get(Messages.LOGOUT)));
-//      file.add(ControlFactory.methodControl(this, "login", Messages.get(Messages.LOGIN)));
+//      file.add(Controls.methodControl(this, "logout", Messages.get(Messages.LOGOUT)));
+//      file.add(Controls.methodControl(this, "login", Messages.get(Messages.LOGIN)));
 //      file.addSeparator();
 //    }
-    file.add(ControlFactory.methodControl(this, "exit", FrameworkMessages.get(FrameworkMessages.EXIT),
+    file.add(Controls.methodControl(this, "exit", FrameworkMessages.get(FrameworkMessages.EXIT),
             null, FrameworkMessages.get(FrameworkMessages.EXIT_TIP),
             FrameworkMessages.get(FrameworkMessages.EXIT_MNEMONIC).charAt(0)));
 
@@ -329,13 +329,13 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    */
   protected ControlSet getSettingsControlSet() {
     final ImageIcon cascadeRefreshIcon = Images.loadImage(Images.ICON_CASCADE_REFRESH);
-    final Control ctrCascadeRefresh = ControlFactory.toggleControl(applicationModel, "cascadeRefresh",
+    final Control ctrCascadeRefresh = Controls.toggleControl(applicationModel, "cascadeRefresh",
             FrameworkMessages.get(FrameworkMessages.CASCADE_REFRESH), applicationModel.cascadeRefreshObserver());
     ctrCascadeRefresh.setDescription(FrameworkMessages.get(FrameworkMessages.CASCADE_REFRESH_DESC));
     ctrCascadeRefresh.setIcon(cascadeRefreshIcon);
 
     final ImageIcon setLoggingIcon = Images.loadImage(Images.ICON_PRINT_QUERIES);
-    final Control ctrSetLoggingLevel = ControlFactory.methodControl(this, "setLoggingLevel",
+    final Control ctrSetLoggingLevel = Controls.methodControl(this, "setLoggingLevel",
             FrameworkMessages.get(FrameworkMessages.SET_LOG_LEVEL));
     ctrSetLoggingLevel.setDescription(FrameworkMessages.get(FrameworkMessages.SET_LOG_LEVEL_DESC));
     ctrSetLoggingLevel.setIcon(setLoggingIcon);
@@ -366,14 +366,14 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   protected ControlSet getViewControlSet() {
     final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.VIEW),
             FrameworkMessages.get(FrameworkMessages.VIEW_MNEMONIC).charAt(0));
-    final Control ctrRefreshAll = ControlFactory.methodControl(applicationModel, "refresh",
+    final Control ctrRefreshAll = Controls.methodControl(applicationModel, "refresh",
             FrameworkMessages.get(FrameworkMessages.REFRESH_ALL));
     controlSet.add(ctrRefreshAll);
     controlSet.addSeparator();
-    controlSet.add(ControlFactory.methodControl(this, "viewApplicationTree",
+    controlSet.add(Controls.methodControl(this, "viewApplicationTree",
             FrameworkMessages.get(FrameworkMessages.APPLICATION_TREE), null, null));
     controlSet.addSeparator();
-    final ToggleBeanValueLink ctrAlwaysOnTop = ControlFactory.toggleControl(this,
+    final ToggleBeanValueLink ctrAlwaysOnTop = Controls.toggleControl(this,
             "alwaysOnTop", FrameworkMessages.get(FrameworkMessages.ALWAYS_ON_TOP), evtAlwaysOnTopChanged);
     controlSet.add(ctrAlwaysOnTop);
 
@@ -386,11 +386,11 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   protected ControlSet getHelpControlSet() {
     final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.HELP),
             FrameworkMessages.get(FrameworkMessages.HELP_MNEMONIC).charAt(0));
-    final Control ctrHelp = ControlFactory.methodControl(this, "showHelp",
+    final Control ctrHelp = Controls.methodControl(this, "showHelp",
             FrameworkMessages.get(FrameworkMessages.HELP) + "...", null, null);
     controlSet.add(ctrHelp);
     controlSet.addSeparator();
-    final Control ctrAbout = ControlFactory.methodControl(this, "showAbout",
+    final Control ctrAbout = Controls.methodControl(this, "showAbout",
             FrameworkMessages.get(FrameworkMessages.ABOUT) + "...", null, null);
     controlSet.add(ctrAbout);
 

@@ -11,8 +11,8 @@ import org.jminor.common.model.States;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.combobox.ItemComboBoxModel;
 import org.jminor.common.ui.combobox.SteppedComboBox;
-import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
+import org.jminor.common.ui.control.Controls;
 import org.jminor.common.ui.control.DateBeanValueLink;
 import org.jminor.common.ui.control.DoubleBeanValueLink;
 import org.jminor.common.ui.control.IntBeanValueLink;
@@ -107,10 +107,10 @@ public abstract class AbstractSearchPanel<K> extends JPanel {
     this.upperBoundField = getInputField(true);
     this.lowerBoundField = isLowerBoundFieldRequired(searchModel.getSearchKey()) ? getInputField(false) : null;
     this.toggleSearchEnabled = ControlProvider.createToggleButton(
-            ControlFactory.toggleControl(searchModel, "searchEnabled", null, searchModel.enabledObserver()));
+            Controls.toggleControl(searchModel, "searchEnabled", null, searchModel.enabledObserver()));
     toggleSearchEnabled.setIcon(Images.loadImage(Images.IMG_FILTER_16));
     this.toggleSearchAdvanced = ControlProvider.createToggleButton(
-            ControlFactory.toggleControl(this, "advancedSearchOn", null, stAdvancedSearch.stateObserver()));
+            Controls.toggleControl(this, "advancedSearchOn", null, stAdvancedSearch.stateObserver()));
     toggleSearchAdvanced.setIcon(Images.loadImage(Images.IMG_PREFERENCES_16));
     linkComponentsToLockedState();
     initUI();

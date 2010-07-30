@@ -7,8 +7,8 @@ import org.jminor.common.model.LoadTestModel;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.control.Control;
-import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
+import org.jminor.common.ui.control.Controls;
 import org.jminor.common.ui.control.IntBeanSpinnerValueLink;
 import org.jminor.common.ui.control.IntBeanValueLink;
 import org.jminor.common.ui.control.LinkType;
@@ -210,9 +210,9 @@ public final class LoadTestPanel extends JPanel {
   private JPanel initializeChartControlPanel() {
     final JPanel controlPanel = new JPanel(new FlexibleGridLayout(1, 2, 5, 5, true, false));
     controlPanel.setBorder(BorderFactory.createTitledBorder("Charts"));
-    controlPanel.add(ControlProvider.createCheckBox(ControlFactory.toggleControl(loadTestModel, "collectChartData",
+    controlPanel.add(ControlProvider.createCheckBox(Controls.toggleControl(loadTestModel, "collectChartData",
             "Collect chart data", loadTestModel.collectChartDataObserver())));
-    controlPanel.add(ControlProvider.createButton(ControlFactory.methodControl(loadTestModel, "resetChartData", "Reset")));
+    controlPanel.add(ControlProvider.createButton(Controls.methodControl(loadTestModel, "resetChartData", "Reset")));
 
     return controlPanel;
   }
@@ -279,9 +279,9 @@ public final class LoadTestPanel extends JPanel {
     ((JSpinner.DefaultEditor) spnWarningTime.getEditor()).getTextField().setColumns(3);
     spnWarningTime.setToolTipText("A work request is considered 'delayed' if the time it takes to process it exceeds this value (ms)");
 
-    final ToggleBeanValueLink pauseControl = ControlFactory.toggleControl(loadTestModel, "paused", "Pause", loadTestModel.pauseObserver());
+    final ToggleBeanValueLink pauseControl = Controls.toggleControl(loadTestModel, "paused", "Pause", loadTestModel.pauseObserver());
     pauseControl.setMnemonic('P');
-    final MethodControl gcControl = ControlFactory.methodControl(loadTestModel, "performGC", "Perform GC");
+    final MethodControl gcControl = Controls.methodControl(loadTestModel, "performGC", "Perform GC");
 
     final FlexibleGridLayout layout = new FlexibleGridLayout(4, 2, 5, 5, true, false);
     layout.setFixedRowHeight(UiUtil.getPreferredTextFieldHeight());

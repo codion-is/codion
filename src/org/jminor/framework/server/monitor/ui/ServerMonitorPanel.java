@@ -6,8 +6,8 @@ package org.jminor.framework.server.monitor.ui;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.formats.DateFormats;
 import org.jminor.common.ui.UiUtil;
-import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
+import org.jminor.common.ui.control.Controls;
 import org.jminor.common.ui.control.IntBeanSpinnerValueLink;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.control.TextBeanValueLink;
@@ -19,16 +19,7 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 
-import javax.swing.BorderFactory;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSpinner;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
+import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
@@ -95,9 +86,9 @@ public final class ServerMonitorPanel extends JPanel {
     infoPanel.add(initConnectionCountField());
     infoPanel.add(new JLabel("Memory usage", JLabel.RIGHT));
     infoPanel.add(initMemoryField());
-    infoPanel.add(ControlProvider.createButton(ControlFactory.methodControl(this, "loadDomainModel", "Load domain model...")));
-    infoPanel.add(ControlProvider.createButton(ControlFactory.methodControl(model, "performGC", "Run garbage collector")));
-    infoPanel.add(ControlProvider.createButton(ControlFactory.methodControl(this, "shutdownServer", "Shut down server")));
+    infoPanel.add(ControlProvider.createButton(Controls.methodControl(this, "loadDomainModel", "Load domain model...")));
+    infoPanel.add(ControlProvider.createButton(Controls.methodControl(model, "performGC", "Run garbage collector")));
+    infoPanel.add(ControlProvider.createButton(Controls.methodControl(this, "shutdownServer", "Shut down server")));
 
     final JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
     controlPanel.add(new JLabel("Warning threshold (ms)"));
@@ -109,7 +100,7 @@ public final class ServerMonitorPanel extends JPanel {
 
     final JPanel controlPanelBase = new JPanel(new BorderLayout(5, 5));
     controlPanelBase.add(controlPanel, BorderLayout.WEST);
-    controlPanelBase.add(ControlProvider.createButton(ControlFactory.methodControl(model, "resetStats", "Reset")), BorderLayout.EAST);
+    controlPanelBase.add(ControlProvider.createButton(Controls.methodControl(model, "resetStats", "Reset")), BorderLayout.EAST);
 
     final JPanel chartPanel = new JPanel(new GridLayout(3, 1, 5, 5));
     chartPanel.add(requestsPerSecondChartPanel);
@@ -147,7 +138,7 @@ public final class ServerMonitorPanel extends JPanel {
     final JScrollPane scroller = new JScrollPane(new JList(model.getDomainListModel()));
 
     final JPanel refreshPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-    refreshPanel.add(ControlProvider.createButton(ControlFactory.methodControl(model, "refreshDomainList", "Refresh")));
+    refreshPanel.add(ControlProvider.createButton(Controls.methodControl(model, "refreshDomainList", "Refresh")));
     panel.add(refreshPanel, BorderLayout.NORTH);
     panel.add(scroller, BorderLayout.CENTER);
 

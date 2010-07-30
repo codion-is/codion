@@ -8,8 +8,8 @@ import org.jminor.common.model.Util;
 import org.jminor.common.model.WeakPropertyChangeListener;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.Control;
-import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlSet;
+import org.jminor.common.ui.control.Controls;
 import org.jminor.common.ui.images.Images;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityEditModel;
@@ -473,7 +473,7 @@ public class EntityPanel extends JPanel {
   }
 
   public final Control getToggleEditPanelControl() {
-    final Control toggle = ControlFactory.methodControl(this, "toggleEditPanelState",
+    final Control toggle = Controls.methodControl(this, "toggleEditPanelState",
             Images.loadImage("Form16.gif"));
     toggle.setDescription(FrameworkMessages.get(FrameworkMessages.TOGGLE_EDIT_TIP));
 
@@ -481,7 +481,7 @@ public class EntityPanel extends JPanel {
   }
 
   public final Control getToggleDetailPanelControl() {
-    final Control toggle = ControlFactory.methodControl(this, "toggleDetailPanelState",
+    final Control toggle = Controls.methodControl(this, "toggleDetailPanelState",
             Images.loadImage(Images.IMG_HISTORY_16));
     toggle.setDescription(FrameworkMessages.get(FrameworkMessages.TOGGLE_DETAIL_TIP));
 

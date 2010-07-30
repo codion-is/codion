@@ -10,7 +10,7 @@ import org.jminor.common.model.SearchModel;
 import org.jminor.common.model.SortingDirective;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.control.Control;
-import org.jminor.common.ui.control.ControlFactory;
+import org.jminor.common.ui.control.Controls;
 import org.jminor.common.ui.textfield.SearchFieldHint;
 
 import javax.swing.*;
@@ -146,7 +146,7 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
    * @return a control for showing the column selection dialog
    */
   public final Control getSelectColumnsControl() {
-    return ControlFactory.methodControl(this, "selectTableColumns",
+    return Controls.methodControl(this, "selectTableColumns",
             Messages.get(Messages.SELECT_COLUMNS) + "...", null,
             Messages.get(Messages.SELECT_COLUMNS));
   }

@@ -8,8 +8,8 @@ import org.jminor.common.model.Events;
 import org.jminor.common.ui.AbstractSearchPanel;
 import org.jminor.common.ui.AbstractTableColumnSyncPanel;
 import org.jminor.common.ui.UiUtil;
-import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlSet;
+import org.jminor.common.ui.control.Controls;
 import org.jminor.common.ui.images.Images;
 import org.jminor.framework.client.model.EntityTableSearchModel;
 import org.jminor.framework.client.model.ForeignKeySearchModel;
@@ -89,9 +89,9 @@ public final class EntityTableSearchAdvancedPanel extends AbstractTableColumnSyn
   public ControlSet getControls() {
     final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.SEARCH));
     controlSet.setIcon(Images.loadImage(Images.IMG_FILTER_16));
-    controlSet.add(ControlFactory.toggleControl(this, "advanced",
+    controlSet.add(Controls.toggleControl(this, "advanced",
             FrameworkMessages.get(FrameworkMessages.ADVANCED), evtAdvancedChanged));
-    controlSet.add(ControlFactory.methodControl(searchModel, "clearPropertySearchModels", FrameworkMessages.get(FrameworkMessages.CLEAR)));
+    controlSet.add(Controls.methodControl(searchModel, "clearPropertySearchModels", FrameworkMessages.get(FrameworkMessages.CLEAR)));
 
     return controlSet;
   }

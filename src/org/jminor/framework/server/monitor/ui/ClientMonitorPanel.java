@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.server.monitor.ui;
 
-import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
+import org.jminor.common.ui.control.Controls;
 import org.jminor.framework.server.monitor.ClientInstanceMonitor;
 import org.jminor.framework.server.monitor.ClientMonitor;
 
@@ -70,7 +70,7 @@ public final class ClientMonitorPanel extends JPanel {
     final JScrollPane clientInstanceScroller = new JScrollPane(clientInstanceList);
     clientInstanceScroller.setBorder(BorderFactory.createTitledBorder("Clients"));
     clientInstanceBase.add(clientInstanceScroller, BorderLayout.CENTER);
-    clientInstanceBase.add(ControlProvider.createButton(ControlFactory.methodControl(this, "refresh", "Refresh")), BorderLayout.SOUTH);
+    clientInstanceBase.add(ControlProvider.createButton(Controls.methodControl(this, "refresh", "Refresh")), BorderLayout.SOUTH);
 
     final JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
     splitPane.setOneTouchExpandable(true);

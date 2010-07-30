@@ -20,9 +20,9 @@ import org.jminor.common.ui.checkbox.TristateCheckBox;
 import org.jminor.common.ui.combobox.MaximumMatch;
 import org.jminor.common.ui.combobox.SteppedComboBox;
 import org.jminor.common.ui.control.Control;
-import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.ControlSet;
+import org.jminor.common.ui.control.Controls;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.images.Images;
 import org.jminor.common.ui.valuemap.ValueChangeMapEditPanel;
@@ -35,16 +35,7 @@ import org.jminor.framework.i18n.FrameworkMessages;
 
 import org.apache.log4j.Logger;
 
-import javax.swing.ComboBoxModel;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.JToolBar;
+import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
@@ -123,7 +114,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    */
   public final Control getRefreshControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.REFRESH_MNEMONIC);
-    return ControlFactory.methodControl(getEditModel(), "refresh", FrameworkMessages.get(FrameworkMessages.REFRESH),
+    return Controls.methodControl(getEditModel(), "refresh", FrameworkMessages.get(FrameworkMessages.REFRESH),
             getEditModel().stateActive(), FrameworkMessages.get(FrameworkMessages.REFRESH_TIP) + " (ALT-" + mnemonic + ")",
             mnemonic.charAt(0), null, Images.loadImage(Images.IMG_REFRESH_16));
   }
@@ -133,7 +124,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    */
   public final Control getDeleteControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.DELETE_MNEMONIC);
-    return ControlFactory.methodControl(this, "delete", FrameworkMessages.get(FrameworkMessages.DELETE),
+    return Controls.methodControl(this, "delete", FrameworkMessages.get(FrameworkMessages.DELETE),
             States.aggregateState(Conjunction.AND,
                     getEditModel().stateActive(),
                     getEditModel().stateAllowDelete(),
@@ -147,7 +138,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    */
   public final Control getClearControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.CLEAR_MNEMONIC);
-    return ControlFactory.methodControl(this, "clearModelValues", FrameworkMessages.get(FrameworkMessages.CLEAR),
+    return Controls.methodControl(this, "clearModelValues", FrameworkMessages.get(FrameworkMessages.CLEAR),
             getEditModel().stateActive(), FrameworkMessages.get(FrameworkMessages.CLEAR_ALL_TIP) + " (ALT-" + mnemonic + ")",
             mnemonic.charAt(0), null, Images.loadImage(Images.IMG_NEW_16));
   }
@@ -157,7 +148,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    */
   public final Control getUpdateControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.UPDATE_MNEMONIC);
-    return ControlFactory.methodControl(this, "update", FrameworkMessages.get(FrameworkMessages.UPDATE),
+    return Controls.methodControl(this, "update", FrameworkMessages.get(FrameworkMessages.UPDATE),
             States.aggregateState(Conjunction.AND,
                     getEditModel().stateActive(),
                     getEditModel().stateAllowUpdate(),
@@ -172,7 +163,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    */
   public final Control getInsertControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.INSERT_MNEMONIC);
-    return ControlFactory.methodControl(this, "save", FrameworkMessages.get(FrameworkMessages.INSERT),
+    return Controls.methodControl(this, "save", FrameworkMessages.get(FrameworkMessages.INSERT),
             States.aggregateState(Conjunction.AND, getEditModel().stateActive(), getEditModel().stateAllowInsert()),
             FrameworkMessages.get(FrameworkMessages.INSERT_TIP) + " (ALT-" + mnemonic + ")",
             mnemonic.charAt(0), null, Images.loadImage("Add16.gif"));
@@ -186,7 +177,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
     final State stInsertUpdate = States.aggregateState(Conjunction.OR, getEditModel().stateAllowInsert(),
             States.aggregateState(Conjunction.AND, getEditModel().stateAllowUpdate(),
                     getEditModel().stateModified()));
-    return ControlFactory.methodControl(this, "save", insertCaption,
+    return Controls.methodControl(this, "save", insertCaption,
             States.aggregateState(Conjunction.AND, getEditModel().stateActive(), stInsertUpdate),
             FrameworkMessages.get(FrameworkMessages.INSERT_UPDATE_TIP),
             insertCaption.charAt(0), null, Images.loadImage(Images.IMG_PROPERTIES_16));

@@ -7,8 +7,8 @@ import org.jminor.common.model.CancelException;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.UiUtil;
-import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlSet;
+import org.jminor.common.ui.control.Controls;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.DefaultEntityApplicationModel;
 import org.jminor.framework.client.model.EntityApplicationModel;
@@ -54,7 +54,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel {
   @Override
   protected ControlSet getToolsControlSet() {
     final ControlSet toolsSet = super.getToolsControlSet();
-    toolsSet.add(ControlFactory.methodControl(this, "importJSON", EmpDept.getString(IMPORT_JSON)));
+    toolsSet.add(Controls.methodControl(this, "importJSON", EmpDept.getString(IMPORT_JSON)));
 
     return toolsSet;
   }

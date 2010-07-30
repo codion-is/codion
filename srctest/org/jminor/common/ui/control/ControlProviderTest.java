@@ -41,7 +41,7 @@ public class ControlProviderTest {
     set = new ControlSet("hello");
     set.add(new Control("one"));
     set.add(new Control("two"));
-    set.add(ControlFactory.toggleControl(this, "booleanValue", "three", null));
+    set.add(Controls.toggleControl(this, "booleanValue", "three", null));
   }
 
   @Test

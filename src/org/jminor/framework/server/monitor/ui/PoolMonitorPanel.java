@@ -46,9 +46,9 @@ public final class PoolMonitorPanel extends JPanel {
 
 //  private ControlSet getPopupCommands() {
 //    final ControlSet controlSet = new ControlSet();
-//    controlSet.add(ControlFactory.methodControl(this, "addConnectionPool", "Add connection pool(s)"));
+//    controlSet.add(Controls.methodControl(this, "addConnectionPool", "Add connection pool(s)"));
 //    controlSet.addSeparator();
-//    controlSet.add(ControlFactory.methodControl(model, "refresh", "Refresh"));
+//    controlSet.add(Controls.methodControl(model, "refresh", "Refresh"));
 //
 //    return controlSet;
 //  }

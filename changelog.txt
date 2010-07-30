@@ -1949,3 +1949,4 @@
   Events and States factory classes added
   EventObserver fleshed out
   common.model.Conjunction added
+  ControlFactory renamed to Controls for consistency

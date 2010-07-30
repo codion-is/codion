@@ -6,8 +6,8 @@ package org.jminor.framework.server.monitor.ui;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.ui.ExceptionDialog;
 import org.jminor.common.ui.UiUtil;
-import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
+import org.jminor.common.ui.control.Controls;
 import org.jminor.common.ui.control.IntBeanSpinnerValueLink;
 import org.jminor.framework.server.monitor.ClientMonitor;
 import org.jminor.framework.server.monitor.ClientUserMonitor;
@@ -76,7 +76,7 @@ public final class ClientUserMonitorPanel extends JPanel {
     clientUserBase.add(userScroller);
 
     clientTypeBase.add(clientUserBase, BorderLayout.CENTER);
-    clientTypeBase.add(ControlProvider.createButton(ControlFactory.methodControl(model, "refresh", "Refresh")), BorderLayout.SOUTH);
+    clientTypeBase.add(ControlProvider.createButton(Controls.methodControl(model, "refresh", "Refresh")), BorderLayout.SOUTH);
 
     final JPanel actionBase = new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
     actionBase.add(new JLabel("Reaper interval (s)", JLabel.RIGHT));
@@ -90,9 +90,9 @@ public final class ClientUserMonitorPanel extends JPanel {
     actionBase.add(spnConnectionTimeout);
 
     actionBase.setBorder(BorderFactory.createTitledBorder("Remote connection controls"));
-    actionBase.add(ControlProvider.createButton(ControlFactory.methodControl(model, "disconnectTimedOut",
+    actionBase.add(ControlProvider.createButton(Controls.methodControl(model, "disconnectTimedOut",
             "Disconnect idle", null, "Disconnect those that have exceeded the allowed idle time")));
-    actionBase.add(ControlProvider.createButton(ControlFactory.methodControl(this, "disconnectAll",
+    actionBase.add(ControlProvider.createButton(Controls.methodControl(this, "disconnectAll",
             "Disconnect all", null, "Disconnect all")));
 
     setLayout(new BorderLayout());

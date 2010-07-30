@@ -5,8 +5,8 @@ package org.jminor.framework.server.monitor.ui;
 
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.model.formats.DateFormats;
-import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
+import org.jminor.common.ui.control.Controls;
 import org.jminor.common.ui.control.IntBeanSpinnerValueLink;
 import org.jminor.common.ui.control.ToggleBeanValueLink;
 import org.jminor.framework.server.monitor.ConnectionPoolMonitor;
@@ -196,7 +196,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     panel.setBorder(BorderFactory.createTitledBorder("Statistics"));
     panel.add(statsBase, BorderLayout.CENTER);
     panel.add(ControlProvider.createButton(
-            ControlFactory.methodControl(model, "resetStats", "Reset")), BorderLayout.EAST);
+            Controls.methodControl(model, "resetStats", "Reset")), BorderLayout.EAST);
 
     return panel;
   }
@@ -215,7 +215,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     final JPanel configBase = new JPanel(new BorderLayout(5,5));
     configBase.add(chartConfig, BorderLayout.CENTER);
     configBase.add(ControlProvider.createButton(
-            ControlFactory.methodControl(model, "resetInPoolStats", "Reset")), BorderLayout.EAST);
+            Controls.methodControl(model, "resetInPoolStats", "Reset")), BorderLayout.EAST);
 
     final JPanel chartBase = new JPanel(new GridLayout(2,2));
     chartBase.add(requestsPerSecondChartPanel);

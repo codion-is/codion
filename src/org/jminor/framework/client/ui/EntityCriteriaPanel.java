@@ -4,8 +4,8 @@
 package org.jminor.framework.client.ui;
 
 import org.jminor.common.ui.AbstractSearchPanel;
-import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
+import org.jminor.common.ui.control.Controls;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.model.EntityTableSearchModel;
 import org.jminor.framework.client.model.ForeignKeySearchModel;
@@ -72,7 +72,7 @@ public final class EntityCriteriaPanel extends JPanel {
   private JPanel initializeShowAllPanel(final EntityTableModel tableModel) {
     final JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
     panel.setBorder(BorderFactory.createTitledBorder(FrameworkMessages.get(FrameworkMessages.FILTER_SETTINGS)));
-    panel.add(ControlProvider.createCheckBox(ControlFactory.toggleControl(tableModel,
+    panel.add(ControlProvider.createCheckBox(Controls.toggleControl(tableModel,
             "queryCriteriaRequired", FrameworkMessages.get(FrameworkMessages.REQUIRE_QUERY_CRITERIA), null)));
 
     return panel;

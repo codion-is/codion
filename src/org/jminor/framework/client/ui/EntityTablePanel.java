@@ -20,9 +20,9 @@ import org.jminor.common.ui.AbstractSearchPanel;
 import org.jminor.common.ui.DefaultExceptionHandler;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.Control;
-import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.ControlSet;
+import org.jminor.common.ui.control.Controls;
 import org.jminor.common.ui.control.ToggleBeanValueLink;
 import org.jminor.common.ui.images.Images;
 import org.jminor.common.ui.input.BooleanInputProvider;
@@ -476,7 +476,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
    * @return a control for showing the query configuration dialog
    */
   public final Control getConfigureQueryControl() {
-    return ControlFactory.methodControl(this, "configureQuery",
+    return Controls.methodControl(this, "configureQuery",
             FrameworkMessages.get(FrameworkMessages.CONFIGURE_QUERY) + "...", null,
             FrameworkMessages.get(FrameworkMessages.CONFIGURE_QUERY), 0,
             null, Images.loadImage(Images.IMG_PREFERENCES_16));
@@ -486,7 +486,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
    * @return a control for showing the dependencies dialog
    */
   public final Control getViewDependenciesControl() {
-    return ControlFactory.methodControl(this, "viewSelectionDependencies",
+    return Controls.methodControl(this, "viewSelectionDependencies",
             FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES) + "...",
             getTableModel().stateSelectionEmpty().getReversedState(),
             FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES_TIP), 'W');
@@ -496,7 +496,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
    * @return a control for deleting the selected entities
    */
   public final Control getDeleteSelectedControl() {
-    return ControlFactory.methodControl(this, "delete", FrameworkMessages.get(FrameworkMessages.DELETE),
+    return Controls.methodControl(this, "delete", FrameworkMessages.get(FrameworkMessages.DELETE),
             States.aggregateState(Conjunction.AND,
                     getTableModel().stateAllowDelete(),
                     getTableModel().stateSelectionEmpty().getReversedState()),
@@ -508,7 +508,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
    * @return a control for exporting the selected records to file
    */
   public final Control getExportControl() {
-    return ControlFactory.methodControl(this, "exportSelected",
+    return Controls.methodControl(this, "exportSelected",
             FrameworkMessages.get(FrameworkMessages.EXPORT_SELECTED) + "...",
             getTableModel().stateSelectionEmpty().getReversedState(),
             FrameworkMessages.get(FrameworkMessages.EXPORT_SELECTED_TIP), 0, null,
@@ -520,7 +520,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
    */
   public final Control getPrintTableControl() {
     final String printCaption = FrameworkMessages.get(FrameworkMessages.PRINT_TABLE);
-    return ControlFactory.methodControl(this, "printTable", printCaption, null,
+    return Controls.methodControl(this, "printTable", printCaption, null,
             printCaption, printCaption.charAt(0), null, Images.loadImage("Print16.gif"));
   }
 
@@ -645,7 +645,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
   }
 
   public final Control getToggleSummaryPanelControl() {
-    final ToggleBeanValueLink toggle = ControlFactory.toggleControl(this, "summaryPanelVisible", null,
+    final ToggleBeanValueLink toggle = Controls.toggleControl(this, "summaryPanelVisible", null,
             evtSummaryPanelVisibilityChanged);
     toggle.setIcon(Images.loadImage("Sum16.gif"));
     toggle.setDescription(FrameworkMessages.get(FrameworkMessages.TOGGLE_SUMMARY_TIP));
@@ -675,7 +675,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
   }
 
   public final Control getClearSelectionControl() {
-    final Control clearSelection = ControlFactory.methodControl(getTableModel(), "clearSelection", null,
+    final Control clearSelection = Controls.methodControl(getTableModel(), "clearSelection", null,
             getTableModel().stateSelectionEmpty().getReversedState(), null, -1, null,
             Images.loadImage("ClearSelection16.gif"));
     clearSelection.setDescription(FrameworkMessages.get(FrameworkMessages.CLEAR_SELECTION_TIP));
@@ -684,7 +684,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
   }
 
   public final Control getMoveSelectionDownControl() {
-    final Control selectionDown = ControlFactory.methodControl(getTableModel(), "moveSelectionDown",
+    final Control selectionDown = Controls.methodControl(getTableModel(), "moveSelectionDown",
             Images.loadImage(Images.IMG_DOWN_16));
     selectionDown.setDescription(FrameworkMessages.get(FrameworkMessages.SELECTION_DOWN_TIP));
 
@@ -692,7 +692,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
   }
 
   public final Control getMoveSelectionUpControl() {
-    final Control selectionUp = ControlFactory.methodControl(getTableModel(), "moveSelectionUp",
+    final Control selectionUp = Controls.methodControl(getTableModel(), "moveSelectionUp",
             Images.loadImage(Images.IMG_UP_16));
     selectionUp.setDescription(FrameworkMessages.get(FrameworkMessages.SELECTION_UP_TIP));
 
@@ -1002,7 +1002,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
   }
 
   protected final ToggleBeanValueLink getSearchPanelControl() {
-    return ControlFactory.toggleControl(this, "searchPanelVisible",
+    return Controls.toggleControl(this, "searchPanelVisible",
             FrameworkMessages.get(FrameworkMessages.SHOW), evtSearchPanelVisibilityChanged);
   }
 
@@ -1030,7 +1030,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
    */
   protected final Control getRefreshControl() {
     final String refreshCaption = FrameworkMessages.get(FrameworkMessages.REFRESH);
-    return ControlFactory.methodControl(getTableModel(), "refresh", refreshCaption,
+    return Controls.methodControl(getTableModel(), "refresh", refreshCaption,
             null, FrameworkMessages.get(FrameworkMessages.REFRESH_TIP), refreshCaption.charAt(0),
             null, Images.loadImage(Images.IMG_REFRESH_16));
   }
@@ -1040,7 +1040,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
    */
   protected final Control getClearControl() {
     final String clearCaption = FrameworkMessages.get(FrameworkMessages.CLEAR);
-    return ControlFactory.methodControl(getTableModel(), "clear", clearCaption,
+    return Controls.methodControl(getTableModel(), "clear", clearCaption,
             null, null, clearCaption.charAt(0), null, null);
   }
 
@@ -1061,7 +1061,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
   protected final JToolBar initializeRefreshToolbar() {
     final KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0);
     final String keyName = stroke.toString().replace("pressed ", "");
-    final Control refresh = ControlFactory.methodControl(getTableModel(), "refresh", null,
+    final Control refresh = Controls.methodControl(getTableModel(), "refresh", null,
             getTableModel().getSearchModel().stateSearchStateChanged(), FrameworkMessages.get(FrameworkMessages.REFRESH_TIP)
                     + " (" + keyName + ")", 0, null, Images.loadImage(Images.IMG_STOP_16));
 

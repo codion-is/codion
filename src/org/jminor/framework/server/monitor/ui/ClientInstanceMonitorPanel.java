@@ -6,8 +6,8 @@ package org.jminor.framework.server.monitor.ui;
 import org.jminor.common.model.LogEntry;
 import org.jminor.common.model.formats.DateFormats;
 import org.jminor.common.server.ServerLog;
-import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
+import org.jminor.common.ui.control.Controls;
 import org.jminor.framework.server.monitor.ClientInstanceMonitor;
 
 import javax.swing.BorderFactory;
@@ -109,7 +109,7 @@ public final class ClientInstanceMonitorPanel extends JPanel {
     final JPanel pnlSettings = new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
     pnlSettings.add(chkLoggingEnabled);
     pnlSettings.add(ControlProvider.createButton(
-            ControlFactory.methodControl(this, "updateView", "Refresh log")));
+            Controls.methodControl(this, "updateView", "Refresh log")));
     infoBase.add(pnlSettings, BorderLayout.EAST);
     add(infoBase, BorderLayout.NORTH);
 
@@ -122,7 +122,7 @@ public final class ClientInstanceMonitorPanel extends JPanel {
 
 //  private ControlSet getPopupCommands() {
 //    final ControlSet controlSet = new ControlSet();
-//    controlSet.add(ControlFactory.methodControl(this, "disconnectSelected", "Disconnect selected"));
+//    controlSet.add(Controls.methodControl(this, "disconnectSelected", "Disconnect selected"));
 //
 //    return controlSet;
 //  }
