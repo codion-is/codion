@@ -169,7 +169,7 @@ public class DefaultEntityModel implements EntityModel {
    */
   @Override
   public final String toString() {
-    return getClass().getSimpleName() + ": " + getEntityID();
+    return getClass().getSimpleName() + ": " + entityID;
   }
 
   public final String getEntityID() {

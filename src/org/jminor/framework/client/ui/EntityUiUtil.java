@@ -302,9 +302,9 @@ public final class EntityUiUtil {
     Util.rejectNullValue(foreignKeyProperty, "foreignKeyProperty");
     Util.rejectNullValue(editModel, "editModel");
     final EntityComboBoxModel boxModel = editModel.initializeEntityComboBoxModel(foreignKeyProperty);
-    if (boxModel.isCleared()) {
-      boxModel.refresh();
-    }
+//    if (boxModel.isCleared()) {
+//      boxModel.refresh();//todo is this necessary?
+//    }
     final EntityComboBox comboBox = new EntityComboBox(boxModel);
     new EntityComboBoxValueLink(comboBox, editModel, foreignKeyProperty);
     UiUtil.linkToEnabledState(enabledState, comboBox);

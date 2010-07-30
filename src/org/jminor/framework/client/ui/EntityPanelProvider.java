@@ -243,7 +243,7 @@ public class EntityPanelProvider implements Comparable {
         entityModel.getTableModel().setDetailModel(true);
       }
 
-      return createInstance(entityModel);
+      return createInstance(entityModel, detailPanel);
     }
     catch (RuntimeException e) {
       throw e;
@@ -280,7 +280,7 @@ public class EntityPanelProvider implements Comparable {
 
   protected void configureTableModel(final EntityTableModel tableModel) {}
 
-  private EntityPanel createInstance(final EntityModel model) {
+  private EntityPanel createInstance(final EntityModel model, final boolean isDetailPanel) {
     if (model == null) {
       throw new RuntimeException("Can not create a EntityPanel without an EntityModel");
     }
@@ -295,8 +295,15 @@ public class EntityPanelProvider implements Comparable {
           entityPanel.addDetailPanel(detailPanel);
         }
       }
-      if (refreshOnInit) {
-        model.refresh();
+      if (!isDetailPanel && refreshOnInit) {
+        final boolean cascadeRefresh = model.isCascadeRefresh();
+        try {
+          model.setCascadeRefresh(true);
+          model.refresh();
+        }
+        finally {
+          model.setCascadeRefresh(cascadeRefresh);
+        }
       }
 
       return entityPanel;
