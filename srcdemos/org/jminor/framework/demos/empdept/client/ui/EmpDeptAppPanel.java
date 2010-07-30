@@ -76,7 +76,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel {
   }
 
   private static final class EmpDeptApplicationModel extends DefaultEntityApplicationModel {
-    public EmpDeptApplicationModel(final EntityDbProvider dbProvider) {
+    private EmpDeptApplicationModel(final EntityDbProvider dbProvider) {
       super(dbProvider);
     }
 
@@ -87,7 +87,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel {
   }
 
   private static final class EmployeePanelProvider extends EntityPanelProvider {
-    public EmployeePanelProvider() {
+    private EmployeePanelProvider() {
       super(EmpDept.T_EMPLOYEE);
     }
 
