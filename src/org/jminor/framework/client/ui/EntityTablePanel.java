@@ -777,7 +777,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     }
 
     if (searchPanel instanceof EntityTableSearchAdvancedPanel) {
-      ((EntityTableSearchAdvancedPanel) searchPanel).eventAdvancedChanged().addListener(new ActionListener() {
+      ((EntityTableSearchAdvancedPanel) searchPanel).addAdvancedListener(new ActionListener() {
         public void actionPerformed(final ActionEvent e) {
           if (isSearchPanelVisible()) {
             revalidateAndShowSearchPanel();

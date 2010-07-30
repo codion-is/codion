@@ -84,7 +84,7 @@ public final class ClientUserMonitorPanel extends JPanel {
 
     actionBase.add(new JLabel("Connection timeout (s)"));
     final JSpinner spnConnectionTimeout = new JSpinner(
-            new IntBeanSpinnerValueLink(model, "connectionTimeout", model.eventConnectionTimeoutChanged()).getSpinnerModel());
+            new IntBeanSpinnerValueLink(model, "connectionTimeout", model.getConnectionTimeoutObserver()).getSpinnerModel());
     ((JSpinner.DefaultEditor) spnConnectionTimeout.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) spnConnectionTimeout.getEditor()).getTextField().setColumns(7);
     actionBase.add(spnConnectionTimeout);

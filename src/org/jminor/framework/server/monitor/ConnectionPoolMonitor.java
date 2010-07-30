@@ -7,6 +7,7 @@ import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolState;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.User;
 
@@ -14,6 +15,7 @@ import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
+import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -179,20 +181,28 @@ public final class ConnectionPoolMonitor {
     }
   }
 
-  public Event eventCollectFineGrainedStatsChanged() {
-    return evtCollectFineGrainedStatsChanged;
+  public void addStatsListener(final ActionListener listener) {
+    evtStatsUpdated.addListener(listener);
   }
 
-  public Event eventRefresh() {
-    return evtRefresh;
+  public void removeStatsListener(final ActionListener listener) {
+    evtStatsUpdated.removeListener(listener);
   }
 
-  public Event eventStatsUpdated() {
-    return evtStatsUpdated;
+  public EventObserver getCollectFineGrainedStatsObserver() {
+    return evtCollectFineGrainedStatsChanged.getObserver();
   }
 
-  public Event eventStatsUpdateIntervalChanged() {
-    return evtStatsUpdateIntervalChanged;
+  public EventObserver getRefreshObserver() {
+    return evtRefresh.getObserver();
+  }
+
+  public EventObserver getStatsObserver() {
+    return evtStatsUpdated.getObserver();
+  }
+
+  public EventObserver getStatsUpdateIntervalObserver() {
+    return evtStatsUpdateIntervalChanged.getObserver();
   }
 
   private void updateStats() throws RemoteException {

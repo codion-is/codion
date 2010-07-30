@@ -54,7 +54,7 @@ public final class HostMonitorPanel extends JPanel {
   }
 
   private void bindEvents() {
-    model.eventRefreshed().addListener(new ActionListener() {
+    model.addRefreshListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         try {
           refreshServerTabs();
@@ -64,7 +64,7 @@ public final class HostMonitorPanel extends JPanel {
         }
       }
     });
-    model.eventServerMonitorRemoved().addListener(new ActionListener() {
+    model.addServerMonitorRemovedListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         try {
           refreshServerTabs();

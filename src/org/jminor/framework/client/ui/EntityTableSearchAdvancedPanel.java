@@ -21,6 +21,7 @@ import javax.swing.JPanel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import java.awt.Dimension;
+import java.awt.event.ActionListener;
 import java.util.Enumeration;
 
 /**
@@ -109,8 +110,12 @@ public final class EntityTableSearchAdvancedPanel extends AbstractTableColumnSyn
     return null;
   }
 
-  public Event eventAdvancedChanged() {
-    return evtAdvancedChanged;
+  public void addAdvancedListener(final ActionListener listener) {
+    evtAdvancedChanged.addListener(listener);
+  }
+
+  public void removeAdvancedListener(final ActionListener listener) {
+    evtAdvancedChanged.removeListener(listener);
   }
 
   @Override

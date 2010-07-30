@@ -93,7 +93,7 @@ public final class ServerMonitorPanel extends JPanel {
     final JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
     controlPanel.add(new JLabel("Warning threshold (ms)"));
     final JSpinner spnWarningThreshold = new JSpinner(
-            new IntBeanSpinnerValueLink(model, "warningThreshold", model.eventWarningThresholdChanged()).getSpinnerModel());
+            new IntBeanSpinnerValueLink(model, "warningThreshold", model.getWarningThresholdObserver()).getSpinnerModel());
     ((JSpinner.DefaultEditor) spnWarningThreshold.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) spnWarningThreshold.getEditor()).getTextField().setColumns(3);
     controlPanel.add(spnWarningThreshold);
@@ -172,7 +172,7 @@ public final class ServerMonitorPanel extends JPanel {
     final JTextField txtConnectionCount = new JTextField(6);
     txtConnectionCount.setEditable(false);
     txtConnectionCount.setHorizontalAlignment(JLabel.CENTER);
-    new TextBeanValueLink(txtConnectionCount, model, "connectionCount", Integer.class, model.eventStatsUpdated(),
+    new TextBeanValueLink(txtConnectionCount, model, "connectionCount", Integer.class, model.getStatsUpdatedObserver(),
             LinkType.READ_ONLY);
 
     return txtConnectionCount;
@@ -182,7 +182,7 @@ public final class ServerMonitorPanel extends JPanel {
     final JTextField txtMemory = new JTextField(8);
     txtMemory.setEditable(false);
     txtMemory.setHorizontalAlignment(JLabel.CENTER);
-    new TextBeanValueLink(txtMemory, model, "memoryUsage", String.class, model.eventStatsUpdated(), LinkType.READ_ONLY);
+    new TextBeanValueLink(txtMemory, model, "memoryUsage", String.class, model.getStatsUpdatedObserver(), LinkType.READ_ONLY);
 
     return txtMemory;
   }

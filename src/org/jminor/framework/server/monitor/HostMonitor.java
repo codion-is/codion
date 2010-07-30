@@ -50,7 +50,7 @@ public final class HostMonitor {
     for (final String serverName : getEntityDbRemoteServers(hostName)) {
       if (!containsServerMonitor(serverName)) {
         final ServerMonitor serverMonitor = new ServerMonitor(hostName, serverName);
-        serverMonitor.eventServerShutDown().addListener(new ActionListener() {
+        serverMonitor.addServerShutDownListener(new ActionListener() {
           public void actionPerformed(final ActionEvent e) {
             removeServer(serverMonitor);
           }
@@ -73,12 +73,20 @@ public final class HostMonitor {
     stLiveUpdate.setActive(value);
   }
 
-  public Event eventRefreshed() {
-    return evtRefreshed;
+  public void addRefreshListener(final ActionListener listener) {
+    evtRefreshed.addListener(listener);
   }
 
-  public Event eventServerMonitorRemoved() {
-    return evtServerMonitorRemoved;
+  public void removeRefreshListener(final ActionListener listener) {
+    evtRefreshed.removeListener(listener);
+  }
+
+  public void addServerMonitorRemovedListener(final ActionListener listener) {
+    evtServerMonitorRemoved.addListener(listener);
+  }
+
+  public void removeServerMonitorRemovedListener(final ActionListener listener) {
+    evtServerMonitorRemoved.removeListener(listener);
   }
 
   private void removeServer(final ServerMonitor serverMonitor) {

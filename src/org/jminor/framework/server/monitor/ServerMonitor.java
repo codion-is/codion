@@ -4,6 +4,7 @@
 package org.jminor.framework.server.monitor;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.Util;
 import org.jminor.framework.domain.EntityDefinition;
@@ -15,6 +16,7 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 import javax.swing.DefaultListModel;
 import javax.swing.ListModel;
+import java.awt.event.ActionListener;
 import java.net.URI;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -184,20 +186,44 @@ public final class ServerMonitor {
     return serverName;
   }
 
-  public Event eventServerShutDown() {
-    return evtServerShutDown;
+  public void addServerShutDownListener(final ActionListener listener) {
+    evtServerShutDown.addListener(listener);
   }
 
-  public Event eventStatsUpdated() {
-    return evtStatsUpdated;
+  public void removeServerShutDownListener(final ActionListener listener) {
+    evtServerShutDown.removeListener(listener);
   }
 
-  public Event eventWarningThresholdChanged() {
-    return evtWarningThresholdChanged;
+  public void addStatsUpdatedListener(final ActionListener listener) {
+    evtStatsUpdated.addListener(listener);
   }
 
-  public Event eventStatsUpdateIntervalChanged() {
-    return evtStatsUpdateIntervalChanged;
+  public void removeStatsUpdatedListener(final ActionListener listener) {
+    evtStatsUpdated.removeListener(listener);
+  }
+
+  public void addWarningThresholdListener(final ActionListener listener) {
+    evtWarningThresholdChanged.addListener(listener);
+  }
+
+  public void removeWarningThresholdListener(final ActionListener listener) {
+    evtWarningThresholdChanged.removeListener(listener);
+  }
+
+  public void addStatsUpdateIntervalListener(final ActionListener listener) {
+    evtStatsUpdateIntervalChanged.addListener(listener);
+  }
+
+  public void removeStatsUpdateIntervalListener(final ActionListener listener) {
+    evtStatsUpdateIntervalChanged.removeListener(listener);
+  }
+
+  public EventObserver getWarningThresholdObserver() {
+    return evtWarningThresholdChanged.getObserver();
+  }
+
+  public EventObserver getStatsUpdatedObserver() {
+    return evtStatsUpdated.getObserver();
   }
 
   private EntityDbServerAdmin connectServer(final String serverName) throws RemoteException {

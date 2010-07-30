@@ -116,7 +116,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   }
 
   private void bindEvents() {
-    model.eventStatsUpdated().addListener(new ActionListener() {
+    model.addStatsListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         updateView();
       }
@@ -177,7 +177,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     txtCreatedDestroyedResetTime.setHorizontalAlignment(JLabel.CENTER);
 
     final JCheckBox chkCollectStats = new JCheckBox();
-    chkCollectStats.setModel(new ToggleBeanValueLink(model, "collectFineGrainedStats", model.eventCollectFineGrainedStatsChanged(), null).getButtonModel());
+    chkCollectStats.setModel(new ToggleBeanValueLink(model, "collectFineGrainedStats", model.getCollectFineGrainedStatsObserver(), null).getButtonModel());
 
     statsBase.add(new JLabel("Fine grained statistics"));
     statsBase.add(chkCollectStats);
@@ -204,7 +204,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   private JPanel getChartPanel() {
     final JPanel chartConfig = new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
     final JSpinner spnUpdateInterval = new JSpinner(new IntBeanSpinnerValueLink(model, "statsUpdateInterval",
-            model.eventStatsUpdateIntervalChanged()).getSpinnerModel());
+            model.getStatsUpdateIntervalObserver()).getSpinnerModel());
 
     ((JSpinner.DefaultEditor) spnUpdateInterval.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) spnUpdateInterval.getEditor()).getTextField().setColumns(3);
