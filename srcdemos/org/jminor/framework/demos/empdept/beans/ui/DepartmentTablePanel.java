@@ -32,7 +32,7 @@ public class DepartmentTablePanel extends EntityTablePanel {
 
     final String reportPath = Configuration.getReportPath() + "/empdept_employees.jasper";
     final Collection<Object> departmentNumbers =
-            EntityUtil.getDistinctPropertyValues(getTableModel().getSelectedItems(), DEPARTMENT_ID);
+            EntityUtil.getDistinctPropertyValues(DEPARTMENT_ID, getTableModel().getSelectedItems());
     final HashMap<String, Object> reportParameters = new HashMap<String, Object>();
     reportParameters.put("DEPTNO", departmentNumbers);
     EntityReportUiUtil.viewJdbcReport(this, new JasperReportsWrapper(reportPath, reportParameters),

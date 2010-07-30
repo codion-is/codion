@@ -31,6 +31,9 @@ public final class EntityTableSearchSimplePanel extends JPanel implements Entity
   private final Refreshable refreshable;
   private final Collection<Property> searchProperties;
 
+  private JTextField searchField;
+  private JButton searchButton;
+
   public EntityTableSearchSimplePanel(final EntityTableSearchModel searchModel, final Refreshable refreshable) {
     this.searchModel = searchModel;
     this.refreshable = refreshable;
@@ -50,19 +53,28 @@ public final class EntityTableSearchSimplePanel extends JPanel implements Entity
     return searchProperties;
   }
 
+  public void setSearchTest(final String txt) {
+    searchField.setText(txt);
+  }
+
+  public void performSearch() {
+    searchButton.doClick();
+  }
+
   private void initUI() {
-    final JTextField searchField = new JTextField();
+    searchField = new JTextField();
     final Action action = new AbstractAction(FrameworkMessages.get(FrameworkMessages.SEARCH)) {
       public void actionPerformed(final ActionEvent e) {
         performSimpleSearch(searchField.getText(), searchProperties);
       }
     };
+    searchButton = new JButton(action);
 
     searchField.addActionListener(action);
     setLayout(new BorderLayout(5,5));
     setBorder(BorderFactory.createTitledBorder(FrameworkMessages.get(FrameworkMessages.CONDITION)));
     add(searchField, BorderLayout.CENTER);
-    add(new JButton(action), BorderLayout.EAST);
+    add(searchButton, BorderLayout.EAST);
   }
 
   private void performSimpleSearch(final String searchText, final Collection<Property> searchProperties) {

@@ -32,6 +32,9 @@ public class MonitorModelTest {
     hostMonitor.refresh();
     final ServerMonitor serverMonitor = hostMonitor.getServerMonitors().iterator().next();
     assertNotNull(serverMonitor);
+    final ClientUserMonitor clientUserMonitor = serverMonitor.getClientMonitor();
+    clientUserMonitor.refresh();
+
     serverMonitor.shutdown();
   }
 }

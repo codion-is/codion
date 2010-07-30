@@ -1096,7 +1096,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
    */
   @SuppressWarnings({"UnusedDeclaration"})
   protected InputProvider getInputProvider(final Property property, final List<Entity> toUpdate) {
-    final Collection<Object> values = EntityUtil.getDistinctPropertyValues(toUpdate, property.getPropertyID());
+    final Collection<Object> values = EntityUtil.getDistinctPropertyValues(property.getPropertyID(), toUpdate);
     final Object currentValue = values.size() == 1 ? values.iterator().next() : null;
     if (property instanceof Property.ValueListProperty) {
       return new ValueListInputProvider(currentValue, ((Property.ValueListProperty) property).getValues());

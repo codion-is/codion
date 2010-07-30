@@ -13,18 +13,7 @@ import org.jminor.framework.Configuration;
 
 import java.sql.Timestamp;
 import java.text.Collator;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 /**
  * A static utility class.
@@ -150,11 +139,11 @@ public final class EntityUtil {
   /**
    * Returns a Collection containing the distinct values of <code>propertyID</code> from the given entities.
    * If the <code>entities</code> list is null an empty Collection is returned.
-   * @param entities the entities from which to retrieve the values
    * @param propertyID the ID of the property for which to retrieve the values
+   * @param entities the entities from which to retrieve the values
    * @return a Collection containing the distinct property values
    */
-  public static Collection<Object> getDistinctPropertyValues(final List<Entity> entities, final String propertyID) {
+  public static Collection<Object> getDistinctPropertyValues(final String propertyID, final List<Entity> entities) {
     final Set<Object> values = new HashSet<Object>();
     if (entities == null) {
       return values;
@@ -175,7 +164,7 @@ public final class EntityUtil {
    * @return the old property values mapped to their respective primary key
    */
   public static Map<Entity.Key, Object> setPropertyValue(final String propertyID, final Object value,
-                                                         final List<Entity> entities) {
+                                                         final Collection<Entity> entities) {
     Util.rejectNullValue(entities, "entities");
     final Map<Entity.Key, Object> oldValues = new HashMap<Entity.Key, Object>(entities.size());
     for (final Entity entity : entities) {
@@ -187,11 +176,11 @@ public final class EntityUtil {
 
   /**
    * Returns a Map containing the given entities hashed by the value of the property with ID <code>propertyID</code>
-   * @param entities the entities to map by property value
    * @param propertyID the ID of the property which value should be used for mapping
+   * @param entities the entities to map by property value
    * @return a Map of entities hashed by property value
    */
-  public static Map<Object, Collection<Entity>> hashByPropertyValue(final List<Entity> entities, final String propertyID) {
+  public static Map<Object, Collection<Entity>> hashByPropertyValue(final String propertyID, final Collection<Entity> entities) {
     return Util.map(entities, new Util.HashKeyProvider<Object, Entity>() {
       public Object getKey(final Entity value) {
         return value.getValue(propertyID);
