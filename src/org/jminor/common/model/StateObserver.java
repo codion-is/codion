@@ -10,7 +10,7 @@ import javax.swing.Action;
 public interface StateObserver extends EventObserver {
 
   /**
-   * @return true if this state is active, false otherwise
+   * @return true if the state being observed is active, false otherwise
    */
   boolean isActive();
 
