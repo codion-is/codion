@@ -79,7 +79,7 @@ public class DefaultValueChangeMapEditModelTest {
     assertTrue(valueChangeCounter.size() == 2);
     assertTrue(model.isValueNull(key));
 
-    assertTrue(model.stateModified().isActive());
+    assertTrue(model.getModifiedState().isActive());
 
     model.getValueMap();
     model.clear();

@@ -5,7 +5,7 @@ package org.jminor.common.ui.control;
 
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Events;
-import org.jminor.common.model.State;
+import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.Util;
 
 import java.awt.event.ActionEvent;
@@ -42,7 +42,7 @@ public final class MethodControl extends Control {
    * @param enabledState if specified then this control will only be enabled when this state is
    * @throws RuntimeException if the method was not found in the owner object
    */
-  public MethodControl(final String name, final Object owner, final String methodName, final State enabledState) {
+  public MethodControl(final String name, final Object owner, final String methodName, final StateObserver enabledState) {
     super(name, enabledState);
     Util.rejectNullValue(owner, "owner");
     Util.rejectNullValue(methodName, "methodName");

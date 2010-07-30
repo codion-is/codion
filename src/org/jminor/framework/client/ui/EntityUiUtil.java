@@ -7,8 +7,8 @@ import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.DateUtil;
-import org.jminor.common.model.Event;
-import org.jminor.common.model.State;
+import org.jminor.common.model.EventObserver;
+import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.checkbox.TristateButtonModel;
 import org.jminor.common.model.combobox.BooleanComboBoxModel;
@@ -229,12 +229,12 @@ public final class EntityUiUtil {
   }
 
   public static JCheckBox createCheckBox(final Property property, final EntityEditModel editModel,
-                                         final State enabledState) {
+                                         final StateObserver enabledState) {
     return createCheckBox(property, editModel, enabledState, true);
   }
 
   public static JCheckBox createCheckBox(final Property property, final EntityEditModel editModel,
-                                         final State enabledState, final boolean includeCaption) {
+                                         final StateObserver enabledState, final boolean includeCaption) {
     Util.rejectNullValue(property, "property");
     if (!property.isBoolean()) {
       throw new RuntimeException("Boolean property required for createCheckBox");
@@ -257,7 +257,7 @@ public final class EntityUiUtil {
   }
 
   public static TristateCheckBox createTristateCheckBox(final Property property, final EntityEditModel editModel,
-                                                        final State enabledState, final boolean includeCaption) {
+                                                        final StateObserver enabledState, final boolean includeCaption) {
     Util.rejectNullValue(property, "property");
     Util.rejectNullValue(editModel, "editModel");
     if (!property.isBoolean() && property.isNullable()) {
@@ -285,7 +285,7 @@ public final class EntityUiUtil {
   }
 
   public static SteppedComboBox createBooleanComboBox(final Property property, final EntityEditModel editModel,
-                                                      final State enabledState) {
+                                                      final StateObserver enabledState) {
     final SteppedComboBox box = createComboBox(property, editModel, new BooleanComboBoxModel(), enabledState);
     box.setPopupWidth(40);
 
@@ -298,7 +298,7 @@ public final class EntityUiUtil {
   }
 
   public static EntityComboBox createEntityComboBox(final Property.ForeignKeyProperty foreignKeyProperty,
-                                                    final EntityEditModel editModel, final State enabledState) {
+                                                    final EntityEditModel editModel, final StateObserver enabledState) {
     Util.rejectNullValue(foreignKeyProperty, "foreignKeyProperty");
     Util.rejectNullValue(editModel, "editModel");
     final EntityComboBoxModel boxModel = editModel.initializeEntityComboBoxModel(foreignKeyProperty);
@@ -396,7 +396,7 @@ public final class EntityUiUtil {
   }
 
   public static SteppedComboBox createValueListComboBox(final Property.ValueListProperty property, final EntityEditModel editModel,
-                                                        final State enabledState) {
+                                                        final StateObserver enabledState) {
     final SteppedComboBox comboBox = createComboBox(property, editModel, new ItemComboBoxModel<Object>(property.getValues()), enabledState);
     MaximumMatch.enable(comboBox);
 
@@ -404,12 +404,12 @@ public final class EntityUiUtil {
   }
 
   public static SteppedComboBox createComboBox(final Property property, final EntityEditModel editModel,
-                                               final ComboBoxModel model, final State enabledState) {
+                                               final ComboBoxModel model, final StateObserver enabledState) {
     return createComboBox(property, editModel, model, enabledState, false);
   }
 
   public static SteppedComboBox createComboBox(final Property property, final EntityEditModel editModel,
-                                               final ComboBoxModel model, final State enabledState,
+                                               final ComboBoxModel model, final StateObserver enabledState,
                                                final boolean editable) {
     Util.rejectNullValue(property, "property");
     final SteppedComboBox comboBox = new SteppedComboBox(model);
@@ -435,7 +435,7 @@ public final class EntityUiUtil {
 
   public static DateInputPanel createDateInputPanel(final Property property, final EntityEditModel editModel,
                                                     final SimpleDateFormat dateFormat, final LinkType linkType,
-                                                    final boolean includeButton, final State enabledState) {
+                                                    final boolean includeButton, final StateObserver enabledState) {
     Util.rejectNullValue(property, "property");
     if (!property.isTime()) {
       throw new IllegalArgumentException("Property " + property + " is not a date property");
@@ -502,14 +502,14 @@ public final class EntityUiUtil {
 
   public static JTextField createTextField(final Property property, final EntityEditModel editModel,
                                            final LinkType linkType, final String formatMaskString,
-                                           final boolean immediateUpdate, final State enabledState) {
+                                           final boolean immediateUpdate, final StateObserver enabledState) {
     return createTextField(property, editModel, linkType, formatMaskString, immediateUpdate, null, enabledState);
   }
 
   public static JTextField createTextField(final Property property, final EntityEditModel editModel,
                                            final LinkType linkType, final String formatMaskString,
                                            final boolean immediateUpdate, final SimpleDateFormat dateFormat,
-                                           final State enabledState) {
+                                           final StateObserver enabledState) {
     return createTextField(property, editModel, linkType, formatMaskString, immediateUpdate, dateFormat,
             enabledState, false);
   }
@@ -517,7 +517,7 @@ public final class EntityUiUtil {
   public static JTextField createTextField(final Property property, final EntityEditModel editModel,
                                            final LinkType linkType, final String formatMaskString,
                                            final boolean immediateUpdate, final SimpleDateFormat dateFormat,//todo dateFormat?
-                                           final State enabledState, final boolean valueContainsLiteralCharacters) {
+                                           final StateObserver enabledState, final boolean valueContainsLiteralCharacters) {
     Util.rejectNullValue(property, "property");
     Util.rejectNullValue(editModel, "editModel");
     Util.rejectNullValue(linkType, "linkType");
@@ -555,17 +555,17 @@ public final class EntityUiUtil {
   }
 
   public static SteppedComboBox createPropertyComboBox(final String propertyID, final EntityEditModel editModel,
-                                                       final Event refreshEvent) {
+                                                       final EventObserver refreshEvent) {
     return createPropertyComboBox(propertyID, editModel, refreshEvent, null);
   }
 
   public static SteppedComboBox createPropertyComboBox(final String propertyID, final EntityEditModel editModel,
-                                                       final Event refreshEvent, final State state) {
+                                                       final EventObserver refreshEvent, final StateObserver state) {
     return createPropertyComboBox(propertyID, editModel, refreshEvent, state, null);
   }
 
   public static SteppedComboBox createPropertyComboBox(final String propertyID, final EntityEditModel editModel,
-                                                       final Event refreshEvent, final State state,
+                                                       final EventObserver refreshEvent, final StateObserver state,
                                                        final String nullValue) {
     return createPropertyComboBox(EntityRepository.getColumnProperty(editModel.getEntityID(), propertyID),
             editModel, refreshEvent, state, nullValue);
@@ -576,24 +576,24 @@ public final class EntityUiUtil {
   }
 
   public static SteppedComboBox createPropertyComboBox(final Property.ColumnProperty property, final EntityEditModel editModel,
-                                                       final Event refreshEvent) {
+                                                       final EventObserver refreshEvent) {
     return createPropertyComboBox(property, editModel, refreshEvent, null);
   }
 
   public static SteppedComboBox createPropertyComboBox(final Property.ColumnProperty property, final EntityEditModel editModel,
-                                                       final Event refreshEvent, final State state) {
+                                                       final EventObserver refreshEvent, final StateObserver state) {
     return createPropertyComboBox(property, editModel, refreshEvent, state, null);
   }
 
   public static SteppedComboBox createPropertyComboBox(final Property.ColumnProperty property, final EntityEditModel editModel,
-                                                       final Event refreshEvent, final State state,
+                                                       final EventObserver refreshEvent, final StateObserver state,
                                                        final String nullValue) {
     return createPropertyComboBox(property, editModel, refreshEvent, state, nullValue, false);
   }
 
 
   public static SteppedComboBox createPropertyComboBox(final Property.ColumnProperty property, final EntityEditModel editModel,
-                                                       final Event refreshEvent, final State state,
+                                                       final EventObserver refreshEvent, final StateObserver state,
                                                        final String nullValue, final boolean editable) {
     final SteppedComboBox comboBox = createComboBox(property, editModel,
             editModel.initializePropertyComboBoxModel(property, refreshEvent, nullValue), state, editable);
@@ -653,7 +653,7 @@ public final class EntityUiUtil {
   }
 
   private static JTextField initTextField(final Property property, final EntityEditModel editModel,
-                                          final State enabledState, final String formatMaskString,
+                                          final StateObserver enabledState, final String formatMaskString,
                                           final boolean valueContainsLiteralCharacters) {
     final JTextField field;
     if (property.isInteger()) {

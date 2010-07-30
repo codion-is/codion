@@ -58,11 +58,11 @@ public final class AggregateStateImplTest {
     stateTwo.setActive(false);
     stateThree.setActive(false);
     orState = States.aggregateState(Conjunction.OR);
-    orState.addState(stateOne.getLinkedState());
+    orState.addState(stateOne);
     orState.addState(stateTwo);
-    orState.addState(stateThree.getLinkedState().getLinkedState());
-    andState = States.aggregateState(Conjunction.AND, stateOne.getLinkedState(), stateTwo.getLinkedState(), stateThree.getLinkedState());
-    assertEquals("Aggregate AND inactive, inactive linked, inactive linked, inactive linked", andState.toString());
+    orState.addState(stateThree);
+    andState = States.aggregateState(Conjunction.AND, stateOne, stateTwo, stateThree);
+    assertEquals("Aggregate AND inactive, inactive, inactive, inactive", andState.toString());
 
     assertFalse("Or state should be inactive", orState.isActive());
     assertFalse("And state should be inactive", andState.isActive());
@@ -87,7 +87,7 @@ public final class AggregateStateImplTest {
     assertTrue("Or state should be active when two component states are active", orState.isActive());
     assertFalse("And state should be inactive when only two of three component states is active", andState.isActive());
 
-    andState.removeState(stateOne.getLinkedState());
+    andState.removeState(stateOne);
     assertTrue(andState.isActive());
 
     stateTwo.setActive(false);

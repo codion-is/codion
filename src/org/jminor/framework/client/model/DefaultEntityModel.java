@@ -504,7 +504,7 @@ public class DefaultEntityModel implements EntityModel {
   private List<Entity> getActiveEntities() {
     final List<Entity> activeEntities;
     if (containsTableModel()) {
-      if (tableModel.stateSelectionEmpty().isActive()) {
+      if (tableModel.isSelectionEmpty()) {
         activeEntities = null;
       }
       else {

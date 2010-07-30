@@ -11,6 +11,7 @@ import org.jminor.common.model.Events;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.SearchModel;
 import org.jminor.common.model.State;
+import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.States;
 import org.jminor.common.model.Util;
 import org.jminor.framework.db.provider.EntityDbProvider;
@@ -249,8 +250,8 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
     }
   }
 
-  public final State stateSearchStateChanged() {
-    return stSearchStateChanged.getLinkedState();
+  public final StateObserver getSearchStateChangedState() {
+    return stSearchStateChanged.getObserver();
   }
 
   public final void addFilterStateListener(final ActionListener listener) {
@@ -345,7 +346,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
       searchModel.addSearchStateListener(new ActionListener() {
         public void actionPerformed(final ActionEvent e) {
           stSearchStateChanged.setActive(!searchStateOnRefresh.equals(getSearchModelState()));
-          stSearchStateChanged.notifyStateObserver();
+          stSearchStateChanged.notifyObserver();
         }
       });
     }

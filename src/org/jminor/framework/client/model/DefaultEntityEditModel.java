@@ -11,6 +11,7 @@ import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.State;
+import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.States;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.DefaultValueChangeMapEditModel;
@@ -170,8 +171,8 @@ public class DefaultEntityEditModel extends DefaultValueChangeMapEditModel<Strin
     return this;
   }
 
-  public final State stateAllowInsert() {
-    return stAllowInsert.getLinkedState();
+  public final StateObserver getAllowInsertState() {
+    return stAllowInsert.getObserver();
   }
 
   public final boolean isUpdateAllowed() {
@@ -183,8 +184,8 @@ public class DefaultEntityEditModel extends DefaultValueChangeMapEditModel<Strin
     return this;
   }
 
-  public final State stateAllowUpdate() {
-    return stAllowUpdate.getLinkedState();
+  public final StateObserver getAllowUpdateState() {
+    return stAllowUpdate.getObserver();
   }
 
   public final boolean isDeleteAllowed() {
@@ -196,16 +197,16 @@ public class DefaultEntityEditModel extends DefaultValueChangeMapEditModel<Strin
     return this;
   }
 
-  public final State stateAllowDelete() {
-    return stAllowDelete.getLinkedState();
+  public final StateObserver getAllowDeleteState() {
+    return stAllowDelete.getObserver();
   }
 
-  public final State stateEntityNull() {
-    return stEntityNull.getLinkedState();
+  public final StateObserver getEntityNullState() {
+    return stEntityNull.getObserver();
   }
 
-  public final State stateActive() {
-    return stActive.getLinkedState();
+  public final StateObserver getActiveState() {
+    return stActive.getObserver();
   }
 
   public final void setActive(final boolean active) {

@@ -7,7 +7,7 @@ import org.jminor.common.db.exception.DbException;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.FilteredTableModel;
 import org.jminor.common.model.SortingDirective;
-import org.jminor.common.model.State;
+import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.reports.ReportDataWrapper;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.domain.Entity;
@@ -25,14 +25,14 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
    * @return the state used to determine if updating should be enabled
    * @see #isMultipleUpdateAllowed()
    */
-  State stateAllowMultipleUpdate();
+  StateObserver getAllowMultipleUpdateState();
 
   /**
    * @return the state used to determine if deleting should be enabled
    * @see #isDeleteAllowed()
    * @see #setDeleteAllowed(boolean)
    */
-  State stateAllowDelete();
+  StateObserver getAllowDeleteState();
 
   /**
    * @param propertyID the ID of the property to sort by

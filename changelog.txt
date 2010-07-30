@@ -1950,3 +1950,6 @@
   EventObserver fleshed out
   common.model.Conjunction added
   ControlFactory renamed to Controls for consistency
+  StateObserver added
+  LinkedState removed
+  state... methods renamed to get...State

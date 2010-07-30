@@ -4,7 +4,7 @@
 package org.jminor.common.ui.control;
 
 import org.jminor.common.model.EventObserver;
-import org.jminor.common.model.State;
+import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.Util;
 
 import javax.swing.*;
@@ -155,10 +155,10 @@ public final class ControlProvider {
       if (description != null) {
         menu.setToolTipText(description);
       }
-      final State enabledState = controlSet.getEnabledState();
+      final StateObserver enabledState = controlSet.getEnabledState();
       if (enabledState != null) {
         menu.setEnabled(enabledState.isActive());
-        enabledState.stateObserver().addListener(new ActionListener() {
+        enabledState.addListener(new ActionListener() {
           public void actionPerformed(final ActionEvent e) {
             menu.setEnabled(enabledState.isActive());
           }

@@ -8,6 +8,7 @@ import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.State;
+import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.States;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.exception.ValidationException;
@@ -116,7 +117,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   public final Control getRefreshControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.REFRESH_MNEMONIC);
     return Controls.methodControl(getEditModel(), "refresh", FrameworkMessages.get(FrameworkMessages.REFRESH),
-            getEditModel().stateActive(), FrameworkMessages.get(FrameworkMessages.REFRESH_TIP) + " (ALT-" + mnemonic + ")",
+            getEditModel().getActiveState(), FrameworkMessages.get(FrameworkMessages.REFRESH_TIP) + " (ALT-" + mnemonic + ")",
             mnemonic.charAt(0), null, Images.loadImage(Images.IMG_REFRESH_16));
   }
 
@@ -127,9 +128,9 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.DELETE_MNEMONIC);
     return Controls.methodControl(this, "delete", FrameworkMessages.get(FrameworkMessages.DELETE),
             States.aggregateState(Conjunction.AND,
-                    getEditModel().stateActive(),
-                    getEditModel().stateAllowDelete(),
-                    getEditModel().stateEntityNull().getReversedState()),
+                    getEditModel().getActiveState(),
+                    getEditModel().getAllowDeleteState(),
+                    getEditModel().getEntityNullState().getReversedState()),
             FrameworkMessages.get(FrameworkMessages.DELETE_TIP) + " (ALT-" + mnemonic + ")", mnemonic.charAt(0), null,
             Images.loadImage(Images.IMG_DELETE_16));
   }
@@ -140,7 +141,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   public final Control getClearControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.CLEAR_MNEMONIC);
     return Controls.methodControl(this, "clearModelValues", FrameworkMessages.get(FrameworkMessages.CLEAR),
-            getEditModel().stateActive(), FrameworkMessages.get(FrameworkMessages.CLEAR_ALL_TIP) + " (ALT-" + mnemonic + ")",
+            getEditModel().getActiveState(), FrameworkMessages.get(FrameworkMessages.CLEAR_ALL_TIP) + " (ALT-" + mnemonic + ")",
             mnemonic.charAt(0), null, Images.loadImage(Images.IMG_NEW_16));
   }
 
@@ -151,10 +152,10 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.UPDATE_MNEMONIC);
     return Controls.methodControl(this, "update", FrameworkMessages.get(FrameworkMessages.UPDATE),
             States.aggregateState(Conjunction.AND,
-                    getEditModel().stateActive(),
-                    getEditModel().stateAllowUpdate(),
-                    getEditModel().stateEntityNull().getReversedState(),
-                    getEditModel().stateModified()),
+                    getEditModel().getActiveState(),
+                    getEditModel().getAllowUpdateState(),
+                    getEditModel().getEntityNullState().getReversedState(),
+                    getEditModel().getModifiedState()),
             FrameworkMessages.get(FrameworkMessages.UPDATE_TIP) + " (ALT-" + mnemonic + ")", mnemonic.charAt(0),
             null, Images.loadImage(Images.IMG_SAVE_16));
   }
@@ -165,7 +166,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   public final Control getInsertControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.INSERT_MNEMONIC);
     return Controls.methodControl(this, "save", FrameworkMessages.get(FrameworkMessages.INSERT),
-            States.aggregateState(Conjunction.AND, getEditModel().stateActive(), getEditModel().stateAllowInsert()),
+            States.aggregateState(Conjunction.AND, getEditModel().getActiveState(), getEditModel().getAllowInsertState()),
             FrameworkMessages.get(FrameworkMessages.INSERT_TIP) + " (ALT-" + mnemonic + ")",
             mnemonic.charAt(0), null, Images.loadImage("Add16.gif"));
   }
@@ -175,11 +176,11 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    */
   public final Control getSaveControl() {
     final String insertCaption = FrameworkMessages.get(FrameworkMessages.INSERT_UPDATE);
-    final State stInsertUpdate = States.aggregateState(Conjunction.OR, getEditModel().stateAllowInsert(),
-            States.aggregateState(Conjunction.AND, getEditModel().stateAllowUpdate(),
-                    getEditModel().stateModified()));
+    final State stInsertUpdate = States.aggregateState(Conjunction.OR, getEditModel().getAllowInsertState(),
+            States.aggregateState(Conjunction.AND, getEditModel().getAllowUpdateState(),
+                    getEditModel().getModifiedState()));
     return Controls.methodControl(this, "save", insertCaption,
-            States.aggregateState(Conjunction.AND, getEditModel().stateActive(), stInsertUpdate),
+            States.aggregateState(Conjunction.AND, getEditModel().getActiveState(), stInsertUpdate),
             FrameworkMessages.get(FrameworkMessages.INSERT_UPDATE_TIP),
             insertCaption.charAt(0), null, Images.loadImage(Images.IMG_PROPERTIES_16));
   }
@@ -780,7 +781,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @return a DateInputPanel bound to the property
    */
   protected final DateInputPanel createDateInputPanel(final String propertyID, final SimpleDateFormat dateFormat,
-                                                      final boolean includeButton, final State enabledState) {
+                                                      final boolean includeButton, final StateObserver enabledState) {
     return createDateInputPanel(propertyID, dateFormat, includeButton, enabledState, LinkType.READ_WRITE);
   }
 
@@ -794,7 +795,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @return a DateInputPanel bound to the property
    */
   protected final DateInputPanel createDateInputPanel(final String propertyID, final SimpleDateFormat dateFormat,
-                                                      final boolean includeButton, final State enabledState,
+                                                      final boolean includeButton, final StateObserver enabledState,
                                                       final LinkType linkType) {
     return createDateInputPanel(EntityRepository.getProperty(getEditModel().getEntityID(), propertyID),
             dateFormat, includeButton, enabledState, linkType);
@@ -840,7 +841,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @return a DateInputPanel bound to the property
    */
   protected final DateInputPanel createDateInputPanel(final Property property, final SimpleDateFormat dateFormat,
-                                                      final boolean includeButton, final State enabledState) {
+                                                      final boolean includeButton, final StateObserver enabledState) {
     return createDateInputPanel(property, dateFormat, includeButton, enabledState, LinkType.READ_WRITE);
   }
 
@@ -854,7 +855,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @return a DateInputPanel bound to the property
    */
   protected final DateInputPanel createDateInputPanel(final Property property, final SimpleDateFormat dateFormat,
-                                                      final boolean includeButton, final State enabledState,
+                                                      final boolean includeButton, final StateObserver enabledState,
                                                       final LinkType linkType) {
     final DateInputPanel panel = EntityUiUtil.createDateInputPanel(property, getEditModel(), dateFormat, linkType, includeButton, enabledState);
     setComponent(property.getPropertyID(), panel.getInputField());
@@ -920,7 +921,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    */
   protected final JTextField createTextField(final String propertyID, final LinkType linkType,
                                              final boolean immediateUpdate, final String maskString,
-                                             final State enabledState) {
+                                             final StateObserver enabledState) {
     return createTextField(propertyID, linkType, immediateUpdate, maskString, enabledState, false);
   }
 
@@ -937,7 +938,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    */
   protected final JTextField createTextField(final String propertyID, final LinkType linkType,
                                              final boolean immediateUpdate, final String maskString,
-                                             final State enabledState, final boolean valueIncludesLiteralCharacters) {
+                                             final StateObserver enabledState, final boolean valueIncludesLiteralCharacters) {
     return createTextField(EntityRepository.getProperty(getEditModel().getEntityID(), propertyID),
             linkType, maskString, immediateUpdate, enabledState, valueIncludesLiteralCharacters);
   }
@@ -987,7 +988,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    */
   protected final JTextField createTextField(final Property property, final LinkType linkType,
                                              final String maskString, final boolean immediateUpdate,
-                                             final State enabledState) {
+                                             final StateObserver enabledState) {
     return createTextField(property, linkType, maskString, immediateUpdate, enabledState, false);
   }
 
@@ -1004,7 +1005,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    */
   protected final JTextField createTextField(final Property property, final LinkType linkType,
                                              final String maskString, final boolean immediateUpdate,
-                                             final State enabledState, final boolean valueIncludesLiteralCharacters) {
+                                             final StateObserver enabledState, final boolean valueIncludesLiteralCharacters) {
     final JTextField txt = EntityUiUtil.createTextField(property, getEditModel(), linkType, maskString, immediateUpdate,
             Configuration.getDefaultDateFormat(), enabledState, valueIncludesLiteralCharacters);
     setComponent(property.getPropertyID(), txt);
@@ -1027,7 +1028,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @param enabledState a state for controlling the enabled state of the component
    * @return a JCheckBox bound to the property
    */
-  protected final JCheckBox createCheckBox(final String propertyID, final State enabledState) {
+  protected final JCheckBox createCheckBox(final String propertyID, final StateObserver enabledState) {
     return createCheckBox(propertyID, enabledState, true);
   }
 
@@ -1038,7 +1039,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @param includeCaption specifies whether or not the caption should be included
    * @return a JCheckBox bound to the property
    */
-  protected final JCheckBox createCheckBox(final String propertyID, final State enabledState,
+  protected final JCheckBox createCheckBox(final String propertyID, final StateObserver enabledState,
                                            final boolean includeCaption) {
     return createCheckBox(EntityRepository.getProperty(getEditModel().getEntityID(), propertyID), enabledState, includeCaption);
   }
@@ -1058,7 +1059,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @param enabledState a state for controlling the enabled state of the component
    * @return a JCheckBox bound to the property
    */
-  protected final JCheckBox createCheckBox(final Property property, final State enabledState) {
+  protected final JCheckBox createCheckBox(final Property property, final StateObserver enabledState) {
     return createCheckBox(property, enabledState, true);
   }
 
@@ -1069,7 +1070,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @param includeCaption specifies whether or not the caption should be included
    * @return a JCheckBox bound to the property
    */
-  protected final JCheckBox createCheckBox(final Property property, final State enabledState,
+  protected final JCheckBox createCheckBox(final Property property, final StateObserver enabledState,
                                            final boolean includeCaption) {
     final JCheckBox box = EntityUiUtil.createCheckBox(property, getEditModel(), enabledState, includeCaption);
     setComponent(property.getPropertyID(), box);
@@ -1092,7 +1093,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @param enabledState a state for controlling the enabled state of the component
    * @return a TristateCheckBox bound to the property
    */
-  protected final TristateCheckBox createTristateCheckBox(final String propertyID, final State enabledState) {
+  protected final TristateCheckBox createTristateCheckBox(final String propertyID, final StateObserver enabledState) {
     return createTristateCheckBox(propertyID, enabledState, true);
   }
 
@@ -1103,7 +1104,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @param includeCaption specifies whether or not the caption should be included
    * @return a TristateCheckBox bound to the property
    */
-  protected final TristateCheckBox createTristateCheckBox(final String propertyID, final State enabledState,
+  protected final TristateCheckBox createTristateCheckBox(final String propertyID, final StateObserver enabledState,
                                                           final boolean includeCaption) {
     return createTristateCheckBox(EntityRepository.getProperty(getEditModel().getEntityID(), propertyID), enabledState, includeCaption);
   }
@@ -1123,7 +1124,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @param enabledState a state for controlling the enabled state of the component
    * @return a TristateCheckBox bound to the property
    */
-  protected final TristateCheckBox createTristateCheckBox(final Property property, final State enabledState) {
+  protected final TristateCheckBox createTristateCheckBox(final Property property, final StateObserver enabledState) {
     return createTristateCheckBox(property, enabledState, true);
   }
 
@@ -1134,7 +1135,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @param includeCaption specifies whether or not the caption should be included
    * @return a TristateCheckBox bound to the property
    */
-  protected final TristateCheckBox createTristateCheckBox(final Property property, final State enabledState,
+  protected final TristateCheckBox createTristateCheckBox(final Property property, final StateObserver enabledState,
                                                           final boolean includeCaption) {
     final TristateCheckBox box = EntityUiUtil.createTristateCheckBox(property, getEditModel(), enabledState, includeCaption);
     setComponent(property.getPropertyID(), box);
@@ -1159,7 +1160,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @param enabledState a state for controlling the enabled state of the component
    * @return JComboBox for the given property
    */
-  protected final JComboBox createBooleanComboBox(final String propertyID, final State enabledState) {
+  protected final JComboBox createBooleanComboBox(final String propertyID, final StateObserver enabledState) {
     return createBooleanComboBox(EntityRepository.getProperty(getEditModel().getEntityID(), propertyID),enabledState);
   }
 
@@ -1180,7 +1181,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @param enabledState a state for controlling the enabled state of the component
    * @return JComboBox for the given property
    */
-  protected final JComboBox createBooleanComboBox(final Property property, final State enabledState) {
+  protected final JComboBox createBooleanComboBox(final Property property, final StateObserver enabledState) {
     final JComboBox ret = EntityUiUtil.createBooleanComboBox(property, getEditModel(), enabledState);
     setComponent(property.getPropertyID(), ret);
 
@@ -1210,7 +1211,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @see org.jminor.common.ui.combobox.MaximumMatch
    */
   protected final SteppedComboBox createComboBox(final String propertyID, final ComboBoxModel comboBoxModel,
-                                                 final boolean maximumMatch, final State enabledState) {
+                                                 final boolean maximumMatch, final StateObserver enabledState) {
     return createComboBox(EntityRepository.getProperty(getEditModel().getEntityID(), propertyID),
             comboBoxModel, maximumMatch, enabledState);
   }
@@ -1238,7 +1239,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @see org.jminor.common.ui.combobox.MaximumMatch
    */
   protected final SteppedComboBox createComboBox(final Property property, final ComboBoxModel comboBoxModel,
-                                                 final boolean maximumMatch, final State enabledState) {
+                                                 final boolean maximumMatch, final StateObserver enabledState) {
     final SteppedComboBox comboBox = EntityUiUtil.createComboBox(property, getEditModel(), comboBoxModel, enabledState);
     if (maximumMatch) {
       MaximumMatch.enable(comboBox);
@@ -1267,7 +1268,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @return a SteppedComboBox bound to the property
    * @throws IllegalArgumentException in case the property is not a value list property
    */
-  protected final SteppedComboBox createValueListComboBox(final String propertyID, final State enabledState) {
+  protected final SteppedComboBox createValueListComboBox(final String propertyID, final StateObserver enabledState) {
     final Property property = EntityRepository.getProperty(getEditModel().getEntityID(), propertyID);
     if (!(property instanceof Property.ValueListProperty)) {
       throw new IllegalArgumentException("Property identified by '" + propertyID + "' is not a ValueListProperty");
@@ -1293,7 +1294,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @param enabledState a state for controlling the enabled state of the component
    * @return a SteppedComboBox bound to the property
    */
-  protected final SteppedComboBox createValueListComboBox(final Property.ValueListProperty property, final State enabledState) {
+  protected final SteppedComboBox createValueListComboBox(final Property.ValueListProperty property, final StateObserver enabledState) {
     final SteppedComboBox box = EntityUiUtil.createValueListComboBox(property, getEditModel(), enabledState);
     setComponent(property.getPropertyID(), box);
 
@@ -1318,7 +1319,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @return an editable SteppedComboBox bound the the property
    */
   protected final SteppedComboBox createEditableComboBox(final String propertyID, final ComboBoxModel comboBoxModel,
-                                                         final State enabledState) {
+                                                         final StateObserver enabledState) {
     return createEditableComboBox(EntityRepository.getProperty(getEditModel().getEntityID(), propertyID),
             comboBoxModel, enabledState);
   }
@@ -1331,7 +1332,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @return an editable SteppedComboBox bound the the property
    */
   protected final SteppedComboBox createEditableComboBox(final Property property, final ComboBoxModel comboBoxModel,
-                                                         final State enabledState) {
+                                                         final StateObserver enabledState) {
     final SteppedComboBox ret = EntityUiUtil.createComboBox(property, getEditModel(), comboBoxModel, enabledState, true);
     setComponent(property.getPropertyID(), ret);
 
@@ -1355,7 +1356,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @param enabledState a state for controlling the enabled state of the component
    * @return a SteppedComboBox bound to the property
    */
-  protected final SteppedComboBox createPropertyComboBox(final String propertyID, final State enabledState) {
+  protected final SteppedComboBox createPropertyComboBox(final String propertyID, final StateObserver enabledState) {
     return createPropertyComboBox(propertyID, enabledState, null);
   }
 
@@ -1367,7 +1368,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @param nullValueString the value used to represent a null value, shown at the top of the combo box value list
    * @return a SteppedComboBox bound to the property
    */
-  protected final SteppedComboBox createPropertyComboBox(final String propertyID, final State enabledState,
+  protected final SteppedComboBox createPropertyComboBox(final String propertyID, final StateObserver enabledState,
                                                          final String nullValueString) {
     return createPropertyComboBox(propertyID, enabledState, nullValueString, false);
   }
@@ -1381,7 +1382,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @param editable true if the combo box should be editable, only works with combo boxes based on String.class properties
    * @return a SteppedComboBox bound to the property
    */
-  protected final SteppedComboBox createPropertyComboBox(final String propertyID, final State enabledState,
+  protected final SteppedComboBox createPropertyComboBox(final String propertyID, final StateObserver enabledState,
                                                          final String nullValueString, final boolean editable) {
     return createPropertyComboBox(EntityRepository.getColumnProperty(getEditModel().getEntityID(), propertyID),
             enabledState, nullValueString, editable);
@@ -1404,7 +1405,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @param enabledState a state for controlling the enabled state of the component
    * @return a SteppedComboBox bound to the property
    */
-  protected final SteppedComboBox createPropertyComboBox(final Property.ColumnProperty property, final State enabledState) {
+  protected final SteppedComboBox createPropertyComboBox(final Property.ColumnProperty property, final StateObserver enabledState) {
     return createPropertyComboBox(property, enabledState, null);
   }
 
@@ -1416,7 +1417,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @param nullValueString the value used to represent a null value, shown at the top of the combo box value list
    * @return a SteppedComboBox bound to the property
    */
-  protected final SteppedComboBox createPropertyComboBox(final Property.ColumnProperty property, final State enabledState,
+  protected final SteppedComboBox createPropertyComboBox(final Property.ColumnProperty property, final StateObserver enabledState,
                                                          final String nullValueString) {
     return createPropertyComboBox(property, enabledState, nullValueString, false);
   }
@@ -1430,7 +1431,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @param editable true if the combo box should be editable, only works with combo boxes based on String.class properties
    * @return a SteppedComboBox bound to the property
    */
-  protected final SteppedComboBox createPropertyComboBox(final Property.ColumnProperty property, final State enabledState,
+  protected final SteppedComboBox createPropertyComboBox(final Property.ColumnProperty property, final StateObserver enabledState,
                                                          final String nullValueString, final boolean editable) {
     final SteppedComboBox ret = EntityUiUtil.createPropertyComboBox(property, getEditModel(), null, enabledState, nullValueString, editable);
     setComponent(property.getPropertyID(), ret);
@@ -1444,7 +1445,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @param enabledState a state for controlling the enabled state of the component
    * @return a EntityComboBox bound to the property
    */
-  protected final EntityComboBox createEntityComboBox(final String foreignKeyPropertyID, final State enabledState) {
+  protected final EntityComboBox createEntityComboBox(final String foreignKeyPropertyID, final StateObserver enabledState) {
     return createEntityComboBox((Property.ForeignKeyProperty)
             EntityRepository.getProperty(getEditModel().getEntityID(), foreignKeyPropertyID), enabledState);
   }
@@ -1479,7 +1480,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @return an EntityComboBox bound to the property
    */
   protected final EntityComboBox createEntityComboBox(final Property.ForeignKeyProperty foreignKeyProperty,
-                                                      final State enabledState) {
+                                                      final StateObserver enabledState) {
     final EntityComboBox ret = EntityUiUtil.createEntityComboBox(foreignKeyProperty, getEditModel(), enabledState);
     setComponent(foreignKeyProperty.getPropertyID(), ret);
 

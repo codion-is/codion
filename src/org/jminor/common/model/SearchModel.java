@@ -157,15 +157,15 @@ public interface SearchModel<K> {
    */
   void setLowerBound(final Date value);
 
-  State stateLocked();
+  StateObserver getLockedState();
 
-  EventObserver enabledObserver();
+  EventObserver getEnabledObserver();
 
-  EventObserver lowerBoundObserver();
+  EventObserver getLowerBoundObserver();
 
-  EventObserver upperBoundObserver();
+  EventObserver getUpperBoundObserver();
 
-  EventObserver searchTypeObserver();
+  EventObserver getSearchTypeObserver();
 
   void addEnabledListener(final ActionListener listener);
 

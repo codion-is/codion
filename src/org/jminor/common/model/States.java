@@ -26,7 +26,7 @@ public final class States {
     return new StateImpl(initialState);
   }
 
-  public static State.AggregateState aggregateState(final Conjunction type, final State... states) {
+  public static State.AggregateState aggregateState(final Conjunction type, final StateObserver... states) {
     return new AggregateStateImpl(type, states);
   }
 
@@ -35,11 +35,11 @@ public final class States {
   }
 
   static class StateImpl implements State {
-    private final Event evtStateChanged = Events.event();
 
-    private LinkedState linkedState = null;
-    private ReverseState reversedState = null;
-    private boolean active = false;
+    private final Object lock = new Object();
+
+    private volatile StateObserver observer;
+    private volatile boolean active = false;
 
     /**
      * Constructs a new State instance initialized as inactive
@@ -61,23 +61,23 @@ public final class States {
       return active ? "active" : "inactive";
     }
 
-    public final void addListeningAction(final Action action) {
-      action.setEnabled(isActive());
-      evtStateChanged.addListener(new ActionListener() {
-        public void actionPerformed(final ActionEvent e) {
-          action.setEnabled(isActive());
+    public final StateObserver getObserver() {
+      if (observer == null) {
+        synchronized (lock) {
+          observer = new StateObserverImpl(this);
         }
-      });
+      }
+      return observer;
     }
 
     /**
      * @param value the new active state of this State instance
      */
-    public void setActive(final boolean value) {
+    public synchronized void setActive(final boolean value) {
       final boolean oldValue = active;
       active = value;
       if (oldValue != value) {
-        evtStateChanged.fire();
+        getObserver().notifyObserver();
       }
     }
 
@@ -88,103 +88,52 @@ public final class States {
       return active;
     }
 
-    /**
-     * @return a State that is always the same as the parent state but can not be directly modified
-     */
-    public final State getLinkedState() {
-      if (linkedState == null) {
-        linkedState = new LinkedState(this);
-      }
-
-      return linkedState;
+    public void addListeningAction(final Action action) {
+      getObserver().addListeningAction(action);
     }
 
-    /**
-     * @return A State object that is always the reverse of the parent state
-     */
-    public State getReversedState() {
-      if (reversedState == null) {
-        reversedState = new ReverseState(this);
-      }
-
-      return reversedState;
+    public void addListener(final ActionListener listener) {
+      getObserver().addListener(listener);
     }
 
-    /**
-     * @return an EventObserver notified each time the state changes
-     */
-    public final EventObserver stateObserver() {
-      return evtStateChanged.getObserver();
+    public void notifyObserver() {
+      getObserver().notifyObserver();
     }
 
-    public final void addStateListener(final ActionListener listener) {
-      evtStateChanged.addListener(listener);
+    public void removeListener(final ActionListener listener) {
+      getObserver().removeListener(listener);
     }
 
-    public final void removeStateListener(final ActionListener listener) {
-      evtStateChanged.removeListener(listener);
-    }
-
-    public final void notifyStateObserver() {
-      evtStateChanged.fire();
-    }
-
-    protected final Event evtStateChanged() {
-      return evtStateChanged;
+    public StateObserver getReversedState() {
+      return getObserver().getReversedState();
     }
   }
 
-  private static class LinkedState extends StateImpl {
+  private static final class ReverseState extends StateImpl {
 
-    private final State referenceState;
+    private final StateObserver referenceState;
 
-    LinkedState(final StateImpl referenceState) {
+    ReverseState(final StateObserver referenceState) {
       this.referenceState = referenceState;
-      this.referenceState.addStateListener(new ActionListener() {
+      this.referenceState.addListener(new ActionListener() {
         public void actionPerformed(final ActionEvent e) {
-          evtStateChanged().actionPerformed(e);
+          getObserver().notifyObserver();
         }
       });
     }
 
     @Override
     public boolean isActive() {
-      return referenceState.isActive();
+      return !referenceState.isActive();
     }
 
     @Override
-    public void setActive(final boolean value) {
-      throw new RuntimeException("Cannot set the state of a linked state");
-    }
-
-    @Override
-    public String toString() {
-      return referenceState + " linked";
-    }
-
-    public final State getReferenceState() {
+    public StateObserver getReversedState() {
       return referenceState;
     }
-  }
-
-  private static final class ReverseState extends LinkedState {
-
-    ReverseState(final StateImpl referenceState) {
-      super(referenceState);
-    }
 
     @Override
-    public boolean isActive() {
-      return !getReferenceState().isActive();
-    }
-
-    @Override
-    public State getReversedState() {
-      return getReferenceState();
-    }
-
-    @Override
-    public void setActive(final boolean value) {
+    public synchronized void setActive(final boolean value) {
       throw new RuntimeException("Cannot set the state of a reversed state");
     }
 
@@ -205,16 +154,21 @@ public final class States {
      */
     public enum Type {AND, OR}
 
-    private final List<State> states = new ArrayList<State>();
+    private final List<StateObserver> states = new ArrayList<StateObserver>();
+    private final ActionListener linkAction = new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
+        getObserver().notifyObserver();
+      }
+    };
     private final Conjunction type;
 
     private AggregateStateImpl(final Conjunction type) {
       this.type = type;
     }
 
-    private AggregateStateImpl(final Conjunction type, final State... states) {
+    private AggregateStateImpl(final Conjunction type, final StateObserver... states) {
       this(type);
-      for (final State state : states) {
+      for (final StateObserver state : states) {
         addState(state);
       }
     }
@@ -223,7 +177,7 @@ public final class States {
     public String toString() {
       final StringBuilder stringBuilder = new StringBuilder("Aggregate ");
       stringBuilder.append(type == Conjunction.AND ? "AND " : "OR ").append(isActive() ? "active" : "inactive");
-      for (final State state : states) {
+      for (final StateObserver state : states) {
         stringBuilder.append(", ").append(state);
       }
 
@@ -237,28 +191,28 @@ public final class States {
       return type;
     }
 
-    public void addState(final State state) {
+    public void addState(final StateObserver state) {
       final boolean wasActive = isActive();
       states.add(state);
-      state.addStateListener(evtStateChanged());
+      state.addListener(linkAction);
       if (wasActive != isActive()) {
-        evtStateChanged().fire();
+        getObserver().notifyObserver();
       }
     }
 
-    public void removeState(final State state) {
+    public void removeState(final StateObserver state) {
       final boolean wasActive = isActive();
-      state.removeStateListener(evtStateChanged());
+      state.removeListener(linkAction);
       states.remove(state);
       if (wasActive != isActive()) {
-        evtStateChanged().fire();
+        getObserver().notifyObserver();
       }
     }
 
     @Override
     public boolean isActive() {
       if (type == Conjunction.AND) { //AND, one inactive is enough
-        for (final State state : states) {
+        for (final StateObserver state : states) {
           if (!state.isActive()) {
             return false;
           }
@@ -267,7 +221,7 @@ public final class States {
         return true;
       }
       else { //OR, one active is enough
-        for (final State state : states) {
+        for (final StateObserver state : states) {
           if (state.isActive()) {
             return true;
           }
@@ -278,8 +232,62 @@ public final class States {
     }
 
     @Override
-    public void setActive(final boolean value) {
+    public synchronized void setActive(final boolean value) {
       throw new RuntimeException("The state of aggregate states can't be set");
+    }
+  }
+
+  static final class StateObserverImpl implements StateObserver {
+    private final Event evtStateChanged = Events.event();
+    private final State state;
+
+    private ReverseState reversedState = null;
+
+    private StateObserverImpl(final State state) {
+      this.state = state;
+    }
+
+    public boolean isActive() {
+      return state.isActive();
+    }
+
+    /**
+     * @return A State object that is always the reverse of the parent state
+     */
+    public StateObserver getReversedState() {
+      if (reversedState == null) {
+        reversedState = new ReverseState(this);
+      }
+
+      return reversedState.getObserver();
+    }
+
+    public final void addListeningAction(final Action action) {
+      action.setEnabled(state.isActive());
+      evtStateChanged.addListener(new ActionListener() {
+        public void actionPerformed(final ActionEvent e) {
+          action.setEnabled(state.isActive());
+        }
+      });
+    }
+
+    /**
+     * @return an EventObserver notified each time the state changes
+     */
+    public final EventObserver stateObserver() {
+      return evtStateChanged.getObserver();
+    }
+
+    public final void addListener(final ActionListener listener) {
+      evtStateChanged.addListener(listener);
+    }
+
+    public final void removeListener(final ActionListener listener) {
+      evtStateChanged.removeListener(listener);
+    }
+
+    public final void notifyObserver() {
+      evtStateChanged.fire();
     }
   }
 
@@ -309,7 +317,7 @@ public final class States {
         members.add(new WeakReference<State>(state));
       }
       updateAccordingToState(state);
-      state.addStateListener(new ActionListener() {
+      state.addListener(new ActionListener() {
         public void actionPerformed(final ActionEvent e) {
           updateAccordingToState(state);
         }

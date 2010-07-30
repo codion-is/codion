@@ -576,15 +576,15 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     return Collections.unmodifiableList(hiddenColumns);
   }
 
-  public final State stateSelectionEmpty() {
-    return selectionModel.stateSelectionEmpty().getLinkedState();
+  public final StateObserver getSelectionEmptyState() {
+    return selectionModel.getSelectionEmptyState();
   }
 
   /**
    * @return a State active when multiple rows are selected
    */
-  public final State stateMultipleSelection() {
-    return selectionModel.stateMultipleSelection().getLinkedState();
+  public final StateObserver getMultipleSelectionState() {
+    return selectionModel.getMultipleSelectionState();
   }
 
   public final void addColumnHiddenListener(final ActionListener listener) {
@@ -1049,12 +1049,12 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
       evtSelectionChanged.addListener(listener);
     }
 
-    public State stateMultipleSelection() {
-      return stMultipleSelection.getLinkedState();
+    public StateObserver getMultipleSelectionState() {
+      return stMultipleSelection.getObserver();
     }
 
-    public State stateSelectionEmpty() {
-      return stSelectionEmpty.getLinkedState();
+    public StateObserver getSelectionEmptyState() {
+      return stSelectionEmpty.getObserver();
     }
   }
 }

@@ -10,6 +10,7 @@ import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.SortingDirective;
 import org.jminor.common.model.State;
+import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.States;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.reports.ReportDataWrapper;
@@ -220,21 +221,21 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     return this;
   }
 
-  public final State stateAllowMultipleUpdate() {
-    return stAllowMultipleUpdate.getLinkedState();
+  public final StateObserver getAllowMultipleUpdateState() {
+    return stAllowMultipleUpdate.getObserver();
   }
 
   public final boolean isDeleteAllowed() {
     return stAllowDelete.isActive();
   }
 
-  public final EntityTableModel setDeleteAllowed(final boolean value) {
-    stAllowDelete.setActive(value);
+  public final EntityTableModel setDeleteAllowed(final boolean deleteAllowed) {
+    stAllowDelete.setActive(deleteAllowed);
     return this;
   }
 
-  public final State stateAllowDelete() {
-    return stAllowDelete.getLinkedState();
+  public final StateObserver getAllowDeleteState() {
+    return stAllowDelete.getObserver();
   }
 
   public final boolean isReadOnly() {
@@ -440,7 +441,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
         }
 
         public boolean isValueSubset() {
-          return !stateSelectionEmpty().isActive();
+          return !isSelectionEmpty();
         }
       };
       propertySummaryModels.put(property.getPropertyID(), new DefaultPropertySummaryModel(property, valueProvider));

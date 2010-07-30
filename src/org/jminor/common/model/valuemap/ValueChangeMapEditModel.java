@@ -5,7 +5,7 @@ package org.jminor.common.model.valuemap;
 
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Refreshable;
-import org.jminor.common.model.State;
+import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 
 import java.awt.event.ActionListener;
@@ -16,13 +16,13 @@ public interface ValueChangeMapEditModel<K, V> extends Refreshable {
    * @return a State indicating the modified status of this value map
    * @see #isModified()
    */
-  State stateModified();
+  StateObserver getModifiedState();
   /**
    * @return a State indicating the valid status of this value map
    * @see #getValidator()
    * @see #isValid()
    */
-  State stateValid();
+  StateObserver getValidState();
 
   void addValueSetListener(final K key, final ActionListener listener);
 
@@ -108,13 +108,13 @@ public interface ValueChangeMapEditModel<K, V> extends Refreshable {
 
   /**
    * @return true if the underlying value map contains only valid values
-   * @see #stateValid() ()
+   * @see #getValidState() ()
    */
   boolean isValid();
 
   /**
    * @return true if the underlying value map is modified
-   * @see #stateModified()
+   * @see #getModifiedState()
    */
   boolean isModified();
 }

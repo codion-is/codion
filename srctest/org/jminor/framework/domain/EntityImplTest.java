@@ -58,9 +58,9 @@ public class EntityImplTest {
     referencedEntityValue.setValue(EntityTestDomain.MASTER_CODE, masterCode);
 
     referencedEntityValue.setValue(EntityTestDomain.MASTER_ID, -55);
-    assertTrue(referencedEntityValue.stateModified().isActive());
+    assertTrue(referencedEntityValue.getModifiedState().isActive());
     referencedEntityValue.saveValue(EntityTestDomain.MASTER_ID);
-    assertFalse(referencedEntityValue.stateModified().isActive());
+    assertFalse(referencedEntityValue.getModifiedState().isActive());
 
     referencedEntityValue = new EntityImpl(EntityTestDomain.T_MASTER);
 
@@ -69,9 +69,9 @@ public class EntityImplTest {
     referencedEntityValue.setValue(EntityTestDomain.MASTER_CODE, masterCode);
 
     referencedEntityValue.setValue(EntityTestDomain.MASTER_ID, -55);
-    assertTrue(referencedEntityValue.stateModified().isActive());
+    assertTrue(referencedEntityValue.getModifiedState().isActive());
     referencedEntityValue.revertValue(EntityTestDomain.MASTER_ID);
-    assertFalse(referencedEntityValue.stateModified().isActive());
+    assertFalse(referencedEntityValue.getModifiedState().isActive());
 
     Entity test = new EntityImpl(EntityTestDomain.T_DETAIL);
     //assert not modified

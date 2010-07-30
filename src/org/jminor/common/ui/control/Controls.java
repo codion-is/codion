@@ -4,7 +4,7 @@
 package org.jminor.common.ui.control;
 
 import org.jminor.common.model.EventObserver;
-import org.jminor.common.model.State;
+import org.jminor.common.model.StateObserver;
 
 import javax.swing.Icon;
 import javax.swing.KeyStroke;
@@ -36,27 +36,27 @@ public final class Controls {
   }
 
   public static MethodControl methodControl(final Object owner, final String method, final String name,
-                                            final State state) {
+                                            final StateObserver state) {
     return new MethodControl(name, owner, method, state);
   }
 
   public static MethodControl methodControl(final Object owner, final String method, final String name,
-                                            final State state, final String description) {
+                                            final StateObserver state, final String description) {
     return (MethodControl) methodControl(owner, method, name, state).setDescription(description);
   }
 
   public static MethodControl methodControl(final Object owner, final String method, final String name,
-                                            final State state, final String description, final int mnemonic) {
+                                            final StateObserver state, final String description, final int mnemonic) {
     return (MethodControl) methodControl(owner, method, name, state, description).setMnemonic(mnemonic);
   }
 
   public static MethodControl methodControl(final Object owner, final String method, final String name,
-                                            final State state, final String description, final int mnemonic, final KeyStroke ks) {
+                                            final StateObserver state, final String description, final int mnemonic, final KeyStroke ks) {
     return (MethodControl) methodControl(owner, method, name, state, description, mnemonic).setKeyStroke(ks);
   }
 
   public static MethodControl methodControl(final Object owner, final String method, final String name,
-                                            final State state, final String description, final int mnemonic,
+                                            final StateObserver state, final String description, final int mnemonic,
                                             final KeyStroke ks, final Icon icon) {
     return (MethodControl) methodControl(owner, method, name, state, description, mnemonic, ks).setIcon(icon);
   }

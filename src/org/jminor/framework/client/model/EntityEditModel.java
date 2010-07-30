@@ -7,7 +7,7 @@ import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.exception.DbException;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.EventObserver;
-import org.jminor.common.model.State;
+import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
 import org.jminor.common.model.valuemap.ValueCollectionProvider;
 import org.jminor.common.model.valuemap.exception.ValidationException;
@@ -24,33 +24,33 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * Indicates whether the model is active and ready to receive input
    * @return a state indicating whether the model is active and ready to receive input
    */
-  State stateActive();
+  StateObserver getActiveState();
 
   /**
    * @return the state used to determine if deleting should be enabled
    * @see #isDeleteAllowed()
    * @see #setDeleteAllowed(boolean)
    */
-  State stateAllowDelete();
+  StateObserver getAllowDeleteState();
 
   /**
    * @return a State indicating whether or not the active entity is null
    */
-  State stateEntityNull();
+  StateObserver getEntityNullState();
 
   /**
    * @return the state used to determine if updating should be enabled
    * @see #isUpdateAllowed()
    * @see #setUpdateAllowed(boolean)
    */
-  State stateAllowUpdate();
+  StateObserver getAllowUpdateState();
 
   /**
    * @return the state used to determine if inserting should be enabled
    * @see #isInsertAllowed()
    * @see #setInsertAllowed(boolean)
    */
-  State stateAllowInsert();
+  StateObserver getAllowInsertState();
 
   void addBeforeInsertListener(final ActionListener listener);
 

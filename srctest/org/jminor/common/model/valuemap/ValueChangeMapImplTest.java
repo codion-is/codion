@@ -39,8 +39,8 @@ public class ValueChangeMapImplTest {
     catch (IllegalArgumentException e) {}
     model.addValueListener(valueListener);
 
-    model.stateModified();
-    model.valueChangeObserver();
+    model.getModifiedState();
+    model.getValueChangeObserver();
 
     assertFalse(model.containsValue(key));
 
@@ -103,8 +103,8 @@ public class ValueChangeMapImplTest {
   public void equals() {
     final ValueChangeMap<String, Integer> mapOne = new ValueChangeMapImpl<String, Integer>();
     final ValueChangeMap<String, Integer> mapTwo = (ValueChangeMap) mapOne.getInstance();
-    mapOne.valueChangeObserver();
-    mapTwo.valueChangeObserver();
+    mapOne.getValueChangeObserver();
+    mapTwo.getValueChangeObserver();
 
     mapOne.initializeValue("keyOne", 1);
     mapOne.setValue("keyTwo", 2);

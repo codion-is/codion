@@ -151,7 +151,8 @@ public class DefaultSearchModelTest {
     model.removeEnabledListener(enabledListener);
 
     model.setLocked(true);
-    assertTrue(model.stateLocked().isActive());
+    assertTrue(model.isLocked());
+    assertTrue(model.getLockedState().isActive());
 
     try {
       model.setUpperBound("test");

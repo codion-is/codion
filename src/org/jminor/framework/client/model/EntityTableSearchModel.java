@@ -8,7 +8,7 @@ import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.FilterCriteria;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.SearchModel;
-import org.jminor.common.model.State;
+import org.jminor.common.model.StateObserver;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
@@ -27,7 +27,7 @@ public interface EntityTableSearchModel extends FilterCriteria<Entity>, Refresha
    * @return a State activated each time the search state differs from the state at last reset
    * @see #setSearchModelState()
    */
-  State stateSearchStateChanged();
+  StateObserver getSearchStateChangedState();
 
   void addFilterStateListener(final ActionListener listener);
 
@@ -82,7 +82,7 @@ public interface EntityTableSearchModel extends FilterCriteria<Entity>, Refresha
 
   /**
    * Sets the current search model state
-   * @see #stateSearchStateChanged
+   * @see #getSearchStateChangedState
    */
   void setSearchModelState();
 

@@ -7,7 +7,7 @@ import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.EventObserver;
-import org.jminor.common.model.State;
+import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.ValueCollectionProvider;
 import org.jminor.common.ui.images.NavigableImagePanel;
@@ -258,10 +258,10 @@ public final class UiUtil {
     }
   }
 
-  public static Action linkToEnabledState(final State enabledState, final Action action) {
+  public static Action linkToEnabledState(final StateObserver enabledState, final Action action) {
     if (enabledState != null) {
       action.setEnabled(enabledState.isActive());
-      enabledState.addStateListener(new ActionListener() {
+      enabledState.addListener(new ActionListener() {
         public void actionPerformed(final ActionEvent e) {
           action.setEnabled(enabledState.isActive());
         }
@@ -271,10 +271,10 @@ public final class UiUtil {
     return action;
   }
 
-  public static JComponent linkToEnabledState(final State enabledState, final JComponent component) {
+  public static JComponent linkToEnabledState(final StateObserver enabledState, final JComponent component) {
     if (enabledState != null) {
       component.setEnabled(enabledState.isActive());
-      enabledState.addStateListener(new ActionListener() {
+      enabledState.addListener(new ActionListener() {
         public void actionPerformed(final ActionEvent e) {
           component.setEnabled(enabledState.isActive());
         }

@@ -515,7 +515,7 @@ public class EntityPanel extends JPanel {
    * @return true if this EntityPanel is active and ready to receive input
    */
   public final boolean isActive() {
-    return getEditModel().stateActive().isActive();
+    return getEditModel().getActiveState().isActive();
   }
 
   /**
@@ -1131,7 +1131,7 @@ public class EntityPanel extends JPanel {
   }
 
   private void addActivationInitializer() {
-    getEditModel().stateActive().addStateListener(new ActionListener() {
+    getEditModel().getActiveState().addListener(new ActionListener() {
       private final Runnable initializer = new Runnable() {
         public void run() {
           initializePanel();

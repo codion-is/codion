@@ -29,7 +29,7 @@ public class DepartmentEditPanel extends EntityEditPanel {
     txtDepartmentNumber.setColumns(10);
 
     //we don't allow editing of the department number since it's a primary key
-    getEditModel().stateEntityNull().addStateListener(new ActionListener() {
+    getEditModel().getEntityNullState().addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         if (getEditModel().isEntityNew()) {
           txtDepartmentNumber.setEnabled(true);

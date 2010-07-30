@@ -29,8 +29,8 @@ public class ControlTest {
     control.setDescription("description");
     assertEquals("description", control.getDescription());
 
-    control.setEnabled(false);
-    assertFalse(enabledState.isActive());
+    enabledState.setActive(false);
+    
     assertFalse(control.isEnabled());
   }
 }

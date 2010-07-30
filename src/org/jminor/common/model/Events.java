@@ -22,7 +22,8 @@ public final class Events {
     return new EventImpl();
   }
 
-  final static class EventImpl implements Event {
+  static final class EventImpl implements Event {
+
     private final ActionEvent defaultActionEvent = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "");
     private volatile EventObserverImpl observer;
 
@@ -49,9 +50,9 @@ public final class Events {
       fire(e);
     }
 
-    public EventObserverImpl getObserver() {
+    public EventObserver getObserver() {
       if (observer == null) {
-        synchronized (this) {
+        synchronized (defaultActionEvent) {
           observer = new EventObserverImpl();
         }
       }
@@ -80,7 +81,7 @@ public final class Events {
     }
 
     public Collection<? extends ActionListener> getListeners() {
-      return getObserver().getListeners();
+      return ((EventObserverImpl) getObserver()).getListeners();
     }
   }
 

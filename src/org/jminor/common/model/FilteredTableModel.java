@@ -17,12 +17,12 @@ public interface FilteredTableModel<T, C> extends FilteredModel<T>, TableModel, 
   /**
    * @return a State active when the selection is empty
    */
-  State stateSelectionEmpty();
+  StateObserver getSelectionEmptyState();
 
   /**
    * @return a State active when multiple rows are selected
    */
-  State stateMultipleSelection();
+  StateObserver getMultipleSelectionState();
 
   void addSelectionChangedListener(final ActionListener listener);
 

@@ -340,19 +340,19 @@ public class DefaultSearchModel<K> implements SearchModel<K> {
     evtSearchModelCleared.fire();
   }
 
-  public final State stateLocked() {
-    return stLocked.getLinkedState();
+  public final StateObserver getLockedState() {
+    return stLocked.getObserver();
   }
 
-  public final Event enabledObserver() {
-    return evtEnabledChanged;
+  public final EventObserver getEnabledObserver() {
+    return evtEnabledChanged.getObserver();
   }
 
-  public final EventObserver lowerBoundObserver() {
+  public final EventObserver getLowerBoundObserver() {
     return evtLowerBoundChanged.getObserver();
   }
 
-  public final EventObserver upperBoundObserver() {
+  public final EventObserver getUpperBoundObserver() {
     return evtUpperBoundChanged.getObserver();
   }
 
@@ -404,7 +404,7 @@ public class DefaultSearchModel<K> implements SearchModel<K> {
     evtSearchTypeChanged.removeListener(listener);
   }
 
-  public final EventObserver searchTypeObserver() {
+  public final EventObserver getSearchTypeObserver() {
     return evtSearchTypeChanged.getObserver();
   }
 

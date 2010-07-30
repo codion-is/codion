@@ -7,6 +7,7 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.State;
+import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.States;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.exception.ValidationException;
@@ -115,11 +116,11 @@ public class DefaultValueChangeMapEditModel<K, V> implements ValueChangeMapEditM
   }
 
   public final boolean isModified() {
-    return stateModified().isActive();
+    return getModifiedState().isActive();
   }
 
   public final boolean isValid() {
-    return stateValid().isActive();
+    return getValidState().isActive();
   }
 
   public final void addValueSetListener(final K key, final ActionListener listener) {
@@ -155,12 +156,12 @@ public class DefaultValueChangeMapEditModel<K, V> implements ValueChangeMapEditM
     evtValueMapSet.removeListener(listener);
   }
 
-  public final State stateModified() {
-    return valueMap.stateModified();
+  public final StateObserver getModifiedState() {
+    return valueMap.getModifiedState();
   }
 
-  public final State stateValid() {
-    return stValid.getLinkedState();
+  public final StateObserver getValidState() {
+    return stValid.getObserver();
   }
 
   protected V prepareNewValue(final K key, final V value) {

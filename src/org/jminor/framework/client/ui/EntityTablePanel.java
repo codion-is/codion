@@ -455,8 +455,8 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
    */
   public ControlSet getUpdateSelectedControlSet() {
     final State enabled = States.aggregateState(Conjunction.AND,
-            getTableModel().stateAllowMultipleUpdate(),
-            getTableModel().stateSelectionEmpty().getReversedState());
+            getTableModel().getAllowMultipleUpdateState(),
+            getTableModel().getSelectionEmptyState().getReversedState());
     final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED),
             (char) 0, Images.loadImage("Modify16.gif"), enabled);
     controlSet.setDescription(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_TIP));
@@ -488,7 +488,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
   public final Control getViewDependenciesControl() {
     return Controls.methodControl(this, "viewSelectionDependencies",
             FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES) + "...",
-            getTableModel().stateSelectionEmpty().getReversedState(),
+            getTableModel().getSelectionEmptyState().getReversedState(),
             FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES_TIP), 'W');
   }
 
@@ -498,8 +498,8 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
   public final Control getDeleteSelectedControl() {
     return Controls.methodControl(this, "delete", FrameworkMessages.get(FrameworkMessages.DELETE),
             States.aggregateState(Conjunction.AND,
-                    getTableModel().stateAllowDelete(),
-                    getTableModel().stateSelectionEmpty().getReversedState()),
+                    getTableModel().getAllowDeleteState(),
+                    getTableModel().getSelectionEmptyState().getReversedState()),
             FrameworkMessages.get(FrameworkMessages.DELETE_TIP), 0, null,
             Images.loadImage(Images.IMG_DELETE_16));
   }
@@ -510,7 +510,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
   public final Control getExportControl() {
     return Controls.methodControl(this, "exportSelected",
             FrameworkMessages.get(FrameworkMessages.EXPORT_SELECTED) + "...",
-            getTableModel().stateSelectionEmpty().getReversedState(),
+            getTableModel().getSelectionEmptyState().getReversedState(),
             FrameworkMessages.get(FrameworkMessages.EXPORT_SELECTED_TIP), 0, null,
             Images.loadImage(Images.IMG_SAVE_16));
   }
@@ -543,7 +543,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
    * @see #getInputProvider(org.jminor.framework.domain.Property, java.util.List)
    */
   public final void updateSelectedEntities(final Property propertyToUpdate) {
-    if (getTableModel().stateSelectionEmpty().isActive()) {
+    if (getTableModel().getSelectionEmptyState().isActive()) {
       return;
     }
 
@@ -676,7 +676,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
 
   public final Control getClearSelectionControl() {
     final Control clearSelection = Controls.methodControl(getTableModel(), "clearSelection", null,
-            getTableModel().stateSelectionEmpty().getReversedState(), null, -1, null,
+            getTableModel().getSelectionEmptyState().getReversedState(), null, -1, null,
             Images.loadImage("ClearSelection16.gif"));
     clearSelection.setDescription(FrameworkMessages.get(FrameworkMessages.CLEAR_SELECTION_TIP));
 
@@ -1062,7 +1062,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     final KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0);
     final String keyName = stroke.toString().replace("pressed ", "");
     final Control refresh = Controls.methodControl(getTableModel(), "refresh", null,
-            getTableModel().getSearchModel().stateSearchStateChanged(), FrameworkMessages.get(FrameworkMessages.REFRESH_TIP)
+            getTableModel().getSearchModel().getSearchStateChangedState(), FrameworkMessages.get(FrameworkMessages.REFRESH_TIP)
                     + " (" + keyName + ")", 0, null, Images.loadImage(Images.IMG_STOP_16));
 
     final InputMap inputMap = getInputMap(WHEN_IN_FOCUSED_WINDOW);
@@ -1293,7 +1293,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
 
   private Control getCopyCellControl() {
     return new Control(FrameworkMessages.get(FrameworkMessages.COPY_CELL),
-            getTableModel().stateSelectionEmpty().getReversedState()) {
+            getTableModel().getSelectionEmptyState().getReversedState()) {
       @Override
       public void actionPerformed(final ActionEvent e) {
         final JTable table = getJTable();
@@ -1387,7 +1387,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
       getJTable().addKeyListener(new KeyAdapter() {
         @Override
         public void keyTyped(final KeyEvent e) {
-          if (e.getKeyChar() == KeyEvent.VK_DELETE && !getTableModel().stateSelectionEmpty().isActive()) {
+          if (e.getKeyChar() == KeyEvent.VK_DELETE && !getTableModel().getSelectionEmptyState().isActive()) {
             try {
               delete();
             }
@@ -1431,13 +1431,13 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
 
     getTableModel().addSelectedIndexListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
-        if (!getTableModel().stateSelectionEmpty().isActive()) {
+        if (!getTableModel().getSelectionEmptyState().isActive()) {
           scrollToCoordinate(getTableModel().getSelectedIndex(), getJTable().getSelectedColumn());
         }
       }
     });
 
-    getTableModel().getSearchModel().stateSearchStateChanged().addStateListener(new ActionListener() {
+    getTableModel().getSearchModel().getSearchStateChangedState().addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         getJTable().getTableHeader().repaint();
         getJTable().repaint();

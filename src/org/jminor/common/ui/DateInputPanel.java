@@ -4,7 +4,7 @@
 package org.jminor.common.ui;
 
 import org.jminor.common.i18n.Messages;
-import org.jminor.common.model.State;
+import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.Util;
 
 import javax.swing.AbstractAction;
@@ -33,7 +33,7 @@ public final class DateInputPanel extends JPanel {
   }
 
   public DateInputPanel(final JFormattedTextField inputField, final SimpleDateFormat dateFormat,
-                        final boolean includeButton, final State enabledState) {
+                        final boolean includeButton, final StateObserver enabledState) {
     super(new BorderLayout());
     Util.rejectNullValue(inputField, "inputField");
     Util.rejectNullValue(dateFormat, "dateFormat");

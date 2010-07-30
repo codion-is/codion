@@ -4,7 +4,7 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.model.DateUtil;
-import org.jminor.common.model.State;
+import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.valuemap.ValueMapValidator;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.Configuration;
@@ -101,15 +101,15 @@ public final class DefaultEntityEditModelTest {
     }
     catch (IllegalArgumentException e) {}
 
-    final State entityNullState = editModel.stateEntityNull();
+    final StateObserver entityNullState = editModel.getEntityNullState();
 
     assertTrue(entityNullState.isActive());
 
     editModel.setReadOnly(false);
     assertFalse(editModel.isReadOnly());
-    assertTrue(editModel.stateAllowInsert().isActive());
-    assertTrue(editModel.stateAllowUpdate().isActive());
-    assertTrue(editModel.stateAllowDelete().isActive());
+    assertTrue(editModel.getAllowInsertState().isActive());
+    assertTrue(editModel.getAllowUpdateState().isActive());
+    assertTrue(editModel.getAllowDeleteState().isActive());
 
     final ActionListener listener = new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
@@ -130,11 +130,11 @@ public final class DefaultEntityEditModelTest {
             editModel.getValueProvider(jobProperty).getValues());
 
     editModel.setActive(true);
-    assertTrue(editModel.stateActive().isActive());
+    assertTrue(editModel.getActiveState().isActive());
 
     editModel.refresh();
     assertTrue(editModel.isEntityNew());
-    assertFalse(editModel.stateModified().isActive());
+    assertFalse(editModel.getModifiedState().isActive());
 
     final Entity employee = editModel.getDbProvider().getEntityDb().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "MARTIN");
     editModel.setEntity(employee);
@@ -142,10 +142,10 @@ public final class DefaultEntityEditModelTest {
 
     assertTrue("Active entity is not equal to the entity just set", editModel.getEntityCopy().propertyValuesEqual(employee));
     assertFalse("Active entity is new after an entity is set", editModel.isEntityNew());
-    assertFalse(editModel.stateModified().isActive());
+    assertFalse(editModel.getModifiedState().isActive());
     editModel.setEntity(null);
     assertTrue("Active entity is new null after entity is set to null", editModel.isEntityNew());
-    assertFalse(editModel.stateModified().isActive());
+    assertFalse(editModel.getModifiedState().isActive());
     assertTrue("Active entity is not null after entity is set to null", editModel.getEntityCopy().isNull());
 
     editModel.setEntity(employee);
@@ -160,7 +160,7 @@ public final class DefaultEntityEditModelTest {
     final String name = "Mr. Mr";
 
     editModel.setValue(EmpDept.EMPLOYEE_COMMISSION, commission);
-    assertTrue(editModel.stateModified().isActive());
+    assertTrue(editModel.getModifiedState().isActive());
     editModel.setValue(EmpDept.EMPLOYEE_HIREDATE, hiredate);
     editModel.setValue(EmpDept.EMPLOYEE_NAME, name);
 
@@ -170,7 +170,7 @@ public final class DefaultEntityEditModelTest {
 
     editModel.setValue(EmpDept.EMPLOYEE_COMMISSION, originalCommission);
     assertTrue(editModel.isModified());
-    assertTrue(editModel.stateModified().isActive());
+    assertTrue(editModel.getModifiedState().isActive());
     editModel.setValue(EmpDept.EMPLOYEE_HIREDATE, originalHiredate);
     assertTrue(editModel.isModified());
     editModel.setValue(EmpDept.EMPLOYEE_NAME, originalName);
@@ -279,7 +279,7 @@ public final class DefaultEntityEditModelTest {
       assertTrue(editModel.isUpdateAllowed());
 
       editModel.update();
-      assertFalse(editModel.stateModified().isActive());
+      assertFalse(editModel.getModifiedState().isActive());
       editModel.removeAfterUpdateListener(listener);
     }
     finally {

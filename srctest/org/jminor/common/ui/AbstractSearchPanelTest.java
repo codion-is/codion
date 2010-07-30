@@ -24,7 +24,7 @@ public class AbstractSearchPanelTest {
     assertFalse(panel.isDialogShowing());
     assertFalse(panel.isAdvancedSearchOn());
     panel.setAdvancedSearchOn(true);
-    assertTrue(panel.stateAdvancedSearch().isActive());
+    assertTrue(panel.getAdvancedSearchState().isActive());
     panel.setAdvancedSearchOn(false);
     assertFalse(panel.isAdvancedSearchOn());
   }

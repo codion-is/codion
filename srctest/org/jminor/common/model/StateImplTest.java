@@ -27,7 +27,7 @@ public class StateImplTest {
         stateChanged++;
       }
     };
-    state.addStateListener(listener);
+    state.addListener(listener);
 
     assertFalse("State should be inactive when initialized", state.isActive());
     state.setActive(true);
@@ -46,23 +46,8 @@ public class StateImplTest {
     assertTrue("evtStateChanged should have been fired when an inactive state was deactivated", stateChanged == 2);
     state.setActive(false);
     assertTrue("evtStateChanged should not have been fired when an inactive state was deactivated", stateChanged == 2);
-    try {
-      final State linkedState = state.getLinkedState();
-      assertEquals("inactive linked", linkedState.toString());
-      linkedState.setActive(false);
-      fail("should not be able to set the state of a linked state");
-    }
-    catch (Exception e) {}
-    try {
-      final State reversedState = state.getReversedState();
-      assertEquals(state, reversedState.getReversedState());
-      assertEquals("active reversed", reversedState.toString());
-      reversedState.setActive(false);
-      fail("should not be able to set the state of a reversed state");
-    }
-    catch (Exception e) {}
 
-    state.removeStateListener(listener);
+    state.removeListener(listener);
   }
 
   @Test
