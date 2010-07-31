@@ -1,7 +1,7 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.framework.demos.empdept.domain.EmpDept;
-import org.jminor.framework.domain.EntityRepository;
+import org.jminor.framework.domain.Entities;
 
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -18,6 +18,6 @@ public final class DefaultEntityTableColumnModelTest {
     new EmpDept();
     final DefaultEntityTableColumnModel model = new DefaultEntityTableColumnModel(EmpDept.T_DEPARTMENT);
     assertEquals(EmpDept.T_DEPARTMENT, model.getEntityID());
-    assertEquals(EntityRepository.getVisibleProperties(EmpDept.T_DEPARTMENT), model.getColumnProperties());
+    assertEquals(Entities.getVisibleProperties(EmpDept.T_DEPARTMENT), model.getColumnProperties());
   }
 }

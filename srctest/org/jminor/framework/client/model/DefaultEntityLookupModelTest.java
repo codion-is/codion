@@ -9,7 +9,6 @@ import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
 
 import org.junit.After;
@@ -128,7 +127,7 @@ public final class DefaultEntityLookupModelTest {
     lookupModel.setCaseSensitive(true);
     lookupModel.setWildcardPostfix(true);
     lookupModel.setAdditionalLookupCriteria(
-            EntityCriteriaUtil.propertyCriteria(EntityRepository.getColumnProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB),
+            EntityCriteriaUtil.propertyCriteria(Entities.getColumnProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB),
                     SearchType.NOT_LIKE, "ajob"));
     result = lookupModel.performQuery();
     assertTrue("Result should contain john", contains(result, "John"));
@@ -137,8 +136,8 @@ public final class DefaultEntityLookupModelTest {
 
   @Before
   public void setUp() throws Exception {
-    properties = Arrays.asList(EntityRepository.getColumnProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME),
-                    EntityRepository.getColumnProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB));
+    properties = Arrays.asList(Entities.getColumnProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME),
+                    Entities.getColumnProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB));
     lookupModel = new DefaultEntityLookupModel(EmpDept.T_EMPLOYEE, EntityDbConnectionTest.DB_PROVIDER, properties);
 
     EntityDbConnectionTest.DB_PROVIDER.getEntityDb().beginTransaction();

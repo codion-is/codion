@@ -7,7 +7,7 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.Events;
 import org.jminor.framework.db.EntityDbConnectionTest;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
-import org.jminor.framework.domain.EntityRepository;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Property;
 
 import static org.junit.Assert.*;
@@ -26,7 +26,7 @@ public final class DefaultPropertyComboBoxModelTest {
 
   public DefaultPropertyComboBoxModelTest() {
     new EmpDept();
-    property = EntityRepository.getColumnProperty(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME);
+    property = Entities.getColumnProperty(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME);
     comboBoxModel = new DefaultPropertyComboBoxModel(EmpDept.T_DEPARTMENT,
             EntityDbConnectionTest.DB_PROVIDER, property,
             null, refreshEvent);

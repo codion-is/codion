@@ -5,7 +5,7 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.model.SearchType;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
-import org.jminor.framework.domain.EntityRepository;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Property;
 
 import static org.junit.Assert.assertEquals;
@@ -27,7 +27,7 @@ public class DefaultPropertySearchModelTest {
 
   @Test
   public void propertySearchModel() throws Exception {
-    final Property.ColumnProperty property = (Property.ColumnProperty) EntityRepository.getProperty(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME);
+    final Property.ColumnProperty property = (Property.ColumnProperty) Entities.getProperty(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME);
     final PropertySearchModel model = new DefaultPropertySearchModel(property);
     assertEquals(property, model.getSearchKey());
     model.setSearchType(SearchType.LIKE);

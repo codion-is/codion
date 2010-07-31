@@ -29,7 +29,7 @@ public class EntityUtilTest {
       values.add(i);
       entities.add(entity);
     }
-    final Property property = EntityRepository.getProperty(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_ID);
+    final Property property = Entities.getProperty(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_ID);
     List<Object> propertyValues = EntityUtil.getPropertyValues(EmpDept.DEPARTMENT_ID, entities);
     assertTrue(propertyValues.containsAll(values));
     propertyValues = EntityUtil.getPropertyValues(property, entities);
@@ -166,8 +166,8 @@ public class EntityUtilTest {
 
     final Collection<Property> properties = EntityUtil.getProperties(EmpDept.T_DEPARTMENT, propertyIDs);
     assertEquals(2, properties.size());
-    assertTrue(properties.contains(EntityRepository.getProperty(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_ID)));
-    assertTrue(properties.contains(EntityRepository.getProperty(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME)));
+    assertTrue(properties.contains(Entities.getProperty(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_ID)));
+    assertTrue(properties.contains(Entities.getProperty(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME)));
 
     final Collection<Property> noProperties = EntityUtil.getProperties(EmpDept.T_DEPARTMENT, null);
     assertEquals(0, noProperties.size());

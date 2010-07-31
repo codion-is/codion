@@ -18,7 +18,6 @@ import org.jminor.framework.db.EntityDbConnectionTest;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 
@@ -43,8 +42,8 @@ public final class DefaultEntityEditModelTest {
   @Before
   public void setUp() {
     new EmpDept();
-    jobProperty = EntityRepository.getColumnProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB);
-    deptProperty = EntityRepository.getForeignKeyProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_DEPARTMENT_FK);
+    jobProperty = Entities.getColumnProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB);
+    deptProperty = Entities.getForeignKeyProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_DEPARTMENT_FK);
     debugOutput = Configuration.getBooleanValue(Configuration.PROPERTY_DEBUG_OUTPUT);
     Configuration.setValue(Configuration.PROPERTY_DEBUG_OUTPUT, true);
     editModel = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityDbConnectionTest.DB_PROVIDER);
@@ -78,7 +77,7 @@ public final class DefaultEntityEditModelTest {
   @Test
   public void createEntityLookupModel() {
     final EntityLookupModel model = editModel.createEntityLookupModel(EmpDept.T_DEPARTMENT,
-            EntityRepository.getSearchProperties(EmpDept.T_DEPARTMENT), null);
+            Entities.getSearchProperties(EmpDept.T_DEPARTMENT), null);
     assertNotNull(model);
     assertEquals(EmpDept.T_DEPARTMENT, model.getEntityID());
   }
@@ -185,7 +184,7 @@ public final class DefaultEntityEditModelTest {
     catch (ValidationException e) {
       assertEquals(EmpDept.EMPLOYEE_COMMISSION, e.getKey());
       assertEquals(50d, e.getValue());
-      final Property property = EntityRepository.getProperty(EmpDept.T_EMPLOYEE, (String) e.getKey());
+      final Property property = Entities.getProperty(EmpDept.T_EMPLOYEE, (String) e.getKey());
       assertEquals("Validation message should fit", "'" + property + "' " +
               FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_TOO_SMALL) + " " + property.getMin(), e.getMessage());
     }

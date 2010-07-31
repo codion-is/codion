@@ -10,7 +10,6 @@ import org.jminor.common.model.reports.ReportDataWrapper;
 import org.jminor.framework.db.EntityDbConnectionTest;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.EntityTestDomain;
 import org.jminor.framework.domain.Property;
 
@@ -80,7 +79,7 @@ public final class DefaultEntityTableModelTest {
 
     assertEquals(Integer.class, testModel.getColumnClass(0));
 
-    final Property property = EntityRepository.getProperty(EntityTestDomain.T_DETAIL, EntityTestDomain.DETAIL_STRING);
+    final Property property = Entities.getProperty(EntityTestDomain.T_DETAIL, EntityTestDomain.DETAIL_STRING);
     final TableColumn column = testModel.getTableColumn(property);
     assertEquals(property, column.getIdentifier());
 
