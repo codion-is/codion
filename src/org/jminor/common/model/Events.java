@@ -18,6 +18,8 @@ import java.util.Set;
  */
 public final class Events {
 
+  private Events() {}
+
   public static Event event() {
     return new EventImpl();
   }
@@ -72,17 +74,23 @@ public final class Events {
 
     private final Set<ActionListener> listeners = new HashSet<ActionListener>();
 
-    public synchronized void addListener(final ActionListener listener) {
+    public void addListener(final ActionListener listener) {
       Util.rejectNullValue(listener, "listener");
-      listeners.add(listener);
+      synchronized (listeners) {
+        listeners.add(listener);
+      }
     }
 
     public synchronized void removeListener(final ActionListener listener) {
-      listeners.remove(listener);
+      synchronized (listeners) {
+        listeners.remove(listener);
+      }
     }
 
     private synchronized Collection<? extends ActionListener> getListeners() {
-      return Collections.unmodifiableCollection(listeners);
+      synchronized (listeners) {
+        return Collections.unmodifiableCollection(listeners);
+      }
     }
   }
 }

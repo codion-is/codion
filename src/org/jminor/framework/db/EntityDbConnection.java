@@ -375,13 +375,8 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
     String selectQuery = null;
     try {
       selectQuery = Entities.getSelectQuery(criteria.getEntityID());
-      if (selectQuery == null) {
-        selectQuery = Entities.getSelectTableName(criteria.getEntityID());
-      }
-      else {
-        selectQuery = getSelectSQL("(" + selectQuery + " " +
-                criteria.getWhereClause(!selectQuery.toLowerCase().contains("where")) + ") alias", "count(*)", null, null);
-      }
+      selectQuery = getSelectSQL(selectQuery == null ? Entities.getSelectTableName(criteria.getEntityID()) :
+              "(" + selectQuery + " " + criteria.getWhereClause(!selectQuery.toLowerCase().contains("where")) + ") alias", "count(*)", null, null);
       selectQuery += " " + criteria.getWhereClause(!containsWhereKeyword(selectQuery));
       statement = getConnection().prepareStatement(selectQuery);
       resultSet = executePreparedSelect(statement, selectQuery, criteria.getValues(), criteria.getValueProperties());
@@ -948,7 +943,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
     return dependencies;
   }
 
-  private static class Dependency {
+  private static final class Dependency {
     private final String entityID;
     private final List<Property.ColumnProperty> foreignKeyProperties;
 

@@ -93,7 +93,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
   /**
    * The selection model
    */
-  private final SelectionModel selectionModel = new SelectionModel();
+  private final SelectionModel selectionModel;
 
   /**
    * Caches the column indexes in the model
@@ -144,6 +144,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     this.columnModel = columnModel;
     this.columnIndexCache = new int[columnModel.getColumnCount()];
     this.columnFilterModels = columnFilterModels;
+    this.selectionModel = new SelectionModel(this);
     addTableModelListener(new SortHandler());
     bindEventsInternal();
   }
@@ -954,12 +955,14 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     }
   }
 
-  private final class SelectionModel extends DefaultListSelectionModel {
+  private static final class SelectionModel extends DefaultListSelectionModel {
 
     private final Event evtSelectionChanged = Events.event();
     private final Event evtSelectedIndexChanged = Events.event();
     private final State stSelectionEmpty = States.state(true);
     private final State stMultipleSelection = States.state(false);
+
+    private final AbstractFilteredTableModel tableModel;
 
     /**
      * true while the selection is being updated
@@ -970,17 +973,21 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
      */
     private int selectedIndex = -1;
 
+    private SelectionModel(final AbstractFilteredTableModel tableModel) {
+      this.tableModel = tableModel;
+    }
+
     @Override
     public void fireValueChanged(final int firstIndex, final int lastIndex, final boolean isAdjusting) {
       super.fireValueChanged(firstIndex, lastIndex, isAdjusting);
-      stSelectionEmpty.setActive(SelectionModel.this.isSelectionEmpty());
+      stSelectionEmpty.setActive(isSelectionEmpty());
       stMultipleSelection.setActive(getSelectionCount() > 1);
       final int minSelIndex = getMinSelectionIndex();
       if (selectedIndex != minSelIndex) {
         selectedIndex = minSelIndex;
         evtSelectedIndexChanged.fire();
       }
-      if (!(isAdjusting || isUpdatingSelection || isSorting)) {
+      if (!(isAdjusting || isUpdatingSelection || tableModel.isSorting())) {
         evtSelectionChanged.fire();
       }
     }

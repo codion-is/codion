@@ -18,6 +18,8 @@ import java.util.List;
  */
 public final class States {
 
+  private States() {}
+
   public static State state() {
     return new StateImpl();
   }
