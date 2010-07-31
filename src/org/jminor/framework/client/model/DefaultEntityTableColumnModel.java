@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.client.model;
 
-import org.jminor.framework.domain.EntityRepository;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Property;
 
 import javax.swing.table.DefaultTableColumnModel;
@@ -17,7 +17,7 @@ public class DefaultEntityTableColumnModel extends DefaultTableColumnModel imple
   private final List<Property> columnProperties;
 
   public DefaultEntityTableColumnModel(final String entityID) {
-    this(entityID, EntityRepository.getVisibleProperties(entityID));
+    this(entityID, Entities.getVisibleProperties(entityID));
   }
 
   public DefaultEntityTableColumnModel(final String entityID, final List<Property> columnProperties) {

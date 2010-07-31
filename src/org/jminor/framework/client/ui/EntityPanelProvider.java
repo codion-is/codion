@@ -13,7 +13,7 @@ import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.model.EntityValidator;
 import org.jminor.framework.db.provider.EntityDbProvider;
-import org.jminor.framework.domain.EntityRepository;
+import org.jminor.framework.domain.Entities;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -104,7 +104,7 @@ public class EntityPanelProvider implements Comparable {
    */
   public final String getCaption() {
     if (caption == null || caption.length() == 0) {
-      this.caption = EntityRepository.getEntityDefinition(entityID).getCaption();
+      this.caption = Entities.getCaption(entityID);
     }
 
     if (caption == null) {

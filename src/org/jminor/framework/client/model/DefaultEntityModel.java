@@ -16,8 +16,8 @@ import org.jminor.framework.client.model.event.InsertListener;
 import org.jminor.framework.client.model.event.UpdateEvent;
 import org.jminor.framework.client.model.event.UpdateListener;
 import org.jminor.framework.db.provider.EntityDbProvider;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
 
 import org.apache.log4j.Logger;
@@ -354,7 +354,7 @@ public class DefaultEntityModel implements EntityModel {
       tableModel.searchByForeignKeyValues(masterEntityID, selectedMasterEntities);
     }
 
-    for (final Property.ForeignKeyProperty foreignKeyProperty : EntityRepository.getForeignKeyProperties(entityID, masterEntityID)) {
+    for (final Property.ForeignKeyProperty foreignKeyProperty : Entities.getForeignKeyProperties(entityID, masterEntityID)) {
       editModel.setValue(foreignKeyProperty.getPropertyID(), selectedMasterEntities != null
               && !selectedMasterEntities.isEmpty() ? selectedMasterEntities.get(0) : null);
     }
@@ -437,7 +437,7 @@ public class DefaultEntityModel implements EntityModel {
 
     for (final EntityModel detailModel : detailModels) {
       for (final Property.ForeignKeyProperty foreignKeyProperty :
-              EntityRepository.getForeignKeyProperties(detailModel.getEntityID(), entityID)) {
+              Entities.getForeignKeyProperties(detailModel.getEntityID(), entityID)) {
         final EntityEditModel detailEditModel = detailModel.getEditModel();
         if (detailEditModel.containsComboBoxModel(foreignKeyProperty)) {
           final EntityComboBoxModel comboModel = detailEditModel.getEntityComboBoxModel(foreignKeyProperty);
@@ -474,7 +474,7 @@ public class DefaultEntityModel implements EntityModel {
       final Entity insertedEntity = dbProvider.getEntityDb().selectSingle(insertedPrimaryKeys.get(0));
       for (final EntityModel detailModel : detailModels) {
         for (final Property.ForeignKeyProperty foreignKeyProperty :
-                EntityRepository.getForeignKeyProperties(detailModel.getEntityID(), entityID)) {
+                Entities.getForeignKeyProperties(detailModel.getEntityID(), entityID)) {
           final EntityEditModel detailEditModel = detailModel.getEditModel();
           if (detailEditModel.containsComboBoxModel(foreignKeyProperty)) {
             detailEditModel.getEntityComboBoxModel(foreignKeyProperty).refresh();
@@ -492,7 +492,7 @@ public class DefaultEntityModel implements EntityModel {
   private void refreshDetailModelsAfterUpdate() {
     for (final EntityModel detailModel : detailModels) {
       for (final Property.ForeignKeyProperty foreignKeyProperty :
-              EntityRepository.getForeignKeyProperties(detailModel.getEntityID(), entityID)) {
+              Entities.getForeignKeyProperties(detailModel.getEntityID(), entityID)) {
         final EntityEditModel detailEditModel = detailModel.getEditModel();
         if (detailEditModel.containsComboBoxModel(foreignKeyProperty)) {
           detailEditModel.getEntityComboBoxModel(foreignKeyProperty).refresh();

@@ -39,8 +39,8 @@ import org.jminor.framework.client.model.DefaultEntityTableModel;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.db.provider.EntityDbProvider;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
@@ -1135,11 +1135,11 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
    */
   protected final InputProvider createEntityInputProvider(final Property.ForeignKeyProperty foreignKeyProperty, final Entity currentValue,
                                                           final EntityEditModel editModel) {
-    if (!EntityRepository.isLargeDataset(foreignKeyProperty.getReferencedEntityID())) {
+    if (!Entities.isLargeDataset(foreignKeyProperty.getReferencedEntityID())) {
       return new EntityComboProvider(editModel.createEntityComboBoxModel(foreignKeyProperty), currentValue);
     }
     else {
-      final List<Property.ColumnProperty> searchProperties = EntityRepository.getSearchProperties(foreignKeyProperty.getReferencedEntityID());
+      final List<Property.ColumnProperty> searchProperties = Entities.getSearchProperties(foreignKeyProperty.getReferencedEntityID());
       if (searchProperties.isEmpty()) {
         throw new RuntimeException("No searchable properties found for entity: " + foreignKeyProperty.getReferencedEntityID());
       }
@@ -1157,13 +1157,12 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
   }
 
   /**
-   * By default this returns the result of isRowColoring from the EntityRepository
+   * By default this returns the result of isRowColoring from the Entities repository
    * @return true if the table rows should be colored according to the underlying entity
-   * @see org.jminor.framework.domain.EntityDefinition#setRowColoring(boolean)
-   * @see org.jminor.framework.domain.EntityRepository#isRowColoring(String)
+   * @see org.jminor.framework.domain.Entities#isRowColoring(String)
    */
   protected boolean isRowColoring() {
-    return EntityRepository.isRowColoring(getTableModel().getEntityID());
+    return Entities.isRowColoring(getTableModel().getEntityID());
   }
 
   /**
@@ -1195,7 +1194,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
    * Initializes the JTable instance
    * @return the JTable instance
    * @see org.jminor.framework.domain.EntityDefinition#setRowColoring(boolean)
-   * @see org.jminor.framework.domain.EntityRepository.Proxy#getBackgroundColor(org.jminor.framework.domain.Entity)
+   * @see org.jminor.framework.domain.Entities.Proxy#getBackgroundColor(org.jminor.framework.domain.Entity)
    */
   @Override
   protected final JTable initializeJTable() {
@@ -1496,9 +1495,9 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
    * @param dbProvider if provided then lazy loaded entity references are loaded so that the full object graph can be shown
    */
   private static void populateEntityMenu(final JComponent rootMenu, final Entity entity, final EntityDbProvider dbProvider) {
-    populatePrimaryKeyMenu(rootMenu, entity, new ArrayList<Property.PrimaryKeyProperty>(EntityRepository.getPrimaryKeyProperties(entity.getEntityID())));
-    populateForeignKeyMenu(rootMenu, entity, dbProvider, new ArrayList<Property.ForeignKeyProperty>(EntityRepository.getForeignKeyProperties(entity.getEntityID())));
-    populateValueMenu(rootMenu, entity, new ArrayList<Property>(EntityRepository.getProperties(entity.getEntityID(), false)));
+    populatePrimaryKeyMenu(rootMenu, entity, new ArrayList<Property.PrimaryKeyProperty>(Entities.getPrimaryKeyProperties(entity.getEntityID())));
+    populateForeignKeyMenu(rootMenu, entity, dbProvider, new ArrayList<Property.ForeignKeyProperty>(Entities.getForeignKeyProperties(entity.getEntityID())));
+    populateValueMenu(rootMenu, entity, new ArrayList<Property>(Entities.getProperties(entity.getEntityID(), false)));
   }
 
   private static void populatePrimaryKeyMenu(final JComponent rootMenu, final Entity entity, final List<Property.PrimaryKeyProperty> primaryKeyProperties) {

@@ -25,8 +25,8 @@ import org.jminor.framework.db.EntityDb;
 import org.jminor.framework.db.EntityDbConnection;
 import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.db.criteria.EntitySelectCriteria;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
 
 import org.apache.log4j.Logger;
@@ -790,7 +790,7 @@ public final class EntityDbRemoteAdapter extends UnicastRemoteObject implements 
     private static String getEntityParameterString(final Entity entity) {
       final StringBuilder builder = new StringBuilder();
       builder.append(entity.getEntityID()).append(" {");
-      for (final Property property : EntityRepository.getColumnProperties(entity.getEntityID(), true, true, true)) {
+      for (final Property property : Entities.getColumnProperties(entity.getEntityID(), true, true, true)) {
         final boolean modified = entity.isModified(property.getPropertyID());
         if (property instanceof Property.PrimaryKeyProperty || modified) {
           final StringBuilder valueString = new StringBuilder();

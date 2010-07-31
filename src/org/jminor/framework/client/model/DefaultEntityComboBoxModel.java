@@ -10,8 +10,8 @@ import org.jminor.common.model.Util;
 import org.jminor.common.model.combobox.DefaultFilteredComboBoxModel;
 import org.jminor.framework.db.criteria.EntitySelectCriteria;
 import org.jminor.framework.db.provider.EntityDbProvider;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
 
 import java.awt.event.ActionEvent;
@@ -174,8 +174,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
   }
 
   public final EntityComboBoxModel createForeignKeyFilterComboBoxModel(final String foreignKeyPropertyID) {
-    final Property.ForeignKeyProperty foreignKeyProperty =
-            EntityRepository.getForeignKeyProperty(entityID, foreignKeyPropertyID);
+    final Property.ForeignKeyProperty foreignKeyProperty = Entities.getForeignKeyProperty(entityID, foreignKeyPropertyID);
     final EntityComboBoxModel foreignKeyModel
             = new DefaultEntityComboBoxModel(foreignKeyProperty.getReferencedEntityID(), dbProvider);
     foreignKeyModel.setNullValueString("-");
@@ -211,7 +210,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
         final Entity selected = model.getSelectedEntity();
         if (selected != null) {
           foreignKeyModel.setSelectedEntityByPrimaryKey(selected.getReferencedPrimaryKey(
-                  EntityRepository.getForeignKeyProperty(model.getEntityID(), foreignKeyPropertyID)));
+                  Entities.getForeignKeyProperty(model.getEntityID(), foreignKeyPropertyID)));
         }
       }
     });

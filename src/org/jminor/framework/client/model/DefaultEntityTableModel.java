@@ -19,8 +19,8 @@ import org.jminor.framework.client.model.event.DeleteEvent;
 import org.jminor.framework.client.model.event.DeleteListener;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.db.provider.EntityDbProvider;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
@@ -200,7 +200,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   public final void setSortingDirective(final String propertyID, final SortingDirective directive) {
-    final int columnIndex = getColumnModel().getColumnIndex(EntityRepository.getProperty(entityID, propertyID));
+    final int columnIndex = getColumnModel().getColumnIndex(Entities.getProperty(entityID, propertyID));
     if (columnIndex == -1) {
       throw new IllegalArgumentException("Column based on property '" + propertyID + " not found");
     }
@@ -281,7 +281,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   public Color getRowBackgroundColor(final int row) {
     final Entity rowEntity = getItemAt(row);
 
-    return EntityRepository.getProxy(rowEntity.getEntityID()).getBackgroundColor(rowEntity);
+    return Entities.getProxy(rowEntity.getEntityID()).getBackgroundColor(rowEntity);
   }
 
   public final Collection<Object> getValues(final Property property, final boolean selectedOnly) {
@@ -344,7 +344,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   public void searchByForeignKeyValues(final String referencedEntityID, final List<Entity> referenceEntities) {
-    final List<Property.ForeignKeyProperty> properties = EntityRepository.getForeignKeyProperties(entityID, referencedEntityID);
+    final List<Property.ForeignKeyProperty> properties = Entities.getForeignKeyProperties(entityID, referencedEntityID);
     if (!properties.isEmpty() && isDetailModel && searchModel.setSearchValues(properties.get(0).getPropertyID(), referenceEntities)) {
       refresh();
     }
@@ -424,7 +424,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   public final PropertySummaryModel getPropertySummaryModel(final String propertyID) {
-    return getPropertySummaryModel(EntityRepository.getProperty(entityID, propertyID));
+    return getPropertySummaryModel(Entities.getProperty(entityID, propertyID));
   }
 
   public final PropertySummaryModel getPropertySummaryModel(final Property property) {
@@ -486,7 +486,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
     try {
       return dbProvider.getEntityDb().selectMany(EntityCriteriaUtil.selectCriteria(entityID, criteria,
-              EntityRepository.getOrderByClause(entityID), fetchCount));
+              Entities.getOrderByClause(entityID), fetchCount));
     }
     catch (Exception e) {
       throw new RuntimeException(e);

@@ -16,7 +16,6 @@ import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.db.provider.EntityDbProviderFactory;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 
@@ -98,7 +97,7 @@ public abstract class EntityTestUnit {
    */
   protected Entity createEntity(final String entityID) {
     final Entity entity = Entities.entityInstance(entityID);
-    for (final Property.ForeignKeyProperty foreignKeyProperty : EntityRepository.getForeignKeyProperties(entityID)) {
+    for (final Property.ForeignKeyProperty foreignKeyProperty : Entities.getForeignKeyProperties(entityID)) {
       final Entity referenceEntity = referencedEntities.get(foreignKeyProperty.getReferencedEntityID());
       if (referenceEntity != null) {
         entity.setValue(foreignKeyProperty.getPropertyID(), referenceEntity);
@@ -147,12 +146,12 @@ public abstract class EntityTestUnit {
       getEntityDb().beginTransaction();
       initializeReferenceEntities(addAllReferencedEntityIDs(entityID, new ArrayList<String>()));
       Entity testEntity = null;
-      if (!EntityRepository.isReadOnly(entityID)) {
+      if (!Entities.isReadOnly(entityID)) {
         testEntity = testInsert(Util.rejectNullValue(initializeTestEntity(entityID), "test entity"));
         testUpdate(testEntity);
       }
       testSelect(entityID, testEntity);
-      if (!EntityRepository.isReadOnly(entityID)) {
+      if (!Entities.isReadOnly(entityID)) {
         testDelete(testEntity);
       }
     }
@@ -262,7 +261,7 @@ public abstract class EntityTestUnit {
     final Entity tmp = getEntityDb().selectSingle(testEntity.getOriginalPrimaryKey());
     assertEquals("Primary keys of entity and its updated counterpart should be equal",
             testEntity.getPrimaryKey(), tmp.getPrimaryKey());
-    for (final Property.ColumnProperty property : EntityRepository.getColumnProperties(testEntity.getEntityID())) {
+    for (final Property.ColumnProperty property : Entities.getColumnProperties(testEntity.getEntityID())) {
       if (!property.isReadOnly() && property.isUpdatable()) {
         final Object beforeUpdate = testEntity.getValue(property.getPropertyID());
         final Object afterUpdate = tmp.getValue(property.getPropertyID());
@@ -315,7 +314,7 @@ public abstract class EntityTestUnit {
    * @return the container
    */
   private List<String> addAllReferencedEntityIDs(final String entityID, final List<String> container) {
-    for (final Property.ForeignKeyProperty foreignKeyProperty : EntityRepository.getForeignKeyProperties(entityID)) {
+    for (final Property.ForeignKeyProperty foreignKeyProperty : Entities.getForeignKeyProperties(entityID)) {
       final String referenceEntityID = foreignKeyProperty.getReferencedEntityID();
       if (referenceEntityID != null && !container.contains(referenceEntityID)) {
         container.add(referenceEntityID);
@@ -332,7 +331,7 @@ public abstract class EntityTestUnit {
       return true;
     }
 
-    final Collection<Property.ForeignKeyProperty> foreignKeyProperties = EntityRepository.getForeignKeyProperties(root);
+    final Collection<Property.ForeignKeyProperty> foreignKeyProperties = Entities.getForeignKeyProperties(root);
     if (foreignKeyProperties.isEmpty()) {
       return false;
     }

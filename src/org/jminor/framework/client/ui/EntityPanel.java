@@ -15,7 +15,7 @@ import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.EntityTableModel;
-import org.jminor.framework.domain.EntityRepository;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
@@ -181,7 +181,7 @@ public class EntityPanel extends JPanel {
    * @param model the EntityModel
    */
   public EntityPanel(final EntityModel model) {
-    this(model, EntityRepository.getEntityDefinition(model.getEntityID()).getCaption());
+    this(model, Entities.getCaption(model.getEntityID()));
   }
 
   public EntityPanel(final EntityModel model, final String caption) {
@@ -194,7 +194,7 @@ public class EntityPanel extends JPanel {
    * @param editPanel the edit panel
    */
   public EntityPanel(final EntityModel model, final EntityEditPanel editPanel) {
-    this(model, EntityRepository.getEntityDefinition(model.getEntityID()).getCaption(), editPanel);
+    this(model, Entities.getCaption(model.getEntityID()), editPanel);
   }
 
   /**
@@ -203,7 +203,7 @@ public class EntityPanel extends JPanel {
    * @param tablePanel the table panel
    */
   public EntityPanel(final EntityModel model, final EntityTablePanel tablePanel) {
-    this(model, EntityRepository.getEntityDefinition(model.getEntityID()).getCaption(), tablePanel);
+    this(model, Entities.getCaption(model.getEntityID()), tablePanel);
   }
 
   /**
@@ -233,7 +233,7 @@ public class EntityPanel extends JPanel {
    * @param tablePanel the table panel
    */
   public EntityPanel(final EntityModel model, final EntityEditPanel editPanel, final EntityTablePanel tablePanel) {
-    this(model, EntityRepository.getEntityDefinition(model.getEntityID()).getCaption(), editPanel, tablePanel);
+    this(model, Entities.getCaption(model.getEntityID()), editPanel, tablePanel);
   }
 
   /**

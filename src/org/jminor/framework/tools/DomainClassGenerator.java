@@ -89,10 +89,8 @@ public final class DomainClassGenerator {
 
       final StringBuilder builder = new StringBuilder("package ").append(packageName).append(";\n\n");
 
-      builder.append("import org.jminor.framework.domain.EntityDefinition;\n");
-      builder.append("import org.jminor.framework.domain.EntityRepository;\n");
+      builder.append("import org.jminor.framework.domain.Entities;\n");
       builder.append("import org.jminor.framework.domain.Properties;\n\n");
-      builder.append("import org.jminor.framework.domain.Property;\n\n");
       builder.append("import java.sql.Types;\n\n");
 
       builder.append("public class ").append(domainClassName).append(" {\n\n");
@@ -127,7 +125,7 @@ public final class DomainClassGenerator {
   }
 
   public static void appendEntityDefinition(final StringBuilder builder, final Table table) {
-    builder.append("    EntityRepository.add(new EntityDefinition(").append(getEntityID(table)).append(",\n");
+    builder.append("    Entities.add(new EntityDefinition(").append(getEntityID(table)).append(",\n");
     for (final Column column : table.getColumns()) {
       builder.append(getPropertyDefinition(table, column))
               .append(table.getColumns().indexOf(column) < table.getColumns().size() - 1 ? ", " : "").append("\n");

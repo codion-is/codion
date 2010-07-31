@@ -388,7 +388,7 @@ public interface Property extends Attribute {
    * A property which value is derived from the values of one or more properties.
    * For the property to be updated when the parent properties are you must
    * link the properties together using the <code>addLinkedPropertyIDs()</code>method.
-   * @see org.jminor.framework.domain.EntityRepository.Proxy#getDerivedValue(Entity, org.jminor.framework.domain.Property.DerivedProperty)
+   * @see org.jminor.framework.domain.Entities.Proxy#getDerivedValue(Entity, org.jminor.framework.domain.Property.DerivedProperty)
    */
   interface DerivedProperty extends TransientProperty {
 

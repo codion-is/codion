@@ -42,8 +42,8 @@ import org.jminor.framework.client.model.EntityLookupModel;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.model.event.InsertEvent;
 import org.jminor.framework.client.model.event.InsertListener;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 
@@ -345,7 +345,7 @@ public final class EntityUiUtil {
 
   public static EntityLookupField createEntityLookupField(final Property.ForeignKeyProperty foreignKeyProperty,
                                                           final EntityEditModel editModel) {
-    final Collection<String> searchPropertyIDs = EntityRepository.getEntitySearchPropertyIDs(foreignKeyProperty.getReferencedEntityID());
+    final Collection<String> searchPropertyIDs = Entities.getEntitySearchPropertyIDs(foreignKeyProperty.getReferencedEntityID());
     if (searchPropertyIDs.isEmpty()) {
       throw new RuntimeException("No default search properties specified for entity: " + foreignKeyProperty.getReferencedEntityID()
               + ", unable to create EntityLookupField, you must specify the searchPropertyIDs");
@@ -368,7 +368,7 @@ public final class EntityUiUtil {
     if (searchPropertyIDs == null || searchPropertyIDs.length == 0) {
       throw new RuntimeException("No search properties specified for entity lookup field: " + foreignKeyProperty.getReferencedEntityID());
     }
-    final List<Property.ColumnProperty> searchProperties = EntityRepository.getSearchProperties(
+    final List<Property.ColumnProperty> searchProperties = Entities.getSearchProperties(
             foreignKeyProperty.getReferencedEntityID(), Arrays.asList(searchPropertyIDs));
     for (final Property.ColumnProperty searchProperty : searchProperties) {
       if (!searchProperty.isString()) {
@@ -567,7 +567,7 @@ public final class EntityUiUtil {
   public static SteppedComboBox createPropertyComboBox(final String propertyID, final EntityEditModel editModel,
                                                        final EventObserver refreshEvent, final StateObserver state,
                                                        final String nullValue) {
-    return createPropertyComboBox(EntityRepository.getColumnProperty(editModel.getEntityID(), propertyID),
+    return createPropertyComboBox(Entities.getColumnProperty(editModel.getEntityID(), propertyID),
             editModel, refreshEvent, state, nullValue);
   }
 

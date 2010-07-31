@@ -58,7 +58,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
    */
   EntityImpl(final String entityID) {
     this.entityID = entityID;
-    properties = EntityRepository.getProperties(entityID);
+    properties = Entities.getProperties(entityID);
   }
 
   /**
@@ -80,7 +80,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
   public Key getPrimaryKey() {
     if (primaryKey == null) {
       primaryKey = new KeyImpl(entityID);
-      for (final Property.PrimaryKeyProperty property : EntityRepository.getPrimaryKeyProperties(entityID)) {
+      for (final Property.PrimaryKeyProperty property : Entities.getPrimaryKeyProperties(entityID)) {
         primaryKey.setValue(property.getPropertyID(), getValue(property));
       }
     }
@@ -90,7 +90,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
 
   public Key getOriginalPrimaryKey() {
     final Key key = new KeyImpl(entityID);
-    for (final Property.PrimaryKeyProperty property : EntityRepository.getPrimaryKeyProperties(entityID)) {
+    for (final Property.PrimaryKeyProperty property : Entities.getPrimaryKeyProperties(entityID)) {
       key.setValue(property.getPropertyID(), getOriginalValue(property.getPropertyID()));
     }
 
@@ -104,7 +104,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
   public Property getProperty(final String propertyID) {
     Util.rejectNullValue(propertyID, "propertyID");
     if (properties == null) {
-      this.properties = EntityRepository.getProperties(entityID);
+      this.properties = Entities.getProperties(entityID);
     }
 
     final Property property = properties.get(propertyID);
@@ -168,7 +168,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
       return getDenormalizedViewValue((Property.DenormalizedViewProperty) property);
     }
     if (property instanceof Property.DerivedProperty) {
-      return EntityRepository.getProxy(entityID).getDerivedValue(this, (Property.DerivedProperty) property);
+      return Entities.getProxy(entityID).getDerivedValue(this, (Property.DerivedProperty) property);
     }
 
     if (containsValue(property.getPropertyID())) {
@@ -265,7 +265,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
   }
 
   public String getFormattedValue(final Property property, final Format format) {
-    return EntityRepository.getProxy(entityID).getFormattedValue(this, property, format);
+    return Entities.getProxy(entityID).getFormattedValue(this, property, format);
   }
 
   /**
@@ -284,7 +284,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
 
   public boolean propertyValuesEqual(final Entity entity) {
     Util.rejectNullValue(entity, "entity");
-    for (final Property property : EntityRepository.getColumnProperties(entity.getEntityID(), true, true, true, false)) {
+    for (final Property property : Entities.getColumnProperties(entity.getEntityID(), true, true, true, false)) {
       if (!Util.equal(getValue(property), entity.getValue(property))) {
         return false;
       }
@@ -307,7 +307,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
    * @return the compare result from comparing <code>entity</code> with this Entity instance
    */
   public int compareTo(final Entity o) {
-    return EntityRepository.getProxy(entityID).compareTo(this, o);
+    return Entities.getProxy(entityID).compareTo(this, o);
   }
 
   /**
@@ -320,12 +320,12 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
 
   /**
    * @return a string representation of this entity
-   * @see org.jminor.framework.domain.EntityRepository.Proxy#toString(Entity)
+   * @see org.jminor.framework.domain.Entities.Proxy#toString(Entity)
    */
   @Override
   public String toString() {
     if (toString == null) {
-      toString = EntityRepository.getProxy(entityID).toString(this);
+      toString = Entities.getProxy(entityID).toString(this);
     }
 
     return toString;
@@ -411,8 +411,8 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
     addValueListener(new ValueChangeListener<String, Object>() {
       @Override
       protected void valueChanged(final ValueChangeEvent<String, Object> event) {
-        if (EntityRepository.hasLinkedProperties(entityID, event.getKey())) {
-          final Collection<String> linkedPropertyIDs = EntityRepository.getLinkedPropertyIDs(entityID, event.getKey());
+        if (Entities.hasLinkedProperties(entityID, event.getKey())) {
+          final Collection<String> linkedPropertyIDs = Entities.getLinkedPropertyIDs(entityID, event.getKey());
           for (final String propertyID : linkedPropertyIDs) {
             final Object linkedValue = getValue(propertyID);
             notifyValueChange(propertyID, linkedValue, linkedValue, false);
@@ -434,7 +434,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
   private void propagateForeignKeyValues(final Property.ForeignKeyProperty foreignKeyProperty, final Entity newValue,
                                          final boolean initialization) {
     setForeignKeyValues(foreignKeyProperty, newValue, initialization);
-    if (EntityRepository.hasDenormalizedProperties(entityID)) {
+    if (Entities.hasDenormalizedProperties(entityID)) {
       setDenormalizedValues(foreignKeyProperty, newValue, initialization);
     }
   }
@@ -452,7 +452,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
                                    final boolean initialization) {
     referencedPrimaryKeysCache = null;
     final Collection<Property.PrimaryKeyProperty> referenceEntityPKProperties =
-            EntityRepository.getPrimaryKeyProperties(foreignKeyProperty.getReferencedEntityID());
+            Entities.getPrimaryKeyProperties(foreignKeyProperty.getReferencedEntityID());
     for (final Property.PrimaryKeyProperty primaryKeyProperty : referenceEntityPKProperties) {
       final Property referenceProperty = foreignKeyProperty.getReferenceProperties().get(primaryKeyProperty.getIndex());
       if (!(referenceProperty instanceof Property.MirrorProperty)) {
@@ -482,7 +482,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
   private void setDenormalizedValues(final Property.ForeignKeyProperty foreignKeyProperty, final Entity referencedEntity,
                                      final boolean initialization) {
     final Collection<Property.DenormalizedProperty> denormalizedProperties =
-            EntityRepository.getDenormalizedProperties(entityID, foreignKeyProperty.getPropertyID());
+            Entities.getDenormalizedProperties(entityID, foreignKeyProperty.getPropertyID());
     if (denormalizedProperties != null) {
       for (final Property.DenormalizedProperty denormalizedProperty : denormalizedProperties) {
         final Object value;
@@ -588,7 +588,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
 //
 //  private void readObject(final java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
 //    entityID = (String) in.readObject();
-//    properties = EntityRepository.getProperties(entityID);
+//    properties = Entities.getProperties(entityID);
 //    for (final Property property : properties.values()) {
 //      if (!(property instanceof Property.DenormalizedViewProperty) && !(property instanceof Property.DerivedProperty)) {
 //        setValue(property, in.readObject());
@@ -702,7 +702,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
     KeyImpl(final String entityID) {
       super(1);
       this.entityID = entityID;
-      this.properties = EntityRepository.getPrimaryKeyProperties(entityID);
+      this.properties = Entities.getPrimaryKeyProperties(entityID);
       this.singleIntegerKey = properties.size() == 1 && properties.get(0).isInteger();
     }
 
@@ -731,7 +731,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
 
     public List<Property.PrimaryKeyProperty> getProperties() {
       if (properties == null) {
-        properties = EntityRepository.getPrimaryKeyProperties(entityID);
+        properties = Entities.getPrimaryKeyProperties(entityID);
       }
 
       return properties;

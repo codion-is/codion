@@ -10,17 +10,17 @@ import org.jminor.common.server.AbstractRemoteServer;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ServerLog;
 import org.jminor.framework.Configuration;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.EntityDefinition;
-import org.jminor.framework.domain.EntityRepository;
 
 import org.apache.log4j.Logger;
 
 import javax.rmi.ssl.SslRMIClientSocketFactory;
 import javax.rmi.ssl.SslRMIServerSocketFactory;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.net.MalformedURLException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -234,7 +234,7 @@ public final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRem
   }
 
   public static Collection<EntityDefinition> getEntityDefinitions() {
-    return new ArrayList<EntityDefinition>(EntityRepository.getEntityDefinitions().values());
+    return new ArrayList<EntityDefinition>(Entities.getEntityDefinitions().values());
   }
 
   public static void loadDomainModel(final String domainClassName) throws ClassNotFoundException,

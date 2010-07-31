@@ -15,8 +15,8 @@ import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.States;
 import org.jminor.common.model.Util;
 import org.jminor.framework.db.provider.EntityDbProvider;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
 
 import java.awt.event.ActionEvent;
@@ -56,7 +56,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
    * @param simpleSearch if true then search panels based on this search model should implement a simplified search
    */
   public DefaultEntityTableSearchModel(final String entityID, final EntityDbProvider dbProvider, final boolean simpleSearch) {
-    this(entityID, dbProvider, new ArrayList<Property>(EntityRepository.getVisibleProperties(entityID)), simpleSearch);
+    this(entityID, dbProvider, new ArrayList<Property>(Entities.getVisibleProperties(entityID)), simpleSearch);
   }
 
   /**
@@ -273,7 +273,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
           final Property.SearchableProperty property, final EntityDbProvider dbProvider) {
     if (property instanceof Property.ForeignKeyProperty) {
       final Property.ForeignKeyProperty fkProperty = (Property.ForeignKeyProperty) property;
-      if (EntityRepository.isLargeDataset(fkProperty.getReferencedEntityID())) {
+      if (Entities.isLargeDataset(fkProperty.getReferencedEntityID())) {
         final EntityLookupModel lookupModel = new DefaultEntityLookupModel(fkProperty.getReferencedEntityID(),
                 dbProvider, getSearchProperties(fkProperty.getReferencedEntityID()));
         lookupModel.setMultipleSelectionAllowed(true);
@@ -365,13 +365,13 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
   }
 
   private List<Property.ColumnProperty> getSearchProperties(final String entityID) {
-    final Collection<String> searchPropertyIDs = EntityRepository.getEntitySearchPropertyIDs(entityID);
+    final Collection<String> searchPropertyIDs = Entities.getEntitySearchPropertyIDs(entityID);
 
-    return searchPropertyIDs == null ? getStringProperties(entityID) : EntityRepository.getSearchProperties(entityID, searchPropertyIDs);
+    return searchPropertyIDs == null ? getStringProperties(entityID) : Entities.getSearchProperties(entityID, searchPropertyIDs);
   }
 
   private List<Property.ColumnProperty> getStringProperties(final String entityID) {
-    final Collection<Property.ColumnProperty> databaseProperties = EntityRepository.getColumnProperties(entityID);
+    final Collection<Property.ColumnProperty> databaseProperties = Entities.getColumnProperties(entityID);
     final List<Property.ColumnProperty> stringProperties = new ArrayList<Property.ColumnProperty>();
     for (final Property.ColumnProperty property : databaseProperties) {
       if (property.isString()) {

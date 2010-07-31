@@ -10,7 +10,7 @@ import org.jminor.common.ui.control.ControlSet;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityTableSearchModel;
 import org.jminor.framework.client.model.PropertySearchModel;
-import org.jminor.framework.domain.EntityRepository;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 
@@ -103,14 +103,14 @@ public final class EntityTableSearchSimplePanel extends JPanel implements Entity
 
   private Collection<Property> getSearchableProperties() {
     final Collection<Property> searchableProperties = new ArrayList<Property>();
-    final Collection<String> defaultSearchPropertyIDs = EntityRepository.getEntitySearchPropertyIDs(searchModel.getEntityID());
+    final Collection<String> defaultSearchPropertyIDs = Entities.getEntitySearchPropertyIDs(searchModel.getEntityID());
     if (!defaultSearchPropertyIDs.isEmpty()) {
       for (final String propertyID : defaultSearchPropertyIDs) {
-        searchableProperties.add(EntityRepository.getProperty(searchModel.getEntityID(), propertyID));
+        searchableProperties.add(Entities.getProperty(searchModel.getEntityID(), propertyID));
       }
     }
     else {
-      for (final Property property : EntityRepository.getColumnProperties(searchModel.getEntityID())) {
+      for (final Property property : Entities.getColumnProperties(searchModel.getEntityID())) {
         if (property.isString() && !property.isHidden()) {
           searchableProperties.add(property);
         }

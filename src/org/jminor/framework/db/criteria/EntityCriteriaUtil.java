@@ -9,8 +9,8 @@ import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 
@@ -54,7 +54,7 @@ public final class EntityCriteriaUtil {
                                                     final SearchType searchType, final String orderByClause,
                                                     final int fetchCount, final Object... values) {
 
-    final Property property = EntityRepository.getProperty(entityID, propertyID);
+    final Property property = Entities.getProperty(entityID, propertyID);
     final Criteria<Property.ColumnProperty> criteria;
     if (property instanceof Property.ForeignKeyProperty) {
       criteria = new ForeignKeyCriteria((Property.ForeignKeyProperty) property, searchType, values);
@@ -113,7 +113,7 @@ public final class EntityCriteriaUtil {
 
   public static EntityCriteria criteria(final String entityID, final String propertyID,
                                         final SearchType searchType, final Object... values) {
-    return new DefaultEntityCriteria(entityID, new PropertyCriteria((Property.ColumnProperty) EntityRepository.getProperty(entityID, propertyID),
+    return new DefaultEntityCriteria(entityID, new PropertyCriteria((Property.ColumnProperty) Entities.getProperty(entityID, propertyID),
             searchType, values));
   }
 
@@ -124,7 +124,7 @@ public final class EntityCriteriaUtil {
 
   public static Criteria<Property.ColumnProperty> propertyCriteria(final String entityID, final String propertyID, final boolean caseSensitive,
                                                                    final SearchType searchType, final Object... values) {
-    return propertyCriteria((Property.ColumnProperty) EntityRepository.getProperty(entityID, propertyID), caseSensitive, searchType, values);
+    return propertyCriteria((Property.ColumnProperty) Entities.getProperty(entityID, propertyID), caseSensitive, searchType, values);
   }
 
   public static Criteria<Property.ColumnProperty> propertyCriteria(final Property.ColumnProperty property,
@@ -199,7 +199,7 @@ public final class EntityCriteriaUtil {
      * @return a where condition based on this EntityCriteria
      */
     public String asString() {
-      return EntityRepository.getTableName(entityID) + " " + getWhereClause();
+      return Entities.getTableName(entityID) + " " + getWhereClause();
     }
 
     public final String getWhereClause() {
@@ -294,7 +294,7 @@ public final class EntityCriteriaUtil {
      */
     @Override
     public String asString() {
-      return EntityRepository.getSelectTableName(getEntityID()) + " " + getWhereClause();
+      return Entities.getSelectTableName(getEntityID()) + " " + getWhereClause();
     }
 
     public int getFetchCount() {
@@ -337,7 +337,7 @@ public final class EntityCriteriaUtil {
     }
 
     public EntitySelectCriteria setFetchDepthForAll(final int fetchDepth) {
-      final Collection<Property.ForeignKeyProperty > properties = EntityRepository.getForeignKeyProperties(getEntityID());
+      final Collection<Property.ForeignKeyProperty > properties = Entities.getForeignKeyProperties(getEntityID());
       for (final Property.ForeignKeyProperty property : properties) {
         foreignKeyFetchDepths.put(property.getPropertyID(), fetchDepth);
       }
@@ -355,7 +355,7 @@ public final class EntityCriteriaUtil {
     }
 
     private Map<String, Integer> initializeForeignKeyFetchDepths() {
-      final Collection<Property.ForeignKeyProperty > properties = EntityRepository.getForeignKeyProperties(getEntityID());
+      final Collection<Property.ForeignKeyProperty > properties = Entities.getForeignKeyProperties(getEntityID());
       final Map<String, Integer> depths = new HashMap<String, Integer>(properties.size());
       for (final Property.ForeignKeyProperty property : properties) {
         depths.put(property.getPropertyID(), property.getFetchDepth());

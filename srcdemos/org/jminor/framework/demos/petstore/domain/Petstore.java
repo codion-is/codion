@@ -7,7 +7,6 @@ import org.jminor.common.model.IdSource;
 import org.jminor.common.model.Version;
 import org.jminor.common.model.valuemap.StringProvider;
 import org.jminor.framework.domain.Entities;
-import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Properties;
 
 import java.sql.Types;
@@ -79,7 +78,7 @@ public class Petstore {
   public static final String TAG_ITEM_ITEM_FK = "item_fk";
 
   static {
-    EntityRepository.add(Entities.define(T_ADDRESS, "petstore.address",
+    Entities.define(T_ADDRESS, "petstore.address",
             Properties.primaryKeyProperty(ADDRESS_ID),
             Properties.columnProperty(ADDRESS_STREET_1, Types.VARCHAR, "Street 1").setMaxLength(55).setNullable(false),
             Properties.columnProperty(ADDRESS_STREET_2, Types.VARCHAR, "Street 2").setMaxLength(55),
@@ -93,9 +92,9 @@ public class Petstore {
             .setStringProvider(new StringProvider<String>(ADDRESS_STREET_1).addText(" ")
             .addValue(ADDRESS_STREET_2).addText(", ").addValue(ADDRESS_CITY).addText(" ")
             .addValue(ADDRESS_ZIP).addText(", ").addValue(ADDRESS_STATE))
-            .setCaption("Addresses"));
+            .setCaption("Addresses");
 
-    EntityRepository.add(Entities.define(T_CATEGORY, "petstore.category",
+    Entities.define(T_CATEGORY, "petstore.category",
             Properties.primaryKeyProperty(CATEGORY_ID),
             Properties.columnProperty(CATEGORY_NAME, Types.VARCHAR, "Name").setMaxLength(25).setNullable(false),
             Properties.columnProperty(CATEGORY_DESCRIPTION, Types.VARCHAR, "Description").setMaxLength(255).setNullable(false),
@@ -103,9 +102,9 @@ public class Petstore {
             .setIdSource(IdSource.MAX_PLUS_ONE)
             .setOrderByClause(CATEGORY_NAME)
             .setStringProvider(new StringProvider<String>(CATEGORY_NAME))
-            .setCaption("Categories"));
+            .setCaption("Categories");
 
-    EntityRepository.add(Entities.define(T_ITEM, "petstore.item",
+    Entities.define(T_ITEM, "petstore.item",
             Properties.primaryKeyProperty(ITEM_ID),
             Properties.foreignKeyProperty(ITEM_PRODUCT_FK, "Product", T_PRODUCT,
                     Properties.columnProperty(ITEM_PRODUCT_ID)).setFetchDepth(2).setNullable(false),
@@ -122,9 +121,9 @@ public class Petstore {
             .setIdSource(IdSource.MAX_PLUS_ONE)
             .setOrderByClause(ITEM_NAME)
             .setStringProvider(new StringProvider<String>(ITEM_PRODUCT_FK).addText(" - ").addValue(ITEM_NAME))
-            .setCaption("Items"));
+            .setCaption("Items");
 
-    EntityRepository.add(Entities.define(T_PRODUCT, "petstore.product",
+    Entities.define(T_PRODUCT, "petstore.product",
             Properties.primaryKeyProperty(PRODUCT_ID),
             Properties.foreignKeyProperty(PRODUCT_CATEGORY_FK, "Category", T_CATEGORY,
                     Properties.columnProperty(PRODUCT_CATEGORY_ID)).setNullable(false),
@@ -135,9 +134,9 @@ public class Petstore {
             .setOrderByClause(PRODUCT_NAME)
             .setStringProvider(new StringProvider<String>(PRODUCT_CATEGORY_FK)
             .addText(" - ").addValue(PRODUCT_NAME))
-            .setCaption("Products"));
+            .setCaption("Products");
 
-    EntityRepository.add(Entities.define(T_SELLER_CONTACT_INFO, "petstore.sellercontactinfo",
+    Entities.define(T_SELLER_CONTACT_INFO, "petstore.sellercontactinfo",
             Properties.primaryKeyProperty(SELLER_CONTACT_INFO_ID),
             Properties.columnProperty(SELLER_CONTACT_INFO_FIRST_NAME, Types.VARCHAR, "First name").setMaxLength(24).setNullable(false),
             Properties.columnProperty(SELLER_CONTACT_INFO_LAST_NAME, Types.VARCHAR, "Last name").setMaxLength(24).setNullable(false),
@@ -146,9 +145,9 @@ public class Petstore {
             .setOrderByClause(SELLER_CONTACT_INFO_LAST_NAME + ", "+ SELLER_CONTACT_INFO_FIRST_NAME)
             .setStringProvider(new StringProvider<String>(SELLER_CONTACT_INFO_LAST_NAME)
             .addText(", ").addValue(SELLER_CONTACT_INFO_FIRST_NAME))
-            .setCaption("Seller info"));
+            .setCaption("Seller info");
 
-    EntityRepository.add(Entities.define(T_TAG, "petstore.tag",
+    Entities.define(T_TAG, "petstore.tag",
             Properties.primaryKeyProperty(TAG_ID),
             Properties.columnProperty(TAG_TAG, Types.VARCHAR, "Tag").setMaxLength(30).setNullable(false),
             Properties.subqueryProperty(TAG_REFCOUNT, Types.INTEGER, "Reference count",
@@ -157,14 +156,14 @@ public class Petstore {
             .setOrderByClause(TAG_TAG)
             .setSelectTableName("petstore.tag tag")
             .setStringProvider(new StringProvider<String>(TAG_TAG))
-            .setCaption("Tags"));
+            .setCaption("Tags");
 
-    EntityRepository.add(Entities.define(T_TAG_ITEM, "petstore.tag_item",
+    Entities.define(T_TAG_ITEM, "petstore.tag_item",
             Properties.foreignKeyProperty(TAG_ITEM_ITEM_FK, "Item", T_ITEM,
                     Properties.primaryKeyProperty(TAG_ITEM_ITEM_ID, Types.INTEGER).setIndex(0)).setNullable(false),
             Properties.foreignKeyProperty(TAG_ITEM_TAG_FK, "Tag", T_TAG,
                     Properties.primaryKeyProperty(TAG_ITEM_TAG_ID, Types.INTEGER).setIndex(1)).setNullable(false))
             .setStringProvider(new StringProvider<String>(TAG_ITEM_ITEM_FK).addText(" - ").addValue(TAG_ITEM_TAG_FK))
-            .setCaption("Item tags"));
+            .setCaption("Item tags");
   }
 }
