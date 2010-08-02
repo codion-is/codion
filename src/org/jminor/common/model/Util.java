@@ -168,14 +168,14 @@ public final class Util {
   }
 
   public static Integer getInt(final String text) {
-    if (text == null || text.length() == 0) {
+    if (text == null || text.isEmpty()) {
       return null;
     }
 
     final String noGrouping = text.replace(".", "");
 
     final int value;
-    if ((noGrouping.length() > 0) && (!noGrouping.equals("-"))) {
+    if (!noGrouping.isEmpty() && !noGrouping.equals("-")) {
       value = Integer.parseInt(noGrouping);
     }
     else if (noGrouping.equals("-")) {
@@ -189,12 +189,12 @@ public final class Util {
   }
 
   public static Double getDouble(final String text) {
-    if (text == null || text.length() == 0) {
+    if (text == null || text.isEmpty()) {
       return null;
     }
 
     final double value;
-    if ((text.length() > 0) && (!text.equals("-"))) {
+    if (!text.isEmpty() && !text.equals("-")) {
       value = Double.parseDouble(text.replace(',', '.'));
     }
     else if (text.equals("-")) {
@@ -208,14 +208,14 @@ public final class Util {
   }
 
   public static Long getLong(final String text) {
-    if (text == null || text.length() == 0) {
+    if (text == null || text.isEmpty()) {
       return null;
     }
 
     final String noGrouping = text.replace(".", "");
 
     final long value;
-    if ((noGrouping.length() > 0) && (!noGrouping.equals("-"))) {
+    if (!noGrouping.isEmpty() && !noGrouping.equals("-")) {
       value = Long.parseLong(noGrouping);
     }
     else if (noGrouping.equals("-")) {
@@ -701,7 +701,7 @@ public final class Util {
   }
 
   public static void require(final String propertyName, final String value) {
-    if (value == null || value.length() == 0) {
+    if (value == null || value.isEmpty()) {
       throw new RuntimeException(propertyName + " is required");
     }
   }

@@ -111,7 +111,7 @@ public class DefaultPropertySummaryModel implements PropertySummaryModel {
     abstract String getSummary(final PropertyValueProvider valueProvider, final Property property);
 
     String addSubsetIndicator(final String txt, final PropertyValueProvider valueProvider) {
-      return txt.length() > 0 ? txt + (valueProvider.isValueSubset() ? "*" : "") : txt;
+      return !txt.isEmpty() ? txt + (valueProvider.isValueSubset() ? "*" : "") : txt;
     }
   }
 

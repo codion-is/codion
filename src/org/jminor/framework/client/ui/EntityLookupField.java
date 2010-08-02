@@ -164,7 +164,7 @@ public final class EntityLookupField extends JTextField {
         updateColors();
       }
       public void focusLost(final FocusEvent e) {
-        if (getText().length() == 0) {
+        if (getText().isEmpty()) {
           getModel().setSelectedEntity(null);
         }
 //        else //todo?
@@ -188,7 +188,7 @@ public final class EntityLookupField extends JTextField {
   }
 
   private void performLookup() {
-    if (model.getSearchString().length() == 0) {
+    if (model.getSearchString().isEmpty()) {
       model.setSelectedEntities(null);
       if (enterAction != null) {
         enterAction.actionPerformed(new ActionEvent(this, 0, "actionPerformed"));

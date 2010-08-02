@@ -95,10 +95,10 @@ public final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRem
     EntityDbRemoteAdapter.initConnectionPools(database);
     final String host = database.getHost();
     final String port = database.getPort();
-    if (host == null || host.length() == 0) {
+    if (host == null || host.isEmpty()) {
       throw new RuntimeException("Database host must be specified (" + Database.DATABASE_HOST + ")");
     }
-    if (!database.isEmbedded() && (port == null || port.length() == 0)) {
+    if (!database.isEmbedded() && (port == null || port.isEmpty())) {
       throw new RuntimeException("Database port must be specified (" + Database.DATABASE_PORT + ")");
     }
 
@@ -312,13 +312,13 @@ public final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRem
 
   private void loadDefaultDomainModels() throws RemoteException {
     final String domainModelClasses = Configuration.getStringValue(Configuration.SERVER_DOMAIN_MODEL_CLASSES);
-    if (domainModelClasses == null || domainModelClasses.length() == 0) {
+    if (domainModelClasses == null || domainModelClasses.isEmpty()) {
       return;
     }
 
     final String[] classes = domainModelClasses.split(",");
     final String domainModelJars = Configuration.getStringValue(Configuration.SERVER_DOMAIN_MODEL_JARS);
-    final String[] jars = domainModelJars == null || domainModelJars.length() == 0 ? null : domainModelJars.split(",");
+    final String[] jars = domainModelJars == null || domainModelJars.isEmpty() ? null : domainModelJars.split(",");
     try {
       final URI[] jarURIs = jars == null ? null : Util.getURIs(jars);
       for (final String classname : classes) {

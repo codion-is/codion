@@ -164,7 +164,7 @@ public final class EntityDbRemoteProvider extends AbstractEntityDbProvider {
   private static RemoteServer checkServer(final RemoteServer server) throws RemoteException {
     final int port = server.getServerPort();
     final String requestedPort = System.getProperty(Configuration.SERVER_PORT);
-    if (requestedPort == null || (requestedPort.length() > 0 && port == Integer.parseInt(requestedPort))) {
+    if (requestedPort == null || (!requestedPort.isEmpty() && port == Integer.parseInt(requestedPort))) {
       return server;
     }
 

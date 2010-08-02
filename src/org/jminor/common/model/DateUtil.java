@@ -42,7 +42,7 @@ public final class DateUtil {
     if (formats == null || formats.length == 0) {
       throw new RuntimeException("Date format is required");
     }
-    if (date == null || date.length() == 0) {
+    if (date == null || date.isEmpty()) {
       return emptyStringOk;
     }
 

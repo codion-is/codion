@@ -652,7 +652,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
 
     final StringBuilder queryBuilder = new StringBuilder(selectQuery);
     final String whereClause = criteria.getWhereClause(!containsWhereKeyword(selectQuery));
-    if (whereClause.length() > 0) {
+    if (!whereClause.isEmpty()) {
       queryBuilder.append(" ").append(whereClause);
     }
     if (orderByClause != null) {
@@ -882,10 +882,10 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
     sql.append(columns);
     sql.append(" from ");
     sql.append(table);
-    if (whereCondition != null && whereCondition.length() > 0) {
+    if (whereCondition != null && !whereCondition.isEmpty()) {
       sql.append(" ").append(whereCondition);
     }
-    if (orderByClause != null && orderByClause.length() > 0) {
+    if (orderByClause != null && !orderByClause.isEmpty()) {
       sql.append(" order by ");
       sql.append(orderByClause);
     }

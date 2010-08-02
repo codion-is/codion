@@ -82,7 +82,7 @@ public final class EntityTableSearchSimplePanel extends JPanel implements Entity
     try {
       searchModel.clearPropertySearchModels();
       searchModel.setSearchConjunction(Conjunction.OR);
-      if (searchText.length() > 0) {
+      if (!searchText.isEmpty()) {
         final String wildcard = (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER);
         final String searchTextWithWildcards = wildcard + searchText + wildcard;
         for (final Property searchProperty : searchProperties) {

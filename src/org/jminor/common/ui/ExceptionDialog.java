@@ -200,7 +200,7 @@ public final class ExceptionDialog extends JDialog {
   public void emailErrorReport() {
     if (errorReportEmailAddressTo == null) {
       final String address = JOptionPane.showInputDialog(Messages.get(Messages.INPUT_EMAIL_ADDRESS));
-      if (address != null && address.length() > 0) {
+      if (address != null && !address.isEmpty()) {
         errorReportEmailAddressTo = address;
       }
       else {

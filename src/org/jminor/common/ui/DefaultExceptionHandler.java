@@ -37,7 +37,7 @@ public final class DefaultExceptionHandler implements ExceptionHandler {
 
   public void handleDbException(final DbException dbException, final JComponent dialogParent) {
     String errMsg = dbException.getMessage();
-    if (errMsg == null || errMsg.length() == 0) {
+    if (errMsg == null || errMsg.isEmpty()) {
       if (dbException.getCause() == null) {
         errMsg = trimMessage(dbException);
       }

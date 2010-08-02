@@ -580,7 +580,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     for (final EntityPanelProvider provider : mainApplicationPanelProviders) {
       final EntityPanel entityPanel = provider.createInstance(applicationModel.getDbProvider());
       mainApplicationPanels.add(entityPanel);
-      final String caption = (provider.getCaption() == null || provider.getCaption().length() == 0)
+      final String caption = (provider.getCaption() == null || provider.getCaption().isEmpty())
               ? entityPanel.getCaption() : provider.getCaption();
       applicationTabPane.addTab(caption, entityPanel);
     }
@@ -722,7 +722,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     final User user = LoginPanel.showLoginPanel(null, defaultUser == null ?
             new User(Configuration.getDefaultUsername(applicationIdentifier), null) : defaultUser,
             applicationIcon, frameCaption + " - " + Messages.get(Messages.LOGIN), null, null);
-    if (user.getUsername() == null || user.getUsername().length() == 0) {
+    if (user.getUsername() == null || user.getUsername().isEmpty()) {
       throw new RuntimeException(FrameworkMessages.get(FrameworkMessages.EMPTY_USERNAME));
     }
 
@@ -938,7 +938,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
 
   private static String getUsername(final String username) {
     final String usernamePrefix = (String) Configuration.getValue(Configuration.USERNAME_PREFIX);
-    if (usernamePrefix != null && usernamePrefix.length() > 0 && username.toUpperCase().startsWith(usernamePrefix.toUpperCase())) {
+    if (usernamePrefix != null && !usernamePrefix.isEmpty() && username.toUpperCase().startsWith(usernamePrefix.toUpperCase())) {
       return username.substring(usernamePrefix.length(), username.length());
     }
 

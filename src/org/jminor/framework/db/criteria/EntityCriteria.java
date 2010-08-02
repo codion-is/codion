@@ -10,7 +10,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * A class encapsulating query criteria parameters.
+ * A class encapsulating query criteria parameters for querying a set of entities.
  */
 public interface EntityCriteria extends Serializable {
 
@@ -30,18 +30,21 @@ public interface EntityCriteria extends Serializable {
   String getWhereClause();
 
   /**
-   * @param includeWhereKeyword if false AND is used instead of the WHERE keyword
+   * @param includeWhereKeyword if true the returned string is prefixed with the WHERE keyword,
+   * if false it is prefixed with the AND keyword
    * @return a where clause base on this criteria
    */
   String getWhereClause(final boolean includeWhereKeyword);
 
   /**
-   * @return the values the underlying criteria is based on, if any
+   * @return the values the underlying criteria is based on, if any, in the order
+   * their respective properties are returned by <code>getValueProperties()</code>
    */
   List<Object> getValues();
 
   /**
-   * @return the properties of the values the underlying criteria is based on, if any
+   * @return the properties of the values the underlying criteria is based on, if any,
+   * in the order their respective values are returned by <code>getValues()</code>
    */
   List<Property.ColumnProperty> getValueProperties();
 }

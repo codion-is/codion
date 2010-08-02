@@ -103,7 +103,7 @@ public final class UiUtil {
     fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
     fileChooser.removeChoosableFileFilter(fileChooser.getFileFilter());
     fileChooser.setMultiSelectionEnabled(false);
-    if (startDir != null && startDir.length() > 0) {
+    if (startDir != null && !startDir.isEmpty()) {
       fileChooser.setCurrentDirectory(new File(startDir));
     }
     if (dialogTitle != null) {
@@ -131,7 +131,7 @@ public final class UiUtil {
     fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
     fileChooser.removeChoosableFileFilter(fileChooser.getFileFilter());
     fileChooser.setMultiSelectionEnabled(false);
-    if (startDir != null && startDir.length() > 0) {
+    if (startDir != null && !startDir.isEmpty()) {
       fileChooser.setCurrentDirectory(new File(startDir));
     }
     final int option = fileChooser.showOpenDialog(dialogParent);
@@ -862,7 +862,7 @@ public final class UiUtil {
   }
 
   public static String getStartDir(final String text) {
-    if (text == null || text.length() == 0) {
+    if (text == null || text.isEmpty()) {
       return null;
     }
     try {
@@ -893,7 +893,7 @@ public final class UiUtil {
   public static void showImage(final String imagePath, final JComponent dialogParent,
                                final Collection<String> acceptedFileTypes) throws IOException {
     Util.rejectNullValue(imagePath, "imagePath");
-    if (imagePath.length() == 0) {
+    if (imagePath.isEmpty()) {
       return;
     }
 

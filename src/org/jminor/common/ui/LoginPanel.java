@@ -112,7 +112,7 @@ public final class LoginPanel extends JPanel {
 
     setLayout(new BorderLayout());
     add(retBase, BorderLayout.CENTER);
-    if (usernameField.getText().length() == 0) {
+    if (usernameField.getText().isEmpty()) {
       addInitialFocusHack(usernameField);
     }
     else {

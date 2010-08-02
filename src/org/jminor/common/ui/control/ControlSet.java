@@ -146,7 +146,7 @@ public final class ControlSet extends Control {
 
   public boolean hasName() {
     final String name = getName();
-    return name != null && name.length() > 0;
+    return name != null && !name.isEmpty();
   }
 
   public boolean hasIcon() {

@@ -196,7 +196,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
 
   public final boolean searchStringRepresentsSelected() {
     final String selectedAsString = toString(getSelectedEntities());
-    return (selectedEntities.isEmpty() && searchString.length() == 0)
+    return (selectedEntities.isEmpty() && searchString.isEmpty())
             || !selectedEntities.isEmpty() && selectedAsString.equals(searchString);
   }
 

@@ -228,7 +228,7 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
 
   private void doSearch(final boolean addToSelection, final int fromIndex, final boolean forward,
                         final String searchText) {
-    if (searchText.length() > 0) {
+    if (!searchText.isEmpty()) {
       final Point viewIndex = tableModel.findNextItemCoordinate(fromIndex, forward, searchText);
       if (viewIndex != null) {
         lastSearchResultIndex = viewIndex;
@@ -342,7 +342,7 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
 
   private static void addFilterIndicator(final TableColumn column) {
     String val = (String) column.getHeaderValue();
-    if (val.length() > 0 && val.charAt(0) != FILTER_INDICATOR) {
+    if (!val.isEmpty() && val.charAt(0) != FILTER_INDICATOR) {
       val = FILTER_INDICATOR + val;
     }
 
@@ -351,7 +351,7 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
 
   private static void removeFilterIndicator(final TableColumn column) {
     String val = (String) column.getHeaderValue();
-    if (val.length() > 0 && val.charAt(0) == FILTER_INDICATOR) {
+    if (!val.isEmpty() && val.charAt(0) == FILTER_INDICATOR) {
       val = val.substring(1);
     }
 

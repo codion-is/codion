@@ -112,6 +112,6 @@ public class FormattedValueLink<K> extends TextValueLink<K> {
     final String validationMessage = getValidationMessage(editModel);
     textComponent.setBackground(validInput && validationMessage == null ? validBackground : invalidBackground);
     textComponent.setToolTipText(validationMessage == null ? defaultToolTip :
-            (defaultToolTip != null && defaultToolTip.length() > 0 ? defaultToolTip + ": " : "") + validationMessage);
+            (defaultToolTip != null && !defaultToolTip.isEmpty() ? defaultToolTip + ": " : "") + validationMessage);
   }
 }

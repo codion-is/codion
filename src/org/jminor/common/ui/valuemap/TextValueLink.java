@@ -132,7 +132,7 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> implements
    * @return a value, null if the input text has zero length or if it does not yield a valid value
    */
   protected Object valueFromText(final String text) {
-    if (text != null && text.length() == 0) {
+    if (text != null && text.isEmpty()) {
       return null;
     }
 
@@ -174,6 +174,6 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> implements
     final String validationMessage = getValidationMessage(editModel);
     textComponent.setBackground(validationMessage == null ? validBackgroundColor : invalidBackgroundColor);
     textComponent.setToolTipText(validationMessage == null ? defaultToolTip :
-            (defaultToolTip != null && defaultToolTip.length() > 0 ? defaultToolTip + ": " : "") + validationMessage);
+            (defaultToolTip != null && !defaultToolTip.isEmpty() ? defaultToolTip + ": " : "") + validationMessage);
   }
 }

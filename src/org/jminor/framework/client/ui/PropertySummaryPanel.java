@@ -36,7 +36,7 @@ public final class PropertySummaryPanel extends JPanel {
       public void actionPerformed(final ActionEvent e) {
         final String summaryText = model.getSummaryText();
         lblSummary.setText(summaryText);
-        lblSummary.setToolTipText(summaryText.length() > 0 ? (model.getSummaryType() + ": " + summaryText) : summaryText);
+        lblSummary.setToolTipText(!summaryText.isEmpty() ? (model.getSummaryType() + ": " + summaryText) : summaryText);
       }
     });
     initialize();

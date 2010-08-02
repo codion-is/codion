@@ -57,7 +57,7 @@ public final class DerbyDatabase extends AbstractDatabase {
     if (connectionProperties != null) {
       final String username = (String) connectionProperties.get("user");
       final String password = (String) connectionProperties.get("password");
-      if (username != null && username.length() > 0 && password != null && password.length() > 0) {
+      if (username != null && !username.isEmpty() && password != null && !password.isEmpty()) {
         return "user=" + username + ";" + "password=" + password;
       }
     }

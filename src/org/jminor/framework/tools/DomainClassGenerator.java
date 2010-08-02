@@ -189,7 +189,7 @@ public final class DomainClassGenerator {
     if (column.decimalDigits >= 1) {
       ret += "\n                .setMaximumFractionDigits(" + column.decimalDigits + ")";
     }
-    if (column.comment != null && column.comment.length() > 0) {
+    if (column.comment != null && !column.comment.isEmpty()) {
       ret += "\n                .setDescription(" + column.comment + ")";
     }
 
@@ -331,7 +331,7 @@ public final class DomainClassGenerator {
     private final Collection<String> tablesToInclude;
 
     TablePacker(final String tablesToInclude) {
-      this.tablesToInclude = tablesToInclude != null && tablesToInclude.length() > 0
+      this.tablesToInclude = tablesToInclude != null && !tablesToInclude.isEmpty()
               ? getTablesToInclude(tablesToInclude) : null;
     }
 

@@ -209,7 +209,7 @@ public final class EntityCriteriaUtil {
     public final String getWhereClause(final boolean includeWhereKeyword) {
       final String criteriaString = criteria == null ? "" : criteria.asString();
 
-      return criteriaString.length() > 0 ? (includeWhereKeyword ? "where " : "and ") + criteriaString : "";
+      return !criteriaString.isEmpty() ? (includeWhereKeyword ? "where " : "and ") + criteriaString : "";
     }
   }
 

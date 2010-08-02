@@ -24,7 +24,7 @@ public final class MonitorModel {
   private final Collection<HostMonitor> hostMonitors = new ArrayList<HostMonitor>();
 
   public MonitorModel(final String hostNames) throws RemoteException {
-    if (hostNames == null || hostNames.length() == 0) {
+    if (hostNames == null || hostNames.isEmpty()) {
       throw new RuntimeException("No server host names specified for server monitor");
     }
     for (final String hostname : Arrays.asList(hostNames.split(","))) {

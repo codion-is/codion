@@ -617,7 +617,7 @@ public final class EntityDbRemoteAdapter extends UnicastRemoteObject implements 
 
   static void initConnectionPools(final Database database) {
     final String initialPoolUsers = System.getProperty(Configuration.SERVER_CONNECTION_POOLING_INITIAL);
-    if (initialPoolUsers != null && initialPoolUsers.length() > 0) {
+    if (initialPoolUsers != null && !initialPoolUsers.isEmpty()) {
       for (final String username : initialPoolUsers.split(",")) {
         final User user = new User(username.trim(), null);
         CONNECTION_POOLS.put(user, new ConnectionPoolImpl(new PoolableConnectionProvider() {
@@ -777,7 +777,7 @@ public final class EntityDbRemoteAdapter extends UnicastRemoteObject implements 
     private void appendEntityCriteria(final EntityCriteria criteria, final StringBuilder destination) {
       destination.append(criteria.getEntityID());
       final String whereClause = criteria.getWhereClause(true);
-      if (whereClause != null && whereClause.length() > 0) {
+      if (whereClause != null && !whereClause.isEmpty()) {
         destination.append(", ").append(whereClause);
       }
       final List<?> values = criteria.getValues();
