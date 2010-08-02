@@ -44,6 +44,7 @@
     </plugins>
   </build>
   <properties>
+    <sonar.host.url>http://192.168.1.34:9001</sonar.host.url>
     <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
     <sonar.cobertura.reportPath >test/coveragereport/xml/coverage.xml</sonar.cobertura.reportPath>
     <sonar.surefire.reportsPath>test/report</sonar.surefire.reportsPath>

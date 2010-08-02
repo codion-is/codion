@@ -21,11 +21,6 @@ public class UtilTest {
   }
 
   @Test
-  public void isHostReachable() {
-    assertTrue(Util.isHostReachable("localhost", 300));
-  }
-
-  @Test
   public void isEqual() {
     Object one = null;
     Object two = null;
