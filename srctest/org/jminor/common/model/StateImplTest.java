@@ -33,7 +33,7 @@ public class StateImplTest {
     state.setActive(true);
     assertTrue("State should be active after activation", state.isActive());
     assertTrue("Listening action should be active after activation", listeningAction.isEnabled());
-    assertEquals("active", state.toString());
+    assertEquals(States.StateImpl.ACTIVE, state.toString());
     assertFalse("Reversed state should be inactive after activation", state.getReversedState().isActive());
     assertTrue("evtStateChanged should have been fired when an inactive state was activated", stateChanged == 1);
     state.setActive(true);
@@ -41,7 +41,7 @@ public class StateImplTest {
     state.setActive(false);
     assertFalse("State should be inactive after deactivation", state.isActive());
     assertFalse("Listening action should be inactive after deactivation", listeningAction.isEnabled());
-    assertEquals("inactive", state.toString());
+    assertEquals(States.StateImpl.INACTIVE, state.toString());
     assertTrue("Reversed state should be active after deactivation", state.getReversedState().isActive());
     assertTrue("evtStateChanged should have been fired when an inactive state was deactivated", stateChanged == 2);
     state.setActive(false);

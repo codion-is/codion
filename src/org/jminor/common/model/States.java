@@ -39,7 +39,9 @@ public final class States {
 
   static class StateImpl implements State {
 
-    private final Object lock = new Object();
+    static final String ACTIVE = "active";
+    static final String INACTIVE = "inactive";
+
     private final Event evtStateChanged = Events.event();
 
     private volatile StateObserver observer;
@@ -55,12 +57,12 @@ public final class States {
 
     @Override
     public String toString() {
-      return active ? "active" : "inactive";
+      return active ? ACTIVE : INACTIVE;
     }
 
     public final StateObserver getObserver() {
       if (observer == null) {
-        synchronized (lock) {
+        synchronized (evtStateChanged) {
           observer = new StateObserverImpl(this);
         }
       }
@@ -166,7 +168,7 @@ public final class States {
     @Override
     public synchronized String toString() {
       final StringBuilder stringBuilder = new StringBuilder("Aggregate ");
-      stringBuilder.append(conjunction.toString()).append(isActive() ? "active" : "inactive");
+      stringBuilder.append(conjunction.toString()).append(isActive() ? ACTIVE : INACTIVE);
       for (final StateObserver state : states) {
         stringBuilder.append(", ").append(state);
       }
