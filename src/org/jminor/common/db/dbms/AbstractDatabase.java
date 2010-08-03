@@ -118,8 +118,8 @@ public abstract class AbstractDatabase implements Database {
     Util.rejectNullValue(user.getPassword(), "Password must be provided");
     loadDriver();
     final Properties connectionProperties = new Properties();
-    connectionProperties.put("user", user.getUsername());
-    connectionProperties.put("password", user.getPassword());
+    connectionProperties.put(USER_PROPERTY, user.getUsername());
+    connectionProperties.put(PASSWORD_PROPERTY, user.getPassword());
 
     return DriverManager.getConnection(getURL(connectionProperties), addConnectionProperties(connectionProperties));
   }
@@ -160,17 +160,25 @@ public abstract class AbstractDatabase implements Database {
    */
   public void shutdownEmbedded(final Properties connectionProperties) {}
 
+  public String getSequenceSQL(final String sequenceName) {
+    throw new RuntimeException("Sequence support is not implemented for database type: " + getDatabaseType());
+  }
+
   /**
-   * This default implementation returns null
+   * Returns a string containing authentication info to append to the connection URL,
+   * base on the values found in <code>connectionProperties</code>.
+   * this default implementation returns the following assuming that <code>connectionProperties</code>
+   * contains values for both "user" and "password" keys:
+   * user=scott;password=tiger
    * @param connectionProperties the connection properties
-   * @return null
+   * @return a string containing authentication info to append to the connection URL
    */
   public String getAuthenticationInfo(final Properties connectionProperties) {
     if (connectionProperties != null) {
-      final String username = (String) connectionProperties.get("user");
-      final String password = (String) connectionProperties.get("password");
+      final String username = (String) connectionProperties.get(USER_PROPERTY);
+      final String password = (String) connectionProperties.get(PASSWORD_PROPERTY);
       if (!Util.nullOrEmpty(username, password)) {
-        return "user=" + username + ";" + "password=" + password;
+        return USER_PROPERTY + "=" + username + ";" + PASSWORD_PROPERTY + "=" + password;
       }
     }
 

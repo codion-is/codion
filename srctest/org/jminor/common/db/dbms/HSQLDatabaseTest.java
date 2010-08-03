@@ -16,11 +16,12 @@ public class HSQLDatabaseTest {
     HSQLDatabase db = new HSQLDatabase("host", "1234", "sid");
     final Properties props = new Properties();
     props.put("user", "scott");
-    props.put("password", "tiger");
+    props.put(Database.PASSWORD_PROPERTY, "tiger");
     assertTrue(db.supportsIsValid());
     assertEquals("user=scott;password=tiger", db.getAuthenticationInfo(props));
-    assertEquals("IDENTITY()", db.getAutoIncrementValueSQL(null));
-    assertEquals("select next value for seq", db.getSequenceSQL("seq"));
+    assertEquals(HSQLDatabase.AUTO_INCREMENT_QUERY, db.getAutoIncrementValueSQL(null));
+    final String idSource = "seq";
+    assertEquals(HSQLDatabase.SEQUENCE_VALUE_QUERY + idSource, db.getSequenceSQL(idSource));
     assertEquals("jdbc:hsqldb:hsql//host:1234/sid;user=scott;password=tiger", db.getURL(props));
 
     db = new HSQLDatabase("dbname");

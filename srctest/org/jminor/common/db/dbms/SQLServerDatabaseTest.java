@@ -13,7 +13,7 @@ public class SQLServerDatabaseTest {
     final SQLServerDatabase db = new SQLServerDatabase("host", "1234", "sid");
     assertTrue(db.supportsIsValid());
     assertNull(db.getAuthenticationInfo(null));
-    assertEquals("SELECT SCOPE_IDENTITY()", db.getAutoIncrementValueSQL(null));
+    assertEquals(SQLServerDatabase.AUTO_INCREMENT_QUERY, db.getAutoIncrementValueSQL(null));
     try {
       db.getSequenceSQL("seq");
       fail();

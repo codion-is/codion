@@ -12,6 +12,10 @@ import java.util.Properties;
  */
 public final class PostgreSQLDatabase extends AbstractDatabase {
 
+  static final String DRIVER_NAME = "org.postgresql.Driver";
+  static final String URL_PREFIX = "jdbc:postgresql://";
+  static final String CHECK_QUERY = "select 1";
+
   public PostgreSQLDatabase() {
     super(POSTGRESQL);
   }
@@ -21,7 +25,7 @@ public final class PostgreSQLDatabase extends AbstractDatabase {
   }
 
   public void loadDriver() throws ClassNotFoundException {
-    Class.forName("org.postgresql.Driver");
+    Class.forName(DRIVER_NAME);
   }
 
   public String getAutoIncrementValueSQL(final String idSource) {
@@ -33,7 +37,7 @@ public final class PostgreSQLDatabase extends AbstractDatabase {
   }
 
   public String getURL(final Properties connectionProperties) {
-    return "jdbc:postgresql://" + getHost() + ":" + getPort() + "/" + getSid();
+    return URL_PREFIX + getHost() + ":" + getPort() + "/" + getSid();
   }
 
   /**
@@ -46,7 +50,7 @@ public final class PostgreSQLDatabase extends AbstractDatabase {
 
   @Override
   public String getCheckConnectionQuery() {
-    return "select 1";
+    return CHECK_QUERY;
   }
 
   @Override

@@ -1955,3 +1955,4 @@
   state... methods renamed to get...State
   string.length() >/== 0 replaced with (!)string.isEmpty()
   Util.nullOrEmpty() finally added and used throughout
+  common.db.dbms refactored

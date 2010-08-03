@@ -12,6 +12,12 @@ import java.util.Properties;
  */
 public final class HSQLDatabase extends AbstractDatabase {
 
+  static final String DRIVER_NAME = "org.hsqldb.jdbcDriver";
+  static final String AUTO_INCREMENT_QUERY = "IDENTITY()";
+  static final String SEQUENCE_VALUE_QUERY = "select next value for ";
+  static final String EMBEDDED_URL_PREFIX = "jdbc:hsqldb:file:";
+  static final String NETWORKED_URL_PREFIX = "jdbc:hsqldb:hsql//";
+
   public HSQLDatabase() {
     super(HSQL);
   }
@@ -25,24 +31,24 @@ public final class HSQLDatabase extends AbstractDatabase {
   }
 
   public void loadDriver() throws ClassNotFoundException {
-    Class.forName("org.hsqldb.jdbcDriver");
+    Class.forName(DRIVER_NAME);
   }
 
   public String getAutoIncrementValueSQL(final String idSource) {
-    return "IDENTITY()";
+    return AUTO_INCREMENT_QUERY;
   }
 
   public String getSequenceSQL(final String sequenceName) {
-    return "select next value for " + sequenceName;
+    return SEQUENCE_VALUE_QUERY + sequenceName;
   }
 
   public String getURL(final Properties connectionProperties) {
     final String authentication = getAuthenticationInfo(connectionProperties);
     if (isEmbedded()) {
-      return "jdbc:hsqldb:file:" + getHost() + (authentication == null ? "" : ";" + authentication);
+      return EMBEDDED_URL_PREFIX + getHost() + (authentication == null ? "" : ";" + authentication);
     }
     else {
-      return "jdbc:hsqldb:hsql//" + getHost() + ":" + getPort() + "/" + getSid() + (authentication == null ? "" : ";" + authentication);
+      return NETWORKED_URL_PREFIX + getHost() + ":" + getPort() + "/" + getSid() + (authentication == null ? "" : ";" + authentication);
     }
   }
 

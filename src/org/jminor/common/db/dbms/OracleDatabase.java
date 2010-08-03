@@ -16,6 +16,10 @@ import java.util.Properties;
  */
 public final class OracleDatabase extends AbstractDatabase {
 
+  static final String DRIVER_NAME = "oracle.jdbc.OracleDriver";
+  static final String URL_PREFIX = "jdbc:oracle:thin:@";
+  static final String CHECK_QUERY = "select 1 from dual";
+
   private static final Map<Integer, String> ERROR_CODE_MAP = new HashMap<Integer, String>();
 
   private static final int UNIQUE_KEY_ERROR = 1;
@@ -55,7 +59,7 @@ public final class OracleDatabase extends AbstractDatabase {
   }
 
   public void loadDriver() throws ClassNotFoundException {
-    Class.forName("oracle.jdbc.OracleDriver");
+    Class.forName(DRIVER_NAME);
   }
 
   public String getAutoIncrementValueSQL(final String idSource) {
@@ -67,7 +71,7 @@ public final class OracleDatabase extends AbstractDatabase {
   }
 
   public String getURL(final Properties connectionProperties) {
-    return "jdbc:oracle:thin:@" + getHost() + ":" + getPort() + ":" + getSid();
+    return URL_PREFIX + getHost() + ":" + getPort() + ":" + getSid();
   }
 
   /**
@@ -80,7 +84,7 @@ public final class OracleDatabase extends AbstractDatabase {
 
   @Override
   public String getCheckConnectionQuery() {
-    return "select 1 from dual";
+    return CHECK_QUERY;
   }
 
   @Override

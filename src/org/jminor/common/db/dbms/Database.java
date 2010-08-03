@@ -106,6 +106,16 @@ public interface Database {
   String HSQL = "hsql";
 
   /**
+   * The constant used to denote the username value in the connection properties
+   */
+  String USER_PROPERTY = "user";
+
+  /**
+   * The constant used to denote the password value in the connection properties
+   */
+  String PASSWORD_PROPERTY = "password";
+
+  /**
    * Loads the database driver
    * @throws ClassNotFoundException in case the driver class in not found
    */
