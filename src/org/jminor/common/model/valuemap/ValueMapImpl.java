@@ -15,24 +15,9 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V>, Serializable {
   /**
    * Holds the values contained in this value map.
    */
-  private final Map<K, V> values;
+  private final Map<K, V> values = new HashMap<K, V>();
 
-  private static final int DEFAULT_SIZE = 10;
-
-  /**
-   * Instantiate a new ValueMap with a default size of 10.
-   */
-  public ValueMapImpl() {
-    this(DEFAULT_SIZE);
-  }
-
-  /**
-   * Instantiates a new ValueMapImpl with a size of <code>initialSize</code>.
-   * @param initialSize the initial size
-   */
-  public ValueMapImpl(final int initialSize) {
-    values = new HashMap<K, V>(initialSize);
-  }
+  private static final int MAGIC_NUMBER = 23;
 
   public boolean isValueNull(final K key) {
     return getValue(key) == null;
@@ -93,7 +78,7 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V>, Serializable {
 
   @Override
   public int hashCode() {
-    int hash = 23;
+    int hash = MAGIC_NUMBER;
     for (final Object value : getValues()) {
       hash = hash + (value == null ? 0 : value.hashCode());
     }

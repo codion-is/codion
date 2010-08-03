@@ -700,7 +700,6 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
      * @param entityID the entity ID
      */
     KeyImpl(final String entityID) {
-      super(1);
       this.entityID = entityID;
       this.properties = Entities.getPrimaryKeyProperties(entityID);
       this.singleIntegerKey = properties.size() == 1 && properties.get(0).isInteger();

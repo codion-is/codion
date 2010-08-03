@@ -66,7 +66,7 @@ public class DefaultValueChangeMapEditModel<K, V> implements ValueChangeMapEditM
   public void refresh() {}
 
   public ValueChangeMap<K, V> getDefaultValueMap() {
-    return new ValueChangeMapImpl<K, V>(valueMap.size());
+    return new ValueChangeMapImpl<K, V>();
   }
 
   public final ValueMapValidator<K, V> getValidator() {

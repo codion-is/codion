@@ -56,6 +56,8 @@ import java.text.SimpleDateFormat;
  */
 public abstract class AbstractSearchPanel<K> extends JPanel {
 
+  public static final int DEFAULT_FIELD_COLUMNS = 4;
+
   private static final SearchType[] SEARCH_TYPES = {
           SearchType.LIKE, SearchType.NOT_LIKE, SearchType.AT_LEAST,
           SearchType.AT_MOST, SearchType.WITHIN_RANGE, SearchType.OUTSIDE_RANGE};
@@ -466,16 +468,16 @@ public abstract class AbstractSearchPanel<K> extends JPanel {
       return UiUtil.createFormattedField(DateUtil.getDateMask((SimpleDateFormat) format));
     }
     else if (model.getType() == Types.DOUBLE) {
-      return new DoubleField(4);
+      return new DoubleField(DEFAULT_FIELD_COLUMNS);
     }
     else if (model.getType() == Types.INTEGER) {
-      return new IntField(4);
+      return new IntField(DEFAULT_FIELD_COLUMNS);
     }
     else if (model.getType() == Types.BOOLEAN) {
       return new JCheckBox();
     }
     else {
-      return new JTextField(4);
+      return new JTextField(DEFAULT_FIELD_COLUMNS);
     }
   }
 

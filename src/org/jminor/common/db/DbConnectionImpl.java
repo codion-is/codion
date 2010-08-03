@@ -633,6 +633,9 @@ public class DbConnectionImpl implements DbConnection {
   };
 
   public static final class QueryCounter {
+
+    private static final int DEFAULT_UPDATE_INTERVAL = 2000;
+
     private long queriesPerSecondTime = System.currentTimeMillis();
     private int queriesPerSecond = 0;
     private int queriesPerSecondCounter = 0;
@@ -653,7 +656,7 @@ public class DbConnectionImpl implements DbConnection {
         public void run() {
           updateQueriesPerSecond();
         }
-      }, new Date(), 2000);
+      }, new Date(), DEFAULT_UPDATE_INTERVAL);
     }
 
     public void count(final String sql) {

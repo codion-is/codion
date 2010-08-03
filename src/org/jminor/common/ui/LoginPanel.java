@@ -28,6 +28,8 @@ import java.awt.event.WindowEvent;
  */
 public final class LoginPanel extends JPanel {
 
+  private static final int DEFAULT_FIELD_COLUMNS = 8;
+
   private final JTextField usernameField = new JTextField(8);
   private final JPasswordField passwordField = new JPasswordField(8);
 
@@ -99,8 +101,8 @@ public final class LoginPanel extends JPanel {
     usernameField.setText(defaultUser == null ? "" : defaultUser.getUsername());
     passwordField.setText(defaultUser == null ? "" : defaultUser.getPassword());
 
-    usernameField.setColumns(8);
-    passwordField.setColumns(8);
+    usernameField.setColumns(DEFAULT_FIELD_COLUMNS);
+    passwordField.setColumns(DEFAULT_FIELD_COLUMNS);
     UiUtil.selectAllOnFocusGained(usernameField);
     UiUtil.selectAllOnFocusGained(passwordField);
 

@@ -23,8 +23,8 @@ public final class PropertyFilterPanel extends AbstractSearchPanel<Property> {
   }
 
   @Override
-  protected boolean isLowerBoundFieldRequired(final Property property) {
-    return !property.isBoolean();
+  protected boolean isLowerBoundFieldRequired(final Property searchKey) {
+    return !searchKey.isBoolean();
   }
 
   @Override

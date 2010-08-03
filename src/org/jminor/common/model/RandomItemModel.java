@@ -31,7 +31,7 @@ public class RandomItemModel<T> {
   /**
    * An Event fired when a weight value has changed
    */
-  protected final Event evtWeightsChanged = Events.event();
+  private final Event evtWeightsChanged = Events.event();
 
   /**
    * The items contained in this model
@@ -127,7 +127,7 @@ public class RandomItemModel<T> {
   /**
    * @return an Event which fires each time a weight has been changed.
    */
-  public final EventObserver weightsObserver() {
+  public final EventObserver getWeightsObserver() {
     return evtWeightsChanged.getObserver();
   }
 
@@ -190,6 +190,10 @@ public class RandomItemModel<T> {
     }
 
     throw new RuntimeException("Item not found: " + item);
+  }
+
+  protected void fireWeightsChangedEvent() {
+    evtWeightsChanged.fire();
   }
 
   private int getTotalWeights() {

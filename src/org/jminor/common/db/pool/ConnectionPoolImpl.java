@@ -330,6 +330,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
 
   private static class Counter {
     private static final double THOUSAND = 1000d;
+    private static final int DEFAULT_STATS_UPDATE_INTERVAL = 1000;
 
     private final long creationDate = System.currentTimeMillis();
     private long resetDate = creationDate;
@@ -352,7 +353,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
         public void run() {
           updateStatistics();
         }
-      }, new Date(), 1000);
+      }, new Date(), DEFAULT_STATS_UPDATE_INTERVAL);
     }
 
     public synchronized long getCreationDate() {

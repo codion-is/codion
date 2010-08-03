@@ -91,16 +91,16 @@ public final class PropertySearchPanel extends AbstractSearchPanel<Property.Colu
       return UiUtil.createFormattedField(DateUtil.getDateMask(dateFormat));
     }
     else if (property.isDouble()) {
-      return new DoubleField(4);
+      return new DoubleField(DEFAULT_FIELD_COLUMNS);
     }
     else if (property.isInteger()) {
-      return new IntField(4);
+      return new IntField(DEFAULT_FIELD_COLUMNS);
     }
     else if (property.isBoolean()) {
       return new JComboBox(new BooleanComboBoxModel());
     }
     else {
-      return new JTextField(4);
+      return new JTextField(DEFAULT_FIELD_COLUMNS);
     }
   }
 

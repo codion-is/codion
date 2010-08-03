@@ -243,7 +243,7 @@ public final class States {
       return reversedState.getObserver();
     }
 
-    public final void addListeningAction(final Action action) {
+    public void addListeningAction(final Action action) {
       Util.rejectNullValue(action, "action");
       action.setEnabled(state.isActive());
       evtStateChanged.addListener(new ActionListener() {
@@ -253,15 +253,15 @@ public final class States {
       });
     }
 
-    public final void addListener(final ActionListener listener) {
+    public void addListener(final ActionListener listener) {
       evtStateChanged.addListener(listener);
     }
 
-    public final void removeListener(final ActionListener listener) {
+    public void removeListener(final ActionListener listener) {
       evtStateChanged.removeListener(listener);
     }
 
-    public final void notifyObserver() {
+    public void notifyObserver() {
       evtStateChanged.fire();
     }
   }

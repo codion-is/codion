@@ -78,10 +78,10 @@ public final class DateInputPanel extends JPanel {
     return dateFormat.toPattern();
   }
 
-  private final static class InputFocusAdapter extends FocusAdapter {
+  private static final class InputFocusAdapter extends FocusAdapter {
     private final JFormattedTextField inputField;
 
-    public InputFocusAdapter(final JFormattedTextField inputField) {
+    private InputFocusAdapter(final JFormattedTextField inputField) {
       this.inputField = inputField;
     }
 

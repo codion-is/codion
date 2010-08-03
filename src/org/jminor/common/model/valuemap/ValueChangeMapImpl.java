@@ -39,18 +39,6 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
    */
   private transient Event evtValueChanged;
 
-  public ValueChangeMapImpl() {
-    this(10);
-  }
-
-  /**
-   * Instantiates a new ValueChangeMapImpl with a size of <code>initialSize</code>.
-   * @param initialSize the initial size
-   */
-  public ValueChangeMapImpl(final int initialSize) {
-    super(initialSize);
-  }
-
   public void initializeValue(final K key, final V value) {
     super.setValue(key, value);
     if (evtValueChanged != null) {
@@ -74,7 +62,7 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
 
   @Override
   public ValueChangeMap<K, V> getInstance() {
-    return new ValueChangeMapImpl<K, V>(size());
+    return new ValueChangeMapImpl<K, V>();
   }
 
   public final boolean isModified(final K key) {

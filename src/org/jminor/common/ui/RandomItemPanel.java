@@ -73,7 +73,7 @@ public final class RandomItemPanel<T> extends JPanel {
   private SpinnerModel createWeightSpinnerModel(final T item) {
     final SpinnerNumberModel spinnerModel = new SpinnerNumberModel(model.getWeight(item), 0, Integer.MAX_VALUE, 1);
     final AbstractValueLink<RandomItemPanel, Integer> valueLink =
-            new AbstractValueLink<RandomItemPanel, Integer>(this, getModel().weightsObserver(), LinkType.READ_WRITE) {
+            new AbstractValueLink<RandomItemPanel, Integer>(this, getModel().getWeightsObserver(), LinkType.READ_WRITE) {
       @Override
       public Integer getModelValue() {
         return getModel().getWeight(item);
