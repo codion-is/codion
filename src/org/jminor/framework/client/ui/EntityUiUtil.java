@@ -688,7 +688,7 @@ public final class EntityUiUtil {
     return field;
   }
 
-  private static class NewRecordAction extends AbstractAction {
+  private static final class NewRecordAction extends AbstractAction {
 
     private final EntityComboBox comboBox;
     private final EntityPanelProvider panelProvider;
@@ -702,14 +702,8 @@ public final class EntityUiUtil {
     public void actionPerformed(final ActionEvent e) {
       final EntityPanel entityPanel = panelProvider.createInstance(comboBox.getModel().getDbProvider());
       entityPanel.initializePanel();
-      final List<Entity.Key> lastInsertedPrimaryKeys = new ArrayList<Entity.Key>();
-      entityPanel.getModel().getEditModel().addAfterInsertListener(new InsertListener() {
-        @Override
-        protected void inserted(final InsertEvent event) {
-          lastInsertedPrimaryKeys.clear();
-          lastInsertedPrimaryKeys.addAll(event.getInsertedKeys());
-        }
-      });
+      final List<Entity.Key> insertedPrimaryKeys = new ArrayList<Entity.Key>();
+      entityPanel.getModel().getEditModel().addAfterInsertListener(new NewRecordListener(insertedPrimaryKeys));
       final Window parentWindow = UiUtil.getParentWindow(comboBox);
       final String caption = panelProvider.getCaption() == null || panelProvider.getCaption().equals("") ?
               entityPanel.getCaption() : panelProvider.getCaption();
@@ -717,7 +711,7 @@ public final class EntityUiUtil {
       dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
       dialog.setLayout(new BorderLayout());
       dialog.add(entityPanel, BorderLayout.CENTER);
-      final JButton btnClose = initializeOkButton(entityPanel.getModel().getTableModel(), dialog, lastInsertedPrimaryKeys);
+      final JButton btnClose = initializeOkButton(entityPanel.getModel().getTableModel(), dialog, insertedPrimaryKeys);
       final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
       buttonPanel.add(btnClose);
       dialog.add(buttonPanel, BorderLayout.SOUTH);
@@ -727,6 +721,21 @@ public final class EntityUiUtil {
       dialog.setResizable(true);
       dialog.setVisible(true);
     }
+
+  private static final class NewRecordListener extends InsertListener {
+
+    private final Collection<Entity.Key> insertKeys;
+
+    private NewRecordListener(final Collection<Entity.Key> insertKeys) {
+      this.insertKeys = insertKeys;
+    }
+
+    @Override
+    protected void inserted(final InsertEvent event) {
+      insertKeys.clear();
+      insertKeys.addAll(event.getInsertedKeys());
+    }
+  }
 
     private JButton initializeOkButton(final EntityTableModel tableModel, final JDialog dialog,
                                        final List<Entity.Key> lastInsertedPrimaryKeys) {

@@ -462,7 +462,7 @@ public abstract class LoadTestModel {
     }
   }
 
-  private static class ApplicationRunner implements Runnable {
+  private static final class ApplicationRunner implements Runnable {
 
     private final LoadTestModel loadTestModel;
 
