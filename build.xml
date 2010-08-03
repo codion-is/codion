@@ -99,7 +99,7 @@
     <mkdir dir="${build.demos}"/>
     <mkdir dir="${build.test}"/>
 
-    <javac destdir="${build.base}" debug="${build.debuginfo}">
+    <javac destdir="${build.base}" debug="${build.debuginfo}" excludes="**/*package-info.java">
       <src path="${src}"/>
       <classpath refid="lib.build"/>
     </javac>
@@ -115,7 +115,7 @@
       <fileset refid="framework_resources"/>
     </copy>
 
-    <javac destdir="${build.plugins}" debug="${build.debuginfo}">
+    <javac destdir="${build.plugins}" debug="${build.debuginfo}" excludes="**/*package-info.java">
       <src path="${srcplugins}"/>
       <classpath>
         <path refid="lib.build"/>
@@ -471,7 +471,6 @@
         <include name="**/*.class"/>
         <exclude name="**/*Stub.class"/>
         <exclude name="**/*Skel.class"/>
-        <exclude name="**/package-info.class"/>
       </fileset>
     </cobertura-instrument>
   </target>
