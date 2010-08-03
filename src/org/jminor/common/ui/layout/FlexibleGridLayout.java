@@ -55,88 +55,12 @@ public final class FlexibleGridLayout extends GridLayout {
 
   @Override
   public Dimension preferredLayoutSize(final Container parent) {
-    synchronized (parent.getTreeLock()) {
-      final Insets insets = parent.getInsets();
-      final int numberOfComponents = parent.getComponentCount();
-      int numberOfRows = getRows();
-      int numberOfColumns = getColumns();
-      if (numberOfRows > 0) {
-        numberOfColumns = (numberOfComponents + numberOfRows - 1) / numberOfRows;
-      }
-      else {
-        numberOfRows = (numberOfComponents + numberOfColumns - 1) / numberOfColumns;
-      }
-      final int[] columnWidths = new int[numberOfColumns];
-      final int[] rowHeights = new int[numberOfRows];
-      for (int i = 0; i < numberOfComponents; i++) {
-        final int row = i / numberOfColumns;
-        final int column = i % numberOfColumns;
-        final Component comp = parent.getComponent(i);
-        final Dimension d = comp.getPreferredSize();
-        if (columnWidths[column] < d.width) {
-          columnWidths[column] = d.width;
-        }
-        if (rowHeights[row] < d.height) {
-          rowHeights[row] = d.height;
-        }
-      }
-      //
-      arrangeFixedSizes(columnWidths, rowHeights);
-      //
-      int newWidth = 0;
-      for (int j = 0; j < numberOfColumns; j++) {
-        newWidth += columnWidths[j];
-      }
-      int newHeight = 0;
-      for (int i = 0; i < numberOfRows; i++) {
-        newHeight += rowHeights[i];
-      }
-      return new Dimension(insets.left + insets.right + newWidth + (numberOfColumns-1)*getHgap(),
-              insets.top + insets.bottom + newHeight + (numberOfRows-1)*getVgap());
-    }
+    return layoutSize(parent, true);
   }
 
   @Override
   public Dimension minimumLayoutSize(final Container parent) {
-    synchronized (parent.getTreeLock()) {
-      final Insets insets = parent.getInsets();
-      final int numberOfComponents = parent.getComponentCount();
-      int numberOfRows = getRows();
-      int numberOfColumns = getColumns();
-      if (numberOfRows > 0) {
-        numberOfColumns = (numberOfComponents + numberOfRows - 1) / numberOfRows;
-      }
-      else {
-        numberOfRows = (numberOfComponents + numberOfColumns - 1) / numberOfColumns;
-      }
-      final int[] columnWidths = new int[numberOfColumns];
-      final int[] rowHeights = new int[numberOfRows];
-      for (int i = 0; i < numberOfComponents; i++) {
-        final int row = i / numberOfColumns;
-        final int column = i % numberOfColumns;
-        final Component comp = parent.getComponent(i);
-        final Dimension d = comp.getMinimumSize();
-        if (columnWidths[column] < d.width) {
-          columnWidths[column] = d.width;
-        }
-        if (rowHeights[row] < d.height) {
-          rowHeights[row] = d.height;
-        }
-      }
-      //
-      arrangeFixedSizes(columnWidths, rowHeights);
-      //
-      int newWidth = 0;
-      for (int j = 0; j < numberOfColumns; j++) {
-        newWidth += columnWidths[j];
-      }
-      int newHeight = 0;
-      for (int i = 0; i < numberOfRows; i++) {
-        newHeight += rowHeights[i];
-      }
-      return new Dimension(insets.left + insets.right + newWidth + (numberOfColumns-1)*getHgap(),
-              insets.top + insets.bottom + newHeight + (numberOfRows-1)*getVgap());
-    }
+    return layoutSize(parent, false);
   }
 
   @Override
@@ -159,8 +83,8 @@ public final class FlexibleGridLayout extends GridLayout {
       final int verticalGap = getVgap();
       // scaling factors
       final Dimension pd = preferredLayoutSize(parent);
-      final double sw = (1.0 * parent.getWidth()) / pd.width;
-      final double sh = (1.0 * parent.getHeight()) / pd.height;
+      final double sw = (1.0 * parent.getWidth()) / pd.getWidth();
+      final double sh = (1.0 * parent.getHeight()) / pd.getHeight();
       // scale
       final int[] columnWidths = new int[numberOfColumns];
       final int[] rowHeights = new int[numberOfRows];
@@ -169,13 +93,13 @@ public final class FlexibleGridLayout extends GridLayout {
         final int column = i % numberOfColumns;
         final Component currentComponent = parent.getComponent(i);
         final Dimension currCompPrefSize = currentComponent.getPreferredSize();
-        currCompPrefSize.width = (int) (sw * currCompPrefSize.width);
-        currCompPrefSize.height = (int) (sh * currCompPrefSize.height);
-        if (columnWidths[column] < currCompPrefSize.width) {
-          columnWidths[column] = currCompPrefSize.width;
+        currCompPrefSize.width = (int) (sw * currCompPrefSize.getWidth());
+        currCompPrefSize.height = (int) (sh * currCompPrefSize.getHeight());
+        if (columnWidths[column] < currCompPrefSize.getWidth()) {
+          columnWidths[column] = (int) currCompPrefSize.getWidth();
         }
-        if (rowHeights[row] < currCompPrefSize.height) {
-          rowHeights[row] = currCompPrefSize.height;
+        if (rowHeights[row] < currCompPrefSize.getHeight()) {
+          rowHeights[row] = (int) currCompPrefSize.getHeight();
         }
       }
       //
@@ -222,6 +146,48 @@ public final class FlexibleGridLayout extends GridLayout {
       for (int i = 0; i < rowHeights.length; i++) {
         rowHeights[i] = maxRowHeight;
       }
+    }
+  }
+
+  private Dimension layoutSize(final Container parent, final boolean preferredSize) {
+    synchronized (parent.getTreeLock()) {
+      final Insets insets = parent.getInsets();
+      final int numberOfComponents = parent.getComponentCount();
+      int numberOfRows = getRows();
+      int numberOfColumns = getColumns();
+      if (numberOfRows > 0) {
+        numberOfColumns = (numberOfComponents + numberOfRows - 1) / numberOfRows;
+      }
+      else {
+        numberOfRows = (numberOfComponents + numberOfColumns - 1) / numberOfColumns;
+      }
+      final int[] columnWidths = new int[numberOfColumns];
+      final int[] rowHeights = new int[numberOfRows];
+      for (int i = 0; i < numberOfComponents; i++) {
+        final int row = i / numberOfColumns;
+        final int column = i % numberOfColumns;
+        final Component comp = parent.getComponent(i);
+        final Dimension d = preferredSize ? comp.getPreferredSize() : comp.getMinimumSize();
+        if (columnWidths[column] < d.getWidth()) {
+          columnWidths[column] = (int) d.getWidth();
+        }
+        if (rowHeights[row] < d.getHeight()) {
+          rowHeights[row] = (int) d.getHeight();
+        }
+      }
+      //
+      arrangeFixedSizes(columnWidths, rowHeights);
+      //
+      int newWidth = 0;
+      for (int j = 0; j < numberOfColumns; j++) {
+        newWidth += columnWidths[j];
+      }
+      int newHeight = 0;
+      for (int i = 0; i < numberOfRows; i++) {
+        newHeight += rowHeights[i];
+      }
+      return new Dimension(insets.left + insets.right + newWidth + (numberOfColumns-1)*getHgap(),
+              insets.top + insets.bottom + newHeight + (numberOfRows-1)*getVgap());
     }
   }
 }

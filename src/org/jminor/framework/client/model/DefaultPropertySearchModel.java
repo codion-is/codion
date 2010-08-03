@@ -27,7 +27,7 @@ public class DefaultPropertySearchModel extends DefaultSearchModel<Property.Colu
   }
 
   @Override
-  public String toString() {
+  public final String toString() {
     final StringBuilder stringBuilder = new StringBuilder(getSearchKey().getPropertyID());
     if (isSearchEnabled()) {
       stringBuilder.append(getSearchType());

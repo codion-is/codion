@@ -51,7 +51,6 @@ import javax.swing.event.ChangeListener;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -764,7 +763,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
   /**
    * Initializes the UI
    */
-  protected void initializeUI() {
+  protected final void initializeUI() {
     final JPanel tableSearchAndSummaryPanel = new JPanel(new BorderLayout());
     setLayout(new BorderLayout());
     if (searchPanel != null) {
@@ -785,6 +784,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
         }
       });
     }
+    initializeTable();
 
     final JScrollPane tableScrollPane = getTableScrollPane();
     tableSearchAndSummaryPanel.add(tableScrollPane, BorderLayout.CENTER);
@@ -1191,49 +1191,6 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
   }
 
   /**
-   * Initializes the JTable instance
-   * @return the JTable instance
-   * @see org.jminor.framework.domain.EntityDefinition#setRowColoring(boolean)
-   * @see org.jminor.framework.domain.Entities.Proxy#getBackgroundColor(org.jminor.framework.domain.Entity)
-   */
-  @Override
-  protected final JTable initializeJTable() {
-    final TableColumnModel columnModel = getTableModel().getColumnModel();
-    final JTable jTable = new JTable(getTableModel(), columnModel, getTableModel().getSelectionModel());
-    final TableCellRenderer tableCellRenderer = initializeTableCellRenderer();
-    final Enumeration<TableColumn> columnEnumeration = columnModel.getColumns();
-    while (columnEnumeration.hasMoreElements()) {
-      final TableColumn column = columnEnumeration.nextElement();
-      column.setCellRenderer(tableCellRenderer);
-      column.setResizable(true);
-    }
-
-    jTable.addMouseListener(initializeTableMouseListener());
-
-    final JTableHeader header = jTable.getTableHeader();
-    final TableCellRenderer defaultHeaderRenderer = header.getDefaultRenderer();
-    final Font defaultFont = jTable.getFont();
-    final Font searchFont = new Font(defaultFont.getName(), Font.BOLD, defaultFont.getSize());
-    header.setDefaultRenderer(new TableCellRenderer() {
-      public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
-                                                     final boolean hasFocus, final int row, final int column) {
-        final JLabel label = (JLabel) defaultHeaderRenderer.getTableCellRendererComponent(table, value, isSelected,
-                hasFocus, row, column);
-        label.setFont(getTableModel().getSearchModel().isSearchEnabled(
-                getTableModel().getColumnProperty(column).getPropertyID()) ? searchFont : defaultFont);
-
-        return label;
-      }
-    });
-    header.setFocusable(false);
-    header.setReorderingAllowed(allowColumnReordering());
-
-    jTable.setAutoResizeMode(getAutoResizeMode());
-
-    return jTable;
-  }
-
-  /**
    * @return the auto resize mode to use for the JTable, by default this returns the value of Configuration.TABLE_AUTO_RESIZE_MODE
    * @see Configuration#TABLE_AUTO_RESIZE_MODE
    */
@@ -1450,6 +1407,38 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
         }
       });
     }
+  }
+
+  private void initializeTable() {
+    final TableCellRenderer tableCellRenderer = initializeTableCellRenderer();
+    final Enumeration<TableColumn> columnEnumeration = getJTable().getColumnModel().getColumns();
+    while (columnEnumeration.hasMoreElements()) {
+      final TableColumn column = columnEnumeration.nextElement();
+      column.setCellRenderer(tableCellRenderer);
+      column.setResizable(true);
+    }
+
+    getJTable().addMouseListener(initializeTableMouseListener());
+
+    final JTableHeader header = getJTable().getTableHeader();
+    final TableCellRenderer defaultHeaderRenderer = header.getDefaultRenderer();
+    final Font defaultFont = getJTable().getFont();
+    final Font searchFont = new Font(defaultFont.getName(), Font.BOLD, defaultFont.getSize());
+    header.setDefaultRenderer(new TableCellRenderer() {
+      public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
+                                                     final boolean hasFocus, final int row, final int column) {
+        final JLabel label = (JLabel) defaultHeaderRenderer.getTableCellRendererComponent(table, value, isSelected,
+                hasFocus, row, column);
+        label.setFont(getTableModel().getSearchModel().isSearchEnabled(
+                getTableModel().getColumnProperty(column).getPropertyID()) ? searchFont : defaultFont);
+
+        return label;
+      }
+    });
+    header.setFocusable(false);
+    header.setReorderingAllowed(allowColumnReordering());
+
+    getJTable().setAutoResizeMode(getAutoResizeMode());
   }
 
   private void revalidateAndShowSearchPanel() {

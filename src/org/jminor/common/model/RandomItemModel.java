@@ -182,7 +182,7 @@ public class RandomItemModel<T> {
    * @return the RandomItem
    * @throws RuntimeException in case the item is not found
    */
-  protected RandomItem<T> getRandomItem(final T item) {
+  protected final RandomItem<T> getRandomItem(final T item) {
     for (final RandomItem<T> randomItem : items) {
       if (randomItem.getItem().equals(item)) {
         return randomItem;
@@ -192,7 +192,7 @@ public class RandomItemModel<T> {
     throw new RuntimeException("Item not found: " + item);
   }
 
-  protected void fireWeightsChangedEvent() {
+  protected final void fireWeightsChangedEvent() {
     evtWeightsChanged.fire();
   }
 
@@ -208,7 +208,7 @@ public class RandomItemModel<T> {
   /**
    * A class encapsulating an Object item and a integer weight value.
    */
-  public static class RandomItem<T> {
+  public static final class RandomItem<T> {
 
     private final T item;
     private int weight = 0;
@@ -221,11 +221,11 @@ public class RandomItemModel<T> {
       this.weight = weight;
     }
 
-    public final int getWeight() {
+    public int getWeight() {
       return weight;
     }
 
-    public final T getItem() {
+    public T getItem() {
       return item;
     }
 
@@ -235,20 +235,20 @@ public class RandomItemModel<T> {
     }
 
     @Override
-    public final boolean equals(final Object obj) {
+    public boolean equals(final Object obj) {
       return obj instanceof RandomItem && (((RandomItem) obj).item.equals(item));
     }
 
     @Override
-    public final int hashCode() {
+    public int hashCode() {
       return item.hashCode();
     }
 
-    final void increment() {
+    void increment() {
       weight++;
     }
 
-    final void decrement() {
+    void decrement() {
       if (weight == 0) {
         throw new IllegalStateException("Weight can not be negative");
       }
@@ -256,7 +256,7 @@ public class RandomItemModel<T> {
       weight--;
     }
 
-    final void setWeight(final int weight) {
+    private void setWeight(final int weight) {
       if (weight < 0) {
         throw new IllegalStateException("Weight can not be negative");
       }

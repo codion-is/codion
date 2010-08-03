@@ -61,7 +61,7 @@ public class TextFieldPlus extends JTextField {
     this.upperCase = upperCase;
   }
 
-  public boolean isUpperCase() {
+  public final boolean isUpperCase() {
     return upperCase;
   }
 

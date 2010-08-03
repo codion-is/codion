@@ -84,7 +84,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
     return entityID;
   }
 
-  public EntityDbProvider getDbProvider() {
+  public final EntityDbProvider getDbProvider() {
     return dbProvider;
   }
 
@@ -122,7 +122,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
     return Collections.unmodifiableCollection(propertyFilterModels.values());
   }
 
-  public List<SearchModel<Property>> getPropertyFilterModelsOrdered() {
+  public final List<SearchModel<Property>> getPropertyFilterModelsOrdered() {
     final List<SearchModel<Property>> models = new ArrayList<SearchModel<Property>>(properties.size());
     for (final Property property : properties) {
       models.add(getPropertyFilterModel(property.getPropertyID()));

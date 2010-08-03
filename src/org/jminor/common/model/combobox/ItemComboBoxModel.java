@@ -59,7 +59,7 @@ public class ItemComboBoxModel<T> extends DefaultComboBoxModel {
     return (Item<T>) super.getSelectedItem();
   }
 
-  protected final void initializeItems(final List<Item<T>> items) {
+  private void initializeItems(final List<Item<T>> items) {
     if (items == null) {
       return;
     }

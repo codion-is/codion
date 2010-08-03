@@ -91,7 +91,7 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
     bindEvents();
   }
 
-  public List<AbstractSearchPanel<C>> getColumnFilterPanels() {
+  public final List<AbstractSearchPanel<C>> getColumnFilterPanels() {
     return Collections.unmodifiableList(columnFilterPanels);
   }
 
@@ -182,11 +182,9 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
     }
   }
 
-  /**
-   * Initializes the JTable instance
-   * @return the JTable instance
-   */
-  protected abstract JTable initializeJTable();
+  private JTable initializeJTable() {
+    return new JTable(getTableModel(), getTableModel().getColumnModel(), getTableModel().getSelectionModel());
+  }
 
   private JTextField initializeSearchField() {
     final JTextField txtSearch = new JTextField();
@@ -251,19 +249,20 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
   }
 
   private JPopupMenu initializeSearchFieldPopupMenu() {
+    final JCheckBox boxRegexp = new JCheckBox(Messages.get(Messages.REGULAR_EXPRESSION_SEARCH), tableModel.isRegularExpressionSearch());
+    final JPanel panel = new JPanel(new GridLayout(1,1,5,5));
+    panel.add(boxRegexp);
+
+    final AbstractAction action = new AbstractAction(Messages.get(Messages.OK)) {
+      public void actionPerformed(final ActionEvent e) {
+        tableModel.setRegularExpressionSearch(boxRegexp.isSelected());
+      }
+    };
+    action.putValue(Action.MNEMONIC_KEY, Messages.get(Messages.OK_MNEMONIC).charAt(0));
+
     final JPopupMenu popupMenu = new JPopupMenu();
     popupMenu.add(new AbstractAction(Messages.get(Messages.SETTINGS)) {
       public void actionPerformed(final ActionEvent e) {
-        final JPanel panel = new JPanel(new GridLayout(1,1,5,5));
-        final JCheckBox boxRegexp =
-                new JCheckBox(Messages.get(Messages.REGULAR_EXPRESSION_SEARCH), tableModel.isRegularExpressionSearch());
-        panel.add(boxRegexp);
-        final AbstractAction action = new AbstractAction(Messages.get(Messages.OK)) {
-          public void actionPerformed(final ActionEvent evt) {
-            tableModel.setRegularExpressionSearch(boxRegexp.isSelected());
-          }
-        };
-        action.putValue(Action.MNEMONIC_KEY, Messages.get(Messages.OK_MNEMONIC).charAt(0));
         UiUtil.showInDialog(UiUtil.getParentWindow(AbstractFilteredTablePanel.this), panel, true,
                 Messages.get(Messages.SETTINGS), true, true, action);
       }

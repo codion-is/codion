@@ -752,39 +752,44 @@ public final class EntityDbRemoteAdapter extends UnicastRemoteObject implements 
     }
 
     @Override
-    protected void appendArgumentAsString(final Object argument, final StringBuilder destination) {
+    protected String getMethodArgumentAsString(final Object argument) {
       if (argument == null) {
-        return;
+        return "";
       }
 
+      final StringBuilder builder = new StringBuilder();
       if (argument instanceof EntityCriteria) {
-        appendEntityCriteria((EntityCriteria) argument, destination);
+        builder.append(appendEntityCriteria((EntityCriteria) argument));
       }
       else if (argument instanceof Object[] && ((Object[]) argument).length > 0) {
-        destination.append("[").append(argumentArrayToString((Object[]) argument)).append("]");
+        builder.append("[").append(argumentArrayToString((Object[]) argument)).append("]");
       }
       else if (argument instanceof Collection && !((Collection) argument).isEmpty()) {
-        destination.append("[").append(argumentArrayToString(((Collection) argument).toArray())).append("]");
+        builder.append("[").append(argumentArrayToString(((Collection) argument).toArray())).append("]");
       }
       else if (argument instanceof Entity) {
-        destination.append(getEntityParameterString((Entity) argument));
+        builder.append(getEntityParameterString((Entity) argument));
       }
       else {
-        destination.append(argument.toString());
+        builder.append(argument.toString());
       }
+
+      return builder.toString();
     }
 
-    private void appendEntityCriteria(final EntityCriteria criteria, final StringBuilder destination) {
-      destination.append(criteria.getEntityID());
+    private String appendEntityCriteria(final EntityCriteria criteria) {
+      final StringBuilder builder = new StringBuilder();
+      builder.append(criteria.getEntityID());
       final String whereClause = criteria.getWhereClause(true);
       if (!Util.nullOrEmpty(whereClause)) {
-        destination.append(", ").append(whereClause);
+        builder.append(", ").append(whereClause);
       }
       final List<?> values = criteria.getValues();
       if (values != null) {
-        destination.append(", ");
-        appendArgumentAsString(values, destination);
+        builder.append(", ").append(getMethodArgumentAsString(values));
       }
+
+      return builder.toString();
     }
 
     private static String getEntityParameterString(final Entity entity) {

@@ -36,16 +36,7 @@ import org.jminor.framework.i18n.FrameworkMessages;
 
 import org.apache.log4j.Logger;
 
-import javax.swing.ComboBoxModel;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.JToolBar;
+import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;

@@ -53,19 +53,6 @@ public final class DerbyDatabase extends AbstractDatabase {
   }
 
   @Override
-  public String getAuthenticationInfo(final Properties connectionProperties) {
-    if (connectionProperties != null) {
-      final String username = (String) connectionProperties.get("user");
-      final String password = (String) connectionProperties.get("password");
-      if (!Util.nullOrEmpty(username, password)) {
-        return "user=" + username + ";" + "password=" + password;
-      }
-    }
-
-    return null;
-  }
-
-  @Override
   public void shutdownEmbedded(final Properties connectionProperties) {
     try {
       final String authentication = getAuthenticationInfo(connectionProperties);

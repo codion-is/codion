@@ -117,11 +117,6 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   @Override
-  public boolean isCellEditable(final int rowIndex, final int columnIndex) {
-    return false;
-  }
-
-  @Override
   public final String toString() {
     return getClass().getSimpleName() + ": " + entityID;
   }
@@ -274,7 +269,12 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   @Override
-  public void setValueAt(final Object aValue, final int rowIndex, final int columnIndex) {
+  public final boolean isCellEditable(final int rowIndex, final int columnIndex) {
+    return false;
+  }
+
+  @Override
+  public final void setValueAt(final Object aValue, final int rowIndex, final int columnIndex) {
     throw new RuntimeException("setValueAt is not supported");
   }
 

@@ -7,7 +7,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
-import javax.swing.JTable;
 import java.text.DateFormat;
 
 public class AbstractFilteredTablePanelTest {
@@ -28,10 +27,6 @@ public class AbstractFilteredTablePanelTest {
             return true;
           }
         };
-      }
-      @Override
-      protected JTable initializeJTable() {
-        return new JTable(getTableModel(), getTableModel().getColumnModel(), getTableModel().getSelectionModel());
       }
     };
     assertEquals(1, panel.getColumnFilterPanels().size());

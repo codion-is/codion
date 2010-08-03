@@ -113,7 +113,7 @@ public class DbConnectionImpl implements DbConnection {
     methodLogger.setEnabled(enabled);
   }
 
-  public boolean isLoggingEnabled() {
+  public final boolean isLoggingEnabled() {
     return methodLogger.isEnabled();
   }
 
