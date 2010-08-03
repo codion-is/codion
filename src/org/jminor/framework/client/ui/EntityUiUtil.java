@@ -628,8 +628,7 @@ public final class EntityUiUtil {
   public static JPanel createEntityComboBoxNewRecordPanel(final EntityComboBox entityComboBox,
                                                           final EntityPanelProvider panelProvider,
                                                           final boolean newRecordButtonTakesFocus) {
-    return createEastButtonPanel(entityComboBox, initializeNewRecordAction(entityComboBox, panelProvider),
-            newRecordButtonTakesFocus);
+    return createEastButtonPanel(entityComboBox, new NewRecordAction(entityComboBox, panelProvider), newRecordButtonTakesFocus);
   }
 
   public static JPanel createEntityComboBoxFilterPanel(final EntityComboBox entityComboBox,
@@ -689,60 +688,67 @@ public final class EntityUiUtil {
     return field;
   }
 
-  private static AbstractAction initializeNewRecordAction(final EntityComboBox comboBox, final EntityPanelProvider panelProvider) {
-    return new AbstractAction("", Images.loadImage(Images.IMG_ADD_16)) {
-      public void actionPerformed(final ActionEvent e) {
-        final EntityPanel entityPanel = panelProvider.createInstance(comboBox.getModel().getDbProvider());
-        entityPanel.initializePanel();
-        final List<Entity.Key> lastInsertedPrimaryKeys = new ArrayList<Entity.Key>();
-        entityPanel.getModel().getEditModel().addAfterInsertListener(new InsertListener() {
-          @Override
-          protected void inserted(final InsertEvent event) {
-            lastInsertedPrimaryKeys.clear();
-            lastInsertedPrimaryKeys.addAll(event.getInsertedKeys());
-          }
-        });
-        final Window parentWindow = UiUtil.getParentWindow(comboBox);
-        final String caption = panelProvider.getCaption() == null || panelProvider.getCaption().equals("") ?
-                entityPanel.getCaption() : panelProvider.getCaption();
-        final JDialog dialog = new JDialog(parentWindow, caption);
-        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        dialog.setLayout(new BorderLayout());
-        dialog.add(entityPanel, BorderLayout.CENTER);
-        final JButton btnClose = initializeOkButton(comboBox.getModel(), entityPanel.getModel().getTableModel(),
-                dialog, lastInsertedPrimaryKeys);
-        final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        buttonPanel.add(btnClose);
-        dialog.add(buttonPanel, BorderLayout.SOUTH);
-        dialog.pack();
-        dialog.setLocationRelativeTo(parentWindow);
-        dialog.setModal(true);
-        dialog.setResizable(true);
-        dialog.setVisible(true);
-      }
-    };
-  }
+  private static class NewRecordAction extends AbstractAction {
 
-  private static JButton initializeOkButton(final EntityComboBoxModel comboBoxModel, final EntityTableModel tableModel,
-                                            final JDialog dialog, final List<Entity.Key> lastInsertedPrimaryKeys) {
-    final JButton button = new JButton(new AbstractAction(Messages.get(Messages.OK)) {
-      public void actionPerformed(final ActionEvent e) {
-        comboBoxModel.refresh();
-        if (lastInsertedPrimaryKeys != null && !lastInsertedPrimaryKeys.isEmpty()) {
-          comboBoxModel.setSelectedEntityByPrimaryKey(lastInsertedPrimaryKeys.get(0));
-        }
-        else {
-          final Entity selectedEntity = tableModel.getSelectedItem();
-          if (selectedEntity != null) {
-            comboBoxModel.setSelectedItem(selectedEntity);
-          }
-        }
-        dialog.dispose();
-      }
-    });
-    button.setMnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0));
+    private final EntityComboBox comboBox;
+    private final EntityPanelProvider panelProvider;
 
-    return button;
+    private NewRecordAction(final EntityComboBox comboBox, final EntityPanelProvider panelProvider) {
+      super("", Images.loadImage(Images.IMG_ADD_16));
+      this.comboBox = comboBox;
+      this.panelProvider = panelProvider;
+    }
+
+    public void actionPerformed(final ActionEvent e) {
+      final EntityPanel entityPanel = panelProvider.createInstance(comboBox.getModel().getDbProvider());
+      entityPanel.initializePanel();
+      final List<Entity.Key> lastInsertedPrimaryKeys = new ArrayList<Entity.Key>();
+      entityPanel.getModel().getEditModel().addAfterInsertListener(new InsertListener() {
+        @Override
+        protected void inserted(final InsertEvent event) {
+          lastInsertedPrimaryKeys.clear();
+          lastInsertedPrimaryKeys.addAll(event.getInsertedKeys());
+        }
+      });
+      final Window parentWindow = UiUtil.getParentWindow(comboBox);
+      final String caption = panelProvider.getCaption() == null || panelProvider.getCaption().equals("") ?
+              entityPanel.getCaption() : panelProvider.getCaption();
+      final JDialog dialog = new JDialog(parentWindow, caption);
+      dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+      dialog.setLayout(new BorderLayout());
+      dialog.add(entityPanel, BorderLayout.CENTER);
+      final JButton btnClose = initializeOkButton(entityPanel.getModel().getTableModel(), dialog, lastInsertedPrimaryKeys);
+      final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+      buttonPanel.add(btnClose);
+      dialog.add(buttonPanel, BorderLayout.SOUTH);
+      dialog.pack();
+      dialog.setLocationRelativeTo(parentWindow);
+      dialog.setModal(true);
+      dialog.setResizable(true);
+      dialog.setVisible(true);
+    }
+
+    private JButton initializeOkButton(final EntityTableModel tableModel, final JDialog dialog,
+                                       final List<Entity.Key> lastInsertedPrimaryKeys) {
+      final JButton button = new JButton(new AbstractAction(Messages.get(Messages.OK)) {
+        public void actionPerformed(final ActionEvent e) {
+          comboBox.getModel().refresh();
+          if (lastInsertedPrimaryKeys != null && !lastInsertedPrimaryKeys.isEmpty()) {
+            comboBox.getModel().setSelectedEntityByPrimaryKey(lastInsertedPrimaryKeys.get(0));
+          }
+          else {
+            final Entity selectedEntity = tableModel.getSelectedItem();
+            if (selectedEntity != null) {
+              comboBox.getModel().setSelectedItem(selectedEntity);
+            }
+          }
+          dialog.dispose();
+        }
+      });
+      button.setMnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0));
+
+      return button;
+    }
   }
 
   public static class EntityComboBoxValueLink extends ComboBoxValueLink<String> {

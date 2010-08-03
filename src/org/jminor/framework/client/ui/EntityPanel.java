@@ -268,7 +268,6 @@ public class EntityPanel extends JPanel {
       this.tablePanel.initializePopupMenu(getTablePopupControlSet());
     }
     bindModelEvents();
-    addActivationInitializer();
   }
 
   /**
@@ -1128,35 +1127,7 @@ public class EntityPanel extends JPanel {
         UiUtil.setWaitCursor(false, EntityPanel.this);
       }
     });
-  }
-
-  private void addActivationInitializer() {
-    getEditModel().getActiveState().addListener(new ActionListener() {
-      private final Runnable initializer = new Runnable() {
-        public void run() {
-          initializePanel();
-          showPanelTab();
-          //do not try to grab the initial focus when a child component already has the focus, for example the table
-          final boolean grabInitialFocus = !isParentPanel(KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner());
-          prepareUI(grabInitialFocus, false);
-        }
-      };
-      public void actionPerformed(final ActionEvent e) {
-        if (isActive()) {
-          try {
-            if (SwingUtilities.isEventDispatchThread()) {
-              initializer.run();
-            }
-            else {
-              SwingUtilities.invokeAndWait(initializer);
-            }
-          }
-          catch (Exception ex) {
-            throw new RuntimeException(ex);
-          }
-        }
-      }
-    });
+    getEditModel().getActiveState().addListener(new ActivationListener());
   }
 
   /**
@@ -1192,6 +1163,33 @@ public class EntityPanel extends JPanel {
         });
       }
     });
+  }
+
+  private class ActivationListener implements ActionListener {
+    private final Runnable initializer = new Runnable() {
+      public void run() {
+        initializePanel();
+        showPanelTab();
+        //do not try to grab the initial focus when a child component already has the focus, for example the table
+        final boolean grabInitialFocus = !isParentPanel(KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner());
+        prepareUI(grabInitialFocus, false);
+      }
+    };
+    public void actionPerformed(final ActionEvent e) {
+      if (isActive()) {
+        try {
+          if (SwingUtilities.isEventDispatchThread()) {
+            initializer.run();
+          }
+          else {
+            SwingUtilities.invokeAndWait(initializer);
+          }
+        }
+        catch (Exception ex) {
+          throw new RuntimeException(ex);
+        }
+      }
+    }
   }
 
   private static class ActivationFocusAdapter extends MouseAdapter {

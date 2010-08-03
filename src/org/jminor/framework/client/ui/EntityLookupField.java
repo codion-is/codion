@@ -214,30 +214,7 @@ public final class EntityLookupField extends JTextField {
 
   private JPopupMenu initializePopupMenu() {
     final JPopupMenu popupMenu = new JPopupMenu();
-    popupMenu.add(new AbstractAction(Messages.get(Messages.SETTINGS)) {
-      public void actionPerformed(final ActionEvent e) {
-        final JPanel panel = new JPanel(new GridLayout(3,1,5,5));
-        final JCheckBox boxCaseSensitive =
-                new JCheckBox(FrameworkMessages.get(FrameworkMessages.CASE_SENSITIVE), getModel().isCaseSensitive());
-        final JCheckBox boxPrefixWildcard =
-                new JCheckBox(FrameworkMessages.get(FrameworkMessages.PREFIX_WILDCARD), getModel().isWildcardPrefix());
-        final JCheckBox boxPostfixWildcard =
-                new JCheckBox(FrameworkMessages.get(FrameworkMessages.POSTFIX_WILDCARD), getModel().isWildcardPostfix());
-        panel.add(boxCaseSensitive);
-        panel.add(boxPrefixWildcard);
-        panel.add(boxPostfixWildcard);
-        final AbstractAction action = new AbstractAction(Messages.get(Messages.OK)) {
-          public void actionPerformed(final ActionEvent evt) {
-            getModel().setCaseSensitive(boxCaseSensitive.isSelected());
-            getModel().setWildcardPrefix(boxPrefixWildcard.isSelected());
-            getModel().setWildcardPostfix(boxPostfixWildcard.isSelected());
-          }
-        };
-        action.putValue(Action.MNEMONIC_KEY, Messages.get(Messages.OK_MNEMONIC).charAt(0));
-        UiUtil.showInDialog(UiUtil.getParentWindow(EntityLookupField.this), panel, true,
-                Messages.get(Messages.SETTINGS), true, true, action);
-      }
-    });
+    popupMenu.add(new SettingsAction(this));
 
     return popupMenu;
   }
@@ -251,6 +228,38 @@ public final class EntityLookupField extends JTextField {
     return entityList;
   }
 
+  private static final class SettingsAction extends AbstractAction {
+
+    private final EntityLookupField lookupPanel;
+
+    private SettingsAction(final EntityLookupField lookupPanel) {
+      super(Messages.get(Messages.SETTINGS));
+      this.lookupPanel = lookupPanel;
+    }
+
+    public void actionPerformed(final ActionEvent e) {
+        final JPanel panel = new JPanel(new GridLayout(3,1,5,5));
+        final JCheckBox boxCaseSensitive =
+                new JCheckBox(FrameworkMessages.get(FrameworkMessages.CASE_SENSITIVE), lookupPanel.getModel().isCaseSensitive());
+        final JCheckBox boxPrefixWildcard =
+                new JCheckBox(FrameworkMessages.get(FrameworkMessages.PREFIX_WILDCARD), lookupPanel.getModel().isWildcardPrefix());
+        final JCheckBox boxPostfixWildcard =
+                new JCheckBox(FrameworkMessages.get(FrameworkMessages.POSTFIX_WILDCARD), lookupPanel.getModel().isWildcardPostfix());
+        panel.add(boxCaseSensitive);
+        panel.add(boxPrefixWildcard);
+        panel.add(boxPostfixWildcard);
+        final AbstractAction action = new AbstractAction(Messages.get(Messages.OK)) {
+          public void actionPerformed(final ActionEvent e) {
+            lookupPanel.getModel().setCaseSensitive(boxCaseSensitive.isSelected());
+            lookupPanel.getModel().setWildcardPrefix(boxPrefixWildcard.isSelected());
+            lookupPanel.getModel().setWildcardPostfix(boxPostfixWildcard.isSelected());
+          }
+        };
+        action.putValue(Action.MNEMONIC_KEY, Messages.get(Messages.OK_MNEMONIC).charAt(0));
+        UiUtil.showInDialog(UiUtil.getParentWindow(lookupPanel), panel, true, Messages.get(Messages.SETTINGS), true, true, action);
+      }
+  }
+
   private static final class EntityComparator implements Comparator<Entity> {
     public int compare(final Entity o1, final Entity o2) {
       return o1.compareTo(o2);
@@ -260,7 +269,7 @@ public final class EntityLookupField extends JTextField {
   private static final class LookupFieldMouseListener extends MouseAdapter {
     private final Action okAction;
 
-    public LookupFieldMouseListener(final Action okAction) {
+    private LookupFieldMouseListener(final Action okAction) {
       this.okAction = okAction;
     }
 

@@ -50,40 +50,42 @@ public class IntField extends TextFieldPlus {
 
   @Override
   protected Document createDefaultModel() {
-    return new PlainDocument() {
-      @Override
-      public void insertString(final int offs, final String str, final AttributeSet a) throws BadLocationException {
-        if (getMaxLength() > 0 && getLength() + (str != null ? str.length() : 0) > getMaxLength()) {
-          return;
-        }
-        if (str == null || str.equals("")) {
-          super.insertString(offs, str, a);
-          return;
-        }
-        final String text = getText(0, getLength());
-        int value = 0;
-        if (text != null && !text.equals("") && !text.equals("-")) {
-          value = Integer.parseInt(text);
-        }
-        boolean valueOk = false;
-        final char c = str.charAt(0);
-        if (offs == 0 && c == '-') {
-          valueOk = value >= 0;
-        }
-        else if (Character.isDigit(c)) {
-          valueOk = !((offs == 0) && (value < 0));
-        }
-        // Range check
-        if (valueOk) {
-          final StringBuilder sb = new StringBuilder(text);
-          sb.insert(offs, str);
-          valueOk = isWithinRange(Util.getLong(sb.toString()));
-        }
+    return new IntFieldDocument();
+  }
 
-        if (valueOk) {
-          super.insertString(offs, str, a);
-        }
+  private final class IntFieldDocument extends PlainDocument {
+    @Override
+    public void insertString(final int offs, final String str, final AttributeSet a) throws BadLocationException {
+      if (getMaxLength() > 0 && getLength() + (str != null ? str.length() : 0) > getMaxLength()) {
+        return;
       }
-    };
+      if (str == null || str.equals("")) {
+        super.insertString(offs, str, a);
+        return;
+      }
+      final String text = getText(0, getLength());
+      int value = 0;
+      if (text != null && !text.equals("") && !text.equals("-")) {
+        value = Integer.parseInt(text);
+      }
+      boolean valueOk = false;
+      final char c = str.charAt(0);
+      if (offs == 0 && c == '-') {
+        valueOk = value >= 0;
+      }
+      else if (Character.isDigit(c)) {
+        valueOk = !((offs == 0) && (value < 0));
+      }
+      // Range check
+      if (valueOk) {
+        final StringBuilder sb = new StringBuilder(text);
+        sb.insert(offs, str);
+        valueOk = isWithinRange(Util.getLong(sb.toString()));
+      }
+
+      if (valueOk) {
+        super.insertString(offs, str, a);
+      }
+    }
   }
 }

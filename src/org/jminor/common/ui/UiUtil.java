@@ -693,65 +693,7 @@ public final class UiUtil {
    */
   public static void addAcceptSingleFileDragAndDrop(final JTextComponent textComponent) {
     textComponent.setDragEnabled(true);
-    textComponent.setTransferHandler(new TransferHandler() {
-      @Override
-      public boolean canImport(final TransferSupport support) {
-        try {
-          final DataFlavor nixFileDataFlavor = new DataFlavor("text/uri-list;class=java.lang.String");
-          for (final DataFlavor flavor : support.getDataFlavors()) {
-            if (flavor.isFlavorJavaFileListType() || flavor.equals(nixFileDataFlavor)) {
-              return true;
-            }
-          }
-
-          return false;
-        }
-        catch (ClassNotFoundException e) {
-          throw new RuntimeException(e);
-        }
-      }
-
-      @Override
-      public boolean importData(final TransferSupport support) {
-        final String path = getFileDataFlavor(support);
-        if (path != null) {
-          textComponent.setText(path);
-          return true;
-        }
-        else {
-          return false;
-        }
-      }
-    });
-  }
-
-  @SuppressWarnings({"unchecked"})
-  private static String getFileDataFlavor(final TransferHandler.TransferSupport support) {
-    try {
-      for (final DataFlavor flavor : support.getDataFlavors()) {
-        if (flavor.isFlavorJavaFileListType()) {
-          final List<File> files = (List<File>) support.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
-
-          return !files.isEmpty() ? files.get(0).getAbsolutePath() : null;
-        }
-      }
-      //the code below is for handling unix/linux
-      final DataFlavor nixFileDataFlavor = new DataFlavor("text/uri-list;class=java.lang.String");
-      final String data = (String) support.getTransferable().getTransferData(nixFileDataFlavor);
-      for (final StringTokenizer st = new StringTokenizer(data, "\r\n"); st.hasMoreTokens();) {
-        final String token = st.nextToken().trim();
-        if (token.startsWith("#") || token.isEmpty()) {// comment line, by RFC 2483
-          continue;
-        }
-
-        return new File(new URI(token)).getAbsolutePath();
-      }
-    }
-    catch (Exception e) {
-      throw new RuntimeException(e);
-    }
-
-    return null;
+    textComponent.setTransferHandler(new DnDTransferHandler(textComponent));
   }
 
   public static void addKeyEvent(final JComponent component, final int keyEvent, final Action action) {
@@ -945,6 +887,73 @@ public final class UiUtil {
 
     public void actionPerformed(final ActionEvent e) {
       dialog.dispose();
+    }
+  }
+
+  private static final class DnDTransferHandler extends TransferHandler {
+
+    private final JTextComponent textComponent;
+
+    private DnDTransferHandler(final JTextComponent textComponent) {
+      this.textComponent = textComponent;
+    }
+
+    @Override
+    public boolean canImport(final TransferSupport support) {
+      try {
+        final DataFlavor nixFileDataFlavor = new DataFlavor("text/uri-list;class=java.lang.String");
+        for (final DataFlavor flavor : support.getDataFlavors()) {
+          if (flavor.isFlavorJavaFileListType() || flavor.equals(nixFileDataFlavor)) {
+            return true;
+          }
+        }
+
+        return false;
+      }
+      catch (ClassNotFoundException e) {
+        throw new RuntimeException(e);
+      }
+    }
+
+    @Override
+    public boolean importData(final TransferSupport support) {
+      final String path = getFileDataFlavor(support);
+      if (path != null) {
+        textComponent.setText(path);
+        return true;
+      }
+      else {
+        return false;
+      }
+    }
+
+    @SuppressWarnings({"unchecked"})
+    private String getFileDataFlavor(final TransferHandler.TransferSupport support) {
+      try {
+        for (final DataFlavor flavor : support.getDataFlavors()) {
+          if (flavor.isFlavorJavaFileListType()) {
+            final List<File> files = (List<File>) support.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
+
+            return !files.isEmpty() ? files.get(0).getAbsolutePath() : null;
+          }
+        }
+        //the code below is for handling unix/linux
+        final DataFlavor nixFileDataFlavor = new DataFlavor("text/uri-list;class=java.lang.String");
+        final String data = (String) support.getTransferable().getTransferData(nixFileDataFlavor);
+        for (final StringTokenizer st = new StringTokenizer(data, "\r\n"); st.hasMoreTokens();) {
+          final String token = st.nextToken().trim();
+          if (token.startsWith("#") || token.isEmpty()) {// comment line, by RFC 2483
+            continue;
+          }
+
+          return new File(new URI(token)).getAbsolutePath();
+        }
+      }
+      catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+
+      return null;
     }
   }
 }

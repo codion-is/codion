@@ -87,28 +87,7 @@ public final class EntityCriteriaPanel extends JPanel {
     propertyList.setCellRenderer(new CriteriaListCellRenderer());
     propertyList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-    propertyList.addListSelectionListener(new ListSelectionListener() {
-      public void valueChanged(final ListSelectionEvent e) {
-        editorPanel.removeAll();
-        final PropertySearchModel selected = (PropertySearchModel) propertyList.getSelectedValue();
-        if (selected != null) {
-          AbstractSearchPanel panel = panels.get(selected);
-          if (panel == null) {
-            if (selected instanceof ForeignKeySearchModel) {
-              panel = new ForeignKeySearchPanel((ForeignKeySearchModel) selected, true);
-            }
-            else {
-              panel = new PropertySearchPanel(selected, true, true);
-            }
-            panels.put(selected, panel);
-          }
-
-          editorPanel.add(panel, BorderLayout.NORTH);
-          revalidate();
-          repaint();
-        }
-      }
-    });
+    propertyList.addListSelectionListener(new SearchModelSelectionListener(editorPanel, propertyList));
 
     return propertyList;
   }
@@ -124,7 +103,7 @@ public final class EntityCriteriaPanel extends JPanel {
   private static final class RepaintListener implements ActionListener {
     private final JList propertyList;
 
-    public RepaintListener(final JList propertyList) {
+    private RepaintListener(final JList propertyList) {
       this.propertyList = propertyList;
     }
 
@@ -155,6 +134,38 @@ public final class EntityCriteriaPanel extends JPanel {
       }
       else {
         return propertyOne.getPropertyID().compareTo(propertyTwo.getPropertyID());
+      }
+    }
+  }
+
+  private final class SearchModelSelectionListener implements ListSelectionListener {
+
+    private final JPanel editorPanel;
+    private final JList propertyList;
+
+    private SearchModelSelectionListener(final JPanel editorPanel, final JList propertyList) {
+      this.editorPanel = editorPanel;
+      this.propertyList = propertyList;
+    }
+
+    public void valueChanged(final ListSelectionEvent e) {
+      editorPanel.removeAll();
+      final PropertySearchModel selected = (PropertySearchModel) propertyList.getSelectedValue();
+      if (selected != null) {
+        AbstractSearchPanel panel = panels.get(selected);
+        if (panel == null) {
+          if (selected instanceof ForeignKeySearchModel) {
+            panel = new ForeignKeySearchPanel((ForeignKeySearchModel) selected, true);
+          }
+          else {
+            panel = new PropertySearchPanel(selected, true, true);
+          }
+          panels.put(selected, panel);
+        }
+
+        editorPanel.add(panel, BorderLayout.NORTH);
+        revalidate();
+        repaint();
       }
     }
   }

@@ -124,7 +124,6 @@ public abstract class LoadTestModel {
     this.scenarioChooser = initializeScenarioChooser();
     this.counter = new Counter(this.usageScenarios);
     initializeChartData();
-    initializeContext();
     setUpdateInterval(DEFAULT_UPDATE_INTERVAL);
   }
 
@@ -248,7 +247,7 @@ public abstract class LoadTestModel {
 
   public final void addApplicationBatch() throws Exception {
     for (int i = 0; i < applicationBatchSize; i++) {
-      addApplication();
+      new Thread(new ApplicationRunner(this)).start();
     }
   }
 
@@ -394,76 +393,14 @@ public abstract class LoadTestModel {
 
   protected abstract void disconnectApplication(final Object application);
 
-  protected void initializeContext() {/**/}
-
-  /**
-   * Simulates a user think pause by sleeping for a little while
-   * @throws InterruptedException in case the sleep is interrupted
-   * @see #getThinkTime()
-   */
-  protected final void think() throws InterruptedException {
-    Thread.sleep(getThinkTime());
-  }
-
   protected final int getThinkTime() {
     final int time = minimumThinkTime - maximumThinkTime;
     return time > 0 ? RANDOM.nextInt(time) + minimumThinkTime : minimumThinkTime;
   }
 
-  private synchronized void addApplication() {
-    final Runnable applicationRunner = new Runnable() {
-      public void run() {
-        try {
-          delayLogin();
-          final Object application = initializeApplication();
-          LOG.debug("LoadTestModel initialized application: " + application);
-          applications.push(application);
-          evtApplicationtCountChanged.fire();
-          while (applications.contains(application)) {
-            try {
-              think();
-              if (!isPaused() && (applications.contains(application))) {
-                final long currentTime = System.currentTimeMillis();
-                try {
-                  counter.incrementWorkRequests();
-                  performWork(application);
-                }
-                finally {
-                  final long workTime = System.currentTimeMillis() - currentTime;
-                  if (workTime > warningTime) {
-                    counter.incrementDelayedWorkRequests();
-                  }
-                }
-              }
-            }
-            catch (Exception e) {
-              LOG.debug("Exception during during LoadTestModel.run() with application: " + application, e);
-            }
-          }
-          disconnectApplication(application);
-        }
-        catch (Exception e) {
-          LOG.error("Exception while initializing application", e);
-        }
-      }
-    };
-    new Thread(applicationRunner).start();
-  }
-
   private synchronized void removeApplication() {
     applications.pop();
     evtApplicationtCountChanged.fire();
-  }
-
-  private void delayLogin() {
-    try {
-      final int sleepyTime = RANDOM.nextInt(maximumThinkTime * (loginDelayFactor <= 0 ? 1 : loginDelayFactor));
-      System.out.println("AppModel delaying login for " + sleepyTime + " ms");
-      Thread.sleep(sleepyTime);// delay login a bit so all do not try to login at the same time
-    }
-    catch (InterruptedException e) {
-      LOG.error("Delay login sleep interrupted", e);
-    }
   }
 
   private RandomItemModel<UsageScenario> initializeScenarioChooser() {
@@ -522,6 +459,70 @@ public abstract class LoadTestModel {
     for (final Object object : usageScenarioCollection.getSeries()) {
       final XYSeries series = (XYSeries) object;
       series.add(time, counter.getScenarioRate((String) series.getKey()));
+    }
+  }
+
+  private static class ApplicationRunner implements Runnable {
+
+    private final LoadTestModel loadTestModel;
+
+    private ApplicationRunner(final LoadTestModel loadTestModel) {
+      this.loadTestModel = loadTestModel;
+    }
+
+    public void run() {
+      try {
+        delayLogin();
+        final Object application = loadTestModel.initializeApplication();
+        LOG.debug("LoadTestModel initialized application: " + application);
+        loadTestModel.applications.push(application);
+        loadTestModel.evtApplicationtCountChanged.fire();
+        while (loadTestModel.applications.contains(application)) {
+          try {
+            think();
+            if (!loadTestModel.isPaused() && (loadTestModel.applications.contains(application))) {
+              final long currentTime = System.currentTimeMillis();
+              try {
+                loadTestModel.counter.incrementWorkRequests();
+                loadTestModel.performWork(application);
+              }
+              finally {
+                final long workTime = System.currentTimeMillis() - currentTime;
+                if (workTime > loadTestModel.getWarningTime()) {
+                  loadTestModel.counter.incrementDelayedWorkRequests();
+                }
+              }
+            }
+          }
+          catch (Exception e) {
+            LOG.debug("Exception during during LoadTestModel.run() with application: " + application, e);
+          }
+        }
+        loadTestModel.disconnectApplication(application);
+      }
+      catch (Exception e) {
+        LOG.error("Exception while initializing application", e);
+      }
+    }
+
+    /**
+     * Simulates a user think pause by sleeping for a little while
+     * @throws InterruptedException in case the sleep is interrupted
+     */
+    private void think() throws InterruptedException {
+      Thread.sleep(loadTestModel.getThinkTime());
+    }
+
+    private void delayLogin() {
+      try {
+        final int sleepyTime = RANDOM.nextInt(loadTestModel.getMaximumThinkTime() *
+                (loadTestModel.getLoginDelayFactor() <= 0 ? 1 : loadTestModel.getLoginDelayFactor()));
+        System.out.println("AppModel delaying login for " + sleepyTime + " ms");
+        Thread.sleep(sleepyTime);// delay login a bit so all do not try to login at the same time
+      }
+      catch (InterruptedException e) {
+        LOG.error("Delay login sleep interrupted", e);
+      }
     }
   }
 

@@ -42,28 +42,7 @@ public final class MaximumMatch extends PlainDocument {
         }
       }
     });
-    editor.addKeyListener(new KeyAdapter() {
-      @Override
-      public void keyPressed(final KeyEvent e) {
-        if (comboBox.isDisplayable() && Character.isLetterOrDigit(e.getKeyChar())) {
-          comboBox.setPopupVisible(true);
-        }
-        hitBackspace=false;
-        switch (e.getKeyCode()) {
-          // determine if the pressed key is backspace (needed by the remove method)
-          case KeyEvent.VK_BACK_SPACE:
-            hitBackspace=true;
-            hitBackspaceOnSelection=editor.getSelectionStart()!=editor.getSelectionEnd();
-            return;
-            // ignore delete key
-          case KeyEvent.VK_DELETE:
-            e.consume();
-            comboBox.getToolkit().beep();
-            return;
-        }
-        editor.getParent().dispatchEvent(e);
-      }
-    });
+    editor.addKeyListener(new MatchKeyListener());
     // Bug 5100422 on Java 1.5: Editable JComboBox won't hide popup when tabbing out
     hidePopupOnFocusLoss=System.getProperty("java.version").startsWith("1.5");
     // Highlight whole text when gaining focus
@@ -96,8 +75,8 @@ public final class MaximumMatch extends PlainDocument {
   }
 
   @Override
-  public void remove(final int offset, final int len) throws BadLocationException {
-    int offs = offset;
+  public void remove(final int offs, final int len) throws BadLocationException {
+    int offset = offs;
     // return immediately when selecting an item
     if (selecting) {
       return;
@@ -105,33 +84,33 @@ public final class MaximumMatch extends PlainDocument {
     if (hitBackspace) {
       // user hit backspace => move the selection backwards
       // old item keeps being selected
-      if (offs>0) {
+      if (offset > 0) {
         if (hitBackspaceOnSelection) {
-          offs--;
+          offset--;
         }
       }
       else {
         // User hit backspace with the cursor positioned on the start => beep
         UIManager.getLookAndFeel().provideErrorFeedback(comboBox);
       }
-      highlightCompletedText(offs);
+      highlightCompletedText(offset);
     }
     else {
-      super.remove(offs, len);
+      super.remove(offset, len);
     }
   }
 
   @Override
-  public void insertString(final int offset, final String str, final AttributeSet a) throws BadLocationException {
-    int offs = offset;
+  public void insertString(final int offs, final String str, final AttributeSet a) throws BadLocationException {
+    int offset = offs;
     // return immediately when selecting an item
     if (selecting || model.getSize() == 0) {
       return;
     }
     // insert the string into the document
-    super.insertString(offs, str, a);
+    super.insertString(offset, str, a);
     // lookup and select a matching item
-    boolean match=false;
+    boolean match = false;
     Object item = lookupItem(getText(0, getLength()));
     if (item != null) {
       match=true;
@@ -141,21 +120,21 @@ public final class MaximumMatch extends PlainDocument {
       // keep old item selected if there is no match, possibly a null item
       item = comboBox.getSelectedItem();
       // imitate no insert (later on offs will be incremented by str.length(): selection won't move forward)
-      offs = offs-str.length();
+      offset = offset - str.length();
       // provide feedback to the user that his input has been received but can not be accepted
       UIManager.getLookAndFeel().provideErrorFeedback(comboBox);
     }
 
     if (match) {
-      offs = getMaximumMatchingOffset(getText(0, getLength()), item);
+      offset = getMaximumMatchingOffset(getText(0, getLength()), item);
     }
     else {
-      offs += str.length();
+      offset += str.length();
     }
 
     setText(item == null ? "" : item.toString());
     // select the completed part
-    highlightCompletedText(offs);
+    highlightCompletedText(offset);
   }
 
   /**
@@ -243,5 +222,28 @@ public final class MaximumMatch extends PlainDocument {
       }
     }
     return n;
+  }
+
+  private final class MatchKeyListener extends KeyAdapter {
+    @Override
+    public void keyPressed(final KeyEvent e) {
+      if (comboBox.isDisplayable() && Character.isLetterOrDigit(e.getKeyChar())) {
+        comboBox.setPopupVisible(true);
+      }
+      hitBackspace=false;
+      switch (e.getKeyCode()) {
+        // determine if the pressed key is backspace (needed by the remove method)
+        case KeyEvent.VK_BACK_SPACE:
+          hitBackspace=true;
+          hitBackspaceOnSelection=editor.getSelectionStart()!=editor.getSelectionEnd();
+          return;
+        // ignore delete key
+        case KeyEvent.VK_DELETE:
+          e.consume();
+          comboBox.getToolkit().beep();
+          return;
+      }
+      editor.getParent().dispatchEvent(e);
+    }
   }
 }

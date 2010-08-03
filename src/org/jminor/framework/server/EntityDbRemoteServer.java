@@ -252,32 +252,7 @@ public final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRem
     final String message = "Server loading domain model class '" + domainClassName + "' from"
             + (locations == null || locations.length == 0 ? " classpath" : " jars: ") + Util.getArrayContentsAsString(locations, false);
     LOG.info(message);
-    AccessController.doPrivileged(new PrivilegedAction<Object>() {
-      public Object run() {
-        try {
-          if (locations == null || locations.length == 0) {
-            Class.forName(domainClassName);
-          }
-          else {
-            final URL[] locationsURL = new URL[locations.length];
-            int i = 0;
-            for (final URI uri : locations) {
-              locationsURL[i++] = uri.toURL();
-            }
-            Class.forName(domainClassName.trim(), true, new URLClassLoader(locationsURL, ClassLoader.getSystemClassLoader()));
-            LOG.info("Domain class loaded: " + domainClassName);
-          }
-
-          return null;
-        }
-        catch (MalformedURLException e) {
-          throw new RuntimeException(e);
-        }
-        catch (ClassNotFoundException e) {
-          throw new RuntimeException(e);
-        }
-      }
-    });
+    AccessController.doPrivileged(new DomainModelAction(locations, domainClassName));
   }
 
   @Override
@@ -367,6 +342,42 @@ public final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRem
     catch (Exception e) {
       LOG.info("Server creating registry on port: " + Registry.REGISTRY_PORT);
       LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
+    }
+  }
+
+  private static final class DomainModelAction implements PrivilegedAction<Object> {
+
+    private final URI[] locations;
+    private final String domainClassName;
+
+    private DomainModelAction(final URI[] locations, final String domainClassName) {
+      this.locations = locations;
+      this.domainClassName = domainClassName;
+    }
+
+    public Object run() {
+      try {
+        if (locations == null || locations.length == 0) {
+          Class.forName(domainClassName);
+        }
+        else {
+          final URL[] locationsURL = new URL[locations.length];
+          int i = 0;
+          for (final URI uri : locations) {
+            locationsURL[i++] = uri.toURL();
+          }
+          Class.forName(domainClassName.trim(), true, new URLClassLoader(locationsURL, ClassLoader.getSystemClassLoader()));
+          LOG.info("Domain class loaded: " + domainClassName);
+        }
+
+        return null;
+      }
+      catch (MalformedURLException e) {
+        throw new RuntimeException(e);
+      }
+      catch (ClassNotFoundException e) {
+        throw new RuntimeException(e);
+      }
     }
   }
 }
