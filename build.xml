@@ -99,7 +99,7 @@
     <mkdir dir="${build.demos}"/>
     <mkdir dir="${build.test}"/>
 
-    <javac destdir="${build.base}" debug="${build.debuginfo}" excludes="**/*package-info.java">
+    <javac destdir="${build.base}" debug="${build.debuginfo}">
       <src path="${src}"/>
       <classpath refid="lib.build"/>
     </javac>
@@ -511,12 +511,10 @@
     <mkdir dir="${test.coveragereport.xml}"/>
     <cobertura-report format="xml" destdir="${test.coveragereport.xml}" >
       <fileset dir="${src}">
-          <include name="**/*.java" />
-          <exclude name="**/package-info.java"/>
+        <include name="**/*.java" />
       </fileset>
       <fileset dir="${srcplugins}">
-          <include name="**/*.java" />
-        <exclude name="**/package-info.java"/>
+        <include name="**/*.java" />
       </fileset>
     </cobertura-report>
   </target>
@@ -527,11 +525,9 @@
     <cobertura-report format="html" destdir="${test.coveragereport.html}" >
       <fileset dir="${src}">
           <include name="**/*.java" />
-          <exclude name="**/package-info.java"/>
       </fileset>
       <fileset dir="${srcplugins}">
           <include name="**/*.java" />
-        <exclude name="**/package-info.java"/>
       </fileset>
     </cobertura-report>
   </target>
