@@ -115,7 +115,7 @@
       <fileset refid="framework_resources"/>
     </copy>
 
-    <javac destdir="${build.plugins}" debug="${build.debuginfo}" excludes="**/*package-info.java">
+    <javac destdir="${build.plugins}" debug="${build.debuginfo}">
       <src path="${srcplugins}"/>
       <classpath>
         <path refid="lib.build"/>
