@@ -1956,3 +1956,4 @@
   string.length() >/== 0 replaced with (!)string.isEmpty()
   Util.nullOrEmpty() finally added and used throughout
   common.db.dbms refactored
+  State/StateObserver refactored

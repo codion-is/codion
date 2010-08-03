@@ -346,7 +346,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
       searchModel.addSearchStateListener(new ActionListener() {
         public void actionPerformed(final ActionEvent e) {
           stSearchStateChanged.setActive(!searchStateOnRefresh.equals(getSearchModelState()));
-          stSearchStateChanged.notifyObserver();
+          stSearchStateChanged.notifyObservers();
         }
       });
     }

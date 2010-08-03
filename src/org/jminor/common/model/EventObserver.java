@@ -21,7 +21,7 @@ public interface EventObserver {
   void addListener(final ActionListener listener);
 
   /**
-   * Removes <code>listener</code> from this Event
+   * Removes <code>listener</code> from this EventObserver
    * @param listener the listener to remove
    */
   void removeListener(final ActionListener listener);

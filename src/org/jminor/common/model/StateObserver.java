@@ -14,12 +14,10 @@ public interface StateObserver extends EventObserver {
    */
   boolean isActive();
 
-  void notifyObserver();
-
   void addListeningAction(final Action action);
 
   /**
-   * @return A State object that is always the reverse of the parent state
+   * @return A StateObserver object that is always the reverse of the parent state
    */
   StateObserver getReversedState();
 }

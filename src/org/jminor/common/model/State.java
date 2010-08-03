@@ -14,9 +14,15 @@ public interface State extends StateObserver {
   void setActive(final boolean value);
 
   /**
-   * @return an EventObserver notified each time the state changes
+   * @return an StateObserver notified each time the state changes or <code>notifyObservers()</code> is called
+   * @see #notifyObservers()
    */
   StateObserver getObserver();
+
+  /**
+   * Notifies any observer that this state has been updated
+   */
+  void notifyObservers();
 
   /**
    * A state which behaves according to a set of states, either ANDing or ORing those together

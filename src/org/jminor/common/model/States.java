@@ -28,9 +28,9 @@ public final class States {
     return new StateImpl(initialState);
   }
 
-  public static State.AggregateState aggregateState(final Conjunction conjunction, final StateObserver... states) {
+  public static State.AggregateState aggregateState(final Conjunction conjunction, final StateObserver... stateObservers) {
     Util.rejectNullValue(conjunction, "conjunction");
-    return new AggregateStateImpl(conjunction, states);
+    return new AggregateStateImpl(conjunction, stateObservers);
   }
 
   public static State.StateGroup stateGroup() {
@@ -40,6 +40,7 @@ public final class States {
   static class StateImpl implements State {
 
     private final Object lock = new Object();
+    private final Event evtStateChanged = Events.event();
 
     private volatile StateObserver observer;
     private volatile boolean active = false;
@@ -70,7 +71,7 @@ public final class States {
       final boolean oldValue = active;
       active = value;
       if (oldValue != value) {
-        getObserver().notifyObserver();
+        evtStateChanged.fire();
       }
     }
 
@@ -79,19 +80,25 @@ public final class States {
     }
 
     public final void addListeningAction(final Action action) {
-      getObserver().addListeningAction(action);
+      Util.rejectNullValue(action, "action");
+      action.setEnabled(isActive());
+      addListener(new ActionListener() {
+        public void actionPerformed(final ActionEvent e) {
+          action.setEnabled(isActive());
+        }
+      });
     }
 
     public final void addListener(final ActionListener listener) {
-      getObserver().addListener(listener);
+      evtStateChanged.addListener(listener);
     }
 
-    public final void notifyObserver() {
-      getObserver().notifyObserver();
+    public final void notifyObservers() {
+      evtStateChanged.fire();
     }
 
     public final void removeListener(final ActionListener listener) {
-      getObserver().removeListener(listener);
+      evtStateChanged.removeListener(listener);
     }
 
     public StateObserver getReversedState() {
@@ -107,7 +114,7 @@ public final class States {
       this.referenceState = referenceState;
       this.referenceState.addListener(new ActionListener() {
         public void actionPerformed(final ActionEvent e) {
-          getObserver().notifyObserver();
+          notifyObservers();
         }
       });
     }
@@ -138,7 +145,7 @@ public final class States {
     private final List<StateObserver> states = new ArrayList<StateObserver>();
     private final ActionListener linkAction = new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
-        getObserver().notifyObserver();
+        notifyObservers();
       }
     };
     private final Conjunction conjunction;
@@ -177,7 +184,7 @@ public final class States {
       states.add(state);
       state.addListener(linkAction);
       if (wasActive != isActive()) {
-        getObserver().notifyObserver();
+        notifyObservers();
       }
     }
 
@@ -187,7 +194,7 @@ public final class States {
       state.removeListener(linkAction);
       states.remove(state);
       if (wasActive != isActive()) {
-        getObserver().notifyObserver();
+        notifyObservers();
       }
     }
 
@@ -221,7 +228,6 @@ public final class States {
 
   static final class StateObserverImpl implements StateObserver {
 
-    private final Event evtStateChanged = Events.event();
     private final State state;
 
     private volatile ReverseState reversedState = null;
@@ -236,7 +242,7 @@ public final class States {
 
     public StateObserver getReversedState() {
       if (reversedState == null) {
-        synchronized (evtStateChanged) {
+        synchronized (state) {
           reversedState = new ReverseState(this);
         }
       }
@@ -244,25 +250,15 @@ public final class States {
     }
 
     public void addListeningAction(final Action action) {
-      Util.rejectNullValue(action, "action");
-      action.setEnabled(state.isActive());
-      evtStateChanged.addListener(new ActionListener() {
-        public void actionPerformed(final ActionEvent e) {
-          action.setEnabled(state.isActive());
-        }
-      });
+      state.addListeningAction(action);
     }
 
     public void addListener(final ActionListener listener) {
-      evtStateChanged.addListener(listener);
+      state.addListener(listener);
     }
 
     public void removeListener(final ActionListener listener) {
-      evtStateChanged.removeListener(listener);
-    }
-
-    public void notifyObserver() {
-      evtStateChanged.fire();
+      state.removeListener(listener);
     }
   }
 
