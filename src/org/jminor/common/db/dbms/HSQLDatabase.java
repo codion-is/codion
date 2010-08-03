@@ -51,7 +51,7 @@ public final class HSQLDatabase extends AbstractDatabase {
     if (connectionProperties != null) {
       final String username = (String) connectionProperties.get("user");
       final String password = (String) connectionProperties.get("password");
-      if (username != null && !username.isEmpty() && password != null && !password.isEmpty()) {
+      if (!Util.nullOrEmpty(username, password)) {
         return "user=" + username + ";" + "password=" + password;
       }
     }

@@ -4,6 +4,7 @@
 package org.jminor.common.ui.control;
 
 import org.jminor.common.model.EventObserver;
+import org.jminor.common.model.Util;
 
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -50,7 +51,7 @@ public class TextBeanValueLink extends AbstractBeanValueLink implements Document
   protected Object getUIValue() {
     final String text = getText();
 
-    return text == null || text.isEmpty() ? null : text;
+    return Util.nullOrEmpty(text) ? null : text;
   }
 
   protected String getValueAsString(final Object value) {

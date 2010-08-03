@@ -168,7 +168,7 @@ public final class Util {
   }
 
   public static Integer getInt(final String text) {
-    if (text == null || text.isEmpty()) {
+    if (nullOrEmpty(text)) {
       return null;
     }
 
@@ -189,7 +189,7 @@ public final class Util {
   }
 
   public static Double getDouble(final String text) {
-    if (text == null || text.isEmpty()) {
+    if (nullOrEmpty(text)) {
       return null;
     }
 
@@ -208,7 +208,7 @@ public final class Util {
   }
 
   public static Long getLong(final String text) {
-    if (text == null || text.isEmpty()) {
+    if (nullOrEmpty(text)) {
       return null;
     }
 
@@ -678,17 +678,6 @@ public final class Util {
     return map;
   }
 
-  private static <K, V> void map(final Map<K, Collection<V>> map, final V value, final K key) {
-    rejectNullValue(value, "value");
-    rejectNullValue(key, "key");
-    rejectNullValue(map, "map");
-    if (!map.containsKey(key)) {
-      map.put(key, new ArrayList<V>());
-    }
-
-    map.get(key).add(value);
-  }
-
   public static boolean onClasspath(final String classname) {
     rejectNullValue(classname, "classname");
     try {
@@ -701,9 +690,22 @@ public final class Util {
   }
 
   public static void require(final String propertyName, final String value) {
-    if (value == null || value.isEmpty()) {
+    if (nullOrEmpty(value)) {
       throw new RuntimeException(propertyName + " is required");
     }
+  }
+
+  public static boolean nullOrEmpty(final String... strings) {
+    if (strings == null) {
+      return true;
+    }
+    for (final String string : strings) {
+      if (string == null || string.isEmpty()) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   /**
@@ -740,5 +742,16 @@ public final class Util {
    */
   public interface HashKeyProvider<K, V> {
     K getKey(final V value);
+  }
+
+  private static <K, V> void map(final Map<K, Collection<V>> map, final V value, final K key) {
+    rejectNullValue(value, "value");
+    rejectNullValue(key, "key");
+    rejectNullValue(map, "map");
+    if (!map.containsKey(key)) {
+      map.put(key, new ArrayList<V>());
+    }
+
+    map.get(key).add(value);
   }
 }

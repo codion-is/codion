@@ -3,6 +3,7 @@
  */
 package org.jminor.common.ui.valuemap;
 
+import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
 import org.jminor.common.ui.control.LinkType;
 
@@ -174,6 +175,6 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> implements
     final String validationMessage = getValidationMessage(editModel);
     textComponent.setBackground(validationMessage == null ? validBackgroundColor : invalidBackgroundColor);
     textComponent.setToolTipText(validationMessage == null ? defaultToolTip :
-            (defaultToolTip != null && !defaultToolTip.isEmpty() ? defaultToolTip + ": " : "") + validationMessage);
+            (!Util.nullOrEmpty(defaultToolTip) ? defaultToolTip + ": " : "") + validationMessage);
   }
 }

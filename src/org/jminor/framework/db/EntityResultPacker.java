@@ -127,7 +127,7 @@ public final class EntityResultPacker implements ResultPacker<Entity> {
         return getBoolean(resultSet, selectIndex);
       case Types.CHAR: {
         final String val = getString(resultSet, selectIndex);
-        if (val != null && !val.isEmpty()) {
+        if (!Util.nullOrEmpty(val)) {
           return val.charAt(0);
         }
         else {

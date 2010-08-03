@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.server.monitor.ui;
 
+import org.jminor.common.model.Util;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.framework.server.monitor.ConnectionPoolMonitor;
 import org.jminor.framework.server.monitor.PoolMonitor;
@@ -29,7 +30,7 @@ public final class PoolMonitorPanel extends JPanel {
 
   public void addConnectionPool() throws RemoteException {
     final String usernames = JOptionPane.showInputDialog("User name(s) (comma separated)");
-    if (usernames != null && !usernames.isEmpty()) {
+    if (!Util.nullOrEmpty(usernames)) {
       model.addConnectionPools(usernames.split(","));
     }
   }

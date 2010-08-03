@@ -103,7 +103,7 @@ public class EntityPanelProvider implements Comparable {
    * @return the caption to use when this EntityPanelProvider is shown in f.x. menus
    */
   public final String getCaption() {
-    if (caption == null || caption.isEmpty()) {
+    if (Util.nullOrEmpty(caption)) {
       this.caption = Entities.getCaption(entityID);
     }
 

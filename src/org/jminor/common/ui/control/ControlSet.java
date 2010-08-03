@@ -4,6 +4,7 @@
 package org.jminor.common.ui.control;
 
 import org.jminor.common.model.State;
+import org.jminor.common.model.Util;
 
 import javax.swing.Action;
 import javax.swing.ImageIcon;
@@ -145,8 +146,7 @@ public final class ControlSet extends Control {
   }
 
   public boolean hasName() {
-    final String name = getName();
-    return name != null && !name.isEmpty();
+    return !Util.nullOrEmpty(getName());
   }
 
   public boolean hasIcon() {

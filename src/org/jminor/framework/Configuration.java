@@ -557,7 +557,7 @@ public final class Configuration {
 
   public static String getReportPath() {
     final String path = getStringValue(REPORT_PATH);
-    if (path == null || path.isEmpty()) {
+    if (Util.nullOrEmpty(path)) {
       throw new RuntimeException("jminor.report.path property is not speficied");
     }
 

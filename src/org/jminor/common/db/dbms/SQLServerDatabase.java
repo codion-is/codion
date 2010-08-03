@@ -34,7 +34,7 @@ public final class SQLServerDatabase extends AbstractDatabase {
 
   public String getURL(final Properties connectionProperties) {
     final String sid = getSid();
-    return "jdbc:sqlserver://" + getHost() + ":" + getPort() + (sid != null && !sid.isEmpty() ? ";databaseName=" + sid : "");
+    return "jdbc:sqlserver://" + getHost() + ":" + getPort() + (!Util.nullOrEmpty(sid) ? ";databaseName=" + sid : "");
   }
 
   @Override

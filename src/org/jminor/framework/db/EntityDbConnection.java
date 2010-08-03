@@ -882,10 +882,10 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
     sql.append(columns);
     sql.append(" from ");
     sql.append(table);
-    if (whereCondition != null && !whereCondition.isEmpty()) {
+    if (!Util.nullOrEmpty(whereCondition)) {
       sql.append(" ").append(whereCondition);
     }
-    if (orderByClause != null && !orderByClause.isEmpty()) {
+    if (!Util.nullOrEmpty(orderByClause)) {
       sql.append(" order by ");
       sql.append(orderByClause);
     }
@@ -964,7 +964,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
   private static final class PropertyResultPacker implements ResultPacker {
     private final Property property;
 
-    public PropertyResultPacker(final Property property) {
+    private PropertyResultPacker(final Property property) {
       this.property = property;
     }
 

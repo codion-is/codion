@@ -617,17 +617,17 @@ public final class EntityDbRemoteAdapter extends UnicastRemoteObject implements 
 
   static void initConnectionPools(final Database database) {
     final String initialPoolUsers = System.getProperty(Configuration.SERVER_CONNECTION_POOLING_INITIAL);
-    if (initialPoolUsers != null && !initialPoolUsers.isEmpty()) {
+    if (!Util.nullOrEmpty(initialPoolUsers)) {
       for (final String username : initialPoolUsers.split(",")) {
-        final User user = new User(username.trim(), null);
-        CONNECTION_POOLS.put(user, new ConnectionPoolImpl(new PoolableConnectionProvider() {
+        final User poolUser = new User(username.trim(), null);
+        CONNECTION_POOLS.put(poolUser, new ConnectionPoolImpl(new PoolableConnectionProvider() {
           public PoolableConnection createConnection(final User user) throws ClassNotFoundException, SQLException {
             return EntityDbRemoteAdapter.createDbConnection(database, user);
           }
           public void destroyConnection(final PoolableConnection connection) {
             connection.disconnect();
           }
-        }, user));
+        }, poolUser));
       }
     }
   }
@@ -777,7 +777,7 @@ public final class EntityDbRemoteAdapter extends UnicastRemoteObject implements 
     private void appendEntityCriteria(final EntityCriteria criteria, final StringBuilder destination) {
       destination.append(criteria.getEntityID());
       final String whereClause = criteria.getWhereClause(true);
-      if (whereClause != null && !whereClause.isEmpty()) {
+      if (!Util.nullOrEmpty(whereClause)) {
         destination.append(", ").append(whereClause);
       }
       final List<?> values = criteria.getValues();
@@ -808,7 +808,7 @@ public final class EntityDbRemoteAdapter extends UnicastRemoteObject implements 
   }
 
   private static final class RequestCounter {//todo should I bother to synchronize this?
-    
+
     private static long requestsPerSecondTime = System.currentTimeMillis();
     private static int requestsPerSecond = 0;
     private static int requestsPerSecondCounter = 0;
