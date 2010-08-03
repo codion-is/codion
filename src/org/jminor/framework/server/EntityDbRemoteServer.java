@@ -351,13 +351,7 @@ public final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRem
     private final String domainClassName;
 
     private DomainModelAction(final URI[] locations, final String domainClassName) {
-      if (locations == null) {
-        this.locations = null;
-      }
-      else {
-        this.locations = new URI[locations.length];
-        System.arraycopy(locations, 0, this.locations, 0, locations.length);
-      }
+      this.locations = locations;
       this.domainClassName = domainClassName;
     }
 
