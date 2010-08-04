@@ -45,7 +45,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
   private final boolean simpleSearch;
   private Criteria<Property.ColumnProperty> additionalSearchCriteria;
   private Conjunction searchConjunction = Conjunction.AND;
-  private String searchStateOnRefresh;
+  private String searchStateOnRefresh = "";
 
   /**
    * Instantiates a new DefaultEntityTableSearchModel
@@ -75,9 +75,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
     this.entityID = entityID;
     this.dbProvider = dbProvider;
     this.properties = properties;
-    this.searchStateOnRefresh = getSearchModelState();
     this.simpleSearch = simpleSearch;
-    bindEvents();
   }
 
   public final String getEntityID() {
@@ -308,6 +306,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
     if (propertySearchModels == null) {
       propertySearchModels = initializePropertySearchModels(dbProvider);
     }
+    bindEvents();
   }
 
   /**

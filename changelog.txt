@@ -1972,3 +1972,4 @@
   SearchModel.getSearchKey() renamed to getColumnIdentifier()
   AbstractSearchPanel renamed to ColumnSearchPanel
   SearchType.getImageName() added
+  DefaultEntityTableSearchModel no longer sets the search state during construction, call to bindEvents() moved to initialize()
