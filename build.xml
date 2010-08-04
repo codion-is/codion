@@ -272,8 +272,7 @@
     <javadoc destdir="${pluginsapi}" sourcepath="${srcplugins}" packagenames="org.jminor.*" Encoding="UTF-8"
              docencoding="UTF-8" author="true" version="true" use="true"
              windowtitle="JMinor v${version} Plugin API" doctitle="JMinor v${version} Plugin API"
-             group="JasperReports model org.jminor.framework.plugins.jasperreports.model,
-                    JasperReports UI org.jminor.framework.plugins.jasperreports.ui">
+             group="Plugins org.jminor.framework.plugins">
       <classpath>
         <path refid="lib.build"/>
         <path location="${build.base}"/>
