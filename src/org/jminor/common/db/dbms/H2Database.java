@@ -45,6 +45,7 @@ public final class H2Database extends AbstractDatabase {
     return AUTO_INCREMENT_QUERY;
   }
 
+  @Override
   public String getSequenceSQL(final String sequenceName) {
     return SEQUENCE_VALUE_QUERY + sequenceName;
   }
@@ -60,18 +61,6 @@ public final class H2Database extends AbstractDatabase {
     }
     else {
       return URL_PREFIX + "//" + getHost() + ":" + getPort() + "/" + getSid() + (authentication == null ? "" : ";" + authentication) + urlAppend;
-    }
-  }
-
-  @Override
-  protected void validate(final String databaseType, final String host, final String port, final String sid, final boolean embedded) {
-    if (embedded) {
-      Util.require(DATABASE_HOST, host);
-    }
-    else {
-      Util.require(DATABASE_HOST, host);
-      Util.require(DATABASE_PORT, port);
-      Util.require(DATABASE_SID, sid);
     }
   }
 }

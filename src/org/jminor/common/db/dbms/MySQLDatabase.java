@@ -3,8 +3,6 @@
  */
 package org.jminor.common.db.dbms;
 
-import org.jminor.common.model.Util;
-
 import java.util.Properties;
 
 /**
@@ -15,7 +13,7 @@ public final class MySQLDatabase extends AbstractDatabase {
   static final String DRIVER_NAME = "com.mysql.jdbc.Driver";
   static final String AUTO_INCREMENT_QUERY = "select last_insert_id() from dual";
   static final String URL_PREFIX = "jdbc:mysql://";
-  
+
   public MySQLDatabase() {
     super(MYSQL);
   }
@@ -34,12 +32,5 @@ public final class MySQLDatabase extends AbstractDatabase {
 
   public String getURL(final Properties connectionProperties) {
     return URL_PREFIX + getHost() + ":" + getPort() + "/" + getSid();
-  }
-
-  @Override
-  protected void validate(final String databaseType, final String host, final String port, final String sid, final boolean embedded) {
-    Util.require(DATABASE_HOST, host);
-    Util.require(DATABASE_PORT, port);
-    Util.require(DATABASE_SID, sid);
   }
 }

@@ -36,10 +36,4 @@ public final class SQLServerDatabase extends AbstractDatabase {
     final String sid = getSid();
     return URL_PREFIX + getHost() + ":" + getPort() + (!Util.nullOrEmpty(sid) ? ";databaseName=" + sid : "");
   }
-
-  @Override
-  protected void validate(final String databaseType, final String host, final String port, final String sid, final boolean embedded) {
-    Util.require(DATABASE_HOST, host);
-    Util.require(DATABASE_PORT, port);
-  }
 }

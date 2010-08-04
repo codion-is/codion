@@ -4,7 +4,6 @@
 package org.jminor.common.db.dbms;
 
 import org.jminor.common.i18n.Messages;
-import org.jminor.common.model.Util;
 
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -66,6 +65,7 @@ public final class OracleDatabase extends AbstractDatabase {
     return "select " + idSource + ".currval from dual";
   }
 
+  @Override
   public String getSequenceSQL(final String sequenceName) {
     return "select " + sequenceName + ".nextval from dual";
   }
@@ -101,12 +101,5 @@ public final class OracleDatabase extends AbstractDatabase {
     }
 
     return exception.getMessage();
-  }
-
-  @Override
-  protected void validate(final String databaseType, final String host, final String port, final String sid, final boolean embedded) {
-    Util.require(DATABASE_HOST, host);
-    Util.require(DATABASE_PORT, port);
-    Util.require(DATABASE_SID, sid);
   }
 }

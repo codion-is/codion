@@ -25,11 +25,10 @@ public final class AbstractDatabaseTest {
       database.shutdownEmbedded(null);
       database.getErrorMessage(new SQLException());
       new AbstractDatabase("db") {
-        @Override
-        protected void validate(final String databaseType, final String host, final String port, final String sid, final boolean embedded) {}
         public String getAutoIncrementValueSQL(final String idSource) {
           return null;
         }
+        @Override
         public String getSequenceSQL(final String sequenceName) {
           return null;
         }

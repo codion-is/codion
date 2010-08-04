@@ -84,7 +84,14 @@ public abstract class AbstractDatabase implements Database {
    */
   public AbstractDatabase(final String databaseType, final String host, final String port, final String sid,
                           final boolean embedded) {
-    validate(databaseType, host, port, sid, embedded);
+    Util.rejectNullValue(databaseType, "databaseType");
+    Util.require(DATABASE_HOST, host);
+    if (!embedded) {
+      Util.require(DATABASE_PORT, port);
+      if (!SQLSERVER.equals(databaseType)) {
+        Util.require(DATABASE_SID, sid);
+      }
+    }
     this.databaseType = databaseType;
     this.host = host;
     this.port = port;
@@ -155,19 +162,19 @@ public abstract class AbstractDatabase implements Database {
   /**
    * This should shutdown the database in case it is an embedded one
    * and if that is applicable, such as for Derby.
-   * This default implementation does nothing.
+   * This default implementation simply throws an exception declaring that sequences are not supported.
    * @param connectionProperties the connection properties
    */
   public void shutdownEmbedded(final Properties connectionProperties) {}
 
   public String getSequenceSQL(final String sequenceName) {
-    throw new RuntimeException("Sequence support is not implemented for database type: " + getDatabaseType());
+    throw new RuntimeException("Sequence support is not implemented for database type: " + databaseType);
   }
 
   /**
    * Returns a string containing authentication info to append to the connection URL,
    * base on the values found in <code>connectionProperties</code>.
-   * this default implementation returns the following assuming that <code>connectionProperties</code>
+   * This default implementation returns the following assuming that <code>connectionProperties</code>
    * contains values for both "user" and "password" keys:
    * user=scott;password=tiger
    * @param connectionProperties the connection properties
@@ -202,26 +209,4 @@ public abstract class AbstractDatabase implements Database {
   public Properties addConnectionProperties(final Properties properties) {
     return properties;
   }
-
-  /**
-   * Validates that the given parameters suffice to connect to the given database type.
-   * <pre>
-   * <code>if (embedded) {
-   *   require(DATABASE_HOST, host);
-   * }
-   * else {
-   *   require(DATABASE_HOST, host);
-   *   require(DATABASE_PORT, port);
-   *   require(DATABASE_SID, sid);
-   * }
-   * </code>
-   * </pre>
-   * @param databaseType the database type
-   * @param host the database host name
-   * @param port the database port
-   * @param sid the database sid
-   * @param embedded true if the database being connected to is an embedded one
-   * @see org.jminor.common.model.Util#require(String, String)
-   */
-  protected abstract void validate(final String databaseType, final String host, final String port, final String sid, final boolean embedded);
 }
