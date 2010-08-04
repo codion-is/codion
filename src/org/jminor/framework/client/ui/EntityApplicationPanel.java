@@ -86,12 +86,6 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   private static final String DIV_UP = "divUp";
   private static final String DIV_DOWN = "divDown";
 
-  /** Constructs a new EntityApplicationPanel.
-   */
-  public EntityApplicationPanel() {
-    configureApplication();
-  }
-
   public final void handleException(final Throwable exception, final JComponent dialogParent) {
     LOG.error(this, exception);
     DefaultExceptionHandler.getInstance().handleException(exception, dialogParent);
@@ -464,13 +458,6 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   protected EntityDbProvider initializeDbProvider(final User user, final String frameCaption) throws CancelException {
     return EntityDbProviderFactory.createEntityDbProvider(user, frameCaption);
   }
-
-  /**
-   * A convenience method for overriding, so that system wide configuration parameters can be set
-   * before the application is initialized
-   * @see org.jminor.framework.Configuration
-   */
-  protected void configureApplication() {}
 
   protected void bindEvents() {}
 

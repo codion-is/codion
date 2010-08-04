@@ -52,23 +52,19 @@ public final class PetstoreAppPanel extends EntityApplicationPanel {
   }
 
   @Override
-  protected void configureApplication() {
-    Locale.setDefault(new Locale("en"));
-    Configuration.setValue(Configuration.TOOLBAR_BUTTONS, true);
-    Configuration.setValue(Configuration.PROPERTY_DEBUG_OUTPUT, true);
-  }
-
-  @Override
   protected EntityApplicationModel initializeApplicationModel(final EntityDbProvider dbProvider) throws CancelException {
     return new PetstoreApplicationModel(dbProvider);
   }
 
   public static void main(final String[] args) {
+    Locale.setDefault(new Locale("en"));
+    Configuration.setValue(Configuration.TOOLBAR_BUTTONS, true);
+    Configuration.setValue(Configuration.PROPERTY_DEBUG_OUTPUT, true);
     new PetstoreAppPanel().startApplication("The Pet Store", null, false, UiUtil.getScreenSizeRatio(0.8), new User("scott", "tiger"));
   }
 
   private static final class PetstoreApplicationModel extends DefaultEntityApplicationModel {
-    public PetstoreApplicationModel(EntityDbProvider dbProvider) {
+    private PetstoreApplicationModel(EntityDbProvider dbProvider) {
       super(dbProvider);
     }
 

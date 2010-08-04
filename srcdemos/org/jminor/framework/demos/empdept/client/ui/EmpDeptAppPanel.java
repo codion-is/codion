@@ -60,18 +60,14 @@ public class EmpDeptAppPanel extends EntityApplicationPanel {
   }
 
   @Override
-  protected void configureApplication() {
-    Configuration.setValue(Configuration.TOOLBAR_BUTTONS, true);
-    Configuration.setValue(Configuration.COMPACT_ENTITY_PANEL_LAYOUT, true);
-    Configuration.setValue(Configuration.USE_OPTIMISTIC_LOCKING, true);
-  }
-
-  @Override
   protected EntityApplicationModel initializeApplicationModel(final EntityDbProvider dbProvider) throws CancelException {
     return new EmpDeptApplicationModel(dbProvider);
   }
 
   public static void main(final String[] args) {
+    Configuration.setValue(Configuration.TOOLBAR_BUTTONS, true);
+    Configuration.setValue(Configuration.COMPACT_ENTITY_PANEL_LAYOUT, true);
+    Configuration.setValue(Configuration.USE_OPTIMISTIC_LOCKING, true);
     new EmpDeptAppPanel().startApplication("Emp-Dept", null, false, UiUtil.getScreenSizeRatio(0.6), new User("scott", "tiger"));
   }
 
