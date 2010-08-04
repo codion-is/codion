@@ -3,17 +3,12 @@
  */
 package org.jminor.common.ui.valuemap;
 
-import org.jminor.common.model.DocumentAdapter;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
 import org.jminor.common.ui.control.LinkType;
 
 import javax.swing.JFormattedTextField;
-import javax.swing.event.DocumentEvent;
 import javax.swing.text.JTextComponent;
-import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.text.Format;
 import java.text.ParseException;
 
@@ -40,6 +35,7 @@ public class FormattedValueLink<K> extends TextValueLink<K> {
     super(textComponent, editModel, key, immediateUpdate, linkType);
     this.format = format;
     this.formatter = textComponent.getFormatter();
+    new FormattedValidator<K>(this, textComponent, editModel).updateValidityInfo();
     updateUI();
   }
 
@@ -87,32 +83,23 @@ public class FormattedValueLink<K> extends TextValueLink<K> {
     return parsedValue;
   }
 
-  @Override
-  protected void addValidator(final JTextComponent textComponent, final ValueChangeMapEditModel<K, Object> editModel) {
-    final Color defaultTextFieldBackground = textComponent.getBackground();
-    final Color invalidBackgroundColor = Color.LIGHT_GRAY;
-    final String defaultToolTip = textComponent.getToolTipText();
-    final String maskString = textComponent.getText();
-    textComponent.getDocument().addDocumentListener(new DocumentAdapter() {
-      @Override
-      public void insertOrUpdate(final DocumentEvent e) {
-        updateValidityInfo(textComponent, editModel, maskString, defaultTextFieldBackground, invalidBackgroundColor, defaultToolTip);
-      }
-    });
-    editModel.addValueListener(getKey(), new ActionListener() {
-      public void actionPerformed(final ActionEvent e) {
-        updateValidityInfo(textComponent, editModel, maskString, defaultTextFieldBackground, invalidBackgroundColor, defaultToolTip);
-      }
-    });
-  }
+  private static final class FormattedValidator<K> extends ValidatorImpl<K> {
 
-  private void updateValidityInfo(final JTextComponent textComponent, final ValueChangeMapEditModel<K, Object> editModel,
-                                  final String maskString, final Color validBackground, final Color invalidBackground,
-                                  final String defaultToolTip) {
-    final boolean validInput = !isModelValueNull() || (textComponent.getText().equals(maskString) && isNullable());
-    final String validationMessage = getValidationMessage(editModel);
-    textComponent.setBackground(validInput && validationMessage == null ? validBackground : invalidBackground);
-    textComponent.setToolTipText(validationMessage == null ? defaultToolTip :
-            (!Util.nullOrEmpty(defaultToolTip) ? defaultToolTip + ": " : "") + validationMessage);
+    private final String maskString;
+
+    private FormattedValidator(final TextValueLink<K> textValueLink, final JTextComponent textComponent,
+                               final ValueChangeMapEditModel<K, Object> editModel) {
+      super(textValueLink, textComponent, editModel);
+      this.maskString = textComponent.getText();
+    }
+
+    @Override
+    public void updateValidityInfo() {
+      final boolean validInput = !getLink().isModelValueNull() || (getTextComponent().getText().equals(maskString) && getLink().isNullable());
+      final String validationMessage = getLink().getValidationMessage(getEditModel());
+      getTextComponent().setBackground(validInput && validationMessage == null ? getValidBackgroundColor() : getInvalidBackgroundColor());
+      getTextComponent().setToolTipText(validationMessage == null ? getDefaultToolTip() :
+              (!Util.nullOrEmpty(getDefaultToolTip()) ? getDefaultToolTip() + ": " : "") + validationMessage);
+    }
   }
 }

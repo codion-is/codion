@@ -1959,3 +1959,7 @@
   State/StateObserver refactored
   EntityPanel.getTablePopupControlSet() is now private
   EntityApplicationPanel.configureApplication() removed
+  TextValueLink.addValidator() removed
+  TextValueLink.Validator and ValidatorImpl added
+  FormattedValueLink.FormattedValidator added
+  UiUtul.transferFocusOnEnter() bug fixed, key events got lost if SHIFT was not down
