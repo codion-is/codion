@@ -7,8 +7,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
-import java.text.DateFormat;
-
 public class AbstractFilteredTablePanelTest {
 
   @Test
@@ -17,11 +15,7 @@ public class AbstractFilteredTablePanelTest {
             new AbstractFilteredTablePanel<String, Integer>(AbstractFilteredTableModelTest.createTestModel()) {
       @Override
       protected AbstractSearchPanel<Integer> initializeFilterPanel(final SearchModel<Integer> model) {
-        return new AbstractSearchPanel<Integer>(model, true, true) {
-          @Override
-          protected DateFormat getDateFormat() {
-            return null;
-          }
+        return new AbstractSearchPanel<Integer>(model, true, true) {          
           @Override
           protected boolean isLowerBoundFieldRequired(final Integer searchKey) {
             return true;

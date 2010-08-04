@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.client.ui;
 
+import org.jminor.common.model.SearchModel;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.ui.AbstractSearchPanel;
 import org.jminor.common.ui.combobox.MaximumMatch;
@@ -14,7 +15,6 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JComponent;
 import java.awt.event.ActionEvent;
-import java.text.DateFormat;
 
 /**
  * User: Björn Darri
@@ -28,11 +28,11 @@ public final class ForeignKeySearchPanel extends AbstractSearchPanel<Property.Fo
   }
 
   public ForeignKeySearchPanel(final ForeignKeySearchModel model, final boolean includeToggleAdvBtn) {
-    super(model, true, includeToggleAdvBtn);
+    super(model, true, includeToggleAdvBtn, new ForeignKeyInputFieldProvider(model));
   }
 
   @Override
-  protected boolean isLowerBoundFieldRequired(final Property.ForeignKeyProperty property) {
+  protected boolean isLowerBoundFieldRequired(final Property.ForeignKeyProperty searchKey) {
     return false;
   }
 
@@ -41,40 +41,48 @@ public final class ForeignKeySearchPanel extends AbstractSearchPanel<Property.Fo
     return searchType == SearchType.LIKE || searchType == SearchType.NOT_LIKE;
   }
 
-  @Override
-  protected JComponent getInputField(final boolean isUpperBound) {
-    final JComponent field = initEntityField();
-    field.setToolTipText(isUpperBound ? "a" : "b");
+  private static final class ForeignKeyInputFieldProvider implements InputFieldProvider<Property.ForeignKeyProperty> {
 
-    return field;
-  }
+    private final SearchModel<Property.ForeignKeyProperty> model;
 
-  protected DateFormat getDateFormat() {
-    return null;
-  }
+    private ForeignKeyInputFieldProvider(final SearchModel<Property.ForeignKeyProperty> model) {
+      this.model = model;
+    }
 
-  private JComponent initEntityField() {
-    final EntityComboBoxModel boxModel = ((ForeignKeySearchModel) getModel()).getEntityComboBoxModel();
-    if (boxModel != null) {
-      final EntityComboBox field = new EntityComboBox(boxModel);
-      MaximumMatch.enable(field);
+    public SearchModel<Property.ForeignKeyProperty> getSearchModel() {
+      return model;
+    }
+
+    public JComponent getInputField(final boolean isUpperBound) {
+      final JComponent field = initEntityField();
+      field.setToolTipText(isUpperBound ? "a" : "b");
 
       return field;
     }
-    else {
-      final EntityLookupField field = new EntityLookupField(((ForeignKeySearchModel) getModel()).getEntityLookupModel());
-      field.setEnterAction(getEnableAction());
-      field.getModel().refreshSearchText();
 
-      return field;
-    }
-  }
+    private JComponent initEntityField() {
+      final EntityComboBoxModel boxModel = ((ForeignKeySearchModel) model).getEntityComboBoxModel();
+      if (boxModel != null) {
+        final EntityComboBox field = new EntityComboBox(boxModel);
+        MaximumMatch.enable(field);
 
-  private Action getEnableAction() {
-    return new AbstractAction() {
-      public void actionPerformed(final ActionEvent e) {
-        getModel().setSearchEnabled(!getModel().isSearchEnabled());
+        return field;
       }
-    };
+      else {
+        final EntityLookupField field = new EntityLookupField(((ForeignKeySearchModel) model).getEntityLookupModel());
+        field.setEnterAction(getEnableAction());
+        field.getModel().refreshSearchText();
+
+        return field;
+      }
+    }
+
+    private Action getEnableAction() {
+      return new AbstractAction() {
+        public void actionPerformed(final ActionEvent e) {
+          model.setSearchEnabled(!model.isSearchEnabled());
+        }
+      };
+    }
   }
 }

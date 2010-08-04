@@ -7,7 +7,6 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import java.sql.Types;
-import java.text.DateFormat;
 
 public class AbstractSearchPanelTest {
 
@@ -33,11 +32,6 @@ public class AbstractSearchPanelTest {
 
     private SearchPanelImpl(final SearchModel<String> objectSearchModel, final boolean includeActivateBtn, final boolean includeToggleAdvBtn) {
       super(objectSearchModel, includeActivateBtn, includeToggleAdvBtn);
-    }
-
-    @Override
-    protected DateFormat getDateFormat() {
-      return null;
     }
 
     @Override

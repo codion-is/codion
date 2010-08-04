@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Timestamp;
 import java.sql.Types;
+import java.text.Format;
 import java.util.Date;
 import java.util.Locale;
 import java.util.regex.Pattern;
@@ -31,6 +32,7 @@ public class DefaultSearchModel<K> implements SearchModel<K> {
 
   private final K searchKey;
   private final int type;
+  private final Format dateFormat;
 
   private SearchType searchType = SearchType.LIKE;
   private boolean enabled = false;
@@ -42,10 +44,16 @@ public class DefaultSearchModel<K> implements SearchModel<K> {
   private String wildcard;
 
   public DefaultSearchModel(final K searchKey, final int type, final String wildcard) {
+    this(searchKey, type, wildcard, null);
+  }
+
+  public DefaultSearchModel(final K searchKey, final int type, final String wildcard,
+                            final Format dateFormat) {
     Util.rejectNullValue(searchKey, "searchKey");
     this.searchKey = searchKey;
     this.type = type;
     this.wildcard = wildcard;
+    this.dateFormat = dateFormat;
     bindEvents();
   }
 
@@ -65,6 +73,10 @@ public class DefaultSearchModel<K> implements SearchModel<K> {
    */
   public final void setCaseSensitive(final boolean caseSensitive) {
     this.caseSensitive = caseSensitive;
+  }
+
+  public final Format getFormat() {
+    return dateFormat;
   }
 
   /**

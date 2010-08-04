@@ -307,9 +307,8 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
   /**
    * @return the EntityTableModel used by this EntityTablePanel
    */
-  @Override
   public final EntityTableModel getTableModel() {
-    return (EntityTableModel) super.getTableModel();
+    return (EntityTableModel) super.getFilteredTableModel();
   }
 
   /**

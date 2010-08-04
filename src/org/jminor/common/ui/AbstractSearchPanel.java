@@ -45,7 +45,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.Types;
 import java.text.DateFormat;
-import java.text.Format;
 import java.text.SimpleDateFormat;
 
 /**
@@ -102,13 +101,23 @@ public abstract class AbstractSearchPanel<K> extends JPanel {
   private final boolean includeToggleSearchAdvancedBtn;
 
   public AbstractSearchPanel(final SearchModel<K> searchModel, final boolean includeActivateBtn, final boolean includeToggleAdvBtn) {
+    this(searchModel, includeActivateBtn, includeToggleAdvBtn, new DefaultInputFieldProvider<K>(searchModel));
+  }
+
+  public AbstractSearchPanel(final SearchModel<K> searchModel, final boolean includeActivateBtn, final boolean includeToggleAdvBtn,
+                             final InputFieldProvider inputFieldProvider) {
+    this(searchModel, includeActivateBtn, includeToggleAdvBtn, inputFieldProvider.getInputField(true), inputFieldProvider.getInputField(false));
+  }
+
+  public AbstractSearchPanel(final SearchModel<K> searchModel, final boolean includeActivateBtn, final boolean includeToggleAdvBtn,
+                             final JComponent upperBoundField, final JComponent lowerBoundField) {
     Util.rejectNullValue(searchModel, "searchModel");
     this.model = searchModel;
     this.includeToggleSearchEnabledBtn = includeActivateBtn;
     this.includeToggleSearchAdvancedBtn = includeToggleAdvBtn;
     this.searchTypeCombo = initSearchTypeComboBox();
-    this.upperBoundField = getInputField(true);
-    this.lowerBoundField = isLowerBoundFieldRequired(searchModel.getSearchKey()) ? getInputField(false) : null;
+    this.upperBoundField = upperBoundField;
+    this.lowerBoundField = lowerBoundField;
     this.toggleSearchEnabled = ControlProvider.createToggleButton(
             Controls.toggleControl(searchModel, "searchEnabled", null, searchModel.getEnabledObserver()));
     toggleSearchEnabled.setIcon(Images.loadImage(Images.IMG_FILTER_16));
@@ -256,30 +265,100 @@ public abstract class AbstractSearchPanel<K> extends JPanel {
     return true;
   }
 
-  /**
-   * @param isUpperBound true if the field should represent the upper bound, otherwise it should be the lower bound field
-   * @return an input field for either the upper or lower bound
-   */
-  protected JComponent getInputField(final boolean isUpperBound) {
-    final DateFormat format = getDateFormat();
-    final JComponent field = initField(format);
-    if (model.getType() == Types.BOOLEAN) {
-      createToggleProperty((JCheckBox) field, isUpperBound);
-    }
-    else {
-      createTextProperty(field, isUpperBound, format);
+  public interface InputFieldProvider<K> {
+    SearchModel<K> getSearchModel();
+    JComponent getInputField(final boolean isUpperBound);
+  }
+
+  private static class DefaultInputFieldProvider<K> implements InputFieldProvider<K> {
+
+    private final SearchModel<K> model;
+
+    private DefaultInputFieldProvider(final SearchModel<K> model) {
+      this.model = model;
     }
 
-    if (field instanceof JTextField) {//enter button toggles the filter on/off
-      ((JTextField) field).addActionListener(new ActionListener() {
-        public void actionPerformed(final ActionEvent e) {
-          model.setSearchEnabled(!model.isSearchEnabled());
-        }
-      });
+    public SearchModel<K> getSearchModel() {
+      return model;
     }
-    field.setToolTipText(isUpperBound ? "a" : "b");
 
-    return field;
+    /**
+     * @param isUpperBound true if the field should represent the upper bound, otherwise it should be the lower bound field
+     * @return an input field for either the upper or lower bound
+     */
+    public JComponent getInputField(final boolean isUpperBound) {
+      final JComponent field = initField();
+      if (model.getType() == Types.BOOLEAN) {
+        createToggleProperty((JCheckBox) field, isUpperBound);
+      }
+      else {
+        createTextProperty(field, isUpperBound);
+      }
+
+      if (field instanceof JTextField) {//enter button toggles the filter on/off
+        ((JTextField) field).addActionListener(new ActionListener() {
+          public void actionPerformed(final ActionEvent e) {
+            model.setSearchEnabled(!model.isSearchEnabled());
+          }
+        });
+      }
+      field.setToolTipText(isUpperBound ? "a" : "b");
+
+      return field;
+    }
+
+    private JComponent initField() {
+      if (model.getType() == Types.DATE || model.getType() == Types.TIMESTAMP) {
+        return UiUtil.createFormattedField(DateUtil.getDateMask((SimpleDateFormat) model.getFormat()));
+      }
+      else if (model.getType() == Types.DOUBLE) {
+        return new DoubleField(DEFAULT_FIELD_COLUMNS);
+      }
+      else if (model.getType() == Types.INTEGER) {
+        return new IntField(DEFAULT_FIELD_COLUMNS);
+      }
+      else if (model.getType() == Types.BOOLEAN) {
+        return new JCheckBox();
+      }
+      else {
+        return new JTextField(DEFAULT_FIELD_COLUMNS);
+      }
+    }
+
+    private void createToggleProperty(final JCheckBox checkBox, final boolean isUpperBound) {
+      new ToggleBeanValueLink(checkBox.getModel(), model,
+              isUpperBound ? SearchModel.UPPER_BOUND_PROPERTY : SearchModel.LOWER_BOUND_PROPERTY,
+              isUpperBound ? model.getUpperBoundObserver() : model.getLowerBoundObserver());
+    }
+
+    private TextBeanValueLink createTextProperty(final JComponent component, final boolean isUpper) {
+      if (model.getType() == Types.INTEGER) {
+        return new IntBeanValueLink((IntField) component, model,
+                isUpper ? SearchModel.UPPER_BOUND_PROPERTY : SearchModel.LOWER_BOUND_PROPERTY,
+                isUpper ? model.getUpperBoundObserver() : model.getLowerBoundObserver());
+      }
+      if (model.getType() == Types.DOUBLE) {
+        return new DoubleBeanValueLink((DoubleField) component, model,
+                isUpper ? SearchModel.UPPER_BOUND_PROPERTY : SearchModel.LOWER_BOUND_PROPERTY,
+                isUpper ? model.getUpperBoundObserver() : model.getLowerBoundObserver());
+      }
+      if (model.getType() == Types.DATE) {
+        return new DateBeanValueLink((JFormattedTextField) component, model,
+                isUpper ? SearchModel.UPPER_BOUND_PROPERTY : SearchModel.LOWER_BOUND_PROPERTY,
+                isUpper ? model.getUpperBoundObserver() : model.getLowerBoundObserver(),
+                LinkType.READ_WRITE, (DateFormat) model.getFormat());
+      }
+      if (model.getType() == Types.TIMESTAMP) {
+        return new TimestampBeanValueLink((JFormattedTextField) component, model,
+                isUpper ? SearchModel.UPPER_BOUND_PROPERTY : SearchModel.LOWER_BOUND_PROPERTY,
+                isUpper ? model.getUpperBoundObserver() : model.getLowerBoundObserver(),
+                LinkType.READ_WRITE, (DateFormat) model.getFormat());
+      }
+
+      return new TextBeanValueLink((JTextField) component, model,
+              isUpper ? SearchModel.UPPER_BOUND_PROPERTY : SearchModel.LOWER_BOUND_PROPERTY,
+              String.class, isUpper ? model.getUpperBoundObserver() : model.getLowerBoundObserver());
+    }
   }
 
   /**
@@ -287,11 +366,6 @@ public abstract class AbstractSearchPanel<K> extends JPanel {
    * @return true if a lower bound field is required given the key
    */
   protected abstract boolean isLowerBoundFieldRequired(final K searchKey);
-
-  /**
-   * @return the Format object to use when formatting input, is any
-   */
-  protected abstract DateFormat getDateFormat();
 
   /**
    * Binds events to relevant GUI actions
@@ -461,58 +535,5 @@ public abstract class AbstractSearchPanel<K> extends JPanel {
         inactivateDialog();
       }
     });
-  }
-
-  private JComponent initField(final Format format) {
-    if (model.getType() == Types.DATE || model.getType() == Types.TIMESTAMP) {
-      return UiUtil.createFormattedField(DateUtil.getDateMask((SimpleDateFormat) format));
-    }
-    else if (model.getType() == Types.DOUBLE) {
-      return new DoubleField(DEFAULT_FIELD_COLUMNS);
-    }
-    else if (model.getType() == Types.INTEGER) {
-      return new IntField(DEFAULT_FIELD_COLUMNS);
-    }
-    else if (model.getType() == Types.BOOLEAN) {
-      return new JCheckBox();
-    }
-    else {
-      return new JTextField(DEFAULT_FIELD_COLUMNS);
-    }
-  }
-
-  private void createToggleProperty(final JCheckBox checkBox, final boolean isUpperBound) {
-    new ToggleBeanValueLink(checkBox.getModel(), model,
-            isUpperBound ? SearchModel.UPPER_BOUND_PROPERTY : SearchModel.LOWER_BOUND_PROPERTY,
-            isUpperBound ? model.getUpperBoundObserver() : model.getLowerBoundObserver());
-  }
-
-  private TextBeanValueLink createTextProperty(final JComponent component, final boolean isUpper, final DateFormat format) {
-    if (model.getType() == Types.INTEGER) {
-      return new IntBeanValueLink((IntField) component, model,
-              isUpper ? SearchModel.UPPER_BOUND_PROPERTY : SearchModel.LOWER_BOUND_PROPERTY,
-              isUpper ? model.getUpperBoundObserver() : model.getLowerBoundObserver());
-    }
-    if (model.getType() == Types.DOUBLE) {
-      return new DoubleBeanValueLink((DoubleField) component, model,
-              isUpper ? SearchModel.UPPER_BOUND_PROPERTY : SearchModel.LOWER_BOUND_PROPERTY,
-              isUpper ? model.getUpperBoundObserver() : model.getLowerBoundObserver());
-    }
-    if (model.getType() == Types.DATE) {
-      return new DateBeanValueLink((JFormattedTextField) component, model,
-              isUpper ? SearchModel.UPPER_BOUND_PROPERTY : SearchModel.LOWER_BOUND_PROPERTY,
-              isUpper ? model.getUpperBoundObserver() : model.getLowerBoundObserver(),
-              LinkType.READ_WRITE, format);
-    }
-    if (model.getType() == Types.TIMESTAMP) {
-      return new TimestampBeanValueLink((JFormattedTextField) component, model,
-              isUpper ? SearchModel.UPPER_BOUND_PROPERTY : SearchModel.LOWER_BOUND_PROPERTY,
-              isUpper ? model.getUpperBoundObserver() : model.getLowerBoundObserver(),
-              LinkType.READ_WRITE, format);
-    }
-
-    return new TextBeanValueLink((JTextField) component, model,
-            isUpper ? SearchModel.UPPER_BOUND_PROPERTY : SearchModel.LOWER_BOUND_PROPERTY,
-            String.class, isUpper ? model.getUpperBoundObserver() : model.getLowerBoundObserver());
   }
 }

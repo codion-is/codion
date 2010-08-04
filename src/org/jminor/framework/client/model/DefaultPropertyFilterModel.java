@@ -15,7 +15,8 @@ import org.jminor.framework.domain.Property;
 public class DefaultPropertyFilterModel extends DefaultSearchModel<Property> {
 
   public DefaultPropertyFilterModel(final Property property) {
-    super(property, property.getType(), (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER));
+    super(property, property.getType(), (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER),
+            property.getFormat());
   }
 
   @Override

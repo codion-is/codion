@@ -23,7 +23,8 @@ public class DefaultPropertySearchModel extends DefaultSearchModel<Property.Colu
    * @throws IllegalArgumentException if an illegal constant is used
    */
   public DefaultPropertySearchModel(final Property.ColumnProperty property) {
-    super(property, property.getType(), (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER));
+    super(property, property.getType(), (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER),
+            property.getFormat());
   }
 
   @Override

@@ -5,6 +5,7 @@ package org.jminor.common.model;
 
 import java.awt.event.ActionListener;
 import java.sql.Timestamp;
+import java.text.Format;
 import java.util.Date;
 
 /**
@@ -28,6 +29,11 @@ public interface SearchModel<K> {
    * @param caseSensitive true if this search model should be case sensitive when working with strings
    */
   void setCaseSensitive(final boolean caseSensitive);
+
+  /**
+   * @return the Format object to use when formatting input, is any
+   */
+  Format getFormat();
 
   /**
    * @param object the object

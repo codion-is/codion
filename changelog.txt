@@ -1963,3 +1963,7 @@
   TextValueLink.Validator and ValidatorImpl added
   FormattedValueLink.FormattedValidator added
   UiUtul.transferFocusOnEnter() bug fixed, key events got lost if SHIFT was not down
+  AbstractFilteredTablePanel.getTableModel() renamed to getFilteredTableModel(), finalized
+  AbstractFilteredTablePanel.getDateFormat() moved to SearchModel and renamed to getForma()
+  AbstractSearchPanel, added input fields as constructor parameters
+  AbstractSearchPanel.InputFieldProvider interface added, implemented in subclasses

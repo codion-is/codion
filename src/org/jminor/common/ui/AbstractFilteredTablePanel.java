@@ -115,7 +115,7 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
   /**
    * @return the TableModel used by this TablePanel
    */
-  public FilteredTableModel<T, C> getTableModel() {
+  public final FilteredTableModel<T, C> getFilteredTableModel() {
     return tableModel;
   }
 
@@ -183,7 +183,7 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
   }
 
   private JTable initializeJTable() {
-    return new JTable(getTableModel(), getTableModel().getColumnModel(), getTableModel().getSelectionModel());
+    return new JTable(tableModel, tableModel.getColumnModel(), tableModel.getSelectionModel());
   }
 
   private JTextField initializeSearchField() {
@@ -272,10 +272,10 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
   }
 
   private List<AbstractSearchPanel<C>> initializeFilterPanels() {
-    final List<AbstractSearchPanel<C>> filterPanels = new ArrayList<AbstractSearchPanel<C>>(getTableModel().getFilterModels().size());
+    final List<AbstractSearchPanel<C>> filterPanels = new ArrayList<AbstractSearchPanel<C>>(tableModel.getFilterModels().size());
     final Enumeration<TableColumn> columns = table.getColumnModel().getColumns();
     while (columns.hasMoreElements()) {
-      final SearchModel<C> model = getTableModel().getFilterModel(columns.nextElement().getModelIndex());
+      final SearchModel<C> model = tableModel.getFilterModel(columns.nextElement().getModelIndex());
       filterPanels.add(initializeFilterPanel(model));
     }
 
@@ -304,7 +304,7 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
     final Enumeration<TableColumn> columns = tableModel.getColumnModel().getColumns();
     while (columns.hasMoreElements()) {
       final TableColumn column = columns.nextElement();
-      final SearchModel model = getTableModel().getFilterModel(column.getModelIndex());
+      final SearchModel model = tableModel.getFilterModel(column.getModelIndex());
       model.addSearchStateListener(new ActionListener() {
         public void actionPerformed(final ActionEvent e) {
           if (model.isSearchEnabled()) {
@@ -324,7 +324,7 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
   }
 
   private void toggleColumnFilterPanel(final MouseEvent event) {
-    final int index = getTableModel().getColumnModel().getColumnIndexAtX(event.getX());
+    final int index = tableModel.getColumnModel().getColumnIndexAtX(event.getX());
 
     toggleFilterPanel(event.getLocationOnScreen(), columnFilterPanels.get(index), table);
   }
