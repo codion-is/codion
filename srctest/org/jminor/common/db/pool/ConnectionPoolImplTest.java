@@ -252,9 +252,9 @@ public class ConnectionPoolImplTest {
 
   private ConnectionPoolImpl initializeLoadTestPool() {
     final ConnectionPoolImpl pool = new ConnectionPoolImpl(createConnectionProvider(), User.UNIT_TEST_USER);
-    pool.setPooledConnectionTimeout(70);
+    pool.setPooledConnectionTimeout(50);
     pool.setMinimumPoolSize(1);
-    pool.setPoolCleanupInterval(200);
+    pool.setPoolCleanupInterval(130);
 
     return pool;
   }
