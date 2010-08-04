@@ -1971,3 +1971,4 @@
   SearchModel renamed to ColumnSearchModel
   SearchModel.getSearchKey() renamed to getColumnIdentifier()
   AbstractSearchPanel renamed to ColumnSearchPanel
+  SearchType.getImageName() added

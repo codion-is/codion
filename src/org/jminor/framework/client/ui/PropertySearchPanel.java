@@ -51,7 +51,7 @@ public final class PropertySearchPanel extends ColumnSearchPanel<Property.Column
       return new SearchType[] {SearchType.LIKE};
     }
     else {
-      return SEARCH_TYPES;
+      return SearchType.values();
     }
   }
 

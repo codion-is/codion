@@ -24,7 +24,7 @@ public final class PropertyFilterPanel extends ColumnSearchPanel<Property> {
       return new SearchType[] {SearchType.LIKE};
     }
     else {
-      return SEARCH_TYPES;
+      return SearchType.values();
     }
   }
 }

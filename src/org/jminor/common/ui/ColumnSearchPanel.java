@@ -59,14 +59,6 @@ public class ColumnSearchPanel<K> extends JPanel {
 
   public static final int DEFAULT_FIELD_COLUMNS = 4;
 
-  protected static final SearchType[] SEARCH_TYPES = {
-          SearchType.LIKE, SearchType.NOT_LIKE, SearchType.AT_LEAST,
-          SearchType.AT_MOST, SearchType.WITHIN_RANGE, SearchType.OUTSIDE_RANGE};
-
-  private static final String[] SEARCH_TYPE_IMAGES = {
-          "Equals60x16.gif", "NotEquals60x16.gif", "LessThanOrEquals60x16.gif",
-          "LargerThanOrEquals60x16.gif", "Inclusive60x16.gif", "Exclusive60x16.gif"};
-
   private static final int ENABLED_BUTTON_SIZE = 20;
 
   /**
@@ -108,7 +100,7 @@ public class ColumnSearchPanel<K> extends JPanel {
   private final boolean includeToggleSearchAdvancedBtn;
 
   public ColumnSearchPanel(final ColumnSearchModel<K> searchModel, final boolean includeActivateBtn, final boolean includeToggleAdvBtn) {
-    this(searchModel, includeActivateBtn, includeToggleAdvBtn, SEARCH_TYPES);
+    this(searchModel, includeActivateBtn, includeToggleAdvBtn, SearchType.values());
   }
 
   public ColumnSearchPanel(final ColumnSearchModel<K> searchModel, final boolean includeActivateBtn, final boolean includeToggleAdvBtn,
@@ -129,7 +121,7 @@ public class ColumnSearchPanel<K> extends JPanel {
     this.model = searchModel;
     this.includeToggleSearchEnabledBtn = includeActivateBtn;
     this.includeToggleSearchAdvancedBtn = includeToggleAdvBtn;
-    this.searchTypes = searchTypes == null ? Arrays.asList(SEARCH_TYPES) : Arrays.asList(searchTypes);
+    this.searchTypes = searchTypes == null ? Arrays.asList(SearchType.values()) : Arrays.asList(searchTypes);
     this.searchTypeCombo = initSearchTypeComboBox();
     this.upperBoundField = upperBoundField;
     this.lowerBoundField = lowerBoundField;
@@ -279,7 +271,7 @@ public class ColumnSearchPanel<K> extends JPanel {
     JComponent initializeInputField(final boolean isUpperBound);
   }
 
-  private static class DefaultInputFieldProvider<K> implements InputFieldProvider<K> {
+  private static final class DefaultInputFieldProvider<K> implements InputFieldProvider<K> {
 
     private final ColumnSearchModel<K> model;
 
@@ -414,9 +406,9 @@ public class ColumnSearchPanel<K> extends JPanel {
 
   private JComboBox initSearchTypeComboBox() {
     final ItemComboBoxModel comboBoxModel = new ItemComboBoxModel();
-    for (int i = 0; i < SEARCH_TYPES.length; i++) {
-      if (searchTypes.contains(SEARCH_TYPES[i])) {
-        comboBoxModel.addElement(new ItemComboBoxModel.IconItem<SearchType>(SEARCH_TYPES[i], Images.loadImage(SEARCH_TYPE_IMAGES[i])));
+    for (final SearchType type : SearchType.values()) {
+      if (searchTypes.contains(type)) {
+        comboBoxModel.addElement(new ItemComboBoxModel.IconItem<SearchType>(type, Images.loadImage(type.getImageName())));
       }
     }
     final JComboBox comboBox = new SteppedComboBox(comboBoxModel);

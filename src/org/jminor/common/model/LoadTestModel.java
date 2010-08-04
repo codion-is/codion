@@ -517,7 +517,6 @@ public abstract class LoadTestModel {
       try {
         final int sleepyTime = RANDOM.nextInt(loadTestModel.getMaximumThinkTime() *
                 (loadTestModel.getLoginDelayFactor() <= 0 ? 1 : loadTestModel.getLoginDelayFactor()));
-        System.out.println("AppModel delaying login for " + sleepyTime + " ms");
         Thread.sleep(sleepyTime);// delay login a bit so all do not try to login at the same time
       }
       catch (InterruptedException e) {
