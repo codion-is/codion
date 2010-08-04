@@ -49,6 +49,11 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
   EntityEditModel getEditModel();
 
   /**
+   * @return true if this table model contains a edit model
+   */
+  boolean hasEditModel();
+
+  /**
    * Associates the given edit model with this table model, this enables delete/update
    * functionality via this table model as well as enabling it to
    * react to delete events in the edit model.

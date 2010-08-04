@@ -1400,7 +1400,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
       }
     });
 
-    if (getTableModel().getEditModel() != null) {
+    if (getTableModel().hasEditModel()) {
       getTableModel().getEditModel().addEntitiesChangedListener(new ActionListener() {
         public void actionPerformed(final ActionEvent e) {
           getJTable().repaint();

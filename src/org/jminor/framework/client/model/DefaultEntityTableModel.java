@@ -134,6 +134,10 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     });
   }
 
+  public boolean hasEditModel() {
+    return this.editModel != null;
+  }
+
   public final List<Property> getTableColumnProperties() {
     final List<Property> propertyList = new ArrayList<Property>(getColumnModel().getColumnCount());
     final Enumeration<TableColumn> columnEnumeration = getColumnModel().getColumns();
@@ -234,7 +238,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   public final boolean isReadOnly() {
-    return editModel != null && editModel.isReadOnly();
+    return editModel == null || editModel.isReadOnly();
   }
 
   /**

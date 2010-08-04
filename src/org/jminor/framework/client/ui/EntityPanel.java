@@ -488,21 +488,6 @@ public class EntityPanel extends JPanel {
   }
 
   /**
-   * Returns a ControlSet containing the detail panel controls, if no detail
-   * panels exist the resulting ControlSet will be empty.
-   * @return the ControlSet on which the table popup menu is based
-   * @see #getDetailPanelControls(int)
-   */
-  public ControlSet getTablePopupControlSet() {
-    final ControlSet controlSet = new ControlSet("");
-    if (!detailEntityPanels.isEmpty()) {
-      controlSet.add(getDetailPanelControls(EMBEDDED));
-    }
-
-    return controlSet;
-  }
-
-  /**
    * By default this delegates to the edit panel
    * @param exception the exception to handle
    */
@@ -979,6 +964,21 @@ public class EntityPanel extends JPanel {
     });
 
     return tabbedPane;
+  }
+
+  /**
+   * Returns a ControlSet containing the detail panel controls, if no detail
+   * panels exist the resulting ControlSet will be empty.
+   * @return the ControlSet on which the table popup menu is based
+   * @see #getDetailPanelControls(int)
+   */
+  private ControlSet getTablePopupControlSet() {
+    final ControlSet controlSet = new ControlSet("");
+    if (!detailEntityPanels.isEmpty()) {
+      controlSet.add(getDetailPanelControls(EMBEDDED));
+    }
+
+    return controlSet;
   }
 
   /**

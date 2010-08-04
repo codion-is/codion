@@ -1957,3 +1957,4 @@
   Util.nullOrEmpty() finally added and used throughout
   common.db.dbms refactored
   State/StateObserver refactored
+  EntityPanel.getTablePopupControlSet() is now private
