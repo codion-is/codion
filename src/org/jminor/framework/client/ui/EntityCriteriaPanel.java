@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.client.ui;
 
-import org.jminor.common.ui.AbstractSearchPanel;
+import org.jminor.common.ui.ColumnSearchPanel;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.Controls;
 import org.jminor.framework.client.model.EntityTableModel;
@@ -44,7 +44,7 @@ public final class EntityCriteriaPanel extends JPanel {
   private static final int DEFAULT_WIDTH = 200;
   private static final int DEFAULT_HEIGHT = 40;
 
-  private final Map<PropertySearchModel, AbstractSearchPanel> panels = new HashMap<PropertySearchModel, AbstractSearchPanel>();
+  private final Map<PropertySearchModel, ColumnSearchPanel> panels = new HashMap<PropertySearchModel, ColumnSearchPanel>();
 
   public EntityCriteriaPanel(final EntityTableModel tableModel) {
     setLayout(new BorderLayout(5,5));
@@ -118,7 +118,7 @@ public final class EntityCriteriaPanel extends JPanel {
                                                   final boolean isSelected, final boolean cellHasFocus) {
       final Component cellRenderer = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
       final PropertySearchModel selected = (PropertySearchModel) value;
-      ((JLabel)cellRenderer).setText(selected.getSearchKey().toString());
+      ((JLabel)cellRenderer).setText(selected.getColumnIdentifier().toString());
       cellRenderer.setForeground(selected.isSearchEnabled() ? Color.red : Color.black);
 
       return cellRenderer;
@@ -127,8 +127,8 @@ public final class EntityCriteriaPanel extends JPanel {
 
   private static final class SearchModelComparator implements Comparator<PropertySearchModel> {
     public int compare(final PropertySearchModel o1, final PropertySearchModel o2) {
-      final Property propertyOne = (Property) o1.getSearchKey();
-      final Property propertyTwo = (Property) o2.getSearchKey();
+      final Property propertyOne = (Property) o1.getColumnIdentifier();
+      final Property propertyTwo = (Property) o2.getColumnIdentifier();
       if (propertyOne.getCaption() != null && propertyTwo.getCaption() != null) {
         return propertyOne.getCaption().compareTo(propertyTwo.getCaption());
       }
@@ -152,7 +152,7 @@ public final class EntityCriteriaPanel extends JPanel {
       editorPanel.removeAll();
       final PropertySearchModel selected = (PropertySearchModel) propertyList.getSelectedValue();
       if (selected != null) {
-        AbstractSearchPanel panel = panels.get(selected);
+        ColumnSearchPanel panel = panels.get(selected);
         if (panel == null) {
           if (selected instanceof ForeignKeySearchModel) {
             panel = new ForeignKeySearchPanel((ForeignKeySearchModel) selected, true);

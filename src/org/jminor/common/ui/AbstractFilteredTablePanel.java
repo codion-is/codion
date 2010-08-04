@@ -4,9 +4,9 @@
 package org.jminor.common.ui;
 
 import org.jminor.common.i18n.Messages;
+import org.jminor.common.model.ColumnSearchModel;
 import org.jminor.common.model.DocumentAdapter;
 import org.jminor.common.model.FilteredTableModel;
-import org.jminor.common.model.SearchModel;
 import org.jminor.common.model.SortingDirective;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.control.Control;
@@ -58,7 +58,7 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
   /**
    * the property filter panels
    */
-  private final List<AbstractSearchPanel<C>> columnFilterPanels;
+  private final List<ColumnSearchPanel<C>> columnFilterPanels;
 
   /**
    * the JTable for showing the underlying entities
@@ -91,7 +91,7 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
     bindEvents();
   }
 
-  public final List<AbstractSearchPanel<C>> getColumnFilterPanels() {
+  public final List<ColumnSearchPanel<C>> getColumnFilterPanels() {
     return Collections.unmodifiableList(columnFilterPanels);
   }
 
@@ -100,7 +100,7 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
    * @param value true if the active filter panels should be shown, false if they should be hidden
    */
   public final void setFilterPanelsVisible(final boolean value) {
-    for (final AbstractSearchPanel columnFilterPanel : getColumnFilterPanels()) {
+    for (final ColumnSearchPanel columnFilterPanel : getColumnFilterPanels()) {
       if (value) {
         columnFilterPanel.showDialog();
       }
@@ -110,7 +110,7 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
     }
   }
 
-  protected abstract AbstractSearchPanel<C> initializeFilterPanel(final SearchModel<C> model);
+  protected abstract ColumnSearchPanel<C> initializeFilterPanel(final ColumnSearchModel<C> model);
 
   /**
    * @return the TableModel used by this TablePanel
@@ -271,11 +271,11 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
     return popupMenu;
   }
 
-  private List<AbstractSearchPanel<C>> initializeFilterPanels() {
-    final List<AbstractSearchPanel<C>> filterPanels = new ArrayList<AbstractSearchPanel<C>>(tableModel.getFilterModels().size());
+  private List<ColumnSearchPanel<C>> initializeFilterPanels() {
+    final List<ColumnSearchPanel<C>> filterPanels = new ArrayList<ColumnSearchPanel<C>>(tableModel.getFilterModels().size());
     final Enumeration<TableColumn> columns = table.getColumnModel().getColumns();
     while (columns.hasMoreElements()) {
-      final SearchModel<C> model = tableModel.getFilterModel(columns.nextElement().getModelIndex());
+      final ColumnSearchModel<C> model = tableModel.getFilterModel(columns.nextElement().getModelIndex());
       filterPanels.add(initializeFilterPanel(model));
     }
 
@@ -304,7 +304,7 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
     final Enumeration<TableColumn> columns = tableModel.getColumnModel().getColumns();
     while (columns.hasMoreElements()) {
       final TableColumn column = columns.nextElement();
-      final SearchModel model = tableModel.getFilterModel(column.getModelIndex());
+      final ColumnSearchModel model = tableModel.getFilterModel(column.getModelIndex());
       model.addSearchStateListener(new ActionListener() {
         public void actionPerformed(final ActionEvent e) {
           if (model.isSearchEnabled()) {
@@ -329,7 +329,7 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
     toggleFilterPanel(event.getLocationOnScreen(), columnFilterPanels.get(index), table);
   }
 
-  private static void toggleFilterPanel(final Point position, final AbstractSearchPanel columnFilterPanel,
+  private static void toggleFilterPanel(final Point position, final ColumnSearchPanel columnFilterPanel,
                                         final Container parent) {
     if (columnFilterPanel.isDialogActive()) {
       columnFilterPanel.inactivateDialog();

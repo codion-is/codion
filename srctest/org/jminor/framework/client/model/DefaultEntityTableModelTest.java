@@ -4,7 +4,7 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.db.criteria.Criteria;
-import org.jminor.common.model.SearchModel;
+import org.jminor.common.model.ColumnSearchModel;
 import org.jminor.common.model.SortingDirective;
 import org.jminor.common.model.reports.ReportDataWrapper;
 import org.jminor.framework.db.EntityDbConnectionTest;
@@ -38,7 +38,7 @@ public final class DefaultEntityTableModelTest {
   @Test
   public void testFiltering() {
     testModel.refresh();
-    final SearchModel<Property> filterModel = testModel.getSearchModel().getPropertyFilterModel(EntityTestDomain.DETAIL_STRING);
+    final ColumnSearchModel<Property> filterModel = testModel.getSearchModel().getPropertyFilterModel(EntityTestDomain.DETAIL_STRING);
     filterModel.setLikeValue("a");
     testModel.filterContents();
   }

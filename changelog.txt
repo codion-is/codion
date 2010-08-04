@@ -1967,3 +1967,7 @@
   AbstractFilteredTablePanel.getDateFormat() moved to SearchModel and renamed to getForma()
   AbstractSearchPanel, added input fields as constructor parameters
   AbstractSearchPanel.InputFieldProvider interface added, implemented in subclasses
+  AbstractSearchPanel.searchTypeAllowed() removed, SearchType... parameter added to constructor
+  SearchModel renamed to ColumnSearchModel
+  SearchModel.getSearchKey() renamed to getColumnIdentifier()
+  AbstractSearchPanel renamed to ColumnSearchPanel

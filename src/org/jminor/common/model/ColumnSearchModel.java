@@ -12,13 +12,14 @@ import java.util.Date;
  * User: Björn Darri
  * Date: 19.7.2010
  * Time: 16:56:36
+ * <K> the type of objects used to identify columns
  */
-public interface SearchModel<K> {
+public interface ColumnSearchModel<K> {
 
   String UPPER_BOUND_PROPERTY = "upperBound";
   String LOWER_BOUND_PROPERTY = "lowerBound";
 
-  K getSearchKey();
+  K getColumnIdentifier();
 
   /**
    * @return true if this filter is be case sensitive

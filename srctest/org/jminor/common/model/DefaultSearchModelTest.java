@@ -52,7 +52,7 @@ public class DefaultSearchModelTest {
 
   @Test
   public void testSetBounds() {
-    final DefaultSearchModel<String> model = new DefaultSearchModel<String>("test", Types.VARCHAR, "%");
+    final DefaultColumnSearchModel<String> model = new DefaultColumnSearchModel<String>("test", Types.VARCHAR, "%");
     model.setAutoEnable(false);
     assertFalse(model.isAutoEnable());
     model.addUpperBoundListener(upperBoundListener);
@@ -108,7 +108,7 @@ public class DefaultSearchModelTest {
 
   @Test
   public void testSearchType() {
-    final DefaultSearchModel<String> model = new DefaultSearchModel<String>("test", Types.VARCHAR, "%");
+    final DefaultColumnSearchModel<String> model = new DefaultColumnSearchModel<String>("test", Types.VARCHAR, "%");
     model.addSearchTypeListener(searchTypeListener);
     assertEquals(SearchType.LIKE, model.getSearchType());
     model.setSearchType(SearchType.AT_LEAST);
@@ -126,13 +126,13 @@ public class DefaultSearchModelTest {
 
   @Test
   public void test() throws Exception {
-    final DefaultSearchModel<String> model = new DefaultSearchModel<String>("test", Types.VARCHAR, "%");
+    final DefaultColumnSearchModel<String> model = new DefaultColumnSearchModel<String>("test", Types.VARCHAR, "%");
     assertTrue(model.isAutoEnable());
     model.setUpperBound("test");
     assertTrue(model.isSearchEnabled());
     model.setCaseSensitive(false);
     assertFalse(model.isCaseSensitive());
-    assertEquals("test", model.getSearchKey());
+    assertEquals("test", model.getColumnIdentifier());
     assertEquals(Types.VARCHAR, model.getType());
     assertEquals("%", model.getWildcard());
 

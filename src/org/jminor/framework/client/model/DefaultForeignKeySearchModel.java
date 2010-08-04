@@ -4,7 +4,7 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.db.criteria.Criteria;
-import org.jminor.common.model.DefaultSearchModel;
+import org.jminor.common.model.DefaultColumnSearchModel;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.domain.Entity;
@@ -21,7 +21,7 @@ import java.util.List;
  * Date: 19.7.2010<br>
  * Time: 13:53:07
  */
-public class DefaultForeignKeySearchModel extends DefaultSearchModel<Property.ForeignKeyProperty>
+public class DefaultForeignKeySearchModel extends DefaultColumnSearchModel<Property.ForeignKeyProperty>
         implements ForeignKeySearchModel {
 
   private final EntityComboBoxModel entityComboBoxModel;
@@ -61,7 +61,7 @@ public class DefaultForeignKeySearchModel extends DefaultSearchModel<Property.Fo
 
   @Override
   public final String toString() {
-    final StringBuilder stringBuilder = new StringBuilder(getSearchKey().getPropertyID());
+    final StringBuilder stringBuilder = new StringBuilder(getColumnIdentifier().getPropertyID());
     if (isSearchEnabled()) {
       stringBuilder.append(getSearchType());
       stringBuilder.append(getUpperBound() != null ? toString(getUpperBound()) : "null");
@@ -101,7 +101,7 @@ public class DefaultForeignKeySearchModel extends DefaultSearchModel<Property.Fo
    * @return a Criteria based on the values in this search model.
    */
   public final Criteria<Property.ColumnProperty> getCriteria() {
-    return EntityCriteriaUtil.foreignKeyCriteria(getSearchKey(), getSearchType(), getUpperBound());
+    return EntityCriteriaUtil.foreignKeyCriteria(getColumnIdentifier(), getSearchType(), getUpperBound());
   }
 
   private String toString(final Object object) {

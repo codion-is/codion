@@ -3,9 +3,9 @@
  */
 package org.jminor.framework.client.ui;
 
-import org.jminor.common.model.SearchModel;
+import org.jminor.common.model.ColumnSearchModel;
 import org.jminor.common.model.SearchType;
-import org.jminor.common.ui.AbstractSearchPanel;
+import org.jminor.common.ui.ColumnSearchPanel;
 import org.jminor.common.ui.combobox.MaximumMatch;
 import org.jminor.framework.client.model.EntityComboBoxModel;
 import org.jminor.framework.client.model.ForeignKeySearchModel;
@@ -21,39 +21,29 @@ import java.awt.event.ActionEvent;
  * Date: 19.7.2010
  * Time: 14:15:36
  */
-public final class ForeignKeySearchPanel extends AbstractSearchPanel<Property.ForeignKeyProperty> {
+public final class ForeignKeySearchPanel extends ColumnSearchPanel<Property.ForeignKeyProperty> {
 
   public ForeignKeySearchPanel(final ForeignKeySearchModel model) {
     this(model, false);
   }
 
   public ForeignKeySearchPanel(final ForeignKeySearchModel model, final boolean includeToggleAdvBtn) {
-    super(model, true, includeToggleAdvBtn, new ForeignKeyInputFieldProvider(model));
-  }
-
-  @Override
-  protected boolean isLowerBoundFieldRequired(final Property.ForeignKeyProperty searchKey) {
-    return false;
-  }
-
-  @Override
-  protected boolean searchTypeAllowed(final SearchType searchType) {
-    return searchType == SearchType.LIKE || searchType == SearchType.NOT_LIKE;
+    super(model, true, includeToggleAdvBtn, new ForeignKeyInputFieldProvider(model), SearchType.LIKE, SearchType.NOT_LIKE);
   }
 
   private static final class ForeignKeyInputFieldProvider implements InputFieldProvider<Property.ForeignKeyProperty> {
 
-    private final SearchModel<Property.ForeignKeyProperty> model;
+    private final ColumnSearchModel<Property.ForeignKeyProperty> model;
 
-    private ForeignKeyInputFieldProvider(final SearchModel<Property.ForeignKeyProperty> model) {
+    private ForeignKeyInputFieldProvider(final ColumnSearchModel<Property.ForeignKeyProperty> model) {
       this.model = model;
     }
 
-    public SearchModel<Property.ForeignKeyProperty> getSearchModel() {
+    public ColumnSearchModel<Property.ForeignKeyProperty> getSearchModel() {
       return model;
     }
 
-    public JComponent getInputField(final boolean isUpperBound) {
+    public JComponent initializeInputField(final boolean isUpperBound) {
       final JComponent field = initEntityField();
       field.setToolTipText(isUpperBound ? "a" : "b");
 

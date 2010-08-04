@@ -3,8 +3,8 @@
  */
 package org.jminor.common.ui;
 
+import org.jminor.common.model.ColumnSearchModel;
 import org.jminor.common.model.DateUtil;
-import org.jminor.common.model.SearchModel;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.State;
 import org.jminor.common.model.StateObserver;
@@ -46,18 +46,20 @@ import java.awt.event.WindowEvent;
 import java.sql.Types;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Collection;
 
 /**
- * An abstract panel for showing search/filter configuration.<br>
+ * A UI implementation for ColumnSearchModel
  * User: Bjorn Darri<br>
  * Date: 26.12.2007<br>
  * Time: 15:17:20<br>
  */
-public abstract class AbstractSearchPanel<K> extends JPanel {
+public class ColumnSearchPanel<K> extends JPanel {
 
   public static final int DEFAULT_FIELD_COLUMNS = 4;
 
-  private static final SearchType[] SEARCH_TYPES = {
+  protected static final SearchType[] SEARCH_TYPES = {
           SearchType.LIKE, SearchType.NOT_LIKE, SearchType.AT_LEAST,
           SearchType.AT_MOST, SearchType.WITHIN_RANGE, SearchType.OUTSIDE_RANGE};
 
@@ -70,7 +72,12 @@ public abstract class AbstractSearchPanel<K> extends JPanel {
   /**
    * The SearchModel this AbstractSearchPanel represents
    */
-  private final SearchModel<K> model;
+  private final ColumnSearchModel<K> model;
+
+  /**
+   * The search types allowed in this model
+   */
+  private final Collection<SearchType> searchTypes;
 
   /**
    * A JToggleButton for enabling/disabling the filter
@@ -100,21 +107,29 @@ public abstract class AbstractSearchPanel<K> extends JPanel {
   private final boolean includeToggleSearchEnabledBtn;
   private final boolean includeToggleSearchAdvancedBtn;
 
-  public AbstractSearchPanel(final SearchModel<K> searchModel, final boolean includeActivateBtn, final boolean includeToggleAdvBtn) {
-    this(searchModel, includeActivateBtn, includeToggleAdvBtn, new DefaultInputFieldProvider<K>(searchModel));
+  public ColumnSearchPanel(final ColumnSearchModel<K> searchModel, final boolean includeActivateBtn, final boolean includeToggleAdvBtn) {
+    this(searchModel, includeActivateBtn, includeToggleAdvBtn, SEARCH_TYPES);
   }
 
-  public AbstractSearchPanel(final SearchModel<K> searchModel, final boolean includeActivateBtn, final boolean includeToggleAdvBtn,
-                             final InputFieldProvider inputFieldProvider) {
-    this(searchModel, includeActivateBtn, includeToggleAdvBtn, inputFieldProvider.getInputField(true), inputFieldProvider.getInputField(false));
+  public ColumnSearchPanel(final ColumnSearchModel<K> searchModel, final boolean includeActivateBtn, final boolean includeToggleAdvBtn,
+                           final SearchType... searchTypes) {
+    this(searchModel, includeActivateBtn, includeToggleAdvBtn, new DefaultInputFieldProvider<K>(searchModel), searchTypes);
   }
 
-  public AbstractSearchPanel(final SearchModel<K> searchModel, final boolean includeActivateBtn, final boolean includeToggleAdvBtn,
-                             final JComponent upperBoundField, final JComponent lowerBoundField) {
+  public ColumnSearchPanel(final ColumnSearchModel<K> searchModel, final boolean includeActivateBtn, final boolean includeToggleAdvBtn,
+                           final InputFieldProvider inputFieldProvider, final SearchType... searchTypes) {
+    this(searchModel, includeActivateBtn, includeToggleAdvBtn, inputFieldProvider.initializeInputField(true),
+            inputFieldProvider.initializeInputField(false), searchTypes);
+  }
+
+  public ColumnSearchPanel(final ColumnSearchModel<K> searchModel, final boolean includeActivateBtn, final boolean includeToggleAdvBtn,
+                           final JComponent upperBoundField, final JComponent lowerBoundField,
+                           final SearchType... searchTypes) {
     Util.rejectNullValue(searchModel, "searchModel");
     this.model = searchModel;
     this.includeToggleSearchEnabledBtn = includeActivateBtn;
     this.includeToggleSearchAdvancedBtn = includeToggleAdvBtn;
+    this.searchTypes = searchTypes == null ? Arrays.asList(SEARCH_TYPES) : Arrays.asList(searchTypes);
     this.searchTypeCombo = initSearchTypeComboBox();
     this.upperBoundField = upperBoundField;
     this.lowerBoundField = lowerBoundField;
@@ -133,7 +148,7 @@ public abstract class AbstractSearchPanel<K> extends JPanel {
   /**
    * @return the search model this panel uses
    */
-  public final SearchModel<K> getModel() {
+  public final ColumnSearchModel<K> getModel() {
     return this.model;
   }
 
@@ -257,28 +272,22 @@ public abstract class AbstractSearchPanel<K> extends JPanel {
     return stTwoSearchFields.getObserver();
   }
 
-  /**
-   * @param searchType the search type
-   * @return true if the given search type is allowed given the underlying property
-   */
-  protected boolean searchTypeAllowed(final SearchType searchType) {
-    return true;
-  }
-
   public interface InputFieldProvider<K> {
-    SearchModel<K> getSearchModel();
-    JComponent getInputField(final boolean isUpperBound);
+
+    ColumnSearchModel<K> getSearchModel();
+
+    JComponent initializeInputField(final boolean isUpperBound);
   }
 
   private static class DefaultInputFieldProvider<K> implements InputFieldProvider<K> {
 
-    private final SearchModel<K> model;
+    private final ColumnSearchModel<K> model;
 
-    private DefaultInputFieldProvider(final SearchModel<K> model) {
+    private DefaultInputFieldProvider(final ColumnSearchModel<K> model) {
       this.model = model;
     }
 
-    public SearchModel<K> getSearchModel() {
+    public ColumnSearchModel<K> getSearchModel() {
       return model;
     }
 
@@ -286,7 +295,10 @@ public abstract class AbstractSearchPanel<K> extends JPanel {
      * @param isUpperBound true if the field should represent the upper bound, otherwise it should be the lower bound field
      * @return an input field for either the upper or lower bound
      */
-    public JComponent getInputField(final boolean isUpperBound) {
+    public JComponent initializeInputField(final boolean isUpperBound) {
+      if (model.getType() == Types.BOOLEAN && !isUpperBound) {
+        return null;//no lower bound field required for booleans
+      }
       final JComponent field = initField();
       if (model.getType() == Types.BOOLEAN) {
         createToggleProperty((JCheckBox) field, isUpperBound);
@@ -327,45 +339,39 @@ public abstract class AbstractSearchPanel<K> extends JPanel {
 
     private void createToggleProperty(final JCheckBox checkBox, final boolean isUpperBound) {
       new ToggleBeanValueLink(checkBox.getModel(), model,
-              isUpperBound ? SearchModel.UPPER_BOUND_PROPERTY : SearchModel.LOWER_BOUND_PROPERTY,
+              isUpperBound ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
               isUpperBound ? model.getUpperBoundObserver() : model.getLowerBoundObserver());
     }
 
     private TextBeanValueLink createTextProperty(final JComponent component, final boolean isUpper) {
       if (model.getType() == Types.INTEGER) {
         return new IntBeanValueLink((IntField) component, model,
-                isUpper ? SearchModel.UPPER_BOUND_PROPERTY : SearchModel.LOWER_BOUND_PROPERTY,
+                isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
                 isUpper ? model.getUpperBoundObserver() : model.getLowerBoundObserver());
       }
       if (model.getType() == Types.DOUBLE) {
         return new DoubleBeanValueLink((DoubleField) component, model,
-                isUpper ? SearchModel.UPPER_BOUND_PROPERTY : SearchModel.LOWER_BOUND_PROPERTY,
+                isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
                 isUpper ? model.getUpperBoundObserver() : model.getLowerBoundObserver());
       }
       if (model.getType() == Types.DATE) {
         return new DateBeanValueLink((JFormattedTextField) component, model,
-                isUpper ? SearchModel.UPPER_BOUND_PROPERTY : SearchModel.LOWER_BOUND_PROPERTY,
+                isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
                 isUpper ? model.getUpperBoundObserver() : model.getLowerBoundObserver(),
                 LinkType.READ_WRITE, (DateFormat) model.getFormat());
       }
       if (model.getType() == Types.TIMESTAMP) {
         return new TimestampBeanValueLink((JFormattedTextField) component, model,
-                isUpper ? SearchModel.UPPER_BOUND_PROPERTY : SearchModel.LOWER_BOUND_PROPERTY,
+                isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
                 isUpper ? model.getUpperBoundObserver() : model.getLowerBoundObserver(),
                 LinkType.READ_WRITE, (DateFormat) model.getFormat());
       }
 
       return new TextBeanValueLink((JTextField) component, model,
-              isUpper ? SearchModel.UPPER_BOUND_PROPERTY : SearchModel.LOWER_BOUND_PROPERTY,
+              isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
               String.class, isUpper ? model.getUpperBoundObserver() : model.getLowerBoundObserver());
     }
   }
-
-  /**
-   * @param searchKey the key
-   * @return true if a lower bound field is required given the key
-   */
-  protected abstract boolean isLowerBoundFieldRequired(final K searchKey);
 
   /**
    * Binds events to relevant GUI actions
@@ -406,22 +412,14 @@ public abstract class AbstractSearchPanel<K> extends JPanel {
     }
   }
 
-  /**
-   * @return an ItemComboBoxModel containing the available search types
-   */
-  private ItemComboBoxModel initSearchTypeModel() {
+  private JComboBox initSearchTypeComboBox() {
     final ItemComboBoxModel comboBoxModel = new ItemComboBoxModel();
     for (int i = 0; i < SEARCH_TYPES.length; i++) {
-      if (searchTypeAllowed(SEARCH_TYPES[i])) {
+      if (searchTypes.contains(SEARCH_TYPES[i])) {
         comboBoxModel.addElement(new ItemComboBoxModel.IconItem<SearchType>(SEARCH_TYPES[i], Images.loadImage(SEARCH_TYPE_IMAGES[i])));
       }
     }
-
-    return comboBoxModel;
-  }
-
-  private JComboBox initSearchTypeComboBox() {
-    final JComboBox comboBox = new SteppedComboBox(initSearchTypeModel());
+    final JComboBox comboBox = new SteppedComboBox(comboBoxModel);
     ControlProvider.bindItemSelector(comboBox, model, "searchType", SearchType.class, model.getSearchTypeObserver());
 
     return comboBox;
@@ -512,10 +510,10 @@ public abstract class AbstractSearchPanel<K> extends JPanel {
 
     final JDialog dlgParent = UiUtil.getParentDialog(parent);
     if (dlgParent != null) {
-      dialog = new JDialog(dlgParent, model.getSearchKey().toString(), false);
+      dialog = new JDialog(dlgParent, model.getColumnIdentifier().toString(), false);
     }
     else {
-      dialog = new JDialog(UiUtil.getParentFrame(parent), model.getSearchKey().toString(), false);
+      dialog = new JDialog(UiUtil.getParentFrame(parent), model.getColumnIdentifier().toString(), false);
     }
 
     final JPanel searchPanel = new JPanel(new BorderLayout());

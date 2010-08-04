@@ -198,12 +198,12 @@ public interface FilteredTableModel<T, C> extends FilteredModel<T>, TableModel, 
    * @param columnIndex the column index
    * @return the SearchModel at the given column index
    */
-  SearchModel<C> getFilterModel(final int columnIndex);
+  ColumnSearchModel<C> getFilterModel(final int columnIndex);
 
   /**
    * @return an unmodifiable list view of the column filter models
    */
-  List<SearchModel<C>> getFilterModels();
+  List<ColumnSearchModel<C>> getFilterModels();
 
   /**
    * @return true if no rows are selected in this table model

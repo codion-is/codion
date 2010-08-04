@@ -3,12 +3,12 @@
  */
 package org.jminor.framework.client.ui;
 
+import org.jminor.common.model.ColumnSearchModel;
 import org.jminor.common.model.DateUtil;
-import org.jminor.common.model.SearchModel;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.combobox.BooleanComboBoxModel;
 import org.jminor.common.model.combobox.ItemComboBoxModel;
-import org.jminor.common.ui.AbstractSearchPanel;
+import org.jminor.common.ui.ColumnSearchPanel;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.combobox.MaximumMatch;
 import org.jminor.common.ui.combobox.SteppedComboBox;
@@ -31,9 +31,10 @@ import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JTextField;
 import java.awt.event.ActionEvent;
+import java.sql.Types;
 import java.text.SimpleDateFormat;
 
-public final class PropertySearchPanel extends AbstractSearchPanel<Property.ColumnProperty> {
+public final class PropertySearchPanel extends ColumnSearchPanel<Property.ColumnProperty> {
 
   public PropertySearchPanel(final PropertySearchModel<Property.ColumnProperty> model) {
     this(model, false, false);
@@ -41,33 +42,35 @@ public final class PropertySearchPanel extends AbstractSearchPanel<Property.Colu
 
   public PropertySearchPanel(final PropertySearchModel<Property.ColumnProperty> model,
                              final boolean includeActivateBtn, final boolean includeToggleAdvBtn) {
-    super(model, includeActivateBtn, includeToggleAdvBtn, new PropertyInputFieldProvider(model));
+    super(model, includeActivateBtn, includeToggleAdvBtn, new PropertyInputFieldProvider(model),
+            getSearchTypes(model));
   }
 
-  @Override
-  protected boolean isLowerBoundFieldRequired(final Property.ColumnProperty searchKey) {
-    return !searchKey.isBoolean();
-  }
-
-  @Override
-  protected boolean searchTypeAllowed(final SearchType searchType) {
-    final Property property = getModel().getSearchKey();
-    return !property.isBoolean() || searchType == SearchType.LIKE || searchType == SearchType.NOT_LIKE;
+  private static SearchType[] getSearchTypes(final PropertySearchModel<Property.ColumnProperty> model) {
+    if (model.getColumnIdentifier().isBoolean()) {
+      return new SearchType[] {SearchType.LIKE};
+    }
+    else {
+      return SEARCH_TYPES;
+    }
   }
 
   private static final class PropertyInputFieldProvider implements InputFieldProvider<Property.ColumnProperty> {
 
-    private final SearchModel<Property.ColumnProperty> model;
+    private final ColumnSearchModel<Property.ColumnProperty> model;
 
-    private PropertyInputFieldProvider(final SearchModel<Property.ColumnProperty> model) {
+    private PropertyInputFieldProvider(final ColumnSearchModel<Property.ColumnProperty> model) {
       this.model = model;
     }
 
-    public SearchModel<Property.ColumnProperty> getSearchModel() {
+    public ColumnSearchModel<Property.ColumnProperty> getSearchModel() {
       return model;
     }
 
-    public JComponent getInputField(final boolean isUpperBound) {
+    public JComponent initializeInputField(final boolean isUpperBound) {
+      if (model.getType() == Types.BOOLEAN && !isUpperBound) {
+        return null;//no lower bound field required for booleans
+      }
       final JComponent field = initField();
       bindField(field, isUpperBound);
       if (field instanceof JTextField) { //enter button toggles the filter on/off
@@ -79,7 +82,7 @@ public final class PropertySearchPanel extends AbstractSearchPanel<Property.Colu
     }
 
     private JComponent initField() {
-      final Property property = model.getSearchKey();
+      final Property property = model.getColumnIdentifier();
       if (property instanceof Property.ValueListProperty) {
         return initValueListField((Property.ValueListProperty) property);
       }
@@ -109,28 +112,28 @@ public final class PropertySearchPanel extends AbstractSearchPanel<Property.Colu
     }
 
     private void bindField(final JComponent field, final boolean isUpper) {
-      final Property property = model.getSearchKey();
+      final Property property = model.getColumnIdentifier();
       if (property instanceof Property.ValueListProperty) {
         new SelectedItemBeanValueLink((JComboBox) field, model,
-                isUpper ? SearchModel.UPPER_BOUND_PROPERTY : SearchModel.LOWER_BOUND_PROPERTY,
+                isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
                 Object.class, isUpper ? model.getUpperBoundObserver() : model.getLowerBoundObserver());
       }
       else if (property.isDate()) {
         new DateBeanValueLink((JFormattedTextField) field, model,
-                isUpper ? SearchModel.UPPER_BOUND_PROPERTY : SearchModel.LOWER_BOUND_PROPERTY,
+                isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
                 isUpper ? model.getUpperBoundObserver() : model.getLowerBoundObserver(),
                 LinkType.READ_WRITE, (SimpleDateFormat) model.getFormat());
 
       }
       else if (property.isTimestamp()) {
         new TimestampBeanValueLink((JFormattedTextField) field, model,
-                isUpper ? SearchModel.UPPER_BOUND_PROPERTY : SearchModel.LOWER_BOUND_PROPERTY,
+                isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
                 isUpper ? model.getUpperBoundObserver() : model.getLowerBoundObserver(),
                 LinkType.READ_WRITE, (SimpleDateFormat) model.getFormat());
       }
       else if (property.isDouble()) {
         new DoubleBeanValueLink((DoubleField) field, model,
-                isUpper ? SearchModel.UPPER_BOUND_PROPERTY : SearchModel.LOWER_BOUND_PROPERTY,
+                isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
                 isUpper ? model.getUpperBoundObserver() : model.getLowerBoundObserver());
       }
       else if (property.isInteger()) {
@@ -145,7 +148,7 @@ public final class PropertySearchPanel extends AbstractSearchPanel<Property.Colu
       }
       else if (!property.isReference()) {//entity based properties are bound in the model
         new TextBeanValueLink((JTextField) field, model,
-                isUpper ? SearchModel.UPPER_BOUND_PROPERTY : SearchModel.LOWER_BOUND_PROPERTY, String.class,
+                isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY, String.class,
                 isUpper ? model.getUpperBoundObserver() : model.getLowerBoundObserver());
       }
     }

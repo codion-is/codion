@@ -29,7 +29,7 @@ public class DefaultPropertySearchModelTest {
   public void propertySearchModel() throws Exception {
     final Property.ColumnProperty property = (Property.ColumnProperty) Entities.getProperty(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME);
     final PropertySearchModel model = new DefaultPropertySearchModel(property);
-    assertEquals(property, model.getSearchKey());
+    assertEquals(property, model.getColumnIdentifier());
     model.setSearchType(SearchType.LIKE);
     model.setUpperBound("upper");
     assertEquals(property.getPropertyID() + " like ?", model.getCriteria().asString());

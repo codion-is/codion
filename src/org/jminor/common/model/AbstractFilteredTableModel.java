@@ -83,7 +83,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
   /**
    * The SearchModels used for filtering
    */
-  private final List<? extends SearchModel<C>> columnFilterModels;
+  private final List<? extends ColumnSearchModel<C>> columnFilterModels;
 
   /**
    * Contains columns that have been hidden
@@ -105,7 +105,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
    */
   private final FilterCriteria<T> filterCriteria = new FilterCriteria<T>() {
     public boolean include(final T item) {
-      for (final SearchModel columnFilter : columnFilterModels) {
+      for (final ColumnSearchModel columnFilter : columnFilterModels) {
         if (columnFilter.isSearchEnabled() && !columnFilter.include(item)) {
           return false;
         }
@@ -140,7 +140,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
   private boolean regularExpressionSearch = false;
 
   public AbstractFilteredTableModel(final TableColumnModel columnModel,
-                                    final List<? extends SearchModel<C>> columnFilterModels) {
+                                    final List<? extends ColumnSearchModel<C>> columnFilterModels) {
     this.columnModel = columnModel;
     this.columnIndexCache = new int[columnModel.getColumnCount()];
     this.columnFilterModels = columnFilterModels;
@@ -305,11 +305,11 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     this.regularExpressionSearch = value;
   }
 
-  public final SearchModel<C> getFilterModel(final int columnIndex) {
+  public final ColumnSearchModel<C> getFilterModel(final int columnIndex) {
     return columnFilterModels.get(columnIndex);
   }
 
-  public final List<SearchModel<C>> getFilterModels() {
+  public final List<ColumnSearchModel<C>> getFilterModels() {
     return Collections.unmodifiableList(columnFilterModels);
   }
 
@@ -771,7 +771,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
         selectedItems.clear();
       }
     });
-    for (final SearchModel searchModel : columnFilterModels) {
+    for (final ColumnSearchModel searchModel : columnFilterModels) {
       searchModel.addSearchStateListener(new ActionListener() {
         public void actionPerformed(final ActionEvent e) {
           filterContents();

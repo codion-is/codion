@@ -5,11 +5,11 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.criteria.CriteriaSet;
+import org.jminor.common.model.ColumnSearchModel;
 import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.Refreshable;
-import org.jminor.common.model.SearchModel;
 import org.jminor.common.model.State;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.States;
@@ -39,7 +39,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
   private final String entityID;
   private final EntityDbProvider dbProvider;
   private final List<Property> properties;
-  private Map<String, SearchModel<Property>> propertyFilterModels;
+  private Map<String, ColumnSearchModel<Property>> propertyFilterModels;
   private Map<String, PropertySearchModel<? extends Property.SearchableProperty>> propertySearchModels;
   /** When active the search should be simplified */
   private final boolean simpleSearch;
@@ -108,7 +108,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
     stSearchStateChanged.setActive(false);
   }
 
-  public final SearchModel<Property> getPropertyFilterModel(final String propertyID) {
+  public final ColumnSearchModel<Property> getPropertyFilterModel(final String propertyID) {
     initialize();
     if (propertyFilterModels.containsKey(propertyID)) {
       return propertyFilterModels.get(propertyID);
@@ -117,13 +117,13 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
     return null;
   }
 
-  public final Collection<SearchModel<Property>> getPropertyFilterModels() {
+  public final Collection<ColumnSearchModel<Property>> getPropertyFilterModels() {
     initialize();
     return Collections.unmodifiableCollection(propertyFilterModels.values());
   }
 
-  public final List<SearchModel<Property>> getPropertyFilterModelsOrdered() {
-    final List<SearchModel<Property>> models = new ArrayList<SearchModel<Property>>(properties.size());
+  public final List<ColumnSearchModel<Property>> getPropertyFilterModelsOrdered() {
+    final List<ColumnSearchModel<Property>> models = new ArrayList<ColumnSearchModel<Property>>(properties.size());
     for (final Property property : properties) {
       models.add(getPropertyFilterModel(property.getPropertyID()));
     }
@@ -133,7 +133,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
 
   public final boolean include(final Entity item) {
     initialize();
-    for (final SearchModel<Property> columnFilter : propertyFilterModels.values()) {
+    for (final ColumnSearchModel<Property> columnFilter : propertyFilterModels.values()) {
       if (columnFilter.isSearchEnabled() && !columnFilter.include(item)) {
         return false;
       }
@@ -183,7 +183,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
       return propertySearchModels.get(propertyID);
     }
 
-    throw new RuntimeException("SearchModel not found for property with ID: " + propertyID);
+    throw new RuntimeException("ColumnSearchModel not found for property with ID: " + propertyID);
   }
 
   public final boolean isSearchEnabled(final String propertyID) {
@@ -206,7 +206,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
   }
 
   public final void setFilterValue(final String propertyID, final Comparable value) {
-    final SearchModel<Property> filterModel = getPropertyFilterModel(propertyID);
+    final ColumnSearchModel<Property> filterModel = getPropertyFilterModel(propertyID);
     if (filterModel != null) {
       filterModel.setLikeValue(value);
     }
@@ -297,7 +297,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
    * @param property the Property for which to initialize a PropertyFilterModel
    * @return a PropertyFilterModel for the given property
    */
-  protected SearchModel<Property> initializePropertyFilterModel(final Property property) {
+  protected ColumnSearchModel<Property> initializePropertyFilterModel(final Property property) {
     return new DefaultPropertyFilterModel(property);
   }
 
@@ -330,10 +330,10 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
   /**
    * @return a map of PropertyFilterModels mapped to their respective propertyIDs
    */
-  private Map<String, SearchModel<Property>> initializePropertyFilterModels() {
-    final Map<String, SearchModel<Property>> filters = new HashMap<String, SearchModel<Property>>(properties.size());
+  private Map<String, ColumnSearchModel<Property>> initializePropertyFilterModels() {
+    final Map<String, ColumnSearchModel<Property>> filters = new HashMap<String, ColumnSearchModel<Property>>(properties.size());
     for (final Property property : properties) {
-      final SearchModel<Property> filterModel = initializePropertyFilterModel(property);
+      final ColumnSearchModel<Property> filterModel = initializePropertyFilterModel(property);
       filterModel.addSearchStateListener(evtFilterStateChanged);
       filters.put(property.getPropertyID(), filterModel);
     }

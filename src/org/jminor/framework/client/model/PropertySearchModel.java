@@ -4,11 +4,11 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.db.criteria.CriteriaProvider;
-import org.jminor.common.model.SearchModel;
+import org.jminor.common.model.ColumnSearchModel;
 import org.jminor.framework.domain.Property;
 
 /**
  * A base interface for searching a set of entities based on a property.
  */
 public interface PropertySearchModel<T extends Property.SearchableProperty>
-        extends SearchModel<T>, CriteriaProvider<Property.ColumnProperty> {}
+        extends ColumnSearchModel<T>, CriteriaProvider<Property.ColumnProperty> {}

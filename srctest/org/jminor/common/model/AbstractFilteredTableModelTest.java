@@ -35,7 +35,7 @@ public final class AbstractFilteredTableModelTest {
     final TableColumn column = new TableColumn(0);
     column.setIdentifier(0);
     columnModel.addColumn(column);
-    final SearchModel<Integer> filterModel = new DefaultSearchModel<Integer>(0, Types.VARCHAR, "%");
+    final ColumnSearchModel<Integer> filterModel = new DefaultColumnSearchModel<Integer>(0, Types.VARCHAR, "%");
     return new AbstractFilteredTableModel<String, Integer>(columnModel, Arrays.asList(filterModel)) {
       @Override
       protected void doRefresh() {

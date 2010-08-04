@@ -7,16 +7,16 @@ import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.exception.DbException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
+import org.jminor.common.model.ColumnSearchModel;
 import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Events;
-import org.jminor.common.model.SearchModel;
 import org.jminor.common.model.Serializer;
 import org.jminor.common.model.State;
 import org.jminor.common.model.States;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.AbstractFilteredTablePanel;
-import org.jminor.common.ui.AbstractSearchPanel;
+import org.jminor.common.ui.ColumnSearchPanel;
 import org.jminor.common.ui.DefaultExceptionHandler;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.Control;
@@ -837,7 +837,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
   }
 
   @Override
-  protected AbstractSearchPanel<Property> initializeFilterPanel(final SearchModel<Property> model) {
+  protected ColumnSearchPanel<Property> initializeFilterPanel(final ColumnSearchModel<Property> model) {
     return new PropertyFilterPanel(model, true, true);
   }
 

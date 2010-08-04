@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
  * Date: 26.12.2007<br>
  * Time: 14:48:22<br>
  */
-public class DefaultSearchModel<K> implements SearchModel<K> {
+public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
 
   private final Event evtUpperBoundChanged = Events.event();
   private final Event evtLowerBoundChanged = Events.event();
@@ -30,7 +30,7 @@ public class DefaultSearchModel<K> implements SearchModel<K> {
 
   private final State stLocked = States.state();
 
-  private final K searchKey;
+  private final K columnIdentifier;
   private final int type;
   private final Format dateFormat;
 
@@ -43,22 +43,22 @@ public class DefaultSearchModel<K> implements SearchModel<K> {
   private Object lowerBound = null;
   private String wildcard;
 
-  public DefaultSearchModel(final K searchKey, final int type, final String wildcard) {
-    this(searchKey, type, wildcard, null);
+  public DefaultColumnSearchModel(final K columnIdentifier, final int type, final String wildcard) {
+    this(columnIdentifier, type, wildcard, null);
   }
 
-  public DefaultSearchModel(final K searchKey, final int type, final String wildcard,
-                            final Format dateFormat) {
-    Util.rejectNullValue(searchKey, "searchKey");
-    this.searchKey = searchKey;
+  public DefaultColumnSearchModel(final K columnIdentifier, final int type, final String wildcard,
+                                  final Format dateFormat) {
+    Util.rejectNullValue(columnIdentifier, "searchKey");
+    this.columnIdentifier = columnIdentifier;
     this.type = type;
     this.wildcard = wildcard;
     this.dateFormat = dateFormat;
     bindEvents();
   }
 
-  public final K getSearchKey() {
-    return searchKey;
+  public final K getColumnIdentifier() {
+    return columnIdentifier;
   }
 
   /**
@@ -615,7 +615,7 @@ public class DefaultSearchModel<K> implements SearchModel<K> {
 
   private void checkLock() {
     if (stLocked.isActive()) {
-      throw new IllegalStateException("Search model for key " + searchKey + " is locked");
+      throw new IllegalStateException("Search model for key " + columnIdentifier + " is locked");
     }
   }
 }

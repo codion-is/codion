@@ -1,7 +1,7 @@
 package org.jminor.common.ui;
 
-import org.jminor.common.model.DefaultSearchModel;
-import org.jminor.common.model.SearchModel;
+import org.jminor.common.model.ColumnSearchModel;
+import org.jminor.common.model.DefaultColumnSearchModel;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -13,7 +13,7 @@ public class AbstractSearchPanelTest {
   @Test
   public void test() {
     final String key = "key";
-    final SearchModel<String> model = new DefaultSearchModel<String>(key, Types.VARCHAR, "%");
+    final ColumnSearchModel<String> model = new DefaultColumnSearchModel<String>(key, Types.VARCHAR, "%");
     final SearchPanelImpl panel = new SearchPanelImpl(model, true, true);
     assertEquals(model, panel.getModel());
     assertNotNull(panel.getUpperBoundField());
@@ -28,15 +28,10 @@ public class AbstractSearchPanelTest {
     assertFalse(panel.isAdvancedSearchOn());
   }
 
-  private static class SearchPanelImpl extends AbstractSearchPanel<String> {
+  private static class SearchPanelImpl extends ColumnSearchPanel<String> {
 
-    private SearchPanelImpl(final SearchModel<String> objectSearchModel, final boolean includeActivateBtn, final boolean includeToggleAdvBtn) {
+    private SearchPanelImpl(final ColumnSearchModel<String> objectSearchModel, final boolean includeActivateBtn, final boolean includeToggleAdvBtn) {
       super(objectSearchModel, includeActivateBtn, includeToggleAdvBtn);
-    }
-
-    @Override
-    protected boolean isLowerBoundFieldRequired(final String searchKey) {
-      return true;
     }
   }
 }

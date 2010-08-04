@@ -3,23 +3,28 @@
  */
 package org.jminor.framework.client.ui;
 
-import org.jminor.common.model.SearchModel;
-import org.jminor.common.ui.AbstractSearchPanel;
+import org.jminor.common.model.ColumnSearchModel;
+import org.jminor.common.model.SearchType;
+import org.jminor.common.ui.ColumnSearchPanel;
 import org.jminor.framework.domain.Property;
 
-public final class PropertyFilterPanel extends AbstractSearchPanel<Property> {
+public final class PropertyFilterPanel extends ColumnSearchPanel<Property> {
 
-  public PropertyFilterPanel(final SearchModel<Property> model) {
+  public PropertyFilterPanel(final ColumnSearchModel<Property> model) {
     this(model, false, false);
   }
 
-  public PropertyFilterPanel(final SearchModel<Property> model, final boolean includeActivateBtn,
+  public PropertyFilterPanel(final ColumnSearchModel<Property> model, final boolean includeActivateBtn,
                              final boolean includeToggleAdvBtn) {
-    super(model, includeActivateBtn, includeToggleAdvBtn);
+    super(model, includeActivateBtn, includeToggleAdvBtn, getSearchTypes(model));
   }
 
-  @Override
-  protected boolean isLowerBoundFieldRequired(final Property searchKey) {
-    return !searchKey.isBoolean();
+  private static SearchType[] getSearchTypes(final ColumnSearchModel<Property> model) {
+    if (model.getColumnIdentifier().isBoolean()) {
+      return new SearchType[] {SearchType.LIKE};
+    }
+    else {
+      return SEARCH_TYPES;
+    }
   }
 }
