@@ -15,7 +15,7 @@ import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.States;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
-import org.jminor.common.model.valuemap.DefaultValueChangeMapEditModel;
+import org.jminor.common.model.valuemap.AbstractValueChangeMapEditModel;
 import org.jminor.common.model.valuemap.ValueChangeEvent;
 import org.jminor.common.model.valuemap.ValueChangeListener;
 import org.jminor.common.model.valuemap.ValueCollectionProvider;
@@ -45,7 +45,7 @@ import java.util.Map;
 /**
  * A default EntityEditModel implementation
  */
-public class DefaultEntityEditModel extends DefaultValueChangeMapEditModel<String, Object> implements EntityEditModel {
+public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<String, Object> implements EntityEditModel {
 
   protected static final Logger LOG = Util.getLogger(DefaultEntityEditModel.class);
 
@@ -438,7 +438,6 @@ public class DefaultEntityEditModel extends DefaultValueChangeMapEditModel<Strin
     return propertyComboBoxModels.containsKey(property);
   }
 
-  @Override
   public final Entity getDefaultValueMap() {
     final Entity defaultEntity = Entities.entityInstance(entityID);
     final Collection<Property.ColumnProperty> databaseProperties = Entities.getColumnProperties(entityID);

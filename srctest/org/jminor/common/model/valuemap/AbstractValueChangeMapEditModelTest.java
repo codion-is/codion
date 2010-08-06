@@ -13,25 +13,29 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class DefaultValueChangeMapEditModelTest {
+public class AbstractValueChangeMapEditModelTest {
 
   private final ValueChangeMap<String, Integer> valueMap = new ValueChangeMapImpl<String, Integer>();
-  private final DefaultValueChangeMapEditModel<String, Integer> model =
-          new DefaultValueChangeMapEditModel<String, Integer>(valueMap, new DefaultValueMapValidator<String, Integer>() {
-    @Override
-    public boolean isNullable(final ValueMap<String, Integer> valueMap, final String key) {
-      return super.isNullable(valueMap, key) && false;
-    }
+  private final AbstractValueChangeMapEditModel<String, Integer> model =
+          new AbstractValueChangeMapEditModel<String, Integer>(valueMap, new DefaultValueMapValidator<String, Integer>() {
+            @Override
+            public boolean isNullable(final ValueMap<String, Integer> valueMap, final String key) {
+              return super.isNullable(valueMap, key) && false;
+            }
 
-    @Override
-    public void validate(final ValueMap<String, Integer> valueMap, final String key, final int action) throws ValidationException {
-      super.validate(valueMap, key, action);
-      final Object value = valueMap.getValue(key);
-      if (value.equals(-1)) {
-        throw new ValidationException(key, -1, "nono");
-      }
-    }
-  });
+            @Override
+            public void validate(final ValueMap<String, Integer> valueMap, final String key, final int action) throws ValidationException {
+              super.validate(valueMap, key, action);
+              final Object value = valueMap.getValue(key);
+              if (value.equals(-1)) {
+                throw new ValidationException(key, -1, "nono");
+              }
+            }
+          }) {
+            public ValueMap<String, Integer> getDefaultValueMap() {
+              return new ValueChangeMapImpl<String, Integer>();
+            }
+          };
 
   private final Collection<Object> valueChangeCounter = new ArrayList<Object>();
   private final Collection<Object> valueSetCounter = new ArrayList<Object>();

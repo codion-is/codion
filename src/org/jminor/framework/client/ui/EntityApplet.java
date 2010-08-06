@@ -24,7 +24,7 @@ public class EntityApplet extends JApplet {
   }
 
   @Override
-  public void init() {
+  public final void init() {
     try {
       SwingUtilities.invokeAndWait(new Runnable() {
         public void run() {
@@ -42,7 +42,7 @@ public class EntityApplet extends JApplet {
   }
 
   @Override
-  public void destroy() {
+  public final void destroy() {
     SwingUtilities.invokeLater(new Runnable() {
       public void run() {
         entityPanelProvider.getInstance().getModel().getDbProvider().disconnect();
@@ -51,10 +51,8 @@ public class EntityApplet extends JApplet {
   }
 
   @Override
-  public void start() {
-  }
+  public void start() {}
 
   @Override
-  public void stop() {
-  }
+  public void stop() {}
 }

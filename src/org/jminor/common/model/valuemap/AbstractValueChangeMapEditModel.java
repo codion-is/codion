@@ -22,7 +22,7 @@ import java.util.Map;
  * @param <K> the type of the keys in the value map
  * @param <V> the type of the values in the value map
  */
-public class DefaultValueChangeMapEditModel<K, V> implements ValueChangeMapEditModel<K, V> {
+public abstract class AbstractValueChangeMapEditModel<K, V> implements ValueChangeMapEditModel<K, V> {
 
   /**
    * The value map instance edited by this edit model.
@@ -54,7 +54,7 @@ public class DefaultValueChangeMapEditModel<K, V> implements ValueChangeMapEditM
    * @param initialMap the value map to edit
    * @param validator the validator
    */
-  public DefaultValueChangeMapEditModel(final ValueChangeMap<K, V> initialMap, final ValueMapValidator<K, V> validator) {
+  public AbstractValueChangeMapEditModel(final ValueChangeMap<K, V> initialMap, final ValueMapValidator<K, V> validator) {
     Util.rejectNullValue(initialMap, "initialMap");
     this.valueMap = initialMap;
     this.validator = validator;
@@ -64,10 +64,6 @@ public class DefaultValueChangeMapEditModel<K, V> implements ValueChangeMapEditM
   public void clear() {}
 
   public void refresh() {}
-
-  public ValueChangeMap<K, V> getDefaultValueMap() {
-    return new ValueChangeMapImpl<K, V>();
-  }
 
   public final ValueMapValidator<K, V> getValidator() {
     return validator;

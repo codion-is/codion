@@ -1984,3 +1984,5 @@
   EntityEditPanel.getEntityEditModel() added
   AbstractFilteredTablePanel.getFilteredTableModel() renamed to getTableModel()
   EntityTablePanel.getTableModel() renamed to getEntityTableModel()
+  DefaultValueChangeMapEditModel.getDefaultValueMap() implementation removed
+  DefaultValueChangeMapEditModel renamed to AbstractValueChangeMapEditModel
