@@ -22,8 +22,6 @@ import org.jminor.framework.domain.Property;
 
 import org.apache.log4j.Logger;
 
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -115,7 +113,6 @@ public class DefaultEntityModel implements EntityModel {
     }
     if (tableModel != null) {
       tableModel.setEditModel(editModel);
-      bindTableModelEvents();
     }
     bindEvents();
   }
@@ -158,7 +155,6 @@ public class DefaultEntityModel implements EntityModel {
     this.tableModel = tableModel;
     if (tableModel != null) {
       tableModel.setEditModel(editModel);
-      bindTableModelEvents();
     }
     bindEvents();
   }
@@ -548,44 +544,19 @@ public class DefaultEntityModel implements EntityModel {
         }
       }
     });
-    if (!containsTableModel()) {
+    if (containsTableModel()) {
+      tableModel.addSelectionChangedListener(new ActionListener() {
+        public void actionPerformed(final ActionEvent e) {
+          updateDetailModelsByActiveEntity();
+        }
+      });
+    }
+    else {
       editModel.addValueMapSetListener(new ActionListener() {
         public void actionPerformed(final ActionEvent e) {
           updateDetailModelsByActiveEntity();
         }
       });
     }
-  }
-
-  private void bindTableModelEvents() {
-    if (!containsTableModel()) {
-      return;
-    }
-
-    editModel.addAfterRefreshListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent e) {
-        tableModel.refresh();
-      }
-    });
-    tableModel.addSelectionChangedListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent e) {
-        updateDetailModelsByActiveEntity();
-      }
-    });
-    tableModel.addSelectedIndexListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent e) {
-        editModel.setEntity(tableModel.isSelectionEmpty() ? null : tableModel.getSelectedItem());
-      }
-    });
-
-    tableModel.addTableModelListener(new TableModelListener() {
-      public void tableChanged(final TableModelEvent e) {
-        //if the selected record is being updated via the table model refresh the one in the edit model
-        if (e.getType() == TableModelEvent.UPDATE && e.getFirstRow() == tableModel.getSelectedIndex()) {
-          editModel.setEntity(null);
-          editModel.setEntity(tableModel.getSelectedItem());
-        }
-      }
-    });
   }
 }

@@ -1989,3 +1989,4 @@
   EntityTablePanel.initializeUI() renamed to initializePanel(), publicized, call required after panel construction
   EntityTablePanel.panelInitialized field added, functionality mirrors EntityPanel
   EntityTablePanel.additionalPopup/ToolbarControls fields added
+  DefaultEntityModel.bindTableModelEvents() functionality moved to DefaultEntityTableModel.setEditModel()

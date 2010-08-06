@@ -27,6 +27,8 @@ import org.jminor.framework.i18n.FrameworkMessages;
 
 import org.apache.log4j.Logger;
 
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.TableColumn;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -126,12 +128,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
       throw new RuntimeException("Edit model has already been set for table model: " + this);
     }
     this.editModel = editModel;
-    this.editModel.addAfterDeleteListener(new DeleteListener() {
-      @Override
-      protected void deleted(final DeleteEvent event) {
-        handleDeleteInternal(event);
-      }
-    });
+    bindEditModelEvents();
   }
 
   public boolean hasEditModel() {
@@ -537,6 +534,35 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     searchModel.addFilterStateListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         filterContents();
+      }
+    });
+  }
+
+  private void bindEditModelEvents() {
+    editModel.addAfterDeleteListener(new DeleteListener() {
+      @Override
+      protected void deleted(final DeleteEvent event) {
+        handleDeleteInternal(event);
+      }
+    });
+    editModel.addAfterRefreshListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
+        refresh();
+      }
+    });
+    addSelectedIndexListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
+        editModel.setEntity(isSelectionEmpty() ? null : getSelectedItem());
+      }
+    });
+
+    addTableModelListener(new TableModelListener() {
+      public void tableChanged(final TableModelEvent e) {
+        //if the selected record is being updated via the table model refresh the one in the edit model
+        if (e.getType() == TableModelEvent.UPDATE && e.getFirstRow() == getSelectedIndex()) {
+          editModel.setEntity(null);
+          editModel.setEntity(getSelectedItem());
+        }
       }
     });
   }
