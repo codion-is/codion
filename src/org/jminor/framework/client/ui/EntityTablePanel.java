@@ -307,8 +307,8 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
   /**
    * @return the EntityTableModel used by this EntityTablePanel
    */
-  public final EntityTableModel getTableModel() {
-    return (EntityTableModel) super.getFilteredTableModel();
+  public final EntityTableModel getEntityTableModel() {
+    return (EntityTableModel) super.getTableModel();
   }
 
   /**
@@ -318,7 +318,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
    * @see org.jminor.framework.client.model.EntityTableModel#isQueryConfigurationAllowed()
    */
   public final void configureQuery() {
-    if (!getTableModel().isQueryConfigurationAllowed()) {
+    if (!getEntityTableModel().isQueryConfigurationAllowed()) {
       return;
     }
 
@@ -326,10 +326,10 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     AbstractAction action;
     try {
       UiUtil.setWaitCursor(true, this);
-      panel = new EntityCriteriaPanel(getTableModel());
+      panel = new EntityCriteriaPanel(getEntityTableModel());
       action = new AbstractAction(FrameworkMessages.get(FrameworkMessages.APPLY)) {
         public void actionPerformed(final ActionEvent e) {
-          getTableModel().refresh();
+          getEntityTableModel().refresh();
         }
       };
       action.putValue(Action.MNEMONIC_KEY, FrameworkMessages.get(FrameworkMessages.APPLY_MNEMONIC).charAt(0));
@@ -431,7 +431,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
 
   @Override
   public final String toString() {
-    return getClass().getSimpleName() + ": " + getTableModel().getEntityID();
+    return getClass().getSimpleName() + ": " + getEntityTableModel().getEntityID();
   }
 
   /**
@@ -453,12 +453,12 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
    */
   public ControlSet getUpdateSelectedControlSet() {
     final State enabled = States.aggregateState(Conjunction.AND,
-            getTableModel().getAllowMultipleUpdateState(),
-            getTableModel().getSelectionEmptyState().getReversedState());
+            getEntityTableModel().getAllowMultipleUpdateState(),
+            getEntityTableModel().getSelectionEmptyState().getReversedState());
     final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED),
             (char) 0, Images.loadImage("Modify16.gif"), enabled);
     controlSet.setDescription(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_TIP));
-    for (final Property property : EntityUtil.getUpdatableProperties(getTableModel().getEntityID())) {
+    for (final Property property : EntityUtil.getUpdatableProperties(getEntityTableModel().getEntityID())) {
       final String caption = property.getCaption() == null ? property.getPropertyID() : property.getCaption();
       controlSet.add(UiUtil.linkToEnabledState(enabled, new AbstractAction(caption) {
         public void actionPerformed(final ActionEvent e) {
@@ -486,7 +486,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
   public final Control getViewDependenciesControl() {
     return Controls.methodControl(this, "viewSelectionDependencies",
             FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES) + "...",
-            getTableModel().getSelectionEmptyState().getReversedState(),
+            getEntityTableModel().getSelectionEmptyState().getReversedState(),
             FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES_TIP), 'W');
   }
 
@@ -496,8 +496,8 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
   public final Control getDeleteSelectedControl() {
     return Controls.methodControl(this, "delete", FrameworkMessages.get(FrameworkMessages.DELETE),
             States.aggregateState(Conjunction.AND,
-                    getTableModel().getAllowDeleteState(),
-                    getTableModel().getSelectionEmptyState().getReversedState()),
+                    getEntityTableModel().getAllowDeleteState(),
+                    getEntityTableModel().getSelectionEmptyState().getReversedState()),
             FrameworkMessages.get(FrameworkMessages.DELETE_TIP), 0, null,
             Images.loadImage(Images.IMG_DELETE_16));
   }
@@ -508,7 +508,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
   public final Control getExportControl() {
     return Controls.methodControl(this, "exportSelected",
             FrameworkMessages.get(FrameworkMessages.EXPORT_SELECTED) + "...",
-            getTableModel().getSelectionEmptyState().getReversedState(),
+            getEntityTableModel().getSelectionEmptyState().getReversedState(),
             FrameworkMessages.get(FrameworkMessages.EXPORT_SELECTED_TIP), 0, null,
             Images.loadImage(Images.IMG_SAVE_16));
   }
@@ -541,12 +541,12 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
    * @see #getInputProvider(org.jminor.framework.domain.Property, java.util.List)
    */
   public final void updateSelectedEntities(final Property propertyToUpdate) {
-    if (getTableModel().getSelectionEmptyState().isActive()) {
+    if (getEntityTableModel().getSelectionEmptyState().isActive()) {
       return;
     }
 
-    final List<Entity> selectedEntities = EntityUtil.copyEntities(getTableModel().getSelectedItems());
-    if (!getTableModel().isMultipleUpdateAllowed() && selectedEntities.size() > 1) {
+    final List<Entity> selectedEntities = EntityUtil.copyEntities(getEntityTableModel().getSelectedItems());
+    if (!getEntityTableModel().isMultipleUpdateAllowed() && selectedEntities.size() > 1) {
       throw new RuntimeException("Update of multiple entities is not allowed!");
     }
 
@@ -558,7 +558,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
       EntityUtil.setPropertyValue(propertyToUpdate.getPropertyID(), inputPanel.getValue(), selectedEntities);
       try {
         UiUtil.setWaitCursor(true, this);
-        getTableModel().update(selectedEntities);
+        getEntityTableModel().update(selectedEntities);
       }
       catch (RuntimeException re) {
         throw re;
@@ -580,13 +580,13 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     final Map<String, Collection<Entity>> dependencies;
     try {
       UiUtil.setWaitCursor(true, this);
-      dependencies = getTableModel().getSelectionDependencies();
+      dependencies = getEntityTableModel().getSelectionDependencies();
     }
     finally {
       UiUtil.setWaitCursor(false, this);
     }
     if (!dependencies.isEmpty()) {
-      showDependenciesDialog(dependencies, getTableModel().getDbProvider(), this);
+      showDependenciesDialog(dependencies, getEntityTableModel().getDbProvider(), this);
     }
     else {
       JOptionPane.showMessageDialog(this, FrameworkMessages.get(FrameworkMessages.NONE_FOUND),
@@ -603,7 +603,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     if (confirmDelete()) {
       try {
         UiUtil.setWaitCursor(true, this);
-        getTableModel().deleteSelected();
+        getEntityTableModel().deleteSelected();
       }
       finally {
         UiUtil.setWaitCursor(false, this);
@@ -617,7 +617,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
    * @throws org.jminor.common.model.Serializer.SerializeException in case of an exception
    */
   public final void exportSelected() throws CancelException, Serializer.SerializeException {
-    final List<Entity> selected = getTableModel().getSelectedItems();
+    final List<Entity> selected = getEntityTableModel().getSelectedItems();
     Util.writeFile(EntityUtil.getEntitySerializer().serialize(selected), UiUtil.chooseFileToSave(this, null, null));
     JOptionPane.showMessageDialog(this, FrameworkMessages.get(FrameworkMessages.EXPORT_SELECTED_DONE));
   }
@@ -656,7 +656,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
    * @return a search panel toggle button
    */
   public final Control getToggleSearchPanelControl() {
-    if (!getTableModel().isQueryConfigurationAllowed()) {
+    if (!getEntityTableModel().isQueryConfigurationAllowed()) {
       return null;
     }
 
@@ -673,8 +673,8 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
   }
 
   public final Control getClearSelectionControl() {
-    final Control clearSelection = Controls.methodControl(getTableModel(), "clearSelection", null,
-            getTableModel().getSelectionEmptyState().getReversedState(), null, -1, null,
+    final Control clearSelection = Controls.methodControl(getEntityTableModel(), "clearSelection", null,
+            getEntityTableModel().getSelectionEmptyState().getReversedState(), null, -1, null,
             Images.loadImage("ClearSelection16.gif"));
     clearSelection.setDescription(FrameworkMessages.get(FrameworkMessages.CLEAR_SELECTION_TIP));
 
@@ -682,7 +682,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
   }
 
   public final Control getMoveSelectionDownControl() {
-    final Control selectionDown = Controls.methodControl(getTableModel(), "moveSelectionDown",
+    final Control selectionDown = Controls.methodControl(getEntityTableModel(), "moveSelectionDown",
             Images.loadImage(Images.IMG_DOWN_16));
     selectionDown.setDescription(FrameworkMessages.get(FrameworkMessages.SELECTION_DOWN_TIP));
 
@@ -690,7 +690,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
   }
 
   public final Control getMoveSelectionUpControl() {
-    final Control selectionUp = Controls.methodControl(getTableModel(), "moveSelectionUp",
+    final Control selectionUp = Controls.methodControl(getEntityTableModel(), "moveSelectionUp",
             Images.loadImage(Images.IMG_UP_16));
     selectionUp.setDescription(FrameworkMessages.get(FrameworkMessages.SELECTION_UP_TIP));
 
@@ -1029,7 +1029,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
    */
   protected final Control getRefreshControl() {
     final String refreshCaption = FrameworkMessages.get(FrameworkMessages.REFRESH);
-    return Controls.methodControl(getTableModel(), "refresh", refreshCaption,
+    return Controls.methodControl(getEntityTableModel(), "refresh", refreshCaption,
             null, FrameworkMessages.get(FrameworkMessages.REFRESH_TIP), refreshCaption.charAt(0),
             null, Images.loadImage(Images.IMG_REFRESH_16));
   }
@@ -1039,7 +1039,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
    */
   protected final Control getClearControl() {
     final String clearCaption = FrameworkMessages.get(FrameworkMessages.CLEAR);
-    return Controls.methodControl(getTableModel(), "clear", clearCaption,
+    return Controls.methodControl(getEntityTableModel(), "clear", clearCaption,
             null, null, clearCaption.charAt(0), null, null);
   }
 
@@ -1048,7 +1048,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
    * @return the summary panel
    */
   protected final EntityTableSummaryPanel initializeSummaryPanel() {
-    final EntityTableSummaryPanel panel = new EntityTableSummaryPanel(getTableModel());
+    final EntityTableSummaryPanel panel = new EntityTableSummaryPanel(getEntityTableModel());
     panel.setVerticalFillerWidth(UiUtil.getPreferredScrollBarWidth());
 
     return panel;
@@ -1060,8 +1060,8 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
   protected final JToolBar initializeRefreshToolbar() {
     final KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0);
     final String keyName = stroke.toString().replace("pressed ", "");
-    final Control refresh = Controls.methodControl(getTableModel(), "refresh", null,
-            getTableModel().getSearchModel().getSearchStateChangedState(), FrameworkMessages.get(FrameworkMessages.REFRESH_TIP)
+    final Control refresh = Controls.methodControl(getEntityTableModel(), "refresh", null,
+            getEntityTableModel().getSearchModel().getSearchStateChangedState(), FrameworkMessages.get(FrameworkMessages.REFRESH_TIP)
                     + " (" + keyName + ")", 0, null, Images.loadImage(Images.IMG_STOP_16));
 
     final InputMap inputMap = getInputMap(WHEN_IN_FOCUSED_WINDOW);
@@ -1116,10 +1116,10 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
       return new BooleanInputProvider((Boolean) currentValue);
     }
     if (property.isString()) {
-      return new TextInputProvider(property.getCaption(), getTableModel().getEditModel().getValueProvider(property), (String) currentValue);
+      return new TextInputProvider(property.getCaption(), getEntityTableModel().getEditModel().getValueProvider(property), (String) currentValue);
     }
     if (property.isReference()) {
-      return createEntityInputProvider((Property.ForeignKeyProperty) property, (Entity) currentValue, getTableModel().getEditModel());
+      return createEntityInputProvider((Property.ForeignKeyProperty) property, (Entity) currentValue, getEntityTableModel().getEditModel());
     }
 
     throw new IllegalArgumentException("Unsupported property type: " + property.getType());
@@ -1152,7 +1152,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
    * @return the TableCellRenderer
    */
   protected TableCellRenderer initializeTableCellRenderer() {
-    return new EntityTableCellRenderer(getTableModel(), isRowColoring());
+    return new EntityTableCellRenderer(getEntityTableModel(), isRowColoring());
   }
 
   /**
@@ -1161,7 +1161,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
    * @see org.jminor.framework.domain.Entities#isRowColoring(String)
    */
   protected boolean isRowColoring() {
-    return Entities.isRowColoring(getTableModel().getEntityID());
+    return Entities.isRowColoring(getEntityTableModel().getEntityID());
   }
 
   /**
@@ -1216,13 +1216,13 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
    * @see #getControl(String)
    */
   private void setupControls() {
-    if (!getTableModel().isReadOnly() && getTableModel().isDeleteAllowed()) {
+    if (!getEntityTableModel().isReadOnly() && getEntityTableModel().isDeleteAllowed()) {
       setControl(DELETE_SELECTED, getDeleteSelectedControl());
     }
-    if (!getTableModel().isReadOnly() && getTableModel().isMultipleUpdateAllowed()) {
+    if (!getEntityTableModel().isReadOnly() && getEntityTableModel().isMultipleUpdateAllowed()) {
       setControl(UPDATE_SELECTED, getUpdateSelectedControlSet());
     }
-    if (getTableModel().isQueryConfigurationAllowed()) {
+    if (getEntityTableModel().isQueryConfigurationAllowed()) {
       setControl(CONFIGURE_QUERY, getConfigureQueryControl());
       setControl(SEARCH_PANEL_VISIBLE, getSearchPanelControl());
     }
@@ -1248,7 +1248,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
 
   private Control getCopyCellControl() {
     return new Control(FrameworkMessages.get(FrameworkMessages.COPY_CELL),
-            getTableModel().getSelectionEmptyState().getReversedState()) {
+            getEntityTableModel().getSelectionEmptyState().getReversedState()) {
       @Override
       public void actionPerformed(final ActionEvent e) {
         final JTable table = getJTable();
@@ -1272,11 +1272,11 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
 
   private void copyTableAsDelimitedString() throws CancelException {
     final List<String> headerValues = new ArrayList<String>();
-    final List<Property> properties = new ArrayList<Property>(getTableModel().getTableColumnProperties());
+    final List<Property> properties = new ArrayList<Property>(getEntityTableModel().getTableColumnProperties());
     final ListIterator<Property> iterator = properties.listIterator();
     //remove hidden columns
     while (iterator.hasNext()) {
-      if (!getTableModel().isColumnVisible(iterator.next())) {
+      if (!getEntityTableModel().isColumnVisible(iterator.next())) {
         iterator.remove();
       }
     }
@@ -1286,8 +1286,8 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
 
     final String[][] header = {headerValues.toArray(new String[headerValues.size()])};
 
-    final List<Entity> entities = getTableModel().isSelectionEmpty()
-            ? getTableModel().getVisibleItems() : getTableModel().getSelectedItems();
+    final List<Entity> entities = getEntityTableModel().isSelectionEmpty()
+            ? getEntityTableModel().getVisibleItems() : getEntityTableModel().getSelectedItems();
 
     final String[][] data = new String[entities.size()][];
     for (int i = 0; i < data.length; i++) {
@@ -1303,10 +1303,10 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
 
   private void showEntityMenu(final Point location) {
     try {
-      final Entity entity = getTableModel().getSelectedItem();
+      final Entity entity = getEntityTableModel().getSelectedItem();
       if (entity != null) {
         final JPopupMenu popupMenu = new JPopupMenu();
-        populateEntityMenu(popupMenu, (Entity) entity.getCopy(), getTableModel().getDbProvider());
+        populateEntityMenu(popupMenu, (Entity) entity.getCopy(), getEntityTableModel().getDbProvider());
         popupMenu.show(getTableScrollPane(), location.x, (int) location.getY() - (int) getTableScrollPane().getViewport().getViewPosition().getY());
       }
     }
@@ -1316,7 +1316,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
   }
 
   private Property getPropertyToUpdate() throws CancelException {
-    final JComboBox box = new JComboBox(EntityUtil.getUpdatableProperties(getTableModel().getEntityID()).toArray());
+    final JComboBox box = new JComboBox(EntityUtil.getUpdatableProperties(getEntityTableModel().getEntityID()).toArray());
     final int ret = JOptionPane.showOptionDialog(this, box,
             FrameworkMessages.get(FrameworkMessages.SELECT_PROPERTY_FOR_UPDATE),
             JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
@@ -1331,18 +1331,18 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
 
   private void updateStatusMessage() {
     if (statusMessageLabel != null) {
-      final String status = getTableModel().getStatusMessage();
+      final String status = getEntityTableModel().getStatusMessage();
       statusMessageLabel.setText(status);
       statusMessageLabel.setToolTipText(status);
     }
   }
 
   private void bindEvents() {
-    if (!getTableModel().isReadOnly() && getTableModel().isDeleteAllowed()) {
+    if (!getEntityTableModel().isReadOnly() && getEntityTableModel().isDeleteAllowed()) {
       getJTable().addKeyListener(new KeyAdapter() {
         @Override
         public void keyTyped(final KeyEvent e) {
-          if (e.getKeyChar() == KeyEvent.VK_DELETE && !getTableModel().getSelectionEmptyState().isActive()) {
+          if (e.getKeyChar() == KeyEvent.VK_DELETE && !getEntityTableModel().getSelectionEmptyState().isActive()) {
             try {
               delete();
             }
@@ -1357,12 +1357,12 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
         }
       });
     }
-    getTableModel().addRefreshStartedListener(new ActionListener() {
+    getEntityTableModel().addRefreshStartedListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         UiUtil.setWaitCursor(true, EntityTablePanel.this);
       }
     });
-    getTableModel().addRefreshDoneListener(new ActionListener() {
+    getEntityTableModel().addRefreshDoneListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         UiUtil.setWaitCursor(false, EntityTablePanel.this);
       }
@@ -1380,27 +1380,27 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
         updateStatusMessage();
       }
     };
-    getTableModel().addSelectionChangedListener(statusListener);
-    getTableModel().addFilteringListener(statusListener);
-    getTableModel().addTableDataChangedListener(statusListener);
+    getEntityTableModel().addSelectionChangedListener(statusListener);
+    getEntityTableModel().addFilteringListener(statusListener);
+    getEntityTableModel().addTableDataChangedListener(statusListener);
 
-    getTableModel().addSelectedIndexListener(new ActionListener() {
+    getEntityTableModel().addSelectedIndexListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
-        if (!getTableModel().getSelectionEmptyState().isActive()) {
-          scrollToCoordinate(getTableModel().getSelectedIndex(), getJTable().getSelectedColumn());
+        if (!getEntityTableModel().getSelectionEmptyState().isActive()) {
+          scrollToCoordinate(getEntityTableModel().getSelectedIndex(), getJTable().getSelectedColumn());
         }
       }
     });
 
-    getTableModel().getSearchModel().getSearchStateChangedState().addListener(new ActionListener() {
+    getEntityTableModel().getSearchModel().getSearchStateChangedState().addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         getJTable().getTableHeader().repaint();
         getJTable().repaint();
       }
     });
 
-    if (getTableModel().hasEditModel()) {
-      getTableModel().getEditModel().addEntitiesChangedListener(new ActionListener() {
+    if (getEntityTableModel().hasEditModel()) {
+      getEntityTableModel().getEditModel().addEntitiesChangedListener(new ActionListener() {
         public void actionPerformed(final ActionEvent e) {
           getJTable().repaint();
         }
@@ -1428,8 +1428,8 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
                                                      final boolean hasFocus, final int row, final int column) {
         final JLabel label = (JLabel) defaultHeaderRenderer.getTableCellRendererComponent(table, value, isSelected,
                 hasFocus, row, column);
-        label.setFont(getTableModel().getSearchModel().isSearchEnabled(
-                getTableModel().getColumnProperty(column).getPropertyID()) ? searchFont : defaultFont);
+        label.setFont(getEntityTableModel().getSearchModel().isSearchEnabled(
+                getEntityTableModel().getColumnProperty(column).getPropertyID()) ? searchFont : defaultFont);
 
         return label;
       }

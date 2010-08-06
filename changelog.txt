@@ -1980,3 +1980,7 @@
   DefaultPropertyComboBoxModel simplified
   EntityLookupModel.description field added
   DefaultEntityComboBoxModel.performQuery() privatized
+  ValueChangeMapEditPanel.getEditModel() finalized
+  EntityEditPanel.getEntityEditModel() added
+  AbstractFilteredTablePanel.getFilteredTableModel() renamed to getTableModel()
+  EntityTablePanel.getTableModel() renamed to getEntityTableModel()

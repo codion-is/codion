@@ -35,7 +35,7 @@ public abstract class ValueChangeMapEditPanel<K, V> extends JPanel {
     this.model = model;
   }
 
-  public ValueChangeMapEditModel<K, V> getEditModel() {
+  public final ValueChangeMapEditModel<K, V> getEditModel() {
     return model;
   }
 
@@ -49,7 +49,7 @@ public abstract class ValueChangeMapEditPanel<K, V> extends JPanel {
   }
 
   public final void clearModelValues() {
-    getEditModel().setValueMap(null);
+    model.setValueMap(null);
   }
 
   /**

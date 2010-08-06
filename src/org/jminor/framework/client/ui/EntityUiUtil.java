@@ -88,7 +88,7 @@ public final class EntityUiUtil {
     return new AbstractAction() {
       public void actionPerformed(final ActionEvent e) {
         try {
-          final EntityTableModel tableModel = tablePanel.getTableModel();
+          final EntityTableModel tableModel = tablePanel.getEntityTableModel();
           if (!tableModel.isSelectionEmpty()) {
             final Entity selected = tableModel.getSelectedItem();
             if (!selected.isValueNull(imagePathPropertyID)) {
@@ -134,7 +134,7 @@ public final class EntityUiUtil {
     final EntityTablePanel entityTablePanel = new EntityTablePanel(lookupModel);
     entityTablePanel.addTableDoubleClickListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
-        if (!entityTablePanel.getTableModel().isSelectionEmpty()) {
+        if (!entityTablePanel.getEntityTableModel().isSelectionEmpty()) {
           okAction.actionPerformed(e);
         }
       }

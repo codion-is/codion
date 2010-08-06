@@ -89,12 +89,11 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   public EntityEditPanel(final EntityEditModel editModel, final String... controlKeys) {
     super(editModel);
     setupControls(controlKeys);
-    initializeUI();
     bindEvents();
+    initializeUI();
   }
 
-  @Override
-  public final EntityEditModel getEditModel() {
+  public final EntityEditModel getEntityEditModel() {
     return (EntityEditModel) super.getEditModel();
   }
 
@@ -117,7 +116,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   public final Control getRefreshControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.REFRESH_MNEMONIC);
     return Controls.methodControl(getEditModel(), "refresh", FrameworkMessages.get(FrameworkMessages.REFRESH),
-            getEditModel().getActiveState(), FrameworkMessages.get(FrameworkMessages.REFRESH_TIP) + " (ALT-" + mnemonic + ")",
+            getEntityEditModel().getActiveState(), FrameworkMessages.get(FrameworkMessages.REFRESH_TIP) + " (ALT-" + mnemonic + ")",
             mnemonic.charAt(0), null, Images.loadImage(Images.IMG_REFRESH_16));
   }
 
@@ -128,9 +127,9 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.DELETE_MNEMONIC);
     return Controls.methodControl(this, "delete", FrameworkMessages.get(FrameworkMessages.DELETE),
             States.aggregateState(Conjunction.AND,
-                    getEditModel().getActiveState(),
-                    getEditModel().getAllowDeleteState(),
-                    getEditModel().getEntityNullState().getReversedState()),
+                    getEntityEditModel().getActiveState(),
+                    getEntityEditModel().getAllowDeleteState(),
+                    getEntityEditModel().getEntityNullState().getReversedState()),
             FrameworkMessages.get(FrameworkMessages.DELETE_TIP) + " (ALT-" + mnemonic + ")", mnemonic.charAt(0), null,
             Images.loadImage(Images.IMG_DELETE_16));
   }
@@ -141,7 +140,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   public final Control getClearControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.CLEAR_MNEMONIC);
     return Controls.methodControl(this, "clearModelValues", FrameworkMessages.get(FrameworkMessages.CLEAR),
-            getEditModel().getActiveState(), FrameworkMessages.get(FrameworkMessages.CLEAR_ALL_TIP) + " (ALT-" + mnemonic + ")",
+            getEntityEditModel().getActiveState(), FrameworkMessages.get(FrameworkMessages.CLEAR_ALL_TIP) + " (ALT-" + mnemonic + ")",
             mnemonic.charAt(0), null, Images.loadImage(Images.IMG_NEW_16));
   }
 
@@ -152,10 +151,10 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.UPDATE_MNEMONIC);
     return Controls.methodControl(this, "update", FrameworkMessages.get(FrameworkMessages.UPDATE),
             States.aggregateState(Conjunction.AND,
-                    getEditModel().getActiveState(),
-                    getEditModel().getAllowUpdateState(),
-                    getEditModel().getEntityNullState().getReversedState(),
-                    getEditModel().getModifiedState()),
+                    getEntityEditModel().getActiveState(),
+                    getEntityEditModel().getAllowUpdateState(),
+                    getEntityEditModel().getEntityNullState().getReversedState(),
+                    getEntityEditModel().getModifiedState()),
             FrameworkMessages.get(FrameworkMessages.UPDATE_TIP) + " (ALT-" + mnemonic + ")", mnemonic.charAt(0),
             null, Images.loadImage(Images.IMG_SAVE_16));
   }
@@ -166,7 +165,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   public final Control getInsertControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.INSERT_MNEMONIC);
     return Controls.methodControl(this, "save", FrameworkMessages.get(FrameworkMessages.INSERT),
-            States.aggregateState(Conjunction.AND, getEditModel().getActiveState(), getEditModel().getAllowInsertState()),
+            States.aggregateState(Conjunction.AND, getEntityEditModel().getActiveState(), getEntityEditModel().getAllowInsertState()),
             FrameworkMessages.get(FrameworkMessages.INSERT_TIP) + " (ALT-" + mnemonic + ")",
             mnemonic.charAt(0), null, Images.loadImage("Add16.gif"));
   }
@@ -176,11 +175,11 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    */
   public final Control getSaveControl() {
     final String insertCaption = FrameworkMessages.get(FrameworkMessages.INSERT_UPDATE);
-    final State stInsertUpdate = States.aggregateState(Conjunction.OR, getEditModel().getAllowInsertState(),
-            States.aggregateState(Conjunction.AND, getEditModel().getAllowUpdateState(),
-                    getEditModel().getModifiedState()));
+    final State stInsertUpdate = States.aggregateState(Conjunction.OR, getEntityEditModel().getAllowInsertState(),
+            States.aggregateState(Conjunction.AND, getEntityEditModel().getAllowUpdateState(),
+                    getEntityEditModel().getModifiedState()));
     return Controls.methodControl(this, "save", insertCaption,
-            States.aggregateState(Conjunction.AND, getEditModel().getActiveState(), stInsertUpdate),
+            States.aggregateState(Conjunction.AND, getEntityEditModel().getActiveState(), stInsertUpdate),
             FrameworkMessages.get(FrameworkMessages.INSERT_UPDATE_TIP),
             insertCaption.charAt(0), null, Images.loadImage(Images.IMG_PROPERTIES_16));
   }
@@ -241,7 +240,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * is asked whether to update the selected entity or insert a new one
    */
   public final void save() {
-    if (getEditModel().isEntityNew() || !getEditModel().isModified() || !getEditModel().isUpdateAllowed()) {
+    if (getEntityEditModel().isEntityNew() || !getEntityEditModel().isModified() || !getEntityEditModel().isUpdateAllowed()) {
       //no entity selected, selected entity is unmodified or update is not allowed, can only insert
       insert();
     }
@@ -279,7 +278,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
         validateData();
         try {
           UiUtil.setWaitCursor(true, this);
-          getEditModel().insert();
+          getEntityEditModel().insert();
         }
         finally {
           UiUtil.setWaitCursor(false, this);
@@ -319,7 +318,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
       if (!confirm || confirmDelete()) {
         try {
           UiUtil.setWaitCursor(true, this);
-          getEditModel().delete();
+          getEntityEditModel().delete();
         }
         finally {
           UiUtil.setWaitCursor(false, this);
@@ -357,7 +356,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
         validateData();
         try {
           UiUtil.setWaitCursor(true, this);
-          getEditModel().update();
+          getEntityEditModel().update();
         }
         finally {
           UiUtil.setWaitCursor(false, this);
@@ -462,14 +461,14 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    */
   private void setupControls(final String... controlKeys) {
     final Collection<String> keys = Arrays.asList(controlKeys);
-    if (!getEditModel().isReadOnly()) {
-      if (getEditModel().isInsertAllowed() && (keys.size() == 0 || keys.contains(INSERT))) {
+    if (!getEntityEditModel().isReadOnly()) {
+      if (getEntityEditModel().isInsertAllowed() && (keys.size() == 0 || keys.contains(INSERT))) {
         setControl(INSERT, getInsertControl());
       }
-      if (getEditModel().isUpdateAllowed() && (keys.size() == 0 || keys.contains(UPDATE))) {
+      if (getEntityEditModel().isUpdateAllowed() && (keys.size() == 0 || keys.contains(UPDATE))) {
         setControl(UPDATE, getUpdateControl());
       }
-      if (getEditModel().isDeleteAllowed() && (keys.size() == 0 || keys.contains(DELETE))) {
+      if (getEntityEditModel().isDeleteAllowed() && (keys.size() == 0 || keys.contains(DELETE))) {
         setControl(DELETE, getDeleteControl());
       }
     }
@@ -581,7 +580,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   protected final JPanel createPropertyPanel(final String propertyID, final JComponent inputComponent,
                                              final boolean labelOnTop, final int hgap, final int vgap,
                                              final int labelAlignment) {
-    return createPropertyPanel(EntityUiUtil.createLabel(Entities.getProperty(getEditModel().getEntityID(),
+    return createPropertyPanel(EntityUiUtil.createLabel(Entities.getProperty(getEntityEditModel().getEntityID(),
             propertyID), labelAlignment), inputComponent, labelOnTop, hgap, vgap);
   }
 
@@ -644,8 +643,8 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @return a JTextArea bound to the property
    */
   protected final JTextArea createTextArea(final String propertyID, final int rows, final int columns) {
-    final JTextArea textArea = EntityUiUtil.createTextArea(Entities.getProperty(getEditModel().getEntityID(), propertyID),
-            getEditModel(), rows, columns);
+    final JTextArea textArea = EntityUiUtil.createTextArea(Entities.getProperty(getEntityEditModel().getEntityID(), propertyID),
+            getEntityEditModel(), rows, columns);
     setComponent(propertyID, textArea);
 
     return textArea;
@@ -694,7 +693,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    */
   protected final TextInputPanel createTextInputPanel(final String propertyID, final LinkType linkType,
                                                       final boolean immediateUpdate, final boolean buttonFocusable) {
-    return createTextInputPanel(Entities.getProperty(getEditModel().getEntityID(), propertyID), linkType,
+    return createTextInputPanel(Entities.getProperty(getEntityEditModel().getEntityID(), propertyID), linkType,
             immediateUpdate, buttonFocusable);
   }
 
@@ -722,7 +721,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    */
   protected final TextInputPanel createTextInputPanel(final Property property, final LinkType linkType,
                                                       final boolean immediateUpdate, final boolean buttonFocusable) {
-    final TextInputPanel ret = EntityUiUtil.createTextInputPanel(property, getEditModel(), linkType, immediateUpdate, buttonFocusable);
+    final TextInputPanel ret = EntityUiUtil.createTextInputPanel(property, getEntityEditModel(), linkType, immediateUpdate, buttonFocusable);
     setComponent(property.getPropertyID(), ret.getTextComponent());
 
     return ret;
@@ -797,7 +796,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   protected final DateInputPanel createDateInputPanel(final String propertyID, final SimpleDateFormat dateFormat,
                                                       final boolean includeButton, final StateObserver enabledState,
                                                       final LinkType linkType) {
-    return createDateInputPanel(Entities.getProperty(getEditModel().getEntityID(), propertyID),
+    return createDateInputPanel(Entities.getProperty(getEntityEditModel().getEntityID(), propertyID),
             dateFormat, includeButton, enabledState, linkType);
   }
 
@@ -857,7 +856,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   protected final DateInputPanel createDateInputPanel(final Property property, final SimpleDateFormat dateFormat,
                                                       final boolean includeButton, final StateObserver enabledState,
                                                       final LinkType linkType) {
-    final DateInputPanel panel = EntityUiUtil.createDateInputPanel(property, getEditModel(), dateFormat, linkType, includeButton, enabledState);
+    final DateInputPanel panel = EntityUiUtil.createDateInputPanel(property, getEntityEditModel(), dateFormat, linkType, includeButton, enabledState);
     setComponent(property.getPropertyID(), panel.getInputField());
 
     return panel;
@@ -939,7 +938,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   protected final JTextField createTextField(final String propertyID, final LinkType linkType,
                                              final boolean immediateUpdate, final String maskString,
                                              final StateObserver enabledState, final boolean valueIncludesLiteralCharacters) {
-    return createTextField(Entities.getProperty(getEditModel().getEntityID(), propertyID),
+    return createTextField(Entities.getProperty(getEntityEditModel().getEntityID(), propertyID),
             linkType, maskString, immediateUpdate, enabledState, valueIncludesLiteralCharacters);
   }
 
@@ -1006,7 +1005,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   protected final JTextField createTextField(final Property property, final LinkType linkType,
                                              final String maskString, final boolean immediateUpdate,
                                              final StateObserver enabledState, final boolean valueIncludesLiteralCharacters) {
-    final JTextField txt = EntityUiUtil.createTextField(property, getEditModel(), linkType, maskString, immediateUpdate,
+    final JTextField txt = EntityUiUtil.createTextField(property, getEntityEditModel(), linkType, maskString, immediateUpdate,
             Configuration.getDefaultDateFormat(), enabledState, valueIncludesLiteralCharacters);
     setComponent(property.getPropertyID(), txt);
 
@@ -1041,7 +1040,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    */
   protected final JCheckBox createCheckBox(final String propertyID, final StateObserver enabledState,
                                            final boolean includeCaption) {
-    return createCheckBox(Entities.getProperty(getEditModel().getEntityID(), propertyID), enabledState, includeCaption);
+    return createCheckBox(Entities.getProperty(getEntityEditModel().getEntityID(), propertyID), enabledState, includeCaption);
   }
 
   /**
@@ -1072,7 +1071,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    */
   protected final JCheckBox createCheckBox(final Property property, final StateObserver enabledState,
                                            final boolean includeCaption) {
-    final JCheckBox box = EntityUiUtil.createCheckBox(property, getEditModel(), enabledState, includeCaption);
+    final JCheckBox box = EntityUiUtil.createCheckBox(property, getEntityEditModel(), enabledState, includeCaption);
     setComponent(property.getPropertyID(), box);
 
     return box;
@@ -1106,7 +1105,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    */
   protected final TristateCheckBox createTristateCheckBox(final String propertyID, final StateObserver enabledState,
                                                           final boolean includeCaption) {
-    return createTristateCheckBox(Entities.getProperty(getEditModel().getEntityID(), propertyID), enabledState, includeCaption);
+    return createTristateCheckBox(Entities.getProperty(getEntityEditModel().getEntityID(), propertyID), enabledState, includeCaption);
   }
 
   /**
@@ -1137,7 +1136,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    */
   protected final TristateCheckBox createTristateCheckBox(final Property property, final StateObserver enabledState,
                                                           final boolean includeCaption) {
-    final TristateCheckBox box = EntityUiUtil.createTristateCheckBox(property, getEditModel(), enabledState, includeCaption);
+    final TristateCheckBox box = EntityUiUtil.createTristateCheckBox(property, getEntityEditModel(), enabledState, includeCaption);
     setComponent(property.getPropertyID(), box);
 
     return box;
@@ -1161,7 +1160,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @return JComboBox for the given property
    */
   protected final JComboBox createBooleanComboBox(final String propertyID, final StateObserver enabledState) {
-    return createBooleanComboBox(Entities.getProperty(getEditModel().getEntityID(), propertyID),enabledState);
+    return createBooleanComboBox(Entities.getProperty(getEntityEditModel().getEntityID(), propertyID),enabledState);
   }
 
   /**
@@ -1182,7 +1181,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @return JComboBox for the given property
    */
   protected final JComboBox createBooleanComboBox(final Property property, final StateObserver enabledState) {
-    final JComboBox ret = EntityUiUtil.createBooleanComboBox(property, getEditModel(), enabledState);
+    final JComboBox ret = EntityUiUtil.createBooleanComboBox(property, getEntityEditModel(), enabledState);
     setComponent(property.getPropertyID(), ret);
 
     return ret;
@@ -1212,7 +1211,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    */
   protected final SteppedComboBox createComboBox(final String propertyID, final ComboBoxModel comboBoxModel,
                                                  final boolean maximumMatch, final StateObserver enabledState) {
-    return createComboBox(Entities.getProperty(getEditModel().getEntityID(), propertyID),
+    return createComboBox(Entities.getProperty(getEntityEditModel().getEntityID(), propertyID),
             comboBoxModel, maximumMatch, enabledState);
   }
 
@@ -1240,7 +1239,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    */
   protected final SteppedComboBox createComboBox(final Property property, final ComboBoxModel comboBoxModel,
                                                  final boolean maximumMatch, final StateObserver enabledState) {
-    final SteppedComboBox comboBox = EntityUiUtil.createComboBox(property, getEditModel(), comboBoxModel, enabledState);
+    final SteppedComboBox comboBox = EntityUiUtil.createComboBox(property, getEntityEditModel(), comboBoxModel, enabledState);
     if (maximumMatch) {
       MaximumMatch.enable(comboBox);
     }
@@ -1269,7 +1268,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @throws IllegalArgumentException in case the property is not a value list property
    */
   protected final SteppedComboBox createValueListComboBox(final String propertyID, final StateObserver enabledState) {
-    final Property property = Entities.getProperty(getEditModel().getEntityID(), propertyID);
+    final Property property = Entities.getProperty(getEntityEditModel().getEntityID(), propertyID);
     if (!(property instanceof Property.ValueListProperty)) {
       throw new IllegalArgumentException("Property identified by '" + propertyID + "' is not a ValueListProperty");
     }
@@ -1295,7 +1294,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @return a SteppedComboBox bound to the property
    */
   protected final SteppedComboBox createValueListComboBox(final Property.ValueListProperty property, final StateObserver enabledState) {
-    final SteppedComboBox box = EntityUiUtil.createValueListComboBox(property, getEditModel(), enabledState);
+    final SteppedComboBox box = EntityUiUtil.createValueListComboBox(property, getEntityEditModel(), enabledState);
     setComponent(property.getPropertyID(), box);
 
     return box;
@@ -1320,7 +1319,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    */
   protected final SteppedComboBox createEditableComboBox(final String propertyID, final ComboBoxModel comboBoxModel,
                                                          final StateObserver enabledState) {
-    return createEditableComboBox(Entities.getProperty(getEditModel().getEntityID(), propertyID),
+    return createEditableComboBox(Entities.getProperty(getEntityEditModel().getEntityID(), propertyID),
             comboBoxModel, enabledState);
   }
 
@@ -1333,7 +1332,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    */
   protected final SteppedComboBox createEditableComboBox(final Property property, final ComboBoxModel comboBoxModel,
                                                          final StateObserver enabledState) {
-    final SteppedComboBox ret = EntityUiUtil.createComboBox(property, getEditModel(), comboBoxModel, enabledState, true);
+    final SteppedComboBox ret = EntityUiUtil.createComboBox(property, getEntityEditModel(), comboBoxModel, enabledState, true);
     setComponent(property.getPropertyID(), ret);
 
     return ret;
@@ -1384,7 +1383,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    */
   protected final SteppedComboBox createPropertyComboBox(final String propertyID, final StateObserver enabledState,
                                                          final String nullValueString, final boolean editable) {
-    return createPropertyComboBox(Entities.getColumnProperty(getEditModel().getEntityID(), propertyID),
+    return createPropertyComboBox(Entities.getColumnProperty(getEntityEditModel().getEntityID(), propertyID),
             enabledState, nullValueString, editable);
   }
 
@@ -1433,7 +1432,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    */
   protected final SteppedComboBox createPropertyComboBox(final Property.ColumnProperty property, final StateObserver enabledState,
                                                          final String nullValueString, final boolean editable) {
-    final SteppedComboBox ret = EntityUiUtil.createPropertyComboBox(property, getEditModel(), null, enabledState, nullValueString, editable);
+    final SteppedComboBox ret = EntityUiUtil.createPropertyComboBox(property, getEntityEditModel(), null, enabledState, nullValueString, editable);
     setComponent(property.getPropertyID(), ret);
 
     return ret;
@@ -1447,7 +1446,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    */
   protected final EntityComboBox createEntityComboBox(final String foreignKeyPropertyID, final StateObserver enabledState) {
     return createEntityComboBox((Property.ForeignKeyProperty)
-            Entities.getProperty(getEditModel().getEntityID(), foreignKeyPropertyID), enabledState);
+            Entities.getProperty(getEntityEditModel().getEntityID(), foreignKeyPropertyID), enabledState);
   }
 
   /**
@@ -1458,7 +1457,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @return an EntityComboBox bound to the property
    */
   protected final EntityComboBox createEntityComboBox(final String foreignKeyPropertyID) {
-    return createEntityComboBox(Entities.getForeignKeyProperty(getEditModel().getEntityID(),
+    return createEntityComboBox(Entities.getForeignKeyProperty(getEntityEditModel().getEntityID(),
             foreignKeyPropertyID), null);
   }
 
@@ -1481,7 +1480,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    */
   protected final EntityComboBox createEntityComboBox(final Property.ForeignKeyProperty foreignKeyProperty,
                                                       final StateObserver enabledState) {
-    final EntityComboBox ret = EntityUiUtil.createEntityComboBox(foreignKeyProperty, getEditModel(), enabledState);
+    final EntityComboBox ret = EntityUiUtil.createEntityComboBox(foreignKeyProperty, getEntityEditModel(), enabledState);
     setComponent(foreignKeyProperty.getPropertyID(), ret);
 
     return ret;
@@ -1494,7 +1493,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @return an EntityLookupField bound the property
    */
   protected final EntityLookupField createEntityLookupField(final String foreignKeyPropertyID) {
-    final Property.ForeignKeyProperty fkProperty = Entities.getForeignKeyProperty(getEditModel().getEntityID(),
+    final Property.ForeignKeyProperty fkProperty = Entities.getForeignKeyProperty(getEntityEditModel().getEntityID(),
             foreignKeyPropertyID);
     final Collection<String> searchPropertyIDs = Entities.getEntitySearchPropertyIDs(fkProperty.getReferencedEntityID());
     return createEntityLookupField(fkProperty, searchPropertyIDs.toArray(new String[searchPropertyIDs.size()]));
@@ -1509,7 +1508,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    */
   protected final EntityLookupField createEntityLookupField(final String foreignKeyPropertyID,
                                                             final String... searchPropertyIDs) {
-    final Property.ForeignKeyProperty fkProperty = Entities.getForeignKeyProperty(getEditModel().getEntityID(),
+    final Property.ForeignKeyProperty fkProperty = Entities.getForeignKeyProperty(getEntityEditModel().getEntityID(),
             foreignKeyPropertyID);
     if (searchPropertyIDs == null || searchPropertyIDs.length == 0) {
       final Collection<String> propertyIDs = Entities.getEntitySearchPropertyIDs(fkProperty.getReferencedEntityID());
@@ -1527,7 +1526,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    */
   protected final EntityLookupField createEntityLookupField(final Property.ForeignKeyProperty foreignKeyProperty,
                                                             final String... searchPropertyIDs) {
-    final EntityLookupField ret = EntityUiUtil.createEntityLookupField(foreignKeyProperty, getEditModel(), searchPropertyIDs);
+    final EntityLookupField ret = EntityUiUtil.createEntityLookupField(foreignKeyProperty, getEntityEditModel(), searchPropertyIDs);
     setComponent(foreignKeyProperty.getPropertyID(), ret);
 
     return ret;
@@ -1539,7 +1538,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @return an uneditable JTextField bound to the property
    */
   protected final JTextField createEntityField(final String propertyID) {
-    return createEntityField(Entities.getForeignKeyProperty(getEditModel().getEntityID(), propertyID));
+    return createEntityField(Entities.getForeignKeyProperty(getEntityEditModel().getEntityID(), propertyID));
   }
 
   /**
@@ -1548,7 +1547,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @return an uneditable JTextField bound to the property
    */
   protected final JTextField createEntityField(final Property.ForeignKeyProperty foreignKeyProperty) {
-    final JTextField ret = EntityUiUtil.createEntityField(foreignKeyProperty, getEditModel());
+    final JTextField ret = EntityUiUtil.createEntityField(foreignKeyProperty, getEntityEditModel());
     setComponent(foreignKeyProperty.getPropertyID(), ret);
 
     return ret;
@@ -1563,7 +1562,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    */
   protected final JPanel createEntityFieldPanel(final String propertyID, final EntityTableModel lookupModel) {
     return createEntityFieldPanel((Property.ForeignKeyProperty)
-            Entities.getProperty(getEditModel().getEntityID(), propertyID), lookupModel);
+            Entities.getProperty(getEntityEditModel().getEntityID(), propertyID), lookupModel);
   }
 
   /**
@@ -1575,7 +1574,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    */
   protected final EntityUiUtil.EntityFieldPanel createEntityFieldPanel(final Property.ForeignKeyProperty foreignKeyProperty,
                                                                        final EntityTableModel lookupModel) {
-    final EntityUiUtil.EntityFieldPanel ret = EntityUiUtil.createEntityFieldPanel(foreignKeyProperty, getEditModel(), lookupModel);
+    final EntityUiUtil.EntityFieldPanel ret = EntityUiUtil.createEntityFieldPanel(foreignKeyProperty, getEntityEditModel(), lookupModel);
     setComponent(foreignKeyProperty.getPropertyID(), ret.getTextField());
 
     return ret;
@@ -1597,16 +1596,16 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @return a JLabel for the given property
    */
   protected final JLabel createLabel(final String propertyID, final int horizontalAlignment) {
-    return EntityUiUtil.createLabel(Entities.getProperty(getEditModel().getEntityID(), propertyID), horizontalAlignment);
+    return EntityUiUtil.createLabel(Entities.getProperty(getEntityEditModel().getEntityID(), propertyID), horizontalAlignment);
   }
 
   private void bindEvents() {
-    getEditModel().addBeforeRefreshListener(new ActionListener() {
+    getEntityEditModel().addBeforeRefreshListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         UiUtil.setWaitCursor(true, EntityEditPanel.this);
       }
     });
-    getEditModel().addAfterRefreshListener(new ActionListener() {
+    getEntityEditModel().addAfterRefreshListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         UiUtil.setWaitCursor(false, EntityEditPanel.this);
       }

@@ -115,7 +115,7 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
   /**
    * @return the TableModel used by this TablePanel
    */
-  public final FilteredTableModel<T, C> getFilteredTableModel() {
+  public final FilteredTableModel<T, C> getTableModel() {
     return tableModel;
   }
 
