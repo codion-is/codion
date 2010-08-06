@@ -6,7 +6,6 @@ package org.jminor.framework.demos.schemabrowser.domain;
 import org.jminor.common.db.dbms.DatabaseProvider;
 import org.jminor.common.model.valuemap.StringProvider;
 import org.jminor.framework.domain.Entities;
-import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Properties;
 import org.jminor.framework.domain.Property;
 
@@ -51,23 +50,23 @@ public class SchemaBrowser {
   public static final String COLUMN_CONSTRAINT_POSITION = bundle.getString("column_constraint_position");
 
   static {
-    EntityRepository.add(Entities.define(T_SCHEMA, bundle.getString("t_schema"),
+    Entities.define(T_SCHEMA, bundle.getString("t_schema"),
             Properties.primaryKeyProperty(SCHEMA_NAME, Types.VARCHAR, "Name"))
             .setOrderByClause(SCHEMA_NAME)
             .setReadOnly(true)
             .setStringProvider(new StringProvider<String>(SCHEMA_NAME))
-            .setCaption("Schemas"));
+            .setCaption("Schemas");
 
-    EntityRepository.add(Entities.define(T_TABLE, bundle.getString("t_table"),
+    Entities.define(T_TABLE, bundle.getString("t_table"),
             Properties.foreignKeyProperty(TABLE_SCHEMA_FK, "Schema", T_SCHEMA,
                     Properties.primaryKeyProperty(TABLE_SCHEMA, Types.VARCHAR).setIndex(0)),
             Properties.primaryKeyProperty(TABLE_NAME, Types.VARCHAR, "Name").setIndex(1))
             .setOrderByClause(TABLE_SCHEMA + ", " + TABLE_NAME)
             .setReadOnly(true)
             .setStringProvider(new StringProvider<String>(TABLE_SCHEMA_FK).addText(".").addValue(TABLE_NAME))
-            .setCaption("Tables"));
+            .setCaption("Tables");
 
-    EntityRepository.add(Entities.define(T_COLUMN, bundle.getString("t_column"),
+    Entities.define(T_COLUMN, bundle.getString("t_column"),
             Properties.foreignKeyProperty(COLUMN_TABLE_FK, "Table", T_TABLE,
                     new Property.ColumnProperty[] {
                             Properties.primaryKeyProperty(COLUMN_SCHEMA, Types.VARCHAR).setIndex(0),
@@ -78,9 +77,9 @@ public class SchemaBrowser {
             .setOrderByClause(COLUMN_SCHEMA + ", " + COLUMN_TABLE_NAME + ", " + COLUMN_NAME)
             .setReadOnly(true)
             .setStringProvider(new StringProvider<String>(COLUMN_TABLE_FK).addText(".").addValue(COLUMN_NAME))
-            .setCaption("Columns"));
+            .setCaption("Columns");
 
-    EntityRepository.add(Entities.define(T_CONSTRAINT, bundle.getString("t_constraint"),
+    Entities.define(T_CONSTRAINT, bundle.getString("t_constraint"),
             Properties.foreignKeyProperty(CONSTRAINT_TABLE_FK, "Table", T_TABLE,
                     new Property.ColumnProperty[] {
                             Properties.primaryKeyProperty(CONSTRAINT_SCHEMA, Types.VARCHAR).setIndex(0),
@@ -91,9 +90,9 @@ public class SchemaBrowser {
             .setOrderByClause(CONSTRAINT_SCHEMA + ", " + CONSTRAINT_TABLE_NAME + ", " + CONSTRAINT_NAME)
             .setReadOnly(true).setLargeDataset(true)
             .setStringProvider(new StringProvider<String>(CONSTRAINT_TABLE_FK).addText(".").addValue(CONSTRAINT_NAME))
-            .setCaption("Constraints"));
+            .setCaption("Constraints");
 
-    EntityRepository.add(Entities.define(T_COLUMN_CONSTRAINT, bundle.getString("t_column_constraint"),
+    Entities.define(T_COLUMN_CONSTRAINT, bundle.getString("t_column_constraint"),
             Properties.foreignKeyProperty(COLUMN_CONSTRAINT_CONSTRAINT_FK, "Constraint", T_CONSTRAINT,
                     new Property.ColumnProperty[] {
                             Properties.primaryKeyProperty(COLUMN_CONSTRAINT_SCHEMA, Types.VARCHAR).setIndex(0),
@@ -104,6 +103,6 @@ public class SchemaBrowser {
             Properties.columnProperty(COLUMN_CONSTRAINT_POSITION, Types.INTEGER, "Position"))
             .setOrderByClause(COLUMN_CONSTRAINT_SCHEMA + ", " + COLUMN_CONSTRAINT_TABLE_NAME + ", " + COLUMN_CONSTRAINT_CONSTRAINT_NAME)
             .setReadOnly(true)
-            .setCaption("Column constraints"));
+            .setCaption("Column constraints");
   }
 }

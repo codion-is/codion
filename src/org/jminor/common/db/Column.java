@@ -6,23 +6,24 @@ package org.jminor.common.db;
 import org.jminor.common.model.Attribute;
 
 /**
- * User: Björn Darri<br>
- * Date: 17.7.2010<br>
- * Time: 20:35:19
+ * Describes a database column
  */
 public interface Column extends Attribute {
 
+  /**
+   * @return the column name
+   */
   String getColumnName();
 
-  int getSelectIndex();
-
-  boolean isDenormalized();
-
-  boolean columnHasDefaultValue();
-
-  boolean isReference();
-
+  /**
+   * @return the column data type as per java.sql.Types
+   */
   int getType();
+
+  /**
+   * @return the index of this property in a select query
+   */
+  int getSelectIndex();
 
   /**
    * Specifies whether or not this column is updatable
@@ -30,5 +31,18 @@ public interface Column extends Attribute {
    */
   boolean isUpdatable();
 
+  /**
+   * @return false if this column should not be searchable
+   */
   boolean isSearchable();
+
+  /**
+   * @return true if this column is a denormalized column
+   */
+  boolean isDenormalized();
+
+  /**
+   * @return true if this column has a default value
+   */
+  boolean columnHasDefaultValue();
 }

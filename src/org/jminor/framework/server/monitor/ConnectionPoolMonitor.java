@@ -7,12 +7,15 @@ import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolState;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventObserver;
+import org.jminor.common.model.Events;
 import org.jminor.common.model.User;
 
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
+import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,10 +31,10 @@ import java.util.TimerTask;
  */
 public final class ConnectionPoolMonitor {
 
-  private final Event evtStatsUpdated = new Event();
-  private final Event evtStatsUpdateIntervalChanged = new Event();
-  private final Event evtCollectFineGrainedStatsChanged = new Event();
-  private final Event evtRefresh = new Event();
+  private final Event evtStatsUpdated = Events.event();
+  private final Event evtStatsUpdateIntervalChanged = Events.event();
+  private final Event evtCollectFineGrainedStatsChanged = Events.event();
+  private final Event evtRefresh = Events.event();
 
   private final User user;
   private final ConnectionPool pool;
@@ -178,20 +181,28 @@ public final class ConnectionPoolMonitor {
     }
   }
 
-  public Event eventCollectFineGrainedStatsChanged() {
-    return evtCollectFineGrainedStatsChanged;
+  public void addStatsListener(final ActionListener listener) {
+    evtStatsUpdated.addListener(listener);
   }
 
-  public Event eventRefresh() {
-    return evtRefresh;
+  public void removeStatsListener(final ActionListener listener) {
+    evtStatsUpdated.removeListener(listener);
   }
 
-  public Event eventStatsUpdated() {
-    return evtStatsUpdated;
+  public EventObserver getCollectFineGrainedStatsObserver() {
+    return evtCollectFineGrainedStatsChanged.getObserver();
   }
 
-  public Event eventStatsUpdateIntervalChanged() {
-    return evtStatsUpdateIntervalChanged;
+  public EventObserver getRefreshObserver() {
+    return evtRefresh.getObserver();
+  }
+
+  public EventObserver getStatsObserver() {
+    return evtStatsUpdated.getObserver();
+  }
+
+  public EventObserver getStatsUpdateIntervalObserver() {
+    return evtStatsUpdateIntervalChanged.getObserver();
   }
 
   private void updateStats() throws RemoteException {
@@ -223,11 +234,7 @@ public final class ConnectionPoolMonitor {
 
   private List<ConnectionPoolState> sortAndRemoveDuplicates(final List<ConnectionPoolState> stats) {
     final List<ConnectionPoolState> poolStates = new ArrayList<ConnectionPoolState>(stats.size());
-    Collections.sort(poolStates, new Comparator<ConnectionPoolState>() {
-      public int compare(final ConnectionPoolState o1, final ConnectionPoolState o2) {
-        return ((Long) o1.getTime()).compareTo(o2.getTime());
-      }
-    });
+    Collections.sort(poolStates, new StateComparator());
     long time = -1;
     for (int i = stats.size()-1; i >= 0; i--) {
       final ConnectionPoolState state = stats.get(i);
@@ -259,5 +266,11 @@ public final class ConnectionPoolMonitor {
         catch (RemoteException e) {/**/}
       }
     }, delay, delay);
+  }
+
+  private static final class StateComparator implements Comparator<ConnectionPoolState> {
+    public int compare(final ConnectionPoolState o1, final ConnectionPoolState o2) {
+      return ((Long) o1.getTime()).compareTo(o2.getTime());
+    }
   }
 }

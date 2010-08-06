@@ -9,13 +9,17 @@ import javax.swing.table.TableColumnModel;
 import java.util.List;
 
 /**
- * User: darri
- * Date: 29.6.2010
- * Time: 10:05:38
+ * An interface describing a column model for entity tables
  */
 public interface EntityTableColumnModel extends TableColumnModel {
 
+  /**
+   * @return the entity ID
+   */
   String getEntityID();
 
+  /**
+   * @return the properties to base the columns on
+   */
   List<Property> getColumnProperties();
 }

@@ -5,6 +5,8 @@ package org.jminor.framework.server.monitor;
 
 import org.jminor.common.db.DatabaseStatistics;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventObserver;
+import org.jminor.common.model.Events;
 import org.jminor.framework.server.EntityDbServerAdmin;
 
 import org.jfree.data.xy.XYSeries;
@@ -19,7 +21,7 @@ import java.util.TimerTask;
  */
 public final class DatabaseMonitor {
 
-  private final Event evtStatsUpdateIntervalChanged = new Event();
+  private final Event evtStatsUpdateIntervalChanged = Events.event();
 
   private final EntityDbServerAdmin server;
   private final PoolMonitor poolMonitor;
@@ -89,8 +91,8 @@ public final class DatabaseMonitor {
     return queriesPerSecondCollection;
   }
 
-  public Event eventStatsUpdateIntervalChanged() {
-    return evtStatsUpdateIntervalChanged;
+  public EventObserver getStatsUpdateIntervalObserver() {
+    return evtStatsUpdateIntervalChanged.getObserver();
   }
 
   private void startUpdateTimer(final int delay) {

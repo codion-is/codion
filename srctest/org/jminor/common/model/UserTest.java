@@ -18,5 +18,10 @@ public class UserTest {
     final User user = new User("scott", "tiger");
     assertEquals("scott", user.getUsername());
     assertEquals("tiger", user.getPassword());
+    user.setPassword("mess");
+    assertEquals("mess", user.getPassword());
+    assertEquals("User: scott", user.toString());
+    assertEquals("scott".hashCode(), user.hashCode());
+    assertEquals(new User("scott", null), user);
   }
 }

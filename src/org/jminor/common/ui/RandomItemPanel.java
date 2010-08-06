@@ -42,7 +42,7 @@ public final class RandomItemPanel<T> extends JPanel {
   /**
    * Initializes the UI
    */
-  protected void initializeUI() {
+  private void initializeUI() {
     final int count = model.getItemCount();
     setLayout(new FlexibleGridLayout(count * 2, 1, 5, 5, true, false));
     for (final RandomItemModel.RandomItem<T> item : model.getItems()) {
@@ -56,7 +56,7 @@ public final class RandomItemPanel<T> extends JPanel {
    * @param item the item for which to create a configuration panel
    * @return a conrol panel for the item weight
    */
-  protected JPanel initializeWeightPanel(final RandomItemModel.RandomItem<T> item) {
+  private JPanel initializeWeightPanel(final RandomItemModel.RandomItem<T> item) {
     final JPanel panel = new JPanel(new BorderLayout(0, 0));
     final JSpinner spinner = new JSpinner(createWeightSpinnerModel(item.getItem()));
     spinner.setToolTipText(item.getItem().toString());
@@ -72,7 +72,8 @@ public final class RandomItemPanel<T> extends JPanel {
    */
   private SpinnerModel createWeightSpinnerModel(final T item) {
     final SpinnerNumberModel spinnerModel = new SpinnerNumberModel(model.getWeight(item), 0, Integer.MAX_VALUE, 1);
-    final AbstractValueLink<RandomItemPanel, Integer> valueLink = new AbstractValueLink<RandomItemPanel, Integer>(this, getModel().eventWeightsChanged(), LinkType.READ_WRITE) {
+    final AbstractValueLink<RandomItemPanel, Integer> valueLink =
+            new AbstractValueLink<RandomItemPanel, Integer>(this, getModel().getWeightsObserver(), LinkType.READ_WRITE) {
       @Override
       public Integer getModelValue() {
         return getModel().getWeight(item);

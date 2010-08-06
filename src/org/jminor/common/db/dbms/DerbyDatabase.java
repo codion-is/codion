@@ -16,6 +16,11 @@ import java.util.Properties;
  */
 public final class DerbyDatabase extends AbstractDatabase {
 
+  static final String EMBEDDED_DRIVER_NAME = "org.apache.derby.jdbc.EmbeddedDriver";
+  static final String NETWORKED_DRIVER_NAME = "org.apache.derby.jdbc.ClientDriver";
+  static final String AUTO_INCREMENT_QUERY = "select IDENTITY_VAL_LOCAL() from ";
+  static final String URL_PREFIX = "jdbc:derby:";
+
   private static final Logger LOG = Util.getLogger(DerbyDatabase.class);
 
   public DerbyDatabase() {
@@ -31,63 +36,34 @@ public final class DerbyDatabase extends AbstractDatabase {
   }
 
   public void loadDriver() throws ClassNotFoundException {
-    Class.forName(isEmbedded() ? "org.apache.derby.jdbc.EmbeddedDriver" : "org.apache.derby.jdbc.ClientDriver");
+    Class.forName(isEmbedded() ? EMBEDDED_DRIVER_NAME : NETWORKED_DRIVER_NAME);
   }
 
   public String getAutoIncrementValueSQL(final String idSource) {
-    return "select IDENTITY_VAL_LOCAL() from " + idSource;
-  }
-
-  public String getSequenceSQL(final String sequenceName) {
-    throw new RuntimeException("Sequence support is not implemented for database type: " + getDatabaseType());
+    return AUTO_INCREMENT_QUERY + idSource;
   }
 
   public String getURL(final Properties connectionProperties) {
     final String authentication = getAuthenticationInfo(connectionProperties);
     if (isEmbedded()) {
-      return "jdbc:derby:" + getHost() + (authentication == null ? "" : ";" + authentication);
+      return URL_PREFIX + getHost() + (authentication == null ? "" : ";" + authentication);
     }
     else {
-      return "jdbc:derby://" + getHost() + ":" + getPort() + "/" + getSid() + (authentication == null ? "" : ";" + authentication);
+      return URL_PREFIX + "//" + getHost() + ":" + getPort() + "/" + getSid() + (authentication == null ? "" : ";" + authentication);
     }
-  }
-
-  @Override
-  public String getAuthenticationInfo(final Properties connectionProperties) {
-    if (connectionProperties != null) {
-      final String username = (String) connectionProperties.get("user");
-      final String password = (String) connectionProperties.get("password");
-      if (username != null && username.length() > 0 && password != null && password.length() > 0) {
-        return "user=" + username + ";" + "password=" + password;
-      }
-    }
-
-    return null;
   }
 
   @Override
   public void shutdownEmbedded(final Properties connectionProperties) {
     try {
       final String authentication = getAuthenticationInfo(connectionProperties);
-      DriverManager.getConnection("jdbc:derby:" + getHost() + ";shutdown=true"
+      DriverManager.getConnection(URL_PREFIX + getHost() + ";shutdown=true"
                + (authentication == null ? "" : ";" + authentication));
     }
     catch (SQLException e) {
       if (!e.getSQLState().equals("08006")) {//08006 is expected on Derby shutdown
         LOG.error("Embedded Derby database was did not successfully shut down!", e);
       }
-    }
-  }
-
-  @Override
-  protected void validate(final String databaseType, final String host, final String port, final String sid, final boolean embedded) {
-    if (embedded) {
-      Util.require(DATABASE_HOST, host);
-    }
-    else {
-      Util.require(DATABASE_HOST, host);
-      Util.require(DATABASE_PORT, port);
-      Util.require(DATABASE_SID, sid);
     }
   }
 }

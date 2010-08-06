@@ -16,5 +16,6 @@ public class PostgreSQLDatabaseTest {
     assertEquals("select currval(seq)", db.getAutoIncrementValueSQL("seq"));
     assertEquals("select nextval(seq)", db.getSequenceSQL("seq"));
     assertEquals("jdbc:postgresql://host:1234/sid", db.getURL(null));
+    assertEquals(PostgreSQLDatabase.CHECK_QUERY, db.getCheckConnectionQuery());
   }
 }

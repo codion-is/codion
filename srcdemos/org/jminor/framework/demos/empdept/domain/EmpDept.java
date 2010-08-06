@@ -8,7 +8,6 @@ import org.jminor.common.model.Version;
 import org.jminor.common.model.valuemap.StringProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Properties;
 
 import java.awt.Color;
@@ -71,7 +70,7 @@ public class EmpDept {
 
   static {
     /*Defining the entity type T_DEPARTMENT*/
-    EntityRepository.add(Entities.define(T_DEPARTMENT, "scott.dept",
+    Entities.define(T_DEPARTMENT, "scott.dept",
             Properties.primaryKeyProperty(DEPARTMENT_ID, Types.INTEGER, getString(DEPARTMENT_ID))
                     .setNullable(false),
             Properties.columnProperty(DEPARTMENT_NAME, Types.VARCHAR, getString(DEPARTMENT_NAME))
@@ -81,10 +80,10 @@ public class EmpDept {
             .setIdSource(IdSource.NONE)
             .setOrderByClause(DEPARTMENT_NAME)
             .setStringProvider(new StringProvider<String>(DEPARTMENT_NAME))
-            .setCaption(getString(EMPLOYEE)));
+            .setCaption(getString(EMPLOYEE));
 
     /*Defining the entity type T_EMPLOYEE*/
-    EntityRepository.add(Entities.define(T_EMPLOYEE, "scott.emp",
+    Entities.define(T_EMPLOYEE, "scott.emp",
             Properties.primaryKeyProperty(EMPLOYEE_ID, Types.INTEGER, getString(EMPLOYEE_ID)),
             Properties.columnProperty(EMPLOYEE_NAME, Types.VARCHAR, getString(EMPLOYEE_NAME))
                     .setMaxLength(10).setNullable(false),
@@ -102,16 +101,16 @@ public class EmpDept {
             Properties.columnProperty(EMPLOYEE_HIREDATE, Types.DATE, getString(EMPLOYEE_HIREDATE))
                     .setNullable(false),
             Properties.denormalizedViewProperty(EMPLOYEE_DEPARTMENT_LOCATION, EMPLOYEE_DEPARTMENT_FK,
-                    EntityRepository.getProperty(T_DEPARTMENT, DEPARTMENT_LOCATION),
+                    Entities.getProperty(T_DEPARTMENT, DEPARTMENT_LOCATION),
                     getString(DEPARTMENT_LOCATION)).setPreferredColumnWidth(100))
             .setIdSource(IdSource.MAX_PLUS_ONE)
             .setOrderByClause(EMPLOYEE_DEPARTMENT + ", " + EMPLOYEE_NAME)
             .setStringProvider(new StringProvider<String>(EMPLOYEE_NAME))
             .setRowColoring(true)
-            .setCaption(getString(DEPARTMENT)));
+            .setCaption(getString(DEPARTMENT));
 
     /*Set a Proxy implementation to provide a custom background color for managers*/
-    EntityRepository.setProxy(T_EMPLOYEE, new EntityRepository.Proxy() {
+    Entities.setProxy(T_EMPLOYEE, new Entities.Proxy() {
       @Override
       public Color getBackgroundColor(final Entity entity) {
         if (!entity.isValueNull(EMPLOYEE_JOB) && entity.getStringValue(EMPLOYEE_JOB).equals("MANAGER")) {

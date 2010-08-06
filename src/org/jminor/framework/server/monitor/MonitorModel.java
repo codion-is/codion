@@ -4,6 +4,8 @@
 package org.jminor.framework.server.monitor;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.model.Events;
+import org.jminor.common.model.Util;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -17,13 +19,13 @@ import java.util.Collection;
  */
 public final class MonitorModel {
 
-  private final Event evtHostAdded = new Event();
-  private final Event evtHostRemoved = new Event();
+  private final Event evtHostAdded = Events.event();
+  private final Event evtHostRemoved = Events.event();
 
   private final Collection<HostMonitor> hostMonitors = new ArrayList<HostMonitor>();
 
   public MonitorModel(final String hostNames) throws RemoteException {
-    if (hostNames == null || hostNames.length() == 0) {
+    if (Util.nullOrEmpty(hostNames)) {
       throw new RuntimeException("No server host names specified for server monitor");
     }
     for (final String hostname : Arrays.asList(hostNames.split(","))) {

@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.server.monitor.ui;
 
+import org.jminor.common.model.Util;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.framework.server.monitor.ConnectionPoolMonitor;
 import org.jminor.framework.server.monitor.PoolMonitor;
@@ -29,7 +30,7 @@ public final class PoolMonitorPanel extends JPanel {
 
   public void addConnectionPool() throws RemoteException {
     final String usernames = JOptionPane.showInputDialog("User name(s) (comma separated)");
-    if (usernames != null && usernames.length() > 0) {
+    if (!Util.nullOrEmpty(usernames)) {
       model.addConnectionPools(usernames.split(","));
     }
   }
@@ -46,9 +47,9 @@ public final class PoolMonitorPanel extends JPanel {
 
 //  private ControlSet getPopupCommands() {
 //    final ControlSet controlSet = new ControlSet();
-//    controlSet.add(ControlFactory.methodControl(this, "addConnectionPool", "Add connection pool(s)"));
+//    controlSet.add(Controls.methodControl(this, "addConnectionPool", "Add connection pool(s)"));
 //    controlSet.addSeparator();
-//    controlSet.add(ControlFactory.methodControl(model, "refresh", "Refresh"));
+//    controlSet.add(Controls.methodControl(model, "refresh", "Refresh"));
 //
 //    return controlSet;
 //  }

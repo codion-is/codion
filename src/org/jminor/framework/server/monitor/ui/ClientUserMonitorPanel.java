@@ -6,8 +6,8 @@ package org.jminor.framework.server.monitor.ui;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.ui.ExceptionDialog;
 import org.jminor.common.ui.UiUtil;
-import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
+import org.jminor.common.ui.control.Controls;
 import org.jminor.common.ui.control.IntBeanSpinnerValueLink;
 import org.jminor.framework.server.monitor.ClientMonitor;
 import org.jminor.framework.server.monitor.ClientUserMonitor;
@@ -31,7 +31,7 @@ public final class ClientUserMonitorPanel extends JPanel {
 
   private final ClientUserMonitor model;
 
-  private ClientMonitorPanel clientTypeMonitorPanel = new ClientMonitorPanel();
+  private final ClientMonitorPanel clientTypeMonitorPanel = new ClientMonitorPanel();
   private JComboBox cmbMaintenanceCheck;
 
   public ClientUserMonitorPanel(final ClientUserMonitor model) throws RemoteException {
@@ -42,7 +42,6 @@ public final class ClientUserMonitorPanel extends JPanel {
   public void disconnectAll() throws RemoteException {
     if (JOptionPane.showConfirmDialog(this, "Are you sure you want to disconnect all clients?", "Disconnect all",
             JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
-      System.out.println("disco");
       model.disconnectAll();
     }
   }
@@ -76,7 +75,7 @@ public final class ClientUserMonitorPanel extends JPanel {
     clientUserBase.add(userScroller);
 
     clientTypeBase.add(clientUserBase, BorderLayout.CENTER);
-    clientTypeBase.add(ControlProvider.createButton(ControlFactory.methodControl(model, "refresh", "Refresh")), BorderLayout.SOUTH);
+    clientTypeBase.add(ControlProvider.createButton(Controls.methodControl(model, "refresh", "Refresh")), BorderLayout.SOUTH);
 
     final JPanel actionBase = new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
     actionBase.add(new JLabel("Reaper interval (s)", JLabel.RIGHT));
@@ -84,15 +83,15 @@ public final class ClientUserMonitorPanel extends JPanel {
 
     actionBase.add(new JLabel("Connection timeout (s)"));
     final JSpinner spnConnectionTimeout = new JSpinner(
-            new IntBeanSpinnerValueLink(model, "connectionTimeout", model.eventConnectionTimeoutChanged()).getSpinnerModel());
+            new IntBeanSpinnerValueLink(model, "connectionTimeout", model.getConnectionTimeoutObserver()).getSpinnerModel());
     ((JSpinner.DefaultEditor) spnConnectionTimeout.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) spnConnectionTimeout.getEditor()).getTextField().setColumns(7);
     actionBase.add(spnConnectionTimeout);
 
     actionBase.setBorder(BorderFactory.createTitledBorder("Remote connection controls"));
-    actionBase.add(ControlProvider.createButton(ControlFactory.methodControl(model, "disconnectTimedOut",
+    actionBase.add(ControlProvider.createButton(Controls.methodControl(model, "disconnectTimedOut",
             "Disconnect idle", null, "Disconnect those that have exceeded the allowed idle time")));
-    actionBase.add(ControlProvider.createButton(ControlFactory.methodControl(this, "disconnectAll",
+    actionBase.add(ControlProvider.createButton(Controls.methodControl(this, "disconnectAll",
             "Disconnect all", null, "Disconnect all")));
 
     setLayout(new BorderLayout());
@@ -115,7 +114,7 @@ public final class ClientUserMonitorPanel extends JPanel {
     cmbMaintenanceCheck = new JComboBox(new Integer[] {1,2,3,4,5,6,7,8,9,10,20,30,40,50,60,120,180,340,6000,10000});
     cmbMaintenanceCheck.setSelectedItem(model.getCheckMaintenanceInterval());
     cmbMaintenanceCheck.addItemListener(new ItemListener() {
-      public void itemStateChanged(ItemEvent e) {
+      public void itemStateChanged(final ItemEvent e) {
         try {
           model.setCheckMaintenanceInterval((Integer) cmbMaintenanceCheck.getSelectedItem());
         }

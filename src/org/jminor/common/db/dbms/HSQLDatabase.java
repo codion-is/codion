@@ -3,14 +3,18 @@
  */
 package org.jminor.common.db.dbms;
 
-import org.jminor.common.model.Util;
-
 import java.util.Properties;
 
 /**
  * A Database implementation based on the HSQL database.
  */
 public final class HSQLDatabase extends AbstractDatabase {
+
+  static final String DRIVER_NAME = "org.hsqldb.jdbcDriver";
+  static final String AUTO_INCREMENT_QUERY = "IDENTITY()";
+  static final String SEQUENCE_VALUE_QUERY = "select next value for ";
+  static final String EMBEDDED_URL_PREFIX = "jdbc:hsqldb:file:";
+  static final String NETWORKED_URL_PREFIX = "jdbc:hsqldb:hsql//";
 
   public HSQLDatabase() {
     super(HSQL);
@@ -25,52 +29,28 @@ public final class HSQLDatabase extends AbstractDatabase {
   }
 
   public void loadDriver() throws ClassNotFoundException {
-    Class.forName("org.hsqldb.jdbcDriver");
+    Class.forName(DRIVER_NAME);
   }
 
   public String getAutoIncrementValueSQL(final String idSource) {
-    return "IDENTITY()";
+    return AUTO_INCREMENT_QUERY;
   }
 
+  @Override
   public String getSequenceSQL(final String sequenceName) {
-    return "select next value for " + sequenceName;
+    return SEQUENCE_VALUE_QUERY + sequenceName;
   }
 
   public String getURL(final Properties connectionProperties) {
     final String authentication = getAuthenticationInfo(connectionProperties);
     if (isEmbedded()) {
-      return "jdbc:hsqldb:file:" + getHost() + (authentication == null ? "" : ";" + authentication);
+      return EMBEDDED_URL_PREFIX + getHost() + (authentication == null ? "" : ";" + authentication);
     }
     else {
-      return "jdbc:hsqldb:hsql//" + getHost() + ":" + getPort() + "/" + getSid() + (authentication == null ? "" : ";" + authentication);
+      return NETWORKED_URL_PREFIX + getHost() + ":" + getPort() + "/" + getSid() + (authentication == null ? "" : ";" + authentication);
     }
-  }
-
-  @Override
-  public String getAuthenticationInfo(final Properties connectionProperties) {
-    if (connectionProperties != null) {
-      final String username = (String) connectionProperties.get("user");
-      final String password = (String) connectionProperties.get("password");
-      if (username != null && username.length() > 0 && password != null && password.length() > 0) {
-        return "user=" + username + ";" + "password=" + password;
-      }
-    }
-
-    return null;
   }
 
   @Override
   public void shutdownEmbedded(final Properties connectionProperties) {}
-
-  @Override
-  protected void validate(final String databaseType, final String host, final String port, final String sid, final boolean embedded) {
-    if (embedded) {
-      Util.require(DATABASE_HOST, host);
-    }
-    else {
-      Util.require(DATABASE_HOST, host);
-      Util.require(DATABASE_PORT, port);
-      Util.require(DATABASE_SID, sid);
-    }
-  }
 }

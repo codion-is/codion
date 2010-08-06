@@ -13,7 +13,7 @@ public class MySQLDatabaseTest {
     final MySQLDatabase db = new MySQLDatabase("host", "1234", "sid");
     assertTrue(db.supportsIsValid());
     assertNull(db.getAuthenticationInfo(null));
-    assertEquals("select last_insert_id() from dual", db.getAutoIncrementValueSQL("id_source"));
+    assertEquals(MySQLDatabase.AUTO_INCREMENT_QUERY, db.getAutoIncrementValueSQL(null));
     try {
       db.getSequenceSQL("seq");
       fail();

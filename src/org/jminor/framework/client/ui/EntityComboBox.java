@@ -22,7 +22,7 @@ import java.util.Collection;
  * A UI component based on the EntityComboBoxModel.
  * @see EntityComboBoxModel
  */
-public class EntityComboBox extends SteppedComboBox {
+public final class EntityComboBox extends SteppedComboBox {
 
   /**
    * Instantiates a new EntityComboBox
@@ -69,7 +69,7 @@ public class EntityComboBox extends SteppedComboBox {
   private JPopupMenu initializePopupMenu() {
     final JPopupMenu popupMenu = new JPopupMenu();
     popupMenu.add(new AbstractAction(FrameworkMessages.get(FrameworkMessages.REFRESH)) {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         getModel().forceRefresh();
       }
     });

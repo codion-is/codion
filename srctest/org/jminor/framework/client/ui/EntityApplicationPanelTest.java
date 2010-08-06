@@ -31,7 +31,7 @@ public class EntityApplicationPanelTest {
         new EmpDept();
       }
     });
-    panel.getEntityPanel(EmpDept.T_DEPARTMENT).getTablePanel().getTableModel().setSelectedItemIndexes(Arrays.asList(0,1,2));
+    panel.getEntityPanel(EmpDept.T_DEPARTMENT).getTablePanel().getEntityTableModel().setSelectedItemIndexes(Arrays.asList(0,1,2));
     panel.getModel().getDbProvider().disconnect();
   }
 }

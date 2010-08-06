@@ -10,5 +10,10 @@ import java.util.Collection;
  * @param <V> the type of the values
  */
 public interface ValueCollectionProvider<V> {
+
+  /**
+   * Retrieves the values associated with this value provider.
+   * @return a collection containing the values provided by this value provider
+   */
   Collection<V> getValues();
 }

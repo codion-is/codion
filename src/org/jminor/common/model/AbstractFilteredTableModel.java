@@ -17,10 +17,12 @@ import javax.swing.table.TableColumnModel;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
@@ -38,19 +40,30 @@ import java.util.Map;
  * Time: 09:48:07<br>
  * @param <T> the type of the values in this table model
  */
-public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel implements FilteredTableModel<T> {
+public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableModel implements FilteredTableModel<T, C> {
 
-  private final Event evtFilteringStarted = new Event();
-  private final Event evtFilteringDone = new Event();
-  private final Event evtSortingStarted = new Event();
-  private final Event evtSortingDone = new Event();
-  private final Event evtTableDataChanged = new Event();
-  private final Event evtColumnHidden = new Event();
-  private final Event evtColumnShown = new Event();
+  public static final Comparator<Comparable<Object>> COMPARABLE_COMPARATOR = new Comparator<Comparable<Object>>() {
+    public int compare(final Comparable<Object> o1, final Comparable<Object> o2) {
+      return (o1.compareTo(o2));
+    }
+  };
+  public static final Comparator<Object> LEXICAL_COMPARATOR = new Comparator<Object>() {
+    private final Collator collator = Collator.getInstance();
+    public int compare(final Object o1, final Object o2) {
+      return collator.compare(o1.toString(), o2.toString());
+    }
+  };
+
+  private final Event evtFilteringDone = Events.event();
+  private final Event evtSortingStarted = Events.event();
+  private final Event evtSortingDone = Events.event();
+  private final Event evtRefreshStarted = Events.event();
+  private final Event evtRefreshDone = Events.event();
+  private final Event evtTableDataChanged = Events.event();
+  private final Event evtColumnHidden = Events.event();
+  private final Event evtColumnShown = Events.event();
 
   private static final SortingState EMPTY_SORTING_STATE = new SortingStateImpl(-1, SortingDirective.UNSORTED);
-
-  private final FilterCriteria<T> acceptAllCriteria = new FilterCriteria.AcceptAllCriteria<T>();
 
   /**
    * Holds visible items
@@ -68,6 +81,11 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
   private final TableColumnModel columnModel;
 
   /**
+   * The SearchModels used for filtering
+   */
+  private final List<? extends ColumnSearchModel<C>> columnFilterModels;
+
+  /**
    * Contains columns that have been hidden
    */
   private final List<TableColumn> hiddenColumns = new ArrayList<TableColumn>();
@@ -75,7 +93,7 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
   /**
    * The selection model
    */
-  private final SelectionModel selectionModel = new SelectionModel();
+  private final SelectionModel selectionModel;
 
   /**
    * Caches the column indexes in the model
@@ -85,7 +103,22 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
   /**
    * the filter criteria used by this model
    */
-  private FilterCriteria<T> filterCriteria = acceptAllCriteria;
+  private final FilterCriteria<T> filterCriteria = new FilterCriteria<T>() {
+    public boolean include(final T item) {
+      for (final ColumnSearchModel columnFilter : columnFilterModels) {
+        if (columnFilter.isSearchEnabled() && !columnFilter.include(item)) {
+          return false;
+        }
+      }
+
+      return true;
+    }
+  };
+
+  /**
+   * true while the model data is being refreshed
+   */
+  private boolean isRefreshing = false;
 
   /**
    * true while the model data is being filtered
@@ -97,7 +130,7 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
    */
   private boolean isSorting = false;
 
-  private final List<Row> viewToModel = new ArrayList<Row>();
+  private final List<Row<T>> viewToModel = new ArrayList<Row<T>>();
   private final Map<Integer, Integer> modelToView = new HashMap<Integer, Integer>();
   private final List<SortingState> sortingStates = new ArrayList<SortingState>();
 
@@ -106,9 +139,12 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
    */
   private boolean regularExpressionSearch = false;
 
-  public AbstractFilteredTableModel(final TableColumnModel columnModel) {
+  public AbstractFilteredTableModel(final TableColumnModel columnModel,
+                                    final List<? extends ColumnSearchModel<C>> columnFilterModels) {
     this.columnModel = columnModel;
     this.columnIndexCache = new int[columnModel.getColumnCount()];
+    this.columnFilterModels = columnFilterModels;
+    this.selectionModel = new SelectionModel(this);
     addTableModelListener(new SortHandler());
     bindEventsInternal();
   }
@@ -135,14 +171,6 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
 
   public final int getRowCount() {
     return visibleItems.size();
-  }
-
-  public final boolean isFiltering() {
-    return isFiltering;
-  }
-
-  public final boolean isSorting() {
-    return isSorting;
   }
 
   public final boolean contains(final T item, final boolean includeFiltered) {
@@ -189,6 +217,21 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
     return null;
   }
 
+  public final void refresh() {
+    if (isRefreshing) {
+      return;
+    }
+    try {
+      isRefreshing = true;
+      evtRefreshStarted.fire();
+      doRefresh();
+    }
+    finally {
+      isRefreshing = false;
+      evtRefreshDone.fire();
+    }
+  }
+
   public final void clear() {
     filteredItems.clear();
     final int size = getRowCount();
@@ -229,12 +272,45 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
     sortingStatusChanged();
   }
 
+  public final int compare(final T objectOne, final T objectTwo, final int columnIndex, final SortingDirective directive) {
+    final Comparable valueOne = getComparable(objectOne, columnIndex);
+    final Comparable valueTwo = getComparable(objectTwo, columnIndex);
+    final int comparison;
+    // Define null less than everything, except null.
+    if (valueOne == null && valueTwo == null) {
+      comparison = 0;
+    }
+    else if (valueOne == null) {
+      comparison = -1;
+    }
+    else if (valueTwo == null) {
+      comparison = 1;
+    }
+    else {
+      //noinspection unchecked
+      comparison = getComparator(columnIndex).compare(valueOne, valueTwo);
+    }
+    if (comparison != 0) {
+      return directive == SortingDirective.DESCENDING ? -comparison : comparison;
+    }
+
+    return 0;
+  }
+
   public final boolean isRegularExpressionSearch() {
     return regularExpressionSearch;
   }
 
   public final void setRegularExpressionSearch(final boolean value) {
     this.regularExpressionSearch = value;
+  }
+
+  public final ColumnSearchModel<C> getFilterModel(final int columnIndex) {
+    return columnFilterModels.get(columnIndex);
+  }
+
+  public final List<ColumnSearchModel<C>> getFilterModels() {
+    return Collections.unmodifiableList(columnFilterModels);
   }
 
   public final void selectAll() {
@@ -361,10 +437,6 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
     return selectionModel.isSelectionEmpty();
   }
 
-  public final ListSelectionModel getSelectionModel2() {
-    return selectionModel;
-  }
-
   public final T getItemAt(final int index) {
     return visibleItems.get(modelIndex(index));
   }
@@ -380,19 +452,17 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
 
   /**
    * Filters this table model
-   * @see #eventFilteringStarted()
-   * @see #eventFilteringDone()
+   * @see #addFilteringListener(java.awt.event.ActionListener)
    */
   public final void filterContents() {
     try {
       isFiltering = true;
-      evtFilteringStarted.fire();
       final List<T> selectedItems = getSelectedItems();
       visibleItems.addAll(filteredItems);
       filteredItems.clear();
       for (final ListIterator<T> iterator = visibleItems.listIterator(); iterator.hasNext();) {
         final T item = iterator.next();
-        if (!getFilterCriteria().include(item)) {
+        if (!filterCriteria.include(item)) {
           filteredItems.add(item);
           iterator.remove();
         }
@@ -411,13 +481,7 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
   }
 
   public final void setFilterCriteria(final FilterCriteria<T> filterCriteria) {
-    if (filterCriteria == null) {
-      this.filterCriteria = acceptAllCriteria;
-    }
-    else {
-      this.filterCriteria = filterCriteria;
-    }
-    filterContents();
+    throw new UnsupportedOperationException("AbstractFilteredTableModel.setFilterCriteria(FilterCriteria)");
   }
 
   public final List<T> getAllItems() {
@@ -513,66 +577,93 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
     return Collections.unmodifiableList(hiddenColumns);
   }
 
-  public final State stateSelectionEmpty() {
-    return selectionModel.stSelectionEmpty.getLinkedState();
+  public final StateObserver getSelectionEmptyState() {
+    return selectionModel.getSelectionEmptyState();
   }
 
   /**
    * @return a State active when multiple rows are selected
    */
-  public final State stateMultipleSelection() {
-    return selectionModel.stMultipleSelection.getLinkedState();
+  public final StateObserver getMultipleSelectionState() {
+    return selectionModel.getMultipleSelectionState();
   }
 
-  /**
-   * @return an Event fired whenever a column is hidden,
-   * the ActionEvent source is the column identifier.
-   */
-  public final Event eventColumnHidden() {
-    return evtColumnHidden;
+  public final void addColumnHiddenListener(final ActionListener listener) {
+    evtColumnHidden.addListener(listener);
   }
 
-  /**
-   * @return an Event fired whenever a column is shown,
-   * the ActionEvent source is the column identifier.
-   */
-  public final Event eventColumnShown() {
-    return evtColumnShown;
+  public final void removeColumnHiddenListener(final ActionListener listener) {
+    evtColumnHidden.removeListener(listener);
   }
 
-  public final Event eventFilteringDone() {
-    return evtFilteringDone;
+  public final void addColumnShownListener(final ActionListener listener) {
+    evtColumnShown.addListener(listener);
   }
 
-  public final Event eventFilteringStarted() {
-    return evtFilteringStarted;
+  public final void removeColumnShownListener(final ActionListener listener) {
+    evtColumnShown.removeListener(listener);
   }
 
-  public final Event eventSortingDone() {
-    return evtSortingDone;
+  public final void addRefreshStartedListener(final ActionListener listener) {
+    evtRefreshStarted.addListener(listener);
   }
 
-  public final Event eventSortingStarted() {
-    return evtSortingStarted;
+  public final void removeRefreshStartedListener(final ActionListener listener) {
+    evtRefreshStarted.removeListener(listener);
   }
 
-  public final Event eventSelectedIndexChanged() {
-    return selectionModel.evtSelectedIndexChanged;
+  public final void addRefreshDoneListener(final ActionListener listener) {
+    evtRefreshDone.addListener(listener);
   }
 
-  public final Event eventSelectionChanged() {
-    return selectionModel.evtSelectionChanged;
+  public final void removeRefreshDoneListener(final ActionListener listener) {
+    evtRefreshDone.removeListener(listener);
   }
 
-  /**
-   * @return an Event fired when the selection is changing
-   */
-  public final Event eventSelectionChangedAdjusting() {
-    return selectionModel.evtSelectionChangedAdjusting;
+  public final void addFilteringListener(final ActionListener listener) {
+    evtFilteringDone.addListener(listener);
   }
 
-  public final Event eventTableDataChanged() {
-    return evtTableDataChanged;
+  public final void removeFilteringListener(final ActionListener listener) {
+    evtFilteringDone.removeListener(listener);
+  }
+
+  public final void addSortingListener(final ActionListener listener) {
+    evtSortingDone.addListener(listener);
+  }
+
+  public final void removeSortingListener(final ActionListener listener) {
+    evtSortingDone.removeListener(listener);
+  }
+
+  public final void addSelectedIndexListener(final ActionListener listener) {
+    selectionModel.addSelectedIndexListener(listener);
+  }
+
+  public final void removeSelectedIndexListener(final ActionListener listener) {
+    selectionModel.removeSelectedIndexListener(listener);
+  }
+
+  public final void addSelectionChangedListener(final ActionListener listener) {
+    selectionModel.addSelectionChangedListener(listener);
+  }
+
+  public final void removeSelectionChangedListener(final ActionListener listener) {
+    selectionModel.removeSelectionChangedListener(listener);
+  }
+
+  public final void addTableDataChangedListener(final ActionListener listener) {
+    evtTableDataChanged.addListener(listener);
+  }
+
+  public final void removeTableDataChangedListener(final ActionListener listener) {
+    evtTableDataChanged.removeListener(listener);
+  }
+
+  protected abstract void doRefresh();
+
+  protected Comparable getComparable(final Object object, final int columnIndex) {
+    return (Comparable) object;
   }
 
   /**
@@ -611,9 +702,8 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
    * @param atFront if true then the items are added at the front
    */
   protected final void addItems(final List<T> items, final boolean atFront) {
-    final FilterCriteria<T> criteria = getFilterCriteria();
     for (final T item : items) {
-      if (criteria.include(item)) {
+      if (filterCriteria.include(item)) {
         if (atFront) {
           visibleItems.add(0, item);
         }
@@ -652,10 +742,18 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
     };
   }
 
+  protected final boolean isFiltering() {
+    return isFiltering;
+  }
+
+  protected final boolean isSorting() {
+    return isSorting;
+  }
+
   private void bindEventsInternal() {
     final List<T> selectedItems = new ArrayList<T>();
     addTableModelListener(new TableModelListener() {
-      public void tableChanged(TableModelEvent e) {
+      public void tableChanged(final TableModelEvent e) {
         evtTableDataChanged.fire();
       }
     });
@@ -673,6 +771,13 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
         selectedItems.clear();
       }
     });
+    for (final ColumnSearchModel searchModel : columnFilterModels) {
+      searchModel.addSearchStateListener(new ActionListener() {
+        public void actionPerformed(final ActionEvent e) {
+          filterContents();
+        }
+      });
+    }
     columnModel.addColumnModelListener(new TableColumnModelListener() {
       public void columnAdded(final TableColumnModelEvent e) {
         Arrays.fill(columnIndexCache, -1);
@@ -688,6 +793,18 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
     });
   }
 
+  private Comparator getComparator(final int column) {
+    final Class columnClass = getColumnClass(column);
+    if (columnClass.equals(String.class)) {
+      return LEXICAL_COMPARATOR;
+    }
+    if (Comparable.class.isAssignableFrom(columnClass)) {
+      return COMPARABLE_COMPARATOR;
+    }
+
+    return LEXICAL_COMPARATOR;
+  }
+
   private int viewIndex(final int modelIndex) {
     final Map<Integer, Integer> view = getModelToView();
     if (!view.isEmpty() && modelIndex >= 0 && modelIndex < view.size()) {
@@ -697,8 +814,8 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
     return -1;
   }
 
-  private int modelIndex(int viewIndex) {
-    final List<Row> model = getViewToModel();
+  private int modelIndex(final int viewIndex) {
+    final List<Row<T>> model = getViewToModel();
     if (!model.isEmpty() && viewIndex >= 0 && viewIndex < model.size()) {
       return model.get(viewIndex).getModelIndex();
     }
@@ -706,11 +823,11 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
     return -1;
   }
 
-  private List<Row> getViewToModel() {
+  private List<Row<T>> getViewToModel() {
     if (!visibleItems.isEmpty() && viewToModel.isEmpty()) {
       final int tableModelRowCount = getRowCount();
       for (int row = 0; row < tableModelRowCount; row++) {
-        viewToModel.add(new Row(row));
+        viewToModel.add(new Row<T>(row, this));
       }
 
       if (isSorted()) {
@@ -755,26 +872,12 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
     modelToView.clear();
   }
 
-  private static final class SortingStateImpl implements SortingState {
-    private int column;
-    private SortingDirective direction;
-
-    private SortingStateImpl(final int column, final SortingDirective direction) {
-      this.column = column;
-      this.direction = direction;
-    }
-
-    public int getColumnIndex() {
-      return column;
-    }
-
-    public SortingDirective getDirective() {
-      return direction;
-    }
+  private List<SortingState> getSortingStates() {
+    return sortingStates;
   }
 
-  private class SortHandler implements TableModelListener {
-    public void tableChanged(TableModelEvent e) {
+  private final class SortHandler implements TableModelListener {
+    public void tableChanged(final TableModelEvent e) {
       // If we're not sorting by anything, just pass the event along.
       if (!isSorted()) {
         clearSorting();
@@ -794,24 +897,26 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
     }
   }
 
-  private class Row implements Comparable<Row> {
+  private static final class Row<T> implements Comparable<Row<T>> {
 
+    private final AbstractFilteredTableModel<T, ?> tableModel;
     private final int modelIndex;
 
-    Row(final int modelIndex) {
+    private Row(final int modelIndex, final AbstractFilteredTableModel<T, ?> tableModel) {
       this.modelIndex = modelIndex;
+      this.tableModel = tableModel;
     }
 
     public int getModelIndex() {
       return modelIndex;
     }
 
-    public int compareTo(final Row o) {
-      final T one = visibleItems.get(modelIndex);
-      final T two = visibleItems.get(o.modelIndex);
+    public int compareTo(final Row<T> o) {
+      final T one = tableModel.getItemAt(modelIndex);
+      final T two = tableModel.getItemAt(o.modelIndex);
 
-      for (final SortingState directive : sortingStates) {
-        final int comparison = compare(one, two, directive.getColumnIndex(), directive.getDirective());
+      for (final SortingState directive : tableModel.getSortingStates()) {
+        final int comparison = tableModel.compare(one, two, directive.getColumnIndex(), directive.getDirective());
         if (comparison != 0) {
           return comparison;
         }
@@ -819,15 +924,45 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
 
       return 0;
     }
+
+    @Override
+    public boolean equals(final Object obj) {
+      //noinspection unchecked
+      return obj instanceof Row && ((Row) obj).modelIndex == modelIndex;
+    }
+
+    @Override
+    public int hashCode() {
+      return modelIndex;
+    }
   }
 
-  private class SelectionModel extends DefaultListSelectionModel {
+  private static final class SortingStateImpl implements SortingState {
+    private final int column;
+    private final SortingDirective direction;
 
-    private final Event evtSelectionChangedAdjusting = new Event();
-    private final Event evtSelectionChanged = new Event();
-    private final Event evtSelectedIndexChanged = new Event();
-    private final State stSelectionEmpty = new State(true);
-    private final State stMultipleSelection = new State(false);
+    private SortingStateImpl(final int column, final SortingDirective direction) {
+      this.column = column;
+      this.direction = direction;
+    }
+
+    public int getColumnIndex() {
+      return column;
+    }
+
+    public SortingDirective getDirective() {
+      return direction;
+    }
+  }
+
+  private static final class SelectionModel extends DefaultListSelectionModel {
+
+    private final Event evtSelectionChanged = Events.event();
+    private final Event evtSelectedIndexChanged = Events.event();
+    private final State stSelectionEmpty = States.state(true);
+    private final State stMultipleSelection = States.state(false);
+
+    private final AbstractFilteredTableModel tableModel;
 
     /**
      * true while the selection is being updated
@@ -838,8 +973,12 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
      */
     private int selectedIndex = -1;
 
+    private SelectionModel(final AbstractFilteredTableModel tableModel) {
+      this.tableModel = tableModel;
+    }
+
     @Override
-    public void fireValueChanged(int firstIndex, int lastIndex, boolean isAdjusting) {
+    public void fireValueChanged(final int firstIndex, final int lastIndex, final boolean isAdjusting) {
       super.fireValueChanged(firstIndex, lastIndex, isAdjusting);
       stSelectionEmpty.setActive(isSelectionEmpty());
       stMultipleSelection.setActive(getSelectionCount() > 1);
@@ -848,10 +987,7 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
         selectedIndex = minSelIndex;
         evtSelectedIndexChanged.fire();
       }
-      if (isAdjusting || isUpdatingSelection || isSorting) {
-        evtSelectionChangedAdjusting.fire();
-      }
-      else {
+      if (!(isAdjusting || isUpdatingSelection || tableModel.isSorting())) {
         evtSelectionChanged.fire();
       }
     }
@@ -904,24 +1040,28 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
       return selectedIndex;
     }
 
-    public Event eventSelectedIndexChanged() {
-      return evtSelectedIndexChanged;
+    public void addSelectedIndexListener(final ActionListener listener) {
+      evtSelectedIndexChanged.addListener(listener);
     }
 
-    public Event eventSelectionChanged() {
-      return evtSelectionChanged;
+    public void removeSelectedIndexListener(final ActionListener listener) {
+      evtSelectedIndexChanged.addListener(listener);
     }
 
-    public Event eventSelectionChangedAdjusting() {
-      return evtSelectionChangedAdjusting;
+    public void addSelectionChangedListener(final ActionListener listener) {
+      evtSelectionChanged.addListener(listener);
     }
 
-    public State stateMultipleSelection() {
-      return stMultipleSelection.getLinkedState();
+    public void removeSelectionChangedListener(final ActionListener listener) {
+      evtSelectionChanged.addListener(listener);
     }
 
-    public State stateSelectionEmpty() {
-      return stSelectionEmpty.getLinkedState();
+    public StateObserver getMultipleSelectionState() {
+      return stMultipleSelection.getObserver();
+    }
+
+    public StateObserver getSelectionEmptyState() {
+      return stSelectionEmpty.getObserver();
     }
   }
 }

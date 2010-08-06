@@ -7,14 +7,12 @@ import org.jminor.common.model.Event;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 
+import java.awt.event.ActionListener;
 import java.util.Collection;
 import java.util.List;
 
 /**
- * A class for providing summaries of numerical table columns: sum, average, minimum, maximum and minimum & maximum.<br>
- * User: Bjorn Darri<br>
- * Date: 5.9.2009<br>
- * Time: 21:47:06<br>
+ * A interface defining a class for providing summaries of numerical table columns: sum, average, minimum, maximum and minimum & maximum.<br>
  */
 public interface PropertySummaryModel {
 
@@ -68,9 +66,13 @@ public interface PropertySummaryModel {
 
   String getSummaryText();
 
-  Event eventSummaryChanged();
+  void addSummaryListener(final ActionListener listener);
 
-  Event eventSummaryTypeChanged();
+  void removeSummaryListener(final ActionListener listener);
+
+  void addSummaryTypeListener(final ActionListener listener);
+
+  void removeSummaryTypeListener(final ActionListener listener);
 
   /**
    * Provides the values used when creating the summary value.

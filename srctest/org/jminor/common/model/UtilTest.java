@@ -12,6 +12,30 @@ import java.util.List;
 public class UtilTest {
 
   @Test
+  public void testRejectNullValue() {
+    Util.rejectNullValue("value", "value");
+    try {
+      Util.rejectNullValue(null, "value");
+    }
+    catch (IllegalArgumentException e) {}
+  }
+
+  @Test
+  public void isEqual() {
+    Object one = null;
+    Object two = null;
+    assertTrue(Util.equal(one, two));
+
+    one = new Object();
+    assertFalse(Util.equal(one, two));
+    two = new Object();
+    assertFalse(Util.equal(one, two));
+
+    two = one;
+    assertTrue(Util.equal(one, two));
+  }
+
+  @Test
   public void roundDouble() {
     final Double d = 5.1234567;
     assertEquals(new Double(5.1), new Double(Util.roundDouble(d, 1)));

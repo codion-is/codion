@@ -47,7 +47,7 @@ public class DbException extends Exception  {
   /**
    * @return the sql query which caused the exception
    */
-  public String getStatement() {
+  public final String getStatement() {
     return this.statement;
   }
 }

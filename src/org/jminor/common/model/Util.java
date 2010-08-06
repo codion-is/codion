@@ -8,16 +8,7 @@ import org.apache.log4j.Logger;
 
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.Closeable;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -28,27 +19,13 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.text.Collator;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.prefs.Preferences;
 
 /**
  * A static utility class.
  */
 public final class Util {
-
-  private Util() {}
 
   public static final String VERSION_FILE = "version.txt";
 
@@ -61,9 +38,9 @@ public final class Util {
 
   public static final String PREF_DEFAULT_USERNAME = "jminor.username";
 
+  private static final List<Logger> LOGGERS = new ArrayList<Logger>();
   private static final Random RANDOM = new Random();
-
-  private static List<Logger> loggers = new ArrayList<Logger>();
+  private static final int K = 1024;
   private static Level defaultLoggingLevel;
   private static Preferences userPreferences;
 
@@ -86,18 +63,7 @@ public final class Util {
     }
   }
 
-  /**
-   * True if the given objects are equal. Both objects being null results in true.
-   * @param one the first object
-   * @param two the second object
-   * @return true if the given objects are equal
-   */
-  public static boolean isEqual(final Object one, final Object two) {
-    final boolean oneNull = one == null;
-    final boolean twoNull = two == null;
-
-    return oneNull && twoNull || !(oneNull ^ twoNull) && one.equals(two);
-  }
+  private Util() {}
 
   /**
    * Returns true if the given host is reachable, false if it is not or an exception is thrown while trying
@@ -164,11 +130,11 @@ public final class Util {
    * @return the current logging level
    */
   public static Level getLoggingLevel() {
-    if (loggers.isEmpty()) {
+    if (LOGGERS.isEmpty()) {
       return defaultLoggingLevel;
     }
 
-    return loggers.get(0).getLevel();
+    return LOGGERS.get(0).getLevel();
   }
 
   public static void setDefaultLoggingLevel(final Level defaultLoggingLevel) {
@@ -178,7 +144,7 @@ public final class Util {
 
   public static void setLoggingLevel(final Level level) {
     rejectNullValue(level, "level");
-    for (final Logger logger : loggers) {
+    for (final Logger logger : LOGGERS) {
       logger.setLevel(level);
     }
   }
@@ -187,7 +153,7 @@ public final class Util {
     rejectNullValue(classToLog, "classToLog");
     final Logger logger = Logger.getLogger(classToLog);
     logger.setLevel(getLoggingLevel());
-    loggers.add(logger);
+    LOGGERS.add(logger);
 
     return logger;
   }
@@ -196,20 +162,20 @@ public final class Util {
     rejectNullValue(name, "name");
     final Logger logger = Logger.getLogger(name);
     logger.setLevel(getLoggingLevel());
-    loggers.add(logger);
+    LOGGERS.add(logger);
 
     return logger;
   }
 
   public static Integer getInt(final String text) {
-    if (text == null || text.length() == 0) {
+    if (nullOrEmpty(text)) {
       return null;
     }
 
     final String noGrouping = text.replace(".", "");
 
-    int value;
-    if ((noGrouping.length() > 0) && (!noGrouping.equals("-"))) {
+    final int value;
+    if (!noGrouping.isEmpty() && !noGrouping.equals("-")) {
       value = Integer.parseInt(noGrouping);
     }
     else if (noGrouping.equals("-")) {
@@ -223,12 +189,12 @@ public final class Util {
   }
 
   public static Double getDouble(final String text) {
-    if (text == null || text.length() == 0) {
+    if (nullOrEmpty(text)) {
       return null;
     }
 
-    double value;
-    if ((text.length() > 0) && (!text.equals("-"))) {
+    final double value;
+    if (!text.isEmpty() && !text.equals("-")) {
       value = Double.parseDouble(text.replace(',', '.'));
     }
     else if (text.equals("-")) {
@@ -242,14 +208,14 @@ public final class Util {
   }
 
   public static Long getLong(final String text) {
-    if (text == null || text.length() == 0) {
+    if (nullOrEmpty(text)) {
       return null;
     }
 
     final String noGrouping = text.replace(".", "");
 
-    long value;
-    if ((noGrouping.length() > 0) && (!noGrouping.equals("-"))) {
+    final long value;
+    if (!noGrouping.isEmpty() && !noGrouping.equals("-")) {
       value = Long.parseLong(noGrouping);
     }
     else if (noGrouping.equals("-")) {
@@ -271,7 +237,7 @@ public final class Util {
     printArrayContents(objects, false);
   }
 
-  public static void printArrayContents(final Object[] objects, boolean onePerLine) {
+  public static void printArrayContents(final Object[] objects, final boolean onePerLine) {
     System.out.println(getArrayContentsAsString(objects, onePerLine));
   }
 
@@ -283,7 +249,7 @@ public final class Util {
     return getArrayContentsAsString(collection.toArray(), onePerLine);
   }
 
-  public static String getArrayContentsAsString(Object[] items, boolean onePerLine) {
+  public static String getArrayContentsAsString(final Object[] items, final boolean onePerLine) {
     if (items == null) {
       return "";
     }
@@ -315,15 +281,15 @@ public final class Util {
   }
 
   public static long getAllocatedMemory() {
-    return Runtime.getRuntime().totalMemory() / 1024;
+    return Runtime.getRuntime().totalMemory() / K;
   }
 
   public static long getFreeMemory() {
-    return Runtime.getRuntime().freeMemory() / 1024;
+    return Runtime.getRuntime().freeMemory() / K;
   }
 
   public static long getMaxMemory() {
-    return Runtime.getRuntime().maxMemory() / 1024;
+    return Runtime.getRuntime().maxMemory() / K;
   }
 
   public static long getUsedMemory() {
@@ -473,6 +439,28 @@ public final class Util {
     }
   }
 
+  public static void serializeToFile(final Collection objects, final File file) {
+    ObjectOutputStream outputStream = null;
+    try {
+      outputStream = new ObjectOutputStream(new FileOutputStream(file));
+      for (final Object object : objects) {
+        outputStream.writeObject(object);
+      }
+    }
+    catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+    finally {
+      closeSilently(outputStream);
+    }
+  }
+
+  /**
+   * True if the given objects are equal. Both objects being null results in true.
+   * @param one the first object
+   * @param two the second object
+   * @return true if the given objects are equal
+   */
   public static boolean equal(final Object one, final Object two) {
     return one == null && two == null || !(one == null ^ two == null) && one.equals(two);
   }
@@ -568,10 +556,6 @@ public final class Util {
         return collator.compare(o1.toString(), o2.toString());
       }
     });
-  }
-
-  public static Random getRandom() {
-    return RANDOM;
   }
 
   public static URI getURI(final String urlOrPath) throws URISyntaxException {
@@ -694,17 +678,6 @@ public final class Util {
     return map;
   }
 
-  private static <K, V> void map(final Map<K, Collection<V>> map, final V value, final K key) {
-    rejectNullValue(value, "value");
-    rejectNullValue(key, "key");
-    rejectNullValue(map, "map");
-    if (!map.containsKey(key)) {
-      map.put(key, new ArrayList<V>());
-    }
-
-    map.get(key).add(value);
-  }
-
   public static boolean onClasspath(final String classname) {
     rejectNullValue(classname, "classname");
     try {
@@ -717,9 +690,22 @@ public final class Util {
   }
 
   public static void require(final String propertyName, final String value) {
-    if (value == null || value.length() == 0) {
+    if (nullOrEmpty(value)) {
       throw new RuntimeException(propertyName + " is required");
     }
+  }
+
+  public static boolean nullOrEmpty(final String... strings) {
+    if (strings == null) {
+      return true;
+    }
+    for (final String string : strings) {
+      if (string == null || string.isEmpty()) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   /**
@@ -756,5 +742,16 @@ public final class Util {
    */
   public interface HashKeyProvider<K, V> {
     K getKey(final V value);
+  }
+
+  private static <K, V> void map(final Map<K, Collection<V>> map, final V value, final K key) {
+    rejectNullValue(value, "value");
+    rejectNullValue(key, "key");
+    rejectNullValue(map, "map");
+    if (!map.containsKey(key)) {
+      map.put(key, new ArrayList<V>());
+    }
+
+    map.get(key).add(value);
   }
 }

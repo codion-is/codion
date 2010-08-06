@@ -405,7 +405,7 @@ public final class Configuration {
    */
   public static final String SEARCH_PANELS_VISIBLE = "jminor.client.searchPanelsVisible";
 
-  private static Map<String, Object> settings = new HashMap<String, Object>();
+  private static final Map<String, Object> SETTINGS = new HashMap<String, Object>();
 
   static {
     //default settings
@@ -443,7 +443,6 @@ public final class Configuration {
     setValue(LIMIT_FOREIGN_KEY_FETCH_DEPTH, true);
     setValue(DEFAULT_LOOK_AND_FEEL_CLASSNAME, UIManager.getSystemLookAndFeelClassName());
     setValue(AUTO_CREATE_ENTITY_MODELS, true);
-    setValue(SEARCH_PANELS_VISIBLE, false);
     parseSystemSettings();
   }
 
@@ -485,7 +484,6 @@ public final class Configuration {
     parseStringSetting(WILDCARD_CHARACTER);
     parseStringSetting(DEFAULT_LOOK_AND_FEEL_CLASSNAME);
     parseBooleanSetting(AUTO_CREATE_ENTITY_MODELS);
-    parseBooleanSetting(SEARCH_PANELS_VISIBLE);
   }
 
   private static void parseIntegerSetting(final String setting) {
@@ -510,11 +508,11 @@ public final class Configuration {
   }
 
   public static void setValue(final String key, final Object value) {
-    settings.put(key, value);
+    SETTINGS.put(key, value);
   }
 
   public static Object getValue(final String key) {
-    return settings.get(key);
+    return SETTINGS.get(key);
   }
 
   public static Integer getIntValue(final String key) {
@@ -526,7 +524,7 @@ public final class Configuration {
   }
 
   public static String getStringValue(final String key) {
-    return (String) settings.get(key);
+    return (String) SETTINGS.get(key);
   }
 
   /**
@@ -557,7 +555,7 @@ public final class Configuration {
 
   public static String getReportPath() {
     final String path = getStringValue(REPORT_PATH);
-    if (path == null || path.isEmpty()) {
+    if (Util.nullOrEmpty(path)) {
       throw new RuntimeException("jminor.report.path property is not speficied");
     }
 

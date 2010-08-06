@@ -3,8 +3,9 @@
  */
 package org.jminor.framework.client.ui;
 
+import org.jminor.common.model.ColumnSearchModel;
 import org.jminor.common.model.SearchType;
-import org.jminor.common.ui.AbstractSearchPanel;
+import org.jminor.common.ui.ColumnSearchPanel;
 import org.jminor.common.ui.combobox.MaximumMatch;
 import org.jminor.framework.client.model.EntityComboBoxModel;
 import org.jminor.framework.client.model.ForeignKeySearchModel;
@@ -14,69 +15,64 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JComponent;
 import java.awt.event.ActionEvent;
-import java.text.Format;
 
 /**
  * User: Björn Darri
  * Date: 19.7.2010
  * Time: 14:15:36
  */
-public class ForeignKeySearchPanel extends AbstractSearchPanel<Property.ForeignKeyProperty> {
+public final class ForeignKeySearchPanel extends ColumnSearchPanel<Property.ForeignKeyProperty> {
 
   public ForeignKeySearchPanel(final ForeignKeySearchModel model) {
-    this(model, false, false);
+    this(model, false);
   }
 
-  public ForeignKeySearchPanel(final ForeignKeySearchModel model, final boolean includeActivateBtn,
-                               final boolean includeToggleAdvBtn) {
-    super(model, includeActivateBtn, includeToggleAdvBtn);
-    model.initialize();
+  public ForeignKeySearchPanel(final ForeignKeySearchModel model, final boolean includeToggleAdvBtn) {
+    super(model, true, includeToggleAdvBtn, new ForeignKeyInputFieldProvider(model), SearchType.LIKE, SearchType.NOT_LIKE);
   }
 
-  @Override
-  protected boolean isLowerBoundFieldRequired(final Property.ForeignKeyProperty property) {
-    return false;
-  }
+  private static final class ForeignKeyInputFieldProvider implements InputFieldProvider<Property.ForeignKeyProperty> {
 
-  @Override
-  protected boolean searchTypeAllowed(final SearchType searchType) {
-    return searchType == SearchType.LIKE || searchType == SearchType.NOT_LIKE;
-  }
+    private final ColumnSearchModel<Property.ForeignKeyProperty> model;
 
-  @Override
-  protected JComponent getInputField(final boolean isUpperBound) {
-    final JComponent field = initEntityField();
-    field.setToolTipText(isUpperBound ? "a" : "b");
+    private ForeignKeyInputFieldProvider(final ColumnSearchModel<Property.ForeignKeyProperty> model) {
+      this.model = model;
+    }
 
-    return field;
-  }
+    public ColumnSearchModel<Property.ForeignKeyProperty> getSearchModel() {
+      return model;
+    }
 
-  protected Format getInputFormat() {
-    return null;
-  }
-
-  private JComponent initEntityField() {
-    final EntityComboBoxModel boxModel = ((ForeignKeySearchModel) getModel()).getEntityComboBoxModel();
-    if (boxModel != null) {
-      final EntityComboBox field = new EntityComboBox(boxModel);
-      MaximumMatch.enable(field);
+    public JComponent initializeInputField(final boolean isUpperBound) {
+      final JComponent field = initEntityField();
+      field.setToolTipText(isUpperBound ? "a" : "b");
 
       return field;
     }
-    else {
-      final EntityLookupField field = new EntityLookupField(((ForeignKeySearchModel) getModel()).getEntityLookupModel());
-      field.setEnterAction(getEnableAction());
-      field.getModel().refreshSearchText();
 
-      return field;
-    }
-  }
+    private JComponent initEntityField() {
+      final EntityComboBoxModel boxModel = ((ForeignKeySearchModel) model).getEntityComboBoxModel();
+      if (boxModel != null) {
+        final EntityComboBox field = new EntityComboBox(boxModel);
+        MaximumMatch.enable(field);
 
-  private Action getEnableAction() {
-    return new AbstractAction() {
-      public void actionPerformed(ActionEvent e) {
-        getModel().setSearchEnabled(!getModel().isSearchEnabled());
+        return field;
       }
-    };
+      else {
+        final EntityLookupField field = new EntityLookupField(((ForeignKeySearchModel) model).getEntityLookupModel());
+        field.setEnterAction(getEnableAction());
+        field.getModel().refreshSearchText();
+
+        return field;
+      }
+    }
+
+    private Action getEnableAction() {
+      return new AbstractAction() {
+        public void actionPerformed(final ActionEvent e) {
+          model.setSearchEnabled(!model.isSearchEnabled());
+        }
+      };
+    }
   }
 }

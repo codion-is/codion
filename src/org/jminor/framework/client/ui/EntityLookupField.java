@@ -12,20 +12,7 @@ import org.jminor.framework.client.model.EntityLookupModel;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.i18n.FrameworkMessages;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.KeyStroke;
-import javax.swing.ListSelectionModel;
+import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
@@ -47,7 +34,7 @@ import java.util.List;
  * A UI component based on the EntityLookupModel
  * @see EntityLookupModel
  */
-public class EntityLookupField extends JTextField {
+public final class EntityLookupField extends JTextField {
 
   private final EntityLookupModel model;
   private final SearchFieldHint searchHint;
@@ -71,25 +58,25 @@ public class EntityLookupField extends JTextField {
     bindProperty();
   }
 
-  public final EntityLookupModel getModel() {
+  public EntityLookupModel getModel() {
     return model;
   }
 
-  public final Action getEnterAction() {
+  public Action getEnterAction() {
     return enterAction;
   }
 
-  public final EntityLookupField setEnterAction(final Action enterAction) {
+  public EntityLookupField setEnterAction(final Action enterAction) {
     this.enterAction = enterAction;
     return this;
   }
 
-  public final EntityLookupField setDefaultBackgroundColor(final Color defaultBackgroundColor) {
+  public EntityLookupField setDefaultBackgroundColor(final Color defaultBackgroundColor) {
     this.defaultBackgroundColor = defaultBackgroundColor;
     return this;
   }
 
-  public final EntityLookupField setTransferFocusOnEnter() {
+  public EntityLookupField setTransferFocusOnEnter() {
     return setEnterAction(new AbstractAction() {
       public void actionPerformed(final ActionEvent e) {
         transferFocus();
@@ -105,26 +92,18 @@ public class EntityLookupField extends JTextField {
       model.setSelectedEntities(entities);
     }
     else {
-      Collections.sort(entities, new Comparator<Entity>() {
-        public int compare(final Entity o1, final Entity o2) {
-          return o1.compareTo(o2);
-        }
-      });
+      Collections.sort(entities, new EntityComparator());
       final JList list = new JList(entities.toArray());
       final Window owner = UiUtil.getParentWindow(EntityLookupField.this);
       final JDialog dialog = new JDialog(owner, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY));
       dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
       final Action okAction = new AbstractAction(Messages.get(Messages.OK)) {
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(final ActionEvent e) {
           getModel().setSelectedEntities(toEntityList(list.getSelectedValues()));
           dialog.dispose();
         }
       };
-      final Action cancelAction = new AbstractAction(Messages.get(Messages.CANCEL)) {
-        public void actionPerformed(ActionEvent e) {
-          dialog.dispose();
-        }
-      };
+      final Action cancelAction = new UiUtil.DialogDisposeAction(dialog, Messages.get(Messages.CANCEL));
       list.setSelectionMode(model.isMultipleSelectionAllowed() ?
               ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);
       final JButton btnOk  = new JButton(okAction);
@@ -136,14 +115,7 @@ public class EntityLookupField extends JTextField {
       UiUtil.addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, cancelAction);
       list.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
               KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "none");
-      list.addMouseListener(new MouseAdapter() {
-        @Override
-        public void mouseClicked(final MouseEvent e) {
-          if (e.getClickCount() == 2) {
-            okAction.actionPerformed(null);
-          }
-        }
-      });
+      list.addMouseListener(new LookupFieldMouseListener(okAction));
       dialog.setLayout(new BorderLayout());
       final JScrollPane scroller = new JScrollPane(list);
       dialog.add(scroller, BorderLayout.CENTER);
@@ -163,16 +135,15 @@ public class EntityLookupField extends JTextField {
   }
 
   private void bindProperty() {
-    new TextBeanValueLink(this, getModel(), "searchString", String.class, getModel().eventSearchStringChanged()) {
+    new TextBeanValueLink(this, getModel(), "searchString", String.class, getModel().searchStringObserver()) {
       @Override
-      protected void setUIValue(final Object value) {
-        super.setUIValue(value);
+      protected void handleSetUIValue(final Object value) {
         updateColors();
         searchHint.updateState();
       }
     };
-    model.eventSearchStringChanged().addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+    model.addSearchStringListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
         updateColors();
       }
     });
@@ -180,7 +151,7 @@ public class EntityLookupField extends JTextField {
 
   private void addEscapeListener() {
     UiUtil.addKeyEvent(this, KeyEvent.VK_ESCAPE, new AbstractAction("cancel") {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         getModel().refreshSearchText();
         selectAll();
       }
@@ -193,7 +164,7 @@ public class EntityLookupField extends JTextField {
         updateColors();
       }
       public void focusLost(final FocusEvent e) {
-        if (getText().length() == 0) {
+        if (getText().isEmpty()) {
           getModel().setSelectedEntity(null);
         }
 //        else //todo?
@@ -217,7 +188,7 @@ public class EntityLookupField extends JTextField {
   }
 
   private void performLookup() {
-    if (model.getSearchString().length() == 0) {
+    if (model.getSearchString().isEmpty()) {
       model.setSelectedEntities(null);
       if (enterAction != null) {
         enterAction.actionPerformed(new ActionEvent(this, 0, "actionPerformed"));
@@ -243,30 +214,7 @@ public class EntityLookupField extends JTextField {
 
   private JPopupMenu initializePopupMenu() {
     final JPopupMenu popupMenu = new JPopupMenu();
-    popupMenu.add(new AbstractAction(Messages.get(Messages.SETTINGS)) {
-      public void actionPerformed(ActionEvent e) {
-        final JPanel panel = new JPanel(new GridLayout(3,1,5,5));
-        final JCheckBox boxCaseSensitive =
-                new JCheckBox(FrameworkMessages.get(FrameworkMessages.CASE_SENSITIVE), getModel().isCaseSensitive());
-        final JCheckBox boxPrefixWildcard =
-                new JCheckBox(FrameworkMessages.get(FrameworkMessages.PREFIX_WILDCARD), getModel().isWildcardPrefix());
-        final JCheckBox boxPostfixWildcard =
-                new JCheckBox(FrameworkMessages.get(FrameworkMessages.POSTFIX_WILDCARD), getModel().isWildcardPostfix());
-        panel.add(boxCaseSensitive);
-        panel.add(boxPrefixWildcard);
-        panel.add(boxPostfixWildcard);
-        final AbstractAction action = new AbstractAction(Messages.get(Messages.OK)) {
-          public void actionPerformed(final ActionEvent evt) {
-            getModel().setCaseSensitive(boxCaseSensitive.isSelected());
-            getModel().setWildcardPrefix(boxPrefixWildcard.isSelected());
-            getModel().setWildcardPostfix(boxPostfixWildcard.isSelected());
-          }
-        };
-        action.putValue(Action.MNEMONIC_KEY, Messages.get(Messages.OK_MNEMONIC).charAt(0));
-        UiUtil.showInDialog(UiUtil.getParentWindow(EntityLookupField.this), panel, true,
-                Messages.get(Messages.SETTINGS), true, true, action);
-      }
-    });
+    popupMenu.add(new SettingsAction(this));
 
     return popupMenu;
   }
@@ -278,5 +226,58 @@ public class EntityLookupField extends JTextField {
     }
 
     return entityList;
+  }
+
+  private static final class SettingsAction extends AbstractAction {
+
+    private final EntityLookupField lookupPanel;
+
+    private SettingsAction(final EntityLookupField lookupPanel) {
+      super(Messages.get(Messages.SETTINGS));
+      this.lookupPanel = lookupPanel;
+    }
+
+    public void actionPerformed(final ActionEvent e) {
+        final JPanel panel = new JPanel(new GridLayout(3,1,5,5));
+        final JCheckBox boxCaseSensitive =
+                new JCheckBox(FrameworkMessages.get(FrameworkMessages.CASE_SENSITIVE), lookupPanel.getModel().isCaseSensitive());
+        final JCheckBox boxPrefixWildcard =
+                new JCheckBox(FrameworkMessages.get(FrameworkMessages.PREFIX_WILDCARD), lookupPanel.getModel().isWildcardPrefix());
+        final JCheckBox boxPostfixWildcard =
+                new JCheckBox(FrameworkMessages.get(FrameworkMessages.POSTFIX_WILDCARD), lookupPanel.getModel().isWildcardPostfix());
+        panel.add(boxCaseSensitive);
+        panel.add(boxPrefixWildcard);
+        panel.add(boxPostfixWildcard);
+        final AbstractAction action = new AbstractAction(Messages.get(Messages.OK)) {
+          public void actionPerformed(final ActionEvent e) {
+            lookupPanel.getModel().setCaseSensitive(boxCaseSensitive.isSelected());
+            lookupPanel.getModel().setWildcardPrefix(boxPrefixWildcard.isSelected());
+            lookupPanel.getModel().setWildcardPostfix(boxPostfixWildcard.isSelected());
+          }
+        };
+        action.putValue(Action.MNEMONIC_KEY, Messages.get(Messages.OK_MNEMONIC).charAt(0));
+        UiUtil.showInDialog(UiUtil.getParentWindow(lookupPanel), panel, true, Messages.get(Messages.SETTINGS), true, true, action);
+      }
+  }
+
+  private static final class EntityComparator implements Comparator<Entity> {
+    public int compare(final Entity o1, final Entity o2) {
+      return o1.compareTo(o2);
+    }
+  }
+
+  private static final class LookupFieldMouseListener extends MouseAdapter {
+    private final Action okAction;
+
+    private LookupFieldMouseListener(final Action okAction) {
+      this.okAction = okAction;
+    }
+
+    @Override
+    public void mouseClicked(final MouseEvent e) {
+      if (e.getClickCount() == 2) {
+        okAction.actionPerformed(null);
+      }
+    }
   }
 }

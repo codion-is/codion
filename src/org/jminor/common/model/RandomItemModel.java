@@ -31,7 +31,7 @@ public class RandomItemModel<T> {
   /**
    * An Event fired when a weight value has changed
    */
-  private final Event evtWeightsChanged = new Event();
+  private final Event evtWeightsChanged = Events.event();
 
   /**
    * The items contained in this model
@@ -52,17 +52,9 @@ public class RandomItemModel<T> {
   public RandomItemModel(final int defaultWeight, final T... items) {
     if (items != null) {
       for (final T item : items) {
-        addItem(item, defaultWeight);
+        this.items.add(new RandomItem<T>(item, defaultWeight));
       }
     }
-  }
-
-  /**
-   * Adds the given item to this model with default weight of 0.
-   * @param item the item to add
-   */
-  public final void addItem(final T item) {
-    addItem(item, 0);
   }
 
   /**
@@ -72,6 +64,43 @@ public class RandomItemModel<T> {
    */
   public void addItem(final T item, final int weight) {
     items.add(new RandomItem<T>(item, weight));
+  }
+
+  /**
+   * Increments the weight of the given item by one
+   * @param item the item
+   */
+  public void increment(final T item) {
+    getRandomItem(item).increment();
+    evtWeightsChanged.fire();
+  }
+
+  /**
+   * Decrements the weight of the given item by one
+   * @param item the item
+   * @throws IllegalStateException in case the weight is 0
+   */
+  public void decrement(final T item) {
+    getRandomItem(item).decrement();
+    evtWeightsChanged.fire();
+  }
+
+  /**
+   * Sets the weight of the given item
+   * @param item the item
+   * @param weight the value
+   */
+  public void setWeight(final T item, final int weight) {
+    getRandomItem(item).setWeight(weight);
+    evtWeightsChanged.fire();
+  }
+
+  /**
+   * Adds the given item to this model with default weight of 0.
+   * @param item the item to add
+   */
+  public final void addItem(final T item) {
+    addItem(item, 0);
   }
 
   /**
@@ -98,8 +127,8 @@ public class RandomItemModel<T> {
   /**
    * @return an Event which fires each time a weight has been changed.
    */
-  public final Event eventWeightsChanged() {
-    return evtWeightsChanged;
+  public final EventObserver getWeightsObserver() {
+    return evtWeightsChanged.getObserver();
   }
 
   /**
@@ -139,35 +168,6 @@ public class RandomItemModel<T> {
   }
 
   /**
-   * Increments the weight of the given item by one
-   * @param item the item
-   */
-  public void increment(final T item) {
-    getRandomItem(item).increment();
-    eventWeightsChanged().fire();
-  }
-
-  /**
-   * Decrements the weight of the given item by one
-   * @param item the item
-   * @throws IllegalStateException in case the weight is 0
-   */
-  public void decrement(final T item) {
-    getRandomItem(item).decrement();
-    eventWeightsChanged().fire();
-  }
-
-  /**
-   * Sets the weight of the given item
-   * @param item the item
-   * @param weight the value
-   */
-  public void setWeight(final T item, final int weight) {
-    getRandomItem(item).setWeight(weight);
-    eventWeightsChanged().fire();
-  }
-
-  /**
    * Returns the weight of the given item.
    * @param item the item
    * @return the item weight
@@ -182,7 +182,7 @@ public class RandomItemModel<T> {
    * @return the RandomItem
    * @throws RuntimeException in case the item is not found
    */
-  protected RandomItem<T> getRandomItem(final T item) {
+  protected final RandomItem<T> getRandomItem(final T item) {
     for (final RandomItem<T> randomItem : items) {
       if (randomItem.getItem().equals(item)) {
         return randomItem;
@@ -190,6 +190,10 @@ public class RandomItemModel<T> {
     }
 
     throw new RuntimeException("Item not found: " + item);
+  }
+
+  protected final void fireWeightsChangedEvent() {
+    evtWeightsChanged.fire();
   }
 
   private int getTotalWeights() {
@@ -204,7 +208,7 @@ public class RandomItemModel<T> {
   /**
    * A class encapsulating an Object item and a integer weight value.
    */
-  public static class RandomItem<T> {
+  public static final class RandomItem<T> {
 
     private final T item;
     private int weight = 0;
@@ -252,7 +256,7 @@ public class RandomItemModel<T> {
       weight--;
     }
 
-    void setWeight(final int weight) {
+    private void setWeight(final int weight) {
       if (weight < 0) {
         throw new IllegalStateException("Weight can not be negative");
       }

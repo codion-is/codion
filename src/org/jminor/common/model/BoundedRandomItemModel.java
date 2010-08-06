@@ -60,7 +60,7 @@ public final class BoundedRandomItemModel<T> extends RandomItemModel<T> {
       decrementWeight(randomItem);
       getRandomItem(item).increment();
     }
-    eventWeightsChanged().fire();
+    fireWeightsChangedEvent();
   }
 
   @Override
@@ -74,20 +74,20 @@ public final class BoundedRandomItemModel<T> extends RandomItemModel<T> {
       incrementWeight(randomItem);
       randomItem.decrement();
     }
-    eventWeightsChanged().fire();
+    fireWeightsChangedEvent();
   }
 
   @Override
   public void setWeight(final T item, final int weight) {
-    throw new RuntimeException("setWeigth is not implemented in " + getClass().getSimpleName());
+    throw new UnsupportedOperationException("setWeigth is not implemented in " + getClass().getSimpleName());
   }
 
   @Override
   public void addItem(final T item, final int weight) {
-    throw new RuntimeException("addItem is not implemented in " + getClass().getSimpleName());
+    throw new UnsupportedOperationException("addItem is not implemented in " + getClass().getSimpleName());
   }
 
-  protected void initializeItems(final T... items) {
+  private void initializeItems(final T... items) {
     final int rest = weightBounds % items.length;
     final int amountEach = weightBounds / items.length;
     for (int i = 0; i < items.length; i++) {

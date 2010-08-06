@@ -4,11 +4,13 @@
 package org.jminor.common.model.combobox;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.model.Events;
 import org.jminor.common.model.FilterCriteria;
 import org.jminor.common.model.Util;
 
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
+import java.awt.event.ActionListener;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,9 +24,8 @@ import java.util.ListIterator;
  */
 public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T> {
 
-  private final Event evtSelectionChanged = new Event();
-  private final Event evtFilteringStarted = new Event();
-  private final Event evtFilteringDone = new Event();
+  private final Event evtSelectionChanged = Events.event();
+  private final Event evtFilteringDone = Events.event();
 
   private final FilterCriteria<T> acceptAllCriteria = new FilterCriteria.AcceptAllCriteria<T>();
 
@@ -58,11 +59,11 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
    */
   public DefaultFilteredComboBoxModel(final String nullValueString) {
     this.nullValueString = nullValueString;
-    this.sortComparator = initializeItemSortComparator();
+    this.sortComparator = new SortComparator<T>(nullValueString);
   }
 
   public final void refresh() {
-    resetContents();
+    setContents(initializeContents());
   }
 
   public final void clear() {
@@ -95,28 +96,28 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   }
 
   public final void filterContents() {
-    visibleItems.addAll(filteredItems);
-    filteredItems.clear();
-    final FilterCriteria<T> criteria = getFilterCriteria();
-    for (final ListIterator<T> itemIterator = visibleItems.listIterator(); itemIterator.hasNext();) {
-      final T item = itemIterator.next();
-      if (item != null && !criteria.include(item)) {
-        filteredItems.add(item);
-        itemIterator.remove();
+    try {
+      visibleItems.addAll(filteredItems);
+      filteredItems.clear();
+      for (final ListIterator<T> itemIterator = visibleItems.listIterator(); itemIterator.hasNext();) {
+        final T item = itemIterator.next();
+        if (item != null && !filterCriteria.include(item)) {
+          filteredItems.add(item);
+          itemIterator.remove();
+        }
       }
-    }
-    if (sortComparator != null) {
-      Collections.sort(visibleItems, sortComparator);
-    }
-    if (selectedItem != null && !visibleItems.contains(selectedItem)) {
-      setSelectedItem(null);
-    }
+      if (sortComparator != null) {
+        Collections.sort(visibleItems, sortComparator);
+      }
+      if (selectedItem != null && !visibleItems.contains(selectedItem)) {
+        setSelectedItem(null);
+      }
 
-    fireContentsChanged();
-  }
-
-  public void resetContents() {
-    setContents(initializeContents());
+      fireContentsChanged();
+    }
+    finally {
+      evtFilteringDone.fire();
+    }
   }
 
   public final List<T> getFilteredItems() {
@@ -131,7 +132,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     return Collections.unmodifiableList(visibleItems.subList(1, getSize() - 1));
   }
 
-  public final void setFilterCriteria(final FilterCriteria filterCriteria) {
+  public final void setFilterCriteria(final FilterCriteria<T> filterCriteria) {
     if (filterCriteria == null) {
       this.filterCriteria = acceptAllCriteria;
     }
@@ -141,7 +142,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     filterContents();
   }
 
-  public FilterCriteria<T> getFilterCriteria() {
+  public final FilterCriteria<T> getFilterCriteria() {
     return filterCriteria;
   }
 
@@ -173,7 +174,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   }
 
   public final void addItem(final T item) {
-    if (getFilterCriteria().include(item)) {
+    if (filterCriteria.include(item)) {
       visibleItems.add(item);
     }
     else {
@@ -224,16 +225,21 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     return selectedItem;
   }
 
-  public void setSelectedItem(final Object anItem) {
-    if (Util.equal(selectedItem, anItem)) {
+  public final void setSelectedItem(final Object anItem) {
+    final Object toSelect = translateSelectionItem(anItem);
+    if (vetoSelectionChange(toSelect)) {
+      return;
+    }
+    if (Util.equal(selectedItem, toSelect)) {
       return;
     }
 
-    if (nullValueString != null && nullValueString.equals(anItem)) {
+    if (nullValueString != null && nullValueString.equals(toSelect)) {
       selectedItem = null;
     }
     else {
-      selectedItem = (T) anItem;
+      //noinspection unchecked
+      selectedItem = (T) toSelect;
     }
     fireContentsChanged();
     evtSelectionChanged.fire();
@@ -260,16 +266,20 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     return visibleItems.size();
   }
 
-  public final Event eventFilteringDone() {
-    return evtFilteringDone;
+  public final void addFilteringListener(final ActionListener listener) {
+    evtFilteringDone.addListener(listener);
   }
 
-  public final Event eventFilteringStarted() {
-    return evtFilteringStarted;
+  public final void removeFilteringListener(final ActionListener listener) {
+    evtFilteringDone.removeListener(listener);
   }
 
-  public final Event eventSelectionChanged() {
-    return evtSelectionChanged;
+  public final void addSelectionListener(final ActionListener listener) {
+    evtSelectionChanged.addListener(listener);
+  }
+
+  public final void removeSelectionListener(final ActionListener listener) {
+    evtSelectionChanged.removeListener(listener);
   }
 
   /**
@@ -287,47 +297,55 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     return contents;
   }
 
-  /**
-   * Initializes the comparator to use when sorting the items in this model,
-   * if the model should not be sorted simply override and return null.
-   * @return the Comparator to use when sorting the contents of this model.
-   */
-  protected Comparator<T> initializeItemSortComparator() {
-    return new Comparator<T>() {
-      private final Collator collator = Collator.getInstance();
-      @SuppressWarnings({"unchecked"})
-      public int compare(final T o1, final T o2) {
-        if (o1 == null && o2 == null) {
-          return 0;
-        }
-        if (o1 == null) {
-          return -1;
-        }
-        if (o2 == null) {
-          return 1;
-        }
-        if (nullValueString != null) {
-          if (o1.equals(nullValueString)) {
-            return -1;
-          }
-          if (o2.equals(nullValueString)) {
-            return 1;
-          }
-        }
-        if (o1 instanceof Comparable && o2 instanceof Comparable) {
-          return ((Comparable) o1).compareTo(o2);
-        }
-        else {
-          return collator.compare(o1.toString(), o2.toString());
-        }
-      }
-    };
+  protected boolean vetoSelectionChange(final Object item) {
+    return false;
   }
 
-  private void fireContentsChanged() {
+  protected Object translateSelectionItem(final Object item) {
+    return item;
+  }
+
+  protected final void fireContentsChanged() {
     final ListDataEvent event = new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0, Integer.MAX_VALUE);
     for (final ListDataListener dataListener : listDataListeners) {
       dataListener.contentsChanged(event);
+    }
+  }
+
+  private static final class SortComparator<T> implements Comparator<T> {
+
+    private final String nullValueString;
+
+    SortComparator(final String nullValueString) {
+      this.nullValueString = nullValueString;
+    }
+
+    private final Collator collator = Collator.getInstance();
+    @SuppressWarnings({"unchecked"})
+    public int compare(final T o1, final T o2) {
+      if (o1 == null && o2 == null) {
+        return 0;
+      }
+      if (o1 == null) {
+        return -1;
+      }
+      if (o2 == null) {
+        return 1;
+      }
+      if (nullValueString != null) {
+        if (o1.equals(nullValueString)) {
+          return -1;
+        }
+        if (o2.equals(nullValueString)) {
+          return 1;
+        }
+      }
+      if (o1 instanceof Comparable && o2 instanceof Comparable) {
+        return ((Comparable) o1).compareTo(o2);
+      }
+      else {
+        return collator.compare(o1.toString(), o2.toString());
+      }
     }
   }
 }

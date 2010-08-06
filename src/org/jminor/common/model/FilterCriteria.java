@@ -10,7 +10,7 @@ package org.jminor.common.model;
 public interface FilterCriteria<T> {
   /**
    * @param item the item
-   * @return true if <code>item</code> should be included
+   * @return true if <code>item</code> should be included, false if it should be filtered
    */
   boolean include(T item);
 

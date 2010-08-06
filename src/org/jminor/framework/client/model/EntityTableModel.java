@@ -7,7 +7,7 @@ import org.jminor.common.db.exception.DbException;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.FilteredTableModel;
 import org.jminor.common.model.SortingDirective;
-import org.jminor.common.model.State;
+import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.reports.ReportDataWrapper;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.domain.Entity;
@@ -19,20 +19,20 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public interface EntityTableModel extends FilteredTableModel<Entity>, EntityDataProvider {
+public interface EntityTableModel extends FilteredTableModel<Entity, Property>, EntityDataProvider {
 
   /**
    * @return the state used to determine if updating should be enabled
    * @see #isMultipleUpdateAllowed()
    */
-  State stateAllowMultipleUpdate();
+  StateObserver getAllowMultipleUpdateState();
 
   /**
    * @return the state used to determine if deleting should be enabled
    * @see #isDeleteAllowed()
    * @see #setDeleteAllowed(boolean)
    */
-  State stateAllowDelete();
+  StateObserver getAllowDeleteState();
 
   /**
    * @param propertyID the ID of the property to sort by
@@ -47,6 +47,11 @@ public interface EntityTableModel extends FilteredTableModel<Entity>, EntityData
    * @see #setEditModel(EntityEditModel)
    */
   EntityEditModel getEditModel();
+
+  /**
+   * @return true if this table model contains a edit model
+   */
+  boolean hasEditModel();
 
   /**
    * Associates the given edit model with this table model, this enables delete/update
@@ -111,18 +116,18 @@ public interface EntityTableModel extends FilteredTableModel<Entity>, EntityData
   boolean isDetailModel();
 
   /**
-   * @param value true if this model should allow records to be deleted
+   * @param deleteAllowed true if this model should allow records to be deleted
+   * @return this EntityTableModel instance
    */
-  void setDeleteAllowed(final boolean value);
+  EntityTableModel setDeleteAllowed(final boolean deleteAllowed);
 
   /**
-   * @return true if this model should allow records to be deleted
+   * @return true if this model allows records to be deleted
    */
   boolean isDeleteAllowed();
 
   /**
    * @return true if this model is read only or if no edit model has been specified.
-   * by default this returns the isReadOnly value of the underlying entity
    * @see #setEditModel(EntityEditModel)
    */
   boolean isReadOnly();
@@ -131,6 +136,12 @@ public interface EntityTableModel extends FilteredTableModel<Entity>, EntityData
    * @return true if this model allows multiple entities to be updated at a time
    */
   boolean isMultipleUpdateAllowed();
+
+  /**
+   * @param multipleUpdateAllowed true if this model should multiple entities to be updated at a time
+   * @return this EntityTableModel instance
+   */
+  EntityTableModel setMultipleUpdateAllowed(final boolean multipleUpdateAllowed);
 
   /**
    * Returns the PropertySummaryModel associated with the property identified by <code>propertyID</code>
@@ -156,7 +167,7 @@ public interface EntityTableModel extends FilteredTableModel<Entity>, EntityData
   /**
    * @param row the row for which to retrieve the background color
    * @return the background color for this row, specified by the row entity
-   * @see org.jminor.framework.domain.EntityRepository.Proxy#getBackgroundColor(org.jminor.framework.domain.Entity)
+   * @see org.jminor.framework.domain.Entities.Proxy#getBackgroundColor(org.jminor.framework.domain.Entity)
    * @see org.jminor.framework.client.ui.EntityTableCellRenderer
    */
   Color getRowBackgroundColor(final int row);
@@ -248,6 +259,8 @@ public interface EntityTableModel extends FilteredTableModel<Entity>, EntityData
    * @see #getSelectedEntitiesIterator()
    */
   ReportDataWrapper getReportDataSource();
+
+  EntityTableModel setReportDataSource(final ReportDataWrapper reportDataSource);
 
   /**
    * @param property the property for which to retrieve the values

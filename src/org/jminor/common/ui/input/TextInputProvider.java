@@ -12,7 +12,7 @@ import javax.swing.JTextField;
 /**
  * A InputProvider implementation for String values.
  */
-public final class TextInputProvider extends AbstractInputProvider<String> {
+public final class TextInputProvider extends AbstractInputProvider<String, TextInputPanel> {
 
   private static final int DEFAULT_COLUMNS = 16;
 
@@ -22,9 +22,9 @@ public final class TextInputProvider extends AbstractInputProvider<String> {
 
   @Override
   public String getValue() {
-    final String value = ((TextInputPanel) getInputComponent()).getText();
+    final String value = getInputComponent().getText();
 
-    return value.length() == 0 ? null : value;
+    return value.isEmpty() ? null : value;
   }
 
   private static TextInputPanel createTextInputPanel(final String inputDialogTitle, final ValueCollectionProvider valueProvider,

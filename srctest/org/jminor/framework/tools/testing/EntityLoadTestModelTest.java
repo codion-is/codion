@@ -51,11 +51,11 @@ public class EntityLoadTestModelTest {
     assertEquals(350, loadTest.getUpdateInterval());
     assertEquals(0, loadTest.getLoginDelayFactor());
 
-    loadTest.getScenarioChooser().setWeight(loadTest.getUsageScenario("selectDepartment"), 1);
-    loadTest.getScenarioChooser().setWeight(loadTest.getUsageScenario("insertDepartment"), 0);
-    loadTest.getScenarioChooser().setWeight(loadTest.getUsageScenario("insertEmployee"), 0);
-    loadTest.getScenarioChooser().setWeight(loadTest.getUsageScenario("logoutLogin"), 0);
-    loadTest.getScenarioChooser().setWeight(loadTest.getUsageScenario("updateEmployee"), 0);
+    loadTest.getScenarioChooser().setWeight(loadTest.getUsageScenario("SelectDepartment"), 1);
+    loadTest.getScenarioChooser().setWeight(loadTest.getUsageScenario("InsertDepartment"), 0);
+    loadTest.getScenarioChooser().setWeight(loadTest.getUsageScenario("InsertEmployee"), 0);
+    loadTest.getScenarioChooser().setWeight(loadTest.getUsageScenario("LoginLogout"), 0);
+    loadTest.getScenarioChooser().setWeight(loadTest.getUsageScenario("UpdateEmployee"), 0);
 
     loadTest.setMaximumThinkTime(100);
     loadTest.setMinimumThinkTime(50);
@@ -64,16 +64,16 @@ public class EntityLoadTestModelTest {
     loadTest.setApplicationBatchSize(2);
     assertEquals(2, loadTest.getApplicationBatchSize());
 
-    loadTest.addApplications();
+    loadTest.addApplicationBatch();
 
-    Thread.sleep(3000);
+    Thread.sleep(5000);
 
     assertEquals("Two clients expected, if this fails try increasing the Thread.sleep() value above",
             2, loadTest.getApplicationCount());
-    assertTrue(loadTest.getUsageScenario("selectDepartment").getTotalRunCount() > 0);
-    assertTrue(loadTest.getUsageScenario("selectDepartment").getSuccessfulRunCount() > 0);
-    assertTrue(loadTest.getUsageScenario("selectDepartment").getUnsuccessfulRunCount() == 0);
-    assertTrue(loadTest.getUsageScenario("insertDepartment").getTotalRunCount() == 0);
+    assertTrue(loadTest.getUsageScenario("SelectDepartment").getTotalRunCount() > 0);
+    assertTrue(loadTest.getUsageScenario("SelectDepartment").getSuccessfulRunCount() > 0);
+    assertTrue(loadTest.getUsageScenario("SelectDepartment").getUnsuccessfulRunCount() == 0);
+    assertTrue(loadTest.getUsageScenario("InsertDepartment").getTotalRunCount() == 0);
 
     loadTest.setPaused(true);
     assertTrue(loadTest.isPaused());
@@ -81,7 +81,7 @@ public class EntityLoadTestModelTest {
     loadTest.resetChartData();
 
     loadTest.setApplicationBatchSize(1);
-    loadTest.removeApplications();
+    loadTest.removeApplicationBatch();
     assertEquals(1, loadTest.getApplicationCount());
     loadTest.exit();
 
@@ -104,7 +104,7 @@ public class EntityLoadTestModelTest {
     tableModel.refresh();
 
     EntityLoadTestModel.selectRandomRow(tableModel);
-    assertFalse(tableModel.stateSelectionEmpty().isActive());
+    assertFalse(tableModel.getSelectionEmptyState().isActive());
 
     EntityLoadTestModel.selectRandomRows(tableModel, 3);
     assertEquals(3, tableModel.getSelectedItems().size());

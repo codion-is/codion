@@ -3,7 +3,7 @@
  */
 package org.jminor.common.ui.control;
 
-import org.jminor.common.model.Event;
+import org.jminor.common.model.EventObserver;
 
 import javax.swing.JFormattedTextField;
 import javax.swing.text.MaskFormatter;
@@ -20,7 +20,7 @@ public class FormattedTextBeanValueLink extends TextBeanValueLink {
 
   public FormattedTextBeanValueLink(final JFormattedTextField textComponent, final Object owner,
                                     final String propertyName, final Class<?> valueClass,
-                                    final Event valueChangeEvent, final LinkType linkType,
+                                    final EventObserver valueChangeEvent, final LinkType linkType,
                                     final Format format) {
     super(textComponent, owner, propertyName, valueClass, valueChangeEvent, linkType);
     if (format == null) {
@@ -42,17 +42,21 @@ public class FormattedTextBeanValueLink extends TextBeanValueLink {
    * @return the value, if a formatter is present, the formatted value is returned
    */
   @Override
-  protected Object getUIValue() {
+  protected final Object getUIValue() {
     final String text = getText();
     if (text != null && text.contains(placeholder)) {
       return null;
     }
 
     try {
-      return text != null ? format.parseObject(text) : null;
+      return text != null ? translate(format.parseObject(text)) : null;
     }
     catch (ParseException nf) {
       return null;
     }
+  }
+
+  protected Object translate(final Object parsedValue) {
+    return parsedValue;
   }
 }

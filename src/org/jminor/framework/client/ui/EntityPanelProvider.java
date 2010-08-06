@@ -4,15 +4,16 @@
 package org.jminor.framework.client.ui;
 
 import org.jminor.common.model.Util;
-import org.jminor.common.ui.control.ControlSet;
 import org.jminor.framework.client.model.DefaultEntityEditModel;
 import org.jminor.framework.client.model.DefaultEntityModel;
 import org.jminor.framework.client.model.DefaultEntityTableModel;
+import org.jminor.framework.client.model.DefaultEntityValidator;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.EntityTableModel;
+import org.jminor.framework.client.model.EntityValidator;
 import org.jminor.framework.db.provider.EntityDbProvider;
-import org.jminor.framework.domain.EntityRepository;
+import org.jminor.framework.domain.Entities;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,6 +23,7 @@ import java.util.Map;
 
 /**
  * A class providing EntityPanel instances.
+ * Note: this class has a natural ordering based on the caption which is inconsistent with equals.
  */
 public class EntityPanelProvider implements Comparable {
 
@@ -33,15 +35,15 @@ public class EntityPanelProvider implements Comparable {
 
   private Class<? extends EntityModel> modelClass = DefaultEntityModel.class;
   private Class<? extends EntityEditModel> editModelClass = DefaultEntityEditModel.class;
+  private Class<? extends EntityValidator> validatorClass = DefaultEntityValidator.class;
   private Class<? extends EntityTableModel> tableModelClass = DefaultEntityTableModel.class;
   private Class<? extends EntityPanel> panelClass = EntityPanel.class;
   private Class<? extends EntityTablePanel> tablePanelClass = EntityTablePanel.class;
-
   private Class<? extends EntityEditPanel> editPanelClass;
 
-  private List<EntityPanelProvider> detailPanelProviders = new ArrayList<EntityPanelProvider>();
+  private final List<EntityPanelProvider> detailPanelProviders = new ArrayList<EntityPanelProvider>();
 
-  private static final Map<String, EntityPanelProvider> panelProviders = Collections.synchronizedMap(new HashMap<String, EntityPanelProvider>());
+  private static final Map<String, EntityPanelProvider> PANEL_PROVIDERS = Collections.synchronizedMap(new HashMap<String, EntityPanelProvider>());
 
   private EntityPanel instance;
 
@@ -83,11 +85,11 @@ public class EntityPanelProvider implements Comparable {
   }
 
   public final EntityPanelProvider register() {
-    synchronized (panelProviders) {
-      if (panelProviders.containsKey(entityID)) {
+    synchronized (PANEL_PROVIDERS) {
+      if (PANEL_PROVIDERS.containsKey(entityID)) {
         throw new RuntimeException("Panel provider has already been set for entity: " + entityID);
       }
-      panelProviders.put(entityID, this);
+      PANEL_PROVIDERS.put(entityID, this);
     }
 
     return this;
@@ -101,8 +103,8 @@ public class EntityPanelProvider implements Comparable {
    * @return the caption to use when this EntityPanelProvider is shown in f.x. menus
    */
   public final String getCaption() {
-    if (caption == null || caption.length() == 0) {
-      this.caption = EntityRepository.getEntityDefinition(entityID).getCaption();
+    if (Util.nullOrEmpty(caption)) {
+      this.caption = Entities.getCaption(entityID);
     }
 
     if (caption == null) {
@@ -219,6 +221,16 @@ public class EntityPanelProvider implements Comparable {
     return thisCompare.compareTo(thatCompare);
   }
 
+  @Override
+  public final boolean equals(final Object obj) {
+    return obj instanceof EntityPanelProvider && ((EntityPanelProvider) obj).entityID.equals(entityID);
+  }
+
+  @Override
+  public final int hashCode() {
+    return entityID.hashCode();
+  }
+
   public final EntityPanel createInstance(final EntityDbProvider dbProvider) {
     return createInstance(dbProvider, false);
   }
@@ -230,11 +242,8 @@ public class EntityPanelProvider implements Comparable {
       if (detailPanel && entityModel.containsTableModel()) {
         entityModel.getTableModel().setDetailModel(true);
       }
-      if (refreshOnInit) {
-        entityModel.refresh();
-      }
 
-      return createInstance(entityModel);
+      return createInstance(entityModel, detailPanel);
     }
     catch (RuntimeException e) {
       throw e;
@@ -256,7 +265,7 @@ public class EntityPanelProvider implements Comparable {
   }
 
   public static EntityPanelProvider getProvider(final String entityID) {
-    return panelProviders.get(entityID);
+    return PANEL_PROVIDERS.get(entityID);
   }
 
   protected void configurePanel(final EntityPanel panel) {}
@@ -271,32 +280,12 @@ public class EntityPanelProvider implements Comparable {
 
   protected void configureTableModel(final EntityTableModel tableModel) {}
 
-  private EntityPanel createInstance(final EntityModel model) {
+  private EntityPanel createInstance(final EntityModel model, final boolean isDetailPanel) {
     if (model == null) {
       throw new RuntimeException("Can not create a EntityPanel without an EntityModel");
     }
     try {
-      final EntityPanel entityPanel= initializePanel(model);
-      final EntityEditPanel editPanel;
-      if (editPanelClass != null) {
-        editPanel = initializeEditPanel(model.getEditModel());
-      }
-      else {
-        editPanel = null;
-      }
-      final EntityTablePanel tablePanel;
-      if (model.containsTableModel()) {
-        tablePanel = initializeTablePanel(entityPanel);
-      }
-      else {
-        tablePanel = null;
-      }
-      if (editPanel != null) {
-        entityPanel.setEditPanel(editPanel);
-      }
-      if (tablePanel != null) {
-        entityPanel.setTablePanel(tablePanel);
-      }
+      final EntityPanel entityPanel = initializePanel(model);
       if (!detailPanelProviders.isEmpty()) {
         entityPanel.setDetailPanelState(detailPanelState);
         entityPanel.setDetailSplitPanelResizeWeight(detailSplitPanelResizeWeight);
@@ -306,8 +295,15 @@ public class EntityPanelProvider implements Comparable {
           entityPanel.addDetailPanel(detailPanel);
         }
       }
-      if (refreshOnInit) {
-        model.refresh();
+      if (!isDetailPanel && refreshOnInit) {
+        final boolean cascadeRefresh = model.isCascadeRefresh();
+        try {
+          model.setCascadeRefresh(true);
+          model.refresh();
+        }
+        finally {
+          model.setCascadeRefresh(cascadeRefresh);
+        }
       }
 
       return entityPanel;
@@ -322,16 +318,26 @@ public class EntityPanelProvider implements Comparable {
 
   private EntityPanel initializePanel(final EntityModel model) {
     try {
-      final EntityPanel panel = panelClass.getConstructor(EntityModel.class).newInstance(model);
-      configurePanel(panel);
-      if (editPanelClass != null) {
-        panel.setEditPanel(initializeEditPanel(model.getEditModel()));
+      final EntityPanel entityPanel;
+      if (panelClass.equals(EntityPanel.class)) {
+        final EntityTablePanel tablePanel;
+        if (model.containsTableModel()) {
+          tablePanel = initializeTablePanel(model.getTableModel());
+        }
+        else {
+          tablePanel = null;
+        }
+
+        entityPanel = panelClass.getConstructor(EntityModel.class, EntityEditPanel.class, EntityTablePanel.class)
+                .newInstance(model, initializeEditPanel(model.getEditModel()), tablePanel);
       }
-      if (model.containsTableModel()) {
-        panel.setTablePanel(initializeTablePanel(panel));
+      else {
+        entityPanel = panelClass.getConstructor(EntityModel.class).newInstance(model);
       }
 
-      return panel;
+      configurePanel(entityPanel);
+
+      return entityPanel;
     }
     catch (RuntimeException e) {
       throw e;
@@ -356,18 +362,9 @@ public class EntityPanelProvider implements Comparable {
     }
   }
 
-  private EntityTablePanel initializeTablePanel(final EntityPanel entityPanel) {
+  private EntityTablePanel initializeTablePanel(final EntityTableModel tableModel) {
     try {
-      final EntityTablePanel tablePanel = tablePanelClass.getConstructor(EntityTableModel.class).newInstance(entityPanel.getModel().getTableModel());
-      final ControlSet toolbarControls = new ControlSet("");
-      if (editPanelClass != null || entityPanel.getEditPanel() != null) {
-        toolbarControls.add(entityPanel.getToggleEditPanelControl());
-      }
-      if (!detailPanelProviders.isEmpty() || !entityPanel.getDetailPanels().isEmpty()) {
-        toolbarControls.add(entityPanel.getToggleDetailPanelControl());
-      }
-      tablePanel.initializeToolbar(toolbarControls);
-      tablePanel.initializePopupMenu(entityPanel.getTablePopupControlSet());
+      final EntityTablePanel tablePanel = tablePanelClass.getConstructor(EntityTableModel.class).newInstance(tableModel);
       configureTablePanel(tablePanel);
 
       return tablePanel;
@@ -422,6 +419,26 @@ public class EntityPanelProvider implements Comparable {
     }
   }
 
+  private EntityValidator initializeValidator(final EntityDbProvider dbProvider) {
+    try {
+      final EntityValidator validator;
+      if (validatorClass.equals(DefaultEntityValidator.class)) {
+        validator = initializeDefaultValidator(dbProvider);
+      }
+      else {
+        validator = validatorClass.getConstructor(EntityDbProvider.class).newInstance(dbProvider);
+      }
+
+      return validator;
+    }
+    catch (RuntimeException re) {
+      throw re;
+    }
+    catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
   private EntityTableModel initializeTableModel(final EntityDbProvider dbProvider) {
     try {
       final EntityTableModel tableModel;
@@ -451,10 +468,15 @@ public class EntityPanelProvider implements Comparable {
   }
 
   private EntityEditModel initializeDefaultEditModel(final EntityDbProvider dbProvider) {
-    return new DefaultEntityEditModel(entityID, dbProvider);
+    final EntityValidator validator = initializeValidator(dbProvider);
+    return new DefaultEntityEditModel(entityID, dbProvider, validator);
   }
 
   private EntityTableModel initializeDefaultTableModel(final EntityDbProvider dbProvider) {
     return new DefaultEntityTableModel(entityID, dbProvider);
+  }
+
+  private EntityValidator initializeDefaultValidator(final EntityDbProvider dbProvider) {
+    return new DefaultEntityValidator(entityID, dbProvider);
   }
 }

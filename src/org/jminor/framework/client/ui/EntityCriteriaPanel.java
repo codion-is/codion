@@ -3,9 +3,9 @@
  */
 package org.jminor.framework.client.ui;
 
-import org.jminor.common.ui.AbstractSearchPanel;
-import org.jminor.common.ui.control.ControlFactory;
+import org.jminor.common.ui.ColumnSearchPanel;
 import org.jminor.common.ui.control.ControlProvider;
+import org.jminor.common.ui.control.Controls;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.model.EntityTableSearchModel;
 import org.jminor.framework.client.model.ForeignKeySearchModel;
@@ -39,15 +39,18 @@ import java.util.Map;
 /**
  * A panel for configuring the PropertySearchModels for a given EntityTableModel.
  */
-public class EntityCriteriaPanel extends JPanel {
+public final class EntityCriteriaPanel extends JPanel {
 
-  private final Map<PropertySearchModel, AbstractSearchPanel> panels = new HashMap<PropertySearchModel, AbstractSearchPanel>();
+  private static final int DEFAULT_WIDTH = 200;
+  private static final int DEFAULT_HEIGHT = 40;
+
+  private final Map<PropertySearchModel, ColumnSearchPanel> panels = new HashMap<PropertySearchModel, ColumnSearchPanel>();
 
   public EntityCriteriaPanel(final EntityTableModel tableModel) {
     setLayout(new BorderLayout(5,5));
 
     final JPanel editPanel = new JPanel(new BorderLayout());
-    editPanel.setPreferredSize(new Dimension(200,40));
+    editPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
 
     final JList propertyList = initializePropertyList(tableModel.getSearchModel(), editPanel);
     final JScrollPane scroller = new JScrollPane(propertyList);
@@ -69,7 +72,7 @@ public class EntityCriteriaPanel extends JPanel {
   private JPanel initializeShowAllPanel(final EntityTableModel tableModel) {
     final JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
     panel.setBorder(BorderFactory.createTitledBorder(FrameworkMessages.get(FrameworkMessages.FILTER_SETTINGS)));
-    panel.add(ControlProvider.createCheckBox(ControlFactory.toggleControl(tableModel,
+    panel.add(ControlProvider.createCheckBox(Controls.toggleControl(tableModel,
             "queryCriteriaRequired", FrameworkMessages.get(FrameworkMessages.REQUIRE_QUERY_CRITERIA), null)));
 
     return panel;
@@ -79,47 +82,12 @@ public class EntityCriteriaPanel extends JPanel {
     final List<PropertySearchModel> searchCriteria = getSortedCriteria(searchModel);
     final JList propertyList = new JList(searchCriteria.toArray());
     for (final PropertySearchModel model : searchCriteria) {
-      model.eventSearchStateChanged().addListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          propertyList.repaint();
-        }
-      });
+      model.addSearchStateListener(new RepaintListener(propertyList));
     }
-    propertyList.setCellRenderer(new DefaultListCellRenderer() {
-      @Override
-      public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-        final Component cellRenderer = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-        final PropertySearchModel selected = (PropertySearchModel) value;
-        ((JLabel)cellRenderer).setText(selected.getSearchKey().toString());
-        cellRenderer.setForeground(selected.isSearchEnabled() ? Color.red : Color.black);
-
-        return cellRenderer;
-      }
-    });
+    propertyList.setCellRenderer(new CriteriaListCellRenderer());
     propertyList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-    propertyList.addListSelectionListener(new ListSelectionListener() {
-      public void valueChanged(ListSelectionEvent e) {
-        editorPanel.removeAll();
-        final PropertySearchModel selected = (PropertySearchModel) propertyList.getSelectedValue();
-        if (selected != null) {
-          AbstractSearchPanel panel = panels.get(selected);
-          if (panel == null) {
-            if (selected instanceof ForeignKeySearchModel) {
-              panel = new ForeignKeySearchPanel((ForeignKeySearchModel) selected, true, true);
-            }
-            else {
-              panel = new PropertySearchPanel(selected, true, true);
-            }
-            panels.put(selected, panel);
-          }
-
-          editorPanel.add(panel, BorderLayout.NORTH);
-          revalidate();
-          repaint();
-        }
-      }
-    });
+    propertyList.addListSelectionListener(new SearchModelSelectionListener(editorPanel, propertyList));
 
     return propertyList;
   }
@@ -127,19 +95,78 @@ public class EntityCriteriaPanel extends JPanel {
   private List<PropertySearchModel> getSortedCriteria(final EntityTableSearchModel searchModel) {
     final List<PropertySearchModel> searchCriteria =
             new ArrayList<PropertySearchModel>(searchModel.getPropertySearchModels());
-    Collections.sort(searchCriteria, new Comparator<PropertySearchModel>() {
-      public int compare(final PropertySearchModel o1, final PropertySearchModel o2) {
-        final Property propertyOne = (Property) o1.getSearchKey();
-        final Property propertyTwo = (Property) o2.getSearchKey();
-        if (propertyOne.getCaption() != null && propertyTwo.getCaption() != null) {
-          return propertyOne.getCaption().compareTo(propertyTwo.getCaption());
-        }
-        else {
-          return propertyOne.getPropertyID().compareTo(propertyTwo.getPropertyID());
-        }
-      }
-    });
+    Collections.sort(searchCriteria, new SearchModelComparator());
 
     return searchCriteria;
+  }
+
+  private static final class RepaintListener implements ActionListener {
+    private final JList propertyList;
+
+    private RepaintListener(final JList propertyList) {
+      this.propertyList = propertyList;
+    }
+
+    public void actionPerformed(final ActionEvent e) {
+      propertyList.repaint();
+    }
+  }
+
+  private static final class CriteriaListCellRenderer extends DefaultListCellRenderer {
+    @Override
+    public Component getListCellRendererComponent(final JList list, final Object value, final int index,
+                                                  final boolean isSelected, final boolean cellHasFocus) {
+      final Component cellRenderer = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+      final PropertySearchModel selected = (PropertySearchModel) value;
+      ((JLabel)cellRenderer).setText(selected.getColumnIdentifier().toString());
+      cellRenderer.setForeground(selected.isSearchEnabled() ? Color.red : Color.black);
+
+      return cellRenderer;
+    }
+  }
+
+  private static final class SearchModelComparator implements Comparator<PropertySearchModel> {
+    public int compare(final PropertySearchModel o1, final PropertySearchModel o2) {
+      final Property propertyOne = (Property) o1.getColumnIdentifier();
+      final Property propertyTwo = (Property) o2.getColumnIdentifier();
+      if (propertyOne.getCaption() != null && propertyTwo.getCaption() != null) {
+        return propertyOne.getCaption().compareTo(propertyTwo.getCaption());
+      }
+      else {
+        return propertyOne.getPropertyID().compareTo(propertyTwo.getPropertyID());
+      }
+    }
+  }
+
+  private final class SearchModelSelectionListener implements ListSelectionListener {
+
+    private final JPanel editorPanel;
+    private final JList propertyList;
+
+    private SearchModelSelectionListener(final JPanel editorPanel, final JList propertyList) {
+      this.editorPanel = editorPanel;
+      this.propertyList = propertyList;
+    }
+
+    public void valueChanged(final ListSelectionEvent e) {
+      editorPanel.removeAll();
+      final PropertySearchModel selected = (PropertySearchModel) propertyList.getSelectedValue();
+      if (selected != null) {
+        ColumnSearchPanel panel = panels.get(selected);
+        if (panel == null) {
+          if (selected instanceof ForeignKeySearchModel) {
+            panel = new ForeignKeySearchPanel((ForeignKeySearchModel) selected, true);
+          }
+          else {
+            panel = new PropertySearchPanel(selected, true, true);
+          }
+          panels.put(selected, panel);
+        }
+
+        editorPanel.add(panel, BorderLayout.NORTH);
+        revalidate();
+        repaint();
+      }
+    }
   }
 }

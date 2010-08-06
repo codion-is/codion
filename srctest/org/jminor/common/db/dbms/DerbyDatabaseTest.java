@@ -15,10 +15,11 @@ public class DerbyDatabaseTest {
     DerbyDatabase db = new DerbyDatabase("host", "1234", "sid");
     final Properties props = new Properties();
     props.put("user", "scott");
-    props.put("password", "tiger");
+    props.put(Database.PASSWORD_PROPERTY, "tiger");
     assertTrue(db.supportsIsValid());
     assertEquals("user=scott;password=tiger", db.getAuthenticationInfo(props));
-    assertEquals("select IDENTITY_VAL_LOCAL() from id_source", db.getAutoIncrementValueSQL("id_source"));
+    final String idSource = "id_source";
+    assertEquals(DerbyDatabase.AUTO_INCREMENT_QUERY + idSource, db.getAutoIncrementValueSQL(idSource));
     try {
       db.getSequenceSQL("seq");
       fail();

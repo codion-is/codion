@@ -10,28 +10,31 @@ import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.SortingDirective;
 import org.jminor.common.model.State;
+import org.jminor.common.model.StateObserver;
+import org.jminor.common.model.States;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.reports.ReportDataWrapper;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.client.model.event.DeleteEvent;
+import org.jminor.framework.client.model.event.DeleteListener;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.db.provider.EntityDbProvider;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 
 import org.apache.log4j.Logger;
 
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.TableColumn;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -41,24 +44,9 @@ import java.util.Map;
 /**
  * A TableModel implementation for displaying and working with entities.
  */
-public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> implements EntityTableModel {
+public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, Property> implements EntityTableModel {
 
   private static final Logger LOG = Util.getLogger(DefaultEntityTableModel.class);
-
-  private final Event evtRefreshStarted = new Event();
-  private final Event evtRefreshDone = new Event();
-
-  public static final Comparator COMPARABLE_COMPARATOR = new Comparator<Comparable>() {
-    public int compare(Comparable o1, Comparable o2) {
-      return (o1.compareTo(o2));
-    }
-  };
-  public static final Comparator LEXICAL_COMPARATOR = new Comparator<Object>() {
-    private final Collator collator = Collator.getInstance();
-    public int compare(Object o1, Object o2) {
-      return collator.compare(o1.toString(), o2.toString());
-    }
-  };
 
   /**
    * The entity ID
@@ -105,14 +93,11 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
    */
   private boolean queryCriteriaRequired = true;
 
-  /**
-   * true while the model data is being refreshed
-   */
-  private boolean isRefreshing = false;
+  private final State stAllowMultipleUpdate = States.state(true);
 
-  private final State stAllowMultipleUpdate = new State(true);
+  private final State stAllowDelete = States.state(true);
 
-  private final State stAllowDelete = new State(true);
+  private ReportDataWrapper reportDataSource;
 
   public DefaultEntityTableModel(final String entityID, final EntityDbProvider dbProvider) {
     this(entityID, dbProvider, new DefaultEntityTableColumnModel(entityID));
@@ -126,13 +111,16 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
   public DefaultEntityTableModel(final String entityID, final EntityDbProvider dbProvider,
                                  final EntityTableColumnModel columnModel,
                                  final EntityTableSearchModel searchModel) {
-    super(columnModel);
+    super(columnModel, searchModel.getPropertyFilterModelsOrdered());
     this.entityID = entityID;
     this.dbProvider = dbProvider;
     this.searchModel = searchModel;
-    setFilterCriteria(searchModel);
-    bindEventsInternal();
     bindEvents();
+  }
+
+  @Override
+  public final String toString() {
+    return getClass().getSimpleName() + ": " + entityID;
   }
 
   public final void setEditModel(final EntityEditModel editModel) {
@@ -140,11 +128,11 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
       throw new RuntimeException("Edit model has already been set for table model: " + this);
     }
     this.editModel = editModel;
-    this.editModel.eventAfterDelete().addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent e) {
-        handleDelete((DeleteEvent) e);
-      }
-    });
+    bindEditModelEvents();
+  }
+
+  public boolean hasEditModel() {
+    return this.editModel != null;
   }
 
   public final List<Property> getTableColumnProperties() {
@@ -183,9 +171,6 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
     this.isDetailModel = detailModel;
   }
 
-  /**
-   * @return whether to show all underlying entities when no criteria is applied.
-   */
   public final boolean isQueryCriteriaRequired() {
     return queryCriteriaRequired;
   }
@@ -211,93 +196,60 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
   }
 
   public final void setSortingDirective(final String propertyID, final SortingDirective directive) {
-    final int columnIndex = getColumnModel().getColumnIndex(EntityRepository.getProperty(entityID, propertyID));
+    final int columnIndex = getColumnModel().getColumnIndex(Entities.getProperty(entityID, propertyID));
     if (columnIndex == -1) {
-      throw new RuntimeException("Column based on property '" + propertyID + " not found");
+      throw new IllegalArgumentException("Column based on property '" + propertyID + " not found");
     }
 
     super.setSortingDirective(columnIndex, directive);
-  }
-
-  public final int compare(final Entity objectOne, final Entity objectTwo, final int columnIndex, final SortingDirective directive) {
-    final Property property = getColumnProperty(columnIndex);
-    final Object valueOne = objectOne.getValue(property);
-    final Object valueTwo = objectTwo.getValue(property);
-    int comparison;
-    // Define null less than everything, except null.
-    if (valueOne == null && valueTwo == null) {
-      comparison = 0;
-    }
-    else if (valueOne == null) {
-      comparison = -1;
-    }
-    else if (valueTwo == null) {
-      comparison = 1;
-    }
-    else {
-      comparison = getComparator(columnIndex).compare(valueOne, valueTwo);
-    }
-    if (comparison != 0) {
-      return directive == SortingDirective.DESCENDING ? -comparison : comparison;
-    }
-
-    return 0;
   }
 
   public final EntityDbProvider getDbProvider() {
     return dbProvider;
   }
 
-  /**
-   * @return true if the model is either refreshing, filtering or sorting
-   */
-  public final boolean isChangingState() {
-    return isRefreshing || isFiltering() || isSorting();
+  public final boolean isMultipleUpdateAllowed() {
+    return stAllowMultipleUpdate.isActive();
   }
 
-  /**
-   * @return true if the model data is being refreshed
-   */
-  public final boolean isRefreshing() {
-    return isRefreshing;
+  public final EntityTableModel setMultipleUpdateAllowed(final boolean multipleUpdateAllowed) {
+    stAllowMultipleUpdate.setActive(multipleUpdateAllowed);
+    return this;
   }
 
-  public boolean isMultipleUpdateAllowed() {
-    return true;
+  public final StateObserver getAllowMultipleUpdateState() {
+    return stAllowMultipleUpdate.getObserver();
   }
 
-  public final State stateAllowMultipleUpdate() {
-    return stAllowMultipleUpdate.getLinkedState();
-  }
-
-  public boolean isDeleteAllowed() {
+  public final boolean isDeleteAllowed() {
     return stAllowDelete.isActive();
   }
 
-  public final void setDeleteAllowed(final boolean value) {
-    stAllowDelete.setActive(value);
+  public final EntityTableModel setDeleteAllowed(final boolean deleteAllowed) {
+    stAllowDelete.setActive(deleteAllowed);
+    return this;
   }
 
-  public final State stateAllowDelete() {
-    return stAllowDelete.getLinkedState();
+  public final StateObserver getAllowDeleteState() {
+    return stAllowDelete.getObserver();
   }
 
-  public boolean isReadOnly() {
-    return editModel == null || EntityRepository.isReadOnly(entityID);
+  public final boolean isReadOnly() {
+    return editModel == null || editModel.isReadOnly();
   }
 
   /**
-   * Returns an initialized ReportDataWrapper instance, the default implementation returns null.
+   * Returns an initialized ReportDataWrapper instance.
    * @return an initialized ReportDataWrapper
    * @see #getSelectedEntitiesIterator()
    */
-  public ReportDataWrapper getReportDataSource() {
-    return null;
+  public final ReportDataWrapper getReportDataSource() {
+    return reportDataSource;
   }
 
-  @Override
-  public boolean isCellEditable(final int rowIndex, final int columnIndex) {
-    return false;
+  public final EntityTableModel setReportDataSource(final ReportDataWrapper reportDataSource) {
+    this.reportDataSource = reportDataSource;
+    return this;
   }
 
   @Override
@@ -318,14 +270,19 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
   }
 
   @Override
-  public void setValueAt(final Object aValue, final int rowIndex, final int columnIndex) {
+  public final boolean isCellEditable(final int rowIndex, final int columnIndex) {
+    return false;
+  }
+
+  @Override
+  public final void setValueAt(final Object aValue, final int rowIndex, final int columnIndex) {
     throw new RuntimeException("setValueAt is not supported");
   }
 
   public Color getRowBackgroundColor(final int row) {
     final Entity rowEntity = getItemAt(row);
 
-    return EntityRepository.getProxy(rowEntity.getEntityID()).getBackgroundColor(rowEntity);
+    return Entities.getProxy(rowEntity.getEntityID()).getBackgroundColor(rowEntity);
   }
 
   public final Collection<Object> getValues(final Property property, final boolean selectedOnly) {
@@ -333,7 +290,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
             selectedOnly ? getSelectedItems() : getVisibleItems(), false);
   }
 
-  public Entity getEntityByPrimaryKey(final Entity.Key primaryKey) {
+  public final Entity getEntityByPrimaryKey(final Entity.Key primaryKey) {
     for (final Entity entity : getVisibleItems()) {
       if (entity.getPrimaryKey().equals(primaryKey)) {
         return entity;
@@ -347,7 +304,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
     return indexOf(getEntityByPrimaryKey(primaryKey));
   }
 
-  public String getStatusMessage() {
+  public final String getStatusMessage() {
     final int filteredItemCount = getFilteredItemCount();
 
     return new StringBuilder(Integer.toString(getRowCount())).append(" (").append(
@@ -357,34 +314,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
                     + FrameworkMessages.get(FrameworkMessages.HIDDEN) + ")" : ")").toString();
   }
 
-  /**
-   * Refreshes the data in this table model, keeping the selected items
-   * @see #evtRefreshStarted
-   * @see #evtRefreshDone
-   */
-  public final void refresh() {
-    if (isRefreshing) {
-      return;
-    }
-
-    try {
-      LOG.trace(this + " refreshing");
-      isRefreshing = true;
-      evtRefreshStarted.fire();
-      final List<Entity.Key> selectedPrimaryKeys = getPrimaryKeysOfSelectedEntities();
-      final List<Entity> queryResult = performQuery(getQueryCriteria());
-      clear();
-      addItems(queryResult, false);
-      setSelectedByPrimaryKeys(selectedPrimaryKeys);
-    }
-    finally {
-      isRefreshing = false;
-      evtRefreshDone.fire();
-      LOG.trace(this + " refreshing done");
-    }
-  }
-
-  public final void addEntitiesByPrimaryKeys(final List<Entity.Key> primaryKeys, boolean atFront) {
+  public final void addEntitiesByPrimaryKeys(final List<Entity.Key> primaryKeys, final boolean atFront) {
     try {
       addItems(dbProvider.getEntityDb().selectMany(primaryKeys), atFront);
     }
@@ -415,7 +345,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
   }
 
   public void searchByForeignKeyValues(final String referencedEntityID, final List<Entity> referenceEntities) {
-    final List<Property.ForeignKeyProperty> properties = EntityRepository.getForeignKeyProperties(entityID, referencedEntityID);
+    final List<Property.ForeignKeyProperty> properties = Entities.getForeignKeyProperties(entityID, referencedEntityID);
     if (!properties.isEmpty() && isDetailModel && searchModel.setSearchValues(properties.get(0).getPropertyID(), referenceEntities)) {
       refresh();
     }
@@ -494,26 +424,17 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
     }
   }
 
-  @Override
-  public String toString() {
-    return entityID;
-  }
-
-  public boolean include(final Entity item) {
-    return searchModel.include(item);
-  }
-
   public final PropertySummaryModel getPropertySummaryModel(final String propertyID) {
-    return getPropertySummaryModel(EntityRepository.getProperty(entityID, propertyID));
+    return getPropertySummaryModel(Entities.getProperty(entityID, propertyID));
   }
 
   public final PropertySummaryModel getPropertySummaryModel(final Property property) {
     if (!propertySummaryModels.containsKey(property.getPropertyID())) {
       final PropertySummaryModel.PropertyValueProvider valueProvider = new PropertySummaryModel.PropertyValueProvider() {
         public void bindValuesChangedEvent(final Event event) {
-          eventFilteringDone().addListener(event);//todo summary is updated twice per refresh and should update on insert
-          eventRefreshDone().addListener(event);
-          eventSelectionChanged().addListener(event);
+          addFilteringListener(event);//todo summary is updated twice per refresh and should update on insert
+          addRefreshDoneListener(event);
+          addSelectionChangedListener(event);
         }
 
         public Collection<?> getValues() {
@@ -521,7 +442,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
         }
 
         public boolean isValueSubset() {
-          return !stateSelectionEmpty().isActive();
+          return !isSelectionEmpty();
         }
       };
       propertySummaryModels.put(property.getPropertyID(), new DefaultPropertySummaryModel(property, valueProvider));
@@ -538,20 +459,19 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
     return getSelectedItems().iterator();
   }
 
-  public final Event eventRefreshDone() {
-    return evtRefreshDone;
-  }
-
-  public final Event eventRefreshStarted() {
-    return evtRefreshStarted;
-  }
-
-  /**
-   * @param entityID the ID of the entity the table is based on
-   * @return a list of Properties that should be used as basis for this table models column model
-   */
-  protected List<Property> initializeColumnProperties(final String entityID) {
-    return new ArrayList<Property>(EntityRepository.getVisibleProperties(entityID));
+  @Override
+  protected final void doRefresh() {
+    try {
+      LOG.debug(this + " refreshing");
+      final List<Entity.Key> selectedPrimaryKeys = getPrimaryKeysOfSelectedEntities();
+      final List<Entity> queryResult = performQuery(getQueryCriteria());
+      clear();
+      addItems(queryResult, false);
+      setSelectedByPrimaryKeys(selectedPrimaryKeys);
+    }
+    finally {
+      LOG.debug(this + " refreshing done");
+    }
   }
 
   /**
@@ -567,11 +487,17 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
 
     try {
       return dbProvider.getEntityDb().selectMany(EntityCriteriaUtil.selectCriteria(entityID, criteria,
-              EntityRepository.getOrderByClause(entityID), fetchCount));
+              Entities.getOrderByClause(entityID), fetchCount));
     }
     catch (Exception e) {
       throw new RuntimeException(e);
     }
+  }
+
+  @Override
+  protected final Comparable getComparable(final Object object, final int columnIndex) {
+    final Property property = getColumnProperty(columnIndex);
+    return (Comparable) ((Entity) object).getValue(property);
   }
 
   @Override
@@ -581,18 +507,6 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
     return getItemAt(rowIndex).getValueAsString(property);
   }
 
-  protected final Comparator getComparator(final int column) {
-    final Class columnClass = getColumnClass(column);
-    if (columnClass.equals(String.class)) {
-      return LEXICAL_COMPARATOR;
-    }
-    if (Comparable.class.isAssignableFrom(columnClass)) {
-      return COMPARABLE_COMPARATOR;
-    }
-
-    return LEXICAL_COMPARATOR;
-  }
-
   /**
    * @return a Criteria object used to filter the result when this
    * table models data is queried, the default implementation returns
@@ -600,39 +514,66 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity> 
    * found in the underlying EntityTableSearchModel
    * @see EntityTableSearchModel#getSearchCriteria()
    */
-  protected Criteria<Property.ColumnProperty> getQueryCriteria() {
+  protected final Criteria<Property.ColumnProperty> getQueryCriteria() {
     return searchModel.getSearchCriteria();
   }
 
-  protected final void handleColumnHidden(final Property property) {
-    //disable the search model for the column to be hidden, to prevent confusion
-    searchModel.setSearchEnabled(property.getPropertyID(), false);
-  }
+  protected void handleDelete(final DeleteEvent event) {}
 
-  protected void handleDelete(final DeleteEvent e) {
-    removeItems(e.getDeletedEntities());
-  }
-
-  /**
-   * Override to add event bindings
-   */
-  protected void bindEvents() {}
-
-  private void bindEventsInternal() {
-    eventColumnHidden().addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+  private void bindEvents() {
+    addColumnHiddenListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
         handleColumnHidden((Property) e.getSource());
       }
     });
-    searchModel.eventFilterStateChanged().addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent e) {
-        filterContents();
-      }
-    });
-    evtRefreshDone.addListener(new ActionListener() {
+    addRefreshDoneListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         searchModel.setSearchModelState();
       }
     });
+    searchModel.addFilterStateListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
+        filterContents();
+      }
+    });
+  }
+
+  private void bindEditModelEvents() {
+    editModel.addAfterDeleteListener(new DeleteListener() {
+      @Override
+      protected void deleted(final DeleteEvent event) {
+        handleDeleteInternal(event);
+      }
+    });
+    editModel.addAfterRefreshListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
+        refresh();
+      }
+    });
+    addSelectedIndexListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
+        editModel.setEntity(isSelectionEmpty() ? null : getSelectedItem());
+      }
+    });
+
+    addTableModelListener(new TableModelListener() {
+      public void tableChanged(final TableModelEvent e) {
+        //if the selected record is being updated via the table model refresh the one in the edit model
+        if (e.getType() == TableModelEvent.UPDATE && e.getFirstRow() == getSelectedIndex()) {
+          editModel.setEntity(null);
+          editModel.setEntity(getSelectedItem());
+        }
+      }
+    });
+  }
+
+  private void handleDeleteInternal(final DeleteEvent e) {
+    removeItems(e.getDeletedEntities());
+    handleDelete(e);
+  }
+
+  private void handleColumnHidden(final Property property) {
+    //disable the search model for the column to be hidden, to prevent confusion
+    searchModel.setSearchEnabled(property.getPropertyID(), false);
   }
 }

@@ -16,11 +16,12 @@ public class H2DatabaseTest {
     H2Database db = new H2Database("host", "1234", "sid");
     final Properties props = new Properties();
     props.put("user", "scott");
-    props.put("password", "tiger");
+    props.put(Database.PASSWORD_PROPERTY, "tiger");
     assertTrue(db.supportsIsValid());
     assertEquals("user=scott;password=tiger", db.getAuthenticationInfo(props));
-    assertEquals("CALL IDENTITY()", db.getAutoIncrementValueSQL(null));
-    assertEquals("select next value for seq", db.getSequenceSQL("seq"));
+    assertEquals(H2Database.AUTO_INCREMENT_QUERY, db.getAutoIncrementValueSQL(null));
+    final String idSource = "seq";
+    assertEquals(H2Database.SEQUENCE_VALUE_QUERY + idSource, db.getSequenceSQL(idSource));
     assertEquals("jdbc:h2://host:1234/sid;user=scott;password=tiger", db.getURL(props));
 
     db = new H2Database("dbname");

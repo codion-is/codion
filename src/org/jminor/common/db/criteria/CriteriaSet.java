@@ -3,6 +3,8 @@
  */
 package org.jminor.common.db.criteria;
 
+import org.jminor.common.model.Conjunction;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,25 +16,6 @@ import java.util.List;
 public class CriteriaSet<T> implements Criteria<T>, Serializable {
 
   private static final long serialVersionUID = 1;
-
-  /**
-   * Represents two possible conjunctions, AND and OR
-   */
-  public enum Conjunction {
-    AND, OR;
-
-    @Override
-    public String toString() {
-      switch (this) {
-        case AND:
-          return " and ";
-        case OR:
-          return " or ";
-        default:
-          throw new IllegalArgumentException("Unknown CriteriaSet.Conjunction enum");
-      }
-    }
-  }
 
   /**
    * The conjunction used by this CriteriaSet
@@ -60,7 +43,7 @@ public class CriteriaSet<T> implements Criteria<T>, Serializable {
   public CriteriaSet(final Conjunction conjunction, final Criteria<T>... criteria) {
     this.conjunction = conjunction;
     for (final Criteria<T> criterion : criteria) {
-      addCriteria(criterion);
+      add(criterion);
     }
   }
 
@@ -68,7 +51,7 @@ public class CriteriaSet<T> implements Criteria<T>, Serializable {
    * Adds a new Criteria object to this set
    * @param criteria the Criteria to add
    */
-  public final void addCriteria(final Criteria<T> criteria) {
+  public final void add(final Criteria<T> criteria) {
     if (criteria != null) {
       this.criteriaList.add(criteria);
     }

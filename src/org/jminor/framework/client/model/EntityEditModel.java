@@ -1,112 +1,92 @@
+/*
+ * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
+ */
 package org.jminor.framework.client.model;
 
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.exception.DbException;
 import org.jminor.common.model.CancelException;
-import org.jminor.common.model.Event;
-import org.jminor.common.model.State;
+import org.jminor.common.model.EventObserver;
+import org.jminor.common.model.StateObserver;
+import org.jminor.common.model.combobox.FilteredComboBoxModel;
 import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
 import org.jminor.common.model.valuemap.ValueCollectionProvider;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
-import javax.swing.ComboBoxModel;
-import java.util.Collection;
+import java.awt.event.ActionListener;
 import java.util.List;
 
 public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>, EntityDataProvider {
 
   /**
-   * Code for the insert action, used during validation
-   */
-  int INSERT = 1;
-  /**
-   * Code for the update action, used during validation
-   */
-  int UPDATE = 2;
-  /**
-   * Code for an unknown action, used during validation
-   */
-  int UNKNOWN = 3;
-
-  /**
    * Indicates whether the model is active and ready to receive input
    * @return a state indicating whether the model is active and ready to receive input
    */
-  State stateActive();
+  StateObserver getActiveState();
 
   /**
    * @return the state used to determine if deleting should be enabled
    * @see #isDeleteAllowed()
    * @see #setDeleteAllowed(boolean)
    */
-  State stateAllowDelete();
+  StateObserver getAllowDeleteState();
 
   /**
    * @return a State indicating whether or not the active entity is null
    */
-  State stateEntityNull();
+  StateObserver getEntityNullState();
 
   /**
    * @return the state used to determine if updating should be enabled
    * @see #isUpdateAllowed()
    * @see #setUpdateAllowed(boolean)
    */
-  State stateAllowUpdate();
+  StateObserver getAllowUpdateState();
 
   /**
    * @return the state used to determine if inserting should be enabled
    * @see #isInsertAllowed()
    * @see #setInsertAllowed(boolean)
    */
-  State stateAllowInsert();
+  StateObserver getAllowInsertState();
 
-  /**
-   * @return an Event fired after a successful insert
-   */
-  Event eventAfterInsert();
+  void addBeforeInsertListener(final ActionListener listener);
 
-  /**
-   * @return an Event fired after a successful update
-   */
-  Event eventAfterUpdate();
+  void removeBeforeInsertListener(final ActionListener listener);
 
-  /**
-   * @return an Event fired after a successful delete
-   */
-  Event eventAfterDelete();
+  void addAfterInsertListener(final ActionListener listener);
 
-  /**
-   * @return an event fired before a refresh
-   */
-  Event eventRefreshStarted();
+  void removeAfterInsertListener(final ActionListener listener);
 
-  /**
-   * @return an event fired after a refresh has been performed
-   */
-  Event eventRefreshDone();
+  void addBeforeUpdateListener(final ActionListener listener);
 
-  /**
-   * @return an Event fired before a delete
-   */
-  Event eventBeforeDelete();
+  void removeBeforeUpdateListener(final ActionListener listener);
 
-  /**
-   * @return an Event fired before a insert
-   */
-  Event eventBeforeInsert();
+  void addAfterUpdateListener(final ActionListener listener);
 
-  /**
-   * @return an Event fired before a update
-   */
-  Event eventBeforeUpdate();
+  void removeAfterUpdateListener(final ActionListener listener);
 
-  /**
-   * @return an Event fired when the underlying table has undergone changes,
-   * such as insert, update or delete
-   */
-  Event eventEntitiesChanged();
+  void addBeforeDeleteListener(final ActionListener listener);
+
+  void removeBeforeDeleteListener(final ActionListener listener);
+
+  void addAfterDeleteListener(final ActionListener listener);
+
+  void removeAfterDeleteListener(final ActionListener listener);
+
+  void addBeforeRefreshListener(final ActionListener listener);
+
+  void removeBeforeRefreshListener(final ActionListener listener);
+
+  void addAfterRefreshListener(final ActionListener listener);
+
+  void removeAfterRefreshListener(final ActionListener listener);
+
+  void addEntitiesChangedListener(final ActionListener listener);
+
+  void removeEntitiesChangedListener(final ActionListener listener);
 
   /**
    * Sets the Entity instance to edit
@@ -135,15 +115,6 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
   boolean isEntityNew();
 
   /**
-   * Validates the given Entity objects.
-   * @param entities the entities to validate
-   * @param action describes the action requiring validation,
-   * EntityEditor.INSERT, EntityEditor.UPDATE or EntityEditor.UNKNOWN
-   * @throws ValidationException in case the validation fails
-   */
-  void validateEntities(final Collection<Entity> entities, final int action) throws ValidationException;
-
-  /**
    * Sets the active state of this edit model, an active edit model should be
    * ready to recieve input, this is relevant when a UI is based on the model
    * @param active the active state
@@ -160,8 +131,10 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
   Entity getForeignKeyValue(final String foreignKeyPropertyID);
 
   /**
+   * Initializes a value provider for the given property, used for adding lookup
+   * functionality to input fields for example.
    * @param property the property
-   * @return a value provider providing the values of the given property
+   * @return a value provider for the given property
    */
   ValueCollectionProvider getValueProvider(final Property property);
 
@@ -170,6 +143,8 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * by default this returns the isReadOnly value of the underlying entity
    */
   boolean isReadOnly();
+
+  EntityEditModel setReadOnly(final boolean readOnly);
 
   /**
    * @return true if this model should allow records to be inserted
@@ -239,14 +214,15 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * has been initialized for the given property, a new one is created and associated with
    * the property, to be returned the next time this method is called
    */
-  ComboBoxModel initializePropertyComboBoxModel(final Property.ColumnProperty property, final Event refreshEvent, final String nullValueString);
+  FilteredComboBoxModel initializePropertyComboBoxModel(final Property.ColumnProperty property, final EventObserver refreshEvent,
+                                                        final String nullValueString);
 
   /**
    * @param property the property for which to get the ComboBoxModel
    * @return a PropertyComboBoxModel representing <code>property</code>
    * @throws RuntimeException if no combo box has been initialized for the given property
    */
-  PropertyComboBoxModel getPropertyComboBoxModel(final Property.ColumnProperty property);
+  FilteredComboBoxModel getPropertyComboBoxModel(final Property.ColumnProperty property);
 
   /**
    * Returns true if this edit model contains a ComboBoxModel for the given property
@@ -301,7 +277,7 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * @param nullValueString the string to use as a null value caption
    * @return a combo box model based on the given property
    */
-  PropertyComboBoxModel createPropertyComboBoxModel(final Property.ColumnProperty property, final Event refreshEvent,
+  FilteredComboBoxModel createPropertyComboBoxModel(final Property.ColumnProperty property, final EventObserver refreshEvent,
                                                     final String nullValueString);
 
   /**
@@ -316,27 +292,49 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
   void clearComboBoxModels();
 
   /**
-   * @return true if the active entity has been modified
-   * @see org.jminor.framework.domain.Entity#isModified()
+   * Returns the default value for the given property, used when initializing a new
+   * default entity for this edit model. This does not apply to denormalized properties
+   * (Property.DenormalizedProperty) nor properties that are wrapped in foreign key properties
+   * (Property.ForeignKeyProperty)
+   * If the default value of a property should be the last value used <code>persistValueOnClear</code>
+   * should be overridden so that it returns <code>true</code> for that property.
+   * @param property the property
+   * @return the default value for the property
+   * @see Property#setDefaultValue(Object)
+   * @see #persistValueOnClear(org.jminor.framework.domain.Property)
    */
-  boolean isEntityModified();
+  Object getDefaultValue(final Property property);
+
+  /**
+   * Returns true if the last available value for this property should be used when initializing
+   * a default entity for this EntityModel.
+   * Override for selective reset of field values when the model is cleared.
+   * For Property.ForeignKeyProperty values this method by default returns the value of the
+   * property <code>Configuration.PERSIST_FOREIGN_KEY_VALUES</code>.
+   * @param property the property
+   * @return true if the given field value should be reset when the model is cleared
+   * @see org.jminor.framework.Configuration#PERSIST_FOREIGN_KEY_VALUES
+   */
+  boolean persistValueOnClear(final Property property);
 
   /**
    * Performs a insert on the active entity
    * @throws DbException in case of a database exception
    * @throws CancelException in case the user cancels the operation
    * @throws org.jminor.common.model.valuemap.exception.ValidationException in case validation fails
-   * @see #validateEntities(java.util.Collection, int)
+   * @see EntityValidator#validate(java.util.Collection, int)
    */
   void insert() throws CancelException, DbException, ValidationException;
 
   /**
-   * Performs a insert on the given entities
+   * Performs an insert on the given entities, returns silently on recieving an empty list
    * @param entities the entities to insert
    * @throws DbException in case of a database exception
    * @throws CancelException in case the user cancels the operation
-   * @throws org.jminor.common.model.valuemap.exception.ValidationException in case validation fails
-   * @see #validateEntities(java.util.Collection, int)
+   * @throws ValidationException in case validation fails
+   * @see #addBeforeInsertListener(java.awt.event.ActionListener)
+   * @see #addAfterInsertListener(java.awt.event.ActionListener)
+   * @see EntityValidator#validate(java.util.Collection, int)
    */
   void insert(List<Entity> entities) throws CancelException, DbException, ValidationException;
 
@@ -346,7 +344,7 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * @throws CancelException in case the user cancels the operation
    * @throws org.jminor.common.db.exception.RecordModifiedException in case an entity was modified by another user
    * @throws org.jminor.common.model.valuemap.exception.ValidationException in case validation fails
-   * @see #validateEntities(java.util.Collection, int)
+   * @see EntityValidator#validate(java.util.Collection, int)
    */
   void update() throws CancelException, DbException, ValidationException;
 
@@ -358,9 +356,9 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * @throws CancelException in case the user cancels the operation
    * @throws org.jminor.common.db.exception.RecordModifiedException in case an entity was modified by another user
    * @throws ValidationException in case validation fails
-   * @see #eventBeforeUpdate
-   * @see #eventAfterUpdate
-   * @see #validateEntities(java.util.Collection, int)
+   * @see #addBeforeUpdateListener(java.awt.event.ActionListener)
+   * @see #addAfterUpdateListener(java.awt.event.ActionListener)
+   * @see EntityValidator#validate(java.util.Collection, int)
    */
   void update(final List<Entity> entities) throws DbException, CancelException, ValidationException;
 
@@ -368,8 +366,8 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * Deletes the active entity
    * @throws DbException in case of a database exception
    * @throws CancelException in case the user cancels the operation
-   * @see #eventBeforeDelete
-   * @see #eventAfterDelete
+   * @see #addBeforeDeleteListener(java.awt.event.ActionListener)
+   * @see #addAfterDeleteListener(java.awt.event.ActionListener)
    */
   void delete() throws DbException, CancelException;
 
@@ -378,8 +376,8 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * @param entities the entities to delete
    * @throws DbException in case of a database exception
    * @throws CancelException in case the user cancels the operation
-   * @see #eventBeforeDelete
-   * @see #eventAfterDelete
+   * @see #addBeforeDeleteListener(java.awt.event.ActionListener)
+   * @see #addAfterDeleteListener(java.awt.event.ActionListener)
    */
   void delete(final List<Entity> entities) throws DbException, CancelException;
 }

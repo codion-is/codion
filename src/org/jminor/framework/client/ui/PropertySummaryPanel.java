@@ -22,7 +22,7 @@ import java.awt.event.MouseEvent;
 /**
  * A panel that shows a summary value for a numerical column property in a EntityTableModel.
  */
-public class PropertySummaryPanel extends JPanel {
+public final class PropertySummaryPanel extends JPanel {
 
   private final PropertySummaryModel model;
   private final JLabel lblSummary = new JLabel("", JLabel.RIGHT);
@@ -32,11 +32,11 @@ public class PropertySummaryPanel extends JPanel {
    */
   public PropertySummaryPanel(final PropertySummaryModel model) {
     this.model = model;
-    model.eventSummaryChanged().addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+    model.addSummaryListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
         final String summaryText = model.getSummaryText();
         lblSummary.setText(summaryText);
-        lblSummary.setToolTipText(summaryText.length() > 0 ? (model.getSummaryType() + ": " + summaryText) : summaryText);
+        lblSummary.setToolTipText(!summaryText.isEmpty() ? (model.getSummaryType() + ": " + summaryText) : summaryText);
       }
     });
     initialize();
@@ -68,11 +68,11 @@ public class PropertySummaryPanel extends JPanel {
     final ButtonGroup group = new ButtonGroup();
     for (final PropertySummaryModel.SummaryType summaryType : model.getSummaryTypes()) {
       final JRadioButtonMenuItem item = new JRadioButtonMenuItem(new AbstractAction(summaryType.toString()) {
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(final ActionEvent e) {
           model.setSummaryType(summaryType);
         }
       });
-      model.eventSummaryTypeChanged().addListener(new ActionListener() {
+      model.addSummaryTypeListener(new ActionListener() {
         public void actionPerformed(final ActionEvent e) {
           item.setSelected(model.getSummaryType() == summaryType);
         }

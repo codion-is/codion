@@ -12,6 +12,10 @@ import java.util.Properties;
  */
 public final class SQLServerDatabase extends AbstractDatabase {
 
+  static final String DRIVER_NAME = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
+  static final String AUTO_INCREMENT_QUERY = "SELECT SCOPE_IDENTITY()";
+  static final String URL_PREFIX = "jdbc:sqlserver://";
+
   public SQLServerDatabase() {
     super(SQLSERVER);
   }
@@ -21,25 +25,15 @@ public final class SQLServerDatabase extends AbstractDatabase {
   }
 
   public void loadDriver() throws ClassNotFoundException {
-    Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+    Class.forName(DRIVER_NAME);
   }
 
   public String getAutoIncrementValueSQL(final String idSource) {
-    return "SELECT SCOPE_IDENTITY()";
-  }
-
-  public String getSequenceSQL(final String sequenceName) {
-    throw new RuntimeException("Sequence support is not implemented for database type: " + getDatabaseType());
+    return AUTO_INCREMENT_QUERY;
   }
 
   public String getURL(final Properties connectionProperties) {
     final String sid = getSid();
-    return "jdbc:sqlserver://" + getHost() + ":" + getPort() + (sid != null && sid.length() > 0 ? ";databaseName=" + sid : "");
-  }
-
-  @Override
-  protected void validate(final String databaseType, final String host, final String port, final String sid, final boolean embedded) {
-    Util.require(DATABASE_HOST, host);
-    Util.require(DATABASE_PORT, port);
+    return URL_PREFIX + getHost() + ":" + getPort() + (!Util.nullOrEmpty(sid) ? ";databaseName=" + sid : "");
   }
 }

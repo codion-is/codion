@@ -36,8 +36,8 @@ public final class DateValueLink<K> extends FormattedValueLink<K> {
   }
 
   @Override
-  protected Object valueFromText(final String text) {
-    final Date formatted = (Date) super.valueFromText(text);
+  protected Object translate(final Object parsedValue) {
+    final Date formatted = (Date) parsedValue;
     return formatted == null ? null : isTimestamp ? new Timestamp(formatted.getTime()) : new Date(formatted.getTime());
   }
 }

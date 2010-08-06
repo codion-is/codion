@@ -15,7 +15,7 @@ import java.util.List;
  * A InputProvider implementation based on a list of Item's
  * @see Item
  */
-public final class ValueListInputProvider extends AbstractInputProvider<Object> {
+public final class ValueListInputProvider extends AbstractInputProvider<Object, JComboBox> {
 
   public ValueListInputProvider(final Object currentValue, final List<Item<Object>> values) {
     super(createComboBox(currentValue, values));
@@ -24,7 +24,7 @@ public final class ValueListInputProvider extends AbstractInputProvider<Object> 
   @SuppressWarnings({"unchecked"})
   @Override
   public Object getValue() {
-    final ItemComboBoxModel<Object> model = (ItemComboBoxModel) ((JComboBox) getInputComponent()).getModel();
+    final ItemComboBoxModel<Object> model = (ItemComboBoxModel) getInputComponent().getModel();
     return model.getSelectedItem().getItem();
   }
 

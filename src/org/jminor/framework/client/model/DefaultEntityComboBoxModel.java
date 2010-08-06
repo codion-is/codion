@@ -4,13 +4,15 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.model.Events;
 import org.jminor.common.model.FilterCriteria;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.combobox.DefaultFilteredComboBoxModel;
+import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.db.criteria.EntitySelectCriteria;
 import org.jminor.framework.db.provider.EntityDbProvider;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
 
 import java.awt.event.ActionEvent;
@@ -29,7 +31,7 @@ import java.util.Set;
  */
 public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Entity> implements EntityComboBoxModel {
 
-  private final Event evtRefreshDone = new Event();
+  private final Event evtRefreshDone = Events.event();
 
   /**
    * the ID of the underlying entity
@@ -59,7 +61,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
   /**
    * A map of entities used to filter the contents of this model
    */
-  private Map<String, Set<Entity>> foreignKeyFilterEntities = new HashMap<String, Set<Entity>>();
+  private final Map<String, Set<Entity>> foreignKeyFilterEntities = new HashMap<String, Set<Entity>>();
 
   private final FilterCriteria<Entity> foreignKeyFilterCriteria = new FilterCriteria<Entity>() {
     public boolean include(final Entity item) {
@@ -84,6 +86,18 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     Util.rejectNullValue(dbProvider, "dbProvider");
     this.entityID = entityID;
     this.dbProvider = dbProvider;
+    this.selectCriteria = EntityCriteriaUtil.selectCriteria(entityID);
+    final FilterCriteria<Entity> superCriteria = super.getFilterCriteria();
+    setFilterCriteria(new FilterCriteria<Entity>() {
+      public boolean include(final Entity item) {
+        return superCriteria.include(item) && foreignKeyFilterCriteria.include(item);
+      }
+    });
+  }
+
+  @Override
+  public final String toString() {
+    return getClass().getSimpleName() + " [entityID: " + entityID + "]";
   }
 
   public final EntityDbProvider getDbProvider() {
@@ -108,7 +122,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     return staticData;
   }
 
-  public final EntityComboBoxModel setStaticData(boolean staticData) {
+  public final EntityComboBoxModel setStaticData(final boolean staticData) {
     this.staticData = staticData;
     return this;
   }
@@ -134,52 +148,17 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     return (Entity) getSelectedItem();
   }
 
-  @Override
-  public void setSelectedItem(final Object anItem) {
-    if (getSize() == 0) {
-      return;
-    }
-    final Object item = anItem instanceof String && ((String) anItem).length() == 0 ? null : anItem;
-    if (item != null && !item.equals(getNullValueString()) && !(item instanceof Entity)) {
-      throw new IllegalArgumentException("Cannot set '" + item + "' [" + item.getClass()
-              + "] as selected item in a EntityComboBoxModel (" + this + ")");
-    }
-
-    if (item instanceof Entity) {
-      final int indexOfKey = getIndexOfKey(((Entity) anItem).getPrimaryKey());
-      if (indexOfKey >= 0) {
-        super.setSelectedItem(getElementAt(indexOfKey));
-      }
-      else {
-        super.setSelectedItem(anItem);
-      }
-    }
-    else {
-      super.setSelectedItem(null);
-    }
-  }
-
-  @Override
-  public final FilterCriteria<Entity> getFilterCriteria() {
-    final FilterCriteria<Entity> superCriteria = super.getFilterCriteria();
-    return new FilterCriteria<Entity>() {
-      public boolean include(final Entity item) {
-        return superCriteria.include(item) && foreignKeyFilterCriteria.include(item);
-      }
-    };
-  }
-
-  @Override
-  public String toString() {
-    return getClass().getSimpleName() + " [entityID: " + entityID + "]";
-  }
-
   public final void setEntitySelectCriteria(final EntitySelectCriteria entitySelectCriteria) {
     if (entitySelectCriteria != null && !entitySelectCriteria.getEntityID().equals(entityID)) {
       throw new RuntimeException("EntitySelectCriteria entityID mismatch, " + entityID
               + " expected, got " + entitySelectCriteria.getEntityID());
     }
-    this.selectCriteria = entitySelectCriteria;
+    if (entitySelectCriteria == null) {
+      this.selectCriteria = EntityCriteriaUtil.selectCriteria(entityID);
+    }
+    else {
+      this.selectCriteria = entitySelectCriteria;
+    }
   }
 
   public final void setForeignKeyFilterEntities(final String foreignKeyPropertyID, final Collection<Entity> entities) {
@@ -202,8 +181,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
   }
 
   public final EntityComboBoxModel createForeignKeyFilterComboBoxModel(final String foreignKeyPropertyID) {
-    final Property.ForeignKeyProperty foreignKeyProperty =
-            EntityRepository.getForeignKeyProperty(entityID, foreignKeyPropertyID);
+    final Property.ForeignKeyProperty foreignKeyProperty = Entities.getForeignKeyProperty(entityID, foreignKeyPropertyID);
     final EntityComboBoxModel foreignKeyModel
             = new DefaultEntityComboBoxModel(foreignKeyProperty.getReferencedEntityID(), dbProvider);
     foreignKeyModel.setNullValueString("-");
@@ -213,8 +191,12 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     return foreignKeyModel;
   }
 
-  public final Event eventRefreshDone() {
-    return evtRefreshDone;
+  public final void addRefreshListener(final ActionListener listener) {
+    evtRefreshDone.addListener(listener);
+  }
+
+  public final void removeRefreshListener(final ActionListener listener) {
+    evtRefreshDone.removeListener(listener);
   }
 
   //todo move somewhere else?
@@ -223,27 +205,53 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     if (filterEntities != null && !filterEntities.isEmpty()) {
       foreignKeyModel.setSelectedItem(filterEntities.iterator().next());
     }
-    foreignKeyModel.eventSelectionChanged().addListener(new ActionListener() {
+    foreignKeyModel.addSelectionListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         final Entity selectedEntity = foreignKeyModel.getSelectedEntity();
         model.setForeignKeyFilterEntities(foreignKeyPropertyID,
                 selectedEntity == null ? new ArrayList<Entity>(0) : Arrays.asList(selectedEntity));
       }
     });
-    model.eventSelectionChanged().addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+    model.addSelectionListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
         final Entity selected = model.getSelectedEntity();
         if (selected != null) {
           foreignKeyModel.setSelectedEntityByPrimaryKey(selected.getReferencedPrimaryKey(
-                  EntityRepository.getForeignKeyProperty(model.getEntityID(), foreignKeyPropertyID)));
+                  Entities.getForeignKeyProperty(model.getEntityID(), foreignKeyPropertyID)));
         }
       }
     });
-    model.eventRefreshDone().addListener(new ActionListener() {
+    model.addRefreshListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         foreignKeyModel.forceRefresh();
       }
     });
+  }
+
+  @Override
+  protected Object translateSelectionItem(final Object item) {
+    if (item instanceof Entity) {
+      final int indexOfKey = getIndexOfKey(((Entity) item).getPrimaryKey());
+      if (indexOfKey >= 0) {
+        return getElementAt(indexOfKey);
+      }
+      else {
+        return item;
+      }
+    }
+    else {
+      return item;
+    }
+  }
+
+  @Override
+  protected final boolean vetoSelectionChange(final Object item) {
+    if (getSize() == 0) {
+      return true;
+    }
+    final Object theItem = item instanceof String && ((String) item).isEmpty() ? null : item;
+
+    return theItem != null && !theItem.equals(getNullValueString()) && !(theItem instanceof Entity);
   }
 
   /**
@@ -267,14 +275,9 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
    * Retrieves the entities to present in this EntityComboBoxModel
    * @return the entities to present in this EntityComboBoxModel
    */
-  protected List<Entity> performQuery() {
+  private List<Entity> performQuery() {
     try {
-      if (selectCriteria != null) {
-        return dbProvider.getEntityDb().selectMany(selectCriteria);
-      }
-      else {
-        return dbProvider.getEntityDb().selectAll(entityID);
-      }
+      return dbProvider.getEntityDb().selectMany(selectCriteria);
     }
     catch (Exception e) {
       throw new RuntimeException(e);

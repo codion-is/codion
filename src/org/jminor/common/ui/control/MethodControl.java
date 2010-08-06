@@ -4,10 +4,12 @@
 package org.jminor.common.ui.control;
 
 import org.jminor.common.model.Event;
-import org.jminor.common.model.State;
+import org.jminor.common.model.Events;
+import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.Util;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -16,7 +18,7 @@ import java.lang.reflect.Method;
  */
 public final class MethodControl extends Control {
 
-  private final Event evtActionPerformed = new Event();
+  private final Event evtActionPerformed = Events.event();
 
   private final Object owner;
   private final Method method;
@@ -40,7 +42,7 @@ public final class MethodControl extends Control {
    * @param enabledState if specified then this control will only be enabled when this state is
    * @throws RuntimeException if the method was not found in the owner object
    */
-  public MethodControl(final String name, final Object owner, final String methodName, final State enabledState) {
+  public MethodControl(final String name, final Object owner, final String methodName, final StateObserver enabledState) {
     super(name, enabledState);
     Util.rejectNullValue(owner, "owner");
     Util.rejectNullValue(methodName, "methodName");
@@ -72,10 +74,11 @@ public final class MethodControl extends Control {
     }
   }
 
-  /**
-   * @return an Event fired after each call to actionPerformed
-   */
-  public Event eventActionPerformed() {
-    return evtActionPerformed;
+  public void addActionPerformedListener(final ActionListener listener) {
+    evtActionPerformed.addListener(listener);
+  }
+
+  public void removeActionPerformedListener(final ActionListener listener) {
+    evtActionPerformed.removeListener(listener);
   }
 }

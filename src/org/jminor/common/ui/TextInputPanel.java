@@ -48,8 +48,8 @@ public final class TextInputPanel extends JPanel {
     this.dialogTitle = dialogTitle;
     this.textComponent = textComponent;
     this.txtAreaSize = txtAreaSize == null ? UiUtil.getScreenSizeRatio(DEFAULT_TEXT_AREA_SCREEN_SIZE_RATIO) : txtAreaSize;
-    this.button = createButton(textComponent, buttonFocusable, UiUtil.DIMENSION_TEXT_FIELD_SQUARE);
-    initializeUI(textComponent, button);
+    this.button = createButton(buttonFocusable, UiUtil.DIMENSION_TEXT_FIELD_SQUARE);
+    initializeUI();
   }
 
   /**
@@ -80,51 +80,55 @@ public final class TextInputPanel extends JPanel {
     return button;
   }
 
-  protected void initializeUI(final JTextComponent textComponent, final JButton button) {
+  private void initializeUI() {
     setLayout(new BorderLayout());
     add(textComponent, BorderLayout.CENTER);
     add(button, BorderLayout.EAST);
   }
 
-  private JButton createButton(final JTextComponent textComponent, final boolean buttonFocusable,
-                               final Dimension buttonSize) {
-    final AbstractAction action = new AbstractAction("...") {
-      public void actionPerformed(final ActionEvent e) {
-        final JTextArea txtArea = new JTextArea(textComponent.getText()) {
-          @Override
-          protected Document createDefaultModel() {
-            return new PlainDocument() {
-              @Override
-              public void insertString(final int offs, final String str, final AttributeSet a) throws BadLocationException {
-                if (getMaxLength() > 0 && getLength() + (str != null ? str.length() : 0) > getMaxLength()) {
-                  return;
-                }
-
-                super.insertString(offs, str, a);
-              }
-            };
-          }
-        };
-        txtArea.setPreferredSize(txtAreaSize);
-        txtArea.setLineWrap(true);
-        txtArea.setWrapStyleWord(true);
-        final JScrollPane scroller = new JScrollPane(txtArea);
-        final AbstractAction okAction = new AbstractAction(Messages.get(Messages.OK)) {
-          public void actionPerformed(final ActionEvent evt) {
-            textComponent.setText(txtArea.getText());
-          }
-        };
-        okAction.putValue(Action.MNEMONIC_KEY, Messages.get(Messages.OK_MNEMONIC).charAt(0));
-        UiUtil.showInDialog(UiUtil.getParentWindow(textComponent), scroller, true, dialogTitle, true, true, okAction);
-      }
-    };
-
-    final JButton jButton = new JButton(action);
+  private JButton createButton(final boolean buttonFocusable, final Dimension buttonSize) {
+    final JButton jButton = new JButton(new InputAction());
     jButton.setFocusable(buttonFocusable);
     if (buttonSize != null) {
       jButton.setPreferredSize(buttonSize);
     }
 
     return jButton;
+  }
+
+  private final class InputAction extends AbstractAction {
+
+    private InputAction() {
+      super("...");
+    }
+
+    public void actionPerformed(final ActionEvent e) {
+      final JTextArea txtArea = new JTextArea(textComponent.getText()) {
+        @Override
+        protected Document createDefaultModel() {
+          return new PlainDocument() {
+            @Override
+            public void insertString(final int offs, final String str, final AttributeSet a) throws BadLocationException {
+              if (getMaxLength() > 0 && getLength() + (str != null ? str.length() : 0) > getMaxLength()) {
+                return;
+              }
+
+              super.insertString(offs, str, a);
+            }
+          };
+        }
+      };
+      txtArea.setPreferredSize(txtAreaSize);
+      txtArea.setLineWrap(true);
+      txtArea.setWrapStyleWord(true);
+      final JScrollPane scroller = new JScrollPane(txtArea);
+      final AbstractAction okAction = new AbstractAction(Messages.get(Messages.OK)) {
+        public void actionPerformed(final ActionEvent evt) {
+          textComponent.setText(txtArea.getText());
+        }
+      };
+      okAction.putValue(Action.MNEMONIC_KEY, Messages.get(Messages.OK_MNEMONIC).charAt(0));
+      UiUtil.showInDialog(UiUtil.getParentWindow(textComponent), scroller, true, dialogTitle, true, true, okAction);
+    }
   }
 }

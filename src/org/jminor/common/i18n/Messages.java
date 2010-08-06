@@ -3,6 +3,8 @@
  */
 package org.jminor.common.i18n;
 
+import org.jminor.common.db.dbms.AbstractDatabase;
+
 import javax.swing.UIManager;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -51,7 +53,7 @@ public final class Messages {
   public static final String LOGIN = "login";
   public static final String LOGOUT = "logout";
   public static final String USERNAME = "username";
-  public static final String PASSWORD = "password";
+  public static final String PASSWORD = AbstractDatabase.PASSWORD_PROPERTY;
   public static final String CHOOSE_DATE = "choose_date";
   public static final String UNIQUE_KEY_ERROR = "unique_key_error";
   public static final String CHILD_RECORD_ERROR = "child_record_error";

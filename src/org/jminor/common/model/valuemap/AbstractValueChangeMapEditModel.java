@@ -4,10 +4,15 @@
 package org.jminor.common.model.valuemap;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventObserver;
+import org.jminor.common.model.Events;
 import org.jminor.common.model.State;
+import org.jminor.common.model.StateObserver;
+import org.jminor.common.model.States;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 
+import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,7 +33,7 @@ public abstract class AbstractValueChangeMapEditModel<K, V> implements ValueChan
    * Fired when the active value map is set.
    * @see #setValueMap(ValueMap)
    */
-  private final Event evtValueMapSet = new Event();
+  private final Event evtValueMapSet = Events.event();
 
   /**
    * Holds events signaling value changes made via the ui
@@ -40,14 +45,36 @@ public abstract class AbstractValueChangeMapEditModel<K, V> implements ValueChan
    */
   private final Map<K, Event> valueChangeEventMap = new HashMap<K, Event>();
 
+  private final ValueMapValidator<K, V> validator;
+
+  private final State stValid = States.state();
+
   /**
    * Instantiates a new edit model instance for the given value map.
    * @param initialMap the value map to edit
+   * @param validator the validator
    */
-  public AbstractValueChangeMapEditModel(final ValueChangeMap<K, V> initialMap) {
+  public AbstractValueChangeMapEditModel(final ValueChangeMap<K, V> initialMap, final ValueMapValidator<K, V> validator) {
     Util.rejectNullValue(initialMap, "initialMap");
     this.valueMap = initialMap;
+    this.validator = validator;
     bindEventsInternal();
+  }
+
+  public void clear() {}
+
+  public void refresh() {}
+
+  public final ValueMapValidator<K, V> getValidator() {
+    return validator;
+  }
+
+  public final boolean isNullable(final K key) {
+    return validator.isNullable(valueMap, key);
+  }
+
+  public final void validate(final K key, final int action) throws ValidationException {
+    validator.validate(valueMap, key, action);
   }
 
   public final V getValue(final K key) {
@@ -59,7 +86,6 @@ public abstract class AbstractValueChangeMapEditModel<K, V> implements ValueChan
     final boolean initialization = valueMap.containsValue(key);
     final V oldValue = valueMap.getValue(key);
     valueMap.setValue(key, prepareNewValue(key, value));
-
     if (!Util.equal(value, oldValue)) {
       notifyValueSet(key, new ValueChangeEvent<K, V>(this, valueMap, key, value, oldValue, false, initialization));
     }
@@ -77,7 +103,7 @@ public abstract class AbstractValueChangeMapEditModel<K, V> implements ValueChan
   public final boolean isValid(final K key, final int action) {
     Util.rejectNullValue(key, "key");
     try {
-      validate(key, action);
+      validator.validate(valueMap, key, action);
       return true;
     }
     catch (ValidationException e) {
@@ -85,30 +111,57 @@ public abstract class AbstractValueChangeMapEditModel<K, V> implements ValueChan
     }
   }
 
-  public final Event getValueSetEvent(final K key) {
-    Util.rejectNullValue(key, "key");
-    if (!valueSetEventMap.containsKey(key)) {
-      valueSetEventMap.put(key, new Event());
-    }
-
-    return valueSetEventMap.get(key);
+  public final boolean isModified() {
+    return getModifiedState().isActive();
   }
 
-  public final Event getValueChangeEvent(final K key) {
+  public final boolean isValid() {
+    return getValidState().isActive();
+  }
+
+  public final void addValueSetListener(final K key, final ActionListener listener) {
+    getValueSetEvent(key).addListener(listener);
+  }
+
+  public final void removeValueSetListener(final K key, final ActionListener listener) {
+    getValueSetEvent(key).removeListener(listener);
+  }
+
+  public final EventObserver getValueChangeObserver(final K key) {
     Util.rejectNullValue(key, "key");
     if (!valueChangeEventMap.containsKey(key)) {
-      valueChangeEventMap.put(key, new Event());
+      valueChangeEventMap.put(key, Events.event());
     }
 
-    return valueChangeEventMap.get(key);
+    return valueChangeEventMap.get(key).getObserver();
   }
 
-  public final Event eventValueMapSet() {
-    return evtValueMapSet;
+  public final void addValueListener(final K key, final ActionListener listener) {
+    getValueChangeObserver(key).addListener(listener);
   }
 
-  public final State stateModified() {
-    return valueMap.stateModified();
+  public final void removeValueListener(final K key, final ActionListener listener) {
+    getValueChangeEvent(key).removeListener(listener);
+  }
+
+  public final void addValueMapSetListener(final ActionListener listener) {
+    evtValueMapSet.addListener(listener);
+  }
+
+  public final void removeValueMapSetListener(final ActionListener listener) {
+    evtValueMapSet.removeListener(listener);
+  }
+
+  public final StateObserver getModifiedState() {
+    return valueMap.getModifiedState();
+  }
+
+  public final StateObserver getValidState() {
+    return stValid.getObserver();
+  }
+
+  protected V prepareNewValue(final K key, final V value) {
+    return value;
   }
 
   /**
@@ -116,10 +169,6 @@ public abstract class AbstractValueChangeMapEditModel<K, V> implements ValueChan
    */
   protected final ValueChangeMap<K, V> getValueMap() {
     return valueMap;
-  }
-
-  protected V prepareNewValue(final K key, final V value) {
-    return value;
   }
 
   /**
@@ -131,6 +180,24 @@ public abstract class AbstractValueChangeMapEditModel<K, V> implements ValueChan
     getValueSetEvent(key).fire(event);
   }
 
+  private Event getValueSetEvent(final K key) {
+    Util.rejectNullValue(key, "key");
+    if (!valueSetEventMap.containsKey(key)) {
+      valueSetEventMap.put(key, Events.event());
+    }
+
+    return valueSetEventMap.get(key);
+  }
+
+  private Event getValueChangeEvent(final K key) {
+    Util.rejectNullValue(key, "key");
+    if (!valueChangeEventMap.containsKey(key)) {
+      valueChangeEventMap.put(key, Events.event());
+    }
+
+    return valueChangeEventMap.get(key);
+  }
+
   private void bindEventsInternal() {
     valueMap.addValueListener(new ValueChangeListener<K, V>() {
       @Override
@@ -139,6 +206,7 @@ public abstract class AbstractValueChangeMapEditModel<K, V> implements ValueChan
         if (valueChangeEvent != null) {
           valueChangeEvent.fire(event);
         }
+        stValid.setActive(validator.isValid(valueMap, ValueMapValidator.UNKNOWN));
       }
     });
   }

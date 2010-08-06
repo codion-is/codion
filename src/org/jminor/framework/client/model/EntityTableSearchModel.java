@@ -4,29 +4,34 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.db.criteria.Criteria;
-import org.jminor.common.db.criteria.CriteriaSet;
-import org.jminor.common.model.Event;
+import org.jminor.common.model.ColumnSearchModel;
+import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.FilterCriteria;
 import org.jminor.common.model.Refreshable;
-import org.jminor.common.model.State;
+import org.jminor.common.model.StateObserver;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
+import java.awt.event.ActionListener;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * This interface defines filtering functionality, which refers to showing/hiding entities already available
+ * in a table model and searching functionality, which refers to configuring the underlying query,
+ * which then needs to be re-run.<br>
+ */
 public interface EntityTableSearchModel extends FilterCriteria<Entity>, Refreshable {
 
   /**
    * @return a State activated each time the search state differs from the state at last reset
    * @see #setSearchModelState()
    */
-  State stateSearchStateChanged();
+  StateObserver getSearchStateChangedState();
 
-  /**
-   * @return an Event fired when the state of a filter model changes
-   */
-  Event eventFilterStateChanged();
+  void addFilterStateListener(final ActionListener listener);
+
+  void removeFilterStateListener(final ActionListener listener);
 
   /**
    * @return the ID of the entity this table searcher is based on
@@ -47,9 +52,20 @@ public interface EntityTableSearchModel extends FilterCriteria<Entity>, Refresha
   boolean setSearchValues(final String propertyID, final Collection<?> values);
 
   /**
+   * Sets the criteria value of the PropertyFilterModel associated with the property identified by <code>propertyID</code>.
+   * @param propertyID the id of the property
+   * @param value the criteria value
+   */
+  void setFilterValue(final String propertyID, final Comparable value);
+
+  /**
    * @return the current criteria based on the state of the search models
    */
   Criteria<Property.ColumnProperty> getSearchCriteria();
+
+  Criteria<Property.ColumnProperty> getAdditionalSearchCriteria();
+
+  EntityTableSearchModel setAdditionalSearchCriteria(final Criteria<Property.ColumnProperty> criteria);
 
   /**
    * @param propertyID the column propertyID
@@ -66,7 +82,7 @@ public interface EntityTableSearchModel extends FilterCriteria<Entity>, Refresha
 
   /**
    * Sets the current search model state
-   * @see #stateSearchStateChanged
+   * @see #getSearchStateChangedState
    */
   void setSearchModelState();
 
@@ -74,16 +90,16 @@ public interface EntityTableSearchModel extends FilterCriteria<Entity>, Refresha
 
   /**
    * @return the conjunction to be used when more than one column search criteria is active,
-   * the default is <code>CriteriaSet.Conjunction.AND</code>
-   * @see org.jminor.common.db.criteria.CriteriaSet.Conjunction
+   * the default is <code>Conjunction.AND</code>
+   * @see Conjunction
    */
-  CriteriaSet.Conjunction getSearchConjunction();
+  Conjunction getSearchConjunction();
 
   /**
    * @param conjunction the conjunction to be used when more than one column search criteria is active
-   * @see org.jminor.common.db.criteria.CriteriaSet.Conjunction
+   * @see Conjunction
    */
-  void setSearchConjunction(final CriteriaSet.Conjunction conjunction);
+  void setSearchConjunction(final Conjunction conjunction);
 
   /**
    * @param propertyID the id of the property for which to check for the PropertySearchModel
@@ -95,13 +111,13 @@ public interface EntityTableSearchModel extends FilterCriteria<Entity>, Refresha
   /**
    * @return a list containing the PropertySearchModels configured in this table search model
    */
-  Collection<PropertySearchModel> getPropertySearchModels();
+  Collection<PropertySearchModel<? extends Property.SearchableProperty>> getPropertySearchModels();
 
   /**
    * @param propertyID the id of the property for which to retrieve the PropertySearchModel
    * @return the PropertySearchModel associated with the property identified by <code>propertyID</code>
    */
-  PropertySearchModel getPropertySearchModel(final String propertyID);
+  PropertySearchModel<? extends Property.SearchableProperty> getPropertySearchModel(final String propertyID);
 
   /**
    * Clears the state of all PropertySearchModels
@@ -111,14 +127,19 @@ public interface EntityTableSearchModel extends FilterCriteria<Entity>, Refresha
   /**
    * @return the property filters configured in this table search model
    */
-  Collection<PropertyFilterModel> getPropertyFilterModels();
+  Collection<ColumnSearchModel<Property>> getPropertyFilterModels();
+
+  /**
+   * @return the PropertyFilterModels in the same order as the columns they represent
+   */
+  List<ColumnSearchModel<Property>> getPropertyFilterModelsOrdered();
 
   /**
    * The PropertyFilterModel associated with the property identified by <code>propertyID</code>
    * @param propertyID the id of the property for which to retrieve the PropertyFilterModel
    * @return the PropertyFilterModel for the property with id <code>propertyID</code>
    */
-  PropertyFilterModel getPropertyFilterModel(final String propertyID);
+  ColumnSearchModel<Property> getPropertyFilterModel(final String propertyID);
 
   /**
    * @param propertyID column propertyID

@@ -10,7 +10,7 @@ import java.awt.event.ItemEvent;
 public final class TristateButtonModel extends ToggleButtonModel {
   private TristateState state = TristateState.DESELECTED;
 
-  public TristateButtonModel(TristateState state) {
+  public TristateButtonModel(final TristateState state) {
     setState(state);
   }
 
@@ -28,29 +28,29 @@ public final class TristateButtonModel extends ToggleButtonModel {
 
   // Overrides of superclass methods
   @Override
-  public void setEnabled(boolean enabled) {
+  public void setEnabled(final boolean enabled) {
     super.setEnabled(enabled);
     // Restore state display
     displayState();
   }
 
   @Override
-  public void setSelected(boolean selected) {
+  public void setSelected(final boolean selected) {
     setState(selected ? TristateState.SELECTED : TristateState.DESELECTED);
   }
 
   // Empty overrides of superclass methods
   @Override
-  public void setArmed(boolean b) {}
+  public void setArmed(final boolean b) {}
 
   @Override
-  public void setPressed(boolean b) {}
+  public void setPressed(final boolean b) {}
 
   public void iterateState() {
     setState(state.next());
   }
 
-  private void setState(TristateState state) {
+  private void setState(final TristateState state) {
     //Set internal state
     this.state = state;
     displayState();
@@ -61,7 +61,7 @@ public final class TristateButtonModel extends ToggleButtonModel {
       fireStateChanged();
 
       // Send ItemEvent
-      int indeterminate = 3;
+      final int indeterminate = 3;
       fireItemStateChanged(new ItemEvent(this, ItemEvent.ITEM_STATE_CHANGED, this, indeterminate));
     }
   }

@@ -7,10 +7,11 @@ import org.jminor.common.db.exception.DbException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.Events;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.control.Control;
-import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
+import org.jminor.common.ui.control.Controls;
 import org.jminor.common.ui.control.ToggleBeanValueLink;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
 
@@ -37,11 +38,16 @@ import java.io.StringWriter;
  */
 public final class ExceptionDialog extends JDialog {
 
+  private static final int DESCRIPTION_LABEL_WIDTH = 250;
+  private static final int MESSAGE_LABEL_WIDTH = 50;
+  private static final int SCROLL_PANE_WIDTH = 500;
+  private static final int SCROLL_PANE_HEIGHT = 200;
+
   //ui components
   private JTextField exceptionField;
   private JTextArea messageArea;
   private JPanel detailPanel;
-  private Window ownerFrame;
+  private final Window ownerFrame;
   private JPanel centerPanel;
   private JTextArea detailsArea;
   private JLabel descriptionLabel;
@@ -57,7 +63,7 @@ public final class ExceptionDialog extends JDialog {
   private Control ctrCopy;
   private Control ctrEmail;
 
-  private Event evtShowDetailsChanged = new Event();
+  private final Event evtShowDetailsChanged = Events.event();
   private boolean showDetails = false;
 
   private static String errorReportEmailAddressTo;
@@ -194,7 +200,7 @@ public final class ExceptionDialog extends JDialog {
   public void emailErrorReport() {
     if (errorReportEmailAddressTo == null) {
       final String address = JOptionPane.showInputDialog(Messages.get(Messages.INPUT_EMAIL_ADDRESS));
-      if (address != null && address.length() > 0) {
+      if (!Util.nullOrEmpty(address)) {
         errorReportEmailAddressTo = address;
       }
       else {
@@ -215,26 +221,26 @@ public final class ExceptionDialog extends JDialog {
   }
 
   private void setupControls() {
-    ctrDetails = ControlFactory.toggleControl(this, "showDetails",
+    ctrDetails = Controls.toggleControl(this, "showDetails",
             Messages.get(Messages.DETAILS), null,
             Messages.get(Messages.SHOW_DETAILS));
-    ctrPrint = ControlFactory.methodControl(this, "printErrorReport",
+    ctrPrint = Controls.methodControl(this, "printErrorReport",
             Messages.get(Messages.PRINT), null,
             Messages.get(Messages.PRINT_ERROR_REPORT),
             Messages.get(Messages.PRINT_ERROR_REPORT_MNEMONIC).charAt(0));
-    ctrClose = ControlFactory.methodControl(this, "close",
+    ctrClose = Controls.methodControl(this, "close",
             Messages.get(Messages.CLOSE), null,
             Messages.get(Messages.CLOSE_DIALOG),
             Messages.get(Messages.CLOSE_MNEMONIC).charAt(0));
-    ctrSave = ControlFactory.methodControl(this, "saveErrorReport",
+    ctrSave = Controls.methodControl(this, "saveErrorReport",
             Messages.get(Messages.SAVE), null,
             Messages.get(Messages.SAVE_ERROR_LOG),
             Messages.get(Messages.SAVE_MNEMONIC).charAt(0));
-    ctrCopy = ControlFactory.methodControl(this,"copyErrorReport",
+    ctrCopy = Controls.methodControl(this,"copyErrorReport",
             Messages.get(Messages.COPY), null,
             Messages.get(Messages.COPY_TO_CLIPBOARD),
             Messages.get(Messages.COPY_MNEMONIC).charAt(0));
-    ctrEmail = ControlFactory.methodControl(this,"emailErrorReport",
+    ctrEmail = Controls.methodControl(this,"emailErrorReport",
             Messages.get(Messages.SEND), null,
             Messages.get(Messages.SEND_EMAIL),
             Messages.get(Messages.SEND_MNEMONIC).charAt(0));
@@ -259,7 +265,7 @@ public final class ExceptionDialog extends JDialog {
 
   private void bindEvents() {
     evtShowDetailsChanged.addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         initDetailView(isShowDetails());
       }
     });
@@ -287,7 +293,7 @@ public final class ExceptionDialog extends JDialog {
     layout.setFixedRowHeight(new JTextField().getPreferredSize().height);
     detailPanel = new JPanel(layout);
     descriptionLabel = new JLabel(UIManager.getIcon("OptionPane.errorIcon"), SwingConstants.CENTER);
-    descriptionLabel.setMaximumSize(new Dimension(250, descriptionLabel.getMaximumSize().height));
+    descriptionLabel.setMaximumSize(new Dimension(DESCRIPTION_LABEL_WIDTH, descriptionLabel.getMaximumSize().height));
     descriptionLabel.setIconTextGap(10);
     final JLabel exceptionLabel = new JLabel(
             Messages.get(Messages.EXCEPTION) + ": ", SwingConstants.LEFT);
@@ -295,7 +301,7 @@ public final class ExceptionDialog extends JDialog {
     exceptionField.setEnabled(false);
     final JLabel messageLabel = new JLabel(
             Messages.get(Messages.MESSAGE) + ": ", SwingConstants.LEFT);
-    messageLabel.setPreferredSize(new Dimension(50, messageLabel.getPreferredSize().height));
+    messageLabel.setPreferredSize(new Dimension(MESSAGE_LABEL_WIDTH, messageLabel.getPreferredSize().height));
     messageArea = new JTextArea();
     messageArea.setEnabled(false);
     messageArea.setLineWrap(true);
@@ -328,7 +334,7 @@ public final class ExceptionDialog extends JDialog {
     detailsArea.setWrapStyleWord(true);
 
     final JScrollPane scrollPane = new JScrollPane(detailsArea);
-    scrollPane.setPreferredSize(new Dimension(500,200));
+    scrollPane.setPreferredSize(new Dimension(SCROLL_PANE_WIDTH, SCROLL_PANE_HEIGHT));
     final JPanel center = new JPanel(new BorderLayout());
     center.add(scrollPane, BorderLayout.CENTER);
 

@@ -38,7 +38,7 @@ public class EntityDbRemoteServerTest {
     System.setProperty(Configuration.SERVER_DB_PORT, "2223");
     System.setProperty(Configuration.SERVER_ADMIN_PORT, "3334");
     System.setProperty(Configuration.SERVER_HOST_NAME, "localhost");
-    System.setProperty(Configuration.SERVER_CONNECTION_POOLING_INITIAL, "scott");
+    System.setProperty(Configuration.SERVER_CONNECTION_POOLING_INITIAL, User.UNIT_TEST_USER.getUsername());
     System.setProperty(Configuration.SERVER_CONNECTION_SSL_ENABLED, "true");
     System.setProperty(Configuration.SERVER_DOMAIN_MODEL_CLASSES, "org.jminor.framework.demos.empdept.domain.EmpDept,org.jminor.framework.demos.petstore.domain.Petstore");
     System.setProperty("java.rmi.server.hostname", "localhost");
@@ -61,7 +61,7 @@ public class EntityDbRemoteServerTest {
     if (admin != null) {
       admin.shutdown();
     }
-    Thread.sleep(100);
+    Thread.sleep(300);
     admin = null;
     server = null;
     System.setSecurityManager(defaultManager);
@@ -70,13 +70,13 @@ public class EntityDbRemoteServerTest {
   @Test
   public void test() throws Exception {
     final EntityDbRemoteProvider providerOne = new EntityDbRemoteProvider(User.UNIT_TEST_USER,
-            UUID.randomUUID(), "EntityDbRemoteServerTest");
+            UUID.randomUUID(), getClass().getSimpleName());
     final EntityDb remoteDbOne = providerOne.getEntityDb();
     assertTrue(remoteDbOne.isConnectionValid());
     assertEquals(1, server.getConnectionCount());
 
     final EntityDbRemoteProvider providerTwo = new EntityDbRemoteProvider(User.UNIT_TEST_USER,
-            UUID.randomUUID(), "EntityDbRemoteServerTest");
+            UUID.randomUUID(), getClass().getSimpleName());
     final EntityDb remoteDbTwo = providerTwo.getEntityDb();
     server.setLoggingOn(providerTwo.getClientID(), true);
     assertTrue(server.isLoggingOn(providerTwo.getClientID()));

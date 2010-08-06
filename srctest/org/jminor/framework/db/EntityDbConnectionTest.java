@@ -18,7 +18,6 @@ import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.demos.petstore.domain.Petstore;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.EntityTestDomain;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Properties;
@@ -55,10 +54,10 @@ public class EntityDbConnectionTest {
   static {
     new Petstore();
     new EmpDept();
-    EntityRepository.add(Entities.define(COMBINED_ENTITY_ID,
+    Entities.define(COMBINED_ENTITY_ID,
             Properties.primaryKeyProperty("empno"),
             Properties.columnProperty("deptno", Types.INTEGER))
-            .setSelectQuery("select e.empno, d.deptno from scott.emp e, scott.dept d where e.deptno = d.deptno"));
+            .setSelectQuery("select e.empno, d.deptno from scott.emp e, scott.dept d where e.deptno = d.deptno");
   }
 
   public EntityDbConnectionTest() throws ClassNotFoundException, SQLException {
@@ -120,7 +119,7 @@ public class EntityDbConnectionTest {
   public void selectAll() throws Exception {
     final List<Entity> depts = connection.selectAll(EmpDept.T_DEPARTMENT);
     assertEquals(depts.size(), 4);
-    List<Entity> emps = connection.selectAll(COMBINED_ENTITY_ID);
+    final List<Entity> emps = connection.selectAll(COMBINED_ENTITY_ID);
     assertTrue(emps.size() > 0);
   }
 

@@ -18,6 +18,9 @@ import java.util.Date;
  */
 public final class DateUtil {
 
+  private static final int THIRTY_FIRST = 31;
+  private static final int THIRTIETH = 30;
+
   private DateUtil() {}
 
   /**
@@ -30,23 +33,23 @@ public final class DateUtil {
   }
 
   /**
-   * @param date the date to check for validity
+   * @param dateString the date to check for validity
    * @param emptyStringOk if true then an empty string is regarded as a valid date
    * @param formats the date formats to use for validation
    * @return true if the date is valid, using the given date formats
    */
-  public static boolean isDateValid(final String date, final boolean emptyStringOk, final DateFormat... formats) {
+  public static boolean isDateValid(final String dateString, final boolean emptyStringOk, final DateFormat... formats) {
     if (formats == null || formats.length == 0) {
       throw new RuntimeException("Date format is required");
     }
-    if (date == null || date.length() == 0) {
+    if (Util.nullOrEmpty(dateString)) {
       return emptyStringOk;
     }
 
     for (final DateFormat format : formats) {
       format.setLenient(false);
       try {
-        format.parse(date);
+        format.parse(dateString);
         return true;
       }
       catch (ParseException e) {/**/}
@@ -85,7 +88,7 @@ public final class DateUtil {
     return new Timestamp(cal.getTimeInMillis());
   }
 
-  public static Date getDate(int year, int month, int day) {
+  public static Date getDate(final int year, final int month, final int day) {
     final Calendar cal = Calendar.getInstance();
     cal.set(Calendar.YEAR, year);
     cal.set(Calendar.MONTH, month);
@@ -136,7 +139,7 @@ public final class DateUtil {
   public static Date getLastDayOfYear() {
     final Calendar c = Calendar.getInstance();
     c.set(Calendar.MONTH, Calendar.DECEMBER);
-    c.set(Calendar.DAY_OF_MONTH, 31);
+    c.set(Calendar.DAY_OF_MONTH, THIRTY_FIRST);
 
     return c.getTime();
   }
@@ -179,22 +182,22 @@ public final class DateUtil {
     switch (quarter) {
       case 1: {
         c.set(Calendar.MONTH, Calendar.MARCH);
-        c.set(Calendar.DAY_OF_MONTH, 31);
+        c.set(Calendar.DAY_OF_MONTH, THIRTY_FIRST);
         return c.getTime();
       }
       case 2: {
         c.set(Calendar.MONTH, Calendar.JUNE);
-        c.set(Calendar.DAY_OF_MONTH, 30);
+        c.set(Calendar.DAY_OF_MONTH, THIRTIETH);
         return c.getTime();
       }
       case 3: {
         c.set(Calendar.MONTH, Calendar.SEPTEMBER);
-        c.set(Calendar.DAY_OF_MONTH, 30);
+        c.set(Calendar.DAY_OF_MONTH, THIRTIETH);
         return c.getTime();
       }
       case 4: {
         c.set(Calendar.MONTH, Calendar.DECEMBER);
-        c.set(Calendar.DAY_OF_MONTH, 31);
+        c.set(Calendar.DAY_OF_MONTH, THIRTY_FIRST);
         return c.getTime();
       }
     }

@@ -3,55 +3,55 @@
  */
 package org.jminor.common.model.valuemap;
 
-import org.jminor.common.model.Event;
+import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Refreshable;
-import org.jminor.common.model.State;
+import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 
+import java.awt.event.ActionListener;
+
 public interface ValueChangeMapEditModel<K, V> extends Refreshable {
-  /**
-   * Code for the insert action, used during validation
-   */
-  int INSERT = 1;
-  /**
-   * Code for the update action, used during validation
-   */
-  int UPDATE = 2;
-  /**
-   * Code for an unknown action, used during validation
-   */
-  int UNKNOWN = 3;
 
   /**
    * @return a State indicating the modified status of this value map
+   * @see #isModified()
    */
-  State stateModified();
-
+  StateObserver getModifiedState();
   /**
-   * @param key the key for which to retrieve the event
-   * @return an Event object which fires when the value of <code>key</code> is changed via
-   * the <code>setValue()</code> methods
-   * @see #setValue(Object, Object)
+   * @return a State indicating the valid status of this value map
+   * @see #getValidator()
+   * @see #isValid()
    */
-  Event getValueSetEvent(final K key);
+  StateObserver getValidState();
 
-  /**
-   * @return an Event fired when the active value map has been changed
-   * @see #setValueMap(org.jminor.common.model.valuemap.ValueMap)
-   */
-  Event eventValueMapSet();
+  void addValueSetListener(final K key, final ActionListener listener);
+
+  void removeValueSetListener(final K key, final ActionListener listener);
+
+  void addValueMapSetListener(final ActionListener listener);
+
+  void removeValueMapSetListener(final ActionListener listener);
+
+  void addValueListener(final K key, final ActionListener listener);
+
+  void removeValueListener(final K key, final ActionListener listener);
 
   /**
    * @param key the key for which to retrieve the event
    * @return an Event object which fires when the value of <code>key</code> changes
    */
-  Event getValueChangeEvent(K key);
+  EventObserver getValueChangeObserver(K key);
+
+  /**
+   * @return the validatorAFTM
+   */
+  ValueMapValidator<K, V> getValidator();
 
   /**
    * Sets the active value map, that is, deep copies the value from the source map into the underlying map
    * @param valueMap the map to set as active, if null then the default map value is set as active
    * @see #getDefaultValueMap()
-   * @see #eventValueMapSet()
+   * @see #addValueMapSetListener(java.awt.event.ActionListener)
    */
   void setValueMap(final ValueMap<K, V> valueMap);
 
@@ -87,30 +87,13 @@ public interface ValueChangeMapEditModel<K, V> extends Refreshable {
   ValueMap<K, V> getDefaultValueMap();
 
   /**
-   * @param valueMap the value map
-   * @param key the key
-   * @return true if this value is allowed to be null in the given value map
-   */
-  boolean isNullable(final ValueChangeMap<K, V> valueMap, final K key);
-
-  /**
-   * Checks if the value associated with the give key is valid, throws a ValidationException if not
-   * @param valueMap the value map to validate
-   * @param key the key the value is associated with
-   * @param action describes the action requiring validation,
-   * ValueChangeMapEditModel.INSERT, ValueChangeMapEditModel.UPDATE or ValueChangeMapEditModel.UNKNOWN
-   * @throws org.jminor.common.model.valuemap.exception.ValidationException if the given value is not valid for the given key
-   */
-  void validate(final ValueChangeMap<K, V> valueMap, final K key, final int action) throws ValidationException;
-
-  /**
    * Checks if the value associated with the give key is valid, throws a ValidationException if not
    * @param key the key
    * @param action describes the action requiring validation,
    * ValueChangeMapEditModel.INSERT, ValueChangeMapEditModel.UPDATE or ValueChangeMapEditModel.UNKNOWN
    * @throws org.jminor.common.model.valuemap.exception.ValidationException if the given value is not valid for the given key
    */
-  void validate(K key, int action) throws ValidationException;
+  void validate(final K key, final int action) throws ValidationException;
 
   /**
    * Returns true if the given value is valid for the given key, using the <code>validate</code> method
@@ -119,13 +102,19 @@ public interface ValueChangeMapEditModel<K, V> extends Refreshable {
    * ValueChangeMapEditModel.INSERT, ValueChangeMapEditModel.UPDATE or ValueChangeMapEditModel.UNKNOWN
    * @return true if the value is valid
    * @see #validate(Object, int)
-   * @see #validate(ValueChangeMap, Object, int)
+   * @see ValueMapValidator#validate(ValueMap, Object, int)
    */
   boolean isValid(final K key, final int action);
 
   /**
-   * Clears the edit model and sets the default state.
-   * @see #getDefaultValueMap()
+   * @return true if the underlying value map contains only valid values
+   * @see #getValidState() ()
    */
-  void clearValues();
+  boolean isValid();
+
+  /**
+   * @return true if the underlying value map is modified
+   * @see #getModifiedState()
+   */
+  boolean isModified();
 }

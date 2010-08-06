@@ -58,9 +58,9 @@ public class EntityImplTest {
     referencedEntityValue.setValue(EntityTestDomain.MASTER_CODE, masterCode);
 
     referencedEntityValue.setValue(EntityTestDomain.MASTER_ID, -55);
-    assertTrue(referencedEntityValue.stateModified().isActive());
+    assertTrue(referencedEntityValue.getModifiedState().isActive());
     referencedEntityValue.saveValue(EntityTestDomain.MASTER_ID);
-    assertFalse(referencedEntityValue.stateModified().isActive());
+    assertFalse(referencedEntityValue.getModifiedState().isActive());
 
     referencedEntityValue = new EntityImpl(EntityTestDomain.T_MASTER);
 
@@ -69,9 +69,9 @@ public class EntityImplTest {
     referencedEntityValue.setValue(EntityTestDomain.MASTER_CODE, masterCode);
 
     referencedEntityValue.setValue(EntityTestDomain.MASTER_ID, -55);
-    assertTrue(referencedEntityValue.stateModified().isActive());
+    assertTrue(referencedEntityValue.getModifiedState().isActive());
     referencedEntityValue.revertValue(EntityTestDomain.MASTER_ID);
-    assertFalse(referencedEntityValue.stateModified().isActive());
+    assertFalse(referencedEntityValue.getModifiedState().isActive());
 
     Entity test = new EntityImpl(EntityTestDomain.T_DETAIL);
     //assert not modified
@@ -166,6 +166,10 @@ public class EntityImplTest {
     assertFalse("Entity copy should not be == the original", test2 == testEntity);
     assertTrue("Entities should be equal after .getCopy()", Util.equal(test2, testEntity));
     assertTrue("Entity property values should be equal after .getCopy()", test2.propertyValuesEqual(testEntity));
+
+    test2.setValue(EntityTestDomain.DETAIL_DOUBLE, 2.1);
+    assertTrue(test2.isModified());
+    assertTrue(((Entity) test2.getCopy()).isModified());
 
     //test propogate entity reference/denormalized values
     testEntity.setValue(EntityTestDomain.DETAIL_ENTITY_FK, null);

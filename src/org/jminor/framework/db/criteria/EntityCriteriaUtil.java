@@ -5,11 +5,12 @@ package org.jminor.framework.db.criteria;
 
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.criteria.CriteriaSet;
+import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 
@@ -53,8 +54,8 @@ public final class EntityCriteriaUtil {
                                                     final SearchType searchType, final String orderByClause,
                                                     final int fetchCount, final Object... values) {
 
-    final Property property = EntityRepository.getProperty(entityID, propertyID);
-    Criteria<Property.ColumnProperty> criteria;
+    final Property property = Entities.getProperty(entityID, propertyID);
+    final Criteria<Property.ColumnProperty> criteria;
     if (property instanceof Property.ForeignKeyProperty) {
       criteria = new ForeignKeyCriteria((Property.ForeignKeyProperty) property, searchType, values);
     }
@@ -112,7 +113,7 @@ public final class EntityCriteriaUtil {
 
   public static EntityCriteria criteria(final String entityID, final String propertyID,
                                         final SearchType searchType, final Object... values) {
-    return new DefaultEntityCriteria(entityID, new PropertyCriteria((Property.ColumnProperty) EntityRepository.getProperty(entityID, propertyID),
+    return new DefaultEntityCriteria(entityID, new PropertyCriteria((Property.ColumnProperty) Entities.getProperty(entityID, propertyID),
             searchType, values));
   }
 
@@ -123,7 +124,7 @@ public final class EntityCriteriaUtil {
 
   public static Criteria<Property.ColumnProperty> propertyCriteria(final String entityID, final String propertyID, final boolean caseSensitive,
                                                                    final SearchType searchType, final Object... values) {
-    return propertyCriteria((Property.ColumnProperty) EntityRepository.getProperty(entityID, propertyID), caseSensitive, searchType, values);
+    return propertyCriteria((Property.ColumnProperty) Entities.getProperty(entityID, propertyID), caseSensitive, searchType, values);
   }
 
   public static Criteria<Property.ColumnProperty> propertyCriteria(final Property.ColumnProperty property,
@@ -177,19 +178,19 @@ public final class EntityCriteriaUtil {
       this.criteria = criteria;
     }
 
-    public List<Object> getValues() {
+    public final List<Object> getValues() {
       return criteria == null ? null : criteria.getValues();
     }
 
-    public List<Property.ColumnProperty> getValueProperties() {
+    public final List<Property.ColumnProperty> getValueProperties() {
       return criteria == null ? null : criteria.getValueKeys();
     }
 
-    public String getEntityID() {
+    public final String getEntityID() {
       return entityID;
     }
 
-    public Criteria<Property.ColumnProperty> getCriteria() {
+    public final Criteria<Property.ColumnProperty> getCriteria() {
       return criteria;
     }
 
@@ -198,21 +199,21 @@ public final class EntityCriteriaUtil {
      * @return a where condition based on this EntityCriteria
      */
     public String asString() {
-      return EntityRepository.getTableName(entityID) + " " + getWhereClause();
+      return Entities.getTableName(entityID) + " " + getWhereClause();
     }
 
-    public String getWhereClause() {
+    public final String getWhereClause() {
       return getWhereClause(true);
     }
 
-    public String getWhereClause(final boolean includeWhereKeyword) {
+    public final String getWhereClause(final boolean includeWhereKeyword) {
       final String criteriaString = criteria == null ? "" : criteria.asString();
 
-      return criteriaString.length() > 0 ? (includeWhereKeyword ? "where " : "and ") + criteriaString : "";
+      return !criteriaString.isEmpty() ? (includeWhereKeyword ? "where " : "and ") + criteriaString : "";
     }
   }
 
-  private static class DefaultEntitySelectCriteria extends DefaultEntityCriteria implements EntitySelectCriteria {
+  private static final class DefaultEntitySelectCriteria extends DefaultEntityCriteria implements EntitySelectCriteria {
 
     private static final long serialVersionUID = 1;
 
@@ -293,7 +294,7 @@ public final class EntityCriteriaUtil {
      */
     @Override
     public String asString() {
-      return EntityRepository.getSelectTableName(getEntityID()) + " " + getWhereClause();
+      return Entities.getSelectTableName(getEntityID()) + " " + getWhereClause();
     }
 
     public int getFetchCount() {
@@ -336,7 +337,7 @@ public final class EntityCriteriaUtil {
     }
 
     public EntitySelectCriteria setFetchDepthForAll(final int fetchDepth) {
-      final Collection<Property.ForeignKeyProperty > properties = EntityRepository.getForeignKeyProperties(getEntityID());
+      final Collection<Property.ForeignKeyProperty > properties = Entities.getForeignKeyProperties(getEntityID());
       for (final Property.ForeignKeyProperty property : properties) {
         foreignKeyFetchDepths.put(property.getPropertyID(), fetchDepth);
       }
@@ -354,7 +355,7 @@ public final class EntityCriteriaUtil {
     }
 
     private Map<String, Integer> initializeForeignKeyFetchDepths() {
-      final Collection<Property.ForeignKeyProperty > properties = EntityRepository.getForeignKeyProperties(getEntityID());
+      final Collection<Property.ForeignKeyProperty > properties = Entities.getForeignKeyProperties(getEntityID());
       final Map<String, Integer> depths = new HashMap<String, Integer>(properties.size());
       for (final Property.ForeignKeyProperty property : properties) {
         depths.put(property.getPropertyID(), property.getFetchDepth());
@@ -367,7 +368,7 @@ public final class EntityCriteriaUtil {
   /**
    * A class encapsulating a query criteria with Entity.Key objects as values.
    */
-  private static class EntityKeyCriteria extends CriteriaSet<Property.ColumnProperty> {
+  private static final class EntityKeyCriteria extends CriteriaSet<Property.ColumnProperty> {
 
     private static final long serialVersionUID = 1;
 
@@ -447,10 +448,10 @@ public final class EntityCriteriaUtil {
           final CriteriaSet<Property.ColumnProperty> andSet = new CriteriaSet<Property.ColumnProperty>(Conjunction.AND);
           int i = 0;
           for (final Property.ColumnProperty property : propertyList) {
-            andSet.addCriteria(new PropertyCriteria(property, SearchType.LIKE, key.getValue(pkProperties.get(i++).getPropertyID())));
+            andSet.add(new PropertyCriteria(property, SearchType.LIKE, key.getValue(pkProperties.get(i++).getPropertyID())));
           }
 
-          addCriteria(andSet);
+          add(andSet);
         }
       }
       else {
@@ -459,10 +460,10 @@ public final class EntityCriteriaUtil {
         //a = b
         if (keys.size() == 1) {
           final Entity.Key key = keys.get(0);
-          addCriteria(new PropertyCriteria(property, SearchType.LIKE, key.getValue(primaryKeyProperty.getPropertyID())));
+          add(new PropertyCriteria(property, SearchType.LIKE, key.getValue(primaryKeyProperty.getPropertyID())));
         }
         else { //a in (c, v, d, s)
-          addCriteria(new PropertyCriteria(property, SearchType.LIKE, EntityUtil.getPropertyValues(keys)));
+          add(new PropertyCriteria(property, SearchType.LIKE, EntityUtil.getPropertyValues(keys)));
         }
       }
     }
@@ -471,7 +472,7 @@ public final class EntityCriteriaUtil {
   /**
    * A object for encapsulating a query criteria with a single property and one or more values.
    */
-  private static class PropertyCriteria implements Criteria<Property.ColumnProperty>, Serializable {
+  private static final class PropertyCriteria implements Criteria<Property.ColumnProperty>, Serializable {
 
     private static final long serialVersionUID = 1;
 
@@ -747,15 +748,8 @@ public final class EntityCriteriaUtil {
       return getForeignKeyCriteriaValues();
     }
 
-    /**
-     * @return the number values contained in this criteria.
-     */
-    public int getValueCount() {
-      return getValues().size();
-    }
-
     private String getForeignKeyCriteriaString() {
-      if (getValueCount() > 1) {
+      if (getValues().size() > 1) {
         return getMultipleForeignKeyCriteriaString();
       }
 
@@ -792,9 +786,9 @@ public final class EntityCriteriaUtil {
     }
 
     private Criteria<Property.ColumnProperty> createMultipleCompositeForeignKeyCriteria() {
-      final CriteriaSet<Property.ColumnProperty> criteriaSet = new CriteriaSet<Property.ColumnProperty>(CriteriaSet.Conjunction.OR);
+      final CriteriaSet<Property.ColumnProperty> criteriaSet = new CriteriaSet<Property.ColumnProperty>(Conjunction.OR);
       for (final Object entityKey : values) {
-        criteriaSet.addCriteria(createSingleForeignKeyCriteria((Entity.Key) entityKey));
+        criteriaSet.add(createSingleForeignKeyCriteria((Entity.Key) entityKey));
       }
 
       return criteriaSet;
@@ -803,11 +797,11 @@ public final class EntityCriteriaUtil {
     private Criteria<Property.ColumnProperty> createSingleForeignKeyCriteria(final Entity.Key entityKey) {
       final Property.ForeignKeyProperty foreignKeyProperty = property;
       if (foreignKeyProperty.isCompositeReference()) {
-        final CriteriaSet<Property.ColumnProperty> pkSet = new CriteriaSet<Property.ColumnProperty>(CriteriaSet.Conjunction.AND);
+        final CriteriaSet<Property.ColumnProperty> pkSet = new CriteriaSet<Property.ColumnProperty>(Conjunction.AND);
         for (final Property.ColumnProperty referencedProperty : foreignKeyProperty.getReferenceProperties()) {
           final String referencedPropertyID = foreignKeyProperty.getReferencedPropertyID(referencedProperty);
           final Object referencedValue = entityKey == null ? null : entityKey.getValue(referencedPropertyID);
-          pkSet.addCriteria(new PropertyCriteria(referencedProperty, searchType, referencedValue));
+          pkSet.add(new PropertyCriteria(referencedProperty, searchType, referencedValue));
         }
 
         return pkSet;
@@ -858,13 +852,13 @@ public final class EntityCriteriaUtil {
     private String getInList(final Property.ColumnProperty property, final boolean notIn) {
       final StringBuilder stringBuilder = new StringBuilder("(").append(property.getColumnName()).append((notIn ? " not in (" : " in ("));
       int cnt = 1;
-      for (int i = 0; i < getValueCount(); i++) {
+      for (int i = 0; i < getValues().size(); i++) {
         stringBuilder.append("?");
-        if (cnt++ == 1000 && i < getValueCount() - 1) {//Oracle limit
+        if (cnt++ == 1000 && i < getValues().size() - 1) {//Oracle limit
           stringBuilder.append(notIn ? ") and " : ") or ").append(property.getColumnName()).append(" in (");
           cnt = 1;
         }
-        else if (i < getValueCount() - 1) {
+        else if (i < getValues().size() - 1) {
           stringBuilder.append(", ");
         }
       }

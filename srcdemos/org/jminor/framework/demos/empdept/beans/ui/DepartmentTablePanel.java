@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.demos.empdept.beans.ui;
 
-import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlSet;
+import org.jminor.common.ui.control.Controls;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.ui.EntityTablePanel;
@@ -26,23 +26,23 @@ public class DepartmentTablePanel extends EntityTablePanel {
   }
 
   public void viewEmployeeReport() throws Exception {
-    if (getTableModel().isSelectionEmpty()) {
+    if (getEntityTableModel().isSelectionEmpty()) {
       return;
     }
 
     final String reportPath = Configuration.getReportPath() + "/empdept_employees.jasper";
     final Collection<Object> departmentNumbers =
-            EntityUtil.getDistinctPropertyValues(getTableModel().getSelectedItems(), DEPARTMENT_ID);
+            EntityUtil.getDistinctPropertyValues(DEPARTMENT_ID, getEntityTableModel().getSelectedItems());
     final HashMap<String, Object> reportParameters = new HashMap<String, Object>();
     reportParameters.put("DEPTNO", departmentNumbers);
     EntityReportUiUtil.viewJdbcReport(this, new JasperReportsWrapper(reportPath, reportParameters),
-            new JasperReportsUIWrapper(), null, getTableModel().getDbProvider());
+            new JasperReportsUIWrapper(), null, getEntityTableModel().getDbProvider());
   }
 
   @Override
   protected ControlSet getPrintControls() {
     final ControlSet printControlSet = super.getPrintControls();
-    printControlSet.add(ControlFactory.methodControl(this, "viewEmployeeReport", EmpDept.getString(EMPLOYEE_REPORT)));
+    printControlSet.add(Controls.methodControl(this, "viewEmployeeReport", EmpDept.getString(EMPLOYEE_REPORT)));
 
     return printControlSet;
   }

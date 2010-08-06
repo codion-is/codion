@@ -6,6 +6,7 @@ package org.jminor.framework.client.ui;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.Events;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.DefaultExceptionHandler;
@@ -14,9 +15,9 @@ import org.jminor.common.ui.ExceptionHandler;
 import org.jminor.common.ui.LoginPanel;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.Control;
-import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.ControlSet;
+import org.jminor.common.ui.control.Controls;
 import org.jminor.common.ui.control.ToggleBeanValueLink;
 import org.jminor.common.ui.images.Images;
 import org.jminor.framework.Configuration;
@@ -66,12 +67,12 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   private EntityApplicationModel applicationModel;
   private JTabbedPane applicationTabPane;
 
-  private final Event evtApplicationStarted = new Event();
-  private final Event evtSelectedEntityPanelChanged = new Event();
-  private final Event evtAlwaysOnTopChanged = new Event();
+  private final Event evtApplicationStarted = Events.event();
+  private final Event evtSelectedEntityPanelChanged = Events.event();
+  private final Event evtAlwaysOnTopChanged = Events.event();
 
   private final boolean persistEntityPanels = Configuration.getBooleanValue(Configuration.PERSIST_ENTITY_PANELS);
-  private Map<EntityPanelProvider, EntityPanel> persistentEntityPanels = new HashMap<EntityPanelProvider, EntityPanel>();
+  private final Map<EntityPanelProvider, EntityPanel> persistentEntityPanels = new HashMap<EntityPanelProvider, EntityPanel>();
 
   private static final int DIVIDER_JUMP = 30;
 
@@ -84,12 +85,6 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   private static final String DIV_RIGHT = "divRight";
   private static final String DIV_UP = "divUp";
   private static final String DIV_DOWN = "divDown";
-
-  /** Constructs a new EntityApplicationPanel.
-   */
-  public EntityApplicationPanel() {
-    configureApplication();
-  }
 
   public final void handleException(final Throwable exception, final JComponent dialogParent) {
     LOG.error(this, exception);
@@ -176,17 +171,17 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   }
 
   public final void startApplication(final String frameCaption, final String iconName, final boolean maximize,
-                               final Dimension frameSize) {
+                                     final Dimension frameSize) {
     startApplication(frameCaption, iconName, maximize, frameSize, null);
   }
 
   public final void startApplication(final String frameCaption, final String iconName, final boolean maximize,
-                               final Dimension frameSize, final User defaultUser) {
+                                     final Dimension frameSize, final User defaultUser) {
     startApplication(frameCaption, iconName, maximize, frameSize, defaultUser, true);
   }
 
   public final void startApplication(final String frameCaption, final String iconName, final boolean maximize,
-                               final Dimension frameSize, final User defaultUser, final boolean showFrame) {
+                                     final Dimension frameSize, final User defaultUser, final boolean showFrame) {
     try {
       startApplicationInternal(frameCaption, iconName, maximize, frameSize, defaultUser, showFrame);
     }
@@ -261,16 +256,28 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     dialog.setVisible(true);
   }
 
-  public final Event eventAlwaysOnTopChanged() {
-    return evtAlwaysOnTopChanged;
+  public final void addAlwaysOnTopListener(final ActionListener listener) {
+    evtAlwaysOnTopChanged.addListener(listener);
   }
 
-  public final Event eventApplicationStarted() {
-    return evtApplicationStarted;
+  public final void removeAlwaysOnTopListener(final ActionListener listener) {
+    evtAlwaysOnTopChanged.removeListener(listener);
   }
 
-  public final Event eventSelectedEntityPanelChanged() {
-    return evtSelectedEntityPanelChanged;
+  public final void addApplicationStartedListener(final ActionListener listener) {
+    evtApplicationStarted.addListener(listener);
+  }
+
+  public final void removeApplicationStartedListener(final ActionListener listener) {
+    evtApplicationStarted.removeListener(listener);
+  }
+
+  public final void addSelectedPanelListener(final ActionListener listener) {
+    evtSelectedEntityPanelChanged.addListener(listener);
+  }
+
+  public final void removeSelectedPanelListener(final ActionListener listener) {
+    evtSelectedEntityPanelChanged.removeListener(listener);
   }
 
   protected ControlSet getMainMenuControlSet() {
@@ -300,11 +307,11 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     final ControlSet file = new ControlSet(FrameworkMessages.get(FrameworkMessages.FILE));
     file.setMnemonic(FrameworkMessages.get(FrameworkMessages.FILE_MNEMONIC).charAt(0));
 //    if (isLoginRequired()) {
-//      file.add(ControlFactory.methodControl(this, "logout", Messages.get(Messages.LOGOUT)));
-//      file.add(ControlFactory.methodControl(this, "login", Messages.get(Messages.LOGIN)));
+//      file.add(Controls.methodControl(this, "logout", Messages.get(Messages.LOGOUT)));
+//      file.add(Controls.methodControl(this, "login", Messages.get(Messages.LOGIN)));
 //      file.addSeparator();
 //    }
-    file.add(ControlFactory.methodControl(this, "exit", FrameworkMessages.get(FrameworkMessages.EXIT),
+    file.add(Controls.methodControl(this, "exit", FrameworkMessages.get(FrameworkMessages.EXIT),
             null, FrameworkMessages.get(FrameworkMessages.EXIT_TIP),
             FrameworkMessages.get(FrameworkMessages.EXIT_MNEMONIC).charAt(0)));
 
@@ -316,13 +323,13 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    */
   protected ControlSet getSettingsControlSet() {
     final ImageIcon cascadeRefreshIcon = Images.loadImage(Images.ICON_CASCADE_REFRESH);
-    final Control ctrCascadeRefresh = ControlFactory.toggleControl(applicationModel, "cascadeRefresh",
-            FrameworkMessages.get(FrameworkMessages.CASCADE_REFRESH), applicationModel.eventCascadeRefreshChanged());
+    final Control ctrCascadeRefresh = Controls.toggleControl(applicationModel, "cascadeRefresh",
+            FrameworkMessages.get(FrameworkMessages.CASCADE_REFRESH), applicationModel.cascadeRefreshObserver());
     ctrCascadeRefresh.setDescription(FrameworkMessages.get(FrameworkMessages.CASCADE_REFRESH_DESC));
     ctrCascadeRefresh.setIcon(cascadeRefreshIcon);
 
     final ImageIcon setLoggingIcon = Images.loadImage(Images.ICON_PRINT_QUERIES);
-    final Control ctrSetLoggingLevel = ControlFactory.methodControl(this, "setLoggingLevel",
+    final Control ctrSetLoggingLevel = Controls.methodControl(this, "setLoggingLevel",
             FrameworkMessages.get(FrameworkMessages.SET_LOG_LEVEL));
     ctrSetLoggingLevel.setDescription(FrameworkMessages.get(FrameworkMessages.SET_LOG_LEVEL_DESC));
     ctrSetLoggingLevel.setIcon(setLoggingIcon);
@@ -353,14 +360,14 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   protected ControlSet getViewControlSet() {
     final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.VIEW),
             FrameworkMessages.get(FrameworkMessages.VIEW_MNEMONIC).charAt(0));
-    final Control ctrRefreshAll = ControlFactory.methodControl(applicationModel, "refresh",
+    final Control ctrRefreshAll = Controls.methodControl(applicationModel, "refresh",
             FrameworkMessages.get(FrameworkMessages.REFRESH_ALL));
     controlSet.add(ctrRefreshAll);
     controlSet.addSeparator();
-    controlSet.add(ControlFactory.methodControl(this, "viewApplicationTree",
+    controlSet.add(Controls.methodControl(this, "viewApplicationTree",
             FrameworkMessages.get(FrameworkMessages.APPLICATION_TREE), null, null));
     controlSet.addSeparator();
-    final ToggleBeanValueLink ctrAlwaysOnTop = ControlFactory.toggleControl(this,
+    final ToggleBeanValueLink ctrAlwaysOnTop = Controls.toggleControl(this,
             "alwaysOnTop", FrameworkMessages.get(FrameworkMessages.ALWAYS_ON_TOP), evtAlwaysOnTopChanged);
     controlSet.add(ctrAlwaysOnTop);
 
@@ -373,11 +380,11 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   protected ControlSet getHelpControlSet() {
     final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.HELP),
             FrameworkMessages.get(FrameworkMessages.HELP_MNEMONIC).charAt(0));
-    final Control ctrHelp = ControlFactory.methodControl(this, "showHelp",
+    final Control ctrHelp = Controls.methodControl(this, "showHelp",
             FrameworkMessages.get(FrameworkMessages.HELP) + "...", null, null);
     controlSet.add(ctrHelp);
     controlSet.addSeparator();
-    final Control ctrAbout = ControlFactory.methodControl(this, "showAbout",
+    final Control ctrAbout = Controls.methodControl(this, "showAbout",
             FrameworkMessages.get(FrameworkMessages.ABOUT) + "...", null, null);
     controlSet.add(ctrAbout);
 
@@ -452,13 +459,6 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     return EntityDbProviderFactory.createEntityDbProvider(user, frameCaption);
   }
 
-  /**
-   * A convenience method for overriding, so that system wide configuration parameters can be set
-   * before the application is initialized
-   * @see org.jminor.framework.Configuration
-   */
-  protected void configureApplication() {}
-
   protected void bindEvents() {}
 
   /**
@@ -482,7 +482,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     for (final EntityPanelProvider panelProvider : supportPanelProviders) {
       controlSet.add(new Control(panelProvider.getCaption()) {
         @Override
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(final ActionEvent e) {
           SwingUtilities.invokeLater(new Runnable() {
             public void run() {
               showEntityPanelDialog(panelProvider);
@@ -503,7 +503,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     final JDialog dialog;
     try {
       UiUtil.setWaitCursor(true, this);
-      EntityPanel entityPanel;
+      final EntityPanel entityPanel;
       if (persistEntityPanels && persistentEntityPanels.containsKey(panelProvider)) {
         entityPanel = persistentEntityPanels.get(panelProvider);
         if (entityPanel.isShowing()) {
@@ -521,11 +521,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
       dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
       dialog.setLayout(new BorderLayout());
       dialog.add(entityPanel, BorderLayout.CENTER);
-      final Action closeAction = new AbstractAction(Messages.get(Messages.CLOSE)) {
-        public void actionPerformed(ActionEvent e) {
-          dialog.dispose();
-        }
-      };
+      final Action closeAction = new UiUtil.DialogDisposeAction(dialog, Messages.get(Messages.CLOSE));
       final JButton btnClose = new JButton(closeAction);
       btnClose.setMnemonic('L');
       UiUtil.addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, closeAction);
@@ -561,7 +557,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     applicationTabPane.setFocusable(false);
     applicationTabPane.setUI(UiUtil.getBorderlessTabbedPaneUI());
     applicationTabPane.addChangeListener(new ChangeListener() {
-      public void stateChanged(ChangeEvent e) {
+      public void stateChanged(final ChangeEvent e) {
         evtSelectedEntityPanelChanged.fire();
       }
     });
@@ -571,8 +567,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     for (final EntityPanelProvider provider : mainApplicationPanelProviders) {
       final EntityPanel entityPanel = provider.createInstance(applicationModel.getDbProvider());
       mainApplicationPanels.add(entityPanel);
-      final String caption = (provider.getCaption() == null || provider.getCaption().length() == 0)
-              ? entityPanel.getCaption() : provider.getCaption();
+      final String caption = !Util.nullOrEmpty(provider.getCaption()) ? entityPanel.getCaption() : provider.getCaption();
       applicationTabPane.addTab(caption, entityPanel);
     }
     add(applicationTabPane, BorderLayout.CENTER);
@@ -636,13 +631,13 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    * @see #getNorthToolBar()
    */
   protected final JFrame prepareFrame(final String title, final boolean maximize,
-                                final boolean showMenuBar, final Dimension size,
-                                final ImageIcon applicationIcon, final boolean setVisible) {
+                                      final boolean showMenuBar, final Dimension size,
+                                      final ImageIcon applicationIcon, final boolean setVisible) {
     final JFrame frame = new JFrame();
     frame.setIconImage(applicationIcon.getImage());
     frame.addWindowListener(new WindowAdapter() {
       @Override
-      public void windowClosing(WindowEvent e) {
+      public void windowClosing(final WindowEvent e) {
         try {
           exit();
         }
@@ -713,7 +708,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     final User user = LoginPanel.showLoginPanel(null, defaultUser == null ?
             new User(Configuration.getDefaultUsername(applicationIdentifier), null) : defaultUser,
             applicationIcon, frameCaption + " - " + Messages.get(Messages.LOGIN), null, null);
-    if (user.getUsername() == null || user.getUsername().length() == 0) {
+    if (Util.nullOrEmpty(user.getUsername())) {
       throw new RuntimeException(FrameworkMessages.get(FrameworkMessages.EMPTY_USERNAME));
     }
 
@@ -807,35 +802,13 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
 
   private void initializeResizing(final EntityPanel panel) {
     UiUtil.addKeyEvent(panel, KeyEvent.VK_LEFT, KeyEvent.SHIFT_DOWN_MASK + KeyEvent.ALT_DOWN_MASK,
-            new AbstractAction(DIV_LEFT) {
-              public void actionPerformed(ActionEvent e) {
-                final EntityPanel activePanelParent = panel.getMasterPanel();
-                if (activePanelParent != null) {
-                  activePanelParent.resizePanel(EntityPanel.LEFT, DIVIDER_JUMP);
-                }
-              }
-            });
+            new ResizeHorizontallyAction(panel, DIV_LEFT, EntityPanel.LEFT));
     UiUtil.addKeyEvent(panel, KeyEvent.VK_RIGHT, KeyEvent.SHIFT_DOWN_MASK + KeyEvent.ALT_DOWN_MASK,
-            new AbstractAction(DIV_RIGHT) {
-              public void actionPerformed(ActionEvent e) {
-                final EntityPanel activePanelParent = panel.getMasterPanel();
-                if (activePanelParent != null) {
-                  activePanelParent.resizePanel(EntityPanel.RIGHT, DIVIDER_JUMP);
-                }
-              }
-            });
+            new ResizeHorizontallyAction(panel, DIV_RIGHT, EntityPanel.RIGHT));
     UiUtil.addKeyEvent(panel, KeyEvent.VK_DOWN, KeyEvent.SHIFT_DOWN_MASK + KeyEvent.ALT_DOWN_MASK,
-            new AbstractAction(DIV_DOWN) {
-              public void actionPerformed(ActionEvent e) {
-                panel.resizePanel(EntityPanel.DOWN, DIVIDER_JUMP);
-              }
-            });
+            new ResizeVerticallyAction(panel, DIV_DOWN, EntityPanel.DOWN));
     UiUtil.addKeyEvent(panel, KeyEvent.VK_UP, KeyEvent.SHIFT_DOWN_MASK + KeyEvent.ALT_DOWN_MASK,
-            new AbstractAction(DIV_UP) {
-              public void actionPerformed(ActionEvent e) {
-                panel.resizePanel(EntityPanel.UP, DIVIDER_JUMP);
-              }
-            });
+            new ResizeVerticallyAction(panel, DIV_UP, EntityPanel.UP));
   }
 
   private void initializeNavigation(final EntityPanel panel) {
@@ -846,26 +819,10 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK, true), NAV_RIGHT);
     inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK, true), NAV_LEFT);
 
-    actionMap.put(NAV_UP, new AbstractAction() {
-      public void actionPerformed(ActionEvent e) {
-        navigate(EntityPanel.UP);
-      }
-    });
-    actionMap.put(NAV_DOWN, new AbstractAction() {
-      public void actionPerformed(ActionEvent e) {
-        navigate(EntityPanel.DOWN);
-      }
-    });
-    actionMap.put(NAV_RIGHT, new AbstractAction() {
-      public void actionPerformed(ActionEvent e) {
-        navigate(EntityPanel.RIGHT);
-      }
-    });
-    actionMap.put(NAV_LEFT, new AbstractAction() {
-      public void actionPerformed(ActionEvent e) {
-        navigate(EntityPanel.LEFT);
-      }
-    });
+    actionMap.put(NAV_UP, new NavigateAction(EntityPanel.UP));
+    actionMap.put(NAV_DOWN, new NavigateAction(EntityPanel.DOWN));
+    actionMap.put(NAV_RIGHT, new NavigateAction(EntityPanel.RIGHT));
+    actionMap.put(NAV_LEFT, new NavigateAction(EntityPanel.LEFT));
   }
 
   private void navigate(final int direction) {
@@ -967,10 +924,55 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
 
   private static String getUsername(final String username) {
     final String usernamePrefix = (String) Configuration.getValue(Configuration.USERNAME_PREFIX);
-    if (usernamePrefix != null && usernamePrefix.length() > 0 && username.toUpperCase().startsWith(usernamePrefix.toUpperCase())) {
+    if (!Util.nullOrEmpty(usernamePrefix) && username.toUpperCase().startsWith(usernamePrefix.toUpperCase())) {
       return username.substring(usernamePrefix.length(), username.length());
     }
 
     return username;
+  }
+
+  private final class NavigateAction extends AbstractAction {
+    private final int direction;
+    private NavigateAction(final int direction) {
+      this.direction = direction;
+    }
+    public void actionPerformed(final ActionEvent e) {
+      navigate(direction);
+    }
+  }
+
+  private static final class ResizeHorizontallyAction extends AbstractAction {
+
+    private final EntityPanel panel;
+    private final int direction;
+
+    private ResizeHorizontallyAction(final EntityPanel panel, final String action, final int direction) {
+      super(action);
+      this.panel = panel;
+      this.direction = direction;
+    }
+
+    public void actionPerformed(final ActionEvent e) {
+      final EntityPanel activePanelParent = panel.getMasterPanel();
+      if (activePanelParent != null) {
+        activePanelParent.resizePanel(direction, DIVIDER_JUMP);
+      }
+    }
+  }
+
+  private static final class ResizeVerticallyAction extends AbstractAction {
+
+    private final EntityPanel panel;
+    private final int direction;
+
+    private ResizeVerticallyAction(final EntityPanel panel, final String action, final int direction) {
+      super(action);
+      this.panel = panel;
+      this.direction = direction;
+    }
+
+    public void actionPerformed(final ActionEvent e) {
+      panel.resizePanel(direction, DIVIDER_JUMP);
+    }
   }
 }

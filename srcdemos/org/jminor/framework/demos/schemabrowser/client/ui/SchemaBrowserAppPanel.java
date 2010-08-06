@@ -32,22 +32,24 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel {
   }
 
   @Override
-  protected void configureApplication() {
-    Configuration.setValue(Configuration.TABLE_AUTO_RESIZE_MODE, JTable.AUTO_RESIZE_ALL_COLUMNS);
-    Configuration.setValue(Configuration.SEARCH_PANELS_VISIBLE, true);
-  }
-
-  @Override
   protected EntityApplicationModel initializeApplicationModel(final EntityDbProvider dbProvider) throws CancelException {
-    return new DefaultEntityApplicationModel(dbProvider) {
-      @Override
-      protected void loadDomainModel() {
-        new SchemaBrowser();
-      }
-    };
+    return new SchemaBrowserApplicationModel(dbProvider);
   }
 
   public static void main(final String[] args) {
+    Configuration.setValue(Configuration.TABLE_AUTO_RESIZE_MODE, JTable.AUTO_RESIZE_ALL_COLUMNS);
+    Configuration.setValue(Configuration.DEFAULT_SEARCH_PANEL_STATE, true);
     new SchemaBrowserAppPanel().startApplication("Schema Browser", null, false, UiUtil.getScreenSizeRatio(0.5), new User("scott", "tiger"));
+  }
+
+  private static final class SchemaBrowserApplicationModel extends DefaultEntityApplicationModel {
+    private SchemaBrowserApplicationModel(final EntityDbProvider dbProvider) {
+      super(dbProvider);
+    }
+
+    @Override
+    protected void loadDomainModel() {
+      new SchemaBrowser();
+    }
   }
 }

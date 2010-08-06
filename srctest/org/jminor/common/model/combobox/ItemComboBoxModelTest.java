@@ -18,6 +18,7 @@ public class ItemComboBoxModelTest {
 
   @Test
   public void test() throws Exception {
+    new ItemComboBoxModel();
     final List<Item<Integer>> items = Arrays.asList(
             new Item<Integer>(1, "AOne"),
             new Item<Integer>(2, "BTwo"),

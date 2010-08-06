@@ -4,11 +4,12 @@
 package org.jminor.framework.client.ui;
 
 import org.jminor.common.model.Event;
-import org.jminor.common.ui.AbstractSearchPanel;
+import org.jminor.common.model.Events;
 import org.jminor.common.ui.AbstractTableColumnSyncPanel;
+import org.jminor.common.ui.ColumnSearchPanel;
 import org.jminor.common.ui.UiUtil;
-import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlSet;
+import org.jminor.common.ui.control.Controls;
 import org.jminor.common.ui.images.Images;
 import org.jminor.framework.client.model.EntityTableSearchModel;
 import org.jminor.framework.client.model.ForeignKeySearchModel;
@@ -20,17 +21,16 @@ import javax.swing.JPanel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import java.awt.Dimension;
+import java.awt.event.ActionListener;
 import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * A UI component based on the EntityTableSearchModel
  * @see EntityTableSearchModel
  */
-public class EntityTableSearchAdvancedPanel extends AbstractTableColumnSyncPanel implements EntityTableSearchPanel {
+public final class EntityTableSearchAdvancedPanel extends AbstractTableColumnSyncPanel implements EntityTableSearchPanel {
 
-  private final Event evtAdvancedChanged = new Event();
+  private final Event evtAdvancedChanged = Events.event();
 
   private final EntityTableSearchModel searchModel;
 
@@ -55,8 +55,8 @@ public class EntityTableSearchAdvancedPanel extends AbstractTableColumnSyncPanel
    */
   public void setAutomaticWildcard(final boolean value) {
     for (final JPanel searchPanel : getColumnPanels().values()) {
-      if (searchPanel instanceof AbstractSearchPanel) {
-        ((AbstractSearchPanel) searchPanel).getModel().setAutomaticWildcard(value);
+      if (searchPanel instanceof ColumnSearchPanel) {
+        ((ColumnSearchPanel) searchPanel).getModel().setAutomaticWildcard(value);
       }
     }
   }
@@ -66,8 +66,8 @@ public class EntityTableSearchAdvancedPanel extends AbstractTableColumnSyncPanel
    */
   public void setAdvanced(final boolean value) {
     for (final JPanel searchPanel : getColumnPanels().values()) {
-      if (searchPanel instanceof AbstractSearchPanel) {
-        ((AbstractSearchPanel) searchPanel).setAdvancedSearchOn(value);
+      if (searchPanel instanceof ColumnSearchPanel) {
+        ((ColumnSearchPanel) searchPanel).setAdvancedSearchOn(value);
       }
     }
 
@@ -79,8 +79,8 @@ public class EntityTableSearchAdvancedPanel extends AbstractTableColumnSyncPanel
    */
   public boolean isAdvanced() {
     for (final JPanel searchPanel : getColumnPanels().values()) {
-      if (searchPanel instanceof AbstractSearchPanel) {
-        return ((AbstractSearchPanel) searchPanel).isAdvancedSearchOn();
+      if (searchPanel instanceof ColumnSearchPanel) {
+        return ((ColumnSearchPanel) searchPanel).isAdvancedSearchOn();
       }
     }
 
@@ -90,49 +90,46 @@ public class EntityTableSearchAdvancedPanel extends AbstractTableColumnSyncPanel
   public ControlSet getControls() {
     final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.SEARCH));
     controlSet.setIcon(Images.loadImage(Images.IMG_FILTER_16));
-    controlSet.add(ControlFactory.toggleControl(this, "advanced",
+    controlSet.add(Controls.toggleControl(this, "advanced",
             FrameworkMessages.get(FrameworkMessages.ADVANCED), evtAdvancedChanged));
-    controlSet.add(ControlFactory.methodControl(searchModel, "clearPropertySearchModels", FrameworkMessages.get(FrameworkMessages.CLEAR)));
+    controlSet.add(Controls.methodControl(searchModel, "clearPropertySearchModels", FrameworkMessages.get(FrameworkMessages.CLEAR)));
 
     return controlSet;
   }
 
-  public AbstractSearchPanel getSearchPanel(final String propertyID) {
+  public ColumnSearchPanel getSearchPanel(final String propertyID) {
     final Enumeration<TableColumn> columnEnumeration = getColumnModel().getColumns();
     while (columnEnumeration.hasMoreElements()) {
       final TableColumn column = columnEnumeration.nextElement();
       final Property property = (Property) column.getIdentifier();
       if (property.is(propertyID)) {
-        return (AbstractSearchPanel) getColumnPanels().get(column);
+        return (ColumnSearchPanel) getColumnPanels().get(column);
       }
     }
 
     return null;
   }
 
-  public Event eventAdvancedChanged() {
-    return evtAdvancedChanged;
+  public void addAdvancedListener(final ActionListener listener) {
+    evtAdvancedChanged.addListener(listener);
+  }
+
+  public void removeAdvancedListener(final ActionListener listener) {
+    evtAdvancedChanged.removeListener(listener);
   }
 
   @Override
-  protected Map<TableColumn, JPanel> initializeColumnPanels() {
-    final Map<TableColumn, JPanel> panels = new HashMap<TableColumn, JPanel>();
-    final Enumeration<TableColumn> columnEnumeration = getColumnModel().getColumns();
-    while (columnEnumeration.hasMoreElements()) {
-      final TableColumn column = columnEnumeration.nextElement();
-      final Property property = (Property) column.getIdentifier();
-      if (searchModel.containsPropertySearchModel(property.getPropertyID())) {
-        final PropertySearchModel propertySearchModel = searchModel.getPropertySearchModel(property.getPropertyID());
-        panels.put(column, initializeSearchPanel(propertySearchModel));
-      }
-      else {
-        final JPanel panel = new JPanel();
-        panel.setPreferredSize(new Dimension(panel.getPreferredSize().width, UiUtil.getPreferredTextFieldHeight()));
-        panels.put(column, panel);
-      }
+  protected JPanel initializeColumnPanel(final TableColumn column) {
+    final Property property = (Property) column.getIdentifier();
+    if (searchModel.containsPropertySearchModel(property.getPropertyID())) {
+      final PropertySearchModel propertySearchModel = searchModel.getPropertySearchModel(property.getPropertyID());
+      return initializeSearchPanel(propertySearchModel);
     }
-
-    return panels;
+    else {
+      final JPanel panel = new JPanel();
+      panel.setPreferredSize(new Dimension(panel.getPreferredSize().width, UiUtil.getPreferredTextFieldHeight()));
+      return panel;
+    }
   }
 
   /**
@@ -140,9 +137,9 @@ public class EntityTableSearchAdvancedPanel extends AbstractTableColumnSyncPanel
    * @param propertySearchModel the PropertySearchModel for which to create a search panel
    * @return a PropertySearchPanel based on the given model
    */
-  protected AbstractSearchPanel initializeSearchPanel(final PropertySearchModel propertySearchModel) {
+  private ColumnSearchPanel initializeSearchPanel(final PropertySearchModel propertySearchModel) {
     if (propertySearchModel instanceof ForeignKeySearchModel) {
-      return new ForeignKeySearchPanel((ForeignKeySearchModel) propertySearchModel, true, false);
+      return new ForeignKeySearchPanel((ForeignKeySearchModel) propertySearchModel, false);
     }
 
     return new PropertySearchPanel(propertySearchModel, true, false);

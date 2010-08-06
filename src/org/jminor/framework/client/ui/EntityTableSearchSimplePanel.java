@@ -3,14 +3,14 @@
  */
 package org.jminor.framework.client.ui;
 
-import org.jminor.common.db.criteria.CriteriaSet;
+import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.ui.control.ControlSet;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityTableSearchModel;
 import org.jminor.framework.client.model.PropertySearchModel;
-import org.jminor.framework.domain.EntityRepository;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 
@@ -25,11 +25,14 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class EntityTableSearchSimplePanel extends JPanel implements EntityTableSearchPanel {
+public final class EntityTableSearchSimplePanel extends JPanel implements EntityTableSearchPanel {
 
   private final EntityTableSearchModel searchModel;
   private final Refreshable refreshable;
   private final Collection<Property> searchProperties;
+
+  private JTextField searchField;
+  private JButton searchButton;
 
   public EntityTableSearchSimplePanel(final EntityTableSearchModel searchModel, final Refreshable refreshable) {
     this.searchModel = searchModel;
@@ -50,27 +53,36 @@ public class EntityTableSearchSimplePanel extends JPanel implements EntityTableS
     return searchProperties;
   }
 
+  public void setSearchTest(final String txt) {
+    searchField.setText(txt);
+  }
+
+  public void performSearch() {
+    searchButton.doClick();
+  }
+
   private void initUI() {
-    final JTextField searchField = new JTextField();
+    searchField = new JTextField();
     final Action action = new AbstractAction(FrameworkMessages.get(FrameworkMessages.SEARCH)) {
       public void actionPerformed(final ActionEvent e) {
         performSimpleSearch(searchField.getText(), searchProperties);
       }
     };
+    searchButton = new JButton(action);
 
     searchField.addActionListener(action);
     setLayout(new BorderLayout(5,5));
     setBorder(BorderFactory.createTitledBorder(FrameworkMessages.get(FrameworkMessages.CONDITION)));
     add(searchField, BorderLayout.CENTER);
-    add(new JButton(action), BorderLayout.EAST);
+    add(searchButton, BorderLayout.EAST);
   }
 
   private void performSimpleSearch(final String searchText, final Collection<Property> searchProperties) {
-    final CriteriaSet.Conjunction conjunction = searchModel.getSearchConjunction();
+    final Conjunction conjunction = searchModel.getSearchConjunction();
     try {
       searchModel.clearPropertySearchModels();
-      searchModel.setSearchConjunction(CriteriaSet.Conjunction.OR);
-      if (searchText.length() > 0) {
+      searchModel.setSearchConjunction(Conjunction.OR);
+      if (!searchText.isEmpty()) {
         final String wildcard = (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER);
         final String searchTextWithWildcards = wildcard + searchText + wildcard;
         for (final Property searchProperty : searchProperties) {
@@ -91,14 +103,14 @@ public class EntityTableSearchSimplePanel extends JPanel implements EntityTableS
 
   private Collection<Property> getSearchableProperties() {
     final Collection<Property> searchableProperties = new ArrayList<Property>();
-    final Collection<String> defaultSearchPropertyIDs = EntityRepository.getEntitySearchPropertyIDs(searchModel.getEntityID());
+    final Collection<String> defaultSearchPropertyIDs = Entities.getEntitySearchPropertyIDs(searchModel.getEntityID());
     if (!defaultSearchPropertyIDs.isEmpty()) {
       for (final String propertyID : defaultSearchPropertyIDs) {
-        searchableProperties.add(EntityRepository.getProperty(searchModel.getEntityID(), propertyID));
+        searchableProperties.add(Entities.getProperty(searchModel.getEntityID(), propertyID));
       }
     }
     else {
-      for (final Property property : EntityRepository.getColumnProperties(searchModel.getEntityID())) {
+      for (final Property property : Entities.getColumnProperties(searchModel.getEntityID())) {
         if (property.isString() && !property.isHidden()) {
           searchableProperties.add(property);
         }

@@ -27,6 +27,10 @@ import java.util.TimerTask;
 
 public class ConnectionPoolImplTest {
 
+  private static final int PRINT_PERIOD = 860;
+  private static final int SLEEP_MILLIS = 4200;
+  private static final int CLOSE_SLEEP_MILLIS = 2500;
+
   @Test
   public void loadTest() throws Exception {
     final Date startTime = new Date();
@@ -42,14 +46,15 @@ public class ConnectionPoolImplTest {
         System.out.println("destroyed: " + pool.getConnectionPoolStatistics(startTime.getTime()).getConnectionsDestroyed());
         System.out.println("####################################");
       }
-    }, startTime, 500);
-    model.addApplications();
+    }, startTime, PRINT_PERIOD);
+    model.addApplicationBatch();
     model.setCollectChartData(true);
-    Thread.sleep(4200);
+    Thread.sleep(SLEEP_MILLIS);
     model.exit();
     pool.close();
-    Thread.sleep(1000);
+    Thread.sleep(CLOSE_SLEEP_MILLIS);
     final ConnectionPoolStatistics statistics = pool.getConnectionPoolStatistics(startTime.getTime());
+    assertTrue(statistics.getAverageCheckOutTime() == 0);
     assertEquals(statistics.getConnectionsCreated(), statistics.getConnectionsDestroyed());
   }
 
@@ -58,8 +63,40 @@ public class ConnectionPoolImplTest {
     final Date startDate = new Date();
     final User user = User.UNIT_TEST_USER;
     final ConnectionPoolImpl pool = new ConnectionPoolImpl(createConnectionProvider(), user);
+    assertTrue(pool.isEnabled());
     pool.getUser().setPassword(User.UNIT_TEST_USER.getPassword());
     assertEquals(user, pool.getUser());
+    assertEquals(ConnectionPoolImpl.DEFAULT_CLEANUP_INTERVAL, pool.getPoolCleanupInterval());
+    assertEquals(ConnectionPoolImpl.DEFAULT_TIMEOUT, pool.getPooledConnectionTimeout());
+    assertEquals(ConnectionPoolImpl.DEFAULT_MAXIMUM_POOL_SIZE, pool.getMaximumPoolSize());
+    assertEquals(ConnectionPoolImpl.DEFAULT_MAXIMUM_POOL_SIZE / 2, pool.getMinimumPoolSize());
+
+    try {
+      pool.setMaximumPoolSize(3);
+      fail();
+    }
+    catch (Exception e) {}
+    try {
+      pool.setMaximumPoolSize(-1);
+      fail();
+    }
+    catch (Exception e) {}
+    pool.setMaximumPoolSize(6);
+    assertEquals(6, pool.getMaximumPoolSize());
+
+    try {
+      pool.setMinimumPoolSize(8);
+      fail();
+    }
+    catch (Exception e) {}
+    try {
+      pool.setMinimumPoolSize(-1);
+      fail();
+    }
+    catch (Exception e) {}
+    pool.setMinimumPoolSize(3);
+    assertEquals(3, pool.getMinimumPoolSize());
+
     pool.setCollectFineGrainedStatistics(true);
     assertTrue(pool.isCollectFineGrainedStatistics());
     ConnectionPoolStatistics statistics = pool.getConnectionPoolStatistics(startDate.getTime());
@@ -144,6 +181,12 @@ public class ConnectionPoolImplTest {
     assertNotNull(statistics.getRequestsDelayedPerSecond());
     assertNotNull(statistics.getConnectionRequestsDelayed());
 
+    final List<ConnectionPoolState> states = statistics.getPoolStatistics();
+    assertFalse(states.isEmpty());
+    final ConnectionPoolState state = states.get(0);
+    assertTrue(state.getConnectionCount() != -1);
+    assertTrue(state.getConnectionsInUse() != -1);
+
     pool.resetPoolStatistics();
     statistics = pool.getConnectionPoolStatistics(startDate.getTime());
     assertEquals(0, statistics.getConnectionRequests());
@@ -168,7 +211,7 @@ public class ConnectionPoolImplTest {
       @Override
       protected Object initializeApplication() throws CancelException {
         return new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
+          public void actionPerformed(final ActionEvent e) {
             try {
               DbConnection connection = null;
               try {
@@ -209,9 +252,9 @@ public class ConnectionPoolImplTest {
 
   private ConnectionPoolImpl initializeLoadTestPool() {
     final ConnectionPoolImpl pool = new ConnectionPoolImpl(createConnectionProvider(), User.UNIT_TEST_USER);
-    pool.setPooledConnectionTimeout(70);
+    pool.setPooledConnectionTimeout(50);
     pool.setMinimumPoolSize(1);
-    pool.setPoolCleanupInterval(200);
+    pool.setPoolCleanupInterval(130);
 
     return pool;
   }

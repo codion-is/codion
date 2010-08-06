@@ -3,11 +3,11 @@
  */
 package org.jminor.framework.client.model;
 
-import org.jminor.common.model.Event;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
 import org.jminor.framework.db.criteria.EntitySelectCriteria;
 import org.jminor.framework.domain.Entity;
 
+import java.awt.event.ActionListener;
 import java.util.Collection;
 
 /**
@@ -22,14 +22,11 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity>, Enti
    */
   Entity getSelectedEntity();
 
-  /**
-   * @return an Event fired when a refresh has been performed
-   */
-  Event eventRefreshDone();
-
   Collection<Entity> getForeignKeyFilterEntities(final String foreignKeyPropertyID);
 
   void setForeignKeyFilterEntities(final String foreignKeyPropertyID, final Collection<Entity> entities);
+
+  EntityComboBoxModel createForeignKeyFilterComboBoxModel(final String foreignKeyPropertyID);
 
   /**
    * Selects the entity with the given primary key, if the entity is not available
@@ -63,5 +60,7 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity>, Enti
    */
   void setEntitySelectCriteria(final EntitySelectCriteria entitySelectCriteria);
 
-  EntityComboBoxModel createForeignKeyFilterComboBoxModel(final String foreignKeyPropertyID);
+  void addRefreshListener(final ActionListener listener);
+
+  void removeRefreshListener(final ActionListener listener);
 }

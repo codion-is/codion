@@ -20,7 +20,7 @@ import java.util.Arrays;
  * Date: 11.10.2009
  * Time: 21:44:41
  */
-public class DefaultEntityComboBoxModelTest {
+public final class DefaultEntityComboBoxModelTest {
 
   private final DefaultEntityComboBoxModel comboBoxModel;
 
@@ -50,18 +50,14 @@ public class DefaultEntityComboBoxModelTest {
 
   @Test
   public void test() throws Exception {
+    assertEquals(EmpDept.T_EMPLOYEE, comboBoxModel.getEntityID());
+    comboBoxModel.setStaticData(false);
+    comboBoxModel.toString();
     assertTrue(comboBoxModel.getSize() == 0);
-    comboBoxModel.setSelectedItem("test");
     assertNull(comboBoxModel.getSelectedItem());
     comboBoxModel.refresh();
     assertTrue(comboBoxModel.getSize() > 0);
     assertFalse(comboBoxModel.isCleared());
-
-    try {
-      comboBoxModel.setSelectedItem("test");
-      fail("Should not be able to select a string");
-    }
-    catch (IllegalArgumentException e) {}
 
     try {
       comboBoxModel.setEntitySelectCriteria(EntityCriteriaUtil.selectCriteria(EmpDept.T_DEPARTMENT));
@@ -72,6 +68,8 @@ public class DefaultEntityComboBoxModelTest {
     final Entity clark = comboBoxModel.getDbProvider().getEntityDb().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "CLARK");
     comboBoxModel.setSelectedItem(clark);
     assertEquals(clark, comboBoxModel.getSelectedEntity());
+    comboBoxModel.setSelectedItem("test");
+    assertEquals("Selecting a string should not change the selection", clark, comboBoxModel.getSelectedEntity());
     comboBoxModel.setSelectedItem(null);
     comboBoxModel.setSelectedEntityByPrimaryKey(clark.getPrimaryKey());
     assertEquals(clark, comboBoxModel.getSelectedEntity());

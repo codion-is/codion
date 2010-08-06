@@ -37,7 +37,7 @@ public final class DomainClassGenerator {
 
   private DomainClassGenerator() {}
 
-  public static void main(String[] arguments) throws Exception {
+  public static void main(final String[] arguments) throws Exception {
     final JTextField txtSchemaName = new JTextField();
     UiUtil.makeUpperCase(txtSchemaName);
     final JTextField txtPackageName = new JTextField();
@@ -89,10 +89,8 @@ public final class DomainClassGenerator {
 
       final StringBuilder builder = new StringBuilder("package ").append(packageName).append(";\n\n");
 
-      builder.append("import org.jminor.framework.domain.EntityDefinition;\n");
-      builder.append("import org.jminor.framework.domain.EntityRepository;\n");
+      builder.append("import org.jminor.framework.domain.Entities;\n");
       builder.append("import org.jminor.framework.domain.Properties;\n\n");
-      builder.append("import org.jminor.framework.domain.Property;\n\n");
       builder.append("import java.sql.Types;\n\n");
 
       builder.append("public class ").append(domainClassName).append(" {\n\n");
@@ -127,7 +125,7 @@ public final class DomainClassGenerator {
   }
 
   public static void appendEntityDefinition(final StringBuilder builder, final Table table) {
-    builder.append("    EntityRepository.add(new EntityDefinition(").append(getEntityID(table)).append(",\n");
+    builder.append("    Entities.add(new EntityDefinition(").append(getEntityID(table)).append(",\n");
     for (final Column column : table.getColumns()) {
       builder.append(getPropertyDefinition(table, column))
               .append(table.getColumns().indexOf(column) < table.getColumns().size() - 1 ? ", " : "").append("\n");
@@ -191,7 +189,7 @@ public final class DomainClassGenerator {
     if (column.decimalDigits >= 1) {
       ret += "\n                .setMaximumFractionDigits(" + column.decimalDigits + ")";
     }
-    if (column.comment != null && column.comment.length() > 0) {
+    if (!Util.nullOrEmpty(column.comment)) {
       ret += "\n                .setDescription(" + column.comment + ")";
     }
 
@@ -333,8 +331,7 @@ public final class DomainClassGenerator {
     private final Collection<String> tablesToInclude;
 
     TablePacker(final String tablesToInclude) {
-      this.tablesToInclude = tablesToInclude != null && tablesToInclude.length() > 0
-              ? getTablesToInclude(tablesToInclude) : null;
+      this.tablesToInclude = !Util.nullOrEmpty(tablesToInclude) ? getTablesToInclude(tablesToInclude) : null;
     }
 
     public List<Table> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {

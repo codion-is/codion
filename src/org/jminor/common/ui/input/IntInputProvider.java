@@ -8,17 +8,17 @@ import org.jminor.common.ui.textfield.IntField;
 /**
  * A InputProvider implementation for int values.
 */
-public final class IntInputProvider extends AbstractInputProvider<Integer> {
+public final class IntInputProvider extends AbstractInputProvider<Integer, IntField> {
 
   public IntInputProvider(final Integer currentValue) {
     super(new IntField());
     if (currentValue != null) {
-      ((IntField) getInputComponent()).setInt(currentValue);
+      getInputComponent().setInt(currentValue);
     }
   }
 
   @Override
   public Integer getValue() {
-    return ((IntField) getInputComponent()).getInt();
+    return getInputComponent().getInt();
   }
 }

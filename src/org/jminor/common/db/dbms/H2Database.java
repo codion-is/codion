@@ -12,6 +12,12 @@ import java.util.Properties;
  */
 public final class H2Database extends AbstractDatabase {
 
+  static final String DRIVER_NAME = "org.h2.Driver";
+  static final String AUTO_INCREMENT_QUERY = "CALL IDENTITY()";
+  static final String SEQUENCE_VALUE_QUERY = "select next value for ";
+  static final String SYSADMIN_USERNAME = "sa";
+  static final String URL_PREFIX = "jdbc:h2:";
+
   private String urlAppend = "";
 
   public H2Database() {
@@ -32,56 +38,29 @@ public final class H2Database extends AbstractDatabase {
   }
 
   public void loadDriver() throws ClassNotFoundException {
-    Class.forName("org.h2.Driver");
+    Class.forName(DRIVER_NAME);
   }
 
   public String getAutoIncrementValueSQL(final String idSource) {
-    return "CALL IDENTITY()";
+    return AUTO_INCREMENT_QUERY;
   }
 
+  @Override
   public String getSequenceSQL(final String sequenceName) {
-    return "select next value for " + sequenceName;
+    return SEQUENCE_VALUE_QUERY + sequenceName;
   }
 
   public String getURL(final Properties connectionProperties) {
     final String authentication = getAuthenticationInfo(connectionProperties);
     if (isEmbedded()) {
-      if (connectionProperties != null && (!connectionProperties.containsKey("user") || ((String) connectionProperties.get("user")).length() == 0)) {
-        connectionProperties.put("user", "sa");
+      if (connectionProperties != null && (Util.nullOrEmpty((String) connectionProperties.get(USER_PROPERTY)))) {
+        connectionProperties.put(USER_PROPERTY, SYSADMIN_USERNAME);
       }
 
-      return "jdbc:h2:" + getHost() + (authentication == null ? "" : ";" + authentication) + urlAppend;
+      return URL_PREFIX + getHost() + (authentication == null ? "" : ";" + authentication) + urlAppend;
     }
     else {
-      return "jdbc:h2://" + getHost() + ":" + getPort() + "/" + getSid() + (authentication == null ? "" : ";" + authentication) + urlAppend;
-    }
-  }
-
-  @Override
-  public String getAuthenticationInfo(final Properties connectionProperties) {
-    if (connectionProperties != null) {
-      final String username = (String) connectionProperties.get("user");
-      final String password = (String) connectionProperties.get("password");
-      if (username != null && username.length() > 0 && password != null && password.length() > 0) {
-        return "user=" + username + ";" + "password=" + password;
-      }
-    }
-
-    return null;
-  }
-
-  @Override
-  public void shutdownEmbedded(final Properties connectionProperties) {}
-
-  @Override
-  protected void validate(final String databaseType, final String host, final String port, final String sid, final boolean embedded) {
-    if (embedded) {
-      Util.require(DATABASE_HOST, host);
-    }
-    else {
-      Util.require(DATABASE_HOST, host);
-      Util.require(DATABASE_PORT, port);
-      Util.require(DATABASE_SID, sid);
+      return URL_PREFIX + "//" + getHost() + ":" + getPort() + "/" + getSid() + (authentication == null ? "" : ";" + authentication) + urlAppend;
     }
   }
 }

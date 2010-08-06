@@ -6,6 +6,7 @@ package org.jminor.common.ui;
 import org.jminor.common.db.exception.DbException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
+import org.jminor.common.model.Util;
 
 import javax.swing.JComponent;
 import java.io.FileNotFoundException;
@@ -37,7 +38,7 @@ public final class DefaultExceptionHandler implements ExceptionHandler {
 
   public void handleDbException(final DbException dbException, final JComponent dialogParent) {
     String errMsg = dbException.getMessage();
-    if (errMsg == null || errMsg.length() == 0) {
+    if (Util.nullOrEmpty(errMsg)) {
       if (dbException.getCause() == null) {
         errMsg = trimMessage(dbException);
       }

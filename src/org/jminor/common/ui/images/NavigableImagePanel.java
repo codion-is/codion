@@ -174,8 +174,8 @@ public final class NavigableImagePanel extends JPanel {
      */
     public static final ZoomDevice MOUSE_WHEEL = new ZoomDevice("mouseWheel");
 
-    private String zoomDevice;
-    private ZoomDevice(String zoomDevice) {
+    private final String zoomDevice;
+    private ZoomDevice(final String zoomDevice) {
       this.zoomDevice = zoomDevice;
     }
     @Override
@@ -185,10 +185,10 @@ public final class NavigableImagePanel extends JPanel {
   }
 
   //This class is required for high precision image coordinates translation.
-  private static class Coords {
+  private static final class Coords {
     private double x;
     private double y;
-    public Coords(double x, double y) {
+    private Coords(final double x, final double y) {
       this.x = x;
       this.y = y;
     }
@@ -204,10 +204,10 @@ public final class NavigableImagePanel extends JPanel {
     }
   }
 
-  private class WheelZoomDevice implements MouseWheelListener {
-    public void mouseWheelMoved(MouseWheelEvent e) {
-      Point p = e.getPoint();
-      boolean zoomIn = (e.getWheelRotation() < 0);
+  private final class WheelZoomDevice implements MouseWheelListener {
+    public void mouseWheelMoved(final MouseWheelEvent e) {
+      final Point p = e.getPoint();
+      final boolean zoomIn = (e.getWheelRotation() < 0);
       if (isInNavigationImage(p)) {
         if (zoomIn) {
           navZoomFactor = 1.0 + zoomIncrement;
@@ -226,10 +226,10 @@ public final class NavigableImagePanel extends JPanel {
     }
   }
 
-  private class ButtonZoomDevice extends MouseAdapter {
+  private final class ButtonZoomDevice extends MouseAdapter {
     @Override
-    public void mouseClicked(MouseEvent e) {
-      Point p = e.getPoint();
+    public void mouseClicked(final MouseEvent e) {
+      final Point p = e.getPoint();
       if (SwingUtilities.isRightMouseButton(e)) {
         if (isInNavigationImage(p)) {
           navZoomFactor = 1.0 - zoomIncrement;
@@ -258,7 +258,7 @@ public final class NavigableImagePanel extends JPanel {
     setOpaque(false);
     addComponentListener(new ComponentAdapter() {
       @Override
-      public void componentResized(ComponentEvent e) {
+      public void componentResized(final ComponentEvent e) {
         if (scale > 0.0) {
           if (isFullImageInPanel()) {
             centerImage();
@@ -276,7 +276,7 @@ public final class NavigableImagePanel extends JPanel {
 
     addMouseListener(new MouseAdapter() {
       @Override
-      public void mousePressed(MouseEvent e) {
+      public void mousePressed(final MouseEvent e) {
         if (SwingUtilities.isLeftMouseButton(e) &&isInNavigationImage(e.getPoint())) {
           displayImageAt(e.getPoint());
         }
@@ -284,13 +284,13 @@ public final class NavigableImagePanel extends JPanel {
     });
 
     addMouseMotionListener(new MouseMotionListener() {
-      public void mouseDragged(MouseEvent e) {
+      public void mouseDragged(final MouseEvent e) {
         if (SwingUtilities.isLeftMouseButton(e)
                 && !isInNavigationImage(e.getPoint())) {
           moveImage(e.getPoint());
         }
       }
-      public void mouseMoved(MouseEvent e) {
+      public void mouseMoved(final MouseEvent e) {
         //we need the mouse position so that after zooming
         //that position of the image is maintained
         mousePosition = e.getPoint();
@@ -306,7 +306,7 @@ public final class NavigableImagePanel extends JPanel {
    * @param image the default image
    * @throws java.io.IOException in case of an exception
    */
-  public NavigableImagePanel(BufferedImage image) throws IOException {
+  public NavigableImagePanel(final BufferedImage image) throws IOException {
     this();
     setImage(image);
   }
@@ -344,7 +344,7 @@ public final class NavigableImagePanel extends JPanel {
    *
    * @param newZoomDevice specifies the type of a new zoom device.
    */
-  public void setZoomDevice(ZoomDevice newZoomDevice) {
+  public void setZoomDevice(final ZoomDevice newZoomDevice) {
     if (newZoomDevice == ZoomDevice.NONE) {
       removeWheelZoomDevice();
       removeButtonZoomDevice();
@@ -373,14 +373,14 @@ public final class NavigableImagePanel extends JPanel {
 
   //Called from paintComponent() when a new image is set.
   private void initializeParams() {
-    double xScale = (double)getWidth() / image.getWidth();
-    double yScale = (double)getHeight() / image.getHeight();
+    final double xScale = (double)getWidth() / image.getWidth();
+    final double yScale = (double)getHeight() / image.getHeight();
     initialScale = Math.min(xScale, yScale);
     scale = initialScale;
 
     //An image is initially centered
     centerImage();
-    if (isNavigationImageEnabled()) {
+    if (navigationImageEnabled) {
       createNavigationImage();
     }
   }
@@ -397,11 +397,11 @@ public final class NavigableImagePanel extends JPanel {
     //displayed to allow for zooming into it without pixellation effect.
     navImageWidth = (int)(getWidth() * NAV_IMAGE_FACTOR);
     navImageHeight = navImageWidth * image.getHeight() / image.getWidth();
-    int scrNavImageWidth = (int)(getWidth() * SCREEN_NAV_IMAGE_FACTOR);
+    final int scrNavImageWidth = (int)(getWidth() * SCREEN_NAV_IMAGE_FACTOR);
     navScale = (double)scrNavImageWidth / navImageWidth;
     navigationImage = new BufferedImage(navImageWidth, navImageHeight,
             image.getType());
-    Graphics g = navigationImage.getGraphics();
+    final Graphics g = navigationImage.getGraphics();
     g.drawImage(image, 0, 0, navImageWidth, navImageHeight, null);
   }
 
@@ -410,8 +410,8 @@ public final class NavigableImagePanel extends JPanel {
    *
    * @param image an image to be set in the panel
    */
-  public void setImage(BufferedImage image) {
-    BufferedImage oldImage = this.image;
+  public void setImage(final BufferedImage image) {
+    final BufferedImage oldImage = this.image;
     this.image = image;
     //Reset scale so that initializeParameters() is called in paintComponent()
     //for the new image.
@@ -425,49 +425,49 @@ public final class NavigableImagePanel extends JPanel {
    * @param bImage the image to test
    * @return true if the image uses the standard RGB color space
    */
-  public static boolean isStandardRGBImage(BufferedImage bImage) {
+  public static boolean isStandardRGBImage(final BufferedImage bImage) {
     return bImage.getColorModel().getColorSpace().isCS_sRGB();
   }
 
   //Converts this panel's coordinates into the original image coordinates
-  private Coords panelToImageCoords(Point p) {
+  private Coords panelToImageCoords(final Point p) {
     return new Coords((p.x - originX) / scale, (p.y - originY) / scale);
   }
 
   //Converts the original image coordinates into this panel's coordinates
-  private Coords imageToPanelCoords(Coords p) {
+  private Coords imageToPanelCoords(final Coords p) {
     return new Coords((p.x * scale) + originX, (p.y * scale) + originY);
   }
 
   //Converts the navigation image coordinates into the zoomed image coordinates
-  private Point navToZoomedImageCoords(Point p) {
-    int x = p.x * getScreenImageWidth() / getScreenNavImageWidth();
-    int y = p.y * getScreenImageHeight() / getScreenNavImageHeight();
+  private Point navToZoomedImageCoords(final Point p) {
+    final int x = p.x * getScreenImageWidth() / getScreenNavImageWidth();
+    final int y = p.y * getScreenImageHeight() / getScreenNavImageHeight();
     return new Point(x, y);
   }
 
   //The user clicked within the navigation image and this part of the image
   //is displayed in the panel.
   //The clicked point of the image is centered in the panel.
-  private void displayImageAt(Point p) {
-    Point scrImagePoint = navToZoomedImageCoords(p);
+  private void displayImageAt(final Point p) {
+    final Point scrImagePoint = navToZoomedImageCoords(p);
     originX = -(scrImagePoint.x - getWidth() / 2);
     originY = -(scrImagePoint.y - getHeight() / 2);
     repaint();
   }
 
   //Tests whether a given point in the panel falls within the image boundaries.
-  private boolean isInImage(Point p) {
-    Coords coords = panelToImageCoords(p);
-    int x = coords.getIntX();
-    int y = coords.getIntY();
+  private boolean isInImage(final Point p) {
+    final Coords coords = panelToImageCoords(p);
+    final int x = coords.getIntX();
+    final int y = coords.getIntY();
     return (x >= 0 && x < image.getWidth() && y >= 0 && y < image.getHeight());
   }
 
   //Tests whether a given point in the panel falls within the navigation image
   //boundaries.
-  private boolean isInNavigationImage(Point p) {
-    return (isNavigationImageEnabled() && p.x < getScreenNavImageWidth()
+  private boolean isInNavigationImage(final Point p) {
+    return (navigationImageEnabled && p.x < getScreenNavImageWidth()
             && p.y < getScreenNavImageHeight());
   }
 
@@ -499,7 +499,7 @@ public final class NavigableImagePanel extends JPanel {
    *
    * @param enabled enables/disables high quality rendering
    */
-  public void setHighQualityRenderingEnabled(boolean enabled) {
+  public void setHighQualityRenderingEnabled(final boolean enabled) {
     highQualityRenderingEnabled = enabled;
   }
 
@@ -527,7 +527,7 @@ public final class NavigableImagePanel extends JPanel {
    *
    * @param enabled true when navigation image is enabled, false otherwise.
    */
-  public void setNavigationImageEnabled(boolean enabled) {
+  public void setNavigationImageEnabled(final boolean enabled) {
     navigationImageEnabled = enabled;
     repaint();
   }
@@ -540,7 +540,7 @@ public final class NavigableImagePanel extends JPanel {
   }
 
   //Converts the specified zoom level	to scale.
-  private double zoomToScale(double zoom) {
+  private double zoomToScale(final double zoom) {
     return initialScale * zoom;
   }
 
@@ -561,8 +561,8 @@ public final class NavigableImagePanel extends JPanel {
    *
    * @param newZoom the zoom level used to display this panel's image.
    */
-  public void setZoom(double newZoom) {
-    Point zoomingCenter = new Point(getWidth() / 2, getHeight() / 2);
+  public void setZoom(final double newZoom) {
+    final Point zoomingCenter = new Point(getWidth() / 2, getHeight() / 2);
     setZoom(newZoom, zoomingCenter);
   }
 
@@ -575,8 +575,8 @@ public final class NavigableImagePanel extends JPanel {
    * @param newZoom the zoom level used to display this panel's image.
    * @param zoomingCenter the zooming center
    */
-  public void setZoom(double newZoom, Point zoomingCenter) {
-    Coords imageP = panelToImageCoords(zoomingCenter);
+  public void setZoom(final double newZoom, final Point zoomingCenter) {
+    final Coords imageP = panelToImageCoords(zoomingCenter);
     if (imageP.x < 0.0) {
       imageP.x = 0.0;
     }
@@ -590,10 +590,10 @@ public final class NavigableImagePanel extends JPanel {
       imageP.y = image.getHeight() - 1.0;
     }
 
-    Coords correctedP = imageToPanelCoords(imageP);
-    double oldZoom = getZoom();
+    final Coords correctedP = imageToPanelCoords(imageP);
+    final double oldZoom = getZoom();
     scale = zoomToScale(newZoom);
-    Coords panelP = imageToPanelCoords(imageP);
+    final Coords panelP = imageToPanelCoords(imageP);
 
     originX += (correctedP.getIntX() - (int)panelP.x);
     originY += (correctedP.getIntY() - (int)panelP.y);
@@ -618,8 +618,8 @@ public final class NavigableImagePanel extends JPanel {
    *
    * @param newZoomIncrement new zoom increment value
    */
-  public void setZoomIncrement(double newZoomIncrement) {
-    double oldZoomIncrement = zoomIncrement;
+  public void setZoomIncrement(final double newZoomIncrement) {
+    final double oldZoomIncrement = zoomIncrement;
     zoomIncrement = newZoomIncrement;
     firePropertyChange(ZOOM_INCREMENT_CHANGED_PROPERTY,
             Double.valueOf(oldZoomIncrement), Double.valueOf(zoomIncrement));
@@ -628,10 +628,10 @@ public final class NavigableImagePanel extends JPanel {
   //Zooms an image in the panel by repainting it at the new zoom level.
   //The current mouse position is the zooming center.
   private void zoomImage() {
-    Coords imageP = panelToImageCoords(mousePosition);
-    double oldZoom = getZoom();
+    final Coords imageP = panelToImageCoords(mousePosition);
+    final double oldZoom = getZoom();
     scale *= zoomFactor;
-    Coords panelP = imageToPanelCoords(imageP);
+    final Coords panelP = imageToPanelCoords(imageP);
 
     originX += (mousePosition.x - (int)panelP.x);
     originY += (mousePosition.y - (int)panelP.y);
@@ -667,7 +667,7 @@ public final class NavigableImagePanel extends JPanel {
    * @param x the x coordinate of the new image origin
    * @param y the y coordinate of the new image origin
    */
-  public void setImageOrigin(int x, int y) {
+  public void setImageOrigin(final int x, final int y) {
     setImageOrigin(new Point(x, y));
   }
 
@@ -678,16 +678,16 @@ public final class NavigableImagePanel extends JPanel {
    * This method is used for programmatic image navigation.</p>
    * @param newOrigin the value of a new image origin
    */
-  public void setImageOrigin(Point newOrigin) {
+  public void setImageOrigin(final Point newOrigin) {
     originX = newOrigin.x;
     originY = newOrigin.y;
     repaint();
   }
 
   //Moves te image (by dragging with the mouse) to a new mouse position p.
-  private void moveImage(Point p) {
-    int xDelta = p.x - mousePosition.x;
-    int yDelta = p.y - mousePosition.y;
+  private void moveImage(final Point p) {
+    final int xDelta = p.x - mousePosition.x;
+    final int yDelta = p.y - mousePosition.y;
     originX += xDelta;
     originY += yDelta;
     mousePosition = p;
@@ -697,21 +697,21 @@ public final class NavigableImagePanel extends JPanel {
   //Gets the bounds of the image area currently displayed in the panel (in image
   //coordinates).
   private Rectangle getImageClipBounds() {
-    Coords startCoords = panelToImageCoords(new Point(0, 0));
-    Coords endCoords = panelToImageCoords(new Point(getWidth() - 1, getHeight() - 1));
-    int panelX1 = startCoords.getIntX();
-    int panelY1 = startCoords.getIntY();
-    int panelX2 = endCoords.getIntX();
-    int panelY2 = endCoords.getIntY();
+    final Coords startCoords = panelToImageCoords(new Point(0, 0));
+    final Coords endCoords = panelToImageCoords(new Point(getWidth() - 1, getHeight() - 1));
+    final int panelX1 = startCoords.getIntX();
+    final int panelY1 = startCoords.getIntY();
+    final int panelX2 = endCoords.getIntX();
+    final int panelY2 = endCoords.getIntY();
     //No intersection?
     if (panelX1 >= image.getWidth() || panelX2 < 0 || panelY1 >= image.getHeight() || panelY2 < 0) {
       return null;
     }
 
-    int x1 = (panelX1 < 0) ? 0 : panelX1;
-    int y1 = (panelY1 < 0) ? 0 : panelY1;
-    int x2 = (panelX2 >= image.getWidth()) ? image.getWidth() - 1 : panelX2;
-    int y2 = (panelY2 >= image.getHeight()) ? image.getHeight() - 1 : panelY2;
+    final int x1 = (panelX1 < 0) ? 0 : panelX1;
+    final int y1 = (panelY1 < 0) ? 0 : panelY1;
+    final int x2 = (panelX2 >= image.getWidth()) ? image.getWidth() - 1 : panelX2;
+    final int y2 = (panelY2 >= image.getHeight()) ? image.getHeight() - 1 : panelY2;
     return new Rectangle(x1, y1, x2 - x1 + 1, y2 - y1 + 1);
   }
 
@@ -722,7 +722,7 @@ public final class NavigableImagePanel extends JPanel {
    * @param g the <code>Graphics</code> context for painting
    */
   @Override
-  protected void paintComponent(Graphics g) {
+  protected void paintComponent(final Graphics g) {
     super.paintComponent(g); // Paints the background
 
     if (image == null) {
@@ -734,42 +734,40 @@ public final class NavigableImagePanel extends JPanel {
     }
 
     if (isHighQualityRendering()) {
-      Rectangle rect = getImageClipBounds();
+      final Rectangle rect = getImageClipBounds();
       if (rect == null || rect.width == 0 || rect.height == 0) { // no part of image is displayed in the panel
         return;
       }
 
-      BufferedImage subimage = image.getSubimage(rect.x, rect.y, rect.width,
+      final BufferedImage subimage = image.getSubimage(rect.x, rect.y, rect.width,
               rect.height);
-      Graphics2D g2 = (Graphics2D)g;
+      final Graphics2D g2 = (Graphics2D)g;
       g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, INTERPOLATION_TYPE);
       g2.drawImage(subimage, Math.max(0, originX), Math.max(0, originY),
               Math.min((int)(subimage.getWidth() * scale), getWidth()),
               Math.min((int)(subimage.getHeight() * scale), getHeight()), null);
     } else {
-      g.drawImage(image, originX, originY, getScreenImageWidth(),
-              getScreenImageHeight(), null);
+      g.drawImage(image, originX, originY, getScreenImageWidth(), getScreenImageHeight(), null);
     }
 
     //Draw navigation image
-    if (isNavigationImageEnabled()) {
-      g.drawImage(navigationImage, 0, 0, getScreenNavImageWidth(),
-              getScreenNavImageHeight(), null);
+    if (navigationImageEnabled) {
+      g.drawImage(navigationImage, 0, 0, getScreenNavImageWidth(), getScreenNavImageHeight(), null);
       drawZoomAreaOutline(g);
     }
   }
 
   //Paints a white outline over the navigation image indicating
   //the area of the image currently displayed in the panel.
-  private void drawZoomAreaOutline(Graphics g) {
+  private void drawZoomAreaOutline(final Graphics g) {
     if (isFullImageInPanel()) {
       return;
     }
 
-    int x = -originX * getScreenNavImageWidth() / getScreenImageWidth();
-    int y = -originY * getScreenNavImageHeight() / getScreenImageHeight();
-    int width = getWidth() * getScreenNavImageWidth() / getScreenImageWidth();
-    int height = getHeight() * getScreenNavImageHeight() / getScreenImageHeight();
+    final int x = -originX * getScreenNavImageWidth() / getScreenImageWidth();
+    final int y = -originY * getScreenNavImageHeight() / getScreenImageHeight();
+    final int width = getWidth() * getScreenNavImageWidth() / getScreenImageWidth();
+    final int height = getHeight() * getScreenNavImageHeight() / getScreenImageHeight();
     g.setColor(Color.white);
     g.drawRect(x, y, width, height);
   }

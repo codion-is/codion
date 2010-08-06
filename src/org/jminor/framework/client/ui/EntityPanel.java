@@ -8,14 +8,14 @@ import org.jminor.common.model.Util;
 import org.jminor.common.model.WeakPropertyChangeListener;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.Control;
-import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlSet;
+import org.jminor.common.ui.control.Controls;
 import org.jminor.common.ui.images.Images;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.EntityTableModel;
-import org.jminor.framework.domain.EntityRepository;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
@@ -67,6 +67,13 @@ public class EntityPanel extends JPanel {
   public static final int RIGHT = 2;
   public static final int LEFT = 3;
 
+  private static final double DEFAULT_SPLIT_PANEL_RESIZE_WEIGHT = 0.5;
+  private static final int SPLIT_PANE_DIVIDER_SIZE = 18;
+  private static final int DETAIL_DIALOG_OFFSET = 29;
+  private static final double DETAIL_DIALOG_SIZE_RATIO = 1.5;
+  private static final int DETAIL_DIALOG_HEIGHT_OFFSET = 54;
+  private static final int EDIT_DIALOG_LOCATION_OFFSET = 98;
+
   /**
    * The EntityModel instance used by this EntityPanel
    */
@@ -85,12 +92,12 @@ public class EntityPanel extends JPanel {
   /**
    * The EntityEditPanel instance
    */
-  private EntityEditPanel editPanel;
+  private final EntityEditPanel editPanel;
 
   /**
    * The EntityTablePanel instance used by this EntityPanel
    */
-  private EntityTablePanel tablePanel;
+  private final EntityTablePanel tablePanel;
 
   /**
    * The edit panel which contains the controls required for editing a entity
@@ -154,7 +161,7 @@ public class EntityPanel extends JPanel {
    */
   private boolean panelInitialized = false;
 
-  private double detailSplitPanelResizeWeight = 0.5;
+  private double detailSplitPanelResizeWeight = DEFAULT_SPLIT_PANEL_RESIZE_WEIGHT;
 
   /**
    * Hold a reference to this PropertyChangeListener so that it will be garbage collected along with this EntityPanel instance
@@ -174,7 +181,7 @@ public class EntityPanel extends JPanel {
    * @param model the EntityModel
    */
   public EntityPanel(final EntityModel model) {
-    this(model, EntityRepository.getEntityDefinition(model.getEntityID()).getCaption());
+    this(model, Entities.getCaption(model.getEntityID()));
   }
 
   public EntityPanel(final EntityModel model, final String caption) {
@@ -187,7 +194,7 @@ public class EntityPanel extends JPanel {
    * @param editPanel the edit panel
    */
   public EntityPanel(final EntityModel model, final EntityEditPanel editPanel) {
-    this(model, EntityRepository.getEntityDefinition(model.getEntityID()).getCaption(), editPanel, null);
+    this(model, Entities.getCaption(model.getEntityID()), editPanel);
   }
 
   /**
@@ -196,7 +203,37 @@ public class EntityPanel extends JPanel {
    * @param tablePanel the table panel
    */
   public EntityPanel(final EntityModel model, final EntityTablePanel tablePanel) {
-    this(model, EntityRepository.getEntityDefinition(model.getEntityID()).getCaption(), null, tablePanel);
+    this(model, Entities.getCaption(model.getEntityID()), tablePanel);
+  }
+
+  /**
+   * Instantiates a new EntityPanel instance. The Panel is not laid out and initialized until initialize() is called.
+   * @param model the EntityModel
+   * @param caption the caption to use when presenting this entity panel
+   * @param editPanel the edit panel
+   */
+  public EntityPanel(final EntityModel model, final String caption, final EntityEditPanel editPanel) {
+    this(model, caption, editPanel, null);
+  }
+
+  /**
+   * Instantiates a new EntityPanel instance. The Panel is not laid out and initialized until initialize() is called.
+   * @param model the EntityModel
+   * @param caption the caption to use when presenting this entity panel
+   * @param tablePanel the table panel
+   */
+  public EntityPanel(final EntityModel model, final String caption, final EntityTablePanel tablePanel) {
+    this(model, caption, null, tablePanel);
+  }
+
+  /**
+   * Instantiates a new EntityPanel instance. The Panel is not laid out and initialized until initialize() is called.
+   * @param model the EntityModel
+   * @param editPanel the edit panel
+   * @param tablePanel the table panel
+   */
+  public EntityPanel(final EntityModel model, final EntityEditPanel editPanel, final EntityTablePanel tablePanel) {
+    this(model, Entities.getCaption(model.getEntityID()), editPanel, tablePanel);
   }
 
   /**
@@ -212,15 +249,13 @@ public class EntityPanel extends JPanel {
     Util.rejectNullValue(caption, "caption");
     this.model = model;
     this.caption = caption;
-    if (editPanel != null) {
-      setEditPanel(editPanel);
+    this.editPanel = editPanel;
+    if (tablePanel == null && model.containsTableModel()) {
+      this.tablePanel = new EntityTablePanel(model.getTableModel());
     }
-    if (tablePanel != null) {
-      setTablePanel(tablePanel);
+    else {
+      this.tablePanel = tablePanel;
     }
-    bindModelEvents();
-    bindTableModelEvents();
-    addActivationInitializer();
   }
 
   /**
@@ -316,10 +351,9 @@ public class EntityPanel extends JPanel {
         UiUtil.setWaitCursor(true, this);
         initializeAssociatedPanels();
         initializeControlPanels();
-        bindEventsInternal();
+        bindModelEvents();
         bindEvents();
         initializeUI();
-        bindTablePanelEvents();
         initialize();
       }
       finally {
@@ -340,56 +374,28 @@ public class EntityPanel extends JPanel {
   }
 
   public final EntityEditPanel getEditPanel() {
-    if (editPanel == null) {
-      editPanel = initializeEditPanel(model.getEditModel());
-    }
-
     return editPanel;
-  }
-
-  public final void setEditPanel(final EntityEditPanel editPanel) {
-    if (panelInitialized) {
-      throw new RuntimeException("Can not set edit panel after initialization");
-    }
-    if (model.getEditModel() != editPanel.getEditModel()) {
-      throw new RuntimeException("The edit model must match the edit panel model");
-    }
-    this.editPanel = editPanel;
   }
 
   /**
    * @return true if this panel contains a edit panel.
    */
   public final boolean containsEditPanel() {
-    return getEditPanel() != null;
+    return editPanel != null;
   }
 
   /**
    * @return the EntityTablePanel used by this EntityPanel
    */
   public final EntityTablePanel getTablePanel() {
-    if (model.containsTableModel() && (tablePanel == null)) {
-      tablePanel = initializeTablePanel(model.getTableModel());
-    }
-
     return tablePanel;
-  }
-
-  public final void setTablePanel(final EntityTablePanel tablePanel) {
-    if (panelInitialized) {
-      throw new RuntimeException("Can not set table panel after initialization");
-    }
-    if (model.containsTableModel() && tablePanel != null && model.getTableModel() != tablePanel.getTableModel()) {
-      throw new RuntimeException("The table model must match the table panel model");
-    }
-    this.tablePanel = tablePanel;
   }
 
   /**
    * @return true if this panel contains a table panel.
    */
   public final boolean containsTablePanel() {
-    return getTablePanel() != null;
+    return tablePanel != null;
   }
 
   /**
@@ -443,19 +449,19 @@ public class EntityPanel extends JPanel {
   }
 
   @Override
-  public String toString() {
-    return caption;
+  public final String toString() {
+    return getClass().getSimpleName() + ": " + caption;
   }
 
   /**
    * @return the caption to use when presenting this entity panel
    */
-  public String getCaption() {
+  public final String getCaption() {
     return caption;
   }
 
   public final Control getToggleEditPanelControl() {
-    final Control toggle = ControlFactory.methodControl(this, "toggleEditPanelState",
+    final Control toggle = Controls.methodControl(this, "toggleEditPanelState",
             Images.loadImage("Form16.gif"));
     toggle.setDescription(FrameworkMessages.get(FrameworkMessages.TOGGLE_EDIT_TIP));
 
@@ -463,7 +469,7 @@ public class EntityPanel extends JPanel {
   }
 
   public final Control getToggleDetailPanelControl() {
-    final Control toggle = ControlFactory.methodControl(this, "toggleDetailPanelState",
+    final Control toggle = Controls.methodControl(this, "toggleDetailPanelState",
             Images.loadImage(Images.IMG_HISTORY_16));
     toggle.setDescription(FrameworkMessages.get(FrameworkMessages.TOGGLE_DETAIL_TIP));
 
@@ -471,33 +477,18 @@ public class EntityPanel extends JPanel {
   }
 
   /**
-   * Returns a ControlSet containing the detail panel controls, if no detail
-   * panels exist the resulting ControlSet will be empty.
-   * @return the ControlSet on which the table popup menu is based
-   * @see #getDetailPanelControls(int)
-   */
-  public ControlSet getTablePopupControlSet() {
-    final ControlSet controlSet = new ControlSet("");
-    if (!detailEntityPanels.isEmpty()) {
-      controlSet.add(getDetailPanelControls(EMBEDDED));
-    }
-
-    return controlSet;
-  }
-
-  /**
    * By default this delegates to the edit panel
    * @param exception the exception to handle
    */
   public final void handleException(final Exception exception) {
-    getEditPanel().handleException(exception);
+    editPanel.handleException(exception);
   }
 
   /**
    * @return true if this EntityPanel is active and ready to receive input
    */
   public final boolean isActive() {
-    return getEditModel().stateActive().isActive();
+    return getEditModel().getActiveState().isActive();
   }
 
   /**
@@ -509,7 +500,7 @@ public class EntityPanel extends JPanel {
     return detailSplitPanelResizeWeight;
   }
 
-  public final EntityPanel setDetailSplitPanelResizeWeight(double detailSplitPanelResizeWeight) {
+  public final EntityPanel setDetailSplitPanelResizeWeight(final double detailSplitPanelResizeWeight) {
     if (panelInitialized) {
       throw new RuntimeException("Can not set edit detailSplitPanelResizeWeight after initialization");
     }
@@ -606,9 +597,11 @@ public class EntityPanel extends JPanel {
    * @param state the edit panel state, either HIDDEN, EMBEDDED or DIALOG
    */
   public final void setEditPanelState(final int state) {
-    if (editControlPanel == null) {
-      this.editPanelState = state;
+    if (!containsEditPanel()) {
       return;
+    }
+    if (editControlPanel == null) {
+      editControlPanel = initializeEditControlPanel();
     }
 
     editPanelState = state;
@@ -651,7 +644,7 @@ public class EntityPanel extends JPanel {
     }
 
     if (containsTablePanel()) {
-      getTablePanel().setFilterPanelsVisible(value);
+      tablePanel.setFilterPanelsVisible(value);
     }
     for (final EntityPanel detailEntityPanel : detailEntityPanels) {
       detailEntityPanel.setFilterPanelsVisible(value);
@@ -697,13 +690,12 @@ public class EntityPanel extends JPanel {
    * @see EntityEditPanel#setInitialFocusComponent(javax.swing.JComponent)
    */
   public final void prepareUI(final boolean setInitialFocus, final boolean clearUI) {
-    final EntityEditPanel entityEditPanel = getEditPanel();
-    if (entityEditPanel != null) {
-      entityEditPanel.prepareUI(setInitialFocus, clearUI);
+    if (editPanel != null) {
+      editPanel.prepareUI(setInitialFocus, clearUI);
     }
     else if (setInitialFocus) {
-      if (getTablePanel() != null) {
-        getTablePanel().getJTable().requestFocus();
+      if (tablePanel != null) {
+        tablePanel.getJTable().requestFocus();
       }
       else if (getComponentCount() > 0) {
         getComponents()[0].requestFocus();
@@ -712,26 +704,18 @@ public class EntityPanel extends JPanel {
   }
 
   /**
-   * @return a list of properties to use when selecting a input component in the edit panel,
-   * by default this returns all the properties that have mapped enabled components in the edit panel.
-   * @see org.jminor.common.ui.valuemap.ValueChangeMapEditPanel#setComponent(Object, javax.swing.JComponent)
+   * @param propertyID the ID of the property
+   * @return true if the given property should be included when selecting a input component in the edit panel,
+   * returns true by default.
    */
-  protected List<Property> getSelectComponentProperties() {
-    final EntityEditPanel entityEditPanel = getEditPanel();
-    final Collection<String> componentKeys = entityEditPanel.getComponentKeys();
-    final Collection<String> focusableComponentKeys = new ArrayList<String>(componentKeys.size());
-    for (final String key : componentKeys) {
-      if (entityEditPanel.getComponent(key).isEnabled()) {
-        focusableComponentKeys.add(key);
-      }
-    }
-    return EntityUtil.getSortedProperties(model.getEntityID(), focusableComponentKeys);
+  protected boolean includeComponentSelectionProperty(final String propertyID) {
+    return true;
   }
 
   /**
    * Finds the next JTabbedPane ancestor and sets the selected component to be this EntityPanel instance
    */
-  protected final void showPanelTab() {
+  private void showPanelTab() {
     final JTabbedPane tp = (JTabbedPane) SwingUtilities.getAncestorOfClass(JTabbedPane.class, this);
     if (tp != null) {
       tp.setSelectedComponent(this);
@@ -769,9 +753,18 @@ public class EntityPanel extends JPanel {
    * </pre>
    */
   protected void initializeUI() {
-    editControlPanel = initializeEditControlPanel();
-    final EntityTablePanel entityTablePanel = getTablePanel();
+    final EntityTablePanel entityTablePanel = tablePanel;
     if (entityTablePanel != null) {
+      final ControlSet toolbarControls = new ControlSet("");
+      if (this.editPanel != null) {
+        toolbarControls.add(getToggleEditPanelControl());
+      }
+      if (this.model.getDetailModels().size() > 0) {
+        toolbarControls.add(getToggleDetailPanelControl());
+      }
+      tablePanel.setAdditionalToolbarControls(toolbarControls);
+      tablePanel.setAdditionalPopupControls(getTablePopupControlSet());
+      tablePanel.initializePanel();
       if (entityTablePanel.getTableDoubleClickAction() == null) {
         entityTablePanel.setTableDoubleClickAction(initializeTableDoubleClickAction());
       }
@@ -812,24 +805,24 @@ public class EntityPanel extends JPanel {
    * CTR-S transfers focus to the search panel, CTR-C opens a select control dialog
    * and CTR-F selects the table search field
    *///todo fix this so that dialogged panels also behave accordingly
-  protected void setupKeyboardActions() {
+  private void setupKeyboardActions() {
     if (containsTablePanel()) {
       UiUtil.addKeyEvent(this, KeyEvent.VK_T, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
               true, new AbstractAction("selectTablePanel") {
-                public void actionPerformed(ActionEvent e) {
+                public void actionPerformed(final ActionEvent e) {
                   getTablePanel().getJTable().requestFocusInWindow();
                 }
               });
       UiUtil.addKeyEvent(this, KeyEvent.VK_F, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
               true, new AbstractAction("selectSearchField") {
-                public void actionPerformed(ActionEvent e) {
+                public void actionPerformed(final ActionEvent e) {
                   getTablePanel().getSearchField().requestFocusInWindow();
                 }
               });
-      if (getTablePanel().getSearchPanel() != null) {
+      if (tablePanel.getSearchPanel() != null) {
         UiUtil.addKeyEvent(this, KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
                 true, new AbstractAction("toggleSearchPanel") {
-                  public void actionPerformed(ActionEvent e) {
+                  public void actionPerformed(final ActionEvent e) {
                     getTablePanel().toggleSearchPanel();
                     if (getTablePanel().isSearchPanelVisible()) {
                       getTablePanel().getSearchPanel().requestFocusInWindow();
@@ -841,7 +834,7 @@ public class EntityPanel extends JPanel {
     if (containsEditPanel()) {
       UiUtil.addKeyEvent(this, KeyEvent.VK_E, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
               true, new AbstractAction("selectEditPanel") {
-                public void actionPerformed(ActionEvent e) {
+                public void actionPerformed(final ActionEvent e) {
                   if (getEditPanelState() == HIDDEN) {
                     setEditPanelState(EMBEDDED);
                   }
@@ -850,11 +843,10 @@ public class EntityPanel extends JPanel {
               });
       UiUtil.addKeyEvent(this, KeyEvent.VK_I, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
               true, new AbstractAction("selectComponent") {
-                public void actionPerformed(ActionEvent e) {
+                public void actionPerformed(final ActionEvent e) {
                   if (getEditPanelState() == HIDDEN) {
                     setEditPanelState(EMBEDDED);
                   }
-
                   final Property property = (Property) UiUtil.selectValue(getEditPanel(), getSelectComponentProperties(),
                           Messages.get(Messages.SELECT_INPUT_FIELD));
                   if (property != null) {
@@ -863,6 +855,26 @@ public class EntityPanel extends JPanel {
                 }
               });
     }
+  }
+
+  /**
+   * Called during construction, before controls have been initialized
+   */
+  protected void initializeAssociatedPanels() {}
+
+  /**
+   * Called during construction, after controls have been initialized,
+   * use this method to initialize any application panels that rely on controls having been initialized
+   */
+  protected void initializeControlPanels() {}
+
+  /**
+   * Override to add code that should be called during the initialization routine after the UI has been initialized
+   */
+  protected void initialize() {}
+
+  protected final void setMasterPanel(final EntityPanel masterPanel) {
+    this.masterPanel = masterPanel;
   }
 
   /**
@@ -885,8 +897,8 @@ public class EntityPanel extends JPanel {
    * @return a panel used for editing entities, if <code>initializeEditPanel()</code>
    * returns null then by default this method returns null as well
    */
-  protected JPanel initializeEditControlPanel() {
-    if (getEditPanel() == null) {
+  private JPanel initializeEditControlPanel() {
+    if (!containsEditPanel()) {
       return null;
     }
 
@@ -896,11 +908,10 @@ public class EntityPanel extends JPanel {
     final int alignment = controlPanelConstraints.equals(BorderLayout.SOUTH) || controlPanelConstraints.equals(BorderLayout.NORTH) ? FlowLayout.CENTER : FlowLayout.LEADING;
     final JPanel propertyBase = new JPanel(new FlowLayout(alignment, 5, 5));
     panel.addMouseListener(new ActivationFocusAdapter(propertyBase));
-    final EntityEditPanel entityEditPanel = getEditPanel();
-    propertyBase.add(entityEditPanel);
+    propertyBase.add(editPanel);
     panel.add(propertyBase, BorderLayout.CENTER);
     final JComponent controlPanel = Configuration.getBooleanValue(Configuration.TOOLBAR_BUTTONS) ?
-            entityEditPanel.getControlToolBar() : entityEditPanel.createControlPanel(alignment == FlowLayout.CENTER);
+            editPanel.getControlToolBar() : editPanel.createControlPanel(alignment == FlowLayout.CENTER);
     if (controlPanel != null) {
       panel.add(controlPanel, controlPanelConstraints);
     }
@@ -908,25 +919,16 @@ public class EntityPanel extends JPanel {
     return panel;
   }
 
-  @SuppressWarnings({"UnusedDeclaration"})
-  protected EntityEditPanel initializeEditPanel(final EntityEditModel editModel) {
-    return null;
-  }
-
-  protected EntityTablePanel initializeTablePanel(final EntityTableModel tableModel) {
-    return new EntityTablePanel(tableModel, getTablePopupControlSet(), getToolbarControlSet());
-  }
-
   /**
    * Initializes the horizontal split pane, used in the case of detail panel(s)
    * @return the horizontal split pane
    */
-  protected final JSplitPane initializeHorizontalSplitPane() {
+  private JSplitPane initializeHorizontalSplitPane() {
     final JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true);
     splitPane.setBorder(BorderFactory.createEmptyBorder());
     splitPane.setOneTouchExpandable(true);
     splitPane.setResizeWeight(detailSplitPanelResizeWeight);
-    splitPane.setDividerSize(18);
+    splitPane.setDividerSize(SPLIT_PANE_DIVIDER_SIZE);
 
     return splitPane;
   }
@@ -935,7 +937,7 @@ public class EntityPanel extends JPanel {
    * Initializes the JTabbedPane containing the detail panels, used in case of multiple detail panels
    * @return the JTabbedPane for holding detail panels
    */
-  protected final JTabbedPane initializeDetailTabPane() {
+  private JTabbedPane initializeDetailTabPane() {
     final JTabbedPane tabbedPane = new JTabbedPane();
     tabbedPane.setFocusable(false);
     tabbedPane.setUI(UiUtil.getBorderlessTabbedPaneUI());
@@ -951,7 +953,7 @@ public class EntityPanel extends JPanel {
     });
     tabbedPane.addMouseListener(new MouseAdapter() {
       @Override
-      public void mouseReleased(MouseEvent e) {
+      public void mouseReleased(final MouseEvent e) {
         if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
           setDetailPanelState(getDetailPanelState() == DIALOG ? EMBEDDED : DIALOG);
         }
@@ -965,31 +967,15 @@ public class EntityPanel extends JPanel {
   }
 
   /**
-   * Called during construction, before controls have been initialized
+   * Returns a ControlSet containing the detail panel controls, if no detail
+   * panels exist the resulting ControlSet will be empty.
+   * @return the ControlSet on which the table popup menu is based
+   * @see #getDetailPanelControls(int)
    */
-  protected void initializeAssociatedPanels() {}
-
-  /**
-   * Called during construction, after controls have been initialized,
-   * use this method to initialize any application panels that rely on controls having been initialized
-   */
-  protected void initializeControlPanels() {}
-
-  /**
-   * Override to add code that should be called during the initialization routine after the UI has been initialized
-   */
-  protected void initialize() {}
-
-  /**
-   * @return the ControlSet which is to be added to the table panel toolbar
-   */
-  protected ControlSet getToolbarControlSet() {
+  private ControlSet getTablePopupControlSet() {
     final ControlSet controlSet = new ControlSet("");
-    if (getEditPanel() != null) {
-      controlSet.add(getToggleEditPanelControl());
-    }
     if (!detailEntityPanels.isEmpty()) {
-      controlSet.add(getToggleDetailPanelControl());
+      controlSet.add(getDetailPanelControls(EMBEDDED));
     }
 
     return controlSet;
@@ -1001,7 +987,7 @@ public class EntityPanel extends JPanel {
    * not the case and the detail panels are hidden those are shown in a dialog.
    * @return the Action to perform when the a double click is performed on the table
    */
-  protected Action initializeTableDoubleClickAction() {
+  private Action initializeTableDoubleClickAction() {
     return new AbstractAction() {
       public void actionPerformed(final ActionEvent e) {
         if (editControlPanel != null || !detailEntityPanels.isEmpty()) {
@@ -1021,7 +1007,7 @@ public class EntityPanel extends JPanel {
    * @param status the status
    * @return a ControlSet for controlling the state of the detail panels
    */
-  protected final ControlSet getDetailPanelControls(final int status) {
+  private ControlSet getDetailPanelControls(final int status) {
     if (detailEntityPanels.isEmpty()) {
       return null;
     }
@@ -1030,7 +1016,7 @@ public class EntityPanel extends JPanel {
     for (final EntityPanel detailPanel : detailEntityPanels) {
       controlSet.add(new Control(detailPanel.getCaption()) {
         @Override
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(final ActionEvent e) {
           detailPanelTabbedPane.setSelectedComponent(detailPanel);
           setDetailPanelState(status);
         }
@@ -1040,24 +1026,6 @@ public class EntityPanel extends JPanel {
     return controlSet;
   }
 
-  /**
-   * Override to keep event bindings in one place,
-   * this method is called during initialization before the UI is initialized
-   */
-  protected void bindEvents() {}
-
-  /**
-   * Override to keep table model event bindings in one place,
-   * this method is called during initialization before the UI is initialized
-   */
-  protected void bindTableModelEvents() {}
-
-  /**
-   * Binds events associated with the EntityTablePanel
-   * this method is called during initialization after the UI is initialized
-   */
-  protected void bindTablePanelEvents() {}
-
   //#############################################################################################
   // End - initialization methods
   //#############################################################################################
@@ -1065,19 +1033,19 @@ public class EntityPanel extends JPanel {
   /**
    * Shows the detail panels in a non-modal dialog
    */
-  protected final void showDetailDialog() {
+  private void showDetailDialog() {
     final Window parent = UiUtil.getParentWindow(this);
     final Dimension parentSize = parent.getSize();
     final Dimension size = getDetailDialogSize(parentSize);
     final Point parentLocation = parent.getLocation();
     final Point location = new Point(parentLocation.x+(parentSize.width-size.width),
-            parentLocation.y+(parentSize.height-size.height)-29);
+            parentLocation.y+(parentSize.height-size.height)- DETAIL_DIALOG_OFFSET);
     SwingUtilities.invokeLater(new Runnable() {
       public void run() {
         detailPanelDialog = UiUtil.showInDialog(UiUtil.getParentWindow(EntityPanel.this), detailPanelTabbedPane, false,
                 caption + " - " + FrameworkMessages.get(FrameworkMessages.DETAIL_TABLES), false, true,
                 null, size, location, new AbstractAction() {
-                  public void actionPerformed(ActionEvent e) {
+                  public void actionPerformed(final ActionEvent e) {
                     setDetailPanelState(HIDDEN);
                   }
                 });
@@ -1089,28 +1057,40 @@ public class EntityPanel extends JPanel {
    * @param parentSize the size of the parent window
    * @return the size to use when showing the detail dialog
    */
-  protected final Dimension getDetailDialogSize(final Dimension parentSize) {
-    return new Dimension((int) (parentSize.width/1.5),
-            (editControlPanel != null) ? (int) (parentSize.height/1.5) : parentSize.height-54);
+  private Dimension getDetailDialogSize(final Dimension parentSize) {
+    return new Dimension((int) (parentSize.width/ DETAIL_DIALOG_SIZE_RATIO), (editControlPanel != null) ?
+            (int) (parentSize.height/ DETAIL_DIALOG_SIZE_RATIO) : parentSize.height- DETAIL_DIALOG_HEIGHT_OFFSET);
   }
 
   /**
    * Shows the edit panel in a non-modal dialog
    */
-  protected final void showEditDialog() {
+  private void showEditDialog() {
     final Point location = getLocationOnScreen();
-    location.setLocation(location.x+1, location.y + getSize().height- editControlPanel.getSize().height-98);
+    location.setLocation(location.x+1, location.y + getSize().height- editControlPanel.getSize().height- EDIT_DIALOG_LOCATION_OFFSET);
     editPanelDialog = UiUtil.showInDialog(UiUtil.getParentWindow(this), editControlPanel, false,
             caption, false, true, null, null, location, new AbstractAction() {
-              public void actionPerformed(ActionEvent e) {
+              public void actionPerformed(final ActionEvent e) {
                 setEditPanelState(HIDDEN);
               }
             });
-    getEditPanel().prepareUI(true, false);
+    editPanel.prepareUI(true, false);
   }
 
-  protected final void setMasterPanel(final EntityPanel masterPanel) {
-    this.masterPanel = masterPanel;
+  /**
+   * @return a list of properties to use when selecting a input component in the edit panel,
+   * by default this returns all the properties that have mapped enabled components in the edit panel.
+   * @see org.jminor.common.ui.valuemap.ValueChangeMapEditPanel#setComponent(Object, javax.swing.JComponent)
+   */
+  private List<Property> getSelectComponentProperties() {
+    final Collection<String> propertyIDs = editPanel.getComponentKeys();
+    final Collection<String> focusableComponentPropertyIDs = new ArrayList<String>(propertyIDs.size());
+    for (final String propertyID : propertyIDs) {
+      if (includeComponentSelectionProperty(propertyID) && editPanel.getComponent(propertyID).isEnabled()) {
+        focusableComponentPropertyIDs.add(propertyID);
+      }
+    }
+    return EntityUtil.getSortedProperties(model.getEntityID(), focusableComponentPropertyIDs);
   }
 
   private void disposeEditDialog() {
@@ -1130,45 +1110,17 @@ public class EntityPanel extends JPanel {
   }
 
   private void bindModelEvents() {
-    model.eventRefreshStarted().addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+    model.addBeforeRefreshListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
         UiUtil.setWaitCursor(true, EntityPanel.this);
       }
     });
-    model.eventRefreshDone().addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+    model.addAfterRefreshListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
         UiUtil.setWaitCursor(false, EntityPanel.this);
       }
     });
-  }
-
-  private void addActivationInitializer() {
-    getEditModel().stateActive().eventStateChanged().addListener(new ActionListener() {
-      private final Runnable initializer = new Runnable() {
-        public void run() {
-          initializePanel();
-          showPanelTab();
-          //do not try to grab the initial focus when a child component already has the focus, for example the table
-          final boolean grabInitialFocus = !isParentPanel(KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner());
-          prepareUI(grabInitialFocus, false);
-        }
-      };
-      public void actionPerformed(final ActionEvent e) {
-        if (isActive()) {
-          try {
-            if (SwingUtilities.isEventDispatchThread()) {
-              initializer.run();
-            }
-            else {
-              SwingUtilities.invokeAndWait(initializer);
-            }
-          }
-          catch (Exception ex) {
-            throw new RuntimeException(ex);
-          }
-        }
-      }
-    });
+    getEditModel().getActiveState().addListener(new ActivationListener());
   }
 
   /**
@@ -1185,10 +1137,10 @@ public class EntityPanel extends JPanel {
     return editPanelDialog != null && SwingUtilities.getWindowAncestor(component) == editPanelDialog;
   }
 
-  private void bindEventsInternal() {
+  private void bindEvents() {
     addComponentListener(new ComponentAdapter() {
       @Override
-      public void componentHidden(ComponentEvent e) {
+      public void componentHidden(final ComponentEvent e) {
         SwingUtilities.invokeLater(new Runnable() {
           public void run() {
             setFilterPanelsVisible(false);
@@ -1196,7 +1148,7 @@ public class EntityPanel extends JPanel {
         });
       }
       @Override
-      public void componentShown(ComponentEvent e) {
+      public void componentShown(final ComponentEvent e) {
         SwingUtilities.invokeLater(new Runnable() {
           public void run() {
             setFilterPanelsVisible(true);
@@ -1204,6 +1156,33 @@ public class EntityPanel extends JPanel {
         });
       }
     });
+  }
+
+  private class ActivationListener implements ActionListener {
+    private final Runnable initializer = new Runnable() {
+      public void run() {
+        initializePanel();
+        showPanelTab();
+        //do not try to grab the initial focus when a child component already has the focus, for example the table
+        final boolean grabInitialFocus = !isParentPanel(KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner());
+        prepareUI(grabInitialFocus, false);
+      }
+    };
+    public void actionPerformed(final ActionEvent e) {
+      if (isActive()) {
+        try {
+          if (SwingUtilities.isEventDispatchThread()) {
+            initializer.run();
+          }
+          else {
+            SwingUtilities.invokeAndWait(initializer);
+          }
+        }
+        catch (Exception ex) {
+          throw new RuntimeException(ex);
+        }
+      }
+    }
   }
 
   private static class ActivationFocusAdapter extends MouseAdapter {
@@ -1215,7 +1194,7 @@ public class EntityPanel extends JPanel {
     }
 
     @Override
-    public void mouseReleased(MouseEvent e) {
+    public void mouseReleased(final MouseEvent e) {
       target.requestFocusInWindow();//activates this EntityPanel
     }
   }

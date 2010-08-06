@@ -15,25 +15,13 @@ import org.jminor.framework.tools.testing.EntityLoadTestModel;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import java.util.Arrays;
-import java.util.Collection;
 
-public class ChinookLoadTest extends EntityLoadTestModel {
+public final class ChinookLoadTest extends EntityLoadTestModel {
 
   public ChinookLoadTest() {
-    super(User.UNIT_TEST_USER);
-  }
-
-  @Override
-  protected void loadDomainModel() {
-    new Chinook();
-  }
-
-  @Override
-  protected Collection<UsageScenario> initializeUsageScenarios() {
-    final UsageScenario viewGenre = new UsageScenario("viewGenre") {
+    super(User.UNIT_TEST_USER, new UsageScenario("viewGenre") {
       @Override
-      protected void performScenario(Object application) throws Exception {
+      protected void performScenario(final Object application) throws Exception {
         final EntityApplicationModel model = (EntityApplicationModel) application;
         final EntityModel genreModel = model.getMainApplicationModel(Chinook.T_GENRE);
         genreModel.refresh();
@@ -44,10 +32,9 @@ public class ChinookLoadTest extends EntityLoadTestModel {
       protected int getDefaultWeight() {
         return 3;
       }
-    };
-    final UsageScenario viewInvoice = new UsageScenario("viewInvoice") {
+    }, new UsageScenario("viewInvoice") {
       @Override
-      protected void performScenario(Object application) throws Exception {
+      protected void performScenario(final Object application) throws Exception {
         final EntityApplicationModel model = (EntityApplicationModel) application;
         final EntityModel customerModel = model.getMainApplicationModel(Chinook.T_CUSTOMER);
         selectRandomRow(customerModel.getTableModel());
@@ -59,10 +46,9 @@ public class ChinookLoadTest extends EntityLoadTestModel {
       protected int getDefaultWeight() {
         return 2;
       }
-    };
-    final UsageScenario viewAlbum = new UsageScenario("viewAlbum") {
+    }, new UsageScenario("viewAlbum") {
       @Override
-      protected void performScenario(Object application) throws Exception {
+      protected void performScenario(final Object application) throws Exception {
         final EntityApplicationModel model = (EntityApplicationModel) application;
         final EntityModel artistModel = model.getMainApplicationModel(Chinook.T_ARTIST);
         selectRandomRow(artistModel.getTableModel());
@@ -74,9 +60,12 @@ public class ChinookLoadTest extends EntityLoadTestModel {
       protected int getDefaultWeight() {
         return 5;
       }
-    };
+    });
+  }
 
-    return Arrays.asList(viewGenre, viewInvoice, viewAlbum);
+  @Override
+  protected void loadDomainModel() {
+    new Chinook();
   }
 
   @Override
@@ -118,17 +107,19 @@ public class ChinookLoadTest extends EntityLoadTestModel {
     return appModel;
   }
 
-  public static void main(String[] args) throws Exception {
-    SwingUtilities.invokeLater(new Runnable() {
-      public void run() {
-        try {
-          UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-          new LoadTestPanel(new ChinookLoadTest()).showFrame();
-        }
-        catch (Exception e) {
-          e.printStackTrace();
-        }
+  public static void main(final String[] args) throws Exception {
+    SwingUtilities.invokeLater(new Runner());
+  }
+
+  private static final class Runner implements Runnable {
+    public void run() {
+      try {
+        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        new LoadTestPanel(new ChinookLoadTest()).showFrame();
       }
-    });
+      catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
   }
 }

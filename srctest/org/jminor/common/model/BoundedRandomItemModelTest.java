@@ -3,8 +3,7 @@
  */
 package org.jminor.common.model;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 /**
@@ -13,18 +12,50 @@ import org.junit.Test;
  * Time: 21:50:22
  */
 public class BoundedRandomItemModelTest {
+  private final Object one = "one";
+  private final Object two = "two";
+  private final Object three = "three";
+
+  @Test
+  public void testConstructors() {
+    BoundedRandomItemModel<Object> model = new BoundedRandomItemModel<Object>(10, one, two, three);
+    assertTrue(model.getItemCount() == 3);
+    assertTrue(model.getWeightBounds() == 10);
+    try {
+      model = new BoundedRandomItemModel<Object>(10);
+      fail();
+    }
+    catch (IllegalArgumentException e) {}
+    try {
+      model = new BoundedRandomItemModel<Object>();
+      fail();
+    }
+    catch (IllegalArgumentException e) {}
+    try {
+      model = new BoundedRandomItemModel<Object>(-10);
+      fail();
+    }
+    catch (IllegalArgumentException e) {}
+  }
+
+  @Test
+  public void testExceptionals() {
+    final BoundedRandomItemModel<Object> model = new BoundedRandomItemModel<Object>(10, one, two, three);
+    try {
+      model.setWeight(one, 10);
+      fail();
+    }
+    catch (UnsupportedOperationException e) {}
+    try {
+      model.addItem("four");
+      fail();
+    }
+    catch (UnsupportedOperationException e) {}
+  }
 
   @Test
   public void test() {
-    final Object one = "one";
-    final Object two = "two";
-    final Object three = "three";
-
     final BoundedRandomItemModel<Object> model = new BoundedRandomItemModel<Object>(10, one, two, three);
-
-    assertEquals(3, model.getItemCount());
-
-    assertEquals(10, model.getWeightBounds());
 
     assertEquals(3, model.getWeight(one));//last
     assertEquals(3, model.getWeight(two));

@@ -8,7 +8,6 @@ import org.jminor.common.model.Deserializer;
 import org.jminor.common.model.Serializer;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
 
 import org.json.JSONException;
@@ -69,7 +68,7 @@ public final class EntityJSONParser implements Serializer<Entity>, Deserializer<
       final JSONObject entityObject = jsonObject.getJSONObject(jsonObject.names().get(i).toString());
       final Map<String, Object> propertyValueMap = new HashMap<String, Object>();
       final String entityID = entityObject.getString("entityID");
-      if (!EntityRepository.isDefined(entityID)) {
+      if (!Entities.isDefined(entityID)) {
         throw new RuntimeException("Undifined entity type found in JSON file: '" + entityID + "'");
       }
 
@@ -121,7 +120,7 @@ public final class EntityJSONParser implements Serializer<Entity>, Deserializer<
   }
 
   private static Object parseJSONValue(final String entityID, final String propertyID, final JSONObject propertyValues) throws JSONException, ParseException {
-    final Property property = EntityRepository.getProperty(entityID, propertyID);
+    final Property property = Entities.getProperty(entityID, propertyID);
     if (propertyValues.isNull(propertyID)) {
       return null;
     }
@@ -164,7 +163,7 @@ public final class EntityJSONParser implements Serializer<Entity>, Deserializer<
 
   private static JSONObject getPropertyValuesJSONObject(final Entity entity, final boolean includeForeignKeys) throws JSONException {
     final JSONObject propertyValues = new JSONObject();
-    for (final Property property : EntityRepository.getColumnProperties(entity.getEntityID(), true, true, true, includeForeignKeys)) {
+    for (final Property property : Entities.getColumnProperties(entity.getEntityID(), true, true, true, includeForeignKeys)) {
       propertyValues.put(property.getPropertyID(), getJSONValue(entity, property, includeForeignKeys));
     }
 
@@ -187,7 +186,7 @@ public final class EntityJSONParser implements Serializer<Entity>, Deserializer<
 
   private static JSONObject getOriginalValuesJSONObject(final Entity entity, final boolean includeForeignKeys) throws JSONException {
     final JSONObject originalValues = new JSONObject();
-    for (final Property property : EntityRepository.getColumnProperties(entity.getEntityID(), true, true, true, includeForeignKeys)) {
+    for (final Property property : Entities.getColumnProperties(entity.getEntityID(), true, true, true, includeForeignKeys)) {
       if (entity.isModified(property.getPropertyID())) {
         originalValues.put(property.getPropertyID(), getJSONOriginalValue(entity, property));
       }

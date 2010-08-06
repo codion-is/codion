@@ -4,6 +4,8 @@
 package org.jminor.framework.server.monitor;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventObserver;
+import org.jminor.common.model.Events;
 import org.jminor.common.model.Util;
 import org.jminor.framework.domain.EntityDefinition;
 import org.jminor.framework.server.EntityDbServerAdmin;
@@ -14,6 +16,7 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 import javax.swing.DefaultListModel;
 import javax.swing.ListModel;
+import java.awt.event.ActionListener;
 import java.net.URI;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -34,10 +37,10 @@ public final class ServerMonitor {
 
   private static final Logger LOG = Util.getLogger(ServerMonitor.class);
 
-  private final Event evtStatsUpdateIntervalChanged = new Event();
-  private final Event evtServerShutDown = new Event();
-  private final Event evtStatsUpdated = new Event();
-  private final Event evtWarningThresholdChanged = new Event();
+  private final Event evtStatsUpdateIntervalChanged = Events.event();
+  private final Event evtServerShutDown = Events.event();
+  private final Event evtStatsUpdated = Events.event();
+  private final Event evtWarningThresholdChanged = Events.event();
 
   private final String hostName;
   private final String serverName;
@@ -160,11 +163,7 @@ public final class ServerMonitor {
   public void refreshDomainList() throws RemoteException {
     domainListModel.clear();
     final List<EntityDefinition> definitions = new ArrayList<EntityDefinition>(server.getEntityDefinitions());
-    Collections.sort(definitions, new Comparator<EntityDefinition>() {
-      public int compare(final EntityDefinition o1, final EntityDefinition o2) {
-        return o1.getTableName().compareTo(o2.getTableName());
-      }
-    });
+    Collections.sort(definitions, new DefinitionComparator());
     for (final EntityDefinition definition : definitions) {
       domainListModel.addElement(definition);
     }
@@ -187,20 +186,44 @@ public final class ServerMonitor {
     return serverName;
   }
 
-  public Event eventServerShutDown() {
-    return evtServerShutDown;
+  public void addServerShutDownListener(final ActionListener listener) {
+    evtServerShutDown.addListener(listener);
   }
 
-  public Event eventStatsUpdated() {
-    return evtStatsUpdated;
+  public void removeServerShutDownListener(final ActionListener listener) {
+    evtServerShutDown.removeListener(listener);
   }
 
-  public Event eventWarningThresholdChanged() {
-    return evtWarningThresholdChanged;
+  public void addStatsUpdatedListener(final ActionListener listener) {
+    evtStatsUpdated.addListener(listener);
   }
 
-  public Event eventStatsUpdateIntervalChanged() {
-    return evtStatsUpdateIntervalChanged;
+  public void removeStatsUpdatedListener(final ActionListener listener) {
+    evtStatsUpdated.removeListener(listener);
+  }
+
+  public void addWarningThresholdListener(final ActionListener listener) {
+    evtWarningThresholdChanged.addListener(listener);
+  }
+
+  public void removeWarningThresholdListener(final ActionListener listener) {
+    evtWarningThresholdChanged.removeListener(listener);
+  }
+
+  public void addStatsUpdateIntervalListener(final ActionListener listener) {
+    evtStatsUpdateIntervalChanged.addListener(listener);
+  }
+
+  public void removeStatsUpdateIntervalListener(final ActionListener listener) {
+    evtStatsUpdateIntervalChanged.removeListener(listener);
+  }
+
+  public EventObserver getWarningThresholdObserver() {
+    return evtWarningThresholdChanged.getObserver();
+  }
+
+  public EventObserver getStatsUpdatedObserver() {
+    return evtStatsUpdated.getObserver();
   }
 
   private EntityDbServerAdmin connectServer(final String serverName) throws RemoteException {
@@ -259,5 +282,11 @@ public final class ServerMonitor {
         catch (RemoteException e) {/**/}
       }
     }, delay, delay);
+  }
+
+  private static final class DefinitionComparator implements Comparator<EntityDefinition> {
+    public int compare(final EntityDefinition o1, final EntityDefinition o2) {
+      return o1.getTableName().compareTo(o2.getTableName());
+    }
   }
 }

@@ -16,6 +16,7 @@ import java.awt.FlowLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -57,7 +58,7 @@ public abstract class AbstractTableColumnSyncPanel extends JPanel {
     resetPanel();
   }
 
-  protected abstract Map<TableColumn, JPanel> initializeColumnPanels();
+  protected abstract JPanel initializeColumnPanel(final TableColumn column);
 
   protected final void resetPanel() {
     removeAll();
@@ -98,14 +99,19 @@ public abstract class AbstractTableColumnSyncPanel extends JPanel {
       final TableColumn column = columnEnumeration.nextElement();
       final JPanel panel = columnPanels.get(column);
       panel.setPreferredSize(new Dimension(column.getWidth(), panel.getPreferredSize().height));
-      column.addPropertyChangeListener(new PropertyChangeListener() {
-        public void propertyChange(PropertyChangeEvent evt) {
-          if (evt.getPropertyName().equals("width")) {
-            syncPanelWidth(panel, column);
-          }
-        }
-      });
+      column.addPropertyChangeListener(new SyncListener(panel, column));
     }
+  }
+
+  private Map<TableColumn, JPanel> initializeColumnPanels() {
+    final Map<TableColumn, JPanel> panels = new HashMap<TableColumn, JPanel>();
+    final Enumeration<TableColumn> columns = columnModel.getColumns();
+    while (columns.hasMoreElements()) {
+      final TableColumn column = columns.nextElement();
+      panels.put(column, initializeColumnPanel(column));
+    }
+
+    return panels;
   }
 
   private static void syncPanelWidths(final TableColumnModel columnModel, final Map<TableColumn, JPanel> panelMap) {
@@ -120,5 +126,21 @@ public abstract class AbstractTableColumnSyncPanel extends JPanel {
   private static void syncPanelWidth(final JPanel panel, final TableColumn column) {
     panel.setPreferredSize(new Dimension(column.getWidth(), panel.getPreferredSize().height));
     panel.revalidate();
+  }
+
+  private static final class SyncListener implements PropertyChangeListener {
+    private final JPanel panel;
+    private final TableColumn column;
+
+    public SyncListener(final JPanel panel, final TableColumn column) {
+      this.panel = panel;
+      this.column = column;
+    }
+
+    public void propertyChange(final PropertyChangeEvent evt) {
+      if (evt.getPropertyName().equals("width")) {
+        syncPanelWidth(panel, column);
+      }
+    }
   }
 }

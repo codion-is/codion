@@ -4,7 +4,7 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.db.criteria.Criteria;
-import org.jminor.common.model.AbstractSearchModel;
+import org.jminor.common.model.DefaultColumnSearchModel;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.domain.Entity;
@@ -21,24 +21,13 @@ import java.util.List;
  * Date: 19.7.2010<br>
  * Time: 13:53:07
  */
-public class DefaultForeignKeySearchModel extends AbstractSearchModel<Property.ForeignKeyProperty>
+public class DefaultForeignKeySearchModel extends DefaultColumnSearchModel<Property.ForeignKeyProperty>
         implements ForeignKeySearchModel {
 
   private final EntityComboBoxModel entityComboBoxModel;
   private final EntityLookupModel entityLookupModel;
 
   private boolean updatingModel = false;
-
-  /**
-   * Constructs a DefaultPropertySearchModel instance
-   * @param property the property
-   * @throws IllegalArgumentException if an illegal constant is used
-   */
-  public DefaultForeignKeySearchModel(final Property.ForeignKeyProperty property) {
-    super(property, property.getType(), (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER));
-    this.entityLookupModel = null;
-    this.entityComboBoxModel = null;
-  }
 
   /**
    * Constructs a DefaultPropertySearchModel instance
@@ -62,13 +51,17 @@ public class DefaultForeignKeySearchModel extends AbstractSearchModel<Property.F
   public DefaultForeignKeySearchModel(final Property.ForeignKeyProperty property, final EntityComboBoxModel entityComboBoxModel) {
     super(property, property.getType(), (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER));
     this.entityComboBoxModel = entityComboBoxModel;
+    if (entityComboBoxModel != null && entityComboBoxModel.isCleared()) {
+      entityComboBoxModel.refresh();
+      entityComboBoxModel.setSelectedItem(getUpperBound());
+    }
     this.entityLookupModel = null;
     bindComboBoxEvents();
   }
 
   @Override
   public final String toString() {
-    final StringBuilder stringBuilder = new StringBuilder(getSearchKey().getPropertyID());
+    final StringBuilder stringBuilder = new StringBuilder(getColumnIdentifier().getPropertyID());
     if (isSearchEnabled()) {
       stringBuilder.append(getSearchType());
       stringBuilder.append(getUpperBound() != null ? toString(getUpperBound()) : "null");
@@ -90,10 +83,6 @@ public class DefaultForeignKeySearchModel extends AbstractSearchModel<Property.F
     }
   }
 
-  public boolean include(final Object object) {
-    return true;
-  }
-
   /**
    * @return the EntityComboBoxModel used by this PropertySearchModel, if any
    */
@@ -109,26 +98,10 @@ public class DefaultForeignKeySearchModel extends AbstractSearchModel<Property.F
   }
 
   /**
-   * Ensures that the data this PropertySearchModel relies on (in ComboBoxModels f.ex) has been initialized
-   */
-  public final void initialize() {
-    if (entityComboBoxModel != null && entityComboBoxModel.isCleared()) {
-      entityComboBoxModel.refresh();
-      try {
-        updatingModel = true;//to prevent a round trip to setUpperBound()
-        entityComboBoxModel.setSelectedItem(getUpperBound());
-      }
-      finally {
-        updatingModel = false;
-      }
-    }
-  }
-
-  /**
    * @return a Criteria based on the values in this search model.
    */
   public final Criteria<Property.ColumnProperty> getCriteria() {
-    return EntityCriteriaUtil.foreignKeyCriteria(getSearchKey(), getSearchType(), getUpperBound());
+    return EntityCriteriaUtil.foreignKeyCriteria(getColumnIdentifier(), getSearchType(), getUpperBound());
   }
 
   private String toString(final Object object) {
@@ -146,8 +119,8 @@ public class DefaultForeignKeySearchModel extends AbstractSearchModel<Property.F
   }
 
   private void bindLookupModelEvents() {
-    entityLookupModel.eventSelectedEntitiesChanged().addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+    entityLookupModel.addSelectedEntitiesListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
         try {
           updatingModel = true;
           final Collection<Entity> selectedEntities = entityLookupModel.getSelectedEntities();
@@ -158,8 +131,8 @@ public class DefaultForeignKeySearchModel extends AbstractSearchModel<Property.F
         }
       }
     });
-    eventUpperBoundChanged().addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+    addUpperBoundListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
         if (!updatingModel) {//noinspection unchecked
           entityLookupModel.setSelectedEntities((List<Entity>) getUpperBound());
         }
@@ -168,15 +141,15 @@ public class DefaultForeignKeySearchModel extends AbstractSearchModel<Property.F
   }
 
   private void bindComboBoxEvents() {
-    entityComboBoxModel.eventSelectionChanged().addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+    entityComboBoxModel.addSelectionListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
         if (!updatingModel) {
           setUpperBound(entityComboBoxModel.getSelectedEntity());
         }
       }
     });
-    eventUpperBoundChanged().addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+    addUpperBoundListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
         try {
           updatingModel = true;
           final Object upper = getUpperBound();
@@ -193,7 +166,7 @@ public class DefaultForeignKeySearchModel extends AbstractSearchModel<Property.F
       }
     });
 
-    entityComboBoxModel.eventRefreshDone().addListener(new ActionListener() {
+    entityComboBoxModel.addRefreshListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         final Object upper = getUpperBound();
         if ((upper instanceof Collection && !((Collection) upper).isEmpty())) {

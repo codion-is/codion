@@ -8,12 +8,12 @@ import javax.swing.JComponent;
 /**
  * Specifies a generic class for providing a value via a UI component.
  */
-public interface InputProvider<T> {
+public interface InputProvider<T, K extends JComponent> {
 
   /**
    * @return the input component
    */
-  JComponent getInputComponent();
+  K getInputComponent();
 
   /**
    * @return the value according to the input component

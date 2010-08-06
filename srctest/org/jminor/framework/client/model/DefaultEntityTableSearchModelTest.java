@@ -1,28 +1,13 @@
 package org.jminor.framework.client.model;
 
-import org.jminor.common.db.criteria.CriteriaSet;
+import org.jminor.common.model.Conjunction;
 import org.jminor.framework.db.EntityDbConnectionTest;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
-import org.jminor.framework.domain.Property;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-import java.util.ArrayList;
-
 public class DefaultEntityTableSearchModelTest {
-
-  @Test
-  public void testConstructor() {
-    try {
-      new DefaultEntityTableSearchModel(null, EntityDbConnectionTest.DB_PROVIDER, new ArrayList<Property>(), false);
-    }
-    catch (IllegalArgumentException e) {}
-    try {
-      new DefaultEntityTableSearchModel("entityID", EntityDbConnectionTest.DB_PROVIDER, null, false);
-    }
-    catch (IllegalArgumentException e) {}
-  }
 
   @Test
   public void test() {
@@ -32,8 +17,8 @@ public class DefaultEntityTableSearchModelTest {
     assertEquals(EmpDept.T_EMPLOYEE, model.getEntityID());
     assertNotNull(model.getSearchableProperties());
     assertEquals(false, model.isSimpleSearch());
-    model.setSearchConjunction(CriteriaSet.Conjunction.OR);
-    assertEquals(CriteriaSet.Conjunction.OR, model.getSearchConjunction());
+    model.setSearchConjunction(Conjunction.OR);
+    assertEquals(Conjunction.OR, model.getSearchConjunction());
     assertEquals(9, model.getPropertyFilterModels().size());
     assertEquals(8, model.getPropertySearchModels().size());
 

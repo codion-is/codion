@@ -3,35 +3,24 @@
  */
 package org.jminor.framework.client.model;
 
-import org.jminor.common.model.Event;
-import org.jminor.common.model.Util;
+import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.combobox.DefaultFilteredComboBoxModel;
+import org.jminor.common.model.valuemap.ValueCollectionProvider;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Property;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
  * A combo box model based on a single entity property.
  */
-public class DefaultPropertyComboBoxModel extends DefaultFilteredComboBoxModel implements PropertyComboBoxModel {
+public class DefaultPropertyComboBoxModel extends DefaultFilteredComboBoxModel {
 
-  /**
-   * The ID of the entity
-   */
-  private final String entityID;
-
-  /**
-   * The EntityDbProvider instance to use when populating this combo box model
-   */
-  private final EntityDbProvider dbProvider;
-
-  /**
-   * The property which values should be shown in this combo box model
-   */
-  private final Property.ColumnProperty property;
+  private final ValueCollectionProvider<Object> valueProvider;
 
   /**
    * @param entityID the ID of the underlying entity
@@ -42,38 +31,41 @@ public class DefaultPropertyComboBoxModel extends DefaultFilteredComboBoxModel i
    */
   public DefaultPropertyComboBoxModel(final String entityID, final EntityDbProvider dbProvider,
                                       final Property.ColumnProperty property, final String nullValueString,
-                                      final Event refreshEvent) {
+                                      final EventObserver refreshEvent) {
+    this(new ValueCollectionProvider<Object>() {
+      public Collection<Object> getValues() {
+        try {
+          return dbProvider.getEntityDb().selectPropertyValues(entityID, property.getPropertyID(), true);
+        }
+        catch (Exception e) {
+          throw new RuntimeException(e);
+        }
+      }
+    }, nullValueString == null ? (property.isNullable() ? "" : null) : nullValueString, refreshEvent);
+  }
+
+  /**
+   * @param valueProvider provides the values to show in this combo box model
+   * @param nullValueString the value to use to represent a null value
+   * @param refreshEvent triggers a refresh
+   */
+  public DefaultPropertyComboBoxModel(final ValueCollectionProvider<Object> valueProvider, final String nullValueString,
+                                      final EventObserver refreshEvent) {
     super(nullValueString);
-    Util.rejectNullValue(entityID, "entityID");
-    Util.rejectNullValue(dbProvider, "dbProvider");
-    Util.rejectNullValue(property, "property");
-    if (property.isNullable()) {
-      setNullValueString("");
-    }
-    this.entityID = entityID;
-    this.dbProvider = dbProvider;
-    this.property = property;
+    this.valueProvider = valueProvider;
     if (refreshEvent != null) {
       refreshEvent.addListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(final ActionEvent e) {
           refresh();
         }
       });
     }
   }
 
-  public final Property.ColumnProperty getProperty() {
-    return property;
-  }
-
-  public final EntityDbProvider getDbProvider() {
-    return dbProvider;
-  }
-
   @Override
-  protected List<?> initializeContents() {
+  protected final List<?> initializeContents() {
     try {
-      return dbProvider.getEntityDb().selectPropertyValues(entityID, property.getPropertyID(), true);
+      return new ArrayList<Object>(valueProvider.getValues());
     }
     catch (Exception e) {
       throw new RuntimeException(e);

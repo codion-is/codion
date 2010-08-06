@@ -24,7 +24,7 @@ public final class SearchFieldHint {
   public SearchFieldHint(final JTextField txtField, final String searchHint) {
     Util.rejectNullValue(txtField, "txtField");
     Util.rejectNullValue(searchHint, "searchHint");
-    if (searchHint.length() == 0) {
+    if (searchHint.isEmpty()) {
       throw new IllegalArgumentException("Search hint is null or empty");
     }
     this.txtField = txtField;
@@ -41,7 +41,7 @@ public final class SearchFieldHint {
   public void updateState() {
     final boolean hasFocus = txtField.hasFocus();
     final boolean hideHint = hasFocus && txtField.getText().equals(searchHint);
-    final boolean showHint = !hasFocus && txtField.getText().length() == 0;
+    final boolean showHint = !hasFocus && txtField.getText().isEmpty();
     if (hideHint) {
       txtField.setText("");
     }

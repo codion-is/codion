@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -22,20 +23,22 @@ import java.util.TimerTask;
  */
 public abstract class LoadTestModel {
 
+  public static final int DEFAULT_UPDATE_INTERVAL = 2000;
+
   protected static final Logger LOG = Util.getLogger(LoadTestModel.class);
 
   protected static final Random RANDOM = new Random();
 
-  private final Event evtPausedChanged = new Event();
-  private final Event evtCollectChartDataChanged = new Event();
-  private final Event evtMaximumThinkTimeChanged = new Event();
-  private final Event evtMinimumThinkTimeChanged = new Event();
-  private final Event evtWarningTimeChanged = new Event();
-  private final Event evtLoginDelayFactorChanged = new Event();
-  private final Event evtApplicationtCountChanged = new Event();
-  private final Event evtApplicationBatchSizeChanged = new Event();
-  private final Event evtDoneExiting = new Event();
-  private final Event evtUpdateIntervalChanged = new Event();
+  private final Event evtPausedChanged = Events.event();
+  private final Event evtCollectChartDataChanged = Events.event();
+  private final Event evtMaximumThinkTimeChanged = Events.event();
+  private final Event evtMinimumThinkTimeChanged = Events.event();
+  private final Event evtWarningTimeChanged = Events.event();
+  private final Event evtLoginDelayFactorChanged = Events.event();
+  private final Event evtApplicationtCountChanged = Events.event();
+  private final Event evtApplicationBatchSizeChanged = Events.event();
+  private final Event evtDoneExiting = Events.event();
+  private final Event evtUpdateIntervalChanged = Events.event();
 
   private int maximumThinkTime;
   private int minimumThinkTime;
@@ -74,8 +77,6 @@ public abstract class LoadTestModel {
   private final XYSeries maxMemoryCollection = new XYSeries("Maximum memory");
   private final XYSeriesCollection memoryUsageCollection = new XYSeriesCollection();
 
-  private static final int DEFAULT_UPDATE_INTERVAL = 2000;
-
   /**
    * Constructs a new LoadTestModel.
    * @param user the default user to use when initializing applications
@@ -84,10 +85,33 @@ public abstract class LoadTestModel {
    * @param applicationBatchSize the number of applications to add in a batch
    * @param warningTime a work request is considered 'delayed' if the time it takes to process it exceeds this value (ms)
    */
-  public LoadTestModel(final User user, final int maximumThinkTime, final int loginDelayFactor, final int applicationBatchSize,
-                       final int warningTime) {
+  public LoadTestModel(final User user, final int maximumThinkTime, final int loginDelayFactor,
+                       final int applicationBatchSize, final int warningTime) {
+    this(user, new ArrayList<UsageScenario>(), maximumThinkTime, loginDelayFactor, applicationBatchSize, warningTime);
+  }
+
+  /**
+   * Constructs a new LoadTestModel.
+   * @param user the default user to use when initializing applications
+   * @param usageScenarios the usage scenarios to use
+   * @param maximumThinkTime the maximum think time, by default the minimum think time is max / 2
+   * @param loginDelayFactor the value with which to multiply the think time when delaying login
+   * @param applicationBatchSize the number of applications to add in a batch
+   * @param warningTime a work request is considered 'delayed' if the time it takes to process it exceeds this value (ms)
+   */
+  public LoadTestModel(final User user, final Collection<UsageScenario> usageScenarios, final int maximumThinkTime,
+                       final int loginDelayFactor, final int applicationBatchSize, final int warningTime) {
     if (maximumThinkTime <= 0) {
       throw new IllegalArgumentException("Maximum think time must be a positive integer");
+    }
+    if (loginDelayFactor <= 0) {
+      throw new IllegalArgumentException("Login delay factor must be a positive integer");
+    }
+    if (applicationBatchSize <= 0) {
+      throw new IllegalArgumentException("Application batch size must be a positive integer");
+    }
+    if (warningTime <= 0) {
+      throw new IllegalArgumentException("Warning time must be a positive integer");
     }
 
     this.user = user;
@@ -96,11 +120,10 @@ public abstract class LoadTestModel {
     this.loginDelayFactor = loginDelayFactor;
     this.applicationBatchSize = applicationBatchSize;
     this.warningTime = warningTime;
-    this.usageScenarios = initializeUsageScenarios();
+    this.usageScenarios = usageScenarios;
     this.scenarioChooser = initializeScenarioChooser();
     this.counter = new Counter(this.usageScenarios);
     initializeChartData();
-    initializeContext();
     setUpdateInterval(DEFAULT_UPDATE_INTERVAL);
   }
 
@@ -108,7 +131,7 @@ public abstract class LoadTestModel {
     return user;
   }
 
-  public final void setUser(User user) {
+  public final void setUser(final User user) {
     this.user = user;
   }
 
@@ -175,7 +198,7 @@ public abstract class LoadTestModel {
     return warningTime;
   }
 
-  public final void setWarningTime(int warningTime) {
+  public final void setWarningTime(final int warningTime) {
     if (warningTime <= 0) {
       throw new IllegalArgumentException("Warning time must be a positive integer");
     }
@@ -213,7 +236,7 @@ public abstract class LoadTestModel {
     return applicationBatchSize;
   }
 
-  public final void setApplicationBatchSize(int applicationBatchSize) {
+  public final void setApplicationBatchSize(final int applicationBatchSize) {
     if (applicationBatchSize <= 0) {
       throw new IllegalArgumentException("Application batch size must be a positive integer");
     }
@@ -222,13 +245,13 @@ public abstract class LoadTestModel {
     evtApplicationBatchSizeChanged.fire();
   }
 
-  public final void addApplications() throws Exception {
+  public final void addApplicationBatch() throws Exception {
     for (int i = 0; i < applicationBatchSize; i++) {
-      addApplication();
+      new Thread(new ApplicationRunner(this)).start();
     }
   }
 
-  public final void removeApplications() throws Exception {
+  public final void removeApplicationBatch() {
     for (int i = 0; i < applicationBatchSize && !applications.isEmpty(); i++) {
       removeApplication();
     }
@@ -278,7 +301,7 @@ public abstract class LoadTestModel {
   /**
    * @param maximumThinkTime the maximum number of milliseconds that should pass between work requests
    */
-  public final void setMaximumThinkTime(int maximumThinkTime) {
+  public final void setMaximumThinkTime(final int maximumThinkTime) {
     if (maximumThinkTime <= 0) {
       throw new IllegalArgumentException("Maximum think time must be a positive integer");
     }
@@ -297,7 +320,7 @@ public abstract class LoadTestModel {
   /**
    * @param minimumThinkTime the minimum number of milliseconds that should pass between work requests
    */
-  public final void setMinimumThinkTime(int minimumThinkTime) {
+  public final void setMinimumThinkTime(final int minimumThinkTime) {
     if (minimumThinkTime < 0) {
       throw new IllegalArgumentException("Minimum think time must be a positive integer");
     }
@@ -319,36 +342,36 @@ public abstract class LoadTestModel {
     evtLoginDelayFactorChanged.fire();
   }
 
-  public final Event eventApplicationBatchSizeChanged() {
-    return evtApplicationBatchSizeChanged;
+  public final void addExitListener(final ActionListener listener) {
+    evtDoneExiting.addListener(listener);
   }
 
-  public final Event eventApplicationCountChanged() {
-    return evtApplicationtCountChanged;
+  public final EventObserver applicationBatchSizeObserver() {
+    return evtApplicationBatchSizeChanged.getObserver();
   }
 
-  public final Event eventDoneExiting() {
-    return evtDoneExiting;
+  public final EventObserver applicationCountObserver() {
+    return evtApplicationtCountChanged.getObserver();
   }
 
-  public final Event eventMaximumThinkTimeChanged() {
-    return evtMaximumThinkTimeChanged;
+  public final EventObserver maximumThinkTimeObserver() {
+    return evtMaximumThinkTimeChanged.getObserver();
   }
 
-  public final Event eventMinimumThinkTimeChanged() {
-    return evtMinimumThinkTimeChanged;
+  public final EventObserver minimumThinkTimeObserver() {
+    return evtMinimumThinkTimeChanged.getObserver();
   }
 
-  public final Event eventPausedChanged() {
-    return evtPausedChanged;
+  public final EventObserver pauseObserver() {
+    return evtPausedChanged.getObserver();
   }
 
-  public final Event eventCollectChartDataChanged() {
-    return evtCollectChartDataChanged;
+  public final EventObserver collectChartDataObserver() {
+    return evtCollectChartDataChanged.getObserver();
   }
 
-  public final Event eventWarningTimeChanged() {
-    return evtWarningTimeChanged;
+  public final EventObserver warningTimeObserver() {
+    return evtWarningTimeChanged.getObserver();
   }
 
   protected void performWork(final Object application) {
@@ -366,84 +389,18 @@ public abstract class LoadTestModel {
     getUsageScenario(usageScenarioName).run(application);
   }
 
-  protected Collection<UsageScenario> initializeUsageScenarios() {
-    return new ArrayList<UsageScenario>();
-  }
-
   protected abstract Object initializeApplication() throws CancelException;
 
   protected abstract void disconnectApplication(final Object application);
-
-  protected void initializeContext() {/**/}
-
-  /**
-   * Simulates a user think pause by sleeping for a little while
-   * @throws InterruptedException in case the sleep is interrupted
-   * @see #getThinkTime()
-   */
-  protected final void think() throws InterruptedException {
-    Thread.sleep(getThinkTime());
-  }
 
   protected final int getThinkTime() {
     final int time = minimumThinkTime - maximumThinkTime;
     return time > 0 ? RANDOM.nextInt(time) + minimumThinkTime : minimumThinkTime;
   }
 
-  private synchronized void addApplication() {
-    final Runnable applicationRunner = new Runnable() {
-      public void run() {
-        try {
-          delayLogin();
-          final Object application = initializeApplication();
-          LOG.debug("LoadTestModel initialized application: " + application);
-          applications.push(application);
-          evtApplicationtCountChanged.fire();
-          while (applications.contains(application)) {
-            try {
-              think();
-              if (!isPaused() && (applications.contains(application))) {
-                final long currentTime = System.currentTimeMillis();
-                try {
-                  counter.incrementWorkRequests();
-                  performWork(application);
-                }
-                finally {
-                  final long workTime = System.currentTimeMillis() - currentTime;
-                  if (workTime > warningTime) {
-                    counter.incrementDelayedWorkRequests();
-                  }
-                }
-              }
-            }
-            catch (Exception e) {
-              LOG.debug("Exception during during LoadTestModel.run() with application: " + application, e);
-            }
-          }
-          disconnectApplication(application);
-        }
-        catch (Exception e) {
-          LOG.error("Exception while initializing application", e);
-        }
-      }
-    };
-    new Thread(applicationRunner).start();
-  }
-
   private synchronized void removeApplication() {
     applications.pop();
     evtApplicationtCountChanged.fire();
-  }
-
-  private void delayLogin() {
-    try {
-      final int sleepyTime = RANDOM.nextInt(maximumThinkTime * (loginDelayFactor <= 0 ? 1 : loginDelayFactor));
-      System.out.println("AppModel delaying login for " + sleepyTime + " ms");
-      Thread.sleep(sleepyTime);// delay login a bit so all do not try to login at the same time
-    }
-    catch (InterruptedException e) {
-      LOG.error("Delay login sleep interrupted", e);
-    }
   }
 
   private RandomItemModel<UsageScenario> initializeScenarioChooser() {
@@ -505,6 +462,69 @@ public abstract class LoadTestModel {
     }
   }
 
+  private static final class ApplicationRunner implements Runnable {
+
+    private final LoadTestModel loadTestModel;
+
+    private ApplicationRunner(final LoadTestModel loadTestModel) {
+      this.loadTestModel = loadTestModel;
+    }
+
+    public void run() {
+      try {
+        delayLogin();
+        final Object application = loadTestModel.initializeApplication();
+        LOG.debug("LoadTestModel initialized application: " + application);
+        loadTestModel.applications.push(application);
+        loadTestModel.evtApplicationtCountChanged.fire();
+        while (loadTestModel.applications.contains(application)) {
+          try {
+            think();
+            if (!loadTestModel.isPaused() && (loadTestModel.applications.contains(application))) {
+              final long currentTime = System.currentTimeMillis();
+              try {
+                loadTestModel.counter.incrementWorkRequests();
+                loadTestModel.performWork(application);
+              }
+              finally {
+                final long workTime = System.currentTimeMillis() - currentTime;
+                if (workTime > loadTestModel.getWarningTime()) {
+                  loadTestModel.counter.incrementDelayedWorkRequests();
+                }
+              }
+            }
+          }
+          catch (Exception e) {
+            LOG.debug("Exception during during LoadTestModel.run() with application: " + application, e);
+          }
+        }
+        loadTestModel.disconnectApplication(application);
+      }
+      catch (Exception e) {
+        LOG.error("Exception while initializing application", e);
+      }
+    }
+
+    /**
+     * Simulates a user think pause by sleeping for a little while
+     * @throws InterruptedException in case the sleep is interrupted
+     */
+    private void think() throws InterruptedException {
+      Thread.sleep(loadTestModel.getThinkTime());
+    }
+
+    private void delayLogin() {
+      try {
+        final int sleepyTime = RANDOM.nextInt(loadTestModel.getMaximumThinkTime() *
+                (loadTestModel.getLoginDelayFactor() <= 0 ? 1 : loadTestModel.getLoginDelayFactor()));
+        Thread.sleep(sleepyTime);// delay login a bit so all do not try to login at the same time
+      }
+      catch (InterruptedException e) {
+        LOG.error("Delay login sleep interrupted", e);
+      }
+    }
+  }
+
   /**
    * Encapsulates a load test usage scenario.
    */
@@ -514,39 +534,43 @@ public abstract class LoadTestModel {
     private int successfulRunCount = 0;
     private int unsuccessfulRunCount = 0;
 
+    public UsageScenario() {
+      this.name = getClass().getSimpleName();
+    }
+
     public UsageScenario(final String name) {
       this.name = name;
     }
 
-    public String getName() {
+    public final String getName() {
       return this.name;
     }
 
-    public int getSuccessfulRunCount() {
+    public final int getSuccessfulRunCount() {
       return successfulRunCount;
     }
 
-    public int getUnsuccessfulRunCount() {
+    public final int getUnsuccessfulRunCount() {
       return unsuccessfulRunCount;
     }
 
-    public int getTotalRunCount() {
+    public final int getTotalRunCount() {
       return successfulRunCount + unsuccessfulRunCount;
     }
 
-    public void resetRunCount() {
+    public final void resetRunCount() {
       successfulRunCount = 0;
       unsuccessfulRunCount = 0;
     }
 
     @Override
-    public String toString() {
+    public final String toString() {
       return name;
     }
 
-    public void run(final Object application) throws Exception {
+    public final void run(final Object application) throws Exception {
       if (application == null) {
-        throw new RuntimeException("Can not run without an application model");
+        throw new RuntimeException("Can not run without an application");
       }
       try {
         prepare(application);
@@ -580,7 +604,7 @@ public abstract class LoadTestModel {
     protected void cleanup(final Object application) {}
   }
 
-  private static class Counter {
+  private static final class Counter {
 
     private final Collection<UsageScenario> usageScenarios;
     private final Map<String, Integer> usageScenarioRates = new HashMap<String, Integer>();

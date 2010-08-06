@@ -1898,3 +1898,96 @@
   Finalized a bunch of classes and methods
   More of the same
 0.5.8
+  Distribution jars are now package-sealed by default
+  ValueChangeMapEditModel.clearValues() removed, setValueMap(null) serves that purpose
+  ValueChangeMapEditPanel.clearModelValues() added for clear action
+  AbstractValueChangeMapEditModel, added default implementations for abstract methods, renamed to DefaultValueChangeMapEditModel
+  ForeignKeySearchModel.initialize() removed
+  AbstractInputProvider overgenerified?
+  More finalization/inheritance work
+  Coberture coverage added to build.xml
+  ValueMapImplTest added
+  EntityDbConnection.insert() minor optimzation change
+  EntityImpl.handleSetAs() did not call super
+  DefaultEntityEditModel.update() now sets the active entity after update
+  PropertyFilterModel, most of it pushed up into SearchModel
+  AbstractSearchModel renamed to DefaultSearchModel
+  AbstractFilteredTableModel now contains the column search models, filterCriteria implemented accordingly
+  PropertyFilterPanel stuff moved to AbstractSearchPanel
+  AbstractFilteredTablePanel now contains the column search panels
+  DateBeanValueLink and TimestampBeanValueLink added
+  ValueMap.getValueCount() removed
+  Field and parameter finalization (automatic)
+  common.model.valuemap improved unit tests
+  common.model improved unit tests
+  common.ui.control improved unit tests
+  common.ui improved and added unit tests
+  common.model.valuemap.Validator added
+  DefaultValidator added
+  DefaultValueChangeMapEditModel.getValidator() added
+  EntityValidator added
+  DefaultEntityValidator added
+  EntityValidator.getDbProvider() added
+  DefaultEntityValidator.dbProvider field added
+  EntityPanelProvider.validatorClass added
+  EntityValidator moved to client.model
+  Insert/Update/DeleteListener added
+  EntityTablePanel.initializeSearchPanel() and initializeSummaryPanel() removed to constructor
+  DefaultFilteredComboBoxModel.setSelectedItem() now final, translateSelectionItem() and vetoSelectionChange() added
+  DefaultFilteredComboBoxModel.resetContents() removed
+  AbstractBeanValueLink.getSet/GetMethod() now private
+  LoadTestModel.usageScenarios now final, initializeUsageScenarios() removed
+  More finalization of classes, fields and methods
+  LoadTestModelTest improved
+  AbstractFilteredTableModelTest improved
+  AbstractFilteredTableModelTest improved some more
+  Added tests to common
+  More finalization/refactoring
+  EventObserver interface added
+  Event model improved, event...() methods replaced with ...Observer() and add...Listener() methods
+  Event and State now interfaces
+  Events and States factory classes added
+  EventObserver fleshed out
+  common.model.Conjunction added
+  ControlFactory renamed to Controls for consistency
+  StateObserver added
+  LinkedState removed
+  state... methods renamed to get...State
+  string.length() >/== 0 replaced with (!)string.isEmpty()
+  Util.nullOrEmpty() finally added and used throughout
+  common.db.dbms refactored
+  State/StateObserver refactored
+  EntityPanel.getTablePopupControlSet() is now private
+  EntityApplicationPanel.configureApplication() removed
+  TextValueLink.addValidator() removed
+  TextValueLink.Validator and ValidatorImpl added
+  FormattedValueLink.FormattedValidator added
+  UiUtul.transferFocusOnEnter() bug fixed, key events got lost if SHIFT was not down
+  AbstractFilteredTablePanel.getTableModel() renamed to getFilteredTableModel(), finalized
+  AbstractFilteredTablePanel.getDateFormat() moved to SearchModel and renamed to getForma()
+  AbstractSearchPanel, added input fields as constructor parameters
+  AbstractSearchPanel.InputFieldProvider interface added, implemented in subclasses
+  AbstractSearchPanel.searchTypeAllowed() removed, SearchType... parameter added to constructor
+  SearchModel renamed to ColumnSearchModel
+  SearchModel.getSearchKey() renamed to getColumnIdentifier()
+  AbstractSearchPanel renamed to ColumnSearchPanel
+  SearchType.getImageName() added
+  DefaultEntityTableSearchModel no longer sets the search state during construction, call to bindEvents() moved to initialize()
+  EntityPanel, editControlPanel initialized during setEditPanelState()
+  PropertyFilterModelProvider/DefaultPropertyFilterModelProvider added
+  PropertySearchModelProvider/DefaultPropertySearchModelProvider added
+  PropertyComboBoxModel interface removed, FilteredComboBoxModel used instead
+  DefaultPropertyComboBoxModel simplified
+  EntityLookupModel.description field added
+  DefaultEntityComboBoxModel.performQuery() privatized
+  ValueChangeMapEditPanel.getEditModel() finalized
+  EntityEditPanel.getEntityEditModel() added
+  AbstractFilteredTablePanel.getFilteredTableModel() renamed to getTableModel()
+  EntityTablePanel.getTableModel() renamed to getEntityTableModel()
+  DefaultValueChangeMapEditModel.getDefaultValueMap() implementation removed
+  DefaultValueChangeMapEditModel renamed to AbstractValueChangeMapEditModel
+  EntityTablePanel.initializeUI() renamed to initializePanel(), publicized, call required after panel construction
+  EntityTablePanel.panelInitialized field added, functionality mirrors EntityPanel
+  EntityTablePanel.additionalPopup/ToolbarControls fields added
+  DefaultEntityModel.bindTableModelEvents() functionality moved to DefaultEntityTableModel.setEditModel()
+  DefaultEntityModel.updateDetailModelsByActiveEntity() privatized

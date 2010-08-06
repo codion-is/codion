@@ -4,7 +4,7 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.db.criteria.Criteria;
-import org.jminor.common.model.AbstractSearchModel;
+import org.jminor.common.model.DefaultColumnSearchModel;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.domain.Property;
@@ -14,7 +14,7 @@ import java.util.Collection;
 /**
  * A class for searching a set of entities based on a property.
  */
-public class DefaultPropertySearchModel extends AbstractSearchModel<Property.ColumnProperty>
+public class DefaultPropertySearchModel extends DefaultColumnSearchModel<Property.ColumnProperty>
         implements PropertySearchModel<Property.ColumnProperty> {
 
   /**
@@ -23,12 +23,13 @@ public class DefaultPropertySearchModel extends AbstractSearchModel<Property.Col
    * @throws IllegalArgumentException if an illegal constant is used
    */
   public DefaultPropertySearchModel(final Property.ColumnProperty property) {
-    super(property, property.getType(), (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER));
+    super(property, property.getType(), (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER),
+            property.getFormat());
   }
 
   @Override
-  public String toString() {
-    final StringBuilder stringBuilder = new StringBuilder(getSearchKey().getPropertyID());
+  public final String toString() {
+    final StringBuilder stringBuilder = new StringBuilder(getColumnIdentifier().getPropertyID());
     if (isSearchEnabled()) {
       stringBuilder.append(getSearchType());
       stringBuilder.append(getUpperBound() != null ? toString(getUpperBound()) : "null");
@@ -38,20 +39,11 @@ public class DefaultPropertySearchModel extends AbstractSearchModel<Property.Col
     return stringBuilder.toString();
   }
 
-  /**
-   * @return a Criteria based on the values in this search model.
-   */
-  public Criteria<Property.ColumnProperty> getCriteria() {
+  public final Criteria<Property.ColumnProperty> getCriteria() {
     return getValueCount(getSearchType()) == 1 ?
-            EntityCriteriaUtil.propertyCriteria(getSearchKey(), isCaseSensitive(), getSearchType(), getUpperBound()) :
-            EntityCriteriaUtil.propertyCriteria(getSearchKey(), isCaseSensitive(), getSearchType(), getLowerBound(), getUpperBound());
+            EntityCriteriaUtil.propertyCriteria(getColumnIdentifier(), isCaseSensitive(), getSearchType(), getUpperBound()) :
+            EntityCriteriaUtil.propertyCriteria(getColumnIdentifier(), isCaseSensitive(), getSearchType(), getLowerBound(), getUpperBound());
   }
-
-  public boolean include(final Object object) {
-    return true;
-  }
-
-  public void initialize() {}
 
   private String toString(final Object object) {
     final StringBuilder stringBuilder = new StringBuilder();

@@ -59,7 +59,7 @@ public class ItemComboBoxModel<T> extends DefaultComboBoxModel {
     return (Item<T>) super.getSelectedItem();
   }
 
-  protected final void initializeItems(final List<Item<T>> items) {
+  private void initializeItems(final List<Item<T>> items) {
     if (items == null) {
       return;
     }
@@ -120,13 +120,8 @@ public class ItemComboBoxModel<T> extends DefaultComboBoxModel {
       return icon.getIconWidth();
     }
 
-    public void paintIcon(Component c, Graphics g, int x, int y) {
+    public void paintIcon(final Component c, final Graphics g, final int x, final int y) {
       icon.paintIcon(c, g, x, y);
-    }
-
-    @Override
-    public String toString() {
-      return getItem().toString();
     }
   }
 }

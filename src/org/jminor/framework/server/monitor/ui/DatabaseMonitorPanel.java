@@ -4,8 +4,8 @@
 package org.jminor.framework.server.monitor.ui;
 
 import org.jminor.common.ui.UiUtil;
-import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
+import org.jminor.common.ui.control.Controls;
 import org.jminor.common.ui.control.IntBeanSpinnerValueLink;
 import org.jminor.framework.server.monitor.DatabaseMonitor;
 
@@ -55,7 +55,7 @@ public final class DatabaseMonitorPanel extends JPanel {
   private JPanel getChartPanel() {
     final JPanel chartConfig = new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
     final JSpinner spnUpdateInterval = new JSpinner(new IntBeanSpinnerValueLink(model, "statsUpdateInterval",
-            model.eventStatsUpdateIntervalChanged()).getSpinnerModel());
+            model.getStatsUpdateIntervalObserver()).getSpinnerModel());
 
     ((JSpinner.DefaultEditor) spnUpdateInterval.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) spnUpdateInterval.getEditor()).getTextField().setColumns(3);
@@ -66,7 +66,7 @@ public final class DatabaseMonitorPanel extends JPanel {
     final JPanel configBase = new JPanel(new BorderLayout(5,5));
     configBase.add(chartConfig, BorderLayout.CENTER);
     configBase.add(ControlProvider.createButton(
-            ControlFactory.methodControl(model, "resetStats", "Reset")), BorderLayout.EAST);
+            Controls.methodControl(model, "resetStats", "Reset")), BorderLayout.EAST);
 
     final JPanel panel = new JPanel(new BorderLayout(5,5));
     queriesPerSecondChartPanel.setBorder(BorderFactory.createEtchedBorder());

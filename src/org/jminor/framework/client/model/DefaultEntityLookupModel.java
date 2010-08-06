@@ -5,7 +5,10 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.criteria.CriteriaSet;
+import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventObserver;
+import org.jminor.common.model.Events;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
@@ -15,6 +18,7 @@ import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -27,8 +31,8 @@ import java.util.List;
  */
 public class DefaultEntityLookupModel implements EntityLookupModel {
 
-  private final Event evtSelectedEntitiesChanged = new Event();
-  private final Event evtSearchStringChanged = new Event();
+  private final Event evtSelectedEntitiesChanged = Events.event();
+  private final Event evtSearchStringChanged = Events.event();
 
   /**
    * The ID of the entity this lookup model is based on
@@ -58,6 +62,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
   private boolean wildcardPostfix = true;
   private String wildcard = (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER);
   private String multipleValueSeparator = ",";
+  private String description;
 
   /**
    * Instantiates a new EntityLookupModel
@@ -72,6 +77,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
     this.dbProvider = dbProvider;
     this.entityID = entityID;
     this.lookupProperties = lookupProperties;
+    this.description = Util.getCollectionContentsAsString(getLookupProperties(), false);
   }
 
   public final String getEntityID() {
@@ -89,16 +95,20 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
     return Collections.unmodifiableList(lookupProperties);
   }
 
-  public String getDescription() {
-    return Util.getCollectionContentsAsString(getLookupProperties(), false);
-  }
-
   public final boolean isMultipleSelectionAllowed() {
     return multipleSelectionAllowed;
   }
 
   public final void setMultipleSelectionAllowed(final boolean multipleSelectionAllowed) {
     this.multipleSelectionAllowed = multipleSelectionAllowed;
+  }
+
+  public final String getDescription() {
+    return description;
+  }
+
+  public final void setDescription(final String description) {
+    this.description = description;
   }
 
   public final void setSelectedEntity(final Entity entity) {
@@ -143,9 +153,6 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
     return this;
   }
 
-  /**
-   * @return whether or not to automatically prefix the the search string with a wildcard
-   */
   public final boolean isWildcardPrefix() {
     return wildcardPrefix;
   }
@@ -155,9 +162,6 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
     return this;
   }
 
-  /**
-   * @return the wildcard
-   */
   public final String getWildcard() {
     return wildcard;
   }
@@ -198,7 +202,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
 
   public final boolean searchStringRepresentsSelected() {
     final String selectedAsString = toString(getSelectedEntities());
-    return (selectedEntities.isEmpty() && searchString.length() == 0)
+    return (selectedEntities.isEmpty() && searchString.isEmpty())
             || !selectedEntities.isEmpty() && selectedAsString.equals(searchString);
   }
 
@@ -211,12 +215,24 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
     }
   }
 
-  public final Event eventSearchStringChanged() {
-    return evtSearchStringChanged;
+  public final EventObserver searchStringObserver() {
+    return evtSearchStringChanged.getObserver();
   }
 
-  public final Event eventSelectedEntitiesChanged() {
-    return evtSelectedEntitiesChanged;
+  public final void addSearchStringListener(final ActionListener listener) {
+    evtSearchStringChanged.addListener(listener);
+  }
+
+  public final void addSelectedEntitiesListener(final ActionListener listener) {
+    evtSelectedEntitiesChanged.addListener(listener);
+  }
+
+  public final void removeSearchStringListener(final ActionListener listener) {
+    evtSearchStringChanged.removeListener(listener);
+  }
+
+  public final void removeSelectedEntitiesListener(final ActionListener listener) {
+    evtSelectedEntitiesChanged.removeListener(listener);
   }
 
   /**
@@ -228,17 +244,17 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
       return EntityCriteriaUtil.selectCriteria(entityID);
     }
 
-    final CriteriaSet<Property.ColumnProperty> baseCriteria = new CriteriaSet<Property.ColumnProperty>(CriteriaSet.Conjunction.OR);
+    final CriteriaSet<Property.ColumnProperty> baseCriteria = new CriteriaSet<Property.ColumnProperty>(Conjunction.OR);
     final String[] lookupTexts = multipleSelectionAllowed ? searchString.split(multipleValueSeparator) : new String[] {searchString};
     for (final Property.ColumnProperty lookupProperty : lookupProperties) {
       for (final String lookupText : lookupTexts) {
         final String modifiedLookupText = (wildcardPrefix ? wildcard : "") + lookupText + (wildcardPostfix ? wildcard : "");
-        baseCriteria.addCriteria(EntityCriteriaUtil.propertyCriteria(lookupProperty, caseSensitive, SearchType.LIKE, modifiedLookupText));
+        baseCriteria.add(EntityCriteriaUtil.propertyCriteria(lookupProperty, caseSensitive, SearchType.LIKE, modifiedLookupText));
       }
     }
 
     return EntityCriteriaUtil.selectCriteria(entityID, additionalLookupCriteria == null ? baseCriteria :
-            new CriteriaSet<Property.ColumnProperty>(CriteriaSet.Conjunction.AND, additionalLookupCriteria, baseCriteria));
+            new CriteriaSet<Property.ColumnProperty>(Conjunction.AND, additionalLookupCriteria, baseCriteria));
   }
 
   private String toString(final List<Entity> entityList) {

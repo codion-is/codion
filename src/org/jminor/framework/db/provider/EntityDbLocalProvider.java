@@ -37,7 +37,7 @@ public final class EntityDbLocalProvider extends AbstractEntityDbProvider {
     Util.rejectNullValue(database, "database");
     this.database = database;
     this.connectionProperties.put("user", user.getUsername());
-    this.connectionProperties.put("password", user.getPassword());
+    this.connectionProperties.put(Database.PASSWORD_PROPERTY, user.getPassword());
   }
 
   public String getDescription() {

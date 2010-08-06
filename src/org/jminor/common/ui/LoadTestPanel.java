@@ -7,8 +7,8 @@ import org.jminor.common.model.LoadTestModel;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.control.Control;
-import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
+import org.jminor.common.ui.control.Controls;
 import org.jminor.common.ui.control.IntBeanSpinnerValueLink;
 import org.jminor.common.ui.control.IntBeanValueLink;
 import org.jminor.common.ui.control.LinkType;
@@ -49,6 +49,7 @@ import java.awt.event.WindowEvent;
 public final class LoadTestPanel extends JPanel {
 
   private static final int MEMORY_USAGE_UPDATE_INTERVAL = 2000;
+  private static final double SCREEN_SIZE_RATIO = 0.75;
   private final LoadTestModel loadTestModel;
 
   /**
@@ -68,31 +69,24 @@ public final class LoadTestPanel extends JPanel {
   public JFrame showFrame() {
     final JFrame frame = UiUtil.createFrame(Images.loadImage("jminor_logo32.gif").getImage());
     final String title = "JMinor - " + loadTestModel.getClass().getSimpleName();
-    loadTestModel.eventDoneExiting().addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        if (frame != null) {
-          frame.setVisible(false);
-          frame.dispose();
-        }
-      }
-    });
+    loadTestModel.addExitListener(new ExitListener(frame));
     frame.addWindowListener(new WindowAdapter() {
       @Override
-      public void windowClosing(WindowEvent e) {
+      public void windowClosing(final WindowEvent e) {
         frame.setTitle(title + " - Closing...");
         loadTestModel.exit();
       }
     });
     frame.setTitle(title);
     frame.getContentPane().add(this);
-    UiUtil.resizeWindow(frame, 0.75);
+    UiUtil.resizeWindow(frame, SCREEN_SIZE_RATIO);
     UiUtil.centerWindow(frame);
     frame.setVisible(true);
 
     return frame;
   }
 
-  protected void initializeUI() {
+  private void initializeUI() {
     final JPanel chartBase = initializeChartPanel();
     final JPanel activityPanel = initializeActivityPanel();
     final JPanel applicationPanel = initializeApplicationPanel();
@@ -138,7 +132,7 @@ public final class LoadTestPanel extends JPanel {
     final JTextField txtPassword = new JPasswordField(user.getPassword());
     txtPassword.setColumns(8);
     final ActionListener userInfoListener = new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         loadTestModel.setUser(new User(txtUsername.getText(), txtPassword.getText()));
       }
     };
@@ -160,18 +154,13 @@ public final class LoadTestPanel extends JPanel {
   private JPanel initializeApplicationPanel() {
     final IntField applicationCountField = new IntField();
     applicationCountField.setHorizontalAlignment(JTextField.CENTER);
-    new IntBeanValueLink(applicationCountField, getModel(), "applicationCount", loadTestModel.eventApplicationCountChanged(), LinkType.READ_ONLY) {
-      @Override
-      protected synchronized void setUIValue(final Object value) {
-        super.setUIValue(value);
-      }
-    };
+    new IntBeanValueLink(applicationCountField, loadTestModel, "applicationCount", loadTestModel.applicationCountObserver(), LinkType.READ_ONLY);
 
     final JPanel applicationPanel = new JPanel(new BorderLayout(5, 5));
     applicationPanel.setBorder(BorderFactory.createTitledBorder("Applications"));
 
     final JSpinner spnBatchSize = new JSpinner(new IntBeanSpinnerValueLink(loadTestModel, "applicationBatchSize",
-            loadTestModel.eventApplicationBatchSizeChanged()).getSpinnerModel());
+            loadTestModel.applicationBatchSizeObserver()).getSpinnerModel());
     spnBatchSize.setToolTipText("Application batch size");
     ((JSpinner.DefaultEditor) spnBatchSize.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) spnBatchSize.getEditor()).getTextField().setColumns(3);
@@ -200,10 +189,10 @@ public final class LoadTestPanel extends JPanel {
       public void actionPerformed(final ActionEvent e) {
         try {
           if (add) {
-            loadTestModel.addApplications();
+            loadTestModel.addApplicationBatch();
           }
           else {
-            loadTestModel.removeApplications();
+            loadTestModel.removeApplicationBatch();
           }
         }
         catch (Exception ex) {
@@ -221,9 +210,9 @@ public final class LoadTestPanel extends JPanel {
   private JPanel initializeChartControlPanel() {
     final JPanel controlPanel = new JPanel(new FlexibleGridLayout(1, 2, 5, 5, true, false));
     controlPanel.setBorder(BorderFactory.createTitledBorder("Charts"));
-    controlPanel.add(ControlProvider.createCheckBox(ControlFactory.toggleControl(loadTestModel, "collectChartData",
-            "Collect chart data", loadTestModel.eventCollectChartDataChanged())));
-    controlPanel.add(ControlProvider.createButton(ControlFactory.methodControl(loadTestModel, "resetChartData", "Reset")));
+    controlPanel.add(ControlProvider.createCheckBox(Controls.toggleControl(loadTestModel, "collectChartData",
+            "Collect chart data", loadTestModel.collectChartDataObserver())));
+    controlPanel.add(ControlProvider.createButton(Controls.methodControl(loadTestModel, "resetChartData", "Reset")));
 
     return controlPanel;
   }
@@ -272,27 +261,27 @@ public final class LoadTestPanel extends JPanel {
 
   private JPanel initializeActivityPanel() {
     SpinnerNumberModel spinnerModel = new IntBeanSpinnerValueLink(loadTestModel, "maximumThinkTime",
-            loadTestModel.eventMaximumThinkTimeChanged()).getSpinnerModel();
+            loadTestModel.maximumThinkTimeObserver()).getSpinnerModel();
     spinnerModel.setStepSize(10);
     final JSpinner spnMaxThinkTime = new JSpinner(spinnerModel);
     ((JSpinner.DefaultEditor) spnMaxThinkTime.getEditor()).getTextField().setColumns(3);
 
     spinnerModel = new IntBeanSpinnerValueLink(loadTestModel, "minimumThinkTime",
-            loadTestModel.eventMinimumThinkTimeChanged()).getSpinnerModel();
+            loadTestModel.minimumThinkTimeObserver()).getSpinnerModel();
     spinnerModel.setStepSize(10);
     final JSpinner spnMinThinkTimeField = new JSpinner(spinnerModel);
     ((JSpinner.DefaultEditor) spnMinThinkTimeField.getEditor()).getTextField().setColumns(3);
 
     spinnerModel = new IntBeanSpinnerValueLink(loadTestModel, "warningTime",
-            loadTestModel.eventWarningTimeChanged()).getSpinnerModel();
+            loadTestModel.warningTimeObserver()).getSpinnerModel();
     spinnerModel.setStepSize(10);
     final JSpinner spnWarningTime = new JSpinner(spinnerModel);
     ((JSpinner.DefaultEditor) spnWarningTime.getEditor()).getTextField().setColumns(3);
     spnWarningTime.setToolTipText("A work request is considered 'delayed' if the time it takes to process it exceeds this value (ms)");
 
-    final ToggleBeanValueLink pauseControl = ControlFactory.toggleControl(loadTestModel, "paused", "Pause", loadTestModel.eventPausedChanged());
+    final ToggleBeanValueLink pauseControl = Controls.toggleControl(loadTestModel, "paused", "Pause", loadTestModel.pauseObserver());
     pauseControl.setMnemonic('P');
-    final MethodControl gcControl = ControlFactory.methodControl(loadTestModel, "performGC", "Perform GC");
+    final MethodControl gcControl = Controls.methodControl(loadTestModel, "performGC", "Perform GC");
 
     final FlexibleGridLayout layout = new FlexibleGridLayout(4, 2, 5, 5, true, false);
     layout.setFixedRowHeight(UiUtil.getPreferredTextFieldHeight());
@@ -310,5 +299,20 @@ public final class LoadTestPanel extends JPanel {
     thinkTimePanel.setBorder(BorderFactory.createTitledBorder("Activity"));
 
     return thinkTimePanel;
+  }
+
+  private static final class ExitListener implements ActionListener {
+    private final JFrame frame;
+
+    public ExitListener(final JFrame frame) {
+      this.frame = frame;
+    }
+
+    public void actionPerformed(final ActionEvent e) {
+      if (frame != null) {
+        frame.setVisible(false);
+        frame.dispose();
+      }
+    }
   }
 }

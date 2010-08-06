@@ -102,25 +102,12 @@ public final class StringProvider<K> implements ValueMap.ToString<K>, Serializab
     return this;
   }
 
-  /**
-   * Returns true if the given key is referenced
-   * @param referenceKey the key
-   * @return true if the given key is referenced
-   */
-  public boolean references(final K referenceKey) {
-    for (final ValueProvider provider : valueProviders) {
-      if (provider instanceof ReferencedValueProvider && ((ReferencedValueProvider) provider).getReferenceKey().equals(referenceKey)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
   private interface ValueProvider<T> extends Serializable {
     String toString(final ValueMap<T, ?> valueMap);
   }
 
   private static class FormattedValueProvider<T> implements ValueProvider<T> {
+    private static final long serialVersionUID = 1;
     private final T key;
     private final Format format;
 
@@ -139,6 +126,7 @@ public final class StringProvider<K> implements ValueMap.ToString<K>, Serializab
   }
 
   private static class ReferencedValueProvider<T> implements ValueProvider<T> {
+    private static final long serialVersionUID = 1;
     private final T referenceKey;
     private final T key;
 
@@ -163,13 +151,10 @@ public final class StringProvider<K> implements ValueMap.ToString<K>, Serializab
 
       return referencedValueMap.getValue(key).toString();
     }
-
-    public T getReferenceKey() {
-      return referenceKey;
-    }
   }
 
   private static class StringValueProvider<T> implements ValueProvider<T> {
+    private static final long serialVersionUID = 1;
     private final T key;
 
     StringValueProvider(final T key) {
@@ -186,6 +171,7 @@ public final class StringProvider<K> implements ValueMap.ToString<K>, Serializab
   }
 
   private static class StaticTextProvider<T> implements ValueProvider<T> {
+    private static final long serialVersionUID = 1;
     private final String text;
 
     StaticTextProvider(final String text) {

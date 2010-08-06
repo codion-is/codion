@@ -21,8 +21,8 @@ import org.jminor.framework.Configuration;
 import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.db.criteria.EntitySelectCriteria;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
@@ -98,11 +98,11 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
       final List<Property.ColumnProperty> insertProperties = new ArrayList<Property.ColumnProperty>();
       final List<Object> statementValues = new ArrayList<Object>();
       for (final Entity entity : entities) {
-        if (EntityRepository.isReadOnly(entity.getEntityID())) {
+        if (Entities.isReadOnly(entity.getEntityID())) {
           throw new DbException("Can not insert a read only entity: " + entity.getEntityID());
         }
 
-        final IdSource idSource = EntityRepository.getIdSource(entity.getEntityID());
+        final IdSource idSource = Entities.getIdSource(entity.getEntityID());
         final Property.PrimaryKeyProperty firstPrimaryKeyProperty = entity.getPrimaryKey().getFirstKeyProperty();
         if (idSource.isQueried() && entity.getPrimaryKey().isNull()) {
           entity.setValue(firstPrimaryKeyProperty, queryNewIdValue(entity.getEntityID(), idSource, firstPrimaryKeyProperty));
@@ -114,12 +114,13 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
 
         executePreparedUpdate(statement, insertQuery, statementValues, insertProperties);
 
+        final Entity.Key primaryKey = entity.getPrimaryKey();
         if (idSource.isAutoIncrement() && entity.getPrimaryKey().isNull()) {
-          entity.setValue(firstPrimaryKeyProperty, queryInteger(getDatabase().getAutoIncrementValueSQL(
-                  EntityRepository.getEntityIdSource(entity.getEntityID()))));
+          primaryKey.setValue(firstPrimaryKeyProperty.getPropertyID(), queryInteger(getDatabase().getAutoIncrementValueSQL(
+                  Entities.getEntityIdSource(entity.getEntityID()))));
         }
 
-        keys.add(entity.getPrimaryKey());
+        keys.add(primaryKey);
 
         statement.close();
         insertProperties.clear();
@@ -154,20 +155,18 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
     try {
       final Map<String, Collection<Entity>> hashedEntities = EntityUtil.hashByEntityID(entities);
       for (final String entityID : hashedEntities.keySet()) {
-        if (EntityRepository.isReadOnly(entityID)) {
+        if (Entities.isReadOnly(entityID)) {
           throw new DbException("Can not update a read only entity: " + entityID);
         }
       }
-
       final List<Object> statementValues = new ArrayList<Object>();
       final List<Property.ColumnProperty> statementProperties = new ArrayList<Property.ColumnProperty>();
       for (final Map.Entry<String, Collection<Entity>> entry : hashedEntities.entrySet()) {
-        final List<Property.PrimaryKeyProperty> primaryKeyProperties = EntityRepository.getPrimaryKeyProperties(entry.getKey());
+        final List<Property.PrimaryKeyProperty> primaryKeyProperties = Entities.getPrimaryKeyProperties(entry.getKey());
         for (final Entity entity : entry.getValue()) {
           if (!entity.isModified()) {
             throw new DbException("Can not update an unmodified entity: " + entity);
           }
-
           addUpdateProperties(entity, statementProperties, statementValues);
           updateQuery = getUpdateSQL(entity, statementProperties, primaryKeyProperties);
 
@@ -175,7 +174,6 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
           for (final Property.PrimaryKeyProperty primaryKeyProperty : primaryKeyProperties) {
             statementValues.add(entity.getOriginalValue(primaryKeyProperty.getPropertyID()));
           }
-
           if (optimisticLocking) {
             lockAndCheckForUpdate(entity);
           }
@@ -215,10 +213,9 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
     PreparedStatement statement = null;
     String deleteQuery = null;
     try {
-      if (EntityRepository.isReadOnly(criteria.getEntityID())) {
+      if (Entities.isReadOnly(criteria.getEntityID())) {
         throw new DbException("Can not delete a read only entity: " + criteria.getEntityID());
       }
-
       deleteQuery = getDeleteSQL(criteria);
       statement = getConnection().prepareStatement(deleteQuery);
       executePreparedUpdate(statement, deleteQuery, criteria.getValues(), criteria.getValueProperties());
@@ -250,17 +247,19 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
     try {
       final Map<String, Collection<Entity.Key>> hashedKeys = EntityUtil.hashKeysByEntityID(entityKeys);
       for (final String entityID : hashedKeys.keySet()) {
-        if (EntityRepository.isReadOnly(entityID)) {
+        if (Entities.isReadOnly(entityID)) {
           throw new DbException("Can not delete a read only entity: " + entityID);
         }
       }
-
+      final ArrayList<Entity.Key> criteriaKeys = new ArrayList<Entity.Key>();
       for (final Map.Entry<String, Collection<Entity.Key>> entry : hashedKeys.entrySet()) {
-        final EntitySelectCriteria criteria = EntityCriteriaUtil.selectCriteria(new ArrayList<Entity.Key>(entry.getValue()));
-        deleteQuery = "delete from " + EntityRepository.getTableName(entry.getKey()) + " " + criteria.getWhereClause();
+        criteriaKeys.addAll(entry.getValue());
+        final EntitySelectCriteria criteria = EntityCriteriaUtil.selectCriteria(criteriaKeys);
+        deleteQuery = "delete from " + Entities.getTableName(entry.getKey()) + " " + criteria.getWhereClause();
         statement = getConnection().prepareStatement(deleteQuery);
         executePreparedUpdate(statement, deleteQuery, criteria.getValues(), criteria.getValueProperties());
         statement.close();
+        criteriaKeys.clear();
       }
       if (!isTransactionOpen()) {
         commit();
@@ -313,7 +312,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
   }
 
   public List<Entity> selectAll(final String entityID) throws DbException {
-    return selectMany(EntityCriteriaUtil.selectCriteria(entityID, EntityRepository.getOrderByClause(entityID)));
+    return selectMany(EntityCriteriaUtil.selectCriteria(entityID, Entities.getOrderByClause(entityID)));
   }
 
   public List<Entity> selectMany(final EntitySelectCriteria criteria) throws DbException {
@@ -321,7 +320,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
     ResultSet resultSet = null;
     String selectQuery = null;
     try {
-      selectQuery = initializeSelectQuery(criteria, EntityRepository.getSelectColumnsString(criteria.getEntityID()), criteria.getOrderByClause());
+      selectQuery = initializeSelectQuery(criteria, Entities.getSelectColumnsString(criteria.getEntityID()), criteria.getOrderByClause());
       statement = getConnection().prepareStatement(selectQuery);
       resultSet = executePreparedSelect(statement, selectQuery, criteria.getValues(), criteria.getValueProperties());
       final List<Entity> result = getEntityResultPacker(criteria.getEntityID()).pack(resultSet, criteria.getFetchCount());
@@ -343,13 +342,13 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
   public List<Object> selectPropertyValues(final String entityID, final String propertyID, final boolean order) throws DbException {
     String sql = null;
     try {
-      if (EntityRepository.getSelectQuery(entityID) != null) {
+      if (Entities.getSelectQuery(entityID) != null) {
         throw new RuntimeException("selectPropertyValues is not implemented for entities with custom select queries");
       }
 
-      final Property.ColumnProperty property = (Property.ColumnProperty) EntityRepository.getProperty(entityID, propertyID);
+      final Property.ColumnProperty property = (Property.ColumnProperty) Entities.getProperty(entityID, propertyID);
       final String columnName = property.getColumnName();
-      sql = getSelectSQL(EntityRepository.getSelectTableName(entityID),
+      sql = getSelectSQL(Entities.getSelectTableName(entityID),
               new StringBuilder("distinct ").append(columnName).toString(),
               new StringBuilder("where ").append(columnName).append(" is not null").toString(), order ? columnName : null);
 
@@ -375,8 +374,8 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
     ResultSet resultSet = null;
     String selectQuery = null;
     try {
-      selectQuery = EntityRepository.getSelectQuery(criteria.getEntityID());
-      selectQuery = getSelectSQL(selectQuery == null ? EntityRepository.getSelectTableName(criteria.getEntityID()) :
+      selectQuery = Entities.getSelectQuery(criteria.getEntityID());
+      selectQuery = getSelectSQL(selectQuery == null ? Entities.getSelectTableName(criteria.getEntityID()) :
               "(" + selectQuery + " " + criteria.getWhereClause(!selectQuery.toLowerCase().contains("where")) + ") alias", "count(*)", null, null);
       selectQuery += " " + criteria.getWhereClause(!containsWhereKeyword(selectQuery));
       statement = getConnection().prepareStatement(selectQuery);
@@ -472,14 +471,14 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
       try {
         beginTransaction();
         final Property.BlobProperty property =
-                (Property.BlobProperty) EntityRepository.getProperty(primaryKey.getEntityID(), blobPropertyID);
+                (Property.BlobProperty) Entities.getProperty(primaryKey.getEntityID(), blobPropertyID);
 
         final String whereCondition = getWhereCondition(primaryKey.getProperties());
 
         execute(new StringBuilder("update ").append(primaryKey.getEntityID()).append(" set ").append(property.getColumnName())
                 .append(" = '").append(dataDescription).append("' where ").append(whereCondition).toString());
 
-        writeBlobField(blobData, EntityRepository.getTableName(primaryKey.getEntityID()),
+        writeBlobField(blobData, Entities.getTableName(primaryKey.getEntityID()),
                 property.getBlobColumnName(), whereCondition);
         success = true;
       }
@@ -500,9 +499,9 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
   public byte[] readBlob(final Entity.Key primaryKey, final String blobPropertyID) throws Exception {//todo does not work as is
     try {
       final Property.BlobProperty property =
-              (Property.BlobProperty) EntityRepository.getProperty(primaryKey.getEntityID(), blobPropertyID);
+              (Property.BlobProperty) Entities.getProperty(primaryKey.getEntityID(), blobPropertyID);
 
-      return readBlobField(EntityRepository.getTableName(primaryKey.getEntityID()), property.getBlobColumnName(),
+      return readBlobField(Entities.getTableName(primaryKey.getEntityID()), property.getBlobColumnName(),
               getWhereCondition(primaryKey.getProperties()));
     }
     catch (SQLException exception) {
@@ -513,8 +512,8 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
   private EntityResultPacker getEntityResultPacker(final String entityID) {
     EntityResultPacker packer = entityResultPackers.get(entityID);
     if (packer == null) {
-      packer = new EntityResultPacker(entityID, EntityRepository.getColumnProperties(entityID),
-              EntityRepository.getTransientProperties(entityID));
+      packer = new EntityResultPacker(entityID, Entities.getColumnProperties(entityID),
+              Entities.getTransientProperties(entityID));
       entityResultPackers.put(entityID, packer);
     }
 
@@ -524,24 +523,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
   private ResultPacker getPropertyResultPacker(final Property property) {
     ResultPacker packer = propertyResultPackers.get(property.getType());
     if (packer == null) {
-      packer  = new ResultPacker() {
-        public List pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
-          final List<Object> result = new ArrayList<Object>(50);
-          int counter = 0;
-          while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
-            if (property.isInteger()) {
-              result.add(resultSet.getInt(1));
-            }
-            else if (property.isDouble()) {
-              result.add(resultSet.getDouble(1));
-            }
-            else {
-              result.add(resultSet.getObject(1));
-            }
-          }
-          return result;
-        }
-      };
+      packer  = new PropertyResultPacker(property);
       propertyResultPackers.put(property.getType(), packer);
     }
 
@@ -576,7 +558,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
       return;
     }
     //Any sufficiently complex algorithm is indistinguishable from evil
-    final Collection<Property.ForeignKeyProperty> foreignKeyProperties = EntityRepository.getForeignKeyProperties(entities.get(0).getEntityID());
+    final Collection<Property.ForeignKeyProperty> foreignKeyProperties = Entities.getForeignKeyProperties(entities.get(0).getEntityID());
     for (final Property.ForeignKeyProperty property : foreignKeyProperties) {
       final int maxFetchDepth = criteria.getCurrentFetchDepth() == 0 ? criteria.getFetchDepth(property.getPropertyID()) : criteria.getFetchDepth();
       if (!limitForeignKeyFetchDepth || criteria.getCurrentFetchDepth() < maxFetchDepth) {
@@ -596,17 +578,17 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
   }
 
   private int queryNewIdValue(final String entityID, final IdSource idSource, final Property.PrimaryKeyProperty primaryKeyProperty) throws DbException {
-    String sql;
+    final String sql;
     switch (idSource) {
       case MAX_PLUS_ONE:
         sql = new StringBuilder("select max(").append(primaryKeyProperty.getColumnName())
-                .append(") + 1 from ").append(EntityRepository.getTableName(entityID)).toString();
+                .append(") + 1 from ").append(Entities.getTableName(entityID)).toString();
         break;
       case QUERY:
-        sql = EntityRepository.getEntityIdSource(entityID);
+        sql = Entities.getEntityIdSource(entityID);
         break;
       case SEQUENCE:
-        sql = getDatabase().getSequenceSQL(EntityRepository.getEntityIdSource(entityID));
+        sql = getDatabase().getSequenceSQL(Entities.getEntityIdSource(entityID));
         break;
       default:
         throw new IllegalArgumentException(idSource + " does not represent a queried ID source");
@@ -663,14 +645,14 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
   }
 
   private String initializeSelectQuery(final EntitySelectCriteria criteria, final String columnsString, final String orderByClause) {
-    String selectQuery = EntityRepository.getSelectQuery(criteria.getEntityID());
+    String selectQuery = Entities.getSelectQuery(criteria.getEntityID());
     if (selectQuery == null) {
-      selectQuery = getSelectSQL(EntityRepository.getSelectTableName(criteria.getEntityID()), columnsString, null, null);
+      selectQuery = getSelectSQL(Entities.getSelectTableName(criteria.getEntityID()), columnsString, null, null);
     }
 
     final StringBuilder queryBuilder = new StringBuilder(selectQuery);
     final String whereClause = criteria.getWhereClause(!containsWhereKeyword(selectQuery));
-    if (whereClause.length() > 0) {
+    if (!whereClause.isEmpty()) {
       queryBuilder.append(" ").append(whereClause);
     }
     if (orderByClause != null) {
@@ -810,12 +792,8 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
    */
   private static String getUpdateSQL(final Entity entity, final Collection<Property.ColumnProperty> properties,
                                      final List<Property.PrimaryKeyProperty> primaryKeyProperties) throws DbException {
-    if (!entity.isModified()) {
-      throw new DbException("Can not get update sql for an unmodified entity");
-    }
-
     final StringBuilder sql = new StringBuilder("update ");
-    sql.append(EntityRepository.getTableName(entity.getEntityID())).append(" set ");
+    sql.append(Entities.getTableName(entity.getEntityID())).append(" set ");
     int columnIndex = 0;
     for (final Property.ColumnProperty property : properties) {
       sql.append(property.getColumnName()).append(" = ?");
@@ -834,7 +812,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
    */
   private static String getInsertSQL(final String entityID, final Collection<Property.ColumnProperty> insertProperties) {
     final StringBuilder sql = new StringBuilder("insert into ");
-    sql.append(EntityRepository.getTableName(entityID)).append("(");
+    sql.append(Entities.getTableName(entityID)).append("(");
     final StringBuilder columnValues = new StringBuilder(") values(");
     int columnIndex = 0;
     for (final Property.ColumnProperty property : insertProperties) {
@@ -885,7 +863,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
    * @return a query for deleting the entities specified by the given criteria
    */
   private static String getDeleteSQL(final EntityCriteria criteria) {
-    return new StringBuilder("delete from ").append(EntityRepository.getTableName(criteria.getEntityID())).append(" ")
+    return new StringBuilder("delete from ").append(Entities.getTableName(criteria.getEntityID())).append(" ")
             .append(criteria.getWhereClause()).toString();
   }
 
@@ -904,10 +882,10 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
     sql.append(columns);
     sql.append(" from ");
     sql.append(table);
-    if (whereCondition != null && whereCondition.length() > 0) {
+    if (!Util.nullOrEmpty(whereCondition)) {
       sql.append(" ").append(whereCondition);
     }
-    if (orderByClause != null && orderByClause.length() > 0) {
+    if (!Util.nullOrEmpty(orderByClause)) {
       sql.append(" order by ");
       sql.append(orderByClause);
     }
@@ -923,8 +901,8 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
    */
   private static void addInsertProperties(final Entity entity, final Collection<Property.ColumnProperty> properties,
                                           final Collection<Object> values) {
-    for (final Property.ColumnProperty property : EntityRepository.getColumnProperties(entity.getEntityID(),
-            EntityRepository.getIdSource(entity.getEntityID()) != IdSource.AUTO_INCREMENT, false, true, false, false)) {
+    for (final Property.ColumnProperty property : Entities.getColumnProperties(entity.getEntityID(),
+            Entities.getIdSource(entity.getEntityID()) != IdSource.AUTO_INCREMENT, false, true, false, false)) {
       if (!entity.isValueNull(property.getPropertyID())) {
         properties.add(property);
         values.add(entity.getValue(property));
@@ -941,7 +919,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
   private static Collection<Property.ColumnProperty> addUpdateProperties(final Entity entity,
                                                                          final Collection<Property.ColumnProperty> properties,
                                                                          final Collection<Object> values) {
-    for (final Property.ColumnProperty property : EntityRepository.getColumnProperties(entity.getEntityID(), true, false, false, false)) {
+    for (final Property.ColumnProperty property : Entities.getColumnProperties(entity.getEntityID(), true, false, false, false)) {
       if (entity.isModified(property.getPropertyID())) {
         properties.add(property);
         values.add(entity.getValue(property));
@@ -952,10 +930,10 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
   }
 
   private static Set<Dependency> resolveEntityDependencies(final String entityID) {
-    final Collection<String> entityIDs = EntityRepository.getDefinedEntities();
+    final Collection<String> entityIDs = Entities.getDefinedEntities();
     final Set<Dependency> dependencies = new HashSet<Dependency>();
     for (final String entityIDToCheck : entityIDs) {
-      for (final Property.ForeignKeyProperty foreignKeyProperty : EntityRepository.getForeignKeyProperties(entityIDToCheck)) {
+      for (final Property.ForeignKeyProperty foreignKeyProperty : Entities.getForeignKeyProperties(entityIDToCheck)) {
         if (foreignKeyProperty.getReferencedEntityID().equals(entityID)) {
           dependencies.add(new Dependency(entityIDToCheck, foreignKeyProperty.getReferenceProperties()));
         }
@@ -965,7 +943,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
     return dependencies;
   }
 
-  private static class Dependency {
+  private static final class Dependency {
     private final String entityID;
     private final List<Property.ColumnProperty> foreignKeyProperties;
 
@@ -980,6 +958,31 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
 
     public List<Property.ColumnProperty> getForeignKeyProperties() {
       return foreignKeyProperties;
+    }
+  }
+
+  private static final class PropertyResultPacker implements ResultPacker {
+    private final Property property;
+
+    private PropertyResultPacker(final Property property) {
+      this.property = property;
+    }
+
+    public List pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
+      final List<Object> result = new ArrayList<Object>(50);
+      int counter = 0;
+      while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
+        if (property.isInteger()) {
+          result.add(resultSet.getInt(1));
+        }
+        else if (property.isDouble()) {
+          result.add(resultSet.getDouble(1));
+        }
+        else {
+          result.add(resultSet.getObject(1));
+        }
+      }
+      return result;
     }
   }
 }

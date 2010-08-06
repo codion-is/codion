@@ -13,26 +13,16 @@ import org.jminor.framework.client.ui.EntityApplicationPanel;
 import org.jminor.framework.client.ui.EntityPanel;
 import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.db.provider.EntityDbProvider;
-import org.jminor.framework.demos.chinook.beans.ui.AlbumEditPanel;
-import org.jminor.framework.demos.chinook.beans.ui.ArtistEditPanel;
-import org.jminor.framework.demos.chinook.beans.ui.CustomerEditPanel;
-import org.jminor.framework.demos.chinook.beans.ui.EmployeeEditPanel;
-import org.jminor.framework.demos.chinook.beans.ui.GenreEditPanel;
-import org.jminor.framework.demos.chinook.beans.ui.InvoiceEditPanel;
-import org.jminor.framework.demos.chinook.beans.ui.InvoiceLineEditPanel;
-import org.jminor.framework.demos.chinook.beans.ui.MediaTypeEditPanel;
-import org.jminor.framework.demos.chinook.beans.ui.PlaylistEditPanel;
-import org.jminor.framework.demos.chinook.beans.ui.PlaylistTrackEditPanel;
-import org.jminor.framework.demos.chinook.beans.ui.TrackEditPanel;
+import org.jminor.framework.demos.chinook.beans.ui.*;
 import org.jminor.framework.demos.chinook.domain.Chinook;
 import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 
 import java.util.Locale;
 
-public class ChinookAppPanel extends EntityApplicationPanel {
+public final class ChinookAppPanel extends EntityApplicationPanel {
 
   public ChinookAppPanel() {
-   /* ARTIST
+    /* ARTIST
     *   ALBUM
     *     TRACK
     * PLAYLIST
@@ -90,24 +80,26 @@ public class ChinookAppPanel extends EntityApplicationPanel {
 
   @Override
   protected EntityApplicationModel initializeApplicationModel(final EntityDbProvider dbProvider) throws CancelException {
-    return new DefaultEntityApplicationModel(dbProvider) {
-      @Override
-      protected void loadDomainModel() {
-        new Chinook();
-      }
-    };
-  }
-
-  @Override
-  protected void configureApplication() {
-    Configuration.setValue(Configuration.TOOLBAR_BUTTONS, true);
-    Configuration.setValue(Configuration.COMPACT_ENTITY_PANEL_LAYOUT, true);
-    Configuration.setValue(Configuration.USE_OPTIMISTIC_LOCKING, true);
-    Configuration.setValue(Configuration.PROPERTY_DEBUG_OUTPUT, true);
+    return new ChinookApplicationModel(dbProvider);
   }
 
   public static void main(final String[] args) throws CancelException {
     Locale.setDefault(new Locale("EN", "en"));
+    Configuration.setValue(Configuration.TOOLBAR_BUTTONS, true);
+    Configuration.setValue(Configuration.COMPACT_ENTITY_PANEL_LAYOUT, true);
+    Configuration.setValue(Configuration.USE_OPTIMISTIC_LOCKING, true);
+    Configuration.setValue(Configuration.PROPERTY_DEBUG_OUTPUT, true);
     new ChinookAppPanel().startApplication("Chinook", null, false, UiUtil.getScreenSizeRatio(0.6), new User("scott", "tiger"));
+  }
+
+  private static final class ChinookApplicationModel extends DefaultEntityApplicationModel {
+    private ChinookApplicationModel(EntityDbProvider dbProvider) {
+      super(dbProvider);
+    }
+
+    @Override
+    protected void loadDomainModel() {
+      new Chinook();
+    }
   }
 }

@@ -10,13 +10,14 @@ import org.jminor.common.server.AbstractRemoteServer;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ServerLog;
 import org.jminor.framework.Configuration;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.EntityDefinition;
-import org.jminor.framework.domain.EntityRepository;
 
 import org.apache.log4j.Logger;
 
 import javax.rmi.ssl.SslRMIClientSocketFactory;
 import javax.rmi.ssl.SslRMIServerSocketFactory;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -48,6 +49,9 @@ public final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRem
   static final boolean SSL_CONNECTION_ENABLED =
           System.getProperty(Configuration.SERVER_CONNECTION_SSL_ENABLED, "true").equalsIgnoreCase("true");
 
+  private static final int DEFAULT_CHECK_INTERVAL = 30;
+  private static final int DEFAULT_TIMEOUT = 120;
+
   private static final int SERVER_PORT;
   private static final int SERVER_DB_PORT;
 
@@ -74,8 +78,8 @@ public final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRem
   private final long startDate = System.currentTimeMillis();
 
   private Timer connectionMaintenanceTimer;
-  private int checkMaintenanceInterval = 30; //seconds
-  private int connectionTimeout = 120; //seconds
+  private int checkMaintenanceInterval = DEFAULT_CHECK_INTERVAL; //seconds
+  private int connectionTimeout = DEFAULT_TIMEOUT; //seconds
 
   /**
    * Constructs a new EntityDbRemoteServer and binds it to the given registry
@@ -91,10 +95,10 @@ public final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRem
     EntityDbRemoteAdapter.initConnectionPools(database);
     final String host = database.getHost();
     final String port = database.getPort();
-    if (host == null || host.length() == 0) {
+    if (Util.nullOrEmpty(host)) {
       throw new RuntimeException("Database host must be specified (" + Database.DATABASE_HOST + ")");
     }
-    if (!database.isEmbedded() && (port == null || port.length() == 0)) {
+    if (!database.isEmbedded() && Util.nullOrEmpty(port)) {
       throw new RuntimeException("Database port must be specified (" + Database.DATABASE_PORT + ")");
     }
 
@@ -214,21 +218,6 @@ public final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRem
     return startDate;
   }
 
-  @Override
-  public void shutdown() throws RemoteException {
-    if (isShuttingDown()) {
-      return;
-    }
-    super.shutdown();
-    removeConnections(false);
-    final String connectInfo = getServerName() + " removed from registry";
-    LOG.info(connectInfo);
-    System.out.println(connectInfo);
-    if (database.isEmbedded()) {
-      database.shutdownEmbedded(null);
-    }//todo does not work when shutdown requires user authentication
-  }
-
   public void removeConnections(final boolean inactiveOnly) throws RemoteException {
     final List<ClientInfo> clients = new ArrayList<ClientInfo>(getConnections().keySet());
     for (final ClientInfo client : clients) {
@@ -245,7 +234,7 @@ public final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRem
   }
 
   public static Collection<EntityDefinition> getEntityDefinitions() {
-    return new ArrayList<EntityDefinition>(EntityRepository.getEntityDefinitions().values());
+    return new ArrayList<EntityDefinition>(Entities.getEntityDefinitions().values());
   }
 
   public static void loadDomainModel(final String domainClassName) throws ClassNotFoundException,
@@ -263,29 +252,18 @@ public final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRem
     final String message = "Server loading domain model class '" + domainClassName + "' from"
             + (locations == null || locations.length == 0 ? " classpath" : " jars: ") + Util.getArrayContentsAsString(locations, false);
     LOG.info(message);
-    AccessController.doPrivileged(new PrivilegedAction<Object>() {
-      public Object run() {
-        try {
-          if (locations == null || locations.length == 0) {
-            Class.forName(domainClassName);
-          }
-          else {
-            final URL[] locationsURL = new URL[locations.length];
-            int i = 0;
-            for (final URI uri : locations) {
-              locationsURL[i++] = uri.toURL();
-            }
-            Class.forName(domainClassName.trim(), true, new URLClassLoader(locationsURL, ClassLoader.getSystemClassLoader()));
-            LOG.info("Domain class loaded: " + domainClassName);
-          }
+    AccessController.doPrivileged(new DomainModelAction(locations, domainClassName));
+  }
 
-          return null;
-        }
-        catch (Exception e) {
-          throw new RuntimeException(e);
-        }
-      }
-    });
+  @Override
+  protected void handleShutdown() throws RemoteException {
+    removeConnections(false);
+    final String connectInfo = getServerName() + " removed from registry";
+    LOG.info(connectInfo);
+    System.out.println(connectInfo);
+    if (database.isEmbedded()) {
+      database.shutdownEmbedded(null);
+    }//todo does not work when shutdown requires user authentication
   }
 
   @Override
@@ -309,13 +287,13 @@ public final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRem
 
   private void loadDefaultDomainModels() throws RemoteException {
     final String domainModelClasses = Configuration.getStringValue(Configuration.SERVER_DOMAIN_MODEL_CLASSES);
-    if (domainModelClasses == null || domainModelClasses.length() == 0) {
+    if (Util.nullOrEmpty(domainModelClasses)) {
       return;
     }
 
     final String[] classes = domainModelClasses.split(",");
     final String domainModelJars = Configuration.getStringValue(Configuration.SERVER_DOMAIN_MODEL_JARS);
-    final String[] jars = domainModelJars == null || domainModelJars.length() == 0 ? null : domainModelJars.split(",");
+    final String[] jars = Util.nullOrEmpty(domainModelJars) ? null : domainModelJars.split(",");
     try {
       final URI[] jarURIs = jars == null ? null : Util.getURIs(jars);
       for (final String classname : classes) {
@@ -350,20 +328,56 @@ public final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRem
     }
   }
 
-  private static String initializeServerName(String host, String sid) {
+  private static String initializeServerName(final String host, final String sid) {
     return Configuration.getValue(Configuration.SERVER_NAME_PREFIX)
             + " " + Util.getVersion() + " @ " + (sid != null ? sid.toUpperCase() : host.toUpperCase())
             + " [id:" + Long.toHexString(System.currentTimeMillis()) + "]";
   }
 
   private static void initializeRegistry() throws RemoteException {
-    Registry localRegistry = LocateRegistry.getRegistry(Registry.REGISTRY_PORT);
+    final Registry localRegistry = LocateRegistry.getRegistry(Registry.REGISTRY_PORT);
     try {
       localRegistry.list();
     }
     catch (Exception e) {
       LOG.info("Server creating registry on port: " + Registry.REGISTRY_PORT);
       LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
+    }
+  }
+
+  private static final class DomainModelAction implements PrivilegedAction<Object> {
+
+    private final URI[] locations;
+    private final String domainClassName;
+
+    private DomainModelAction(final URI[] locations, final String domainClassName) {
+      this.locations = locations;
+      this.domainClassName = domainClassName;
+    }
+
+    public Object run() {
+      try {
+        if (locations == null || locations.length == 0) {
+          Class.forName(domainClassName);
+        }
+        else {
+          final URL[] locationsURL = new URL[locations.length];
+          int i = 0;
+          for (final URI uri : locations) {
+            locationsURL[i++] = uri.toURL();
+          }
+          Class.forName(domainClassName.trim(), true, new URLClassLoader(locationsURL, ClassLoader.getSystemClassLoader()));
+          LOG.info("Domain class loaded: " + domainClassName);
+        }
+
+        return null;
+      }
+      catch (MalformedURLException e) {
+        throw new RuntimeException(e);
+      }
+      catch (ClassNotFoundException e) {
+        throw new RuntimeException(e);
+      }
     }
   }
 }

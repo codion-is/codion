@@ -11,7 +11,7 @@ import org.jminor.common.i18n.Messages;
  * Date: 26.9.2009<br>
  * Time: 15:35:18<br>
  */
-public class RecordModifiedException extends DbException {
+public final class RecordModifiedException extends DbException {
 
   private final Object row;
   private final Object modifiedRow;

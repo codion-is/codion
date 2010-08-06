@@ -15,6 +15,7 @@ import org.junit.Test;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -23,7 +24,7 @@ import java.util.List;
 public class DbConnectionImplTest {
 
   private static final Database DATABASE = DatabaseProvider.createInstance();
-  private DbConnection dbConnection;
+  private DbConnectionImpl dbConnection;
 
   /*public void testBlob() throws Exception {
     DbConnection dbConnection = null;
@@ -57,6 +58,7 @@ public class DbConnectionImplTest {
   @Before
   public void before() throws Exception {
     dbConnection = new DbConnectionImpl(DATABASE, User.UNIT_TEST_USER);
+    dbConnection.setLoggingEnabled(true);
   }
 
   @After
@@ -72,6 +74,26 @@ public class DbConnectionImplTest {
   }
 
   @Test
+  public void test() throws Exception {
+    dbConnection.toString();
+    assertEquals(dbConnection.getUser(), User.UNIT_TEST_USER);
+    assertTrue(dbConnection.isLoggingEnabled());
+    assertEquals(DATABASE, dbConnection.getDatabase());
+    dbConnection.setPoolTime(10);
+    assertEquals(10, dbConnection.getPoolTime());
+    dbConnection.setPoolRetryCount(2);
+    assertEquals(2, dbConnection.getPoolRetryCount());
+    DbConnectionImpl.getDatabaseStatistics();
+  }
+
+  @Test
+  public void testLogging() throws Exception {
+    dbConnection.queryInteger("select deptno from scott.dept where deptno = 20");
+    assertEquals("query", dbConnection.getMethodLogger().getLastAccessedMethod());
+    assertTrue(dbConnection.getLogEntries().size() > 0);
+  }
+
+  @Test
   public void disconnect() throws Exception {
     dbConnection.disconnect();
     assertFalse(dbConnection.isConnected());
@@ -80,6 +102,42 @@ public class DbConnectionImplTest {
   @Test
   public void getConnection() throws Exception {
     assertNotNull(dbConnection.getConnection());
+  }
+
+  @Test
+  public void execute() throws Exception {
+    try {
+      dbConnection.execute("insert into scott.dept(deptno, dname, loc) values(42, 'name', 'loc')");
+      dbConnection.execute(Arrays.asList(
+            "update scott.dept set dname = 'newname' where deptno = 42",
+            "update scott.dept set loc = 'newloc' where deptno = 42"));
+      dbConnection.execute(Arrays.asList("update scott.dept set dname = 'aname' where deptno = 42"));
+    }
+    finally {
+      dbConnection.rollback();
+    }
+    try {
+      try {
+        dbConnection.execute("insert into scott.dept(deptnoNO, dname, loc) values(42, 'name', 'loc')");
+        fail();
+      }
+      catch (SQLException e) {}
+      try {
+        dbConnection.execute(Arrays.asList(
+            "update scott.dept set dname = 'newname' where deptno = 42",
+              "update scott.dept set locII = 'newloc' where deptno = 42"));
+        fail();
+      }
+      catch (SQLException e) {}
+    }
+    finally {
+      dbConnection.rollback();
+    }
+  }
+
+  @Test
+  public void executeCallableStatement() throws Exception {
+    dbConnection.executeCallableStatement("select 1 from dual", -1);
   }
 
   @Test
@@ -179,5 +237,17 @@ public class DbConnectionImplTest {
       fail("IllegalStateException should have been thrown");
     }
     catch (IllegalStateException e) {}
+  }
+
+  @Test
+  public void commit() throws Exception {
+    dbConnection.execute("update scott.dept set dname = dname where deptno = 20");
+    dbConnection.commit();
+  }
+
+  @Test
+  public void rollback() throws Exception {
+    dbConnection.execute("update scott.dept set dname = dname where deptno = 20");
+    dbConnection.rollback();
   }
 }

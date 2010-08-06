@@ -4,6 +4,8 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventObserver;
+import org.jminor.common.model.Events;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
@@ -18,7 +20,7 @@ import java.util.List;
  */
 public abstract class DefaultEntityApplicationModel implements EntityApplicationModel {
 
-  private final Event evtCascadeRefreshChanged = new Event();
+  private final Event evtCascadeRefreshChanged = Events.event();
 
   private final EntityDbProvider dbProvider;
   private final List<EntityModel> mainApplicationModels = new ArrayList<EntityModel>();
@@ -26,24 +28,22 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
   public DefaultEntityApplicationModel(final EntityDbProvider dbProvider) {
     this.dbProvider = dbProvider;
     loadDomainModel();
-    bindEvents();
   }
 
-  public void logout() {
+  public final void logout() {
     dbProvider.setUser(null);
     clear();
+    handleLogout();
   }
 
-  public void login(final User user) {
+  public final void login(final User user) {
     dbProvider.setUser(user);
     for (final EntityModel mainApplicationModel : mainApplicationModels) {
       mainApplicationModel.refresh();
     }
+    handleLogin();
   }
 
-  /**
-   * @return the current user
-   */
   public final User getUser() {
     try {
       return dbProvider.getEntityDb().getUser();
@@ -53,17 +53,10 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
     }
   }
 
-  /**
-   * @return the EntityDbProvider instance being used by this EntityApplicationModel
-   */
   public final EntityDbProvider getDbProvider() {
     return dbProvider;
   }
 
-  /**
-   * Adds the given detail models to this model.
-   * @param mainApplicationModels the detail models to add
-   */
   public final void addMainApplicationModels(final EntityModel... mainApplicationModels) {
     Util.rejectNullValue(mainApplicationModels, "mainApplicationModels");
     for (final EntityModel model : mainApplicationModels) {
@@ -71,35 +64,20 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
     }
   }
 
-  /**
-   * Adds the given detail model to this model
-   * @param detailModel the detail model
-   * @return the detail model just added
-   */
   public final EntityModel addMainApplicationModel(final EntityModel detailModel) {
     this.mainApplicationModels.add(detailModel);
 
     return detailModel;
   }
 
-  /**
-   * @return an unmodifiable List containing the main application models
-   */
   public final List<? extends EntityModel> getMainApplicationModels() {
     return Collections.unmodifiableList(mainApplicationModels);
   }
 
-  /**
-   * @return true if cascade refresh is active
-   */
   public final boolean isCascadeRefresh() {
     return !mainApplicationModels.isEmpty() && mainApplicationModels.iterator().next().isCascadeRefresh();
   }
 
-  /**
-   * fires: evtCascadeRefreshChanged
-   * @param value the new value
-   */
   public final void setCascadeRefresh(final boolean value) {
     if (!mainApplicationModels.isEmpty() && isCascadeRefresh() != value) {
       for (final EntityModel mainApplicationModel : mainApplicationModels) {
@@ -110,9 +88,6 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
     }
   }
 
-  /**
-   * Refreshes the whole application tree
-   */
   public final void refresh() {
     final boolean cascade = isCascadeRefresh();
     try {
@@ -162,8 +137,8 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
     throw new RuntimeException("No detail model for type " + entityID + " found in model: " + this);
   }
 
-  public final Event eventCascadeRefreshChanged() {
-    return evtCascadeRefreshChanged;
+  public final EventObserver cascadeRefreshObserver() {
+    return evtCascadeRefreshChanged.getObserver();
   }
 
   /**
@@ -172,9 +147,7 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
    */
   protected abstract void loadDomainModel();
 
-  protected void bindEvents() {}
+  protected void handleLogout() {}
 
-  protected EntityModel createEntityModel(final String entityID) {
-    return new DefaultEntityModel(entityID, dbProvider);
-  }
+  protected void handleLogin() {}
 }

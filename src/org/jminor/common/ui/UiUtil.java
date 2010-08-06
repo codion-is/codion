@@ -6,8 +6,8 @@ package org.jminor.common.ui;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.DateUtil;
-import org.jminor.common.model.Event;
-import org.jminor.common.model.State;
+import org.jminor.common.model.EventObserver;
+import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.ValueCollectionProvider;
 import org.jminor.common.ui.images.NavigableImagePanel;
@@ -27,47 +27,18 @@ import javax.swing.text.MaskFormatter;
 import javax.swing.text.PlainDocument;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
-import java.awt.BorderLayout;
-import java.awt.Container;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.GraphicsEnvironment;
-import java.awt.GridLayout;
-import java.awt.Image;
-import java.awt.Insets;
-import java.awt.Point;
-import java.awt.Window;
+import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.StringTokenizer;
 import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * A static utility class.
@@ -132,7 +103,7 @@ public final class UiUtil {
     fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
     fileChooser.removeChoosableFileFilter(fileChooser.getFileFilter());
     fileChooser.setMultiSelectionEnabled(false);
-    if (startDir != null && startDir.length() > 0) {
+    if (!Util.nullOrEmpty(startDir)) {
       fileChooser.setCurrentDirectory(new File(startDir));
     }
     if (dialogTitle != null) {
@@ -160,7 +131,7 @@ public final class UiUtil {
     fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
     fileChooser.removeChoosableFileFilter(fileChooser.getFileFilter());
     fileChooser.setMultiSelectionEnabled(false);
-    if (startDir != null && startDir.length() > 0) {
+    if (!Util.nullOrEmpty(startDir)) {
       fileChooser.setCurrentDirectory(new File(startDir));
     }
     final int option = fileChooser.showOpenDialog(dialogParent);
@@ -287,11 +258,11 @@ public final class UiUtil {
     }
   }
 
-  public static Action linkToEnabledState(final State enabledState, final Action action) {
+  public static Action linkToEnabledState(final StateObserver enabledState, final Action action) {
     if (enabledState != null) {
       action.setEnabled(enabledState.isActive());
-      enabledState.eventStateChanged().addListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
+      enabledState.addListener(new ActionListener() {
+        public void actionPerformed(final ActionEvent e) {
           action.setEnabled(enabledState.isActive());
         }
       });
@@ -300,11 +271,11 @@ public final class UiUtil {
     return action;
   }
 
-  public static JComponent linkToEnabledState(final State enabledState, final JComponent component) {
+  public static JComponent linkToEnabledState(final StateObserver enabledState, final JComponent component) {
     if (enabledState != null) {
       component.setEnabled(enabledState.isActive());
-      enabledState.eventStateChanged().addListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
+      enabledState.addListener(new ActionListener() {
+        public void actionPerformed(final ActionEvent e) {
           component.setEnabled(enabledState.isActive());
         }
       });
@@ -338,7 +309,7 @@ public final class UiUtil {
     final Dimension screenSize = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getSize();
     final Dimension frameSize = window.getSize();
     if (frameSize.getHeight() > screenSize.getHeight() || frameSize.getWidth() > screenSize.getWidth()) {
-      Dimension newFrameSize = new Dimension((int) Math.min(frameSize.getWidth(), screenSize.getWidth()),
+      final Dimension newFrameSize = new Dimension((int) Math.min(frameSize.getWidth(), screenSize.getWidth()),
               (int) Math.min(frameSize.getHeight(), screenSize.getHeight()));
       window.setSize(newFrameSize);
     }
@@ -364,20 +335,22 @@ public final class UiUtil {
     return window == null ? getParentFrame(container) : window;
   }
 
-  public static JFrame getParentFrame(Container container) {
-    while (!(container instanceof JFrame) && (container != null)) {
-      container = container.getParent();
+  public static JFrame getParentFrame(final Container container) {
+    Container parent = container;
+    while (!(parent instanceof JFrame) && (parent != null)) {
+      parent = parent.getParent();
     }
 
-    return (JFrame) container;
+    return (JFrame) parent;
   }
 
-  public static JDialog getParentDialog(Container container) {
-    while (!(container instanceof JDialog) && (container != null)) {
-      container = container.getParent();
+  public static JDialog getParentDialog(final Container container) {
+    Container parent = container;
+    while (!(parent instanceof JDialog) && (parent != null)) {
+      parent = parent.getParent();
     }
 
-    return (JDialog) container;
+    return (JDialog) parent;
   }
 
   public static void centerWindow(final Window window) {
@@ -491,15 +464,15 @@ public final class UiUtil {
 
     ((PlainDocument) textField.getDocument()).setDocumentFilter(new DocumentFilter() {
       @Override
-      public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
+      public void insertString(final FilterBypass fb, final int offset, final String string, final AttributeSet attr) throws BadLocationException {
         super.insertString(fb, offset, string == null ? null : string.toUpperCase(Locale.getDefault()), attr);
       }
       @Override
-      public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
+      public void remove(final FilterBypass fb, final int offset, final int length) throws BadLocationException {
         super.remove(fb, offset, length);
       }
       @Override
-      public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
+      public void replace(final FilterBypass fb, final int offset, final int length, final String text, final AttributeSet attrs) throws BadLocationException {
         super.replace(fb, offset, length, text == null ? null : text.toUpperCase(Locale.getDefault()), attrs);
       }
     });
@@ -520,15 +493,15 @@ public final class UiUtil {
   public static JTextComponent makeLowerCase(final JTextComponent textField) {
     ((PlainDocument) textField.getDocument()).setDocumentFilter(new DocumentFilter() {
       @Override
-      public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
+      public void insertString(final FilterBypass fb, final int offset, final String string, final AttributeSet attr) throws BadLocationException {
         super.insertString(fb, offset, string.toLowerCase(), attr);
       }
       @Override
-      public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
+      public void remove(final FilterBypass fb, final int offset, final int length) throws BadLocationException {
         super.remove(fb, offset, length);
       }
       @Override
-      public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
+      public void replace(final FilterBypass fb, final int offset, final int length, final String text, final AttributeSet attrs) throws BadLocationException {
         super.replace(fb, offset, length, text.toLowerCase(), attrs);
       }
     });
@@ -552,9 +525,6 @@ public final class UiUtil {
           else {
             component.transferFocus();
           }
-        }
-        else if (component.getParent() != null) {
-          component.getParent().dispatchEvent(e);
         }
       }
     });
@@ -624,14 +594,14 @@ public final class UiUtil {
     if (closeAction != null) {
       dialog.addWindowListener(new WindowAdapter() {
         @Override
-        public void windowClosing(WindowEvent e) {
+        public void windowClosing(final WindowEvent e) {
           closeAction.actionPerformed(new ActionEvent(dialog, -1, null));
         }
       });
     }
     final String okCaption = okAction != null ? (String) okAction.getValue(Action.NAME) : Messages.get(Messages.OK);
     final Action ok = new AbstractAction(okCaption) {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         if (okAction != null) {
           okAction.actionPerformed(e);
         }
@@ -641,15 +611,11 @@ public final class UiUtil {
         }
       }
     };
-    addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, new AbstractAction("close") {
-      public void actionPerformed(ActionEvent e) {
-        dialog.dispose();
-      }
-    });
+    addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, new DialogDisposeAction(dialog, "close"));
     if (includeButtonPanel) {
       final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT,5,5));
       final JButton okButton = new JButton(ok);
-      Character okMnemonic;
+      final Character okMnemonic;
       if (okAction != null && okAction.getValue(Action.MNEMONIC_KEY) != null) {
         okMnemonic = (Character) okAction.getValue(Action.MNEMONIC_KEY);
       }
@@ -686,7 +652,7 @@ public final class UiUtil {
 
   public static JDialog showInDialog(final Container owner, final JComponent componentToShow, final boolean modal,
                                      final String title, final Dimension size, final JButton defaultButton,
-                                     final Event closeEvent) {
+                                     final EventObserver closeEvent) {
     final JDialog dialog = new JDialog(getParentWindow(owner), title);
     dialog.setLayout(new BorderLayout());
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -694,11 +660,7 @@ public final class UiUtil {
       dialog.getRootPane().setDefaultButton(defaultButton);
     }
 
-    final Action disposeActionListener = new AbstractAction() {
-      public void actionPerformed(final ActionEvent e) {
-        dialog.dispose();
-      }
-    };
+    final Action disposeActionListener = new DialogDisposeAction(dialog, null);
     addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, disposeActionListener);
     if (closeEvent != null) {
       closeEvent.addListener(disposeActionListener);
@@ -728,65 +690,7 @@ public final class UiUtil {
    */
   public static void addAcceptSingleFileDragAndDrop(final JTextComponent textComponent) {
     textComponent.setDragEnabled(true);
-    textComponent.setTransferHandler(new TransferHandler() {
-      @Override
-      public boolean canImport(final TransferSupport support) {
-        try {
-          final DataFlavor nixFileDataFlavor = new DataFlavor("text/uri-list;class=java.lang.String");
-          for (final DataFlavor flavor : support.getDataFlavors()) {
-            if (flavor.isFlavorJavaFileListType() || flavor.equals(nixFileDataFlavor)) {
-              return true;
-            }
-          }
-
-          return false;
-        }
-        catch (ClassNotFoundException e) {
-          throw new RuntimeException(e);
-        }
-      }
-
-      @Override
-      public boolean importData(final TransferSupport support) {
-        final String path = getFileDataFlavor(support);
-        if (path != null) {
-          textComponent.setText(path);
-          return true;
-        }
-        else {
-          return false;
-        }
-      }
-    });
-  }
-
-  @SuppressWarnings({"unchecked"})
-  private static String getFileDataFlavor(final TransferHandler.TransferSupport support) {
-    try {
-      for (final DataFlavor flavor : support.getDataFlavors()) {
-        if (flavor.isFlavorJavaFileListType()) {
-          final List<File> files = (List<File>) support.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
-
-          return !files.isEmpty() ? files.get(0).getAbsolutePath() : null;
-        }
-      }
-      //the code below is for handling unix/linux
-      final DataFlavor nixFileDataFlavor = new DataFlavor("text/uri-list;class=java.lang.String");
-      final String data = (String) support.getTransferable().getTransferData(nixFileDataFlavor);
-      for (final StringTokenizer st = new StringTokenizer(data, "\r\n"); st.hasMoreTokens();) {
-        final String token = st.nextToken().trim();
-        if (token.startsWith("#") || token.isEmpty()) {// comment line, by RFC 2483
-          continue;
-        }
-
-        return new File(new URI(token)).getAbsolutePath();
-      }
-    }
-    catch (Exception e) {
-      throw new RuntimeException(e);
-    }
-
-    return null;
+    textComponent.setTransferHandler(new DnDTransferHandler(textComponent));
   }
 
   public static void addKeyEvent(final JComponent component, final int keyEvent, final Action action) {
@@ -826,11 +730,11 @@ public final class UiUtil {
     });
   }
 
-  public static Object selectValue(final JComponent dialogOwner, Collection<?> values) {
+  public static Object selectValue(final JComponent dialogOwner, final Collection<?> values) {
     return selectValue(dialogOwner, values, Messages.get(Messages.SELECT_VALUE));
   }
 
-  public static Object selectValue(final JComponent dialogOwner, Collection<?> values, final String dialogTitle) {
+  public static Object selectValue(final JComponent dialogOwner, final Collection<?> values, final String dialogTitle) {
     final DefaultListModel listModel = new DefaultListModel();
     for (final Object value : values) {
       listModel.addElement(value);
@@ -840,13 +744,9 @@ public final class UiUtil {
     final Window owner = getParentWindow(dialogOwner);
     final JDialog dialog = new JDialog(owner, dialogTitle);
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-    final Action okAction = new AbstractAction(Messages.get(Messages.OK)) {
-      public void actionPerformed(ActionEvent e) {
-        dialog.dispose();
-      }
-    };
+    final Action okAction = new DialogDisposeAction(dialog, Messages.get(Messages.OK));
     final Action cancelAction = new AbstractAction(Messages.get(Messages.CANCEL)) {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         list.clearSelection();
         dialog.dispose();
       }
@@ -901,7 +801,7 @@ public final class UiUtil {
   }
 
   public static String getStartDir(final String text) {
-    if (text == null || text.length() == 0) {
+    if (Util.nullOrEmpty(text)) {
       return null;
     }
     try {
@@ -932,7 +832,7 @@ public final class UiUtil {
   public static void showImage(final String imagePath, final JComponent dialogParent,
                                final Collection<String> acceptedFileTypes) throws IOException {
     Util.rejectNullValue(imagePath, "imagePath");
-    if (imagePath.length() == 0) {
+    if (imagePath.isEmpty()) {
       return;
     }
 
@@ -962,19 +862,95 @@ public final class UiUtil {
   }
 
   private static JDialog initializeDialog(final JComponent parent, final NavigableImagePanel panel) {
-    final JDialog ret =  new JDialog(getParentWindow(parent));
-    ret.setLayout(new BorderLayout());
-    ret.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-    addKeyEvent(ret.getRootPane(), KeyEvent.VK_ESCAPE, new AbstractAction("close") {
-      public void actionPerformed(ActionEvent e) {
-        ret.dispose();
-      }
-    });
-    ret.add(panel, BorderLayout.CENTER);
-    ret.setSize(getScreenSizeRatio(0.5));
-    ret.setLocationRelativeTo(parent);
-    ret.setModal(false);
+    final JDialog dialog =  new JDialog(getParentWindow(parent));
+    dialog.setLayout(new BorderLayout());
+    dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+    addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, new DialogDisposeAction(dialog, "close"));
+    dialog.add(panel, BorderLayout.CENTER);
+    dialog.setSize(getScreenSizeRatio(0.5));
+    dialog.setLocationRelativeTo(parent);
+    dialog.setModal(false);
 
-    return ret;
+    return dialog;
+  }
+
+  public static final class DialogDisposeAction extends AbstractAction {
+    private final JDialog dialog;
+
+    public DialogDisposeAction(final JDialog dialog, final String name) {
+      super(name);
+      this.dialog = dialog;
+    }
+
+    public void actionPerformed(final ActionEvent e) {
+      dialog.dispose();
+    }
+  }
+
+  private static final class DnDTransferHandler extends TransferHandler {
+
+    private final JTextComponent textComponent;
+
+    private DnDTransferHandler(final JTextComponent textComponent) {
+      this.textComponent = textComponent;
+    }
+
+    @Override
+    public boolean canImport(final TransferSupport support) {
+      try {
+        final DataFlavor nixFileDataFlavor = new DataFlavor("text/uri-list;class=java.lang.String");
+        for (final DataFlavor flavor : support.getDataFlavors()) {
+          if (flavor.isFlavorJavaFileListType() || flavor.equals(nixFileDataFlavor)) {
+            return true;
+          }
+        }
+
+        return false;
+      }
+      catch (ClassNotFoundException e) {
+        throw new RuntimeException(e);
+      }
+    }
+
+    @Override
+    public boolean importData(final TransferSupport support) {
+      final String path = getFileDataFlavor(support);
+      if (path != null) {
+        textComponent.setText(path);
+        return true;
+      }
+      else {
+        return false;
+      }
+    }
+
+    @SuppressWarnings({"unchecked"})
+    private String getFileDataFlavor(final TransferHandler.TransferSupport support) {
+      try {
+        for (final DataFlavor flavor : support.getDataFlavors()) {
+          if (flavor.isFlavorJavaFileListType()) {
+            final List<File> files = (List<File>) support.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
+
+            return !files.isEmpty() ? files.get(0).getAbsolutePath() : null;
+          }
+        }
+        //the code below is for handling unix/linux
+        final DataFlavor nixFileDataFlavor = new DataFlavor("text/uri-list;class=java.lang.String");
+        final String data = (String) support.getTransferable().getTransferData(nixFileDataFlavor);
+        for (final StringTokenizer st = new StringTokenizer(data, "\r\n"); st.hasMoreTokens();) {
+          final String token = st.nextToken().trim();
+          if (token.startsWith("#") || token.isEmpty()) {// comment line, by RFC 2483
+            continue;
+          }
+
+          return new File(new URI(token)).getAbsolutePath();
+        }
+      }
+      catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+
+      return null;
+    }
   }
 }

@@ -3,7 +3,8 @@
  */
 package org.jminor.common.ui.control;
 
-import org.jminor.common.model.State;
+import org.jminor.common.model.StateObserver;
+import org.jminor.common.model.States;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -17,7 +18,7 @@ import java.awt.event.ActionListener;
  */
 public class Control extends AbstractAction {
 
-  private final State enabledState;
+  private final StateObserver enabledState;
 
   /**
    * Constructs a new Control.
@@ -30,14 +31,14 @@ public class Control extends AbstractAction {
     this(name, null);
   }
 
-  public Control(String name, final State enabledState) {
+  public Control(final String name, final StateObserver enabledState) {
     this(name, enabledState,  null);
   }
 
-  public Control(String name, final State enabledState, final Icon icon) {
+  public Control(final String name, final StateObserver enabledState, final Icon icon) {
     super(name);
-    this.enabledState = enabledState == null ? new State(true) : enabledState;
-    this.enabledState.eventStateChanged().addListener(new ActionListener() {
+    this.enabledState = enabledState == null ? States.state(true) : enabledState;
+    this.enabledState.addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         firePropertyChange("enabled", !Control.this.enabledState.isActive(), Control.this.enabledState.isActive());
       }
@@ -52,7 +53,7 @@ public class Control extends AbstractAction {
 
   @Override
   public final void setEnabled(final boolean newValue) {
-    enabledState.setActive(newValue);
+    throw new UnsupportedOperationException();
   }
 
   public void actionPerformed(final ActionEvent e) {}
@@ -92,7 +93,7 @@ public class Control extends AbstractAction {
   /**
    * @return the state which controls whether this Control instance is enabled
    */
-  public final State getEnabledState() {
+  public final StateObserver getEnabledState() {
     return enabledState;
   }
 

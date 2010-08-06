@@ -3,7 +3,7 @@
  */
 package org.jminor.common.ui.control;
 
-import org.jminor.common.model.Event;
+import org.jminor.common.model.EventObserver;
 
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
@@ -19,16 +19,16 @@ public final class IntBeanSpinnerValueLink extends AbstractBeanValueLink {
 
   private final SpinnerNumberModel spinnerModel;
 
-  public IntBeanSpinnerValueLink(final Object owner, final String propertyName, final Event propertyChangeEvent) {
+  public IntBeanSpinnerValueLink(final Object owner, final String propertyName, final EventObserver propertyChangeEvent) {
     this(owner, propertyName, propertyChangeEvent, LinkType.READ_WRITE);
   }
 
-  public IntBeanSpinnerValueLink(final Object owner, final String propertyName, final Event propertyChangeEvent,
+  public IntBeanSpinnerValueLink(final Object owner, final String propertyName, final EventObserver propertyChangeEvent,
                                     final LinkType linkType) {
     super(owner, propertyName, int.class, propertyChangeEvent, linkType);
     spinnerModel = new SpinnerNumberModel();
     spinnerModel.addChangeListener(new ChangeListener() {
-      public void stateChanged(ChangeEvent e) {
+      public void stateChanged(final ChangeEvent e) {
         updateModel();
       }
     });

@@ -4,7 +4,9 @@
 package org.jminor.framework.server.monitor;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.model.Events;
 import org.jminor.common.model.State;
+import org.jminor.common.model.States;
 import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
 
@@ -28,12 +30,12 @@ public final class HostMonitor {
 
   private static final Logger LOG = Util.getLogger(HostMonitor.class);
 
-  private final Event evtRefreshed = new Event();
-  private final Event evtServerMonitorRemoved = new Event();
+  private final Event evtRefreshed = Events.event();
+  private final Event evtServerMonitorRemoved = Events.event();
 
-  private final State stLiveUpdate = new State();
+  private final State stLiveUpdate = States.state();
   private final String hostName;
-  private Collection<ServerMonitor> serverMonitors = new ArrayList<ServerMonitor>();
+  private final Collection<ServerMonitor> serverMonitors = new ArrayList<ServerMonitor>();
 
   public HostMonitor(final String hostName) throws RemoteException {
     this.hostName = hostName;
@@ -48,7 +50,7 @@ public final class HostMonitor {
     for (final String serverName : getEntityDbRemoteServers(hostName)) {
       if (!containsServerMonitor(serverName)) {
         final ServerMonitor serverMonitor = new ServerMonitor(hostName, serverName);
-        serverMonitor.eventServerShutDown().addListener(new ActionListener() {
+        serverMonitor.addServerShutDownListener(new ActionListener() {
           public void actionPerformed(final ActionEvent e) {
             removeServer(serverMonitor);
           }
@@ -71,12 +73,20 @@ public final class HostMonitor {
     stLiveUpdate.setActive(value);
   }
 
-  public Event eventRefreshed() {
-    return evtRefreshed;
+  public void addRefreshListener(final ActionListener listener) {
+    evtRefreshed.addListener(listener);
   }
 
-  public Event eventServerMonitorRemoved() {
-    return evtServerMonitorRemoved;
+  public void removeRefreshListener(final ActionListener listener) {
+    evtRefreshed.removeListener(listener);
+  }
+
+  public void addServerMonitorRemovedListener(final ActionListener listener) {
+    evtServerMonitorRemoved.addListener(listener);
+  }
+
+  public void removeServerMonitorRemovedListener(final ActionListener listener) {
+    evtServerMonitorRemoved.removeListener(listener);
   }
 
   private void removeServer(final ServerMonitor serverMonitor) {

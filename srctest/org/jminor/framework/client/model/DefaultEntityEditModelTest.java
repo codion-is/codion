@@ -4,20 +4,25 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.model.DateUtil;
-import org.jminor.common.model.State;
-import org.jminor.common.model.valuemap.AbstractValueChangeMapEditModel;
+import org.jminor.common.model.StateObserver;
+import org.jminor.common.model.combobox.FilteredComboBoxModel;
+import org.jminor.common.model.valuemap.ValueMapValidator;
 import org.jminor.common.model.valuemap.exception.ValidationException;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.event.DeleteEvent;
+import org.jminor.framework.client.model.event.DeleteListener;
 import org.jminor.framework.client.model.event.InsertEvent;
+import org.jminor.framework.client.model.event.InsertListener;
 import org.jminor.framework.client.model.event.UpdateEvent;
+import org.jminor.framework.client.model.event.UpdateListener;
 import org.jminor.framework.db.EntityDbConnectionTest;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 
+import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,13 +33,53 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-public class DefaultEntityEditModelTest {
+public final class DefaultEntityEditModelTest {
 
-  private DefaultEntityEditModel editModel = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityDbConnectionTest.DB_PROVIDER);
+  private DefaultEntityEditModel editModel;
+  private Property.ColumnProperty jobProperty;
+  private Property.ForeignKeyProperty deptProperty;
+  private boolean debugOutput;
 
   @Before
   public void setUp() {
     new EmpDept();
+    jobProperty = Entities.getColumnProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB);
+    deptProperty = Entities.getForeignKeyProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_DEPARTMENT_FK);
+    debugOutput = Configuration.getBooleanValue(Configuration.PROPERTY_DEBUG_OUTPUT);
+    Configuration.setValue(Configuration.PROPERTY_DEBUG_OUTPUT, true);
+    editModel = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityDbConnectionTest.DB_PROVIDER);
+  }
+
+  @After
+  public void tearDown() {
+    Configuration.setValue(Configuration.PROPERTY_DEBUG_OUTPUT, debugOutput);
+  }
+
+  @Test
+  public void initializePropertyComboBoxModel() {
+    final FilteredComboBoxModel model = editModel.initializePropertyComboBoxModel(jobProperty, null, "null");
+    assertNotNull(model);
+    assertTrue(editModel.containsComboBoxModel(jobProperty.getPropertyID()));
+    assertEquals(model, editModel.getPropertyComboBoxModel(jobProperty));
+    editModel.refreshComboBoxModels();
+    editModel.clearComboBoxModels();
+  }
+
+  @Test
+  public void createEntityComboBoxModel() {
+    final EntityComboBoxModel model = editModel.createEntityComboBoxModel(deptProperty);
+    assertNotNull(model);
+    assertEquals(deptProperty.getReferencedEntityID(), model.getEntityID());
+    editModel.refreshComboBoxModels();
+    editModel.clearComboBoxModels();
+  }
+
+  @Test
+  public void createEntityLookupModel() {
+    final EntityLookupModel model = editModel.createEntityLookupModel(EmpDept.T_DEPARTMENT,
+            Entities.getSearchProperties(EmpDept.T_DEPARTMENT), null);
+    assertNotNull(model);
+    assertEquals(EmpDept.T_DEPARTMENT, model.getEntityID());
   }
 
   @Test
@@ -55,31 +100,56 @@ public class DefaultEntityEditModelTest {
     }
     catch (IllegalArgumentException e) {}
 
-    final State entityNullState = editModel.stateEntityNull();
+    final StateObserver entityNullState = editModel.getEntityNullState();
 
     assertTrue(entityNullState.isActive());
 
+    editModel.setReadOnly(false);
+    assertFalse(editModel.isReadOnly());
+    assertTrue(editModel.getAllowInsertState().isActive());
+    assertTrue(editModel.getAllowUpdateState().isActive());
+    assertTrue(editModel.getAllowDeleteState().isActive());
+
+    final ActionListener listener = new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
+      }
+    };
+    editModel.addAfterDeleteListener(listener);
+    editModel.addAfterInsertListener(listener);
+    editModel.addAfterUpdateListener(listener);
+    editModel.addBeforeDeleteListener(listener);
+    editModel.addBeforeInsertListener(listener);
+    editModel.addBeforeUpdateListener(listener);
+    editModel.addEntitiesChangedListener(listener);
+    editModel.addBeforeRefreshListener(listener);
+    editModel.addAfterRefreshListener(listener);
+
+    assertEquals(EmpDept.T_EMPLOYEE, editModel.getEntityID());
+    assertEquals(editModel.getDbProvider().getEntityDb().selectPropertyValues(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB, true),
+            editModel.getValueProvider(jobProperty).getValues());
+
+    editModel.setActive(true);
+    assertTrue(editModel.getActiveState().isActive());
+
     editModel.refresh();
     assertTrue(editModel.isEntityNew());
-    assertFalse(editModel.stateModified().isActive());
+    assertFalse(editModel.getModifiedState().isActive());
 
-    //todo
-//    employeeModel.getTableModel().setSelectedItemIndex(0);
-//
-//    assertFalse(entityNullState.isActive());
-//
-//    assertTrue("Active entity is not equal to the selected entity",
-//            editModel.getEntityCopy().propertyValuesEqual(employeeModel.getTableModel().getItemAtViewIndex(0)));
-//
-//    assertFalse("Active entity is new after an entity is selected", editModel.isEntityNew());
-//    assertFalse(editModel.stateModified().isActive());
-//    employeeModel.getTableModel().clearSelection();
-//    assertTrue("Active entity is new null after selection is cleared", editModel.isEntityNew());
-//    assertFalse(editModel.stateModified().isActive());
-//    assertTrue("Active entity is not null after selection is cleared", editModel.getEntityCopy().isNull());
-//
-//    employeeModel.getTableModel().setSelectedItemIndex(0);
-//    assertTrue("Active entity is null after selection is made", !editModel.getEntityCopy().isNull());
+    final Entity employee = editModel.getDbProvider().getEntityDb().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "MARTIN");
+    editModel.setEntity(employee);
+    assertFalse(entityNullState.isActive());
+
+    assertTrue("Active entity is not equal to the entity just set", editModel.getEntityCopy().propertyValuesEqual(employee));
+    assertFalse("Active entity is new after an entity is set", editModel.isEntityNew());
+    assertFalse(editModel.getModifiedState().isActive());
+    editModel.setEntity(null);
+    assertTrue("Active entity is new null after entity is set to null", editModel.isEntityNew());
+    assertFalse(editModel.getModifiedState().isActive());
+    assertTrue("Active entity is not null after entity is set to null", editModel.getEntityCopy().isNull());
+
+    editModel.setEntity(employee);
+    assertTrue("Active entity is null after selection is made", !editModel.getEntityCopy().isNull());
+    editModel.setEntity(null);
 
     final Double originalCommission = (Double) editModel.getValue(EmpDept.EMPLOYEE_COMMISSION);
     final double commission = 1500.5;
@@ -89,7 +159,7 @@ public class DefaultEntityEditModelTest {
     final String name = "Mr. Mr";
 
     editModel.setValue(EmpDept.EMPLOYEE_COMMISSION, commission);
-    assertTrue(editModel.stateModified().isActive());
+    assertTrue(editModel.getModifiedState().isActive());
     editModel.setValue(EmpDept.EMPLOYEE_HIREDATE, hiredate);
     editModel.setValue(EmpDept.EMPLOYEE_NAME, name);
 
@@ -98,29 +168,39 @@ public class DefaultEntityEditModelTest {
     assertEquals("Name does not fit", editModel.getValue(EmpDept.EMPLOYEE_NAME), name);
 
     editModel.setValue(EmpDept.EMPLOYEE_COMMISSION, originalCommission);
-    assertTrue(editModel.isEntityModified());
-    assertTrue(editModel.stateModified().isActive());
+    assertTrue(editModel.isModified());
+    assertTrue(editModel.getModifiedState().isActive());
     editModel.setValue(EmpDept.EMPLOYEE_HIREDATE, originalHiredate);
-    assertTrue(editModel.isEntityModified());
+    assertTrue(editModel.isModified());
     editModel.setValue(EmpDept.EMPLOYEE_NAME, originalName);
-    assertFalse(editModel.isEntityModified());
+    assertFalse(editModel.isModified());
 
     //test validation
     try {
       editModel.setValue(EmpDept.EMPLOYEE_COMMISSION, 50d);
-      editModel.validate(EmpDept.EMPLOYEE_COMMISSION, AbstractValueChangeMapEditModel.INSERT);
+      editModel.validate(EmpDept.EMPLOYEE_COMMISSION, ValueMapValidator.INSERT);
       fail("Validation should fail on invalid commission value");
     }
     catch (ValidationException e) {
       assertEquals(EmpDept.EMPLOYEE_COMMISSION, e.getKey());
       assertEquals(50d, e.getValue());
-      final Property property = EntityRepository.getProperty(EmpDept.T_EMPLOYEE, (String) e.getKey());
+      final Property property = Entities.getProperty(EmpDept.T_EMPLOYEE, (String) e.getKey());
       assertEquals("Validation message should fit", "'" + property + "' " +
               FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_TOO_SMALL) + " " + property.getMin(), e.getMessage());
     }
 
     editModel.setValueMap(null);
     assertTrue("Active entity is not null after model is cleared", editModel.getEntityCopy().isNull());
+
+    editModel.removeAfterDeleteListener(listener);
+    editModel.removeAfterInsertListener(listener);
+    editModel.removeAfterUpdateListener(listener);
+    editModel.removeBeforeDeleteListener(listener);
+    editModel.removeBeforeInsertListener(listener);
+    editModel.removeBeforeUpdateListener(listener);
+    editModel.removeEntitiesChangedListener(listener);
+    editModel.removeBeforeRefreshListener(listener);
+    editModel.removeAfterRefreshListener(listener);
   }
 
   @Test
@@ -143,11 +223,11 @@ public class DefaultEntityEditModelTest {
       editModel.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, department);
 
       final Entity toInsert = editModel.getEntityCopy();
-      editModel.eventAfterInsert().addListener(new ActionListener() {
-        public void actionPerformed(final ActionEvent e) {
+      editModel.addAfterInsertListener(new InsertListener() {
+        @Override
+        protected void inserted(final InsertEvent event) {
           try {
-            final InsertEvent insertEvent = (InsertEvent) e;
-            final Entity inserted = editModel.getDbProvider().getEntityDb().selectSingle(insertEvent.getInsertedKeys().get(0));
+            final Entity inserted = editModel.getDbProvider().getEntityDb().selectSingle(event.getInsertedKeys().get(0));
             toInsert.setValue(EmpDept.EMPLOYEE_ID, inserted.getValue(EmpDept.EMPLOYEE_ID));
             assertTrue(toInsert.propertyValuesEqual(inserted));
           }
@@ -180,12 +260,13 @@ public class DefaultEntityEditModelTest {
       editModel.setEntity(editModel.getDbProvider().getEntityDb().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "MILLER"));
       editModel.setValue(EmpDept.EMPLOYEE_NAME, "BJORN");
       final List<Entity> toUpdate = Arrays.asList(editModel.getEntityCopy());
-      editModel.eventAfterUpdate().addListener(new ActionListener() {
-        public void actionPerformed(final ActionEvent e) {
-          final UpdateEvent de = (UpdateEvent) e;
-          assertEquals(toUpdate, de.getUpdatedEntities());
+      final UpdateListener listener = new UpdateListener() {
+        @Override
+        protected void updated(final UpdateEvent event) {
+          assertEquals(toUpdate, event.getUpdatedEntities());
         }
-      });
+      };
+      editModel.addAfterUpdateListener(listener);
       editModel.setUpdateAllowed(false);
       assertFalse(editModel.isUpdateAllowed());
       try {
@@ -197,6 +278,8 @@ public class DefaultEntityEditModelTest {
       assertTrue(editModel.isUpdateAllowed());
 
       editModel.update();
+      assertFalse(editModel.getModifiedState().isActive());
+      editModel.removeAfterUpdateListener(listener);
     }
     finally {
       editModel.getDbProvider().getEntityDb().rollbackTransaction();
@@ -209,10 +292,10 @@ public class DefaultEntityEditModelTest {
       editModel.getDbProvider().getEntityDb().beginTransaction();
       editModel.setEntity(editModel.getDbProvider().getEntityDb().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "MILLER"));
       final List<Entity> toDelete = Arrays.asList(editModel.getEntityCopy());
-      editModel.eventAfterDelete().addListener(new ActionListener() {
-        public void actionPerformed(final ActionEvent e) {
-          final DeleteEvent de = (DeleteEvent) e;
-          assertEquals(toDelete, de.getDeletedEntities());
+      editModel.addAfterDeleteListener(new DeleteListener() {
+        @Override
+        protected void deleted(final DeleteEvent event) {
+          assertEquals(toDelete, event.getDeletedEntities());
         }
       });
       editModel.setDeleteAllowed(false);

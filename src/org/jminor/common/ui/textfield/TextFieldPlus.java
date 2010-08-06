@@ -61,6 +61,10 @@ public class TextFieldPlus extends JTextField {
     this.upperCase = upperCase;
   }
 
+  public final boolean isUpperCase() {
+    return upperCase;
+  }
+
   public final void setRange(final int min, final int max) {
     setRange((double) min, (double) max);
   }

@@ -14,6 +14,10 @@ public interface DbConnection extends PoolableConnection {
 
   User getUser();
 
+  void setLoggingEnabled(final boolean enabled);
+
+  boolean isLoggingEnabled();
+
   List query(final String sql, final ResultPacker resultPacker, final int fetchCount) throws SQLException;
 
   boolean isConnected();

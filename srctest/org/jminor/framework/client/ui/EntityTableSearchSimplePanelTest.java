@@ -1,0 +1,22 @@
+package org.jminor.framework.client.ui;
+
+import org.jminor.framework.client.model.DefaultEntityTableModel;
+import org.jminor.framework.client.model.EntityTableModel;
+import org.jminor.framework.db.EntityDbConnectionTest;
+import org.jminor.framework.demos.empdept.domain.EmpDept;
+
+import static org.junit.Assert.assertEquals;
+import org.junit.Test;
+
+public class EntityTableSearchSimplePanelTest {
+
+  @Test
+  public void test() {
+    new EmpDept();
+    final EntityTableModel tableModel = new DefaultEntityTableModel(EmpDept.T_DEPARTMENT, EntityDbConnectionTest.DB_PROVIDER);
+    final EntityTableSearchSimplePanel panel = new EntityTableSearchSimplePanel(tableModel.getSearchModel(), tableModel);
+    panel.setSearchTest("OPERATIONS");
+    panel.performSearch();
+    assertEquals(1, tableModel.getRowCount());
+  }
+}

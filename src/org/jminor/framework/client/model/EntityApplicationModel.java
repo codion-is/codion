@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.client.model;
 
-import org.jminor.common.model.Event;
+import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.User;
 import org.jminor.framework.db.provider.EntityDbProvider;
@@ -15,8 +15,15 @@ import java.util.List;
  */
 public interface EntityApplicationModel extends Refreshable {
 
+  /**
+   * Log out from this application model
+   */
   void logout();
 
+  /**
+   * Logs in the given user
+   * @param user the user to login
+   */
   void login(final User user);
 
   /**
@@ -58,9 +65,20 @@ public interface EntityApplicationModel extends Refreshable {
    */
   void setCascadeRefresh(final boolean value);
 
+  /**
+   * @param modelClass the model class
+   * @return the EntityModel of the given type
+   */
   EntityModel getMainApplicationModel(final Class<? extends EntityModel> modelClass);
 
+  /**
+   * @param entityID the entity ID
+   * @return the EntityModel based on the given entityID
+   */
   EntityModel getMainApplicationModel(final String entityID);
 
-  Event eventCascadeRefreshChanged();
+  /**
+   * @return an Event fired when the cascadeRefresh property has changed
+   */
+  EventObserver cascadeRefreshObserver();
 }

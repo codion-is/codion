@@ -86,7 +86,7 @@ final class EntityDefinitionImpl implements EntityDefinition, Serializable {
   /**
    * Links a set of derived property ids to a parent property id
    */
-  private Map<String, Set<String>> linkedProperties = new HashMap<String, Set<String>>();
+  private final Map<String, Set<String>> linkedProperties = new HashMap<String, Set<String>>();
 
   private transient List<Property.PrimaryKeyProperty> primaryKeyProperties;
   private transient List<Property.ForeignKeyProperty> foreignKeyProperties;

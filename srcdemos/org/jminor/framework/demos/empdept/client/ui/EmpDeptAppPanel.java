@@ -7,8 +7,8 @@ import org.jminor.common.model.CancelException;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.UiUtil;
-import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlSet;
+import org.jminor.common.ui.control.Controls;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.DefaultEntityApplicationModel;
 import org.jminor.framework.client.model.EntityApplicationModel;
@@ -32,18 +32,7 @@ import java.nio.charset.Charset;
 public class EmpDeptAppPanel extends EntityApplicationPanel {
 
   public EmpDeptAppPanel() {
-    final EntityPanelProvider employeePanelProvider = new EntityPanelProvider(T_EMPLOYEE) {
-      @Override
-      protected void configureTableModel(final EntityTableModel tableModel) {
-        tableModel.setQueryCriteriaRequired(false);
-        tableModel.getPropertySummaryModel(EMPLOYEE_SALARY).setSummaryType(PropertySummaryModel.SummaryType.AVERAGE);
-      }
-
-      @Override
-      protected void configureTablePanel(final EntityTablePanel tablePanel) {
-        tablePanel.setSummaryPanelVisible(true);
-      }
-    };
+    final EntityPanelProvider employeePanelProvider = new EmployeePanelProvider();
     employeePanelProvider.setEditModelClass(EmployeeEditModel.class);
     employeePanelProvider.setEditPanelClass(EmployeeEditPanel.class);
 
@@ -65,29 +54,48 @@ public class EmpDeptAppPanel extends EntityApplicationPanel {
   @Override
   protected ControlSet getToolsControlSet() {
     final ControlSet toolsSet = super.getToolsControlSet();
-    toolsSet.add(ControlFactory.methodControl(this, "importJSON", EmpDept.getString(IMPORT_JSON)));
+    toolsSet.add(Controls.methodControl(this, "importJSON", EmpDept.getString(IMPORT_JSON)));
 
     return toolsSet;
   }
 
   @Override
-  protected void configureApplication() {
-    Configuration.setValue(Configuration.TOOLBAR_BUTTONS, true);
-    Configuration.setValue(Configuration.COMPACT_ENTITY_PANEL_LAYOUT, true);
-    Configuration.setValue(Configuration.USE_OPTIMISTIC_LOCKING, true);
-  }
-
-  @Override
   protected EntityApplicationModel initializeApplicationModel(final EntityDbProvider dbProvider) throws CancelException {
-    return new DefaultEntityApplicationModel(dbProvider) {
-      @Override
-      protected void loadDomainModel() {
-        new EmpDept();
-      }
-    };
+    return new EmpDeptApplicationModel(dbProvider);
   }
 
   public static void main(final String[] args) {
+    Configuration.setValue(Configuration.TOOLBAR_BUTTONS, true);
+    Configuration.setValue(Configuration.COMPACT_ENTITY_PANEL_LAYOUT, true);
+    Configuration.setValue(Configuration.USE_OPTIMISTIC_LOCKING, true);
     new EmpDeptAppPanel().startApplication("Emp-Dept", null, false, UiUtil.getScreenSizeRatio(0.6), new User("scott", "tiger"));
+  }
+
+  private static final class EmpDeptApplicationModel extends DefaultEntityApplicationModel {
+    private EmpDeptApplicationModel(final EntityDbProvider dbProvider) {
+      super(dbProvider);
+    }
+
+    @Override
+    protected void loadDomainModel() {
+      new EmpDept();
+    }
+  }
+
+  private static final class EmployeePanelProvider extends EntityPanelProvider {
+    private EmployeePanelProvider() {
+      super(EmpDept.T_EMPLOYEE);
+    }
+
+    @Override
+    protected void configureTableModel(final EntityTableModel tableModel) {
+      tableModel.setQueryCriteriaRequired(false);
+      tableModel.getPropertySummaryModel(EMPLOYEE_SALARY).setSummaryType(PropertySummaryModel.SummaryType.AVERAGE);
+    }
+
+    @Override
+    protected void configureTablePanel(final EntityTablePanel tablePanel) {
+      tablePanel.setSummaryPanelVisible(true);
+    }
   }
 }

@@ -5,13 +5,14 @@ package org.jminor.framework.server.monitor.ui;
 
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.Events;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.DefaultExceptionHandler;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.Control;
-import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.ControlSet;
+import org.jminor.common.ui.control.Controls;
 import org.jminor.common.ui.images.Images;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.server.monitor.HostMonitor;
@@ -39,7 +40,7 @@ public final class MonitorPanel extends JPanel {
   private static final String JDK_PREFERENCE_KEY = MonitorPanel.class.getName() + ".jdkPathPreferenceKey";
   private static String jdkDir = Util.getUserPreference(JDK_PREFERENCE_KEY, null);
 
-  private final Event evtAlwaysOnTopChanged = new Event();
+  private final Event evtAlwaysOnTopChanged = Events.event();
   private static final int MEMORY_USAGE_UPDATE_INTERVAL = 2000;
   private final MonitorModel model;
   private JFrame monitorFrame;
@@ -85,8 +86,7 @@ public final class MonitorPanel extends JPanel {
       }
     }
     final String separator = System.getProperty("file.separator");
-    ProcessBuilder builder = new ProcessBuilder(jdkDir + separator + "bin"  + separator + "jconsole");
-    builder.start();
+    new ProcessBuilder(jdkDir + separator + "bin"  + separator + "jconsole").start();
   }
 
   public void setJDKDir() {
@@ -150,7 +150,7 @@ public final class MonitorPanel extends JPanel {
   }
 
   private Control initRefreshControl() {
-    final Control control = ControlFactory.methodControl(model, "refresh", "Refresh");
+    final Control control = Controls.methodControl(model, "refresh", "Refresh");
     control.setMnemonic('R');
 
     return control;
@@ -158,7 +158,7 @@ public final class MonitorPanel extends JPanel {
 
   private Control initAlwaysOnTopControl() {
     final Control control =
-            ControlFactory.toggleControl(this, "alwaysOnTop", "Always on Top", evtAlwaysOnTopChanged);
+            Controls.toggleControl(this, "alwaysOnTop", "Always on Top", evtAlwaysOnTopChanged);
     control.setMnemonic('A');
 
     return control;
@@ -166,7 +166,7 @@ public final class MonitorPanel extends JPanel {
 
   private Control initSetJDKDirControl() {
     final Control control =
-            ControlFactory.methodControl(this, "setJDKDir", "Set JDK home...");
+            Controls.methodControl(this, "setJDKDir", "Set JDK home...");
     control.setMnemonic('S');
 
     return control;
@@ -174,14 +174,14 @@ public final class MonitorPanel extends JPanel {
 
   private Control initJConsoleControl() {
     final Control control =
-            ControlFactory.methodControl(this, "runJConsole", "Run JConsole");
+            Controls.methodControl(this, "runJConsole", "Run JConsole");
     control.setMnemonic('J');
 
     return control;
   }
 
   private Control initExitControl() {
-    return ControlFactory.methodControl(this, "exit", "Exit", null, null, 'X');
+    return Controls.methodControl(this, "exit", "Exit", null, null, 'X');
   }
 
   private JPanel initializeSouthPanel() {

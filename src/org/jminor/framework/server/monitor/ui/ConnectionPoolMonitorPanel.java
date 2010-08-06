@@ -5,8 +5,8 @@ package org.jminor.framework.server.monitor.ui;
 
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.model.formats.DateFormats;
-import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
+import org.jminor.common.ui.control.Controls;
 import org.jminor.common.ui.control.IntBeanSpinnerValueLink;
 import org.jminor.common.ui.control.ToggleBeanValueLink;
 import org.jminor.framework.server.monitor.ConnectionPoolMonitor;
@@ -41,8 +41,9 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
 
   private final ConnectionPoolMonitor model;
 
-  private final NumberFormat format = NumberFormat.getInstance();
+  private static final int RESET_FIELD_COLUMNS = 14;
 
+  private final NumberFormat format = NumberFormat.getInstance();
   private final JFreeChart inPoolChart = ChartFactory.createXYStepChart(null,
         null, null, null, PlotOrientation.VERTICAL, true, true, false);
   private final JFreeChart inPoolMacroChart = ChartFactory.createXYStepChart(null,
@@ -51,7 +52,6 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
         null, null, null, PlotOrientation.VERTICAL, true, true, false);
   private final JFreeChart checkOutTimeChart = ChartFactory.createXYStepChart(null,
         null, null, null, PlotOrientation.VERTICAL, true, true, false);
-
   private final ChartPanel inPoolChartPanel = new ChartPanel(inPoolChart);
   private final ChartPanel inPoolChartPanelMacro = new ChartPanel(inPoolMacroChart);
   private final ChartPanel requestsPerSecondChartPanel = new ChartPanel(requestsPerSecondChart);
@@ -60,7 +60,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   private final JTextField txtPoolSize = new JTextField();
   private final JTextField txtCreated = new JTextField();
   private final JTextField txtDestroyed = new JTextField();
-  private final JTextField txtCreatedDestroyedResetTime = new JTextField(14);
+  private final JTextField txtCreatedDestroyedResetTime = new JTextField(RESET_FIELD_COLUMNS);
   private final JTextField txtRequested = new JTextField();
   private final JTextField txtDelayed = new JTextField();
 
@@ -116,7 +116,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   }
 
   private void bindEvents() {
-    model.eventStatsUpdated().addListener(new ActionListener() {
+    model.addStatsListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         updateView();
       }
@@ -177,7 +177,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     txtCreatedDestroyedResetTime.setHorizontalAlignment(JLabel.CENTER);
 
     final JCheckBox chkCollectStats = new JCheckBox();
-    chkCollectStats.setModel(new ToggleBeanValueLink(model, "collectFineGrainedStats", model.eventCollectFineGrainedStatsChanged(), null).getButtonModel());
+    chkCollectStats.setModel(new ToggleBeanValueLink(model, "collectFineGrainedStats", model.getCollectFineGrainedStatsObserver(), null).getButtonModel());
 
     statsBase.add(new JLabel("Fine grained statistics"));
     statsBase.add(chkCollectStats);
@@ -196,7 +196,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     panel.setBorder(BorderFactory.createTitledBorder("Statistics"));
     panel.add(statsBase, BorderLayout.CENTER);
     panel.add(ControlProvider.createButton(
-            ControlFactory.methodControl(model, "resetStats", "Reset")), BorderLayout.EAST);
+            Controls.methodControl(model, "resetStats", "Reset")), BorderLayout.EAST);
 
     return panel;
   }
@@ -204,7 +204,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   private JPanel getChartPanel() {
     final JPanel chartConfig = new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
     final JSpinner spnUpdateInterval = new JSpinner(new IntBeanSpinnerValueLink(model, "statsUpdateInterval",
-            model.eventStatsUpdateIntervalChanged()).getSpinnerModel());
+            model.getStatsUpdateIntervalObserver()).getSpinnerModel());
 
     ((JSpinner.DefaultEditor) spnUpdateInterval.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) spnUpdateInterval.getEditor()).getTextField().setColumns(3);
@@ -215,7 +215,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     final JPanel configBase = new JPanel(new BorderLayout(5,5));
     configBase.add(chartConfig, BorderLayout.CENTER);
     configBase.add(ControlProvider.createButton(
-            ControlFactory.methodControl(model, "resetInPoolStats", "Reset")), BorderLayout.EAST);
+            Controls.methodControl(model, "resetInPoolStats", "Reset")), BorderLayout.EAST);
 
     final JPanel chartBase = new JPanel(new GridLayout(2,2));
     chartBase.add(requestsPerSecondChartPanel);

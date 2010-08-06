@@ -30,13 +30,14 @@ public class EntityTestDomain {
   public static final String DETAIL_SELECT_TABLE_NAME = "test.entity_test_select";
 
   static {
-    EntityRepository.add(Entities.define(T_MASTER,
+    Entities.define(T_MASTER,
             Properties.primaryKeyProperty(MASTER_ID),
             Properties.columnProperty(MASTER_NAME, Types.VARCHAR),
             Properties.columnProperty(MASTER_CODE, Types.INTEGER))
-            .setStringProvider(new StringProvider<String>(MASTER_NAME)));
+            .setStringProvider(new StringProvider<String>(MASTER_NAME))
+            .setLargeDataset(true);
 
-    EntityRepository.add(Entities.define(T_DETAIL,
+    Entities.define(T_DETAIL,
             Properties.primaryKeyProperty(DETAIL_ID),
             Properties.columnProperty(DETAIL_INT, Types.INTEGER, DETAIL_INT),
             Properties.columnProperty(DETAIL_DOUBLE, Types.DOUBLE, DETAIL_DOUBLE),
@@ -47,10 +48,10 @@ public class EntityTestDomain {
             Properties.foreignKeyProperty(DETAIL_ENTITY_FK, DETAIL_ENTITY_FK, T_MASTER,
                     Properties.columnProperty(DETAIL_ENTITY_ID)),
             Properties.denormalizedViewProperty(DETAIL_MASTER_NAME, DETAIL_ENTITY_FK,
-                    EntityRepository.getProperty(T_MASTER, MASTER_NAME), DETAIL_MASTER_NAME),
+                    Entities.getProperty(T_MASTER, MASTER_NAME), DETAIL_MASTER_NAME),
             Properties.denormalizedViewProperty(DETAIL_MASTER_CODE, DETAIL_ENTITY_FK,
-                    EntityRepository.getProperty(T_MASTER, MASTER_CODE), DETAIL_MASTER_CODE))
+                    Entities.getProperty(T_MASTER, MASTER_CODE), DETAIL_MASTER_CODE))
             .setOrderByClause(DETAIL_STRING).setSelectTableName(DETAIL_SELECT_TABLE_NAME)
-            .setStringProvider(new StringProvider<String>(DETAIL_STRING)));
+            .setStringProvider(new StringProvider<String>(DETAIL_STRING));
   }
 }

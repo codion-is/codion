@@ -111,6 +111,10 @@ public class MethodLogger {
     reset();
   }
 
+  protected String getMethodArgumentAsString(final Object argument) {
+    return String.valueOf(argument);
+  }
+
   private synchronized LogEntry addLogEntry(final String method, final String message, final long time, final boolean isExit,
                                             final Throwable exception, final List<LogEntry> subLog) {
     if (!isExit) {
@@ -148,16 +152,12 @@ public class MethodLogger {
 
     final StringBuilder stringBuilder = new StringBuilder(arguments.length*40);
     for (int i = 0; i < arguments.length; i++) {
-      appendArgumentAsString(arguments[i], stringBuilder);
+      stringBuilder.append(getMethodArgumentAsString(arguments[i]));
       if (i < arguments.length-1) {
         stringBuilder.append(", ");
       }
     }
 
     return stringBuilder.toString();
-  }
-
-  protected void appendArgumentAsString(final Object argument, final StringBuilder destination) {
-    destination.append(String.valueOf(argument));
   }
 }

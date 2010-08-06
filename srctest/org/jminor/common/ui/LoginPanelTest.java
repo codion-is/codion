@@ -1,0 +1,19 @@
+package org.jminor.common.ui;
+
+import org.jminor.common.model.User;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import org.junit.Test;
+
+public class LoginPanelTest {
+
+  @Test
+  public void test() {
+    final User user = new User("user", "pass");
+    final LoginPanel panel = new LoginPanel(user);
+    assertEquals(user, panel.getUser());
+    assertNotNull(panel.getPasswordField());
+    assertNotNull(panel.getUsernameField());
+  }
+}

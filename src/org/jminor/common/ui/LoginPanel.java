@@ -28,6 +28,8 @@ import java.awt.event.WindowEvent;
  */
 public final class LoginPanel extends JPanel {
 
+  private static final int DEFAULT_FIELD_COLUMNS = 8;
+
   private final JTextField usernameField = new JTextField(8);
   private final JPasswordField passwordField = new JPasswordField(8);
 
@@ -90,7 +92,7 @@ public final class LoginPanel extends JPanel {
     return showLoginPanel(parent, defaultUser);
   }
 
-  protected void initUI(final boolean labelsOnTop, final String userLabel, final String passLabel) {
+  private void initUI(final boolean labelsOnTop, final String userLabel, final String passLabel) {
     final JPanel retBase = new JPanel(new FlexibleGridLayout(labelsOnTop ? 4 : 2, labelsOnTop ? 1 : 2,5,5,true,false));
     lblUser.setHorizontalAlignment(labelsOnTop ? JLabel.LEADING : JLabel.RIGHT);
     lblPass.setHorizontalAlignment(labelsOnTop ? JLabel.LEADING : JLabel.RIGHT);
@@ -99,8 +101,8 @@ public final class LoginPanel extends JPanel {
     usernameField.setText(defaultUser == null ? "" : defaultUser.getUsername());
     passwordField.setText(defaultUser == null ? "" : defaultUser.getPassword());
 
-    usernameField.setColumns(8);
-    passwordField.setColumns(8);
+    usernameField.setColumns(DEFAULT_FIELD_COLUMNS);
+    passwordField.setColumns(DEFAULT_FIELD_COLUMNS);
     UiUtil.selectAllOnFocusGained(usernameField);
     UiUtil.selectAllOnFocusGained(passwordField);
 
@@ -112,7 +114,7 @@ public final class LoginPanel extends JPanel {
 
     setLayout(new BorderLayout());
     add(retBase, BorderLayout.CENTER);
-    if (usernameField.getText().length() == 0) {
+    if (usernameField.getText().isEmpty()) {
       addInitialFocusHack(usernameField);
     }
     else {
@@ -126,11 +128,11 @@ public final class LoginPanel extends JPanel {
    */
   private static void addInitialFocusHack(final JTextField textField) {
     textField.addHierarchyListener(new HierarchyListener() {
-      public void hierarchyChanged(HierarchyEvent e) {
+      public void hierarchyChanged(final HierarchyEvent e) {
         if (textField.isShowing() && (e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0) {
           SwingUtilities.getWindowAncestor(textField).addWindowFocusListener(new WindowAdapter() {
             @Override
-            public void windowGainedFocus(WindowEvent evt) {
+            public void windowGainedFocus(final WindowEvent evt) {
               textField.requestFocusInWindow();
               textField.setCaretPosition(textField.getText().length());
             }

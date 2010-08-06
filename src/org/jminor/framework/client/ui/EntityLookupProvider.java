@@ -11,20 +11,19 @@ import org.jminor.framework.domain.Entity;
  * A InputProvider implementation for Entity values based on a EntityLookupField.
  * @see EntityLookupField
  */
-public class EntityLookupProvider extends AbstractInputProvider<Entity> {
+public final class EntityLookupProvider extends AbstractInputProvider<Entity, EntityLookupField> {
 
   public EntityLookupProvider(final EntityLookupModel lookupModel, final Entity currentValue) {
     super(createEntityField(lookupModel, currentValue));
   }
 
   @Override
-  public final Entity getValue() {
-    final EntityLookupField lookupField = (EntityLookupField) getInputComponent();
-    if (lookupField.getModel().getSelectedEntities().isEmpty()) {
+  public Entity getValue() {
+    if (getInputComponent().getModel().getSelectedEntities().isEmpty()) {
       return null;
     }
 
-    return lookupField.getModel().getSelectedEntities().get(0);
+    return getInputComponent().getModel().getSelectedEntities().get(0);
   }
 
   private static EntityLookupField createEntityField(final EntityLookupModel lookupModel, final Object currentValue) {

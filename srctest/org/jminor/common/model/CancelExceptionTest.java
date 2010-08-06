@@ -7,7 +7,7 @@ import org.junit.Test;
 
 public class CancelExceptionTest {
 
-  @Test(expected=CancelException.class)
+  @Test(expected = CancelException.class)
   public void test() throws CancelException {
     throw new CancelException();
   }

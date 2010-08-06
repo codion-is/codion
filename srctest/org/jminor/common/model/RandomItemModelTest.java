@@ -3,8 +3,7 @@
  */
 package org.jminor.common.model;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class RandomItemModelTest {
@@ -16,6 +15,9 @@ public class RandomItemModelTest {
     final Object three = "three";
 
     final RandomItemModel<Object> model = new RandomItemModel<Object>(0, one, two, three);
+    assertNotNull(model.getRandom());
+    assertEquals(3, model.getItemCount());
+    assertEquals(3, model.getItems().size());
 
     model.increment(three);
     assertEquals(three, model.getRandomItem());

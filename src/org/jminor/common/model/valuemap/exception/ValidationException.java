@@ -21,11 +21,11 @@ public class ValidationException extends Exception {
     this.value = value;
   }
 
-  public Object getKey() {
+  public final Object getKey() {
     return key;
   }
 
-  public Object getValue() {
+  public final Object getValue() {
     return value;
   }
 }

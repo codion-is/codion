@@ -9,7 +9,6 @@ import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
 
 import org.junit.After;
@@ -22,9 +21,10 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-public class DefaultEntityLookupModelTest {
+public final class DefaultEntityLookupModelTest {
 
   private DefaultEntityLookupModel lookupModel;
+  private List<Property.ColumnProperty> properties;
 
   @Test
   public void testConstructor() {
@@ -48,6 +48,20 @@ public class DefaultEntityLookupModelTest {
       fail();
     }
     catch (IllegalArgumentException e) {}
+  }
+
+  @Test
+  public void theRest() {
+    assertNotNull(lookupModel.getDescription());
+    assertNotNull(lookupModel.getDbProvider());
+    assertEquals(properties, lookupModel.getLookupProperties());
+    assertTrue(lookupModel.isMultipleSelectionAllowed());
+    lookupModel.setMultipleSelectionAllowed(false);
+    assertFalse(lookupModel.isMultipleSelectionAllowed());
+    assertFalse(lookupModel.isCaseSensitive());
+    assertTrue(lookupModel.isWildcardPostfix());
+    assertTrue(lookupModel.isWildcardPrefix());
+    assertNotNull(lookupModel.getWildcard());
   }
 
   @Test
@@ -113,7 +127,7 @@ public class DefaultEntityLookupModelTest {
     lookupModel.setCaseSensitive(true);
     lookupModel.setWildcardPostfix(true);
     lookupModel.setAdditionalLookupCriteria(
-            EntityCriteriaUtil.propertyCriteria(EntityRepository.getColumnProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB),
+            EntityCriteriaUtil.propertyCriteria(Entities.getColumnProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB),
                     SearchType.NOT_LIKE, "ajob"));
     result = lookupModel.performQuery();
     assertTrue("Result should contain john", contains(result, "John"));
@@ -122,9 +136,9 @@ public class DefaultEntityLookupModelTest {
 
   @Before
   public void setUp() throws Exception {
-    lookupModel = new DefaultEntityLookupModel(EmpDept.T_EMPLOYEE, EntityDbConnectionTest.DB_PROVIDER,
-            Arrays.asList(EntityRepository.getColumnProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME),
-                    EntityRepository.getColumnProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB)));
+    properties = Arrays.asList(Entities.getColumnProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME),
+                    Entities.getColumnProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB));
+    lookupModel = new DefaultEntityLookupModel(EmpDept.T_EMPLOYEE, EntityDbConnectionTest.DB_PROVIDER, properties);
 
     EntityDbConnectionTest.DB_PROVIDER.getEntityDb().beginTransaction();
     setupData();

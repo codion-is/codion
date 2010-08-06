@@ -17,10 +17,9 @@ import org.jminor.framework.tools.testing.EntityLoadTestModel;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * User: Bjorn Darri
@@ -28,85 +27,11 @@ import java.util.Map;
  * Time: 03:33:10
  */
 @SuppressWarnings({"UnusedDeclaration"})
-public class EmpDeptLoadTest extends EntityLoadTestModel {
+public final class EmpDeptLoadTest extends EntityLoadTestModel {
 
   public EmpDeptLoadTest() {
-    super(User.UNIT_TEST_USER);
-  }
-
-  @Override
-  protected Collection<UsageScenario> initializeUsageScenarios() {
-    final UsageScenario selectDepartment = new UsageScenario("selectDepartment") {
-      @Override
-      protected void performScenario(final Object application) throws Exception {
-        selectRandomRow(((EntityApplicationModel) application).getMainApplicationModel(EmpDept.T_DEPARTMENT).getTableModel());
-      }
-      @Override
-      protected int getDefaultWeight() {
-        return 10;
-      }
-    };
-    final UsageScenario updateEmployee = new UsageScenario("updateEmployee") {
-      @Override
-      protected void performScenario(final Object application) throws Exception {
-        final EntityModel departmentModel = ((EntityApplicationModel) application).getMainApplicationModel(EmpDept.T_DEPARTMENT);
-        selectRandomRow(departmentModel.getTableModel());
-        final EntityModel employeeModel = departmentModel.getDetailModel(EmpDept.T_EMPLOYEE);
-        if (employeeModel.getTableModel().getRowCount() > 0) {
-          selectRandomRow(employeeModel.getTableModel());
-          final Entity selected = employeeModel.getTableModel().getSelectedItem();
-          EntityUtil.randomize(selected, false, null);
-          employeeModel.getEditModel().setEntity(selected);
-          employeeModel.getEditModel().update();
-        }
-      }
-      @Override
-      protected int getDefaultWeight() {
-        return 5;
-      }
-    };
-    final UsageScenario insertEmployee = new UsageScenario("insertEmployee") {
-      @Override
-      protected void performScenario(final Object application) throws Exception {
-        final EntityModel departmentModel = ((EntityApplicationModel) application).getMainApplicationModel(EmpDept.T_DEPARTMENT);
-        selectRandomRow(departmentModel.getTableModel());
-        final EntityModel employeeModel = departmentModel.getDetailModel(EmpDept.T_EMPLOYEE);
-        final Map<String, Entity> references = new HashMap<String, Entity>();
-        references.put(EmpDept.T_DEPARTMENT, departmentModel.getTableModel().getSelectedItem());
-        employeeModel.getEditModel().setValueMap(EntityUtil.createRandomEntity(EmpDept.T_EMPLOYEE, references));
-        employeeModel.getEditModel().insert();
-      }
-      @Override
-      protected int getDefaultWeight() {
-        return 3;
-      }
-    };
-    final UsageScenario insertDepartment = new UsageScenario("insertDepartment") {
-      @Override
-      protected void performScenario(final Object application) throws Exception {
-        final EntityModel departmentModel = ((EntityApplicationModel) application).getMainApplicationModel(EmpDept.T_DEPARTMENT);
-        departmentModel.getEditModel().setValueMap(EntityUtil.createRandomEntity(EmpDept.T_DEPARTMENT, null));
-        departmentModel.getEditModel().insert();
-      }
-      @Override
-      protected int getDefaultWeight() {
-        return 1;
-      }
-    };
-    final UsageScenario logoutLogin = new UsageScenario("logoutLogin") {
-      @Override
-      protected void performScenario(final Object application) throws Exception {
-        ((EntityApplicationModel) application).getDbProvider().disconnect();
-        think();
-        ((EntityApplicationModel) application).getDbProvider().getEntityDb();
-      }
-      @Override
-      protected int getDefaultWeight() {
-        return 4;
-      }
-    };
-
-    return Arrays.asList(insertDepartment, insertEmployee, updateEmployee, selectDepartment, logoutLogin);
+    super(User.UNIT_TEST_USER, new InsertDepartment(), new InsertEmployee(), new LoginLogout(),
+            new SelectDepartment(), new UpdateEmployee());
   }
 
   @Override
@@ -131,17 +56,94 @@ public class EmpDeptLoadTest extends EntityLoadTestModel {
     return applicationModel;
   }
 
-  public static void main(String[] args) throws Exception {
-    SwingUtilities.invokeLater(new Runnable() {
-      public void run() {
-        try {
-          UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-          new LoadTestPanel(new EmpDeptLoadTest()).showFrame();
-        }
-        catch (Exception e) {
-          e.printStackTrace();
+  private static final class SelectDepartment extends UsageScenario {
+    @Override
+    protected void performScenario(final Object application) throws Exception {
+      selectRandomRow(((EntityApplicationModel) application).getMainApplicationModel(EmpDept.T_DEPARTMENT).getTableModel());
+    }
+    @Override
+    protected int getDefaultWeight() {
+      return 10;
+    }
+  }
+
+  private static final class UpdateEmployee extends UsageScenario {
+    @Override
+      protected void performScenario(final Object application) throws Exception {
+        final EntityModel departmentModel = ((EntityApplicationModel) application).getMainApplicationModel(EmpDept.T_DEPARTMENT);
+        selectRandomRow(departmentModel.getTableModel());
+        final EntityModel employeeModel = departmentModel.getDetailModel(EmpDept.T_EMPLOYEE);
+        if (employeeModel.getTableModel().getRowCount() > 0) {
+          selectRandomRow(employeeModel.getTableModel());
+          final Entity selected = employeeModel.getTableModel().getSelectedItem();
+          EntityUtil.randomize(selected, false, null);
+          employeeModel.getEditModel().setEntity(selected);
+          employeeModel.getEditModel().update();
         }
       }
-    });
+      @Override
+      protected int getDefaultWeight() {
+        return 5;
+      }
+  }
+
+  private static final class InsertEmployee extends UsageScenario {
+    @Override
+    protected void performScenario(final Object application) throws Exception {
+      final EntityModel departmentModel = ((EntityApplicationModel) application).getMainApplicationModel(EmpDept.T_DEPARTMENT);
+      selectRandomRow(departmentModel.getTableModel());
+      final EntityModel employeeModel = departmentModel.getDetailModel(EmpDept.T_EMPLOYEE);
+      final Map<String, Entity> references = new HashMap<String, Entity>();
+      references.put(EmpDept.T_DEPARTMENT, departmentModel.getTableModel().getSelectedItem());
+      employeeModel.getEditModel().setValueMap(EntityUtil.createRandomEntity(EmpDept.T_EMPLOYEE, references));
+      employeeModel.getEditModel().insert();
+    }
+    @Override
+    protected int getDefaultWeight() {
+      return 3;
+    }
+  }
+
+  private static final class InsertDepartment extends UsageScenario {
+    @Override
+      protected void performScenario(final Object application) throws Exception {
+        final EntityModel departmentModel = ((EntityApplicationModel) application).getMainApplicationModel(EmpDept.T_DEPARTMENT);
+        departmentModel.getEditModel().setValueMap(EntityUtil.createRandomEntity(EmpDept.T_DEPARTMENT, null));
+        departmentModel.getEditModel().insert();
+      }
+      @Override
+      protected int getDefaultWeight() {
+        return 1;
+      }
+  }
+
+  private static final class LoginLogout extends UsageScenario {
+    final Random random = new Random();
+    @Override
+      protected void performScenario(final Object application) throws Exception {
+        ((EntityApplicationModel) application).getDbProvider().disconnect();
+        Thread.sleep(random.nextInt(1500));
+        ((EntityApplicationModel) application).getDbProvider().getEntityDb();
+      }
+      @Override
+      protected int getDefaultWeight() {
+        return 4;
+      }
+  }
+
+  public static void main(final String[] args) throws Exception {
+    SwingUtilities.invokeLater(new Runner());
+  }
+
+  private static final class Runner implements Runnable {
+    public void run() {
+      try {
+        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        new LoadTestPanel(new EmpDeptLoadTest()).showFrame();
+      }
+      catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
   }
 }

@@ -3,7 +3,8 @@
  */
 package org.jminor.common.ui.control;
 
-import org.jminor.common.model.Event;
+import org.jminor.common.model.EventObserver;
+import org.jminor.common.model.Util;
 
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -19,12 +20,12 @@ public class TextBeanValueLink extends AbstractBeanValueLink implements Document
   private final Document document;
 
   public TextBeanValueLink(final JTextComponent textComponent, final Object owner, final String propertyName,
-                           final Class<?> valueClass, final Event valueChangeEvent) {
+                           final Class<?> valueClass, final EventObserver valueChangeEvent) {
     this(textComponent, owner, propertyName, valueClass, valueChangeEvent, LinkType.READ_WRITE);
   }
 
   public TextBeanValueLink(final JTextComponent textComponent, final Object owner, final String propertyName,
-                           final Class<?> valueClass, final Event valueChangeEvent, final LinkType linkType) {
+                           final Class<?> valueClass, final EventObserver valueChangeEvent, final LinkType linkType) {
     super(owner, propertyName, valueClass, valueChangeEvent, linkType);
     this.document = textComponent.getDocument();
     if (linkType == LinkType.READ_ONLY) {
@@ -43,21 +44,6 @@ public class TextBeanValueLink extends AbstractBeanValueLink implements Document
 
   public final void changedUpdate(final DocumentEvent e) {}
 
-  @Override
-  protected void setUIValue(final Object value) {
-    try {
-      synchronized (document) {
-        document.remove(0, document.getLength());
-        if (value != null) {
-          document.insertString(0, getValueAsString(value), null);
-        }
-      }
-    }
-    catch (BadLocationException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
   /**
    * @return the value from the UI component
    */
@@ -65,11 +51,27 @@ public class TextBeanValueLink extends AbstractBeanValueLink implements Document
   protected Object getUIValue() {
     final String text = getText();
 
-    return text == null || text.length() == 0 ? null : text;
+    return Util.nullOrEmpty(text) ? null : text;
   }
 
   protected String getValueAsString(final Object value) {
     return value != null ? value.toString() : null;
+  }
+
+  @Override
+  protected final void setUIValue(final Object value) {
+    try {
+      synchronized (document) {
+        document.remove(0, document.getLength());
+        if (value != null) {
+          document.insertString(0, getValueAsString(value), null);
+        }
+      }
+      handleSetUIValue(value);
+    }
+    catch (BadLocationException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   protected final String getText() {
@@ -82,4 +84,6 @@ public class TextBeanValueLink extends AbstractBeanValueLink implements Document
       throw new RuntimeException(e);
     }
   }
+
+  protected void handleSetUIValue(final Object value) {}
 }

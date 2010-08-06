@@ -4,7 +4,7 @@
 package org.jminor.common.ui;
 
 import org.jminor.common.i18n.Messages;
-import org.jminor.common.model.State;
+import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.Util;
 
 import javax.swing.AbstractAction;
@@ -33,7 +33,7 @@ public final class DateInputPanel extends JPanel {
   }
 
   public DateInputPanel(final JFormattedTextField inputField, final SimpleDateFormat dateFormat,
-                        final boolean includeButton, final State enabledState) {
+                        final boolean includeButton, final StateObserver enabledState) {
     super(new BorderLayout());
     Util.rejectNullValue(inputField, "inputField");
     Util.rejectNullValue(dateFormat, "dateFormat");
@@ -42,7 +42,7 @@ public final class DateInputPanel extends JPanel {
     add(inputField, BorderLayout.CENTER);
     if (includeButton) {
       final AbstractAction buttonAction = new AbstractAction("...") {
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(final ActionEvent e) {
           Date currentValue = null;
           try {
             currentValue = getDate();
@@ -57,12 +57,7 @@ public final class DateInputPanel extends JPanel {
       if (enabledState != null) {
         UiUtil.linkToEnabledState(enabledState, this.button);
       }
-      addFocusListener(new FocusAdapter() {
-        @Override
-        public void focusGained(final FocusEvent e) {
-          inputField.requestFocusInWindow();
-        }
-      });
+      addFocusListener(new InputFocusAdapter(inputField));
       add(this.button, BorderLayout.EAST);
     }
   }
@@ -81,5 +76,18 @@ public final class DateInputPanel extends JPanel {
 
   public String getFormatPattern() {
     return dateFormat.toPattern();
+  }
+
+  private static final class InputFocusAdapter extends FocusAdapter {
+    private final JFormattedTextField inputField;
+
+    private InputFocusAdapter(final JFormattedTextField inputField) {
+      this.inputField = inputField;
+    }
+
+    @Override
+    public void focusGained(final FocusEvent e) {
+      inputField.requestFocusInWindow();
+    }
   }
 }

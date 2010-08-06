@@ -122,7 +122,7 @@ public final class ConnectionPoolStatisticsImpl implements ConnectionPoolStatist
     this.requestsDelayedPerSecond = requestsDelayedPerSecond;
   }
 
-  public void setRequestsPerSecond(int requestsPerSecond) {
+  public void setRequestsPerSecond(final int requestsPerSecond) {
     this.requestsPerSecond = requestsPerSecond;
   }
 

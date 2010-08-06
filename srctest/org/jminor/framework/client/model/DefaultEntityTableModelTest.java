@@ -4,11 +4,12 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.db.criteria.Criteria;
+import org.jminor.common.model.ColumnSearchModel;
 import org.jminor.common.model.SortingDirective;
+import org.jminor.common.model.reports.ReportDataWrapper;
 import org.jminor.framework.db.EntityDbConnectionTest;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.EntityTestDomain;
 import org.jminor.framework.domain.Property;
 
@@ -23,7 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class DefaultEntityTableModelTest {
+public final class DefaultEntityTableModelTest {
 
   private static final Entity[] testEntities;
 
@@ -34,38 +35,51 @@ public class DefaultEntityTableModelTest {
     testEntities = initTestEntities(new Entity[5]);
   }
 
-  private static Entity[] initTestEntities(final Entity[] testEntities) {
-    for (int i = 0; i < testEntities.length; i++) {
-      testEntities[i] = Entities.entityInstance(EntityTestDomain.T_DETAIL);
-      testEntities[i].setValue(EntityTestDomain.DETAIL_ID, i+1);
-      testEntities[i].setValue(EntityTestDomain.DETAIL_STRING, new String[]{"a", "b", "c", "d", "e"}[i]);
-    }
-
-    return testEntities;
+  @Test
+  public void testFiltering() {
+    testModel.refresh();
+    final ColumnSearchModel<Property> filterModel = testModel.getSearchModel().getPropertyFilterModel(EntityTestDomain.DETAIL_STRING);
+    filterModel.setLikeValue("a");
+    testModel.filterContents();
   }
 
   @Test
-  public void testBasics() {
+  public void testSorting() {
+    testModel.setSortingDirective(EntityTestDomain.DETAIL_STRING, SortingDirective.DESCENDING);
+    testModel.setSortingDirective(EntityTestDomain.DETAIL_STRING, SortingDirective.ASCENDING);
+  }
+
+  @Test
+  public void testTheRest() {
     final List<Property> columnProperties = testModel.getTableColumnProperties();
     assertEquals(testModel.getColumnCount(), columnProperties.size());
+    testModel.setQueryConfigurationAllowed(false);
+    assertFalse(testModel.isQueryConfigurationAllowed());
+    testModel.setFetchCount(10);
+    assertEquals(10, testModel.getFetchCount());
+    assertFalse(testModel.isDetailModel());
+    assertNotNull(testModel.getEditModel());
+    assertNotNull(testModel.getAllowDeleteState());
+    assertNotNull(testModel.getAllowMultipleUpdateState());
+    assertFalse(testModel.isReadOnly());
+    testModel.setMultipleUpdateAllowed(true).setQueryConfigurationAllowed(true).setDeleteAllowed(true);
+    assertTrue(testModel.isMultipleUpdateAllowed());
+    assertTrue(testModel.isDeleteAllowed());
     assertTrue(testModel.isQueryConfigurationAllowed());
     testModel.refresh();
-    testModel.setSortingDirective(EntityTestDomain.DETAIL_STRING, SortingDirective.DESCENDING);
-    assertEquals("e", testModel.getItemAt(0).getValue(EntityTestDomain.DETAIL_STRING));
-    testModel.setSelectedItemIndex(2);
-    assertEquals(2, testModel.getSelectedIndex());
-    testModel.moveSelectionDown();
-    assertEquals(3, testModel.getSelectedIndex());
-    testModel.moveSelectionUp();
-    testModel.moveSelectionUp();
-    assertEquals(1, testModel.getSelectedIndex());
-    testModel.selectAll();
-    assertEquals(5, testModel.getSelectedItems().size());
-    testModel.clearSelection();
-    assertEquals(0, testModel.getSelectedItems().size());
     assertFalse(testModel.isCellEditable(0,0));
 
-    final Property property = EntityRepository.getProperty(EntityTestDomain.T_DETAIL, EntityTestDomain.DETAIL_STRING);
+    final ReportDataWrapper wrapper = new ReportDataWrapper() {
+      public Object getDataSource() {
+        return null;
+      }
+    };
+    testModel.setReportDataSource(wrapper);
+    assertNotNull(testModel.getReportDataSource());
+
+    assertEquals(Integer.class, testModel.getColumnClass(0));
+
+    final Property property = Entities.getProperty(EntityTestDomain.T_DETAIL, EntityTestDomain.DETAIL_STRING);
     final TableColumn column = testModel.getTableColumn(property);
     assertEquals(property, column.getIdentifier());
 
@@ -96,140 +110,32 @@ public class DefaultEntityTableModelTest {
     propValues.put(EntityTestDomain.DETAIL_STRING, "b");
     final Collection<Entity> byPropertyValues = testModel.getEntitiesByPropertyValues(propValues);
     assertEquals(1, byPropertyValues.size());
-  }
 
-  @Test
-  public void entityTableModel() throws Exception {
-    testModel.refresh();
-    assertTrue("Model should contain all entities", tableModelContainsAll(testEntities, false, testModel));
-
-    //test filters
-    testModel.getSearchModel().getPropertyFilterModel(EntityTestDomain.DETAIL_STRING).setLikeValue("a");
-    assertTrue("filter should be enabled", testModel.getSearchModel().getPropertyFilterModel(EntityTestDomain.DETAIL_STRING).isSearchEnabled());
-    assertEquals("4 entities should be filtered", 4, testModel.getFilteredItemCount());
-    assertFalse("Model should not contain all entities",
-            tableModelContainsAll(testEntities, false, testModel));
-    assertTrue("Model should contain all entities, including filtered",
-            tableModelContainsAll(testEntities, true, testModel));
-    testModel.getSearchModel().getPropertyFilterModel(EntityTestDomain.DETAIL_STRING).setSearchEnabled(false);
-    assertFalse("filter should not be enabled", testModel.getSearchModel().getPropertyFilterModel(EntityTestDomain.DETAIL_STRING).isSearchEnabled());
-
-    assertTrue("Model should contain all entities", tableModelContainsAll(testEntities, false, testModel));
-
-    testModel.getSearchModel().getPropertyFilterModel(EntityTestDomain.DETAIL_STRING).setLikeValue("t"); // ekki til
-    assertTrue("filter should be enabled", testModel.getSearchModel().getPropertyFilterModel(EntityTestDomain.DETAIL_STRING).isSearchEnabled());
-    assertEquals("all 5 entities should be filtered", 5, testModel.getFilteredItemCount());
-    assertFalse("Model should not contain all entities",
-            tableModelContainsAll(testEntities, false, testModel));
-    assertTrue("Model should contain all entities, including filtered",
-            tableModelContainsAll(testEntities, true, testModel));
-    testModel.getSearchModel().getPropertyFilterModel(EntityTestDomain.DETAIL_STRING).setSearchEnabled(false);
-    assertTrue("Model should contain all entities", tableModelContainsAll(testEntities, false, testModel));
-    assertFalse("filter should not be enabled", testModel.getSearchModel().getPropertyFilterModel(EntityTestDomain.DETAIL_STRING).isSearchEnabled());
-
-    //test selection
-    testModel.setSelectedItem(testEntities[0]);
-    assertEquals("selected item should fit", testEntities[0], testModel.getSelectedItem());
-    assertEquals("current index should fit", 0, testModel.getSelectedIndex());
-    testModel.addSelectedItemIndex(1);
-    assertEquals("selected item should fit", testEntities[0], testModel.getSelectedItem());
-    assertEquals("selected indexes should fit", Arrays.asList(0, 1), testModel.getSelectedIndexes());
-    assertEquals("current index should fit", 0, testModel.getSelectedIndex());
-    testModel.addSelectedItemIndex(4);
-    assertEquals("selected indexes should fit", Arrays.asList(0, 1, 4), testModel.getSelectedIndexes());
-    testModel.getSelectionModel().removeIndexInterval(1, 4);
-    assertEquals("selected indexes should fit", Arrays.asList(0), testModel.getSelectedIndexes());
-    assertEquals("current index should fit", 0, testModel.getSelectedIndex());
-    testModel.getSelectionModel().clearSelection();
-    assertEquals("selected indexes should fit", new ArrayList<Integer>(), testModel.getSelectedIndexes());
-    assertEquals("current index should fit", -1, testModel.getSelectionModel().getMinSelectionIndex());
-    testModel.addSelectedItemIndexes(Arrays.asList(0, 3, 4));
-    assertEquals("selected indexes should fit", Arrays.asList(0, 3, 4), testModel.getSelectedIndexes());
-    assertEquals("current index should fit", 0, testModel.getSelectionModel().getMinSelectionIndex());
-    testModel.getSelectionModel().removeSelectionInterval(0, 0);
-    assertEquals("current index should fit", 3, testModel.getSelectionModel().getMinSelectionIndex());
-    testModel.getSelectionModel().removeSelectionInterval(3, 3);
-    assertEquals("current index should fit", 4, testModel.getSelectionModel().getMinSelectionIndex());
-
-    testModel.addSelectedItemIndexes(Arrays.asList(0, 3, 4));
-    assertEquals("current index should fit", 0, testModel.getSelectionModel().getMinSelectionIndex());
-    testModel.getSelectionModel().removeSelectionInterval(3, 3);
-    assertEquals("current index should fit", 0, testModel.getSelectionModel().getMinSelectionIndex());
-    testModel.getSelectionModel().clearSelection();
-    assertEquals("current index should fit", -1, testModel.getSelectionModel().getMinSelectionIndex());
-
-    testModel.addSelectedItemIndexes(Arrays.asList(0, 1, 2, 3, 4));
-    assertEquals("current index should fit", 0, testModel.getSelectionModel().getMinSelectionIndex());
-    testModel.getSelectionModel().removeSelectionInterval(0, 0);
-    assertEquals("current index should fit", 1, testModel.getSelectionModel().getMinSelectionIndex());
-    testModel.getSelectionModel().removeSelectionInterval(1, 1);
-    assertEquals("current index should fit", 2, testModel.getSelectionModel().getMinSelectionIndex());
-    testModel.getSelectionModel().removeSelectionInterval(2, 2);
-    assertEquals("current index should fit", 3, testModel.getSelectionModel().getMinSelectionIndex());
-    testModel.getSelectionModel().removeSelectionInterval(3, 3);
-    assertEquals("current index should fit", 4, testModel.getSelectionModel().getMinSelectionIndex());
-    testModel.getSelectionModel().removeSelectionInterval(4, 4);
-    assertEquals("current index should fit", -1, testModel.getSelectionModel().getMinSelectionIndex());
-
-    //test selection and filtering together
-    testModel.addSelectedItemIndexes(Arrays.asList(3));
-    assertEquals("current index should fit", 3, testModel.getSelectionModel().getMinSelectionIndex());
-
-    testModel.getSearchModel().getPropertyFilterModel(EntityTestDomain.DETAIL_STRING).setLikeValue("d");
-    assertEquals("current index should fit", 0,
-            testModel.getSelectionModel().getMinSelectionIndex());
-    assertEquals("selected indexes should fit", Arrays.asList(0), testModel.getSelectedIndexes());
-    testModel.getSearchModel().getPropertyFilterModel(EntityTestDomain.DETAIL_STRING).setSearchEnabled(false);
-    assertEquals("current index should fit", 0,
-            testModel.getSelectionModel().getMinSelectionIndex());
-    assertEquals("selected item should fit", testEntities[3], testModel.getSelectedItem());
-
-    //test selection and sorting together
-    testModel.setSelectedItemIndexes(Arrays.asList(3));
-    assertEquals("current index should fit", 3, testModel.getSelectionModel().getMinSelectionIndex());
-    assertEquals("current selected item should fit", testEntities[2], testModel.getSelectedItem());
-
-    testModel.setSortingDirective(2, SortingDirective.ASCENDING);
-    assertEquals("current selected item should fit", testEntities[2], testModel.getSelectedItem());
-    assertEquals("current index should fit", 2,
-            testModel.getSelectionModel().getMinSelectionIndex());
-
-    testModel.setSelectedItemIndexes(Arrays.asList(0));
-    assertEquals("current selected item should fit", testEntities[0], testModel.getSelectedItem());
-    testModel.setSortingDirective(2, SortingDirective.DESCENDING);
-    assertEquals("current index should fit", 4,
-            testModel.getSelectionModel().getMinSelectionIndex());
-
-    assertEquals("selected indexes should fit", Arrays.asList(4), testModel.getSelectedIndexes());
-    assertEquals("current selected item should fit", testEntities[0], testModel.getSelectedItem());
-    assertEquals("current index should fit", 4,
-            testModel.getSelectionModel().getMinSelectionIndex());
-    assertEquals("selected item should fit", testEntities[0], testModel.getSelectedItem());
-  }
-
-  private boolean tableModelContainsAll(final Entity[] entities, final boolean includeFiltered,
-                                        final EntityTableModel model) {
-    for (final Entity entity : entities) {
-      if (!model.contains(entity, includeFiltered)) {
-        return false;
-      }
+    try {
+      testModel.setValueAt("hello", 0, 0);
+      fail();
     }
-
-    return true;
+    catch (Exception e) {}
   }
 
-  public static class EntityTableModelTmp extends DefaultEntityTableModel {
+  public static final class EntityTableModelTmp extends DefaultEntityTableModel {
     public EntityTableModelTmp() {
       super(EntityTestDomain.T_DETAIL, EntityDbConnectionTest.DB_PROVIDER);
+      setEditModel(new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, EntityDbConnectionTest.DB_PROVIDER));
     }
-
     @Override
     protected List<Entity> performQuery(final Criteria criteria) {
       return Arrays.asList(testEntities);
     }
+  }
 
-    protected boolean isRefreshRequired() {
-      return true;
+  private static Entity[] initTestEntities(final Entity[] testEntities) {
+    for (int i = 0; i < testEntities.length; i++) {
+      testEntities[i] = Entities.entityInstance(EntityTestDomain.T_DETAIL);
+      testEntities[i].setValue(EntityTestDomain.DETAIL_ID, i+1);
+      testEntities[i].setValue(EntityTestDomain.DETAIL_STRING, new String[]{"a", "b", "c", "d", "e"}[i]);
     }
+
+    return testEntities;
   }
 }

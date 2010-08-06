@@ -11,6 +11,7 @@ import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityTableModel;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -20,8 +21,8 @@ public abstract class EntityLoadTestModel extends LoadTestModel {
 
   private static final int DEFAULT_WARNING_TIME = 200;
 
-  public EntityLoadTestModel(final User user) {
-    super(user, Integer.parseInt(System.getProperty(Configuration.LOAD_TEST_THINKTIME, "2000")),
+  public EntityLoadTestModel(final User user, final UsageScenario... usageScenarios) {
+    super(user, Arrays.asList(usageScenarios), Integer.parseInt(System.getProperty(Configuration.LOAD_TEST_THINKTIME, "2000")),
             Integer.parseInt(System.getProperty(Configuration.LOAD_TEST_LOGIN_DELAY, "2")),
             Integer.parseInt(System.getProperty(Configuration.LOAD_TEST_BATCH_SIZE, "10")), DEFAULT_WARNING_TIME);
     loadDomainModel();

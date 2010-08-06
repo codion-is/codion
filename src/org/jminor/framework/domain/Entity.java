@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Represents a row in a database table, providing access to the column values via the ValueMap interface.
+ * An ORM entity interface, providing access to the property values via the ValueMap interface.
  */
 public interface Entity extends ValueChangeMap<String, Object>, Comparable<Entity> {
 
@@ -100,12 +100,31 @@ public interface Entity extends ValueChangeMap<String, Object>, Comparable<Entit
    */
   Boolean getBooleanValue(final String propertyID);
 
+  /**
+   * @param propertyID the ID of the property for which to retrieve the formatted value
+   * @return the value of the property identified by <code>propertyID</code>, formatting it
+   * with the format object associated with the property
+   */
   String getFormattedValue(final String propertyID);
 
+  /**
+   * @param propertyID the ID of the property for which to retrieve the formatted value
+   * @param format the format object
+   * @return the value of the property identified by <code>propertyID</code>, formatted with <code>format</code>
+   */
   String getFormattedValue(final String propertyID, final Format format);
 
+  /**
+   * @param property the property for which to retrieve the formatted value
+   * @return the value of the given property formatted with the format object associated with the property
+   */
   String getFormattedValue(final Property property);
 
+  /**
+   * @param property the property for which to retrieve the formatted value
+   * @param format the format object
+   * @return the value of the given property, formatted with <code>format</code>
+   */
   String getFormattedValue(final Property property, final Format format);
 
   /**
@@ -133,8 +152,20 @@ public interface Entity extends ValueChangeMap<String, Object>, Comparable<Entit
    */
   Key getReferencedPrimaryKey(final Property.ForeignKeyProperty foreignKeyProperty);
 
+  /**
+   * Returns true if the value of the given foreign key is null, in case of composite
+   * foreign keys a single null value is enough.
+   * @param foreignKeyProperty the foreign key property
+   * @return true if the foreign key value is null
+   */
   boolean isForeignKeyNull(final Property.ForeignKeyProperty foreignKeyProperty);
 
+  /**
+   * Sets the value of the given property
+   * @param property the property
+   * @param value the value
+   * @return the previous value
+   */
   Object setValue(final Property property, final Object value);
 
   /**
@@ -148,6 +179,10 @@ public interface Entity extends ValueChangeMap<String, Object>, Comparable<Entit
    */
   boolean isValueNull(final Property property);
 
+  /**
+   * @param property the property
+   * @return true if this entity contains a value for the given property
+   */
   boolean containsValue(final Property property);
 
   /**
@@ -203,6 +238,9 @@ public interface Entity extends ValueChangeMap<String, Object>, Comparable<Entit
      */
     boolean isNull();
 
+    /**
+     * @return true if this primary key is based on a single integer column
+     */
     boolean isSingleIntegerKey();
 
     /**
@@ -211,7 +249,7 @@ public interface Entity extends ValueChangeMap<String, Object>, Comparable<Entit
     boolean isCompositeKey();
 
     /**
-     * @return the first key property
+     * @return the first key property, useful for single property keys
      */
     Property.PrimaryKeyProperty getFirstKeyProperty();
 

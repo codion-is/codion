@@ -4,7 +4,11 @@
 package org.jminor.common.model.valuemap;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventObserver;
+import org.jminor.common.model.Events;
 import org.jminor.common.model.State;
+import org.jminor.common.model.StateObserver;
+import org.jminor.common.model.States;
 import org.jminor.common.model.Util;
 
 import java.awt.event.ActionEvent;
@@ -28,22 +32,20 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
   /**
    * Holds the original value for keys which values have changed.
    */
-  private Map<K, V> originalValues;
+  private Map<K, V> originalValues = null;
 
   /**
    * Fired when a value changes, null until initialized by a call to eventValueChanged().
    */
   private transient Event evtValueChanged;
 
-  /**
-   * Instantiates a new ValueChangeMapImpl with a size of <code>initialSize</code>.
-   * @param initialSize the initial size
-   */
-  public ValueChangeMapImpl(final int initialSize) {
-    super(initialSize);
+  public void initializeValue(final K key, final V value) {
+    super.setValue(key, value);
+    if (evtValueChanged != null) {
+      notifyValueChange(key, value, null, true);
+    }
+    handleInitializeValue(key, value);
   }
-
-  public ValueChangeMapImpl() {}
 
   public final V getOriginalValue(final K key) {
     Util.rejectNullValue(key, "key");
@@ -58,52 +60,13 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
     return originalValues != null && !originalValues.isEmpty();
   }
 
+  @Override
+  public ValueChangeMap<K, V> getInstance() {
+    return new ValueChangeMapImpl<K, V>();
+  }
+
   public final boolean isModified(final K key) {
     return originalValues != null && originalValues.containsKey(key);
-  }
-
-  public void initializeValue(final K key, final V value) {
-    super.setValue(key, value);
-    if (evtValueChanged != null) {
-      notifyValueChange(key, value, null, true);
-    }
-  }
-
-  @Override
-  public V setValue(final K key, final V value) {
-    final boolean initialization = !containsValue(key);
-    V previousValue = null;
-    if (!initialization) {
-      previousValue = getValue(key);
-      if (Util.equal(previousValue, value)) {
-        return previousValue;
-      }
-    }
-
-    if (!initialization) {
-      updateModifiedState(key, value, previousValue);
-    }
-
-    super.setValue(key, value);
-    if (evtValueChanged != null) {
-      notifyValueChange(key, value, previousValue, initialization);
-    }
-
-    return previousValue;
-  }
-
-  @Override
-  public V removeValue(final K key) {
-    final boolean keyExists = containsValue(key);
-    final V value = getValue(key);
-    super.removeValue(key);
-    removeOriginalValue(key);
-
-    if (keyExists && evtValueChanged != null) {//dont notify a non-existant key
-      notifyValueChange(key, null, value, false);
-    }
-
-    return value;
   }
 
   public final void revertValue(final K key) {
@@ -128,35 +91,6 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
     }
   }
 
-  @Override
-  public void clear() {
-    super.clear();
-    if (originalValues != null) {
-      originalValues.clear();
-    }
-  }
-
-  @Override
-  public void setAs(final ValueMap<K, V> sourceMap) {
-    super.setAs(sourceMap);
-    if (sourceMap instanceof ValueChangeMap) {
-      final ValueChangeMap<K, V> sourceChangeMap = (ValueChangeMap<K, V>) sourceMap;
-      if (sourceChangeMap.isModified()) {
-        if (originalValues == null) {
-          originalValues = new HashMap<K, V>();
-        }
-        for (final K entryKey : sourceChangeMap.getOriginalValueKeys()) {
-          originalValues.put(entryKey, copyValue(sourceChangeMap.getOriginalValue(entryKey)));
-        }
-      }
-    }
-  }
-
-  @Override
-  public ValueChangeMap<K, V> getInstance() {
-    return new ValueChangeMapImpl<K, V>();
-  }
-
   public final ValueChangeMap<K, V> getOriginalCopy() {
     final ValueChangeMap<K, V> copy = (ValueChangeMap<K, V>) getCopy();
     copy.revertAll();
@@ -170,7 +104,7 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
   }
 
   public final void addValueListener(final ActionListener valueListener) {
-    eventValueChanged().addListener(valueListener);
+    getValueChangeObserver().addListener(valueListener);
   }
 
   public final void removeValueListener(final ActionListener valueListener) {
@@ -179,27 +113,23 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
     }
   }
 
-  public final State stateModified() {
-    final State state = new State(isModified());
-    eventValueChanged().addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+  public final StateObserver getModifiedState() {
+    final State state = States.state(isModified());
+    getValueChangeObserver().addListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
         state.setActive(isModified());
       }
     });
 
-    return state.getLinkedState();
+    return state.getObserver();
   }
 
-  public final Event eventValueChanged() {
-    if (evtValueChanged == null) {
-      evtValueChanged = new Event();
-    }
-
-    return evtValueChanged;
+  public final EventObserver getValueChangeObserver() {
+    return getValueChangedEvent().getObserver();
   }
 
-  protected void notifyValueChange(final K key, final V value, final V oldValue, final boolean initialization) {
-    eventValueChanged().fire(new ValueChangeEvent<K, V>(this, this, key, value, oldValue, true, initialization));
+  protected final void notifyValueChange(final K key, final V value, final V oldValue, final boolean initialization) {
+    getValueChangedEvent().fire(new ValueChangeEvent<K, V>(this, this, key, value, oldValue, true, initialization));
   }
 
   protected final void setOriginalValue(final K key, final V oldValue) {
@@ -218,6 +148,56 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
     }
   }
 
+  @SuppressWarnings({"UnusedDeclaration"})
+  protected void handleInitializeValue(final K key, final V value) {}
+
+  protected void handleInitializeValueChangedEvent() {}
+
+  @Override
+  protected void handleValueRemoved(final K key, final V value) {
+    removeOriginalValue(key);
+    if (evtValueChanged != null) {
+      notifyValueChange(key, null, value, false);
+    }
+  }
+
+  @Override
+  protected void handleValueSet(final K key, final V value, final V previousValue, final boolean initialization) {
+    if (!initialization && Util.equal(previousValue, value)) {
+      return;
+    }
+
+    if (!initialization) {
+      updateModifiedState(key, value, previousValue);
+    }
+
+    if (evtValueChanged != null) {
+      notifyValueChange(key, value, previousValue, initialization);
+    }
+  }
+
+  @Override
+  protected void handleClear() {
+    if (originalValues != null) {
+      originalValues.clear();
+    }
+  }
+
+  @Override
+  protected void handleSetAs(final ValueMap<K, V> sourceMap) {
+    if (sourceMap instanceof ValueChangeMap) {
+      final ValueChangeMap<K, V> sourceChangeMap = (ValueChangeMap<K, V>) sourceMap;
+      if (sourceChangeMap.isModified()) {
+        if (originalValues == null) {
+          originalValues = new HashMap<K, V>();
+        }
+        for (final K entryKey : sourceChangeMap.getOriginalValueKeys()) {
+          originalValues.put(entryKey, copyValue(sourceChangeMap.getOriginalValue(entryKey)));
+        }
+      }
+    }
+  }
+
   private void updateModifiedState(final K key, final V value, final V previousValue) {
     final boolean modified = isModified(key);
     if (modified && Util.equal(getOriginalValue(key), value)) {
@@ -226,5 +206,14 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
     else if (!modified) {
       setOriginalValue(key, previousValue);
     }
+  }
+
+  private Event getValueChangedEvent() {
+    if (evtValueChanged == null) {
+      evtValueChanged = Events.event();
+      handleInitializeValueChangedEvent();
+    }
+
+    return evtValueChanged;
   }
 }

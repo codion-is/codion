@@ -86,6 +86,8 @@ public final class LogEntry implements Serializable, Comparable<LogEntry> {
    */
   public void reset() {
     set(null, null, 0, null);
+    this.exitMessage = null;
+    this.subLog = null;
   }
 
   public long getEntryTime() {
@@ -163,7 +165,7 @@ public final class LogEntry implements Serializable, Comparable<LogEntry> {
     return subLog;
   }
 
-  public void setSubLog(List<LogEntry> subLog) {
+  public void setSubLog(final List<LogEntry> subLog) {
     this.subLog = subLog;
   }
 
@@ -206,7 +208,7 @@ public final class LogEntry implements Serializable, Comparable<LogEntry> {
     final StringBuilder stringBuilder = new StringBuilder();
     if (exitTime > 0) {
       stringBuilder.append(indentString).append(getEntryTimeFormatted()).append(" @ ").append(method).append(
-              entryMessage != null && entryMessage.length() > 0 ? (": " + entryMessage) : "").append("\n");
+              !Util.nullOrEmpty(entryMessage) ? (": " + entryMessage) : "").append("\n");
       stringBuilder.append(indentString).append(getExitTimeFormatted()).append(" > ").append(delta).append(" ms")
               .append(exitMessage == null ? "" : " (" + exitMessage + ")");
       if (stackTrace != null) {
@@ -215,7 +217,7 @@ public final class LogEntry implements Serializable, Comparable<LogEntry> {
     }
     else {
       stringBuilder.append(indentString).append(getEntryTimeFormatted()).append(" @ ").append(method).append(
-              entryMessage != null && entryMessage.length() > 0 ? (": " + entryMessage) : "");
+              !Util.nullOrEmpty(entryMessage) ? (": " + entryMessage) : "");
     }
 
     return stringBuilder.toString();

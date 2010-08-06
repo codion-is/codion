@@ -4,14 +4,15 @@
 package org.jminor.common.model;
 
 /**
- * User: Björn Darri<br>
- * Date: 18.7.2010<br>
- * Time: 20:53:51
+ * A simple attribute interface
  */
 public interface Attribute {
 
   String getCaption();
 
+  /**
+   * @return a String describing this attribute
+   */
   String getDescription();
 
   /**
@@ -19,19 +20,8 @@ public interface Attribute {
    */
   boolean hasDescription();
 
-  Class<?> getTypeClass();
-
   /**
-   * Specifies whether or not this attribute is read only
-   * @return true if this attribute is read only
+   * @return the Class representing the values of this attribute
    */
-  boolean isReadOnly();
-
-  boolean isNullable();
-
-  Object getDefaultValue();
-
-  int getMaxLength();
-
-  int getMaximumFractionDigits();
+  Class<?> getTypeClass();
 }

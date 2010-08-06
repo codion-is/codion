@@ -156,7 +156,7 @@ public final class EntityDbRemoteServerAdmin extends UnicastRemoteObject impleme
     EntityDbRemoteAdapter.resetConnectionPoolStatistics(user);
   }
 
-  public boolean isCollectFineGrainedPoolStatistics(User user) throws RemoteException {
+  public boolean isCollectFineGrainedPoolStatistics(final User user) throws RemoteException {
     return EntityDbRemoteAdapter.isCollectFineGrainedPoolStatistics(user);
   }
 
@@ -172,7 +172,7 @@ public final class EntityDbRemoteServerAdmin extends UnicastRemoteObject impleme
     return EntityDbRemoteAdapter.getWarningThreshold();
   }
 
-  public void setWarningTimeThreshold(int threshold) throws RemoteException {
+  public void setWarningTimeThreshold(final int threshold) throws RemoteException {
     EntityDbRemoteAdapter.setWarningThreshold(threshold);
   }
 
@@ -302,7 +302,7 @@ public final class EntityDbRemoteServerAdmin extends UnicastRemoteObject impleme
     };
   }
 
-  public static void main(String[] arguments) throws Exception {
+  public static void main(final String[] arguments) throws Exception {
     new EntityDbRemoteServerAdmin(new EntityDbRemoteServer(DatabaseProvider.createInstance()),
             EntityDbRemoteServer.SSL_CONNECTION_ENABLED);
   }

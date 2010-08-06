@@ -3,12 +3,12 @@
  */
 package org.jminor.framework.client.ui;
 
-import org.jminor.framework.client.model.EntityLookupModel;
 import org.jminor.framework.client.model.DefaultEntityLookupModel;
+import org.jminor.framework.client.model.EntityLookupModel;
 import org.jminor.framework.db.EntityDbConnectionTest;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityRepository;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -24,7 +24,7 @@ public class EntityLookupProviderTest {
   @Test
   public void test() throws Exception {
     final EntityLookupModel model = new DefaultEntityLookupModel(EmpDept.T_DEPARTMENT,
-            EntityDbConnectionTest.DB_PROVIDER, EntityRepository.getSearchProperties(EmpDept.T_DEPARTMENT));
+            EntityDbConnectionTest.DB_PROVIDER, Entities.getSearchProperties(EmpDept.T_DEPARTMENT));
     final EntityLookupProvider provider = new EntityLookupProvider(model, null);
 
     assertNull(provider.getValue());

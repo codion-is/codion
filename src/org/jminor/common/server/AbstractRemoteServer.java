@@ -103,7 +103,7 @@ public abstract class AbstractRemoteServer<T> extends UnicastRemoteObject implem
     return shuttingDown;
   }
 
-  public void shutdown() throws RemoteException {
+  public final void shutdown() throws RemoteException {
     if (shuttingDown) {
       return;
     }
@@ -120,7 +120,10 @@ public abstract class AbstractRemoteServer<T> extends UnicastRemoteObject implem
     catch (NoSuchObjectException e) {
       LOG.warn(e);
     }
+    handleShutdown();
   }
+
+  protected void handleShutdown() throws RemoteException {}
 
   protected abstract T doConnect(final ClientInfo info) throws RemoteException;
 

@@ -16,5 +16,6 @@ public class OracleDatabaseTest {
     assertEquals("select seq.currval from dual", db.getAutoIncrementValueSQL("seq"));
     assertEquals("select seq.nextval from dual", db.getSequenceSQL("seq"));
     assertEquals("jdbc:oracle:thin:@host:1234:sid", db.getURL(null));
+    assertEquals(OracleDatabase.CHECK_QUERY, db.getCheckConnectionQuery());
   }
 }

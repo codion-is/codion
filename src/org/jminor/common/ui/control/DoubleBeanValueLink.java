@@ -3,7 +3,7 @@
  */
 package org.jminor.common.ui.control;
 
-import org.jminor.common.model.Event;
+import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.textfield.DoubleField;
 
@@ -13,18 +13,18 @@ import org.jminor.common.ui.textfield.DoubleField;
 public class DoubleBeanValueLink extends TextBeanValueLink {
 
   public DoubleBeanValueLink(final DoubleField doubleField, final Object owner, final String propertyName,
-                             final Event valueChangeEvent) {
+                             final EventObserver valueChangeEvent) {
     this(doubleField, owner, propertyName, valueChangeEvent,LinkType.READ_WRITE);
   }
 
   public DoubleBeanValueLink(final DoubleField doubleField, final Object owner, final String propertyName,
-                             final Event valueChangeEvent, final LinkType linkType) {
+                             final EventObserver valueChangeEvent, final LinkType linkType) {
     super(doubleField, owner, propertyName, Double.class, valueChangeEvent, linkType);
     updateUI();
   }
 
   @Override
-  protected Object getUIValue() {
+  protected final Object getUIValue() {
     try {
       return Util.getDouble(getText());
     }

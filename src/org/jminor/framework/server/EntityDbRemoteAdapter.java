@@ -25,8 +25,8 @@ import org.jminor.framework.db.EntityDb;
 import org.jminor.framework.db.EntityDbConnection;
 import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.db.criteria.EntitySelectCriteria;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
 
 import org.apache.log4j.Logger;
@@ -555,7 +555,7 @@ public final class EntityDbRemoteAdapter extends UnicastRemoteObject implements 
     CONNECTION_POOLS.get(user).setPoolCleanupInterval(poolCleanupInterval);
   }
 
-  public static int getConnectionPoolCleanupInterval(User user) {
+  public static int getConnectionPoolCleanupInterval(final User user) {
     return CONNECTION_POOLS.get(user).getPoolCleanupInterval();
   }
 
@@ -575,7 +575,7 @@ public final class EntityDbRemoteAdapter extends UnicastRemoteObject implements 
     CONNECTION_POOLS.get(user).setMaximumPoolSize(value);
   }
 
-  public static void setMinimumConnectionPoolSize(User user, final int value) {
+  public static void setMinimumConnectionPoolSize(final User user, final int value) {
     CONNECTION_POOLS.get(user).setMinimumPoolSize(value);
   }
 
@@ -617,17 +617,17 @@ public final class EntityDbRemoteAdapter extends UnicastRemoteObject implements 
 
   static void initConnectionPools(final Database database) {
     final String initialPoolUsers = System.getProperty(Configuration.SERVER_CONNECTION_POOLING_INITIAL);
-    if (initialPoolUsers != null && initialPoolUsers.length() > 0) {
+    if (!Util.nullOrEmpty(initialPoolUsers)) {
       for (final String username : initialPoolUsers.split(",")) {
-        final User user = new User(username.trim(), null);
-        CONNECTION_POOLS.put(user, new ConnectionPoolImpl(new PoolableConnectionProvider() {
+        final User poolUser = new User(username.trim(), null);
+        CONNECTION_POOLS.put(poolUser, new ConnectionPoolImpl(new PoolableConnectionProvider() {
           public PoolableConnection createConnection(final User user) throws ClassNotFoundException, SQLException {
             return EntityDbRemoteAdapter.createDbConnection(database, user);
           }
           public void destroyConnection(final PoolableConnection connection) {
             connection.disconnect();
           }
-        }, user));
+        }, poolUser));
       }
     }
   }
@@ -752,45 +752,50 @@ public final class EntityDbRemoteAdapter extends UnicastRemoteObject implements 
     }
 
     @Override
-    protected void appendArgumentAsString(final Object argument, final StringBuilder destination) {
+    protected String getMethodArgumentAsString(final Object argument) {
       if (argument == null) {
-        return;
+        return "";
       }
 
+      final StringBuilder builder = new StringBuilder();
       if (argument instanceof EntityCriteria) {
-        appendEntityCriteria((EntityCriteria) argument, destination);
+        builder.append(appendEntityCriteria((EntityCriteria) argument));
       }
       else if (argument instanceof Object[] && ((Object[]) argument).length > 0) {
-        destination.append("[").append(argumentArrayToString((Object[]) argument)).append("]");
+        builder.append("[").append(argumentArrayToString((Object[]) argument)).append("]");
       }
       else if (argument instanceof Collection && !((Collection) argument).isEmpty()) {
-        destination.append("[").append(argumentArrayToString(((Collection) argument).toArray())).append("]");
+        builder.append("[").append(argumentArrayToString(((Collection) argument).toArray())).append("]");
       }
       else if (argument instanceof Entity) {
-        destination.append(getEntityParameterString((Entity) argument));
+        builder.append(getEntityParameterString((Entity) argument));
       }
       else {
-        destination.append(argument.toString());
+        builder.append(argument.toString());
       }
+
+      return builder.toString();
     }
 
-    private void appendEntityCriteria(final EntityCriteria criteria, StringBuilder destination) {
-      destination.append(criteria.getEntityID());
+    private String appendEntityCriteria(final EntityCriteria criteria) {
+      final StringBuilder builder = new StringBuilder();
+      builder.append(criteria.getEntityID());
       final String whereClause = criteria.getWhereClause(true);
-      if (whereClause != null && whereClause.length() > 0) {
-        destination.append(", ").append(whereClause);
+      if (!Util.nullOrEmpty(whereClause)) {
+        builder.append(", ").append(whereClause);
       }
       final List<?> values = criteria.getValues();
       if (values != null) {
-        destination.append(", ");
-        appendArgumentAsString(values, destination);
+        builder.append(", ").append(getMethodArgumentAsString(values));
       }
+
+      return builder.toString();
     }
 
     private static String getEntityParameterString(final Entity entity) {
       final StringBuilder builder = new StringBuilder();
       builder.append(entity.getEntityID()).append(" {");
-      for (final Property property : EntityRepository.getColumnProperties(entity.getEntityID(), true, true, true)) {
+      for (final Property property : Entities.getColumnProperties(entity.getEntityID(), true, true, true)) {
         final boolean modified = entity.isModified(property.getPropertyID());
         if (property instanceof Property.PrimaryKeyProperty || modified) {
           final StringBuilder valueString = new StringBuilder();
@@ -808,7 +813,7 @@ public final class EntityDbRemoteAdapter extends UnicastRemoteObject implements 
   }
 
   private static final class RequestCounter {//todo should I bother to synchronize this?
-    
+
     private static long requestsPerSecondTime = System.currentTimeMillis();
     private static int requestsPerSecond = 0;
     private static int requestsPerSecondCounter = 0;

@@ -5,6 +5,8 @@ package org.jminor.common.ui.input;
 
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventObserver;
+import org.jminor.common.model.Events;
 import org.jminor.common.model.Util;
 
 import javax.swing.AbstractAction;
@@ -17,13 +19,14 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * A panel for presenting a InputProvider.
  */
 public final class InputProviderPanel extends JPanel implements InputProvider {
 
-  private final Event evtButtonClicked = new Event();
+  private final Event evtButtonClicked = Events.event();
 
   private final InputProvider inputProvider;
 
@@ -63,11 +66,19 @@ public final class InputProviderPanel extends JPanel implements InputProvider {
     return inputProvider.getInputComponent();
   }
 
-  public Event eventButtonClicked() {
+  public EventObserver buttonClickObserver() {
     return evtButtonClicked;
   }
 
-  protected void initUI(final String caption) {
+  public void addButtonClickListener(final ActionListener listener) {
+    evtButtonClicked.addListener(listener);
+  }
+
+  public void removeButtonClickListener(final ActionListener listener) {
+    evtButtonClicked.removeListener(listener);
+  }
+
+  private void initUI(final String caption) {
     setLayout(new BorderLayout(5,5));
     setBorder(BorderFactory.createTitledBorder(caption));
     add(inputProvider.getInputComponent(), BorderLayout.CENTER);

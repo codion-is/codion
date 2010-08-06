@@ -4,6 +4,7 @@
 package org.jminor.common.ui.control;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.model.Events;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -19,7 +20,7 @@ import javax.swing.JComboBox;
 public class SelectedItemBeanValueLinkTest {
 
   private String selectedItem;
-  private Event evtSelectedItemChanged = new Event();
+  private Event evtSelectedItemChanged = Events.event();
 
   @Test
   public void test() throws Exception {

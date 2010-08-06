@@ -3,7 +3,7 @@
  */
 package org.jminor.common.ui.control;
 
-import org.jminor.common.model.Event;
+import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.textfield.IntField;
 
@@ -13,18 +13,18 @@ import org.jminor.common.ui.textfield.IntField;
 public class IntBeanValueLink extends TextBeanValueLink {
 
   public IntBeanValueLink(final IntField intField, final Object owner, final String propertyName,
-                          final Event valueChangeEvent) {
+                          final EventObserver valueChangeEvent) {
     this(intField, owner, propertyName, valueChangeEvent, LinkType.READ_WRITE);
   }
 
   public IntBeanValueLink(final IntField intField, final Object owner, final String propertyName,
-                          final Event valueChangeEvent, final LinkType linkType) {
+                          final EventObserver valueChangeEvent, final LinkType linkType) {
     super(intField, owner, propertyName, Integer.class, valueChangeEvent, linkType);
     updateUI();
   }
 
   @Override
-  protected Object getUIValue() {
+  protected final Object getUIValue() {
     try {
       return Util.getInt(getText());
     }

@@ -8,17 +8,17 @@ import org.jminor.common.ui.textfield.DoubleField;
 /**
  * A InputProvider implementation for double values.
 */
-public final class DoubleInputProvider extends AbstractInputProvider<Double> {
+public final class DoubleInputProvider extends AbstractInputProvider<Double, DoubleField> {
 
   public DoubleInputProvider(final Double currentValue) {
     super(new DoubleField());
     if (currentValue != null) {
-      ((DoubleField) getInputComponent()).setDouble(currentValue);
+      getInputComponent().setDouble(currentValue);
     }
   }
 
   @Override
   public Double getValue() {
-    return ((DoubleField) getInputComponent()).getDouble();
+    return getInputComponent().getDouble();
   }
 }

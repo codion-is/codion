@@ -55,11 +55,11 @@ public abstract class AbstractEntityDbProvider implements EntityDbProvider {
 
   protected abstract EntityDb connect();
 
-  protected EntityDb getEntityDbInternal() {
+  protected final EntityDb getEntityDbInternal() {
     return entityDb;
   }
 
-  protected void setEntityDb(final EntityDb entityDb) {
+  protected final void setEntityDb(final EntityDb entityDb) {
     this.entityDb = entityDb;
   }
 

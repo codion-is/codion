@@ -34,8 +34,9 @@ public class DbConnectionImpl implements DbConnection {
 
   private static final Logger LOG = Util.getLogger(DbConnection.class);
 
-  protected static final QueryCounter QUERY_COUNTER = new QueryCounter();
+  private static final String EXECUTE = "execute";
 
+  protected static final QueryCounter QUERY_COUNTER = new QueryCounter();
   private final User user;
   private final Database database;
 
@@ -88,17 +89,17 @@ public class DbConnectionImpl implements DbConnection {
     return poolTime;
   }
 
-  public final void setPoolRetryCount(final int poolRetryCount) {
-    this.poolRetryCount = poolRetryCount;
+  public final void setPoolRetryCount(final int retryCount) {
+    this.poolRetryCount = retryCount;
   }
 
-  public int getPoolRetryCount() {
+  public final int getPoolRetryCount() {
     return poolRetryCount;
   }
 
   @Override
-  public String toString() {
-    return "DbConnection: " + user.getUsername();
+  public final String toString() {
+    return getClass().getSimpleName() + ": " + user.getUsername();
   }
 
   /**
@@ -110,6 +111,10 @@ public class DbConnectionImpl implements DbConnection {
 
   public final void setLoggingEnabled(final boolean enabled) {
     methodLogger.setEnabled(enabled);
+  }
+
+  public final boolean isLoggingEnabled() {
+    return methodLogger.isEnabled();
   }
 
   /**
@@ -330,16 +335,7 @@ public class DbConnectionImpl implements DbConnection {
     //http://www.idevelopment.info/data/Programming/java/jdbc/LOBS/BLOBFileExample.java
     final String sql = "select " + columnName + " from " + tableName + " where " + whereClause;
 
-    final List result = query(sql, new ResultPacker() {
-      public List pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
-        final List<Blob> blobs = new ArrayList<Blob>();
-        if (resultSet.next()) {
-          blobs.add(resultSet.getBlob(1));
-        }
-
-        return blobs;
-      }
-    }, 1);
+    final List result = query(sql, new BlobResultPacker(), 1);
 
     final Blob blob = (Blob) result.get(0);
 
@@ -466,7 +462,7 @@ public class DbConnectionImpl implements DbConnection {
    */
   public final void execute(final String sql) throws SQLException {
     QUERY_COUNTER.count(sql);
-    methodLogger.logAccess("execute", new Object[] {sql});
+    methodLogger.logAccess(EXECUTE, new Object[] {sql});
     final long time = System.currentTimeMillis();
     LOG.debug(sql);
     Statement statement = null;
@@ -488,7 +484,7 @@ public class DbConnectionImpl implements DbConnection {
         }
       }
       catch (SQLException e) {/**/}
-      methodLogger.logExit("execute", exception, null);
+      methodLogger.logExit(EXECUTE, exception, null);
     }
   }
 
@@ -504,7 +500,7 @@ public class DbConnectionImpl implements DbConnection {
       return;
     }
 
-    methodLogger.logAccess("execute", statements.toArray());
+    methodLogger.logAccess(EXECUTE, statements.toArray());
     final long time = System.currentTimeMillis();
     Statement statement = null;
     SQLException exception = null;
@@ -530,7 +526,7 @@ public class DbConnectionImpl implements DbConnection {
         }
       }
       catch (SQLException e) {/**/}
-      methodLogger.logExit("execute", exception, null);
+      methodLogger.logExit(EXECUTE, exception, null);
     }
   }
 
@@ -636,7 +632,10 @@ public class DbConnectionImpl implements DbConnection {
     }
   };
 
-  public static class QueryCounter {
+  public static final class QueryCounter {
+
+    private static final int DEFAULT_UPDATE_INTERVAL = 2000;
+
     private long queriesPerSecondTime = System.currentTimeMillis();
     private int queriesPerSecond = 0;
     private int queriesPerSecondCounter = 0;
@@ -657,7 +656,7 @@ public class DbConnectionImpl implements DbConnection {
         public void run() {
           updateQueriesPerSecond();
         }
-      }, new Date(), 2000);
+      }, new Date(), DEFAULT_UPDATE_INTERVAL);
     }
 
     public void count(final String sql) {
@@ -722,6 +721,17 @@ public class DbConnectionImpl implements DbConnection {
         undefinedPerSecondCounter = 0;
         queriesPerSecondTime = current;
       }
+    }
+  }
+
+  private static final class BlobResultPacker implements ResultPacker {
+    public List pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
+      final List<Blob> blobs = new ArrayList<Blob>();
+      if (resultSet.next()) {
+        blobs.add(resultSet.getBlob(1));
+      }
+
+      return blobs;
     }
   }
 }
