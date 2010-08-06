@@ -1986,3 +1986,6 @@
   EntityTablePanel.getTableModel() renamed to getEntityTableModel()
   DefaultValueChangeMapEditModel.getDefaultValueMap() implementation removed
   DefaultValueChangeMapEditModel renamed to AbstractValueChangeMapEditModel
+  EntityTablePanel.initializeUI() renamed to initializePanel(), publicized, call required after panel construction
+  EntityTablePanel.panelInitialized field added, functionality mirrors EntityPanel
+  EntityTablePanel.additionalPopup/ToolbarControls fields added

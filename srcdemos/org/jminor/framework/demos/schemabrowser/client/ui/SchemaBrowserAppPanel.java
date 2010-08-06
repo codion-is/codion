@@ -38,7 +38,7 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel {
 
   public static void main(final String[] args) {
     Configuration.setValue(Configuration.TABLE_AUTO_RESIZE_MODE, JTable.AUTO_RESIZE_ALL_COLUMNS);
-    Configuration.setValue(Configuration.SEARCH_PANELS_VISIBLE, true);
+    Configuration.setValue(Configuration.DEFAULT_SEARCH_PANEL_STATE, true);
     new SchemaBrowserAppPanel().startApplication("Schema Browser", null, false, UiUtil.getScreenSizeRatio(0.5), new User("scott", "tiger"));
   }
 

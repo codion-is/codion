@@ -132,6 +132,7 @@ public final class EntityUiUtil {
     };
 
     final EntityTablePanel entityTablePanel = new EntityTablePanel(lookupModel);
+    entityTablePanel.initializePanel();
     entityTablePanel.addTableDoubleClickListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         if (!entityTablePanel.getEntityTableModel().isSelectionEmpty()) {

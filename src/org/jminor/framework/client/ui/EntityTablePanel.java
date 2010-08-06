@@ -178,6 +178,14 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
   private Action tableDoubleClickAction;
 
   /**
+   * True after <code>initializePanel()</code> has been called
+   */
+  private boolean panelInitialized = false;
+
+  private ControlSet additionalPopupControls;
+  private ControlSet additionalToolbarControls;
+
+  /**
    * Initializes a new EntityTablePanel instance
    * @param tableModel the EntityTableModel instance
    */
@@ -259,35 +267,8 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     super(tableModel);
     this.searchPanel = searchPanel;
     this.summaryPanel = summaryPanel;
-    setupControls();
-    initializeUI();
-    initializePopupMenu(additionalPopupControls);
-    initializeToolbar(additionalToolbarControls);
-    bindEvents();
-    updateStatusMessage();
-    if (Configuration.getBooleanValue(Configuration.SEARCH_PANELS_VISIBLE)) {
-      setSearchPanelVisible(true);
-    }
-  }
-
-  public final EntityTablePanel initializePopupMenu(final ControlSet additionalPopupControls) {
-    setTablePopupMenu(getJTable(), getPopupControls(additionalPopupControls));
-    return this;
-  }
-
-  public final EntityTablePanel initializeToolbar(final ControlSet additionalToolbarControls) {
-    final ControlSet toolbarControlSet = getToolbarControls(additionalToolbarControls);
-    if (toolbarControlSet != null) {
-      final JToolBar southToolBar = ControlProvider.createToolbar(toolbarControlSet, JToolBar.HORIZONTAL);
-      for (final Component component : southToolBar.getComponents()) {
-        component.setPreferredSize(new Dimension(TOOLBAR_BUTTON_SIZE, TOOLBAR_BUTTON_SIZE));
-      }
-      southToolBar.setFocusable(false);
-      southToolBar.setFloatable(false);
-      southToolBar.setRollover(true);
-      southPanel.add(southToolBar, BorderLayout.EAST);
-    }
-    return this;
+    this.additionalPopupControls = additionalPopupControls;
+    this.additionalToolbarControls = additionalToolbarControls;
   }
 
   /**
@@ -302,6 +283,20 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
    */
   public final Action getTableDoubleClickAction() {
     return tableDoubleClickAction;
+  }
+
+  public final void setAdditionalPopupControls(final ControlSet additionalPopupControls) {
+    if (panelInitialized) {
+      throw new RuntimeException("Additional popup controls must be set before the panel is initialized");
+    }
+    this.additionalPopupControls = additionalPopupControls;
+  }
+
+  public final void setAdditionalToolbarControls(final ControlSet additionalToolbarControls) {
+    if (panelInitialized) {
+      throw new RuntimeException("Additional toolbar controls must be set before the panel is initialized");
+    }
+    this.additionalToolbarControls = additionalToolbarControls;
   }
 
   /**
@@ -754,6 +749,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     tableModel.setQueryConfigurationAllowed(false);
     tableModel.setEditModel(editModel);
     final EntityTablePanel tablePanel = new EntityTablePanel(tableModel, null, null, null, null);
+    tablePanel.initializePanel();
     tableModel.refresh();
 
     return tablePanel;
@@ -761,55 +757,69 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
 
   /**
    * Initializes the UI
+   * @return this EntityTablePanel instance
    */
-  protected final void initializeUI() {
-    final JPanel tableSearchAndSummaryPanel = new JPanel(new BorderLayout());
-    setLayout(new BorderLayout());
-    if (searchPanel != null) {
-      searchScrollPane = new JScrollPane((JPanel) searchPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER,
-              JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-      if (searchPanel instanceof EntityTableSearchAdvancedPanel) {
-        searchScrollPane.getHorizontalScrollBar().setModel(getTableScrollPane().getHorizontalScrollBar().getModel());
-      }
-      tableSearchAndSummaryPanel.add(searchScrollPane, BorderLayout.NORTH);
-    }
-
-    if (searchPanel instanceof EntityTableSearchAdvancedPanel) {
-      ((EntityTableSearchAdvancedPanel) searchPanel).addAdvancedListener(new ActionListener() {
-        public void actionPerformed(final ActionEvent e) {
-          if (isSearchPanelVisible()) {
-            revalidateAndShowSearchPanel();
+  public final EntityTablePanel initializePanel() {
+    if (!panelInitialized) {
+      try {
+        setupControls();
+        final JPanel tableSearchAndSummaryPanel = new JPanel(new BorderLayout());
+        setLayout(new BorderLayout());
+        if (searchPanel != null) {
+          searchScrollPane = new JScrollPane((JPanel) searchPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER,
+                  JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+          if (searchPanel instanceof EntityTableSearchAdvancedPanel) {
+            searchScrollPane.getHorizontalScrollBar().setModel(getTableScrollPane().getHorizontalScrollBar().getModel());
           }
+          tableSearchAndSummaryPanel.add(searchScrollPane, BorderLayout.NORTH);
         }
-      });
-    }
-    initializeTable();
 
-    final JScrollPane tableScrollPane = getTableScrollPane();
-    tableSearchAndSummaryPanel.add(tableScrollPane, BorderLayout.CENTER);
-    add(tableSearchAndSummaryPanel, BorderLayout.CENTER);
-    if (summaryPanel != null) {
-      summaryScrollPane = new JScrollPane(summaryPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER,
-              JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-      horizontalTableScrollBar = tableScrollPane.getHorizontalScrollBar();
-      tableScrollPane.getViewport().addChangeListener(new ChangeListener() {
-        public void stateChanged(final ChangeEvent e) {
-          horizontalTableScrollBar.setVisible(tableScrollPane.getViewport().getViewSize().width > tableScrollPane.getSize().width);
-          revalidate();
+        if (searchPanel instanceof EntityTableSearchAdvancedPanel) {
+          ((EntityTableSearchAdvancedPanel) searchPanel).addAdvancedListener(new ActionListener() {
+            public void actionPerformed(final ActionEvent e) {
+              if (isSearchPanelVisible()) {
+                revalidateAndShowSearchPanel();
+              }
+            }
+          });
         }
-      });
-      summaryScrollPane.getHorizontalScrollBar().setModel(horizontalTableScrollBar.getModel());
-      summaryScrollPane.setVisible(false);
-      summaryBasePanel = new JPanel(new BorderLayout());
-      tableSearchAndSummaryPanel.add(summaryBasePanel, BorderLayout.SOUTH);
+        initializeTable();
+        final JScrollPane tableScrollPane = getTableScrollPane();
+        tableSearchAndSummaryPanel.add(tableScrollPane, BorderLayout.CENTER);
+        add(tableSearchAndSummaryPanel, BorderLayout.CENTER);
+        if (summaryPanel != null) {
+          summaryScrollPane = new JScrollPane(summaryPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER,
+                  JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+          horizontalTableScrollBar = tableScrollPane.getHorizontalScrollBar();
+          tableScrollPane.getViewport().addChangeListener(new ChangeListener() {
+            public void stateChanged(final ChangeEvent e) {
+              horizontalTableScrollBar.setVisible(tableScrollPane.getViewport().getViewSize().width > tableScrollPane.getSize().width);
+              revalidate();
+            }
+          });
+          summaryScrollPane.getHorizontalScrollBar().setModel(horizontalTableScrollBar.getModel());
+          summaryScrollPane.setVisible(false);
+          summaryBasePanel = new JPanel(new BorderLayout());
+          tableSearchAndSummaryPanel.add(summaryBasePanel, BorderLayout.SOUTH);
+          updateStatusMessage();
+        }
+
+        southPanel = initializeSouthPanel();
+        if (southPanel != null) {
+          add(southPanel, BorderLayout.SOUTH);
+        }
+
+        initializeToolbar();
+        setSearchPanelVisible(Configuration.getBooleanValue(Configuration.DEFAULT_SEARCH_PANEL_STATE));
+        bindEvents();
+      }
+      finally {
+        panelInitialized = true;
+        UiUtil.setWaitCursor(false, this);
+      }
     }
 
-    southPanel = initializeSouthPanel();
-    if (southPanel != null) {
-      add(southPanel, BorderLayout.SOUTH);
-    }
-
-    setSearchPanelVisible(Configuration.getBooleanValue(Configuration.DEFAULT_SEARCH_PANEL_STATE));
+    return this;
   }
 
   /**
@@ -1207,6 +1217,24 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     return Configuration.getBooleanValue(Configuration.ALLOW_COLUMN_REORDERING);
   }
 
+  private void initializePopupMenu() {
+    setTablePopupMenu(getJTable(), getPopupControls(additionalPopupControls));
+  }
+
+  private void initializeToolbar() {
+    final ControlSet toolbarControlSet = getToolbarControls(additionalToolbarControls);
+    if (toolbarControlSet != null) {
+      final JToolBar southToolBar = ControlProvider.createToolbar(toolbarControlSet, JToolBar.HORIZONTAL);
+      for (final Component component : southToolBar.getComponents()) {
+        component.setPreferredSize(new Dimension(TOOLBAR_BUTTON_SIZE, TOOLBAR_BUTTON_SIZE));
+      }
+      southToolBar.setFocusable(false);
+      southToolBar.setFloatable(false);
+      southToolBar.setRollover(true);
+      southPanel.add(southToolBar, BorderLayout.EAST);
+    }
+  }
+
   /**
    * Initializes the controls available to this EntityTablePanel by mapping them to their respective
    * control codes (EntityTablePanel.UPDATE_SELECTED, DELETE_SELECTED etc) via the <code>setControl(String, Control) method,
@@ -1367,14 +1395,6 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
         UiUtil.setWaitCursor(false, EntityTablePanel.this);
       }
     });
-    getJTable().addMouseListener(new MouseAdapter() {
-      @Override
-      public void mouseClicked(final MouseEvent e) {
-        if(e.getClickCount() == 2) {
-          evtTableDoubleClicked.fire();
-        }
-      }
-    });
     final ActionListener statusListener = new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         updateStatusMessage();
@@ -1418,6 +1438,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     }
 
     getJTable().addMouseListener(initializeTableMouseListener());
+    initializePopupMenu();
 
     final JTableHeader header = getJTable().getTableHeader();
     final TableCellRenderer defaultHeaderRenderer = header.getDefaultRenderer();

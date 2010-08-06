@@ -443,7 +443,6 @@ public final class Configuration {
     setValue(LIMIT_FOREIGN_KEY_FETCH_DEPTH, true);
     setValue(DEFAULT_LOOK_AND_FEEL_CLASSNAME, UIManager.getSystemLookAndFeelClassName());
     setValue(AUTO_CREATE_ENTITY_MODELS, true);
-    setValue(SEARCH_PANELS_VISIBLE, false);
     parseSystemSettings();
   }
 
@@ -485,7 +484,6 @@ public final class Configuration {
     parseStringSetting(WILDCARD_CHARACTER);
     parseStringSetting(DEFAULT_LOOK_AND_FEEL_CLASSNAME);
     parseBooleanSetting(AUTO_CREATE_ENTITY_MODELS);
-    parseBooleanSetting(SEARCH_PANELS_VISIBLE);
   }
 
   private static void parseIntegerSetting(final String setting) {

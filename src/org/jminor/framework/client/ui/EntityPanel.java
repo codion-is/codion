@@ -256,18 +256,6 @@ public class EntityPanel extends JPanel {
     else {
       this.tablePanel = tablePanel;
     }
-    if (this.tablePanel != null) {
-      final ControlSet toolbarControls = new ControlSet("");
-      if (this.editPanel != null) {
-        toolbarControls.add(getToggleEditPanelControl());
-      }
-      if (this.model.getDetailModels().size() > 0) {
-        toolbarControls.add(getToggleDetailPanelControl());
-      }
-      this.tablePanel.initializeToolbar(toolbarControls);
-      this.tablePanel.initializePopupMenu(getTablePopupControlSet());
-    }
-    bindModelEvents();
   }
 
   /**
@@ -363,6 +351,7 @@ public class EntityPanel extends JPanel {
         UiUtil.setWaitCursor(true, this);
         initializeAssociatedPanels();
         initializeControlPanels();
+        bindModelEvents();
         bindEvents();
         initializeUI();
         initialize();
@@ -763,6 +752,16 @@ public class EntityPanel extends JPanel {
   protected void initializeUI() {
     final EntityTablePanel entityTablePanel = tablePanel;
     if (entityTablePanel != null) {
+      final ControlSet toolbarControls = new ControlSet("");
+      if (this.editPanel != null) {
+        toolbarControls.add(getToggleEditPanelControl());
+      }
+      if (this.model.getDetailModels().size() > 0) {
+        toolbarControls.add(getToggleDetailPanelControl());
+      }
+      tablePanel.setAdditionalToolbarControls(toolbarControls);
+      tablePanel.setAdditionalPopupControls(getTablePopupControlSet());
+      tablePanel.initializePanel();
       if (entityTablePanel.getTableDoubleClickAction() == null) {
         entityTablePanel.setTableDoubleClickAction(initializeTableDoubleClickAction());
       }
