@@ -76,6 +76,10 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
     this.dbProvider = dbProvider;
     this.properties = properties;
     this.simpleSearch = simpleSearch;
+    this.propertyFilterModels = initializePropertyFilterModels();
+    this.propertySearchModels = initializePropertySearchModels(dbProvider);
+    this.searchStateOnRefresh = getSearchModelState();
+    bindEvents();
   }
 
   public final String getEntityID() {
@@ -107,7 +111,6 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
   }
 
   public final ColumnSearchModel<Property> getPropertyFilterModel(final String propertyID) {
-    initialize();
     if (propertyFilterModels.containsKey(propertyID)) {
       return propertyFilterModels.get(propertyID);
     }
@@ -116,7 +119,6 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
   }
 
   public final Collection<ColumnSearchModel<Property>> getPropertyFilterModels() {
-    initialize();
     return Collections.unmodifiableCollection(propertyFilterModels.values());
   }
 
@@ -130,7 +132,6 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
   }
 
   public final boolean include(final Entity item) {
-    initialize();
     for (final ColumnSearchModel<Property> columnFilter : propertyFilterModels.values()) {
       if (columnFilter.isSearchEnabled() && !columnFilter.include(item)) {
         return false;
@@ -141,7 +142,6 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
   }
 
   public final void refresh() {
-    initialize();
     for (final PropertySearchModel model : propertySearchModels.values()) {
       if (model instanceof Refreshable) {
         ((Refreshable) model).refresh();
@@ -150,7 +150,6 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
   }
 
   public final void clear() {
-    initialize();
     for (final PropertySearchModel model : propertySearchModels.values()) {
       if (model instanceof Refreshable) {
         ((Refreshable) model).clear();
@@ -159,24 +158,20 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
   }
 
   public final void clearPropertySearchModels() {
-    initialize();
     for (final PropertySearchModel searchModel : propertySearchModels.values()) {
       searchModel.clearSearch();
     }
   }
 
   public final Collection<PropertySearchModel<? extends Property.SearchableProperty>> getPropertySearchModels() {
-    initialize();
     return Collections.unmodifiableCollection(propertySearchModels.values());
   }
 
   public final boolean containsPropertySearchModel(final String propertyID) {
-    initialize();
     return propertySearchModels.containsKey(propertyID);
   }
 
   public final PropertySearchModel<? extends Property.SearchableProperty> getPropertySearchModel(final String propertyID) {
-    initialize();
     if (propertySearchModels.containsKey(propertyID)) {
       return propertySearchModels.get(propertyID);
     }
@@ -211,7 +206,6 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
   }
 
   public final Criteria<Property.ColumnProperty> getSearchCriteria() {
-    initialize();
     final CriteriaSet<Property.ColumnProperty> criteriaSet = new CriteriaSet<Property.ColumnProperty>(searchConjunction);
     for (final PropertySearchModel<? extends Property.SearchableProperty> criteria : propertySearchModels.values()) {
       if (criteria.isSearchEnabled()) {
@@ -267,7 +261,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
    * @return a PropertySearchModel for the given property, null if this property is not searchable or if searching
    * should not be allowed for this property
    */
-  protected PropertySearchModel<? extends Property.SearchableProperty> initializePropertySearchModel(
+  private PropertySearchModel<? extends Property.SearchableProperty> initializePropertySearchModel(
           final Property.SearchableProperty property, final EntityDbProvider dbProvider) {
     if (property instanceof Property.ForeignKeyProperty) {
       final Property.ForeignKeyProperty fkProperty = (Property.ForeignKeyProperty) property;
@@ -295,18 +289,8 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
    * @param property the Property for which to initialize a PropertyFilterModel
    * @return a PropertyFilterModel for the given property
    */
-  protected ColumnSearchModel<Property> initializePropertyFilterModel(final Property property) {
+  private ColumnSearchModel<Property> initializePropertyFilterModel(final Property property) {
     return new DefaultPropertyFilterModel(property);
-  }
-
-  private void initialize() {
-    if (propertyFilterModels == null) {
-      propertyFilterModels = initializePropertyFilterModels();
-    }
-    if (propertySearchModels == null) {
-      propertySearchModels = initializePropertySearchModels(dbProvider);
-    }
-    bindEvents();
   }
 
   /**

@@ -609,8 +609,7 @@ public class EntityPanel extends JPanel {
    */
   public final void setEditPanelState(final int state) {
     if (editControlPanel == null) {
-      this.editPanelState = state;
-      return;
+      editControlPanel = initializeEditControlPanel();
     }
 
     editPanelState = state;
@@ -762,7 +761,6 @@ public class EntityPanel extends JPanel {
    * </pre>
    */
   protected void initializeUI() {
-    editControlPanel = initializeEditControlPanel();
     final EntityTablePanel entityTablePanel = tablePanel;
     if (entityTablePanel != null) {
       if (entityTablePanel.getTableDoubleClickAction() == null) {
