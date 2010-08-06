@@ -1079,18 +1079,21 @@ public class EntityPanel extends JPanel {
 
   /**
    * @return a list of properties to use when selecting a input component in the edit panel,
-   * by default this returns all the properties that have mapped enabled components in the edit panel.
+   * this returns all the properties that have mapped components in the edit panel
+   * that are enabled, visible and focusable.
    * @see org.jminor.common.ui.valuemap.ValueChangeMapEditPanel#setComponent(Object, javax.swing.JComponent)
    */
   private List<Property> getSelectComponentProperties() {
     final Collection<String> propertyIDs = editPanel.getComponentKeys();
-    final Collection<String> focusableComponentPropertyIDs = new ArrayList<String>(propertyIDs.size());
+    final Collection<String> selectableComponentPropertyIDs = new ArrayList<String>(propertyIDs.size());
     for (final String propertyID : propertyIDs) {
-      if (includeComponentSelectionProperty(propertyID) && editPanel.getComponent(propertyID).isEnabled()) {
-        focusableComponentPropertyIDs.add(propertyID);
+      final JComponent component = editPanel.getComponent(propertyID);
+      if (includeComponentSelectionProperty(propertyID) && component.isVisible() &&
+              component.isFocusable() && component.isEnabled()) {
+        selectableComponentPropertyIDs.add(propertyID);
       }
     }
-    return EntityUtil.getSortedProperties(model.getEntityID(), focusableComponentPropertyIDs);
+    return EntityUtil.getSortedProperties(model.getEntityID(), selectableComponentPropertyIDs);
   }
 
   private void disposeEditDialog() {

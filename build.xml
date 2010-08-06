@@ -416,7 +416,8 @@
     <delete file="${basedir}/${ant.project.name}-${version}-project.zip"/>
     <delete file="${basedir}/derby.log"/>
     <zip destfile="${basedir}/${ant.project.name}-${version}-project.zip">
-      <fileset dir="${basedir}" excludes="test/**,dist/deployment/**,classes/**,derbydb/**,h2db/**"/>
+      <fileset dir="${basedir}"
+               excludes="*.ser,*.log,target/**,test/**,dist/deployment/**,classes/**,derbydb/**,h2db/**"/>
     </zip>
   </target>
 
