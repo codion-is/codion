@@ -475,45 +475,55 @@ class PropertyImpl implements Property, Serializable {
       this.columnName = propertyID;
     }
 
+    /** {@inheritDoc} */
     public final String getColumnName() {
       return this.columnName;
     }
 
+    /** {@inheritDoc} */
     public final boolean columnHasDefaultValue() {
       return columnHasDefaultValue;
     }
 
+    /** {@inheritDoc} */
     public final ColumnProperty setColumnHasDefaultValue(final boolean columnHasDefaultValue) {
       this.columnHasDefaultValue = columnHasDefaultValue;
       return this;
     }
 
+    /** {@inheritDoc} */
     public final boolean isUpdatable() {
       return this.updatable;
     }
 
+    /** {@inheritDoc} */
     public final ColumnProperty setUpdatable(final boolean updatable) {
       this.updatable = updatable;
       return this;
     }
 
+    /** {@inheritDoc} */
     public ColumnProperty setSearchable(final boolean searchable) {
       this.searchable = searchable;
       return this;
     }
 
+    /** {@inheritDoc} */
     public boolean isSearchable() {
       return searchable;
     }
 
+    /** {@inheritDoc} */
     public boolean isDenormalized() {
       return false;
     }
 
+    /** {@inheritDoc} */
     public final void setSelectIndex(final int selectIndex) {
       this.selectIndex = selectIndex;
     }
 
+    /** {@inheritDoc} */
     public final int getSelectIndex() {
       return selectIndex;
     }
@@ -538,10 +548,12 @@ class PropertyImpl implements Property, Serializable {
       setUpdatable(false);
     }
 
+    /** {@inheritDoc} */
     public final int getIndex() {
       return index;
     }
 
+    /** {@inheritDoc} */
     public final PrimaryKeyProperty setIndex(final int index) {
       if (index < 0) {
         throw new IllegalArgumentException("Primary key index must be at least 0");
@@ -606,27 +618,33 @@ class PropertyImpl implements Property, Serializable {
       this.referenceProperties = Collections.unmodifiableList(Arrays.asList(referenceProperties));
     }
 
+    /** {@inheritDoc} */
     public final String getReferencedEntityID() {
       return referencedEntityID;
     }
 
+    /** {@inheritDoc} */
     public final List<ColumnProperty> getReferenceProperties() {
       return referenceProperties;
     }
 
+    /** {@inheritDoc} */
     public final boolean isCompositeReference() {
       return this.referenceProperties.size() > 1;
     }
 
+    /** {@inheritDoc} */
     public final int getFetchDepth() {
       return fetchDepth;
     }
 
+    /** {@inheritDoc} */
     public final ForeignKeyProperty setFetchDepth(final int fetchDepth) {
       this.fetchDepth = fetchDepth;
       return this;
     }
 
+    /** {@inheritDoc} */
     public final String getReferencedPropertyID(final Property referenceProperty) {
       if (linkedReferenceProperties == null) {
         return null;
@@ -691,14 +709,17 @@ class PropertyImpl implements Property, Serializable {
       this.denormalizedProperty = denormalizedProperty;
     }
 
+    /** {@inheritDoc} */
     public final String getForeignKeyPropertyID() {
       return foreignKeyPropertyID;
     }
 
+    /** {@inheritDoc} */
     public final Property getDenormalizedProperty() {
       return denormalizedProperty;
     }
 
+    /** {@inheritDoc} */
     @Override
     public final boolean isDenormalized() {
       return true;
@@ -733,14 +754,17 @@ class PropertyImpl implements Property, Serializable {
       this.values = Collections.unmodifiableList(values);
     }
 
+    /** {@inheritDoc} */
     public final boolean isValid(final Object value) {
       return values.contains(new Item<Object>(value, ""));
     }
 
+    /** {@inheritDoc} */
     public final List<Item<Object>> getValues() {
       return values;
     }
 
+    /** {@inheritDoc} */
     public final String getCaption(final Object value) {
       final Item item = new Item<Object>(value, "");
       final int index = values.indexOf(item);
@@ -787,10 +811,12 @@ class PropertyImpl implements Property, Serializable {
       setReadOnly(true);
     }
 
+    /** {@inheritDoc} */
     public final Collection<String> getLinkedPropertyIDs() {
       return linkedPropertyIDs;
     }
 
+    /** {@inheritDoc} */
     public final DerivedProperty addLinkedPropertyIDs(final String... linkedPropertyIDs) {
       if (this.linkedPropertyIDs == null) {
         this.linkedPropertyIDs = new HashSet<String>();
@@ -831,11 +857,12 @@ class PropertyImpl implements Property, Serializable {
       this.denormalizedProperty = property;
     }
 
-
+    /** {@inheritDoc} */
     public final String getForeignKeyPropertyID() {
       return foreignKeyPropertyID;
     }
 
+    /** {@inheritDoc} */
     public final Property getDenormalizedProperty() {
       return denormalizedProperty;
     }
@@ -861,6 +888,7 @@ class PropertyImpl implements Property, Serializable {
       this.subquery = subquery;
     }
 
+    /** {@inheritDoc} */
     public final String getSubQuery() {
       return subquery;
     }
@@ -908,10 +936,12 @@ class PropertyImpl implements Property, Serializable {
       this.falseValue = falseValue;
     }
 
+    /** {@inheritDoc} */
     public final int getColumnType() {
       return columnType;
     }
 
+    /** {@inheritDoc} */
     public final Boolean toBoolean(final Object object) {
       if (Util.equal(trueValue, object)) {
         return true;
@@ -923,6 +953,7 @@ class PropertyImpl implements Property, Serializable {
       return null;
     }
 
+    /** {@inheritDoc} */
     public final String toSQLString(final Boolean value) {
       final Object result = toSQLValue(value);
       if (columnType == Types.VARCHAR) {
@@ -937,6 +968,7 @@ class PropertyImpl implements Property, Serializable {
       }
     }
 
+    /** {@inheritDoc} */
     public final Object toSQLValue(final Boolean value) {
       if (value == null) {
         return null;
@@ -962,6 +994,7 @@ class PropertyImpl implements Property, Serializable {
       this.blobColumnName = blobColumnName;
     }
 
+    /** {@inheritDoc} */
     public final String getBlobColumnName() {
       return blobColumnName;
     }
@@ -981,6 +1014,7 @@ class PropertyImpl implements Property, Serializable {
       this.auditAction = auditAction;
     }
 
+    /** {@inheritDoc} */
     public final AuditAction getAuditAction() {
       return auditAction;
     }

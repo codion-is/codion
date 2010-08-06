@@ -113,6 +113,7 @@ public final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRem
     return database;
   }
 
+  /** {@inheritDoc} */
   public int getServerLoad() throws RemoteException {
     return EntityDbRemoteAdapter.getRequestsPerSecond();
   }

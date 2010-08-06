@@ -24,14 +24,17 @@ public final class SQLServerDatabase extends AbstractDatabase {
     super(SQLSERVER, host, port, databaseName, false);
   }
 
+  /** {@inheritDoc} */
   public void loadDriver() throws ClassNotFoundException {
     Class.forName(DRIVER_NAME);
   }
 
+  /** {@inheritDoc} */
   public String getAutoIncrementValueSQL(final String idSource) {
     return AUTO_INCREMENT_QUERY;
   }
 
+  /** {@inheritDoc} */
   public String getURL(final Properties connectionProperties) {
     final String sid = getSid();
     return URL_PREFIX + getHost() + ":" + getPort() + (!Util.nullOrEmpty(sid) ? ";databaseName=" + sid : "");

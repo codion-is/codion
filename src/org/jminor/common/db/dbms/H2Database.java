@@ -37,19 +37,23 @@ public final class H2Database extends AbstractDatabase {
     return this;
   }
 
+  /** {@inheritDoc} */
   public void loadDriver() throws ClassNotFoundException {
     Class.forName(DRIVER_NAME);
   }
 
+  /** {@inheritDoc} */
   public String getAutoIncrementValueSQL(final String idSource) {
     return AUTO_INCREMENT_QUERY;
   }
 
+  /** {@inheritDoc} */
   @Override
   public String getSequenceSQL(final String sequenceName) {
     return SEQUENCE_VALUE_QUERY + sequenceName;
   }
 
+  /** {@inheritDoc} */
   public String getURL(final Properties connectionProperties) {
     final String authentication = getAuthenticationInfo(connectionProperties);
     if (isEmbedded()) {

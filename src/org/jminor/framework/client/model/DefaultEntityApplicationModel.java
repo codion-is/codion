@@ -30,12 +30,14 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
     loadDomainModel();
   }
 
+  /** {@inheritDoc} */
   public final void logout() {
     dbProvider.setUser(null);
     clear();
     handleLogout();
   }
 
+  /** {@inheritDoc} */
   public final void login(final User user) {
     dbProvider.setUser(user);
     for (final EntityModel mainApplicationModel : mainApplicationModels) {
@@ -44,6 +46,7 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
     handleLogin();
   }
 
+  /** {@inheritDoc} */
   public final User getUser() {
     try {
       return dbProvider.getEntityDb().getUser();
@@ -53,10 +56,12 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
     }
   }
 
+  /** {@inheritDoc} */
   public final EntityDbProvider getDbProvider() {
     return dbProvider;
   }
 
+  /** {@inheritDoc} */
   public final void addMainApplicationModels(final EntityModel... mainApplicationModels) {
     Util.rejectNullValue(mainApplicationModels, "mainApplicationModels");
     for (final EntityModel model : mainApplicationModels) {
@@ -64,20 +69,24 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
     }
   }
 
+  /** {@inheritDoc} */
   public final EntityModel addMainApplicationModel(final EntityModel detailModel) {
     this.mainApplicationModels.add(detailModel);
 
     return detailModel;
   }
 
+  /** {@inheritDoc} */
   public final List<? extends EntityModel> getMainApplicationModels() {
     return Collections.unmodifiableList(mainApplicationModels);
   }
 
+  /** {@inheritDoc} */
   public final boolean isCascadeRefresh() {
     return !mainApplicationModels.isEmpty() && mainApplicationModels.iterator().next().isCascadeRefresh();
   }
 
+  /** {@inheritDoc} */
   public final void setCascadeRefresh(final boolean value) {
     if (!mainApplicationModels.isEmpty() && isCascadeRefresh() != value) {
       for (final EntityModel mainApplicationModel : mainApplicationModels) {
@@ -88,6 +97,7 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
     }
   }
 
+  /** {@inheritDoc} */
   public final void refresh() {
     final boolean cascade = isCascadeRefresh();
     try {
@@ -101,12 +111,14 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
     }
   }
 
+  /** {@inheritDoc} */
   public final void clear() {
     for (final EntityModel mainApplicationModel : mainApplicationModels) {
       mainApplicationModel.clear();
     }
   }
 
+  /** {@inheritDoc} */
   public final EntityModel getMainApplicationModel(final Class<? extends EntityModel> modelClass) {
     for (final EntityModel model : mainApplicationModels) {
       if (model.getClass().equals(modelClass)) {
@@ -117,6 +129,7 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
     throw new RuntimeException("Detail model of class: " + modelClass + " not found");
   }
 
+  /** {@inheritDoc} */
   public final EntityModel getMainApplicationModel(final String entityID) {
     for (final EntityModel detailModel : mainApplicationModels) {
       if (detailModel.getEntityID().equals(entityID)) {
@@ -137,6 +150,7 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
     throw new RuntimeException("No detail model for type " + entityID + " found in model: " + this);
   }
 
+  /** {@inheritDoc} */
   public final EventObserver cascadeRefreshObserver() {
     return evtCascadeRefreshChanged.getObserver();
   }

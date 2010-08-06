@@ -99,26 +99,32 @@ public abstract class AbstractDatabase implements Database {
     this.embedded = embedded;
   }
 
+  /** {@inheritDoc} */
   public final String getDatabaseType() {
     return databaseType;
   }
 
+  /** {@inheritDoc} */
   public final String getHost() {
     return host;
   }
 
+  /** {@inheritDoc} */
   public final String getPort() {
     return port;
   }
 
+  /** {@inheritDoc} */
   public final String getSid() {
     return sid;
   }
 
+  /** {@inheritDoc} */
   public final boolean isEmbedded() {
     return embedded;
   }
 
+  /** {@inheritDoc} */
   public final Connection createConnection(final User user) throws ClassNotFoundException, SQLException {
     Util.rejectNullValue(user, "user");
     Util.rejectNullValue(user.getUsername(), "Username must be provided");
@@ -131,42 +137,25 @@ public abstract class AbstractDatabase implements Database {
     return DriverManager.getConnection(getURL(connectionProperties), addConnectionProperties(connectionProperties));
   }
 
-  /**
-   * Returns true if the dbms supports the select for update NOWAIT option
-   * @return true if NOWAIT is supported for select for update
-   */
+  /** {@inheritDoc} */
   public boolean supportsNowait() {
     return true;
   }
 
-  /**
-   * This default implementation returns true
-   * @return true if the dbms supports the Java 6 jdbc call Connection.isValid()
-   */
+  /** {@inheritDoc} */
   public boolean supportsIsValid() {
     return true;
   }
 
-  /**
-   * Returns a query to use when checking if the connection is valid,
-   * this is used in cases where the dbms does not support the isValid() call.
-   * Returning null is safe if isValid() is supported.
-   * This default implementation returns null.
-   * @return a check connection query
-   * @see #supportsIsValid()
-   */
+  /** {@inheritDoc} */
   public String getCheckConnectionQuery() {
     return null;
   }
 
-  /**
-   * This should shutdown the database in case it is an embedded one
-   * and if that is applicable, such as for Derby.
-   * This default implementation simply throws an exception declaring that sequences are not supported.
-   * @param connectionProperties the connection properties
-   */
+  /** {@inheritDoc} */
   public void shutdownEmbedded(final Properties connectionProperties) {}
 
+  /** {@inheritDoc} */
   public String getSequenceSQL(final String sequenceName) {
     throw new RuntimeException("Sequence support is not implemented for database type: " + databaseType);
   }
@@ -192,20 +181,12 @@ public abstract class AbstractDatabase implements Database {
     return null;
   }
 
-  /**
-   * This default implementation simply returns the error message from the exception
-   * @param exception the underlying SQLException
-   * @return the exception message
-   */
+  /** {@inheritDoc} */
   public String getErrorMessage(final SQLException exception) {
     return exception.getMessage();
   }
 
-  /**
-   * This default implementation simply returns the properties map.
-   * @param properties the properties map to add to
-   * @return the given properties map
-   */
+  /** {@inheritDoc} */
   public Properties addConnectionProperties(final Properties properties) {
     return properties;
   }

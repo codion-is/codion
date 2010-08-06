@@ -6,7 +6,7 @@
   <groupId>JMinor</groupId>
   <artifactId>jminor</artifactId>
   <name>JMinor</name>
-  <version>0.5.8</version>
+  <version>0.5.9</version>
   <description>
     JMinor is a minimalistic Java rich client/server
     CRUD application framework based solely on J2SE

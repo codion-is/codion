@@ -74,52 +74,48 @@ public class DbConnectionImpl implements DbConnection {
     }
   }
 
-  /**
-   * Sets the time this connection was checked into a connection pool
-   * @param time the time this connection was pooled
-   */
+  /** {@inheritDoc} */
   public final void setPoolTime(final long time) {
     this.poolTime = time;
   }
 
-  /**
-   * @return the time at which this connection was pooled
-   */
+  /** {@inheritDoc} */
   public final long getPoolTime() {
     return poolTime;
   }
 
+  /** {@inheritDoc} */
   public final void setPoolRetryCount(final int retryCount) {
     this.poolRetryCount = retryCount;
   }
 
+  /** {@inheritDoc} */
   public final int getPoolRetryCount() {
     return poolRetryCount;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final String toString() {
     return getClass().getSimpleName() + ": " + user.getUsername();
   }
 
-  /**
-   * @return the connection user
-   */
+  /** {@inheritDoc} */
   public final User getUser() {
     return user;
   }
 
+  /** {@inheritDoc} */
   public final void setLoggingEnabled(final boolean enabled) {
     methodLogger.setEnabled(enabled);
   }
 
+  /** {@inheritDoc} */
   public final boolean isLoggingEnabled() {
     return methodLogger.isEnabled();
   }
 
-  /**
-   * @return true if the connection is valid
-   */
+  /** {@inheritDoc} */
   public final boolean isConnectionValid() {
     try {
       return connection != null && database.supportsIsValid() ? connection.isValid(0) : checkConnection();
@@ -130,9 +126,7 @@ public class DbConnectionImpl implements DbConnection {
     }
   }
 
-  /**
-   * Disconnects this DbConnection
-   */
+  /** {@inheritDoc} */
   public final void disconnect() {
     if (!isConnected()) {
       return;
@@ -157,17 +151,12 @@ public class DbConnectionImpl implements DbConnection {
     checkConnectionStatement = null;
   }
 
-  /**
-   * @return true if the connection is connected
-   */
+  /** {@inheritDoc} */
   public final boolean isConnected() {
     return connection != null;
   }
 
-  /**
-   * Begins a transaction on this connection
-   * @throws IllegalStateException in case a transaction is already open
-   */
+  /** {@inheritDoc} */
   public final void beginTransaction() {
     if (transactionOpen) {
       throw new IllegalStateException("Transaction already open");
@@ -178,11 +167,7 @@ public class DbConnectionImpl implements DbConnection {
     methodLogger.logExit("beginTransaction", null, null);
   }
 
-  /**
-   * Performs a rollback and ends the current transaction
-   * @throws SQLException in case anything goes wrong during the rollback action
-   * @throws IllegalStateException in case transaction is not open
-   */
+  /** {@inheritDoc} */
   public final void rollbackTransaction() throws SQLException {
     SQLException exception = null;
     try {
@@ -203,11 +188,7 @@ public class DbConnectionImpl implements DbConnection {
     }
   }
 
-  /**
-   * Performs a commit and ends the current transaction
-   * @throws SQLException in case anything goes wrong during the commit action
-   * @throws IllegalStateException in case transaction is not open
-   */
+  /** {@inheritDoc} */
   public final void commitTransaction() throws SQLException {
     try {
       if (!transactionOpen) {
@@ -224,21 +205,12 @@ public class DbConnectionImpl implements DbConnection {
     }
   }
 
-  /**
-   * @return true if a transaction is open
-   */
+  /** {@inheritDoc} */
   public final boolean isTransactionOpen() {
     return transactionOpen;
   }
 
-  /**
-   * Performs the given sql query and returns the result in a List
-   * @param sql the query
-   * @param resultPacker a ResultPacker instance for creating the return List
-   * @param fetchCount the number of records to retrieve, use -1 to retrieve all
-   * @return the query result in a List
-   * @throws SQLException thrown if anything goes wrong during the query execution
-   */
+  /** {@inheritDoc} */
   public final List query(final String sql, final ResultPacker resultPacker, final int fetchCount) throws SQLException {
     QUERY_COUNTER.count(sql);
     methodLogger.logAccess("query", new Object[] {sql});
@@ -274,13 +246,7 @@ public class DbConnectionImpl implements DbConnection {
     }
   }
 
-  /**
-   * Performs the given query and returns the result as a List of Strings
-   * @param sql the query, it must select at least a single string column, any other
-   * subsequent columns are disregarded
-   * @return a List of Strings representing the query result
-   * @throws SQLException thrown if anything goes wrong during the execution
-   */
+  /** {@inheritDoc} */
   public final List<String> queryStrings(final String sql) throws SQLException {
     final List res = query(sql, STRING_PACKER, -1);
     final List<String> strings = new ArrayList<String>(res.size());
@@ -291,14 +257,7 @@ public class DbConnectionImpl implements DbConnection {
     return strings;
   }
 
-  /**
-   * Performs the given query and returns the result as an integer
-   * @param sql the query must select at least a single number column, any other
-   * subsequent columns are disregarded
-   * @return the first record in the result as a integer
-   * @throws SQLException thrown if anything goes wrong during the execution
-   * @throws org.jminor.common.db.exception.DbException thrown if no record is found
-   */
+  /** {@inheritDoc} */
   public final int queryInteger(final String sql) throws SQLException, DbException {
     final List<Integer> integers = queryIntegers(sql);
     if (!integers.isEmpty()) {
@@ -308,24 +267,13 @@ public class DbConnectionImpl implements DbConnection {
     throw new DbException("No records returned when querying for an integer", sql);
   }
 
-  /**
-   * Performs the given query and returns the result as a List of Integers
-   * @param sql the query, it must select at least a single number column, any other
-   * subsequent columns are disregarded
-   * @return a List of Integers representing the query result
-   * @throws SQLException thrown if anything goes wrong during the execution
-   */
+  /** {@inheritDoc} */
   @SuppressWarnings({"unchecked"})
   public final List<Integer> queryIntegers(final String sql) throws SQLException {
     return (List<Integer>) query(sql, INT_PACKER, -1);
   }
 
-  /**
-   * @param sql the query
-   * @param fetchCount the maximum number of records to return, -1 for all
-   * @return the result of this query, in a List of rows represented as Lists
-   * @throws SQLException thrown if anything goes wrong during the query execution
-   */
+  /** {@inheritDoc} */
   @SuppressWarnings({"unchecked"})
   public final List<List> queryObjects(final String sql, final int fetchCount) throws SQLException {
     return (List<List>) query(sql, new MixedResultPacker(), fetchCount);
@@ -369,11 +317,7 @@ public class DbConnectionImpl implements DbConnection {
     }
   }
 
-  /**
-   * Performs a commit
-   * @throws SQLException thrown if anything goes wrong during the execution
-   * @throws IllegalStateException in case a transaction is open
-   */
+  /** {@inheritDoc} */
   public final void commit() throws SQLException {
     if (transactionOpen) {
       throw new IllegalStateException("Can not perform a commit during an open transaction");
@@ -394,11 +338,7 @@ public class DbConnectionImpl implements DbConnection {
     }
   }
 
-  /**
-   * Performs a rollback
-   * @throws SQLException thrown if anything goes wrong during the execution
-   * @throws IllegalStateException in case a transaction is open
-   */
+  /** {@inheritDoc} */
   public final void rollback() throws SQLException {
     if (transactionOpen) {
       throw new IllegalStateException("Can not perform a rollback during an open transaction");

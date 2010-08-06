@@ -53,6 +53,11 @@ public interface EntityLookupModel extends EntityDataProvider {
   String getDescription();
 
   /**
+   * @param description a string describing this lookup model
+   */
+  void setDescription(final String description);
+
+  /**
    * @return a list containing the properties used when performing a lookup
    */
   List<Property.ColumnProperty> getLookupProperties();

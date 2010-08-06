@@ -127,46 +127,56 @@ final class EntityDefinitionImpl implements EntityDefinition, Serializable {
     initializeDerivedPropertyChangeLinks();
   }
 
+  /** {@inheritDoc} */
   public String getEntityID() {
     return entityID;
   }
 
+  /** {@inheritDoc} */
   public String getTableName() {
     return tableName;
   }
 
+  /** {@inheritDoc} */
   public String getCaption() {
     return caption;
   }
 
+  /** {@inheritDoc} */
   public EntityDefinition setCaption(final String caption) {
     Util.rejectNullValue(caption, "caption");
     this.caption = caption;
     return this;
   }
 
+  /** {@inheritDoc} */
   public boolean isLargeDataset() {
     return largeDataset;
   }
 
+  /** {@inheritDoc} */
   public EntityDefinition setLargeDataset(final boolean largeDataset) {
     this.largeDataset = largeDataset;
     return this;
   }
 
+  /** {@inheritDoc} */
   public boolean isReadOnly() {
     return readOnly;
   }
 
+  /** {@inheritDoc} */
   public EntityDefinition setReadOnly(final boolean readOnly) {
     this.readOnly = readOnly;
     return this;
   }
 
+  /** {@inheritDoc} */
   public IdSource getIdSource() {
     return idSource;
   }
 
+  /** {@inheritDoc} */
   public EntityDefinition setIdSource(final IdSource idSource) {
     Util.rejectNullValue(idSource, "idSource");
     this.idSource = idSource;
@@ -177,65 +187,78 @@ final class EntityDefinitionImpl implements EntityDefinition, Serializable {
     return this;
   }
 
+  /** {@inheritDoc} */
   public String getIdValueSource() {
     return idValueSource;
   }
 
+  /** {@inheritDoc} */
   public EntityDefinition setIdValueSource(final String idValueSource) {
     Util.rejectNullValue(idValueSource, "idValueSource");
     this.idValueSource = idValueSource;
     return this;
   }
 
+  /** {@inheritDoc} */
   public String getOrderByClause() {
     return orderByClause;
   }
 
+  /** {@inheritDoc} */
   public EntityDefinition setOrderByClause(final String orderByClause) {
     Util.rejectNullValue(orderByClause, "orderByClause");
     this.orderByClause = orderByClause;
     return this;
   }
 
+  /** {@inheritDoc} */
   public String getSelectTableName() {
     return selectTableName;
   }
 
+  /** {@inheritDoc} */
   public EntityDefinition setSelectTableName(final String selectTableName) {
     Util.rejectNullValue(selectTableName, "selectTableName");
     this.selectTableName = selectTableName;
     return this;
   }
 
+  /** {@inheritDoc} */
   public String getSelectQuery() {
     return selectQuery;
   }
 
+  /** {@inheritDoc} */
   public EntityDefinition setSelectQuery(final String selectQuery) {
     Util.rejectNullValue(selectQuery, "selectQuery");
     this.selectQuery = selectQuery;
     return this;
   }
 
+  /** {@inheritDoc} */
   public ValueMap.ToString<String> getStringProvider() {
     return stringProvider;
   }
 
+  /** {@inheritDoc} */
   public EntityDefinition setStringProvider(final ValueMap.ToString<String> stringProvider) {
     Util.rejectNullValue(stringProvider, "stringProvider");
     this.stringProvider = stringProvider;
     return this;
   }
 
+  /** {@inheritDoc} */
   public boolean isRowColoring() {
     return rowColoring;
   }
 
+  /** {@inheritDoc} */
   public EntityDefinition setRowColoring(final boolean rowColoring) {
     this.rowColoring = rowColoring;
     return this;
   }
 
+  /** {@inheritDoc} */
   public List<String> getSearchPropertyIDs() {
     if (searchPropertyIDs == null) {
       return Collections.emptyList();
@@ -243,6 +266,7 @@ final class EntityDefinitionImpl implements EntityDefinition, Serializable {
     return Collections.unmodifiableList(searchPropertyIDs);
   }
 
+  /** {@inheritDoc} */
   public EntityDefinition setSearchPropertyIDs(final String... searchPropertyIDs) {
     Util.rejectNullValue(searchPropertyIDs, "searchPropertyIDs");
     for (final String propertyID : searchPropertyIDs) {
@@ -255,18 +279,22 @@ final class EntityDefinitionImpl implements EntityDefinition, Serializable {
     return this;
   }
 
+  /** {@inheritDoc} */
   public Map<String, Property> getProperties() {
     return properties;
   }
 
+  /** {@inheritDoc} */
   public boolean hasLinkedProperties(final String propertyID) {
     return linkedProperties.containsKey(propertyID);
   }
 
+  /** {@inheritDoc} */
   public Collection<String> getLinkedPropertyIDs(final String propertyID) {
     return linkedProperties.get(propertyID);
   }
 
+  /** {@inheritDoc} */
   public List<Property.PrimaryKeyProperty> getPrimaryKeyProperties() {
     if (primaryKeyProperties == null) {
       primaryKeyProperties = Collections.unmodifiableList(getPrimaryKeyProperties(properties.values()));
@@ -274,6 +302,7 @@ final class EntityDefinitionImpl implements EntityDefinition, Serializable {
     return primaryKeyProperties;
   }
 
+  /** {@inheritDoc} */
   public String getSelectColumnsString() {
     if (selectColumnsString == null) {
       selectColumnsString = initSelectColumnsString(getColumnProperties());
@@ -281,6 +310,7 @@ final class EntityDefinitionImpl implements EntityDefinition, Serializable {
     return selectColumnsString;
   }
 
+  /** {@inheritDoc} */
   public List<Property> getVisibleProperties() {
     if (visibleProperties == null) {
       visibleProperties = Collections.unmodifiableList(getVisibleProperties(properties.values()));
@@ -288,6 +318,7 @@ final class EntityDefinitionImpl implements EntityDefinition, Serializable {
     return visibleProperties;
   }
 
+  /** {@inheritDoc} */
   public List<Property.ColumnProperty> getColumnProperties() {
     if (columnProperties == null) {
       columnProperties = Collections.unmodifiableList(getColumnProperties(properties.values()));
@@ -295,6 +326,7 @@ final class EntityDefinitionImpl implements EntityDefinition, Serializable {
     return columnProperties;
   }
 
+  /** {@inheritDoc} */
   public List<Property.TransientProperty> getTransientProperties() {
     if (transientProperties == null) {
       transientProperties = Collections.unmodifiableList(getTransientProperties(properties.values()));
@@ -302,6 +334,7 @@ final class EntityDefinitionImpl implements EntityDefinition, Serializable {
     return transientProperties;
   }
 
+  /** {@inheritDoc} */
   public List<Property.ForeignKeyProperty> getForeignKeyProperties() {
     if (foreignKeyProperties == null) {
       foreignKeyProperties = Collections.unmodifiableList(getForeignKeyProperties(properties.values()));
@@ -309,6 +342,7 @@ final class EntityDefinitionImpl implements EntityDefinition, Serializable {
     return foreignKeyProperties;
   }
 
+  /** {@inheritDoc} */
   public boolean hasDenormalizedProperties() {
     if (denormalizedProperties == null) {
       denormalizedProperties = Collections.unmodifiableMap(getDenormalizedProperties(properties.values()));
@@ -317,6 +351,7 @@ final class EntityDefinitionImpl implements EntityDefinition, Serializable {
     return hasDenormalizedProperties;
   }
 
+  /** {@inheritDoc} */
   public boolean hasDenormalizedProperties(final String foreignKeyPropertyID) {
     if (denormalizedProperties == null) {
       denormalizedProperties = Collections.unmodifiableMap(getDenormalizedProperties(properties.values()));
@@ -324,6 +359,7 @@ final class EntityDefinitionImpl implements EntityDefinition, Serializable {
     return hasDenormalizedProperties && denormalizedProperties.containsKey(foreignKeyPropertyID);
   }
 
+  /** {@inheritDoc} */
   public Collection<Property.DenormalizedProperty> getDenormalizedProperties(final String foreignKeyPropertyID) {
     if (denormalizedProperties == null) {
       denormalizedProperties = Collections.unmodifiableMap(getDenormalizedProperties(properties.values()));
@@ -331,6 +367,7 @@ final class EntityDefinitionImpl implements EntityDefinition, Serializable {
     return denormalizedProperties.get(foreignKeyPropertyID);
   }
 
+  /** {@inheritDoc} */
   @Override
   public String toString() {
     return entityID;

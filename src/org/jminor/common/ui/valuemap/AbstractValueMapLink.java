@@ -31,11 +31,13 @@ public abstract class AbstractValueMapLink<K, V> extends AbstractValueLink<Value
     this.key = key;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final V getModelValue() {
     return isModelValueNull() ? null : getEditModel().getValue(key);
   }
 
+  /** {@inheritDoc} */
   @Override
   public final void setModelValue(final V value) {
     getEditModel().setValue(key, value);

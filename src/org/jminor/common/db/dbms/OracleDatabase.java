@@ -57,19 +57,23 @@ public final class OracleDatabase extends AbstractDatabase {
     super(ORACLE, host, port, sid);
   }
 
+  /** {@inheritDoc} */
   public void loadDriver() throws ClassNotFoundException {
     Class.forName(DRIVER_NAME);
   }
 
+  /** {@inheritDoc} */
   public String getAutoIncrementValueSQL(final String idSource) {
     return "select " + idSource + ".currval from dual";
   }
 
+  /** {@inheritDoc} */
   @Override
   public String getSequenceSQL(final String sequenceName) {
     return "select " + sequenceName + ".nextval from dual";
   }
 
+  /** {@inheritDoc} */
   public String getURL(final Properties connectionProperties) {
     return URL_PREFIX + getHost() + ":" + getPort() + ":" + getSid();
   }
@@ -82,11 +86,13 @@ public final class OracleDatabase extends AbstractDatabase {
     return false;
   }
 
+  /** {@inheritDoc} */
   @Override
   public String getCheckConnectionQuery() {
     return CHECK_QUERY;
   }
 
+  /** {@inheritDoc} */
   @Override
   public String getErrorMessage(final SQLException exception) {
     if (exception.getErrorCode() == NULL_VALUE_ERROR || exception.getErrorCode() == NULL_VALU_ERROR_2) {

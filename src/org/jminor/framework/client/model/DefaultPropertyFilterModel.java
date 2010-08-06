@@ -19,6 +19,7 @@ public class DefaultPropertyFilterModel extends DefaultColumnSearchModel<Propert
             property.getFormat());
   }
 
+  /** {@inheritDoc} */
   @Override
   protected final Comparable getComparable(final Object object) {
     final Entity entity = (Entity) object;

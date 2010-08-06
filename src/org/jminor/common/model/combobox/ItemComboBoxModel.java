@@ -39,6 +39,7 @@ public class ItemComboBoxModel<T> extends DefaultComboBoxModel {
     initializeItems(new ArrayList<Item<T>>(items));
   }
 
+  /** {@inheritDoc} */
   @Override
   public final void setSelectedItem(final Object anObject) {
     if (!(anObject instanceof Item)) {
@@ -53,6 +54,7 @@ public class ItemComboBoxModel<T> extends DefaultComboBoxModel {
     return indexOf(item);
   }
 
+  /** {@inheritDoc} */
   @SuppressWarnings({"unchecked"})
   @Override
   public final Item<T> getSelectedItem() {

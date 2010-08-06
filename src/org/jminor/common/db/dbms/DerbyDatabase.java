@@ -35,14 +35,17 @@ public final class DerbyDatabase extends AbstractDatabase {
     super(DERBY, host, port, sid, false);
   }
 
+  /** {@inheritDoc} */
   public void loadDriver() throws ClassNotFoundException {
     Class.forName(isEmbedded() ? EMBEDDED_DRIVER_NAME : NETWORKED_DRIVER_NAME);
   }
 
+  /** {@inheritDoc} */
   public String getAutoIncrementValueSQL(final String idSource) {
     return AUTO_INCREMENT_QUERY + idSource;
   }
 
+  /** {@inheritDoc} */
   public String getURL(final Properties connectionProperties) {
     final String authentication = getAuthenticationInfo(connectionProperties);
     if (isEmbedded()) {
@@ -53,6 +56,7 @@ public final class DerbyDatabase extends AbstractDatabase {
     }
   }
 
+  /** {@inheritDoc} */
   @Override
   public void shutdownEmbedded(final Properties connectionProperties) {
     try {

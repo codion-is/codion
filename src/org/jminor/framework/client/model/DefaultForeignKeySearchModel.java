@@ -59,6 +59,7 @@ public class DefaultForeignKeySearchModel extends DefaultColumnSearchModel<Prope
     bindComboBoxEvents();
   }
 
+  /** {@inheritDoc} */
   @Override
   public final String toString() {
     final StringBuilder stringBuilder = new StringBuilder(getColumnIdentifier().getPropertyID());
@@ -71,28 +72,26 @@ public class DefaultForeignKeySearchModel extends DefaultColumnSearchModel<Prope
     return stringBuilder.toString();
   }
 
+  /** {@inheritDoc} */
   public final void refresh() {
     if (entityComboBoxModel != null) {
       entityComboBoxModel.refresh();
     }
   }
 
+  /** {@inheritDoc} */
   public final void clear() {
     if (entityComboBoxModel != null) {
       entityComboBoxModel.clear();
     }
   }
 
-  /**
-   * @return the EntityComboBoxModel used by this PropertySearchModel, if any
-   */
+  /** {@inheritDoc} */
   public final EntityComboBoxModel getEntityComboBoxModel() {
     return entityComboBoxModel;
   }
 
-  /**
-   * @return the EntityLookupModel used by this PropertySearchModel, if any
-   */
+  /** {@inheritDoc} */
   public final EntityLookupModel getEntityLookupModel() {
     return entityLookupModel;
   }

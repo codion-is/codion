@@ -39,6 +39,7 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
    */
   private transient Event evtValueChanged;
 
+  /** {@inheritDoc} */
   public void initializeValue(final K key, final V value) {
     super.setValue(key, value);
     if (evtValueChanged != null) {
@@ -47,6 +48,7 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
     handleInitializeValue(key, value);
   }
 
+  /** {@inheritDoc} */
   public final V getOriginalValue(final K key) {
     Util.rejectNullValue(key, "key");
     if (isModified(key)) {
@@ -56,41 +58,49 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
     return getValue(key);
   }
 
+  /** {@inheritDoc} */
   public boolean isModified() {
     return originalValues != null && !originalValues.isEmpty();
   }
 
+  /** {@inheritDoc} */
   @Override
   public ValueChangeMap<K, V> getInstance() {
     return new ValueChangeMapImpl<K, V>();
   }
 
+  /** {@inheritDoc} */
   public final boolean isModified(final K key) {
     return originalValues != null && originalValues.containsKey(key);
   }
 
+  /** {@inheritDoc} */
   public final void revertValue(final K key) {
     if (isModified(key)) {
       setValue(key, getOriginalValue(key));
     }
   }
 
+  /** {@inheritDoc} */
   public final void revertAll() {
     for (final K key : getValueKeys()) {
       revertValue(key);
     }
   }
 
+  /** {@inheritDoc} */
   public final void saveValue(final K key) {
     removeOriginalValue(key);
   }
 
+  /** {@inheritDoc} */
   public final void saveAll() {
     for (final K key : getValueKeys()) {
       saveValue(key);
     }
   }
 
+  /** {@inheritDoc} */
   public final ValueChangeMap<K, V> getOriginalCopy() {
     final ValueChangeMap<K, V> copy = (ValueChangeMap<K, V>) getCopy();
     copy.revertAll();
@@ -98,21 +108,25 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
     return copy;
   }
 
+  /** {@inheritDoc} */
   public final Collection<K> getOriginalValueKeys() {
     return originalValues == null ? new ArrayList<K>() :
             Collections.unmodifiableCollection(originalValues.keySet());
   }
 
+  /** {@inheritDoc} */
   public final void addValueListener(final ActionListener valueListener) {
     getValueChangeObserver().addListener(valueListener);
   }
 
+  /** {@inheritDoc} */
   public final void removeValueListener(final ActionListener valueListener) {
     if (evtValueChanged != null) {
       evtValueChanged.removeListener(valueListener);
     }
   }
 
+  /** {@inheritDoc} */
   public final StateObserver getModifiedState() {
     final State state = States.state(isModified());
     getValueChangeObserver().addListener(new ActionListener() {
@@ -124,6 +138,7 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
     return state.getObserver();
   }
 
+  /** {@inheritDoc} */
   public final EventObserver getValueChangeObserver() {
     return getValueChangedEvent().getObserver();
   }

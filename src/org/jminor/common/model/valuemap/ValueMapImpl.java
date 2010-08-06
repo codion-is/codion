@@ -19,10 +19,12 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V>, Serializable {
 
   private static final int MAGIC_NUMBER = 23;
 
+  /** {@inheritDoc} */
   public boolean isValueNull(final K key) {
     return getValue(key) == null;
   }
 
+  /** {@inheritDoc} */
   public V setValue(final K key, final V value) {
     final boolean initialization = !values.containsKey(key);
     final V previousValue = values.put(key, value);
@@ -31,10 +33,12 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V>, Serializable {
     return previousValue;
   }
 
+  /** {@inheritDoc} */
   public V getValue(final K key) {
     return values.get(key);
   }
 
+  /** {@inheritDoc} */
   public String getValueAsString(final K key) {
     final V value = values.get(key);
     if (value == null) {
@@ -44,10 +48,12 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V>, Serializable {
     return value.toString();
   }
 
+  /** {@inheritDoc} */
   public ValueMap<K, V> getInstance() {
     return new ValueMapImpl<K, V>();
   }
 
+  /** {@inheritDoc} */
   public V copyValue(final V value) {
     return value;
   }
@@ -76,6 +82,7 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V>, Serializable {
     return true;
   }
 
+  /** {@inheritDoc} */
   @Override
   public int hashCode() {
     int hash = MAGIC_NUMBER;
@@ -86,10 +93,12 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V>, Serializable {
     return hash;
   }
 
+  /** {@inheritDoc} */
   public final boolean containsValue(final K key) {
     return values.containsKey(key);
   }
 
+  /** {@inheritDoc} */
   public final V removeValue(final K key) {
     if (values.containsKey(key)) {
       final V value = values.remove(key);
@@ -101,19 +110,23 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V>, Serializable {
     return null;
   }
 
+  /** {@inheritDoc} */
   public final Collection<K> getValueKeys() {
     return Collections.unmodifiableCollection(values.keySet());
   }
 
+  /** {@inheritDoc} */
   public final void clear() {
     values.clear();
     handleClear();
   }
 
+  /** {@inheritDoc} */
   public final int size() {
     return values.size();
   }
 
+  /** {@inheritDoc} */
   public final ValueMap<K, V> getCopy() {
     final ValueMap<K, V> copy = getInstance();
     copy.setAs(this);
@@ -121,6 +134,7 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V>, Serializable {
     return copy;
   }
 
+  /** {@inheritDoc} */
   public final void setAs(final ValueMap<K, V> sourceMap) {
     clear();
     if (sourceMap != null) {
@@ -132,6 +146,7 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V>, Serializable {
     handleSetAs(sourceMap);
   }
 
+  /** {@inheritDoc} */
   public final Collection<V> getValues() {
     return Collections.unmodifiableCollection(values.values());
   }

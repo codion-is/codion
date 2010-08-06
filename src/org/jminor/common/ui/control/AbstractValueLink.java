@@ -57,6 +57,7 @@ public abstract class AbstractValueLink<T, V> extends Control {
     }
   }
 
+  /** {@inheritDoc} */
   @Override
   public final void actionPerformed(final ActionEvent e) {
     updateModel();

@@ -22,14 +22,17 @@ public final class MySQLDatabase extends AbstractDatabase {
     super(MYSQL, host, port, dbname);
   }
 
+  /** {@inheritDoc} */
   public void loadDriver() throws ClassNotFoundException {
     Class.forName(DRIVER_NAME);
   }
 
+  /** {@inheritDoc} */
   public String getAutoIncrementValueSQL(final String idSource) {
     return AUTO_INCREMENT_QUERY;
   }
 
+  /** {@inheritDoc} */
   public String getURL(final Properties connectionProperties) {
     return URL_PREFIX + getHost() + ":" + getPort() + "/" + getSid();
   }
