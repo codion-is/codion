@@ -168,18 +168,22 @@ public class DefaultEntityModel implements EntityModel {
     return getClass().getSimpleName() + ": " + entityID;
   }
 
+  /** {@inheritDoc} */
   public final String getEntityID() {
     return entityID;
   }
 
+  /** {@inheritDoc} */
   public final EntityDbProvider getDbProvider() {
     return dbProvider;
   }
 
+  /** {@inheritDoc} */
   public final boolean isCascadeRefresh() {
     return stCascadeRefresh.isActive();
   }
 
+  /** {@inheritDoc} */
   public final void setCascadeRefresh(final boolean value) {
     for (final EntityModel detailModel : detailModels) {
       detailModel.setCascadeRefresh(value);
@@ -188,26 +192,32 @@ public class DefaultEntityModel implements EntityModel {
     stCascadeRefresh.setActive(value);
   }
 
+  /** {@inheritDoc} */
   public final EntityModel getMasterModel() {
     return masterModel;
   }
 
+  /** {@inheritDoc} */
   public final void setMasterModel(final EntityModel entityModel) {
     this.masterModel = entityModel;
   }
 
+  /** {@inheritDoc} */
   public final EntityEditModel getEditModel() {
     return editModel;
   }
 
+  /** {@inheritDoc} */
   public final EntityTableModel getTableModel() {
     return tableModel;
   }
 
+  /** {@inheritDoc} */
   public final boolean containsTableModel() {
     return tableModel != null;
   }
 
+  /** {@inheritDoc} */
   public final void addDetailModels(final EntityModel... detailModels) {
     Util.rejectNullValue(detailModels, "detailModels");
     for (final EntityModel detailModel : detailModels) {
@@ -215,6 +225,7 @@ public class DefaultEntityModel implements EntityModel {
     }
   }
 
+  /** {@inheritDoc} */
   public final EntityModel addDetailModel(final EntityModel detailModel) {
     this.detailModels.add(detailModel);
     detailModel.setMasterModel(this);
@@ -225,6 +236,7 @@ public class DefaultEntityModel implements EntityModel {
     return detailModel;
   }
 
+  /** {@inheritDoc} */
   public final boolean containsDetailModel(final Class<? extends EntityModel> modelClass) {
     for (final EntityModel detailModel : detailModels) {
       if (detailModel.getClass().equals(modelClass)) {
@@ -235,6 +247,7 @@ public class DefaultEntityModel implements EntityModel {
     return false;
   }
 
+  /** {@inheritDoc} */
   public final boolean containsDetailModel(final String entityID) {
     for (final EntityModel detailModel : detailModels) {
       if (detailModel.getEntityID().equals(entityID)) {
@@ -245,10 +258,12 @@ public class DefaultEntityModel implements EntityModel {
     return false;
   }
 
+  /** {@inheritDoc} */
   public final Collection<? extends EntityModel> getDetailModels() {
     return Collections.unmodifiableCollection(detailModels);
   }
 
+  /** {@inheritDoc} */
   public final void setLinkedDetailModels(final EntityModel... detailModels) {
     final Set<EntityModel> linked = new HashSet<EntityModel>(linkedDetailModels);
     linkedDetailModels.clear();
@@ -265,10 +280,12 @@ public class DefaultEntityModel implements EntityModel {
     }
   }
 
+  /** {@inheritDoc} */
   public final Collection<EntityModel> getLinkedDetailModels() {
     return Collections.unmodifiableCollection(linkedDetailModels);
   }
 
+  /** {@inheritDoc} */
   public final EntityModel getDetailModel(final Class<? extends EntityModel> modelClass) {
     for (final EntityModel detailModel : detailModels) {
       if (detailModel.getClass().equals(modelClass)) {
@@ -289,6 +306,7 @@ public class DefaultEntityModel implements EntityModel {
     throw new RuntimeException("No detail model of type " + modelClass + " found in model: " + this);
   }
 
+  /** {@inheritDoc} */
   public final EntityModel getDetailModel(final String entityID) {
     for (final EntityModel detailModel : detailModels) {
       if (detailModel.getEntityID().equals(entityID)) {
@@ -304,6 +322,7 @@ public class DefaultEntityModel implements EntityModel {
     throw new RuntimeException("No detail model for type " + entityID + " found in model: " + this);
   }
 
+  /** {@inheritDoc} */
   public final void refresh() {
     if (isRefreshing) {
       return;
@@ -325,12 +344,14 @@ public class DefaultEntityModel implements EntityModel {
     }
   }
 
+  /** {@inheritDoc} */
   public final void refreshDetailModels() {
     for (final EntityModel detailModel : detailModels) {
       detailModel.refresh();
     }
   }
 
+  /** {@inheritDoc} */
   public final void clear() {
     if (containsTableModel()) {
       tableModel.clear();
@@ -339,12 +360,14 @@ public class DefaultEntityModel implements EntityModel {
     clearDetailModels();
   }
 
+  /** {@inheritDoc} */
   public final void clearDetailModels() {
     for (final EntityModel detailModel : detailModels) {
       detailModel.clear();
     }
   }
 
+  /** {@inheritDoc} */
   public void masterSelectionChanged(final String masterEntityID, final List<Entity> selectedMasterEntities) {
     if (containsTableModel()) {
       tableModel.searchByForeignKeyValues(masterEntityID, selectedMasterEntities);
@@ -356,26 +379,32 @@ public class DefaultEntityModel implements EntityModel {
     }
   }
 
+  /** {@inheritDoc} */
   public final void addLinkedDetailModelsListener(final ActionListener listener) {
     evtLinkedDetailModelsChanged.addListener(listener);
   }
 
+  /** {@inheritDoc} */
   public final void removeLinkedDetailModelsListener(final ActionListener listener) {
     evtLinkedDetailModelsChanged.removeListener(listener);
   }
 
+  /** {@inheritDoc} */
   public final void addBeforeRefreshListener(final ActionListener listener) {
     evtRefreshStarted.addListener(listener);
   }
 
+  /** {@inheritDoc} */
   public final void removeBeforeRefreshListener(final ActionListener listener) {
     evtRefreshStarted.removeListener(listener);
   }
 
+  /** {@inheritDoc} */
   public final void addAfterRefreshListener(final ActionListener listener) {
     evtRefreshDone.addListener(listener);
   }
 
+  /** {@inheritDoc} */
   public final void removeAfterRefreshListener(final ActionListener listener) {
     evtRefreshDone.removeListener(listener);
   }

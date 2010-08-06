@@ -61,44 +61,37 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
     return columnIdentifier;
   }
 
-  /**
-   * @return true if this filter is be case sensitive
-   */
+  /** {@inheritDoc} */
   public final boolean isCaseSensitive() {
     return caseSensitive;
   }
 
-  /**
-   * @param caseSensitive true if this search model should be case sensitive when working with strings
-   */
+  /** {@inheritDoc} */
   public final void setCaseSensitive(final boolean caseSensitive) {
     this.caseSensitive = caseSensitive;
   }
 
+  /** {@inheritDoc} */
   public final Format getFormat() {
     return dateFormat;
   }
 
-  /**
-   * Locks/unlocks this search model, thus preventing changes to either values or search type
-   * @param value the value
-   */
+  /** {@inheritDoc} */
   public final void setLocked(final boolean value) {
     stLocked.setActive(value);
   }
 
+  /** {@inheritDoc} */
   public final boolean isLocked() {
     return stLocked.isActive();
   }
 
-  /**
-   * @return the data type of the underlying search property.
-   * @see Types
-   */
+  /** {@inheritDoc} */
   public final int getType() {
     return type;
   }
 
+  /** {@inheritDoc} */
   public final void setLikeValue(final Comparable value) {
     setSearchType(SearchType.LIKE);
     setUpperBound(value);
@@ -108,10 +101,7 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
     }
   }
 
-  /**
-   * @param upper the upper bound
-   * @throws IllegalStateException in case this model has been locked
-   */
+  /** {@inheritDoc} */
   public final void setUpperBound(final Object upper) {
     checkLock();
     if (!Util.equal(upperBound, upper)) {
@@ -120,9 +110,7 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
     }
   }
 
-  /**
-   * @return the upper bound
-   */
+  /** {@inheritDoc} */
   public final Object getUpperBound() {
     if (type == Types.VARCHAR && automaticWildcard) {
       return wildcard + upperBound + wildcard;
@@ -132,10 +120,7 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
     }
   }
 
-  /**
-   * @param value the lower bound
-   * @throws IllegalStateException in case this model has been locked
-   */
+  /** {@inheritDoc} */
   public final void setLowerBound(final Object value) {
     checkLock();
     if (!Util.equal(lowerBound, value)) {
@@ -144,9 +129,7 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
     }
   }
 
-  /**
-   * @return the lower bound
-   */
+  /** {@inheritDoc} */
   public final Object getLowerBound() {
     if (type == Types.VARCHAR && automaticWildcard) {
       return wildcard + lowerBound + wildcard;
@@ -156,129 +139,92 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
     }
   }
 
-  /**
-   * @param value the upper bound
-   */
+  /** {@inheritDoc} */
   public final void setUpperBound(final String value) {
     setUpperBound((Object) value);
   }
 
-  /**
-   * @param value the upper bound
-   */
+  /** {@inheritDoc} */
   public final void setUpperBound(final Double value) {
     setUpperBound((Object) value);
   }
 
-  /**
-   * @param value the upper bound
-   */
+  /** {@inheritDoc} */
   public final void setUpperBound(final Integer value) {
     setUpperBound((Object) value);
   }
 
-  /**
-   * @param value the upper bound
-   */
+  /** {@inheritDoc} */
   public final void setUpperBound(final boolean value) {
     setUpperBound(Boolean.valueOf(value));
   }
 
-  /**
-   * @param value the upper bound
-   */
+  /** {@inheritDoc} */
   public final void setUpperBound(final char value) {
     setUpperBound(Character.valueOf(value));
   }
 
-  /**
-   * @param value the upper bound
-   */
+  /** {@inheritDoc} */
   public final void setUpperBound(final Boolean value) {
     setUpperBound((Object) value);
   }
 
-  /**
-   * @param value the upper bound
-   */
+  /** {@inheritDoc} */
   public final void setUpperBound(final Timestamp value) {
     setUpperBound((Object) value);
   }
 
-  /**
-   * @param value the upper bound
-   */
+  /** {@inheritDoc} */
   public final void setUpperBound(final Date value) {
     setUpperBound((Object) value);
   }
 
-  /**
-   * @param value the Lower bound
-   */
+  /** {@inheritDoc} */
   public final void setLowerBound(final String value) {
     setLowerBound((Object) value);
   }
 
-  /**
-   * @param value the Lower bound
-   */
+  /** {@inheritDoc} */
   public final void setLowerBound(final Double value) {
     setLowerBound((Object) value);
   }
 
-  /**
-   * @param value the Lower bound
-   */
+  /** {@inheritDoc} */
   public final void setLowerBound(final Integer value) {
     setLowerBound((Object) value);
   }
 
-  /**
-   * @param value the Lower bound
-   */
+  /** {@inheritDoc} */
   public final void setLowerBound(final boolean value) {
     setLowerBound(Boolean.valueOf(value));
   }
 
-  /**
-   * @param value the Lower bound
-   */
+  /** {@inheritDoc} */
   public final void setLowerBound(final char value) {
     setLowerBound(Character.valueOf(value));
   }
 
-  /**
-   * @param value the Lower bound
-   */
+  /** {@inheritDoc} */
   public final void setLowerBound(final Boolean value) {
     setLowerBound((Object) value);
   }
 
-  /**
-   * @param value the Lower bound
-   */
+  /** {@inheritDoc} */
   public final void setLowerBound(final Timestamp value) {
     setLowerBound((Object) value);
   }
 
-  /**
-   * @param value the Lower bound
-   */
+  /** {@inheritDoc} */
   public final void setLowerBound(final Date value) {
     setLowerBound((Object) value);
   }
 
-  /**
-   * @return the search type
-   */
+  /** {@inheritDoc} */
   public final SearchType getSearchType() {
     return searchType;
   }
 
-  /**
-   * @param searchType the search type
-   * @throws IllegalStateException in case this model has been locked
-   */
+  /** {@inheritDoc} */
   public final void setSearchType(final SearchType searchType) {
     Util.rejectNullValue(searchType, "searchType");
     checkLock();
@@ -288,40 +234,32 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
     }
   }
 
-  /**
-   * @return the wildcard
-   */
+  /** {@inheritDoc} */
   public final String getWildcard() {
     return wildcard;
   }
 
-  /**
-   * Sets the wildcard to use
-   * @param wildcard the wildcard
-   */
+  /** {@inheritDoc} */
   public final void setWildcard(final String wildcard) {
     this.wildcard = wildcard;
   }
 
+  /** {@inheritDoc} */
   public final boolean isAutoEnable() {
     return autoEnable;
   }
 
+  /** {@inheritDoc} */
   public final void setAutoEnable(final boolean autoEnable) {
     this.autoEnable = autoEnable;
   }
 
-  /**
-   * @return true if this search model is enabled
-   */
+  /** {@inheritDoc} */
   public final boolean isSearchEnabled() {
     return enabled;
   }
 
-  /**
-   * @param value true if this search model should be enabled
-   * @throws IllegalStateException in case this model has been locked
-   */
+  /** {@inheritDoc} */
   public final void setSearchEnabled(final boolean value) {
     checkLock();
     if (enabled != value) {
@@ -330,20 +268,17 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
     }
   }
 
-  /**
-   * @param value true if wildcard should automatically be added to strings
-   */
+  /** {@inheritDoc} */
   public final void setAutomaticWildcard(final boolean value) {
     automaticWildcard = value;
   }
 
-  /**
-   * @return true if wildcard is automatically be added to strings
-   */
+  /** {@inheritDoc} */
   public final boolean isAutomaticWildcard() {
     return automaticWildcard;
   }
 
+  /** {@inheritDoc} */
   public final void clearSearch() {
     setSearchEnabled(false);
     setUpperBound((Object) null);
@@ -352,78 +287,97 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
     evtSearchModelCleared.fire();
   }
 
+  /** {@inheritDoc} */
   public final StateObserver getLockedState() {
     return stLocked.getObserver();
   }
 
+  /** {@inheritDoc} */
   public final EventObserver getEnabledObserver() {
     return evtEnabledChanged.getObserver();
   }
 
+  /** {@inheritDoc} */
   public final EventObserver getLowerBoundObserver() {
     return evtLowerBoundChanged.getObserver();
   }
 
+  /** {@inheritDoc} */
   public final EventObserver getUpperBoundObserver() {
     return evtUpperBoundChanged.getObserver();
   }
 
+  /** {@inheritDoc} */
   public final void addEnabledListener(final ActionListener listener) {
     evtEnabledChanged.addListener(listener);
   }
 
+  /** {@inheritDoc} */
   public final void removeEnabledListener(final ActionListener listener) {
     evtEnabledChanged.removeListener(listener);
   }
 
+  /** {@inheritDoc} */
   public final void addUpperBoundListener(final ActionListener listener) {
     evtUpperBoundChanged.addListener(listener);
   }
 
+  /** {@inheritDoc} */
   public final void removeUpperBoundListener(final ActionListener listener) {
     evtUpperBoundChanged.removeListener(listener);
   }
 
+  /** {@inheritDoc} */
   public final void addLowerBoundListener(final ActionListener listener) {
     evtLowerBoundChanged.addListener(listener);
   }
 
+  /** {@inheritDoc} */
   public final void removeLowerBoundListener(final ActionListener listener) {
     evtLowerBoundChanged.removeListener(listener);
   }
 
+  /** {@inheritDoc} */
   public final void addClearedListener(final ActionListener listener) {
     evtSearchModelCleared.addListener(listener);
   }
 
+  /** {@inheritDoc} */
   public final void removeClearedListener(final ActionListener listener) {
     evtSearchModelCleared.removeListener(listener);
   }
 
+  /** {@inheritDoc} */
   public final void addSearchStateListener(final ActionListener listener) {
     evtSearchStateChanged.addListener(listener);
   }
 
+  /** {@inheritDoc} */
   public final void removeSearchStateListener(final ActionListener listener) {
     evtSearchStateChanged.removeListener(listener);
   }
 
+  /** {@inheritDoc} */
   public final void addSearchTypeListener(final ActionListener listener) {
     evtSearchTypeChanged.addListener(listener);
   }
 
+  /** {@inheritDoc} */
   public final void removeSearchTypeListener(final ActionListener listener) {
     evtSearchTypeChanged.removeListener(listener);
   }
 
+  /** {@inheritDoc} */
   public final EventObserver getSearchTypeObserver() {
     return evtSearchTypeChanged.getObserver();
   }
 
+  /** {@inheritDoc} */
   public final boolean include(final Object object) {
     return include(getComparable(object));
   }
 
+  /** {@inheritDoc} */
   public final boolean include(final Comparable comparable) {
     if (!enabled) {
       return true;

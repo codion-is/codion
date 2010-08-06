@@ -62,15 +62,18 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     this.sortComparator = new SortComparator<T>(nullValueString);
   }
 
+  /** {@inheritDoc} */
   public final void refresh() {
     setContents(initializeContents());
   }
 
+  /** {@inheritDoc} */
   public final void clear() {
     setSelectedItem(null);
     setContents(null);
   }
 
+  /** {@inheritDoc} */
   public final boolean isCleared() {
     return cleared;
   }
@@ -95,6 +98,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     cleared = contents == null;
   }
 
+  /** {@inheritDoc} */
   public final void filterContents() {
     try {
       visibleItems.addAll(filteredItems);
@@ -120,10 +124,12 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     }
   }
 
+  /** {@inheritDoc} */
   public final List<T> getFilteredItems() {
     return Collections.unmodifiableList(filteredItems);
   }
 
+  /** {@inheritDoc} */
   public final List<T> getVisibleItems() {
     if (nullValueString == null) {
       return Collections.unmodifiableList(visibleItems);
@@ -132,6 +138,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     return Collections.unmodifiableList(visibleItems.subList(1, getSize() - 1));
   }
 
+  /** {@inheritDoc} */
   public final void setFilterCriteria(final FilterCriteria<T> filterCriteria) {
     if (filterCriteria == null) {
       this.filterCriteria = acceptAllCriteria;
@@ -142,10 +149,12 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     filterContents();
   }
 
+  /** {@inheritDoc} */
   public final FilterCriteria<T> getFilterCriteria() {
     return filterCriteria;
   }
 
+  /** {@inheritDoc} */
   public final List<T> getAllItems() {
     final List<T> entities = new ArrayList<T>(visibleItems);
     entities.addAll(filteredItems);
@@ -153,14 +162,17 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     return entities;
   }
 
+  /** {@inheritDoc} */
   public final int getFilteredItemCount() {
     return filteredItems.size();
   }
 
+  /** {@inheritDoc} */
   public final int getVisibleItemCount() {
     return visibleItems.size();
   }
 
+  /** {@inheritDoc} */
   public final boolean isVisible(final T item) {
     if (item == null) {
       return nullValueString != null;
@@ -169,10 +181,12 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     return visibleItems.contains(item);
   }
 
+  /** {@inheritDoc} */
   public final boolean isFiltered(final T item) {
     return filteredItems.contains(item);
   }
 
+  /** {@inheritDoc} */
   public final void addItem(final T item) {
     if (filterCriteria.include(item)) {
       visibleItems.add(item);
@@ -182,6 +196,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     }
   }
 
+  /** {@inheritDoc} */
   public final void removeItem(final T item) {
     if (visibleItems.contains(item)) {
       visibleItems.remove(item);
@@ -193,6 +208,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     fireContentsChanged();
   }
 
+  /** {@inheritDoc} */
   public final boolean contains(final T item, final boolean includeFiltered) {
     final boolean ret = visibleItems.contains(item);
     if (!ret && includeFiltered) {
@@ -202,10 +218,12 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     return ret;
   }
 
+  /** {@inheritDoc} */
   public final String getNullValueString() {
     return nullValueString;
   }
 
+  /** {@inheritDoc} */
   public final void setNullValueString(final String nullValueString) {
     this.nullValueString = nullValueString;
     if (selectedItem == null) {
@@ -213,10 +231,12 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     }
   }
 
+  /** {@inheritDoc} */
   public final boolean isNullValueSelected() {
     return selectedItem == null && nullValueString != null;
   }
 
+  /** {@inheritDoc} */
   public final Object getSelectedItem() {
     if (selectedItem == null && nullValueString != null) {
       return nullValueString;
@@ -225,6 +245,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     return selectedItem;
   }
 
+  /** {@inheritDoc} */
   public final void setSelectedItem(final Object anItem) {
     final Object toSelect = translateSelectionItem(anItem);
     if (vetoSelectionChange(toSelect)) {
@@ -245,14 +266,17 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     evtSelectionChanged.fire();
   }
 
+  /** {@inheritDoc} */
   public final void addListDataListener(final ListDataListener l) {
     listDataListeners.add(l);
   }
 
+  /** {@inheritDoc} */
   public final void removeListDataListener(final ListDataListener l) {
     listDataListeners.remove(l);
   }
 
+  /** {@inheritDoc} */
   public final Object getElementAt(final int index) {
     final Object element = visibleItems.get(index);
     if (element == null) {
@@ -262,22 +286,27 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     return element;
   }
 
+  /** {@inheritDoc} */
   public final int getSize() {
     return visibleItems.size();
   }
 
+  /** {@inheritDoc} */
   public final void addFilteringListener(final ActionListener listener) {
     evtFilteringDone.addListener(listener);
   }
 
+  /** {@inheritDoc} */
   public final void removeFilteringListener(final ActionListener listener) {
     evtFilteringDone.removeListener(listener);
   }
 
+  /** {@inheritDoc} */
   public final void addSelectionListener(final ActionListener listener) {
     evtSelectionChanged.addListener(listener);
   }
 
+  /** {@inheritDoc} */
   public final void removeSelectionListener(final ActionListener listener) {
     evtSelectionChanged.removeListener(listener);
   }
