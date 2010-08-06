@@ -285,7 +285,8 @@ public final class Entities {
     final ListIterator<Property.ColumnProperty> iterator = properties.listIterator();
     while (iterator.hasNext()) {
       final Property.ColumnProperty property = iterator.next();
-      if (!includeReadOnly && property.isReadOnly() || !includeNonUpdatable && !property.isUpdatable()
+      if (!includeReadOnly && property.isReadOnly()
+              || !includeNonUpdatable && !property.isUpdatable()
               || !includePrimaryKeyProperties && property instanceof Property.PrimaryKeyProperty
               || !includeForeignKeyProperties && property instanceof Property.ForeignKeyProperty
               || !includeTransientProperties && property instanceof Property.TransientProperty) {

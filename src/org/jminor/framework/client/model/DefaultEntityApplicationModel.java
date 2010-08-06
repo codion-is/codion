@@ -150,8 +150,4 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
   protected void handleLogout() {}
 
   protected void handleLogin() {}
-
-  protected EntityModel createEntityModel(final String entityID) {
-    return new DefaultEntityModel(entityID, dbProvider);
-  }
 }

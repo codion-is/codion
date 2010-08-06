@@ -62,6 +62,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
   private boolean wildcardPostfix = true;
   private String wildcard = (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER);
   private String multipleValueSeparator = ",";
+  private String description;
 
   /**
    * Instantiates a new EntityLookupModel
@@ -76,10 +77,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
     this.dbProvider = dbProvider;
     this.entityID = entityID;
     this.lookupProperties = lookupProperties;
-  }
-
-  public String getDescription() {
-    return Util.getCollectionContentsAsString(getLookupProperties(), false);
+    this.description = Util.getCollectionContentsAsString(getLookupProperties(), false);
   }
 
   public final String getEntityID() {
@@ -103,6 +101,14 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
 
   public final void setMultipleSelectionAllowed(final boolean multipleSelectionAllowed) {
     this.multipleSelectionAllowed = multipleSelectionAllowed;
+  }
+
+  public final String getDescription() {
+    return description;
+  }
+
+  public final void setDescription(final String description) {
+    this.description = description;
   }
 
   public final void setSelectedEntity(final Entity entity) {

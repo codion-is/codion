@@ -5,6 +5,7 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.StateObserver;
+import org.jminor.common.model.combobox.FilteredComboBoxModel;
 import org.jminor.common.model.valuemap.ValueMapValidator;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.Configuration;
@@ -56,10 +57,9 @@ public final class DefaultEntityEditModelTest {
 
   @Test
   public void initializePropertyComboBoxModel() {
-    final PropertyComboBoxModel model = editModel.initializePropertyComboBoxModel(jobProperty, null, "null");
+    final FilteredComboBoxModel model = editModel.initializePropertyComboBoxModel(jobProperty, null, "null");
     assertNotNull(model);
     assertTrue(editModel.containsComboBoxModel(jobProperty.getPropertyID()));
-    assertEquals(jobProperty, model.getProperty());
     assertEquals(model, editModel.getPropertyComboBoxModel(jobProperty));
     editModel.refreshComboBoxModels();
     editModel.clearComboBoxModels();

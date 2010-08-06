@@ -8,13 +8,13 @@ import org.jminor.common.db.exception.DbException;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.StateObserver;
+import org.jminor.common.model.combobox.FilteredComboBoxModel;
 import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
 import org.jminor.common.model.valuemap.ValueCollectionProvider;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
-import javax.swing.ComboBoxModel;
 import java.awt.event.ActionListener;
 import java.util.List;
 
@@ -214,15 +214,15 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * has been initialized for the given property, a new one is created and associated with
    * the property, to be returned the next time this method is called
    */
-  ComboBoxModel initializePropertyComboBoxModel(final Property.ColumnProperty property, final EventObserver refreshEvent,
-                                                final String nullValueString);
+  FilteredComboBoxModel initializePropertyComboBoxModel(final Property.ColumnProperty property, final EventObserver refreshEvent,
+                                                        final String nullValueString);
 
   /**
    * @param property the property for which to get the ComboBoxModel
    * @return a PropertyComboBoxModel representing <code>property</code>
    * @throws RuntimeException if no combo box has been initialized for the given property
    */
-  PropertyComboBoxModel getPropertyComboBoxModel(final Property.ColumnProperty property);
+  FilteredComboBoxModel getPropertyComboBoxModel(final Property.ColumnProperty property);
 
   /**
    * Returns true if this edit model contains a ComboBoxModel for the given property
@@ -277,7 +277,7 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * @param nullValueString the string to use as a null value caption
    * @return a combo box model based on the given property
    */
-  PropertyComboBoxModel createPropertyComboBoxModel(final Property.ColumnProperty property, final EventObserver refreshEvent,
+  FilteredComboBoxModel createPropertyComboBoxModel(final Property.ColumnProperty property, final EventObserver refreshEvent,
                                                     final String nullValueString);
 
   /**

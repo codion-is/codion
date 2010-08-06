@@ -20,7 +20,7 @@ public class DefaultPropertyFilterModel extends DefaultColumnSearchModel<Propert
   }
 
   @Override
-  protected Comparable getComparable(final Object object) {
+  protected final Comparable getComparable(final Object object) {
     final Entity entity = (Entity) object;
     if (entity.isValueNull(getColumnIdentifier().getPropertyID())) {
       return null;

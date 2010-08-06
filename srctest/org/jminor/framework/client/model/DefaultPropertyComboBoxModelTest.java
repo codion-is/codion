@@ -5,12 +5,13 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Events;
+import org.jminor.common.model.combobox.FilteredComboBoxModel;
 import org.jminor.framework.db.EntityDbConnectionTest;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Property;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /**
@@ -20,13 +21,12 @@ import org.junit.Test;
  */
 public final class DefaultPropertyComboBoxModelTest {
 
-  private final PropertyComboBoxModel comboBoxModel;
-  private final Property.ColumnProperty property;
+  private final FilteredComboBoxModel comboBoxModel;
   private final Event refreshEvent = Events.event();
 
   public DefaultPropertyComboBoxModelTest() {
     new EmpDept();
-    property = Entities.getColumnProperty(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME);
+    final Property.ColumnProperty property = Entities.getColumnProperty(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME);
     comboBoxModel = new DefaultPropertyComboBoxModel(EmpDept.T_DEPARTMENT,
             EntityDbConnectionTest.DB_PROVIDER, property,
             null, refreshEvent);
@@ -34,8 +34,6 @@ public final class DefaultPropertyComboBoxModelTest {
 
   @Test
   public void test() {
-    assertNotNull(comboBoxModel.getDbProvider());
-    assertEquals(property, comboBoxModel.getProperty());
     assertTrue(comboBoxModel.getSize() == 0);
     refreshEvent.fire();
     assertTrue(comboBoxModel.getSize() > 0);

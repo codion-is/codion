@@ -12,19 +12,9 @@ import org.jminor.common.model.valuemap.ValueProvider;
 import org.jminor.framework.Configuration;
 
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.text.Collator;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 /**
  * A static utility class.
@@ -333,42 +323,24 @@ public final class EntityUtil {
 
       return item.getItem();
     }
-    else if (property.isBoolean()) {
-      return RANDOM.nextBoolean();
+    switch (property.getType()) {
+      case Types.BOOLEAN:
+        return RANDOM.nextBoolean();
+      case Types.CHAR:
+        return (char) RANDOM.nextInt();
+      case Types.DATE:
+        return DateUtil.floorDate(new Date());
+      case Types.TIMESTAMP:
+        return DateUtil.floorTimestamp(new Timestamp(System.currentTimeMillis()));
+      case Types.DOUBLE:
+        return getRandomDouble(property);
+      case Types.INTEGER:
+        return getRandomInteger(property);
+      case Types.VARCHAR:
+        return getRandomString(property);
+      default:
+        return null;
     }
-    else if (property.isCharacter()) {
-      return (char) RANDOM.nextInt();
-    }
-    else if (property.isDate()) {
-      return DateUtil.floorDate(new Date());
-    }
-    else if (property.isTimestamp()) {
-      return DateUtil.floorTimestamp(new Timestamp(System.currentTimeMillis()));
-    }
-    else if (property.isDouble()) {
-      final double min = property.getMin() == null ? -10000000 : property.getMin();
-      final double max = property.getMax() == null ? 10000000 : property.getMax();
-      //Min + (int)(Math.random() * ((Max - Min) + 1))
-      final double ret = min + (RANDOM.nextDouble() * ((max - min) + 1));
-      if (property.getMaximumFractionDigits() > 0) {
-        return Util.roundDouble(ret, property.getMaximumFractionDigits());
-      }
-      else {
-        return ret;
-      }
-    }
-    else if (property.isInteger()) {
-      final double min = property.getMin() == null ? -10000000 : property.getMin();
-      final double max = property.getMax() == null ? 10000000 : property.getMax();
-
-      return (int) (min + (RANDOM.nextDouble() * ((max - min) + 1)));
-    }
-    else if (property.isString()) {
-      final int minLength = property.isNullable() ? 0 : 1;
-      return Util.createRandomString(minLength, property.getMaxLength() < 0 ? 10 : property.getMaxLength());
-    }
-
-    return null;
   }
 
   @SuppressWarnings({"unchecked"})
@@ -430,5 +402,30 @@ public final class EntityUtil {
     }
 
     return copies;
+  }
+
+  private static Object getRandomString(final Property property) {
+    final int minLength = property.isNullable() ? 0 : 1;
+    return Util.createRandomString(minLength, property.getMaxLength() < 0 ? 10 : property.getMaxLength());
+  }
+
+  private static Object getRandomInteger(final Property property) {
+    final double min = property.getMin() == null ? -10000000 : property.getMin();
+    final double max = property.getMax() == null ? 10000000 : property.getMax();
+
+    return (int) (min + (RANDOM.nextDouble() * ((max - min) + 1)));
+  }
+
+  private static Object getRandomDouble(final Property property) {
+    final double min = property.getMin() == null ? -10000000 : property.getMin();
+    final double max = property.getMax() == null ? 10000000 : property.getMax();
+    //Min + (int)(Math.random() * ((Max - Min) + 1))
+    final double ret = min + (RANDOM.nextDouble() * ((max - min) + 1));
+    if (property.getMaximumFractionDigits() > 0) {
+      return Util.roundDouble(ret, property.getMaximumFractionDigits());
+    }
+    else {
+      return ret;
+    }
   }
 }

@@ -14,6 +14,7 @@ import org.jminor.common.model.State;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.States;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.combobox.FilteredComboBoxModel;
 import org.jminor.common.model.valuemap.DefaultValueChangeMapEditModel;
 import org.jminor.common.model.valuemap.ValueChangeEvent;
 import org.jminor.common.model.valuemap.ValueChangeListener;
@@ -83,7 +84,7 @@ public class DefaultEntityEditModel extends DefaultValueChangeMapEditModel<Strin
    * are refreshed when refreshComboBoxModels() is called
    * @see org.jminor.common.model.Refreshable
    */
-  private final Map<Property, ComboBoxModel> propertyComboBoxModels = new HashMap<Property, ComboBoxModel>();
+  private final Map<Property, FilteredComboBoxModel> propertyComboBoxModels = new HashMap<Property, FilteredComboBoxModel>();
 
   /**
    * The mechanism for restricting a single active EntityEditModel at a time
@@ -129,7 +130,7 @@ public class DefaultEntityEditModel extends DefaultValueChangeMapEditModel<Strin
             && Configuration.getBooleanValue(Configuration.PERSIST_FOREIGN_KEY_VALUES);
   }
 
-  public PropertyComboBoxModel createPropertyComboBoxModel(final Property.ColumnProperty property, final EventObserver refreshEvent,
+  public FilteredComboBoxModel createPropertyComboBoxModel(final Property.ColumnProperty property, final EventObserver refreshEvent,
                                                            final String nullValueString) {
     return new DefaultPropertyComboBoxModel(entityID, dbProvider, property, nullValueString, refreshEvent);
   }
@@ -364,9 +365,9 @@ public class DefaultEntityEditModel extends DefaultValueChangeMapEditModel<Strin
     }
   }
 
-  public final PropertyComboBoxModel getPropertyComboBoxModel(final Property.ColumnProperty property) {
+  public final FilteredComboBoxModel getPropertyComboBoxModel(final Property.ColumnProperty property) {
     Util.rejectNullValue(property, "property");
-    final PropertyComboBoxModel comboBoxModel = (PropertyComboBoxModel) propertyComboBoxModels.get(property);
+    final FilteredComboBoxModel comboBoxModel = propertyComboBoxModels.get(property);
     if (comboBoxModel == null) {
       throw new RuntimeException("No PropertyComboBoxModel has been initialized for property: " + property);
     }
@@ -374,10 +375,10 @@ public class DefaultEntityEditModel extends DefaultValueChangeMapEditModel<Strin
     return comboBoxModel;
   }
 
-  public final PropertyComboBoxModel initializePropertyComboBoxModel(final Property.ColumnProperty property, final EventObserver refreshEvent,
+  public final FilteredComboBoxModel initializePropertyComboBoxModel(final Property.ColumnProperty property, final EventObserver refreshEvent,
                                                                      final String nullValueString) {
     Util.rejectNullValue(property, "property");
-    PropertyComboBoxModel comboBoxModel = (PropertyComboBoxModel) propertyComboBoxModels.get(property);
+    FilteredComboBoxModel comboBoxModel = propertyComboBoxModels.get(property);
     if (comboBoxModel == null) {
       comboBoxModel = createPropertyComboBoxModel(property, refreshEvent == null ? evtEntitiesChanged : refreshEvent, nullValueString);
       setComboBoxModel(property, comboBoxModel);
@@ -609,7 +610,7 @@ public class DefaultEntityEditModel extends DefaultValueChangeMapEditModel<Strin
    * @param model the ComboBoxModel
    * @throws RuntimeException in case the ComboBoxModel has already been set for this property
    */
-  private void setComboBoxModel(final Property property, final ComboBoxModel model) {
+  private void setComboBoxModel(final Property property, final FilteredComboBoxModel model) {
     if (propertyComboBoxModels.containsKey(property)) {
       throw new RuntimeException("ComboBoxModel already associated with property: " + property);
     }

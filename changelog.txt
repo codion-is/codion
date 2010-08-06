@@ -1976,3 +1976,6 @@
   EntityPanel, editControlPanel initialized during setEditPanelState()
   PropertyFilterModelProvider/DefaultPropertyFilterModelProvider added
   PropertySearchModelProvider/DefaultPropertySearchModelProvider added
+  PropertyComboBoxModel interface removed, FilteredComboBoxModel used instead
+  DefaultPropertyComboBoxModel simplified
+  EntityLookupModel.description field added

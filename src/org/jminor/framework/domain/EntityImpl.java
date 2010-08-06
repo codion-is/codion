@@ -614,19 +614,8 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
     if (property instanceof Property.PrimaryKeyProperty) {
       this.primaryKey = null;
     }
-    if (property instanceof Property.DenormalizedViewProperty) {
-      throw new IllegalArgumentException("Can not set the value of a denormalized view property");
-    }
-    if (property instanceof Property.DerivedProperty) {
-      throw new IllegalArgumentException("Can not set the value of a derived property");
-    }
-    if (property instanceof Property.ValueListProperty && value != null && !((Property.ValueListProperty) property).isValid(value)) {
-      throw new IllegalArgumentException("Invalid value list value: " + value + " for property " + property.getPropertyID());
-    }
-    if (value instanceof Entity && value.equals(this)) {
-      throw new IllegalArgumentException("Circular entity reference detected: " + this + "->" + property.getPropertyID());
-    }
 
+    validateValue(this, property, value);
     if (validateType) {
       validateType(property, value);
     }
@@ -659,6 +648,21 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
     }
 
     return value;
+  }
+
+  private static void validateValue(final Entity entity, final Property property, final Object value) {
+    if (property instanceof Property.DenormalizedViewProperty) {
+      throw new IllegalArgumentException("Can not set the value of a denormalized view property");
+    }
+    if (property instanceof Property.DerivedProperty) {
+      throw new IllegalArgumentException("Can not set the value of a derived property");
+    }
+    if (property instanceof Property.ValueListProperty && value != null && !((Property.ValueListProperty) property).isValid(value)) {
+      throw new IllegalArgumentException("Invalid value list value: " + value + " for property " + property.getPropertyID());
+    }
+    if (value instanceof Entity && value.equals(entity)) {
+      throw new IllegalArgumentException("Circular entity reference detected: " + entity + "->" + property.getPropertyID());
+    }
   }
 
   /**
