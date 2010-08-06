@@ -8,6 +8,7 @@ import org.jminor.common.model.Events;
 import org.jminor.common.model.FilterCriteria;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.combobox.DefaultFilteredComboBoxModel;
+import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.db.criteria.EntitySelectCriteria;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entities;
@@ -85,6 +86,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     Util.rejectNullValue(dbProvider, "dbProvider");
     this.entityID = entityID;
     this.dbProvider = dbProvider;
+    this.selectCriteria = EntityCriteriaUtil.selectCriteria(entityID);
     final FilterCriteria<Entity> superCriteria = super.getFilterCriteria();
     setFilterCriteria(new FilterCriteria<Entity>() {
       public boolean include(final Entity item) {
@@ -151,7 +153,12 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
       throw new RuntimeException("EntitySelectCriteria entityID mismatch, " + entityID
               + " expected, got " + entitySelectCriteria.getEntityID());
     }
-    this.selectCriteria = entitySelectCriteria;
+    if (entitySelectCriteria == null) {
+      this.selectCriteria = EntityCriteriaUtil.selectCriteria(entityID);
+    }
+    else {
+      this.selectCriteria = entitySelectCriteria;
+    }
   }
 
   public final void setForeignKeyFilterEntities(final String foreignKeyPropertyID, final Collection<Entity> entities) {
@@ -221,24 +228,6 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     });
   }
 
-  /**
-   * Retrieves the entities to present in this EntityComboBoxModel
-   * @return the entities to present in this EntityComboBoxModel
-   */
-  protected List<Entity> performQuery() {
-    try {
-      if (selectCriteria != null) {
-        return dbProvider.getEntityDb().selectMany(selectCriteria);
-      }
-      else {
-        return dbProvider.getEntityDb().selectAll(entityID);
-      }
-    }
-    catch (Exception e) {
-      throw new RuntimeException(e);
-    }
-  }
-
   @Override
   protected Object translateSelectionItem(final Object item) {
     if (item instanceof Entity) {
@@ -279,6 +268,19 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     }
     finally {
       evtRefreshDone.fire();
+    }
+  }
+
+  /**
+   * Retrieves the entities to present in this EntityComboBoxModel
+   * @return the entities to present in this EntityComboBoxModel
+   */
+  private List<Entity> performQuery() {
+    try {
+      return dbProvider.getEntityDb().selectMany(selectCriteria);
+    }
+    catch (Exception e) {
+      throw new RuntimeException(e);
     }
   }
 

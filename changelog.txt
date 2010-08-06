@@ -1979,3 +1979,4 @@
   PropertyComboBoxModel interface removed, FilteredComboBoxModel used instead
   DefaultPropertyComboBoxModel simplified
   EntityLookupModel.description field added
+  DefaultEntityComboBoxModel.performQuery() privatized
