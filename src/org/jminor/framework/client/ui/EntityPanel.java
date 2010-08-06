@@ -597,6 +597,9 @@ public class EntityPanel extends JPanel {
    * @param state the edit panel state, either HIDDEN, EMBEDDED or DIALOG
    */
   public final void setEditPanelState(final int state) {
+    if (!containsEditPanel()) {
+      return;
+    }
     if (editControlPanel == null) {
       editControlPanel = initializeEditControlPanel();
     }

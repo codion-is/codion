@@ -1990,3 +1990,4 @@
   EntityTablePanel.panelInitialized field added, functionality mirrors EntityPanel
   EntityTablePanel.additionalPopup/ToolbarControls fields added
   DefaultEntityModel.bindTableModelEvents() functionality moved to DefaultEntityTableModel.setEditModel()
+  DefaultEntityModel.updateDetailModelsByActiveEntity() privatized

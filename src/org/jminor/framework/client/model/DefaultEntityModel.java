@@ -380,7 +380,7 @@ public class DefaultEntityModel implements EntityModel {
     evtRefreshDone.removeListener(listener);
   }
 
-  protected void updateDetailModelsByActiveEntity() {
+  private void updateDetailModelsByActiveEntity() {
     final List<Entity> activeEntities = getActiveEntities();
     for (final EntityModel detailModel : linkedDetailModels) {
       detailModel.masterSelectionChanged(entityID, activeEntities);
