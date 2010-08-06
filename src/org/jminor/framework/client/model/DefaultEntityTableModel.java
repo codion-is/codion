@@ -118,11 +118,13 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     bindEvents();
   }
 
+  /** {@inheritDoc} */
   @Override
   public final String toString() {
     return getClass().getSimpleName() + ": " + entityID;
   }
 
+  /** {@inheritDoc} */
   public final void setEditModel(final EntityEditModel editModel) {
     if (this.editModel != null) {
       throw new RuntimeException("Edit model has already been set for table model: " + this);
@@ -131,10 +133,12 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     bindEditModelEvents();
   }
 
-  public boolean hasEditModel() {
+  /** {@inheritDoc} */
+  public final boolean hasEditModel() {
     return this.editModel != null;
   }
 
+  /** {@inheritDoc} */
   public final List<Property> getTableColumnProperties() {
     final List<Property> propertyList = new ArrayList<Property>(getColumnModel().getColumnCount());
     final Enumeration<TableColumn> columnEnumeration = getColumnModel().getColumns();
@@ -145,49 +149,60 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     return propertyList;
   }
 
+  /** {@inheritDoc} */
   public final boolean isQueryConfigurationAllowed() {
     return queryConfigurationAllowed;
   }
 
+  /** {@inheritDoc} */
   public final EntityTableModel setQueryConfigurationAllowed(final boolean value) {
     this.queryConfigurationAllowed = value;
     return this;
   }
 
+  /** {@inheritDoc} */
   public final int getFetchCount() {
     return fetchCount;
   }
 
+  /** {@inheritDoc} */
   public final DefaultEntityTableModel setFetchCount(final int fetchCount) {
     this.fetchCount = fetchCount;
     return this;
   }
 
+  /** {@inheritDoc} */
   public final boolean isDetailModel() {
     return isDetailModel;
   }
 
+  /** {@inheritDoc} */
   public final void setDetailModel(final boolean detailModel) {
     this.isDetailModel = detailModel;
   }
 
+  /** {@inheritDoc} */
   public final boolean isQueryCriteriaRequired() {
     return queryCriteriaRequired;
   }
 
+  /** {@inheritDoc} */
   public final EntityTableModel setQueryCriteriaRequired(final boolean value) {
     this.queryCriteriaRequired = value;
     return this;
   }
 
+  /** {@inheritDoc} */
   public final String getEntityID() {
     return entityID;
   }
 
+  /** {@inheritDoc} */
   public final EntityTableSearchModel getSearchModel() {
     return searchModel;
   }
 
+  /** {@inheritDoc} */
   public final EntityEditModel getEditModel() {
     if (editModel == null) {
       throw new RuntimeException("No edit model has been set for table model: " + this);
@@ -195,6 +210,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     return editModel;
   }
 
+  /** {@inheritDoc} */
   public final void setSortingDirective(final String propertyID, final SortingDirective directive) {
     final int columnIndex = getColumnModel().getColumnIndex(Entities.getProperty(entityID, propertyID));
     if (columnIndex == -1) {
@@ -204,54 +220,60 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     super.setSortingDirective(columnIndex, directive);
   }
 
+  /** {@inheritDoc} */
   public final EntityDbProvider getDbProvider() {
     return dbProvider;
   }
 
+  /** {@inheritDoc} */
   public final boolean isMultipleUpdateAllowed() {
     return stAllowMultipleUpdate.isActive();
   }
 
+  /** {@inheritDoc} */
   public final EntityTableModel setMultipleUpdateAllowed(final boolean multipleUpdateAllowed) {
     stAllowMultipleUpdate.setActive(multipleUpdateAllowed);
     return this;
   }
 
+  /** {@inheritDoc} */
   public final StateObserver getAllowMultipleUpdateState() {
     return stAllowMultipleUpdate.getObserver();
   }
 
+  /** {@inheritDoc} */
   public final boolean isDeleteAllowed() {
     return stAllowDelete.isActive();
   }
 
+  /** {@inheritDoc} */
   public final EntityTableModel setDeleteAllowed(final boolean deleteAllowed) {
     stAllowDelete.setActive(deleteAllowed);
     return this;
   }
 
+  /** {@inheritDoc} */
   public final StateObserver getAllowDeleteState() {
     return stAllowDelete.getObserver();
   }
 
+  /** {@inheritDoc} */
   public final boolean isReadOnly() {
     return editModel == null || editModel.isReadOnly();
   }
 
-  /**
-   * Returns an initialized ReportDataWrapper instance.
-   * @return an initialized ReportDataWrapper
-   * @see #getSelectedEntitiesIterator()
-   */
+  /** {@inheritDoc} */
   public final ReportDataWrapper getReportDataSource() {
     return reportDataSource;
   }
 
+  /** {@inheritDoc} */
   public final EntityTableModel setReportDataSource(final ReportDataWrapper reportDataSource) {
     this.reportDataSource = reportDataSource;
     return this;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final Class<?> getColumnClass(final int columnIndex) {
     final Property columnProperty = (Property) getColumnModel().getColumn(convertColumnIndexToView(columnIndex)).getIdentifier();
@@ -259,6 +281,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     return columnProperty.getTypeClass();
   }
 
+  /** {@inheritDoc} */
   public final Object getValueAt(final int rowIndex, final int columnIndex) {
     final Property property = (Property) getColumnModel().getColumn(convertColumnIndexToView(columnIndex)).getIdentifier();
     final Object value = getItemAt(rowIndex).getValue(property);
@@ -269,27 +292,32 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     return value;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final boolean isCellEditable(final int rowIndex, final int columnIndex) {
     return false;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final void setValueAt(final Object aValue, final int rowIndex, final int columnIndex) {
     throw new RuntimeException("setValueAt is not supported");
   }
 
+  /** {@inheritDoc} */
   public Color getRowBackgroundColor(final int row) {
     final Entity rowEntity = getItemAt(row);
 
     return Entities.getProxy(rowEntity.getEntityID()).getBackgroundColor(rowEntity);
   }
 
+  /** {@inheritDoc} */
   public final Collection<Object> getValues(final Property property, final boolean selectedOnly) {
     return EntityUtil.getPropertyValues(property.getPropertyID(),
             selectedOnly ? getSelectedItems() : getVisibleItems(), false);
   }
 
+  /** {@inheritDoc} */
   public final Entity getEntityByPrimaryKey(final Entity.Key primaryKey) {
     for (final Entity entity : getVisibleItems()) {
       if (entity.getPrimaryKey().equals(primaryKey)) {
@@ -300,10 +328,12 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     return null;
   }
 
+  /** {@inheritDoc} */
   public final int indexOf(final Entity.Key primaryKey) {
     return indexOf(getEntityByPrimaryKey(primaryKey));
   }
 
+  /** {@inheritDoc} */
   public final String getStatusMessage() {
     final int filteredItemCount = getFilteredItemCount();
 
@@ -314,6 +344,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
                     + FrameworkMessages.get(FrameworkMessages.HIDDEN) + ")" : ")").toString();
   }
 
+  /** {@inheritDoc} */
   public final void addEntitiesByPrimaryKeys(final List<Entity.Key> primaryKeys, final boolean atFront) {
     try {
       addItems(dbProvider.getEntityDb().selectMany(primaryKeys), atFront);
@@ -323,6 +354,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     }
   }
 
+  /** {@inheritDoc} */
   public final void replaceEntities(final Collection<Entity> entities) {
     for (int i = 0; i < getVisibleItemCount(); i++) {
       final Entity entity = getItemAt(i);
@@ -344,6 +376,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     }
   }
 
+  /** {@inheritDoc} */
   public void searchByForeignKeyValues(final String referencedEntityID, final List<Entity> referenceEntities) {
     final List<Property.ForeignKeyProperty> properties = Entities.getForeignKeyProperties(entityID, referencedEntityID);
     if (!properties.isEmpty() && isDetailModel && searchModel.setSearchValues(properties.get(0).getPropertyID(), referenceEntities)) {
@@ -351,10 +384,12 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     }
   }
 
+  /** {@inheritDoc} */
   public final List<Entity.Key> getPrimaryKeysOfSelectedEntities() {
     return EntityUtil.getPrimaryKeys(getSelectedItems());
   }
 
+  /** {@inheritDoc} */
   public final void setSelectedByPrimaryKeys(final List<Entity.Key> keys) {
     final List<Integer> indexes = new ArrayList<Integer>();
     for (final Entity visibleEntity : getVisibleItems()) {
@@ -368,6 +403,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     setSelectedItemIndexes(indexes);
   }
 
+  /** {@inheritDoc} */
   public final List<Entity> getEntitiesByPrimaryKeys(final List<Entity.Key> keys) {
     final List<Entity> entities = new ArrayList<Entity>();
     for (final Entity entity : getAllItems()) {
@@ -382,6 +418,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     return entities;
   }
 
+  /** {@inheritDoc} */
   public final Collection<Entity> getEntitiesByPropertyValues(final Map<String, Object> values) {
     final List<Entity> entities = new ArrayList<Entity>();
     for (final Entity entity : getAllItems()) {
@@ -401,6 +438,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     return entities;
   }
 
+  /** {@inheritDoc} */
   public final void deleteSelected() throws CancelException, DbException {
     if (editModel == null) {
       throw new RuntimeException("No edit model has been set for table model: " + this);
@@ -408,6 +446,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     editModel.delete(getSelectedItems());
   }
 
+  /** {@inheritDoc} */
   public final void update(final List<Entity> entities) throws CancelException, ValidationException, DbException {
     if (editModel == null) {
       throw new RuntimeException("No edit model has been set for table model: " + this);
@@ -415,6 +454,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     editModel.update(entities);
   }
 
+  /** {@inheritDoc} */
   public final Map<String, Collection<Entity>> getSelectionDependencies() {
     try {
       return dbProvider.getEntityDb().selectDependentEntities(getSelectedItems());
@@ -424,10 +464,12 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     }
   }
 
+  /** {@inheritDoc} */
   public final PropertySummaryModel getPropertySummaryModel(final String propertyID) {
     return getPropertySummaryModel(Entities.getProperty(entityID, propertyID));
   }
 
+  /** {@inheritDoc} */
   public final PropertySummaryModel getPropertySummaryModel(final Property property) {
     if (!propertySummaryModels.containsKey(property.getPropertyID())) {
       final PropertySummaryModel.PropertyValueProvider valueProvider = new PropertySummaryModel.PropertyValueProvider() {
@@ -451,14 +493,17 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     return propertySummaryModels.get(property.getPropertyID());
   }
 
+  /** {@inheritDoc} */
   public final Property getColumnProperty(final int columnIndex) {
     return (Property) getColumnModel().getColumn(columnIndex).getIdentifier();
   }
 
+  /** {@inheritDoc} */
   public final Iterator<Entity> getSelectedEntitiesIterator() {
     return getSelectedItems().iterator();
   }
 
+  /** {@inheritDoc} */
   @Override
   protected final void doRefresh() {
     try {
@@ -494,12 +539,14 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     }
   }
 
+  /** {@inheritDoc} */
   @Override
   protected final Comparable getComparable(final Object object, final int columnIndex) {
     final Property property = getColumnProperty(columnIndex);
     return (Comparable) ((Entity) object).getValue(property);
   }
 
+  /** {@inheritDoc} */
   @Override
   protected final String getSearchValueAt(final int rowIndex, final int columnIndex) {
     final Property property = (Property) getColumnModel().getColumn(convertColumnIndexToView(columnIndex)).getIdentifier();

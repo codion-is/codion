@@ -161,75 +161,93 @@ class PropertyImpl implements Property, Serializable {
     return caption;
   }
 
+  /** {@inheritDoc} */
   public final boolean is(final Property property) {
     return is(property.getPropertyID());
   }
 
+  /** {@inheritDoc} */
   public final boolean isNumerical() {
     return isInteger() || isDouble();
   }
 
+  /** {@inheritDoc} */
   public final boolean isTime() {
     return isDate() || isTimestamp();
   }
 
+  /** {@inheritDoc} */
   public final boolean isDate() {
     return isType(Types.DATE);
   }
 
+  /** {@inheritDoc} */
   public final boolean isTimestamp() {
     return isType(Types.TIMESTAMP);
   }
 
+  /** {@inheritDoc} */
   public final boolean isCharacter() {
     return isType(Types.CHAR);
   }
 
+  /** {@inheritDoc} */
   public final boolean isString() {
     return isType(Types.VARCHAR);
   }
 
+  /** {@inheritDoc} */
   public final boolean isInteger() {
     return isType(Types.INTEGER);
   }
 
+  /** {@inheritDoc} */
   public final boolean isDouble() {
     return isType(Types.DOUBLE);
   }
 
+  /** {@inheritDoc} */
   public final boolean isBoolean() {
     return isType(Types.BOOLEAN);
   }
 
+  /** {@inheritDoc} */
   public final boolean isReference() {
     return isType(Types.REF);
   }
 
+  /** {@inheritDoc} */
   public final boolean is(final String propertyID) {
     return this.propertyID.equals(propertyID);
   }
 
+  /** {@inheritDoc} */
   public final String getPropertyID() {
     return this.propertyID;
   }
 
+  /** {@inheritDoc} */
   public final int getType() {
     return type;
   }
 
+  /** {@inheritDoc} */
   public final boolean isType(final int type) {
     return this.type == type;
   }
 
+  /** {@inheritDoc} */
   public final Property setHidden(final boolean hidden) {
     this.hidden = hidden;
     return this;
   }
 
+  /** {@inheritDoc} */
   public final boolean isHidden() {
     return hidden;
   }
 
+  /** {@inheritDoc} */
   public final Property setReadOnly(final boolean readOnly) {
     if (hasParentProperty()) {
       throw new RuntimeException("Can not set the read only status of a property with a parent property");
@@ -239,6 +257,7 @@ class PropertyImpl implements Property, Serializable {
     return this;
   }
 
+  /** {@inheritDoc} */
   public final boolean isReadOnly() {
     if (parentProperty != null) {
       return parentProperty.isReadOnly();
@@ -247,15 +266,18 @@ class PropertyImpl implements Property, Serializable {
     return this.readOnly;
   }
 
+  /** {@inheritDoc} */
   public final Property setDefaultValue(final Object defaultValue) {
     this.defaultValue = defaultValue;
     return this;
   }
 
+  /** {@inheritDoc} */
   public final Object getDefaultValue() {
     return this.defaultValue;
   }
 
+  /** {@inheritDoc} */
   public final Property setNullable(final boolean nullable) {
     if (hasParentProperty()) {
       throw new RuntimeException("Can not set the nullable status of a property with a parent property");
@@ -265,37 +287,45 @@ class PropertyImpl implements Property, Serializable {
     return this;
   }
 
+  /** {@inheritDoc} */
   public final boolean isNullable() {
     return nullable;
   }
 
+  /** {@inheritDoc} */
   public final Property setMaxLength(final int maxLength) {
     this.maxLength = maxLength;
     return this;
   }
 
+  /** {@inheritDoc} */
   public final int getMaxLength() {
     return maxLength;
   }
 
+  /** {@inheritDoc} */
   public final Double getMax() {
     return max;
   }
 
+  /** {@inheritDoc} */
   public final Property setMax(final double max) {
     this.max = max;
     return this;
   }
 
+  /** {@inheritDoc} */
   public final Double getMin() {
     return min;
   }
 
+  /** {@inheritDoc} */
   public final Property setMin(final double min) {
     this.min = min;
     return this;
   }
 
+  /** {@inheritDoc} */
   public final Property setUseNumberFormatGrouping(final boolean useGrouping) {
     if (!(format instanceof NumberFormat)) {
       throw new RuntimeException("Grouping only good for number formats");
@@ -305,46 +335,56 @@ class PropertyImpl implements Property, Serializable {
     return this;
   }
 
+  /** {@inheritDoc} */
   public final Property setPreferredColumnWidth(final int preferredColumnWidth) {
     this.preferredColumnWidth = preferredColumnWidth;
     return this;
   }
 
+  /** {@inheritDoc} */
   public final int getPreferredColumnWidth() {
     return preferredColumnWidth;
   }
 
+  /** {@inheritDoc} */
   public final String getDescription() {
     return description;
   }
 
+  /** {@inheritDoc} */
   public final Property setDescription(final String description) {
     this.description = description;
     return this;
   }
 
+  /** {@inheritDoc} */
   public final boolean hasDescription() {
     return description != null;
   }
 
+  /** {@inheritDoc} */
   public final Character getMnemonic() {
     return mnemonic;
   }
 
+  /** {@inheritDoc} */
   public final Property setMnemonic(final Character mnemonic) {
     this.mnemonic = mnemonic;
     return this;
   }
 
+  /** {@inheritDoc} */
   public final Format getFormat() {
     return format;
   }
 
+  /** {@inheritDoc} */
   public final Property setFormat(final Format format) {
     this.format = format;
     return this;
   }
 
+  /** {@inheritDoc} */
   public final Property setMaximumFractionDigits(final int maximumFractionDigits) {
     if (!(format instanceof NumberFormat)) {
       throw new RuntimeException("Maximum fraction digits only good for number formats");
@@ -354,14 +394,17 @@ class PropertyImpl implements Property, Serializable {
     return this;
   }
 
+  /** {@inheritDoc} */
   public final int getMaximumFractionDigits() {
     return ((NumberFormat) format).getMaximumFractionDigits();
   }
 
+  /** {@inheritDoc} */
   public final boolean hasParentProperty() {
     return this.parentProperty != null;
   }
 
+  /** {@inheritDoc} */
   public final String getCaption() {
     if (caption == null && hasParentProperty()) {
       return parentProperty.getCaption();
@@ -370,16 +413,19 @@ class PropertyImpl implements Property, Serializable {
     return caption;
   }
 
+  /** {@inheritDoc} */
   @Override
   public boolean equals(final Object obj) {
     return this == obj || obj instanceof Property && this.propertyID.equals(((Property) obj).getPropertyID());
   }
 
+  /** {@inheritDoc} */
   @Override
   public final int hashCode() {
     return hashCode;
   }
 
+  /** {@inheritDoc} */
   public final Class<?> getTypeClass() {
     if (typeClass == null) {
       typeClass = Util.getTypeClass(type);
@@ -388,10 +434,12 @@ class PropertyImpl implements Property, Serializable {
     return typeClass;
   }
 
+  /** {@inheritDoc} */
   public final void setParentProperty(final ForeignKeyProperty foreignKeyProperty) {
     this.parentProperty = foreignKeyProperty;
   }
 
+  /** {@inheritDoc} */
   public final ForeignKeyProperty getParentProperty() {
     return this.parentProperty;
   }

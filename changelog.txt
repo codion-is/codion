@@ -1994,3 +1994,4 @@
   DefaultEntityModel.updateDetailModelsByActiveEntity() privatized
 0.5.9
   Entities.getSearchProperties() used to replace a couple of similar code snippets
+  /** {@inheritDoc} */ added

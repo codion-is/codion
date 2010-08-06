@@ -149,30 +149,37 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     bindEventsInternal();
   }
 
+  /** {@inheritDoc} */
   public final List<T> getVisibleItems() {
     return Collections.unmodifiableList(visibleItems);
   }
 
+  /** {@inheritDoc} */
   public final List<T> getFilteredItems() {
     return Collections.unmodifiableList(filteredItems);
   }
 
+  /** {@inheritDoc} */
   public final int getVisibleItemCount() {
     return visibleItems.size();
   }
 
+  /** {@inheritDoc} */
   public final int getFilteredItemCount() {
     return filteredItems.size();
   }
 
+  /** {@inheritDoc} */
   public final int getColumnCount() {
     return columnModel.getColumnCount();
   }
 
+  /** {@inheritDoc} */
   public final int getRowCount() {
     return visibleItems.size();
   }
 
+  /** {@inheritDoc} */
   public final boolean contains(final T item, final boolean includeFiltered) {
     final boolean ret = visibleItems.contains(item);
     if (!ret && includeFiltered) {
@@ -182,18 +189,22 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     return ret;
   }
 
+  /** {@inheritDoc} */
   public final boolean isVisible(final T item) {
     return visibleItems.contains(item);
   }
 
+  /** {@inheritDoc} */
   public final boolean isFiltered(final T item) {
     return filteredItems.contains(item);
   }
 
+  /** {@inheritDoc} */
   public final Point findNextItemCoordinate(final int fromIndex, final boolean forward, final String searchText) {
     return findNextItemCoordinate(fromIndex, forward, getSearchCriteria(searchText));
   }
 
+  /** {@inheritDoc} */
   public final Point findNextItemCoordinate(final int fromIndex, final boolean forward, final FilterCriteria<Object> criteria) {
     if (forward) {
       for (int row = fromIndex >= getRowCount() ? 0 : fromIndex; row < getRowCount(); row++) {
@@ -217,6 +228,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     return null;
   }
 
+  /** {@inheritDoc} */
   public final void refresh() {
     if (isRefreshing) {
       return;
@@ -232,6 +244,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     }
   }
 
+  /** {@inheritDoc} */
   public final void clear() {
     filteredItems.clear();
     final int size = getRowCount();
@@ -241,10 +254,12 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     }
   }
 
+  /** {@inheritDoc} */
   public final ListSelectionModel getSelectionModel() {
     return selectionModel;
   }
 
+  /** {@inheritDoc} */
   public final int getSortPriority(final int columnIndex) {
     int i = 0;
     for (final SortingState state : sortingStates) {
@@ -257,10 +272,12 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     return -1;
   }
 
+  /** {@inheritDoc} */
   public final SortingDirective getSortingDirective(final int columnIndex) {
     return getSortingState(columnIndex).getDirective();
   }
 
+  /** {@inheritDoc} */
   public final void setSortingDirective(final int columnIndex, final SortingDirective directive) {
     final SortingState state = getSortingState(columnIndex);
     if (!state.equals(EMPTY_SORTING_STATE)) {
@@ -272,6 +289,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     sortingStatusChanged();
   }
 
+  /** {@inheritDoc} */
   public final int compare(final T objectOne, final T objectTwo, final int columnIndex, final SortingDirective directive) {
     final Comparable valueOne = getComparable(objectOne, columnIndex);
     final Comparable valueTwo = getComparable(objectTwo, columnIndex);
@@ -297,30 +315,37 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     return 0;
   }
 
+  /** {@inheritDoc} */
   public final boolean isRegularExpressionSearch() {
     return regularExpressionSearch;
   }
 
+  /** {@inheritDoc} */
   public final void setRegularExpressionSearch(final boolean value) {
     this.regularExpressionSearch = value;
   }
 
+  /** {@inheritDoc} */
   public final ColumnSearchModel<C> getFilterModel(final int columnIndex) {
     return columnFilterModels.get(columnIndex);
   }
 
+  /** {@inheritDoc} */
   public final List<ColumnSearchModel<C>> getFilterModels() {
     return Collections.unmodifiableList(columnFilterModels);
   }
 
+  /** {@inheritDoc} */
   public final void selectAll() {
     getSelectionModel().setSelectionInterval(0, getVisibleItemCount() - 1);
   }
 
+  /** {@inheritDoc} */
   public final void clearSelection() {
     getSelectionModel().clearSelection();
   }
 
+  /** {@inheritDoc} */
   public final Collection<Integer> getSelectedIndexes() {
     final List<Integer> indexes = new ArrayList<Integer>();
     final int min = selectionModel.getMinSelectionIndex();
@@ -334,6 +359,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     return indexes;
   }
 
+  /** {@inheritDoc} */
   public final void moveSelectionUp() {
     if (!visibleItems.isEmpty()) {
       if (getSelectionModel().isSelectionEmpty()) {
@@ -351,6 +377,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     }
   }
 
+  /** {@inheritDoc} */
   public final void moveSelectionDown() {
     if (!visibleItems.isEmpty()) {
       if (getSelectionModel().isSelectionEmpty()) {
@@ -368,19 +395,23 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     }
   }
 
+  /** {@inheritDoc} */
   public final void setSelectedItemIndex(final int index) {
     selectionModel.setSelectionInterval(index, index);
   }
 
+  /** {@inheritDoc} */
   public final void addSelectedItemIndex(final int index) {
     selectionModel.addSelectionInterval(index, index);
   }
 
+  /** {@inheritDoc} */
   public final void setSelectedItemIndexes(final List<Integer> indexes) {
     selectionModel.clearSelection();
     selectionModel.addSelectedItemIndexes(indexes);
   }
 
+  /** {@inheritDoc} */
   public final List<T> getSelectedItems() {
     final Collection<Integer> selectedModelIndexes = getSelectedIndexes();
     final List<T> selectedItems = new ArrayList<T>();
@@ -391,6 +422,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     return selectedItems;
   }
 
+  /** {@inheritDoc} */
   public final void setSelectedItems(final List<T> items) {
     final List<Integer> indexes = new ArrayList<Integer>();
     for (final T item : items) {
@@ -403,6 +435,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     setSelectedItemIndexes(indexes);
   }
 
+  /** {@inheritDoc} */
   public final T getSelectedItem() {
     final int index = selectionModel.getSelectedIndex();
     if (index >= 0 && index < getVisibleItemCount()) {
@@ -413,47 +446,49 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     }
   }
 
+  /** {@inheritDoc} */
   public final void setSelectedItem(final T item) {
     setSelectedItems(Arrays.asList(item));
   }
 
-  /**
-   * Adds these indexes to the selection
-   * @param indexes the indexes to add to the selection
-   */
+
+  /** {@inheritDoc} */
   public final void addSelectedItemIndexes(final List<Integer> indexes) {
     selectionModel.addSelectedItemIndexes(indexes);
   }
 
+  /** {@inheritDoc} */
   public final int getSelectedIndex() {
     return selectionModel.getSelectedIndex();
   }
 
+  /** {@inheritDoc} */
   public final int getSelectionCount() {
     return selectionModel.getSelectionCount();
   }
 
+  /** {@inheritDoc} */
   public final boolean isSelectionEmpty() {
     return selectionModel.isSelectionEmpty();
   }
 
+  /** {@inheritDoc} */
   public final T getItemAt(final int index) {
     return visibleItems.get(modelIndex(index));
   }
 
+  /** {@inheritDoc} */
   public final int indexOf(final T item) {
     return viewIndex(visibleItems.indexOf(item));
   }
 
+  /** {@inheritDoc} */
   public final void clearSortingState() {
     sortingStates.clear();
     sortingStatusChanged();
   }
 
-  /**
-   * Filters this table model
-   * @see #addFilteringListener(java.awt.event.ActionListener)
-   */
+  /** {@inheritDoc} */
   public final void filterContents() {
     try {
       isFiltering = true;
@@ -476,14 +511,17 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     }
   }
 
+  /** {@inheritDoc} */
   public final FilterCriteria<T> getFilterCriteria() {
     return filterCriteria;
   }
 
+  /** {@inheritDoc} */
   public final void setFilterCriteria(final FilterCriteria<T> filterCriteria) {
     throw new UnsupportedOperationException("AbstractFilteredTableModel.setFilterCriteria(FilterCriteria)");
   }
 
+  /** {@inheritDoc} */
   public final List<T> getAllItems() {
     final List<T> entities = new ArrayList<T>(visibleItems);
     entities.addAll(filteredItems);
@@ -491,20 +529,14 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     return entities;
   }
 
-  /**
-   * Removes the given items from this table model
-   * @param items the items to remove from the model
-   */
+  /** {@inheritDoc} */
   public final void removeItems(final List<T> items) {
     for (final T item : items) {
       removeItem(item);
     }
   }
 
-  /**
-   * Removes the given item from this table model
-   * @param item the item to remove from the model
-   */
+  /** {@inheritDoc} */
   public final void removeItem(final T item) {
     if (visibleItems.contains(item)) {
       final int index = indexOf(item);
@@ -518,19 +550,17 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     }
   }
 
+  /** {@inheritDoc} */
   public final TableColumnModel getColumnModel() {
     return columnModel;
   }
 
-  /**
-   * Returns the TableColumn for the given identifier
-   * @param identifier the identifier for which to retrieve the column
-   * @return the TableColumn associated with the given identifier
-   */
+  /** {@inheritDoc} */
   public final TableColumn getTableColumn(final Object identifier) {
     return columnModel.getColumn(columnModel.getColumnIndex(identifier));
   }
 
+  /** {@inheritDoc} */
   public final void setColumnVisible(final Object columnIdentifier, final boolean visible) {
     if (visible) {
       if (!isColumnVisible(columnIdentifier)) {
@@ -544,6 +574,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     }
   }
 
+  /** {@inheritDoc} */
   public final void showColumn(final Object columnIdentifier) {
     final ListIterator<TableColumn> hiddenColumnIterator = hiddenColumns.listIterator();
     while (hiddenColumnIterator.hasNext()) {
@@ -556,6 +587,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     }
   }
 
+  /** {@inheritDoc} */
   public final void hideColumn(final Object columnIdentifier) {
     final TableColumn column = getTableColumn(columnIdentifier);
     columnModel.removeColumn(column);
@@ -563,6 +595,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     evtColumnHidden.fire(new ActionEvent(columnIdentifier, 0, "hideColumn"));
   }
 
+  /** {@inheritDoc} */
   public final boolean isColumnVisible(final Object columnIdentifier) {
     for (final TableColumn column : hiddenColumns) {
       if (column.getIdentifier().equals(columnIdentifier)) {
@@ -573,89 +606,107 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     return true;
   }
 
+  /** {@inheritDoc} */
   public final List<TableColumn> getHiddenColumns() {
     return Collections.unmodifiableList(hiddenColumns);
   }
 
+  /** {@inheritDoc} */
   public final StateObserver getSelectionEmptyState() {
     return selectionModel.getSelectionEmptyState();
   }
 
-  /**
-   * @return a State active when multiple rows are selected
-   */
+  /** {@inheritDoc} */
   public final StateObserver getMultipleSelectionState() {
     return selectionModel.getMultipleSelectionState();
   }
 
+  /** {@inheritDoc} */
   public final void addColumnHiddenListener(final ActionListener listener) {
     evtColumnHidden.addListener(listener);
   }
 
+  /** {@inheritDoc} */
   public final void removeColumnHiddenListener(final ActionListener listener) {
     evtColumnHidden.removeListener(listener);
   }
 
+  /** {@inheritDoc} */
   public final void addColumnShownListener(final ActionListener listener) {
     evtColumnShown.addListener(listener);
   }
 
+  /** {@inheritDoc} */
   public final void removeColumnShownListener(final ActionListener listener) {
     evtColumnShown.removeListener(listener);
   }
 
+  /** {@inheritDoc} */
   public final void addRefreshStartedListener(final ActionListener listener) {
     evtRefreshStarted.addListener(listener);
   }
 
+  /** {@inheritDoc} */
   public final void removeRefreshStartedListener(final ActionListener listener) {
     evtRefreshStarted.removeListener(listener);
   }
 
+  /** {@inheritDoc} */
   public final void addRefreshDoneListener(final ActionListener listener) {
     evtRefreshDone.addListener(listener);
   }
 
+  /** {@inheritDoc} */
   public final void removeRefreshDoneListener(final ActionListener listener) {
     evtRefreshDone.removeListener(listener);
   }
 
+  /** {@inheritDoc} */
   public final void addFilteringListener(final ActionListener listener) {
     evtFilteringDone.addListener(listener);
   }
 
+  /** {@inheritDoc} */
   public final void removeFilteringListener(final ActionListener listener) {
     evtFilteringDone.removeListener(listener);
   }
 
+  /** {@inheritDoc} */
   public final void addSortingListener(final ActionListener listener) {
     evtSortingDone.addListener(listener);
   }
 
+  /** {@inheritDoc} */
   public final void removeSortingListener(final ActionListener listener) {
     evtSortingDone.removeListener(listener);
   }
 
+  /** {@inheritDoc} */
   public final void addSelectedIndexListener(final ActionListener listener) {
     selectionModel.addSelectedIndexListener(listener);
   }
 
+  /** {@inheritDoc} */
   public final void removeSelectedIndexListener(final ActionListener listener) {
     selectionModel.removeSelectedIndexListener(listener);
   }
 
+  /** {@inheritDoc} */
   public final void addSelectionChangedListener(final ActionListener listener) {
     selectionModel.addSelectionChangedListener(listener);
   }
 
+  /** {@inheritDoc} */
   public final void removeSelectionChangedListener(final ActionListener listener) {
     selectionModel.removeSelectionChangedListener(listener);
   }
 
+  /** {@inheritDoc} */
   public final void addTableDataChangedListener(final ActionListener listener) {
     evtTableDataChanged.addListener(listener);
   }
 
+  /** {@inheritDoc} */
   public final void removeTableDataChangedListener(final ActionListener listener) {
     evtTableDataChanged.removeListener(listener);
   }

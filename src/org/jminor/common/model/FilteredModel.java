@@ -21,6 +21,7 @@ public interface FilteredModel<T> {
    * Filters the table according to the criteria returned by <code>getFilterCriteria()</code>.
    * This method does not interfere with the internal ordering of the visible items.
    * @see #getFilterCriteria()
+   * @see #addFilteringListener(java.awt.event.ActionListener)
    */
   void filterContents();
 
