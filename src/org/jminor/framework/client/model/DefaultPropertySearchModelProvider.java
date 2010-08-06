@@ -7,7 +7,7 @@ import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Property;
 
-final class DefaultPropertySearchModelProvider implements PropertySearchModelProvider {
+public class DefaultPropertySearchModelProvider implements PropertySearchModelProvider {
 
   public PropertySearchModel<? extends Property.SearchableProperty> initializePropertySearchModel(
           final Property.SearchableProperty property, final EntityDbProvider dbProvider) {
