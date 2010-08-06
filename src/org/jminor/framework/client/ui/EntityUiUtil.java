@@ -371,12 +371,7 @@ public final class EntityUiUtil {
     }
     final List<Property.ColumnProperty> searchProperties = Entities.getSearchProperties(
             foreignKeyProperty.getReferencedEntityID(), Arrays.asList(searchPropertyIDs));
-    for (final Property.ColumnProperty searchProperty : searchProperties) {
-      if (!searchProperty.isString()) {
-        throw new IllegalArgumentException("Can only create EntityLookupField with a search property of STRING type");
-      }
-    }
-
+    
     final EntityLookupField lookupField =
             new EntityLookupField(editModel.createEntityLookupModel(foreignKeyProperty.getReferencedEntityID(),
                     searchProperties, additionalSearchCriteria));

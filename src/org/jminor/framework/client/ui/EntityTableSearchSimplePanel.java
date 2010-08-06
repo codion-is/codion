@@ -22,14 +22,13 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
-import java.util.ArrayList;
 import java.util.Collection;
 
 public final class EntityTableSearchSimplePanel extends JPanel implements EntityTableSearchPanel {
 
   private final EntityTableSearchModel searchModel;
   private final Refreshable refreshable;
-  private final Collection<Property> searchProperties;
+  private final Collection<Property.ColumnProperty> searchProperties;
 
   private JTextField searchField;
   private JButton searchButton;
@@ -37,7 +36,7 @@ public final class EntityTableSearchSimplePanel extends JPanel implements Entity
   public EntityTableSearchSimplePanel(final EntityTableSearchModel searchModel, final Refreshable refreshable) {
     this.searchModel = searchModel;
     this.refreshable = refreshable;
-    this.searchProperties = getSearchableProperties();
+    this.searchProperties = Entities.getSearchProperties(searchModel.getEntityID());
     initUI();
   }
 
@@ -47,10 +46,6 @@ public final class EntityTableSearchSimplePanel extends JPanel implements Entity
 
   public ControlSet getControls() {
     return null;
-  }
-
-  public Collection<Property> getSearchProperties() {
-    return searchProperties;
   }
 
   public void setSearchTest(final String txt) {
@@ -77,7 +72,7 @@ public final class EntityTableSearchSimplePanel extends JPanel implements Entity
     add(searchButton, BorderLayout.EAST);
   }
 
-  private void performSimpleSearch(final String searchText, final Collection<Property> searchProperties) {
+  private void performSimpleSearch(final String searchText, final Collection<Property.ColumnProperty> searchProperties) {
     final Conjunction conjunction = searchModel.getSearchConjunction();
     try {
       searchModel.clearPropertySearchModels();
@@ -99,28 +94,5 @@ public final class EntityTableSearchSimplePanel extends JPanel implements Entity
     finally {
       searchModel.setSearchConjunction(conjunction);
     }
-  }
-
-  private Collection<Property> getSearchableProperties() {
-    final Collection<Property> searchableProperties = new ArrayList<Property>();
-    final Collection<String> defaultSearchPropertyIDs = Entities.getEntitySearchPropertyIDs(searchModel.getEntityID());
-    if (!defaultSearchPropertyIDs.isEmpty()) {
-      for (final String propertyID : defaultSearchPropertyIDs) {
-        searchableProperties.add(Entities.getProperty(searchModel.getEntityID(), propertyID));
-      }
-    }
-    else {
-      for (final Property property : Entities.getColumnProperties(searchModel.getEntityID())) {
-        if (property.isString() && !property.isHidden()) {
-          searchableProperties.add(property);
-        }
-      }
-    }
-    if (searchableProperties.isEmpty()) {
-      throw new RuntimeException("Unable to create a simple search panel for entity: "
-              + searchModel.getEntityID() + ", no STRING based properties found");
-    }
-
-    return searchableProperties;
   }
 }

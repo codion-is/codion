@@ -7,10 +7,6 @@ import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Property;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 final class DefaultPropertySearchModelProvider implements PropertySearchModelProvider {
 
   public PropertySearchModel<? extends Property.SearchableProperty> initializePropertySearchModel(
@@ -19,7 +15,7 @@ final class DefaultPropertySearchModelProvider implements PropertySearchModelPro
       final Property.ForeignKeyProperty fkProperty = (Property.ForeignKeyProperty) property;
       if (Entities.isLargeDataset(fkProperty.getReferencedEntityID())) {
         final EntityLookupModel lookupModel = new DefaultEntityLookupModel(fkProperty.getReferencedEntityID(),
-                dbProvider, getSearchProperties(fkProperty.getReferencedEntityID()));
+                dbProvider, Entities.getSearchProperties(fkProperty.getReferencedEntityID()));
         lookupModel.setMultipleSelectionAllowed(true);
         return new DefaultForeignKeySearchModel(fkProperty, lookupModel);
       }
@@ -34,23 +30,5 @@ final class DefaultPropertySearchModelProvider implements PropertySearchModelPro
     }
 
     throw new RuntimeException("Not a searchable property (Property.ColumnProperty or PropertyForeignKeyProperty): " + property);
-  }
-
-  private List<Property.ColumnProperty> getSearchProperties(final String entityID) {
-    final Collection<String> searchPropertyIDs = Entities.getEntitySearchPropertyIDs(entityID);
-
-    return searchPropertyIDs == null ? getStringProperties(entityID) : Entities.getSearchProperties(entityID, searchPropertyIDs);
-  }
-
-  private List<Property.ColumnProperty> getStringProperties(final String entityID) {
-    final Collection<Property.ColumnProperty> databaseProperties = Entities.getColumnProperties(entityID);
-    final List<Property.ColumnProperty> stringProperties = new ArrayList<Property.ColumnProperty>();
-    for (final Property.ColumnProperty property : databaseProperties) {
-      if (property.isString()) {
-        stringProperties.add(property);
-      }
-    }
-
-    return stringProperties;
   }
 }
