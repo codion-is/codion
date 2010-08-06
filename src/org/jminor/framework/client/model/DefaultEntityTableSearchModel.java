@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -38,9 +39,8 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
 
   private final String entityID;
   private final EntityDbProvider dbProvider;
-  private final List<Property> properties;
-  private Map<String, ColumnSearchModel<Property>> propertyFilterModels;
-  private Map<String, PropertySearchModel<? extends Property.SearchableProperty>> propertySearchModels;
+  private Map<String, ColumnSearchModel<Property>> propertyFilterModels = new LinkedHashMap<String, ColumnSearchModel<Property>>();
+  private Map<String, PropertySearchModel<? extends Property.SearchableProperty>> propertySearchModels = new HashMap<String, PropertySearchModel<? extends Property.SearchableProperty>>();
   /** When active the search should be simplified */
   private final boolean simpleSearch;
   private Criteria<Property.ColumnProperty> additionalSearchCriteria;
@@ -56,7 +56,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
    * @param simpleSearch if true then search panels based on this search model should implement a simplified search
    */
   public DefaultEntityTableSearchModel(final String entityID, final EntityDbProvider dbProvider, final boolean simpleSearch) {
-    this(entityID, dbProvider, new ArrayList<Property>(Entities.getVisibleProperties(entityID)), simpleSearch);
+    this(entityID, dbProvider, simpleSearch, new DefaultPropertyFilterModelProvider(), new DefaultPropertySearchModelProvider());
   }
 
   /**
@@ -64,20 +64,29 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
    * @param entityID the ID of the underlying entity
    * @param dbProvider a EntityDbProvider instance, required if <code>searchableProperties</code> include
    * foreign key properties
-   * @param properties the underlying properties
    * assumed to belong to the entity identified by <code>entityID</code>
    * @param simpleSearch if true then search panels based on this search model should implement a simplified search
+   * @param filterModelProvider provides the column filter models for this table search model
+   * @param searchModelProvider provides the column search models for this table search model
    */
-  public DefaultEntityTableSearchModel(final String entityID, final EntityDbProvider dbProvider,
-                                       final List<Property> properties, final boolean simpleSearch) {
-    Util.rejectNullValue(entityID, "entityID");
-    Util.rejectNullValue(properties, "properties");
+  public DefaultEntityTableSearchModel(final String entityID, final EntityDbProvider dbProvider, final boolean simpleSearch,
+                                       final PropertyFilterModelProvider filterModelProvider,
+                                       final PropertySearchModelProvider searchModelProvider) {
+    Util.rejectNullValue(entityID, entityID);
     this.entityID = entityID;
     this.dbProvider = dbProvider;
-    this.properties = properties;
+    for (final Property property : Entities.getVisibleProperties(entityID)) {
+      final ColumnSearchModel<Property> filterModel = filterModelProvider.initializePropertyFilterModel(property);
+      this.propertyFilterModels.put(filterModel.getColumnIdentifier().getPropertyID(), filterModel);
+      if (property instanceof Property.SearchableProperty) {
+        final PropertySearchModel<? extends Property.SearchableProperty> searchModel =
+                searchModelProvider.initializePropertySearchModel((Property.SearchableProperty) property, dbProvider);
+        if (searchModel != null) {
+          this.propertySearchModels.put(searchModel.getColumnIdentifier().getPropertyID(), searchModel);
+        }
+      }
+    }
     this.simpleSearch = simpleSearch;
-    this.propertyFilterModels = initializePropertyFilterModels();
-    this.propertySearchModels = initializePropertySearchModels(dbProvider);
     this.searchStateOnRefresh = getSearchModelState();
     bindEvents();
   }
@@ -96,10 +105,8 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
 
   public final List<Property.SearchableProperty> getSearchableProperties() {
     final List<Property.SearchableProperty> searchProperties = new ArrayList<Property.SearchableProperty>();
-    for (final Property property : properties) {
-      if (property instanceof Property.SearchableProperty) {
-        searchProperties.add((Property.SearchableProperty) property);
-      }
+    for (final PropertySearchModel<? extends Property.SearchableProperty> searchModel : propertySearchModels.values()) {
+      searchProperties.add(searchModel.getColumnIdentifier());
     }
 
     return searchProperties;
@@ -123,12 +130,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
   }
 
   public final List<ColumnSearchModel<Property>> getPropertyFilterModelsOrdered() {
-    final List<ColumnSearchModel<Property>> models = new ArrayList<ColumnSearchModel<Property>>(properties.size());
-    for (final Property property : properties) {
-      models.add(getPropertyFilterModel(property.getPropertyID()));
-    }
-
-    return models;
+    return new ArrayList<ColumnSearchModel<Property>>(propertyFilterModels.values());
   }
 
   public final boolean include(final Entity item) {
@@ -254,76 +256,6 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
     evtFilterStateChanged.removeListener(listener);
   }
 
-  /**
-   * Initializes a PropertySearchModel for the given property
-   * @param property the Property for which to create a PropertySearchModel
-   * @param dbProvider the EntityDbProvider instance to use in case the property is a ForeignKeyProperty
-   * @return a PropertySearchModel for the given property, null if this property is not searchable or if searching
-   * should not be allowed for this property
-   */
-  private PropertySearchModel<? extends Property.SearchableProperty> initializePropertySearchModel(
-          final Property.SearchableProperty property, final EntityDbProvider dbProvider) {
-    if (property instanceof Property.ForeignKeyProperty) {
-      final Property.ForeignKeyProperty fkProperty = (Property.ForeignKeyProperty) property;
-      if (Entities.isLargeDataset(fkProperty.getReferencedEntityID())) {
-        final EntityLookupModel lookupModel = new DefaultEntityLookupModel(fkProperty.getReferencedEntityID(),
-                dbProvider, getSearchProperties(fkProperty.getReferencedEntityID()));
-        lookupModel.setMultipleSelectionAllowed(true);
-        return new DefaultForeignKeySearchModel(fkProperty, lookupModel);
-      }
-      else {
-        final EntityComboBoxModel comboBoxModel = new DefaultEntityComboBoxModel(fkProperty.getReferencedEntityID(), dbProvider);
-        comboBoxModel.setNullValueString("");
-        return new DefaultForeignKeySearchModel(fkProperty, comboBoxModel);
-      }
-    }
-    else if (property instanceof Property.ColumnProperty) {
-      return new DefaultPropertySearchModel((Property.ColumnProperty) property);
-    }
-
-    throw new RuntimeException("Not a searchable property (Property.ColumnProperty or PropertyForeignKeyProperty): " + property);
-  }
-
-  /**
-   * Initializes a PropertyFilterModel for the given property
-   * @param property the Property for which to initialize a PropertyFilterModel
-   * @return a PropertyFilterModel for the given property
-   */
-  private ColumnSearchModel<Property> initializePropertyFilterModel(final Property property) {
-    return new DefaultPropertyFilterModel(property);
-  }
-
-  /**
-   * @param dbProvider the EntityDbProvider to use for foreign key based fields, such as combo boxes
-   * @return a map of PropertySearchModels mapped to their respective propertyIDs
-   */
-  private Map<String, PropertySearchModel<? extends Property.SearchableProperty>> initializePropertySearchModels(final EntityDbProvider dbProvider) {
-    final Map<String, PropertySearchModel<? extends Property.SearchableProperty>> searchModels =
-            new HashMap<String, PropertySearchModel<? extends Property.SearchableProperty>>();
-    for (final Property.SearchableProperty property : getSearchableProperties()) {
-      final PropertySearchModel<? extends Property.SearchableProperty> searchModel = initializePropertySearchModel(property, dbProvider);
-      if (searchModel != null) {
-        searchModels.put(property.getPropertyID(), searchModel);
-      }
-    }
-
-    return searchModels;
-  }
-
-  /**
-   * @return a map of PropertyFilterModels mapped to their respective propertyIDs
-   */
-  private Map<String, ColumnSearchModel<Property>> initializePropertyFilterModels() {
-    final Map<String, ColumnSearchModel<Property>> filters = new HashMap<String, ColumnSearchModel<Property>>(properties.size());
-    for (final Property property : properties) {
-      final ColumnSearchModel<Property> filterModel = initializePropertyFilterModel(property);
-      filterModel.addSearchStateListener(evtFilterStateChanged);
-      filters.put(property.getPropertyID(), filterModel);
-    }
-
-    return filters;
-  }
-
   private void bindEvents() {
     for (final PropertySearchModel searchModel : propertySearchModels.values()) {
       searchModel.addSearchStateListener(new ActionListener() {
@@ -345,23 +277,5 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
     }
 
     return stringBuilder.toString();
-  }
-
-  private List<Property.ColumnProperty> getSearchProperties(final String entityID) {
-    final Collection<String> searchPropertyIDs = Entities.getEntitySearchPropertyIDs(entityID);
-
-    return searchPropertyIDs == null ? getStringProperties(entityID) : Entities.getSearchProperties(entityID, searchPropertyIDs);
-  }
-
-  private List<Property.ColumnProperty> getStringProperties(final String entityID) {
-    final Collection<Property.ColumnProperty> databaseProperties = Entities.getColumnProperties(entityID);
-    final List<Property.ColumnProperty> stringProperties = new ArrayList<Property.ColumnProperty>();
-    for (final Property.ColumnProperty property : databaseProperties) {
-      if (property.isString()) {
-        stringProperties.add(property);
-      }
-    }
-
-    return stringProperties;
   }
 }

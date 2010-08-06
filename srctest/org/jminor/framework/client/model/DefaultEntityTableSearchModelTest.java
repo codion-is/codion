@@ -3,26 +3,11 @@ package org.jminor.framework.client.model;
 import org.jminor.common.model.Conjunction;
 import org.jminor.framework.db.EntityDbConnectionTest;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
-import org.jminor.framework.domain.Property;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-import java.util.ArrayList;
-
 public class DefaultEntityTableSearchModelTest {
-
-  @Test
-  public void testConstructor() {
-    try {
-      new DefaultEntityTableSearchModel(null, EntityDbConnectionTest.DB_PROVIDER, new ArrayList<Property>(), false);
-    }
-    catch (IllegalArgumentException e) {}
-    try {
-      new DefaultEntityTableSearchModel("entityID", EntityDbConnectionTest.DB_PROVIDER, null, false);
-    }
-    catch (IllegalArgumentException e) {}
-  }
 
   @Test
   public void test() {
