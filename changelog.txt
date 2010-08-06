@@ -1897,6 +1897,7 @@
   Collections.size() == 0 replaced with isEmpty() throughout
   Finalized a bunch of classes and methods
   More of the same
+0.5.7
 0.5.8
   Distribution jars are now package-sealed by default
   ValueChangeMapEditModel.clearValues() removed, setValueMap(null) serves that purpose
@@ -1991,3 +1992,4 @@
   EntityTablePanel.additionalPopup/ToolbarControls fields added
   DefaultEntityModel.bindTableModelEvents() functionality moved to DefaultEntityTableModel.setEditModel()
   DefaultEntityModel.updateDetailModelsByActiveEntity() privatized
+0.5.9
