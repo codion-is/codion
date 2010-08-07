@@ -431,7 +431,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
 
   /**
    * @param type the confirmation message type, one of the following:
-   * EntityPanel.CONFIRM_TYPE_INSERT, EntityPanel.CONFIRM_TYPE_DELETE or EntityPanel.CONFIRM_TYPE_UPDATE
+   * EntityEditPanel.CONFIRM_TYPE_INSERT, EntityEditPanel.CONFIRM_TYPE_DELETE or EntityEditPanel.CONFIRM_TYPE_UPDATE
    * @return a string array containing two elements, the element at index 0 is used
    * as the message displayed in the dialog and the element at index 1 is used as the dialog title,
    * i.e. ["Are you sure you want to delete the selected records?", "About to delete selected records"]

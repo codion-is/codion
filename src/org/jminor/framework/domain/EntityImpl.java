@@ -443,12 +443,10 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
     addValueListener(new ValueChangeListener<String, Object>() {
       @Override
       protected void valueChanged(final ValueChangeEvent<String, Object> event) {
-        if (Entities.hasLinkedProperties(entityID, event.getKey())) {
-          final Collection<String> linkedPropertyIDs = Entities.getLinkedPropertyIDs(entityID, event.getKey());
-          for (final String propertyID : linkedPropertyIDs) {
-            final Object linkedValue = getValue(propertyID);
-            notifyValueChange(propertyID, linkedValue, linkedValue, false);
-          }
+        final Collection<String> linkedPropertyIDs = Entities.getLinkedPropertyIDs(entityID, event.getKey());
+        for (final String propertyID : linkedPropertyIDs) {
+          final Object linkedValue = getValue(propertyID);
+          notifyValueChange(propertyID, linkedValue, linkedValue, false);
         }
       }
     });

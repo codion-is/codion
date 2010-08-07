@@ -291,7 +291,12 @@ final class EntityDefinitionImpl implements EntityDefinition, Serializable {
 
   /** {@inheritDoc} */
   public Collection<String> getLinkedPropertyIDs(final String propertyID) {
-    return linkedProperties.get(propertyID);
+    final Collection<String> linked = linkedProperties.get(propertyID);
+    if (linked == null) {
+      return Collections.emptyList();
+    }
+
+    return linked;
   }
 
   /** {@inheritDoc} */

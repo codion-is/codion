@@ -207,7 +207,7 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
   /**
    * @param property the property for which to get the ComboBoxModel
    * @param refreshEvent the combo box model is refreshed when this event fires,
-   * if none is specified EntityModel.eventEntitiesChanged is used
+   * if none is specified <code>addEntitiesChangedListener()</code> is used.
    * @param nullValueString the value to use for representing the null item at the top of the list,
    * if this value is null then no such item is included
    * @return a PropertyComboBoxModel representing <code>property</code>, if no combo box model
@@ -271,7 +271,7 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
   EntityComboBoxModel initializeEntityComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty);
 
   /**
-   * Creates a combo box model providing the values of the given property
+   * Creates a combo box model containing the current values of the given property
    * @param property the property
    * @param refreshEvent the combo box model is refreshed each time this event is fired
    * @param nullValueString the string to use as a null value caption
@@ -281,13 +281,13 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
                                                     final String nullValueString);
 
   /**
-   * Refreshes the Refreshable ComboBoxModels associated with this EntityModel
+   * Refreshes the Refreshable ComboBoxModels associated with this EntityEditModel
    * @see org.jminor.common.model.Refreshable
    */
   void refreshComboBoxModels();
 
   /**
-   * Clears the data from all combo boxe models
+   * Clears the data from all combo box models
    */
   void clearComboBoxModels();
 
@@ -307,7 +307,7 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
 
   /**
    * Returns true if the last available value for this property should be used when initializing
-   * a default entity for this EntityModel.
+   * a default entity.
    * Override for selective reset of field values when the model is cleared.
    * For Property.ForeignKeyProperty values this method by default returns the value of the
    * property <code>Configuration.PERSIST_FOREIGN_KEY_VALUES</code>.

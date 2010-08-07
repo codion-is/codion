@@ -178,8 +178,8 @@ public interface EntityDefinition {
   boolean hasLinkedProperties(final String propertyID);
 
   /**
-   * Returns the IDs of of the properties which values are linked to the value of the given property,
-   * null if no linked properties exist
+   * Returns the IDs of the properties which values are linked to the value of the given property,
+   * an empty collection if no such linked properties exist
    * @param propertyID the ID of the property
    * @return a collection conaining the IDs of any properties which are linked to the given property
    */
