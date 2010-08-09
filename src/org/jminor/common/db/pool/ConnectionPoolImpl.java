@@ -112,9 +112,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
     }
 
     synchronized (connectionPool) {
-      synchronized (connectionsInUse) {
-        connectionsInUse.remove(dbConnection);
-      }
+      connectionsInUse.remove(dbConnection);
       if (dbConnection.isConnectionValid()) {
         try {
           if (dbConnection.isTransactionOpen()) {
@@ -205,10 +203,8 @@ public final class ConnectionPoolImpl implements ConnectionPool {
   public ConnectionPoolStatistics getConnectionPoolStatistics(final long since) {
     final ConnectionPoolStatisticsImpl statistics = new ConnectionPoolStatisticsImpl(user);
     synchronized (connectionPool) {
-      synchronized (connectionsInUse) {
-        statistics.setConnectionsInUse(connectionsInUse.size());
-        statistics.setAvailableInPool(connectionPool.size());
-      }
+      statistics.setConnectionsInUse(connectionsInUse.size());
+      statistics.setAvailableInPool(connectionPool.size());
     }
     statistics.setLiveConnectionCount(counter.getLiveConnections());
     statistics.setConnectionsCreated(counter.getConnectionsCreated());
@@ -250,18 +246,16 @@ public final class ConnectionPoolImpl implements ConnectionPool {
 
   private PoolableConnection getConnectionFromPool() {
     synchronized (connectionPool) {
-      synchronized (connectionsInUse) {
-        final int connectionsInPool = connectionPool.size();
-        if (collectFineGrainedStatistics) {
-          addInPoolStats(connectionsInPool, connectionsInUse.size(), System.currentTimeMillis());
-        }
-        final PoolableConnection dbConnection = connectionsInPool > 0 ? connectionPool.pop() : null;
-        if (dbConnection != null) {
-          connectionsInUse.add(dbConnection);
-        }
-
-        return dbConnection;
+      final int connectionsInPool = connectionPool.size();
+      if (collectFineGrainedStatistics) {
+        addInPoolStats(connectionsInPool, connectionsInUse.size(), System.currentTimeMillis());
       }
+      final PoolableConnection dbConnection = connectionsInPool > 0 ? connectionPool.pop() : null;
+      if (dbConnection != null) {
+        connectionsInUse.add(dbConnection);
+      }
+
+      return dbConnection;
     }
   }
 
