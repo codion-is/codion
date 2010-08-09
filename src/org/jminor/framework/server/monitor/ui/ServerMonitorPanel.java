@@ -20,6 +20,8 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 
 import javax.swing.*;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
@@ -135,7 +137,9 @@ public final class ServerMonitorPanel extends JPanel {
 
   private JPanel initDomainModelPanel() {
     final JPanel panel = new JPanel(new BorderLayout(5,5));
-    final JScrollPane scroller = new JScrollPane(new JList(model.getDomainListModel()));
+    final JTable table = new JTable(model.getDomainTableModel());
+    table.setRowSorter(new TableRowSorter<TableModel>(model.getDomainTableModel()));
+    final JScrollPane scroller = new JScrollPane(table);
 
     final JPanel refreshPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
     refreshPanel.add(ControlProvider.createButton(Controls.methodControl(model, "refreshDomainList", "Refresh")));

@@ -8,7 +8,6 @@ import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.model.User;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ServerLog;
-import org.jminor.framework.domain.EntityDefinition;
 
 import org.apache.log4j.Level;
 
@@ -17,6 +16,7 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -231,7 +231,11 @@ public interface EntityDbServerAdmin extends Remote {
   void loadDomainModel(final URI location, final String domainClassName) throws RemoteException, ClassNotFoundException,
           IllegalAccessException, InstantiationException;
 
-  Collection<EntityDefinition> getEntityDefinitions() throws RemoteException;
+  /**
+   * @return a map containing all entityIDs, with their respective table names as an associated value
+   * @throws RemoteException in case of an exception
+   */
+  Map<String,String> getEntityDefinitions() throws RemoteException;
 
   void setConnectionPoolCleanupInterval(final User user, final int poolCleanupInterval) throws RemoteException;
 

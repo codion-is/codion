@@ -11,7 +11,6 @@ import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ServerLog;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.domain.Entities;
-import org.jminor.framework.domain.EntityDefinition;
 
 import org.apache.log4j.Logger;
 
@@ -27,15 +26,7 @@ import java.rmi.registry.Registry;
 import java.rmi.server.RMISocketFactory;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * The remote server class, responsible for handling remote db connection requests.
@@ -234,8 +225,11 @@ public final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRem
     }
   }
 
-  public static Collection<EntityDefinition> getEntityDefinitions() {
-    return new ArrayList<EntityDefinition>(Entities.getEntityDefinitions().values());
+  /**
+   * @return a map containing all defined entityIDs, with their respective table names as an associated value
+   */
+  public static Map<String,String> getEntityDefinitions() {
+    return Entities.getEntityDefinitions();
   }
 
   public static void loadDomainModel(final String domainClassName) throws ClassNotFoundException,

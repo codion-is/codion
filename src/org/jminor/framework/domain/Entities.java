@@ -12,7 +12,6 @@ import java.text.Collator;
 import java.text.Format;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
@@ -512,8 +511,16 @@ public final class Entities {
     return new ArrayList<String>(ENTITY_DEFINITIONS.keySet());
   }
 
-  public static Map<String, EntityDefinition> getEntityDefinitions() {
-    return Collections.unmodifiableMap(ENTITY_DEFINITIONS);
+  /**
+   * @return a map containing all defined entityIDs, with their respective table names as an associated value
+   */
+  public static Map<String, String> getEntityDefinitions() {
+    final Map<String, String> definitions = new HashMap<String, String>();
+    for (final EntityDefinition definition : ENTITY_DEFINITIONS.values()) {
+      definitions.put(definition.getEntityID(), definition.getTableName());
+    }
+
+    return definitions;
   }
 
   /**

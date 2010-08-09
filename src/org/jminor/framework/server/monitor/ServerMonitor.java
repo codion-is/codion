@@ -14,17 +14,15 @@ import org.apache.log4j.Logger;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
-import javax.swing.DefaultListModel;
-import javax.swing.ListModel;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import java.awt.event.ActionListener;
 import java.net.URI;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -56,7 +54,7 @@ public final class ServerMonitor {
   private boolean shutdown = false;
 
   private String memoryUsage;
-  private final DefaultListModel domainListModel = new DefaultListModel();
+  private final DefaultTableModel domainListModel = new DefaultTableModel();
   private final XYSeries connectionRequestsPerSecondSeries = new XYSeries("Service requests per second");
   private final XYSeries warningTimeExceededSecondSeries = new XYSeries("Service calls exceeding warning time per second");
   private final XYSeriesCollection connectionRequestsPerSecondCollection = new XYSeriesCollection();
@@ -161,15 +159,14 @@ public final class ServerMonitor {
   }
 
   public void refreshDomainList() throws RemoteException {
-    domainListModel.clear();
-    final List<EntityDefinition> definitions = new ArrayList<EntityDefinition>(server.getEntityDefinitions());
-    Collections.sort(definitions, new DefinitionComparator());
-    for (final EntityDefinition definition : definitions) {
-      domainListModel.addElement(definition);
+    domainListModel.setDataVector(new Object[][]{}, new Object[] {"Entity ID", "Table name"});
+    final Map<String,String> definitions = server.getEntityDefinitions();
+    for (final Map.Entry<String, String> definition : definitions.entrySet()) {
+      domainListModel.addRow(new Object[] {definition.getKey(), definition.getValue()});
     }
   }
 
-  public ListModel getDomainListModel() {
+  public TableModel getDomainTableModel() {
     return domainListModel;
   }
 

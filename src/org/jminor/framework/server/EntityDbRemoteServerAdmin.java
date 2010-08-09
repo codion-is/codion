@@ -13,7 +13,6 @@ import org.jminor.common.server.RemoteServer;
 import org.jminor.common.server.ServerLog;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityDbConnection;
-import org.jminor.framework.domain.EntityDefinition;
 
 import org.apache.log4j.Level;
 
@@ -29,6 +28,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -333,7 +333,7 @@ public final class EntityDbRemoteServerAdmin extends UnicastRemoteObject impleme
   }
 
   /** {@inheritDoc} */
-  public Collection<EntityDefinition> getEntityDefinitions() throws RemoteException {
+  public Map<String,String> getEntityDefinitions() throws RemoteException {
     return EntityDbRemoteServer.getEntityDefinitions();
   }
 
