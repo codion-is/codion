@@ -579,10 +579,13 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
   private boolean writablePropertiesModified() {
     for (final String propertyID : getOriginalValueKeys()) {
       final Property property = getProperty(propertyID);
-      if (property instanceof Property.PrimaryKeyProperty || property instanceof Property.TransientProperty) {
-        return true;
+      if (property instanceof Property.ColumnProperty) {
+        final Property.ColumnProperty columnProperty = (Property.ColumnProperty) property;
+        if (!columnProperty.isReadOnly() && columnProperty.isUpdatable()) {
+          return true;
+        }
       }
-      else if (property instanceof Property.ColumnProperty && ((Property.ColumnProperty) property).isUpdatable() && !property.isReadOnly()) {
+      if (property instanceof Property.TransientProperty) {
         return true;
       }
     }

@@ -246,9 +246,8 @@ public class EntityPanel extends JPanel {
   public EntityPanel(final EntityModel model, final String caption, final EntityEditPanel editPanel,
                      final EntityTablePanel tablePanel) {
     Util.rejectNullValue(model, "model");
-    Util.rejectNullValue(caption, "caption");
     this.model = model;
-    this.caption = caption;
+    this.caption = caption == null ? model.getEntityID() : caption;
     this.editPanel = editPanel;
     if (tablePanel == null && model.containsTableModel()) {
       this.tablePanel = new EntityTablePanel(model.getTableModel());

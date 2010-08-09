@@ -80,7 +80,7 @@ public class EmpDept {
             .setIdSource(IdSource.NONE)
             .setOrderByClause(DEPARTMENT_NAME)
             .setStringProvider(new StringProvider<String>(DEPARTMENT_NAME))
-            .setCaption(getString(EMPLOYEE));
+            .setCaption(getString(DEPARTMENT));
 
     /*Defining the entity type T_EMPLOYEE*/
     Entities.define(T_EMPLOYEE, "scott.emp",
@@ -107,7 +107,7 @@ public class EmpDept {
             .setOrderByClause(EMPLOYEE_DEPARTMENT + ", " + EMPLOYEE_NAME)
             .setStringProvider(new StringProvider<String>(EMPLOYEE_NAME))
             .setRowColoring(true)
-            .setCaption(getString(DEPARTMENT));
+            .setCaption(getString(EMPLOYEE));
 
     /*Set a Proxy implementation to provide a custom background color for managers*/
     Entities.setProxy(T_EMPLOYEE, new Entities.Proxy() {

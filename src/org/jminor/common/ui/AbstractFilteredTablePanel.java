@@ -481,7 +481,7 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
         final JLabel label = (JLabel) component;
         label.setHorizontalTextPosition(JLabel.LEFT);
         final int modelColumn = table.convertColumnIndexToModel(column);
-        label.setIcon(getHeaderRendererIcon(modelColumn, label.getFont().getSize()+4));
+        label.setIcon(getHeaderRendererIcon(modelColumn, label.getFont().getSize()));
       }
 
       return component;

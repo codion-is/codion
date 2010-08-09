@@ -1995,3 +1995,7 @@
 0.5.9
   Entities.getSearchProperties() used to replace a couple of similar code snippets
   /** {@inheritDoc} */ added
+  EntityApplicationPanel.loginRequired field added, isLoginRequired() finalized, setter added
+  DomainClassGenerator improved
+  EntityPanelProvider now handles null editPanelClass
+  EntityImpl.writablePropertiesModified() modified

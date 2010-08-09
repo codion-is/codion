@@ -801,7 +801,6 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
           summaryScrollPane.setVisible(false);
           summaryBasePanel = new JPanel(new BorderLayout());
           tableSearchAndSummaryPanel.add(summaryBasePanel, BorderLayout.SOUTH);
-          updateStatusMessage();
         }
 
         southPanel = initializeSouthPanel();
@@ -812,6 +811,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
         initializeToolbar();
         setSearchPanelVisible(Configuration.getBooleanValue(Configuration.DEFAULT_SEARCH_PANEL_STATE));
         bindEvents();
+        updateStatusMessage();
       }
       finally {
         panelInitialized = true;

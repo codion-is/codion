@@ -74,6 +74,8 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   private final boolean persistEntityPanels = Configuration.getBooleanValue(Configuration.PERSIST_ENTITY_PANELS);
   private final Map<EntityPanelProvider, EntityPanel> persistentEntityPanels = new HashMap<EntityPanelProvider, EntityPanel>();
 
+  private boolean loginRequired = Configuration.getBooleanValue(Configuration.AUTHENTICATION_REQUIRED);
+
   private static final int DIVIDER_JUMP = 30;
 
   private static final String NAV_UP = "navigateUp";
@@ -578,8 +580,12 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     }
   }
 
-  protected boolean isLoginRequired() {
-    return Configuration.getBooleanValue(Configuration.AUTHENTICATION_REQUIRED);
+  protected final boolean isLoginRequired() {
+    return loginRequired;
+  }
+
+  protected final void setLoginRequired(boolean loginRequired) {
+    this.loginRequired = loginRequired;
   }
 
   protected String getDefaultLookAndFeelClassName() {

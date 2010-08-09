@@ -58,7 +58,8 @@ public class EntityImplTest {
     referencedEntityValue.setValue(EntityTestDomain.MASTER_CODE, masterCode);
 
     referencedEntityValue.setValue(EntityTestDomain.MASTER_ID, -55);
-    assertTrue(referencedEntityValue.getModifiedState().isActive());
+    //the id is not updatable as it is part of the primary key, which is not updatable by default
+    assertFalse(referencedEntityValue.getModifiedState().isActive());
     referencedEntityValue.saveValue(EntityTestDomain.MASTER_ID);
     assertFalse(referencedEntityValue.getModifiedState().isActive());
 
@@ -68,9 +69,9 @@ public class EntityImplTest {
     referencedEntityValue.setValue(EntityTestDomain.MASTER_NAME, masterName);
     referencedEntityValue.setValue(EntityTestDomain.MASTER_CODE, masterCode);
 
-    referencedEntityValue.setValue(EntityTestDomain.MASTER_ID, -55);
+    referencedEntityValue.setValue(EntityTestDomain.MASTER_NAME, "aname");
     assertTrue(referencedEntityValue.getModifiedState().isActive());
-    referencedEntityValue.revertValue(EntityTestDomain.MASTER_ID);
+    referencedEntityValue.revertValue(EntityTestDomain.MASTER_NAME);
     assertFalse(referencedEntityValue.getModifiedState().isActive());
 
     Entity test = new EntityImpl(EntityTestDomain.T_DETAIL);
