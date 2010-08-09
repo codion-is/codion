@@ -1999,3 +1999,4 @@
   DomainClassGenerator improved
   EntityPanelProvider now handles null editPanelClass
   EntityImpl.writablePropertiesModified() modified
+  EntityImpl.getDefaultValueMap() bug fix

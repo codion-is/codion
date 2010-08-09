@@ -485,11 +485,15 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
   /** {@inheritDoc} */
   public final Entity getDefaultValueMap() {
     final Entity defaultEntity = Entities.entityInstance(entityID);
-    final Collection<Property.ColumnProperty> databaseProperties = Entities.getColumnProperties(entityID);
-    for (final Property.ColumnProperty property : databaseProperties) {
+    final Collection<Property.ColumnProperty> columnProperties = Entities.getColumnProperties(entityID);
+    for (final Property.ColumnProperty property : columnProperties) {
       if (!property.hasParentProperty() && !property.isDenormalized()) {//these are set via their respective parent properties
         defaultEntity.setValue(property, getDefaultValue(property));
       }
+    }
+    final Collection<Property.ForeignKeyProperty> foreignKeyProperties = Entities.getForeignKeyProperties(entityID);
+    for (final Property.ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
+      defaultEntity.setValue(foreignKeyProperty, getDefaultValue(foreignKeyProperty));
     }
 
     return defaultEntity;

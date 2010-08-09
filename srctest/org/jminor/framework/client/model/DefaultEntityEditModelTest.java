@@ -213,23 +213,21 @@ public final class DefaultEntityEditModelTest {
       editModel.setValue(EmpDept.EMPLOYEE_NAME, "Björn");
       editModel.setValue(EmpDept.EMPLOYEE_SALARY, 1000d);
 
-      Entity department = Entities.entityInstance(EmpDept.T_DEPARTMENT);
-      department.setValue(EmpDept.DEPARTMENT_ID, 99);
-      department.setValue(EmpDept.DEPARTMENT_LOCATION, "Limbo");
-      department.setValue(EmpDept.DEPARTMENT_NAME, "Judgment");
+      final Entity tmpDept = Entities.entityInstance(EmpDept.T_DEPARTMENT);
+      tmpDept.setValue(EmpDept.DEPARTMENT_ID, 99);
+      tmpDept.setValue(EmpDept.DEPARTMENT_LOCATION, "Limbo");
+      tmpDept.setValue(EmpDept.DEPARTMENT_NAME, "Judgment");
 
-      department = editModel.getDbProvider().getEntityDb().selectSingle(editModel.getDbProvider().getEntityDb().insert(Arrays.asList(department)).get(0));
+      final Entity department = editModel.getDbProvider().getEntityDb().selectSingle(editModel.getDbProvider().getEntityDb().insert(Arrays.asList(tmpDept)).get(0));
 
       editModel.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, department);
 
-      final Entity toInsert = editModel.getEntityCopy();
       editModel.addAfterInsertListener(new InsertListener() {
         @Override
         protected void inserted(final InsertEvent event) {
           try {
             final Entity inserted = editModel.getDbProvider().getEntityDb().selectSingle(event.getInsertedKeys().get(0));
-            toInsert.setValue(EmpDept.EMPLOYEE_ID, inserted.getValue(EmpDept.EMPLOYEE_ID));
-            assertTrue(toInsert.propertyValuesEqual(inserted));
+            assertEquals(department, inserted.getValue(EmpDept.EMPLOYEE_DEPARTMENT_FK));
           }
           catch (Exception ex) {
             ex.printStackTrace();
@@ -247,6 +245,14 @@ public final class DefaultEntityEditModelTest {
       assertTrue(editModel.isInsertAllowed());
 
       editModel.insert();
+
+      editModel.setValue(EmpDept.EMPLOYEE_NAME, "Bobby");
+      try {
+        editModel.insert();
+      }
+      catch (Exception e) {
+        fail("Should be able to insert again");
+      }
     }
     finally {
       editModel.getDbProvider().getEntityDb().rollbackTransaction();

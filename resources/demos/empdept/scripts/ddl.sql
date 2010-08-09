@@ -18,7 +18,7 @@ CREATE TABLE scott.emp (
   hiredate DATE,
   sal DECIMAL(7, 2) NOT NULL,
   comm DECIMAL(7, 2),
-  deptno INT
+  deptno INT NOT NULL
 );
 
 alter table scott.emp

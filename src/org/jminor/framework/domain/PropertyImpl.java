@@ -280,7 +280,7 @@ class PropertyImpl implements Property, Serializable {
   /** {@inheritDoc} */
   public final Property setNullable(final boolean nullable) {
     if (hasParentProperty()) {
-      throw new RuntimeException("Can not set the nullable status of a property with a parent property");
+      throw new RuntimeException("Set the nullable status of the parent property instead: " + parentProperty);
     }
 
     this.nullable = nullable;
@@ -289,6 +289,10 @@ class PropertyImpl implements Property, Serializable {
 
   /** {@inheritDoc} */
   public final boolean isNullable() {
+    if (hasParentProperty()) {
+      return parentProperty.isNullable();
+    }
+
     return nullable;
   }
 
