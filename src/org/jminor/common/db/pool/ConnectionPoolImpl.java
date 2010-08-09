@@ -48,13 +48,13 @@ public final class ConnectionPoolImpl implements ConnectionPool {
   private boolean closed = false;
 
   private final Counter counter = new Counter();
-  private volatile boolean creatingConnection = false;
   private final User user;
-  private int pooledConnectionTimeout = DEFAULT_TIMEOUT;
-  private int minimumPoolSize = DEFAULT_MAXIMUM_POOL_SIZE / 2;
-  private int maximumPoolSize = DEFAULT_MAXIMUM_POOL_SIZE;
-  private int poolCleanupInterval = DEFAULT_CLEANUP_INTERVAL;
-  private boolean enabled = true;
+  private volatile boolean creatingConnection = false;
+  private volatile int pooledConnectionTimeout = DEFAULT_TIMEOUT;
+  private volatile int minimumPoolSize = DEFAULT_MAXIMUM_POOL_SIZE / 2;
+  private volatile int maximumPoolSize = DEFAULT_MAXIMUM_POOL_SIZE;
+  private volatile int poolCleanupInterval = DEFAULT_CLEANUP_INTERVAL;
+  private volatile boolean enabled = true;
 
   public ConnectionPoolImpl(final PoolableConnectionProvider poolableConnectionProvider, final User user) {
     this.poolableConnectionProvider = poolableConnectionProvider;
@@ -126,7 +126,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
   }
 
   /** {@inheritDoc} */
-  public synchronized int getPooledConnectionTimeout() {
+  public int getPooledConnectionTimeout() {
     return pooledConnectionTimeout;
   }
 
@@ -136,7 +136,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
   }
 
   /** {@inheritDoc} */
-  public synchronized int getMinimumPoolSize() {
+  public int getMinimumPoolSize() {
     return minimumPoolSize;
   }
 
@@ -149,7 +149,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
   }
 
   /** {@inheritDoc} */
-  public synchronized int getMaximumPoolSize() {
+  public int getMaximumPoolSize() {
     return maximumPoolSize;
   }
 
@@ -167,7 +167,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
   }
 
   /** {@inheritDoc} */
-  public void setEnabled(final boolean enabled) {
+  public synchronized void setEnabled(final boolean enabled) {
     this.enabled = enabled;
     if (!enabled) {
       close();
@@ -175,7 +175,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
   }
 
   /** {@inheritDoc} */
-  public void setPoolCleanupInterval(final int poolCleanupInterval) {
+  public synchronized void setPoolCleanupInterval(final int poolCleanupInterval) {
     if (this.poolCleanupInterval != poolCleanupInterval) {
       this.poolCleanupInterval = poolCleanupInterval;
       startPoolCleaner();
