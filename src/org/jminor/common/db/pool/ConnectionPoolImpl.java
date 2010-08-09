@@ -62,6 +62,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
     startPoolCleaner();
   }
 
+  /** {@inheritDoc} */
   public PoolableConnection checkOutConnection() throws ClassNotFoundException, SQLException {
     if (closed) {
       throw new IllegalStateException("Can not check out a connection from a closed connection pool!");
@@ -104,6 +105,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
     return connection;
   }
 
+  /** {@inheritDoc} */
   public void checkInConnection(final PoolableConnection dbConnection) {
     if (closed) {
       disconnect(dbConnection);
@@ -132,27 +134,27 @@ public final class ConnectionPoolImpl implements ConnectionPool {
     }
   }
 
+  /** {@inheritDoc} */
   public User getUser() {
     return user;
   }
 
-  public void close() {
-    closed = true;
-    emptyPool();
-  }
-
+  /** {@inheritDoc} */
   public synchronized int getPooledConnectionTimeout() {
     return pooledConnectionTimeout;
   }
 
+  /** {@inheritDoc} */
   public synchronized void setPooledConnectionTimeout(final int timeout) {
     this.pooledConnectionTimeout = timeout;
   }
 
+  /** {@inheritDoc} */
   public synchronized int getMinimumPoolSize() {
     return minimumPoolSize;
   }
 
+  /** {@inheritDoc} */
   public synchronized void setMinimumPoolSize(final int value) {
     if (value > maximumPoolSize || value < 0) {
       throw new IllegalArgumentException("Minimum pool size must be a positive integer an be less than maximum pool size");
@@ -160,10 +162,12 @@ public final class ConnectionPoolImpl implements ConnectionPool {
     this.minimumPoolSize = value;
   }
 
+  /** {@inheritDoc} */
   public synchronized int getMaximumPoolSize() {
     return maximumPoolSize;
   }
 
+  /** {@inheritDoc} */
   public synchronized void setMaximumPoolSize(final int value) {
     if (value < minimumPoolSize || value < 1) {
       throw new IllegalArgumentException("Maximum pool size must be larger than 1 and larger than minimum pool size");
@@ -171,10 +175,12 @@ public final class ConnectionPoolImpl implements ConnectionPool {
     this.maximumPoolSize = value;
   }
 
+  /** {@inheritDoc} */
   public boolean isEnabled() {
     return enabled;
   }
 
+  /** {@inheritDoc} */
   public void setEnabled(final boolean enabled) {
     this.enabled = enabled;
     if (!enabled) {
@@ -182,6 +188,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
     }
   }
 
+  /** {@inheritDoc} */
   public void setPoolCleanupInterval(final int poolCleanupInterval) {
     if (this.poolCleanupInterval != poolCleanupInterval) {
       this.poolCleanupInterval = poolCleanupInterval;
@@ -189,10 +196,12 @@ public final class ConnectionPoolImpl implements ConnectionPool {
     }
   }
 
+  /** {@inheritDoc} */
   public int getPoolCleanupInterval() {
     return poolCleanupInterval;
   }
 
+  /** {@inheritDoc} */
   public ConnectionPoolStatistics getConnectionPoolStatistics(final long since) {
     final ConnectionPoolStatisticsImpl statistics = new ConnectionPoolStatisticsImpl(user);
     synchronized (connectionPool) {
@@ -219,35 +228,24 @@ public final class ConnectionPoolImpl implements ConnectionPool {
     return statistics;
   }
 
-  /**
-   * @param since the time
-   * @return stats collected since <code>since</code>, the results are not guaranteed to be ordered
-   */
-  public List<ConnectionPoolState> getPoolStatistics(final long since) {
-    final List<ConnectionPoolState> poolStates = new ArrayList<ConnectionPoolState>();
-    synchronized (connectionPoolStatistics) {
-      final ListIterator<ConnectionPoolStateImpl> iterator = connectionPoolStatistics.listIterator();
-      while (iterator.hasNext()) {//NB. the stat log is circular, result should be sorted
-        final ConnectionPoolState state = iterator.next();
-        if (state.getTime() >= since) {
-          poolStates.add(state);
-        }
-      }
-    }
-
-    return poolStates;
-  }
-
+  /** {@inheritDoc} */
   public boolean isCollectFineGrainedStatistics() {
     return collectFineGrainedStatistics;
   }
 
+  /** {@inheritDoc} */
   public void setCollectFineGrainedStatistics(final boolean value) {
     this.collectFineGrainedStatistics = value;
   }
 
+  /** {@inheritDoc} */
   public void resetPoolStatistics() {
     counter.resetPoolStatistics();
+  }
+
+  void close() {
+    closed = true;
+    emptyPool();
   }
 
   private PoolableConnection getConnectionFromPool() {
@@ -326,6 +324,25 @@ public final class ConnectionPoolImpl implements ConnectionPool {
 
     counter.incrementConnectionsDestroyedCounter();
     poolableConnectionProvider.destroyConnection(connection);
+  }
+
+  /**
+   * @param since the time
+   * @return stats collected since <code>since</code>, the results are not guaranteed to be ordered
+   */
+  private List<ConnectionPoolState> getPoolStatistics(final long since) {
+    final List<ConnectionPoolState> poolStates = new ArrayList<ConnectionPoolState>();
+    synchronized (connectionPoolStatistics) {
+      final ListIterator<ConnectionPoolStateImpl> iterator = connectionPoolStatistics.listIterator();
+      while (iterator.hasNext()) {//NB. the stat log is circular, result should be sorted
+        final ConnectionPoolState state = iterator.next();
+        if (state.getTime() >= since) {
+          poolStates.add(state);
+        }
+      }
+    }
+
+    return poolStates;
   }
 
   private static class Counter {

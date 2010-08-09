@@ -16,8 +16,14 @@ import java.util.List;
  */
 public interface EntityLookupModel extends EntityDataProvider {
 
+  /**
+   * @param listener a listener to be notified each time the selected entities are changed
+   */
   void addSelectedEntitiesListener(final ActionListener listener);
 
+  /**
+   * @param listener the listener to remove
+   */
   void removeSelectedEntitiesListener(final ActionListener listener);
 
   /**
@@ -25,8 +31,14 @@ public interface EntityLookupModel extends EntityDataProvider {
    */
   EventObserver searchStringObserver();
 
+  /**
+   * @param listener a listener to be notified each time the search string changes
+   */
   void addSearchStringListener(final ActionListener listener);
 
+  /**
+   * @param listener the listener to remove
+   */
   void removeSearchStringListener(final ActionListener listener);
 
   /**

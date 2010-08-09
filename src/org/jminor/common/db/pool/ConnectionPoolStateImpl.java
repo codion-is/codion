@@ -28,14 +28,17 @@ public final class ConnectionPoolStateImpl implements ConnectionPoolState, Seria
     this.connectionsInUse = connectionsInUse;
   }
 
+  /** {@inheritDoc} */
   public int getConnectionCount() {
     return connectionCount;
   }
 
+  /** {@inheritDoc} */
   public int getConnectionsInUse() {
     return connectionsInUse;
   }
 
+  /** {@inheritDoc} */
   public long getTime() {
     return time;
   }

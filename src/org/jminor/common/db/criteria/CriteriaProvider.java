@@ -10,5 +10,8 @@ package org.jminor.common.db.criteria;
  */
 public interface CriteriaProvider<T> {
 
+  /**
+   * @return a criteria object
+   */
   Criteria<T> getCriteria();
 }

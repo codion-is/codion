@@ -106,7 +106,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
   private final FilterCriteria<T> filterCriteria = new FilterCriteria<T>() {
     public boolean include(final T item) {
       for (final ColumnSearchModel columnFilter : columnFilterModels) {
-        if (columnFilter.isSearchEnabled() && !columnFilter.include(item)) {
+        if (columnFilter.isEnabled() && !columnFilter.include(item)) {
           return false;
         }
       }

@@ -24,16 +24,38 @@ public interface ValueChangeMapEditModel<K, V> extends Refreshable {
    */
   StateObserver getValidState();
 
+  /**
+   * @param key the key for which to monitor value changes
+   * @param listener a listener notified each time the value of <code>key</code> is set
+   */
   void addValueSetListener(final K key, final ActionListener listener);
 
+  /**
+   * @param key the key
+   * @param listener the listener to remove
+   */
   void removeValueSetListener(final K key, final ActionListener listener);
 
+  /**
+   * @param listener a listener notified each time the value map is set
+   */
   void addValueMapSetListener(final ActionListener listener);
 
+  /**
+   * @param listener the listener to remove
+   */
   void removeValueMapSetListener(final ActionListener listener);
 
+  /**
+   * @param key the key for which to monitor value changes
+   * @param listener a listener notified each time the value of <code>key</code> changes
+   */
   void addValueListener(final K key, final ActionListener listener);
 
+  /**
+   * @param key the key
+   * @param listener the listener to remove
+   */
   void removeValueListener(final K key, final ActionListener listener);
 
   /**

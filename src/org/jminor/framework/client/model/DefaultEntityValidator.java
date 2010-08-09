@@ -47,10 +47,12 @@ public class DefaultEntityValidator extends DefaultValueMapValidator<String, Obj
     this.dbProvider = dbProvider;
   }
 
+  /** {@inheritDoc} */
   public final String getEntityID() {
     return entityID;
   }
 
+  /** {@inheritDoc} */
   public final EntityDbProvider getDbProvider() {
     return dbProvider;
   }
@@ -67,16 +69,19 @@ public class DefaultEntityValidator extends DefaultValueMapValidator<String, Obj
     return Entities.getProperty(entityID, key).isNullable();
   }
 
+  /** {@inheritDoc} */
   public void validate(final Entity entity, final int action) throws ValidationException {
     validate((ValueMap<String, Object>) entity, action);
   }
 
+  /** {@inheritDoc} */
   public final void validate(final Collection<Entity> entities, final int action) throws ValidationException {
     for (final Entity entity : entities) {
       validate(entity, action);
     }
   }
 
+  /** {@inheritDoc} */
   @Override
   public final void validate(final ValueMap<String, Object> valueMap, final int action) throws ValidationException {
     Util.rejectNullValue(valueMap, "entity");
@@ -85,11 +90,13 @@ public class DefaultEntityValidator extends DefaultValueMapValidator<String, Obj
     }
   }
 
+  /** {@inheritDoc} */
   @Override
   public final void validate(final ValueMap<String, Object> valueMap, final String key, final int action) throws ValidationException {
     validate((Entity) valueMap, key, action);
   }
 
+  /** {@inheritDoc} */
   public void validate(final Entity entity, final String propertyID, final int action) throws ValidationException {
     Util.rejectNullValue(entity, "entity");
     final Property property = entity.getProperty(propertyID);
@@ -101,6 +108,7 @@ public class DefaultEntityValidator extends DefaultValueMapValidator<String, Obj
     }
   }
 
+  /** {@inheritDoc} */
   public final void performRangeValidation(final Entity entity, final Property property) throws RangeValidationException {
     if (entity.isValueNull(property.getPropertyID())) {
       return;
@@ -118,6 +126,7 @@ public class DefaultEntityValidator extends DefaultValueMapValidator<String, Obj
     }
   }
 
+  /** {@inheritDoc} */
   public final void performNullValidation(final Entity entity, final Property property, final int action) throws NullValidationException {
     if (!isNullable(entity, property.getPropertyID()) && entity.isValueNull(property.getPropertyID())) {
       if (action == INSERT) {

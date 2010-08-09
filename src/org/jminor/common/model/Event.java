@@ -22,5 +22,8 @@ public interface Event extends ActionListener, EventObserver {
    */
   void fire(final ActionEvent event);
 
+  /**
+   * @return an observer notified each time this event fires
+   */
   EventObserver getObserver();
 }

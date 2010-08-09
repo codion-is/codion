@@ -156,7 +156,7 @@ public final class PropertySearchPanel extends ColumnSearchPanel<Property.Column
     private Action getEnableAction() {
       return new AbstractAction() {
         public void actionPerformed(final ActionEvent e) {
-          model.setSearchEnabled(!model.isSearchEnabled());
+          model.setEnabled(!model.isEnabled());
         }
       };
     }

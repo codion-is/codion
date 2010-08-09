@@ -12,16 +12,34 @@ import java.util.List;
 
 public interface EntityModel extends Refreshable, EntityDataProvider {
 
+  /**
+   * @param listener a listener to be notified before a refresh is performed
+   */
   void addBeforeRefreshListener(final ActionListener listener);
 
+  /**
+   * @param listener the listener to remove
+   */
   void removeBeforeRefreshListener(final ActionListener listener);
 
+  /**
+   * @param listener a listener to be notified each time a refresh has been performed
+   */
   void addAfterRefreshListener(final ActionListener listener);
 
+  /**
+   * @param listener the listener to remove
+   */
   void removeAfterRefreshListener(final ActionListener listener);
 
+  /**
+   * @param listener a listener to be notified each time the linked detail models change
+   */
   void addLinkedDetailModelsListener(final ActionListener listener);
 
+  /**
+   * @param listener the listener to remove
+   */
   void removeLinkedDetailModelsListener(final ActionListener listener);
 
   /**

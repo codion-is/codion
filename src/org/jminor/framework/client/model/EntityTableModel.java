@@ -203,8 +203,23 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
    */
   Map<String, Collection<Entity>> getSelectionDependencies();
 
+  /**
+   * Updates the given Entities. If the entities are unmodified or the list is empty
+   * this method returns silently.
+   * @param entities the Entities to update
+   * @throws DbException in case of a database exception
+   * @throws CancelException in case the user cancels the operation
+   * @throws org.jminor.common.db.exception.RecordModifiedException in case an entity was modified by another user
+   * @throws ValidationException in case validation fails
+   * @see EntityValidator#validate(java.util.Collection, int)
+   */
   void update(final List<Entity> entities) throws CancelException, ValidationException, DbException;
 
+  /**
+   * Deletes the selected entities
+   * @throws DbException in case of a database exception
+   * @throws CancelException in case the user cancels the operation
+   */
   void deleteSelected() throws CancelException, DbException;
 
   /**
@@ -260,6 +275,11 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
    */
   ReportDataWrapper getReportDataSource();
 
+  /**
+   * Sets the report data source to use during report generation
+   * @param reportDataSource the data source
+   * @return this table model instance
+   */
   EntityTableModel setReportDataSource(final ReportDataWrapper reportDataSource);
 
   /**
@@ -275,5 +295,9 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
    */
   Entity getEntityByPrimaryKey(final Entity.Key primaryKey);
 
+  /**
+   * @param primaryKey the primary key
+   * @return the row index of the entity with the given primary key, -1 if not found
+   */
   int indexOf(final Entity.Key primaryKey);
 }

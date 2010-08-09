@@ -62,6 +62,7 @@ public class DefaultPropertyComboBoxModel extends DefaultFilteredComboBoxModel {
     }
   }
 
+  /** {@inheritDoc} */
   @Override
   protected final List<?> initializeContents() {
     try {

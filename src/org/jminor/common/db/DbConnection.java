@@ -17,8 +17,14 @@ public interface DbConnection extends PoolableConnection {
    */
   User getUser();
 
+  /**
+   * @param enabled true to enable logging on this connection, false to disable
+   */
   void setLoggingEnabled(final boolean enabled);
 
+  /**
+   * @return true if logging is enabled, false otherwise
+   */
   boolean isLoggingEnabled();
 
   /**

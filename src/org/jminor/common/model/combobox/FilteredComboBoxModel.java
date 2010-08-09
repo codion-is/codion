@@ -17,12 +17,24 @@ import java.util.Collection;
  */
 public interface FilteredComboBoxModel<T> extends FilteredModel<T>, ComboBoxModel, Refreshable {
 
+  /**
+   * @param listener a listener notified each time the selection changes
+   */
   void addSelectionListener(final ActionListener listener);
 
+  /**
+   * @param listener a selection listener to remove
+   */
   void removeSelectionListener(final ActionListener listener);
 
+  /**
+   * @param contents the contents to display in this combo box model
+   */
   void setContents(final Collection<T> contents);
 
+  /**
+   * @param item the item to add
+   */
   void addItem(final T item);
 
   /**

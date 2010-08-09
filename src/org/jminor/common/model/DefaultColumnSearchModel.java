@@ -57,6 +57,7 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
     bindEvents();
   }
 
+  /** {@inheritDoc} */
   public final K getColumnIdentifier() {
     return columnIdentifier;
   }
@@ -97,7 +98,7 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
     setUpperBound(value);
     final boolean enableSearch = value != null;
     if (enabled != enableSearch) {
-      setSearchEnabled(enableSearch);
+      setEnabled(enableSearch);
     }
   }
 
@@ -253,12 +254,12 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
   }
 
   /** {@inheritDoc} */
-  public final boolean isSearchEnabled() {
+  public final boolean isEnabled() {
     return enabled;
   }
 
   /** {@inheritDoc} */
-  public final void setSearchEnabled(final boolean value) {
+  public final void setEnabled(final boolean value) {
     checkLock();
     if (enabled != value) {
       enabled = value;
@@ -278,7 +279,7 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
 
   /** {@inheritDoc} */
   public final void clearSearch() {
-    setSearchEnabled(false);
+    setEnabled(false);
     setUpperBound((Object) null);
     setLowerBound((Object) null);
     setSearchType(SearchType.LIKE);
@@ -549,10 +550,10 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
           final boolean upperBoundNull = upperBound == null;
           final boolean lowerBoundNull = lowerBound == null;
           if (getValueCount(searchType) == 2) {
-            setSearchEnabled(!lowerBoundNull && !upperBoundNull);
+            setEnabled(!lowerBoundNull && !upperBoundNull);
           }
           else {
-            setSearchEnabled(!upperBoundNull);
+            setEnabled(!upperBoundNull);
           }
         }
       }

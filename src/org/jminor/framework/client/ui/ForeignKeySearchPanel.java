@@ -70,7 +70,7 @@ public final class ForeignKeySearchPanel extends ColumnSearchPanel<Property.Fore
     private Action getEnableAction() {
       return new AbstractAction() {
         public void actionPerformed(final ActionEvent e) {
-          model.setSearchEnabled(!model.isSearchEnabled());
+          model.setEnabled(!model.isEnabled());
         }
       };
     }

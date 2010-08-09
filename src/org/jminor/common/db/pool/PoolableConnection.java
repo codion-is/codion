@@ -26,8 +26,14 @@ public interface PoolableConnection {
    */
   void setPoolTime(final long time);
 
+  /**
+   * @param retryCount the number of retries used to retrieve this connection from the pool
+   */
   void setPoolRetryCount(final int retryCount);
 
+  /**
+   * @return the number of retries required to retrieve this connection from the pool
+   */
   int getPoolRetryCount();
 
   /**

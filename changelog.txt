@@ -2000,3 +2000,4 @@
   EntityPanelProvider now handles null editPanelClass
   EntityImpl.writablePropertiesModified() modified
   EntityImpl.getDefaultValueMap() bug fix
+  ColumnSearchModel.searchEnabled renamed to enabled

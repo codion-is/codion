@@ -60,18 +60,39 @@ public interface PropertySummaryModel {
    */
   void setSummaryType(final SummaryType summaryType);
 
+  /**
+   * @return the current summary type
+   */
   SummaryType getSummaryType();
 
+  /**
+   * @return a list containing the available summary types
+   */
   List<SummaryType> getSummaryTypes();
 
+  /**
+   * @return a string represting the summary value
+   */
   String getSummaryText();
 
+  /**
+   * @param listener a listener to be notified each time the summary changes
+   */
   void addSummaryListener(final ActionListener listener);
 
+  /**
+   * @param listener the listener to remove
+   */
   void removeSummaryListener(final ActionListener listener);
 
+  /**
+   * @param listener a listener to be notified each time the summary type changes
+   */
   void addSummaryTypeListener(final ActionListener listener);
 
+  /**
+   * @param listener the listener to remove
+   */
   void removeSummaryTypeListener(final ActionListener listener);
 
   /**

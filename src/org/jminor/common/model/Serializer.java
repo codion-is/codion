@@ -11,6 +11,12 @@ import java.util.List;
  */
 public interface Serializer<V> {
 
+  /**
+   * Serializes the given values to a string
+   * @param values the values to serialize
+   * @return a string representing the given values
+   * @throws SerializeException in case of an exception
+   */
   String serialize(final List<V> values) throws SerializeException;
 
   class SerializeException extends Exception {

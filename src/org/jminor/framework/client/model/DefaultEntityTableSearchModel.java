@@ -144,7 +144,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
   /** {@inheritDoc} */
   public final boolean include(final Entity item) {
     for (final ColumnSearchModel<Property> columnFilter : propertyFilterModels.values()) {
-      if (columnFilter.isSearchEnabled() && !columnFilter.include(item)) {
+      if (columnFilter.isEnabled() && !columnFilter.include(item)) {
         return false;
       }
     }
@@ -198,12 +198,12 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
 
   /** {@inheritDoc} */
   public final boolean isSearchEnabled(final String propertyID) {
-    return containsPropertySearchModel(propertyID) && getPropertySearchModel(propertyID).isSearchEnabled();
+    return containsPropertySearchModel(propertyID) && getPropertySearchModel(propertyID).isEnabled();
   }
 
   /** {@inheritDoc} */
   public final boolean isFilterEnabled(final String propertyID) {
-    return getPropertyFilterModel(propertyID).isSearchEnabled();
+    return getPropertyFilterModel(propertyID).isEnabled();
   }
 
   /** {@inheritDoc} */
@@ -211,7 +211,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
     final String searchState = getSearchModelState();
     if (containsPropertySearchModel(propertyID)) {
       final PropertySearchModel searchModel = getPropertySearchModel(propertyID);
-      searchModel.setSearchEnabled(values != null && !values.isEmpty());
+      searchModel.setEnabled(values != null && !values.isEmpty());
       searchModel.setUpperBound((Object) null);//because the upperBound could be a reference to the active entity which changes accordingly
       searchModel.setUpperBound(values != null && values.isEmpty() ? null : values);//this then fails to register a changed upper bound
     }
@@ -230,7 +230,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
   public final Criteria<Property.ColumnProperty> getSearchCriteria() {
     final CriteriaSet<Property.ColumnProperty> criteriaSet = new CriteriaSet<Property.ColumnProperty>(searchConjunction);
     for (final PropertySearchModel<? extends Property.SearchableProperty> criteria : propertySearchModels.values()) {
-      if (criteria.isSearchEnabled()) {
+      if (criteria.isEnabled()) {
         criteriaSet.add(criteria.getCriteria());
       }
     }
@@ -265,7 +265,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
   /** {@inheritDoc} */
   public final void setSearchEnabled(final String propertyID, final boolean enabled) {
     if (containsPropertySearchModel(propertyID)) {
-      getPropertySearchModel(propertyID).setSearchEnabled(enabled);
+      getPropertySearchModel(propertyID).setEnabled(enabled);
     }
   }
 

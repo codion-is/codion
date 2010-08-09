@@ -253,8 +253,14 @@ public interface Property extends Attribute {
    */
   boolean hasParentProperty();
 
+  /**
+   * @param foreignKeyProperty the parent property
+   */
   void setParentProperty(final ForeignKeyProperty foreignKeyProperty);
 
+  /**
+   * @return the parent property
+   */
   ForeignKeyProperty getParentProperty();
 
   interface SearchableProperty extends Property {}
@@ -371,6 +377,10 @@ public interface Property extends Attribute {
      */
     List<Item<Object>> getValues();
 
+    /**
+     * @param value the value
+     * @return the caption associated with the given value
+     */
     String getCaption(final Object value);
   }
 
@@ -457,6 +467,11 @@ public interface Property extends Attribute {
      */
     String toSQLString(final Boolean value);
 
+    /**
+     * Translates the given Boolean value into a sql value
+     * @param value the value to translate
+     * @return the actual value used to represent the given boolean value
+     */
     Object toSQLValue(final Boolean value);
   }
 

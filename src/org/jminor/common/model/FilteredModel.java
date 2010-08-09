@@ -13,8 +13,14 @@ import java.util.List;
  */
 public interface FilteredModel<T> {
 
+  /**
+   * @param listener a listener notified each time this model is filtered
+   */
   void addFilteringListener(final ActionListener listener);
 
+  /**
+   * @param listener the listener to remove
+   */
   void removeFilteringListener(final ActionListener listener);
 
   /**

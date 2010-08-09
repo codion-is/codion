@@ -62,7 +62,7 @@ public class DefaultSearchModelTest {
 
     model.setUpperBound("hello");
     assertEquals(1, searchStateCounter.size());
-    assertFalse(model.isSearchEnabled());
+    assertFalse(model.isEnabled());
     assertEquals(1, upperBoundCounter.size());
     assertEquals("hello", model.getUpperBound());
     model.setLowerBound("hello");
@@ -129,7 +129,7 @@ public class DefaultSearchModelTest {
     final DefaultColumnSearchModel<String> model = new DefaultColumnSearchModel<String>("test", Types.VARCHAR, "%");
     assertTrue(model.isAutoEnable());
     model.setUpperBound("test");
-    assertTrue(model.isSearchEnabled());
+    assertTrue(model.isEnabled());
     model.setCaseSensitive(false);
     assertFalse(model.isCaseSensitive());
     assertEquals("test", model.getColumnIdentifier());
@@ -143,9 +143,9 @@ public class DefaultSearchModelTest {
     assertTrue(model.isAutomaticWildcard());
 
     model.addEnabledListener(enabledListener);
-    model.setSearchEnabled(false);
+    model.setEnabled(false);
     assertEquals(1, enabledCounter.size());
-    model.setSearchEnabled(true);
+    model.setEnabled(true);
     assertEquals(2, enabledCounter.size());
 
     model.removeEnabledListener(enabledListener);
@@ -165,7 +165,7 @@ public class DefaultSearchModelTest {
     }
     catch (IllegalStateException e) {}
     try {
-      model.setSearchEnabled(true);
+      model.setEnabled(true);
       fail("Should not be able to set search enabled in a locked search model");
     }
     catch (IllegalStateException e) {}

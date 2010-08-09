@@ -26,10 +26,12 @@ public class DefaultEntityTableColumnModel extends DefaultTableColumnModel imple
     initializeColumns();
   }
 
+  /** {@inheritDoc} */
   public final String getEntityID() {
     return entityID;
   }
 
+  /** {@inheritDoc} */
   public final List<Property> getColumnProperties() {
     return columnProperties;
   }

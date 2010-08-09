@@ -93,6 +93,7 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> implements
     }
   }
 
+  /** {@inheritDoc} */
   public final void changedUpdate(final DocumentEvent e) {}
 
   /** {@inheritDoc} */

@@ -242,6 +242,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     });
   }
 
+  /** {@inheritDoc} */
   @Override
   protected Object translateSelectionItem(final Object item) {
     if (item instanceof Entity) {
@@ -258,6 +259,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     }
   }
 
+  /** {@inheritDoc} */
   @Override
   protected final boolean vetoSelectionChange(final Object item) {
     if (getSize() == 0) {
@@ -268,9 +270,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     return theItem != null && !theItem.equals(getNullValueString()) && !(theItem instanceof Entity);
   }
 
-  /**
-   * @return the data to be presented in this EntityComboBoxModel, called when the data is refreshed
-   */
+  /** {@inheritDoc} */
   @Override
   protected final List<Entity> initializeContents() {
     try {

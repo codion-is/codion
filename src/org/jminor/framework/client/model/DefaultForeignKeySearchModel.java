@@ -63,7 +63,7 @@ public class DefaultForeignKeySearchModel extends DefaultColumnSearchModel<Prope
   @Override
   public final String toString() {
     final StringBuilder stringBuilder = new StringBuilder(getColumnIdentifier().getPropertyID());
-    if (isSearchEnabled()) {
+    if (isEnabled()) {
       stringBuilder.append(getSearchType());
       stringBuilder.append(getUpperBound() != null ? toString(getUpperBound()) : "null");
       stringBuilder.append(getLowerBound() != null ? toString(getLowerBound()) : "null");

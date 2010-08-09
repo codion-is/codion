@@ -8,6 +8,7 @@ package org.jminor.common.model;
  * @param <T> the type of items this criteria filters.
  */
 public interface FilterCriteria<T> {
+
   /**
    * @param item the item
    * @return true if <code>item</code> should be included, false if it should be filtered

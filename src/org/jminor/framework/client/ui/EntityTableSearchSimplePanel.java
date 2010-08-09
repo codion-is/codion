@@ -85,7 +85,7 @@ public final class EntityTableSearchSimplePanel extends JPanel implements Entity
           propertySearchModel.setCaseSensitive(false);
           propertySearchModel.setUpperBound(searchTextWithWildcards);
           propertySearchModel.setSearchType(SearchType.LIKE);
-          propertySearchModel.setSearchEnabled(true);
+          propertySearchModel.setEnabled(true);
         }
       }
 

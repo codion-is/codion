@@ -40,6 +40,7 @@ public final class EntityDbLocalProvider extends AbstractEntityDbProvider {
     this.connectionProperties.put(Database.PASSWORD_PROPERTY, user.getPassword());
   }
 
+  /** {@inheritDoc} */
   public String getDescription() {
     final String sid = database.getSid();
     if (sid == null) {
@@ -49,6 +50,7 @@ public final class EntityDbLocalProvider extends AbstractEntityDbProvider {
     return sid;
   }
 
+  /** {@inheritDoc} */
   public void disconnect() {
     try {
       if (getEntityDbInternal() != null && getEntityDbInternal().isConnectionValid()) {
@@ -64,6 +66,7 @@ public final class EntityDbLocalProvider extends AbstractEntityDbProvider {
     }
   }
 
+  /** {@inheritDoc} */
   @Override
   protected EntityDb connect() {
     try {
@@ -75,6 +78,7 @@ public final class EntityDbLocalProvider extends AbstractEntityDbProvider {
     }
   }
 
+  /** {@inheritDoc} */
   @Override
   protected boolean isConnectionValid() {
     try {

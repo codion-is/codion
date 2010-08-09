@@ -24,36 +24,84 @@ public interface FilteredTableModel<T, C> extends FilteredModel<T>, TableModel, 
    */
   StateObserver getMultipleSelectionState();
 
+  /**
+   * @param listener a listener to be notified each time the selection changes
+   */
   void addSelectionChangedListener(final ActionListener listener);
 
+  /**
+   * @param listener the listener to remove
+   */
   void removeSelectionChangedListener(final ActionListener listener);
 
+  /**
+   * @param listener a listener to be notified each time the selected index changes
+   */
   void addSelectedIndexListener(final ActionListener listener);
 
+  /**
+   * @param listener the listener to remove
+   */
   void removeSelectedIndexListener(final ActionListener listener);
 
+  /**
+   * @param listener a listener to be notified each time a refresh is about to start
+   */
   void addRefreshStartedListener(final ActionListener listener);
 
+  /**
+   * @param listener the listener to remove
+   */
   void removeRefreshStartedListener(final ActionListener listener);
 
+  /**
+   * @param listener a listener to be notified each time a refresh has ended
+   */
   void addRefreshDoneListener(final ActionListener listener);
 
+  /**
+   * @param listener the listener to remove
+   */
   void removeRefreshDoneListener(final ActionListener listener);
 
+  /**
+   * @param listener a listener to be notified each time the model has been sorted
+   */
   void addSortingListener(final ActionListener listener);
 
+  /**
+   * @param listener the listener to remove
+   */
   void removeSortingListener(final ActionListener listener);
 
+  /**
+   * @param listener a listener to be notified each time a column is hidden
+   */
   void addColumnHiddenListener(final ActionListener listener);
 
+  /**
+   * @param listener the listener to remove
+   */
   void removeColumnHiddenListener(final ActionListener listener);
 
+  /**
+   * @param listener a listener to be notified each time a column is shown
+   */
   void addColumnShownListener(final ActionListener listener);
 
+  /**
+   * @param listener the listener to remove
+   */
   void removeColumnShownListener(final ActionListener listener);
 
+  /**
+   * @param listener a listener to be notified each time the table data changes
+   */
   void addTableDataChangedListener(final ActionListener listener);
 
+  /**
+   * @param listener the listener to remove
+   */
   void removeTableDataChangedListener(final ActionListener listener);
 
   /**

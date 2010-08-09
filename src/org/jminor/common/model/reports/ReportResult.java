@@ -9,5 +9,9 @@ package org.jminor.common.model.reports;
  * Time: 21:09:30
  */
 public interface ReportResult<R> {
+
+  /**
+   * @return a populated report, ready for display
+   */
   R getResult();
 }

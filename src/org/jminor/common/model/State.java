@@ -27,7 +27,7 @@ public interface State extends StateObserver {
   /**
    * A state which behaves according to a set of states, either ANDing or ORing those together
    * when determining its own state.
-   */  
+   */
   interface AggregateState extends State {
 
     /**
@@ -35,8 +35,14 @@ public interface State extends StateObserver {
      */
     Conjunction getConjunction();
 
+    /**
+     * @param state the state to add to this aggregate state
+     */
     void addState(final StateObserver state);
 
+    /**
+     * @param state the state to remove from this aggregate state
+     */
     void removeState(final StateObserver state);
   }
 

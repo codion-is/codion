@@ -4,5 +4,9 @@
 package org.jminor.common.model.reports;
 
 public interface ReportDataWrapper<T> {
+
+  /**
+   * @return the data source being wrapped
+   */
   T getDataSource();
 }

@@ -307,7 +307,7 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
       final ColumnSearchModel model = tableModel.getFilterModel(column.getModelIndex());
       model.addSearchStateListener(new ActionListener() {
         public void actionPerformed(final ActionEvent e) {
-          if (model.isSearchEnabled()) {
+          if (model.isEnabled()) {
             addFilterIndicator(column);
           }
           else {
@@ -317,7 +317,7 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
           getJTable().getTableHeader().repaint();
         }
       });
-      if (model.isSearchEnabled()) {
+      if (model.isEnabled()) {
         addFilterIndicator(column);
       }
     }

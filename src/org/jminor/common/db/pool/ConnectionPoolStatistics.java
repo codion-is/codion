@@ -12,33 +12,78 @@ import java.util.List;
  */
 public interface ConnectionPoolStatistics {
 
+  /**
+   * @return the connection pool user
+   */
   User getUser();
 
+  /**
+   * @return fine grained list of pool states associated with this statistics object
+   */
   List<ConnectionPoolState> getPoolStatistics();
 
+  /**
+   * @return the number of available connections
+   */
   int getAvailableInPool();
 
+  /**
+   * @return the number of connections in use
+   */
   int getConnectionsInUse();
 
+  /**
+   * @return the timestamp
+   */
   long getTimestamp();
 
+  /**
+   * @return the time at which this statistics object was created
+   */
   long getCreationDate();
 
+  /**
+   * @return the number of connections created by the pool
+   */
   int getConnectionsCreated();
 
+  /**
+   * @return the number of idle connections destroyed by the pool
+   */
   int getConnectionsDestroyed();
 
+  /**
+   * @return the last time stats were reset
+   */
+  long getResetDate();
+
+  /**
+   * @return the number of delayed connection requests since last reset
+   */
   int getConnectionRequestsDelayed();
 
+  /**
+   * @return the number of connection requests since last reset
+   */
   int getConnectionRequests();
 
+  /**
+   * @return the number of delayed connection requests per second
+   */
   int getRequestsDelayedPerSecond();
 
+  /**
+   * @return the number of connection requests per second
+   */
   int getRequestsPerSecond();
 
+  /**
+   * @return the avarage check out time in nanoseconds
+   */
   long getAverageCheckOutTime();
 
+  /**
+   * @return the total number of connections being managed by the pool
+   */
   int getLiveConnectionCount();
-
-  long getResetDate();
 }

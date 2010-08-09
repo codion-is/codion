@@ -11,6 +11,12 @@ import java.util.List;
  */
 public interface Deserializer<V> {
 
+  /**
+   * Deserializes the given string into a list of values
+   * @param values the string representing the values
+   * @return a list containing the values in the same order they appear in the string
+   * @throws DeserializeException in case of an exception
+   */
   List<V> deserialize(final String values) throws DeserializeException;
 
   class DeserializeException extends Exception {

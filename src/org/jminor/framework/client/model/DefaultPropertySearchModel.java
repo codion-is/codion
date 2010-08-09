@@ -30,7 +30,7 @@ public class DefaultPropertySearchModel extends DefaultColumnSearchModel<Propert
   @Override
   public final String toString() {
     final StringBuilder stringBuilder = new StringBuilder(getColumnIdentifier().getPropertyID());
-    if (isSearchEnabled()) {
+    if (isEnabled()) {
       stringBuilder.append(getSearchType());
       stringBuilder.append(getUpperBound() != null ? toString(getUpperBound()) : "null");
       stringBuilder.append(getLowerBound() != null ? toString(getLowerBound()) : "null");

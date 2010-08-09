@@ -21,6 +21,7 @@ public final class ValueListInputProvider extends AbstractInputProvider<Object, 
     super(createComboBox(currentValue, values));
   }
 
+  /** {@inheritDoc} */
   @SuppressWarnings({"unchecked"})
   @Override
   public Object getValue() {

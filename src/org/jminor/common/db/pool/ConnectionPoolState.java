@@ -11,9 +11,18 @@ package org.jminor.common.db.pool;
 */
 public interface ConnectionPoolState {
 
+  /**
+   * @return the total number of connections being managed by the pool
+   */
   int getConnectionCount();
 
+  /**
+   * @return the number of connections currently in use
+   */
   int getConnectionsInUse();
 
+  /**
+   * @return the timestamp associated with this pool state
+   */
   long getTime();
 }

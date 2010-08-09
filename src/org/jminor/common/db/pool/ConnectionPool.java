@@ -57,23 +57,53 @@ public interface ConnectionPool {
    */
   void setCollectFineGrainedStatistics(final boolean value);
 
+  /**
+   * @param enabled true to enable this pool, false to disable
+   */
   void setEnabled(final boolean enabled);
 
+  /**
+   * @return true if this pool is enabled, false otherwise
+   */
   boolean isEnabled();
 
+  /**
+   * @param poolCleanupInterval the pool cleanup interval in milliseconds
+   */
   void setPoolCleanupInterval(final int poolCleanupInterval);
 
+  /**
+   * @return the connection timeout in milliseconds
+   */
   int getPooledConnectionTimeout();
 
+  /**
+   * @param timeout the connection timeout in milliseconds
+   */
   void setPooledConnectionTimeout(final int timeout);
 
+  /**
+   * @return the pool cleanup interval in milliseconds
+   */
   int getPoolCleanupInterval();
 
+  /**
+   * @return the minimum number of connections to keep in the pool
+   */
   int getMinimumPoolSize();
 
+  /**
+   * @param value the minimum number of connections to keep in the pool
+   */
   void setMinimumPoolSize(final int value);
 
+  /**
+   * @return the maximum number of connections this pool can create
+   */
   int getMaximumPoolSize();
 
+  /**
+   * @param value the maximum number of connections this pool can create
+   */
   void setMaximumPoolSize(final int value);
 }

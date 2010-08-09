@@ -20,10 +20,12 @@ public abstract class AbstractEntityDbProvider implements EntityDbProvider {
     this.user = user;
   }
 
+  /** {@inheritDoc} */
   public final User getUser() {
     return user;
   }
 
+  /** {@inheritDoc} */
   public final void setUser(final User user) {
     if (Util.equal(user, this.user)) {
       return;
@@ -32,6 +34,7 @@ public abstract class AbstractEntityDbProvider implements EntityDbProvider {
     this.user = user;
   }
 
+  /** {@inheritDoc} */
   public final boolean isConnected() {
     try {
       return entityDb != null && entityDb.isConnected();
@@ -41,6 +44,7 @@ public abstract class AbstractEntityDbProvider implements EntityDbProvider {
     }
   }
 
+  /** {@inheritDoc} */
   public final EntityDb getEntityDb() {
     if (user == null) {
       throw new IllegalStateException("No user set");

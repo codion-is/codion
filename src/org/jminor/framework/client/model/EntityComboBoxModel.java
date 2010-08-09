@@ -60,7 +60,13 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity>, Enti
    */
   void setEntitySelectCriteria(final EntitySelectCriteria entitySelectCriteria);
 
+  /**
+   * @param listener a listener to be notified each time this model is refreshed
+   */
   void addRefreshListener(final ActionListener listener);
 
+  /**
+   * @param listener the listener to remove
+   */
   void removeRefreshListener(final ActionListener listener);
 }

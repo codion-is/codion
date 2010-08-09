@@ -14,6 +14,10 @@ public interface StateObserver extends EventObserver {
    */
   boolean isActive();
 
+  /**
+   * Links the enabled state of the given action to the active state of the state being observed
+   * @param action an action to link
+   */
   void addListeningAction(final Action action);
 
   /**

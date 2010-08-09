@@ -126,7 +126,7 @@ public class ColumnSearchPanel<K> extends JPanel {
     this.upperBoundField = upperBoundField;
     this.lowerBoundField = lowerBoundField;
     this.toggleSearchEnabled = ControlProvider.createToggleButton(
-            Controls.toggleControl(searchModel, "searchEnabled", null, searchModel.getEnabledObserver()));
+            Controls.toggleControl(searchModel, "enabled", null, searchModel.getEnabledObserver()));
     toggleSearchEnabled.setIcon(Images.loadImage(Images.IMG_FILTER_16));
     this.toggleSearchAdvanced = ControlProvider.createToggleButton(
             Controls.toggleControl(this, "advancedSearchOn", null, stAdvancedSearch.getObserver()));
@@ -302,7 +302,7 @@ public class ColumnSearchPanel<K> extends JPanel {
       if (field instanceof JTextField) {//enter button toggles the filter on/off
         ((JTextField) field).addActionListener(new ActionListener() {
           public void actionPerformed(final ActionEvent e) {
-            model.setSearchEnabled(!model.isSearchEnabled());
+            model.setEnabled(!model.isEnabled());
           }
         });
       }

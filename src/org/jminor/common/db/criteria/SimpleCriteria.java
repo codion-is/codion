@@ -24,14 +24,17 @@ public final class SimpleCriteria<T> implements Criteria<T> {
     this.keys = keys;
   }
 
+  /** {@inheritDoc} */
   public String asString() {
     return criteriaString;
   }
 
+  /** {@inheritDoc} */
   public List<Object> getValues() {
     return values;
   }
 
+  /** {@inheritDoc} */
   public List<T> getValueKeys() {
     return keys;
   }

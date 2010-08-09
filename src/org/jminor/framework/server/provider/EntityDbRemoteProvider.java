@@ -49,6 +49,7 @@ public final class EntityDbRemoteProvider extends AbstractEntityDbProvider {
     setTruststore(clientTypeID);
   }
 
+  /** {@inheritDoc} */
   public String getDescription() {
     try {
       return server != null ? server.getServerName() : "";
@@ -58,6 +59,7 @@ public final class EntityDbRemoteProvider extends AbstractEntityDbProvider {
     }
   }
 
+  /** {@inheritDoc} */
   public void disconnect() {
     try {
       if (getEntityDbInternal() != null && isConnectionValid()) {
@@ -74,6 +76,7 @@ public final class EntityDbRemoteProvider extends AbstractEntityDbProvider {
     return clientID;
   }
 
+  /** {@inheritDoc} */
   @Override
   protected EntityDb connect() {
     try {
@@ -85,6 +88,7 @@ public final class EntityDbRemoteProvider extends AbstractEntityDbProvider {
     }
   }
 
+  /** {@inheritDoc} */
   @Override
   protected boolean isConnectionValid() {
     try {

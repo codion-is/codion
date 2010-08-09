@@ -40,7 +40,7 @@ public interface ColumnSearchModel<K> {
    * @param object the object
    * @return true if the object should be included
    */
-  boolean include(Object object);
+  boolean include(final Object object);
 
   /**
    * @param value true if wildcard should automatically be added to strings
@@ -52,36 +52,89 @@ public interface ColumnSearchModel<K> {
    */
   boolean isAutomaticWildcard();
 
+  /**
+   * @param comparable the value to check
+   * @return true if the given value should be included
+   */
   boolean include(final Comparable comparable);
 
-  void setLocked(boolean value);
+  /**
+   * @param value true to lock this model, false to unlock
+   */
+  void setLocked(final boolean value);
 
+  /**
+   * @return true if this model is locked
+   */
   boolean isLocked();
 
-  void setUpperBound(Object upper);
-
+  /**
+   * @return the data type this search model is based on
+   * @see java.sql.Types
+   */
   int getType();
 
+  /**
+   * @param upper the new upper bound
+   */
+  void setUpperBound(final Object upper);
+
+  /**
+   * A shortcut method for setting the upper bound value, searchType to LIKE
+   * and enabling this model.
+   * @param value the value to use as criteria
+   */
   void setLikeValue(final Comparable value);
 
+  /**
+   * @return the upper bound
+   */
   Object getUpperBound();
 
-  void setLowerBound(Object value);
+  /**
+   * @param value the lower bound
+   */
+  void setLowerBound(final Object value);
 
+  /**
+   * @return the lower bound
+   */
   Object getLowerBound();
 
+  /**
+   * @return the search type
+   */
   SearchType getSearchType();
 
-  void setSearchType(SearchType searchType);
+  /**
+   * @param searchType the search type
+   */
+  void setSearchType(final SearchType searchType);
 
+  /**
+   * @return true if auto enable is enabled
+   */
   boolean isAutoEnable();
 
-  void setAutoEnable(boolean autoEnable);
+  /**
+   * If set, this model automatically enables itself when a criteria is specified
+   * @param autoEnable true to enable, false to disable
+   */
+  void setAutoEnable(final boolean autoEnable);
 
-  boolean isSearchEnabled();
+  /**
+   * @return true if this search model is enabled
+   */
+  boolean isEnabled();
 
-  void setSearchEnabled(boolean value);
+  /**
+   * @param value true to enable, false to disable
+   */
+  void setEnabled(final boolean value);
 
+  /**
+   * Clears the criteria values from this search model
+   */
   void clearSearch();
 
   /**
@@ -164,37 +217,88 @@ public interface ColumnSearchModel<K> {
    */
   void setLowerBound(final Date value);
 
+  /**
+   * @return an observer for this model's locked state
+   */
   StateObserver getLockedState();
 
+  /**
+   * @return an observer for this model's enabled state
+   */
   EventObserver getEnabledObserver();
 
+  /**
+   * @return an observer for this model's lower bound
+   */
   EventObserver getLowerBoundObserver();
 
+  /**
+   * @return an observer for this model's upper bound
+   */
   EventObserver getUpperBoundObserver();
 
+  /**
+   * @return an observer for this model's search type
+   */
   EventObserver getSearchTypeObserver();
 
+  /**
+   * @param listener a listener to be notified each time the enabled state changes
+   */
   void addEnabledListener(final ActionListener listener);
 
+  /**
+   * @param listener the listener to remove
+   */
   void removeEnabledListener(final ActionListener listener);
 
+  /**
+   * @param listener a listener to be notified each time the search type changes
+   */
   void addSearchTypeListener(final ActionListener listener);
 
+  /**
+   * @param listener the listener to remove
+   */
   void removeSearchTypeListener(final ActionListener listener);
 
+  /**
+   * @param listener a listener to be notified each time the lower bound changes
+   */
   void addLowerBoundListener(final ActionListener listener);
 
+  /**
+   * @param listener the listener to remove
+   */
   void removeLowerBoundListener(final ActionListener listener);
 
+  /**
+   * @param listener a listener to be notified each time the upper bound changes
+   */
   void addUpperBoundListener(final ActionListener listener);
 
+  /**
+   * @param listener the listener to remove
+   */
   void removeUpperBoundListener(final ActionListener listener);
 
+  /**
+   * @param listener a listener to be notified each time the model is cleared
+   */
   void addClearedListener(final ActionListener listener);
 
+  /**
+   * @param listener the listener to remove
+   */
   void removeClearedListener(final ActionListener listener);
 
+  /**
+   * @param listener a listener to be notified each time the search state changes
+   */
   void addSearchStateListener(final ActionListener listener);
 
+  /**
+   * @param listener the listener to remove
+   */
   void removeSearchStateListener(final ActionListener listener);
 }
