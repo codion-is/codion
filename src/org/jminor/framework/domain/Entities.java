@@ -121,10 +121,16 @@ public final class Entities {
    */
   public static List<Property.ColumnProperty> getSearchProperties(final String entityID, final Collection<String> searchPropertyIds) {
     final List<Property.ColumnProperty> searchProperties = new ArrayList<Property.ColumnProperty>();
-    for (final Property.ColumnProperty property : getColumnProperties(entityID)) {
-      if (!searchPropertyIds.isEmpty() && searchPropertyIds.contains(property.getPropertyID()) ||
-              (property.isString() && property.isSearchable())) {
-        searchProperties.add(property);
+    if (searchPropertyIds != null && !searchPropertyIds.isEmpty()) {
+      for (final String propertyID : searchPropertyIds) {
+        searchProperties.add(getColumnProperty(entityID, propertyID));
+      }
+    }
+    else {
+      for (final Property.ColumnProperty property : getColumnProperties(entityID)) {
+        if (property.isString() && property.isSearchable()) {
+          searchProperties.add(property);
+        }
       }
     }
 
