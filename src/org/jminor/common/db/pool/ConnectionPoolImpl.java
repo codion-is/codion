@@ -6,19 +6,18 @@ package org.jminor.common.db.pool;
 import org.jminor.common.db.dbms.Database;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
-
 import org.apache.log4j.Logger;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Set;
+import java.util.Random;
 import java.util.Stack;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Executors;
 
 /**
  * A simple connection pool implementation, pools connections on username basis.<br>
@@ -31,11 +30,11 @@ public final class ConnectionPoolImpl implements ConnectionPool {
   public static final int DEFAULT_TIMEOUT = 60000;
   public static final int DEFAULT_CLEANUP_INTERVAL = 20000;
   public static final int DEFAULT_MAXIMUM_POOL_SIZE = 8;
+  public static final int DEFAULT_MAXIMUM_RETRY_WAIT_PERIOD = 50;
 
   private static final Logger LOG = Util.getLogger(ConnectionPoolImpl.class);
 
   private final Stack<PoolableConnection> connectionPool = new Stack<PoolableConnection>();
-  private final Set<PoolableConnection> connectionsInUse = new HashSet<PoolableConnection>();
 
   private final List<ConnectionPoolStateImpl> connectionPoolStatistics = new ArrayList<ConnectionPoolStateImpl>(1000);
 
@@ -48,12 +47,14 @@ public final class ConnectionPoolImpl implements ConnectionPool {
   private boolean closed = false;
 
   private final Counter counter = new Counter();
+  private final Random random = new Random();
   private final User user;
   private volatile boolean creatingConnection = false;
   private volatile int pooledConnectionTimeout = DEFAULT_TIMEOUT;
   private volatile int minimumPoolSize = DEFAULT_MAXIMUM_POOL_SIZE / 2;
   private volatile int maximumPoolSize = DEFAULT_MAXIMUM_POOL_SIZE;
   private volatile int poolCleanupInterval = DEFAULT_CLEANUP_INTERVAL;
+  private volatile int maximumRetryWaitPeriod = DEFAULT_MAXIMUM_RETRY_WAIT_PERIOD;
   private volatile boolean enabled = true;
 
   public ConnectionPoolImpl(final PoolableConnectionProvider poolableConnectionProvider, final User user) {
@@ -72,41 +73,38 @@ public final class ConnectionPoolImpl implements ConnectionPool {
     counter.incrementRequestCounter();
     PoolableConnection connection;
     synchronized (connectionPool) {
+      if (collectFineGrainedStatistics) {
+        addInPoolStats(connectionPool.size(), System.currentTimeMillis());
+      }
       connection = getConnectionFromPool();
     }
-    int retryCount = 0;
     if (connection == null) {
       counter.incrementDelayedRequestCounter();
+    }
+    int retryCount = 0;
+    while (connection == null) {
+      retryCount++;
+      waitForRetry();
       synchronized (connectionPool) {
-        if (counter.getLiveConnections() < maximumPoolSize && !creatingConnection) {
-          try {
-            creatingConnection = true;
-            counter.incrementConnectionsCreatedCounter();
-            connection = poolableConnectionProvider.createConnection(user);
-            connectionsInUse.add(connection);
-          }
-          finally {
-            creatingConnection = false;
-          }
+        if (!creatingConnection && counter.getLiveConnections() < maximumPoolSize) {
+          Executors.newSingleThreadExecutor().submit(new ConnectionCreator());
         }
       }
-      while (connection == null) {
-        try {
-          synchronized (connectionPool) {
-            if (connectionPool.isEmpty()) {
-              connectionPool.wait();
-            }
-            connection = getConnectionFromPool();
-            retryCount++;
-          }
-        }
-        catch (InterruptedException e) {/**/}
+      synchronized (connectionPool) {
+        connection = getConnectionFromPool();
       }
     }
     connection.setPoolRetryCount(retryCount);
     counter.addCheckOutTime(System.nanoTime() - time);
 
     return connection;
+  }
+
+  private void waitForRetry() {
+    try {
+      Thread.sleep(random.nextInt(maximumRetryWaitPeriod));
+    }
+    catch (InterruptedException e) {/**/}
   }
 
   /** {@inheritDoc} */
@@ -126,7 +124,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
   }
 
   /** {@inheritDoc} */
-  public int getPooledConnectionTimeout() {
+  public synchronized int getPooledConnectionTimeout() {
     return pooledConnectionTimeout;
   }
 
@@ -136,7 +134,17 @@ public final class ConnectionPoolImpl implements ConnectionPool {
   }
 
   /** {@inheritDoc} */
-  public int getMinimumPoolSize() {
+  public synchronized int getMaximumRetryWaitPeriod() {
+    return maximumRetryWaitPeriod;
+  }
+
+  /** {@inheritDoc} */
+  public synchronized void setMaximumRetryWaitPeriod(final int maximumRetryWaitPeriod) {
+    this.maximumRetryWaitPeriod = maximumRetryWaitPeriod;
+  }
+
+  /** {@inheritDoc} */
+  public synchronized int getMinimumPoolSize() {
     return minimumPoolSize;
   }
 
@@ -149,7 +157,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
   }
 
   /** {@inheritDoc} */
-  public int getMaximumPoolSize() {
+  public synchronized int getMaximumPoolSize() {
     return maximumPoolSize;
   }
 
@@ -162,7 +170,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
   }
 
   /** {@inheritDoc} */
-  public boolean isEnabled() {
+  public synchronized boolean isEnabled() {
     return enabled;
   }
 
@@ -183,7 +191,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
   }
 
   /** {@inheritDoc} */
-  public int getPoolCleanupInterval() {
+  public synchronized int getPoolCleanupInterval() {
     return poolCleanupInterval;
   }
 
@@ -191,8 +199,9 @@ public final class ConnectionPoolImpl implements ConnectionPool {
   public ConnectionPoolStatistics getConnectionPoolStatistics(final long since) {
     final ConnectionPoolStatisticsImpl statistics = new ConnectionPoolStatisticsImpl(user);
     synchronized (connectionPool) {
-      statistics.setConnectionsInUse(connectionsInUse.size());
-      statistics.setAvailableInPool(connectionPool.size());
+      final int inPool = connectionPool.size();
+      statistics.setAvailableInPool(inPool);
+      statistics.setConnectionsInUse(counter.getLiveConnections() - inPool);
     }
     statistics.setLiveConnectionCount(counter.getLiveConnections());
     statistics.setConnectionsCreated(counter.getConnectionsCreated());
@@ -237,16 +246,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
    * @return a connection from the pool, null if none is available
    */
   private PoolableConnection getConnectionFromPool() {
-    final int connectionsInPool = connectionPool.size();
-    if (collectFineGrainedStatistics) {
-      addInPoolStats(connectionsInPool, connectionsInUse.size(), System.currentTimeMillis());
-    }
-    final PoolableConnection dbConnection = connectionsInPool > 0 ? connectionPool.pop() : null;
-    if (dbConnection != null) {
-      connectionsInUse.add(dbConnection);
-    }
-
-    return dbConnection;
+    return connectionPool.size() > 0 ? connectionPool.pop() : null;
   }
 
   /**
@@ -254,7 +254,6 @@ public final class ConnectionPoolImpl implements ConnectionPool {
    * @param dbConnection the connection to add to the pool
    */
   private void addConnectionToPool(final PoolableConnection dbConnection) {
-    connectionsInUse.remove(dbConnection);
     if (dbConnection.isConnectionValid()) {
       try {
         if (dbConnection.isTransactionOpen()) {
@@ -273,15 +272,16 @@ public final class ConnectionPoolImpl implements ConnectionPool {
     }
   }
 
-  private void addInPoolStats(final int size, final int inUse, final long time) {
+  private void addInPoolStats(final int inPool, final long timestamp) {
     synchronized (connectionPoolStatistics) {
       final int poolStatisticsSize = 1000;
+      final int inUse = counter.getLiveConnections() - inPool;
       connectionPoolStatisticsIndex = connectionPoolStatisticsIndex == poolStatisticsSize ? 0 : connectionPoolStatisticsIndex;
       if (connectionPoolStatistics.size() == poolStatisticsSize) {//filled already, reuse
-        connectionPoolStatistics.get(connectionPoolStatisticsIndex).set(time, size, inUse);
+        connectionPoolStatistics.get(connectionPoolStatisticsIndex).set(timestamp, inPool, inUse);
       }
       else {
-        connectionPoolStatistics.add(new ConnectionPoolStateImpl(time, size, inUse));
+        connectionPoolStatistics.add(new ConnectionPoolStateImpl(timestamp, inPool, inUse));
       }
 
       connectionPoolStatisticsIndex++;
@@ -353,21 +353,43 @@ public final class ConnectionPoolImpl implements ConnectionPool {
     return poolStates;
   }
 
+  private final class ConnectionCreator implements Runnable {
+    public void run() {
+      creatingConnection = true;
+      try {
+        PoolableConnection newConnection = null;
+        try {
+          newConnection = poolableConnectionProvider.createConnection(user);
+        }
+        catch (Exception e) {
+          LOG.error(e);
+        }
+        counter.incrementConnectionsCreatedCounter();
+        synchronized (connectionPool) {
+          addConnectionToPool(newConnection);
+        }
+      }
+      finally {
+        creatingConnection = false;
+      }
+    }
+  }
+
   private static class Counter {
     private static final double THOUSAND = 1000d;
     private static final int DEFAULT_STATS_UPDATE_INTERVAL = 1000;
 
     private final long creationDate = System.currentTimeMillis();
     private long resetDate = creationDate;
-    private int liveConnections = 0;
-    private int connectionsCreated = 0;
-    private int connectionsDestroyed = 0;
-    private int connectionRequests = 0;
-    private int connectionRequestsDelayed = 0;
-    private int requestsDelayedPerSecond = 0;
-    private int requestsDelayedPerSecondCounter = 0;
-    private int requestsPerSecond = 0;
-    private int requestsPerSecondCounter = 0;
+    private volatile int liveConnections = 0;
+    private volatile int connectionsCreated = 0;
+    private volatile int connectionsDestroyed = 0;
+    private volatile int connectionRequests = 0;
+    private volatile int connectionRequestsDelayed = 0;
+    private volatile int requestsDelayedPerSecond = 0;
+    private volatile int requestsDelayedPerSecondCounter = 0;
+    private volatile int requestsPerSecond = 0;
+    private volatile int requestsPerSecondCounter = 0;
     private long averageCheckOutTime = 0;
     private final List<Long> checkOutTimes = new ArrayList<Long>();
     private long requestsPerSecondTime = creationDate;

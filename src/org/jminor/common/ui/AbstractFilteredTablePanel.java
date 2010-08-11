@@ -413,8 +413,8 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
   }
 
   private static final class Arrow implements Icon {
-    private static final double PRIORITY_SIZE_RATIO = 2d;
-    private static final double PRIORITY_SIZE_CONST = 0.8;
+    private static final double PRIORITY_SIZE_RATIO = 0.8;
+    private static final double PRIORITY_SIZE_CONST = 2.0;
     private final boolean descending;
     private final int size;
     private final int priority;
@@ -481,7 +481,7 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
         final JLabel label = (JLabel) component;
         label.setHorizontalTextPosition(JLabel.LEFT);
         final int modelColumn = table.convertColumnIndexToModel(column);
-        label.setIcon(getHeaderRendererIcon(modelColumn, label.getFont().getSize()));
+        label.setIcon(getHeaderRendererIcon(modelColumn, label.getFont().getSize() + 5));
       }
 
       return component;

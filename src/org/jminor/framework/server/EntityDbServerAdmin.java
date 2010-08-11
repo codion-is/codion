@@ -249,6 +249,10 @@ public interface EntityDbServerAdmin extends Remote {
 
   int getPooledConnectionTimeout(final User user) throws RemoteException;
 
+  int getMaximumPoolRetryWaitPeriod(final User user) throws RemoteException;
+
+  void setMaximumPoolRetryWaitPeriod(final User user, final int timeout) throws RemoteException;
+
   void setMaximumConnectionPoolSize(final User user, final int value) throws RemoteException;
 
   int getMaximumConnectionPoolSize(final User user) throws RemoteException;

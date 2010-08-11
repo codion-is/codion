@@ -130,11 +130,13 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     final JSpinner spnCleanupInterval = new JSpinner(new IntBeanSpinnerValueLink(model, "poolCleanupInterval", null).getSpinnerModel());
     final JSpinner spnMaximumSize = new JSpinner(new IntBeanSpinnerValueLink(model, "maximumPoolSize", null).getSpinnerModel());
     final JSpinner spnMinimumSize = new JSpinner(new IntBeanSpinnerValueLink(model, "minimumPoolSize", null).getSpinnerModel());
+    final JSpinner spnMaximumRetryWait = new JSpinner(new IntBeanSpinnerValueLink(model, "maximumRetryWaitPeriod", null).getSpinnerModel());
 
     ((JSpinner.DefaultEditor) spnTimeout.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) spnCleanupInterval.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) spnMinimumSize.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) spnMaximumSize.getEditor()).getTextField().setEditable(false);
+    ((JSpinner.DefaultEditor) spnMaximumRetryWait.getEditor()).getTextField().setEditable(false);
 
     ((JSpinner.DefaultEditor) spnTimeout.getEditor()).getTextField().setColumns(3);
     ((JSpinner.DefaultEditor) spnCleanupInterval.getEditor()).getTextField().setColumns(3);
@@ -151,6 +153,8 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     configBase.add(spnMinimumSize);
     configBase.add(new JLabel("Maximum size"));
     configBase.add(spnMaximumSize);
+    configBase.add(new JLabel("Maximum retry wait (ms)"));
+    configBase.add(spnMaximumRetryWait);
     configBase.add(new JLabel("Idle timeout (s)"));
     configBase.add(spnTimeout);
     configBase.add(new JLabel("Cleanup interval (s)"));

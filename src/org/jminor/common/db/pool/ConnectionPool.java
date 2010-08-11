@@ -83,6 +83,16 @@ public interface ConnectionPool {
   void setPooledConnectionTimeout(final int timeout);
 
   /**
+   * @return the maximum number of milliseconds the pool waits between checkout retries
+   */
+  int getMaximumRetryWaitPeriod();
+
+  /**
+   * @param maximumRetryWaitPeriod the maximum number of milliseconds the pool waits between checkout retries
+   */
+  void setMaximumRetryWaitPeriod(final int maximumRetryWaitPeriod);
+
+  /**
    * @return the pool cleanup interval in milliseconds
    */
   int getPoolCleanupInterval();

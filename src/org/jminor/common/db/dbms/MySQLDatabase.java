@@ -36,4 +36,10 @@ public final class MySQLDatabase extends AbstractDatabase {
   public String getURL(final Properties connectionProperties) {
     return URL_PREFIX + getHost() + ":" + getPort() + "/" + getSid();
   }
+
+  /** {@inheritDoc} */
+  @Override
+  public boolean supportsNowait() {
+    return false;
+  }
 }

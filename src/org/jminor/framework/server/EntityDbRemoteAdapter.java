@@ -599,6 +599,10 @@ public final class EntityDbRemoteAdapter extends UnicastRemoteObject implements 
     return CONNECTION_POOLS.get(user).getPooledConnectionTimeout();
   }
 
+  public static int getMaximumPoolRetryWaitPeriod(final User user) {
+    return CONNECTION_POOLS.get(user).getMaximumRetryWaitPeriod();
+  }
+
   public static void setMaximumConnectionPoolSize(final User user, final int value) {
     CONNECTION_POOLS.get(user).setMaximumPoolSize(value);
   }
@@ -609,6 +613,10 @@ public final class EntityDbRemoteAdapter extends UnicastRemoteObject implements 
 
   public static void setPooledConnectionTimeout(final User user, final int timeout) {
     CONNECTION_POOLS.get(user).setPooledConnectionTimeout(timeout);
+  }
+
+  public static void setMaximumPoolRetryWaitPeriod(final User user, final int value) {
+    CONNECTION_POOLS.get(user).setMaximumRetryWaitPeriod(value);
   }
 
   public static ConnectionPoolStatistics getConnectionPoolStatistics(final User user, final long since) {

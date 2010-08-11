@@ -2002,3 +2002,5 @@
   EntityImpl.getDefaultValueMap() bug fix
   ColumnSearchModel.searchEnabled renamed to enabled
   Entities.getEntityDefinitions() no longer exposes the EntityDefinition class
+  ConnectionPoolImpl overhaul
+  MySQLDatabase.supportsNowait() overridden, returns false

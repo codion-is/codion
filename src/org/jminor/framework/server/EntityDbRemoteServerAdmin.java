@@ -272,6 +272,16 @@ public final class EntityDbRemoteServerAdmin extends UnicastRemoteObject impleme
   }
 
   /** {@inheritDoc} */
+  public int getMaximumPoolRetryWaitPeriod(final User user) throws RemoteException {
+    return EntityDbRemoteAdapter.getMaximumPoolRetryWaitPeriod(user);
+  }
+
+  /** {@inheritDoc} */
+  public void setMaximumPoolRetryWaitPeriod(final User user, final int timeout) throws RemoteException {
+    EntityDbRemoteAdapter.setMaximumPoolRetryWaitPeriod(user, timeout);
+  }
+
+  /** {@inheritDoc} */
   public String getMemoryUsage() throws RemoteException {
     return Util.getMemoryUsageString();
   }

@@ -87,6 +87,15 @@ public final class PoolMonitor {
       }
     }
 
+    public int getMaximumRetryWaitPeriod() {
+      try {
+        return server.getMaximumPoolRetryWaitPeriod(user);
+      }
+      catch (RemoteException e) {
+        throw new RuntimeException(e);
+      }
+    }
+
     public int getPooledConnectionTimeout() {
       try {
         return server.getPooledConnectionTimeout(user);
@@ -117,6 +126,15 @@ public final class PoolMonitor {
     public void setPooledConnectionTimeout(final int timeout) {
       try {
         server.setPooledConnectionTimeout(user, timeout);
+      }
+      catch (RemoteException e) {
+        throw new RuntimeException(e);
+      }
+    }
+
+    public void setMaximumRetryWaitPeriod(final int value) {
+      try {
+        server.setMaximumPoolRetryWaitPeriod(user, value);
       }
       catch (RemoteException e) {
         throw new RuntimeException(e);

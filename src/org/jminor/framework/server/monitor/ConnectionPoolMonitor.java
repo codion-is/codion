@@ -113,6 +113,14 @@ public final class ConnectionPoolMonitor {
     pool.setMaximumPoolSize(value);
   }
 
+  public int getMaximumRetryWaitPeriod() {
+    return pool.getMaximumRetryWaitPeriod();
+  }
+
+  public void setMaximumRetryWaitPeriod(final int value) throws RemoteException {
+    pool.setMaximumRetryWaitPeriod(value);
+  }
+
   public boolean datasetContainsData() {
     return statsCollection.getSeriesCount() > 0
             && statsCollection.getSeries(0).getItemCount() > 0
