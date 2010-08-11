@@ -462,12 +462,13 @@ public final class EntityUiUtil {
     return panel;
   }
 
-  public static JTextArea createTextArea(final Property property, final EntityEditModel editModel) {
-    return createTextArea(property, editModel, -1, -1);
+  public static JTextArea createTextArea(final Property property, final EntityEditModel editModel,
+                                         final LinkType linkType) {
+    return createTextArea(property, editModel, linkType, -1, -1);
   }
 
   public static JTextArea createTextArea(final Property property, final EntityEditModel editModel,
-                                         final int rows, final int columns) {
+                                         final LinkType linkType, final int rows, final int columns) {
     Util.rejectNullValue(property, "property");
     Util.rejectNullValue(editModel, "editModel");
     if (!property.isString()) {
@@ -478,7 +479,7 @@ public final class EntityUiUtil {
     textArea.setLineWrap(true);
     textArea.setWrapStyleWord(true);
 
-    new TextValueLink<String>(textArea, editModel, property.getPropertyID(), true, LinkType.READ_WRITE);
+    new TextValueLink<String>(textArea, editModel, property.getPropertyID(), true, linkType);
     if (property.hasDescription()) {
       textArea.setToolTipText(property.getDescription());
     }

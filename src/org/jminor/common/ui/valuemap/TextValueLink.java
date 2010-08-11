@@ -65,7 +65,7 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> implements
       });
     }
     if (linkType == LinkType.READ_ONLY) {
-      textComponent.setEnabled(false);
+      textComponent.setEditable(false);
     }
     new ValidatorImpl<K>(this, textComponent, editModel).updateValidityInfo();
     updateUI();

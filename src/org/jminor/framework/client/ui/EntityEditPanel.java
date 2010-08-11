@@ -654,8 +654,21 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @return a JTextArea bound to the property
    */
   protected final JTextArea createTextArea(final String propertyID, final int rows, final int columns) {
-    final JTextArea textArea = EntityUiUtil.createTextArea(Entities.getProperty(getEntityEditModel().getEntityID(), propertyID),
-            getEntityEditModel(), rows, columns);
+    return createTextArea(propertyID, null, rows, columns);
+  }
+
+  /**
+   * Creates a JTextArea component bound to the property identified by <code>propertyID </code>.
+   * @param propertyID the ID of the property to bind
+   * @param linkType the link type
+   * @param rows the number of rows in the text area
+   * @param columns the number of columns in the text area
+   * @return a JTextArea bound to the property
+   */
+  protected final JTextArea createTextArea(final String propertyID, final LinkType linkType, final int rows, final int columns) {
+    final Property property = Entities.getProperty(getEntityEditModel().getEntityID(), propertyID);
+    final LinkType actualLinkType = linkType == null ? getDefaultLinkType(property) : linkType;
+    final JTextArea textArea = EntityUiUtil.createTextArea(property, getEntityEditModel(), actualLinkType, rows, columns);
     setComponent(propertyID, textArea);
 
     return textArea;
@@ -667,7 +680,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @return a TextInputPanel bound to the property
    */
   protected final TextInputPanel createTextInputPanel(final String propertyID) {
-    return createTextInputPanel(propertyID, LinkType.READ_WRITE);
+    return createTextInputPanel(propertyID, null);
   }
 
   /**
@@ -732,7 +745,8 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    */
   protected final TextInputPanel createTextInputPanel(final Property property, final LinkType linkType,
                                                       final boolean immediateUpdate, final boolean buttonFocusable) {
-    final TextInputPanel ret = EntityUiUtil.createTextInputPanel(property, getEntityEditModel(), linkType, immediateUpdate, buttonFocusable);
+    final LinkType actualLinkType = linkType == null ? getDefaultLinkType(property) : linkType;
+    final TextInputPanel ret = EntityUiUtil.createTextInputPanel(property, getEntityEditModel(), actualLinkType, immediateUpdate, buttonFocusable);
     setComponent(property.getPropertyID(), ret.getTextComponent());
 
     return ret;
@@ -792,7 +806,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    */
   protected final DateInputPanel createDateInputPanel(final String propertyID, final SimpleDateFormat dateFormat,
                                                       final boolean includeButton, final StateObserver enabledState) {
-    return createDateInputPanel(propertyID, dateFormat, includeButton, enabledState, LinkType.READ_WRITE);
+    return createDateInputPanel(propertyID, dateFormat, includeButton, enabledState, null);
   }
 
   /**
@@ -852,7 +866,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    */
   protected final DateInputPanel createDateInputPanel(final Property property, final SimpleDateFormat dateFormat,
                                                       final boolean includeButton, final StateObserver enabledState) {
-    return createDateInputPanel(property, dateFormat, includeButton, enabledState, LinkType.READ_WRITE);
+    return createDateInputPanel(property, dateFormat, includeButton, enabledState, null);
   }
 
   /**
@@ -867,7 +881,8 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   protected final DateInputPanel createDateInputPanel(final Property property, final SimpleDateFormat dateFormat,
                                                       final boolean includeButton, final StateObserver enabledState,
                                                       final LinkType linkType) {
-    final DateInputPanel panel = EntityUiUtil.createDateInputPanel(property, getEntityEditModel(), dateFormat, linkType, includeButton, enabledState);
+    final LinkType actualLinkType = linkType == null ? getDefaultLinkType(property) : linkType;
+    final DateInputPanel panel = EntityUiUtil.createDateInputPanel(property, getEntityEditModel(), dateFormat, actualLinkType, includeButton, enabledState);
     setComponent(property.getPropertyID(), panel.getInputField());
 
     return panel;
@@ -879,7 +894,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @return a text field bound to the property
    */
   protected final JTextField createTextField(final String propertyID) {
-    return createTextField(propertyID, LinkType.READ_WRITE);
+    return createTextField(propertyID, null);
   }
 
   /**
@@ -959,7 +974,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @return a text field bound to the property
    */
   protected final JTextField createTextField(final Property property) {
-    return createTextField(property, LinkType.READ_WRITE);
+    return createTextField(property, null);
   }
 
   /**
@@ -1016,7 +1031,8 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   protected final JTextField createTextField(final Property property, final LinkType linkType,
                                              final String maskString, final boolean immediateUpdate,
                                              final StateObserver enabledState, final boolean valueIncludesLiteralCharacters) {
-    final JTextField txt = EntityUiUtil.createTextField(property, getEntityEditModel(), linkType, maskString, immediateUpdate,
+    final LinkType actualLinkType = linkType == null ? getDefaultLinkType(property) : linkType;
+    final JTextField txt = EntityUiUtil.createTextField(property, getEntityEditModel(), actualLinkType, maskString, immediateUpdate,
             Configuration.getDefaultDateFormat(), enabledState, valueIncludesLiteralCharacters);
     setComponent(property.getPropertyID(), txt);
 
@@ -1621,5 +1637,16 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
         UiUtil.setWaitCursor(false, EntityEditPanel.this);
       }
     });
+  }
+
+  private LinkType getDefaultLinkType(final Property property) {
+    final boolean nonUpdatable = property.isReadOnly() ||
+            (property instanceof Property.ColumnProperty && !((Property.ColumnProperty) property).isUpdatable());
+    if (nonUpdatable) {
+      return LinkType.READ_ONLY;
+    }
+    else {
+      return LinkType.READ_WRITE;
+    }
   }
 }
