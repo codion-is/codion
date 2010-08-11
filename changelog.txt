@@ -2005,3 +2005,4 @@
   ConnectionPoolImpl overhaul
   MySQLDatabase.supportsNowait() overridden, returns false
   Entities.getSearchProperties() bug fixed
+  EntityEditPanel.createPropertyPanel(propertyID) added, picks up the input component associated with the property, well duhh

@@ -23,7 +23,7 @@ public class DepartmentEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     final JTextField txtDepartmentNumber = createTextField(DEPARTMENT_ID);
     final JTextField txtDepartmentName = (JTextField) UiUtil.makeUpperCase(createTextField(DEPARTMENT_NAME));
-    final JTextField txtDepartmentLocation = (JTextField) UiUtil.makeUpperCase(createTextField(DEPARTMENT_LOCATION));
+    UiUtil.makeUpperCase(createTextField(DEPARTMENT_LOCATION));
 
     setInitialFocusComponent(txtDepartmentNumber);
     txtDepartmentNumber.setColumns(10);
@@ -43,8 +43,8 @@ public class DepartmentEditPanel extends EntityEditPanel {
     });
 
     setLayout(new GridLayout(3,1,5,5));
-    add(createPropertyPanel(DEPARTMENT_ID, txtDepartmentNumber));
-    add(createPropertyPanel(DEPARTMENT_NAME, txtDepartmentName));
-    add(createPropertyPanel(DEPARTMENT_LOCATION, txtDepartmentLocation));
+    add(createPropertyPanel(DEPARTMENT_ID));
+    add(createPropertyPanel(DEPARTMENT_NAME));
+    add(createPropertyPanel(DEPARTMENT_LOCATION));
   }
 }

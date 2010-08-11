@@ -524,6 +524,17 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   protected abstract void initializeUI();
 
   /**
+   * Creates a panel containing a label and the component associated with the given property.
+   * The label text is the caption of the property identified by <code>propertyID</code>.
+   * The default layout of the resulting panel is with the label on top and inputComponent below.
+   * @param propertyID the id of the property from which to retrieve the label caption
+   * @return a panel containing a label and a component
+   */
+  protected final JPanel createPropertyPanel(final String propertyID) {
+    return createPropertyPanel(propertyID, getComponent(propertyID), true);
+  }
+
+  /**
    * Creates a panel containing a label and the given component.
    * The label text is the caption of the property identified by <code>propertyID</code>.
    * The default layout of the resulting panel is with the label on top and <code>inputComponent</code> below.

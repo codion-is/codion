@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.demos.empdept.beans.ui;
 
-import org.jminor.common.ui.DateInputPanel;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
 import org.jminor.framework.client.model.EntityEditModel;
@@ -25,10 +24,10 @@ public class EmployeeEditPanel extends EntityEditPanel {
     final JTextField txtName = (JTextField) UiUtil.makeUpperCase(createTextField(EMPLOYEE_NAME));
     final JTextField txtJob = (JTextField) UiUtil.makeUpperCase(createTextField(EMPLOYEE_JOB));
     final JComboBox boxManager = createEntityComboBox(EMPLOYEE_MGR_FK);
-    final JComboBox boxDepartment = createEntityComboBox(EMPLOYEE_DEPARTMENT_FK);
-    final JTextField txtSalary = createTextField(EMPLOYEE_SALARY);
-    final JTextField txtCommission = createTextField(EMPLOYEE_COMMISSION);
-    final DateInputPanel pnlHiredate = createDateInputPanel(EMPLOYEE_HIREDATE);
+    createEntityComboBox(EMPLOYEE_DEPARTMENT_FK);
+    createTextField(EMPLOYEE_SALARY);
+    createTextField(EMPLOYEE_COMMISSION);
+    createDateInputPanel(EMPLOYEE_HIREDATE);
 
     setInitialFocusComponent(txtName);
 
@@ -38,15 +37,15 @@ public class EmployeeEditPanel extends EntityEditPanel {
 
     setLayout(new FlexibleGridLayout(3,3,5,5,true,false));
 
-    add(createPropertyPanel(EMPLOYEE_NAME, txtName));
-    add(createPropertyPanel(EMPLOYEE_JOB, txtJob));
-    add(createPropertyPanel(EMPLOYEE_DEPARTMENT_FK, boxDepartment));
+    add(createPropertyPanel(EMPLOYEE_NAME));
+    add(createPropertyPanel(EMPLOYEE_JOB));
+    add(createPropertyPanel(EMPLOYEE_DEPARTMENT_FK));
 
-    add(createPropertyPanel(EMPLOYEE_MGR_FK, boxManager));
-    add(createPropertyPanel(EMPLOYEE_SALARY, txtSalary));
-    add(createPropertyPanel(EMPLOYEE_COMMISSION, txtCommission));
+    add(createPropertyPanel(EMPLOYEE_MGR_FK));
+    add(createPropertyPanel(EMPLOYEE_SALARY));
+    add(createPropertyPanel(EMPLOYEE_COMMISSION));
 
-    add(createPropertyPanel(EMPLOYEE_HIREDATE, pnlHiredate));
+    add(createPropertyPanel(EMPLOYEE_HIREDATE));
     add(new JLabel());
     add(new JLabel());
   }
