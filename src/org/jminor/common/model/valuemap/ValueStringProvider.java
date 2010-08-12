@@ -9,6 +9,7 @@ package org.jminor.common.model.valuemap;
  * Date: 4.4.2010<br>
  * Time: 21:06:22<br>
  * @param <K> the type of the map keys
+ * todo rename to ValueAsStringProvider?
  */
 public interface ValueStringProvider<K> {
 
