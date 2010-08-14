@@ -62,7 +62,7 @@ public final class DerbyDatabase extends AbstractDatabase {
     try {
       final String authentication = getAuthenticationInfo(connectionProperties);
       DriverManager.getConnection(URL_PREFIX + getHost() + ";shutdown=true"
-               + (authentication == null ? "" : ";" + authentication));
+               + (authentication == null ? "" : ";" + authentication)).close();
     }
     catch (SQLException e) {
       if (!e.getSQLState().equals("08006")) {//08006 is expected on Derby shutdown

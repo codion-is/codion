@@ -239,13 +239,14 @@ public final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRem
 
   public static void loadDomainModel(final URI location, final String domainClassName) throws ClassNotFoundException,
           IllegalAccessException, InstantiationException {
-    loadDomainModel(location == null ? null : new URI[] {location}, domainClassName);
+    loadDomainModel(location == null ? null : Arrays.asList(location), domainClassName);
   }
 
-  public static void loadDomainModel(final URI[] locations, final String domainClassName) throws ClassNotFoundException,
+  public static void loadDomainModel(final Collection<URI> locations, final String domainClassName) throws ClassNotFoundException,
           IllegalAccessException, InstantiationException {
     final String message = "Server loading domain model class '" + domainClassName + "' from"
-            + (locations == null || locations.length == 0 ? " classpath" : " jars: ") + Util.getArrayContentsAsString(locations, false);
+            + (locations == null || locations.isEmpty() ? " classpath" : " jars: ")
+            + Util.getCollectionContentsAsString(locations, false);
     LOG.info(message);
     AccessController.doPrivileged(new DomainModelAction(locations, domainClassName));
   }
@@ -290,7 +291,7 @@ public final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRem
     final String domainModelJars = Configuration.getStringValue(Configuration.SERVER_DOMAIN_MODEL_JARS);
     final String[] jars = Util.nullOrEmpty(domainModelJars) ? null : domainModelJars.split(",");
     try {
-      final URI[] jarURIs = jars == null ? null : Util.getURIs(jars);
+      final Collection<URI> jarURIs = jars == null ? null : Util.getURIs(Arrays.asList(jars));
       for (final String classname : classes) {
         loadDomainModel(jarURIs, classname);
       }
@@ -342,21 +343,21 @@ public final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRem
 
   private static final class DomainModelAction implements PrivilegedAction<Object> {
 
-    private final URI[] locations;
+    private final Collection<URI> locations;
     private final String domainClassName;
 
-    private DomainModelAction(final URI[] locations, final String domainClassName) {
+    private DomainModelAction(final Collection<URI> locations, final String domainClassName) {
       this.locations = locations;
       this.domainClassName = domainClassName;
     }
 
     public Object run() {
       try {
-        if (locations == null || locations.length == 0) {
+        if (locations == null || locations.isEmpty()) {
           Class.forName(domainClassName);
         }
         else {
-          final URL[] locationsURL = new URL[locations.length];
+          final URL[] locationsURL = new URL[locations.size()];
           int i = 0;
           for (final URI uri : locations) {
             locationsURL[i++] = uri.toURL();

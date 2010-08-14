@@ -26,6 +26,7 @@ import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.db.provider.EntityDbProviderFactory;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.i18n.FrameworkMessages;
+
 import org.apache.log4j.Logger;
 
 import javax.swing.*;

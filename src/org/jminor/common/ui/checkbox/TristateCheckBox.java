@@ -25,12 +25,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 public final class TristateCheckBox extends JCheckBox {
-  // Listener on model changes to maintain correct focusability
-  private final ChangeListener enableListener = new ChangeListener() {
-    public void stateChanged(final ChangeEvent e) {
-      TristateCheckBox.this.setFocusable(getModel().isEnabled());
-    }
-  };
 
   public TristateCheckBox(final String text) {
     this(text, null, TristateState.DESELECTED);
@@ -79,7 +73,11 @@ public final class TristateCheckBox extends JCheckBox {
 
     //Listen for enable changes
     if (model instanceof TristateButtonModel) {
-      model.addChangeListener(enableListener);
+      model.addChangeListener(new ChangeListener() {
+        public void stateChanged(final ChangeEvent e) {
+          TristateCheckBox.this.setFocusable(getModel().isEnabled());
+        }
+      });
     }
   }
 

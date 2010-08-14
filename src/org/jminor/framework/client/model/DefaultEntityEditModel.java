@@ -9,7 +9,6 @@ import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
-import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.State;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.States;
@@ -33,7 +32,6 @@ import org.jminor.framework.domain.Property;
 
 import org.apache.log4j.Logger;
 
-import javax.swing.ComboBoxModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
@@ -385,19 +383,15 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
 
   /** {@inheritDoc} */
   public final void refreshComboBoxModels() {
-    for (final ComboBoxModel comboBoxModel : propertyComboBoxModels.values()) {
-      if (comboBoxModel instanceof Refreshable) {
-        ((Refreshable) comboBoxModel).refresh();
-      }
+    for (final FilteredComboBoxModel comboBoxModel : propertyComboBoxModels.values()) {
+      comboBoxModel.refresh();
     }
   }
 
   /** {@inheritDoc} */
   public final void clearComboBoxModels() {
-    for (final ComboBoxModel comboBoxModel : propertyComboBoxModels.values()) {
-      if (comboBoxModel instanceof Refreshable) {
-        ((Refreshable) comboBoxModel).clear();
-      }
+    for (final FilteredComboBoxModel comboBoxModel : propertyComboBoxModels.values()) {
+      comboBoxModel.clear();
     }
   }
 

@@ -93,7 +93,12 @@ public class DefaultEntityValidator extends DefaultValueMapValidator<String, Obj
   /** {@inheritDoc} */
   @Override
   public final void validate(final ValueMap<String, Object> valueMap, final String key, final int action) throws ValidationException {
-    validate((Entity) valueMap, key, action);
+    if (valueMap instanceof Entity) {
+      validate((Entity) valueMap, key, action);
+    }
+    else {
+      super.validate(valueMap, key, action);
+    }
   }
 
   /** {@inheritDoc} */

@@ -13,6 +13,7 @@ import java.awt.event.ActionListener;
 import java.text.Format;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 public class DefaultPropertySummaryModel implements PropertySummaryModel {
@@ -144,19 +145,22 @@ public class DefaultPropertySummaryModel implements PropertySummaryModel {
     public String getSummary(final PropertyValueProvider valueProvider, final Property property) {
       final Format format = property.getFormat();
       String txt = "";
-      if (property.isInteger()) {
-        long sum = 0;
-        for (final Object obj : valueProvider.getValues()) {
-          sum += (Integer) obj;
+      final Collection values = valueProvider.getValues();
+      if (!values.isEmpty()) {
+        if (property.isInteger()) {
+          long sum = 0;
+          for (final Object obj : values) {
+            sum += (Integer) obj;
+          }
+          txt = format.format(sum);
         }
-        txt = format.format(sum);
-      }
-      else if (property.isDouble()) {
-        double sum = 0;
-        for (final Object obj : valueProvider.getValues()) {
-          sum += (Double) obj;
+        else if (property.isDouble()) {
+          double sum = 0;
+          for (final Object obj : values) {
+            sum += (Double) obj;
+          }
+          txt = format.format(sum);
         }
-        txt = format.format(sum);
       }
 
       return addSubsetIndicator(txt, valueProvider);
@@ -174,25 +178,24 @@ public class DefaultPropertySummaryModel implements PropertySummaryModel {
     public String getSummary(final PropertyValueProvider valueProvider, final Property property) {
       final Format format = property.getFormat();
       String txt = "";
-      if (property.isInteger()) {
-        double sum = 0;
-        int count = 0;
-        for (final Object obj : valueProvider.getValues()) {
-          sum += (Integer)obj;
-          count++;
-        }
-        if (count > 0) {
+      final Collection values = valueProvider.getValues();
+      if (!values.isEmpty()) {
+        if (property.isInteger()) {
+          double sum = 0;
+          int count = 0;
+          for (final Object obj : values) {
+            sum += (Integer)obj;
+            count++;
+          }
           txt = format.format(sum / count);
         }
-      }
-      else if (property.isDouble()) {
-        double sum = 0;
-        int count = 0;
-        for (final Object obj : valueProvider.getValues()) {
-          sum += (Double)obj;
-          count++;
-        }
-        if (count > 0) {
+        else if (property.isDouble()) {
+          double sum = 0;
+          int count = 0;
+          for (final Object obj : values) {
+            sum += (Double)obj;
+            count++;
+          }
           txt = format.format(sum / count);
         }
       }
@@ -212,25 +215,23 @@ public class DefaultPropertySummaryModel implements PropertySummaryModel {
     public String getSummary(final PropertyValueProvider valueProvider, final Property property) {
       final Format format = property.getFormat();
       String txt = "";
-      if (property.isInteger()) {
-        int min = Integer.MAX_VALUE;
-        for (final Object obj : valueProvider.getValues()) {
-          min = Math.min(min, (Integer) obj);
+      final Collection values = valueProvider.getValues();
+      if (!values.isEmpty()) {
+        if (property.isInteger()) {
+          int min = Integer.MAX_VALUE;
+          for (final Object obj : values) {
+            min = Math.min(min, (Integer) obj);
+          }
+          txt = format.format(min);
         }
-        if (min != Integer.MAX_VALUE) {
+        else if (property.isDouble()) {
+          double min = Double.MAX_VALUE;
+          for (final Object obj : values) {
+            min = Math.min(min, (Double) obj);
+          }
           txt = format.format(min);
         }
       }
-      else if (property.isDouble()) {
-        double min = Double.MAX_VALUE;
-        for (final Object obj : valueProvider.getValues()) {
-          min = Math.min(min, (Double) obj);
-        }
-        if (min != Double.MAX_VALUE) {
-          txt = format.format(min);
-        }
-      }
-
       return addSubsetIndicator(txt, valueProvider);
     }
   }
@@ -246,21 +247,20 @@ public class DefaultPropertySummaryModel implements PropertySummaryModel {
     public String getSummary(final PropertyValueProvider valueProvider, final Property property) {
       final Format format = property.getFormat();
       String txt = "";
-      if (property.isInteger()) {
-        int max = Integer.MIN_VALUE;
-        for (final Object obj : valueProvider.getValues()) {
-          max = Math.max(max, (Integer) obj);
-        }
-        if (max != Integer.MIN_VALUE) {
+      final Collection values = valueProvider.getValues();
+      if (!values.isEmpty()) {
+        if (property.isInteger()) {
+          int max = 0;
+          for (final Object obj : values) {
+            max = Math.max(max, (Integer) obj);
+          }
           txt = format.format(max);
         }
-      }
-      else if (property.isDouble()) {
-        double max = Double.MIN_VALUE;
-        for (final Object obj : valueProvider.getValues()) {
-          max = Math.max(max, (Double) obj);
-        }
-        if (max != Double.MIN_VALUE) {
+        else if (property.isDouble()) {
+          double max = 0;
+          for (final Object obj : values) {
+            max = Math.max(max, (Double) obj);
+          }
           txt = format.format(max);
         }
       }
@@ -280,25 +280,24 @@ public class DefaultPropertySummaryModel implements PropertySummaryModel {
     public String getSummary(final PropertyValueProvider valueProvider, final Property property) {
       final Format format = property.getFormat();
       String txt = "";
-      if (property.isInteger()) {
-        int min = Integer.MAX_VALUE;
-        int max = Integer.MIN_VALUE;
-        for (final Object obj : valueProvider.getValues()) {
-          max = Math.max(max, (Integer) obj);
-          min = Math.min(min, (Integer) obj);
-        }
-        if (max != Integer.MIN_VALUE) {
+      final Collection values = valueProvider.getValues();
+      if (!values.isEmpty()) {
+        if (property.isInteger()) {
+          int min = Integer.MAX_VALUE;
+          int max = Integer.MIN_VALUE;
+          for (final Object obj : values) {
+            max = Math.max(max, (Integer) obj);
+            min = Math.min(min, (Integer) obj);
+          }
           txt = format.format(min) + "/" + format.format(max);
         }
-      }
-      else if (property.isDouble()) {
-        double min = Double.MAX_VALUE;
-        double max = Double.MIN_VALUE;
-        for (final Object obj : valueProvider.getValues()) {
-          max = Math.max(max, (Double) obj);
-          min = Math.min(min, (Double) obj);
-        }
-        if (max != Double.MIN_VALUE) {
+        else if (property.isDouble()) {
+          double min = Double.MAX_VALUE;
+          double max = Double.MIN_VALUE;
+          for (final Object obj : values) {
+            max = Math.max(max, (Double) obj);
+            min = Math.min(min, (Double) obj);
+          }
           txt = format.format(min) + "/" + format.format(max);
         }
       }

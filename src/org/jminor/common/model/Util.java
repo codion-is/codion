@@ -559,17 +559,17 @@ public final class Util {
   }
 
   public static URI getURI(final String urlOrPath) throws URISyntaxException {
-    return getURIs(new String[] {urlOrPath})[0];
+    return getURIs(Arrays.asList(urlOrPath)).iterator().next();
   }
 
-  public static URI[] getURIs(final String[] urlsOrPaths) throws URISyntaxException {
-    final URI[] urls = new URI[urlsOrPaths.length];
-    for (int i = 0; i < urlsOrPaths.length; i++) {
-      if (urlsOrPaths[i].toLowerCase().startsWith("http")) {
-        urls[i] = new URI(urlsOrPaths[i].trim());
+  public static Collection<URI> getURIs(final Collection<String> urlsOrPaths) throws URISyntaxException {
+    final Collection<URI> urls = new ArrayList<URI>();
+    for (final String urlsOrPath : urlsOrPaths) {
+      if (urlsOrPath.toLowerCase().startsWith("http")) {
+        urls.add(new URI(urlsOrPath.trim()));
       }
       else {
-        urls[i] = new File(urlsOrPaths[i].trim()).toURI();
+        urls.add(new File(urlsOrPath.trim()).toURI());
       }
     }
 
