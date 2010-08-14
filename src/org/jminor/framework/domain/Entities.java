@@ -7,6 +7,10 @@ import org.jminor.common.model.IdSource;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.ValueMap;
 
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeModel;
+import javax.swing.tree.MutableTreeNode;
 import java.awt.Color;
 import java.text.Collator;
 import java.text.Format;
@@ -518,6 +522,20 @@ public final class Entities {
   }
 
   /**
+   * @return a tree model showing the dependencies between entities via foreign keys
+   */
+  public static TreeModel getDependencyTreeModel() {
+    final DefaultMutableTreeNode root = new DefaultMutableTreeNode(null);
+    for (final EntityDefinition definition : ENTITY_DEFINITIONS.values()) {
+      if (definition.getForeignKeyProperties().isEmpty() || referencesOnlySelf(definition)) {
+        root.add(new EntityDependencyTreeNode(definition.getEntityID()));
+      }
+    }
+
+    return new DefaultTreeModel(root);
+  }
+
+  /**
    * @return a map containing all defined entityIDs, with their respective table names as an associated value
    */
   public static Map<String, String> getEntityDefinitions() {
@@ -646,6 +664,86 @@ public final class Entities {
     @SuppressWarnings({"UnusedDeclaration"})
     public Color getBackgroundColor(final Entity entity) {
       return null;
+    }
+  }
+
+  private static boolean referencesOnlySelf(final EntityDefinition definition) {
+    for (final Property.ForeignKeyProperty fkProperty : definition.getForeignKeyProperties()) {
+      if (!fkProperty.getReferencedEntityID().equals(definition.getEntityID())) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  private static final class EntityDependencyTreeNode extends DefaultMutableTreeNode {
+
+    private EntityDependencyTreeNode(final String entityID) {
+      super(entityID);
+      Util.rejectNullValue(entityID, "entityID");
+    }
+
+    @Override
+    public String toString() {
+      return getEntityID();
+    }
+
+    public String getEntityID() {
+      return (String) getUserObject();
+    }
+
+    @Override
+    public int hashCode() {
+      return getEntityID().hashCode();
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+      return obj instanceof EntityDependencyTreeNode && getEntityID().equals(((EntityDependencyTreeNode) obj).getEntityID());
+    }
+
+    @Override
+    public void setParent(MutableTreeNode newParent) {
+      if (getParent() == null) {
+        for (final EntityDependencyTreeNode child : initializeChildren(newParent)) {
+          add(child);
+        }
+      }
+      super.setParent(newParent);
+    }
+
+    public void setUserObject(final Object object) {
+      if (!(object instanceof String)) {
+        throw new IllegalArgumentException("entityID required, got: " + object);
+      }
+      super.setUserObject(object);
+    }
+
+    private List<EntityDependencyTreeNode> initializeChildren(final MutableTreeNode parent) {
+      final List<EntityDependencyTreeNode> children = new ArrayList<EntityDependencyTreeNode>();
+      for (final String entityID : getEntityDefinitions().keySet()) {
+        for (final Property.ForeignKeyProperty fkProperty : getForeignKeyProperties(entityID)) {
+          if (fkProperty.getReferencedEntityID().equals(getEntityID()) &&
+                  !foreignKeyCycle(fkProperty.getReferencedEntityID(), parent)) {
+            children.add(new EntityDependencyTreeNode(entityID));
+          }
+        }
+      }
+
+      return children;
+    }
+
+    public static boolean foreignKeyCycle(final String referencedEntityID, final MutableTreeNode parent) {
+      MutableTreeNode tmp = parent;
+      while (tmp != null && tmp instanceof EntityDependencyTreeNode) {
+        if (((EntityDependencyTreeNode) tmp).getEntityID().equals(referencedEntityID)) {
+          return true;
+        }
+        tmp = (MutableTreeNode) tmp.getParent();
+      }
+
+      return false;
     }
   }
 }

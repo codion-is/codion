@@ -24,8 +24,8 @@ import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.db.provider.EntityDbProviderFactory;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.i18n.FrameworkMessages;
-
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
@@ -33,10 +33,9 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -170,6 +169,11 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   public final void viewApplicationTree() {
     UiUtil.showInDialog(UiUtil.getParentWindow(this), initializeApplicationTree(), false,
             FrameworkMessages.get(FrameworkMessages.APPLICATION_TREE), false, true, null);
+  }
+
+  public final void viewDependencyTree() {
+    UiUtil.showInDialog(UiUtil.getParentWindow(this), initializeDependencyTree(), false,
+            FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES), false, true, null);
   }
 
   public final void startApplication(final String frameCaption, final String iconName, final boolean maximize,
@@ -368,6 +372,8 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     controlSet.addSeparator();
     controlSet.add(Controls.methodControl(this, "viewApplicationTree",
             FrameworkMessages.get(FrameworkMessages.APPLICATION_TREE), null, null));
+    controlSet.add(Controls.methodControl(this, "viewDependencyTree",
+            FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES), null, null));
     controlSet.addSeparator();
     final ToggleBeanValueLink ctrAlwaysOnTop = Controls.toggleControl(this,
             "alwaysOnTop", FrameworkMessages.get(FrameworkMessages.ALWAYS_ON_TOP), evtAlwaysOnTopChanged);
@@ -790,7 +796,15 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   }
 
   private JScrollPane initializeApplicationTree() {
-    final JTree tree = new JTree(createApplicationTree(mainApplicationPanels));
+    return initalizeTree(createApplicationTree(mainApplicationPanels));
+  }
+
+  private JScrollPane initializeDependencyTree() {
+    return initalizeTree(Entities.getDependencyTreeModel());
+  }
+
+  private JScrollPane initalizeTree(final TreeModel treeModel) {
+    final JTree tree = new JTree(treeModel);
     tree.setShowsRootHandles(true);
     tree.setToggleClickCount(1);
     tree.setRootVisible(false);
