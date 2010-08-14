@@ -9,8 +9,8 @@ import org.jminor.common.model.valuemap.ValueMap;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeModel;
 import javax.swing.tree.MutableTreeNode;
+import javax.swing.tree.TreeModel;
 import java.awt.Color;
 import java.text.Collator;
 import java.text.Format;
@@ -95,6 +95,17 @@ public final class Entities {
 
   public static boolean isDefined(final String entityID) {
     return ENTITY_DEFINITIONS.containsKey(entityID);
+  }
+
+  public static Collection<String> getDomainEntityIDs(final String domainID) {
+    final Collection<String> entityIDs = new ArrayList<String>();
+    for (final EntityDefinition definition : ENTITY_DEFINITIONS.values()) {
+      if (definition.getDomainID().equals(domainID)) {
+        entityIDs.add(definition.getEntityID());
+      }
+    }
+
+    return entityIDs;
   }
 
   /**
@@ -525,10 +536,19 @@ public final class Entities {
    * @return a tree model showing the dependencies between entities via foreign keys
    */
   public static TreeModel getDependencyTreeModel() {
+    return getDependencyTreeModel(null);
+  }
+
+  /**
+   * @param domainID the ID of the domain for which to return a dependency tree model
+   * @return a tree model showing the dependencies between entities via foreign keys
+   */
+  public static TreeModel getDependencyTreeModel(final String domainID) {
     final DefaultMutableTreeNode root = new DefaultMutableTreeNode(null);
-    for (final EntityDefinition definition : ENTITY_DEFINITIONS.values()) {
+    for (final String entityID : getEntityDefinitions(domainID).values()) {
+      final EntityDefinition definition = ENTITY_DEFINITIONS.get(entityID);
       if (definition.getForeignKeyProperties().isEmpty() || referencesOnlySelf(definition)) {
-        root.add(new EntityDependencyTreeNode(definition.getEntityID()));
+        root.add(new EntityDependencyTreeNode(domainID, definition.getEntityID()));
       }
     }
 
@@ -539,9 +559,24 @@ public final class Entities {
    * @return a map containing all defined entityIDs, with their respective table names as an associated value
    */
   public static Map<String, String> getEntityDefinitions() {
+    return getEntityDefinitions(null);
+  }
+
+  /**
+   * @param domainID the ID of the domain for which to retrieve the entity definitions
+   * @return a map containing all defined entityIDs, with their respective table names as an associated value
+   */
+  public static Map<String, String> getEntityDefinitions(final String domainID) {
     final Map<String, String> definitions = new HashMap<String, String>();
     for (final EntityDefinition definition : ENTITY_DEFINITIONS.values()) {
-      definitions.put(definition.getEntityID(), definition.getTableName());
+      if (domainID == null) {
+        definitions.put(definition.getEntityID(), definition.getTableName());
+      }
+      else {
+        if (getDomainEntityIDs(domainID).contains(definition.getEntityID())) {
+          definitions.put(definition.getEntityID(), definition.getTableName());
+        }
+      }
     }
 
     return definitions;
@@ -678,9 +713,12 @@ public final class Entities {
   }
 
   private static final class EntityDependencyTreeNode extends DefaultMutableTreeNode {
+    private final String domainID;
 
-    private EntityDependencyTreeNode(final String entityID) {
+    private EntityDependencyTreeNode(final String domainID, final String entityID) {
       super(entityID);
+      this.domainID = domainID;
+      Util.rejectNullValue(domainID, "domainID");
       Util.rejectNullValue(entityID, "entityID");
     }
 
@@ -722,11 +760,11 @@ public final class Entities {
 
     private List<EntityDependencyTreeNode> initializeChildren(final MutableTreeNode parent) {
       final List<EntityDependencyTreeNode> children = new ArrayList<EntityDependencyTreeNode>();
-      for (final String entityID : getEntityDefinitions().keySet()) {
+      for (final String entityID : getEntityDefinitions(domainID).keySet()) {
         for (final Property.ForeignKeyProperty fkProperty : getForeignKeyProperties(entityID)) {
           if (fkProperty.getReferencedEntityID().equals(getEntityID()) &&
                   !foreignKeyCycle(fkProperty.getReferencedEntityID(), parent)) {
-            children.add(new EntityDependencyTreeNode(entityID));
+            children.add(new EntityDependencyTreeNode(domainID, entityID));
           }
         }
       }

@@ -11,6 +11,8 @@ import java.sql.Types;
 
 public class Chinook {
 
+  public static final String DOMAIN_ID = Chinook.class.getName();
+
   public static final String T_ALBUM = "chinook.album";
   public static final String ALBUM_ALBUMID = "albumid";
   public static final String ALBUM_TITLE = "title";
@@ -124,6 +126,7 @@ public class Chinook {
                     .setNullable(false)
                     .setMaxLength(160)
                     .setPreferredColumnWidth(160))
+            .setDomainID(DOMAIN_ID)
             .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_ALBUM)
             .setStringProvider(new StringProvider<String>(ALBUM_TITLE))
             .setLargeDataset(true)
@@ -136,6 +139,7 @@ public class Chinook {
             Properties.columnProperty(ARTIST_NAME, Types.VARCHAR, "Name")
                     .setMaxLength(120)
                     .setPreferredColumnWidth(160))
+            .setDomainID(DOMAIN_ID)
             .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_ARTIST)
             .setStringProvider(new StringProvider<String>(ARTIST_NAME))
             .setLargeDataset(true)
@@ -172,6 +176,7 @@ public class Chinook {
                     .setMaxLength(60),
             Properties.foreignKeyProperty(CUSTOMER_SUPPORTREPID_FK, "Support rep", T_EMPLOYEE,
                     Properties.columnProperty(CUSTOMER_SUPPORTREPID)))
+            .setDomainID(DOMAIN_ID)
             .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_CUSTOMER)
             .setStringProvider(new StringProvider<String>(CUSTOMER_LASTNAME)
             .addText(", ").addValue(CUSTOMER_FIRSTNAME))
@@ -210,6 +215,7 @@ public class Chinook {
                     .setMaxLength(24),
             Properties.columnProperty(EMPLOYEE_EMAIL, Types.VARCHAR, "Email")
                     .setMaxLength(60))
+            .setDomainID(DOMAIN_ID)
             .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_EMPLOYEE)
             .setStringProvider(new StringProvider<String>(EMPLOYEE_LASTNAME)
             .addText(", ").addValue(EMPLOYEE_FIRSTNAME))
@@ -222,6 +228,7 @@ public class Chinook {
             Properties.columnProperty(GENRE_NAME, Types.VARCHAR, "Name")
                     .setMaxLength(120)
                     .setPreferredColumnWidth(160))
+            .setDomainID(DOMAIN_ID)
             .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_GENRE)
             .setStringProvider(new StringProvider<String>(GENRE_NAME))
             .setSearchPropertyIDs(GENRE_NAME)
@@ -233,6 +240,7 @@ public class Chinook {
             Properties.columnProperty(MEDIATYPE_NAME, Types.VARCHAR, "Name")
                     .setMaxLength(120)
                     .setPreferredColumnWidth(160))
+            .setDomainID(DOMAIN_ID)
             .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_MEDIATYPE)
             .setStringProvider(new StringProvider<String>(MEDIATYPE_NAME))
             .setOrderByClause(MEDIATYPE_NAME)
@@ -266,6 +274,7 @@ public class Chinook {
             Properties.columnProperty(TRACK_BYTES, Types.INTEGER, "Bytes"),
             Properties.columnProperty(TRACK_UNITPRICE, Types.DOUBLE, "Price")
                     .setNullable(false))
+            .setDomainID(DOMAIN_ID)
             .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_TRACK)
             .setStringProvider(new StringProvider<String>(TRACK_NAME))
             .setLargeDataset(true)
@@ -297,6 +306,7 @@ public class Chinook {
             Properties.columnProperty(PLAYLIST_NAME, Types.VARCHAR, "Name")
                     .setMaxLength(120)
                     .setPreferredColumnWidth(160))
+            .setDomainID(DOMAIN_ID)
             .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_PLAYLIST)
             .setStringProvider(new StringProvider<String>(PLAYLIST_NAME))
             .setLargeDataset(true)
@@ -321,6 +331,7 @@ public class Chinook {
             Properties.denormalizedViewProperty(PLAYLISTTRACK_ALBUM_DENORM, PLAYLISTTRACK_TRACKID_FK,
                     Entities.getProperty(T_TRACK, TRACK_ALBUMID_FK), "Album")
                     .setPreferredColumnWidth(160))
+            .setDomainID(DOMAIN_ID)
             .setIdSource(IdSource.NONE)
             .setStringProvider(new StringProvider<String>(PLAYLISTTRACK_PLAYLISTID_FK)
             .addText(" - ").addValue(PLAYLISTTRACK_TRACKID_FK))
@@ -349,6 +360,7 @@ public class Chinook {
                     .setMaxLength(10),
             Properties.columnProperty(INVOICE_TOTAL, Types.DOUBLE, "Total")
                     .setNullable(false))
+            .setDomainID(DOMAIN_ID)
             .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_INVOICE)
             .setStringProvider(new StringProvider<String>(INVOICE_INVOICEID))
             .setLargeDataset(true).setSearchPropertyIDs(INVOICE_INVOICEID_AS_STRING)
@@ -369,6 +381,7 @@ public class Chinook {
                     .setNullable(false),
             Properties.columnProperty(INVOICELINE_QUANTITY, Types.INTEGER, "Quantity")
                     .setNullable(false))
+            .setDomainID(DOMAIN_ID)
             .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_INVOICELINE)
             .setLargeDataset(true)
             .setCaption("Invoice lines");

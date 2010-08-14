@@ -26,6 +26,18 @@ public interface EntityDefinition {
   String getTableName();
 
   /**
+   * @return the ID of the domain this entity type belongs to
+   */
+  String getDomainID();
+
+  /**
+   * Sets the domain ID for this entity type
+   * @param domainID the domain ID
+   * @return this EntityDefinition instance
+   */
+  EntityDefinition setDomainID(final String domainID);
+
+  /**
    * @return the caption to use when presenting entities of this type
    */
   String getCaption();

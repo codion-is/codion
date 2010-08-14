@@ -38,6 +38,10 @@ final class EntityDefinitionImpl implements EntityDefinition, Serializable {
    */
   private final String tableName;
   /**
+   * The domainID
+   */
+  private String domainID;
+  /**
    * The caption to use for the entity type
    */
   private String caption;
@@ -116,6 +120,7 @@ final class EntityDefinitionImpl implements EntityDefinition, Serializable {
     Util.rejectNullValue(entityID, "entityID");
     Util.rejectNullValue(tableName, "tableName");
     Util.rejectNullValue(propertyDefinitions, "entityDefinitions");
+    this.domainID = entityID;
     this.entityID = entityID;
     this.tableName = tableName;
     this.selectTableName = tableName;
@@ -135,6 +140,17 @@ final class EntityDefinitionImpl implements EntityDefinition, Serializable {
   /** {@inheritDoc} */
   public String getTableName() {
     return tableName;
+  }
+
+  /** {@inheritDoc} */
+  public String getDomainID() {
+    return domainID;
+  }
+
+  /** {@inheritDoc} */
+  public EntityDefinition setDomainID(final String domainID) {
+    this.domainID = domainID;
+    return this;
   }
 
   /** {@inheritDoc} */

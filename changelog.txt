@@ -2011,3 +2011,6 @@
   Entities.getDependencyTree() added
   EntitiesTest added
   EntityApplicationPanel.viewDependencyTree() added to View menu
+  EntityDefinition.domainID added
+  Entities.getDomainEntityIDs()
+  Entities.getDependencyTreeModel() overloaded with a domainID parameter
