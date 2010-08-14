@@ -25,7 +25,7 @@ JMinor is a minimalistic Java rich client CRUD application framework based solel
 
 2. RELEASE INFO
 
-Release contents (~18 MB):
+Release contents (~20 MB):
 * "dist" contains the JMinor binary jar files
 * "docs" contains basic documentation as well as API javadocs
 * "lib" contains third-party libraries needed for building the framework and/or running the samples
@@ -42,33 +42,33 @@ Release contents (~18 MB):
 
 The "dist" directory contains the following distinct jar files for use in applications.
 
-* "jminor" (~850 KB)
+* "jminor" (~1 MB)
 - Convenient jar file containing the full framework codebase
 
-* "jminor-client (~370 KB)
+* "jminor-client (~450 KB)
 - Full client codebase, including both local and remote connection facilities
 - Dependencies: jminor-common
 
-* "jminor-client-remote (~350 KB)
+* "jminor-client-remote (~420 KB)
 - Client codebase including only remote connection facilities
 - Dependencies: jminor-common
 
-* "jminor-common" (~370 KB)
+* "jminor-common" (~450 KB)
 - Common codebase
 
 * "jminor-demos.jar" (~100 KB)
 - Three demo applications
 - Dependencies: jminor-client, jminor-common
 
-* "jminor_server" (~120 KB)
+* "jminor_server" (~150 KB)
 - RMI server codebase
 - Dependencies: jminor-common
 
-* "jminor_server_monitor" (~100 KB)
+* "jminor_server_monitor" (~150 KB)
 - RMI server monitor codebase
 - Dependencies: jminor-common
 
-* "jminor-api-doc" (~1.9 MB)
+* "jminor-api-doc" (~2.5 MB)
 - API documentation
 
 
