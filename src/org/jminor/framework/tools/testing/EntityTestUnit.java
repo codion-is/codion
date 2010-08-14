@@ -18,16 +18,11 @@ import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
-
-import org.junit.After;
 import static org.junit.Assert.*;
+import org.junit.After;
 import org.junit.Before;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -144,7 +139,7 @@ public abstract class EntityTestUnit {
   protected final void testEntity(final String entityID) throws Exception {
     try {
       getEntityDb().beginTransaction();
-      initializeReferenceEntities(addAllReferencedEntityIDs(entityID, new ArrayList<String>()));
+      initializeReferencedEntities(entityID, entityID);
       Entity testEntity = null;
       if (!Entities.isReadOnly(entityID)) {
         testEntity = testInsert(Util.rejectNullValue(initializeTestEntity(entityID), "test entity"));
@@ -188,15 +183,20 @@ public abstract class EntityTestUnit {
   /**
    * This method should initialize instances of entities specified by the entityIDs found in the
    * <code>entityIDs</code> Collection and map them to their respective entityIDs via the setReferenceEntity method
-   * @param referenceEntityIDs the IDs of the entities that should be initialized
+   * @param testEntityID the ID of the entity being tested
+   * @param entityID the ID of the entity for which to initialize the referenced entities
    * @throws Exception in case of an exception
    * @see #setReferenceEntity(String, org.jminor.framework.domain.Entity)
    */
   @SuppressWarnings({"UnusedDeclaration"})
-  protected void initializeReferenceEntities(final List<String> referenceEntityIDs) throws Exception {
-    Collections.sort(referenceEntityIDs, new ReferenceComparator());
-    for (final String entityID : referenceEntityIDs) {
-      setReferenceEntity(entityID, createReferenceEntity(entityID));
+  protected final void initializeReferencedEntities(final String testEntityID, final String entityID) throws Exception {
+    for (final Property.ForeignKeyProperty fkProperty : Entities.getForeignKeyProperties(entityID)) {
+      if (!fkProperty.getReferencedEntityID().equals(entityID)) {
+        initializeReferencedEntities(testEntityID, fkProperty.getReferencedEntityID());
+      }
+      if (!referencedEntities.containsKey(fkProperty.getReferencedEntityID())) {
+        setReferenceEntity(fkProperty.getReferencedEntityID(), createReferenceEntity(fkProperty.getReferencedEntityID()));
+      }
     }
   }
 
@@ -305,56 +305,5 @@ public abstract class EntityTestUnit {
     }
 
     return getEntityDb().selectSingle(getEntityDb().insert(Arrays.asList(entity)).get(0));
-  }
-
-  /**
-   * Adds all entityIDs referenced via foreign keys by the entity identified by <code>entityID</code> to <code>container</code>
-   * @param entityID the entityID
-   * @param container the container
-   * @return the container
-   */
-  private List<String> addAllReferencedEntityIDs(final String entityID, final List<String> container) {
-    for (final Property.ForeignKeyProperty foreignKeyProperty : Entities.getForeignKeyProperties(entityID)) {
-      final String referenceEntityID = foreignKeyProperty.getReferencedEntityID();
-      if (referenceEntityID != null && !container.contains(referenceEntityID)) {
-        container.add(referenceEntityID);
-        addAllReferencedEntityIDs(referenceEntityID, container);
-      }
-    }
-    return container;
-  }
-
-  private static boolean superTreeContains(final String root, final String entityID) {
-    Util.rejectNullValue(root, "root");
-    Util.rejectNullValue(entityID, "entityID");
-    if (root.equals(entityID)) {
-      return true;
-    }
-
-    final Collection<Property.ForeignKeyProperty> foreignKeyProperties = Entities.getForeignKeyProperties(root);
-    if (foreignKeyProperties.isEmpty()) {
-      return false;
-    }
-
-    for (final Property.ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
-      final String referencedEntityID = foreignKeyProperty.getReferencedEntityID();
-      if (referencedEntityID.equals(root) || referencedEntityID.equals(entityID) || superTreeContains(referencedEntityID, entityID)) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  private static final class ReferenceComparator implements Comparator<String> {
-    public int compare(final String o1, final String o2) {
-      if (superTreeContains(o1, o2)) {
-        return 1;
-      }
-      else if (superTreeContains(o2, o1)) {
-        return -1;
-      }
-      return 0;
-    }
   }
 }

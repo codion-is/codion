@@ -2007,3 +2007,4 @@
   Entities.getSearchProperties() bug fixed
   EntityEditPanel.createPropertyPanel(propertyID) added, picks up the input component associated with the property, well duhh
   EntityEditPanel now picks a default LinkType based on the readOnly/updatable status of the underlying property
+  EntityTestUnit.initializeReferenceEntities() renamed to initializeReferencedEntities(), refactored and bugfixed
