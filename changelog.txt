@@ -2014,3 +2014,4 @@
   EntityDefinition.domainID added
   Entities.getDomainEntityIDs()
   Entities.getDependencyTreeModel() overloaded with a domainID parameter
+  EntityTestUnit.createReferenceEntity() renamed to initializeReferenceEntity()

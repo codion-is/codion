@@ -107,7 +107,7 @@ public abstract class EntityTestUnit {
    * @return the entity mapped to the given entityID
    * @see #setReferenceEntity(String, org.jminor.framework.domain.Entity)
    */
-  protected Entity getReferenceEntity(final String entityID) {
+  protected final Entity getReferenceEntity(final String entityID) {
     final Entity entity = referencedEntities.get(entityID);
     if (entity == null) {
       throw new RuntimeException("No reference entity available of type " + entityID);
@@ -165,10 +165,20 @@ public abstract class EntityTestUnit {
   /**
    * This method should return an instance of the entity specified by <code>entityID</code>
    * @param entityID the entityID for which to initialize an entity instance
-   * @return an entity
+   * @return the entity instance to use for testing the entity type
    * @throws Exception in case of an exception
    */
   protected Entity initializeTestEntity(final String entityID) throws Exception {
+    return EntityUtil.createRandomEntity(entityID, referencedEntities);
+  }
+
+  /**
+   * Initializes a new Entity of the given type, by default this method creates a Entity filled with random values.
+   * @param entityID the entity ID
+   * @return a entity of the given type
+   * @throws Exception in case of an exception
+   */
+  protected Entity initializeReferenceEntity(final String entityID) throws Exception {
     return EntityUtil.createRandomEntity(entityID, referencedEntities);
   }
 
@@ -195,19 +205,9 @@ public abstract class EntityTestUnit {
         initializeReferencedEntities(testEntityID, fkProperty.getReferencedEntityID());
       }
       if (!referencedEntities.containsKey(fkProperty.getReferencedEntityID())) {
-        setReferenceEntity(fkProperty.getReferencedEntityID(), createReferenceEntity(fkProperty.getReferencedEntityID()));
+        setReferenceEntity(fkProperty.getReferencedEntityID(), initializeReferenceEntity(fkProperty.getReferencedEntityID()));
       }
     }
-  }
-
-  /**
-   * Initializes a new Entity of the given type, by default this method creates a Entity filled with random values.
-   * @param entityID the entity ID
-   * @return a entity of the given type
-   * @throws Exception in case of an exception
-   */
-  protected Entity createReferenceEntity(final String entityID) throws Exception {
-    return EntityUtil.createRandomEntity(entityID, referencedEntities);
   }
 
   /**
