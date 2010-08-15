@@ -255,6 +255,7 @@ public class EntityPanel extends JPanel {
     else {
       this.tablePanel = tablePanel;
     }
+    model.getEditModel().getActiveState().addListener(new ActivationListener());
   }
 
   /**
@@ -1122,7 +1123,6 @@ public class EntityPanel extends JPanel {
         UiUtil.setWaitCursor(false, EntityPanel.this);
       }
     });
-    getEditModel().getActiveState().addListener(new ActivationListener());
   }
 
   /**
