@@ -27,10 +27,11 @@ public class ProductPanel extends EntityEditPanel {
     setLayout(new FlexibleGridLayout(3,1,5,5));
     final EntityComboBox box = createEntityComboBox(PRODUCT_CATEGORY_FK);
     setInitialFocusComponent(box);
-    add(createPropertyPanel(PRODUCT_CATEGORY_FK, box));
-    add(createPropertyPanel(PRODUCT_NAME, createTextField(PRODUCT_NAME)));
+    addPropertyPanel(PRODUCT_CATEGORY_FK);
+    createTextField(PRODUCT_NAME);
+    addPropertyPanel(PRODUCT_NAME);
     final JTextField txt = createTextField(PRODUCT_DESCRIPTION);
     txt.setColumns(16);
-    add(createPropertyPanel(PRODUCT_DESCRIPTION, txt));
+    addPropertyPanel(PRODUCT_DESCRIPTION);
   }
 }

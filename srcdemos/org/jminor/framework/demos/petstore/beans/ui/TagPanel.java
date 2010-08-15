@@ -27,6 +27,6 @@ public class TagPanel extends EntityEditPanel {
     final JTextField txt = createTextField(TAG_TAG);
     setInitialFocusComponent(txt);
     txt.setColumns(16);
-    add(createPropertyPanel(TAG_TAG, txt));
+    addPropertyPanel(TAG_TAG);
   }
 }

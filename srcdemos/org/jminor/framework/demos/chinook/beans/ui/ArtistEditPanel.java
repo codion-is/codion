@@ -23,6 +23,6 @@ public class ArtistEditPanel extends EntityEditPanel {
     txtName.setColumns(18);
 
     setLayout(new GridLayout(1, 1, 5, 5));
-    add(createPropertyPanel(ARTIST_NAME, txtName));
+    addPropertyPanel(ARTIST_NAME);
   }
 }

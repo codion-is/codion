@@ -6,7 +6,6 @@ package org.jminor.framework.demos.chinook.beans.ui;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
 import org.jminor.framework.client.model.EntityEditModel;
-import org.jminor.framework.client.ui.EntityComboBox;
 import org.jminor.framework.client.ui.EntityEditPanel;
 import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 
@@ -43,20 +42,20 @@ public class CustomerEditPanel extends EntityEditPanel {
     txtFax.setColumns(16);
     final JTextField txtEmail = createTextField(CUSTOMER_EMAIL);
     txtEmail.setColumns(16);
-    final EntityComboBox boxEmp = createEntityComboBox(CUSTOMER_SUPPORTREPID_FK);
+    createEntityComboBox(CUSTOMER_SUPPORTREPID_FK);
 
     setLayout(new FlexibleGridLayout(3, 4, 5, 5));
-    add(createPropertyPanel(CUSTOMER_FIRSTNAME, txtFirstName));
-    add(createPropertyPanel(CUSTOMER_LASTNAME, txtLastName));
-    add(createPropertyPanel(CUSTOMER_COMPANY, txtCompany));
-    add(createPropertyPanel(CUSTOMER_ADDRESS, txtAddress));
-    add(createPropertyPanel(CUSTOMER_CITY, txtCity));
-    add(createPropertyPanel(CUSTOMER_STATE, txtState));
-    add(createPropertyPanel(CUSTOMER_COUNTRY, txtCountry));
-    add(createPropertyPanel(CUSTOMER_POSTALCODE, txtPostalcode));
-    add(createPropertyPanel(CUSTOMER_PHONE, txtPhone));
-    add(createPropertyPanel(CUSTOMER_FAX, txtFax));
-    add(createPropertyPanel(CUSTOMER_EMAIL, txtEmail));
-    add(createPropertyPanel(CUSTOMER_SUPPORTREPID_FK, boxEmp));
+    addPropertyPanel(CUSTOMER_FIRSTNAME);
+    addPropertyPanel(CUSTOMER_LASTNAME);
+    addPropertyPanel(CUSTOMER_COMPANY);
+    addPropertyPanel(CUSTOMER_ADDRESS);
+    addPropertyPanel(CUSTOMER_CITY);
+    addPropertyPanel(CUSTOMER_STATE);
+    addPropertyPanel(CUSTOMER_COUNTRY);
+    addPropertyPanel(CUSTOMER_POSTALCODE);
+    addPropertyPanel(CUSTOMER_PHONE);
+    addPropertyPanel(CUSTOMER_FAX);
+    addPropertyPanel(CUSTOMER_EMAIL);
+    addPropertyPanel(CUSTOMER_SUPPORTREPID_FK);
   }
 }

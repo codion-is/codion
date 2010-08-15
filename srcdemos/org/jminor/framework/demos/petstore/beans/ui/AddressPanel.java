@@ -28,21 +28,23 @@ public class AddressPanel extends EntityEditPanel {
     JTextField txt = createTextField(ADDRESS_CITY);
     setInitialFocusComponent(txt);
     txt.setColumns(12);
-    add(createPropertyPanel(ADDRESS_CITY, txt));
+    addPropertyPanel(ADDRESS_CITY);
     txt = createTextField(ADDRESS_STATE);
     txt.setColumns(12);
-    add(createPropertyPanel(ADDRESS_STATE, txt));
+    addPropertyPanel(ADDRESS_STATE);
     add(new JLabel());
     txt = createTextField(ADDRESS_ZIP);
     txt.setColumns(12);
-    add(createPropertyPanel(ADDRESS_ZIP, txt));
+    addPropertyPanel(ADDRESS_ZIP);
     txt = createTextField(ADDRESS_STREET_1);
     txt.setColumns(12);
-    add(createPropertyPanel(ADDRESS_STREET_1, txt));
+    addPropertyPanel(ADDRESS_STREET_1);
     txt = createTextField(ADDRESS_STREET_2);
     txt.setColumns(12);
-    add(createPropertyPanel(ADDRESS_STREET_2, txt));
-    add(createPropertyPanel(ADDRESS_LATITUDE, createTextField(ADDRESS_LATITUDE)));
-    add(createPropertyPanel(ADDRESS_LONGITUDE, createTextField(ADDRESS_LONGITUDE)));
+    addPropertyPanel(ADDRESS_STREET_2);
+    createTextField(ADDRESS_LATITUDE);
+    addPropertyPanel(ADDRESS_LATITUDE);
+    createTextField(ADDRESS_LONGITUDE);
+    addPropertyPanel(ADDRESS_LONGITUDE);
   }
 }

@@ -31,14 +31,15 @@ public class ItemPanel extends EntityEditPanel {
     setLayout(new FlexibleGridLayout(3,3,5,5));
     EntityComboBox box = createEntityComboBox(ITEM_PRODUCT_FK);
     setInitialFocusComponent(box);
-    add(createPropertyPanel(ITEM_PRODUCT_FK, box));
+    addPropertyPanel(ITEM_PRODUCT_FK);
     JTextField txt = createTextField(ITEM_NAME);
     txt.setColumns(12);
-    add(createPropertyPanel(ITEM_NAME, txt));
+    addPropertyPanel(ITEM_NAME);
     txt = createTextField(ITEM_DESCRIPTION);
     txt.setColumns(16);
-    add(createPropertyPanel(ITEM_DESCRIPTION, txt));
-    add(createPropertyPanel(ITEM_PRICE, createTextField(ITEM_PRICE)));
+    addPropertyPanel(ITEM_DESCRIPTION);
+    createTextField(ITEM_PRICE);
+    addPropertyPanel(ITEM_PRICE);
     box = createEntityComboBox(ITEM_C0NTACT_INFO_FK);
     box.setPopupWidth(200);
     box.setPreferredSize(UiUtil.getPreferredTextFieldSize());
@@ -49,8 +50,11 @@ public class ItemPanel extends EntityEditPanel {
     box.setPreferredSize(UiUtil.getPreferredTextFieldSize());
     add(createPropertyPanel(ITEM_ADDRESS_FK, EntityUiUtil.createEntityComboBoxNewRecordPanel(box,
             new EntityPanelProvider(Petstore.T_ADDRESS).setEditPanelClass(AddressPanel.class), false)));
-    add(createPropertyPanel(ITEM_IMAGE_URL, createTextField(ITEM_IMAGE_URL)));
-    add(createPropertyPanel(ITEM_IMAGE_THUMB_URL, createTextField(ITEM_IMAGE_THUMB_URL)));
-    add(createPropertyPanel(ITEM_DISABLED, createTristateCheckBox(ITEM_DISABLED, null, false)));
+    createTextField(ITEM_IMAGE_URL);
+    addPropertyPanel(ITEM_IMAGE_URL);
+    createTextField(ITEM_IMAGE_THUMB_URL);
+    addPropertyPanel(ITEM_IMAGE_THUMB_URL);
+    createTristateCheckBox(ITEM_DISABLED, null, false);
+    addPropertyPanel(ITEM_DISABLED);
   }
 }

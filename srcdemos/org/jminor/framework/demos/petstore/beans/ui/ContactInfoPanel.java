@@ -27,8 +27,10 @@ public class ContactInfoPanel extends EntityEditPanel {
     final JTextField txt = createTextField(SELLER_CONTACT_INFO_LAST_NAME);
     setInitialFocusComponent(txt);
     txt.setColumns(10);
-    add(createPropertyPanel(SELLER_CONTACT_INFO_LAST_NAME, txt));
-    add(createPropertyPanel(SELLER_CONTACT_INFO_FIRST_NAME, createTextField(SELLER_CONTACT_INFO_FIRST_NAME)));
-    add(createPropertyPanel(SELLER_CONTACT_INFO_EMAIL, createTextField(SELLER_CONTACT_INFO_EMAIL)));
+    addPropertyPanel(SELLER_CONTACT_INFO_LAST_NAME);
+    createTextField(SELLER_CONTACT_INFO_FIRST_NAME);
+    addPropertyPanel(SELLER_CONTACT_INFO_FIRST_NAME);
+    createTextField(SELLER_CONTACT_INFO_EMAIL);
+    addPropertyPanel(SELLER_CONTACT_INFO_EMAIL);
   }
 }

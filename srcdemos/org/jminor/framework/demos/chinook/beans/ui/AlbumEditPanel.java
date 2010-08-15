@@ -26,7 +26,7 @@ public class AlbumEditPanel extends EntityEditPanel {
     txtTitle.setColumns(18);
 
     setLayout(new GridLayout(2, 1, 5, 5));
-    add(createPropertyPanel(ALBUM_ARTISTID_FK, txtArtists));
-    add(createPropertyPanel(ALBUM_TITLE, txtTitle));
+    addPropertyPanel(ALBUM_ARTISTID_FK);
+    addPropertyPanel(ALBUM_TITLE);
   }
 }

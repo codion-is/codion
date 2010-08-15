@@ -43,8 +43,8 @@ public class DepartmentEditPanel extends EntityEditPanel {
     });
 
     setLayout(new GridLayout(3,1,5,5));
-    add(createPropertyPanel(DEPARTMENT_ID));
-    add(createPropertyPanel(DEPARTMENT_NAME));
-    add(createPropertyPanel(DEPARTMENT_LOCATION));
+    addPropertyPanel(DEPARTMENT_ID);
+    addPropertyPanel(DEPARTMENT_NAME);
+    addPropertyPanel(DEPARTMENT_LOCATION);
   }
 }

@@ -7,7 +7,6 @@ import org.jminor.common.ui.DateInputPanel;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
 import org.jminor.framework.client.model.EntityEditModel;
-import org.jminor.framework.client.ui.EntityComboBox;
 import org.jminor.framework.client.ui.EntityEditPanel;
 import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 
@@ -44,26 +43,26 @@ public class EmployeeEditPanel extends EntityEditPanel {
     txtFax.setColumns(16);
     final JTextField txtEmail = createTextField(EMPLOYEE_EMAIL);
     txtEmail.setColumns(16);
-    final EntityComboBox boxEmp = createEntityComboBox(EMPLOYEE_REPORTSTO_FK);
+    createEntityComboBox(EMPLOYEE_REPORTSTO_FK);
     final DateInputPanel hiredateInputPanel = createDateInputPanel(EMPLOYEE_HIREDATE);
     hiredateInputPanel.getInputField().setColumns(16);
     final JTextField txtTitle = createTextField(EMPLOYEE_TITLE);
     txtTitle.setColumns(16);
 
     setLayout(new FlexibleGridLayout(4, 4, 5, 5));
-    add(createPropertyPanel(EMPLOYEE_FIRSTNAME, txtFirstName));
-    add(createPropertyPanel(EMPLOYEE_LASTNAME, txtLastName));
-    add(createPropertyPanel(EMPLOYEE_BIRTHDATE, birthdateInputPanel));
-    add(createPropertyPanel(EMPLOYEE_ADDRESS, txtAddress));
-    add(createPropertyPanel(EMPLOYEE_CITY, txtCity));
-    add(createPropertyPanel(EMPLOYEE_STATE, txtState));
-    add(createPropertyPanel(EMPLOYEE_COUNTRY, txtCountry));
-    add(createPropertyPanel(EMPLOYEE_POSTALCODE, txtPostalcode));
-    add(createPropertyPanel(EMPLOYEE_PHONE, txtPhone));
-    add(createPropertyPanel(EMPLOYEE_FAX, txtFax));
-    add(createPropertyPanel(EMPLOYEE_EMAIL, txtEmail));
-    add(createPropertyPanel(EMPLOYEE_REPORTSTO_FK, boxEmp));
-    add(createPropertyPanel(EMPLOYEE_HIREDATE, hiredateInputPanel));
-    add(createPropertyPanel(EMPLOYEE_TITLE, txtTitle));
+    addPropertyPanel(EMPLOYEE_FIRSTNAME);
+    addPropertyPanel(EMPLOYEE_LASTNAME);
+    addPropertyPanel(EMPLOYEE_BIRTHDATE);
+    addPropertyPanel(EMPLOYEE_ADDRESS);
+    addPropertyPanel(EMPLOYEE_CITY);
+    addPropertyPanel(EMPLOYEE_STATE);
+    addPropertyPanel(EMPLOYEE_COUNTRY);
+    addPropertyPanel(EMPLOYEE_POSTALCODE);
+    addPropertyPanel(EMPLOYEE_PHONE);
+    addPropertyPanel(EMPLOYEE_FAX);
+    addPropertyPanel(EMPLOYEE_EMAIL);
+    addPropertyPanel(EMPLOYEE_REPORTSTO_FK);
+    addPropertyPanel(EMPLOYEE_HIREDATE);
+    addPropertyPanel(EMPLOYEE_TITLE);
   }
 }

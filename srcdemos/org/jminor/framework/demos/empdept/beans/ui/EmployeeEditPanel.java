@@ -37,15 +37,15 @@ public class EmployeeEditPanel extends EntityEditPanel {
 
     setLayout(new FlexibleGridLayout(3,3,5,5,true,false));
 
-    add(createPropertyPanel(EMPLOYEE_NAME));
-    add(createPropertyPanel(EMPLOYEE_JOB));
-    add(createPropertyPanel(EMPLOYEE_DEPARTMENT_FK));
+    addPropertyPanel(EMPLOYEE_NAME);
+    addPropertyPanel(EMPLOYEE_JOB);
+    addPropertyPanel(EMPLOYEE_DEPARTMENT_FK);
 
-    add(createPropertyPanel(EMPLOYEE_MGR_FK));
-    add(createPropertyPanel(EMPLOYEE_SALARY));
-    add(createPropertyPanel(EMPLOYEE_COMMISSION));
+    addPropertyPanel(EMPLOYEE_MGR_FK);
+    addPropertyPanel(EMPLOYEE_SALARY);
+    addPropertyPanel(EMPLOYEE_COMMISSION);
 
-    add(createPropertyPanel(EMPLOYEE_HIREDATE));
+    addPropertyPanel(EMPLOYEE_HIREDATE);
     add(new JLabel());
     add(new JLabel());
   }

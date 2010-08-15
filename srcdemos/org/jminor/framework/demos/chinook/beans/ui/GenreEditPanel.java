@@ -23,6 +23,6 @@ public class GenreEditPanel extends EntityEditPanel {
     txtName.setColumns(12);
 
     setLayout(new GridLayout(1, 1, 5, 5));
-    add(createPropertyPanel(GENRE_NAME, txtName));
+    addPropertyPanel(GENRE_NAME);
   }
 }

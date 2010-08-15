@@ -10,7 +10,6 @@ import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.ui.EntityEditPanel;
 import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -29,8 +28,8 @@ public class TrackEditPanel extends EntityEditPanel {
     txtAlbum.setColumns(18);
     final JTextField txtName = createTextField(TRACK_NAME);
     txtName.setColumns(18);
-    final JComboBox cmbMediaType = createEntityComboBox(TRACK_MEDIATYPEID_FK);
-    final JComboBox cmbGenre = createEntityComboBox(TRACK_GENREID_FK);
+    createEntityComboBox(TRACK_MEDIATYPEID_FK);
+    createEntityComboBox(TRACK_GENREID_FK);
     final TextInputPanel txtComposer = createTextInputPanel(TRACK_COMPOSER);
     ((JTextField) txtComposer.getTextComponent()).setColumns(18);
     final JTextField txtMilliseconds = createTextField(TRACK_MILLISECONDS);
@@ -44,13 +43,13 @@ public class TrackEditPanel extends EntityEditPanel {
     durationPanel.add(createPropertyPanel(new JLabel("(min/sec)"), txtDuration, true));
 
     setLayout(new FlexibleGridLayout(4, 2, 5, 5, true, false));
-    add(createPropertyPanel(TRACK_ALBUMID_FK, txtAlbum));
-    add(createPropertyPanel(TRACK_NAME, txtName));
-    add(createPropertyPanel(TRACK_GENREID_FK, cmbGenre));
-    add(createPropertyPanel(TRACK_COMPOSER, txtComposer));
-    add(createPropertyPanel(TRACK_MEDIATYPEID_FK, cmbMediaType));
-    add(createPropertyPanel(TRACK_BYTES, txtBytes));
-    add(createPropertyPanel(TRACK_UNITPRICE, txtUnitPrice));
+    addPropertyPanel(TRACK_ALBUMID_FK);
+    addPropertyPanel(TRACK_NAME);
+    addPropertyPanel(TRACK_GENREID_FK);
+    addPropertyPanel(TRACK_COMPOSER);
+    addPropertyPanel(TRACK_MEDIATYPEID_FK);
+    addPropertyPanel(TRACK_BYTES);
+    addPropertyPanel(TRACK_UNITPRICE);
     add(durationPanel);
   }
 }

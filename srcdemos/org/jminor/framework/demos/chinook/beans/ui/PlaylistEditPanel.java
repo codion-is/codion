@@ -23,6 +23,6 @@ public class PlaylistEditPanel extends EntityEditPanel {
     txtName.setColumns(12);
 
     setLayout(new GridLayout(1, 1, 5, 5));
-    add(createPropertyPanel(PLAYLIST_NAME, txtName));
+    addPropertyPanel(PLAYLIST_NAME);
   }
 }

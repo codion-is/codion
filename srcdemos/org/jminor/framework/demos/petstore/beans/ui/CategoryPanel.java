@@ -27,10 +27,11 @@ public class CategoryPanel extends EntityEditPanel {
     final JTextField txtName = createTextField(CATEGORY_NAME);
     setInitialFocusComponent(txtName);
     txtName.setColumns(10);
-    add(createPropertyPanel(CATEGORY_NAME, txtName));
+    addPropertyPanel(CATEGORY_NAME);
     final JTextField txtDesc = createTextField(CATEGORY_DESCRIPTION);
     txtDesc.setColumns(18);
-    add(createPropertyPanel(CATEGORY_DESCRIPTION, txtDesc));
-    add(createPropertyPanel(CATEGORY_IMAGE_URL, createTextField(CATEGORY_IMAGE_URL)));
+    addPropertyPanel(CATEGORY_DESCRIPTION);
+    createTextField(CATEGORY_IMAGE_URL);
+    addPropertyPanel(CATEGORY_IMAGE_URL);
   }
 }

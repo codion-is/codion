@@ -38,13 +38,13 @@ public class InvoiceEditPanel extends EntityEditPanel {
     txtTotal.setColumns(16);
 
     setLayout(new GridLayout(4, 2, 5, 5));
-    add(createPropertyPanel(INVOICE_CUSTOMERID_FK, txtCustomer));
-    add(createPropertyPanel(INVOICE_INVOICEDATE, datePanel));
-    add(createPropertyPanel(INVOICE_BILLINGADDRESS, txtAddress));
-    add(createPropertyPanel(INVOICE_BILLINGCITY, txtCity));
-    add(createPropertyPanel(INVOICE_BILLINGSTATE, txtState));
-    add(createPropertyPanel(INVOICE_BILLINGCOUNTRY, txtCountry));
-    add(createPropertyPanel(INVOICE_BILLINGPOSTALCODE, txtPostalcode));
-    add(createPropertyPanel(INVOICE_TOTAL, txtTotal));
+    addPropertyPanel(INVOICE_CUSTOMERID_FK);
+    addPropertyPanel(INVOICE_INVOICEDATE);
+    addPropertyPanel(INVOICE_BILLINGADDRESS);
+    addPropertyPanel(INVOICE_BILLINGCITY);
+    addPropertyPanel(INVOICE_BILLINGSTATE);
+    addPropertyPanel(INVOICE_BILLINGCOUNTRY);
+    addPropertyPanel(INVOICE_BILLINGPOSTALCODE);
+    addPropertyPanel(INVOICE_TOTAL);
   }
 }
