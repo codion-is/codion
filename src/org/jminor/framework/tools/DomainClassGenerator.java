@@ -135,7 +135,6 @@ public final class DomainClassGenerator {
 
   public static void appendPropertyConstants(final StringBuilder builder, final Table table,
                                              final DatabaseMetaData metaData) throws SQLException {
-    System.out.println("Processing table: " + table);
     final List<ForeignKey> foreignKeys = getForeignKeys(metaData, table.schemaName);
     final List<PrimaryKey> primaryKeys = getPrimaryKeys(metaData, table.schemaName);
     final List<Column> columns = new ColumnPacker().pack(metaData.getColumns(table.schemaName, table.schemaName, table.tableName, null), -1);

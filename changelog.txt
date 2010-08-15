@@ -2015,3 +2015,4 @@
   Entities.getDomainEntityIDs()
   Entities.getDependencyTreeModel() overloaded with a domainID parameter
   EntityTestUnit.createReferenceEntity() renamed to initializeReferenceEntity()
+  EntityTestUnit.doSetUp() and doTearDown() added, empty, overridable

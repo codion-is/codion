@@ -40,16 +40,28 @@ public abstract class EntityTestUnit {
   }
 
   @Before
-  public void setUp() throws Exception {
+  public final void setUp() throws Exception {
     entityDbProvider = initializeDbConnectionProvider();
+    doSetUp();
   }
 
   @After
-  public void tearDown() throws Exception {
+  public final void tearDown() throws Exception {
     if (entityDbProvider != null) {
       entityDbProvider.disconnect();
     }
+    doTearDown();
   }
+
+  /**
+   * Override to provide specific setup for this test
+   */
+  protected void doSetUp() {}
+
+  /**
+   * Override to provide specific tear down for this test
+   */
+  protected void doTearDown() {}
 
   /**
    * @return the EntityDbProvider instance this test case should use
