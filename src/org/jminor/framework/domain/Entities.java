@@ -11,6 +11,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeModel;
+import javax.swing.tree.TreeNode;
 import java.awt.Color;
 import java.text.Collator;
 import java.text.Format;
@@ -749,13 +750,12 @@ public final class Entities {
 
     /** {@inheritDoc} */
     @Override
-    public void setParent(MutableTreeNode newParent) {
-      if (getParent() == null) {
-        for (final EntityDependencyTreeNode child : initializeChildren(newParent)) {
-          add(child);
-        }
-      }
+    public void setParent(final MutableTreeNode newParent) {
       super.setParent(newParent);
+      removeAllChildren();
+      for (final EntityDependencyTreeNode child : initializeChildren()) {
+        add(child);
+      }
     }
 
     /** {@inheritDoc} */
@@ -767,12 +767,11 @@ public final class Entities {
       super.setUserObject(userObject);
     }
 
-    private List<EntityDependencyTreeNode> initializeChildren(final MutableTreeNode parent) {
+    private List<EntityDependencyTreeNode> initializeChildren() {
       final List<EntityDependencyTreeNode> childrenList = new ArrayList<EntityDependencyTreeNode>();
       for (final String entityID : getEntityDefinitions(domainID).keySet()) {
         for (final Property.ForeignKeyProperty fkProperty : getForeignKeyProperties(entityID)) {
-          if (fkProperty.getReferencedEntityID().equals(getEntityID()) &&
-                  !foreignKeyCycle(fkProperty.getReferencedEntityID(), parent)) {
+          if (fkProperty.getReferencedEntityID().equals(getEntityID()) && !foreignKeyCycle(fkProperty.getReferencedEntityID())) {
             childrenList.add(new EntityDependencyTreeNode(domainID, entityID));
           }
         }
@@ -781,13 +780,13 @@ public final class Entities {
       return childrenList;
     }
 
-    public static boolean foreignKeyCycle(final String referencedEntityID, final MutableTreeNode parent) {
-      MutableTreeNode tmp = parent;
+    private boolean foreignKeyCycle(final String referencedEntityID) {
+      TreeNode tmp = getParent();
       while (tmp != null && tmp instanceof EntityDependencyTreeNode) {
         if (((EntityDependencyTreeNode) tmp).getEntityID().equals(referencedEntityID)) {
           return true;
         }
-        tmp = (MutableTreeNode) tmp.getParent();
+        tmp = tmp.getParent();
       }
 
       return false;

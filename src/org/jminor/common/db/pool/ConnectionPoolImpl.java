@@ -6,6 +6,7 @@ package org.jminor.common.db.pool;
 import org.jminor.common.db.dbms.Database;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
+
 import org.apache.log4j.Logger;
 
 import java.sql.SQLException;
@@ -203,18 +204,18 @@ public final class ConnectionPoolImpl implements ConnectionPool {
       final int inPool = connectionPool.size();
       statistics.setAvailableInPool(inPool);
       statistics.setConnectionsInUse(counter.getLiveConnections() - inPool);
+      statistics.setLiveConnectionCount(counter.getLiveConnections());
+      statistics.setConnectionsCreated(counter.getConnectionsCreated());
+      statistics.setConnectionsDestroyed(counter.getConnectionsDestroyed());
+      statistics.setCreationDate(counter.getCreationDate());
+      statistics.setConnectionRequests(counter.getConnectionRequests());
+      statistics.setConnectionRequestsDelayed(counter.getConnectionRequestsDelayed());
+      statistics.setRequestsDelayedPerSecond(counter.getRequestsDelayedPerSecond());
+      statistics.setRequestsPerSecond(counter.getRequestsPerSecond());
+      statistics.setAverageCheckOutTime(counter.getAverageCheckOutTime());
+      statistics.setResetDate(counter.getResetDate());
+      statistics.setTimestamp(System.currentTimeMillis());
     }
-    statistics.setLiveConnectionCount(counter.getLiveConnections());
-    statistics.setConnectionsCreated(counter.getConnectionsCreated());
-    statistics.setConnectionsDestroyed(counter.getConnectionsDestroyed());
-    statistics.setCreationDate(counter.getCreationDate());
-    statistics.setConnectionRequests(counter.getConnectionRequests());
-    statistics.setConnectionRequestsDelayed(counter.getConnectionRequestsDelayed());
-    statistics.setRequestsDelayedPerSecond(counter.getRequestsDelayedPerSecond());
-    statistics.setRequestsPerSecond(counter.getRequestsPerSecond());
-    statistics.setAverageCheckOutTime(counter.getAverageCheckOutTime());
-    statistics.setResetDate(counter.getResetDate());
-    statistics.setTimestamp(System.currentTimeMillis());
     if (since >= 0) {
       statistics.setPoolStatistics(getPoolStatistics(since));
     }
