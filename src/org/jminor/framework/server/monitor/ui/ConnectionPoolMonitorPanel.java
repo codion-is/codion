@@ -74,7 +74,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
 
   public void updateView() {
     final ConnectionPoolStatistics stats = model.getConnectionPoolStats();
-    txtPoolSize.setText(format.format(stats.getLiveConnectionCount()));
+    txtPoolSize.setText(format.format(stats.getPoolSize()));
     txtCreated.setText(format.format(stats.getConnectionsCreated()));
     txtDestroyed.setText(format.format(stats.getConnectionsDestroyed()));
     txtCreatedDestroyedResetTime.setText(DateFormats.getDateFormat(DateFormats.FULL_TIMESTAMP).format(stats.getResetDate()));

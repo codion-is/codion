@@ -2021,3 +2021,4 @@
   ConnectionPoolImpl bug fixed, creating a connection did not prevent another one from being created at the sam time
   UsageScenario.runScenario() now throws ScenarioException
   ConnectionPoolImpl bettered a bit
+  ConnectionPoolStatistics.getLiveConnectionCount() renamed to getPoolSize()

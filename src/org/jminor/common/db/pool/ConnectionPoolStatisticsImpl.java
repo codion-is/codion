@@ -31,7 +31,7 @@ public final class ConnectionPoolStatisticsImpl implements ConnectionPoolStatist
   private int connectionRequestsDelayed;
   private int requestsDelayedPerSecond;
   private int requestsPerSecond;
-  private int liveConnectionCount;
+  private int poolSize;
   private long averageCheckOutTime;
 
   public ConnectionPoolStatisticsImpl(final User user) {
@@ -138,12 +138,12 @@ public final class ConnectionPoolStatisticsImpl implements ConnectionPoolStatist
     this.averageCheckOutTime = averageCheckOutTime;
   }
 
-  public void setLiveConnectionCount(final int liveConnectionCount) {
-    this.liveConnectionCount = liveConnectionCount;
+  public void setPoolSize(final int poolSize) {
+    this.poolSize = poolSize;
   }
 
-  public int getLiveConnectionCount() {
-    return liveConnectionCount;
+  public int getPoolSize() {
+    return poolSize;
   }
 
   public void setResetDate(final long resetDate) {

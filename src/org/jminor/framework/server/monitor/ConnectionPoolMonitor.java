@@ -216,7 +216,7 @@ public final class ConnectionPoolMonitor {
   private void updateStats() throws RemoteException {
     poolStats = pool.getConnectionPoolStatistics(lastStatsUpdateTime);
     lastStatsUpdateTime = poolStats.getTimestamp();
-    poolSizeSeries.add(poolStats.getTimestamp(), poolStats.getLiveConnectionCount());
+    poolSizeSeries.add(poolStats.getTimestamp(), poolStats.getPoolSize());
     minimumPoolSizeSeries.add(poolStats.getTimestamp(), pool.getMinimumPoolSize());
     maximumPoolSizeSeries.add(poolStats.getTimestamp(), pool.getMaximumPoolSize());
     inPoolSeriesMacro.add(poolStats.getTimestamp(), poolStats.getAvailableInPool());

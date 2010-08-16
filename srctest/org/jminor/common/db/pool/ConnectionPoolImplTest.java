@@ -115,7 +115,7 @@ public class ConnectionPoolImplTest {
     assertEquals(1, statistics.getConnectionsCreated());
     assertEquals(0, statistics.getAvailableInPool());
     assertEquals(1, statistics.getConnectionsInUse());
-    assertEquals(1, statistics.getLiveConnectionCount());
+    assertEquals(1, statistics.getPoolSize());
 
     final PoolableConnection dbConnectionTwo = pool.checkOutConnection();
     assertTrue(dbConnectionTwo.isConnectionValid());
@@ -124,7 +124,7 @@ public class ConnectionPoolImplTest {
     assertEquals(2, statistics.getConnectionsCreated());
     assertEquals(0, statistics.getAvailableInPool());
     assertEquals(2, statistics.getConnectionsInUse());
-    assertEquals(2, statistics.getLiveConnectionCount());
+    assertEquals(2, statistics.getPoolSize());
 
     pool.checkInConnection(dbConnectionOne);
     statistics = pool.getConnectionPoolStatistics(startDate.getTime());
@@ -132,7 +132,7 @@ public class ConnectionPoolImplTest {
     assertEquals(2, statistics.getConnectionsCreated());
     assertEquals(1, statistics.getAvailableInPool());
     assertEquals(1, statistics.getConnectionsInUse());
-    assertEquals(2, statistics.getLiveConnectionCount());
+    assertEquals(2, statistics.getPoolSize());
 
     final PoolableConnection dbConnectionThree = pool.checkOutConnection();
     assertTrue(dbConnectionThree.isConnectionValid());
@@ -141,7 +141,7 @@ public class ConnectionPoolImplTest {
     assertEquals(2, statistics.getConnectionsCreated());
     assertEquals(0, statistics.getAvailableInPool());
     assertEquals(2, statistics.getConnectionsInUse());
-    assertEquals(2, statistics.getLiveConnectionCount());
+    assertEquals(2, statistics.getPoolSize());
 
     pool.checkInConnection(dbConnectionTwo);
     statistics = pool.getConnectionPoolStatistics(startDate.getTime());
@@ -149,7 +149,7 @@ public class ConnectionPoolImplTest {
     assertEquals(2, statistics.getConnectionsCreated());
     assertEquals(1, statistics.getAvailableInPool());
     assertEquals(1, statistics.getConnectionsInUse());
-    assertEquals(2, statistics.getLiveConnectionCount());
+    assertEquals(2, statistics.getPoolSize());
 
     pool.checkInConnection(dbConnectionThree);
     statistics = pool.getConnectionPoolStatistics(startDate.getTime());
@@ -157,7 +157,7 @@ public class ConnectionPoolImplTest {
     assertEquals(2, statistics.getConnectionsCreated());
     assertEquals(2, statistics.getAvailableInPool());
     assertEquals(0, statistics.getConnectionsInUse());
-    assertEquals(2, statistics.getLiveConnectionCount());
+    assertEquals(2, statistics.getPoolSize());
 
     assertTrue(statistics.getPoolStatistics().size() > 0);
 
@@ -167,7 +167,7 @@ public class ConnectionPoolImplTest {
     assertEquals(2, statistics.getConnectionsCreated());
     assertEquals(1, statistics.getAvailableInPool());
     assertEquals(1, statistics.getConnectionsInUse());
-    assertEquals(2, statistics.getLiveConnectionCount());
+    assertEquals(2, statistics.getPoolSize());
 
     dbConnectionFour.disconnect();
     pool.checkInConnection(dbConnectionFour);
@@ -175,7 +175,7 @@ public class ConnectionPoolImplTest {
     assertEquals(2, statistics.getConnectionsCreated());
     assertEquals(1, statistics.getAvailableInPool());
     assertEquals(0, statistics.getConnectionsInUse());
-    assertEquals(1, statistics.getLiveConnectionCount());
+    assertEquals(1, statistics.getPoolSize());
 
     assertNotNull(statistics.getRequestsPerSecond());
     assertNotNull(statistics.getRequestsDelayedPerSecond());

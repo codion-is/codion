@@ -83,7 +83,7 @@ public interface ConnectionPoolStatistics {
   long getAverageCheckOutTime();
 
   /**
-   * @return the total number of connections being managed by the pool
+   * @return the number of connections being managed by the pool
    */
-  int getLiveConnectionCount();
+  int getPoolSize();
 }

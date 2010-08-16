@@ -72,8 +72,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
 
     final long time = System.nanoTime();
     counter.incrementRequestCounter();
-    PoolableConnection connection;
-    connection = getConnectionFromPool();
+    PoolableConnection connection = getConnectionFromPool();
     if (connection == null) {
       counter.incrementDelayedRequestCounter();
     }
@@ -81,7 +80,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
     while (connection == null) {
       retryCount++;
       synchronized (connectionPool) {
-        if (!creatingConnection && counter.getLiveConnections() < maximumPoolSize) {
+        if (!creatingConnection && counter.getPoolSize() < maximumPoolSize) {
           creatingConnection = true;
           Executors.newSingleThreadExecutor().submit(new ConnectionCreator());
         }
@@ -207,8 +206,8 @@ public final class ConnectionPoolImpl implements ConnectionPool {
     synchronized (connectionPool) {
       final int inPool = connectionPool.size();
       statistics.setAvailableInPool(inPool);
-      statistics.setConnectionsInUse(counter.getLiveConnections() - inPool);
-      statistics.setLiveConnectionCount(counter.getLiveConnections());
+      statistics.setConnectionsInUse(counter.getPoolSize() - inPool);
+      statistics.setPoolSize(counter.getPoolSize());
       statistics.setConnectionsCreated(counter.getConnectionsCreated());
       statistics.setConnectionsDestroyed(counter.getConnectionsDestroyed());
       statistics.setCreationDate(counter.getCreationDate());
@@ -270,7 +269,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
   private void addInPoolStats(final int inPool, final long timestamp) {
     synchronized (connectionPoolStatistics) {
       final int poolStatisticsSize = 1000;
-      final int inUse = counter.getLiveConnections() - inPool;
+      final int inUse = counter.getPoolSize() - inPool;
       connectionPoolStatisticsIndex = connectionPoolStatisticsIndex == poolStatisticsSize ? 0 : connectionPoolStatisticsIndex;
       if (connectionPoolStatistics.size() == poolStatisticsSize) {//filled already, reuse
         connectionPoolStatistics.get(connectionPoolStatisticsIndex).set(timestamp, inPool, inUse);
@@ -369,7 +368,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
 
     private final long creationDate = System.currentTimeMillis();
     private long resetDate = creationDate;
-    private volatile int liveConnections = 0;
+    private volatile int poolSize = 0;
     private volatile int connectionsCreated = 0;
     private volatile int connectionsDestroyed = 0;
     private volatile int connectionRequests = 0;
@@ -415,8 +414,8 @@ public final class ConnectionPoolImpl implements ConnectionPool {
       return connectionsDestroyed;
     }
 
-    public synchronized int getLiveConnections() {
-      return liveConnections;
+    public synchronized int getPoolSize() {
+      return poolSize;
     }
 
     public synchronized int getRequestsDelayedPerSecond() {
@@ -460,12 +459,12 @@ public final class ConnectionPoolImpl implements ConnectionPool {
     }
 
     public synchronized void incrementConnectionsDestroyedCounter() {
-      liveConnections--;
+      poolSize--;
       connectionsDestroyed++;
     }
 
     public synchronized void incrementConnectionsCreatedCounter() {
-      liveConnections++;
+      poolSize++;
       connectionsCreated++;
     }
 
