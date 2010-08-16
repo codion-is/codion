@@ -612,6 +612,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
       return;
     }
     catch (SQLException e) {
+      LOG.debug(sqlStatement);
       LOG.error(this, e);
       exception = e;
     }
@@ -633,6 +634,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
       return statement.executeQuery();
     }
     catch (SQLException e) {
+      LOG.debug(sqlStatement);
       LOG.error(this, e);
       exception = e;
     }
