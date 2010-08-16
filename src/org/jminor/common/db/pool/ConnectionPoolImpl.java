@@ -73,31 +73,25 @@ public final class ConnectionPoolImpl implements ConnectionPool {
     final long time = System.nanoTime();
     counter.incrementRequestCounter();
     PoolableConnection connection;
-    synchronized (connectionPool) {
-      if (collectFineGrainedStatistics) {
-        addInPoolStats(connectionPool.size(), System.currentTimeMillis());
-      }
-      connection = getConnectionFromPool();
-    }
+    connection = getConnectionFromPool();
     if (connection == null) {
       counter.incrementDelayedRequestCounter();
     }
     int retryCount = 0;
     while (connection == null) {
       retryCount++;
-      waitForRetry();
       synchronized (connectionPool) {
         if (!creatingConnection && counter.getLiveConnections() < maximumPoolSize) {
           creatingConnection = true;
           Executors.newSingleThreadExecutor().submit(new ConnectionCreator());
         }
       }
-      synchronized (connectionPool) {
-        connection = getConnectionFromPool();
-      }
+      waitForRetry();
+      connection = getConnectionFromPool();
     }
     connection.setPoolRetryCount(retryCount);
     counter.addCheckOutTime(System.nanoTime() - time);
+    //todo max retries and/or max retry time, throw exception
 
     return connection;
   }
@@ -114,9 +108,19 @@ public final class ConnectionPoolImpl implements ConnectionPool {
     if (closed) {
       disconnect(dbConnection);
     }
-
-    synchronized (connectionPool) {
+    if (dbConnection.isConnectionValid()) {
+      try {
+        if (dbConnection.isTransactionOpen()) {
+          dbConnection.rollbackTransaction();
+        }
+      }
+      catch (SQLException e) {
+        LOG.error(this, e);
+      }
       addConnectionToPool(dbConnection);
+    }
+    else {
+      disconnect(dbConnection);
     }
   }
 
@@ -244,33 +248,22 @@ public final class ConnectionPoolImpl implements ConnectionPool {
   }
 
   /**
-   * Must be called within a synchronized(connectionPool) block
    * @return a connection from the pool, null if none is available
    */
   private PoolableConnection getConnectionFromPool() {
-    return connectionPool.size() > 0 ? connectionPool.pop() : null;
+    synchronized (connectionPool) {
+      final int size = connectionPool.size();
+      if (collectFineGrainedStatistics) {
+        addInPoolStats(size, System.currentTimeMillis());
+      }
+      return size > 0 ? connectionPool.pop() : null;
+    }
   }
 
-  /**
-   * Must be called within a synchronized(connectionPool) block
-   * @param dbConnection the connection to add to the pool
-   */
-  private void addConnectionToPool(final PoolableConnection dbConnection) {
-    if (dbConnection.isConnectionValid()) {
-      try {
-        if (dbConnection.isTransactionOpen()) {
-          dbConnection.rollbackTransaction();
-        }
-      }
-      catch (SQLException e) {
-        LOG.error(this, e);
-      }
-      dbConnection.setPoolTime(System.currentTimeMillis());
-      connectionPool.push(dbConnection);
-      connectionPool.notifyAll();
-    }
-    else {
-      disconnect(dbConnection);
+  private void addConnectionToPool(final PoolableConnection connection) {
+    connection.setPoolTime(System.currentTimeMillis());
+    synchronized (connectionPool) {
+      connectionPool.push(connection);
     }
   }
 
@@ -358,17 +351,11 @@ public final class ConnectionPoolImpl implements ConnectionPool {
   private final class ConnectionCreator implements Runnable {
     public void run() {
       try {
-        PoolableConnection newConnection = null;
-        try {
-          newConnection = poolableConnectionProvider.createConnection(user);
-        }
-        catch (Exception e) {
-          LOG.error(e);
-        }
+        addConnectionToPool(poolableConnectionProvider.createConnection(user));
         counter.incrementConnectionsCreatedCounter();
-        synchronized (connectionPool) {
-          addConnectionToPool(newConnection);
-        }
+      }
+      catch (Exception e) {
+        LOG.error(e);
       }
       finally {
         creatingConnection = false;
