@@ -713,34 +713,41 @@ public final class Entities {
   }
 
   private static final class EntityDependencyTreeNode extends DefaultMutableTreeNode {
+
     private final String domainID;
 
     private EntityDependencyTreeNode(final String domainID, final String entityID) {
       super(entityID);
       this.domainID = domainID;
-      Util.rejectNullValue(domainID, "domainID");
       Util.rejectNullValue(entityID, "entityID");
     }
 
+    /**
+     * @return the ID of the entity this node represents
+     */
+    public String getEntityID() {
+      return (String) getUserObject();
+    }
+
+    /** {@inheritDoc} */
     @Override
     public String toString() {
       return getEntityID();
     }
 
-    public String getEntityID() {
-      return (String) getUserObject();
-    }
-
+    /** {@inheritDoc} */
     @Override
     public int hashCode() {
       return getEntityID().hashCode();
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean equals(final Object obj) {
       return obj instanceof EntityDependencyTreeNode && getEntityID().equals(((EntityDependencyTreeNode) obj).getEntityID());
     }
 
+    /** {@inheritDoc} */
     @Override
     public void setParent(MutableTreeNode newParent) {
       if (getParent() == null) {
@@ -751,25 +758,27 @@ public final class Entities {
       super.setParent(newParent);
     }
 
-    public void setUserObject(final Object object) {
-      if (!(object instanceof String)) {
-        throw new IllegalArgumentException("entityID required, got: " + object);
+    /** {@inheritDoc} */
+    @Override
+    public void setUserObject(final Object userObject) {
+      if (!(userObject instanceof String)) {
+        throw new IllegalArgumentException("entityID required, got: " + userObject);
       }
-      super.setUserObject(object);
+      super.setUserObject(userObject);
     }
 
     private List<EntityDependencyTreeNode> initializeChildren(final MutableTreeNode parent) {
-      final List<EntityDependencyTreeNode> children = new ArrayList<EntityDependencyTreeNode>();
+      final List<EntityDependencyTreeNode> childrenList = new ArrayList<EntityDependencyTreeNode>();
       for (final String entityID : getEntityDefinitions(domainID).keySet()) {
         for (final Property.ForeignKeyProperty fkProperty : getForeignKeyProperties(entityID)) {
           if (fkProperty.getReferencedEntityID().equals(getEntityID()) &&
                   !foreignKeyCycle(fkProperty.getReferencedEntityID(), parent)) {
-            children.add(new EntityDependencyTreeNode(domainID, entityID));
+            childrenList.add(new EntityDependencyTreeNode(domainID, entityID));
           }
         }
       }
 
-      return children;
+      return childrenList;
     }
 
     public static boolean foreignKeyCycle(final String referencedEntityID, final MutableTreeNode parent) {
