@@ -248,8 +248,7 @@
       <attribute name="Implementation-Version" value="${version}"/>
       <attribute name="Implementation-URL" value="http://jminor.org"/>
       <attribute name="Build-Jdk" value="${java.specification.version}"/>
-      <attribute name="Sealed" value="true"/>
-    </manifest>
+      </manifest>
   </target>
 
   <target name="javadoc" depends="build"

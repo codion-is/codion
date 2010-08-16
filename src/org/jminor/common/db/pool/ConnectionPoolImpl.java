@@ -87,6 +87,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
       waitForRetry();
       synchronized (connectionPool) {
         if (!creatingConnection && counter.getLiveConnections() < maximumPoolSize) {
+          creatingConnection = true;
           Executors.newSingleThreadExecutor().submit(new ConnectionCreator());
         }
       }
@@ -355,7 +356,6 @@ public final class ConnectionPoolImpl implements ConnectionPool {
 
   private final class ConnectionCreator implements Runnable {
     public void run() {
-      creatingConnection = true;
       try {
         PoolableConnection newConnection = null;
         try {

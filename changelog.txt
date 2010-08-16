@@ -2018,3 +2018,4 @@
   EntityTestUnit.doSetUp() and doTearDown() added, empty, overridable
   EntityPanel bug fixed, activation event was bound to late, now bound during construction
   EntityEditPanel.addPropertyPanel() added, used throughout
+  ConnectionPoolImpl bug fixed, creating a connection did not prevent another one from being created at the sam time
