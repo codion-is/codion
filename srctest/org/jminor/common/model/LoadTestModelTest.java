@@ -12,9 +12,9 @@ public class LoadTestModelTest {
   private static final LoadTestModel.UsageScenario SCENARIO = new LoadTestModel.UsageScenario("test") {
     final Random random = new Random();
     @Override
-    protected void performScenario(final Object application) throws Exception {
+    protected void performScenario(final Object application) throws LoadTestModel.ScenarioException {
       if (random.nextDouble() > 0.5) {
-        throw new Exception();
+        throw new LoadTestModel.ScenarioException();
       }
     }
   };

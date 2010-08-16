@@ -58,7 +58,7 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
 
   private static final class SelectDepartment extends UsageScenario {
     @Override
-    protected void performScenario(final Object application) throws Exception {
+    protected void performScenario(final Object application) throws ScenarioException {
       selectRandomRow(((EntityApplicationModel) application).getMainApplicationModel(EmpDept.T_DEPARTMENT).getTableModel());
     }
     @Override
@@ -69,7 +69,8 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
 
   private static final class UpdateEmployee extends UsageScenario {
     @Override
-      protected void performScenario(final Object application) throws Exception {
+      protected void performScenario(final Object application) throws ScenarioException {
+      try {
         final EntityModel departmentModel = ((EntityApplicationModel) application).getMainApplicationModel(EmpDept.T_DEPARTMENT);
         selectRandomRow(departmentModel.getTableModel());
         final EntityModel employeeModel = departmentModel.getDetailModel(EmpDept.T_EMPLOYEE);
@@ -81,6 +82,10 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
           employeeModel.getEditModel().update();
         }
       }
+      catch (Exception e) {
+        throw new ScenarioException(e);
+      }
+    }
       @Override
       protected int getDefaultWeight() {
         return 5;
@@ -89,14 +94,19 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
 
   private static final class InsertEmployee extends UsageScenario {
     @Override
-    protected void performScenario(final Object application) throws Exception {
-      final EntityModel departmentModel = ((EntityApplicationModel) application).getMainApplicationModel(EmpDept.T_DEPARTMENT);
-      selectRandomRow(departmentModel.getTableModel());
-      final EntityModel employeeModel = departmentModel.getDetailModel(EmpDept.T_EMPLOYEE);
-      final Map<String, Entity> references = new HashMap<String, Entity>();
-      references.put(EmpDept.T_DEPARTMENT, departmentModel.getTableModel().getSelectedItem());
-      employeeModel.getEditModel().setValueMap(EntityUtil.createRandomEntity(EmpDept.T_EMPLOYEE, references));
-      employeeModel.getEditModel().insert();
+    protected void performScenario(final Object application) throws ScenarioException {
+      try {
+        final EntityModel departmentModel = ((EntityApplicationModel) application).getMainApplicationModel(EmpDept.T_DEPARTMENT);
+        selectRandomRow(departmentModel.getTableModel());
+        final EntityModel employeeModel = departmentModel.getDetailModel(EmpDept.T_EMPLOYEE);
+        final Map<String, Entity> references = new HashMap<String, Entity>();
+        references.put(EmpDept.T_DEPARTMENT, departmentModel.getTableModel().getSelectedItem());
+        employeeModel.getEditModel().setValueMap(EntityUtil.createRandomEntity(EmpDept.T_EMPLOYEE, references));
+        employeeModel.getEditModel().insert();
+      }
+      catch (Exception e) {
+        throw new ScenarioException(e);
+      }
     }
     @Override
     protected int getDefaultWeight() {
@@ -106,11 +116,16 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
 
   private static final class InsertDepartment extends UsageScenario {
     @Override
-      protected void performScenario(final Object application) throws Exception {
+      protected void performScenario(final Object application) throws ScenarioException {
+      try {
         final EntityModel departmentModel = ((EntityApplicationModel) application).getMainApplicationModel(EmpDept.T_DEPARTMENT);
         departmentModel.getEditModel().setValueMap(EntityUtil.createRandomEntity(EmpDept.T_DEPARTMENT, null));
         departmentModel.getEditModel().insert();
       }
+      catch (Exception e) {
+        throw new ScenarioException(e);
+      }
+    }
       @Override
       protected int getDefaultWeight() {
         return 1;
@@ -120,11 +135,14 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
   private static final class LoginLogout extends UsageScenario {
     final Random random = new Random();
     @Override
-      protected void performScenario(final Object application) throws Exception {
+      protected void performScenario(final Object application) throws ScenarioException {
+      try {
         ((EntityApplicationModel) application).getDbProvider().disconnect();
         Thread.sleep(random.nextInt(1500));
         ((EntityApplicationModel) application).getDbProvider().getEntityDb();
       }
+      catch (InterruptedException e) {/**/}
+    }
       @Override
       protected int getDefaultWeight() {
         return 4;

@@ -21,7 +21,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
   public ChinookLoadTest() {
     super(User.UNIT_TEST_USER, new UsageScenario("viewGenre") {
       @Override
-      protected void performScenario(final Object application) throws Exception {
+      protected void performScenario(final Object application) throws ScenarioException {
         final EntityApplicationModel model = (EntityApplicationModel) application;
         final EntityModel genreModel = model.getMainApplicationModel(Chinook.T_GENRE);
         genreModel.refresh();
@@ -34,7 +34,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
       }
     }, new UsageScenario("viewInvoice") {
       @Override
-      protected void performScenario(final Object application) throws Exception {
+      protected void performScenario(final Object application) throws ScenarioException {
         final EntityApplicationModel model = (EntityApplicationModel) application;
         final EntityModel customerModel = model.getMainApplicationModel(Chinook.T_CUSTOMER);
         selectRandomRow(customerModel.getTableModel());
@@ -48,7 +48,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
       }
     }, new UsageScenario("viewAlbum") {
       @Override
-      protected void performScenario(final Object application) throws Exception {
+      protected void performScenario(final Object application) throws ScenarioException {
         final EntityApplicationModel model = (EntityApplicationModel) application;
         final EntityModel artistModel = model.getMainApplicationModel(Chinook.T_ARTIST);
         selectRandomRow(artistModel.getTableModel());

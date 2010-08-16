@@ -27,7 +27,7 @@ public final class PetstoreLoadTest extends EntityLoadTestModel {
   public PetstoreLoadTest() {
     super(User.UNIT_TEST_USER, new UsageScenario("selectRecords") {
       @Override
-      protected void performScenario(final Object application) throws Exception {
+      protected void performScenario(final Object application) throws ScenarioException {
         final EntityModel categoryModel = ((EntityApplicationModel) application).getMainApplicationModels().iterator().next();
         categoryModel.getTableModel().clearSelection();
         categoryModel.refresh();

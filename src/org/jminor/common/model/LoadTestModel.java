@@ -568,7 +568,7 @@ public abstract class LoadTestModel {
       return name;
     }
 
-    public final void run(final Object application) throws Exception {
+    public final void run(final Object application) throws ScenarioException {
       if (application == null) {
         throw new RuntimeException("Can not run without an application");
       }
@@ -577,7 +577,7 @@ public abstract class LoadTestModel {
         performScenario(application);
         successfulRunCount++;
       }
-      catch (Exception e) {
+      catch (ScenarioException e) {
         unsuccessfulRunCount++;
         throw e;
       }
@@ -593,15 +593,26 @@ public abstract class LoadTestModel {
     /**
      * Runs a set of actions on the given application.
      * @param application the application
-     * @throws Exception in case of an exception
+     * @throws ScenarioException in case of an exception
      */
-    protected abstract void performScenario(final Object application) throws Exception;
+    protected abstract void performScenario(final Object application) throws ScenarioException;
 
     @SuppressWarnings({"UnusedDeclaration"})
     protected void prepare(final Object application) {}
 
     @SuppressWarnings({"UnusedDeclaration"})
     protected void cleanup(final Object application) {}
+  }
+
+  public static final class ScenarioException extends Exception {
+
+    public ScenarioException() {
+      super();
+    }
+
+    public ScenarioException(final Throwable cause) {
+      super(cause);
+    }
   }
 
   private static final class Counter {
