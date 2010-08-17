@@ -2025,3 +2025,4 @@
   ConnectionPoolStatistics.getPoolStatistics() renamed to getFineGrainedStatistics()
   LoadTestModel, javadoc improvement
   common.* javadoc improvements
+  EntityCriteriaUtil now respects the 100 max IN list items guaranteed by the JDBC standard

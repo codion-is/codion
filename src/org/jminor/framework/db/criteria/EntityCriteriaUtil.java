@@ -28,6 +28,8 @@ import java.util.Map;
  */
 public final class EntityCriteriaUtil {
 
+  private static final int IN_CLAUSE_LIMIT = 100;//JDBC limit
+
   private EntityCriteriaUtil() {}
 
   public static EntitySelectCriteria selectCriteria(final Entity.Key key) {
@@ -661,7 +663,7 @@ public final class EntityCriteriaUtil {
         else {
           stringBuilder.append("?");
         }
-        if (cnt++ == 1000 && i < getValueCount() - 1) {//Oracle limit
+        if (cnt++ == IN_CLAUSE_LIMIT && i < getValueCount() - 1) {
           stringBuilder.append(notIn ? ") and " : ") or ").append(property.getColumnName()).append(" in (");
           cnt = 1;
         }
@@ -854,7 +856,7 @@ public final class EntityCriteriaUtil {
       int cnt = 1;
       for (int i = 0; i < getValues().size(); i++) {
         stringBuilder.append("?");
-        if (cnt++ == 1000 && i < getValues().size() - 1) {//Oracle limit
+        if (cnt++ == IN_CLAUSE_LIMIT && i < getValues().size() - 1) {
           stringBuilder.append(notIn ? ") and " : ") or ").append(property.getColumnName()).append(" in (");
           cnt = 1;
         }
