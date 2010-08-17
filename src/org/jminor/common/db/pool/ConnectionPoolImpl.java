@@ -28,10 +28,10 @@ import java.util.concurrent.Executors;
  */
 public final class ConnectionPoolImpl implements ConnectionPool {
 
-  public static final int DEFAULT_TIMEOUT = 60000;
-  public static final int DEFAULT_CLEANUP_INTERVAL = 20000;
+  public static final int DEFAULT_CONNECTION_TIMEOUT_MS = 60000;
+  public static final int DEFAULT_CLEANUP_INTERVAL_MS = 20000;
   public static final int DEFAULT_MAXIMUM_POOL_SIZE = 8;
-  public static final int DEFAULT_MAXIMUM_RETRY_WAIT_PERIOD = 50;
+  public static final int DEFAULT_MAXIMUM_RETRY_WAIT_PERIOD_MS = 50;
 
   private static final Logger LOG = Util.getLogger(ConnectionPoolImpl.class);
 
@@ -51,11 +51,11 @@ public final class ConnectionPoolImpl implements ConnectionPool {
   private final Random random = new Random();
   private final User user;
   private volatile boolean creatingConnection = false;
-  private volatile int pooledConnectionTimeout = DEFAULT_TIMEOUT;
+  private volatile int pooledConnectionTimeout = DEFAULT_CONNECTION_TIMEOUT_MS;
   private volatile int minimumPoolSize = DEFAULT_MAXIMUM_POOL_SIZE / 2;
   private volatile int maximumPoolSize = DEFAULT_MAXIMUM_POOL_SIZE;
-  private volatile int poolCleanupInterval = DEFAULT_CLEANUP_INTERVAL;
-  private volatile int maximumRetryWaitPeriod = DEFAULT_MAXIMUM_RETRY_WAIT_PERIOD;
+  private volatile int poolCleanupInterval = DEFAULT_CLEANUP_INTERVAL_MS;
+  private volatile int maximumRetryWaitPeriod = DEFAULT_MAXIMUM_RETRY_WAIT_PERIOD_MS;
   private volatile boolean enabled = true;
 
   public ConnectionPoolImpl(final PoolableConnectionProvider poolableConnectionProvider, final User user) {
@@ -93,13 +93,6 @@ public final class ConnectionPoolImpl implements ConnectionPool {
     //todo max retries and/or max retry time, throw exception
 
     return connection;
-  }
-
-  private void waitForRetry() {
-    try {
-      Thread.sleep(random.nextInt(maximumRetryWaitPeriod));
-    }
-    catch (InterruptedException e) {/**/}
   }
 
   /** {@inheritDoc} */
@@ -220,7 +213,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
       statistics.setTimestamp(System.currentTimeMillis());
     }
     if (since >= 0) {
-      statistics.setPoolStatistics(getPoolStatistics(since));
+      statistics.setFineGrainedStatistics(getFineGrainedStatistics(since));
     }
 
     return statistics;
@@ -264,6 +257,13 @@ public final class ConnectionPoolImpl implements ConnectionPool {
     synchronized (connectionPool) {
       connectionPool.push(connection);
     }
+  }
+
+  private void waitForRetry() {
+    try {
+      Thread.sleep(random.nextInt(maximumRetryWaitPeriod));
+    }
+    catch (InterruptedException e) {/**/}
   }
 
   private void addInPoolStats(final int inPool, final long timestamp) {
@@ -332,7 +332,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
    * @param since the time
    * @return stats collected since <code>since</code>, the results are not guaranteed to be ordered
    */
-  private List<ConnectionPoolState> getPoolStatistics(final long since) {
+  private List<ConnectionPoolState> getFineGrainedStatistics(final long since) {
     final List<ConnectionPoolState> poolStates = new ArrayList<ConnectionPoolState>();
     synchronized (connectionPoolStatistics) {
       final ListIterator<ConnectionPoolStateImpl> iterator = connectionPoolStatistics.listIterator();

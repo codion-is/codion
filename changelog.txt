@@ -2022,3 +2022,4 @@
   UsageScenario.runScenario() now throws ScenarioException
   ConnectionPoolImpl bettered a bit
   ConnectionPoolStatistics.getLiveConnectionCount() renamed to getPoolSize()
+  ConnectionPoolStatistics.getPoolStatistics() renamed to getFineGrainedStatistics()

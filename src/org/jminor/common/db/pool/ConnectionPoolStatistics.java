@@ -18,9 +18,11 @@ public interface ConnectionPoolStatistics {
   User getUser();
 
   /**
+   * Returns a list containing connection pool states spanning some interval,
+   * the order of items in the list is not guaranteed.
    * @return fine grained list of pool states associated with this statistics object
    */
-  List<ConnectionPoolState> getPoolStatistics();
+  List<ConnectionPoolState> getFineGrainedStatistics();
 
   /**
    * @return the number of available connections

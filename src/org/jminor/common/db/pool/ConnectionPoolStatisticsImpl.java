@@ -25,7 +25,7 @@ public final class ConnectionPoolStatisticsImpl implements ConnectionPoolStatist
   private int connectionsDestroyed;
   private long creationDate;
 
-  private List<ConnectionPoolState> poolStatistics;
+  private List<ConnectionPoolState> fineGrainedStatistics;
   private long resetDate;
   private int connectionRequests;
   private int connectionRequestsDelayed;
@@ -42,12 +42,12 @@ public final class ConnectionPoolStatisticsImpl implements ConnectionPoolStatist
     return user;
   }
 
-  public void setPoolStatistics(final List<ConnectionPoolState> stats) {
-    this.poolStatistics = stats;
+  public void setFineGrainedStatistics(final List<ConnectionPoolState> statistics) {
+    this.fineGrainedStatistics = statistics;
   }
 
-  public List<ConnectionPoolState> getPoolStatistics() {
-    return poolStatistics;
+  public List<ConnectionPoolState> getFineGrainedStatistics() {
+    return fineGrainedStatistics;
   }
 
   public int getAvailableInPool() {

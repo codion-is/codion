@@ -17,6 +17,7 @@ public interface ConnectionPool {
 
   /**
    * Return the given connection to the pool.
+   * If the pool has been closed the connection is disconnected and discarded.
    * @param dbConnection the database connection to return to the pool
    */
   void checkInConnection(final PoolableConnection dbConnection);
@@ -26,6 +27,7 @@ public interface ConnectionPool {
    * @return a database connection retrieved from the pool
    * @throws ClassNotFoundException in case the JDBC driver class is not found
    * @throws SQLException in case of a database exception
+   * @throws IllegalStateException if the pool is closed
    */
   PoolableConnection checkOutConnection() throws ClassNotFoundException, SQLException;
 
@@ -48,12 +50,16 @@ public interface ConnectionPool {
 
   /**
    * @return true if fine grained pool usage statistics should be collected.
+   * @see #getConnectionPoolStatistics(long)
+   * @see ConnectionPoolStatistics#getFineGrainedStatistics()
    */
   boolean isCollectFineGrainedStatistics();
 
   /**
    * Specifies whether or not fine grained usage statistics should be collected.
    * @param value the value
+   * @see #getConnectionPoolStatistics(long)
+   * @see ConnectionPoolStatistics#getFineGrainedStatistics()
    */
   void setCollectFineGrainedStatistics(final boolean value);
 
@@ -104,6 +110,7 @@ public interface ConnectionPool {
 
   /**
    * @param value the minimum number of connections to keep in the pool
+   * @throws IllegalArgumentException if value is less than 0 or larger than maximum pool size
    */
   void setMinimumPoolSize(final int value);
 
@@ -114,6 +121,7 @@ public interface ConnectionPool {
 
   /**
    * @param value the maximum number of connections this pool can create
+   * @throws IllegalArgumentException if value is less than 1 or less than minimum pool size
    */
   void setMaximumPoolSize(final int value);
 }
