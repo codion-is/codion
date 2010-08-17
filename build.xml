@@ -104,7 +104,8 @@
       <classpath refid="lib.build"/>
     </javac>
 
-    <rmic base="${build.base}" includes="org/jminor/common/server/AbstractRemoteServer.class,
+    <rmic base="${build.base}" stubversion="1.2"
+          includes="org/jminor/common/server/AbstractRemoteServer.class,
                                          org/jminor/framework/server/EntityDbRemoteAdapter.class,
                                          org/jminor/framework/server/EntityDbRemoteServerAdmin.class">
       <classpath refid="lib.build"/>
@@ -211,8 +212,7 @@
                 org/jminor/framework/domain/*,
                 org/jminor/framework/i18n/**,
                 org/jminor/framework/server/*.class"
-         excludes="org/jminor/framework/server/*Stub.class,
-                org/jminor/framework/server/*Skel.class"/>
+         excludes="org/jminor/framework/server/*Stub.class"/>
 
     <jar jarfile="${dist}/${ant.project.name}-server-monitor.jar" basedir="${build.base}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
@@ -469,7 +469,6 @@
       <fileset dir="${build.base}">
         <include name="**/*.class"/>
         <exclude name="**/*Stub.class"/>
-        <exclude name="**/*Skel.class"/>
       </fileset>
     </cobertura-instrument>
   </target>
