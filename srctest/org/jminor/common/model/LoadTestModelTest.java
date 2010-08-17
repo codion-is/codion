@@ -65,7 +65,7 @@ public class LoadTestModelTest {
     assertEquals(2, model.getLoginDelayFactor());
     model.setLoginDelayFactor(3);
     assertEquals(3, model.getLoginDelayFactor());
-    assertEquals(LoadTestModel.DEFAULT_UPDATE_INTERVAL, model.getUpdateInterval());
+    assertEquals(LoadTestModel.DEFAULT_CHART_DATA_UPDATE_INTERVAL_MS, model.getUpdateInterval());
     assertEquals(1000, model.getWarningTime());
     assertEquals(2, model.getApplicationBatchSize());
     model.setWarningTime(80);

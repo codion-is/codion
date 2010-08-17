@@ -12,7 +12,6 @@ import org.jminor.common.ui.control.Controls;
 import org.jminor.common.ui.control.IntBeanSpinnerValueLink;
 import org.jminor.common.ui.control.IntBeanValueLink;
 import org.jminor.common.ui.control.LinkType;
-import org.jminor.common.ui.control.MethodControl;
 import org.jminor.common.ui.control.ToggleBeanValueLink;
 import org.jminor.common.ui.images.Images;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
@@ -260,28 +259,27 @@ public final class LoadTestPanel extends JPanel {
   }
 
   private JPanel initializeActivityPanel() {
-    SpinnerNumberModel spinnerModel = new IntBeanSpinnerValueLink(loadTestModel, "maximumThinkTime",
+    final SpinnerNumberModel maxSpinnerModel = new IntBeanSpinnerValueLink(loadTestModel, "maximumThinkTime",
             loadTestModel.maximumThinkTimeObserver()).getSpinnerModel();
-    spinnerModel.setStepSize(10);
-    final JSpinner spnMaxThinkTime = new JSpinner(spinnerModel);
+    maxSpinnerModel.setStepSize(10);
+    final JSpinner spnMaxThinkTime = new JSpinner(maxSpinnerModel);
     ((JSpinner.DefaultEditor) spnMaxThinkTime.getEditor()).getTextField().setColumns(3);
 
-    spinnerModel = new IntBeanSpinnerValueLink(loadTestModel, "minimumThinkTime",
+    final SpinnerNumberModel minSpinnerModel = new IntBeanSpinnerValueLink(loadTestModel, "minimumThinkTime",
             loadTestModel.minimumThinkTimeObserver()).getSpinnerModel();
-    spinnerModel.setStepSize(10);
-    final JSpinner spnMinThinkTimeField = new JSpinner(spinnerModel);
+    minSpinnerModel.setStepSize(10);
+    final JSpinner spnMinThinkTimeField = new JSpinner(minSpinnerModel);
     ((JSpinner.DefaultEditor) spnMinThinkTimeField.getEditor()).getTextField().setColumns(3);
 
-    spinnerModel = new IntBeanSpinnerValueLink(loadTestModel, "warningTime",
+    final SpinnerNumberModel warningSpinnerModel = new IntBeanSpinnerValueLink(loadTestModel, "warningTime",
             loadTestModel.warningTimeObserver()).getSpinnerModel();
-    spinnerModel.setStepSize(10);
-    final JSpinner spnWarningTime = new JSpinner(spinnerModel);
+    warningSpinnerModel.setStepSize(10);
+    final JSpinner spnWarningTime = new JSpinner(warningSpinnerModel);
     ((JSpinner.DefaultEditor) spnWarningTime.getEditor()).getTextField().setColumns(3);
     spnWarningTime.setToolTipText("A work request is considered 'delayed' if the time it takes to process it exceeds this value (ms)");
 
     final ToggleBeanValueLink pauseControl = Controls.toggleControl(loadTestModel, "paused", "Pause", loadTestModel.pauseObserver());
     pauseControl.setMnemonic('P');
-    final MethodControl gcControl = Controls.methodControl(loadTestModel, "performGC", "Perform GC");
 
     final FlexibleGridLayout layout = new FlexibleGridLayout(4, 2, 5, 5, true, false);
     layout.setFixedRowHeight(UiUtil.getPreferredTextFieldHeight());
@@ -292,8 +290,6 @@ public final class LoadTestPanel extends JPanel {
     thinkTimePanel.add(spnMinThinkTimeField);
     thinkTimePanel.add(new JLabel("Warning time", JLabel.CENTER));
     thinkTimePanel.add(spnWarningTime);
-
-    thinkTimePanel.add(ControlProvider.createButton(gcControl));
     thinkTimePanel.add(ControlProvider.createToggleButton(pauseControl));
 
     thinkTimePanel.setBorder(BorderFactory.createTitledBorder("Activity"));
@@ -304,7 +300,7 @@ public final class LoadTestPanel extends JPanel {
   private static final class ExitListener implements ActionListener {
     private final JFrame frame;
 
-    public ExitListener(final JFrame frame) {
+    private ExitListener(final JFrame frame) {
       this.frame = frame;
     }
 

@@ -348,6 +348,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
   }
 
   private final class ConnectionCreator implements Runnable {
+    /** {@inheritDoc} */
     public void run() {
       try {
         addConnectionToPool(poolableConnectionProvider.createConnection(user));

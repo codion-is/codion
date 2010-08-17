@@ -23,7 +23,7 @@ import java.util.TimerTask;
  */
 public abstract class LoadTestModel {
 
-  public static final int DEFAULT_UPDATE_INTERVAL = 2000;
+  public static final int DEFAULT_CHART_DATA_UPDATE_INTERVAL_MS = 2000;
 
   protected static final Logger LOG = Util.getLogger(LoadTestModel.class);
 
@@ -124,29 +124,42 @@ public abstract class LoadTestModel {
     this.scenarioChooser = initializeScenarioChooser();
     this.counter = new Counter(this.usageScenarios);
     initializeChartData();
-    setUpdateInterval(DEFAULT_UPDATE_INTERVAL);
+    setUpdateInterval(DEFAULT_CHART_DATA_UPDATE_INTERVAL_MS);
   }
 
+  /**
+   * @return the user to use when initializing new application instances
+   */
   public final User getUser() {
     return user;
   }
 
+  /**
+   * @param user the user to use when initializing new application instances
+   */
   public final void setUser(final User user) {
     this.user = user;
   }
 
-  public final void performGC() {
-    System.gc();
-  }
-
+  /**
+   * @return the RandomItemModel used to select the next scenario to run
+   */
   public final RandomItemModel<UsageScenario> getScenarioChooser() {
     return scenarioChooser;
   }
 
+  /**
+   * @return the usage scenarios used by this load test model
+   */
   public final Collection<UsageScenario> getUsageScenarios() {
     return usageScenarios;
   }
 
+  /**
+   * @param usageScenarioName the name of the usage scenario to fetch
+   * @return the usage scenario with the given name
+   * @throws RuntimeException if no such scenario exists
+   */
   public final UsageScenario getUsageScenario(final String usageScenarioName) {
     for (final UsageScenario scenario : usageScenarios) {
       if (scenario.getName().equals(usageScenarioName)) {
@@ -157,22 +170,37 @@ public abstract class LoadTestModel {
     throw new RuntimeException("UsageScenario not found: " + usageScenarioName);
   }
 
+  /**
+   * @return a dataset plotting the number of work requests per second
+   */
   public final XYSeriesCollection getWorkRequestsDataset() {
     return workRequestsCollection;
   }
 
+  /**
+   * @return a dataset plotting the think time
+   */
   public final XYSeriesCollection getThinkTimeDataset() {
     return thinkTimeCollection;
   }
 
+  /**
+   * @return a dataset plotting the number of active applications
+   */
   public final XYSeriesCollection getNumberOfApplicationsDataset() {
     return numberOfApplicationsCollection;
   }
 
+  /**
+   * @return a dataset plotting the number of runs each usage scenario is being run per second
+   */
   public final XYSeriesCollection getUsageScenarioDataset() {
     return usageScenarioCollection;
   }
 
+  /**
+   * @return a dataset plotting the memory usage of this load test model
+   */
   public final XYSeriesCollection getMemoryUsageDataset() {
     return memoryUsageCollection;
   }
@@ -194,10 +222,16 @@ public abstract class LoadTestModel {
     }
   }
 
+  /**
+   * @return the the maximum time in milliseconds a work request has to finish
+   */
   public final int getWarningTime() {
     return warningTime;
   }
 
+  /**
+   * @param warningTime the the maximum time in milliseconds a work request has to finish
+   */
   public final void setWarningTime(final int warningTime) {
     if (warningTime <= 0) {
       throw new IllegalArgumentException("Warning time must be a positive integer");
@@ -209,10 +243,16 @@ public abstract class LoadTestModel {
     }
   }
 
+  /**
+   * @return the chart data update interval
+   */
   public final int getUpdateInterval() {
     return updateInterval;
   }
 
+  /**
+   * @param updateInterval the chart data update interval
+   */
   public final void setUpdateInterval(final int updateInterval) {
     if (updateInterval < 0) {
       throw new IllegalArgumentException("Update interval must be a positive integer");
@@ -232,10 +272,16 @@ public abstract class LoadTestModel {
     return applications.size();
   }
 
+  /**
+   * @return the number of applications to initialize per batch
+   */
   public final int getApplicationBatchSize() {
     return applicationBatchSize;
   }
 
+  /**
+   * @param applicationBatchSize the number of applications to initialize per batch
+   */
   public final void setApplicationBatchSize(final int applicationBatchSize) {
     if (applicationBatchSize <= 0) {
       throw new IllegalArgumentException("Application batch size must be a positive integer");
@@ -245,12 +291,20 @@ public abstract class LoadTestModel {
     evtApplicationBatchSizeChanged.fire();
   }
 
-  public final void addApplicationBatch() throws Exception {
+  /**
+   * Adds a batch of applications.
+   * @see #setApplicationBatchSize(int)
+   */
+  public final void addApplicationBatch() {
     for (int i = 0; i < applicationBatchSize; i++) {
       new Thread(new ApplicationRunner(this)).start();
     }
   }
 
+  /**
+   * Removes one batch of applications.
+   * @see #setApplicationBatchSize(int)
+   */
   public final void removeApplicationBatch() {
     for (int i = 0; i < applicationBatchSize && !applications.isEmpty(); i++) {
       removeApplication();
@@ -272,15 +326,24 @@ public abstract class LoadTestModel {
     evtPausedChanged.fire();
   }
 
+  /**
+   * @return true if chart data is being collected
+   */
   public final boolean isCollectChartData() {
     return collectChartData;
   }
 
+  /**
+   * @param value true if chart data should be collected
+   */
   public final void setCollectChartData(final boolean value) {
     this.collectChartData = value;
     evtCollectChartDataChanged.fire();
   }
 
+  /**
+   * Removes all applications
+   */
   public final void exit() {
     paused = false;
     stopped = true;
@@ -329,10 +392,20 @@ public abstract class LoadTestModel {
     evtMinimumThinkTimeChanged.fire();
   }
 
+  /**
+   * Sets the with which to multiply the think time when logging in, this helps
+   * spread the application logins when creating a batch of application.
+   * @return the number with which to multiply the think time when logging in
+   */
   public final int getLoginDelayFactor() {
     return this.loginDelayFactor;
   }
 
+  /**
+   * Sets the with which to multiply the think time when logging in, this helps
+   * spread the application logins when creating a batch of application.
+   * @param loginDelayFactor the number with which to multiply the think time when logging in
+   */
   public final void setLoginDelayFactor(final int loginDelayFactor) {
     if (loginDelayFactor < 0) {
       throw new IllegalArgumentException("Login delay factor must be a positive integer");
@@ -342,38 +415,66 @@ public abstract class LoadTestModel {
     evtLoginDelayFactorChanged.fire();
   }
 
+  /**
+   * @param listener a listener notified when this load test model has finished removing all applications
+   */
   public final void addExitListener(final ActionListener listener) {
     evtDoneExiting.addListener(listener);
   }
 
+  /**
+   * @return an observer notified each time the application batch size changes
+   */
   public final EventObserver applicationBatchSizeObserver() {
     return evtApplicationBatchSizeChanged.getObserver();
   }
 
+  /**
+   * @return an observer notified each time the application count changes
+   */
   public final EventObserver applicationCountObserver() {
     return evtApplicationtCountChanged.getObserver();
   }
 
+  /**
+   * @return an observer notified each time the maximum think time changes
+   */
   public final EventObserver maximumThinkTimeObserver() {
     return evtMaximumThinkTimeChanged.getObserver();
   }
 
+  /**
+   * @return an observer notified each time the minimum think time changes
+   */
   public final EventObserver minimumThinkTimeObserver() {
     return evtMinimumThinkTimeChanged.getObserver();
   }
 
+  /**
+   * @return an observer notified each time the paused state changes
+   */
   public final EventObserver pauseObserver() {
     return evtPausedChanged.getObserver();
   }
 
+  /**
+   * @return an observer notified each time the collect chart data state changes
+   */
   public final EventObserver collectChartDataObserver() {
     return evtCollectChartDataChanged.getObserver();
   }
 
+  /**
+   * @return an observer notified each time the warning time changes
+   */
   public final EventObserver warningTimeObserver() {
     return evtWarningTimeChanged.getObserver();
   }
 
+  /**
+   * Selects a random scenario and runs it with the given application
+   * @param application the application for running the next scenario
+   */
   protected void performWork(final Object application) {
     Util.rejectNullValue(application, "application");
     final String scenarioName = scenarioChooser.getRandomItem().getName();
@@ -385,19 +486,40 @@ public abstract class LoadTestModel {
     }
   }
 
-  protected void runScenario(final String usageScenarioName, final Object application) throws Exception {
+  /**
+   * Runs the scenario with the given name on the given application
+   * @param usageScenarioName the name of the scenario to run
+   * @param application the application to use
+   * @throws ScenarioException in case of an exception
+   */
+  protected final void runScenario(final String usageScenarioName, final Object application) throws ScenarioException {
     getUsageScenario(usageScenarioName).run(application);
   }
 
+  /**
+   * @return an initialized application.
+   * @throws CancelException in case the initialization was cancelled
+   */
   protected abstract Object initializeApplication() throws CancelException;
 
+  /**
+   * @param application the application to disconnect
+   */
   protected abstract void disconnectApplication(final Object application);
 
+  /**
+   * @return a random think time in milliseconds based on the values of minimumThinkTime and maximumThinkTime
+   * @see #setMinimumThinkTime(int)
+   * @see #setMaximumThinkTime(int)
+   */
   protected final int getThinkTime() {
     final int time = minimumThinkTime - maximumThinkTime;
     return time > 0 ? RANDOM.nextInt(time) + minimumThinkTime : minimumThinkTime;
   }
 
+  /**
+   * Removes a single application
+   */
   private synchronized void removeApplication() {
     applications.pop();
     evtApplicationtCountChanged.fire();
@@ -470,6 +592,7 @@ public abstract class LoadTestModel {
       this.loadTestModel = loadTestModel;
     }
 
+    /** {@inheritDoc} */
     public void run() {
       try {
         delayLogin();
@@ -534,40 +657,70 @@ public abstract class LoadTestModel {
     private int successfulRunCount = 0;
     private int unsuccessfulRunCount = 0;
 
+    /**
+     * Instantiates a new UsageScenario using the simple class name as scenario name
+     */
     public UsageScenario() {
       this.name = getClass().getSimpleName();
     }
 
+    /**
+     * Instantiates a new UsageScenario with the given name
+     * @param name the scenario name
+     */
     public UsageScenario(final String name) {
       this.name = name;
     }
 
+    /**
+     * @return the name of this scenario
+     */
     public final String getName() {
       return this.name;
     }
 
+    /**
+     * @return the number of times this scenario has been successfully run
+     */
     public final int getSuccessfulRunCount() {
       return successfulRunCount;
     }
 
+    /**
+     * @return the number of times this scenario has been unsuccessfully run
+     */
     public final int getUnsuccessfulRunCount() {
       return unsuccessfulRunCount;
     }
 
+    /**
+     * @return the total number of times this scenario has been run
+     */
     public final int getTotalRunCount() {
       return successfulRunCount + unsuccessfulRunCount;
     }
 
+    /**
+     * Resets the run counters
+     */
     public final void resetRunCount() {
       successfulRunCount = 0;
       unsuccessfulRunCount = 0;
     }
 
+    /**
+     * @return the name of this scenario
+     */
     @Override
     public final String toString() {
       return name;
     }
 
+    /**
+     * Runs this scenario with the given application
+     * @param application the application to use
+     * @throws ScenarioException in case of an exception
+     */
     public final void run(final Object application) throws ScenarioException {
       if (application == null) {
         throw new RuntimeException("Can not run without an application");
@@ -586,6 +739,9 @@ public abstract class LoadTestModel {
       }
     }
 
+    /**
+     * @return the default weight for this scenario, 1 by default
+     */
     protected int getDefaultWeight() {
       return 1;
     }
@@ -597,9 +753,17 @@ public abstract class LoadTestModel {
      */
     protected abstract void performScenario(final Object application) throws ScenarioException;
 
+    /**
+     * Called before this scenario is run, override to prepare the application for each run
+     * @param application the application
+     */
     @SuppressWarnings({"UnusedDeclaration"})
     protected void prepare(final Object application) {}
 
+    /**
+     * Called after this scenario has been run, override to cleanup the application after each run
+     * @param application the application
+     */
     @SuppressWarnings({"UnusedDeclaration"})
     protected void cleanup(final Object application) {}
   }
@@ -626,7 +790,7 @@ public abstract class LoadTestModel {
     private int delayedWorkRequestCounter = 0;
     private long time = System.currentTimeMillis();
 
-    Counter(final Collection<UsageScenario> usageScenarios) {
+    private Counter(final Collection<UsageScenario> usageScenarios) {
       this.usageScenarios = usageScenarios;
     }
 
