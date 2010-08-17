@@ -23,14 +23,26 @@ public class SteppedComboBox extends JComboBox {
   private final boolean hidePopupOnFocusLoss;
   private int popupWidth = 0;
 
+  /**
+   * Instantiates a new SteppedComboBox.
+   * @param items the items this combo box should contain
+   */
   public SteppedComboBox(final Collection items) {
     this(items.toArray());
   }
 
+  /**
+   * Instantiates a new SteppedComboBox.
+   * @param items the items this combo box should contain
+   */
   public SteppedComboBox(final Object[] items) {
     this(new DefaultComboBoxModel(items));
   }
 
+  /**
+   * Instantiates a new SteppedComboBox.
+   * @param boxModel the combo box model
+   */
   public SteppedComboBox(final ComboBoxModel boxModel) {
     super(boxModel);
     initUI();

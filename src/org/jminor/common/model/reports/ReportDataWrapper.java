@@ -3,6 +3,10 @@
  */
 package org.jminor.common.model.reports;
 
+/**
+ * A simple wrapper for a report data source
+ * @param <T> the type of the datasource being wrapped.
+ */
 public interface ReportDataWrapper<T> {
 
   /**

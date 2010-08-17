@@ -35,6 +35,10 @@ public class ItemComboBoxModel<T> extends DefaultComboBoxModel {
     this(Arrays.asList(items));
   }
 
+  /**
+   * Constructs a new ItemComboBoxModel
+   * @param items the items
+   */
   public ItemComboBoxModel(final List<Item<T>> items) {
     initializeItems(new ArrayList<Item<T>>(items));
   }
@@ -50,6 +54,10 @@ public class ItemComboBoxModel<T> extends DefaultComboBoxModel {
     }
   }
 
+  /**
+   * @param item the item
+   * @return the index of the given item
+   */
   public final int getIndexOfItem(final Object item) {
     return indexOf(item);
   }
@@ -108,20 +116,28 @@ public class ItemComboBoxModel<T> extends DefaultComboBoxModel {
 
     private final ImageIcon icon;
 
+    /**
+     * Constructs a new IconItem.
+     * @param item the item this IconItem represents
+     * @param icon the icon
+     */
     public IconItem(final T item, final ImageIcon icon) {
       super(item, item == null ? "" : item.toString());
       Util.rejectNullValue(icon, "icon");
       this.icon = icon;
     }
 
+    /** {@inheritDoc} */
     public int getIconHeight() {
       return icon.getIconHeight();
     }
 
+    /** {@inheritDoc} */
     public int getIconWidth() {
       return icon.getIconWidth();
     }
 
+    /** {@inheritDoc} */
     public void paintIcon(final Component c, final Graphics g, final int x, final int y) {
       icon.paintIcon(c, g, x, y);
     }

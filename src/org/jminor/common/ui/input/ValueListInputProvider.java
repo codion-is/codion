@@ -17,8 +17,13 @@ import java.util.List;
  */
 public final class ValueListInputProvider extends AbstractInputProvider<Object, JComboBox> {
 
-  public ValueListInputProvider(final Object currentValue, final List<Item<Object>> values) {
-    super(createComboBox(currentValue, values));
+  /**
+   * Instantiates a new ValueListInputProvider.
+   * @param initialValue the initial value
+   * @param values the available values
+   */
+  public ValueListInputProvider(final Object initialValue, final List<Item<Object>> values) {
+    super(createComboBox(initialValue, values));
   }
 
   /** {@inheritDoc} */

@@ -2024,3 +2024,4 @@
   ConnectionPoolStatistics.getLiveConnectionCount() renamed to getPoolSize()
   ConnectionPoolStatistics.getPoolStatistics() renamed to getFineGrainedStatistics()
   LoadTestModel, javadoc improvement
+  common.* javadoc improvements

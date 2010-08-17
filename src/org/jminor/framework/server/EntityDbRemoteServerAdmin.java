@@ -33,10 +33,7 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * Implements the EntityDbServerAdmin interface, providing admin access to a EntityDbRemoteServer instance.<br>
- * User: Bjorn Darri<br>
- * Date: 28.6.2009<br>
- * Time: 16:17:14<br>
+ * Implements the EntityDbServerAdmin interface, providing admin access to a EntityDbRemoteServer instance.
  */
 public final class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements EntityDbServerAdmin {
 

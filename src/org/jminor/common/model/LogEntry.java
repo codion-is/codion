@@ -30,6 +30,9 @@ public final class LogEntry implements Serializable, Comparable<LogEntry> {
   private String stackTrace;
   private List<LogEntry> subLog;
 
+  /**
+   * Instantiates a new empty log entry.
+   */
   public LogEntry() {
     this("", "", 0, null);
   }
@@ -90,6 +93,9 @@ public final class LogEntry implements Serializable, Comparable<LogEntry> {
     this.subLog = null;
   }
 
+  /**
+   * @return the time this entry represents
+   */
   public long getEntryTime() {
     return entryTime;
   }
@@ -105,6 +111,9 @@ public final class LogEntry implements Serializable, Comparable<LogEntry> {
     return this;
   }
 
+  /**
+   * @return the exit time
+   */
   public long getExitTime() {
     return exitTime;
   }
@@ -116,27 +125,47 @@ public final class LogEntry implements Serializable, Comparable<LogEntry> {
     return delta;
   }
 
+  /**
+   * @return the entry message
+   */
   public String getEntryMessage() {
     return entryMessage;
   }
 
+  /**
+   * @return the method name
+   */
   public String getMethod() {
     return method;
   }
 
+  /**
+   * @return the stack trace, if any
+   */
   public String getStackTrace() {
     return stackTrace;
   }
 
+  /**
+   * @param message the exit message
+   * @return this log entry
+   */
   public LogEntry setExitMessage(final String message) {
     this.exitMessage = message;
     return this;
   }
 
+  /**
+   * @return the exit message
+   */
   public String getExitMessage() {
     return exitMessage;
   }
 
+  /**
+   * @param exception the exception
+   * @return this log entry
+   */
   public LogEntry setException(final Throwable exception) {
     if (exception == null) {
       this.stackTrace = null;
@@ -161,10 +190,16 @@ public final class LogEntry implements Serializable, Comparable<LogEntry> {
     return TIMESTAMP_FORMAT.get().format(new Date(exitTime));
   }
 
+  /**
+   * @return the sub log, if any
+   */
   public List<LogEntry> getSubLog() {
     return subLog;
   }
 
+  /**
+   * @param subLog the sub log
+   */
   public void setSubLog(final List<LogEntry> subLog) {
     this.subLog = subLog;
   }
@@ -176,6 +211,7 @@ public final class LogEntry implements Serializable, Comparable<LogEntry> {
     return exitTime > 0;
   }
 
+  /** {@inheritDoc} */
   public int compareTo(final LogEntry o) {
     if (this.entryTime < o.entryTime) {
       return -1;
@@ -188,21 +224,29 @@ public final class LogEntry implements Serializable, Comparable<LogEntry> {
     }
   }
 
+  /** {@inheritDoc} */
   @Override
   public boolean equals(final Object obj) {
     return obj instanceof LogEntry && this.entryTime == ((LogEntry) obj).entryTime;
   }
 
+  /** {@inheritDoc} */
   @Override
   public int hashCode() {
     return Long.valueOf(this.entryTime).hashCode();
   }
 
+  /** {@inheritDoc} */
   @Override
   public String toString() {
     return toString(0);
   }
 
+  /**
+   * Returns a string representation of this log entry.
+   * @param indentation the number of tab indents to prefix the string with
+   * @return a string representation of this log entry
+   */
   public String toString(final int indentation) {
     final String indentString = indentation > 0 ? Util.padString("", indentation, '\t', false) : "";
     final StringBuilder stringBuilder = new StringBuilder();

@@ -45,8 +45,15 @@ public abstract class AbstractValueChangeMapEditModel<K, V> implements ValueChan
    */
   private final Map<K, Event> valueChangeEventMap = new HashMap<K, Event>();
 
+  /**
+   * The validator used by this edit model
+   */
   private final ValueMapValidator<K, V> validator;
 
+  /**
+   * A state indicating whether or not the value map being edited is in a valid state
+   * according the the validator
+   */
   private final State stValid = States.state();
 
   /**
@@ -181,6 +188,13 @@ public abstract class AbstractValueChangeMapEditModel<K, V> implements ValueChan
     return stValid.getObserver();
   }
 
+  /**
+   * Provides a hook into the value setting mechanism, override to
+   * translate or otherwise manipulate the value being set
+   * @param key the key
+   * @param value the value
+   * @return the prepared value
+   */
   protected V prepareNewValue(final K key, final V value) {
     return value;
   }

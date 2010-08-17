@@ -84,6 +84,9 @@ public class ComboBoxValueLink<K> extends AbstractValueMapLink<K, Object> {
     boxModel.setSelectedItem(value);
   }
 
+  /**
+   * @return the underlying combo box model
+   */
   protected final ComboBoxModel getModel() {
     return boxModel;
   }

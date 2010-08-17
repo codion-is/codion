@@ -14,9 +14,7 @@ import javax.swing.ButtonModel;
 import java.rmi.RemoteException;
 
 /**
- * User: Bjorn Darri<br>
- * Date: 4.12.2007<br>
- * Time: 18:22:24<br>
+ * A ClientInstanceMonitor
  */
 public final class ClientInstanceMonitor {
 

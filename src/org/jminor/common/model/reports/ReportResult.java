@@ -4,14 +4,13 @@
 package org.jminor.common.model.reports;
 
 /**
- * User: Björn Darri
- * Date: 23.5.2010
- * Time: 21:09:30
+ * A simple wrapper for a report result
+ * @param <R> the type of the report result being wrapped.
  */
 public interface ReportResult<R> {
 
   /**
-   * @return a populated report, ready for display
+   * @return a populated report result, ready for display
    */
   R getResult();
 }

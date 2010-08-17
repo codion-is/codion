@@ -7,9 +7,11 @@ import javax.swing.JComponent;
 
 /**
  * Specifies a generic class for providing a value via a UI component.
+ * @param <T> the value type
+ * @param <K> the input component type
  */
 public interface InputProvider<T, K extends JComponent> {
-
+  
   /**
    * @return the input component
    */

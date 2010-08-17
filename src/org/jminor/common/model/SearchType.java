@@ -6,10 +6,7 @@ package org.jminor.common.model;
 import java.io.Serializable;
 
 /**
- * Enumerating the possible ways of searching.<br>
- * User: darri<br>
- * Date: 9.3.2007<br>
- * Time: 23:22:01<br>
+ * Enumerating the possible ways of searching.
  */
 public enum SearchType implements Serializable {
 

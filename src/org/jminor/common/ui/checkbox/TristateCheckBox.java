@@ -24,14 +24,28 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+/**
+ * A check box implementation based on the TristateButtonModel
+ * @see org.jminor.common.model.checkbox.TristateButtonModel
+ */
 public final class TristateCheckBox extends JCheckBox {
 
-  public TristateCheckBox(final String text) {
-    this(text, null, TristateState.DESELECTED);
+  /**
+   * Instantiates a new TristateCheckBox.
+   * @param caption the caption
+   */
+  public TristateCheckBox(final String caption) {
+    this(caption, null, TristateState.DESELECTED);
   }
 
-  public TristateCheckBox(final String text, final Icon icon, final TristateState initial) {
-    super(text, icon);
+  /**
+   * Instantiates a new TristateCheckBox.
+   * @param caption the caption
+   * @param icon the icon
+   * @param initial the inital state
+   */
+  public TristateCheckBox(final String caption, final Icon icon, final TristateState initial) {
+    super(caption, icon);
 
     //Set default single model
     setModel(new TristateButtonModel(initial));
@@ -66,7 +80,7 @@ public final class TristateCheckBox extends JCheckBox {
     return getTristateModel().getState();
   }
 
-  //Overrides super class method
+  /** {@inheritDoc} */
   @Override
   public void setModel(final ButtonModel newModel) {
     super.setModel(newModel);

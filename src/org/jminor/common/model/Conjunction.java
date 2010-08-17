@@ -1,13 +1,14 @@
 package org.jminor.common.model;
 
 /**
- * User: Björn Darri
- * Date: 29.7.2010
- * Time: 22:18:34
+ * AND / OR
  */
 public enum Conjunction {
   AND, OR;
 
+  /**
+   * @return AND: " and " OR: " or "
+   */
   @Override
   public String toString() {
     switch (this) {
@@ -19,4 +20,4 @@ public enum Conjunction {
         throw new IllegalArgumentException("Unknown org.jminor.common.model.Conjunction enum");
     }
   }
-  }
+}

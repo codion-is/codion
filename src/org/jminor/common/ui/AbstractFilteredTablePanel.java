@@ -39,9 +39,8 @@ import java.util.Enumeration;
 import java.util.List;
 
 /**
- * User: Björn Darri<br>
- * Date: 25.4.2010<br>
- * Time: 12:47:55<br>
+ * A UI component based on FilteredTableModel.
+ * @see FilteredTableModel
  */
 public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
 
@@ -80,6 +79,10 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
    */
   private final JTextField searchField;
 
+  /**
+   * Instantiates a new AbstractFilteredTablePanel.
+   * @param tableModel the table model
+   */
   public AbstractFilteredTablePanel(final FilteredTableModel<T, C> tableModel) {
     Util.rejectNullValue(tableModel, "tableModel");
     this.tableModel = tableModel;
@@ -91,6 +94,9 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
     bindEvents();
   }
 
+  /**
+   * @return the column search panels serving as column filter panels
+   */
   public final List<ColumnSearchPanel<C>> getColumnFilterPanels() {
     return Collections.unmodifiableList(columnFilterPanels);
   }
@@ -110,6 +116,11 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
     }
   }
 
+  /**
+   * Initializes a ColumnSearchPanel for the given search model
+   * @param model the search model
+   * @return a column search panel based on the given model
+   */
   protected abstract ColumnSearchPanel<C> initializeFilterPanel(final ColumnSearchModel<C> model);
 
   /**
@@ -134,10 +145,18 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
     return searchField;
   }
 
+  /**
+   * @return the scrollpanel the containing the table
+   */
   public final JScrollPane getTableScrollPane() {
     return tableScrollPane;
   }
 
+  /**
+   * Scrolls to the given coordinate.
+   * @param row the row
+   * @param column the column
+   */
   public final void scrollToCoordinate(final int row, final int column) {
     table.scrollRectToVisible(table.getCellRect(row, column, true));
   }

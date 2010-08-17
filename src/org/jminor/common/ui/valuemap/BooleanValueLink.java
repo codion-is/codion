@@ -17,11 +17,24 @@ public final class BooleanValueLink<K> extends AbstractValueMapLink<K, Object> {
 
   private final ButtonModel buttonModel;
 
+  /**
+   * Instantiates a new BooleanValueLink.
+   * @param buttonModel the button model to link
+   * @param editModel the edit model
+   * @param key the key of the property to link
+   */
   public BooleanValueLink(final ButtonModel buttonModel, final ValueChangeMapEditModel<K, Object> editModel,
                           final K key) {
     this(buttonModel, editModel, key, LinkType.READ_WRITE);
   }
 
+  /**
+   * Instantiates a new BooleanValueLink.
+   * @param buttonModel the button model to link
+   * @param editModel the edit model
+   * @param key the key of the property to link
+   * @param linkType the link type
+   */
   public BooleanValueLink(final ButtonModel buttonModel, final ValueChangeMapEditModel<K, Object> editModel,
                           final K key, final LinkType linkType) {
     super(editModel, key, linkType);
@@ -34,11 +47,13 @@ public final class BooleanValueLink<K> extends AbstractValueMapLink<K, Object> {
     updateUI();
   }
 
+  /** {@inheritDoc} */
   @Override
   protected Object getUIValue() {
     return buttonModel.isSelected();
   }
 
+  /** {@inheritDoc} */
   @Override
   protected void setUIValue(final Object value) {
     buttonModel.setSelected(value != null && (Boolean) value);

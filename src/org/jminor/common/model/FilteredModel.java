@@ -7,9 +7,8 @@ import java.awt.event.ActionListener;
 import java.util.List;
 
 /**
- * User: darri
- * Date: 8.7.2010
- * Time: 12:07:46
+ * Specifies a data model that can be filtered.
+ * @param <T> the type of data in the model.
  */
 public interface FilteredModel<T> {
 

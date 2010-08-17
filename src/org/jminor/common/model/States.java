@@ -12,27 +12,45 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * User: Björn Darri
- * Date: 29.7.2010
- * Time: 20:26:46
+ * A factory class for State objects.
+ * @see State
  */
 public final class States {
 
   private States() {}
 
+  /**
+   * Instantiates a new State object.
+   * @return a new State
+   */
   public static State state() {
     return new StateImpl();
   }
 
+  /**
+   * Instantiates a new State object.
+   * @param initialState the initial state
+   * @return a new State
+   */
   public static State state(final boolean initialState) {
     return new StateImpl(initialState);
   }
 
+  /**
+   * Instantiates a new State.AggregateState object.
+   * @param conjunction the conjunction to use
+   * @param stateObservers the state observers to base this aggregate state on
+   * @return a new State.AggregateState
+   */
   public static State.AggregateState aggregateState(final Conjunction conjunction, final StateObserver... stateObservers) {
     Util.rejectNullValue(conjunction, "conjunction");
     return new AggregateStateImpl(conjunction, stateObservers);
   }
 
+  /**
+   * Instantiates a new State.StateGroup object.
+   * @return a new State.StateGroup
+   */
   public static State.StateGroup stateGroup() {
     return new StateGroupImpl();
   }

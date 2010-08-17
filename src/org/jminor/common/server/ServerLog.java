@@ -14,10 +14,7 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * A class encapsulating a simple collection of server access log entries and basic connection access info.<br>
- * User: Bjorn Darri<br>
- * Date: 7.12.2007<br>
- * Time: 12:07:44<br>
+ * A class encapsulating a simple collection of server access log entries and basic connection access info.
  */
 public final class ServerLog implements Serializable {
 
@@ -35,6 +32,17 @@ public final class ServerLog implements Serializable {
 
   private static final ThreadLocal<DateFormat> TIMESTAMP_FORMAT = DateUtil.getThreadLocalDateFormat(DateFormats.EXACT_TIMESTAMP);
 
+  /**
+   * Instantiates a new ServerLog instance.
+   * @param clientID the ID of the client this log represents
+   * @param connectionCreationDate the date this client connection was created
+   * @param log the log entries
+   * @param lastAccessDate the last access date
+   * @param lastExitDate the last exit date
+   * @param lastAccessedMethod the last accessed method
+   * @param lastAccessedMessage the last access message
+   * @param lastExitedMethod the last exited method
+   */
   public ServerLog(final UUID clientID, final long connectionCreationDate, final List<LogEntry> log,
                    final long lastAccessDate, final long lastExitDate, final String lastAccessedMethod,
                    final String lastAccessedMessage, final String lastExitedMethod) {
@@ -139,12 +147,14 @@ public final class ServerLog implements Serializable {
     return TIMESTAMP_FORMAT.get().format(lastExitDate);
   }
 
+  /** {@inheritDoc} */
   @Override
   public boolean equals(final Object obj) {
     return this == obj || !((obj == null) || (obj.getClass() != this.getClass()))
             && clientID.equals(((ServerLog) obj).clientID);
   }
 
+  /** {@inheritDoc} */
   @Override
   public int hashCode() {
     return clientID.hashCode();

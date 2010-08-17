@@ -10,7 +10,7 @@ import java.util.Collection;
  * @param <K> the type of the map keys
  * @param <V> the type of the map values
  */
-public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueStringProvider<K>, ValueCollectionProvider<V> {
+public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueAsStringProvider<K>, ValueCollectionProvider<V> {
 
   /**
    * Maps the given value to the given key, returning the old value if any.

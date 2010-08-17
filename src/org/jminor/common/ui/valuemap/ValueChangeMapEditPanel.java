@@ -14,9 +14,6 @@ import java.util.Map;
 
 /**
  * A UI class based on the ValueChangeMapEditModel.<br>
- * User: Björn Darri<br>
- * Date: 25.4.2010<br>
- * Time: 12:29:37<br>
  */
 public abstract class ValueChangeMapEditPanel<K, V> extends JPanel {
 
@@ -31,14 +28,27 @@ public abstract class ValueChangeMapEditPanel<K, V> extends JPanel {
 
   private K initialFocusComponentKey;
 
+  /**
+   * Instantiates a new ValueChangeMapEditPanel based on the given model.
+   * @param model the model
+   */
   public ValueChangeMapEditPanel(final ValueChangeMapEditModel<K, V> model) {
     this.model = model;
   }
 
+  /**
+   * @return the edit model this panel is based on
+   */
   public final ValueChangeMapEditModel<K, V> getEditModel() {
     return model;
   }
 
+  /**
+   * Prepares the UI.
+   * @param setInitialFocus if true then the initial focus is set
+   * @param clearUI if true the UI is cleared.
+   * @see org.jminor.common.model.valuemap.ValueChangeMapEditModel#clear()
+   */
   public final void prepareUI(final boolean setInitialFocus, final boolean clearUI) {
     if (clearUI) {
       clearModelValues();
@@ -48,6 +58,9 @@ public abstract class ValueChangeMapEditPanel<K, V> extends JPanel {
     }
   }
 
+  /**
+   * Clears the values from the underlying model
+   */
   public final void clearModelValues() {
     model.setValueMap(null);
   }
@@ -64,6 +77,9 @@ public abstract class ValueChangeMapEditPanel<K, V> extends JPanel {
     return initialFocusComponent;
   }
 
+  /**
+   * @return the key of the component to receive initial the focus
+   */
   public final K getInitialFocusComponentKey() {
     return initialFocusComponentKey;
   }
@@ -79,6 +95,9 @@ public abstract class ValueChangeMapEditPanel<K, V> extends JPanel {
     this.initialFocusComponentKey = initialFocusComponentKey;
   }
 
+  /**
+   * Sets the initial focus
+   */
   public final void setInitialFocus() {
     final JComponent focusComponent = getInitialFocusComponent();
     if (focusComponent == null) {
@@ -96,6 +115,10 @@ public abstract class ValueChangeMapEditPanel<K, V> extends JPanel {
     return new ArrayList<K>(components.keySet());
   }
 
+  /**
+   * @param key the key
+   * @return the component associated with the given key
+   */
   public final JComponent getComponent(final K key) {
     if (!components.containsKey(key)) {
       throw new RuntimeException("No component associated with key: " + key);
@@ -104,12 +127,18 @@ public abstract class ValueChangeMapEditPanel<K, V> extends JPanel {
     return components.get(key);
   }
 
+  /**
+   * @param key the key of the component to select
+   */
   public final void selectComponent(final K key) {
     if (components.containsKey(key)) {
       components.get(key).requestFocusInWindow();
     }
   }
 
+  /**
+   * @return the component that should get the initial focus
+   */
   protected JComponent getInitialFocusComponent() {
     if (initialFocusComponent != null) {
       return initialFocusComponent;

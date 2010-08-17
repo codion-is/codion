@@ -16,11 +16,6 @@ import java.sql.Types;
 import java.util.Arrays;
 import java.util.Collection;
 
-/**
- * User: Bjorn Darri
- * Date: 6.9.2009
- * Time: 16:47:57
- */
 public class DefaultPropertySummaryModelTest {
 
   final PropertySummaryModel testIntModel = new DefaultPropertySummaryModel(Properties.columnProperty("TestProperty", Types.INTEGER),

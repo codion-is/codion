@@ -11,21 +11,31 @@ import javax.swing.event.ChangeListener;
 
 /**
  * Binds a SpinnerModel to a int based bean property.
- * User: Bjorn Darri<br>
- * Date: 14.12.2007<br>
- * Time: 23:58:50<br>
  */
 public final class IntBeanSpinnerValueLink extends AbstractBeanValueLink {
 
   private final SpinnerNumberModel spinnerModel;
 
-  public IntBeanSpinnerValueLink(final Object owner, final String propertyName, final EventObserver propertyChangeEvent) {
-    this(owner, propertyName, propertyChangeEvent, LinkType.READ_WRITE);
+  /**
+   * Instantiates a new IntBeanSpinnerValueLink.
+   * @param owner the value owner
+   * @param propertyName the property name
+   * @param valueChangeEvent an EventObserver notified each time the value changes
+   */
+  public IntBeanSpinnerValueLink(final Object owner, final String propertyName, final EventObserver valueChangeEvent) {
+    this(owner, propertyName, valueChangeEvent, LinkType.READ_WRITE);
   }
 
-  public IntBeanSpinnerValueLink(final Object owner, final String propertyName, final EventObserver propertyChangeEvent,
-                                    final LinkType linkType) {
-    super(owner, propertyName, int.class, propertyChangeEvent, linkType);
+  /**
+   * Instantiates a new IntBeanSpinnerValueLink.
+   * @param owner the value owner
+   * @param propertyName the property name
+   * @param valueChangeEvent an EventObserver notified each time the value changes
+   * @param linkType the link type
+   */
+  public IntBeanSpinnerValueLink(final Object owner, final String propertyName, final EventObserver valueChangeEvent,
+                                 final LinkType linkType) {
+    super(owner, propertyName, int.class, valueChangeEvent, linkType);
     spinnerModel = new SpinnerNumberModel();
     spinnerModel.addChangeListener(new ChangeListener() {
       public void stateChanged(final ChangeEvent e) {
@@ -35,15 +45,20 @@ public final class IntBeanSpinnerValueLink extends AbstractBeanValueLink {
     updateUI();
   }
 
+  /**
+   * @return the spinner model
+   */
   public SpinnerNumberModel getSpinnerModel() {
     return spinnerModel;
   }
 
+  /** {@inheritDoc} */
   @Override
   protected Object getUIValue() {
     return spinnerModel.getValue();
   }
 
+  /** {@inheritDoc} */
   @Override
   protected void setUIValue(final Object value) {
     spinnerModel.setValue(value);

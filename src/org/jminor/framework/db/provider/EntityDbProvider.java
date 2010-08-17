@@ -7,10 +7,7 @@ import org.jminor.common.model.User;
 import org.jminor.framework.db.EntityDb;
 
 /**
- * Interface for a class responsible for providing EntityDb objects.<br>
- * User: darri<br>
- * Date: 9.5.2005<br>
- * Time: 11:39:13<br>
+ * Interface for a class responsible for providing EntityDb objects.
  */
 public interface EntityDbProvider {
 

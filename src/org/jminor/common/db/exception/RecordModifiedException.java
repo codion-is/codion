@@ -6,10 +6,7 @@ package org.jminor.common.db.exception;
 import org.jminor.common.i18n.Messages;
 
 /**
- * An exception indicating that the row in question has been modified since it was loaded.<br>
- * User: Bjorn Darri<br>
- * Date: 26.9.2009<br>
- * Time: 15:35:18<br>
+ * An exception indicating that the row in question has been modified since it was loaded.
  */
 public final class RecordModifiedException extends DbException {
 

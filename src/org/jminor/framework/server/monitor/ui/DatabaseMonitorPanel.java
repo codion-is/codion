@@ -25,7 +25,7 @@ import java.awt.FlowLayout;
 import java.rmi.RemoteException;
 
 /**
- * User: Bjorn Darri<br>
+ * A DatabaseMonitorPanel 
  */
 public final class DatabaseMonitorPanel extends JPanel {
 

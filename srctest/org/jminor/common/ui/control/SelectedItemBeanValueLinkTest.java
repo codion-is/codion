@@ -12,11 +12,6 @@ import org.junit.Test;
 
 import javax.swing.JComboBox;
 
-/**
- * User: Bjorn Darri
- * Date: 13.1.2008
- * Time: 12:15:13
- */
 public class SelectedItemBeanValueLinkTest {
 
   private String selectedItem;

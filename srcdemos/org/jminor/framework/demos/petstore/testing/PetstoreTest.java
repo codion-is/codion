@@ -11,11 +11,6 @@ import org.jminor.framework.tools.testing.EntityTestUnit;
 
 import org.junit.Test;
 
-/**
- * User: Bjorn Darri
- * Date: 24.12.2007
- * Time: 13:20:26
- */
 public class PetstoreTest extends EntityTestUnit {
 
   @Test

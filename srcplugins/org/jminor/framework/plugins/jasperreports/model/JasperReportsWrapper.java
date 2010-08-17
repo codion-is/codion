@@ -22,11 +22,9 @@ import java.sql.Connection;
 import java.util.Map;
 
 /**
- * User: Bjorn Darri<br>
- * Date: 23.5.2010<br>
- * Time: 21:16:12
+ * A Jasper Reports wrapper.
  */
-public final class JasperReportsWrapper implements ReportWrapper<JasperPrint>, Serializable {
+public final class JasperReportsWrapper implements ReportWrapper<JasperPrint, JRDataSource>, Serializable {
   private static final long serialVersionUID = 1;
   private final JasperReport report;
   private final Map reportParameters;
@@ -41,10 +39,12 @@ public final class JasperReportsWrapper implements ReportWrapper<JasperPrint>, S
     this.reportParameters = reportParameters;
   }
 
+  /** {@inheritDoc} */
   public String getReportName() {
     return report.getName();
   }
 
+  /** {@inheritDoc} */
   public ReportResult<JasperPrint> fillReport(final Connection connection) throws ReportException {
     Util.rejectNullValue(connection, "connection");
     try {
@@ -55,16 +55,18 @@ public final class JasperReportsWrapper implements ReportWrapper<JasperPrint>, S
     }
   }
 
-  public ReportResult<JasperPrint> fillReport(final ReportDataWrapper dataWrapper) throws ReportException {
+  /** {@inheritDoc} */
+  public ReportResult<JasperPrint> fillReport(final ReportDataWrapper<JRDataSource> dataWrapper) throws ReportException {
     Util.rejectNullValue(dataWrapper, "dataWrapper");
     try {
-      return new JasperReportsResult(JasperFillManager.fillReport(report, reportParameters, (JRDataSource) dataWrapper.getDataSource()));
+      return new JasperReportsResult(JasperFillManager.fillReport(report, reportParameters, dataWrapper.getDataSource()));
     }
     catch (JRException e) {
       throw new ReportException(e);
     }
   }
 
+  /** {@inheritDoc} */
   @Override
   public String toString() {
     final StringBuilder builder = new StringBuilder(report.getName());

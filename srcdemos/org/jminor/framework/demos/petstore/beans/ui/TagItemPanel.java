@@ -16,11 +16,6 @@ import static org.jminor.framework.demos.petstore.domain.Petstore.TAG_ITEM_TAG_F
 
 import java.awt.Dimension;
 
-/**
- * User: Bjorn Darri
- * Date: 24.12.2007
- * Time: 23:36:04
- */
 public class TagItemPanel extends EntityEditPanel {
 
   public TagItemPanel(final EntityEditModel model) {

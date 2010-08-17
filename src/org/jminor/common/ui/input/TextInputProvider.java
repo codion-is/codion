@@ -16,10 +16,17 @@ public final class TextInputProvider extends AbstractInputProvider<String, TextI
 
   private static final int DEFAULT_COLUMNS = 16;
 
-  public TextInputProvider(final String inputDialogTitle, final ValueCollectionProvider valueProvider, final String currentValue) {
-    super(createTextInputPanel(inputDialogTitle, valueProvider, currentValue));
+  /**
+   * Instantiates a new TextInputProvider.
+   * @param inputDialogTitle the title to use for the lookup input dialog
+   * @param valueProvider the value provider
+   * @param initialValue the initial value
+   */
+  public TextInputProvider(final String inputDialogTitle, final ValueCollectionProvider valueProvider, final String initialValue) {
+    super(createTextInputPanel(inputDialogTitle, valueProvider, initialValue));
   }
 
+  /** {@inheritDoc} */
   @Override
   public String getValue() {
     final String value = getInputComponent().getText();
@@ -28,8 +35,8 @@ public final class TextInputProvider extends AbstractInputProvider<String, TextI
   }
 
   private static TextInputPanel createTextInputPanel(final String inputDialogTitle, final ValueCollectionProvider valueProvider,
-                                                     final Object currentValue) {
-    final JTextField txtField = new JTextField(currentValue != null ? currentValue.toString() : "");
+                                                     final Object initialValue) {
+    final JTextField txtField = new JTextField(initialValue != null ? initialValue.toString() : "");
     txtField.setColumns(DEFAULT_COLUMNS);
     UiUtil.addLookupDialog(txtField, valueProvider);
 

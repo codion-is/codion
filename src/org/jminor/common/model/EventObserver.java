@@ -6,9 +6,7 @@ package org.jminor.common.model;
 import java.awt.event.ActionListener;
 
 /**
- * User: darri
- * Date: 29.7.2010
- * Time: 11:54:38
+ * Specifies an Event observer.
  */
 public interface EventObserver {
 

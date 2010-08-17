@@ -30,6 +30,10 @@ public final class MaximumMatch extends PlainDocument {
   private boolean hitBackspace = false;
   private boolean hitBackspaceOnSelection;
 
+  /**
+   * Activates the maximum match on the given combo box
+   * @param comboBox the combo box
+   */
   public MaximumMatch(final JComboBox comboBox) {
     this.comboBox = comboBox;
     model = comboBox.getModel();
@@ -67,6 +71,11 @@ public final class MaximumMatch extends PlainDocument {
     highlightCompletedText(0);
   }
 
+  /**
+   * Enables maximum match for the given combo box.
+   * A side effect of this method is that the combo box is made editable.
+   * @param comboBox the combo box
+   */
   public static void enable(final JComboBox comboBox) {
     // has to be editable
     comboBox.setEditable(true);

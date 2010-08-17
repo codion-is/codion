@@ -12,9 +12,7 @@ import java.rmi.RemoteException;
 import java.util.Collection;
 
 /**
- * User: Bjorn Darri<br>
- * Date: 11.12.2007<br>
- * Time: 11:42:18<br>
+ * A ClientMonitor
  */
 public final class ClientMonitor {
 

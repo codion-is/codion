@@ -13,11 +13,8 @@ import java.util.Locale;
 import java.util.regex.Pattern;
 
 /**
- * Encapsulates the property search parameters search type, upper bound and lower bound,
- * as well as relevant events and states.<br>
- * User: Bjorn Darri<br>
- * Date: 26.12.2007<br>
- * Time: 14:48:22<br>
+ * A default ColumnSearchModel model implementation.
+ * @param <K> the type of the column identifier
  */
 public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
 
@@ -32,7 +29,7 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
 
   private final K columnIdentifier;
   private final int type;
-  private final Format dateFormat;
+  private final Format format;
 
   private SearchType searchType = SearchType.LIKE;
   private boolean enabled = false;
@@ -43,17 +40,30 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
   private Object lowerBound = null;
   private String wildcard;
 
+  /**
+   * Instantiates a DefaultColumnSearchModel.
+   * @param columnIdentifier the column identifier
+   * @param type the column data type
+   * @param wildcard the string to use as wildcard
+   */
   public DefaultColumnSearchModel(final K columnIdentifier, final int type, final String wildcard) {
     this(columnIdentifier, type, wildcard, null);
   }
 
+  /**
+   * Instantiates a DefaultColumnSearchModel.
+   * @param columnIdentifier the column identifier
+   * @param type the column data type
+   * @param wildcard the string to use as wildcard
+   * @param format the format to use when presenting the values, dates for example
+   */
   public DefaultColumnSearchModel(final K columnIdentifier, final int type, final String wildcard,
-                                  final Format dateFormat) {
+                                  final Format format) {
     Util.rejectNullValue(columnIdentifier, "searchKey");
     this.columnIdentifier = columnIdentifier;
     this.type = type;
     this.wildcard = wildcard;
-    this.dateFormat = dateFormat;
+    this.format = format;
     bindEvents();
   }
 
@@ -74,7 +84,7 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
 
   /** {@inheritDoc} */
   public final Format getFormat() {
-    return dateFormat;
+    return format;
   }
 
   /** {@inheritDoc} */
@@ -405,6 +415,10 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
     throw new RuntimeException("Undefined search type: " + searchType);
   }
 
+  /**
+   * @param searchType the search type
+   * @return the number of input values required for the given search type
+   */
   public static int getValueCount(final SearchType searchType) {
     switch(searchType) {
       case LIKE:
@@ -420,6 +434,10 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
     throw new IllegalArgumentException("Undefined search type " + searchType);
   }
 
+  /**
+   * @param object the object
+   * @return a Comparable representing the given object
+   */
   protected Comparable getComparable(final Object object) {
     return (Comparable) object;
   }

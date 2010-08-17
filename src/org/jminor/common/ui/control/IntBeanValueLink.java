@@ -12,17 +12,33 @@ import org.jminor.common.ui.textfield.IntField;
  */
 public class IntBeanValueLink extends TextBeanValueLink {
 
+  /**
+   * Instantiates a new IntBeanValueLink.
+   * @param intField the int field to link with the value
+   * @param owner the value owner
+   * @param propertyName the property name
+   * @param valueChangeEvent an EventObserver notified each time the value changes
+   */
   public IntBeanValueLink(final IntField intField, final Object owner, final String propertyName,
                           final EventObserver valueChangeEvent) {
     this(intField, owner, propertyName, valueChangeEvent, LinkType.READ_WRITE);
   }
 
+  /**
+   * Instantiates a new IntBeanValueLink.
+   * @param intField the int field to link with the value
+   * @param owner the value owner
+   * @param propertyName the property name
+   * @param valueChangeEvent an EventObserver notified each time the value changes
+   * @param linkType the link type
+   */
   public IntBeanValueLink(final IntField intField, final Object owner, final String propertyName,
                           final EventObserver valueChangeEvent, final LinkType linkType) {
     super(intField, owner, propertyName, Integer.class, valueChangeEvent, linkType);
     updateUI();
   }
 
+  /** {@inheritDoc} */
   @Override
   protected final Object getUIValue() {
     try {

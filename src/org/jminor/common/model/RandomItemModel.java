@@ -40,6 +40,9 @@ public class RandomItemModel<T> {
 
   private final Random random = new Random();
 
+  /**
+   * Instantiates a new empty RandomItemModel.
+   */
   public RandomItemModel() {
     this(0);
   }
@@ -192,6 +195,9 @@ public class RandomItemModel<T> {
     throw new RuntimeException("Item not found: " + item);
   }
 
+  /**
+   * Notifies this model that the item weights have changed.
+   */
   protected final void fireWeightsChangedEvent() {
     evtWeightsChanged.fire();
   }

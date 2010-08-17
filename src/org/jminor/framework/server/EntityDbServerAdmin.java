@@ -20,10 +20,7 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * Defines the server admin service methods.<br>
- * User: darri<br>
- * Date: 19.2.2007<br>
- * Time: 09:41:35<br>
+ * Defines the server admin service methods.
  */
 public interface EntityDbServerAdmin extends Remote {
 

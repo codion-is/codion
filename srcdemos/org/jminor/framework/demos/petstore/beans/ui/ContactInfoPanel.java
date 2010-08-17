@@ -10,17 +10,12 @@ import static org.jminor.framework.demos.petstore.domain.Petstore.*;
 
 import javax.swing.JTextField;
 
-/**
- * User: Bjorn Darri
- * Date: 24.12.2007
- * Time: 14:05:58
- */
 public class ContactInfoPanel extends EntityEditPanel {
 
   public ContactInfoPanel(final EntityEditModel model) {
     super(model);
   }
-  
+
   @Override
   protected void initializeUI() {
     setLayout(new FlexibleGridLayout(3,1,5,5));

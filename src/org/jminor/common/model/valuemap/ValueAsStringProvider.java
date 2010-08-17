@@ -4,14 +4,10 @@
 package org.jminor.common.model.valuemap;
 
 /**
- * Provides values mapped to keys as strings.<br>
- * User: Bjorn Darri<br>
- * Date: 4.4.2010<br>
- * Time: 21:06:22<br>
+ * Provides values mapped to keys as strings.
  * @param <K> the type of the map keys
- * todo rename to ValueAsStringProvider?
  */
-public interface ValueStringProvider<K> {
+public interface ValueAsStringProvider<K> {
 
   /**
    * Retrieves the value mapped to the given key as a String

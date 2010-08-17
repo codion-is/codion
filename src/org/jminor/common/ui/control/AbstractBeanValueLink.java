@@ -17,11 +17,26 @@ public abstract class AbstractBeanValueLink extends AbstractValueLink<Object, Ob
   private final Method getMethod;
   private final Method setMethod;
 
+  /**
+   * Instantiates a new AbstractBeanValueLink.
+   * @param owner the value owner
+   * @param propertyName the name of the property
+   * @param valueClass the value class
+   * @param valueChangeEvent an event observer notified each time the value changes
+   */
   public AbstractBeanValueLink(final Object owner, final String propertyName, final Class<?> valueClass,
                                final EventObserver valueChangeEvent) {
     this(owner, propertyName, valueClass, valueChangeEvent, LinkType.READ_WRITE);
   }
 
+  /**
+   * Instantiates a new AbstractBeanValueLink.
+   * @param owner the value owner
+   * @param propertyName the name of the property
+   * @param valueClass the value class
+   * @param valueChangeEvent an event observer notified each time the value changes
+   * @param linkType the link type
+   */
   public AbstractBeanValueLink(final Object owner, final String propertyName, final Class<?> valueClass,
                                final EventObserver valueChangeEvent, final LinkType linkType) {
     super(owner, valueChangeEvent, linkType);
@@ -48,6 +63,7 @@ public abstract class AbstractBeanValueLink extends AbstractValueLink<Object, Ob
     return propertyName;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final Object getModelValue() {
     try {
@@ -61,6 +77,7 @@ public abstract class AbstractBeanValueLink extends AbstractValueLink<Object, Ob
     }
   }
 
+  /** {@inheritDoc} */
   @Override
   public final void setModelValue(final Object value) {
     try {

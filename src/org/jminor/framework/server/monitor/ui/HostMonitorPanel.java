@@ -21,9 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- * User: Bjorn Darri<br>
- * Date: 4.12.2007<br>
- * Time: 18:12:28<br>
+ * A HostMonitorPanel 
  */
 public final class HostMonitorPanel extends JPanel {
 

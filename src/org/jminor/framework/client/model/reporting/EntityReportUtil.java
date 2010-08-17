@@ -10,10 +10,7 @@ import org.jminor.common.model.reports.ReportWrapper;
 import org.jminor.framework.db.provider.EntityDbProvider;
 
 /**
- * A static utility class for working with reports.<br>
- * User: Bjorn Darri<br>
- * Date: 30.7.2009<br>
- * Time: 17:58:09<br>
+ * A static utility class for working with reports.
  */
 public final class EntityReportUtil {
 
@@ -26,7 +23,7 @@ public final class EntityReportUtil {
    * @return an initialized ReportResult object
    * @throws ReportException in case of a report exception
    */
-  public static <T> ReportResult<T> fillReport(final ReportWrapper<T> reportWrapper, final EntityDbProvider dbProvider) throws ReportException {
+  public static <T, D> ReportResult<T> fillReport(final ReportWrapper<T, D> reportWrapper, final EntityDbProvider dbProvider) throws ReportException {
     try {
       return dbProvider.getEntityDb().fillReport(reportWrapper);
     }
@@ -45,7 +42,7 @@ public final class EntityReportUtil {
    * @return an initialized ReportResult object
    * @throws ReportException in case of a report exception
    */
-  public static <T> ReportResult<T> fillReport(final ReportWrapper<T> reportWrapper, final ReportDataWrapper<T> dataSource) throws ReportException {
+  public static <T, D> ReportResult<T> fillReport(final ReportWrapper<T, D> reportWrapper, final ReportDataWrapper<D> dataSource) throws ReportException {
     return reportWrapper.fillReport(dataSource);
   }
 }

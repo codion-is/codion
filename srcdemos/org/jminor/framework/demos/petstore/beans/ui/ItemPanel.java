@@ -15,11 +15,6 @@ import static org.jminor.framework.demos.petstore.domain.Petstore.*;
 
 import javax.swing.JTextField;
 
-/**
- * User: Bjorn Darri
- * Date: 24.12.2007
- * Time: 14:05:58
- */
 public class ItemPanel extends EntityEditPanel {
 
   public ItemPanel(final EntityEditModel model) {

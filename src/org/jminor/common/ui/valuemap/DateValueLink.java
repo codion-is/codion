@@ -35,6 +35,7 @@ public final class DateValueLink<K> extends FormattedValueLink<K> {
     Util.rejectNullValue(dateFormat, "dateFormat");
   }
 
+  /** {@inheritDoc} */
   @Override
   protected Object translate(final Object parsedValue) {
     final Date formatted = (Date) parsedValue;

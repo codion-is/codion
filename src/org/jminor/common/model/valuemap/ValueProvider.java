@@ -4,10 +4,7 @@
 package org.jminor.common.model.valuemap;
 
 /**
- * Provides values mapped to keys.<br>
- * User: Bjorn Darri<br>
- * Date: 4.4.2010<br>
- * Time: 21:06:22<br>
+ * Provides values mapped to keys.
  * @param <K> the type of the map keys
  * @param <V> the type of the map values
  */

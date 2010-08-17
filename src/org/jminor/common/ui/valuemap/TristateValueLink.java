@@ -11,19 +11,30 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
 /**
- * User: Björn Darri
- * Date: 10.5.2010
- * Time: 19:32:44
+ * A class for linking a UI component to a boolean value.
  */
 public final class TristateValueLink<K> extends AbstractValueMapLink<K, Object>{
 
   private final TristateButtonModel buttonModel;
 
+  /**
+   * Instantiates a new TristateValueLink.
+   * @param buttonModel the button model to link
+   * @param editModel the edit model
+   * @param key the key of the property to link
+   */
   public TristateValueLink(final TristateButtonModel buttonModel, final ValueChangeMapEditModel<K, Object> editModel,
                            final K key) {
     this(buttonModel, editModel, key, LinkType.READ_WRITE);
   }
 
+  /**
+   * Instantiates a new TristateValueLink.
+   * @param buttonModel the button model to link
+   * @param editModel the edit model
+   * @param key the key of the property to link
+   * @param linkType the link type
+   */
   public TristateValueLink(final TristateButtonModel buttonModel, final ValueChangeMapEditModel<K, Object> editModel,
                            final K key, final LinkType linkType) {
     super(editModel, key, linkType);
@@ -36,6 +47,7 @@ public final class TristateValueLink<K> extends AbstractValueMapLink<K, Object>{
     updateUI();
   }
 
+  /** {@inheritDoc} */
   @Override
   protected Object getUIValue() {
     if (buttonModel.isIndeterminate()) {
@@ -45,6 +57,7 @@ public final class TristateValueLink<K> extends AbstractValueMapLink<K, Object>{
     return buttonModel.isSelected();
   }
 
+  /** {@inheritDoc} */
   @Override
   protected void setUIValue(final Object value) {
     if (value == null) {

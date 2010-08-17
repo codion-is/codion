@@ -58,22 +58,34 @@ public final class InputProviderPanel extends JPanel implements InputProvider {
     return okButton;
   }
 
+  /** {@inheritDoc} */
   public Object getValue() {
     return inputProvider.getValue();
   }
 
+  /** {@inheritDoc} */
   public JComponent getInputComponent() {
     return inputProvider.getInputComponent();
   }
 
-  public EventObserver buttonClickObserver() {
-    return evtButtonClicked;
+  /**
+   * @return an event observer notified each time the OK button is clicked
+   */
+  public EventObserver getButtonClickObserver() {
+    return evtButtonClicked.getObserver();
   }
 
+  /**
+   *
+   * @param listener a listener notified each time the OK button is clicked
+   */
   public void addButtonClickListener(final ActionListener listener) {
     evtButtonClicked.addListener(listener);
   }
 
+  /**
+   * @param listener the listener to remove
+   */
   public void removeButtonClickListener(final ActionListener listener) {
     evtButtonClicked.removeListener(listener);
   }

@@ -77,6 +77,9 @@ public abstract class AbstractValueLink<T, V> extends Control {
     return linkType;
   }
 
+  /**
+   * Updates the model according to the UI.
+   */
   public final void updateModel() {
     if (linkType != LinkType.READ_ONLY && !isUpdatingModel && !isUpdatingUI) {
       try {
@@ -89,6 +92,9 @@ public abstract class AbstractValueLink<T, V> extends Control {
     }
   }
 
+  /**
+   * Updates the UI according to the model.
+   */
   public final void updateUI() {
     if (linkType != LinkType.WRITE_ONLY && !isUpdatingModel) {
       try {

@@ -12,9 +12,6 @@ import java.util.Date;
 
 /**
  * A static utility class for date handling.<br>
- * User: Bjorn Darri<br>
- * Date: 3.8.2009<br>
- * Time: 00:09:47<br>
  */
 public final class DateUtil {
 
@@ -88,6 +85,12 @@ public final class DateUtil {
     return new Timestamp(cal.getTimeInMillis());
   }
 
+  /**
+   * @param year the year
+   * @param month the month
+   * @param day the day
+   * @return a Date based on the given values
+   */
   public static Date getDate(final int year, final int month, final int day) {
     final Calendar cal = Calendar.getInstance();
     cal.set(Calendar.YEAR, year);
@@ -97,6 +100,9 @@ public final class DateUtil {
     return cal.getTime();
   }
 
+  /**
+   * @return yesterday
+   */
   public static Date getYesterday() {
     final Calendar c = Calendar.getInstance();
     c.add(Calendar.DAY_OF_MONTH, -1);
@@ -104,14 +110,24 @@ public final class DateUtil {
     return c.getTime();
   }
 
+  /**
+   * @return the first day of last month
+   */
   public static Date getFirstDayOfLastMonth() {
     return getFirstDayOfMonth(-1);
   }
 
+  /**
+   * @return the last day of last month
+   */
   public static Date getLastDayOfLastMonth() {
     return getLastDayOfMonth(-1);
   }
 
+  /**
+   * @param toAdd the number of months to add to the current month
+   * @return the first day of the month <code>toAdd</code> from the current month
+   */
   public static Date getFirstDayOfMonth(final int toAdd) {
     final Calendar c = Calendar.getInstance();
     c.add(Calendar.MONTH, toAdd);
@@ -120,6 +136,10 @@ public final class DateUtil {
     return c.getTime();
   }
 
+  /**
+   * @param toAdd the number of months to add to the current month
+   * @return the last day of the month <code>toAdd</code> from the current month
+   */
   public static Date getLastDayOfMonth(final int toAdd) {
     final Calendar c = Calendar.getInstance();
     c.add(Calendar.MONTH, toAdd);
@@ -128,6 +148,9 @@ public final class DateUtil {
     return c.getTime();
   }
 
+  /**
+   * @return the first day of the current year
+   */
   public static Date getFirstDayOfYear() {
     final Calendar c = Calendar.getInstance();
     c.set(Calendar.MONTH, Calendar.JANUARY);
@@ -136,6 +159,9 @@ public final class DateUtil {
     return c.getTime();
   }
 
+  /**
+   * @return the last day of the current year
+   */
   public static Date getLastDayOfYear() {
     final Calendar c = Calendar.getInstance();
     c.set(Calendar.MONTH, Calendar.DECEMBER);
@@ -144,6 +170,12 @@ public final class DateUtil {
     return c.getTime();
   }
 
+  /**
+   * Returns the first day of the the given quarter, assuming quarters begin
+   * in january, april, july and october.
+   * @param quarter the quarter, 1, 2, 3 or 4
+   * @return the first day of the given quarter
+   */
   public static Date getFirstDayOfQuarter(final int quarter) {
     if (quarter < 1 || quarter > 4) {
       throw new IllegalArgumentException("Quarter must be between 1 and 4");
@@ -173,6 +205,12 @@ public final class DateUtil {
     return null;
   }
 
+  /**
+   * Returns the last day of the the given quarter, assuming quarters begin
+   * in january, april, july and october.
+   * @param quarter the quarter, 1, 2, 3 or 4
+   * @return the last day of the given quarter
+   */
   public static Date getLastDayOfQuarter(final int quarter) {
     if (quarter < 1 || quarter > 4) {
       throw new IllegalArgumentException("Quarter must be between 1 and 4");
@@ -205,7 +243,14 @@ public final class DateUtil {
     return null;
   }
 
+  /**
+   * @param from the from date
+   * @param to the to date
+   * @return the number of days in the given interval
+   */
   public static int numberOfDaysInRange(final Date from, final Date to) {
+    Util.rejectNullValue(from, "from");
+    Util.rejectNullValue(to, "to");
     final Calendar fromCalendar = Calendar.getInstance();
     fromCalendar.setTime(from);
     final Calendar toCalendar = Calendar.getInstance();
@@ -224,6 +269,10 @@ public final class DateUtil {
     return numberOfDays;
   }
 
+  /**
+   * @param formatString the format string
+   * @return a thread local date format based on the given format string
+   */
   public static ThreadLocal<DateFormat> getThreadLocalDateFormat(final String formatString) {
     return new ThreadLocal<DateFormat>() {
       @Override

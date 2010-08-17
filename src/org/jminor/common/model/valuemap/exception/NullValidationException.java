@@ -6,9 +6,6 @@ package org.jminor.common.model.valuemap.exception;
 /**
  * An exception used to indicate that a null value was being associated with
  * a key which does not allow null values.
- * User: Björn Darri<br>
- * Date: 20.4.2010<br>
- * Time: 23:13:09<br>
  */
 public class NullValidationException extends ValidationException {
 

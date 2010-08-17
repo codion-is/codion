@@ -6,19 +6,25 @@ package org.jminor.common.model;
 import java.util.regex.Pattern;
 
 /**
- * A FilterCriteria implementation based on a regular expression.<br>
- * User: Björn Darri<br>
- * Date: 27.6.2010<br>
- * Time: 20:11:27
+ * A FilterCriteria implementation based on a regular expression.
  */
 public final class RegexFilterCriteria<T> implements FilterCriteria<T> {
 
   private final Pattern pattern;
 
+  /**
+   * Instantiates a new RegexFilterCriteria.
+   * @param patternString the regex pattern
+   */
   public RegexFilterCriteria(final String patternString) {
     this(patternString, true);
   }
 
+  /**
+   * Instantiates a new RegexFilterCriteria.
+   * @param patternString the regex pattern
+   * @param caseSensitive if true then this criteria is case sensitive
+   */
   public RegexFilterCriteria(final String patternString, final boolean caseSensitive) {
     pattern = initializePattern(patternString, caseSensitive);
   }

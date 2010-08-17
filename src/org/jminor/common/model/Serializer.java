@@ -19,7 +19,16 @@ public interface Serializer<V> {
    */
   String serialize(final List<V> values) throws SerializeException;
 
+  /**
+   * An exception occurring during serialization
+   */
   class SerializeException extends Exception {
+
+    /**
+     * Instantiates a new SerializeException.
+     * @param message the message
+     * @param cause the root cause
+     */
     public SerializeException(final String message, final Throwable cause) {
       super(message, cause);
     }

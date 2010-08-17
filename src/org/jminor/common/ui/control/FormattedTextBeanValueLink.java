@@ -18,6 +18,16 @@ public class FormattedTextBeanValueLink extends TextBeanValueLink {
   private final Format format;
   private final String placeholder;
 
+  /**
+   * Instantiates a new FormattedTextBeanValueLink.
+   * @param textComponent the text component to link with the value
+   * @param owner the value owner
+   * @param propertyName the property name
+   * @param valueClass the value class
+   * @param valueChangeEvent an EventObserver notified each time the value changes
+   * @param linkType the link type
+   * @param format the format
+   */
   public FormattedTextBeanValueLink(final JFormattedTextField textComponent, final Object owner,
                                     final String propertyName, final Class<?> valueClass,
                                     final EventObserver valueChangeEvent, final LinkType linkType,
@@ -31,6 +41,7 @@ public class FormattedTextBeanValueLink extends TextBeanValueLink {
     updateUI();
   }
 
+  /** {@inheritDoc} */
   @Override
   protected final String getValueAsString(final Object value) {
     return value == null ? null : format.format(value);
@@ -56,6 +67,11 @@ public class FormattedTextBeanValueLink extends TextBeanValueLink {
     }
   }
 
+  /**
+   * Provides a hook into the value setting mechanism.
+   * @param parsedValue the parsed value returned from the UI component
+   * @return the translated value
+   */
   protected Object translate(final Object parsedValue) {
     return parsedValue;
   }

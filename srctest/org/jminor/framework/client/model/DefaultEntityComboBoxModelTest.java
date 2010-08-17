@@ -15,11 +15,6 @@ import org.junit.Test;
 
 import java.util.Arrays;
 
-/**
- * User: Bjorn Darri
- * Date: 11.10.2009
- * Time: 21:44:41
- */
 public final class DefaultEntityComboBoxModelTest {
 
   private final DefaultEntityComboBoxModel comboBoxModel;

@@ -20,9 +20,7 @@ import java.awt.BorderLayout;
 import java.rmi.RemoteException;
 
 /**
- * User: Bjorn Darri<br>
- * Date: 11.12.2007<br>
- * Time: 12:58:29<br>
+ * A ClientMonitorPanel 
  */
 public final class ClientMonitorPanel extends JPanel {
 

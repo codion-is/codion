@@ -9,9 +9,8 @@ import java.text.Format;
 import java.util.Date;
 
 /**
- * User: Björn Darri
- * Date: 19.7.2010
- * Time: 16:56:36
+ * Specifies a search model based on a table column, search parameters, search type, upper bound and lower bound,
+ * as well as relevant events and states.
  * <K> the type of objects used to identify columns
  */
 public interface ColumnSearchModel<K> {

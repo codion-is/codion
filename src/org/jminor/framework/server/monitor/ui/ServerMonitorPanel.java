@@ -31,9 +31,7 @@ import java.rmi.RemoteException;
 import java.util.Date;
 
 /**
- * User: Bjorn Darri<br>
- * Date: 4.12.2007<br>
- * Time: 18:14:35<br>
+ * A ServerMonitorPanel 
  */
 public final class ServerMonitorPanel extends JPanel {
 

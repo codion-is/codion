@@ -10,13 +10,18 @@ import org.jminor.common.ui.textfield.IntField;
 */
 public final class IntInputProvider extends AbstractInputProvider<Integer, IntField> {
 
-  public IntInputProvider(final Integer currentValue) {
+  /**
+   * Instantiates a new IntInputProvider.
+   * @param initialValue the initial value
+   */
+  public IntInputProvider(final Integer initialValue) {
     super(new IntField());
-    if (currentValue != null) {
-      getInputComponent().setInt(currentValue);
+    if (initialValue != null) {
+      getInputComponent().setInt(initialValue);
     }
   }
 
+  /** {@inheritDoc} */
   @Override
   public Integer getValue() {
     return getInputComponent().getInt();

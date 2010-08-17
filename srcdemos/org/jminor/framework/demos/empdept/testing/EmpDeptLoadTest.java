@@ -21,11 +21,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-/**
- * User: Bjorn Darri
- * Date: 30.11.2007
- * Time: 03:33:10
- */
 @SuppressWarnings({"UnusedDeclaration"})
 public final class EmpDeptLoadTest extends EntityLoadTestModel {
 

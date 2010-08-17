@@ -55,6 +55,7 @@ public final class MethodControl extends Control {
     }
   }
 
+  /** {@inheritDoc} */
   @Override
   public void actionPerformed(final ActionEvent e) {
     try {
@@ -74,10 +75,16 @@ public final class MethodControl extends Control {
     }
   }
 
+  /**
+   * @param listener a listener notified each time action performed is called
+   */
   public void addActionPerformedListener(final ActionListener listener) {
     evtActionPerformed.addListener(listener);
   }
 
+  /**
+   * @param listener the listener to remove
+   */
   public void removeActionPerformedListener(final ActionListener listener) {
     evtActionPerformed.removeListener(listener);
   }

@@ -17,7 +17,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /**
- * User: Bjorn Darri<br>
+ * A DatabaseMonitor 
  */
 public final class DatabaseMonitor {
 

@@ -9,9 +9,7 @@ import org.jminor.common.model.valuemap.exception.NullValidationException;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 
 /**
- * User: Björn Darri
- * Date: 26.7.2010
- * Time: 23:12:16
+ * A default value map validator implementation, which performs basic null validation.
  */
 public class DefaultValueMapValidator<K, V> implements ValueMapValidator<K, V> {
 

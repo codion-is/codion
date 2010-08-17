@@ -12,17 +12,33 @@ import org.jminor.common.ui.textfield.DoubleField;
  */
 public class DoubleBeanValueLink extends TextBeanValueLink {
 
+  /**
+   * Instantiates a new DoubleBeanValueLink.
+   * @param doubleField the double field to link with the value
+   * @param owner the value owner
+   * @param propertyName the property name
+   * @param valueChangeEvent an EventObserver notified each time the value changes
+   */
   public DoubleBeanValueLink(final DoubleField doubleField, final Object owner, final String propertyName,
                              final EventObserver valueChangeEvent) {
     this(doubleField, owner, propertyName, valueChangeEvent,LinkType.READ_WRITE);
   }
 
+  /**
+   * Instantiates a new DoubleBeanValueLink.
+   * @param doubleField the double field to link with the value
+   * @param owner the value owner
+   * @param propertyName the property name
+   * @param valueChangeEvent an EventObserver notified each time the value changes
+   * @param linkType the link type
+   */
   public DoubleBeanValueLink(final DoubleField doubleField, final Object owner, final String propertyName,
                              final EventObserver valueChangeEvent, final LinkType linkType) {
     super(doubleField, owner, propertyName, Double.class, valueChangeEvent, linkType);
     updateUI();
   }
 
+  /** {@inheritDoc} */
   @Override
   protected final Object getUIValue() {
     try {

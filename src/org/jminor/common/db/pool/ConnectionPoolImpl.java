@@ -21,10 +21,7 @@ import java.util.TimerTask;
 import java.util.concurrent.Executors;
 
 /**
- * A simple connection pool implementation, pools connections on username basis.<br>
- * User: Bjorn Darri<br>
- * Date: 7.12.2007<br>
- * Time: 00:04:08<br>
+ * A simple connection pool implementation, pools connections on username basis.
  */
 public final class ConnectionPoolImpl implements ConnectionPool {
 

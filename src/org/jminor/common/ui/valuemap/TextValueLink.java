@@ -128,6 +128,11 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> implements
     }
   }
 
+  /**
+   * Provides a hook into the value setting mechanism.
+   * @param text the value returned from the UI component
+   * @return the translated value
+   */
   protected String translate(final String text) {
     return text;
   }

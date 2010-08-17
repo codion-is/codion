@@ -13,11 +13,6 @@ import javax.swing.JButton;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-/**
- * User: Bjorn Darri
- * Date: 13.1.2008
- * Time: 13:05:09
- */
 public class MethodControlTest {
 
   private int callCount = 0;

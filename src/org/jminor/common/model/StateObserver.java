@@ -3,9 +3,7 @@ package org.jminor.common.model;
 import javax.swing.Action;
 
 /**
- * User: darri
- * Date: 30.7.2010
- * Time: 12:02:28
+ * Specifies a State observer.
  */
 public interface StateObserver extends EventObserver {
 

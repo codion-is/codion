@@ -26,6 +26,7 @@ public class JasperReportsEntityDataSource implements JRDataSource, ReportDataWr
     this.reportIterator = reportIterator;
   }
 
+  /** {@inheritDoc} */
   public final boolean next() throws JRException {
     final boolean hasNext = reportIterator.hasNext();
     if (hasNext) {
@@ -56,6 +57,7 @@ public class JasperReportsEntityDataSource implements JRDataSource, ReportDataWr
     return currentEntity;
   }
 
+  /** {@inheritDoc} */
   public final JRDataSource getDataSource() {
     return this;
   }

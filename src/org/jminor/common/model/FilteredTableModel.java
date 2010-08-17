@@ -12,6 +12,11 @@ import java.awt.event.ActionListener;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * Specifies a table model that can be filtered.
+ * @param <T> the type of items in the table model
+ * @param <C> the type of column identifiers used by the table model
+ */
 public interface FilteredTableModel<T, C> extends FilteredModel<T>, TableModel, Refreshable {
 
   /**
@@ -304,6 +309,9 @@ public interface FilteredTableModel<T, C> extends FilteredModel<T>, TableModel, 
    */
   T getSelectedItem();
 
+  /**
+   * @return the selected indexes, an empty collection if selection is empty
+   */
   Collection<Integer> getSelectedIndexes();
 
   /**
@@ -346,8 +354,19 @@ public interface FilteredTableModel<T, C> extends FilteredModel<T>, TableModel, 
    */
   ListSelectionModel getSelectionModel();
 
+  /**
+   * Specifies a sorting state for a column.
+   */
   interface SortingState {
+
+    /**
+     * @return the column index
+     */
     int getColumnIndex();
+
+    /**
+     * @return the sorting directive currently associated with the column
+     */
     SortingDirective getDirective();
   }
 }

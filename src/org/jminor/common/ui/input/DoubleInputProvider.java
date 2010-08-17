@@ -10,13 +10,18 @@ import org.jminor.common.ui.textfield.DoubleField;
 */
 public final class DoubleInputProvider extends AbstractInputProvider<Double, DoubleField> {
 
-  public DoubleInputProvider(final Double currentValue) {
+  /**
+   * Instantiates a new DoubleInputProvider.
+   * @param initialValue the initial value
+   */
+  public DoubleInputProvider(final Double initialValue) {
     super(new DoubleField());
-    if (currentValue != null) {
-      getInputComponent().setDouble(currentValue);
+    if (initialValue != null) {
+      getInputComponent().setDouble(initialValue);
     }
   }
 
+  /** {@inheritDoc} */
   @Override
   public Double getValue() {
     return getInputComponent().getDouble();

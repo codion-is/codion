@@ -8,11 +8,8 @@ import java.beans.PropertyChangeListener;
 import java.lang.ref.WeakReference;
 
 /**
- * A PropertyChangeListener which does not prevent garbage collection.<br>
+ * A PropertyChangeListener which does not prevent garbage collection.
  * @see WeakReference
- * User: Bjorn Darri<br>
- * Date: 12.4.2009<br>
- * Time: 16:34:25<br>
  */
 public final class WeakPropertyChangeListener implements PropertyChangeListener {
 

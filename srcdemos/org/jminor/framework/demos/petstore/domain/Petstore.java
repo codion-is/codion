@@ -11,11 +11,6 @@ import org.jminor.framework.domain.Properties;
 
 import java.sql.Types;
 
-/**
- * User: Bjorn Darri
- * Date: 24.12.2007
- * Time: 13:09:59
- */
 public class Petstore {
 
   public static final Version version = new Version(Petstore.class.getPackage().getName(), "1");

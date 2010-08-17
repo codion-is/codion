@@ -6,10 +6,11 @@ package org.jminor.common.model.reports;
 import java.sql.Connection;
 
 /**
- * User: Bjorn Darri<br>
- * Date: 23.5.2010<br>
+ * A simple wrapper for a report
+ * @param <R> the type of the report being wrapped.
+ * @param <D> the type of the report datasource
  */
-public interface ReportWrapper<R> {
+public interface ReportWrapper<R, D> {
 
   /**
    * @return the name of the report
@@ -30,5 +31,5 @@ public interface ReportWrapper<R> {
    * @return a filled report ready for display
    * @throws ReportException in case of an exception
    */
-  ReportResult<R> fillReport(final ReportDataWrapper dataWrapper) throws ReportException;
+  ReportResult<R> fillReport(final ReportDataWrapper<D> dataWrapper) throws ReportException;
 }

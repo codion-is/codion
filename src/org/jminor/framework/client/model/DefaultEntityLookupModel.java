@@ -25,9 +25,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * User: darri
- * Date: 29.6.2010
- * Time: 10:44:06
+ * A default EntityLookupModel implementation
  */
 public class DefaultEntityLookupModel implements EntityLookupModel {
 

@@ -14,11 +14,6 @@ import org.junit.Test;
 
 import java.util.List;
 
-/**
- * User: Bjorn Darri<br>
- * Date: 29.7.2009<br>
- * Time: 18:07:24
- */
 public class DefaultPropertySearchModelTest {
 
   static {

@@ -37,11 +37,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * User: Bjorn Darri
- * Date: 31.3.2009
- * Time: 21:02:43
- */
 public class EntityDbConnectionTest {
 
   public static final EntityDbProvider DB_PROVIDER =

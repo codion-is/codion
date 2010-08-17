@@ -27,6 +27,11 @@ public final class User implements Serializable {
     UNIT_TEST_USER = new User(unitTestUserName, unitTestPassword);
   }
 
+  /**
+   * Instantiates a new User.
+   * @param username the username
+   * @param password the password
+   */
   public User(final String username, final String password) {
     Util.rejectNullValue(username, "username");
     this.username = username;
@@ -41,6 +46,9 @@ public final class User implements Serializable {
     return username;
   }
 
+  /**
+   * @param password the password
+   */
   public void setPassword(final String password) {
     this.password = password;
   }
@@ -52,16 +60,19 @@ public final class User implements Serializable {
     return password;
   }
 
+  /** {@inheritDoc} */
   @Override
   public String toString() {
     return "User: " + username;
   }
 
+  /** {@inheritDoc} */
   @Override
   public boolean equals(final Object obj) {
     return this == obj || obj instanceof User && ((User) obj).username.equals(username);
   }
 
+  /** {@inheritDoc} */
   @Override
   public int hashCode() {
     return hashCode;

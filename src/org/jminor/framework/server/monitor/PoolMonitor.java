@@ -15,9 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- * User: Bjorn Darri<br>
- * Date: 10.12.2007<br>
- * Time: 15:27:24<br>
+ * A PoolMonitor
  */
 public final class PoolMonitor {
 

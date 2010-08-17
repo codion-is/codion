@@ -9,10 +9,7 @@ import java.io.Serializable;
 import java.util.UUID;
 
 /**
- * Contains basic information about a remote client.<br>
- * User: Bjorn Darri<br>
- * Date: 11.12.2007<br>
- * Time: 13:19:13<br>
+ * Contains basic information about a remote client.
  */
 public final class ClientInfo implements Serializable {
 

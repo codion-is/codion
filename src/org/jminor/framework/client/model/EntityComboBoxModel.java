@@ -11,9 +11,7 @@ import java.awt.event.ActionListener;
 import java.util.Collection;
 
 /**
- * User: darri
- * Date: 29.6.2010
- * Time: 10:10:25
+ * Specifies a ComboBoxModel containing entities.
  */
 public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity>, EntityDataProvider {
 

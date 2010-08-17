@@ -3,6 +3,9 @@
  */
 package org.jminor.common.model;
 
+/**
+ * Specifies sorting directives.
+ */
 public enum SortingDirective {
   DESCENDING, ASCENDING, UNSORTED
 }

@@ -19,7 +19,16 @@ public interface Deserializer<V> {
    */
   List<V> deserialize(final String values) throws DeserializeException;
 
+  /**
+   * An exception occurring during deserialization
+   */
   class DeserializeException extends Exception {
+
+    /**
+     * Instantiates a new DeserializeException.
+     * @param message the message
+     * @param cause the root cause
+     */
     public DeserializeException(final String message, final Throwable cause) {
       super(message, cause);
     }

@@ -10,10 +10,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 /**
- * Defines DBMS specific functionality as well as basic database configuration settings.<br>
- * User: darri<br>
- * Date: 16.6.2009<br>
- * Time: 08:52:08<br>
+ * Defines DBMS specific functionality as well as basic database configuration settings.
  */
 public interface Database {
 

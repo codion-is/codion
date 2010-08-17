@@ -10,6 +10,11 @@ import org.jminor.common.model.valuemap.exception.ValidationException;
 
 import java.awt.event.ActionListener;
 
+/**
+ * Specifies an object which facilitates the editing of values in a ValueChangeMap
+ * @param <K> the type of the value map keys
+ * @param <V> the type of the value map values
+ */
 public interface ValueChangeMapEditModel<K, V> extends Refreshable {
 
   /**
@@ -17,6 +22,7 @@ public interface ValueChangeMapEditModel<K, V> extends Refreshable {
    * @see #isModified()
    */
   StateObserver getModifiedState();
+
   /**
    * @return a State indicating the valid status of this value map
    * @see #getValidator()

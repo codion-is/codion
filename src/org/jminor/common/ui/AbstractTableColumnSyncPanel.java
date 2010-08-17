@@ -28,6 +28,10 @@ public abstract class AbstractTableColumnSyncPanel extends JPanel {
   private final Box.Filler verticalFiller;
   private Map<TableColumn, JPanel> columnPanels;
 
+  /**
+   * Instantiates a new AbstractTableColumnSyncPanel.
+   * @param columnModel the column model
+   */
   public AbstractTableColumnSyncPanel(final TableColumnModel columnModel) {
     setLayout(new FlowLayout(FlowLayout.LEFT,0,0));
     this.columnModel = columnModel;
@@ -35,10 +39,16 @@ public abstract class AbstractTableColumnSyncPanel extends JPanel {
     this.verticalFiller = new Box.Filler(fillerSize, fillerSize, fillerSize);
   }
 
+  /**
+   * @return the underlying column model
+   */
   public final TableColumnModel getColumnModel() {
     return columnModel;
   }
 
+  /**
+   * @return the column panels mapped their respective columns
+   */
   public final Map<TableColumn, JPanel> getColumnPanels() {
     if (columnPanels == null) {
       columnPanels = initializeColumnPanels();
@@ -58,8 +68,16 @@ public abstract class AbstractTableColumnSyncPanel extends JPanel {
     resetPanel();
   }
 
+  /**
+   * Initializes the column panel for the given column
+   * @param column the column
+   * @return the column panel for the given column
+   */
   protected abstract JPanel initializeColumnPanel(final TableColumn column);
 
+  /**
+   * Resets the panel and layes out all subpanels.
+   */
   protected final void resetPanel() {
     removeAll();
     final Enumeration<TableColumn> columnEnumeration = columnModel.getColumns();

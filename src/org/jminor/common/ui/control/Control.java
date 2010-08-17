@@ -27,14 +27,29 @@ public class Control extends AbstractAction {
     this(null);
   }
 
+  /**
+   * Constructs a new Control.
+   * @param name the control name
+   */
   public Control(final String name) {
     this(name, null);
   }
 
+  /**
+   * Constructs a new Control.
+   * @param name the control name
+   * @param enabledState the state observer dictating the enable state of this control
+   */
   public Control(final String name, final StateObserver enabledState) {
     this(name, enabledState,  null);
   }
 
+  /**
+   * Constructs a new Control.
+   * @param name the control name
+   * @param enabledState the state observer dictating the enable state of this control
+   * @param icon the icon
+   */
   public Control(final String name, final StateObserver enabledState, final Icon icon) {
     super(name);
     this.enabledState = enabledState == null ? States.state(true) : enabledState;
@@ -46,16 +61,19 @@ public class Control extends AbstractAction {
     setIcon(icon);
   }
 
+  /** {@inheritDoc} */
   @Override
   public final boolean isEnabled() {
     return enabledState.isActive();
   }
 
+  /** {@inheritDoc} */
   @Override
   public final void setEnabled(final boolean newValue) {
     throw new UnsupportedOperationException();
   }
 
+  /** {@inheritDoc} */
   public void actionPerformed(final ActionEvent e) {}
 
   /**

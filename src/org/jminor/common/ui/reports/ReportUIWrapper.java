@@ -8,9 +8,8 @@ import org.jminor.common.model.reports.ReportResult;
 import javax.swing.JComponent;
 
 /**
- * User: darri<br>
- * Date: 25.5.2010<br>
- * Time: 14:42:03
+ * A simple wrapper for a report presentation UI
+ * @param <R> the type of the report result being wrapped.
  */
 public interface ReportUIWrapper<R> {
 

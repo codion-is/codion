@@ -15,10 +15,16 @@ import java.util.Date;
  */
 public final class DateInputProvider extends AbstractInputProvider<Date, DateInputPanel> {
 
-  public DateInputProvider(final Date currentValue, final SimpleDateFormat dateFormat) {
-    super(new DateInputPanel(currentValue, dateFormat));
+  /**
+   * Instantiates a new DateInputProvider.
+   * @param initialValue the initial value
+   * @param dateFormat the date format
+   */
+  public DateInputProvider(final Date initialValue, final SimpleDateFormat dateFormat) {
+    super(new DateInputPanel(initialValue, dateFormat));
   }
 
+  /** {@inheritDoc} */
   @Override
   public Date getValue() {
     try {

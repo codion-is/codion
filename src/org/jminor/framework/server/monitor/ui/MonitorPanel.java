@@ -31,9 +31,7 @@ import java.io.IOException;
 import java.rmi.RemoteException;
 
 /**
- * User: Bjorn Darri<br>
- * Date: 4.12.2007<br>
- * Time: 18:11:06
+ * A MonitorPanel 
  */
 public final class MonitorPanel extends JPanel {
 

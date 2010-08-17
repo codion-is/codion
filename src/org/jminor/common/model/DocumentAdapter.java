@@ -3,6 +3,9 @@ package org.jminor.common.model;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+/**
+ * A simple document adapter.
+ */
 public class DocumentAdapter implements DocumentListener {
 
   /** {@inheritDoc} */
@@ -18,5 +21,9 @@ public class DocumentAdapter implements DocumentListener {
     insertOrUpdate(e);
   }
 
+  /**
+   * Called during both insert and update events.
+   * @param e the document event
+   */
   public void insertOrUpdate(final DocumentEvent e) {}
 }

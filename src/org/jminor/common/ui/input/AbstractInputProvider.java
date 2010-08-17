@@ -7,11 +7,17 @@ import javax.swing.JComponent;
 
 /**
  * A default InputProvider implementation.
+ * @param <T> the value type
+ * @param <K> the input component type
  */
 public abstract class AbstractInputProvider<T, K extends JComponent> implements InputProvider<T, K> {
 
   private final K inputComponent;
 
+  /**
+   * Instantiates a new AbstractInputProvider.
+   * @param inputComponent the input component
+   */
   public AbstractInputProvider(final K inputComponent) {
     this.inputComponent = inputComponent;
   }

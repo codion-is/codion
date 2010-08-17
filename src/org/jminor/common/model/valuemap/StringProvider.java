@@ -50,6 +50,11 @@ public final class StringProvider<K> implements ValueMap.ToString<K>, Serializab
     addValue(key);
   }
 
+  /**
+   * Builds a string from the given value map
+   * @param valueMap the value map
+   * @return a string representation of the given value map
+   */
   public String toString(final ValueMap<K, ?> valueMap) {
     final StringBuilder builder = new StringBuilder();
     for (final ValueProvider<K> valueProvider : valueProviders) {
@@ -111,11 +116,12 @@ public final class StringProvider<K> implements ValueMap.ToString<K>, Serializab
     private final T key;
     private final Format format;
 
-    FormattedValueProvider(final T key, final Format format) {
+    private FormattedValueProvider(final T key, final Format format) {
       this.key = key;
       this.format = format;
     }
 
+    /** {@inheritDoc} */
     public String toString(final ValueMap<T, ?> valueMap) {
       if (valueMap.isValueNull(key)) {
         return "";
@@ -130,11 +136,12 @@ public final class StringProvider<K> implements ValueMap.ToString<K>, Serializab
     private final T referenceKey;
     private final T key;
 
-    ReferencedValueProvider(final T referenceKey, final T key) {
+    private ReferencedValueProvider(final T referenceKey, final T key) {
       this.referenceKey = referenceKey;
       this.key = key;
     }
 
+    /** {@inheritDoc} */
     @SuppressWarnings({"unchecked"})
     public String toString(final ValueMap<T, ?> valueMap) {
       if (valueMap.isValueNull(referenceKey)) {
@@ -157,10 +164,11 @@ public final class StringProvider<K> implements ValueMap.ToString<K>, Serializab
     private static final long serialVersionUID = 1;
     private final T key;
 
-    StringValueProvider(final T key) {
+    private StringValueProvider(final T key) {
       this.key = key;
     }
 
+    /** {@inheritDoc} */
     public String toString(final ValueMap<T, ?> valueMap) {
       if (valueMap.isValueNull(key)) {
         return "";
@@ -174,10 +182,11 @@ public final class StringProvider<K> implements ValueMap.ToString<K>, Serializab
     private static final long serialVersionUID = 1;
     private final String text;
 
-    StaticTextProvider(final String text) {
+    private StaticTextProvider(final String text) {
       this.text = text;
     }
 
+    /** {@inheritDoc} */
     public String toString(final ValueMap<T, ?> valueMap) {
       return text;
     }

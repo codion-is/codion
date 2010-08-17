@@ -11,6 +11,11 @@ import java.awt.event.ActionListener;
  */
 public abstract class ValueChangeListener<K, V> implements ActionListener {
 
+  /**
+   * Calls <code>valueChanged()</code> assuming the given event is a ValueChangeEvent
+   * @param e the event
+   * @throws IllegalArgumentException in case the received event is not a ValueChangeEvent instance
+   */
   @SuppressWarnings({"unchecked"})
   public final void actionPerformed(final ActionEvent e) {
     if (!(e instanceof ValueChangeEvent)) {
@@ -20,5 +25,9 @@ public abstract class ValueChangeListener<K, V> implements ActionListener {
     valueChanged((ValueChangeEvent<K, V>) e);
   }
 
+  /**
+   * Called when a value changes.
+   * @param event the event describing the value change
+   */
   protected abstract void valueChanged(final ValueChangeEvent<K, V> event);
 }

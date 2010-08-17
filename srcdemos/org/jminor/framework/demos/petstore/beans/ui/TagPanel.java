@@ -10,11 +10,6 @@ import static org.jminor.framework.demos.petstore.domain.Petstore.TAG_TAG;
 
 import javax.swing.JTextField;
 
-/**
- * User: Bjorn Darri
- * Date: 24.12.2007
- * Time: 14:05:58
- */
 public class TagPanel extends EntityEditPanel {
 
   public TagPanel(final EntityEditModel model) {

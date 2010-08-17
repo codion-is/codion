@@ -25,9 +25,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /**
- * User: Bjorn Darri<br>
- * Date: 4.12.2007<br>
- * Time: 18:20:24<br>
+ * A ConnectionPoolMonitor 
  */
 public final class ConnectionPoolMonitor {
 

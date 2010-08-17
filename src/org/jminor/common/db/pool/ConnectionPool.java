@@ -8,10 +8,7 @@ import org.jminor.common.model.User;
 import java.sql.SQLException;
 
 /**
- * Defines a simple connection pool.<br>
- * User: Bjorn Darri<br>
- * Date: 28.3.2010<br>
- * Time: 13:06:20<br>
+ * Defines a simple connection pool.
  */
 public interface ConnectionPool {
 

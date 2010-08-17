@@ -13,9 +13,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 /**
- * User: Bjorn Darri<br>
- * Date: 4.12.2007<br>
- * Time: 17:31:09<br>
+ * A MonitorModel 
  */
 public final class MonitorModel {
 

@@ -42,12 +42,12 @@ import java.util.Map;
  */
 public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableModel implements FilteredTableModel<T, C> {
 
-  public static final Comparator<Comparable<Object>> COMPARABLE_COMPARATOR = new Comparator<Comparable<Object>>() {
+  private static final Comparator<Comparable<Object>> COMPARABLE_COMPARATOR = new Comparator<Comparable<Object>>() {
     public int compare(final Comparable<Object> o1, final Comparable<Object> o2) {
       return (o1.compareTo(o2));
     }
   };
-  public static final Comparator<Object> LEXICAL_COMPARATOR = new Comparator<Object>() {
+  private static final Comparator<Object> LEXICAL_COMPARATOR = new Comparator<Object>() {
     private final Collator collator = Collator.getInstance();
     public int compare(final Object o1, final Object o2) {
       return collator.compare(o1.toString(), o2.toString());
@@ -139,6 +139,11 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
    */
   private boolean regularExpressionSearch = false;
 
+  /**
+   * Instantiates a new table model.
+   * @param columnModel the column model to base this table model on
+   * @param columnFilterModels the column filter models
+   */
   public AbstractFilteredTableModel(final TableColumnModel columnModel,
                                     final List<? extends ColumnSearchModel<C>> columnFilterModels) {
     this.columnModel = columnModel;
@@ -711,8 +716,16 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     evtTableDataChanged.removeListener(listener);
   }
 
+  /**
+   * Refreshes the data in this table model.
+   */
   protected abstract void doRefresh();
 
+  /**
+   * @param object the value
+   * @param columnIndex the column index
+   * @return a Comparable for the given value and column index
+   */
   protected Comparable getComparable(final Object object, final int columnIndex) {
     return (Comparable) object;
   }
@@ -781,22 +794,33 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     return value == null ? "" : value.toString();
   }
 
+  /**
+   * @param searchText the search text
+   * @return a FilterCriteria based on the given search text
+   */
   protected final FilterCriteria<Object> getSearchCriteria(final String searchText) {
     if (regularExpressionSearch) {
       return new RegexFilterCriteria<Object>(searchText);
     }
 
     return new FilterCriteria<Object>() {
+      /** {@inheritDoc} */
       public boolean include(final Object item) {
         return !(item == null || searchText == null) && item.toString().toLowerCase().contains(searchText.toLowerCase());
       }
     };
   }
 
+  /**
+   * @return true while this table model is being filtered
+   */
   protected final boolean isFiltering() {
     return isFiltering;
   }
 
+  /**
+   * @return true while this table model is being sorted
+   */
   protected final boolean isSorting() {
     return isSorting;
   }

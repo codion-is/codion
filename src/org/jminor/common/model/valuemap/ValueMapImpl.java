@@ -8,6 +8,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * A default ValueMap implementation.
+ * @param <K> the key type
+ * @param <V> the value type
+ */
 public class ValueMapImpl<K, V> implements ValueMap<K, V>, Serializable {
 
   private static final long serialVersionUID = 1;
@@ -151,11 +156,30 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V>, Serializable {
     return Collections.unmodifiableCollection(values.values());
   }
 
+  /**
+   * Called after a value has been set.
+   * @param key the key
+   * @param value the value
+   * @param previousValue the previous value
+   * @param initialization true if the value was being initialized
+   */
   protected void handleValueSet(final K key, final V value, final V previousValue, final boolean initialization) {}
 
+  /**
+   * Called after a value has been removed from this map.
+   * @param key the key
+   * @param value the value that was removed
+   */
   protected void handleValueRemoved(final K key, final V value) {}
 
+  /**
+   * Called after the value map has been cleared.
+   */
   protected void handleClear() {}
 
+  /**
+   * Called after the value map has been set.
+   * @param sourceMap the source map
+   */
   protected void handleSetAs(final ValueMap<K, V> sourceMap) {}
 }

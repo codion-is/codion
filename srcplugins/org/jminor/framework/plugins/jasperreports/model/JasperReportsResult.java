@@ -11,9 +11,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 import java.io.Serializable;
 
 /**
- * User: Bjorn Darri<br>
- * Date: 23.5.2010<br>
- * Time: 21:20:16
+ * A Jasper Reports result wrapper.
  */
 public final class JasperReportsResult implements ReportResult<JasperPrint>, Serializable {
   private static final long serialVersionUID = 1;
@@ -24,6 +22,7 @@ public final class JasperReportsResult implements ReportResult<JasperPrint>, Ser
     this.jasperPrint = jasperPrint;
   }
 
+  /** {@inheritDoc} */
   public JasperPrint getResult() {
     return jasperPrint;
   }

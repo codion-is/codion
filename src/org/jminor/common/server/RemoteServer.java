@@ -10,10 +10,8 @@ import java.rmi.RemoteException;
 import java.util.UUID;
 
 /**
- * Defines the methods available to remote clients.<br>
- * User: darri<br>
- * Date: 4.3.2005<br>
- * Time: 10:59:16<br>
+ * Defines the methods available to remote clients.
+ * @param <T> the type of remote interface this server supplies to clients
  */
 public interface RemoteServer<T> extends Remote {
 

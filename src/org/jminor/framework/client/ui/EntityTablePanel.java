@@ -548,7 +548,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     final InputProviderPanel inputPanel = new InputProviderPanel(propertyToUpdate.getCaption(),
             getInputProvider(propertyToUpdate, selectedEntities));
     UiUtil.showInDialog(this, inputPanel, true, FrameworkMessages.get(FrameworkMessages.SET_PROPERTY_VALUE),
-            null, inputPanel.getOkButton(), inputPanel.buttonClickObserver());
+            null, inputPanel.getOkButton(), inputPanel.getButtonClickObserver());
     if (inputPanel.isEditAccepted()) {
       EntityUtil.setPropertyValue(propertyToUpdate.getPropertyID(), inputPanel.getValue(), selectedEntities);
       try {

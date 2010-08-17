@@ -14,9 +14,7 @@ import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 
 /**
- * User: Bjorn Darri<br>
- * Date: 11.12.2007<br>
- * Time: 12:58:44<br>
+ * A ClientUserMonitor
  */
 public final class ClientUserMonitor {
 

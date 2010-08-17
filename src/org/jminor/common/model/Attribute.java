@@ -4,7 +4,7 @@
 package org.jminor.common.model;
 
 /**
- * A simple attribute interface
+ * Specifies a simple attribute.
  */
 public interface Attribute {
 

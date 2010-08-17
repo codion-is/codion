@@ -19,11 +19,28 @@ public class TextBeanValueLink extends AbstractBeanValueLink implements Document
 
   private final Document document;
 
+  /**
+   * Instantiates a new TextBeanValueLink.
+   * @param textComponent the text component to link with the value
+   * @param owner the value owner
+   * @param propertyName the property name
+   * @param valueClass the value class
+   * @param valueChangeEvent an EventObserver notified each time the value changes
+   */
   public TextBeanValueLink(final JTextComponent textComponent, final Object owner, final String propertyName,
                            final Class<?> valueClass, final EventObserver valueChangeEvent) {
     this(textComponent, owner, propertyName, valueClass, valueChangeEvent, LinkType.READ_WRITE);
   }
 
+  /**
+   * Instantiates a new TextBeanValueLink.
+   * @param textComponent the text component to link with the value
+   * @param owner the value owner
+   * @param propertyName the property name
+   * @param valueClass the value class
+   * @param valueChangeEvent an EventObserver notified each time the value changes
+   * @param linkType the link type
+   */
   public TextBeanValueLink(final JTextComponent textComponent, final Object owner, final String propertyName,
                            final Class<?> valueClass, final EventObserver valueChangeEvent, final LinkType linkType) {
     super(owner, propertyName, valueClass, valueChangeEvent, linkType);
@@ -34,14 +51,17 @@ public class TextBeanValueLink extends AbstractBeanValueLink implements Document
     this.document.addDocumentListener(this);
   }
 
+  /** {@inheritDoc} */
   public final void insertUpdate(final DocumentEvent e) {
     updateModel();
   }
 
+  /** {@inheritDoc} */
   public final void removeUpdate(final DocumentEvent e) {
     updateModel();
   }
 
+  /** {@inheritDoc} */
   public final void changedUpdate(final DocumentEvent e) {}
 
   /**
@@ -58,6 +78,7 @@ public class TextBeanValueLink extends AbstractBeanValueLink implements Document
     return value != null ? value.toString() : null;
   }
 
+  /** {@inheritDoc} */
   @Override
   protected final void setUIValue(final Object value) {
     try {
@@ -74,6 +95,9 @@ public class TextBeanValueLink extends AbstractBeanValueLink implements Document
     }
   }
 
+  /**
+   * @return the from the input component
+   */
   protected final String getText() {
     try {
       synchronized (document) {
@@ -85,5 +109,9 @@ public class TextBeanValueLink extends AbstractBeanValueLink implements Document
     }
   }
 
+  /**
+   * Called after the values has been set in the UI
+   * @param value the value
+   */
   protected void handleSetUIValue(final Object value) {}
 }

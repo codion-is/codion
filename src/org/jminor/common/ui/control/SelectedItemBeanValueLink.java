@@ -19,15 +19,32 @@ public final class SelectedItemBeanValueLink extends AbstractBeanValueLink {
 
   private final ComboBoxModel comboBoxModel;
 
+  /**
+   * Instantiates a new SelectedItemBeanValueLink.
+   * @param box the combo box to link with the value
+   * @param owner the value owner
+   * @param propertyName the property name
+   * @param valueClass the value class
+   * @param valueChangeEvent an EventObserver notified each time the value changes
+   */
   public SelectedItemBeanValueLink(final JComboBox box, final Object owner, final String propertyName,
-                                   final Class propertyClass, final EventObserver valueChangeEvent) {
-    this(box, owner, propertyName, propertyClass, valueChangeEvent, LinkType.READ_WRITE);
+                                   final Class valueClass, final EventObserver valueChangeEvent) {
+    this(box, owner, propertyName, valueClass, valueChangeEvent, LinkType.READ_WRITE);
   }
 
+  /**
+   * Instantiates a new SelectedItemBeanValueLink.
+   * @param box the combo box to link with the value
+   * @param owner the value owner
+   * @param propertyName the property name
+   * @param valueClass the value class
+   * @param valueChangeEvent an EventObserver notified each time the value changes
+   * @param linkType the link type
+   */
   public SelectedItemBeanValueLink(final JComboBox box, final Object owner, final String propertyName,
-                                   final Class propertyClass, final EventObserver valueChangeEvent,
+                                   final Class valueClass, final EventObserver valueChangeEvent,
                                    final LinkType linkType) {
-    super(owner, propertyName, propertyClass, valueChangeEvent, linkType);
+    super(owner, propertyName, valueClass, valueChangeEvent, linkType);
     this.comboBoxModel = box.getModel();
     updateUI();
     box.addItemListener(new ItemListener() {
@@ -39,6 +56,7 @@ public final class SelectedItemBeanValueLink extends AbstractBeanValueLink {
     });
   }
 
+  /** {@inheritDoc} */
   @Override
   protected Object getUIValue() {
     if (comboBoxModel instanceof ItemComboBoxModel) {
@@ -49,6 +67,7 @@ public final class SelectedItemBeanValueLink extends AbstractBeanValueLink {
     }
   }
 
+  /** {@inheritDoc} */
   @Override
   protected void setUIValue(final Object value) {
     comboBoxModel.setSelectedItem(value);

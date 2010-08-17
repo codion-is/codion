@@ -4,9 +4,7 @@
 package org.jminor.common.model.reports;
 
 /**
- * User: Björn Darri
- * Date: 23.5.2010
- * Time: 21:18:15
+ * An exception occurring during report generation.
  */
 public class ReportException extends Exception {
   public ReportException(final Throwable cause) {

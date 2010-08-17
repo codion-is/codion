@@ -17,11 +17,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import java.util.UUID;
 
-/**
- * User: Bjorn Darri
- * Date: 30.11.2007
- * Time: 04:00:43
- */
 public final class SchemaBrowserLoadTest extends EntityLoadTestModel {
 
   public SchemaBrowserLoadTest() {

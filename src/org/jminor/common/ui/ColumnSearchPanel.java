@@ -51,9 +51,6 @@ import java.util.Collection;
 
 /**
  * A UI implementation for ColumnSearchModel
- * User: Bjorn Darri<br>
- * Date: 26.12.2007<br>
- * Time: 15:17:20<br>
  */
 public class ColumnSearchPanel<K> extends JPanel {
 

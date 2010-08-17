@@ -19,6 +19,11 @@ public class Item<T> implements Comparable<Item<T>>, Serializable {
   private final T item;
   private final String caption;
 
+  /**
+   * Instantiates a new Item.
+   * @param item the item
+   * @param caption the caption
+   */
   public Item(final T item, final String caption) {
     Util.rejectNullValue(caption, "caption");
     this.item = item;
@@ -39,21 +44,31 @@ public class Item<T> implements Comparable<Item<T>>, Serializable {
     return item;
   }
 
+  /**
+   * @return the item caption
+   */
   @Override
   public final String toString() {
     return caption;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final boolean equals(final Object obj) {
     return obj instanceof Item && Util.equal(item, ((Item) obj).item);
   }
 
+  /** {@inheritDoc} */
   @Override
   public final int hashCode() {
     return item == null ? 0 : item.hashCode();
   }
 
+  /**
+   * Compares this item with the given item according to the caption.
+   * @param o the item to compare with
+   * @return the compare result
+   */
   public final int compareTo(final Item<T> o) {
     return COLLATOR.get().compare(caption, o.caption);
   }

@@ -8,6 +8,9 @@ import org.jminor.common.model.reports.ReportDataWrapper;
 
 import net.sf.jasperreports.engine.JRDataSource;
 
+/**
+ * A Jasper Reports data wrapper.
+ */
 public final class JasperReportsDataWrapper implements ReportDataWrapper<JRDataSource> {
 
   private final JRDataSource dataSource;
@@ -17,6 +20,7 @@ public final class JasperReportsDataWrapper implements ReportDataWrapper<JRDataS
     this.dataSource = dataSource;
   }
 
+  /** {@inheritDoc} */
   public JRDataSource getDataSource() {
     return dataSource;
   }

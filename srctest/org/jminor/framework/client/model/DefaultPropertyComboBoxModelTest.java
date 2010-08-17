@@ -14,11 +14,6 @@ import org.jminor.framework.domain.Property;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
-/**
- * User: Bjorn Darri
- * Date: 11.10.2009
- * Time: 21:44:41
- */
 public final class DefaultPropertyComboBoxModelTest {
 
   private final FilteredComboBoxModel comboBoxModel;

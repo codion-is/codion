@@ -15,9 +15,7 @@ import java.awt.BorderLayout;
 import java.rmi.RemoteException;
 
 /**
- * User: Bjorn Darri<br>
- * Date: 10.12.2007<br>
- * Time: 15:54:36<br>
+ * A PoolMonitorPanel 
  */
 public final class PoolMonitorPanel extends JPanel {
 
