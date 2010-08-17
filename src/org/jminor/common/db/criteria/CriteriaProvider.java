@@ -4,9 +4,7 @@
 package org.jminor.common.db.criteria;
 
 /**
- * User: Björn Darri
- * Date: 19.7.2010
- * Time: 17:34:21
+ * An object responsible for providing a criteria.
  */
 public interface CriteriaProvider<T> {
 

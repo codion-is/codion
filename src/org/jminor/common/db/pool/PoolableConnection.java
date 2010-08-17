@@ -7,9 +7,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
- * User: Björn Darri
- * Date: 18.7.2010
- * Time: 19:49:49
+ * Defines a wrapper connection which can be pooled.
  */
 public interface PoolableConnection {
 

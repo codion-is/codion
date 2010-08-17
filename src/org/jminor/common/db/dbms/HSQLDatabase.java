@@ -16,14 +16,27 @@ public final class HSQLDatabase extends AbstractDatabase {
   static final String EMBEDDED_URL_PREFIX = "jdbc:hsqldb:file:";
   static final String NETWORKED_URL_PREFIX = "jdbc:hsqldb:hsql//";
 
+  /**
+   * Instantiates a new H2Database.
+   */
   public HSQLDatabase() {
     super(HSQL);
   }
 
+  /**
+   * Instantiates a new embedded HSQLDatabase.
+   * @param databaseName the path to the database files
+   */
   public HSQLDatabase(final String databaseName) {
     super(HSQL, databaseName, null, null, true);
   }
 
+  /**
+   * Instantiates a new networked HSQLDatabase.
+   * @param host the host name
+   * @param port the port number
+   * @param sid the service identifier
+   */
   public HSQLDatabase(final String host, final String port, final String sid) {
     super(HSQL, host, port, sid, false);
   }

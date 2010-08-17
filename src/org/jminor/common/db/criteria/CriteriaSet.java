@@ -64,6 +64,7 @@ public class CriteriaSet<T> implements Criteria<T>, Serializable {
     return criteriaList.size();
   }
 
+  /** {@inheritDoc} */
   public final String asString() {
     if (criteriaList.isEmpty()) {
       return "";
@@ -81,6 +82,7 @@ public class CriteriaSet<T> implements Criteria<T>, Serializable {
     return criteriaString.append(criteriaList.size() > 1 ? ")" : "").toString();
   }
 
+  /** {@inheritDoc} */
   public final List<Object> getValues() {
     final List<Object> values = new ArrayList<Object>();
     for (final Criteria<T> criteria : criteriaList) {
@@ -90,6 +92,7 @@ public class CriteriaSet<T> implements Criteria<T>, Serializable {
     return values;
   }
 
+  /** {@inheritDoc} */
   public final List<T> getValueKeys() {
     final List<T> types = new ArrayList<T>();
     for (final Criteria<T> criteria : criteriaList) {

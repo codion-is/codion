@@ -49,10 +49,19 @@ public final class OracleDatabase extends AbstractDatabase {
     ERROR_CODE_MAP.put(VIEW_HAS_ERRORS_ERROR, Messages.get(Messages.VIEW_HAS_ERRORS_ERROR));
   }
 
+  /**
+   * Instantiates a new OracleDatabase.
+   */
   public OracleDatabase() {
     super(ORACLE);
   }
 
+  /**
+   * Instantiates a new OracleDatabase.
+   * @param host the host name
+   * @param port the port number
+   * @param sid the service identifier
+   */
   public OracleDatabase(final String host, final String port, final String sid) {
     super(ORACLE, host, port, sid);
   }

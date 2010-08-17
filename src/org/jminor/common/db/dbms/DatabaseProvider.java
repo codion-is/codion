@@ -12,6 +12,12 @@ public final class DatabaseProvider {
 
   private DatabaseProvider() {}
 
+  /**
+   * @return a new Database instance based on runtime properties
+   * @see Database#DATABASE_TYPE
+   * @see Database#DATABASE_IMPLEMENTATION_CLASS
+   * @throws RuntimeException if an unrecognized database type is specified
+   */
   public static Database createInstance() {
     try {
       final String databaseClassName = System.getProperty(Database.DATABASE_IMPLEMENTATION_CLASS, getDatabaseClassName());

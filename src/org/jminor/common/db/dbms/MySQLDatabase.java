@@ -14,10 +14,19 @@ public final class MySQLDatabase extends AbstractDatabase {
   static final String AUTO_INCREMENT_QUERY = "select last_insert_id() from dual";
   static final String URL_PREFIX = "jdbc:mysql://";
 
+  /**
+   * Instantiates a new MySQLDatabase.
+   */
   public MySQLDatabase() {
     super(MYSQL);
   }
 
+  /**
+   * Instantiates a new MySQLDatabase.
+   * @param host the host name
+   * @param port the port number
+   * @param dbname the db name
+   */
   public MySQLDatabase(final String host, final String port, final String dbname) {
     super(MYSQL, host, port, dbname);
   }

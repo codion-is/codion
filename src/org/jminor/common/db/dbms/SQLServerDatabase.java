@@ -16,10 +16,19 @@ public final class SQLServerDatabase extends AbstractDatabase {
   static final String AUTO_INCREMENT_QUERY = "SELECT SCOPE_IDENTITY()";
   static final String URL_PREFIX = "jdbc:sqlserver://";
 
+  /**
+   * Instantiates a new SQLServerDatabase.
+   */
   public SQLServerDatabase() {
     super(SQLSERVER);
   }
 
+  /**
+   * Instantiates a new SQLServerDatabase.
+   * @param host the host name
+   * @param port the port number
+   * @param databaseName the database name
+   */
   public SQLServerDatabase(final String host, final String port, final String databaseName) {
     super(SQLSERVER, host, port, databaseName, false);
   }

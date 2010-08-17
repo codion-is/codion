@@ -14,10 +14,19 @@ public final class PostgreSQLDatabase extends AbstractDatabase {
   static final String URL_PREFIX = "jdbc:postgresql://";
   static final String CHECK_QUERY = "select 1";
 
+  /**
+   * Instantiates a new PostgreDatabase.
+   */
   public PostgreSQLDatabase() {
     super(POSTGRESQL);
   }
 
+  /**
+   * Instantiates a new PostgreDatabase.
+   * @param host the host name
+   * @param port the port number
+   * @param database the database name
+   */
   public PostgreSQLDatabase(final String host, final String port, final String database) {
     super(POSTGRESQL, host, port, database, false);
   }

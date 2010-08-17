@@ -20,18 +20,35 @@ public final class H2Database extends AbstractDatabase {
 
   private String urlAppend = "";
 
+  /**
+   * Instantiates a new H2Database.
+   */
   public H2Database() {
     super(H2);
   }
 
+  /**
+   * Instantiates a new embedded H2Database.
+   * @param databaseName the path to the database files
+   */
   public H2Database(final String databaseName) {
     super(H2, databaseName, null, null, true);
   }
 
+  /**
+   * Instantiates a new networked H2Database.
+   * @param host the host name
+   * @param port the port number
+   * @param databaseName the database name
+   */
   public H2Database(final String host, final String port, final String databaseName) {
     super(H2, host, port, databaseName, false);
   }
 
+  /**
+   * @param urlAppend a string to append to the connection URL
+   * @return this H2Database instance
+   */
   public H2Database setUrlAppend(final String urlAppend) {
     this.urlAppend = urlAppend;
     return this;

@@ -3,19 +3,30 @@
  */
 package org.jminor.common.db;
 
+import org.jminor.common.db.dbms.Database;
 import org.jminor.common.db.exception.DbException;
 import org.jminor.common.db.pool.PoolableConnection;
+import org.jminor.common.model.LogEntry;
 import org.jminor.common.model.User;
 
 import java.sql.SQLException;
 import java.util.List;
 
+
+/**
+ * Specifies a database connection, providing basic transaction control and helper functions for querying and manipulating data.
+ */
 public interface DbConnection extends PoolableConnection {
 
   /**
    * @return the connection user
    */
   User getUser();
+
+  /**
+   * @return the database implementation this connection is based on
+   */
+  Database getDatabase();
 
   /**
    * @param enabled true to enable logging on this connection, false to disable
@@ -77,4 +88,53 @@ public interface DbConnection extends PoolableConnection {
    * @throws SQLException thrown if anything goes wrong during the execution
    */
   List<String> queryStrings(final String sql) throws SQLException;
+
+  /**
+   * Returns the contents of the given blob field.
+   * @param tableName the table name
+   * @param columnName the name of the blob column
+   * @param whereClause the where clause
+   * @return the blob contents
+   * @throws SQLException thrown if anything goes wrong during the execution
+   */
+  byte[] readBlobField(final String tableName, final String columnName, final String whereClause) throws SQLException;
+
+  /**
+   * Writes the given blob data into the given column.
+   * @param blobData the blob data
+   * @param tableName the table name
+   * @param columnName the blob column name
+   * @param whereClause the where clause
+   * @throws SQLException thrown if anything goes wrong during the execution
+   */
+  void writeBlobField(final byte[] blobData, final String tableName, final String columnName,
+                      final String whereClause) throws SQLException;
+
+  /**
+   * Executes the given statement, which can be anything except a select query.
+   * @param sql the statement to execute
+   * @throws SQLException thrown if anything goes wrong during execution
+   */
+  void execute(final String sql) throws SQLException;
+
+  /**
+   * Executes the statement.
+   * @param sqlStatement the statement to execute
+   * @param outParameterType the type of the out parameter, -1 if no out parameter, java.sql.Types.*
+   * @return the out parameter, null if none is specified
+   * @throws SQLException thrown if anything goes wrong during execution
+   */
+  Object executeCallableStatement(final String sqlStatement, final int outParameterType) throws SQLException;
+
+  /**
+   * Executes the given statements, in a batch if possible, which can be anything except a select query.
+   * @param statements the statements to execute
+   * @throws SQLException thrown if anything goes wrong during execution
+   */
+  void execute(final List<String> statements) throws SQLException;
+
+  /**
+   * @return the log entries
+   */
+  List<LogEntry> getLogEntries();
 }

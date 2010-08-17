@@ -47,8 +47,8 @@ import java.awt.event.WindowEvent;
  */
 public final class LoadTestPanel extends JPanel {
 
-  private static final int MEMORY_USAGE_UPDATE_INTERVAL = 2000;
-  private static final double SCREEN_SIZE_RATIO = 0.75;
+  private static final int DEFAULT_MEMORY_USAGE_UPDATE_INTERVAL_MS = 2000;
+  private static final double DEFAULT_SCREEN_SIZE_RATIO = 0.75;
   private final LoadTestModel loadTestModel;
 
   /**
@@ -61,10 +61,17 @@ public final class LoadTestPanel extends JPanel {
     initializeUI();
   }
 
+  /**
+   * @return the load test model this panel is based on
+   */
   public LoadTestModel getModel() {
     return loadTestModel;
   }
 
+  /**
+   * Shows a frame containing this load test panel
+   * @return the frame
+   */
   public JFrame showFrame() {
     final JFrame frame = UiUtil.createFrame(Images.loadImage("jminor_logo32.gif").getImage());
     final String title = "JMinor - " + loadTestModel.getClass().getSimpleName();
@@ -78,7 +85,7 @@ public final class LoadTestPanel extends JPanel {
     });
     frame.setTitle(title);
     frame.getContentPane().add(this);
-    UiUtil.resizeWindow(frame, SCREEN_SIZE_RATIO);
+    UiUtil.resizeWindow(frame, DEFAULT_SCREEN_SIZE_RATIO);
     UiUtil.centerWindow(frame);
     frame.setVisible(true);
 
@@ -112,7 +119,7 @@ public final class LoadTestPanel extends JPanel {
   private JPanel initializeSouthPanel() {
     final JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
     southPanel.add(new JLabel("Memory usage:"));
-    southPanel.add(UiUtil.createMemoryUsageField(MEMORY_USAGE_UPDATE_INTERVAL));
+    southPanel.add(UiUtil.createMemoryUsageField(DEFAULT_MEMORY_USAGE_UPDATE_INTERVAL_MS));
 
     return southPanel;
   }

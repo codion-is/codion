@@ -28,7 +28,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /**
- * A database connection class providing transaction control and functions for querying and manipulating data.
+ * A default DbConnection implementation.
  */
 public class DbConnectionImpl implements DbConnection {
 
@@ -156,6 +156,22 @@ public class DbConnectionImpl implements DbConnection {
     return connection != null;
   }
 
+  /**
+   * @return the underlying Connection object
+   */
+  public final Connection getConnection() {
+    if (!isConnected()) {
+      throw new RuntimeException("Not connected");
+    }
+
+    return connection;
+  }
+
+  /** {@inheritDoc} */
+  public final Database getDatabase() {
+    return database;
+  }
+
   /** {@inheritDoc} */
   public final void beginTransaction() {
     if (transactionOpen) {
@@ -279,6 +295,7 @@ public class DbConnectionImpl implements DbConnection {
     return (List<List>) query(sql, new MixedResultPacker(), fetchCount);
   }
 
+  /** {@inheritDoc} */
   public final byte[] readBlobField(final String tableName, final String columnName, final String whereClause) throws SQLException {
     //http://www.idevelopment.info/data/Programming/java/jdbc/LOBS/BLOBFileExample.java
     final String sql = "select " + columnName + " from " + tableName + " where " + whereClause;
@@ -290,6 +307,7 @@ public class DbConnectionImpl implements DbConnection {
     return blob.getBytes(1, (int) blob.length());
   }
 
+  /** {@inheritDoc} */
   public final void writeBlobField(final byte[] blobData, final String tableName, final String columnName,
                                    final String whereClause) throws SQLException {
     final long time = System.currentTimeMillis();
@@ -359,6 +377,7 @@ public class DbConnectionImpl implements DbConnection {
     }
   }
 
+  /** {@inheritDoc} */
   public final Object executeCallableStatement(final String sqlStatement, final int outParameterType) throws SQLException {
     QUERY_COUNTER.count(sqlStatement);
     methodLogger.logAccess("executeCallableStatement", new Object[] {sqlStatement, outParameterType});
@@ -395,11 +414,7 @@ public class DbConnectionImpl implements DbConnection {
     }
   }
 
-  /**
-   * Executes the given statement, which can be anything except a select query.
-   * @param sql the statement to execute
-   * @throws SQLException thrown if anything goes wrong during execution
-   */
+  /** {@inheritDoc} */
   public final void execute(final String sql) throws SQLException {
     QUERY_COUNTER.count(sql);
     methodLogger.logAccess(EXECUTE, new Object[] {sql});
@@ -428,11 +443,7 @@ public class DbConnectionImpl implements DbConnection {
     }
   }
 
-  /**
-   * Executes the given statements, in a batch if possible, which can be anything except a select query.
-   * @param statements the statements to execute
-   * @throws SQLException thrown if anything goes wrong during execution
-   */
+  /** {@inheritDoc} */
   public final void execute(final List<String> statements) throws SQLException {
     Util.rejectNullValue(statements, "statements");
     if (statements.size() == 1) {
@@ -470,29 +481,21 @@ public class DbConnectionImpl implements DbConnection {
     }
   }
 
-  /**
-   * @return the underlying Connection object
-   */
-  public final Connection getConnection() {
-    if (!isConnected()) {
-      throw new RuntimeException("Not connected");
-    }
-
-    return connection;
-  }
-
-  public final Database getDatabase() {
-    return database;
-  }
-
+  /** {@inheritDoc} */
   public final List<LogEntry> getLogEntries() {
     return methodLogger.getLogEntries();
   }
 
+  /**
+   * @return the MethodLogger being used by this db connection
+   */
   protected final MethodLogger getMethodLogger() {
     return methodLogger;
   }
 
+  /**
+   * @return a DatabaseStatistics object containing the most recent statistics from the underlying database
+   */
   public static DatabaseStatistics getDatabaseStatistics() {
     return new DbStatistics(QUERY_COUNTER.getQueriesPerSecond(),
             QUERY_COUNTER.getSelectsPerSecond(), QUERY_COUNTER.getInsertsPerSecond(),
@@ -531,23 +534,9 @@ public class DbConnectionImpl implements DbConnection {
     return false;
   }
 
-  private static class MixedResultPacker implements ResultPacker<List> {
-    public List<List> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
-      final List<List> result = new ArrayList<List>();
-      final int columnCount = resultSet.getMetaData().getColumnCount();
-      int counter = 0;
-      while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
-        final List<Object> row = new ArrayList<Object>(columnCount);
-        for (int index = 1; index <= columnCount; index++) {
-          row.add(resultSet.getObject(index));
-        }
-        result.add(row);
-      }
-
-      return result;
-    }
-  }
-
+  /**
+   * A result packer for fetching integers from an result set containing a single integer column
+   */
   public static final ResultPacker<Integer> INT_PACKER = new ResultPacker<Integer>() {
     public List<Integer> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       final List<Integer> integers = new ArrayList<Integer>();
@@ -560,6 +549,9 @@ public class DbConnectionImpl implements DbConnection {
     }
   };
 
+  /**
+   * A result packer for fetching strings from an result set containing a single string column
+   */
   public static final ResultPacker<String> STRING_PACKER = new ResultPacker<String>() {
     public List<String> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       final List<String> strings = new ArrayList<String>();
@@ -574,7 +566,7 @@ public class DbConnectionImpl implements DbConnection {
 
   public static final class QueryCounter {
 
-    private static final int DEFAULT_UPDATE_INTERVAL = 2000;
+    private static final int DEFAULT_UPDATE_INTERVAL_MS = 2000;
 
     private long queriesPerSecondTime = System.currentTimeMillis();
     private int queriesPerSecond = 0;
@@ -590,13 +582,13 @@ public class DbConnectionImpl implements DbConnection {
     private int undefinedPerSecond = 0;
     private int undefinedPerSecondCounter = 0;
 
-    public QueryCounter() {
+    private QueryCounter() {
       new Timer(true).schedule(new TimerTask() {
         @Override
         public void run() {
           updateQueriesPerSecond();
         }
-      }, new Date(), DEFAULT_UPDATE_INTERVAL);
+      }, new Date(), DEFAULT_UPDATE_INTERVAL_MS);
     }
 
     public void count(final String sql) {
@@ -661,6 +653,23 @@ public class DbConnectionImpl implements DbConnection {
         undefinedPerSecondCounter = 0;
         queriesPerSecondTime = current;
       }
+    }
+  }
+
+  private static final class MixedResultPacker implements ResultPacker<List> {
+    public List<List> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
+      final List<List> result = new ArrayList<List>();
+      final int columnCount = resultSet.getMetaData().getColumnCount();
+      int counter = 0;
+      while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
+        final List<Object> row = new ArrayList<Object>(columnCount);
+        for (int index = 1; index <= columnCount; index++) {
+          row.add(resultSet.getObject(index));
+        }
+        result.add(row);
+      }
+
+      return result;
     }
   }
 

@@ -23,14 +23,27 @@ public final class DerbyDatabase extends AbstractDatabase {
 
   private static final Logger LOG = Util.getLogger(DerbyDatabase.class);
 
+  /**
+   * Instantiates a new DerbyDatabase.
+   */
   public DerbyDatabase() {
     super(DERBY);
   }
 
+  /**
+   * Instantiates a new embedded DerbyDatabase.
+   * @param databaseName the path to the database files
+   */
   public DerbyDatabase(final String databaseName) {
     super(DERBY, databaseName, null, null, true);
   }
 
+  /**
+   * Instantiates a new networked DerbyDatabase.
+   * @param host the host name
+   * @param port the port number
+   * @param sid the service identifier
+   */
   public DerbyDatabase(final String host, final String port, final String sid) {
     super(DERBY, host, port, sid, false);
   }
