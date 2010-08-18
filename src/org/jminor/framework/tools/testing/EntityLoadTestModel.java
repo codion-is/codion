@@ -21,6 +21,11 @@ public abstract class EntityLoadTestModel extends LoadTestModel {
 
   private static final int DEFAULT_WARNING_TIME = 200;
 
+  /**
+   * Instantiates a new EntityLoadTestModel.
+   * @param user the default user
+   * @param usageScenarios the usage scenarios
+   */
   public EntityLoadTestModel(final User user, final UsageScenario... usageScenarios) {
     super(user, Arrays.asList(usageScenarios), Integer.parseInt(System.getProperty(Configuration.LOAD_TEST_THINKTIME, "2000")),
             Integer.parseInt(System.getProperty(Configuration.LOAD_TEST_LOGIN_DELAY, "2")),
@@ -28,47 +33,63 @@ public abstract class EntityLoadTestModel extends LoadTestModel {
     loadDomainModel();
   }
 
-  public static void selectRandomRow(final EntityTableModel model) {
-    if (model.getRowCount() == 0) {
+  /**
+   * Selects a random row in the given table model
+   * @param tableModel the table model
+   */
+  public static void selectRandomRow(final EntityTableModel tableModel) {
+    if (tableModel.getRowCount() == 0) {
       return;
     }
 
-    model.setSelectedItemIndex(RANDOM.nextInt(model.getRowCount()));
+    tableModel.setSelectedItemIndex(RANDOM.nextInt(tableModel.getRowCount()));
   }
 
-  public static void selectRandomRows(final EntityTableModel model, final int count) {
-    if (model.getRowCount() == 0) {
+  /**
+   * Selects random rows in the given table model
+   * @param tableModel the table model
+   * @param count the number of rows to select
+   */
+  public static void selectRandomRows(final EntityTableModel tableModel, final int count) {
+    if (tableModel.getRowCount() == 0) {
       return;
     }
 
-    final int startIdx = RANDOM.nextInt(model.getRowCount() - count);
+    final int startIdx = RANDOM.nextInt(tableModel.getRowCount() - count);
     final List<Integer> indexes = new ArrayList<Integer>();
     for (int i = startIdx; i < count + startIdx; i++) {
       indexes.add(i);
     }
 
-    model.setSelectedItemIndexes(indexes);
+    tableModel.setSelectedItemIndexes(indexes);
   }
 
-  public static void selectRandomRows(final EntityTableModel model, final double ratio) {
-    if (model.getRowCount() == 0) {
+  /**
+   * Selects random rows in the given table model
+   * @param tableModel the table model
+   * @param ratio the ratio of available rows to select
+   */
+  public static void selectRandomRows(final EntityTableModel tableModel, final double ratio) {
+    if (tableModel.getRowCount() == 0) {
       return;
     }
 
-    final int toSelect = ratio > 0 ? (int) Math.floor(model.getRowCount() * ratio) : 1;
+    final int toSelect = ratio > 0 ? (int) Math.floor(tableModel.getRowCount() * ratio) : 1;
     final List<Integer> indexes = new ArrayList<Integer>();
     for (int i = 0; i < toSelect; i++) {
       indexes.add(i);
     }
 
-    model.setSelectedItemIndexes(indexes);
+    tableModel.setSelectedItemIndexes(indexes);
   }
 
+  /** {@inheritDoc} */
   @Override
   protected final void disconnectApplication(final Object application) {
     ((EntityApplicationModel) application).getDbProvider().disconnect();
   }
 
+  /** {@inheritDoc} */
   @Override
   protected abstract EntityApplicationModel initializeApplication() throws CancelException;
 

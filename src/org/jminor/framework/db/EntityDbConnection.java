@@ -86,6 +86,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
     this.limitForeignKeyFetchDepth = limitForeignKeyFetchDepth;
   }
 
+  /** {@inheritDoc} */
   public List<Entity.Key> insert(final List<Entity> entities) throws DbException {
     if (entities == null || entities.isEmpty()) {
       return new ArrayList<Entity.Key>();
@@ -145,6 +146,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
     }
   }
 
+  /** {@inheritDoc} */
   public List<Entity> update(final List<Entity> entities) throws DbException {
     if (entities == null || entities.isEmpty()) {
       return entities;
@@ -209,6 +211,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
     }
   }
 
+  /** {@inheritDoc} */
   public void delete(final EntityCriteria criteria) throws DbException {
     PreparedStatement statement = null;
     String deleteQuery = null;
@@ -237,6 +240,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
     }
   }
 
+  /** {@inheritDoc} */
   public void delete(final List<Entity.Key> entityKeys) throws DbException {
     if (entityKeys == null || entityKeys.isEmpty()) {
       return;
@@ -278,14 +282,17 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
     }
   }
 
+  /** {@inheritDoc} */
   public Entity selectSingle(final String entityID, final String propertyID, final Object value) throws DbException {
     return selectSingle(EntityCriteriaUtil.selectCriteria(entityID, propertyID, SearchType.LIKE, value));
   }
 
+  /** {@inheritDoc} */
   public Entity selectSingle(final Entity.Key key) throws DbException {
     return selectSingle(EntityCriteriaUtil.selectCriteria(key));
   }
 
+  /** {@inheritDoc} */
   public Entity selectSingle(final EntitySelectCriteria criteria) throws DbException {
     final List<Entity> entities = selectMany(criteria);
     if (entities.isEmpty()) {
@@ -298,6 +305,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
     return entities.get(0);
   }
 
+  /** {@inheritDoc} */
   @SuppressWarnings({"unchecked"})
   public List<Entity> selectMany(final List<Entity.Key> keys) throws DbException {
     if (keys == null || keys.isEmpty()) {
@@ -307,14 +315,17 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
     return selectMany(EntityCriteriaUtil.selectCriteria(keys));
   }
 
+  /** {@inheritDoc} */
   public List<Entity> selectMany(final String entityID, final String propertyID, final Object... values) throws DbException {
     return selectMany(EntityCriteriaUtil.selectCriteria(entityID, propertyID, SearchType.LIKE, values));
   }
 
+  /** {@inheritDoc} */
   public List<Entity> selectAll(final String entityID) throws DbException {
     return selectMany(EntityCriteriaUtil.selectCriteria(entityID, Entities.getOrderByClause(entityID)));
   }
 
+  /** {@inheritDoc} */
   public List<Entity> selectMany(final EntitySelectCriteria criteria) throws DbException {
     PreparedStatement statement = null;
     ResultSet resultSet = null;
@@ -339,6 +350,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
     }
   }
 
+  /** {@inheritDoc} */
   public List<Object> selectPropertyValues(final String entityID, final String propertyID, final boolean order) throws DbException {
     String sql = null;
     try {
@@ -360,6 +372,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
     }
   }
 
+  /** {@inheritDoc} */
   public List<List> selectRows(final String statement, final int fetchCount) throws DbException {
     try {
       return queryObjects(statement, fetchCount);
@@ -369,6 +382,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
     }
   }
 
+  /** {@inheritDoc} */
   public int selectRowCount(final EntityCriteria criteria) throws DbException {
     PreparedStatement statement = null;
     ResultSet resultSet = null;
@@ -402,6 +416,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
     }
   }
 
+  /** {@inheritDoc} */
   public Map<String, Collection<Entity>> selectDependentEntities(final Collection<Entity> entities) throws DbException {
     final Map<String, Collection<Entity>> dependencyMap = new HashMap<String, Collection<Entity>>();
     if (entities == null || entities.isEmpty()) {
@@ -420,6 +435,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
     return dependencyMap;
   }
 
+  /** {@inheritDoc} */
   public void executeStatement(final String statement) throws DbException {
     try {
       execute(statement);
@@ -437,6 +453,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
     }
   }
 
+  /** {@inheritDoc} */
   public Object executeStatement(final String statement, final int outParameterType) throws DbException {
     try {
       final Object result = executeCallableStatement(statement, outParameterType);
@@ -456,10 +473,12 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
     }
   }
 
+  /** {@inheritDoc} */
   public ReportResult fillReport(final ReportWrapper reportWrapper) throws ReportException {
     return reportWrapper.fillReport(getConnection());
   }
 
+  /** {@inheritDoc} */
   public void writeBlob(final Entity.Key primaryKey, final String blobPropertyID, final String dataDescription,
                         final byte[] blobData) throws DbException {
     if (isTransactionOpen()) {
@@ -496,6 +515,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
     }
   }
 
+  /** {@inheritDoc} */
   public byte[] readBlob(final Entity.Key primaryKey, final String blobPropertyID) throws Exception {//todo does not work as is
     try {
       final Property.BlobProperty property =
@@ -970,6 +990,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
       this.property = property;
     }
 
+    /** {@inheritDoc} */
     public List pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       final List<Object> result = new ArrayList<Object>(50);
       int counter = 0;

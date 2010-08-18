@@ -7,6 +7,9 @@ import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.framework.db.EntityDb;
 
+/**
+ * An abstract EntityDbProvider implementation.
+ */
 public abstract class AbstractEntityDbProvider implements EntityDbProvider {
 
   /**
@@ -15,6 +18,10 @@ public abstract class AbstractEntityDbProvider implements EntityDbProvider {
   private User user;
   private EntityDb entityDb;
 
+  /**
+   * Instantiates a new AbstractEntityDbProvider.
+   * @param user the user to base the db provider on
+   */
   public AbstractEntityDbProvider(final User user) {
     Util.rejectNullValue(user, "user");
     this.user = user;
@@ -55,8 +62,14 @@ public abstract class AbstractEntityDbProvider implements EntityDbProvider {
     return entityDb;
   }
 
+  /**
+   * @return true if the connection is valid
+   */
   protected abstract boolean isConnectionValid();
 
+  /**
+   * @return an established connection
+   */
   protected abstract EntityDb connect();
 
   protected final EntityDb getEntityDbInternal() {

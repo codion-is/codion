@@ -28,6 +28,12 @@ public final class EntityResultPacker implements ResultPacker<Entity> {
   private final Collection<Property.ColumnProperty> properties;
   private final Collection<Property.TransientProperty> transientProperties;
 
+  /**
+   * Instantiates a new EntityResultPacker.
+   * @param entityID the ID of the entities this packer packs
+   * @param properties the column properties that should be packed by this packer
+   * @param transientProperties the transient properties associated with the entity ID 
+   */
   public EntityResultPacker(final String entityID, final Collection<Property.ColumnProperty> properties,
                             final Collection<Property.TransientProperty> transientProperties) {
     Util.rejectNullValue(entityID, "entityID");
@@ -57,11 +63,7 @@ public final class EntityResultPacker implements ResultPacker<Entity> {
     return entities;
   }
 
-  protected Collection<? extends Property> getProperties() {
-    return properties;
-  }
-
-  protected Entity loadEntity(final ResultSet resultSet) throws SQLException {
+  private Entity loadEntity(final ResultSet resultSet) throws SQLException {
     final Entity entity = Entities.entityInstance(entityID);
     if (transientProperties != null && !transientProperties.isEmpty()) {
       for (final Property.TransientProperty transientProperty : transientProperties) {
@@ -83,7 +85,7 @@ public final class EntityResultPacker implements ResultPacker<Entity> {
     return entity;
   }
 
-  protected Object getValue(final ResultSet resultSet, final Property.ColumnProperty property) throws SQLException {
+  private Object getValue(final ResultSet resultSet, final Property.ColumnProperty property) throws SQLException {
     if (property.isBoolean()) {
       return getBoolean(resultSet, property);
     }

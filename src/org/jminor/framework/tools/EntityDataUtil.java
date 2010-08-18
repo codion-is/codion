@@ -6,6 +6,9 @@ import org.jminor.framework.domain.Entity;
 
 import java.util.List;
 
+/**
+ * A static helper class for mass data manipulation.
+ */
 public final class EntityDataUtil {
 
   private EntityDataUtil() {}

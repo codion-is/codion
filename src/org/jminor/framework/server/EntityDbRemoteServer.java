@@ -26,17 +26,7 @@ import java.rmi.registry.Registry;
 import java.rmi.server.RMISocketFactory;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * The remote server class, responsible for handling remote db connection requests.
@@ -110,6 +100,9 @@ public final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRem
     System.out.println(connectInfo);
   }
 
+  /**
+   * @return the underlying Database implementation class
+   */
   public Database getDatabase() {
     return database;
   }
@@ -119,14 +112,24 @@ public final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRem
     return EntityDbRemoteAdapter.getRequestsPerSecond();
   }
 
+  /**
+   * @return the connection timeout
+   */
   public int getConnectionTimeout() {
     return connectionTimeout;
   }
 
+  /**
+   * @param timeout the new timeout value
+   */
   public void setConnectionTimeout(final int timeout) {
     this.connectionTimeout = timeout;
   }
 
+  /**
+   * @return info on all connected users
+   * @throws RemoteException in case of an exception
+   */
   public Collection<User> getUsers() throws RemoteException {
     final Set<User> users = new HashSet<User>();
     for (final EntityDbRemote adapter : getConnections().values()) {
@@ -136,6 +139,10 @@ public final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRem
     return users;
   }
 
+  /**
+   * @return info on all connected clients
+   * @throws RemoteException in case of an exception
+   */
   public Collection<ClientInfo> getClients() throws RemoteException {
     final Collection<ClientInfo> clients = new ArrayList<ClientInfo>();
     for (final EntityDbRemote adapter : getConnections().values()) {
@@ -145,6 +152,11 @@ public final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRem
     return clients;
   }
 
+  /**
+   * @param user the user
+   * @return all clients connected with the given user
+   * @throws RemoteException in case of an exception
+   */
   public Collection<ClientInfo> getClients(final User user) throws RemoteException {
     final Collection<ClientInfo> clients = new ArrayList<ClientInfo>();
     for (final EntityDbRemote adapter : getConnections().values()) {
@@ -156,6 +168,11 @@ public final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRem
     return clients;
   }
 
+  /**
+   * @param clientTypeID the client type ID
+   * @return all clients of the given type
+   * @throws RemoteException in case of an exception
+   */
   public Collection<ClientInfo> getClients(final String clientTypeID) throws RemoteException {
     final Collection<ClientInfo> clients = new ArrayList<ClientInfo>();
     for (final EntityDbRemote adapter : getConnections().values()) {
@@ -167,13 +184,19 @@ public final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRem
     return clients;
   }
 
-  public int getCheckMaintenanceInterval() {
+  /**
+   * @return the maintenance check interval in ms
+   */
+  public int getCheckMaintenanceInterval() {//todo rename
     return checkMaintenanceInterval;
   }
 
-  public void setCheckMaintenanceInterval(final int checkTimerInterval) {
-    if (checkMaintenanceInterval != checkTimerInterval) {
-      checkMaintenanceInterval = checkTimerInterval <= 0 ? 1 : checkTimerInterval;
+  /**
+   * @param checkMaintenanceInterval the new maintenance interval
+   */
+  public void setCheckMaintenanceInterval(final int checkMaintenanceInterval) {
+    if (this.checkMaintenanceInterval != checkMaintenanceInterval) {
+      this.checkMaintenanceInterval = checkMaintenanceInterval <= 0 ? 1 : checkMaintenanceInterval;
     }
   }
 
@@ -191,6 +214,10 @@ public final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRem
     return null;
   }
 
+  /**
+   * @param clientID the client ID
+   * @return true if logging is enabled for the given client
+   */
   public boolean isLoggingOn(final UUID clientID) {
     final ClientInfo client = new ClientInfo(clientID);
     for (final EntityDbRemote connection : getConnections().values()) {
@@ -202,6 +229,10 @@ public final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRem
     return false;
   }
 
+  /**
+   * @param clientID the client ID
+   * @param status the new logging status
+   */
   public void setLoggingOn(final UUID clientID, final boolean status) {
     final ClientInfo client = new ClientInfo(clientID);
     for (final EntityDbRemote adapter : getConnections().values()) {
@@ -212,14 +243,24 @@ public final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRem
     }
   }
 
+  /**
+   * @return the port this server exports client db connections on
+   */
   public int getServerDbPort() {
     return SERVER_DB_PORT;
   }
 
+  /**
+   * @return the start date of the server
+   */
   public long getStartDate() {
     return startDate;
   }
 
+  /**
+   * @param inactiveOnly if true only inactive connections are culled
+   * @throws RemoteException in case of an exception
+   */
   public void removeConnections(final boolean inactiveOnly) throws RemoteException {
     final List<ClientInfo> clients = new ArrayList<ClientInfo>(getConnections().keySet());
     for (final ClientInfo client : clients) {
@@ -261,6 +302,7 @@ public final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRem
     AccessController.doPrivileged(new DomainModelAction(locations, domainClassName));
   }
 
+  /** {@inheritDoc} */
   @Override
   protected void handleShutdown() throws RemoteException {
     removeConnections(false);
@@ -272,6 +314,7 @@ public final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRem
     }//todo does not work when shutdown requires user authentication
   }
 
+  /** {@inheritDoc} */
   @Override
   protected void doDisconnect(final EntityDbRemote connection) throws RemoteException {
     try {
@@ -283,6 +326,7 @@ public final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRem
     }
   }
 
+  /** {@inheritDoc} */
   @Override
   protected EntityDbRemoteAdapter doConnect(final ClientInfo info) throws RemoteException {
     final EntityDbRemoteAdapter remoteAdapter = new EntityDbRemoteAdapter(this, database, info, SERVER_DB_PORT, CLIENT_LOGGING_ENABLED);
@@ -361,6 +405,7 @@ public final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRem
       this.domainClassName = domainClassName;
     }
 
+    /** {@inheritDoc} */
     public Object run() {
       try {
         if (locations == null || locations.isEmpty()) {

@@ -18,8 +18,9 @@ import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
-import static org.junit.Assert.*;
+
 import org.junit.After;
+import static org.junit.Assert.*;
 import org.junit.Before;
 
 import java.util.Arrays;
@@ -35,6 +36,9 @@ public abstract class EntityTestUnit {
   private EntityDbProvider entityDbProvider;
   private final Map<String, Entity> referencedEntities = new HashMap<String, Entity>();
 
+  /**
+   * Instantiates a new EntityTestUnit.
+   */
   public EntityTestUnit() {
     loadDomainModel();
   }

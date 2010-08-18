@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A static utility class for constructing query criteria implementations
+ * A factory class for query criteria implementations.
  */
 public final class EntityCriteriaUtil {
 
@@ -32,26 +32,58 @@ public final class EntityCriteriaUtil {
 
   private EntityCriteriaUtil() {}
 
+  /**
+   * @param key the key
+   * @return a select criteria based on the given key
+   */
   public static EntitySelectCriteria selectCriteria(final Entity.Key key) {
     return selectCriteria(Arrays.asList(key));
   }
 
+  /**
+   * @param keys the keys
+   * @return a select criteria based on the given keys
+   */
   public static EntitySelectCriteria selectCriteria(final List<Entity.Key> keys) {
     final EntityKeyCriteria keyCriteria = new EntityKeyCriteria(keys);
     return new DefaultEntitySelectCriteria(keyCriteria.getEntityID(), keyCriteria);
   }
 
+  /**
+   * @param entityID the entity ID
+   * @param propertyID the property ID
+   * @param searchType the search type
+   * @param values the criteria values
+   * @return a select criteria based on the given values
+   */
   public static EntitySelectCriteria selectCriteria(final String entityID, final String propertyID,
                                                     final SearchType searchType, final Object... values) {
     return selectCriteria(entityID, propertyID, searchType, -1, values);
   }
 
+  /**
+   * @param entityID the entity ID
+   * @param propertyID the property ID
+   * @param searchType the search type
+   * @param fetchCount the maximum number of entities to fetch
+   * @param values the criteria values
+   * @return a select criteria based on the given values
+   */
   public static EntitySelectCriteria selectCriteria(final String entityID, final String propertyID,
                                                     final SearchType searchType, final int fetchCount,
                                                     final Object... values) {
     return selectCriteria(entityID, propertyID, searchType, null, fetchCount, values);
   }
 
+  /**
+   * @param entityID the entity ID
+   * @param propertyID the property ID
+   * @param searchType the search type
+   * @param orderByClause the order by clause
+   * @param fetchCount the maximum number of entities to fetch
+   * @param values the criteria values
+   * @return a select criteria based on the given values
+   */
   public static EntitySelectCriteria selectCriteria(final String entityID, final String propertyID,
                                                     final SearchType searchType, final String orderByClause,
                                                     final int fetchCount, final Object... values) {
@@ -68,84 +100,181 @@ public final class EntityCriteriaUtil {
     return new DefaultEntitySelectCriteria(entityID, criteria, orderByClause, fetchCount);
   }
 
+  /**
+   * @param entityID the entity ID
+   * @param orderByClause the order by clause
+   * @return a select criteria including all entities of the given type
+   */
   public static EntitySelectCriteria selectCriteria(final String entityID, final String orderByClause) {
     return new DefaultEntitySelectCriteria(entityID, null, orderByClause);
   }
 
-  public static EntitySelectCriteria selectCriteria(final String entityID, final List<Property.ColumnProperty> foreignKeyProperties,
+  /**
+   * @param entityID the entity ID
+   * @param foreignKeyReferenceProperties the foreign key reference properties
+   * @param primaryKeys the primary keys referenced by the given properties
+   * @return a select criteria based on the given values
+   */
+  public static EntitySelectCriteria selectCriteria(final String entityID, final List<Property.ColumnProperty> foreignKeyReferenceProperties,
                                                     final List<Entity.Key> primaryKeys) {
-    final EntityKeyCriteria entityKeyCriteria = new EntityKeyCriteria(foreignKeyProperties, primaryKeys);
+    final EntityKeyCriteria entityKeyCriteria = new EntityKeyCriteria(foreignKeyReferenceProperties, primaryKeys);
     return new DefaultEntitySelectCriteria(entityID, entityKeyCriteria);
   }
 
+  /**
+   * @param entityID the entity ID
+   * @param criteria the column criteria
+   * @param orderByClause the order by clause
+   * @return a select criteria based on the given column criteria
+   */
   public static EntitySelectCriteria selectCriteria(final String entityID, final Criteria<Property.ColumnProperty> criteria,
                                                     final String orderByClause) {
     return selectCriteria(entityID, criteria, orderByClause, -1);
   }
 
-  public static EntitySelectCriteria selectCriteria(final String entityID, final Criteria<Property.ColumnProperty> criteria,
+
+  /**
+   * @param entityID the entity ID
+   * @param propertyCriteria the column criteria
+   * @param orderByClause the order by clause
+   * @param fetchCount the maximum number of entities to fetch
+   * @return a select criteria based on the given column criteria
+   */
+  public static EntitySelectCriteria selectCriteria(final String entityID, final Criteria<Property.ColumnProperty> propertyCriteria,
                                                     final String orderByClause, final int fetchCount) {
-    return new DefaultEntitySelectCriteria(entityID, criteria, orderByClause, fetchCount);
+    return new DefaultEntitySelectCriteria(entityID, propertyCriteria, orderByClause, fetchCount);
   }
 
+  /**
+   * @param entityID the entity ID
+   * @return a select criteria encompassing all entities of the given type
+   */
   public static EntitySelectCriteria selectCriteria(final String entityID) {
     return new DefaultEntitySelectCriteria(entityID);
   }
 
+  /**
+   * @param entityID the entity ID
+   * @param fetchCount the maximum number of entities to fetch
+   * @return a select criteria encompassing all entities of the given type
+   */
   public static EntitySelectCriteria selectCriteria(final String entityID, final int fetchCount) {
     return new DefaultEntitySelectCriteria(entityID, null, fetchCount);
   }
 
+  /**
+   * @param entityID the entity ID
+   * @param propertyCriteria the column criteria
+   * @return a select criteria based on the given column criteria
+   */
   public static EntitySelectCriteria selectCriteria(final String entityID, final Criteria<Property.ColumnProperty> propertyCriteria) {
     return new DefaultEntitySelectCriteria(entityID, propertyCriteria);
   }
 
+  /**
+   * @param key the primary key
+   * @return a criteria specifying the entity having the given primary key
+   */
   public static EntityCriteria criteria(final Entity.Key key) {
     return criteria(Arrays.asList(key));
   }
 
+  /**
+   * @param keys the primary keys
+   * @return a criteria specifying the entities having the given primary keys
+   */
   public static EntityCriteria criteria(final List<Entity.Key> keys) {
     final EntityKeyCriteria keyCriteria = new EntityKeyCriteria(keys);
     return new DefaultEntityCriteria(keyCriteria.getEntityID(), keyCriteria);
   }
 
+  /**
+   * @param entityID the entity ID
+   * @return a criteria specifying all entities of the given type
+   */
   public static EntityCriteria criteria(final String entityID) {
     return new DefaultEntityCriteria(entityID);
   }
 
+  /**
+   * @param entityID the entity ID
+   * @param propertyID the property ID
+   * @param searchType the search type
+   * @param values the criteria values
+   * @return a criteria based on the given values
+   */
   public static EntityCriteria criteria(final String entityID, final String propertyID,
                                         final SearchType searchType, final Object... values) {
     return new DefaultEntityCriteria(entityID, new PropertyCriteria((Property.ColumnProperty) Entities.getProperty(entityID, propertyID),
             searchType, values));
   }
 
+  /**
+   * @param entityID the entity ID
+   * @param propertyID the property ID
+   * @param searchType the search type
+   * @param values the criteria values
+   * @return a property criteria based on the given values
+   */
   public static Criteria<Property.ColumnProperty> propertyCriteria(final String entityID, final String propertyID, final SearchType searchType,
                                                                    final Object... values) {
     return propertyCriteria(entityID, propertyID, true, searchType, values);
   }
 
+  /**
+   * @param entityID the entity ID
+   * @param propertyID the property ID
+   * @param caseSensitive true if the criteria should be case sensitive, only applicable to string properties
+   * @param searchType the search type
+   * @param values the criteria values
+   * @return a property criteria based on the given values
+   */
   public static Criteria<Property.ColumnProperty> propertyCriteria(final String entityID, final String propertyID, final boolean caseSensitive,
                                                                    final SearchType searchType, final Object... values) {
     return propertyCriteria((Property.ColumnProperty) Entities.getProperty(entityID, propertyID), caseSensitive, searchType, values);
   }
 
+  /**
+   * @param property the property
+   * @param searchType the search type
+   * @param values the criteria values
+   * @return a property criteria based on the given values
+   */
   public static Criteria<Property.ColumnProperty> propertyCriteria(final Property.ColumnProperty property,
                                                                    final SearchType searchType,
                                                                    final Object... values) {
     return propertyCriteria(property, true, searchType, values);
   }
 
+  /**
+   * @param property the property
+   * @param searchType the search type
+   * @param caseSensitive true if the criteria should be case sensitive, only applicable to string properties
+   * @param values the criteria values
+   * @return a property criteria based on the given values
+   */
   public static Criteria<Property.ColumnProperty> propertyCriteria(final Property.ColumnProperty property,
                                                                    final boolean caseSensitive, final SearchType searchType,
                                                                    final Object... values) {
     return new PropertyCriteria(property, searchType, values).setCaseSensitive(caseSensitive);
   }
 
+  /**
+   * @param foreignKeyProperty the foreign key property
+   * @param searchType the search type
+   * @param values the criteria values
+   * @return a property criteria based on the given values
+   */
   public static Criteria<Property.ColumnProperty> foreignKeyCriteria(final Property.ForeignKeyProperty foreignKeyProperty,
                                                                      final SearchType searchType, final Object... values) {
     return new ForeignKeyCriteria(foreignKeyProperty, searchType, values);
   }
 
+  /**
+   * @param entityID the entity ID
+   * @param criteria the column criteria
+   * @return a criteria based on the given column criteria
+   */
   public static EntityCriteria criteria(final String entityID, final Criteria<Property.ColumnProperty> criteria) {
     return new DefaultEntityCriteria(entityID, criteria);
   }
@@ -180,18 +309,22 @@ public final class EntityCriteriaUtil {
       this.criteria = criteria;
     }
 
+    /** {@inheritDoc} */
     public final List<Object> getValues() {
       return criteria == null ? null : criteria.getValues();
     }
 
+    /** {@inheritDoc} */
     public final List<Property.ColumnProperty> getValueProperties() {
       return criteria == null ? null : criteria.getValueKeys();
     }
 
+    /** {@inheritDoc} */
     public final String getEntityID() {
       return entityID;
     }
 
+    /** {@inheritDoc} */
     public final Criteria<Property.ColumnProperty> getCriteria() {
       return criteria;
     }
@@ -204,10 +337,12 @@ public final class EntityCriteriaUtil {
       return Entities.getTableName(entityID) + " " + getWhereClause();
     }
 
+    /** {@inheritDoc} */
     public final String getWhereClause() {
       return getWhereClause(true);
     }
 
+    /** {@inheritDoc} */
     public final String getWhereClause(final boolean includeWhereKeyword) {
       final String criteriaString = criteria == null ? "" : criteria.asString();
 
@@ -299,28 +434,34 @@ public final class EntityCriteriaUtil {
       return Entities.getSelectTableName(getEntityID()) + " " + getWhereClause();
     }
 
+    /** {@inheritDoc} */
     public int getFetchCount() {
       return fetchCount;
     }
 
+    /** {@inheritDoc} */
     public String getOrderByClause() {
       return orderByClause;
     }
 
+    /** {@inheritDoc} */
     public int getCurrentFetchDepth() {
       return currentFetchDepth;
     }
 
+    /** {@inheritDoc} */
     public EntitySelectCriteria setCurrentFetchDepth(final int currentFetchDepth) {
       this.currentFetchDepth = currentFetchDepth;
       return this;
     }
 
+    /** {@inheritDoc} */
     public EntitySelectCriteria setFetchDepth(final String foreignKeyPropertyID, final int maxFetchDepth) {
       this.foreignKeyFetchDepths.put(foreignKeyPropertyID, maxFetchDepth);
       return this;
     }
 
+    /** {@inheritDoc} */
     public int getFetchDepth(final String foreignKeyPropertyID) {
       if (foreignKeyFetchDepths.containsKey(foreignKeyPropertyID)) {
         return foreignKeyFetchDepths.get(foreignKeyPropertyID);
@@ -329,15 +470,18 @@ public final class EntityCriteriaUtil {
       return 0;
     }
 
+    /** {@inheritDoc} */
     public int getFetchDepth() {
       return fetchDepth;
     }
 
+    /** {@inheritDoc} */
     public EntitySelectCriteria setFetchDepth(final int maxFetchDepth) {
       this.fetchDepth = maxFetchDepth;
       return this;
     }
 
+    /** {@inheritDoc} */
     public EntitySelectCriteria setFetchDepthForAll(final int fetchDepth) {
       final Collection<Property.ForeignKeyProperty > properties = Entities.getForeignKeyProperties(getEntityID());
       for (final Property.ForeignKeyProperty property : properties) {
@@ -347,10 +491,12 @@ public final class EntityCriteriaUtil {
       return this;
     }
 
+    /** {@inheritDoc} */
     public boolean isSelectForUpdate() {
       return selectForUpdate;
     }
 
+    /** {@inheritDoc} */
     public EntitySelectCriteria setSelectForUpdate(final boolean selectForUpdate) {
       this.selectForUpdate = selectForUpdate;
       return this;
@@ -530,6 +676,7 @@ public final class EntityCriteriaUtil {
       return property;
     }
 
+    /** {@inheritDoc} */
     public List<Object> getValues() {
       if (isNullCriteria) {
         return new ArrayList<Object>();
@@ -538,6 +685,7 @@ public final class EntityCriteriaUtil {
       return values;
     }
 
+    /** {@inheritDoc} */
     public List<Property.ColumnProperty> getValueKeys() {
       if (isNullCriteria) {
         return new ArrayList<Property.ColumnProperty>();
@@ -567,6 +715,7 @@ public final class EntityCriteriaUtil {
       return wildcard;
     }
 
+    /** {@inheritDoc} */
     public String asString() {
       return getConditionString();
     }
@@ -726,6 +875,7 @@ public final class EntityCriteriaUtil {
       this.isNullCriteria = this.values.size() == 1 && this.values.get(0) == null;
     }
 
+    /** {@inheritDoc} */
     public String asString() {
       return getConditionString();
     }
@@ -734,6 +884,7 @@ public final class EntityCriteriaUtil {
       return getForeignKeyCriteriaString();
     }
 
+    /** {@inheritDoc} */
     public List<Property.ColumnProperty> getValueKeys() {
       if (isNullCriteria) {
         return new ArrayList<Property.ColumnProperty>();
@@ -742,6 +893,7 @@ public final class EntityCriteriaUtil {
       return getForeignKeyValueProperties();
     }
 
+    /** {@inheritDoc} */
     public List<Object> getValues() {
       if (isNullCriteria) {
         return new ArrayList<Object>();

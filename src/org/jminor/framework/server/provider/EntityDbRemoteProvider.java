@@ -40,6 +40,12 @@ public final class EntityDbRemoteProvider extends AbstractEntityDbProvider {
   private RemoteServer server;
   private String serverName;
 
+  /**
+   * Instantiates a new EntityDbRemoteProvider.
+   * @param user the user to base the db provider on
+   * @param clientID the client ID
+   * @param clientTypeID a string identifying the client type
+   */
   public EntityDbRemoteProvider(final User user, final UUID clientID, final String clientTypeID) {
     super(user);
     Util.rejectNullValue(user, "user");
@@ -72,6 +78,9 @@ public final class EntityDbRemoteProvider extends AbstractEntityDbProvider {
     }
   }
 
+  /**
+   * @return the client ID
+   */
   public UUID getClientID() {
     return clientID;
   }
