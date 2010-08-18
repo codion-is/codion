@@ -295,7 +295,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
     evtBeforeInsert.fire();
     ((EntityValidator) getValidator()).validate(entities, EntityValidator.INSERT);
 
-    final List<Entity.Key> primaryKeys = EntityUtil.copy(doInsert(entities));
+    final List<Entity.Key> primaryKeys = EntityUtil.copyKeys(doInsert(entities));
     evtAfterInsert.fire(new InsertEvent(this, primaryKeys));
   }
 

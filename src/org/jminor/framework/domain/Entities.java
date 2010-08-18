@@ -94,10 +94,18 @@ public final class Entities {
     return definition;
   }
 
+  /**
+   * @param entityID the entity ID
+   * @return true if an entity with the given ID has been defined
+   */
   public static boolean isDefined(final String entityID) {
     return ENTITY_DEFINITIONS.containsKey(entityID);
   }
 
+  /**
+   * @param domainID the domain ID
+   * @return all entity IDs associated with the given domain
+   */
   public static Collection<String> getDomainEntityIDs(final String domainID) {
     final Collection<String> entityIDs = new ArrayList<String>();
     for (final EntityDefinition definition : ENTITY_DEFINITIONS.values()) {
@@ -521,14 +529,25 @@ public final class Entities {
     return getEntityDefinition(entityID).getIdValueSource();
   }
 
+  /**
+   * @param entityID the entity ID
+   * @return true if row coloring is enabled for the given entity type
+   */
   public static boolean isRowColoring(final String entityID) {
     return getEntityDefinition(entityID).isRowColoring();
   }
 
+  /**
+   * @param entityID the entity ID
+   * @return the caption associated with the given entity type
+   */
   public static String getCaption(final String entityID) {
     return getEntityDefinition(entityID).getCaption();
   }
 
+  /**
+   * @return the entityIDs of all defined entities
+   */
   public static Collection<String> getDefinedEntities() {
     return new ArrayList<String>(ENTITY_DEFINITIONS.keySet());
   }
@@ -661,12 +680,22 @@ public final class Entities {
       return INSTANCE;
     }
 
+    /**
+     * Compares the given entities.
+     * @param entity the first entity
+     * @param entityToCompare the second entity
+     * @return the compare result
+     */
     public int compareTo(final Entity entity, final Entity entityToCompare) {
       Util.rejectNullValue(entity, "entity");
       Util.rejectNullValue(entityToCompare, "entityToCompare");
       return collator.compare(entity.toString(), entityToCompare.toString());
     }
 
+    /**
+     * @param entity the entity
+     * @return a string representation of the given entity
+     */
     public String toString(final Entity entity) {
       Util.rejectNullValue(entity, "entity");
       final String entityID = entity.getEntityID();
@@ -679,10 +708,21 @@ public final class Entities {
       return stringProvider.toString(entity);
     }
 
+    /**
+     * @param entity the entity
+     * @param property the derived property
+     * @return the derived property value
+     */
     public Object getDerivedValue(final Entity entity, final Property.DerivedProperty property) {
       throw new RuntimeException("getDerivedValue() has not been overriden in Entity.Proxy for: " + entity + ", " + property);
     }
 
+    /**
+     * @param entity the entity
+     * @param property the property
+     * @param format the format
+     * @return a formatted version of the value associated with the given property
+     */
     public String getFormattedValue(final Entity entity, final Property property, final Format format) {
       Util.rejectNullValue(entity, "entity");
       final Object value = entity.getValue(property);
@@ -697,6 +737,10 @@ public final class Entities {
       return format.format(value);
     }
 
+    /**
+     * @param entity the entity
+     * @return the background color to use for this entity
+     */
     @SuppressWarnings({"UnusedDeclaration"})
     public Color getBackgroundColor(final Entity entity) {
       return null;

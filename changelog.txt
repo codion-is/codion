@@ -2026,3 +2026,4 @@
   LoadTestModel, javadoc improvement
   common.* javadoc improvements
   EntityCriteriaUtil now respects the 100 max IN list items guaranteed by the JDBC standard
+  Properties, EntityUtil docs added

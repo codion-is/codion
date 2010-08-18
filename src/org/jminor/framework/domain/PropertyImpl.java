@@ -594,7 +594,7 @@ class PropertyImpl implements Property, Serializable {
      * @param caption the property caption
      * @param referencedEntityID the ID of the referenced entity type
      * @param referenceProperties the actual column properties involved in the reference
-     * @param referencedPropertyIDs the IDs of the properties referenced, in the same order as the properties
+     * @param referencedPropertyIDs the IDs of the properties referenced, in the same order as the reference properties
      */
     ForeignKeyPropertyImpl(final String propertyID, final String caption, final String referencedEntityID,
                            final ColumnProperty[] referenceProperties, final String[] referencedPropertyIDs) {
