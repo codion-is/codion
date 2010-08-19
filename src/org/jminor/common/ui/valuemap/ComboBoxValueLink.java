@@ -60,6 +60,7 @@ public class ComboBoxValueLink<K> extends AbstractValueMapLink<K, Object> {
     //this allows editable string based combo boxes to post their edits after each keystroke
     if (comboBox.isEditable() && isString) {
       ((JTextField)comboBox.getEditor().getEditorComponent()).getDocument().addDocumentListener(new DocumentAdapter() {
+        /** {@inheritDoc} */
         @Override
         public void insertOrUpdate(final DocumentEvent e) {
           boxModel.setSelectedItem(comboBox.getEditor().getItem());

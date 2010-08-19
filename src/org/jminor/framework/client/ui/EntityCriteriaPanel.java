@@ -46,6 +46,10 @@ public final class EntityCriteriaPanel extends JPanel {
 
   private final Map<PropertySearchModel, ColumnSearchPanel> panels = new HashMap<PropertySearchModel, ColumnSearchPanel>();
 
+  /**
+   * Instantiates a new EntityCriteriaPanel for the given table model
+   * @param tableModel the table model
+   */
   public EntityCriteriaPanel(final EntityTableModel tableModel) {
     setLayout(new BorderLayout(5,5));
 

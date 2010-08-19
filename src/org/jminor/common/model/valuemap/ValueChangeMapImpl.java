@@ -130,6 +130,7 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
   public final StateObserver getModifiedState() {
     final State state = States.state(isModified());
     getValueChangeObserver().addListener(new ActionListener() {
+      /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
         state.setActive(isModified());
       }

@@ -40,6 +40,7 @@ public final class BooleanValueLink<K> extends AbstractValueMapLink<K, Object> {
     super(editModel, key, linkType);
     this.buttonModel = buttonModel;
     this.buttonModel.addItemListener(new ItemListener() {
+      /** {@inheritDoc} */
       public void itemStateChanged(final ItemEvent e) {
         updateModel();
       }

@@ -27,6 +27,7 @@ public class DefaultPropertySearchModel extends DefaultColumnSearchModel<Propert
             property.getFormat());
   }
 
+  /** {@inheritDoc} */
   @Override
   public final String toString() {
     final StringBuilder stringBuilder = new StringBuilder(getColumnIdentifier().getPropertyID());
@@ -39,6 +40,7 @@ public class DefaultPropertySearchModel extends DefaultColumnSearchModel<Propert
     return stringBuilder.toString();
   }
 
+  /** {@inheritDoc} */
   public final Criteria<Property.ColumnProperty> getCriteria() {
     return getValueCount(getSearchType()) == 1 ?
             EntityCriteriaUtil.propertyCriteria(getColumnIdentifier(), isCaseSensitive(), getSearchType(), getUpperBound()) :

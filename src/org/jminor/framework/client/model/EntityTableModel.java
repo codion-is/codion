@@ -19,6 +19,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Specifies a table model containing Entity objects
+ */
 public interface EntityTableModel extends FilteredTableModel<Entity, Property>, EntityDataProvider {
 
   /**

@@ -344,12 +344,13 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   private static final class SortComparator<T> implements Comparator<T> {
 
     private final String nullValueString;
+    private final Collator collator = Collator.getInstance();
 
     SortComparator(final String nullValueString) {
       this.nullValueString = nullValueString;
     }
 
-    private final Collator collator = Collator.getInstance();
+    /** {@inheritDoc} */
     @SuppressWarnings({"unchecked"})
     public int compare(final T o1, final T o2) {
       if (o1 == null && o2 == null) {

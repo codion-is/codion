@@ -9,6 +9,12 @@ package org.jminor.common.model.valuemap.exception;
  */
 public class RangeValidationException extends ValidationException {
 
+  /**
+   * Instantiates a new RangeValidationException
+   * @param key the key
+   * @param value the value that is out of range
+   * @param message the message
+   */
   public RangeValidationException(final Object key, final Object value, final String message) {
     super(key, value, message);
   }

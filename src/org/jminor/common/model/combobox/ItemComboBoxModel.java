@@ -75,7 +75,7 @@ public class ItemComboBoxModel<T> extends DefaultComboBoxModel {
     }
 
     Collections.sort(items, new Comparator<Item<T>>() {
-      /* Null items at front of list*/
+      /** Null items at front of list*/
       public int compare(final Item<T> o1, final Item<T> o2) {
         if (o1.getItem() == null && o2.getItem() == null) {
           return o1.compareTo(o2);

@@ -184,6 +184,11 @@ public class EntityPanel extends JPanel {
     this(model, Entities.getCaption(model.getEntityID()));
   }
 
+  /**
+   * Initializes a new EntityPanel instance. The Panel is not laid out and initialized until initialize() is called.
+   * @param model the EntityModel
+   * @param caption the caption to use when presenting this entity panel
+   */
   public EntityPanel(final EntityModel model, final String caption) {
     this(model, caption, null, null);
   }
@@ -286,10 +291,17 @@ public class EntityPanel extends JPanel {
     return masterPanel;
   }
 
+  /**
+   * @return the control panel layout constraints (BorderLayout constraints)
+   */
   public final String getControlPanelConstraints() {
     return controlPanelConstraints;
   }
 
+  /**
+   * @param controlPanelConstraints the control panel layout constraints (BorderLayout constraints)
+   * @return this entity panel
+   */
   public final EntityPanel setControlPanelConstraints(final String controlPanelConstraints) {
     if (panelInitialized) {
       throw new RuntimeException("Panel has already been initialized");
@@ -298,6 +310,9 @@ public class EntityPanel extends JPanel {
     return this;
   }
 
+  /**
+   * @return true if this entity panel is using a compact detail layout
+   */
   public final boolean isCompactDetailLayout() {
     return compactDetailLayout;
   }
@@ -314,6 +329,10 @@ public class EntityPanel extends JPanel {
     return this;
   }
 
+  /**
+   * @param detailPanels the detail panels
+   * @return this entity panel
+   */
   public final EntityPanel addDetailPanels(final EntityPanel... detailPanels) {
     Util.rejectNullValue(detailPanels, "detailPanels");
     for (final EntityPanel detailPanel : detailPanels) {
@@ -373,6 +392,9 @@ public class EntityPanel extends JPanel {
     return panelInitialized;
   }
 
+  /**
+   * @return the edit panel
+   */
   public final EntityEditPanel getEditPanel() {
     return editPanel;
   }
@@ -448,6 +470,7 @@ public class EntityPanel extends JPanel {
     throw new RuntimeException("Detail panel of type: " + detailPanelClass + " not found in panel: " + getClass());
   }
 
+  /** {@inheritDoc} */
   @Override
   public final String toString() {
     return getClass().getSimpleName() + ": " + caption;
@@ -460,6 +483,9 @@ public class EntityPanel extends JPanel {
     return caption;
   }
 
+  /**
+   * @return a control for toggling the edit panel
+   */
   public final Control getToggleEditPanelControl() {
     final Control toggle = Controls.methodControl(this, "toggleEditPanelState",
             Images.loadImage("Form16.gif"));
@@ -468,6 +494,9 @@ public class EntityPanel extends JPanel {
     return toggle;
   }
 
+  /**
+   * @return a control for toggling the detail panel
+   */
   public final Control getToggleDetailPanelControl() {
     final Control toggle = Controls.methodControl(this, "toggleDetailPanelState",
             Images.loadImage(Images.IMG_HISTORY_16));
@@ -500,6 +529,10 @@ public class EntityPanel extends JPanel {
     return detailSplitPanelResizeWeight;
   }
 
+  /**
+   * @param detailSplitPanelResizeWeight the detail panel split size weight
+   * @return this entity panel
+   */
   public final EntityPanel setDetailSplitPanelResizeWeight(final double detailSplitPanelResizeWeight) {
     if (panelInitialized) {
       throw new RuntimeException("Can not set edit detailSplitPanelResizeWeight after initialization");
@@ -651,6 +684,11 @@ public class EntityPanel extends JPanel {
     }
   }
 
+  /**
+   * Resizes this panel in the given direction
+   * @param direction the resize direction
+   * @param pixelAmount the resize amount
+   */
   public final void resizePanel(final int direction, final int pixelAmount) {
     switch(direction) {
       case UP:

@@ -11,6 +11,9 @@ import java.sql.SQLException;
  */
 public interface PoolableConnection {
 
+  /**
+   * @return the underlying connection object
+   */
   Connection getConnection();
 
   /**

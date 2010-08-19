@@ -34,10 +34,21 @@ public final class EntityTableSearchAdvancedPanel extends AbstractTableColumnSyn
 
   private final EntityTableSearchModel searchModel;
 
+  /**
+   * Instantiates a new EntityTableSearchAdvancedPanel
+   * @param searchModel the search model
+   * @param columnModel the column model
+   */
   public EntityTableSearchAdvancedPanel(final EntityTableSearchModel searchModel, final TableColumnModel columnModel) {
     this(searchModel, columnModel, UiUtil.getPreferredScrollBarWidth());
   }
 
+  /**
+   * Instantiates a new EntityTableSearchAdvancedPanel
+   * @param searchModel the search model
+   * @param columnModel the column model
+   * @param verticalFillerWidth the vertical filler witdh, f.ex. the width of a scroll bar
+   */
   public EntityTableSearchAdvancedPanel(final EntityTableSearchModel searchModel, final TableColumnModel columnModel,
                                         final int verticalFillerWidth) {
     super(columnModel);
@@ -46,6 +57,7 @@ public final class EntityTableSearchAdvancedPanel extends AbstractTableColumnSyn
     resetPanel();
   }
 
+  /** {@inheritDoc} */
   public EntityTableSearchModel getSearchModel() {
     return searchModel;
   }
@@ -87,6 +99,7 @@ public final class EntityTableSearchAdvancedPanel extends AbstractTableColumnSyn
     return false;
   }
 
+  /** {@inheritDoc} */
   public ControlSet getControls() {
     final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.SEARCH));
     controlSet.setIcon(Images.loadImage(Images.IMG_FILTER_16));
@@ -97,6 +110,10 @@ public final class EntityTableSearchAdvancedPanel extends AbstractTableColumnSyn
     return controlSet;
   }
 
+  /**
+   * @param propertyID the property ID
+   * @return the search panel associated with the given property
+   */
   public ColumnSearchPanel getSearchPanel(final String propertyID) {
     final Enumeration<TableColumn> columnEnumeration = getColumnModel().getColumns();
     while (columnEnumeration.hasMoreElements()) {
@@ -110,14 +127,21 @@ public final class EntityTableSearchAdvancedPanel extends AbstractTableColumnSyn
     return null;
   }
 
+  /**
+   * @param listener a listener notified each time the advamced search state changes
+   */
   public void addAdvancedListener(final ActionListener listener) {
     evtAdvancedChanged.addListener(listener);
   }
 
+  /**
+   * @param listener the listener to remove
+   */
   public void removeAdvancedListener(final ActionListener listener) {
     evtAdvancedChanged.removeListener(listener);
   }
 
+  /** {@inheritDoc} */
   @Override
   protected JPanel initializeColumnPanel(final TableColumn column) {
     final Property property = (Property) column.getIdentifier();

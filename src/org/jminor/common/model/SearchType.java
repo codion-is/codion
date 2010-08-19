@@ -46,5 +46,9 @@ public enum SearchType implements Serializable {
       return "Exclusive60x16.gif";
     }
   };
+
+  /**
+   * @return the name of the image representing this search type
+   */
   public abstract String getImageName();
 }

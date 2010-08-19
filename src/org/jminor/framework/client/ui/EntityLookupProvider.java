@@ -13,10 +13,16 @@ import org.jminor.framework.domain.Entity;
  */
 public final class EntityLookupProvider extends AbstractInputProvider<Entity, EntityLookupField> {
 
-  public EntityLookupProvider(final EntityLookupModel lookupModel, final Entity currentValue) {
-    super(createEntityField(lookupModel, currentValue));
+  /**
+   * Instantiates a new EntityLookupProvider
+   * @param lookupModel the lookup model to base the lookup field on
+   * @param initalValue the initial value
+   */
+  public EntityLookupProvider(final EntityLookupModel lookupModel, final Entity initalValue) {
+    super(createEntityField(lookupModel, initalValue));
   }
 
+  /** {@inheritDoc} */
   @Override
   public Entity getValue() {
     if (getInputComponent().getModel().getSelectedEntities().isEmpty()) {
@@ -26,10 +32,10 @@ public final class EntityLookupProvider extends AbstractInputProvider<Entity, En
     return getInputComponent().getModel().getSelectedEntities().get(0);
   }
 
-  private static EntityLookupField createEntityField(final EntityLookupModel lookupModel, final Object currentValue) {
+  private static EntityLookupField createEntityField(final EntityLookupModel lookupModel, final Object initialValue) {
     final EntityLookupField field = new EntityLookupField(lookupModel);
-    if (currentValue != null) {
-      lookupModel.setSelectedEntity((Entity) currentValue);
+    if (initialValue != null) {
+      lookupModel.setSelectedEntity((Entity) initialValue);
     }
 
     return field;

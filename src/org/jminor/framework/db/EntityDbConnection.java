@@ -66,22 +66,42 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
     super(database, user);
   }
 
+  /**
+   * Constructs a new EntityDbConnection instance
+   * @param connection the connection object to base the entity db connection on
+   * @param database the Database instance
+   * @param user the user used for connecting to the database
+   * @throws SQLException in case there is a problem connecting to the database
+   * @throws ClassNotFoundException in case the JDBC driver class is not found
+   */
   public EntityDbConnection(final Connection connection, final Database database, final User user) throws SQLException {
     super(database, user, connection);
   }
 
+  /**
+   * @return true if optimistic locking is enabled
+   */
   public boolean isOptimisticLocking() {
     return optimisticLocking;
   }
 
+  /**
+   * @param optimisticLocking true if optimistic locking should be enabled
+   */
   public void setOptimisticLocking(final boolean optimisticLocking) {
     this.optimisticLocking = optimisticLocking;
   }
 
+  /**
+   * @return true if foreign key fetch depth is being limited
+   */
   public boolean isLimitForeignKeyFetchDepth() {
     return limitForeignKeyFetchDepth;
   }
 
+  /**
+   * @param limitForeignKeyFetchDepth true if foreign key fetch depth should be limited
+   */
   public void setLimitForeignKeyFetchDepth(final boolean limitForeignKeyFetchDepth) {
     this.limitForeignKeyFetchDepth = limitForeignKeyFetchDepth;
   }

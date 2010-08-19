@@ -14,6 +14,10 @@ import org.jminor.framework.domain.Property;
 @SuppressWarnings({"unchecked"})
 public class DefaultPropertyFilterModel extends DefaultColumnSearchModel<Property> {
 
+  /**
+   * Instantiates a new DefaultPropertyFilterModel
+   * @param property the property
+   */
   public DefaultPropertyFilterModel(final Property property) {
     super(property, property.getType(), (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER),
             property.getFormat());

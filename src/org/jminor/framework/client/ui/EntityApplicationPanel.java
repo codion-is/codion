@@ -88,39 +88,69 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   private static final String DIV_UP = "divUp";
   private static final String DIV_DOWN = "divDown";
 
+  /** {@inheritDoc} */
   public final void handleException(final Throwable exception, final JComponent dialogParent) {
     LOG.error(this, exception);
     DefaultExceptionHandler.getInstance().handleException(exception, dialogParent);
   }
 
+  /**
+   * @return the application model this application panel is based on
+   */
   public final EntityApplicationModel getModel() {
     return applicationModel;
   }
 
-  public final void addMainApplicationPanelProviders(final EntityPanelProvider... panelProviders) {
+  /**
+   * Adds main application panels, displayed on application start
+   * @param panelProviders the main application panel providers
+   * @return this application panel instance
+   */
+  public final EntityApplicationPanel addMainApplicationPanelProviders(final EntityPanelProvider... panelProviders) {
     Util.rejectNullValue(panelProviders, "panelProviders");
     for (final EntityPanelProvider panelProvider : panelProviders) {
       addMainApplicationPanelProvider(panelProvider);
     }
+    return this;
   }
 
+  /**
+   * Adds a main application panel, displayed on application start
+   * @param panelProvider the main application panel provider
+   * @return this application panel instance
+   */
   public final EntityApplicationPanel addMainApplicationPanelProvider(final EntityPanelProvider panelProvider) {
     mainApplicationPanelProviders.add(panelProvider);
     return this;
   }
 
-  public final void addSupportPanelProviders(final EntityPanelProvider... panelProviders) {
+  /**
+   * Adds support application panels, available via a support panel manu
+   * @param panelProviders the support application panel providers
+   * @return this application panel instance
+   */
+  public final EntityApplicationPanel addSupportPanelProviders(final EntityPanelProvider... panelProviders) {
     Util.rejectNullValue(panelProviders, "panelProviders");
     for (final EntityPanelProvider panelProvider : panelProviders) {
       addSupportPanelProvider(panelProvider);
     }
+    return this;
   }
 
+  /**
+   * Adds a support application panel, available via a support panel manu
+   * @param panelProvider the support application panel provider
+   * @return this application panel instance
+   */
   public final EntityApplicationPanel addSupportPanelProvider(final EntityPanelProvider panelProvider) {
     supportPanelProviders.add(panelProvider);
     return this;
   }
 
+  /**
+   * @param entityID the entity ID
+   * @return the main entity panel based on the given entity type, null if none is found
+   */
   public final EntityPanel getMainApplicationPanel(final String entityID) {
     for (final EntityPanel panel : mainApplicationPanels) {
       if (panel.getModel().getEntityID().equals(entityID)) {
@@ -131,6 +161,9 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     return null;
   }
 
+  /**
+   * @return an unmodifiable view of the main application panels
+   */
   public final List<EntityPanel> getMainApplicationPanels() {
     return Collections.unmodifiableList(mainApplicationPanels);
   }
@@ -155,14 +188,25 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     }
   }
 
+  /**
+   * Performs a login, fetching user information via <code>getUser</code>
+   * @throws CancelException in case the login is cancelled
+   * @see #getUser(String, org.jminor.common.model.User, String, javax.swing.ImageIcon)
+   */
   public final void login() throws CancelException {
     applicationModel.login(getUser(Messages.get(Messages.LOGIN), null, getClass().getSimpleName(), null));
   }
 
+  /**
+   * Performs a logout
+   */
   public final void logout() {
     applicationModel.logout();
   }
 
+  /**
+   * Shows a dialog for setting the logging level
+   */
   public final void setLoggingLevel() {
     EntityUiUtil.setLoggingLevel(this);
   }
@@ -172,21 +216,48 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
             FrameworkMessages.get(FrameworkMessages.APPLICATION_TREE), false, true, null);
   }
 
+  /**
+   * Shows a dialog containing a dependency tree view of all defined entities
+   */
   public final void viewDependencyTree() {
     UiUtil.showInDialog(UiUtil.getParentWindow(this), initializeDependencyTree(), false,
             FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES), false, true, null);
   }
 
+  /**
+   * Starts this application.
+   * @param frameCaption the caption to display on the frame
+   * @param iconName the name of the icon to use
+   * @param maximize if true the application frame is maximized on startup
+   * @param frameSize the frame size when unmaximized
+   */
   public final void startApplication(final String frameCaption, final String iconName, final boolean maximize,
                                      final Dimension frameSize) {
     startApplication(frameCaption, iconName, maximize, frameSize, null);
   }
 
+  /**
+   * Starts this application.
+   * @param frameCaption the caption to display on the frame
+   * @param iconName the name of the icon to use
+   * @param maximize if true the application frame is maximized on startup
+   * @param frameSize the frame size when unmaximized
+   * @param defaultUser the default user to display in the login dialog
+   */
   public final void startApplication(final String frameCaption, final String iconName, final boolean maximize,
                                      final Dimension frameSize, final User defaultUser) {
     startApplication(frameCaption, iconName, maximize, frameSize, defaultUser, true);
   }
 
+  /**
+   * Starts this application.
+   * @param frameCaption the caption to display on the frame
+   * @param iconName the name of the icon to use
+   * @param maximize if true the application frame is maximized on startup
+   * @param frameSize the frame size when unmaximized
+   * @param defaultUser the default user to display in the login dialog
+   * @param showFrame if true the frame is set visible
+   */
   public final void startApplication(final String frameCaption, final String iconName, final boolean maximize,
                                      final Dimension frameSize, final User defaultUser, final boolean showFrame) {
     try {
@@ -217,6 +288,10 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     bindEvents();
   }
 
+  /**
+   * Exists this application
+   * @throws CancelException if the exit is cancelled
+   */
   public final void exit() throws CancelException {
     if (Configuration.getBooleanValue(Configuration.CONFIRM_EXIT) && JOptionPane.showConfirmDialog(this, FrameworkMessages.get(FrameworkMessages.CONFIRM_EXIT),
             FrameworkMessages.get(FrameworkMessages.CONFIRM_EXIT_TITLE), JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
@@ -238,6 +313,10 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     System.exit(0);
   }
 
+  /**
+   * Shows a help dialog
+   * @see #getHelpPanel()
+   */
   public final void showHelp() {
     final JOptionPane pane = new JOptionPane(getHelpPanel(), JOptionPane.PLAIN_MESSAGE,
             JOptionPane.NO_OPTION, null, new String[] {Messages.get(Messages.CLOSE)});
@@ -251,6 +330,10 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     dialog.setVisible(true);
   }
 
+  /**
+   * Shows an about dialog
+   * @see #getAboutPanel()
+   */
   public final void showAbout() {
     final JOptionPane pane = new JOptionPane(getAboutPanel(), JOptionPane.PLAIN_MESSAGE,
             JOptionPane.NO_OPTION, null, new String[] {Messages.get(Messages.CLOSE)});
@@ -263,30 +346,56 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     dialog.setVisible(true);
   }
 
+  /**
+   * @param listener a listener notified each time the always on top status changes
+   */
   public final void addAlwaysOnTopListener(final ActionListener listener) {
     evtAlwaysOnTopChanged.addListener(listener);
   }
 
+  /**
+   * @param listener the listener to remove
+   */
   public final void removeAlwaysOnTopListener(final ActionListener listener) {
     evtAlwaysOnTopChanged.removeListener(listener);
   }
 
+  /**
+   * @param listener a listener notified when to application has been successfully started
+   */
   public final void addApplicationStartedListener(final ActionListener listener) {
     evtApplicationStarted.addListener(listener);
   }
 
+  /**
+   * @param listener the listener to remove
+   */
   public final void removeApplicationStartedListener(final ActionListener listener) {
     evtApplicationStarted.removeListener(listener);
   }
 
+  /**
+   * @param listener a listener notified each time the selected main panel changes
+   */
   public final void addSelectedPanelListener(final ActionListener listener) {
     evtSelectedEntityPanelChanged.addListener(listener);
   }
 
+  /**
+   * @param listener the listener to remove
+   */
   public final void removeSelectedPanelListener(final ActionListener listener) {
     evtSelectedEntityPanelChanged.removeListener(listener);
   }
 
+  /**
+   * @return the control set on which to base the main menu
+   * @see #getFileControlSet()
+   * @see #getSettingsControlSet()
+   * @see #getViewControlSet()
+   * @see #getToolsControlSet()
+   * @see #getHelpControlSet()
+   */
   protected ControlSet getMainMenuControlSet() {
     final ControlSet menuControlSets = new ControlSet();
     menuControlSets.add(getFileControlSet());
@@ -444,6 +553,10 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     return panel;
   }
 
+  /**
+   * @param entityPanelClass the entity panel class
+   * @return the main entity panel of the given type, null if none is found
+   */
   protected final EntityPanel getEntityPanel(final Class<? extends EntityPanel> entityPanelClass) {
     for (final EntityPanel entityPanel : mainApplicationPanels) {
       if (entityPanel.getClass().equals(entityPanelClass)) {
@@ -454,6 +567,10 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     return null;
   }
 
+  /**
+   * @param entityID the entity ID
+   * @return the main entity panel of the given entity type, null if none is found
+   */
   protected final EntityPanel getEntityPanel(final String entityID) {
     for (final EntityPanel entityPanel : mainApplicationPanels) {
       if (entityPanel.getModel().getEntityID().equals(entityID)) {
@@ -464,10 +581,21 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     return null;
   }
 
-  protected EntityDbProvider initializeDbProvider(final User user, final String frameCaption) throws CancelException {
-    return EntityDbProviderFactory.createEntityDbProvider(user, frameCaption);
+  /**
+   * Initializes the entity db provider
+   * @param user the user
+   * @param clientTypeID a string specifying the client type
+   * @return an initialized EntityDbProvider
+   * @throws CancelException in case the initialization is cancelled
+   */
+  protected EntityDbProvider initializeDbProvider(final User user, final String clientTypeID) throws CancelException {
+    return EntityDbProviderFactory.createEntityDbProvider(user, clientTypeID);
   }
 
+  /**
+   * Override to add event bindings after initialization
+   * @see #initialize(org.jminor.framework.client.model.EntityApplicationModel)
+   */
   protected void bindEvents() {}
 
   /**
@@ -504,10 +632,19 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     return controlSet;
   }
 
+  /**
+   * Shows a dialog containing the entity panel provided by the given panel provider
+   * @param panelProvider the entity panel provider
+   */
   protected final void showEntityPanelDialog(final EntityPanelProvider panelProvider) {
     showEntityPanelDialog(panelProvider, false);
   }
 
+  /**
+   * Shows a dialog containing the entity panel provided by the given panel provider
+   * @param panelProvider the entity panel provider
+   * @param modalDialog if true the dialog is made modal
+   */
   protected final void showEntityPanelDialog(final EntityPanelProvider panelProvider, final boolean modalDialog) {
     final JDialog dialog;
     try {
@@ -587,23 +724,47 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     }
   }
 
+  /**
+   * @return true if a login dialog is required for this application,
+   * false if the user is supplied differently
+   */
   protected final boolean isLoginRequired() {
     return loginRequired;
   }
 
+  /**
+   * Sets wheteher or not this application requires a login dialog
+   * @param loginRequired the login required status
+   */
   protected final void setLoginRequired(boolean loginRequired) {
     this.loginRequired = loginRequired;
   }
 
+  /**
+   * @return the look and feel class name to use
+   * @see org.jminor.framework.Configuration#DEFAULT_LOOK_AND_FEEL_CLASSNAME
+   */
   protected String getDefaultLookAndFeelClassName() {
     return Configuration.getStringValue(Configuration.DEFAULT_LOOK_AND_FEEL_CLASSNAME);
   }
 
+  /**
+   * Initializes a panel to show in the SOUTH position of this application frame,
+   * override to provide a south panel.
+   * @return a panel for the SOUTH position
+   */
   protected JPanel initializeSouthPanel() {
     return null;
   }
 
-  protected final JDialog createStartupDialog(final Icon icon, final String startupMessage) {
+  /**
+   * Initializes the startup dialog
+   * @param icon the icon
+   * @param startupMessage the startup message
+   * @return the startup dialog
+   * @see #initializeStartupProgressPanel(javax.swing.Icon)
+   */
+  protected final JDialog initializeStartupDialog(final Icon icon, final String startupMessage) {
     final String message = startupMessage == null ? "Initializing Application" : startupMessage;
     final JDialog initializationDialog = new JDialog((JFrame) null, message, false);
     initializationDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -614,6 +775,11 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     return initializationDialog;
   }
 
+  /**
+   * Initializes the progress panel to show in the startup dialog
+   * @param icon the icon
+   * @return an initialized startup progress panel
+   */
   protected JPanel initializeStartupProgressPanel(final Icon icon) {
     final JPanel panel = new JPanel(new BorderLayout(5,5));
     final JProgressBar progressBar = new JProgressBar(JProgressBar.HORIZONTAL);
@@ -628,6 +794,11 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     return panel;
   }
 
+  /**
+   * @param frameCaption the caption for the frame
+   * @param user the user
+   * @return a frame title based on the caption and user information
+   */
   protected String getFrameTitle(final String frameCaption, final User user) {
     return frameCaption + " - " + getUserInfo(user, applicationModel.getDbProvider().getDescription());
   }
@@ -685,10 +856,17 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     return frame;
   }
 
+  /**
+   * @return a JMenuBar based on the main menu control set
+   * @see #getMainMenuControlSet()
+   */
   protected final JMenuBar createMenuBar() {
     return ControlProvider.createMenuBar(getMainMenuControlSet());
   }
 
+  /**
+   * Initializes the panel resizing and navigation functionality
+   */
   protected final void initializeResizingAndNavigation() {
     final DefaultTreeModel panelTree = createApplicationTree(mainApplicationPanels);
     final Enumeration enumeration = ((DefaultMutableTreeNode) panelTree.getRoot()).breadthFirstEnumeration();
@@ -714,8 +892,23 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     });
   }
 
+  /**
+   * Initializes the application model
+   * @param dbProvider the db provider
+   * @return an initialized application model
+   * @throws CancelException in case the initialization is cancelled
+   */
   protected abstract EntityApplicationModel initializeApplicationModel(final EntityDbProvider dbProvider) throws CancelException;
 
+  /**
+   * Returns the user, either via a login dialog or via override, called during startup
+   * @param frameCaption the application frame caption
+   * @param defaultUser the default user
+   * @param applicationIdentifier the application identifier
+   * @param applicationIcon the application icon
+   * @return the application user
+   * @throws CancelException in case a login dialog is cancelled
+   */
   protected User getUser(final String frameCaption, final User defaultUser, final String applicationIdentifier,
                          final ImageIcon applicationIcon) throws CancelException {
     final User user = LoginPanel.showLoginPanel(null, defaultUser == null ?
@@ -757,7 +950,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     UIManager.setLookAndFeel(getDefaultLookAndFeelClassName());
     final ImageIcon applicationIcon = iconName != null ? Images.getImageIcon(getClass(), iconName) :
             Images.loadImage("jminor_logo32.gif");
-    final JDialog startupDialog = createStartupDialog(applicationIcon, frameCaption);
+    final JDialog startupDialog = initializeStartupDialog(applicationIcon, frameCaption);
     EntityDbProvider entityDbProvider;
     while (true) {
       final User user = isLoginRequired() ? getUser(frameCaption, defaultUser, getClass().getSimpleName(), applicationIcon) : new User("", "");

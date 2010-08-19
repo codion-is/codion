@@ -58,24 +58,43 @@ public final class EntityLookupField extends JTextField {
     bindProperty();
   }
 
+  /**
+   * @return the lookup model this lookup field is based on
+   */
   public EntityLookupModel getModel() {
     return model;
   }
 
+  /**
+   * @return the action called when ENTER is pressed
+   */
   public Action getEnterAction() {
     return enterAction;
   }
 
+  /**
+   * @param enterAction the action to call when ENTER is pressed
+   * @return this lookup field
+   */
   public EntityLookupField setEnterAction(final Action enterAction) {
     this.enterAction = enterAction;
     return this;
   }
 
+  /**
+   * @param defaultBackgroundColor the default background color
+   * @return this lookup field
+   */
   public EntityLookupField setDefaultBackgroundColor(final Color defaultBackgroundColor) {
     this.defaultBackgroundColor = defaultBackgroundColor;
     return this;
   }
 
+  /**
+   * Activates the transferral of focus on ENTER, N.B. uses the enter action
+   * @return this lookup field
+   * @see #setEnterAction(javax.swing.Action)
+   */
   public EntityLookupField setTransferFocusOnEnter() {
     return setEnterAction(new AbstractAction() {
       public void actionPerformed(final ActionEvent e) {

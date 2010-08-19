@@ -48,6 +48,7 @@ public final class SelectedItemBeanValueLink extends AbstractBeanValueLink {
     this.comboBoxModel = box.getModel();
     updateUI();
     box.addItemListener(new ItemListener() {
+      /** {@inheritDoc} */
       public void itemStateChanged(final ItemEvent e) {
         if (e.getStateChange() == ItemEvent.SELECTED) {
           updateModel();

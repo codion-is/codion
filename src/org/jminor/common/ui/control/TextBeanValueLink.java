@@ -74,6 +74,10 @@ public class TextBeanValueLink extends AbstractBeanValueLink implements Document
     return Util.nullOrEmpty(text) ? null : text;
   }
 
+  /**
+   * @param value the value
+   * @return the value as a string
+   */
   protected String getValueAsString(final Object value) {
     return value != null ? value.toString() : null;
   }

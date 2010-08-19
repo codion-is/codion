@@ -18,6 +18,9 @@ public interface ColumnSearchModel<K> {
   String UPPER_BOUND_PROPERTY = "upperBound";
   String LOWER_BOUND_PROPERTY = "lowerBound";
 
+  /**
+   * @return the column identifier
+   */
   K getColumnIdentifier();
 
   /**

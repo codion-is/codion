@@ -219,6 +219,11 @@ public class RandomItemModel<T> {
     private final T item;
     private int weight = 0;
 
+    /**
+     * Instantiates a new RandomItem
+     * @param item the item
+     * @param weight the random selection weight to assign to this item
+     */
     public RandomItem(final T item, final int weight) {
       if (weight < 0) {
         throw new IllegalStateException("Weight can not be negative");
@@ -227,24 +232,33 @@ public class RandomItemModel<T> {
       this.weight = weight;
     }
 
+    /**
+     * @return the random weight assigned to this item
+     */
     public int getWeight() {
       return weight;
     }
 
+    /**
+     * @return the item this random item represents
+     */
     public T getItem() {
       return item;
     }
 
+  /** {@inheritDoc} */
     @Override
     public String toString() {
       return item.toString();
     }
 
+  /** {@inheritDoc} */
     @Override
     public boolean equals(final Object obj) {
       return obj instanceof RandomItem && (((RandomItem) obj).item.equals(item));
     }
 
+  /** {@inheritDoc} */
     @Override
     public int hashCode() {
       return item.hashCode();

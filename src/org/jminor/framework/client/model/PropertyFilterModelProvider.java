@@ -6,6 +6,9 @@ package org.jminor.framework.client.model;
 import org.jminor.common.model.ColumnSearchModel;
 import org.jminor.framework.domain.Property;
 
+/**
+ * Specifies an object responsible for providing property filter models
+ */
 public interface PropertyFilterModelProvider {
 
   /**

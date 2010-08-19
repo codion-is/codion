@@ -6,6 +6,9 @@ package org.jminor.framework.client.model;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Property;
 
+/**
+ * Specifies an object responsible for providing property search models
+ */
 public interface PropertySearchModelProvider {
 
   /**

@@ -216,7 +216,6 @@ public abstract class AbstractValueChangeMapEditModel<K, V> implements ValueChan
   }
 
   private Event getValueSetEvent(final K key) {
-    Util.rejectNullValue(key, "key");
     if (!valueSetEventMap.containsKey(key)) {
       valueSetEventMap.put(key, Events.event());
     }
@@ -225,7 +224,6 @@ public abstract class AbstractValueChangeMapEditModel<K, V> implements ValueChan
   }
 
   private Event getValueChangeEvent(final K key) {
-    Util.rejectNullValue(key, "key");
     if (!valueChangeEventMap.containsKey(key)) {
       valueChangeEventMap.put(key, Events.event());
     }

@@ -12,9 +12,19 @@ import org.jminor.framework.client.model.EntityTableSearchModel;
  */
 public interface EntityTableSearchPanel {
 
+  /**
+   * @return the search model this search panel is based on
+   */
   EntityTableSearchModel getSearchModel();
 
+  /**
+   * @return the search controls
+   */
   ControlSet getControls();
 
+  /**
+   * Requests the focus for this search panel
+   * @return true if the focus request was granted
+   */
   boolean requestFocusInWindow();
 }

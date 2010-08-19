@@ -15,10 +15,16 @@ import javax.swing.JComboBox;
  */
 public final class EntityComboProvider extends AbstractInputProvider<Entity, JComboBox> {
 
-  public EntityComboProvider(final EntityComboBoxModel model, final Entity currentValue) {
-    super(createEntityField(model, currentValue));
+  /**
+   * Instantiates a new input provider based on the EntityComboBoxModel class
+   * @param model the combo box model
+   * @param initialValue the initial value to display
+   */
+  public EntityComboProvider(final EntityComboBoxModel model, final Entity initialValue) {
+    super(createEntityField(model, initialValue));
   }
 
+  /** {@inheritDoc} */
   @Override
   public Entity getValue() {
     final EntityComboBoxModel model = (EntityComboBoxModel) getInputComponent().getModel();

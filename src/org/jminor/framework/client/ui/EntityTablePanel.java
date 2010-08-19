@@ -285,6 +285,9 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     return tableDoubleClickAction;
   }
 
+  /**
+   * @param additionalPopupControls a set of controls to add to the table popup menu
+   */
   public final void setAdditionalPopupControls(final ControlSet additionalPopupControls) {
     if (panelInitialized) {
       throw new RuntimeException("Additional popup controls must be set before the panel is initialized");
@@ -292,6 +295,9 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     this.additionalPopupControls = additionalPopupControls;
   }
 
+  /**
+   * @param additionalToolbarControls a set of controls to add to the table toolbar menu
+   */
   public final void setAdditionalToolbarControls(final ControlSet additionalToolbarControls) {
     if (panelInitialized) {
       throw new RuntimeException("Additional toolbar controls must be set before the panel is initialized");
@@ -424,6 +430,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     }
   }
 
+  /** {@inheritDoc} */
   @Override
   public final String toString() {
     return getClass().getSimpleName() + ": " + getEntityTableModel().getEntityID();
@@ -637,6 +644,10 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     DefaultExceptionHandler.getInstance().handleException(exception, this);
   }
 
+  /**
+   * Initializes the button used to toggle the summary panel state (hidden and visible)
+   * @return a summary panel toggle button
+   */
   public final Control getToggleSummaryPanelControl() {
     final ToggleBeanValueLink toggle = Controls.toggleControl(this, "summaryPanelVisible", null,
             evtSummaryPanelVisibilityChanged);
@@ -667,6 +678,9 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     return ret;
   }
 
+  /**
+   * @return a control for clearing the table selection
+   */
   public final Control getClearSelectionControl() {
     final Control clearSelection = Controls.methodControl(getEntityTableModel(), "clearSelection", null,
             getEntityTableModel().getSelectionEmptyState().getReversedState(), null, -1, null,
@@ -676,6 +690,9 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     return clearSelection;
   }
 
+  /**
+   * @return a control for moving the table selection one index down
+   */
   public final Control getMoveSelectionDownControl() {
     final Control selectionDown = Controls.methodControl(getEntityTableModel(), "moveSelectionDown",
             Images.loadImage(Images.IMG_DOWN_16));
@@ -684,6 +701,9 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     return selectionDown;
   }
 
+  /**
+   * @return a control for moving the table selection one index up
+   */
   public final Control getMoveSelectionUpControl() {
     final Control selectionUp = Controls.methodControl(getEntityTableModel(), "moveSelectionUp",
             Images.loadImage(Images.IMG_UP_16));
@@ -692,26 +712,44 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     return selectionUp;
   }
 
+  /**
+   * @param listener a listener notified each time the search panel visibility changes
+   */
   public final void addSearchPanelVisibleListener(final ActionListener listener) {
     evtSearchPanelVisibilityChanged.addListener(listener);
   }
 
+  /**
+   * @param listener the listener to remove
+   */
   public final void removeSearchPanelVisibleListener(final ActionListener listener) {
     evtSearchPanelVisibilityChanged.removeListener(listener);
   }
 
+  /**
+   * @param listener a listener notified each time the summary panel visibility changes
+   */
   public final void addSummaryPanelVisibleListener(final ActionListener listener) {
     evtSummaryPanelVisibilityChanged.addListener(listener);
   }
 
+  /**
+   * @param listener the listener to remove
+   */
   public final void removeSummaryPanelVisibleListener(final ActionListener listener) {
     evtSummaryPanelVisibilityChanged.removeListener(listener);
   }
 
+  /**
+   * @param listener a listener notified each time the table is double clicked
+   */
   public final void addTableDoubleClickListener(final ActionListener listener) {
     evtTableDoubleClicked.addListener(listener);
   }
 
+  /**
+   * @param listener the listener to remove
+   */
   public final void removeTableDoubleClickListener(final ActionListener listener) {
     evtTableDoubleClicked.removeListener(listener);
   }
@@ -846,6 +884,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     return panel;
   }
 
+  /** {@inheritDoc} */
   @Override
   protected ColumnSearchPanel<Property> initializeFilterPanel(final ColumnSearchModel<Property> model) {
     return new PropertyFilterPanel(model, true, true);

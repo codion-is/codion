@@ -34,12 +34,19 @@ public class EntityTableCellRenderer implements TableCellRenderer {
   private static final Color SINGLE_FILTERED_BACKGROUND = new Color(235, 235, 235);
   private static final Color DOUBLE_FILTERED_BACKGROUND = new Color(215, 215, 215);
 
+  /**
+   * Instantiates a new EntityTableCellRenderer
+   * @param tableModel the table model
+   * @param rowColoring true if entity specific row coloring should be used
+   * @see org.jminor.framework.domain.Entities.Proxy#getBackgroundColor(org.jminor.framework.domain.Entity)
+   */
   public EntityTableCellRenderer(final EntityTableModel tableModel, final boolean rowColoring) {
     Util.rejectNullValue(tableModel, "tableModel");
     this.rowColoring = rowColoring;
     this.tableModel = tableModel;
   }
 
+  /** {@inheritDoc} */
   public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
                                                  final boolean hasFocus, final int row, final int column) {
     final Property property = tableModel.getColumnProperty(column);

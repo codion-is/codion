@@ -6,6 +6,9 @@ package org.jminor.framework.client.model;
 import org.jminor.common.model.ColumnSearchModel;
 import org.jminor.framework.domain.Property;
 
+/**
+ * A default PropertyFilterModelProvider implementation.
+ */
 public class DefaultPropertyFilterModelProvider implements PropertyFilterModelProvider {
 
   /** {@inheritDoc} */

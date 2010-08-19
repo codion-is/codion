@@ -18,12 +18,17 @@ public final class EntityTableSummaryPanel extends AbstractTableColumnSyncPanel 
 
   private final EntityTableModel tableModel;
 
+  /**
+   * Instantiates a new EntityTableSummaryPanel
+   * @param tableModel the table model
+   */
   public EntityTableSummaryPanel(final EntityTableModel tableModel) {
     super(tableModel.getColumnModel());
     this.tableModel = tableModel;
     resetPanel();
   }
 
+  /** {@inheritDoc} */
   @Override
   protected JPanel initializeColumnPanel(final TableColumn column) {
     final Property property = (Property) column.getIdentifier();

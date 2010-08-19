@@ -245,10 +245,16 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
     }
   }
 
+  /**
+   * @return the search wildcard
+   */
   public final String getWildcard() {
     return wildcard;
   }
 
+  /**
+   * @param wildcard the search wildcard
+   */
   public final void setWildcard(final String wildcard) {
     this.wildcard = wildcard;
   }

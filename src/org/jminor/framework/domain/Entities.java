@@ -337,6 +337,11 @@ public final class Entities {
     return getEntityDefinition(entityID).getVisibleProperties();
   }
 
+  /**
+   * @param entityID the entity ID
+   * @param propertyID the property ID
+   * @return the column property identified by property ID
+   */
   public static Property.ColumnProperty getColumnProperty(final String entityID, final String propertyID) {
     final Property property = getProperty(entityID, propertyID);
     if (!(property instanceof Property.ColumnProperty)) {

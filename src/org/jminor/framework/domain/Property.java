@@ -263,8 +263,14 @@ public interface Property extends Attribute {
    */
   ForeignKeyProperty getParentProperty();
 
+  /**
+   * Specifies a property that can be include in database search queries
+   */
   interface SearchableProperty extends Property {}
 
+  /**
+   * Specifies a property based on a table column
+   */
   interface ColumnProperty extends SearchableProperty, Column {
 
     /**

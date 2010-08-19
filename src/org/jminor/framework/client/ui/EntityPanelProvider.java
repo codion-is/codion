@@ -47,10 +47,19 @@ public class EntityPanelProvider implements Comparable {
 
   private EntityPanel instance;
 
+  /**
+   * Instantiates a new EntityPanelProvider for the given entity type
+   * @param entityID the entity ID
+   */
   public EntityPanelProvider(final String entityID) {
     this(entityID, null);
   }
 
+  /**
+   * Instantiates a new EntityPanelProvider for the given entity type
+   * @param entityID the entity ID
+   * @param caption the panel caption
+   */
   public EntityPanelProvider(final String entityID, final String caption) {
     this(entityID, caption, DefaultEntityModel.class, EntityPanel.class);
   }
@@ -95,6 +104,9 @@ public class EntityPanelProvider implements Comparable {
     return this;
   }
 
+  /**
+   * @return the entity ID
+   */
   public final String getEntityID() {
     return entityID;
   }

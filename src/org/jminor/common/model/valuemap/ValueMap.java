@@ -91,6 +91,11 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueAsStringProvid
    * @param <K> the type of the map keys
    */
   interface ToString<K> {
+    /**
+     * Returns a string representation of the given value map
+     * @param valueMap the value map
+     * @return a string representation of the value map
+     */
     String toString(final ValueMap<K, ?> valueMap);
   }
 }
