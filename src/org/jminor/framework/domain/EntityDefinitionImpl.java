@@ -7,17 +7,12 @@ import org.jminor.common.model.IdSource;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.ValueMap;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.Serializable;
 import java.util.*;
 
 /**
  * A class encapsulating a entity definition, such as table name, order by clause and properties.
  */
-final class EntityDefinitionImpl implements EntityDefinition, Serializable {
-
-  private static final long serialVersionUID = 1;
+final class EntityDefinitionImpl implements EntityDefinition {
   /**
    * The entityID
    */
@@ -85,14 +80,14 @@ final class EntityDefinitionImpl implements EntityDefinition, Serializable {
    */
   private final Map<String, Set<String>> linkedProperties = new HashMap<String, Set<String>>();
 
-  private transient List<Property.PrimaryKeyProperty> primaryKeyProperties;
-  private transient List<Property.ForeignKeyProperty> foreignKeyProperties;
-  private transient List<Property.TransientProperty> transientProperties;
-  private transient List<Property> visibleProperties;
-  private transient List<Property.ColumnProperty> columnProperties;
-  private transient Map<String, Collection<Property.DenormalizedProperty>> denormalizedProperties;
-  private transient String selectColumnsString;
-  private transient boolean hasDenormalizedProperties;
+  private List<Property.PrimaryKeyProperty> primaryKeyProperties;
+  private List<Property.ForeignKeyProperty> foreignKeyProperties;
+  private List<Property.TransientProperty> transientProperties;
+  private List<Property> visibleProperties;
+  private List<Property.ColumnProperty> columnProperties;
+  private Map<String, Collection<Property.DenormalizedProperty>> denormalizedProperties;
+  private String selectColumnsString;
+  private boolean hasDenormalizedProperties;
 
   /**
    * Defines a new entity, by default the <code>entityID</code> is used as the underlying table name
@@ -540,17 +535,5 @@ final class EntityDefinitionImpl implements EntityDefinition, Serializable {
     }
 
     return stringBuilder.toString();
-  }
-
-  private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
-    stream.defaultReadObject();
-    this.primaryKeyProperties = null;
-    this.foreignKeyProperties = null;
-    this.transientProperties = null;
-    this.visibleProperties = null;
-    this.columnProperties = null;
-    this.denormalizedProperties = null;
-    this.selectColumnsString = null;
-    this.hasDenormalizedProperties = false;
   }
 }

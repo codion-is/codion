@@ -2030,4 +2030,4 @@
   More javadocs added
   ValueMapImpl and ValueChangeMapImpl no longer implement Serializable
   EntityImpl and EntityImpl.KeyImpl implement writeObject and readObject (testing)
-  EntityDefinitionImpl.readObject() added for initializing transient fields
+  EntityDefinitionImpl no longer implements Serializable
