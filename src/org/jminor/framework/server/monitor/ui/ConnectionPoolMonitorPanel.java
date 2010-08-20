@@ -219,11 +219,11 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     configBase.add(ControlProvider.createButton(
             Controls.methodControl(model, "resetInPoolStats", "Reset")), BorderLayout.EAST);
 
-    final JPanel chartBase = new JPanel(new GridLayout(2,2));
+    final JPanel chartBase = new JPanel(new GridLayout(2,1));
     chartBase.add(requestsPerSecondChartPanel);
     chartBase.add(inPoolChartPanelMacro);
-    chartBase.add(inPoolChartPanel);
     chartBase.add(checkOutTimePanel);
+    chartBase.add(inPoolChartPanel);
     chartBase.setBorder(BorderFactory.createEtchedBorder());
 
     final JPanel panel = new JPanel(new BorderLayout(5,5));

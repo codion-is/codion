@@ -111,10 +111,6 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
   /** {@inheritDoc} */
   public Property getProperty(final String propertyID) {
     Util.rejectNullValue(propertyID, "propertyID");
-    if (properties == null) {
-      this.properties = Entities.getProperties(entityID);
-    }
-
     final Property property = properties.get(propertyID);
     if (property == null) {
       throw new RuntimeException("Property " + propertyID + " not found in entity: " + entityID);
@@ -612,32 +608,6 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
 
     return referencedPrimaryKeysCache.get(foreignKeyProperty);
   }
-
-//  private void writeObject(final java.io.ObjectOutputStream out) throws IOException {
-//    out.writeObject(entityID);
-//    for (final Property property : properties.values()) {
-//      if (!(property instanceof Property.DenormalizedViewProperty) && !(property instanceof Property.DerivedProperty)) {
-//        out.writeObject(getValue(property));
-//      }
-//    }
-//    out.writeObject(getOriginalValues());
-//  }
-//
-//  private void readObject(final java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
-//    entityID = (String) in.readObject();
-//    properties = Entities.getProperties(entityID);
-//    for (final Property property : properties.values()) {
-//      if (!(property instanceof Property.DenormalizedViewProperty) && !(property instanceof Property.DerivedProperty)) {
-//        setValue(property, in.readObject());
-//      }
-//    }
-//    final Map<String, Object> originalValues = (Map<String, Object>) in.readObject();
-//    if (originalValues != null) {
-//      for (final String propertyID : originalValues.keySet()) {
-//        setOriginalValue(propertyID, originalValues.get(propertyID));
-//      }
-//    }
-//  }
 
   /**
    * Sets the property value
