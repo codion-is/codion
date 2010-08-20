@@ -2031,3 +2031,4 @@
   ValueMapImpl and ValueChangeMapImpl no longer implement Serializable
   EntityImpl and EntityImpl.KeyImpl implement writeObject and readObject (testing)
   EntityDefinitionImpl no longer implements Serializable
+  EntityImpl.writeObject() and readObject() now use superclass methods to bypass validation, for the speed!

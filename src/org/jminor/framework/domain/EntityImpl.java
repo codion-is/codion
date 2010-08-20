@@ -707,7 +707,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
     for (final Property property : properties.values()) {
       if (!(property instanceof Property.DerivedProperty) && !(property instanceof Property.DenormalizedViewProperty)) {
         final String propertyID = property.getPropertyID();
-        stream.writeObject(getValue(propertyID));
+        stream.writeObject(super.getValue(propertyID));
         final boolean isModified = isModified(propertyID);
         stream.writeBoolean(isModified);
         if (isModified) {
@@ -723,7 +723,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
     for (final Property property : properties.values()) {
       if (!(property instanceof Property.DerivedProperty) && !(property instanceof Property.DenormalizedViewProperty)) {
         final String propertyID = property.getPropertyID();
-        initializeValue(propertyID, stream.readObject());
+        super.initializeValue(propertyID, stream.readObject());
         if (stream.readBoolean()) {
           setOriginalValue(propertyID, stream.readObject());
         }
