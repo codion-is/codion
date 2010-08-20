@@ -831,7 +831,7 @@ public final class Entities {
 
     private boolean foreignKeyCycle(final String referencedEntityID) {
       TreeNode tmp = getParent();
-      while (tmp != null && tmp instanceof EntityDependencyTreeNode) {
+      while (tmp instanceof EntityDependencyTreeNode) {
         if (((EntityDependencyTreeNode) tmp).getEntityID().equals(referencedEntityID)) {
           return true;
         }

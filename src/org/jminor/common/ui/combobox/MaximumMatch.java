@@ -181,7 +181,8 @@ public final class MaximumMatch extends PlainDocument {
       return selectedItem;
     }
     // iterate over all items
-    for (int i=0, n=model.getSize(); i < n; i++) {
+    final int n = model.getSize();
+    for (int i=0; i < n; i++) {
       final Object currentItem = model.getElementAt(i);
       // current item starts with the pattern?
       if (startsWithIgnoreCase(currentItem.toString(), pattern)) {
@@ -202,7 +203,8 @@ public final class MaximumMatch extends PlainDocument {
     final String selectedAsString=selectedItem.toString();
     int match=selectedAsString.length();
     // look for items that match the given pattern
-    for (int i=0, n=model.getSize(); i < n; i++) {
+    final int n = model.getSize();
+    for (int i=0; i < n; i++) {
       final Object currentItem = model.getElementAt(i);
       if (currentItem == null) {
         return 0;

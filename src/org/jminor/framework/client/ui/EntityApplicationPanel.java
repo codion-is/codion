@@ -736,7 +736,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    * Sets wheteher or not this application requires a login dialog
    * @param loginRequired the login required status
    */
-  protected final void setLoginRequired(boolean loginRequired) {
+  protected final void setLoginRequired(final boolean loginRequired) {
     this.loginRequired = loginRequired;
   }
 

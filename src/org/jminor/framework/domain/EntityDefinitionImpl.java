@@ -411,7 +411,7 @@ final class EntityDefinitionImpl implements EntityDefinition {
     for (final Property property : properties.values()) {
       if (property instanceof Property.DerivedProperty) {
         final Collection<String> linked = ((Property.DerivedProperty) property).getLinkedPropertyIDs();
-        if (linked != null && linked.size()  > 0) {
+        if (linked != null && !linked.isEmpty()) {
           for (final String parentLinkPropertyID : linked) {
             addDerivedPropertyChangeLink(parentLinkPropertyID, property.getPropertyID());
           }

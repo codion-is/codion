@@ -446,11 +446,11 @@ public final class DomainClassGenerator {
     private final String fkSchemaName;
     private final String fkTableName;
     private final String fkColumnName;
-    private final short keySeq;
+    private final int keySeq;
 
     ForeignKey(final String pkSchemaName, final String pkTableName, final String pkColumnName,
                final String fkSchemaName, final String fkTableName, final String fkColumnName,
-               final short keySeq) {
+               final int keySeq) {
       this.pkSchemaName = pkSchemaName;
       this.pkTableName = pkTableName;
       this.pkColumnName = pkColumnName;
@@ -469,7 +469,7 @@ public final class DomainClassGenerator {
       return fkSchemaName + "." + fkTableName + "." + fkColumnName + " -> " + pkSchemaName + "." + pkTableName + "." + pkColumnName;
     }
 
-    public short getKeySeq() {
+    public int getKeySeq() {
       return keySeq;
     }
   }

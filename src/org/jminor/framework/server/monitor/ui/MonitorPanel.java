@@ -64,7 +64,7 @@ public final class MonitorPanel extends JPanel {
   /**
    * @return true if the parent frame is always on top
    */
-  public boolean getAlwaysOnTop() {
+  public boolean isAlwaysOnTop() {
     return monitorFrame != null && monitorFrame.isAlwaysOnTop();
   }
 
