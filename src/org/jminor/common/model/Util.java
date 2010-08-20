@@ -449,10 +449,7 @@ public final class Util {
       }
     }
     catch (EOFException ex) {/**/}
-    catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-    catch (ClassNotFoundException e) {
+    catch (Exception e) {
       throw new RuntimeException(e);
     }
     finally {
