@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.domain;
 
-import org.jminor.common.db.Column;
 import org.jminor.common.model.Attribute;
+import org.jminor.common.model.Column;
 import org.jminor.common.model.Item;
 
 import java.text.Format;

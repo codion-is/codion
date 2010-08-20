@@ -1,9 +1,7 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.db;
-
-import org.jminor.common.model.Attribute;
+package org.jminor.common.model;
 
 /**
  * Describes a database column

@@ -2034,3 +2034,4 @@
   EntityImpl.writeObject() and readObject() now use superclass methods to bypass validation, for the speed!
   ConnectionPoolImpl.RETRIES_BEFORE_NEW_CONNECTION added
   EntityImplTest.serialization() added
+  Column moved from db to model
