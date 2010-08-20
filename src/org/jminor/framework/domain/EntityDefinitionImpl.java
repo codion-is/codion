@@ -7,17 +7,10 @@ import org.jminor.common.model.IdSource;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.ValueMap;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * A class encapsulating a entity definition, such as table name, order by clause and properties.
@@ -547,5 +540,17 @@ final class EntityDefinitionImpl implements EntityDefinition, Serializable {
     }
 
     return stringBuilder.toString();
+  }
+
+  private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
+    stream.defaultReadObject();
+    this.primaryKeyProperties = null;
+    this.foreignKeyProperties = null;
+    this.transientProperties = null;
+    this.visibleProperties = null;
+    this.columnProperties = null;
+    this.denormalizedProperties = null;
+    this.selectColumnsString = null;
+    this.hasDenormalizedProperties = false;
   }
 }
