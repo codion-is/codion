@@ -10,6 +10,9 @@ import org.jminor.common.model.valuemap.ValueChangeMapImpl;
 import org.jminor.common.model.valuemap.ValueMap;
 import org.jminor.common.model.valuemap.ValueMapImpl;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.text.Format;
@@ -35,22 +38,22 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
    * Used to cache the return value of the frequently called toString(),
    * invalidated each time a property value changes
    */
-  private transient String toString;
+  private String toString;
 
   /**
    * Caches the result of <code>getReferencedPrimaryKey</code> method
    */
-  private transient Map<Property.ForeignKeyProperty, Key> referencedPrimaryKeysCache;
+  private Map<Property.ForeignKeyProperty, Key> referencedPrimaryKeysCache;
 
   /**
    * Keep a reference to this frequently referenced map
    */
-  private transient Map<String, Property> properties;
+  private Map<String, Property> properties;
 
   /**
    * The primary key of this entity
    */
-  private transient Key primaryKey;
+  private Key primaryKey;
 
   /**
    * Instantiates a new Entity
@@ -699,6 +702,31 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
     }
   }
 
+  private void writeObject(final ObjectOutputStream stream) throws IOException {
+    stream.writeObject(entityID);
+    for (final Property property : properties.values()) {
+      final String propertyID = property.getPropertyID();
+      stream.writeObject(getValue(propertyID));
+      final boolean isModified = isModified(propertyID);
+      stream.writeBoolean(isModified);
+      if (isModified) {
+        stream.writeObject(getOriginalValue(propertyID));
+      }
+    }
+  }
+
+  private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
+    entityID = (String) stream.readObject();
+    properties = Entities.getProperties(entityID);
+    for (final Property property : properties.values()) {
+      final String propertyID = property.getPropertyID();
+      initializeValue(propertyID, stream.readObject());
+      if (stream.readBoolean()) {
+        setOriginalValue(propertyID, stream.readObject());
+      }
+    }
+  }
+
   /**
    * A class representing column key objects for entities, contains the values for those columns.
    */
@@ -711,12 +739,12 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
     /**
      * the entity ID
      */
-    private final String entityID;
+    private String entityID;
 
     /**
      * true if this key consists of a single integer value
      */
-    private final boolean singleIntegerKey;
+    private boolean singleIntegerKey;
 
     /**
      * Caching the hash code
@@ -731,7 +759,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
     /**
      * Caching this extremely frequently referenced attribute
      */
-    private transient List<Property.PrimaryKeyProperty> properties;
+    private List<Property.PrimaryKeyProperty> properties;
 
     /**
      * Instantiates a new Key for the given entity type
@@ -930,6 +958,22 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
         hashCode = (Integer) value;
       }
       hashCodeDirty = false;
+    }
+
+    private void writeObject(final ObjectOutputStream stream) throws IOException {
+      stream.writeObject(entityID);
+      for (final Property property : properties) {
+        stream.writeObject(getValue(property.getPropertyID()));
+      }
+    }
+
+    private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
+      entityID = (String) stream.readObject();
+      properties = Entities.getPrimaryKeyProperties(entityID);
+      singleIntegerKey = properties.size() == 1 && properties.get(0).isInteger();
+      for (final Property property : properties) {
+        setValue(property.getPropertyID(), stream.readObject());
+      }
     }
   }
 }

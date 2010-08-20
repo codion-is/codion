@@ -2,10 +2,9 @@ package org.jminor.common.model.valuemap;
 
 import org.jminor.common.model.Util;
 
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -13,16 +12,16 @@ import java.util.Map;
  * @param <K> the key type
  * @param <V> the value type
  */
-public class ValueMapImpl<K, V> implements ValueMap<K, V>, Serializable {
-
-  private static final long serialVersionUID = 1;
+public class ValueMapImpl<K, V> implements ValueMap<K, V> {
 
   /**
    * Holds the values contained in this value map.
    */
-  private final Map<K, V> values = new HashMap<K, V>();
+  private final Map<K, V> values = new LinkedHashMap<K, V>();
 
   private static final int MAGIC_NUMBER = 23;
+
+  public ValueMapImpl() {}
 
   /** {@inheritDoc} */
   public boolean isValueNull(final K key) {
@@ -64,7 +63,8 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V>, Serializable {
   }
 
   /**
-   * Two ValueChangeMapImpl objects are equal if all current property values are equal.
+   * Two ValueChangeMapImpl objects are equal if they contain the
+   * same number of values and all their values are equal.
    */
   @SuppressWarnings({"unchecked"})
   @Override

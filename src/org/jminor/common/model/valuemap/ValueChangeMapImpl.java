@@ -13,7 +13,6 @@ import org.jminor.common.model.Util;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -25,9 +24,7 @@ import java.util.Map;
  * @param <K> the type of the map keys
  * @param <V> the type of the map values
  */
-public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements ValueChangeMap<K, V>, Serializable {
-
-  private static final long serialVersionUID = 1;
+public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements ValueChangeMap<K, V> {
 
   /**
    * Holds the original value for keys which values have changed.
@@ -37,7 +34,7 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
   /**
    * Fired when a value changes, null until initialized by a call to eventValueChanged().
    */
-  private transient Event evtValueChanged;
+  private Event evtValueChanged;
 
   /** {@inheritDoc} */
   public void initializeValue(final K key, final V value) {
