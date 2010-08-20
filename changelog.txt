@@ -2032,3 +2032,5 @@
   EntityImpl and EntityImpl.KeyImpl implement writeObject and readObject (testing)
   EntityDefinitionImpl no longer implements Serializable
   EntityImpl.writeObject() and readObject() now use superclass methods to bypass validation, for the speed!
+  ConnectionPoolImpl.RETRIES_BEFORE_NEW_CONNECTION added
+  EntityImplTest.serialization() added

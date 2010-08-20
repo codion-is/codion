@@ -10,9 +10,12 @@ import org.jminor.framework.demos.empdept.domain.EmpDept;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
+import java.io.File;
 import java.sql.Timestamp;
 import java.sql.Types;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 public class EntityImplTest {
 
@@ -35,6 +38,33 @@ public class EntityImplTest {
   public EntityImplTest() {
     new EntityTestDomain();
     new EmpDept();
+  }
+
+  @Test
+  public void serialization() throws Exception {
+    final Entity referencedEntityValue = new EntityImpl(EntityTestDomain.T_MASTER);
+    referencedEntityValue.setValue(EntityTestDomain.MASTER_ID, 1);
+    referencedEntityValue.setValue(EntityTestDomain.MASTER_NAME, "name");
+    referencedEntityValue.setValue(EntityTestDomain.MASTER_CODE, 10);
+    final String originalStringValue = "string value";
+    final Entity entity = getDetailEntity(10, 34, 23.4, originalStringValue, new Date(), new Timestamp(System.currentTimeMillis()), true, referencedEntityValue);
+    entity.setValue(EntityTestDomain.DETAIL_STRING, "a new String value");
+    final File tmp = File.createTempFile("EntityImplTest", "serialization");
+    Util.serializeToFile(Arrays.asList(entity), tmp);
+    final List<Object> fromFile = Util.deserializeFromFile(tmp);
+    assertEquals(1, fromFile.size());
+    final Entity entityFromFile = (Entity) fromFile.get(0);
+    assertTrue(entity.propertyValuesEqual(entityFromFile));
+    assertTrue(entityFromFile.isModified());
+    assertTrue(entityFromFile.isModified(EntityTestDomain.DETAIL_STRING));
+    assertEquals(originalStringValue, entityFromFile.getOriginalValue(EntityTestDomain.DETAIL_STRING));
+
+    final Entity.Key key = entity.getPrimaryKey();
+    final File tmp2 = File.createTempFile("EntityImplTest", "serialization");
+    Util.serializeToFile(Arrays.asList(key), tmp2);
+    final List<Object> keyFromFile = Util.deserializeFromFile(tmp2);
+    assertEquals(1, keyFromFile.size());
+    assertEquals(key, keyFromFile.get(0));
   }
 
   @Test

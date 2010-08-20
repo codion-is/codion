@@ -29,6 +29,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
   public static final int DEFAULT_CLEANUP_INTERVAL_MS = 20000;
   public static final int DEFAULT_MAXIMUM_POOL_SIZE = 8;
   public static final int DEFAULT_MAXIMUM_RETRY_WAIT_PERIOD_MS = 50;
+  public static final int RETRIES_BEFORE_NEW_CONNECTION = 2;
 
   private static final Logger LOG = Util.getLogger(ConnectionPoolImpl.class);
 
@@ -75,15 +76,17 @@ public final class ConnectionPoolImpl implements ConnectionPool {
     }
     int retryCount = 0;
     while (connection == null) {
-      retryCount++;
-      synchronized (connectionPool) {
-        if (!creatingConnection && counter.getPoolSize() < maximumPoolSize) {
-          creatingConnection = true;
-          Executors.newSingleThreadExecutor().submit(new ConnectionCreator());
+      if (retryCount > RETRIES_BEFORE_NEW_CONNECTION) {
+        synchronized (connectionPool) {
+          if (!creatingConnection && counter.getPoolSize() < maximumPoolSize) {
+            creatingConnection = true;
+            Executors.newSingleThreadExecutor().submit(new ConnectionCreator());
+          }
         }
       }
       waitForRetry();
       connection = getConnectionFromPool();
+      retryCount++;
     }
     connection.setPoolRetryCount(retryCount);
     counter.addCheckOutTime(System.nanoTime() - time);

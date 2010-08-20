@@ -439,6 +439,29 @@ public final class Util {
     }
   }
 
+  public static List<Object> deserializeFromFile(final File file) {
+    final List<Object> objects = new ArrayList<Object>();
+    ObjectInputStream inputStream = null;
+    try {
+      inputStream = new ObjectInputStream(new FileInputStream(file));
+      while (true) {
+        objects.add(inputStream.readObject());
+      }
+    }
+    catch (EOFException ex) {/**/}
+    catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+    catch (ClassNotFoundException e) {
+      throw new RuntimeException(e);
+    }
+    finally {
+      closeSilently(inputStream);
+    }
+
+    return objects;
+  }
+
   public static void serializeToFile(final Collection objects, final File file) {
     ObjectOutputStream outputStream = null;
     try {
