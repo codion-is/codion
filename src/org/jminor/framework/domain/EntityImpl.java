@@ -705,12 +705,14 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
   private void writeObject(final ObjectOutputStream stream) throws IOException {
     stream.writeObject(entityID);
     for (final Property property : properties.values()) {
-      final String propertyID = property.getPropertyID();
-      stream.writeObject(getValue(propertyID));
-      final boolean isModified = isModified(propertyID);
-      stream.writeBoolean(isModified);
-      if (isModified) {
-        stream.writeObject(getOriginalValue(propertyID));
+      if (!(property instanceof Property.DerivedProperty) && !(property instanceof Property.DenormalizedViewProperty)) {
+        final String propertyID = property.getPropertyID();
+        stream.writeObject(getValue(propertyID));
+        final boolean isModified = isModified(propertyID);
+        stream.writeBoolean(isModified);
+        if (isModified) {
+          stream.writeObject(getOriginalValue(propertyID));
+        }
       }
     }
   }
@@ -719,10 +721,12 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
     entityID = (String) stream.readObject();
     properties = Entities.getProperties(entityID);
     for (final Property property : properties.values()) {
-      final String propertyID = property.getPropertyID();
-      initializeValue(propertyID, stream.readObject());
-      if (stream.readBoolean()) {
-        setOriginalValue(propertyID, stream.readObject());
+      if (!(property instanceof Property.DerivedProperty) && !(property instanceof Property.DenormalizedViewProperty)) {
+        final String propertyID = property.getPropertyID();
+        initializeValue(propertyID, stream.readObject());
+        if (stream.readBoolean()) {
+          setOriginalValue(propertyID, stream.readObject());
+        }
       }
     }
   }

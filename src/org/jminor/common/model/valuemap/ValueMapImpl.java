@@ -4,7 +4,7 @@ import org.jminor.common.model.Util;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -17,7 +17,7 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V> {
   /**
    * Holds the values contained in this value map.
    */
-  private final Map<K, V> values = new LinkedHashMap<K, V>();
+  private final Map<K, V> values = new HashMap<K, V>();
 
   private static final int MAGIC_NUMBER = 23;
 
