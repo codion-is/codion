@@ -31,7 +31,7 @@ import java.util.*;
 /**
  * The remote server class, responsible for handling remote db connection requests.
  */
-public final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
+final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
 
   static final Logger LOG = Util.getLogger(EntityDbRemoteServer.class);
 
@@ -100,29 +100,29 @@ public final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRem
     System.out.println(connectInfo);
   }
 
-  /**
-   * @return the underlying Database implementation class
-   */
-  public Database getDatabase() {
-    return database;
-  }
-
   /** {@inheritDoc} */
   public int getServerLoad() throws RemoteException {
     return EntityDbRemoteAdapter.getRequestsPerSecond();
   }
 
   /**
+   * @return the underlying Database implementation class
+   */
+  Database getDatabase() {
+    return database;
+  }
+
+  /**
    * @return the connection timeout
    */
-  public int getConnectionTimeout() {
+  int getConnectionTimeout() {
     return connectionTimeout;
   }
 
   /**
    * @param timeout the new timeout value
    */
-  public void setConnectionTimeout(final int timeout) {
+  void setConnectionTimeout(final int timeout) {
     this.connectionTimeout = timeout;
   }
 
@@ -130,7 +130,7 @@ public final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRem
    * @return info on all connected users
    * @throws RemoteException in case of an exception
    */
-  public Collection<User> getUsers() throws RemoteException {
+  Collection<User> getUsers() throws RemoteException {
     final Set<User> users = new HashSet<User>();
     for (final EntityDbRemote adapter : getConnections().values()) {
       users.add(((EntityDbRemoteAdapter) adapter).getUser());
@@ -143,7 +143,7 @@ public final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRem
    * @return info on all connected clients
    * @throws RemoteException in case of an exception
    */
-  public Collection<ClientInfo> getClients() throws RemoteException {
+  Collection<ClientInfo> getClients() throws RemoteException {
     final Collection<ClientInfo> clients = new ArrayList<ClientInfo>();
     for (final EntityDbRemote adapter : getConnections().values()) {
       clients.add(((EntityDbRemoteAdapter) adapter).getClientInfo());
@@ -157,7 +157,7 @@ public final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRem
    * @return all clients connected with the given user
    * @throws RemoteException in case of an exception
    */
-  public Collection<ClientInfo> getClients(final User user) throws RemoteException {
+  Collection<ClientInfo> getClients(final User user) throws RemoteException {
     final Collection<ClientInfo> clients = new ArrayList<ClientInfo>();
     for (final EntityDbRemote adapter : getConnections().values()) {
       if (user == null || ((EntityDbRemoteAdapter) adapter).getUser().equals(user)) {
@@ -173,7 +173,7 @@ public final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRem
    * @return all clients of the given type
    * @throws RemoteException in case of an exception
    */
-  public Collection<ClientInfo> getClients(final String clientTypeID) throws RemoteException {
+  Collection<ClientInfo> getClients(final String clientTypeID) throws RemoteException {
     final Collection<ClientInfo> clients = new ArrayList<ClientInfo>();
     for (final EntityDbRemote adapter : getConnections().values()) {
       if (((EntityDbRemoteAdapter) adapter).getClientInfo().getClientTypeID().equals(clientTypeID)) {
@@ -187,14 +187,14 @@ public final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRem
   /**
    * @return the maintenance check interval in ms
    */
-  public int getCheckMaintenanceInterval() {//todo rename
+  int getCheckMaintenanceInterval() {//todo rename
     return checkMaintenanceInterval;
   }
 
   /**
    * @param checkMaintenanceInterval the new maintenance interval
    */
-  public void setCheckMaintenanceInterval(final int checkMaintenanceInterval) {
+  void setCheckMaintenanceInterval(final int checkMaintenanceInterval) {
     if (this.checkMaintenanceInterval != checkMaintenanceInterval) {
       this.checkMaintenanceInterval = checkMaintenanceInterval <= 0 ? 1 : checkMaintenanceInterval;
     }
@@ -205,7 +205,7 @@ public final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRem
    * @param clientID the UUID identifying the client
    * @return the server log for the given connection
    */
-  public ServerLog getServerLog(final UUID clientID) {
+  ServerLog getServerLog(final UUID clientID) {
     final ClientInfo client = new ClientInfo(clientID);
     if (containsConnection(client)) {
       return ((EntityDbRemoteAdapter) getConnection(client)).getServerLog();
@@ -218,7 +218,7 @@ public final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRem
    * @param clientID the client ID
    * @return true if logging is enabled for the given client
    */
-  public boolean isLoggingOn(final UUID clientID) {
+  boolean isLoggingOn(final UUID clientID) {
     final ClientInfo client = new ClientInfo(clientID);
     for (final EntityDbRemote connection : getConnections().values()) {
       if (((EntityDbRemoteAdapter) connection).getClientInfo().equals(client)) {
@@ -233,7 +233,7 @@ public final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRem
    * @param clientID the client ID
    * @param status the new logging status
    */
-  public void setLoggingOn(final UUID clientID, final boolean status) {
+  void setLoggingOn(final UUID clientID, final boolean status) {
     final ClientInfo client = new ClientInfo(clientID);
     for (final EntityDbRemote adapter : getConnections().values()) {
       if (((EntityDbRemoteAdapter) adapter).getClientInfo().equals(client)) {
@@ -246,14 +246,14 @@ public final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRem
   /**
    * @return the port this server exports client db connections on
    */
-  public int getServerDbPort() {
+  int getServerDbPort() {
     return SERVER_DB_PORT;
   }
 
   /**
    * @return the start date of the server
    */
-  public long getStartDate() {
+  long getStartDate() {
     return startDate;
   }
 
@@ -261,7 +261,7 @@ public final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRem
    * @param inactiveOnly if true only inactive connections are culled
    * @throws RemoteException in case of an exception
    */
-  public void removeConnections(final boolean inactiveOnly) throws RemoteException {
+  void removeConnections(final boolean inactiveOnly) throws RemoteException {
     final List<ClientInfo> clients = new ArrayList<ClientInfo>(getConnections().keySet());
     for (final ClientInfo client : clients) {
       final EntityDbRemoteAdapter adapter = (EntityDbRemoteAdapter) getConnection(client);
@@ -279,21 +279,21 @@ public final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRem
   /**
    * @return a map containing all defined entityIDs, with their respective table names as an associated value
    */
-  public static Map<String,String> getEntityDefinitions() {
+  static Map<String,String> getEntityDefinitions() {
     return Entities.getEntityDefinitions();
   }
 
-  public static void loadDomainModel(final String domainClassName) throws ClassNotFoundException,
+  static void loadDomainModel(final String domainClassName) throws ClassNotFoundException,
           InstantiationException, IllegalAccessException {
     loadDomainModel((URI) null, domainClassName);
   }
 
-  public static void loadDomainModel(final URI location, final String domainClassName) throws ClassNotFoundException,
+  static void loadDomainModel(final URI location, final String domainClassName) throws ClassNotFoundException,
           IllegalAccessException, InstantiationException {
     loadDomainModel(location == null ? null : Arrays.asList(location), domainClassName);
   }
 
-  public static void loadDomainModel(final Collection<URI> locations, final String domainClassName) throws ClassNotFoundException,
+  static void loadDomainModel(final Collection<URI> locations, final String domainClassName) throws ClassNotFoundException,
           IllegalAccessException, InstantiationException {
     final String message = "Server loading domain model class '" + domainClassName + "' from"
             + (locations == null || locations.isEmpty() ? " classpath" : " jars: ")

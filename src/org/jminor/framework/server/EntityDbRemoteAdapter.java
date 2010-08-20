@@ -56,7 +56,7 @@ import java.util.TimerTask;
 /**
  * An adapter for handling logging and database connection pooling.
  */
-public final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityDbRemote {
+final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityDbRemote {
 
   private static final Logger LOG = Util.getLogger(EntityDbRemoteAdapter.class);
   /**
@@ -124,7 +124,7 @@ public final class EntityDbRemoteAdapter extends UnicastRemoteObject implements 
    * @param loggingEnabled specifies whether or not method logging is enabled
    * @throws RemoteException in case of an exception
    */
-  public EntityDbRemoteAdapter(final RemoteServer server, final Database database, final ClientInfo clientInfo, final int port,
+  EntityDbRemoteAdapter(final RemoteServer server, final Database database, final ClientInfo clientInfo, final int port,
                                final boolean loggingEnabled) throws RemoteException {
     super(port, SSL_CONNECTION_ENABLED ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
             SSL_CONNECTION_ENABLED ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
@@ -514,7 +514,7 @@ public final class EntityDbRemoteAdapter extends UnicastRemoteObject implements 
   /**
    * @return information on the client using this remote connection
    */
-  public ClientInfo getClientInfo() {
+  ClientInfo getClientInfo() {
     return clientInfo;
   }
 
@@ -522,7 +522,7 @@ public final class EntityDbRemoteAdapter extends UnicastRemoteObject implements 
    * @return a ServerLog instance containing information about this connections recent activity
    * @see Configuration#SERVER_CONNECTION_LOG_SIZE
    */
-  public ServerLog getServerLog() {
+  ServerLog getServerLog() {
     return new ServerLog(clientInfo.getClientID(), creationDate, methodLogger.getLogEntries(),
             methodLogger.getLastAccessDate(), methodLogger.getLastExitDate(), methodLogger.getLastAccessedMethod(),
             methodLogger.getLastAccessMessage(), methodLogger.getLastExitedMethod());
@@ -531,7 +531,7 @@ public final class EntityDbRemoteAdapter extends UnicastRemoteObject implements 
   /**
    * @return the object containing the method call log
    */
-  public MethodLogger getMethodLogger() {
+  MethodLogger getMethodLogger() {
     return methodLogger;
   }
 
@@ -539,28 +539,28 @@ public final class EntityDbRemoteAdapter extends UnicastRemoteObject implements 
    * @param timeout the number of milliseconds
    * @return true if this connection has been inactive for <code>timeout</code> milliseconds or longer
    */
-  public boolean hasBeenInactive(final int timeout) {
+  boolean hasBeenInactive(final int timeout) {
     return System.currentTimeMillis() - methodLogger.getLastAccessDate() > timeout;
   }
 
   /**
    * @return true during a remote method call
    */
-  public boolean isActive() {
+  boolean isActive() {
     return ACTIVE_CONNECTIONS.contains(this);
   }
 
   /**
    * @return the number of connections that are active at this moment
    */
-  public static int getActiveCount() {
+  static int getActiveCount() {
     return ACTIVE_CONNECTIONS.size();
   }
 
   /**
    * @return a List containing the settings of the enabled connection pools
    */
-  public static List<User> getEnabledConnectionPoolSettings() {
+  static List<User> getEnabledConnectionPoolSettings() {
     final List<User> enabledPoolUsers = new ArrayList<User>();
     for (final ConnectionPool pool : CONNECTION_POOLS.values()) {
       if (pool.isEnabled()) {
@@ -571,83 +571,83 @@ public final class EntityDbRemoteAdapter extends UnicastRemoteObject implements 
     return enabledPoolUsers;
   }
 
-  public static boolean isConnectionPoolEnabled(final User user) throws RemoteException {
+  static boolean isConnectionPoolEnabled(final User user) throws RemoteException {
     return CONNECTION_POOLS.get(user).isEnabled();
   }
 
-  public static void setConnectionPoolEnabled(final User user, final boolean enabled) throws RemoteException {
+  static void setConnectionPoolEnabled(final User user, final boolean enabled) throws RemoteException {
     CONNECTION_POOLS.get(user).setEnabled(enabled);
   }
 
-  public static void setConnectionPoolCleanupInterval(final User user, final int poolCleanupInterval) throws RemoteException {
+  static void setConnectionPoolCleanupInterval(final User user, final int poolCleanupInterval) throws RemoteException {
     CONNECTION_POOLS.get(user).setPoolCleanupInterval(poolCleanupInterval);
   }
 
-  public static int getConnectionPoolCleanupInterval(final User user) {
+  static int getConnectionPoolCleanupInterval(final User user) {
     return CONNECTION_POOLS.get(user).getPoolCleanupInterval();
   }
 
-  public static int getMaximumConnectionPoolSize(final User user) {
+  static int getMaximumConnectionPoolSize(final User user) {
     return CONNECTION_POOLS.get(user).getMaximumPoolSize();
   }
 
-  public static int getMinimumConnectionPoolSize(final User user) {
+  static int getMinimumConnectionPoolSize(final User user) {
     return CONNECTION_POOLS.get(user).getMinimumPoolSize();
   }
 
-  public static int getPooledConnectionTimeout(final User user) {
+  static int getPooledConnectionTimeout(final User user) {
     return CONNECTION_POOLS.get(user).getPooledConnectionTimeout();
   }
 
-  public static int getMaximumPoolRetryWaitPeriod(final User user) {
+  static int getMaximumPoolRetryWaitPeriod(final User user) {
     return CONNECTION_POOLS.get(user).getMaximumRetryWaitPeriod();
   }
 
-  public static void setMaximumConnectionPoolSize(final User user, final int value) {
+  static void setMaximumConnectionPoolSize(final User user, final int value) {
     CONNECTION_POOLS.get(user).setMaximumPoolSize(value);
   }
 
-  public static void setMinimumConnectionPoolSize(final User user, final int value) {
+  static void setMinimumConnectionPoolSize(final User user, final int value) {
     CONNECTION_POOLS.get(user).setMinimumPoolSize(value);
   }
 
-  public static void setPooledConnectionTimeout(final User user, final int timeout) {
+  static void setPooledConnectionTimeout(final User user, final int timeout) {
     CONNECTION_POOLS.get(user).setPooledConnectionTimeout(timeout);
   }
 
-  public static void setMaximumPoolRetryWaitPeriod(final User user, final int value) {
+  static void setMaximumPoolRetryWaitPeriod(final User user, final int value) {
     CONNECTION_POOLS.get(user).setMaximumRetryWaitPeriod(value);
   }
 
-  public static ConnectionPoolStatistics getConnectionPoolStatistics(final User user, final long since) {
+  static ConnectionPoolStatistics getConnectionPoolStatistics(final User user, final long since) {
     return CONNECTION_POOLS.get(user).getConnectionPoolStatistics(since);
   }
 
-  public static void resetConnectionPoolStatistics(final User user) {
+  static void resetConnectionPoolStatistics(final User user) {
     CONNECTION_POOLS.get(user).resetPoolStatistics();
   }
 
-  public static boolean isCollectFineGrainedPoolStatistics(final User user) {
+  static boolean isCollectFineGrainedPoolStatistics(final User user) {
     return CONNECTION_POOLS.get(user).isCollectFineGrainedStatistics();
   }
 
-  public static void setCollectFineGrainedPoolStatistics(final User user, final boolean value) {
+  static void setCollectFineGrainedPoolStatistics(final User user, final boolean value) {
     CONNECTION_POOLS.get(user).setCollectFineGrainedStatistics(value);
   }
 
-  public static int getRequestsPerSecond() {
+  static int getRequestsPerSecond() {
     return RequestCounter.getRequestsPerSecond();
   }
 
-  public static int getWarningTimeExceededPerSecond() {
+  static int getWarningTimeExceededPerSecond() {
     return RequestCounter.getWarningTimeExceededPerSecond();
   }
 
-  public static int getWarningThreshold() {
+  static int getWarningThreshold() {
     return RequestCounter.getWarningThreshold();
   }
 
-  public static void setWarningThreshold(final int threshold) {
+  static void setWarningThreshold(final int threshold) {
     RequestCounter.setWarningThreshold(threshold);
   }
 
@@ -871,23 +871,23 @@ public final class EntityDbRemoteAdapter extends UnicastRemoteObject implements 
       }
     }
 
-    public static int getRequestsPerSecond() {
+    static int getRequestsPerSecond() {
       return requestsPerSecond;
     }
 
-    public static int getWarningTimeExceededPerSecond() {
+    static int getWarningTimeExceededPerSecond() {
       return warningTimeExceededPerSecond;
     }
 
-    public static int getWarningThreshold() {
+    static int getWarningThreshold() {
       return warningThreshold;
     }
 
-    public static void setWarningThreshold(final int warningThreshold) {
+    static void setWarningThreshold(final int warningThreshold) {
       RequestCounter.warningThreshold = warningThreshold;
     }
 
-    public static void incrementRequestsPerSecondCounter() {
+    static void incrementRequestsPerSecondCounter() {
       requestsPerSecondCounter++;
     }
 
