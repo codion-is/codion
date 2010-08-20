@@ -19,6 +19,7 @@ import java.util.Stack;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Executors;
+import java.io.Serializable;
 
 /**
  * A simple connection pool implementation, pools connections on username basis.
@@ -481,6 +482,197 @@ public final class ConnectionPoolImpl implements ConnectionPool {
 
     public synchronized long getAverageCheckOutTime() {
       return averageCheckOutTime;
+    }
+  }
+
+  private static final class ConnectionPoolStateImpl implements ConnectionPoolState, Serializable {
+
+    private static final long serialVersionUID = 1;
+
+    private long time;
+    private int connectionCount = -1;
+    private int connectionsInUse = -1;
+
+    private ConnectionPoolStateImpl(final long time, final int connectionCount, final int connectionsInUse) {
+      set(time, connectionCount, connectionsInUse);
+    }
+
+    private void set(final long time, final int connectionCount, final int connectionsInUse) {
+      this.time = time;
+      this.connectionCount = connectionCount;
+      this.connectionsInUse = connectionsInUse;
+    }
+
+    /** {@inheritDoc} */
+    public int getConnectionCount() {
+      return connectionCount;
+    }
+
+    /** {@inheritDoc} */
+    public int getConnectionsInUse() {
+      return connectionsInUse;
+    }
+
+    /** {@inheritDoc} */
+    public long getTime() {
+      return time;
+    }
+  }
+
+  private static final class ConnectionPoolStatisticsImpl implements ConnectionPoolStatistics, Serializable {
+    private static final long serialVersionUID = 1;
+
+    private final User user;
+    private long timestamp;
+    private int connectionsInUse;
+    private int availableInPool;
+
+    private int connectionsCreated;
+    private int connectionsDestroyed;
+    private long creationDate;
+
+    private List<ConnectionPoolState> fineGrainedStatistics;
+    private long resetDate;
+    private int connectionRequests;
+    private int connectionRequestsDelayed;
+    private int requestsDelayedPerSecond;
+    private int requestsPerSecond;
+    private int poolSize;
+    private long averageCheckOutTime;
+
+    /** {@inheritDoc} */
+    public User getUser() {
+      return user;
+    }
+
+    /** {@inheritDoc} */
+    public List<ConnectionPoolState> getFineGrainedStatistics() {
+      return fineGrainedStatistics;
+    }
+
+    /** {@inheritDoc} */
+    public int getAvailableInPool() {
+      return availableInPool;
+    }
+
+    /** {@inheritDoc} */
+    public int getConnectionsInUse() {
+      return connectionsInUse;
+    }
+
+    /** {@inheritDoc} */
+    public long getTimestamp() {
+      return timestamp;
+    }
+
+    /** {@inheritDoc} */
+    public long getCreationDate() {
+      return this.creationDate;
+    }
+
+    /** {@inheritDoc} */
+    public int getConnectionsCreated() {
+      return connectionsCreated;
+    }
+
+    /** {@inheritDoc} */
+    public int getConnectionsDestroyed() {
+      return connectionsDestroyed;
+    }
+
+    /** {@inheritDoc} */
+    public int getConnectionRequestsDelayed() {
+      return connectionRequestsDelayed;
+    }
+
+    /** {@inheritDoc} */
+    public int getConnectionRequests() {
+      return connectionRequests;
+    }
+
+    /** {@inheritDoc} */
+    public int getRequestsDelayedPerSecond() {
+      return requestsDelayedPerSecond;
+    }
+
+    /** {@inheritDoc} */
+    public int getRequestsPerSecond() {
+      return requestsPerSecond;
+    }
+
+    /** {@inheritDoc} */
+    public long getAverageCheckOutTime() {
+      return averageCheckOutTime;
+    }
+
+    /** {@inheritDoc} */
+    public int getPoolSize() {
+      return poolSize;
+    }
+
+    /** {@inheritDoc} */
+    public long getResetDate() {
+      return resetDate;
+    }
+
+    private ConnectionPoolStatisticsImpl(final User user) {
+      this.user = user;
+    }
+
+    private void setFineGrainedStatistics(final List<ConnectionPoolState> statistics) {
+      this.fineGrainedStatistics = statistics;
+    }
+
+    private void setAvailableInPool(final int availableInPool) {
+      this.availableInPool = availableInPool;
+    }
+
+    private void setConnectionsInUse(final int connectionsInUse) {
+      this.connectionsInUse = connectionsInUse;
+    }
+
+    private void setTimestamp(final long timestamp) {
+      this.timestamp = timestamp;
+    }
+
+    private void setCreationDate(final long time) {
+      this.creationDate = time;
+    }
+
+    private void setConnectionsCreated(final int connectionsCreated) {
+      this.connectionsCreated = connectionsCreated;
+    }
+
+    private void setConnectionsDestroyed(final int connectionsDestroyed) {
+      this.connectionsDestroyed = connectionsDestroyed;
+    }
+
+    private void setConnectionRequestsDelayed(final int connectionRequestsDelayed) {
+      this.connectionRequestsDelayed = connectionRequestsDelayed;
+    }
+
+    private void setConnectionRequests(final int connectionRequests) {
+      this.connectionRequests = connectionRequests;
+    }
+
+    private void setRequestsDelayedPerSecond(final int requestsDelayedPerSecond) {
+      this.requestsDelayedPerSecond = requestsDelayedPerSecond;
+    }
+
+    private void setRequestsPerSecond(final int requestsPerSecond) {
+      this.requestsPerSecond = requestsPerSecond;
+    }
+
+    private void setAverageCheckOutTime(final long averageCheckOutTime) {
+      this.averageCheckOutTime = averageCheckOutTime;
+    }
+
+    private void setPoolSize(final int poolSize) {
+      this.poolSize = poolSize;
+    }
+
+    private void setResetDate(final long resetDate) {
+      this.resetDate = resetDate;
     }
   }
 }
