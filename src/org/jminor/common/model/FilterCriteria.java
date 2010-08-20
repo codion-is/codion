@@ -18,7 +18,11 @@ public interface FilterCriteria<T> {
   /**
    * A convenience criteria class which always returns true
    */
-  class AcceptAllCriteria<T> implements FilterCriteria<T> {
+  final class AcceptAllCriteria<T> implements FilterCriteria<T> {
+    /**
+     * @param item the item
+     * @return true
+     */
     public boolean include(final T item) {
       return true;
     }
@@ -27,7 +31,11 @@ public interface FilterCriteria<T> {
   /**
    * A convenience criteria class which always returns false
    */
-  class RejectAllCriteria<T> implements FilterCriteria<T> {
+  final class RejectAllCriteria<T> implements FilterCriteria<T> {
+    /**
+     * @param item the item
+     * @return false
+     */
     public boolean include(final T item) {
       return false;
     }

@@ -34,6 +34,7 @@ public interface FilteredModel<T> {
    * Returns the filter criteria defined by this model, this method should return
    * a "accept all" criteria instead of null, if no criteria is defined.
    * @return the filter criteria
+   * @see FilterCriteria.AcceptAllCriteria
    */
   FilterCriteria<T> getFilterCriteria();
 
