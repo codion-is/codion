@@ -2037,3 +2037,6 @@
   Column moved from db to model
   RMI server now logs to {user.dir}/logs/jminor_server.log instead of {user.home}/logs/jminor.log
   LoadTestModel uses ExecutorService instead of Thread
+  LoadTestModel changes rolled back, refactored a bit
+  ConnectionPoolImpl improved some
+  AbstractRemoteServer synchronized on connections

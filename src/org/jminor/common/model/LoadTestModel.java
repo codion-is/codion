@@ -17,8 +17,6 @@ import java.util.Random;
 import java.util.Stack;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * A class for running multiple application instances for load testing purposes.
@@ -49,10 +47,9 @@ public abstract class LoadTestModel {
   private int updateInterval;
 
   private boolean paused = false;
-  private boolean stopped = false;
   private boolean collectChartData = false;
 
-  private final Stack<Object> applications = new Stack<Object>();
+  private final Stack<ApplicationRunner> applications = new Stack<ApplicationRunner>();
   private final Collection<UsageScenario> usageScenarios;
   private final RandomItemModel<UsageScenario> scenarioChooser;
   private User user;
@@ -78,8 +75,6 @@ public abstract class LoadTestModel {
   private final XYSeries usedMemoryCollection = new XYSeries("Used memory");
   private final XYSeries maxMemoryCollection = new XYSeries("Maximum memory");
   private final XYSeriesCollection memoryUsageCollection = new XYSeriesCollection();
-
-  private final ExecutorService executor = Executors.newCachedThreadPool();
 
   /**
    * Constructs a new LoadTestModel.
@@ -301,7 +296,13 @@ public abstract class LoadTestModel {
    */
   public final void addApplicationBatch() {
     for (int i = 0; i < applicationBatchSize; i++) {
-      executor.execute(new ApplicationRunner(this));
+      final ApplicationRunner runner = new ApplicationRunner(this);
+      synchronized (applications) {
+        applications.push(runner);
+      }
+      evtApplicationtCountChanged.fire();
+
+      new Thread(runner).start();
     }
   }
 
@@ -350,12 +351,12 @@ public abstract class LoadTestModel {
    */
   public final void exit() {
     paused = false;
-    stopped = true;
     synchronized (applications) {
       while (!applications.isEmpty()) {
         removeApplication();
       }
     }
+    evtDoneExiting.fire();
   }
 
   /**
@@ -524,8 +525,10 @@ public abstract class LoadTestModel {
   /**
    * Removes a single application
    */
-  private synchronized void removeApplication() {
-    applications.pop();
+  private void removeApplication() {
+    synchronized (applications) {
+      applications.pop().stop();
+    }
     evtApplicationtCountChanged.fire();
   }
 
@@ -550,9 +553,6 @@ public abstract class LoadTestModel {
         counter.updateRequestsPerSecond();
         if (collectChartData && !paused) {
           updateChartData();
-        }
-        if (stopped && applications.isEmpty()) {
-          evtDoneExiting.fire();
         }
       }
     }, new Date(), intervalMs);
@@ -591,9 +591,14 @@ public abstract class LoadTestModel {
   private static final class ApplicationRunner implements Runnable {
 
     private final LoadTestModel loadTestModel;
+    private boolean stopped = false;
 
     private ApplicationRunner(final LoadTestModel loadTestModel) {
       this.loadTestModel = loadTestModel;
+    }
+
+    private void stop() {
+      stopped = true;
     }
 
     /** {@inheritDoc} */
@@ -602,12 +607,10 @@ public abstract class LoadTestModel {
         delayLogin();
         final Object application = loadTestModel.initializeApplication();
         LOG.debug("LoadTestModel initialized application: " + application);
-        loadTestModel.applications.push(application);
-        loadTestModel.evtApplicationtCountChanged.fire();
-        while (loadTestModel.applications.contains(application)) {
+        while (!stopped) {
           try {
             think();
-            if (!loadTestModel.isPaused() && (loadTestModel.applications.contains(application))) {
+            if (!loadTestModel.isPaused()) {
               final long currentTime = System.currentTimeMillis();
               try {
                 loadTestModel.counter.incrementWorkRequests();

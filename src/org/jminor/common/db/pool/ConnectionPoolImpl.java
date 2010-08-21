@@ -9,6 +9,7 @@ import org.jminor.common.model.Util;
 
 import org.apache.log4j.Logger;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,8 +19,6 @@ import java.util.Random;
 import java.util.Stack;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.Executors;
-import java.io.Serializable;
 
 /**
  * A simple connection pool implementation, pools connections on username basis.
@@ -30,7 +29,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
   public static final int DEFAULT_CLEANUP_INTERVAL_MS = 20000;
   public static final int DEFAULT_MAXIMUM_POOL_SIZE = 8;
   public static final int DEFAULT_MAXIMUM_RETRY_WAIT_PERIOD_MS = 50;
-  public static final int RETRIES_BEFORE_NEW_CONNECTION = 2;
+  public static final int RETRIES_BEFORE_NEW_CONNECTION = 3;
 
   private static final Logger LOG = Util.getLogger(ConnectionPoolImpl.class);
 
@@ -78,15 +77,12 @@ public final class ConnectionPoolImpl implements ConnectionPool {
     int retryCount = 0;
     while (connection == null) {
       if (retryCount > RETRIES_BEFORE_NEW_CONNECTION) {
-        synchronized (connectionPool) {
-          if (!creatingConnection && counter.getPoolSize() < maximumPoolSize) {
-            creatingConnection = true;
-            Executors.newSingleThreadExecutor().submit(new ConnectionCreator());
-          }
-        }
+        connection = getNewConnection();
       }
-      waitForRetry();
-      connection = getConnectionFromPool();
+      if (connection == null) {
+        waitForRetry();
+        connection = getConnectionFromPool();
+      }
       retryCount++;
     }
     connection.setPoolRetryCount(retryCount);
@@ -241,6 +237,34 @@ public final class ConnectionPoolImpl implements ConnectionPool {
   }
 
   /**
+   * @return a new connection, null if a connection is in the process of being created
+   */
+  private PoolableConnection getNewConnection() {
+    if (creatingConnection) {
+      return null;
+    }
+    synchronized (connectionPool) {
+      if (!creatingConnection && counter.getPoolSize() < maximumPoolSize) {
+        creatingConnection = true;
+        try {
+          final PoolableConnection connection = poolableConnectionProvider.createConnection(user);
+          counter.incrementConnectionsCreatedCounter();
+
+          return connection;
+        }
+        catch (Exception e) {
+          LOG.error(e);
+        }
+        finally {
+          creatingConnection = false;
+        }
+      }
+
+      return null;
+    }
+  }
+
+  /**
    * @return a connection from the pool, null if none is available
    */
   private PoolableConnection getConnectionFromPool() {
@@ -346,22 +370,6 @@ public final class ConnectionPoolImpl implements ConnectionPool {
     }
 
     return poolStates;
-  }
-
-  private final class ConnectionCreator implements Runnable {
-    /** {@inheritDoc} */
-    public void run() {
-      try {
-        addConnectionToPool(poolableConnectionProvider.createConnection(user));
-        counter.incrementConnectionsCreatedCounter();
-      }
-      catch (Exception e) {
-        LOG.error(e);
-      }
-      finally {
-        creatingConnection = false;
-      }
-    }
   }
 
   private static class Counter {

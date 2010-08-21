@@ -53,7 +53,9 @@ public abstract class AbstractRemoteServer<T> extends UnicastRemoteObject implem
    * @return a map containing the current connections
    */
   public final Map<ClientInfo, T> getConnections() {
-    return new HashMap<ClientInfo, T>(connections);
+    synchronized (connections) {
+      return new HashMap<ClientInfo, T>(connections);
+    }
   }
 
   /**
@@ -91,7 +93,9 @@ public abstract class AbstractRemoteServer<T> extends UnicastRemoteObject implem
     }
 
     final T connection = doConnect(client);
-    connections.put(client, connection);
+    synchronized (connections) {
+      connections.put(client, connection);
+    }
 
     return connection;
   }
@@ -103,8 +107,10 @@ public abstract class AbstractRemoteServer<T> extends UnicastRemoteObject implem
     }
 
     final ClientInfo client = new ClientInfo(clientID);
-    if (connections.containsKey(client)) {
-      doDisconnect(connections.remove(client));
+    synchronized (connections) {
+      if (connections.containsKey(client)) {
+        doDisconnect(connections.remove(client));
+      }
     }
   }
 

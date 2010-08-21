@@ -12,7 +12,11 @@ import org.jminor.common.model.CancelException;
 import org.jminor.common.model.LoadTestModel;
 import org.jminor.common.model.User;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import org.junit.Test;
 
 import java.awt.event.ActionEvent;
@@ -22,13 +26,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class ConnectionPoolImplTest {
 
-  private static final int PRINT_PERIOD = 860;
-  private static final int SLEEP_MILLIS = 4200;
+  private static final int SLEEP_MILLIS = 2000;
   private static final int CLOSE_SLEEP_MILLIS = 2500;
 
   @Test
@@ -36,17 +37,6 @@ public class ConnectionPoolImplTest {
     final Date startTime = new Date();
     final ConnectionPoolImpl pool = initializeLoadTestPool();
     final LoadTestModel model = initializeLoadTestModel(pool);
-
-    new Timer(true).schedule(new TimerTask() {
-      @Override
-      public void run() {
-        System.out.println("created: " + pool.getConnectionPoolStatistics(startTime.getTime()).getConnectionsCreated());
-        System.out.println("requests: " + pool.getConnectionPoolStatistics(startTime.getTime()).getConnectionRequests());
-        System.out.println("delayed: " + pool.getConnectionPoolStatistics(startTime.getTime()).getConnectionRequestsDelayed());
-        System.out.println("destroyed: " + pool.getConnectionPoolStatistics(startTime.getTime()).getConnectionsDestroyed());
-        System.out.println("####################################");
-      }
-    }, startTime, PRINT_PERIOD);
     model.addApplicationBatch();
     model.setCollectChartData(true);
     Thread.sleep(SLEEP_MILLIS);
@@ -204,7 +194,7 @@ public class ConnectionPoolImplTest {
   }
 
   private LoadTestModel initializeLoadTestModel(final ConnectionPoolImpl pool) {
-    return new LoadTestModel(User.UNIT_TEST_USER, 200, 1, 20, 20) {
+    return new LoadTestModel(User.UNIT_TEST_USER, 100, 1, 5, 20) {
       @Override
       protected void disconnectApplication(Object application) {}
 
