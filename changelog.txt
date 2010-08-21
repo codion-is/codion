@@ -2035,3 +2035,5 @@
   ConnectionPoolImpl.RETRIES_BEFORE_NEW_CONNECTION added
   EntityImplTest.serialization() added
   Column moved from db to model
+  RMI server now logs to {user.dir}/logs/jminor_server.log instead of {user.home}/logs/jminor.log
+  LoadTestModel uses ExecutorService instead of Thread

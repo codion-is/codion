@@ -17,6 +17,8 @@ import java.util.Random;
 import java.util.Stack;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * A class for running multiple application instances for load testing purposes.
@@ -76,6 +78,8 @@ public abstract class LoadTestModel {
   private final XYSeries usedMemoryCollection = new XYSeries("Used memory");
   private final XYSeries maxMemoryCollection = new XYSeries("Maximum memory");
   private final XYSeriesCollection memoryUsageCollection = new XYSeriesCollection();
+
+  private final ExecutorService executor = Executors.newCachedThreadPool();
 
   /**
    * Constructs a new LoadTestModel.
@@ -297,7 +301,7 @@ public abstract class LoadTestModel {
    */
   public final void addApplicationBatch() {
     for (int i = 0; i < applicationBatchSize; i++) {
-      new Thread(new ApplicationRunner(this)).start();
+      executor.execute(new ApplicationRunner(this));
     }
   }
 

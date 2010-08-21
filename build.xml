@@ -197,6 +197,7 @@
                 org/jminor/framework/client/**,
                 org/jminor/framework/db/criteria/**,
                 org/jminor/framework/db/EntityDb.class,
+                org/jminor/framework/db/provider/AbstractEntityDbProvider*,
                 org/jminor/framework/db/provider/EntityDbProvider*,
                 org/jminor/framework/i18n/**,
                 org/jminor/framework/domain/**,
@@ -296,6 +297,7 @@
     <copy file="${lib.jasperreports.logging}" todir="${deploy.server.path}/lib"/>
     <copy file="${deploy.server.policy}" todir="${deploy.server.path}"/>
     <copy file="${deploy.server.allpermissions.policy}" todir="${deploy.server.path}"/>
+    <copy file="${deploy.server.logging}" tofile="${deploy.server.path}/log4j.properties"/>
     <copy file="${deploy.server.keystore}" todir="${deploy.server.path}"/>
     <copy todir="${deploy.server.path}">
       <fileset dir="${basedir}/resources/server/"/>

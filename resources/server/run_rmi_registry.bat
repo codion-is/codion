@@ -1,1 +1,1 @@
-java -Djava.security.policy=all_permissions.policy -cp lib/jminor-common.jar;lib/jminor-plugins.jar;lib/jminor-server.jar;jasperreports-3.0.0.jar;lib/log4j-1.2.15.jar sun.rmi.registry.RegistryImpl
+java -Djava.security.policy=all_permissions.policy -cp .;lib/jminor-common.jar;lib/jminor-plugins.jar;lib/jminor-server.jar;jasperreports-3.0.0.jar;lib/log4j-1.2.15.jar sun.rmi.registry.RegistryImpl
