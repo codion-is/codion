@@ -148,20 +148,20 @@ public interface Database {
    * @param idSource the source for the id, for example a sequence name or in the case of Derby, the name of the table
    * @return a query string for retrieving the last auto-increment value from idSource
    */
-  String getAutoIncrementValueSQL(String idSource);
+  String getAutoIncrementValueSQL(final String idSource);
 
   /**
    * @param sequenceName the name of the sequence
    * @return a query for selecting the next value from the given sequence
    */
-  String getSequenceSQL(String sequenceName);
+  String getSequenceSQL(final String sequenceName);
 
   /**
    * @param connectionProperties the connection properties, used primarily to provide
    * embedded databases with user info for authentication purposes
    * @return the database url of the active database, based on system properties
    */
-  String getURL(Properties connectionProperties);
+  String getURL(final Properties connectionProperties);
 
   /**
    * In the case of embedded databases the user login info can be appended
@@ -173,14 +173,14 @@ public interface Database {
    * @return an authentication string to append to the connection url,
    * f.ex. user=scott;password=tiger, null if none is required
    */
-  String getAuthenticationInfo(Properties connectionProperties);
+  String getAuthenticationInfo(final Properties connectionProperties);
 
   /**
    * This should shutdown the database in case it is an embedded one
    * and if that is applicable, such as for Derby.
    * @param connectionProperties the connection properties
    */
-  void shutdownEmbedded(Properties connectionProperties);
+  void shutdownEmbedded(final Properties connectionProperties);
 
   /**
    * @return true if the dbms supports the Java 6 jdbc call Connection.isValid()
@@ -208,14 +208,14 @@ public interface Database {
    * @param exception the underlying SQLException
    * @return the message assigned to the given exception
    */
-  String getErrorMessage(SQLException exception);
+  String getErrorMessage(final SQLException exception);
 
   /**
    * Adds any dbms specific connection properties to the given properties map
    * @param properties the properties map to add to
    * @return the properties map
    */
-  Properties addConnectionProperties(Properties properties);
+  Properties addConnectionProperties(final Properties properties);
 
   /**
    * Creates a connection for the given user.
@@ -224,5 +224,5 @@ public interface Database {
    * @throws ClassNotFoundException in case the driver class was not on the classpath
    * @throws SQLException in case of a connection error
    */
-  Connection createConnection(User user) throws ClassNotFoundException, SQLException;
+  Connection createConnection(final User user) throws ClassNotFoundException, SQLException;
 }
