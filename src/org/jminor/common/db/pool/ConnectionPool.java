@@ -13,13 +13,6 @@ import java.sql.SQLException;
 public interface ConnectionPool {
 
   /**
-   * Return the given connection to the pool.
-   * If the pool has been closed the connection is disconnected and discarded.
-   * @param dbConnection the database connection to return to the pool
-   */
-  void checkInConnection(final PoolableConnection dbConnection);
-
-  /**
    * Fetches a connection from the pool.
    * @return a database connection retrieved from the pool
    * @throws ClassNotFoundException in case the JDBC driver class is not found
@@ -27,6 +20,13 @@ public interface ConnectionPool {
    * @throws IllegalStateException if the pool is closed
    */
   PoolableConnection checkOutConnection() throws ClassNotFoundException, SQLException;
+
+  /**
+   * Return the given connection to the pool.
+   * If the pool has been closed the connection is disconnected and discarded.
+   * @param dbConnection the database connection to return to the pool
+   */
+  void checkInConnection(final PoolableConnection dbConnection);
 
   /**
    * @return the user this connection pool is based on.
@@ -61,14 +61,19 @@ public interface ConnectionPool {
   void setCollectFineGrainedStatistics(final boolean value);
 
   /**
+   * @return true if this pool is enabled, false otherwise
+   */
+  boolean isEnabled();
+
+  /**
    * @param enabled true to enable this pool, false to disable
    */
   void setEnabled(final boolean enabled);
 
   /**
-   * @return true if this pool is enabled, false otherwise
+   * @return the pool cleanup interval in milliseconds
    */
-  boolean isEnabled();
+  int getPoolCleanupInterval();
 
   /**
    * @param poolCleanupInterval the pool cleanup interval in milliseconds
@@ -94,11 +99,6 @@ public interface ConnectionPool {
    * @param maximumRetryWaitPeriod the maximum number of milliseconds the pool waits between checkout retries
    */
   void setMaximumRetryWaitPeriod(final int maximumRetryWaitPeriod);
-
-  /**
-   * @return the pool cleanup interval in milliseconds
-   */
-  int getPoolCleanupInterval();
 
   /**
    * @return the minimum number of connections to keep in the pool
