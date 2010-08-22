@@ -76,7 +76,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
     }
     int retryCount = 0;
     while (connection == null) {
-      if (retryCount > RETRIES_BEFORE_NEW_CONNECTION) {
+      if (retryCount > RETRIES_BEFORE_NEW_CONNECTION && counter.getPoolSize() < maximumPoolSize) {
         connection = getNewConnection();
       }
       if (connection == null) {
@@ -238,11 +238,9 @@ public final class ConnectionPoolImpl implements ConnectionPool {
 
   /**
    * @return a new connection, null if a connection is in the process of being created
+   * or if the pool has reached it's maximum size
    */
   private PoolableConnection getNewConnection() {
-    if (creatingConnection) {
-      return null;
-    }
     synchronized (connectionPool) {
       if (!creatingConnection && counter.getPoolSize() < maximumPoolSize) {
         creatingConnection = true;
