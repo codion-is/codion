@@ -360,9 +360,6 @@
     <copy todir="${deploy.demos.path}/h2db">
       <fileset dir="${db.h2.dir}"/>
     </copy>
-    <!--<copy todir="${deploy.demos.path}/derbydb">-->
-      <!--<fileset dir="${db.derby.dir}"/>-->
-    <!--</copy>-->
   </target>
 
   <target name="deploy_all" depends="clean, dist, deploy_server, deploy_server_monitor, deploy_demos"
