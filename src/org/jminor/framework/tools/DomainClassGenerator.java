@@ -493,9 +493,9 @@ public final class DomainClassGenerator {
     private final String pkSchemaName;
     private final String pkTableName;
     private final String pkColumnName;
-    private final short keySeq;
+    private final int keySeq;
 
-    PrimaryKey(final String pkSchemaName, final String pkTableName, final String pkColumnName, final short keySeq) {
+    PrimaryKey(final String pkSchemaName, final String pkTableName, final String pkColumnName, final int keySeq) {
       this.pkSchemaName = pkSchemaName;
       this.pkTableName = pkTableName;
       this.pkColumnName = pkColumnName;
@@ -507,7 +507,7 @@ public final class DomainClassGenerator {
       return pkSchemaName + "." + pkTableName + "." + pkColumnName;
     }
 
-    public short getKeySeq() {
+    public int getKeySeq() {
       return keySeq;
     }
   }
@@ -518,7 +518,7 @@ public final class DomainClassGenerator {
       int counter = 0;
       while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
         primaryKeys.add(new PrimaryKey(resultSet.getString("TABLE_SCHEM"), resultSet.getString("TABLE_NAME"),
-                resultSet.getString("COLUMN_NAME"), resultSet.getShort("KEY_SEQ")));
+                resultSet.getString("COLUMN_NAME"), resultSet.getInt("KEY_SEQ")));
       }
 
       return primaryKeys;

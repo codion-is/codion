@@ -36,9 +36,9 @@ final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
   static final Logger LOG = Util.getLogger(EntityDbRemoteServer.class);
 
   private static final boolean CLIENT_LOGGING_ENABLED =
-          System.getProperty(Configuration.SERVER_CLIENT_LOGGING_ENABLED, "true").equalsIgnoreCase("true");
+          Configuration.getBooleanValue(Configuration.SERVER_CLIENT_LOGGING_ENABLED);
   static final boolean SSL_CONNECTION_ENABLED =
-          System.getProperty(Configuration.SERVER_CONNECTION_SSL_ENABLED, "true").equalsIgnoreCase("true");
+          Configuration.getBooleanValue(Configuration.SERVER_CONNECTION_SSL_ENABLED);
 
   private static final int DEFAULT_CHECK_INTERVAL = 30;
   private static final int DEFAULT_TIMEOUT = 120;
@@ -49,8 +49,8 @@ final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
   private final Database database;
 
   static {
-    final String serverPortProperty = System.getProperty(Configuration.SERVER_PORT);
-    final String serverDbPortProperty = System.getProperty(Configuration.SERVER_DB_PORT);
+    final String serverPortProperty = Configuration.getStringValue(Configuration.SERVER_PORT);
+    final String serverDbPortProperty = Configuration.getStringValue(Configuration.SERVER_DB_PORT);
 
     Util.require(Configuration.SERVER_PORT, serverPortProperty);
     Util.require(Configuration.SERVER_DB_PORT, serverDbPortProperty);
@@ -329,7 +329,8 @@ final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
   /** {@inheritDoc} */
   @Override
   protected EntityDbRemoteAdapter doConnect(final ClientInfo info) throws RemoteException {
-    final EntityDbRemoteAdapter remoteAdapter = new EntityDbRemoteAdapter(this, database, info, SERVER_DB_PORT, CLIENT_LOGGING_ENABLED);
+    final EntityDbRemoteAdapter remoteAdapter = new EntityDbRemoteAdapter(this, database, info, SERVER_DB_PORT,
+            CLIENT_LOGGING_ENABLED, SSL_CONNECTION_ENABLED);
     LOG.debug(info + " connected");
 
     return remoteAdapter;

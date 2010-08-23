@@ -1,5 +1,6 @@
 grant {
   permission java.io.FilePermission "${user.home}/logs/*", "read,write";
+  permission java.io.FilePermission "${java.io.tmpdir}/*", "read,write";
 
   permission java.net.SocketPermission "*:80-", "connect";
 

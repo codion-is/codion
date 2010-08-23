@@ -44,7 +44,7 @@ public final class MonitorPanel extends JPanel {
   private JFrame monitorFrame;
 
   public MonitorPanel() throws RemoteException {
-    this(new MonitorModel(System.getProperty(Configuration.SERVER_HOST_NAME)));
+    this(new MonitorModel(Configuration.getStringValue(Configuration.SERVER_HOST_NAME)));
     Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
       public void uncaughtException(final Thread t, final Throwable e) {
         DefaultExceptionHandler.getInstance().handleException(e, MonitorPanel.this);

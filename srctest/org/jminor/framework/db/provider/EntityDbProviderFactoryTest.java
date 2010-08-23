@@ -7,6 +7,7 @@ import org.jminor.common.model.User;
 import org.jminor.framework.Configuration;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 /**
@@ -18,22 +19,22 @@ public class EntityDbProviderFactoryTest {
 
   @Test
   public void test() throws Exception {
-    final String connectionType = System.getProperty(Configuration.CLIENT_CONNECTION_TYPE);
+    final String connectionType = Configuration.getStringValue(Configuration.CLIENT_CONNECTION_TYPE);
     try {
-      System.setProperty(Configuration.CLIENT_CONNECTION_TYPE, Configuration.CONNECTION_TYPE_LOCAL);
+      Configuration.setValue(Configuration.CLIENT_CONNECTION_TYPE, Configuration.CONNECTION_TYPE_LOCAL);
       EntityDbProvider dbProvider = EntityDbProviderFactory.createEntityDbProvider(User.UNIT_TEST_USER, "test");
       assertTrue(dbProvider instanceof EntityDbLocalProvider);
 
-      System.setProperty(Configuration.CLIENT_CONNECTION_TYPE, Configuration.CONNECTION_TYPE_REMOTE);
+      Configuration.setValue(Configuration.CLIENT_CONNECTION_TYPE, Configuration.CONNECTION_TYPE_REMOTE);
       dbProvider = EntityDbProviderFactory.createEntityDbProvider(User.UNIT_TEST_USER, "test");
-      assertTrue(dbProvider.getClass().getSimpleName().equals("EntityDbRemoteProvider"));
+      assertEquals("EntityDbRemoteProvider", dbProvider.getClass().getSimpleName());
     }
     finally {
       if (connectionType != null) {
-        System.setProperty(Configuration.CLIENT_CONNECTION_TYPE, connectionType);
+        Configuration.setValue(Configuration.CLIENT_CONNECTION_TYPE, connectionType);
       }
       else {
-        System.clearProperty(Configuration.CLIENT_CONNECTION_TYPE);
+        Configuration.clearValue(Configuration.CLIENT_CONNECTION_TYPE);
       }
     }
   }

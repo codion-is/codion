@@ -295,20 +295,16 @@
     <copy file="${lib.jasperreports.base}" todir="${deploy.server.path}/lib"/>
     <copy file="${lib.jasperreports.collections}" todir="${deploy.server.path}/lib"/>
     <copy file="${lib.jasperreports.logging}" todir="${deploy.server.path}/lib"/>
-    <copy file="${deploy.server.policy}" todir="${deploy.server.path}"/>
-    <copy file="${deploy.server.allpermissions.policy}" todir="${deploy.server.path}"/>
-    <copy file="${deploy.server.logging}" tofile="${deploy.server.path}/log4j.properties"/>
-    <copy file="${deploy.server.keystore}" todir="${deploy.server.path}"/>
     <copy todir="${deploy.server.path}">
       <fileset dir="${basedir}/resources/server/"/>
     </copy>
+    <copy file="${deploy.server.policy}" todir="${deploy.server.config.path}"/>
+    <copy file="${deploy.server.allpermissions.policy}" todir="${deploy.server.config.path}"/>
+    <copy file="${deploy.server.keystore}" todir="${deploy.server.config.path}"/>
     <chmod dir="${deploy.server.path}" perm="u+x" type="file" includes="*.sh"/>
     <copy todir="${deploy.server.path}/h2db">
       <fileset dir="${db.h2.dir}"/>
     </copy>
-    <!--<copy todir="${deploy.server.path}/derbydb">-->
-      <!--<fileset dir="${db.derby.dir}"/>-->
-    <!--</copy>-->
   </target>
 
   <target name="deploy_server_monitor"
@@ -321,11 +317,11 @@
     <copy file="${lib.jfreechart.base}" todir="${deploy.server.monitor.path}/lib"/>
     <copy file="${lib.jfreechart.common}" todir="${deploy.server.monitor.path}/lib"/>
     <copy file="${lib.jcalendar}" todir="${deploy.server.monitor.path}/lib"/>
-    <copy file="${deploy.server.monitor.policy}" todir="${deploy.server.monitor.path}"/>
-    <copy file="${deploy.server.monitor.truststore}" todir="${deploy.server.monitor.path}"/>
     <copy todir="${deploy.server.monitor.path}">
       <fileset dir="${basedir}/resources/server_monitor/"/>
     </copy>
+    <copy file="${deploy.server.monitor.policy}" todir="${deploy.server.monitor.config.path}"/>
+    <copy file="${deploy.server.monitor.truststore}" todir="${deploy.server.monitor.config.path}"/>
     <chmod dir="${deploy.server.monitor.path}" perm="u+x" type="file" includes="*.sh"/>
   </target>
 

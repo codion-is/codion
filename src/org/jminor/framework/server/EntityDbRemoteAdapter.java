@@ -88,10 +88,6 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
    */
   private final MethodLogger methodLogger;
   /**
-   * Indicates whether or not a SSL client socket factory should be used when establishing the connection
-   */
-  private static final boolean SSL_CONNECTION_ENABLED = System.getProperty(Configuration.SERVER_CONNECTION_SSL_ENABLED, "true").equalsIgnoreCase("true");
-  /**
    * Contains the active remote connections, that is, those connections that are in the middle of serving a request
    */
   private static final List<EntityDbRemoteAdapter> ACTIVE_CONNECTIONS = Collections.synchronizedList(new ArrayList<EntityDbRemoteAdapter>());
@@ -122,12 +118,13 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
    * @param clientInfo information about the client requesting the connection
    * @param port the port to use when exporting this remote connection
    * @param loggingEnabled specifies whether or not method logging is enabled
+   * @param sslEnabled specifies whether or not ssl should be enabled
    * @throws RemoteException in case of an exception
    */
   EntityDbRemoteAdapter(final RemoteServer server, final Database database, final ClientInfo clientInfo, final int port,
-                               final boolean loggingEnabled) throws RemoteException {
-    super(port, SSL_CONNECTION_ENABLED ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
-            SSL_CONNECTION_ENABLED ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
+                        final boolean loggingEnabled, final boolean sslEnabled) throws RemoteException {
+    super(port, sslEnabled ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
+          sslEnabled ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
     if (CONNECTION_POOLS.containsKey(clientInfo.getUser())) {
       CONNECTION_POOLS.get(clientInfo.getUser()).getUser().setPassword(clientInfo.getUser().getPassword());
     }
@@ -652,7 +649,7 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
   }
 
   static void initConnectionPools(final Database database) {
-    final String initialPoolUsers = System.getProperty(Configuration.SERVER_CONNECTION_POOLING_INITIAL);
+    final String initialPoolUsers = Configuration.getStringValue(Configuration.SERVER_CONNECTION_POOLING_INITIAL);
     if (!Util.nullOrEmpty(initialPoolUsers)) {
       for (final String username : initialPoolUsers.split(",")) {
         final User poolUser = new User(username.trim(), null);
@@ -784,7 +781,7 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
   static class RemoteLogger extends MethodLogger {
 
     RemoteLogger() {
-      super(Integer.parseInt(System.getProperty(Configuration.SERVER_CONNECTION_LOG_SIZE, "40")));
+      super(Configuration.getIntValue(Configuration.SERVER_CONNECTION_LOG_SIZE));
     }
 
     @Override

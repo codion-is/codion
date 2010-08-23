@@ -2040,3 +2040,4 @@
   LoadTestModel changes rolled back, refactored a bit
   ConnectionPoolImpl improved some
   AbstractRemoteServer synchronized on connections
+  Configuration now properties based, .config files added for server + monitor, Util.parseConfigurationFile() added and called by Configuration

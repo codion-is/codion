@@ -12,8 +12,11 @@ import javax.swing.JTable;
 import javax.swing.UIManager;
 import java.awt.Color;
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Properties;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * Settings used throughout the framework.
@@ -40,7 +43,9 @@ public final class Configuration {
 
   /**
    * Specifies whether the client should connect locally or remotely,
-   * accepted values: local, remote
+   * accepted values: local, remote<br>
+   * Value type: String<br>
+   * Default value: local
    * @see #CONNECTION_TYPE_LOCAL
    * @see #CONNECTION_TYPE_REMOTE
    */
@@ -58,7 +63,9 @@ public final class Configuration {
   public static final String DEFAULT_USERNAME = "jminor.client.defaultUser";
 
   /**
-   * The host on which to locate the server
+   * The host on which to locate the server<br>
+   * Value type: String<br>
+   * Default value: localhost
    */
   public static final String SERVER_HOST_NAME = "jminor.server.hostname";
 
@@ -78,17 +85,23 @@ public final class Configuration {
   public static final String SERVER_DB_PORT = "jminor.server.db.port";
 
   /**
-   * The initial logging status on the server, either true (on) or false (off)
+   * The initial connection logging status on the server, either true (on) or false (off)<br>
+   * Value type: Boolean<br>
+   * Default value: true
    */
   public static final String SERVER_CLIENT_LOGGING_ENABLED = "jminor.server.clientLoggingEnabled";
 
   /**
-   * Specifies the size of the (circular) log the server keeps in memory for each connected client
+   * Specifies the size of the (circular) log the server keeps in memory for each connected client<br>
+   * Value type: Integer<br>
+   * Default value: 40
    */
   public static final String SERVER_CONNECTION_LOG_SIZE = "jminor.server.clientLogSize";
 
   /**
-   * Specifies whether the server should establish connections using a secure sockets layer, true (on) or false (off)
+   * Specifies whether the server should establish connections using a secure sockets layer, true (on) or false (off)<br>
+   * ValueType: Boolean<br>
+   * Default value: true
    */
   public static final String SERVER_CONNECTION_SSL_ENABLED = "jminor.server.connection.sslEnabled";
 
@@ -113,17 +126,23 @@ public final class Configuration {
 
   /**
    * Specifies the initial think time setting for the load test client
-   * (max think time = thinktime, min think time = max think time / 2)
+   * (max think time = thinktime, min think time = max think time / 2)<br>
+   * Value type: Integer<br>
+   * Default value: 2000
    */
   public static final String LOAD_TEST_THINKTIME = "jminor.loadtest.thinktime";
 
   /**
-   * Specifies the number which the max think time is multiplied with when initializing the clients
+   * Specifies the number which the max think time is multiplied with when initializing the clients<br>
+   * Value type: Integer<br>
+   * Default value: 2
    */
   public static final String LOAD_TEST_LOGIN_DELAY = "jminor.loadtest.logindelay";
 
   /**
-   * Specifies the initial client batch size
+   * Specifies the initial client batch size<br>
+   * Value type: Integer<br>
+   * Default value: 10
    */
   public static final String LOAD_TEST_BATCH_SIZE = "jminor.loadtest.batchsize";
 
@@ -405,44 +424,54 @@ public final class Configuration {
    */
   public static final String SEARCH_PANELS_VISIBLE = "jminor.client.searchPanelsVisible";
 
-  private static final Map<String, Object> SETTINGS = new HashMap<String, Object>();
+  private static final Properties PROPERTIES = new Properties();
+  private static final int INPUT_BUFFER_SIZE = 8192;
 
   static {
+    Util.parseConfigurationFile();
     //default settings
-    setValue(DEFAULT_TIMESTAMP_FORMAT, "dd-MM-yyyy HH:mm");
-    setValue(DEFAULT_DATE_FORMAT, "dd-MM-yyyy");
-    setValue(ALL_PANELS_ACTIVE, false);
-    setValue(COMPACT_ENTITY_PANEL_LAYOUT, false);
-    setValue(USE_KEYBOARD_NAVIGATION, true);
-    setValue(USE_FOCUS_ACTIVATION, true);
-    setValue(TABLE_AUTO_RESIZE_MODE, JTable.AUTO_RESIZE_OFF);
-    setValue(CONFIRM_EXIT, false);
-    setValue(PROPERTY_DEBUG_OUTPUT, false);
-    setValue(TAB_PLACEMENT, JTabbedPane.TOP);
-    setValue(TOOLBAR_BUTTONS, false);
-    setValue(PERSIST_FOREIGN_KEY_VALUES, true);
-    setValue(USERNAME_PREFIX, "");
-    setValue(AUTHENTICATION_REQUIRED, true);
-    setValue(TRANSFER_FOCUS_ON_ENTER, true);
-    setValue(USE_OPTIMISTIC_LOCKING, false);
-    setValue(SQL_BOOLEAN_VALUE_FALSE, 0);
-    setValue(SQL_BOOLEAN_VALUE_TRUE, 1);
-    setValue(PERSIST_ENTITY_PANELS, false);
-    setValue(DEFAULT_SEARCH_PANEL_STATE, false);
-    setValue(SERVER_NAME_PREFIX, "JMinor Server");
-    setValue(WILDCARD_CHARACTER, "%");
-    setValue(USE_NUMBER_FORMAT_GROUPING, true);
-    setValue(REMOTE_CONNECTION_PROVIDER, "org.jminor.framework.server.provider.EntityDbRemoteProvider");
-    setValue(LOCAL_CONNECTION_PROVIDER, "org.jminor.framework.db.provider.EntityDbLocalProvider");
-    setValue(DEFAULT_COMBO_BOX_NULL_VALUE_ITEM, "-");
-    setValue(INVALID_VALUE_BACKGROUND_COLOR, Color.LIGHT_GRAY);
-    setValue(PERFORM_NULL_VALIDATION, true);
-    setValue(DEFAULT_LABEL_TEXT_ALIGNMENT, JLabel.LEFT);
-    setValue(ALLOW_COLUMN_REORDERING, true);
-    setValue(DEFAULT_FOREIGN_KEY_FETCH_DEPTH, 1);
-    setValue(LIMIT_FOREIGN_KEY_FETCH_DEPTH, true);
-    setValue(DEFAULT_LOOK_AND_FEEL_CLASSNAME, UIManager.getSystemLookAndFeelClassName());
-    setValue(AUTO_CREATE_ENTITY_MODELS, true);
+    PROPERTIES.put(LOAD_TEST_THINKTIME, 2000);
+    PROPERTIES.put(LOAD_TEST_BATCH_SIZE, 10);
+    PROPERTIES.put(LOAD_TEST_LOGIN_DELAY, 2);
+    PROPERTIES.put(CLIENT_CONNECTION_TYPE, CONNECTION_TYPE_LOCAL);
+    PROPERTIES.put(SERVER_CLIENT_LOGGING_ENABLED, true);
+    PROPERTIES.put(SERVER_CONNECTION_LOG_SIZE, 40);
+    PROPERTIES.put(SERVER_CONNECTION_SSL_ENABLED, true);
+    PROPERTIES.put(SERVER_HOST_NAME, "localhost");
+    PROPERTIES.put(DEFAULT_TIMESTAMP_FORMAT, "dd-MM-yyyy HH:mm");
+    PROPERTIES.put(DEFAULT_DATE_FORMAT, "dd-MM-yyyy");
+    PROPERTIES.put(ALL_PANELS_ACTIVE, false);
+    PROPERTIES.put(COMPACT_ENTITY_PANEL_LAYOUT, false);
+    PROPERTIES.put(USE_KEYBOARD_NAVIGATION, true);
+    PROPERTIES.put(USE_FOCUS_ACTIVATION, true);
+    PROPERTIES.put(TABLE_AUTO_RESIZE_MODE, JTable.AUTO_RESIZE_OFF);
+    PROPERTIES.put(CONFIRM_EXIT, false);
+    PROPERTIES.put(PROPERTY_DEBUG_OUTPUT, false);
+    PROPERTIES.put(TAB_PLACEMENT, JTabbedPane.TOP);
+    PROPERTIES.put(TOOLBAR_BUTTONS, false);
+    PROPERTIES.put(PERSIST_FOREIGN_KEY_VALUES, true);
+    PROPERTIES.put(USERNAME_PREFIX, "");
+    PROPERTIES.put(AUTHENTICATION_REQUIRED, true);
+    PROPERTIES.put(TRANSFER_FOCUS_ON_ENTER, true);
+    PROPERTIES.put(USE_OPTIMISTIC_LOCKING, false);
+    PROPERTIES.put(SQL_BOOLEAN_VALUE_FALSE, 0);
+    PROPERTIES.put(SQL_BOOLEAN_VALUE_TRUE, 1);
+    PROPERTIES.put(PERSIST_ENTITY_PANELS, false);
+    PROPERTIES.put(DEFAULT_SEARCH_PANEL_STATE, false);
+    PROPERTIES.put(SERVER_NAME_PREFIX, "JMinor Server");
+    PROPERTIES.put(WILDCARD_CHARACTER, "%");
+    PROPERTIES.put(USE_NUMBER_FORMAT_GROUPING, true);
+    PROPERTIES.put(REMOTE_CONNECTION_PROVIDER, "org.jminor.framework.server.provider.EntityDbRemoteProvider");
+    PROPERTIES.put(LOCAL_CONNECTION_PROVIDER, "org.jminor.framework.db.provider.EntityDbLocalProvider");
+    PROPERTIES.put(DEFAULT_COMBO_BOX_NULL_VALUE_ITEM, "-");
+    PROPERTIES.put(INVALID_VALUE_BACKGROUND_COLOR, Color.LIGHT_GRAY);
+    PROPERTIES.put(PERFORM_NULL_VALIDATION, true);
+    PROPERTIES.put(DEFAULT_LABEL_TEXT_ALIGNMENT, JLabel.LEFT);
+    PROPERTIES.put(ALLOW_COLUMN_REORDERING, true);
+    PROPERTIES.put(DEFAULT_FOREIGN_KEY_FETCH_DEPTH, 1);
+    PROPERTIES.put(LIMIT_FOREIGN_KEY_FETCH_DEPTH, true);
+    PROPERTIES.put(DEFAULT_LOOK_AND_FEEL_CLASSNAME, UIManager.getSystemLookAndFeelClassName());
+    PROPERTIES.put(AUTO_CREATE_ENTITY_MODELS, true);
     parseSystemSettings();
   }
 
@@ -450,6 +479,7 @@ public final class Configuration {
     parseBooleanSetting(ALL_PANELS_ACTIVE);
     parseBooleanSetting(ALLOW_COLUMN_REORDERING);
     parseBooleanSetting(AUTHENTICATION_REQUIRED);
+    parseStringSetting(CLIENT_CONNECTION_TYPE);
     parseBooleanSetting(COMPACT_ENTITY_PANEL_LAYOUT);
     parseBooleanSetting(CONFIRM_EXIT);
     parseStringSetting(DEFAULT_COMBO_BOX_NULL_VALUE_ITEM);
@@ -460,18 +490,27 @@ public final class Configuration {
     parseStringSetting(DEFAULT_USERNAME);
     parseStringSetting(DEFAULT_TIMESTAMP_FORMAT);
     parseBooleanSetting(LIMIT_FOREIGN_KEY_FETCH_DEPTH);
+    parseIntegerSetting(LOAD_TEST_THINKTIME);
+    parseIntegerSetting(LOAD_TEST_BATCH_SIZE);
+    parseIntegerSetting(LOAD_TEST_LOGIN_DELAY);
     parseStringSetting(LOCAL_CONNECTION_PROVIDER);
     parseBooleanSetting(PERFORM_NULL_VALIDATION);
     parseBooleanSetting(PERSIST_ENTITY_PANELS);
     parseBooleanSetting(PERSIST_FOREIGN_KEY_VALUES);
     parseBooleanSetting(PROPERTY_DEBUG_OUTPUT);
     parseStringSetting(REMOTE_CONNECTION_PROVIDER);
+    parseStringSetting(SERVER_ADMIN_PORT);
+    parseStringSetting(SERVER_DB_PORT);
+    parseStringSetting(SERVER_HOST_NAME);
     parseStringSetting(REPORT_PATH);
+    parseStringSetting(SERVER_PORT);
     parseBooleanSetting(SERVER_CLIENT_LOGGING_ENABLED);
     parseIntegerSetting(SERVER_CONNECTION_LOG_SIZE);
+    parseStringSetting(SERVER_CONNECTION_POOLING_INITIAL);
     parseStringSetting(SERVER_DOMAIN_MODEL_CLASSES);
     parseStringSetting(SERVER_DOMAIN_MODEL_JARS);
     parseStringSetting(SERVER_NAME_PREFIX);
+    parseBooleanSetting(SERVER_CONNECTION_SSL_ENABLED);
     parseIntegerSetting(TAB_PLACEMENT);
     parseIntegerSetting(TABLE_AUTO_RESIZE_MODE);
     parseBooleanSetting(TOOLBAR_BUTTONS);
@@ -489,42 +528,54 @@ public final class Configuration {
   private static void parseIntegerSetting(final String setting) {
     final String value = System.getProperty(setting);
     if (value != null) {
-      setValue(setting, Integer.parseInt(value));
+      PROPERTIES.put(setting, Integer.parseInt(value));
     }
   }
 
   private static void parseBooleanSetting(final String setting) {
     final String value = System.getProperty(setting);
     if (value != null) {
-      setValue(setting, value.equalsIgnoreCase("true"));
+      PROPERTIES.put(setting, value.equalsIgnoreCase("true"));
     }
   }
 
   private static void parseStringSetting(final String setting) {
     final String value = System.getProperty(setting);
     if (value != null) {
-      setValue(setting, value);
+      PROPERTIES.put(setting, value);
     }
   }
 
   public static void setValue(final String key, final Object value) {
-    SETTINGS.put(key, value);
+    synchronized (PROPERTIES) {
+      PROPERTIES.put(key, value);
+      System.setProperty(key, value.toString());
+    }
+  }
+
+  public static void clearValue(final String key) {
+    synchronized (PROPERTIES) {
+      PROPERTIES.remove(key);
+      System.clearProperty(key);
+    }
   }
 
   public static Object getValue(final String key) {
-    return SETTINGS.get(key);
+    synchronized (PROPERTIES) {
+      return PROPERTIES.get(key);
+    }
   }
 
   public static Integer getIntValue(final String key) {
     return (Integer) getValue(key);
   }
 
-  public static boolean getBooleanValue(final String key) {
+  public static Boolean getBooleanValue(final String key) {
     return (Boolean) getValue(key);
   }
 
   public static String getStringValue(final String key) {
-    return (String) SETTINGS.get(key);
+    return (String) getValue(key);
   }
 
   /**
@@ -543,7 +594,7 @@ public final class Configuration {
    */
   public static SimpleDateFormat getDefaultDateFormat() {
     return DateFormats.getDateFormat((String) getValue(DEFAULT_DATE_FORMAT));
-}
+  }
 
   /**
    * @return A non-lenient SimpleDateFormat based on Configuration.DEFAULT_TIMESTAMP_FORMAT
@@ -576,5 +627,45 @@ public final class Configuration {
   public static boolean entityDeserializerAvailable() {
     final String deserializerClass = getStringValue(ENTITY_DESERIALIZER_CLASS);
     return deserializerClass != null && Util.onClasspath(deserializerClass);
+  }
+
+  /**
+   * Resolves the given property to a temporary file, assigning it to the property
+   * @param temporaryFileName the temp filename
+   * @param property the property
+   */
+  public static void resolveFileProperty(final String temporaryFileName, final String property) {
+    final String value = getStringValue(property);
+    Util.rejectNullValue(property, "property");
+    if (value == null || value.isEmpty()) {
+      return;
+    }
+    FileOutputStream out = null;
+    InputStream in = null;
+    try {
+      final ClassLoader loader = Util.class.getClassLoader();
+      in = loader.getResourceAsStream(value);
+      if (in == null) {
+        System.out.println(value + " not found on classpath");
+        return;
+      }
+      final File file = File.createTempFile(temporaryFileName, "tmp");
+      file.deleteOnExit();
+      out = new FileOutputStream(file);
+      final byte[] buf = new byte[INPUT_BUFFER_SIZE];
+      int br = in.read(buf);
+      while (br > 0) {
+        out.write(buf, 0, br);
+        br = in.read(buf);
+      }
+
+      setValue(property, file.toString());
+    }
+    catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+    finally {
+      Util.closeSilently(out, in);
+    }
   }
 }

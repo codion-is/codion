@@ -41,20 +41,16 @@ public final class EntityDbRemoteServerAdmin extends UnicastRemoteObject impleme
 
   static {
     System.setSecurityManager(new RMISecurityManager());
-    final String serverAdminPortProperty = System.getProperty(Configuration.SERVER_ADMIN_PORT);
-
-    if (serverAdminPortProperty == null) {
-      throw new RuntimeException("Required server property missing: " + Configuration.SERVER_ADMIN_PORT);
-    }
-
+    final String serverAdminPortProperty = Configuration.getStringValue(Configuration.SERVER_ADMIN_PORT);
+    Util.require(Configuration.SERVER_ADMIN_PORT, serverAdminPortProperty);
     SERVER_ADMIN_PORT = Integer.parseInt(serverAdminPortProperty);
   }
 
   private final EntityDbRemoteServer server;
 
-  public EntityDbRemoteServerAdmin(final EntityDbRemoteServer server, final boolean useSecureConnection) throws RemoteException {
-    super(SERVER_ADMIN_PORT, useSecureConnection ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
-            useSecureConnection ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
+  public EntityDbRemoteServerAdmin(final EntityDbRemoteServer server, final boolean sslEnabled) throws RemoteException {
+    super(SERVER_ADMIN_PORT, sslEnabled ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
+            sslEnabled ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
     this.server = server;
     server.getRegistry().rebind(server.getServerName() + RemoteServer.SERVER_ADMIN_SUFFIX, this);
     Runtime.getRuntime().addShutdownHook(new Thread(getShutdownHook()));

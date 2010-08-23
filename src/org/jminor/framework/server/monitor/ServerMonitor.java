@@ -7,6 +7,7 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.Util;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.domain.EntityDefinition;
 import org.jminor.framework.server.EntityDbServerAdmin;
 
@@ -68,6 +69,7 @@ public final class ServerMonitor {
   public ServerMonitor(final String hostName, final String serverName) throws RemoteException {
     this.hostName = hostName;
     this.serverName = serverName;
+    Configuration.class.getName();
     this.server = connectServer(serverName);
     connectionRequestsPerSecondCollection.addSeries(connectionRequestsPerSecondSeries);
     connectionRequestsPerSecondCollection.addSeries(warningTimeExceededSecondSeries);
@@ -228,15 +230,15 @@ public final class ServerMonitor {
               (EntityDbServerAdmin) LocateRegistry.getRegistry(hostName).lookup(serverName);
       //call to validate the remote connection
       db.getServerPort();
-//      System.out.println("ServerMonitor connected to server: " + serverName);
+      LOG.info("ServerMonitor connected to server: " + serverName);
       return db;
     }
     catch (RemoteException e) {
-//      System.out.println("Server \"" + serverName + "\" is unreachable");
-      LOG.error("Server \"" + serverName + "\" is unreachable");
+      LOG.error("Server \"" + serverName + "\" is unreachable", e);
       throw e;
     }
     catch (NotBoundException e) {
+      LOG.error(e);
       throw new RemoteException("Server " + serverName + " is not bound", e);
     }
     finally {

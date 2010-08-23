@@ -189,13 +189,13 @@ public class EntityUtilTest {
   public void getEntitySerializer() {
     Configuration.setValue(Configuration.ENTITY_SERIALIZER_CLASS, "org.jminor.framework.plugins.json.EntityJSONParser");
     assertNotNull(EntityUtil.getEntitySerializer());
-    Configuration.setValue(Configuration.ENTITY_SERIALIZER_CLASS, null);
+    Configuration.clearValue(Configuration.ENTITY_SERIALIZER_CLASS);
   }
 
   @Test
   public void getEntityDeserializer() {
     Configuration.setValue(Configuration.ENTITY_DESERIALIZER_CLASS, "org.jminor.framework.plugins.json.EntityJSONParser");
     assertNotNull(EntityUtil.getEntityDeserializer());
-    Configuration.setValue(Configuration.ENTITY_DESERIALIZER_CLASS, null);
+    Configuration.clearValue(Configuration.ENTITY_DESERIALIZER_CLASS);
   }
 }

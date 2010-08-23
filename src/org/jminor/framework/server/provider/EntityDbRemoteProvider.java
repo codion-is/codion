@@ -12,10 +12,6 @@ import org.jminor.framework.db.provider.AbstractEntityDbProvider;
 
 import org.apache.log4j.Logger;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -32,7 +28,6 @@ import java.util.UUID;
 public final class EntityDbRemoteProvider extends AbstractEntityDbProvider {
 
   private static final Logger LOG = Util.getLogger(EntityDbRemoteProvider.class);
-  private static final int INPUT_BUFFER_SIZE = 8192;
 
   private final String serverHostName;
   private final UUID clientID;
@@ -49,10 +44,10 @@ public final class EntityDbRemoteProvider extends AbstractEntityDbProvider {
   public EntityDbRemoteProvider(final User user, final UUID clientID, final String clientTypeID) {
     super(user);
     Util.rejectNullValue(user, "user");
-    serverHostName = System.getProperty(Configuration.SERVER_HOST_NAME, "localhost");
+    serverHostName = Configuration.getStringValue(Configuration.SERVER_HOST_NAME);
     this.clientID = clientID;
     this.clientTypeID = clientTypeID;
-    setTruststore(clientTypeID);
+    Configuration.resolveFileProperty(clientTypeID, "javax.net.ssl.trustStore");
   }
 
   /** {@inheritDoc} */
@@ -165,7 +160,7 @@ public final class EntityDbRemoteProvider extends AbstractEntityDbProvider {
             }
           }
           catch (Exception e) {
-            LOG.debug("Server \"" + name + "\" is unreachable", e);
+            LOG.error("Server \"" + name + "\" is unreachable", e);
           }
         }
       }
@@ -176,45 +171,12 @@ public final class EntityDbRemoteProvider extends AbstractEntityDbProvider {
 
   private static RemoteServer checkServer(final RemoteServer server) throws RemoteException {
     final int port = server.getServerPort();
-    final String requestedPort = System.getProperty(Configuration.SERVER_PORT);
+    final String requestedPort = Configuration.getStringValue(Configuration.SERVER_PORT);
     if (requestedPort == null || (!requestedPort.isEmpty() && port == Integer.parseInt(requestedPort))) {
       return server;
     }
 
     return null;
-  }
-
-  private static void setTruststore(final String clientTypeID) {
-    final String truststore = System.getProperty("javax.net.ssl.trustStore");
-    if (truststore != null) {
-      FileOutputStream out = null;
-      InputStream in = null;
-      try {
-        final ClassLoader loader = EntityDbRemoteProvider.class.getClassLoader();
-        in = loader.getResourceAsStream(truststore);
-        if (in == null) {
-          LOG.debug("Truststore resource '" + truststore + "' was not found in classpath");
-          return;
-        }
-        final File trustFile = File.createTempFile(clientTypeID, "ts");
-        trustFile.deleteOnExit();
-        out = new FileOutputStream(trustFile);
-        final byte[] buf = new byte[INPUT_BUFFER_SIZE];
-        int br = in.read(buf);
-        while (br > 0) {
-          out.write(buf, 0, br);
-          br = in.read(buf);
-        }
-        System.setProperty("javax.net.ssl.trustStore", trustFile.toString());
-        LOG.debug("Truststore set to : " + trustFile.toString() + ", original " + truststore);
-      }
-      catch (IOException e) {
-        throw new RuntimeException(e);
-      }
-      finally {
-        Util.closeSilently(out, in);
-      }
-    }
   }
 
   private static final class ServerComparator implements Comparator<RemoteServer> {

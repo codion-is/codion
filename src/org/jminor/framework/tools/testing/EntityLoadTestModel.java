@@ -27,9 +27,9 @@ public abstract class EntityLoadTestModel extends LoadTestModel {
    * @param usageScenarios the usage scenarios
    */
   public EntityLoadTestModel(final User user, final UsageScenario... usageScenarios) {
-    super(user, Arrays.asList(usageScenarios), Integer.parseInt(System.getProperty(Configuration.LOAD_TEST_THINKTIME, "2000")),
-            Integer.parseInt(System.getProperty(Configuration.LOAD_TEST_LOGIN_DELAY, "2")),
-            Integer.parseInt(System.getProperty(Configuration.LOAD_TEST_BATCH_SIZE, "10")), DEFAULT_WARNING_TIME);
+    super(user, Arrays.asList(usageScenarios), Configuration.getIntValue(Configuration.LOAD_TEST_THINKTIME),
+            Configuration.getIntValue(Configuration.LOAD_TEST_LOGIN_DELAY),
+            Configuration.getIntValue(Configuration.LOAD_TEST_BATCH_SIZE), DEFAULT_WARNING_TIME);
     loadDomainModel();
   }
 

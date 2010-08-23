@@ -47,8 +47,7 @@ public final class EntityDbProviderFactory {
   public static EntityDbProvider createEntityDbProvider(final User user, final UUID clientID,
                                                         final String clientTypeID) {
     try {
-      if (System.getProperty(Configuration.CLIENT_CONNECTION_TYPE,
-              Configuration.CONNECTION_TYPE_LOCAL).equals(Configuration.CONNECTION_TYPE_REMOTE)) {
+      if (Configuration.getStringValue(Configuration.CLIENT_CONNECTION_TYPE).equals(Configuration.CONNECTION_TYPE_REMOTE)) {
         return (EntityDbProvider) Class.forName(REMOTE_CONNECTION_PROVIDER).getConstructor(
                 User.class, UUID.class, String.class).newInstance(user, clientID, clientTypeID);
       }

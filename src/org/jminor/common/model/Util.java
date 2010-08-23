@@ -8,7 +8,20 @@ import org.apache.log4j.Logger;
 
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.Closeable;
+import java.io.EOFException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -19,7 +32,20 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.text.Collator;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.prefs.Preferences;
 
 /**
@@ -39,6 +65,7 @@ public final class Util {
   public static final String PREF_DEFAULT_USERNAME = "jminor.username";
 
   private static final List<Logger> LOGGERS = new ArrayList<Logger>();
+  private static final Logger LOG = Util.getLogger(Util.class);
   private static final Random RANDOM = new Random();
   private static final int K = 1024;
   private static Level defaultLoggingLevel;
@@ -64,6 +91,15 @@ public final class Util {
   }
 
   private Util() {}
+
+  /**
+   * Specifies the configuration file name to search for and parse at startup, relative to user.dir,
+   * this is done last, so that settings in the configuration file override settings
+   * gotten via runtime parameters<br>
+   * Value type: String<br>
+   * Default value: null
+   */
+  public static final String CONFIGURATION_FILE = "jminor.configurationFile";
 
   /**
    * Returns true if the given host is reachable, false if it is not or an exception is thrown while trying
@@ -751,6 +787,36 @@ public final class Util {
 
       default:
         return Object.class;
+    }
+  }
+
+  /**
+   * Parses the configuration file specified by the CONFIGURATION_FILE property
+   * @see #CONFIGURATION_FILE
+   */
+  public static void parseConfigurationFile() {
+    final String filename = System.getProperty(CONFIGURATION_FILE);
+    if (filename != null) {
+      InputStream inputStream = null;
+      try {
+        inputStream = ClassLoader.getSystemResourceAsStream(filename);
+        if (inputStream == null) {
+          throw new RuntimeException("Unable to load configuration file: " + filename);
+        }
+        LOG.debug("Reading configuration file: " + filename);
+        final Properties properties = new Properties();
+        properties.load(inputStream);
+        for (final Object key : properties.keySet()) {
+          LOG.debug(key + " - > " + properties.get(key));
+          System.setProperty((String) key, (String) properties.get(key));
+        }
+      }
+      catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+      finally {
+        closeSilently(inputStream);
+      }
     }
   }
 

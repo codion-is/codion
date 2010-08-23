@@ -16,7 +16,9 @@ import org.jminor.framework.demos.petstore.domain.Petstore;
 import org.jminor.framework.server.provider.EntityDbRemoteProvider;
 
 import org.junit.AfterClass;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -34,22 +36,29 @@ public class EntityDbRemoteServerTest {
     new EmpDept();
     new Petstore();
     defaultManager = System.getSecurityManager();
-    System.setProperty(Configuration.SERVER_PORT, "2222");
-    System.setProperty(Configuration.SERVER_DB_PORT, "2223");
-    System.setProperty(Configuration.SERVER_ADMIN_PORT, "3334");
-    System.setProperty(Configuration.SERVER_HOST_NAME, "localhost");
-    System.setProperty(Configuration.SERVER_CONNECTION_POOLING_INITIAL, User.UNIT_TEST_USER.getUsername());
-    System.setProperty(Configuration.SERVER_CONNECTION_SSL_ENABLED, "true");
-    System.setProperty(Configuration.SERVER_DOMAIN_MODEL_CLASSES, "org.jminor.framework.demos.empdept.domain.EmpDept,org.jminor.framework.demos.petstore.domain.Petstore");
-    System.setProperty("java.rmi.server.hostname", "localhost");
-    System.setProperty("java.security.policy", "resources/security/all_permissions.policy");
-    System.setProperty("javax.net.ssl.trustStore", "resources/security/JMinorClientTruststore");
-    System.setProperty("javax.net.ssl.keyStore", "resources/security/JMinorServerKeystore");
-    System.setProperty("javax.net.ssl.keyStorePassword", "jminor");
+    Configuration.class.getName();
+    Configuration.setValue(Configuration.SERVER_PORT, "2222");
+    Configuration.setValue(Configuration.SERVER_DB_PORT, "2223");
+    Configuration.setValue(Configuration.SERVER_ADMIN_PORT, "3334");
+    Configuration.setValue(Configuration.SERVER_HOST_NAME, "localhost");
+    Configuration.setValue(Configuration.SERVER_CONNECTION_POOLING_INITIAL, User.UNIT_TEST_USER.getUsername());
+    Configuration.setValue(Configuration.SERVER_CONNECTION_SSL_ENABLED, true);
+    Configuration.setValue(Configuration.SERVER_DOMAIN_MODEL_CLASSES, "org.jminor.framework.demos.empdept.domain.EmpDept,org.jminor.framework.demos.petstore.domain.Petstore");
+    Configuration.setValue("java.rmi.server.hostname", "localhost");
+    Configuration.setValue("java.security.policy", "resources/security/all_permissions.policy");
+    Configuration.setValue("javax.net.ssl.trustStore", "resources/security/JMinorClientTruststore");
+    Configuration.setValue("javax.net.ssl.keyStore", "resources/security/JMinorServerKeystore");
+    Configuration.setValue("javax.net.ssl.keyStorePassword", "jminor");
     if (server != null) {
       throw new RuntimeException("Server not torn down after last run");
     }
-    server = new EntityDbRemoteServer(DatabaseProvider.createInstance());
+    try {
+      server = new EntityDbRemoteServer(DatabaseProvider.createInstance());
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+      throw e;
+    }
     if (admin != null) {
       throw new RuntimeException("Server admin not torn down after last run");
     }
