@@ -8,7 +8,6 @@ import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
-import org.jminor.framework.domain.EntityDefinition;
 import org.jminor.framework.server.EntityDbServerAdmin;
 
 import org.apache.log4j.Logger;
@@ -22,7 +21,6 @@ import java.net.URI;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
-import java.util.Comparator;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -279,11 +277,5 @@ public final class ServerMonitor {
         catch (RemoteException e) {/**/}
       }
     }, delay, delay);
-  }
-
-  private static final class DefinitionComparator implements Comparator<EntityDefinition> {
-    public int compare(final EntityDefinition o1, final EntityDefinition o2) {
-      return o1.getTableName().compareTo(o2.getTableName());
-    }
   }
 }
