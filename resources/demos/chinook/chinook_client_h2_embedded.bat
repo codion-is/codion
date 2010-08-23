@@ -1,1 +1,0 @@
-java -Djminor.client.connectionType=local -Djminor.db.type=h2 -Djminor.db.embedded=true -Djminor.db.host=h2db/h2 -Djava.security.policy=jminor_demos.policy -Xmx128m -cp lib/jminor-client.jar;lib/jminor-demos.jar;lib/jminor-common.jar;lib/log4j-1.2.15.jar;lib/jcalendar-1.3.2.jar;lib/h2-1.1.114.jar org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel
