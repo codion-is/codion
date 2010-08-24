@@ -18,7 +18,7 @@ grant {
   permission java.lang.RuntimePermission "shutdownHooks";
   //for an embedded database residing in the server working directory
   permission java.io.FilePermission "-", "read,write,delete";
-  //for JasperReports report generation
+  //for JasperReports report generation and domain class loading
   permission java.lang.RuntimePermission "createClassLoader";
   permission java.lang.RuntimePermission "getProtectionDomain";
 };

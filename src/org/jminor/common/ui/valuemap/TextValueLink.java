@@ -202,7 +202,7 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> implements
       return textComponent;
     }
 
-    public final TextValueLink<K> getLink() {
+    public final TextValueLink<K> getValueLink() {
       return link;
     }
 

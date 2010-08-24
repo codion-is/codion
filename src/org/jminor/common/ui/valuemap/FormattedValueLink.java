@@ -99,11 +99,34 @@ public class FormattedValueLink<K> extends TextValueLink<K> {
     /** {@inheritDoc} */
     @Override
     public void updateValidityInfo() {
-      final boolean validInput = !getLink().isModelValueNull() || (getTextComponent().getText().equals(maskString) && getLink().isNullable());
-      final String validationMessage = getLink().getValidationMessage(getEditModel());
-      getTextComponent().setBackground(validInput && validationMessage == null ? getValidBackgroundColor() : getInvalidBackgroundColor());
-      getTextComponent().setToolTipText(validationMessage == null ? getDefaultToolTip() :
-              (!Util.nullOrEmpty(getDefaultToolTip()) ? getDefaultToolTip() + ": " : "") + validationMessage);
+      final JTextComponent textComponent = getTextComponent();
+      final boolean validInput = !getValueLink().isModelValueNull() || (textComponent.getText().equals(maskString) && getValueLink().isNullable());
+      final String validationMessage = getValueLink().getValidationMessage(getEditModel());
+      if (validInput && validationMessage == null) {
+        textComponent.setBackground(getValidBackgroundColor());
+      }
+      else {
+        textComponent.setBackground(getInvalidBackgroundColor());
+      }
+      if (validationMessage != null) {
+        textComponent.setToolTipText(validationMessage);
+      }
+
+      final String defaultToolTip = getDefaultToolTip();
+      String tooltip;
+      if (validationMessage == null) {
+        tooltip = defaultToolTip;
+      }
+      else {
+        if (Util.nullOrEmpty(defaultToolTip)) {
+          tooltip = validationMessage;
+        }
+        else {
+          tooltip = defaultToolTip + ": "  + validationMessage;
+        }
+      }
+
+      textComponent.setToolTipText(tooltip);
     }
   }
 }
