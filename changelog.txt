@@ -2044,3 +2044,4 @@
   TextValueLink.getLink() renamed to getValueLink
   FormattedValueLink.FormattedValidator.updateValidityInfo() refactored
   DocumentAdapter.insertOrUpdate() renamed to insertOrRemoveUpdate()
+  ValueLinkValidators added, fixed issue where formatted value link got both the normal validator as well as the formatted validator

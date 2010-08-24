@@ -3,12 +3,10 @@
  */
 package org.jminor.common.ui.valuemap;
 
-import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
 import org.jminor.common.ui.control.LinkType;
 
 import javax.swing.JFormattedTextField;
-import javax.swing.text.JTextComponent;
 import java.text.Format;
 import java.text.ParseException;
 
@@ -35,7 +33,6 @@ public class FormattedValueLink<K> extends TextValueLink<K> {
     super(textComponent, editModel, key, immediateUpdate, linkType);
     this.format = format;
     this.formatter = textComponent.getFormatter();
-    new FormattedValidator<K>(this, textComponent, editModel).updateValidityInfo();
     updateUI();
   }
 
@@ -84,49 +81,5 @@ public class FormattedValueLink<K> extends TextValueLink<K> {
 
   protected Object translate(final Object parsedValue) {
     return parsedValue;
-  }
-
-  private static final class FormattedValidator<K> extends ValidatorImpl<K> {
-
-    private final String maskString;
-
-    private FormattedValidator(final TextValueLink<K> textValueLink, final JTextComponent textComponent,
-                               final ValueChangeMapEditModel<K, Object> editModel) {
-      super(textValueLink, textComponent, editModel);
-      this.maskString = textComponent.getText();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void updateValidityInfo() {
-      final JTextComponent textComponent = getTextComponent();
-      final boolean validInput = !getValueLink().isModelValueNull() || (textComponent.getText().equals(maskString) && getValueLink().isNullable());
-      final String validationMessage = getValueLink().getValidationMessage(getEditModel());
-      if (validInput && validationMessage == null) {
-        textComponent.setBackground(getValidBackgroundColor());
-      }
-      else {
-        textComponent.setBackground(getInvalidBackgroundColor());
-      }
-      if (validationMessage != null) {
-        textComponent.setToolTipText(validationMessage);
-      }
-
-      final String defaultToolTip = getDefaultToolTip();
-      String tooltip;
-      if (validationMessage == null) {
-        tooltip = defaultToolTip;
-      }
-      else {
-        if (Util.nullOrEmpty(defaultToolTip)) {
-          tooltip = validationMessage;
-        }
-        else {
-          tooltip = defaultToolTip + ": "  + validationMessage;
-        }
-      }
-
-      textComponent.setToolTipText(tooltip);
-    }
   }
 }

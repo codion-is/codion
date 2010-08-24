@@ -105,12 +105,12 @@ public final class EntityUiUtil {
 
   public static List<Entity> selectEntities(final EntityTableModel lookupModel, final Window owner,
                                             final boolean singleSelection, final String dialogTitle) throws CancelException {
-    return selectEntities(lookupModel, owner, singleSelection, dialogTitle, null, false);
+    return selectEntities(lookupModel, owner, singleSelection, dialogTitle, null);
   }
 
   public static List<Entity> selectEntities(final EntityTableModel lookupModel, final Window owner,
                                             final boolean singleSelection, final String dialogTitle,
-                                            final Dimension preferredSize, final boolean simpleSearchPanel) throws CancelException {
+                                            final Dimension preferredSize) throws CancelException {
     Util.rejectNullValue(lookupModel, "lookupModel");
     final List<Entity> selected = new ArrayList<Entity>();
     final JDialog dialog = new JDialog(owner, dialogTitle);
@@ -371,7 +371,7 @@ public final class EntityUiUtil {
     }
     final List<Property.ColumnProperty> searchProperties = Entities.getSearchProperties(
             foreignKeyProperty.getReferencedEntityID(), Arrays.asList(searchPropertyIDs));
-    
+
     final EntityLookupField lookupField =
             new EntityLookupField(editModel.createEntityLookupModel(foreignKeyProperty.getReferencedEntityID(),
                     searchProperties, additionalSearchCriteria));
@@ -608,7 +608,7 @@ public final class EntityUiUtil {
       public void actionPerformed(final ActionEvent e) {
         try {
           lookupField.getModel().setSelectedEntities(selectEntities(tableModel, UiUtil.getParentWindow(lookupField),
-                  true, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY), null, false));
+                  true, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY), null));
         }
         catch (CancelException ex) {/**/}
       }
@@ -834,7 +834,7 @@ public final class EntityUiUtil {
         public void actionPerformed(final ActionEvent e) {
           try {
             final List<Entity> selected = EntityUiUtil.selectEntities(lookupModel, UiUtil.getParentWindow(textField),
-                    true, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY), null, false);
+                    true, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY), null);
             editModel.setValue(foreignKeyProperty.getPropertyID(), !selected.isEmpty() ? selected.get(0) : null);
           }
           catch (CancelException ex) {/**/}
