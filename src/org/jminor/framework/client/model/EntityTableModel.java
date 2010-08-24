@@ -6,7 +6,6 @@ package org.jminor.framework.client.model;
 import org.jminor.common.db.exception.DbException;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.FilteredTableModel;
-import org.jminor.common.model.SortingDirective;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.reports.ReportDataWrapper;
 import org.jminor.common.model.valuemap.exception.ValidationException;
@@ -36,12 +35,6 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
    * @see #setDeleteAllowed(boolean)
    */
   StateObserver getAllowDeleteState();
-
-  /**
-   * @param propertyID the ID of the property to sort by
-   * @param directive the sorting directive
-   */
-  void setSortingDirective(final String propertyID, final SortingDirective directive);
 
   /**
    * Returns the edit model associated with this table model,

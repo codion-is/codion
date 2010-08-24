@@ -33,6 +33,8 @@ import java.util.List;
  */
 public final class DomainClassGenerator {
 
+  private static final String TABLE_SCHEMA = "TABLE_SHCEM";
+
   private DomainClassGenerator() {}
 
   public static void main(final String[] arguments) throws Exception {
@@ -304,7 +306,7 @@ public final class DomainClassGenerator {
       final List<Schema> schemas = new ArrayList<Schema>();
       int counter = 0;
       while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
-        schemas.add(new Schema(resultSet.getString("TABLE_SCHEM")));
+        schemas.add(new Schema(resultSet.getString(TABLE_SCHEMA)));
       }
 
       return schemas;
@@ -351,7 +353,7 @@ public final class DomainClassGenerator {
       while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
         final String tableName = resultSet.getString("TABLE_NAME");
         if (tablesToInclude == null || tablesToInclude.contains(tableName)) {
-          String dbSchema = resultSet.getString("TABLE_SCHEM");
+          String dbSchema = resultSet.getString(TABLE_SCHEMA);
           if (dbSchema == null) {
             dbSchema = this.schema;
           }
@@ -428,7 +430,7 @@ public final class DomainClassGenerator {
           if (resultSet.wasNull()) {
             decimalDigits = -1;
           }
-          columns.add(new Column(resultSet.getString("TABLE_SCHEM"), resultSet.getString("TABLE_NAME"),
+          columns.add(new Column(resultSet.getString(TABLE_SCHEMA), resultSet.getString("TABLE_NAME"),
                   resultSet.getString("COLUMN_NAME"), dataType, translatedType,
                   resultSet.getInt("COLUMN_SIZE"), decimalDigits, resultSet.getInt("NULLABLE"),
                   resultSet.getObject("COLUMN_DEF") != null, resultSet.getString("REMARKS")));
@@ -517,7 +519,7 @@ public final class DomainClassGenerator {
       final List<PrimaryKey> primaryKeys = new ArrayList<PrimaryKey>();
       int counter = 0;
       while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
-        primaryKeys.add(new PrimaryKey(resultSet.getString("TABLE_SCHEM"), resultSet.getString("TABLE_NAME"),
+        primaryKeys.add(new PrimaryKey(resultSet.getString(TABLE_SCHEMA), resultSet.getString("TABLE_NAME"),
                 resultSet.getString("COLUMN_NAME"), resultSet.getInt("KEY_SEQ")));
       }
 

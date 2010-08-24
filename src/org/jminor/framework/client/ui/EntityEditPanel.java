@@ -71,6 +71,8 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   public static final String REFRESH = "refresh";
   public static final String CLEAR = "clear";
 
+  private static final String ALT_PREFIX = " (ALT-";
+
   private final Map<String, Control> controlMap = new HashMap<String, Control>();
 
   /**
@@ -116,8 +118,8 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   public final Control getRefreshControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.REFRESH_MNEMONIC);
     return Controls.methodControl(getEditModel(), "refresh", FrameworkMessages.get(FrameworkMessages.REFRESH),
-            getEntityEditModel().getActiveState(), FrameworkMessages.get(FrameworkMessages.REFRESH_TIP) + " (ALT-" + mnemonic + ")",
-            mnemonic.charAt(0), null, Images.loadImage(Images.IMG_REFRESH_16));
+            getEntityEditModel().getActiveState(), FrameworkMessages.get(FrameworkMessages.REFRESH_TIP) + ALT_PREFIX
+                    + mnemonic + ")", mnemonic.charAt(0), null, Images.loadImage(Images.IMG_REFRESH_16));
   }
 
   /**
@@ -130,7 +132,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
                     getEntityEditModel().getActiveState(),
                     getEntityEditModel().getAllowDeleteState(),
                     getEntityEditModel().getEntityNullState().getReversedState()),
-            FrameworkMessages.get(FrameworkMessages.DELETE_TIP) + " (ALT-" + mnemonic + ")", mnemonic.charAt(0), null,
+            FrameworkMessages.get(FrameworkMessages.DELETE_TIP) + ALT_PREFIX + mnemonic + ")", mnemonic.charAt(0), null,
             Images.loadImage(Images.IMG_DELETE_16));
   }
 
@@ -140,7 +142,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   public final Control getClearControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.CLEAR_MNEMONIC);
     return Controls.methodControl(this, "clearModelValues", FrameworkMessages.get(FrameworkMessages.CLEAR),
-            getEntityEditModel().getActiveState(), FrameworkMessages.get(FrameworkMessages.CLEAR_ALL_TIP) + " (ALT-" + mnemonic + ")",
+            getEntityEditModel().getActiveState(), FrameworkMessages.get(FrameworkMessages.CLEAR_ALL_TIP) + ALT_PREFIX + mnemonic + ")",
             mnemonic.charAt(0), null, Images.loadImage(Images.IMG_NEW_16));
   }
 
@@ -155,7 +157,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
                     getEntityEditModel().getAllowUpdateState(),
                     getEntityEditModel().getEntityNullState().getReversedState(),
                     getEntityEditModel().getModifiedState()),
-            FrameworkMessages.get(FrameworkMessages.UPDATE_TIP) + " (ALT-" + mnemonic + ")", mnemonic.charAt(0),
+            FrameworkMessages.get(FrameworkMessages.UPDATE_TIP) + ALT_PREFIX + mnemonic + ")", mnemonic.charAt(0),
             null, Images.loadImage(Images.IMG_SAVE_16));
   }
 
@@ -166,7 +168,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.INSERT_MNEMONIC);
     return Controls.methodControl(this, "save", FrameworkMessages.get(FrameworkMessages.INSERT),
             States.aggregateState(Conjunction.AND, getEntityEditModel().getActiveState(), getEntityEditModel().getAllowInsertState()),
-            FrameworkMessages.get(FrameworkMessages.INSERT_TIP) + " (ALT-" + mnemonic + ")",
+            FrameworkMessages.get(FrameworkMessages.INSERT_TIP) + ALT_PREFIX + mnemonic + ")",
             mnemonic.charAt(0), null, Images.loadImage("Add16.gif"));
   }
 

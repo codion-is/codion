@@ -27,6 +27,7 @@ import java.util.Map;
  */
 public final class Entities {
 
+  private static final String ENTITY_ID_PARAM = "entityID";
   private static final Map<String, EntityDefinition> ENTITY_DEFINITIONS = new HashMap<String, EntityDefinition>();
   private static volatile Map<String, Proxy> proxies;
 
@@ -333,7 +334,7 @@ public final class Entities {
    * @throws RuntimeException if no visible properties are defined for the given entity
    */
   public static List<Property> getVisibleProperties(final String entityID) {
-    Util.rejectNullValue(entityID, "entityID");
+    Util.rejectNullValue(entityID, ENTITY_ID_PARAM);
     return getEntityDefinition(entityID).getVisibleProperties();
   }
 
@@ -358,7 +359,7 @@ public final class Entities {
    * @throws RuntimeException in case no such property exists
    */
   public static Property getProperty(final String entityID, final String propertyID) {
-    Util.rejectNullValue(entityID, "entityID");
+    Util.rejectNullValue(entityID, ENTITY_ID_PARAM);
     Util.rejectNullValue(propertyID, "propertyID");
     final Property property = getProperties(entityID).get(propertyID);
     if (property == null) {
@@ -386,7 +387,7 @@ public final class Entities {
    * the entity identified by <code>entityID</code>
    */
   public static List<Property> getProperties(final String entityID, final String... propertyIDs) {
-    Util.rejectNullValue(entityID, "entityID");
+    Util.rejectNullValue(entityID, ENTITY_ID_PARAM);
     Util.rejectNullValue(propertyIDs, "propertyIDs");
     final List<Property> properties = new ArrayList<Property>();
     for (final String propertyID : propertyIDs) {
@@ -614,7 +615,7 @@ public final class Entities {
    * @see Proxy
    */
   public static void setProxy(final String entityID, final Proxy entityProxy) {
-    Util.rejectNullValue(entityID, "entityID");
+    Util.rejectNullValue(entityID, ENTITY_ID_PARAM);
     Util.rejectNullValue(entityProxy, "entityProxy");
     if (proxies == null) {
       proxies = new HashMap<String, Proxy>();
@@ -634,7 +635,7 @@ public final class Entities {
    * @see Proxy
    */
   public static Proxy getProxy(final String entityID) {
-    Util.rejectNullValue(entityID, "entityID");
+    Util.rejectNullValue(entityID, ENTITY_ID_PARAM);
     if (proxies != null && proxies.containsKey(entityID)) {
       return proxies.get(entityID);
     }
@@ -649,7 +650,7 @@ public final class Entities {
    * @throws IllegalArgumentException in case the entity has not been defined
    */
   private static EntityDefinition getEntityDefinition(final String entityID) {
-    Util.rejectNullValue(entityID, "entityID");
+    Util.rejectNullValue(entityID, ENTITY_ID_PARAM);
     final EntityDefinition definition = ENTITY_DEFINITIONS.get(entityID);
     if (definition == null) {
       throw new IllegalArgumentException("Undefined entity: " + entityID);
@@ -769,7 +770,7 @@ public final class Entities {
     private EntityDependencyTreeNode(final String domainID, final String entityID) {
       super(entityID);
       this.domainID = domainID;
-      Util.rejectNullValue(entityID, "entityID");
+      Util.rejectNullValue(entityID, ENTITY_ID_PARAM);
     }
 
     /**

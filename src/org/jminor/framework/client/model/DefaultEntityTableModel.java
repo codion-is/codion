@@ -8,7 +8,6 @@ import org.jminor.common.db.exception.DbException;
 import org.jminor.common.model.AbstractFilteredTableModel;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
-import org.jminor.common.model.SortingDirective;
 import org.jminor.common.model.State;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.States;
@@ -211,16 +210,6 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   /** {@inheritDoc} */
-  public final void setSortingDirective(final String propertyID, final SortingDirective directive) {
-    final int columnIndex = getColumnModel().getColumnIndex(Entities.getProperty(entityID, propertyID));
-    if (columnIndex == -1) {
-      throw new IllegalArgumentException("Column based on property '" + propertyID + " not found");
-    }
-
-    super.setSortingDirective(columnIndex, directive);
-  }
-
-  /** {@inheritDoc} */
   public final EntityDbProvider getDbProvider() {
     return dbProvider;
   }
@@ -278,7 +267,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   public final Class<?> getColumnClass(final int columnIndex) {
     final Property columnProperty = (Property) getColumnModel().getColumn(convertColumnIndexToView(columnIndex)).getIdentifier();
 
-    return columnProperty.getTypeClass();
+    return getColumnClass(columnProperty);
   }
 
   /** {@inheritDoc} */
@@ -540,10 +529,14 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   /** {@inheritDoc} */
+  protected final Class getColumnClass(final Property columnIdentifier) {
+    return columnIdentifier.getTypeClass();
+  }
+
+  /** {@inheritDoc} */
   @Override
-  protected final Comparable getComparable(final Object object, final int columnIndex) {
-    final Property property = getColumnProperty(columnIndex);
-    return (Comparable) ((Entity) object).getValue(property);
+  protected final Comparable getComparable(final Object object, final Property columnIdentifier) {
+    return (Comparable) ((Entity) object).getValue(columnIdentifier);
   }
 
   /** {@inheritDoc} */

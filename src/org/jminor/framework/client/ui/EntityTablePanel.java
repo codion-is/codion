@@ -120,6 +120,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
 
   private static final int TOOLBAR_BUTTON_SIZE = 20;
   private static final int STATUS_MESSAGE_FONT_SIZE = 12;
+  private static final String TRIPLEDOT = "...";
 
   private final Event evtTableDoubleClicked = Events.event();
   private final Event evtSearchPanelVisibilityChanged = Events.event();
@@ -477,7 +478,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
    */
   public final Control getConfigureQueryControl() {
     return Controls.methodControl(this, "configureQuery",
-            FrameworkMessages.get(FrameworkMessages.CONFIGURE_QUERY) + "...", null,
+            FrameworkMessages.get(FrameworkMessages.CONFIGURE_QUERY) + TRIPLEDOT, null,
             FrameworkMessages.get(FrameworkMessages.CONFIGURE_QUERY), 0,
             null, Images.loadImage(Images.IMG_PREFERENCES_16));
   }
@@ -487,7 +488,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
    */
   public final Control getViewDependenciesControl() {
     return Controls.methodControl(this, "viewSelectionDependencies",
-            FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES) + "...",
+            FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES) + TRIPLEDOT,
             getEntityTableModel().getSelectionEmptyState().getReversedState(),
             FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES_TIP), 'W');
   }
@@ -509,7 +510,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
    */
   public final Control getExportControl() {
     return Controls.methodControl(this, "exportSelected",
-            FrameworkMessages.get(FrameworkMessages.EXPORT_SELECTED) + "...",
+            FrameworkMessages.get(FrameworkMessages.EXPORT_SELECTED) + TRIPLEDOT,
             getEntityTableModel().getSelectionEmptyState().getReversedState(),
             FrameworkMessages.get(FrameworkMessages.EXPORT_SELECTED_TIP), 0, null,
             Images.loadImage(Images.IMG_SAVE_16));

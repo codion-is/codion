@@ -5,7 +5,6 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.model.ColumnSearchModel;
-import org.jminor.common.model.SortingDirective;
 import org.jminor.common.model.reports.ReportDataWrapper;
 import org.jminor.framework.db.EntityDbConnectionTest;
 import org.jminor.framework.domain.Entities;
@@ -13,7 +12,11 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityTestDomain;
 import org.jminor.framework.domain.Property;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import org.junit.Test;
 
 import javax.swing.table.TableColumn;
@@ -41,12 +44,6 @@ public final class DefaultEntityTableModelTest {
     final ColumnSearchModel<Property> filterModel = testModel.getSearchModel().getPropertyFilterModel(EntityTestDomain.DETAIL_STRING);
     filterModel.setLikeValue("a");
     testModel.filterContents();
-  }
-
-  @Test
-  public void testSorting() {
-    testModel.setSortingDirective(EntityTestDomain.DETAIL_STRING, SortingDirective.DESCENDING);
-    testModel.setSortingDirective(EntityTestDomain.DETAIL_STRING, SortingDirective.ASCENDING);
   }
 
   @Test

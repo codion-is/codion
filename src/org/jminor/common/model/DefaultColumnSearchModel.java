@@ -16,6 +16,7 @@ import java.util.regex.Pattern;
  * A default ColumnSearchModel model implementation.
  * @param <K> the type of the column identifier
  */
+@SuppressWarnings({"unchecked"})
 public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
 
   private final Event evtUpperBoundChanged = Events.event();
@@ -448,7 +449,6 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
     return (Comparable) object;
   }
 
-  @SuppressWarnings({"unchecked"})
   private boolean includeLike(final Comparable comparable) {
     if (getUpperBound() == null) {
       return true;
@@ -465,7 +465,6 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
     return comparable.compareTo(getUpperBound()) == 0;
   }
 
-  @SuppressWarnings({"unchecked"})
   private boolean includeNotLike(final Comparable comparable) {
     if (getUpperBound() == null) {
       return true;
@@ -509,17 +508,14 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
     return string.replaceAll(wildcard, ".*").replaceAll("\\$", ".").replaceAll("\\]", "\\\\]").replaceAll("\\[", "\\\\[");
   }
 
-  @SuppressWarnings({"unchecked"})
   private boolean includeMax(final Comparable comparable) {
     return getUpperBound() == null || comparable != null && comparable.compareTo(getUpperBound()) <= 0;
   }
 
-  @SuppressWarnings({"unchecked"})
   private boolean includeMin(final Comparable comparable) {
     return getUpperBound() == null || comparable != null && comparable.compareTo(getUpperBound()) >= 0;
   }
 
-  @SuppressWarnings({"unchecked"})
   private boolean includeMinMaxInside(final Comparable comparable) {
     if (getLowerBound() == null && getUpperBound() == null) {
       return true;
@@ -543,7 +539,6 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
     return lowerCompareResult >= 0 && upperCompareResult <= 0;
   }
 
-  @SuppressWarnings({"unchecked"})
   private boolean includeMinMaxOutside(final Comparable comparable) {
     if (getLowerBound() == null && getUpperBound() == null) {
       return true;

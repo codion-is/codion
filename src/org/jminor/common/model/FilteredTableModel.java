@@ -180,36 +180,31 @@ public interface FilteredTableModel<T, C> extends FilteredModel<T>, TableModel, 
   void setColumnVisible(final Object columnIdentifier, final boolean visible);
 
   /**
-   * @param columnIndex the index of the column to sort by
+   * @param columnIdentifier the identifier of the column to sort by
    * @param directive the sorting directive
    */
-  void setSortingDirective(final int columnIndex, final SortingDirective directive);
+  void setSortingDirective(final C columnIdentifier, final SortingDirective directive);
 
   /**
-   * @param columnIndex the column index
+   * @param columnIdentifier the column identifier
    * @return the sorting directive assigned to the given column
    */
-  SortingDirective getSortingDirective(final int columnIndex);
+  SortingDirective getSortingDirective(final C columnIdentifier);
 
   /**
-   * @param columnIndex the column index
+   * @param columnIdentifier the column identifier
    * @return the sort priority for the given column
    */
-  int getSortPriority(final int columnIndex);
+  int getSortPriority(final C columnIdentifier);
 
   /**
    * @param objectOne the first item to compare
    * @param objectTwo the second item to compare
-   * @param columnIndex the index of the column on which to base the comparison
+   * @param columnIdentifier the identifier of the column on which to base the comparison
    * @param directive the sorting directive
    * @return the compare result
    */
-  int compare(final T objectOne, final T objectTwo, final int columnIndex, final SortingDirective directive);
-
-  /**
-   * Clears all sorting states from the columns in this model
-   */
-  void clearSortingState();
+  int compare(final T objectOne, final T objectTwo, final C columnIdentifier, final SortingDirective directive);
 
   /**
    * Returns a Point denoting the row (point.y) and column index (point.x) of the first value to fulfill
@@ -357,12 +352,12 @@ public interface FilteredTableModel<T, C> extends FilteredModel<T>, TableModel, 
   /**
    * Specifies a sorting state for a column.
    */
-  interface SortingState {
+  interface SortingState<C> {
 
     /**
-     * @return the column index
+     * @return the column identifier
      */
-    int getColumnIndex();
+    C getColumnIdentifier();
 
     /**
      * @return the sorting directive currently associated with the column

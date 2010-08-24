@@ -36,6 +36,8 @@ public class DbConnectionImpl implements DbConnection {
   private static final Logger LOG = Util.getLogger(DbConnection.class);
 
   private static final String EXECUTE = "execute";
+  private static final String MS_LOG_PRESTFIX = "ms): ";
+  private static final String MS_LOG_POSTFIX = "ms)";
 
   protected static final QueryCounter QUERY_COUNTER = new QueryCounter();
   private final User user;
@@ -240,13 +242,13 @@ public class DbConnectionImpl implements DbConnection {
       resultSet = statement.executeQuery(sql);
       final List result = resultPacker.pack(resultSet, fetchCount);
 
-      LOG.debug(sql + " --(" + Long.toString(System.currentTimeMillis() - time) + "ms)");
+      LOG.debug(sql + " --(" + Long.toString(System.currentTimeMillis() - time) + MS_LOG_POSTFIX);
 
       return result;
     }
     catch (SQLException e) {
       exception = e;
-      LOG.error(user.getUsername() + " (" + Long.toString(System.currentTimeMillis() - time) + "ms): " + sql + ";", e);
+      LOG.error(user.getUsername() + " (" + Long.toString(System.currentTimeMillis() - time) + MS_LOG_PRESTFIX + sql + ";", e);
       throw e;
     }
     finally {
@@ -326,7 +328,7 @@ public class DbConnectionImpl implements DbConnection {
     }
     catch (SQLException e) {
       exception = e;
-      LOG.error(user.getUsername() + " (" + Long.toString(System.currentTimeMillis()-time) + "ms): " + sql+";", e);
+      LOG.error(user.getUsername() + " (" + Long.toString(System.currentTimeMillis()-time) + MS_LOG_PRESTFIX + sql+";", e);
       throw e;
     }
     finally {
@@ -395,13 +397,13 @@ public class DbConnectionImpl implements DbConnection {
 
       statement.execute();
 
-      LOG.debug(sqlStatement + " --(" + Long.toString(System.currentTimeMillis()-time) + "ms)");
+      LOG.debug(sqlStatement + " --(" + Long.toString(System.currentTimeMillis()-time) + MS_LOG_POSTFIX);
 
       return hasOutParameter ? statement.getObject(1) : null;
     }
     catch (SQLException e) {
       exception = e;
-      LOG.error(user.getUsername() + " (" + Long.toString(System.currentTimeMillis()-time) + "ms): " + sqlStatement+";", e);
+      LOG.error(user.getUsername() + " (" + Long.toString(System.currentTimeMillis()-time) + MS_LOG_PRESTFIX + sqlStatement+";", e);
       throw e;
     }
     finally {
@@ -426,11 +428,11 @@ public class DbConnectionImpl implements DbConnection {
     try {
       statement = connection.createStatement();
       statement.executeUpdate(sql);
-      LOG.debug(sql + " --(" + Long.toString(System.currentTimeMillis()-time) + "ms)");
+      LOG.debug(sql + " --(" + Long.toString(System.currentTimeMillis()-time) + MS_LOG_POSTFIX);
     }
     catch (SQLException e) {
       exception = e;
-      LOG.error(user.getUsername() + " (" + Long.toString(System.currentTimeMillis()-time) + "ms): " + sql+";", e);
+      LOG.error(user.getUsername() + " (" + Long.toString(System.currentTimeMillis()-time) + MS_LOG_PRESTFIX + sql+";", e);
       throw e;
     }
     finally {
@@ -464,7 +466,7 @@ public class DbConnectionImpl implements DbConnection {
         LOG.debug(sql);
       }
       statement.executeBatch();
-      LOG.debug("batch" + " --(" + Long.toString(System.currentTimeMillis()-time) + "ms)");
+      LOG.debug("batch" + " --(" + Long.toString(System.currentTimeMillis()-time) + MS_LOG_POSTFIX);
     }
     catch (SQLException e) {
       exception = e;

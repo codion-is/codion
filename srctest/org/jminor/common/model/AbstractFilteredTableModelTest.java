@@ -129,13 +129,12 @@ public final class AbstractFilteredTableModelTest {
 
     final FilterCriteria<Object> criteria = new FilterCriteria<Object>() {
       public boolean include(final Object item) {
-        return item.equals("a") || item.equals("c");
+        return item.equals("b") || item.equals("e");
       }
     };
 
-    tableModel.clearSortingState();
     point = tableModel.findNextItemCoordinate(4, false, criteria);
-    assertEquals(new Point(0, 2), point);
+    assertEquals(new Point(0, 3), point);
     point = tableModel.findNextItemCoordinate(point.y - 1, false, criteria);
     assertEquals(new Point(0, 0), point);
   }
@@ -202,7 +201,6 @@ public final class AbstractFilteredTableModelTest {
     assertEquals(0, tableModel.getSortPriority(0));
     assertEquals(-1, tableModel.getSortPriority(1));
     assertEquals(2, done.size());
-    tableModel.clearSortingState();
 
     final List<String> items = new ArrayList<String>();
     items.add(null);

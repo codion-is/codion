@@ -2045,3 +2045,6 @@
   FormattedValueLink.FormattedValidator.updateValidityInfo() refactored
   DocumentAdapter.insertOrUpdate() renamed to insertOrRemoveUpdate()
   ValueLinkValidators added, fixed issue where formatted value link got both the normal validator as well as the formatted validator
+  AbstractFilteredTableModel, refactored and simplified sorting
+  EntityImpl.getValue() no longer returns the default value in case no value exists
+  DoubleField refactored a bit

@@ -377,6 +377,7 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
   }
 
   private final class MouseSortHandler extends MouseAdapter {
+    @SuppressWarnings({"unchecked"})
     @Override
     public void mouseClicked(final MouseEvent e) {
       if (e.getButton() != MouseEvent.BUTTON1 || e.isAltDown()) {
@@ -386,47 +387,35 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
       final JTableHeader h = (JTableHeader) e.getSource();
       final TableColumnModel columnModel = h.getColumnModel();
       final int viewColumn = columnModel.getColumnIndexAtX(e.getX());
-      final int column;
+      final TableColumn column;
       try {
-        column = columnModel.getColumn(viewColumn).getModelIndex();
+        column = columnModel.getColumn(viewColumn);
       }
       catch (ArrayIndexOutOfBoundsException ex) {
         return;
       }
-      if (column != -1) {
-        SortingDirective status = tableModel.getSortingDirective(column);
-        if (!e.isControlDown()) {
-          tableModel.clearSortingState();
-        }
-        // Cycle the sorting states through {NOT_SORTED, ASCENDING, DESCENDING} or
-        // {NOT_SORTED, DESCENDING, ASCENDING} depending on whether shift is pressed.
-        if (e.isShiftDown()) {
-          switch (status) {
-            case UNSORTED:
+      if (column != null) {
+        final C columnIdentifier = (C) column.getIdentifier();
+        SortingDirective status = tableModel.getSortingDirective(columnIdentifier);
+        final boolean shiftDown = e.isShiftDown();
+        switch (status) {
+          case UNSORTED:
+            if (shiftDown) {
               status = SortingDirective.DESCENDING;
-              break;
-            case ASCENDING:
-              status = SortingDirective.UNSORTED;
-              break;
-            case DESCENDING:
+            }
+            else {
               status = SortingDirective.ASCENDING;
-              break;
-          }
+            }
+            break;
+          case ASCENDING:
+            status = SortingDirective.DESCENDING;
+            break;
+          case DESCENDING:
+            status = SortingDirective.ASCENDING;
+            break;
         }
-        else {
-          switch (status) {
-            case UNSORTED:
-              status = SortingDirective.ASCENDING;
-              break;
-            case ASCENDING:
-              status = SortingDirective.DESCENDING;
-              break;
-            case DESCENDING:
-              status = SortingDirective.UNSORTED;
-              break;
-          }
-        }
-        tableModel.setSortingDirective(column, status);
+
+        tableModel.setSortingDirective(columnIdentifier, status);
       }
     }
   }
@@ -493,6 +482,8 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
       this.tableCellRenderer = tableCellRenderer;
     }
 
+    @SuppressWarnings({"unchecked"})
+    /** {@inheritDoc} */
     public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
                                                    final boolean hasFocus, final int row, final int column) {
       final Component component = tableCellRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
@@ -500,19 +491,20 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
         final JLabel label = (JLabel) component;
         label.setHorizontalTextPosition(JLabel.LEFT);
         final int modelColumn = table.convertColumnIndexToModel(column);
-        label.setIcon(getHeaderRendererIcon(modelColumn, label.getFont().getSize() + 5));
+        final TableColumn tableColumn = table.getColumnModel().getColumn(modelColumn);
+        label.setIcon(getHeaderRendererIcon((C) tableColumn.getIdentifier(), label.getFont().getSize() + 5));
       }
 
       return component;
     }
 
-    private Icon getHeaderRendererIcon(final int column, final int size) {
-      final SortingDirective directive = tableModel.getSortingDirective(column);
+    private Icon getHeaderRendererIcon(final C columnIdentifier, final int size) {
+      final SortingDirective directive = tableModel.getSortingDirective(columnIdentifier);
       if (directive == SortingDirective.UNSORTED) {
         return null;
       }
 
-      return new Arrow(directive == SortingDirective.DESCENDING, size, tableModel.getSortPriority(column));
+      return new Arrow(directive == SortingDirective.DESCENDING, size, tableModel.getSortPriority(columnIdentifier));
     }
   }
 }

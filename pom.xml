@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <!--Incomplete and unusable as a Maven script, used exclusively for Sonar analysis (http://www.sonarsource.org/)-->
   <modelVersion>4.0.0</modelVersion>
-  <groupId>JMinor</groupId>
+  <groupId>org.jminor</groupId>
   <artifactId>jminor</artifactId>
   <name>JMinor</name>
   <version>0.5.9</version>

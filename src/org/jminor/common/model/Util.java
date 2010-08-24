@@ -806,7 +806,8 @@ public final class Util {
         LOG.debug("Reading configuration file: " + filename);
         final Properties properties = new Properties();
         properties.load(inputStream);
-        for (final Object key : properties.keySet()) {
+        for (final Map.Entry entry : properties.entrySet()) {
+          final Object key = entry.getKey();
           LOG.debug(key + " - > " + properties.get(key));
           System.setProperty((String) key, (String) properties.get(key));
         }

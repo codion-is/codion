@@ -22,6 +22,8 @@ import java.util.*;
 public final class EntityUtil {
 
   private static final Random RANDOM = new Random();
+  private static final String ENTITY_PARAM = "entity";
+  private static final String ENTITIES_PARAM = "entities";
 
   private EntityUtil() {}
 
@@ -30,7 +32,7 @@ public final class EntityUtil {
    * @return a List of entities that have been modified
    */
   public static List<Entity> getModifiedEntities(final Collection<Entity> entities) {
-    Util.rejectNullValue(entities, "entities");
+    Util.rejectNullValue(entities, ENTITIES_PARAM);
     final List<Entity> modifiedEntities = new ArrayList<Entity>();
     for (final Entity entity : entities) {
       if (entity.isModified()) {
@@ -47,7 +49,7 @@ public final class EntityUtil {
    * @return the hashed entities
    */
   public static Map<Entity.Key, Entity> hashByPrimaryKey(final List<Entity> entities) {
-    Util.rejectNullValue(entities, "entities");
+    Util.rejectNullValue(entities, ENTITIES_PARAM);
     final Map<Entity.Key, Entity> entityMap = new HashMap<Entity.Key, Entity>();
     for (final Entity entity : entities) {
       entityMap.put(entity.getPrimaryKey(), entity);
@@ -61,7 +63,7 @@ public final class EntityUtil {
    * @return a List containing the primary keys of the given entities
    */
   public static List<Entity.Key> getPrimaryKeys(final Collection<Entity> entities) {
-    Util.rejectNullValue(entities, "entities");
+    Util.rejectNullValue(entities, ENTITIES_PARAM);
     final List<Entity.Key> keys = new ArrayList<Entity.Key>(entities.size());
     for (final Entity entity : entities) {
       keys.add(entity.getPrimaryKey());
@@ -128,7 +130,7 @@ public final class EntityUtil {
    */
   public static List<Object> getPropertyValues(final Property property, final List<Entity> entities,
                                                final boolean includeNullValues) {
-    Util.rejectNullValue(entities, "entities");
+    Util.rejectNullValue(entities, ENTITIES_PARAM);
     final List<Object> values = new ArrayList<Object>(entities.size());
     for (final Entity entity : entities) {
       if (includeNullValues) {
@@ -171,7 +173,7 @@ public final class EntityUtil {
    */
   public static Map<Entity.Key, Object> setPropertyValue(final String propertyID, final Object value,
                                                          final Collection<Entity> entities) {
-    Util.rejectNullValue(entities, "entities");
+    Util.rejectNullValue(entities, ENTITIES_PARAM);
     final Map<Entity.Key, Object> oldValues = new HashMap<Entity.Key, Object>(entities.size());
     for (final Entity entity : entities) {
       oldValues.put(entity.getPrimaryKey(), entity.setValue(propertyID, value));
@@ -290,7 +292,7 @@ public final class EntityUtil {
    * @return deep copies of the entities
    */
   public static List<Entity> copyEntities(final List<Entity> entities) {
-    Util.rejectNullValue(entities, "entities");
+    Util.rejectNullValue(entities, ENTITIES_PARAM);
     final List<Entity> copies = new ArrayList<Entity>(entities.size());
     for (final Entity entity : entities) {
       copies.add((Entity) entity.getCopy());
@@ -353,7 +355,7 @@ public final class EntityUtil {
    * @return the entity with randomized values
    */
   public static Entity randomize(final Entity entity, final boolean includePrimaryKey, final Map<String, Entity> referenceEntities) {
-    Util.rejectNullValue(entity, "entity");
+    Util.rejectNullValue(entity, ENTITY_PARAM);
     for (final Property.ColumnProperty property : Entities.getColumnProperties(entity.getEntityID(), includePrimaryKey, false, true)) {
       if (!property.hasParentProperty() && !property.isDenormalized()) {
         entity.setValue(property, getRandomValue(property, referenceEntities));
