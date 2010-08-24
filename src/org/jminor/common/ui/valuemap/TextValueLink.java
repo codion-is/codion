@@ -9,7 +9,6 @@ import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
 import org.jminor.common.ui.control.LinkType;
 
 import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
@@ -22,7 +21,7 @@ import java.awt.event.FocusEvent;
 /**
  * A class for linking a text component to a ValueChangeMapEditModel text property value.
  */
-public class TextValueLink<K> extends AbstractValueMapLink<K, Object> implements DocumentListener {
+public class TextValueLink<K> extends AbstractValueMapLink<K, Object> {
 
   private final Document document;
   /**
@@ -58,6 +57,7 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> implements
     this.immediateUpdate = immediateUpdate;
     if (!this.immediateUpdate) {
       textComponent.addFocusListener(new FocusAdapter() {
+      /** {@inheritDoc} */
         @Override
         public void focusLost(final FocusEvent e) {
           updateModel();
@@ -69,7 +69,15 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> implements
     }
     new ValidatorImpl<K>(this, textComponent, editModel).updateValidityInfo();
     updateUI();
-    this.document.addDocumentListener(this);
+    this.document.addDocumentListener(new DocumentAdapter() {
+      /** {@inheritDoc} */
+      @Override
+      public final void insertOrRemoveUpdate(final DocumentEvent e) {
+        if (immediateUpdate) {
+          updateModel();
+        }
+      }
+    });
   }
 
   /**
@@ -78,23 +86,6 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> implements
   public final boolean isImmediateUpdate() {
     return immediateUpdate;
   }
-
-  /** {@inheritDoc} */
-  public final void insertUpdate(final DocumentEvent e) {
-    if (immediateUpdate) {
-      updateModel();
-    }
-  }
-
-  /** {@inheritDoc} */
-  public final void removeUpdate(final DocumentEvent e) {
-    if (immediateUpdate) {
-      updateModel();
-    }
-  }
-
-  /** {@inheritDoc} */
-  public final void changedUpdate(final DocumentEvent e) {}
 
   /** {@inheritDoc} */
   @Override
@@ -160,7 +151,14 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> implements
     return value == null ? null : value.toString();
   }
 
+  /**
+   * Specifies a validator, responsible for indicating the validity of a value via the text field
+   * it is being displayed in.
+   */
   public interface Validator {
+    /**
+     * Updates the state of the field, representing the validity of the value
+     */
     void updateValidityInfo();
   }
 
@@ -173,10 +171,25 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> implements
     private final Color invalidBackgroundColor;
     private final String defaultToolTip;
 
+    /**
+     * Instantiates a new ValidatorImpl
+     * @param link the value link, which value to validate
+     * @param textComponent the text component bound to the value
+     * @param editModel the edit model handling the value editing
+     */
     protected ValidatorImpl(final TextValueLink<K> link, final JTextComponent textComponent, final ValueChangeMapEditModel<K, Object> editModel) {
       this(link, textComponent, editModel, textComponent.getBackground(), Color.LIGHT_GRAY, textComponent.getToolTipText());
     }
 
+    /**
+     * Instantiates a new ValidatorImpl
+     * @param link the value link, which value to validate
+     * @param textComponent the text component bound to the value
+     * @param editModel the edit model handling the value editing
+     * @param validBackgroundColor the background color to use when the field value is valid
+     * @param invalidBackgroundColor the background color to use when the field value is invalid
+     * @param defaultToolTip the default tooltip to show when the field value is valid
+     */
     protected ValidatorImpl(final TextValueLink<K> link, final JTextComponent textComponent, final ValueChangeMapEditModel<K, Object> editModel,
                             final Color validBackgroundColor, final Color invalidBackgroundColor, final String defaultToolTip) {
       this.link = link;
@@ -186,42 +199,63 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> implements
       this.textComponent = textComponent;
       this.validBackgroundColor = validBackgroundColor;
       editModel.addValueListener(link.getKey(), new ActionListener() {
+        /** {@inheritDoc} */
         public void actionPerformed(final ActionEvent e) {
           updateValidityInfo();
         }
       });
       textComponent.getDocument().addDocumentListener(new DocumentAdapter() {
+        /** {@inheritDoc} */
         @Override
-        public void insertOrUpdate(final DocumentEvent e) {
+        public void insertOrRemoveUpdate(final DocumentEvent e) {
           updateValidityInfo();
         }
       });
     }
 
+    /**
+     * @return the text component associated with the value being validated
+     */
     public final JTextComponent getTextComponent() {
       return textComponent;
     }
 
+    /**
+     * @return the underlying value link
+     */
     public final TextValueLink<K> getValueLink() {
       return link;
     }
 
+    /**
+     * @return the underlying edit model
+     */
     public final ValueChangeMapEditModel<K, Object> getEditModel() {
       return editModel;
     }
 
+    /**
+     * @return the default tooltip to show when the field value is valid
+     */
     public final String getDefaultToolTip() {
       return defaultToolTip;
     }
 
+    /**
+     * @return the background color to use when the field value is invalid
+     */
     public final Color getInvalidBackgroundColor() {
       return invalidBackgroundColor;
     }
 
+    /**
+     * @return the background color to use when the field value is valid
+     */
     public final Color getValidBackgroundColor() {
       return validBackgroundColor;
     }
 
+    /** {@inheritDoc} */
     public void updateValidityInfo() {
       final String validationMessage = link.getValidationMessage(editModel);
       textComponent.setBackground(validationMessage == null ? validBackgroundColor : invalidBackgroundColor);

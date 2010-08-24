@@ -62,7 +62,7 @@ public class ComboBoxValueLink<K> extends AbstractValueMapLink<K, Object> {
       ((JTextField)comboBox.getEditor().getEditorComponent()).getDocument().addDocumentListener(new DocumentAdapter() {
         /** {@inheritDoc} */
         @Override
-        public void insertOrUpdate(final DocumentEvent e) {
+        public void insertOrRemoveUpdate(final DocumentEvent e) {
           boxModel.setSelectedItem(comboBox.getEditor().getItem());
         }
       });

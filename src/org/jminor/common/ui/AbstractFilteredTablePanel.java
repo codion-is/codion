@@ -213,7 +213,7 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
     SearchFieldHint.enable(txtSearch);
     txtSearch.getDocument().addDocumentListener(new DocumentAdapter() {
       @Override
-      public void insertOrUpdate(final DocumentEvent e) {
+      public void insertOrRemoveUpdate(final DocumentEvent e) {
         doSearch(false, lastSearchResultIndex.y == -1 ? 0 : lastSearchResultIndex.y, true, txtSearch.getText());
       }
     });

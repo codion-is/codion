@@ -2043,3 +2043,4 @@
   Configuration now properties based, .config files added for server + monitor, Util.parseConfigurationFile() added and called by Configuration
   TextValueLink.getLink() renamed to getValueLink
   FormattedValueLink.FormattedValidator.updateValidityInfo() refactored
+  DocumentAdapter.insertOrUpdate() renamed to insertOrRemoveUpdate()

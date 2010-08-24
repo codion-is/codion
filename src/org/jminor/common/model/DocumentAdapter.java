@@ -13,17 +13,17 @@ public class DocumentAdapter implements DocumentListener {
 
   /** {@inheritDoc} */
   public void insertUpdate(final DocumentEvent e) {
-    insertOrUpdate(e);
+    insertOrRemoveUpdate(e);
   }
 
   /** {@inheritDoc} */
   public void removeUpdate(final DocumentEvent e) {
-    insertOrUpdate(e);
+    insertOrRemoveUpdate(e);
   }
 
   /**
-   * Called during both insert and update events.
+   * Called during both insert and remove events.
    * @param e the document event
    */
-  public void insertOrUpdate(final DocumentEvent e) {}
+  public void insertOrRemoveUpdate(final DocumentEvent e) {}
 }
