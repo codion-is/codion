@@ -362,7 +362,7 @@ public final class EntityCriteriaUtil {
     @SuppressWarnings({"unchecked"})
     private void readObject(final ObjectInputStream stream) throws ClassNotFoundException, IOException {
       entityID = (String) stream.readObject();
-      criteria = (CriteriaSet<Property.ColumnProperty>) stream.readObject();
+      criteria = (Criteria<Property.ColumnProperty>) stream.readObject();
     }
   }
 
