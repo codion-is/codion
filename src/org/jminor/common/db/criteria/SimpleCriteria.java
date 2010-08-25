@@ -3,12 +3,13 @@
  */
 package org.jminor.common.db.criteria;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Encapsulates a simple free-form query criteria.
  */
-public final class SimpleCriteria<T> implements Criteria<T> {
+public final class SimpleCriteria<T> implements Criteria<T>, Serializable {
 
   private final String criteriaString;
   private List<Object> values;

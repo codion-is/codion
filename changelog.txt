@@ -2048,3 +2048,5 @@
   AbstractFilteredTableModel, refactored and simplified sorting
   EntityImpl.getValue() no longer returns the default value in case no value exists
   DoubleField refactored a bit
+  Criteria implementations, implemented readObject/writeObject
+  EntityKeyCriteria uses composition instead of inheritance

@@ -529,6 +529,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   /** {@inheritDoc} */
+  @Override
   protected final Class getColumnClass(final Property columnIdentifier) {
     return columnIdentifier.getTypeClass();
   }

@@ -6,13 +6,12 @@ package org.jminor.framework.db.criteria;
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.framework.domain.Property;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
  * A class encapsulating query criteria parameters for querying a set of entities.
  */
-public interface EntityCriteria extends Serializable {
+public interface EntityCriteria {
 
   /**
    * @return the entity ID

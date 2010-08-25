@@ -3,12 +3,10 @@
  */
 package org.jminor.common.model;
 
-import java.io.Serializable;
-
 /**
  * Enumerating the possible ways of searching.
  */
-public enum SearchType implements Serializable {
+public enum SearchType {
 
   LIKE {
     @Override

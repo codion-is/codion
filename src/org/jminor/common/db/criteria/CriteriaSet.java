@@ -5,6 +5,9 @@ package org.jminor.common.db.criteria;
 
 import org.jminor.common.model.Conjunction;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,19 +16,24 @@ import java.util.List;
  * A class encapsulating a set of Criteria objects, that should be either AND'ed
  * or OR'ed together in a query context
  */
-public class CriteriaSet<T> implements Criteria<T>, Serializable {
+public final class CriteriaSet<T> implements Criteria<T>, Serializable {
 
   private static final long serialVersionUID = 1;
 
   /**
    * The conjunction used by this CriteriaSet
    */
-  private final Conjunction conjunction;
+  private Conjunction conjunction;
 
   /**
    * The criteria in this set
    */
-  private final List<Criteria<T>> criteriaList = new ArrayList<Criteria<T>>();
+  private List<Criteria<T>> criteriaList = new ArrayList<Criteria<T>>();
+
+  /**
+   * Used for serialization, not for general use
+   */
+  CriteriaSet() {}
 
   /**
    * Initializes a new CriteriaSet instance
@@ -33,6 +41,7 @@ public class CriteriaSet<T> implements Criteria<T>, Serializable {
    */
   public CriteriaSet(final Conjunction conjunction) {
     this.conjunction = conjunction;
+    criteriaList = new ArrayList<Criteria<T>>();
   }
 
   /**
@@ -42,6 +51,7 @@ public class CriteriaSet<T> implements Criteria<T>, Serializable {
    */
   public CriteriaSet(final Conjunction conjunction, final Criteria<T>... criteria) {
     this.conjunction = conjunction;
+    criteriaList = new ArrayList<Criteria<T>>();
     for (final Criteria<T> criterion : criteria) {
       add(criterion);
     }
@@ -51,7 +61,7 @@ public class CriteriaSet<T> implements Criteria<T>, Serializable {
    * Adds a new Criteria object to this set
    * @param criteria the Criteria to add
    */
-  public final void add(final Criteria<T> criteria) {
+  public void add(final Criteria<T> criteria) {
     if (criteria != null) {
       this.criteriaList.add(criteria);
     }
@@ -60,12 +70,12 @@ public class CriteriaSet<T> implements Criteria<T>, Serializable {
   /**
    * @return the number of criteria in this set
    */
-  public final int getCriteriaCount() {
+  public int getCriteriaCount() {
     return criteriaList.size();
   }
 
   /** {@inheritDoc} */
-  public final String asString() {
+  public String asString() {
     if (criteriaList.isEmpty()) {
       return "";
     }
@@ -83,7 +93,7 @@ public class CriteriaSet<T> implements Criteria<T>, Serializable {
   }
 
   /** {@inheritDoc} */
-  public final List<Object> getValues() {
+  public List<Object> getValues() {
     final List<Object> values = new ArrayList<Object>();
     for (final Criteria<T> criteria : criteriaList) {
       values.addAll(criteria.getValues());
@@ -93,12 +103,23 @@ public class CriteriaSet<T> implements Criteria<T>, Serializable {
   }
 
   /** {@inheritDoc} */
-  public final List<T> getValueKeys() {
+  public List<T> getValueKeys() {
     final List<T> types = new ArrayList<T>();
     for (final Criteria<T> criteria : criteriaList) {
       types.addAll(criteria.getValueKeys());
     }
 
     return types;
+  }
+
+  private void writeObject(final ObjectOutputStream stream) throws IOException {
+    stream.writeObject(conjunction);
+    stream.writeObject(criteriaList);
+  }
+
+  @SuppressWarnings({"unchecked"})
+  private void readObject(final ObjectInputStream stream) throws ClassNotFoundException, IOException {
+    conjunction = (Conjunction) stream.readObject();
+    criteriaList = (ArrayList<Criteria<T>>) stream.readObject();
   }
 }
