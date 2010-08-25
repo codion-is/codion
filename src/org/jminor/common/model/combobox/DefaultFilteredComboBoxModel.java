@@ -343,6 +343,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   }
 
   private static final class SortComparator<T> implements Comparator<T>, Serializable {
+    private static final long serialVersionUID = 1;
 
     private final String nullValueString;
     private final Collator collator = Collator.getInstance();

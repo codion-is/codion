@@ -276,6 +276,7 @@ public final class ConnectionPoolMonitor {
   }
 
   private static final class StateComparator implements Comparator<ConnectionPoolState>, Serializable {
+    private static final long serialVersionUID = 1;
     /** {@inheritDoc} */
     public int compare(final ConnectionPoolState o1, final ConnectionPoolState o2) {
       return ((Long) o1.getTime()).compareTo(o2.getTime());

@@ -181,6 +181,7 @@ public final class EntityDbRemoteProvider extends AbstractEntityDbProvider {
   }
 
   private static final class ServerComparator implements Comparator<RemoteServer>, Serializable {
+    private static final long serialVersionUID = 1;
     /** {@inheritDoc} */
     public int compare(final RemoteServer o1, final RemoteServer o2) {
       try {

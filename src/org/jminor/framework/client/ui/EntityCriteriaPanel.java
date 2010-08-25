@@ -132,6 +132,7 @@ public final class EntityCriteriaPanel extends JPanel {
   }
 
   private static final class SearchModelComparator implements Comparator<PropertySearchModel>, Serializable {
+    private static final long serialVersionUID = 1;
     /** {@inheritDoc} */
     public int compare(final PropertySearchModel o1, final PropertySearchModel o2) {
       final Property propertyOne = (Property) o1.getColumnIdentifier();
