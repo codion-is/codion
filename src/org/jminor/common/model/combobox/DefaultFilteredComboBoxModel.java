@@ -11,6 +11,7 @@ import org.jminor.common.model.Util;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import java.awt.event.ActionListener;
+import java.io.Serializable;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -341,7 +342,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     }
   }
 
-  private static final class SortComparator<T> implements Comparator<T> {
+  private static final class SortComparator<T> implements Comparator<T>, Serializable {
 
     private final String nullValueString;
     private final Collator collator = Collator.getInstance();

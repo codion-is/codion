@@ -12,6 +12,7 @@ import org.jminor.framework.db.provider.AbstractEntityDbProvider;
 
 import org.apache.log4j.Logger;
 
+import java.io.Serializable;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -179,7 +180,8 @@ public final class EntityDbRemoteProvider extends AbstractEntityDbProvider {
     return null;
   }
 
-  private static final class ServerComparator implements Comparator<RemoteServer> {
+  private static final class ServerComparator implements Comparator<RemoteServer>, Serializable {
+    /** {@inheritDoc} */
     public int compare(final RemoteServer o1, final RemoteServer o2) {
       try {
         return Integer.valueOf(o1.getServerLoad()).compareTo(o2.getServerLoad());

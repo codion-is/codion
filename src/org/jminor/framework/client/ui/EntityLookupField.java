@@ -25,6 +25,7 @@ import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -256,6 +257,7 @@ public final class EntityLookupField extends JTextField {
       this.lookupPanel = lookupPanel;
     }
 
+    /** {@inheritDoc} */
     public void actionPerformed(final ActionEvent e) {
         final JPanel panel = new JPanel(new GridLayout(3,1,5,5));
         final JCheckBox boxCaseSensitive =
@@ -268,6 +270,7 @@ public final class EntityLookupField extends JTextField {
         panel.add(boxPrefixWildcard);
         panel.add(boxPostfixWildcard);
         final AbstractAction action = new AbstractAction(Messages.get(Messages.OK)) {
+          /** {@inheritDoc} */
           public void actionPerformed(final ActionEvent e) {
             lookupPanel.getModel().setCaseSensitive(boxCaseSensitive.isSelected());
             lookupPanel.getModel().setWildcardPrefix(boxPrefixWildcard.isSelected());
@@ -279,7 +282,8 @@ public final class EntityLookupField extends JTextField {
       }
   }
 
-  private static final class EntityComparator implements Comparator<Entity> {
+  private static final class EntityComparator implements Comparator<Entity>, Serializable {
+    /** {@inheritDoc} */
     public int compare(final Entity o1, final Entity o2) {
       return o1.compareTo(o2);
     }
@@ -292,6 +296,7 @@ public final class EntityLookupField extends JTextField {
       this.okAction = okAction;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void mouseClicked(final MouseEvent e) {
       if (e.getClickCount() == 2) {

@@ -29,6 +29,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -117,6 +118,7 @@ public final class EntityCriteriaPanel extends JPanel {
   }
 
   private static final class CriteriaListCellRenderer extends DefaultListCellRenderer {
+    /** {@inheritDoc} */
     @Override
     public Component getListCellRendererComponent(final JList list, final Object value, final int index,
                                                   final boolean isSelected, final boolean cellHasFocus) {
@@ -129,7 +131,8 @@ public final class EntityCriteriaPanel extends JPanel {
     }
   }
 
-  private static final class SearchModelComparator implements Comparator<PropertySearchModel> {
+  private static final class SearchModelComparator implements Comparator<PropertySearchModel>, Serializable {
+    /** {@inheritDoc} */
     public int compare(final PropertySearchModel o1, final PropertySearchModel o2) {
       final Property propertyOne = (Property) o1.getColumnIdentifier();
       final Property propertyTwo = (Property) o2.getColumnIdentifier();
@@ -152,6 +155,7 @@ public final class EntityCriteriaPanel extends JPanel {
       this.propertyList = propertyList;
     }
 
+    /** {@inheritDoc} */
     public void valueChanged(final ListSelectionEvent e) {
       editorPanel.removeAll();
       final PropertySearchModel selected = (PropertySearchModel) propertyList.getSelectedValue();

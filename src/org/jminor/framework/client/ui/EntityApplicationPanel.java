@@ -36,7 +36,9 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -953,7 +955,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     final JDialog startupDialog = initializeStartupDialog(applicationIcon, frameCaption);
     EntityDbProvider entityDbProvider;
     while (true) {
-      final User user = isLoginRequired() ? getUser(frameCaption, defaultUser, getClass().getSimpleName(), applicationIcon) : new User("", "");
+      final User user = loginRequired ? getUser(frameCaption, defaultUser, getClass().getSimpleName(), applicationIcon) : new User("", "");
       startupDialog.setVisible(true);
       entityDbProvider = initializeDbProvider(user, frameCaption);
       try {

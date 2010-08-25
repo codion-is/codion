@@ -16,6 +16,7 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 import java.awt.event.ActionListener;
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,7 +26,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /**
- * A ConnectionPoolMonitor 
+ * A ConnectionPoolMonitor
  */
 public final class ConnectionPoolMonitor {
 
@@ -274,7 +275,8 @@ public final class ConnectionPoolMonitor {
     }, delay, delay);
   }
 
-  private static final class StateComparator implements Comparator<ConnectionPoolState> {
+  private static final class StateComparator implements Comparator<ConnectionPoolState>, Serializable {
+    /** {@inheritDoc} */
     public int compare(final ConnectionPoolState o1, final ConnectionPoolState o2) {
       return ((Long) o1.getTime()).compareTo(o2.getTime());
     }
