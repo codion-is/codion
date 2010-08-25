@@ -87,9 +87,20 @@ public class SteppedComboBox extends JComboBox {
   private static final class SteppedComboBoxUI extends MetalComboBoxUI {
     @Override
     protected ComboPopup createPopup() {
-      final BasicComboPopup basicPopup = new BasicComboPopup(comboBox) {
-        @Override
-        public void show() {
+      return new SteppedComboPopup(comboBox);
+    }
+
+    private final class SteppedComboPopup extends BasicComboPopup {
+
+      private SteppedComboPopup(final JComboBox combo) {
+        super(combo);
+        getAccessibleContext().setAccessibleParent(combo);
+      }
+
+      /** {@inheritDoc} */
+      @Override
+      public void setVisible(final boolean b) {
+        if (b) {
           final Dimension popupSize = ((SteppedComboBox)comboBox).getPopupSize(getDisplaySize());
           popupSize.setSize(popupSize.width, getPopupHeightForRowCount(comboBox.getMaximumRowCount()));
           final Rectangle popupBounds = computePopupBounds(0, comboBox.getBounds().height,
@@ -107,13 +118,10 @@ public class SteppedComboBox extends JComboBox {
           }
           getList().ensureIndexIsVisible(getList().getSelectedIndex());
           setLightWeightPopupEnabled(comboBox.isLightWeightPopupEnabled());
-
-          show(comboBox, popupBounds.x, popupBounds.y);
         }
-      };
-      basicPopup.getAccessibleContext().setAccessibleParent(comboBox);
 
-      return basicPopup;
+        super.setVisible(b);
+      }
     }
   }
 }

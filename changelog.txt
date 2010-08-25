@@ -2050,3 +2050,4 @@
   DoubleField refactored a bit
   Criteria implementations, implemented readObject/writeObject
   EntityKeyCriteria uses composition instead of inheritance
+  SteppedComboBox refactored

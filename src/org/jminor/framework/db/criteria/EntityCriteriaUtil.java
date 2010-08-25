@@ -31,6 +31,7 @@ import java.util.Map;
 public final class EntityCriteriaUtil {
 
   private static final int IN_CLAUSE_LIMIT = 100;//JDBC limit
+  private static final String IN_PREFIX = " in (";
 
   private EntityCriteriaUtil() {}
 
@@ -378,7 +379,7 @@ public final class EntityCriteriaUtil {
     private boolean selectForUpdate;
 
     private transient int currentFetchDepth = 0;
-    
+
     DefaultEntitySelectCriteria() {}
 
     /**
@@ -831,7 +832,7 @@ public final class EntityCriteriaUtil {
     }
 
     private String getInList(final Property.ColumnProperty property, final boolean notIn) {
-      final StringBuilder stringBuilder = new StringBuilder("(").append(initializeColumnIdentifier(property)).append((notIn ? " not in (" : " in ("));
+      final StringBuilder stringBuilder = new StringBuilder("(").append(initializeColumnIdentifier(property)).append((notIn ? " not in (" : IN_PREFIX));
       int cnt = 1;
       for (int i = 0; i < getValueCount(); i++) {
         if (this.property.isString() && !caseSensitive) {
@@ -841,7 +842,7 @@ public final class EntityCriteriaUtil {
           stringBuilder.append("?");
         }
         if (cnt++ == IN_CLAUSE_LIMIT && i < getValueCount() - 1) {
-          stringBuilder.append(notIn ? ") and " : ") or ").append(property.getColumnName()).append(" in (");
+          stringBuilder.append(notIn ? ") and " : ") or ").append(property.getColumnName()).append(IN_PREFIX);
           cnt = 1;
         }
         else if (i < getValueCount() - 1) {
@@ -1045,12 +1046,12 @@ public final class EntityCriteriaUtil {
     }
 
     private String getInList(final Property.ColumnProperty property, final boolean notIn) {
-      final StringBuilder stringBuilder = new StringBuilder("(").append(property.getColumnName()).append((notIn ? " not in (" : " in ("));
+      final StringBuilder stringBuilder = new StringBuilder("(").append(property.getColumnName()).append((notIn ? " not in (" : IN_PREFIX));
       int cnt = 1;
       for (int i = 0; i < getValues().size(); i++) {
         stringBuilder.append("?");
         if (cnt++ == IN_CLAUSE_LIMIT && i < getValues().size() - 1) {
-          stringBuilder.append(notIn ? ") and " : ") or ").append(property.getColumnName()).append(" in (");
+          stringBuilder.append(notIn ? ") and " : ") or ").append(property.getColumnName()).append(IN_PREFIX);
           cnt = 1;
         }
         else if (i < getValues().size() - 1) {

@@ -87,8 +87,8 @@
     <delete dir="${build.root}" includeEmptyDirs="true"/>
     <delete dir="${test.reports}" includeEmptyDirs="true"/>
     <delete dir="${test.reports.html}" includeEmptyDirs="true"/>
-    <delete dir="${test.coveragereport.xml}" includeEmptyDirs="true"/>
-    <delete dir="${test.coveragereport.html}" includeEmptyDirs="true"/>
+    <!--<delete dir="${test.coveragereport.xml}" includeEmptyDirs="true"/>-->
+    <!--<delete dir="${test.coveragereport.html}" includeEmptyDirs="true"/>-->
     <delete dir="${test}" includeEmptyDirs="true"/>
   </target>
 

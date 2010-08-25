@@ -38,6 +38,7 @@ public class DbConnectionImpl implements DbConnection {
   private static final String EXECUTE = "execute";
   private static final String MS_LOG_PRESTFIX = "ms): ";
   private static final String MS_LOG_POSTFIX = "ms)";
+  private static final String LOG_COMMENT_PREFIX = " --(";
 
   protected static final QueryCounter QUERY_COUNTER = new QueryCounter();
   private final User user;
@@ -242,7 +243,7 @@ public class DbConnectionImpl implements DbConnection {
       resultSet = statement.executeQuery(sql);
       final List result = resultPacker.pack(resultSet, fetchCount);
 
-      LOG.debug(sql + " --(" + Long.toString(System.currentTimeMillis() - time) + MS_LOG_POSTFIX);
+      LOG.debug(sql + LOG_COMMENT_PREFIX + Long.toString(System.currentTimeMillis() - time) + MS_LOG_POSTFIX);
 
       return result;
     }
@@ -397,7 +398,7 @@ public class DbConnectionImpl implements DbConnection {
 
       statement.execute();
 
-      LOG.debug(sqlStatement + " --(" + Long.toString(System.currentTimeMillis()-time) + MS_LOG_POSTFIX);
+      LOG.debug(sqlStatement + LOG_COMMENT_PREFIX + Long.toString(System.currentTimeMillis()-time) + MS_LOG_POSTFIX);
 
       return hasOutParameter ? statement.getObject(1) : null;
     }
@@ -428,7 +429,7 @@ public class DbConnectionImpl implements DbConnection {
     try {
       statement = connection.createStatement();
       statement.executeUpdate(sql);
-      LOG.debug(sql + " --(" + Long.toString(System.currentTimeMillis()-time) + MS_LOG_POSTFIX);
+      LOG.debug(sql + LOG_COMMENT_PREFIX + Long.toString(System.currentTimeMillis()-time) + MS_LOG_POSTFIX);
     }
     catch (SQLException e) {
       exception = e;
@@ -466,7 +467,7 @@ public class DbConnectionImpl implements DbConnection {
         LOG.debug(sql);
       }
       statement.executeBatch();
-      LOG.debug("batch" + " --(" + Long.toString(System.currentTimeMillis()-time) + MS_LOG_POSTFIX);
+      LOG.debug("batch" + LOG_COMMENT_PREFIX + Long.toString(System.currentTimeMillis()-time) + MS_LOG_POSTFIX);
     }
     catch (SQLException e) {
       exception = e;
