@@ -1529,7 +1529,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     for (final Map.Entry<String, Collection<Entity>> entry : dependencies.entrySet()) {
       final Collection<Entity> dependantEntities = entry.getValue();
       if (!dependantEntities.isEmpty()) {
-        tabPane.addTab(entry.getKey(), createStaticEntityTablePanel(dependantEntities, dbProvider));
+        tabPane.addTab(Entities.getCaption(entry.getKey()), createStaticEntityTablePanel(dependantEntities, dbProvider));
       }
     }
     panel.add(tabPane, BorderLayout.CENTER);

@@ -2051,3 +2051,4 @@
   Criteria implementations, implemented readObject/writeObject
   EntityKeyCriteria uses composition instead of inheritance
   SteppedComboBox refactored
+  EntityTablePanel.createDependenciesPanel() now uses the entity caption instead of the entityID as tab title

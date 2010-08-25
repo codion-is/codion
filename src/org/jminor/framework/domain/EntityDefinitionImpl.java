@@ -90,7 +90,8 @@ final class EntityDefinitionImpl implements EntityDefinition {
   private boolean hasDenormalizedProperties;
 
   /**
-   * Defines a new entity, by default the <code>entityID</code> is used as the underlying table name
+   * Defines a new entity type, with the entityID serving as the initial entity caption
+   * as well as the table name.
    * @param entityID the ID uniquely identifying the entity
    * @param propertyDefinitions the Property objects this entity should encompass
    */
@@ -99,7 +100,7 @@ final class EntityDefinitionImpl implements EntityDefinition {
   }
 
   /**
-   * Defines a new entity
+   * Defines a new entity type with the entityID serving as the initial entity caption.
    * @param entityID the ID uniquely identifying the entity
    * @param tableName the name of the underlying table
    * @param propertyDefinitions the Property objects this entity should encompass
@@ -110,6 +111,7 @@ final class EntityDefinitionImpl implements EntityDefinition {
     Util.rejectNullValue(propertyDefinitions, "entityDefinitions");
     this.domainID = entityID;
     this.entityID = entityID;
+    this.caption = entityID;
     this.tableName = tableName;
     this.selectTableName = tableName;
     this.properties = Collections.unmodifiableMap(initializeProperties(entityID, propertyDefinitions));

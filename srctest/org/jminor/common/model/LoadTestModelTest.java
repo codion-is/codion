@@ -121,7 +121,6 @@ public class LoadTestModelTest {
     model.setPaused(false);
     assertFalse(model.isPaused());
     assertEquals(5, model.getApplicationCount());
-    System.out.println(SCENARIO.toString() + ": " + SCENARIO.getSuccessfulRunCount());
     assertTrue(SCENARIO.getSuccessfulRunCount() > 0);
     assertTrue(SCENARIO.getUnsuccessfulRunCount() > 0);
     assertEquals(SCENARIO.getSuccessfulRunCount() + SCENARIO.getUnsuccessfulRunCount(), SCENARIO.getTotalRunCount());

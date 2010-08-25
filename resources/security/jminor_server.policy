@@ -1,7 +1,7 @@
 grant {
-  permission java.io.FilePermission "${user.home}/logs/*", "read,write";
-  permission java.io.FilePermission "${user.dir}/-", "read,write";
-  permission java.io.FilePermission "./-", "read,write";
+  permission java.io.FilePermission "${user.home}/logs/*", "read,write,delete";
+  permission java.io.FilePermission "${user.dir}/-", "read,write,delete";
+  permission java.io.FilePermission "./-", "read,write,delete";
 
   permission java.net.SocketPermission "*", "accept";
   //Database port
