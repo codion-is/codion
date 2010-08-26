@@ -28,7 +28,7 @@ public class EntityApplicationPanelTest {
     panel.initialize(new DefaultEntityApplicationModel(EntityDbConnectionTest.DB_PROVIDER) {
       @Override
       protected void loadDomainModel() {
-        new EmpDept();
+        EmpDept.init();
       }
     });
     panel.getEntityPanel(EmpDept.T_DEPARTMENT).getTablePanel().getEntityTableModel().setSelectedItemIndexes(Arrays.asList(0,1,2));

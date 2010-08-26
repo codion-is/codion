@@ -19,7 +19,7 @@ public class EntityJSONParserTest {
   public void test() throws Exception {
     final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
     final Date hiredate = format.parse("2001-12-20");
-    new EmpDept();
+    EmpDept.init();
 
     final Entity dept10 = Entities.entityInstance(EmpDept.T_DEPARTMENT);
     dept10.setValue(EmpDept.DEPARTMENT_ID, -10);

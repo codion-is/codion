@@ -8,6 +8,7 @@ import org.jminor.common.db.exception.DbException;
 import org.jminor.common.model.AbstractFilteredTableModel;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.SortingDirective;
 import org.jminor.common.model.State;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.States;
@@ -490,6 +491,16 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   /** {@inheritDoc} */
   public final Iterator<Entity> getSelectedEntitiesIterator() {
     return getSelectedItems().iterator();
+  }
+
+  /** {@inheritDoc} */
+  public final SortingDirective getSortingDirective(final String propertyID) {
+    return super.getSortingDirective(Entities.getProperty(entityID, propertyID));
+  }
+
+  /** {@inheritDoc} */
+  public final void setSortingDirective(final String propertyID, final SortingDirective directive) {
+    super.setSortingDirective(Entities.getProperty(entityID, propertyID), directive);
   }
 
   /** {@inheritDoc} */

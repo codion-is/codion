@@ -12,11 +12,7 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityTestDomain;
 import org.jminor.framework.domain.Property;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 import javax.swing.table.TableColumn;
@@ -34,7 +30,7 @@ public final class DefaultEntityTableModelTest {
   private final DefaultEntityTableModel testModel = new EntityTableModelTmp();
 
   static {
-    new EntityTestDomain();
+    EntityTestDomain.init();
     testEntities = initTestEntities(new Entity[5]);
   }
 

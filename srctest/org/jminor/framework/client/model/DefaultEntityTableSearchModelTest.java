@@ -11,7 +11,7 @@ public class DefaultEntityTableSearchModelTest {
 
   @Test
   public void test() {
-    new EmpDept();
+    EmpDept.init();
     final EntityTableModel tableModel = new DefaultEntityTableModel(EmpDept.T_EMPLOYEE, EntityDbConnectionTest.DB_PROVIDER);
     final EntityTableSearchModel model = tableModel.getSearchModel();
     assertEquals(EmpDept.T_EMPLOYEE, model.getEntityID());

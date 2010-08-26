@@ -15,7 +15,7 @@ public class EntityCriteriaUtilTest {
 
   @BeforeClass
   public static void init() {
-    new EmpDept();
+    EmpDept.init();
   }
 
   @Test

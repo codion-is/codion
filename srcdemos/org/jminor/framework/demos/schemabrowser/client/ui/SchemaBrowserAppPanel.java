@@ -49,7 +49,7 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel {
 
     @Override
     protected void loadDomainModel() {
-      new SchemaBrowser();
+      SchemaBrowser.init();
     }
   }
 }

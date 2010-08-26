@@ -6,6 +6,7 @@ package org.jminor.framework.client.model;
 import org.jminor.common.db.exception.DbException;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.FilteredTableModel;
+import org.jminor.common.model.SortingDirective;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.reports.ReportDataWrapper;
 import org.jminor.common.model.valuemap.exception.ValidationException;
@@ -296,4 +297,17 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
    * @return the row index of the entity with the given primary key, -1 if not found
    */
   int indexOf(final Entity.Key primaryKey);
+
+
+  /**
+   * @param propertyID the propertyID
+   * @param directive the sorting directive
+   */
+  void setSortingDirective(final String propertyID, final SortingDirective directive);
+
+  /**
+   * @param propertyID the propertyID
+   * @return the sorting directive assigned to the given property column
+   */
+  SortingDirective getSortingDirective(final String propertyID);
 }

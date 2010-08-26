@@ -70,7 +70,7 @@ public final class PetstoreAppPanel extends EntityApplicationPanel {
 
     @Override
       protected void loadDomainModel() {
-      new Petstore();
+      Petstore.init();
     }
   }
 }

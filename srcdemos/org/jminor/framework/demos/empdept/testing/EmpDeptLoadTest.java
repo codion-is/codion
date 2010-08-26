@@ -30,17 +30,12 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
   }
 
   @Override
-  protected void loadDomainModel() {
-    new EmpDept();
-  }
-
-  @Override
   protected EntityApplicationModel initializeApplication() throws CancelException {
     final EntityApplicationModel applicationModel = new DefaultEntityApplicationModel(
             EntityDbProviderFactory.createEntityDbProvider(getUser(), EmpDeptLoadTest.class.getSimpleName())) {
       @Override
       protected void loadDomainModel() {
-        new EmpDept();
+        EmpDept.init();
       }
     };
 

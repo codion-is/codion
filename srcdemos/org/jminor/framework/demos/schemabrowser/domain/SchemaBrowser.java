@@ -15,6 +15,9 @@ import java.util.ResourceBundle;
 
 public class SchemaBrowser {
 
+  private SchemaBrowser() {}
+  public static void init() {}
+
   private static final ResourceBundle bundle =
           ResourceBundle.getBundle("org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser",
                   new Locale(DatabaseProvider.getDatabaseType()));

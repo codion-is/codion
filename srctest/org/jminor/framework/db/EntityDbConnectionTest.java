@@ -47,8 +47,8 @@ public class EntityDbConnectionTest {
   private EntityDbConnection connection;
 
   static {
-    new Petstore();
-    new EmpDept();
+    Petstore.init();
+    EmpDept.init();
     Entities.define(COMBINED_ENTITY_ID,
             Properties.primaryKeyProperty("empno"),
             Properties.columnProperty("deptno", Types.INTEGER))
@@ -56,7 +56,7 @@ public class EntityDbConnectionTest {
   }
 
   public EntityDbConnectionTest() throws ClassNotFoundException, SQLException {
-    new EntityTestDomain();
+    EntityTestDomain.init();
   }
 
   @Before

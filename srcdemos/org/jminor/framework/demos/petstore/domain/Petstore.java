@@ -13,6 +13,9 @@ import java.sql.Types;
 
 public class Petstore {
 
+  private Petstore() {}
+  public static void init() {}
+
   public static final Version version = new Version(Petstore.class.getPackage().getName(), "1");
 
   public static final String T_ADDRESS = "address" + version;

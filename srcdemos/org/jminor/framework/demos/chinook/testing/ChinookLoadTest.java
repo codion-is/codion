@@ -64,17 +64,12 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
   }
 
   @Override
-  protected void loadDomainModel() {
-    new Chinook();
-  }
-
-  @Override
   protected EntityApplicationModel initializeApplication() throws CancelException {
     final EntityApplicationModel appModel = new DefaultEntityApplicationModel(
             EntityDbProviderFactory.createEntityDbProvider(getUser(), ChinookLoadTest.class.getSimpleName())) {
       @Override
       protected void loadDomainModel() {
-        new Chinook();
+        Chinook.init();
       }
     };
     /* ARTIST

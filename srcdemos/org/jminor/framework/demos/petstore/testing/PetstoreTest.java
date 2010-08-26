@@ -50,7 +50,7 @@ public class PetstoreTest extends EntityTestUnit {
 
   @Override
   protected void loadDomainModel() {
-    new Petstore();
+    Petstore.init();
   }
 
   @Override

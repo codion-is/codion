@@ -11,7 +11,7 @@ public class EntityCriteriaPanelTest {
 
   @Test
   public void test() {
-    new EmpDept();
+    EmpDept.init();
     final EntityTableModel tableModel = new DefaultEntityTableModel(EmpDept.T_DEPARTMENT, EntityDbConnectionTest.DB_PROVIDER);
     new EntityCriteriaPanel(tableModel);
   }

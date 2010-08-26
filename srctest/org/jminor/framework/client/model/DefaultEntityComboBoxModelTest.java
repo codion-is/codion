@@ -20,7 +20,7 @@ public final class DefaultEntityComboBoxModelTest {
   private final DefaultEntityComboBoxModel comboBoxModel;
 
   public DefaultEntityComboBoxModelTest() {
-    new EmpDept();
+    EmpDept.init();
     comboBoxModel = new DefaultEntityComboBoxModel(EmpDept.T_EMPLOYEE, EntityDbConnectionTest.DB_PROVIDER);
   }
 

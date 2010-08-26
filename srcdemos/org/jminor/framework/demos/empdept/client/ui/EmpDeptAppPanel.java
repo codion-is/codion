@@ -78,7 +78,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel {
 
     @Override
     protected void loadDomainModel() {
-      new EmpDept();
+      EmpDept.init();
     }
   }
 

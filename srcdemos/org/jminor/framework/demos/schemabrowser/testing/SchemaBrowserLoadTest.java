@@ -24,11 +24,6 @@ public final class SchemaBrowserLoadTest extends EntityLoadTestModel {
   }
 
   @Override
-  protected void loadDomainModel() {
-    new SchemaBrowser();
-  }
-
-  @Override
   protected void performWork(final Object application) {
     final EntityModel schemaModel = ((EntityApplicationModel) application).getMainApplicationModels().iterator().next();
     schemaModel.getTableModel().refresh();
@@ -43,7 +38,7 @@ public final class SchemaBrowserLoadTest extends EntityLoadTestModel {
            UUID.randomUUID(), getClass().getSimpleName())) {
       @Override
       protected void loadDomainModel() {
-        new SchemaBrowser();
+        SchemaBrowser.init();
       }
     };
     final EntityModel schemaModel = applicationModel.getMainApplicationModel(SchemaBrowser.T_SCHEMA);

@@ -15,7 +15,7 @@ public final class DefaultEntityTableColumnModelTest {
 
   @Test
   public void test() {
-    new EmpDept();
+    EmpDept.init();
     final DefaultEntityTableColumnModel model = new DefaultEntityTableColumnModel(EmpDept.T_DEPARTMENT);
     assertEquals(EmpDept.T_DEPARTMENT, model.getEntityID());
     assertEquals(Entities.getVisibleProperties(EmpDept.T_DEPARTMENT), model.getColumnProperties());

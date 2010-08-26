@@ -12,7 +12,7 @@ public class EntityTableSearchSimplePanelTest {
 
   @Test
   public void test() {
-    new EmpDept();
+    EmpDept.init();
     final EntityTableModel tableModel = new DefaultEntityTableModel(EmpDept.T_DEPARTMENT, EntityDbConnectionTest.DB_PROVIDER);
     final EntityTableSearchSimplePanel panel = new EntityTableSearchSimplePanel(tableModel.getSearchModel(), tableModel);
     panel.setSearchTest("OPERATIONS");

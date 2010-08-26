@@ -36,8 +36,8 @@ public class EntityImplTest {
   }
 
   public EntityImplTest() {
-    new EntityTestDomain();
-    new EmpDept();
+    EntityTestDomain.init();
+    EmpDept.init();
   }
 
   @Test

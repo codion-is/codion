@@ -30,7 +30,6 @@ public abstract class EntityLoadTestModel extends LoadTestModel {
     super(user, Arrays.asList(usageScenarios), Configuration.getIntValue(Configuration.LOAD_TEST_THINKTIME),
             Configuration.getIntValue(Configuration.LOAD_TEST_LOGIN_DELAY),
             Configuration.getIntValue(Configuration.LOAD_TEST_BATCH_SIZE), DEFAULT_WARNING_TIME);
-    loadDomainModel();
   }
 
   /**
@@ -92,6 +91,4 @@ public abstract class EntityLoadTestModel extends LoadTestModel {
   /** {@inheritDoc} */
   @Override
   protected abstract EntityApplicationModel initializeApplication() throws CancelException;
-
-  protected abstract void loadDomainModel();
 }

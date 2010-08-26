@@ -20,7 +20,7 @@ public class EntityUtilTest {
 
   @Test
   public void getPropertyValues() {
-    new EmpDept();
+    EmpDept.init();
     final List<Entity> entities = new ArrayList<Entity>();
     final List<Object> values = new ArrayList<Object>();
     for (int i = 0; i < 10; i++) {
@@ -38,7 +38,7 @@ public class EntityUtilTest {
 
   @Test
   public void getDistinctPropertyValues() {
-    new EmpDept();
+    EmpDept.init();
     final List<Entity> entities = new ArrayList<Entity>();
     final List<Object> values = new ArrayList<Object>();
 
@@ -77,7 +77,7 @@ public class EntityUtilTest {
 
   @Test
   public void testSetPropertyValue() {
-    new EmpDept();
+    EmpDept.init();
     final Collection<Entity> entities = new ArrayList<Entity>();
     entities.add(Entities.entityInstance(EmpDept.T_DEPARTMENT));
     entities.add(Entities.entityInstance(EmpDept.T_DEPARTMENT));
@@ -97,7 +97,7 @@ public class EntityUtilTest {
 
   @Test
   public void hashByPropertyValue() {
-    new EmpDept();
+    EmpDept.init();
     final List<Entity> entities = new ArrayList<Entity>();
 
     final Entity entityOne = Entities.entityInstance(EmpDept.T_DEPARTMENT);
@@ -135,7 +135,7 @@ public class EntityUtilTest {
 
   @Test
   public void hashByEntitID() {
-    new Chinook();
+    Chinook.init();
     final Entity one = Entities.entityInstance(Chinook.T_ALBUM);
     final Entity two = Entities.entityInstance(Chinook.T_ARTIST);
     final Entity three = Entities.entityInstance(Chinook.T_CUSTOMER);
@@ -159,7 +159,7 @@ public class EntityUtilTest {
 
   @Test
   public void getProperties() {
-    new EmpDept();
+    EmpDept.init();
     final List<String> propertyIDs = new ArrayList<String>();
     propertyIDs.add(EmpDept.DEPARTMENT_ID);
     propertyIDs.add(EmpDept.DEPARTMENT_NAME);

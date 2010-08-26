@@ -99,7 +99,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel {
 
     @Override
     protected void loadDomainModel() {
-      new Chinook();
+      Chinook.init();
     }
   }
 }

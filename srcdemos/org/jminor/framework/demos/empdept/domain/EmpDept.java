@@ -20,6 +20,9 @@ import java.util.ResourceBundle;
  */
 public class EmpDept {
 
+  private EmpDept() {}
+  public static void init() {}
+
   private static final ResourceBundle bundle =
           ResourceBundle.getBundle("org.jminor.framework.demos.empdept.domain.EmpDept", Locale.getDefault());
 

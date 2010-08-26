@@ -11,6 +11,9 @@ import java.sql.Types;
 
 public class Chinook {
 
+  private Chinook() {}
+  public static void init() {}
+
   public static final String DOMAIN_ID = Chinook.class.getName();
 
   public static final String T_ALBUM = "chinook.album";
@@ -386,4 +389,5 @@ public class Chinook {
             .setLargeDataset(true)
             .setCaption("Invoice lines");
   }
+
 }

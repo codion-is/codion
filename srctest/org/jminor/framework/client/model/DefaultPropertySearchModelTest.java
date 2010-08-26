@@ -16,12 +16,9 @@ import java.util.List;
 
 public class DefaultPropertySearchModelTest {
 
-  static {
-    new EmpDept();
-  }
-
   @Test
   public void propertySearchModel() throws Exception {
+    EmpDept.init();
     final Property.ColumnProperty property = (Property.ColumnProperty) Entities.getProperty(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME);
     final PropertySearchModel model = new DefaultPropertySearchModel(property);
     assertEquals(property, model.getColumnIdentifier());

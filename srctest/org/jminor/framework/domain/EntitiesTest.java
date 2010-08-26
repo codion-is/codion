@@ -17,7 +17,7 @@ public class EntitiesTest {
 
   @Test
   public void getDependencyTreeModel() {
-    new Chinook();
+    Chinook.init();
     final TreeModel model = Entities.getDependencyTreeModel(Chinook.DOMAIN_ID);
     final DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
     final Enumeration tree = root.depthFirstEnumeration();

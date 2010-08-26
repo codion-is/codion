@@ -80,6 +80,6 @@ public class ChinookTest extends EntityTestUnit {
 
   @Override
   protected void loadDomainModel() {
-    new Chinook();
+    Chinook.init();
   }
 }

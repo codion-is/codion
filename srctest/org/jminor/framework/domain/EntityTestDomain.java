@@ -9,6 +9,9 @@ import java.sql.Types;
 
 public class EntityTestDomain {
 
+  private EntityTestDomain() {}
+  public static void init() {}
+
   public static final String T_MASTER = "test.master_entity";
   public static final String MASTER_ID = "id";
   public static final String MASTER_NAME = "name";

@@ -31,6 +31,6 @@ public class EmpDeptTest extends EntityTestUnit {
 
   @Override
   protected void loadDomainModel() {
-    new EmpDept();
+    EmpDept.init();
   }
 }

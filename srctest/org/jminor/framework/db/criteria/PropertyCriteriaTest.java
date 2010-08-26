@@ -22,7 +22,7 @@ import java.util.Date;
 public class PropertyCriteriaTest {
 
   public PropertyCriteriaTest() {
-    new EmpDept();
+    EmpDept.init();
   }
 
   @Test

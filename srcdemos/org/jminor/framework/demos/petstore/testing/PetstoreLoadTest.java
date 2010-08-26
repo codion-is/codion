@@ -34,17 +34,12 @@ public final class PetstoreLoadTest extends EntityLoadTestModel {
   }
 
   @Override
-  protected void loadDomainModel() {
-    new Petstore();
-  }
-
-  @Override
   protected EntityApplicationModel initializeApplication() throws CancelException {
     final EntityApplicationModel applicationModel = new DefaultEntityApplicationModel(new EntityDbRemoteProvider(getUser(),
             UUID.randomUUID(), getClass().getSimpleName())) {
       @Override
       protected void loadDomainModel() {
-        new Petstore();
+        Petstore.init();
       }
     };
     final EntityModel categoryModel = applicationModel.getMainApplicationModels().iterator().next();

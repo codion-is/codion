@@ -42,7 +42,7 @@ public final class DefaultEntityEditModelTest {
 
   @Before
   public void setUp() {
-    new EmpDept();
+    EmpDept.init();
     jobProperty = Entities.getColumnProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB);
     deptProperty = Entities.getForeignKeyProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_DEPARTMENT_FK);
     debugOutput = Configuration.getBooleanValue(Configuration.PROPERTY_DEBUG_OUTPUT);

@@ -16,9 +16,7 @@ import org.jminor.framework.demos.petstore.domain.Petstore;
 import org.jminor.framework.server.provider.EntityDbRemoteProvider;
 
 import org.junit.AfterClass;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -33,8 +31,8 @@ public class EntityDbRemoteServerTest {
 
   @BeforeClass
   public static void setUp() throws Exception {
-    new EmpDept();
-    new Petstore();
+    EmpDept.init();
+    Petstore.init();
     defaultManager = System.getSecurityManager();
     Configuration.class.getName();
     Configuration.setValue(Configuration.SERVER_PORT, "2222");
