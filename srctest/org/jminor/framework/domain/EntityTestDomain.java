@@ -37,8 +37,7 @@ public class EntityTestDomain {
             Properties.primaryKeyProperty(MASTER_ID),
             Properties.columnProperty(MASTER_NAME, Types.VARCHAR),
             Properties.columnProperty(MASTER_CODE, Types.INTEGER))
-            .setStringProvider(new StringProvider<String>(MASTER_NAME))
-            .setLargeDataset(true);
+            .setStringProvider(new StringProvider<String>(MASTER_NAME));
 
     Entities.define(T_DETAIL,
             Properties.primaryKeyProperty(DETAIL_ID),
@@ -55,6 +54,6 @@ public class EntityTestDomain {
             Properties.denormalizedViewProperty(DETAIL_MASTER_CODE, DETAIL_ENTITY_FK,
                     Entities.getProperty(T_MASTER, MASTER_CODE), DETAIL_MASTER_CODE))
             .setOrderByClause(DETAIL_STRING).setSelectTableName(DETAIL_SELECT_TABLE_NAME)
-            .setStringProvider(new StringProvider<String>(DETAIL_STRING));
+            .setSmallDataset(true).setStringProvider(new StringProvider<String>(DETAIL_STRING));
   }
 }

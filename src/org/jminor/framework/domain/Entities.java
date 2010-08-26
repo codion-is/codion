@@ -173,7 +173,7 @@ public final class Entities {
   /**
    * @param entityID the entity ID
    * @return true if the entity identified by <code>entityID</code> is read only
-   * @throws RuntimeException if the read only value is undefined
+   * @throws RuntimeException if the entity is undefined
    */
   public static boolean isReadOnly(final String entityID) {
     return getEntityDefinition(entityID).isReadOnly();
@@ -181,11 +181,11 @@ public final class Entities {
 
   /**
    * @param entityID the entity ID
-   * @return true if the entity identified by <code>entityID</code> is based on a large dataset
-   * @throws RuntimeException if the large dataset value is undefined
+   * @return true if the entity identified by <code>entityID</code> is based on a small dataset
+   * @throws RuntimeException if the entity is undefined
    */
-  public static boolean isLargeDataset(final String entityID) {
-    return getEntityDefinition(entityID).isLargeDataset();
+  public static boolean isSmallDataset(final String entityID) {
+    return getEntityDefinition(entityID).isSmallDataset();
   }
 
   /**
@@ -199,7 +199,7 @@ public final class Entities {
   /**
    * @param entityID the entity ID
    * @return the name of the table used to select entities identified by <code>entityID</code>
-   * @throws RuntimeException if none is defined
+   * @throws RuntimeException if the entity is undefined
    */
   public static String getSelectTableName(final String entityID) {
     return getEntityDefinition(entityID).getSelectTableName();
@@ -208,7 +208,7 @@ public final class Entities {
   /**
    * @param entityID the entity ID
    * @return the name of the table on which entities identified by <code>entityID</code> are based
-   * @throws RuntimeException if none is defined
+   * @throws RuntimeException if the entity is undefined
    */
   public static String getTableName(final String entityID) {
     return getEntityDefinition(entityID).getTableName();
@@ -217,7 +217,7 @@ public final class Entities {
   /**
    * @param entityID the entity ID
    * @return the sql query used when selecting entities identified by <code>entityID</code>
-   * @throws RuntimeException if none is defined
+   * @throws RuntimeException if the entity is undefined
    */
   public static String getSelectQuery(final String entityID) {
     return getEntityDefinition(entityID).getSelectQuery();
@@ -226,7 +226,7 @@ public final class Entities {
   /**
    * @param entityID the entity ID
    * @return the query string used to select entities identified by <code>entityID</code>
-   * @throws RuntimeException if none is defined
+   * @throws RuntimeException if the entity is undefined
    */
   public static String getSelectColumnsString(final String entityID) {
     return getEntityDefinition(entityID).getSelectColumnsString();
@@ -235,7 +235,7 @@ public final class Entities {
   /**
    * @param entityID the entity ID
    * @return the IdSource of the entity identified by <code>entityID</code>
-   * @throws RuntimeException if none is defined
+   * @throws RuntimeException if the entity is undefined
    */
   public static IdSource getIdSource(final String entityID) {
     return getEntityDefinition(entityID).getIdSource();
@@ -244,7 +244,7 @@ public final class Entities {
   /**
    * @param entityID the entity ID
    * @return the StringProvider used in case toString() is called for the given entity
-   * @throws RuntimeException if none is defined
+   * @throws RuntimeException if the entity is undefined
    */
   public static ValueMap.ToString<String> getStringProvider(final String entityID) {
     return getEntityDefinition(entityID).getStringProvider();

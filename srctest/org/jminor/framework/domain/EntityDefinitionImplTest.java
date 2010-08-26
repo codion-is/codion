@@ -14,7 +14,7 @@ public class EntityDefinitionImplTest {
     final EntityDefinition definition = new EntityDefinitionImpl("entityID", "tableName",
             Properties.primaryKeyProperty("id"),
             Properties.columnProperty("name", Types.VARCHAR)).setIdSource(IdSource.NONE).setIdValueSource("idValueSource")
-            .setSelectQuery("select * from dual").setLargeDataset(true).setOrderByClause("order by name")
+            .setSelectQuery("select * from dual").setOrderByClause("order by name")
             .setReadOnly(true).setSelectTableName("selectTableName");
 
     assertEquals("entityID", definition.getEntityID());
@@ -22,7 +22,7 @@ public class EntityDefinitionImplTest {
     assertEquals(IdSource.NONE, definition.getIdSource());
     assertEquals("idValueSource", definition.getIdValueSource());
     assertEquals("select * from dual", definition.getSelectQuery());
-    assertEquals(true, definition.isLargeDataset());
+    assertEquals(false, definition.isSmallDataset());
     assertEquals("order by name", definition.getOrderByClause());
     assertEquals(true, definition.isReadOnly());
     assertEquals("selectTableName", definition.getSelectTableName());

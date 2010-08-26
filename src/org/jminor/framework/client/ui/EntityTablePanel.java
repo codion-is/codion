@@ -1184,7 +1184,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
    */
   protected final InputProvider createEntityInputProvider(final Property.ForeignKeyProperty foreignKeyProperty, final Entity currentValue,
                                                           final EntityEditModel editModel) {
-    if (!Entities.isLargeDataset(foreignKeyProperty.getReferencedEntityID())) {
+    if (Entities.isSmallDataset(foreignKeyProperty.getReferencedEntityID())) {
       return new EntityComboProvider(editModel.createEntityComboBoxModel(foreignKeyProperty), currentValue);
     }
     else {

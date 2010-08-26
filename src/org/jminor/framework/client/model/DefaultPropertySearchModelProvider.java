@@ -14,16 +14,16 @@ public class DefaultPropertySearchModelProvider implements PropertySearchModelPr
           final Property.SearchableProperty property, final EntityDbProvider dbProvider) {
     if (property instanceof Property.ForeignKeyProperty) {
       final Property.ForeignKeyProperty fkProperty = (Property.ForeignKeyProperty) property;
-      if (Entities.isLargeDataset(fkProperty.getReferencedEntityID())) {
+      if (Entities.isSmallDataset(fkProperty.getReferencedEntityID())) {
+        final EntityComboBoxModel comboBoxModel = new DefaultEntityComboBoxModel(fkProperty.getReferencedEntityID(), dbProvider);
+        comboBoxModel.setNullValueString("");
+        return new DefaultForeignKeySearchModel(fkProperty, comboBoxModel);
+      }
+      else {
         final EntityLookupModel lookupModel = new DefaultEntityLookupModel(fkProperty.getReferencedEntityID(),
                 dbProvider, Entities.getSearchProperties(fkProperty.getReferencedEntityID()));
         lookupModel.setMultipleSelectionAllowed(true);
         return new DefaultForeignKeySearchModel(fkProperty, lookupModel);
-      }
-      else {
-        final EntityComboBoxModel comboBoxModel = new DefaultEntityComboBoxModel(fkProperty.getReferencedEntityID(), dbProvider);
-        comboBoxModel.setNullValueString("");
-        return new DefaultForeignKeySearchModel(fkProperty, comboBoxModel);
       }
     }
     else if (property instanceof Property.ColumnProperty) {

@@ -132,7 +132,6 @@ public class Chinook {
             .setDomainID(DOMAIN_ID)
             .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_ALBUM)
             .setStringProvider(new StringProvider<String>(ALBUM_TITLE))
-            .setLargeDataset(true)
             .setSearchPropertyIDs(ALBUM_TITLE)
             .setOrderByClause(ALBUM_ARTISTID + ", " + ALBUM_TITLE)
             .setCaption("Albums");
@@ -145,7 +144,6 @@ public class Chinook {
             .setDomainID(DOMAIN_ID)
             .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_ARTIST)
             .setStringProvider(new StringProvider<String>(ARTIST_NAME))
-            .setLargeDataset(true)
             .setSearchPropertyIDs(ARTIST_NAME)
             .setOrderByClause(ARTIST_NAME)
             .setCaption("Artists");
@@ -183,7 +181,6 @@ public class Chinook {
             .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_CUSTOMER)
             .setStringProvider(new StringProvider<String>(CUSTOMER_LASTNAME)
             .addText(", ").addValue(CUSTOMER_FIRSTNAME))
-            .setLargeDataset(true)
             .setSearchPropertyIDs(CUSTOMER_FIRSTNAME, CUSTOMER_LASTNAME, CUSTOMER_EMAIL)
             .setOrderByClause(CUSTOMER_LASTNAME + ", " + CUSTOMER_FIRSTNAME)
             .setCaption("Customers");
@@ -280,7 +277,6 @@ public class Chinook {
             .setDomainID(DOMAIN_ID)
             .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_TRACK)
             .setStringProvider(new StringProvider<String>(TRACK_NAME))
-            .setLargeDataset(true)
             .setSearchPropertyIDs(TRACK_NAME)
             .setOrderByClause(TRACK_NAME)
             .setCaption("Tracks");
@@ -312,7 +308,6 @@ public class Chinook {
             .setDomainID(DOMAIN_ID)
             .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_PLAYLIST)
             .setStringProvider(new StringProvider<String>(PLAYLIST_NAME))
-            .setLargeDataset(true)
             .setSearchPropertyIDs(PLAYLIST_NAME)
             .setOrderByClause(PLAYLIST_NAME)
             .setCaption("Playlists");
@@ -338,7 +333,6 @@ public class Chinook {
             .setIdSource(IdSource.NONE)
             .setStringProvider(new StringProvider<String>(PLAYLISTTRACK_PLAYLISTID_FK)
             .addText(" - ").addValue(PLAYLISTTRACK_TRACKID_FK))
-            .setLargeDataset(true)
             .setCaption("Playlist tracks");
 
     Entities.define(T_INVOICE,
@@ -366,7 +360,7 @@ public class Chinook {
             .setDomainID(DOMAIN_ID)
             .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_INVOICE)
             .setStringProvider(new StringProvider<String>(INVOICE_INVOICEID))
-            .setLargeDataset(true).setSearchPropertyIDs(INVOICE_INVOICEID_AS_STRING)
+            .setSearchPropertyIDs(INVOICE_INVOICEID_AS_STRING)
             .setOrderByClause(INVOICE_CUSTOMERID + ", " + INVOICE_INVOICEDATE + " desc")
             .setCaption("Invoices");
 
@@ -386,7 +380,6 @@ public class Chinook {
                     .setNullable(false))
             .setDomainID(DOMAIN_ID)
             .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_INVOICELINE)
-            .setLargeDataset(true)
             .setCaption("Invoice lines");
   }
 

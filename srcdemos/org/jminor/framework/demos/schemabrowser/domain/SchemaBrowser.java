@@ -91,7 +91,7 @@ public class SchemaBrowser {
             Properties.primaryKeyProperty(CONSTRAINT_NAME, Types.VARCHAR, "Constraint name").setIndex(2),
             Properties.columnProperty(CONSTRAINT_TYPE, Types.VARCHAR, "Type"))
             .setOrderByClause(CONSTRAINT_SCHEMA + ", " + CONSTRAINT_TABLE_NAME + ", " + CONSTRAINT_NAME)
-            .setReadOnly(true).setLargeDataset(true)
+            .setReadOnly(true)
             .setStringProvider(new StringProvider<String>(CONSTRAINT_TABLE_FK).addText(".").addValue(CONSTRAINT_NAME))
             .setCaption("Constraints");
 

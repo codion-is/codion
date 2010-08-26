@@ -55,9 +55,9 @@ final class EntityDefinitionImpl implements EntityDefinition {
    */
   private boolean readOnly;
   /**
-   * The largeDataset value
+   * The smallDataset value
    */
-  private boolean largeDataset;
+  private boolean smallDataset = false;
   /**
    * The StringProvider used when toString() is called for this entity
    * @see org.jminor.common.model.valuemap.ValueMap.ToString
@@ -156,13 +156,13 @@ final class EntityDefinitionImpl implements EntityDefinition {
   }
 
   /** {@inheritDoc} */
-  public boolean isLargeDataset() {
-    return largeDataset;
+  public boolean isSmallDataset() {
+    return smallDataset;
   }
 
   /** {@inheritDoc} */
-  public EntityDefinition setLargeDataset(final boolean largeDataset) {
-    this.largeDataset = largeDataset;
+  public EntityDefinition setSmallDataset(final boolean smallDataset) {
+    this.smallDataset = smallDataset;
     return this;
   }
 

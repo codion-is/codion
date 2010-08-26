@@ -81,6 +81,7 @@ public class EmpDept {
             Properties.columnProperty(DEPARTMENT_LOCATION, Types.VARCHAR, getString(DEPARTMENT_LOCATION))
                     .setPreferredColumnWidth(150).setMaxLength(13))
             .setIdSource(IdSource.NONE)
+            .setSmallDataset(true)
             .setOrderByClause(DEPARTMENT_NAME)
             .setStringProvider(new StringProvider<String>(DEPARTMENT_NAME))
             .setCaption(getString(DEPARTMENT));

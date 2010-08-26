@@ -50,17 +50,18 @@ public interface EntityDefinition {
   EntityDefinition setCaption(final String caption);
 
   /**
-   * @return true if the underlying table is "large"
+   * @return true if the underlying table is small enough for displaying the contents in a combo box
    */
-  boolean isLargeDataset();
+  boolean isSmallDataset();
 
   /**
-   * Specifies whether or not this entity should be regarded as based on a large dataset,
-   * which primarily means that combo box models should not be created based on this entity
-   * @param largeDataset true if the underlying table is "large"
+   * Specifies whether or not this entity should be regarded as based on a small dataset,
+   * which primarily means that combo box models can be based on this entity.
+   * This is false by default.
+   * @param smallDataset true if the underlying table is small enough for displaying the contents in a combo box
    * @return this EntityDefinition instance
    */
-  EntityDefinition setLargeDataset(final boolean largeDataset);
+  EntityDefinition setSmallDataset(final boolean smallDataset);
 
   /**
    * @return true if this entity type is read only
