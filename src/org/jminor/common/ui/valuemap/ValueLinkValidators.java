@@ -16,6 +16,8 @@ import java.awt.event.ActionListener;
  */
 final class ValueLinkValidators {
 
+  private ValueLinkValidators() {}
+
   static <K> void addValidator(final TextValueLink<K> valueLink, final JTextComponent textComponent,
                                final ValueChangeMapEditModel<K, Object> editModel) {
     addValidator(valueLink, textComponent, editModel, textComponent.getBackground(), Color.LIGHT_GRAY, textComponent.getToolTipText());

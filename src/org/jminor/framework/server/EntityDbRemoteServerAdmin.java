@@ -37,6 +37,8 @@ import java.util.UUID;
  */
 public final class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements EntityDbServerAdmin {
 
+  private static final long serialVersionUID = 1;
+
   private static final int SERVER_ADMIN_PORT;
 
   static {
@@ -352,6 +354,7 @@ public final class EntityDbRemoteServerAdmin extends UnicastRemoteObject impleme
 
   private Runnable getShutdownHook() {
     return new Runnable() {
+      /** {@inheritDoc} */
       public void run() {
         if (server.isShuttingDown()) {
           return;

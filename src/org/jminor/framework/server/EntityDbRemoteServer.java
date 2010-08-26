@@ -33,6 +33,8 @@ import java.util.*;
  */
 final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
 
+  private static final long serialVersionUID = 1;
+
   static final Logger LOG = Util.getLogger(EntityDbRemoteServer.class);
 
   private static final boolean CLIENT_LOGGING_ENABLED =

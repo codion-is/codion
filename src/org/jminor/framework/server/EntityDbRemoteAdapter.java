@@ -58,6 +58,8 @@ import java.util.TimerTask;
  */
 final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityDbRemote {
 
+  private static final long serialVersionUID = 1;
+
   private static final Logger LOG = Util.getLogger(EntityDbRemoteAdapter.class);
   /**
    * Contains information about the client using this connection
