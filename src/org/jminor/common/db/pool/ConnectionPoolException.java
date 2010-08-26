@@ -12,7 +12,7 @@ import java.sql.SQLException;
  */
 public class ConnectionPoolException extends SQLException {
 
-  private ConnectionPoolException(final String reason) {
+  ConnectionPoolException(final String reason) {
     super(reason);
   }
 

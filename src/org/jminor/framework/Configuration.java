@@ -11,12 +11,12 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.UIManager;
 import java.awt.Color;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Properties;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.File;
-import java.io.IOException;
 
 /**
  * Settings used throughout the framework.
@@ -547,23 +547,17 @@ public final class Configuration {
   }
 
   public static void setValue(final String key, final Object value) {
-    synchronized (PROPERTIES) {
-      PROPERTIES.put(key, value);
-      System.setProperty(key, value.toString());
-    }
+    PROPERTIES.put(key, value);
+    System.setProperty(key, value.toString());
   }
 
   public static void clearValue(final String key) {
-    synchronized (PROPERTIES) {
-      PROPERTIES.remove(key);
-      System.clearProperty(key);
-    }
+    PROPERTIES.remove(key);
+    System.clearProperty(key);
   }
 
   public static Object getValue(final String key) {
-    synchronized (PROPERTIES) {
-      return PROPERTIES.get(key);
-    }
+    return PROPERTIES.get(key);
   }
 
   public static Integer getIntValue(final String key) {
