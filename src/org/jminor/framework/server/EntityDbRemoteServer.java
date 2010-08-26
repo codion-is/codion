@@ -289,12 +289,12 @@ final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
   }
 
   static void loadDomainModel(final URI location, final String domainClassName) throws ClassNotFoundException,
-          IllegalAccessException, InstantiationException {
+          IllegalAccessException {
     loadDomainModel(location == null ? null : Arrays.asList(location), domainClassName);
   }
 
   static void loadDomainModel(final Collection<URI> locations, final String domainClassName) throws ClassNotFoundException,
-          IllegalAccessException, InstantiationException {
+          IllegalAccessException {
     final String message = "Server loading domain model class '" + domainClassName + "' from"
             + (locations == null || locations.isEmpty() ? " classpath" : " jars: ")
             + Util.getCollectionContentsAsString(locations, false);
@@ -328,10 +328,10 @@ final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
 
   /** {@inheritDoc} */
   @Override
-  protected EntityDbRemoteAdapter doConnect(final ClientInfo info) throws RemoteException {
-    final EntityDbRemoteAdapter remoteAdapter = new EntityDbRemoteAdapter(this, database, info, SERVER_DB_PORT,
+  protected EntityDbRemoteAdapter doConnect(final ClientInfo clientInfo) throws RemoteException {
+    final EntityDbRemoteAdapter remoteAdapter = new EntityDbRemoteAdapter(this, database, clientInfo, SERVER_DB_PORT,
             CLIENT_LOGGING_ENABLED, SSL_CONNECTION_ENABLED);
-    LOG.debug(info + " connected");
+    LOG.debug(clientInfo + " connected");
 
     return remoteAdapter;
   }

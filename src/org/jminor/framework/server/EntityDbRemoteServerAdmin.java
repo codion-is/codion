@@ -166,7 +166,7 @@ public final class EntityDbRemoteServerAdmin extends UnicastRemoteObject impleme
 
   /** {@inheritDoc} */
   public void resetConnectionPoolStatistics(final User user) throws RemoteException {
-    EntityDbRemoteAdapter.resetConnectionPoolStatistics(user);
+    EntityDbRemoteAdapter.resetPoolStatistics(user);
   }
 
   /** {@inheritDoc} */
@@ -201,7 +201,7 @@ public final class EntityDbRemoteServerAdmin extends UnicastRemoteObject impleme
 
   /** {@inheritDoc} */
   public ConnectionPoolStatistics getConnectionPoolStatistics(final User user, final long since) throws RemoteException {
-    return EntityDbRemoteAdapter.getConnectionPoolStatistics(user, since);
+    return EntityDbRemoteAdapter.getPoolStatistics(user, since);
   }
 
   /** {@inheritDoc} */
@@ -216,52 +216,52 @@ public final class EntityDbRemoteServerAdmin extends UnicastRemoteObject impleme
 
   /** {@inheritDoc} */
   public boolean isConnectionPoolEnabled(final User user) throws RemoteException {
-    return EntityDbRemoteAdapter.isConnectionPoolEnabled(user);
+    return EntityDbRemoteAdapter.isPoolEnabled(user);
   }
 
   /** {@inheritDoc} */
   public void setConnectionPoolCleanupInterval(final User user, final int poolCleanupInterval) throws RemoteException {
-    EntityDbRemoteAdapter.setConnectionPoolCleanupInterval(user, poolCleanupInterval);
+    EntityDbRemoteAdapter.setPoolCleanupInterval(user, poolCleanupInterval);
   }
 
   /** {@inheritDoc} */
   public void setConnectionPoolEnabled(final User user, final boolean enabled) throws RemoteException {
-    EntityDbRemoteAdapter.setConnectionPoolEnabled(user, enabled);
+    EntityDbRemoteAdapter.setPoolEnabled(user, enabled);
   }
 
   /** {@inheritDoc} */
   public int getConnectionPoolCleanupInterval(final User user) throws RemoteException {
-    return EntityDbRemoteAdapter.getConnectionPoolCleanupInterval(user);
+    return EntityDbRemoteAdapter.getPoolCleanupInterval(user);
   }
 
   /** {@inheritDoc} */
   public int getMaximumConnectionPoolSize(final User user) throws RemoteException {
-    return EntityDbRemoteAdapter.getMaximumConnectionPoolSize(user);
+    return EntityDbRemoteAdapter.getMaximumPoolSize(user);
   }
 
   /** {@inheritDoc} */
   public int getMinimumConnectionPoolSize(final User user) throws RemoteException {
-    return EntityDbRemoteAdapter.getMinimumConnectionPoolSize(user);
+    return EntityDbRemoteAdapter.getMinimumPoolSize(user);
   }
 
   /** {@inheritDoc} */
   public int getPooledConnectionTimeout(final User user) throws RemoteException {
-    return EntityDbRemoteAdapter.getPooledConnectionTimeout(user);
+    return EntityDbRemoteAdapter.getPoolConnectionTimeout(user);
   }
 
   /** {@inheritDoc} */
   public void setMaximumConnectionPoolSize(final User user, final int value) throws RemoteException {
-    EntityDbRemoteAdapter.setMaximumConnectionPoolSize(user, value);
+    EntityDbRemoteAdapter.setMaximumPoolSize(user, value);
   }
 
   /** {@inheritDoc} */
   public void setMinimumConnectionPoolSize(final User user, final int value) throws RemoteException {
-    EntityDbRemoteAdapter.setMinimumConnectionPoolSize(user, value);
+    EntityDbRemoteAdapter.setMinimumPoolSize(user, value);
   }
 
   /** {@inheritDoc} */
   public void setPooledConnectionTimeout(final User user, final int timeout) throws RemoteException {
-    EntityDbRemoteAdapter.setPooledConnectionTimeout(user, timeout);
+    EntityDbRemoteAdapter.setPoolConnectionTimeout(user, timeout);
   }
 
   /** {@inheritDoc} */
@@ -270,8 +270,18 @@ public final class EntityDbRemoteServerAdmin extends UnicastRemoteObject impleme
   }
 
   /** {@inheritDoc} */
-  public void setMaximumPoolRetryWaitPeriod(final User user, final int timeout) throws RemoteException {
-    EntityDbRemoteAdapter.setMaximumPoolRetryWaitPeriod(user, timeout);
+  public void setMaximumPoolRetryWaitPeriod(final User user, final int value) throws RemoteException {
+    EntityDbRemoteAdapter.setMaximumPoolRetryWaitPeriod(user, value);
+  }
+
+  /** {@inheritDoc} */
+  public int getMaximumPoolCheckOutTime(final User user) throws RemoteException {
+    return EntityDbRemoteAdapter.getMaximumPoolCheckOutTime(user);
+  }
+
+  /** {@inheritDoc} */
+  public void setMaximumPoolCheckOutTime(final User user, final int value) throws RemoteException {
+    EntityDbRemoteAdapter.setMaximumPoolCheckOutTime(user, value);
   }
 
   /** {@inheritDoc} */
@@ -331,7 +341,7 @@ public final class EntityDbRemoteServerAdmin extends UnicastRemoteObject impleme
 
   /** {@inheritDoc} */
   public void loadDomainModel(final URI location, final String domainClassName) throws RemoteException, ClassNotFoundException,
-          IllegalAccessException, InstantiationException {
+          IllegalAccessException {
     EntityDbRemoteServer.loadDomainModel(location, domainClassName);
   }
 

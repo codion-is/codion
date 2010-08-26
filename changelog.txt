@@ -2053,3 +2053,6 @@
   SteppedComboBox refactored
   EntityTablePanel.createDependenciesPanel() now uses the entity caption instead of the entityID as tab title
   EntityCriteriaUtil.DefaultEntityCriteria.readObject() cast bug fixed
+  ConnectionPool.get/SetMaximumCheckOutTime added, up through server admin layer
+  ConnectionPoolException added
+  ConnectionPoolImpl, check out time is now measured in ms instead of ns

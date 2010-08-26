@@ -199,34 +199,102 @@ public interface EntityDbServerAdmin extends Remote {
    */
   void setConnectionTimeout(final int timeout) throws RemoteException;
 
+  /**
+   * @return the identifiers of the client types connected to the server
+   * @throws RemoteException in case of an exception
+   */
   Collection<String> getClientTypes() throws RemoteException;
 
+  /**
+   * @return a list of the usernames behind the active connection pools
+   * @throws RemoteException in case of an exception
+   */
   List<User> getEnabledConnectionPools() throws RemoteException;
 
+  /**
+   * @param user the pool user
+   * @param since the time since from which to retrieve pool statistics
+   * @return the pool statistics
+   * @throws RemoteException in case of an exception
+   */
   ConnectionPoolStatistics getConnectionPoolStatistics(final User user, final long since) throws RemoteException;
 
+  /**
+   * @return usage statistics for the underlying database
+   * @throws RemoteException in case of an exception
+   */
   DatabaseStatistics getDatabaseStatistics() throws RemoteException;
 
+  /**
+   * @return the number of service requests per second
+   * @throws RemoteException in case of an exception
+   */
   int getRequestsPerSecond() throws RemoteException;
 
+  /**
+   *
+   * @return the request warning time threshold in ms
+   * @throws RemoteException in case of an exception
+   */
   int getWarningTimeThreshold() throws RemoteException;
 
+  /**
+   * @param threshold the request warning time threshold in ms
+   * @throws RemoteException in case of an exception
+   */
   void setWarningTimeThreshold(final int threshold) throws RemoteException;
 
+  /**
+   * @return the number of service requests exceeding the warning time
+   * @throws RemoteException in case of an exception
+   * @see #setWarningTimeThreshold(int)
+   */
   int getWarningTimeExceededPerSecond() throws RemoteException;
 
+  /**
+   * Removes connections.
+   * @param inactiveOnly if true, only inactive connections are removed
+   * @throws RemoteException in case of an exception
+   */
   void removeConnections(final boolean inactiveOnly) throws RemoteException;
 
+  /**
+   * Resets the statistics that have been collected so far
+   * @param user the pool user
+   * @throws RemoteException in case of an exception
+   */
   void resetConnectionPoolStatistics(final User user) throws RemoteException;
 
+  /**
+   * @param user the pool user
+   * @return true if fine grained statistics should be collected for the given connection pool
+   * @throws RemoteException in case of an exception
+   */
   boolean isCollectFineGrainedPoolStatistics(final User user) throws RemoteException;
 
+  /**
+   * @param user the pool user
+   * @param value true if fine grained statistics should be collected for the given connection pool
+   * @throws RemoteException in case of an exception
+   */
   void setCollectFineGrainedPoolStatistics(final User user, final boolean value) throws RemoteException;
 
+  /**
+   * @return the server system properties
+   * @throws RemoteException in case of an exception
+   */
   String getSystemProperties() throws RemoteException;
 
+  /**
+   * Loads the domain model found int he given class, at the given location
+   * @param location the classpath URI
+   * @param domainClassName the domain class name
+   * @throws RemoteException in case of an exception
+   * @throws ClassNotFoundException in case the domain class in not found
+   * @throws IllegalAccessException in case the class loader access is denied
+   */
   void loadDomainModel(final URI location, final String domainClassName) throws RemoteException, ClassNotFoundException,
-          IllegalAccessException, InstantiationException;
+          IllegalAccessException;
 
   /**
    * @return a map containing all entityIDs, with their respective table names as an associated value
@@ -234,27 +302,101 @@ public interface EntityDbServerAdmin extends Remote {
    */
   Map<String,String> getEntityDefinitions() throws RemoteException;
 
-  void setConnectionPoolCleanupInterval(final User user, final int poolCleanupInterval) throws RemoteException;
-
+  /**
+   * @param user the pool user
+   * @return the pool cleanup interval in ms
+   * @throws RemoteException in case of an exception
+   */
   int getConnectionPoolCleanupInterval(final User user) throws RemoteException;
 
-  void setConnectionPoolEnabled(final User user, final boolean enabled) throws RemoteException;
+  /**
+   * @param user the pool user
+   * @param poolCleanupInterval the pool cleanup interval in ms
+   * @throws RemoteException in case of an exception
+   */
+  void setConnectionPoolCleanupInterval(final User user, final int poolCleanupInterval) throws RemoteException;
 
+  /**
+   * @param user the pool user
+   * @return the pool enabled status
+   * @throws RemoteException in case of an exception
+   */
   boolean isConnectionPoolEnabled(final User user) throws RemoteException;
 
-  void setPooledConnectionTimeout(final User user, final int timeout) throws RemoteException;
+  /**
+   * @param user the pool user
+   * @param enabled the pool enabled status
+   * @throws RemoteException in case of an exception
+   */
+  void setConnectionPoolEnabled(final User user, final boolean enabled) throws RemoteException;
 
+  /**
+   * @param user the pool user
+   * @return the pooled connection timeout in ms
+   * @throws RemoteException in case of an exception
+   */
   int getPooledConnectionTimeout(final User user) throws RemoteException;
 
+  /**
+   * @param user the pool user
+   * @param timeout the pooled connection timeout in ms
+   * @throws RemoteException in case of an exception
+   */
+  void setPooledConnectionTimeout(final User user, final int timeout) throws RemoteException;
+
+  /**
+   * @param user the pool user
+   * @return the maximum time to wait between check out retries in ms
+   * @throws RemoteException in case of an exception
+   */
   int getMaximumPoolRetryWaitPeriod(final User user) throws RemoteException;
 
-  void setMaximumPoolRetryWaitPeriod(final User user, final int timeout) throws RemoteException;
+  /**
+   * @param user the pool user
+   * @param value the maximum time to wait between check out retries in ms
+   * @throws RemoteException in case of an exception
+   */
+  void setMaximumPoolRetryWaitPeriod(final User user, final int value) throws RemoteException;
 
-  void setMaximumConnectionPoolSize(final User user, final int value) throws RemoteException;
+  /**
+   * @param user the pool user
+   * @return the maximum time in ms to retry checking out a connection before throwing an exception
+   * @throws RemoteException in case of an exception
+   */
+  int getMaximumPoolCheckOutTime(final User user) throws RemoteException;
 
+  /**
+   * @param user the pool user
+   * @param value the maximum time in ms to retry checking out a connection before throwing an exception
+   * @throws RemoteException in case of an exception
+   */
+  void setMaximumPoolCheckOutTime(final User user, final int value) throws RemoteException;
+
+  /**
+   * @param user the pool user
+   * @return the maximum connection pool size
+   * @throws RemoteException in case of an exception
+   */
   int getMaximumConnectionPoolSize(final User user) throws RemoteException;
 
-  void setMinimumConnectionPoolSize(final User user, final int value) throws RemoteException;
+  /**
+   * @param user the pool user
+   * @param value the maximum connection pool size
+   * @throws RemoteException in case of an exception
+   */
+  void setMaximumConnectionPoolSize(final User user, final int value) throws RemoteException;
 
+  /**
+   * @param user the pool user
+   * @return the minimum connection pool size
+   * @throws RemoteException in case of an exception
+   */
   int getMinimumConnectionPoolSize(final User user) throws RemoteException;
+
+  /**
+   * @param user the pool user
+   * @param value the minimum connection pool size
+   * @throws RemoteException in case of an exception
+   */
+  void setMinimumConnectionPoolSize(final User user, final int value) throws RemoteException;
 }

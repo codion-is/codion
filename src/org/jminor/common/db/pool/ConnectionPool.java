@@ -15,9 +15,11 @@ public interface ConnectionPool {
   /**
    * Fetches a connection from the pool.
    * @return a database connection retrieved from the pool
+   * @throws ConnectionPoolException.NoConnectionAvailable in case the maximum check out time is exceeded
    * @throws ClassNotFoundException in case the JDBC driver class is not found
    * @throws SQLException in case of a database exception
    * @throws IllegalStateException if the pool is closed
+   * @see #setMaximumCheckOutTime(int)
    */
   PoolableConnection checkOutConnection() throws ClassNotFoundException, SQLException;
 
@@ -121,4 +123,16 @@ public interface ConnectionPool {
    * @throws IllegalArgumentException if value is less than 1 or less than minimum pool size
    */
   void setMaximumPoolSize(final int value);
+
+  /**
+   * @return the maximum number of milliseconds to retry connection checkout before throwing an exception
+   * @see org.jminor.common.db.pool.ConnectionPoolException.NoConnectionAvailable
+   */
+  int getMaximumCheckOutTime();
+
+  /**
+   * @param value the maximum number of milliseconds to retry connection checkout before throwing an exception
+   * @throws IllegalArgumentException if value is less than 0
+   */
+  void setMaximumCheckOutTime(final int value);
 }

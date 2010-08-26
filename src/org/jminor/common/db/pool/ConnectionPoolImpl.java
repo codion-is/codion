@@ -29,6 +29,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
   public static final int DEFAULT_CLEANUP_INTERVAL_MS = 20000;
   public static final int DEFAULT_MAXIMUM_POOL_SIZE = 8;
   public static final int DEFAULT_MAXIMUM_RETRY_WAIT_PERIOD_MS = 50;
+  public static final int DEFAULT_MAXIMUM_CHECK_OUT_TIME = 1000;
   public static final int RETRIES_BEFORE_NEW_CONNECTION = 3;
 
   private static final Logger LOG = Util.getLogger(ConnectionPoolImpl.class);
@@ -52,6 +53,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
   private volatile int pooledConnectionTimeout = DEFAULT_CONNECTION_TIMEOUT_MS;
   private volatile int minimumPoolSize = DEFAULT_MAXIMUM_POOL_SIZE / 2;
   private volatile int maximumPoolSize = DEFAULT_MAXIMUM_POOL_SIZE;
+  private volatile int maximumCheckOutTime = DEFAULT_MAXIMUM_CHECK_OUT_TIME;
   private volatile int poolCleanupInterval = DEFAULT_CLEANUP_INTERVAL_MS;
   private volatile int maximumRetryWaitPeriod = DEFAULT_MAXIMUM_RETRY_WAIT_PERIOD_MS;
   private volatile boolean enabled = true;
@@ -68,7 +70,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
       throw new IllegalStateException("Can not check out a connection from a closed connection pool!");
     }
 
-    final long time = System.nanoTime();
+    final long time = System.currentTimeMillis();
     counter.incrementRequestCounter();
     PoolableConnection connection = getConnectionFromPool();
     if (connection == null) {
@@ -84,10 +86,12 @@ public final class ConnectionPoolImpl implements ConnectionPool {
         connection = getConnectionFromPool();
       }
       retryCount++;
+      if (System.currentTimeMillis() - time > maximumCheckOutTime) {
+        throw new ConnectionPoolException.NoConnectionAvailable();
+      }
     }
     connection.setPoolRetryCount(retryCount);
-    counter.addCheckOutTime(System.nanoTime() - time);
-    //todo max retries and/or max retry time, throw exception
+    counter.addCheckOutTime(System.currentTimeMillis() - time);
 
     return connection;
   }
@@ -162,6 +166,19 @@ public final class ConnectionPoolImpl implements ConnectionPool {
       throw new IllegalArgumentException("Maximum pool size must be larger than 1 and larger than minimum pool size");
     }
     this.maximumPoolSize = value;
+  }
+
+  /** {@inheritDoc} */
+  public synchronized int getMaximumCheckOutTime() {
+    return maximumCheckOutTime;
+  }
+
+  /** {@inheritDoc} */
+  public synchronized void setMaximumCheckOutTime(final int value) {
+    if (value < 0) {
+      throw new IllegalArgumentException("Maximum check out time must be a positive integer");
+    }
+    this.maximumCheckOutTime = value;
   }
 
   /** {@inheritDoc} */

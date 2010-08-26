@@ -568,59 +568,67 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
     return enabledPoolUsers;
   }
 
-  static boolean isConnectionPoolEnabled(final User user) throws RemoteException {
+  static boolean isPoolEnabled(final User user) throws RemoteException {
     return CONNECTION_POOLS.get(user).isEnabled();
   }
 
-  static void setConnectionPoolEnabled(final User user, final boolean enabled) throws RemoteException {
+  static void setPoolEnabled(final User user, final boolean enabled) throws RemoteException {
     CONNECTION_POOLS.get(user).setEnabled(enabled);
   }
 
-  static void setConnectionPoolCleanupInterval(final User user, final int poolCleanupInterval) throws RemoteException {
-    CONNECTION_POOLS.get(user).setPoolCleanupInterval(poolCleanupInterval);
-  }
-
-  static int getConnectionPoolCleanupInterval(final User user) {
+  static int getPoolCleanupInterval(final User user) {
     return CONNECTION_POOLS.get(user).getPoolCleanupInterval();
   }
 
-  static int getMaximumConnectionPoolSize(final User user) {
+  static void setPoolCleanupInterval(final User user, final int poolCleanupInterval) throws RemoteException {
+    CONNECTION_POOLS.get(user).setPoolCleanupInterval(poolCleanupInterval);
+  }
+
+  static int getMaximumPoolSize(final User user) {
     return CONNECTION_POOLS.get(user).getMaximumPoolSize();
   }
 
-  static int getMinimumConnectionPoolSize(final User user) {
+  static void setMaximumPoolSize(final User user, final int value) {
+    CONNECTION_POOLS.get(user).setMaximumPoolSize(value);
+  }
+
+  static int getMaximumPoolCheckOutTime(final User user) {
+    return CONNECTION_POOLS.get(user).getMaximumCheckOutTime();
+  }
+
+  static void setMaximumPoolCheckOutTime(final User user, final int value) {
+    CONNECTION_POOLS.get(user).setMaximumCheckOutTime(value);
+  }
+
+  static int getMinimumPoolSize(final User user) {
     return CONNECTION_POOLS.get(user).getMinimumPoolSize();
   }
 
-  static int getPooledConnectionTimeout(final User user) {
+  static void setMinimumPoolSize(final User user, final int value) {
+    CONNECTION_POOLS.get(user).setMinimumPoolSize(value);
+  }
+
+  static int getPoolConnectionTimeout(final User user) {
     return CONNECTION_POOLS.get(user).getPooledConnectionTimeout();
+  }
+
+  static void setPoolConnectionTimeout(final User user, final int timeout) {
+    CONNECTION_POOLS.get(user).setPooledConnectionTimeout(timeout);
   }
 
   static int getMaximumPoolRetryWaitPeriod(final User user) {
     return CONNECTION_POOLS.get(user).getMaximumRetryWaitPeriod();
   }
 
-  static void setMaximumConnectionPoolSize(final User user, final int value) {
-    CONNECTION_POOLS.get(user).setMaximumPoolSize(value);
-  }
-
-  static void setMinimumConnectionPoolSize(final User user, final int value) {
-    CONNECTION_POOLS.get(user).setMinimumPoolSize(value);
-  }
-
-  static void setPooledConnectionTimeout(final User user, final int timeout) {
-    CONNECTION_POOLS.get(user).setPooledConnectionTimeout(timeout);
-  }
-
   static void setMaximumPoolRetryWaitPeriod(final User user, final int value) {
     CONNECTION_POOLS.get(user).setMaximumRetryWaitPeriod(value);
   }
 
-  static ConnectionPoolStatistics getConnectionPoolStatistics(final User user, final long since) {
+  static ConnectionPoolStatistics getPoolStatistics(final User user, final long since) {
     return CONNECTION_POOLS.get(user).getConnectionPoolStatistics(since);
   }
 
-  static void resetConnectionPoolStatistics(final User user) {
+  static void resetPoolStatistics(final User user) {
     CONNECTION_POOLS.get(user).resetPoolStatistics();
   }
 

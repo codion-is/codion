@@ -120,6 +120,14 @@ public final class ConnectionPoolMonitor {
     pool.setMaximumRetryWaitPeriod(value);
   }
 
+  public int getMaximumCheckOutTime() {
+    return pool.getMaximumCheckOutTime();
+  }
+
+  public void setMaximumCheckOutTime(final int value) throws RemoteException {
+    pool.setMaximumCheckOutTime(value);
+  }
+
   public boolean datasetContainsData() {
     return statsCollection.getSeriesCount() > 0
             && statsCollection.getSeries(0).getItemCount() > 0

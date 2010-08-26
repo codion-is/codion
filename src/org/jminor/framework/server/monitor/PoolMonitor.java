@@ -58,6 +58,7 @@ public final class PoolMonitor {
       this.server = server;
     }
 
+    /** {@inheritDoc} */
     public int getMaximumPoolSize() {
       try {
         return server.getMaximumConnectionPoolSize(user);
@@ -67,6 +68,7 @@ public final class PoolMonitor {
       }
     }
 
+    /** {@inheritDoc} */
     public int getMinimumPoolSize() {
       try {
         return server.getMinimumConnectionPoolSize(user);
@@ -76,6 +78,7 @@ public final class PoolMonitor {
       }
     }
 
+    /** {@inheritDoc} */
     public int getPoolCleanupInterval() {
       try {
         return server.getConnectionPoolCleanupInterval(user);
@@ -85,6 +88,7 @@ public final class PoolMonitor {
       }
     }
 
+    /** {@inheritDoc} */
     public int getMaximumRetryWaitPeriod() {
       try {
         return server.getMaximumPoolRetryWaitPeriod(user);
@@ -94,6 +98,7 @@ public final class PoolMonitor {
       }
     }
 
+    /** {@inheritDoc} */
     public int getPooledConnectionTimeout() {
       try {
         return server.getPooledConnectionTimeout(user);
@@ -103,6 +108,7 @@ public final class PoolMonitor {
       }
     }
 
+    /** {@inheritDoc} */
     public void setMaximumPoolSize(final int value) {
       try {
         server.setMaximumConnectionPoolSize(user, value);
@@ -112,6 +118,7 @@ public final class PoolMonitor {
       }
     }
 
+    /** {@inheritDoc} */
     public void setMinimumPoolSize(final int value) {
       try {
         server.setMinimumConnectionPoolSize(user, value);
@@ -121,6 +128,7 @@ public final class PoolMonitor {
       }
     }
 
+    /** {@inheritDoc} */
     public void setPooledConnectionTimeout(final int timeout) {
       try {
         server.setPooledConnectionTimeout(user, timeout);
@@ -130,15 +138,37 @@ public final class PoolMonitor {
       }
     }
 
-    public void setMaximumRetryWaitPeriod(final int value) {
+    /** {@inheritDoc} */
+    public void setMaximumRetryWaitPeriod(final int maximumRetryWaitPeriod) {
       try {
-        server.setMaximumPoolRetryWaitPeriod(user, value);
+        server.setMaximumPoolRetryWaitPeriod(user, maximumRetryWaitPeriod);
       }
       catch (RemoteException e) {
         throw new RuntimeException(e);
       }
     }
 
+    /** {@inheritDoc} */
+    public int getMaximumCheckOutTime() {
+      try {
+        return server.getMaximumPoolCheckOutTime(user);
+      }
+      catch (RemoteException e) {
+        throw new RuntimeException(e);
+      }
+    }
+
+    /** {@inheritDoc} */
+    public void setMaximumCheckOutTime(final int value) {
+      try {
+        server.setMaximumPoolCheckOutTime(user, value);
+      }
+      catch (RemoteException e) {
+        throw new RuntimeException(e);
+      }
+    }
+
+    /** {@inheritDoc} */
     public boolean isEnabled() {
       try {
         return server.isConnectionPoolEnabled(user);
@@ -148,6 +178,7 @@ public final class PoolMonitor {
       }
     }
 
+    /** {@inheritDoc} */
     public void setEnabled(final boolean enabled) {
       try {
         server.setConnectionPoolEnabled(user, enabled);
@@ -157,6 +188,7 @@ public final class PoolMonitor {
       }
     }
 
+    /** {@inheritDoc} */
     public void setPoolCleanupInterval(final int poolCleanupInterval) {
       try {
         server.setConnectionPoolCleanupInterval(user, poolCleanupInterval);
@@ -166,6 +198,7 @@ public final class PoolMonitor {
       }
     }
 
+    /** {@inheritDoc} */
     public ConnectionPoolStatistics getConnectionPoolStatistics(final long since) {
       try {
         return server.getConnectionPoolStatistics(user, since);
@@ -175,10 +208,12 @@ public final class PoolMonitor {
       }
     }
 
+    /** {@inheritDoc} */
     public User getUser() {
       return user;
     }
 
+    /** {@inheritDoc} */
     public boolean isCollectFineGrainedStatistics() {
       try {
         return server.isCollectFineGrainedPoolStatistics(user);
@@ -188,6 +223,7 @@ public final class PoolMonitor {
       }
     }
 
+    /** {@inheritDoc} */
     public void resetPoolStatistics() {
       try {
         server.resetConnectionPoolStatistics(user);
@@ -197,6 +233,7 @@ public final class PoolMonitor {
       }
     }
 
+    /** {@inheritDoc} */
     public void setCollectFineGrainedStatistics(final boolean value) {
       try {
         server.setCollectFineGrainedPoolStatistics(user, value);
@@ -206,8 +243,10 @@ public final class PoolMonitor {
       }
     }
 
+    /** {@inheritDoc} */
     public void checkInConnection(final PoolableConnection dbConnection) {}
 
+    /** {@inheritDoc} */
     public PoolableConnection checkOutConnection() throws ClassNotFoundException, SQLException {return null;}
   }
 }
