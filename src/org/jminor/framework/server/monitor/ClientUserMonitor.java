@@ -67,11 +67,11 @@ public final class ClientUserMonitor {
   }
 
   public int getConnectionTimeout() throws RemoteException {
-    return server.getConnectionTimeout();
+    return server.getConnectionTimeout() / 1000;
   }
 
   public void setConnectionTimeout(final int timeout) throws RemoteException {
-    server.setConnectionTimeout(timeout);
+    server.setConnectionTimeout(timeout * 1000);
     evtConnectionTimeoutChanged.fire();
   }
 
