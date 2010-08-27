@@ -70,7 +70,7 @@ public interface FilteredTableModel<T, C> extends FilteredModel<T>, TableModel, 
   void removeRefreshDoneListener(final ActionListener listener);
 
   /**
-   * @param listener a listener to be notified each time the model has been sorted
+   * @param listener a listener to be notified each time the model has been sorted or the sorting state has been cleared
    */
   void addSortingListener(final ActionListener listener);
 
@@ -193,9 +193,9 @@ public interface FilteredTableModel<T, C> extends FilteredModel<T>, TableModel, 
 
   /**
    * @param columnIdentifier the column identifier
-   * @return the sort priority for the given column
+   * @return the sorting priority for the given column
    */
-  int getSortPriority(final C columnIdentifier);
+  int getSortingPriority(final C columnIdentifier);
 
   /**
    * @param objectOne the first item to compare

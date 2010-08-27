@@ -34,8 +34,8 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -73,7 +73,6 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
    * @param database the Database instance
    * @param user the user used for connecting to the database
    * @throws SQLException in case there is a problem connecting to the database
-   * @throws ClassNotFoundException in case the JDBC driver class is not found
    */
   public EntityDbConnection(final Connection connection, final Database database, final User user) throws SQLException {
     super(database, user, connection);

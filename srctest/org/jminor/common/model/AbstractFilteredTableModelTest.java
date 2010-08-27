@@ -190,17 +190,27 @@ public final class AbstractFilteredTableModelTest {
     };
     tableModel.addSortingListener(listener);
 
-    tableModel.refresh();
+    tableModel.refresh();//resets the sorting
     tableModel.setSortingDirective(0, SortingDirective.DESCENDING);
     assertEquals(SortingDirective.DESCENDING, tableModel.getSortingDirective(0));
     assertEquals("e", tableModel.getItemAt(0));
-    assertEquals(1, done.size());
+    assertEquals(2, done.size());
     tableModel.setSortingDirective(0, SortingDirective.ASCENDING);
     assertEquals(SortingDirective.ASCENDING, tableModel.getSortingDirective(0));
     assertEquals("a", tableModel.getItemAt(0));
-    assertEquals(0, tableModel.getSortPriority(0));
-    assertEquals(-1, tableModel.getSortPriority(1));
-    assertEquals(2, done.size());
+    assertEquals(0, tableModel.getSortingPriority(0));
+    assertEquals(3, done.size());
+
+    try {
+      tableModel.getSortingDirective(1);
+      fail();
+    }
+    catch (RuntimeException e) {}
+    try {
+      tableModel.getSortingPriority(1);
+      fail();
+    }
+    catch (RuntimeException e) {}
 
     final List<String> items = new ArrayList<String>();
     items.add(null);
@@ -341,14 +351,14 @@ public final class AbstractFilteredTableModelTest {
     assertEquals("current index should fit", 3, tableModel.getSelectionModel().getMinSelectionIndex());
     assertEquals("current selected item should fit", ITEMS[2], tableModel.getSelectedItem());
 
-    tableModel.setSortingDirective(2, SortingDirective.ASCENDING);
+    tableModel.setSortingDirective(0, SortingDirective.ASCENDING);
     assertEquals("current selected item should fit", ITEMS[2], tableModel.getSelectedItem());
     assertEquals("current index should fit", 2,
             tableModel.getSelectionModel().getMinSelectionIndex());
 
     tableModel.setSelectedItemIndexes(Arrays.asList(0));
     assertEquals("current selected item should fit", ITEMS[0], tableModel.getSelectedItem());
-    tableModel.setSortingDirective(2, SortingDirective.DESCENDING);
+    tableModel.setSortingDirective(0, SortingDirective.DESCENDING);
     assertEquals("current index should fit", 4,
             tableModel.getSelectionModel().getMinSelectionIndex());
 

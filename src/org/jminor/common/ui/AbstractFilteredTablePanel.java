@@ -507,7 +507,7 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
         return null;
       }
 
-      return new Arrow(directive == SortingDirective.DESCENDING, size, tableModel.getSortPriority(columnIdentifier));
+      return new Arrow(directive == SortingDirective.DESCENDING, size, tableModel.getSortingPriority(columnIdentifier));
     }
   }
 }

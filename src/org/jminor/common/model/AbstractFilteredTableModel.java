@@ -18,16 +18,7 @@ import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.Collator;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
+import java.util.*;
 
 /**
  * A TableModel implentation that supports filtering, searching and sorting.
@@ -266,8 +257,8 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
   }
 
   /** {@inheritDoc} */
-  public final int getSortPriority(final C columnIdentifier) {
-    return sortingStates.get(columnIdentifier).getPriority();
+  public final int getSortingPriority(final C columnIdentifier) {
+    return getSortingState(columnIdentifier).getPriority();
   }
 
   /** {@inheritDoc} */
@@ -295,7 +286,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
 
   /** {@inheritDoc} */
   @SuppressWarnings({"unchecked"})
-  public void clearSortingState() {
+  public final void clearSortingState() {
     final Enumeration<TableColumn> columns = columnModel.getColumns();
     while (columns.hasMoreElements()) {
       sortingStates.put((C) columns.nextElement().getIdentifier(), EMPTY_SORTING_STATE);
@@ -464,7 +455,6 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
   public final void setSelectedItem(final T item) {
     setSelectedItems(Arrays.asList(item));
   }
-
 
   /** {@inheritDoc} */
   public final void addSelectedItemIndexes(final List<Integer> indexes) {
@@ -892,16 +882,19 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
   }
 
   private SortingState getSortingState(final C columnIdentifier) {
-    return sortingStates.get(columnIdentifier);
+    final SortingState state = sortingStates.get(columnIdentifier);
+    if (state == null) {
+      throw new RuntimeException("No sorting state assigned to column identified by : " + columnIdentifier);
+    }
+
+    return state;
   }
 
   @SuppressWarnings({"unchecked"})
   private int getNextSortPriority() {
     int maxPriority = -1;
-    final Enumeration<TableColumn> columns = columnModel.getColumns();
-    while (columns.hasMoreElements()) {
-      final TableColumn column = columns.nextElement();
-      maxPriority = Math.max(getSortPriority((C) column.getIdentifier()), maxPriority);
+    for (final SortingState state : sortingStates.values()) {
+      maxPriority = Math.max(state.getPriority(), maxPriority);
     }
 
     return maxPriority + 1;
@@ -989,6 +982,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
       this.tableModel = tableModel;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void fireValueChanged(final int firstIndex, final int lastIndex, final boolean isAdjusting) {
       super.fireValueChanged(firstIndex, lastIndex, isAdjusting);
@@ -1004,6 +998,9 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
       }
     }
 
+    /**
+     * @return the number of selected rows
+     */
     public int getSelectionCount() {
       if (isSelectionEmpty()) {
         return 0;
@@ -1044,34 +1041,58 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
       }
     }
 
+    /**
+     * @return true while the selection is being updated
+     */
     public boolean isUpdatingSelection() {
       return isUpdatingSelection;
     }
 
+    /**
+     * @return the topmost (lowest row index) selected index
+     */
     public int getSelectedIndex() {
       return selectedIndex;
     }
 
+    /**
+     * @param listener a listener notified each time the topmost (lowest row index) selected index changes
+     */
     public void addSelectedIndexListener(final ActionListener listener) {
       evtSelectedIndexChanged.addListener(listener);
     }
 
+    /**
+     * @param listener the listener to remove
+     */
     public void removeSelectedIndexListener(final ActionListener listener) {
       evtSelectedIndexChanged.addListener(listener);
     }
 
+    /**
+     * @param listener a listener notified each time the selection changes
+     */
     public void addSelectionChangedListener(final ActionListener listener) {
       evtSelectionChanged.addListener(listener);
     }
 
+    /**
+     * @param listener the listener to remove
+     */
     public void removeSelectionChangedListener(final ActionListener listener) {
       evtSelectionChanged.addListener(listener);
     }
 
+    /**
+     * @return a state active when multiple rows are selected
+     */
     public StateObserver getMultipleSelectionState() {
       return stMultipleSelection.getObserver();
     }
 
+    /**
+     * @return a state active when the selection is empty
+     */
     public StateObserver getSelectionEmptyState() {
       return stSelectionEmpty.getObserver();
     }

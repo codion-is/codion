@@ -29,7 +29,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /**
- * A default DbConnection implementation.
+ * A default DbConnection implementation, which wraps a standard JDBC Connection object.
  */
 public class DbConnectionImpl implements DbConnection {
 
@@ -40,6 +40,9 @@ public class DbConnectionImpl implements DbConnection {
   private static final String MS_LOG_POSTFIX = "ms)";
   private static final String LOG_COMMENT_PREFIX = " --(";
 
+  /**
+   * A synchronized query counter
+   */
   protected static final QueryCounter QUERY_COUNTER = new QueryCounter();
   private final User user;
   private final Database database;
@@ -67,6 +70,14 @@ public class DbConnectionImpl implements DbConnection {
     this(database, user, database.createConnection(user));
   }
 
+  /**
+   * Constructs a new instance of the DbConnection class, based on the given Connection object.
+   * NB. auto commit is disabled on the Connection that is provided.
+   * @param database the database
+   * @param user the user for the db-connection
+   * @param connection the Connection object to base this DbConnection on
+   * @throws SQLException in case there is a problem connecting to the database
+   */
   public DbConnectionImpl(final Database database, final User user, final Connection connection) throws SQLException {
     Util.rejectNullValue(database, "database");
     Util.rejectNullValue(user, "user");
@@ -568,6 +579,9 @@ public class DbConnectionImpl implements DbConnection {
     }
   };
 
+  /**
+   * A class for counting query types, providing avarages over time
+   */
   public static final class QueryCounter {
 
     private static final int DEFAULT_UPDATE_INTERVAL_MS = 2000;
@@ -595,7 +609,11 @@ public class DbConnectionImpl implements DbConnection {
       }, new Date(), DEFAULT_UPDATE_INTERVAL_MS);
     }
 
-    public void count(final String sql) {
+    /**
+     * Counts the given query, base on it's first character
+     * @param sql the sql query
+     */
+    public synchronized void count(final String sql) {
       queriesPerSecondCounter++;
       switch (Character.toLowerCase(sql.charAt(0))) {
         case 's':
@@ -615,31 +633,49 @@ public class DbConnectionImpl implements DbConnection {
       }
     }
 
-    public int getQueriesPerSecond() {
+    /**
+     * @return the number of queries being run per second
+     */
+    public synchronized int getQueriesPerSecond() {
       return queriesPerSecond;
     }
 
-    public int getSelectsPerSecond() {
+    /**
+     * @return the number of select queries being run per second
+     */
+    public synchronized int getSelectsPerSecond() {
       return selectsPerSecond;
     }
 
-    public int getDeletesPerSecond() {
+    /**
+     * @return the number of delete queries being run per second
+     */
+    public synchronized int getDeletesPerSecond() {
       return deletesPerSecond;
     }
 
-    public int getInsertsPerSecond() {
+    /**
+     * @return the number of insert queries being run per second
+     */
+    public synchronized int getInsertsPerSecond() {
       return insertsPerSecond;
     }
 
-    public int getUpdatesPerSecond() {
+    /**
+     * @return the number of update queries being run per second
+     */
+    public synchronized int getUpdatesPerSecond() {
       return updatesPerSecond;
     }
 
-    public int getUndefinedPerSecond() {
+    /**
+     * @return the number of undefined queries being run per second
+     */
+    public synchronized int getUndefinedPerSecond() {
       return undefinedPerSecond;
     }
 
-    private void updateQueriesPerSecond() {
+    private synchronized void updateQueriesPerSecond() {
       final long current = System.currentTimeMillis();
       final double seconds = (current - queriesPerSecondTime) / 1000d;
       if (seconds > 5) {
