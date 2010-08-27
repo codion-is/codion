@@ -2059,3 +2059,4 @@
   EntityDefinition.is/SetLargeDataset() exchanged for is/SetSmallDataset(), which property is by default false
   Entities.isLargeDataset() replaced with isSmallDatase()
   AbstractFilteredTableModel sorting functionality refactored
+  AuditProperty is now readOnly by default

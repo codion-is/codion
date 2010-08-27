@@ -12,7 +12,6 @@ import org.jminor.common.model.Util;
 import org.jminor.common.ui.LoginPanel;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
-import org.jminor.framework.Configuration;
 
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -29,11 +28,11 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * A DomainClassGenerator 
+ * A DomainClassGenerator
  */
 public final class DomainClassGenerator {
 
-  private static final String TABLE_SCHEMA = "TABLE_SHCEM";
+  private static final String TABLE_SCHEMA = "TABLE_SCHEM";
 
   private DomainClassGenerator() {}
 
@@ -57,7 +56,7 @@ public final class DomainClassGenerator {
     final int option = JOptionPane.showConfirmDialog(null, panel, "Settings", JOptionPane.OK_CANCEL_OPTION);
     if (option == JOptionPane.OK_OPTION) {
       try {
-        final String username = Configuration.getDefaultUsername("DomainClassGenerator");
+        final String username = txtSchemaName.getText();
         final User user = LoginPanel.getUser(null, username != null ? new User(username, null) : null);
         final String schemaName = txtSchemaName.getText();
         final String domainClassName = getDomainClassName(schemaName);
@@ -67,6 +66,9 @@ public final class DomainClassGenerator {
           Util.writeFile(domainClass, UiUtil.chooseFileToSave(null, null, domainClassName + ".java"));
         }
         else {
+          System.out.println("#####################################");
+          System.out.println(domainClass);
+          System.out.println("#####################################");
           Util.setClipboard(domainClass);
         }
 
@@ -168,12 +170,13 @@ public final class DomainClassGenerator {
     String ret;
     final String propertyID = getPropertyID(table, column, column.foreignKey != null);
     if (column.foreignKey != null) {
+      final String referencePropertyID = getPropertyID(table, column, false);
       ret = "        Properties.foreignKeyProperty(" + propertyID + ", \"" + propertyID + "\", " + getEntityID(column.foreignKey.getReferencedTable()) + ",\n";
       if (column.columnType == Types.INTEGER) {
-        ret += "                Properties.columnProperty(" + propertyID + "))";
+        ret += "                Properties.columnProperty(" + referencePropertyID + "))";
       }
       else {
-        ret += "                Properties.columnProperty(" + propertyID + ", " + column.columnTypeName + "))";
+        ret += "                Properties.columnProperty(" + referencePropertyID + ", " + column.columnTypeName + "))";
       }
     }
     else if (column.primaryKey != null) {

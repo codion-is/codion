@@ -1016,6 +1016,7 @@ class PropertyImpl implements Property, Serializable {
     AuditPropertyImpl(final String propertyID, final int type, final AuditAction auditAction, final String caption) {
       super(propertyID, type, caption);
       this.auditAction = auditAction;
+      setReadOnly(true);
     }
 
     /** {@inheritDoc} */
