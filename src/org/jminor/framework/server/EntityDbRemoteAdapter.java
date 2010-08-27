@@ -664,9 +664,11 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
       for (final String username : initialPoolUsers.split(",")) {
         final User poolUser = new User(username.trim(), null);
         CONNECTION_POOLS.put(poolUser, new ConnectionPoolImpl(new PoolableConnectionProvider() {
+          /** {@inheritDoc} */
           public PoolableConnection createConnection(final User user) throws ClassNotFoundException, SQLException {
             return EntityDbRemoteAdapter.createDbConnection(database, user);
           }
+          /** {@inheritDoc} */
           public void destroyConnection(final PoolableConnection connection) {
             connection.disconnect();
           }
@@ -729,10 +731,10 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
     return !(hashCode.equals(IS_CONNECTED) || hashCode.equals(CONNECTION_VALID) || hashCode.equals(GET_ACTIVE_USER));
   }
 
-  static class EntityDbRemoteProxy implements InvocationHandler {
+  private static class EntityDbRemoteProxy implements InvocationHandler {
     private final EntityDbRemoteAdapter remoteAdapter;
 
-    EntityDbRemoteProxy(final EntityDbRemoteAdapter remoteAdapter) {
+    private EntityDbRemoteProxy(final EntityDbRemoteAdapter remoteAdapter) {
       this.remoteAdapter = remoteAdapter;
     }
 
@@ -742,7 +744,7 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
       final String methodName = method.getName();
       Throwable ex = null;
       EntityDbConnection connection = null;
-      final boolean logMethod = shouldMethodBeLogged(methodName);
+      final boolean logMethod = remoteAdapter.methodLogger.isEnabled() && shouldMethodBeLogged(methodName);
       try {
         remoteAdapter.setActive();
         if (logMethod) {
@@ -789,9 +791,9 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
     }
   }
 
-  static class RemoteLogger extends MethodLogger {
+  private static class RemoteLogger extends MethodLogger {
 
-    RemoteLogger() {
+    private RemoteLogger() {
       super(Configuration.getIntValue(Configuration.SERVER_CONNECTION_LOG_SIZE));
     }
 

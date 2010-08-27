@@ -7,6 +7,9 @@ import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Property;
 
+/**
+ * A default PropertySearchModelProvider implementation.
+ */
 public class DefaultPropertySearchModelProvider implements PropertySearchModelProvider {
 
   /** {@inheritDoc} */

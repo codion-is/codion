@@ -35,12 +35,14 @@ import java.util.*;
 public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableModel implements FilteredTableModel<T, C> {
 
   private static final Comparator<Comparable<Object>> COMPARABLE_COMPARATOR = new Comparator<Comparable<Object>>() {
+    /** {@inheritDoc} */
     public int compare(final Comparable<Object> o1, final Comparable<Object> o2) {
       return (o1.compareTo(o2));
     }
   };
   private static final Comparator<Object> LEXICAL_COMPARATOR = new Comparator<Object>() {
     private final Collator collator = Collator.getInstance();
+    /** {@inheritDoc} */
     public int compare(final Object o1, final Object o2) {
       return collator.compare(o1.toString(), o2.toString());
     }
@@ -97,6 +99,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
    * the filter criteria used by this model
    */
   private final FilterCriteria<T> filterCriteria = new FilterCriteria<T>() {
+    /** {@inheritDoc} */
     public boolean include(final T item) {
       for (final ColumnSearchModel columnFilter : columnFilterModels) {
         if (columnFilter.isEnabled() && !columnFilter.include(item)) {
@@ -123,6 +126,9 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
    */
   private boolean isSorting = false;
 
+  /**
+   * holds the column sorting states
+   */
   private final Map<C, SortingState> sortingStates = new HashMap<C, SortingState>();
 
   /**

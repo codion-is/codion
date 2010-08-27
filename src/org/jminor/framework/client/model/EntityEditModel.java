@@ -202,6 +202,10 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    */
   boolean isReadOnly();
 
+  /**
+   * @param readOnly the read only status
+   * @return this edit model instance 
+   */
   EntityEditModel setReadOnly(final boolean readOnly);
 
   /**

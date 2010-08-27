@@ -77,18 +77,22 @@ public final class RandomItemPanel<T> extends JPanel {
     final SpinnerNumberModel spinnerModel = new SpinnerNumberModel(model.getWeight(item), 0, Integer.MAX_VALUE, 1);
     final AbstractValueLink<RandomItemPanel, Integer> valueLink =
             new AbstractValueLink<RandomItemPanel, Integer>(this, getModel().getWeightsObserver(), LinkType.READ_WRITE) {
+      /** {@inheritDoc} */
       @Override
       public Integer getModelValue() {
         return getModel().getWeight(item);
       }
+      /** {@inheritDoc} */
       @Override
       protected Integer getUIValue() {
         return (Integer) spinnerModel.getValue();
       }
+      /** {@inheritDoc} */
       @Override
       public void setModelValue(final Integer value) {
         getModel().setWeight(item, value);
       }
+      /** {@inheritDoc} */
       @Override
       protected void setUIValue(final Integer value) {
         spinnerModel.setValue(value);
@@ -96,6 +100,7 @@ public final class RandomItemPanel<T> extends JPanel {
     };
     valueLink.updateUI();
     spinnerModel.addChangeListener(new ChangeListener() {
+      /** {@inheritDoc} */
       public void stateChanged(final ChangeEvent e) {
         valueLink.updateModel();
       }

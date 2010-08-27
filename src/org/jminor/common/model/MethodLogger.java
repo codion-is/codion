@@ -41,26 +41,44 @@ public class MethodLogger {
     setEnabled(enabled);
   }
 
+  /**
+   * @return last access date
+   */
   public final long getLastAccessDate() {
     return lastAccessDate;
   }
 
+  /**
+   * @return the last accessed method
+   */
   public final String getLastAccessedMethod() {
     return lastAccessedMethod;
   }
 
+  /**
+   * @return the last access message
+   */
   public final String getLastAccessMessage() {
     return lastAccessMessage;
   }
 
+  /**
+   * @return the last exit message
+   */
   public final long getLastExitDate() {
     return lastExitDate;
   }
 
+  /**
+   * @return the last exited method
+   */
   public final String getLastExitedMethod() {
     return lastExitedMethod;
   }
 
+  /**
+   * Resets this log
+   */
   public final synchronized void reset() {
     for (final LogEntry entry : logEntries) {
       entry.reset();
@@ -68,6 +86,9 @@ public class MethodLogger {
     currentLogEntryIndex = 0;
   }
 
+  /**
+   * @return the log entries
+   */
   public final synchronized List<LogEntry> getLogEntries() {
     final ArrayList<LogEntry> entries = new ArrayList<LogEntry>();
     if (!enabled) {
@@ -84,6 +105,10 @@ public class MethodLogger {
     return entries;
   }
 
+  /**
+   * @param method the method being accessed
+   * @param arguments the method arguments
+   */
   public final void logAccess(final String method, final Object[] arguments) {
     this.lastAccessDate = System.currentTimeMillis();
     this.lastAccessedMethod = method;
@@ -93,12 +118,25 @@ public class MethodLogger {
     }
   }
 
+  /**
+   * @param method the method being exited
+   * @param exception the exception, if any
+   * @param subLog the sub-log, if any
+   * @return the LogEntry
+   */
   public final LogEntry logExit(final String method, final Throwable exception, final List<LogEntry> subLog) {
     return logExit(method, exception, subLog, null);
   }
 
+  /**
+   * @param method the method being exited
+   * @param exception the exception, if any
+   * @param subLog the sub-log, if any
+   * @param exitMessage the exit message
+   * @return the LogEntry
+   */
   public final LogEntry logExit(final String method, final Throwable exception, final List<LogEntry> subLog,
-                          final String exitMessage) {
+                                final String exitMessage) {
     this.lastExitDate = System.currentTimeMillis();
     this.lastExitedMethod = method;
     if (enabled) {
@@ -108,15 +146,25 @@ public class MethodLogger {
     return null;
   }
 
+  /**
+   * @return true if this logger is enabled
+   */
   public final boolean isEnabled() {
     return enabled;
   }
 
+  /**
+   * @param enabled true to enable this logger
+   */
   public final void setEnabled(final boolean enabled) {
     this.enabled = enabled;
     reset();
   }
 
+  /**
+   * @param argument the arguemtn
+   * @return a String representation of the given arguement
+   */
   protected String getMethodArgumentAsString(final Object argument) {
     return String.valueOf(argument);
   }

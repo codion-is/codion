@@ -70,6 +70,7 @@ public final class PropertySummaryPanel extends JPanel {
     final ButtonGroup group = new ButtonGroup();
     for (final PropertySummaryModel.SummaryType summaryType : model.getSummaryTypes()) {
       final JRadioButtonMenuItem item = new JRadioButtonMenuItem(new AbstractAction(summaryType.toString()) {
+        /** {@inheritDoc} */
         public void actionPerformed(final ActionEvent e) {
           model.setSummaryType(summaryType);
         }

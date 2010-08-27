@@ -916,6 +916,9 @@ public class EntityPanel extends JPanel {
    */
   protected void initialize() {}
 
+  /**
+   * @param masterPanel the panel serving as master panel for this entity panel
+   */
   protected final void setMasterPanel(final EntityPanel masterPanel) {
     this.masterPanel = masterPanel;
   }
@@ -1118,6 +1121,7 @@ public class EntityPanel extends JPanel {
     location.setLocation(location.x+1, location.y + getSize().height- editControlPanel.getSize().height- EDIT_DIALOG_LOCATION_OFFSET);
     editPanelDialog = UiUtil.showInDialog(UiUtil.getParentWindow(this), editControlPanel, false,
             caption, false, true, null, null, location, new AbstractAction() {
+              /** {@inheritDoc} */
               public void actionPerformed(final ActionEvent e) {
                 setEditPanelState(HIDDEN);
               }
@@ -1195,6 +1199,7 @@ public class EntityPanel extends JPanel {
       @Override
       public void componentHidden(final ComponentEvent e) {
         SwingUtilities.invokeLater(new Runnable() {
+          /** {@inheritDoc} */
           public void run() {
             setFilterPanelsVisible(false);
           }
@@ -1204,6 +1209,7 @@ public class EntityPanel extends JPanel {
       @Override
       public void componentShown(final ComponentEvent e) {
         SwingUtilities.invokeLater(new Runnable() {
+          /** {@inheritDoc} */
           public void run() {
             setFilterPanelsVisible(true);
           }
@@ -1245,7 +1251,7 @@ public class EntityPanel extends JPanel {
 
     private final JComponent target;
 
-    ActivationFocusAdapter(final JComponent target) {
+    private ActivationFocusAdapter(final JComponent target) {
       this.target = target;
     }
 

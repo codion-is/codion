@@ -376,6 +376,11 @@ public final class EntityDbRemoteServerAdmin extends UnicastRemoteObject impleme
     };
   }
 
+  /**
+   * Runs a new EntityDbRemote server with a server admin interface exported.
+   * @param arguments no arguments required
+   * @throws Exception in case of an exception
+   */
   public static void main(final String[] arguments) throws Exception {
     new EntityDbRemoteServerAdmin(new EntityDbRemoteServer(DatabaseProvider.createInstance()),
             EntityDbRemoteServer.SSL_CONNECTION_ENABLED);

@@ -361,7 +361,6 @@ public interface Property extends Attribute {
    * Represents a child foreign key property that is already included as part of another reference foreign key property,
    * and should not handle updating the underlying property
    */
-  //todo better explanation
   interface MirrorProperty extends ColumnProperty {}
 
   /**

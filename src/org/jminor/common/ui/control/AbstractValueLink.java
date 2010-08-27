@@ -103,6 +103,7 @@ public abstract class AbstractValueLink<T, V> extends Control {
         if (!SwingUtilities.isEventDispatchThread()) {
           try {
             SwingUtilities.invokeAndWait(new Runnable() {
+              /** {@inheritDoc} */
               public void run() {
                 setUIValue(getModelValue());
               }

@@ -1324,6 +1324,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
   private Control getCopyCellControl() {
     return new Control(FrameworkMessages.get(FrameworkMessages.COPY_CELL),
             getEntityTableModel().getSelectionEmptyState().getReversedState()) {
+      /** {@inheritDoc} */
       @Override
       public void actionPerformed(final ActionEvent e) {
         final JTable table = getJTable();
