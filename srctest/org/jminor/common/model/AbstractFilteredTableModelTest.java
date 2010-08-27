@@ -398,7 +398,6 @@ public final class AbstractFilteredTableModelTest {
     tableModel.refresh();
     assertTrue("Model should contain all entities", tableModelContainsAll(ITEMS, false, tableModel));
     assertNotNull(tableModel.getFilterCriteria());
-    assertEquals(1, tableModel.getFilterModels().size());
 
     try {
       tableModel.setFilterCriteria(new FilterCriteria<String>() {

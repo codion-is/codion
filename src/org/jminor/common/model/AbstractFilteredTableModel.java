@@ -76,11 +76,6 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
   private final TableColumnModel columnModel;
 
   /**
-   * The SearchModels used for filtering
-   */
-  private final List<? extends ColumnSearchModel<C>> columnFilterModels;
-
-  /**
    * Contains columns that have been hidden
    */
   private final List<TableColumn> hiddenColumns = new ArrayList<TableColumn>();
@@ -94,22 +89,6 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
    * Caches the column indexes in the model
    */
   private final int[] columnIndexCache;
-
-  /**
-   * the filter criteria used by this model
-   */
-  private final FilterCriteria<T> filterCriteria = new FilterCriteria<T>() {
-    /** {@inheritDoc} */
-    public boolean include(final T item) {
-      for (final ColumnSearchModel columnFilter : columnFilterModels) {
-        if (columnFilter.isEnabled() && !columnFilter.include(item)) {
-          return false;
-        }
-      }
-
-      return true;
-    }
-  };
 
   /**
    * true while the model data is being refreshed
@@ -127,9 +106,30 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
   private boolean isSorting = false;
 
   /**
+   * The SearchModels used for filtering
+   */
+  private final Map<C, ColumnSearchModel<C>> columnFilterModels = new HashMap<C, ColumnSearchModel<C>>();
+
+  /**
    * holds the column sorting states
    */
   private final Map<C, SortingState> sortingStates = new HashMap<C, SortingState>();
+
+  /**
+   * the filter criteria used by this model
+   */
+  private final FilterCriteria<T> filterCriteria = new FilterCriteria<T>() {
+    /** {@inheritDoc} */
+    public boolean include(final T item) {
+      for (final ColumnSearchModel columnFilter : columnFilterModels.values()) {
+        if (columnFilter.isEnabled() && !columnFilter.include(item)) {
+          return false;
+        }
+      }
+
+      return true;
+    }
+  };
 
   /**
    * true if searching the table model should be done via regular expressions
@@ -145,7 +145,9 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
                                     final List<? extends ColumnSearchModel<C>> columnFilterModels) {
     this.columnModel = columnModel;
     this.columnIndexCache = new int[columnModel.getColumnCount()];
-    this.columnFilterModels = columnFilterModels;
+    for (final ColumnSearchModel<C> columnFilterModel : columnFilterModels) {
+      this.columnFilterModels.put(columnFilterModel.getColumnIdentifier(), columnFilterModel);
+    }
     this.selectionModel = new SelectionModel(this);
     clearSortingState();
     bindEventsInternal();
@@ -301,32 +303,6 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
   }
 
   /** {@inheritDoc} */
-  public final int compare(final T objectOne, final T objectTwo, final C columnIdentifier, final SortingDirective directive) {
-    final Comparable valueOne = getComparable(objectOne, columnIdentifier);
-    final Comparable valueTwo = getComparable(objectTwo, columnIdentifier);
-    final int comparison;
-    // Define null less than everything, except null.
-    if (valueOne == null && valueTwo == null) {
-      comparison = 0;
-    }
-    else if (valueOne == null) {
-      comparison = -1;
-    }
-    else if (valueTwo == null) {
-      comparison = 1;
-    }
-    else {
-      //noinspection unchecked
-      comparison = getComparator(columnIdentifier).compare(valueOne, valueTwo);
-    }
-    if (comparison != 0) {
-      return directive == SortingDirective.DESCENDING ? -comparison : comparison;
-    }
-
-    return 0;
-  }
-
-  /** {@inheritDoc} */
   public final boolean isRegularExpressionSearch() {
     return regularExpressionSearch;
   }
@@ -337,13 +313,8 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
   }
 
   /** {@inheritDoc} */
-  public final ColumnSearchModel<C> getFilterModel(final int columnIndex) {
-    return columnFilterModels.get(columnIndex);
-  }
-
-  /** {@inheritDoc} */
-  public final List<ColumnSearchModel<C>> getFilterModels() {
-    return Collections.unmodifiableList(columnFilterModels);
+  public final ColumnSearchModel<C> getFilterModel(final C columnIdentifier) {
+    return columnFilterModels.get(columnIdentifier);
   }
 
   /** {@inheritDoc} */
@@ -560,12 +531,12 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
   }
 
   /** {@inheritDoc} */
-  public final TableColumn getTableColumn(final Object identifier) {
+  public final TableColumn getTableColumn(final C identifier) {
     return columnModel.getColumn(columnModel.getColumnIndex(identifier));
   }
 
   /** {@inheritDoc} */
-  public final void setColumnVisible(final Object columnIdentifier, final boolean visible) {
+  public final void setColumnVisible(final C columnIdentifier, final boolean visible) {
     if (visible) {
       if (!isColumnVisible(columnIdentifier)) {
         showColumn(columnIdentifier);
@@ -579,7 +550,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
   }
 
   /** {@inheritDoc} */
-  public final void showColumn(final Object columnIdentifier) {
+  public final void showColumn(final C columnIdentifier) {
     final ListIterator<TableColumn> hiddenColumnIterator = hiddenColumns.listIterator();
     while (hiddenColumnIterator.hasNext()) {
       final TableColumn hiddenColumn = hiddenColumnIterator.next();
@@ -592,7 +563,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
   }
 
   /** {@inheritDoc} */
-  public final void hideColumn(final Object columnIdentifier) {
+  public final void hideColumn(final C columnIdentifier) {
     final TableColumn column = getTableColumn(columnIdentifier);
     columnModel.removeColumn(column);
     hiddenColumns.add(column);
@@ -600,7 +571,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
   }
 
   /** {@inheritDoc} */
-  public final boolean isColumnVisible(final Object columnIdentifier) {
+  public final boolean isColumnVisible(final C columnIdentifier) {
     for (final TableColumn column : hiddenColumns) {
       if (column.getIdentifier().equals(columnIdentifier)) {
         return false;
@@ -856,7 +827,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
         selectedItems.clear();
       }
     });
-    for (final ColumnSearchModel searchModel : columnFilterModels) {
+    for (final ColumnSearchModel searchModel : columnFilterModels.values()) {
       searchModel.addSearchStateListener(new ActionListener() {
       /** {@inheritDoc} */
         public void actionPerformed(final ActionEvent e) {
@@ -921,7 +892,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
       /** {@inheritDoc} */
       public int compare(final T o1, final T o2) {
         for (final Map.Entry<C, SortingState> state : getOrderedSortingStates()) {
-          final int comparison = AbstractFilteredTableModel.this.compare(o1, o2, state.getKey(), state.getValue().getDirective());
+          final int comparison = compareRows(o1, o2, state.getKey(), state.getValue().getDirective());
           if (comparison != 0) {
             return comparison;
           }
@@ -932,6 +903,31 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     });
     fireTableDataChanged();
     evtSortingDone.fire();
+  }
+
+  private int compareRows(final T objectOne, final T objectTwo, final C columnIdentifier, final SortingDirective directive) {
+    final Comparable valueOne = getComparable(objectOne, columnIdentifier);
+    final Comparable valueTwo = getComparable(objectTwo, columnIdentifier);
+    final int comparison;
+    // Define null less than everything, except null.
+    if (valueOne == null && valueTwo == null) {
+      comparison = 0;
+    }
+    else if (valueOne == null) {
+      comparison = -1;
+    }
+    else if (valueTwo == null) {
+      comparison = 1;
+    }
+    else {
+      //noinspection unchecked
+      comparison = getComparator(columnIdentifier).compare(valueOne, valueTwo);
+    }
+    if (comparison != 0) {
+      return directive == SortingDirective.DESCENDING ? -comparison : comparison;
+    }
+
+    return 0;
   }
 
   private List<Map.Entry<C, SortingState>> getOrderedSortingStates() {

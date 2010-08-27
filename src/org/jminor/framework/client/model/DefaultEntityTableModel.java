@@ -591,6 +591,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     return searchModel.getSearchCriteria();
   }
 
+  @SuppressWarnings({"UnusedDeclaration"})
   protected void handleDelete(final DeleteEvent event) {}
 
   private void bindEvents() {

@@ -173,6 +173,7 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
   /**
    * Shows a dialog for selecting which columns to show/hide
    */
+  @SuppressWarnings({"unchecked"})
   public final void selectTableColumns() {
     final List<TableColumn> allColumns = Collections.list(tableModel.getColumnModel().getColumns());
     allColumns.addAll(tableModel.getHiddenColumns());
@@ -186,7 +187,7 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
     final JPanel togglePanel = new JPanel(new GridLayout(Math.min(SELECT_COLUMNS_GRID_ROWS, allColumns.size()), 0));
     final List<JCheckBox> buttonList = new ArrayList<JCheckBox>();
     for (final TableColumn column : allColumns) {
-      final JCheckBox chkColumn = new JCheckBox(column.getHeaderValue().toString(), tableModel.isColumnVisible(column.getIdentifier()));
+      final JCheckBox chkColumn = new JCheckBox(column.getHeaderValue().toString(), tableModel.isColumnVisible((C) column.getIdentifier()));
       buttonList.add(chkColumn);
       togglePanel.add(chkColumn);
     }
@@ -197,7 +198,7 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
     if (result == JOptionPane.OK_OPTION) {
       for (final JCheckBox chkButton : buttonList) {
         final TableColumn column = allColumns.get(buttonList.indexOf(chkButton));
-        tableModel.setColumnVisible(column.getIdentifier(), chkButton.isSelected());
+        tableModel.setColumnVisible((C) column.getIdentifier(), chkButton.isSelected());
       }
     }
   }
@@ -296,11 +297,12 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
     return popupMenu;
   }
 
+  @SuppressWarnings({"unchecked"})
   private List<ColumnSearchPanel<C>> initializeFilterPanels() {
-    final List<ColumnSearchPanel<C>> filterPanels = new ArrayList<ColumnSearchPanel<C>>(tableModel.getFilterModels().size());
+    final List<ColumnSearchPanel<C>> filterPanels = new ArrayList<ColumnSearchPanel<C>>(tableModel.getColumnCount());
     final Enumeration<TableColumn> columns = table.getColumnModel().getColumns();
     while (columns.hasMoreElements()) {
-      final ColumnSearchModel<C> model = tableModel.getFilterModel(columns.nextElement().getModelIndex());
+      final ColumnSearchModel<C> model = tableModel.getFilterModel((C) columns.nextElement().getIdentifier());
       filterPanels.add(initializeFilterPanel(model));
     }
 
@@ -321,6 +323,7 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
     });
   }
 
+  @SuppressWarnings({"unchecked"})
   private void bindEvents() {
     this.tableModel.addSortingListener(new ActionListener() {
       /** {@inheritDoc} */
@@ -331,7 +334,7 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
     final Enumeration<TableColumn> columns = tableModel.getColumnModel().getColumns();
     while (columns.hasMoreElements()) {
       final TableColumn column = columns.nextElement();
-      final ColumnSearchModel model = tableModel.getFilterModel(column.getModelIndex());
+      final ColumnSearchModel model = tableModel.getFilterModel((C) column.getIdentifier());
       model.addSearchStateListener(new ActionListener() {
         /** {@inheritDoc} */
         public void actionPerformed(final ActionEvent e) {

@@ -2062,3 +2062,7 @@
   AuditProperty is now readOnly by default
   EntityLookupField refactored, needs more of it!
   Javadoc berserker appeared.
+  FilteredTableModel.compare() removed
+  AbstractFilteredTableModel.compare() renamed to compareRows() and privatized
+  FilteredTableModel.getFilterModels() removed
+  FilteredTableModel get... methods taking column index as parameter now take column identifiers
