@@ -10,16 +10,29 @@ import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.Controls;
 import org.jminor.common.ui.control.IntBeanSpinnerValueLink;
 import org.jminor.common.ui.control.LinkType;
+import org.jminor.common.ui.control.SelectedItemBeanValueLink;
 import org.jminor.common.ui.control.TextBeanValueLink;
 import org.jminor.framework.server.EntityDbServerAdmin;
 import org.jminor.framework.server.monitor.ServerMonitor;
 
+import org.apache.log4j.Level;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import java.awt.BorderLayout;
@@ -91,6 +104,8 @@ public final class ServerMonitorPanel extends JPanel {
     infoPanel.add(initConnectionCountField());
     infoPanel.add(new JLabel("Memory usage", JLabel.RIGHT));
     infoPanel.add(initMemoryField());
+    infoPanel.add(new JLabel("Logging level", JLabel.RIGHT));
+    infoPanel.add(initLoggingLevelField());
     infoPanel.add(ControlProvider.createButton(Controls.methodControl(this, "loadDomainModel", "Load domain model...")));
     infoPanel.add(ControlProvider.createButton(Controls.methodControl(model, "performGC", "Run garbage collector")));
     infoPanel.add(ControlProvider.createButton(Controls.methodControl(this, "shutdownServer", "Shut down server")));
@@ -191,5 +206,18 @@ public final class ServerMonitorPanel extends JPanel {
     new TextBeanValueLink(txtMemory, model, "memoryUsage", String.class, model.getStatsUpdatedObserver(), LinkType.READ_ONLY);
 
     return txtMemory;
+  }
+
+  private JComboBox initLoggingLevelField() {
+    final DefaultComboBoxModel comboModel = new DefaultComboBoxModel();
+    comboModel.addElement(Level.FATAL);
+    comboModel.addElement(Level.ERROR);
+    comboModel.addElement(Level.DEBUG);
+    comboModel.addElement(Level.INFO);
+
+    final JComboBox box = new JComboBox(comboModel);
+    new SelectedItemBeanValueLink(box, model, "loggingLevel", Level.class, model.getLoggingLevelObserver());
+
+    return box;
   }
 }

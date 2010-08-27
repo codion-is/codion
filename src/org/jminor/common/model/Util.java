@@ -68,7 +68,7 @@ public final class Util {
   private static final Logger LOG = Util.getLogger(Util.class);
   private static final Random RANDOM = new Random();
   private static final int K = 1024;
-  private static Level defaultLoggingLevel;
+  private static Level defaultLoggingLevel = Level.INFO;
   private static Preferences userPreferences;
 
   static {

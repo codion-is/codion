@@ -10,6 +10,7 @@ import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.server.EntityDbServerAdmin;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
@@ -36,6 +37,7 @@ public final class ServerMonitor {
   private final Event evtServerShutDown = Events.event();
   private final Event evtStatsUpdated = Events.event();
   private final Event evtWarningThresholdChanged = Events.event();
+  private final Event evtLoggingLevelChanged = Events.event();
 
   private final String hostName;
   private final String serverName;
@@ -124,6 +126,16 @@ public final class ServerMonitor {
   public void setWarningThreshold(final int threshold) throws RemoteException {
     server.setWarningTimeThreshold(threshold);
     evtWarningThresholdChanged.fire();
+  }
+
+  public Level getLoggingLevel() throws RemoteException {
+    System.out.println(server.getLoggingLevel());
+    return server.getLoggingLevel();
+  }
+
+  public void setLoggingLevel(final Level level) throws RemoteException {
+    server.setLoggingLevel(level);
+    evtLoggingLevelChanged.fire();
   }
 
   public XYSeriesCollection getConnectionRequestsDataSet() {
@@ -219,6 +231,10 @@ public final class ServerMonitor {
 
   public EventObserver getStatsUpdatedObserver() {
     return evtStatsUpdated.getObserver();
+  }
+
+  public EventObserver getLoggingLevelObserver() {
+    return evtLoggingLevelChanged.getObserver();
   }
 
   private EntityDbServerAdmin connectServer(final String serverName) throws RemoteException {
