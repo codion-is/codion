@@ -791,7 +791,7 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
     }
   }
 
-  private static class RemoteLogger extends MethodLogger {
+  private static final class RemoteLogger extends MethodLogger {
 
     private RemoteLogger() {
       super(Configuration.getIntValue(Configuration.SERVER_CONNECTION_LOG_SIZE));
