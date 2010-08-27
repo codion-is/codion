@@ -42,6 +42,7 @@ public final class EntityLookupField extends JTextField {
 
   private Action enterAction;
   private Color defaultBackgroundColor = getBackground();
+  private boolean performingLookup = false;
 
   /**
    * Initializes a new EntityLookupField
@@ -104,12 +105,14 @@ public final class EntityLookupField extends JTextField {
     });
   }
 
-  private void selectEntities(final List<Entity> entities) {
+  private boolean selectEntities(final List<Entity> entities) {
     if (entities.isEmpty()) {
       JOptionPane.showMessageDialog(this, FrameworkMessages.get(FrameworkMessages.NO_RESULTS_FROM_CRITERIA));
+      return false;
     }
     else if (entities.size() == 1) {
       model.setSelectedEntities(entities);
+      return true;
     }
     else {
       Collections.sort(entities, new EntityComparator());
@@ -151,11 +154,14 @@ public final class EntityLookupField extends JTextField {
       dialog.setModal(true);
       dialog.setResizable(true);
       dialog.setVisible(true);
+
+      return model.searchStringRepresentsSelected();
     }
   }
 
   private void bindProperty() {
     new TextBeanValueLink(this, getModel(), "searchString", String.class, getModel().searchStringObserver()) {
+      /** {@inheritDoc} */
       @Override
       protected void handleSetUIValue(final Object value) {
         updateColors();
@@ -163,6 +169,7 @@ public final class EntityLookupField extends JTextField {
       }
     };
     model.addSearchStringListener(new ActionListener() {
+      /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
         updateColors();
       }
@@ -171,6 +178,7 @@ public final class EntityLookupField extends JTextField {
 
   private void addEscapeListener() {
     UiUtil.addKeyEvent(this, KeyEvent.VK_ESCAPE, new AbstractAction("cancel") {
+      /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
         getModel().refreshSearchText();
         selectAll();
@@ -180,15 +188,21 @@ public final class EntityLookupField extends JTextField {
 
   private FocusListener initializeFocusListener() {
     return new FocusListener() {
+      /** {@inheritDoc} */
       public void focusGained(final FocusEvent e) {
         updateColors();
       }
+      /** {@inheritDoc} */
       public void focusLost(final FocusEvent e) {
         if (getText().isEmpty()) {
           getModel().setSelectedEntity(null);
         }
-//        else //todo?
-//          performLookup();
+        else if (!performingLookup && !model.searchStringRepresentsSelected()) {
+          final boolean entitiesSelected = performLookup();
+          if (!entitiesSelected) {
+            requestFocusInWindow();
+          }
+        }
         updateColors();
       }
     };
@@ -201,35 +215,48 @@ public final class EntityLookupField extends JTextField {
 
   private AbstractAction initializeLookupAction() {
     return new AbstractAction(FrameworkMessages.get(FrameworkMessages.SEARCH)) {
+      /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
         performLookup();
       }
     };
   }
 
-  private void performLookup() {
-    if (model.getSearchString().isEmpty()) {
-      model.setSelectedEntities(null);
-      if (enterAction != null) {
-        enterAction.actionPerformed(new ActionEvent(this, 0, "actionPerformed"));
+  private boolean performLookup() {
+    try {
+      performingLookup = true;
+      if (model.getSearchString().isEmpty()) {
+        model.setSelectedEntities(null);
+        if (enterAction != null) {
+          enterAction.actionPerformed(new ActionEvent(this, 0, "actionPerformed"));
+        }
+
+        return true;
+      }
+      else {
+        if (model.searchStringRepresentsSelected() && enterAction != null) {
+          enterAction.actionPerformed(new ActionEvent(this, 0, "actionPerformed"));
+
+          return true;
+        }
+        else if (!model.searchStringRepresentsSelected()) {
+          List<Entity> queryResult;
+          try {
+            UiUtil.setWaitCursor(true, this);
+            queryResult = model.performQuery();
+          }
+          finally {
+            UiUtil.setWaitCursor(false, this);
+          }
+          return selectEntities(queryResult);
+        }
       }
     }
-    else {
-      if (model.searchStringRepresentsSelected() && enterAction != null) {
-        enterAction.actionPerformed(new ActionEvent(this, 0, "actionPerformed"));
-      }
-      else if (!model.searchStringRepresentsSelected()) {
-        List<Entity> queryResult;
-        try {
-          UiUtil.setWaitCursor(true, this);
-          queryResult = model.performQuery();
-        }
-        finally {
-          UiUtil.setWaitCursor(false, this);
-        }
-        selectEntities(queryResult);
-      }
+    finally {
+      performingLookup = false;
     }
+
+    return false;
   }
 
   private JPopupMenu initializePopupMenu() {
@@ -259,27 +286,27 @@ public final class EntityLookupField extends JTextField {
 
     /** {@inheritDoc} */
     public void actionPerformed(final ActionEvent e) {
-        final JPanel panel = new JPanel(new GridLayout(3,1,5,5));
-        final JCheckBox boxCaseSensitive =
-                new JCheckBox(FrameworkMessages.get(FrameworkMessages.CASE_SENSITIVE), lookupPanel.getModel().isCaseSensitive());
-        final JCheckBox boxPrefixWildcard =
-                new JCheckBox(FrameworkMessages.get(FrameworkMessages.PREFIX_WILDCARD), lookupPanel.getModel().isWildcardPrefix());
-        final JCheckBox boxPostfixWildcard =
-                new JCheckBox(FrameworkMessages.get(FrameworkMessages.POSTFIX_WILDCARD), lookupPanel.getModel().isWildcardPostfix());
-        panel.add(boxCaseSensitive);
-        panel.add(boxPrefixWildcard);
-        panel.add(boxPostfixWildcard);
-        final AbstractAction action = new AbstractAction(Messages.get(Messages.OK)) {
-          /** {@inheritDoc} */
-          public void actionPerformed(final ActionEvent e) {
-            lookupPanel.getModel().setCaseSensitive(boxCaseSensitive.isSelected());
-            lookupPanel.getModel().setWildcardPrefix(boxPrefixWildcard.isSelected());
-            lookupPanel.getModel().setWildcardPostfix(boxPostfixWildcard.isSelected());
-          }
-        };
-        action.putValue(Action.MNEMONIC_KEY, Messages.get(Messages.OK_MNEMONIC).charAt(0));
-        UiUtil.showInDialog(UiUtil.getParentWindow(lookupPanel), panel, true, Messages.get(Messages.SETTINGS), true, true, action);
-      }
+      final JPanel panel = new JPanel(new GridLayout(3,1,5,5));
+      final JCheckBox boxCaseSensitive =
+              new JCheckBox(FrameworkMessages.get(FrameworkMessages.CASE_SENSITIVE), lookupPanel.getModel().isCaseSensitive());
+      final JCheckBox boxPrefixWildcard =
+              new JCheckBox(FrameworkMessages.get(FrameworkMessages.PREFIX_WILDCARD), lookupPanel.getModel().isWildcardPrefix());
+      final JCheckBox boxPostfixWildcard =
+              new JCheckBox(FrameworkMessages.get(FrameworkMessages.POSTFIX_WILDCARD), lookupPanel.getModel().isWildcardPostfix());
+      panel.add(boxCaseSensitive);
+      panel.add(boxPrefixWildcard);
+      panel.add(boxPostfixWildcard);
+      final AbstractAction action = new AbstractAction(Messages.get(Messages.OK)) {
+        /** {@inheritDoc} */
+        public void actionPerformed(final ActionEvent e) {
+          lookupPanel.getModel().setCaseSensitive(boxCaseSensitive.isSelected());
+          lookupPanel.getModel().setWildcardPrefix(boxPrefixWildcard.isSelected());
+          lookupPanel.getModel().setWildcardPostfix(boxPostfixWildcard.isSelected());
+        }
+      };
+      action.putValue(Action.MNEMONIC_KEY, Messages.get(Messages.OK_MNEMONIC).charAt(0));
+      UiUtil.showInDialog(UiUtil.getParentWindow(lookupPanel), panel, true, Messages.get(Messages.SETTINGS), true, true, action);
+    }
   }
 
   private static final class EntityComparator implements Comparator<Entity>, Serializable {
