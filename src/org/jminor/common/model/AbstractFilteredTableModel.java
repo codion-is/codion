@@ -928,7 +928,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     }
     Collections.sort(entries, new Comparator<Map.Entry<C, SortingState>>() {
       /** {@inheritDoc} */
-      public int compare(Map.Entry<C, SortingState> o1, Map.Entry<C, SortingState> o2) {
+      public int compare(final Map.Entry<C, SortingState> o1, final Map.Entry<C, SortingState> o2) {
         final Integer priorityOne = o1.getValue().getPriority();
         final Integer priorityTwo = o2.getValue().getPriority();
 

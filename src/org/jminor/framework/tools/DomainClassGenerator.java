@@ -66,9 +66,7 @@ public final class DomainClassGenerator {
           Util.writeFile(domainClass, UiUtil.chooseFileToSave(null, null, domainClassName + ".java"));
         }
         else {
-          System.out.println("#####################################");
           System.out.println(domainClass);
-          System.out.println("#####################################");
           Util.setClipboard(domainClass);
         }
 
