@@ -29,7 +29,7 @@ import java.security.PrivilegedAction;
 import java.util.*;
 
 /**
- * The remote server class, responsible for handling remote db connection requests.
+ * The remote server class, responsible for handling remote EntityDb connection requests.
  */
 final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
 
@@ -42,8 +42,8 @@ final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
   static final boolean SSL_CONNECTION_ENABLED =
           Configuration.getBooleanValue(Configuration.SERVER_CONNECTION_SSL_ENABLED);
 
-  private static final int DEFAULT_CHECK_INTERVAL = 30;
-  private static final int DEFAULT_TIMEOUT = 120;
+  private static final int DEFAULT_CHECK_INTERVAL_MS = 30000;
+  private static final int DEFAULT_TIMEOUT_MS = 120000;
 
   private static final int SERVER_PORT;
   private static final int SERVER_DB_PORT;
@@ -71,8 +71,8 @@ final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
   private final long startDate = System.currentTimeMillis();
 
   private Timer connectionMaintenanceTimer;
-  private int checkMaintenanceInterval = DEFAULT_CHECK_INTERVAL; //seconds
-  private int connectionTimeout = DEFAULT_TIMEOUT; //seconds
+  private int maintenanceInterval = DEFAULT_CHECK_INTERVAL_MS;
+  private int connectionTimeout = DEFAULT_TIMEOUT_MS;
 
   /**
    * Constructs a new EntityDbRemoteServer and binds it to the given registry
@@ -189,16 +189,16 @@ final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
   /**
    * @return the maintenance check interval in ms
    */
-  int getCheckMaintenanceInterval() {//todo rename
-    return checkMaintenanceInterval;
+  int getMaintenanceInterval() {
+    return maintenanceInterval;
   }
 
   /**
-   * @param checkMaintenanceInterval the new maintenance interval
+   * @param maintenanceInterval the new maintenance interval in ms
    */
-  void setCheckMaintenanceInterval(final int checkMaintenanceInterval) {
-    if (this.checkMaintenanceInterval != checkMaintenanceInterval) {
-      this.checkMaintenanceInterval = checkMaintenanceInterval <= 0 ? 1 : checkMaintenanceInterval;
+  void setMaintenanceInterval(final int maintenanceInterval) {
+    if (this.maintenanceInterval != maintenanceInterval) {
+      this.maintenanceInterval = maintenanceInterval <= 0 ? 1 : maintenanceInterval;
     }
   }
 
@@ -313,7 +313,7 @@ final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
     System.out.println(connectInfo);
     if (database.isEmbedded()) {
       database.shutdownEmbedded(null);
-    }//todo does not work when shutdown requires user authentication
+    }//todo does not work when shutdown requires user authentication, jminor.db.shutdownUser hmmm
   }
 
   /** {@inheritDoc} */
@@ -369,7 +369,7 @@ final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
       public void run() {
         maintainConnections();
       }
-    }, new Date(), checkMaintenanceInterval * 1000L);
+    }, new Date(), maintenanceInterval);
   }
 
   private void maintainConnections() {

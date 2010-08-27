@@ -2067,3 +2067,4 @@
   FilteredTableModel.getFilterModels() removed
   FilteredTableModel get... methods taking column index as parameter now take column identifiers
   EntityDbRemoteAdapter refactored
+  EntityDbRemoteServer, fixed inconsistencies in maintenance interval / timeout API

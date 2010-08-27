@@ -158,13 +158,13 @@ public final class EntityDbRemoteServerAdmin extends UnicastRemoteObject impleme
   }
 
   /** {@inheritDoc} */
-  public int getCheckMaintenanceInterval() {
-    return server.getCheckMaintenanceInterval();
+  public int getMaintenanceInterval() {
+    return server.getMaintenanceInterval();
   }
 
   /** {@inheritDoc} */
-  public void setCheckMaintenanceInterval(final int interval) {
-    server.setCheckMaintenanceInterval(interval);
+  public void setMaintenanceInterval(final int interval) {
+    server.setMaintenanceInterval(interval);
   }
 
   /** {@inheritDoc} */

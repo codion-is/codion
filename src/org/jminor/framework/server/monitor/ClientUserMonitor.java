@@ -58,12 +58,12 @@ public final class ClientUserMonitor {
     refresh();
   }
 
-  public void setCheckMaintenanceInterval(final int interval) throws RemoteException {
-    server.setCheckMaintenanceInterval(interval);
+  public void setMaintenanceInterval(final int interval) throws RemoteException {
+    server.setMaintenanceInterval(interval * 1000);
   }
 
-  public int getCheckMaintenanceInterval() throws RemoteException {
-    return server.getCheckMaintenanceInterval();
+  public int getMaintenanceInterval() throws RemoteException {
+    return server.getMaintenanceInterval() / 1000;
   }
 
   public int getConnectionTimeout() throws RemoteException {

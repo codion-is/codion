@@ -67,18 +67,18 @@ public interface EntityDbServerAdmin extends Remote {
   int getConnectionCount() throws RemoteException;
 
   /**
-   * @return the number of seconds that should pass between maintenance cycles,
+   * @return the number of ms that should pass between maintenance cycles,
    * that is, when inactive clients are purged
    * @throws RemoteException in case of a communication error
    */
-  int getCheckMaintenanceInterval() throws RemoteException;
+  int getMaintenanceInterval() throws RemoteException;
 
   /**
-   * @param interval the number of seconds that should pass between maintenance cycles,
+   * @param interval the number of ms that should pass between maintenance cycles,
    * that is, when inactive clients are purged
    * @throws RemoteException in case of a communication error
    */
-  void setCheckMaintenanceInterval(final int interval) throws RemoteException;
+  void setMaintenanceInterval(final int interval) throws RemoteException;
 
   /**
    * @param clientID the ID of the client for which to retrieve the log
@@ -186,15 +186,15 @@ public interface EntityDbServerAdmin extends Remote {
   Collection<ClientInfo> getClients(final String clientTypeID) throws RemoteException;
 
   /**
-   * Returns the connection timeout in seconds
-   * @return the connection timeout in seconds
+   * Returns the connection timeout in ms
+   * @return the connection timeout in ms
    * @throws RemoteException in case of a communication error
    */
   int getConnectionTimeout() throws RemoteException;
 
   /**
-   * Sets the connection timeout in seconds
-   * @param timeout the timeout in seconds
+   * Sets the connection timeout in ms
+   * @param timeout the timeout in ms
    * @throws RemoteException in case of a communication error
    */
   void setConnectionTimeout(final int timeout) throws RemoteException;

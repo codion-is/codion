@@ -30,7 +30,7 @@ public final class ClientUserMonitorPanel extends JPanel {
   private final ClientUserMonitor model;
 
   private final ClientMonitorPanel clientTypeMonitorPanel = new ClientMonitorPanel();
-  private JComboBox cmbMaintenanceCheck;
+  private JComboBox cmbMaintenance;
 
   /**
    * Instantiates a new ClientUserMonitorPanel
@@ -82,7 +82,7 @@ public final class ClientUserMonitorPanel extends JPanel {
 
     final JPanel actionBase = new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
     actionBase.add(new JLabel("Reaper interval (s)", JLabel.RIGHT));
-    actionBase.add(initCheckIntervalComponent());
+    actionBase.add(initMaintenanceIntervalComponent());
 
     actionBase.add(new JLabel("Connection timeout (s)"));
     final JSpinner spnConnectionTimeout = new JSpinner(
@@ -113,13 +113,13 @@ public final class ClientUserMonitorPanel extends JPanel {
     add(splitPane, BorderLayout.CENTER);
   }
 
-  private JComponent initCheckIntervalComponent() throws RemoteException {
-    cmbMaintenanceCheck = new JComboBox(new Integer[] {1,2,3,4,5,6,7,8,9,10,20,30,40,50,60,120,180,340,6000,10000});
-    cmbMaintenanceCheck.setSelectedItem(model.getCheckMaintenanceInterval());
-    cmbMaintenanceCheck.addItemListener(new ItemListener() {
+  private JComponent initMaintenanceIntervalComponent() throws RemoteException {
+    cmbMaintenance = new JComboBox(new Integer[] {1,2,3,4,5,6,7,8,9,10,20,30,40,50,60,120,180,340,6000,10000});
+    cmbMaintenance.setSelectedItem(model.getMaintenanceInterval());
+    cmbMaintenance.addItemListener(new ItemListener() {
       public void itemStateChanged(final ItemEvent e) {
         try {
-          model.setCheckMaintenanceInterval((Integer) cmbMaintenanceCheck.getSelectedItem());
+          model.setMaintenanceInterval((Integer) cmbMaintenance.getSelectedItem());
         }
         catch (RemoteException ex) {
           handleException(ex);
@@ -127,7 +127,7 @@ public final class ClientUserMonitorPanel extends JPanel {
       }
     });
 
-    return cmbMaintenanceCheck;
+    return cmbMaintenance;
   }
 
   private void handleException(final Exception exception) {
