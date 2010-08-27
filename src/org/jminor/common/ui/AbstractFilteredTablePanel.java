@@ -397,6 +397,9 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
       if (column != null) {
         final C columnIdentifier = (C) column.getIdentifier();
         SortingDirective status = tableModel.getSortingDirective(columnIdentifier);
+        if (!e.isControlDown()) {
+          tableModel.clearSortingState();
+        }
         final boolean shiftDown = e.isShiftDown();
         switch (status) {
           case UNSORTED:

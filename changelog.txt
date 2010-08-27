@@ -2058,3 +2058,4 @@
   ConnectionPoolImpl, check out time is now measured in ms instead of ns
   EntityDefinition.is/SetLargeDataset() exchanged for is/SetSmallDataset(), which property is by default false
   Entities.isLargeDataset() replaced with isSmallDatase()
+  AbstractFilteredTableModel sorting functionality refactored

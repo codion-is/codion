@@ -350,18 +350,23 @@ public interface FilteredTableModel<T, C> extends FilteredModel<T>, TableModel, 
   ListSelectionModel getSelectionModel();
 
   /**
+   * Clears the column sorting states, without reordering the rows
+   */
+  void clearSortingState();
+
+  /**
    * Specifies a sorting state for a column.
    */
-  interface SortingState<C> {
-
-    /**
-     * @return the column identifier
-     */
-    C getColumnIdentifier();
+  interface SortingState {
 
     /**
      * @return the sorting directive currently associated with the column
      */
     SortingDirective getDirective();
+
+    /**
+     * @return the sorting priority, 0 being the lowest
+     */
+    int getPriority();
   }
 }

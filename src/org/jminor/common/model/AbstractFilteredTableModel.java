@@ -23,8 +23,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 
 /**
  * A TableModel implentation that supports filtering, searching and sorting.
@@ -62,7 +65,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
   private final Event evtColumnShown = Events.event();
 
   @SuppressWarnings({"unchecked"})
-  private static final SortingState EMPTY_SORTING_STATE = new SortingStateImpl(null, SortingDirective.UNSORTED);
+  private static final SortingState EMPTY_SORTING_STATE = new SortingStateImpl(SortingDirective.UNSORTED, -1);
 
   /**
    * Holds visible items
@@ -129,7 +132,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
    */
   private boolean isSorting = false;
 
-  private final List<SortingState<C>> sortingStates = new ArrayList<SortingState<C>>();
+  private final Map<C, SortingState> sortingStates = new HashMap<C, SortingState>();
 
   /**
    * true if searching the table model should be done via regular expressions
@@ -147,6 +150,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     this.columnIndexCache = new int[columnModel.getColumnCount()];
     this.columnFilterModels = columnFilterModels;
     this.selectionModel = new SelectionModel(this);
+    clearSortingState();
     bindEventsInternal();
   }
 
@@ -235,6 +239,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
       return;
     }
     try {
+      clearSortingState();
       isRefreshing = true;
       evtRefreshStarted.fire();
       doRefresh();
@@ -262,15 +267,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
 
   /** {@inheritDoc} */
   public final int getSortPriority(final C columnIdentifier) {
-    int i = 0;
-    for (final SortingState state : sortingStates) {
-      if (state.getColumnIdentifier().equals(columnIdentifier)) {
-        return i;
-      }
-      i++;
-    }
-
-    return -1;
+    return sortingStates.get(columnIdentifier).getPriority();
   }
 
   /** {@inheritDoc} */
@@ -280,14 +277,30 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
 
   /** {@inheritDoc} */
   public final void setSortingDirective(final C columnIdentifier, final SortingDirective directive) {
-    final SortingState state = getSortingState(columnIdentifier);
-    if (!state.equals(EMPTY_SORTING_STATE)) {
-      sortingStates.remove(state);
+    if (directive == SortingDirective.UNSORTED) {
+      sortingStates.put(columnIdentifier, EMPTY_SORTING_STATE);
     }
-    if (directive != SortingDirective.UNSORTED) {
-      sortingStates.add(new SortingStateImpl<C>(columnIdentifier, directive));
+    else {
+      final SortingState state = getSortingState(columnIdentifier);
+      if (state.equals(EMPTY_SORTING_STATE)) {
+        final int priority = getNextSortPriority();
+        sortingStates.put(columnIdentifier, new SortingStateImpl(directive, priority));
+      }
+      else {
+        sortingStates.put(columnIdentifier, new SortingStateImpl(directive, state.getPriority()));
+      }
     }
     sortingStatusChanged();
+  }
+
+  /** {@inheritDoc} */
+  @SuppressWarnings({"unchecked"})
+  public void clearSortingState() {
+    final Enumeration<TableColumn> columns = columnModel.getColumns();
+    while (columns.hasMoreElements()) {
+      sortingStates.put((C) columns.nextElement().getIdentifier(), EMPTY_SORTING_STATE);
+    }
+    evtSortingDone.fire();
   }
 
   /** {@inheritDoc} */
@@ -879,12 +892,19 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
   }
 
   private SortingState getSortingState(final C columnIdentifier) {
-    for (final SortingState sortingColumn : sortingStates) {
-      if (sortingColumn.getColumnIdentifier().equals(columnIdentifier)) {
-        return sortingColumn;
-      }
+    return sortingStates.get(columnIdentifier);
+  }
+
+  @SuppressWarnings({"unchecked"})
+  private int getNextSortPriority() {
+    int maxPriority = -1;
+    final Enumeration<TableColumn> columns = columnModel.getColumns();
+    while (columns.hasMoreElements()) {
+      final TableColumn column = columns.nextElement();
+      maxPriority = Math.max(getSortPriority((C) column.getIdentifier()), maxPriority);
     }
-    return EMPTY_SORTING_STATE;
+
+    return maxPriority + 1;
   }
 
   private void sortingStatusChanged() {
@@ -892,8 +912,8 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     Collections.sort(visibleItems, new Comparator<T>() {
       public int compare(final T o1, final T o2) {
         /** {@inheritDoc} */
-        for (final SortingState<C> directive : getSortingStates()) {
-          final int comparison = AbstractFilteredTableModel.this.compare(o1, o2, directive.getColumnIdentifier(), directive.getDirective());
+        for (final Map.Entry<C, SortingState> state : getOrderedSortingStates()) {
+          final int comparison = AbstractFilteredTableModel.this.compare(o1, o2, state.getKey(), state.getValue().getDirective());
           if (comparison != 0) {
             return comparison;
           }
@@ -906,24 +926,42 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     evtSortingDone.fire();
   }
 
-  private List<SortingState<C>> getSortingStates() {
-    return sortingStates;
+  private List<Map.Entry<C, SortingState>> getOrderedSortingStates() {
+    final ArrayList<Map.Entry<C, SortingState>> entries = new ArrayList<Map.Entry<C, SortingState>>();
+    for (final Map.Entry<C, SortingState> entry : sortingStates.entrySet()) {
+      if (!EMPTY_SORTING_STATE.equals(entry.getValue())) {
+        entries.add(entry);
+      }
+    }
+    Collections.sort(entries, new Comparator<Map.Entry<C, SortingState>>() {
+      /** {@inheritDoc} */
+      public int compare(Map.Entry<C, SortingState> o1, Map.Entry<C, SortingState> o2) {
+        final Integer priorityOne = o1.getValue().getPriority();
+        final Integer priorityTwo = o2.getValue().getPriority();
+
+        return priorityOne.compareTo(priorityTwo);
+      }
+    });
+
+    return entries;
   }
 
-  private static final class SortingStateImpl<C> implements SortingState<C> {
-    private final C columnIdentifier;
+  private static final class SortingStateImpl implements SortingState {
     private final SortingDirective direction;
+    private final int priority;
 
-    private SortingStateImpl(final C columnIdentifier, final SortingDirective direction) {
+    private SortingStateImpl(final SortingDirective direction, final int priority) {
       Util.rejectNullValue(direction, "direction");
-      this.columnIdentifier = columnIdentifier;
       this.direction = direction;
+      this.priority = priority;
     }
 
-    public C getColumnIdentifier() {
-      return columnIdentifier;
+    /** {@inheritDoc} */
+    public int getPriority() {
+      return priority;
     }
 
+    /** {@inheritDoc} */
     public SortingDirective getDirective() {
       return direction;
     }
