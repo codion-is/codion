@@ -411,7 +411,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
     private final List<Long> checkOutTimes = new ArrayList<Long>();
     private long requestsPerSecondTime = creationDate;
 
-    Counter() {
+    private Counter() {
       new Timer(true).schedule(new TimerTask() {
         @Override
         public void run() {
