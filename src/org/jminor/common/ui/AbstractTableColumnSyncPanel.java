@@ -95,28 +95,7 @@ public abstract class AbstractTableColumnSyncPanel extends JPanel {
       throw new IllegalArgumentException("An equal number of columns and panels is required when binding sizes");
     }
 
-    columnModel.addColumnModelListener(new TableColumnModelListener() {
-      /** {@inheritDoc} */
-      public void columnAdded(final TableColumnModelEvent e) {
-        resetPanel();
-      }
-
-      /** {@inheritDoc} */
-      public void columnRemoved(final TableColumnModelEvent e) {
-        resetPanel();
-      }
-
-      /** {@inheritDoc} */
-      public void columnMoved(final TableColumnModelEvent e) {
-        resetPanel();
-      }
-
-      /** {@inheritDoc} */
-      public void columnMarginChanged(final ChangeEvent e) {}
-
-      /** {@inheritDoc} */
-      public void columnSelectionChanged(final ListSelectionEvent e) {}
-    });
+    columnModel.addColumnModelListener(new SyncColumnModelListener());
     final Enumeration<TableColumn> columnEnumeration = columnModel.getColumns();
     while (columnEnumeration.hasMoreElements()) {
       final TableColumn column = columnEnumeration.nextElement();
@@ -166,5 +145,28 @@ public abstract class AbstractTableColumnSyncPanel extends JPanel {
         syncPanelWidth(panel, column);
       }
     }
+  }
+
+  private final class SyncColumnModelListener implements TableColumnModelListener {
+    /** {@inheritDoc} */
+    public void columnAdded(final TableColumnModelEvent e) {
+      resetPanel();
+    }
+
+    /** {@inheritDoc} */
+    public void columnRemoved(final TableColumnModelEvent e) {
+      resetPanel();
+    }
+
+    /** {@inheritDoc} */
+    public void columnMoved(final TableColumnModelEvent e) {
+      resetPanel();
+    }
+
+    /** {@inheritDoc} */
+    public void columnMarginChanged(final ChangeEvent e) {}
+
+    /** {@inheritDoc} */
+    public void columnSelectionChanged(final ListSelectionEvent e) {}
   }
 }

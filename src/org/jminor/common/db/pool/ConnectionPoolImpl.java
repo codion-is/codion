@@ -392,7 +392,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
     return poolStates;
   }
 
-  private static class Counter {
+  private static final class Counter {
     private static final double THOUSAND = 1000d;
     private static final int DEFAULT_STATS_UPDATE_INTERVAL = 1000;
 

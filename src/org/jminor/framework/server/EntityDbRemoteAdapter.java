@@ -731,7 +731,7 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
     return !(hashCode.equals(IS_CONNECTED) || hashCode.equals(CONNECTION_VALID) || hashCode.equals(GET_ACTIVE_USER));
   }
 
-  private static class EntityDbRemoteProxy implements InvocationHandler {
+  private static final class EntityDbRemoteProxy implements InvocationHandler {
     private final EntityDbRemoteAdapter remoteAdapter;
 
     private EntityDbRemoteProxy(final EntityDbRemoteAdapter remoteAdapter) {

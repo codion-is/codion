@@ -862,7 +862,7 @@ public class EntityPanel extends JPanel {
       if (tablePanel.getSearchPanel() != null) {
         UiUtil.addKeyEvent(this, KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
                 true, new AbstractAction("toggleSearchPanel") {
-                /** {@inheritDoc} */
+                  /** {@inheritDoc} */
                   public void actionPerformed(final ActionEvent e) {
                     getTablePanel().toggleSearchPanel();
                     if (getTablePanel().isSearchPanelVisible()) {
@@ -1194,31 +1194,10 @@ public class EntityPanel extends JPanel {
   }
 
   private void bindEvents() {
-    addComponentListener(new ComponentAdapter() {
-      /** {@inheritDoc} */
-      @Override
-      public void componentHidden(final ComponentEvent e) {
-        SwingUtilities.invokeLater(new Runnable() {
-          /** {@inheritDoc} */
-          public void run() {
-            setFilterPanelsVisible(false);
-          }
-        });
-      }
-      /** {@inheritDoc} */
-      @Override
-      public void componentShown(final ComponentEvent e) {
-        SwingUtilities.invokeLater(new Runnable() {
-          /** {@inheritDoc} */
-          public void run() {
-            setFilterPanelsVisible(true);
-          }
-        });
-      }
-    });
+    addComponentListener(new EntityPanelComponentAdapter());
   }
 
-  private class ActivationListener implements ActionListener {
+  private final class ActivationListener implements ActionListener {
     private final Runnable initializer = new Runnable() {
       /** {@inheritDoc} */
       public void run() {
@@ -1247,7 +1226,7 @@ public class EntityPanel extends JPanel {
     }
   }
 
-  private static class ActivationFocusAdapter extends MouseAdapter {
+  private static final class ActivationFocusAdapter extends MouseAdapter {
 
     private final JComponent target;
 
@@ -1259,6 +1238,29 @@ public class EntityPanel extends JPanel {
     @Override
     public void mouseReleased(final MouseEvent e) {
       target.requestFocusInWindow();//activates this EntityPanel
+    }
+  }
+
+  private final class EntityPanelComponentAdapter extends ComponentAdapter {
+    /** {@inheritDoc} */
+    @Override
+    public void componentHidden(final ComponentEvent e) {
+      SwingUtilities.invokeLater(new Runnable() {
+        /** {@inheritDoc} */
+        public void run() {
+          setFilterPanelsVisible(false);
+        }
+      });
+    }
+    /** {@inheritDoc} */
+    @Override
+    public void componentShown(final ComponentEvent e) {
+      SwingUtilities.invokeLater(new Runnable() {
+        /** {@inheritDoc} */
+        public void run() {
+          setFilterPanelsVisible(true);
+        }
+      });
     }
   }
 }

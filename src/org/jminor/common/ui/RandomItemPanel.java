@@ -75,30 +75,7 @@ public final class RandomItemPanel<T> extends JPanel {
    */
   private SpinnerModel createWeightSpinnerModel(final T item) {
     final SpinnerNumberModel spinnerModel = new SpinnerNumberModel(model.getWeight(item), 0, Integer.MAX_VALUE, 1);
-    final AbstractValueLink<RandomItemPanel, Integer> valueLink =
-            new AbstractValueLink<RandomItemPanel, Integer>(this, getModel().getWeightsObserver(), LinkType.READ_WRITE) {
-      /** {@inheritDoc} */
-      @Override
-      public Integer getModelValue() {
-        return getModel().getWeight(item);
-      }
-      /** {@inheritDoc} */
-      @Override
-      protected Integer getUIValue() {
-        return (Integer) spinnerModel.getValue();
-      }
-      /** {@inheritDoc} */
-      @Override
-      public void setModelValue(final Integer value) {
-        getModel().setWeight(item, value);
-      }
-      /** {@inheritDoc} */
-      @Override
-      protected void setUIValue(final Integer value) {
-        spinnerModel.setValue(value);
-      }
-    };
-    valueLink.updateUI();
+    final AbstractValueLink<RandomItemPanel, Integer> valueLink = new WeightValueLink(spinnerModel, item);
     spinnerModel.addChangeListener(new ChangeListener() {
       /** {@inheritDoc} */
       public void stateChanged(final ChangeEvent e) {
@@ -107,5 +84,42 @@ public final class RandomItemPanel<T> extends JPanel {
     });
 
     return spinnerModel;
+  }
+
+  private final class WeightValueLink extends AbstractValueLink<RandomItemPanel, Integer> {
+
+    private final SpinnerNumberModel spinnerModel;
+    private final T item;
+
+    private WeightValueLink(final SpinnerNumberModel spinnerModel, final T item) {
+      super(RandomItemPanel.this, model.getWeightsObserver(), LinkType.READ_WRITE);
+      this.spinnerModel = spinnerModel;
+      this.item = item;
+      updateUI();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Integer getModelValue() {
+      return getModel().getWeight(item);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    protected Integer getUIValue() {
+      return (Integer) spinnerModel.getValue();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setModelValue(final Integer value) {
+      getModel().setWeight(item, value);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    protected void setUIValue(final Integer value) {
+      spinnerModel.setValue(value);
+    }
   }
 }
