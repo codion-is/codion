@@ -424,11 +424,6 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   protected ControlSet getFileControlSet() {
     final ControlSet file = new ControlSet(FrameworkMessages.get(FrameworkMessages.FILE));
     file.setMnemonic(FrameworkMessages.get(FrameworkMessages.FILE_MNEMONIC).charAt(0));
-//    if (isLoginRequired()) {
-//      file.add(Controls.methodControl(this, "logout", Messages.get(Messages.LOGOUT)));
-//      file.add(Controls.methodControl(this, "login", Messages.get(Messages.LOGIN)));
-//      file.addSeparator();
-//    }
     file.add(Controls.methodControl(this, "exit", FrameworkMessages.get(FrameworkMessages.EXIT),
             null, FrameworkMessages.get(FrameworkMessages.EXIT_TIP),
             FrameworkMessages.get(FrameworkMessages.EXIT_MNEMONIC).charAt(0)));

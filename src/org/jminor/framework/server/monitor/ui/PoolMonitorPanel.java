@@ -15,7 +15,7 @@ import java.awt.BorderLayout;
 import java.rmi.RemoteException;
 
 /**
- * A PoolMonitorPanel 
+ * A PoolMonitorPanel
  */
 public final class PoolMonitorPanel extends JPanel {
 
@@ -42,13 +42,4 @@ public final class PoolMonitorPanel extends JPanel {
     }
     add(connectionPoolPane, BorderLayout.CENTER);
   }
-
-//  private ControlSet getPopupCommands() {
-//    final ControlSet controlSet = new ControlSet();
-//    controlSet.add(Controls.methodControl(this, "addConnectionPool", "Add connection pool(s)"));
-//    controlSet.addSeparator();
-//    controlSet.add(Controls.methodControl(model, "refresh", "Refresh"));
-//
-//    return controlSet;
-//  }
 }

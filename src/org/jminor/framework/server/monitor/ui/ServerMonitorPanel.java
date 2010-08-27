@@ -31,7 +31,7 @@ import java.rmi.RemoteException;
 import java.util.Date;
 
 /**
- * A ServerMonitorPanel 
+ * A ServerMonitorPanel
  */
 public final class ServerMonitorPanel extends JPanel {
 
@@ -120,7 +120,6 @@ public final class ServerMonitorPanel extends JPanel {
     pane.addTab("Environment", initEnvironmentPanel());
     pane.addTab("Database", new DatabaseMonitorPanel(model.getDatabaseMonitor()));
     pane.addTab("Clients/Users", new ClientUserMonitorPanel(model.getClientMonitor()));
-//    pane.addTab("JConsole", getJConsolePanel());
 
     add(pane, BorderLayout.CENTER);
   }
@@ -188,24 +187,4 @@ public final class ServerMonitorPanel extends JPanel {
 
     return txtMemory;
   }
-
-//  private JComponent getJConsolePanel() {
-  //permission java.lang.reflect.ReflectPermission;
-//    try {
-//      final Map<Integer, LocalVirtualMachine> localMachines = LocalVirtualMachine.getAllVirtualMachines();
-//      for (final LocalVirtualMachine vm : localMachines.values()) {
-//        System.out.println(vm.displayName());
-//        if (vm.displayName().endsWith("EntityDbRemoteServerAdmin")) {
-//          final ProxyClient proxyClient = ProxyClient.getProxyClient(vm);
-//          Constructor constructor = VMPanel.class.getDeclaredConstructor(ProxyClient.class, int.class);
-//          constructor.setAccessible(true);
-//          return (VMPanel) constructor.newInstance(proxyClient, 2000);
-//        }
-//      }
-//      return null;
-//    }
-//    catch (Exception e) {
-//      throw new RuntimeException(e);
-//    }
-//  }
 }

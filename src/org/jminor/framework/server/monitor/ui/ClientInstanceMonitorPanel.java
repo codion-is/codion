@@ -25,7 +25,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * A ClientInstanceMonitorPanel 
+ * A ClientInstanceMonitorPanel
  */
 public final class ClientInstanceMonitorPanel extends JPanel {
 
@@ -117,11 +117,4 @@ public final class ClientInstanceMonitorPanel extends JPanel {
 
     add(scrollPane, BorderLayout.CENTER);
   }
-
-//  private ControlSet getPopupCommands() {
-//    final ControlSet controlSet = new ControlSet();
-//    controlSet.add(Controls.methodControl(this, "disconnectSelected", "Disconnect selected"));
-//
-//    return controlSet;
-//  }
 }
