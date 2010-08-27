@@ -2066,3 +2066,4 @@
   AbstractFilteredTableModel.compare() renamed to compareRows() and privatized
   FilteredTableModel.getFilterModels() removed
   FilteredTableModel get... methods taking column index as parameter now take column identifiers
+  EntityDbRemoteAdapter refactored

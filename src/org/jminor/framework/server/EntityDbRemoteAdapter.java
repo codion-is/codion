@@ -687,25 +687,25 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
 
   private EntityDb initializeProxy() {
     return (EntityDb) Proxy.newProxyInstance(EntityDbConnection.class.getClassLoader(),
-            EntityDbConnection.class.getInterfaces(), new EntityDbRemoteProxy(this));
+            EntityDbConnection.class.getInterfaces(), new LoggingInvocationHandler());
   }
 
-  private void returnConnection(final User user, final EntityDbConnection connection) {
-    final ConnectionPool connectionPool = CONNECTION_POOLS.get(user);
+  private void returnConnection(final EntityDbConnection connection) {
+    final ConnectionPool connectionPool = CONNECTION_POOLS.get(clientInfo.getUser());
     connection.setLoggingEnabled(false);
     if (connectionPool != null && connectionPool.isEnabled()) {
       connectionPool.checkInConnection(connection);
     }
   }
 
-  private EntityDbConnection getConnection(final User user) throws ClassNotFoundException, SQLException {
-    final ConnectionPool connectionPool = CONNECTION_POOLS.get(user);
+  private EntityDbConnection getConnection() throws ClassNotFoundException, SQLException {
+    final ConnectionPool connectionPool = CONNECTION_POOLS.get(clientInfo.getUser());
     if (connectionPool != null && connectionPool.isEnabled()) {
-      final EntityDbConnection pooledDbConnection = (EntityDbConnection) connectionPool.checkOutConnection();
       if (entityDbConnection != null) {//pool has been turned on since this one was created
         entityDbConnection.disconnect();//discard
         entityDbConnection = null;
       }
+      final EntityDbConnection pooledDbConnection = (EntityDbConnection) connectionPool.checkOutConnection();
       pooledDbConnection.setLoggingEnabled(methodLogger.isEnabled());
 
       return pooledDbConnection;
@@ -731,12 +731,9 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
     return !(hashCode.equals(IS_CONNECTED) || hashCode.equals(CONNECTION_VALID) || hashCode.equals(GET_ACTIVE_USER));
   }
 
-  private static final class EntityDbRemoteProxy implements InvocationHandler {
-    private final EntityDbRemoteAdapter remoteAdapter;
+  private final class LoggingInvocationHandler implements InvocationHandler {
 
-    private EntityDbRemoteProxy(final EntityDbRemoteAdapter remoteAdapter) {
-      this.remoteAdapter = remoteAdapter;
-    }
+    private static final String GET_CONNECTION = "getConnection";
 
     /** {@inheritDoc} */
     public Object invoke(final Object proxy, final Method method, final Object[] args) throws Exception {
@@ -744,18 +741,18 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
       final String methodName = method.getName();
       Throwable ex = null;
       EntityDbConnection connection = null;
-      final boolean logMethod = remoteAdapter.methodLogger.isEnabled() && shouldMethodBeLogged(methodName);
+      final boolean logMethod = methodLogger.isEnabled() && shouldMethodBeLogged(methodName);
       try {
-        remoteAdapter.setActive();
+        setActive();
         if (logMethod) {
-          remoteAdapter.methodLogger.logAccess("getConnection", new Object[]{remoteAdapter.clientInfo.getUser()});
+          methodLogger.logAccess(GET_CONNECTION, new Object[]{clientInfo.getUser()});
         }
-        connection = remoteAdapter.getConnection(remoteAdapter.clientInfo.getUser());
+        connection = getConnection();
         if (logMethod) {
           final int retries = connection.getPoolRetryCount();
           final String message = retries > 0 ? "retries: " + retries : null;
-          remoteAdapter.methodLogger.logExit("getConnection", null, null, message);
-          remoteAdapter.methodLogger.logAccess(methodName, args);
+          methodLogger.logExit(GET_CONNECTION, null, null, message);
+          methodLogger.logAccess(methodName, args);
         }
 
         return method.invoke(connection, args);
@@ -772,16 +769,16 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
       }
       finally {
         try {
-          remoteAdapter.setInactive();
+          setInactive();
           if (logMethod) {
-            final LogEntry entry = remoteAdapter.methodLogger.logExit(methodName, ex,
+            final LogEntry entry = methodLogger.logExit(methodName, ex,
                     connection != null ? connection.getLogEntries() : null);
             if (entry != null && entry.getDelta() > RequestCounter.warningThreshold) {
               RequestCounter.incrementWarningTimeExceededCounter();
             }
           }
           if (connection != null && !connection.isTransactionOpen()) {
-            remoteAdapter.returnConnection(remoteAdapter.clientInfo.getUser(), connection);
+            returnConnection(connection);
           }
         }
         catch (Exception e) {
