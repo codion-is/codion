@@ -253,6 +253,9 @@ public final class ConnectionPoolImpl implements ConnectionPool {
     counter.resetPoolStatistics();
   }
 
+  /**
+   * Closes this connection pool, disconnecting all connections
+   */
   void close() {
     closed = true;
     emptyPool();
@@ -263,25 +266,27 @@ public final class ConnectionPoolImpl implements ConnectionPool {
    * or if the pool has reached it's maximum size
    */
   private PoolableConnection getNewConnection() {
-    synchronized (connectionPool) {
-      if (!creatingConnection && counter.getPoolSize() < maximumPoolSize) {
-        creatingConnection = true;
-        try {
-          final PoolableConnection connection = poolableConnectionProvider.createConnection(user);
-          counter.incrementConnectionsCreatedCounter();
+    try {
+      synchronized (connectionPool) {
+        if (!creatingConnection && counter.getPoolSize() < maximumPoolSize) {
+          try {
+            creatingConnection = true;
+            final PoolableConnection connection = poolableConnectionProvider.createConnection(user);
+            counter.incrementConnectionsCreatedCounter();
 
-          return connection;
-        }
-        catch (Exception e) {
-          LOG.error(e);
-        }
-        finally {
-          creatingConnection = false;
+            return connection;
+          }
+          finally {
+            creatingConnection = false;
+          }
         }
       }
-
-      return null;
     }
+    catch (Exception e) {
+      LOG.error(e);
+    }
+
+    return null;
   }
 
   /**
