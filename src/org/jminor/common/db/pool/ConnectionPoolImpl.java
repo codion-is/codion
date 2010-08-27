@@ -298,7 +298,15 @@ public final class ConnectionPoolImpl implements ConnectionPool {
       if (collectFineGrainedStatistics) {
         addInPoolStats(size, System.currentTimeMillis());
       }
-      return size > 0 ? connectionPool.pop() : null;
+      final PoolableConnection connection = size > 0 ? connectionPool.pop() : null;
+      if (connection != null && !connection.isConnectionValid()) {
+        LOG.debug("Removing an invalid database connection: " + connection);
+        disconnect(connection);
+
+        return getConnectionFromPool();
+      }
+
+      return connection;
     }
   }
 

@@ -2068,3 +2068,5 @@
   FilteredTableModel get... methods taking column index as parameter now take column identifiers
   EntityDbRemoteAdapter refactored
   EntityDbRemoteServer, fixed inconsistencies in maintenance interval / timeout API
+  ConnectionPoolImpl now checks if a connection is valid before returning it from the pool, lets survive db restarts please
+  EntityDbRemoteAdapter does the same if connection pool is not enabled

@@ -714,6 +714,13 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
     if (entityDbConnection == null) {
       entityDbConnection = createDbConnection(database, clientInfo.getUser());
     }
+    else {
+      if (!entityDbConnection.isConnectionValid()) {//dead connection
+        LOG.debug("Removing an invalid database connection: " + entityDbConnection);
+        entityDbConnection.disconnect();//just in case
+        entityDbConnection = createDbConnection(database, clientInfo.getUser());
+      }
+    }
     entityDbConnection.setLoggingEnabled(methodLogger.isEnabled());
 
     return entityDbConnection;
