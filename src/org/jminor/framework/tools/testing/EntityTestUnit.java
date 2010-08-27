@@ -43,12 +43,20 @@ public abstract class EntityTestUnit {
     loadDomainModel();
   }
 
+  /**
+   * Sets up the database connection
+   * @throws Exception in case of an exception
+   */
   @Before
   public final void setUp() throws Exception {
     entityDbProvider = initializeDbConnectionProvider();
     doSetUp();
   }
 
+  /**
+   * Tears down the database connection
+   * @throws Exception in case of an exception
+   */
   @After
   public final void tearDown() throws Exception {
     if (entityDbProvider != null) {

@@ -17,9 +17,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * User: Björn Darri<br>
- * Date: 19.7.2010<br>
- * Time: 13:53:07
+ * A default ForeignKeySearchModel implementation.
  */
 public class DefaultForeignKeySearchModel extends DefaultColumnSearchModel<Property.ForeignKeyProperty>
         implements ForeignKeySearchModel {
@@ -119,6 +117,7 @@ public class DefaultForeignKeySearchModel extends DefaultColumnSearchModel<Prope
 
   private void bindLookupModelEvents() {
     entityLookupModel.addSelectedEntitiesListener(new ActionListener() {
+      /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
         try {
           updatingModel = true;
@@ -131,6 +130,7 @@ public class DefaultForeignKeySearchModel extends DefaultColumnSearchModel<Prope
       }
     });
     addUpperBoundListener(new ActionListener() {
+      /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
         if (!updatingModel) {//noinspection unchecked
           entityLookupModel.setSelectedEntities((List<Entity>) getUpperBound());
@@ -141,6 +141,7 @@ public class DefaultForeignKeySearchModel extends DefaultColumnSearchModel<Prope
 
   private void bindComboBoxEvents() {
     entityComboBoxModel.addSelectionListener(new ActionListener() {
+      /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
         if (!updatingModel) {
           setUpperBound(entityComboBoxModel.getSelectedEntity());
@@ -148,6 +149,7 @@ public class DefaultForeignKeySearchModel extends DefaultColumnSearchModel<Prope
       }
     });
     addUpperBoundListener(new ActionListener() {
+      /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
         try {
           updatingModel = true;
@@ -166,6 +168,7 @@ public class DefaultForeignKeySearchModel extends DefaultColumnSearchModel<Prope
     });
 
     entityComboBoxModel.addRefreshListener(new ActionListener() {
+      /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
         final Object upper = getUpperBound();
         if ((upper instanceof Collection && !((Collection) upper).isEmpty())) {

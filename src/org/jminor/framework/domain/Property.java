@@ -11,6 +11,9 @@ import java.text.Format;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * Specifies a Property.
+ */
 public interface Property extends Attribute {
 
   /**
@@ -18,7 +21,6 @@ public interface Property extends Attribute {
    * @return true if this property is of the given type
    */
   boolean is(final Property property);
-
 
   /**
    * @return true if this is a numerical Property, that is, Integer or Double
@@ -337,13 +339,22 @@ public interface Property extends Attribute {
      */
     boolean isCompositeReference();
 
-    int getFetchDepth();
-
+    /**
+     * @param referenceProperty the ID of the reference property
+     * @return the reference property ID
+     */
     String getReferencedPropertyID(final Property referenceProperty);
 
+    /**
+     * @return the default fetch depth for this foreign key
+     */
+    int getFetchDepth();
+
+    /**
+     * @param fetchDepth the default fetch depth for this foreign key
+     * @return this ForeignKeyProperty instance
+     */
     ForeignKeyProperty setFetchDepth(final int fetchDepth);
-
-
   }
 
   /**
@@ -351,9 +362,7 @@ public interface Property extends Attribute {
    * and should not handle updating the underlying property
    */
   //todo better explanation
-  interface MirrorProperty extends ColumnProperty {
-
-  }
+  interface MirrorProperty extends ColumnProperty {}
 
   /**
    * A property representing a column that should get its value automatically from a column in a referenced table
@@ -376,6 +385,10 @@ public interface Property extends Attribute {
    */
   interface ValueListProperty extends ColumnProperty {
 
+    /**
+     * @param value the value to validate
+     * @return true if the given value exists in this value list
+     */
     boolean isValid(final Object value);
 
     /**
@@ -396,9 +409,7 @@ public interface Property extends Attribute {
    * a original value of null.
    * The value of transient properties can be set and retrieved like normal properties.
    */
-  interface TransientProperty extends Property {
-
-  }
+  interface TransientProperty extends Property {}
 
   /**
    * A property which value is derived from the values of one or more properties.
@@ -486,22 +497,37 @@ public interface Property extends Attribute {
    */
   interface BlobProperty extends ColumnProperty {
 
+    /**
+     * @return the name of the actual blob column
+     */
     String getBlobColumnName();
   }
 
+  /**
+   * A property representing an audit column
+   */
   interface AuditProperty extends ColumnProperty {
+
+    /**
+     * The possible audit actions
+     */
     enum AuditAction {
       INSERT, UPDATE
     }
 
+    /**
+     * @return the audit action this property represents
+     */
     AuditAction getAuditAction();
   }
 
-  interface AuditTimeProperty extends AuditProperty {
+  /**
+   * Specifiesa audit property with a timestamp value
+   */
+  interface AuditTimeProperty extends AuditProperty {}
 
-  }
-
-  interface AuditUserProperty extends AuditProperty {
-
-  }
+  /**
+   * Specifiesa audit property with a username value
+   */
+  interface AuditUserProperty extends AuditProperty {}
 }

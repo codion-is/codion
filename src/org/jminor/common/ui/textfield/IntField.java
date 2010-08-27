@@ -15,20 +15,32 @@ import javax.swing.text.PlainDocument;
  */
 public class IntField extends TextFieldPlus {
 
-  /** Constructs a new IntField. */
+  /**
+   * Constructs a new IntField.
+   */
   public IntField() {
     this(0);
   }
 
+  /**
+   * Constructs a new IntField.
+   * @param columns the number of columns
+   */
   public IntField(final int columns) {
     super(columns);
   }
 
+  /**
+   * Constructs a new IntField.
+   * @param min the minimum value
+   * @param max the maximum value
+   */
   public IntField(final int min, final int max) {
     this();
     setRange(min, max);
   }
 
+  /** {@inheritDoc} */
   @Override
   public Object getValue() {
     return this.getInt();
@@ -48,12 +60,14 @@ public class IntField extends TextFieldPlus {
     setText(value == null ? "" : value.toString());
   }
 
+  /** {@inheritDoc} */
   @Override
   protected Document createDefaultModel() {
     return new IntFieldDocument();
   }
 
   private final class IntFieldDocument extends PlainDocument {
+    /** {@inheritDoc} */
     @Override
     public void insertString(final int offs, final String str, final AttributeSet a) throws BadLocationException {
       if (getMaxLength() > 0 && getLength() + (str != null ? str.length() : 0) > getMaxLength()) {

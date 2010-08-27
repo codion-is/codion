@@ -35,6 +35,10 @@ public final class ClientInstanceMonitorPanel extends JPanel {
   private ClientInstanceMonitor model;
   private JCheckBox chkLoggingEnabled;
 
+  /**
+   * Instantiates a new ClientInstanceMonitorPanel
+   * @throws RemoteException in case of an exception
+   */
   public ClientInstanceMonitorPanel() throws RemoteException {
     initUI();
     updateView();

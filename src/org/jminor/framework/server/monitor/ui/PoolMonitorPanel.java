@@ -21,6 +21,11 @@ public final class PoolMonitorPanel extends JPanel {
 
   private final PoolMonitor model;
 
+  /**
+   * Instantiates a new PoolMonitorPanel
+   * @param model the PoolMonitor to base this panel on
+   * @throws RemoteException in case of an exception
+   */
   public PoolMonitorPanel(final PoolMonitor model) throws RemoteException {
     this.model = model;
     initUI();

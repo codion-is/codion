@@ -54,6 +54,7 @@ public class Control extends AbstractAction {
     super(name);
     this.enabledState = enabledState == null ? States.state(true) : enabledState;
     this.enabledState.addListener(new ActionListener() {
+      /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
         firePropertyChange("enabled", !Control.this.enabledState.isActive(), Control.this.enabledState.isActive());
       }

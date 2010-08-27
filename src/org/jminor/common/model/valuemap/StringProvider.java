@@ -108,6 +108,10 @@ public final class StringProvider<K> implements ValueMap.ToString<K>, Serializab
   }
 
   private interface ValueProvider<T> extends Serializable {
+    /**
+     * @param valueMap the value map
+     * @return a String representation of a value for the given value map
+     */
     String toString(final ValueMap<T, ?> valueMap);
   }
 

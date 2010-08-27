@@ -736,6 +736,7 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
       this.remoteAdapter = remoteAdapter;
     }
 
+    /** {@inheritDoc} */
     public Object invoke(final Object proxy, final Method method, final Object[] args) throws Exception {
       RequestCounter.incrementRequestsPerSecondCounter();
       final String methodName = method.getName();
@@ -794,6 +795,7 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
       super(Configuration.getIntValue(Configuration.SERVER_CONNECTION_LOG_SIZE));
     }
 
+    /** {@inheritDoc} */
     @Override
     protected String getMethodArgumentAsString(final Object argument) {
       if (argument == null) {
@@ -878,27 +880,27 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
       }
     }
 
-    static int getRequestsPerSecond() {
+    private static int getRequestsPerSecond() {
       return requestsPerSecond;
     }
 
-    static int getWarningTimeExceededPerSecond() {
+    private static int getWarningTimeExceededPerSecond() {
       return warningTimeExceededPerSecond;
     }
 
-    static int getWarningThreshold() {
+    private static int getWarningThreshold() {
       return warningThreshold;
     }
 
-    static void setWarningThreshold(final int warningThreshold) {
+    private static void setWarningThreshold(final int warningThreshold) {
       RequestCounter.warningThreshold = warningThreshold;
     }
 
-    static void incrementRequestsPerSecondCounter() {
+    private static void incrementRequestsPerSecondCounter() {
       requestsPerSecondCounter++;
     }
 
-    public static void incrementWarningTimeExceededCounter() {
+    private static void incrementWarningTimeExceededCounter() {
       warningTimeExceededCounter++;
     }
   }

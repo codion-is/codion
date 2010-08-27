@@ -83,6 +83,7 @@ public final class MaximumMatch extends PlainDocument {
     new MaximumMatch(comboBox);
   }
 
+  /** {@inheritDoc} */
   @Override
   public void remove(final int offs, final int len) throws BadLocationException {
     int offset = offs;
@@ -109,6 +110,7 @@ public final class MaximumMatch extends PlainDocument {
     }
   }
 
+  /** {@inheritDoc} */
   @Override
   public void insertString(final int offs, final String str, final AttributeSet a) throws BadLocationException {
     int offset = offs;

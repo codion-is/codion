@@ -8,6 +8,10 @@ package org.jminor.common.db.exception;
  */
 public class RecordNotFoundException extends DbException {
 
+  /**
+   * Instantiates a new RecordNotFoundException
+   * @param message the exception message
+   */
   public RecordNotFoundException(final String message) {
     super(message);
   }

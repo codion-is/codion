@@ -58,6 +58,11 @@ public final class ConnectionPoolImpl implements ConnectionPool {
   private volatile int maximumRetryWaitPeriod = DEFAULT_MAXIMUM_RETRY_WAIT_PERIOD_MS;
   private volatile boolean enabled = true;
 
+  /**
+   * Instantiates a new ConnectionPoolImpl.
+   * @param poolableConnectionProvider the connection provider
+   * @param user the user this pool is based on
+   */
   public ConnectionPoolImpl(final PoolableConnectionProvider poolableConnectionProvider, final User user) {
     this.poolableConnectionProvider = poolableConnectionProvider;
     this.user = user;
@@ -415,47 +420,47 @@ public final class ConnectionPoolImpl implements ConnectionPool {
       }, new Date(), DEFAULT_STATS_UPDATE_INTERVAL);
     }
 
-    public synchronized long getCreationDate() {
+    private synchronized long getCreationDate() {
       return creationDate;
     }
 
-    public synchronized long getResetDate() {
+    private synchronized long getResetDate() {
       return resetDate;
     }
 
-    public synchronized int getConnectionRequests() {
+    private synchronized int getConnectionRequests() {
       return connectionRequests;
     }
 
-    public synchronized int getConnectionRequestsDelayed() {
+    private synchronized int getConnectionRequestsDelayed() {
       return connectionRequestsDelayed;
     }
 
-    public synchronized int getConnectionsCreated() {
+    private synchronized int getConnectionsCreated() {
       return connectionsCreated;
     }
 
-    public synchronized int getConnectionsDestroyed() {
+    private synchronized int getConnectionsDestroyed() {
       return connectionsDestroyed;
     }
 
-    public synchronized int getPoolSize() {
+    private synchronized int getPoolSize() {
       return poolSize;
     }
 
-    public synchronized int getRequestsDelayedPerSecond() {
+    private synchronized int getRequestsDelayedPerSecond() {
       return requestsDelayedPerSecond;
     }
 
-    public synchronized int getRequestsPerSecond() {
+    private synchronized int getRequestsPerSecond() {
       return requestsPerSecond;
     }
 
-    public synchronized void addCheckOutTime(final long time) {
+    private synchronized void addCheckOutTime(final long time) {
       checkOutTimes.add(time);
     }
 
-    public synchronized void resetPoolStatistics() {
+    private synchronized void resetPoolStatistics() {
       connectionsCreated = 0;
       connectionsDestroyed = 0;
       connectionRequests = 0;
@@ -464,7 +469,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
       resetDate = System.currentTimeMillis();
     }
 
-    public synchronized void updateStatistics() {
+    private synchronized void updateStatistics() {
       final long current = System.currentTimeMillis();
       final double seconds = (current - requestsPerSecondTime) / THOUSAND;
       requestsPerSecond = (int) ((double) requestsPerSecondCounter / seconds);
@@ -483,27 +488,27 @@ public final class ConnectionPoolImpl implements ConnectionPool {
       }
     }
 
-    public synchronized void incrementConnectionsDestroyedCounter() {
+    private synchronized void incrementConnectionsDestroyedCounter() {
       poolSize--;
       connectionsDestroyed++;
     }
 
-    public synchronized void incrementConnectionsCreatedCounter() {
+    private synchronized void incrementConnectionsCreatedCounter() {
       poolSize++;
       connectionsCreated++;
     }
 
-    public synchronized void incrementDelayedRequestCounter() {
+    private synchronized void incrementDelayedRequestCounter() {
       connectionRequestsDelayed++;
       requestsDelayedPerSecondCounter++;
     }
 
-    public synchronized void incrementRequestCounter() {
+    private synchronized void incrementRequestCounter() {
       connectionRequests++;
       requestsPerSecondCounter++;
     }
 
-    public synchronized long getAverageCheckOutTime() {
+    private synchronized long getAverageCheckOutTime() {
       return averageCheckOutTime;
     }
   }

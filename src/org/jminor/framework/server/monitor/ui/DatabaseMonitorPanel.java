@@ -25,7 +25,7 @@ import java.awt.FlowLayout;
 import java.rmi.RemoteException;
 
 /**
- * A DatabaseMonitorPanel 
+ * A DatabaseMonitorPanel
  */
 public final class DatabaseMonitorPanel extends JPanel {
 
@@ -36,6 +36,11 @@ public final class DatabaseMonitorPanel extends JPanel {
 
   private final ChartPanel queriesPerSecondChartPanel = new ChartPanel(queriesPerSecondChart);
 
+  /**
+   * Instantiates a new DatabaseMonitorPanel
+   * @param model the DatabaseMonitor to base this panel on
+   * @throws RemoteException in case of an exception
+   */
   public DatabaseMonitorPanel(final DatabaseMonitor model) throws RemoteException {
     this.model = model;
     queriesPerSecondChart.getXYPlot().setDataset(model.getQueriesPerSecondCollection());

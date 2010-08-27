@@ -20,46 +20,74 @@ public final class ClientInfo implements Serializable {
   private final User user;
   private String clientHost = "unknown host";
 
+  /**
+   * Instantiates a new ClientInfo
+   * @param clientID the client ID
+   */
   public ClientInfo(final UUID clientID) {
     this(clientID, null, null);
   }
 
+  /**
+   * Instantiates a new ClientInfo
+   * @param clientID the client ID
+   * @param clientTypeID a string specifying the client type
+   * @param user the user
+   */
   public ClientInfo(final UUID clientID, final String clientTypeID, final User user) {
     this.clientID = clientID;
     this.clientTypeID = clientTypeID;
     this.user = user;
   }
 
+  /**
+   * @return the user
+   */
   public User getUser() {
     return user;
   }
 
+  /**
+   * @return the client ID
+   */
   public UUID getClientID() {
     return clientID;
   }
 
+  /**
+   * @return the client type ID
+   */
   public String getClientTypeID() {
     return clientTypeID;
   }
 
+  /**
+   * @return the client hostname
+   */
   public String getClientHost() {
     return clientHost;
   }
 
+  /**
+   * @param clientHost the client hostname
+   */
   public void setClientHost(final String clientHost) {
     this.clientHost = clientHost;
   }
 
+  /** {@inheritDoc} */
   @Override
   public int hashCode() {
     return clientID.hashCode();
   }
 
+  /** {@inheritDoc} */
   @Override
   public boolean equals(final Object obj) {
     return this == obj || obj instanceof ClientInfo && clientID.equals(((ClientInfo) obj).clientID);
   }
 
+  /** {@inheritDoc} */
   @Override
   public String toString() {
     return user != null ? user + "@" + clientHost + " [" + clientTypeID + "] - " + clientID : clientID.toString();

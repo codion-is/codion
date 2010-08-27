@@ -8,12 +8,25 @@ import org.jminor.common.model.SearchType;
 import org.jminor.common.ui.ColumnSearchPanel;
 import org.jminor.framework.domain.Property;
 
+/**
+ * A column search panel based on properties.
+ */
 public final class PropertyFilterPanel extends ColumnSearchPanel<Property> {
 
+  /**
+   * Instantiates a new PropertyFilterPanel.
+   * @param model the model to base this panel on
+   */
   public PropertyFilterPanel(final ColumnSearchModel<Property> model) {
     this(model, false, false);
   }
 
+  /**
+   * Instantiates a new PropertyFilterPanel.
+   * @param model the model to base this panel on
+   * @param includeActivateBtn if true an activation button is included
+   * @param includeToggleAdvBtn if true an advanced toggle button is included
+   */
   public PropertyFilterPanel(final ColumnSearchModel<Property> model, final boolean includeActivateBtn,
                              final boolean includeToggleAdvBtn) {
     super(model, includeActivateBtn, includeToggleAdvBtn, getSearchTypes(model));

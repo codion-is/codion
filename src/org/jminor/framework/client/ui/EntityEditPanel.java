@@ -95,6 +95,9 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
     initializeUI();
   }
 
+  /**
+   * @return the edit model this panel is based on
+   */
   public final EntityEditModel getEntityEditModel() {
     return (EntityEditModel) super.getEditModel();
   }
@@ -186,6 +189,10 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
             insertCaption.charAt(0), null, Images.loadImage(Images.IMG_PROPERTIES_16));
   }
 
+  /**
+   * Handles the given exception, which usually means simply displaying it to the user
+   * @param throwable the exception to handle
+   */
   public final void handleException(final Throwable throwable) {
     if (throwable instanceof ValidationException) {
       JOptionPane.showMessageDialog(this, throwable.getMessage(), Messages.get(Messages.EXCEPTION),
@@ -1640,11 +1647,13 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
 
   private void bindEvents() {
     getEntityEditModel().addBeforeRefreshListener(new ActionListener() {
+      /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
         UiUtil.setWaitCursor(true, EntityEditPanel.this);
       }
     });
     getEntityEditModel().addAfterRefreshListener(new ActionListener() {
+      /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
         UiUtil.setWaitCursor(false, EntityEditPanel.this);
       }

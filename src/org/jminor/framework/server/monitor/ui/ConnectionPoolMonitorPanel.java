@@ -62,6 +62,11 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   private final JTextField txtRequested = new JTextField();
   private final JTextField txtDelayed = new JTextField();
 
+  /**
+   * Instantiates a new ConnectionPoolMonitorPanel
+   * @param model the ConnectionPoolMonitor to base this panel on
+   * @throws RemoteException in case of an exception
+   */
   public ConnectionPoolMonitorPanel(final ConnectionPoolMonitor model) throws RemoteException {
     this.model = model;
     format.setMaximumFractionDigits(2);

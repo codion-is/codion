@@ -88,6 +88,7 @@ public class TextFieldPlus extends JTextField {
     return max;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final void setText(final String t) {
     super.setText(t == null ? "" : t);
@@ -100,6 +101,7 @@ public class TextFieldPlus extends JTextField {
   @Override
   protected Document createDefaultModel() {
     return new PlainDocument() {
+      /** {@inheritDoc} */
       @Override
       public void insertString(final int offs, final String str, final AttributeSet a) throws BadLocationException {
         if (getMaxLength() > 0 && getLength() + str.length() > getMaxLength()) {

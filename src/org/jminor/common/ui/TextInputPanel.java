@@ -34,15 +34,33 @@ public final class TextInputPanel extends JPanel {
   private final Dimension txtAreaSize;
   private int maxLength = 0;
 
+  /**
+   * Instantiates a new TextInputPanel.
+   * @param textComponent the text component
+   * @param dialogTitle the input dialog title
+   */
   public TextInputPanel(final JTextComponent textComponent, final String dialogTitle) {
     this(textComponent, dialogTitle, null);
   }
 
+  /**
+   * Instantiates a new TextInputPanel.
+   * @param textComponent the text component
+   * @param dialogTitle the input dialog title
+   * @param txtAreaSize the input text area size
+   */
   public TextInputPanel(final JTextComponent textComponent, final String dialogTitle,
                         final Dimension txtAreaSize) {
     this(textComponent, dialogTitle, txtAreaSize, true);
   }
 
+  /**
+   * Instantiates a new TextInputPanel.
+   * @param textComponent the text component
+   * @param dialogTitle the input dialog title
+   * @param txtAreaSize the input text area size
+   * @param buttonFocusable if true then the input button is focusable
+   */
   public TextInputPanel(final JTextComponent textComponent, final String dialogTitle,
                         final Dimension txtAreaSize, final boolean buttonFocusable) {
     this.dialogTitle = dialogTitle;
@@ -60,22 +78,42 @@ public final class TextInputPanel extends JPanel {
     this.maxLength = maxLength;
   }
 
+  /**
+   * @return the maximum length allowed for this text input panel
+   */
   public int getMaxLength() {
     return maxLength;
   }
 
+  /**
+   * @param text the text to set
+   * @throws IllegalArgumentException in case the text length exceeds maxLength
+   * @see #getMaxLength()
+   */
   public void setText(final String text) {
+    if (maxLength > 0 && text.length() > maxLength) {
+      throw new IllegalArgumentException("Maximum allowed text length exceeded");
+    }
     textComponent.setText(text);
   }
 
+  /**
+   * @return the current input text value
+   */
   public String getText() {
     return textComponent.getText();
   }
 
+  /**
+   * @return the text component
+   */
   public JTextComponent getTextComponent() {
     return textComponent;
   }
 
+  /**
+   * @return the input dialog button
+   */
   public JButton getButton() {
     return button;
   }
@@ -102,11 +140,14 @@ public final class TextInputPanel extends JPanel {
       super("...");
     }
 
+    /** {@inheritDoc} */
     public void actionPerformed(final ActionEvent e) {
       final JTextArea txtArea = new JTextArea(textComponent.getText()) {
         @Override
         protected Document createDefaultModel() {
+          /** {@inheritDoc} */
           return new PlainDocument() {
+            /** {@inheritDoc} */
             @Override
             public void insertString(final int offs, final String str, final AttributeSet a) throws BadLocationException {
               if (getMaxLength() > 0 && getLength() + (str != null ? str.length() : 0) > getMaxLength()) {
@@ -123,6 +164,7 @@ public final class TextInputPanel extends JPanel {
       txtArea.setWrapStyleWord(true);
       final JScrollPane scroller = new JScrollPane(txtArea);
       final AbstractAction okAction = new AbstractAction(Messages.get(Messages.OK)) {
+        /** {@inheritDoc} */
         public void actionPerformed(final ActionEvent evt) {
           textComponent.setText(txtArea.getText());
         }

@@ -847,12 +847,14 @@ public class EntityPanel extends JPanel {
     if (containsTablePanel()) {
       UiUtil.addKeyEvent(this, KeyEvent.VK_T, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
               true, new AbstractAction("selectTablePanel") {
+                /** {@inheritDoc} */
                 public void actionPerformed(final ActionEvent e) {
                   getTablePanel().getJTable().requestFocusInWindow();
                 }
               });
       UiUtil.addKeyEvent(this, KeyEvent.VK_F, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
               true, new AbstractAction("selectSearchField") {
+                /** {@inheritDoc} */
                 public void actionPerformed(final ActionEvent e) {
                   getTablePanel().getSearchField().requestFocusInWindow();
                 }
@@ -860,6 +862,7 @@ public class EntityPanel extends JPanel {
       if (tablePanel.getSearchPanel() != null) {
         UiUtil.addKeyEvent(this, KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
                 true, new AbstractAction("toggleSearchPanel") {
+                /** {@inheritDoc} */
                   public void actionPerformed(final ActionEvent e) {
                     getTablePanel().toggleSearchPanel();
                     if (getTablePanel().isSearchPanelVisible()) {
@@ -872,6 +875,7 @@ public class EntityPanel extends JPanel {
     if (containsEditPanel()) {
       UiUtil.addKeyEvent(this, KeyEvent.VK_E, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
               true, new AbstractAction("selectEditPanel") {
+                /** {@inheritDoc} */
                 public void actionPerformed(final ActionEvent e) {
                   if (getEditPanelState() == HIDDEN) {
                     setEditPanelState(EMBEDDED);
@@ -881,6 +885,7 @@ public class EntityPanel extends JPanel {
               });
       UiUtil.addKeyEvent(this, KeyEvent.VK_I, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
               true, new AbstractAction("selectComponent") {
+                /** {@inheritDoc} */
                 public void actionPerformed(final ActionEvent e) {
                   if (getEditPanelState() == HIDDEN) {
                     setEditPanelState(EMBEDDED);
@@ -984,12 +989,14 @@ public class EntityPanel extends JPanel {
     }
 
     tabbedPane.addChangeListener(new ChangeListener() {
+      /** {@inheritDoc} */
       public void stateChanged(final ChangeEvent e) {
         getModel().setLinkedDetailModels(getDetailPanelState() != HIDDEN ? getSelectedDetailPanel().getModel() : null);
         getSelectedDetailPanel().initializePanel();
       }
     });
     tabbedPane.addMouseListener(new MouseAdapter() {
+      /** {@inheritDoc} */
       @Override
       public void mouseReleased(final MouseEvent e) {
         if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
@@ -1027,6 +1034,7 @@ public class EntityPanel extends JPanel {
    */
   private Action initializeTableDoubleClickAction() {
     return new AbstractAction() {
+      /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
         if (editControlPanel != null || !detailEntityPanels.isEmpty()) {
           if (editControlPanel != null && getEditPanelState() == HIDDEN) {
@@ -1053,6 +1061,7 @@ public class EntityPanel extends JPanel {
     final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.DETAIL_TABLES));
     for (final EntityPanel detailPanel : detailEntityPanels) {
       controlSet.add(new Control(detailPanel.getCaption()) {
+        /** {@inheritDoc} */
         @Override
         public void actionPerformed(final ActionEvent e) {
           detailPanelTabbedPane.setSelectedComponent(detailPanel);
@@ -1079,6 +1088,7 @@ public class EntityPanel extends JPanel {
     final Point location = new Point(parentLocation.x+(parentSize.width-size.width),
             parentLocation.y+(parentSize.height-size.height)- DETAIL_DIALOG_OFFSET);
     SwingUtilities.invokeLater(new Runnable() {
+      /** {@inheritDoc} */
       public void run() {
         detailPanelDialog = UiUtil.showInDialog(UiUtil.getParentWindow(EntityPanel.this), detailPanelTabbedPane, false,
                 caption + " - " + FrameworkMessages.get(FrameworkMessages.DETAIL_TABLES), false, true,
@@ -1152,11 +1162,13 @@ public class EntityPanel extends JPanel {
 
   private void bindModelEvents() {
     model.addBeforeRefreshListener(new ActionListener() {
+      /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
         UiUtil.setWaitCursor(true, EntityPanel.this);
       }
     });
     model.addAfterRefreshListener(new ActionListener() {
+      /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
         UiUtil.setWaitCursor(false, EntityPanel.this);
       }
@@ -1179,6 +1191,7 @@ public class EntityPanel extends JPanel {
 
   private void bindEvents() {
     addComponentListener(new ComponentAdapter() {
+      /** {@inheritDoc} */
       @Override
       public void componentHidden(final ComponentEvent e) {
         SwingUtilities.invokeLater(new Runnable() {
@@ -1187,6 +1200,7 @@ public class EntityPanel extends JPanel {
           }
         });
       }
+      /** {@inheritDoc} */
       @Override
       public void componentShown(final ComponentEvent e) {
         SwingUtilities.invokeLater(new Runnable() {
@@ -1200,6 +1214,7 @@ public class EntityPanel extends JPanel {
 
   private class ActivationListener implements ActionListener {
     private final Runnable initializer = new Runnable() {
+      /** {@inheritDoc} */
       public void run() {
         initializePanel();
         showPanelTab();
@@ -1208,6 +1223,7 @@ public class EntityPanel extends JPanel {
         prepareUI(grabInitialFocus, false);
       }
     };
+    /** {@inheritDoc} */
     public void actionPerformed(final ActionEvent e) {
       if (isActive()) {
         try {
@@ -1233,6 +1249,7 @@ public class EntityPanel extends JPanel {
       this.target = target;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void mouseReleased(final MouseEvent e) {
       target.requestFocusInWindow();//activates this EntityPanel

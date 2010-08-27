@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- * A HostMonitorPanel 
+ * A HostMonitorPanel
  */
 public final class HostMonitorPanel extends JPanel {
 
@@ -29,6 +29,11 @@ public final class HostMonitorPanel extends JPanel {
 
   private JTabbedPane serverPane;
 
+  /**
+   * Instantiates a new HostMonitorPanel
+   * @param model the HostMonitor to base this panel on
+   * @throws RemoteException in case of an exception
+   */
   public HostMonitorPanel(final HostMonitor model) throws RemoteException {
     this.model = model;
     initUI();

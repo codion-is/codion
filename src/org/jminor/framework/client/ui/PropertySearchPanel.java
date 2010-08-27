@@ -34,12 +34,25 @@ import java.awt.event.ActionEvent;
 import java.sql.Types;
 import java.text.SimpleDateFormat;
 
+/**
+ * A column search panel based on the the Property class.
+ */
 public final class PropertySearchPanel extends ColumnSearchPanel<Property.ColumnProperty> {
 
+  /**
+   * Instantiates a new PropertySearchPanel.
+   * @param model the model to base this panel on
+   */
   public PropertySearchPanel(final PropertySearchModel<Property.ColumnProperty> model) {
     this(model, false, false);
   }
 
+  /**
+   * Instantiates a new PropertySearchPanel.
+   * @param model the model to base this panel on
+   * @param includeActivateBtn if true an activation button is included
+   * @param includeToggleAdvBtn if true an advanced toggle button is included
+   */
   public PropertySearchPanel(final PropertySearchModel<Property.ColumnProperty> model,
                              final boolean includeActivateBtn, final boolean includeToggleAdvBtn) {
     super(model, includeActivateBtn, includeToggleAdvBtn, new PropertyInputFieldProvider(model),
@@ -63,10 +76,12 @@ public final class PropertySearchPanel extends ColumnSearchPanel<Property.Column
       this.model = model;
     }
 
+    /** {@inheritDoc} */
     public ColumnSearchModel<Property.ColumnProperty> getSearchModel() {
       return model;
     }
 
+    /** {@inheritDoc} */
     public JComponent initializeInputField(final boolean isUpperBound) {
       if (model.getType() == Types.BOOLEAN && !isUpperBound) {
         return null;//no lower bound field required for booleans
@@ -155,6 +170,7 @@ public final class PropertySearchPanel extends ColumnSearchPanel<Property.Column
 
     private Action getEnableAction() {
       return new AbstractAction() {
+        /** {@inheritDoc} */
         public void actionPerformed(final ActionEvent e) {
           model.setEnabled(!model.isEnabled());
         }

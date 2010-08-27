@@ -8,6 +8,9 @@ package org.jminor.common.model;
  */
 public interface Attribute {
 
+  /**
+   * @return the caption
+   */
   String getCaption();
 
   /**

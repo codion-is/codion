@@ -18,7 +18,6 @@ import org.jminor.common.model.valuemap.AbstractValueChangeMapEditModel;
 import org.jminor.common.model.valuemap.ValueChangeEvent;
 import org.jminor.common.model.valuemap.ValueChangeListener;
 import org.jminor.common.model.valuemap.ValueCollectionProvider;
-import org.jminor.common.model.valuemap.ValueProvider;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.event.DeleteEvent;
@@ -656,6 +655,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
     evtAfterInsert.addListener(evtEntitiesChanged);
     evtAfterUpdate.addListener(evtEntitiesChanged);
     addValueMapSetListener(new ActionListener() {
+      /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
         stEntityNull.setActive(getEntity().isNull());
       }
@@ -727,24 +727,13 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
     private final String entityID;
     private final String propertyID;
 
-    PropertyValueProvider(final EntityDbProvider dbProvider, final String entityID, final String propertyID) {
+    private PropertyValueProvider(final EntityDbProvider dbProvider, final String entityID, final String propertyID) {
       this.dbProvider = dbProvider;
       this.entityID = entityID;
       this.propertyID = propertyID;
     }
 
-    public String getEntityID() {
-      return entityID;
-    }
-
-    public String getPropertyID() {
-      return propertyID;
-    }
-
-    public EntityDbProvider getDbProvider() {
-      return dbProvider;
-    }
-
+    /** {@inheritDoc} */
     public Collection<Object> getValues() {
       try {
         return dbProvider.getEntityDb().selectPropertyValues(entityID, propertyID, true);
@@ -753,17 +742,10 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
         throw new RuntimeException(e);
       }
     }
-
-    public static ValueProvider<Property, Object> getValueProvider(final Entity entity) {
-      return new ValueProvider<Property, Object>() {
-        public Object getValue(final Property key) {
-          return entity.getValue(key);
-        }
-      };
-    }
   }
 
   private static final class StatusMessageListener extends ValueChangeListener<String, Object> {
+    /** {@inheritDoc} */
     @Override
     protected void valueChanged(final ValueChangeEvent<String, Object> event) {
       final String msg = getValueChangeDebugString(event);

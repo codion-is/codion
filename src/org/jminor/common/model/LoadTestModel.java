@@ -548,6 +548,7 @@ public abstract class LoadTestModel {
 
     updateTimer = new Timer(true);
     updateTimer.schedule(new TimerTask() {
+      /** {@inheritDoc} */
       @Override
       public void run() {
         counter.updateRequestsPerSecond();
@@ -775,12 +776,22 @@ public abstract class LoadTestModel {
     protected void cleanup(final Object application) {}
   }
 
+  /**
+   * An exception originating from a scenario run
+   */
   public static final class ScenarioException extends Exception {
 
+    /**
+     * Instantiates a new ScenarioException.
+     */
     public ScenarioException() {
       super();
     }
 
+    /**
+     * Instantiates a new ScenarioException.
+     * @param cause the root cause
+     */
     public ScenarioException(final Throwable cause) {
       super(cause);
     }
@@ -801,15 +812,15 @@ public abstract class LoadTestModel {
       this.usageScenarios = usageScenarios;
     }
 
-    public int getWorkRequestsPerSecond() {
+    private int getWorkRequestsPerSecond() {
       return workRequestsPerSecond;
     }
 
-    public int getDelayedWorkRequestsPerSecond() {
+    private int getDelayedWorkRequestsPerSecond() {
       return delayedWorkRequestsPerSecond;
     }
 
-    public int getScenarioRate(final String scenarioName) {
+    private int getScenarioRate(final String scenarioName) {
       if (!usageScenarioRates.containsKey(scenarioName)) {
         return 0;
       }
@@ -817,15 +828,15 @@ public abstract class LoadTestModel {
       return usageScenarioRates.get(scenarioName);
     }
 
-    public void incrementWorkRequests() {
+    private void incrementWorkRequests() {
       workRequestCounter++;
     }
 
-    public void incrementDelayedWorkRequests() {
+    private void incrementDelayedWorkRequests() {
       delayedWorkRequestCounter++;
     }
 
-    public void updateRequestsPerSecond() {
+    private void updateRequestsPerSecond() {
       final long current = System.currentTimeMillis();
       final double seconds = (current - time) / 1000d;
       if (seconds > 5) {

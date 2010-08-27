@@ -20,7 +20,7 @@ import java.awt.BorderLayout;
 import java.rmi.RemoteException;
 
 /**
- * A ClientMonitorPanel 
+ * A ClientMonitorPanel
  */
 public final class ClientMonitorPanel extends JPanel {
 
@@ -28,6 +28,10 @@ public final class ClientMonitorPanel extends JPanel {
   private final ClientInstanceMonitorPanel clientInstancePanel;
   private final JList clientInstanceList = new JList();
 
+  /**
+   * Instantiates a new ClientMonitorPanel
+   * @throws RemoteException in case of an exception
+   */
   public ClientMonitorPanel() throws RemoteException {
     this.clientInstancePanel = new ClientInstanceMonitorPanel();
     initUI();

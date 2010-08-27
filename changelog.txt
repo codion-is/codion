@@ -2061,3 +2061,4 @@
   AbstractFilteredTableModel sorting functionality refactored
   AuditProperty is now readOnly by default
   EntityLookupField refactored, needs more of it!
+  Javadoc berserker appeared.

@@ -28,7 +28,7 @@ import java.util.Map;
 final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Entity, Serializable, Comparable<Entity> {
 
   private static final long serialVersionUID = 1;
-  
+
   private static final String PROPERTY_PARAM = "property";
   private static final String PROPERTY_ID_PARAM = "propertyID";
 
@@ -438,6 +438,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
   @Override
   protected void handleInitializeValueChangedEvent() {
     addValueListener(new ValueChangeListener<String, Object>() {
+      /** {@inheritDoc} */
       @Override
       protected void valueChanged(final ValueChangeEvent<String, Object> event) {
         final Collection<String> linkedPropertyIDs = Entities.getLinkedPropertyIDs(entityID, event.getKey());
@@ -762,10 +763,12 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
       }
     }
 
+    /** {@inheritDoc} */
     public String getEntityID() {
       return entityID;
     }
 
+    /** {@inheritDoc} */
     public List<Property.PrimaryKeyProperty> getProperties() {
       if (properties == null) {
         properties = Entities.getPrimaryKeyProperties(entityID);
@@ -774,10 +777,12 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
       return properties;
     }
 
+    /** {@inheritDoc} */
     public boolean isCompositeKey() {
       return getPropertyCount() > 1;
     }
 
+    /** {@inheritDoc} */
     public Property.PrimaryKeyProperty getFirstKeyProperty() {
       if (getPropertyCount() == 0) {
         throw new RuntimeException("No properties defined for primary key");
@@ -786,6 +791,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
       return getProperties().get(0);
     }
 
+    /** {@inheritDoc} */
     public Object getFirstKeyValue() {
       return getValue(getFirstKeyProperty().getPropertyID());
     }
@@ -815,6 +821,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
       return new KeyImpl(entityID);
     }
 
+    /** {@inheritDoc} */
     public int getPropertyCount() {
       if (singleIntegerKey) {
         return 1;
@@ -823,6 +830,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
       return getProperties().size();
     }
 
+    /** {@inheritDoc} */
     public boolean isSingleIntegerKey() {
       return singleIntegerKey;
     }
@@ -885,6 +893,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
       return hashCode;
     }
 
+    /** {@inheritDoc} */
     public boolean isNull() {
       if (singleIntegerKey) {
         return hashCode() == INTEGER_NULL_VALUE;
@@ -903,6 +912,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
       return false;
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void handleValueSet(final String key, final Object value, final Object previousValue,
                                   final boolean initialization) {
@@ -916,6 +926,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
       }
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void handleClear() {
       hashCode = INTEGER_NULL_VALUE;

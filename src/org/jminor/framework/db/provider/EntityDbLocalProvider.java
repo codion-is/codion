@@ -28,10 +28,19 @@ public final class EntityDbLocalProvider extends AbstractEntityDbProvider {
 
   private final Properties connectionProperties = new Properties();
 
+  /**
+   * Instantiates a new EntityDbLocalProvider
+   * @param user the user
+   */
   public EntityDbLocalProvider(final User user) {
     this(user, DatabaseProvider.createInstance());
   }
 
+  /**
+   * Instantiates a new EntityDbLocalProvider
+   * @param user the user
+   * @param database the Database implementation
+   */
   public EntityDbLocalProvider(final User user, final Database database) {
     super(user);
     Util.rejectNullValue(database, "database");

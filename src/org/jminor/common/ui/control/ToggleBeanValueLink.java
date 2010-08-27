@@ -91,6 +91,7 @@ public final class ToggleBeanValueLink extends AbstractBeanValueLink {
     super(owner, propertyName, boolean.class, valueChangeEvent, linkType);
     this.buttonModel = buttonModel;
     this.buttonModel.addItemListener(new ItemListener() {
+      /** {@inheritDoc} */
       public void itemStateChanged(final ItemEvent e) {
         updateModel();
       }

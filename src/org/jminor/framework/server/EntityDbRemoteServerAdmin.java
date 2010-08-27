@@ -50,6 +50,12 @@ public final class EntityDbRemoteServerAdmin extends UnicastRemoteObject impleme
 
   private final EntityDbRemoteServer server;
 
+  /**
+   * Instantiates a new EntityDbRemoteServerAdmin
+   * @param server the server to administer
+   * @param sslEnabled true if the server is using SSL connection encryption
+   * @throws RemoteException in case of an exception
+   */
   public EntityDbRemoteServerAdmin(final EntityDbRemoteServer server, final boolean sslEnabled) throws RemoteException {
     super(SERVER_ADMIN_PORT, sslEnabled ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
             sslEnabled ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());

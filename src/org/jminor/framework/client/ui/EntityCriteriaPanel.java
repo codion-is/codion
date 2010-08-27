@@ -112,6 +112,7 @@ public final class EntityCriteriaPanel extends JPanel {
       this.propertyList = propertyList;
     }
 
+    /** {@inheritDoc} */
     public void actionPerformed(final ActionEvent e) {
       propertyList.repaint();
     }

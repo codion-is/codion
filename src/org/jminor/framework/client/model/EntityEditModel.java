@@ -18,6 +18,9 @@ import org.jminor.framework.domain.Property;
 import java.awt.event.ActionListener;
 import java.util.List;
 
+/**
+ * Specifies a class for editing entity instances.
+ */
 public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>, EntityDataProvider {
 
   /**

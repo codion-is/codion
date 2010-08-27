@@ -51,6 +51,7 @@ public class ComboBoxValueLink<K> extends AbstractValueMapLink<K, Object> {
     this.boxModel = comboBox.getModel();
     updateUI();
     comboBox.addItemListener(new ItemListener() {
+      /** {@inheritDoc} */
       public void itemStateChanged(final ItemEvent e) {
         if (e.getStateChange() == ItemEvent.SELECTED) {
           updateModel();

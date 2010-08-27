@@ -564,6 +564,7 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
 
   private void bindEvents() {
     final ActionListener autoEnableListener = new ActionListener() {
+      /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
         if (autoEnable) {
           final boolean upperBoundNull = upperBound == null;

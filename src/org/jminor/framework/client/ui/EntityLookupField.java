@@ -99,6 +99,7 @@ public final class EntityLookupField extends JTextField {
    */
   public EntityLookupField setTransferFocusOnEnter() {
     return setEnterAction(new AbstractAction() {
+      /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
         transferFocus();
       }
@@ -121,6 +122,7 @@ public final class EntityLookupField extends JTextField {
       final JDialog dialog = new JDialog(owner, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY));
       dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
       final Action okAction = new AbstractAction(Messages.get(Messages.OK)) {
+        /** {@inheritDoc} */
         public void actionPerformed(final ActionEvent e) {
           getModel().setSelectedEntities(toEntityList(list.getSelectedValues()));
           dialog.dispose();

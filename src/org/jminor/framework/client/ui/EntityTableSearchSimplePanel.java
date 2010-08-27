@@ -24,6 +24,9 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.util.Collection;
 
+/**
+ * A simple table search panel, with a single search field.
+ */
 public final class EntityTableSearchSimplePanel extends JPanel implements EntityTableSearchPanel {
 
   private final EntityTableSearchModel searchModel;
@@ -33,6 +36,11 @@ public final class EntityTableSearchSimplePanel extends JPanel implements Entity
   private JTextField searchField;
   private JButton searchButton;
 
+  /**
+   * Instantiates a new EntityTableSearchSimplePanel.
+   * @param searchModel the search model to base this panel on
+   * @param refreshable the Refreshable instance to refresh on search
+   */
   public EntityTableSearchSimplePanel(final EntityTableSearchModel searchModel, final Refreshable refreshable) {
     this.searchModel = searchModel;
     this.refreshable = refreshable;
@@ -40,18 +48,26 @@ public final class EntityTableSearchSimplePanel extends JPanel implements Entity
     initUI();
   }
 
+  /** {@inheritDoc} */
   public EntityTableSearchModel getSearchModel() {
     return searchModel;
   }
 
+  /** {@inheritDoc} */
   public ControlSet getControls() {
     return null;
   }
 
+  /**
+   * @param txt the search text
+   */
   public void setSearchTest(final String txt) {
     searchField.setText(txt);
   }
 
+  /**
+   * Performs the search
+   */
   public void performSearch() {
     searchButton.doClick();
   }
@@ -59,6 +75,7 @@ public final class EntityTableSearchSimplePanel extends JPanel implements Entity
   private void initUI() {
     searchField = new JTextField();
     final Action action = new AbstractAction(FrameworkMessages.get(FrameworkMessages.SEARCH)) {
+      /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
         performSimpleSearch(searchField.getText(), searchProperties);
       }

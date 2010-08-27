@@ -553,6 +553,7 @@ public class DbConnectionImpl implements DbConnection {
    * A result packer for fetching integers from an result set containing a single integer column
    */
   public static final ResultPacker<Integer> INT_PACKER = new ResultPacker<Integer>() {
+    /** {@inheritDoc} */
     public List<Integer> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       final List<Integer> integers = new ArrayList<Integer>();
       int counter = 0;
@@ -568,6 +569,7 @@ public class DbConnectionImpl implements DbConnection {
    * A result packer for fetching strings from an result set containing a single string column
    */
   public static final ResultPacker<String> STRING_PACKER = new ResultPacker<String>() {
+    /** {@inheritDoc} */
     public List<String> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       final List<String> strings = new ArrayList<String>();
       int counter = 0;
@@ -697,6 +699,7 @@ public class DbConnectionImpl implements DbConnection {
   }
 
   private static final class MixedResultPacker implements ResultPacker<List> {
+    /** {@inheritDoc} */
     public List<List> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       final List<List> result = new ArrayList<List>();
       final int columnCount = resultSet.getMetaData().getColumnCount();
@@ -714,6 +717,7 @@ public class DbConnectionImpl implements DbConnection {
   }
 
   private static final class BlobResultPacker implements ResultPacker {
+    /** {@inheritDoc} */
     public List pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       final List<Blob> blobs = new ArrayList<Blob>();
       if (resultSet.next()) {

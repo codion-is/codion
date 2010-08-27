@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * A class responsible for, among other things, coordinating a EntityEditModel and an EntityTableModel.
+ * A default EntityModel implementation.
  */
 public class DefaultEntityModel implements EntityModel {
 
@@ -549,24 +549,28 @@ public class DefaultEntityModel implements EntityModel {
 
   private void bindEvents() {
     editModel.addAfterInsertListener(new InsertListener() {
+      /** {@inheritDoc} */
       @Override
       public void inserted(final InsertEvent event) {
         handleInsert(event);
       }
     });
     editModel.addAfterUpdateListener(new UpdateListener() {
+      /** {@inheritDoc} */
       @Override
       protected void updated(final UpdateEvent event) {
         handleUpdate(event);
       }
     });
     editModel.addAfterDeleteListener(new DeleteListener() {
+      /** {@inheritDoc} */
       @Override
       protected void deleted(final DeleteEvent event) {
         handleDelete(event);
       }
     });
     evtLinkedDetailModelsChanged.addListener(new ActionListener() {
+      /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
         if (!getEditModel().isEntityNew()) {
           updateDetailModelsByActiveEntity();
@@ -575,6 +579,7 @@ public class DefaultEntityModel implements EntityModel {
     });
     if (containsTableModel()) {
       tableModel.addSelectionChangedListener(new ActionListener() {
+        /** {@inheritDoc} */
         public void actionPerformed(final ActionEvent e) {
           updateDetailModelsByActiveEntity();
         }
@@ -582,6 +587,7 @@ public class DefaultEntityModel implements EntityModel {
     }
     else {
       editModel.addValueMapSetListener(new ActionListener() {
+        /** {@inheritDoc} */
         public void actionPerformed(final ActionEvent e) {
           updateDetailModelsByActiveEntity();
         }

@@ -23,7 +23,7 @@ import java.awt.event.ItemListener;
 import java.rmi.RemoteException;
 
 /**
- * A ClientUserMonitorPanel 
+ * A ClientUserMonitorPanel
  */
 public final class ClientUserMonitorPanel extends JPanel {
 
@@ -32,6 +32,11 @@ public final class ClientUserMonitorPanel extends JPanel {
   private final ClientMonitorPanel clientTypeMonitorPanel = new ClientMonitorPanel();
   private JComboBox cmbMaintenanceCheck;
 
+  /**
+   * Instantiates a new ClientUserMonitorPanel
+   * @param model the ClientUserMonitor to base this panel on
+   * @throws RemoteException in case of an exception
+   */
   public ClientUserMonitorPanel(final ClientUserMonitor model) throws RemoteException {
     this.model = model;
     initUI();

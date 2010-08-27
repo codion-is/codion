@@ -17,16 +17,23 @@ import javax.swing.JComponent;
 import java.awt.event.ActionEvent;
 
 /**
- * User: Björn Darri
- * Date: 19.7.2010
- * Time: 14:15:36
+ * A column search panel based on foreign key properties.
  */
 public final class ForeignKeySearchPanel extends ColumnSearchPanel<Property.ForeignKeyProperty> {
 
+  /**
+   * Instantiates a new ForeignKeySearchModel.
+   * @param model the model to base this panel on
+   */
   public ForeignKeySearchPanel(final ForeignKeySearchModel model) {
     this(model, false);
   }
 
+  /**
+   * Instantiates a new ForeignKeySearchModel.
+   * @param model the model to base this panel on
+   * @param includeToggleAdvBtn if true an advanced toggle button is included
+   */
   public ForeignKeySearchPanel(final ForeignKeySearchModel model, final boolean includeToggleAdvBtn) {
     super(model, true, includeToggleAdvBtn, new ForeignKeyInputFieldProvider(model), SearchType.LIKE, SearchType.NOT_LIKE);
   }
@@ -39,10 +46,12 @@ public final class ForeignKeySearchPanel extends ColumnSearchPanel<Property.Fore
       this.model = model;
     }
 
+    /** {@inheritDoc} */
     public ColumnSearchModel<Property.ForeignKeyProperty> getSearchModel() {
       return model;
     }
 
+    /** {@inheritDoc} */
     public JComponent initializeInputField(final boolean isUpperBound) {
       final JComponent field = initEntityField();
       field.setToolTipText(isUpperBound ? "a" : "b");
@@ -69,6 +78,7 @@ public final class ForeignKeySearchPanel extends ColumnSearchPanel<Property.Fore
 
     private Action getEnableAction() {
       return new AbstractAction() {
+        /** {@inheritDoc} */
         public void actionPerformed(final ActionEvent e) {
           model.setEnabled(!model.isEnabled());
         }

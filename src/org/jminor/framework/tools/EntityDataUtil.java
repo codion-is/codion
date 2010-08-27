@@ -13,6 +13,15 @@ public final class EntityDataUtil {
 
   private EntityDataUtil() {}
 
+  /**
+   * Copies the given entities from source to destination
+   * @param source the source db
+   * @param destination the destination db
+   * @param transactionBatchSize the number of records to copy between commits
+   * @param copyPrimaryKeys if true primary key values are included, if false then they are assumed to be auto-generated
+   * @param entityIDs the ID's of the entity types to copy
+   * @throws Exception in case of an exception
+   */
   public static void copyEntities(final EntityDb source, final EntityDb destination, final int transactionBatchSize,
                                   final boolean copyPrimaryKeys, final String... entityIDs) throws Exception {
     try {

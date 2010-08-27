@@ -25,6 +25,10 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
   private final EntityDbProvider dbProvider;
   private final List<EntityModel> mainApplicationModels = new ArrayList<EntityModel>();
 
+  /**
+   * Instantiates a new DefaultEntityApplicationModel
+   * @param dbProvider the EntityDbProvider instance
+   */
   public DefaultEntityApplicationModel(final EntityDbProvider dbProvider) {
     this.dbProvider = dbProvider;
     loadDomainModel();
@@ -161,7 +165,15 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
    */
   protected abstract void loadDomainModel();
 
+  /**
+   * Called after a logout has been performed.
+   * Override to add a logout handler.
+   */
   protected void handleLogout() {}
 
+  /**
+   * Called after a login has been performed
+   * Override to add a login handler.
+   */
   protected void handleLogin() {}
 }

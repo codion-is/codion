@@ -7,10 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A class for logging method calls.<br>
- * User: Björn Darri<br>
- * Date: 24.4.2010<br>
- * Time: 10:10:55<br>
+ * A cyclycal method logger.
  */
 public class MethodLogger {
 
@@ -25,10 +22,19 @@ public class MethodLogger {
   private String lastAccessMessage;
   private String lastExitedMethod;
 
+  /**
+   * Instantiates a new MethodLogger.
+   * @param logSize the log size
+   */
   public MethodLogger(final int logSize) {
     this(logSize, false);
   }
 
+  /**
+   * Instantiates a new MethodLogger.
+   * @param logSize the log size
+   * @param enabled true if this logger should be enabled
+   */
   public MethodLogger(final int logSize, final boolean enabled) {
     this.logSize = logSize;
     this.logEntries = initializeLogEntryList();

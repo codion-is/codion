@@ -49,6 +49,11 @@ public final class ServerMonitorPanel extends JPanel {
           null, null, null, PlotOrientation.VERTICAL, true, true, false);
   private final ChartPanel connectionCountChartPanel = new ChartPanel(connectionCountChart);
 
+  /**
+   * Instantiates a new ServerMonitorPanel
+   * @param model the ServerMonitor to base this panel on
+   * @throws RemoteException in case of an exception
+   */
   public ServerMonitorPanel(final ServerMonitor model) throws RemoteException {
     this.model = model;
     requestsPerSecondChart.getXYPlot().setDataset(model.getConnectionRequestsDataSet());

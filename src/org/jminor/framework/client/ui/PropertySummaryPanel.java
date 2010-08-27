@@ -33,6 +33,7 @@ public final class PropertySummaryPanel extends JPanel {
   public PropertySummaryPanel(final PropertySummaryModel model) {
     this.model = model;
     model.addSummaryListener(new ActionListener() {
+      /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
         final String summaryText = model.getSummaryText();
         lblSummary.setText(summaryText);
@@ -55,6 +56,7 @@ public final class PropertySummaryPanel extends JPanel {
     add(lblSummary, BorderLayout.CENTER);
     final JPopupMenu menu = createPopupMenu();
     lblSummary.addMouseListener(new MouseAdapter() {
+      /** {@inheritDoc} */
       @Override
       public void mouseReleased(final MouseEvent e) {
         menu.show(lblSummary, e.getX(), e.getY() - menu.getPreferredSize().height);
@@ -73,6 +75,7 @@ public final class PropertySummaryPanel extends JPanel {
         }
       });
       model.addSummaryTypeListener(new ActionListener() {
+        /** {@inheritDoc} */
         public void actionPerformed(final ActionEvent e) {
           item.setSelected(model.getSummaryType() == summaryType);
         }

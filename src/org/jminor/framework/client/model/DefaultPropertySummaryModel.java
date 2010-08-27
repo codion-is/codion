@@ -16,6 +16,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * A default PropertySummaryModel implementation.
+ */
 public class DefaultPropertySummaryModel implements PropertySummaryModel {
 
   private static final Summary NONE = new None();
@@ -33,6 +36,11 @@ public class DefaultPropertySummaryModel implements PropertySummaryModel {
 
   private SummaryType summaryType = SummaryType.NONE;
 
+  /**
+   * Instantiates a new DefaultPropertySummaryModel
+   * @param property the property to summarize
+   * @param valueProvider the property value provider
+   */
   public DefaultPropertySummaryModel(final Property property, final PropertyValueProvider valueProvider) {
     this.property = property;
     this.valueProvider = valueProvider;

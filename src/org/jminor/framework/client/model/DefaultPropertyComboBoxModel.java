@@ -33,6 +33,7 @@ public class DefaultPropertyComboBoxModel extends DefaultFilteredComboBoxModel {
                                       final Property.ColumnProperty property, final String nullValueString,
                                       final EventObserver refreshEvent) {
     this(new ValueCollectionProvider<Object>() {
+      /** {@inheritDoc} */
       public Collection<Object> getValues() {
         try {
           return dbProvider.getEntityDb().selectPropertyValues(entityID, property.getPropertyID(), true);
@@ -55,6 +56,7 @@ public class DefaultPropertyComboBoxModel extends DefaultFilteredComboBoxModel {
     this.valueProvider = valueProvider;
     if (refreshEvent != null) {
       refreshEvent.addListener(new ActionListener() {
+        /** {@inheritDoc} */
         public void actionPerformed(final ActionEvent e) {
           refresh();
         }

@@ -28,10 +28,22 @@ public final class DateInputPanel extends JPanel {
   private final SimpleDateFormat dateFormat;
   private JButton button;
 
-  public DateInputPanel(final Date initialValue, final SimpleDateFormat maskFormat) {
-    this(UiUtil.createFormattedField(maskFormat, initialValue), maskFormat, true, null);
+  /**
+   * Instantiates a new DateInputPanel.
+   * @param initialValue the initial value to display
+   * @param dateFormat the date format
+   */
+  public DateInputPanel(final Date initialValue, final SimpleDateFormat dateFormat) {
+    this(UiUtil.createFormattedField(dateFormat, initialValue), dateFormat, true, null);
   }
 
+  /**
+   * Instantiates a new DateInputPanel.
+   * @param inputField the input field
+   * @param dateFormat the date format
+   * @param includeButton if true a "..." button is included
+   * @param enabledState the enabled state
+   */
   public DateInputPanel(final JFormattedTextField inputField, final SimpleDateFormat dateFormat,
                         final boolean includeButton, final StateObserver enabledState) {
     super(new BorderLayout());
@@ -42,6 +54,7 @@ public final class DateInputPanel extends JPanel {
     add(inputField, BorderLayout.CENTER);
     if (includeButton) {
       final AbstractAction buttonAction = new AbstractAction("...") {
+        /** {@inheritDoc} */
         public void actionPerformed(final ActionEvent e) {
           Date currentValue = null;
           try {
@@ -62,18 +75,31 @@ public final class DateInputPanel extends JPanel {
     }
   }
 
+  /**
+   * @return the input field
+   */
   public JFormattedTextField getInputField() {
     return inputField;
   }
 
+  /**
+   * @return the button, if any
+   */
   public JButton getButton() {
     return button;
   }
 
+  /**
+   * @return the Date currently being displayed
+   * @throws ParseException in case the date can not be parsed
+   */
   public Date getDate() throws ParseException {
     return dateFormat.parse(inputField.getText());
   }
 
+  /**
+   * @return the format pattern
+   */
   public String getFormatPattern() {
     return dateFormat.toPattern();
   }
@@ -85,6 +111,7 @@ public final class DateInputPanel extends JPanel {
       this.inputField = inputField;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void focusGained(final FocusEvent e) {
       inputField.requestFocusInWindow();

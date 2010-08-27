@@ -18,6 +18,8 @@ import org.jminor.framework.Configuration;
 import org.jminor.framework.server.monitor.HostMonitor;
 import org.jminor.framework.server.monitor.MonitorModel;
 
+import org.apache.log4j.Logger;
+
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -31,9 +33,11 @@ import java.io.IOException;
 import java.rmi.RemoteException;
 
 /**
- * A MonitorPanel 
+ * A MonitorPanel
  */
 public final class MonitorPanel extends JPanel {
+
+  private static final Logger LOG = Util.getLogger(MonitorPanel.class);
 
   private static final String JDK_PREFERENCE_KEY = MonitorPanel.class.getName() + ".jdkPathPreferenceKey";
   private static String jdkDir = Util.getUserPreference(JDK_PREFERENCE_KEY, null);
@@ -43,6 +47,10 @@ public final class MonitorPanel extends JPanel {
   private final MonitorModel model;
   private JFrame monitorFrame;
 
+  /**
+   * Instantiates a new MonitorPanel
+   * @throws RemoteException in case of an exception
+   */
   public MonitorPanel() throws RemoteException {
     this(new MonitorModel(Configuration.getStringValue(Configuration.SERVER_HOST_NAME)));
     Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
@@ -52,6 +60,11 @@ public final class MonitorPanel extends JPanel {
     });
   }
 
+  /**
+   * Instantiates a new MonitorPanel
+   * @param model the MonitorModel to base this panel on
+   * @throws RemoteException in case of an exception
+   */
   public MonitorPanel(final MonitorModel model) throws RemoteException {
     this.model = model;
     initUI();
@@ -198,7 +211,7 @@ public final class MonitorPanel extends JPanel {
           new MonitorPanel().showFrame();
         }
         catch (Exception e) {
-          e.printStackTrace();
+          LOG.error(e);
           System.exit(1);
         }
       }

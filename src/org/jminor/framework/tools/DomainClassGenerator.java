@@ -296,6 +296,7 @@ public final class DomainClassGenerator {
       this.schemaName = schemaName;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
       return schemaName;
@@ -303,6 +304,7 @@ public final class DomainClassGenerator {
   }
 
   static class SchemaPacker implements ResultPacker<Schema> {
+    /** {@inheritDoc} */
     public List<Schema> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       final List<Schema> schemas = new ArrayList<Schema>();
       int counter = 0;
@@ -332,6 +334,7 @@ public final class DomainClassGenerator {
       this.columns = columns;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
       return schemaName + "." + tableName;
@@ -348,6 +351,7 @@ public final class DomainClassGenerator {
       this.schema = schema;
     }
 
+    /** {@inheritDoc} */
     public List<Table> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       final List<Table> tables = new ArrayList<Table>();
       int counter = 0;
@@ -413,6 +417,7 @@ public final class DomainClassGenerator {
       this.primaryKey = primaryKey;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
       return schemaName + "." + tableName + "." + columnName;
@@ -420,6 +425,7 @@ public final class DomainClassGenerator {
   }
 
   static class ColumnPacker implements ResultPacker<Column> {
+    /** {@inheritDoc} */
     public List<Column> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       final List<Column> columns = new ArrayList<Column>();
       int counter = 0;
@@ -467,6 +473,7 @@ public final class DomainClassGenerator {
       return new Table(pkSchemaName, pkTableName);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
       return fkSchemaName + "." + fkTableName + "." + fkColumnName + " -> " + pkSchemaName + "." + pkTableName + "." + pkColumnName;
@@ -478,6 +485,7 @@ public final class DomainClassGenerator {
   }
 
   static class ForeignKeyPacker implements ResultPacker<ForeignKey> {
+    /** {@inheritDoc} */
     public List<ForeignKey> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       final List<ForeignKey> foreignKeys = new ArrayList<ForeignKey>();
       int counter = 0;
@@ -505,6 +513,7 @@ public final class DomainClassGenerator {
       this.keySeq = keySeq;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
       return pkSchemaName + "." + pkTableName + "." + pkColumnName;
@@ -516,6 +525,7 @@ public final class DomainClassGenerator {
   }
 
   static class PrimaryKeyPacker implements ResultPacker<PrimaryKey> {
+    /** {@inheritDoc} */
     public List<PrimaryKey> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       final List<PrimaryKey> primaryKeys = new ArrayList<PrimaryKey>();
       int counter = 0;

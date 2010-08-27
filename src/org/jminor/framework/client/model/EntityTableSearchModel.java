@@ -29,8 +29,14 @@ public interface EntityTableSearchModel extends FilterCriteria<Entity>, Refresha
    */
   StateObserver getSearchStateChangedState();
 
+  /**
+   * @param listener a listener notified each time the filter state changes
+   */
   void addFilterStateListener(final ActionListener listener);
 
+  /**
+   * @param listener the listener to remove
+   */
   void removeFilterStateListener(final ActionListener listener);
 
   /**
@@ -63,8 +69,16 @@ public interface EntityTableSearchModel extends FilterCriteria<Entity>, Refresha
    */
   Criteria<Property.ColumnProperty> getSearchCriteria();
 
+  /**
+   * @return any additional search criteria, not based on any individual property criteria
+   */
   Criteria<Property.ColumnProperty> getAdditionalSearchCriteria();
 
+  /**
+   * Sets the additional search criteria, one not based on any individual property criteria
+   * @param criteria the criteria
+   * @return this EntityTableSearchModel instance
+   */
   EntityTableSearchModel setAdditionalSearchCriteria(final Criteria<Property.ColumnProperty> criteria);
 
   /**
@@ -86,6 +100,9 @@ public interface EntityTableSearchModel extends FilterCriteria<Entity>, Refresha
    */
   void setSearchModelState();
 
+  /**
+   * @return true if simple search should be activated
+   */
   boolean isSimpleSearch();
 
   /**

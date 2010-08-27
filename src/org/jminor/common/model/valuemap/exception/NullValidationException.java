@@ -9,6 +9,11 @@ package org.jminor.common.model.valuemap.exception;
  */
 public class NullValidationException extends ValidationException {
 
+  /**
+   * Instantiates a new NullValidationException
+   * @param key the key with which the null value is associated
+   * @param message the message
+   */
   public NullValidationException(final Object key, final String message) {
     super(key, null, message);
   }

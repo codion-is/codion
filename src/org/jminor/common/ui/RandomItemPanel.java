@@ -35,6 +35,9 @@ public final class RandomItemPanel<T> extends JPanel {
     initializeUI();
   }
 
+  /**
+   * @return the RandomItemModel this panel is based on
+   */
   public RandomItemModel<T> getModel() {
     return model;
   }

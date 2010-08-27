@@ -177,6 +177,7 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
     final List<TableColumn> allColumns = Collections.list(tableModel.getColumnModel().getColumns());
     allColumns.addAll(tableModel.getHiddenColumns());
     Collections.sort(allColumns, new Comparator<TableColumn>() {
+      /** {@inheritDoc} */
       public int compare(final TableColumn o1, final TableColumn o2) {
         return Collator.getInstance().compare(o1.getIdentifier().toString(), o2.getIdentifier().toString());
       }
@@ -212,12 +213,14 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
     txtSearch.setColumns(8);
     SearchFieldHint.enable(txtSearch);
     txtSearch.getDocument().addDocumentListener(new DocumentAdapter() {
+      /** {@inheritDoc} */
       @Override
       public void insertOrRemoveUpdate(final DocumentEvent e) {
         doSearch(false, lastSearchResultIndex.y == -1 ? 0 : lastSearchResultIndex.y, true, txtSearch.getText());
       }
     });
     txtSearch.addKeyListener(new KeyAdapter() {
+      /** {@inheritDoc} */
       @Override
       public void keyReleased(final KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_DOWN) {
@@ -233,6 +236,7 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
     });
     UiUtil.selectAllOnFocusGained(txtSearch);
     UiUtil.addKeyEvent(txtSearch, KeyEvent.VK_ESCAPE, new AbstractAction("requestJTableFocus") {
+      /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
         getJTable().requestFocusInWindow();
       }
@@ -273,6 +277,7 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
     panel.add(boxRegexp);
 
     final AbstractAction action = new AbstractAction(Messages.get(Messages.OK)) {
+      /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
         tableModel.setRegularExpressionSearch(boxRegexp.isSelected());
       }
@@ -281,6 +286,7 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
 
     final JPopupMenu popupMenu = new JPopupMenu();
     popupMenu.add(new AbstractAction(Messages.get(Messages.SETTINGS)) {
+      /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
         UiUtil.showInDialog(UiUtil.getParentWindow(AbstractFilteredTablePanel.this), panel, true,
                 Messages.get(Messages.SETTINGS), true, true, action);
@@ -305,6 +311,7 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
     table.getTableHeader().addMouseListener(new MouseSortHandler());
     table.getTableHeader().setDefaultRenderer(new SortableHeaderRenderer(table.getTableHeader().getDefaultRenderer()));
     table.getTableHeader().addMouseListener(new MouseAdapter() {
+      /** {@inheritDoc} */
       @Override
       public void mouseClicked(final MouseEvent e) {
         if (e.isAltDown()) {
@@ -316,6 +323,7 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
 
   private void bindEvents() {
     this.tableModel.addSortingListener(new ActionListener() {
+      /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
         getJTable().getTableHeader().repaint();
       }
@@ -325,6 +333,7 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
       final TableColumn column = columns.nextElement();
       final ColumnSearchModel model = tableModel.getFilterModel(column.getModelIndex());
       model.addSearchStateListener(new ActionListener() {
+        /** {@inheritDoc} */
         public void actionPerformed(final ActionEvent e) {
           if (model.isEnabled()) {
             addFilterIndicator(column);
@@ -377,6 +386,7 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
   }
 
   private final class MouseSortHandler extends MouseAdapter {
+    /** {@inheritDoc} */
     @SuppressWarnings({"unchecked"})
     @Override
     public void mouseClicked(final MouseEvent e) {
@@ -436,6 +446,7 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
       this.priority = priority;
     }
 
+    /** {@inheritDoc} */
     public void paintIcon(final Component c, final Graphics g, final int x, final int y) {
       final Color color = c == null ? Color.GRAY : c.getBackground();
       // In a compound sort, make each succesive triangle 20%
@@ -469,10 +480,12 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
       g.translate(-x, -theY);
     }
 
+    /** {@inheritDoc} */
     public int getIconWidth() {
       return size;
     }
 
+    /** {@inheritDoc} */
     public int getIconHeight() {
       return size;
     }
@@ -485,8 +498,8 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
       this.tableCellRenderer = tableCellRenderer;
     }
 
-    @SuppressWarnings({"unchecked"})
     /** {@inheritDoc} */
+    @SuppressWarnings({"unchecked"})
     public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
                                                    final boolean hasFocus, final int row, final int column) {
       final Component component = tableCellRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);

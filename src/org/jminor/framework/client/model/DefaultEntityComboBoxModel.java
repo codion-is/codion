@@ -64,6 +64,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
   private final Map<String, Set<Entity>> foreignKeyFilterEntities = new HashMap<String, Set<Entity>>();
 
   private final FilterCriteria<Entity> foreignKeyFilterCriteria = new FilterCriteria<Entity>() {
+    /** {@inheritDoc} */
     public boolean include(final Entity item) {
       for (final Map.Entry<String, Set<Entity>> entry : foreignKeyFilterEntities.entrySet()) {
         final Entity foreignKeyValue = item.getForeignKeyValue(entry.getKey());
@@ -89,6 +90,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     this.selectCriteria = EntityCriteriaUtil.selectCriteria(entityID);
     final FilterCriteria<Entity> superCriteria = super.getFilterCriteria();
     setFilterCriteria(new FilterCriteria<Entity>() {
+      /** {@inheritDoc} */
       public boolean include(final Entity item) {
         return superCriteria.include(item) && foreignKeyFilterCriteria.include(item);
       }
@@ -220,6 +222,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
       foreignKeyModel.setSelectedItem(filterEntities.iterator().next());
     }
     foreignKeyModel.addSelectionListener(new ActionListener() {
+      /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
         final Entity selectedEntity = foreignKeyModel.getSelectedEntity();
         model.setForeignKeyFilterEntities(foreignKeyPropertyID,
@@ -227,6 +230,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
       }
     });
     model.addSelectionListener(new ActionListener() {
+      /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
         final Entity selected = model.getSelectedEntity();
         if (selected != null) {
@@ -236,6 +240,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
       }
     });
     model.addRefreshListener(new ActionListener() {
+      /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
         foreignKeyModel.forceRefresh();
       }

@@ -113,15 +113,24 @@ public class EntityTableCellRenderer implements TableCellRenderer {
   public static class DoubleRenderer extends DefaultTableCellRenderer {
     private final NumberFormat format;
 
+    /**
+     * Instantiates a new DoubleRenderer.
+     * @param property the property to base this renderer on
+     */
     public DoubleRenderer(final Property property) {
       this(initNumberFormat(property));
     }
 
+    /**
+     * Instantiates a new DoubleRenderer.
+     * @param format the format
+     */
     public DoubleRenderer(final NumberFormat format) {
       this.format = format;
       setHorizontalAlignment(JLabel.RIGHT);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void setValue(final Object value) {
       if (value instanceof String) {
@@ -143,15 +152,24 @@ public class EntityTableCellRenderer implements TableCellRenderer {
   public static class IntegerRenderer extends DefaultTableCellRenderer {
     private final NumberFormat format;
 
+    /**
+     * Instantiates a new DoubleRenderer.
+     * @param property the property to base this renderer on
+     */
     public IntegerRenderer(final Property property) {
       this(initNumberFormat(property));
     }
 
+    /**
+     * Instantiates a new IntegerRenderer.
+     * @param format the format
+     */
     public IntegerRenderer(final NumberFormat format) {
       this.format = format;
       setHorizontalAlignment(JLabel.RIGHT);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void setValue(final Object value) {
       if (value instanceof String) {
@@ -173,15 +191,24 @@ public class EntityTableCellRenderer implements TableCellRenderer {
   public static class DateRenderer extends DefaultTableCellRenderer {
     private final DateFormat format;
 
+    /**
+     * Instantiates a new DateRenderer.
+     * @param property the property to base this renderer on
+     */
     public DateRenderer(final Property property) {
       this(initDateFormat(property));
     }
 
+    /**
+     * Instantiates a new DateRenderer.
+     * @param format the format
+     */
     public DateRenderer(final DateFormat format) {
       this.format =  format;
       setHorizontalAlignment(JLabel.RIGHT);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void setValue(final Object value) {
       String txt = "";
@@ -206,15 +233,24 @@ public class EntityTableCellRenderer implements TableCellRenderer {
   public static class TimestampRenderer extends DefaultTableCellRenderer {
     private final DateFormat format;
 
+    /**
+     * Instantiates a new TimestampRenderer.
+     * @param property the property to base this renderer on
+     */
     public TimestampRenderer(final Property property) {
       this(initTimestampFormat(property));
     }
 
+    /**
+     * Instantiates a new TimestampRenderer.
+     * @param format the format
+     */
     public TimestampRenderer(final DateFormat format) {
       this.format = format;
       setHorizontalAlignment(JLabel.RIGHT);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void setValue(final Object value) {
       String txt = "";
@@ -243,6 +279,7 @@ public class EntityTableCellRenderer implements TableCellRenderer {
       setHorizontalAlignment(JLabel.CENTER);
     }
 
+    /** {@inheritDoc} */
     public Component getTableCellRendererComponent(final JTable table, final Object value,
                                                    final boolean isSelected, final boolean hasFocus,
                                                    final int row, final int column) {

@@ -233,11 +233,13 @@ public class EntityPanelProvider implements Comparable {
     return thisCompare.compareTo(thatCompare);
   }
 
+  /** {@inheritDoc} */
   @Override
   public final boolean equals(final Object obj) {
     return obj instanceof EntityPanelProvider && ((EntityPanelProvider) obj).entityID.equals(entityID);
   }
 
+  /** {@inheritDoc} */
   @Override
   public final int hashCode() {
     return entityID.hashCode();

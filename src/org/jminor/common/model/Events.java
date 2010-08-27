@@ -73,10 +73,6 @@ public final class Events {
         observer.removeListener(listener);
       }
     }
-
-    public Collection<? extends ActionListener> getListeners() {
-      return ((EventObserverImpl) getObserver()).getListeners();
-    }
   }
 
   private static final class EventObserverImpl implements EventObserver {

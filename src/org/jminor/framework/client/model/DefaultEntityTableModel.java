@@ -99,15 +99,33 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   private ReportDataWrapper reportDataSource;
 
+  /**
+   * Instantiates a new DefaultEntityTableModel with default column and search models.
+   * @param entityID the entity ID
+   * @param dbProvider the db provider
+   */
   public DefaultEntityTableModel(final String entityID, final EntityDbProvider dbProvider) {
     this(entityID, dbProvider, new DefaultEntityTableColumnModel(entityID));
   }
 
+  /**
+   * Instantiates a new DefaultEntityTableModel with a default search model.
+   * @param entityID the entity ID
+   * @param dbProvider the db provider
+   * @param columnModel the column model
+   */
   public DefaultEntityTableModel(final String entityID, final EntityDbProvider dbProvider,
                                  final EntityTableColumnModel columnModel) {
     this(entityID, dbProvider, columnModel, new DefaultEntityTableSearchModel(entityID, dbProvider, false));
   }
 
+  /**
+   * Instantiates a new DefaultEntityTableModel.
+   * @param entityID the entity ID
+   * @param dbProvider the db provider
+   * @param columnModel the column model
+   * @param searchModel the search model
+   */
   public DefaultEntityTableModel(final String entityID, final EntityDbProvider dbProvider,
                                  final EntityTableColumnModel columnModel,
                                  final EntityTableSearchModel searchModel) {
@@ -463,16 +481,19 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   public final PropertySummaryModel getPropertySummaryModel(final Property property) {
     if (!propertySummaryModels.containsKey(property.getPropertyID())) {
       final PropertySummaryModel.PropertyValueProvider valueProvider = new PropertySummaryModel.PropertyValueProvider() {
+        /** {@inheritDoc} */
         public void bindValuesChangedEvent(final Event event) {
           addFilteringListener(event);//todo summary is updated twice per refresh and should update on insert
           addRefreshDoneListener(event);
           addSelectionChangedListener(event);
         }
 
+        /** {@inheritDoc} */
         public Collection<?> getValues() {
           return DefaultEntityTableModel.this.getValues(property, isValueSubset());
         }
 
+        /** {@inheritDoc} */
         public boolean isValueSubset() {
           return !isSelectionEmpty();
         }
@@ -574,16 +595,19 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   private void bindEvents() {
     addColumnHiddenListener(new ActionListener() {
+      /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
         handleColumnHidden((Property) e.getSource());
       }
     });
     addRefreshDoneListener(new ActionListener() {
+      /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
         searchModel.setSearchModelState();
       }
     });
     searchModel.addFilterStateListener(new ActionListener() {
+      /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
         filterContents();
       }
@@ -592,23 +616,27 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   private void bindEditModelEvents() {
     editModel.addAfterDeleteListener(new DeleteListener() {
+      /** {@inheritDoc} */
       @Override
       protected void deleted(final DeleteEvent event) {
         handleDeleteInternal(event);
       }
     });
     editModel.addAfterRefreshListener(new ActionListener() {
+      /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
         refresh();
       }
     });
     addSelectedIndexListener(new ActionListener() {
+      /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
         editModel.setEntity(isSelectionEmpty() ? null : getSelectedItem());
       }
     });
 
     addTableModelListener(new TableModelListener() {
+      /** {@inheritDoc} */
       public void tableChanged(final TableModelEvent e) {
         //if the selected record is being updated via the table model refresh the one in the edit model
         if (e.getType() == TableModelEvent.UPDATE && e.getFirstRow() == getSelectedIndex()) {

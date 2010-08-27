@@ -50,6 +50,7 @@ public abstract class AbstractValueLink<T, V> extends Control {
     this.linkType = linkType;
     if (linkType != LinkType.WRITE_ONLY && modelValueChangeEvent != null) {
       modelValueChangeEvent.addListener(new ActionListener() {
+        /** {@inheritDoc} */
         public void actionPerformed(final ActionEvent e) {
           updateUI();
         }

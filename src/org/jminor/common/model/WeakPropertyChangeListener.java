@@ -15,10 +15,15 @@ public final class WeakPropertyChangeListener implements PropertyChangeListener 
 
   private final WeakReference<PropertyChangeListener> listenerReference;
 
+  /**
+   * Instantiates a new WeakPropertyChangeListener
+   * @param listener the PropertyChangeListener instance
+   */
   public WeakPropertyChangeListener(final PropertyChangeListener listener) {
     listenerReference = new WeakReference<PropertyChangeListener>(listener);
   }
 
+  /** {@inheritDoc} */
   public void propertyChange(final PropertyChangeEvent evt) {
     final PropertyChangeListener listener = listenerReference.get();
     if (listener == null) {

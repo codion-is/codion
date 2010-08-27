@@ -10,6 +10,9 @@ import java.awt.event.ActionListener;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * Specifies a class responsible for, among other things, coordinating a EntityEditModel and an EntityTableModel.
+ */
 public interface EntityModel extends Refreshable, EntityDataProvider {
 
   /**
