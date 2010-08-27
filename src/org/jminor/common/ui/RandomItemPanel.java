@@ -106,14 +106,14 @@ public final class RandomItemPanel<T> extends JPanel {
 
     /** {@inheritDoc} */
     @Override
-    protected Integer getUIValue() {
-      return (Integer) spinnerModel.getValue();
+    public void setModelValue(final Integer value) {
+      getModel().setWeight(item, value);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void setModelValue(final Integer value) {
-      getModel().setWeight(item, value);
+    protected Integer getUIValue() {
+      return (Integer) spinnerModel.getValue();
     }
 
     /** {@inheritDoc} */
