@@ -14,18 +14,35 @@ import java.awt.event.ActionListener;
 /**
  * A factory class for adding validators to components.
  */
-final class ValueLinkValidators {
+public final class ValueLinkValidators {
 
   private ValueLinkValidators() {}
 
-  static <K> void addValidator(final TextValueLink<K> valueLink, final JTextComponent textComponent,
-                               final ValueChangeMapEditModel<K, Object> editModel) {
+  /**
+   * Adds a validator to the given text component, based on the given value link and edit model
+   * @param valueLink the value link
+   * @param textComponent the text component
+   * @param editModel the edit model
+   * @param <K> the type of the edit model value keys
+   */
+  public static <K> void addValidator(final TextValueLink<K> valueLink, final JTextComponent textComponent,
+                                      final ValueChangeMapEditModel<K, Object> editModel) {
     addValidator(valueLink, textComponent, editModel, textComponent.getBackground(), Color.LIGHT_GRAY, textComponent.getToolTipText());
   }
 
-  static <K> void addValidator(final TextValueLink<K> valueLink, final JTextComponent textComponent,
-                               final ValueChangeMapEditModel<K, Object> editModel,
-                               final Color validBackgroundColor, final Color invalidBackgroundColor, final String defaultToolTip) {
+  /**
+   * Adds a validator to the given text component, based on the given value link and edit model
+   * @param valueLink the value link
+   * @param textComponent the text component
+   * @param editModel the edit model
+   * @param validBackgroundColor the background color indicating a valid value
+   * @param invalidBackgroundColor the background color indicating in invalid value
+   * @param defaultToolTip the tooltip to use while the value is valid
+   * @param <K> the type of the edit model value keys
+   */
+  public static <K> void addValidator(final TextValueLink<K> valueLink, final JTextComponent textComponent,
+                                      final ValueChangeMapEditModel<K, Object> editModel,
+                                      final Color validBackgroundColor, final Color invalidBackgroundColor, final String defaultToolTip) {
     if (valueLink instanceof FormattedValueLink) {
       new FormattedTextValidator<K>((FormattedValueLink<K>) valueLink, textComponent, editModel).updateValidityInfo();
     }
@@ -137,7 +154,7 @@ final class ValueLinkValidators {
     private final String maskString;
 
     private FormattedTextValidator(final FormattedValueLink<K> textValueLink, final JTextComponent textComponent,
-                               final ValueChangeMapEditModel<K, Object> editModel) {
+                                   final ValueChangeMapEditModel<K, Object> editModel) {
       super(textValueLink, textComponent, editModel);
       this.maskString = textComponent.getText();
     }

@@ -63,7 +63,6 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> {
     if (linkType == LinkType.READ_ONLY) {
       textComponent.setEditable(false);
     }
-    ValueLinkValidators.addValidator(this, textComponent, editModel);
     updateUI();
     this.document.addDocumentListener(new DocumentAdapter() {
       /** {@inheritDoc} */

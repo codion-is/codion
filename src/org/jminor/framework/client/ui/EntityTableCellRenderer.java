@@ -47,7 +47,7 @@ public class EntityTableCellRenderer implements TableCellRenderer {
   }
 
   /** {@inheritDoc} */
-  public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
+  public final Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
                                                  final boolean hasFocus, final int row, final int column) {
     final Property property = tableModel.getColumnProperty(column);
     final Component component =
@@ -76,7 +76,7 @@ public class EntityTableCellRenderer implements TableCellRenderer {
     return component;
   }
 
-  protected TableCellRenderer getRenderer(final Property columnProperty) {
+  protected final TableCellRenderer getRenderer(final Property columnProperty) {
     TableCellRenderer renderer = renderers.get(columnProperty.getPropertyID());
     if (renderer == null) {
       renderer = initializeRenderer(columnProperty);
@@ -110,7 +110,7 @@ public class EntityTableCellRenderer implements TableCellRenderer {
   /**
    * A cell renderer for doubles.
    */
-  public static class DoubleRenderer extends DefaultTableCellRenderer {
+  public static final class DoubleRenderer extends DefaultTableCellRenderer {
     private final NumberFormat format;
 
     /**
@@ -149,7 +149,7 @@ public class EntityTableCellRenderer implements TableCellRenderer {
   /**
    * A cell renderer for integers.
    */
-  public static class IntegerRenderer extends DefaultTableCellRenderer {
+  public static final class IntegerRenderer extends DefaultTableCellRenderer {
     private final NumberFormat format;
 
     /**
@@ -188,7 +188,7 @@ public class EntityTableCellRenderer implements TableCellRenderer {
   /**
    * A cell renderer for dates.
    */
-  public static class DateRenderer extends DefaultTableCellRenderer {
+  public static final class DateRenderer extends DefaultTableCellRenderer {
     private final DateFormat format;
 
     /**
@@ -230,7 +230,7 @@ public class EntityTableCellRenderer implements TableCellRenderer {
   /**
    * A cell renderer for timestamps.
    */
-  public static class TimestampRenderer extends DefaultTableCellRenderer {
+  public static final class TimestampRenderer extends DefaultTableCellRenderer {
     private final DateFormat format;
 
     /**
@@ -272,7 +272,7 @@ public class EntityTableCellRenderer implements TableCellRenderer {
   /**
    * A cell renderer for booleans.
    */
-  public static class BooleanRenderer extends JCheckBox implements TableCellRenderer {
+  public static final class BooleanRenderer extends JCheckBox implements TableCellRenderer {
 
     /** Constructs a new BooleanRenderer. */
     public BooleanRenderer() {

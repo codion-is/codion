@@ -35,6 +35,7 @@ import org.jminor.common.ui.valuemap.FormattedValueLink;
 import org.jminor.common.ui.valuemap.IntValueLink;
 import org.jminor.common.ui.valuemap.TextValueLink;
 import org.jminor.common.ui.valuemap.TristateValueLink;
+import org.jminor.common.ui.valuemap.ValueLinkValidators;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityComboBoxModel;
 import org.jminor.framework.client.model.EntityEditModel;
@@ -479,7 +480,8 @@ public final class EntityUiUtil {
     textArea.setLineWrap(true);
     textArea.setWrapStyleWord(true);
 
-    new TextValueLink<String>(textArea, editModel, property.getPropertyID(), true, linkType);
+    final TextValueLink<String> valueLink = new TextValueLink<String>(textArea, editModel, property.getPropertyID(), true, linkType);
+    ValueLinkValidators.addValidator(valueLink, textArea, editModel);
     if (property.hasDescription()) {
       textArea.setToolTipText(property.getDescription());
     }
@@ -520,29 +522,31 @@ public final class EntityUiUtil {
     Util.rejectNullValue(linkType, "linkType");
     final JTextField textField = initTextField(property, editModel, enabledState, formatMaskString, valueContainsLiteralCharacters);
     final String propertyID = property.getPropertyID();
+    TextValueLink<String> valueLink;
     if (property.isString()) {
       if (formatMaskString != null) {
-        new FormattedValueLink<String>((JFormattedTextField) textField, editModel, propertyID, null, immediateUpdate, linkType);
+        valueLink = new FormattedValueLink<String>((JFormattedTextField) textField, editModel, propertyID, null, immediateUpdate, linkType);
       }
       else {
-        new TextValueLink<String>(textField, editModel, propertyID, immediateUpdate, linkType);
+        valueLink = new TextValueLink<String>(textField, editModel, propertyID, immediateUpdate, linkType);
       }
     }
     else if (property.isInteger()) {
-      new IntValueLink<String>((IntField) textField, editModel, propertyID, immediateUpdate, linkType);
+      valueLink = new IntValueLink<String>((IntField) textField, editModel, propertyID, immediateUpdate, linkType);
     }
     else if (property.isDouble()) {
-      new DoubleValueLink<String>((DoubleField) textField, editModel, propertyID, immediateUpdate, linkType);
+      valueLink = new DoubleValueLink<String>((DoubleField) textField, editModel, propertyID, immediateUpdate, linkType);
     }
     else if (property.isDate()) {
-      new DateValueLink<String>((JFormattedTextField) textField, editModel, propertyID, linkType, dateFormat, false);
+      valueLink = new DateValueLink<String>((JFormattedTextField) textField, editModel, propertyID, linkType, dateFormat, false);
     }
     else if (property.isTimestamp()) {
-      new DateValueLink<String>((JFormattedTextField) textField, editModel, propertyID, linkType, dateFormat, true);
+      valueLink = new DateValueLink<String>((JFormattedTextField) textField, editModel, propertyID, linkType, dateFormat, true);
     }
     else {
       throw new IllegalArgumentException("Not a text based property: " + property);
     }
+    ValueLinkValidators.addValidator(valueLink, textField, editModel);
 
     return textField;
   }
