@@ -191,22 +191,31 @@ public final class EntityDbRemoteProvider extends AbstractEntityDbProvider {
 
   private EntityDb initializeProxy(final EntityDbRemote remote) {
     return (EntityDb) Proxy.newProxyInstance(getClass().getClassLoader(),
-            new Class[] {EntityDb.class}, new InvocationHandler() {
-              public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
-                final Method remoteMethod = EntityDbRemote.class.getMethod(method.getName(), method.getParameterTypes());
-                try {
-                  return remoteMethod.invoke(remote, args);
-                }
-                catch (InvocationTargetException ie) {
-                  LOG.error(this, ie);
-                  throw (Exception) ie.getTargetException();
-                }
-                catch (Exception ie) {
-                  LOG.error(this, ie);
-                  throw ie;
-                }
-              }
-            });
+            new Class[] {EntityDb.class}, new RemoteInvocationHandler(remote));
+  }
+
+  private static final class RemoteInvocationHandler implements InvocationHandler {
+    private final EntityDbRemote remote;
+
+    private RemoteInvocationHandler(final EntityDbRemote remote) {
+      this.remote = remote;
+    }
+
+    /** {@inheritDoc} */
+    public Object invoke(final Object proxy, final Method method, final Object[] args) throws Exception {
+      final Method remoteMethod = EntityDbRemote.class.getMethod(method.getName(), method.getParameterTypes());
+      try {
+        return remoteMethod.invoke(remote, args);
+      }
+      catch (InvocationTargetException ie) {
+        LOG.error(this, ie);
+        throw (Exception) ie.getTargetException();
+      }
+      catch (Exception ie) {
+        LOG.error(this, ie);
+        throw ie;
+      }
+    }
   }
 
   private static final class ServerComparator implements Comparator<RemoteServer>, Serializable {

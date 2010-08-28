@@ -2076,3 +2076,5 @@
   EntityDbRemoteProvider proxies EntityDb
   EntityDb no longer throws Exception
   RuntimeException replaced with UnsupportedException, IllegalStateException and IllegalArgument exception where applicable
+  DomainClassGenerator renamed to EntityGenerator, refactored
+  EntityGeneratorTest added, needs fleshing out

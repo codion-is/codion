@@ -5,6 +5,7 @@ package org.jminor.framework.tools;
 
 import org.jminor.common.db.DbConnectionImpl;
 import org.jminor.common.db.ResultPacker;
+import org.jminor.common.db.dbms.Database;
 import org.jminor.common.db.dbms.DatabaseProvider;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.User;
@@ -30,11 +31,11 @@ import java.util.List;
 /**
  * A DomainClassGenerator
  */
-public final class DomainClassGenerator {
+public final class EntityGenerator {
 
   private static final String TABLE_SCHEMA = "TABLE_SCHEM";
 
-  private DomainClassGenerator() {}
+  private EntityGenerator() {}
 
   public static void main(final String[] arguments) throws Exception {
     final JTextField txtSchemaName = new JTextField();
@@ -60,7 +61,7 @@ public final class DomainClassGenerator {
         final User user = LoginPanel.getUser(null, username != null ? new User(username, null) : null);
         final String schemaName = txtSchemaName.getText();
         final String domainClassName = getDomainClassName(schemaName);
-        final String domainClass = getDomainClass(domainClassName, schemaName, txtPackageName.getText(),
+        final String domainClass = getDomainClass(DatabaseProvider.createInstance(), domainClassName, schemaName, txtPackageName.getText(),
                 user.getUsername(), user.getPassword(), txtTablesToInclude.getText());
         if (!chkClipboard.isSelected()) {
           Util.writeFile(domainClass, UiUtil.chooseFileToSave(null, null, domainClassName + ".java"));
@@ -77,16 +78,11 @@ public final class DomainClassGenerator {
     System.exit(0);
   }
 
-  public static String getDomainClassName(final String schemaName) {
-    return schemaName.substring(0,1).toUpperCase() + schemaName.substring(1).toLowerCase();
-  }
-
-  public static String getDomainClass(final String domainClassName, final String schema, final String packageName,
+  public static String getDomainClass(final Database database, final String domainClassName, final String schema, final String packageName,
                                       final String username, final String password, final String tableList) throws Exception {
     Util.rejectNullValue(schema, "schema");
-    final DbConnectionImpl dbConnection = new DbConnectionImpl(DatabaseProvider.createInstance(), new User(username, password));
+    final DbConnectionImpl dbConnection = new DbConnectionImpl(database, new User(username, password));
     try {
-
       final StringBuilder builder = new StringBuilder("package ").append(packageName).append(";\n\n");
 
       builder.append("import org.jminor.framework.domain.Entities;\n");
@@ -97,14 +93,18 @@ public final class DomainClassGenerator {
 
       final DatabaseMetaData metaData = dbConnection.getConnection().getMetaData();
 
-      final List<Table> tablesToProcess = new TablePacker(tableList, schema).pack(metaData.getTables(schema, schema, null, null), -1);
+      final String catalog = database.getDatabaseType().equals(Database.MYSQL) ? schema : null;
+      final List<Table> tablesToProcess = new TablePacker(tableList, schema).pack(metaData.getTables(catalog, schema, null, null), -1);
 
       if (tablesToProcess.isEmpty()) {
         throw new IllegalArgumentException("No tables to process");
       }
 
+      final List<ForeignKey> foreignKeys = getForeignKeys(metaData, catalog, schema);
+      final List<PrimaryKey> primaryKeys = getPrimaryKeys(metaData, catalog, schema);
       for (final Table table : tablesToProcess) {
-        appendPropertyConstants(builder, table, metaData);
+        final List<Column> columns = new ColumnPacker().pack(metaData.getColumns(catalog, table.schemaName, table.tableName, null), -1);
+        appendPropertyConstants(builder, table, columns, foreignKeys, primaryKeys);
       }
 
       builder.append("  static {\n");
@@ -124,7 +124,11 @@ public final class DomainClassGenerator {
     }
   }
 
-  public static void appendEntityDefinition(final StringBuilder builder, final Table table) {
+  private static String getDomainClassName(final String schemaName) {
+    return schemaName.substring(0,1).toUpperCase() + schemaName.substring(1).toLowerCase();
+  }
+
+  private static void appendEntityDefinition(final StringBuilder builder, final Table table) {
     builder.append("    Entities.define(").append(getEntityID(table)).append(",\n");
     for (final Column column : table.getColumns()) {
       builder.append(getPropertyDefinition(table, column))
@@ -133,11 +137,9 @@ public final class DomainClassGenerator {
     builder.append("    );\n\n");
   }
 
-  public static void appendPropertyConstants(final StringBuilder builder, final Table table,
-                                             final DatabaseMetaData metaData) throws SQLException {
-    final List<ForeignKey> foreignKeys = getForeignKeys(metaData, table.schemaName);
-    final List<PrimaryKey> primaryKeys = getPrimaryKeys(metaData, table.schemaName);
-    final List<Column> columns = new ColumnPacker().pack(metaData.getColumns(table.schemaName, table.schemaName, table.tableName, null), -1);
+  private static void appendPropertyConstants(final StringBuilder builder, final Table table,
+                                             final List<Column> columns, final List<ForeignKey> foreignKeys,
+                                             final List<PrimaryKey> primaryKeys) throws SQLException {
     for (final Column column : columns) {
       column.setForeignKey(getForeignKey(column, foreignKeys));
       column.setPrimaryKey(getPrimaryKey(column, primaryKeys));
@@ -148,7 +150,7 @@ public final class DomainClassGenerator {
     System.out.println("Done processing table: " + table);
   }
 
-  public static String getConstants(final Table table) {
+  private static String getConstants(final Table table) {
     final String schemaName = table.schemaName;
     final StringBuilder builder = new StringBuilder("  public static final String ").append(getEntityID(table)).append(
             " = \"").append(schemaName.toLowerCase()).append(".").append(table.tableName.toLowerCase()).append("\";").append("\n");
@@ -239,25 +241,26 @@ public final class DomainClassGenerator {
     return null;
   }
 
-  private static List<PrimaryKey> getPrimaryKeys(final DatabaseMetaData metaData, final String schema) throws SQLException {
+  private static List<PrimaryKey> getPrimaryKeys(final DatabaseMetaData metaData, final String catalog, final String schema) throws SQLException {
     final List<PrimaryKey> primaryKeys = new ArrayList<PrimaryKey>();
-    final List<Table> allSchemaTables = new TablePacker(null, schema).pack(metaData.getTables(schema, schema, null, null), -1);
+    final List<Table> allSchemaTables = new TablePacker(null, schema).pack(metaData.getTables(catalog, schema, null, null), -1);
     for (final Table table : allSchemaTables) {
-      primaryKeys.addAll(new PrimaryKeyPacker().pack(metaData.getPrimaryKeys(table.schemaName, table.schemaName, table.tableName), -1));
+      primaryKeys.addAll(new PrimaryKeyPacker().pack(metaData.getPrimaryKeys(catalog, table.schemaName, table.tableName), -1));
     }
     return primaryKeys;
   }
 
-  private static List<ForeignKey> getForeignKeys(final DatabaseMetaData metaData, final String schema) throws SQLException {
+  private static List<ForeignKey> getForeignKeys(final DatabaseMetaData metaData, final String catalog, final String schema) throws SQLException {
     final List<ForeignKey> foreignKeys = new ArrayList<ForeignKey>();
-    final List<Table> allSchemaTables = new TablePacker(null, schema).pack(metaData.getTables(schema, schema, null, null), -1);
+    final List<Table> allSchemaTables = new TablePacker(null, schema).pack(metaData.getTables(catalog, schema, null, null), -1);
     for (final Table table : allSchemaTables) {
-      foreignKeys.addAll(new ForeignKeyPacker().pack(metaData.getExportedKeys(table.schemaName, table.schemaName, table.tableName), -1));
+      final List<ForeignKey> fks = new ForeignKeyPacker().pack(metaData.getExportedKeys(catalog, table.schemaName, table.tableName), -1);
+      foreignKeys.addAll(fks);
     }
     return foreignKeys;
   }
 
-  public static String translateType(final int sqlType) {
+  private static String translateType(final int sqlType) {
     switch (sqlType) {
       case Types.BIGINT:
       case Types.INTEGER:
@@ -289,34 +292,7 @@ public final class DomainClassGenerator {
     return null;
   }
 
-  static class Schema {
-    private final String schemaName;
-
-    Schema(final String schemaName) {
-      this.schemaName = schemaName;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String toString() {
-      return schemaName;
-    }
-  }
-
-  static class SchemaPacker implements ResultPacker<Schema> {
-    /** {@inheritDoc} */
-    public List<Schema> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
-      final List<Schema> schemas = new ArrayList<Schema>();
-      int counter = 0;
-      while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
-        schemas.add(new Schema(resultSet.getString(TABLE_SCHEMA)));
-      }
-
-      return schemas;
-    }
-  }
-
-  static class Table {
+  private static final class Table {
     private final String schemaName;
     private final String tableName;
     private List<Column> columns;
@@ -341,12 +317,12 @@ public final class DomainClassGenerator {
     }
   }
 
-  static class TablePacker implements ResultPacker<Table> {
+  private static final class TablePacker implements ResultPacker<Table> {
 
     private final Collection<String> tablesToInclude;
     private final String schema;
 
-    TablePacker(final String tablesToInclude, final String schema) {
+    private TablePacker(final String tablesToInclude, final String schema) {
       this.tablesToInclude = !Util.nullOrEmpty(tablesToInclude) ? getTablesToInclude(tablesToInclude) : null;
       this.schema = schema;
     }
@@ -379,7 +355,7 @@ public final class DomainClassGenerator {
     }
   }
 
-  static class Column {
+  private static final class Column {
     private final String schemaName;
     private final String tableName;
     private final String columnName;
@@ -393,7 +369,7 @@ public final class DomainClassGenerator {
     private ForeignKey foreignKey;
     private PrimaryKey primaryKey;
 
-    Column(final String schemaName, final String tableName, final String columnName, final int columnType,
+    private Column(final String schemaName, final String tableName, final String columnName, final int columnType,
            final String columnTypeName, final int columnSize, final int decimalDigits, final int nullable,
            final boolean hasDefaultValue,
            final String comment) {
@@ -409,11 +385,11 @@ public final class DomainClassGenerator {
       this.comment = comment;
     }
 
-    public void setForeignKey(final ForeignKey foreignKeyColumn) {
+    private void setForeignKey(final ForeignKey foreignKeyColumn) {
       this.foreignKey = foreignKeyColumn;
     }
 
-    public void setPrimaryKey(final PrimaryKey primaryKey) {
+    private void setPrimaryKey(final PrimaryKey primaryKey) {
       this.primaryKey = primaryKey;
     }
 
@@ -424,7 +400,7 @@ public final class DomainClassGenerator {
     }
   }
 
-  static class ColumnPacker implements ResultPacker<Column> {
+  private static final class ColumnPacker implements ResultPacker<Column> {
     /** {@inheritDoc} */
     public List<Column> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       final List<Column> columns = new ArrayList<Column>();
@@ -448,28 +424,28 @@ public final class DomainClassGenerator {
     }
   }
 
-  static class ForeignKey {
+  private static final class ForeignKey {
     private final String pkSchemaName;
     private final String pkTableName;
     private final String pkColumnName;
     private final String fkSchemaName;
     private final String fkTableName;
     private final String fkColumnName;
-    private final int keySeq;
+//    private final int keySeq;
 
-    ForeignKey(final String pkSchemaName, final String pkTableName, final String pkColumnName,
-               final String fkSchemaName, final String fkTableName, final String fkColumnName,
-               final int keySeq) {
+    private ForeignKey(final String pkSchemaName, final String pkTableName, final String pkColumnName,
+               final String fkSchemaName, final String fkTableName, final String fkColumnName/*,
+               final int keySeq*/) {
       this.pkSchemaName = pkSchemaName;
       this.pkTableName = pkTableName;
       this.pkColumnName = pkColumnName;
       this.fkSchemaName = fkSchemaName;
       this.fkTableName = fkTableName;
       this.fkColumnName = fkColumnName;
-      this.keySeq = keySeq;
+//      this.keySeq = keySeq;
     }
 
-    public Table getReferencedTable() {
+    private Table getReferencedTable() {
       return new Table(pkSchemaName, pkTableName);
     }
 
@@ -479,12 +455,12 @@ public final class DomainClassGenerator {
       return fkSchemaName + "." + fkTableName + "." + fkColumnName + " -> " + pkSchemaName + "." + pkTableName + "." + pkColumnName;
     }
 
-    public int getKeySeq() {
-      return keySeq;
-    }
+//    private int getKeySeq() {
+//      return keySeq;
+//    }
   }
 
-  static class ForeignKeyPacker implements ResultPacker<ForeignKey> {
+  private static final class ForeignKeyPacker implements ResultPacker<ForeignKey> {
     /** {@inheritDoc} */
     public List<ForeignKey> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       final List<ForeignKey> foreignKeys = new ArrayList<ForeignKey>();
@@ -492,25 +468,25 @@ public final class DomainClassGenerator {
       while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
         foreignKeys.add(new ForeignKey(resultSet.getString("PKTABLE_SCHEM"), resultSet.getString("PKTABLE_NAME"),
                 resultSet.getString("PKCOLUMN_NAME"), resultSet.getString("FKTABLE_SCHEM"),
-                resultSet.getString("FKTABLE_NAME"), resultSet.getString("FKCOLUMN_NAME"),
-                resultSet.getShort("KEY_SEQ")));
+                resultSet.getString("FKTABLE_NAME"), resultSet.getString("FKCOLUMN_NAME")/*,
+                resultSet.getShort("KEY_SEQ")*/));
       }
 
       return foreignKeys;
     }
   }
 
-  static class PrimaryKey {
+  private static final class PrimaryKey {
     private final String pkSchemaName;
     private final String pkTableName;
     private final String pkColumnName;
-    private final int keySeq;
+//    private final int keySeq;
 
-    PrimaryKey(final String pkSchemaName, final String pkTableName, final String pkColumnName, final int keySeq) {
+    PrimaryKey(final String pkSchemaName, final String pkTableName, final String pkColumnName/*, final int keySeq*/) {
       this.pkSchemaName = pkSchemaName;
       this.pkTableName = pkTableName;
       this.pkColumnName = pkColumnName;
-      this.keySeq = keySeq;
+//      this.keySeq = keySeq;
     }
 
     /** {@inheritDoc} */
@@ -519,19 +495,19 @@ public final class DomainClassGenerator {
       return pkSchemaName + "." + pkTableName + "." + pkColumnName;
     }
 
-    public int getKeySeq() {
-      return keySeq;
-    }
+//    private int getKeySeq() {
+//      return keySeq;
+//    }
   }
 
-  static class PrimaryKeyPacker implements ResultPacker<PrimaryKey> {
+  private static final class PrimaryKeyPacker implements ResultPacker<PrimaryKey> {
     /** {@inheritDoc} */
     public List<PrimaryKey> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       final List<PrimaryKey> primaryKeys = new ArrayList<PrimaryKey>();
       int counter = 0;
       while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
         primaryKeys.add(new PrimaryKey(resultSet.getString(TABLE_SCHEMA), resultSet.getString("TABLE_NAME"),
-                resultSet.getString("COLUMN_NAME"), resultSet.getInt("KEY_SEQ")));
+                resultSet.getString("COLUMN_NAME")/*, resultSet.getInt("KEY_SEQ")*/));
       }
 
       return primaryKeys;
