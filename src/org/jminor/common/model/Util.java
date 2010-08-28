@@ -22,10 +22,15 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -819,6 +824,26 @@ public final class Util {
         closeSilently(inputStream);
       }
     }
+  }
+
+  /**
+   * Initializes a Registry if one is not running
+   * @throws RemoteException in case of an exception
+   */
+  public static void initializeRegistry() throws RemoteException {
+    final Registry localRegistry = LocateRegistry.getRegistry(Registry.REGISTRY_PORT);
+    try {
+      localRegistry.list();
+    }
+    catch (Exception e) {
+      LOG.info("Creating registry on port: " + Registry.REGISTRY_PORT);
+      LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
+    }
+  }
+
+  @SuppressWarnings({"unchecked"})
+  public static <T> T initializeProxy(final Class<T> clazz, final InvocationHandler invocationHandler) {
+    return (T) Proxy.newProxyInstance(clazz.getClassLoader(), new Class[] {clazz}, invocationHandler);
   }
 
   /**

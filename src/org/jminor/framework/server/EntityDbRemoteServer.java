@@ -21,12 +21,12 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 import java.rmi.server.RMISocketFactory;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.*;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 /**
  * The remote server class, responsible for handling remote EntityDb connection requests.
@@ -61,7 +61,7 @@ final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
     SERVER_DB_PORT = Integer.parseInt(serverDbPortProperty);
 
     try {
-      initializeRegistry();
+      Util.initializeRegistry();
     }
     catch (RemoteException re) {
       throw new RuntimeException(re);
@@ -135,7 +135,7 @@ final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
   Collection<User> getUsers() throws RemoteException {
     final Set<User> users = new HashSet<User>();
     for (final EntityDbRemote adapter : getConnections().values()) {
-      users.add(((EntityDbRemoteAdapter) adapter).getUser());
+      users.add(adapter.getUser());
     }
 
     return users;
@@ -162,7 +162,7 @@ final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
   Collection<ClientInfo> getClients(final User user) throws RemoteException {
     final Collection<ClientInfo> clients = new ArrayList<ClientInfo>();
     for (final EntityDbRemote adapter : getConnections().values()) {
-      if (user == null || ((EntityDbRemoteAdapter) adapter).getUser().equals(user)) {
+      if (user == null || adapter.getUser().equals(user)) {
         clients.add(((EntityDbRemoteAdapter) adapter).getClientInfo());
       }
     }
@@ -319,15 +319,25 @@ final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
   /** {@inheritDoc} */
   @Override
   protected void doDisconnect(final EntityDbRemote connection) throws RemoteException {
-      connection.disconnect();
-      LOG.debug(((EntityDbRemoteAdapter) connection).getClientInfo() + " disconnected");
+    connection.disconnect();
+    LOG.debug(((EntityDbRemoteAdapter) connection).getClientInfo() + " disconnected");
   }
 
   /** {@inheritDoc} */
   @Override
   protected EntityDbRemoteAdapter doConnect(final ClientInfo clientInfo) throws RemoteException {
-    final EntityDbRemoteAdapter remoteAdapter = new EntityDbRemoteAdapter(this, database, clientInfo, SERVER_DB_PORT,
+    final EntityDbRemoteAdapter remoteAdapter = new EntityDbRemoteAdapter(database, clientInfo, SERVER_DB_PORT,
             CLIENT_LOGGING_ENABLED, SSL_CONNECTION_ENABLED);
+    remoteAdapter.addDisconnectListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
+        try {
+          disconnect(remoteAdapter.getClientInfo().getClientID());
+        }
+        catch (RemoteException ex) {
+          LOG.error(ex);
+        }
+      }
+    });
     LOG.debug(clientInfo + " connected");
 
     return remoteAdapter;
@@ -380,17 +390,6 @@ final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
     return Configuration.getValue(Configuration.SERVER_NAME_PREFIX)
             + " " + Util.getVersion() + " @ " + (sid != null ? sid.toUpperCase() : host.toUpperCase())
             + " [id:" + Long.toHexString(System.currentTimeMillis()) + "]";
-  }
-
-  private static void initializeRegistry() throws RemoteException {
-    final Registry localRegistry = LocateRegistry.getRegistry(Registry.REGISTRY_PORT);
-    try {
-      localRegistry.list();
-    }
-    catch (Exception e) {
-      LOG.info("Server creating registry on port: " + Registry.REGISTRY_PORT);
-      LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
-    }
   }
 
   private static final class DomainModelAction implements PrivilegedAction<Object> {

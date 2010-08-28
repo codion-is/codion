@@ -65,6 +65,31 @@ public abstract class EntityTestUnit {
   }
 
   /**
+   * Runs the insert/update/select/delete tests for the given entityID
+   * @param entityID the ID of the entity to test
+   * @throws DbException in case of an exception
+   */
+  public final void testEntity(final String entityID) throws DbException {
+    try {
+      getEntityDb().beginTransaction();
+      initializeReferencedEntities(entityID, entityID);
+      Entity testEntity = null;
+      if (!Entities.isReadOnly(entityID)) {
+        testEntity = testInsert(Util.rejectNullValue(initializeTestEntity(entityID), "test entity"));
+        testUpdate(testEntity);
+      }
+      testSelect(entityID, testEntity);
+      if (!Entities.isReadOnly(entityID)) {
+        testDelete(testEntity);
+      }
+    }
+    finally {
+      referencedEntities.clear();
+      getEntityDb().rollbackTransaction();
+    }
+  }
+
+  /**
    * Override to provide specific setup for this test
    */
   protected void doSetUp() {}
@@ -152,31 +177,6 @@ public abstract class EntityTestUnit {
     }
 
     referencedEntities.put(entityID, initialize(entity));
-  }
-
-  /**
-   * Runs the insert/update/select/delete tests for the given entityID
-   * @param entityID the ID of the entity to test
-   * @throws DbException in case of an exception
-   */
-  protected final void testEntity(final String entityID) throws DbException {
-    try {
-      getEntityDb().beginTransaction();
-      initializeReferencedEntities(entityID, entityID);
-      Entity testEntity = null;
-      if (!Entities.isReadOnly(entityID)) {
-        testEntity = testInsert(Util.rejectNullValue(initializeTestEntity(entityID), "test entity"));
-        testUpdate(testEntity);
-      }
-      testSelect(entityID, testEntity);
-      if (!Entities.isReadOnly(entityID)) {
-        testDelete(testEntity);
-      }
-    }
-    finally {
-      referencedEntities.clear();
-      getEntityDb().rollbackTransaction();
-    }
   }
 
   /**

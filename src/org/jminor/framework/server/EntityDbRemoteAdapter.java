@@ -10,6 +10,8 @@ import org.jminor.common.db.pool.ConnectionPoolImpl;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.db.pool.PoolableConnection;
 import org.jminor.common.db.pool.PoolableConnectionProvider;
+import org.jminor.common.model.Event;
+import org.jminor.common.model.Events;
 import org.jminor.common.model.LogEntry;
 import org.jminor.common.model.MethodLogger;
 import org.jminor.common.model.User;
@@ -18,7 +20,6 @@ import org.jminor.common.model.reports.ReportException;
 import org.jminor.common.model.reports.ReportResult;
 import org.jminor.common.model.reports.ReportWrapper;
 import org.jminor.common.server.ClientInfo;
-import org.jminor.common.server.RemoteServer;
 import org.jminor.common.server.ServerLog;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityDb;
@@ -33,6 +34,7 @@ import org.apache.log4j.Logger;
 
 import javax.rmi.ssl.SslRMIClientSocketFactory;
 import javax.rmi.ssl.SslRMIServerSocketFactory;
+import java.awt.event.ActionListener;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -97,12 +99,10 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
    * The available connection pools
    */
   private static final Map<User, ConnectionPool> CONNECTION_POOLS = Collections.synchronizedMap(new HashMap<User, ConnectionPool>());
-  /**
-   * The remote server responsible for instantiating this remote adapter
-   */
-  private final RemoteServer server;
 
   private static final int DEFAULT_REQUEST_COUNTER_UPDATE_INTERVAL = 2500;
+
+  private final Event evtDisconnected = Events.event();
 
   static {
     new Timer(true).schedule(new TimerTask() {
@@ -115,7 +115,6 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
 
   /**
    * Instantiates a new EntityDbRemoteAdapter and exports it on the given port number
-   * @param server the RemoteServer instance responsible for instantiating this remote adapter
    * @param database defines the underlying database
    * @param clientInfo information about the client requesting the connection
    * @param port the port to use when exporting this remote connection
@@ -123,14 +122,13 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
    * @param sslEnabled specifies whether or not ssl should be enabled
    * @throws RemoteException in case of an exception
    */
-  EntityDbRemoteAdapter(final RemoteServer server, final Database database, final ClientInfo clientInfo, final int port,
+  EntityDbRemoteAdapter(final Database database, final ClientInfo clientInfo, final int port,
                         final boolean loggingEnabled, final boolean sslEnabled) throws RemoteException {
     super(port, sslEnabled ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
             sslEnabled ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
     if (CONNECTION_POOLS.containsKey(clientInfo.getUser())) {
       CONNECTION_POOLS.get(clientInfo.getUser()).getUser().setPassword(clientInfo.getUser().getPassword());
     }
-    this.server = server;
     this.database = database;
     this.clientInfo = clientInfo;
     this.loggingEntityDbProxy = initializeProxy();
@@ -163,13 +161,13 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
     }
     entityDbConnection = null;
     connected = false;
-    server.disconnect(clientInfo.getClientID());
     try {
       UnicastRemoteObject.unexportObject(this, true);
     }
     catch (NoSuchObjectException e) {
       LOG.error(e);
     }
+    evtDisconnected.fire();
   }
 
   /** {@inheritDoc} */
@@ -337,6 +335,14 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
    */
   boolean isActive() {
     return ACTIVE_CONNECTIONS.contains(this);
+  }
+
+  void addDisconnectListener(final ActionListener listener) {
+    evtDisconnected.addListener(listener);
+  }
+
+  void removeDisconnectListener(final ActionListener listener) {
+    evtDisconnected.removeListener(listener);
   }
 
   /**

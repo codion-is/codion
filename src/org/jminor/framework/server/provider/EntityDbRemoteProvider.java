@@ -16,7 +16,6 @@ import org.apache.log4j.Logger;
 import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.lang.reflect.InvocationTargetException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -92,7 +91,8 @@ public final class EntityDbRemoteProvider extends AbstractEntityDbProvider {
     try {
       LOG.debug("Initializing connection for " + getUser());
       final EntityDbRemote remote = (EntityDbRemote) getRemoteEntityDbServer().connect(getUser(), clientID, clientTypeID);
-      return initializeProxy(remote);
+
+      return Util.initializeProxy(EntityDb.class, new EntityDbRemoteHandler(remote));
     }
     catch (RemoteException e) {
       throw new RuntimeException(e);
@@ -189,15 +189,10 @@ public final class EntityDbRemoteProvider extends AbstractEntityDbProvider {
     return null;
   }
 
-  private EntityDb initializeProxy(final EntityDbRemote remote) {
-    return (EntityDb) Proxy.newProxyInstance(getClass().getClassLoader(),
-            new Class[] {EntityDb.class}, new RemoteInvocationHandler(remote));
-  }
-
-  private static final class RemoteInvocationHandler implements InvocationHandler {
+  private static final class EntityDbRemoteHandler implements InvocationHandler {
     private final EntityDbRemote remote;
 
-    private RemoteInvocationHandler(final EntityDbRemote remote) {
+    private EntityDbRemoteHandler(final EntityDbRemote remote) {
       this.remote = remote;
     }
 
