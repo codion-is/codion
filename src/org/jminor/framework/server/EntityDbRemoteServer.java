@@ -89,10 +89,10 @@ final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
     final String host = database.getHost();
     final String port = database.getPort();
     if (Util.nullOrEmpty(host)) {
-      throw new RuntimeException("Database host must be specified (" + Database.DATABASE_HOST + ")");
+      throw new IllegalArgumentException("Database host must be specified (" + Database.DATABASE_HOST + ")");
     }
     if (!database.isEmbedded() && Util.nullOrEmpty(port)) {
-      throw new RuntimeException("Database port must be specified (" + Database.DATABASE_PORT + ")");
+      throw new IllegalArgumentException("Database port must be specified (" + Database.DATABASE_PORT + ")");
     }
 
     startConnectionCheckTimer();
@@ -319,13 +319,8 @@ final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
   /** {@inheritDoc} */
   @Override
   protected void doDisconnect(final EntityDbRemote connection) throws RemoteException {
-    try {
-      ((EntityDbRemoteAdapter) connection).disconnect();
+      connection.disconnect();
       LOG.debug(((EntityDbRemoteAdapter) connection).getClientInfo() + " disconnected");
-    }
-    catch (Exception e) {
-      throw new RemoteException(e.getMessage(), e);
-    }
   }
 
   /** {@inheritDoc} */
@@ -367,18 +362,18 @@ final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
     connectionMaintenanceTimer.schedule(new TimerTask() {
       @Override
       public void run() {
-        maintainConnections();
+        try {
+          maintainConnections();
+        }
+        catch (RemoteException e) {
+          throw new RuntimeException(e);
+        }
       }
     }, new Date(), maintenanceInterval);
   }
 
-  private void maintainConnections() {
-    try {
-      removeConnections(true);
-    }
-    catch (RemoteException e) {
-      throw new RuntimeException(e);
-    }
+  private void maintainConnections() throws RemoteException {
+    removeConnections(true);
   }
 
   private static String initializeServerName(final String host, final String sid) {
@@ -427,7 +422,7 @@ final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
         return null;
       }
       catch (MalformedURLException e) {
-        throw new RuntimeException(e);
+        throw new IllegalArgumentException(e);
       }
       catch (ClassNotFoundException e) {
         throw new RuntimeException(e);

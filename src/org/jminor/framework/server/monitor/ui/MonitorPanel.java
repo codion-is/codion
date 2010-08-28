@@ -93,7 +93,7 @@ public final class MonitorPanel extends JPanel {
     if (jdkDir == null) {
       setJDKDir();
       if (jdkDir == null) {
-        throw new RuntimeException("No JDK home directory has been specified");
+        throw new IllegalStateException("No JDK home directory has been specified");
       }
     }
     final String separator = System.getProperty("file.separator");

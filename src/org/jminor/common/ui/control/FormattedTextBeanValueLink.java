@@ -34,7 +34,7 @@ public class FormattedTextBeanValueLink extends TextBeanValueLink {
                                     final Format format) {
     super(textComponent, owner, propertyName, valueClass, valueChangeEvent, linkType);
     if (format == null) {
-      throw new RuntimeException("Format is null");
+      throw new IllegalArgumentException("Format is null");
     }
     this.format = format;
     this.placeholder = Character.toString((((MaskFormatter) textComponent.getFormatter()).getPlaceholderCharacter()));

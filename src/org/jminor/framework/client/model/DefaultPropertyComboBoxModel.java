@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.client.model;
 
+import org.jminor.common.db.exception.DbException;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.combobox.DefaultFilteredComboBoxModel;
 import org.jminor.common.model.valuemap.ValueCollectionProvider;
@@ -38,7 +39,7 @@ public class DefaultPropertyComboBoxModel extends DefaultFilteredComboBoxModel {
         try {
           return dbProvider.getEntityDb().selectPropertyValues(entityID, property.getPropertyID(), true);
         }
-        catch (Exception e) {
+        catch (DbException e) {
           throw new RuntimeException(e);
         }
       }
@@ -67,11 +68,6 @@ public class DefaultPropertyComboBoxModel extends DefaultFilteredComboBoxModel {
   /** {@inheritDoc} */
   @Override
   protected final List<?> initializeContents() {
-    try {
-      return new ArrayList<Object>(valueProvider.getValues());
-    }
-    catch (Exception e) {
-      throw new RuntimeException(e);
-    }
+    return new ArrayList<Object>(valueProvider.getValues());
   }
 }

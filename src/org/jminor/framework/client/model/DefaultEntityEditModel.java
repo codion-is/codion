@@ -283,10 +283,10 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
       return;
     }
     if (readOnly) {
-      throw new RuntimeException("This is a read-only model, inserting is not allowed!");
+      throw new UnsupportedOperationException("This is a read-only model, inserting is not allowed!");
     }
     if (!isInsertAllowed()) {
-      throw new RuntimeException("This model does not allow inserting!");
+      throw new UnsupportedOperationException("This model does not allow inserting!");
     }
 
     LOG.debug(toString() + " - insert " + Util.getCollectionContentsAsString(entities, false));
@@ -310,10 +310,10 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
       return;
     }
     if (readOnly) {
-      throw new RuntimeException("This is a read-only model, updating is not allowed!");
+      throw new UnsupportedOperationException("This is a read-only model, updating is not allowed!");
     }
     if (!isUpdateAllowed()) {
-      throw new RuntimeException("This model does not allow updating!");
+      throw new UnsupportedOperationException("This model does not allow updating!");
     }
 
     LOG.debug(toString() + " - update " + Util.getCollectionContentsAsString(entities, false));
@@ -347,10 +347,10 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
       return;
     }
     if (readOnly) {
-      throw new RuntimeException("This is a read-only model, deleting is not allowed!");
+      throw new UnsupportedOperationException("This is a read-only model, deleting is not allowed!");
     }
     if (!isDeleteAllowed()) {
-      throw new RuntimeException("This model does not allow deleting!");
+      throw new UnsupportedOperationException("This model does not allow deleting!");
     }
 
     LOG.debug(toString() + " - delete " + Util.getCollectionContentsAsString(entities, false));
@@ -399,7 +399,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
     Util.rejectNullValue(property, "property");
     final FilteredComboBoxModel comboBoxModel = propertyComboBoxModels.get(property);
     if (comboBoxModel == null) {
-      throw new RuntimeException("No PropertyComboBoxModel has been initialized for property: " + property);
+      throw new IllegalStateException("No PropertyComboBoxModel has been initialized for property: " + property);
     }
 
     return comboBoxModel;
@@ -435,7 +435,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
     Util.rejectNullValue(foreignKeyProperty, "foreignKeyProperty");
     final EntityComboBoxModel comboBoxModel = (EntityComboBoxModel) propertyComboBoxModels.get(foreignKeyProperty);
     if (comboBoxModel == null) {
-      throw new RuntimeException("No EntityComboBoxModel has been initialized for property: " + foreignKeyProperty);
+      throw new IllegalStateException("No EntityComboBoxModel has been initialized for property: " + foreignKeyProperty);
     }
 
     return comboBoxModel;
@@ -595,15 +595,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
    * @throws CancelException in case the operation is canceled
    */
   protected List<Entity.Key> doInsert(final List<Entity> entities) throws DbException, CancelException {
-    try {
-      return dbProvider.getEntityDb().insert(entities);
-    }
-    catch (DbException dbe) {
-      throw dbe;
-    }
-    catch (Exception e) {
-      throw new RuntimeException(e);
-    }
+    return dbProvider.getEntityDb().insert(entities);
   }
 
   /**
@@ -614,15 +606,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
    * @throws CancelException in case the operation is cancelled
    */
   protected List<Entity> doUpdate(final List<Entity> entities) throws DbException, CancelException {
-    try {
-      return dbProvider.getEntityDb().update(entities);
-    }
-    catch (DbException dbe) {
-      throw dbe;
-    }
-    catch (Exception e) {
-      throw new RuntimeException(e);
-    }
+    return dbProvider.getEntityDb().update(entities);
   }
 
   /**
@@ -632,15 +616,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
    * @throws CancelException in case the operation is canceled
    */
   protected void doDelete(final List<Entity> entities) throws DbException, CancelException {
-    try {
-      dbProvider.getEntityDb().delete(EntityUtil.getPrimaryKeys(entities));
-    }
-    catch (DbException dbe) {
-      throw dbe;
-    }
-    catch (Exception e) {
-      throw new RuntimeException(e);
-    }
+    dbProvider.getEntityDb().delete(EntityUtil.getPrimaryKeys(entities));
   }
 
   /**
@@ -673,7 +649,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
    */
   private void setComboBoxModel(final Property property, final FilteredComboBoxModel model) {
     if (propertyComboBoxModels.containsKey(property)) {
-      throw new RuntimeException("ComboBoxModel already associated with property: " + property);
+      throw new IllegalStateException("ComboBoxModel already associated with property: " + property);
     }
 
     propertyComboBoxModels.put(property, model);
@@ -738,7 +714,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
       try {
         return dbProvider.getEntityDb().selectPropertyValues(entityID, propertyID, true);
       }
-      catch (Exception e) {
+      catch (DbException e) {
         throw new RuntimeException(e);
       }
     }

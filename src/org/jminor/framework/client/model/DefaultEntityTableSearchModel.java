@@ -193,7 +193,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
       return propertySearchModels.get(propertyID);
     }
 
-    throw new RuntimeException("ColumnSearchModel not found for property with ID: " + propertyID);
+    throw new IllegalArgumentException("ColumnSearchModel not found for property with ID: " + propertyID);
   }
 
   /** {@inheritDoc} */

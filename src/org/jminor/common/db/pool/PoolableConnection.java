@@ -55,17 +55,15 @@ public interface PoolableConnection {
 
   /**
    * Performs a commit and ends the current transaction
-   * @throws SQLException in case anything goes wrong during the commit action
    * @throws IllegalStateException in case transaction is not open
    */
-  void commitTransaction() throws SQLException;
+  void commitTransaction();
 
   /**
    * Performs a rollback and ends the current transaction
-   * @throws SQLException in case anything goes wrong during the rollback action
    * @throws IllegalStateException in case transaction is not open
    */
-  void rollbackTransaction() throws SQLException;
+  void rollbackTransaction();
 
   /**
    * Performs a commit

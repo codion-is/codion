@@ -126,7 +126,7 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
   EntityDbRemoteAdapter(final RemoteServer server, final Database database, final ClientInfo clientInfo, final int port,
                         final boolean loggingEnabled, final boolean sslEnabled) throws RemoteException {
     super(port, sslEnabled ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
-          sslEnabled ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
+            sslEnabled ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
     if (CONNECTION_POOLS.containsKey(clientInfo.getUser())) {
       CONNECTION_POOLS.get(clientInfo.getUser()).getUser().setPassword(clientInfo.getUser().getPassword());
     }
@@ -149,365 +149,155 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
 
   /** {@inheritDoc} */
   public boolean isConnected() throws RemoteException {
-    try {
-      return entityDbConnection == null ? connected : entityDbConnection.isConnected();
-    }
-    catch (Exception e) {
-      throw new RemoteException(e.getMessage(), e);
-    }
+    return entityDbConnection == null ? connected : entityDbConnection.isConnected();
   }
 
   /** {@inheritDoc} */
   public void disconnect() throws RemoteException {
-    try {
-      if (!isConnected()) {
-        return;
-      }
-
-      if (entityDbConnection != null) {
-        entityDbConnection.disconnect();
-      }
-      entityDbConnection = null;
-      connected = false;
-      server.disconnect(clientInfo.getClientID());
-      try {
-        UnicastRemoteObject.unexportObject(this, true);
-      }
-      catch (NoSuchObjectException e) {
-        LOG.error(e);
-      }
+    if (!isConnected()) {
+      return;
     }
-    catch (Exception e) {
-      throw new RemoteException(e.getMessage(), e);
+
+    if (entityDbConnection != null) {
+      entityDbConnection.disconnect();
+    }
+    entityDbConnection = null;
+    connected = false;
+    server.disconnect(clientInfo.getClientID());
+    try {
+      UnicastRemoteObject.unexportObject(this, true);
+    }
+    catch (NoSuchObjectException e) {
+      LOG.error(e);
     }
   }
 
   /** {@inheritDoc} */
   public int selectRowCount(final EntityCriteria criteria) throws DbException, RemoteException {
-    try {
-      return loggingEntityDbProxy.selectRowCount(criteria);
-    }
-    catch (DbException dbe) {
-      throw dbe;
-    }
-    catch (Exception e) {
-      throw new RemoteException(e.getMessage(), e);
-    }
+    return loggingEntityDbProxy.selectRowCount(criteria);
   }
 
   /** {@inheritDoc} */
-  public ReportResult fillReport(final ReportWrapper reportWrapper) throws ReportException, RemoteException {
-    try {
-      return loggingEntityDbProxy.fillReport(reportWrapper);
-    }
-    catch (ReportException re) {
-      throw re;
-    }
-    catch (Exception e) {
-      throw new RemoteException(e.getMessage(), e);
-    }
+  public ReportResult fillReport(final ReportWrapper reportWrapper) throws ReportException, RemoteException, DbException {
+    return loggingEntityDbProxy.fillReport(reportWrapper);
   }
 
   /** {@inheritDoc} */
   public void executeStatement(final String statement) throws DbException, RemoteException {
-    try {
-      loggingEntityDbProxy.executeStatement(statement);
-    }
-    catch (DbException dbe) {
-      throw dbe;
-    }
-    catch (Exception e) {
-      throw new RemoteException(e.getMessage(), e);
-    }
+    loggingEntityDbProxy.executeStatement(statement);
   }
 
   /** {@inheritDoc} */
   public List<List> selectRows(final String statement, final int fetchCount) throws DbException, RemoteException {
-    try {
-      return loggingEntityDbProxy.selectRows(statement, fetchCount);
-    }
-    catch (DbException dbe) {
-      throw dbe;
-    }
-    catch (Exception e) {
-      throw new RemoteException(e.getMessage(), e);
-    }
+    return loggingEntityDbProxy.selectRows(statement, fetchCount);
   }
 
   /** {@inheritDoc} */
   public Object executeStatement(final String statement, final int outParameterType) throws DbException, RemoteException {
-    try {
-      return loggingEntityDbProxy.executeStatement(statement, outParameterType);
-    }
-    catch (DbException dbe) {
-      throw dbe;
-    }
-    catch (Exception e) {
-      throw new RemoteException(e.getMessage(), e);
-    }
+    return loggingEntityDbProxy.executeStatement(statement, outParameterType);
   }
 
   /** {@inheritDoc} */
   public boolean isConnectionValid() throws RemoteException {
-    try {
-      return loggingEntityDbProxy.isConnectionValid();
-    }
-    catch (Exception e) {
-      throw new RemoteException(e.getMessage(), e);
-    }
+    return loggingEntityDbProxy.isConnectionValid();
   }
 
   /** {@inheritDoc} */
   public void beginTransaction() throws RemoteException {
-    try {
-      loggingEntityDbProxy.beginTransaction();
-    }
-    catch (IllegalStateException is) {
-      throw is;
-    }
-    catch (Exception e) {
-      throw new RemoteException(e.getMessage(), e);
-    }
+    loggingEntityDbProxy.beginTransaction();
   }
 
   /** {@inheritDoc} */
-  public void commitTransaction() throws SQLException, RemoteException {
-    try {
-      loggingEntityDbProxy.commitTransaction();
-    }
-    catch (IllegalStateException is) {
-      throw is;
-    }
-    catch (SQLException exception) {
-      throw exception;
-    }
-    catch (Exception e) {
-      throw new RemoteException(e.getMessage(), e);
-    }
+  public void commitTransaction() throws RemoteException {
+    loggingEntityDbProxy.commitTransaction();
   }
 
   /** {@inheritDoc} */
-  public void rollbackTransaction() throws SQLException, RemoteException {
-    try {
-      loggingEntityDbProxy.rollbackTransaction();
-    }
-    catch (IllegalStateException is) {
-      throw is;
-    }
-    catch (SQLException exception) {
-      throw exception;
-    }
-    catch (Exception e) {
-      throw new RemoteException(e.getMessage(), e);
-    }
+  public void rollbackTransaction() throws RemoteException {
+    loggingEntityDbProxy.rollbackTransaction();
   }
 
   /** {@inheritDoc} */
   public boolean isTransactionOpen() throws RemoteException {
-    try {
-      return loggingEntityDbProxy.isTransactionOpen();
-    }
-    catch (Exception e) {
-      throw new RemoteException(e.getMessage(), e);
-    }
+    return loggingEntityDbProxy.isTransactionOpen();
   }
 
   /** {@inheritDoc} */
   public List<Entity.Key> insert(final List<Entity> entities) throws DbException, RemoteException {
-    try {
-      return loggingEntityDbProxy.insert(entities);
-    }
-    catch (DbException dbe) {
-      throw dbe;
-    }
-    catch (Exception e) {
-      throw new RemoteException(e.getMessage(), e);
-    }
+    return loggingEntityDbProxy.insert(entities);
   }
 
   /** {@inheritDoc} */
   public List<Entity> update(final List<Entity> entities) throws DbException, RemoteException {
-    try {
-      return loggingEntityDbProxy.update(entities);
-    }
-    catch (DbException dbe) {
-      throw dbe;
-    }
-    catch (Exception e) {
-      throw new RemoteException(e.getMessage(), e);
-    }
+    return loggingEntityDbProxy.update(entities);
   }
 
   /** {@inheritDoc} */
   public void delete(final List<Entity.Key> entityKeys) throws DbException, RemoteException {
-    try {
-      loggingEntityDbProxy.delete(entityKeys);
-    }
-    catch (DbException dbe) {
-      throw dbe;
-    }
-    catch (Exception e) {
-      throw new RemoteException(e.getMessage(), e);
-    }
+    loggingEntityDbProxy.delete(entityKeys);
   }
 
   /** {@inheritDoc} */
   public void delete(final EntityCriteria criteria) throws DbException, RemoteException {
-    try {
-      loggingEntityDbProxy.delete(criteria);
-    }
-    catch (DbException dbe) {
-      throw dbe;
-    }
-    catch (Exception e) {
-      throw new RemoteException(e.getMessage(), e);
-    }
+    loggingEntityDbProxy.delete(criteria);
   }
 
   /** {@inheritDoc} */
   public List<Object> selectPropertyValues(final String entityID, final String propertyID,
                                            final boolean order) throws DbException, RemoteException {
-    try {
-      return loggingEntityDbProxy.selectPropertyValues(entityID, propertyID, order);
-    }
-    catch (DbException dbe) {
-      throw dbe;
-    }
-    catch (Exception e) {
-      throw new RemoteException(e.getMessage(), e);
-    }
+    return loggingEntityDbProxy.selectPropertyValues(entityID, propertyID, order);
   }
 
   /** {@inheritDoc} */
   public Entity selectSingle(final String entityID, final String propertyID, final Object value) throws DbException, RemoteException {
-    try {
-      return loggingEntityDbProxy.selectSingle(entityID, propertyID, value);
-    }
-    catch (DbException dbe) {
-      throw dbe;
-    }
-    catch (Exception e) {
-      throw new RemoteException(e.getMessage(), e);
-    }
+    return loggingEntityDbProxy.selectSingle(entityID, propertyID, value);
   }
 
   /** {@inheritDoc} */
   public Entity selectSingle(final Entity.Key key) throws DbException, RemoteException {
-    try {
-      return loggingEntityDbProxy.selectSingle(key);
-    }
-    catch (DbException dbe) {
-      throw dbe;
-    }
-    catch (Exception e) {
-      throw new RemoteException(e.getMessage(), e);
-    }
+    return loggingEntityDbProxy.selectSingle(key);
   }
 
   /** {@inheritDoc} */
   public Entity selectSingle(final EntitySelectCriteria criteria) throws DbException, RemoteException {
-    try {
-      return loggingEntityDbProxy.selectSingle(criteria);
-    }
-    catch (DbException dbe) {
-      throw dbe;
-    }
-    catch (Exception e) {
-      throw new RemoteException(e.getMessage(), e);
-    }
+    return loggingEntityDbProxy.selectSingle(criteria);
   }
 
   /** {@inheritDoc} */
   public List<Entity> selectMany(final List<Entity.Key> keys) throws DbException, RemoteException {
-    try {
-      return loggingEntityDbProxy.selectMany(keys);
-    }
-    catch (DbException dbe) {
-      throw dbe;
-    }
-    catch (Exception e) {
-      throw new RemoteException(e.getMessage(), e);
-    }
+    return loggingEntityDbProxy.selectMany(keys);
   }
 
   /** {@inheritDoc} */
   public List<Entity> selectMany(final EntitySelectCriteria criteria) throws DbException, RemoteException {
-    try {
-      return loggingEntityDbProxy.selectMany(criteria);
-    }
-    catch (DbException dbe) {
-      throw dbe;
-    }
-    catch (Exception e) {
-      throw new RemoteException(e.getMessage(), e);
-    }
+    return loggingEntityDbProxy.selectMany(criteria);
   }
 
   /** {@inheritDoc} */
   public List<Entity> selectMany(final String entityID, final String propertyID,
                                  final Object... values) throws DbException, RemoteException {
-    try {
-      return loggingEntityDbProxy.selectMany(entityID, propertyID, values);
-    }
-    catch (DbException dbe) {
-      throw dbe;
-    }
-    catch (Exception e) {
-      throw new RemoteException(e.getMessage(), e);
-    }
+    return loggingEntityDbProxy.selectMany(entityID, propertyID, values);
   }
 
   /** {@inheritDoc} */
   public List<Entity> selectAll(final String entityID) throws DbException, RemoteException {
-    try {
-      return loggingEntityDbProxy.selectAll(entityID);
-    }
-    catch (DbException dbe) {
-      throw dbe;
-    }
-    catch (Exception e) {
-      throw new RemoteException(e.getMessage(), e);
-    }
+    return loggingEntityDbProxy.selectAll(entityID);
   }
 
   /** {@inheritDoc} */
   public Map<String, Collection<Entity>> selectDependentEntities(final Collection<Entity> entities) throws DbException, RemoteException {
-    try {
-      return loggingEntityDbProxy.selectDependentEntities(entities);
-    }
-    catch (DbException dbe) {
-      throw dbe;
-    }
-    catch (Exception e) {
-      throw new RemoteException(e.getMessage(), e);
-    }
+    return loggingEntityDbProxy.selectDependentEntities(entities);
   }
 
   /** {@inheritDoc} */
   public void writeBlob(final Entity.Key primaryKey, final String blobPropertyID, final String dataDescription,
                         final byte[] blobData) throws DbException, RemoteException{
-    try {
-      loggingEntityDbProxy.writeBlob(primaryKey, blobPropertyID, dataDescription, blobData);
-    }
-    catch (DbException dbe) {
-      throw dbe;
-    }
-    catch (Exception e) {
-      throw new RemoteException(e.getMessage(), e);
-    }
+    loggingEntityDbProxy.writeBlob(primaryKey, blobPropertyID, dataDescription, blobData);
   }
 
   /** {@inheritDoc} */
   public byte[] readBlob(final Entity.Key primaryKey, final String blobPropertyID) throws DbException, RemoteException {
-    try {
-      return loggingEntityDbProxy.readBlob(primaryKey, blobPropertyID);
-    }
-    catch (DbException dbe) {
-      throw dbe;
-    }
-    catch (Exception e) {
-      throw new RemoteException(e.getMessage(), e);
-    }
+    return loggingEntityDbProxy.readBlob(primaryKey, blobPropertyID);
   }
 
   /**
@@ -775,21 +565,16 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
         throw ie;
       }
       finally {
-        try {
-          setInactive();
-          if (logMethod) {
-            final LogEntry entry = methodLogger.logExit(methodName, ex,
-                    connection != null ? connection.getLogEntries() : null);
-            if (entry != null && entry.getDelta() > RequestCounter.warningThreshold) {
-              RequestCounter.incrementWarningTimeExceededCounter();
-            }
-          }
-          if (connection != null && !connection.isTransactionOpen()) {
-            returnConnection(connection);
+        setInactive();
+        if (logMethod) {
+          final LogEntry entry = methodLogger.logExit(methodName, ex,
+                  connection != null ? connection.getLogEntries() : null);
+          if (entry != null && entry.getDelta() > RequestCounter.warningThreshold) {
+            RequestCounter.incrementWarningTimeExceededCounter();
           }
         }
-        catch (Exception e) {
-          LOG.error(this, e);
+        if (connection != null && !connection.isTransactionOpen()) {
+          returnConnection(connection);
         }
       }
     }

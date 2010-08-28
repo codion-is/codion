@@ -55,7 +55,7 @@ public final class BoundedRandomItemModel<T> extends RandomItemModel<T> {
     synchronized (lock) {
       final RandomItem randomItem = getRandomItem(item);
       if (randomItem.getWeight() >= weightBounds) {
-        throw new RuntimeException("Maximum weight reached");
+        throw new IllegalStateException("Maximum weight reached");
       }
 
       decrementWeight(randomItem);
@@ -70,7 +70,7 @@ public final class BoundedRandomItemModel<T> extends RandomItemModel<T> {
     synchronized (lock) {
       final RandomItem<T> randomItem = getRandomItem(item);
       if (randomItem.getWeight() == 0) {
-        throw new RuntimeException("No weight to shed");
+        throw new IllegalStateException("No weight to shed");
       }
 
       incrementWeight(randomItem);

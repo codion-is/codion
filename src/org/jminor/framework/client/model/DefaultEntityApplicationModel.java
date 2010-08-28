@@ -52,12 +52,7 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
 
   /** {@inheritDoc} */
   public final User getUser() {
-    try {
-      return dbProvider.getEntityDb().getUser();
-    }
-    catch (Exception e) {
-      throw new RuntimeException(e);
-    }
+    return dbProvider.getEntityDb().getUser();
   }
 
   /** {@inheritDoc} */
@@ -130,7 +125,7 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
       }
     }
 
-    throw new RuntimeException("Detail model of class: " + modelClass + " not found");
+    throw new IllegalArgumentException("Detail model of class: " + modelClass + " not found");
   }
 
   /** {@inheritDoc} */
@@ -151,7 +146,7 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
         throw new RuntimeException(e);
       }
     }
-    throw new RuntimeException("No detail model for type " + entityID + " found in model: " + this);
+    throw new IllegalArgumentException("No detail model for type " + entityID + " found in model: " + this);
   }
 
   /** {@inheritDoc} */

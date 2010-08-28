@@ -71,7 +71,7 @@ final class ValueLinkValidators {
       this.textComponent = textComponent;
       this.validBackgroundColor = validBackgroundColor;
       if (invalidBackgroundColor.equals(validBackgroundColor)) {
-        throw new RuntimeException("Invalid background color is the same as the current text component background");
+        throw new IllegalArgumentException("Invalid background color is the same as the current text component background");
       }
       editModel.addValueListener(link.getKey(), new ActionListener() {
         /** {@inheritDoc} */

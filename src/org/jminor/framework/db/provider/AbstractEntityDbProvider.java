@@ -43,12 +43,7 @@ public abstract class AbstractEntityDbProvider implements EntityDbProvider {
 
   /** {@inheritDoc} */
   public final boolean isConnected() {
-    try {
-      return entityDb != null && entityDb.isConnected();
-    }
-    catch (Exception e) {
-      return false;
-    }
+    return entityDb != null && entityDb.isConnected();
   }
 
   /** {@inheritDoc} */
@@ -81,13 +76,8 @@ public abstract class AbstractEntityDbProvider implements EntityDbProvider {
   }
 
   private void validateConnection() {
-    try {
-      if (entityDb == null || !isConnectionValid()) {
-        entityDb = connect();
-      }
-    }
-    catch (Exception e) {
-      throw new RuntimeException(e);
+    if (entityDb == null || !isConnectionValid()) {
+      entityDb = connect();
     }
   }
 }

@@ -96,7 +96,7 @@ public class EntityPanelProvider implements Comparable {
   public final EntityPanelProvider register() {
     synchronized (PANEL_PROVIDERS) {
       if (PANEL_PROVIDERS.containsKey(entityID)) {
-        throw new RuntimeException("Panel provider has already been set for entity: " + entityID);
+        throw new IllegalStateException("Panel provider has already been set for entity: " + entityID);
       }
       PANEL_PROVIDERS.put(entityID, this);
     }
@@ -269,7 +269,7 @@ public class EntityPanelProvider implements Comparable {
 
   public final void setInstance(final EntityPanel instance) {
     if (this.instance != null) {
-      throw new RuntimeException("EntityPanel instance has already been set for this provider: " + this.instance);
+      throw new IllegalStateException("EntityPanel instance has already been set for this provider: " + this.instance);
     }
     this.instance = instance;
   }
@@ -296,7 +296,7 @@ public class EntityPanelProvider implements Comparable {
 
   private EntityPanel createInstance(final EntityModel model, final boolean isDetailPanel) {
     if (model == null) {
-      throw new RuntimeException("Can not create a EntityPanel without an EntityModel");
+      throw new IllegalArgumentException("Can not create a EntityPanel without an EntityModel");
     }
     try {
       final EntityPanel entityPanel = initializePanel(model);

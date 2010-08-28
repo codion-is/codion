@@ -2072,3 +2072,7 @@
   EntityDbRemoteAdapter does the same if connection pool is not enabled
   ServerMonitor can now set the server logging level
   Configuration now loads logging level property from Util
+  EntityDbRemote no longer extends EntityDb
+  EntityDbRemoteProvider proxies EntityDb
+  EntityDb no longer throws Exception
+  RuntimeException replaced with UnsupportedException, IllegalStateException and IllegalArgument exception where applicable

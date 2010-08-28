@@ -277,7 +277,7 @@ final class EntityDefinitionImpl implements EntityDefinition {
     Util.rejectNullValue(searchPropertyIDs, "searchPropertyIDs");
     for (final String propertyID : searchPropertyIDs) {
       if (!properties.get(propertyID).isString()) {
-        throw new RuntimeException("Entity search property must be of type String: " + properties.get(propertyID));
+        throw new IllegalArgumentException("Entity search property must be of type String: " + properties.get(propertyID));
       }
     }
 

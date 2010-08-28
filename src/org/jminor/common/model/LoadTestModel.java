@@ -166,7 +166,7 @@ public abstract class LoadTestModel {
       }
     }
 
-    throw new RuntimeException("UsageScenario not found: " + usageScenarioName);
+    throw new IllegalArgumentException("UsageScenario not found: " + usageScenarioName);
   }
 
   /**
@@ -731,7 +731,7 @@ public abstract class LoadTestModel {
      */
     public final void run(final Object application) throws ScenarioException {
       if (application == null) {
-        throw new RuntimeException("Can not run without an application");
+        throw new IllegalArgumentException("Can not run without an application");
       }
       try {
         prepare(application);

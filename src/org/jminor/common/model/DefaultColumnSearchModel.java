@@ -419,7 +419,7 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
         return includeMinMaxOutside(toCompare);
     }
 
-    throw new RuntimeException("Undefined search type: " + searchType);
+    throw new IllegalArgumentException("Undefined search type: " + searchType);
   }
 
   /**

@@ -241,7 +241,7 @@ public final class EntityUiUtil {
                                          final StateObserver enabledState, final boolean includeCaption) {
     Util.rejectNullValue(property, PROPERTY_PARAM_NAME);
     if (!property.isBoolean()) {
-      throw new RuntimeException("Boolean property required for createCheckBox");
+      throw new IllegalArgumentException("Boolean property required for createCheckBox");
     }
 
     final JCheckBox checkBox = includeCaption ? new JCheckBox(property.getCaption()) : new JCheckBox();
@@ -265,7 +265,7 @@ public final class EntityUiUtil {
     Util.rejectNullValue(property, PROPERTY_PARAM_NAME);
     Util.rejectNullValue(editModel, EDIT_MODEL_PARAM_NAME);
     if (!property.isBoolean() && property.isNullable()) {
-      throw new RuntimeException("Nullable boolean property required for createTristateCheckBox");
+      throw new IllegalArgumentException("Nullable boolean property required for createTristateCheckBox");
     }
 
     final TristateCheckBox checkBox = new TristateCheckBox(includeCaption ? property.getCaption() : null);
@@ -348,7 +348,7 @@ public final class EntityUiUtil {
                                                           final EntityEditModel editModel) {
     final Collection<String> searchPropertyIDs = Entities.getEntitySearchPropertyIDs(foreignKeyProperty.getReferencedEntityID());
     if (searchPropertyIDs.isEmpty()) {
-      throw new RuntimeException("No default search properties specified for entity: " + foreignKeyProperty.getReferencedEntityID()
+      throw new IllegalArgumentException("No default search properties specified for entity: " + foreignKeyProperty.getReferencedEntityID()
               + ", unable to create EntityLookupField, you must specify the searchPropertyIDs");
     }
 
@@ -367,7 +367,7 @@ public final class EntityUiUtil {
     Util.rejectNullValue(foreignKeyProperty, "foreignKeyProperty");
     Util.rejectNullValue(editModel, EDIT_MODEL_PARAM_NAME);
     if (searchPropertyIDs == null || searchPropertyIDs.length == 0) {
-      throw new RuntimeException("No search properties specified for entity lookup field: " + foreignKeyProperty.getReferencedEntityID());
+      throw new IllegalArgumentException("No search properties specified for entity lookup field: " + foreignKeyProperty.getReferencedEntityID());
     }
     final List<Property.ColumnProperty> searchProperties = Entities.getSearchProperties(
             foreignKeyProperty.getReferencedEntityID(), Arrays.asList(searchPropertyIDs));
@@ -472,7 +472,7 @@ public final class EntityUiUtil {
     Util.rejectNullValue(property, PROPERTY_PARAM_NAME);
     Util.rejectNullValue(editModel, EDIT_MODEL_PARAM_NAME);
     if (!property.isString()) {
-      throw new RuntimeException("Cannot create a text area for a non-string property");
+      throw new IllegalArgumentException("Cannot create a text area for a non-string property");
     }
 
     final JTextArea textArea = rows > 0 && columns > 0 ? new JTextArea(rows, columns) : new JTextArea();
@@ -665,7 +665,7 @@ public final class EntityUiUtil {
       field = formatMaskString == null ? new TextFieldPlus() : UiUtil.createFormattedField(formatMaskString, valueContainsLiteralCharacters);
     }
     else {
-      throw new RuntimeException("Unable to create text field for property type: " + property.getType());
+      throw new IllegalArgumentException("Unable to create text field for property type: " + property.getType());
     }
 
     UiUtil.linkToEnabledState(enabledState, field);

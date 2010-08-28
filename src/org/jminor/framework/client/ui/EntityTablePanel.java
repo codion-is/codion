@@ -15,6 +15,7 @@ import org.jminor.common.model.Serializer;
 import org.jminor.common.model.State;
 import org.jminor.common.model.States;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.common.ui.AbstractFilteredTablePanel;
 import org.jminor.common.ui.ColumnSearchPanel;
 import org.jminor.common.ui.DefaultExceptionHandler;
@@ -291,7 +292,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
    */
   public final void setAdditionalPopupControls(final ControlSet additionalPopupControls) {
     if (panelInitialized) {
-      throw new RuntimeException("Additional popup controls must be set before the panel is initialized");
+      throw new IllegalStateException("Additional popup controls must be set before the panel is initialized");
     }
     this.additionalPopupControls = additionalPopupControls;
   }
@@ -301,7 +302,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
    */
   public final void setAdditionalToolbarControls(final ControlSet additionalToolbarControls) {
     if (panelInitialized) {
-      throw new RuntimeException("Additional toolbar controls must be set before the panel is initialized");
+      throw new IllegalStateException("Additional toolbar controls must be set before the panel is initialized");
     }
     this.additionalToolbarControls = additionalToolbarControls;
   }
@@ -444,7 +445,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
    */
   public final Control getControl(final String controlCode) {
     if (!controlMap.containsKey(controlCode)) {
-      throw new RuntimeException(controlCode + " control not available in panel: " + this);
+      throw new IllegalArgumentException(controlCode + " control not available in panel: " + this);
     }
 
     return controlMap.get(controlCode);
@@ -551,7 +552,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
 
     final List<Entity> selectedEntities = EntityUtil.copyEntities(getEntityTableModel().getSelectedItems());
     if (!getEntityTableModel().isMultipleUpdateAllowed() && selectedEntities.size() > 1) {
-      throw new RuntimeException("Update of multiple entities is not allowed!");
+      throw new UnsupportedOperationException("Update of multiple entities is not allowed!");
     }
 
     final InputProviderPanel inputPanel = new InputProviderPanel(propertyToUpdate.getCaption(),
@@ -564,12 +565,13 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
         UiUtil.setWaitCursor(true, this);
         getEntityTableModel().update(selectedEntities);
       }
-      catch (RuntimeException re) {
-        throw re;
-      }
-      catch (Exception e) {
+      catch (DbException e) {
         throw new RuntimeException(e);
       }
+      catch (ValidationException e) {
+        throw new RuntimeException(e);
+      }
+      catch (CancelException e) {/**/}
       finally {
         UiUtil.setWaitCursor(false, this);
       }
@@ -765,7 +767,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
    */
   public static EntityTablePanel createStaticEntityTablePanel(final Collection<Entity> entities, final EntityDbProvider dbProvider) {
     if (entities == null || entities.isEmpty()) {
-      throw new RuntimeException("Cannot create an EntityPanel without the entities");
+      throw new IllegalArgumentException("Cannot create an EntityPanel without the entities");
     }
 
     return createStaticEntityTablePanel(entities, dbProvider, entities.iterator().next().getEntityID());
@@ -1196,7 +1198,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     else {
       final List<Property.ColumnProperty> searchProperties = Entities.getSearchProperties(foreignKeyProperty.getReferencedEntityID());
       if (searchProperties.isEmpty()) {
-        throw new RuntimeException("No searchable properties found for entity: " + foreignKeyProperty.getReferencedEntityID());
+        throw new IllegalArgumentException("No searchable properties found for entity: " + foreignKeyProperty.getReferencedEntityID());
       }
 
       return new EntityLookupProvider(editModel.createEntityLookupModel(foreignKeyProperty.getReferencedEntityID(), searchProperties, null), currentValue);
@@ -1379,16 +1381,11 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
   }
 
   private void showEntityMenu(final Point location) {
-    try {
-      final Entity entity = getEntityTableModel().getSelectedItem();
-      if (entity != null) {
-        final JPopupMenu popupMenu = new JPopupMenu();
-        populateEntityMenu(popupMenu, (Entity) entity.getCopy(), getEntityTableModel().getDbProvider());
-        popupMenu.show(getTableScrollPane(), location.x, (int) location.getY() - (int) getTableScrollPane().getViewport().getViewPosition().getY());
-      }
-    }
-    catch (Exception e) {
-      throw new RuntimeException(e);
+    final Entity entity = getEntityTableModel().getSelectedItem();
+    if (entity != null) {
+      final JPopupMenu popupMenu = new JPopupMenu();
+      populateEntityMenu(popupMenu, (Entity) entity.getCopy(), getEntityTableModel().getDbProvider());
+      popupMenu.show(getTableScrollPane(), location.x, (int) location.getY() - (int) getTableScrollPane().getViewport().getViewPosition().getY());
     }
   }
 
@@ -1601,7 +1598,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
         }
       }
     }
-    catch (Exception e) {
+    catch (DbException e) {
       throw new RuntimeException(e);
     }
   }

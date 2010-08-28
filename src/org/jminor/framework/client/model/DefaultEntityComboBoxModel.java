@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.client.model;
 
+import org.jminor.common.db.exception.DbException;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.FilterCriteria;
@@ -161,7 +162,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
   /** {@inheritDoc} */
   public final void setEntitySelectCriteria(final EntitySelectCriteria entitySelectCriteria) {
     if (entitySelectCriteria != null && !entitySelectCriteria.getEntityID().equals(entityID)) {
-      throw new RuntimeException("EntitySelectCriteria entityID mismatch, " + entityID
+      throw new IllegalArgumentException("EntitySelectCriteria entityID mismatch, " + entityID
               + " expected, got " + entitySelectCriteria.getEntityID());
     }
     if (entitySelectCriteria == null) {
@@ -298,7 +299,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     try {
       return dbProvider.getEntityDb().selectMany(selectCriteria);
     }
-    catch (Exception e) {
+    catch (DbException e) {
       throw new RuntimeException(e);
     }
   }

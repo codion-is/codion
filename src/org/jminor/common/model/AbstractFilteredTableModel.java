@@ -870,7 +870,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
   private SortingState getSortingState(final C columnIdentifier) {
     final SortingState state = sortingStates.get(columnIdentifier);
     if (state == null) {
-      throw new RuntimeException("No sorting state assigned to column identified by : " + columnIdentifier);
+      throw new IllegalStateException("No sorting state assigned to column identified by : " + columnIdentifier);
     }
 
     return state;

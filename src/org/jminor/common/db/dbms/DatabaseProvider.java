@@ -23,9 +23,6 @@ public final class DatabaseProvider {
       final String databaseClassName = System.getProperty(Database.DATABASE_IMPLEMENTATION_CLASS, getDatabaseClassName());
       return (Database) Class.forName(databaseClassName).newInstance();
     }
-    catch (RuntimeException iae) {
-      throw iae;
-    }
     catch (Exception e) {
       throw new RuntimeException(e);
     }
@@ -42,7 +39,7 @@ public final class DatabaseProvider {
   private static String getDatabaseClassName() {
     final String dbType = getDatabaseType();
     if (dbType == null) {
-      throw new RuntimeException("Required system property missing: " + Database.DATABASE_TYPE);
+      throw new IllegalArgumentException("Required system property missing: " + Database.DATABASE_TYPE);
     }
 
     if (dbType.equals(Database.POSTGRESQL)) {
@@ -67,7 +64,7 @@ public final class DatabaseProvider {
       return "org.jminor.common.db.dbms.HSQLDatabase";
     }
     else {
-      throw new RuntimeException("Unknown database type: " + dbType);
+      throw new IllegalArgumentException("Unknown database type: " + dbType);
     }
   }
 }

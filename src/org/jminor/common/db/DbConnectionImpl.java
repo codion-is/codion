@@ -176,7 +176,7 @@ public class DbConnectionImpl implements DbConnection {
    */
   public final Connection getConnection() {
     if (!isConnected()) {
-      throw new RuntimeException("Not connected");
+      throw new IllegalStateException("Not connected");
     }
 
     return connection;
@@ -199,7 +199,7 @@ public class DbConnectionImpl implements DbConnection {
   }
 
   /** {@inheritDoc} */
-  public final void rollbackTransaction() throws SQLException {
+  public final void rollbackTransaction(){
     SQLException exception = null;
     try {
       if (!transactionOpen) {
@@ -220,7 +220,8 @@ public class DbConnectionImpl implements DbConnection {
   }
 
   /** {@inheritDoc} */
-  public final void commitTransaction() throws SQLException {
+  public final void commitTransaction(){
+    SQLException exception = null;
     try {
       if (!transactionOpen) {
         throw new IllegalStateException("Transaction is not open");
@@ -230,9 +231,12 @@ public class DbConnectionImpl implements DbConnection {
       methodLogger.logAccess("commitTransaction", new Object[0]);
       connection.commit();
     }
+    catch (SQLException e) {
+      exception = e;
+    }
     finally {
       transactionOpen = false;
-      methodLogger.logExit("commitTransaction", null, null);
+      methodLogger.logExit("commitTransaction", exception, null);
     }
   }
 

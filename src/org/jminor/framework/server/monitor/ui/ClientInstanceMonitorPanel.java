@@ -53,7 +53,7 @@ public final class ClientInstanceMonitorPanel extends JPanel {
   }
 
   public void disconnectSelected() throws RemoteException {
-    throw new RuntimeException("ClientInstanceMonitorPanel.disconnectSelected() has not been implemented");
+    throw new UnsupportedOperationException("ClientInstanceMonitorPanel.disconnectSelected() has not been implemented");
   }
 
   public void updateView() throws RemoteException {

@@ -33,6 +33,6 @@ public class DefaultPropertySearchModelProvider implements PropertySearchModelPr
       return new DefaultPropertySearchModel((Property.ColumnProperty) property);
     }
 
-    throw new RuntimeException("Not a searchable property (Property.ColumnProperty or PropertyForeignKeyProperty): " + property);
+    throw new IllegalArgumentException("Not a searchable property (Property.ColumnProperty or PropertyForeignKeyProperty): " + property);
   }
 }

@@ -121,7 +121,7 @@ public abstract class ValueChangeMapEditPanel<K, V> extends JPanel {
    */
   public final JComponent getComponent(final K key) {
     if (!components.containsKey(key)) {
-      throw new RuntimeException("No component associated with key: " + key);
+      throw new IllegalArgumentException("No component associated with key: " + key);
     }
 
     return components.get(key);
@@ -160,7 +160,7 @@ public abstract class ValueChangeMapEditPanel<K, V> extends JPanel {
    */
   protected final void setComponent(final K key, final JComponent component) {
     if (components.containsKey(key)) {
-      throw new RuntimeException("Component already set for key: " + key);
+      throw new IllegalStateException("Component already set for key: " + key);
     }
     components.put(key, component);
   }

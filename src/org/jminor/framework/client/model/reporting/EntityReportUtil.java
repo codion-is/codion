@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.client.model.reporting;
 
+import org.jminor.common.db.exception.DbException;
 import org.jminor.common.model.reports.ReportDataWrapper;
 import org.jminor.common.model.reports.ReportException;
 import org.jminor.common.model.reports.ReportResult;
@@ -27,10 +28,7 @@ public final class EntityReportUtil {
     try {
       return dbProvider.getEntityDb().fillReport(reportWrapper);
     }
-    catch (ReportException e) {
-      throw e;
-    }
-    catch (Exception e) {
+    catch (DbException e) {
       throw new RuntimeException(e);
     }
   }

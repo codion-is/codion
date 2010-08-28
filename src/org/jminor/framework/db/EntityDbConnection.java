@@ -375,7 +375,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
     String sql = null;
     try {
       if (Entities.getSelectQuery(entityID) != null) {
-        throw new RuntimeException("selectPropertyValues is not implemented for entities with custom select queries");
+        throw new UnsupportedOperationException("selectPropertyValues is not implemented for entities with custom select queries");
       }
 
       final Property.ColumnProperty property = (Property.ColumnProperty) Entities.getProperty(entityID, propertyID);
@@ -536,7 +536,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
   }
 
   /** {@inheritDoc} */
-  public byte[] readBlob(final Entity.Key primaryKey, final String blobPropertyID) throws Exception {//todo does not work as is
+  public byte[] readBlob(final Entity.Key primaryKey, final String blobPropertyID) throws DbException {//todo does not work as is
     try {
       final Property.BlobProperty property =
               (Property.BlobProperty) Entities.getProperty(primaryKey.getEntityID(), blobPropertyID);

@@ -1,5 +1,6 @@
 package org.jminor.framework.tools;
 
+import org.jminor.common.db.exception.DbException;
 import org.jminor.framework.db.EntityDb;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.domain.Entity;
@@ -20,37 +21,26 @@ public final class EntityDataUtil {
    * @param transactionBatchSize the number of records to copy between commits
    * @param copyPrimaryKeys if true primary key values are included, if false then they are assumed to be auto-generated
    * @param entityIDs the ID's of the entity types to copy
-   * @throws Exception in case of an exception
+   * @throws DbException in case of a db exception
    */
   public static void copyEntities(final EntityDb source, final EntityDb destination, final int transactionBatchSize,
-                                  final boolean copyPrimaryKeys, final String... entityIDs) throws Exception {
-    try {
-      for (final String entityID : entityIDs) {
-        final List<Entity> entitiesToCopy = source.selectMany(EntityCriteriaUtil.selectCriteria(entityID).setFetchDepthForAll(0));
-        if (!copyPrimaryKeys) {
-          for (final Entity entity : entitiesToCopy) {
-            entity.getPrimaryKey().clear();
-          }
-        }
-        int fromIndex = 0, toIndex = 0;
-        while (fromIndex < entitiesToCopy.size()) {
-          toIndex = Math.min(toIndex + transactionBatchSize, entitiesToCopy.size());
-          final List<Entity> subList = entitiesToCopy.subList(fromIndex, toIndex);
-          fromIndex = toIndex;
-          destination.beginTransaction();
-          destination.insert(subList);
-          destination.commitTransaction();
+                                  final boolean copyPrimaryKeys, final String... entityIDs) throws DbException {
+    for (final String entityID : entityIDs) {
+      final List<Entity> entitiesToCopy = source.selectMany(EntityCriteriaUtil.selectCriteria(entityID).setFetchDepthForAll(0));
+      if (!copyPrimaryKeys) {
+        for (final Entity entity : entitiesToCopy) {
+          entity.getPrimaryKey().clear();
         }
       }
-    }
-    catch (Exception e) {
-      try {
-        if (destination.isTransactionOpen()) {
-          destination.rollbackTransaction();
-        }
+      int fromIndex = 0, toIndex = 0;
+      while (fromIndex < entitiesToCopy.size()) {
+        toIndex = Math.min(toIndex + transactionBatchSize, entitiesToCopy.size());
+        final List<Entity> subList = entitiesToCopy.subList(fromIndex, toIndex);
+        fromIndex = toIndex;
+        destination.beginTransaction();
+        destination.insert(subList);
+        destination.commitTransaction();
       }
-      catch (Exception e1) {/**/}
-      throw e;
     }
   }
 }

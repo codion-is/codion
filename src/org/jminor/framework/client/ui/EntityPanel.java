@@ -305,7 +305,7 @@ public class EntityPanel extends JPanel {
    */
   public final EntityPanel setControlPanelConstraints(final String controlPanelConstraints) {
     if (panelInitialized) {
-      throw new RuntimeException("Panel has already been initialized");
+      throw new IllegalStateException("Panel has already been initialized");
     }
     this.controlPanelConstraints = controlPanelConstraints;
     return this;
@@ -324,7 +324,7 @@ public class EntityPanel extends JPanel {
    */
   public final EntityPanel setCompactDetailLayout(final boolean compactDetailLayout) {
     if (detailEntityPanels.isEmpty()) {
-      throw new RuntimeException("This panel contains no detail panels, compact detail layout not available");
+      throw new IllegalArgumentException("This panel contains no detail panels, compact detail layout not available");
     }
     this.compactDetailLayout = compactDetailLayout;
     return this;
@@ -349,7 +349,7 @@ public class EntityPanel extends JPanel {
    */
   public final EntityPanel addDetailPanel(final EntityPanel detailPanel) {
     if (panelInitialized) {
-      throw new RuntimeException("Can not add detail panel after initialization");
+      throw new IllegalStateException("Can not add detail panel after initialization");
     }
     detailPanel.masterPanel = this;
     detailEntityPanels.add(detailPanel);
@@ -449,7 +449,7 @@ public class EntityPanel extends JPanel {
    */
   public final EntityPanel getSelectedDetailPanel() {
     if (detailPanelTabbedPane == null) {
-      throw new RuntimeException("No detail panels available");
+      throw new IllegalStateException("No detail panels available");
     }
 
     return (EntityPanel) detailPanelTabbedPane.getSelectedComponent();
@@ -468,7 +468,7 @@ public class EntityPanel extends JPanel {
       }
     }
 
-    throw new RuntimeException("Detail panel of type: " + detailPanelClass + " not found in panel: " + getClass());
+    throw new IllegalArgumentException("Detail panel of type: " + detailPanelClass + " not found in panel: " + getClass());
   }
 
   /** {@inheritDoc} */
@@ -536,7 +536,7 @@ public class EntityPanel extends JPanel {
    */
   public final EntityPanel setDetailSplitPanelResizeWeight(final double detailSplitPanelResizeWeight) {
     if (panelInitialized) {
-      throw new RuntimeException("Can not set edit detailSplitPanelResizeWeight after initialization");
+      throw new IllegalStateException("Can not set edit detailSplitPanelResizeWeight after initialization");
     }
     this.detailSplitPanelResizeWeight = detailSplitPanelResizeWeight;
     return this;

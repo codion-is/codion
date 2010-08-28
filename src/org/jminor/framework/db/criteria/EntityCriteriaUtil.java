@@ -720,7 +720,7 @@ public final class EntityCriteriaUtil {
       Util.rejectNullValue(property, "property");
       Util.rejectNullValue(searchType, "searchType");
       if (values != null && values.length == 0) {
-        throw new RuntimeException("No values specified for PropertyCriteria: " + property);
+        throw new IllegalArgumentException("No values specified for PropertyCriteria: " + property);
       }
       this.property = property;
       this.searchType = searchType;
@@ -913,7 +913,7 @@ public final class EntityCriteriaUtil {
       Util.rejectNullValue(property, "property");
       Util.rejectNullValue(searchType, "searchType");
       if (values != null && values.length == 0) {
-        throw new RuntimeException("No values specified for ForeignKeyPropertyCriteria: " + property);
+        throw new IllegalArgumentException("No values specified for ForeignKeyPropertyCriteria: " + property);
       }
       this.property = property;
       this.searchType = searchType;

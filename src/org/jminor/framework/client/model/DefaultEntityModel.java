@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.client.model;
 
+import org.jminor.common.db.exception.DbException;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.State;
@@ -303,7 +304,7 @@ public class DefaultEntityModel implements EntityModel {
         throw new RuntimeException(e);
       }
     }
-    throw new RuntimeException("No detail model of type " + modelClass + " found in model: " + this);
+    throw new IllegalArgumentException("No detail model of type " + modelClass + " found in model: " + this);
   }
 
   /** {@inheritDoc} */
@@ -319,7 +320,7 @@ public class DefaultEntityModel implements EntityModel {
       addDetailModel(detailModel);
       return detailModel;
     }
-    throw new RuntimeException("No detail model for type " + entityID + " found in model: " + this);
+    throw new IllegalArgumentException("No detail model for type " + entityID + " found in model: " + this);
   }
 
   /** {@inheritDoc} */
@@ -508,7 +509,7 @@ public class DefaultEntityModel implements EntityModel {
         }
       }
     }
-    catch (Exception ex) {
+    catch (DbException ex) {
       throw new RuntimeException(ex);
     }
   }

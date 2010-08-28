@@ -109,7 +109,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    */
   public final Control getControl(final String controlCode) {
     if (!controlMap.containsKey(controlCode)) {
-      throw new RuntimeException(controlCode + " control not available in panel: " + this);
+      throw new IllegalArgumentException(controlCode + " control not available in panel: " + this);
     }
 
     return controlMap.get(controlCode);

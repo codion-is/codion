@@ -279,7 +279,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    */
   public final void initialize(final EntityApplicationModel model) {
     if (model == null) {
-      throw new RuntimeException("Unable to initialize application panel without a model");
+      throw new IllegalStateException("Unable to initialize application panel without a model");
     }
     this.applicationModel = model;
     setUncaughtExceptionHandler();
@@ -705,7 +705,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
       }
     });
     if (mainApplicationPanelProviders.isEmpty()) {
-      throw new RuntimeException("No main entity panels provided");
+      throw new IllegalStateException("No main entity panels provided");
     }
     for (final EntityPanelProvider provider : mainApplicationPanelProviders) {
       final EntityPanel entityPanel = provider.createInstance(applicationModel.getDbProvider());
@@ -912,7 +912,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
             new User(Configuration.getDefaultUsername(applicationIdentifier), null) : defaultUser,
             applicationIcon, frameCaption + " - " + Messages.get(Messages.LOGIN), null, null);
     if (Util.nullOrEmpty(user.getUsername())) {
-      throw new RuntimeException(FrameworkMessages.get(FrameworkMessages.EMPTY_USERNAME));
+      throw new IllegalArgumentException(FrameworkMessages.get(FrameworkMessages.EMPTY_USERNAME));
     }
 
     return user;
@@ -1006,7 +1006,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
 
   private void initializeActiveEntityPanel() {
     if (applicationTabPane.getComponentCount() == 0) {
-      throw new RuntimeException("No application panel has been added to the application tab pane");
+      throw new IllegalStateException("No application panel has been added to the application tab pane");
     }
     ((EntityPanel) applicationTabPane.getSelectedComponent()).initializePanel();
   }

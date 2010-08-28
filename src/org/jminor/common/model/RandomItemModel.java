@@ -141,7 +141,7 @@ public class RandomItemModel<T> {
   public final T getRandomItem() {
     final int totalWeights = getTotalWeights();
     if (totalWeights == 0) {
-      throw new RuntimeException("Can not choose a random item unless total weights exceed 0");
+      throw new IllegalStateException("Can not choose a random item unless total weights exceed 0");
     }
 
     final int randomNumber = random.nextInt(totalWeights + 1);
@@ -153,7 +153,7 @@ public class RandomItemModel<T> {
       }
     }
 
-    throw new RuntimeException("getRandomItem did not find an item");
+    throw new IllegalArgumentException("getRandomItem did not find an item");
   }
 
   /**
@@ -192,7 +192,7 @@ public class RandomItemModel<T> {
       }
     }
 
-    throw new RuntimeException("Item not found: " + item);
+    throw new IllegalArgumentException("Item not found: " + item);
   }
 
   /**

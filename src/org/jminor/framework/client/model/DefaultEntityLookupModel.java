@@ -5,6 +5,7 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.criteria.CriteriaSet;
+import org.jminor.common.db.exception.DbException;
 import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.EventObserver;
@@ -231,7 +232,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
     try {
       return dbProvider.getEntityDb().selectMany(getEntitySelectCriteria());
     }
-    catch (Exception e) {
+    catch (DbException e) {
       throw new RuntimeException(e);
     }
   }

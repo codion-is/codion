@@ -145,7 +145,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   /** {@inheritDoc} */
   public final void setEditModel(final EntityEditModel editModel) {
     if (this.editModel != null) {
-      throw new RuntimeException("Edit model has already been set for table model: " + this);
+      throw new IllegalStateException("Edit model has already been set for table model: " + this);
     }
     this.editModel = editModel;
     bindEditModelEvents();
@@ -223,7 +223,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   /** {@inheritDoc} */
   public final EntityEditModel getEditModel() {
     if (editModel == null) {
-      throw new RuntimeException("No edit model has been set for table model: " + this);
+      throw new IllegalStateException("No edit model has been set for table model: " + this);
     }
     return editModel;
   }
@@ -309,7 +309,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   /** {@inheritDoc} */
   @Override
   public final void setValueAt(final Object aValue, final int rowIndex, final int columnIndex) {
-    throw new RuntimeException("setValueAt is not supported");
+    throw new UnsupportedOperationException("setValueAt is not supported");
   }
 
   /** {@inheritDoc} */
@@ -357,7 +357,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     try {
       addItems(dbProvider.getEntityDb().selectMany(primaryKeys), atFront);
     }
-    catch (Exception e) {
+    catch (DbException e) {
       throw new RuntimeException(e);
     }
   }
@@ -449,7 +449,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   /** {@inheritDoc} */
   public final void deleteSelected() throws CancelException, DbException {
     if (editModel == null) {
-      throw new RuntimeException("No edit model has been set for table model: " + this);
+      throw new IllegalStateException("No edit model has been set for table model: " + this);
     }
     editModel.delete(getSelectedItems());
   }
@@ -457,7 +457,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   /** {@inheritDoc} */
   public final void update(final List<Entity> entities) throws CancelException, ValidationException, DbException {
     if (editModel == null) {
-      throw new RuntimeException("No edit model has been set for table model: " + this);
+      throw new IllegalStateException("No edit model has been set for table model: " + this);
     }
     editModel.update(entities);
   }
@@ -467,7 +467,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     try {
       return dbProvider.getEntityDb().selectDependentEntities(getSelectedItems());
     }
-    catch (Exception e) {
+    catch (DbException e) {
       throw new RuntimeException(e);
     }
   }
@@ -555,7 +555,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
       return dbProvider.getEntityDb().selectMany(EntityCriteriaUtil.selectCriteria(entityID, criteria,
               Entities.getOrderByClause(entityID), fetchCount));
     }
-    catch (Exception e) {
+    catch (DbException e) {
       throw new RuntimeException(e);
     }
   }

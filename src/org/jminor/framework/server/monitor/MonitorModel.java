@@ -24,7 +24,7 @@ public final class MonitorModel {
 
   public MonitorModel(final String hostNames) throws RemoteException {
     if (Util.nullOrEmpty(hostNames)) {
-      throw new RuntimeException("No server host names specified for server monitor");
+      throw new IllegalArgumentException("No server host names specified for server monitor");
     }
     for (final String hostname : Arrays.asList(hostNames.split(","))) {
       addHost(hostname);

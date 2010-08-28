@@ -157,7 +157,7 @@ public abstract class AbstractDatabase implements Database {
 
   /** {@inheritDoc} */
   public String getSequenceSQL(final String sequenceName) {
-    throw new RuntimeException("Sequence support is not implemented for database type: " + databaseType);
+    throw new UnsupportedOperationException("Sequence support is not implemented for database type: " + databaseType);
   }
 
   /**

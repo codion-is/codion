@@ -151,7 +151,7 @@ public final class States {
 
     @Override
     public synchronized void setActive(final boolean value) {
-      throw new RuntimeException("Cannot set the state of a reversed state");
+      throw new UnsupportedOperationException("Cannot set the state of a reversed state");
     }
 
     @Override
@@ -242,7 +242,7 @@ public final class States {
 
     @Override
     public synchronized void setActive(final boolean value) {
-      throw new RuntimeException("The state of aggregate states can't be set");
+      throw new UnsupportedOperationException("The state of aggregate states can't be set");
     }
   }
 

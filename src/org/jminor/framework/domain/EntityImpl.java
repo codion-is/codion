@@ -116,7 +116,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
     Util.rejectNullValue(propertyID, PROPERTY_ID_PARAM);
     final Property property = properties.get(propertyID);
     if (property == null) {
-      throw new RuntimeException("Property " + propertyID + " not found in entity: " + entityID);
+      throw new IllegalArgumentException("Property " + propertyID + " not found in entity: " + entityID);
     }
 
     return property;
@@ -753,7 +753,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
     KeyImpl(final String entityID, final Object value) {
       this(entityID);
       if (isCompositeKey()) {
-        throw new RuntimeException("Not a single value key");
+        throw new IllegalArgumentException("Not a single value key");
       }
 
       final Property property = properties.get(0);
@@ -785,7 +785,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
     /** {@inheritDoc} */
     public Property.PrimaryKeyProperty getFirstKeyProperty() {
       if (getPropertyCount() == 0) {
-        throw new RuntimeException("No properties defined for primary key");
+        throw new IllegalStateException("No properties defined for primary key");
       }
 
       return getProperties().get(0);

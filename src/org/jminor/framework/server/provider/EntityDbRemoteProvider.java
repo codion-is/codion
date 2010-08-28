@@ -9,10 +9,15 @@ import org.jminor.common.server.RemoteServer;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityDb;
 import org.jminor.framework.db.provider.AbstractEntityDbProvider;
+import org.jminor.framework.server.EntityDbRemote;
 
 import org.apache.log4j.Logger;
 
 import java.io.Serializable;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.lang.reflect.InvocationTargetException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -69,7 +74,7 @@ public final class EntityDbRemoteProvider extends AbstractEntityDbProvider {
       }
       setEntityDb(null);
     }
-    catch (Exception e) {
+    catch (RemoteException e) {
       throw new RuntimeException(e);
     }
   }
@@ -86,9 +91,13 @@ public final class EntityDbRemoteProvider extends AbstractEntityDbProvider {
   protected EntityDb connect() {
     try {
       LOG.debug("Initializing connection for " + getUser());
-      return (EntityDb) getRemoteEntityDbServer().connect(getUser(), clientID, clientTypeID);
+      final EntityDbRemote remote = (EntityDbRemote) getRemoteEntityDbServer().connect(getUser(), clientID, clientTypeID);
+      return initializeProxy(remote);
     }
-    catch (Exception e) {
+    catch (RemoteException e) {
+      throw new RuntimeException(e);
+    }
+    catch (NotBoundException e) {
       throw new RuntimeException(e);
     }
   }
@@ -178,6 +187,26 @@ public final class EntityDbRemoteProvider extends AbstractEntityDbProvider {
     }
 
     return null;
+  }
+
+  private EntityDb initializeProxy(final EntityDbRemote remote) {
+    return (EntityDb) Proxy.newProxyInstance(getClass().getClassLoader(),
+            new Class[] {EntityDb.class}, new InvocationHandler() {
+              public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
+                final Method remoteMethod = EntityDbRemote.class.getMethod(method.getName(), method.getParameterTypes());
+                try {
+                  return remoteMethod.invoke(remote, args);
+                }
+                catch (InvocationTargetException ie) {
+                  LOG.error(this, ie);
+                  throw (Exception) ie.getTargetException();
+                }
+                catch (Exception ie) {
+                  LOG.error(this, ie);
+                  throw ie;
+                }
+              }
+            });
   }
 
   private static final class ServerComparator implements Comparator<RemoteServer>, Serializable {

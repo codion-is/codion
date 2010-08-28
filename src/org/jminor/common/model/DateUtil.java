@@ -37,7 +37,7 @@ public final class DateUtil {
    */
   public static boolean isDateValid(final String dateString, final boolean emptyStringOk, final DateFormat... formats) {
     if (formats == null || formats.length == 0) {
-      throw new RuntimeException("Date format is required");
+      throw new IllegalArgumentException("Date format is required");
     }
     if (Util.nullOrEmpty(dateString)) {
       return emptyStringOk;

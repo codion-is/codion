@@ -40,7 +40,7 @@ public final class DateInputProvider extends AbstractInputProvider<Date, DateInp
       }
     }
     catch (ParseException e) {
-      throw new RuntimeException("Wrong date format " + getInputComponent().getFormatPattern() + " expected", e);
+      throw new IllegalArgumentException("Wrong date format " + getInputComponent().getFormatPattern() + " expected", e);
     }
   }
 }

@@ -107,13 +107,8 @@ public final class ConnectionPoolImpl implements ConnectionPool {
       disconnect(dbConnection);
     }
     if (dbConnection.isConnectionValid()) {
-      try {
-        if (dbConnection.isTransactionOpen()) {
-          dbConnection.rollbackTransaction();
-        }
-      }
-      catch (SQLException e) {
-        LOG.error(this, e);
+      if (dbConnection.isTransactionOpen()) {
+        dbConnection.rollbackTransaction();
       }
       addConnectionToPool(dbConnection);
     }

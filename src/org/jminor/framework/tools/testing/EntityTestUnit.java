@@ -45,20 +45,19 @@ public abstract class EntityTestUnit {
 
   /**
    * Sets up the database connection
-   * @throws Exception in case of an exception
+   * @throws CancelException in case the test is cancelled during setup
    */
   @Before
-  public final void setUp() throws Exception {
+  public final void setUp() throws CancelException {
     entityDbProvider = initializeDbConnectionProvider();
     doSetUp();
   }
 
   /**
    * Tears down the database connection
-   * @throws Exception in case of an exception
    */
   @After
-  public final void tearDown() throws Exception {
+  public final void tearDown() {
     if (entityDbProvider != null) {
       entityDbProvider.disconnect();
     }
@@ -134,7 +133,7 @@ public abstract class EntityTestUnit {
   protected final Entity getReferenceEntity(final String entityID) {
     final Entity entity = referencedEntities.get(entityID);
     if (entity == null) {
-      throw new RuntimeException("No reference entity available of type " + entityID);
+      throw new IllegalArgumentException("No reference entity available of type " + entityID);
     }
 
     return entity;
@@ -144,10 +143,10 @@ public abstract class EntityTestUnit {
    * Maps the given reference entity to the given entityID
    * @param entityID the entityID
    * @param entity the reference entity to map to the given entityID
-   * @throws Exception in case of an exception
+   * @throws DbException in case of an exception
    * @see #getReferenceEntity(String)
    */
-  protected final void setReferenceEntity(final String entityID, final Entity entity) throws Exception {
+  protected final void setReferenceEntity(final String entityID, final Entity entity) throws DbException {
     if (!entity.is(entityID)) {
       throw new IllegalArgumentException("Reference entity type mismatch: " + entityID + " - " + entity.getEntityID());
     }
@@ -158,9 +157,9 @@ public abstract class EntityTestUnit {
   /**
    * Runs the insert/update/select/delete tests for the given entityID
    * @param entityID the ID of the entity to test
-   * @throws Exception in case of an exception
+   * @throws DbException in case of an exception
    */
-  protected final void testEntity(final String entityID) throws Exception {
+  protected final void testEntity(final String entityID) throws DbException {
     try {
       getEntityDb().beginTransaction();
       initializeReferencedEntities(entityID, entityID);
@@ -190,9 +189,8 @@ public abstract class EntityTestUnit {
    * This method should return an instance of the entity specified by <code>entityID</code>
    * @param entityID the entityID for which to initialize an entity instance
    * @return the entity instance to use for testing the entity type
-   * @throws Exception in case of an exception
    */
-  protected Entity initializeTestEntity(final String entityID) throws Exception {
+  protected Entity initializeTestEntity(final String entityID) {
     return EntityUtil.createRandomEntity(entityID, referencedEntities);
   }
 
@@ -200,9 +198,8 @@ public abstract class EntityTestUnit {
    * Initializes a new Entity of the given type, by default this method creates a Entity filled with random values.
    * @param entityID the entity ID
    * @return a entity of the given type
-   * @throws Exception in case of an exception
    */
-  protected Entity initializeReferenceEntity(final String entityID) throws Exception {
+  protected Entity initializeReferenceEntity(final String entityID) {
     return EntityUtil.createRandomEntity(entityID, referencedEntities);
   }
 
@@ -219,11 +216,11 @@ public abstract class EntityTestUnit {
    * <code>entityIDs</code> Collection and map them to their respective entityIDs via the setReferenceEntity method
    * @param testEntityID the ID of the entity being tested
    * @param entityID the ID of the entity for which to initialize the referenced entities
-   * @throws Exception in case of an exception
+   * @throws DbException in case of an exception
    * @see #setReferenceEntity(String, org.jminor.framework.domain.Entity)
    */
   @SuppressWarnings({"UnusedDeclaration"})
-  protected final void initializeReferencedEntities(final String testEntityID, final String entityID) throws Exception {
+  protected final void initializeReferencedEntities(final String testEntityID, final String entityID) throws DbException {
     for (final Property.ForeignKeyProperty fkProperty : Entities.getForeignKeyProperties(entityID)) {
       if (!fkProperty.getReferencedEntityID().equals(entityID)) {
         initializeReferencedEntities(testEntityID, fkProperty.getReferencedEntityID());
@@ -238,9 +235,9 @@ public abstract class EntityTestUnit {
    * Tests inserting the given entity
    * @param testEntity the entity to test insert for
    * @return the same entity retrieved from the database after the insert
-   * @throws Exception in case of an exception
+   * @throws DbException in case of an exception
    */
-  private Entity testInsert(final Entity testEntity) throws Exception {
+  private Entity testInsert(final Entity testEntity) throws DbException {
     final List<Entity.Key> keys = getEntityDb().insert(Arrays.asList(testEntity));
     try {
       return getEntityDb().selectSingle(keys.get(0));
@@ -256,9 +253,9 @@ public abstract class EntityTestUnit {
    * then selecting many entities is tested.
    * @param entityID the entityID in case <code>testEntity</code> is null
    * @param testEntity the entity to test selecting
-   * @throws Exception in case of an exception
+   * @throws DbException in case of an exception
    */
-  private void testSelect(final String entityID, final Entity testEntity) throws Exception {
+  private void testSelect(final String entityID, final Entity testEntity) throws DbException {
     if (testEntity != null) {
       final Entity tmp = getEntityDb().selectSingle(testEntity.getPrimaryKey());
       assertTrue("Entity of type " + testEntity.getEntityID() + " failed equals comparison",
@@ -272,9 +269,9 @@ public abstract class EntityTestUnit {
   /**
    * Test updating the given entity, if the entity is not modified this test does nothing
    * @param testEntity the entity to test updating
-   * @throws Exception in case of an exception
+   * @throws DbException in case of an exception
    */
-  private void testUpdate(final Entity testEntity) throws Exception {
+  private void testUpdate(final Entity testEntity) throws DbException {
     modifyEntity(testEntity);
     if (!testEntity.isModified()) {
       return;
@@ -300,9 +297,9 @@ public abstract class EntityTestUnit {
   /**
    * Test deleting the given entity
    * @param testEntity the entity to test deleting
-   * @throws Exception in case of an exception
+   * @throws DbException in case of an exception
    */
-  private void testDelete(final Entity testEntity) throws Exception {
+  private void testDelete(final Entity testEntity) throws DbException {
     getEntityDb().delete(EntityUtil.getPrimaryKeys(Arrays.asList(testEntity)));
 
     boolean caught = false;
@@ -320,9 +317,9 @@ public abstract class EntityTestUnit {
    * already exist in the database, returns the same entity
    * @param entity the entity to initialize
    * @return the entity
-   * @throws Exception in case of an exception
+   * @throws DbException in case of an exception
    */
-  private Entity initialize(final Entity entity) throws Exception {
+  private Entity initialize(final Entity entity) throws DbException {
     final List<Entity> entities = getEntityDb().selectMany(Arrays.asList(entity.getPrimaryKey()));
     if (!entities.isEmpty()) {
       return entities.get(0);

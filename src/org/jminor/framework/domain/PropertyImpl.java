@@ -250,7 +250,7 @@ class PropertyImpl implements Property, Serializable {
   /** {@inheritDoc} */
   public final Property setReadOnly(final boolean readOnly) {
     if (hasParentProperty()) {
-      throw new RuntimeException("Can not set the read only status of a property with a parent property");
+      throw new IllegalStateException("Can not set the read only status of a property with a parent property");
     }
 
     this.readOnly = readOnly;
@@ -280,7 +280,7 @@ class PropertyImpl implements Property, Serializable {
   /** {@inheritDoc} */
   public final Property setNullable(final boolean nullable) {
     if (hasParentProperty()) {
-      throw new RuntimeException("Set the nullable status of the parent property instead: " + parentProperty);
+      throw new IllegalStateException("Set the nullable status of the parent property instead: " + parentProperty);
     }
 
     this.nullable = nullable;
@@ -332,7 +332,7 @@ class PropertyImpl implements Property, Serializable {
   /** {@inheritDoc} */
   public final Property setUseNumberFormatGrouping(final boolean useGrouping) {
     if (!(format instanceof NumberFormat)) {
-      throw new RuntimeException("Grouping only good for number formats");
+      throw new IllegalStateException("Grouping only good for number formats");
     }
 
     ((NumberFormat) format).setGroupingUsed(useGrouping);
@@ -391,7 +391,7 @@ class PropertyImpl implements Property, Serializable {
   /** {@inheritDoc} */
   public final Property setMaximumFractionDigits(final int maximumFractionDigits) {
     if (!(format instanceof NumberFormat)) {
-      throw new RuntimeException("Maximum fraction digits only good for number formats");
+      throw new IllegalStateException("Maximum fraction digits only good for number formats");
     }
 
     ((NumberFormat) format).setMaximumFractionDigits(maximumFractionDigits);
@@ -655,7 +655,7 @@ class PropertyImpl implements Property, Serializable {
       }
 
       if (!linkedReferenceProperties.containsKey(referenceProperty)) {
-        throw new RuntimeException("No referenced property ID associated with reference property: " + referenceProperty);
+        throw new IllegalArgumentException("No referenced property ID associated with reference property: " + referenceProperty);
       }
 
       return linkedReferenceProperties.get(referenceProperty);

@@ -94,7 +94,7 @@ public class DefaultPropertySummaryModel implements PropertySummaryModel {
       case SUM:
         return SUM.getSummary(valueProvider, property);
       default:
-        throw new RuntimeException("Unknown SummaryType: " + summaryType);
+        throw new IllegalArgumentException("Unknown SummaryType: " + summaryType);
     }
   }
 

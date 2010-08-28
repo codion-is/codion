@@ -346,7 +346,7 @@ public final class Entities {
   public static Property.ColumnProperty getColumnProperty(final String entityID, final String propertyID) {
     final Property property = getProperty(entityID, propertyID);
     if (!(property instanceof Property.ColumnProperty)) {
-      throw new RuntimeException(propertyID + ", " + property.getClass() + " does not implement Property.ColumnProperty");
+      throw new IllegalArgumentException(propertyID + ", " + property.getClass() + " does not implement Property.ColumnProperty");
     }
 
     return (Property.ColumnProperty) property;
@@ -363,7 +363,7 @@ public final class Entities {
     Util.rejectNullValue(propertyID, "propertyID");
     final Property property = getProperties(entityID).get(propertyID);
     if (property == null) {
-      throw new RuntimeException("Property '" + propertyID + "' not found in entity: " + entityID);
+      throw new IllegalArgumentException("Property '" + propertyID + "' not found in entity: " + entityID);
     }
 
     return property;
@@ -515,7 +515,7 @@ public final class Entities {
       }
     }
 
-    throw new RuntimeException("Foreign key property with id: " + propertyID + " not found in entity of type: " + entityID);
+    throw new IllegalArgumentException("Foreign key property with id: " + propertyID + " not found in entity of type: " + entityID);
   }
 
   /**
@@ -622,7 +622,7 @@ public final class Entities {
     }
 
     if (proxies.containsKey(entityID)) {
-      throw new RuntimeException("Proxy already set for: " + entityID);
+      throw new IllegalStateException("Proxy already set for: " + entityID);
     }
 
     proxies.put(entityID, entityProxy);
@@ -666,7 +666,7 @@ public final class Entities {
   private static void add(final EntityDefinition entityDefinition) {
     Util.rejectNullValue(entityDefinition, "entityDefinition");
     if (ENTITY_DEFINITIONS.containsKey(entityDefinition.getEntityID())) {
-      throw new RuntimeException("Entity already added: " + entityDefinition.getEntityID());
+      throw new IllegalStateException("Entity already added: " + entityDefinition.getEntityID());
     }
 
     ENTITY_DEFINITIONS.put(entityDefinition.getEntityID(), entityDefinition);
@@ -720,7 +720,7 @@ public final class Entities {
      * @return the derived property value
      */
     public Object getDerivedValue(final Entity entity, final Property.DerivedProperty property) {
-      throw new RuntimeException("getDerivedValue() has not been overriden in Entity.Proxy for: " + entity + ", " + property);
+      throw new IllegalStateException("getDerivedValue() has not been overriden in Entity.Proxy for: " + entity + ", " + property);
     }
 
     /**

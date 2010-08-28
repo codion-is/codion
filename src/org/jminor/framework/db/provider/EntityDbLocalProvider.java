@@ -61,17 +61,12 @@ public final class EntityDbLocalProvider extends AbstractEntityDbProvider {
 
   /** {@inheritDoc} */
   public void disconnect() {
-    try {
-      if (getEntityDbInternal() != null && getEntityDbInternal().isConnectionValid()) {
-        getEntityDbInternal().disconnect();
-        if (((EntityDbConnection) getEntityDbInternal()).getDatabase().isEmbedded()) {
-          ((EntityDbConnection) getEntityDbInternal()).getDatabase().shutdownEmbedded(connectionProperties);
-        }
-        setEntityDb(null);
+    if (getEntityDbInternal() != null && getEntityDbInternal().isConnectionValid()) {
+      getEntityDbInternal().disconnect();
+      if (((EntityDbConnection) getEntityDbInternal()).getDatabase().isEmbedded()) {
+        ((EntityDbConnection) getEntityDbInternal()).getDatabase().shutdownEmbedded(connectionProperties);
       }
-    }
-    catch (Exception e) {
-      throw new RuntimeException(e);
+      setEntityDb(null);
     }
   }
 
@@ -90,11 +85,6 @@ public final class EntityDbLocalProvider extends AbstractEntityDbProvider {
   /** {@inheritDoc} */
   @Override
   protected boolean isConnectionValid() {
-    try {
-      return getEntityDbInternal().isConnectionValid();
-    }
-    catch (Exception e) {
-      throw new RuntimeException(e);
-    }
+    return getEntityDbInternal().isConnectionValid();
   }
 }
