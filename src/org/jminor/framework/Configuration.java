@@ -256,6 +256,13 @@ public final class Configuration {
   public static final String AUTHENTICATION_REQUIRED = "jminor.client.authenticationRequired";
 
   /**
+   * Specifies whether a startup dialog should be shown<br>
+   * Value type: Boolean<br>
+   * Default value: true
+   */
+  public static final String SHOW_STARTUP_DIALOG = "jminor.client.showStartupDialog";
+
+  /**
    * Specifies whether focus should be transferred from components on enter,
    * this does not work for editable combo boxes, combo boxes with the
    * maximum match functionality enabled or text areas<br>
@@ -452,6 +459,7 @@ public final class Configuration {
     PROPERTIES.put(PERSIST_FOREIGN_KEY_VALUES, true);
     PROPERTIES.put(USERNAME_PREFIX, "");
     PROPERTIES.put(AUTHENTICATION_REQUIRED, true);
+    PROPERTIES.put(SHOW_STARTUP_DIALOG, true);
     PROPERTIES.put(TRANSFER_FOCUS_ON_ENTER, true);
     PROPERTIES.put(USE_OPTIMISTIC_LOCKING, false);
     PROPERTIES.put(SQL_BOOLEAN_VALUE_FALSE, 0);
@@ -511,6 +519,7 @@ public final class Configuration {
     parseStringSetting(SERVER_DOMAIN_MODEL_JARS);
     parseStringSetting(SERVER_NAME_PREFIX);
     parseBooleanSetting(SERVER_CONNECTION_SSL_ENABLED);
+    parseBooleanSetting(SHOW_STARTUP_DIALOG);
     parseIntegerSetting(TAB_PLACEMENT);
     parseIntegerSetting(TABLE_AUTO_RESIZE_MODE);
     parseBooleanSetting(TOOLBAR_BUTTONS);

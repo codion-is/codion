@@ -77,6 +77,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   private final Map<EntityPanelProvider, EntityPanel> persistentEntityPanels = new HashMap<EntityPanelProvider, EntityPanel>();
 
   private boolean loginRequired = Configuration.getBooleanValue(Configuration.AUTHENTICATION_REQUIRED);
+  private boolean showStartupDialog = Configuration.getBooleanValue(Configuration.SHOW_STARTUP_DIALOG);
 
   private static final int DIVIDER_JUMP = 30;
 
@@ -275,13 +276,16 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   }
 
   /**
-   * @param model the application model
+   * Initializes this application panel
+   * @param dbProvider the database provider
+   * @throws IllegalStateException if the application model has not been set
+   * @throws org.jminor.common.model.CancelException in case the initialization is cancelled
    */
-  public final void initialize(final EntityApplicationModel model) {
-    if (model == null) {
+  public final void initialize(final EntityDbProvider dbProvider) throws CancelException {
+    this.applicationModel = initializeApplicationModel(dbProvider);
+    if (applicationModel == null) {
       throw new IllegalStateException("Unable to initialize application panel without a model");
     }
-    this.applicationModel = model;
     setUncaughtExceptionHandler();
     initializeUI();
     initializeActiveEntityPanel();
@@ -591,7 +595,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
 
   /**
    * Override to add event bindings after initialization
-   * @see #initialize(org.jminor.framework.client.model.EntityApplicationModel)
+   * @see #initialize(org.jminor.framework.db.provider.EntityDbProvider)
    */
   protected void bindEvents() {}
 
@@ -735,6 +739,20 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    */
   protected final void setLoginRequired(final boolean loginRequired) {
     this.loginRequired = loginRequired;
+  }
+
+  /**
+   * @return true if a startup dialog should be shown
+   */
+  protected final boolean isShowStartupDialog() {
+    return showStartupDialog;
+  }
+
+  /**
+   * @param startupDialog true if a startup dialog should be shown
+   */
+  protected final void setShowStartupDialog(final boolean startupDialog) {
+    this.showStartupDialog = startupDialog;
   }
 
   /**
@@ -947,11 +965,13 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     UIManager.setLookAndFeel(getDefaultLookAndFeelClassName());
     final ImageIcon applicationIcon = iconName != null ? Images.getImageIcon(getClass(), iconName) :
             Images.loadImage("jminor_logo32.gif");
-    final JDialog startupDialog = initializeStartupDialog(applicationIcon, frameCaption);
+    final JDialog startupDialog = showStartupDialog ? initializeStartupDialog(applicationIcon, frameCaption) : null;
     EntityDbProvider entityDbProvider;
     while (true) {
       final User user = loginRequired ? getUser(frameCaption, defaultUser, getClass().getSimpleName(), applicationIcon) : new User("", "");
-      startupDialog.setVisible(true);
+      if (startupDialog != null) {
+        startupDialog.setVisible(true);
+      }
       entityDbProvider = initializeDbProvider(user, frameCaption);
       try {
         entityDbProvider.getEntityDb();
@@ -963,17 +983,21 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
                 FrameworkMessages.get(FrameworkMessages.RETRY),
                 FrameworkMessages.get(FrameworkMessages.RETRY_TITLE),
                 JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
-          startupDialog.dispose();
+          if (startupDialog != null) {
+            startupDialog.dispose();
+          }
           throw new CancelException();
         }
       }
     }
     try {
       final long now = System.currentTimeMillis();
-      initialize(initializeApplicationModel(entityDbProvider));
+      initialize(entityDbProvider);
 
       saveDefaultUser(entityDbProvider.getUser());
-      startupDialog.dispose();
+      if (startupDialog != null) {
+        startupDialog.dispose();
+      }
       final JFrame frame = prepareFrame(getFrameTitle(frameCaption, entityDbProvider.getUser()), maximize, true,
               frameSize, applicationIcon, showFrame);
       evtApplicationStarted.fire();
