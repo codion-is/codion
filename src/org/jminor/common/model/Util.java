@@ -846,6 +846,17 @@ public final class Util {
     return (T) Proxy.newProxyInstance(clazz.getClassLoader(), new Class[] {clazz}, invocationHandler);
   }
 
+  public static Exception unwrapAndLog(final Exception exception, final Class<? extends Exception> wrappingExceptionClass,
+                                       final Logger logger) {
+    if (wrappingExceptionClass.equals(exception.getClass())) {
+      return unwrapAndLog((Exception) exception.getCause(), wrappingExceptionClass, logger);
+    }
+
+    logger.error(exception.getMessage(), exception);
+
+    return exception;
+  }
+
   /**
    * Provides objects of type K, derived from a value of type V, for hashing said value via .hashCode().
    * @param <K> the type of the object to use for key generation via .hashCode()

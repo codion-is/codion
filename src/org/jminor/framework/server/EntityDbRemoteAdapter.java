@@ -36,9 +36,9 @@ import javax.rmi.ssl.SslRMIClientSocketFactory;
 import javax.rmi.ssl.SslRMIServerSocketFactory;
 import java.awt.event.ActionListener;
 import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.lang.reflect.InvocationTargetException;
 import java.rmi.NoSuchObjectException;
 import java.rmi.RemoteException;
 import java.rmi.server.RMISocketFactory;
@@ -490,7 +490,7 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
     final ConnectionPool connectionPool = CONNECTION_POOLS.get(clientInfo.getUser());
     connection.setLoggingEnabled(false);
     if (connectionPool != null && connectionPool.isEnabled()) {
-      connectionPool.checkInConnection(connection);
+      connectionPool.returnConnection(connection);
     }
   }
 
@@ -501,7 +501,7 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
         entityDbConnection.disconnect();//discard
         entityDbConnection = null;
       }
-      final EntityDbConnection pooledDbConnection = (EntityDbConnection) connectionPool.checkOutConnection();
+      final EntityDbConnection pooledDbConnection = (EntityDbConnection) connectionPool.getConnection();
       pooledDbConnection.setLoggingEnabled(methodLogger.isEnabled());
 
       return pooledDbConnection;
@@ -540,51 +540,49 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
 
     /** {@inheritDoc} */
     public Object invoke(final Object proxy, final Method method, final Object[] args) throws Exception {
-      RequestCounter.incrementRequestsPerSecondCounter();
       final String methodName = method.getName();
-      Throwable ex = null;
+      Exception exception = null;
       EntityDbConnection connection = null;
       final boolean logMethod = methodLogger.isEnabled() && shouldMethodBeLogged(methodName);
       try {
         setActive();
-        if (logMethod) {
-          methodLogger.logAccess(GET_CONNECTION, new Object[]{clientInfo.getUser()});
-        }
         connection = getConnection();
         if (logMethod) {
-          final int retries = connection.getPoolRetryCount();
-          final String message = retries > 0 ? "retries: " + retries : null;
-          methodLogger.logExit(GET_CONNECTION, null, null, message);
-          methodLogger.logAccess(methodName, args);
+          logAccess(args, methodName, connection);
         }
 
         return method.invoke(connection, args);
       }
-      catch (InvocationTargetException ie) {
-//        LOG.error(this, ie);
-//        ie.printStackTrace();
-        ex = ie.getCause();
-        throw (Exception) ie.getTargetException();
-      }
-      catch (Exception ie) {
-//        LOG.error(this, ie);
-//        ie.printStackTrace();
-        ex = ie;
-        throw ie;
+      catch (Exception e) {
+        exception = Util.unwrapAndLog(e, InvocationTargetException.class, LOG);
+        throw exception;
       }
       finally {
         setInactive();
         if (logMethod) {
-          final LogEntry entry = methodLogger.logExit(methodName, ex,
-                  connection != null ? connection.getLogEntries() : null);
-          if (entry != null && entry.getDelta() > RequestCounter.warningThreshold) {
-            RequestCounter.incrementWarningTimeExceededCounter();
-          }
+          logExit(methodName, exception, connection);
         }
-        if (connection != null && !connection.isTransactionOpen()) {
+        if (connection != null) {
           returnConnection(connection);
         }
       }
+    }
+
+    private void logExit(final String methodName, final Exception exception, final EntityDbConnection connection) {
+      final LogEntry entry = methodLogger.logExit(methodName, exception,
+              connection != null ? connection.getLogEntries() : null);
+      if (entry != null && entry.getDelta() > RequestCounter.warningThreshold) {
+        RequestCounter.incrementWarningTimeExceededCounter();
+      }
+    }
+
+    private void logAccess(final Object[] args, final String methodName, final EntityDbConnection connection) {
+      RequestCounter.incrementRequestsPerSecondCounter();
+      methodLogger.logAccess(GET_CONNECTION, new Object[]{clientInfo.getUser()});
+      final int retries = connection.getPoolRetryCount();
+      final String message = retries > 0 ? "retries: " + retries : null;
+      methodLogger.logExit(GET_CONNECTION, null, null, message);
+      methodLogger.logAccess(methodName, args);
     }
   }
 

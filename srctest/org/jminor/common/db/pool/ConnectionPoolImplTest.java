@@ -98,7 +98,7 @@ public class ConnectionPoolImplTest {
     assertEquals(0, statistics.getAvailableInPool());
     assertEquals(0, statistics.getConnectionsInUse());
 
-    final PoolableConnection dbConnectionOne = pool.checkOutConnection();
+    final PoolableConnection dbConnectionOne = pool.getConnection();
     assertTrue(dbConnectionOne.isValid());
     statistics = pool.getConnectionPoolStatistics(startDate.getTime());
     assertEquals(1, statistics.getConnectionRequests());
@@ -107,7 +107,7 @@ public class ConnectionPoolImplTest {
     assertEquals(1, statistics.getConnectionsInUse());
     assertEquals(1, statistics.getPoolSize());
 
-    final PoolableConnection dbConnectionTwo = pool.checkOutConnection();
+    final PoolableConnection dbConnectionTwo = pool.getConnection();
     assertTrue(dbConnectionTwo.isValid());
     statistics = pool.getConnectionPoolStatistics(startDate.getTime());
     assertEquals(2, statistics.getConnectionRequests());
@@ -116,7 +116,7 @@ public class ConnectionPoolImplTest {
     assertEquals(2, statistics.getConnectionsInUse());
     assertEquals(2, statistics.getPoolSize());
 
-    pool.checkInConnection(dbConnectionOne);
+    pool.returnConnection(dbConnectionOne);
     statistics = pool.getConnectionPoolStatistics(startDate.getTime());
     assertEquals(2, statistics.getConnectionRequests());
     assertEquals(2, statistics.getConnectionsCreated());
@@ -124,7 +124,7 @@ public class ConnectionPoolImplTest {
     assertEquals(1, statistics.getConnectionsInUse());
     assertEquals(2, statistics.getPoolSize());
 
-    final PoolableConnection dbConnectionThree = pool.checkOutConnection();
+    final PoolableConnection dbConnectionThree = pool.getConnection();
     assertTrue(dbConnectionThree.isValid());
     statistics = pool.getConnectionPoolStatistics(startDate.getTime());
     assertEquals(3, statistics.getConnectionRequests());
@@ -133,7 +133,7 @@ public class ConnectionPoolImplTest {
     assertEquals(2, statistics.getConnectionsInUse());
     assertEquals(2, statistics.getPoolSize());
 
-    pool.checkInConnection(dbConnectionTwo);
+    pool.returnConnection(dbConnectionTwo);
     statistics = pool.getConnectionPoolStatistics(startDate.getTime());
     assertEquals(3, statistics.getConnectionRequests());
     assertEquals(2, statistics.getConnectionsCreated());
@@ -141,7 +141,7 @@ public class ConnectionPoolImplTest {
     assertEquals(1, statistics.getConnectionsInUse());
     assertEquals(2, statistics.getPoolSize());
 
-    pool.checkInConnection(dbConnectionThree);
+    pool.returnConnection(dbConnectionThree);
     statistics = pool.getConnectionPoolStatistics(startDate.getTime());
     assertEquals(3, statistics.getConnectionRequests());
     assertEquals(2, statistics.getConnectionsCreated());
@@ -151,7 +151,7 @@ public class ConnectionPoolImplTest {
 
     assertTrue(statistics.getFineGrainedStatistics().size() > 0);
 
-    final PoolableConnection dbConnectionFour = pool.checkOutConnection();
+    final PoolableConnection dbConnectionFour = pool.getConnection();
     statistics = pool.getConnectionPoolStatistics(startDate.getTime());
     assertEquals(4, statistics.getConnectionRequests());
     assertEquals(2, statistics.getConnectionsCreated());
@@ -160,7 +160,7 @@ public class ConnectionPoolImplTest {
     assertEquals(2, statistics.getPoolSize());
 
     dbConnectionFour.disconnect();
-    pool.checkInConnection(dbConnectionFour);
+    pool.returnConnection(dbConnectionFour);
     statistics = pool.getConnectionPoolStatistics(startDate.getTime());
     assertEquals(2, statistics.getConnectionsCreated());
     assertEquals(1, statistics.getAvailableInPool());
@@ -185,9 +185,9 @@ public class ConnectionPoolImplTest {
 
     pool.setEnabled(false);
     assertEquals(0, pool.getConnectionPoolStatistics(System.currentTimeMillis()).getAvailableInPool());
-    pool.checkInConnection(dbConnectionThree);
+    pool.returnConnection(dbConnectionThree);
     try {
-      pool.checkOutConnection();
+      pool.getConnection();
       fail();
     }
     catch (IllegalStateException e) {}
@@ -205,7 +205,7 @@ public class ConnectionPoolImplTest {
             try {
               DbConnection connection = null;
               try {
-                connection = (DbConnection) pool.checkOutConnection();
+                connection = (DbConnection) pool.getConnection();
                 connection.query("select * from scott.emp", new ResultPacker() {
                   public List pack(ResultSet resultSet, int fetchCount) throws SQLException {
                     while (resultSet.next()) {
@@ -219,7 +219,7 @@ public class ConnectionPoolImplTest {
               }
               finally {
                 if (connection != null) {
-                  pool.checkInConnection(connection);
+                  pool.returnConnection(connection);
                 }
               }
             }

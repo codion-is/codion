@@ -21,14 +21,14 @@ public interface ConnectionPool {
    * @throws IllegalStateException if the pool is closed
    * @see #setMaximumCheckOutTime(int)
    */
-  PoolableConnection checkOutConnection() throws ClassNotFoundException, SQLException;
+  PoolableConnection getConnection() throws ClassNotFoundException, SQLException;
 
   /**
    * Return the given connection to the pool.
    * If the pool has been closed the connection is disconnected and discarded.
    * @param dbConnection the database connection to return to the pool
    */
-  void checkInConnection(final PoolableConnection dbConnection);
+  void returnConnection(final PoolableConnection dbConnection);
 
   /**
    * @return the user this connection pool is based on.

@@ -69,7 +69,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
   }
 
   /** {@inheritDoc} */
-  public PoolableConnection checkOutConnection() throws ClassNotFoundException, SQLException {
+  public PoolableConnection getConnection() throws ClassNotFoundException, SQLException {
     if (!enabled || closed) {
       throw new IllegalStateException("ConnectionPool not enabled or closed");
     }
@@ -109,7 +109,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
   }
 
   /** {@inheritDoc} */
-  public void checkInConnection(final PoolableConnection dbConnection) {
+  public void returnConnection(final PoolableConnection dbConnection) {
     if (closed || !dbConnection.isValid()) {
       synchronized (pool) {
         inUse.remove(dbConnection);

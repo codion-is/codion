@@ -2082,3 +2082,5 @@
   Entities.Proxy dismantled, Entity.*Provider added instead
   ConnectionPoolImpl refactored quite a bit
   ConnectionPool/EntityDb/EntityDbRemote.isConnectionValid() renamed to isValid()
+  ConnectionPool.checkOutConnection() and checkInConnection() renamed to getConnection() and returnConnection()
+  EntityDbRemoteAdapter refactored

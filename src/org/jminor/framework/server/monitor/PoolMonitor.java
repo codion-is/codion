@@ -254,10 +254,10 @@ public final class PoolMonitor {
     }
 
     /** {@inheritDoc} */
-    public void checkInConnection(final PoolableConnection dbConnection) {}
+    public void returnConnection(final PoolableConnection dbConnection) {}
 
     /** {@inheritDoc} */
-    public PoolableConnection checkOutConnection() throws ClassNotFoundException, SQLException {return null;}
+    public PoolableConnection getConnection() throws ClassNotFoundException, SQLException {return null;}
 
     /** {@inheritDoc} */
     public void close() {}
