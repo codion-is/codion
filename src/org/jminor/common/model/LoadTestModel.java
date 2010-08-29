@@ -302,9 +302,7 @@ public abstract class LoadTestModel {
       }
       evtApplicationtCountChanged.fire();
 
-      final Thread applicationRunner = new Thread(runner);
-      applicationRunner.setDaemon(true);
-      applicationRunner.start();
+      new Thread(runner).start();
     }
   }
 
