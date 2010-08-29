@@ -7,9 +7,7 @@ import org.jminor.common.model.Refreshable;
 import org.jminor.framework.domain.Property;
 
 /**
- * User: Björn Darri
- * Date: 19.7.2010
- * Time: 13:53:07
+ * A search model based on foreign key properties.
  */
 public interface ForeignKeySearchModel extends PropertySearchModel<Property.ForeignKeyProperty>, Refreshable {
   
