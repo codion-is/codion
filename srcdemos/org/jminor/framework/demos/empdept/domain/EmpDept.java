@@ -111,19 +111,17 @@ public class EmpDept {
             .setOrderByClause(EMPLOYEE_DEPARTMENT + ", " + EMPLOYEE_NAME)
             .setStringProvider(new StringProvider<String>(EMPLOYEE_NAME))
             .setRowColoring(true)
-            .setCaption(getString(EMPLOYEE));
+            .setCaption(getString(EMPLOYEE))
+            .setBackgroundColorProvider(new Entity.BackgroundColorProvider() {
+              /*provide a custom background color for managers*/
+              public Color getBackgroundColor(final Entity entity) {
+                if (!entity.isValueNull(EMPLOYEE_JOB) && entity.getStringValue(EMPLOYEE_JOB).equals("MANAGER")) {
+                  return Color.CYAN;
+                }
 
-    /*Set a Proxy implementation to provide a custom background color for managers*/
-    Entities.setProxy(T_EMPLOYEE, new Entities.Proxy() {
-      @Override
-      public Color getBackgroundColor(final Entity entity) {
-        if (!entity.isValueNull(EMPLOYEE_JOB) && entity.getStringValue(EMPLOYEE_JOB).equals("MANAGER")) {
-          return Color.CYAN;
-        }
-
-        return super.getBackgroundColor(entity);
-      }
-    });
+                return null;
+              }
+            });
   }
 
   public static String getString(final String key) {

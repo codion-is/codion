@@ -52,8 +52,8 @@ public final class DatabaseMonitorPanel extends JPanel {
     setLayout(new BorderLayout());
     final JTabbedPane tabPane = new JTabbedPane();
     tabPane.setUI(UiUtil.getBorderlessTabbedPaneUI());
-    tabPane.addTab("Performance", getChartPanel());
     tabPane.addTab("Connection Pools", new PoolMonitorPanel(model.getConnectionPoolMonitor()));
+    tabPane.addTab("Performance", getChartPanel());
     add(tabPane, BorderLayout.CENTER);
   }
 

@@ -140,8 +140,8 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     ((JSpinner.DefaultEditor) spnCleanupInterval.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) spnMinimumSize.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) spnMaximumSize.getEditor()).getTextField().setEditable(false);
-    ((JSpinner.DefaultEditor) spnMaximumRetryWait.getEditor()).getTextField().setEditable(false);
-    ((JSpinner.DefaultEditor) spnMaximumCheckOutTime.getEditor()).getTextField().setEditable(false);
+//    ((JSpinner.DefaultEditor) spnMaximumRetryWait.getEditor()).getTextField().setEditable(false);
+//    ((JSpinner.DefaultEditor) spnMaximumCheckOutTime.getEditor()).getTextField().setEditable(false);
 
     ((JSpinner.DefaultEditor) spnTimeout.getEditor()).getTextField().setColumns(3);
     ((JSpinner.DefaultEditor) spnCleanupInterval.getEditor()).getTextField().setColumns(3);
@@ -228,7 +228,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     configBase.add(ControlProvider.createButton(
             Controls.methodControl(model, "resetInPoolStats", "Reset")), BorderLayout.EAST);
 
-    final JPanel chartBase = new JPanel(new GridLayout(2,1));
+    final JPanel chartBase = new JPanel(new GridLayout(2,2));
     chartBase.add(requestsPerSecondChartPanel);
     chartBase.add(inPoolChartPanelMacro);
     chartBase.add(checkOutTimePanel);

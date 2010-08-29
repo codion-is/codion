@@ -5,20 +5,18 @@ package org.jminor.common.db.pool;
 
 import org.jminor.common.db.dbms.Database;
 import org.jminor.common.model.User;
-import org.jminor.common.model.Util;
-
-import org.apache.log4j.Logger;
 
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Collection;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Random;
 import java.util.Stack;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.Date;
 
 /**
  * A simple connection pool implementation, pools connections on username basis.
@@ -30,90 +28,115 @@ public final class ConnectionPoolImpl implements ConnectionPool {
   public static final int DEFAULT_MAXIMUM_POOL_SIZE = 8;
   public static final int DEFAULT_MAXIMUM_RETRY_WAIT_PERIOD_MS = 50;
   public static final int DEFAULT_MAXIMUM_CHECK_OUT_TIME = 1000;
-  public static final int RETRIES_BEFORE_NEW_CONNECTION = 3;
+  public static final int DEFAULT_RETRIES_BEFORE_NEW_CONNECTION = 10;
 
-  private static final Logger LOG = Util.getLogger(ConnectionPoolImpl.class);
-
-  private final Stack<PoolableConnection> connectionPool = new Stack<PoolableConnection>();
-
-  private final List<ConnectionPoolStateImpl> connectionPoolStatistics = new ArrayList<ConnectionPoolStateImpl>(1000);
-
-  private Timer poolCleaner;
-
-  private int connectionPoolStatisticsIndex = 0;
-  private volatile boolean collectFineGrainedStatistics = System.getProperty(Database.DATABASE_POOL_STATISTICS, "true").equalsIgnoreCase("true");
-
-  private final PoolableConnectionProvider poolableConnectionProvider;
-  private boolean closed = false;
-
+  private final PoolableConnectionProvider connectionProvider;
+  private final User user;
+  private final Stack<PoolableConnection> pool = new Stack<PoolableConnection>();
+  private final Collection<PoolableConnection> inUse = new ArrayList<PoolableConnection>();
   private final Counter counter = new Counter();
   private final Random random = new Random();
-  private final User user;
-  private volatile boolean creatingConnection = false;
-  private volatile int pooledConnectionTimeout = DEFAULT_CONNECTION_TIMEOUT_MS;
-  private volatile int minimumPoolSize = DEFAULT_MAXIMUM_POOL_SIZE / 2;
-  private volatile int maximumPoolSize = DEFAULT_MAXIMUM_POOL_SIZE;
-  private volatile int maximumCheckOutTime = DEFAULT_MAXIMUM_CHECK_OUT_TIME;
-  private volatile int poolCleanupInterval = DEFAULT_CLEANUP_INTERVAL_MS;
-  private volatile int maximumRetryWaitPeriod = DEFAULT_MAXIMUM_RETRY_WAIT_PERIOD_MS;
-  private volatile boolean enabled = true;
+
+  private int minimumPoolSize = DEFAULT_MAXIMUM_POOL_SIZE / 2;
+  private int maximumPoolSize = DEFAULT_MAXIMUM_POOL_SIZE;
+  private int retriesBeforeNewConnection = DEFAULT_RETRIES_BEFORE_NEW_CONNECTION;
+  private int maximumRetryWaitPeriod = DEFAULT_MAXIMUM_RETRY_WAIT_PERIOD_MS;
+  private int poolCleanupInterval = DEFAULT_CLEANUP_INTERVAL_MS;
+  private int pooledConnectionTimeout = DEFAULT_CONNECTION_TIMEOUT_MS;
+  private int maximumCheckOuttime = DEFAULT_MAXIMUM_CHECK_OUT_TIME;
+
+  private boolean creatingConnection = false;
+  private boolean enabled = true;
+  private boolean closed = false;
+
+  private Timer cleanupTimer;
+  private int currentPoolStatisticsIndex = 0;
+  private volatile boolean collectFineGrainedStatistics = System.getProperty(Database.DATABASE_POOL_STATISTICS, "true").equalsIgnoreCase("true");
+  private final List<ConnectionPoolStateImpl> connectionPoolStatistics = new ArrayList<ConnectionPoolStateImpl>(1000);
 
   /**
    * Instantiates a new ConnectionPoolImpl.
-   * @param poolableConnectionProvider the connection provider
+   * @param connectionProvider the connection provider
    * @param user the user this pool is based on
    */
-  public ConnectionPoolImpl(final PoolableConnectionProvider poolableConnectionProvider, final User user) {
-    this.poolableConnectionProvider = poolableConnectionProvider;
+  public ConnectionPoolImpl(final PoolableConnectionProvider connectionProvider, final User user) {
     this.user = user;
+    this.connectionProvider = connectionProvider;
+    for (int i = 0; i < 1000; i++) {
+      connectionPoolStatistics.add(new ConnectionPoolStateImpl());
+    }
     startPoolCleaner();
   }
 
   /** {@inheritDoc} */
   public PoolableConnection checkOutConnection() throws ClassNotFoundException, SQLException {
-    if (closed) {
-      throw new IllegalStateException("Can not check out a connection from a closed connection pool!");
+    if (!enabled || closed) {
+      throw new IllegalStateException("ConnectionPool not enabled or closed");
     }
-
-    final long time = System.currentTimeMillis();
+    final long currentTime = System.currentTimeMillis();
+    addPoolStatistics(currentTime);
     counter.incrementRequestCounter();
-    PoolableConnection connection = getConnectionFromPool();
+
+    PoolableConnection connection = fetchFromPool();
     if (connection == null) {
       counter.incrementDelayedRequestCounter();
     }
     int retryCount = 0;
-    while (connection == null) {
-      if (retryCount > RETRIES_BEFORE_NEW_CONNECTION && counter.getPoolSize() < maximumPoolSize) {
-        connection = getNewConnection();
-      }
-      if (connection == null) {
-        waitForRetry();
-        connection = getConnectionFromPool();
-      }
+    while (connection == null && System.currentTimeMillis() - currentTime < maximumCheckOuttime) {
       retryCount++;
-      if (System.currentTimeMillis() - time > maximumCheckOutTime) {
-        throw new ConnectionPoolException.NoConnectionAvailable();
+      boolean newConnection = false;
+      synchronized (pool) {
+        if (retryCount > retriesBeforeNewConnection && pool.size() + inUse.size() < maximumPoolSize && !creatingConnection) {
+          newConnection = true;
+        }
+      }
+      if (newConnection) {
+        synchronized (pool) {
+          creatingConnection = true;
+        }
+        try {
+          connection = connectionProvider.createConnection(user);
+          counter.incrementConnectionsCreatedCounter();
+          inUse.add(connection);
+        }
+        finally {
+          creatingConnection = false;
+        }
+      }
+      else {
+        try {
+          Thread.sleep(random.nextInt(maximumRetryWaitPeriod));
+        }
+        catch (InterruptedException e) {/**/}
+
+        connection = fetchFromPool();
       }
     }
-    connection.setPoolRetryCount(retryCount);
-    counter.addCheckOutTime(System.currentTimeMillis() - time);
+    if (connection != null) {
+      counter.addCheckOutTime(System.currentTimeMillis() - currentTime);
+      connection.setPoolRetryCount(retryCount);
 
-    return connection;
+      return connection;
+    }
+
+    throw new ConnectionPoolException.NoConnectionAvailable();
   }
 
   /** {@inheritDoc} */
   public void checkInConnection(final PoolableConnection dbConnection) {
-    if (closed) {
-      disconnect(dbConnection);
-    }
-    if (dbConnection.isConnectionValid()) {
-      if (dbConnection.isTransactionOpen()) {
-        dbConnection.rollbackTransaction();
+    if (closed || !dbConnection.isConnectionValid()) {
+      synchronized (pool) {
+        inUse.remove(dbConnection);
       }
-      addConnectionToPool(dbConnection);
+      connectionProvider.destroyConnection(dbConnection);
+      counter.incrementConnectionsDestroyedCounter();
+
+      return;
     }
-    else {
-      disconnect(dbConnection);
+    synchronized (pool) {
+      inUse.remove(dbConnection);
+      pool.push(dbConnection);
+      dbConnection.setPoolTime(System.currentTimeMillis());
     }
   }
 
@@ -123,98 +146,25 @@ public final class ConnectionPoolImpl implements ConnectionPool {
   }
 
   /** {@inheritDoc} */
-  public synchronized int getPooledConnectionTimeout() {
-    return pooledConnectionTimeout;
-  }
-
-  /** {@inheritDoc} */
-  public synchronized void setPooledConnectionTimeout(final int timeout) {
-    this.pooledConnectionTimeout = timeout;
-  }
-
-  /** {@inheritDoc} */
-  public synchronized int getMaximumRetryWaitPeriod() {
-    return maximumRetryWaitPeriod;
-  }
-
-  /** {@inheritDoc} */
-  public synchronized void setMaximumRetryWaitPeriod(final int maximumRetryWaitPeriod) {
-    this.maximumRetryWaitPeriod = maximumRetryWaitPeriod;
-  }
-
-  /** {@inheritDoc} */
-  public synchronized int getMinimumPoolSize() {
-    return minimumPoolSize;
-  }
-
-  /** {@inheritDoc} */
-  public synchronized void setMinimumPoolSize(final int value) {
-    if (value > maximumPoolSize || value < 0) {
-      throw new IllegalArgumentException("Minimum pool size must be a positive integer an be less than maximum pool size");
+  public void close() {
+    closed = true;
+    synchronized (pool) {
+      while (!pool.isEmpty()) {
+        connectionProvider.destroyConnection(pool.pop());
+        counter.incrementConnectionsDestroyedCounter();
+      }
     }
-    this.minimumPoolSize = value;
-  }
-
-  /** {@inheritDoc} */
-  public synchronized int getMaximumPoolSize() {
-    return maximumPoolSize;
-  }
-
-  /** {@inheritDoc} */
-  public synchronized void setMaximumPoolSize(final int value) {
-    if (value < minimumPoolSize || value < 1) {
-      throw new IllegalArgumentException("Maximum pool size must be larger than 1 and larger than minimum pool size");
-    }
-    this.maximumPoolSize = value;
-  }
-
-  /** {@inheritDoc} */
-  public synchronized int getMaximumCheckOutTime() {
-    return maximumCheckOutTime;
-  }
-
-  /** {@inheritDoc} */
-  public synchronized void setMaximumCheckOutTime(final int value) {
-    if (value < 0) {
-      throw new IllegalArgumentException("Maximum check out time must be a positive integer");
-    }
-    this.maximumCheckOutTime = value;
-  }
-
-  /** {@inheritDoc} */
-  public synchronized boolean isEnabled() {
-    return enabled;
-  }
-
-  /** {@inheritDoc} */
-  public synchronized void setEnabled(final boolean enabled) {
-    this.enabled = enabled;
-    if (!enabled) {
-      close();
-    }
-  }
-
-  /** {@inheritDoc} */
-  public synchronized void setPoolCleanupInterval(final int poolCleanupInterval) {
-    if (this.poolCleanupInterval != poolCleanupInterval) {
-      this.poolCleanupInterval = poolCleanupInterval;
-      startPoolCleaner();
-    }
-  }
-
-  /** {@inheritDoc} */
-  public synchronized int getPoolCleanupInterval() {
-    return poolCleanupInterval;
   }
 
   /** {@inheritDoc} */
   public ConnectionPoolStatistics getConnectionPoolStatistics(final long since) {
     final ConnectionPoolStatisticsImpl statistics = new ConnectionPoolStatisticsImpl(user);
-    synchronized (connectionPool) {
-      final int inPool = connectionPool.size();
+    synchronized (pool) {
+      final int inPool = pool.size();
+      final int inUseCount = inUse.size();
       statistics.setAvailableInPool(inPool);
-      statistics.setConnectionsInUse(counter.getPoolSize() - inPool);
-      statistics.setPoolSize(counter.getPoolSize());
+      statistics.setConnectionsInUse(inUseCount);
+      statistics.setPoolSize(inPool + inUseCount);
       statistics.setConnectionsCreated(counter.getConnectionsCreated());
       statistics.setConnectionsDestroyed(counter.getConnectionsDestroyed());
       statistics.setCreationDate(counter.getCreationDate());
@@ -234,6 +184,11 @@ public final class ConnectionPoolImpl implements ConnectionPool {
   }
 
   /** {@inheritDoc} */
+  public void resetPoolStatistics() {
+    counter.resetPoolStatistics();
+  }
+
+  /** {@inheritDoc} */
   public boolean isCollectFineGrainedStatistics() {
     return collectFineGrainedStatistics;
   }
@@ -244,141 +199,125 @@ public final class ConnectionPoolImpl implements ConnectionPool {
   }
 
   /** {@inheritDoc} */
-  public void resetPoolStatistics() {
-    counter.resetPoolStatistics();
+  public boolean isEnabled() {
+    return enabled;
   }
 
-  /**
-   * Closes this connection pool, disconnecting all connections
-   */
-  void close() {
-    closed = true;
-    emptyPool();
+  /** {@inheritDoc} */
+  public void setEnabled(final boolean enabled) {
+    this.enabled = enabled;
+    if (!enabled) {
+      close();
+    }
   }
 
-  /**
-   * @return a new connection, null if a connection is in the process of being created
-   * or if the pool has reached it's maximum size
-   */
-  private PoolableConnection getNewConnection() {
-    try {
-      synchronized (connectionPool) {
-        if (!creatingConnection && counter.getPoolSize() < maximumPoolSize) {
-          try {
-            creatingConnection = true;
-            final PoolableConnection connection = poolableConnectionProvider.createConnection(user);
-            counter.incrementConnectionsCreatedCounter();
+  /** {@inheritDoc} */
+  public int getPoolCleanupInterval() {
+    return poolCleanupInterval;
+  }
 
-            return connection;
-          }
-          finally {
-            creatingConnection = false;
-          }
+  /** {@inheritDoc} */
+  public void setPoolCleanupInterval(final int poolCleanupInterval) {
+    if (poolCleanupInterval != this.poolCleanupInterval) {
+      this.poolCleanupInterval = poolCleanupInterval;
+      startPoolCleaner();
+    }
+  }
+
+  /** {@inheritDoc} */
+  public int getPooledConnectionTimeout() {
+    return pooledConnectionTimeout;
+  }
+
+  /** {@inheritDoc} */
+  public void setPooledConnectionTimeout(final int timeout) {
+    this.pooledConnectionTimeout = timeout;
+  }
+
+  /** {@inheritDoc} */
+  public int getMaximumRetryWaitPeriod() {
+    return maximumRetryWaitPeriod;
+  }
+
+  /** {@inheritDoc} */
+  public void setMaximumRetryWaitPeriod(final int maximumRetryWaitPeriod) {
+    this.maximumRetryWaitPeriod = maximumRetryWaitPeriod;
+  }
+
+  /** {@inheritDoc} */
+  public int getMinimumPoolSize() {
+    return minimumPoolSize;
+  }
+
+  /** {@inheritDoc} */
+  public void setMinimumPoolSize(final int value) {
+    if (value > maximumPoolSize || value < 0) {
+      throw new IllegalArgumentException("Minimum pool size must be a positive integer an be less than maximum pool size");
+    }
+    this.minimumPoolSize = value;
+  }
+
+  /** {@inheritDoc} */
+  public int getMaximumPoolSize() {
+    return maximumPoolSize;
+  }
+
+  /** {@inheritDoc} */
+  public void setMaximumPoolSize(final int value) {
+    if (value < minimumPoolSize || value < 1) {
+      throw new IllegalArgumentException("Maximum pool size must be larger than 1 and larger than minimum pool size");
+    }
+    this.maximumPoolSize = value;
+  }
+
+  /** {@inheritDoc} */
+  public int getMaximumCheckOutTime() {
+    return maximumCheckOuttime;
+  }
+
+  /** {@inheritDoc} */
+  public void setMaximumCheckOutTime(final int value) {
+    if (value < 0) {
+      throw new IllegalArgumentException("Maximum check out time must be a positive integer");
+    }
+    this.maximumCheckOuttime = value;
+  }
+
+  private PoolableConnection fetchFromPool() {
+    PoolableConnection connection = null;
+    boolean destroyConnection = false;
+    synchronized (pool) {
+      if (pool.size() > 0) {
+        connection = pool.pop();
+        if (!connection.isConnectionValid()) {
+          destroyConnection = true;
+        }
+        else {
+          inUse.add(connection);
         }
       }
     }
-    catch (Exception e) {
-      LOG.error(e);
-    }
 
-    return null;
-  }
-
-  /**
-   * @return a connection from the pool, null if none is available
-   */
-  private PoolableConnection getConnectionFromPool() {
-    synchronized (connectionPool) {
-      final int size = connectionPool.size();
-      if (collectFineGrainedStatistics) {
-        addInPoolStats(size, System.currentTimeMillis());
+    if (destroyConnection) {
+      connectionProvider.destroyConnection(connection);
+      synchronized (pool) {
+        counter.incrementConnectionsDestroyedCounter();
       }
-      final PoolableConnection connection = size > 0 ? connectionPool.pop() : null;
-      if (connection != null && !connection.isConnectionValid()) {
-        LOG.debug("Removing an invalid database connection: " + connection);
-        disconnect(connection);
+      connection = null;
+    }
 
-        return getConnectionFromPool();
+    return connection;
+  }
+
+  private void addPoolStatistics(final long currentTime) {
+    synchronized (pool) {
+      if (currentPoolStatisticsIndex == 1000) {
+        currentPoolStatisticsIndex = 0;
       }
-
-      return connection;
+      final int inUseCount = inUse.size();
+      connectionPoolStatistics.get(currentPoolStatisticsIndex).set(currentTime, pool.size(), inUseCount);
+      currentPoolStatisticsIndex++;
     }
-  }
-
-  private void addConnectionToPool(final PoolableConnection connection) {
-    connection.setPoolTime(System.currentTimeMillis());
-    synchronized (connectionPool) {
-      connectionPool.push(connection);
-    }
-  }
-
-  private void waitForRetry() {
-    try {
-      Thread.sleep(random.nextInt(maximumRetryWaitPeriod));
-    }
-    catch (InterruptedException e) {/**/}
-  }
-
-  private void addInPoolStats(final int inPool, final long timestamp) {
-    synchronized (connectionPoolStatistics) {
-      final int poolStatisticsSize = 1000;
-      final int inUse = counter.getPoolSize() - inPool;
-      connectionPoolStatisticsIndex = connectionPoolStatisticsIndex == poolStatisticsSize ? 0 : connectionPoolStatisticsIndex;
-      if (connectionPoolStatistics.size() == poolStatisticsSize) {//filled already, reuse
-        connectionPoolStatistics.get(connectionPoolStatisticsIndex).set(timestamp, inPool, inUse);
-      }
-      else {
-        connectionPoolStatistics.add(new ConnectionPoolStateImpl(timestamp, inPool, inUse));
-      }
-
-      connectionPoolStatisticsIndex++;
-    }
-  }
-
-  private void startPoolCleaner() {
-    if (poolCleaner != null) {
-      poolCleaner.cancel();
-    }
-
-    poolCleaner = new Timer(true);
-    poolCleaner.schedule(new TimerTask() {
-      @Override
-      public void run() {
-        cleanPool();
-      }
-    }, new Date(), poolCleanupInterval);
-  }
-
-  private void cleanPool() {
-    synchronized (connectionPool) {
-      final long currentTime = System.currentTimeMillis();
-      final ListIterator<PoolableConnection> iterator = connectionPool.listIterator();
-      while (iterator.hasNext() && connectionPool.size() > minimumPoolSize) {
-        final PoolableConnection connection = iterator.next();
-        final long idleTime = currentTime - connection.getPoolTime();
-        if (idleTime > pooledConnectionTimeout) {
-          iterator.remove();
-          disconnect(connection);
-        }
-      }
-    }
-  }
-
-  private void emptyPool() {
-    synchronized (connectionPool) {
-      while (!connectionPool.isEmpty()) {
-        disconnect(connectionPool.pop());
-      }
-    }
-  }
-
-  private void disconnect(final PoolableConnection connection) {
-    if (connection == null) {
-      return;
-    }
-
-    counter.incrementConnectionsDestroyedCounter();
-    poolableConnectionProvider.destroyConnection(connection);
   }
 
   /**
@@ -387,7 +326,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
    */
   private List<ConnectionPoolState> getFineGrainedStatistics(final long since) {
     final List<ConnectionPoolState> poolStates = new ArrayList<ConnectionPoolState>();
-    synchronized (connectionPoolStatistics) {
+    synchronized (pool) {
       final ListIterator<ConnectionPoolStateImpl> iterator = connectionPoolStatistics.listIterator();
       while (iterator.hasNext()) {//NB. the stat log is circular, result should be sorted
         final ConnectionPoolState state = iterator.next();
@@ -400,13 +339,38 @@ public final class ConnectionPoolImpl implements ConnectionPool {
     return poolStates;
   }
 
+  private void cleanPool() {
+    final long currentTime = System.currentTimeMillis();
+    synchronized (pool) {
+      final ListIterator<PoolableConnection> iterator = pool.listIterator();
+      while (iterator.hasNext() && pool.size() > minimumPoolSize) {
+        final PoolableConnection connection = iterator.next();
+        if (currentTime - connection.getPoolTime() > pooledConnectionTimeout) {
+          connectionProvider.destroyConnection(connection);
+        }
+      }
+    }
+  }
+
+  private void startPoolCleaner() {
+    if (cleanupTimer != null) {
+      cleanupTimer.cancel();
+    }
+    cleanupTimer = new Timer(true);
+    cleanupTimer.schedule(new TimerTask() {
+      @Override
+      public void run() {
+        cleanPool();
+      }
+    }, 0, this.poolCleanupInterval);
+  }
+
   private static final class Counter {
     private static final double THOUSAND = 1000d;
     private static final int DEFAULT_STATS_UPDATE_INTERVAL = 1000;
 
     private final long creationDate = System.currentTimeMillis();
     private long resetDate = creationDate;
-    private volatile int poolSize = 0;
     private volatile int connectionsCreated = 0;
     private volatile int connectionsDestroyed = 0;
     private volatile int connectionRequests = 0;
@@ -452,10 +416,6 @@ public final class ConnectionPoolImpl implements ConnectionPool {
       return connectionsDestroyed;
     }
 
-    private synchronized int getPoolSize() {
-      return poolSize;
-    }
-
     private synchronized int getRequestsDelayedPerSecond() {
       return requestsDelayedPerSecond;
     }
@@ -497,12 +457,10 @@ public final class ConnectionPoolImpl implements ConnectionPool {
     }
 
     private synchronized void incrementConnectionsDestroyedCounter() {
-      poolSize--;
       connectionsDestroyed++;
     }
 
     private synchronized void incrementConnectionsCreatedCounter() {
-      poolSize++;
       connectionsCreated++;
     }
 
@@ -529,9 +487,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
     private int connectionCount = -1;
     private int connectionsInUse = -1;
 
-    private ConnectionPoolStateImpl(final long time, final int connectionCount, final int connectionsInUse) {
-      set(time, connectionCount, connectionsInUse);
-    }
+    private ConnectionPoolStateImpl() {}
 
     private void set(final long time, final int connectionCount, final int connectionsInUse) {
       this.time = time;

@@ -248,5 +248,8 @@ public final class PoolMonitor {
 
     /** {@inheritDoc} */
     public PoolableConnection checkOutConnection() throws ClassNotFoundException, SQLException {return null;}
+
+    /** {@inheritDoc} */
+    public void close() {}
   }
 }

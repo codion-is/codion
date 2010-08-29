@@ -35,7 +35,7 @@ public class ConnectionPoolImplTest {
   @Test
   public void loadTest() throws Exception {
     final Date startTime = new Date();
-    final ConnectionPoolImpl pool = initializeLoadTestPool();
+    final ConnectionPool pool = initializeLoadTestPool();
     final LoadTestModel model = initializeLoadTestModel(pool);
     model.addApplicationBatch();
     model.setCollectChartData(true);
@@ -52,7 +52,7 @@ public class ConnectionPoolImplTest {
   public void test() throws Exception {
     final Date startDate = new Date();
     final User user = User.UNIT_TEST_USER;
-    final ConnectionPoolImpl pool = new ConnectionPoolImpl(createConnectionProvider(), user);
+    final ConnectionPool pool = new ConnectionPoolImpl(createConnectionProvider(), user);
     assertTrue(pool.isEnabled());
     pool.getUser().setPassword(User.UNIT_TEST_USER.getPassword());
     assertEquals(user, pool.getUser());
@@ -193,7 +193,7 @@ public class ConnectionPoolImplTest {
     catch (IllegalStateException e) {}
   }
 
-  private LoadTestModel initializeLoadTestModel(final ConnectionPoolImpl pool) {
+  private LoadTestModel initializeLoadTestModel(final ConnectionPool pool) {
     return new LoadTestModel(User.UNIT_TEST_USER, 100, 1, 5, 20) {
       @Override
       protected void disconnectApplication(Object application) {}
@@ -240,8 +240,8 @@ public class ConnectionPoolImplTest {
     };
   }
 
-  private ConnectionPoolImpl initializeLoadTestPool() {
-    final ConnectionPoolImpl pool = new ConnectionPoolImpl(createConnectionProvider(), User.UNIT_TEST_USER);
+  private ConnectionPool initializeLoadTestPool() {
+    final ConnectionPool pool = new ConnectionPoolImpl(createConnectionProvider(), User.UNIT_TEST_USER);
     pool.setPooledConnectionTimeout(50);
     pool.setMinimumPoolSize(1);
     pool.setPoolCleanupInterval(130);

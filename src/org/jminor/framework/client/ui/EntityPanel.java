@@ -653,7 +653,7 @@ public class EntityPanel extends JPanel {
       prepareUI(true, false);
     }
     else if (state == HIDDEN) {
-      if (compactDetailLayout) {
+      if (compactDetailLayout && !detailEntityPanels.isEmpty()) {
         compactBase.remove(editControlPanel);
       }
       else {

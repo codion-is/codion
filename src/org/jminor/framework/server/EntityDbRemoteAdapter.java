@@ -561,12 +561,14 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
         return method.invoke(connection, args);
       }
       catch (InvocationTargetException ie) {
-        LOG.error(this, ie);
+//        LOG.error(this, ie);
+//        ie.printStackTrace();
         ex = ie.getCause();
         throw (Exception) ie.getTargetException();
       }
       catch (Exception ie) {
-        LOG.error(this, ie);
+//        LOG.error(this, ie);
+//        ie.printStackTrace();
         ex = ie;
         throw ie;
       }

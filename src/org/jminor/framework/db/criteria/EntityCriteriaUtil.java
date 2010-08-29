@@ -806,9 +806,9 @@ public final class EntityCriteriaUtil {
 
       switch(searchType) {
         case LIKE:
-          return getLikeCondition(property, sqlValue);
+          return getLikeCondition(property, columnIdentifier, sqlValue);
         case NOT_LIKE:
-          return getNotLikeCondition(property, sqlValue);
+          return getNotLikeCondition(property, columnIdentifier, sqlValue);
         case AT_LEAST:
           return columnIdentifier + " <= " + sqlValue;
         case AT_MOST:
@@ -826,9 +826,10 @@ public final class EntityCriteriaUtil {
       return property.isString() && !caseSensitive ? "upper(" + sqlStringValue + ")" : sqlStringValue;
     }
 
-    private String getNotLikeCondition(final Property.ColumnProperty property, final String likeValue) {
+    private String getNotLikeCondition(final Property.ColumnProperty property, final String columnIdentifier,
+                                       final String likeValue) {
       return getValueCount() > 1 ? getInList(property, true) :
-              initializeColumnIdentifier(property) + (property.isString() ? " not like "  + likeValue: " <> " + likeValue);
+              columnIdentifier + (property.isString() ? " not like "  + likeValue: " <> " + likeValue);
     }
 
     private String getInList(final Property.ColumnProperty property, final boolean notIn) {
@@ -854,8 +855,9 @@ public final class EntityCriteriaUtil {
       return stringBuilder.toString();
     }
 
-    private String getLikeCondition(final Property.ColumnProperty property, final String likeValue) {
-      return getValueCount() > 1 ? getInList(property, false) : initializeColumnIdentifier(property) +
+    private String getLikeCondition(final Property.ColumnProperty property, final String columnIdentifier,
+                                    final String likeValue) {
+      return getValueCount() > 1 ? getInList(property, false) : columnIdentifier +
               (property.isString() ? " like " + likeValue : " = " + likeValue);
     }
 

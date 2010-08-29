@@ -199,7 +199,7 @@ public final class EntityLookupField extends JTextField {
         if (getText().isEmpty()) {
           getModel().setSelectedEntity(null);
         }
-        else if (!performingLookup && !model.searchStringRepresentsSelected()) {
+        else if (!getText().equals(searchHint.getSearchHint()) && !performingLookup && !model.searchStringRepresentsSelected()) {
           final boolean entitiesSelected = performLookup();
           if (!entitiesSelected) {
             requestFocusInWindow();

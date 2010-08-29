@@ -180,7 +180,7 @@ public class Chinook {
             .setDomainID(DOMAIN_ID)
             .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_CUSTOMER)
             .setStringProvider(new StringProvider<String>(CUSTOMER_LASTNAME)
-            .addText(", ").addValue(CUSTOMER_FIRSTNAME))
+                    .addText(", ").addValue(CUSTOMER_FIRSTNAME))
             .setSearchPropertyIDs(CUSTOMER_FIRSTNAME, CUSTOMER_LASTNAME, CUSTOMER_EMAIL)
             .setOrderByClause(CUSTOMER_LASTNAME + ", " + CUSTOMER_FIRSTNAME)
             .setCaption("Customers");
@@ -218,7 +218,7 @@ public class Chinook {
             .setDomainID(DOMAIN_ID)
             .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_EMPLOYEE)
             .setStringProvider(new StringProvider<String>(EMPLOYEE_LASTNAME)
-            .addText(", ").addValue(EMPLOYEE_FIRSTNAME))
+                    .addText(", ").addValue(EMPLOYEE_FIRSTNAME))
             .setSearchPropertyIDs(EMPLOYEE_FIRSTNAME, EMPLOYEE_LASTNAME, EMPLOYEE_EMAIL)
             .setOrderByClause(EMPLOYEE_LASTNAME + ", " + EMPLOYEE_FIRSTNAME)
             .setCaption("Employees");
@@ -279,26 +279,24 @@ public class Chinook {
             .setStringProvider(new StringProvider<String>(TRACK_NAME))
             .setSearchPropertyIDs(TRACK_NAME)
             .setOrderByClause(TRACK_NAME)
-            .setCaption("Tracks");
+            .setCaption("Tracks")
+            .setDerivedValueProvider(new Entity.DerivedValueProvider() {
+              public Object getDerivedValue(final Entity entity, final Property.DerivedProperty property) {
+                if (property.is(TRACK_MINUTES_SECONDS_DERIVED)) {
+                  final Integer milliseconds = (Integer) entity.getValue(TRACK_MILLISECONDS);
+                  if (milliseconds == null || milliseconds <= 0) {
+                    return "";
+                  }
 
-    Entities.setProxy(T_TRACK, new Entities.Proxy() {
-      @Override
-      public Object getDerivedValue(final Entity entity, final Property.DerivedProperty property) {
-        if (property.is(TRACK_MINUTES_SECONDS_DERIVED)) {
-          final Integer milliseconds = (Integer) entity.getValue(TRACK_MILLISECONDS);
-          if (milliseconds == null || milliseconds <= 0) {
-            return "";
-          }
+                  final int seconds = ((milliseconds / 1000) % 60);
+                  final int minutes = ((milliseconds / 1000) / 60);
 
-          final int seconds = ((milliseconds / 1000) % 60);
-          final int minutes = ((milliseconds / 1000) / 60);
+                  return minutes + " min " + seconds + " sec";
+                }
 
-          return minutes + " min " + seconds + " sec";
-        }
-
-        return super.getDerivedValue(entity, property);
-      }
-    });
+                return null;
+              }
+            });
 
     Entities.define(T_PLAYLIST,
             Properties.primaryKeyProperty(PLAYLIST_PLAYLISTID),
@@ -332,7 +330,7 @@ public class Chinook {
             .setDomainID(DOMAIN_ID)
             .setIdSource(IdSource.NONE)
             .setStringProvider(new StringProvider<String>(PLAYLISTTRACK_PLAYLISTID_FK)
-            .addText(" - ").addValue(PLAYLISTTRACK_TRACKID_FK))
+                    .addText(" - ").addValue(PLAYLISTTRACK_TRACKID_FK))
             .setCaption("Playlist tracks");
 
     Entities.define(T_INVOICE,

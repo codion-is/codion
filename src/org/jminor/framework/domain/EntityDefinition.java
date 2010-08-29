@@ -9,6 +9,8 @@ import org.jminor.common.model.valuemap.ValueMap;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.text.Format;
+import java.awt.Color;
 
 /**
  * A interface defining a entity.
@@ -36,6 +38,30 @@ public interface EntityDefinition {
    * @return this EntityDefinition instance
    */
   EntityDefinition setDomainID(final String domainID);
+
+  /**
+   * @param valueProvider
+   * @return this EntityDefinition instance
+   */
+  EntityDefinition setDerivedValueProvider(final Entity.DerivedValueProvider valueProvider);
+
+  /**
+   * @param toString the to string provider
+   * @return this EntityDefinition instance
+   */
+  EntityDefinition setToStringProvider(final ValueMap.ToString<String> toString);
+
+  /**
+   * @param colorProvider the background color provider
+   * @return this EntityDefinition instance
+   */
+  EntityDefinition setBackgroundColorProvider(final Entity.BackgroundColorProvider colorProvider);
+
+  /**
+   * @param formattedProvider the formatted value provider
+   * @return this EntityDefinition instance
+   */
+  EntityDefinition setFormattedValueProvider(final Entity.FormattedValueProvider formattedProvider);
 
   /**
    * @return the caption to use when presenting entities of this type
@@ -247,4 +273,40 @@ public interface EntityDefinition {
    * referenced by the given foreign key property
    */
   Collection<Property.DenormalizedProperty> getDenormalizedProperties(final String foreignKeyPropertyID);
+
+  /**
+   * Compares the given entities.
+   * @param entity the first entity
+   * @param entityToCompare the second entity
+   * @return the compare result
+   */
+  int compareTo(final Entity entity, final Entity entityToCompare);
+
+  /**
+   * @param entity the entity
+   * @return a string representation of the given entity
+   */
+  String toString(final Entity entity);
+
+  /**
+   * @param entity the entity
+   * @param property the derived property
+   * @return the derived property value
+   */
+  Object getDerivedValue(final Entity entity, final Property.DerivedProperty property);
+
+  /**
+   * @param entity the entity
+   * @param property the property
+   * @param format the format
+   * @return a formatted version of the value associated with the given property
+   */
+  String getFormattedValue(final Entity entity, final Property property, final Format format);
+
+
+  /**
+   * @param entity the entity
+   * @return the background color to use for this entity
+   */
+  Color getBackgroundColor(final Entity entity);
 }

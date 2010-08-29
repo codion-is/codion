@@ -2079,3 +2079,5 @@
   DomainClassGenerator renamed to EntityGenerator, refactored
   EntityGeneratorTest added, needs fleshing out
   Some remote refactorings
+  Entities.Proxy dismantled, Entity.*Provider added instead
+  ConnectionPoolImpl refactored quite a bit

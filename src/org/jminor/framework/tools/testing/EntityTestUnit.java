@@ -70,8 +70,8 @@ public abstract class EntityTestUnit {
    * @throws DbException in case of an exception
    */
   public final void testEntity(final String entityID) throws DbException {
+    getEntityDb().beginTransaction();
     try {
-      getEntityDb().beginTransaction();
       initializeReferencedEntities(entityID, entityID);
       Entity testEntity = null;
       if (!Entities.isReadOnly(entityID)) {

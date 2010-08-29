@@ -135,4 +135,9 @@ public interface ConnectionPool {
    * @throws IllegalArgumentException if value is less than 0
    */
   void setMaximumCheckOutTime(final int value);
+
+  /**
+   * Closes this connection pool, disconnection connections as they are checked in
+   */
+  void close();
 }

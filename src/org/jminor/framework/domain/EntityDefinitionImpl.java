@@ -8,6 +8,9 @@ import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.ValueMap;
 
 import java.util.*;
+import java.text.Collator;
+import java.text.Format;
+import java.awt.Color;
 
 /**
  * A class encapsulating a entity definition, such as table name, order by clause and properties.
@@ -62,7 +65,30 @@ final class EntityDefinitionImpl implements EntityDefinition {
    * The StringProvider used when toString() is called for this entity
    * @see org.jminor.common.model.valuemap.ValueMap.ToString
    */
-  private ValueMap.ToString<String> stringProvider;
+  private ValueMap.ToString<String> stringProvider = new ValueMap.ToString<String>() {
+    /** {@inheritDoc} */
+    public String toString(final ValueMap<String, ?> valueMap) {
+      Util.rejectNullValue(valueMap, "entity");
+      final Entity entity = (Entity) valueMap;
+      return new StringBuilder(entityID).append(": ").append(entity.getPrimaryKey()).toString();
+    }
+  };
+  /**
+   * Provides the background color
+   */
+  private Entity.BackgroundColorProvider backgroundColorProvider = new BackgroundColorProviderImpl();
+  /**
+   * Provides values derived from other properties
+   */
+  private Entity.DerivedValueProvider derivedValueProvider;
+  /**
+   * Provides formatted values
+   */
+  private Entity.FormattedValueProvider formattedValueProvider = new FormattedValueProviderImpl();
+  /**
+   * The comparator
+   */
+  private Entity.Comparator comparator = new ComparatorImpl();
   /**
    * A custom sql query used when selecting entities of this type
    */
@@ -88,6 +114,8 @@ final class EntityDefinitionImpl implements EntityDefinition {
   private Map<String, Collection<Property.DenormalizedProperty>> denormalizedProperties;
   private String selectColumnsString;
   private boolean hasDenormalizedProperties;
+
+  static final Map<String, EntityDefinition> ENTITY_DEFINITIONS = new HashMap<String, EntityDefinition>();
 
   /**
    * Defines a new entity type, with the entityID serving as the initial entity caption
@@ -120,6 +148,7 @@ final class EntityDefinitionImpl implements EntityDefinition {
       ((Property.ColumnProperty) properties.get(selectColumnNames[idx])).setSelectIndex(idx + 1);
     }
     initializeDerivedPropertyChangeLinks();
+    ENTITY_DEFINITIONS.put(entityID, this);
   }
 
   /** {@inheritDoc} */
@@ -384,6 +413,105 @@ final class EntityDefinitionImpl implements EntityDefinition {
     return entityID;
   }
 
+  /** {@inheritDoc} */
+  public EntityDefinition setDerivedValueProvider(final Entity.DerivedValueProvider valueProvider) {
+    this.derivedValueProvider = valueProvider;
+    return this;
+  }
+
+  /** {@inheritDoc} */
+  public EntityDefinition setToStringProvider(final ValueMap.ToString<String> toString) {
+    this.stringProvider = toString;
+    return this;
+  }
+
+  /** {@inheritDoc} */
+  public EntityDefinition setBackgroundColorProvider(final Entity.BackgroundColorProvider colorProvider) {
+    this.backgroundColorProvider = colorProvider;
+    return this;
+  }
+
+  /** {@inheritDoc} */
+  public EntityDefinition setFormattedValueProvider(final Entity.FormattedValueProvider formattedProvider) {
+    this.formattedValueProvider = formattedProvider;
+    return this;
+  }
+
+  /** {@inheritDoc} */
+  public int compareTo(final Entity entity, final Entity entityToCompare) {
+    Util.rejectNullValue(entity, "entity");
+    Util.rejectNullValue(entityToCompare, "entityToCompare");
+    return comparator.compare(entity, entityToCompare);
+  }
+
+  /** {@inheritDoc} */
+  public String toString(final Entity entity) {
+    return stringProvider.toString(entity);
+  }
+
+  /** {@inheritDoc} */
+  public Object getDerivedValue(final Entity entity, final Property.DerivedProperty property) {
+    if (derivedValueProvider != null) {
+      return derivedValueProvider.getDerivedValue(entity, property);
+    }
+
+    throw new IllegalStateException("DerivedValueProvider has not been set for: " + entity);
+  }
+
+  /** {@inheritDoc} */
+  public String getFormattedValue(final Entity entity, final Property property, final Format format) {
+    return formattedValueProvider.getFormattedValue(entity, property, format);
+  }
+
+  /** {@inheritDoc} */
+  @SuppressWarnings({"UnusedDeclaration"})
+  public Color getBackgroundColor(final Entity entity) {
+    return backgroundColorProvider.getBackgroundColor(entity);
+  }
+
+  static List<Property.ColumnProperty> getColumnProperties(final String entityID,
+                                                           final boolean includePrimaryKeyProperties,
+                                                           final boolean includeReadOnly,
+                                                           final boolean includeNonUpdatable,
+                                                           final boolean includeForeignKeyProperties,
+                                                           final boolean includeTransientProperties) {
+    final List<Property.ColumnProperty> properties = new ArrayList<Property.ColumnProperty>(getEntityDefinition(entityID).getColumnProperties());
+    final ListIterator<Property.ColumnProperty> iterator = properties.listIterator();
+    while (iterator.hasNext()) {
+      final Property.ColumnProperty property = iterator.next();
+      if (!includeReadOnly && property.isReadOnly()
+              || !includeNonUpdatable && !property.isUpdatable()
+              || !includePrimaryKeyProperties && property instanceof Property.PrimaryKeyProperty
+              || !includeForeignKeyProperties && property instanceof Property.ForeignKeyProperty
+              || !includeTransientProperties && property instanceof Property.TransientProperty) {
+        iterator.remove();
+      }
+    }
+
+    return properties;
+  }
+
+  static boolean isDefined(final String entityID) {
+    return ENTITY_DEFINITIONS.containsKey(entityID);
+  }
+
+  static EntityDefinition getEntityDefinition(final String entityID) {
+    final EntityDefinition definition = ENTITY_DEFINITIONS.get(entityID);
+    if (definition == null) {
+      throw new IllegalArgumentException("Undefined entity: " + entityID);
+    }
+
+    return definition;
+  }
+
+  /**
+   * Returns the EntityDefinition object associated with <code>entityID</code>
+   * @param entityID the entityID
+   * @param propertyDefinitions the property definitions
+   * @return the EntityDefinition for the given entityID
+   * @throws IllegalArgumentException in case the entity has not been defined
+   */
+
   private static Map<String, Property> initializeProperties(final String entityID, final Property... propertyDefinitions) {
     final Map<String, Property> properties = new LinkedHashMap<String, Property>(propertyDefinitions.length);
     for (final Property property : propertyDefinitions) {
@@ -537,5 +665,37 @@ final class EntityDefinitionImpl implements EntityDefinition {
     }
 
     return stringBuilder.toString();
+  }
+  
+  private static final class BackgroundColorProviderImpl implements Entity.BackgroundColorProvider {
+    /** {@inheritDoc} */
+    public Color getBackgroundColor(final Entity entity) {
+      return null;
+    }
+  }
+
+  private static final class FormattedValueProviderImpl implements Entity.FormattedValueProvider {
+    /** {@inheritDoc} */
+    public String getFormattedValue(final Entity entity, final Property property, final Format format) {
+      Util.rejectNullValue(entity, "entity");
+      final Object value = entity.getValue(property);
+      if (value == null) {
+        return "";
+      }
+
+      if (format == null) {
+        return value.toString();
+      }
+
+      return format.format(value);
+    }
+  }
+
+  private static final class ComparatorImpl implements Entity.Comparator {
+    private final Collator collator = Collator.getInstance();
+    /** {@inheritDoc} */
+    public int compare(final Entity entity, final Entity entityToCompare) {
+      return collator.compare(entity.toString(), entityToCompare.toString());
+    }
   }
 }

@@ -10,6 +10,7 @@ import java.sql.Timestamp;
 import java.text.Format;
 import java.util.Date;
 import java.util.List;
+import java.awt.Color;
 
 /**
  * An ORM entity interface, providing access to the property values via the ValueMap interface.
@@ -214,6 +215,11 @@ public interface Entity extends ValueChangeMap<String, Object>, Comparable<Entit
   boolean isLoaded(final String foreignKeyPropertyID);
 
   /**
+   * @return the background color to use when displaying this entity in a table
+   */
+  Color getBackgroundColor();
+
+  /**
    * A class representing column key objects for entities, contains the values for those columns.
    */
   interface Key extends ValueMap<String, Object> {
@@ -257,5 +263,58 @@ public interface Entity extends ValueChangeMap<String, Object>, Comparable<Entit
      * @return the first value contained in this key, useful for single property keys
      */
     Object getFirstKeyValue();
+  }
+
+  /**
+   * Provides background colors for entities.
+   */
+  interface BackgroundColorProvider {
+
+    /**
+     * @param entity the entity
+     * @return the background color to use for this entity
+     */
+    Color getBackgroundColor(final Entity entity);
+  }
+
+  /**
+   * Provides derived values for entities.
+   */
+  interface DerivedValueProvider {
+
+    /**
+     * @param entity the entity
+     * @param property the derived property
+     * @return the derived property value
+     */
+    Object getDerivedValue(final Entity entity, final Property.DerivedProperty property);
+  }
+
+  /**
+   * Provides comparisons for entities.
+   */
+  interface Comparator {
+
+    /**
+     * Compares the given entities.
+     * @param entity the first entity
+     * @param entityToCompare the second entity
+     * @return the compare result
+     */
+    int compare(final Entity entity, final Entity entityToCompare);
+  }
+
+  /**
+   * Provides formatted values for entities.
+   */
+  interface FormattedValueProvider {
+
+    /**
+     * @param entity the entity
+     * @param property the property
+     * @param format the format
+     * @return a formatted version of the value associated with the given property
+     */
+    String getFormattedValue(final Entity entity, final Property property, final Format format);
   }
 }

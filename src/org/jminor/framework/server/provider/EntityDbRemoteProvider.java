@@ -203,11 +203,16 @@ public final class EntityDbRemoteProvider extends AbstractEntityDbProvider {
         return remoteMethod.invoke(remote, args);
       }
       catch (InvocationTargetException ie) {
-        LOG.error(this, ie);
+        if (ie.getTargetException() instanceof InvocationTargetException) {
+          ie = (InvocationTargetException) ie.getTargetException();
+        }
+//        LOG.error(this, ie.getTargetException());
+//        ie.getTargetException().printStackTrace();
         throw (Exception) ie.getTargetException();
       }
       catch (Exception ie) {
-        LOG.error(this, ie);
+        ie.printStackTrace();
+//        LOG.error(this, ie);
         throw ie;
       }
     }

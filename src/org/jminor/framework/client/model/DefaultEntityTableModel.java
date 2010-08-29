@@ -314,9 +314,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   /** {@inheritDoc} */
   public Color getRowBackgroundColor(final int row) {
-    final Entity rowEntity = getItemAt(row);
-
-    return Entities.getProxy(rowEntity.getEntityID()).getBackgroundColor(rowEntity);
+    return getItemAt(row).getBackgroundColor();
   }
 
   /** {@inheritDoc} */
