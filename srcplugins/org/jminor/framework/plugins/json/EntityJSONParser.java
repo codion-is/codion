@@ -163,8 +163,13 @@ public final class EntityJSONParser implements Serializer<Entity>, Deserializer<
 
   private static JSONObject getPropertyValuesJSONObject(final Entity entity, final boolean includeForeignKeys) throws JSONException {
     final JSONObject propertyValues = new JSONObject();
-    for (final Property property : Entities.getColumnProperties(entity.getEntityID(), true, true, true, includeForeignKeys)) {
+    for (final Property property : Entities.getColumnProperties(entity.getEntityID(), true, true, true)) {
       propertyValues.put(property.getPropertyID(), getJSONValue(entity, property, includeForeignKeys));
+    }
+    if (includeForeignKeys) {
+      for (final Property.ForeignKeyProperty property : Entities.getForeignKeyProperties(entity.getEntityID())) {
+        propertyValues.put(property.getPropertyID(), getJSONValue(entity, property, includeForeignKeys));
+      }
     }
 
     return propertyValues;
@@ -186,8 +191,13 @@ public final class EntityJSONParser implements Serializer<Entity>, Deserializer<
 
   private static JSONObject getOriginalValuesJSONObject(final Entity entity, final boolean includeForeignKeys) throws JSONException {
     final JSONObject originalValues = new JSONObject();
-    for (final Property property : Entities.getColumnProperties(entity.getEntityID(), true, true, true, includeForeignKeys)) {
+    for (final Property property : Entities.getColumnProperties(entity.getEntityID(), true, true, true)) {
       if (entity.isModified(property.getPropertyID())) {
+        originalValues.put(property.getPropertyID(), getJSONOriginalValue(entity, property));
+      }
+    }
+    if (includeForeignKeys) {
+      for (final Property.ForeignKeyProperty property : Entities.getForeignKeyProperties(entity.getEntityID())) {
         originalValues.put(property.getPropertyID(), getJSONOriginalValue(entity, property));
       }
     }

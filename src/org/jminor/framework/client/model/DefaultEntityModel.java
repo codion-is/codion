@@ -336,7 +336,7 @@ public class DefaultEntityModel implements EntityModel {
       if (isCascadeRefresh()) {
         refreshDetailModels();
       }
-      updateDetailModelsByActiveEntity();
+      initializeDetailModels();
     }
     finally {
       isRefreshing = false;
@@ -369,9 +369,9 @@ public class DefaultEntityModel implements EntityModel {
   }
 
   /** {@inheritDoc} */
-  public void masterSelectionChanged(final String masterEntityID, final List<Entity> selectedMasterEntities) {
+  public void initialize(final String masterEntityID, final List<Entity> selectedMasterEntities) {
     if (containsTableModel()) {
-      tableModel.searchByForeignKeyValues(masterEntityID, selectedMasterEntities);
+      tableModel.setForeignKeySearchValues(masterEntityID, selectedMasterEntities);
     }
 
     for (final Property.ForeignKeyProperty foreignKeyProperty : Entities.getForeignKeyProperties(entityID, masterEntityID)) {
@@ -410,10 +410,10 @@ public class DefaultEntityModel implements EntityModel {
     evtRefreshDone.removeListener(listener);
   }
 
-  private void updateDetailModelsByActiveEntity() {
+  private void initializeDetailModels() {
     final List<Entity> activeEntities = getActiveEntities();
     for (final EntityModel detailModel : linkedDetailModels) {
-      detailModel.masterSelectionChanged(entityID, activeEntities);
+      detailModel.initialize(entityID, activeEntities);
     }
   }
 
@@ -574,7 +574,7 @@ public class DefaultEntityModel implements EntityModel {
       /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
         if (!getEditModel().isEntityNew()) {
-          updateDetailModelsByActiveEntity();
+          initializeDetailModels();
         }
       }
     });
@@ -582,7 +582,7 @@ public class DefaultEntityModel implements EntityModel {
       tableModel.addSelectionChangedListener(new ActionListener() {
         /** {@inheritDoc} */
         public void actionPerformed(final ActionEvent e) {
-          updateDetailModelsByActiveEntity();
+          initializeDetailModels();
         }
       });
     }
@@ -590,7 +590,7 @@ public class DefaultEntityModel implements EntityModel {
       editModel.addValueMapSetListener(new ActionListener() {
         /** {@inheritDoc} */
         public void actionPerformed(final ActionEvent e) {
-          updateDetailModelsByActiveEntity();
+          initializeDetailModels();
         }
       });
     }

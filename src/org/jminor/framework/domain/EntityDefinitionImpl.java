@@ -7,10 +7,19 @@ import org.jminor.common.model.IdSource;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.ValueMap;
 
-import java.util.*;
+import java.awt.Color;
 import java.text.Collator;
 import java.text.Format;
-import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * A class encapsulating a entity definition, such as table name, order by clause and properties.
@@ -115,7 +124,7 @@ final class EntityDefinitionImpl implements EntityDefinition {
   private String selectColumnsString;
   private boolean hasDenormalizedProperties;
 
-  static final Map<String, EntityDefinition> ENTITY_DEFINITIONS = new HashMap<String, EntityDefinition>();
+  static Map<String, EntityDefinition> ENTITY_DEFINITIONS;
 
   /**
    * Defines a new entity type, with the entityID serving as the initial entity caption
@@ -148,7 +157,6 @@ final class EntityDefinitionImpl implements EntityDefinition {
       ((Property.ColumnProperty) properties.get(selectColumnNames[idx])).setSelectIndex(idx + 1);
     }
     initializeDerivedPropertyChangeLinks();
-    ENTITY_DEFINITIONS.put(entityID, this);
   }
 
   /** {@inheritDoc} */
@@ -467,41 +475,6 @@ final class EntityDefinitionImpl implements EntityDefinition {
   @SuppressWarnings({"UnusedDeclaration"})
   public Color getBackgroundColor(final Entity entity) {
     return backgroundColorProvider.getBackgroundColor(entity);
-  }
-
-  static List<Property.ColumnProperty> getColumnProperties(final String entityID,
-                                                           final boolean includePrimaryKeyProperties,
-                                                           final boolean includeReadOnly,
-                                                           final boolean includeNonUpdatable,
-                                                           final boolean includeForeignKeyProperties,
-                                                           final boolean includeTransientProperties) {
-    final List<Property.ColumnProperty> properties = new ArrayList<Property.ColumnProperty>(getEntityDefinition(entityID).getColumnProperties());
-    final ListIterator<Property.ColumnProperty> iterator = properties.listIterator();
-    while (iterator.hasNext()) {
-      final Property.ColumnProperty property = iterator.next();
-      if (!includeReadOnly && property.isReadOnly()
-              || !includeNonUpdatable && !property.isUpdatable()
-              || !includePrimaryKeyProperties && property instanceof Property.PrimaryKeyProperty
-              || !includeForeignKeyProperties && property instanceof Property.ForeignKeyProperty
-              || !includeTransientProperties && property instanceof Property.TransientProperty) {
-        iterator.remove();
-      }
-    }
-
-    return properties;
-  }
-
-  static boolean isDefined(final String entityID) {
-    return ENTITY_DEFINITIONS.containsKey(entityID);
-  }
-
-  static EntityDefinition getEntityDefinition(final String entityID) {
-    final EntityDefinition definition = ENTITY_DEFINITIONS.get(entityID);
-    if (definition == null) {
-      throw new IllegalArgumentException("Undefined entity: " + entityID);
-    }
-
-    return definition;
   }
 
   /**

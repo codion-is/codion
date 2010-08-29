@@ -40,8 +40,9 @@ public interface EntityDefinition {
   EntityDefinition setDomainID(final String domainID);
 
   /**
-   * @param valueProvider
+   * @param valueProvider the derived value provider
    * @return this EntityDefinition instance
+   * @see org.jminor.framework.domain.Property.DerivedProperty
    */
   EntityDefinition setDerivedValueProvider(final Entity.DerivedValueProvider valueProvider);
 

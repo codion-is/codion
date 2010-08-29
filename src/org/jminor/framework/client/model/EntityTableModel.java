@@ -68,14 +68,14 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
   void setDetailModel(final boolean detailModel);
 
   /**
-   * Filters this table model according the the given values by finding the first foreign key property
+   * Refreshes this table model according the the given values by finding the first foreign key property
    * referencing the entity identified by <code>referencedEntityID</code> and setting <code>referenceEntities</code>
    * as the criteria values. If no foreign key property is found this method has no effect.
    * @param referencedEntityID the ID of the master entity
    * @param referenceEntities the entities to use as criteria values
    * @see #isDetailModel()
    */
-  void searchByForeignKeyValues(final String referencedEntityID, final List<Entity> referenceEntities);
+  void setForeignKeySearchValues(final String referencedEntityID, final List<Entity> referenceEntities);
 
   /**
    * Retrieves the entities identified by the given primary keys and adds them to this table model
@@ -164,7 +164,7 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
   /**
    * @param row the row for which to retrieve the background color
    * @return the background color for this row, specified by the row entity
-   * @see org.jminor.framework.domain.Entities.Proxy#getBackgroundColor(org.jminor.framework.domain.Entity)
+   * @see org.jminor.framework.domain.EntityDefinition#setBackgroundColorProvider(org.jminor.framework.domain.Entity.BackgroundColorProvider)
    * @see org.jminor.framework.client.ui.EntityTableCellRenderer
    */
   Color getRowBackgroundColor(final int row);

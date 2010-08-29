@@ -83,12 +83,12 @@ public interface EntityModel extends Refreshable, EntityDataProvider {
   boolean isCascadeRefresh();
 
   /**
-   * Updates this EntityModel according to the given master entities,
+   * Initializes this EntityModel according to the given master entities,
    * sets the appropriate property value and filters the EntityTableModel
    * @param masterEntityID the ID of the master entity
    * @param selectedMasterEntities the master entities
    */
-  void masterSelectionChanged(final String masterEntityID, final List<Entity> selectedMasterEntities);
+  void initialize(final String masterEntityID, final List<Entity> selectedMasterEntities);
 
   /**
    * Sets the model serving as master model

@@ -2084,3 +2084,6 @@
   ConnectionPool/EntityDb/EntityDbRemote.isConnectionValid() renamed to isValid()
   ConnectionPool.checkOutConnection() and checkInConnection() renamed to getConnection() and returnConnection()
   EntityDbRemoteAdapter refactored
+  domain package refactored
+  EntityModel.masterSelectionChanged() renamed to initialize()
+  EntityTableModel.searchByForeignKeyValues() renamed to setForeignKeySearchValues()

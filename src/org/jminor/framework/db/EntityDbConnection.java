@@ -944,7 +944,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
   private static void addInsertProperties(final Entity entity, final Collection<Property.ColumnProperty> properties,
                                           final Collection<Object> values) {
     for (final Property.ColumnProperty property : Entities.getColumnProperties(entity.getEntityID(),
-            Entities.getIdSource(entity.getEntityID()) != IdSource.AUTO_INCREMENT, false, true, false, false)) {
+            Entities.getIdSource(entity.getEntityID()) != IdSource.AUTO_INCREMENT, false, true)) {
       if (!entity.isValueNull(property.getPropertyID())) {
         properties.add(property);
         values.add(entity.getValue(property));
@@ -961,7 +961,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
   private static Collection<Property.ColumnProperty> addUpdateProperties(final Entity entity,
                                                                          final Collection<Property.ColumnProperty> properties,
                                                                          final Collection<Object> values) {
-    for (final Property.ColumnProperty property : Entities.getColumnProperties(entity.getEntityID(), true, false, false, false)) {
+    for (final Property.ColumnProperty property : Entities.getColumnProperties(entity.getEntityID(), true, false, false)) {
       if (entity.isModified(property.getPropertyID())) {
         properties.add(property);
         values.add(entity.getValue(property));

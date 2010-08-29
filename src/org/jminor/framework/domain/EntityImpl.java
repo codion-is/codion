@@ -139,7 +139,8 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
 
   /** {@inheritDoc} */
   public Object setValue(final Property property, final Object value) {
-    return setValue(property, value, true);
+    checkDefinitions();
+    return setValue(property, value, true, EntityDefinitionImpl.ENTITY_DEFINITIONS);
   }
 
   /**
@@ -306,9 +307,11 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
   /** {@inheritDoc} */
   public boolean propertyValuesEqual(final Entity entity) {
     Util.rejectNullValue(entity, "entity");
-    for (final Property property : EntityDefinitionImpl.getColumnProperties(entity.getEntityID(), true, true, true, false, true)) {
-      if (!Util.equal(getValue(property), entity.getValue(property))) {
-        return false;
+    for (final Property property : definition.getProperties().values()) {
+      if (property instanceof Property.ColumnProperty) {
+        if (!Util.equal(getValue(property), entity.getValue(property))) {
+          return false;
+        }
       }
     }
 
@@ -373,12 +376,12 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
     if (referencedPrimaryKey != null) {
       return referencedPrimaryKey;
     }
-
+    checkDefinitions();
     if (foreignKeyProperty.isCompositeReference()) {
-      referencedPrimaryKey = initializeCompositeKey(foreignKeyProperty);
+      referencedPrimaryKey = initializeCompositeKey(foreignKeyProperty, EntityDefinitionImpl.ENTITY_DEFINITIONS);
     }
     else {
-      referencedPrimaryKey = initializeSingleValueKey(foreignKeyProperty);
+      referencedPrimaryKey = initializeSingleValueKey(foreignKeyProperty, EntityDefinitionImpl.ENTITY_DEFINITIONS);
     }
 
     cacheReferencedKey(foreignKeyProperty, referencedPrimaryKey);
@@ -464,10 +467,10 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
 
   private void propagateForeignKeyValues(final Property.ForeignKeyProperty foreignKeyProperty, final Entity newValue,
                                          final Collection<Property.PrimaryKeyProperty> referenceEntityPKProperties,
-                                         final boolean initialization) {
-    setForeignKeyValues(foreignKeyProperty, newValue, referenceEntityPKProperties, initialization);
+                                         final boolean initialization, final Map<String, EntityDefinition> entityDefinitions) {
+    setForeignKeyValues(foreignKeyProperty, newValue, referenceEntityPKProperties, initialization, entityDefinitions);
     if (definition.hasDenormalizedProperties()) {
-      setDenormalizedValues(foreignKeyProperty, newValue, initialization);
+      setDenormalizedValues(foreignKeyProperty, newValue, initialization, entityDefinitions);
     }
   }
 
@@ -480,10 +483,11 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
    * @param referencedEntity the referenced entity
    * @param referenceEntityPKProperties the referenced primary key properties
    * @param initialization true if the values are being initialized
+   * @param entityDefinitions a global entity definition map
    */
   private void setForeignKeyValues(final Property.ForeignKeyProperty foreignKeyProperty, final Entity referencedEntity,
                                    final Collection<Property.PrimaryKeyProperty> referenceEntityPKProperties,
-                                   final boolean initialization) {
+                                   final boolean initialization, final Map<String, EntityDefinition> entityDefinitions) {
     referencedPrimaryKeysCache = null;
     for (final Property.PrimaryKeyProperty primaryKeyProperty : referenceEntityPKProperties) {
       final Property referenceProperty = foreignKeyProperty.getReferenceProperties().get(primaryKeyProperty.getIndex());
@@ -499,7 +503,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
           initializeValue(referenceProperty, value);
         }
         else {
-          setValue(referenceProperty, value, false);
+          setValue(referenceProperty, value, false, entityDefinitions);
         }
       }
     }
@@ -510,9 +514,10 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
    * @param foreignKeyProperty the foreign key property referring to the value source
    * @param referencedEntity the entity value owning the denormalized values
    * @param initialization true if the values are being initialized
+   * @param entityDefinitions a global entity definition map
    */
   private void setDenormalizedValues(final Property.ForeignKeyProperty foreignKeyProperty, final Entity referencedEntity,
-                                     final boolean initialization) {
+                                     final boolean initialization, final Map<String, EntityDefinition> entityDefinitions) {
     final Collection<Property.DenormalizedProperty> denormalizedProperties =
             definition.getDenormalizedProperties(foreignKeyProperty.getPropertyID());
     if (denormalizedProperties != null) {
@@ -528,7 +533,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
           initializeValue(denormalizedProperty, value);
         }
         else {
-          setValue(denormalizedProperty, value, false);
+          setValue(denormalizedProperty, value, false, entityDefinitions);
         }
       }
     }
@@ -552,18 +557,20 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
     return valueOwner.getFormattedValue(denormalizedViewProperty.getDenormalizedProperty());
   }
 
-  private Key initializeSingleValueKey(final Property.ForeignKeyProperty foreignKeyProperty) {
+  private Key initializeSingleValueKey(final Property.ForeignKeyProperty foreignKeyProperty,
+                                       final Map<String, EntityDefinition> entityDefinitions) {
     final Property referenceKeyProperty = foreignKeyProperty.getReferenceProperties().get(0);
     final Object value = getValue(referenceKeyProperty);
     if (value == null) {
       return null;
     }
 
-    return new KeyImpl(EntityDefinitionImpl.getEntityDefinition(foreignKeyProperty.getReferencedEntityID()), value);
+    return new KeyImpl(entityDefinitions.get(foreignKeyProperty.getReferencedEntityID()), value);
   }
 
-  private Key initializeCompositeKey(final Property.ForeignKeyProperty foreignKeyProperty) {
-    final Key key = new KeyImpl(EntityDefinitionImpl.getEntityDefinition(foreignKeyProperty.getReferencedEntityID()));
+  private Key initializeCompositeKey(final Property.ForeignKeyProperty foreignKeyProperty,
+                                     final Map<String, EntityDefinition> entityDefinitions) {
+    final Key key = new KeyImpl(entityDefinitions.get(foreignKeyProperty.getReferencedEntityID()));
     for (final Property referenceKeyProperty : foreignKeyProperty.getReferenceProperties()) {
       final Object value = getValue(referenceKeyProperty);
       if (value == null) {
@@ -616,9 +623,11 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
    * @param property the property
    * @param value the value
    * @param validateType if true then type validation is performed
+   * @param entityDefinitions a global entity definition map
    * @return the old value
    */
-  private Object setValue(final Property property, final Object value, final boolean validateType) {
+  private Object setValue(final Property property, final Object value, final boolean validateType,
+                          final Map<String, EntityDefinition> entityDefinitions) {
     Util.rejectNullValue(property, PROPERTY_PARAM);
     if (property instanceof Property.PrimaryKeyProperty) {
       this.primaryKey = null;
@@ -632,13 +641,46 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
     toString = null;
     if (property instanceof Property.ForeignKeyProperty && (value == null || value instanceof Entity)) {
       final Property.ForeignKeyProperty fkProperty = (Property.ForeignKeyProperty) property;
-      final Collection<Property.PrimaryKeyProperty> referenceEntityPKProperties 
-              =  EntityDefinitionImpl.getEntityDefinition(fkProperty.getReferencedEntityID()).getPrimaryKeyProperties();
+      final Collection<Property.PrimaryKeyProperty> referenceEntityPKProperties =
+              entityDefinitions.get(fkProperty.getReferencedEntityID()).getPrimaryKeyProperties();
       propagateForeignKeyValues((Property.ForeignKeyProperty) property, (Entity) value,
-              referenceEntityPKProperties, false);
+              referenceEntityPKProperties, false, entityDefinitions);
     }
 
     return super.setValue(property.getPropertyID(), value);
+  }
+
+  private void writeObject(final ObjectOutputStream stream) throws IOException {
+    stream.writeObject(definition.getEntityID());
+    for (final Property property : definition.getProperties().values()) {
+      if (!(property instanceof Property.DerivedProperty) && !(property instanceof Property.DenormalizedViewProperty)) {
+        final String propertyID = property.getPropertyID();
+        stream.writeObject(super.getValue(propertyID));
+        final boolean isModified = isModified(propertyID);
+        stream.writeBoolean(isModified);
+        if (isModified) {
+          stream.writeObject(getOriginalValue(propertyID));
+        }
+      }
+    }
+  }
+
+  private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
+    checkDefinitions();
+    final String entityID = (String) stream.readObject();
+    definition = EntityDefinitionImpl.ENTITY_DEFINITIONS.get(entityID);
+    if (definition == null) {
+      throw new IllegalArgumentException("Undefined entity: " + entityID);
+    }
+    for (final Property property : definition.getProperties().values()) {
+      if (!(property instanceof Property.DerivedProperty) && !(property instanceof Property.DenormalizedViewProperty)) {
+        final String propertyID = property.getPropertyID();
+        super.initializeValue(propertyID, stream.readObject());
+        if (stream.readBoolean()) {
+          setOriginalValue(propertyID, stream.readObject());
+        }
+      }
+    }
   }
 
   /**
@@ -678,31 +720,9 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
     }
   }
 
-  private void writeObject(final ObjectOutputStream stream) throws IOException {
-    stream.writeObject(definition.getEntityID());
-    for (final Property property : definition.getProperties().values()) {
-      if (!(property instanceof Property.DerivedProperty) && !(property instanceof Property.DenormalizedViewProperty)) {
-        final String propertyID = property.getPropertyID();
-        stream.writeObject(super.getValue(propertyID));
-        final boolean isModified = isModified(propertyID);
-        stream.writeBoolean(isModified);
-        if (isModified) {
-          stream.writeObject(getOriginalValue(propertyID));
-        }
-      }
-    }
-  }
-
-  private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
-    definition = EntityDefinitionImpl.getEntityDefinition((String) stream.readObject());
-    for (final Property property : definition.getProperties().values()) {
-      if (!(property instanceof Property.DerivedProperty) && !(property instanceof Property.DenormalizedViewProperty)) {
-        final String propertyID = property.getPropertyID();
-        super.initializeValue(propertyID, stream.readObject());
-        if (stream.readBoolean()) {
-          setOriginalValue(propertyID, stream.readObject());
-        }
-      }
+  private static void checkDefinitions() {
+    if (EntityDefinitionImpl.ENTITY_DEFINITIONS == null) {
+      throw new IllegalStateException("Entity definitions have not been initialized");
     }
   }
 
@@ -949,8 +969,14 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
       }
     }
 
+    @SuppressWarnings({"SuspiciousMethodCalls"})
     private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
-      definition = EntityDefinitionImpl.getEntityDefinition((String) stream.readObject());
+      checkDefinitions();
+      final String entityID = (String) stream.readObject();
+      definition = EntityDefinitionImpl.ENTITY_DEFINITIONS.get(entityID);
+      if (definition == null) {
+        throw new IllegalArgumentException("Undefined entity: " + entityID);
+      }
       final List<Property.PrimaryKeyProperty> properties = definition.getPrimaryKeyProperties();
       singleIntegerKey = properties.size() == 1 && properties.get(0).isInteger();
       for (final Property property : properties) {

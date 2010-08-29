@@ -383,9 +383,9 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   /** {@inheritDoc} */
-  public void searchByForeignKeyValues(final String referencedEntityID, final List<Entity> referenceEntities) {
+  public void setForeignKeySearchValues(final String referencedEntityID, final List<Entity> referenceEntities) {
     final List<Property.ForeignKeyProperty> properties = Entities.getForeignKeyProperties(entityID, referencedEntityID);
-    if (!properties.isEmpty() && isDetailModel && searchModel.setSearchValues(properties.get(0).getPropertyID(), referenceEntities)) {
+    if (!properties.isEmpty() && isDetailModel /*todo detail?*/&& searchModel.setSearchValues(properties.get(0).getPropertyID(), referenceEntities)) {
       refresh();
     }
   }
