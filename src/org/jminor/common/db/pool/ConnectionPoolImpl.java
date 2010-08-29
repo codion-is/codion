@@ -36,6 +36,8 @@ public final class ConnectionPoolImpl implements ConnectionPool {
   private final Counter counter = new Counter();
   private final Random random = new Random();
 
+  private Timer cleanupTimer;
+
   private int minimumPoolSize = DEFAULT_MAXIMUM_POOL_SIZE / 2;
   private int maximumPoolSize = DEFAULT_MAXIMUM_POOL_SIZE;
   private int maximumRetryWaitPeriod = DEFAULT_MAXIMUM_RETRY_WAIT_PERIOD_MS;
@@ -48,10 +50,9 @@ public final class ConnectionPoolImpl implements ConnectionPool {
   private boolean enabled = true;
   private boolean closed = false;
 
-  private Timer cleanupTimer;
-  private int currentPoolStatisticsIndex = 0;
-  private volatile boolean collectFineGrainedStatistics = System.getProperty(Database.DATABASE_POOL_STATISTICS, "true").equalsIgnoreCase("true");
   private final List<ConnectionPoolStateImpl> connectionPoolStatistics = new ArrayList<ConnectionPoolStateImpl>(1000);
+  private int currentPoolStatisticsIndex = 0;
+  private boolean collectFineGrainedStatistics = System.getProperty(Database.DATABASE_POOL_STATISTICS, "true").equalsIgnoreCase("true");
 
   /**
    * Instantiates a new ConnectionPoolImpl.
