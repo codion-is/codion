@@ -79,7 +79,7 @@ public class EntityDbRemoteServerTest {
     final EntityDbRemoteProvider providerOne = new EntityDbRemoteProvider(User.UNIT_TEST_USER,
             UUID.randomUUID(), getClass().getSimpleName());
     final EntityDb remoteDbOne = providerOne.getEntityDb();
-    assertTrue(remoteDbOne.isConnectionValid());
+    assertTrue(remoteDbOne.isValid());
     assertEquals(1, server.getConnectionCount());
 
     final EntityDbRemoteProvider providerTwo = new EntityDbRemoteProvider(User.UNIT_TEST_USER,
@@ -87,7 +87,7 @@ public class EntityDbRemoteServerTest {
     final EntityDb remoteDbTwo = providerTwo.getEntityDb();
     server.setLoggingOn(providerTwo.getClientID(), true);
     assertTrue(server.isLoggingOn(providerTwo.getClientID()));
-    assertTrue(remoteDbTwo.isConnectionValid());
+    assertTrue(remoteDbTwo.isValid());
     assertEquals(2, server.getConnectionCount());
 
     final Collection<ClientInfo> clients = admin.getClients(new User(User.UNIT_TEST_USER.getUsername(), null));

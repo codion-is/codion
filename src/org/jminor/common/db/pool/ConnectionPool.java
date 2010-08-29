@@ -137,6 +137,18 @@ public interface ConnectionPool {
   void setMaximumCheckOutTime(final int value);
 
   /**
+   * @return the time to wait before a new connection is created
+   */
+  int getWaitTimeBeforeNewConnection();
+
+  /**
+   *
+   * @param value the time to wait before creating a new connection in ms
+   * @throws IllegalArgumentException in case value is negative or larger than <code>maximumCheckOutTime</code>
+   */
+  void setWaitTimeBeforeNewConnection(final int value);
+
+  /**
    * Closes this connection pool, disconnection connections as they are checked in
    */
   void close();

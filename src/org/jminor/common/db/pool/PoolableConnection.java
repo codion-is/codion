@@ -40,7 +40,7 @@ public interface PoolableConnection {
   /**
    * @return true if the connection is valid
    */
-  boolean isConnectionValid();
+  boolean isValid();
 
   /**
    * Begins a transaction on this connection

@@ -169,6 +169,16 @@ public final class PoolMonitor {
     }
 
     /** {@inheritDoc} */
+    public int getWaitTimeBeforeNewConnection() {
+      throw new UnsupportedOperationException();
+    }
+
+    /** {@inheritDoc} */
+    public void setWaitTimeBeforeNewConnection(final int value) {
+      throw new UnsupportedOperationException();
+    }
+
+    /** {@inheritDoc} */
     public boolean isEnabled() {
       try {
         return server.isConnectionPoolEnabled(user);

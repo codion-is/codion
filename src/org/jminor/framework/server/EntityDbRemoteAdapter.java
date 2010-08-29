@@ -196,8 +196,8 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
   }
 
   /** {@inheritDoc} */
-  public boolean isConnectionValid() throws RemoteException {
-    return loggingEntityDbProxy.isConnectionValid();
+  public boolean isValid() throws RemoteException {
+    return loggingEntityDbProxy.isValid();
   }
 
   /** {@inheritDoc} */
@@ -511,7 +511,7 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
       entityDbConnection = createDbConnection(database, clientInfo.getUser());
     }
     else {
-      if (!entityDbConnection.isConnectionValid()) {//dead connection
+      if (!entityDbConnection.isValid()) {//dead connection
         LOG.debug("Removing an invalid database connection: " + entityDbConnection);
         entityDbConnection.disconnect();//just in case
         entityDbConnection = createDbConnection(database, clientInfo.getUser());
@@ -527,7 +527,7 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
   }
 
   private static final String IS_CONNECTED = "isConnected";
-  private static final String CONNECTION_VALID = "isConnectionValid";
+  private static final String CONNECTION_VALID = "isValid";
   private static final String GET_ACTIVE_USER = "getActiveUser";
 
   private static boolean shouldMethodBeLogged(final String hashCode) {

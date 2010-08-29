@@ -28,7 +28,6 @@ public final class ConnectionPoolImpl implements ConnectionPool {
   public static final int DEFAULT_MAXIMUM_POOL_SIZE = 8;
   public static final int DEFAULT_MAXIMUM_RETRY_WAIT_PERIOD_MS = 50;
   public static final int DEFAULT_MAXIMUM_CHECK_OUT_TIME = 1000;
-  public static final int DEFAULT_RETRIES_BEFORE_NEW_CONNECTION = 10;
 
   private final PoolableConnectionProvider connectionProvider;
   private final User user;
@@ -39,11 +38,11 @@ public final class ConnectionPoolImpl implements ConnectionPool {
 
   private int minimumPoolSize = DEFAULT_MAXIMUM_POOL_SIZE / 2;
   private int maximumPoolSize = DEFAULT_MAXIMUM_POOL_SIZE;
-  private int retriesBeforeNewConnection = DEFAULT_RETRIES_BEFORE_NEW_CONNECTION;
   private int maximumRetryWaitPeriod = DEFAULT_MAXIMUM_RETRY_WAIT_PERIOD_MS;
   private int poolCleanupInterval = DEFAULT_CLEANUP_INTERVAL_MS;
   private int pooledConnectionTimeout = DEFAULT_CONNECTION_TIMEOUT_MS;
   private int maximumCheckOuttime = DEFAULT_MAXIMUM_CHECK_OUT_TIME;
+  private int waitTimeBeforeNewConnection = (int) (maximumCheckOuttime * 0.9);
 
   private boolean creatingConnection = false;
   private boolean enabled = true;
@@ -73,42 +72,44 @@ public final class ConnectionPoolImpl implements ConnectionPool {
     if (!enabled || closed) {
       throw new IllegalStateException("ConnectionPool not enabled or closed");
     }
-    final long currentTime = System.currentTimeMillis();
-    addPoolStatistics(currentTime);
     counter.incrementRequestCounter();
+
+    final long startTime = System.currentTimeMillis();
+    addPoolStatistics(startTime);
 
     PoolableConnection connection = fetchFromPool();
     if (connection == null) {
       counter.incrementDelayedRequestCounter();
     }
+    long elapsedTime = System.currentTimeMillis() - startTime;
     int retryCount = 0;
     boolean keepTrying = connection == null;
     while (keepTrying) {
       retryCount++;
-      if (isNewConnectionWarranted(retryCount)) {
+      if (isNewConnectionWarranted(elapsedTime)) {
         connection = createConnection();
       }
       else {
         waitForRetry();
         connection = fetchFromPool();
       }
-      keepTrying = connection == null && System.currentTimeMillis() - currentTime < maximumCheckOuttime;
+      elapsedTime = System.currentTimeMillis() - startTime;
+      keepTrying = connection == null && elapsedTime < maximumCheckOuttime;
     }
 
-    final long checkoutTime = System.currentTimeMillis() - currentTime;
     if (connection != null) {
-      counter.addCheckOutTime(checkoutTime);
+      counter.addCheckOutTime(elapsedTime);
       connection.setPoolRetryCount(retryCount);
 
       return connection;
     }
 
-    throw new ConnectionPoolException.NoConnectionAvailable(retryCount, checkoutTime);
+    throw new ConnectionPoolException.NoConnectionAvailable(retryCount, elapsedTime);
   }
 
   /** {@inheritDoc} */
   public void checkInConnection(final PoolableConnection dbConnection) {
-    if (closed || !dbConnection.isConnectionValid()) {
+    if (closed || !dbConnection.isValid()) {
       synchronized (pool) {
         inUse.remove(dbConnection);
       }
@@ -267,13 +268,26 @@ public final class ConnectionPoolImpl implements ConnectionPool {
     this.maximumCheckOuttime = value;
   }
 
+  /** {@inheritDoc} */
+  public int getWaitTimeBeforeNewConnection() {
+    return waitTimeBeforeNewConnection;
+  }
+
+  /** {@inheritDoc} */
+  public void setWaitTimeBeforeNewConnection(final int value) {
+    if (value < 0 || value >= maximumCheckOuttime) {
+      throw new IllegalArgumentException("Wait time before new connection must be larger than zero and smaller than maximumCheckOutTime");
+    }
+    this.waitTimeBeforeNewConnection = value;
+  }
+
   private PoolableConnection fetchFromPool() {
     PoolableConnection connection = null;
     boolean destroyConnection = false;
     synchronized (pool) {
       if (pool.size() > 0) {
         connection = pool.pop();
-        if (!connection.isConnectionValid()) {
+        if (!connection.isValid()) {
           destroyConnection = true;
         }
         else {
@@ -316,12 +330,12 @@ public final class ConnectionPoolImpl implements ConnectionPool {
     catch (InterruptedException e) {/**/}
   }
 
-  private boolean isNewConnectionWarranted(final int retryCount) {
+  private boolean isNewConnectionWarranted(final long elapsedTime) {
     synchronized (pool) {
       //only create one connection at a time
       if (!creatingConnection) {
         final int currentPoolSize = pool.size() + inUse.size();
-        if (retryCount > retriesBeforeNewConnection && currentPoolSize < maximumPoolSize) {
+        if (elapsedTime > waitTimeBeforeNewConnection && currentPoolSize < maximumPoolSize) {
           return true;
         }
       }

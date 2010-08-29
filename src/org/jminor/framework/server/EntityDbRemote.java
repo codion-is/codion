@@ -45,7 +45,7 @@ public interface EntityDbRemote extends Remote {
    * @throws RemoteException in case of exception
    * @return true if this db connection is valid
    */
-  boolean isConnectionValid() throws RemoteException;
+  boolean isValid() throws RemoteException;
 
   /**
    * @throws RemoteException in case of exception

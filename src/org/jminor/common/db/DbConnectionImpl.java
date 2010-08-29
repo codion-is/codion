@@ -84,7 +84,7 @@ public class DbConnectionImpl implements DbConnection {
     this.database = database;
     this.user = user;
     setConnection(connection);
-    if (!isConnectionValid()) {
+    if (!isValid()) {
       throw new IllegalArgumentException("Connection invalid during instantiation");
     }
   }
@@ -131,7 +131,7 @@ public class DbConnectionImpl implements DbConnection {
   }
 
   /** {@inheritDoc} */
-  public final boolean isConnectionValid() {
+  public final boolean isValid() {
     try {
       return connection != null && database.supportsIsValid() ? connection.isValid(0) : checkConnection();
     }

@@ -39,7 +39,7 @@ public interface EntityDb {
   /**
    * @return true if this db connection is valid
    */
-  boolean isConnectionValid();
+  boolean isValid();
 
   /**
    * @return true if a transaction is open, false otherwise

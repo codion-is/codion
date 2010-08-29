@@ -39,14 +39,14 @@ public class EntityDbRemoteProviderTest {
     final EntityDb db = provider.getEntityDb();
     assertNotNull(db);
     assertTrue(db.isConnected());
-    assertTrue(db.isConnectionValid());
+    assertTrue(db.isValid());
     provider.disconnect();
 
     final EntityDb db2 = provider.getEntityDb();
     assertNotNull(db2);
     assertFalse(db == db2);
     assertTrue(db2.isConnected());
-    assertTrue(db2.isConnectionValid());
+    assertTrue(db2.isValid());
     provider.disconnect();
   }
 }
