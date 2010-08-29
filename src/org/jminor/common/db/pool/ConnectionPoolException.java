@@ -23,9 +23,11 @@ public class ConnectionPoolException extends SQLException {
 
     /**
      * Instantates a new NoConnectionAvailable exception
+     * @param retries the number retries trying to check out a connection
+     * @param checkoutTime the time used trying to check out a connection
      */
-    public NoConnectionAvailable() {
-      super(Messages.get(Messages.NO_CONNECTION_AVAILABLE));
+    public NoConnectionAvailable(final int retries, final long checkoutTime) {
+      super(Messages.get(Messages.NO_CONNECTION_AVAILABLE) + " [" + retries + ", " + checkoutTime + "]");
     }
   }
 }

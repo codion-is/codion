@@ -82,44 +82,28 @@ public final class ConnectionPoolImpl implements ConnectionPool {
       counter.incrementDelayedRequestCounter();
     }
     int retryCount = 0;
-    while (connection == null && System.currentTimeMillis() - currentTime < maximumCheckOuttime) {
+    boolean keepTrying = connection == null;
+    while (keepTrying) {
       retryCount++;
-      boolean newConnection = false;
-      synchronized (pool) {
-        if (retryCount > retriesBeforeNewConnection && pool.size() + inUse.size() < maximumPoolSize && !creatingConnection) {
-          newConnection = true;
-        }
-      }
-      if (newConnection) {
-        synchronized (pool) {
-          creatingConnection = true;
-        }
-        try {
-          connection = connectionProvider.createConnection(user);
-          counter.incrementConnectionsCreatedCounter();
-          inUse.add(connection);
-        }
-        finally {
-          creatingConnection = false;
-        }
+      if (isNewConnectionWarranted(retryCount)) {
+        connection = createConnection();
       }
       else {
-        try {
-          Thread.sleep(random.nextInt(maximumRetryWaitPeriod));
-        }
-        catch (InterruptedException e) {/**/}
-
+        waitForRetry();
         connection = fetchFromPool();
       }
+      keepTrying = connection == null && System.currentTimeMillis() - currentTime < maximumCheckOuttime;
     }
+
+    final long checkoutTime = System.currentTimeMillis() - currentTime;
     if (connection != null) {
-      counter.addCheckOutTime(System.currentTimeMillis() - currentTime);
+      counter.addCheckOutTime(checkoutTime);
       connection.setPoolRetryCount(retryCount);
 
       return connection;
     }
 
-    throw new ConnectionPoolException.NoConnectionAvailable();
+    throw new ConnectionPoolException.NoConnectionAvailable(retryCount, checkoutTime);
   }
 
   /** {@inheritDoc} */
@@ -307,6 +291,43 @@ public final class ConnectionPoolImpl implements ConnectionPool {
     }
 
     return connection;
+  }
+
+  private PoolableConnection createConnection() throws ClassNotFoundException, SQLException {
+    synchronized (pool) {
+      creatingConnection = true;
+    }
+    try {
+      final PoolableConnection connection = connectionProvider.createConnection(user);
+      counter.incrementConnectionsCreatedCounter();
+      inUse.add(connection);
+
+      return connection;
+    }
+    finally {
+      creatingConnection = false;
+    }
+  }
+
+  private void waitForRetry() {
+    try {
+      Thread.sleep(random.nextInt(maximumRetryWaitPeriod));
+    }
+    catch (InterruptedException e) {/**/}
+  }
+
+  private boolean isNewConnectionWarranted(final int retryCount) {
+    synchronized (pool) {
+      //only create one connection at a time
+      if (!creatingConnection) {
+        final int currentPoolSize = pool.size() + inUse.size();
+        if (retryCount > retriesBeforeNewConnection && currentPoolSize < maximumPoolSize) {
+          return true;
+        }
+      }
+
+      return false;
+    }
   }
 
   private void addPoolStatistics(final long currentTime) {
