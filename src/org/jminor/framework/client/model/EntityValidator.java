@@ -14,9 +14,7 @@ import org.jminor.framework.domain.Property;
 import java.util.Collection;
 
 /**
- * User: Björn Darri
- * Date: 26.7.2010
- * Time: 21:16:29
+ * Responsible for providing validation for entities.
  */
 public interface EntityValidator extends ValueMapValidator<String, Object> {
 
