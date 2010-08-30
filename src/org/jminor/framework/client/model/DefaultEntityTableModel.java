@@ -12,7 +12,6 @@ import org.jminor.common.model.SortingDirective;
 import org.jminor.common.model.State;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.States;
-import org.jminor.common.model.Util;
 import org.jminor.common.model.reports.ReportDataWrapper;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.client.model.event.DeleteEvent;
@@ -25,7 +24,8 @@ import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
@@ -46,7 +46,7 @@ import java.util.Map;
  */
 public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, Property> implements EntityTableModel {
 
-  private static final Logger LOG = Util.getLogger(DefaultEntityTableModel.class);
+  private static final Logger LOG = LoggerFactory.getLogger(DefaultEntityTableModel.class);
 
   /**
    * The entity ID

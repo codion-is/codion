@@ -2093,3 +2093,4 @@
   ConnectionPoolStatistics.connectionRequestsFailed added
   ClientMonitorPanel, disconnect action added to list popup menu
   LoadTestModel/Panel, average scenario duration added
+  Log4j replaced with logback

@@ -48,7 +48,9 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 
-import org.apache.log4j.Level;
+import ch.qos.logback.classic.Level;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.BorderLayout;
@@ -79,11 +81,12 @@ public final class EntityUiUtil {
 
   public static void setLoggingLevel(final JComponent dialogParent) {
     final DefaultComboBoxModel model = new DefaultComboBoxModel(
-            new Object[] {Level.FATAL, Level.ERROR, Level.WARN, Level.INFO, Level.DEBUG});
-    model.setSelectedItem(Util.getLoggingLevel());
+            new Object[] {Level.TRACE, Level.ERROR, Level.WARN, Level.INFO, Level.DEBUG});
+    final ch.qos.logback.classic.Logger rootLogger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+    model.setSelectedItem(rootLogger.getLevel());
     JOptionPane.showMessageDialog(dialogParent, new JComboBox(model),
             FrameworkMessages.get(FrameworkMessages.SET_LOG_LEVEL), JOptionPane.QUESTION_MESSAGE);
-    Util.setLoggingLevel((Level) model.getSelectedItem());
+    rootLogger.setLevel((Level) model.getSelectedItem());
   }
 
   public static AbstractAction initializeViewImageAction(final EntityTablePanel tablePanel, final String imagePathPropertyID) {

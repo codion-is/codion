@@ -6,6 +6,7 @@ package org.jminor.framework.server;
 import org.jminor.common.db.dbms.Database;
 import org.jminor.common.db.exception.DbException;
 import org.jminor.common.db.pool.ConnectionPool;
+import org.jminor.common.db.pool.ConnectionPoolException;
 import org.jminor.common.db.pool.ConnectionPoolImpl;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.db.pool.PoolableConnection;
@@ -29,7 +30,8 @@ import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.rmi.ssl.SslRMIClientSocketFactory;
 import javax.rmi.ssl.SslRMIServerSocketFactory;
@@ -61,7 +63,7 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
 
   private static final long serialVersionUID = 1;
 
-  private static final Logger LOG = Util.getLogger(EntityDbRemoteAdapter.class);
+  private static final Logger LOG = LoggerFactory.getLogger(EntityDbRemoteAdapter.class);
   /**
    * Contains information about the client using this connection
    */
@@ -164,7 +166,7 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
       UnicastRemoteObject.unexportObject(this, true);
     }
     catch (NoSuchObjectException e) {
-      LOG.error(e);
+      LOG.error(e.getMessage(), e);
     }
     evtDisconnected.fire();
   }
@@ -559,7 +561,8 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
         return method.invoke(connection, args);
       }
       catch (Exception e) {
-        exception = Util.unwrapAndLog(e, InvocationTargetException.class, LOG);
+        exception = Util.unwrapAndLog(e, InvocationTargetException.class, LOG,
+                ConnectionPoolException.NoConnectionAvailable.class);
         throw exception;
       }
       finally {

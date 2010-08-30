@@ -3,8 +3,8 @@
  */
 package org.jminor.common.model;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
@@ -60,40 +60,12 @@ public final class Util {
 
   public static final String VERSION_FILE = "version.txt";
 
-  public static final String LOGGING_LEVEL_PROPERTY = "jminor.logging.level";
-  public static final String LOGGING_LEVEL_INFO = "info";
-  public static final String LOGGING_LEVEL_DEBUG = "debug";
-  public static final String LOGGING_LEVEL_WARN = "warn";
-  public static final String LOGGING_LEVEL_FATAL = "fatal";
-  public static final String LOGGING_LEVEL_TRACE = "trace";
-
   public static final String PREF_DEFAULT_USERNAME = "jminor.username";
 
-  private static final List<Logger> LOGGERS = new ArrayList<Logger>();
-  private static final Logger LOG = Util.getLogger(Util.class);
+  private static final Logger LOG = LoggerFactory.getLogger(Util.class);
   private static final Random RANDOM = new Random();
   private static final int K = 1024;
-  private static Level defaultLoggingLevel = Level.INFO;
   private static Preferences userPreferences;
-
-  static {
-    final String loggingLevel = System.getProperty(LOGGING_LEVEL_PROPERTY, LOGGING_LEVEL_INFO);
-    if (loggingLevel.equals(LOGGING_LEVEL_INFO)) {
-      defaultLoggingLevel = Level.INFO;
-    }
-    else if (loggingLevel.equals(LOGGING_LEVEL_DEBUG)) {
-      defaultLoggingLevel = Level.DEBUG;
-    }
-    else if (loggingLevel.equals(LOGGING_LEVEL_WARN)) {
-      defaultLoggingLevel = Level.WARN;
-    }
-    else if (loggingLevel.equals(LOGGING_LEVEL_FATAL)) {
-      defaultLoggingLevel = Level.FATAL;
-    }
-    else if (loggingLevel.equals(LOGGING_LEVEL_TRACE)) {
-      defaultLoggingLevel = Level.TRACE;
-    }
-  }
 
   private Util() {}
 
@@ -165,47 +137,6 @@ public final class Util {
     }
 
     return stringBuilder.toString();
-  }
-
-  /**
-   * @return the current logging level
-   */
-  public static Level getLoggingLevel() {
-    if (LOGGERS.isEmpty()) {
-      return defaultLoggingLevel;
-    }
-
-    return LOGGERS.get(0).getLevel();
-  }
-
-  public static void setDefaultLoggingLevel(final Level defaultLoggingLevel) {
-    rejectNullValue(defaultLoggingLevel, "defaultLoggingLevel");
-    Util.defaultLoggingLevel = defaultLoggingLevel;
-  }
-
-  public static void setLoggingLevel(final Level level) {
-    rejectNullValue(level, "level");
-    for (final Logger logger : LOGGERS) {
-      logger.setLevel(level);
-    }
-  }
-
-  public static Logger getLogger(final Class classToLog) {
-    rejectNullValue(classToLog, "classToLog");
-    final Logger logger = Logger.getLogger(classToLog);
-    logger.setLevel(getLoggingLevel());
-    LOGGERS.add(logger);
-
-    return logger;
-  }
-
-  public static Logger getLogger(final String name) {
-    rejectNullValue(name, "name");
-    final Logger logger = Logger.getLogger(name);
-    logger.setLevel(getLoggingLevel());
-    LOGGERS.add(logger);
-
-    return logger;
   }
 
   public static Integer getInt(final String text) {
@@ -848,10 +779,22 @@ public final class Util {
 
   public static Exception unwrapAndLog(final Exception exception, final Class<? extends Exception> wrappingExceptionClass,
                                        final Logger logger) {
+    return unwrapAndLog(exception, wrappingExceptionClass, logger, (Class<? extends Exception>[]) null);
+  }
+
+  public static Exception unwrapAndLog(final Exception exception, final Class<? extends Exception> wrappingExceptionClass,
+                                       final Logger logger, final Class<? extends Exception>... dontLog) {
     if (wrappingExceptionClass.equals(exception.getClass())) {
       return unwrapAndLog((Exception) exception.getCause(), wrappingExceptionClass, logger);
     }
 
+    if (dontLog != null) {
+      for (final Class<? extends Exception> noLog : dontLog) {
+        if (exception.getClass().equals(noLog)) {
+          return exception;
+        }
+      }
+    }
     logger.error(exception.getMessage(), exception);
 
     return exception;

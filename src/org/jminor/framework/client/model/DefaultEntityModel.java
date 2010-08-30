@@ -21,7 +21,8 @@ import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -38,7 +39,7 @@ import java.util.Set;
  */
 public class DefaultEntityModel implements EntityModel {
 
-  protected static final Logger LOG = Util.getLogger(DefaultEntityModel.class);
+  protected static final Logger LOG = LoggerFactory.getLogger(DefaultEntityModel.class);
 
   private final Event evtRefreshStarted = Events.event();
   private final Event evtRefreshDone = Events.event();

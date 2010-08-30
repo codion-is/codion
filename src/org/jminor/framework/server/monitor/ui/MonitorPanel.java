@@ -18,7 +18,8 @@ import org.jminor.framework.Configuration;
 import org.jminor.framework.server.monitor.HostMonitor;
 import org.jminor.framework.server.monitor.MonitorModel;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -37,7 +38,7 @@ import java.rmi.RemoteException;
  */
 public final class MonitorPanel extends JPanel {
 
-  private static final Logger LOG = Util.getLogger(MonitorPanel.class);
+  private static final Logger LOG = LoggerFactory.getLogger(MonitorPanel.class);
 
   private static final String JDK_PREFERENCE_KEY = MonitorPanel.class.getName() + ".jdkPathPreferenceKey";
   private static String jdkDir = Util.getUserPreference(JDK_PREFERENCE_KEY, null);
@@ -211,7 +212,7 @@ public final class MonitorPanel extends JPanel {
           new MonitorPanel().showFrame();
         }
         catch (Exception e) {
-          LOG.error(e);
+          LOG.error(e.getMessage(), e);
           System.exit(1);
         }
       }

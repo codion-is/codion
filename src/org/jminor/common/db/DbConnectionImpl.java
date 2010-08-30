@@ -10,7 +10,8 @@ import org.jminor.common.model.MethodLogger;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
 import java.io.Serializable;
@@ -33,7 +34,7 @@ import java.util.TimerTask;
  */
 public class DbConnectionImpl implements DbConnection {
 
-  private static final Logger LOG = Util.getLogger(DbConnection.class);
+  private static final Logger LOG = LoggerFactory.getLogger(DbConnection.class);
 
   private static final String EXECUTE = "execute";
   private static final String MS_LOG_PRESTFIX = "ms): ";
@@ -136,7 +137,7 @@ public class DbConnectionImpl implements DbConnection {
       return connection != null && database.supportsIsValid() ? connection.isValid(0) : checkConnection();
     }
     catch (SQLException e) {
-      LOG.error(this, e);
+      LOG.error(e.getMessage(), e);
       return false;
     }
   }
@@ -160,7 +161,7 @@ public class DbConnectionImpl implements DbConnection {
       }
     }
     catch (SQLException ex) {
-      LOG.error(this, ex);
+      LOG.error(ex.getMessage(), ex);
     }
     connection = null;
     checkConnectionStatement = null;

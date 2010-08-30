@@ -24,12 +24,14 @@ public final class SchemaBrowserLoadTest extends EntityLoadTestModel {
   }
 
   @Override
-  protected void performWork(final Object application) {
+  protected String performWork(final Object application) {
     final EntityModel schemaModel = ((EntityApplicationModel) application).getMainApplicationModels().iterator().next();
     schemaModel.getTableModel().refresh();
     selectRandomRow(schemaModel.getTableModel());
     selectRandomRow(schemaModel.getDetailModels().iterator().next().getTableModel());
     selectRandomRow(schemaModel.getDetailModels().iterator().next().getDetailModels().iterator().next().getTableModel());
+
+    return application.toString();
   }
 
   @Override

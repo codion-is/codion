@@ -12,10 +12,13 @@ import org.jminor.common.server.ServerLog;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.domain.Entities;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.rmi.ssl.SslRMIClientSocketFactory;
 import javax.rmi.ssl.SslRMIServerSocketFactory;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -24,9 +27,17 @@ import java.rmi.RemoteException;
 import java.rmi.server.RMISocketFactory;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.*;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.UUID;
 
 /**
  * The remote server class, responsible for handling remote EntityDb connection requests.
@@ -35,7 +46,7 @@ final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
 
   private static final long serialVersionUID = 1;
 
-  static final Logger LOG = Util.getLogger(EntityDbRemoteServer.class);
+  static final Logger LOG = LoggerFactory.getLogger(EntityDbRemoteServer.class);
 
   private static final boolean CLIENT_LOGGING_ENABLED =
           Configuration.getBooleanValue(Configuration.SERVER_CLIENT_LOGGING_ENABLED);
@@ -334,7 +345,7 @@ final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
           disconnect(remoteAdapter.getClientInfo().getClientID());
         }
         catch (RemoteException ex) {
-          LOG.error(ex);
+          LOG.error(ex.getMessage(), ex);
         }
       }
     });

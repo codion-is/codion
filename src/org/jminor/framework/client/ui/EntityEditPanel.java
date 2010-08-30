@@ -10,7 +10,6 @@ import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.State;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.States;
-import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.common.ui.DateInputPanel;
 import org.jminor.common.ui.DefaultExceptionHandler;
@@ -34,9 +33,19 @@ import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.swing.*;
+import javax.swing.ComboBoxModel;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.JToolBar;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
@@ -53,7 +62,7 @@ import java.util.Map;
  */
 public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Object> implements ExceptionHandler {
 
-  private static final Logger LOG = Util.getLogger(EntityEditPanel.class);
+  private static final Logger LOG = LoggerFactory.getLogger(EntityEditPanel.class);
 
   public static final int CONFIRM_TYPE_INSERT = 1;
   public static final int CONFIRM_TYPE_UPDATE = 2;
@@ -210,7 +219,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @param dialogParent the component to use as exception dialog parent
    */
   public final void handleException(final Throwable exception, final JComponent dialogParent) {
-    LOG.error(this, exception);
+    LOG.error(exception.getMessage(), exception);
     DefaultExceptionHandler.getInstance().handleException(exception, dialogParent);
   }
 

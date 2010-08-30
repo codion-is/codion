@@ -11,12 +11,13 @@ import org.jminor.framework.db.EntityDb;
 import org.jminor.framework.db.provider.AbstractEntityDbProvider;
 import org.jminor.framework.server.EntityDbRemote;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -32,7 +33,7 @@ import java.util.UUID;
  */
 public final class EntityDbRemoteProvider extends AbstractEntityDbProvider {
 
-  private static final Logger LOG = Util.getLogger(EntityDbRemoteProvider.class);
+  private static final Logger LOG = LoggerFactory.getLogger(EntityDbRemoteProvider.class);
 
   private final String serverHostName;
   private final UUID clientID;

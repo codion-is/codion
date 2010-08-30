@@ -15,7 +15,7 @@ import org.jminor.common.ui.control.TextBeanValueLink;
 import org.jminor.framework.server.EntityDbServerAdmin;
 import org.jminor.framework.server.monitor.ServerMonitor;
 
-import org.apache.log4j.Level;
+import ch.qos.logback.classic.Level;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -210,8 +210,9 @@ public final class ServerMonitorPanel extends JPanel {
 
   private JComboBox initLoggingLevelField() {
     final DefaultComboBoxModel comboModel = new DefaultComboBoxModel();
-    comboModel.addElement(Level.FATAL);
+    comboModel.addElement(Level.TRACE);
     comboModel.addElement(Level.ERROR);
+    comboModel.addElement(Level.WARN);
     comboModel.addElement(Level.DEBUG);
     comboModel.addElement(Level.INFO);
 

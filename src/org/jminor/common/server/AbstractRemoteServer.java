@@ -4,9 +4,9 @@
 package org.jminor.common.server;
 
 import org.jminor.common.model.User;
-import org.jminor.common.model.Util;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.rmi.NoSuchObjectException;
 import java.rmi.NotBoundException;
@@ -26,7 +26,7 @@ import java.util.UUID;
  */
 public abstract class AbstractRemoteServer<T> extends UnicastRemoteObject implements RemoteServer<T> {
 
-  private static final Logger LOG = Util.getLogger(AbstractRemoteServer.class);
+  private static final Logger LOG = LoggerFactory.getLogger(AbstractRemoteServer.class);
 
   private final Map<ClientInfo, T> connections = Collections.synchronizedMap(new HashMap<ClientInfo, T>());
 
@@ -152,13 +152,13 @@ public abstract class AbstractRemoteServer<T> extends UnicastRemoteObject implem
       getRegistry().unbind(serverName);
     }
     catch (NotBoundException e) {
-      LOG.error(this, e);
+      LOG.error(e.getMessage(), e);
     }
     try {
       UnicastRemoteObject.unexportObject(this, true);
     }
     catch (NoSuchObjectException e) {
-      LOG.warn(e);
+      LOG.warn(e.getMessage(), e);
     }
     handleShutdown();
   }

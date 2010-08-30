@@ -10,7 +10,8 @@ import org.jminor.common.model.Util;
 import org.jminor.framework.db.EntityDb;
 import org.jminor.framework.db.EntityDbConnection;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Properties;
 
@@ -19,7 +20,7 @@ import java.util.Properties;
  */
 public final class EntityDbLocalProvider extends AbstractEntityDbProvider {
 
-  private static final Logger LOG = Util.getLogger(EntityDbLocalProvider.class);
+  private static final Logger LOG = LoggerFactory.getLogger(EntityDbLocalProvider.class);
 
   /**
    * The underlying database implementation

@@ -532,7 +532,6 @@ public final class Configuration {
     parseStringSetting(WILDCARD_CHARACTER);
     parseStringSetting(DEFAULT_LOOK_AND_FEEL_CLASSNAME);
     parseBooleanSetting(AUTO_CREATE_ENTITY_MODELS);
-    parseStringSetting(Util.LOGGING_LEVEL_PROPERTY);
   }
 
   private static void parseIntegerSetting(final String setting) {

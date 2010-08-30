@@ -263,10 +263,10 @@ public final class LoadTestPanel extends JPanel {
     final JPanel chartBase = new JPanel(new GridLayout(3, 2, 0, 0));
     chartBase.setBorder(BorderFactory.createTitledBorder("Status"));
     chartBase.add(workRequestsChartPanel);
-    chartBase.add(scenarioDurationChartPanel);
+    chartBase.add(thinkTimeChartPanel);
     chartBase.add(usageScenarioChartPanel);
     chartBase.add(numberOfApplicationsChartPanel);
-    chartBase.add(thinkTimeChartPanel);
+    chartBase.add(scenarioDurationChartPanel);
     chartBase.add(memoryUsageChartPanel);
 
     return chartBase;

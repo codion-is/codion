@@ -27,7 +27,8 @@ import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -49,7 +50,7 @@ import java.util.Set;
  */
 public final class EntityDbConnection extends DbConnectionImpl implements EntityDb {
 
-  private static final Logger LOG = Util.getLogger(EntityDbConnection.class);
+  private static final Logger LOG = LoggerFactory.getLogger(EntityDbConnection.class);
 
   private final Map<String, EntityResultPacker> entityResultPackers = new HashMap<String, EntityResultPacker>();
   private final Map<Integer, ResultPacker> propertyResultPackers = new HashMap<Integer, ResultPacker>();
@@ -158,7 +159,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
         rollbackQuietly();
       }
       LOG.info(insertQuery);
-      LOG.error(this, e);
+      LOG.error(e.getMessage(), e);
       throw new DbException(e, insertQuery, getDatabase().getErrorMessage(e));
     }
     finally {
@@ -216,14 +217,14 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
       if (optimisticLocking && !isTransactionOpen()) {
         rollbackQuietly();//releasing the select for update lock
       }
-      LOG.error(this, e);
+      LOG.error(e.getMessage(), e);
       throw e;
     }
     catch (SQLException e) {
       if (!isTransactionOpen()) {
         rollbackQuietly();
       }
-      LOG.error(this, e);
+      LOG.error(e.getMessage(), e);
       throw new DbException(e, updateQuery, getDatabase().getErrorMessage(e));
     }
     finally {
@@ -252,7 +253,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
         rollbackQuietly();
       }
       LOG.info(deleteQuery);
-      LOG.error(this, e);
+      LOG.error(e.getMessage(), e);
       throw new DbException(e, deleteQuery, getDatabase().getErrorMessage(e));
     }
     finally {
@@ -294,7 +295,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
         rollbackQuietly();
       }
       LOG.info(deleteQuery);
-      LOG.error(this, e);
+      LOG.error(e.getMessage(), e);
       throw new DbException(e, deleteQuery, getDatabase().getErrorMessage(e));
     }
     finally {
@@ -361,7 +362,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
     }
     catch (SQLException exception) {
       final DbException dbException = new DbException(exception, selectQuery, getDatabase().getErrorMessage(exception));
-      LOG.error(this, dbException);
+      LOG.error(dbException.getMessage(), dbException);
       throw dbException;
     }
     finally {
@@ -427,7 +428,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
     }
     catch (SQLException e) {
       LOG.info(selectQuery);
-      LOG.error(this, e);
+      LOG.error(e.getMessage(), e);
       throw new DbException(e, selectQuery, getDatabase().getErrorMessage(e));
     }
     finally {
@@ -468,7 +469,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
         rollbackQuietly();
       }
       LOG.info(statement);
-      LOG.error(this, exception);
+      LOG.error(exception.getMessage(), exception);
       throw new DbException(exception, statement, getDatabase().getErrorMessage(exception));
     }
   }
@@ -485,7 +486,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
     }
     catch (SQLException exception) {
       LOG.info(statement);
-      LOG.error(this, exception);
+      LOG.error(exception.getMessage(), exception);
       if (!isTransactionOpen()) {
         rollbackQuietly();
       }
@@ -653,7 +654,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
     }
     catch (SQLException e) {
       LOG.debug(sqlStatement);
-      LOG.error(this, e);
+      LOG.error(e.getMessage(), e);
       exception = e;
     }
     finally {
@@ -675,7 +676,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
     }
     catch (SQLException e) {
       LOG.debug(sqlStatement);
-      LOG.error(this, e);
+      LOG.error(e.getMessage(), e);
       exception = e;
     }
     finally {

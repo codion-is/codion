@@ -3,9 +3,8 @@
  */
 package org.jminor.common.db.dbms;
 
-import org.jminor.common.model.Util;
-
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -21,7 +20,7 @@ public final class DerbyDatabase extends AbstractDatabase {
   static final String AUTO_INCREMENT_QUERY = "select IDENTITY_VAL_LOCAL() from ";
   static final String URL_PREFIX = "jdbc:derby:";
 
-  private static final Logger LOG = Util.getLogger(DerbyDatabase.class);
+  private static final Logger LOG = LoggerFactory.getLogger(DerbyDatabase.class);
 
   /**
    * Instantiates a new DerbyDatabase.

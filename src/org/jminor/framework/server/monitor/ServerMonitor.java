@@ -6,14 +6,14 @@ package org.jminor.framework.server.monitor;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
-import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.server.EntityDbServerAdmin;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import ch.qos.logback.classic.Level;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
@@ -31,7 +31,7 @@ import java.util.TimerTask;
  */
 public final class ServerMonitor {
 
-  private static final Logger LOG = Util.getLogger(ServerMonitor.class);
+  private static final Logger LOG = LoggerFactory.getLogger(ServerMonitor.class);
 
   private final Event evtStatsUpdateIntervalChanged = Events.event();
   private final Event evtServerShutDown = Events.event();
@@ -252,7 +252,7 @@ public final class ServerMonitor {
       throw e;
     }
     catch (NotBoundException e) {
-      LOG.error(e);
+      LOG.error(e.getMessage(), e);
       throw new RemoteException("Server " + serverName + " is not bound", e);
     }
     finally {
@@ -266,9 +266,9 @@ public final class ServerMonitor {
     memoryUsage = server.getMemoryUsage();
     connectionRequestsPerSecondSeries.add(time, server.getRequestsPerSecond());
     warningTimeExceededSecondSeries.add(time, server.getWarningTimeExceededPerSecond());
-    maxMemorySeries.add(time, server.getMaxMemory());
-    allocatedMemorySeries.add(time, server.getAllocatedMemory());
-    usedMemorySeries.add(time, server.getUsedMemory());
+    maxMemorySeries.add(time, server.getMaxMemory() / 1000);
+    allocatedMemorySeries.add(time, server.getAllocatedMemory() / 1000);
+    usedMemorySeries.add(time, server.getUsedMemory() / 1000);
     connectionCountSeries.add(time, server.getConnectionCount());
     evtStatsUpdated.fire();
   }

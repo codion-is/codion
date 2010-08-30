@@ -20,7 +20,7 @@ JMinor is a minimalistic Java rich client CRUD application framework based solel
 
 * Integrated JasperReports support.
 
-* Logging provided by the Log4J logging framework.
+* Logging provided by the Logback logging framework.
 
 
 2. RELEASE INFO

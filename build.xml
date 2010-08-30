@@ -24,7 +24,9 @@
     <pathelement location="${lib.jasperreports.base}"/>
     <pathelement location="${lib.jcalendar}"/>
     <pathelement location="${lib.json}"/>
-    <pathelement location="${lib.log4j}"/>
+    <pathelement location="${lib.slf4j.api}"/>
+    <pathelement location="${lib.logback.classic}"/>
+    <pathelement location="${lib.logback.core}"/>
   </path>
 
   <path id="lib.client.local">
@@ -37,18 +39,22 @@
     <pathelement location="${lib.derby}"/>
     <pathelement location="${lib.h2}"/>
     <pathelement location="${lib.json}"/>
-    <pathelement location="${lib.log4j}"/>
+    <pathelement location="${lib.slf4j.api}"/>
+    <pathelement location="${lib.logback.classic}"/>
+    <pathelement location="${lib.logback.core}"/>
     <pathelement location="${lib.jasperreports.base}"/>
     <pathelement location="${lib.jasperreports.logging}"/>
     <pathelement location="${lib.jasperreports.collections}"/>
   </path>
 
   <path id="lib.server.monitor">
-        <pathelement location="${lib.derby}"/>
-        <pathelement location="${lib.log4j}"/>
-        <pathelement location="${lib.jcalendar}"/>
-        <pathelement location="${lib.jfreechart.base}"/>
-        <pathelement location="${lib.jfreechart.common}"/>
+    <pathelement location="${lib.derby}"/>
+    <pathelement location="${lib.slf4j.api}"/>
+    <pathelement location="${lib.logback.classic}"/>
+    <pathelement location="${lib.logback.core}"/>
+    <pathelement location="${lib.jcalendar}"/>
+    <pathelement location="${lib.jfreechart.base}"/>
+    <pathelement location="${lib.jfreechart.common}"/>
   </path>
 
   <path id="classes.base">
@@ -68,7 +74,7 @@
   <taskdef classpathref="cobertura.classpath" resource="tasks.properties" />
 
   <fileset id="common_resources" dir="${src}" includes=
-          "org/jminor/common/**/*.gif, org/jminor/common/**/*.png, org/jminor/common/**/*.properties, org/jminor/common/**/*.txt, log4j.properties"/>
+          "org/jminor/common/**/*.gif, org/jminor/common/**/*.png, org/jminor/common/**/*.properties, org/jminor/common/**/*.txt, logback.xml"/>
   <fileset id="framework_resources" dir="${src}" includes=
           "org/jminor/framework/**/*.gif, org/jminor/framework/**/*.png, org/jminor/framework/**/*.properties, org/jminor/framework/**/*.txt"/>
   <fileset id="test_resources" dir="${srctest}" includes=
@@ -177,7 +183,7 @@
 
     <jar jarfile="${dist}/${ant.project.name}-common.jar" basedir="${build.base}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
-         includes="org/jminor/common/**, log4j.properties"/>
+         includes="org/jminor/common/**, logback.xml"/>
 
     <jar jarfile="${dist}/${ant.project.name}-client.jar" basedir="${build.base}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
@@ -288,7 +294,9 @@
     <copy file="${dist}/${ant.project.name}-common.jar" todir="${deploy.server.path}/lib"/>
     <copy file="${dist}/${ant.project.name}-plugins.jar" todir="${deploy.server.path}/lib"/>
     <copy file="${dist}/${ant.project.name}-demos.jar" todir="${deploy.server.path}/lib"/>
-    <copy file="${lib.log4j}" todir="${deploy.server.path}/lib"/>
+    <copy file="${lib.slf4j.api}" todir="${deploy.server.path}/lib"/>
+    <copy file="${lib.logback.classic}" todir="${deploy.server.path}/lib"/>
+    <copy file="${lib.logback.core}" todir="${deploy.server.path}/lib"/>
     <copy file="${lib.derby}" todir="${deploy.server.path}/lib"/>
     <copy file="${lib.h2}" todir="${deploy.server.path}/lib"/>
     <copy file="${lib.json}" todir="${deploy.server.path}/lib"/>
@@ -313,7 +321,9 @@
     <copy file="${dist}/${ant.project.name}-server-monitor.jar" todir="${deploy.server.monitor.path}/lib"/>
     <copy file="${dist}/${ant.project.name}-plugins.jar" todir="${deploy.server.path}/lib"/>
     <copy file="${dist}/${ant.project.name}-common.jar" todir="${deploy.server.monitor.path}/lib"/>
-    <copy file="${lib.log4j}" todir="${deploy.server.monitor.path}/lib"/>
+    <copy file="${lib.slf4j.api}" todir="${deploy.server.monitor.path}/lib"/>
+    <copy file="${lib.logback.classic}" todir="${deploy.server.monitor.path}/lib"/>
+    <copy file="${lib.logback.core}" todir="${deploy.server.monitor.path}/lib"/>
     <copy file="${lib.jfreechart.base}" todir="${deploy.server.monitor.path}/lib"/>
     <copy file="${lib.jfreechart.common}" todir="${deploy.server.monitor.path}/lib"/>
     <copy file="${lib.jcalendar}" todir="${deploy.server.monitor.path}/lib"/>
@@ -340,7 +350,9 @@
     <copy file="${lib.jasperreports.collections}" todir="${deploy.demos.path}/lib"/>
     <copy file="${lib.jasperreports.itext}" todir="${deploy.demos.path}/lib"/>
     <copy file="${lib.jasperreports.logging}" todir="${deploy.demos.path}/lib"/>
-    <copy file="${lib.log4j}" todir="${deploy.demos.path}/lib"/>
+    <copy file="${lib.slf4j.api}" todir="${deploy.demos.path}/lib"/>
+    <copy file="${lib.logback.classic}" todir="${deploy.demos.path}/lib"/>
+    <copy file="${lib.logback.core}" todir="${deploy.demos.path}/lib"/>
     <copy file="${lib.jcalendar}" todir="${deploy.demos.path}/lib"/>
     <copy file="${lib.jfreechart.base}" todir="${deploy.demos.path}/lib"/>
     <copy file="${lib.jfreechart.common}" todir="${deploy.demos.path}/lib"/>
@@ -658,7 +670,9 @@
     <java classname="sun.rmi.registry.RegistryImpl" fork="yes">
       <classpath>
         <path refid="classes.base"/>
-        <pathelement location="${lib.log4j}"/>
+        <pathelement location="${lib.slf4j.api}"/>
+        <pathelement location="${lib.logback.classic}"/>
+        <pathelement location="${lib.logback.core}"/>
         <pathelement location="${lib.jasperreports.base}"/>
       </classpath>
       <jvmarg value="-Djava.security.policy=${basedir}/resources/security/all_permissions.policy"/>

@@ -27,7 +27,8 @@ import org.jminor.framework.db.provider.EntityDbProviderFactory;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.i18n.FrameworkMessages;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -58,7 +59,7 @@ import java.util.Map;
  */
 public abstract class EntityApplicationPanel extends JPanel implements ExceptionHandler {
 
-  private static final Logger LOG = Util.getLogger(EntityApplicationPanel.class);
+  private static final Logger LOG = LoggerFactory.getLogger(EntityApplicationPanel.class);
 
   public static final String TIPS_AND_TRICKS_FILE = "TipsAndTricks.txt";
 
@@ -93,7 +94,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
 
   /** {@inheritDoc} */
   public final void handleException(final Throwable exception, final JComponent dialogParent) {
-    LOG.error(this, exception);
+    LOG.error(exception.getMessage(), exception);
     DefaultExceptionHandler.getInstance().handleException(exception, dialogParent);
   }
 

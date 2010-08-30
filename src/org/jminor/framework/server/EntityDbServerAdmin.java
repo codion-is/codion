@@ -9,7 +9,7 @@ import org.jminor.common.model.User;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ServerLog;
 
-import org.apache.log4j.Level;
+import ch.qos.logback.classic.Level;
 
 import java.net.URI;
 import java.rmi.Remote;

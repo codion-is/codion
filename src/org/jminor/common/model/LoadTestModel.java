@@ -3,9 +3,10 @@
  */
 package org.jminor.common.model;
 
-import org.apache.log4j.Logger;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ public abstract class LoadTestModel {
 
   public static final int DEFAULT_CHART_DATA_UPDATE_INTERVAL_MS = 2000;
 
-  protected static final Logger LOG = Util.getLogger(LoadTestModel.class);
+  protected static final Logger LOG = LoggerFactory.getLogger(LoadTestModel.class);
 
   protected static final Random RANDOM = new Random();
 
@@ -62,7 +63,6 @@ public abstract class LoadTestModel {
   private final XYSeries delayedWorkRequestsSeries = new XYSeries("Duration exceeds warning time");
   private final XYSeriesCollection workRequestsCollection = new XYSeriesCollection();
 
-  private final XYSeries scenarioDurationSeries = new XYSeries("Average scenario duration");
   private final XYSeriesCollection scenarioDurationCollection = new XYSeriesCollection();
 
   private final XYSeries minimumThinkTimeSeries = new XYSeries("Minimum think time");
@@ -227,6 +227,9 @@ public abstract class LoadTestModel {
     usedMemoryCollection.clear();
     maxMemoryCollection.clear();
     for (final Object series : usageScenarioCollection.getSeries()) {
+      ((XYSeries) series).clear();
+    }
+    for (final Object series : scenarioDurationCollection.getSeries()) {
       ((XYSeries) series).clear();
     }
   }
@@ -489,8 +492,9 @@ public abstract class LoadTestModel {
   /**
    * Selects a random scenario and runs it with the given application
    * @param application the application for running the next scenario
+   * @return the name of the scenario that was run
    */
-  protected void performWork(final Object application) {
+  protected String performWork(final Object application) {
     Util.rejectNullValue(application, "application");
     final String scenarioName = scenarioChooser.getRandomItem().getName();
     try {
@@ -499,6 +503,8 @@ public abstract class LoadTestModel {
     catch (Exception e) {
       LOG.debug("Exception while running scenario: " + scenarioName + " with application: " + application, e);
     }
+
+    return scenarioName;
   }
 
   /**
@@ -570,7 +576,6 @@ public abstract class LoadTestModel {
   }
 
   private void initializeChartData() {
-    scenarioDurationCollection.addSeries(scenarioDurationSeries);
     workRequestsCollection.addSeries(workRequestsSeries);
     workRequestsCollection.addSeries(delayedWorkRequestsSeries);
     thinkTimeCollection.addSeries(minimumThinkTimeSeries);
@@ -581,6 +586,7 @@ public abstract class LoadTestModel {
     memoryUsageCollection.addSeries(usedMemoryCollection);
     for (final UsageScenario usageScenario : this.usageScenarios) {
       usageScenarioCollection.addSeries(new XYSeries(usageScenario.getName()));
+      scenarioDurationCollection.addSeries(new XYSeries(usageScenario.getName()));
     }
   }
 
@@ -588,16 +594,19 @@ public abstract class LoadTestModel {
     final long time = System.currentTimeMillis();
     workRequestsSeries.add(time, counter.getWorkRequestsPerSecond());
     delayedWorkRequestsSeries.add(time, counter.getDelayedWorkRequestsPerSecond());
-    scenarioDurationSeries.add(time, counter.getAverageScenarioDuration());
     minimumThinkTimeSeries.add(time, minimumThinkTime);
     maximumThinkTimeSeries.add(time, maximumThinkTime);
     numberOfApplicationsSeries.add(time, applications.size());
-    allocatedMemoryCollection.add(time, Util.getAllocatedMemory());
-    usedMemoryCollection.add(time, Util.getUsedMemory());
-    maxMemoryCollection.add(time, Util.getMaxMemory());
+    allocatedMemoryCollection.add(time, Util.getAllocatedMemory() / 1000);
+    usedMemoryCollection.add(time, Util.getUsedMemory() / 1000);
+    maxMemoryCollection.add(time, Util.getMaxMemory() / 1000);
     for (final Object object : usageScenarioCollection.getSeries()) {
       final XYSeries series = (XYSeries) object;
       series.add(time, counter.getScenarioRate((String) series.getKey()));
+    }
+    for (final Object object : scenarioDurationCollection.getSeries()) {
+      final XYSeries series = (XYSeries) object;
+      series.add(time, counter.getAverageScenarioDuration((String) series.getKey()));
     }
   }
 
@@ -625,13 +634,14 @@ public abstract class LoadTestModel {
             think();
             if (!loadTestModel.isPaused()) {
               final long currentTime = System.currentTimeMillis();
+              String scenarioName = null;
               try {
                 loadTestModel.counter.incrementWorkRequests();
-                loadTestModel.performWork(application);
+                scenarioName = loadTestModel.performWork(application);
               }
               finally {
                 final long workTime = System.currentTimeMillis() - currentTime;
-                loadTestModel.counter.addScenarioDuration((int) workTime);
+                loadTestModel.counter.addScenarioDuration(scenarioName, (int) workTime);
                 if (workTime > loadTestModel.getWarningTime()) {
                   loadTestModel.counter.incrementDelayedWorkRequests();
                 }
@@ -639,7 +649,8 @@ public abstract class LoadTestModel {
             }
           }
           catch (Exception e) {
-            LOG.debug("Exception during during LoadTestModel.run() with application: " + application, e);
+            e.printStackTrace();
+//            LOG.debug("Exception during during LoadTestModel.run() with application: " + application, e);
           }
         }
         loadTestModel.disconnectApplication(application);
@@ -814,13 +825,13 @@ public abstract class LoadTestModel {
 
     private final Collection<UsageScenario> usageScenarios;
     private final Map<String, Integer> usageScenarioRates = new HashMap<String, Integer>();
-    private final Collection<Integer> scenarioDurations = new ArrayList<Integer>();
+    private final Map<String, Integer> usageScenarioDurations = new HashMap<String, Integer>();
+    private final Map<String, Collection<Integer>> scenarioDurations = new HashMap<String, Collection<Integer>>();
 
     private int workRequestsPerSecond = 0;
     private int workRequestCounter = 0;
     private int delayedWorkRequestsPerSecond = 0;
     private int delayedWorkRequestCounter = 0;
-    private int averageScenarioDuration = 0;
     private long time = System.currentTimeMillis();
 
     private Counter(final Collection<UsageScenario> usageScenarios) {
@@ -835,8 +846,12 @@ public abstract class LoadTestModel {
       return delayedWorkRequestsPerSecond;
     }
 
-    private int getAverageScenarioDuration() {
-      return averageScenarioDuration;
+    private int getAverageScenarioDuration(final String scenarioName) {
+      if (!usageScenarioDurations.containsKey(scenarioName)) {
+        return 0;
+      }
+
+      return usageScenarioDurations.get(scenarioName);
     }
 
     private int getScenarioRate(final String scenarioName) {
@@ -847,9 +862,12 @@ public abstract class LoadTestModel {
       return usageScenarioRates.get(scenarioName);
     }
 
-    private void addScenarioDuration(final int duration) {
+    private void addScenarioDuration(final String scenarioName, final int duration) {
       synchronized (scenarioDurations) {
-        scenarioDurations.add(duration);
+        if (!scenarioDurations.containsKey(scenarioName)) {
+          scenarioDurations.put(scenarioName, new ArrayList<Integer>());
+        }
+        scenarioDurations.get(scenarioName).add(duration);
       }
     }
 
@@ -869,15 +887,16 @@ public abstract class LoadTestModel {
         delayedWorkRequestsPerSecond = (int) (delayedWorkRequestCounter / (double) elapsedSeconds);
         for (final UsageScenario scenario : usageScenarios) {
           usageScenarioRates.put(scenario.getName(), (int) (scenario.getTotalRunCount() / elapsedSeconds));
-        }
-        int totalDuration = 0;
-        if (scenarioDurations.size() > 0) {
+          int totalDuration = 0;
           synchronized (scenarioDurations) {
-            for (final Integer duration : scenarioDurations) {
-              totalDuration += duration;
+            final Collection<Integer> durations = scenarioDurations.get(scenario.getName());
+            if (durations != null && durations.size() > 0) {
+              for (final Integer duration : durations) {
+                totalDuration += duration;
+              }
+              usageScenarioDurations.put(scenario.getName(), totalDuration / durations.size());
             }
           }
-          averageScenarioDuration = totalDuration / scenarioDurations.size();
         }
 
         resetCounters();

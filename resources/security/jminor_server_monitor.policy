@@ -1,4 +1,5 @@
 grant {
+  permission java.io.FilePermission "${user.home}/logs", "read";
   permission java.io.FilePermission "${user.home}/logs/*", "read,write,delete";
   permission java.io.FilePermission "${user.dir}/-", "read,write,delete";
 

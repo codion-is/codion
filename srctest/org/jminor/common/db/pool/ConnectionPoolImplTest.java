@@ -234,8 +234,9 @@ public class ConnectionPoolImplTest {
       }
 
       @Override
-      protected void performWork(Object application) {
+      protected String performWork(final Object application) {
         ((ActionListener) application).actionPerformed(null);
+        return application.toString();
       }
     };
   }

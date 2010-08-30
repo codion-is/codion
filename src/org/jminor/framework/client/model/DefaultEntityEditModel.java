@@ -29,7 +29,8 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -44,7 +45,7 @@ import java.util.Map;
  */
 public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<String, Object> implements EntityEditModel {
 
-  protected static final Logger LOG = Util.getLogger(DefaultEntityEditModel.class);
+  protected static final Logger LOG = LoggerFactory.getLogger(DefaultEntityEditModel.class);
 
   private final Event evtBeforeInsert = Events.event();
   private final Event evtAfterInsert = Events.event();

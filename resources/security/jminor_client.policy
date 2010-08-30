@@ -1,5 +1,6 @@
 grant {
   //write to the log file
+  permission java.io.FilePermission "${user.home}/logs", "read";
   permission java.io.FilePermission "${user.home}/logs/*", "read,write,delete";
   permission java.io.FilePermission "${java.io.tmpdir}/*", "read,write,delete";
   permission java.io.FilePermission "${java.home}/-", "read";

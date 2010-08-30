@@ -7,10 +7,10 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.State;
 import org.jminor.common.model.States;
-import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -26,7 +26,7 @@ import java.util.List;
  */
 public final class HostMonitor {
 
-  private static final Logger LOG = Util.getLogger(HostMonitor.class);
+  private static final Logger LOG = LoggerFactory.getLogger(HostMonitor.class);
 
   private final Event evtRefreshed = Events.event();
   private final Event evtServerMonitorRemoved = Events.event();
@@ -122,7 +122,7 @@ public final class HostMonitor {
       }
     }
     catch (RemoteException e) {
-      LOG.error(this, e);
+      LOG.error(e.getMessage(), e);
     }
 
     return serverNames;
