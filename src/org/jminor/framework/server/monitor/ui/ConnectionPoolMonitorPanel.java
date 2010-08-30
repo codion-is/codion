@@ -61,6 +61,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   private final JTextField txtCreatedDestroyedResetTime = new JTextField(RESET_FIELD_COLUMNS);
   private final JTextField txtRequested = new JTextField();
   private final JTextField txtDelayed = new JTextField();
+  private final JTextField txtFailed = new JTextField();
 
   /**
    * Instantiates a new ConnectionPoolMonitorPanel
@@ -82,8 +83,11 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     txtDestroyed.setText(format.format(stats.getDestroyed()));
     txtCreatedDestroyedResetTime.setText(DateFormats.getDateFormat(DateFormats.FULL_TIMESTAMP).format(stats.getResetTime()));
     txtRequested.setText(format.format(stats.getRequests()));
-    final double prc = (double) stats.getDelayedRequests() / (double) stats.getRequests() * 100;
+    double prc = (double) stats.getDelayedRequests() / (double) stats.getRequests() * 100;
     txtDelayed.setText(format.format(stats.getDelayedRequests())
+            + (prc > 0 ? " (" + format.format(prc)+"%)" : ""));
+    prc = (double) stats.getFailedRequests() / (double) stats.getRequests() * 100;
+    txtFailed.setText(format.format(stats.getFailedRequests())
             + (prc > 0 ? " (" + format.format(prc)+"%)" : ""));
     if (model.datasetContainsData()) {
       inPoolChart.getXYPlot().setDataset(model.getInPoolDataSet());
@@ -184,6 +188,8 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     txtRequested.setHorizontalAlignment(JLabel.CENTER);
     txtDelayed.setEditable(false);
     txtDelayed.setHorizontalAlignment(JLabel.CENTER);
+    txtFailed.setEditable(false);
+    txtFailed.setHorizontalAlignment(JLabel.CENTER);
     txtCreatedDestroyedResetTime.setEditable(false);
     txtCreatedDestroyedResetTime.setHorizontalAlignment(JLabel.CENTER);
 
@@ -196,6 +202,8 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     statsBase.add(txtRequested);
     statsBase.add(new JLabel("delayed"));
     statsBase.add(txtDelayed);
+    statsBase.add(new JLabel("failed"));
+    statsBase.add(txtFailed);
     statsBase.add(new JLabel("created"));
     statsBase.add(txtCreated);
     statsBase.add(new JLabel("destroyed"));

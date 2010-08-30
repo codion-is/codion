@@ -65,14 +65,19 @@ public interface ConnectionPoolStatistics {
   long getResetTime();
 
   /**
-   * @return the number of delayed connection requests since last reset
-   */
-  int getDelayedRequests();
-
-  /**
    * @return the number of connection requests since last reset
    */
   int getRequests();
+
+  /**
+   * @return the number of connection requests per second
+   */
+  int getRequestsPerSecond();
+
+  /**
+   * @return the number of delayed connection requests since last reset
+   */
+  int getDelayedRequests();
 
   /**
    * @return the number of delayed connection requests per second
@@ -80,9 +85,14 @@ public interface ConnectionPoolStatistics {
   int getDelayedRequestsPerSecond();
 
   /**
-   * @return the number of connection requests per second
+   * @return the number of failed connection requests since last reset
    */
-  int getRequestsPerSecond();
+  int getFailedRequests();
+
+  /**
+   * @return the number of failed connection requests per second
+   */
+  int getFailedRequestsPerSecond();
 
   /**
    * @return the avarage check out time in nanoseconds

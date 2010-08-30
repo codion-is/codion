@@ -2090,3 +2090,4 @@
   Refactored ConnectionPool and related classes
   Property.get/SetEntityID() added
   EntityCriteriaUtil, reduced serialization overhead
+  ConnectionPoolStatistics.connectionRequestsFailed added

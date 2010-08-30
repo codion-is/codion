@@ -46,8 +46,9 @@ public final class ConnectionPoolMonitor {
   private final XYSeries inUseSeriesMacro = new XYSeries("In use");
   private final XYSeriesCollection statsCollection = new XYSeriesCollection();
   private final XYSeriesCollection macroStatsCollection = new XYSeriesCollection();
-  private final XYSeries delayedRequestsPerSecond = new XYSeries("Delayed requests per second");
-  private final XYSeries connectionRequestsPerSecond = new XYSeries("Connection requests per second");
+  private final XYSeries delayedRequestsPerSecond = new XYSeries("Delayed / second");
+  private final XYSeries failedRequestsPerSecond = new XYSeries("Failed / second");
+  private final XYSeries connectionRequestsPerSecond = new XYSeries("Requests / second");
   private final XYSeriesCollection connectionRequestsPerSecondCollection = new XYSeriesCollection();
   private final XYSeries averageCheckOutTime = new XYSeries("Average check out time");
   private final XYSeriesCollection checkOutTimeCollection = new XYSeriesCollection();
@@ -67,6 +68,7 @@ public final class ConnectionPoolMonitor {
     this.macroStatsCollection.addSeries(maximumPoolSizeSeries);
     this.connectionRequestsPerSecondCollection.addSeries(connectionRequestsPerSecond);
     this.connectionRequestsPerSecondCollection.addSeries(delayedRequestsPerSecond);
+    this.connectionRequestsPerSecondCollection.addSeries(failedRequestsPerSecond);
     this.checkOutTimeCollection.addSeries(averageCheckOutTime);
     updateStats();
     setStatsUpdateInterval(3);
@@ -230,6 +232,7 @@ public final class ConnectionPoolMonitor {
     inUseSeriesMacro.add(poolStats.getTimestamp(), poolStats.getInUse());
     connectionRequestsPerSecond.add(poolStats.getTimestamp(), poolStats.getRequestsPerSecond());
     delayedRequestsPerSecond.add(poolStats.getTimestamp(), poolStats.getDelayedRequestsPerSecond());
+    failedRequestsPerSecond.add(poolStats.getTimestamp(), poolStats.getFailedRequestsPerSecond());
     averageCheckOutTime.add(poolStats.getTimestamp(), poolStats.getAverageGetTime());
     final List<ConnectionPoolState> stats = sortAndRemoveDuplicates(poolStats.getFineGrainedStatistics());
     if (!stats.isEmpty()) {

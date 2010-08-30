@@ -106,6 +106,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
 
       return connection;
     }
+    counter.incrementFailedRequestCounter();
 
     throw new ConnectionPoolException.NoConnectionAvailable(retryCount, elapsedTime);
   }
@@ -159,6 +160,8 @@ public final class ConnectionPoolImpl implements ConnectionPool {
       statistics.setConnectionRequests(counter.getConnectionRequests());
       statistics.setConnectionRequestsDelayed(counter.getConnectionRequestsDelayed());
       statistics.setRequestsDelayedPerSecond(counter.getRequestsDelayedPerSecond());
+      statistics.setConnectionRequestsFailed(counter.getConnectionRequestsFailed());
+      statistics.setRequestsFailedPerSecond(counter.getRequestsFailedPerSecond());
       statistics.setRequestsPerSecond(counter.getRequestsPerSecond());
       statistics.setAverageCheckOutTime(counter.getAverageCheckOutTime());
       statistics.setResetDate(counter.getResetDate());
@@ -409,14 +412,17 @@ public final class ConnectionPoolImpl implements ConnectionPool {
 
     private final long creationDate = System.currentTimeMillis();
     private long resetDate = creationDate;
-    private volatile int connectionsCreated = 0;
-    private volatile int connectionsDestroyed = 0;
-    private volatile int connectionRequests = 0;
-    private volatile int connectionRequestsDelayed = 0;
-    private volatile int requestsDelayedPerSecond = 0;
-    private volatile int requestsDelayedPerSecondCounter = 0;
-    private volatile int requestsPerSecond = 0;
-    private volatile int requestsPerSecondCounter = 0;
+    private int connectionsCreated = 0;
+    private int connectionsDestroyed = 0;
+    private int connectionRequests = 0;
+    private int connectionRequestsDelayed = 0;
+    private int requestsDelayedPerSecond = 0;
+    private int requestsDelayedPerSecondCounter = 0;
+    private int requestsPerSecond = 0;
+    private int requestsPerSecondCounter = 0;
+    private int connectionRequestsFailed = 0;
+    private int requestsFailedPerSecondCounter = 0;
+    private int requestsFailedPerSecond;
     private long averageCheckOutTime = 0;
     private final List<Long> checkOutTimes = new ArrayList<Long>();
     private long requestsPerSecondTime = creationDate;
@@ -446,6 +452,10 @@ public final class ConnectionPoolImpl implements ConnectionPool {
       return connectionRequestsDelayed;
     }
 
+    private synchronized int getConnectionRequestsFailed() {
+      return connectionRequestsFailed;
+    }
+
     private synchronized int getConnectionsCreated() {
       return connectionsCreated;
     }
@@ -456,6 +466,10 @@ public final class ConnectionPoolImpl implements ConnectionPool {
 
     private synchronized int getRequestsDelayedPerSecond() {
       return requestsDelayedPerSecond;
+    }
+
+    private synchronized int getRequestsFailedPerSecond() {
+      return requestsFailedPerSecond;
     }
 
     private synchronized int getRequestsPerSecond() {
@@ -471,6 +485,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
       connectionsDestroyed = 0;
       connectionRequests = 0;
       connectionRequestsDelayed = 0;
+      connectionRequestsFailed = 0;
       checkOutTimes.clear();
       resetDate = System.currentTimeMillis();
     }
@@ -482,6 +497,8 @@ public final class ConnectionPoolImpl implements ConnectionPool {
       requestsPerSecondCounter = 0;
       requestsDelayedPerSecond = (int) ((double) requestsDelayedPerSecondCounter / seconds);
       requestsDelayedPerSecondCounter = 0;
+      requestsFailedPerSecond = (int) ((double) requestsFailedPerSecondCounter / seconds);
+      requestsFailedPerSecondCounter = 0;
       requestsPerSecondTime = current;
       averageCheckOutTime = 0;
       if (!checkOutTimes.isEmpty()) {
@@ -505,6 +522,11 @@ public final class ConnectionPoolImpl implements ConnectionPool {
     private synchronized void incrementDelayedRequestCounter() {
       connectionRequestsDelayed++;
       requestsDelayedPerSecondCounter++;
+    }
+
+    private synchronized void incrementFailedRequestCounter() {
+      connectionRequestsFailed++;
+      requestsFailedPerSecondCounter++;
     }
 
     private synchronized void incrementRequestCounter() {
@@ -564,9 +586,11 @@ public final class ConnectionPoolImpl implements ConnectionPool {
     private List<ConnectionPoolState> fineGrainedStatistics;
     private long resetDate;
     private int connectionRequests;
+    private int requestsPerSecond;
     private int connectionRequestsDelayed;
     private int requestsDelayedPerSecond;
-    private int requestsPerSecond;
+    private int connectionRequestsFailed;
+    private int requestsFailedPerSecond;
     private int poolSize;
     private long averageCheckOutTime;
 
@@ -623,6 +647,16 @@ public final class ConnectionPoolImpl implements ConnectionPool {
     /** {@inheritDoc} */
     public int getDelayedRequestsPerSecond() {
       return requestsDelayedPerSecond;
+    }
+
+    /** {@inheritDoc} */
+    public int getFailedRequests() {
+      return connectionRequestsFailed;
+    }
+
+    /** {@inheritDoc} */
+    public int getFailedRequestsPerSecond() {
+      return requestsFailedPerSecond;
     }
 
     /** {@inheritDoc} */
@@ -703,6 +737,14 @@ public final class ConnectionPoolImpl implements ConnectionPool {
 
     private void setResetDate(final long resetDate) {
       this.resetDate = resetDate;
+    }
+
+    private void setConnectionRequestsFailed(final int connectionRequestsFailed) {
+      this.connectionRequestsFailed = connectionRequestsFailed;
+    }
+
+    private void setRequestsFailedPerSecond(final int requestsFailedPerSecond) {
+      this.requestsFailedPerSecond = requestsFailedPerSecond;
     }
   }
 }
