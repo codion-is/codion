@@ -52,7 +52,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
 
   private final List<ConnectionPoolStateImpl> connectionPoolStatistics = new ArrayList<ConnectionPoolStateImpl>(1000);
   private int currentPoolStatisticsIndex = 0;
-  private boolean collectFineGrainedStatistics = System.getProperty(Database.DATABASE_POOL_STATISTICS, "true").equalsIgnoreCase("true");
+  private boolean collectFineGrainedStatistics = System.getProperty(Database.DATABASE_POOL_STATISTICS, "false").equalsIgnoreCase("true");
 
   /**
    * Instantiates a new ConnectionPoolImpl.
@@ -76,7 +76,9 @@ public final class ConnectionPoolImpl implements ConnectionPool {
     counter.incrementRequestCounter();
 
     final long startTime = System.currentTimeMillis();
-    addPoolStatistics(startTime);
+    if (collectFineGrainedStatistics) {
+      addPoolStatistics(startTime);
+    }
 
     PoolableConnection connection = fetchFromPool();
     if (connection == null) {

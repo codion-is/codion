@@ -134,19 +134,32 @@ public class MethodLogger {
    * @return the LogEntry
    */
   public final LogEntry logExit(final String method, final Throwable exception, final List<LogEntry> subLog) {
-    return logExit(method, exception, subLog, null);
+    return logExit(method, exception, System.currentTimeMillis(), subLog);
   }
 
   /**
    * @param method the method being exited
    * @param exception the exception, if any
+   * @param timestamp the method exit timestamp
+   * @param subLog the sub-log, if any
+   * @return the LogEntry
+   */
+  public final LogEntry logExit(final String method, final Throwable exception, final long timestamp,
+                                final List<LogEntry> subLog) {
+    return logExit(method, exception, timestamp, subLog, null);
+  }
+
+  /**
+   * @param method the method being exited
+   * @param exception the exception, if any
+   * @param timestamp the method exit timestamp
    * @param subLog the sub-log, if any
    * @param exitMessage the exit message
    * @return the LogEntry
    */
-  public final LogEntry logExit(final String method, final Throwable exception, final List<LogEntry> subLog,
-                                final String exitMessage) {
-    this.lastExitDate = System.currentTimeMillis();
+  public final LogEntry logExit(final String method, final Throwable exception, final long timestamp,
+                                final List<LogEntry> subLog, final String exitMessage) {
+    this.lastExitDate = timestamp;
     this.lastExitedMethod = method;
     if (enabled) {
       return addLogEntry(lastExitedMethod, exitMessage, lastExitDate, true, exception, subLog);

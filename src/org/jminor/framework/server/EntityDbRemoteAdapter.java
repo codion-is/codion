@@ -12,7 +12,6 @@ import org.jminor.common.db.pool.PoolableConnection;
 import org.jminor.common.db.pool.PoolableConnectionProvider;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Events;
-import org.jminor.common.model.LogEntry;
 import org.jminor.common.model.MethodLogger;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
@@ -36,9 +35,9 @@ import javax.rmi.ssl.SslRMIClientSocketFactory;
 import javax.rmi.ssl.SslRMIServerSocketFactory;
 import java.awt.event.ActionListener;
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.lang.reflect.InvocationTargetException;
 import java.rmi.NoSuchObjectException;
 import java.rmi.RemoteException;
 import java.rmi.server.RMISocketFactory;
@@ -548,9 +547,10 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
       Exception exception = null;
       EntityDbConnection connection = null;
       final boolean logMethod = methodLogger.isEnabled() && shouldMethodBeLogged(methodName);
+      final long startTime = System.currentTimeMillis();
       try {
         setActive();
-        final long startTime = System.currentTimeMillis();
+        RequestCounter.incrementRequestsPerSecondCounter();
         connection = getConnection();
         if (logMethod) {
           logAccess(args, methodName, connection, startTime);
@@ -564,8 +564,12 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
       }
       finally {
         setInactive();
+        final long currentTime = System.currentTimeMillis();
+        if (currentTime - startTime > RequestCounter.warningThreshold) {
+          RequestCounter.incrementWarningTimeExceededCounter();
+        }
         if (logMethod) {
-          logExit(methodName, exception, connection);
+          logExit(methodName, exception, connection, currentTime);
         }
         if (connection != null) {
           returnConnection(connection);
@@ -573,21 +577,17 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
       }
     }
 
-    private void logExit(final String methodName, final Exception exception, final EntityDbConnection connection) {
-      final LogEntry entry = methodLogger.logExit(methodName, exception,
-              connection != null ? connection.getLogEntries() : null);
-      if (entry != null && entry.getDelta() > RequestCounter.warningThreshold) {
-        RequestCounter.incrementWarningTimeExceededCounter();
-      }
+    private void logExit(final String methodName, final Exception exception, final EntityDbConnection connection,
+                         final long timestamp) {
+      methodLogger.logExit(methodName, exception, timestamp, connection != null ? connection.getLogEntries() : null);
     }
 
     private void logAccess(final Object[] args, final String methodName, final EntityDbConnection connection,
                            final long startTimestamp) {
-      RequestCounter.incrementRequestsPerSecondCounter();
       methodLogger.logAccess(GET_CONNECTION, new Object[]{clientInfo.getUser()}, startTimestamp);
       final int retries = connection.getRetryCount();
       final String message = retries > 0 ? "retries: " + retries : null;
-      methodLogger.logExit(GET_CONNECTION, null, null, message);
+      methodLogger.logExit(GET_CONNECTION, null, System.currentTimeMillis(), null, message);
       methodLogger.logAccess(methodName, args);
     }
   }
