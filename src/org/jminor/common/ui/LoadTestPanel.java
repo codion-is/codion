@@ -224,6 +224,12 @@ public final class LoadTestPanel extends JPanel {
   }
 
   private JPanel initializeChartPanel() {
+    final JFreeChart scenarioDurationChart = ChartFactory.createXYStepChart(null,
+            null, null, loadTestModel.getScenarioDurationDataset(), PlotOrientation.VERTICAL, true, true, false);
+    scenarioDurationChart.getXYPlot().setBackgroundPaint(Color.BLACK);
+    final ChartPanel scenarioDurationChartPanel = new ChartPanel(scenarioDurationChart);
+    scenarioDurationChartPanel.setBorder(BorderFactory.createEtchedBorder());
+
     final JFreeChart workRequestsChart = ChartFactory.createXYStepChart(null,
             null, null, loadTestModel.getWorkRequestsDataset(), PlotOrientation.VERTICAL, true, true, false);
     workRequestsChart.getXYPlot().setBackgroundPaint(Color.BLACK);
@@ -254,9 +260,10 @@ public final class LoadTestPanel extends JPanel {
     final ChartPanel memoryUsageChartPanel = new ChartPanel(memoryUsageChart);
     memoryUsageChartPanel.setBorder(BorderFactory.createEtchedBorder());
 
-    final JPanel chartBase = new JPanel(new GridLayout(5, 1, 0, 0));
+    final JPanel chartBase = new JPanel(new GridLayout(3, 2, 0, 0));
     chartBase.setBorder(BorderFactory.createTitledBorder("Status"));
     chartBase.add(workRequestsChartPanel);
+    chartBase.add(scenarioDurationChartPanel);
     chartBase.add(usageScenarioChartPanel);
     chartBase.add(numberOfApplicationsChartPanel);
     chartBase.add(thinkTimeChartPanel);

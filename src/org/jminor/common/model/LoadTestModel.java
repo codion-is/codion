@@ -62,6 +62,9 @@ public abstract class LoadTestModel {
   private final XYSeries delayedWorkRequestsSeries = new XYSeries("Delayed scenarios per second");
   private final XYSeriesCollection workRequestsCollection = new XYSeriesCollection();
 
+  private final XYSeries scenarioDurationSeries = new XYSeries("Average scenario duration");
+  private final XYSeriesCollection scenarioDurationCollection = new XYSeriesCollection();
+
   private final XYSeries minimumThinkTimeSeries = new XYSeries("Minimum think time");
   private final XYSeries maximumThinkTimeSeries = new XYSeries("Maximum think time");
   private final XYSeriesCollection thinkTimeCollection = new XYSeriesCollection();
@@ -174,6 +177,13 @@ public abstract class LoadTestModel {
    */
   public final XYSeriesCollection getWorkRequestsDataset() {
     return workRequestsCollection;
+  }
+
+  /**
+   * @return a dataset plotting the average scenario duration
+   */
+  public final XYSeriesCollection getScenarioDurationDataset() {
+    return scenarioDurationCollection;
   }
 
   /**
@@ -560,6 +570,7 @@ public abstract class LoadTestModel {
   }
 
   private void initializeChartData() {
+    scenarioDurationCollection.addSeries(scenarioDurationSeries);
     workRequestsCollection.addSeries(workRequestsSeries);
     workRequestsCollection.addSeries(delayedWorkRequestsSeries);
     thinkTimeCollection.addSeries(minimumThinkTimeSeries);
@@ -577,6 +588,7 @@ public abstract class LoadTestModel {
     final long time = System.currentTimeMillis();
     workRequestsSeries.add(time, counter.getWorkRequestsPerSecond());
     delayedWorkRequestsSeries.add(time, counter.getDelayedWorkRequestsPerSecond());
+    scenarioDurationSeries.add(time, counter.getAverageScenarioDuration());
     minimumThinkTimeSeries.add(time, minimumThinkTime);
     maximumThinkTimeSeries.add(time, maximumThinkTime);
     numberOfApplicationsSeries.add(time, applications.size());
@@ -619,6 +631,7 @@ public abstract class LoadTestModel {
               }
               finally {
                 final long workTime = System.currentTimeMillis() - currentTime;
+                loadTestModel.counter.addScenarioDuration((int) workTime);
                 if (workTime > loadTestModel.getWarningTime()) {
                   loadTestModel.counter.incrementDelayedWorkRequests();
                 }
@@ -801,11 +814,13 @@ public abstract class LoadTestModel {
 
     private final Collection<UsageScenario> usageScenarios;
     private final Map<String, Integer> usageScenarioRates = new HashMap<String, Integer>();
+    private final Collection<Integer> scenarioDurations = new ArrayList<Integer>();
 
     private int workRequestsPerSecond = 0;
     private int workRequestCounter = 0;
     private int delayedWorkRequestsPerSecond = 0;
     private int delayedWorkRequestCounter = 0;
+    private int averageScenarioDuration = 0;
     private long time = System.currentTimeMillis();
 
     private Counter(final Collection<UsageScenario> usageScenarios) {
@@ -820,12 +835,22 @@ public abstract class LoadTestModel {
       return delayedWorkRequestsPerSecond;
     }
 
+    private int getAverageScenarioDuration() {
+      return averageScenarioDuration;
+    }
+
     private int getScenarioRate(final String scenarioName) {
       if (!usageScenarioRates.containsKey(scenarioName)) {
         return 0;
       }
 
       return usageScenarioRates.get(scenarioName);
+    }
+
+    private void addScenarioDuration(final int duration) {
+      synchronized (scenarioDurations) {
+        scenarioDurations.add(duration);
+      }
     }
 
     private void incrementWorkRequests() {
@@ -838,12 +863,21 @@ public abstract class LoadTestModel {
 
     private void updateRequestsPerSecond() {
       final long current = System.currentTimeMillis();
-      final double seconds = (current - time) / 1000d;
-      if (seconds > 5) {
-        workRequestsPerSecond = (int) (workRequestCounter / (double) seconds);
-        delayedWorkRequestsPerSecond = (int) (delayedWorkRequestCounter / (double) seconds);
+      final double elapsedSeconds = (current - time) / 1000d;
+      if (elapsedSeconds > 5) {
+        workRequestsPerSecond = (int) (workRequestCounter / (double) elapsedSeconds);
+        delayedWorkRequestsPerSecond = (int) (delayedWorkRequestCounter / (double) elapsedSeconds);
         for (final UsageScenario scenario : usageScenarios) {
-          usageScenarioRates.put(scenario.getName(), (int) (scenario.getTotalRunCount() / seconds));
+          usageScenarioRates.put(scenario.getName(), (int) (scenario.getTotalRunCount() / elapsedSeconds));
+        }
+        int totalDuration = 0;
+        if (scenarioDurations.size() > 0) {
+          synchronized (scenarioDurations) {
+            for (final Integer duration : scenarioDurations) {
+              totalDuration += duration;
+            }
+          }
+          averageScenarioDuration = totalDuration / scenarioDurations.size();
         }
 
         resetCounters();
@@ -857,6 +891,9 @@ public abstract class LoadTestModel {
       }
       workRequestCounter = 0;
       delayedWorkRequestCounter = 0;
+      synchronized (scenarioDurations) {
+        scenarioDurations.clear();
+      }
     }
   }
 }
