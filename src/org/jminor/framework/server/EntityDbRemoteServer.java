@@ -268,7 +268,7 @@ final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
     for (final ClientInfo client : clients) {
       final EntityDbRemoteAdapter adapter = (EntityDbRemoteAdapter) getConnection(client);
       if (inactiveOnly) {
-        if (!adapter.isActive() && adapter.hasBeenInactive(connectionTimeout * 1000)) {
+        if (!adapter.isActive() && adapter.hasBeenInactive(connectionTimeout)) {
           disconnect(client.getClientID());
         }
       }
