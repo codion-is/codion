@@ -878,7 +878,8 @@ public final class EntityCriteriaUtil {
     }
 
     private void writeObject(final ObjectOutputStream stream) throws IOException {
-      stream.writeObject(property);
+      stream.writeObject(property.getEntityID());
+      stream.writeObject(property.getPropertyID());
       stream.writeObject(searchType);
       stream.writeBoolean(isNullCriteria);
       stream.writeBoolean(caseSensitive);
@@ -887,7 +888,9 @@ public final class EntityCriteriaUtil {
 
     @SuppressWarnings({"unchecked"})
     private void readObject(final ObjectInputStream stream) throws ClassNotFoundException, IOException {
-      property = (Property.ColumnProperty) stream.readObject();
+      final String entityID = (String) stream.readObject();
+      final String propertyID = (String) stream.readObject();
+      property = (Property.ColumnProperty) Entities.getProperty(entityID, propertyID);
       searchType = (SearchType) stream.readObject();
       isNullCriteria = stream.readBoolean();
       caseSensitive = stream.readBoolean();
@@ -1067,7 +1070,8 @@ public final class EntityCriteriaUtil {
 
     private void writeObject(final ObjectOutputStream stream) throws IOException {
       stream.writeBoolean(isNullCriteria);
-      stream.writeObject(property);
+      stream.writeObject(property.getEntityID());
+      stream.writeObject(property.getPropertyID());
       stream.writeObject(searchType);
       stream.writeObject(values);
     }
@@ -1075,7 +1079,9 @@ public final class EntityCriteriaUtil {
     @SuppressWarnings({"unchecked"})
     private void readObject(final ObjectInputStream stream) throws ClassNotFoundException, IOException {
       isNullCriteria = stream.readBoolean();
-      property = (Property.ForeignKeyProperty) stream.readObject();
+      final String entityID = (String) stream.readObject();
+      final String propertyID = (String) stream.readObject();
+      property = (Property.ForeignKeyProperty) Entities.getProperty(entityID, propertyID);
       searchType = (SearchType) stream.readObject();
       values = (ArrayList<Entity.Key>) stream.readObject();
     }

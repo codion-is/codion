@@ -44,6 +44,11 @@ class PropertyImpl implements Property, Serializable {
   private final String caption;
 
   /**
+   * The ID of the entity this property is associated with
+   */
+  private String entityID;
+
+  /**
    * A reference to a parent foreign key property, if one exists
    */
   private ForeignKeyProperty parentProperty;
@@ -224,6 +229,19 @@ class PropertyImpl implements Property, Serializable {
   /** {@inheritDoc} */
   public final String getPropertyID() {
     return this.propertyID;
+  }
+
+  /** {@inheritDoc} */
+  public String getEntityID() {
+    return entityID;
+  }
+
+  /** {@inheritDoc} */
+  public void setEntityID(final String entityID) {
+    if (this.entityID != null) {
+      throw new IllegalStateException("entityID (" + this.entityID + ") has already been set for property: " + propertyID);
+    }
+    this.entityID = entityID;
   }
 
   /** {@inheritDoc} */

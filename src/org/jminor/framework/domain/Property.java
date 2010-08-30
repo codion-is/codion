@@ -17,6 +17,17 @@ import java.util.List;
 public interface Property extends Attribute {
 
   /**
+   * @return the ID of the entity this property is associated with
+   */
+  String getEntityID();
+
+  /**
+   * @param entityID the ID of the entity this property is associated with
+   * @throws IllegalStateException in case the entityID has already been set
+   */
+  void setEntityID(final String entityID);
+
+  /**
    * @param property the property
    * @return true if this property is of the given type
    */
@@ -414,7 +425,8 @@ public interface Property extends Attribute {
    * A property which value is derived from the values of one or more properties.
    * For the property to be updated when the parent properties are you must
    * link the properties together using the <code>addLinkedPropertyIDs()</code>method.
-   * @see org.jminor.framework.domain.Entities.Proxy#getDerivedValue(Entity, org.jminor.framework.domain.Property.DerivedProperty)
+   * @see Entity.DerivedValueProvider
+   * @see EntityDefinition#setDerivedValueProvider(org.jminor.framework.domain.Entity.DerivedValueProvider)
    */
   interface DerivedProperty extends TransientProperty {
 

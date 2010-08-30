@@ -88,10 +88,12 @@ public final class Entities {
    * @return a new EntityDefinition
    */
   public static EntityDefinition define(final String entityID, final String tableName, final Property... propertyDefinitions) {
-    final EntityDefinitionImpl entityImpl = 
-            new EntityDefinitionImpl(entityID, tableName, propertyDefinitions);
+    final EntityDefinitionImpl entityImpl = new EntityDefinitionImpl(entityID, tableName, propertyDefinitions);
     EntityDefinitionImpl.ENTITY_DEFINITIONS.put(entityID, entityImpl);
-    
+    for (final Property property : propertyDefinitions) {
+      property.setEntityID(entityID);
+    }
+
     return entityImpl;
   }
 

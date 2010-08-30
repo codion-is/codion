@@ -2088,3 +2088,5 @@
   EntityModel.masterSelectionChanged() renamed to initialize()
   EntityTableModel.searchByForeignKeyValues() renamed to setForeignKeySearchValues()
   Refactored ConnectionPool and related classes
+  Property.get/SetEntityID() added
+  EntityCriteriaUtil, reduced serialization overhead
