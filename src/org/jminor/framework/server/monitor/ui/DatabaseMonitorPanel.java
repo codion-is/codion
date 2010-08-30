@@ -45,6 +45,7 @@ public final class DatabaseMonitorPanel extends JPanel {
     this.model = model;
     queriesPerSecondChart.getXYPlot().setDataset(model.getQueriesPerSecondCollection());
     queriesPerSecondChart.getXYPlot().setBackgroundPaint(Color.BLACK);
+    queriesPerSecondChart.setBackgroundPaint(this.getBackground());
     initUI();
   }
 

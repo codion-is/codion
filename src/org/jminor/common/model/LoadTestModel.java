@@ -59,7 +59,7 @@ public abstract class LoadTestModel {
   private volatile int warningTime;
 
   private final XYSeries workRequestsSeries = new XYSeries("Scenarios run per second");
-  private final XYSeries delayedWorkRequestsSeries = new XYSeries("Delayed scenarios per second");
+  private final XYSeries delayedWorkRequestsSeries = new XYSeries("Duration exceeds warning time");
   private final XYSeriesCollection workRequestsCollection = new XYSeriesCollection();
 
   private final XYSeries scenarioDurationSeries = new XYSeries("Average scenario duration");

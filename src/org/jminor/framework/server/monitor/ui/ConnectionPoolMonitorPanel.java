@@ -108,7 +108,6 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
 
   private void initializeCharts(final ConnectionPoolMonitor model) {
     inPoolMacroChart.getXYPlot().setDataset(model.getInPoolDataSetMacro());
-    inPoolMacroChart.getXYPlot().setBackgroundPaint(Color.BLACK);
     final XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) inPoolMacroChart.getXYPlot().getRenderer();
     renderer.setSeriesPaint(0, Color.RED);
     renderer.setSeriesPaint(1, Color.BLUE);
@@ -116,10 +115,16 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     renderer.setSeriesPaint(3, Color.GREEN);
     renderer.setSeriesPaint(4, Color.MAGENTA);
     requestsPerSecondChart.getXYPlot().setDataset(model.getRequestsPerSecondDataSet());
-    requestsPerSecondChart.getXYPlot().setBackgroundPaint(Color.BLACK);
-    inPoolChart.getXYPlot().setBackgroundPaint(Color.BLACK);
     checkOutTimeChart.getXYPlot().setDataset(model.getCheckOutTimeCollection());
-    checkOutTimeChart.getXYPlot().setBackgroundPaint(Color.BLACK);
+    setColors(inPoolChart);
+    setColors(inPoolMacroChart);
+    setColors(requestsPerSecondChart);
+    setColors(checkOutTimeChart);
+  }
+
+  private void setColors(final JFreeChart chart) {
+    chart.getXYPlot().setBackgroundPaint(Color.BLACK);
+    chart.setBackgroundPaint(this.getBackground());
   }
 
   private void bindEvents() {

@@ -70,11 +70,11 @@ public final class ServerMonitorPanel extends JPanel {
   public ServerMonitorPanel(final ServerMonitor model) throws RemoteException {
     this.model = model;
     requestsPerSecondChart.getXYPlot().setDataset(model.getConnectionRequestsDataSet());
-    requestsPerSecondChart.getXYPlot().setBackgroundPaint(Color.BLACK);
     memoryUsageChart.getXYPlot().setDataset(model.getMemoryUsageDataSet());
-    memoryUsageChart.getXYPlot().setBackgroundPaint(Color.BLACK);
     connectionCountChart.getXYPlot().setDataset(model.getConnectionCountDataSet());
-    connectionCountChart.getXYPlot().setBackgroundPaint(Color.BLACK);
+    setColors(requestsPerSecondChart);
+    setColors(memoryUsageChart);
+    setColors(connectionCountChart);
     initUI();
   }
 
@@ -219,5 +219,10 @@ public final class ServerMonitorPanel extends JPanel {
     new SelectedItemBeanValueLink(box, model, "loggingLevel", Level.class, model.getLoggingLevelObserver());
 
     return box;
+  }
+
+  private void setColors(final JFreeChart chart) {
+    chart.getXYPlot().setBackgroundPaint(Color.BLACK);
+    chart.setBackgroundPaint(this.getBackground());
   }
 }
