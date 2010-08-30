@@ -2091,3 +2091,4 @@
   Property.get/SetEntityID() added
   EntityCriteriaUtil, reduced serialization overhead
   ConnectionPoolStatistics.connectionRequestsFailed added
+  ClientMonitorPanel, disconnect action added to list popup menu

@@ -52,6 +52,10 @@ public final class ClientInstanceMonitor {
     evtLogginStatusChanged.fire();
   }
 
+  public void disconnect() throws RemoteException {
+    server.disconnect(client.getClientID());
+  }
+
   @Override
   public String toString() {
     return client.toString();

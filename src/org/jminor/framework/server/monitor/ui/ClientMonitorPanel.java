@@ -4,19 +4,23 @@
 package org.jminor.framework.server.monitor.ui;
 
 import org.jminor.common.ui.control.ControlProvider;
+import org.jminor.common.ui.control.ControlSet;
 import org.jminor.common.ui.control.Controls;
 import org.jminor.framework.server.monitor.ClientInstanceMonitor;
 import org.jminor.framework.server.monitor.ClientMonitor;
 
+import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
 
 /**
@@ -67,6 +71,7 @@ public final class ClientMonitorPanel extends JPanel {
         }
       }
     });
+    clientInstanceList.setComponentPopupMenu(initializePopupMenu());
 
     final JPanel clientInstanceBase = new JPanel(new BorderLayout(5, 5));
     final JScrollPane clientInstanceScroller = new JScrollPane(clientInstanceList);
@@ -80,5 +85,25 @@ public final class ClientMonitorPanel extends JPanel {
     splitPane.setRightComponent(clientInstancePanel);
 
     add(splitPane, BorderLayout.CENTER);
+  }
+
+  private JPopupMenu initializePopupMenu() {
+    final ControlSet controls = new ControlSet();
+    controls.add(new AbstractAction("Disconnect") {
+      public void actionPerformed(final ActionEvent e) {
+        final ClientInstanceMonitor clientMonitor = (ClientInstanceMonitor) clientInstanceList.getSelectedValue();
+        if (clientMonitor != null) {
+          try {
+            clientMonitor.disconnect();
+            model.getClientInstanceListModel().removeElement(clientMonitor);
+          }
+          catch (RemoteException ex) {
+            throw new RuntimeException(ex);
+          }
+        }
+      }
+    });
+
+    return ControlProvider.createPopupMenu(controls);
   }
 }
