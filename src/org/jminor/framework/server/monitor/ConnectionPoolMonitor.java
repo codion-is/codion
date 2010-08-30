@@ -165,6 +165,7 @@ public final class ConnectionPoolMonitor {
     inUseSeriesMacro.clear();
     connectionRequestsPerSecond.clear();
     delayedRequestsPerSecond.clear();
+    failedRequestsPerSecond.clear();
     poolSizeSeries.clear();
     minimumPoolSizeSeries.clear();
     maximumPoolSizeSeries.clear();

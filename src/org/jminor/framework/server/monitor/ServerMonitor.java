@@ -129,7 +129,6 @@ public final class ServerMonitor {
   }
 
   public Level getLoggingLevel() throws RemoteException {
-    System.out.println(server.getLoggingLevel());
     return server.getLoggingLevel();
   }
 
