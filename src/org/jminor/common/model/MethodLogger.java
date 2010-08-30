@@ -110,7 +110,16 @@ public class MethodLogger {
    * @param arguments the method arguments
    */
   public final void logAccess(final String method, final Object[] arguments) {
-    this.lastAccessDate = System.currentTimeMillis();
+    logAccess(method, arguments, System.currentTimeMillis());
+  }
+
+  /**
+   * @param method the method being accessed
+   * @param arguments the method arguments
+   * @param timestamp the method access timestamp
+   */
+  public final void logAccess(final String method, final Object[] arguments, final long timestamp) {
+    this.lastAccessDate = timestamp;
     this.lastAccessedMethod = method;
     if (enabled) {
       this.lastAccessMessage = argumentArrayToString(arguments);

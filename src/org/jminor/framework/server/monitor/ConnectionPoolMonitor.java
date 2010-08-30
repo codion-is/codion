@@ -81,19 +81,19 @@ public final class ConnectionPoolMonitor {
   }
 
   public int getPooledConnectionTimeout() throws RemoteException {
-    return pool.getPooledConnectionTimeout() / 1000;
+    return pool.getConnectionTimeout() / 1000;
   }
 
   public void setPooledConnectionTimeout(final int value) throws RemoteException {
-    pool.setPooledConnectionTimeout(value * 1000);
+    pool.setConnectionTimeout(value * 1000);
   }
 
   public int getPoolCleanupInterval() throws RemoteException {
-    return pool.getPoolCleanupInterval() / 1000;
+    return pool.getCleanupInterval() / 1000;
   }
 
   public void setPoolCleanupInterval(final int value) throws RemoteException {
-    pool.setPoolCleanupInterval(value);
+    pool.setCleanupInterval(value);
   }
 
   public int getMinimumPoolSize() {
@@ -155,7 +155,7 @@ public final class ConnectionPoolMonitor {
   }
 
   public void resetStats() throws RemoteException {
-    pool.resetPoolStatistics();
+    pool.resetStatistics();
   }
 
   public void resetInPoolStats() {
@@ -221,23 +221,23 @@ public final class ConnectionPoolMonitor {
   }
 
   private void updateStats() throws RemoteException {
-    poolStats = pool.getConnectionPoolStatistics(lastStatsUpdateTime);
+    poolStats = pool.getStatistics(lastStatsUpdateTime);
     lastStatsUpdateTime = poolStats.getTimestamp();
-    poolSizeSeries.add(poolStats.getTimestamp(), poolStats.getPoolSize());
+    poolSizeSeries.add(poolStats.getTimestamp(), poolStats.getSize());
     minimumPoolSizeSeries.add(poolStats.getTimestamp(), pool.getMinimumPoolSize());
     maximumPoolSizeSeries.add(poolStats.getTimestamp(), pool.getMaximumPoolSize());
-    inPoolSeriesMacro.add(poolStats.getTimestamp(), poolStats.getAvailableInPool());
-    inUseSeriesMacro.add(poolStats.getTimestamp(), poolStats.getConnectionsInUse());
+    inPoolSeriesMacro.add(poolStats.getTimestamp(), poolStats.getAvailable());
+    inUseSeriesMacro.add(poolStats.getTimestamp(), poolStats.getInUse());
     connectionRequestsPerSecond.add(poolStats.getTimestamp(), poolStats.getRequestsPerSecond());
-    delayedRequestsPerSecond.add(poolStats.getTimestamp(), poolStats.getRequestsDelayedPerSecond());
-    averageCheckOutTime.add(poolStats.getTimestamp(), poolStats.getAverageCheckOutTime());
+    delayedRequestsPerSecond.add(poolStats.getTimestamp(), poolStats.getDelayedRequestsPerSecond());
+    averageCheckOutTime.add(poolStats.getTimestamp(), poolStats.getAverageGetTime());
     final List<ConnectionPoolState> stats = sortAndRemoveDuplicates(poolStats.getFineGrainedStatistics());
     if (!stats.isEmpty()) {
       final XYSeries inPoolSeries = new XYSeries("Connections available in pool");
       final XYSeries inUseSeries = new XYSeries("Connections in active use");
       for (final ConnectionPoolState inPool : stats) {
-        inPoolSeries.add(inPool.getTime(), inPool.getConnectionCount());
-        inUseSeries.add(inPool.getTime(), inPool.getConnectionsInUse());
+        inPoolSeries.add(inPool.getTimestamp(), inPool.getSize());
+        inUseSeries.add(inPool.getTimestamp(), inPool.getInUse());
       }
 
       this.statsCollection.removeAllSeries();
@@ -253,11 +253,11 @@ public final class ConnectionPoolMonitor {
     long time = -1;
     for (int i = stats.size()-1; i >= 0; i--) {
       final ConnectionPoolState state = stats.get(i);
-      if (state.getTime() != time) {
+      if (state.getTimestamp() != time) {
         poolStates.add(state);
       }
 
-      time = state.getTime();
+      time = state.getTimestamp();
     }
 
     return poolStates;
@@ -287,7 +287,7 @@ public final class ConnectionPoolMonitor {
     private static final long serialVersionUID = 1;
     /** {@inheritDoc} */
     public int compare(final ConnectionPoolState o1, final ConnectionPoolState o2) {
-      return ((Long) o1.getTime()).compareTo(o2.getTime());
+      return ((Long) o1.getTimestamp()).compareTo(o2.getTimestamp());
     }
   }
 }

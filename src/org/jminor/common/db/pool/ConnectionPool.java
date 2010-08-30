@@ -13,6 +13,11 @@ import java.sql.SQLException;
 public interface ConnectionPool {
 
   /**
+   * @return the user this connection pool is based on.
+   */
+  User getUser();
+
+  /**
    * Fetches a connection from the pool.
    * @return a database connection retrieved from the pool
    * @throws ConnectionPoolException.NoConnectionAvailable in case the maximum check out time is exceeded
@@ -31,25 +36,25 @@ public interface ConnectionPool {
   void returnConnection(final PoolableConnection dbConnection);
 
   /**
-   * @return the user this connection pool is based on.
+   * Closes this connection pool, disconnection connections as they are checked in
    */
-  User getUser();
+  void close();
 
   /**
    * Retrives usage statistics for the connection pool since time <code>since</code>.
    * @param since the time from which statistics should be retrieved
    * @return connection pool usage statistics
    */
-  ConnectionPoolStatistics getConnectionPoolStatistics(final long since);
+  ConnectionPoolStatistics getStatistics(final long since);
 
   /**
    * Resets the collected usage statistics
    */
-  void resetPoolStatistics();
+  void resetStatistics();
 
   /**
    * @return true if fine grained pool usage statistics should be collected.
-   * @see #getConnectionPoolStatistics(long)
+   * @see #getStatistics(long)
    * @see ConnectionPoolStatistics#getFineGrainedStatistics()
    */
   boolean isCollectFineGrainedStatistics();
@@ -57,7 +62,7 @@ public interface ConnectionPool {
   /**
    * Specifies whether or not fine grained usage statistics should be collected.
    * @param value the value
-   * @see #getConnectionPoolStatistics(long)
+   * @see #getStatistics(long)
    * @see ConnectionPoolStatistics#getFineGrainedStatistics()
    */
   void setCollectFineGrainedStatistics(final boolean value);
@@ -75,22 +80,22 @@ public interface ConnectionPool {
   /**
    * @return the pool cleanup interval in milliseconds
    */
-  int getPoolCleanupInterval();
+  int getCleanupInterval();
 
   /**
    * @param poolCleanupInterval the pool cleanup interval in milliseconds
    */
-  void setPoolCleanupInterval(final int poolCleanupInterval);
+  void setCleanupInterval(final int poolCleanupInterval);
 
   /**
    * @return the connection timeout in milliseconds
    */
-  int getPooledConnectionTimeout();
+  int getConnectionTimeout();
 
   /**
    * @param timeout the connection timeout in milliseconds
    */
-  void setPooledConnectionTimeout(final int timeout);
+  void setConnectionTimeout(final int timeout);
 
   /**
    * @return the maximum number of milliseconds the pool waits between checkout retries
@@ -147,9 +152,4 @@ public interface ConnectionPool {
    * @throws IllegalArgumentException in case value is negative or larger than <code>maximumCheckOutTime</code>
    */
   void setWaitTimeBeforeNewConnection(final int value);
-
-  /**
-   * Closes this connection pool, disconnection connections as they are checked in
-   */
-  void close();
 }

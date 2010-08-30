@@ -100,7 +100,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
 
     if (connection != null) {
       counter.addCheckOutTime(elapsedTime);
-      connection.setPoolRetryCount(retryCount);
+      connection.setRetryCount(retryCount);
 
       return connection;
     }
@@ -143,7 +143,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
   }
 
   /** {@inheritDoc} */
-  public ConnectionPoolStatistics getConnectionPoolStatistics(final long since) {
+  public ConnectionPoolStatistics getStatistics(final long since) {
     final ConnectionPoolStatisticsImpl statistics = new ConnectionPoolStatisticsImpl(user);
     synchronized (pool) {
       final int inPool = pool.size();
@@ -170,7 +170,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
   }
 
   /** {@inheritDoc} */
-  public void resetPoolStatistics() {
+  public void resetStatistics() {
     counter.resetPoolStatistics();
   }
 
@@ -198,12 +198,12 @@ public final class ConnectionPoolImpl implements ConnectionPool {
   }
 
   /** {@inheritDoc} */
-  public int getPoolCleanupInterval() {
+  public int getCleanupInterval() {
     return poolCleanupInterval;
   }
 
   /** {@inheritDoc} */
-  public void setPoolCleanupInterval(final int poolCleanupInterval) {
+  public void setCleanupInterval(final int poolCleanupInterval) {
     if (poolCleanupInterval != this.poolCleanupInterval) {
       this.poolCleanupInterval = poolCleanupInterval;
       startPoolCleaner();
@@ -211,12 +211,12 @@ public final class ConnectionPoolImpl implements ConnectionPool {
   }
 
   /** {@inheritDoc} */
-  public int getPooledConnectionTimeout() {
+  public int getConnectionTimeout() {
     return pooledConnectionTimeout;
   }
 
   /** {@inheritDoc} */
-  public void setPooledConnectionTimeout(final int timeout) {
+  public void setConnectionTimeout(final int timeout) {
     this.pooledConnectionTimeout = timeout;
   }
 
@@ -366,7 +366,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
       final ListIterator<ConnectionPoolStateImpl> iterator = connectionPoolStatistics.listIterator();
       while (iterator.hasNext()) {//NB. the stat log is circular, result should be sorted
         final ConnectionPoolState state = iterator.next();
-        if (state.getTime() >= since) {
+        if (state.getTimestamp() >= since) {
           poolStates.add(state);
         }
       }
@@ -532,17 +532,17 @@ public final class ConnectionPoolImpl implements ConnectionPool {
     }
 
     /** {@inheritDoc} */
-    public int getConnectionCount() {
+    public int getSize() {
       return connectionCount;
     }
 
     /** {@inheritDoc} */
-    public int getConnectionsInUse() {
+    public int getInUse() {
       return connectionsInUse;
     }
 
     /** {@inheritDoc} */
-    public long getTime() {
+    public long getTimestamp() {
       return time;
     }
   }
@@ -579,12 +579,12 @@ public final class ConnectionPoolImpl implements ConnectionPool {
     }
 
     /** {@inheritDoc} */
-    public int getAvailableInPool() {
+    public int getAvailable() {
       return availableInPool;
     }
 
     /** {@inheritDoc} */
-    public int getConnectionsInUse() {
+    public int getInUse() {
       return connectionsInUse;
     }
 
@@ -599,27 +599,27 @@ public final class ConnectionPoolImpl implements ConnectionPool {
     }
 
     /** {@inheritDoc} */
-    public int getConnectionsCreated() {
+    public int getCreated() {
       return connectionsCreated;
     }
 
     /** {@inheritDoc} */
-    public int getConnectionsDestroyed() {
+    public int getDestroyed() {
       return connectionsDestroyed;
     }
 
     /** {@inheritDoc} */
-    public int getConnectionRequestsDelayed() {
+    public int getDelayedRequests() {
       return connectionRequestsDelayed;
     }
 
     /** {@inheritDoc} */
-    public int getConnectionRequests() {
+    public int getRequests() {
       return connectionRequests;
     }
 
     /** {@inheritDoc} */
-    public int getRequestsDelayedPerSecond() {
+    public int getDelayedRequestsPerSecond() {
       return requestsDelayedPerSecond;
     }
 
@@ -629,17 +629,17 @@ public final class ConnectionPoolImpl implements ConnectionPool {
     }
 
     /** {@inheritDoc} */
-    public long getAverageCheckOutTime() {
+    public long getAverageGetTime() {
       return averageCheckOutTime;
     }
 
     /** {@inheritDoc} */
-    public int getPoolSize() {
+    public int getSize() {
       return poolSize;
     }
 
     /** {@inheritDoc} */
-    public long getResetDate() {
+    public long getResetTime() {
       return resetDate;
     }
 

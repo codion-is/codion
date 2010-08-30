@@ -30,12 +30,12 @@ public interface PoolableConnection {
   /**
    * @param retryCount the number of retries used to retrieve this connection from the pool
    */
-  void setPoolRetryCount(final int retryCount);
+  void setRetryCount(final int retryCount);
 
   /**
    * @return the number of retries required to retrieve this connection from the pool
    */
-  int getPoolRetryCount();
+  int getRetryCount();
 
   /**
    * @return true if the connection is valid

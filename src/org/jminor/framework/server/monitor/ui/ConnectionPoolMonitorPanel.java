@@ -77,13 +77,13 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
 
   public void updateView() {
     final ConnectionPoolStatistics stats = model.getConnectionPoolStats();
-    txtPoolSize.setText(format.format(stats.getPoolSize()));
-    txtCreated.setText(format.format(stats.getConnectionsCreated()));
-    txtDestroyed.setText(format.format(stats.getConnectionsDestroyed()));
-    txtCreatedDestroyedResetTime.setText(DateFormats.getDateFormat(DateFormats.FULL_TIMESTAMP).format(stats.getResetDate()));
-    txtRequested.setText(format.format(stats.getConnectionRequests()));
-    final double prc = (double) stats.getConnectionRequestsDelayed() / (double) stats.getConnectionRequests() * 100;
-    txtDelayed.setText(format.format(stats.getConnectionRequestsDelayed())
+    txtPoolSize.setText(format.format(stats.getSize()));
+    txtCreated.setText(format.format(stats.getCreated()));
+    txtDestroyed.setText(format.format(stats.getDestroyed()));
+    txtCreatedDestroyedResetTime.setText(DateFormats.getDateFormat(DateFormats.FULL_TIMESTAMP).format(stats.getResetTime()));
+    txtRequested.setText(format.format(stats.getRequests()));
+    final double prc = (double) stats.getDelayedRequests() / (double) stats.getRequests() * 100;
+    txtDelayed.setText(format.format(stats.getDelayedRequests())
             + (prc > 0 ? " (" + format.format(prc)+"%)" : ""));
     if (model.datasetContainsData()) {
       inPoolChart.getXYPlot().setDataset(model.getInPoolDataSet());

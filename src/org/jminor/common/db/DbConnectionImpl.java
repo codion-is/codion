@@ -100,12 +100,12 @@ public class DbConnectionImpl implements DbConnection {
   }
 
   /** {@inheritDoc} */
-  public final void setPoolRetryCount(final int retryCount) {
+  public final void setRetryCount(final int retryCount) {
     this.poolRetryCount = retryCount;
   }
 
   /** {@inheritDoc} */
-  public final int getPoolRetryCount() {
+  public final int getRetryCount() {
     return poolRetryCount;
   }
 

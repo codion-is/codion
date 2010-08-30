@@ -25,14 +25,19 @@ public interface ConnectionPoolStatistics {
   List<ConnectionPoolState> getFineGrainedStatistics();
 
   /**
+   * @return the number of connections being managed by the pool
+   */
+  int getSize();
+
+  /**
    * @return the number of available connections
    */
-  int getAvailableInPool();
+  int getAvailable();
 
   /**
    * @return the number of connections in use
    */
-  int getConnectionsInUse();
+  int getInUse();
 
   /**
    * @return the timestamp
@@ -47,32 +52,32 @@ public interface ConnectionPoolStatistics {
   /**
    * @return the number of connections created by the pool
    */
-  int getConnectionsCreated();
+  int getCreated();
 
   /**
    * @return the number of idle connections destroyed by the pool
    */
-  int getConnectionsDestroyed();
+  int getDestroyed();
 
   /**
    * @return the last time stats were reset
    */
-  long getResetDate();
+  long getResetTime();
 
   /**
    * @return the number of delayed connection requests since last reset
    */
-  int getConnectionRequestsDelayed();
+  int getDelayedRequests();
 
   /**
    * @return the number of connection requests since last reset
    */
-  int getConnectionRequests();
+  int getRequests();
 
   /**
    * @return the number of delayed connection requests per second
    */
-  int getRequestsDelayedPerSecond();
+  int getDelayedRequestsPerSecond();
 
   /**
    * @return the number of connection requests per second
@@ -82,10 +87,5 @@ public interface ConnectionPoolStatistics {
   /**
    * @return the avarage check out time in nanoseconds
    */
-  long getAverageCheckOutTime();
-
-  /**
-   * @return the number of connections being managed by the pool
-   */
-  int getPoolSize();
+  long getAverageGetTime();
 }

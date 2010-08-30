@@ -375,11 +375,11 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
   }
 
   static int getPoolCleanupInterval(final User user) {
-    return CONNECTION_POOLS.get(user).getPoolCleanupInterval();
+    return CONNECTION_POOLS.get(user).getCleanupInterval();
   }
 
   static void setPoolCleanupInterval(final User user, final int poolCleanupInterval) throws RemoteException {
-    CONNECTION_POOLS.get(user).setPoolCleanupInterval(poolCleanupInterval);
+    CONNECTION_POOLS.get(user).setCleanupInterval(poolCleanupInterval);
   }
 
   static int getMaximumPoolSize(final User user) {
@@ -407,11 +407,11 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
   }
 
   static int getPoolConnectionTimeout(final User user) {
-    return CONNECTION_POOLS.get(user).getPooledConnectionTimeout();
+    return CONNECTION_POOLS.get(user).getConnectionTimeout();
   }
 
   static void setPoolConnectionTimeout(final User user, final int timeout) {
-    CONNECTION_POOLS.get(user).setPooledConnectionTimeout(timeout);
+    CONNECTION_POOLS.get(user).setConnectionTimeout(timeout);
   }
 
   static int getMaximumPoolRetryWaitPeriod(final User user) {
@@ -423,11 +423,11 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
   }
 
   static ConnectionPoolStatistics getPoolStatistics(final User user, final long since) {
-    return CONNECTION_POOLS.get(user).getConnectionPoolStatistics(since);
+    return CONNECTION_POOLS.get(user).getStatistics(since);
   }
 
   static void resetPoolStatistics(final User user) {
-    CONNECTION_POOLS.get(user).resetPoolStatistics();
+    CONNECTION_POOLS.get(user).resetStatistics();
   }
 
   static boolean isCollectFineGrainedPoolStatistics(final User user) {
@@ -546,9 +546,10 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
       final boolean logMethod = methodLogger.isEnabled() && shouldMethodBeLogged(methodName);
       try {
         setActive();
+        final long startTime = System.currentTimeMillis();
         connection = getConnection();
         if (logMethod) {
-          logAccess(args, methodName, connection);
+          logAccess(args, methodName, connection, startTime);
         }
 
         return method.invoke(connection, args);
@@ -576,10 +577,11 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
       }
     }
 
-    private void logAccess(final Object[] args, final String methodName, final EntityDbConnection connection) {
+    private void logAccess(final Object[] args, final String methodName, final EntityDbConnection connection,
+                           final long startTimestamp) {
       RequestCounter.incrementRequestsPerSecondCounter();
-      methodLogger.logAccess(GET_CONNECTION, new Object[]{clientInfo.getUser()});
-      final int retries = connection.getPoolRetryCount();
+      methodLogger.logAccess(GET_CONNECTION, new Object[]{clientInfo.getUser()}, startTimestamp);
+      final int retries = connection.getRetryCount();
       final String message = retries > 0 ? "retries: " + retries : null;
       methodLogger.logExit(GET_CONNECTION, null, null, message);
       methodLogger.logAccess(methodName, args);

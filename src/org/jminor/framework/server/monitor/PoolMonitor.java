@@ -79,7 +79,7 @@ public final class PoolMonitor {
     }
 
     /** {@inheritDoc} */
-    public int getPoolCleanupInterval() {
+    public int getCleanupInterval() {
       try {
         return server.getConnectionPoolCleanupInterval(user);
       }
@@ -99,7 +99,7 @@ public final class PoolMonitor {
     }
 
     /** {@inheritDoc} */
-    public int getPooledConnectionTimeout() {
+    public int getConnectionTimeout() {
       try {
         return server.getPooledConnectionTimeout(user);
       }
@@ -129,7 +129,7 @@ public final class PoolMonitor {
     }
 
     /** {@inheritDoc} */
-    public void setPooledConnectionTimeout(final int timeout) {
+    public void setConnectionTimeout(final int timeout) {
       try {
         server.setPooledConnectionTimeout(user, timeout);
       }
@@ -199,7 +199,7 @@ public final class PoolMonitor {
     }
 
     /** {@inheritDoc} */
-    public void setPoolCleanupInterval(final int poolCleanupInterval) {
+    public void setCleanupInterval(final int poolCleanupInterval) {
       try {
         server.setConnectionPoolCleanupInterval(user, poolCleanupInterval);
       }
@@ -209,7 +209,7 @@ public final class PoolMonitor {
     }
 
     /** {@inheritDoc} */
-    public ConnectionPoolStatistics getConnectionPoolStatistics(final long since) {
+    public ConnectionPoolStatistics getStatistics(final long since) {
       try {
         return server.getConnectionPoolStatistics(user, since);
       }
@@ -234,7 +234,7 @@ public final class PoolMonitor {
     }
 
     /** {@inheritDoc} */
-    public void resetPoolStatistics() {
+    public void resetStatistics() {
       try {
         server.resetConnectionPoolStatistics(user);
       }

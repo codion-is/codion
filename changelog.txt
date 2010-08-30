@@ -2087,3 +2087,4 @@
   domain package refactored
   EntityModel.masterSelectionChanged() renamed to initialize()
   EntityTableModel.searchByForeignKeyValues() renamed to setForeignKeySearchValues()
+  Refactored ConnectionPool and related classes

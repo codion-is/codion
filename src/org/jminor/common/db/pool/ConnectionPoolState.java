@@ -11,15 +11,15 @@ public interface ConnectionPoolState {
   /**
    * @return the total number of connections being managed by the pool
    */
-  int getConnectionCount();
+  int getSize();
 
   /**
    * @return the number of connections currently in use
    */
-  int getConnectionsInUse();
+  int getInUse();
 
   /**
    * @return the timestamp associated with this pool state
    */
-  long getTime();
+  long getTimestamp();
 }
