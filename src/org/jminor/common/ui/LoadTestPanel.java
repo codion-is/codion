@@ -262,10 +262,10 @@ public final class LoadTestPanel extends JPanel {
     memoryUsageChartPanel.setBorder(BorderFactory.createTitledBorder("Memory usage (MB)"));
 
     chartBase.add(usageScenarioChartPanel);
-    chartBase.add(numberOfApplicationsChartPanel);
-    chartBase.add(scenarioDurationChartPanel);
     chartBase.add(thinkTimeChartPanel);
+    chartBase.add(scenarioDurationChartPanel);
     chartBase.add(memoryUsageChartPanel);
+    chartBase.add(numberOfApplicationsChartPanel);
     
     return chartBase;
   }

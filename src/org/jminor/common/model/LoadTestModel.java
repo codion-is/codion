@@ -71,12 +71,14 @@ public abstract class LoadTestModel {
   private final XYSeries numberOfApplicationsSeries = new XYSeries("Application count");
   private final XYSeriesCollection numberOfApplicationsCollection = new XYSeriesCollection();
 
+  private final XYSeries warningTimeSeries = new XYSeries("Warn. limit");
   private final XYSeriesCollection usageScenarioCollection = new XYSeriesCollection();
 
   private final XYSeries allocatedMemoryCollection = new XYSeries("Allocated memory");
   private final XYSeries usedMemoryCollection = new XYSeries("Used memory");
   private final XYSeries maxMemoryCollection = new XYSeries("Maximum memory");
   private final XYSeriesCollection memoryUsageCollection = new XYSeriesCollection();
+  private final Collection<XYSeries> usageSeries = new ArrayList<XYSeries>();
   private final Collection<XYSeries> durationSeries = new ArrayList<XYSeries>();
 
   /**
@@ -576,11 +578,14 @@ public abstract class LoadTestModel {
     memoryUsageCollection.addSeries(allocatedMemoryCollection);
     memoryUsageCollection.addSeries(usedMemoryCollection);
     usageScenarioCollection.addSeries(scenariosRunSeries);
+    scenarioDurationCollection.addSeries(warningTimeSeries);
     for (final UsageScenario usageScenario : this.usageScenarios) {
       final XYSeries series = new XYSeries(usageScenario.getName());
       usageScenarioCollection.addSeries(series);
-      durationSeries.add(series);
-      scenarioDurationCollection.addSeries(new XYSeries(usageScenario.getName()));
+      usageSeries.add(series);
+      final XYSeries durSeries = new XYSeries(usageScenario.getName());
+      scenarioDurationCollection.addSeries(durSeries);
+      durationSeries.add(durSeries);
     }
     usageScenarioCollection.addSeries(delayedScenarioRunsSeries);
   }
@@ -595,11 +600,11 @@ public abstract class LoadTestModel {
     usedMemoryCollection.add(time, Util.getUsedMemory() / 1000);
     maxMemoryCollection.add(time, Util.getMaxMemory() / 1000);
     scenariosRunSeries.add(time, counter.getWorkRequestsPerSecond());
-    for (final XYSeries series : durationSeries) {
+    warningTimeSeries.add(time, getWarningTime());
+    for (final XYSeries series : usageSeries) {
       series.add(time, counter.getScenarioRate((String) series.getKey()));
     }
-    for (final Object object : scenarioDurationCollection.getSeries()) {
-      final XYSeries series = (XYSeries) object;
+    for (final XYSeries series : durationSeries) {
       series.add(time, counter.getAverageScenarioDuration((String) series.getKey()));
     }
   }
