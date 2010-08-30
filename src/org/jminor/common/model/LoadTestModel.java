@@ -59,9 +59,8 @@ public abstract class LoadTestModel {
   private Timer updateTimer;
   private volatile int warningTime;
 
-  private final XYSeries workRequestsSeries = new XYSeries("Scenarios run per second");
-  private final XYSeries delayedWorkRequestsSeries = new XYSeries("Duration exceeds warning time");
-  private final XYSeriesCollection workRequestsCollection = new XYSeriesCollection();
+  private final XYSeries scenariosRunSeries = new XYSeries("Total");
+  private final XYSeries delayedScenarioRunsSeries = new XYSeries("Warn. time exceeded");
 
   private final XYSeriesCollection scenarioDurationCollection = new XYSeriesCollection();
 
@@ -78,6 +77,7 @@ public abstract class LoadTestModel {
   private final XYSeries usedMemoryCollection = new XYSeries("Used memory");
   private final XYSeries maxMemoryCollection = new XYSeries("Maximum memory");
   private final XYSeriesCollection memoryUsageCollection = new XYSeriesCollection();
+  private final Collection<XYSeries> durationSeries = new ArrayList<XYSeries>();
 
   /**
    * Constructs a new LoadTestModel.
@@ -173,13 +173,6 @@ public abstract class LoadTestModel {
   }
 
   /**
-   * @return a dataset plotting the number of work requests per second
-   */
-  public final XYSeriesCollection getWorkRequestsDataset() {
-    return workRequestsCollection;
-  }
-
-  /**
    * @return a dataset plotting the average scenario duration
    */
   public final XYSeriesCollection getScenarioDurationDataset() {
@@ -218,8 +211,8 @@ public abstract class LoadTestModel {
    * Resets the accumulated chart data
    */
   public final void resetChartData() {
-    workRequestsSeries.clear();
-    delayedWorkRequestsSeries.clear();
+    scenariosRunSeries.clear();
+    delayedScenarioRunsSeries.clear();
     minimumThinkTimeSeries.clear();
     maximumThinkTimeSeries.clear();
     numberOfApplicationsSeries.clear();
@@ -576,32 +569,33 @@ public abstract class LoadTestModel {
   }
 
   private void initializeChartData() {
-    workRequestsCollection.addSeries(workRequestsSeries);
-    workRequestsCollection.addSeries(delayedWorkRequestsSeries);
     thinkTimeCollection.addSeries(minimumThinkTimeSeries);
     thinkTimeCollection.addSeries(maximumThinkTimeSeries);
     numberOfApplicationsCollection.addSeries(numberOfApplicationsSeries);
     memoryUsageCollection.addSeries(maxMemoryCollection);
     memoryUsageCollection.addSeries(allocatedMemoryCollection);
     memoryUsageCollection.addSeries(usedMemoryCollection);
+    usageScenarioCollection.addSeries(scenariosRunSeries);
     for (final UsageScenario usageScenario : this.usageScenarios) {
-      usageScenarioCollection.addSeries(new XYSeries(usageScenario.getName()));
+      final XYSeries series = new XYSeries(usageScenario.getName());
+      usageScenarioCollection.addSeries(series);
+      durationSeries.add(series);
       scenarioDurationCollection.addSeries(new XYSeries(usageScenario.getName()));
     }
+    usageScenarioCollection.addSeries(delayedScenarioRunsSeries);
   }
 
   private void updateChartData() {
     final long time = System.currentTimeMillis();
-    workRequestsSeries.add(time, counter.getWorkRequestsPerSecond());
-    delayedWorkRequestsSeries.add(time, counter.getDelayedWorkRequestsPerSecond());
+    delayedScenarioRunsSeries.add(time, counter.getDelayedWorkRequestsPerSecond());
     minimumThinkTimeSeries.add(time, minimumThinkTime);
     maximumThinkTimeSeries.add(time, maximumThinkTime);
     numberOfApplicationsSeries.add(time, applications.size());
     allocatedMemoryCollection.add(time, Util.getAllocatedMemory() / 1000);
     usedMemoryCollection.add(time, Util.getUsedMemory() / 1000);
     maxMemoryCollection.add(time, Util.getMaxMemory() / 1000);
-    for (final Object object : usageScenarioCollection.getSeries()) {
-      final XYSeries series = (XYSeries) object;
+    scenariosRunSeries.add(time, counter.getWorkRequestsPerSecond());
+    for (final XYSeries series : durationSeries) {
       series.add(time, counter.getScenarioRate((String) series.getKey()));
     }
     for (final Object object : scenarioDurationCollection.getSeries()) {

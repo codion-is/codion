@@ -230,12 +230,6 @@ public final class LoadTestPanel extends JPanel {
     final ChartPanel scenarioDurationChartPanel = new ChartPanel(scenarioDurationChart);
     scenarioDurationChartPanel.setBorder(BorderFactory.createEtchedBorder());
 
-    final JFreeChart workRequestsChart = ChartFactory.createXYStepChart(null,
-            null, null, loadTestModel.getWorkRequestsDataset(), PlotOrientation.VERTICAL, true, true, false);
-    setColors(workRequestsChart);
-    final ChartPanel workRequestsChartPanel = new ChartPanel(workRequestsChart);
-    workRequestsChartPanel.setBorder(BorderFactory.createEtchedBorder());
-
     final JFreeChart thinkTimeChart = ChartFactory.createXYStepChart(null,
             null, null, loadTestModel.getThinkTimeDataset(), PlotOrientation.VERTICAL, true, true, false);
     setColors(thinkTimeChart);
@@ -261,14 +255,18 @@ public final class LoadTestPanel extends JPanel {
     memoryUsageChartPanel.setBorder(BorderFactory.createEtchedBorder());
 
     final JPanel chartBase = new JPanel(new GridLayout(3, 2, 0, 0));
-    chartBase.setBorder(BorderFactory.createTitledBorder("Status"));
-    chartBase.add(workRequestsChartPanel);
-    chartBase.add(thinkTimeChartPanel);
+    usageScenarioChartPanel.setBorder(BorderFactory.createTitledBorder("Scenarios run per second"));
+    thinkTimeChartPanel.setBorder(BorderFactory.createTitledBorder("Think time (ms)"));
+    scenarioDurationChartPanel.setBorder(BorderFactory.createTitledBorder("Scenario duration (ms)"));
+    numberOfApplicationsChartPanel.setBorder(BorderFactory.createTitledBorder("Application count"));
+    memoryUsageChartPanel.setBorder(BorderFactory.createTitledBorder("Memory usage (MB)"));
+
     chartBase.add(usageScenarioChartPanel);
     chartBase.add(numberOfApplicationsChartPanel);
     chartBase.add(scenarioDurationChartPanel);
+    chartBase.add(thinkTimeChartPanel);
     chartBase.add(memoryUsageChartPanel);
-
+    
     return chartBase;
   }
 

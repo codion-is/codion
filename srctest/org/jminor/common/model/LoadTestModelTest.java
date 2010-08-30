@@ -59,8 +59,6 @@ public class LoadTestModelTest {
     assertNotNull(model.getNumberOfApplicationsDataset());
     assertNotNull(model.getThinkTimeDataset());
     assertNotNull(model.getUsageScenarioDataset());
-    assertNotNull(model.getWorkRequestsDataset());
-
 
     assertEquals(2, model.getLoginDelayFactor());
     model.setLoginDelayFactor(3);
