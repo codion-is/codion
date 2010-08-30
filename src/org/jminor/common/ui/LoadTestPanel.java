@@ -264,8 +264,8 @@ public final class LoadTestPanel extends JPanel {
     chartBase.add(usageScenarioChartPanel);
     chartBase.add(thinkTimeChartPanel);
     chartBase.add(scenarioDurationChartPanel);
-    chartBase.add(memoryUsageChartPanel);
     chartBase.add(numberOfApplicationsChartPanel);
+    chartBase.add(memoryUsageChartPanel);
     
     return chartBase;
   }
