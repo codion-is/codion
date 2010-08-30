@@ -591,6 +591,7 @@ class PropertyImpl implements Property, Serializable {
 
     private final String referencedEntityID;
     private final List<ColumnProperty> referenceProperties;
+    private final boolean compositeReference;
     private Map<Property, String> linkedReferenceProperties;
     private int fetchDepth = Configuration.getIntValue(Configuration.DEFAULT_FOREIGN_KEY_FETCH_DEPTH);
 
@@ -638,6 +639,7 @@ class PropertyImpl implements Property, Serializable {
       }
       this.referencedEntityID = referencedEntityID;
       this.referenceProperties = Collections.unmodifiableList(Arrays.asList(referenceProperties));
+      this.compositeReference = this.referenceProperties.size() > 1;
     }
 
     /** {@inheritDoc} */
@@ -652,7 +654,7 @@ class PropertyImpl implements Property, Serializable {
 
     /** {@inheritDoc} */
     public final boolean isCompositeReference() {
-      return this.referenceProperties.size() > 1;
+      return compositeReference;
     }
 
     /** {@inheritDoc} */

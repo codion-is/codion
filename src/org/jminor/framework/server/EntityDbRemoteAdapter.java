@@ -488,7 +488,9 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
 
   private void returnConnection(final EntityDbConnection connection) {
     final ConnectionPool connectionPool = CONNECTION_POOLS.get(clientInfo.getUser());
-    connection.setLoggingEnabled(false);
+    if (methodLogger.isEnabled()) {
+      connection.setLoggingEnabled(false);
+    }
     if (connectionPool != null && connectionPool.isEnabled()) {
       connectionPool.returnConnection(connection);
     }
@@ -502,7 +504,9 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
         entityDbConnection = null;
       }
       final EntityDbConnection pooledDbConnection = (EntityDbConnection) connectionPool.getConnection();
-      pooledDbConnection.setLoggingEnabled(methodLogger.isEnabled());
+      if (methodLogger.isEnabled()) {
+        pooledDbConnection.setLoggingEnabled(methodLogger.isEnabled());
+      }
 
       return pooledDbConnection;
     }

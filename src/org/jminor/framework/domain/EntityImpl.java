@@ -730,6 +730,11 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
     private boolean singleIntegerKey;
 
     /**
+     * true if this key consists of multiple properties
+     */
+    private boolean compositeKey;
+
+    /**
      * Caching the hash code
      */
     private int hashCode = INTEGER_NULL_VALUE;
@@ -751,7 +756,9 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
     KeyImpl(final EntityDefinition definition) {
       this.definition = definition;
       final List<Property.PrimaryKeyProperty> properties = definition.getPrimaryKeyProperties();
-      this.singleIntegerKey = properties.size() == 1 && properties.get(0).isInteger();
+      final int propertyCount = properties.size();
+      this.singleIntegerKey = propertyCount == 1 && properties.get(0).isInteger();
+      this.compositeKey = propertyCount > 1;
     }
 
     /**
@@ -762,15 +769,12 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
      */
     KeyImpl(final EntityDefinition definition, final Object value) {
       this(definition);
-      if (isCompositeKey()) {
+      if (compositeKey) {
         throw new IllegalArgumentException("Not a single value key");
       }
 
       final Property property = definition.getPrimaryKeyProperties().get(0);
       setValue(property.getPropertyID(), value);
-      if (singleIntegerKey) {
-        setHashcode(value);
-      }
     }
 
     /** {@inheritDoc} */
@@ -781,11 +785,6 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
     /** {@inheritDoc} */
     public List<Property.PrimaryKeyProperty> getProperties() {
       return definition.getPrimaryKeyProperties();
-    }
-
-    /** {@inheritDoc} */
-    public boolean isCompositeKey() {
-      return getPropertyCount() > 1;
     }
 
     /** {@inheritDoc} */
@@ -829,7 +828,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
 
     /** {@inheritDoc} */
     public int getPropertyCount() {
-      if (singleIntegerKey) {
+      if (singleIntegerKey || !compositeKey) {
         return 1;
       }
 
@@ -839,6 +838,11 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
     /** {@inheritDoc} */
     public boolean isSingleIntegerKey() {
       return singleIntegerKey;
+    }
+
+    /** {@inheritDoc} */
+    public boolean isCompositeKey() {
+      return compositeKey;
     }
 
     /**
@@ -966,7 +970,9 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
         throw new IllegalArgumentException("Undefined entity: " + entityID);
       }
       final List<Property.PrimaryKeyProperty> properties = definition.getPrimaryKeyProperties();
-      singleIntegerKey = properties.size() == 1 && properties.get(0).isInteger();
+      final int propertyCount = properties.size();
+      singleIntegerKey = propertyCount == 1 && properties.get(0).isInteger();
+      compositeKey = propertyCount > 1;
       for (final Property property : properties) {
         setValue(property.getPropertyID(), stream.readObject());
       }
