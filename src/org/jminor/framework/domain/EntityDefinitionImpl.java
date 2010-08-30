@@ -124,7 +124,7 @@ final class EntityDefinitionImpl implements EntityDefinition {
   private String selectColumnsString;
   private boolean hasDenormalizedProperties;
 
-  static Map<String, EntityDefinition> ENTITY_DEFINITIONS;
+  private static final Map<String, EntityDefinition> ENTITY_DEFINITIONS = new HashMap<String, EntityDefinition>();
 
   /**
    * Defines a new entity type, with the entityID serving as the initial entity caption
@@ -475,6 +475,10 @@ final class EntityDefinitionImpl implements EntityDefinition {
   @SuppressWarnings({"UnusedDeclaration"})
   public Color getBackgroundColor(final Entity entity) {
     return backgroundColorProvider.getBackgroundColor(entity);
+  }
+
+  static Map<String, EntityDefinition> getEntityDefinitionMap() {
+    return ENTITY_DEFINITIONS;
   }
 
   /**

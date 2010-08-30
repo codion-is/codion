@@ -139,8 +139,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
 
   /** {@inheritDoc} */
   public Object setValue(final Property property, final Object value) {
-    checkDefinitions();
-    return setValue(property, value, true, EntityDefinitionImpl.ENTITY_DEFINITIONS);
+    return setValue(property, value, true, EntityDefinitionImpl.getEntityDefinitionMap());
   }
 
   /**
@@ -308,10 +307,8 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
   public boolean propertyValuesEqual(final Entity entity) {
     Util.rejectNullValue(entity, "entity");
     for (final Property property : definition.getProperties().values()) {
-      if (property instanceof Property.ColumnProperty) {
-        if (!Util.equal(getValue(property), entity.getValue(property))) {
-          return false;
-        }
+      if (property instanceof Property.ColumnProperty && !Util.equal(getValue(property), entity.getValue(property))) {
+        return false;
       }
     }
 
@@ -376,12 +373,11 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
     if (referencedPrimaryKey != null) {
       return referencedPrimaryKey;
     }
-    checkDefinitions();
     if (foreignKeyProperty.isCompositeReference()) {
-      referencedPrimaryKey = initializeCompositeKey(foreignKeyProperty, EntityDefinitionImpl.ENTITY_DEFINITIONS);
+      referencedPrimaryKey = initializeCompositeKey(foreignKeyProperty, EntityDefinitionImpl.getEntityDefinitionMap());
     }
     else {
-      referencedPrimaryKey = initializeSingleValueKey(foreignKeyProperty, EntityDefinitionImpl.ENTITY_DEFINITIONS);
+      referencedPrimaryKey = initializeSingleValueKey(foreignKeyProperty, EntityDefinitionImpl.getEntityDefinitionMap());
     }
 
     cacheReferencedKey(foreignKeyProperty, referencedPrimaryKey);
@@ -666,9 +662,8 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
   }
 
   private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
-    checkDefinitions();
     final String entityID = (String) stream.readObject();
-    definition = EntityDefinitionImpl.ENTITY_DEFINITIONS.get(entityID);
+    definition = EntityDefinitionImpl.getEntityDefinitionMap().get(entityID);
     if (definition == null) {
       throw new IllegalArgumentException("Undefined entity: " + entityID);
     }
@@ -717,12 +712,6 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
     }
     if (value instanceof Entity && value.equals(entity)) {
       throw new IllegalArgumentException("Circular entity reference detected: " + entity + "->" + property.getPropertyID());
-    }
-  }
-
-  private static void checkDefinitions() {
-    if (EntityDefinitionImpl.ENTITY_DEFINITIONS == null) {
-      throw new IllegalStateException("Entity definitions have not been initialized");
     }
   }
 
@@ -971,9 +960,8 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
 
     @SuppressWarnings({"SuspiciousMethodCalls"})
     private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
-      checkDefinitions();
       final String entityID = (String) stream.readObject();
-      definition = EntityDefinitionImpl.ENTITY_DEFINITIONS.get(entityID);
+      definition = EntityDefinitionImpl.getEntityDefinitionMap().get(entityID);
       if (definition == null) {
         throw new IllegalArgumentException("Undefined entity: " + entityID);
       }

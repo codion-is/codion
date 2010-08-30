@@ -26,10 +26,6 @@ public final class Entities {
 
   private static final String ENTITY_ID_PARAM = "entityID";
 
-  static {
-    EntityDefinitionImpl.ENTITY_DEFINITIONS = new HashMap<String, EntityDefinition>();
-  }
-
   private Entities() {}
 
   /**
@@ -89,7 +85,7 @@ public final class Entities {
    */
   public static EntityDefinition define(final String entityID, final String tableName, final Property... propertyDefinitions) {
     final EntityDefinitionImpl entityImpl = new EntityDefinitionImpl(entityID, tableName, propertyDefinitions);
-    EntityDefinitionImpl.ENTITY_DEFINITIONS.put(entityID, entityImpl);
+    EntityDefinitionImpl.getEntityDefinitionMap().put(entityID, entityImpl);
     for (final Property property : propertyDefinitions) {
       property.setEntityID(entityID);
     }
@@ -103,7 +99,7 @@ public final class Entities {
    */
   public static Collection<String> getDomainEntityIDs(final String domainID) {
     final Collection<String> entityIDs = new ArrayList<String>();
-    for (final EntityDefinition definition : EntityDefinitionImpl.ENTITY_DEFINITIONS.values()) {
+    for (final EntityDefinition definition : EntityDefinitionImpl.getEntityDefinitionMap().values()) {
       if (definition.getDomainID().equals(domainID)) {
         entityIDs.add(definition.getEntityID());
       }
@@ -509,7 +505,7 @@ public final class Entities {
    * @return the entityIDs of all defined entities
    */
   public static Collection<String> getDefinedEntities() {
-    return new ArrayList<String>(EntityDefinitionImpl.ENTITY_DEFINITIONS.keySet());
+    return new ArrayList<String>(EntityDefinitionImpl.getEntityDefinitionMap().keySet());
   }
 
   /**
@@ -517,7 +513,7 @@ public final class Entities {
    * @return true if the entity is defined
    */
   public static boolean isDefined(final String entityID) {
-    return EntityDefinitionImpl.ENTITY_DEFINITIONS.containsKey(entityID);
+    return EntityDefinitionImpl.getEntityDefinitionMap().containsKey(entityID);
   }
 
   /**
@@ -556,7 +552,7 @@ public final class Entities {
    */
   public static Map<String, String> getEntityDefinitions(final String domainID) {
     final Map<String, String> definitions = new HashMap<String, String>();
-    for (final EntityDefinition definition : EntityDefinitionImpl.ENTITY_DEFINITIONS.values()) {
+    for (final EntityDefinition definition : EntityDefinitionImpl.getEntityDefinitionMap().values()) {
       if (domainID == null) {
         definitions.put(definition.getEntityID(), definition.getTableName());
       }
@@ -581,7 +577,7 @@ public final class Entities {
   }
 
   private static EntityDefinition getEntityDefinition(final String entityID) {
-    final EntityDefinition definition = EntityDefinitionImpl.ENTITY_DEFINITIONS.get(entityID);
+    final EntityDefinition definition = EntityDefinitionImpl.getEntityDefinitionMap().get(entityID);
     if (definition == null) {
       throw new IllegalArgumentException("Undefined entity: " + entityID);
     }
