@@ -12,6 +12,7 @@ import org.jminor.common.ui.control.AbstractValueLink;
 import org.jminor.common.ui.control.LinkType;
 
 import javax.swing.DefaultListModel;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -125,10 +126,13 @@ public final class ItemRandomizerPanel<T> extends JPanel {
    * @return a conrol panel for the item weight
    */
   private JPanel initializeWeightPanel(final ItemRandomizerModel.RandomItem<T> item) {
-    final JPanel panel = new JPanel(new BorderLayout(0, 0));
+    final JPanel panel = new JPanel(new GridLayout(1, 2, 5, 5));
     final JSpinner spinner = new JSpinner(createWeightSpinnerModel(item.getItem()));
+    ((JSpinner.DefaultEditor) spinner.getEditor()).getTextField().setColumns(3);
     spinner.setToolTipText(item.getItem().toString());
-    panel.add(spinner, BorderLayout.CENTER);
+    
+    panel.add(new JLabel(item.getItem().toString()));
+    panel.add(spinner);
 
     return panel;
   }
