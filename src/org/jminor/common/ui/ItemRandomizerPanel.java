@@ -3,21 +3,33 @@
  */
 package org.jminor.common.ui;
 
+import org.jminor.common.model.Event;
+import org.jminor.common.model.Events;
 import org.jminor.common.model.ItemRandomizer;
 import org.jminor.common.model.ItemRandomizerModel;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.control.AbstractValueLink;
 import org.jminor.common.ui.control.LinkType;
-import org.jminor.common.ui.layout.FlexibleGridLayout;
 
-import javax.swing.JLabel;
+import javax.swing.DefaultListModel;
+import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
+import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.BorderLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * A default UI for the ItemRandomizer class.
@@ -25,6 +37,9 @@ import java.awt.BorderLayout;
 public final class ItemRandomizerPanel<T> extends JPanel {
 
   private final ItemRandomizer<T> model;
+  private final JPanel configPanel = new JPanel(new GridLayout(0, 1, 5, 5));
+  private final JList itemList = new JList(new DefaultListModel());
+  private final Event evtSelectedItemChanged = Events.event();
 
   /**
    * Instantiates a new RandomItemPanel.
@@ -44,15 +59,64 @@ public final class ItemRandomizerPanel<T> extends JPanel {
   }
 
   /**
+   * @param listener a listener notified each time the selected item changes
+   */
+  public void addSelectedItemListener(final ActionListener listener) {
+    evtSelectedItemChanged.addListener(listener);
+  }
+
+  /**
+   * @param listener the listener to remove
+   */
+  public void removeSelectedItemListener(final ActionListener listener) {
+    evtSelectedItemChanged.removeListener(listener);
+  }
+
+  /**
+   * @return the currently selected item
+   */
+  @SuppressWarnings({"unchecked"})
+  public List<ItemRandomizer.RandomItem<T>> getSelectedItems() {
+    final List<ItemRandomizer.RandomItem<T>> items = new ArrayList<ItemRandomizer.RandomItem<T>>();
+    for (final Object object : itemList.getSelectedValues()) {
+      items.add((ItemRandomizer.RandomItem<T>) object);
+    }
+
+    return items;
+  }
+
+  /**
    * Initializes the UI
    */
   private void initializeUI() {
-    final int count = model.getItemCount();
-    setLayout(new FlexibleGridLayout(count * 2, 1, 5, 5, true, false));
-    for (final ItemRandomizer.RandomItem<T> item : model.getItems()) {
-      add(new JLabel(item.getItem().toString()));
-      add(initializeWeightPanel(item));
+    final List<ItemRandomizer.RandomItem<T>> items = new ArrayList<ItemRandomizer.RandomItem<T>>(model.getItems());
+    Collections.sort(items, new Comparator<ItemRandomizer.RandomItem<T>>() {
+      public int compare(final ItemRandomizer.RandomItem<T> o1, final ItemRandomizer.RandomItem<T> o2) {
+        return o1.getItem().toString().compareTo(o2.getItem().toString());
+      }
+    });
+    for (final ItemRandomizer.RandomItem<T> item : items) {
+      ((DefaultListModel) itemList.getModel()).addElement(item);
     }
+    itemList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+    itemList.addListSelectionListener(new ListSelectionListener() {
+      @SuppressWarnings({"unchecked"})
+      public void valueChanged(final ListSelectionEvent e) {
+        handleSelectionChanged();
+        evtSelectedItemChanged.fire();
+      }
+    });
+    setLayout(new BorderLayout(5, 5));
+    add(new JScrollPane(itemList), BorderLayout.CENTER);
+    add(configPanel, BorderLayout.SOUTH);
+  }
+
+  private void handleSelectionChanged() {
+    configPanel.removeAll();
+    for (final ItemRandomizer.RandomItem<T> item : getSelectedItems()) {
+      configPanel.add(initializeWeightPanel(item));
+    }
+    revalidate();
   }
 
   /**

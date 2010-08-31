@@ -3,6 +3,7 @@
  */
 package org.jminor.common.ui;
 
+import org.jminor.common.model.ItemRandomizer;
 import org.jminor.common.model.LoadTest;
 import org.jminor.common.model.LoadTestModel;
 import org.jminor.common.model.User;
@@ -44,6 +45,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.List;
 
 /**
  * A default UI component for the LoadTestModel class.
@@ -54,6 +56,8 @@ public final class LoadTestPanel extends JPanel {
   private static final int DEFAULT_MEMORY_USAGE_UPDATE_INTERVAL_MS = 2000;
   private static final double DEFAULT_SCREEN_SIZE_RATIO = 0.75;
   private final LoadTest loadTestModel;
+
+  private final JPanel durationBase = new JPanel(new GridLayout(0, 1, 5, 5));
 
   /**
    * Constructs a new LoadTestPanel.
@@ -128,9 +132,15 @@ public final class LoadTestPanel extends JPanel {
     return southPanel;
   }
 
-  private JPanel initializeScenarioPanel() {
-    final ItemRandomizerPanel scenarioBase = new ItemRandomizerPanel<LoadTestModel.UsageScenario>(loadTestModel.getScenarioChooser());
+  private ItemRandomizerPanel initializeScenarioPanel() {
+    durationBase.setBorder(BorderFactory.createTitledBorder("Scenario duration (ms)"));
+    final ItemRandomizerPanel<LoadTestModel.UsageScenario> scenarioBase = new ItemRandomizerPanel<LoadTestModel.UsageScenario>(loadTestModel.getScenarioChooser());
     scenarioBase.setBorder(BorderFactory.createTitledBorder("Usage scenarios"));
+    scenarioBase.addSelectedItemListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
+        handleScenarioSelected(scenarioBase.getSelectedItems());
+      }
+    });
 
     return scenarioBase;
   }
@@ -228,16 +238,6 @@ public final class LoadTestPanel extends JPanel {
   }
 
   private JPanel initializeChartPanel() {
-    final JFreeChart scenarioDurationChart = ChartFactory.createXYStepChart(null,
-            null, null, loadTestModel.getScenarioDurationDataset(), PlotOrientation.VERTICAL, true, true, false);
-    setColors(scenarioDurationChart);
-    final ChartPanel scenarioDurationChartPanel = new ChartPanel(scenarioDurationChart);
-    scenarioDurationChartPanel.setBorder(BorderFactory.createEtchedBorder());
-    
-    final DeviationRenderer renderer = new DeviationRenderer();
-    renderer.setBaseShapesVisible(false);
-    scenarioDurationChart.getXYPlot().setRenderer(renderer);
-
     final JFreeChart thinkTimeChart = ChartFactory.createXYStepChart(null,
             null, null, loadTestModel.getThinkTimeDataset(), PlotOrientation.VERTICAL, true, true, false);
     setColors(thinkTimeChart);
@@ -270,7 +270,6 @@ public final class LoadTestPanel extends JPanel {
 
     usageScenarioChartPanel.setBorder(BorderFactory.createTitledBorder("Scenarios run per second"));
     thinkTimeChartPanel.setBorder(BorderFactory.createTitledBorder("Think time (ms)"));
-    scenarioDurationChartPanel.setBorder(BorderFactory.createTitledBorder("Scenario duration (ms)"));
     numberOfApplicationsChartPanel.setBorder(BorderFactory.createTitledBorder("Application count"));
     memoryUsageChartPanel.setBorder(BorderFactory.createTitledBorder("Memory usage (MB)"));
     failureChartPanel.setBorder(BorderFactory.createTitledBorder("Scenario failure rate"));
@@ -288,7 +287,7 @@ public final class LoadTestPanel extends JPanel {
     final JPanel chartBase = new JPanel(new BorderLayout(0, 0));
 
     final JTabbedPane tabPane = new JTabbedPane();
-    tabPane.addTab("Scenario durations", scenarioDurationChartPanel);
+    tabPane.addTab("Scenario durations", durationBase);
     tabPane.addTab("Overview", two);
 
     chartBase.add(tabPane);
@@ -335,13 +334,32 @@ public final class LoadTestPanel extends JPanel {
     return thinkTimePanel;
   }
 
+  private void handleScenarioSelected(final List<ItemRandomizer.RandomItem<LoadTest.UsageScenario>> selectedItems) {
+    durationBase.removeAll();
+
+    for (final ItemRandomizer.RandomItem<LoadTest.UsageScenario> item : selectedItems) {
+      final JFreeChart scenarioDurationChart = ChartFactory.createXYStepChart(null,
+              null, null, loadTestModel.getScenarioDurationDataset(item.getItem().getName()),
+              PlotOrientation.VERTICAL, true, true, false);
+      setColors(scenarioDurationChart);
+      final ChartPanel scenarioDurationChartPanel = new ChartPanel(scenarioDurationChart);
+      scenarioDurationChartPanel.setBorder(BorderFactory.createEtchedBorder());
+
+      final DeviationRenderer renderer = new DeviationRenderer();
+      renderer.setBaseShapesVisible(false);
+      scenarioDurationChart.getXYPlot().setRenderer(renderer);
+
+      durationBase.add(scenarioDurationChartPanel);
+    }
+    revalidate();
+  }
+
   private void setColors(final JFreeChart chart) {
     chart.getXYPlot().setBackgroundPaint(Color.BLACK);
     chart.setBackgroundPaint(this.getBackground());
     final XYSplineRenderer renderer = new XYSplineRenderer();
     renderer.setBaseShapesVisible(false);
     chart.getXYPlot().setRenderer(renderer);
-
   }
 
   private static final class ExitListener implements ActionListener {

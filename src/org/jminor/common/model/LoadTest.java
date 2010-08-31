@@ -169,8 +169,9 @@ public interface LoadTest {
 
   /**
    * @return a dataset plotting the average scenario duration
+   * @param name the scenario name
    */
-  YIntervalSeriesCollection getScenarioDurationDataset();
+  YIntervalSeriesCollection getScenarioDurationDataset(final String name);
 
   /**
    * @return a dataset plotting the think time

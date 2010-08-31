@@ -65,7 +65,6 @@ public abstract class LoadTestModel implements LoadTest {
   private final XYSeries scenariosRunSeries = new XYSeries("Total");
   private final XYSeries delayedScenarioRunsSeries = new XYSeries("Warn. time exceeded");
 
-  private final YIntervalSeriesCollection scenarioDurationCollection = new YIntervalSeriesCollection();
   private final XYSeriesCollection scenarioFailureCollection = new XYSeriesCollection();
 
   private final XYSeries minimumThinkTimeSeries = new XYSeries("Minimum think time");
@@ -83,7 +82,7 @@ public abstract class LoadTestModel implements LoadTest {
   private final XYSeries maxMemoryCollection = new XYSeries("Maximum memory");
   private final XYSeriesCollection memoryUsageCollection = new XYSeriesCollection();
   private final Collection<XYSeries> usageSeries = new ArrayList<XYSeries>();
-  private final Collection<YIntervalSeries> durationSeries = new ArrayList<YIntervalSeries>();
+  private final Map<String, YIntervalSeries> durationSeries = new HashMap<String, YIntervalSeries>();
   private final Collection<XYSeries> failureSeries = new ArrayList<XYSeries>();
 
   /**
@@ -167,8 +166,12 @@ public abstract class LoadTestModel implements LoadTest {
     return scenarioChooser;
   }
 
-  /** {@inheritDoc} */
-  public final YIntervalSeriesCollection getScenarioDurationDataset() {
+  /** {@inheritDoc}
+   * @param name*/
+  public final YIntervalSeriesCollection getScenarioDurationDataset(final String name) {
+  final YIntervalSeriesCollection scenarioDurationCollection = new YIntervalSeriesCollection();
+    scenarioDurationCollection.addSeries(durationSeries.get(name));
+
     return scenarioDurationCollection;
   }
 
@@ -210,7 +213,7 @@ public abstract class LoadTestModel implements LoadTest {
     for (final XYSeries series : usageSeries) {
       series.clear();
     }
-    for (final YIntervalSeries series : durationSeries) {
+    for (final YIntervalSeries series : durationSeries.values()) {
       series.clear();
     }
   }
@@ -503,8 +506,7 @@ public abstract class LoadTestModel implements LoadTest {
       usageScenarioCollection.addSeries(series);
       usageSeries.add(series);
       final YIntervalSeries avgDurSeries = new YIntervalSeries(usageScenario.getName());
-      scenarioDurationCollection.addSeries(avgDurSeries);
-      durationSeries.add(avgDurSeries);
+      durationSeries.put(usageScenario.getName(), avgDurSeries);
       final XYSeries failSeries = new XYSeries(usageScenario.getName());
       scenarioFailureCollection.addSeries(failSeries);
       failureSeries.add(failSeries);
@@ -526,7 +528,7 @@ public abstract class LoadTestModel implements LoadTest {
     for (final XYSeries series : usageSeries) {
       series.add(time, counter.getScenarioRate((String) series.getKey()));
     }
-    for (final YIntervalSeries series : durationSeries) {
+    for (final YIntervalSeries series : durationSeries.values()) {
       final String scenario = (String) series.getKey();
       series.add(time, counter.getAverageScenarioDuration(scenario),
               counter.getMinimumScenarioDuration(scenario), counter.getMaximumScenarioDuration(scenario));
