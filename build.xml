@@ -31,12 +31,10 @@
 
   <path id="lib.client.local">
     <path refid="lib.client.remote"/>
-    <pathelement location="${lib.derby}"/>
     <pathelement location="${lib.h2}"/>
   </path>
 
   <path id="lib.server">
-    <pathelement location="${lib.derby}"/>
     <pathelement location="${lib.h2}"/>
     <pathelement location="${lib.json}"/>
     <pathelement location="${lib.slf4j.api}"/>
@@ -48,7 +46,6 @@
   </path>
 
   <path id="lib.server.monitor">
-    <pathelement location="${lib.derby}"/>
     <pathelement location="${lib.slf4j.api}"/>
     <pathelement location="${lib.logback.classic}"/>
     <pathelement location="${lib.logback.core}"/>
@@ -198,21 +195,6 @@
                 org/jminor/framework/server/EntityDbRemote.class,
                 org/jminor/framework/server/EntityDbRemoteAdapter_Stub.class"/>
 
-    <jar jarfile="${dist}/${ant.project.name}-client-remote.jar" basedir="${build.base}"
-         manifest="${build.base}/META-INF/MANIFEST.MF"
-         includes="org/jminor/framework/Configuration*,
-                org/jminor/framework/client/**,
-                org/jminor/framework/db/criteria/**,
-                org/jminor/framework/db/EntityDb.class,
-                org/jminor/framework/db/provider/AbstractEntityDbProvider*,
-                org/jminor/framework/db/provider/EntityDbProvider*,
-                org/jminor/framework/i18n/**,
-                org/jminor/framework/domain/**,
-                org/jminor/framework/tools/testing/**,
-                org/jminor/framework/server/provider/EntityDbRemoteProvider*,
-                org/jminor/framework/server/EntityDbRemote.class,
-                org/jminor/framework/server/EntityDbRemoteAdapter_Stub.class"/>
-
     <jar jarfile="${dist}/${ant.project.name}-server.jar" basedir="${build.base}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/Configuration*,
@@ -298,7 +280,6 @@
     <copy file="${lib.slf4j.api}" todir="${deploy.server.path}/lib"/>
     <copy file="${lib.logback.classic}" todir="${deploy.server.path}/lib"/>
     <copy file="${lib.logback.core}" todir="${deploy.server.path}/lib"/>
-    <copy file="${lib.derby}" todir="${deploy.server.path}/lib"/>
     <copy file="${lib.h2}" todir="${deploy.server.path}/lib"/>
     <copy file="${lib.json}" todir="${deploy.server.path}/lib"/>
     <copy file="${lib.jasperreports.base}" todir="${deploy.server.path}/lib"/>
@@ -340,11 +321,9 @@
           description="Deploys the demo applications to the path defined by the 'deploy.demos.path' property">
     <mkdir dir="${deploy.demos.path}"/>
     <copy file="${dist}/${ant.project.name}-client.jar" todir="${deploy.demos.path}/lib"/>
-    <copy file="${dist}/${ant.project.name}-client-remote.jar" todir="${deploy.demos.path}/lib"/>
     <copy file="${dist}/${ant.project.name}-plugins.jar" todir="${deploy.demos.path}/lib"/>
     <copy file="${dist}/${ant.project.name}-demos.jar" todir="${deploy.demos.path}/lib"/>
     <copy file="${dist}/${ant.project.name}-common.jar" todir="${deploy.demos.path}/lib"/>
-    <copy file="${lib.derby}" todir="${deploy.demos.path}/lib"/>
     <copy file="${lib.h2}" todir="${deploy.demos.path}/lib"/>
     <copy file="${lib.json}" todir="${deploy.demos.path}/lib"/>
     <copy file="${lib.jasperreports.base}" todir="${deploy.demos.path}/lib"/>

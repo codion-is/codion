@@ -31,7 +31,7 @@
     <jar href="jminor-demos.jar" main="true" />
 
     <!--  libraries-->
-    <jar href="jminor-client-remote.jar"/>
+    <jar href="jminor-client.jar"/>
     <jar href="jminor-common.jar"/>
     <jar href="jcalendar-1.3.2.jar"/>
     <jar href="slf4j-api-1.6.1.jar"/>

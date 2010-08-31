@@ -2098,3 +2098,4 @@
   ItemRandomizer interface added
   RandomItemModel renamed to ItemRandomizerModel
   Remote load testing implemented
+  Derby lib removed, with JavaDB and all that
