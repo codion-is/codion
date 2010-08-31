@@ -795,7 +795,9 @@ public final class Util {
         }
       }
     }
-    logger.error(exception.getMessage(), exception);
+    if (logger != null) {
+      logger.error(exception.getMessage(), exception);
+    }
 
     return exception;
   }

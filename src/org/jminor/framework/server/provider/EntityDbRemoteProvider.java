@@ -204,7 +204,7 @@ public final class EntityDbRemoteProvider extends AbstractEntityDbProvider {
         return remoteMethod.invoke(remote, args);
       }
       catch (Exception e) {
-        throw Util.unwrapAndLog(e, InvocationTargetException.class, LOG);
+        throw Util.unwrapAndLog(e, InvocationTargetException.class, null);
       }
     }
   }
