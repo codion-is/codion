@@ -19,6 +19,14 @@ public interface RemoteServer<T> extends Remote {
 
   /**
    * Establishes a connection to this RemoteServer
+   * @param clientInfo the client info
+   * @return a remote connection instance
+   * @throws RemoteException in case of a RemoteException
+   */
+  T connect(final ClientInfo clientInfo) throws RemoteException;
+
+  /**
+   * Establishes a connection to this RemoteServer
    * @param user the user
    * @param clientID a UUID identifying the client
    * @param clientTypeID a String identifying the client

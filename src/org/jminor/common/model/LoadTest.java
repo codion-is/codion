@@ -7,6 +7,7 @@ import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.YIntervalSeriesCollection;
 
 import java.awt.event.ActionListener;
+import java.io.Serializable;
 import java.util.Collection;
 
 /**
@@ -29,17 +30,18 @@ public interface LoadTest {
    */
   void setUser(User user);
 
-  /**
-   * @param scenarioName the name of the usage scenario to fetch
-   * @return the usage scenario with the given name
-   * @throws RuntimeException if no such scenario exists
-   */
-  UsageScenario getUsageScenario(final String scenarioName);
+  public void setWeight(final String scenarioName, final int weight);
 
   /**
    * @return the usage scenarios used by this load test;
    */
-  Collection<UsageScenario> getUsageScenarios();
+  Collection<String> getUsageScenarios();
+
+  /**
+   * @param usageScenarioName the scenario name
+   * @return the usage scenario
+   */
+  UsageScenario getUsageScenario(final String usageScenarioName);
 
   /**
    * @return the the maximum time in milliseconds a work request has to finish
@@ -131,11 +133,6 @@ public interface LoadTest {
   void setCollectChartData(final boolean value);
 
   /**
-   * @return the RandomItemModel used to select the next scenario to run
-   */
-  ItemRandomizer<UsageScenario> getScenarioChooser();
-
-  /**
    * @return an observer notified each time the application count changes
    */
   EventObserver applicationCountObserver();
@@ -223,9 +220,14 @@ public interface LoadTest {
   EventObserver getPauseObserver();
 
   /**
+   * @return the randomizer used to select scenarios
+   */
+  ItemRandomizer<UsageScenario> getScenarioChooser();
+
+  /**
    * Specifies a load test usage scenario.
    */
-  interface UsageScenario {
+  interface UsageScenario extends Serializable {
 
     /**
      * @return the name of this scenario

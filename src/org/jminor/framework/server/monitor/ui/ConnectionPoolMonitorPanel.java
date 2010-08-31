@@ -16,6 +16,7 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.chart.renderer.xy.DeviationRenderer;
 
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
@@ -43,17 +44,16 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
 
   private final NumberFormat format = NumberFormat.getInstance();
   private final JFreeChart inPoolChart = ChartFactory.createXYStepChart(null,
-        null, null, null, PlotOrientation.VERTICAL, true, true, false);
+          null, null, null, PlotOrientation.VERTICAL, true, true, false);
   private final JFreeChart inPoolMacroChart = ChartFactory.createXYStepChart(null,
-        null, null, null, PlotOrientation.VERTICAL, true, true, false);
+          null, null, null, PlotOrientation.VERTICAL, true, true, false);
   private final JFreeChart requestsPerSecondChart = ChartFactory.createXYStepChart(null,
-        null, null, null, PlotOrientation.VERTICAL, true, true, false);
-  private final JFreeChart checkOutTimeChart = ChartFactory.createXYStepChart(null,
-        null, null, null, PlotOrientation.VERTICAL, true, true, false);
+          null, null, null, PlotOrientation.VERTICAL, true, true, false);
   private final ChartPanel inPoolChartPanel = new ChartPanel(inPoolChart);
   private final ChartPanel inPoolChartPanelMacro = new ChartPanel(inPoolMacroChart);
   private final ChartPanel requestsPerSecondChartPanel = new ChartPanel(requestsPerSecondChart);
-  private final ChartPanel checkOutTimePanel = new ChartPanel(checkOutTimeChart);
+
+  private ChartPanel checkOutTimePanel;
 
   private final JTextField txtPoolSize = new JTextField();
   private final JTextField txtCreated = new JTextField();
@@ -107,6 +107,16 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   }
 
   private void initializeCharts(final ConnectionPoolMonitor model) {
+    final JFreeChart checkOutTimeChart = ChartFactory.createXYStepChart(null,
+            null, null, model.getCheckOutTimeCollection(), PlotOrientation.VERTICAL, true, true, false);
+    setColors(checkOutTimeChart);
+    checkOutTimePanel = new ChartPanel(checkOutTimeChart);
+    checkOutTimePanel.setBorder(BorderFactory.createEtchedBorder());
+
+    final DeviationRenderer devRenderer = new DeviationRenderer();
+    devRenderer.setBaseShapesVisible(false);
+    checkOutTimeChart.getXYPlot().setRenderer(devRenderer);
+
     inPoolMacroChart.getXYPlot().setDataset(model.getInPoolDataSetMacro());
     final XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) inPoolMacroChart.getXYPlot().getRenderer();
     renderer.setSeriesPaint(0, Color.RED);

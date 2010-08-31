@@ -50,6 +50,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
     Util.rejectNullValue(itemRandomizer, "model");
     this.model = itemRandomizer;
     initializeUI();
+    itemList.getSelectionModel().setSelectionInterval(0, itemList.getModel().getSize() - 1);
   }
 
   /**

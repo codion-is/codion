@@ -2097,3 +2097,4 @@
   Interfaced load test classes
   ItemRandomizer interface added
   RandomItemModel renamed to ItemRandomizerModel
+  Remote load testing implemented

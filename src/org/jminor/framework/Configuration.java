@@ -147,6 +147,14 @@ public final class Configuration {
   public static final String LOAD_TEST_BATCH_SIZE = "jminor.loadtest.batchsize";
 
   /**
+   * Indicates whether a load test runner should use a remote load test server<br>
+   * Value type: Boolean<br>
+   * Default value: false
+   * @see #USE_FOCUS_ACTIVATION
+   */
+  public static final String LOAD_TEST_REMOTE = "jminor.loadtest.remote";
+
+  /**
    * The date format pattern to use when showing timestamp values in tables and when
    * creating default timestamp input fields<br>
    * Value type: String<br>
@@ -440,6 +448,7 @@ public final class Configuration {
     PROPERTIES.put(LOAD_TEST_THINKTIME, 2000);
     PROPERTIES.put(LOAD_TEST_BATCH_SIZE, 10);
     PROPERTIES.put(LOAD_TEST_LOGIN_DELAY, 2);
+    PROPERTIES.put(LOAD_TEST_REMOTE, false);
     PROPERTIES.put(CLIENT_CONNECTION_TYPE, CONNECTION_TYPE_LOCAL);
     PROPERTIES.put(SERVER_CLIENT_LOGGING_ENABLED, true);
     PROPERTIES.put(SERVER_CONNECTION_LOG_SIZE, 40);
@@ -501,6 +510,7 @@ public final class Configuration {
     parseIntegerSetting(LOAD_TEST_THINKTIME);
     parseIntegerSetting(LOAD_TEST_BATCH_SIZE);
     parseIntegerSetting(LOAD_TEST_LOGIN_DELAY);
+    parseBooleanSetting(LOAD_TEST_REMOTE);
     parseStringSetting(LOCAL_CONNECTION_PROVIDER);
     parseBooleanSetting(PERFORM_NULL_VALIDATION);
     parseBooleanSetting(PERSIST_ENTITY_PANELS);

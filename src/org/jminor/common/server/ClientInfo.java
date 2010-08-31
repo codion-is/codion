@@ -6,6 +6,8 @@ package org.jminor.common.server;
 import org.jminor.common.model.User;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -18,6 +20,7 @@ public final class ClientInfo implements Serializable {
   private final UUID clientID;
   private final String clientTypeID;
   private final User user;
+  private final Map properties;
   private String clientHost = "unknown host";
 
   /**
@@ -38,6 +41,7 @@ public final class ClientInfo implements Serializable {
     this.clientID = clientID;
     this.clientTypeID = clientTypeID;
     this.user = user;
+    this.properties = new HashMap();
   }
 
   /**
@@ -91,5 +95,13 @@ public final class ClientInfo implements Serializable {
   @Override
   public String toString() {
     return user != null ? user + "@" + clientHost + " [" + clientTypeID + "] - " + clientID : clientID.toString();
+  }
+
+  public void setProperty(final String key, final Object value) {
+    properties.put(key, value);
+  }
+
+  public Object getProperty(final String key) {
+    return properties.get(key);
   }
 }

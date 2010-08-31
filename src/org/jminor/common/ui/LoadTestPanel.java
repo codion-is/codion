@@ -45,7 +45,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.List;
 
 /**
  * A default UI component for the LoadTestModel class.
@@ -58,6 +57,7 @@ public final class LoadTestPanel extends JPanel {
   private final LoadTest loadTestModel;
 
   private final JPanel durationBase = new JPanel(new GridLayout(0, 1, 5, 5));
+  private ItemRandomizerPanel randomizerPanel;
 
   /**
    * Constructs a new LoadTestPanel.
@@ -67,6 +67,7 @@ public final class LoadTestPanel extends JPanel {
     Util.rejectNullValue(loadTestModel, "loadTestModel");
     this.loadTestModel = loadTestModel;
     initializeUI();
+    handleScenarioSelected();
   }
 
   /**
@@ -105,13 +106,13 @@ public final class LoadTestPanel extends JPanel {
     final JPanel activityPanel = initializeActivityPanel();
     final JPanel applicationPanel = initializeApplicationPanel();
     final JPanel userBase = initializeUserPanel();
-    final JPanel scenarioBase = initializeScenarioPanel();
+    randomizerPanel = initializeScenarioPanel();
     final JPanel chartControlPanel = initializeChartControlPanel();
 
     final JPanel controlPanel = new JPanel(new FlexibleGridLayout(5, 1, 5, 5, false, true));
     controlPanel.add(applicationPanel);
     controlPanel.add(activityPanel);
-    controlPanel.add(scenarioBase);
+    controlPanel.add(randomizerPanel);
     controlPanel.add(userBase);
     controlPanel.add(chartControlPanel);
 
@@ -138,7 +139,7 @@ public final class LoadTestPanel extends JPanel {
     scenarioBase.setBorder(BorderFactory.createTitledBorder("Usage scenarios"));
     scenarioBase.addSelectedItemListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
-        handleScenarioSelected(scenarioBase.getSelectedItems());
+        handleScenarioSelected();
       }
     });
 
@@ -274,8 +275,6 @@ public final class LoadTestPanel extends JPanel {
     memoryUsageChartPanel.setBorder(BorderFactory.createTitledBorder("Memory usage (MB)"));
     failureChartPanel.setBorder(BorderFactory.createTitledBorder("Scenario failure rate"));
 
-
-
     final JPanel two = new JPanel(new GridLayout(5, 1, 0, 0));
 
     two.add(usageScenarioChartPanel);
@@ -334,10 +333,12 @@ public final class LoadTestPanel extends JPanel {
     return thinkTimePanel;
   }
 
-  private void handleScenarioSelected(final List<ItemRandomizer.RandomItem<LoadTest.UsageScenario>> selectedItems) {
+  @SuppressWarnings({"unchecked"})
+  private void handleScenarioSelected() {
     durationBase.removeAll();
 
-    for (final ItemRandomizer.RandomItem<LoadTest.UsageScenario> item : selectedItems) {
+    for (final Object selectedItem : randomizerPanel.getSelectedItems()) {
+      final ItemRandomizer.RandomItem<LoadTest.UsageScenario> item = (ItemRandomizer.RandomItem<LoadTest.UsageScenario>) selectedItem;
       final JFreeChart scenarioDurationChart = ChartFactory.createXYStepChart(null,
               null, null, loadTestModel.getScenarioDurationDataset(item.getItem().getName()),
               PlotOrientation.VERTICAL, true, true, false);

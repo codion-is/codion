@@ -3,6 +3,7 @@
  */
 package org.jminor.common.model;
 
+import java.io.Serializable;
 import java.util.Collection;
 
 /**
@@ -95,7 +96,7 @@ public interface ItemRandomizer<T> {
    */
   void decrementWeight(final T item);
 
-  interface RandomItem<T> {
+  interface RandomItem<T> extends Serializable {
 
     /**
      * Increments the weight value assigned to this random item

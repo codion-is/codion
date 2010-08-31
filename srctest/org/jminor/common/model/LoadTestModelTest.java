@@ -108,7 +108,7 @@ public class LoadTestModelTest {
     catch (RuntimeException e) {}
 
     model.setApplicationBatchSize(5);
-    assertTrue(model.getUsageScenarios().contains(SCENARIO));
+    assertTrue(model.getUsageScenarios().contains(SCENARIO.getName()));
     model.setUser(USER);
     assertEquals(USER, model.getUser());
     assertNotNull(model.getScenarioChooser());

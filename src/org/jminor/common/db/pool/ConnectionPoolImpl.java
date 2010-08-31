@@ -164,6 +164,8 @@ public final class ConnectionPoolImpl implements ConnectionPool {
       statistics.setRequestsFailedPerSecond(counter.getRequestsFailedPerSecond());
       statistics.setRequestsPerSecond(counter.getRequestsPerSecond());
       statistics.setAverageCheckOutTime(counter.getAverageCheckOutTime());
+      statistics.setMininumCheckOutTime(counter.getMinimumCheckOutTime());
+      statistics.setMaximumCheckOutTime(counter.getMaximumCheckOutTime());
       statistics.setResetDate(counter.getResetDate());
       statistics.setTimestamp(System.currentTimeMillis());
     }
@@ -424,6 +426,8 @@ public final class ConnectionPoolImpl implements ConnectionPool {
     private int requestsFailedPerSecondCounter = 0;
     private int requestsFailedPerSecond;
     private long averageCheckOutTime = 0;
+    private long minimumCheckOutTime = 0;
+    private long maximumCheckOutTime = 0;
     private final List<Long> checkOutTimes = new ArrayList<Long>();
     private long requestsPerSecondTime = creationDate;
 
@@ -503,10 +507,22 @@ public final class ConnectionPoolImpl implements ConnectionPool {
       averageCheckOutTime = 0;
       if (!checkOutTimes.isEmpty()) {
         long total = 0;
+        long min = -1;
+        long max = -1;
         for (final Long time : checkOutTimes) {
           total += time;
+          if (min == -1) {
+            min = time;
+            max = time;
+          }
+          else {
+            min = Math.min(min, time);
+            max = Math.max(max, time);
+          }
         }
         averageCheckOutTime = total / checkOutTimes.size();
+        minimumCheckOutTime = min;
+        maximumCheckOutTime = max;
         checkOutTimes.clear();
       }
     }
@@ -536,6 +552,14 @@ public final class ConnectionPoolImpl implements ConnectionPool {
 
     private synchronized long getAverageCheckOutTime() {
       return averageCheckOutTime;
+    }
+
+    private synchronized long getMinimumCheckOutTime() {
+      return minimumCheckOutTime;
+    }
+
+    private synchronized long getMaximumCheckOutTime() {
+      return maximumCheckOutTime;
     }
   }
 
@@ -593,6 +617,8 @@ public final class ConnectionPoolImpl implements ConnectionPool {
     private int requestsFailedPerSecond;
     private int poolSize;
     private long averageCheckOutTime;
+    private long mininumCheckOutTime;
+    private long maximumCheckOutTime;
 
     /** {@inheritDoc} */
     public User getUser() {
@@ -670,6 +696,16 @@ public final class ConnectionPoolImpl implements ConnectionPool {
     }
 
     /** {@inheritDoc} */
+    public long getMininumCheckOutTime() {
+      return mininumCheckOutTime;
+    }
+
+    /** {@inheritDoc} */
+    public long getMaximumCheckOutTime() {
+      return maximumCheckOutTime;
+    }
+
+    /** {@inheritDoc} */
     public int getSize() {
       return poolSize;
     }
@@ -729,6 +765,14 @@ public final class ConnectionPoolImpl implements ConnectionPool {
 
     private void setAverageCheckOutTime(final long averageCheckOutTime) {
       this.averageCheckOutTime = averageCheckOutTime;
+    }
+
+    private void setMininumCheckOutTime(final long mininumCheckOutTime) {
+      this.mininumCheckOutTime = mininumCheckOutTime;
+    }
+
+    private void setMaximumCheckOutTime(final long maximumCheckOutTime) {
+      this.maximumCheckOutTime = maximumCheckOutTime;
     }
 
     private void setPoolSize(final int poolSize) {

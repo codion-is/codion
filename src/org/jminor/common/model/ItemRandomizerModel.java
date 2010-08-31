@@ -134,7 +134,7 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
       }
     }
 
-    throw new IllegalArgumentException("Item not found: " + item);
+    throw new IllegalArgumentException("Item not found: " + item + ": " + item.getClass());
   }
 
   /**

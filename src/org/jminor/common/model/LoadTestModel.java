@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -157,12 +156,20 @@ public abstract class LoadTestModel implements LoadTest {
   }
 
   /** {@inheritDoc} */
-  public Collection<UsageScenario> getUsageScenarios() {
-    return Collections.unmodifiableCollection(usageScenarios);
+  public Collection<String> getUsageScenarios() {
+    final Collection<String> ret = new ArrayList<String>();
+    for (final UsageScenario scenario : usageScenarios) {
+      ret.add(scenario.getName());
+    }
+
+    return ret;
   }
 
-  /** {@inheritDoc} */
-  public final ItemRandomizer<UsageScenario> getScenarioChooser() {
+  public void setWeight(String scenarioName, int weight) {
+    scenarioChooser.setWeight(getUsageScenario(scenarioName), weight);
+  }
+
+  public ItemRandomizer<UsageScenario> getScenarioChooser() {
     return scenarioChooser;
   }
 
@@ -688,6 +695,16 @@ public abstract class LoadTestModel implements LoadTest {
       finally {
         cleanup(application);
       }
+    }
+
+    @Override
+    public int hashCode() {
+      return getName().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      return obj instanceof UsageScenario && ((UsageScenario) obj).getName().equals(getName());
     }
 
     /** {@inheritDoc} */

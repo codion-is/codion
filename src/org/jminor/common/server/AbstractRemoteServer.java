@@ -82,22 +82,27 @@ public abstract class AbstractRemoteServer<T> extends UnicastRemoteObject implem
   }
 
   /** {@inheritDoc} */
+  public final T connect(final ClientInfo clientInfo) throws RemoteException {
+    if (connections.containsKey(clientInfo)) {
+      return connections.get(clientInfo);
+    }
+
+    final T connection = doConnect(clientInfo);
+    synchronized (connections) {
+      connections.put(clientInfo, connection);
+    }
+
+    return connection;
+  }
+
+  /** {@inheritDoc} */
   public final T connect(final User user, final UUID clientID, final String clientTypeID) throws RemoteException {
     if (clientID == null) {
       return null;
     }
 
     final ClientInfo client = new ClientInfo(clientID, clientTypeID, user);
-    if (connections.containsKey(client)) {
-      return connections.get(client);
-    }
-
-    final T connection = doConnect(client);
-    synchronized (connections) {
-      connections.put(client, connection);
-    }
-
-    return connection;
+    return connect(client);
   }
 
   /** {@inheritDoc} */

@@ -112,6 +112,7 @@
 
     <rmic base="${build.base}" stubversion="1.2"
           includes="org/jminor/common/server/AbstractRemoteServer.class,
+                                         org/jminor/common/server/loadtest/RemoteLoadTestAdapter.class
                                          org/jminor/framework/server/EntityDbRemoteAdapter.class,
                                          org/jminor/framework/server/EntityDbRemoteServerAdmin.class">
       <classpath refid="lib.build"/>
@@ -361,6 +362,7 @@
     </copy>
     <copy file="${deploy.demos.policy}" todir="${deploy.demos.config.path}"/>
     <copy file="${deploy.loadtest.policy}" todir="${deploy.demos.config.path}"/>
+    <copy file="${deploy.loadtest.server.policy}" todir="${deploy.demos.config.path}"/>
     <copy file="${deploy.demos.truststore}" todir="${deploy.demos.config.path}"/>
     <copy todir="${deploy.demos.path}">
       <fileset dir="${basedir}/resources/demos/empdept/" excludes="**/*.jrxml,**/*.bak"/>

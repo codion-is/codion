@@ -14,6 +14,8 @@ import org.jminor.common.model.User;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+import org.jfree.data.xy.YIntervalSeries;
+import org.jfree.data.xy.YIntervalSeriesCollection;
 
 import java.awt.event.ActionListener;
 import java.io.Serializable;
@@ -50,8 +52,8 @@ public final class ConnectionPoolMonitor {
   private final XYSeries failedRequestsPerSecond = new XYSeries("Failed / second");
   private final XYSeries connectionRequestsPerSecond = new XYSeries("Requests / second");
   private final XYSeriesCollection connectionRequestsPerSecondCollection = new XYSeriesCollection();
-  private final XYSeries averageCheckOutTime = new XYSeries("Average check out time");
-  private final XYSeriesCollection checkOutTimeCollection = new XYSeriesCollection();
+  private final YIntervalSeries averageCheckOutTime = new YIntervalSeries("Average check out time");
+  private final YIntervalSeriesCollection checkOutTimeCollection = new YIntervalSeriesCollection();
 
   private long lastStatsUpdateTime = 0;
 
@@ -152,7 +154,7 @@ public final class ConnectionPoolMonitor {
     return connectionRequestsPerSecondCollection;
   }
 
-  public XYSeriesCollection getCheckOutTimeCollection() {
+  public YIntervalSeriesCollection getCheckOutTimeCollection() {
     return checkOutTimeCollection;
   }
 
@@ -234,7 +236,8 @@ public final class ConnectionPoolMonitor {
     connectionRequestsPerSecond.add(poolStats.getTimestamp(), poolStats.getRequestsPerSecond());
     delayedRequestsPerSecond.add(poolStats.getTimestamp(), poolStats.getDelayedRequestsPerSecond());
     failedRequestsPerSecond.add(poolStats.getTimestamp(), poolStats.getFailedRequestsPerSecond());
-    averageCheckOutTime.add(poolStats.getTimestamp(), poolStats.getAverageGetTime());
+    averageCheckOutTime.add(poolStats.getTimestamp(), poolStats.getAverageGetTime(),
+            poolStats.getMininumCheckOutTime(), poolStats.getMaximumCheckOutTime());
     final List<ConnectionPoolState> stats = sortAndRemoveDuplicates(poolStats.getFineGrainedStatistics());
     if (!stats.isEmpty()) {
       final XYSeries inPoolSeries = new XYSeries("Connections available in pool");

@@ -5,9 +5,19 @@ package org.jminor.framework.demos.chinook.testing;
 
 import org.jminor.common.db.exception.DbException;
 import org.jminor.common.model.CancelException;
+import org.jminor.common.model.Event;
+import org.jminor.common.model.Events;
+import org.jminor.common.model.ItemRandomizer;
+import org.jminor.common.model.LoadTest;
 import org.jminor.common.model.LoadTestModel;
 import org.jminor.common.model.User;
+import org.jminor.common.model.Util;
 import org.jminor.common.model.reports.ReportException;
+import org.jminor.common.server.ClientInfo;
+import org.jminor.common.server.RemoteServer;
+import org.jminor.common.server.ServerUtil;
+import org.jminor.common.server.loadtest.LoadTestServer;
+import org.jminor.common.server.loadtest.RemoteLoadTest;
 import org.jminor.common.ui.LoadTestPanel;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.DefaultEntityApplicationModel;
@@ -23,8 +33,17 @@ import org.jminor.framework.tools.testing.EntityLoadTestModel;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import java.awt.event.ActionListener;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.UUID;
 
 public final class ChinookLoadTest extends EntityLoadTestModel {
 
@@ -158,10 +177,104 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
     public void run() {
       try {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        new LoadTestPanel(new ChinookLoadTest()).showFrame();
+        final LoadTest loadTest;
+        if (Configuration.getBooleanValue(Configuration.LOAD_TEST_REMOTE)) {
+          loadTest = getRemoteLoadTest();
+        }
+        else {
+          loadTest = new ChinookLoadTest();
+        }
+
+        new LoadTestPanel(loadTest).showFrame();
       }
       catch (Exception e) {
         e.printStackTrace();
+      }
+    }
+  }
+
+  private static LoadTest getRemoteLoadTest() throws RemoteException, NotBoundException {
+    final RemoteServer server = ServerUtil.getServer("97.107.136.43", LoadTestServer.SERVER_NAME);
+
+    final String clientType = ChinookLoadTest.class.getSimpleName();
+    final ClientInfo info = new ClientInfo(UUID.randomUUID(), clientType, new User("scott", "tiger"));
+    info.setProperty("jminor.loadtest.className", "org.jminor.framework.demos.chinook.testing.ChinookLoadTest");
+
+    return initializeProxy((RemoteLoadTest) server.connect(info));
+  }
+
+  private static LoadTest initializeProxy(final RemoteLoadTest loadTest) {
+    final Event evtRefresh = Events.event();
+    new Timer(true).schedule(new TimerTask() {
+      public void run() {
+        evtRefresh.fire();
+      }
+    }, 0, 500);
+    final ItemRandomizer randomizerProxy = Util.initializeProxy(ItemRandomizer.class, new RemoteRandomizerHandler(loadTest, evtRefresh));
+
+    return Util.initializeProxy(LoadTest.class, new RemoteLoadTestHandler(loadTest, randomizerProxy, evtRefresh));
+  }
+
+  private static final class RemoteRandomizerHandler implements InvocationHandler {
+    private final Event evtRefresh;
+    private final RemoteLoadTest loadTest;
+
+    public RemoteRandomizerHandler(final RemoteLoadTest loadTest, final Event refreshEvent) {
+      this.loadTest = loadTest;
+      this.evtRefresh = refreshEvent;
+    }
+
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+      if (method.getName().endsWith("Listener")) {
+        evtRefresh.addListener((ActionListener) args[0]);
+        return null;
+      }
+      else if (method.getName().endsWith("Observer")) {
+        return evtRefresh.getObserver();
+      }
+      try {
+        final Method remoteMethod = RemoteLoadTest.class.getMethod(method.getName(), method.getParameterTypes());
+        return remoteMethod.invoke(loadTest, args);
+      }
+      catch (Exception e) {
+        throw Util.unwrapAndLog(e, InvocationTargetException.class, null);
+      }
+    }
+  }
+
+  private static final class RemoteLoadTestHandler implements InvocationHandler {
+    private final Event evtRefresh;
+    private final RemoteLoadTest loadTest;
+    private final ItemRandomizer randomizer;
+
+    public RemoteLoadTestHandler(final RemoteLoadTest loadTest, final ItemRandomizer randomizer, final Event refreshEvent) {
+      this.loadTest = loadTest;
+      this.randomizer = randomizer;
+      this.evtRefresh = refreshEvent;
+    }
+
+    public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
+      if (method.getName().equals("addExitListener")) {
+        return null;
+      }
+      else if (method.getName().endsWith("Listener")) {
+        evtRefresh.addListener((ActionListener) args[0]);
+        return null;
+      }
+      else if (method.getName().endsWith("Observer")) {
+        return evtRefresh.getObserver();
+      }
+      else if (method.getName().equals("getScenarioChooser")) {
+        return randomizer;
+      }
+      else {
+        try {
+          final Method remoteMethod = RemoteLoadTest.class.getMethod(method.getName(), method.getParameterTypes());
+          return remoteMethod.invoke(loadTest, args);
+        }
+        catch (Exception e) {
+          throw Util.unwrapAndLog(e, InvocationTargetException.class, null);
+        }
       }
     }
   }
