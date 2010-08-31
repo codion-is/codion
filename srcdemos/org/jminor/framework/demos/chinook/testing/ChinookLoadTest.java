@@ -3,20 +3,28 @@
  */
 package org.jminor.framework.demos.chinook.testing;
 
-import org.jminor.common.model.CancelException;
-import org.jminor.common.model.User;
-import org.jminor.common.model.LoadTestModel;
-import org.jminor.common.ui.LoadTestPanel;
 import org.jminor.common.db.exception.DbException;
+import org.jminor.common.model.CancelException;
+import org.jminor.common.model.LoadTestModel;
+import org.jminor.common.model.User;
+import org.jminor.common.model.reports.ReportException;
+import org.jminor.common.ui.LoadTestPanel;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.DefaultEntityApplicationModel;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
+import org.jminor.framework.client.model.EntityTableModel;
+import org.jminor.framework.client.model.reporting.EntityReportUtil;
 import org.jminor.framework.db.provider.EntityDbProviderFactory;
 import org.jminor.framework.demos.chinook.domain.Chinook;
+import org.jminor.framework.domain.EntityUtil;
+import org.jminor.framework.plugins.jasperreports.model.JasperReportsWrapper;
 import org.jminor.framework.tools.testing.EntityLoadTestModel;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import java.util.Collection;
+import java.util.HashMap;
 
 public final class ChinookLoadTest extends EntityLoadTestModel {
 
@@ -40,6 +48,31 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
       @Override
       public int getDefaultWeight() {
         return 3;
+      }
+    }, new LoadTestModel.AbstractUsageScenario("viewCustomerReport") {
+      @Override
+      protected void performScenario(final Object application) throws ScenarioException {
+        final EntityApplicationModel model = (EntityApplicationModel) application;
+        final EntityTableModel customerModel = model.getMainApplicationModel(Chinook.T_CUSTOMER).getTableModel();
+        selectRandomRow(customerModel);
+
+        final String reportPath = Configuration.getReportPath() + "/customer_report.jasper";
+        final Collection<Object> customerIDs =
+                EntityUtil.getDistinctPropertyValues(Chinook.CUSTOMER_CUSTOMERID, customerModel.getSelectedItems());
+        final HashMap<String, Object> reportParameters = new HashMap<String, Object>();
+        reportParameters.put("CUSTOMER_IDS", customerIDs);
+        try {
+          EntityReportUtil.fillReport(new JasperReportsWrapper(reportPath, reportParameters),
+                  customerModel.getDbProvider());
+        }
+        catch (ReportException e) {
+          throw new ScenarioException(e);
+        }
+      }
+
+      @Override
+      public int getDefaultWeight() {
+        return 1;
       }
     }, new LoadTestModel.AbstractUsageScenario("viewInvoice") {
       @Override

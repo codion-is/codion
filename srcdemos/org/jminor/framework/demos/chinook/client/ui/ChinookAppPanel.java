@@ -56,6 +56,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel {
 
     final EntityPanelProvider customerProvider = new EntityPanelProvider(T_CUSTOMER);
     customerProvider.setEditPanelClass(CustomerEditPanel.class);
+    customerProvider.setTablePanelClass(CustomerTablePanel.class);
     customerProvider.addDetailPanelProvider(invoiceProvider);
 
     final EntityPanelProvider invoiceLineProvider = new EntityPanelProvider(T_INVOICELINE);
