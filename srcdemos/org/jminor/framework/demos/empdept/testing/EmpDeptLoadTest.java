@@ -4,6 +4,7 @@
 package org.jminor.framework.demos.empdept.testing;
 
 import org.jminor.common.model.CancelException;
+import org.jminor.common.model.LoadTestModel;
 import org.jminor.common.model.User;
 import org.jminor.common.ui.LoadTestPanel;
 import org.jminor.framework.client.model.DefaultEntityApplicationModel;
@@ -49,20 +50,20 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
     return applicationModel;
   }
 
-  private static final class SelectDepartment extends UsageScenario {
+  private static final class SelectDepartment extends LoadTestModel.AbstractUsageScenario {
     @Override
     protected void performScenario(final Object application) throws ScenarioException {
       selectRandomRow(((EntityApplicationModel) application).getMainApplicationModel(EmpDept.T_DEPARTMENT).getTableModel());
     }
     @Override
-    protected int getDefaultWeight() {
+    public int getDefaultWeight() {
       return 10;
     }
   }
 
-  private static final class UpdateEmployee extends UsageScenario {
+  private static final class UpdateEmployee extends LoadTestModel.AbstractUsageScenario {
     @Override
-      protected void performScenario(final Object application) throws ScenarioException {
+    protected void performScenario(final Object application) throws ScenarioException {
       try {
         final EntityModel departmentModel = ((EntityApplicationModel) application).getMainApplicationModel(EmpDept.T_DEPARTMENT);
         selectRandomRow(departmentModel.getTableModel());
@@ -79,13 +80,13 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
         throw new ScenarioException(e);
       }
     }
-      @Override
-      protected int getDefaultWeight() {
-        return 5;
-      }
+    @Override
+    public int getDefaultWeight() {
+      return 5;
+    }
   }
 
-  private static final class InsertEmployee extends UsageScenario {
+  private static final class InsertEmployee extends LoadTestModel.AbstractUsageScenario {
     @Override
     protected void performScenario(final Object application) throws ScenarioException {
       try {
@@ -102,14 +103,14 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
       }
     }
     @Override
-    protected int getDefaultWeight() {
+    public int getDefaultWeight() {
       return 3;
     }
   }
 
-  private static final class InsertDepartment extends UsageScenario {
+  private static final class InsertDepartment extends LoadTestModel.AbstractUsageScenario {
     @Override
-      protected void performScenario(final Object application) throws ScenarioException {
+    protected void performScenario(final Object application) throws ScenarioException {
       try {
         final EntityModel departmentModel = ((EntityApplicationModel) application).getMainApplicationModel(EmpDept.T_DEPARTMENT);
         departmentModel.getEditModel().setValueMap(EntityUtil.createRandomEntity(EmpDept.T_DEPARTMENT, null));
@@ -119,16 +120,17 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
         throw new ScenarioException(e);
       }
     }
+
       @Override
-      protected int getDefaultWeight() {
-        return 1;
-      }
+    public int getDefaultWeight() {
+      return 1;
+    }
   }
 
-  private static final class LoginLogout extends UsageScenario {
+  private static final class LoginLogout extends LoadTestModel.AbstractUsageScenario {
     final Random random = new Random();
     @Override
-      protected void performScenario(final Object application) throws ScenarioException {
+    protected void performScenario(final Object application) throws ScenarioException {
       try {
         ((EntityApplicationModel) application).getDbProvider().disconnect();
         Thread.sleep(random.nextInt(1500));
@@ -136,10 +138,10 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
       }
       catch (InterruptedException e) {/**/}
     }
-      @Override
-      protected int getDefaultWeight() {
-        return 4;
-      }
+    @Override
+    public int getDefaultWeight() {
+      return 4;
+    }
   }
 
   public static void main(final String[] args) throws Exception {

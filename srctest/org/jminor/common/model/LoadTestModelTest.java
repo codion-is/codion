@@ -9,7 +9,7 @@ import java.util.Random;
 public class LoadTestModelTest {
 
   private static final User USER = new User("hello", "world");
-  private static final LoadTestModel.UsageScenario SCENARIO = new LoadTestModel.UsageScenario("test") {
+  private static final LoadTestModel.UsageScenario SCENARIO = new LoadTestModel.AbstractUsageScenario("test") {
     final Random random = new Random();
     @Override
     protected void performScenario(final Object application) throws LoadTestModel.ScenarioException {
@@ -51,9 +51,9 @@ public class LoadTestModelTest {
     assertNotNull(model.applicationCountObserver());
     assertNotNull(model.collectChartDataObserver());
     assertNotNull(model.maximumThinkTimeObserver());
-    assertNotNull(model.minimumThinkTimeObserver());
-    assertNotNull(model.pauseObserver());
-    assertNotNull(model.warningTimeObserver());
+    assertNotNull(model.getMinimumThinkTimeObserver());
+    assertNotNull(model.getPauseObserver());
+    assertNotNull(model.getWarningTimeObserver());
 
     assertNotNull(model.getMemoryUsageDataset());
     assertNotNull(model.getNumberOfApplicationsDataset());

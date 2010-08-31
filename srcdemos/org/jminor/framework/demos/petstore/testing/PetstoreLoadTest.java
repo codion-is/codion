@@ -5,6 +5,7 @@ package org.jminor.framework.demos.petstore.testing;
 
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.User;
+import org.jminor.common.model.LoadTestModel;
 import org.jminor.common.ui.LoadTestPanel;
 import org.jminor.framework.client.model.DefaultEntityApplicationModel;
 import org.jminor.framework.client.model.EntityApplicationModel;
@@ -20,7 +21,7 @@ import java.util.UUID;
 public final class PetstoreLoadTest extends EntityLoadTestModel {
 
   public PetstoreLoadTest() {
-    super(User.UNIT_TEST_USER, new UsageScenario("selectRecords") {
+    super(User.UNIT_TEST_USER, new LoadTestModel.AbstractUsageScenario("selectRecords") {
       @Override
       protected void performScenario(final Object application) throws ScenarioException {
         final EntityModel categoryModel = ((EntityApplicationModel) application).getMainApplicationModels().iterator().next();

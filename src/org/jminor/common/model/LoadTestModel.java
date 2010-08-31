@@ -5,12 +5,15 @@ package org.jminor.common.model;
 
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+import org.jfree.data.xy.YIntervalSeries;
+import org.jfree.data.xy.YIntervalSeriesCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,9 +23,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /**
- * A class for running multiple application instances for load testing purposes.
+ * A default LoadTest implementation.
  */
-public abstract class LoadTestModel {
+public abstract class LoadTestModel implements LoadTest {
 
   public static final int DEFAULT_CHART_DATA_UPDATE_INTERVAL_MS = 2000;
 
@@ -52,7 +55,7 @@ public abstract class LoadTestModel {
 
   private final Stack<ApplicationRunner> applications = new Stack<ApplicationRunner>();
   private final Collection<UsageScenario> usageScenarios;
-  private final RandomItemModel<UsageScenario> scenarioChooser;
+  private final ItemRandomizer<UsageScenario> scenarioChooser;
   private User user;
 
   private final Counter counter;
@@ -62,7 +65,8 @@ public abstract class LoadTestModel {
   private final XYSeries scenariosRunSeries = new XYSeries("Total");
   private final XYSeries delayedScenarioRunsSeries = new XYSeries("Warn. time exceeded");
 
-  private final XYSeriesCollection scenarioDurationCollection = new XYSeriesCollection();
+  private final YIntervalSeriesCollection scenarioDurationCollection = new YIntervalSeriesCollection();
+  private final XYSeriesCollection scenarioFailureCollection = new XYSeriesCollection();
 
   private final XYSeries minimumThinkTimeSeries = new XYSeries("Minimum think time");
   private final XYSeries maximumThinkTimeSeries = new XYSeries("Maximum think time");
@@ -79,7 +83,8 @@ public abstract class LoadTestModel {
   private final XYSeries maxMemoryCollection = new XYSeries("Maximum memory");
   private final XYSeriesCollection memoryUsageCollection = new XYSeriesCollection();
   private final Collection<XYSeries> usageSeries = new ArrayList<XYSeries>();
-  private final Collection<XYSeries> durationSeries = new ArrayList<XYSeries>();
+  private final Collection<YIntervalSeries> durationSeries = new ArrayList<YIntervalSeries>();
+  private final Collection<XYSeries> failureSeries = new ArrayList<XYSeries>();
 
   /**
    * Constructs a new LoadTestModel.
@@ -131,40 +136,18 @@ public abstract class LoadTestModel {
     setUpdateInterval(DEFAULT_CHART_DATA_UPDATE_INTERVAL_MS);
   }
 
-  /**
-   * @return the user to use when initializing new application instances
-   */
+  /** {@inheritDoc} */
   public final User getUser() {
     return user;
   }
 
-  /**
-   * @param user the user to use when initializing new application instances
-   */
+  /** {@inheritDoc} */
   public final void setUser(final User user) {
     this.user = user;
   }
 
-  /**
-   * @return the RandomItemModel used to select the next scenario to run
-   */
-  public final RandomItemModel<UsageScenario> getScenarioChooser() {
-    return scenarioChooser;
-  }
-
-  /**
-   * @return the usage scenarios used by this load test model
-   */
-  public final Collection<UsageScenario> getUsageScenarios() {
-    return usageScenarios;
-  }
-
-  /**
-   * @param usageScenarioName the name of the usage scenario to fetch
-   * @return the usage scenario with the given name
-   * @throws RuntimeException if no such scenario exists
-   */
-  public final UsageScenario getUsageScenario(final String usageScenarioName) {
+  /** {@inheritDoc} */
+  public UsageScenario getUsageScenario(final String usageScenarioName) {
     for (final UsageScenario scenario : usageScenarios) {
       if (scenario.getName().equals(usageScenarioName)) {
         return scenario;
@@ -174,44 +157,47 @@ public abstract class LoadTestModel {
     throw new IllegalArgumentException("UsageScenario not found: " + usageScenarioName);
   }
 
-  /**
-   * @return a dataset plotting the average scenario duration
-   */
-  public final XYSeriesCollection getScenarioDurationDataset() {
+  /** {@inheritDoc} */
+  public Collection<UsageScenario> getUsageScenarios() {
+    return Collections.unmodifiableCollection(usageScenarios);
+  }
+
+  /** {@inheritDoc} */
+  public final ItemRandomizer<UsageScenario> getScenarioChooser() {
+    return scenarioChooser;
+  }
+
+  /** {@inheritDoc} */
+  public final YIntervalSeriesCollection getScenarioDurationDataset() {
     return scenarioDurationCollection;
   }
 
-  /**
-   * @return a dataset plotting the think time
-   */
+  /** {@inheritDoc} */
   public final XYSeriesCollection getThinkTimeDataset() {
     return thinkTimeCollection;
   }
 
-  /**
-   * @return a dataset plotting the number of active applications
-   */
+  /** {@inheritDoc} */
   public final XYSeriesCollection getNumberOfApplicationsDataset() {
     return numberOfApplicationsCollection;
   }
 
-  /**
-   * @return a dataset plotting the number of runs each usage scenario is being run per second
-   */
+  /** {@inheritDoc} */
   public final XYSeriesCollection getUsageScenarioDataset() {
     return usageScenarioCollection;
   }
 
-  /**
-   * @return a dataset plotting the memory usage of this load test model
-   */
+  /** {@inheritDoc} */
+  public final XYSeriesCollection getUsageScenarioFailureDataset() {
+    return scenarioFailureCollection;
+  }
+
+  /** {@inheritDoc} */
   public final XYSeriesCollection getMemoryUsageDataset() {
     return memoryUsageCollection;
   }
 
-  /**
-   * Resets the accumulated chart data
-   */
+  /** {@inheritDoc} */
   public final void resetChartData() {
     scenariosRunSeries.clear();
     delayedScenarioRunsSeries.clear();
@@ -221,24 +207,20 @@ public abstract class LoadTestModel {
     allocatedMemoryCollection.clear();
     usedMemoryCollection.clear();
     maxMemoryCollection.clear();
-    for (final Object series : usageScenarioCollection.getSeries()) {
-      ((XYSeries) series).clear();
+    for (final XYSeries series : usageSeries) {
+      series.clear();
     }
-    for (final Object series : scenarioDurationCollection.getSeries()) {
-      ((XYSeries) series).clear();
+    for (final YIntervalSeries series : durationSeries) {
+      series.clear();
     }
   }
 
-  /**
-   * @return the the maximum time in milliseconds a work request has to finish
-   */
+  /** {@inheritDoc} */
   public final int getWarningTime() {
     return warningTime;
   }
 
-  /**
-   * @param warningTime the the maximum time in milliseconds a work request has to finish
-   */
+  /** {@inheritDoc} */
   public final void setWarningTime(final int warningTime) {
     if (warningTime <= 0) {
       throw new IllegalArgumentException("Warning time must be a positive integer");
@@ -250,16 +232,12 @@ public abstract class LoadTestModel {
     }
   }
 
-  /**
-   * @return the chart data update interval
-   */
+  /** {@inheritDoc} */
   public final int getUpdateInterval() {
     return updateInterval;
   }
 
-  /**
-   * @param updateInterval the chart data update interval
-   */
+  /** {@inheritDoc} */
   public final void setUpdateInterval(final int updateInterval) {
     if (updateInterval < 0) {
       throw new IllegalArgumentException("Update interval must be a positive integer");
@@ -272,23 +250,17 @@ public abstract class LoadTestModel {
     }
   }
 
-  /**
-   * @return the number of active applications
-   */
+  /** {@inheritDoc} */
   public final int getApplicationCount() {
     return applications.size();
   }
 
-  /**
-   * @return the number of applications to initialize per batch
-   */
+  /** {@inheritDoc} */
   public final int getApplicationBatchSize() {
     return applicationBatchSize;
   }
 
-  /**
-   * @param applicationBatchSize the number of applications to initialize per batch
-   */
+  /** {@inheritDoc} */
   public final void setApplicationBatchSize(final int applicationBatchSize) {
     if (applicationBatchSize <= 0) {
       throw new IllegalArgumentException("Application batch size must be a positive integer");
@@ -298,10 +270,7 @@ public abstract class LoadTestModel {
     evtApplicationBatchSizeChanged.fire();
   }
 
-  /**
-   * Adds a batch of applications.
-   * @see #setApplicationBatchSize(int)
-   */
+  /** {@inheritDoc} */
   public final void addApplicationBatch() {
     for (int i = 0; i < applicationBatchSize; i++) {
       final ApplicationRunner runner = new ApplicationRunner(this);
@@ -314,49 +283,36 @@ public abstract class LoadTestModel {
     }
   }
 
-  /**
-   * Removes one batch of applications.
-   * @see #setApplicationBatchSize(int)
-   */
+  /** {@inheritDoc} */
   public final void removeApplicationBatch() {
     for (int i = 0; i < applicationBatchSize && !applications.isEmpty(); i++) {
       removeApplication();
     }
   }
 
-  /**
-   * @return true if the load testing is paused
-   */
+  /** {@inheritDoc} */
   public final boolean isPaused() {
     return this.paused;
   }
 
-  /**
-   * @param value true if load testing should be paused
-   */
+  /** {@inheritDoc} */
   public final void setPaused(final boolean value) {
     this.paused = value;
     evtPausedChanged.fire();
   }
 
-  /**
-   * @return true if chart data is being collected
-   */
+  /** {@inheritDoc} */
   public final boolean isCollectChartData() {
     return collectChartData;
   }
 
-  /**
-   * @param value true if chart data should be collected
-   */
+  /** {@inheritDoc} */
   public final void setCollectChartData(final boolean value) {
     this.collectChartData = value;
     evtCollectChartDataChanged.fire();
   }
 
-  /**
-   * Removes all applications
-   */
+  /** {@inheritDoc} */
   public final void exit() {
     paused = false;
     synchronized (applications) {
@@ -367,16 +323,12 @@ public abstract class LoadTestModel {
     evtDoneExiting.fire();
   }
 
-  /**
-   * @return the maximum number of milliseconds that should pass between work requests
-   */
+  /** {@inheritDoc} */
   public final int getMaximumThinkTime() {
     return this.maximumThinkTime;
   }
 
-  /**
-   * @param maximumThinkTime the maximum number of milliseconds that should pass between work requests
-   */
+  /** {@inheritDoc} */
   public final void setMaximumThinkTime(final int maximumThinkTime) {
     if (maximumThinkTime <= 0) {
       throw new IllegalArgumentException("Maximum think time must be a positive integer");
@@ -386,16 +338,12 @@ public abstract class LoadTestModel {
     evtMaximumThinkTimeChanged.fire();
   }
 
-  /**
-   * @return the minimum number of milliseconds that should pass between work requests
-   */
+  /** {@inheritDoc} */
   public final int getMinimumThinkTime() {
     return this.minimumThinkTime;
   }
 
-  /**
-   * @param minimumThinkTime the minimum number of milliseconds that should pass between work requests
-   */
+  /** {@inheritDoc} */
   public final void setMinimumThinkTime(final int minimumThinkTime) {
     if (minimumThinkTime < 0) {
       throw new IllegalArgumentException("Minimum think time must be a positive integer");
@@ -405,20 +353,12 @@ public abstract class LoadTestModel {
     evtMinimumThinkTimeChanged.fire();
   }
 
-  /**
-   * Sets the with which to multiply the think time when logging in, this helps
-   * spread the application logins when creating a batch of application.
-   * @return the number with which to multiply the think time when logging in
-   */
+  /** {@inheritDoc} */
   public final int getLoginDelayFactor() {
     return this.loginDelayFactor;
   }
 
-  /**
-   * Sets the with which to multiply the think time when logging in, this helps
-   * spread the application logins when creating a batch of application.
-   * @param loginDelayFactor the number with which to multiply the think time when logging in
-   */
+  /** {@inheritDoc} */
   public final void setLoginDelayFactor(final int loginDelayFactor) {
     if (loginDelayFactor < 0) {
       throw new IllegalArgumentException("Login delay factor must be a positive integer");
@@ -428,59 +368,43 @@ public abstract class LoadTestModel {
     evtLoginDelayFactorChanged.fire();
   }
 
-  /**
-   * @param listener a listener notified when this load test model has finished removing all applications
-   */
+  /** {@inheritDoc} */
   public final void addExitListener(final ActionListener listener) {
     evtDoneExiting.addListener(listener);
   }
 
-  /**
-   * @return an observer notified each time the application batch size changes
-   */
+  /** {@inheritDoc} */
   public final EventObserver applicationBatchSizeObserver() {
     return evtApplicationBatchSizeChanged.getObserver();
   }
 
-  /**
-   * @return an observer notified each time the application count changes
-   */
+  /** {@inheritDoc} */
   public final EventObserver applicationCountObserver() {
     return evtApplicationtCountChanged.getObserver();
   }
 
-  /**
-   * @return an observer notified each time the maximum think time changes
-   */
+  /** {@inheritDoc} */
   public final EventObserver maximumThinkTimeObserver() {
     return evtMaximumThinkTimeChanged.getObserver();
   }
 
-  /**
-   * @return an observer notified each time the minimum think time changes
-   */
-  public final EventObserver minimumThinkTimeObserver() {
+  /** {@inheritDoc} */
+  public final EventObserver getMinimumThinkTimeObserver() {
     return evtMinimumThinkTimeChanged.getObserver();
   }
 
-  /**
-   * @return an observer notified each time the paused state changes
-   */
-  public final EventObserver pauseObserver() {
+  /** {@inheritDoc} */
+  public final EventObserver getPauseObserver() {
     return evtPausedChanged.getObserver();
   }
 
-  /**
-   * @return an observer notified each time the collect chart data state changes
-   */
+  /** {@inheritDoc} */
   public final EventObserver collectChartDataObserver() {
     return evtCollectChartDataChanged.getObserver();
   }
 
-  /**
-   * @return an observer notified each time the warning time changes
-   */
-  public final EventObserver warningTimeObserver() {
+  /** {@inheritDoc} */
+  public final EventObserver getWarningTimeObserver() {
     return evtWarningTimeChanged.getObserver();
   }
 
@@ -488,16 +412,12 @@ public abstract class LoadTestModel {
    * Selects a random scenario and runs it with the given application
    * @param application the application for running the next scenario
    * @return the name of the scenario that was run
+   * @throws ScenarioException any exception thrown by the work request
    */
-  protected String performWork(final Object application) {
+  protected String performWork(final Object application) throws ScenarioException {
     Util.rejectNullValue(application, "application");
     final String scenarioName = scenarioChooser.getRandomItem().getName();
-    try {
-      runScenario(scenarioName, application);
-    }
-    catch (Exception e) {
-      LOG.debug("Exception while running scenario: " + scenarioName + " with application: " + application, e);
-    }
+    runScenario(scenarioName, application);
 
     return scenarioName;
   }
@@ -543,8 +463,8 @@ public abstract class LoadTestModel {
     evtApplicationtCountChanged.fire();
   }
 
-  private RandomItemModel<UsageScenario> initializeScenarioChooser() {
-    final RandomItemModel<UsageScenario> model = new RandomItemModel<UsageScenario>();
+  private ItemRandomizer<UsageScenario> initializeScenarioChooser() {
+    final ItemRandomizer<UsageScenario> model = new ItemRandomizerModel<UsageScenario>();
     for (final UsageScenario scenario : this.usageScenarios) {
       model.addItem(scenario, scenario.getDefaultWeight());
     }
@@ -578,14 +498,16 @@ public abstract class LoadTestModel {
     memoryUsageCollection.addSeries(allocatedMemoryCollection);
     memoryUsageCollection.addSeries(usedMemoryCollection);
     usageScenarioCollection.addSeries(scenariosRunSeries);
-    scenarioDurationCollection.addSeries(warningTimeSeries);
     for (final UsageScenario usageScenario : this.usageScenarios) {
       final XYSeries series = new XYSeries(usageScenario.getName());
       usageScenarioCollection.addSeries(series);
       usageSeries.add(series);
-      final XYSeries durSeries = new XYSeries(usageScenario.getName());
-      scenarioDurationCollection.addSeries(durSeries);
-      durationSeries.add(durSeries);
+      final YIntervalSeries avgDurSeries = new YIntervalSeries(usageScenario.getName());
+      scenarioDurationCollection.addSeries(avgDurSeries);
+      durationSeries.add(avgDurSeries);
+      final XYSeries failSeries = new XYSeries(usageScenario.getName());
+      scenarioFailureCollection.addSeries(failSeries);
+      failureSeries.add(failSeries);
     }
     usageScenarioCollection.addSeries(delayedScenarioRunsSeries);
   }
@@ -604,8 +526,13 @@ public abstract class LoadTestModel {
     for (final XYSeries series : usageSeries) {
       series.add(time, counter.getScenarioRate((String) series.getKey()));
     }
-    for (final XYSeries series : durationSeries) {
-      series.add(time, counter.getAverageScenarioDuration((String) series.getKey()));
+    for (final YIntervalSeries series : durationSeries) {
+      final String scenario = (String) series.getKey();
+      series.add(time, counter.getAverageScenarioDuration(scenario),
+              counter.getMinimumScenarioDuration(scenario), counter.getMaximumScenarioDuration(scenario));
+    }
+    for (final XYSeries series : failureSeries) {
+      series.add(time, counter.getScenarioFailureRate((String) series.getKey()));
     }
   }
 
@@ -636,7 +563,13 @@ public abstract class LoadTestModel {
               String scenarioName = null;
               try {
                 loadTestModel.counter.incrementWorkRequests();
-                scenarioName = loadTestModel.performWork(application);
+                try {
+                  scenarioName = loadTestModel.performWork(application);
+                }
+                catch (ScenarioException e) {
+                  e.printStackTrace();
+                  LOG.debug("ScenarioException: " + scenarioName, e.getCause());
+                }
               }
               finally {
                 final long workTime = System.currentTimeMillis() - currentTime;
@@ -648,8 +581,7 @@ public abstract class LoadTestModel {
             }
           }
           catch (Exception e) {
-            e.printStackTrace();
-//            LOG.debug("Exception during during LoadTestModel.run() with application: " + application, e);
+            LOG.debug("Exception during during LoadTestModel.run() with application: " + application, e);
           }
         }
         loadTestModel.disconnectApplication(application);
@@ -680,9 +612,9 @@ public abstract class LoadTestModel {
   }
 
   /**
-   * Encapsulates a load test usage scenario.
+   * An abstract usage scenario.
    */
-  public abstract static class UsageScenario {
+  public abstract static class AbstractUsageScenario implements LoadTest.UsageScenario {
 
     private final String name;
     private int successfulRunCount = 0;
@@ -691,7 +623,7 @@ public abstract class LoadTestModel {
     /**
      * Instantiates a new UsageScenario using the simple class name as scenario name
      */
-    public UsageScenario() {
+    public AbstractUsageScenario() {
       this.name = getClass().getSimpleName();
     }
 
@@ -699,41 +631,31 @@ public abstract class LoadTestModel {
      * Instantiates a new UsageScenario with the given name
      * @param name the scenario name
      */
-    public UsageScenario(final String name) {
+    public AbstractUsageScenario(final String name) {
       this.name = name;
     }
 
-    /**
-     * @return the name of this scenario
-     */
+    /** {@inheritDoc} */
     public final String getName() {
       return this.name;
     }
 
-    /**
-     * @return the number of times this scenario has been successfully run
-     */
+    /** {@inheritDoc} */
     public final int getSuccessfulRunCount() {
       return successfulRunCount;
     }
 
-    /**
-     * @return the number of times this scenario has been unsuccessfully run
-     */
+    /** {@inheritDoc} */
     public final int getUnsuccessfulRunCount() {
       return unsuccessfulRunCount;
     }
 
-    /**
-     * @return the total number of times this scenario has been run
-     */
+    /** {@inheritDoc} */
     public final int getTotalRunCount() {
       return successfulRunCount + unsuccessfulRunCount;
     }
 
-    /**
-     * Resets the run counters
-     */
+    /** {@inheritDoc} */
     public final void resetRunCount() {
       successfulRunCount = 0;
       unsuccessfulRunCount = 0;
@@ -747,11 +669,7 @@ public abstract class LoadTestModel {
       return name;
     }
 
-    /**
-     * Runs this scenario with the given application
-     * @param application the application to use
-     * @throws ScenarioException in case of an exception
-     */
+    /** {@inheritDoc} */
     public final void run(final Object application) throws ScenarioException {
       if (application == null) {
         throw new IllegalArgumentException("Can not run without an application");
@@ -770,10 +688,8 @@ public abstract class LoadTestModel {
       }
     }
 
-    /**
-     * @return the default weight for this scenario, 1 by default
-     */
-    protected int getDefaultWeight() {
+    /** {@inheritDoc} */
+    public int getDefaultWeight() {
       return 1;
     }
 
@@ -799,32 +715,14 @@ public abstract class LoadTestModel {
     protected void cleanup(final Object application) {}
   }
 
-  /**
-   * An exception originating from a scenario run
-   */
-  public static final class ScenarioException extends Exception {
-
-    /**
-     * Instantiates a new ScenarioException.
-     */
-    public ScenarioException() {
-      super();
-    }
-
-    /**
-     * Instantiates a new ScenarioException.
-     * @param cause the root cause
-     */
-    public ScenarioException(final Throwable cause) {
-      super(cause);
-    }
-  }
-
   private static final class Counter {
 
     private final Collection<UsageScenario> usageScenarios;
     private final Map<String, Integer> usageScenarioRates = new HashMap<String, Integer>();
-    private final Map<String, Integer> usageScenarioDurations = new HashMap<String, Integer>();
+    private final Map<String, Integer> usageScenarioAvgDurations = new HashMap<String, Integer>();
+    private final Map<String, Integer> usageScenarioMaxDurations = new HashMap<String, Integer>();
+    private final Map<String, Integer> usageScenarioMinDurations = new HashMap<String, Integer>();
+    private final Map<String, Double> usageScenarioFailures = new HashMap<String, Double>();
     private final Map<String, Collection<Integer>> scenarioDurations = new HashMap<String, Collection<Integer>>();
 
     private int workRequestsPerSecond = 0;
@@ -845,12 +743,36 @@ public abstract class LoadTestModel {
       return delayedWorkRequestsPerSecond;
     }
 
-    private int getAverageScenarioDuration(final String scenarioName) {
-      if (!usageScenarioDurations.containsKey(scenarioName)) {
+    private int getMinimumScenarioDuration(final String scenarioName) {
+      if (!usageScenarioMinDurations.containsKey(scenarioName)) {
         return 0;
       }
 
-      return usageScenarioDurations.get(scenarioName);
+      return usageScenarioMinDurations.get(scenarioName);
+    }
+
+    private int getMaximumScenarioDuration(final String scenarioName) {
+      if (!usageScenarioMaxDurations.containsKey(scenarioName)) {
+        return 0;
+      }
+
+      return usageScenarioMaxDurations.get(scenarioName);
+    }
+
+    private int getAverageScenarioDuration(final String scenarioName) {
+      if (!usageScenarioAvgDurations.containsKey(scenarioName)) {
+        return 0;
+      }
+
+      return usageScenarioAvgDurations.get(scenarioName);
+    }
+
+    private double getScenarioFailureRate(final String scenarioName) {
+      if (!usageScenarioFailures.containsKey(scenarioName)) {
+        return 0;
+      }
+
+      return usageScenarioFailures.get(scenarioName);
     }
 
     private int getScenarioRate(final String scenarioName) {
@@ -886,14 +808,28 @@ public abstract class LoadTestModel {
         delayedWorkRequestsPerSecond = (int) (delayedWorkRequestCounter / (double) elapsedSeconds);
         for (final UsageScenario scenario : usageScenarios) {
           usageScenarioRates.put(scenario.getName(), (int) (scenario.getTotalRunCount() / elapsedSeconds));
-          int totalDuration = 0;
+          final double failures = scenario.getUnsuccessfulRunCount();
+          usageScenarioFailures.put(scenario.getName(), failures);
           synchronized (scenarioDurations) {
             final Collection<Integer> durations = scenarioDurations.get(scenario.getName());
             if (durations != null && durations.size() > 0) {
+              int totalDuration = 0;
+              int minDuration = -1;
+              int maxDuration = -1;
               for (final Integer duration : durations) {
                 totalDuration += duration;
+                if (minDuration == -1) {
+                  minDuration = duration;
+                  maxDuration = duration;
+                }
+                else {
+                  minDuration = Math.min(minDuration, duration);
+                  maxDuration = Math.max(maxDuration, duration);
+                }
               }
-              usageScenarioDurations.put(scenario.getName(), totalDuration / durations.size());
+              usageScenarioAvgDurations.put(scenario.getName(), totalDuration / durations.size());
+              usageScenarioMinDurations.put(scenario.getName(), minDuration);
+              usageScenarioMaxDurations.put(scenario.getName(), maxDuration);
             }
           }
         }

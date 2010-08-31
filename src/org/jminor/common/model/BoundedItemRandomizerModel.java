@@ -4,7 +4,7 @@
 package org.jminor.common.model;
 
 /**
- * A RandomItemModel with the added constraint that the total item weights can not exceed a defined maximum.
+ * A ItemRandomizer with the added constraint that the total item weights can not exceed a defined maximum.
  * When the weight of one item is incremented the weight of another is decremented in a round robin kind of fashion
  * and when a item weight is decremented the weight of another is incremented.<br>
  * User: Björn Darri<br>
@@ -12,7 +12,7 @@ package org.jminor.common.model;
  * Time: 21:26:00<br>
  * @param <T> the type of item this random item model returns
  */
-public final class BoundedRandomItemModel<T> extends RandomItemModel<T> {
+public final class BoundedItemRandomizerModel<T> extends ItemRandomizerModel<T> {
 
   private final Object lock = new Object();
   private final int weightBounds;
@@ -22,7 +22,7 @@ public final class BoundedRandomItemModel<T> extends RandomItemModel<T> {
    * Instantiates a new BoundedRandomItemModel with a default bounded weight of 100.
    * @param items the items
    */
-  public BoundedRandomItemModel(final T... items) {
+  public BoundedItemRandomizerModel(final T... items) {
     this(100, items);
   }
 
@@ -31,7 +31,7 @@ public final class BoundedRandomItemModel<T> extends RandomItemModel<T> {
    * @param boundedWeight the maximum total weight
    * @param items the items
    */
-  public BoundedRandomItemModel(final int boundedWeight, final T... items) {
+  public BoundedItemRandomizerModel(final int boundedWeight, final T... items) {
     if (boundedWeight <= 0) {
       throw new IllegalArgumentException("Bounded weight must be a positive integer");
     }
@@ -51,7 +51,7 @@ public final class BoundedRandomItemModel<T> extends RandomItemModel<T> {
 
   /** {@inheritDoc} */
   @Override
-  public void increment(final T item) {
+  public void incrementWeight(final T item) {
     synchronized (lock) {
       final RandomItem randomItem = getRandomItem(item);
       if (randomItem.getWeight() >= weightBounds) {
@@ -59,14 +59,14 @@ public final class BoundedRandomItemModel<T> extends RandomItemModel<T> {
       }
 
       decrementWeight(randomItem);
-      getRandomItem(item).increment();
+      getRandomItem(item).incrementWeight();
     }
     fireWeightsChangedEvent();
   }
 
   /** {@inheritDoc} */
   @Override
-  public void decrement(final T item) {
+  public void decrementWeight(final T item) {
     synchronized (lock) {
       final RandomItem<T> randomItem = getRandomItem(item);
       if (randomItem.getWeight() == 0) {
@@ -74,7 +74,7 @@ public final class BoundedRandomItemModel<T> extends RandomItemModel<T> {
       }
 
       incrementWeight(randomItem);
-      randomItem.decrement();
+      randomItem.decrementWeight();
     }
     fireWeightsChangedEvent();
   }
@@ -101,12 +101,12 @@ public final class BoundedRandomItemModel<T> extends RandomItemModel<T> {
 
   private void incrementWeight(final RandomItem exclude) {
     lastAffected = getNextItem(exclude, false);
-    lastAffected.increment();
+    lastAffected.incrementWeight();
   }
 
   private void decrementWeight(final RandomItem exclude) {
     lastAffected = getNextItem(exclude, true);
-    lastAffected.decrement();
+    lastAffected.decrementWeight();
   }
 
   private RandomItem<T> getNextItem(final RandomItem exclude, final boolean nonEmpty) {

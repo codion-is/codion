@@ -6,7 +6,7 @@ package org.jminor.common.model;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-public class RandomItemModelTest {
+public class ItemRandomizerModelTest {
 
   @Test
   public void test() {
@@ -14,58 +14,58 @@ public class RandomItemModelTest {
     final Object two = "two";
     final Object three = "three";
 
-    final RandomItemModel<Object> model = new RandomItemModel<Object>(0, one, two, three);
+    final ItemRandomizerModel<Object> model = new ItemRandomizerModel<Object>(0, one, two, three);
     assertNotNull(model.getRandom());
     assertEquals(3, model.getItemCount());
     assertEquals(3, model.getItems().size());
 
-    model.increment(three);
+    model.incrementWeight(three);
     assertEquals(three, model.getRandomItem());
 
-    model.decrement(three);
+    model.decrementWeight(three);
 
-    model.increment(one);
+    model.incrementWeight(one);
     assertEquals(1, model.getWeight(one));
-    model.increment(two);
+    model.incrementWeight(two);
     assertEquals(1, model.getWeight(two));
-    model.increment(three);
+    model.incrementWeight(three);
     assertEquals(1, model.getWeight(three));
 
     assertEquals(Double.valueOf(1/3d), Double.valueOf(model.getWeightRatio(one)));
 
-    model.increment(three);
+    model.incrementWeight(three);
     assertEquals(2, model.getWeight(three));
-    model.increment(three);
+    model.incrementWeight(three);
     assertEquals(3, model.getWeight(three));
-    model.increment(three);
+    model.incrementWeight(three);
     assertEquals(4, model.getWeight(three));
 
     assertEquals(Double.valueOf(4/6d), Double.valueOf(model.getWeightRatio(three)));
 
-    model.increment(one);
+    model.incrementWeight(one);
     assertEquals(2, model.getWeight(one));
 
     assertEquals(Double.valueOf(2/7d), Double.valueOf(model.getWeightRatio(one)));
 
-    model.increment(two);
+    model.incrementWeight(two);
     assertEquals(2, model.getWeight(two));
 
     assertEquals(Double.valueOf(2/8d), Double.valueOf(model.getWeightRatio(one)));
     assertEquals(Double.valueOf(2/8d), Double.valueOf(model.getWeightRatio(two)));
     assertEquals(Double.valueOf(4/8d), Double.valueOf(model.getWeightRatio(three)));
 
-    model.decrement(one);
+    model.decrementWeight(one);
     assertEquals(1, model.getWeight(one));
-    model.decrement(two);
+    model.decrementWeight(two);
     assertEquals(1, model.getWeight(two));
 
-    model.decrement(one);
+    model.decrementWeight(one);
     assertEquals(0, model.getWeight(one));
-    model.decrement(two);
+    model.decrementWeight(two);
     assertEquals(0, model.getWeight(two));
 
     try {
-      model.decrement(one);
+      model.decrementWeight(one);
       fail();
     }
     catch (Exception e) {}

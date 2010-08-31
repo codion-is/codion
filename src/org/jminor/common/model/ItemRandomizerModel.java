@@ -8,25 +8,9 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * RandomItemModel provides a way for randomly choosing an item based on a weight value.
- *
- * <pre>
- * Object one = new Object();
- * Object two = new Object();
- * Object three = new Object();
- *
- * RandomItemModel model = new RandomItemModel(one, two, three);
- *
- * model.setWeight(one, 10);
- * model.setWeight(two, 60);
- * model.setWeight(three, 30);
- *
- * //10% chance of getting 'one', 60% chance of getting 'two' and 30% chance of getting 'three'.
- * Object random = model.getRandomItem();
- * </pre>
- * @param <T> the type of item this random item model returns
+ * A default ItemRandomizer implementation.
  */
-public class RandomItemModel<T> {
+public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
 
   /**
    * An Event fired when a weight value has changed
@@ -36,14 +20,14 @@ public class RandomItemModel<T> {
   /**
    * The items contained in this model
    */
-  private final List<RandomItem<T>> items = new ArrayList<RandomItem<T>>();
+  private final List<ItemRandomizer.RandomItem<T>> items = new ArrayList<ItemRandomizer.RandomItem<T>>();
 
   private final Random random = new Random();
 
   /**
    * Instantiates a new empty RandomItemModel.
    */
-  public RandomItemModel() {
+  public ItemRandomizerModel() {
     this(0);
   }
 
@@ -52,92 +36,58 @@ public class RandomItemModel<T> {
    * @param defaultWeight the default weight to assign to each intial item
    * @param items the items to add to this model
    */
-  public RandomItemModel(final int defaultWeight, final T... items) {
+  public ItemRandomizerModel(final int defaultWeight, final T... items) {
     if (items != null) {
       for (final T item : items) {
-        this.items.add(new RandomItem<T>(item, defaultWeight));
+        this.items.add(new DefaultRandomItem<T>(item, defaultWeight));
       }
     }
   }
 
-  /**
-   * Adds the given item to this model with the given weight value.
-   * @param item the item to add
-   * @param weight the initial weight to assign to the item
-   */
+  /** {@inheritDoc} */
   public void addItem(final T item, final int weight) {
-    items.add(new RandomItem<T>(item, weight));
+    items.add(new DefaultRandomItem<T>(item, weight));
   }
 
-  /**
-   * Increments the weight of the given item by one
-   * @param item the item
-   */
-  public void increment(final T item) {
-    getRandomItem(item).increment();
+  /** {@inheritDoc} */
+  public void incrementWeight(final T item) {
+    getRandomItem(item).incrementWeight();
     evtWeightsChanged.fire();
   }
 
-  /**
-   * Decrements the weight of the given item by one
-   * @param item the item
-   * @throws IllegalStateException in case the weight is 0
-   */
-  public void decrement(final T item) {
-    getRandomItem(item).decrement();
+  /** {@inheritDoc} */
+  public void decrementWeight(final T item) {
+    getRandomItem(item).decrementWeight();
     evtWeightsChanged.fire();
   }
 
-  /**
-   * Sets the weight of the given item
-   * @param item the item
-   * @param weight the value
-   */
+  /** {@inheritDoc} */
   public void setWeight(final T item, final int weight) {
     getRandomItem(item).setWeight(weight);
     evtWeightsChanged.fire();
   }
 
-  /**
-   * Adds the given item to this model with default weight of 0.
-   * @param item the item to add
-   */
+  /** {@inheritDoc} */
   public final void addItem(final T item) {
     addItem(item, 0);
   }
 
-  /**
-   * @return the items in this model.
-   */
-  public final List<RandomItem<T>> getItems() {
+  /** {@inheritDoc} */
+  public final List<ItemRandomizer.RandomItem<T>> getItems() {
     return items;
   }
 
-  /**
-   * @return a Random instance.
-   */
-  public final Random getRandom() {
-    return random;
-  }
-
-  /**
-   * @return the number of items in this model.
-   */
+  /** {@inheritDoc} */
   public final int getItemCount() {
     return items.size();
   }
 
-  /**
-   * @return an Event which fires each time a weight has been changed.
-   */
+  /** {@inheritDoc} */
   public final EventObserver getWeightsObserver() {
     return evtWeightsChanged.getObserver();
   }
 
-  /**
-   * Fetches a random item from this model based on the item weights.
-   * @return a randomly chosen item.
-   */
+  /** {@inheritDoc} */
   public final T getRandomItem() {
     final int totalWeights = getTotalWeights();
     if (totalWeights == 0) {
@@ -146,7 +96,7 @@ public class RandomItemModel<T> {
 
     final int randomNumber = random.nextInt(totalWeights + 1);
     int position = 0;
-    for (final RandomItem<T> item : items) {
+    for (final ItemRandomizer.RandomItem<T> item : items) {
       position += item.getWeight();
       if (randomNumber <= position && item.getWeight() > 0) {
         return item.getItem();
@@ -156,11 +106,7 @@ public class RandomItemModel<T> {
     throw new IllegalArgumentException("getRandomItem did not find an item");
   }
 
-  /**
-   * Returns this items share in the total weights as a floating point number between 0 and 1
-   * @param item the item
-   * @return the ratio of the total weights held by the given item
-   */
+  /** {@inheritDoc} */
   public final double getWeightRatio(final T item) {
     final int totalWeights = getTotalWeights();
     if (totalWeights == 0) {
@@ -170,11 +116,7 @@ public class RandomItemModel<T> {
     return getWeight(item) / (double) totalWeights;
   }
 
-  /**
-   * Returns the weight of the given item.
-   * @param item the item
-   * @return the item weight
-   */
+  /** {@inheritDoc} */
   public final int getWeight(final T item) {
     return getRandomItem(item).getWeight();
   }
@@ -185,8 +127,8 @@ public class RandomItemModel<T> {
    * @return the RandomItem
    * @throws RuntimeException in case the item is not found
    */
-  protected final RandomItem<T> getRandomItem(final T item) {
-    for (final RandomItem<T> randomItem : items) {
+  protected final ItemRandomizer.RandomItem<T> getRandomItem(final T item) {
+    for (final ItemRandomizer.RandomItem<T> randomItem : items) {
       if (randomItem.getItem().equals(item)) {
         return randomItem;
       }
@@ -202,9 +144,16 @@ public class RandomItemModel<T> {
     evtWeightsChanged.fire();
   }
 
+  /**
+   * @return a Random instance.
+   */
+  protected final Random getRandom() {
+    return random;
+  }
+
   private int getTotalWeights() {
     int sum = 0;
-    for (final RandomItem item : items) {
+    for (final ItemRandomizer.RandomItem item : items) {
       sum += item.getWeight();
     }
 
@@ -214,7 +163,7 @@ public class RandomItemModel<T> {
   /**
    * A class encapsulating an Object item and a integer weight value.
    */
-  public static final class RandomItem<T> {
+  private static final class DefaultRandomItem<T> implements ItemRandomizer.RandomItem<T> {
 
     private final T item;
     private int weight = 0;
@@ -224,7 +173,7 @@ public class RandomItemModel<T> {
      * @param item the item
      * @param weight the random selection weight to assign to this item
      */
-    public RandomItem(final T item, final int weight) {
+    private DefaultRandomItem(final T item, final int weight) {
       if (weight < 0) {
         throw new IllegalStateException("Weight can not be negative");
       }
@@ -232,16 +181,12 @@ public class RandomItemModel<T> {
       this.weight = weight;
     }
 
-    /**
-     * @return the random weight assigned to this item
-     */
+    /** {@inheritDoc} */
     public int getWeight() {
       return weight;
     }
 
-    /**
-     * @return the item this random item represents
-     */
+    /** {@inheritDoc} */
     public T getItem() {
       return item;
     }
@@ -255,7 +200,7 @@ public class RandomItemModel<T> {
   /** {@inheritDoc} */
     @Override
     public boolean equals(final Object obj) {
-      return obj instanceof RandomItem && (((RandomItem) obj).item.equals(item));
+      return obj instanceof ItemRandomizer.RandomItem && (((ItemRandomizer.RandomItem) obj).getItem().equals(item));
     }
 
   /** {@inheritDoc} */
@@ -264,11 +209,13 @@ public class RandomItemModel<T> {
       return item.hashCode();
     }
 
-    void increment() {
+    /** {@inheritDoc} */
+    public void incrementWeight() {
       weight++;
     }
 
-    void decrement() {
+    /** {@inheritDoc} */
+    public void decrementWeight() {
       if (weight == 0) {
         throw new IllegalStateException("Weight can not be negative");
       }
@@ -276,7 +223,8 @@ public class RandomItemModel<T> {
       weight--;
     }
 
-    private void setWeight(final int weight) {
+    /** {@inheritDoc} */
+    public void setWeight(final int weight) {
       if (weight < 0) {
         throw new IllegalStateException("Weight can not be negative");
       }

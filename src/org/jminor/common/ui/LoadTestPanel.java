@@ -3,6 +3,7 @@
  */
 package org.jminor.common.ui;
 
+import org.jminor.common.model.LoadTest;
 import org.jminor.common.model.LoadTestModel;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
@@ -21,6 +22,8 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.renderer.xy.DeviationRenderer;
+import org.jfree.chart.renderer.xy.XYSplineRenderer;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -29,6 +32,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JSpinner;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import java.awt.BorderLayout;
@@ -49,13 +53,13 @@ public final class LoadTestPanel extends JPanel {
 
   private static final int DEFAULT_MEMORY_USAGE_UPDATE_INTERVAL_MS = 2000;
   private static final double DEFAULT_SCREEN_SIZE_RATIO = 0.75;
-  private final LoadTestModel loadTestModel;
+  private final LoadTest loadTestModel;
 
   /**
    * Constructs a new LoadTestPanel.
    * @param loadTestModel the LoadTestModel to base this panel on
    */
-  public LoadTestPanel(final LoadTestModel loadTestModel) {
+  public LoadTestPanel(final LoadTest loadTestModel) {
     Util.rejectNullValue(loadTestModel, "loadTestModel");
     this.loadTestModel = loadTestModel;
     initializeUI();
@@ -64,7 +68,7 @@ public final class LoadTestPanel extends JPanel {
   /**
    * @return the load test model this panel is based on
    */
-  public LoadTestModel getModel() {
+  public LoadTest getModel() {
     return loadTestModel;
   }
 
@@ -125,7 +129,7 @@ public final class LoadTestPanel extends JPanel {
   }
 
   private JPanel initializeScenarioPanel() {
-    final RandomItemPanel scenarioBase = new RandomItemPanel<LoadTestModel.UsageScenario>(loadTestModel.getScenarioChooser());
+    final ItemRandomizerPanel scenarioBase = new ItemRandomizerPanel<LoadTestModel.UsageScenario>(loadTestModel.getScenarioChooser());
     scenarioBase.setBorder(BorderFactory.createTitledBorder("Usage scenarios"));
 
     return scenarioBase;
@@ -229,6 +233,10 @@ public final class LoadTestPanel extends JPanel {
     setColors(scenarioDurationChart);
     final ChartPanel scenarioDurationChartPanel = new ChartPanel(scenarioDurationChart);
     scenarioDurationChartPanel.setBorder(BorderFactory.createEtchedBorder());
+    
+    final DeviationRenderer renderer = new DeviationRenderer();
+    renderer.setBaseShapesVisible(false);
+    scenarioDurationChart.getXYPlot().setRenderer(renderer);
 
     final JFreeChart thinkTimeChart = ChartFactory.createXYStepChart(null,
             null, null, loadTestModel.getThinkTimeDataset(), PlotOrientation.VERTICAL, true, true, false);
@@ -248,25 +256,43 @@ public final class LoadTestPanel extends JPanel {
     final ChartPanel usageScenarioChartPanel = new ChartPanel(usageScenarioChart);
     usageScenarioChartPanel.setBorder(BorderFactory.createEtchedBorder());
 
+    final JFreeChart failureChart = ChartFactory.createXYStepChart(null,
+            null, null, loadTestModel.getUsageScenarioFailureDataset(), PlotOrientation.VERTICAL, true, true, false);
+    setColors(failureChart);
+    final ChartPanel failureChartPanel = new ChartPanel(failureChart);
+    failureChartPanel.setBorder(BorderFactory.createEtchedBorder());
+
     final JFreeChart memoryUsageChart = ChartFactory.createXYStepChart(null,
             null, null, loadTestModel.getMemoryUsageDataset(), PlotOrientation.VERTICAL, true, true, false);
     setColors(memoryUsageChart);
     final ChartPanel memoryUsageChartPanel = new ChartPanel(memoryUsageChart);
     memoryUsageChartPanel.setBorder(BorderFactory.createEtchedBorder());
 
-    final JPanel chartBase = new JPanel(new GridLayout(3, 2, 0, 0));
     usageScenarioChartPanel.setBorder(BorderFactory.createTitledBorder("Scenarios run per second"));
     thinkTimeChartPanel.setBorder(BorderFactory.createTitledBorder("Think time (ms)"));
     scenarioDurationChartPanel.setBorder(BorderFactory.createTitledBorder("Scenario duration (ms)"));
     numberOfApplicationsChartPanel.setBorder(BorderFactory.createTitledBorder("Application count"));
     memoryUsageChartPanel.setBorder(BorderFactory.createTitledBorder("Memory usage (MB)"));
+    failureChartPanel.setBorder(BorderFactory.createTitledBorder("Scenario failure rate"));
 
-    chartBase.add(usageScenarioChartPanel);
-    chartBase.add(thinkTimeChartPanel);
-    chartBase.add(scenarioDurationChartPanel);
-    chartBase.add(numberOfApplicationsChartPanel);
-    chartBase.add(memoryUsageChartPanel);
-    
+
+
+    final JPanel two = new JPanel(new GridLayout(5, 1, 0, 0));
+
+    two.add(usageScenarioChartPanel);
+    two.add(failureChartPanel);
+    two.add(memoryUsageChartPanel);
+    two.add(thinkTimeChartPanel);
+    two.add(numberOfApplicationsChartPanel);
+
+    final JPanel chartBase = new JPanel(new BorderLayout(0, 0));
+
+    final JTabbedPane tabPane = new JTabbedPane();
+    tabPane.addTab("Scenario durations", scenarioDurationChartPanel);
+    tabPane.addTab("Overview", two);
+
+    chartBase.add(tabPane);
+
     return chartBase;
   }
 
@@ -278,19 +304,19 @@ public final class LoadTestPanel extends JPanel {
     ((JSpinner.DefaultEditor) spnMaxThinkTime.getEditor()).getTextField().setColumns(3);
 
     final SpinnerNumberModel minSpinnerModel = new IntBeanSpinnerValueLink(loadTestModel, "minimumThinkTime",
-            loadTestModel.minimumThinkTimeObserver()).getSpinnerModel();
+            loadTestModel.getMinimumThinkTimeObserver()).getSpinnerModel();
     minSpinnerModel.setStepSize(10);
     final JSpinner spnMinThinkTimeField = new JSpinner(minSpinnerModel);
     ((JSpinner.DefaultEditor) spnMinThinkTimeField.getEditor()).getTextField().setColumns(3);
 
     final SpinnerNumberModel warningSpinnerModel = new IntBeanSpinnerValueLink(loadTestModel, "warningTime",
-            loadTestModel.warningTimeObserver()).getSpinnerModel();
+            loadTestModel.getWarningTimeObserver()).getSpinnerModel();
     warningSpinnerModel.setStepSize(10);
     final JSpinner spnWarningTime = new JSpinner(warningSpinnerModel);
     ((JSpinner.DefaultEditor) spnWarningTime.getEditor()).getTextField().setColumns(3);
     spnWarningTime.setToolTipText("A work request is considered 'delayed' if the time it takes to process it exceeds this value (ms)");
 
-    final ToggleBeanValueLink pauseControl = Controls.toggleControl(loadTestModel, "paused", "Pause", loadTestModel.pauseObserver());
+    final ToggleBeanValueLink pauseControl = Controls.toggleControl(loadTestModel, "paused", "Pause", loadTestModel.getPauseObserver());
     pauseControl.setMnemonic('P');
 
     final FlexibleGridLayout layout = new FlexibleGridLayout(4, 2, 5, 5, true, false);
@@ -312,6 +338,10 @@ public final class LoadTestPanel extends JPanel {
   private void setColors(final JFreeChart chart) {
     chart.getXYPlot().setBackgroundPaint(Color.BLACK);
     chart.setBackgroundPaint(this.getBackground());
+    final XYSplineRenderer renderer = new XYSplineRenderer();
+    renderer.setBaseShapesVisible(false);
+    chart.getXYPlot().setRenderer(renderer);
+
   }
 
   private static final class ExitListener implements ActionListener {

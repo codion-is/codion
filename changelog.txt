@@ -2094,3 +2094,6 @@
   ClientMonitorPanel, disconnect action added to list popup menu
   LoadTestModel/Panel, average scenario duration added
   Log4j replaced with logback
+  Interfaced load test classes
+  ItemRandomizer interface added
+  RandomItemModel renamed to ItemRandomizerModel

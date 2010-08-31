@@ -3,7 +3,8 @@
  */
 package org.jminor.common.ui;
 
-import org.jminor.common.model.RandomItemModel;
+import org.jminor.common.model.ItemRandomizer;
+import org.jminor.common.model.ItemRandomizerModel;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.control.AbstractValueLink;
 import org.jminor.common.ui.control.LinkType;
@@ -19,26 +20,26 @@ import javax.swing.event.ChangeListener;
 import java.awt.BorderLayout;
 
 /**
- * A default UI for the RandomItemModel.
+ * A default UI for the ItemRandomizer class.
  */
-public final class RandomItemPanel<T> extends JPanel {
+public final class ItemRandomizerPanel<T> extends JPanel {
 
-  private final RandomItemModel<T> model;
+  private final ItemRandomizer<T> model;
 
   /**
    * Instantiates a new RandomItemPanel.
-   * @param randomItemModel the RandomItemModel to base this panel on
+   * @param itemRandomizer the ItemRandomizer to base this panel on
    */
-  public RandomItemPanel(final RandomItemModel<T> randomItemModel) {
-    Util.rejectNullValue(randomItemModel, "model");
-    this.model = randomItemModel;
+  public ItemRandomizerPanel(final ItemRandomizer<T> itemRandomizer) {
+    Util.rejectNullValue(itemRandomizer, "model");
+    this.model = itemRandomizer;
     initializeUI();
   }
 
   /**
-   * @return the RandomItemModel this panel is based on
+   * @return the randomizer this panel is based on
    */
-  public RandomItemModel<T> getModel() {
+  public ItemRandomizer<T> getModel() {
     return model;
   }
 
@@ -48,7 +49,7 @@ public final class RandomItemPanel<T> extends JPanel {
   private void initializeUI() {
     final int count = model.getItemCount();
     setLayout(new FlexibleGridLayout(count * 2, 1, 5, 5, true, false));
-    for (final RandomItemModel.RandomItem<T> item : model.getItems()) {
+    for (final ItemRandomizer.RandomItem<T> item : model.getItems()) {
       add(new JLabel(item.getItem().toString()));
       add(initializeWeightPanel(item));
     }
@@ -59,7 +60,7 @@ public final class RandomItemPanel<T> extends JPanel {
    * @param item the item for which to create a configuration panel
    * @return a conrol panel for the item weight
    */
-  private JPanel initializeWeightPanel(final RandomItemModel.RandomItem<T> item) {
+  private JPanel initializeWeightPanel(final ItemRandomizerModel.RandomItem<T> item) {
     final JPanel panel = new JPanel(new BorderLayout(0, 0));
     final JSpinner spinner = new JSpinner(createWeightSpinnerModel(item.getItem()));
     spinner.setToolTipText(item.getItem().toString());
@@ -75,7 +76,7 @@ public final class RandomItemPanel<T> extends JPanel {
    */
   private SpinnerModel createWeightSpinnerModel(final T item) {
     final SpinnerNumberModel spinnerModel = new SpinnerNumberModel(model.getWeight(item), 0, Integer.MAX_VALUE, 1);
-    final AbstractValueLink<RandomItemPanel, Integer> valueLink = new WeightValueLink(spinnerModel, item);
+    final AbstractValueLink<ItemRandomizerPanel, Integer> valueLink = new WeightValueLink(spinnerModel, item);
     spinnerModel.addChangeListener(new ChangeListener() {
       /** {@inheritDoc} */
       public void stateChanged(final ChangeEvent e) {
@@ -86,13 +87,13 @@ public final class RandomItemPanel<T> extends JPanel {
     return spinnerModel;
   }
 
-  private final class WeightValueLink extends AbstractValueLink<RandomItemPanel, Integer> {
+  private final class WeightValueLink extends AbstractValueLink<ItemRandomizerPanel, Integer> {
 
     private final SpinnerNumberModel spinnerModel;
     private final T item;
 
     private WeightValueLink(final SpinnerNumberModel spinnerModel, final T item) {
-      super(RandomItemPanel.this, model.getWeightsObserver(), LinkType.READ_WRITE);
+      super(ItemRandomizerPanel.this, model.getWeightsObserver(), LinkType.READ_WRITE);
       this.spinnerModel = spinnerModel;
       this.item = item;
       updateUI();
