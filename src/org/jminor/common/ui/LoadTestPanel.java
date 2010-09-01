@@ -24,18 +24,8 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.xy.DeviationRenderer;
-import org.jfree.chart.renderer.xy.XYSplineRenderer;
 
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JSpinner;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
-import javax.swing.SpinnerNumberModel;
+import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
@@ -358,9 +348,6 @@ public final class LoadTestPanel extends JPanel {
   private void setColors(final JFreeChart chart) {
     chart.getXYPlot().setBackgroundPaint(Color.BLACK);
     chart.setBackgroundPaint(this.getBackground());
-    final XYSplineRenderer renderer = new XYSplineRenderer();
-    renderer.setBaseShapesVisible(false);
-    chart.getXYPlot().setRenderer(renderer);
   }
 
   private static final class ExitListener implements ActionListener {
