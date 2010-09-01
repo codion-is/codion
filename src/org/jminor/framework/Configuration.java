@@ -6,6 +6,9 @@ package org.jminor.framework;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.formats.DateFormats;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
@@ -26,6 +29,8 @@ import java.util.Properties;
  * override and use it to set configuration properties.
  */
 public final class Configuration {
+
+  private static final Logger LOG = LoggerFactory.getLogger(Configuration.class);
 
   private Configuration() {}
 
@@ -439,6 +444,7 @@ public final class Configuration {
    */
   public static final String SEARCH_PANELS_VISIBLE = "jminor.client.searchPanelsVisible";
 
+  private static final String JAVAX_NET_NET_TRUSTSTORE = "javax.net.ssl.trustStore";
   private static final Properties PROPERTIES = new Properties();
   private static final int INPUT_BUFFER_SIZE = 8192;
 
@@ -542,6 +548,8 @@ public final class Configuration {
     parseStringSetting(WILDCARD_CHARACTER);
     parseStringSetting(DEFAULT_LOOK_AND_FEEL_CLASSNAME);
     parseBooleanSetting(AUTO_CREATE_ENTITY_MODELS);
+
+    parseStringSetting(JAVAX_NET_NET_TRUSTSTORE);
   }
 
   private static void parseIntegerSetting(final String setting) {
@@ -643,14 +651,13 @@ public final class Configuration {
   }
 
   /**
-   * Resolves the given property to a temporary file, assigning it to the property
+   * Resolves the "javax.net.ssl.trustStore" to a temporary file, assigning it to the property
    * @param temporaryFileName the temp filename
-   * @param property the property
    */
-  public static void resolveFileProperty(final String temporaryFileName, final String property) {
-    final String value = getStringValue(property);
-    Util.rejectNullValue(property, "property");
+  public static void resolveTruststoreProperty(final String temporaryFileName) {
+    final String value = getStringValue(JAVAX_NET_NET_TRUSTSTORE);
     if (value == null || value.isEmpty()) {
+      LOG.debug("resolveFileProperty: " + JAVAX_NET_NET_TRUSTSTORE + " is empty");
       return;
     }
     FileOutputStream out = null;
@@ -659,7 +666,7 @@ public final class Configuration {
       final ClassLoader loader = Util.class.getClassLoader();
       in = loader.getResourceAsStream(value);
       if (in == null) {
-        System.out.println(value + " not found on classpath");
+        LOG.debug("resolveFileProperty: " + value + " not found on classpath");
         return;
       }
       final File file = File.createTempFile(temporaryFileName, "tmp");
@@ -671,8 +678,8 @@ public final class Configuration {
         out.write(buf, 0, br);
         br = in.read(buf);
       }
-
-      setValue(property, file.toString());
+      LOG.debug("resolveFileProperty: " + JAVAX_NET_NET_TRUSTSTORE + " -> " + file.toString());
+      setValue(JAVAX_NET_NET_TRUSTSTORE, file.toString());
     }
     catch (IOException e) {
       throw new RuntimeException(e);

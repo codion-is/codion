@@ -6,28 +6,34 @@ package org.jminor.common.db.pool;
 import org.jminor.common.db.dbms.Database;
 import org.jminor.common.model.User;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Random;
 import java.util.Stack;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.Date;
 
 /**
  * A simple connection pool implementation, pools connections on username basis.
  */
 public final class ConnectionPoolImpl implements ConnectionPool {
 
+  private static final Logger LOG = LoggerFactory.getLogger(ConnectionPoolImpl.class);
+
   public static final int DEFAULT_CONNECTION_TIMEOUT_MS = 60000;
   public static final int DEFAULT_CLEANUP_INTERVAL_MS = 20000;
   public static final int DEFAULT_MAXIMUM_POOL_SIZE = 8;
   public static final int DEFAULT_MAXIMUM_RETRY_WAIT_PERIOD_MS = 50;
-  public static final int DEFAULT_MAXIMUM_CHECK_OUT_TIME = 1000;
+  public static final int DEFAULT_MAXIMUM_CHECK_OUT_TIME = 2000;
+  public static final int NEW_CONNECTION_THRESHOLD = 500;
 
   private final PoolableConnectionProvider connectionProvider;
   private final User user;
@@ -38,15 +44,15 @@ public final class ConnectionPoolImpl implements ConnectionPool {
 
   private Timer cleanupTimer;
 
-  private int minimumPoolSize = DEFAULT_MAXIMUM_POOL_SIZE / 2;
-  private int maximumPoolSize = DEFAULT_MAXIMUM_POOL_SIZE;
-  private int maximumRetryWaitPeriod = DEFAULT_MAXIMUM_RETRY_WAIT_PERIOD_MS;
-  private int poolCleanupInterval = DEFAULT_CLEANUP_INTERVAL_MS;
-  private int pooledConnectionTimeout = DEFAULT_CONNECTION_TIMEOUT_MS;
-  private int maximumCheckOuttime = DEFAULT_MAXIMUM_CHECK_OUT_TIME;
-  private int waitTimeBeforeNewConnection = (int) (maximumCheckOuttime * 0.9);
+  private volatile int minimumPoolSize = DEFAULT_MAXIMUM_POOL_SIZE / 2;
+  private volatile int maximumPoolSize = DEFAULT_MAXIMUM_POOL_SIZE;
+  private volatile int maximumRetryWaitPeriod = DEFAULT_MAXIMUM_RETRY_WAIT_PERIOD_MS;
+  private volatile int poolCleanupInterval = DEFAULT_CLEANUP_INTERVAL_MS;
+  private volatile int pooledConnectionTimeout = DEFAULT_CONNECTION_TIMEOUT_MS;
+  private volatile int maximumCheckOuttime = DEFAULT_MAXIMUM_CHECK_OUT_TIME;
+  private volatile int waitTimeBeforeNewConnection = NEW_CONNECTION_THRESHOLD;
 
-  private boolean creatingConnection = false;
+  private volatile boolean creatingConnection = false;
   private boolean enabled = true;
   private boolean closed = false;
 
@@ -325,6 +331,14 @@ public final class ConnectionPoolImpl implements ConnectionPool {
       inUse.add(connection);
 
       return connection;
+    }
+    catch (SQLException sqle) {
+      LOG.error("Database error while creating a new connection", sqle);
+      throw sqle;
+    }
+    catch (ClassNotFoundException e) {
+      LOG.error("JDBC Driver class not found", e);
+      throw e;
     }
     finally {
       creatingConnection = false;

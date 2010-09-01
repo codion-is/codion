@@ -53,7 +53,7 @@ public final class EntityDbRemoteProvider extends AbstractEntityDbProvider {
     serverHostName = Configuration.getStringValue(Configuration.SERVER_HOST_NAME);
     this.clientID = clientID;
     this.clientTypeID = clientTypeID;
-    Configuration.resolveFileProperty(clientTypeID, "javax.net.ssl.trustStore");
+    Configuration.resolveTruststoreProperty(clientTypeID);
   }
 
   /** {@inheritDoc} */

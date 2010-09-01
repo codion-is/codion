@@ -13,8 +13,8 @@ import org.jminor.framework.domain.Property;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * A default ForeignKeySearchModel implementation.
@@ -133,7 +133,7 @@ public class DefaultForeignKeySearchModel extends DefaultColumnSearchModel<Prope
       /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
         if (!updatingModel) {//noinspection unchecked
-          entityLookupModel.setSelectedEntities((List<Entity>) getUpperBound());
+          entityLookupModel.setSelectedEntities(Arrays.asList((Entity) getUpperBound()));
         }
       }
     });
