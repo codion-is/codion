@@ -3,9 +3,15 @@
  */
 package org.jminor.framework.db.provider;
 
+import org.jminor.common.model.State;
+import org.jminor.common.model.StateObserver;
+import org.jminor.common.model.States;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.framework.db.EntityDb;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * An abstract EntityDbProvider implementation.
@@ -17,6 +23,7 @@ public abstract class AbstractEntityDbProvider implements EntityDbProvider {
    */
   private User user;
   private EntityDb entityDb;
+  private final State stConnectionValid = States.state();
 
   /**
    * Instantiates a new AbstractEntityDbProvider.
@@ -25,6 +32,12 @@ public abstract class AbstractEntityDbProvider implements EntityDbProvider {
   public AbstractEntityDbProvider(final User user) {
     Util.rejectNullValue(user, "user");
     this.user = user;
+    new Timer().schedule(new TimerTask() {
+      /** {@inheritDoc} */
+      public void run() {
+        stConnectionValid.setActive(isConnectionValid());
+      }
+    }, 1000, 1000);
   }
 
   /** {@inheritDoc} */
@@ -43,7 +56,12 @@ public abstract class AbstractEntityDbProvider implements EntityDbProvider {
 
   /** {@inheritDoc} */
   public final boolean isConnected() {
-    return entityDb != null && entityDb.isConnected();
+    return entityDb != null;
+  }
+
+  /** {@inheritDoc} */
+  public final StateObserver getConnectedState() {
+    return stConnectionValid.getObserver();
   }
 
   /** {@inheritDoc} */

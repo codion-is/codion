@@ -77,6 +77,7 @@ public final class Messages {
   public static final String REGULAR_EXPRESSION_SEARCH = "regular_expression_search";
   public static final String SETTINGS = "settings";
   public static final String NO_CONNECTION_AVAILABLE = "no_connection_available";
+  public static final String NOT_CONNECTED = "not_connected";
 
   static {
     UIManager.put("OptionPane.yesButtonText", get(YES));

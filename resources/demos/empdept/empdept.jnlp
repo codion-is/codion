@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jnlp spec="1.0+" codebase="http://jminor.no-ip.org/webstart/empdept/" href="empdept.jnlp">
+<jnlp spec="1.0+" codebase="http://webstart.jminor.org/empdept/" href="empdept.jnlp">
 
   <information>
     <title>EmpDept JMinor Demo</title>
@@ -27,7 +27,7 @@
     <property name="jminor.client.connectionType" value="remote"/>
     <property name="javax.net.ssl.trustStore" value="JMinorClientTruststore"/>
     <property name="jminor.server.hostname" value="97.107.136.43" />
-    <property name="jminor.report.path" value="http://jminor.no-ip.org/webstart/webstart/reports/" />
+    <property name="jminor.report.path" value="http://webstart.jminor.org/empdept/reports/" />
   </resources>
 
   <application-desc main-class="org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel"/>

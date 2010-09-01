@@ -803,6 +803,13 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     return isSorting;
   }
 
+  /**
+   * @return true while this table model is being refreshed
+   */
+  protected final boolean isRefreshing() {
+    return isRefreshing;
+  }
+
   private void bindEventsInternal() {
     final List<T> selectedItems = new ArrayList<T>();
     addTableModelListener(new TableModelListener() {

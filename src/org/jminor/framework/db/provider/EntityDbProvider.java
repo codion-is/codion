@@ -4,6 +4,7 @@
 package org.jminor.framework.db.provider;
 
 import org.jminor.common.model.User;
+import org.jminor.common.model.StateObserver;
 import org.jminor.framework.db.EntityDb;
 
 /**
@@ -27,6 +28,11 @@ public interface EntityDbProvider {
    * @return true if a connection has been established
    */
   boolean isConnected();
+
+  /**
+   * @return a state active when this provider is connected
+   */
+  StateObserver getConnectedState();
 
   /**
    * Logs out, disconnects and performs cleanup if required

@@ -2099,3 +2099,8 @@
   RandomItemModel renamed to ItemRandomizerModel
   Remote load testing implemented
   Derby lib removed, with JavaDB and all that
+  AbstractFilteredTableModel.isRefreshing() added
+  StateObserver, activation listeners can now be added/removed
+  EntityDbProvider.getConnectedState() added
+  EntityDbRemoteProvider description now includes the server host name
+  EntityApplicationPanel now displays a "Disconnected" message in the title

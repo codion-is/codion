@@ -7,6 +7,7 @@ import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Events;
+import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.DefaultExceptionHandler;
@@ -91,6 +92,8 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   private static final String DIV_RIGHT = "divRight";
   private static final String DIV_UP = "divUp";
   private static final String DIV_DOWN = "divDown";
+
+  private String frameTitle = "<no title>";
 
   /** {@inheritDoc} */
   public final void handleException(final Throwable exception, final JComponent dialogParent) {
@@ -957,6 +960,18 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
         initializeActiveEntityPanel();
       }
     });
+    final StateObserver connected = getModel().getDbProvider().getConnectedState();
+    connected.addActivateListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
+        UiUtil.getParentFrame(EntityApplicationPanel.this).setTitle(frameTitle);
+      }
+    });
+    connected.addDeactivateListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
+        UiUtil.getParentFrame(EntityApplicationPanel.this).setTitle(frameTitle + " - "
+                + Messages.get(Messages.NOT_CONNECTED));
+      }
+    });
   }
 
   private void startApplicationInternal(final String frameCaption, final String iconName, final boolean maximize,
@@ -999,8 +1014,8 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
       if (startupDialog != null) {
         startupDialog.dispose();
       }
-      final JFrame frame = prepareFrame(getFrameTitle(frameCaption, entityDbProvider.getUser()), maximize, true,
-              frameSize, applicationIcon, showFrame);
+      this.frameTitle = getFrameTitle(frameCaption, entityDbProvider.getUser());
+      final JFrame frame = prepareFrame(frameTitle, maximize, true, frameSize, applicationIcon, showFrame);
       evtApplicationStarted.fire();
       LOG.info(frame.getTitle() + ", application started successfully, " + entityDbProvider.getUser().getUsername()
               + ": " + (System.currentTimeMillis() - now) + " ms");

@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.server.provider;
 
+import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.server.RemoteServer;
@@ -59,7 +60,11 @@ public final class EntityDbRemoteProvider extends AbstractEntityDbProvider {
   /** {@inheritDoc} */
   public String getDescription() {
     try {
-      return server != null ? server.getServerName() : "";
+      if (server == null) {
+        return serverHostName + " - " + Messages.get(Messages.NOT_CONNECTED);
+      }
+
+      return server.getServerName() + "@" + serverHostName;
     }
     catch (RemoteException e) {
       throw new RuntimeException(e);

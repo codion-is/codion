@@ -61,6 +61,8 @@ public final class States {
     static final String INACTIVE = "inactive";
 
     private final Event evtStateChanged = Events.event();
+    private final Event evtStateActivated = Events.event();
+    private final Event evtStateDeactivated = Events.event();
 
     private volatile StateObserver observer;
     private volatile boolean active = false;
@@ -87,11 +89,33 @@ public final class States {
       return observer;
     }
 
+    public void addActivateListener(final ActionListener listener) {
+      evtStateActivated.addListener(listener);
+    }
+
+    public void removeActiveListener(final ActionListener listener) {
+      evtStateActivated.removeListener(listener);
+    }
+
+    public void addDeactivateListener(final ActionListener listener) {
+      evtStateDeactivated.addListener(listener);
+    }
+
+    public void removeDeactiveListener(final ActionListener listener) {
+      evtStateDeactivated.removeListener(listener);
+    }
+
     public synchronized void setActive(final boolean value) {
       final boolean oldValue = active;
       active = value;
       if (oldValue != value) {
         evtStateChanged.fire();
+        if (active) {
+          evtStateActivated.fire();
+        }
+        else {
+          evtStateDeactivated.fire();
+        }
       }
     }
 
@@ -279,6 +303,22 @@ public final class States {
 
     public void removeListener(final ActionListener listener) {
       state.removeListener(listener);
+    }
+
+    public void addActivateListener(final ActionListener listener) {
+      state.addActivateListener(listener);
+    }
+
+    public void removeActiveListener(final ActionListener listener) {
+      state.removeActiveListener(listener);
+    }
+
+    public void addDeactivateListener(final ActionListener listener) {
+      state.addDeactivateListener(listener);
+    }
+
+    public void removeDeactiveListener(final ActionListener listener) {
+      state.removeDeactiveListener(listener);
     }
   }
 

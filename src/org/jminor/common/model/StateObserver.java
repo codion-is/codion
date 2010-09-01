@@ -1,6 +1,7 @@
 package org.jminor.common.model;
 
 import javax.swing.Action;
+import java.awt.event.ActionListener;
 
 /**
  * Specifies a State observer.
@@ -22,4 +23,24 @@ public interface StateObserver extends EventObserver {
    * @return A StateObserver object that is always the reverse of the parent state
    */
   StateObserver getReversedState();
+
+  /**
+   * @param listener a listener notified each time this state is activated
+   */
+  void addActivateListener(final ActionListener listener);
+
+  /**
+   * @param listener the listener to remove
+   */
+  void removeActiveListener(final ActionListener listener);
+
+  /**
+   * @param listener a listener notified each time this state is deactivated
+   */
+  void addDeactivateListener(final ActionListener listener);
+
+  /**
+   * @param listener the listener to remove
+   */
+  void removeDeactiveListener(final ActionListener listener);
 }
