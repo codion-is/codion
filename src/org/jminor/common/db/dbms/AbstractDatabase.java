@@ -133,6 +133,7 @@ public abstract class AbstractDatabase implements Database {
     final Properties connectionProperties = new Properties();
     connectionProperties.put(USER_PROPERTY, user.getUsername());
     connectionProperties.put(PASSWORD_PROPERTY, user.getPassword());
+    DriverManager.setLoginTimeout(getLoginTimeout());
 
     return DriverManager.getConnection(getURL(connectionProperties), addConnectionProperties(connectionProperties));
   }
@@ -189,5 +190,13 @@ public abstract class AbstractDatabase implements Database {
   /** {@inheritDoc} */
   public Properties addConnectionProperties(final Properties properties) {
     return properties;
+  }
+
+  /**
+   * @return the connection timeout in seconds
+   * @see Database#DEFAULT_LOGIN_TIMEOUT
+   */
+  protected int getLoginTimeout() {
+    return Database.DEFAULT_LOGIN_TIMEOUT;
   }
 }

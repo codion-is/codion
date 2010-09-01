@@ -113,6 +113,12 @@ public interface Database {
   String PASSWORD_PROPERTY = "password";
 
   /**
+   * The default connection login timeout
+   * @see java.sql.DriverManager#setLoginTimeout(int)
+   */
+  int DEFAULT_LOGIN_TIMEOUT = 2;
+
+  /**
    * Loads the database driver
    * @throws ClassNotFoundException in case the driver class in not found
    */
