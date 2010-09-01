@@ -4,6 +4,7 @@
   <description>JMinor RAD Framework build file</description>
 
   <property file="build.properties"/>
+  <property file="user.properties"/>
 
   <path id="lib.build">
     <fileset dir="${lib}">
@@ -215,6 +216,8 @@
     <jar jarfile="${dist}/${ant.project.name}-plugins.jar" basedir="${build.plugins}"
          manifest="${build.base}/META-INF/MANIFEST.MF"/>
 
+    <copyfile src="${deploy.demos.truststore}" dest="${build.demos}/JMinorClientTruststore"/>
+
     <jar jarfile="${dist}/${ant.project.name}-demos.jar" basedir="${build.demos}"
          manifest="${build.base}/META-INF/MANIFEST.MF"/>
 
@@ -336,6 +339,9 @@
     <copy file="${lib.jcalendar}" todir="${deploy.demos.path}/lib"/>
     <copy file="${lib.jfreechart.base}" todir="${deploy.demos.path}/lib"/>
     <copy file="${lib.jfreechart.common}" todir="${deploy.demos.path}/lib"/>
+    <signjar alias="${jar.sign.alias}" storepass="${jar.sign.storepass}" keystore="${jar.sign.keystoreloc}">
+      <fileset dir="${deploy.demos.path}/lib" />
+    </signjar>
     <copy todir="${deploy.demos.config.path}">
       <fileset dir="${deploy.demos.config}"/>
     </copy>
@@ -346,8 +352,8 @@
     <copy todir="${deploy.demos.path}">
       <fileset dir="${basedir}/resources/demos/empdept/" excludes="**/*.jrxml,**/*.bak"/>
       <fileset dir="${basedir}/resources/demos/petstore/" excludes="**/*.jrxml,**/*.bak"/>
+      <fileset dir="${basedir}/resources/demos/chinook/" excludes="**/*.jrxml,**/*.bak"/>
       <fileset dir="${basedir}/resources/demos/schemabrowser/"/>
-      <fileset dir="${basedir}/resources/demos/chinook/"/>
     </copy>
     <chmod dir="${deploy.demos.path}" perm="u+x" type="file" includes="*.sh"/>
     <copy todir="${deploy.demos.path}/h2db">
