@@ -2105,3 +2105,4 @@
   EntityDbRemoteProvider description now includes the server host name
   EntityApplicationPanel now displays a "Disconnected" message in the title
   EntityDbConnection no longer propagates dbms specific exception to the client
+  LoginProxy added

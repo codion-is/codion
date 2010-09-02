@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2004 - 2010, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.common.server.loadtest;
 
+import org.jminor.common.model.Util;
 import org.jminor.common.server.AbstractRemoteServer;
 import org.jminor.common.server.ClientInfo;
-import org.jminor.common.model.Util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +36,7 @@ public class LoadTestServer extends AbstractRemoteServer<RemoteLoadTest> {
     getRegistry().rebind(serverName, this);
   }
 
+  @Override
   protected RemoteLoadTest doConnect(final ClientInfo clientInfo) throws RemoteException {
     final RemoteLoadTest remoteAdapter = new RemoteLoadTestAdapter(clientInfo, loadTestPort);
 
@@ -44,6 +45,7 @@ public class LoadTestServer extends AbstractRemoteServer<RemoteLoadTest> {
     return remoteAdapter;
   }
 
+  @Override
   protected void doDisconnect(final RemoteLoadTest connection) throws RemoteException {
     LOG.debug(((RemoteLoadTestAdapter) connection).getClientInfo() + " disconnected");
   }

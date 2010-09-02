@@ -535,7 +535,7 @@ public abstract class LoadTestModel implements LoadTest {
     usedMemoryCollection.add(time, Util.getUsedMemory() / 1000);
     maxMemoryCollection.add(time, Util.getMaxMemory() / 1000);
     scenariosRunSeries.add(time, counter.getWorkRequestsPerSecond());
-    warningTimeSeries.add(time, getWarningTime());
+    warningTimeSeries.add(time, warningTime);
     for (final XYSeries series : usageSeries) {
       series.add(time, counter.getScenarioRate((String) series.getKey()));
     }
@@ -580,7 +580,6 @@ public abstract class LoadTestModel implements LoadTest {
                   scenarioName = loadTestModel.performWork(application);
                 }
                 catch (ScenarioException e) {
-                  e.printStackTrace();
                   LOG.debug("ScenarioException: " + scenarioName, e.getCause());
                 }
               }
@@ -703,12 +702,12 @@ public abstract class LoadTestModel implements LoadTest {
 
     @Override
     public int hashCode() {
-      return getName().hashCode();
+      return name.hashCode();
     }
 
     @Override
     public boolean equals(Object obj) {
-      return obj instanceof UsageScenario && ((UsageScenario) obj).getName().equals(getName());
+      return obj instanceof UsageScenario && ((UsageScenario) obj).getName().equals(name);
     }
 
     /** {@inheritDoc} */

@@ -34,6 +34,12 @@ public abstract class AbstractRemoteServer<T> extends UnicastRemoteObject implem
   private final int serverPort;
   private volatile boolean shuttingDown = false;
 
+
+  private LoginProxy loginProxy = new LoginProxy() {
+    public ClientInfo doLogin(final ClientInfo clientInfo) {
+      return clientInfo;
+    }
+  };
   /**
    * Instantiates a new AbstractRemoteServer
    * @param serverPort the port on which the server should be exported
@@ -87,7 +93,7 @@ public abstract class AbstractRemoteServer<T> extends UnicastRemoteObject implem
       return connections.get(clientInfo);
     }
 
-    final T connection = doConnect(clientInfo);
+    final T connection = doConnect(loginProxy.doLogin(clientInfo));
     synchronized (connections) {
       connections.put(clientInfo, connection);
     }
@@ -135,6 +141,13 @@ public abstract class AbstractRemoteServer<T> extends UnicastRemoteObject implem
    */
   public final Registry getRegistry() throws RemoteException {
     return LocateRegistry.getRegistry(Registry.REGISTRY_PORT);
+  }
+
+  /**
+   * @param loginProxy the login proxy
+   */
+  public void setLoginProxy(final LoginProxy loginProxy) {
+    this.loginProxy = loginProxy;
   }
 
   /**
