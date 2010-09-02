@@ -335,6 +335,7 @@ public abstract class LoadTestModel implements LoadTest {
       }
     }
     evtDoneExiting.fire();
+    System.exit(0);
   }
 
   /** {@inheritDoc} */
