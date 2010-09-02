@@ -158,8 +158,8 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
       if (!isTransactionOpen()) {
         rollbackQuietly();
       }
-      LOG.info(insertQuery);
-      LOG.error(e.getMessage(), e);
+      LOG.debug(insertQuery);
+      LOG.debug(e.getMessage(), e);
       throw new DbException(getDatabase().getErrorMessage(e));
     }
     finally {
@@ -216,14 +216,14 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
       if (optimisticLocking && !isTransactionOpen()) {
         rollbackQuietly();//releasing the select for update lock
       }
-      LOG.error(e.getMessage(), e);
+      LOG.debug(e.getMessage(), e);
       throw e;
     }
     catch (SQLException e) {
       if (!isTransactionOpen()) {
         rollbackQuietly();
       }
-      LOG.error(e.getMessage(), e);
+      LOG.debug(e.getMessage(), e);
       throw new DbException(getDatabase().getErrorMessage(e));
     }
     finally {
@@ -251,8 +251,8 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
       if (!isTransactionOpen()) {
         rollbackQuietly();
       }
-      LOG.info(deleteQuery);
-      LOG.error(e.getMessage(), e);
+      LOG.debug(deleteQuery);
+      LOG.debug(e.getMessage(), e);
       throw new DbException(getDatabase().getErrorMessage(e));
     }
     finally {
@@ -293,8 +293,8 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
       if (!isTransactionOpen()) {
         rollbackQuietly();
       }
-      LOG.info(deleteQuery);
-      LOG.error(e.getMessage(), e);
+      LOG.debug(deleteQuery);
+      LOG.debug(e.getMessage(), e);
       throw new DbException(getDatabase().getErrorMessage(e));
     }
     finally {
@@ -360,8 +360,8 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
       return result;
     }
     catch (SQLException e) {
-      LOG.info(selectQuery);
-      LOG.error(e.getMessage(), e);
+      LOG.debug(selectQuery);
+      LOG.debug(e.getMessage(), e);
       throw new DbException(getDatabase().getErrorMessage(e));
     }
     finally {
@@ -425,8 +425,8 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
       return result.get(0);
     }
     catch (SQLException e) {
-      LOG.info(selectQuery);
-      LOG.error(e.getMessage(), e);
+      LOG.debug(selectQuery);
+      LOG.debug(e.getMessage(), e);
       throw new DbException(getDatabase().getErrorMessage(e));
     }
     finally {
@@ -466,8 +466,8 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
       if (!isTransactionOpen()) {
         rollbackQuietly();
       }
-      LOG.info(statement);
-      LOG.error(e.getMessage(), e);
+      LOG.debug(statement);
+      LOG.debug(e.getMessage(), e);
       throw new DbException(getDatabase().getErrorMessage(e));
     }
   }
@@ -483,8 +483,8 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
       return result;
     }
     catch (SQLException e) {
-      LOG.info(statement);
-      LOG.error(e.getMessage(), e);
+      LOG.debug(statement);
+      LOG.debug(e.getMessage(), e);
       if (!isTransactionOpen()) {
         rollbackQuietly();
       }
@@ -533,8 +533,8 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
       }
     }
     catch (SQLException e) {
-      LOG.info(statement);
-      LOG.error(e.getMessage(), e);
+      LOG.debug(statement);
+      LOG.debug(e.getMessage(), e);
       throw new DbException(getDatabase().getErrorMessage(e));
     }
   }
@@ -549,7 +549,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
               getWhereCondition(primaryKey.getProperties()));
     }
     catch (SQLException e) {
-      LOG.error(e.getMessage(), e);
+      LOG.debug(e.getMessage(), e);
       throw new DbException(getDatabase().getErrorMessage(e));
     }
   }
@@ -642,8 +642,8 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
       return queryInteger(sql);
     }
     catch (SQLException e) {
-      LOG.info(sql);
-      LOG.error(e.getMessage(), e);
+      LOG.debug(sql);
+      LOG.debug(e.getMessage(), e);
       throw new DbException(getDatabase().getErrorMessage(e));
     }
   }
@@ -660,7 +660,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
     }
     catch (SQLException e) {
       LOG.debug(sqlStatement);
-      LOG.error(e.getMessage(), e);
+      LOG.debug(e.getMessage(), e);
       exception = e;
     }
     finally {
@@ -682,7 +682,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
     }
     catch (SQLException e) {
       LOG.debug(sqlStatement);
-      LOG.error(e.getMessage(), e);
+      LOG.debug(e.getMessage(), e);
       exception = e;
     }
     finally {
@@ -769,7 +769,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
       }
     }
     catch (SQLException e) {
-      LOG.error("Unable to set parameter: " + property + ", value: " + value + ", value class: " + (value == null ? "null" : value.getClass()), e);
+      LOG.debug("Unable to set parameter: " + property + ", value: " + value + ", value class: " + (value == null ? "null" : value.getClass()), e);
       throw e;
     }
   }
