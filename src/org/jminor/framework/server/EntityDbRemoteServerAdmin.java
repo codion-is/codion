@@ -99,7 +99,7 @@ public final class EntityDbRemoteServerAdmin extends UnicastRemoteObject impleme
   /** {@inheritDoc} */
   public Level getLoggingLevel() throws RemoteException {
     final ch.qos.logback.classic.Logger rootLogger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
-    
+
     return rootLogger.getLevel();
   }
 
@@ -270,6 +270,16 @@ public final class EntityDbRemoteServerAdmin extends UnicastRemoteObject impleme
   /** {@inheritDoc} */
   public void setMinimumConnectionPoolSize(final User user, final int value) throws RemoteException {
     EntityDbRemoteAdapter.setMinimumPoolSize(user, value);
+  }
+
+  /** {@inheritDoc} */
+  public int getPoolConnectionThreshold(final User user) throws RemoteException {
+    return EntityDbRemoteAdapter.getPoolConnectionThreshold(user);
+  }
+
+  /** {@inheritDoc} */
+  public void setPoolConnectionThreshold(final User user, final int value) throws RemoteException {
+    EntityDbRemoteAdapter.setPoolConnectionThreshold(user, value);
   }
 
   /** {@inheritDoc} */

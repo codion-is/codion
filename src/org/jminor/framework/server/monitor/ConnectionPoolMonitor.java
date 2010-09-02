@@ -132,6 +132,14 @@ public final class ConnectionPoolMonitor {
     pool.setMaximumCheckOutTime(value);
   }
 
+  public int getNewConnectionThreshold() {
+    return pool.getNewConnectionThreshold();
+  }
+
+  public void setNewConnectionThreshold(final int value) throws RemoteException {
+    pool.setNewConnectionThreshold(value);
+  }
+
   public boolean datasetContainsData() {
     return statsCollection.getSeriesCount() > 0
             && statsCollection.getSeries(0).getItemCount() > 0

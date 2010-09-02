@@ -169,13 +169,23 @@ public final class PoolMonitor {
     }
 
     /** {@inheritDoc} */
-    public int getWaitTimeBeforeNewConnection() {
-      throw new UnsupportedOperationException();
+    public int getNewConnectionThreshold() {
+      try {
+        return server.getPoolConnectionThreshold(user);
+      }
+      catch (RemoteException e) {
+        throw new RuntimeException(e);
+      }
     }
 
     /** {@inheritDoc} */
-    public void setWaitTimeBeforeNewConnection(final int value) {
-      throw new UnsupportedOperationException();
+    public void setNewConnectionThreshold(final int value) {
+      try {
+        server.setPoolConnectionThreshold(user, value);
+      }
+      catch (RemoteException e) {
+        throw new RuntimeException(e);
+      }
     }
 
     /** {@inheritDoc} */

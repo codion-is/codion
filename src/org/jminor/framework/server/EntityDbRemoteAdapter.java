@@ -407,6 +407,14 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
     CONNECTION_POOLS.get(user).setMinimumPoolSize(value);
   }
 
+  static int getPoolConnectionThreshold(final User user) {
+    return CONNECTION_POOLS.get(user).getNewConnectionThreshold();
+  }
+
+  static void setPoolConnectionThreshold(final User user, final int value) {
+    CONNECTION_POOLS.get(user).setNewConnectionThreshold(value);
+  }
+
   static int getPoolConnectionTimeout(final User user) {
     return CONNECTION_POOLS.get(user).getConnectionTimeout();
   }

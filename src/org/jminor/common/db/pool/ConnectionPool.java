@@ -144,12 +144,12 @@ public interface ConnectionPool {
   /**
    * @return the time to wait before a new connection is created
    */
-  int getWaitTimeBeforeNewConnection();
+  int getNewConnectionThreshold();
 
   /**
    *
    * @param value the time to wait before creating a new connection in ms
    * @throws IllegalArgumentException in case value is negative or larger than <code>maximumCheckOutTime</code>
    */
-  void setWaitTimeBeforeNewConnection(final int value);
+  void setNewConnectionThreshold(final int value);
 }

@@ -399,4 +399,8 @@ public interface EntityDbServerAdmin extends Remote {
    * @throws RemoteException in case of an exception
    */
   void setMinimumConnectionPoolSize(final User user, final int value) throws RemoteException;
+
+  int getPoolConnectionThreshold(final User user) throws RemoteException;
+
+  void setPoolConnectionThreshold(final User user, final int value) throws RemoteException;
 }

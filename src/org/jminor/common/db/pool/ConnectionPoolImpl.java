@@ -33,7 +33,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
   public static final int DEFAULT_MAXIMUM_POOL_SIZE = 8;
   public static final int DEFAULT_MAXIMUM_RETRY_WAIT_PERIOD_MS = 50;
   public static final int DEFAULT_MAXIMUM_CHECK_OUT_TIME = 2000;
-  public static final int NEW_CONNECTION_THRESHOLD = 500;
+  public static final int DEFAULT_NEW_CONNECTION_THRESHOLD = 500;
 
   private final PoolableConnectionProvider connectionProvider;
   private final User user;
@@ -50,7 +50,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
   private volatile int poolCleanupInterval = DEFAULT_CLEANUP_INTERVAL_MS;
   private volatile int pooledConnectionTimeout = DEFAULT_CONNECTION_TIMEOUT_MS;
   private volatile int maximumCheckOuttime = DEFAULT_MAXIMUM_CHECK_OUT_TIME;
-  private volatile int waitTimeBeforeNewConnection = NEW_CONNECTION_THRESHOLD;
+  private volatile int newConnectionThreshold = DEFAULT_NEW_CONNECTION_THRESHOLD;
 
   private volatile boolean creatingConnection = false;
   private boolean enabled = true;
@@ -284,16 +284,16 @@ public final class ConnectionPoolImpl implements ConnectionPool {
   }
 
   /** {@inheritDoc} */
-  public int getWaitTimeBeforeNewConnection() {
-    return waitTimeBeforeNewConnection;
+  public int getNewConnectionThreshold() {
+    return newConnectionThreshold;
   }
 
   /** {@inheritDoc} */
-  public void setWaitTimeBeforeNewConnection(final int value) {
+  public void setNewConnectionThreshold(final int value) {
     if (value < 0 || value >= maximumCheckOuttime) {
       throw new IllegalArgumentException("Wait time before new connection must be larger than zero and smaller than maximumCheckOutTime");
     }
-    this.waitTimeBeforeNewConnection = value;
+    this.newConnectionThreshold = value;
   }
 
   public boolean isNanoStatistics() {
@@ -366,7 +366,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
       //only create one connection at a time
       if (!creatingConnection) {
         final int currentPoolSize = pool.size() + inUse.size();
-        if (elapsedTime > waitTimeBeforeNewConnection && currentPoolSize < maximumPoolSize) {
+        if (elapsedTime > newConnectionThreshold && currentPoolSize < maximumPoolSize) {
           return true;
         }
       }

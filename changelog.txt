@@ -2106,3 +2106,4 @@
   EntityApplicationPanel now displays a "Disconnected" message in the title
   EntityDbConnection no longer propagates dbms specific exception to the client
   LoginProxy added
+  ConnectionPoolImpl new connection threshold is now configurable from pool monitor

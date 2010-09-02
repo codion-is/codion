@@ -15,8 +15,8 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.renderer.xy.DeviationRenderer;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
@@ -154,6 +154,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     final JSpinner spnMinimumSize = new JSpinner(new IntBeanSpinnerValueLink(model, "minimumPoolSize", null).getSpinnerModel());
     final JSpinner spnMaximumRetryWait = new JSpinner(new IntBeanSpinnerValueLink(model, "maximumRetryWaitPeriod", null).getSpinnerModel());
     final JSpinner spnMaximumCheckOutTime = new JSpinner(new IntBeanSpinnerValueLink(model, "maximumCheckOutTime", null).getSpinnerModel());
+    final JSpinner spnNewConnectionThreshold = new JSpinner(new IntBeanSpinnerValueLink(model, "newConnectionThreshold", null).getSpinnerModel());
 
     ((JSpinner.DefaultEditor) spnTimeout.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) spnCleanupInterval.getEditor()).getTextField().setEditable(false);
@@ -166,6 +167,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     ((JSpinner.DefaultEditor) spnCleanupInterval.getEditor()).getTextField().setColumns(3);
     ((JSpinner.DefaultEditor) spnMinimumSize.getEditor()).getTextField().setColumns(3);
     ((JSpinner.DefaultEditor) spnMaximumSize.getEditor()).getTextField().setColumns(3);
+    ((JSpinner.DefaultEditor) spnNewConnectionThreshold.getEditor()).getTextField().setColumns(3);
 
     txtPoolSize.setEditable(false);
     txtPoolSize.setColumns(3);
@@ -181,6 +183,8 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     configBase.add(spnMaximumRetryWait);
     configBase.add(new JLabel("Max. check out time (ms)"));
     configBase.add(spnMaximumCheckOutTime);
+    configBase.add(new JLabel("New connection threshold (ms)"));
+    configBase.add(spnNewConnectionThreshold);
     configBase.add(new JLabel("Idle timeout (s)"));
     configBase.add(spnTimeout);
     configBase.add(new JLabel("Cleanup interval (s)"));
