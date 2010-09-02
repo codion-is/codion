@@ -25,7 +25,7 @@ public final class DatabaseMonitor {
 
   private final EntityDbServerAdmin server;
   private final PoolMonitor poolMonitor;
-  private final XYSeries queriesPerSecond = new XYSeries("Total per second");
+  private final XYSeries queriesPerSecond = new XYSeries("Queries per second");
   private final XYSeries selectsPerSecond = new XYSeries("Selects per second");
   private final XYSeries insertsPerSecond = new XYSeries("Inserts per second");
   private final XYSeries updatesPerSecond = new XYSeries("Updates per second");
