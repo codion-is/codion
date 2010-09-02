@@ -216,7 +216,7 @@
     <jar jarfile="${dist}/${ant.project.name}-plugins.jar" basedir="${build.plugins}"
          manifest="${build.base}/META-INF/MANIFEST.MF"/>
 
-    <copyfile src="${deploy.demos.truststore}" dest="${build.demos}/JMinorClientTruststore"/>
+    <copy file="${deploy.demos.truststore}" todir="${build.demos}"/>
 
     <jar jarfile="${dist}/${ant.project.name}-demos.jar" basedir="${build.demos}"
          manifest="${build.base}/META-INF/MANIFEST.MF"/>
@@ -320,7 +320,7 @@
     <chmod dir="${deploy.server.monitor.path}" perm="u+x" type="file" includes="*.sh"/>
   </target>
 
-  <target name="deploy_demos" depends="recreate_h2_db, compile_demo_reports"
+  <target name="deploy_demos" depends="recreate_h2_db, compile_demo_reports, sign_demo_jars"
           description="Deploys the demo applications to the path defined by the 'deploy.demos.path' property">
     <mkdir dir="${deploy.demos.path}"/>
     <copy file="${dist}/${ant.project.name}-client.jar" todir="${deploy.demos.path}/lib"/>
@@ -339,9 +339,6 @@
     <copy file="${lib.jcalendar}" todir="${deploy.demos.path}/lib"/>
     <copy file="${lib.jfreechart.base}" todir="${deploy.demos.path}/lib"/>
     <copy file="${lib.jfreechart.common}" todir="${deploy.demos.path}/lib"/>
-    <signjar alias="${jar.sign.alias}" storepass="${jar.sign.storepass}" keystore="${jar.sign.keystoreloc}">
-      <fileset dir="${deploy.demos.path}/lib" />
-    </signjar>
     <copy todir="${deploy.demos.config.path}">
       <fileset dir="${deploy.demos.config}"/>
     </copy>
@@ -359,6 +356,13 @@
     <copy todir="${deploy.demos.path}/h2db">
       <fileset dir="${db.h2.dir}"/>
     </copy>
+  </target>
+
+  <target name="sign_demo_jars" depends="dist"
+          description="Signs the jars found in the 'deploy.demos.path'">
+    <signjar alias="${jar.sign.alias}" storepass="${jar.sign.storepass}" keystore="${jar.sign.keystoreloc}">
+      <fileset dir="${deploy.demos.path}/lib" />
+    </signjar>
   </target>
 
   <target name="deploy_all" depends="clean, dist, deploy_server, deploy_server_monitor, deploy_demos"
