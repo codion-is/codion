@@ -48,14 +48,23 @@ public final class LoadTestPanel extends JPanel {
 
   private final JPanel durationBase = new JPanel(new GridLayout(0, 1, 5, 5));
   private ItemRandomizerPanel randomizerPanel;
+  private JPanel pluginPanel;
 
   /**
    * Constructs a new LoadTestPanel.
    * @param loadTestModel the LoadTestModel to base this panel on
    */
   public LoadTestPanel(final LoadTest loadTestModel) {
+    this(loadTestModel, null);
+  }
+  /**
+   * Constructs a new LoadTestPanel.
+   * @param loadTestModel the LoadTestModel to base this panel on
+   */
+  public LoadTestPanel(final LoadTest loadTestModel, final JPanel pluginPanel) {
     Util.rejectNullValue(loadTestModel, "loadTestModel");
     this.loadTestModel = loadTestModel;
+    this.pluginPanel = pluginPanel;
     initializeUI();
     handleScenarioSelected();
   }
@@ -111,7 +120,15 @@ public final class LoadTestPanel extends JPanel {
 
     setLayout(new BorderLayout());
     add(controlBase, BorderLayout.WEST);
-    add(chartBase, BorderLayout.CENTER);
+    if (pluginPanel != null) {
+      final JTabbedPane tabPanel = new JTabbedPane();
+      tabPanel.addTab("Load test", chartBase);
+      tabPanel.addTab("Plugins", pluginPanel);
+      add(tabPanel, BorderLayout.CENTER);
+    }
+    else {
+      add(chartBase, BorderLayout.CENTER);
+    }
     add(initializeSouthPanel(), BorderLayout.SOUTH);
   }
 
@@ -265,13 +282,20 @@ public final class LoadTestPanel extends JPanel {
     memoryUsageChartPanel.setBorder(BorderFactory.createTitledBorder("Memory usage (MB)"));
     failureChartPanel.setBorder(BorderFactory.createTitledBorder("Scenario failure rate"));
 
-    final JPanel two = new JPanel(new GridLayout(5, 1, 0, 0));
+    final JTabbedPane twoTab = new JTabbedPane();
+    twoTab.addTab("Scenarios run", usageScenarioChartPanel);
+    twoTab.addTab("Failed runs", failureChartPanel);
 
-    two.add(usageScenarioChartPanel);
-    two.add(failureChartPanel);
-    two.add(memoryUsageChartPanel);
-    two.add(thinkTimeChartPanel);
-    two.add(numberOfApplicationsChartPanel);
+    final JPanel bottomPanel = new JPanel(new GridLayout(1, 3, 0, 0));
+    bottomPanel.add(memoryUsageChartPanel);
+    bottomPanel.add(thinkTimeChartPanel);
+    bottomPanel.add(numberOfApplicationsChartPanel);
+
+    final JSplitPane two = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+    two.setOneTouchExpandable(true);
+    two.setLeftComponent(twoTab);
+    two.setRightComponent(bottomPanel);
+    two.setResizeWeight(0.8);
 
     final JPanel chartBase = new JPanel(new BorderLayout(0, 0));
 

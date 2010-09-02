@@ -20,6 +20,8 @@ import java.util.Random;
 import java.util.Stack;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * A default LoadTest implementation.
@@ -53,8 +55,9 @@ public abstract class LoadTestModel implements LoadTest {
   private boolean collectChartData = false;
 
   private final Stack<ApplicationRunner> applications = new Stack<ApplicationRunner>();
-  private final Collection<UsageScenario> usageScenarios;
+  private final Collection<? extends UsageScenario> usageScenarios;
   private final ItemRandomizer<UsageScenario> scenarioChooser;
+  private final ExecutorService executor = Executors.newCachedThreadPool();
   private User user;
 
   private final Counter counter;
@@ -106,7 +109,7 @@ public abstract class LoadTestModel implements LoadTest {
    * @param applicationBatchSize the number of applications to add in a batch
    * @param warningTime a work request is considered 'delayed' if the time it takes to process it exceeds this value (ms)
    */
-  public LoadTestModel(final User user, final Collection<UsageScenario> usageScenarios, final int maximumThinkTime,
+  public LoadTestModel(final User user, final Collection<? extends UsageScenario> usageScenarios, final int maximumThinkTime,
                        final int loginDelayFactor, final int applicationBatchSize, final int warningTime) {
     if (maximumThinkTime <= 0) {
       throw new IllegalArgumentException("Maximum think time must be a positive integer");
@@ -289,7 +292,7 @@ public abstract class LoadTestModel implements LoadTest {
       }
       evtApplicationtCountChanged.fire();
 
-      new Thread(runner).start();
+      executor.execute(runner);
     }
   }
 
@@ -324,6 +327,7 @@ public abstract class LoadTestModel implements LoadTest {
 
   /** {@inheritDoc} */
   public final void exit() {
+    executor.shutdownNow();
     paused = false;
     synchronized (applications) {
       while (!applications.isEmpty()) {
@@ -736,7 +740,7 @@ public abstract class LoadTestModel implements LoadTest {
 
   private static final class Counter {
 
-    private final Collection<UsageScenario> usageScenarios;
+    private final Collection<? extends UsageScenario> usageScenarios;
     private final Map<String, Integer> usageScenarioRates = new HashMap<String, Integer>();
     private final Map<String, Integer> usageScenarioAvgDurations = new HashMap<String, Integer>();
     private final Map<String, Integer> usageScenarioMaxDurations = new HashMap<String, Integer>();
@@ -750,7 +754,7 @@ public abstract class LoadTestModel implements LoadTest {
     private int delayedWorkRequestCounter = 0;
     private long time = System.currentTimeMillis();
 
-    private Counter(final Collection<UsageScenario> usageScenarios) {
+    private Counter(final Collection<? extends UsageScenario> usageScenarios) {
       this.usageScenarios = usageScenarios;
     }
 

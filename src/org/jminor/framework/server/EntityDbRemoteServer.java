@@ -399,8 +399,8 @@ final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
 
   private static String initializeServerName(final String host, final String sid) {
     return Configuration.getValue(Configuration.SERVER_NAME_PREFIX)
-            + " " + Util.getVersion() + " @ " + (sid != null ? sid.toUpperCase() : host.toUpperCase())
-            + " [id:" + Long.toHexString(System.currentTimeMillis()) + "]";
+            + " " + Util.getVersion() + "@" + (sid != null ? sid.toUpperCase() : host.toUpperCase());
+            //+ " [id:" + Long.toHexString(System.currentTimeMillis()) + "]";
   }
 
   private static final class DomainModelAction implements PrivilegedAction<Object> {
