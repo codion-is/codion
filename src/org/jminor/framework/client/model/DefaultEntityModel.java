@@ -379,6 +379,7 @@ public class DefaultEntityModel implements EntityModel {
       editModel.setValue(foreignKeyProperty.getPropertyID(), selectedMasterEntities != null
               && !selectedMasterEntities.isEmpty() ? selectedMasterEntities.get(0) : null);
     }
+    handleInitialization(masterEntityID, selectedMasterEntities);
   }
 
   /** {@inheritDoc} */
@@ -410,6 +411,13 @@ public class DefaultEntityModel implements EntityModel {
   public final void removeAfterRefreshListener(final ActionListener listener) {
     evtRefreshDone.removeListener(listener);
   }
+
+  /**
+   * @param masterEntityID the entity ID of the master model doing the initialization
+   * @param selectedMasterEntities the entities selected in the master model
+   */
+  @SuppressWarnings({"UnusedDeclaration"})
+  protected void handleInitialization(final String masterEntityID, final List<Entity> selectedMasterEntities) {}
 
   private void initializeDetailModels() {
     final List<Entity> activeEntities = getActiveEntities();
