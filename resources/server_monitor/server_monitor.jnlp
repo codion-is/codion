@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jnlp spec="1.0+" codebase="http://jminor.no-ip.org/webstart/server_monitor/" href="server_monitorjnlp">
+<jnlp spec="1.0+" codebase="http://jminor.no-ip.org/webstart/server_monitor/" href="server_monitor.jnlp">
 
   <information>
     <title>JMinor Server Monitor</title>
@@ -12,17 +12,19 @@
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se" />
 
-    <jar href="lib/jminor-server-monitor.jar.jar" main="true" />
+    <jar href="lib/jminor-server-monitor.jar" main="true" />
 
     <!--  libraries-->
     <jar href="lib/jminor-common.jar"/>
     <jar href="lib/slf4j-api-1.6.1.jar"/>
     <jar href="lib/logback-core-0.9.24.jar"/>
     <jar href="lib/logback-classic-0.9.24.jar"/>
+    <jar href="lib/jfreechart-1.0.12.jar"/>
+    <jar href="lib/jcommon-1.0.15.jar"/>
+    <jar href="lib/jcalendar-1.3.2.jar"/>
 
     <property name="javax.net.ssl.trustStore" value="JMinorServerMonitorTruststore"/>
     <property name="jminor.server.hostname" value="97.107.136.43" />
-    <property name="jminor.report.path" value="http://jminor.no-ip.org/webstart/chinook/reports/" />
   </resources>
 
   <application-desc main-class="org.jminor.framework.server.monitor.ui.MonitorPanel"/>
