@@ -111,6 +111,9 @@ public final class EntityDbRemoteProvider extends AbstractEntityDbProvider {
   /** {@inheritDoc} */
   @Override
   protected boolean isConnectionValid() {
+    if (!isConnected()) {
+      return false;
+    }
     try {
       //could be a call to any method, simply checking if remote connection is valid
       getEntityDbInternal().isConnected();

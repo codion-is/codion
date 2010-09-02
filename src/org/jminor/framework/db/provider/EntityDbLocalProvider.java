@@ -86,6 +86,6 @@ public final class EntityDbLocalProvider extends AbstractEntityDbProvider {
   /** {@inheritDoc} */
   @Override
   protected boolean isConnectionValid() {
-    return getEntityDbInternal().isValid();
+    return isConnected() && getEntityDbInternal().isValid();
   }
 }

@@ -160,7 +160,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
       }
       LOG.info(insertQuery);
       LOG.error(e.getMessage(), e);
-      throw new DbException(e, insertQuery, getDatabase().getErrorMessage(e));
+      throw new DbException(getDatabase().getErrorMessage(e));
     }
     finally {
       Util.closeSilently(statement);
@@ -173,7 +173,6 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
       return entities;
     }
 
-    String updateQuery = null;
     PreparedStatement statement = null;
     try {
       final Map<String, Collection<Entity>> hashedEntities = EntityUtil.hashByEntityID(entities);
@@ -191,7 +190,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
             throw new DbException("Can not update an unmodified entity: " + entity);
           }
           addUpdateProperties(entity, statementProperties, statementValues);
-          updateQuery = getUpdateSQL(entity, statementProperties, primaryKeyProperties);
+          final String updateQuery = getUpdateSQL(entity, statementProperties, primaryKeyProperties);
 
           statementProperties.addAll(primaryKeyProperties);
           for (final Property.PrimaryKeyProperty primaryKeyProperty : primaryKeyProperties) {
@@ -225,7 +224,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
         rollbackQuietly();
       }
       LOG.error(e.getMessage(), e);
-      throw new DbException(e, updateQuery, getDatabase().getErrorMessage(e));
+      throw new DbException(getDatabase().getErrorMessage(e));
     }
     finally {
       Util.closeSilently(statement);
@@ -254,7 +253,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
       }
       LOG.info(deleteQuery);
       LOG.error(e.getMessage(), e);
-      throw new DbException(e, deleteQuery, getDatabase().getErrorMessage(e));
+      throw new DbException(getDatabase().getErrorMessage(e));
     }
     finally {
       Util.closeSilently(statement);
@@ -296,7 +295,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
       }
       LOG.info(deleteQuery);
       LOG.error(e.getMessage(), e);
-      throw new DbException(e, deleteQuery, getDatabase().getErrorMessage(e));
+      throw new DbException(getDatabase().getErrorMessage(e));
     }
     finally {
       Util.closeSilently(statement);
@@ -360,10 +359,10 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
 
       return result;
     }
-    catch (SQLException exception) {
-      final DbException dbException = new DbException(exception, selectQuery, getDatabase().getErrorMessage(exception));
-      LOG.error(dbException.getMessage(), dbException);
-      throw dbException;
+    catch (SQLException e) {
+      LOG.info(selectQuery);
+      LOG.error(e.getMessage(), e);
+      throw new DbException(getDatabase().getErrorMessage(e));
     }
     finally {
       Util.closeSilently(statement);
@@ -373,7 +372,6 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
 
   /** {@inheritDoc} */
   public List<Object> selectPropertyValues(final String entityID, final String propertyID, final boolean order) throws DbException {
-    String sql = null;
     try {
       if (Entities.getSelectQuery(entityID) != null) {
         throw new UnsupportedOperationException("selectPropertyValues is not implemented for entities with custom select queries");
@@ -381,15 +379,15 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
 
       final Property.ColumnProperty property = (Property.ColumnProperty) Entities.getProperty(entityID, propertyID);
       final String columnName = property.getColumnName();
-      sql = getSelectSQL(Entities.getSelectTableName(entityID),
+      final String sql = getSelectSQL(Entities.getSelectTableName(entityID),
               new StringBuilder("distinct ").append(columnName).toString(),
               new StringBuilder("where ").append(columnName).append(" is not null").toString(), order ? columnName : null);
 
       //noinspection unchecked
       return query(sql, getPropertyResultPacker(property), -1);
     }
-    catch (SQLException exception) {
-      throw new DbException(exception, sql, getDatabase().getErrorMessage(exception));
+    catch (SQLException e) {
+      throw new DbException(getDatabase().getErrorMessage(e));
     }
   }
 
@@ -398,8 +396,8 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
     try {
       return queryObjects(statement, fetchCount);
     }
-    catch (SQLException exception) {
-      throw new DbException(exception, statement, getDatabase().getErrorMessage(exception));
+    catch (SQLException e) {
+      throw new DbException(getDatabase().getErrorMessage(e));
     }
   }
 
@@ -429,7 +427,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
     catch (SQLException e) {
       LOG.info(selectQuery);
       LOG.error(e.getMessage(), e);
-      throw new DbException(e, selectQuery, getDatabase().getErrorMessage(e));
+      throw new DbException(getDatabase().getErrorMessage(e));
     }
     finally {
       Util.closeSilently(statement);
@@ -464,13 +462,13 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
         commit();
       }
     }
-    catch (SQLException exception) {
+    catch (SQLException e) {
       if (!isTransactionOpen()) {
         rollbackQuietly();
       }
       LOG.info(statement);
-      LOG.error(exception.getMessage(), exception);
-      throw new DbException(exception, statement, getDatabase().getErrorMessage(exception));
+      LOG.error(e.getMessage(), e);
+      throw new DbException(getDatabase().getErrorMessage(e));
     }
   }
 
@@ -484,13 +482,13 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
 
       return result;
     }
-    catch (SQLException exception) {
+    catch (SQLException e) {
       LOG.info(statement);
-      LOG.error(exception.getMessage(), exception);
+      LOG.error(e.getMessage(), e);
       if (!isTransactionOpen()) {
         rollbackQuietly();
       }
-      throw new DbException(exception, statement, getDatabase().getErrorMessage(exception));
+      throw new DbException(getDatabase().getErrorMessage(e));
     }
   }
 
@@ -506,6 +504,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
       throw new DbException("Can not save blob within an open transaction");
     }
 
+    String statement = null;
     try {
       boolean success = false;
       try {
@@ -515,8 +514,10 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
 
         final String whereCondition = getWhereCondition(primaryKey.getProperties());
 
-        execute(new StringBuilder("update ").append(primaryKey.getEntityID()).append(" set ").append(property.getColumnName())
-                .append(" = '").append(dataDescription).append("' where ").append(whereCondition).toString());
+        statement = new StringBuilder("update ").append(primaryKey.getEntityID()).append(" set ").append(property.getColumnName())
+                .append(" = '").append(dataDescription).append("' where ").append(whereCondition).toString();
+
+        execute(statement);
 
         writeBlobField(blobData, Entities.getTableName(primaryKey.getEntityID()),
                 property.getBlobColumnName(), whereCondition);
@@ -531,8 +532,10 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
         }
       }
     }
-    catch (SQLException exception) {
-      throw new DbException(exception, null, getDatabase().getErrorMessage(exception));
+    catch (SQLException e) {
+      LOG.info(statement);
+      LOG.error(e.getMessage(), e);
+      throw new DbException(getDatabase().getErrorMessage(e));
     }
   }
 
@@ -545,8 +548,9 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
       return readBlobField(Entities.getTableName(primaryKey.getEntityID()), property.getBlobColumnName(),
               getWhereCondition(primaryKey.getProperties()));
     }
-    catch (SQLException exception) {
-      throw new DbException(exception, null, getDatabase().getErrorMessage(exception));
+    catch (SQLException e) {
+      LOG.error(e.getMessage(), e);
+      throw new DbException(getDatabase().getErrorMessage(e));
     }
   }
 
@@ -637,8 +641,10 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
     try {
       return queryInteger(sql);
     }
-    catch (SQLException exception) {
-      throw new DbException(exception, sql, getDatabase().getErrorMessage(exception));
+    catch (SQLException e) {
+      LOG.info(sql);
+      LOG.error(e.getMessage(), e);
+      throw new DbException(getDatabase().getErrorMessage(e));
     }
   }
 
@@ -1047,7 +1053,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
      * @param transientProperties the transient properties associated with the entity ID
      */
     private EntityResultPacker(final String entityID, final Collection<Property.ColumnProperty> properties,
-                       final Collection<Property.TransientProperty> transientProperties) {
+                               final Collection<Property.TransientProperty> transientProperties) {
       Util.rejectNullValue(entityID, "entityID");
       Util.rejectNullValue(properties, "properties");
       this.entityID = entityID;
