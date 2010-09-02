@@ -205,9 +205,11 @@
                 org/jminor/framework/server/*.class"
          excludes="org/jminor/framework/server/*Stub.class"/>
 
+    <copy file="${deploy.server.monitor.truststore}" todir="${build.base}"/>
+
     <jar jarfile="${dist}/${ant.project.name}-server-monitor.jar" basedir="${build.base}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
-         includes="org/jminor/framework/Configuration*,
+         includes="*, org/jminor/framework/Configuration*,
                 org/jminor/framework/domain/**,
                 org/jminor/framework/server/monitor/**,
                 org/jminor/framework/server/EntityDbServerAdmin.class,
@@ -300,7 +302,7 @@
     </copy>
   </target>
 
-  <target name="deploy_server_monitor"
+  <target name="deploy_server_monitor" depends="sign_server_monitor_jars"
           description="Deploys the rmi server monitor to the path defined by the 'deploy.server.monitor.path' property">
     <mkdir dir="${deploy.server.monitor.path}"/>
     <copy file="${dist}/${ant.project.name}-server-monitor.jar" todir="${deploy.server.monitor.path}/lib"/>
@@ -318,6 +320,13 @@
     <copy file="${deploy.server.monitor.policy}" todir="${deploy.server.monitor.config.path}"/>
     <copy file="${deploy.server.monitor.truststore}" todir="${deploy.server.monitor.config.path}"/>
     <chmod dir="${deploy.server.monitor.path}" perm="u+x" type="file" includes="*.sh"/>
+  </target>
+
+  <target name="sign_server_monitor_jars" depends="dist"
+          description="Signs the jars found in the 'deploy.server.monitor.path'">
+    <signjar alias="${jar.sign.alias}" storepass="${jar.sign.storepass}" keystore="${jar.sign.keystoreloc}">
+      <fileset dir="${deploy.server.monitor.path}/lib" />
+    </signjar>
   </target>
 
   <target name="deploy_demos" depends="recreate_h2_db, compile_demo_reports, sign_demo_jars"
