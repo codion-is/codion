@@ -335,6 +335,10 @@ public abstract class LoadTestModel implements LoadTest {
       }
     }
     evtDoneExiting.fire();
+    try {
+      Thread.sleep(maximumThinkTime);
+    }
+    catch (InterruptedException e) {/**/}
     System.exit(0);
   }
 
