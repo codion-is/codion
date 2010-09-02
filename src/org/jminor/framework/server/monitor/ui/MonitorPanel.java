@@ -59,7 +59,6 @@ public final class MonitorPanel extends JPanel {
         DefaultExceptionHandler.getInstance().handleException(e, MonitorPanel.this);
       }
     });
-    Configuration.resolveTruststoreProperty(MonitorPanel.class.getSimpleName());
   }
 
   /**
@@ -206,6 +205,7 @@ public final class MonitorPanel extends JPanel {
   }
 
   public static void main(final String[] arguments) {
+    Configuration.resolveTruststoreProperty(MonitorPanel.class.getSimpleName());
     SwingUtilities.invokeLater(new Runnable() {
       public void run() {
         try {
