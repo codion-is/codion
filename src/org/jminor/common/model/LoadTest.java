@@ -30,7 +30,12 @@ public interface LoadTest {
    */
   void setUser(User user);
 
-  public void setWeight(final String scenarioName, final int weight);
+  /**
+   * Sets the random chooser weight for the given scenario
+   * @param scenarioName the name of the scenario
+   * @param weight the new weight to assign to the scenario
+   */
+  void setWeight(final String scenarioName, final int weight);
 
   /**
    * @return the usage scenarios used by this load test;

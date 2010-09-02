@@ -166,7 +166,7 @@ public class EntityPanel extends JPanel {
   /**
    * Hold a reference to this PropertyChangeListener so that it will be garbage collected along with this EntityPanel instance
    */
-  private final PropertyChangeListener focusPropertyListener = new PropertyChangeListener() {
+  private final transient PropertyChangeListener focusPropertyListener = new PropertyChangeListener() {
     /** {@inheritDoc} */
     public void propertyChange(final PropertyChangeEvent evt) {
       final Component focusOwner = (Component) evt.getNewValue();

@@ -91,7 +91,7 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
   /**
    * The object containing the method call log
    */
-  private final MethodLogger methodLogger;
+  private final transient MethodLogger methodLogger;
   /**
    * Contains the active remote connections, that is, those connections that are in the middle of serving a request
    */

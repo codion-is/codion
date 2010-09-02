@@ -22,6 +22,9 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
    */
   private final List<ItemRandomizer.RandomItem<T>> items = new ArrayList<ItemRandomizer.RandomItem<T>>();
 
+  /**
+   * The Random instance used by this randomizer
+   */
   private final Random random = new Random();
 
   /**
@@ -164,6 +167,8 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
    * A class encapsulating an Object item and a integer weight value.
    */
   private static final class DefaultRandomItem<T> implements ItemRandomizer.RandomItem<T> {
+
+    private static final long serialVersionUID = 1;
 
     private final T item;
     private int weight = 0;

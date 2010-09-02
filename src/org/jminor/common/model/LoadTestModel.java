@@ -148,7 +148,7 @@ public abstract class LoadTestModel implements LoadTest {
   }
 
   /** {@inheritDoc} */
-  public UsageScenario getUsageScenario(final String usageScenarioName) {
+  public final UsageScenario getUsageScenario(final String usageScenarioName) {
     for (final UsageScenario scenario : usageScenarios) {
       if (scenario.getName().equals(usageScenarioName)) {
         return scenario;
@@ -159,7 +159,7 @@ public abstract class LoadTestModel implements LoadTest {
   }
 
   /** {@inheritDoc} */
-  public Collection<String> getUsageScenarios() {
+  public final Collection<String> getUsageScenarios() {
     final Collection<String> ret = new ArrayList<String>();
     for (final UsageScenario scenario : usageScenarios) {
       ret.add(scenario.getName());
@@ -168,18 +168,20 @@ public abstract class LoadTestModel implements LoadTest {
     return ret;
   }
 
-  public void setWeight(String scenarioName, int weight) {
+  /** {@inheritDoc} */
+  public final void setWeight(final String scenarioName, final int weight) {
     scenarioChooser.setWeight(getUsageScenario(scenarioName), weight);
   }
 
-  public ItemRandomizer<UsageScenario> getScenarioChooser() {
+  /** {@inheritDoc} */
+  public final ItemRandomizer<UsageScenario> getScenarioChooser() {
     return scenarioChooser;
   }
 
   /** {@inheritDoc}
    * @param name*/
   public final YIntervalSeriesCollection getScenarioDurationDataset(final String name) {
-  final YIntervalSeriesCollection scenarioDurationCollection = new YIntervalSeriesCollection();
+    final YIntervalSeriesCollection scenarioDurationCollection = new YIntervalSeriesCollection();
     scenarioDurationCollection.addSeries(durationSeries.get(name));
 
     return scenarioDurationCollection;
@@ -339,7 +341,6 @@ public abstract class LoadTestModel implements LoadTest {
       Thread.sleep(maximumThinkTime);
     }
     catch (InterruptedException e) {/**/}
-    System.exit(0);
   }
 
   /** {@inheritDoc} */
@@ -536,9 +537,9 @@ public abstract class LoadTestModel implements LoadTest {
     minimumThinkTimeSeries.add(time, minimumThinkTime);
     maximumThinkTimeSeries.add(time, maximumThinkTime);
     numberOfApplicationsSeries.add(time, applications.size());
-    allocatedMemoryCollection.add(time, Util.getAllocatedMemory() / 1000);
-    usedMemoryCollection.add(time, Util.getUsedMemory() / 1000);
-    maxMemoryCollection.add(time, Util.getMaxMemory() / 1000);
+    allocatedMemoryCollection.add(time, Util.getAllocatedMemory() / 1000d);
+    usedMemoryCollection.add(time, Util.getUsedMemory() / 1000d);
+    maxMemoryCollection.add(time, Util.getMaxMemory() / 1000d);
     scenariosRunSeries.add(time, counter.getWorkRequestsPerSecond());
     warningTimeSeries.add(time, warningTime);
     for (final XYSeries series : usageSeries) {
@@ -585,12 +586,14 @@ public abstract class LoadTestModel implements LoadTest {
                   scenarioName = loadTestModel.performWork(application);
                 }
                 catch (ScenarioException e) {
-                  LOG.debug("ScenarioException: " + scenarioName, e.getCause());
+                  LOG.debug("ScenarioException: " + application, e.getCause());
                 }
               }
               finally {
                 final long workTime = System.currentTimeMillis() - currentTime;
-                loadTestModel.counter.addScenarioDuration(scenarioName, (int) workTime);
+                if (scenarioName != null) {
+                  loadTestModel.counter.addScenarioDuration(scenarioName, (int) workTime);
+                }
                 if (workTime > loadTestModel.getWarningTime()) {
                   loadTestModel.counter.incrementDelayedWorkRequests();
                 }
@@ -705,13 +708,15 @@ public abstract class LoadTestModel implements LoadTest {
       }
     }
 
+    /** {@inheritDoc} */
     @Override
-    public int hashCode() {
+    public final int hashCode() {
       return name.hashCode();
     }
 
+    /** {@inheritDoc} */
     @Override
-    public boolean equals(Object obj) {
+    public final boolean equals(final Object obj) {
       return obj instanceof UsageScenario && ((UsageScenario) obj).getName().equals(name);
     }
 
@@ -839,7 +844,7 @@ public abstract class LoadTestModel implements LoadTest {
           usageScenarioFailures.put(scenario.getName(), failures);
           synchronized (scenarioDurations) {
             final Collection<Integer> durations = scenarioDurations.get(scenario.getName());
-            if (durations != null && durations.size() > 0) {
+            if (durations != null && !durations.isEmpty()) {
               int totalDuration = 0;
               int minDuration = -1;
               int maxDuration = -1;

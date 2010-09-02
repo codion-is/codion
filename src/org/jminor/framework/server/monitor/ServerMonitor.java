@@ -265,9 +265,9 @@ public final class ServerMonitor {
     memoryUsage = server.getMemoryUsage();
     connectionRequestsPerSecondSeries.add(time, server.getRequestsPerSecond());
     warningTimeExceededSecondSeries.add(time, server.getWarningTimeExceededPerSecond());
-    maxMemorySeries.add(time, server.getMaxMemory() / 1000);
-    allocatedMemorySeries.add(time, server.getAllocatedMemory() / 1000);
-    usedMemorySeries.add(time, server.getUsedMemory() / 1000);
+    maxMemorySeries.add(time, server.getMaxMemory() / 1000d);
+    allocatedMemorySeries.add(time, server.getAllocatedMemory() / 1000d);
+    usedMemorySeries.add(time, server.getUsedMemory() / 1000d);
     connectionCountSeries.add(time, server.getConnectionCount());
     evtStatsUpdated.fire();
   }

@@ -14,7 +14,13 @@ import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
 import java.rmi.server.RMISocketFactory;
 
-public class LoadTestServer extends AbstractRemoteServer<RemoteLoadTest> {
+/**
+ * A server for running load tests remotely.
+ * @see org.jminor.common.model.LoadTestModel
+ */
+public final class LoadTestServer extends AbstractRemoteServer<RemoteLoadTest> {
+
+  private static final long serialVersionUID = 1;
 
   public static final String SERVER_NAME = "LoadTestServer";
   private static final Logger LOG = LoggerFactory.getLogger(LoadTestServer.class);
@@ -30,12 +36,20 @@ public class LoadTestServer extends AbstractRemoteServer<RemoteLoadTest> {
     }
   }
 
+  /**
+   * Instantiates and exports a new LoadTestServer.
+   * @param serverPort the port on which to serve clients
+   * @param loadTestPort the port on which to export the load tests
+   * @param serverName the name of this server
+   * @throws java.rmi.RemoteException in case of a remote exception
+   */
   public LoadTestServer(final int serverPort, final int loadTestPort, final String serverName) throws RemoteException {
     super(serverPort, serverName, RMISocketFactory.getSocketFactory(), RMISocketFactory.getSocketFactory());
     this.loadTestPort = loadTestPort;
     getRegistry().rebind(serverName, this);
   }
 
+  /** {@inheritDoc} */
   @Override
   protected RemoteLoadTest doConnect(final ClientInfo clientInfo) throws RemoteException {
     final RemoteLoadTest remoteAdapter = new RemoteLoadTestAdapter(clientInfo, loadTestPort);
@@ -45,13 +59,20 @@ public class LoadTestServer extends AbstractRemoteServer<RemoteLoadTest> {
     return remoteAdapter;
   }
 
+  /** {@inheritDoc} */
   @Override
   protected void doDisconnect(final RemoteLoadTest connection) throws RemoteException {
     LOG.debug(((RemoteLoadTestAdapter) connection).getClientInfo() + " disconnected");
   }
 
+  /**
+   * Not implemented!
+   * @return 0
+   * @throws UnsupportedOperationException consistently
+   * @throws RemoteException in case of a remote exception
+   */
   public int getServerLoad() throws RemoteException {
-    return 0;
+    throw new UnsupportedOperationException();
   }
 
   /**
@@ -61,7 +82,6 @@ public class LoadTestServer extends AbstractRemoteServer<RemoteLoadTest> {
    */
   public static void main(final String[] arguments) throws Exception {
     new LoadTestServer(6666, 6666, SERVER_NAME);
-    System.out.println(SERVER_NAME);
-    LOG.debug(SERVER_NAME + " bound to registry");
+    LOG.info(SERVER_NAME + " bound to registry");
   }
 }
