@@ -8,14 +8,14 @@ import org.jminor.common.model.User;
 import java.sql.SQLException;
 
 /**
- * Defines an interface responsible for creating DbConnection instances.
+ * Defines an interface responsible for creating PoolableConnection instances.
  */
 public interface PoolableConnectionProvider {
 
   /**
-   * Creates a new DbConnection instance based on the given user.
+   * Creates a new PoolableConnection instance based on the given user.
    * @param user the user
-   * @return a new DbConnection instance
+   * @return a new PoolableConnection instance
    * @throws ClassNotFoundException in case the JDBC driver class was not found
    * @throws SQLException in case of a database exception
    */
