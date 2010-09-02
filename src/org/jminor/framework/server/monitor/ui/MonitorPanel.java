@@ -59,6 +59,7 @@ public final class MonitorPanel extends JPanel {
         DefaultExceptionHandler.getInstance().handleException(e, MonitorPanel.this);
       }
     });
+    Configuration.resolveTruststoreProperty(MonitorPanel.class.getSimpleName());
   }
 
   /**
