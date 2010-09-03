@@ -300,8 +300,8 @@ public final class LoadTestPanel extends JPanel {
     final JPanel chartBase = new JPanel(new BorderLayout(0, 0));
 
     final JTabbedPane tabPane = new JTabbedPane();
-    tabPane.addTab("Scenario durations", durationBase);
     tabPane.addTab("Overview", two);
+    tabPane.addTab("Scenario durations", durationBase);
 
     chartBase.add(tabPane);
 
