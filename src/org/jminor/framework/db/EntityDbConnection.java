@@ -46,7 +46,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Implements the database layer accessible to the client.
+ * EntityDb implementation based on a local JDBC connection.
  */
 public final class EntityDbConnection extends DbConnectionImpl implements EntityDb {
 
@@ -94,14 +94,15 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
   }
 
   /**
-   * @return true if foreign key fetch depth is being limited
+   * @return true if foreign key fetch depths are being limited
    */
   public boolean isLimitForeignKeyFetchDepth() {
     return limitForeignKeyFetchDepth;
   }
 
   /**
-   * @param limitForeignKeyFetchDepth true if foreign key fetch depth should be limited
+   * @param limitForeignKeyFetchDepth false to override the fetch depth limit provided by criteria
+   * @see org.jminor.framework.db.criteria.EntitySelectCriteria#setFetchDepth(int)
    */
   public void setLimitForeignKeyFetchDepth(final boolean limitForeignKeyFetchDepth) {
     this.limitForeignKeyFetchDepth = limitForeignKeyFetchDepth;
@@ -234,12 +235,11 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
   /** {@inheritDoc} */
   public void delete(final EntityCriteria criteria) throws DbException {
     PreparedStatement statement = null;
-    String deleteQuery = null;
     try {
       if (Entities.isReadOnly(criteria.getEntityID())) {
         throw new DbException("Can not delete a read only entity: " + criteria.getEntityID());
       }
-      deleteQuery = getDeleteSQL(criteria);
+      final String deleteQuery = getDeleteSQL(criteria);
       statement = getConnection().prepareStatement(deleteQuery);
       executePreparedUpdate(statement, deleteQuery, criteria.getValues(), criteria.getValueProperties());
 
@@ -251,7 +251,6 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
       if (!isTransactionOpen()) {
         rollbackQuietly();
       }
-      LOG.debug(deleteQuery);
       LOG.debug(e.getMessage(), e);
       throw new DbException(getDatabase().getErrorMessage(e));
     }
@@ -577,7 +576,8 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
 
   /**
    * Selects the given entity for update and checks if the it has been modified by comparing
-   * the property values to the current values in the database
+   * the property values to the current values in the database.
+   * The calling method is responsible for releasing the select for update lock.
    * @param entity the entity to check
    * @throws DbException in case of a database exception
    * @throws RecordNotFoundException in case the entity has been deleted
@@ -594,32 +594,57 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
   }
 
   /**
-   * @param entities the entities for which to set the reference entities
+   * Selects the entities referenced by the given entities via foreign keys and sets those
+   * as their respective foreign key values. this is done recursively for the entities referenced
+   * by the foreign keys as well, until the qriteria fetch depth limit is reached.
+   * @param entities the entities for which to set the foreign key entity values
    * @param criteria the criteria
    * @throws DbException in case of a database exception
+   * @see #setLimitForeignKeyFetchDepth(boolean)
+   * @see org.jminor.framework.db.criteria.EntitySelectCriteria#setFetchDepth(int)
    */
   private void setForeignKeyValues(final List<Entity> entities, final EntitySelectCriteria criteria) throws DbException {
     if (entities == null || entities.isEmpty()) {
       return;
     }
-    //Any sufficiently complex algorithm is indistinguishable from evil
+    //Any sufficiently complex algorithm is indistinguishable from evil, so I'll talk you through it.
+    //We retrieve the foreign keys defined for the given entity type, and for each, fetch the referenced entity
     final Collection<Property.ForeignKeyProperty> foreignKeyProperties = Entities.getForeignKeyProperties(entities.get(0).getEntityID());
-    for (final Property.ForeignKeyProperty property : foreignKeyProperties) {
-      final int maxFetchDepth = criteria.getCurrentFetchDepth() == 0 ? criteria.getFetchDepth(property.getPropertyID()) : criteria.getFetchDepth();
-      if (!limitForeignKeyFetchDepth || criteria.getCurrentFetchDepth() < maxFetchDepth) {
-        final List<Entity.Key> referencedKeys = getReferencedPrimaryKeys(entities, property);
-        if (!referencedKeys.isEmpty()) {
-          final EntitySelectCriteria referenceCriteria = EntityCriteriaUtil.selectCriteria(referencedKeys)
-                  .setCurrentFetchDepth(criteria.getCurrentFetchDepth() + 1)
-                  .setFetchDepth(maxFetchDepth);
-          final List<Entity> referencedEntities = selectMany(referenceCriteria);
+    for (final Property.ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
+      //We limit the foreign key fetch depth so we don't select the whole reference graph for each entity unless we intend to do so.
+      //Here's the fetch depth limit we propagate to the next foreign key level via recursion
+      final int fetchDepthLimit;
+      //if we're at the root recursion level, use the specific fetch depth assigned to this foreign key in the criteria
+      if (criteria.getCurrentFetchDepth() == 0) {
+        fetchDepthLimit = criteria.getFetchDepth(foreignKeyProperty.getPropertyID());
+      }
+      else {
+        //otherwise we use the overall criteria fetch depth limit
+        fetchDepthLimit = criteria.getFetchDepth();
+      }
+      //and now, if we haven't reached the limit, continue fetching referenced entities
+      if (!limitForeignKeyFetchDepth || criteria.getCurrentFetchDepth() < fetchDepthLimit) {
+        //we create the primary keys of the referenced entities using the values in the referencing columns
+        final List<Entity.Key> referencedPrimaryKeys = getReferencedPrimaryKeys(entities, foreignKeyProperty);
+        if (!referencedPrimaryKeys.isEmpty()) {
+          //let's create a select criteria using the primary keys we just created
+          final EntitySelectCriteria referencedEntitiesCriteria = EntityCriteriaUtil.selectCriteria(referencedPrimaryKeys);
+          //we increment the current fetch depth in the criteria we're propagating forward, or down, whichever way you fancy
+          referencedEntitiesCriteria.setCurrentFetchDepth(criteria.getCurrentFetchDepth() + 1);
+          //and here we plug in the fetch depth limit we deduced before
+          referencedEntitiesCriteria.setFetchDepth(fetchDepthLimit);
+          //then it's a simple matter of selecting the referenced entities and setting them as their respective foreign key values
+          final List<Entity> referencedEntities = selectMany(referencedEntitiesCriteria);
           final Map<Entity.Key, Entity> hashedReferencedEntities = EntityUtil.hashByPrimaryKey(referencedEntities);
           for (final Entity entity : entities) {
-            entity.initializeValue(property, hashedReferencedEntities.get(entity.getReferencedPrimaryKey(property)));
+            //in case you're wondering, the primary key of the referenced entity created
+            //before is cached by the entity instance, and is just about to be re-used
+            entity.initializeValue(foreignKeyProperty, hashedReferencedEntities.get(entity.getReferencedPrimaryKey(foreignKeyProperty)));
           }
         }
       }
     }
+    //nice talking to you
   }
 
   private int queryNewIdValue(final String entityID, final IdSource idSource, final Property.PrimaryKeyProperty primaryKeyProperty) throws DbException {
@@ -717,7 +742,14 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
     return queryBuilder.toString();
   }
 
-  private String createLogMessage(final String sqlStatement, final List<?> values, final SQLException exception, final LogEntry entry) {
+  private void rollbackQuietly() {
+    try {
+      rollback();
+    }
+    catch (SQLException e) {/**/}
+  }
+
+  private static String createLogMessage(final String sqlStatement, final List<?> values, final SQLException exception, final LogEntry entry) {
     final StringBuilder logMessage = new StringBuilder();
     if (entry == null) {
       logMessage.append(sqlStatement).append(", ").append(Util.getCollectionContentsAsString(values, false));
@@ -730,13 +762,6 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
     }
 
     return logMessage.toString();
-  }
-
-  private void rollbackQuietly() {
-    try {
-      rollback();
-    }
-    catch (SQLException e) {/**/}
   }
 
   private static void setParameterValues(final PreparedStatement statement, final List<?> values,
@@ -1103,7 +1128,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
       return entity;
     }
 
-    private Object getValue(final ResultSet resultSet, final Property.ColumnProperty property) throws SQLException {
+    private static Object getValue(final ResultSet resultSet, final Property.ColumnProperty property) throws SQLException {
       if (property.isBoolean()) {
         return getBoolean(resultSet, property);
       }
@@ -1112,7 +1137,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
       }
     }
 
-    private Boolean getBoolean(final ResultSet resultSet, final Property.ColumnProperty property) throws SQLException {
+    private static Boolean getBoolean(final ResultSet resultSet, final Property.ColumnProperty property) throws SQLException {
       if (property instanceof Property.BooleanProperty) {
         return ((Property.BooleanProperty) property).toBoolean(
                 getValue(resultSet, ((Property.BooleanProperty) property).getColumnType(), property.getSelectIndex()));
@@ -1131,7 +1156,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
       }
     }
 
-    private Object getValue(final ResultSet resultSet, final int sqlType, final int selectIndex) throws SQLException {
+    private static Object getValue(final ResultSet resultSet, final int sqlType, final int selectIndex) throws SQLException {
       switch (sqlType) {
         case Types.INTEGER:
           return getInteger(resultSet, selectIndex);
@@ -1159,33 +1184,33 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
       throw new IllegalArgumentException("Unknown value type: " + sqlType);
     }
 
-    private Integer getInteger(final ResultSet resultSet, final int columnIndex) throws SQLException {
+    private static Integer getInteger(final ResultSet resultSet, final int columnIndex) throws SQLException {
       final int value = resultSet.getInt(columnIndex);
 
       return resultSet.wasNull() ? null : value;
     }
 
-    private Double getDouble(final ResultSet resultSet, final int columnIndex) throws SQLException {
+    private static Double getDouble(final ResultSet resultSet, final int columnIndex) throws SQLException {
       final double value = resultSet.getDouble(columnIndex);
 
       return resultSet.wasNull() ? null : value;
     }
 
-    private String getString(final ResultSet resultSet, final int columnIndex) throws SQLException {
+    private static String getString(final ResultSet resultSet, final int columnIndex) throws SQLException {
       final String string = resultSet.getString(columnIndex);
 
       return resultSet.wasNull() ? null : string;
     }
 
-    private Boolean getBoolean(final ResultSet resultSet, final int columnIndex) throws SQLException {
+    private static Boolean getBoolean(final ResultSet resultSet, final int columnIndex) throws SQLException {
       return resultSet.getBoolean(columnIndex);
     }
 
-    private java.util.Date getDate(final ResultSet resultSet, final int columnIndex) throws SQLException {
+    private static java.util.Date getDate(final ResultSet resultSet, final int columnIndex) throws SQLException {
       return resultSet.getDate(columnIndex);
     }
 
-    private Timestamp getTimestamp(final ResultSet resultSet, final int columnIndex) throws SQLException {
+    private static Timestamp getTimestamp(final ResultSet resultSet, final int columnIndex) throws SQLException {
       return resultSet.getTimestamp(columnIndex);
     }
   }

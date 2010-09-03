@@ -337,11 +337,11 @@ public abstract class LoadTestModel<T> implements LoadTest {
         removeApplication();
       }
     }
-    evtDoneExiting.fire();
     try {
       Thread.sleep(maximumThinkTime);
     }
     catch (InterruptedException e) {/**/}
+    evtDoneExiting.fire();
   }
 
   /** {@inheritDoc} */

@@ -181,6 +181,18 @@ public interface EntityDefinition {
   EntityDefinition setStringProvider(final ValueMap.ToString<String> stringProvider);
 
   /**
+   * Sets the comparator to use when comparing this entity type to other entities
+   * @param comparator the comparator
+   * @return this EntityDefinition instance
+   */
+  EntityDefinition setComparator(final Entity.Comparator comparator);
+
+  /**
+   * @return the comparator used when comparing this entity type to other entities
+   */
+  Entity.Comparator getComparator();
+
+  /**
    * @return true if this entity type should use specific row coloring when presented in table views
    */
   boolean isRowColoring();

@@ -83,7 +83,7 @@ public final class EntityDbRemoteServerAdmin extends UnicastRemoteObject impleme
 
   /** {@inheritDoc} */
   public int getServerDbPort() throws RemoteException {
-    return server.getServerDbPort();
+    return EntityDbRemoteServer.getServerDbPort();
   }
 
   /** {@inheritDoc} */

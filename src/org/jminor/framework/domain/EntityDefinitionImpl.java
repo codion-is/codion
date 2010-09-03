@@ -291,6 +291,18 @@ final class EntityDefinitionImpl implements EntityDefinition {
   }
 
   /** {@inheritDoc} */
+  public Entity.Comparator getComparator() {
+    return comparator;
+  }
+
+  /** {@inheritDoc} */
+  public EntityDefinition setComparator(final Entity.Comparator comparator) {
+    Util.rejectNullValue(comparator, "comparator");
+    this.comparator = comparator;
+    return this;
+  }
+
+  /** {@inheritDoc} */
   public boolean isRowColoring() {
     return rowColoring;
   }

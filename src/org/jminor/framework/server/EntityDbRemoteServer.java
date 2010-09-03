@@ -96,7 +96,7 @@ final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
             SSL_CONNECTION_ENABLED ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
     loadDefaultDomainModels();
     this.database = database;
-    EntityDbRemoteAdapter.initConnectionPools(database);
+    EntityDbRemoteAdapter.initializeConnectionPools(database);
     final String host = database.getHost();
     final String port = database.getPort();
     if (Util.nullOrEmpty(host)) {
@@ -257,13 +257,6 @@ final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
   }
 
   /**
-   * @return the port this server exports client db connections on
-   */
-  int getServerDbPort() {
-    return SERVER_DB_PORT;
-  }
-
-  /**
    * @return the start date of the server
    */
   long getStartDate() {
@@ -294,6 +287,13 @@ final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
    */
   static Map<String,String> getEntityDefinitions() {
     return Entities.getEntityDefinitions();
+  }
+
+  /**
+   * @return the port this server exports client db connections on
+   */
+  static int getServerDbPort() {
+    return SERVER_DB_PORT;
   }
 
   static void loadDomainModel(final String domainClassName) throws ClassNotFoundException,
@@ -354,7 +354,7 @@ final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
     return remoteAdapter;
   }
 
-  private void loadDefaultDomainModels() throws RemoteException {
+  private static void loadDefaultDomainModels() throws RemoteException {
     final String domainModelClasses = Configuration.getStringValue(Configuration.SERVER_DOMAIN_MODEL_CLASSES);
     if (Util.nullOrEmpty(domainModelClasses)) {
       return;

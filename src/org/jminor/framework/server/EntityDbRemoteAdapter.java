@@ -57,7 +57,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /**
- * An adapter for handling logging and database connection pooling.
+ * An implementation of the EntityDbRemote interface, provides the logging of service calls
+ * and database connection pooling.
  */
 final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityDbRemote {
 
@@ -463,21 +464,12 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
     RequestCounter.setWarningThreshold(threshold);
   }
 
-  static void initConnectionPools(final Database database) {
+  static void initializeConnectionPools(final Database database) {
     final String initialPoolUsers = Configuration.getStringValue(Configuration.SERVER_CONNECTION_POOLING_INITIAL);
     if (!Util.nullOrEmpty(initialPoolUsers)) {
       for (final String username : initialPoolUsers.split(",")) {
         final User poolUser = new User(username.trim(), null);
-        CONNECTION_POOLS.put(poolUser, new ConnectionPoolImpl(new PoolableConnectionProvider() {
-          /** {@inheritDoc} */
-          public PoolableConnection createConnection(final User user) throws ClassNotFoundException, SQLException {
-            return EntityDbRemoteAdapter.createDbConnection(database, user);
-          }
-          /** {@inheritDoc} */
-          public void destroyConnection(final PoolableConnection connection) {
-            connection.disconnect();
-          }
-        }, poolUser));
+        CONNECTION_POOLS.put(poolUser, new ConnectionPoolImpl(new ConnectionProvider(database), poolUser));
       }
     }
   }
@@ -493,16 +485,6 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
   private EntityDb initializeProxy() {
     return (EntityDb) Proxy.newProxyInstance(EntityDbConnection.class.getClassLoader(),
             EntityDbConnection.class.getInterfaces(), new LoggingInvocationHandler());
-  }
-
-  private void returnConnection(final EntityDbConnection connection) {
-    final ConnectionPool connectionPool = CONNECTION_POOLS.get(clientInfo.getUser());
-    if (methodLogger.isEnabled()) {
-      connection.setLoggingEnabled(false);
-    }
-    if (connectionPool != null && connectionPool.isEnabled()) {
-      connectionPool.returnConnection(connection);
-    }
   }
 
   private EntityDbConnection getConnection() throws ClassNotFoundException, SQLException {
@@ -535,6 +517,16 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
     return entityDbConnection;
   }
 
+  private void returnConnection(final EntityDbConnection connection) {
+    final ConnectionPool connectionPool = CONNECTION_POOLS.get(clientInfo.getUser());
+    if (methodLogger.isEnabled()) {
+      connection.setLoggingEnabled(false);
+    }
+    if (connectionPool != null && connectionPool.isEnabled()) {
+      connectionPool.returnConnection(connection);
+    }
+  }
+
   private static EntityDbConnection createDbConnection(final Database database, final User user) throws ClassNotFoundException, SQLException {
     return new EntityDbConnection(database, user);
   }
@@ -543,8 +535,8 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
   private static final String CONNECTION_VALID = "isValid";
   private static final String GET_ACTIVE_USER = "getActiveUser";
 
-  private static boolean shouldMethodBeLogged(final String hashCode) {
-    return !(hashCode.equals(IS_CONNECTED) || hashCode.equals(CONNECTION_VALID) || hashCode.equals(GET_ACTIVE_USER));
+  private static boolean shouldMethodBeLogged(final String methodName) {
+    return !(methodName.equals(IS_CONNECTED) || methodName.equals(CONNECTION_VALID) || methodName.equals(GET_ACTIVE_USER));
   }
 
   private final class LoggingInvocationHandler implements InvocationHandler {
@@ -668,6 +660,25 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
       builder.deleteCharAt(builder.length() - 1);
 
       return builder.append("}").toString();
+    }
+  }
+
+  private static final class ConnectionProvider implements PoolableConnectionProvider {
+
+    private final Database database;
+
+    private ConnectionProvider(final Database database) {
+      this.database = database;
+    }
+
+    /** {@inheritDoc} */
+    public PoolableConnection createConnection(final User user) throws ClassNotFoundException, SQLException {
+      return createDbConnection(database, user);
+    }
+
+    /** {@inheritDoc} */
+    public void destroyConnection(final PoolableConnection connection) {
+      connection.disconnect();
     }
   }
 

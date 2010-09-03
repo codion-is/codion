@@ -133,7 +133,7 @@ public final class LoadTestPanel extends JPanel {
     add(initializeSouthPanel(), BorderLayout.SOUTH);
   }
 
-  private JPanel initializeSouthPanel() {
+  private static JPanel initializeSouthPanel() {
     final JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
     southPanel.add(new JLabel("Memory usage:"));
     southPanel.add(UiUtil.createMemoryUsageField(DEFAULT_MEMORY_USAGE_UPDATE_INTERVAL_MS));
@@ -387,6 +387,7 @@ public final class LoadTestPanel extends JPanel {
         frame.setVisible(false);
         frame.dispose();
       }
+      System.exit(0);
     }
   }
 }
