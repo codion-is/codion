@@ -116,7 +116,7 @@ public final class MonitorPanel extends JPanel {
   public void showFrame() {
     monitorFrame = UiUtil.createFrame(Images.loadImage("jminor_logo_red24.png").getImage());
     monitorFrame.setJMenuBar(ControlProvider.createMenuBar(initMainMenuControlSets()));
-    monitorFrame.setTitle("JMinor - EntityDb Server Monitor");
+    monitorFrame.setTitle("JMinor Server Monitor");
     monitorFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     monitorFrame.getContentPane().add(this);
     UiUtil.resizeWindow(monitorFrame, 0.75);

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2004 - 2010, BjÃ¶rn Darri SigurÃ°sson. All Rights Reserved.
  */
 package org.jminor.common.db.tools;
 
@@ -14,8 +14,8 @@ import org.jminor.common.model.LoadTestModel;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 
-import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -62,6 +62,7 @@ public final class QueryLoadTestModel extends LoadTestModel {
   }
 
   /** {@inheritDoc} */
+  @Override
   protected Object initializeApplication() throws CancelException {
     try {
       return pool.getConnection();
@@ -72,6 +73,7 @@ public final class QueryLoadTestModel extends LoadTestModel {
   }
 
   /** {@inheritDoc} */
+  @Override
   protected void disconnectApplication(final Object application) {
     pool.returnConnection((PoolableConnection) application);
   }
@@ -112,6 +114,7 @@ public final class QueryLoadTestModel extends LoadTestModel {
      * @param application the application
      * @throws ScenarioException
      */
+    @Override
     protected final void performScenario(final Object application) throws ScenarioException {
       PoolableConnection connection = null;
       PreparedStatement statement = null;
@@ -166,7 +169,7 @@ public final class QueryLoadTestModel extends LoadTestModel {
 
     private final Database database;
 
-    public ConnectionProvider(final Database database) {
+    private ConnectionProvider(final Database database) {
       this.database = database;
     }
 

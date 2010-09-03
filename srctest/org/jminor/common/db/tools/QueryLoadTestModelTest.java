@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2004 - 2010, BjÃ¶rn Darri SigurÃ°sson. All Rights Reserved.
  */
 package org.jminor.common.db.tools;
 
@@ -13,20 +13,20 @@ import java.util.Arrays;
 
 public final class QueryLoadTestModelTest {
 
-  private final static QueryLoadTestModel.QueryScenario SELECT_EMPLOYEE =
+  private static final QueryLoadTestModel.QueryScenario SELECT_EMPLOYEE =
           new QueryLoadTestModel.QueryScenario("selectEmployees", "select * from scott.emp");
-  private final static QueryLoadTestModel.QueryScenario SELECT_DEPARTMENTS =
+  private static final QueryLoadTestModel.QueryScenario SELECT_DEPARTMENTS =
           new QueryLoadTestModel.QueryScenario("selectDepartments", "select * from scott.dept");
-  private final static QueryLoadTestModel.QueryScenario SELECT_CUSTOMERS =
+  private static final QueryLoadTestModel.QueryScenario SELECT_CUSTOMERS =
           new QueryLoadTestModel.QueryScenario("selectCustomers", "select * from chinook.customer");
-  private final static QueryLoadTestModel.QueryScenario SELECT_ALBUMS =
+  private static final QueryLoadTestModel.QueryScenario SELECT_ALBUMS =
           new QueryLoadTestModel.QueryScenario("selectAlbum", "select * from chinook.album");
-  private final static QueryLoadTestModel.QueryScenario SELECT_PRODUCTS =
+  private static final QueryLoadTestModel.QueryScenario SELECT_PRODUCTS =
           new QueryLoadTestModel.QueryScenario("selectProducts", "select * from petstore.product");
   @Test
   public void test() {
     final H2Database database = new H2Database("h2db/h2");
-    
+
     final QueryLoadTestModel loadTest = new QueryLoadTestModel(database, User.UNIT_TEST_USER,
             Arrays.asList(SELECT_ALBUMS, SELECT_CUSTOMERS, SELECT_DEPARTMENTS,
                     SELECT_EMPLOYEE, SELECT_PRODUCTS));

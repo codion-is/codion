@@ -395,9 +395,6 @@
     <copy todir="${wiki.media.project}/docs">
       <fileset dir="${docs}"/>
     </copy>
-    <copy todir="${wiki.media.project}/resources">
-      <fileset dir="${resources}"/>
-    </copy>
     <copy todir="${wiki.media.project}/test">
       <fileset dir="${test}"/>
     </copy>
@@ -416,6 +413,9 @@
     </copy>
     <copy todir="${wiki.media.project}/src">
       <fileset dir="${srcdemos}"/>
+    </copy>
+    <copy todir="${wiki.media.project}/src/resources">
+      <fileset dir="${resources}"/>
     </copy>
     <chmod dir="${wiki.media.project}/src" perm="ugo+r" type="file" includes="**/*"/>
     <chmod dir="${wiki.media.project}/src" perm="ugo+rx" type="dir" includes="**/*"/>

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2004 - 2010, BjÃ¶rn Darri SigurÃ°sson. All Rights Reserved.
  */
 package org.jminor.common.server;
 
@@ -47,7 +47,6 @@ public final class ServerUtil {
             }
           }
           catch (Exception e) {
-            e.printStackTrace();
             LOG.error("Server \"" + name + "\" is unreachable", e);
           }
         }

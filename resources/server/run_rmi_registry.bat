@@ -1,1 +1,1 @@
-java -Djava.security.policy=all_permissions.policy -cp config/;lib/jminor-common.jar;lib/jminor-plugins.jar;lib/jminor-server.jar;jasperreports-3.0.0.jar;lib/slf4j-api-1.6.1.jar;lib/logback-core-0.9.24.jar;lib/logback-classic-0.9.24.jar sun.rmi.registry.RegistryImpl
+java -Djava.security.policy=all_permissions.policy -cp config/;lib/* sun.rmi.registry.RegistryImpl
