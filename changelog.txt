@@ -2108,3 +2108,4 @@
   LoginProxy added
   ConnectionPoolImpl new connection threshold is now configurable from pool monitor
   LoadTestModel generified
+  Fixed sorting when columns have been moved around

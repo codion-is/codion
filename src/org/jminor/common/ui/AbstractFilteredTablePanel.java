@@ -397,16 +397,9 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
         return;
       }
 
-      final JTableHeader h = (JTableHeader) e.getSource();
-      final TableColumnModel columnModel = h.getColumnModel();
-      final int viewColumn = columnModel.getColumnIndexAtX(e.getX());
-      final TableColumn column;
-      try {
-        column = columnModel.getColumn(viewColumn);
-      }
-      catch (ArrayIndexOutOfBoundsException ex) {
-        return;
-      }
+      final JTableHeader tableHeader = (JTableHeader) e.getSource();
+      final TableColumnModel columnModel = tableHeader.getColumnModel();
+      final TableColumn column = columnModel.getColumn(columnModel.getColumnIndexAtX(e.getX()));
       if (column != null) {
         final C columnIdentifier = (C) column.getIdentifier();
         SortingDirective status = tableModel.getSortingDirective(columnIdentifier);
@@ -509,8 +502,7 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
       if (component instanceof JLabel) {
         final JLabel label = (JLabel) component;
         label.setHorizontalTextPosition(JLabel.LEFT);
-        final int modelColumn = table.convertColumnIndexToModel(column);
-        final TableColumn tableColumn = table.getColumnModel().getColumn(modelColumn);
+        final TableColumn tableColumn = table.getColumnModel().getColumn(column);
         label.setIcon(getHeaderRendererIcon((C) tableColumn.getIdentifier(), label.getFont().getSize() + 5));
       }
 
