@@ -5,7 +5,6 @@ package org.jminor.framework.demos.empdept.testing;
 
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.LoadTest;
-import org.jminor.common.model.LoadTestModel;
 import org.jminor.common.model.User;
 import org.jminor.common.ui.LoadTestPanel;
 import org.jminor.framework.client.model.DefaultEntityApplicationModel;
@@ -51,10 +50,10 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
     return applicationModel;
   }
 
-  private static final class SelectDepartment extends LoadTestModel.AbstractUsageScenario {
+  private static final class SelectDepartment extends AbstractEntityUsageScenario {
     @Override
-    protected void performScenario(final Object application) throws ScenarioException {
-      selectRandomRow(((EntityApplicationModel) application).getMainApplicationModel(EmpDept.T_DEPARTMENT).getTableModel());
+    protected void performScenario(final EntityApplicationModel application) throws ScenarioException {
+      selectRandomRow(application.getMainApplicationModel(EmpDept.T_DEPARTMENT).getTableModel());
     }
     @Override
     public int getDefaultWeight() {
@@ -62,11 +61,11 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
     }
   }
 
-  private static final class UpdateEmployee extends LoadTestModel.AbstractUsageScenario {
+  private static final class UpdateEmployee extends AbstractEntityUsageScenario {
     @Override
-    protected void performScenario(final Object application) throws LoadTest.ScenarioException {
+    protected void performScenario(final EntityApplicationModel application) throws LoadTest.ScenarioException {
       try {
-        final EntityModel departmentModel = ((EntityApplicationModel) application).getMainApplicationModel(EmpDept.T_DEPARTMENT);
+        final EntityModel departmentModel = application.getMainApplicationModel(EmpDept.T_DEPARTMENT);
         selectRandomRow(departmentModel.getTableModel());
         final EntityModel employeeModel = departmentModel.getDetailModel(EmpDept.T_EMPLOYEE);
         if (employeeModel.getTableModel().getRowCount() > 0) {
@@ -87,11 +86,11 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
     }
   }
 
-  private static final class InsertEmployee extends LoadTestModel.AbstractUsageScenario {
+  private static final class InsertEmployee extends AbstractEntityUsageScenario {
     @Override
-    protected void performScenario(final Object application) throws ScenarioException {
+    protected void performScenario(final EntityApplicationModel application) throws ScenarioException {
       try {
-        final EntityModel departmentModel = ((EntityApplicationModel) application).getMainApplicationModel(EmpDept.T_DEPARTMENT);
+        final EntityModel departmentModel = application.getMainApplicationModel(EmpDept.T_DEPARTMENT);
         selectRandomRow(departmentModel.getTableModel());
         final EntityModel employeeModel = departmentModel.getDetailModel(EmpDept.T_EMPLOYEE);
         final Map<String, Entity> references = new HashMap<String, Entity>();
@@ -109,11 +108,11 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
     }
   }
 
-  private static final class InsertDepartment extends LoadTestModel.AbstractUsageScenario {
+  private static final class InsertDepartment extends AbstractEntityUsageScenario {
     @Override
-    protected void performScenario(final Object application) throws ScenarioException {
+    protected void performScenario(final EntityApplicationModel application) throws ScenarioException {
       try {
-        final EntityModel departmentModel = ((EntityApplicationModel) application).getMainApplicationModel(EmpDept.T_DEPARTMENT);
+        final EntityModel departmentModel = application.getMainApplicationModel(EmpDept.T_DEPARTMENT);
         departmentModel.getEditModel().setValueMap(EntityUtil.createRandomEntity(EmpDept.T_DEPARTMENT, null));
         departmentModel.getEditModel().insert();
       }
@@ -128,14 +127,14 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
     }
   }
 
-  private static final class LoginLogout extends LoadTestModel.AbstractUsageScenario {
+  private static final class LoginLogout extends AbstractEntityUsageScenario {
     final Random random = new Random();
     @Override
-    protected void performScenario(final Object application) throws ScenarioException {
+    protected void performScenario(final EntityApplicationModel application) throws ScenarioException {
       try {
-        ((EntityApplicationModel) application).getDbProvider().disconnect();
+        application.getDbProvider().disconnect();
         Thread.sleep(random.nextInt(1500));
-        ((EntityApplicationModel) application).getDbProvider().getEntityDb();
+        application.getDbProvider().getEntityDb();
       }
       catch (InterruptedException e) {/**/}
     }

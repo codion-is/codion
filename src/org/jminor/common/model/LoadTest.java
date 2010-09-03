@@ -232,7 +232,7 @@ public interface LoadTest {
   /**
    * Specifies a load test usage scenario.
    */
-  interface UsageScenario extends Serializable {
+  interface UsageScenario<T> extends Serializable {
 
     /**
      * @return the name of this scenario
@@ -249,7 +249,7 @@ public interface LoadTest {
      * @param application the application to use
      * @throws ScenarioException in case of an exception
      */
-    void run(Object application) throws ScenarioException;
+    void run(final T application) throws ScenarioException;
 
     /**
      * @return the total number of times this scenario has been run

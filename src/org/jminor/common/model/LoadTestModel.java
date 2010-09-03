@@ -25,8 +25,9 @@ import java.util.concurrent.Executors;
 
 /**
  * A default LoadTest implementation.
+ * @param <T> the type of the applications this load test uses
  */
-public abstract class LoadTestModel implements LoadTest {
+public abstract class LoadTestModel<T> implements LoadTest {
 
   public static final int DEFAULT_CHART_DATA_UPDATE_INTERVAL_MS = 2000;
 
@@ -54,8 +55,8 @@ public abstract class LoadTestModel implements LoadTest {
   private boolean paused = false;
   private boolean collectChartData = false;
 
-  private final Stack<ApplicationRunner> applications = new Stack<ApplicationRunner>();
-  private final Collection<? extends UsageScenario> usageScenarios;
+  private final Stack<ApplicationRunner<T>> applications = new Stack<ApplicationRunner<T>>();
+  private final Collection<? extends UsageScenario<T>> usageScenarios;
   private final ItemRandomizer<UsageScenario> scenarioChooser;
   private final ExecutorService executor = Executors.newCachedThreadPool();
   private User user;
@@ -97,7 +98,7 @@ public abstract class LoadTestModel implements LoadTest {
    */
   public LoadTestModel(final User user, final int maximumThinkTime, final int loginDelayFactor,
                        final int applicationBatchSize, final int warningTime) {
-    this(user, new ArrayList<UsageScenario>(), maximumThinkTime, loginDelayFactor, applicationBatchSize, warningTime);
+    this(user, new ArrayList<UsageScenario<T>>(), maximumThinkTime, loginDelayFactor, applicationBatchSize, warningTime);
   }
 
   /**
@@ -109,7 +110,7 @@ public abstract class LoadTestModel implements LoadTest {
    * @param applicationBatchSize the number of applications to add in a batch
    * @param warningTime a work request is considered 'delayed' if the time it takes to process it exceeds this value (ms)
    */
-  public LoadTestModel(final User user, final Collection<? extends UsageScenario> usageScenarios, final int maximumThinkTime,
+  public LoadTestModel(final User user, final Collection<? extends UsageScenario<T>> usageScenarios, final int maximumThinkTime,
                        final int loginDelayFactor, final int applicationBatchSize, final int warningTime) {
     if (maximumThinkTime <= 0) {
       throw new IllegalArgumentException("Maximum think time must be a positive integer");
@@ -148,8 +149,8 @@ public abstract class LoadTestModel implements LoadTest {
   }
 
   /** {@inheritDoc} */
-  public final UsageScenario getUsageScenario(final String usageScenarioName) {
-    for (final UsageScenario scenario : usageScenarios) {
+  public final UsageScenario<T> getUsageScenario(final String usageScenarioName) {
+    for (final UsageScenario<T> scenario : usageScenarios) {
       if (scenario.getName().equals(usageScenarioName)) {
         return scenario;
       }
@@ -288,7 +289,7 @@ public abstract class LoadTestModel implements LoadTest {
   /** {@inheritDoc} */
   public final void addApplicationBatch() {
     for (int i = 0; i < applicationBatchSize; i++) {
-      final ApplicationRunner runner = new ApplicationRunner(this);
+      final ApplicationRunner<T> runner = new ApplicationRunner<T>(this);
       synchronized (applications) {
         applications.push(runner);
       }
@@ -434,7 +435,7 @@ public abstract class LoadTestModel implements LoadTest {
    * @return the name of the scenario that was run
    * @throws ScenarioException any exception thrown by the work request
    */
-  protected String performWork(final Object application) throws ScenarioException {
+  protected String performWork(final T application) throws ScenarioException {
     Util.rejectNullValue(application, "application");
     final String scenarioName = scenarioChooser.getRandomItem().getName();
     runScenario(scenarioName, application);
@@ -448,7 +449,7 @@ public abstract class LoadTestModel implements LoadTest {
    * @param application the application to use
    * @throws ScenarioException in case of an exception
    */
-  protected final void runScenario(final String usageScenarioName, final Object application) throws ScenarioException {
+  protected final void runScenario(final String usageScenarioName, final T application) throws ScenarioException {
     getUsageScenario(usageScenarioName).run(application);
   }
 
@@ -456,12 +457,12 @@ public abstract class LoadTestModel implements LoadTest {
    * @return an initialized application.
    * @throws CancelException in case the initialization was cancelled
    */
-  protected abstract Object initializeApplication() throws CancelException;
+  protected abstract T initializeApplication() throws CancelException;
 
   /**
    * @param application the application to disconnect
    */
-  protected abstract void disconnectApplication(final Object application);
+  protected abstract void disconnectApplication(final T application);
 
   /**
    * @return a random think time in milliseconds based on the values of minimumThinkTime and maximumThinkTime
@@ -555,12 +556,12 @@ public abstract class LoadTestModel implements LoadTest {
     }
   }
 
-  private static final class ApplicationRunner implements Runnable {
+  private static final class ApplicationRunner<T> implements Runnable {
 
-    private final LoadTestModel loadTestModel;
+    private final LoadTestModel<T> loadTestModel;
     private boolean stopped = false;
 
-    private ApplicationRunner(final LoadTestModel loadTestModel) {
+    private ApplicationRunner(final LoadTestModel<T> loadTestModel) {
       this.loadTestModel = loadTestModel;
     }
 
@@ -574,7 +575,7 @@ public abstract class LoadTestModel implements LoadTest {
         if (loadTestModel.getLoginDelayFactor() > 0) {
           delayLogin();
         }
-        final Object application = loadTestModel.initializeApplication();
+        final T application = loadTestModel.initializeApplication();
         LOG.debug("LoadTestModel initialized application: " + application);
         while (!stopped) {
           try {
@@ -636,7 +637,7 @@ public abstract class LoadTestModel implements LoadTest {
   /**
    * An abstract usage scenario.
    */
-  public abstract static class AbstractUsageScenario implements LoadTest.UsageScenario {
+  public abstract static class AbstractUsageScenario<T> implements LoadTest.UsageScenario<T> {
 
     private final String name;
     private int successfulRunCount = 0;
@@ -692,7 +693,7 @@ public abstract class LoadTestModel implements LoadTest {
     }
 
     /** {@inheritDoc} */
-    public final void run(final Object application) throws ScenarioException {
+    public final void run(final T application) throws ScenarioException {
       if (application == null) {
         throw new IllegalArgumentException("Can not run without an application");
       }
@@ -732,7 +733,7 @@ public abstract class LoadTestModel implements LoadTest {
      * @param application the application
      * @throws ScenarioException in case of an exception
      */
-    protected abstract void performScenario(final Object application) throws ScenarioException;
+    protected abstract void performScenario(final T application) throws ScenarioException;
 
     /**
      * Called before this scenario is run, override to prepare the application for each run

@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * A class for running multiple EntityApplicationModel instances for load testing purposes.
  */
-public abstract class EntityLoadTestModel extends LoadTestModel {
+public abstract class EntityLoadTestModel extends LoadTestModel<EntityApplicationModel> {
 
   private static final int DEFAULT_WARNING_TIME = 200;
 
@@ -26,7 +26,7 @@ public abstract class EntityLoadTestModel extends LoadTestModel {
    * @param user the default user
    * @param usageScenarios the usage scenarios
    */
-  public EntityLoadTestModel(final User user, final UsageScenario... usageScenarios) {
+  public EntityLoadTestModel(final User user, final UsageScenario<EntityApplicationModel>... usageScenarios) {
     super(user, Arrays.asList(usageScenarios), Configuration.getIntValue(Configuration.LOAD_TEST_THINKTIME),
             Configuration.getIntValue(Configuration.LOAD_TEST_LOGIN_DELAY),
             Configuration.getIntValue(Configuration.LOAD_TEST_BATCH_SIZE), DEFAULT_WARNING_TIME);
@@ -84,11 +84,22 @@ public abstract class EntityLoadTestModel extends LoadTestModel {
 
   /** {@inheritDoc} */
   @Override
-  protected final void disconnectApplication(final Object application) {
-    ((EntityApplicationModel) application).getDbProvider().disconnect();
+  protected final void disconnectApplication(final EntityApplicationModel application) {
+    application.getDbProvider().disconnect();
   }
 
   /** {@inheritDoc} */
   @Override
   protected abstract EntityApplicationModel initializeApplication() throws CancelException;
+
+  public abstract static class AbstractEntityUsageScenario extends AbstractUsageScenario<EntityApplicationModel> {
+
+    public AbstractEntityUsageScenario() {
+      super();
+    }
+
+    public AbstractEntityUsageScenario(final String name) {
+      super(name);
+    }
+  }
 }
