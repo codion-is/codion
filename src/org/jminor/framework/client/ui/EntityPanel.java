@@ -47,6 +47,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -166,15 +167,7 @@ public class EntityPanel extends JPanel {
   /**
    * Hold a reference to this PropertyChangeListener so that it will be garbage collected along with this EntityPanel instance
    */
-  private final transient PropertyChangeListener focusPropertyListener = new PropertyChangeListener() {
-    /** {@inheritDoc} */
-    public void propertyChange(final PropertyChangeEvent evt) {
-      final Component focusOwner = (Component) evt.getNewValue();
-      if (focusOwner != null && isParentPanel(focusOwner) && !isActive()) {
-        getEditModel().setActive(true);
-      }
-    }
-  };
+  private final PropertyChangeListener focusPropertyListener = new FocusListener();
 
   /**
    * Initializes a new EntityPanel instance. The Panel is not laid out and initialized until initialize() is called.
@@ -1223,6 +1216,17 @@ public class EntityPanel extends JPanel {
         catch (Exception ex) {
           throw new RuntimeException(ex);
         }
+      }
+    }
+  }
+
+  private class FocusListener implements PropertyChangeListener, Serializable {
+    private static final long serialVersionUID = 1;
+    /** {@inheritDoc} */
+    public void propertyChange(final PropertyChangeEvent evt) {
+      final Component focusOwner = (Component) evt.getNewValue();
+      if (focusOwner != null && isParentPanel(focusOwner) && !isActive()) {
+        getEditModel().setActive(true);
       }
     }
   }

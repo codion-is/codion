@@ -105,8 +105,10 @@ public final class FlexibleGridLayout extends GridLayout {
       //
       arrangeFixedSizes(columnWidths, rowHeights);
       //
-      for (int c = 0, x = insets.left; c < numberOfColumns; c++) {
-        for (int r = 0, y = insets.top; r < numberOfRows; r++) {
+      int x = insets.left;
+      for (int c = 0; c < numberOfColumns; c++) {
+        int y = insets.top;
+        for (int r = 0; r < numberOfRows; r++) {
           final int i = r * numberOfColumns + c;
           if (i < numberOfComponents) {
             parent.getComponent(i).setBounds(x, y, columnWidths[c], rowHeights[r]);

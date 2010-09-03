@@ -60,6 +60,7 @@ public final class LoadTestPanel extends JPanel {
   /**
    * Constructs a new LoadTestPanel.
    * @param loadTestModel the LoadTestModel to base this panel on
+   * @param pluginPanel a panel to add as a plugin panel
    */
   public LoadTestPanel(final LoadTest loadTestModel, final JPanel pluginPanel) {
     Util.rejectNullValue(loadTestModel, "loadTestModel");

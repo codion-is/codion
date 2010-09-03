@@ -9,14 +9,11 @@ import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.dbms.Database;
 import org.jminor.common.db.dbms.DatabaseProvider;
 import org.jminor.common.model.CancelException;
+import org.jminor.common.model.LoadTest;
 import org.jminor.common.model.LoadTestModel;
 import org.jminor.common.model.User;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 import java.awt.event.ActionEvent;
@@ -24,6 +21,7 @@ import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -194,12 +192,18 @@ public class ConnectionPoolImplTest {
   }
 
   private LoadTestModel initializeLoadTestModel(final ConnectionPool pool) {
-    return new LoadTestModel(User.UNIT_TEST_USER, 100, 1, 5, 20) {
+    final LoadTest.UsageScenario<ActionListener> scenario = new LoadTestModel.AbstractUsageScenario<ActionListener>() {
       @Override
-      protected void disconnectApplication(Object application) {}
+      protected void performScenario(final ActionListener application) throws LoadTest.ScenarioException {
+        application.actionPerformed(null);
+      }
+    };
+    return new LoadTestModel<ActionListener>(User.UNIT_TEST_USER, Arrays.asList(scenario), 100, 1, 5, 20) {
+      @Override
+      protected void disconnectApplication(ActionListener application) {}
 
       @Override
-      protected Object initializeApplication() throws CancelException {
+      protected ActionListener initializeApplication() throws CancelException {
         return new ActionListener() {
           public void actionPerformed(final ActionEvent e) {
             try {
@@ -231,12 +235,6 @@ public class ConnectionPoolImplTest {
             }
           }
         };
-      }
-
-      @Override
-      protected String performWork(final Object application) {
-        ((ActionListener) application).actionPerformed(null);
-        return application.toString();
       }
     };
   }

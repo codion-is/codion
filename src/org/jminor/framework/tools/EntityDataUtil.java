@@ -32,7 +32,8 @@ public final class EntityDataUtil {
           entity.getPrimaryKey().clear();
         }
       }
-      int fromIndex = 0, toIndex = 0;
+      int fromIndex = 0;
+      int toIndex = 0;
       while (fromIndex < entitiesToCopy.size()) {
         toIndex = Math.min(toIndex + transactionBatchSize, entitiesToCopy.size());
         final List<Entity> subList = entitiesToCopy.subList(fromIndex, toIndex);

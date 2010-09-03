@@ -19,25 +19,25 @@ import java.util.UUID;
 
 public final class SchemaBrowserLoadTest extends EntityLoadTestModel {
 
+  private static final UsageScenario SCENARIO = new AbstractEntityUsageScenario() {
+    @Override
+    protected void performScenario(final EntityApplicationModel application) throws ScenarioException {
+      final EntityModel schemaModel = application.getMainApplicationModels().iterator().next();
+      schemaModel.getTableModel().refresh();
+      selectRandomRow(schemaModel.getTableModel());
+      selectRandomRow(schemaModel.getDetailModels().iterator().next().getTableModel());
+      selectRandomRow(schemaModel.getDetailModels().iterator().next().getDetailModels().iterator().next().getTableModel());
+    }
+  };
+
   public SchemaBrowserLoadTest() {
-    super(User.UNIT_TEST_USER);
-  }
-
-  @Override
-  protected String performWork(final EntityApplicationModel application) {
-    final EntityModel schemaModel = application.getMainApplicationModels().iterator().next();
-    schemaModel.getTableModel().refresh();
-    selectRandomRow(schemaModel.getTableModel());
-    selectRandomRow(schemaModel.getDetailModels().iterator().next().getTableModel());
-    selectRandomRow(schemaModel.getDetailModels().iterator().next().getDetailModels().iterator().next().getTableModel());
-
-    return application.toString();
+    super(User.UNIT_TEST_USER, SCENARIO);
   }
 
   @Override
   protected EntityApplicationModel initializeApplication() throws CancelException {
     final EntityApplicationModel applicationModel = new DefaultEntityApplicationModel(new EntityDbRemoteProvider(getUser(),
-           UUID.randomUUID(), getClass().getSimpleName())) {
+            UUID.randomUUID(), getClass().getSimpleName())) {
       @Override
       protected void loadDomainModel() {
         SchemaBrowser.init();

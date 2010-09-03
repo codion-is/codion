@@ -22,6 +22,8 @@ public final class LoadTestServer extends AbstractRemoteServer<RemoteLoadTest> {
 
   private static final long serialVersionUID = 1;
 
+  private static final int DEFAULT_PORT = 6666;
+
   public static final String SERVER_NAME = "LoadTestServer";
   private static final Logger LOG = LoggerFactory.getLogger(LoadTestServer.class);
   private final int loadTestPort;
@@ -81,7 +83,7 @@ public final class LoadTestServer extends AbstractRemoteServer<RemoteLoadTest> {
    * @throws Exception in case of an exception
    */
   public static void main(final String[] arguments) throws Exception {
-    new LoadTestServer(6666, 6666, SERVER_NAME);
+    new LoadTestServer(DEFAULT_PORT, DEFAULT_PORT, SERVER_NAME);
     LOG.info(SERVER_NAME + " bound to registry");
   }
 }

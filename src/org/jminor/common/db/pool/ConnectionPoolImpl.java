@@ -35,6 +35,8 @@ public final class ConnectionPoolImpl implements ConnectionPool {
   public static final int DEFAULT_MAXIMUM_CHECK_OUT_TIME = 2000;
   public static final int DEFAULT_NEW_CONNECTION_THRESHOLD = 500;
 
+  private static final int FINE_GRAINED_STATS_SIZE = 1000;
+
   private final PoolableConnectionProvider connectionProvider;
   private final User user;
   private final Stack<PoolableConnection> pool = new Stack<PoolableConnection>();
@@ -69,7 +71,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
   public ConnectionPoolImpl(final PoolableConnectionProvider connectionProvider, final User user) {
     this.user = user;
     this.connectionProvider = connectionProvider;
-    for (int i = 0; i < 1000; i++) {
+    for (int i = 0; i < FINE_GRAINED_STATS_SIZE; i++) {
       connectionPoolStatistics.add(new ConnectionPoolStateImpl());
     }
     startPoolCleaner();
@@ -377,7 +379,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
 
   private void addPoolStatistics(final long currentTime) {
     synchronized (pool) {
-      if (currentPoolStatisticsIndex == 1000) {
+      if (currentPoolStatisticsIndex == FINE_GRAINED_STATS_SIZE) {
         currentPoolStatisticsIndex = 0;
       }
       final int inUseCount = inUse.size();

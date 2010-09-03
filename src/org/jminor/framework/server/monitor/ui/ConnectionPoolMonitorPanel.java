@@ -55,10 +55,10 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
 
   private ChartPanel checkOutTimePanel;
 
+  private final JTextField txtResetTime = new JTextField(RESET_FIELD_COLUMNS);
   private final JTextField txtPoolSize = new JTextField();
   private final JTextField txtCreated = new JTextField();
   private final JTextField txtDestroyed = new JTextField();
-  private final JTextField txtCreatedDestroyedResetTime = new JTextField(RESET_FIELD_COLUMNS);
   private final JTextField txtRequested = new JTextField();
   private final JTextField txtDelayed = new JTextField();
   private final JTextField txtFailed = new JTextField();
@@ -81,7 +81,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     txtPoolSize.setText(format.format(stats.getSize()));
     txtCreated.setText(format.format(stats.getCreated()));
     txtDestroyed.setText(format.format(stats.getDestroyed()));
-    txtCreatedDestroyedResetTime.setText(DateFormats.getDateFormat(DateFormats.FULL_TIMESTAMP).format(stats.getResetTime()));
+    txtResetTime.setText(DateFormats.getDateFormat(DateFormats.FULL_TIMESTAMP).format(stats.getResetTime()));
     txtRequested.setText(format.format(stats.getRequests()));
     double prc = (double) stats.getDelayedRequests() / (double) stats.getRequests() * 100;
     txtDelayed.setText(format.format(stats.getDelayedRequests())
@@ -209,8 +209,8 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     txtDelayed.setHorizontalAlignment(JLabel.CENTER);
     txtFailed.setEditable(false);
     txtFailed.setHorizontalAlignment(JLabel.CENTER);
-    txtCreatedDestroyedResetTime.setEditable(false);
-    txtCreatedDestroyedResetTime.setHorizontalAlignment(JLabel.CENTER);
+    txtResetTime.setEditable(false);
+    txtResetTime.setHorizontalAlignment(JLabel.CENTER);
 
     final JCheckBox chkCollectStats = new JCheckBox();
     chkCollectStats.setModel(new ToggleBeanValueLink(model, "collectFineGrainedStats", model.getCollectFineGrainedStatsObserver(), null).getButtonModel());
@@ -228,7 +228,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     statsBase.add(new JLabel("destroyed"));
     statsBase.add(txtDestroyed);
     statsBase.add(new JLabel(" since"));
-    statsBase.add(txtCreatedDestroyedResetTime);
+    statsBase.add(txtResetTime);
 
     final JPanel panel = new JPanel(new BorderLayout(5,5));
     panel.setBorder(BorderFactory.createTitledBorder("Statistics"));

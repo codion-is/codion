@@ -32,6 +32,8 @@ import java.util.TimerTask;
  */
 public final class ConnectionPoolMonitor {
 
+  private static final int THOUSAND = 1000;
+
   private final Event evtStatsUpdated = Events.event();
   private final Event evtStatsUpdateIntervalChanged = Events.event();
   private final Event evtCollectFineGrainedStatsChanged = Events.event();
@@ -85,15 +87,15 @@ public final class ConnectionPoolMonitor {
   }
 
   public int getPooledConnectionTimeout() throws RemoteException {
-    return pool.getConnectionTimeout() / 1000;
+    return pool.getConnectionTimeout() / THOUSAND;
   }
 
   public void setPooledConnectionTimeout(final int value) throws RemoteException {
-    pool.setConnectionTimeout(value * 1000);
+    pool.setConnectionTimeout(value * THOUSAND);
   }
 
   public int getPoolCleanupInterval() throws RemoteException {
-    return pool.getCleanupInterval() / 1000;
+    return pool.getCleanupInterval() / THOUSAND;
   }
 
   public void setPoolCleanupInterval(final int value) throws RemoteException {

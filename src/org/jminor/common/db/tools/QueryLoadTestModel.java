@@ -26,7 +26,12 @@ import java.util.List;
 /**
  * A load test implementation for testing database queries.
  */
-public final class QueryLoadTestModel extends LoadTestModel {
+public final class QueryLoadTestModel extends LoadTestModel<PoolableConnection> {
+
+  private static final int DEFAULT_MAXIMUM_THINK_TIME_MS = 500;
+  private static final int DEFAULT_LOGIN_DELAY_MS = 2;
+  private static final int DEFAULT_BATCH_SIZE = 5;
+  private static final int DEFAULT_WARNING_TIME_MS = 50;
 
   private final ConnectionPool pool;
 
@@ -37,7 +42,7 @@ public final class QueryLoadTestModel extends LoadTestModel {
    * @param scenarios the query scenarios
    */
   public QueryLoadTestModel(final Database database, final User user, final Collection<? extends QueryScenario> scenarios) {
-    super(user, scenarios, 100, 2, 5, 10);
+    super(user, scenarios, DEFAULT_MAXIMUM_THINK_TIME_MS, DEFAULT_LOGIN_DELAY_MS, DEFAULT_BATCH_SIZE, DEFAULT_WARNING_TIME_MS);
     final long time = System.currentTimeMillis();
     this.pool = new ConnectionPoolImpl(new ConnectionProvider(database), user);
     addExitListener(new ActionListener() {
@@ -63,7 +68,7 @@ public final class QueryLoadTestModel extends LoadTestModel {
 
   /** {@inheritDoc} */
   @Override
-  protected Object initializeApplication() throws CancelException {
+  protected PoolableConnection initializeApplication() throws CancelException {
     try {
       return pool.getConnection();
     }
@@ -74,14 +79,14 @@ public final class QueryLoadTestModel extends LoadTestModel {
 
   /** {@inheritDoc} */
   @Override
-  protected void disconnectApplication(final Object application) {
-    pool.returnConnection((PoolableConnection) application);
+  protected void disconnectApplication(final PoolableConnection application) {
+    pool.returnConnection(application);
   }
 
   /**
    * A usage scenario based on a SQL query.
    */
-  public static class QueryScenario extends AbstractUsageScenario {
+  public static class QueryScenario extends AbstractUsageScenario<PoolableConnection> {
 
     private static final long serialVersionUID = 1;
 
@@ -111,16 +116,15 @@ public final class QueryLoadTestModel extends LoadTestModel {
 
     /**
      *
-     * @param application the application
+     * @param application the connection
      * @throws ScenarioException
      */
     @Override
-    protected final void performScenario(final Object application) throws ScenarioException {
-      PoolableConnection connection = null;
+    protected final void performScenario(final PoolableConnection application) throws ScenarioException {
       PreparedStatement statement = null;
+      ResultSet resultSet = null;
       try {
-        connection = (PoolableConnection) application;
-        statement = connection.getConnection().prepareCall(query);
+        statement = application.getConnection().prepareCall(query);
         final List<Object> parameters = getParameters();
         if (parameters != null && !parameters.isEmpty()) {
           int index = 1;
@@ -128,29 +132,30 @@ public final class QueryLoadTestModel extends LoadTestModel {
             statement.setObject(index++, parameter);
           }
         }
-        final ResultSet rs = statement.executeQuery();
-        final int columnCount = rs.getMetaData().getColumnCount();
+        resultSet = statement.executeQuery();
+        final int columnCount = resultSet.getMetaData().getColumnCount();
         if (columnCount > 0) {
-          while (rs.next()) {
+          while (resultSet.next()) {
             for (int i = 1; i <= columnCount; i++) {
-              rs.getObject(i);
+              resultSet.getObject(i);
             }
           }
         }
         if (transactional) {
-          connection.commit();
+          application.commit();
         }
       }
       catch (Exception e) {
-        if (transactional && connection != null) {
+        if (transactional && application != null) {
           try {
-            connection.rollback();
+            application.rollback();
           }
           catch (SQLException e1) {/**/}
         }
         throw new ScenarioException(e);
       }
       finally {
+        Util.closeSilently(resultSet);
         Util.closeSilently(statement);
       }
     }

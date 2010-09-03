@@ -430,20 +430,6 @@ public abstract class LoadTestModel<T> implements LoadTest {
   }
 
   /**
-   * Selects a random scenario and runs it with the given application
-   * @param application the application for running the next scenario
-   * @return the name of the scenario that was run
-   * @throws ScenarioException any exception thrown by the work request
-   */
-  protected String performWork(final T application) throws ScenarioException {
-    Util.rejectNullValue(application, "application");
-    final String scenarioName = scenarioChooser.getRandomItem().getName();
-    runScenario(scenarioName, application);
-
-    return scenarioName;
-  }
-
-  /**
    * Runs the scenario with the given name on the given application
    * @param usageScenarioName the name of the scenario to run
    * @param application the application to use
@@ -472,6 +458,20 @@ public abstract class LoadTestModel<T> implements LoadTest {
   protected final int getThinkTime() {
     final int time = minimumThinkTime - maximumThinkTime;
     return time > 0 ? RANDOM.nextInt(time) + minimumThinkTime : minimumThinkTime;
+  }
+
+  /**
+   * Selects a random scenario and runs it with the given application
+   * @param application the application for running the next scenario
+   * @return the name of the scenario that was run
+   * @throws ScenarioException any exception thrown by the work request
+   */
+  private String performWork(final T application) throws ScenarioException {
+    Util.rejectNullValue(application, "application");
+    final String scenarioName = scenarioChooser.getRandomItem().getName();
+    runScenario(scenarioName, application);
+
+    return scenarioName;
   }
 
   /**

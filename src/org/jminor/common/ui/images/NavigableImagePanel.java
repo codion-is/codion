@@ -473,10 +473,10 @@ public final class NavigableImagePanel extends JPanel {
 
   //Used when the image is resized.
   private boolean isImageEdgeInPanel() {
-    return previousPanelSize != null
-            && (originX > 0 && originX < previousPanelSize.width
-            || originY > 0 && originY < previousPanelSize.height);
+    final boolean originXOK = originX > 0 && originX < previousPanelSize.width;
+    final boolean originYOK = originY > 0 && originY < previousPanelSize.height;
 
+    return previousPanelSize != null && (originXOK || originYOK);
   }
 
   //Tests whether the image is displayed in its entirety in the panel.
