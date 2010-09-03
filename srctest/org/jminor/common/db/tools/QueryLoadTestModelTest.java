@@ -6,22 +6,34 @@ package org.jminor.common.db.tools;
 import org.jminor.common.db.dbms.H2Database;
 import org.jminor.common.model.User;
 
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import java.util.Arrays;
 
 public final class QueryLoadTestModelTest {
 
+  private final static QueryLoadTestModel.QueryScenario SELECT_EMPLOYEE =
+          new QueryLoadTestModel.QueryScenario("selectEmployees", "select * from scott.emp");
+  private final static QueryLoadTestModel.QueryScenario SELECT_DEPARTMENTS =
+          new QueryLoadTestModel.QueryScenario("selectDepartments", "select * from scott.dept");
+  private final static QueryLoadTestModel.QueryScenario SELECT_CUSTOMERS =
+          new QueryLoadTestModel.QueryScenario("selectCustomers", "select * from chinook.customer");
+  private final static QueryLoadTestModel.QueryScenario SELECT_ALBUMS =
+          new QueryLoadTestModel.QueryScenario("selectAlbum", "select * from chinook.album");
+  private final static QueryLoadTestModel.QueryScenario SELECT_PRODUCTS =
+          new QueryLoadTestModel.QueryScenario("selectProducts", "select * from petstore.product");
   @Test
   public void test() {
     final H2Database database = new H2Database("h2db/h2");
+    
     final QueryLoadTestModel loadTest = new QueryLoadTestModel(database, User.UNIT_TEST_USER,
-            Arrays.asList(
-                    new QueryLoadTestModel.QueryScenario("selectEmployees", "select * from scott.emp"),
-                    new QueryLoadTestModel.QueryScenario("selectDepartments", "select * from scott.dept"),
-                    new QueryLoadTestModel.QueryScenario("selectCustomers", "select * from chinook.customer"),
-                    new QueryLoadTestModel.QueryScenario("selectAlbum", "select * from chinook.album"),
-                    new QueryLoadTestModel.QueryScenario("selectProducts", "select * from petstore.product")));
+            Arrays.asList(SELECT_ALBUMS, SELECT_CUSTOMERS, SELECT_DEPARTMENTS,
+                    SELECT_EMPLOYEE, SELECT_PRODUCTS));
+    loadTest.setMinimumThinkTime(10);
+    loadTest.setMaximumThinkTime(30);
+    loadTest.setLoginDelayFactor(0);
+    loadTest.setApplicationBatchSize(6);
     loadTest.addApplicationBatch();
     try {
       Thread.sleep(1000);
@@ -32,6 +44,11 @@ public final class QueryLoadTestModelTest {
       Thread.sleep(1000);
     }
     catch (InterruptedException e) {/**/}
+    assertTrue(SELECT_ALBUMS.getSuccessfulRunCount() > 0);
+    assertTrue(SELECT_CUSTOMERS.getSuccessfulRunCount() > 0);
+    assertTrue(SELECT_DEPARTMENTS.getSuccessfulRunCount() > 0);
+    assertTrue(SELECT_EMPLOYEE.getSuccessfulRunCount() > 0);
+    assertTrue(SELECT_PRODUCTS.getSuccessfulRunCount() > 0);
     loadTest.exit();
   }
 }

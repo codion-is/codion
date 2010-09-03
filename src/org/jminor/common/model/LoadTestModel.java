@@ -571,7 +571,9 @@ public abstract class LoadTestModel implements LoadTest {
     /** {@inheritDoc} */
     public void run() {
       try {
-        delayLogin();
+        if (loadTestModel.getLoginDelayFactor() > 0) {
+          delayLogin();
+        }
         final Object application = loadTestModel.initializeApplication();
         LOG.debug("LoadTestModel initialized application: " + application);
         while (!stopped) {

@@ -30,7 +30,7 @@ public final class PoolMonitor {
 
   public void refresh() throws RemoteException {
     for (final User user : server.getEnabledConnectionPools()) {
-      connectionPoolMonitors.add(new ConnectionPoolMonitor(user, new MonitorPool(user, server)));
+      connectionPoolMonitors.add(new ConnectionPoolMonitor(new MonitorPool(user, server)));
     }
   }
 

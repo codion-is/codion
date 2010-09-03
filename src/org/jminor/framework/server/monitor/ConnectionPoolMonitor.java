@@ -60,8 +60,8 @@ public final class ConnectionPoolMonitor {
   private Timer updateTimer;
   private int statsUpdateInterval;
 
-  public ConnectionPoolMonitor(final User user, final ConnectionPool pool) throws RemoteException {
-    this.user = user;
+  public ConnectionPoolMonitor(final ConnectionPool pool) throws RemoteException {
+    this.user = pool.getUser();
     this.pool = pool;
     this.macroStatsCollection.addSeries(inPoolSeriesMacro);
     this.macroStatsCollection.addSeries(inUseSeriesMacro);
