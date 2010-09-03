@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jnlp spec="1.0+" codebase="http://jminor.no-ip.org/webstart/chinook/" href="chinook.jnlp">
+<jnlp spec="1.0+" codebase="http://jminor.no-ip.org/webstart/demos/" href="chinook.jnlp">
 
   <information>
     <title>Chinook JMinor Demo</title>
@@ -27,7 +27,7 @@
     <property name="jminor.client.connectionType" value="remote"/>
     <property name="javax.net.ssl.trustStore" value="JMinorClientTruststore"/>
     <property name="jminor.server.hostname" value="97.107.136.43" />
-    <property name="jminor.report.path" value="http://jminor.no-ip.org/webstart/chinook/reports/" />
+    <property name="jminor.report.path" value="http://jminor.no-ip.org/webstart/demos/reports/" />
   </resources>
 
   <application-desc main-class="org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel"/>

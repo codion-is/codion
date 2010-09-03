@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jnlp spec="1.0+" codebase="http://jminor.no-ip.org/webstart/chinook/" href="chinook_load_test.jnlp">
+<jnlp spec="1.0+" codebase="http://jminor.no-ip.org/webstart/demos/" href="chinook_load_test.jnlp">
 
   <information>
     <title>Chinook Load Test JMinor Demo</title>
@@ -29,7 +29,7 @@
     <property name="jminor.client.connectionType" value="remote"/>
     <property name="javax.net.ssl.trustStore" value="JMinorClientTruststore"/>
     <property name="jminor.server.hostname" value="97.107.136.43" />
-    <property name="jminor.report.path" value="http://jminor.no-ip.org/webstart/chinook/reports/" />
+    <property name="jminor.report.path" value="http://jminor.no-ip.org/webstart/demos/reports/" />
     <property name="jminor.loadtest.thinktime" value="2500" />
     <property name="jminor.loadtest.logindelay" value="2" />
   </resources>
