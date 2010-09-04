@@ -14,7 +14,8 @@ public interface Column extends Attribute {
   String getColumnName();
 
   /**
-   * @return the column data type as per java.sql.Types
+   * @return the column data type
+   * @see java.sql.Types
    */
   int getType();
 
@@ -25,7 +26,7 @@ public interface Column extends Attribute {
 
   /**
    * Specifies whether or not this column is updatable
-   * @return true if this attribute is column
+   * @return true if this column is updatable
    */
   boolean isUpdatable();
 

@@ -36,6 +36,18 @@ import java.util.Set;
 
 /**
  * A default EntityModel implementation.
+ * 
+ * <pre>
+ * String entityID = "some.entity";
+ * String clientTypeID = "JavadocDemo";
+ * User user = new User("scott", "tiger");
+ *
+ * EntityDbProvider dbProvider = EntityDbProviderFactory.createEntityDbProvider(user, clientTypeID);
+ *
+ * EntityModel model = new DefaultEntityModel(entityID, dbProvider);
+ *
+ * EntityPanel panel = new EntityPanel(model);
+ * </pre>
  */
 public class DefaultEntityModel implements EntityModel {
 
@@ -333,7 +345,7 @@ public class DefaultEntityModel implements EntityModel {
       LOG.debug(this + " refreshing");
       isRefreshing = true;
       evtRefreshStarted.fire();
-      editModel.refresh();//triggers table model refresh as per bindTableModelEvents()
+      editModel.refresh();
       if (isCascadeRefresh()) {
         refreshDetailModels();
       }
@@ -474,7 +486,7 @@ public class DefaultEntityModel implements EntityModel {
       for (final Property.ForeignKeyProperty foreignKeyProperty :
               Entities.getForeignKeyProperties(detailModel.getEntityID(), entityID)) {
         final EntityEditModel detailEditModel = detailModel.getEditModel();
-        if (detailEditModel.containsComboBoxModel(foreignKeyProperty)) {
+        if (detailEditModel.containsComboBoxModel(foreignKeyProperty.getPropertyID())) {
           final EntityComboBoxModel comboModel = detailEditModel.getEntityComboBoxModel(foreignKeyProperty);
           final Entity selectedEntity = comboModel.getSelectedEntity();
           for (final Entity deletedEntity : deletedEntities) {
@@ -511,7 +523,7 @@ public class DefaultEntityModel implements EntityModel {
         for (final Property.ForeignKeyProperty foreignKeyProperty :
                 Entities.getForeignKeyProperties(detailModel.getEntityID(), entityID)) {
           final EntityEditModel detailEditModel = detailModel.getEditModel();
-          if (detailEditModel.containsComboBoxModel(foreignKeyProperty)) {
+          if (detailEditModel.containsComboBoxModel(foreignKeyProperty.getPropertyID())) {
             detailEditModel.getEntityComboBoxModel(foreignKeyProperty).refresh();
           }
           detailEditModel.setValue(foreignKeyProperty.getPropertyID(), insertedEntity);
@@ -529,7 +541,7 @@ public class DefaultEntityModel implements EntityModel {
       for (final Property.ForeignKeyProperty foreignKeyProperty :
               Entities.getForeignKeyProperties(detailModel.getEntityID(), entityID)) {
         final EntityEditModel detailEditModel = detailModel.getEditModel();
-        if (detailEditModel.containsComboBoxModel(foreignKeyProperty)) {
+        if (detailEditModel.containsComboBoxModel(foreignKeyProperty.getPropertyID())) {
           detailEditModel.getEntityComboBoxModel(foreignKeyProperty).refresh();
         }
       }

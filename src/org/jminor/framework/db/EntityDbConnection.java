@@ -47,6 +47,16 @@ import java.util.Set;
 
 /**
  * EntityDb implementation based on a local JDBC connection.
+ * <pre>
+ * Database database = new H2Database("pathToDb");
+ * User user = new User("scott", "tiger");
+ *
+ * EntityDbConnection connection = new EntityDbConnection(databse, user);
+ *
+ * List<Entity> entities = connection.selectAll(entityID);
+ *
+ * connection.disconnect();
+ * </pre>
  */
 public final class EntityDbConnection extends DbConnectionImpl implements EntityDb {
 
@@ -607,44 +617,44 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
     if (entities == null || entities.isEmpty()) {
       return;
     }
-    //Any sufficiently complex algorithm is indistinguishable from evil, so I'll talk you through it.
+    //Any sufficiently complex algorithm is indistinguishable from evil, so I'll talk you through this.
     //We retrieve the foreign keys defined for the given entity type, and for each, fetch the referenced entity
     final Collection<Property.ForeignKeyProperty> foreignKeyProperties = Entities.getForeignKeyProperties(entities.get(0).getEntityID());
     for (final Property.ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
       //We limit the foreign key fetch depth so we don't select the whole reference graph for each entity unless we intend to do so.
       //Here's the fetch depth limit we propagate to the next foreign key level via recursion
       final int fetchDepthLimit;
-      //if we're at the root recursion level, use the specific fetch depth assigned to this foreign key in the criteria
+      //If we're at the root recursion level, use the specific fetch depth assigned to this foreign key in the criteria
       if (criteria.getCurrentFetchDepth() == 0) {
         fetchDepthLimit = criteria.getFetchDepth(foreignKeyProperty.getPropertyID());
       }
       else {
-        //otherwise we use the overall criteria fetch depth limit
+        //Otherwise we use the overall criteria fetch depth limit
         fetchDepthLimit = criteria.getFetchDepth();
       }
-      //and now, if we haven't reached the limit, continue fetching referenced entities
+      //And now, if we haven't reached the limit, continue fetching referenced entities
       if (!limitForeignKeyFetchDepth || criteria.getCurrentFetchDepth() < fetchDepthLimit) {
-        //we create the primary keys of the referenced entities using the values in the referencing columns
+        //We create the primary keys of the referenced entities using the values in the referencing columns
         final List<Entity.Key> referencedPrimaryKeys = getReferencedPrimaryKeys(entities, foreignKeyProperty);
         if (!referencedPrimaryKeys.isEmpty()) {
-          //let's create a select criteria using the primary keys we just created
+          //Let's create a select criteria using the primary keys we just created
           final EntitySelectCriteria referencedEntitiesCriteria = EntityCriteriaUtil.selectCriteria(referencedPrimaryKeys);
-          //we increment the current fetch depth in the criteria we're propagating forward, or down, whichever way you fancy
+          //We increment the current fetch depth in the criteria we're propagating forward, or down, whichever way you fancy
           referencedEntitiesCriteria.setCurrentFetchDepth(criteria.getCurrentFetchDepth() + 1);
-          //and here we plug in the fetch depth limit we deduced before
+          //And here we plug in the fetch depth limit we deduced before
           referencedEntitiesCriteria.setFetchDepth(fetchDepthLimit);
-          //then it's a simple matter of selecting the referenced entities and setting them as their respective foreign key values
+          //Then it's a simple matter of selecting the referenced entities and setting them as their respective foreign key values
           final List<Entity> referencedEntities = selectMany(referencedEntitiesCriteria);
           final Map<Entity.Key, Entity> hashedReferencedEntities = EntityUtil.hashByPrimaryKey(referencedEntities);
           for (final Entity entity : entities) {
-            //in case you're wondering, the primary key of the referenced entity created
-            //before is cached by the entity instance, and is just about to be re-used
+            //In case you're wondering, the primary key of the referenced entity created before is cached by the
+            //entity instance, not strictly necessary, but it IS just about to be re-used
             entity.initializeValue(foreignKeyProperty, hashedReferencedEntities.get(entity.getReferencedPrimaryKey(foreignKeyProperty)));
           }
         }
       }
     }
-    //nice talking to you
+    //Nice talking to you!
   }
 
   private int queryNewIdValue(final String entityID, final IdSource idSource, final Property.PrimaryKeyProperty primaryKeyProperty) throws DbException {

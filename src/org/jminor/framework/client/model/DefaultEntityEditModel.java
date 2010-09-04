@@ -42,6 +42,18 @@ import java.util.Map;
 
 /**
  * A default EntityEditModel implementation
+ *
+ * <pre>
+ * String entityID = "some.entity";
+ * String clientTypeID = "JavadocDemo";
+ * User user = new User("scott", "tiger");
+ *
+ * EntityDbProvider dbProvider = EntityDbProviderFactory.createEntityDbProvider(user, clientTypeID);
+ *
+ * EntityEditModel editModel = new DefaultEntityEditModel(entityID, dbProvider);
+ * 
+ * EntityEditPanel panel = new EntityEditPanel(editModel);
+ * </pre>
  */
 public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<String, Object> implements EntityEditModel {
 
@@ -471,12 +483,6 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
   }
 
   /** {@inheritDoc} */
-  public final boolean containsComboBoxModel(final Property property) {
-    Util.rejectNullValue(property, "property");
-    return propertyComboBoxModels.containsKey(property);
-  }
-
-  /** {@inheritDoc} */
   public final Entity getDefaultValueMap() {
     final Entity defaultEntity = Entities.entityInstance(entityID);
     final Collection<Property.ColumnProperty> columnProperties = Entities.getColumnProperties(entityID);
@@ -654,6 +660,11 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
     }
 
     propertyComboBoxModels.put(property, model);
+  }
+
+  private boolean containsComboBoxModel(final Property property) {
+    Util.rejectNullValue(property, "property");
+    return propertyComboBoxModels.containsKey(property);
   }
 
   private static String getValueChangeDebugString(final ValueChangeEvent<String, Object> event) {

@@ -8,6 +8,17 @@ import java.awt.event.ActionListener;
 
 /**
  * A synchronous event class.
+ * <pre>
+ * Event event = Events.event();
+ *
+ * event.addListener(new ActionListener...);
+ *
+ * EventObserver observer = event.getObserver();
+ *
+ * bindModelToEvent(observer);
+ *
+ * event.fire();
+ * </pre>
  */
 public interface Event extends ActionListener, EventObserver {
 

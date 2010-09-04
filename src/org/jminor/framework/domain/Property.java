@@ -304,6 +304,10 @@ public interface Property extends Attribute {
      */
     ColumnProperty setColumnHasDefaultValue(final boolean columnHasDefaultValue);
 
+    /**
+     * @param searchable true if this column can be included in search criteria
+     * @return this Property instance
+     */
     ColumnProperty setSearchable(final boolean searchable);
   }
 

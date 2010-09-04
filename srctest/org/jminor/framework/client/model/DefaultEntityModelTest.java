@@ -3,20 +3,31 @@
  */
 package org.jminor.framework.client.model;
 
+import org.jminor.common.db.exception.DbException;
+import org.jminor.common.model.CancelException;
 import org.jminor.common.model.SearchType;
+import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.db.EntityDb;
 import org.jminor.framework.db.EntityDbConnectionTest;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public final class DefaultEntityModelTest {
@@ -24,25 +35,65 @@ public final class DefaultEntityModelTest {
   private DefaultEntityModel departmentModel;
   private int eventCount = 0;
 
-  private static class EmpModel extends DefaultEntityModel {
-    private EmpModel(final EntityDbProvider dbProvider) {
+  public static class EmpModel extends DefaultEntityModel {
+    public EmpModel(final EntityDbProvider dbProvider) {
       super(new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, dbProvider),
               new DefaultEntityTableModel(EmpDept.T_EMPLOYEE, dbProvider));
     }
   }
 
   @Test
-  public void testDetailModels() {
-    departmentModel.addDetailModels(new EmpModel(departmentModel.getDbProvider()));
+  public void testDetailModels() throws CancelException, DbException, ValidationException {
     assertTrue(departmentModel.containsDetailModel(EmpModel.class));
-    final EntityModel empModel = departmentModel.getDetailModel(EmpModel.class);
-    assertNotNull(empModel);
-    departmentModel.setLinkedDetailModels(empModel);
-    assertTrue(departmentModel.getLinkedDetailModels().contains(empModel));
+    final EntityModel employeeModel = departmentModel.getDetailModel(EmpModel.class);
+    assertNotNull(employeeModel);
+    departmentModel.setLinkedDetailModels(employeeModel);
+    assertTrue(departmentModel.getLinkedDetailModels().contains(employeeModel));
+    departmentModel.refresh();
+    final EntityComboBoxModel deptCombo = employeeModel.getEditModel().initializeEntityComboBoxModel(Entities.getForeignKeyProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_DEPARTMENT_FK));
+    deptCombo.refresh();
+    final Entity.Key key = Entities.keyInstance(EmpDept.T_DEPARTMENT);
+    key.setValue(EmpDept.DEPARTMENT_ID, 40);//operations, no employees
+    final List<Entity.Key> keys = new ArrayList<Entity.Key>();
+    keys.add(key);
+    departmentModel.getTableModel().setSelectedByPrimaryKeys(keys);
+    final Entity operations = departmentModel.getTableModel().getSelectedItem();
+    try {
+      departmentModel.getDbProvider().getEntityDb().beginTransaction();
+      departmentModel.getEditModel().delete();
+      assertFalse(deptCombo.contains(operations, true));
+      final Entity newDept = Entities.entityInstance(EmpDept.T_DEPARTMENT);
+      newDept.setValue(EmpDept.DEPARTMENT_ID, 99);
+      newDept.setValue(EmpDept.DEPARTMENT_NAME, "nameit");
+      departmentModel.getEditModel().insert(Arrays.asList(newDept));
+      assertTrue(deptCombo.contains(newDept, true));
+      newDept.setValue(EmpDept.DEPARTMENT_NAME, "nameitagain");
+      departmentModel.getEditModel().update(Arrays.asList(newDept));
+      assertEquals("nameitagain", deptCombo.getEntity(newDept.getPrimaryKey()).getValue(EmpDept.DEPARTMENT_NAME));
+    }
+    finally {
+      departmentModel.getDbProvider().getEntityDb().rollbackTransaction();
+    }
   }
 
   @Test
-  public void testConstructor() {
+  public void clear() {
+    departmentModel.refresh();
+    assertTrue(departmentModel.getTableModel().getRowCount() > 0);
+
+    final EntityModel employeeModel = departmentModel.getDetailModel(EmpModel.class);
+    employeeModel.refresh();
+    assertTrue(employeeModel.getTableModel().getRowCount() > 0);
+
+    departmentModel.clearDetailModels();
+    assertTrue(employeeModel.getTableModel().getRowCount() == 0);
+
+    departmentModel.clear();
+    assertTrue(departmentModel.getTableModel().getRowCount() == 0);
+  }
+
+  @Test
+  public void constructor() {
     try {
       new DefaultEntityModel(null, EntityDbConnectionTest.DB_PROVIDER);
       fail();
@@ -138,10 +189,10 @@ public final class DefaultEntityModelTest {
   @Before
   public void setUp() throws Exception {
     departmentModel = new DefaultEntityModel(EmpDept.T_DEPARTMENT, EntityDbConnectionTest.DB_PROVIDER);
-    departmentModel.getDetailModel(EmpDept.T_EMPLOYEE).getTableModel().setQueryCriteriaRequired(false);
+    departmentModel.getDetailModel(EmpModel.class).getTableModel().setQueryCriteriaRequired(false);
   }
 
-  private boolean containsAll(List<Entity> employees, List<Entity> employeesFromModel) {
+  private static boolean containsAll(final List<Entity> employees, final List<Entity> employeesFromModel) {
     for (final Entity entity : employeesFromModel) {
       if (!employees.contains(entity)) {
         return false;

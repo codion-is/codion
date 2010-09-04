@@ -38,7 +38,8 @@ public class EntityTableCellRenderer implements TableCellRenderer {
    * Instantiates a new EntityTableCellRenderer
    * @param tableModel the table model
    * @param rowColoring true if entity specific row coloring should be used
-   * @see org.jminor.framework.domain.Entities.Proxy#getBackgroundColor(org.jminor.framework.domain.Entity)
+   * @see org.jminor.framework.domain.Entity.BackgroundColorProvider
+   * @see org.jminor.framework.domain.EntityDefinition#setBackgroundColorProvider(org.jminor.framework.domain.Entity.BackgroundColorProvider)
    */
   public EntityTableCellRenderer(final EntityTableModel tableModel, final boolean rowColoring) {
     Util.rejectNullValue(tableModel, "tableModel");

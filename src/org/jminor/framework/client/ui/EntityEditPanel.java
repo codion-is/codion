@@ -1669,7 +1669,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
     });
   }
 
-  private LinkType getDefaultLinkType(final Property property) {
+  private static LinkType getDefaultLinkType(final Property property) {
     final boolean nonUpdatable = property.isReadOnly() ||
             (property instanceof Property.ColumnProperty && !((Property.ColumnProperty) property).isUpdatable());
     if (nonUpdatable) {

@@ -35,6 +35,21 @@ public final class DefaultEntityTableModelTest {
   }
 
   @Test
+  public void getValueAt() {
+    testModel.refresh();
+    assertEquals(1, testModel.getValueAt(0, 0));
+    assertEquals(2, testModel.getValueAt(1, 0));
+    assertEquals(3, testModel.getValueAt(2, 0));
+    assertEquals(4, testModel.getValueAt(3, 0));
+    assertEquals(5, testModel.getValueAt(4, 0));
+    assertEquals("a", testModel.getValueAt(0, 2));
+    assertEquals("b", testModel.getValueAt(1, 2));
+    assertEquals("c", testModel.getValueAt(2, 2));
+    assertEquals("d", testModel.getValueAt(3, 2));
+    assertEquals("e", testModel.getValueAt(4, 2));
+  }
+
+  @Test
   public void testFiltering() {
     testModel.refresh();
     final ColumnSearchModel<Property> filterModel = testModel.getSearchModel().getPropertyFilterModel(EntityTestDomain.DETAIL_STRING);
@@ -126,6 +141,7 @@ public final class DefaultEntityTableModelTest {
     for (int i = 0; i < testEntities.length; i++) {
       testEntities[i] = Entities.entityInstance(EntityTestDomain.T_DETAIL);
       testEntities[i].setValue(EntityTestDomain.DETAIL_ID, i+1);
+      testEntities[i].setValue(EntityTestDomain.DETAIL_INT, i+1);
       testEntities[i].setValue(EntityTestDomain.DETAIL_STRING, new String[]{"a", "b", "c", "d", "e"}[i]);
     }
 

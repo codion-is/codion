@@ -137,6 +137,17 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
   }
 
   /** {@inheritDoc} */
+  public Entity getEntity(final Entity.Key primaryKey) {
+    for (final Entity entity : getAllItems()) {
+      if (entity.getPrimaryKey().equals(primaryKey)) {
+        return entity;
+      }
+    }
+
+    return null;
+  }
+
+  /** {@inheritDoc} */
   public final void setSelectedEntityByPrimaryKey(final Entity.Key primaryKey) {
     final int indexOfKey = getIndexOfKey(primaryKey);
     if (indexOfKey >= 0) {

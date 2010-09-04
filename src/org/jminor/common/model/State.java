@@ -5,6 +5,19 @@ package org.jminor.common.model;
 
 /**
  * A class encapsulating a simple boolean state, providing a change event.
+ * <pre>
+ * State state = States.state();
+ *
+ * Action action = ...;
+ *
+ * state.addListeningAction(action);
+ *
+ * //action is now disabled since states are inactive by default
+ *
+ * state.setActive(true);
+ *
+ * //action is now enabled
+ * </pre>
  */
 public interface State extends StateObserver {
 

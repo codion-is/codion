@@ -20,6 +20,12 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity>, Enti
    */
   Entity getSelectedEntity();
 
+  /**
+   * @param primaryKey the primary key of the entity to fetch from this model
+   * @return the entity with the given key if it is contained in the model, null otherwise
+   */
+  Entity getEntity(final Entity.Key primaryKey);
+
   Collection<Entity> getForeignKeyFilterEntities(final String foreignKeyPropertyID);
 
   void setForeignKeyFilterEntities(final String foreignKeyPropertyID, final Collection<Entity> entities);

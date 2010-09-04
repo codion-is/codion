@@ -294,13 +294,6 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
   boolean containsComboBoxModel(final String propertyID);
 
   /**
-   * Returns true if this edit model contains a ComboBoxModel for the given property
-   * @param property the property
-   * @return true if a ComboBoxModel has been initialized for the given property
-   */
-  boolean containsComboBoxModel(final Property property);
-
-  /**
    * @param propertyID the ID of the property for which to retrieve the <code>EntityComboBoxModel</code>
    * @return the EntityComboBoxModel for the property identified by <code>propertyID</code>,
    * if no combo box model is associated with the property a new one is initialized, and associated

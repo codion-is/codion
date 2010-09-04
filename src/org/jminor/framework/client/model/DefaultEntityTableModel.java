@@ -43,6 +43,22 @@ import java.util.Map;
 
 /**
  * A TableModel implementation for displaying and working with entities.
+ *
+ * <pre>
+ * String entityID = "some.entity";
+ * String clientTypeID = "JavadocDemo";
+ * User user = new User("scott", "tiger");
+ *
+ * EntityDbProvider dbProvider = EntityDbProviderFactory.createEntityDbProvider(user, clientTypeID);
+ *
+ * EntityTableModel tableModel = new DefaultEntityTableModel(entityID, dbProvider);
+ *
+ * EntityEditModel editModel = ...;
+ *
+ * tableModel.setEditModel(editModel);
+ *
+ * EntityTablePanel panel = new EntityTablePanel(model);
+ * </pre> 
  */
 public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, Property> implements EntityTableModel {
 
