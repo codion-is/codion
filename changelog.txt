@@ -2112,3 +2112,5 @@
   EntityComboBoxModel.getEntity(primaryKey) added
   EntityEditModel.containsComboBoxModel(Property) removed
   Javadocs and coverage improvements
+  AbstractRemoteServer connection limiting added
+  RemoteServer.connectionsAvailable() added

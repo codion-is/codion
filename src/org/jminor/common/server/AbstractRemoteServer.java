@@ -32,14 +32,15 @@ public abstract class AbstractRemoteServer<T> extends UnicastRemoteObject implem
 
   private final String serverName;
   private final int serverPort;
+  private int connectionLimit = -1;
   private volatile boolean shuttingDown = false;
-
 
   private LoginProxy loginProxy = new LoginProxy() {
     public ClientInfo doLogin(final ClientInfo clientInfo) {
       return clientInfo;
     }
   };
+
   /**
    * Instantiates a new AbstractRemoteServer
    * @param serverPort the port on which the server should be exported
@@ -87,10 +88,47 @@ public abstract class AbstractRemoteServer<T> extends UnicastRemoteObject implem
     return connections.size();
   }
 
+  /**
+   * @return the maximum number of concurrent connections accepted by this server,
+   * a negative number means no limit while 0 means the server is closed.
+   */
+  public int getConnectionLimit() {
+    return connectionLimit;
+  }
+
+  /**
+   * @param connectionLimit the maximum number of concurrent connections accepted by this server,
+   * a negative number means no limit while 0 means the server is closed.
+   */
+  public void setConnectionLimit(final int connectionLimit) {
+    this.connectionLimit = connectionLimit;
+  }
+
   /** {@inheritDoc} */
-  public final T connect(final ClientInfo clientInfo) throws RemoteException {
+  public boolean connectionsAvailable() throws RemoteException {
+    return !maximumNummberOfConnectionReached();
+  }
+
+  /** {@inheritDoc} */
+  public final T connect(final User user, final UUID clientID, final String clientTypeID) throws RemoteException,
+          ServerException.ServerFullException, ServerException.LoginException {
+    if (clientID == null) {
+      return null;
+    }
+
+    final ClientInfo client = new ClientInfo(clientID, clientTypeID, user);
+    return connect(client);
+  }
+
+  /** {@inheritDoc} */
+  public final T connect(final ClientInfo clientInfo) throws RemoteException,
+          ServerException.ServerFullException, ServerException.LoginException {
     if (connections.containsKey(clientInfo)) {
       return connections.get(clientInfo);
+    }
+
+    if (maximumNummberOfConnectionReached()) {
+      throw ServerException.serverFullException();
     }
 
     final T connection = doConnect(loginProxy.doLogin(clientInfo));
@@ -99,16 +137,6 @@ public abstract class AbstractRemoteServer<T> extends UnicastRemoteObject implem
     }
 
     return connection;
-  }
-
-  /** {@inheritDoc} */
-  public final T connect(final User user, final UUID clientID, final String clientTypeID) throws RemoteException {
-    if (clientID == null) {
-      return null;
-    }
-
-    final ClientInfo client = new ClientInfo(clientID, clientTypeID, user);
-    return connect(client);
   }
 
   /** {@inheritDoc} */
@@ -133,14 +161,6 @@ public abstract class AbstractRemoteServer<T> extends UnicastRemoteObject implem
   /** {@inheritDoc} */
   public final int getServerPort() {
     return serverPort;
-  }
-
-  /**
-   * @return the local registry
-   * @throws RemoteException in case of an exception
-   */
-  public final Registry getRegistry() throws RemoteException {
-    return LocateRegistry.getRegistry(Registry.REGISTRY_PORT);
   }
 
   /**
@@ -182,6 +202,14 @@ public abstract class AbstractRemoteServer<T> extends UnicastRemoteObject implem
   }
 
   /**
+   * @return the local registry
+   * @throws RemoteException in case of an exception
+   */
+  public static Registry getRegistry() throws RemoteException {
+    return LocateRegistry.getRegistry(Registry.REGISTRY_PORT);
+  }
+
+  /**
    * Called after shutdown has finished
    * @throws RemoteException in case of an exception
    */
@@ -201,4 +229,8 @@ public abstract class AbstractRemoteServer<T> extends UnicastRemoteObject implem
    * @throws RemoteException in case of an exception
    */
   protected abstract void doDisconnect(final T connection) throws RemoteException;
+
+  private boolean maximumNummberOfConnectionReached() {
+    return connectionLimit > -1 && getConnectionCount() >= connectionLimit;
+  }
 }

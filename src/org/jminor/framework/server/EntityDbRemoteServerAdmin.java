@@ -338,6 +338,16 @@ public final class EntityDbRemoteServerAdmin extends UnicastRemoteObject impleme
   }
 
   /** {@inheritDoc} */
+  public int getConnectionLimit() throws RemoteException {
+    return server.getConnectionLimit();
+  }
+
+  /** {@inheritDoc} */
+  public void setConnectionLimit(final int value) throws RemoteException {
+    server.setConnectionLimit(value);
+  }
+
+  /** {@inheritDoc} */
   public ServerLog getServerLog(final UUID clientID) {
     return server.getServerLog(clientID);
   }

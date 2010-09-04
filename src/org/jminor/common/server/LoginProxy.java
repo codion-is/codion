@@ -12,7 +12,7 @@ public interface LoginProxy {
    * the same user
    * @param clientInfo the client info
    * @return a new client info with the same clientID but not necessarily the same user
-   * @throws LoginException in case the login fails
+   * @throws ServerException.LoginException in case the login fails
    */
-  ClientInfo doLogin(final ClientInfo clientInfo) throws LoginException;
+  ClientInfo doLogin(final ClientInfo clientInfo) throws ServerException.LoginException;
 }

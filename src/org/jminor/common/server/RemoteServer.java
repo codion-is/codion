@@ -22,8 +22,11 @@ public interface RemoteServer<T> extends Remote {
    * @param clientInfo the client info
    * @return a remote connection instance
    * @throws RemoteException in case of a RemoteException
+   * @throws ServerException.ServerFullException in case the server isn't accepting more connections
+   * @throws ServerException.LoginException in case the login fails
    */
-  T connect(final ClientInfo clientInfo) throws RemoteException;
+  T connect(final ClientInfo clientInfo) throws RemoteException, ServerException.ServerFullException,
+          ServerException.LoginException;
 
   /**
    * Establishes a connection to this RemoteServer
@@ -32,8 +35,11 @@ public interface RemoteServer<T> extends Remote {
    * @param clientTypeID a String identifying the client
    * @return a remote connection instance
    * @throws RemoteException in case of a RemoteException
+   * @throws ServerException.ServerFullException in case the server isn't accepting more connections
+   * @throws ServerException.LoginException in case the login fails
    */
-  T connect(final User user, final UUID clientID, final String clientTypeID) throws RemoteException;
+  T connect(final User user, final UUID clientID, final String clientTypeID) throws RemoteException,
+          ServerException.ServerFullException, ServerException.LoginException;
 
   /**
    * Disconnects the connection identified by the given key.
@@ -59,4 +65,10 @@ public interface RemoteServer<T> extends Remote {
    * @throws RemoteException in case of an exception
    */
   int getServerLoad() throws RemoteException;
+
+  /**
+   * @return true if there are connections available
+   * @throws RemoteException in case of an exception
+   */
+  boolean connectionsAvailable() throws RemoteException;
 }

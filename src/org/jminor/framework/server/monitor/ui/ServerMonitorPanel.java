@@ -102,13 +102,18 @@ public final class ServerMonitorPanel extends JPanel {
     final JPanel infoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
     infoPanel.add(new JLabel("Remote connections", JLabel.RIGHT));
     infoPanel.add(initConnectionCountField());
+    infoPanel.add(new JLabel("Connection limit", JLabel.RIGHT));
+    final JSpinner spnConnectionLimit = new JSpinner(
+            new IntBeanSpinnerValueLink(model, "connectionLimit", model.getConnectionLimitObserver()).getSpinnerModel());
+    ((JSpinner.DefaultEditor) spnConnectionLimit.getEditor()).getTextField().setColumns(3);
+    infoPanel.add(spnConnectionLimit);
     infoPanel.add(new JLabel("Memory usage", JLabel.RIGHT));
     infoPanel.add(initMemoryField());
     infoPanel.add(new JLabel("Logging level", JLabel.RIGHT));
     infoPanel.add(initLoggingLevelField());
-    infoPanel.add(ControlProvider.createButton(Controls.methodControl(this, "loadDomainModel", "Load domain model...")));
-    infoPanel.add(ControlProvider.createButton(Controls.methodControl(model, "performGC", "Run garbage collector")));
-    infoPanel.add(ControlProvider.createButton(Controls.methodControl(this, "shutdownServer", "Shut down server")));
+    infoPanel.add(ControlProvider.createButton(Controls.methodControl(this, "loadDomainModel", "Load domain...")));
+    infoPanel.add(ControlProvider.createButton(Controls.methodControl(model, "performGC", "GC")));
+    infoPanel.add(ControlProvider.createButton(Controls.methodControl(this, "shutdownServer", "Shutdown")));
 
     final JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
     controlPanel.add(new JLabel("Warning threshold (ms)"));

@@ -15,6 +15,7 @@ import org.jminor.common.model.reports.ReportException;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.RemoteServer;
 import org.jminor.common.server.ServerUtil;
+import org.jminor.common.server.ServerException;
 import org.jminor.common.server.loadtest.LoadTestServer;
 import org.jminor.common.server.loadtest.RemoteLoadTest;
 import org.jminor.common.ui.LoadTestPanel;
@@ -176,7 +177,8 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
     }
   }
 
-  private static LoadTest getRemoteLoadTest() throws RemoteException, NotBoundException {
+  private static LoadTest getRemoteLoadTest() throws RemoteException, NotBoundException,
+          ServerException.ServerFullException, ServerException.LoginException {
     final RemoteServer server = ServerUtil.getServer("97.107.136.43", LoadTestServer.SERVER_NAME);
 
     final String clientType = ChinookLoadTest.class.getSimpleName();
@@ -208,7 +210,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
       this.evtRefresh = refreshEvent;
     }
 
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+    public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
       if (method.getName().endsWith("Listener")) {
         evtRefresh.addListener((ActionListener) args[0]);
         return null;

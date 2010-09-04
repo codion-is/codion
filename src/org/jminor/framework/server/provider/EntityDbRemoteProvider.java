@@ -100,10 +100,7 @@ public final class EntityDbRemoteProvider extends AbstractEntityDbProvider {
 
       return Util.initializeProxy(EntityDb.class, new EntityDbRemoteHandler(remote));
     }
-    catch (RemoteException e) {
-      throw new RuntimeException(e);
-    }
-    catch (NotBoundException e) {
+    catch (Exception e) {
       throw new RuntimeException(e);
     }
   }
@@ -189,6 +186,9 @@ public final class EntityDbRemoteProvider extends AbstractEntityDbProvider {
   }
 
   private static RemoteServer checkServer(final RemoteServer server) throws RemoteException {
+    if (!server.connectionsAvailable()) {
+      return null;
+    }
     final int port = server.getServerPort();
     final String requestedPort = Configuration.getStringValue(Configuration.SERVER_PORT);
     if (requestedPort == null || (!requestedPort.isEmpty() && port == Integer.parseInt(requestedPort))) {

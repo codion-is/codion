@@ -38,6 +38,7 @@ public final class ServerMonitor {
   private final Event evtStatsUpdated = Events.event();
   private final Event evtWarningThresholdChanged = Events.event();
   private final Event evtLoggingLevelChanged = Events.event();
+  private final Event evtConnectionLimitChanged = Events.event();
 
   private final String hostName;
   private final String serverName;
@@ -64,6 +65,7 @@ public final class ServerMonitor {
   private final XYSeriesCollection memoryUsageCollection = new XYSeriesCollection();
 
   private final XYSeries connectionCountSeries = new XYSeries("Connection count");
+  private final XYSeries connectionLimitSeries = new XYSeries("Maximum connection count");
   private final XYSeriesCollection connectionCountCollection = new XYSeriesCollection();
 
   public ServerMonitor(final String hostName, final String serverName) throws RemoteException {
@@ -77,6 +79,7 @@ public final class ServerMonitor {
     memoryUsageCollection.addSeries(allocatedMemorySeries);
     memoryUsageCollection.addSeries(usedMemorySeries);
     connectionCountCollection.addSeries(connectionCountSeries);
+    connectionCountCollection.addSeries(connectionLimitSeries);
     databaseMonitor = new DatabaseMonitor(server);
     clientMonitor = new ClientUserMonitor(server);
     refreshDomainList();
@@ -126,6 +129,15 @@ public final class ServerMonitor {
   public void setWarningThreshold(final int threshold) throws RemoteException {
     server.setWarningTimeThreshold(threshold);
     evtWarningThresholdChanged.fire();
+  }
+
+  public int getConnectionLimit() throws RemoteException {
+    return server.getConnectionLimit();
+  }
+
+  public void setConnectionLimit(final int value) throws RemoteException {
+    server.setConnectionLimit(value);
+    evtConnectionLimitChanged.fire();
   }
 
   public Level getLoggingLevel() throws RemoteException {
@@ -228,6 +240,10 @@ public final class ServerMonitor {
     return evtWarningThresholdChanged.getObserver();
   }
 
+  public EventObserver getConnectionLimitObserver() {
+    return evtConnectionLimitChanged.getObserver();
+  }
+
   public EventObserver getStatsUpdatedObserver() {
     return evtStatsUpdated.getObserver();
   }
@@ -269,6 +285,7 @@ public final class ServerMonitor {
     allocatedMemorySeries.add(time, server.getAllocatedMemory() / 1000d);
     usedMemorySeries.add(time, server.getUsedMemory() / 1000d);
     connectionCountSeries.add(time, server.getConnectionCount());
+    connectionLimitSeries.add(time, server.getConnectionLimit());
     evtStatsUpdated.fire();
   }
 

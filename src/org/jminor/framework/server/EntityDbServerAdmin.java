@@ -67,6 +67,18 @@ public interface EntityDbServerAdmin extends Remote {
   int getConnectionCount() throws RemoteException;
 
   /**
+   * @return the maximum number of concurrent connections this servers accepts
+   * @throws RemoteException in case of a communication error
+   */
+  int getConnectionLimit() throws RemoteException;
+
+  /**
+   * @param value the maximum number of concurrent connections this servers accepts
+   * @throws RemoteException in case of a communication error
+   */
+  void setConnectionLimit(final int value) throws RemoteException;
+
+  /**
    * @return the number of ms that should pass between maintenance cycles,
    * that is, when inactive clients are purged
    * @throws RemoteException in case of a communication error

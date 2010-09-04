@@ -78,6 +78,7 @@ public final class Messages {
   public static final String SETTINGS = "settings";
   public static final String NO_CONNECTION_AVAILABLE = "no_connection_available";
   public static final String NOT_CONNECTED = "not_connected";
+  public static final String SERVER_FULL = "server_full";
 
   static {
     UIManager.put("OptionPane.yesButtonText", get(YES));

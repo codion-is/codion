@@ -13,6 +13,7 @@ import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.ListIterator;
@@ -178,7 +179,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
       statistics.setResetDate(counter.getResetDate());
       statistics.setTimestamp(System.currentTimeMillis());
     }
-    if (since >= 0) {
+    if (collectFineGrainedStatistics && since >= 0) {
       statistics.setFineGrainedStatistics(getFineGrainedStatistics(since));
     }
 
@@ -632,7 +633,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
     private int connectionsDestroyed;
     private long creationDate;
 
-    private List<ConnectionPoolState> fineGrainedStatistics;
+    private List<ConnectionPoolState> fineGrainedStatistics = Collections.emptyList();
     private long resetDate;
     private int connectionRequests;
     private int requestsPerSecond;
