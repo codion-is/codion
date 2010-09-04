@@ -32,7 +32,7 @@ public abstract class AbstractRemoteServer<T> extends UnicastRemoteObject implem
 
   private final String serverName;
   private final int serverPort;
-  private int connectionLimit = -1;
+  private volatile int connectionLimit = -1;
   private volatile boolean shuttingDown = false;
 
   private LoginProxy loginProxy = new LoginProxy() {

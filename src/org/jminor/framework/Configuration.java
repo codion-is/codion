@@ -104,6 +104,14 @@ public final class Configuration {
   public static final String SERVER_CONNECTION_LOG_SIZE = "jminor.server.clientLogSize";
 
   /**
+   * Specifies maximum number of concurrent connections the server accepts<br>
+   * -1 indicates no limit and 0 indicates a closed server.
+   * Value type: Integer<br>
+   * Default value: -1
+   */
+  public static final String SERVER_CONNECTION_LIMIT = "jminor.server.connectionLimit";
+
+  /**
    * Specifies whether the server should establish connections using a secure sockets layer, true (on) or false (off)<br>
    * ValueType: Boolean<br>
    * Default value: true
@@ -471,6 +479,7 @@ public final class Configuration {
     PROPERTIES.put(LOAD_TEST_REMOTE, false);
     PROPERTIES.put(CLIENT_CONNECTION_TYPE, CONNECTION_TYPE_LOCAL);
     PROPERTIES.put(SERVER_CLIENT_LOGGING_ENABLED, true);
+    PROPERTIES.put(SERVER_CONNECTION_LIMIT, -1);
     PROPERTIES.put(SERVER_CONNECTION_LOG_SIZE, 40);
     PROPERTIES.put(SERVER_CONNECTION_SSL_ENABLED, true);
     PROPERTIES.put(SERVER_HOST_NAME, "localhost");
@@ -544,6 +553,7 @@ public final class Configuration {
     parseStringSetting(REPORT_PATH);
     parseStringSetting(SERVER_PORT);
     parseBooleanSetting(SERVER_CLIENT_LOGGING_ENABLED);
+    parseIntegerSetting(SERVER_CONNECTION_LIMIT);
     parseIntegerSetting(SERVER_CONNECTION_LOG_SIZE);
     parseStringSetting(SERVER_CONNECTION_POOLING_INITIAL);
     parseStringSetting(SERVER_DOMAIN_MODEL_CLASSES);

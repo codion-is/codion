@@ -106,6 +106,7 @@ final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
       throw new IllegalArgumentException("Database port must be specified (" + Database.DATABASE_PORT + ")");
     }
 
+    setConnectionLimit(Configuration.getIntValue(Configuration.SERVER_CONNECTION_LIMIT));
     startConnectionCheckTimer();
     getRegistry().rebind(getServerName(), this);
     final String connectInfo = getServerName() + " bound to registry";

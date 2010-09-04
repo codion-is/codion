@@ -2115,3 +2115,4 @@
   AbstractRemoteServer connection limiting added
   RemoteServer.connectionsAvailable() added
   WebStartServer added
+  Configuration.SERVER_CONNECTION_LIMIT added
