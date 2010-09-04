@@ -1,0 +1,89 @@
+/*
+ * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
+ */
+package org.jminor.common.server.web;
+
+import Acme.Serve.Serve;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * A simple web server for serving files.
+ *
+ * <pre>
+ * WebStartServer server = new WebStartServer("c:\webstart");
+ * server.serve();
+ * </pre>
+ */
+public class WebStartServer extends Serve {
+
+  private static final Logger LOG = LoggerFactory.getLogger(WebStartServer.class);
+
+  public static final int DEFAULT_PORT = 8080;
+
+  /**
+   * Instantiates a new WebStartServer on the default port.
+   * @param documentRoot the document root
+   */
+  public WebStartServer(final String documentRoot) {
+    this(documentRoot, DEFAULT_PORT);
+  }
+
+  /**
+   *
+   * Instantiates a new WebStartServer on the given port.
+   * @param documentRoot the document root
+   * @param port the port on which to serve files
+   */
+  public WebStartServer(final String documentRoot, final int port) {
+    final PathTreeDictionary aliases = new PathTreeDictionary();
+    aliases.put("/", new File(documentRoot));
+
+    setMappingTable(aliases);
+
+    // setting properties for the server, and exchangable Acceptors
+    final Map<String, Object> properties = new HashMap<String, Object>();
+    properties.put("port", port);
+    properties.put(Acme.Serve.Serve.ARG_NOHUP, "nohup");
+
+    arguments = properties;
+
+    addDefaultServlets(null); //file servlet
+
+    Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+      public void run() {
+        try {
+          notifyStop();
+        }
+        catch(IOException ioe) {
+          LOG.error(ioe.getMessage(), ioe);
+        }
+        destroyAllServlets();
+      }
+    }));
+  }
+
+  /**
+   * Runs a WebStartServer.
+   * @param args documentRoot [args]
+   */
+  public static void main(final String[] args) {
+    final String documentRoot;
+    int port = DEFAULT_PORT;
+    if (args.length == 0) {
+      throw new IllegalArgumentException("Arguments: documentRoot [port]");
+    }
+    else {
+      documentRoot = args[0];
+      if (args.length > 1) {
+        port = Integer.parseInt(args[1]);
+      }
+    }
+    new WebStartServer(documentRoot, port).serve();
+  }
+}

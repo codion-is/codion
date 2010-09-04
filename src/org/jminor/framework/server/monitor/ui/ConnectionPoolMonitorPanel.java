@@ -9,6 +9,7 @@ import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.Controls;
 import org.jminor.common.ui.control.IntBeanSpinnerValueLink;
 import org.jminor.common.ui.control.ToggleBeanValueLink;
+import org.jminor.common.ui.UiUtil;
 import org.jminor.framework.server.monitor.ConnectionPoolMonitor;
 
 import org.jfree.chart.ChartFactory;
@@ -146,7 +147,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   }
 
   private JPanel getPoolConfigPanel() {
-    final JPanel configBase = new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
+    final JPanel configBase = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
 
     final JSpinner spnTimeout = new JSpinner(new IntBeanSpinnerValueLink(model, "pooledConnectionTimeout", null).getSpinnerModel());
     final JSpinner spnCleanupInterval = new JSpinner(new IntBeanSpinnerValueLink(model, "poolCleanupInterval", null).getSpinnerModel());
@@ -173,22 +174,14 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     txtPoolSize.setColumns(3);
     txtPoolSize.setHorizontalAlignment(JLabel.CENTER);
 
-    configBase.add(new JLabel("Pool size"));
-    configBase.add(txtPoolSize);
-    configBase.add(new JLabel("Min. size"));
-    configBase.add(spnMinimumSize);
-    configBase.add(new JLabel("Max. size"));
-    configBase.add(spnMaximumSize);
-    configBase.add(new JLabel("Max. retry wait (ms)"));
-    configBase.add(spnMaximumRetryWait);
-    configBase.add(new JLabel("Max. check out time (ms)"));
-    configBase.add(spnMaximumCheckOutTime);
-    configBase.add(new JLabel("New connection threshold (ms)"));
-    configBase.add(spnNewConnectionThreshold);
-    configBase.add(new JLabel("Idle timeout (s)"));
-    configBase.add(spnTimeout);
-    configBase.add(new JLabel("Cleanup interval (s)"));
-    configBase.add(spnCleanupInterval);
+    configBase.add(UiUtil.northCenterPanel(new JLabel("Size"), txtPoolSize));
+    configBase.add(UiUtil.northCenterPanel(new JLabel("Minimum size"), spnMinimumSize));
+    configBase.add(UiUtil.northCenterPanel(new JLabel("Maximum size"), spnMaximumSize));
+    configBase.add(UiUtil.northCenterPanel(new JLabel("Maximum retry wait (ms)"), spnMaximumRetryWait));
+    configBase.add(UiUtil.northCenterPanel(new JLabel("Maximum check out time (ms)"), spnMaximumCheckOutTime));
+    configBase.add(UiUtil.northCenterPanel(new JLabel("New connection threshold (ms)"), spnNewConnectionThreshold));
+    configBase.add(UiUtil.northCenterPanel(new JLabel("Idle timeout (s)"), spnTimeout));
+    configBase.add(UiUtil.northCenterPanel(new JLabel("Cleanup interval (s)"), spnCleanupInterval));
 
     final JPanel panel = new JPanel(new BorderLayout(5,5));
     panel.setBorder(BorderFactory.createTitledBorder("Configuration"));

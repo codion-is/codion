@@ -411,11 +411,13 @@ public final class ConnectionPoolImpl implements ConnectionPool {
   private void cleanPool() {
     final long currentTime = System.currentTimeMillis();
     synchronized (pool) {
+      final int inUseCount = inUse.size();
       final ListIterator<PoolableConnection> iterator = pool.listIterator();
-      while (iterator.hasNext() && pool.size() > minimumPoolSize) {
+      while (iterator.hasNext() && pool.size() + inUseCount > minimumPoolSize) {
         final PoolableConnection connection = iterator.next();
         if (currentTime - connection.getPoolTime() > pooledConnectionTimeout) {
           connectionProvider.destroyConnection(connection);
+          iterator.remove();
         }
       }
     }
@@ -531,6 +533,8 @@ public final class ConnectionPoolImpl implements ConnectionPool {
       requestsFailedPerSecondCounter = 0;
       requestsPerSecondTime = current;
       averageCheckOutTime = 0;
+      minimumCheckOutTime = 0;
+      maximumCheckOutTime = 0;
       if (!checkOutTimes.isEmpty()) {
         long total = 0;
         long min = -1;

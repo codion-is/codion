@@ -464,6 +464,14 @@ public final class UiUtil {
     };
   }
 
+  public static JPanel northCenterPanel(final JComponent north, final JComponent center) {
+    final JPanel panel = new JPanel(new BorderLayout(5, 5));
+    panel.add(north, BorderLayout.NORTH);
+    panel.add(center, BorderLayout.CENTER);
+
+    return panel;
+  }
+
   public static void showToolTip(final JComponent component) {
     final Action toolTipAction = component.getActionMap().get("postTip");
     if (toolTipAction != null) {
@@ -945,7 +953,7 @@ public final class UiUtil {
     }
 
     @SuppressWarnings({"unchecked"})
-    private String getFileDataFlavor(final TransferHandler.TransferSupport support) {
+    private static String getFileDataFlavor(final TransferHandler.TransferSupport support) {
       try {
         for (final DataFlavor flavor : support.getDataFlavors()) {
           if (flavor.isFlavorJavaFileListType()) {

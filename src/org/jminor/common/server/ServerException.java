@@ -35,7 +35,7 @@ public class ServerException extends Exception {
   /**
    * An exception indicating that a login has failed
    */
-  public final static class LoginException extends ServerException {
+  public static final class LoginException extends ServerException {
     private LoginException() {
       super();
     }
@@ -44,7 +44,7 @@ public class ServerException extends Exception {
   /**
    * An exception indicating that the server is not accepting new connections
    */
-  public final static class ServerFullException extends ServerException {
+  public static final class ServerFullException extends ServerException {
     private ServerFullException() {
       super(Messages.get(Messages.SERVER_FULL));
     }

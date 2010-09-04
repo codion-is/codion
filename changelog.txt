@@ -2114,3 +2114,4 @@
   Javadocs and coverage improvements
   AbstractRemoteServer connection limiting added
   RemoteServer.connectionsAvailable() added
+  WebStartServer added

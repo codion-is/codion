@@ -3,17 +3,21 @@ grant {
   permission java.io.FilePermission "${user.home}/logs/-", "read,write,delete";
   permission java.io.FilePermission "${user.dir}/-", "read,write,delete";
   permission java.io.FilePermission "./-", "read,write,delete";
+  //Web Start Server document root
+  //permission java.io.FilePermission "/home/webstart/-", "read";
 
-  permission java.net.SocketPermission "*", "accept";
+  //Web Start server port
+  permission java.net.SocketPermission "*:80", "listen,resolve";
   //Database port
-  permission java.net.SocketPermission "*:1521", "connect";
+  permission java.net.SocketPermission "*:3306", "connect";
   //Client service port
   permission java.net.SocketPermission "*:2222", "connect,listen";
   //Server admin port
-  permission java.net.SocketPermission "*:2223", "connect,listen";
+  permission java.net.SocketPermission "*:4444", "connect,listen";
   //RMI Registry
   permission java.net.SocketPermission "*:1099", "connect,listen";
 
+  permission java.net.SocketPermission "*", "accept";
   permission java.util.PropertyPermission "*", "read, write";
 
   permission java.lang.RuntimePermission "shutdownHooks";

@@ -286,6 +286,8 @@
     <copy file="${lib.logback.classic}" todir="${deploy.server.path}/lib"/>
     <copy file="${lib.logback.core}" todir="${deploy.server.path}/lib"/>
     <copy file="${lib.h2}" todir="${deploy.server.path}/lib"/>
+    <copy file="${lib.webserver}" todir="${deploy.server.path}/lib"/>
+    <copy file="${lib.servlet}" todir="${deploy.server.path}/lib"/>
     <copy file="${lib.json}" todir="${deploy.server.path}/lib"/>
     <copy file="${lib.jasperreports.base}" todir="${deploy.server.path}/lib"/>
     <copy file="${lib.jasperreports.collections}" todir="${deploy.server.path}/lib"/>

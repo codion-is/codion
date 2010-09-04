@@ -330,6 +330,20 @@ public final class Configuration {
   public static final String SERVER_NAME_PREFIX = "jminor.server.namePrefix";
 
   /**
+   * Specifies the document root for the WebStartServer, if no specified the web server will not be started<br>
+   * Value type: String<br>
+   * Default value: null
+   */
+  public static final String WEB_SERVER_DOCUMENT_ROOT = "jminor.server.web.documentRoot";
+
+  /**
+   * Specifies the port number for the WebStartServer<br>
+   * Value type: Integer<br>
+   * Default value: 80
+   */
+  public static final String WEB_SERVER_PORT = "jminor.server.web.port";
+
+  /**
    * Specifies the wildcard character used by the framework<br>
    * Value type: String<br>
    * Default value: %
@@ -495,6 +509,7 @@ public final class Configuration {
     PROPERTIES.put(LIMIT_FOREIGN_KEY_FETCH_DEPTH, true);
     PROPERTIES.put(DEFAULT_LOOK_AND_FEEL_CLASSNAME, UIManager.getSystemLookAndFeelClassName());
     PROPERTIES.put(AUTO_CREATE_ENTITY_MODELS, true);
+    PROPERTIES.put(WEB_SERVER_PORT, 80);
     parseSystemSettings();
   }
 
@@ -548,7 +563,8 @@ public final class Configuration {
     parseStringSetting(WILDCARD_CHARACTER);
     parseStringSetting(DEFAULT_LOOK_AND_FEEL_CLASSNAME);
     parseBooleanSetting(AUTO_CREATE_ENTITY_MODELS);
-
+    parseStringSetting(WEB_SERVER_DOCUMENT_ROOT);
+    parseIntegerSetting(WEB_SERVER_PORT);
     parseStringSetting(JAVAX_NET_NET_TRUSTSTORE);
   }
 

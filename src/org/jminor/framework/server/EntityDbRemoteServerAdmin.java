@@ -11,6 +11,7 @@ import org.jminor.common.model.Util;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.RemoteServer;
 import org.jminor.common.server.ServerLog;
+import org.jminor.common.server.web.WebStartServer;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityDbConnection;
 
@@ -33,6 +34,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Implements the EntityDbServerAdmin interface, providing admin access to a EntityDbRemoteServer instance.
@@ -51,6 +54,7 @@ public final class EntityDbRemoteServerAdmin extends UnicastRemoteObject impleme
   }
 
   private final EntityDbRemoteServer server;
+  private WebStartServer webServer;
 
   /**
    * Instantiates a new EntityDbRemoteServerAdmin
@@ -62,7 +66,7 @@ public final class EntityDbRemoteServerAdmin extends UnicastRemoteObject impleme
     super(SERVER_ADMIN_PORT, sslEnabled ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
             sslEnabled ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
     this.server = server;
-    server.getRegistry().rebind(server.getServerName() + RemoteServer.SERVER_ADMIN_SUFFIX, this);
+    EntityDbRemoteServer.getRegistry().rebind(server.getServerName() + RemoteServer.SERVER_ADMIN_SUFFIX, this);
     Runtime.getRuntime().addShutdownHook(new Thread(getShutdownHook()));
   }
 
@@ -147,9 +151,10 @@ public final class EntityDbRemoteServerAdmin extends UnicastRemoteObject impleme
   /** {@inheritDoc} */
   public void shutdown() throws RemoteException {
     try {
-      server.getRegistry().unbind(server.getServerName() + RemoteServer.SERVER_ADMIN_SUFFIX);
+      EntityDbRemoteServer.getRegistry().unbind(server.getServerName() + RemoteServer.SERVER_ADMIN_SUFFIX);
     }
     catch (NotBoundException e) {/**/}
+    shutdownWebServer();
     server.shutdown();
     try {
       UnicastRemoteObject.unexportObject(this, true);
@@ -383,6 +388,10 @@ public final class EntityDbRemoteServerAdmin extends UnicastRemoteObject impleme
     return EntityDbRemoteServer.getEntityDefinitions();
   }
 
+  private void setWebServer(final WebStartServer webServer) {
+    this.webServer = webServer;
+  }
+
   private Runnable getShutdownHook() {
     return new Runnable() {
       /** {@inheritDoc} */
@@ -391,7 +400,7 @@ public final class EntityDbRemoteServerAdmin extends UnicastRemoteObject impleme
           return;
         }
         try {
-          EntityDbRemoteServer.LOG.info("Shuting down server on VM shutdown");
+          shutdownWebServer();
           server.shutdown();
         }
         catch (RemoteException e) {
@@ -401,13 +410,35 @@ public final class EntityDbRemoteServerAdmin extends UnicastRemoteObject impleme
     };
   }
 
+  private void shutdownWebServer() {
+    if (webServer != null) {
+      EntityDbRemoteServer.LOG.info("Shuting down server on VM shutdown");
+      EntityDbRemoteServer.LOG.info("Shuting down web server on VM shutdown");
+      webServer.destroyAllServlets();
+    }
+  }
+
   /**
    * Runs a new EntityDbRemote server with a server admin interface exported.
    * @param arguments no arguments required
-   * @throws Exception in case of an exception
+   * @throws java.rmi.RemoteException in case of a remote exception during service export
    */
-  public static void main(final String[] arguments) throws Exception {
-    new EntityDbRemoteServerAdmin(new EntityDbRemoteServer(DatabaseProvider.createInstance()),
-            EntityDbRemoteServer.SSL_CONNECTION_ENABLED);
+  public static void main(final String[] arguments) throws RemoteException {
+    final EntityDbRemoteServerAdmin admin = new EntityDbRemoteServerAdmin(
+            new EntityDbRemoteServer(DatabaseProvider.createInstance()),
+                  EntityDbRemoteServer.SSL_CONNECTION_ENABLED);
+
+    final String webDocumentRoot = Configuration.getStringValue(Configuration.WEB_SERVER_DOCUMENT_ROOT);
+    final ExecutorService executor = Executors.newSingleThreadExecutor();
+    if (webDocumentRoot != null) {
+      final int port = Configuration.getIntValue(Configuration.WEB_SERVER_PORT);
+      final WebStartServer webServer = new WebStartServer(webDocumentRoot, port);
+      admin.setWebServer(webServer);
+      executor.execute(new Runnable() {
+        public void run() {
+          webServer.serve();
+        }
+      });
+    }
   }
 }

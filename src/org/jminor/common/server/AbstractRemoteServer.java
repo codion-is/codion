@@ -92,7 +92,7 @@ public abstract class AbstractRemoteServer<T> extends UnicastRemoteObject implem
    * @return the maximum number of concurrent connections accepted by this server,
    * a negative number means no limit while 0 means the server is closed.
    */
-  public int getConnectionLimit() {
+  public final int getConnectionLimit() {
     return connectionLimit;
   }
 
@@ -100,12 +100,12 @@ public abstract class AbstractRemoteServer<T> extends UnicastRemoteObject implem
    * @param connectionLimit the maximum number of concurrent connections accepted by this server,
    * a negative number means no limit while 0 means the server is closed.
    */
-  public void setConnectionLimit(final int connectionLimit) {
+  public final void setConnectionLimit(final int connectionLimit) {
     this.connectionLimit = connectionLimit;
   }
 
   /** {@inheritDoc} */
-  public boolean connectionsAvailable() throws RemoteException {
+  public final boolean connectionsAvailable() throws RemoteException {
     return !maximumNummberOfConnectionReached();
   }
 
@@ -166,7 +166,7 @@ public abstract class AbstractRemoteServer<T> extends UnicastRemoteObject implem
   /**
    * @param loginProxy the login proxy
    */
-  public void setLoginProxy(final LoginProxy loginProxy) {
+  public final void setLoginProxy(final LoginProxy loginProxy) {
     this.loginProxy = loginProxy;
   }
 
