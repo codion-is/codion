@@ -387,7 +387,6 @@ public final class LoadTestPanel extends JPanel {
         frame.setVisible(false);
         frame.dispose();
       }
-      System.exit(0);
     }
   }
 }

@@ -24,6 +24,7 @@ public abstract class AbstractEntityDbProvider implements EntityDbProvider {
   private User user;
   private EntityDb entityDb;
   private final State stConnectionValid = States.state();
+  private Timer validTimer;
 
   /**
    * Instantiates a new AbstractEntityDbProvider.
@@ -32,12 +33,7 @@ public abstract class AbstractEntityDbProvider implements EntityDbProvider {
   public AbstractEntityDbProvider(final User user) {
     Util.rejectNullValue(user, "user");
     this.user = user;
-    new Timer().schedule(new TimerTask() {
-      /** {@inheritDoc} */
-      public void run() {
-        stConnectionValid.setActive(isConnectionValid());
-      }
-    }, 1000, 1000);
+    startValidTimer();
   }
 
   /** {@inheritDoc} */
@@ -96,6 +92,24 @@ public abstract class AbstractEntityDbProvider implements EntityDbProvider {
   private void validateConnection() {
     if (entityDb == null || !isConnectionValid()) {
       entityDb = connect();
+      startValidTimer();
     }
+  }
+
+  private void startValidTimer() {
+    if (validTimer != null) {
+      validTimer.cancel();
+    }
+    validTimer = new Timer();
+    validTimer.schedule(new TimerTask() {
+      /** {@inheritDoc} */
+      public void run() {
+        final boolean valid = isConnectionValid();
+        stConnectionValid.setActive(valid);
+        if (!valid) {
+          validTimer.cancel();
+        }
+      }
+    }, 0, 1000);
   }
 }

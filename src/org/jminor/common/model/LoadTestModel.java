@@ -330,6 +330,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
 
   /** {@inheritDoc} */
   public final void exit() {
+    updateTimer.cancel();
     executor.shutdownNow();
     paused = false;
     synchronized (applications) {
@@ -337,10 +338,12 @@ public abstract class LoadTestModel<T> implements LoadTest {
         removeApplication();
       }
     }
-    try {
-      Thread.sleep(maximumThinkTime);
+    while (!executor.isTerminated()) {
+      try {
+        Thread.sleep(maximumThinkTime);
+      }
+      catch (InterruptedException e) {/**/}
     }
-    catch (InterruptedException e) {/**/}
     evtDoneExiting.fire();
   }
 
