@@ -643,8 +643,8 @@ public abstract class LoadTestModel<T> implements LoadTest {
   public abstract static class AbstractUsageScenario<T> implements LoadTest.UsageScenario<T> {
 
     private final String name;
-    private int successfulRunCount = 0;
-    private int unsuccessfulRunCount = 0;
+    private volatile int successfulRunCount = 0;
+    private volatile int unsuccessfulRunCount = 0;
 
     /**
      * Instantiates a new UsageScenario using the simple class name as scenario name
