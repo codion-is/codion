@@ -16,7 +16,10 @@ import org.jminor.framework.demos.petstore.domain.Petstore;
 import org.jminor.framework.server.provider.EntityDbRemoteProvider;
 
 import org.junit.AfterClass;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -119,6 +122,24 @@ public class EntityDbRemoteServerTest {
     providerOne.disconnect();
     assertEquals(1, server.getConnectionCount());
 
+    providerTwo.disconnect();
+    assertEquals(0, server.getConnectionCount());
+
+    server.setConnectionLimit(1);
+    providerOne.getEntityDb();
+    try {
+      providerTwo.getEntityDb();
+      fail("Server should be full");
+    }
+    catch (RuntimeException e) {}
+
+    assertEquals(1, server.getConnectionCount());
+    server.setConnectionLimit(2);
+    providerTwo.getEntityDb();
+    assertEquals(2, server.getConnectionCount());
+    
+    providerOne.disconnect();
+    assertEquals(1, server.getConnectionCount());
     providerTwo.disconnect();
     assertEquals(0, server.getConnectionCount());
   }
