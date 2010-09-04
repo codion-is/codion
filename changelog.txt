@@ -2109,6 +2109,7 @@
   ConnectionPoolImpl new connection threshold is now configurable from pool monitor
   LoadTestModel generified
   Fixed sorting when columns have been moved around
+0.6.0
   EntityComboBoxModel.getEntity(primaryKey) added
   EntityEditModel.containsComboBoxModel(Property) removed
   Javadocs and coverage improvements
