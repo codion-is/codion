@@ -43,7 +43,6 @@ public final class QueryLoadTestModel extends LoadTestModel<PoolableConnection> 
    */
   public QueryLoadTestModel(final Database database, final User user, final Collection<? extends QueryScenario> scenarios) {
     super(user, scenarios, DEFAULT_MAXIMUM_THINK_TIME_MS, DEFAULT_LOGIN_DELAY_MS, DEFAULT_BATCH_SIZE, DEFAULT_WARNING_TIME_MS);
-    final long time = System.currentTimeMillis();
     this.pool = new ConnectionPoolImpl(new ConnectionProvider(database), user);
     addExitListener(new ActionListener() {
       /** {@inheritDoc} */
@@ -51,12 +50,6 @@ public final class QueryLoadTestModel extends LoadTestModel<PoolableConnection> 
         pool.close();
       }
     });
-    while (pool.getStatistics(time).getSize() > 0) {
-      try {
-        Thread.sleep(20);
-      }
-      catch (InterruptedException e) {/**/}
-    }
   }
 
   /**
@@ -79,8 +72,8 @@ public final class QueryLoadTestModel extends LoadTestModel<PoolableConnection> 
 
   /** {@inheritDoc} */
   @Override
-  protected void disconnectApplication(final PoolableConnection application) {
-    pool.returnConnection(application);
+  protected void disconnectApplication(final PoolableConnection connection) {
+    pool.returnConnection(connection);
   }
 
   /**
@@ -116,15 +109,15 @@ public final class QueryLoadTestModel extends LoadTestModel<PoolableConnection> 
 
     /**
      *
-     * @param application the connection
+     * @param connection the connection
      * @throws ScenarioException
      */
     @Override
-    protected final void performScenario(final PoolableConnection application) throws ScenarioException {
+    protected final void performScenario(final PoolableConnection connection) throws ScenarioException {
       PreparedStatement statement = null;
       ResultSet resultSet = null;
       try {
-        statement = application.getConnection().prepareCall(query);
+        statement = connection.getConnection().prepareCall(query);
         final List<Object> parameters = getParameters();
         if (parameters != null && !parameters.isEmpty()) {
           int index = 1;
@@ -142,13 +135,13 @@ public final class QueryLoadTestModel extends LoadTestModel<PoolableConnection> 
           }
         }
         if (transactional) {
-          application.commit();
+          connection.commit();
         }
       }
       catch (Exception e) {
-        if (transactional && application != null) {
+        if (transactional && connection != null) {
           try {
-            application.rollback();
+            connection.rollback();
           }
           catch (SQLException e1) {/**/}
         }
@@ -161,7 +154,7 @@ public final class QueryLoadTestModel extends LoadTestModel<PoolableConnection> 
     }
 
     /**
-     * Returns the parameter values to use for the next query execution,
+     * For overriding, returns the parameter values to use for the next query execution,
      * these must of course match the parameter slots in the underlying query.
      * @return a list of parameters for the next query run
      */
