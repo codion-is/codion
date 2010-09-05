@@ -40,20 +40,6 @@ public final class RemoteLoadTestAdapter extends UnicastRemoteObject implements 
     this.loadTest = instantiateLoadTest(clientInfo);
   }
 
-  private LoadTest instantiateLoadTest(final ClientInfo clientInfo) throws RemoteException {
-    final String loadTestClass = (String) clientInfo.getProperty(LOAD_TEST_CLASSNAME);
-    if (loadTestClass == null) {
-      throw new IllegalArgumentException(LOAD_TEST_CLASSNAME + " is missing");
-    }
-
-    try {
-      return (LoadTest) Class.forName(loadTestClass).getConstructor().newInstance();
-    }
-    catch (Exception e) {
-      throw new RemoteException(e.getMessage(), e);
-    }
-  }
-
   /**
    * @return the client info associated with this remote test adapter
    */
@@ -259,5 +245,19 @@ public final class RemoteLoadTestAdapter extends UnicastRemoteObject implements 
   /** {@inheritDoc} */
   public void decrementWeight(final Object item) {
     loadTest.getScenarioChooser().decrementWeight((LoadTest.UsageScenario) item);
+  }
+
+  private static LoadTest instantiateLoadTest(final ClientInfo clientInfo) throws RemoteException {
+    final String loadTestClass = clientInfo.getClientTypeID();
+    if (loadTestClass == null) {
+      throw new IllegalArgumentException(LOAD_TEST_CLASSNAME + " is missing");
+    }
+
+    try {
+      return (LoadTest) Class.forName(loadTestClass).getConstructor().newInstance();
+    }
+    catch (Exception e) {
+      throw new RemoteException(e.getMessage(), e);
+    }
   }
 }

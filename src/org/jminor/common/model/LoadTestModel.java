@@ -10,7 +10,6 @@ import org.jfree.data.xy.YIntervalSeriesCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -22,6 +21,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.awt.event.ActionListener;
 
 /**
  * A default LoadTest implementation.
@@ -393,11 +393,6 @@ public abstract class LoadTestModel<T> implements LoadTest {
   }
 
   /** {@inheritDoc} */
-  public final void addExitListener(final ActionListener listener) {
-    evtDoneExiting.addListener(listener);
-  }
-
-  /** {@inheritDoc} */
   public final EventObserver applicationBatchSizeObserver() {
     return evtApplicationBatchSizeChanged.getObserver();
   }
@@ -440,6 +435,13 @@ public abstract class LoadTestModel<T> implements LoadTest {
    */
   protected final void runScenario(final String usageScenarioName, final T application) throws ScenarioException {
     getUsageScenario(usageScenarioName).run(application);
+  }
+
+  /**
+   * @param listener a listener notified when this load test model has finished removing all applications
+   */
+  protected void addExitListener(final ActionListener listener) {
+    evtDoneExiting.addListener(listener);
   }
 
   /**

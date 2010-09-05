@@ -20,7 +20,7 @@ import java.util.Map;
  * server.serve();
  * </pre>
  */
-public class WebStartServer extends Serve {
+public final class WebStartServer extends Serve {
 
   private static final Logger LOG = LoggerFactory.getLogger(WebStartServer.class);
 
@@ -54,18 +54,16 @@ public class WebStartServer extends Serve {
     arguments = properties;
 
     addDefaultServlets(null); //file servlet
+  }
 
-    Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-      public void run() {
-        try {
-          notifyStop();
-        }
-        catch(IOException ioe) {
-          LOG.error(ioe.getMessage(), ioe);
-        }
-        destroyAllServlets();
-      }
-    }));
+  public void stop() {
+    try {
+      notifyStop();
+      destroyAllServlets();
+    }
+    catch(IOException ioe) {
+      LOG.error(ioe.getMessage(), ioe);
+    }
   }
 
   /**

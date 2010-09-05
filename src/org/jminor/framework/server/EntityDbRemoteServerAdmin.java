@@ -414,7 +414,7 @@ public final class EntityDbRemoteServerAdmin extends UnicastRemoteObject impleme
     if (webServer != null) {
       EntityDbRemoteServer.LOG.info("Shuting down server on VM shutdown");
       EntityDbRemoteServer.LOG.info("Shuting down web server on VM shutdown");
-      webServer.destroyAllServlets();
+      webServer.stop();
     }
   }
 

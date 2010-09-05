@@ -615,9 +615,11 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
         }
         if (logMethod) {
           final LogEntry logEntry = methodLogger.logExit(methodName, exception, currentTime, connection != null ? connection.getLogEntries() : null);
-          final StringBuilder messageBuilder = new StringBuilder(client.toString()).append("\n");
-          appendLogEntries(messageBuilder, logEntry.getSubLog(), 1);
-          LOG.debug(messageBuilder.toString());
+          if (methodLogger.isEnabled()) {
+            final StringBuilder messageBuilder = new StringBuilder(client.toString()).append("\n");
+            appendLogEntries(messageBuilder, logEntry.getSubLog(), 1);
+            LOG.debug(messageBuilder.toString());
+          }
         }
         if (connection != null) {
           if (connection.isTransactionOpen()) {

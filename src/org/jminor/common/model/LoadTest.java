@@ -6,7 +6,6 @@ package org.jminor.common.model;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.YIntervalSeriesCollection;
 
-import java.awt.event.ActionListener;
 import java.io.Serializable;
 import java.util.Collection;
 
@@ -203,11 +202,7 @@ public interface LoadTest {
   /**
    * @return an observer notified each time the maximum think time changes
    */
-  EventObserver maximumThinkTimeObserver();/**
-
-   * @param listener a listener notified when this load test model has finished removing all applications
-   */
-  void addExitListener(ActionListener listener);
+  EventObserver maximumThinkTimeObserver();
 
   /**
    * @return an observer notified each time the minimum think time changes

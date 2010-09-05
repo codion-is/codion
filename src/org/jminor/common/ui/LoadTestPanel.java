@@ -84,7 +84,7 @@ public final class LoadTestPanel extends JPanel {
   public JFrame showFrame() {
     final JFrame frame = UiUtil.createFrame(Images.loadImage("jminor_logo32.gif").getImage());
     final String title = "JMinor - " + loadTestModel.getClass().getSimpleName();
-    loadTestModel.addExitListener(new ExitListener(frame));
+    frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     frame.addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosing(final WindowEvent e) {
@@ -373,20 +373,5 @@ public final class LoadTestPanel extends JPanel {
   private void setColors(final JFreeChart chart) {
     chart.getXYPlot().setBackgroundPaint(Color.BLACK);
     chart.setBackgroundPaint(this.getBackground());
-  }
-
-  private static final class ExitListener implements ActionListener {
-    private final JFrame frame;
-
-    private ExitListener(final JFrame frame) {
-      this.frame = frame;
-    }
-
-    public void actionPerformed(final ActionEvent e) {
-      if (frame != null) {
-        frame.setVisible(false);
-        frame.dispose();
-      }
-    }
   }
 }

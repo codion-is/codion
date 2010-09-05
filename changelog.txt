@@ -2125,3 +2125,4 @@
   LogEntry, User and ClientInfo read/writeObject implemented
   EntityImpl.read/writeObject optimized a bit more
   CriteriaSet.read/WriteObject optimized
+  LoadTestServer refactored and improved
