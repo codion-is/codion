@@ -437,7 +437,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
 
   /** {@inheritDoc} */
   @Override
-  protected void handleInitializeValueChangedEvent() {
+  protected void handleValueChangedEventInitialized() {
     addValueListener(new ValueChangeListener<String, Object>() {
       /** {@inheritDoc} */
       @Override

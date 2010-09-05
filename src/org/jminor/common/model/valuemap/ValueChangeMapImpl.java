@@ -42,7 +42,7 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
     if (evtValueChanged != null) {
       notifyValueChange(key, value, null, true);
     }
-    handleInitializeValue(key, value);
+    handleValueInitialized(key, value);
   }
 
   /** {@inheritDoc} */
@@ -161,9 +161,9 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
   }
 
   @SuppressWarnings({"UnusedDeclaration"})
-  protected void handleInitializeValue(final K key, final V value) {}
+  protected void handleValueInitialized(final K key, final V value) {}
 
-  protected void handleInitializeValueChangedEvent() {}
+  protected void handleValueChangedEventInitialized() {}
 
   @Override
   protected void handleValueRemoved(final K key, final V value) {
@@ -223,7 +223,7 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
   private Event getValueChangedEvent() {
     if (evtValueChanged == null) {
       evtValueChanged = Events.event();
-      handleInitializeValueChangedEvent();
+      handleValueChangedEventInitialized();
     }
 
     return evtValueChanged;
