@@ -31,7 +31,7 @@ public final class DateFormats {
   /** dd-MM-yy HH:mm */
   public static final String SHORT_TIMESTAMP = "dd-MM-yy HH:mm";
   /** dd-MM-yyyy HH:mm:ss.SSS */
-  public static final String EXACT_TIMESTAMP = "dd-MM-yyyy HH:mm:ss.SSS";
+  public static final String EXACT_TIMESTAMP = "yyyy-MM-dd HH:mm:ss.SSS";
   /** dd-MM-yyyy HH:mm:ss */
   public static final String FULL_TIMESTAMP = "dd-MM-yyyy HH:mm:ss";
 

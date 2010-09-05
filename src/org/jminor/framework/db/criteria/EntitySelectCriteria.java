@@ -23,19 +23,11 @@ public interface EntitySelectCriteria extends EntityCriteria {
      */
   int getFetchCount();
 
-  int getCurrentFetchDepth();
+  int getForeignKeyFetchDepthLimit(final String foreignKeyPropertyID);
 
-  int getFetchDepth();
+  EntitySelectCriteria setForeignKeyFetchDepthLimit(final String foreignKeyPropertyID, final int maxFetchDepth);
 
-  int getFetchDepth(final String foreignKeyPropertyID);
-
-  EntitySelectCriteria setCurrentFetchDepth(final int currentFetchDepth);
-
-  EntitySelectCriteria setFetchDepth(final int maxFetchDepth);
-
-  EntitySelectCriteria setFetchDepth(final String foreignKeyPropertyID, final int maxFetchDepth);
-
-  EntitySelectCriteria setFetchDepthForAll(final int fetchDepth);
+  EntitySelectCriteria setForeignKeyFetchDepthLimit(final int fetchDepth);
 
   EntitySelectCriteria setSelectForUpdate(final boolean selectForUpdate);
 }

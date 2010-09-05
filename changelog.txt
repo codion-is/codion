@@ -2119,3 +2119,5 @@
   Configuration.SERVER_CONNECTION_LIMIT added
   EmpDeptLoadTest improved
   ConnectionPoolImplTest now uses QueryLoadTestModel
+  EntityDbConnection.setForeignKeyValues() simplified
+  Server logging improved

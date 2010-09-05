@@ -217,8 +217,8 @@ public final class ServerMonitorPanel extends JPanel {
     final DefaultComboBoxModel comboModel = new DefaultComboBoxModel();
     comboModel.addElement(Level.TRACE);
     comboModel.addElement(Level.ERROR);
-    comboModel.addElement(Level.WARN);
     comboModel.addElement(Level.DEBUG);
+    comboModel.addElement(Level.WARN);
     comboModel.addElement(Level.INFO);
 
     final JComboBox box = new JComboBox(comboModel);

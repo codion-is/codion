@@ -155,19 +155,19 @@ public class EntityDbConnectionTest {
     emp = emp.getForeignKeyValue(EmpDept.EMPLOYEE_MGR_FK);
     assertFalse(emp.isLoaded(EmpDept.EMPLOYEE_MGR_FK));
 
-    result = connection.selectMany(criteria.setFetchDepth(EmpDept.EMPLOYEE_DEPARTMENT_FK, 0));
+    result = connection.selectMany(criteria.setForeignKeyFetchDepthLimit(EmpDept.EMPLOYEE_DEPARTMENT_FK, 0));
     assertEquals(1, result.size());
     emp = result.get(0);
     assertFalse(emp.isLoaded(EmpDept.EMPLOYEE_DEPARTMENT_FK));
     assertTrue(emp.isLoaded(EmpDept.EMPLOYEE_MGR_FK));
 
-    result = connection.selectMany(criteria.setFetchDepth(EmpDept.EMPLOYEE_MGR_FK, 0));
+    result = connection.selectMany(criteria.setForeignKeyFetchDepthLimit(EmpDept.EMPLOYEE_MGR_FK, 0));
     assertEquals(1, result.size());
     emp = result.get(0);
     assertFalse(emp.isLoaded(EmpDept.EMPLOYEE_DEPARTMENT_FK));
     assertFalse(emp.isLoaded(EmpDept.EMPLOYEE_MGR_FK));
 
-    result = connection.selectMany(criteria.setFetchDepth(EmpDept.EMPLOYEE_MGR_FK, 2));
+    result = connection.selectMany(criteria.setForeignKeyFetchDepthLimit(EmpDept.EMPLOYEE_MGR_FK, 2));
     assertEquals(1, result.size());
     emp = result.get(0);
     assertFalse(emp.isLoaded(EmpDept.EMPLOYEE_DEPARTMENT_FK));
@@ -258,11 +258,7 @@ public class EntityDbConnectionTest {
     }
   }
 
-  protected EntityDbConnection initializeConnection() throws ClassNotFoundException, SQLException {
+  private static EntityDbConnection initializeConnection() throws ClassNotFoundException, SQLException {
     return new EntityDbConnection(DatabaseProvider.createInstance(), User.UNIT_TEST_USER);
-  }
-
-  protected EntityDbConnection getConnection() {
-    return connection;
   }
 }

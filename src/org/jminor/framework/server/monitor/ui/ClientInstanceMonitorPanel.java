@@ -87,17 +87,6 @@ public final class ClientInstanceMonitorPanel extends JPanel {
     }
   }
 
-  private void appendLogEntries(final StringBuilder log, final List<LogEntry> logEntries, final int indentation) {
-    Collections.sort(logEntries);
-    for (final LogEntry logEntry : logEntries) {
-      log.append(logEntry.toString(indentation)).append("\n");
-      final List<LogEntry> subLog = logEntry.getSubLog();
-      if (subLog != null) {
-        appendLogEntries(log, subLog, indentation + 1);
-      }
-    }
-  }
-
   private void initUI() throws RemoteException {
     setLayout(new BorderLayout(5,5));
     txtCreationDate.setEditable(false);
@@ -120,5 +109,16 @@ public final class ClientInstanceMonitorPanel extends JPanel {
     scrollPane.setBorder(BorderFactory.createTitledBorder("Connection log"));
 
     add(scrollPane, BorderLayout.CENTER);
+  }
+
+  private static void appendLogEntries(final StringBuilder log, final List<LogEntry> logEntries, final int indentation) {
+    Collections.sort(logEntries);
+    for (final LogEntry logEntry : logEntries) {
+      log.append(logEntry.toString(indentation)).append("\n");
+      final List<LogEntry> subLog = logEntry.getSubLog();
+      if (subLog != null) {
+        appendLogEntries(log, subLog, indentation + 1);
+      }
+    }
   }
 }

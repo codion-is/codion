@@ -26,7 +26,7 @@ public final class EntityDataUtil {
   public static void copyEntities(final EntityDb source, final EntityDb destination, final int transactionBatchSize,
                                   final boolean copyPrimaryKeys, final String... entityIDs) throws DbException {
     for (final String entityID : entityIDs) {
-      final List<Entity> entitiesToCopy = source.selectMany(EntityCriteriaUtil.selectCriteria(entityID).setFetchDepthForAll(0));
+      final List<Entity> entitiesToCopy = source.selectMany(EntityCriteriaUtil.selectCriteria(entityID).setForeignKeyFetchDepthLimit(0));
       if (!copyPrimaryKeys) {
         for (final Entity entity : entitiesToCopy) {
           entity.getPrimaryKey().clear();

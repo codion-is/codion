@@ -112,7 +112,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
 
   /**
    * @param limitForeignKeyFetchDepth false to override the fetch depth limit provided by criteria
-   * @see org.jminor.framework.db.criteria.EntitySelectCriteria#setFetchDepth(int)
+   * @see org.jminor.framework.db.criteria.EntitySelectCriteria#setForeignKeyFetchDepthLimit(int)
    */
   public void setLimitForeignKeyFetchDepth(final boolean limitForeignKeyFetchDepth) {
     this.limitForeignKeyFetchDepth = limitForeignKeyFetchDepth;
@@ -126,7 +126,6 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
 
     final List<Entity.Key> keys = new ArrayList<Entity.Key>(entities.size());
     PreparedStatement statement = null;
-    String insertQuery = null;
     try {
       final List<Property.ColumnProperty> insertProperties = new ArrayList<Property.ColumnProperty>();
       final List<Object> statementValues = new ArrayList<Object>();
@@ -142,7 +141,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
         }
 
         addInsertProperties(entity, insertProperties, statementValues);
-        insertQuery = getInsertSQL(entity.getEntityID(), insertProperties);
+        final String insertQuery = getInsertSQL(entity.getEntityID(), insertProperties);
         statement = getConnection().prepareStatement(insertQuery);
 
         executePreparedUpdate(statement, insertQuery, statementValues, insertProperties);
@@ -169,8 +168,6 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
       if (!isTransactionOpen()) {
         rollbackQuietly();
       }
-      LOG.debug(insertQuery);
-      LOG.debug(e.getMessage(), e);
       throw new DbException(getDatabase().getErrorMessage(e));
     }
     finally {
@@ -227,14 +224,12 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
       if (optimisticLocking && !isTransactionOpen()) {
         rollbackQuietly();//releasing the select for update lock
       }
-      LOG.debug(e.getMessage(), e);
       throw e;
     }
     catch (SQLException e) {
       if (!isTransactionOpen()) {
         rollbackQuietly();
       }
-      LOG.debug(e.getMessage(), e);
       throw new DbException(getDatabase().getErrorMessage(e));
     }
     finally {
@@ -261,7 +256,6 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
       if (!isTransactionOpen()) {
         rollbackQuietly();
       }
-      LOG.debug(e.getMessage(), e);
       throw new DbException(getDatabase().getErrorMessage(e));
     }
     finally {
@@ -276,7 +270,6 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
     }
 
     PreparedStatement statement = null;
-    String deleteQuery = null;
     try {
       final Map<String, Collection<Entity.Key>> hashedKeys = EntityUtil.hashKeysByEntityID(entityKeys);
       for (final String entityID : hashedKeys.keySet()) {
@@ -288,7 +281,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
       for (final Map.Entry<String, Collection<Entity.Key>> entry : hashedKeys.entrySet()) {
         criteriaKeys.addAll(entry.getValue());
         final EntitySelectCriteria criteria = EntityCriteriaUtil.selectCriteria(criteriaKeys);
-        deleteQuery = "delete from " + Entities.getTableName(entry.getKey()) + " " + criteria.getWhereClause();
+        final String deleteQuery = "delete from " + Entities.getTableName(entry.getKey()) + " " + criteria.getWhereClause();
         statement = getConnection().prepareStatement(deleteQuery);
         executePreparedUpdate(statement, deleteQuery, criteria.getValues(), criteria.getValueProperties());
         statement.close();
@@ -302,8 +295,6 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
       if (!isTransactionOpen()) {
         rollbackQuietly();
       }
-      LOG.debug(deleteQuery);
-      LOG.debug(e.getMessage(), e);
       throw new DbException(getDatabase().getErrorMessage(e));
     }
     finally {
@@ -356,27 +347,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
 
   /** {@inheritDoc} */
   public List<Entity> selectMany(final EntitySelectCriteria criteria) throws DbException {
-    PreparedStatement statement = null;
-    ResultSet resultSet = null;
-    String selectQuery = null;
-    try {
-      selectQuery = initializeSelectQuery(criteria, Entities.getSelectColumnsString(criteria.getEntityID()), criteria.getOrderByClause());
-      statement = getConnection().prepareStatement(selectQuery);
-      resultSet = executePreparedSelect(statement, selectQuery, criteria.getValues(), criteria.getValueProperties());
-      final List<Entity> result = getEntityResultPacker(criteria.getEntityID()).pack(resultSet, criteria.getFetchCount());
-      setForeignKeyValues(result, criteria);
-
-      return result;
-    }
-    catch (SQLException e) {
-      LOG.debug(selectQuery);
-      LOG.debug(e.getMessage(), e);
-      throw new DbException(getDatabase().getErrorMessage(e));
-    }
-    finally {
-      Util.closeSilently(statement);
-      Util.closeSilently(resultSet);
-    }
+    return doSelectMany(criteria, 0);
   }
 
   /** {@inheritDoc} */
@@ -414,9 +385,8 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
   public int selectRowCount(final EntityCriteria criteria) throws DbException {
     PreparedStatement statement = null;
     ResultSet resultSet = null;
-    String selectQuery = null;
     try {
-      selectQuery = Entities.getSelectQuery(criteria.getEntityID());
+      String selectQuery = Entities.getSelectQuery(criteria.getEntityID());
       selectQuery = getSelectSQL(selectQuery == null ? Entities.getSelectTableName(criteria.getEntityID()) :
               "(" + selectQuery + " " + criteria.getWhereClause(!selectQuery.toLowerCase().contains("where")) + ") alias", "count(*)", null, null);
       selectQuery += " " + criteria.getWhereClause(!containsWhereKeyword(selectQuery));
@@ -434,8 +404,6 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
       return result.get(0);
     }
     catch (SQLException e) {
-      LOG.debug(selectQuery);
-      LOG.debug(e.getMessage(), e);
       throw new DbException(getDatabase().getErrorMessage(e));
     }
     finally {
@@ -475,8 +443,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
       if (!isTransactionOpen()) {
         rollbackQuietly();
       }
-      LOG.debug(statement);
-      LOG.debug(e.getMessage(), e);
+      LOG.debug(createLogMessage(getUser(), statement, null, e, null));
       throw new DbException(getDatabase().getErrorMessage(e));
     }
   }
@@ -492,8 +459,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
       return result;
     }
     catch (SQLException e) {
-      LOG.debug(statement);
-      LOG.debug(e.getMessage(), e);
+      LOG.debug(createLogMessage(getUser(), statement, null, e, null));
       if (!isTransactionOpen()) {
         rollbackQuietly();
       }
@@ -542,8 +508,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
       }
     }
     catch (SQLException e) {
-      LOG.debug(statement);
-      LOG.debug(e.getMessage(), e);
+      LOG.debug(createLogMessage(getUser(), statement, null, e, null));
       throw new DbException(getDatabase().getErrorMessage(e));
     }
   }
@@ -558,7 +523,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
               getWhereCondition(primaryKey.getProperties()));
     }
     catch (SQLException e) {
-      LOG.debug(e.getMessage(), e);
+      LOG.debug(createLogMessage(getUser(), null, null, e, null));
       throw new DbException(getDatabase().getErrorMessage(e));
     }
   }
@@ -595,7 +560,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
    */
   private void lockAndCheckForUpdate(final Entity entity) throws DbException {
     final Entity.Key originalKey = entity.getOriginalPrimaryKey();
-    final Entity current = selectSingle(EntityCriteriaUtil.selectCriteria(originalKey).setSelectForUpdate(true).setFetchDepthForAll(0));
+    final Entity current = selectSingle(EntityCriteriaUtil.selectCriteria(originalKey).setSelectForUpdate(true).setForeignKeyFetchDepthLimit(0));
     for (final String propertyID : current.getValueKeys()) {
       if (!entity.containsValue(propertyID) || !Util.equal(current.getValue(propertyID), entity.getOriginalValue(propertyID))) {
         throw new RecordModifiedException(entity, current);
@@ -603,58 +568,59 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
     }
   }
 
+  private List<Entity> doSelectMany(final EntitySelectCriteria criteria, final int currentFKFetchDepth) throws DbException {
+    PreparedStatement statement = null;
+    ResultSet resultSet = null;
+    try {
+      final String selectQuery = initializeSelectQuery(criteria, Entities.getSelectColumnsString(criteria.getEntityID()), criteria.getOrderByClause());
+      statement = getConnection().prepareStatement(selectQuery);
+      resultSet = executePreparedSelect(statement, selectQuery, criteria.getValues(), criteria.getValueProperties());
+      final List<Entity> result = getEntityResultPacker(criteria.getEntityID()).pack(resultSet, criteria.getFetchCount());
+      setForeignKeyValues(result, criteria, currentFKFetchDepth);
+
+      return result;
+    }
+    catch (SQLException e) {
+      throw new DbException(getDatabase().getErrorMessage(e));
+    }
+    finally {
+      Util.closeSilently(statement);
+      Util.closeSilently(resultSet);
+    }
+  }
+
+
   /**
    * Selects the entities referenced by the given entities via foreign keys and sets those
    * as their respective foreign key values. this is done recursively for the entities referenced
    * by the foreign keys as well, until the qriteria fetch depth limit is reached.
    * @param entities the entities for which to set the foreign key entity values
    * @param criteria the criteria
+   * @param currentFetchDepth the current foreign key fetch depth
    * @throws DbException in case of a database exception
    * @see #setLimitForeignKeyFetchDepth(boolean)
-   * @see org.jminor.framework.db.criteria.EntitySelectCriteria#setFetchDepth(int)
+   * @see org.jminor.framework.db.criteria.EntitySelectCriteria#setForeignKeyFetchDepthLimit(int)
    */
-  private void setForeignKeyValues(final List<Entity> entities, final EntitySelectCriteria criteria) throws DbException {
+  private void setForeignKeyValues(final List<Entity> entities, final EntitySelectCriteria criteria, final int currentFetchDepth) throws DbException {
     if (entities == null || entities.isEmpty()) {
       return;
     }
-    //Any sufficiently complex algorithm is indistinguishable from evil, so I'll talk you through this.
-    //We retrieve the foreign keys defined for the given entity type, and for each, fetch the referenced entity
     final Collection<Property.ForeignKeyProperty> foreignKeyProperties = Entities.getForeignKeyProperties(entities.get(0).getEntityID());
     for (final Property.ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
-      //We limit the foreign key fetch depth so we don't select the whole reference graph for each entity unless we intend to do so.
-      //Here's the fetch depth limit we propagate to the next foreign key level via recursion
-      final int fetchDepthLimit;
-      //If we're at the root recursion level, use the specific fetch depth assigned to this foreign key in the criteria
-      if (criteria.getCurrentFetchDepth() == 0) {
-        fetchDepthLimit = criteria.getFetchDepth(foreignKeyProperty.getPropertyID());
-      }
-      else {
-        //Otherwise we use the overall criteria fetch depth limit
-        fetchDepthLimit = criteria.getFetchDepth();
-      }
-      //And now, if we haven't reached the limit, continue fetching referenced entities
-      if (!limitForeignKeyFetchDepth || criteria.getCurrentFetchDepth() < fetchDepthLimit) {
-        //We create the primary keys of the referenced entities using the values in the referencing columns
+      final int fetchDepthLimit = criteria.getForeignKeyFetchDepthLimit(foreignKeyProperty.getPropertyID());
+      if (!limitForeignKeyFetchDepth || currentFetchDepth < fetchDepthLimit) {
         final List<Entity.Key> referencedPrimaryKeys = getReferencedPrimaryKeys(entities, foreignKeyProperty);
         if (!referencedPrimaryKeys.isEmpty()) {
-          //Let's create a select criteria using the primary keys we just created
           final EntitySelectCriteria referencedEntitiesCriteria = EntityCriteriaUtil.selectCriteria(referencedPrimaryKeys);
-          //We increment the current fetch depth in the criteria we're propagating forward, or down, whichever way you fancy
-          referencedEntitiesCriteria.setCurrentFetchDepth(criteria.getCurrentFetchDepth() + 1);
-          //And here we plug in the fetch depth limit we deduced before
-          referencedEntitiesCriteria.setFetchDepth(fetchDepthLimit);
-          //Then it's a simple matter of selecting the referenced entities and setting them as their respective foreign key values
-          final List<Entity> referencedEntities = selectMany(referencedEntitiesCriteria);
+          referencedEntitiesCriteria.setForeignKeyFetchDepthLimit(fetchDepthLimit);
+          final List<Entity> referencedEntities = doSelectMany(referencedEntitiesCriteria, currentFetchDepth + 1);
           final Map<Entity.Key, Entity> hashedReferencedEntities = EntityUtil.hashByPrimaryKey(referencedEntities);
           for (final Entity entity : entities) {
-            //In case you're wondering, the primary key of the referenced entity created before is cached by the
-            //entity instance, not strictly necessary, but it IS just about to be re-used
             entity.initializeValue(foreignKeyProperty, hashedReferencedEntities.get(entity.getReferencedPrimaryKey(foreignKeyProperty)));
           }
         }
       }
     }
-    //Nice talking to you!
   }
 
   private int queryNewIdValue(final String entityID, final IdSource idSource, final Property.PrimaryKeyProperty primaryKeyProperty) throws DbException {
@@ -677,8 +643,6 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
       return queryInteger(sql);
     }
     catch (SQLException e) {
-      LOG.debug(sql);
-      LOG.debug(e.getMessage(), e);
       throw new DbException(getDatabase().getErrorMessage(e));
     }
   }
@@ -694,13 +658,11 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
       return;
     }
     catch (SQLException e) {
-      LOG.debug(sqlStatement);
-      LOG.debug(e.getMessage(), e);
       exception = e;
     }
     finally {
       final LogEntry entry = getMethodLogger().logExit("executePreparedUpdate", exception, null);
-      LOG.debug(createLogMessage(sqlStatement, values, exception, entry));
+      LOG.debug(createLogMessage(getUser(), sqlStatement, values, exception, entry));
     }
 
     throw exception;
@@ -716,13 +678,11 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
       return statement.executeQuery();
     }
     catch (SQLException e) {
-      LOG.debug(sqlStatement);
-      LOG.debug(e.getMessage(), e);
       exception = e;
     }
     finally {
       final LogEntry entry = getMethodLogger().logExit("executePreparedSelect", exception, null);
-      LOG.debug(createLogMessage(sqlStatement, values, exception, entry));
+      LOG.debug(createLogMessage(getUser(), sqlStatement, values, exception, entry));
     }
 
     throw exception;
@@ -759,16 +719,16 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
     catch (SQLException e) {/**/}
   }
 
-  private static String createLogMessage(final String sqlStatement, final List<?> values, final SQLException exception, final LogEntry entry) {
-    final StringBuilder logMessage = new StringBuilder();
+  private static String createLogMessage(final User user, final String sqlStatement, final List<?> values, final SQLException exception, final LogEntry entry) {
+    final StringBuilder logMessage = new StringBuilder(user.toString()).append("\n");
     if (entry == null) {
       logMessage.append(sqlStatement).append(", ").append(Util.getCollectionContentsAsString(values, false));
     }
     else {
-      logMessage.append(entry.toString(2));
+      logMessage.append(entry.toString(1));
     }
     if (exception != null) {
-      logMessage.append(" [Exception: ").append(exception.getMessage()).append("]");
+      logMessage.append("\n").append(" [Exception: ").append(exception.getMessage()).append("]");
     }
 
     return logMessage.toString();

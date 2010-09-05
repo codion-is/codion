@@ -16,6 +16,7 @@ import org.jminor.common.model.Events;
 import org.jminor.common.model.MethodLogger;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.LogEntry;
 import org.jminor.common.model.reports.ReportException;
 import org.jminor.common.model.reports.ReportResult;
 import org.jminor.common.model.reports.ReportWrapper;
@@ -486,7 +487,7 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
 
   private EntityDb initializeProxy() {
     return (EntityDb) Proxy.newProxyInstance(EntityDbConnection.class.getClassLoader(),
-            EntityDbConnection.class.getInterfaces(), new LoggingInvocationHandler());
+            EntityDbConnection.class.getInterfaces(), new LoggingInvocationHandler(clientInfo));
   }
 
   private EntityDbConnection getConnection() throws ClassNotFoundException, SQLException {
@@ -554,6 +555,11 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
   private final class LoggingInvocationHandler implements InvocationHandler {
 
     private static final String GET_CONNECTION = "getConnection";
+    private final ClientInfo client;
+
+    private LoggingInvocationHandler(final ClientInfo client) {
+      this.client = client;
+    }
 
     /**
      * Holds the connection while a transaction is open, since it isn't proper to return one to the pool in such a state
@@ -591,7 +597,7 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
           }
         }
         if (logMethod) {
-          logAccess(args, methodName, connection, startTime);
+          methodLogger.logAccess(methodName, args);
         }
 
         return method.invoke(connection, args);
@@ -608,7 +614,10 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
           RequestCounter.incrementWarningTimeExceededCounter();
         }
         if (logMethod) {
-          logExit(methodName, exception, connection, currentTime);
+          final LogEntry logEntry = methodLogger.logExit(methodName, exception, currentTime, connection != null ? connection.getLogEntries() : null);
+          final StringBuilder messageBuilder = new StringBuilder(client.toString()).append("\n");
+          appendLogEntries(messageBuilder, logEntry.getSubLog(), 1);
+          LOG.debug(messageBuilder.toString());
         }
         if (connection != null) {
           if (connection.isTransactionOpen()) {
@@ -623,15 +632,16 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
         }
       }
     }
+  }
 
-    private void logExit(final String methodName, final Exception exception, final EntityDbConnection connection,
-                         final long timestamp) {
-      methodLogger.logExit(methodName, exception, timestamp, connection != null ? connection.getLogEntries() : null);
-    }
-
-    private void logAccess(final Object[] args, final String methodName, final EntityDbConnection connection,
-                           final long startTimestamp) {
-      methodLogger.logAccess(methodName, args);
+  private static void appendLogEntries(final StringBuilder log, final List<LogEntry> logEntries, final int indentation) {
+    Collections.sort(logEntries);
+    for (final LogEntry logEntry : logEntries) {
+      log.append(logEntry.toString(indentation)).append("\n");
+      final List<LogEntry> subLog = logEntry.getSubLog();
+      if (subLog != null) {
+        appendLogEntries(log, subLog, indentation + 1);
+      }
     }
   }
 
