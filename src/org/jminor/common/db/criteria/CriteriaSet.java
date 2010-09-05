@@ -114,12 +114,19 @@ public final class CriteriaSet<T> implements Criteria<T>, Serializable {
 
   private void writeObject(final ObjectOutputStream stream) throws IOException {
     stream.writeObject(conjunction);
-    stream.writeObject(criteriaList);
+    stream.writeInt(criteriaList.size());
+    for (final Criteria<T> value : criteriaList) {
+      stream.writeObject(value);
+    }
   }
 
   @SuppressWarnings({"unchecked"})
   private void readObject(final ObjectInputStream stream) throws ClassNotFoundException, IOException {
     conjunction = (Conjunction) stream.readObject();
-    criteriaList = (ArrayList<Criteria<T>>) stream.readObject();
+    final int criteriaCount = stream.readInt();
+    criteriaList = new ArrayList<Criteria<T>>(criteriaCount);
+    for (int i = 0; i < criteriaCount; i++) {
+      criteriaList.add(( Criteria<T>) stream.readObject());
+    }
   }
 }

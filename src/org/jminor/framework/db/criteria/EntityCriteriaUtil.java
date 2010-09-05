@@ -436,11 +436,10 @@ public final class EntityCriteriaUtil {
      * @see EntityKeyCriteria
      */
     private DefaultEntitySelectCriteria(final String entityID, final Criteria<Property.ColumnProperty> criteria, final String orderByClause,
-                                final int fetchCount) {
+                                        final int fetchCount) {
       this.criteria = new DefaultEntityCriteria(entityID, criteria);
       this.fetchCount = fetchCount;
       this.orderByClause = orderByClause;
-      this.foreignKeyFetchDepthLimits = initializeForeignKeyFetchDepths();
     }
 
     /** {@inheritDoc} */
@@ -485,17 +484,20 @@ public final class EntityCriteriaUtil {
 
     /** {@inheritDoc} */
     public EntitySelectCriteria setForeignKeyFetchDepthLimit(final String foreignKeyPropertyID, final int fetchDepthLimit) {
+      if (foreignKeyFetchDepthLimits == null) {
+        foreignKeyFetchDepthLimits = new HashMap<String, Integer>();
+      }
       this.foreignKeyFetchDepthLimits.put(foreignKeyPropertyID, fetchDepthLimit);
       return this;
     }
 
     /** {@inheritDoc} */
     public int getForeignKeyFetchDepthLimit(final String foreignKeyPropertyID) {
-      if (foreignKeyFetchDepthLimits.containsKey(foreignKeyPropertyID)) {
+      if (foreignKeyFetchDepthLimits != null && foreignKeyFetchDepthLimits.containsKey(foreignKeyPropertyID)) {
         return foreignKeyFetchDepthLimits.get(foreignKeyPropertyID);
       }
 
-      return 0;
+      return Entities.getForeignKeyProperty(getEntityID(), foreignKeyPropertyID).getFetchDepth();
     }
 
     /** {@inheritDoc} */
@@ -519,21 +521,11 @@ public final class EntityCriteriaUtil {
       return this;
     }
 
-    private Map<String, Integer> initializeForeignKeyFetchDepths() {
-      final Collection<Property.ForeignKeyProperty > properties = Entities.getForeignKeyProperties(getEntityID());
-      final Map<String, Integer> depths = new HashMap<String, Integer>(properties.size());
-      for (final Property.ForeignKeyProperty property : properties) {
-        depths.put(property.getPropertyID(), property.getFetchDepth());
-      }
-
-      return depths;
-    }
-
     private void writeObject(final ObjectOutputStream stream) throws IOException {
       stream.writeObject(orderByClause);
       stream.writeInt(fetchCount);
       stream.writeBoolean(selectForUpdate);
-      stream.writeObject(foreignKeyFetchDepthLimits);//todo optimize
+      stream.writeObject(foreignKeyFetchDepthLimits);
       stream.writeObject(criteria);
     }
 
@@ -829,7 +821,10 @@ public final class EntityCriteriaUtil {
       stream.writeObject(searchType);
       stream.writeBoolean(isNullCriteria);
       stream.writeBoolean(caseSensitive);
-      stream.writeObject(values);
+      stream.writeInt(values.size());
+      for (final Object value : values) {
+        stream.writeObject(value);
+      }
     }
 
     @SuppressWarnings({"unchecked"})
@@ -840,7 +835,11 @@ public final class EntityCriteriaUtil {
       searchType = (SearchType) stream.readObject();
       isNullCriteria = stream.readBoolean();
       caseSensitive = stream.readBoolean();
-      values = (ArrayList<Object>) stream.readObject();
+      final int valueCount = stream.readInt();
+      values = new ArrayList<Object>(valueCount);
+      for (int i = 0; i < valueCount; i++) {
+        values.add(stream.readObject());
+      }
     }
 
     /**
@@ -985,28 +984,6 @@ public final class EntityCriteriaUtil {
       }
     }
 
-    /**
-     * @param values the values to use in this criteria
-     * @return a list containing the values
-     */
-    @SuppressWarnings({"unchecked"})
-    private List<Entity.Key> initializeValues(final Object... values) {
-      final List<Entity.Key> ret = new ArrayList<Entity.Key>();
-      if (values == null) {
-        ret.add(null);
-      }
-      else {
-        if (values.length == 1 && values[0] instanceof Collection) {
-          ret.addAll(getValueList(((Collection) values[0]).toArray()));
-        }
-        else {
-          ret.addAll(getValueList(values));
-        }
-      }
-
-      return ret;
-    }
-
     private String getInList(final Property.ColumnProperty property, final boolean notIn) {
       final StringBuilder stringBuilder = new StringBuilder("(").append(property.getColumnName()).append((notIn ? " not in (" : IN_PREFIX));
       int cnt = 1;
@@ -1030,7 +1007,10 @@ public final class EntityCriteriaUtil {
       stream.writeObject(property.getEntityID());
       stream.writeObject(property.getPropertyID());
       stream.writeObject(searchType);
-      stream.writeObject(values);
+      stream.writeInt(values.size());
+      for (final Entity.Key key : values) {
+        stream.writeObject(key);
+      }
     }
 
     @SuppressWarnings({"unchecked"})
@@ -1040,7 +1020,33 @@ public final class EntityCriteriaUtil {
       final String propertyID = (String) stream.readObject();
       property = (Property.ForeignKeyProperty) Entities.getProperty(entityID, propertyID);
       searchType = (SearchType) stream.readObject();
-      values = (ArrayList<Entity.Key>) stream.readObject();
+      final int valueCount = stream.readInt();
+      values = new ArrayList<Entity.Key>(valueCount);
+      for (int i = 0; i < valueCount; i++) {
+        values.add((Entity.Key) stream.readObject());
+      }
+    }
+
+    /**
+     * @param values the values to use in this criteria
+     * @return a list containing the values
+     */
+    @SuppressWarnings({"unchecked"})
+    private static List<Entity.Key> initializeValues(final Object... values) {
+      final List<Entity.Key> ret = new ArrayList<Entity.Key>();
+      if (values == null) {
+        ret.add(null);
+      }
+      else {
+        if (values.length == 1 && values[0] instanceof Collection) {
+          ret.addAll(getValueList(((Collection) values[0]).toArray()));
+        }
+        else {
+          ret.addAll(getValueList(values));
+        }
+      }
+
+      return ret;
     }
 
     @SuppressWarnings({"unchecked"})

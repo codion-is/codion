@@ -2122,4 +2122,6 @@
   EntityDbConnection.setForeignKeyValues() simplified
   Server logging improved
   ClientInstanceMonitor.getLoggingEnabledButtonModel() uses lazy init
-  LogEntry, User and ClientInfo read/WriteObject implemented
+  LogEntry, User and ClientInfo read/writeObject implemented
+  EntityImpl.read/writeObject optimized a bit more
+  CriteriaSet.read/WriteObject optimized

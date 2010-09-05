@@ -648,14 +648,18 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
 
   private void writeObject(final ObjectOutputStream stream) throws IOException {
     stream.writeObject(definition.getEntityID());
+    final boolean isModified = isModified();
+    stream.writeBoolean(isModified);
     for (final Property property : definition.getProperties().values()) {
       if (!(property instanceof Property.DerivedProperty) && !(property instanceof Property.DenormalizedViewProperty)) {
         final String propertyID = property.getPropertyID();
         stream.writeObject(super.getValue(propertyID));
-        final boolean isModified = isModified(propertyID);
-        stream.writeBoolean(isModified);
         if (isModified) {
-          stream.writeObject(getOriginalValue(propertyID));
+          final boolean valueModified = isModified(propertyID);
+          stream.writeBoolean(valueModified);
+          if (valueModified) {
+            stream.writeObject(getOriginalValue(propertyID));
+          }
         }
       }
     }
@@ -663,6 +667,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
 
   private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
     final String entityID = (String) stream.readObject();
+    final boolean isModified = stream.readBoolean();
     definition = EntityDefinitionImpl.getEntityDefinitionMap().get(entityID);
     if (definition == null) {
       throw new IllegalArgumentException("Undefined entity: " + entityID);
@@ -671,8 +676,10 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
       if (!(property instanceof Property.DerivedProperty) && !(property instanceof Property.DenormalizedViewProperty)) {
         final String propertyID = property.getPropertyID();
         super.initializeValue(propertyID, stream.readObject());
-        if (stream.readBoolean()) {
-          setOriginalValue(propertyID, stream.readObject());
+        if (isModified) {
+          if (stream.readBoolean()) {
+            setOriginalValue(propertyID, stream.readObject());
+          }
         }
       }
     }
