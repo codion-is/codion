@@ -43,7 +43,7 @@ public class EntityDbRemoteAdapterTest {
 
       final EntityDbRemoteAdapter finalAdapter = adapter;
       final EntityDb proxy = Util.initializeProxy(EntityDb.class, new InvocationHandler() {
-        public Object invoke(Object proxy, Method method, Object[] args) throws Exception {
+        public Object invoke(final Object proxy, final Method method, final Object[] args) throws Exception {
           final Method remoteMethod = EntityDbRemote.class.getMethod(method.getName(), method.getParameterTypes());
           try {
             return remoteMethod.invoke(finalAdapter, args);

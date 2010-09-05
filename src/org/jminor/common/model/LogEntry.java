@@ -253,7 +253,7 @@ public final class LogEntry implements Serializable, Comparable<LogEntry> {
     if (exitTime > 0) {
       stringBuilder.append(indentString).append(getEntryTimeFormatted()).append(" @ ").append(method).append(
               !Util.nullOrEmpty(entryMessage) ? (": " + entryMessage) : "").append("\n");
-      stringBuilder.append(indentString).append(getExitTimeFormatted()).append(" > ").append(delta).append(" ms")
+      stringBuilder.append(indentString).append(getExitTimeFormatted()).append(" > ").append(delta).append(" ms ")
               .append(exitMessage == null ? "" : " (" + exitMessage + ")");
       if (stackTrace != null) {
         stringBuilder.append(stackTrace);
@@ -267,7 +267,7 @@ public final class LogEntry implements Serializable, Comparable<LogEntry> {
     return stringBuilder.toString();
   }
 
-  private String getStackTrace(final Throwable exception) {
+  private static String getStackTrace(final Throwable exception) {
     final StringWriter sw = new StringWriter();
     exception.printStackTrace(new PrintWriter(sw));
 

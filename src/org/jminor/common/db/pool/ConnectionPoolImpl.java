@@ -123,6 +123,9 @@ public final class ConnectionPoolImpl implements ConnectionPool {
 
   /** {@inheritDoc} */
   public void returnConnection(final PoolableConnection dbConnection) {
+    if (dbConnection.isTransactionOpen()) {
+      throw new RuntimeException("Open transaction");
+    }
     if (closed || !dbConnection.isValid()) {
       synchronized (pool) {
         inUse.remove(dbConnection);

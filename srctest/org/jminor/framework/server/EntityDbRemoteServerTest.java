@@ -103,8 +103,8 @@ public class EntityDbRemoteServerTest {
     assertNotNull(stats.getQueriesPerSecond());
 
     final ServerLog log = server.getServerLog(providerTwo.getClientID());
-    assertEquals("selectAll", log.getLastAccessedMethod());
-    assertEquals("selectAll", log.getLastExitedMethod());
+    assertEquals("returnConnection", log.getLastAccessedMethod());
+    assertEquals("returnConnection", log.getLastExitedMethod());
     assertTrue(log.getLastDelta() >= 0);
     assertNotNull(log.getConnectionCreationDate());
     assertNotNull(log.getLastAccessDate());

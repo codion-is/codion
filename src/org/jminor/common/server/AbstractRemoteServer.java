@@ -123,6 +123,9 @@ public abstract class AbstractRemoteServer<T> extends UnicastRemoteObject implem
   /** {@inheritDoc} */
   public final T connect(final ClientInfo clientInfo) throws RemoteException,
           ServerException.ServerFullException, ServerException.LoginException {
+    if (shuttingDown) {
+      throw new RemoteException("Server is shutting down");
+    }
     if (connections.containsKey(clientInfo)) {
       return connections.get(clientInfo);
     }
@@ -186,6 +189,7 @@ public abstract class AbstractRemoteServer<T> extends UnicastRemoteObject implem
       return;
     }
     shuttingDown = true;
+    handleShutdown();
     try {
       getRegistry().unbind(serverName);
     }
@@ -198,7 +202,6 @@ public abstract class AbstractRemoteServer<T> extends UnicastRemoteObject implem
     catch (NoSuchObjectException e) {
       LOG.warn(e.getMessage(), e);
     }
-    handleShutdown();
   }
 
   /**

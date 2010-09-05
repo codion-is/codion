@@ -331,7 +331,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
   /** {@inheritDoc} */
   public final void exit() {
     updateTimer.cancel();
-    executor.shutdownNow();
+    executor.shutdown();
     paused = false;
     synchronized (applications) {
       while (!applications.isEmpty()) {

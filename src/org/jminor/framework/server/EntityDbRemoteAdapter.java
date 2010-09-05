@@ -102,6 +102,8 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
    */
   private static final Map<User, ConnectionPool> CONNECTION_POOLS = Collections.synchronizedMap(new HashMap<User, ConnectionPool>());
 
+  private static final String RETURN_CONNECTION = "returnConnection";
+
   private static final int DEFAULT_REQUEST_COUNTER_UPDATE_INTERVAL = 2500;
 
   private final Event evtDisconnected = Events.event();
@@ -517,13 +519,23 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
     return entityDbConnection;
   }
 
-  private void returnConnection(final EntityDbConnection connection) {
+  private void returnConnection(final EntityDbConnection connection, final boolean logMethod) {
     final ConnectionPool connectionPool = CONNECTION_POOLS.get(clientInfo.getUser());
     if (methodLogger.isEnabled()) {
       connection.setLoggingEnabled(false);
     }
     if (connectionPool != null && connectionPool.isEnabled()) {
-      connectionPool.returnConnection(connection);
+      try {
+        if (logMethod) {
+          methodLogger.logAccess(RETURN_CONNECTION, new Object[]{clientInfo.getUser()});
+        }
+        connectionPool.returnConnection(connection);
+      }
+      finally {
+        if (logMethod) {
+          methodLogger.logExit(RETURN_CONNECTION, null, null);
+        }
+      }
     }
   }
 
@@ -543,17 +555,41 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
 
     private static final String GET_CONNECTION = "getConnection";
 
+    /**
+     * Holds the connection while a transaction is open, since it isn't proper to return one to the pool in such a state
+     */
+    private volatile EntityDbConnection transactionDbConnection;
+
     /** {@inheritDoc} */
     public Object invoke(final Object proxy, final Method method, final Object[] args) throws Exception {
       final String methodName = method.getName();
       Exception exception = null;
-      EntityDbConnection connection = null;
+      EntityDbConnection connection = transactionDbConnection;
       final boolean logMethod = methodLogger.isEnabled() && shouldMethodBeLogged(methodName);
       final long startTime = System.currentTimeMillis();
       try {
         setActive();
         RequestCounter.incrementRequestsPerSecondCounter();
-        connection = getConnection();
+        if (connection == null) {
+          Exception getException = null;
+          methodLogger.logAccess(GET_CONNECTION, new Object[]{clientInfo.getUser()});
+          try {
+            connection = getConnection();
+          }
+          catch (Exception e) {
+            getException = e;
+            throw e;
+          }
+          finally {
+            methodLogger.logExit(GET_CONNECTION, getException, System.currentTimeMillis(), null);
+          }
+        }
+        else {
+          //we must be within a transaction, basic sanity check, cheap operation
+          if (!connection.isTransactionOpen()) {
+            throw new IllegalStateException("Transaction closed");
+          }
+        }
         if (logMethod) {
           logAccess(args, methodName, connection, startTime);
         }
@@ -575,7 +611,15 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
           logExit(methodName, exception, connection, currentTime);
         }
         if (connection != null) {
-          returnConnection(connection);
+          if (connection.isTransactionOpen()) {
+            //keep this connection around until the transaction is closed
+            connection.setLoggingEnabled(methodLogger.isEnabled());
+            transactionDbConnection = connection;
+          }
+          else {
+            transactionDbConnection = null;
+            returnConnection(connection, logMethod);
+          }
         }
       }
     }
@@ -587,10 +631,6 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
 
     private void logAccess(final Object[] args, final String methodName, final EntityDbConnection connection,
                            final long startTimestamp) {
-      methodLogger.logAccess(GET_CONNECTION, new Object[]{clientInfo.getUser()}, startTimestamp);
-      final int retries = connection.getRetryCount();
-      final String message = retries > 0 ? "retries: " + retries : null;
-      methodLogger.logExit(GET_CONNECTION, null, System.currentTimeMillis(), null, message);
       methodLogger.logAccess(methodName, args);
     }
   }

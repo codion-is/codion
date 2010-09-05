@@ -2117,3 +2117,5 @@
   RemoteServer.connectionsAvailable() added
   WebStartServer added
   Configuration.SERVER_CONNECTION_LIMIT added
+  EmpDeptLoadTest improved
+  ConnectionPoolImplTest now uses QueryLoadTestModel

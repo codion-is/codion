@@ -3,24 +3,20 @@
  */
 package org.jminor.common.db.pool;
 
-import org.jminor.common.db.DbConnection;
 import org.jminor.common.db.DbConnectionImpl;
-import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.dbms.Database;
 import org.jminor.common.db.dbms.DatabaseProvider;
-import org.jminor.common.model.CancelException;
-import org.jminor.common.model.LoadTest;
-import org.jminor.common.model.LoadTestModel;
+import org.jminor.common.db.tools.QueryLoadTestModel;
 import org.jminor.common.model.User;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import org.junit.Test;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -32,16 +28,16 @@ public class ConnectionPoolImplTest {
 
   @Test
   public void loadTest() throws Exception {
-    final Date startTime = new Date();
-    final ConnectionPool pool = initializeLoadTestPool();
-    final LoadTestModel model = initializeLoadTestModel(pool);
+    final long startTime = System.currentTimeMillis();
+    final Database database = DatabaseProvider.createInstance();
+    final QueryLoadTestModel model = new QueryLoadTestModel(database, User.UNIT_TEST_USER,
+            Arrays.asList(new QueryLoadTestModel.QueryScenario("selectEmployees", "select * from scott.emp")));
     model.addApplicationBatch();
     model.setCollectChartData(true);
     Thread.sleep(SLEEP_MILLIS);
     model.exit();
-    pool.close();
     Thread.sleep(CLOSE_SLEEP_MILLIS);
-    final ConnectionPoolStatistics statistics = pool.getStatistics(startTime.getTime());
+    final ConnectionPoolStatistics statistics =  model.getConnectionPool().getStatistics(startTime);
     assertTrue(statistics.getAverageGetTime() == 0);
     assertEquals(statistics.getCreated(), statistics.getDestroyed());
   }
@@ -189,63 +185,6 @@ public class ConnectionPoolImplTest {
       fail();
     }
     catch (IllegalStateException e) {}
-  }
-
-  private LoadTestModel initializeLoadTestModel(final ConnectionPool pool) {
-    final LoadTest.UsageScenario<ActionListener> scenario = new LoadTestModel.AbstractUsageScenario<ActionListener>() {
-      @Override
-      protected void performScenario(final ActionListener application) throws LoadTest.ScenarioException {
-        application.actionPerformed(null);
-      }
-    };
-    return new LoadTestModel<ActionListener>(User.UNIT_TEST_USER, Arrays.asList(scenario), 100, 1, 5, 20) {
-      @Override
-      protected void disconnectApplication(ActionListener application) {}
-
-      @Override
-      protected ActionListener initializeApplication() throws CancelException {
-        return new ActionListener() {
-          public void actionPerformed(final ActionEvent e) {
-            try {
-              DbConnection connection = null;
-              try {
-                connection = (DbConnection) pool.getConnection();
-                connection.query("select * from scott.emp", new ResultPacker() {
-                  public List pack(ResultSet resultSet, int fetchCount) throws SQLException {
-                    while (resultSet.next()) {
-                      for (int i = 1; i <= resultSet.getMetaData().getColumnCount(); i++) {
-                        resultSet.getObject(i);
-                      }
-                    }
-                    return new ArrayList();
-                  }
-                }, 100);
-              }
-              finally {
-                if (connection != null) {
-                  pool.returnConnection(connection);
-                }
-              }
-            }
-            catch (ClassNotFoundException e1) {
-              e1.printStackTrace();
-            }
-            catch (SQLException e1) {
-              e1.printStackTrace();
-            }
-          }
-        };
-      }
-    };
-  }
-
-  private ConnectionPool initializeLoadTestPool() {
-    final ConnectionPool pool = new ConnectionPoolImpl(createConnectionProvider(), User.UNIT_TEST_USER);
-    pool.setConnectionTimeout(50);
-    pool.setMinimumPoolSize(1);
-    pool.setCleanupInterval(130);
-
-    return pool;
   }
 
   private static PoolableConnectionProvider createConnectionProvider() {

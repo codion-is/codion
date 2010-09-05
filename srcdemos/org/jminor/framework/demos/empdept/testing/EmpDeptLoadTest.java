@@ -62,6 +62,9 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
   }
 
   private static final class UpdateEmployee extends AbstractEntityUsageScenario {
+
+    private final Random random = new Random();
+
     @Override
     protected void performScenario(final EntityApplicationModel application) throws LoadTest.ScenarioException {
       try {
@@ -69,11 +72,27 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
         selectRandomRow(departmentModel.getTableModel());
         final EntityModel employeeModel = departmentModel.getDetailModel(EmpDept.T_EMPLOYEE);
         if (employeeModel.getTableModel().getRowCount() > 0) {
-          selectRandomRow(employeeModel.getTableModel());
-          final Entity selected = employeeModel.getTableModel().getSelectedItem();
-          EntityUtil.randomize(selected, false, null);
-          employeeModel.getEditModel().setEntity(selected);
-          employeeModel.getEditModel().update();
+          employeeModel.getDbProvider().getEntityDb().beginTransaction();
+          try {
+            selectRandomRow(employeeModel.getTableModel());
+            Entity selected = employeeModel.getTableModel().getSelectedItem();
+            EntityUtil.randomize(selected, false, null);
+            employeeModel.getEditModel().setEntity(selected);
+            employeeModel.getEditModel().update();
+            selectRandomRow(employeeModel.getTableModel());
+            selected = employeeModel.getTableModel().getSelectedItem();
+            EntityUtil.randomize(selected, false, null);
+            employeeModel.getEditModel().setEntity(selected);
+            employeeModel.getEditModel().update();
+          }
+          finally {
+            if (random.nextDouble() < 0.5) {
+              employeeModel.getDbProvider().getEntityDb().rollbackTransaction();
+            }
+            else {
+              employeeModel.getDbProvider().getEntityDb().commitTransaction();
+            }
+          }
         }
       }
       catch (Exception e) {
@@ -86,7 +105,7 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
     }
   }
 
-  private static final class InsertEmployee extends AbstractEntityUsageScenario {
+  private static final class InsertEmployee extends EntityLoadTestModel.AbstractEntityUsageScenario {
     @Override
     protected void performScenario(final EntityApplicationModel application) throws ScenarioException {
       try {
@@ -121,7 +140,7 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
       }
     }
 
-      @Override
+    @Override
     public int getDefaultWeight() {
       return 1;
     }
