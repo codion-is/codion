@@ -5,6 +5,9 @@ package org.jminor.common.model;
 
 import org.jminor.common.model.formats.DateFormats;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.io.StringWriter;
@@ -272,5 +275,37 @@ public final class LogEntry implements Serializable, Comparable<LogEntry> {
     exception.printStackTrace(new PrintWriter(sw));
 
     return sw.toString();
+  }
+
+  private void writeObject(final ObjectOutputStream stream) throws IOException {
+    stream.writeObject(method);
+    stream.writeObject(entryMessage);
+    stream.writeObject(exitMessage);
+    stream.writeLong(entryTime);
+    stream.writeLong(exitTime);
+    stream.writeObject(stackTrace);
+    stream.writeInt(subLog == null ? 0 : subLog.size());
+    if (subLog != null) {
+      for (final LogEntry subEntry : subLog) {
+        stream.writeObject(subEntry);
+      }
+    }
+  }
+
+  private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
+    this.method = (String) stream.readObject();
+    this.entryMessage = (String) stream.readObject();
+    this.exitMessage = (String) stream.readObject();
+    this.entryTime = stream.readLong();
+    this.exitTime = stream.readLong();
+    this.delta = this.exitTime - this.entryTime;
+    this.stackTrace = (String) stream.readObject();
+    final int subLogSize = stream.readInt();
+    if (subLogSize > 0) {
+      this.subLog = new ArrayList<LogEntry>(subLogSize);
+      for (int i = 0; i < subLogSize; i++) {
+        this.subLog.add((LogEntry) stream.readObject());
+      }
+    }
   }
 }

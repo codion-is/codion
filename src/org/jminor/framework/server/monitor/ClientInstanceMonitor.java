@@ -22,15 +22,18 @@ public final class ClientInstanceMonitor {
 
   private final ClientInfo client;
   private final EntityDbServerAdmin server;
-  private final ButtonModel loggingEnabledButtonModel;
+  private ButtonModel loggingEnabledButtonModel;
 
   public ClientInstanceMonitor(final ClientInfo client, final EntityDbServerAdmin server) {
     this.client = client;
     this.server = server;
-    loggingEnabledButtonModel = new ToggleBeanValueLink(this, "loggingOn", evtLogginStatusChanged, null).getButtonModel();
   }
 
   public ButtonModel getLoggingEnabledButtonModel() {
+    if (loggingEnabledButtonModel == null) {
+      loggingEnabledButtonModel = new ToggleBeanValueLink(this, "loggingOn", evtLogginStatusChanged, null).getButtonModel();
+    }
+
     return loggingEnabledButtonModel;
   }
 

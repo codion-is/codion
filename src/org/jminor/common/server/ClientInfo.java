@@ -5,9 +5,10 @@ package org.jminor.common.server;
 
 import org.jminor.common.model.User;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -17,10 +18,9 @@ public final class ClientInfo implements Serializable {
 
   private static final long serialVersionUID = 1;
 
-  private final UUID clientID;
-  private final String clientTypeID;
-  private final User user;
-  private final Map properties;
+  private UUID clientID;
+  private String clientTypeID;
+  private User user;
   private String clientHost = "unknown host";
 
   /**
@@ -41,7 +41,6 @@ public final class ClientInfo implements Serializable {
     this.clientID = clientID;
     this.clientTypeID = clientTypeID;
     this.user = user;
-    this.properties = new HashMap();
   }
 
   /**
@@ -97,11 +96,17 @@ public final class ClientInfo implements Serializable {
     return user != null ? user + "@" + clientHost + " [" + clientTypeID + "] - " + clientID : clientID.toString();
   }
 
-  public void setProperty(final String key, final Object value) {
-    properties.put(key, value);
+  private void writeObject(final ObjectOutputStream stream) throws IOException {
+    stream.writeObject(clientID);
+    stream.writeObject(clientTypeID);
+    stream.writeObject(user);
+    stream.writeObject(clientHost);
   }
 
-  public Object getProperty(final String key) {
-    return properties.get(key);
+  private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
+    this.clientID = (UUID) stream.readObject();
+    this.clientTypeID = (String) stream.readObject();
+    this.user = (User) stream.readObject();
+    this.clientHost = (String) stream.readObject();
   }
 }

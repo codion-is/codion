@@ -3,6 +3,9 @@
  */
 package org.jminor.common.model;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 /**
@@ -17,8 +20,8 @@ public final class User implements Serializable {
 
   public static final User UNIT_TEST_USER;
 
-  private final String username;
-  private final int hashCode;
+  private String username;
+  private int hashCode;
   private String password;
 
   static {
@@ -76,5 +79,17 @@ public final class User implements Serializable {
   @Override
   public int hashCode() {
     return hashCode;
+  }
+
+  private void writeObject(final ObjectOutputStream stream) throws IOException {
+    stream.writeObject(username);
+    stream.writeObject(password);
+  }
+
+  @SuppressWarnings({"SuspiciousMethodCalls"})
+  private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
+    this.username = (String) stream.readObject();
+    this.hashCode = username.hashCode();
+    this.password = (String) stream.readObject();
   }
 }

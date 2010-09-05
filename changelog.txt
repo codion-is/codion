@@ -2121,3 +2121,5 @@
   ConnectionPoolImplTest now uses QueryLoadTestModel
   EntityDbConnection.setForeignKeyValues() simplified
   Server logging improved
+  ClientInstanceMonitor.getLoggingEnabledButtonModel() uses lazy init
+  LogEntry, User and ClientInfo read/WriteObject implemented
