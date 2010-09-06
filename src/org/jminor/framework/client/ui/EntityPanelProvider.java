@@ -4,6 +4,7 @@
 package org.jminor.framework.client.ui;
 
 import org.jminor.common.model.Util;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.DefaultEntityEditModel;
 import org.jminor.framework.client.model.DefaultEntityModel;
 import org.jminor.framework.client.model.DefaultEntityTableModel;
@@ -32,6 +33,7 @@ public class EntityPanelProvider implements Comparable {
   private boolean refreshOnInit = true;
   private int detailPanelState = EntityPanel.EMBEDDED;
   private double detailSplitPanelResizeWeight = 0.5;
+  private boolean tableSearchPanelVisible = Configuration.getBooleanValue(Configuration.DEFAULT_SEARCH_PANEL_STATE);
 
   private Class<? extends EntityModel> modelClass = DefaultEntityModel.class;
   private Class<? extends EntityEditModel> editModelClass = DefaultEntityEditModel.class;
@@ -144,6 +146,15 @@ public class EntityPanelProvider implements Comparable {
 
   public final EntityPanelProvider setRefreshOnInit(final boolean refreshOnInit) {
     this.refreshOnInit = refreshOnInit;
+    return this;
+  }
+
+  public final boolean isTableSearchPanelVisible() {
+    return tableSearchPanelVisible;
+  }
+
+  public final EntityPanelProvider setTableSearchPanelVisible(final boolean tableSearchPanelVisible) {
+    this.tableSearchPanelVisible = tableSearchPanelVisible;
     return this;
   }
 
@@ -349,6 +360,9 @@ public class EntityPanelProvider implements Comparable {
         entityPanel = panelClass.getConstructor(EntityModel.class).newInstance(model);
       }
 
+      if (entityPanel.getTablePanel() != null && tableSearchPanelVisible) {
+        entityPanel.getTablePanel().setSearchPanelVisible(tableSearchPanelVisible);
+      }
       configurePanel(entityPanel);
 
       return entityPanel;

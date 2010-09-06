@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2004 - 2010, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.common.server.web;
 
@@ -71,17 +71,15 @@ public final class WebStartServer extends Serve {
    * @param args documentRoot [args]
    */
   public static void main(final String[] args) {
-    final String documentRoot;
-    int port = DEFAULT_PORT;
     if (args.length == 0) {
       throw new IllegalArgumentException("Arguments: documentRoot [port]");
     }
-    else {
-      documentRoot = args[0];
-      if (args.length > 1) {
-        port = Integer.parseInt(args[1]);
-      }
+    int port = DEFAULT_PORT;
+    final String documentRoot = args[0];
+    if (args.length > 1) {
+      port = Integer.parseInt(args[1]);
     }
+
     new WebStartServer(documentRoot, port).serve();
   }
 }

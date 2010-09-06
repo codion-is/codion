@@ -2126,3 +2126,6 @@
   EntityImpl.read/writeObject optimized a bit more
   CriteriaSet.read/WriteObject optimized
   LoadTestServer refactored and improved
+  EntityPanelProvider.tableSearchPanelVisible field added
+  DefaultEntityModel.refresh() calls editModel.refreshComboBoxModels() instead of .refresh() which automatically triggered a refresh in the table model, which isn't always the right thing to do
+  java.rmi.server.randomIDs=true and java.rmi.server.useCodebaseOnly=true added to server config files

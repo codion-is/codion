@@ -855,7 +855,6 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
         }
 
         initializeToolbar();
-        setSearchPanelVisible(Configuration.getBooleanValue(Configuration.DEFAULT_SEARCH_PANEL_STATE));
         bindEvents();
         updateStatusMessage();
       }

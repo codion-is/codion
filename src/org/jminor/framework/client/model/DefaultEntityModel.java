@@ -36,7 +36,7 @@ import java.util.Set;
 
 /**
  * A default EntityModel implementation.
- * 
+ *
  * <pre>
  * String entityID = "some.entity";
  * String clientTypeID = "JavadocDemo";
@@ -345,7 +345,7 @@ public class DefaultEntityModel implements EntityModel {
       LOG.debug(this + " refreshing");
       isRefreshing = true;
       evtRefreshStarted.fire();
-      editModel.refresh();
+      editModel.refreshComboBoxModels();
       if (isCascadeRefresh()) {
         refreshDetailModels();
       }

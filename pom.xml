@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <!--Incomplete and unusable as a Maven script, used exclusively for Sonar analysis (http://www.sonarsource.org/)-->
+  <!--Incomplete and unusable as a Maven build script, used exclusively for Sonar analysis (http://www.sonarsource.org/)-->
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.jminor</groupId>
   <artifactId>jminor</artifactId>
