@@ -588,10 +588,8 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   /** {@inheritDoc} */
   @Override
-  protected final String getSearchValueAt(final int rowIndex, final int columnIndex) {
-    final Property property = (Property) getColumnModel().getColumn(convertColumnIndexToView(columnIndex)).getIdentifier();
-
-    return getItemAt(rowIndex).getValueAsString(property);
+  protected final String getSearchValueAt(final int rowIndex, final Property columnIdentifier) {
+    return getItemAt(rowIndex).getValueAsString(columnIdentifier);
   }
 
   /**

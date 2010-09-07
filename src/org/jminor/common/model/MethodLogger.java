@@ -184,8 +184,8 @@ public class MethodLogger {
   }
 
   /**
-   * @param argument the arguemtn
-   * @return a String representation of the given arguement
+   * @param argument the argument
+   * @return a String representation of the given argument
    */
   protected String getMethodArgumentAsString(final Object argument) {
     return String.valueOf(argument);

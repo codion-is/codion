@@ -580,10 +580,13 @@ public abstract class LoadTestModel<T> implements LoadTest {
         if (loadTestModel.getLoginDelayFactor() > 0) {
           delayLogin();
         }
-        final T application = loadTestModel.initializeApplication();
-        LOG.debug("LoadTestModel initialized application: " + application);
+        T application = null;
         while (!stopped) {
           try {
+            if (application == null) {
+              application = loadTestModel.initializeApplication();
+              LOG.debug("LoadTestModel initialized application: " + application);
+            }
             think();
             if (!loadTestModel.isPaused()) {
               final long currentTime = System.currentTimeMillis();
@@ -609,10 +612,14 @@ public abstract class LoadTestModel<T> implements LoadTest {
             }
           }
           catch (Exception e) {
-            LOG.debug("Exception during during LoadTestModel.run() with application: " + application, e);
+            final String message = "Exception during " + (application == null ? "application initialization" : ("run " + application));
+            LOG.debug(message, e);
           }
         }
-        loadTestModel.disconnectApplication(application);
+        if (application != null) {
+          loadTestModel.disconnectApplication(application);
+          LOG.debug("LoadTestModel disconnected application: " + application);
+        }
       }
       catch (Exception e) {
         LOG.error("Exception while initializing application", e);

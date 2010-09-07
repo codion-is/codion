@@ -734,7 +734,7 @@ public class DbConnectionImpl implements DbConnection {
   }
 
   /**
- * A default DatabaseStatistics implementation.
+   * A default DatabaseStatistics implementation.
    */
   private static final class DbStatistics implements DatabaseStatistics, Serializable {
 
@@ -756,7 +756,7 @@ public class DbConnectionImpl implements DbConnection {
      * @param updatesPerSecond the number of update queries being run per second
      */
     private DbStatistics(final int queriesPerSecond, final int selectsPerSecond, final int insertsPerSecond,
-                        final int deletesPerSecond, final int updatesPerSecond) {
+                         final int deletesPerSecond, final int updatesPerSecond) {
       this.queriesPerSecond = queriesPerSecond;
       this.selectsPerSecond = selectsPerSecond;
       this.insertsPerSecond = insertsPerSecond;

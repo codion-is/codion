@@ -78,7 +78,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
   /**
    * Contains columns that have been hidden
    */
-  private final List<TableColumn> hiddenColumns = new ArrayList<TableColumn>();
+  private final Map<C, TableColumn> hiddenColumns = new HashMap<C, TableColumn>();
 
   /**
    * The selection model
@@ -175,7 +175,9 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
 
   /** {@inheritDoc} */
   public final int getColumnCount() {
-    return columnModel.getColumnCount();
+    synchronized (columnModel) {
+      return columnModel.getColumnCount();
+    }
   }
 
   /** {@inheritDoc} */
@@ -209,22 +211,31 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
   }
 
   /** {@inheritDoc} */
+  @SuppressWarnings({"unchecked"})
   public final Point findNextItemCoordinate(final int fromIndex, final boolean forward, final FilterCriteria<Object> criteria) {
     if (forward) {
       for (int row = fromIndex >= getRowCount() ? 0 : fromIndex; row < getRowCount(); row++) {
-        for (int column = 0; column < getColumnCount(); column++) {
-          if (criteria.include(getSearchValueAt(row, column))) {
-            return new Point(column, row);
+        final Enumeration<TableColumn> visibleColumns = getColumnModel().getColumns();
+        int index = 0;
+        while (visibleColumns.hasMoreElements()) {
+          final TableColumn column = visibleColumns.nextElement();
+          if (criteria.include(getSearchValueAt(row, (C) column.getIdentifier()))) {
+            return new Point(index, row);//todo getModelIndex() what does that return, really?
           }
+          index ++;
         }
       }
     }
     else {
       for (int row = fromIndex < 0 ? getRowCount() - 1 : fromIndex; row >= 0; row--) {
-        for (int column = 0; column < getColumnCount(); column++) {
-          if (criteria.include(getSearchValueAt(row, column))) {
-            return new Point(column, row);
+        final Enumeration<TableColumn> visibleColumns = getColumnModel().getColumns();
+        int index = 0;
+        while (visibleColumns.hasMoreElements()) {
+          final TableColumn column = visibleColumns.nextElement();
+          if (criteria.include(getSearchValueAt(row, (C) column.getIdentifier()))) {
+            return new Point(index, row);
           }
+          index++;
         }
       }
     }
@@ -295,9 +306,11 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
   /** {@inheritDoc} */
   @SuppressWarnings({"unchecked"})
   public final void clearSortingState() {
-    final Enumeration<TableColumn> columns = columnModel.getColumns();
-    while (columns.hasMoreElements()) {
-      sortingStates.put((C) columns.nextElement().getIdentifier(), EMPTY_SORTING_STATE);
+    synchronized (columnModel) {
+      final Enumeration<TableColumn> columns = columnModel.getColumns();
+      while (columns.hasMoreElements()) {
+        sortingStates.put((C) columns.nextElement().getIdentifier(), EMPTY_SORTING_STATE);
+      }
     }
     evtSortingDone.fire();
   }
@@ -532,58 +545,49 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
 
   /** {@inheritDoc} */
   public final TableColumn getTableColumn(final C identifier) {
-    return columnModel.getColumn(columnModel.getColumnIndex(identifier));
+    Util.rejectNullValue(identifier, "identifier");
+    synchronized (columnModel) {
+      final Enumeration<TableColumn> visibleColumns = getColumnModel().getColumns();
+      while (visibleColumns.hasMoreElements()) {
+        final TableColumn column = visibleColumns.nextElement();
+        if (identifier.equals(column.getIdentifier())) {
+          return column;
+        }
+      }
+
+      return null;
+    }
   }
 
   /** {@inheritDoc} */
+  @SuppressWarnings({"unchecked"})
   public final void setColumnVisible(final C columnIdentifier, final boolean visible) {
     if (visible) {
-      if (!isColumnVisible(columnIdentifier)) {
-        showColumn(columnIdentifier);
+      final TableColumn column = hiddenColumns.get(columnIdentifier);
+      if (column != null) {
+        hiddenColumns.remove(columnIdentifier);
+        columnModel.addColumn(column);
+        evtColumnShown.fire(new ActionEvent(column.getIdentifier(), 0, "setColumnVisible"));
       }
     }
     else {
-      if (isColumnVisible(columnIdentifier)) {
-        hideColumn(columnIdentifier);
+      if (!hiddenColumns.containsKey(columnIdentifier)) {
+        final TableColumn column = getTableColumn(columnIdentifier);
+        columnModel.removeColumn(column);
+        hiddenColumns.put((C) column.getIdentifier(), column);
+        evtColumnShown.fire(new ActionEvent(column.getIdentifier(), 0, "setColumnVisible"));
       }
     }
-  }
-
-  /** {@inheritDoc} */
-  public final void showColumn(final C columnIdentifier) {
-    final ListIterator<TableColumn> hiddenColumnIterator = hiddenColumns.listIterator();
-    while (hiddenColumnIterator.hasNext()) {
-      final TableColumn hiddenColumn = hiddenColumnIterator.next();
-      if (hiddenColumn.getIdentifier().equals(columnIdentifier)) {
-        hiddenColumnIterator.remove();
-        columnModel.addColumn(hiddenColumn);
-        evtColumnShown.fire(new ActionEvent(hiddenColumn.getIdentifier(), 0, "showColumn"));
-      }
-    }
-  }
-
-  /** {@inheritDoc} */
-  public final void hideColumn(final C columnIdentifier) {
-    final TableColumn column = getTableColumn(columnIdentifier);
-    columnModel.removeColumn(column);
-    hiddenColumns.add(column);
-    evtColumnHidden.fire(new ActionEvent(columnIdentifier, 0, "hideColumn"));
   }
 
   /** {@inheritDoc} */
   public final boolean isColumnVisible(final C columnIdentifier) {
-    for (final TableColumn column : hiddenColumns) {
-      if (column.getIdentifier().equals(columnIdentifier)) {
-        return false;
-      }
-    }
-
-    return true;
+    return !hiddenColumns.containsKey(columnIdentifier);
   }
 
   /** {@inheritDoc} */
   public final List<TableColumn> getHiddenColumns() {
-    return Collections.unmodifiableList(hiddenColumns);
+    return new ArrayList<TableColumn>(hiddenColumns.values());
   }
 
   /** {@inheritDoc} */
@@ -755,11 +759,11 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
   /**
    * Returns the value to use when searching through the table.
    * @param rowIndex the row index
-   * @param columnIndex the column index
+   * @param columnIdentifier the column identifier
    * @return the search value
    */
-  protected String getSearchValueAt(final int rowIndex, final int columnIndex) {
-    final Object value = getValueAt(rowIndex, columnIndex);
+  protected String getSearchValueAt(final int rowIndex, final C columnIdentifier) {
+    final Object value = getValueAt(rowIndex, getTableColumn(columnIdentifier).getModelIndex());
 
     return value == null ? "" : value.toString();
   }
@@ -836,7 +840,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     });
     for (final ColumnSearchModel searchModel : columnFilterModels.values()) {
       searchModel.addSearchStateListener(new ActionListener() {
-      /** {@inheritDoc} */
+        /** {@inheritDoc} */
         public void actionPerformed(final ActionEvent e) {
           filterContents();
         }

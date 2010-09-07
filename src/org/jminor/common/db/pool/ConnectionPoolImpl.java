@@ -62,7 +62,6 @@ public final class ConnectionPoolImpl implements ConnectionPool {
   private final List<ConnectionPoolStateImpl> connectionPoolStatistics = new ArrayList<ConnectionPoolStateImpl>(1000);
   private int currentPoolStatisticsIndex = 0;
   private boolean collectFineGrainedStatistics = System.getProperty(Database.DATABASE_POOL_STATISTICS, "false").equalsIgnoreCase("true");
-  private boolean nanoStatistics = false;
 
   /**
    * Instantiates a new ConnectionPoolImpl.
@@ -87,7 +86,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
 
     final long startTime = System.currentTimeMillis();
     if (collectFineGrainedStatistics) {
-      addPoolStatistics(nanoStatistics ? System.nanoTime() : startTime);
+      addPoolStatistics(startTime);
     }
 
     PoolableConnection connection = fetchFromPool();
@@ -300,14 +299,6 @@ public final class ConnectionPoolImpl implements ConnectionPool {
       throw new IllegalArgumentException("Wait time before new connection must be larger than zero and smaller than maximumCheckOutTime");
     }
     this.newConnectionThreshold = value;
-  }
-
-  public boolean isNanoStatistics() {
-    return nanoStatistics;
-  }
-
-  public void setNanoStatistics(final boolean nanoStatistics) {
-    this.nanoStatistics = nanoStatistics;
   }
 
   private PoolableConnection fetchFromPool() {

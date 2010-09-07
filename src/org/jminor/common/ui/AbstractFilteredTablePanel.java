@@ -399,9 +399,9 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
 
       final JTableHeader tableHeader = (JTableHeader) e.getSource();
       final TableColumnModel columnModel = tableHeader.getColumnModel();
-      final TableColumn column = columnModel.getColumn(columnModel.getColumnIndexAtX(e.getX()));
-      if (column != null) {
-        final C columnIdentifier = (C) column.getIdentifier();
+      final int index = columnModel.getColumnIndexAtX(e.getX());
+      if (index >= 0) {
+        final C columnIdentifier = (C) columnModel.getColumn(index).getIdentifier();
         SortingDirective status = tableModel.getSortingDirective(columnIdentifier);
         if (!e.isControlDown()) {
           tableModel.clearSortingState();

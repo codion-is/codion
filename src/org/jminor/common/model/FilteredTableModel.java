@@ -153,20 +153,6 @@ public interface FilteredTableModel<T, C> extends FilteredModel<T>, TableModel, 
   Collection<TableColumn> getHiddenColumns();
 
   /**
-   * Shows the column identified by the given identifier,
-   * if the column is visible calling this method has no effect
-   * @param columnIdentifier the column identifier
-   */
-  void showColumn(final C columnIdentifier);
-
-  /**
-   * Hides the column identified by the given identifier,
-   * if the column is already hidden calling this method has no effect
-   * @param columnIdentifier the column identifier
-   */
-  void hideColumn(final C columnIdentifier);
-
-  /**
    * @param columnIdentifier the key for which to query if its column is visible
    * @return true if the column is visible, false if it is hidden
    */

@@ -451,7 +451,7 @@ public final class AbstractFilteredTableModelTest {
     tableModel.removeFilteringListener(listener);
   }
 
-  private boolean tableModelContainsAll(final String[] strings, final boolean includeFiltered,
+  private static boolean tableModelContainsAll(final String[] strings, final boolean includeFiltered,
                                         final AbstractFilteredTableModel<String, Integer> model) {
     for (final String string : strings) {
       if (!model.contains(string, includeFiltered)) {

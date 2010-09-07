@@ -70,17 +70,18 @@ public abstract class EntityLoadTestModel extends LoadTestModel<EntityApplicatio
    * @param count the number of rows to select
    */
   public static void selectRandomRows(final EntityTableModel tableModel, final int count) {
-    if (tableModel.getRowCount() == 0) {
-      return;
+    if (tableModel.getRowCount() < count) {
+      tableModel.selectAll();
     }
+    else {
+      final int startIdx = RANDOM.nextInt(tableModel.getRowCount() - count);
+      final List<Integer> indexes = new ArrayList<Integer>();
+      for (int i = startIdx; i < count + startIdx; i++) {
+        indexes.add(i);
+      }
 
-    final int startIdx = RANDOM.nextInt(tableModel.getRowCount() - count);
-    final List<Integer> indexes = new ArrayList<Integer>();
-    for (int i = startIdx; i < count + startIdx; i++) {
-      indexes.add(i);
+      tableModel.setSelectedItemIndexes(indexes);
     }
-
-    tableModel.setSelectedItemIndexes(indexes);
   }
 
   /**
