@@ -51,7 +51,7 @@ import java.util.Map;
  * EntityDbProvider dbProvider = EntityDbProviderFactory.createEntityDbProvider(user, clientTypeID);
  *
  * EntityEditModel editModel = new DefaultEntityEditModel(entityID, dbProvider);
- * 
+ *
  * EntityEditPanel panel = new EntityEditPanel(editModel);
  * </pre>
  */
@@ -145,7 +145,10 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
   /** {@inheritDoc} */
   public FilteredComboBoxModel createPropertyComboBoxModel(final Property.ColumnProperty property, final EventObserver refreshEvent,
                                                            final String nullValueString) {
-    return new DefaultPropertyComboBoxModel(entityID, dbProvider, property, nullValueString, refreshEvent);
+    final FilteredComboBoxModel model = new DefaultPropertyComboBoxModel(entityID, dbProvider, property, nullValueString, refreshEvent);
+    model.refresh();
+
+    return model;
   }
 
   /** {@inheritDoc} */
@@ -154,6 +157,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
     final EntityComboBoxModel model = new DefaultEntityComboBoxModel(foreignKeyProperty.getReferencedEntityID(), dbProvider);
     model.setNullValueString(getValidator().isNullable(getEntity(), foreignKeyProperty.getPropertyID()) ?
             (String) Configuration.getValue(Configuration.DEFAULT_COMBO_BOX_NULL_VALUE_ITEM) : null);
+    model.refresh();
 
     return model;
   }

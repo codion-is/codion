@@ -345,7 +345,9 @@ public class DefaultEntityModel implements EntityModel {
       LOG.debug(this + " refreshing");
       isRefreshing = true;
       evtRefreshStarted.fire();
-      editModel.refreshComboBoxModels();
+      if (containsTableModel()) {
+        tableModel.refresh();
+      }
       if (isCascadeRefresh()) {
         refreshDetailModels();
       }

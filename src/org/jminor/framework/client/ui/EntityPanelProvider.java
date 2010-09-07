@@ -16,6 +16,7 @@ import org.jminor.framework.client.model.EntityValidator;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entities;
 
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -27,6 +28,8 @@ import java.util.Map;
  * Note: this class has a natural ordering based on the caption which is inconsistent with equals.
  */
 public class EntityPanelProvider implements Comparable {
+
+  private final Collator collator = Collator.getInstance();
 
   private final String entityID;
   private String caption;
@@ -241,7 +244,7 @@ public class EntityPanelProvider implements Comparable {
     final String thatCompare = ((EntityPanelProvider) o).caption == null
             ? ((EntityPanelProvider) o).panelClass.getSimpleName() : ((EntityPanelProvider) o).caption;
 
-    return thisCompare.compareTo(thatCompare);
+    return collator.compare(thisCompare, thatCompare);
   }
 
   /** {@inheritDoc} */
@@ -321,14 +324,7 @@ public class EntityPanelProvider implements Comparable {
         }
       }
       if (!isDetailPanel && refreshOnInit) {
-        final boolean cascadeRefresh = model.isCascadeRefresh();
-        try {
-          model.setCascadeRefresh(true);
-          model.refresh();
-        }
-        finally {
-          model.setCascadeRefresh(cascadeRefresh);
-        }
+        model.refresh();
       }
 
       return entityPanel;
