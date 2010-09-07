@@ -380,5 +380,4 @@ public class Chinook {
             .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_INVOICELINE)
             .setCaption("Invoice lines");
   }
-
 }

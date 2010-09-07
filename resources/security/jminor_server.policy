@@ -7,7 +7,7 @@ grant {
   //permission java.io.FilePermission "/home/webstart/-", "read";
 
   //Web Start server port
-  permission java.net.SocketPermission "*:80", "listen,resolve";
+  permission java.net.SocketPermission "*:80", "listen";
   //Database port
   permission java.net.SocketPermission "*:3306", "connect";
   //Client service port
@@ -21,7 +21,6 @@ grant {
   permission java.util.PropertyPermission "*", "read, write";
 
   permission java.lang.RuntimePermission "shutdownHooks";
-  //for an embedded database residing in the server working directory
   //for JasperReports report generation and domain class loading
   permission java.lang.RuntimePermission "createClassLoader";
   permission java.lang.RuntimePermission "getProtectionDomain";
