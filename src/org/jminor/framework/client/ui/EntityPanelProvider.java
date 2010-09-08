@@ -327,7 +327,7 @@ public class EntityPanelProvider implements Comparable {
           entityPanel.addDetailPanel(detailPanel);
         }
       }
-      if (!isDetailPanel && refreshOnInit) {
+      if (refreshOnInit) {
         model.refresh();
       }
 

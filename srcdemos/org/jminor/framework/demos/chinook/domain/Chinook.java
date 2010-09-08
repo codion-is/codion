@@ -312,7 +312,8 @@ public class Chinook {
 
     Entities.define(T_PLAYLISTTRACK,
             Properties.foreignKeyProperty(PLAYLISTTRACK_PLAYLISTID_FK, "Playlist", T_PLAYLIST,
-                    Properties.primaryKeyProperty(PLAYLISTTRACK_PLAYLISTID))
+                    Properties.primaryKeyProperty(PLAYLISTTRACK_PLAYLISTID)
+                            .setUpdatable(true))
                     .setNullable(false)
                     .setPreferredColumnWidth(120),
             Properties.denormalizedViewProperty(PLAYLISTTRACK_ARTIST_DENORM, PLAYLISTTRACK_ALBUM_DENORM,
@@ -320,7 +321,8 @@ public class Chinook {
                     .setPreferredColumnWidth(160),
             Properties.foreignKeyProperty(PLAYLISTTRACK_TRACKID_FK, "Track", T_TRACK,
                     Properties.primaryKeyProperty(PLAYLISTTRACK_TRACKID, Types.INTEGER)
-                            .setIndex(1))
+                            .setIndex(1)
+                            .setUpdatable(true))
                     .setFetchDepth(3)
                     .setNullable(false)
                     .setPreferredColumnWidth(160),

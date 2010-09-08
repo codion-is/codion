@@ -16,6 +16,7 @@ import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.plugins.jasperreports.model.JasperReportsWrapper;
 import org.jminor.framework.plugins.jasperreports.ui.JasperReportsUIWrapper;
 
+import javax.swing.SwingWorker;
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -35,8 +36,14 @@ public class DepartmentTablePanel extends EntityTablePanel {
             EntityUtil.getDistinctPropertyValues(DEPARTMENT_ID, getEntityTableModel().getSelectedItems());
     final HashMap<String, Object> reportParameters = new HashMap<String, Object>();
     reportParameters.put("DEPTNO", departmentNumbers);
-    EntityReportUiUtil.viewJdbcReport(this, new JasperReportsWrapper(reportPath, reportParameters),
-            new JasperReportsUIWrapper(), null, getEntityTableModel().getDbProvider());
+    new SwingWorker() {
+      @Override
+      protected Object doInBackground() throws Exception {
+        EntityReportUiUtil.viewJdbcReport(DepartmentTablePanel.this, new JasperReportsWrapper(reportPath, reportParameters),
+                new JasperReportsUIWrapper(), null, getEntityTableModel().getDbProvider());
+        return null;
+      }
+    }.execute();
   }
 
   @Override

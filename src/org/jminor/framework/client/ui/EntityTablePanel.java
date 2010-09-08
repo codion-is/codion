@@ -130,11 +130,6 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
   private final Map<String, Control> controlMap = new HashMap<String, Control>();
 
   /**
-   * the horizontal table scroll bar
-   */
-  private JScrollBar horizontalTableScrollBar;
-
-  /**
    * the search panel
    */
   private final EntityTableSearchPanel searchPanel;
@@ -142,12 +137,17 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
   /**
    * the scroll pane used for the search panel
    */
-  private JScrollPane searchScrollPane;
+  private final JScrollPane searchScrollPane;
+
+  /**
+   * the horizontal table scroll bar
+   */
+  private final JScrollBar horizontalTableScrollBar;
 
   /**
    * the south panel
    */
-  private JPanel southPanel;
+  private final JPanel southPanel;
 
   /**
    * the summary panel
@@ -157,22 +157,22 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
   /**
    * the panel used as a base panel for the summary panels, used for showing/hiding the summary panels
    */
-  private JPanel summaryBasePanel;
+  private final JPanel summaryBasePanel;
 
   /**
    * the scroll pane used for the summary panel
    */
-  private JScrollPane summaryScrollPane;
+  private final JScrollPane summaryScrollPane;
 
   /**
    * the toolbar containing the refresh button
    */
-  private JToolBar refreshToolBar;
+  private final JToolBar refreshToolBar;
 
   /**
    * the label for showing the status of the table, that is, the number of rows, number of selected rows etc.
    */
-  private JLabel statusMessageLabel;
+  private final JLabel statusMessageLabel;
 
   /**
    * the action performed when the table is double clicked
@@ -268,7 +268,25 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
                           final EntityTableSummaryPanel summaryPanel) {
     super(tableModel);
     this.searchPanel = searchPanel;
+    if (searchPanel != null) {
+      this.searchScrollPane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    }
+    else {
+      this.searchScrollPane = null;
+    }
     this.summaryPanel = summaryPanel;
+    if (summaryPanel != null) {
+      summaryBasePanel = new JPanel(new BorderLayout());
+      summaryScrollPane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    }
+    else {
+      summaryBasePanel = null;
+      summaryScrollPane = null;
+    }
+    this.southPanel = new JPanel(new BorderLayout());
+    this.statusMessageLabel = initializeStatusMessageLabel();
+    this.refreshToolBar = initializeRefreshToolbar();
+    this.horizontalTableScrollBar = getTableScrollPane().getHorizontalScrollBar();
     this.additionalPopupControls = additionalPopupControls;
     this.additionalToolbarControls = additionalToolbarControls;
   }
@@ -354,7 +372,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     }
 
     if (summaryScrollPane != null) {
-      summaryScrollPane.setVisible(visible);
+      summaryScrollPane.getViewport().setView(visible ? summaryPanel : null);
       if (visible) {
         summaryBasePanel.add(summaryScrollPane, BorderLayout.NORTH);
         summaryBasePanel.add(horizontalTableScrollBar, BorderLayout.SOUTH);
@@ -363,7 +381,6 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
         summaryBasePanel.remove(horizontalTableScrollBar);
         getTableScrollPane().setHorizontalScrollBar(horizontalTableScrollBar);
       }
-
       revalidate();
       evtSummaryPanelVisibilityChanged.fire();
     }
@@ -373,7 +390,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
    * @return true if the column summary panel is visible, false if it is hidden
    */
   public final boolean isSummaryPanelVisible() {
-    return summaryScrollPane != null && summaryScrollPane.isVisible();
+    return summaryScrollPane != null && summaryScrollPane.getViewport().getView() == summaryPanel;
   }
 
   /**
@@ -390,6 +407,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
       if (refreshToolBar != null) {
         refreshToolBar.setVisible(visible);
       }
+      revalidate();
       evtSearchPanelVisibilityChanged.fire();
     }
   }
@@ -809,33 +827,27 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
         setupControls();
         final JPanel tableSearchAndSummaryPanel = new JPanel(new BorderLayout());
         setLayout(new BorderLayout());
-        if (searchPanel != null) {
-          searchScrollPane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_NEVER,
-                  JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        if (searchScrollPane != null) {
+          tableSearchAndSummaryPanel.add(searchScrollPane, BorderLayout.NORTH);
           if (searchPanel instanceof EntityTableSearchAdvancedPanel) {
             searchScrollPane.getHorizontalScrollBar().setModel(getTableScrollPane().getHorizontalScrollBar().getModel());
           }
-          tableSearchAndSummaryPanel.add(searchScrollPane, BorderLayout.NORTH);
-        }
-
-        if (searchPanel instanceof EntityTableSearchAdvancedPanel) {
-          ((EntityTableSearchAdvancedPanel) searchPanel).addAdvancedListener(new ActionListener() {
-            /** {@inheritDoc} */
-            public void actionPerformed(final ActionEvent e) {
-              if (isSearchPanelVisible()) {
-                revalidateAndShowSearchPanel();
+          if (searchPanel instanceof EntityTableSearchAdvancedPanel) {
+            ((EntityTableSearchAdvancedPanel) searchPanel).addAdvancedListener(new ActionListener() {
+              /** {@inheritDoc} */
+              public void actionPerformed(final ActionEvent e) {
+                if (isSearchPanelVisible()) {
+                  revalidate();
+                }
               }
-            }
-          });
+            });
+          }
         }
         initializeTable();
         final JScrollPane tableScrollPane = getTableScrollPane();
         tableSearchAndSummaryPanel.add(tableScrollPane, BorderLayout.CENTER);
         add(tableSearchAndSummaryPanel, BorderLayout.CENTER);
-        if (summaryPanel != null) {
-          summaryScrollPane = new JScrollPane(summaryPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER,
-                  JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-          horizontalTableScrollBar = tableScrollPane.getHorizontalScrollBar();
+        if (summaryScrollPane != null) {
           tableScrollPane.getViewport().addChangeListener(new ChangeListener() {
             /** {@inheritDoc} */
             public void stateChanged(final ChangeEvent e) {
@@ -844,17 +856,18 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
             }
           });
           summaryScrollPane.getHorizontalScrollBar().setModel(horizontalTableScrollBar.getModel());
-          summaryScrollPane.setVisible(false);
-          summaryBasePanel = new JPanel(new BorderLayout());
           tableSearchAndSummaryPanel.add(summaryBasePanel, BorderLayout.SOUTH);
         }
 
-        southPanel = initializeSouthPanel();
-        if (southPanel != null) {
+        final JPanel southPanelCenter = initializeSouthPanel();
+        if (southPanelCenter != null) {
+          final JToolBar southToolBar = initializeToolbar();
+          if (southToolBar != null) {
+            southPanelCenter.add(southToolBar, BorderLayout.EAST);
+          }
+          southPanel.add(southPanelCenter, BorderLayout.SOUTH);
           add(southPanel, BorderLayout.SOUTH);
         }
-
-        initializeToolbar();
         bindEvents();
         updateStatusMessage();
       }
@@ -872,8 +885,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
    * @return the south panel, or null if no south panel should be used
    */
   protected JPanel initializeSouthPanel() {
-    statusMessageLabel = new JLabel("", JLabel.CENTER);
-    statusMessageLabel.setFont(new Font(statusMessageLabel.getFont().getName(), Font.PLAIN, STATUS_MESSAGE_FONT_SIZE));
+    initializeStatusMessageLabel();
     final JPanel centerPanel = new JPanel(new BorderLayout(5, 5));
     final JTextField searchField = getSearchField();
     final JPanel searchFieldPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -883,7 +895,6 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     final JPanel panel = new JPanel(new BorderLayout());
     panel.add(centerPanel, BorderLayout.CENTER);
     panel.setBorder(BorderFactory.createEtchedBorder());
-    refreshToolBar = initializeRefreshToolbar();
     if (refreshToolBar != null) {
       panel.add(refreshToolBar, BorderLayout.WEST);
     }
@@ -1112,36 +1123,6 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
   }
 
   /**
-   * @return the refresh toolbar
-   */
-  protected final JToolBar initializeRefreshToolbar() {
-    final KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0);
-    final String keyName = stroke.toString().replace("pressed ", "");
-    final Control refresh = Controls.methodControl(getEntityTableModel(), "refresh", null,
-            getEntityTableModel().getSearchModel().getSearchStateChangedState(), FrameworkMessages.get(FrameworkMessages.REFRESH_TIP)
-                    + " (" + keyName + ")", 0, null, Images.loadImage(Images.IMG_STOP_16));
-
-    final InputMap inputMap = getInputMap(WHEN_IN_FOCUSED_WINDOW);
-    final ActionMap actionMap = getActionMap();
-
-    inputMap.put(stroke, "refreshControl");
-    actionMap.put("refreshControl", refresh);
-
-    final AbstractButton button = ControlProvider.createButton(refresh);
-    button.setPreferredSize(new Dimension(TOOLBAR_BUTTON_SIZE, TOOLBAR_BUTTON_SIZE));
-    button.setFocusable(false);
-
-    final JToolBar toolBar = new JToolBar(JToolBar.HORIZONTAL);
-    toolBar.setFocusable(false);
-    toolBar.setFloatable(false);
-    toolBar.setRollover(true);
-
-    toolBar.add(button);
-
-    return toolBar;
-  }
-
-  /**
    * Provides value input components for multiple entity update, override to supply
    * specific InputValueProvider implementations for properties.
    * Remember to return with a call to super.getInputProviderInputProvider().
@@ -1265,11 +1246,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     return Configuration.getBooleanValue(Configuration.ALLOW_COLUMN_REORDERING);
   }
 
-  private void initializePopupMenu() {
-    setTablePopupMenu(getJTable(), getPopupControls(additionalPopupControls));
-  }
-
-  private void initializeToolbar() {
+  private JToolBar initializeToolbar() {
     final ControlSet toolbarControlSet = getToolbarControls(additionalToolbarControls);
     if (toolbarControlSet != null) {
       final JToolBar southToolBar = ControlProvider.createToolbar(toolbarControlSet, JToolBar.HORIZONTAL);
@@ -1279,8 +1256,11 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
       southToolBar.setFocusable(false);
       southToolBar.setFloatable(false);
       southToolBar.setRollover(true);
-      southPanel.add(southToolBar, BorderLayout.EAST);
+
+      return southToolBar;
     }
+
+    return null;
   }
 
   /**
@@ -1377,6 +1357,43 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
       data[i] = line.toArray(new String[line.size()]);
     }
     Util.setClipboard(Util.getDelimitedString(header, data, "\t"));
+  }
+
+  private JLabel initializeStatusMessageLabel() {
+    final JLabel label  = new JLabel("", JLabel.CENTER);
+    label.setFont(new Font(label.getFont().getName(), Font.PLAIN, STATUS_MESSAGE_FONT_SIZE));
+
+    return label;
+  }
+
+  /**
+   * @return the refresh toolbar
+   */
+  private JToolBar initializeRefreshToolbar() {
+    final KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0);
+    final String keyName = stroke.toString().replace("pressed ", "");
+    final Control refresh = Controls.methodControl(getEntityTableModel(), "refresh", null,
+            getEntityTableModel().getSearchModel().getSearchStateChangedState(), FrameworkMessages.get(FrameworkMessages.REFRESH_TIP)
+                    + " (" + keyName + ")", 0, null, Images.loadImage(Images.IMG_STOP_16));
+
+    final InputMap inputMap = getInputMap(WHEN_IN_FOCUSED_WINDOW);
+    final ActionMap actionMap = getActionMap();
+
+    inputMap.put(stroke, "refreshControl");
+    actionMap.put("refreshControl", refresh);
+
+    final AbstractButton button = ControlProvider.createButton(refresh);
+    button.setPreferredSize(new Dimension(TOOLBAR_BUTTON_SIZE, TOOLBAR_BUTTON_SIZE));
+    button.setFocusable(false);
+
+    final JToolBar toolBar = new JToolBar(JToolBar.HORIZONTAL);
+    toolBar.setFocusable(false);
+    toolBar.setFloatable(false);
+    toolBar.setRollover(true);
+
+    toolBar.add(button);
+
+    return toolBar;
   }
 
   private void showEntityMenu(final Point location) {
@@ -1490,7 +1507,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     }
 
     getJTable().addMouseListener(initializeTableMouseListener());
-    initializePopupMenu();
+    setTablePopupMenu(getJTable(), getPopupControls(additionalPopupControls));
 
     final JTableHeader header = getJTable().getTableHeader();
     final TableCellRenderer defaultHeaderRenderer = header.getDefaultRenderer();
@@ -1512,12 +1529,6 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     header.setReorderingAllowed(allowColumnReordering());
 
     getJTable().setAutoResizeMode(getAutoResizeMode());
-  }
-
-  private void revalidateAndShowSearchPanel() {
-    searchScrollPane.getViewport().setView(null);
-    searchScrollPane.getViewport().setView((JPanel) searchPanel);
-    revalidate();
   }
 
   private static void showDependenciesDialog(final Map<String, Collection<Entity>> dependencies, final EntityDbProvider dbProvider,

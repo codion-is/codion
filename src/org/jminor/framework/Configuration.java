@@ -465,13 +465,6 @@ public final class Configuration {
    */
   public static final String AUTO_CREATE_ENTITY_MODELS = "jminor.client.autoCreateEntityModels";
 
-  /**
-   * Specifies whether search panels should be visible by default in table panels.
-   * Value type: Boolean<br>
-   * Default value: false<br>
-   */
-  public static final String SEARCH_PANELS_VISIBLE = "jminor.client.searchPanelsVisible";
-
   public static final String JAVAX_NET_NET_TRUSTSTORE = "javax.net.ssl.trustStore";
   private static final Properties PROPERTIES = new Properties();
   private static final int INPUT_BUFFER_SIZE = 8192;
