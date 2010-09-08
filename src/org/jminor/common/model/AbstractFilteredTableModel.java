@@ -149,7 +149,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
       this.columnFilterModels.put(columnFilterModel.getColumnIdentifier(), columnFilterModel);
     }
     this.selectionModel = new SelectionModel(this);
-    clearSortingState();
+    resetSortingStates();
     bindEventsInternal();
   }
 
@@ -247,7 +247,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
       return;
     }
     try {
-      clearSortingState();
+      resetSortingStates();
       isRefreshing = true;
       evtRefreshStarted.fire();
       doRefresh();
@@ -302,18 +302,9 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
   }
 
   /** {@inheritDoc} */
-  @SuppressWarnings({"unchecked"})
   public final void clearSortingState() {
-    try {
-      evtSortingStarted.fire();
-      final Enumeration<TableColumn> columns = columnModel.getColumns();
-      while (columns.hasMoreElements()) {
-        sortingStates.put((C) columns.nextElement().getIdentifier(), emptySortingState);
-      }
-    }
-    finally {
-      evtSortingDone.fire();
-    }
+    resetSortingStates();
+    sortingStatusChanged();
   }
 
   /** {@inheritDoc} */
@@ -537,15 +528,15 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
   /** {@inheritDoc} */
   public final TableColumn getTableColumn(final C identifier) {
     Util.rejectNullValue(identifier, "identifier");
-      final Enumeration<TableColumn> visibleColumns = columnModel.getColumns();
-      while (visibleColumns.hasMoreElements()) {
-        final TableColumn column = visibleColumns.nextElement();
-        if (identifier.equals(column.getIdentifier())) {
-          return column;
-        }
+    final Enumeration<TableColumn> visibleColumns = columnModel.getColumns();
+    while (visibleColumns.hasMoreElements()) {
+      final TableColumn column = visibleColumns.nextElement();
+      if (identifier.equals(column.getIdentifier())) {
+        return column;
       }
+    }
 
-      return null;
+    return null;
   }
 
   /** {@inheritDoc} */
@@ -804,27 +795,10 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
   }
 
   private void bindEventsInternal() {
-    final List<T> selectedItems = new ArrayList<T>();
     addTableModelListener(new TableModelListener() {
       /** {@inheritDoc} */
       public void tableChanged(final TableModelEvent e) {
         evtTableDataChanged.fire();
-      }
-    });
-    evtSortingStarted.addListener(new ActionListener() {
-      /** {@inheritDoc} */
-      public void actionPerformed(final ActionEvent e) {
-        isSorting = true;
-        selectedItems.clear();
-        selectedItems.addAll(getSelectedItems());
-      }
-    });
-    evtSortingDone.addListener(new ActionListener() {
-      /** {@inheritDoc} */
-      public void actionPerformed(final ActionEvent e) {
-        isSorting = false;
-        setSelectedItems(selectedItems);
-        selectedItems.clear();
       }
     });
     for (final ColumnSearchModel searchModel : columnFilterModels.values()) {
@@ -887,22 +861,30 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
   }
 
   private void sortingStatusChanged() {
-    evtSortingStarted.fire();
-    Collections.sort(visibleItems, new Comparator<T>() {
-      /** {@inheritDoc} */
-      public int compare(final T o1, final T o2) {
-        for (final Map.Entry<C, SortingState> state : getOrderedSortingStates()) {
-          final int comparison = compareRows(o1, o2, state.getKey(), state.getValue().getDirective());
-          if (comparison != 0) {
-            return comparison;
+    try {
+      isSorting = true;
+      evtSortingStarted.fire();
+      final List<T> selectedItems = new ArrayList<T>(getSelectedItems());
+      Collections.sort(visibleItems, new Comparator<T>() {
+        /** {@inheritDoc} */
+        public int compare(final T o1, final T o2) {
+          for (final Map.Entry<C, SortingState> state : getOrderedSortingStates()) {
+            final int comparison = compareRows(o1, o2, state.getKey(), state.getValue().getDirective());
+            if (comparison != 0) {
+              return comparison;
+            }
           }
-        }
 
-        return 0;
-      }
-    });
-    fireTableDataChanged();
-    evtSortingDone.fire();
+          return 0;
+        }
+      });
+      fireTableDataChanged();
+      setSelectedItems(selectedItems);
+    }
+    finally {
+      isSorting = false;
+      evtSortingDone.fire();
+    }
   }
 
   private int compareRows(final T objectOne, final T objectTwo, final C columnIdentifier, final SortingDirective directive) {
@@ -928,6 +910,14 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     }
 
     return 0;
+  }
+
+  @SuppressWarnings({"unchecked"})
+  private void resetSortingStates() {
+    final Enumeration<TableColumn> columns = columnModel.getColumns();
+    while (columns.hasMoreElements()) {
+      sortingStates.put((C) columns.nextElement().getIdentifier(), emptySortingState);
+    }
   }
 
   private List<Map.Entry<C, SortingState>> getOrderedSortingStates() {

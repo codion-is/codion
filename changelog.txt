@@ -2136,3 +2136,4 @@
   AbstractFilteredTablePanel, fixed bug causing selection to be cleared during refresh, evtSortingDone was being fired without a previous evtSortingStarted firing
   Cascade refresh functionality removed
   Removed unused images
+  Refactored event bindings between DefaultEntityModel, DefaultEntityEditModel and DefaultEntityTableModel with relation to sorting and repeated detail model refreshing

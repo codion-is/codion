@@ -576,7 +576,7 @@ public class DefaultEntityModel implements EntityModel {
     evtLinkedDetailModelsChanged.addListener(new ActionListener() {
       /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
-        if (!getEditModel().isEntityNew()) {
+        if (!editModel.isEntityNew()) {
           initializeDetailModels();
         }
       }

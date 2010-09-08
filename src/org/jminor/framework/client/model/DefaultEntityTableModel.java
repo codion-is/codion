@@ -58,7 +58,7 @@ import java.util.Map;
  * tableModel.setEditModel(editModel);
  *
  * EntityTablePanel panel = new EntityTablePanel(model);
- * </pre> 
+ * </pre>
  */
 public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, Property> implements EntityTableModel {
 
