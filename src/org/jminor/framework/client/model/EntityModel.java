@@ -73,16 +73,6 @@ public interface EntityModel extends Refreshable, EntityDataProvider {
   void setLinkedDetailModels(final EntityModel... detailModels);
 
   /**
-   * @param value true if a refresh in this model should trigger a refresh in its detail models
-   */
-  void setCascadeRefresh(final boolean value);
-
-  /**
-   * @return true if a refresh on this model should trigger a refresh in its detail models
-   */
-  boolean isCascadeRefresh();
-
-  /**
    * Initializes this EntityModel according to the given master entities,
    * sets the appropriate property value and filters the EntityTableModel
    * @param masterEntityID the ID of the master entity

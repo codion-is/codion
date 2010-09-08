@@ -6,8 +6,6 @@ package org.jminor.framework.client.model;
 import org.jminor.common.db.exception.DbException;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Events;
-import org.jminor.common.model.State;
-import org.jminor.common.model.States;
 import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.event.DeleteEvent;
@@ -56,7 +54,6 @@ public class DefaultEntityModel implements EntityModel {
   private final Event evtRefreshStarted = Events.event();
   private final Event evtRefreshDone = Events.event();
   private final Event evtLinkedDetailModelsChanged = Events.event();
-  private final State stCascadeRefresh = States.state();
 
   /**
    * The entity ID
@@ -190,20 +187,6 @@ public class DefaultEntityModel implements EntityModel {
   /** {@inheritDoc} */
   public final EntityDbProvider getDbProvider() {
     return dbProvider;
-  }
-
-  /** {@inheritDoc} */
-  public final boolean isCascadeRefresh() {
-    return stCascadeRefresh.isActive();
-  }
-
-  /** {@inheritDoc} */
-  public final void setCascadeRefresh(final boolean value) {
-    for (final EntityModel detailModel : detailModels) {
-      detailModel.setCascadeRefresh(value);
-    }
-
-    stCascadeRefresh.setActive(value);
   }
 
   /** {@inheritDoc} */
@@ -347,9 +330,6 @@ public class DefaultEntityModel implements EntityModel {
       evtRefreshStarted.fire();
       if (containsTableModel()) {
         tableModel.refresh();
-      }
-      if (isCascadeRefresh()) {
-        refreshDetailModels();
       }
       initializeDetailModels();
     }

@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.client.model;
 
-import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.User;
 import org.jminor.framework.db.provider.EntityDbProvider;
@@ -55,17 +54,6 @@ public interface EntityApplicationModel extends Refreshable {
   List<? extends EntityModel> getMainApplicationModels();
 
   /**
-   * @return true if cascade refresh is active
-   */
-  boolean isCascadeRefresh();
-
-  /**
-   * fires: evtCascadeRefreshChanged
-   * @param value the new value
-   */
-  void setCascadeRefresh(final boolean value);
-
-  /**
    * @param modelClass the model class
    * @return the EntityModel of the given type
    */
@@ -76,9 +64,4 @@ public interface EntityApplicationModel extends Refreshable {
    * @return the EntityModel based on the given entityID
    */
   EntityModel getMainApplicationModel(final String entityID);
-
-  /**
-   * @return an Event fired when the cascadeRefresh property has changed
-   */
-  EventObserver cascadeRefreshObserver();
 }

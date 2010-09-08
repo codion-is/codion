@@ -26,12 +26,7 @@ public final class Images {
   public static final String IMG_DOWN_16 = "Down16.gif";
   public static final String IMG_STOP_16 = "Stop16.gif";
   public static final String IMG_HISTORY_16 = "History16.gif";
-  public static final String IMG_FIND_16 = "Find16.gif";
-  public static final String ICON_SELECTION_FILTERS_DETAIL = "icon_selection_filters_detail.gif";
-  public static final String ICON_CASCADE_REFRESH = "icon_cascade_refresh.gif";
-  public static final String ICON_SMART_REFRESH = "icon_smart_refresh.gif";
-  public static final String ICON_PRINT_QUERIES = "icon_print_queries.gif";
-  public static final String ICON_CHECK_REFERENCES_ON_DELETE = "icon_check_references_on_delete.gif";
+  public static final String ICON_LOGGING = "icon_print_queries.gif";
 
   private Images() {}
 

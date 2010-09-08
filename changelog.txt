@@ -2134,3 +2134,5 @@
   Property.isReference() removed, instanceof Property.ForeignKeyProperty used instead
   EntityTablePanel does not add the search panel to the search panel scroll panel on initialization anymore
   AbstractFilteredTablePanel, fixed bug causing selection to be cleared during refresh, evtSortingDone was being fired without a previous evtSortingStarted firing
+  Cascade refresh functionality removed
+  Removed unused images

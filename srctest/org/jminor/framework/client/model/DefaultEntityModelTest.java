@@ -15,12 +15,7 @@ import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -116,8 +111,6 @@ public final class DefaultEntityModelTest {
 
   @Test
   public void test() throws Exception {
-    departmentModel.setCascadeRefresh(true);
-    assertTrue(departmentModel.isCascadeRefresh());
     assertNull(departmentModel.getMasterModel());
     assertNotNull(departmentModel.getEditModel());
     assertNotNull(departmentModel.getTableModel());
@@ -136,7 +129,6 @@ public final class DefaultEntityModelTest {
     departmentModel.addBeforeRefreshListener(listener);
     departmentModel.addAfterRefreshListener(listener);
     departmentModel.refresh();
-    assertTrue(departmentModel.getDetailModel(EmpDept.T_EMPLOYEE).getTableModel().getRowCount() > 0);
     assertEquals(2, eventCount);
 
     try {

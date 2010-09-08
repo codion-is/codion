@@ -31,7 +31,6 @@ public final class DefaultEntityApplicationModelTest {
     assertEquals(User.UNIT_TEST_USER, model.getUser());
     model.refresh();
     assertTrue(deptModel.getTableModel().getRowCount() > 0);
-    assertTrue(deptModel.getDetailModel(EmpDept.T_EMPLOYEE).getTableModel().getRowCount() > 0);
     model.logout();
     assertFalse(model.getDbProvider().isConnected());
     model.login(User.UNIT_TEST_USER);

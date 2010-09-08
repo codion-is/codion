@@ -3,9 +3,6 @@
  */
 package org.jminor.framework.client.model;
 
-import org.jminor.common.model.Event;
-import org.jminor.common.model.EventObserver;
-import org.jminor.common.model.Events;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
@@ -19,8 +16,6 @@ import java.util.List;
  * A central application model class.
  */
 public abstract class DefaultEntityApplicationModel implements EntityApplicationModel {
-
-  private final Event evtCascadeRefreshChanged = Events.event();
 
   private final EntityDbProvider dbProvider;
   private final List<EntityModel> mainApplicationModels = new ArrayList<EntityModel>();
@@ -81,32 +76,9 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
   }
 
   /** {@inheritDoc} */
-  public final boolean isCascadeRefresh() {
-    return !mainApplicationModels.isEmpty() && mainApplicationModels.iterator().next().isCascadeRefresh();
-  }
-
-  /** {@inheritDoc} */
-  public final void setCascadeRefresh(final boolean value) {
-    if (!mainApplicationModels.isEmpty() && isCascadeRefresh() != value) {
-      for (final EntityModel mainApplicationModel : mainApplicationModels) {
-        mainApplicationModel.setCascadeRefresh(value);
-      }
-
-      evtCascadeRefreshChanged.fire();
-    }
-  }
-
-  /** {@inheritDoc} */
   public final void refresh() {
-    final boolean cascade = isCascadeRefresh();
-    try {
-      setCascadeRefresh(true);
-      for (final EntityModel mainApplicationModel : mainApplicationModels) {
-        mainApplicationModel.refresh();
-      }
-    }
-    finally {
-      setCascadeRefresh(cascade);
+    for (final EntityModel mainApplicationModel : mainApplicationModels) {
+      mainApplicationModel.refresh();
     }
   }
 
@@ -147,11 +119,6 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
       }
     }
     throw new IllegalArgumentException("No detail model for type " + entityID + " found in model: " + this);
-  }
-
-  /** {@inheritDoc} */
-  public final EventObserver cascadeRefreshObserver() {
-    return evtCascadeRefreshChanged.getObserver();
   }
 
   /**

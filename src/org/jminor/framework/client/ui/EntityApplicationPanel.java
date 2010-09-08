@@ -443,13 +443,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    * @return the ControlSet specifying the items in the 'Settings' menu
    */
   protected ControlSet getSettingsControlSet() {
-    final ImageIcon cascadeRefreshIcon = Images.loadImage(Images.ICON_CASCADE_REFRESH);
-    final Control ctrCascadeRefresh = Controls.toggleControl(applicationModel, "cascadeRefresh",
-            FrameworkMessages.get(FrameworkMessages.CASCADE_REFRESH), applicationModel.cascadeRefreshObserver());
-    ctrCascadeRefresh.setDescription(FrameworkMessages.get(FrameworkMessages.CASCADE_REFRESH_DESC));
-    ctrCascadeRefresh.setIcon(cascadeRefreshIcon);
-
-    final ImageIcon setLoggingIcon = Images.loadImage(Images.ICON_PRINT_QUERIES);
+    final ImageIcon setLoggingIcon = Images.loadImage(Images.ICON_LOGGING);
     final Control ctrSetLoggingLevel = Controls.methodControl(this, "setLoggingLevel",
             FrameworkMessages.get(FrameworkMessages.SET_LOG_LEVEL));
     ctrSetLoggingLevel.setDescription(FrameworkMessages.get(FrameworkMessages.SET_LOG_LEVEL_DESC));
@@ -457,8 +451,6 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
 
     final ControlSet controlSet = new ControlSet(Messages.get(Messages.SETTINGS));
 
-    controlSet.add(ctrCascadeRefresh);
-    controlSet.addSeparator();
     controlSet.add(ctrSetLoggingLevel);
 
     return controlSet;

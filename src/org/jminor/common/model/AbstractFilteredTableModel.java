@@ -1012,7 +1012,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     /**
      * @return the number of selected rows
      */
-    public int getSelectionCount() {
+    private int getSelectionCount() {
       if (isSelectionEmpty()) {
         return 0;
       }
@@ -1035,7 +1035,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
      * Adds these indexes to the selection
      * @param indexes the indexes to add to the selection
      */
-    public void addSelectedItemIndexes(final List<Integer> indexes) {
+    private void addSelectedItemIndexes(final List<Integer> indexes) {
       try {
         isUpdatingSelection = true;
         for (int i = 0; i < indexes.size()-1; i++) {
@@ -1055,7 +1055,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     /**
      * @param indexes the indexes to select
      */
-    public final void setSelectedItemIndexes(final List<Integer> indexes) {
+    private void setSelectedItemIndexes(final List<Integer> indexes) {
       clearSelection();
       addSelectedItemIndexes(indexes);
     }
@@ -1063,7 +1063,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     /**
      * @return the selected indexes
      */
-    public Collection<Integer> getSelectedIndexes() {
+    private Collection<Integer> getSelectedIndexes() {
       final List<Integer> indexes = new ArrayList<Integer>();
       final int min = getMinSelectionIndex();
       final int max = getMaxSelectionIndex();
