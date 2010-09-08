@@ -2131,3 +2131,5 @@
   java.rmi.server.randomIDs=true and java.rmi.server.useCodebaseOnly=true added to server config files
   Tentative fixing of the column movement bug
   DefaultEntityEditModel now refreshes data bound combo box models when they are created
+  Property.isReference() removed, instanceof Property.ForeignKeyProperty used instead
+  EntityTablePanel does not add the search panel to the search panel scroll panel on initialization anymore

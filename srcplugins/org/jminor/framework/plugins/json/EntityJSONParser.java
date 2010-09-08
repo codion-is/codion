@@ -125,10 +125,7 @@ public final class EntityJSONParser implements Serializer<Entity>, Deserializer<
       return null;
     }
 
-    if (property.isReference()) {
-      return parseJSONString(propertyValues.getString(propertyID)).get(0);
-    }
-    else if (property.isString()) {
+    if (property.isString()) {
       return propertyValues.getString(propertyID);
     }
     else if (property.isBoolean()) {
@@ -145,6 +142,9 @@ public final class EntityJSONParser implements Serializer<Entity>, Deserializer<
     }
     else if (property.isInteger()) {
       return propertyValues.getInt(propertyID);
+    }
+    else if (property instanceof Property.ForeignKeyProperty) {
+      return parseJSONString(propertyValues.getString(propertyID)).get(0);
     }
 
     return propertyValues.getString(propertyID);

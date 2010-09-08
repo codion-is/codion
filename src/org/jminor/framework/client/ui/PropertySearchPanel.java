@@ -118,14 +118,6 @@ public final class PropertySearchPanel extends ColumnSearchPanel<Property.Column
       }
     }
 
-    private JComponent initValueListField(final Property.ValueListProperty property) {
-      final ItemComboBoxModel<Object> boxModel = new ItemComboBoxModel<Object>(property.getValues());
-      final SteppedComboBox box = new SteppedComboBox(boxModel);
-      MaximumMatch.enable(box);
-
-      return box;
-    }
-
     private void bindField(final JComponent field, final boolean isUpper) {
       final Property property = model.getColumnIdentifier();
       if (property instanceof Property.ValueListProperty) {
@@ -161,7 +153,7 @@ public final class PropertySearchPanel extends ColumnSearchPanel<Property.Column
                 isUpper ? PropertySearchModel.UPPER_BOUND_PROPERTY : PropertySearchModel.LOWER_BOUND_PROPERTY,
                 Object.class, isUpper ? model.getUpperBoundObserver() : model.getLowerBoundObserver());
       }
-      else if (!property.isReference()) {//entity based properties are bound in the model
+      else if (!(property instanceof Property.ForeignKeyProperty)) {//entity based properties are bound in the model
         new TextBeanValueLink((JTextField) field, model,
                 isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY, String.class,
                 isUpper ? model.getUpperBoundObserver() : model.getLowerBoundObserver());
@@ -175,6 +167,14 @@ public final class PropertySearchPanel extends ColumnSearchPanel<Property.Column
           model.setEnabled(!model.isEnabled());
         }
       };
+    }
+
+    private static JComponent initValueListField(final Property.ValueListProperty property) {
+      final ItemComboBoxModel<Object> boxModel = new ItemComboBoxModel<Object>(property.getValues());
+      final SteppedComboBox box = new SteppedComboBox(boxModel);
+      MaximumMatch.enable(box);
+
+      return box;
     }
   }
 }

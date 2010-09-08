@@ -314,6 +314,10 @@ public class EntityPanelProvider implements Comparable {
     }
     try {
       final EntityPanel entityPanel = initializePanel(model);
+      if (entityPanel.getTablePanel() != null && tableSearchPanelVisible) {
+        entityPanel.getTablePanel().setSearchPanelVisible(tableSearchPanelVisible);
+      }
+      configurePanel(entityPanel);
       if (!detailPanelProviders.isEmpty()) {
         entityPanel.setDetailPanelState(detailPanelState);
         entityPanel.setDetailSplitPanelResizeWeight(detailSplitPanelResizeWeight);
@@ -355,11 +359,6 @@ public class EntityPanelProvider implements Comparable {
       else {
         entityPanel = panelClass.getConstructor(EntityModel.class).newInstance(model);
       }
-
-      if (entityPanel.getTablePanel() != null && tableSearchPanelVisible) {
-        entityPanel.getTablePanel().setSearchPanelVisible(tableSearchPanelVisible);
-      }
-      configurePanel(entityPanel);
 
       return entityPanel;
     }

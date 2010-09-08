@@ -171,6 +171,7 @@ public interface Entity extends ValueChangeMap<String, Object>, Comparable<Entit
 
   /**
    * @return true if the this entity instance has a null primary key
+   * todo rename to isNew()?
    */
   boolean isNull();
 
@@ -220,7 +221,7 @@ public interface Entity extends ValueChangeMap<String, Object>, Comparable<Entit
   Color getBackgroundColor();
 
   /**
-   * A class representing column key objects for entities, contains the values for those columns.
+   * A class representing a primary key.
    */
   interface Key extends ValueMap<String, Object> {
 
@@ -240,7 +241,7 @@ public interface Entity extends ValueChangeMap<String, Object>, Comparable<Entit
     int getPropertyCount();
 
     /**
-     * @return true if one of the properties has a null value
+     * @return true if one of the primary key properties has a null value
      */
     boolean isNull();
 

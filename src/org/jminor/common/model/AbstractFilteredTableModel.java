@@ -220,7 +220,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
         while (visibleColumns.hasMoreElements()) {
           final TableColumn column = visibleColumns.nextElement();
           if (criteria.include(getSearchValueAt(row, (C) column.getIdentifier()))) {
-            return new Point(index, row);//todo getModelIndex() what does that return, really?
+            return new Point(index, row);
           }
           index ++;
         }
@@ -575,7 +575,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
         final TableColumn column = getTableColumn(columnIdentifier);
         columnModel.removeColumn(column);
         hiddenColumns.put((C) column.getIdentifier(), column);
-        evtColumnShown.fire(new ActionEvent(column.getIdentifier(), 0, "setColumnVisible"));
+        evtColumnHidden.fire(new ActionEvent(column.getIdentifier(), 0, "setColumnVisible"));
       }
     }
   }

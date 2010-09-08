@@ -776,7 +776,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
       }
     }
     catch (SQLException e) {
-      LOG.debug("Unable to set parameter: " + property + ", value: " + value + ", value class: " + (value == null ? "null" : value.getClass()), e);
+      LOG.error("Unable to set parameter: " + property + ", value: " + value + ", value class: " + (value == null ? "null" : value.getClass()), e);
       throw e;
     }
   }

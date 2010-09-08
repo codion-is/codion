@@ -810,7 +810,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
         final JPanel tableSearchAndSummaryPanel = new JPanel(new BorderLayout());
         setLayout(new BorderLayout());
         if (searchPanel != null) {
-          searchScrollPane = new JScrollPane((JPanel) searchPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER,
+          searchScrollPane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_NEVER,
                   JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
           if (searchPanel instanceof EntityTableSearchAdvancedPanel) {
             searchScrollPane.getHorizontalScrollBar().setModel(getTableScrollPane().getHorizontalScrollBar().getModel());
@@ -1175,7 +1175,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     if (property.isString()) {
       return new TextInputProvider(property.getCaption(), getEntityTableModel().getEditModel().getValueProvider(property), (String) currentValue);
     }
-    if (property.isReference()) {
+    if (property instanceof Property.ForeignKeyProperty) {
       return createEntityInputProvider((Property.ForeignKeyProperty) property, (Entity) currentValue, getEntityTableModel().getEditModel());
     }
 

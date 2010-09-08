@@ -137,6 +137,7 @@ public final class AbstractFilteredTableModelTest {
     assertEquals(new Point(0, 3), point);
     point = tableModel.findNextItemCoordinate(point.y - 1, false, criteria);
     assertEquals(new Point(0, 0), point);
+    //todo add a column and move'em around
   }
 
   @Test

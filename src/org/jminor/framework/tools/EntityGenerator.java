@@ -222,7 +222,6 @@ public final class EntityGenerator {
     for (final ForeignKey foreignKey : foreignKeys) {
       if (foreignKey.fkTableName.equals(column.tableName)
               && foreignKey.fkColumnName.equals(column.columnName)) {
-        System.out.println("foreignKey: " + column.tableName + ", " + column.columnName);
         return foreignKey;
       }
     }
@@ -345,7 +344,7 @@ public final class EntityGenerator {
       return tables;
     }
 
-    private List<String> getTablesToInclude(final String tablesToInclude) {
+    private static List<String> getTablesToInclude(final String tablesToInclude) {
       final List<String> ret = new ArrayList<String>();
       for (final String tableName : tablesToInclude.split(",")) {
         ret.add(tableName.trim());

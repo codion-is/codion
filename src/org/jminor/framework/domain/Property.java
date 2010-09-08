@@ -28,10 +28,35 @@ public interface Property extends Attribute {
   void setEntityID(final String entityID);
 
   /**
+   * The property identifier, should be unique within an Entity.
+   * By default this ID serves as column name for database properties.
+   * @return the ID of this property
+   */
+
+  String getPropertyID();
+
+  /**
+   * @param propertyID the property ID
+   * @return true if this property is of the given type
+   */
+  boolean is(final String propertyID);
+
+  /**
    * @param property the property
    * @return true if this property is of the given type
    */
   boolean is(final Property property);
+
+  /**
+   * @return the data type of the value of this property
+   */
+  int getType();
+
+  /**
+   * @param type the type to check
+   * @return true if the type of this property is the one given
+   */
+  boolean isType(final int type);
 
   /**
    * @return true if this is a numerical Property, that is, Integer or Double
@@ -79,37 +104,6 @@ public interface Property extends Attribute {
   boolean isBoolean();
 
   /**
-   * @return true if this is a reference property
-   */
-  boolean isReference();
-
-  /**
-   * @param propertyID the property ID
-   * @return true if this property is of the given type
-   */
-  boolean is(final String propertyID);
-
-  /**
-   * The property identifier, should be unique within an Entity.
-   * By default this ID serves as column name for database properties.
-   * @see #getPropertyID()
-   * @return the ID of this property
-   */
-
-  String getPropertyID();
-
-  /**
-   * @return the data type of the value of this property
-   */
-  int getType();
-
-  /**
-   * @param type the type to check
-   * @return true if the type of this property is the one given
-   */
-  boolean isType(final int type);
-
-  /**
    * Sets the default value for this property, overrides the underlying column default value, if any
    * @param defaultValue the value to use as default
    * @return the property
@@ -127,7 +121,7 @@ public interface Property extends Attribute {
   boolean isHidden();
 
   /**
-   * @param hidden specifies whether this property should not be visible to the user
+   * @param hidden specifies whether this property should hidden in table views
    * @return this Property instance
    */
   Property setHidden(final boolean hidden);
@@ -167,7 +161,8 @@ public interface Property extends Attribute {
   Property setMaximumFractionDigits(final int maximumFractionDigits);
 
   /**
-   * @return the maximum number of fraction digits to show for this property value
+   * @return the maximum number of fraction digits to show for this property value,
+   * only applicable to DOUBLE properties
    */
   int getMaximumFractionDigits();
 
@@ -214,14 +209,15 @@ public interface Property extends Attribute {
   boolean isNullable();
 
   /**
-   * Sets the maximum length of this property value
+   * Sets the maximum length of this property value, this applies to String (varchar) based properties
    * @param maxLength the maximum length
    * @return this Property instance
    */
   Property setMaxLength(final int maxLength);
 
   /**
-   * @return the maximum length of this property value, -1 is returned if the max length is undefined
+   * @return the maximum length of this property value, -1 is returned if the max length is undefined,
+   * this applies to String (varchar) based properties
    */
   int getMaxLength();
 
@@ -262,12 +258,13 @@ public interface Property extends Attribute {
   boolean isReadOnly();
 
   /**
-   * @return true if this property has a parent property
+   * @return true if this property is part of a foreign key property
+   * todo rename
    */
   boolean hasParentProperty();
 
   /**
-   * @param foreignKeyProperty the parent property
+   * @param foreignKeyProperty the parent foreign key property, if any
    */
   void setParentProperty(final ForeignKeyProperty foreignKeyProperty);
 
@@ -277,7 +274,7 @@ public interface Property extends Attribute {
   ForeignKeyProperty getParentProperty();
 
   /**
-   * Specifies a property that can be include in database search queries
+   * Specifies a property that can be include in database search criteria
    */
   interface SearchableProperty extends Property {}
 
@@ -293,8 +290,8 @@ public interface Property extends Attribute {
     ColumnProperty setUpdatable(boolean updatable);
 
     /**
-     * Sets the select column index
-     * @param selectIndex the index
+     * Sets the index to use when fetching the value of this column from a result set
+     * @param selectIndex the index of this column in a result set
      */
     void setSelectIndex(final int selectIndex);
 
@@ -316,6 +313,7 @@ public interface Property extends Attribute {
    * A primary key property is by default non-updatable.
    */
   interface PrimaryKeyProperty extends ColumnProperty {
+
     /**
      * @return this property's index in the primary key
      */
@@ -332,7 +330,7 @@ public interface Property extends Attribute {
   /**
    * A meta property that represents a reference to another entity, typically but not necessarily based on a foreign key.
    * These do not map directly to a underlying table column, but wrap the actual column properties involved in the relation.
-   * e.g.: new Property.ForeignKeyProperty("reference_fk", new Property("reference_id")), where "reference_id" is the
+   * e.g.: Properties.foreignKeyProperty("reference_fk", Properties.columnProperty("reference_id")), where "reference_id" is the
    * actual name of the column involved in the reference, but "reference_fk" is simply a descriptive property ID
    */
   interface ForeignKeyProperty extends SearchableProperty {
@@ -350,7 +348,7 @@ public interface Property extends Attribute {
     List<ColumnProperty> getReferenceProperties();
 
     /**
-     * @return true if this reference is based on more than on column
+     * @return true if this reference is based on multiple columns
      */
     boolean isCompositeReference();
 
@@ -361,12 +359,12 @@ public interface Property extends Attribute {
     String getReferencedPropertyID(final Property referenceProperty);
 
     /**
-     * @return the default fetch depth for this foreign key
+     * @return the default query fetch depth for this foreign key
      */
     int getFetchDepth();
 
     /**
-     * @param fetchDepth the default fetch depth for this foreign key
+     * @param fetchDepth the default query fetch depth for this foreign key
      * @return this ForeignKeyProperty instance
      */
     ForeignKeyProperty setFetchDepth(final int fetchDepth);
@@ -374,7 +372,9 @@ public interface Property extends Attribute {
 
   /**
    * Represents a child foreign key property that is already included as part of another reference foreign key property,
-   * and should not handle updating the underlying property
+   * and should not handle updating the underlying property, useful in rare cases when foreign keys are referencing
+   * tables having composite natural primary keys as opposed to surrogate ones.
+   * todo example pleeeeaaase!
    */
   interface MirrorProperty extends ColumnProperty {}
 
@@ -384,12 +384,12 @@ public interface Property extends Attribute {
   interface DenormalizedProperty extends ColumnProperty {
 
     /**
-     * @return the id of the foreign key property (entity) from which this property should retrieve its value
+     * @return the id of the foreign key property from which this property should retrieve its value
      */
     String getForeignKeyPropertyID();
 
     /**
-     * @return the property from which this property gets its value
+     * @return the property in the referenced entity from which this property gets its value
      */
     Property getDenormalizedProperty();
   }
@@ -420,8 +420,9 @@ public interface Property extends Attribute {
   /**
    * A property that does not map to an underlying database column. The value of a transient property
    * is initialized to null when entities are loaded, which means transient properties always have
-   * a original value of null.
-   * The value of transient properties can be set and retrieved like normal properties.
+   * a <null> original value.
+   * The value of transient properties can be set and retrieved like normal properties but are ignored during
+   * DML operations.
    */
   interface TransientProperty extends Property {}
 
@@ -435,7 +436,7 @@ public interface Property extends Attribute {
   interface DerivedProperty extends TransientProperty {
 
     /**
-     * @return the IDs of properties that trigger a change event for this property
+     * @return the IDs of properties that should trigger a change event for this property
      */
     Collection<String> getLinkedPropertyIDs();
 

@@ -27,6 +27,11 @@ class PropertyImpl implements Property, Serializable {
   private static final long serialVersionUID = 1;
 
   /**
+   * The ID of the entity this property is associated with
+   */
+  private String entityID;
+
+  /**
    * The property identifier, should be unique within an Entity.
    * By default this ID serves as column name for database properties.
    * @see #getPropertyID()
@@ -44,17 +49,12 @@ class PropertyImpl implements Property, Serializable {
   private final String caption;
 
   /**
-   * The ID of the entity this property is associated with
-   */
-  private String entityID;
-
-  /**
    * A reference to a parent foreign key property, if one exists
    */
   private ForeignKeyProperty parentProperty;
 
   /**
-   * A default value for this property in new Entity instances
+   * The default value for this property
    */
   private Object defaultValue;
 
@@ -214,11 +214,6 @@ class PropertyImpl implements Property, Serializable {
   /** {@inheritDoc} */
   public final boolean isBoolean() {
     return isType(Types.BOOLEAN);
-  }
-
-  /** {@inheritDoc} */
-  public final boolean isReference() {
-    return isType(Types.REF);
   }
 
   /** {@inheritDoc} */

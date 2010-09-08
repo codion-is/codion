@@ -31,8 +31,9 @@ public class DefaultPropertyFilterModel extends DefaultColumnSearchModel<Propert
       return null;
     }
 
-    final Object value = entity.getValue(getColumnIdentifier().getPropertyID());
-    if (getColumnIdentifier().isReference()) {
+    final Property property = getColumnIdentifier();
+    final Object value = entity.getValue(property.getPropertyID());
+    if (property instanceof Property.ForeignKeyProperty) {
       return value.toString();
     }
     else {
