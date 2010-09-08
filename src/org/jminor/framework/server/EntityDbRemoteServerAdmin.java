@@ -66,7 +66,7 @@ public final class EntityDbRemoteServerAdmin extends UnicastRemoteObject impleme
     super(SERVER_ADMIN_PORT, sslEnabled ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
             sslEnabled ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
     this.server = server;
-    EntityDbRemoteServer.getRegistry().rebind(server.getServerName() + RemoteServer.SERVER_ADMIN_SUFFIX, this);
+    Util.getRegistry().rebind(RemoteServer.SERVER_ADMIN_PREFIX + server.getServerName(), this);
     Runtime.getRuntime().addShutdownHook(new Thread(getShutdownHook()));
   }
 
@@ -151,9 +151,18 @@ public final class EntityDbRemoteServerAdmin extends UnicastRemoteObject impleme
   /** {@inheritDoc} */
   public void shutdown() throws RemoteException {
     try {
-      EntityDbRemoteServer.getRegistry().unbind(server.getServerName() + RemoteServer.SERVER_ADMIN_SUFFIX);
+      Util.getRegistry().unbind(server.getServerName());
     }
     catch (NotBoundException e) {/**/}
+    try {
+      Util.getRegistry().unbind(RemoteServer.SERVER_ADMIN_PREFIX + server.getServerName());
+    }
+    catch (NotBoundException e) {/**/}
+
+    final String connectInfo = server.getServerName() + " removed from registry";
+    EntityDbRemoteServer.LOG.info(connectInfo);
+    System.out.println(connectInfo);
+
     shutdownWebServer();
     server.shutdown();
     try {
@@ -400,8 +409,7 @@ public final class EntityDbRemoteServerAdmin extends UnicastRemoteObject impleme
           return;
         }
         try {
-          shutdownWebServer();
-          server.shutdown();
+          shutdown();
         }
         catch (RemoteException e) {
           EntityDbRemoteServer.LOG.error("Exception on shutdown", e);

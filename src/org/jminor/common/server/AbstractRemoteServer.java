@@ -5,16 +5,11 @@ package org.jminor.common.server;
 
 import org.jminor.common.model.User;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.rmi.NoSuchObjectException;
-import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
+import java.rmi.NoSuchObjectException;
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
+import java.rmi.server.RMISocketFactory;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Collections;
 import java.util.HashMap;
@@ -25,8 +20,6 @@ import java.util.UUID;
  * A default RemoteServer implementation.
  */
 public abstract class AbstractRemoteServer<T> extends UnicastRemoteObject implements RemoteServer<T> {
-
-  private static final Logger LOG = LoggerFactory.getLogger(AbstractRemoteServer.class);
 
   private final Map<ClientInfo, T> connections = Collections.synchronizedMap(new HashMap<ClientInfo, T>());
 
@@ -40,6 +33,16 @@ public abstract class AbstractRemoteServer<T> extends UnicastRemoteObject implem
       return clientInfo;
     }
   };
+
+  /**
+   * Instantiates a new AbstractRemoteServer
+   * @param serverPort the port on which the server should be exported
+   * @param serverName the name used when exporting this server
+   * @throws RemoteException in case of an exception
+   */
+  public AbstractRemoteServer(final int serverPort, final String serverName) throws RemoteException {
+    this(serverPort, serverName, RMISocketFactory.getSocketFactory(), RMISocketFactory.getSocketFactory());
+  }
 
   /**
    * Instantiates a new AbstractRemoteServer
@@ -189,27 +192,12 @@ public abstract class AbstractRemoteServer<T> extends UnicastRemoteObject implem
       return;
     }
     shuttingDown = true;
-    handleShutdown();
-    try {
-      getRegistry().unbind(serverName);
-    }
-    catch (NotBoundException e) {
-      LOG.error(e.getMessage(), e);
-    }
     try {
       UnicastRemoteObject.unexportObject(this, true);
     }
-    catch (NoSuchObjectException e) {
-      LOG.warn(e.getMessage(), e);
-    }
-  }
+    catch (NoSuchObjectException e) {/**/}
 
-  /**
-   * @return the local registry
-   * @throws RemoteException in case of an exception
-   */
-  public static Registry getRegistry() throws RemoteException {
-    return LocateRegistry.getRegistry(Registry.REGISTRY_PORT);
+    handleShutdown();
   }
 
   /**

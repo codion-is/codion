@@ -52,6 +52,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
   private int applicationBatchSize;
   private int updateInterval;
 
+  private boolean shuttingDown = false;
   private boolean paused = false;
   private boolean collectChartData = false;
 
@@ -330,6 +331,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
 
   /** {@inheritDoc} */
   public final void exit() {
+    shuttingDown = true;
     updateTimer.cancel();
     executor.shutdown();
     paused = false;
@@ -508,8 +510,11 @@ public abstract class LoadTestModel<T> implements LoadTest {
       /** {@inheritDoc} */
       @Override
       public void run() {
+        if (shuttingDown || paused) {
+          return;
+        }
         counter.updateRequestsPerSecond();
-        if (collectChartData && !paused) {
+        if (collectChartData) {
           updateChartData();
         }
       }

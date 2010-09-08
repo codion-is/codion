@@ -15,7 +15,7 @@ import java.util.UUID;
  */
 public interface RemoteServer<T> extends Remote {
 
-  String SERVER_ADMIN_SUFFIX = "-admin";
+  String SERVER_ADMIN_PREFIX = "Admin - ";
 
   /**
    * Establishes a connection to this RemoteServer

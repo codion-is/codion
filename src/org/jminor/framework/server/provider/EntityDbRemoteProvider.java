@@ -7,6 +7,7 @@ import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.server.RemoteServer;
+import org.jminor.common.server.ServerUtil;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityDb;
 import org.jminor.framework.db.provider.AbstractEntityDbProvider;
@@ -15,18 +16,11 @@ import org.jminor.framework.server.EntityDbRemote;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -149,53 +143,11 @@ public final class EntityDbRemoteProvider extends AbstractEntityDbProvider {
   }
 
   private void connectToServer() throws RemoteException, NotBoundException {
-    final List<RemoteServer> servers = getEntityServers(serverHostName);
-    if (!servers.isEmpty()) {
-      Collections.sort(servers, new ServerComparator());
-      this.server = servers.get(0);
-      this.serverName = this.server.getServerName();
-    }
-    else {
-      throw new NotBoundException("No reachable or suitable entity server found!");
-    }
-  }
-
-  private static List<RemoteServer> getEntityServers(final String hostNames) throws RemoteException {
-    final List<RemoteServer> servers = new ArrayList<RemoteServer>();
-    for (final String serverHostName : hostNames.split(",")) {
-      final Registry registry = LocateRegistry.getRegistry(serverHostName);
-      final String version = Util.getVersion();
-      final String[] boundNames = registry.list();
-      for (final String name : boundNames) {
-        if (name.startsWith((String) Configuration.getValue(Configuration.SERVER_NAME_PREFIX))
-                && name.contains(version) && !name.contains(RemoteServer.SERVER_ADMIN_SUFFIX)) {
-          try {
-            final RemoteServer server = checkServer((RemoteServer) registry.lookup(name));
-            if (server != null) {
-              servers.add(server);
-            }
-          }
-          catch (Exception e) {
-            LOG.error("Server \"" + name + "\" is unreachable", e);
-          }
-        }
-      }
-    }
-
-    return servers;
-  }
-
-  private static RemoteServer checkServer(final RemoteServer server) throws RemoteException {
-    if (!server.connectionsAvailable()) {
-      return null;
-    }
-    final int port = server.getServerPort();
-    final String requestedPort = Configuration.getStringValue(Configuration.SERVER_PORT);
-    if (requestedPort == null || (!requestedPort.isEmpty() && port == Integer.parseInt(requestedPort))) {
-      return server;
-    }
-
-    return null;
+    final String portNumber = Configuration.getStringValue(Configuration.SERVER_PORT);
+    final int port = portNumber == null || portNumber.isEmpty() ? -1 : Integer.parseInt(portNumber);
+    this.server = ServerUtil.getServer(serverHostName,
+            (String) Configuration.getValue(Configuration.SERVER_NAME_PREFIX), port);
+    this.serverName = this.server.getServerName();
   }
 
   private static final class EntityDbRemoteHandler implements InvocationHandler {
@@ -213,19 +165,6 @@ public final class EntityDbRemoteProvider extends AbstractEntityDbProvider {
       }
       catch (Exception e) {
         throw Util.unwrapAndLog(e, InvocationTargetException.class, null);
-      }
-    }
-  }
-
-  private static final class ServerComparator implements Comparator<RemoteServer>, Serializable {
-    private static final long serialVersionUID = 1;
-    /** {@inheritDoc} */
-    public int compare(final RemoteServer o1, final RemoteServer o2) {
-      try {
-        return Integer.valueOf(o1.getServerLoad()).compareTo(o2.getServerLoad());
-      }
-      catch (RemoteException e) {
-        return 1;
       }
     }
   }

@@ -48,7 +48,7 @@ public final class LoadTestServer extends AbstractRemoteServer<RemoteLoadTest> {
   public LoadTestServer(final int serverPort, final int loadTestPort, final String serverName) throws RemoteException {
     super(serverPort, serverName, RMISocketFactory.getSocketFactory(), RMISocketFactory.getSocketFactory());
     this.loadTestPort = loadTestPort;
-    getRegistry().rebind(serverName, this);
+    Util.getRegistry().rebind(serverName, this);
   }
 
   /** {@inheritDoc} */

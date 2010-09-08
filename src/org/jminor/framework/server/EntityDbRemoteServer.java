@@ -108,7 +108,7 @@ final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
 
     setConnectionLimit(Configuration.getIntValue(Configuration.SERVER_CONNECTION_LIMIT));
     startConnectionCheckTimer();
-    getRegistry().rebind(getServerName(), this);
+    Util.getRegistry().rebind(getServerName(), this);
     final String connectInfo = getServerName() + " bound to registry";
     LOG.info(connectInfo);
     System.out.println(connectInfo);
@@ -320,9 +320,6 @@ final class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
   @Override
   protected void handleShutdown() throws RemoteException {
     removeConnections(false);
-    final String connectInfo = getServerName() + " removed from registry";
-    LOG.info(connectInfo);
-    System.out.println(connectInfo);
     if (database.isEmbedded()) {
       database.shutdownEmbedded(null);
     }//todo does not work when shutdown requires user authentication, jminor.db.shutdownUser hmmm

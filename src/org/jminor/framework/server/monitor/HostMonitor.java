@@ -7,6 +7,7 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.State;
 import org.jminor.common.model.States;
+import org.jminor.common.server.RemoteServer;
 import org.jminor.framework.Configuration;
 
 import org.slf4j.Logger;
@@ -102,7 +103,7 @@ public final class HostMonitor {
     return false;
   }
 
-  private List<String> getEntityDbRemoteServers(final String serverHostName) {
+  private static List<String> getEntityDbRemoteServers(final String serverHostName) {
     final List<String> serverNames = new ArrayList<String>();
     try {
       String message = "HostMonitor locating registry on host: " + serverHostName;
@@ -132,8 +133,7 @@ public final class HostMonitor {
     final List<String> serverNames = new ArrayList<String>();
     final String[] boundNames = registry.list();
     for (final String name : boundNames) {
-      if (name.startsWith((String) Configuration.getValue(Configuration.SERVER_NAME_PREFIX))
-              && name.endsWith("-admin")) {
+      if (name.startsWith(RemoteServer.SERVER_ADMIN_PREFIX + Configuration.getValue(Configuration.SERVER_NAME_PREFIX))) {
         serverNames.add(name);
       }
     }

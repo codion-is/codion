@@ -772,6 +772,14 @@ public final class Util {
     }
   }
 
+  /**
+   * @return the local registry
+   * @throws java.rmi.RemoteException in case of an exception
+   */
+  public static Registry getRegistry() throws RemoteException {
+    return LocateRegistry.getRegistry(Registry.REGISTRY_PORT);
+  }
+
   @SuppressWarnings({"unchecked"})
   public static <T> T initializeProxy(final Class<T> clazz, final InvocationHandler invocationHandler) {
     return (T) Proxy.newProxyInstance(clazz.getClassLoader(), new Class[] {clazz}, invocationHandler);
