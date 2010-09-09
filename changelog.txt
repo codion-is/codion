@@ -2142,3 +2142,4 @@
   EntityDefinition.isRowColoring field removed
   EntityDefinition.isRowColoring() renamed to hasBackgroundColorProvider(), renaming bubbled all the way up
   QueryLoadTestModel improved
+  EntityDbRemoteTest added
