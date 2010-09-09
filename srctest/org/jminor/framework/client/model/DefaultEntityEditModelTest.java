@@ -128,9 +128,6 @@ public final class DefaultEntityEditModelTest {
     assertEquals(editModel.getDbProvider().getEntityDb().selectPropertyValues(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB, true),
             editModel.getValueProvider(jobProperty).getValues());
 
-    editModel.setActive(true);
-    assertTrue(editModel.getActiveState().isActive());
-
     editModel.refresh();
     assertTrue(editModel.isEntityNew());
     assertFalse(editModel.getModifiedState().isActive());

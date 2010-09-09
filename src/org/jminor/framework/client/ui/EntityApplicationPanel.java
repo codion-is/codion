@@ -23,9 +23,9 @@ import org.jminor.common.ui.control.ToggleBeanValueLink;
 import org.jminor.common.ui.images.Images;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityApplicationModel;
+import org.jminor.framework.client.model.DefaultEntityApplicationModel;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.db.provider.EntityDbProviderFactory;
-import org.jminor.framework.domain.Entities;
 import org.jminor.framework.i18n.FrameworkMessages;
 
 import org.slf4j.Logger;
@@ -1023,7 +1023,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   }
 
   private JScrollPane initializeDependencyTree() {
-    return initalizeTree(Entities.getDependencyTreeModel());
+    return initalizeTree(DefaultEntityApplicationModel.getDependencyTreeModel());
   }
 
   private JScrollPane initalizeTree(final TreeModel treeModel) {
@@ -1098,7 +1098,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
 
   private static void activatePanel(final EntityPanel panel) {
     if (panel != null) {
-      panel.getEditModel().setActive(true);
+      panel.getEditPanel().setActive(true);
     }
   }
 
@@ -1112,7 +1112,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
       if (activeDetailPanel != null) {
         return activeDetailPanel;
       }
-      if (panel.isActive()) {
+      if (panel.getEditPanel().isActive()) {
         return panel;
       }
     }

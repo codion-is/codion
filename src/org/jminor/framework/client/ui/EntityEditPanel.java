@@ -85,6 +85,16 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   private final Map<String, Control> controlMap = new HashMap<String, Control>();
 
   /**
+   * Indicates whether the model is active and ready to receive input
+   */
+  private final State stActive = States.state(Configuration.getBooleanValue(Configuration.ALL_PANELS_ACTIVE));
+
+  /**
+   * The mechanism for restricting a single active EntityEditModel at a time
+   */
+  private static final State.StateGroup ACTIVE_STATE_GROUP = States.stateGroup();
+
+  /**
    * Instantiates a new EntityEditPanel based on the provided EntityEditModel
    * @param editModel the EntityEditModel instance to base this EntityEditPanel on
    */
@@ -99,6 +109,9 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    */
   public EntityEditPanel(final EntityEditModel editModel, final String... controlKeys) {
     super(editModel);
+    if (!Configuration.getBooleanValue(Configuration.ALL_PANELS_ACTIVE)) {
+      ACTIVE_STATE_GROUP.addState(stActive);
+    }
     setupControls(controlKeys);
     bindEvents();
     initializeUI();
@@ -109,6 +122,30 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    */
   public final EntityEditModel getEntityEditModel() {
     return (EntityEditModel) super.getEditModel();
+  }
+
+  /**
+   * Indicates whether this panel is active and ready to receive input
+   * @return a state indicating whether the active is active and ready to receive input
+   */
+  public final StateObserver getActiveState() {
+    return stActive.getObserver();
+  }
+
+  /**
+   * Sets the active state of this edit panel, an active edit panel should be
+   * enabled and ready to recieve input
+   * @param active the active state
+   */
+  public final void setActive(final boolean active) {
+    stActive.setActive(active);
+  }
+
+  /**
+   * @return true if this edit panel is active and ready to receive input
+   */
+  public final boolean isActive() {
+    return stActive.isActive();
   }
 
   /**
@@ -130,7 +167,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   public final Control getRefreshControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.REFRESH_MNEMONIC);
     return Controls.methodControl(getEditModel(), "refresh", FrameworkMessages.get(FrameworkMessages.REFRESH),
-            getEntityEditModel().getActiveState(), FrameworkMessages.get(FrameworkMessages.REFRESH_TIP) + ALT_PREFIX
+            getActiveState(), FrameworkMessages.get(FrameworkMessages.REFRESH_TIP) + ALT_PREFIX
                     + mnemonic + ")", mnemonic.charAt(0), null, Images.loadImage(Images.IMG_REFRESH_16));
   }
 
@@ -141,7 +178,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.DELETE_MNEMONIC);
     return Controls.methodControl(this, "delete", FrameworkMessages.get(FrameworkMessages.DELETE),
             States.aggregateState(Conjunction.AND,
-                    getEntityEditModel().getActiveState(),
+                    getActiveState(),
                     getEntityEditModel().getAllowDeleteState(),
                     getEntityEditModel().getEntityNullState().getReversedState()),
             FrameworkMessages.get(FrameworkMessages.DELETE_TIP) + ALT_PREFIX + mnemonic + ")", mnemonic.charAt(0), null,
@@ -154,7 +191,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   public final Control getClearControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.CLEAR_MNEMONIC);
     return Controls.methodControl(this, "clearModelValues", FrameworkMessages.get(FrameworkMessages.CLEAR),
-            getEntityEditModel().getActiveState(), FrameworkMessages.get(FrameworkMessages.CLEAR_ALL_TIP) + ALT_PREFIX + mnemonic + ")",
+            getActiveState(), FrameworkMessages.get(FrameworkMessages.CLEAR_ALL_TIP) + ALT_PREFIX + mnemonic + ")",
             mnemonic.charAt(0), null, Images.loadImage(Images.IMG_NEW_16));
   }
 
@@ -165,7 +202,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.UPDATE_MNEMONIC);
     return Controls.methodControl(this, "update", FrameworkMessages.get(FrameworkMessages.UPDATE),
             States.aggregateState(Conjunction.AND,
-                    getEntityEditModel().getActiveState(),
+                    getActiveState(),
                     getEntityEditModel().getAllowUpdateState(),
                     getEntityEditModel().getEntityNullState().getReversedState(),
                     getEntityEditModel().getModifiedState()),
@@ -179,7 +216,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   public final Control getInsertControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.INSERT_MNEMONIC);
     return Controls.methodControl(this, "save", FrameworkMessages.get(FrameworkMessages.INSERT),
-            States.aggregateState(Conjunction.AND, getEntityEditModel().getActiveState(), getEntityEditModel().getAllowInsertState()),
+            States.aggregateState(Conjunction.AND, getActiveState(), getEntityEditModel().getAllowInsertState()),
             FrameworkMessages.get(FrameworkMessages.INSERT_TIP) + ALT_PREFIX + mnemonic + ")",
             mnemonic.charAt(0), null, Images.loadImage("Add16.gif"));
   }
@@ -193,7 +230,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
             States.aggregateState(Conjunction.AND, getEntityEditModel().getAllowUpdateState(),
                     getEntityEditModel().getModifiedState()));
     return Controls.methodControl(this, "save", insertCaption,
-            States.aggregateState(Conjunction.AND, getEntityEditModel().getActiveState(), stInsertUpdate),
+            States.aggregateState(Conjunction.AND, getActiveState(), stInsertUpdate),
             FrameworkMessages.get(FrameworkMessages.INSERT_UPDATE_TIP),
             insertCaption.charAt(0), null, Images.loadImage(Images.IMG_PROPERTIES_16));
   }

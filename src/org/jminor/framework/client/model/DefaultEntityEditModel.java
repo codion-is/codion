@@ -75,11 +75,6 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
   private final State stAllowDelete = States.state(true);
 
   /**
-   * Indicates whether the model is active and ready to receive input
-   */
-  private final State stActive = States.state(Configuration.getBooleanValue(Configuration.ALL_PANELS_ACTIVE));
-
-  /**
    * The ID of the entity this edit model is based on
    */
   private final String entityID;
@@ -95,11 +90,6 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
    * @see org.jminor.common.model.Refreshable
    */
   private final Map<Property, FilteredComboBoxModel> propertyComboBoxModels = new HashMap<Property, FilteredComboBoxModel>();
-
-  /**
-   * The mechanism for restricting a single active EntityEditModel at a time
-   */
-  private static final State.StateGroup ACTIVE_STATE_GROUP = States.stateGroup();
 
   private boolean readOnly;
 
@@ -121,9 +111,6 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
   public DefaultEntityEditModel(final String entityID, final EntityDbProvider dbProvider, final EntityValidator validator) {
     super(Entities.entityInstance(entityID), validator);
     Util.rejectNullValue(dbProvider, "dbProvider");
-    if (!Configuration.getBooleanValue(Configuration.ALL_PANELS_ACTIVE)) {
-      ACTIVE_STATE_GROUP.addState(stActive);
-    }
     this.entityID = entityID;
     this.dbProvider = dbProvider;
     this.readOnly = Entities.isReadOnly(entityID);
@@ -234,16 +221,6 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
   /** {@inheritDoc} */
   public final StateObserver getEntityNullState() {
     return stEntityNull.getObserver();
-  }
-
-  /** {@inheritDoc} */
-  public final StateObserver getActiveState() {
-    return stActive.getObserver();
-  }
-
-  /** {@inheritDoc} */
-  public final void setActive(final boolean active) {
-    stActive.setActive(active);
   }
 
   /** {@inheritDoc} */

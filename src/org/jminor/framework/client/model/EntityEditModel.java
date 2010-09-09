@@ -24,12 +24,6 @@ import java.util.List;
 public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>, EntityDataProvider {
 
   /**
-   * Indicates whether the model is active and ready to receive input
-   * @return a state indicating whether the model is active and ready to receive input
-   */
-  StateObserver getActiveState();
-
-  /**
    * @return the state used to determine if deleting should be enabled
    * @see #isDeleteAllowed()
    * @see #setDeleteAllowed(boolean)
@@ -171,13 +165,6 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * @see org.jminor.framework.domain.Entity#isNull()
    */
   boolean isEntityNew();
-
-  /**
-   * Sets the active state of this edit model, an active edit model should be
-   * ready to recieve input, this is relevant when a UI is based on the model
-   * @param active the active state
-   */
-  void setActive(final boolean active);
 
   /**
    * Returns the value associated with the given propertyID assuming it

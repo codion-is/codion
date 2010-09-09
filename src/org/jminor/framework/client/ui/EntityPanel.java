@@ -248,13 +248,13 @@ public class EntityPanel extends JPanel {
     this.model = model;
     this.caption = caption == null ? model.getEntityID() : caption;
     this.editPanel = editPanel;
+    this.editPanel.getActiveState().addListener(new ActivationListener());
     if (tablePanel == null && model.containsTableModel()) {
       this.tablePanel = new EntityTablePanel(model.getTableModel());
     }
     else {
       this.tablePanel = tablePanel;
     }
-    model.getEditModel().getActiveState().addListener(new ActivationListener());
   }
 
   /**
@@ -505,13 +505,6 @@ public class EntityPanel extends JPanel {
    */
   public final void handleException(final Exception exception) {
     editPanel.handleException(exception);
-  }
-
-  /**
-   * @return true if this EntityPanel is active and ready to receive input
-   */
-  public final boolean isActive() {
-    return getEditModel().getActiveState().isActive();
   }
 
   /**
@@ -1204,7 +1197,7 @@ public class EntityPanel extends JPanel {
     };
     /** {@inheritDoc} */
     public void actionPerformed(final ActionEvent e) {
-      if (isActive()) {
+      if (editPanel.isActive()) {
         try {
           if (SwingUtilities.isEventDispatchThread()) {
             initializer.run();
@@ -1225,8 +1218,8 @@ public class EntityPanel extends JPanel {
     /** {@inheritDoc} */
     public void propertyChange(final PropertyChangeEvent evt) {
       final Component focusOwner = (Component) evt.getNewValue();
-      if (focusOwner != null && isParentPanel(focusOwner) && !isActive()) {
-        getEditModel().setActive(true);
+      if (focusOwner != null && isParentPanel(focusOwner) && !editPanel.isActive()) {
+        getEditPanel().setActive(true);
       }
     }
   }

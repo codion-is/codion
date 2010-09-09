@@ -51,9 +51,9 @@ import java.util.Set;
  * Database database = new H2Database("pathToDb");
  * User user = new User("scott", "tiger");
  *
- * EntityDbConnection connection = new EntityDbConnection(databse, user);
+ * EntityDbConnection connection = new EntityDbConnection(database, user);
  *
- * List<Entity> entities = connection.selectAll(entityID);
+ * List<Entity> entities = connection.selectAll("entityID");
  *
  * connection.disconnect();
  * </pre>

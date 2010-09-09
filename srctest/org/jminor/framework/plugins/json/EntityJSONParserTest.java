@@ -26,7 +26,7 @@ public class EntityJSONParserTest {
     dept10.setValue(EmpDept.DEPARTMENT_NAME, "DEPTNAME");
     dept10.setValue(EmpDept.DEPARTMENT_LOCATION, "LOCATION");
 
-    String dept10JSON = "{\"department" + EmpDept.version + " PK[deptno:-10]\":{\"propertyValues\":{\"dname\":\"DEPTNAME\",\"loc\":\"LOCATION\",\"deptno\":-10},\"entityID\":\"department" + EmpDept.version + "\"}}";
+    final String dept10JSON = "{\"department" + EmpDept.version + " PK[deptno:-10]\":{\"propertyValues\":{\"dname\":\"DEPTNAME\",\"loc\":\"LOCATION\",\"deptno\":-10},\"entityID\":\"department" + EmpDept.version + "\"}}";
     String jsonString = EntityJSONParser.getJSONString(Arrays.asList(dept10));
     assertEquals(dept10JSON, jsonString);
 
@@ -35,7 +35,7 @@ public class EntityJSONParserTest {
     dept20.setValue(EmpDept.DEPARTMENT_NAME, "ADEPT");
     dept20.setValue(EmpDept.DEPARTMENT_LOCATION, "ALOC");
 
-    String dept20JSON = "{\"department" + EmpDept.version + " PK[deptno:-20]\":{\"propertyValues\":{\"dname\":\"ADEPT\",\"loc\":\"ALOC\",\"deptno\":-20},\"entityID\":\"department" + EmpDept.version + "\"}}";
+    final String dept20JSON = "{\"department" + EmpDept.version + " PK[deptno:-20]\":{\"propertyValues\":{\"dname\":\"ADEPT\",\"loc\":\"ALOC\",\"deptno\":-20},\"entityID\":\"department" + EmpDept.version + "\"}}";
     jsonString = EntityJSONParser.getJSONString(Arrays.asList(dept20));
     assertEquals(dept20JSON, jsonString);
 
