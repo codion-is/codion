@@ -2144,3 +2144,4 @@
   QueryLoadTestModel improved
   EntityDbRemoteTest added
   EntityModel.stActive moved to it's logical home, EntityEditPanel
+  EntityTableColumnModel removed along with default implementation

@@ -29,7 +29,9 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -121,31 +123,18 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
    * @param dbProvider the db provider
    */
   public DefaultEntityTableModel(final String entityID, final EntityDbProvider dbProvider) {
-    this(entityID, dbProvider, new DefaultEntityTableColumnModel(entityID));
-  }
-
-  /**
-   * Instantiates a new DefaultEntityTableModel with a default search model.
-   * @param entityID the entity ID
-   * @param dbProvider the db provider
-   * @param columnModel the column model
-   */
-  public DefaultEntityTableModel(final String entityID, final EntityDbProvider dbProvider,
-                                 final EntityTableColumnModel columnModel) {
-    this(entityID, dbProvider, columnModel, new DefaultEntityTableSearchModel(entityID, dbProvider, false));
+    this(entityID, dbProvider, new DefaultEntityTableSearchModel(entityID, dbProvider, false));
   }
 
   /**
    * Instantiates a new DefaultEntityTableModel.
    * @param entityID the entity ID
    * @param dbProvider the db provider
-   * @param columnModel the column model
    * @param searchModel the search model
    */
   public DefaultEntityTableModel(final String entityID, final EntityDbProvider dbProvider,
-                                 final EntityTableColumnModel columnModel,
                                  final EntityTableSearchModel searchModel) {
-    super(columnModel, searchModel.getPropertyFilterModelsOrdered());
+    super(initializeColumnModel(entityID), searchModel.getPropertyFilterModelsOrdered());
     this.entityID = entityID;
     this.dbProvider = dbProvider;
     this.searchModel = searchModel;
@@ -668,5 +657,21 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   private void handleColumnHidden(final Property property) {
     //disable the search model for the column to be hidden, to prevent confusion
     searchModel.setSearchEnabled(property.getPropertyID(), false);
+  }
+
+  private static TableColumnModel initializeColumnModel(final String entityID) {
+    final DefaultTableColumnModel model = new DefaultTableColumnModel();
+    int modelIndex = 0;
+    for (final Property property : Entities.getVisibleProperties(entityID)) {
+      final TableColumn column = new TableColumn(modelIndex++);
+      column.setIdentifier(property);
+      column.setHeaderValue(property.getCaption());
+      if (property.getPreferredColumnWidth() > 0) {
+        column.setPreferredWidth(property.getPreferredColumnWidth());
+      }
+      model.addColumn(column);
+    }
+
+    return model;
   }
 }
