@@ -119,7 +119,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
   public static final String MOVE_SELECTION_DOWN = "moveSelectionDown";
   public static final String COPY_TABLE_DATA = "copyTableData";
 
-  private static final int TOOLBAR_BUTTON_SIZE = 20;
+  private static final Dimension TOOLBAR_BUTTON_SIZE = new Dimension(20, 20);
   private static final int STATUS_MESSAGE_FONT_SIZE = 12;
   private static final String TRIPLEDOT = "...";
 
@@ -1251,7 +1251,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     if (toolbarControlSet != null) {
       final JToolBar southToolBar = ControlProvider.createToolbar(toolbarControlSet, JToolBar.HORIZONTAL);
       for (final Component component : southToolBar.getComponents()) {
-        component.setPreferredSize(new Dimension(TOOLBAR_BUTTON_SIZE, TOOLBAR_BUTTON_SIZE));
+        component.setPreferredSize(TOOLBAR_BUTTON_SIZE);
       }
       southToolBar.setFocusable(false);
       southToolBar.setFloatable(false);
@@ -1383,7 +1383,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     actionMap.put("refreshControl", refresh);
 
     final AbstractButton button = ControlProvider.createButton(refresh);
-    button.setPreferredSize(new Dimension(TOOLBAR_BUTTON_SIZE, TOOLBAR_BUTTON_SIZE));
+    button.setPreferredSize(TOOLBAR_BUTTON_SIZE);
     button.setFocusable(false);
 
     final JToolBar toolBar = new JToolBar(JToolBar.HORIZONTAL);
@@ -1615,14 +1615,15 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
 
   private static void populateValueMenu(final JComponent rootMenu, final Entity entity, final List<Property> properties) {
     Util.collate(properties);
+    final int maxValueLength = 20;
     for (final Property property : properties) {
       if (!property.hasParentProperty() && !(property instanceof Property.ForeignKeyProperty)) {
         final String prefix = "[" + Util.getTypeClass(property.getType()).getSimpleName().substring(0, 1)
                 + (property instanceof Property.DenormalizedViewProperty ? "*" : "")
                 + (property instanceof Property.DenormalizedProperty ? "+" : "") + "] ";
         final String value = entity.isValueNull(property.getPropertyID()) ? "<null>" : entity.getValueAsString(property.getPropertyID());
-        final boolean longValue = value != null && value.length() > TOOLBAR_BUTTON_SIZE;
-        final JMenuItem menuItem = new JMenuItem(prefix + property + ": " + (longValue ? value.substring(0, TOOLBAR_BUTTON_SIZE) + "..." : value));
+        final boolean longValue = value != null && value.length() > maxValueLength;
+        final JMenuItem menuItem = new JMenuItem(prefix + property + ": " + (longValue ? value.substring(0, maxValueLength) + "..." : value));
         if (longValue) {
           menuItem.setToolTipText(value.length() > 1000 ? value.substring(0, 1000) : value);
         }
