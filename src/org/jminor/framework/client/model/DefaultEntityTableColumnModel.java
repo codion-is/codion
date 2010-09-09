@@ -49,9 +49,9 @@ public class DefaultEntityTableColumnModel extends DefaultTableColumnModel imple
   }
 
   private void initializeColumns() {
-    int i = 0;
+    int modelIndex = 0;
     for (final Property property : columnProperties) {
-      final TableColumn column = new TableColumn(i++);
+      final TableColumn column = new TableColumn(modelIndex++);
       column.setIdentifier(property);
       column.setHeaderValue(property.getCaption());
       if (property.getPreferredColumnWidth() > 0) {
