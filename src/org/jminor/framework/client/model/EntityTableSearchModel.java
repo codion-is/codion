@@ -24,22 +24,6 @@ import java.util.List;
 public interface EntityTableSearchModel extends FilterCriteria<Entity>, Refreshable {
 
   /**
-   * @return a State activated each time the search state differs from the state at last reset
-   * @see #setSearchModelState()
-   */
-  StateObserver getSearchStateChangedState();
-
-  /**
-   * @param listener a listener notified each time the filter state changes
-   */
-  void addFilterStateListener(final ActionListener listener);
-
-  /**
-   * @param listener the listener to remove
-   */
-  void removeFilterStateListener(final ActionListener listener);
-
-  /**
    * @return the ID of the entity this table searcher is based on
    */
   String getEntityID();
@@ -163,4 +147,20 @@ public interface EntityTableSearchModel extends FilterCriteria<Entity>, Refresha
    * @return true if the PropertyFilterModel behind column with index <code>columnIndex</code> is enabled
    */
   boolean isFilterEnabled(final String propertyID);
+
+  /**
+   * @return a State activated each time the search state differs from the state at last reset
+   * @see #setSearchModelState()
+   */
+  StateObserver getSearchStateChangedState();
+
+  /**
+   * @param listener a listener notified each time the filter state changes
+   */
+  void addFilterStateListener(final ActionListener listener);
+
+  /**
+   * @param listener the listener to remove
+   */
+  void removeFilterStateListener(final ActionListener listener);
 }

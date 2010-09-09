@@ -25,19 +25,6 @@ import java.util.Map;
 public interface EntityTableModel extends FilteredTableModel<Entity, Property>, EntityDataProvider {
 
   /**
-   * @return the state used to determine if updating should be enabled
-   * @see #isMultipleUpdateAllowed()
-   */
-  StateObserver getAllowMultipleUpdateState();
-
-  /**
-   * @return the state used to determine if deleting should be enabled
-   * @see #isDeleteAllowed()
-   * @see #setDeleteAllowed(boolean)
-   */
-  StateObserver getAllowDeleteState();
-
-  /**
    * Returns the edit model associated with this table model,
    * throws a RuntimeExcption in case no edit model has been associated with this table model
    * @return the edit model associated with this table model
@@ -310,4 +297,17 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
    * @return the sorting directive assigned to the given property column
    */
   SortingDirective getSortingDirective(final String propertyID);
+
+  /**
+   * @return the state used to determine if updating should be enabled
+   * @see #isMultipleUpdateAllowed()
+   */
+  StateObserver getAllowMultipleUpdateState();
+
+  /**
+   * @return the state used to determine if deleting should be enabled
+   * @see #isDeleteAllowed()
+   * @see #setDeleteAllowed(boolean)
+   */
+  StateObserver getAllowDeleteState();
 }

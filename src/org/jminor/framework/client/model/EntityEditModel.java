@@ -24,123 +24,6 @@ import java.util.List;
 public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>, EntityDataProvider {
 
   /**
-   * @return the state used to determine if deleting should be enabled
-   * @see #isDeleteAllowed()
-   * @see #setDeleteAllowed(boolean)
-   */
-  StateObserver getAllowDeleteState();
-
-  /**
-   * @return a State indicating whether or not the active entity is null
-   */
-  StateObserver getEntityNullState();
-
-  /**
-   * @return the state used to determine if updating should be enabled
-   * @see #isUpdateAllowed()
-   * @see #setUpdateAllowed(boolean)
-   */
-  StateObserver getAllowUpdateState();
-
-  /**
-   * @return the state used to determine if inserting should be enabled
-   * @see #isInsertAllowed()
-   * @see #setInsertAllowed(boolean)
-   */
-  StateObserver getAllowInsertState();
-
-  /**
-   * @param listener a listener to be notified before an insert is performed
-   */
-  void addBeforeInsertListener(final ActionListener listener);
-
-  /**
-   * @param listener a listener to be notified each time
-   */
-  void removeBeforeInsertListener(final ActionListener listener);
-
-  /**
-   * @param listener a listener to be notified each time a insert has been performed
-   */
-  void addAfterInsertListener(final ActionListener listener);
-
-  /**
-   * @param listener a listener to be notified each time
-   */
-  void removeAfterInsertListener(final ActionListener listener);
-
-  /**
-   * @param listener a listener to be notified before an update is performed
-   */
-  void addBeforeUpdateListener(final ActionListener listener);
-
-  /**
-   * @param listener a listener to be notified each time
-   */
-  void removeBeforeUpdateListener(final ActionListener listener);
-
-  /**
-   * @param listener a listener to be notified each time an update has been performed
-   */
-  void addAfterUpdateListener(final ActionListener listener);
-
-  /**
-   * @param listener a listener to be notified each time
-   */
-  void removeAfterUpdateListener(final ActionListener listener);
-
-  /**
-   * @param listener a listener to be notified before a delete is performed
-   */
-  void addBeforeDeleteListener(final ActionListener listener);
-
-  /**
-   * @param listener a listener to be notified each time
-   */
-  void removeBeforeDeleteListener(final ActionListener listener);
-
-  /**
-   * @param listener a listener to be notified each time a delete has been performed
-   */
-  void addAfterDeleteListener(final ActionListener listener);
-
-  /**
-   * @param listener a listener to be notified each time
-   */
-  void removeAfterDeleteListener(final ActionListener listener);
-
-  /**
-   * @param listener a listener to be notified before a refresh is performed
-   */
-  void addBeforeRefreshListener(final ActionListener listener);
-
-  /**
-   * @param listener a listener to be notified each time
-   */
-  void removeBeforeRefreshListener(final ActionListener listener);
-
-  /**
-   * @param listener a listener to be notified each time a refresh has been performed
-   */
-  void addAfterRefreshListener(final ActionListener listener);
-
-  /**
-   * @param listener a listener to be notified each time
-   */
-  void removeAfterRefreshListener(final ActionListener listener);
-
-  /**
-   * @param listener a listener to be notified each time a entity is modified via this model,
-   * updated, inserted or deleted
-   */
-  void addEntitiesChangedListener(final ActionListener listener);
-
-  /**
-   * @param listener a listener to be notified each time
-   */
-  void removeEntitiesChangedListener(final ActionListener listener);
-
-  /**
    * Sets the Entity instance to edit
    * @param entity the entity
    */
@@ -422,4 +305,121 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * @see #addAfterDeleteListener(java.awt.event.ActionListener)
    */
   void delete(final List<Entity> entities) throws DbException, CancelException;
+
+  /**
+   * @return the state used to determine if deleting should be enabled
+   * @see #isDeleteAllowed()
+   * @see #setDeleteAllowed(boolean)
+   */
+  StateObserver getAllowDeleteState();
+
+  /**
+   * @return a State indicating whether or not the active entity is null
+   */
+  StateObserver getEntityNullState();
+
+  /**
+   * @return the state used to determine if updating should be enabled
+   * @see #isUpdateAllowed()
+   * @see #setUpdateAllowed(boolean)
+   */
+  StateObserver getAllowUpdateState();
+
+  /**
+   * @return the state used to determine if inserting should be enabled
+   * @see #isInsertAllowed()
+   * @see #setInsertAllowed(boolean)
+   */
+  StateObserver getAllowInsertState();
+
+  /**
+   * @param listener a listener to be notified before an insert is performed
+   */
+  void addBeforeInsertListener(final ActionListener listener);
+
+  /**
+   * @param listener a listener to be notified each time
+   */
+  void removeBeforeInsertListener(final ActionListener listener);
+
+  /**
+   * @param listener a listener to be notified each time a insert has been performed
+   */
+  void addAfterInsertListener(final ActionListener listener);
+
+  /**
+   * @param listener a listener to be notified each time
+   */
+  void removeAfterInsertListener(final ActionListener listener);
+
+  /**
+   * @param listener a listener to be notified before an update is performed
+   */
+  void addBeforeUpdateListener(final ActionListener listener);
+
+  /**
+   * @param listener a listener to be notified each time
+   */
+  void removeBeforeUpdateListener(final ActionListener listener);
+
+  /**
+   * @param listener a listener to be notified each time an update has been performed
+   */
+  void addAfterUpdateListener(final ActionListener listener);
+
+  /**
+   * @param listener a listener to be notified each time
+   */
+  void removeAfterUpdateListener(final ActionListener listener);
+
+  /**
+   * @param listener a listener to be notified before a delete is performed
+   */
+  void addBeforeDeleteListener(final ActionListener listener);
+
+  /**
+   * @param listener a listener to be notified each time
+   */
+  void removeBeforeDeleteListener(final ActionListener listener);
+
+  /**
+   * @param listener a listener to be notified each time a delete has been performed
+   */
+  void addAfterDeleteListener(final ActionListener listener);
+
+  /**
+   * @param listener a listener to be notified each time
+   */
+  void removeAfterDeleteListener(final ActionListener listener);
+
+  /**
+   * @param listener a listener to be notified before a refresh is performed
+   */
+  void addBeforeRefreshListener(final ActionListener listener);
+
+  /**
+   * @param listener a listener to be notified each time
+   */
+  void removeBeforeRefreshListener(final ActionListener listener);
+
+  /**
+   * @param listener a listener to be notified each time a refresh has been performed
+   */
+  void addAfterRefreshListener(final ActionListener listener);
+
+  /**
+   * @param listener a listener to be notified each time
+   */
+  void removeAfterRefreshListener(final ActionListener listener);
+
+  /**
+   * @param listener a listener to be notified each time a entity is modified via this model,
+   * updated, inserted or deleted
+   */
+  void addEntitiesChangedListener(final ActionListener listener);
+
+  /**
+   * @param listener a listener to be notified each time
+   */
+  void removeEntitiesChangedListener(final ActionListener listener);
 }

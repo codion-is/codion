@@ -17,31 +17,6 @@ import java.util.List;
 public interface EntityLookupModel extends EntityDataProvider {
 
   /**
-   * @param listener a listener to be notified each time the selected entities are changed
-   */
-  void addSelectedEntitiesListener(final ActionListener listener);
-
-  /**
-   * @param listener the listener to remove
-   */
-  void removeSelectedEntitiesListener(final ActionListener listener);
-
-  /**
-   * @return an Event fired each time the search string changes
-   */
-  EventObserver searchStringObserver();
-
-  /**
-   * @param listener a listener to be notified each time the search string changes
-   */
-  void addSearchStringListener(final ActionListener listener);
-
-  /**
-   * @param listener the listener to remove
-   */
-  void removeSearchStringListener(final ActionListener listener);
-
-  /**
    * @return an unmodifiable view of the selected entities
    */
   List<Entity> getSelectedEntities();
@@ -179,4 +154,29 @@ public interface EntityLookupModel extends EntityDataProvider {
    * @return this EntityLookupModel instance
    */
   EntityLookupModel setAdditionalLookupCriteria(final Criteria additionalLookupCriteria);
+
+  /**
+   * @param listener a listener to be notified each time the selected entities are changed
+   */
+  void addSelectedEntitiesListener(final ActionListener listener);
+
+  /**
+   * @param listener the listener to remove
+   */
+  void removeSelectedEntitiesListener(final ActionListener listener);
+
+  /**
+   * @return an Event fired each time the search string changes
+   */
+  EventObserver searchStringObserver();
+
+  /**
+   * @param listener a listener to be notified each time the search string changes
+   */
+  void addSearchStringListener(final ActionListener listener);
+
+  /**
+   * @param listener the listener to remove
+   */
+  void removeSearchStringListener(final ActionListener listener);
 }
