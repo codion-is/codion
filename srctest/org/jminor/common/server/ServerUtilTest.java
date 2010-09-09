@@ -1,15 +1,15 @@
 /*
- * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2004 - 2010, BjÃ¶rn Darri SigurÃ¶sson. All Rights Reserved.
  */
 package org.jminor.common.server;
 
 import org.jminor.common.model.Util;
 
 import org.junit.After;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.fail;
-import static org.junit.Assert.assertNotNull;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -24,9 +24,11 @@ public class ServerUtilTest {
   public void setUp() throws RemoteException {
     Util.initializeRegistry();
     server = new AbstractRemoteServer(12345, SERVER_NAME) {
+      @Override
       protected Object doConnect(final ClientInfo clientInfo) throws RemoteException {
         return null;
       }
+      @Override
       protected void doDisconnect(final Object connection) throws RemoteException {}
       public int getServerLoad() throws RemoteException {
         return 0;
@@ -44,8 +46,8 @@ public class ServerUtilTest {
   @Test
   public void test() throws RemoteException {
     try {
-      final RemoteServer server = ServerUtil.getServer("localhost", SERVER_NAME);
-      assertNotNull(server);
+      final RemoteServer remoteServer = ServerUtil.getServer("localhost", SERVER_NAME);
+      assertNotNull(remoteServer);
     }
     catch (NotBoundException e) {
       fail("Remote server not bound");
