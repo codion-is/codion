@@ -2139,3 +2139,6 @@
   Refactored event bindings between DefaultEntityModel, DefaultEntityEditModel and DefaultEntityTableModel with relation to sorting and repeated detail model refreshing
   ServerUtilTest added
   RemoteServer refactorings
+  EntityDefinition.isRowColoring field removed
+  EntityDefinition.isRowColoring() renamed to hasBackgroundColorProvider(), renaming bubbled all the way up
+  QueryLoadTestModel improved

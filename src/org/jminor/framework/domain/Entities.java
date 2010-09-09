@@ -16,8 +16,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.ListIterator;
+import java.util.Map;
 
 /**
  * A Entity factory class
@@ -489,8 +489,8 @@ public final class Entities {
    * @param entityID the entity ID
    * @return true if row coloring is enabled for the given entity type
    */
-  public static boolean isRowColoring(final String entityID) {
-    return getEntityDefinition(entityID).isRowColoring();
+  public static boolean hasBackgroundColorProvider(final String entityID) {
+    return getEntityDefinition(entityID).hasBackgroundColorProvider();
   }
 
   /**

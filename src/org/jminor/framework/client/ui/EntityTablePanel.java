@@ -1190,16 +1190,16 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
    * @return the TableCellRenderer
    */
   protected TableCellRenderer initializeTableCellRenderer() {
-    return new EntityTableCellRenderer(getEntityTableModel(), isRowColoring());
+    return new EntityTableCellRenderer(getEntityTableModel(), hasBackgroundColorProvider());
   }
 
   /**
    * By default this returns the result of isRowColoring from the Entities repository
    * @return true if the table rows should be colored according to the underlying entity
-   * @see org.jminor.framework.domain.Entities#isRowColoring(String)
+   * @see org.jminor.framework.domain.Entities#hasBackgroundColorProvider(String)
    */
-  protected boolean isRowColoring() {
-    return Entities.isRowColoring(getEntityTableModel().getEntityID());
+  protected boolean hasBackgroundColorProvider() {
+    return Entities.hasBackgroundColorProvider(getEntityTableModel().getEntityID());
   }
 
   /**

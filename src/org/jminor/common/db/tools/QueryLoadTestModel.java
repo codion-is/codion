@@ -26,7 +26,7 @@ import java.util.List;
 /**
  * A load test implementation for testing database queries.
  */
-public final class QueryLoadTestModel extends LoadTestModel<PoolableConnection> {
+public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.QueryApplication> {
 
   private static final int DEFAULT_MAXIMUM_THINK_TIME_MS = 500;
   private static final int DEFAULT_LOGIN_DELAY_MS = 2;
@@ -59,27 +59,27 @@ public final class QueryLoadTestModel extends LoadTestModel<PoolableConnection> 
     return pool;
   }
 
-  /** {@inheritDoc} */
   @Override
-  protected PoolableConnection initializeApplication() throws CancelException {
-    try {
-      return pool.getConnection();
-    }
-    catch (Exception e) {
-      throw new RuntimeException(e);
-    }
+  protected void disconnectApplication(final QueryApplication application) {}
+
+  @Override
+  protected QueryApplication initializeApplication() throws CancelException {
+    return new QueryApplication(pool);
   }
 
-  /** {@inheritDoc} */
-  @Override
-  protected void disconnectApplication(final PoolableConnection connection) {
-    pool.returnConnection(connection);
+  public static final class QueryApplication {
+
+    private final ConnectionPool pool;
+
+    private QueryApplication(final ConnectionPool pool) {
+      this.pool = pool;
+    }
   }
 
   /**
    * A usage scenario based on a SQL query.
    */
-  public static class QueryScenario extends AbstractUsageScenario<PoolableConnection> {
+  public static class QueryScenario extends AbstractUsageScenario<QueryApplication> {
 
     private static final long serialVersionUID = 1;
 
@@ -109,14 +109,16 @@ public final class QueryLoadTestModel extends LoadTestModel<PoolableConnection> 
 
     /**
      *
-     * @param connection the connection
-     * @throws ScenarioException
+     * @param application the connection pool providing connections
+     * @throws ScenarioException in case of an exception during the scenario run
      */
     @Override
-    protected final void performScenario(final PoolableConnection connection) throws ScenarioException {
+    protected final void performScenario(final QueryApplication application) throws ScenarioException {
+      PoolableConnection connection = null;
       PreparedStatement statement = null;
       ResultSet resultSet = null;
       try {
+        connection = application.pool.getConnection();
         statement = connection.getConnection().prepareCall(query);
         final List<Object> parameters = getParameters();
         if (parameters != null && !parameters.isEmpty()) {
@@ -148,6 +150,9 @@ public final class QueryLoadTestModel extends LoadTestModel<PoolableConnection> 
         throw new ScenarioException(e);
       }
       finally {
+        if (connection != null) {
+          application.pool.returnConnection(connection);
+        }
         Util.closeSilently(resultSet);
         Util.closeSilently(statement);
       }

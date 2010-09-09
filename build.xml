@@ -173,7 +173,7 @@
     <jrc srcdir="${resources.demos}" includes="**/*.jrxml"/>
   </target>
 
-  <target name="dist" depends="build, manifest"
+  <target name="dist" depends="clean, build, manifest"
           description="Builds all distribution jar files in the dist directory">
     <mkdir dir="${dist}"/>
     <jar jarfile="${dist}/${ant.project.name}.jar" basedir="${build.base}"
@@ -386,7 +386,7 @@
     </zip>
   </target>
 
-  <target name="deploy_to_wiki" depends="javadoc, run_and_report, deploy_src_to_wiki"
+  <target name="deploy_to_wiki" depends="javadoc, unit_test_coverage, deploy_src_to_wiki"
           description="Publishes the relevant files to the documentation wiki">
     <delete dir="${wiki.media.project}/docs"/>
     <delete dir="${wiki.media.project}/resources"/>

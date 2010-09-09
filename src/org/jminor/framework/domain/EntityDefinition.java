@@ -6,11 +6,11 @@ package org.jminor.framework.domain;
 import org.jminor.common.model.IdSource;
 import org.jminor.common.model.valuemap.ValueMap;
 
+import java.awt.Color;
+import java.text.Format;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.text.Format;
-import java.awt.Color;
 
 /**
  * A interface defining a entity.
@@ -193,16 +193,10 @@ public interface EntityDefinition {
   Entity.Comparator getComparator();
 
   /**
-   * @return true if this entity type should use specific row coloring when presented in table views
+   * @return true if this entity type has a background color provider assigned to it
+   * @see org.jminor.framework.domain.Entity.BackgroundColorProvider
    */
-  boolean isRowColoring();
-
-  /**
-   * Sets wether or not to use specific row coloring when presenting entities of this type in table views
-   * @param rowColoring the rowColoring value
-   * @return this EntityDefinition instance
-   */
-  EntityDefinition setRowColoring(final boolean rowColoring);
+  boolean hasBackgroundColorProvider();
 
   /**
    * @return a list of property IDs identifying the properties to use when performing

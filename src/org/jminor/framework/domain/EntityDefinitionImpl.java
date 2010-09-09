@@ -10,16 +10,7 @@ import org.jminor.common.model.valuemap.ValueMap;
 import java.awt.Color;
 import java.text.Collator;
 import java.text.Format;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * A class encapsulating a entity definition, such as table name, order by clause and properties.
@@ -85,7 +76,7 @@ final class EntityDefinitionImpl implements EntityDefinition {
   /**
    * Provides the background color
    */
-  private Entity.BackgroundColorProvider backgroundColorProvider = new BackgroundColorProviderImpl();
+  private Entity.BackgroundColorProvider backgroundColorProvider = null;
   /**
    * Provides values derived from other properties
    */
@@ -102,10 +93,6 @@ final class EntityDefinitionImpl implements EntityDefinition {
    * A custom sql query used when selecting entities of this type
    */
   private String selectQuery;
-  /**
-   * True if this entity should be color specifically in table views
-   */
-  private boolean rowColoring;
   /**
    * The IDs of the properties to use when performing a string based lookup on this entity
    */
@@ -303,17 +290,6 @@ final class EntityDefinitionImpl implements EntityDefinition {
   }
 
   /** {@inheritDoc} */
-  public boolean isRowColoring() {
-    return rowColoring;
-  }
-
-  /** {@inheritDoc} */
-  public EntityDefinition setRowColoring(final boolean rowColoring) {
-    this.rowColoring = rowColoring;
-    return this;
-  }
-
-  /** {@inheritDoc} */
   public List<String> getSearchPropertyIDs() {
     if (searchPropertyIDs == null) {
       return Collections.emptyList();
@@ -484,8 +460,17 @@ final class EntityDefinitionImpl implements EntityDefinition {
   }
 
   /** {@inheritDoc} */
+  public boolean hasBackgroundColorProvider() {
+    return backgroundColorProvider != null;
+  }
+
+  /** {@inheritDoc} */
   @SuppressWarnings({"UnusedDeclaration"})
   public Color getBackgroundColor(final Entity entity) {
+    if (backgroundColorProvider == null) {
+      return null;
+    }
+
     return backgroundColorProvider.getBackgroundColor(entity);
   }
 
@@ -654,13 +639,6 @@ final class EntityDefinitionImpl implements EntityDefinition {
     }
 
     return stringBuilder.toString();
-  }
-  
-  private static final class BackgroundColorProviderImpl implements Entity.BackgroundColorProvider {
-    /** {@inheritDoc} */
-    public Color getBackgroundColor(final Entity entity) {
-      return null;
-    }
   }
 
   private static final class FormattedValueProviderImpl implements Entity.FormattedValueProvider {

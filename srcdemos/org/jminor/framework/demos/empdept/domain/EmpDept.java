@@ -110,7 +110,6 @@ public class EmpDept {
             .setIdSource(IdSource.MAX_PLUS_ONE)
             .setOrderByClause(EMPLOYEE_DEPARTMENT + ", " + EMPLOYEE_NAME)
             .setStringProvider(new StringProvider<String>(EMPLOYEE_NAME))
-            .setRowColoring(true)
             .setCaption(getString(EMPLOYEE))
             .setBackgroundColorProvider(new Entity.BackgroundColorProvider() {
               /*provide a custom background color for managers*/
