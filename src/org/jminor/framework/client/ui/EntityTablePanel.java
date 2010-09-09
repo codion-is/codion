@@ -72,7 +72,6 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 
 /**
@@ -1320,24 +1319,14 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
       /** {@inheritDoc} */
       @Override
       public void actionPerformed(final ActionEvent e) {
-        try {
-          copyTableAsDelimitedString();
-        }
-        catch (CancelException ex) {/**/}
+        copyTableAsDelimitedString();
       }
     };
   }
 
-  private void copyTableAsDelimitedString() throws CancelException {
+  private void copyTableAsDelimitedString() {
     final List<String> headerValues = new ArrayList<String>();
     final List<Property> properties = new ArrayList<Property>(getEntityTableModel().getTableColumnProperties());
-    final ListIterator<Property> iterator = properties.listIterator();
-    //remove hidden columns
-    while (iterator.hasNext()) {
-      if (!getEntityTableModel().isColumnVisible(iterator.next())) {
-        iterator.remove();
-      }
-    }
     for (final Property property : properties) {
       headerValues.add(property.getCaption());
     }
@@ -1357,13 +1346,6 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
       data[i] = line.toArray(new String[line.size()]);
     }
     Util.setClipboard(Util.getDelimitedString(header, data, "\t"));
-  }
-
-  private JLabel initializeStatusMessageLabel() {
-    final JLabel label  = new JLabel("", JLabel.CENTER);
-    label.setFont(new Font(label.getFont().getName(), Font.PLAIN, STATUS_MESSAGE_FONT_SIZE));
-
-    return label;
   }
 
   /**
@@ -1543,6 +1525,13 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     }
     UiUtil.showInDialog(UiUtil.getParentWindow(dialogParent), dependenciesPanel,
             true, FrameworkMessages.get(FrameworkMessages.DEPENDENT_RECORDS_FOUND), true, true, null);
+  }
+
+  private static JLabel initializeStatusMessageLabel() {
+    final JLabel label  = new JLabel("", JLabel.CENTER);
+    label.setFont(new Font(label.getFont().getName(), Font.PLAIN, STATUS_MESSAGE_FONT_SIZE));
+
+    return label;
   }
 
   private static JPanel createDependenciesPanel(final Map<String, Collection<Entity>> dependencies,
