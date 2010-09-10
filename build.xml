@@ -544,7 +544,7 @@
     </cobertura-report>
   </target>
 
-  <target name="sonar_analysis_win_only" depends="clean, build, unit_test_coverage"
+  <target name="sonar_analysis_win_only" depends="clean, dist, unit_test_coverage"
           description="Runs the unit tests with coverage analysis and then command 'mvn sonar:sonar' via the cmd shell">
     <exec executable="cmd">
       <arg value="/c"/>

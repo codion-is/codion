@@ -3,6 +3,10 @@
  */
 package org.jminor.framework.domain;
 
+import org.junit.Test;
+
 public class EntitiesTest {
   //test method moved, no need to delete the class
+  @Test
+  public void test() {}
 }
