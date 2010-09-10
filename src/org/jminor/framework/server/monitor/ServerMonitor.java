@@ -6,6 +6,7 @@ package org.jminor.framework.server.monitor;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
+import org.jminor.common.server.RemoteServer;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.server.EntityDbServerAdmin;
 
@@ -70,7 +71,7 @@ public final class ServerMonitor {
 
   public ServerMonitor(final String hostName, final String serverName) throws RemoteException {
     this.hostName = hostName;
-    this.serverName = serverName;
+    this.serverName = removeAdminPrefix(serverName);
     Configuration.class.getName();
     this.server = connectServer(serverName);
     connectionRequestsPerSecondCollection.addSeries(connectionRequestsPerSecondSeries);
@@ -309,5 +310,13 @@ public final class ServerMonitor {
         catch (RemoteException e) {/**/}
       }
     }, delay, delay);
+  }
+
+  private static String removeAdminPrefix(final String serverName) {
+    if (serverName.startsWith(RemoteServer.SERVER_ADMIN_PREFIX)) {
+      return serverName.substring(RemoteServer.SERVER_ADMIN_PREFIX.length(), serverName.length());
+    }
+
+    return serverName;
   }
 }
