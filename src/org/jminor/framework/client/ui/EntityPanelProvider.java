@@ -366,6 +366,9 @@ public class EntityPanelProvider implements Comparable {
   }
 
   private EntityEditPanel initializeEditPanel(final EntityEditModel editModel) {
+    if (editPanelClass == null) {
+      throw new IllegalArgumentException("No edit panel class has been specified for entity panel provider: " + entityID);
+    }
     try {
       final EntityEditPanel editPanel = editPanelClass.getConstructor(EntityEditModel.class).newInstance(editModel);
       configureEditPanel(editPanel);
