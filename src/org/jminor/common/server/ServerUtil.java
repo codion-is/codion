@@ -66,12 +66,12 @@ public final class ServerUtil {
     for (final String serverHostName : hostNames.split(",")) {
       final Registry registry = LocateRegistry.getRegistry(serverHostName);
       for (final String name : registry.list()) {
-        System.out.println("Found server: " + name);
+        LOG.info("Found server \"" + name + "\"");
         if (name.startsWith(serverNamePrefix)) {
           try {
             final RemoteServer server = checkServer((RemoteServer) registry.lookup(name), port);
             if (server != null) {
-              System.out.println("Adding server: " + server.getServerName());
+              LOG.info("Adding server \"" + name + "\"");
               servers.add(server);
             }
           }
