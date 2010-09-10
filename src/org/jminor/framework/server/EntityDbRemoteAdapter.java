@@ -587,7 +587,11 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
             throw e;
           }
           finally {
-            methodLogger.logExit(GET_CONNECTION, getException, System.currentTimeMillis(), null);
+            String message = null;
+            if (connection != null && connection.getRetryCount() > 0) {
+              message = "retries: " + connection.getRetryCount();
+            }
+            methodLogger.logExit(GET_CONNECTION, getException, null, message);
           }
         }
         else {
@@ -614,7 +618,7 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
           RequestCounter.incrementWarningTimeExceededCounter();
         }
         if (logMethod) {
-          final LogEntry logEntry = methodLogger.logExit(methodName, exception, currentTime, connection != null ? connection.getLogEntries() : null);
+          final LogEntry logEntry = methodLogger.logExit(methodName, exception, connection != null ? connection.getLogEntries() : null);
           if (methodLogger.isEnabled()) {
             final StringBuilder messageBuilder = new StringBuilder(client.toString()).append("\n");
             appendLogEntries(messageBuilder, logEntry.getSubLog(), 1);

@@ -35,6 +35,8 @@ public abstract class LoadTestModel<T> implements LoadTest {
 
   protected static final Random RANDOM = new Random();
 
+  private static final long NANO_IN_MILLI = 1000000;
+
   private final Event evtPausedChanged = Events.event();
   private final Event evtCollectChartDataChanged = Events.event();
   private final Event evtMaximumThinkTimeChanged = Events.event();
@@ -594,7 +596,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
             }
             think();
             if (!loadTestModel.isPaused()) {
-              final long currentTime = System.currentTimeMillis();
+              final long currentTimeNano = System.nanoTime();
               String scenarioName = null;
               try {
                 loadTestModel.counter.incrementWorkRequests();
@@ -606,11 +608,11 @@ public abstract class LoadTestModel<T> implements LoadTest {
                 }
               }
               finally {
-                final long workTime = System.currentTimeMillis() - currentTime;
+                final long workTimeMillis = (System.nanoTime() - currentTimeNano) / NANO_IN_MILLI;
                 if (scenarioName != null) {
-                  loadTestModel.counter.addScenarioDuration(scenarioName, (int) workTime);
+                  loadTestModel.counter.addScenarioDuration(scenarioName, (int) workTimeMillis);
                 }
-                if (workTime > loadTestModel.getWarningTime()) {
+                if (workTimeMillis > loadTestModel.getWarningTime()) {
                   loadTestModel.counter.incrementDelayedWorkRequests();
                 }
               }

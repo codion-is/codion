@@ -76,7 +76,7 @@ public final class ServerUtil {
             }
           }
           catch (Exception e) {
-            LOG.error("Server \"" + name + "\" is unreachable", e);
+            LOG.info("Server \"" + name + "\" is unreachable", e);
           }
         }
       }

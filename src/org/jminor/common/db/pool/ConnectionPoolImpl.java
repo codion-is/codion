@@ -37,6 +37,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
   public static final int DEFAULT_NEW_CONNECTION_THRESHOLD = 500;
 
   private static final int FINE_GRAINED_STATS_SIZE = 1000;
+  private static final long NANO_IN_MILLI = 1000000;
 
   private final PoolableConnectionProvider connectionProvider;
   private final User user;
@@ -84,40 +85,40 @@ public final class ConnectionPoolImpl implements ConnectionPool {
     }
     counter.incrementRequestCounter();
 
-    final long startTime = System.currentTimeMillis();
+    final long nanoStartTime = System.nanoTime();
     if (collectFineGrainedStatistics) {
-      addPoolStatistics(startTime);
+      addPoolStatistics(System.currentTimeMillis());
     }
 
     PoolableConnection connection = fetchFromPool();
     if (connection == null) {
       counter.incrementDelayedRequestCounter();
     }
-    long elapsedTime = System.currentTimeMillis() - startTime;
+    long elapsedNanoTime = System.nanoTime() - nanoStartTime;
     int retryCount = 0;
     boolean keepTrying = connection == null;
     while (keepTrying) {
       retryCount++;
-      if (isNewConnectionWarranted(elapsedTime)) {
+      if (isNewConnectionWarranted(elapsedNanoTime / NANO_IN_MILLI)) {
         connection = createConnection();
       }
       else {
         waitForRetry();
         connection = fetchFromPool();
       }
-      elapsedTime = System.currentTimeMillis() - startTime;
-      keepTrying = connection == null && elapsedTime < maximumCheckOuttime;
+      elapsedNanoTime = System.nanoTime() - nanoStartTime;
+      keepTrying = connection == null && (elapsedNanoTime / NANO_IN_MILLI) < maximumCheckOuttime;
     }
 
     if (connection != null) {
-      counter.addCheckOutTime(elapsedTime);
+      counter.addCheckOutTime(elapsedNanoTime / NANO_IN_MILLI);
       connection.setRetryCount(retryCount);
 
       return connection;
     }
     counter.incrementFailedRequestCounter();
 
-    throw new ConnectionPoolException.NoConnectionAvailable(retryCount, elapsedTime);
+    throw new ConnectionPoolException.NoConnectionAvailable(retryCount, elapsedNanoTime / NANO_IN_MILLI);
   }
 
   /** {@inheritDoc} */

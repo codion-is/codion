@@ -92,7 +92,7 @@ public class MethodLogger {
   public final synchronized List<LogEntry> getLogEntries() {
     final ArrayList<LogEntry> entries = new ArrayList<LogEntry>();
     if (!enabled) {
-      entries.add(new LogEntry("Logging is not enabled", "", System.currentTimeMillis(), null));
+      entries.add(new LogEntry("Logging is not enabled", "", System.currentTimeMillis(), 0, null));
     }
     else {
       for (final LogEntry entry : logEntries) {
@@ -110,20 +110,11 @@ public class MethodLogger {
    * @param arguments the method arguments
    */
   public final void logAccess(final String method, final Object[] arguments) {
-    logAccess(method, arguments, System.currentTimeMillis());
-  }
-
-  /**
-   * @param method the method being accessed
-   * @param arguments the method arguments
-   * @param timestamp the method access timestamp
-   */
-  public final void logAccess(final String method, final Object[] arguments, final long timestamp) {
-    this.lastAccessDate = timestamp;
+    this.lastAccessDate = System.currentTimeMillis();
     this.lastAccessedMethod = method;
     if (enabled) {
       this.lastAccessMessage = argumentArrayToString(arguments);
-      addLogEntry(lastAccessedMethod, lastAccessMessage, lastAccessDate, false, null, null);
+      addLogEntry(lastAccessedMethod, lastAccessMessage, lastAccessDate, System.nanoTime(), false, null, null);
     }
   }
 
@@ -134,35 +125,22 @@ public class MethodLogger {
    * @return the LogEntry
    */
   public final LogEntry logExit(final String method, final Throwable exception, final List<LogEntry> subLog) {
-    return logExit(method, exception, System.currentTimeMillis(), subLog);
+    return logExit(method, exception, subLog, null);
   }
 
   /**
    * @param method the method being exited
    * @param exception the exception, if any
-   * @param timestamp the method exit timestamp
-   * @param subLog the sub-log, if any
-   * @return the LogEntry
-   */
-  public final LogEntry logExit(final String method, final Throwable exception, final long timestamp,
-                                final List<LogEntry> subLog) {
-    return logExit(method, exception, timestamp, subLog, null);
-  }
-
-  /**
-   * @param method the method being exited
-   * @param exception the exception, if any
-   * @param timestamp the method exit timestamp
    * @param subLog the sub-log, if any
    * @param exitMessage the exit message
    * @return the LogEntry
    */
-  public final LogEntry logExit(final String method, final Throwable exception, final long timestamp,
+  public final LogEntry logExit(final String method, final Throwable exception,
                                 final List<LogEntry> subLog, final String exitMessage) {
-    this.lastExitDate = timestamp;
+    this.lastExitDate = System.currentTimeMillis();
     this.lastExitedMethod = method;
     if (enabled) {
-      return addLogEntry(lastExitedMethod, exitMessage, lastExitDate, true, exception, subLog);
+      return addLogEntry(lastExitedMethod, exitMessage, lastExitDate, System.nanoTime(), true, exception, subLog);
     }
 
     return null;
@@ -191,7 +169,8 @@ public class MethodLogger {
     return String.valueOf(argument);
   }
 
-  private synchronized LogEntry addLogEntry(final String method, final String message, final long time, final boolean isExit,
+  private synchronized LogEntry addLogEntry(final String method, final String message, final long time,
+                                            final long nanoTime, final boolean isExit,
                                             final Throwable exception, final List<LogEntry> subLog) {
     if (!isExit) {
       if (currentLogEntryIndex > logEntries.size()-1) {
@@ -199,7 +178,7 @@ public class MethodLogger {
       }
 
       final LogEntry entry = logEntries.get(currentLogEntryIndex);
-      entry.set(method, message, time, exception);
+      entry.set(method, message, time, nanoTime, exception);
 
       return entry;
     }
@@ -208,7 +187,7 @@ public class MethodLogger {
       assert lastEntry.getMethod().equals(method);
       lastEntry.setSubLog(subLog);
       currentLogEntryIndex++;
-      return lastEntry.setException(exception).setExitMessage(message).setExitTime(time);
+      return lastEntry.setException(exception).setExitMessage(message).setExitTimeNano(nanoTime);
     }
   }
 
