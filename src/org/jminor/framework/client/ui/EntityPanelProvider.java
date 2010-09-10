@@ -50,8 +50,6 @@ public class EntityPanelProvider implements Comparable {
 
   private static final Map<String, EntityPanelProvider> PANEL_PROVIDERS = Collections.synchronizedMap(new HashMap<String, EntityPanelProvider>());
 
-  private EntityPanel instance;
-
   /**
    * Instantiates a new EntityPanelProvider for the given entity type
    * @param entityID the entity ID
@@ -259,11 +257,11 @@ public class EntityPanelProvider implements Comparable {
     return entityID.hashCode();
   }
 
-  public final EntityPanel createInstance(final EntityDbProvider dbProvider) {
-    return createInstance(dbProvider, false);
+  public final EntityPanel createPanel(final EntityDbProvider dbProvider) {
+    return createPanel(dbProvider, false);
   }
 
-  public final EntityPanel createInstance(final EntityDbProvider dbProvider, final boolean detailPanel) {
+  public final EntityPanel createPanel(final EntityDbProvider dbProvider, final boolean detailPanel) {
     Util.rejectNullValue(dbProvider, "dbProvider");
     try {
       final EntityModel entityModel = initializeModel(this, dbProvider);
@@ -271,7 +269,7 @@ public class EntityPanelProvider implements Comparable {
         entityModel.getTableModel().setDetailModel(true);
       }
 
-      return createInstance(entityModel, detailPanel);
+      return createInstance(entityModel);
     }
     catch (RuntimeException e) {
       throw e;
@@ -281,15 +279,12 @@ public class EntityPanelProvider implements Comparable {
     }
   }
 
-  public final void setInstance(final EntityPanel instance) {
-    if (this.instance != null) {
-      throw new IllegalStateException("EntityPanel instance has already been set for this provider: " + this.instance);
-    }
-    this.instance = instance;
+  public final EntityEditPanel createEditPanel(final EntityDbProvider dbProvider) {
+    return initializeEditPanel(initializeEditModel(dbProvider));
   }
 
-  public final EntityPanel getInstance() {
-    return instance;
+  public final EntityTablePanel createTablePanel(final EntityDbProvider dbProvider) {
+    return initializeTablePanel(initializeTableModel(dbProvider));
   }
 
   public static EntityPanelProvider getProvider(final String entityID) {
@@ -308,7 +303,7 @@ public class EntityPanelProvider implements Comparable {
 
   protected void configureTableModel(final EntityTableModel tableModel) {}
 
-  private EntityPanel createInstance(final EntityModel model, final boolean isDetailPanel) {
+  private EntityPanel createInstance(final EntityModel model) {
     if (model == null) {
       throw new IllegalArgumentException("Can not create a EntityPanel without an EntityModel");
     }
@@ -322,7 +317,7 @@ public class EntityPanelProvider implements Comparable {
         entityPanel.setDetailPanelState(detailPanelState);
         entityPanel.setDetailSplitPanelResizeWeight(detailSplitPanelResizeWeight);
         for (final EntityPanelProvider detailProvider : detailPanelProviders) {
-          final EntityPanel detailPanel = detailProvider.createInstance(model.getDbProvider(), true);
+          final EntityPanel detailPanel = detailProvider.createPanel(model.getDbProvider(), true);
           model.addDetailModel(detailPanel.getModel());
           entityPanel.addDetailPanel(detailPanel);
         }

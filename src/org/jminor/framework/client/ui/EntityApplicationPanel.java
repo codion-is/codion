@@ -22,8 +22,8 @@ import org.jminor.common.ui.control.Controls;
 import org.jminor.common.ui.control.ToggleBeanValueLink;
 import org.jminor.common.ui.images.Images;
 import org.jminor.framework.Configuration;
-import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.DefaultEntityApplicationModel;
+import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.db.provider.EntityDbProviderFactory;
 import org.jminor.framework.i18n.FrameworkMessages;
@@ -654,7 +654,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
         }
       }
       else {
-        entityPanel = panelProvider.createInstance(applicationModel.getDbProvider());
+        entityPanel = panelProvider.createPanel(applicationModel.getDbProvider());
         entityPanel.initializePanel();
         if (persistEntityPanels) {
           persistentEntityPanels.put(panelProvider, entityPanel);
@@ -708,7 +708,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
       throw new IllegalStateException("No main entity panels provided");
     }
     for (final EntityPanelProvider provider : mainApplicationPanelProviders) {
-      final EntityPanel entityPanel = provider.createInstance(applicationModel.getDbProvider());
+      final EntityPanel entityPanel = provider.createPanel(applicationModel.getDbProvider());
       mainApplicationPanels.add(entityPanel);
       final String caption = !Util.nullOrEmpty(provider.getCaption()) ? entityPanel.getCaption() : provider.getCaption();
       applicationTabPane.addTab(caption, entityPanel);
@@ -952,7 +952,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
         initializeActiveEntityPanel();
       }
     });
-    final StateObserver connected = getModel().getDbProvider().getConnectedState();
+    final StateObserver connected = applicationModel.getDbProvider().getConnectedState();
     connected.addActivateListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         UiUtil.getParentFrame(EntityApplicationPanel.this).setTitle(frameTitle);

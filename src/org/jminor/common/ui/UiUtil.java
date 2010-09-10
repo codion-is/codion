@@ -29,35 +29,16 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.StringTokenizer;
 import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * A static utility class.
@@ -887,6 +868,29 @@ public final class UiUtil {
     else {
       throw new RuntimeException(Messages.get(Messages.FILE_NOT_FOUND) + ": " + imagePath);
     }
+  }
+
+  /**
+   * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=5018574
+   * @param component the component, in case of text fields the caret is moved to the end of the text
+   * @param onFocusAction the action to run when the focus has been requested
+   */
+  public static void addInitialFocusHack(final JComponent component, final Action onFocusAction) {
+    component.addHierarchyListener(new HierarchyListener() {
+      public void hierarchyChanged(final HierarchyEvent e) {
+        if (component.isShowing() && (e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0) {
+          SwingUtilities.getWindowAncestor(component).addWindowFocusListener(new WindowAdapter() {
+            @Override
+            public void windowGainedFocus(final WindowEvent evt) {
+              component.requestFocusInWindow();
+              if (onFocusAction != null) {
+                onFocusAction.actionPerformed(new ActionEvent(component, 0, "onFocusAction"));
+              }
+            }
+          });
+        }
+      }
+    });
   }
 
   private static JDialog initializeDialog(final JComponent parent, final NavigableImagePanel panel) {

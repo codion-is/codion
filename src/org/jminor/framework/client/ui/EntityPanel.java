@@ -248,7 +248,9 @@ public class EntityPanel extends JPanel {
     this.model = model;
     this.caption = caption == null ? model.getEntityID() : caption;
     this.editPanel = editPanel;
-    this.editPanel.getActiveState().addListener(new ActivationListener());
+    if (editPanel != null) {
+      this.editPanel.getActiveState().addListener(new ActivationListener());
+    }
     if (tablePanel == null && model.containsTableModel()) {
       this.tablePanel = new EntityTablePanel(model.getTableModel());
     }

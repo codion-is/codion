@@ -38,12 +38,12 @@ public class ItemPanel extends EntityEditPanel {
     box = createEntityComboBox(ITEM_C0NTACT_INFO_FK);
     box.setPopupWidth(200);
     box.setPreferredSize(UiUtil.getPreferredTextFieldSize());
-    add(createPropertyPanel(ITEM_C0NTACT_INFO_FK, EntityUiUtil.createEntityComboBoxNewRecordPanel(box,
+    add(createPropertyPanel(ITEM_C0NTACT_INFO_FK, EntityUiUtil.createEntityComboBoxPanel(box,
             new EntityPanelProvider(Petstore.T_SELLER_CONTACT_INFO).setEditPanelClass(ContactInfoPanel.class), false)));
     box = createEntityComboBox(ITEM_ADDRESS_FK);
     box.setPopupWidth(200);
     box.setPreferredSize(UiUtil.getPreferredTextFieldSize());
-    add(createPropertyPanel(ITEM_ADDRESS_FK, EntityUiUtil.createEntityComboBoxNewRecordPanel(box,
+    add(createPropertyPanel(ITEM_ADDRESS_FK, EntityUiUtil.createEntityComboBoxPanel(box,
             new EntityPanelProvider(Petstore.T_ADDRESS).setEditPanelClass(AddressPanel.class), false)));
     createTextField(ITEM_IMAGE_URL);
     addPropertyPanel(ITEM_IMAGE_URL);

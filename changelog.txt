@@ -2145,3 +2145,8 @@
   EntityDbRemoteTest added
   EntityModel.stActive moved to it's logical home, EntityEditPanel
   EntityTableColumnModel removed along with default implementation
+  EntityEditModel insert/update/delete now return the affected entities/keys
+  EntityUiUtil.NewRecordAction renamed to NewEntityAction, now uses a single EntityEditPanel instead of a whole EntityPanel
+  LoginPanel.addInitialFocusHack() moved to UiUtil, action parameter added
+  EntityPanelProvider.createInstance() renamed to createPanel()
+  EntityPanelProvider.createEditPanel() and createTablePanel() added

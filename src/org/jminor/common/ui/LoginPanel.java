@@ -8,6 +8,7 @@ import org.jminor.common.model.CancelException;
 import org.jminor.common.model.User;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
 
+import javax.swing.AbstractAction;
 import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -16,12 +17,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
-import java.awt.event.HierarchyEvent;
-import java.awt.event.HierarchyListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.ActionEvent;
 
 /**
  * A JPanel for retrieving login information.
@@ -115,30 +112,18 @@ public final class LoginPanel extends JPanel {
     setLayout(new BorderLayout());
     add(retBase, BorderLayout.CENTER);
     if (usernameField.getText().isEmpty()) {
-      addInitialFocusHack(usernameField);
+      UiUtil.addInitialFocusHack(usernameField, new AbstractAction() {
+        public void actionPerformed(final ActionEvent e) {
+          usernameField.setCaretPosition(usernameField.getText().length());
+        }
+      });
     }
     else {
-      addInitialFocusHack(passwordField);
-    }
-  }
-
-  /**
-   * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=5018574
-   * @param textField the field
-   */
-  private static void addInitialFocusHack(final JTextField textField) {
-    textField.addHierarchyListener(new HierarchyListener() {
-      public void hierarchyChanged(final HierarchyEvent e) {
-        if (textField.isShowing() && (e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0) {
-          SwingUtilities.getWindowAncestor(textField).addWindowFocusListener(new WindowAdapter() {
-            @Override
-            public void windowGainedFocus(final WindowEvent evt) {
-              textField.requestFocusInWindow();
-              textField.setCaretPosition(textField.getText().length());
-            }
-          });
+      UiUtil.addInitialFocusHack(passwordField, new AbstractAction() {
+        public void actionPerformed(final ActionEvent e) {
+          passwordField.setCaretPosition(passwordField.getText().length());
         }
-      }
-    });
+      });
+    }
   }
 }

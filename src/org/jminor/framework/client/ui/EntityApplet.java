@@ -18,6 +18,7 @@ import java.util.UUID;
 public class EntityApplet extends JApplet {
 
   private final EntityPanelProvider entityPanelProvider;
+  private EntityPanel instance;
 
   public EntityApplet(final EntityPanelProvider entityPanelProvider) {
     this.entityPanelProvider = entityPanelProvider;
@@ -28,9 +29,9 @@ public class EntityApplet extends JApplet {
     try {
       SwingUtilities.invokeAndWait(new Runnable() {
         public void run() {
-          final EntityPanel panel = entityPanelProvider.createInstance(new EntityDbRemoteProvider(new User("scott", "tiger"),
+          final EntityPanel panel = entityPanelProvider.createPanel(new EntityDbRemoteProvider(new User("scott", "tiger"),
                   UUID.randomUUID(), entityPanelProvider.toString()));
-          entityPanelProvider.setInstance(panel);
+          instance = panel;
           panel.initializeUI();
           getContentPane().add(panel);
         }
@@ -45,7 +46,7 @@ public class EntityApplet extends JApplet {
   public final void destroy() {
     SwingUtilities.invokeLater(new Runnable() {
       public void run() {
-        entityPanelProvider.getInstance().getModel().getDbProvider().disconnect();
+        instance.getModel().getDbProvider().disconnect();
       }
     });
   }

@@ -4,6 +4,7 @@
 package org.jminor.framework.client.ui;
 
 import org.jminor.common.db.criteria.Criteria;
+import org.jminor.common.db.exception.DbException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.DateUtil;
@@ -26,18 +27,10 @@ import org.jminor.common.ui.images.Images;
 import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.common.ui.textfield.IntField;
 import org.jminor.common.ui.textfield.TextFieldPlus;
-import org.jminor.common.ui.valuemap.AbstractValueMapLink;
-import org.jminor.common.ui.valuemap.BooleanValueLink;
-import org.jminor.common.ui.valuemap.ComboBoxValueLink;
-import org.jminor.common.ui.valuemap.DateValueLink;
-import org.jminor.common.ui.valuemap.DoubleValueLink;
-import org.jminor.common.ui.valuemap.FormattedValueLink;
-import org.jminor.common.ui.valuemap.IntValueLink;
-import org.jminor.common.ui.valuemap.TextValueLink;
-import org.jminor.common.ui.valuemap.TristateValueLink;
-import org.jminor.common.ui.valuemap.ValueLinkValidators;
+import org.jminor.common.ui.valuemap.*;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityComboBoxModel;
+import org.jminor.framework.client.model.EntityDataProvider;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityLookupModel;
 import org.jminor.framework.client.model.EntityTableModel;
@@ -629,14 +622,12 @@ public final class EntityUiUtil {
     return panel;
   }
 
-  public static JPanel createEntityComboBoxNewRecordPanel(final EntityComboBox entityComboBox,
-                                                          final EntityPanelProvider panelProvider,
-                                                          final boolean newRecordButtonTakesFocus) {
-    return createEastButtonPanel(entityComboBox, new NewRecordAction(entityComboBox, panelProvider), newRecordButtonTakesFocus);
+  public static JPanel createEntityComboBoxPanel(final EntityComboBox entityComboBox, final EntityPanelProvider panelProvider,
+                                                 final boolean newRecordButtonTakesFocus) {
+    return createEastButtonPanel(entityComboBox, new NewEntityAction(entityComboBox, panelProvider), newRecordButtonTakesFocus);
   }
 
-  public static JPanel createEntityComboBoxFilterPanel(final EntityComboBox entityComboBox,
-                                                       final String foreignKeyPropertyID,
+  public static JPanel createEntityComboBoxFilterPanel(final EntityComboBox entityComboBox, final String foreignKeyPropertyID,
                                                        final boolean filterButtonTakesFocus) {
     return createEastButtonPanel(entityComboBox, entityComboBox.createForeignKeyFilterAction(foreignKeyPropertyID),
             filterButtonTakesFocus);
@@ -690,78 +681,6 @@ public final class EntityUiUtil {
     }
 
     return field;
-  }
-
-  private static final class NewRecordAction extends AbstractAction {
-
-    private final EntityComboBox comboBox;
-    private final EntityPanelProvider panelProvider;
-
-    private NewRecordAction(final EntityComboBox comboBox, final EntityPanelProvider panelProvider) {
-      super("", Images.loadImage(Images.IMG_ADD_16));
-      this.comboBox = comboBox;
-      this.panelProvider = panelProvider;
-    }
-
-    public void actionPerformed(final ActionEvent e) {
-      final EntityPanel entityPanel = panelProvider.createInstance(comboBox.getModel().getDbProvider());
-      entityPanel.initializePanel();
-      final List<Entity.Key> insertedPrimaryKeys = new ArrayList<Entity.Key>();
-      entityPanel.getModel().getEditModel().addAfterInsertListener(new NewRecordListener(insertedPrimaryKeys));
-      final Window parentWindow = UiUtil.getParentWindow(comboBox);
-      final String caption = panelProvider.getCaption() == null || panelProvider.getCaption().equals("") ?
-              entityPanel.getCaption() : panelProvider.getCaption();
-      final JDialog dialog = new JDialog(parentWindow, caption);
-      dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-      dialog.setLayout(new BorderLayout());
-      dialog.add(entityPanel, BorderLayout.CENTER);
-      final JButton btnClose = initializeOkButton(entityPanel.getModel().getTableModel(), dialog, insertedPrimaryKeys);
-      final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-      buttonPanel.add(btnClose);
-      dialog.add(buttonPanel, BorderLayout.SOUTH);
-      dialog.pack();
-      dialog.setLocationRelativeTo(parentWindow);
-      dialog.setModal(true);
-      dialog.setResizable(true);
-      dialog.setVisible(true);
-    }
-
-  private static final class NewRecordListener extends InsertListener {
-
-    private final Collection<Entity.Key> insertKeys;
-
-    private NewRecordListener(final Collection<Entity.Key> insertKeys) {
-      this.insertKeys = insertKeys;
-    }
-
-    @Override
-    protected void inserted(final InsertEvent event) {
-      insertKeys.clear();
-      insertKeys.addAll(event.getInsertedKeys());
-    }
-  }
-
-    private JButton initializeOkButton(final EntityTableModel tableModel, final JDialog dialog,
-                                       final List<Entity.Key> lastInsertedPrimaryKeys) {
-      final JButton button = new JButton(new AbstractAction(Messages.get(Messages.OK)) {
-        public void actionPerformed(final ActionEvent e) {
-          comboBox.getModel().refresh();
-          if (lastInsertedPrimaryKeys != null && !lastInsertedPrimaryKeys.isEmpty()) {
-            comboBox.getModel().setSelectedEntityByPrimaryKey(lastInsertedPrimaryKeys.get(0));
-          }
-          else {
-            final Entity selectedEntity = tableModel.getSelectedItem();
-            if (selectedEntity != null) {
-              comboBox.getModel().setSelectedItem(selectedEntity);
-            }
-          }
-          dialog.dispose();
-        }
-      });
-      button.setMnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0));
-
-      return button;
-    }
   }
 
   public static class EntityComboBoxValueLink extends ComboBoxValueLink<String> {
@@ -851,6 +770,68 @@ public final class EntityUiUtil {
 
       add(textField, BorderLayout.CENTER);
       add(btn, BorderLayout.EAST);
+    }
+  }
+
+  private static final class NewEntityAction extends AbstractAction {
+
+    private final JComponent component;
+    private final EntityDataProvider dataProvider;
+    private final EntityPanelProvider panelProvider;
+    private List<Entity.Key> lastInsertedKeys = new ArrayList<Entity.Key>();
+
+    private NewEntityAction(final JComponent component, final EntityPanelProvider panelProvider) {
+      super("", Images.loadImage(Images.IMG_ADD_16));
+      this.component = component;
+      if (component instanceof EntityComboBox) {
+        this.dataProvider = ((EntityComboBox) component).getModel();
+      }
+      else if (component instanceof EntityLookupField) {
+        this.dataProvider = ((EntityLookupField) component).getModel();
+      }
+      else {
+        throw new IllegalArgumentException("EntityComboBox or EntityLookupField expected, got: " + component);
+      }
+      this.panelProvider = panelProvider;
+    }
+
+    public void actionPerformed(final ActionEvent e) {
+      final EntityEditPanel editPanel = panelProvider.createEditPanel(dataProvider.getDbProvider());
+      ((EntityEditModel) editPanel.getEditModel()).addAfterInsertListener(new InsertListener() {
+        @Override
+        protected void inserted(final InsertEvent event) {
+          lastInsertedKeys.clear();
+          lastInsertedKeys.addAll(event.getInsertedKeys());
+        }
+      });
+      final JOptionPane pane = new JOptionPane(editPanel, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
+      final JDialog dialog = pane.createDialog(component, panelProvider.getCaption());
+      dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+      UiUtil.addInitialFocusHack(editPanel, new AbstractAction() {
+        public void actionPerformed(final ActionEvent e) {
+          editPanel.setInitialFocus();
+        }
+      });
+      dialog.setVisible(true);
+      if (pane.getValue() != null && pane.getValue().equals(0)) {
+        final boolean insert = editPanel.insert();
+        if (insert && lastInsertedKeys.size() > 0) {
+          if (dataProvider instanceof EntityComboBoxModel) {
+            ((EntityComboBoxModel) dataProvider).refresh();
+            ((EntityComboBoxModel) dataProvider).setSelectedEntityByPrimaryKey(lastInsertedKeys.get(0));
+          }
+          else if (dataProvider instanceof EntityLookupModel) {
+            try {
+              final List<Entity> insertedEntites = dataProvider.getDbProvider().getEntityDb().selectMany(lastInsertedKeys);
+              ((EntityLookupModel) dataProvider).setSelectedEntities(insertedEntites);
+            }
+            catch (DbException ex) {
+              throw new RuntimeException(ex);
+            }
+          }
+        }
+      }
+      component.requestFocusInWindow();
     }
   }
 }

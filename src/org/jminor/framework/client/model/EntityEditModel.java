@@ -74,7 +74,7 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
 
   /**
    * @param readOnly the read only status
-   * @return this edit model instance 
+   * @return this edit model instance
    */
   EntityEditModel setReadOnly(final boolean readOnly);
 
@@ -244,16 +244,18 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
 
   /**
    * Performs a insert on the active entity
+   * @return the primary keys of the inserted entities
    * @throws DbException in case of a database exception
    * @throws CancelException in case the user cancels the operation
    * @throws org.jminor.common.model.valuemap.exception.ValidationException in case validation fails
    * @see EntityValidator#validate(java.util.Collection, int)
    */
-  void insert() throws CancelException, DbException, ValidationException;
+  List<Entity.Key> insert() throws CancelException, DbException, ValidationException;
 
   /**
    * Performs an insert on the given entities, returns silently on recieving an empty list
    * @param entities the entities to insert
+   * @return the primary keys of the inserted entities
    * @throws DbException in case of a database exception
    * @throws CancelException in case the user cancels the operation
    * @throws ValidationException in case validation fails
@@ -261,22 +263,24 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * @see #addAfterInsertListener(java.awt.event.ActionListener)
    * @see EntityValidator#validate(java.util.Collection, int)
    */
-  void insert(List<Entity> entities) throws CancelException, DbException, ValidationException;
+  List<Entity.Key> insert(List<Entity> entities) throws CancelException, DbException, ValidationException;
 
   /**
    * Performs a update on the active entity
+   * @return the updated entities
    * @throws DbException in case of a database exception
    * @throws CancelException in case the user cancels the operation
    * @throws org.jminor.common.db.exception.RecordModifiedException in case an entity was modified by another user
    * @throws org.jminor.common.model.valuemap.exception.ValidationException in case validation fails
    * @see EntityValidator#validate(java.util.Collection, int)
    */
-  void update() throws CancelException, DbException, ValidationException;
+  List<Entity> update() throws CancelException, DbException, ValidationException;
 
   /**
    * Updates the given Entities. If the entities are unmodified or the list is empty
    * this method returns silently.
    * @param entities the Entities to update
+   * @return the updated entities
    * @throws DbException in case of a database exception
    * @throws CancelException in case the user cancels the operation
    * @throws org.jminor.common.db.exception.RecordModifiedException in case an entity was modified by another user
@@ -285,26 +289,28 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * @see #addAfterUpdateListener(java.awt.event.ActionListener)
    * @see EntityValidator#validate(java.util.Collection, int)
    */
-  void update(final List<Entity> entities) throws DbException, CancelException, ValidationException;
+  List<Entity> update(final List<Entity> entities) throws DbException, CancelException, ValidationException;
 
   /**
    * Deletes the active entity
+   * @return the deleted entities
    * @throws DbException in case of a database exception
    * @throws CancelException in case the user cancels the operation
    * @see #addBeforeDeleteListener(java.awt.event.ActionListener)
    * @see #addAfterDeleteListener(java.awt.event.ActionListener)
    */
-  void delete() throws DbException, CancelException;
+  List<Entity> delete() throws DbException, CancelException;
 
   /**
    * Deletes the given entities, returns silently on recieving an empty list
    * @param entities the entities to delete
+   * @return the deleted entities
    * @throws DbException in case of a database exception
    * @throws CancelException in case the user cancels the operation
    * @see #addBeforeDeleteListener(java.awt.event.ActionListener)
    * @see #addAfterDeleteListener(java.awt.event.ActionListener)
    */
-  void delete(final List<Entity> entities) throws DbException, CancelException;
+  List<Entity> delete(final List<Entity> entities) throws DbException, CancelException;
 
   /**
    * @return the state used to determine if deleting should be enabled
