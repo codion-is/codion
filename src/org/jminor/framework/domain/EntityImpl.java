@@ -45,7 +45,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
   private Map<Property.ForeignKeyProperty, Key> referencedPrimaryKeysCache;
 
   /**
-   * Keep a reference to this frequently referenced map
+   * Keep a reference to this frequently referenced object
    */
   private EntityDefinition definition;
 
@@ -144,7 +144,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
 
   /**
    * Initializes the given value assuming it has no previously set value.
-   * This method does not propagate foreign key values but does set denormalized values if any exist.
+   * This method does not propagate foreign key values.
    * This method should be used with care, if at all.
    * @param key the ID of the property for which to initialize the value
    * @param value the value
@@ -433,6 +433,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
   protected void handleClear() {
     super.handleClear();
     primaryKey = null;
+    toString = null;
   }
 
   /** {@inheritDoc} */
@@ -455,6 +456,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
   @Override
   protected void handleSetAs(final ValueMap<String, Object> sourceMap) {
     super.handleSetAs(sourceMap);
+    primaryKey = null;
     toString = null;
     if (sourceMap instanceof Entity) {
       toString = sourceMap.toString();
@@ -750,7 +752,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
     private boolean hashCodeDirty = true;
 
     /**
-     * Caching this extremely frequently referenced attribute
+     * Caching this extremely frequently referenced object
      */
     private EntityDefinition definition;
 

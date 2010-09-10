@@ -380,7 +380,7 @@ public final class EntityCriteriaUtil {
     DefaultEntitySelectCriteria() {}
 
     /**
-     * Instantiates a new EntityCriteria, which includes all the underlying entities
+     * Instantiates a new DefaultEntityCriteria, which includes all the underlying entities
      * @param entityID the ID of the entity to select
      */
     private DefaultEntitySelectCriteria(final String entityID) {
@@ -388,7 +388,7 @@ public final class EntityCriteriaUtil {
     }
 
     /**
-     * Instantiates a new EntityCriteria
+     * Instantiates a new DefaultEntityCriteria
      * @param entityID the ID of the entity to select
      * @param criteria the Criteria object
      * @see org.jminor.common.db.criteria.CriteriaSet
@@ -400,7 +400,7 @@ public final class EntityCriteriaUtil {
     }
 
     /**
-     * Instantiates a new EntityCriteria
+     * Instantiates a new DefaultEntityCriteria
      * @param entityID the ID of the entity to select
      * @param criteria the Criteria object
      * @param orderByClause the 'order by' clause to use, i.e. "last_name, first_name desc"
@@ -413,7 +413,7 @@ public final class EntityCriteriaUtil {
     }
 
     /**
-     * Instantiates a new EntityCriteria
+     * Instantiates a new DefaultEntityCriteria
      * @param entityID the ID of the entity to select
      * @param criteria the Criteria object
      * @param fetchCount the maximum number of records to fetch from the result
@@ -426,7 +426,7 @@ public final class EntityCriteriaUtil {
     }
 
     /**
-     * Instantiates a new EntityCriteria
+     * Instantiates a new DefaultEntityCriteria
      * @param entityID the ID of the entity to select
      * @param criteria the Criteria object
      * @param orderByClause the 'order by' clause to use, i.e. "last_name, first_name desc"

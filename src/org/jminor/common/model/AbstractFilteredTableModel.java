@@ -27,12 +27,13 @@ import java.util.*;
  * JTable table = new JTable(tableModel, tableModel.getColumnModel(), tableModel.getSelectionModel());
  * </pre><br>
  * User: Björn Darri<br>
- * Sorting functionality based on TableSorter by Philip Milne, Brendon McLean, Dan van Enckevort and Parwinder Sekhon<br>
+ * Sorting functionality originally based on TableSorter by Philip Milne, Brendon McLean, Dan van Enckevort and Parwinder Sekhon<br>
  * Date: 18.4.2010<br>
  * Time: 09:48:07<br>
- * @param <T> the type of the values in this table model
+ * @param <R> the type representing the rows in this table model
+ * @param <C> type type used to identify columns in this table model, Integer for simple indexed identification for example
  */
-public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableModel implements FilteredTableModel<T, C> {
+public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableModel implements FilteredTableModel<R, C> {
 
   private static final Comparator<Comparable<Object>> COMPARABLE_COMPARATOR = new Comparator<Comparable<Object>>() {
     /** {@inheritDoc} */
@@ -63,12 +64,12 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
   /**
    * Holds visible items
    */
-  private final List<T> visibleItems = new ArrayList<T>();
+  private final List<R> visibleItems = new ArrayList<R>();
 
   /**
    * Holds items that are filtered
    */
-  private final List<T> filteredItems = new ArrayList<T>();
+  private final List<R> filteredItems = new ArrayList<R>();
 
   /**
    * The TableColumnModel
@@ -118,9 +119,9 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
   /**
    * the filter criteria used by this model
    */
-  private final FilterCriteria<T> filterCriteria = new FilterCriteria<T>() {
+  private final FilterCriteria<R> filterCriteria = new FilterCriteria<R>() {
     /** {@inheritDoc} */
-    public boolean include(final T item) {
+    public boolean include(final R item) {
       for (final ColumnSearchModel columnFilter : columnFilterModels.values()) {
         if (columnFilter.isEnabled() && !columnFilter.include(item)) {
           return false;
@@ -154,12 +155,12 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
   }
 
   /** {@inheritDoc} */
-  public final List<T> getVisibleItems() {
+  public final List<R> getVisibleItems() {
     return Collections.unmodifiableList(visibleItems);
   }
 
   /** {@inheritDoc} */
-  public final List<T> getFilteredItems() {
+  public final List<R> getFilteredItems() {
     return Collections.unmodifiableList(filteredItems);
   }
 
@@ -184,7 +185,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
   }
 
   /** {@inheritDoc} */
-  public final boolean contains(final T item, final boolean includeFiltered) {
+  public final boolean contains(final R item, final boolean includeFiltered) {
     final boolean ret = visibleItems.contains(item);
     if (!ret && includeFiltered) {
       return filteredItems.contains(item);
@@ -194,12 +195,12 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
   }
 
   /** {@inheritDoc} */
-  public final boolean isVisible(final T item) {
+  public final boolean isVisible(final R item) {
     return visibleItems.contains(item);
   }
 
   /** {@inheritDoc} */
-  public final boolean isFiltered(final T item) {
+  public final boolean isFiltered(final R item) {
     return filteredItems.contains(item);
   }
 
@@ -261,7 +262,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
   /** {@inheritDoc} */
   public final void clear() {
     filteredItems.clear();
-    final int size = getRowCount();
+    final int size = visibleItems.size();
     if (size > 0) {
       visibleItems.clear();
       fireTableRowsDeleted(0, size - 1);
@@ -298,13 +299,13 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
         sortingStates.put(columnIdentifier, new SortingStateImpl(directive, state.getPriority()));
       }
     }
-    sortingStatusChanged();
+    sortTableModel();
   }
 
   /** {@inheritDoc} */
   public final void clearSortingState() {
     resetSortingStates();
-    sortingStatusChanged();
+    sortTableModel();
   }
 
   /** {@inheritDoc} */
@@ -389,9 +390,9 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
   }
 
   /** {@inheritDoc} */
-  public final List<T> getSelectedItems() {
+  public final List<R> getSelectedItems() {
     final Collection<Integer> selectedModelIndexes = selectionModel.getSelectedIndexes();
-    final List<T> selectedItems = new ArrayList<T>();
+    final List<R> selectedItems = new ArrayList<R>();
     for (final int modelIndex : selectedModelIndexes) {
       selectedItems.add(getItemAt(modelIndex));
     }
@@ -400,9 +401,9 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
   }
 
   /** {@inheritDoc} */
-  public final void setSelectedItems(final List<T> items) {
+  public final void setSelectedItems(final List<R> items) {
     final List<Integer> indexes = new ArrayList<Integer>();
-    for (final T item : items) {
+    for (final R item : items) {
       final int index = indexOf(item);
       if (index >= 0) {
         indexes.add(index);
@@ -413,7 +414,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
   }
 
   /** {@inheritDoc} */
-  public final T getSelectedItem() {
+  public final R getSelectedItem() {
     final int index = selectionModel.getSelectedIndex();
     if (index >= 0 && index < getVisibleItemCount()) {
       return getItemAt(index);
@@ -424,7 +425,7 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
   }
 
   /** {@inheritDoc} */
-  public final void setSelectedItem(final T item) {
+  public final void setSelectedItem(final R item) {
     setSelectedItems(Arrays.asList(item));
   }
 
@@ -449,12 +450,12 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
   }
 
   /** {@inheritDoc} */
-  public final T getItemAt(final int index) {
+  public final R getItemAt(final int index) {
     return visibleItems.get(index);
   }
 
   /** {@inheritDoc} */
-  public final int indexOf(final T item) {
+  public final int indexOf(final R item) {
     return visibleItems.indexOf(item);
   }
 
@@ -462,11 +463,11 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
   public final void filterContents() {
     try {
       isFiltering = true;
-      final List<T> selectedItems = getSelectedItems();
+      final List<R> selectedItems = getSelectedItems();
       visibleItems.addAll(filteredItems);
       filteredItems.clear();
-      for (final ListIterator<T> iterator = visibleItems.listIterator(); iterator.hasNext();) {
-        final T item = iterator.next();
+      for (final ListIterator<R> iterator = visibleItems.listIterator(); iterator.hasNext();) {
+        final R item = iterator.next();
         if (!filterCriteria.include(item)) {
           filteredItems.add(item);
           iterator.remove();
@@ -482,32 +483,32 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
   }
 
   /** {@inheritDoc} */
-  public final FilterCriteria<T> getFilterCriteria() {
+  public final FilterCriteria<R> getFilterCriteria() {
     return filterCriteria;
   }
 
   /** {@inheritDoc} */
-  public final void setFilterCriteria(final FilterCriteria<T> filterCriteria) {
+  public final void setFilterCriteria(final FilterCriteria<R> filterCriteria) {
     throw new UnsupportedOperationException("AbstractFilteredTableModel.setFilterCriteria(FilterCriteria)");
   }
 
   /** {@inheritDoc} */
-  public final List<T> getAllItems() {
-    final List<T> entities = new ArrayList<T>(visibleItems);
+  public final List<R> getAllItems() {
+    final List<R> entities = new ArrayList<R>(visibleItems);
     entities.addAll(filteredItems);
 
     return entities;
   }
 
   /** {@inheritDoc} */
-  public final void removeItems(final List<T> items) {
-    for (final T item : items) {
+  public final void removeItems(final List<R> items) {
+    for (final R item : items) {
       removeItem(item);
     }
   }
 
   /** {@inheritDoc} */
-  public final void removeItem(final T item) {
+  public final void removeItem(final R item) {
     if (visibleItems.contains(item)) {
       final int index = indexOf(item);
       visibleItems.remove(item);
@@ -719,8 +720,8 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
    * @param items the items to add
    * @param atFront if true then the items are added at the front
    */
-  protected final void addItems(final List<T> items, final boolean atFront) {
-    for (final T item : items) {
+  protected final void addItems(final List<R> items, final boolean atFront) {
+    for (final R item : items) {
       if (filterCriteria.include(item)) {
         if (atFront) {
           visibleItems.add(0, item);
@@ -860,14 +861,14 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     return maxPriority + 1;
   }
 
-  private void sortingStatusChanged() {
+  private void sortTableModel() {
     try {
       isSorting = true;
       evtSortingStarted.fire();
-      final List<T> selectedItems = new ArrayList<T>(getSelectedItems());
-      Collections.sort(visibleItems, new Comparator<T>() {
+      final List<R> selectedItems = new ArrayList<R>(getSelectedItems());
+      Collections.sort(visibleItems, new Comparator<R>() {
         /** {@inheritDoc} */
-        public int compare(final T o1, final T o2) {
+        public int compare(final R o1, final R o2) {
           for (final Map.Entry<C, SortingState> state : getOrderedSortingStates()) {
             final int comparison = compareRows(o1, o2, state.getKey(), state.getValue().getDirective());
             if (comparison != 0) {
@@ -887,7 +888,27 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     }
   }
 
-  private int compareRows(final T objectOne, final T objectTwo, final C columnIdentifier, final SortingDirective directive) {
+  private List<Map.Entry<C, SortingState>> getOrderedSortingStates() {
+    final ArrayList<Map.Entry<C, SortingState>> entries = new ArrayList<Map.Entry<C, SortingState>>();
+    for (final Map.Entry<C, SortingState> entry : sortingStates.entrySet()) {
+      if (!emptySortingState.equals(entry.getValue())) {
+        entries.add(entry);
+      }
+    }
+    Collections.sort(entries, new Comparator<Map.Entry<C, SortingState>>() {
+      /** {@inheritDoc} */
+      public int compare(final Map.Entry<C, SortingState> o1, final Map.Entry<C, SortingState> o2) {
+        final Integer priorityOne = o1.getValue().getPriority();
+        final Integer priorityTwo = o2.getValue().getPriority();
+
+        return priorityOne.compareTo(priorityTwo);
+      }
+    });
+
+    return entries;
+  }
+
+  private int compareRows(final R objectOne, final R objectTwo, final C columnIdentifier, final SortingDirective directive) {
     final Comparable valueOne = getComparable(objectOne, columnIdentifier);
     final Comparable valueTwo = getComparable(objectTwo, columnIdentifier);
     final int comparison;
@@ -918,26 +939,6 @@ public abstract class AbstractFilteredTableModel<T, C> extends AbstractTableMode
     while (columns.hasMoreElements()) {
       sortingStates.put((C) columns.nextElement().getIdentifier(), emptySortingState);
     }
-  }
-
-  private List<Map.Entry<C, SortingState>> getOrderedSortingStates() {
-    final ArrayList<Map.Entry<C, SortingState>> entries = new ArrayList<Map.Entry<C, SortingState>>();
-    for (final Map.Entry<C, SortingState> entry : sortingStates.entrySet()) {
-      if (!emptySortingState.equals(entry.getValue())) {
-        entries.add(entry);
-      }
-    }
-    Collections.sort(entries, new Comparator<Map.Entry<C, SortingState>>() {
-      /** {@inheritDoc} */
-      public int compare(final Map.Entry<C, SortingState> o1, final Map.Entry<C, SortingState> o2) {
-        final Integer priorityOne = o1.getValue().getPriority();
-        final Integer priorityTwo = o2.getValue().getPriority();
-
-        return priorityOne.compareTo(priorityTwo);
-      }
-    });
-
-    return entries;
   }
 
   private static final class SortingStateImpl implements SortingState {

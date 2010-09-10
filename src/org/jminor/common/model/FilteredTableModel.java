@@ -14,10 +14,10 @@ import java.util.List;
 
 /**
  * Specifies a table model that can be filtered.
- * @param <T> the type of items in the table model
- * @param <C> the type of column identifiers used by the table model
+ * @param <R> the type representing the rows in this table model
+ * @param <C> type type used to identify columns in this table model, Integer for simple indexed identification for example
  */
-public interface FilteredTableModel<T, C> extends FilteredModel<T>, TableModel, Refreshable {
+public interface FilteredTableModel<R, C> extends FilteredModel<R>, TableModel, Refreshable {
 
   /**
    * @return a State active when the selection is empty
@@ -114,26 +114,26 @@ public interface FilteredTableModel<T, C> extends FilteredModel<T>, TableModel, 
    * @param index the index
    * @return the item at the given row index
    */
-  T getItemAt(final int index);
+  R getItemAt(final int index);
 
   /**
    * Returns the index of the given item
    * @param item the item
    * @return the index of the given item or -1 if it was not found
    */
-  int indexOf(final T item);
+  int indexOf(final R item);
 
   /**
    * Removes the given items from this table model
    * @param items the items to remove from the model
    */
-  void removeItems(final List<T> items);
+  void removeItems(final List<R> items);
 
   /**
    * Removes the given item from this table model
    * @param item the item to remove from the model
    */
-  void removeItem(final T item);
+  void removeItem(final R item);
 
   /**
    * @return the TableColumnModel used by this TableModel
@@ -264,17 +264,17 @@ public interface FilteredTableModel<T, C> extends FilteredModel<T>, TableModel, 
    * Selects the given items
    * @param items the items to select
    */
-  void setSelectedItems(final List<T> items);
+  void setSelectedItems(final List<R> items);
 
   /**
    * @return a list containing the selected items
    */
-  List<T> getSelectedItems();
+  List<R> getSelectedItems();
 
   /**
    * @return the selected item, null if none is selected
    */
-  T getSelectedItem();
+  R getSelectedItem();
 
   /**
    * @return the selected indexes, an empty collection if selection is empty
@@ -285,7 +285,7 @@ public interface FilteredTableModel<T, C> extends FilteredModel<T>, TableModel, 
    * Sets the selected item
    * @param item the item to select
    */
-  void setSelectedItem(final T item);
+  void setSelectedItem(final R item);
 
   /**
    * Selects all visible entities

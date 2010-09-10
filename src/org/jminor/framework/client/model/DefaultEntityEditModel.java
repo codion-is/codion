@@ -92,6 +92,9 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
    */
   private final Map<Property, FilteredComboBoxModel> propertyComboBoxModels = new HashMap<Property, FilteredComboBoxModel>();
 
+  /**
+   * Holds the read only status of this edit model
+   */
   private boolean readOnly;
 
   /**

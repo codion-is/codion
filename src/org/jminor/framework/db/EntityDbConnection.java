@@ -558,7 +558,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
   }
 
   /**
-   * Selects the given entity for update and checks if the it has been modified by comparing
+   * Selects the given entity for update and checks it it has been modified by comparing
    * the property values to the current values in the database.
    * The calling method is responsible for releasing the select for update lock.
    * @param entity the entity to check
@@ -663,10 +663,10 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
       getMethodLogger().logAccess("executePreparedUpdate", new Object[] {sqlStatement, values});
       setParameterValues(statement, values, properties);
       statement.executeUpdate();
-      return;
     }
     catch (SQLException e) {
       exception = e;
+      throw e;
     }
     finally {
       final LogEntry entry = getMethodLogger().logExit("executePreparedUpdate", exception, null);
@@ -674,8 +674,6 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
         LOG.debug(createLogMessage(getUser(), sqlStatement, values, exception, entry));
       }
     }
-
-    throw exception;
   }
 
   private ResultSet executePreparedSelect(final PreparedStatement statement, final String sqlStatement,
@@ -689,6 +687,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
     }
     catch (SQLException e) {
       exception = e;
+      throw e;
     }
     finally {
       final LogEntry entry = getMethodLogger().logExit("executePreparedSelect", exception, null);
@@ -696,8 +695,6 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
         LOG.debug(createLogMessage(getUser(), sqlStatement, values, exception, entry));
       }
     }
-
-    throw exception;
   }
 
   private String initializeSelectQuery(final EntitySelectCriteria criteria, final String columnsString, final String orderByClause) {
@@ -886,32 +883,20 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
   /**
    * Constructs a where condition based on the given primary key properties and the values provide by <code>valueProvider</code>
    * @param properties the properties to use when constructing the condition
-   * @return a where clause according to the given properties and the values provided by <code>valueProvider</code>,
-   * without the 'where' keyword
-   * e.g. "(idCol = 42)" or in case of multiple properties "(idCol1 = 42) and (idCol2 = 24)"
+   * @return a where clause according to the given properties without the 'where' keyword
+   * e.g. "(idCol = ?)" or in case of multiple properties "(idCol1 = ? and idCol2 = ?)"
    */
   private static String getWhereCondition(final List<Property.PrimaryKeyProperty> properties) {
     final StringBuilder stringBuilder = new StringBuilder(" where (");
     int i = 0;
     for (final Property.PrimaryKeyProperty property : properties) {
-      stringBuilder.append(getQueryString(property.getPropertyID(), "?"));
+      stringBuilder.append(property.getColumnName()).append(" = ?");
       if (i++ < properties.size() - 1) {
         stringBuilder.append(" and ");
       }
     }
 
     return stringBuilder.append(")").toString();
-  }
-
-  /**
-   * @param columnName the columnName
-   * @param sqlStringValue the sql string value
-   * @return a query comparison string, e.g. "columnName = sqlStringValue"
-   * or "columnName is null" in case sqlStringValue is 'null'
-   */
-  private static String getQueryString(final String columnName, final String sqlStringValue) {
-    return new StringBuilder(columnName).append(sqlStringValue.equalsIgnoreCase("null") ?
-            " is " : " = ").append(sqlStringValue).toString();
   }
 
   /**

@@ -583,7 +583,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   /**
    * @return a Criteria object used to filter the result when this
-   * table models data is queried, the default implementation returns
+   * table models data is queried, this implementation returns
    * the result retrieved via the <code>getSearchCriteria()</code> method
    * found in the underlying EntityTableSearchModel
    * @see EntityTableSearchModel#getSearchCriteria()

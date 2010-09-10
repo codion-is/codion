@@ -436,7 +436,7 @@ public class DefaultEntityModel implements EntityModel {
       if (updateEvent.isPrimaryKeyModified()) {
         tableModel.refresh();//best we can do under the circumstances
       }
-      else {//replace and select the updated entities
+      else {//replace the updated entities in the table model
         final List<Entity> updated = new ArrayList<Entity>();
         for (final Entity entity : updatedEntities) {
           if (entity.is(entityID)) {

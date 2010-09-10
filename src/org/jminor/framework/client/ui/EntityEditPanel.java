@@ -85,12 +85,12 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   private final Map<String, Control> controlMap = new HashMap<String, Control>();
 
   /**
-   * Indicates whether the model is active and ready to receive input
+   * Indicates whether the panel is active and ready to receive input
    */
   private final State stActive = States.state(Configuration.getBooleanValue(Configuration.ALL_PANELS_ACTIVE));
 
   /**
-   * The mechanism for restricting a single active EntityEditModel at a time
+   * The mechanism for restricting a single active EntityEditPanel at a time
    */
   private static final State.StateGroup ACTIVE_STATE_GROUP = States.stateGroup();
 
@@ -295,7 +295,8 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * is asked whether to update the selected entity or insert a new one
    */
   public final void save() {
-    if (getEntityEditModel().isEntityNew() || !getEntityEditModel().isModified() || !getEntityEditModel().isUpdateAllowed()) {
+    final EntityEditModel editModel = getEntityEditModel();
+    if (editModel.isEntityNew() || !editModel.isModified() || !editModel.isUpdateAllowed()) {
       //no entity selected, selected entity is unmodified or update is not allowed, can only insert
       insert();
     }
@@ -454,7 +455,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   }
 
   /**
-   * Called before a delete is performed, if true is returned the delete action is performed otherwise it is canceled
+   * Called before a delete is performed, if true is returned the delete action is performed otherwise it is cancelled
    * @return true if the delete action should be performed
    */
   protected boolean confirmDelete() {

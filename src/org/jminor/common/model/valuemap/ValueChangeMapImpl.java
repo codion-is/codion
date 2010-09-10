@@ -32,7 +32,7 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
   private Map<K, V> originalValues = null;
 
   /**
-   * Fired when a value changes, null until initialized by a call to eventValueChanged().
+   * Fired when a value changes, null until initialized by a call to getValueChangedEvent().
    */
   private Event evtValueChanged;
 

@@ -2150,3 +2150,4 @@
   LoginPanel.addInitialFocusHack() moved to UiUtil, action parameter added
   EntityPanelProvider.createInstance() renamed to createPanel()
   EntityPanelProvider.createEditPanel() and createTablePanel() added
+  Minor improvements, mostly javadoc errors

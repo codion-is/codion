@@ -20,6 +20,7 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V> {
   private final Map<K, V> values = new HashMap<K, V>();
 
   private static final int MAGIC_NUMBER = 23;
+  private static final String EMPTY_STRING = "";
 
   public ValueMapImpl() {}
 
@@ -46,7 +47,7 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V> {
   public String getValueAsString(final K key) {
     final V value = values.get(key);
     if (value == null) {
-      return "";
+      return EMPTY_STRING;
     }
 
     return value.toString();
@@ -63,7 +64,7 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V> {
   }
 
   /**
-   * Two ValueChangeMapImpl objects are equal if they contain the
+   * Two ValueMapImpl objects are equal if they contain the
    * same number of values and all their values are equal.
    */
   @SuppressWarnings({"unchecked"})
