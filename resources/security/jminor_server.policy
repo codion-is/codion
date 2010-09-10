@@ -8,6 +8,7 @@ grant {
 
   //Web Start server port
   permission java.net.SocketPermission "*:80", "listen";
+  permission java.net.SocketPermission "*:80-", "connect";
   //Database port
   permission java.net.SocketPermission "*:3306", "connect";
   //Client service port

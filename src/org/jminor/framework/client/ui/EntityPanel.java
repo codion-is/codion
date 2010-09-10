@@ -184,7 +184,7 @@ public class EntityPanel extends JPanel {
    * @param caption the caption to use when presenting this entity panel
    */
   public EntityPanel(final EntityModel model, final String caption) {
-    this(model, caption, null, null);
+    this(model, caption, (EntityEditPanel) null);
   }
 
   /**
