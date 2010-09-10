@@ -815,7 +815,7 @@ public final class EntityUiUtil {
       dialog.setVisible(true);
       if (pane.getValue() != null && pane.getValue().equals(0)) {
         final boolean insert = editPanel.insert();
-        if (insert && lastInsertedKeys.size() > 0) {
+        if (insert && !lastInsertedKeys.isEmpty()) {
           if (dataProvider instanceof EntityComboBoxModel) {
             ((EntityComboBoxModel) dataProvider).refresh();
             ((EntityComboBoxModel) dataProvider).setSelectedEntityByPrimaryKey(lastInsertedKeys.get(0));
