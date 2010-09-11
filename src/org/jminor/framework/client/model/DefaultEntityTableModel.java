@@ -111,7 +111,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
    */
   private boolean queryCriteriaRequired = true;
 
-  private final State stAllowMultipleUpdate = States.state(true);
+  private final State stBatchUpdateAllowed = States.state(true);
 
   private final State stAllowDelete = States.state(true);
 
@@ -239,19 +239,19 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   /** {@inheritDoc} */
-  public final boolean isMultipleUpdateAllowed() {
-    return stAllowMultipleUpdate.isActive();
+  public final boolean isBatchUpdateAllowed() {
+    return stBatchUpdateAllowed.isActive();
   }
 
   /** {@inheritDoc} */
-  public final EntityTableModel setMultipleUpdateAllowed(final boolean multipleUpdateAllowed) {
-    stAllowMultipleUpdate.setActive(multipleUpdateAllowed);
+  public final EntityTableModel setBatchUpdateAllowed(final boolean batchUpdateAllowed) {
+    stBatchUpdateAllowed.setActive(batchUpdateAllowed);
     return this;
   }
 
   /** {@inheritDoc} */
-  public final StateObserver getAllowMultipleUpdateState() {
-    return stAllowMultipleUpdate.getObserver();
+  public final StateObserver getBatchUpdateAllowedState() {
+    return stBatchUpdateAllowed.getObserver();
   }
 
   /** {@inheritDoc} */

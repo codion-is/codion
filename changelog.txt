@@ -2154,3 +2154,4 @@
   LoadTestModel, nanoTime() used for measurements
   MethodLogger, nanotime() used for measurements
   EntityCriteriaUtil.PropertyCriteria refactored
+  EntityTableModel.isMultipleUpdateAllowed() renamed to isBatchUpdateAllowed()

@@ -68,10 +68,10 @@ public final class DefaultEntityTableModelTest {
     assertFalse(testModel.isDetailModel());
     assertNotNull(testModel.getEditModel());
     assertNotNull(testModel.getAllowDeleteState());
-    assertNotNull(testModel.getAllowMultipleUpdateState());
+    assertNotNull(testModel.getBatchUpdateAllowedState());
     assertFalse(testModel.isReadOnly());
-    testModel.setMultipleUpdateAllowed(true).setQueryConfigurationAllowed(true).setDeleteAllowed(true);
-    assertTrue(testModel.isMultipleUpdateAllowed());
+    testModel.setBatchUpdateAllowed(true).setQueryConfigurationAllowed(true).setDeleteAllowed(true);
+    assertTrue(testModel.isBatchUpdateAllowed());
     assertTrue(testModel.isDeleteAllowed());
     assertTrue(testModel.isQueryConfigurationAllowed());
     testModel.refresh();

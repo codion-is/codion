@@ -474,7 +474,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
    */
   public ControlSet getUpdateSelectedControlSet() {
     final State enabled = States.aggregateState(Conjunction.AND,
-            getEntityTableModel().getAllowMultipleUpdateState(),
+            getEntityTableModel().getBatchUpdateAllowedState(),
             getEntityTableModel().getSelectionEmptyState().getReversedState());
     final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED),
             (char) 0, Images.loadImage("Modify16.gif"), enabled);
@@ -568,7 +568,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     }
 
     final List<Entity> selectedEntities = EntityUtil.copyEntities(getEntityTableModel().getSelectedItems());
-    if (!getEntityTableModel().isMultipleUpdateAllowed() && selectedEntities.size() > 1) {
+    if (!getEntityTableModel().isBatchUpdateAllowed() && selectedEntities.size() > 1) {
       throw new UnsupportedOperationException("Update of multiple entities is not allowed!");
     }
 
@@ -1274,7 +1274,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     if (!getEntityTableModel().isReadOnly() && getEntityTableModel().isDeleteAllowed()) {
       setControl(DELETE_SELECTED, getDeleteSelectedControl());
     }
-    if (!getEntityTableModel().isReadOnly() && getEntityTableModel().isMultipleUpdateAllowed()) {
+    if (!getEntityTableModel().isReadOnly() && getEntityTableModel().isBatchUpdateAllowed()) {
       setControl(UPDATE_SELECTED, getUpdateSelectedControlSet());
     }
     if (getEntityTableModel().isQueryConfigurationAllowed()) {

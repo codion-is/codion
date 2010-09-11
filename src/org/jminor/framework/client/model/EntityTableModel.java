@@ -119,13 +119,13 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
   /**
    * @return true if this model allows multiple entities to be updated at a time
    */
-  boolean isMultipleUpdateAllowed();
+  boolean isBatchUpdateAllowed();
 
   /**
-   * @param multipleUpdateAllowed true if this model should multiple entities to be updated at a time
+   * @param batchUpdateAllowed true if this model should allow multiple entities to be updated at a time
    * @return this EntityTableModel instance
    */
-  EntityTableModel setMultipleUpdateAllowed(final boolean multipleUpdateAllowed);
+  EntityTableModel setBatchUpdateAllowed(final boolean batchUpdateAllowed);
 
   /**
    * Returns the PropertySummaryModel associated with the property identified by <code>propertyID</code>
@@ -299,10 +299,10 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
   SortingDirective getSortingDirective(final String propertyID);
 
   /**
-   * @return the state used to determine if updating should be enabled
-   * @see #isMultipleUpdateAllowed()
+   * @return the state used to determine if batch updating of entities should be enabled
+   * @see #isBatchUpdateAllowed()
    */
-  StateObserver getAllowMultipleUpdateState();
+  StateObserver getBatchUpdateAllowedState();
 
   /**
    * @return the state used to determine if deleting should be enabled
