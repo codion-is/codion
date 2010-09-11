@@ -10,6 +10,7 @@ import org.jminor.common.i18n.Messages;
  */
 public final class RecordModifiedException extends DbException {
 
+  private static final String MESSAGE = Messages.get(Messages.RECORD_MODIFIED_EXCEPTION);
   private final Object row;
   private final Object modifiedRow;
 
@@ -19,7 +20,7 @@ public final class RecordModifiedException extends DbException {
    * @param modifiedRow the current (modified) version of the row
    */
   public RecordModifiedException(final Object row, final Object modifiedRow) {
-    super(Messages.get(Messages.RECORD_MODIFIED_EXCEPTION));
+    super(MESSAGE);
     this.row = row;
     this.modifiedRow = modifiedRow;
   }

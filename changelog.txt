@@ -2153,3 +2153,4 @@
   Minor improvements, mostly javadoc errors
   LoadTestModel, nanoTime() used for measurements
   MethodLogger, nanotime() used for measurements
+  EntityCriteriaUtil.PropertyCriteria refactored
