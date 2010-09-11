@@ -518,7 +518,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
   public final Control getDeleteSelectedControl() {
     return Controls.methodControl(this, "delete", FrameworkMessages.get(FrameworkMessages.DELETE),
             States.aggregateState(Conjunction.AND,
-                    getEntityTableModel().getAllowDeleteState(),
+                    getEntityTableModel().getDeleteAllowedState(),
                     getEntityTableModel().getSelectionEmptyState().getReversedState()),
             FrameworkMessages.get(FrameworkMessages.DELETE_TIP), 0, null,
             Images.loadImage(Images.IMG_DELETE_16));

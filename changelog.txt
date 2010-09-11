@@ -2155,3 +2155,4 @@
   MethodLogger, nanotime() used for measurements
   EntityCriteriaUtil.PropertyCriteria refactored
   EntityTableModel.isMultipleUpdateAllowed() renamed to isBatchUpdateAllowed()
+  EntityTableModel.getAllowDeleteState() renamed to getDeleteAllowedState()

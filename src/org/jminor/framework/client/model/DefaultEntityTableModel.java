@@ -113,7 +113,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   private final State stBatchUpdateAllowed = States.state(true);
 
-  private final State stAllowDelete = States.state(true);
+  private final State stDeleteAllowed = States.state(true);
 
   private ReportDataWrapper reportDataSource;
 
@@ -256,18 +256,18 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   /** {@inheritDoc} */
   public final boolean isDeleteAllowed() {
-    return stAllowDelete.isActive();
+    return stDeleteAllowed.isActive();
   }
 
   /** {@inheritDoc} */
   public final EntityTableModel setDeleteAllowed(final boolean deleteAllowed) {
-    stAllowDelete.setActive(deleteAllowed);
+    stDeleteAllowed.setActive(deleteAllowed);
     return this;
   }
 
   /** {@inheritDoc} */
-  public final StateObserver getAllowDeleteState() {
-    return stAllowDelete.getObserver();
+  public final StateObserver getDeleteAllowedState() {
+    return stDeleteAllowed.getObserver();
   }
 
   /** {@inheritDoc} */

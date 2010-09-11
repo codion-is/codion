@@ -309,5 +309,5 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
    * @see #isDeleteAllowed()
    * @see #setDeleteAllowed(boolean)
    */
-  StateObserver getAllowDeleteState();
+  StateObserver getDeleteAllowedState();
 }
