@@ -121,7 +121,7 @@ public final class LoginPanel extends JPanel {
     else {
       UiUtil.addInitialFocusHack(passwordField, new AbstractAction() {
         public void actionPerformed(final ActionEvent e) {
-          passwordField.setCaretPosition(passwordField.getText().length());
+          passwordField.setCaretPosition(passwordField.getPassword().length);
         }
       });
     }

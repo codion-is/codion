@@ -778,7 +778,7 @@ public final class EntityUiUtil {
     private final JComponent component;
     private final EntityDataProvider dataProvider;
     private final EntityPanelProvider panelProvider;
-    private List<Entity.Key> lastInsertedKeys = new ArrayList<Entity.Key>();
+    private final List<Entity.Key> lastInsertedKeys = new ArrayList<Entity.Key>();
 
     private NewEntityAction(final JComponent component, final EntityPanelProvider panelProvider) {
       super("", Images.loadImage(Images.IMG_ADD_16));
@@ -807,11 +807,7 @@ public final class EntityUiUtil {
       final JOptionPane pane = new JOptionPane(editPanel, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
       final JDialog dialog = pane.createDialog(component, panelProvider.getCaption());
       dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-      UiUtil.addInitialFocusHack(editPanel, new AbstractAction() {
-        public void actionPerformed(final ActionEvent e) {
-          editPanel.setInitialFocus();
-        }
-      });
+      UiUtil.addInitialFocusHack(editPanel, new InitialFocusAction(editPanel));
       dialog.setVisible(true);
       if (pane.getValue() != null && pane.getValue().equals(0)) {
         final boolean insert = editPanel.insert();
@@ -832,6 +828,19 @@ public final class EntityUiUtil {
         }
       }
       component.requestFocusInWindow();
+    }
+  }
+
+  private static final class InitialFocusAction extends AbstractAction {
+
+    private final EntityEditPanel editPanel;
+
+    private InitialFocusAction(final EntityEditPanel editPanel) {
+      this.editPanel = editPanel;
+    }
+
+    public void actionPerformed(final ActionEvent e) {
+      editPanel.setInitialFocus();
     }
   }
 }
