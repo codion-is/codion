@@ -302,6 +302,9 @@
     <copy todir="${deploy.server.path}/h2db">
       <fileset dir="${db.h2.dir}"/>
     </copy>
+    <copy todir="${deploy.server.path}/reports/demos" flatten="true">
+      <fileset dir="${basedir}/resources/demos/" includes="**/*.jasper"/>      
+    </copy>
   </target>
 
   <target name="deploy_server_monitor"

@@ -94,7 +94,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel {
   }
 
   private static final class ChinookApplicationModel extends DefaultEntityApplicationModel {
-    private ChinookApplicationModel(EntityDbProvider dbProvider) {
+    private ChinookApplicationModel(final EntityDbProvider dbProvider) {
       super(dbProvider);
     }
 

@@ -19,6 +19,8 @@ import net.sf.jasperreports.engine.util.JRLoader;
 import java.io.Serializable;
 import java.net.URL;
 import java.sql.Connection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -26,28 +28,26 @@ import java.util.Map;
  */
 public final class JasperReportsWrapper implements ReportWrapper<JasperPrint, JRDataSource>, Serializable {
   private static final long serialVersionUID = 1;
-  private final JasperReport report;
+  private final String reportPath;
   private final Map reportParameters;
+  private final static Map<String, JasperReport> reportCache = Collections.synchronizedMap(new HashMap<String, JasperReport>());
 
   public JasperReportsWrapper(final String reportPath, final Map reportParameters) {
-    this(loadJasperReport(reportPath), reportParameters);
-  }
-
-  public JasperReportsWrapper(final JasperReport report, final Map reportParameters) {
-    Util.rejectNullValue(report, "report");
-    this.report = report;
+    Util.rejectNullValue(reportPath, "reportPath");
+    this.reportPath = reportPath;
     this.reportParameters = reportParameters;
   }
 
   /** {@inheritDoc} */
   public String getReportName() {
-    return report.getName();
+    return reportPath;
   }
 
   /** {@inheritDoc} */
   public ReportResult<JasperPrint> fillReport(final Connection connection) throws ReportException {
     Util.rejectNullValue(connection, "connection");
     try {
+      final JasperReport report = loadJasperReport(reportPath);
       return new JasperReportsResult(JasperFillManager.fillReport(report, reportParameters, connection));
     }
     catch (JRException e) {
@@ -59,6 +59,7 @@ public final class JasperReportsWrapper implements ReportWrapper<JasperPrint, JR
   public ReportResult<JasperPrint> fillReport(final ReportDataWrapper<JRDataSource> dataWrapper) throws ReportException {
     Util.rejectNullValue(dataWrapper, "dataWrapper");
     try {
+      final JasperReport report = loadJasperReport(reportPath);
       return new JasperReportsResult(JasperFillManager.fillReport(report, reportParameters, dataWrapper.getDataSource()));
     }
     catch (JRException e) {
@@ -69,7 +70,7 @@ public final class JasperReportsWrapper implements ReportWrapper<JasperPrint, JR
   /** {@inheritDoc} */
   @Override
   public String toString() {
-    final StringBuilder builder = new StringBuilder(report.getName());
+    final StringBuilder builder = new StringBuilder(reportPath);
     if (reportParameters != null && reportParameters.size() > 0) {
       builder.append(", parameters: ").append(reportParameters.toString());
     }
@@ -88,13 +89,20 @@ public final class JasperReportsWrapper implements ReportWrapper<JasperPrint, JR
     if (reportPath.isEmpty()) {
       throw new IllegalArgumentException("Empty report path");
     }
+    if (reportCache.containsKey(reportPath)) {
+      return reportCache.get(reportPath);
+    }
+    final JasperReport report;
     try {
       if (reportPath.toLowerCase().startsWith("http")) {
-        return (JasperReport) JRLoader.loadObject(new URL(reportPath));
+        report = (JasperReport) JRLoader.loadObject(new URL(reportPath));
       }
       else {
-        return (JasperReport) JRLoader.loadObject(reportPath);
+        report = (JasperReport) JRLoader.loadObject(reportPath);
       }
+      reportCache.put(reportPath, report);
+
+      return report;
     }
     catch (Exception e) {
       throw new RuntimeException(e);

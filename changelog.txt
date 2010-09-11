@@ -2156,3 +2156,4 @@
   EntityCriteriaUtil.PropertyCriteria refactored
   EntityTableModel.isMultipleUpdateAllowed() renamed to isBatchUpdateAllowed()
   EntityTableModel.getAllowDeleteState() renamed to getDeleteAllowedState()
+  JasperReportsWrapper now only holds the report path and loads the actual report object only when requried, and caches it
