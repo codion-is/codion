@@ -13,7 +13,6 @@ import org.jminor.common.model.Util;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -105,9 +104,13 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
   }
 
   /** {@inheritDoc} */
+  @SuppressWarnings({"unchecked"})
   public final Collection<K> getOriginalValueKeys() {
-    return originalValues == null ? new ArrayList<K>() :
-            Collections.unmodifiableCollection(originalValues.keySet());
+    if (originalValues == null) {
+      return (Collection<K>) Collections.EMPTY_LIST;
+    }
+
+    return Collections.unmodifiableCollection(originalValues.keySet());
   }
 
   /** {@inheritDoc} */
