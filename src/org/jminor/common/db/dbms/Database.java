@@ -50,6 +50,13 @@ public interface Database {
   String DATABASE_EMBEDDED = "jminor.db.embedded";
 
   /**
+   * Specifies whether or not the database should be run in in-memory mode, if applicable<br>
+   * Values: "true"/"false"<br>
+   * Default: "false"<br>
+   */
+  String DATABASE_EMBEDDED_IN_MEMORY = "jminor.db.embeddedInMemory";
+
+  /**
    * Specifies the Database implementation class to use in case of a dbms that is not directly supported
    * @see Database
    */
@@ -59,6 +66,11 @@ public interface Database {
    * Specifies whether or not connection pools should collect fine grained performance/usage statistics by default, true or false
    */
   String DATABASE_POOL_STATISTICS = "jminor.db.pooling.collectStatistics";
+
+  /**
+   * The script to run when initializing an embedded database
+   */
+  String DATABASE_INIT_SCRIPT = "jminor.db.initScript";
 
   /**
    * The constant used to denote the Oracle database type

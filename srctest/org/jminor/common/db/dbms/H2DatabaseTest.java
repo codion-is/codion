@@ -22,9 +22,9 @@ public class H2DatabaseTest {
     assertEquals(H2Database.AUTO_INCREMENT_QUERY, db.getAutoIncrementValueSQL(null));
     final String idSource = "seq";
     assertEquals(H2Database.SEQUENCE_VALUE_QUERY + idSource, db.getSequenceSQL(idSource));
-    assertEquals("jdbc:h2://host:1234/sid;user=scott;password=tiger", db.getURL(props));
+    assertEquals(H2Database.URL_PREFIX + "//host:1234/sid;user=scott;password=tiger", db.getURL(props));
 
     db = new H2Database("dbname");
-    assertEquals("jdbc:h2:dbname;user=scott;password=tiger", db.getURL(props));
+    assertEquals(H2Database.URL_PREFIX + "dbname;user=scott;password=tiger", db.getURL(props));
   }
 }

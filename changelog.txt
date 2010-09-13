@@ -2163,3 +2163,5 @@
   EntityTableModel.getColumnProperty() moved to FilteredTableModel, renamed to getColumnIdentifier()
   Entities.getEntityIdSource() renamed to getIdValueSource()
   EntityTableModel.getRowBackgroundColor() renamed to getPropertyBackgroundColor()
+  Database.DATABASE_INIT_SCRIPT and DATABASE_EMBEDDED_IN_MEMORY added
+  H2Database, embedded in memory implemented

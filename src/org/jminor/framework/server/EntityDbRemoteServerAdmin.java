@@ -164,6 +164,7 @@ public final class EntityDbRemoteServerAdmin extends UnicastRemoteObject impleme
     System.out.println(connectInfo);
 
     shutdownWebServer();
+    EntityDbRemoteServer.LOG.info("Shutting down server");
     server.shutdown();
     try {
       UnicastRemoteObject.unexportObject(this, true);
@@ -420,8 +421,7 @@ public final class EntityDbRemoteServerAdmin extends UnicastRemoteObject impleme
 
   private void shutdownWebServer() {
     if (webServer != null) {
-      EntityDbRemoteServer.LOG.info("Shuting down server on VM shutdown");
-      EntityDbRemoteServer.LOG.info("Shuting down web server on VM shutdown");
+      EntityDbRemoteServer.LOG.info("Shutting down web server");
       webServer.stop();
     }
   }

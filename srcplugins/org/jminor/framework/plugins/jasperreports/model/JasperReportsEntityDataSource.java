@@ -36,6 +36,11 @@ public class JasperReportsEntityDataSource implements JRDataSource, ReportDataWr
     return hasNext;
   }
 
+  /** {@inheritDoc} */
+  public final JRDataSource getDataSource() {
+    return this;
+  }
+
   /**
    * Returns the table value of the property identified by <code>jrField.getName()</code>
    * @param jrField the report field which value to retrieve
@@ -55,10 +60,5 @@ public class JasperReportsEntityDataSource implements JRDataSource, ReportDataWr
 
   protected final Entity getCurrentEntity() {
     return currentEntity;
-  }
-
-  /** {@inheritDoc} */
-  public final JRDataSource getDataSource() {
-    return this;
   }
 }
