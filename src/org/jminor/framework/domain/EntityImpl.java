@@ -10,6 +10,7 @@ import org.jminor.common.model.valuemap.ValueChangeMapImpl;
 import org.jminor.common.model.valuemap.ValueMap;
 import org.jminor.common.model.valuemap.ValueMapImpl;
 
+import java.awt.Color;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -21,7 +22,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.awt.Color;
 
 /**
  * Represents a row in a database table, providing access to the column values via the ValueMap interface.
@@ -285,7 +285,16 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
 
   /** {@inheritDoc} */
   public String getFormattedValue(final Property property, final Format format) {
-    return definition.getFormattedValue(this, property, format);
+    final Object value = getValue(property);
+    if (value == null) {
+      return "";
+    }
+
+    if (format == null) {
+      return value.toString();
+    }
+
+    return format.format(value);
   }
 
   /**

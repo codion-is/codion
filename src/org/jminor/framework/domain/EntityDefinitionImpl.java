@@ -9,7 +9,6 @@ import org.jminor.common.model.valuemap.ValueMap;
 
 import java.awt.Color;
 import java.text.Collator;
-import java.text.Format;
 import java.util.*;
 
 /**
@@ -81,10 +80,6 @@ final class EntityDefinitionImpl implements EntityDefinition {
    * Provides values derived from other properties
    */
   private Entity.DerivedValueProvider derivedValueProvider;
-  /**
-   * Provides formatted values
-   */
-  private Entity.FormattedValueProvider formattedValueProvider = new FormattedValueProviderImpl();
   /**
    * The comparator
    */
@@ -428,12 +423,6 @@ final class EntityDefinitionImpl implements EntityDefinition {
   }
 
   /** {@inheritDoc} */
-  public EntityDefinition setFormattedValueProvider(final Entity.FormattedValueProvider formattedProvider) {
-    this.formattedValueProvider = formattedProvider;
-    return this;
-  }
-
-  /** {@inheritDoc} */
   public int compareTo(final Entity entity, final Entity entityToCompare) {
     Util.rejectNullValue(entity, "entity");
     Util.rejectNullValue(entityToCompare, "entityToCompare");
@@ -452,11 +441,6 @@ final class EntityDefinitionImpl implements EntityDefinition {
     }
 
     throw new IllegalStateException("DerivedValueProvider has not been set for: " + entity);
-  }
-
-  /** {@inheritDoc} */
-  public String getFormattedValue(final Entity entity, final Property property, final Format format) {
-    return formattedValueProvider.getFormattedValue(entity, property, format);
   }
 
   /** {@inheritDoc} */
@@ -639,23 +623,6 @@ final class EntityDefinitionImpl implements EntityDefinition {
     }
 
     return stringBuilder.toString();
-  }
-
-  private static final class FormattedValueProviderImpl implements Entity.FormattedValueProvider {
-    /** {@inheritDoc} */
-    public String getFormattedValue(final Entity entity, final Property property, final Format format) {
-      Util.rejectNullValue(entity, "entity");
-      final Object value = entity.getValue(property);
-      if (value == null) {
-        return "";
-      }
-
-      if (format == null) {
-        return value.toString();
-      }
-
-      return format.format(value);
-    }
   }
 
   private static final class ComparatorImpl implements Entity.Comparator {

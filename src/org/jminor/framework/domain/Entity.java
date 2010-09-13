@@ -6,11 +6,11 @@ package org.jminor.framework.domain;
 import org.jminor.common.model.valuemap.ValueChangeMap;
 import org.jminor.common.model.valuemap.ValueMap;
 
+import java.awt.Color;
 import java.sql.Timestamp;
 import java.text.Format;
 import java.util.Date;
 import java.util.List;
-import java.awt.Color;
 
 /**
  * An ORM entity interface, providing access to the property values via the ValueMap interface.
@@ -303,19 +303,5 @@ public interface Entity extends ValueChangeMap<String, Object>, Comparable<Entit
      * @return the compare result
      */
     int compare(final Entity entity, final Entity entityToCompare);
-  }
-
-  /**
-   * Provides formatted values for entities.
-   */
-  interface FormattedValueProvider {
-
-    /**
-     * @param entity the entity
-     * @param property the property
-     * @param format the format
-     * @return a formatted version of the value associated with the given property
-     */
-    String getFormattedValue(final Entity entity, final Property property, final Format format);
   }
 }

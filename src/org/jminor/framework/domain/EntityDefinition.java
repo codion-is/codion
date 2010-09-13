@@ -7,7 +7,6 @@ import org.jminor.common.model.IdSource;
 import org.jminor.common.model.valuemap.ValueMap;
 
 import java.awt.Color;
-import java.text.Format;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -57,12 +56,6 @@ public interface EntityDefinition {
    * @return this EntityDefinition instance
    */
   EntityDefinition setBackgroundColorProvider(final Entity.BackgroundColorProvider colorProvider);
-
-  /**
-   * @param formattedProvider the formatted value provider
-   * @return this EntityDefinition instance
-   */
-  EntityDefinition setFormattedValueProvider(final Entity.FormattedValueProvider formattedProvider);
 
   /**
    * @return the caption to use when presenting entities of this type
@@ -301,15 +294,6 @@ public interface EntityDefinition {
    * @return the derived property value
    */
   Object getDerivedValue(final Entity entity, final Property.DerivedProperty property);
-
-  /**
-   * @param entity the entity
-   * @param property the property
-   * @param format the format
-   * @return a formatted version of the value associated with the given property
-   */
-  String getFormattedValue(final Entity entity, final Property property, final Format format);
-
 
   /**
    * @param entity the entity
