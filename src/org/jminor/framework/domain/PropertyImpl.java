@@ -12,10 +12,8 @@ import java.sql.Types;
 import java.text.Format;
 import java.text.NumberFormat;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -823,25 +821,30 @@ class PropertyImpl implements Property, Serializable {
 
     private static final long serialVersionUID = 1;
 
-    private Collection<String> linkedPropertyIDs;
+    private final Provider valueProvider;
+    private final List<String> linkedPropertyIDs;
 
-    DerivedPropertyImpl(final String propertyID, final int type, final String caption) {
+    DerivedPropertyImpl(final String propertyID, final int type, final String caption,
+                        final Provider valueProvider, final String... linkedPropertyIDs) {
       super(propertyID, type, caption);
+      this.valueProvider = valueProvider;
+      if (linkedPropertyIDs == null) {
+        this.linkedPropertyIDs = Collections.emptyList();
+      }
+      else {
+        this.linkedPropertyIDs = Arrays.asList(linkedPropertyIDs);
+      }
       setReadOnly(true);
     }
 
     /** {@inheritDoc} */
-    public final Collection<String> getLinkedPropertyIDs() {
-      return linkedPropertyIDs;
+    public Provider getValueProvider() {
+      return valueProvider;
     }
 
     /** {@inheritDoc} */
-    public final DerivedProperty addLinkedPropertyIDs(final String... linkedPropertyIDs) {
-      if (this.linkedPropertyIDs == null) {
-        this.linkedPropertyIDs = new HashSet<String>();
-      }
-      this.linkedPropertyIDs.addAll(Arrays.asList(linkedPropertyIDs));
-      return this;
+    public final List<String> getLinkedPropertyIDs() {
+      return linkedPropertyIDs;
     }
   }
 

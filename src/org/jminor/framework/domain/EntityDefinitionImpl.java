@@ -77,10 +77,6 @@ final class EntityDefinitionImpl implements EntityDefinition {
    */
   private Entity.BackgroundColorProvider backgroundColorProvider = null;
   /**
-   * Provides values derived from other properties
-   */
-  private Entity.DerivedValueProvider derivedValueProvider;
-  /**
    * The comparator
    */
   private Entity.Comparator comparator = new ComparatorImpl();
@@ -405,12 +401,6 @@ final class EntityDefinitionImpl implements EntityDefinition {
   }
 
   /** {@inheritDoc} */
-  public EntityDefinition setDerivedValueProvider(final Entity.DerivedValueProvider valueProvider) {
-    this.derivedValueProvider = valueProvider;
-    return this;
-  }
-
-  /** {@inheritDoc} */
   public EntityDefinition setToStringProvider(final ValueMap.ToString<String> toString) {
     this.stringProvider = toString;
     return this;
@@ -432,15 +422,6 @@ final class EntityDefinitionImpl implements EntityDefinition {
   /** {@inheritDoc} */
   public String toString(final Entity entity) {
     return stringProvider.toString(entity);
-  }
-
-  /** {@inheritDoc} */
-  public Object getDerivedValue(final Entity entity, final Property.DerivedProperty property) {
-    if (derivedValueProvider != null) {
-      return derivedValueProvider.getDerivedValue(entity, property);
-    }
-
-    throw new IllegalStateException("DerivedValueProvider has not been set for: " + entity);
   }
 
   /** {@inheritDoc} */

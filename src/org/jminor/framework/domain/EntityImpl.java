@@ -17,6 +17,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.text.Format;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -176,7 +177,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
       return getDenormalizedViewValue((Property.DenormalizedViewProperty) property);
     }
     if (property instanceof Property.DerivedProperty) {
-      return definition.getDerivedValue(this, (Property.DerivedProperty) property);
+      return getDerivedValue((Property.DerivedProperty) property);
     }
 
     return super.getValue(property.getPropertyID());
@@ -591,23 +592,6 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
     return key;
   }
 
-  private boolean writablePropertiesModified() {
-    for (final String propertyID : getOriginalValueKeys()) {
-      final Property property = getProperty(propertyID);
-      if (property instanceof Property.ColumnProperty) {
-        final Property.ColumnProperty columnProperty = (Property.ColumnProperty) property;
-        if (!columnProperty.isReadOnly() && columnProperty.isUpdatable()) {
-          return true;
-        }
-      }
-      if (property instanceof Property.TransientProperty) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
   private void cacheReferencedKey(final Property.ForeignKeyProperty foreignKeyProperty, final Key referencedPrimaryKey) {
     if (referencedPrimaryKey != null) {
       if (referencedPrimaryKeysCache == null) {
@@ -623,6 +607,32 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
     }
 
     return referencedPrimaryKeysCache.get(foreignKeyProperty);
+  }
+
+  private Object getDerivedValue(final Property.DerivedProperty derivedProperty) {
+    final List<Object> values = new ArrayList<Object>(derivedProperty.getLinkedPropertyIDs().size());
+    for (final String linkedPropertyID : derivedProperty.getLinkedPropertyIDs()) {
+      values.add(getValue(linkedPropertyID));
+    }
+
+    return derivedProperty.getValueProvider().getValue(values.toArray(new Object[values.size()]));
+  }
+
+  private boolean writablePropertiesModified() {
+    for (final String propertyID : getOriginalValueKeys()) {
+      final Property property = getProperty(propertyID);
+      if (property instanceof Property.ColumnProperty) {
+        final Property.ColumnProperty columnProperty = (Property.ColumnProperty) property;
+        if (!columnProperty.isReadOnly() && columnProperty.isUpdatable()) {
+          return true;
+        }
+      }
+      if (property instanceof Property.TransientProperty) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   /**

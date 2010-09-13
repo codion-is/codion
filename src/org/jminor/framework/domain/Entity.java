@@ -281,19 +281,6 @@ public interface Entity extends ValueChangeMap<String, Object>, Comparable<Entit
   }
 
   /**
-   * Provides derived values for entities.
-   */
-  interface DerivedValueProvider {
-
-    /**
-     * @param entity the entity
-     * @param property the derived property
-     * @return the derived property value
-     */
-    Object getDerivedValue(final Entity entity, final Property.DerivedProperty property);
-  }
-
-  /**
    * Provides comparisons for entities.
    */
   interface Comparator {

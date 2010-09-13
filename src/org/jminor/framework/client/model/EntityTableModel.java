@@ -279,7 +279,6 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
    */
   int indexOf(final Entity.Key primaryKey);
 
-
   /**
    * @param propertyID the propertyID
    * @param directive the sorting directive

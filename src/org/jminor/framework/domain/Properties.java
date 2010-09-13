@@ -115,10 +115,13 @@ public final class Properties {
    * @param propertyID the property ID
    * @param type the property type
    * @param caption the caption
+   * @param valueProvider the object responsible for providing the derived value
+   * @param linkedPropertyIDs the IDs of the properties on whose value this property derives its value
    * @return a new derived property
    */
-  public static Property.DerivedProperty derivedProperty(final String propertyID, final int type, final String caption) {
-    return new PropertyImpl.DerivedPropertyImpl(propertyID, type, caption);
+  public static Property.DerivedProperty derivedProperty(final String propertyID, final int type, final String caption,
+                        final Property.DerivedProperty.Provider valueProvider, final String... linkedPropertyIDs) {
+    return new PropertyImpl.DerivedPropertyImpl(propertyID, type, caption, valueProvider, linkedPropertyIDs);
   }
 
   /**

@@ -8,7 +8,6 @@ import org.jminor.common.model.Column;
 import org.jminor.common.model.Item;
 
 import java.text.Format;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -430,30 +429,37 @@ public interface Property extends Attribute {
    * A property which value is derived from the values of one or more properties.
    * For the property to be updated when the parent properties are you must
    * link the properties together using the <code>addLinkedPropertyIDs()</code>method.
-   * @see Entity.DerivedValueProvider
-   * @see EntityDefinition#setDerivedValueProvider(org.jminor.framework.domain.Entity.DerivedValueProvider)
    */
   interface DerivedProperty extends TransientProperty {
 
     /**
      * @return the IDs of properties that should trigger a change event for this property
      */
-    Collection<String> getLinkedPropertyIDs();
+    List<String> getLinkedPropertyIDs();
 
     /**
-     * Adds a property change link on the property identified by <code>linkedPropertyID</code>,
-     * so that changes in that property trigger a change in this property
-     * @param linkedPropertyIDs the IDs of the properties on which to link
-     * @return this TransientProperty instance
+     * @return the value provider, providing the derived value
      */
-    DerivedProperty addLinkedPropertyIDs(final String... linkedPropertyIDs);
+    Provider getValueProvider();
+
+    /**
+     * Responsible for providing values derived from other values
+     */
+    interface Provider {
+
+      /**
+       * @param linkedValues the linked values, in the same order as the linked property IDs were recieved
+       * @return the derived value
+       */
+      Object getValue(final Object... linkedValues);
+    }
   }
 
   /**
    * A property that gets its value from a entity referenced by a foreign key, but is for
    * display only, and does not map to a database column
    */
-  interface DenormalizedViewProperty extends TransientProperty {
+  interface DenormalizedViewProperty extends Property.TransientProperty {
 
     /**
      * @return the id of the foreign key property (entity) from which this property should retrieve its value

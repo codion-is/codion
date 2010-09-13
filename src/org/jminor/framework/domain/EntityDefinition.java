@@ -39,13 +39,6 @@ public interface EntityDefinition {
   EntityDefinition setDomainID(final String domainID);
 
   /**
-   * @param valueProvider the derived value provider
-   * @return this EntityDefinition instance
-   * @see org.jminor.framework.domain.Property.DerivedProperty
-   */
-  EntityDefinition setDerivedValueProvider(final Entity.DerivedValueProvider valueProvider);
-
-  /**
    * @param toString the to string provider
    * @return this EntityDefinition instance
    */
@@ -281,13 +274,6 @@ public interface EntityDefinition {
    * @return a string representation of the given entity
    */
   String toString(final Entity entity);
-
-  /**
-   * @param entity the entity
-   * @param property the derived property
-   * @return the derived property value
-   */
-  Object getDerivedValue(final Entity entity, final Property.DerivedProperty property);
 
   /**
    * @param entity the entity

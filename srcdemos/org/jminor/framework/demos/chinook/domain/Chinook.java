@@ -3,7 +3,6 @@ package org.jminor.framework.demos.chinook.domain;
 import org.jminor.common.model.IdSource;
 import org.jminor.common.model.valuemap.StringProvider;
 import org.jminor.framework.domain.Entities;
-import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Properties;
 import org.jminor.framework.domain.Property;
 
@@ -117,6 +116,21 @@ public class Chinook {
   public static final String TRACK_MINUTES_SECONDS_DERIVED = "minutes_seconds_transient";
   public static final String TRACK_BYTES = "bytes";
   public static final String TRACK_UNITPRICE = "unitprice";
+
+  public static final Property.DerivedProperty.Provider TRACK_MIN_SEC_PROVIDER =
+          new Property.DerivedProperty.Provider() {
+            public Object getValue(final Object... linkedValues) {
+              final Integer milliseconds = (Integer) linkedValues[0];
+              if (milliseconds == null || milliseconds <= 0) {
+                return "";
+              }
+
+              final int seconds = ((milliseconds / 1000) % 60);
+              final int minutes = ((milliseconds / 1000) / 60);
+
+              return minutes + " min " + seconds + " sec";
+            }
+          };
 
   static {
     Entities.define(T_ALBUM,
@@ -269,8 +283,8 @@ public class Chinook {
                     .setNullable(false),
             Properties.columnProperty(TRACK_MILLISECONDS, Types.INTEGER, "Duration (ms)")
                     .setNullable(false),
-            Properties.derivedProperty(TRACK_MINUTES_SECONDS_DERIVED, Types.VARCHAR, "Duration (min/sec)")
-                    .addLinkedPropertyIDs(TRACK_MILLISECONDS),
+            Properties.derivedProperty(TRACK_MINUTES_SECONDS_DERIVED, Types.VARCHAR, "Duration (min/sec)",
+                    TRACK_MIN_SEC_PROVIDER, TRACK_MILLISECONDS),
             Properties.columnProperty(TRACK_BYTES, Types.INTEGER, "Bytes"),
             Properties.columnProperty(TRACK_UNITPRICE, Types.DOUBLE, "Price")
                     .setNullable(false))
@@ -279,24 +293,7 @@ public class Chinook {
             .setStringProvider(new StringProvider<String>(TRACK_NAME))
             .setSearchPropertyIDs(TRACK_NAME)
             .setOrderByClause(TRACK_NAME)
-            .setCaption("Tracks")
-            .setDerivedValueProvider(new Entity.DerivedValueProvider() {
-              public Object getDerivedValue(final Entity entity, final Property.DerivedProperty property) {
-                if (property.is(TRACK_MINUTES_SECONDS_DERIVED)) {
-                  final Integer milliseconds = (Integer) entity.getValue(TRACK_MILLISECONDS);
-                  if (milliseconds == null || milliseconds <= 0) {
-                    return "";
-                  }
-
-                  final int seconds = ((milliseconds / 1000) % 60);
-                  final int minutes = ((milliseconds / 1000) / 60);
-
-                  return minutes + " min " + seconds + " sec";
-                }
-
-                return null;
-              }
-            });
+            .setCaption("Tracks");
 
     Entities.define(T_PLAYLIST,
             Properties.primaryKeyProperty(PLAYLIST_PLAYLISTID),
