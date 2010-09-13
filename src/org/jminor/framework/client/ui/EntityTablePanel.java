@@ -1189,16 +1189,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
    * @return the TableCellRenderer
    */
   protected TableCellRenderer initializeTableCellRenderer() {
-    return new EntityTableCellRenderer(getEntityTableModel(), hasBackgroundColorProvider());
-  }
-
-  /**
-   * By default this returns the result of isRowColoring from the Entities repository
-   * @return true if the table rows should be colored according to the underlying entity
-   * @see org.jminor.framework.domain.Entities#hasBackgroundColorProvider(String)
-   */
-  protected boolean hasBackgroundColorProvider() {
-    return Entities.hasBackgroundColorProvider(getEntityTableModel().getEntityID());
+    return new EntityTableCellRenderer(getEntityTableModel());
   }
 
   /**
@@ -1501,8 +1492,9 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
                                                      final boolean hasFocus, final int row, final int column) {
         final JLabel label = (JLabel) defaultHeaderRenderer.getTableCellRendererComponent(table, value, isSelected,
                 hasFocus, row, column);
-        label.setFont(getEntityTableModel().getSearchModel().isSearchEnabled(
-                getEntityTableModel().getColumnProperty(column).getPropertyID()) ? searchFont : defaultFont);
+        final EntityTableModel tableModel = getEntityTableModel();
+        final Property property = (Property) tableModel.getColumnModel().getColumn(column).getIdentifier();
+        label.setFont(tableModel.getSearchModel().isSearchEnabled(property.getPropertyID()) ? searchFont : defaultFont);
 
         return label;
       }

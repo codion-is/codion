@@ -289,14 +289,12 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   /** {@inheritDoc} */
   @Override
   public final Class<?> getColumnClass(final int columnIndex) {
-    final Property columnProperty = (Property) getColumnModel().getColumn(convertColumnIndexToView(columnIndex)).getIdentifier();
-
-    return getColumnClass(columnProperty);
+    return getColumnClass(getColumnIdentifer(columnIndex));
   }
 
   /** {@inheritDoc} */
   public final Object getValueAt(final int rowIndex, final int columnIndex) {
-    final Property property = (Property) getColumnModel().getColumn(convertColumnIndexToView(columnIndex)).getIdentifier();
+    final Property property = getColumnIdentifer(columnIndex);
     final Object value = getItemAt(rowIndex).getValue(property);
     if (property instanceof Property.ValueListProperty) {
       return ((Property.ValueListProperty) property).getCaption(value);
@@ -318,8 +316,8 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   /** {@inheritDoc} */
-  public Color getRowBackgroundColor(final int row) {
-    return getItemAt(row).getBackgroundColor();
+  public Color getPropertyBackgroundColor(final int row, final Property columnProperty) {
+    return getItemAt(row).getBackgroundColor(columnProperty);
   }
 
   /** {@inheritDoc} */
@@ -505,11 +503,6 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     }
 
     return propertySummaryModels.get(property.getPropertyID());
-  }
-
-  /** {@inheritDoc} */
-  public final Property getColumnProperty(final int columnIndex) {
-    return (Property) getColumnModel().getColumn(columnIndex).getIdentifier();
   }
 
   /** {@inheritDoc} */

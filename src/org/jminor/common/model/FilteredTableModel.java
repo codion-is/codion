@@ -148,6 +148,12 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R>, TableModel, 
   TableColumn getTableColumn(final C identifier);
 
   /**
+   * @param modelColumnIndex the column model index
+   * @return the column identifier
+   */
+  C getColumnIdentifer(final int modelColumnIndex);
+
+  /**
    * @return an unmodifiable view of hidden table columns
    */
   Collection<TableColumn> getHiddenColumns();

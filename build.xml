@@ -303,7 +303,7 @@
       <fileset dir="${db.h2.dir}"/>
     </copy>
     <copy todir="${deploy.server.path}/reports/demos" flatten="true">
-      <fileset dir="${basedir}/resources/demos/" includes="**/*.jasper"/>      
+      <fileset dir="${basedir}/resources/demos/" includes="**/*.jasper"/>
     </copy>
   </target>
 
@@ -478,7 +478,7 @@
     </junit>
   </target>
 
-  <target name="instrument" depends="clean, build">
+  <target name="instrument" depends="build">
     <delete file="cobertura.ser" />
     <delete dir="${instrumented.dir}" includeEmptyDirs="true"/>
     <mkdir dir="${instrumented.dir}"/>
@@ -516,6 +516,7 @@
         <fileset dir="${srcdemos}" includes="**/*Test.java" excludes="**/*LoadTest.java"/>
       </batchtest>
     </junit>
+    <antcall target="report"/>
     <antcall target="unit_test_coverage_report_xml"/>
     <antcall target="unit_test_coverage_report_html"/>
     <delete dir="${instrumented.dir}" includeEmptyDirs="true"/>

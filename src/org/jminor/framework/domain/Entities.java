@@ -476,16 +476,8 @@ public final class Entities {
    * @return the name of the primary key value source for the given entity
    * @throws RuntimeException in case no id source name is specified
    */
-  public static String getEntityIdSource(final String entityID) {
+  public static String getIdValueSource(final String entityID) {
     return getEntityDefinition(entityID).getIdValueSource();
-  }
-
-  /**
-   * @param entityID the entity ID
-   * @return true if row coloring is enabled for the given entity type
-   */
-  public static boolean hasBackgroundColorProvider(final String entityID) {
-    return getEntityDefinition(entityID).hasBackgroundColorProvider();
   }
 
   /**

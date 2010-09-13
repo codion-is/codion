@@ -363,8 +363,8 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
   }
 
   /** {@inheritDoc} */
-  public Color getBackgroundColor() {
-    return definition.getBackgroundColor(this);
+  public Color getBackgroundColor(final Property property) {
+    return definition.getBackgroundColor(this, property);
   }
 
   /**

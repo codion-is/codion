@@ -27,7 +27,6 @@ import java.util.Map;
 public class EntityTableCellRenderer implements TableCellRenderer {
 
   private final EntityTableModel tableModel;
-  private final boolean rowColoring;
 
   private final Map<String, TableCellRenderer> renderers = new HashMap<String, TableCellRenderer>();
 
@@ -37,20 +36,18 @@ public class EntityTableCellRenderer implements TableCellRenderer {
   /**
    * Instantiates a new EntityTableCellRenderer
    * @param tableModel the table model
-   * @param rowColoring true if entity specific row coloring should be used
    * @see org.jminor.framework.domain.Entity.BackgroundColorProvider
    * @see org.jminor.framework.domain.EntityDefinition#setBackgroundColorProvider(org.jminor.framework.domain.Entity.BackgroundColorProvider)
    */
-  public EntityTableCellRenderer(final EntityTableModel tableModel, final boolean rowColoring) {
+  public EntityTableCellRenderer(final EntityTableModel tableModel) {
     Util.rejectNullValue(tableModel, "tableModel");
-    this.rowColoring = rowColoring;
     this.tableModel = tableModel;
   }
 
   /** {@inheritDoc} */
   public final Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
-                                                 final boolean hasFocus, final int row, final int column) {
-    final Property property = tableModel.getColumnProperty(column);
+                                                       final boolean hasFocus, final int row, final int column) {
+    final Property property = (Property) tableModel.getColumnModel().getColumn(column).getIdentifier();
     final Component component =
             getRenderer(property).getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
@@ -60,14 +57,14 @@ public class EntityTableCellRenderer implements TableCellRenderer {
 
     final boolean propertySearchEnabled = tableModel.getSearchModel().isSearchEnabled(property.getPropertyID());
     final boolean propertyFilterEnabled = tableModel.getSearchModel().isFilterEnabled(property.getPropertyID());
-    final Color rowColor = rowColoring ? tableModel.getRowBackgroundColor(row) : null;
-    if (rowColor == null && !(propertySearchEnabled || propertyFilterEnabled)) {
+    final Color cellColor = tableModel.getPropertyBackgroundColor(row, property);
+    if (cellColor == null && !(propertySearchEnabled || propertyFilterEnabled)) {
       component.setBackground(table.getBackground());
       component.setForeground(table.getForeground());
     }
     else {
-      if (rowColor != null) {
-        component.setBackground(rowColor);
+      if (cellColor != null) {
+        component.setBackground(cellColor);
       }
       else {
         component.setBackground((propertySearchEnabled && propertyFilterEnabled) ? DOUBLE_FILTERED_BACKGROUND : SINGLE_FILTERED_BACKGROUND);

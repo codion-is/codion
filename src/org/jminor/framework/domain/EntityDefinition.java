@@ -186,12 +186,6 @@ public interface EntityDefinition {
   Entity.Comparator getComparator();
 
   /**
-   * @return true if this entity type has a background color provider assigned to it
-   * @see org.jminor.framework.domain.Entity.BackgroundColorProvider
-   */
-  boolean hasBackgroundColorProvider();
-
-  /**
    * @return a list of property IDs identifying the properties to use when performing
    * a default lookup for this entity type
    */
@@ -297,7 +291,8 @@ public interface EntityDefinition {
 
   /**
    * @param entity the entity
-   * @return the background color to use for this entity
+   * @param property the property
+   * @return the background color to use for this entity and property
    */
-  Color getBackgroundColor(final Entity entity);
+  Color getBackgroundColor(final Entity entity, final Property property);
 }

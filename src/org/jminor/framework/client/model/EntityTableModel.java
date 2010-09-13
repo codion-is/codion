@@ -142,19 +142,13 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
   PropertySummaryModel getPropertySummaryModel(final Property property);
 
   /**
-   * Returns the property the column at the given index is based on
-   * @param columnIndex the column index
-   * @return the column property
-   */
-  Property getColumnProperty(final int columnIndex);
-
-  /**
    * @param row the row for which to retrieve the background color
-   * @return the background color for this row, specified by the row entity
+   * @param columnProperty the column property for which to retrieve the background color
+   * @return the background color for this row and property, specified by the row entity
    * @see org.jminor.framework.domain.EntityDefinition#setBackgroundColorProvider(org.jminor.framework.domain.Entity.BackgroundColorProvider)
    * @see org.jminor.framework.client.ui.EntityTableCellRenderer
    */
-  Color getRowBackgroundColor(final int row);
+  Color getPropertyBackgroundColor(final int row, final Property columnProperty);
 
   /**
    * @return the underlying table column properties

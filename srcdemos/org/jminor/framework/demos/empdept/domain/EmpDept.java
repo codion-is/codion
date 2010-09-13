@@ -9,6 +9,7 @@ import org.jminor.common.model.valuemap.StringProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Properties;
+import org.jminor.framework.domain.Property;
 
 import java.awt.Color;
 import java.sql.Types;
@@ -113,8 +114,8 @@ public class EmpDept {
             .setCaption(getString(EMPLOYEE))
             .setBackgroundColorProvider(new Entity.BackgroundColorProvider() {
               /*provide a custom background color for managers*/
-              public Color getBackgroundColor(final Entity entity) {
-                if (!entity.isValueNull(EMPLOYEE_JOB) && entity.getStringValue(EMPLOYEE_JOB).equals("MANAGER")) {
+              public Color getBackgroundColor(final Entity entity, final Property property) {
+                if (property.is(EMPLOYEE_JOB) && "MANAGER".equals(entity.getValue(EMPLOYEE_JOB))) {
                   return Color.CYAN;
                 }
 

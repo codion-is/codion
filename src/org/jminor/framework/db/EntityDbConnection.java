@@ -123,39 +123,44 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
     if (entities == null || entities.isEmpty()) {
       return new ArrayList<Entity.Key>();
     }
+    checkReadOnly(entities);
 
     final List<Entity.Key> keys = new ArrayList<Entity.Key>(entities.size());
     PreparedStatement statement = null;
     try {
-      final List<Property.ColumnProperty> insertProperties = new ArrayList<Property.ColumnProperty>();
+      final List<Property.ColumnProperty> statementProperties = new ArrayList<Property.ColumnProperty>();
       final List<Object> statementValues = new ArrayList<Object>();
       for (final Entity entity : entities) {
-        if (Entities.isReadOnly(entity.getEntityID())) {
-          throw new DbException("Can not insert a read only entity: " + entity.getEntityID());
-        }
-
-        final IdSource idSource = Entities.getIdSource(entity.getEntityID());
+        final String entityID = entity.getEntityID();
+        final IdSource idSource = Entities.getIdSource(entityID);
+        final String idValueSource = Entities.getIdValueSource(entityID);
         final Property.PrimaryKeyProperty firstPrimaryKeyProperty = entity.getPrimaryKey().getFirstKeyProperty();
-        if (idSource.isQueried() && entity.getPrimaryKey().isNull()) {
-          entity.setValue(firstPrimaryKeyProperty, queryNewIdValue(entity.getEntityID(), idSource, firstPrimaryKeyProperty));
+        final boolean queryPrimaryKeyValue = idSource.isQueried() && entity.getPrimaryKey().isNull();
+        final List<Property.ColumnProperty> columnProperties = Entities.getColumnProperties(entityID, !idSource.isAutoIncrement(), false, true);
+
+        if (queryPrimaryKeyValue) {
+          final int primaryKeyValue = queryNewPKValue(entityID, idSource, idValueSource, firstPrimaryKeyProperty);
+          entity.setValue(firstPrimaryKeyProperty, primaryKeyValue);
         }
 
-        addInsertProperties(entity, insertProperties, statementValues);
-        final String insertQuery = getInsertSQL(entity.getEntityID(), insertProperties);
+        addStatementPropertiesAndValues(true, entity, columnProperties, statementProperties, statementValues);
+
+        final String insertQuery = getInsertSQL(entityID, statementProperties);
+
         statement = getConnection().prepareStatement(insertQuery);
 
-        executePreparedUpdate(statement, insertQuery, statementValues, insertProperties);
+        executePreparedUpdate(statement, insertQuery, statementValues, statementProperties);
 
         final Entity.Key primaryKey = entity.getPrimaryKey();
-        if (idSource.isAutoIncrement() && entity.getPrimaryKey().isNull()) {
-          primaryKey.setValue(firstPrimaryKeyProperty.getPropertyID(), queryInteger(getDatabase().getAutoIncrementValueSQL(
-                  Entities.getEntityIdSource(entity.getEntityID()))));
+        if (idSource.isAutoIncrement() && primaryKey.isNull()) {
+          final int primaryKeyValue = queryInteger(getDatabase().getAutoIncrementValueSQL(idValueSource));
+          primaryKey.setValue(firstPrimaryKeyProperty.getPropertyID(), primaryKeyValue);
         }
 
         keys.add(primaryKey);
 
         statement.close();
-        insertProperties.clear();
+        statementProperties.clear();
         statementValues.clear();
       }
       if (!isTransactionOpen()) {
@@ -180,24 +185,19 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
     if (entities == null || entities.isEmpty()) {
       return entities;
     }
+    checkReadOnly(entities);
 
     PreparedStatement statement = null;
     try {
       final Map<String, Collection<Entity>> hashedEntities = EntityUtil.hashByEntityID(entities);
-      for (final String entityID : hashedEntities.keySet()) {
-        if (Entities.isReadOnly(entityID)) {
-          throw new DbException("Can not update a read only entity: " + entityID);
-        }
-      }
       final List<Object> statementValues = new ArrayList<Object>();
       final List<Property.ColumnProperty> statementProperties = new ArrayList<Property.ColumnProperty>();
       for (final Map.Entry<String, Collection<Entity>> entry : hashedEntities.entrySet()) {
         final List<Property.PrimaryKeyProperty> primaryKeyProperties = Entities.getPrimaryKeyProperties(entry.getKey());
+        final List<Property.ColumnProperty> columnProperties = Entities.getColumnProperties(entry.getKey(), true, false, false);
         for (final Entity entity : entry.getValue()) {
-          if (!entity.isModified()) {
-            throw new DbException("Can not update an unmodified entity: " + entity);
-          }
-          addUpdateProperties(entity, statementProperties, statementValues);
+          addStatementPropertiesAndValues(false, entity, columnProperties, statementProperties, statementValues);
+
           final String updateQuery = getUpdateSQL(entity, statementProperties, primaryKeyProperties);
 
           statementProperties.addAll(primaryKeyProperties);
@@ -239,11 +239,9 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
 
   /** {@inheritDoc} */
   public void delete(final EntityCriteria criteria) throws DbException {
+    checkReadOnly(criteria.getEntityID());
     PreparedStatement statement = null;
     try {
-      if (Entities.isReadOnly(criteria.getEntityID())) {
-        throw new DbException("Can not delete a read only entity: " + criteria.getEntityID());
-      }
       final String deleteQuery = getDeleteSQL(criteria);
       statement = getConnection().prepareStatement(deleteQuery);
       executePreparedUpdate(statement, deleteQuery, criteria.getValues(), criteria.getValueProperties());
@@ -273,9 +271,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
     try {
       final Map<String, Collection<Entity.Key>> hashedKeys = EntityUtil.hashKeysByEntityID(entityKeys);
       for (final String entityID : hashedKeys.keySet()) {
-        if (Entities.isReadOnly(entityID)) {
-          throw new DbException("Can not delete a read only entity: " + entityID);
-        }
+        checkReadOnly(entityID);
       }
       final ArrayList<Entity.Key> criteriaKeys = new ArrayList<Entity.Key>();
       for (final Map.Entry<String, Collection<Entity.Key>> entry : hashedKeys.entrySet()) {
@@ -597,7 +593,6 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
     }
   }
 
-
   /**
    * Selects the entities referenced by the given entities via foreign keys and sets those
    * as their respective foreign key values. this is done recursively for the entities referenced
@@ -631,7 +626,8 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
     }
   }
 
-  private int queryNewIdValue(final String entityID, final IdSource idSource, final Property.PrimaryKeyProperty primaryKeyProperty) throws DbException {
+  private int queryNewPKValue(final String entityID, final IdSource idSource, final String idValueSource,
+                              final Property.PrimaryKeyProperty primaryKeyProperty) throws DbException {
     final String sql;
     switch (idSource) {
       case MAX_PLUS_ONE:
@@ -639,10 +635,10 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
                 .append(") + 1 from ").append(Entities.getTableName(entityID)).toString();
         break;
       case QUERY:
-        sql = Entities.getEntityIdSource(entityID);
+        sql = idValueSource;
         break;
       case SEQUENCE:
-        sql = getDatabase().getSequenceSQL(Entities.getEntityIdSource(entityID));
+        sql = getDatabase().getSequenceSQL(idValueSource);
         break;
       default:
         throw new IllegalArgumentException(idSource + " does not represent a queried ID source");
@@ -935,39 +931,36 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
   }
 
   /**
-   * Returns the properties used when inserting an instance of this entity, leaving out properties with null values
-   * @param entity the entity
-   * @param properties the properties are added to this collection
+   * @param forInsert if true then non-null properties are added, if false then update is assumed and all
+   * modified properties are added.
+   * @param entity the Entity instance
+   * @param columnProperties the column properties the entity type is based on
+   * @param properties the collection to add the properties to
    * @param values the values are added to this collection
    */
-  private static void addInsertProperties(final Entity entity, final Collection<Property.ColumnProperty> properties,
-                                          final Collection<Object> values) {
-    for (final Property.ColumnProperty property : Entities.getColumnProperties(entity.getEntityID(),
-            Entities.getIdSource(entity.getEntityID()) != IdSource.AUTO_INCREMENT, false, true)) {
-      if (!entity.isValueNull(property.getPropertyID())) {
+  private static void addStatementPropertiesAndValues(final boolean forInsert, final Entity entity,final List<Property.ColumnProperty> columnProperties,
+                                                      final Collection<Property.ColumnProperty> properties,
+                                                      final Collection<Object> values) {
+    for (final Property.ColumnProperty property : columnProperties) {
+      final boolean insertAndNonNull = forInsert && !entity.isValueNull(property.getPropertyID());
+      final boolean updateAndModified = !forInsert && entity.isModified(property.getPropertyID());
+      if (insertAndNonNull || updateAndModified) {
         properties.add(property);
         values.add(entity.getValue(property));
       }
     }
   }
 
-  /**
-   * @param entity the Entity instance
-   * @param properties the collection to add the properties to
-   * @return the properties used to update this entity, properties that have had their values modified that is
-   * @param values the values are added to this collection
-   */
-  private static Collection<Property.ColumnProperty> addUpdateProperties(final Entity entity,
-                                                                         final Collection<Property.ColumnProperty> properties,
-                                                                         final Collection<Object> values) {
-    for (final Property.ColumnProperty property : Entities.getColumnProperties(entity.getEntityID(), true, false, false)) {
-      if (entity.isModified(property.getPropertyID())) {
-        properties.add(property);
-        values.add(entity.getValue(property));
-      }
+  private static void checkReadOnly(final Collection<Entity> entities) throws DbException {
+    for (final Entity entity : entities) {
+      checkReadOnly(entity.getEntityID());
     }
+  }
 
-    return properties;
+  private static void checkReadOnly(final String entityID) throws DbException {
+    if (Entities.isReadOnly(entityID)) {
+      throw new DbException("Can not update a read only entity: " + entityID);
+    }
   }
 
   private static Set<Dependency> resolveEntityDependencies(final String entityID) {

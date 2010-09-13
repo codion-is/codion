@@ -216,9 +216,10 @@ public interface Entity extends ValueChangeMap<String, Object>, Comparable<Entit
   boolean isLoaded(final String foreignKeyPropertyID);
 
   /**
-   * @return the background color to use when displaying this entity in a table
+   * @param property the property for which to retrieve the background color
+   * @return the background color to use when displaying this property in a table
    */
-  Color getBackgroundColor();
+  Color getBackgroundColor(final Property property);
 
   /**
    * A class representing a primary key.
@@ -273,9 +274,10 @@ public interface Entity extends ValueChangeMap<String, Object>, Comparable<Entit
 
     /**
      * @param entity the entity
-     * @return the background color to use for this entity
+     * @param property the property
+     * @return the background color to use for this entity and property
      */
-    Color getBackgroundColor(final Entity entity);
+    Color getBackgroundColor(final Entity entity, final Property property);
   }
 
   /**

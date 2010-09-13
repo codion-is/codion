@@ -2158,3 +2158,8 @@
   EntityTableModel.getAllowDeleteState() renamed to getDeleteAllowedState()
   JasperReportsWrapper now only holds the report path and loads the actual report object only when requried, and caches it
   Entity.FormattedValueProvider removed
+  Entity.BackgroundColorProvider.getBackgroundColor() added Property parameter
+  EntityTableCellRenderer uses the above to set the background color of individual cells
+  EntityTableModel.getColumnProperty() moved to FilteredTableModel, renamed to getColumnIdentifier()
+  Entities.getEntityIdSource() renamed to getIdValueSource()
+  EntityTableModel.getRowBackgroundColor() renamed to getPropertyBackgroundColor()

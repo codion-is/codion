@@ -444,18 +444,12 @@ final class EntityDefinitionImpl implements EntityDefinition {
   }
 
   /** {@inheritDoc} */
-  public boolean hasBackgroundColorProvider() {
-    return backgroundColorProvider != null;
-  }
-
-  /** {@inheritDoc} */
-  @SuppressWarnings({"UnusedDeclaration"})
-  public Color getBackgroundColor(final Entity entity) {
+  public Color getBackgroundColor(final Entity entity, final Property property) {
     if (backgroundColorProvider == null) {
       return null;
     }
 
-    return backgroundColorProvider.getBackgroundColor(entity);
+    return backgroundColorProvider.getBackgroundColor(entity, property);
   }
 
   static Map<String, EntityDefinition> getEntityDefinitionMap() {

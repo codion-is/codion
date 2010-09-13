@@ -34,10 +34,15 @@ public class MonitorPanelTest {
     databaseMonitor.setStatsUpdateInterval(350);
     final ConnectionPoolMonitor poolMonitor = databaseMonitor.getConnectionPoolMonitor().getConnectionPoolInstanceMonitors().iterator().next();
     poolMonitor.setCollectFineGrainedStats(true);
-    poolMonitor.setStatsUpdateInterval(350);
+    poolMonitor.setStatsUpdateInterval(300);
 
     Thread.sleep(1000);
     poolMonitor.resetStats();
     poolMonitor.resetInPoolStats();
+
+    poolMonitor.shutdown();
+    Thread.sleep(500);
+
+    serverMonitor.shutdownServer();
   }
 }

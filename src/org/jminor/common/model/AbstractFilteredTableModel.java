@@ -542,6 +542,12 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   /** {@inheritDoc} */
   @SuppressWarnings({"unchecked"})
+  public final C getColumnIdentifer(final int modelColumnIndex) {
+    return (C) columnModel.getColumn(convertColumnIndexToView(modelColumnIndex)).getIdentifier();
+  }
+
+  /** {@inheritDoc} */
+  @SuppressWarnings({"unchecked"})
   public final void setColumnVisible(final C columnIdentifier, final boolean visible) {
     if (visible) {
       final TableColumn column = hiddenColumns.get(columnIdentifier);
