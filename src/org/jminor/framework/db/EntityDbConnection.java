@@ -959,7 +959,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
 
   private static void checkReadOnly(final String entityID) throws DbException {
     if (Entities.isReadOnly(entityID)) {
-      throw new DbException("Can not update a read only entity: " + entityID);
+      throw new DbException("Entities of type: " + entityID + " are read only");
     }
   }
 
