@@ -132,7 +132,7 @@ public final class H2Database extends AbstractDatabase {
       final String databaseName = System.getProperty(DATABASE_HOST, "");
       Util.require(DATABASE_HOST, databaseName);
       final String url = URL_PREFIX + databaseName + init;
-      DriverManager.getConnection(url, properties);
+      DriverManager.getConnection(url, properties).close();
     }
     else {
       new RunScript().runTool("-url", new H2Database().getURL(properties), "-showResults", "-script", scriptPath);
