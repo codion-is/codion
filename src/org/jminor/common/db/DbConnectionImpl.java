@@ -47,6 +47,7 @@ public class DbConnectionImpl implements DbConnection {
   protected static final QueryCounter QUERY_COUNTER = new QueryCounter();
   private final User user;
   private final Database database;
+  private final boolean supportsIsValid;
 
   private Connection connection;
   private Statement checkConnectionStatement;
@@ -83,6 +84,7 @@ public class DbConnectionImpl implements DbConnection {
     Util.rejectNullValue(database, "database");
     Util.rejectNullValue(user, "user");
     this.database = database;
+    this.supportsIsValid = database.supportsIsValid();
     this.user = user;
     setConnection(connection);
     if (!isValid()) {
@@ -134,7 +136,7 @@ public class DbConnectionImpl implements DbConnection {
   /** {@inheritDoc} */
   public final boolean isValid() {
     try {
-      return connection != null && database.supportsIsValid() ? connection.isValid(0) : checkConnection();
+      return connection != null && supportsIsValid ? connection.isValid(0) : checkConnection();
     }
     catch (SQLException e) {
       LOG.error(e.getMessage(), e);

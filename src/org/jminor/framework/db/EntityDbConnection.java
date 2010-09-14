@@ -750,9 +750,8 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
     }
 
     int i = 0;
-    for (final Object value : values) {
-      setParameterValue(statement, i + 1, value, parameterProperties.get(i));
-      i++;
+    for (final Property.ColumnProperty property : parameterProperties) {
+      setParameterValue(statement, i + 1, values.get(i++), property);
     }
   }
 
@@ -821,6 +820,7 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
   /**
    * @param selectQuery the query to check
    * @return true if the query contains the WHERE keyword after the last FROM keyword instance
+   * todo too simplistic, wont this fail at some point?
    */
   private static boolean containsWhereKeyword(final String selectQuery) {
     final String lowerCaseQuery = selectQuery.toLowerCase();

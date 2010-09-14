@@ -103,7 +103,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
         connection = createConnection();
       }
       else {
-        waitForRetry();
+        waitBeforeRetry();
         connection = fetchFromPool();
       }
       elapsedNanoTime = System.nanoTime() - nanoStartTime;
@@ -352,7 +352,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
     }
   }
 
-  private void waitForRetry() {
+  private void waitBeforeRetry() {
     try {
       Thread.sleep(random.nextInt(maximumRetryWaitPeriod));
     }
@@ -360,16 +360,11 @@ public final class ConnectionPoolImpl implements ConnectionPool {
   }
 
   private boolean isNewConnectionWarranted(final long elapsedTime) {
-    synchronized (pool) {
-      //only create one connection at a time
-      if (!creatingConnection) {
-        final int currentPoolSize = pool.size() + inUse.size();
-        if (elapsedTime > newConnectionThreshold && currentPoolSize < maximumPoolSize) {
-          return true;
-        }
-      }
-
+    if (elapsedTime < newConnectionThreshold) {
       return false;
+    }
+    synchronized (pool) {
+      return !creatingConnection && (pool.size() + inUse.size() ) < maximumPoolSize;
     }
   }
 

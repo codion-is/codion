@@ -2168,3 +2168,4 @@
   Entity.DerivedValueProvider removed
   Property.DerivedProperty.Provider added (too deep?)
   EnitityValidator is now Entity.Validator
+  ConnectionPoolImpl.isNewConnectionWarranted() refactored
