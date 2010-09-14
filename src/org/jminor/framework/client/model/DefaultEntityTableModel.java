@@ -152,6 +152,9 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     if (this.editModel != null) {
       throw new IllegalStateException("Edit model has already been set for table model: " + this);
     }
+    if (!editModel.getEntityID().equals(entityID)) {
+      throw new IllegalArgumentException("Entity ID mismatch, editModel: " + editModel.getEntityID() + ", tableModel: " + entityID);
+    }
     this.editModel = editModel;
     bindEditModelEvents();
   }

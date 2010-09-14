@@ -366,6 +366,9 @@ public class EntityPanelProvider implements Comparable {
     if (editPanelClass == null) {
       throw new IllegalArgumentException("No edit panel class has been specified for entity panel provider: " + entityID);
     }
+    if (!editModel.getEntityID().equals(entityID)) {
+      throw new IllegalArgumentException("Entity ID mismatch, editModel: " + editModel.getEntityID() + ", required: " + entityID);
+    }
     try {
       final EntityEditPanel editPanel = editPanelClass.getConstructor(EntityEditModel.class).newInstance(editModel);
       configureEditPanel(editPanel);
@@ -382,6 +385,9 @@ public class EntityPanelProvider implements Comparable {
 
   private EntityTablePanel initializeTablePanel(final EntityTableModel tableModel) {
     try {
+      if (!tableModel.getEntityID().equals(entityID)) {
+        throw new IllegalArgumentException("Entity ID mismatch, tableModel: " + tableModel.getEntityID() + ", required: " + entityID);
+      }
       final EntityTablePanel tablePanel = tablePanelClass.getConstructor(EntityTableModel.class).newInstance(tableModel);
       configureTablePanel(tablePanel);
 
