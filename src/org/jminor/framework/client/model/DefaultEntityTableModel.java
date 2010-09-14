@@ -271,6 +271,11 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   /** {@inheritDoc} */
+  public boolean isUpdateAllowed() {
+    return editModel != null && editModel.isUpdateAllowed();
+  }
+
+  /** {@inheritDoc} */
   public final boolean isReadOnly() {
     return editModel == null || editModel.isReadOnly();
   }

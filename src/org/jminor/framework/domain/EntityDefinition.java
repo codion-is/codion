@@ -51,6 +51,17 @@ public interface EntityDefinition {
   EntityDefinition setBackgroundColorProvider(final Entity.BackgroundColorProvider colorProvider);
 
   /**
+   * @param validator the validator for this entity type
+   * @return this EntityDefinition instance
+   */
+  EntityDefinition setValidator(final Entity.Validator validator);
+
+  /**
+   * @return the validator for this enitity type
+   */
+  Entity.Validator getValidator();
+
+  /**
    * @return the caption to use when presenting entities of this type
    */
   String getCaption();

@@ -2163,7 +2163,8 @@
   EntityTableModel.getColumnProperty() moved to FilteredTableModel, renamed to getColumnIdentifier()
   Entities.getEntityIdSource() renamed to getIdValueSource()
   EntityTableModel.getRowBackgroundColor() renamed to getPropertyBackgroundColor()
-  Database.DATABASE_INIT_SCRIPT and DATABASE_EMBEDDED_IN_MEMORY added
+  H2Database.DATABASE_INIT_SCRIPT and DATABASE_IN_MEMORY added
   H2Database, embedded in memory implemented
   Entity.DerivedValueProvider removed
   Property.DerivedProperty.Provider added (too deep?)
+  EnitityValidator is now Entity.Validator

@@ -248,7 +248,7 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * @throws DbException in case of a database exception
    * @throws CancelException in case the user cancels the operation
    * @throws org.jminor.common.model.valuemap.exception.ValidationException in case validation fails
-   * @see EntityValidator#validate(java.util.Collection, int)
+   * @see org.jminor.framework.domain.Entity.Validator#validate(java.util.Collection, int)
    */
   List<Entity.Key> insert() throws CancelException, DbException, ValidationException;
 
@@ -261,7 +261,7 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * @throws ValidationException in case validation fails
    * @see #addBeforeInsertListener(java.awt.event.ActionListener)
    * @see #addAfterInsertListener(java.awt.event.ActionListener)
-   * @see EntityValidator#validate(java.util.Collection, int)
+   * @see org.jminor.framework.domain.Entity.Validator#validate(java.util.Collection, int)
    */
   List<Entity.Key> insert(List<Entity> entities) throws CancelException, DbException, ValidationException;
 
@@ -272,7 +272,7 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * @throws CancelException in case the user cancels the operation
    * @throws org.jminor.common.db.exception.RecordModifiedException in case an entity was modified by another user
    * @throws org.jminor.common.model.valuemap.exception.ValidationException in case validation fails
-   * @see EntityValidator#validate(java.util.Collection, int)
+   * @see org.jminor.framework.domain.Entity.Validator#validate(java.util.Collection, int)
    */
   List<Entity> update() throws CancelException, DbException, ValidationException;
 
@@ -287,7 +287,7 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * @throws ValidationException in case validation fails
    * @see #addBeforeUpdateListener(java.awt.event.ActionListener)
    * @see #addAfterUpdateListener(java.awt.event.ActionListener)
-   * @see EntityValidator#validate(java.util.Collection, int)
+   * @see org.jminor.framework.domain.Entity.Validator#validate(java.util.Collection, int)
    */
   List<Entity> update(final List<Entity> entities) throws DbException, CancelException, ValidationException;
 

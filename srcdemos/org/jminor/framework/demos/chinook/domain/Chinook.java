@@ -7,6 +7,7 @@ import org.jminor.framework.domain.Properties;
 import org.jminor.framework.domain.Property;
 
 import java.sql.Types;
+import java.util.Map;
 
 public class Chinook {
 
@@ -119,8 +120,8 @@ public class Chinook {
 
   public static final Property.DerivedProperty.Provider TRACK_MIN_SEC_PROVIDER =
           new Property.DerivedProperty.Provider() {
-            public Object getValue(final Object... linkedValues) {
-              final Integer milliseconds = (Integer) linkedValues[0];
+            public Object getValue(final Map<String, Object> linkedValues) {
+              final Integer milliseconds = (Integer) linkedValues.get(TRACK_MILLISECONDS);
               if (milliseconds == null || milliseconds <= 0) {
                 return "";
               }

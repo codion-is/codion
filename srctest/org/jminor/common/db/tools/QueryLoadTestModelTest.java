@@ -3,7 +3,7 @@
  */
 package org.jminor.common.db.tools;
 
-import org.jminor.common.db.dbms.H2Database;
+import org.jminor.common.db.dbms.DatabaseProvider;
 import org.jminor.common.model.User;
 
 import static org.junit.Assert.assertTrue;
@@ -25,9 +25,7 @@ public final class QueryLoadTestModelTest {
           new QueryLoadTestModel.QueryScenario("selectProducts", "select * from petstore.product");
   @Test
   public void test() {
-    final H2Database database = new H2Database("h2db/h2");
-
-    final QueryLoadTestModel loadTest = new QueryLoadTestModel(database, User.UNIT_TEST_USER,
+    final QueryLoadTestModel loadTest = new QueryLoadTestModel(DatabaseProvider.createInstance(), User.UNIT_TEST_USER,
             Arrays.asList(SELECT_ALBUMS, SELECT_CUSTOMERS, SELECT_DEPARTMENTS,
                     SELECT_EMPLOYEE, SELECT_PRODUCTS));
     loadTest.setMinimumThinkTime(10);

@@ -17,7 +17,6 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.text.Format;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -610,12 +609,12 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
   }
 
   private Object getDerivedValue(final Property.DerivedProperty derivedProperty) {
-    final List<Object> values = new ArrayList<Object>(derivedProperty.getLinkedPropertyIDs().size());
+    final Map<String, Object> values = new HashMap<String, Object>(derivedProperty.getLinkedPropertyIDs().size());
     for (final String linkedPropertyID : derivedProperty.getLinkedPropertyIDs()) {
-      values.add(getValue(linkedPropertyID));
+      values.put(linkedPropertyID, getValue(linkedPropertyID));
     }
 
-    return derivedProperty.getValueProvider().getValue(values.toArray(new Object[values.size()]));
+    return derivedProperty.getValueProvider().getValue(values);
   }
 
   private boolean writablePropertiesModified() {

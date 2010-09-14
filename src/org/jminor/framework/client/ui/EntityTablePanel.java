@@ -1265,7 +1265,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     if (!getEntityTableModel().isReadOnly() && getEntityTableModel().isDeleteAllowed()) {
       setControl(DELETE_SELECTED, getDeleteSelectedControl());
     }
-    if (!getEntityTableModel().isReadOnly() && getEntityTableModel().isBatchUpdateAllowed()) {
+    if (!getEntityTableModel().isReadOnly() && getEntityTableModel().isUpdateAllowed() && getEntityTableModel().isBatchUpdateAllowed()) {
       setControl(UPDATE_SELECTED, getUpdateSelectedControlSet());
     }
     if (getEntityTableModel().isQueryConfigurationAllowed()) {

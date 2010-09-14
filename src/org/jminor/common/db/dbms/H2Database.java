@@ -16,20 +16,31 @@ import java.util.Properties;
  */
 public final class H2Database extends AbstractDatabase {
 
+  /**
+   * Specifies whether or not the database should be run in in-memory mode<br>
+   * Values: "true"/"false"<br>
+   * Default: "false"<br>
+   */
+  public static final String DATABASE_IN_MEMORY = "jminor.db.embeddedInMemory";
+  /**
+   * The script to run when initializing an embedded database
+   */
+  public static final String DATABASE_INIT_SCRIPT = "jminor.db.initScript";
+
   static final String DRIVER_NAME = "org.h2.Driver";
   static final String AUTO_INCREMENT_QUERY = "CALL IDENTITY()";
   static final String SEQUENCE_VALUE_QUERY = "select next value for ";
   static final String SYSADMIN_USERNAME = "sa";
   static final String TRUE = "true";
   static final String FALSE = "false";
-  static final boolean EMBEDDED_IN_MEMORY = TRUE.equals(System.getProperty(DATABASE_EMBEDDED_IN_MEMORY, FALSE));
+  static final boolean EMBEDDED_IN_MEMORY = TRUE.equals(System.getProperty(DATABASE_IN_MEMORY, FALSE));
 
   static final String URL_PREFIX = "jdbc:h2:" + (EMBEDDED_IN_MEMORY ? "mem:" : "");
 
   static {
     if (EMBEDDED_IN_MEMORY) {
       try {
-        createEmbeddedH2Database(System.getProperty(Database.DATABASE_INIT_SCRIPT), true);
+        createEmbeddedH2Database(System.getProperty(DATABASE_INIT_SCRIPT), true);
       }
       catch (SQLException e) {
         throw new RuntimeException(e);
@@ -114,11 +125,12 @@ public final class H2Database extends AbstractDatabase {
     final Properties properties = new Properties();
     properties.put(USER_PROPERTY, SYSADMIN_USERNAME);
     if (inMemory) {
-      String init = "";
+      String init = ";DB_CLOSE_DELAY=-1";
       if (scriptPath != null) {
-        init = ";DB_CLOSE_DELAY=-1;INIT=RUNSCRIPT FROM './" + scriptPath + "'";
+        init += ";INIT=RUNSCRIPT FROM './" + scriptPath + "'";
       }
       final String databaseName = System.getProperty(DATABASE_HOST, "");
+      Util.require(DATABASE_HOST, databaseName);
       final String url = URL_PREFIX + databaseName + init;
       DriverManager.getConnection(url, properties);
     }

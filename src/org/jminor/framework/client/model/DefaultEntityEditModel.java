@@ -103,7 +103,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
    * @param dbProvider the EntityDbProvider instance
    */
   public DefaultEntityEditModel(final String entityID, final EntityDbProvider dbProvider) {
-    this(entityID, dbProvider, new DefaultEntityValidator(entityID, dbProvider));
+    this(entityID, dbProvider, Entities.getValidator(entityID));
   }
 
   /**
@@ -112,7 +112,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
    * @param dbProvider the EntityDbProvider instance
    * @param validator the validator to use
    */
-  public DefaultEntityEditModel(final String entityID, final EntityDbProvider dbProvider, final EntityValidator validator) {
+  public DefaultEntityEditModel(final String entityID, final EntityDbProvider dbProvider, final Entity.Validator validator) {
     super(Entities.entityInstance(entityID), validator);
     Util.rejectNullValue(dbProvider, "dbProvider");
     this.entityID = entityID;
@@ -290,7 +290,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
     LOG.debug(toString() + " - insert " + Util.getCollectionContentsAsString(entities, false));
 
     evtBeforeInsert.fire();
-    ((EntityValidator) getValidator()).validate(entities, EntityValidator.INSERT);
+    ((Entity.Validator) getValidator()).validate(entities, Entity.Validator.INSERT);
 
     final List<Entity.Key> primaryKeys = EntityUtil.copyKeys(doInsert(entities));
     evtAfterInsert.fire(new InsertEvent(this, primaryKeys));
@@ -324,7 +324,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
     }
 
     evtBeforeUpdate.fire();
-    ((EntityValidator) getValidator()).validate(modifiedEntities, EntityValidator.UPDATE);
+    ((Entity.Validator) getValidator()).validate(modifiedEntities, Entity.Validator.UPDATE);
 
     final List<Entity> updatedEntities = doUpdate(modifiedEntities);
     final int index = updatedEntities.indexOf(getEntity());

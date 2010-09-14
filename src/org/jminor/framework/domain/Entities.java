@@ -489,6 +489,14 @@ public final class Entities {
   }
 
   /**
+   * @param entityID the entityID
+   * @return the validator for the given entity type
+   */
+  public static Entity.Validator getValidator(final String entityID) {
+    return getEntityDefinition(entityID).getValidator();
+  }
+
+  /**
    * @return the entityIDs of all defined entities
    */
   public static Collection<String> getDefinedEntities() {

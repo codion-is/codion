@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.client.model;
+package org.jminor.framework.domain;
 
 import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.DefaultValueMapValidator;
@@ -10,51 +10,29 @@ import org.jminor.common.model.valuemap.exception.NullValidationException;
 import org.jminor.common.model.valuemap.exception.RangeValidationException;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.Configuration;
-import org.jminor.framework.db.provider.EntityDbProvider;
-import org.jminor.framework.domain.Entities;
-import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 
 import java.util.Collection;
 
 /**
- * User: Björn Darri
- * Date: 26.7.2010
- * Time: 22:40:55
+ * A default extensible Entity.Validator implementation.
  */
-public class DefaultEntityValidator extends DefaultValueMapValidator<String, Object> implements EntityValidator {
+public class EntityValidator extends DefaultValueMapValidator<String, Object> implements Entity.Validator {
 
   private final String entityID;
-  private final EntityDbProvider dbProvider;
 
   /**
    * Instantiates a new DefaultEntityValidator
    * @param entityID the ID of the entities to validate
    */
-  public DefaultEntityValidator(final String entityID) {
-    this(entityID, null);
-  }
-
-  /**
-   * Instantiates a new DefaultEntityValidator
-   * @param entityID the ID of the entities to validate
-   * @param dbProvider the dbProvider in case the validation requires db access, null if not
-   */
-  public DefaultEntityValidator(final String entityID, final EntityDbProvider dbProvider) {
+  public EntityValidator(final String entityID) {
     Util.rejectNullValue(entityID, "entityID");
     this.entityID = entityID;
-    this.dbProvider = dbProvider;
   }
 
   /** {@inheritDoc} */
   public final String getEntityID() {
     return entityID;
-  }
-
-  /** {@inheritDoc} */
-  public final EntityDbProvider getDbProvider() {
-    return dbProvider;
   }
 
   /**

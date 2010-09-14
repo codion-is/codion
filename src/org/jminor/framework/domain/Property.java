@@ -9,6 +9,7 @@ import org.jminor.common.model.Item;
 
 import java.text.Format;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Specifies a Property.
@@ -448,10 +449,10 @@ public interface Property extends Attribute {
     interface Provider {
 
       /**
-       * @param linkedValues the linked values, in the same order as the linked property IDs were recieved
+       * @param linkedValues the linked values, mapped to their respective propertyIDs
        * @return the derived value
        */
-      Object getValue(final Object... linkedValues);
+      Object getValue(final Map<String, Object> linkedValues);
     }
   }
 

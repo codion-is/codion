@@ -81,6 +81,10 @@ final class EntityDefinitionImpl implements EntityDefinition {
    */
   private Entity.Comparator comparator = new ComparatorImpl();
   /**
+   * The validator
+   */
+  private Entity.Validator validator;
+  /**
    * A custom sql query used when selecting entities of this type
    */
   private String selectQuery;
@@ -129,6 +133,7 @@ final class EntityDefinitionImpl implements EntityDefinition {
     this.caption = entityID;
     this.tableName = tableName;
     this.selectTableName = tableName;
+    this.validator = new EntityValidator(entityID);
     this.properties = Collections.unmodifiableMap(initializeProperties(entityID, propertyDefinitions));
     final String[] selectColumnNames = initSelectColumnNames(getColumnProperties());
     for (int idx = 0; idx < selectColumnNames.length; idx++) {
@@ -410,6 +415,17 @@ final class EntityDefinitionImpl implements EntityDefinition {
   public EntityDefinition setBackgroundColorProvider(final Entity.BackgroundColorProvider colorProvider) {
     this.backgroundColorProvider = colorProvider;
     return this;
+  }
+
+  /** {@inheritDoc} */
+  public EntityDefinition setValidator(final Entity.Validator validator) {
+    this.validator = validator;
+    return this;
+  }
+
+  /** {@inheritDoc} */
+  public Entity.Validator getValidator() {
+    return validator;
   }
 
   /** {@inheritDoc} */

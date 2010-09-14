@@ -5,10 +5,15 @@ package org.jminor.framework.domain;
 
 import org.jminor.common.model.valuemap.ValueChangeMap;
 import org.jminor.common.model.valuemap.ValueMap;
+import org.jminor.common.model.valuemap.ValueMapValidator;
+import org.jminor.common.model.valuemap.exception.NullValidationException;
+import org.jminor.common.model.valuemap.exception.RangeValidationException;
+import org.jminor.common.model.valuemap.exception.ValidationException;
 
 import java.awt.Color;
 import java.sql.Timestamp;
 import java.text.Format;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -292,5 +297,66 @@ public interface Entity extends ValueChangeMap<String, Object>, Comparable<Entit
      * @return the compare result
      */
     int compare(final Entity entity, final Entity entityToCompare);
+  }
+
+  /**
+   * Responsible for providing validation for entities.
+   */
+  interface Validator extends ValueMapValidator<String, Object> {
+
+    /**
+     * @return the ID of the entity this validator validates
+     */
+    String getEntityID();
+
+    /**
+     * Validates the values in the given entity
+     * @param entity the entity to validate
+     * @param action the action requiring validation
+     * @throws org.jminor.common.model.valuemap.exception.ValidationException in case the validation fails
+     * @see Property#setNullable(boolean)
+     * @see org.jminor.framework.Configuration#PERFORM_NULL_VALIDATION
+     */
+    void validate(final Entity entity, final int action) throws ValidationException;
+
+    /**
+     * Validates the given property in the given entity
+     * @param entity the entity to validate
+     * @param propertyID the ID of the property to validate
+     * @param action the action requiring validation
+     * @throws org.jminor.common.model.valuemap.exception.ValidationException in case the validation fails
+     * @see Property#setNullable(boolean)
+     * @see org.jminor.framework.Configuration#PERFORM_NULL_VALIDATION
+     */
+    void validate(final Entity entity, final String propertyID, final int action) throws ValidationException;
+
+    /**
+     * Validates the given Entity objects.
+     * @param entities the entities to validate
+     * @param action describes the action requiring validation,
+     * EntityEditor.INSERT, EntityEditor.UPDATE or EntityEditor.UNKNOWN
+     * @throws org.jminor.common.model.valuemap.exception.ValidationException in case the validation fails
+     */
+    void validate(final Collection<Entity> entities, final int action) throws ValidationException;
+
+    /**
+     * Performs a null validation on the given property
+     * @param entity the entity
+     * @param property the property
+     * @param action the action requiring validation
+     * @throws org.jminor.common.model.valuemap.exception.NullValidationException in case the proerty value is null and the property is not nullable
+     * @see Property#isNullable()
+     */
+    void performNullValidation(final Entity entity, final Property property, final int action) throws NullValidationException;
+
+    /**
+     * Performs a range validation on the given property
+     * @param entity the entity
+     * @param property the property
+     * @throws org.jminor.common.model.valuemap.exception.RangeValidationException in case the value of the given property is outside the legal range
+     * @see org.jminor.framework.domain.Property#setMax(double)
+     * @see org.jminor.framework.domain.Property#setMin(double)
+     */
+    void performRangeValidation(final Entity entity, final Property property) throws RangeValidationException;
   }
 }
