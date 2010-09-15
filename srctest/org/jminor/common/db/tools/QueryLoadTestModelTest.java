@@ -34,12 +34,12 @@ public final class QueryLoadTestModelTest {
     loadTest.setApplicationBatchSize(6);
     loadTest.addApplicationBatch();
     try {
-      Thread.sleep(1000);
+      Thread.sleep(1500);
     }
     catch (InterruptedException e) {/**/}
     loadTest.removeApplicationBatch();
     try {
-      Thread.sleep(1000);
+      Thread.sleep(500);
     }
     catch (InterruptedException e) {/**/}
     assertTrue(SELECT_ALBUMS.getSuccessfulRunCount() > 0);
