@@ -519,12 +519,9 @@ public class DefaultEntityModel implements EntityModel {
   @SuppressWarnings({"UnusedDeclaration"})
   private void refreshDetailModelsAfterUpdate(final Collection<Entity> updatedEntities) {
     for (final EntityModel detailModel : detailModels) {
-      for (final Property.ForeignKeyProperty foreignKeyProperty :
-              Entities.getForeignKeyProperties(detailModel.getEntityID(), entityID)) {
-        detailModel.getEditModel().replaceForeignKeyValues(entityID, updatedEntities);
-        if (detailModel.containsTableModel()) {
-          detailModel.getTableModel().replaceForeignKeyValues(entityID, updatedEntities);
-        }
+      detailModel.getEditModel().replaceForeignKeyValues(entityID, updatedEntities);
+      if (detailModel.containsTableModel()) {
+        detailModel.getTableModel().replaceForeignKeyValues(entityID, updatedEntities);
       }
     }
   }
