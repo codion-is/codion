@@ -3,6 +3,8 @@
  */
 package org.jminor.framework.client.model;
 
+import org.jminor.common.db.exception.DbException;
+import org.jminor.common.model.CancelException;
 import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
@@ -22,13 +24,18 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import org.junit.After;
-import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -57,12 +64,21 @@ public final class DefaultEntityEditModelTest {
 
   @Test
   public void initializePropertyComboBoxModel() {
+    try {
+      editModel.getPropertyComboBoxModel(jobProperty);
+      fail();
+    }
+    catch (IllegalStateException e) {}
     final FilteredComboBoxModel model = editModel.initializePropertyComboBoxModel(jobProperty, null, "null");
     assertNotNull(model);
     assertTrue(editModel.containsComboBoxModel(jobProperty.getPropertyID()));
     assertEquals(model, editModel.getPropertyComboBoxModel(jobProperty));
     editModel.refreshComboBoxModels();
     editModel.clearComboBoxModels();
+    assertTrue(editModel.getPropertyComboBoxModel(jobProperty).isCleared());
+    editModel.refreshComboBoxModels();
+    editModel.clear();
+    assertTrue(editModel.getPropertyComboBoxModel(jobProperty).isCleared());
   }
 
   @Test
@@ -72,6 +88,28 @@ public final class DefaultEntityEditModelTest {
     assertEquals(deptProperty.getReferencedEntityID(), model.getEntityID());
     editModel.refreshComboBoxModels();
     editModel.clearComboBoxModels();
+  }
+
+  @Test
+  public void getEntityComboBoxModel() {
+    try {
+      editModel.initializeEntityComboBoxModel(jobProperty.getPropertyID());
+      fail();
+    }
+    catch (IllegalArgumentException e) {}
+    try {
+      editModel.getEntityComboBoxModel(jobProperty.getPropertyID());
+      fail();
+    }
+    catch (IllegalArgumentException e) {}
+    try {
+      editModel.getEntityComboBoxModel(deptProperty.getPropertyID());
+      fail();
+    }
+    catch (IllegalStateException e) {}
+    final EntityComboBoxModel model = editModel.initializeEntityComboBoxModel(deptProperty.getPropertyID());
+    assertNotNull(model);
+    assertEquals(model, editModel.getEntityComboBoxModel(deptProperty));
   }
 
   @Test
@@ -111,8 +149,7 @@ public final class DefaultEntityEditModelTest {
     assertTrue(editModel.getAllowDeleteState().isActive());
 
     final ActionListener listener = new ActionListener() {
-      public void actionPerformed(final ActionEvent e) {
-      }
+      public void actionPerformed(final ActionEvent e) {}
     };
     editModel.addAfterDeleteListener(listener);
     editModel.addAfterInsertListener(listener);
@@ -200,9 +237,28 @@ public final class DefaultEntityEditModelTest {
     editModel.removeAfterRefreshListener(listener);
   }
 
+  @Test(expected = UnsupportedOperationException.class)
+  public void insertReadOnly() throws CancelException, ValidationException, DbException {
+    editModel.setReadOnly(true);
+    editModel.insert();
+  }
+  
+  @Test(expected = UnsupportedOperationException.class)
+  public void updateReadOnly() throws CancelException, ValidationException, DbException {
+    editModel.setReadOnly(true);
+    editModel.update();
+  }
+
+  @Test(expected = UnsupportedOperationException.class)
+  public void deleteReadOnly() throws CancelException, ValidationException, DbException {
+    editModel.setReadOnly(true);
+    editModel.delete();
+  }
+
   @Test
   public void insert() throws Exception {
     try {
+      assertTrue(editModel.insert(new ArrayList<Entity>()).isEmpty());
       editModel.getDbProvider().getEntityDb().beginTransaction();
       editModel.setValue(EmpDept.EMPLOYEE_COMMISSION, 1000d);
       editModel.setValue(EmpDept.EMPLOYEE_HIREDATE, DateUtil.floorDate(new Date()));
@@ -237,7 +293,7 @@ public final class DefaultEntityEditModelTest {
         editModel.insert();
         fail("Should not be able to insert");
       }
-      catch (Exception e) {}
+      catch (UnsupportedOperationException e) {}
       editModel.setInsertAllowed(true);
       assertTrue(editModel.isInsertAllowed());
 
@@ -259,6 +315,8 @@ public final class DefaultEntityEditModelTest {
   @Test
   public void update() throws Exception {
     try {
+      assertTrue(editModel.update().isEmpty());
+      assertTrue(editModel.update(new ArrayList<Entity>()).isEmpty());
       editModel.getDbProvider().getEntityDb().beginTransaction();
       editModel.setEntity(editModel.getDbProvider().getEntityDb().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "MILLER"));
       editModel.setValue(EmpDept.EMPLOYEE_NAME, "BJORN");
@@ -276,7 +334,7 @@ public final class DefaultEntityEditModelTest {
         editModel.update();
         fail("Should not be able to update");
       }
-      catch (Exception e) {}
+      catch (UnsupportedOperationException e) {}
       editModel.setUpdateAllowed(true);
       assertTrue(editModel.isUpdateAllowed());
 
@@ -292,6 +350,7 @@ public final class DefaultEntityEditModelTest {
   @Test
   public void delete() throws Exception {
     try {
+      assertTrue(editModel.delete(new ArrayList<Entity>()).isEmpty());
       editModel.getDbProvider().getEntityDb().beginTransaction();
       editModel.setEntity(editModel.getDbProvider().getEntityDb().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "MILLER"));
       final List<Entity> toDelete = Arrays.asList(editModel.getEntityCopy());
@@ -307,7 +366,7 @@ public final class DefaultEntityEditModelTest {
         editModel.delete();
         fail("Should not be able to delete");
       }
-      catch (Exception e) {}
+      catch (UnsupportedOperationException e) {}
       editModel.setDeleteAllowed(true);
       assertTrue(editModel.isDeleteAllowed());
 

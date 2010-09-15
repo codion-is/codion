@@ -51,8 +51,9 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
   /**
    * @param detailModel if set to true then this table model will not run a query unless a query criteria has been specified
    * @see #setQueryCriteriaRequired(boolean)
+   * @return this table model instance
    */
-  void setDetailModel(final boolean detailModel);
+  EntityTableModel setDetailModel(final boolean detailModel);
 
   /**
    * Refreshes this table model according the the given values by finding the first foreign key property
@@ -107,12 +108,6 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
    * @return true if this table model has a master model
    */
   boolean isDetailModel();
-
-  /**
-   * @param deleteAllowed true if this model should allow records to be deleted
-   * @return this EntityTableModel instance
-   */
-  EntityTableModel setDeleteAllowed(final boolean deleteAllowed);
 
   /**
    * @return true if this model allows records to be deleted
@@ -310,11 +305,4 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
    * @see #isBatchUpdateAllowed()
    */
   StateObserver getBatchUpdateAllowedState();
-
-  /**
-   * @return the state used to determine if deleting should be enabled
-   * @see #isDeleteAllowed()
-   * @see #setDeleteAllowed(boolean)
-   */
-  StateObserver getDeleteAllowedState();
 }

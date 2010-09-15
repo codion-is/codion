@@ -2174,3 +2174,8 @@
   DefaultEntityModel.refreshDetailModelsAfterUpdate() now calls the above methods
   DefaultFilteredComboBoxModel.setContents() now refreshes the selected item
   DefaultEntityModelTest tests the above
+  DefaultEntityTableModel.stDeleteAllowed removed, delegated to the edit model as with updateAllowed
+  DefaultEntityEditModel.setComboBoxModel() removed
+  DefaultEntityEditModelTest improved
+  DefaultEntityTableModelTest improved a bit
+  Unit tests and demo apps run via Ant now run with an in-memory database

@@ -389,8 +389,8 @@
     </zip>
   </target>
 
-  <target name="deploy_to_wiki" depends="javadoc, unit_test_coverage, deploy_src_to_wiki"
-          description="Publishes the relevant files to the documentation wiki">
+  <target name="deploy_to_wiki" depends="javadoc, run_unit_tests_with_coverage, deploy_src_to_wiki"
+          description="Publishes non-source project files to the documentation wiki">
     <delete dir="${wiki.media.project}/docs"/>
     <delete dir="${wiki.media.project}/resources"/>
     <delete dir="${wiki.media.project}/test"/>
@@ -408,7 +408,8 @@
     <chmod file="${wiki.media.project}" perm="ugo+rx" type="dir"/>
   </target>
 
-  <target name="deploy_src_to_wiki" >
+  <target name="deploy_src_to_wiki"
+          description="Publishes the source files to the documentation wiki">
     <delete dir="${wiki.media.project}/src"/>
     <copy todir="${wiki.media.project}/src">
       <fileset dir="${src}" />
@@ -437,9 +438,8 @@
     </zip>
   </target>
 
-  <target name="run_and_report" depends="run_unit_tests"
-          description="Creates a unit test html report">
-    <delete dir="${test.reports.html}"/>
+  <target name="create_unit_test_report"
+          description="Creates a unit test html report on previously run tests">
     <mkdir dir="${test.reports.html}"/>
     <junitreport todir="${test.reports}">
       <fileset dir="${test.reports}" includes="TEST-*.xml"/>
@@ -447,16 +447,7 @@
     </junitreport>
   </target>
 
-  <target name="report"
-          description="Creates a unit test html report on a previously run test">
-    <mkdir dir="${test.reports.html}"/>
-    <junitreport todir="${test.reports}">
-      <fileset dir="${test.reports}" includes="TEST-*.xml"/>
-      <report format="frames" todir="${test.reports.html}"/>
-    </junitreport>
-  </target>
-
-  <target name="run_unit_tests" depends="build, compile_demo_reports, recreate_h2_db"
+  <target name="run_unit_tests" depends="build, compile_demo_reports"
           description="Runs the framework unit tests">
     <mkdir dir="${test.reports}"/>
     <junit printsummary="yes" haltonfailure="false" haltonerror="false" fork="yes">
@@ -471,6 +462,8 @@
       <jvmarg value="-Djminor.db.port=${junit.db.port}"/>
       <jvmarg value="-Djminor.db.sid=${junit.db.sid}"/>
       <jvmarg value="-Djminor.db.embedded=${junit.db.embedded}"/>
+      <jvmarg value="-Djminor.db.embeddedInMemory=${junit.db.embeddedInMemory}"/>
+      <jvmarg value="-Djminor.db.initScript=${junit.db.initScript}"/>
       <batchtest todir="${test.reports}">
         <fileset dir="${srctest}" includes="**/*Test.java"/>
         <fileset dir="${srcdemos}" includes="**/*Test.java" excludes="**/*LoadTest.java"/>
@@ -478,7 +471,18 @@
     </junit>
   </target>
 
-  <target name="instrument" depends="build">
+  <target name="run_unit_tests_and_report" depends="run_unit_tests"
+          description="Creates a unit test html report">
+    <delete dir="${test.reports.html}"/>
+    <mkdir dir="${test.reports.html}"/>
+    <junitreport todir="${test.reports}">
+      <fileset dir="${test.reports}" includes="TEST-*.xml"/>
+      <report format="frames" todir="${test.reports.html}"/>
+    </junitreport>
+  </target>
+
+  <target name="instrument" depends="build"
+          description="Creates instrumented versions of the build class files for coverage reporting">
     <delete file="cobertura.ser" />
     <delete dir="${instrumented.dir}" includeEmptyDirs="true"/>
     <mkdir dir="${instrumented.dir}"/>
@@ -490,7 +494,7 @@
     </cobertura-instrument>
   </target>
 
-  <target name="unit_test_coverage" depends="instrument, compile_demo_reports, recreate_h2_db"
+  <target name="run_unit_tests_with_coverage" depends="instrument, compile_demo_reports"
           description="Runs the framework unit tests with coverage reporting">
     <mkdir dir="${test.reports}"/>
 
@@ -511,18 +515,21 @@
       <jvmarg value="-Djminor.db.port=${junit.db.port}"/>
       <jvmarg value="-Djminor.db.sid=${junit.db.sid}"/>
       <jvmarg value="-Djminor.db.embedded=${junit.db.embedded}"/>
+      <jvmarg value="-Djminor.db.embeddedInMemory=${junit.db.embeddedInMemory}"/>
+      <jvmarg value="-Djminor.db.initScript=${junit.db.initScript}"/>
       <batchtest todir="${test.reports}">
         <fileset dir="${srctest}" includes="**/*Test.java"/>
         <fileset dir="${srcdemos}" includes="**/*Test.java" excludes="**/*LoadTest.java"/>
       </batchtest>
     </junit>
-    <antcall target="report"/>
-    <antcall target="unit_test_coverage_report_xml"/>
-    <antcall target="unit_test_coverage_report_html"/>
+    <antcall target="create_unit_test_report"/>
+    <antcall target="create_coverage_report_xml"/>
+    <antcall target="create_coverage_report_html"/>
     <delete dir="${instrumented.dir}" includeEmptyDirs="true"/>
   </target>
 
-  <target name="unit_test_coverage_report_xml">
+  <target name="create_coverage_report_xml"
+          description="Creates a unit test coverage xml report on previously run tests">
     <delete dir="${test.coveragereport.xml}" includeEmptyDirs="true"/>
     <mkdir dir="${test.coveragereport.xml}"/>
     <cobertura-report format="xml" destdir="${test.coveragereport.xml}" >
@@ -535,7 +542,8 @@
     </cobertura-report>
   </target>
 
-  <target name="unit_test_coverage_report_html">
+  <target name="create_coverage_report_html"
+          description="Creates a unit test coverage html report on previously run tests">
     <delete dir="${test.coveragereport.html}" includeEmptyDirs="true"/>
     <mkdir dir="${test.coveragereport.html}"/>
     <cobertura-report format="html" destdir="${test.coveragereport.html}" >
@@ -548,7 +556,7 @@
     </cobertura-report>
   </target>
 
-  <target name="sonar_analysis_win_only" depends="clean, dist, unit_test_coverage"
+  <target name="sonar_analysis_win_only" depends="clean, dist, run_unit_tests_with_coverage"
           description="Runs the unit tests with coverage analysis and then command 'mvn sonar:sonar' via the cmd shell">
     <exec executable="cmd">
       <arg value="/c"/>
@@ -557,9 +565,9 @@
     </exec>
   </target>
 
-  <target name="run_demo_empdept_local" depends="build, recreate_h2_db"
-          description="Runs the EmpDept demo application with a local db connection">
-    <java classname="org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel" fork="yes">
+  <target name="run_demo_chinook_local" depends="build"
+          description="Runs the Chinook demo application with a local db connection">
+    <java classname="org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel" fork="yes">
       <classpath>
         <path refid="classes.base"/>
         <path refid="lib.client.local"/>
@@ -569,26 +577,28 @@
       <jvmarg value="-Djminor.db.port=${demo.db.port}"/>
       <jvmarg value="-Djminor.db.sid=${demo.db.sid}"/>
       <jvmarg value="-Djminor.db.embedded=${demo.db.embedded}"/>
-      <jvmarg value="-Djminor.report.path=resources/demos/empdept/reports/"/>
+      <jvmarg value="-Djminor.db.embeddedInMemory=${demo.db.embeddedInMemory}"/>
+      <jvmarg value="-Djminor.db.initScript=${demo.db.initScript}"/>
+      <jvmarg value="-Djminor.report.path=resources/demos/chinook/reports/"/>
     </java>
   </target>
 
-  <target name="run_demo_empdept_remote" depends="build"
-          description="Runs the EmpDept demo application with a remote db connection">
-    <java classname="org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel" fork="yes">
+  <target name="run_demo_chinook_remote" depends="build"
+          description="Runs the Chinook demo application with a remote db connection">
+    <java classname="org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel" fork="yes">
       <classpath>
         <path refid="classes.base"/>
         <path refid="lib.client.remote"/>
       </classpath>
       <jvmarg value="-Djminor.client.connectionType=remote"/>
-      <jvmarg value="-Djminor.server.hostname=stofusofi.fiskistofa.is"/>
-      <jvmarg value="-Djminor.report.path=resources/demos/empdept/reports/"/>
+      <jvmarg value="-Djminor.server.hostname=localhost"/>
+      <jvmarg value="-Djminor.report.path=resources/demos/chinook/reports/"/>
       <jvmarg value="-Djavax.net.ssl.trustStore=${basedir}/resources/security/JMinorClientTruststore"/>
       <jvmarg value="-Djava.security.policy=${basedir}/resources/security/jminor_client.policy"/>
     </java>
   </target>
 
-  <target name="run_demo_empdept_load_test" depends="build"
+  <target name="run_demo_chinook_load_test" depends="build"
           description="Runs the EmpDept load testing application with a remote db connection">
     <java classname="org.jminor.framework.demos.empdept.testing.EmpDeptLoadTest" fork="yes">
       <classpath>
@@ -599,42 +609,13 @@
       </classpath>
       <jvmarg value="-Djminor.client.connectionType=remote"/>
       <jvmarg value="-Djminor.server.hostname=localhost"/>
-      <jvmarg value="-Djminor.report.path=resources/demos/empdept/reports/"/>
+      <jvmarg value="-Djminor.report.path=resources/demos/chinook/reports/"/>
       <jvmarg value="-Djavax.net.ssl.trustStore=${basedir}/resources/security/JMinorClientTruststore"/>
       <jvmarg value="-Djava.security.policy=${basedir}/resources/security/jminor_load_test.policy"/>
     </java>
   </target>
 
-  <target name="run_demo_petstore_local" depends="build, recreate_h2_db"
-          description="Runs the Petstore demo application with a local db connection">
-    <java classname="org.jminor.framework.demos.petstore.client.ui.PetstoreAppPanel" fork="yes">
-      <classpath>
-        <path refid="classes.base"/>
-        <path refid="lib.client.local"/>
-      </classpath>
-      <jvmarg value="-Djminor.db.type=${demo.db.type}"/>
-      <jvmarg value="-Djminor.db.host=${demo.db.host}"/>
-      <jvmarg value="-Djminor.db.port=${demo.db.port}"/>
-      <jvmarg value="-Djminor.db.sid=${demo.db.sid}"/>
-      <jvmarg value="-Djminor.db.embedded=${demo.db.embedded}"/>
-    </java>
-  </target>
-
-  <target name="run_demo_petstore_remote" depends="build"
-          description="Runs the Petstore demo application with a remote db connection">
-    <java classname="org.jminor.framework.demos.petstore.client.ui.PetstoreAppPanel" fork="yes">
-      <classpath>
-        <path refid="classes.base"/>
-        <path refid="lib.client.remote"/>
-      </classpath>
-      <jvmarg value="-Djminor.client.connectionType=remote"/>
-      <jvmarg value="-Djminor.server.hostname=localhost"/>
-      <jvmarg value="-Djavax.net.ssl.trustStore=${basedir}/resources/security/JMinorClientTruststore"/>
-      <jvmarg value="-Djava.security.policy=${basedir}/resources/security/jminor_client.policy"/>
-    </java>
-  </target>
-
-  <target name="run_rmi_server" depends="build, recreate_h2_db"
+  <target name="run_rmi_server" depends="build"
           description="Runs the RMI server">
     <java classname="org.jminor.framework.server.EntityDbRemoteServerAdmin" fork="yes">
       <classpath>
@@ -647,6 +628,8 @@
       <jvmarg value="-Djminor.db.port=${demo.db.port}"/>
       <jvmarg value="-Djminor.db.sid=${demo.db.sid}"/>
       <jvmarg value="-Djminor.db.embedded=${demo.db.embedded}"/>
+      <jvmarg value="-Djminor.db.embeddedInMemory=${demo.db.embeddedInMemory}"/>
+      <jvmarg value="-Djminor.db.initScript=${demo.db.initScript}"/>
       <jvmarg value="-Djminor.server.pooling.initial=scott"/>
       <jvmarg value="-Djminor.server.clientLoggingEnabled=true"/>
       <jvmarg value="-Djminor.server.port=2222"/>
@@ -678,10 +661,7 @@
     <java classname="sun.rmi.registry.RegistryImpl" fork="yes">
       <classpath>
         <path refid="classes.base"/>
-        <pathelement location="${lib.slf4j.api}"/>
-        <pathelement location="${lib.logback.classic}"/>
-        <pathelement location="${lib.logback.core}"/>
-        <pathelement location="${lib.jasperreports.base}"/>
+        <path refid="lib.server"/>
       </classpath>
       <jvmarg value="-Djava.security.policy=${basedir}/resources/security/all_permissions.policy"/>
     </java>

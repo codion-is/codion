@@ -473,6 +473,10 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
    * underlying entity, for performing an update on the selected entities
    */
   public ControlSet getUpdateSelectedControlSet() {
+    if (getEntityTableModel().isReadOnly() || !getEntityTableModel().isUpdateAllowed()
+            || !getEntityTableModel().isBatchUpdateAllowed()) {
+      throw new IllegalStateException("Table model is read only or does not allow updates");
+    }
     final State enabled = States.aggregateState(Conjunction.AND,
             getEntityTableModel().getBatchUpdateAllowedState(),
             getEntityTableModel().getSelectionEmptyState().getReversedState());
@@ -516,9 +520,12 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
    * @return a control for deleting the selected entities
    */
   public final Control getDeleteSelectedControl() {
+    if (getEntityTableModel().isReadOnly() || !getEntityTableModel().isDeleteAllowed()) {
+      throw new IllegalStateException("Table model is read only or does not allow delete");
+    }
     return Controls.methodControl(this, "delete", FrameworkMessages.get(FrameworkMessages.DELETE),
             States.aggregateState(Conjunction.AND,
-                    getEntityTableModel().getDeleteAllowedState(),
+                    getEntityTableModel().getEditModel().getAllowDeleteState(),
                     getEntityTableModel().getSelectionEmptyState().getReversedState()),
             FrameworkMessages.get(FrameworkMessages.DELETE_TIP), 0, null,
             Images.loadImage(Images.IMG_DELETE_16));

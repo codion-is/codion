@@ -435,7 +435,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
     FilteredComboBoxModel comboBoxModel = propertyComboBoxModels.get(property);
     if (comboBoxModel == null) {
       comboBoxModel = createPropertyComboBoxModel(property, refreshEvent == null ? evtEntitiesChanged : refreshEvent, nullValueString);
-      setComboBoxModel(property, comboBoxModel);
+      propertyComboBoxModels.put(property, comboBoxModel);
       comboBoxModel.refresh();
     }
 
@@ -481,7 +481,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
     EntityComboBoxModel comboBoxModel = (EntityComboBoxModel) propertyComboBoxModels.get(foreignKeyProperty);
     if (comboBoxModel == null) {
       comboBoxModel = createEntityComboBoxModel(foreignKeyProperty);
-      setComboBoxModel(foreignKeyProperty, comboBoxModel);
+      propertyComboBoxModels.put(foreignKeyProperty, comboBoxModel);
     }
 
     return comboBoxModel;
@@ -658,22 +658,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
     }
   }
 
-  /**
-   * Sets the ComboBoxModel to be associated with the given property
-   * @param property the property
-   * @param model the ComboBoxModel
-   * @throws RuntimeException in case the ComboBoxModel has already been set for this property
-   */
-  private void setComboBoxModel(final Property property, final FilteredComboBoxModel model) {
-    if (propertyComboBoxModels.containsKey(property)) {
-      throw new IllegalStateException("ComboBoxModel already associated with property: " + property);
-    }
-
-    propertyComboBoxModels.put(property, model);
-  }
-
   private boolean containsComboBoxModel(final Property property) {
-    Util.rejectNullValue(property, "property");
     return propertyComboBoxModels.containsKey(property);
   }
 

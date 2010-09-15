@@ -12,7 +12,11 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityTestDomain;
 import org.jminor.framework.domain.Property;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import org.junit.Test;
 
 import javax.swing.table.TableColumn;
@@ -32,6 +36,70 @@ public final class DefaultEntityTableModelTest {
   static {
     EntityTestDomain.init();
     testEntities = initTestEntities(new Entity[5]);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void setEditModelWrongEntityID() {
+    final EntityTableModel tableModel = new DefaultEntityTableModel(EntityTestDomain.T_DETAIL, EntityDbConnectionTest.DB_PROVIDER);
+    final EntityEditModel editModel = new DefaultEntityEditModel(EntityTestDomain.T_MASTER, EntityDbConnectionTest.DB_PROVIDER);
+    tableModel.setEditModel(editModel);
+  }
+
+  @Test(expected = IllegalStateException.class)
+  public void setEditModelAlreadySet() {
+    assertTrue(testModel.hasEditModel());
+    final EntityEditModel editModel = new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, EntityDbConnectionTest.DB_PROVIDER);
+    testModel.setEditModel(editModel);
+  }
+
+  @Test
+  public void setAndGetEditModel() {
+    final EntityTableModel tableModel = new DefaultEntityTableModel(EntityTestDomain.T_DETAIL, EntityDbConnectionTest.DB_PROVIDER);
+    final EntityEditModel editModel = new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, EntityDbConnectionTest.DB_PROVIDER);
+    assertFalse(tableModel.hasEditModel());
+    tableModel.setEditModel(editModel);
+    assertTrue(tableModel.hasEditModel());
+    assertEquals(editModel, tableModel.getEditModel());
+  }
+
+  @Test(expected = IllegalStateException.class)
+  public void getEditModelNoEditModelSet() {
+    final EntityTableModel tableModel = new DefaultEntityTableModel(EntityTestDomain.T_DETAIL, EntityDbConnectionTest.DB_PROVIDER);
+    tableModel.getEditModel();
+  }
+
+  @Test
+  public void isUpdateAllowed() {
+    final EntityTableModel tableModel = new DefaultEntityTableModel(EntityTestDomain.T_DETAIL, EntityDbConnectionTest.DB_PROVIDER);
+    final EntityEditModel editModel = new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, EntityDbConnectionTest.DB_PROVIDER);
+    assertFalse(tableModel.isUpdateAllowed());
+    tableModel.setEditModel(editModel);
+    assertTrue(tableModel.isUpdateAllowed());
+    editModel.setUpdateAllowed(false);
+    assertFalse(tableModel.isUpdateAllowed());
+  }
+
+  @Test
+  public void isDeleteAllowed() {
+    final EntityTableModel tableModel = new DefaultEntityTableModel(EntityTestDomain.T_DETAIL, EntityDbConnectionTest.DB_PROVIDER);
+    final EntityEditModel editModel = new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, EntityDbConnectionTest.DB_PROVIDER);
+    assertFalse(tableModel.isDeleteAllowed());
+    tableModel.setEditModel(editModel);
+    assertTrue(tableModel.isDeleteAllowed());
+    editModel.setDeleteAllowed(false);
+    assertFalse(tableModel.isDeleteAllowed());
+  }
+
+  @Test
+  public void settersAndGetters() {
+    assertEquals(EntityDbConnectionTest.DB_PROVIDER, testModel.getDbProvider());
+    assertEquals(EntityTestDomain.T_DETAIL, testModel.getEntityID());
+    testModel.setDetailModel(false);
+    assertFalse(testModel.isDetailModel());
+    testModel.setQueryCriteriaRequired(false);
+    assertFalse(testModel.isQueryCriteriaRequired());
+    testModel.setQueryConfigurationAllowed(false);
+    assertFalse(testModel.isQueryConfigurationAllowed());
   }
 
   @Test
@@ -67,10 +135,9 @@ public final class DefaultEntityTableModelTest {
     assertEquals(10, testModel.getFetchCount());
     assertFalse(testModel.isDetailModel());
     assertNotNull(testModel.getEditModel());
-    assertNotNull(testModel.getDeleteAllowedState());
     assertNotNull(testModel.getBatchUpdateAllowedState());
     assertFalse(testModel.isReadOnly());
-    testModel.setBatchUpdateAllowed(true).setQueryConfigurationAllowed(true).setDeleteAllowed(true);
+    testModel.setBatchUpdateAllowed(true).setQueryConfigurationAllowed(true);
     assertTrue(testModel.isBatchUpdateAllowed());
     assertTrue(testModel.isDeleteAllowed());
     assertTrue(testModel.isQueryConfigurationAllowed());
