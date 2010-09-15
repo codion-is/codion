@@ -402,18 +402,39 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   /** {@inheritDoc} */
+  public final void replaceForeignKeyValues(final String foreignKeyEntityID, final Collection<Entity> newForeignKeyValues) {
+    final List<Property.ForeignKeyProperty> foreignKeyProperties = Entities.getForeignKeyProperties(this.entityID, foreignKeyEntityID);
+    boolean changed = false;
+    for (final Entity entity : getAllItems()) {
+      for (final Property.ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
+        for (final Entity newForeignKeyValue : newForeignKeyValues) {
+          final Entity currentForeignKeyValue = entity.getForeignKeyValue(foreignKeyProperty.getPropertyID());
+          if (currentForeignKeyValue != null && currentForeignKeyValue.equals(newForeignKeyValue)) {
+            currentForeignKeyValue.setAs(newForeignKeyValue);
+            changed = true;
+          }
+        }
+      }
+    }
+    if (changed) {
+      fireTableChanged(new TableModelEvent(this, 0, getRowCount() - 1));
+    }
+  }
+
+  /** {@inheritDoc} */
   public final List<Entity.Key> getPrimaryKeysOfSelectedEntities() {
     return EntityUtil.getPrimaryKeys(getSelectedItems());
   }
 
   /** {@inheritDoc} */
   public final void setSelectedByPrimaryKeys(final List<Entity.Key> keys) {
+    final List<Entity.Key> keyList = new ArrayList<Entity.Key>(keys);
     final List<Integer> indexes = new ArrayList<Integer>();
     for (final Entity visibleEntity : getVisibleItems()) {
-      final int index = keys.indexOf(visibleEntity.getPrimaryKey());
+      final int index = keyList.indexOf(visibleEntity.getPrimaryKey());
       if (index >= 0) {
         indexes.add(indexOf(visibleEntity));
-        keys.remove(index);
+        keyList.remove(index);
       }
     }
 

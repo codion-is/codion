@@ -16,6 +16,7 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
 import java.awt.event.ActionListener;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -57,6 +58,15 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * @throws ClassCastException in case the value was not an Entity
    */
   Entity getForeignKeyValue(final String foreignKeyPropertyID);
+
+  /**
+   * For every field referencing the given foreign key values, replaces that foreign key instance with
+   * the corresponding entity from <code>foreignKeyValues</code>, useful when property
+   * values have been changed in the referenced entity that must be reflected in the edit model.
+   * @param foreignKeyEntityID the entity ID of the foreign key values
+   * @param newForeignKeyValues the new foreign key entities
+   */
+  void replaceForeignKeyValues(final String foreignKeyEntityID, final Collection<Entity> newForeignKeyValues);
 
   /**
    * Initializes a value provider for the given property, used for adding lookup

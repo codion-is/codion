@@ -45,26 +45,38 @@ public final class DefaultEntityModelTest {
     departmentModel.setLinkedDetailModels(employeeModel);
     assertTrue(departmentModel.getLinkedDetailModels().contains(employeeModel));
     departmentModel.refresh();
-    final EntityComboBoxModel deptCombo = employeeModel.getEditModel().initializeEntityComboBoxModel(Entities.getForeignKeyProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_DEPARTMENT_FK));
-    deptCombo.refresh();
-    final Entity.Key key = Entities.keyInstance(EmpDept.T_DEPARTMENT);
-    key.setValue(EmpDept.DEPARTMENT_ID, 40);//operations, no employees
+    final EntityEditModel employeeEditModel = employeeModel.getEditModel();
+    final EntityComboBoxModel departmentsComboBoxModel = employeeEditModel.initializeEntityComboBoxModel(Entities.getForeignKeyProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_DEPARTMENT_FK));
+    departmentsComboBoxModel.refresh();
+    final Entity.Key primaryKey = Entities.keyInstance(EmpDept.T_DEPARTMENT);
+    primaryKey.setValue(EmpDept.DEPARTMENT_ID, 40);//operations, no employees
     final List<Entity.Key> keys = new ArrayList<Entity.Key>();
-    keys.add(key);
+    keys.add(primaryKey);
     departmentModel.getTableModel().setSelectedByPrimaryKeys(keys);
     final Entity operations = departmentModel.getTableModel().getSelectedItem();
     try {
       departmentModel.getDbProvider().getEntityDb().beginTransaction();
       departmentModel.getEditModel().delete();
-      assertFalse(deptCombo.contains(operations, true));
-      final Entity newDept = Entities.entityInstance(EmpDept.T_DEPARTMENT);
-      newDept.setValue(EmpDept.DEPARTMENT_ID, 99);
-      newDept.setValue(EmpDept.DEPARTMENT_NAME, "nameit");
-      departmentModel.getEditModel().insert(Arrays.asList(newDept));
-      assertTrue(deptCombo.contains(newDept, true));
-      newDept.setValue(EmpDept.DEPARTMENT_NAME, "nameitagain");
-      departmentModel.getEditModel().update(Arrays.asList(newDept));
-      assertEquals("nameitagain", deptCombo.getEntity(newDept.getPrimaryKey()).getValue(EmpDept.DEPARTMENT_NAME));
+      assertFalse(departmentsComboBoxModel.contains(operations, true));
+      departmentModel.getEditModel().setValue(EmpDept.DEPARTMENT_ID, 99);
+      departmentModel.getEditModel().setValue(EmpDept.DEPARTMENT_NAME, "nameit");
+      final Entity.Key insertedKey = departmentModel.getEditModel().insert().get(0);
+      final Entity inserted = departmentModel.getDbProvider().getEntityDb().selectSingle(insertedKey);
+      assertTrue(departmentsComboBoxModel.contains(inserted, true));
+      departmentModel.getTableModel().setSelectedByPrimaryKeys(Arrays.asList(insertedKey));
+      departmentModel.getEditModel().setValue(EmpDept.DEPARTMENT_NAME, "nameitagain");
+      departmentModel.getEditModel().update();
+      assertEquals("nameitagain", departmentsComboBoxModel.getEntity(insertedKey).getValue(EmpDept.DEPARTMENT_NAME));
+
+      primaryKey.setValue(EmpDept.DEPARTMENT_ID, 20);//research
+      departmentModel.getTableModel().setSelectedByPrimaryKeys(keys);
+      departmentModel.getEditModel().setValue(EmpDept.DEPARTMENT_NAME, "NewName");
+      departmentModel.getEditModel().update();
+
+      for (final Entity employee : employeeModel.getTableModel().getAllItems()) {
+        final Entity dept = employee.getForeignKeyValue(EmpDept.EMPLOYEE_DEPARTMENT_FK);
+        assertEquals("NewName", dept.getValue(EmpDept.DEPARTMENT_NAME));
+      }
     }
     finally {
       departmentModel.getDbProvider().getEntityDb().rollbackTransaction();

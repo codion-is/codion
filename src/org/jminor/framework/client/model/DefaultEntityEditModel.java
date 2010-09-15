@@ -134,36 +134,6 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
   }
 
   /** {@inheritDoc} */
-  public FilteredComboBoxModel createPropertyComboBoxModel(final Property.ColumnProperty property, final EventObserver refreshEvent,
-                                                           final String nullValueString) {
-    final FilteredComboBoxModel model = new DefaultPropertyComboBoxModel(entityID, dbProvider, property, nullValueString, refreshEvent);
-    model.refresh();
-
-    return model;
-  }
-
-  /** {@inheritDoc} */
-  public EntityComboBoxModel createEntityComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty) {
-    Util.rejectNullValue(foreignKeyProperty, "foreignKeyProperty");
-    final EntityComboBoxModel model = new DefaultEntityComboBoxModel(foreignKeyProperty.getReferencedEntityID(), dbProvider);
-    model.setNullValueString(getValidator().isNullable(getEntity(), foreignKeyProperty.getPropertyID()) ?
-            (String) Configuration.getValue(Configuration.DEFAULT_COMBO_BOX_NULL_VALUE_ITEM) : null);
-    model.refresh();
-
-    return model;
-  }
-
-  /** {@inheritDoc} */
-  public EntityLookupModel createEntityLookupModel(final String entityID,
-                                                   final List<Property.ColumnProperty> lookupProperties,
-                                                   final Criteria additionalSearchCriteria) {
-    final EntityLookupModel model = new DefaultEntityLookupModel(entityID, dbProvider, lookupProperties);
-    model.setAdditionalLookupCriteria(additionalSearchCriteria);
-
-    return model;
-  }
-
-  /** {@inheritDoc} */
   public final boolean isReadOnly() {
     return readOnly;
   }
@@ -245,6 +215,25 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
   /** {@inheritDoc} */
   public final Entity getForeignKeyValue(final String foreignKeyPropertyID) {
     return (Entity) getValue(foreignKeyPropertyID);
+  }
+
+  /** {@inheritDoc} */
+  public final void replaceForeignKeyValues(final String foreignKeyEntityID, final Collection<Entity> newForeignKeyValues) {
+    final List<Property.ForeignKeyProperty> foreignKeyProperties = Entities.getForeignKeyProperties(this.entityID, foreignKeyEntityID);
+    for (final Property.ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
+      if (containsComboBoxModel(foreignKeyProperty.getPropertyID())) {
+        getEntityComboBoxModel(foreignKeyProperty.getPropertyID()).refresh();
+      }
+      final Entity currentForeignKeyValue = getForeignKeyValue(foreignKeyProperty.getPropertyID());
+      if (currentForeignKeyValue != null) {
+        for (final Entity newForeignKeyValue : newForeignKeyValues) {
+          if (currentForeignKeyValue.equals(newForeignKeyValue)) {
+            setValue(foreignKeyProperty.getPropertyID(), null);
+            setValue(foreignKeyProperty.getPropertyID(), newForeignKeyValue);
+          }
+        }
+      }
+    }
   }
 
   /** {@inheritDoc} */
@@ -396,6 +385,36 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
     for (final FilteredComboBoxModel comboBoxModel : propertyComboBoxModels.values()) {
       comboBoxModel.clear();
     }
+  }
+
+  /** {@inheritDoc} */
+  public FilteredComboBoxModel createPropertyComboBoxModel(final Property.ColumnProperty property, final EventObserver refreshEvent,
+                                                           final String nullValueString) {
+    final FilteredComboBoxModel model = new DefaultPropertyComboBoxModel(entityID, dbProvider, property, nullValueString, refreshEvent);
+    model.refresh();
+
+    return model;
+  }
+
+  /** {@inheritDoc} */
+  public EntityComboBoxModel createEntityComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty) {
+    Util.rejectNullValue(foreignKeyProperty, "foreignKeyProperty");
+    final EntityComboBoxModel model = new DefaultEntityComboBoxModel(foreignKeyProperty.getReferencedEntityID(), dbProvider);
+    model.setNullValueString(getValidator().isNullable(getEntity(), foreignKeyProperty.getPropertyID()) ?
+            (String) Configuration.getValue(Configuration.DEFAULT_COMBO_BOX_NULL_VALUE_ITEM) : null);
+    model.refresh();
+
+    return model;
+  }
+
+  /** {@inheritDoc} */
+  public EntityLookupModel createEntityLookupModel(final String entityID,
+                                                   final List<Property.ColumnProperty> lookupProperties,
+                                                   final Criteria additionalSearchCriteria) {
+    final EntityLookupModel model = new DefaultEntityLookupModel(entityID, dbProvider, lookupProperties);
+    model.setAdditionalLookupCriteria(additionalSearchCriteria);
+
+    return model;
   }
 
   /** {@inheritDoc} */

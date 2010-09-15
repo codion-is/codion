@@ -65,6 +65,15 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
   void setForeignKeySearchValues(final String referencedEntityID, final List<Entity> referenceEntities);
 
   /**
+   * For every entity in this table model, replaces the foreign key instance bearing the primary
+   * key with the corresponding entity from <code>foreignKeyValues</code>, useful when property
+   * values have been changed in the referenced entity that must be reflected in the table model.
+   * @param foreignKeyEntityID the entity ID of the foreign key values
+   * @param newForeignKeyValues the foreign key entities
+   */
+  void replaceForeignKeyValues(final String foreignKeyEntityID, final Collection<Entity> newForeignKeyValues);
+
+  /**
    * Retrieves the entities identified by the given primary keys and adds them to this table model
    * @param primaryKeys the primary keys
    * @param atFront if true the entities are added to the front

@@ -444,11 +444,10 @@ public class DefaultEntityModel implements EntityModel {
           }
         }
         tableModel.replaceEntities(updated);
-        tableModel.setSelectedItems(updated);
       }
     }
 
-    refreshDetailModelsAfterUpdate();
+    refreshDetailModelsAfterUpdate(updatedEntities);
   }
 
   private void handleDelete(final DeleteEvent deleteEvent) {
@@ -518,13 +517,13 @@ public class DefaultEntityModel implements EntityModel {
   }
 
   @SuppressWarnings({"UnusedDeclaration"})
-  private void refreshDetailModelsAfterUpdate() {
+  private void refreshDetailModelsAfterUpdate(final Collection<Entity> updatedEntities) {
     for (final EntityModel detailModel : detailModels) {
       for (final Property.ForeignKeyProperty foreignKeyProperty :
               Entities.getForeignKeyProperties(detailModel.getEntityID(), entityID)) {
-        final EntityEditModel detailEditModel = detailModel.getEditModel();
-        if (detailEditModel.containsComboBoxModel(foreignKeyProperty.getPropertyID())) {
-          detailEditModel.getEntityComboBoxModel(foreignKeyProperty).refresh();
+        detailModel.getEditModel().replaceForeignKeyValues(entityID, updatedEntities);
+        if (detailModel.containsTableModel()) {
+          detailModel.getTableModel().replaceForeignKeyValues(entityID, updatedEntities);
         }
       }
     }

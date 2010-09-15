@@ -2169,3 +2169,8 @@
   Property.DerivedProperty.Provider added (too deep?)
   EnitityValidator is now Entity.Validator
   ConnectionPoolImpl.isNewConnectionWarranted() refactored
+  EntityEditModel.replaceForeignKeyValues() added
+  EntityTableModel.replaceForeignKeyValues() added
+  DefaultEntityModel.refreshDetailModelsAfterUpdate() now calls the above methods
+  DefaultFilteredComboBoxModel.setContents() now refreshes the selected item
+  DefaultEntityModelTest tests the above

@@ -84,6 +84,10 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
    * @param contents the contents to be used by this model
    */
   public final void setContents(final Collection<T> contents) {
+    final Object selected = getSelectedItem();
+    if (selectedItem != null) {
+      setSelectedItem(null);
+    }
     filteredItems.clear();
     visibleItems.clear();
     if (contents != null) {
@@ -92,6 +96,9 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
       if (nullValueString != null) {
         visibleItems.add(0, null);
       }
+    }
+    if (selectedItem != null) {
+      setSelectedItem(selected);
     }
     else {
       fireContentsChanged();
