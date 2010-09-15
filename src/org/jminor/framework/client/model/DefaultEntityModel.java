@@ -569,29 +569,20 @@ public class DefaultEntityModel implements EntityModel {
         handleDelete(event);
       }
     });
-    evtLinkedDetailModelsChanged.addListener(new ActionListener() {
+    final ActionListener initializer = new ActionListener() {
       /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
         if (!editModel.isEntityNew()) {
           initializeDetailModels();
         }
       }
-    });
+    };
+    evtLinkedDetailModelsChanged.addListener(initializer);
     if (containsTableModel()) {
-      tableModel.addSelectionChangedListener(new ActionListener() {
-        /** {@inheritDoc} */
-        public void actionPerformed(final ActionEvent e) {
-          initializeDetailModels();
-        }
-      });
+      tableModel.addSelectionChangedListener(initializer);
     }
     else {
-      editModel.addValueMapSetListener(new ActionListener() {
-        /** {@inheritDoc} */
-        public void actionPerformed(final ActionEvent e) {
-          initializeDetailModels();
-        }
-      });
+      editModel.addValueMapSetListener(initializer);
     }
   }
 }
