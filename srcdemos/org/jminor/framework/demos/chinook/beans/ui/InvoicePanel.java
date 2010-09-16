@@ -5,9 +5,11 @@ package org.jminor.framework.demos.chinook.beans.ui;
 
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.ui.EntityPanel;
+import org.jminor.framework.client.ui.EntityTablePanel;
 import org.jminor.framework.demos.chinook.domain.Chinook;
 import org.jminor.framework.domain.Entities;
 
+import javax.swing.JPanel;
 import java.awt.Dimension;
 
 public class InvoicePanel extends EntityPanel {
@@ -21,7 +23,12 @@ public class InvoicePanel extends EntityPanel {
     final EntityModel invoiceLineModel = model.getDetailModel(Chinook.T_INVOICELINE);
     final EntityPanel invoiceLinePanel = new EntityPanel(invoiceLineModel,
             new InvoiceLineEditPanel(invoiceLineModel.getEditModel()),
-            new InvoiceLineTablePanel(invoiceLineModel.getTableModel()));
+            new EntityTablePanel(invoiceLineModel.getTableModel()) {
+              @Override
+              protected JPanel initializeSouthPanel() {
+                return null;
+              }
+            });
     invoiceLineModel.getTableModel().setColumnVisible(Entities.getProperty(Chinook.T_INVOICELINE, Chinook.INVOICELINE_INVOICEID_FK), false);
     invoiceLinePanel.setEditPanelState(EntityPanel.HIDDEN);
     invoiceLinePanel.getTablePanel().setSummaryPanelVisible(true);

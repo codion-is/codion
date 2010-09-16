@@ -9,10 +9,12 @@ import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.model.PropertySummaryModel;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.demos.chinook.domain.Chinook;
+import org.jminor.framework.domain.Entity;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 public class InvoiceModel extends DefaultEntityModel {
 
@@ -35,7 +37,11 @@ public class InvoiceModel extends DefaultEntityModel {
     setLinkedDetailModels(invoiceLineModel);
     getEditModel().addValueMapSetListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
-        getDetailModel(Chinook.T_INVOICELINE).initialize(Chinook.T_INVOICE, Arrays.asList(getEditModel().getEntityCopy()));
+        final List<Entity> invoices = new ArrayList<Entity>();
+        if (!getEditModel().isEntityNew()) {
+          invoices.add(getEditModel().getEntityCopy());
+        }
+        getDetailModel(Chinook.T_INVOICELINE).initialize(Chinook.T_INVOICE, invoices);
       }
     });
   }
