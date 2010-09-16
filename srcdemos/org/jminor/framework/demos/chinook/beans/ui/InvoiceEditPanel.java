@@ -17,15 +17,11 @@ import java.awt.GridLayout;
 
 public class InvoiceEditPanel extends EntityEditPanel {
 
-  private final JPanel invoiceLineBasePanel = new JPanel(new BorderLayout());
+  private final EntityPanel invoiceLinePanel;
 
-  public InvoiceEditPanel(final EntityEditModel editModel) {
+  public InvoiceEditPanel(final EntityEditModel editModel, final EntityPanel invoiceLinePanel) {
     super(editModel);
-  }
-
-  void addInvoiceLinePanel(final EntityPanel invoiceLinePanel) {
-    this.invoiceLineBasePanel.add(invoiceLinePanel);
-    revalidate();
+    this.invoiceLinePanel = invoiceLinePanel;
   }
 
   @Override
@@ -64,6 +60,6 @@ public class InvoiceEditPanel extends EntityEditPanel {
     setLayout(new BorderLayout(5, 5));
     add(centerBase, BorderLayout.CENTER);
 
-    add(createPropertyPanel(new JLabel("Invoice lines"), invoiceLineBasePanel, true), BorderLayout.EAST);
+    add(createPropertyPanel(new JLabel("Invoice lines"), invoiceLinePanel, true), BorderLayout.EAST);
   }
 }

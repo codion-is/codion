@@ -11,20 +11,24 @@ import org.jminor.framework.demos.chinook.domain.Chinook;
 import org.jminor.framework.domain.Entities;
 
 import javax.swing.JPanel;
+import javax.swing.JTable;
 import java.awt.Dimension;
 
 public class InvoicePanel extends EntityPanel {
 
   public InvoicePanel(final EntityModel model) {
-    super(model, new InvoiceEditPanel(model.getEditModel()));
-    addInvoiceLinePanel(model);
+    super(model, new InvoiceEditPanel(model.getEditModel(),
+            initializeInvoiceLinePanel(model.getDetailModel(Chinook.T_INVOICELINE))));
   }
 
-  private void addInvoiceLinePanel(final EntityModel model) {
-    final EntityModel invoiceLineModel = model.getDetailModel(Chinook.T_INVOICELINE);
+  private static EntityPanel initializeInvoiceLinePanel(final EntityModel invoiceLineModel) {
     final EntityPanel invoiceLinePanel = new EntityPanel(invoiceLineModel,
             new InvoiceLineEditPanel(invoiceLineModel.getEditModel()),
             new EntityTablePanel(invoiceLineModel.getTableModel(), (EntityTableSearchPanel) null) {
+              @Override
+              protected int getAutoResizeMode() {
+                return JTable.AUTO_RESIZE_ALL_COLUMNS;
+              }
               @Override
               protected JPanel initializeSouthPanel() {
                 return null;
@@ -36,6 +40,6 @@ public class InvoicePanel extends EntityPanel {
     invoiceLinePanel.getTablePanel().setPreferredSize(new Dimension(360, 40));
     invoiceLinePanel.initializePanel();
 
-    ((InvoiceEditPanel) getEditPanel()).addInvoiceLinePanel(invoiceLinePanel);
+    return invoiceLinePanel;
   }
 }
