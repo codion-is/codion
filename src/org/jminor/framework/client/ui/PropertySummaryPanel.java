@@ -51,6 +51,7 @@ public final class PropertySummaryPanel extends JPanel {
 
   private void initialize() {
     setLayout(new BorderLayout());
+    txtSummary.setHorizontalAlignment(JTextField.RIGHT);
     txtSummary.setEditable(false);
     txtSummary.setFocusable(false);
     txtSummary.setPreferredSize(UiUtil.getPreferredTextFieldSize());
