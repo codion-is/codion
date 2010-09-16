@@ -85,6 +85,20 @@ public class Chinook {
   public static final String INVOICELINE_TRACKID_FK = "trackid_fk";
   public static final String INVOICELINE_UNITPRICE = "unitprice";
   public static final String INVOICELINE_QUANTITY = "quantity";
+  public static final String INVOICELINE_TOTAL = "total";
+
+  public static final Property.DerivedProperty.Provider INVOICELINE_TOTAL_PROVIDER =
+          new Property.DerivedProperty.Provider() {
+            public Object getValue(final Map<String, Object> linkedValues) {
+              final Integer quantity = (Integer) linkedValues.get(INVOICELINE_QUANTITY);
+              final Double unitPrice = (Double) linkedValues.get(INVOICELINE_UNITPRICE);
+              if (unitPrice == null || quantity == null) {
+                return null;
+              }
+
+              return quantity * unitPrice;
+            }
+          };
 
   public static final String T_MEDIATYPE = "chinook.mediatype";
   public static final String MEDIATYPE_MEDIATYPEID = "mediatypeid";
@@ -370,12 +384,14 @@ public class Chinook {
             Properties.foreignKeyProperty(INVOICELINE_TRACKID_FK, "Track", T_TRACK,
                     Properties.columnProperty(INVOICELINE_TRACKID))
                     .setNullable(false)
-                    .setPreferredColumnWidth(160),
+                    .setPreferredColumnWidth(100),
             Properties.denormalizedProperty(INVOICELINE_UNITPRICE, INVOICELINE_TRACKID_FK,
                     Entities.getProperty(T_TRACK, TRACK_UNITPRICE), "Unit price")
                     .setNullable(false),
             Properties.columnProperty(INVOICELINE_QUANTITY, Types.INTEGER, "Quantity")
-                    .setNullable(false))
+                    .setNullable(false),
+            Properties.derivedProperty(INVOICELINE_TOTAL, Types.DOUBLE, "Total", INVOICELINE_TOTAL_PROVIDER,
+                    INVOICELINE_QUANTITY, INVOICELINE_UNITPRICE))
             .setDomainID(DOMAIN_ID)
             .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_INVOICELINE)
             .setCaption("Invoice lines");
