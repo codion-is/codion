@@ -1089,8 +1089,8 @@ public class EntityPanel extends JPanel {
     final Dimension parentSize = parent.getSize();
     final Dimension size = getDetailDialogSize(parentSize);
     final Point parentLocation = parent.getLocation();
-    final Point location = new Point(parentLocation.x+(parentSize.width-size.width),
-            parentLocation.y+(parentSize.height-size.height)- DETAIL_DIALOG_OFFSET);
+    final Point location = new Point(parentLocation.x + (parentSize.width - size.width),
+            parentLocation.y + (parentSize.height - size.height) - DETAIL_DIALOG_OFFSET);
     SwingUtilities.invokeLater(new Runnable() {
       /** {@inheritDoc} */
       public void run() {
@@ -1110,8 +1110,8 @@ public class EntityPanel extends JPanel {
    * @return the size to use when showing the detail dialog
    */
   private Dimension getDetailDialogSize(final Dimension parentSize) {
-    return new Dimension((int) (parentSize.width/ DETAIL_DIALOG_SIZE_RATIO), (editControlPanel != null) ?
-            (int) (parentSize.height/ DETAIL_DIALOG_SIZE_RATIO) : parentSize.height- DETAIL_DIALOG_HEIGHT_OFFSET);
+    return new Dimension((int) (parentSize.width / DETAIL_DIALOG_SIZE_RATIO), (editControlPanel != null) ?
+            (int) (parentSize.height / DETAIL_DIALOG_SIZE_RATIO) : parentSize.height - DETAIL_DIALOG_HEIGHT_OFFSET);
   }
 
   /**
