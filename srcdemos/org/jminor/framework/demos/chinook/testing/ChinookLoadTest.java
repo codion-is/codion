@@ -135,9 +135,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
 
     final EntityModel customerModel = appModel.getMainApplicationModel(Chinook.T_CUSTOMER);
     final EntityModel invoiceModel = customerModel.getDetailModel(Chinook.T_INVOICE);
-    final EntityModel invoicelineModel = invoiceModel.getDetailModel(Chinook.T_INVOICELINE);
     customerModel.setLinkedDetailModels(invoiceModel);
-    invoiceModel.setLinkedDetailModels(invoicelineModel);
 
     return appModel;
   }

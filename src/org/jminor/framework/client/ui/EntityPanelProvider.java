@@ -14,6 +14,9 @@ import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entities;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,6 +29,8 @@ import java.util.Map;
  * Note: this class has a natural ordering based on the caption which is inconsistent with equals.
  */
 public class EntityPanelProvider implements Comparable {
+
+  protected static final Logger LOG = LoggerFactory.getLogger(EntityPanelProvider.class);
 
   private final Collator collator = Collator.getInstance();
 
@@ -261,12 +266,45 @@ public class EntityPanelProvider implements Comparable {
   public final EntityPanel createPanel(final EntityDbProvider dbProvider, final boolean detailPanel) {
     Util.rejectNullValue(dbProvider, "dbProvider");
     try {
-      final EntityModel entityModel = initializeModel(this, dbProvider);
+      final EntityModel entityModel = initializeModel(dbProvider);
       if (detailPanel && entityModel.containsTableModel()) {
         entityModel.getTableModel().setDetailModel(true);
       }
 
-      return createInstance(entityModel);
+      return createPanel(entityModel);
+    }
+    catch (RuntimeException e) {
+      throw e;
+    }
+    catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  public final EntityPanel createPanel(final EntityModel model) {
+    if (model == null) {
+      throw new IllegalArgumentException("Can not create a EntityPanel without an EntityModel");
+    }
+    try {
+      final EntityPanel entityPanel = initializePanel(model);
+      if (entityPanel.getTablePanel() != null && tableSearchPanelVisible) {
+        entityPanel.getTablePanel().setSearchPanelVisible(tableSearchPanelVisible);
+      }
+      configurePanel(entityPanel);
+      if (!detailPanelProviders.isEmpty()) {
+        entityPanel.setDetailPanelState(detailPanelState);
+        entityPanel.setDetailSplitPanelResizeWeight(detailSplitPanelResizeWeight);
+        for (final EntityPanelProvider detailProvider : detailPanelProviders) {
+          final EntityPanel detailPanel = detailProvider.createPanel(model.getDbProvider(), true);
+          model.addDetailModel(detailPanel.getModel());
+          entityPanel.addDetailPanel(detailPanel);
+        }
+      }
+      if (refreshOnInit) {
+        model.refresh();
+      }
+
+      return entityPanel;
     }
     catch (RuntimeException e) {
       throw e;
@@ -299,39 +337,6 @@ public class EntityPanelProvider implements Comparable {
   protected void configureEditModel(final EntityEditModel editModel) {}
 
   protected void configureTableModel(final EntityTableModel tableModel) {}
-
-  private EntityPanel createInstance(final EntityModel model) {
-    if (model == null) {
-      throw new IllegalArgumentException("Can not create a EntityPanel without an EntityModel");
-    }
-    try {
-      final EntityPanel entityPanel = initializePanel(model);
-      if (entityPanel.getTablePanel() != null && tableSearchPanelVisible) {
-        entityPanel.getTablePanel().setSearchPanelVisible(tableSearchPanelVisible);
-      }
-      configurePanel(entityPanel);
-      if (!detailPanelProviders.isEmpty()) {
-        entityPanel.setDetailPanelState(detailPanelState);
-        entityPanel.setDetailSplitPanelResizeWeight(detailSplitPanelResizeWeight);
-        for (final EntityPanelProvider detailProvider : detailPanelProviders) {
-          final EntityPanel detailPanel = detailProvider.createPanel(model.getDbProvider(), true);
-          model.addDetailModel(detailPanel.getModel());
-          entityPanel.addDetailPanel(detailPanel);
-        }
-      }
-      if (refreshOnInit) {
-        model.refresh();
-      }
-
-      return entityPanel;
-    }
-    catch (RuntimeException e) {
-      throw e;
-    }
-    catch (Exception e) {
-      throw new RuntimeException(e);
-    }
-  }
 
   private EntityPanel initializePanel(final EntityModel model) {
     try {
@@ -401,16 +406,18 @@ public class EntityPanelProvider implements Comparable {
     }
   }
 
-  private static EntityModel initializeModel(final EntityPanelProvider panelProvider, final EntityDbProvider dbProvider) {
+  private EntityModel initializeModel(final EntityDbProvider dbProvider) {
     try {
       final EntityModel model;
-      if (panelProvider.modelClass.equals(DefaultEntityModel.class)) {
-        model = panelProvider.initializeDefaultModel(dbProvider);
+      if (modelClass.equals(DefaultEntityModel.class)) {
+        LOG.debug(toString() + " initializing a default entity model");
+        model = initializeDefaultModel(dbProvider);
       }
       else {
-        model = panelProvider.modelClass.getConstructor(EntityDbProvider.class).newInstance(dbProvider);
+        LOG.debug(toString() + " initializing a custom entity model: " + modelClass);
+        model = modelClass.getConstructor(EntityDbProvider.class).newInstance(dbProvider);
       }
-      panelProvider.configureModel(model);
+      configureModel(model);
 
       return model;
     }
@@ -426,9 +433,11 @@ public class EntityPanelProvider implements Comparable {
     try {
       final EntityEditModel editModel;
       if (editModelClass.equals(DefaultEntityEditModel.class)) {
+        LOG.debug(toString() + " initializing a default model");
         editModel = initializeDefaultEditModel(dbProvider);
       }
       else {
+        LOG.debug(toString() + " initializing a custom edit model: " + editModelClass);
         editModel = editModelClass.getConstructor(EntityDbProvider.class).newInstance(dbProvider);
       }
       configureEditModel(editModel);
@@ -447,9 +456,11 @@ public class EntityPanelProvider implements Comparable {
     try {
       final EntityTableModel tableModel;
       if (tableModelClass.equals(DefaultEntityTableModel.class)) {
+        LOG.debug(toString() + " initializing a default table model");
         tableModel = initializeDefaultTableModel(dbProvider);
       }
       else {
+        LOG.debug(toString() + " initializing a custom table model: " + tableModelClass);
         tableModel = tableModelClass.getConstructor(EntityDbProvider.class).newInstance(dbProvider);
       }
       configureTableModel(tableModel);

@@ -3,30 +3,31 @@
  */
 package org.jminor.framework.demos.chinook.beans.ui;
 
-import org.jminor.framework.client.model.DefaultEntityModel;
-import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.ui.EntityPanel;
 import org.jminor.framework.demos.chinook.domain.Chinook;
+import org.jminor.framework.domain.Entities;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Arrays;
+import java.awt.Dimension;
 
 public class InvoicePanel extends EntityPanel {
 
   public InvoicePanel(final EntityModel model) {
-    super(model, new InvoiceEditPanel(model.getEditModel(), new InvoiceLinePanel(initializeInvoiceLineModel(model.getEditModel()))));
+    super(model, new InvoiceEditPanel(model.getEditModel()));
+    addInvoiceLinePanel(model);
   }
 
-  private static EntityModel initializeInvoiceLineModel(final EntityEditModel invoiceEditModel) {
-    final EntityModel lineModel = new DefaultEntityModel(Chinook.T_INVOICELINE, invoiceEditModel.getDbProvider());
-    invoiceEditModel.addValueMapSetListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent e) {
-        lineModel.initialize(Chinook.T_INVOICE, Arrays.asList(invoiceEditModel.getEntityCopy()));
-      }
-    });
+  private void addInvoiceLinePanel(final EntityModel model) {
+    final EntityModel invoiceLineModel = model.getDetailModel(Chinook.T_INVOICELINE);
+    final EntityPanel invoiceLinePanel = new EntityPanel(invoiceLineModel,
+            new InvoiceLineEditPanel(invoiceLineModel.getEditModel()),
+            new InvoiceLineTablePanel(invoiceLineModel.getTableModel()));
+    invoiceLineModel.getTableModel().setColumnVisible(Entities.getProperty(Chinook.T_INVOICELINE, Chinook.INVOICELINE_INVOICEID_FK), false);
+    invoiceLinePanel.setEditPanelState(EntityPanel.HIDDEN);
+    invoiceLinePanel.getTablePanel().setSummaryPanelVisible(true);
+    invoiceLinePanel.getTablePanel().setPreferredSize(new Dimension(360, 40));
+    invoiceLinePanel.initializePanel();
 
-    return lineModel;
+    ((InvoiceEditPanel) getEditPanel()).addInvoiceLinePanel(invoiceLinePanel);
   }
 }

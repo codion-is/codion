@@ -13,6 +13,7 @@ import org.jminor.framework.client.ui.EntityApplicationPanel;
 import org.jminor.framework.client.ui.EntityPanel;
 import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.db.provider.EntityDbProvider;
+import org.jminor.framework.demos.chinook.beans.InvoiceModel;
 import org.jminor.framework.demos.chinook.beans.ui.*;
 import org.jminor.framework.demos.chinook.domain.Chinook;
 import static org.jminor.framework.demos.chinook.domain.Chinook.*;
@@ -52,6 +53,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel {
     playlistProvider.setDetailSplitPanelResizeWeight(0.3);
 
     final EntityPanelProvider invoiceProvider = new EntityPanelProvider(T_INVOICE);
+    invoiceProvider.setModelClass(InvoiceModel.class);
     invoiceProvider.setPanelClass(InvoicePanel.class);
 
     final EntityPanelProvider customerProvider = new EntityPanelProvider(T_CUSTOMER);
