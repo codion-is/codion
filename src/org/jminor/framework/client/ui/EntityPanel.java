@@ -1119,7 +1119,7 @@ public class EntityPanel extends JPanel {
    */
   private void showEditDialog() {
     final Point location = getLocationOnScreen();
-    location.setLocation(location.x+1, location.y + getSize().height- editControlPanel.getSize().height- EDIT_DIALOG_LOCATION_OFFSET);
+    location.setLocation(location.x + 1, location.y + getSize().height - editControlPanel.getSize().height - EDIT_DIALOG_LOCATION_OFFSET);
     editPanelDialog = UiUtil.showInDialog(UiUtil.getParentWindow(this), editControlPanel, false,
             caption, false, true, null, null, location, new AbstractAction() {
               /** {@inheritDoc} */

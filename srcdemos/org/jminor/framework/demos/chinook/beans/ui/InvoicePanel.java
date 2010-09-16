@@ -36,7 +36,6 @@ public class InvoicePanel extends EntityPanel {
             });
     invoiceLineModel.getTableModel().setColumnVisible(Entities.getProperty(Chinook.T_INVOICELINE, Chinook.INVOICELINE_INVOICEID_FK), false);
     invoiceLinePanel.setEditPanelState(EntityPanel.HIDDEN);
-    invoiceLinePanel.getTablePanel().setSummaryPanelVisible(true);
     invoiceLinePanel.getTablePanel().setPreferredSize(new Dimension(360, 40));
     invoiceLinePanel.initializePanel();
 

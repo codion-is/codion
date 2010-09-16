@@ -4,16 +4,22 @@
 package org.jminor.framework.demos.chinook.beans.ui;
 
 import org.jminor.common.ui.DateInputPanel;
+import org.jminor.common.ui.UiUtil;
+import org.jminor.common.ui.control.Control;
+import org.jminor.common.ui.control.ControlProvider;
+import org.jminor.common.ui.images.Images;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.ui.EntityEditPanel;
 import org.jminor.framework.client.ui.EntityPanel;
 import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
 
 public class InvoiceEditPanel extends EntityEditPanel {
 
@@ -55,11 +61,24 @@ public class InvoiceEditPanel extends EntityEditPanel {
     propertyBase.add(createPropertyPanel(INVOICE_TOTAL));
 
     final JPanel centerBase = new JPanel(new BorderLayout(5, 5));
-    centerBase.add(propertyBase, BorderLayout.NORTH);
+    centerBase.add(propertyBase, BorderLayout.CENTER);
+
+    final Control showLineEditPanelAction = new Control(null, null, Images.loadImage("Add16.gif")) {
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        invoiceLinePanel.setEditPanelState(invoiceLinePanel.getEditPanelState() == EntityPanel.HIDDEN ?
+                EntityPanel.DIALOG : EntityPanel.HIDDEN);
+      }
+    };
+    final JButton btnToggleEditPanel = ControlProvider.createButton(showLineEditPanelAction);
+    btnToggleEditPanel.setPreferredSize(UiUtil.DIMENSION_TEXT_FIELD_SQUARE);
+
+    final JPanel labelButtonPanel = new JPanel(new BorderLayout());
+    labelButtonPanel.add(new JLabel("Invoice lines"), BorderLayout.CENTER);
+    labelButtonPanel.add(btnToggleEditPanel, BorderLayout.EAST);
 
     setLayout(new BorderLayout(5, 5));
     add(centerBase, BorderLayout.CENTER);
-
-    add(createPropertyPanel(new JLabel("Invoice lines"), invoiceLinePanel, true), BorderLayout.EAST);
+    add(createPropertyPanel(labelButtonPanel, invoiceLinePanel, true, 0, 2), BorderLayout.EAST);
   }
 }
