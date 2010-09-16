@@ -52,7 +52,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel {
     playlistProvider.setDetailSplitPanelResizeWeight(0.3);
 
     final EntityPanelProvider invoiceProvider = new EntityPanelProvider(T_INVOICE);
-    invoiceProvider.setEditPanelClass(InvoiceEditPanel.class);
+    invoiceProvider.setPanelClass(InvoicePanel.class);
 
     final EntityPanelProvider customerProvider = new EntityPanelProvider(T_CUSTOMER);
     customerProvider.setEditPanelClass(CustomerEditPanel.class);

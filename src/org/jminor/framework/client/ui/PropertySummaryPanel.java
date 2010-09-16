@@ -7,12 +7,11 @@ import org.jminor.common.ui.UiUtil;
 import org.jminor.framework.client.model.PropertySummaryModel;
 
 import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JTextField;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -25,7 +24,7 @@ import java.awt.event.MouseEvent;
 public final class PropertySummaryPanel extends JPanel {
 
   private final PropertySummaryModel model;
-  private final JLabel lblSummary = new JLabel("", JLabel.RIGHT);
+  private final JTextField txtSummary = new JTextField();
 
   /**
    * @param model the PropertySummaryModel instance
@@ -36,8 +35,8 @@ public final class PropertySummaryPanel extends JPanel {
       /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
         final String summaryText = model.getSummaryText();
-        lblSummary.setText(summaryText);
-        lblSummary.setToolTipText(!summaryText.isEmpty() ? (model.getSummaryType() + ": " + summaryText) : summaryText);
+        txtSummary.setText(summaryText);
+        txtSummary.setToolTipText(!summaryText.isEmpty() ? (model.getSummaryType() + ": " + summaryText) : summaryText);
       }
     });
     initialize();
@@ -52,17 +51,18 @@ public final class PropertySummaryPanel extends JPanel {
 
   private void initialize() {
     setLayout(new BorderLayout());
-    lblSummary.setPreferredSize(UiUtil.getPreferredTextFieldSize());
-    add(lblSummary, BorderLayout.CENTER);
+    txtSummary.setEditable(false);
+    txtSummary.setFocusable(false);
+    txtSummary.setPreferredSize(UiUtil.getPreferredTextFieldSize());
+    add(txtSummary, BorderLayout.CENTER);
     final JPopupMenu menu = createPopupMenu();
-    lblSummary.addMouseListener(new MouseAdapter() {
+    txtSummary.addMouseListener(new MouseAdapter() {
       /** {@inheritDoc} */
       @Override
       public void mouseReleased(final MouseEvent e) {
-        menu.show(lblSummary, e.getX(), e.getY() - menu.getPreferredSize().height);
+        menu.show(txtSummary, e.getX(), e.getY() - menu.getPreferredSize().height);
       }
     });
-    lblSummary.setBorder(BorderFactory.createEtchedBorder());
   }
 
   private JPopupMenu createPopupMenu() {

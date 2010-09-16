@@ -554,6 +554,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
       if (column != null) {
         hiddenColumns.remove(columnIdentifier);
         columnModel.addColumn(column);
+        columnModel.moveColumn(columnModel.getColumnCount() - 1, 0);
         evtColumnShown.fire(new ActionEvent(column.getIdentifier(), 0, "setColumnVisible"));
       }
     }

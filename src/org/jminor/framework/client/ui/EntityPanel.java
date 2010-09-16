@@ -20,6 +20,9 @@ import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
@@ -58,6 +61,8 @@ import java.util.List;
  * To lay out the panel components and initialize the panel you must call the method <code>initializePanel()</code>.
  */
 public class EntityPanel extends JPanel {
+
+  private static final Logger LOG = LoggerFactory.getLogger(EntityPanel.class);
 
   public static final int DIALOG = 1;
   public static final int EMBEDDED = 2;
@@ -376,6 +381,10 @@ public class EntityPanel extends JPanel {
         UiUtil.setWaitCursor(false, this);
       }
     }
+
+    //do not try to grab the initial focus when a child component already has the focus, for example the table
+    final boolean grabInitialFocus = !isParentPanel(KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner());
+    prepareUI(grabInitialFocus, false);
 
     return this;
   }
@@ -717,6 +726,7 @@ public class EntityPanel extends JPanel {
    * @see EntityEditPanel#setInitialFocusComponent(javax.swing.JComponent)
    */
   public final void prepareUI(final boolean setInitialFocus, final boolean clearUI) {
+    LOG.debug(getEditModel().getEntityID() + " prepareUI(" + setInitialFocus + ", " + clearUI + ")");
     if (editPanel != null) {
       editPanel.prepareUI(setInitialFocus, clearUI);
     }
@@ -737,16 +747,6 @@ public class EntityPanel extends JPanel {
    */
   protected boolean includeComponentSelectionProperty(final String propertyID) {
     return true;
-  }
-
-  /**
-   * Finds the next JTabbedPane ancestor and sets the selected component to be this EntityPanel instance
-   */
-  private void showPanelTab() {
-    final JTabbedPane tp = (JTabbedPane) SwingUtilities.getAncestorOfClass(JTabbedPane.class, this);
-    if (tp != null) {
-      tp.setSelectedComponent(this);
-    }
   }
 
   //#############################################################################################
@@ -780,10 +780,12 @@ public class EntityPanel extends JPanel {
    * </pre>
    */
   protected void initializeUI() {
-    final EntityTablePanel entityTablePanel = tablePanel;
-    if (entityTablePanel != null) {
+    if (editPanel != null) {
+      editPanel.initializePanel();
+    }
+    if (tablePanel != null) {
       final ControlSet toolbarControls = new ControlSet("");
-      if (this.editPanel != null) {
+      if (editPanel != null) {
         toolbarControls.add(getToggleEditPanelControl());
       }
       if (this.model.getDetailModels().size() > 0) {
@@ -792,26 +794,26 @@ public class EntityPanel extends JPanel {
       tablePanel.setAdditionalToolbarControls(toolbarControls);
       tablePanel.setAdditionalPopupControls(getTablePopupControlSet());
       tablePanel.initializePanel();
-      if (entityTablePanel.getTableDoubleClickAction() == null) {
-        entityTablePanel.setTableDoubleClickAction(initializeTableDoubleClickAction());
+      if (tablePanel.getTableDoubleClickAction() == null) {
+        tablePanel.setTableDoubleClickAction(initializeTableDoubleClickAction());
       }
-      entityTablePanel.setMinimumSize(new Dimension(0,0));
+      tablePanel.setMinimumSize(new Dimension(0,0));
     }
     horizontalSplitPane = !detailEntityPanels.isEmpty() ? initializeHorizontalSplitPane() : null;
     detailPanelTabbedPane = !detailEntityPanels.isEmpty() ? initializeDetailTabPane() : null;
 
     setLayout(new BorderLayout(5,5));
     if (detailPanelTabbedPane == null) { //no left right split pane
-      add(entityTablePanel, BorderLayout.CENTER);
+      add(tablePanel, BorderLayout.CENTER);
     }
     else {
       if (compactDetailLayout) {
         compactBase = new JPanel(new BorderLayout(5,5));
-        compactBase.add(entityTablePanel, BorderLayout.CENTER);
+        compactBase.add(tablePanel, BorderLayout.CENTER);
         horizontalSplitPane.setLeftComponent(compactBase);
       }
       else {
-        horizontalSplitPane.setLeftComponent(entityTablePanel);
+        horizontalSplitPane.setLeftComponent(tablePanel);
       }
       horizontalSplitPane.setRightComponent(detailPanelTabbedPane);
       add(horizontalSplitPane, BorderLayout.CENTER);
@@ -978,6 +980,16 @@ public class EntityPanel extends JPanel {
     tabbedPane.setUI(UiUtil.getBorderlessTabbedPaneUI());
     for (final EntityPanel detailPanel : detailEntityPanels) {
       tabbedPane.addTab(detailPanel.caption, detailPanel);
+      if (detailPanel.editPanel != null) {
+        detailPanel.editPanel.getActiveState().addListener(new ActionListener() {
+          public void actionPerformed(final ActionEvent e) {
+            if (detailPanel.editPanel.isActive()) {
+              LOG.debug(getEditModel().getEntityID() + " selectDetailPanelTab: " + detailPanel.getEditModel().getEntityID());
+              tabbedPane.setSelectedComponent(detailPanel);
+            }
+          }
+        });
+      }
     }
 
     tabbedPane.addChangeListener(new ChangeListener() {
@@ -1187,30 +1199,10 @@ public class EntityPanel extends JPanel {
   }
 
   private final class ActivationListener implements ActionListener {
-    private final Runnable initializer = new Runnable() {
-      /** {@inheritDoc} */
-      public void run() {
-        initializePanel();
-        showPanelTab();
-        //do not try to grab the initial focus when a child component already has the focus, for example the table
-        final boolean grabInitialFocus = !isParentPanel(KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner());
-        prepareUI(grabInitialFocus, false);
-      }
-    };
     /** {@inheritDoc} */
     public void actionPerformed(final ActionEvent e) {
       if (editPanel.isActive()) {
-        try {
-          if (SwingUtilities.isEventDispatchThread()) {
-            initializer.run();
-          }
-          else {
-            SwingUtilities.invokeAndWait(initializer);
-          }
-        }
-        catch (Exception ex) {
-          throw new RuntimeException(ex);
-        }
+        initializePanel();
       }
     }
   }
@@ -1221,6 +1213,7 @@ public class EntityPanel extends JPanel {
     public void propertyChange(final PropertyChangeEvent evt) {
       final Component focusOwner = (Component) evt.getNewValue();
       if (focusOwner != null && isParentPanel(focusOwner) && !editPanel.isActive()) {
+        LOG.debug(editPanel.getEntityEditModel().getEntityID() + " focusActivation");
         getEditPanel().setActive(true);
       }
     }

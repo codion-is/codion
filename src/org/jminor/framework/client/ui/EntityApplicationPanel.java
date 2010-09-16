@@ -712,6 +712,16 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
       mainApplicationPanels.add(entityPanel);
       final String caption = !Util.nullOrEmpty(provider.getCaption()) ? entityPanel.getCaption() : provider.getCaption();
       applicationTabPane.addTab(caption, entityPanel);
+      if (entityPanel.getEditPanel() != null) {
+        entityPanel.getEditPanel().getActiveState().addListener(new ActionListener() {
+          public void actionPerformed(final ActionEvent e) {
+            if (entityPanel.getEditPanel().isActive()) {
+              LOG.debug(entityPanel.getEditModel().getEntityID() + " selectApplicationTab");
+              applicationTabPane.setSelectedComponent(entityPanel);
+            }
+          }
+        });
+      }
     }
     add(applicationTabPane, BorderLayout.CENTER);
 

@@ -36,16 +36,7 @@ import org.jminor.framework.i18n.FrameworkMessages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.ComboBoxModel;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.JToolBar;
+import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
@@ -95,6 +86,11 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   private static final State.StateGroup ACTIVE_STATE_GROUP = States.stateGroup();
 
   /**
+   * True after <code>initializePanel()</code> has been called
+   */
+  private boolean panelInitialized = false;
+
+  /**
    * Instantiates a new EntityEditPanel based on the provided EntityEditModel
    * @param editModel the EntityEditModel instance to base this EntityEditPanel on
    */
@@ -114,7 +110,6 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
     }
     setupControls(controlKeys);
     bindEvents();
-    initializeUI();
   }
 
   /**
@@ -284,6 +279,35 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    */
   public final JToolBar getControlToolBar() {
     return ControlProvider.createToolbar(getControlPanelControlSet(), JToolBar.VERTICAL);
+  }
+
+  /**
+   * Initializes this EntityEditPanel UI.
+   * This method marks this panel as initialized which prevents it from running again, whether or not an exception occurs.
+   * @return this EntityPanel instance
+   * @see #isPanelInitialized()
+   */
+  public final EntityEditPanel initializePanel() {
+    if (!panelInitialized) {
+      try {
+        UiUtil.setWaitCursor(true, this);
+        initializeUI();
+      }
+      finally {
+        panelInitialized = true;
+        UiUtil.setWaitCursor(false, this);
+      }
+    }
+
+    return this;
+  }
+
+  /**
+   * @return true if the method initializePanel() has been called on this EntityEditPanel instance
+   * @see #initializePanel()
+   */
+  public final boolean isPanelInitialized() {
+    return panelInitialized;
   }
 
   //#############################################################################################
