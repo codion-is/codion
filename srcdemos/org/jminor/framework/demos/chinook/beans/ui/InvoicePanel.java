@@ -6,6 +6,7 @@ package org.jminor.framework.demos.chinook.beans.ui;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.ui.EntityPanel;
 import org.jminor.framework.client.ui.EntityTablePanel;
+import org.jminor.framework.client.ui.EntityTableSearchPanel;
 import org.jminor.framework.demos.chinook.domain.Chinook;
 import org.jminor.framework.domain.Entities;
 
@@ -23,7 +24,7 @@ public class InvoicePanel extends EntityPanel {
     final EntityModel invoiceLineModel = model.getDetailModel(Chinook.T_INVOICELINE);
     final EntityPanel invoiceLinePanel = new EntityPanel(invoiceLineModel,
             new InvoiceLineEditPanel(invoiceLineModel.getEditModel()),
-            new EntityTablePanel(invoiceLineModel.getTableModel()) {
+            new EntityTablePanel(invoiceLineModel.getTableModel(), (EntityTableSearchPanel) null) {
               @Override
               protected JPanel initializeSouthPanel() {
                 return null;
