@@ -2182,3 +2182,4 @@
   AbstractFilteredTableModel.setColumnVisible() now adds the column at index 0
   EntityEditPanel.isPanelInitialized field added, along with initializePanel() and isPanelInitialized()
   PropertySummaryPanel now uses JTextField instead of JLabel
+  EntityLookupField transfers focus on select

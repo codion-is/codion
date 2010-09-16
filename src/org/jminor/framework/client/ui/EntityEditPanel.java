@@ -227,7 +227,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
     return Controls.methodControl(this, "save", insertCaption,
             States.aggregateState(Conjunction.AND, getActiveState(), stInsertUpdate),
             FrameworkMessages.get(FrameworkMessages.INSERT_UPDATE_TIP),
-            insertCaption.charAt(0), null, Images.loadImage(Images.IMG_PROPERTIES_16));
+            insertCaption.charAt(0), null, Images.loadImage(Images.IMG_SAVE_16));
   }
 
   /**
@@ -262,12 +262,12 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    */
   public final JPanel createControlPanel(final boolean horizontal) {
     if (horizontal) {
-      final JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER,5,5));
+      final JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
       panel.add(ControlProvider.createHorizontalButtonPanel(getControlPanelControlSet()));
       return panel;
     }
     else {
-      final JPanel panel = new JPanel(new BorderLayout(5,5));
+      final JPanel panel = new JPanel(new BorderLayout(5, 5));
       panel.add(ControlProvider.createVerticalButtonPanel(getControlPanelControlSet()), BorderLayout.NORTH);
       return panel;
     }
@@ -275,10 +275,11 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
 
   /**
    * Initializes the control toolbar, that is, the toolbar containing buttons for editing entities (Insert, Update...)
+   * @param orientation the orientation
    * @return the control toolbar
    */
-  public final JToolBar getControlToolBar() {
-    return ControlProvider.createToolbar(getControlPanelControlSet(), JToolBar.VERTICAL);
+  public final JToolBar getControlToolBar(final int orientation) {
+    return ControlProvider.createToolbar(getControlPanelControlSet(), orientation);
   }
 
   /**

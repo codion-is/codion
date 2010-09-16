@@ -210,7 +210,6 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
   private JTextField initializeSearchField() {
     final JTextField txtSearch = new JTextField();
     txtSearch.setBackground((Color) UIManager.getLookAndFeel().getDefaults().get("TextField.inactiveBackground"));
-    txtSearch.setBorder(BorderFactory.createLineBorder(txtSearch.getForeground(), 1));
     txtSearch.setColumns(8);
     SearchFieldHint.enable(txtSearch);
     txtSearch.getDocument().addDocumentListener(new DocumentAdapter() {

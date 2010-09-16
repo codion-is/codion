@@ -31,6 +31,7 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -161,6 +162,7 @@ public class EntityPanel extends JPanel {
    * Holds the current state of the detail panels (HIDDEN, EMBEDDED or DIALOG)
    */
   private int detailPanelState = EMBEDDED;
+  private boolean includeControlPanel = true;
 
   /**
    * True after <code>initializePanel()</code> has been called
@@ -427,7 +429,6 @@ public class EntityPanel extends JPanel {
 
   /**
    * @return the edit control panel
-   * @see #initializeEditControlPanel()
    */
   public final JPanel getEditControlPanel() {
     return editControlPanel;
@@ -533,9 +534,28 @@ public class EntityPanel extends JPanel {
    */
   public final EntityPanel setDetailSplitPanelResizeWeight(final double detailSplitPanelResizeWeight) {
     if (panelInitialized) {
-      throw new IllegalStateException("Can not set edit detailSplitPanelResizeWeight after initialization");
+      throw new IllegalStateException("Can not set detailSplitPanelResizeWeight after initialization");
     }
     this.detailSplitPanelResizeWeight = detailSplitPanelResizeWeight;
+    return this;
+  }
+
+  /**
+   * @return true if the control panel should be included
+   */
+  public final boolean isIncludeControlPanel() {
+    return includeControlPanel;
+  }
+
+  /**
+   * @param includeControlPanel true if the control panel should be included
+   * @return this entity panel
+   */
+  public final EntityPanel setIncludeControlPanel(final boolean includeControlPanel) {
+    if (panelInitialized) {
+      throw new IllegalStateException("Can not set includeControlPanel after initialization");
+    }
+    this.includeControlPanel = includeControlPanel;
     return this;
   }
 
@@ -941,16 +961,17 @@ public class EntityPanel extends JPanel {
 
     final JPanel panel = new JPanel(new BorderLayout(5,5));
     panel.setMinimumSize(new Dimension(0,0));
-    panel.setBorder(BorderFactory.createEtchedBorder());
     final int alignment = controlPanelConstraints.equals(BorderLayout.SOUTH) || controlPanelConstraints.equals(BorderLayout.NORTH) ? FlowLayout.CENTER : FlowLayout.LEADING;
     final JPanel propertyBase = new JPanel(new FlowLayout(alignment, 5, 5));
     panel.addMouseListener(new ActivationFocusAdapter(propertyBase));
     propertyBase.add(editPanel);
     panel.add(propertyBase, BorderLayout.CENTER);
-    final JComponent controlPanel = Configuration.getBooleanValue(Configuration.TOOLBAR_BUTTONS) ?
-            editPanel.getControlToolBar() : editPanel.createControlPanel(alignment == FlowLayout.CENTER);
-    if (controlPanel != null) {
-      panel.add(controlPanel, controlPanelConstraints);
+    if (includeControlPanel) {
+      final JComponent controlPanel = Configuration.getBooleanValue(Configuration.TOOLBAR_BUTTONS) ?
+              editPanel.getControlToolBar(JToolBar.VERTICAL) : editPanel.createControlPanel(alignment == FlowLayout.CENTER);
+      if (controlPanel != null) {
+        panel.add(controlPanel, controlPanelConstraints);
+      }
     }
 
     return panel;

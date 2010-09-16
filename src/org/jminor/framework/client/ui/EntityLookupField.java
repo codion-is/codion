@@ -40,6 +40,12 @@ public final class EntityLookupField extends JTextField {
   private final EntityLookupModel model;
   private final SearchFieldHint searchHint;
 
+  private final Action transferFocusAction = new AbstractAction() {
+    /** {@inheritDoc} */
+    public void actionPerformed(final ActionEvent e) {
+      transferFocus();
+    }
+  };
   private Action enterAction;
   private Color defaultBackgroundColor = getBackground();
   private boolean performingLookup = false;
@@ -98,12 +104,7 @@ public final class EntityLookupField extends JTextField {
    * @see #setEnterAction(javax.swing.Action)
    */
   public EntityLookupField setTransferFocusOnEnter() {
-    return setEnterAction(new AbstractAction() {
-      /** {@inheritDoc} */
-      public void actionPerformed(final ActionEvent e) {
-        transferFocus();
-      }
-    });
+    return setEnterAction(transferFocusAction);
   }
 
   private boolean selectEntities(final List<Entity> entities) {
@@ -219,7 +220,9 @@ public final class EntityLookupField extends JTextField {
     return new AbstractAction(FrameworkMessages.get(FrameworkMessages.SEARCH)) {
       /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
-        performLookup();
+        if (performLookup() && enterAction == transferFocusAction) {
+          transferFocus();
+        }
       }
     };
   }

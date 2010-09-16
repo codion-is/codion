@@ -572,9 +572,7 @@ public class DefaultEntityModel implements EntityModel {
     final ActionListener initializer = new ActionListener() {
       /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
-        if (!editModel.isEntityNew()) {
-          initializeDetailModels();
-        }
+        initializeDetailModels();
       }
     };
     evtLinkedDetailModelsChanged.addListener(initializer);

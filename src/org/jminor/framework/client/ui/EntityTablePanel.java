@@ -1243,7 +1243,11 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     return Configuration.getBooleanValue(Configuration.ALLOW_COLUMN_REORDERING);
   }
 
-  private JToolBar initializeToolbar() {
+  /**
+   * Initializes the south panel toolbar, by default based on <code>getToolbarControls()</code>
+   * @return the toolbar to add to the south panel
+   */
+  protected JToolBar initializeToolbar() {
     final ControlSet toolbarControlSet = getToolbarControls(additionalToolbarControls);
     if (toolbarControlSet != null) {
       final JToolBar southToolBar = ControlProvider.createToolbar(toolbarControlSet, JToolBar.HORIZONTAL);
