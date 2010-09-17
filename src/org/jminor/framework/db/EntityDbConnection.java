@@ -579,9 +579,20 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
       final String selectQuery = initializeSelectQuery(criteria, Entities.getSelectColumnsString(criteria.getEntityID()), criteria.getOrderByClause());
       statement = getConnection().prepareStatement(selectQuery);
       resultSet = executePreparedSelect(statement, selectQuery, criteria.getValues(), criteria.getValueProperties());
-      getMethodLogger().logAccess("packResult", new Object[0]);
-      final List<Entity> result = getEntityResultPacker(criteria.getEntityID()).pack(resultSet, criteria.getFetchCount());
-      getMethodLogger().logExit("packResult", null, null, "row count: " + result.size());
+      List<Entity> result = null;
+      SQLException packingException = null;
+      try {
+        getMethodLogger().logAccess("packResult", new Object[0]);
+        result = getEntityResultPacker(criteria.getEntityID()).pack(resultSet, criteria.getFetchCount());
+      }
+      catch (SQLException e) {
+        packingException = e;
+        throw e;
+      }
+      finally {
+        final String message = result != null ? "row count: " + result.size() : "";
+        getMethodLogger().logExit("packResult", packingException, null, message);
+      }
       setForeignKeyValues(result, criteria, currentFKFetchDepth);
 
       return result;

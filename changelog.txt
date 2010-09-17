@@ -2189,3 +2189,4 @@
   AbstractValueLink.translateModelValue() added
   EntityCriteriaUtil.ForeignKeyCriteria nullCriteria bug fixed
   EntityDbConnection now logs the result packing time and row count
+  EntityDbConnection result packer logging improved a bit
