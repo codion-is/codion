@@ -93,6 +93,11 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
   private final Map<Property, FilteredComboBoxModel> propertyComboBoxModels = new HashMap<Property, FilteredComboBoxModel>();
 
   /**
+   * Conains true if values should be persisted for the given property when the model is cleared
+   */
+  private final Map<String, Boolean> persistingValues = new HashMap<String, Boolean>();
+
+  /**
    * Holds the read only status of this edit model
    */
   private boolean readOnly;
@@ -129,8 +134,11 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
 
   /** {@inheritDoc} */
   public boolean persistValueOnClear(final Property property) {
-    return property instanceof Property.ForeignKeyProperty
-            && Configuration.getBooleanValue(Configuration.PERSIST_FOREIGN_KEY_VALUES);
+    if (persistingValues.containsKey(property.getPropertyID())) {
+      return persistingValues.get(property.getPropertyID());
+    }
+    return property instanceof Property.ForeignKeyProperty &&
+            Configuration.getBooleanValue(Configuration.PERSIST_FOREIGN_KEY_VALUES);
   }
 
   /** {@inheritDoc} */
@@ -141,6 +149,12 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
   /** {@inheritDoc} */
   public final EntityEditModel setReadOnly(final boolean readOnly) {
     this.readOnly = readOnly;
+    return this;
+  }
+
+  /** {@inheritDoc} */
+  public final EntityEditModel setPersistValueOnClear(final String propertyID, final boolean persistValueOnClear) {
+    persistingValues.put(propertyID, persistValueOnClear);
     return this;
   }
 

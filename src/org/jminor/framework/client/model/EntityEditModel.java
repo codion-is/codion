@@ -89,6 +89,14 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
   EntityEditModel setReadOnly(final boolean readOnly);
 
   /**
+   * @param propertyID the property ID
+   * @param persistValueOnClear true if this model should persist the value of the given property on clear
+   * @return this edit model instance
+   * @see org.jminor.framework.Configuration#PERSIST_FOREIGN_KEY_VALUES
+   */
+  EntityEditModel setPersistValueOnClear(final String propertyID, final boolean persistValueOnClear);
+
+  /**
    * @return true if this model should allow records to be inserted
    */
   boolean isInsertAllowed();
