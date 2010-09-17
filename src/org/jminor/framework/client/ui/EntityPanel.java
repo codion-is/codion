@@ -705,7 +705,7 @@ public class EntityPanel extends JPanel {
       prepareUI(true, false);
     }
     else if (state == HIDDEN) {
-      if (compactDetailLayout && !detailEntityPanels.isEmpty()) {
+      if (compactBase != null && !detailEntityPanels.isEmpty()) {
         compactBase.remove(editControlPanel);
       }
       else {
