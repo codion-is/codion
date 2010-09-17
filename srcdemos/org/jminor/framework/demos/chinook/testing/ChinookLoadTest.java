@@ -14,7 +14,6 @@ import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.model.reporting.EntityReportUtil;
 import org.jminor.framework.db.provider.EntityDbProviderFactory;
-import org.jminor.framework.demos.chinook.beans.InvoiceModel;
 import org.jminor.framework.demos.chinook.domain.Chinook;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.plugins.jasperreports.model.JasperReportsWrapper;
@@ -135,9 +134,10 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
     playlistModel.setLinkedDetailModels(playlistTrackModel);
 
     final EntityModel customerModel = appModel.getMainApplicationModel(Chinook.T_CUSTOMER);
-    final EntityModel invoiceModel = new InvoiceModel(customerModel.getDbProvider());
-    customerModel.addDetailModel(invoiceModel);
+    final EntityModel invoiceModel = customerModel.getDetailModel(Chinook.T_INVOICE);
+    final EntityModel invoicelineModel = invoiceModel.getDetailModel(Chinook.T_INVOICELINE);
     customerModel.setLinkedDetailModels(invoiceModel);
+    invoiceModel.setLinkedDetailModels(invoicelineModel);
 
     return appModel;
   }

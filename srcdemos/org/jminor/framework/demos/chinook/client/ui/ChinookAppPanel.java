@@ -9,15 +9,19 @@ import org.jminor.common.ui.UiUtil;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.DefaultEntityApplicationModel;
 import org.jminor.framework.client.model.EntityApplicationModel;
+import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.ui.EntityApplicationPanel;
 import org.jminor.framework.client.ui.EntityPanel;
 import org.jminor.framework.client.ui.EntityPanelProvider;
+import org.jminor.framework.client.ui.EntityTablePanel;
 import org.jminor.framework.db.provider.EntityDbProvider;
-import org.jminor.framework.demos.chinook.beans.InvoiceModel;
 import org.jminor.framework.demos.chinook.beans.ui.*;
 import org.jminor.framework.demos.chinook.domain.Chinook;
 import static org.jminor.framework.demos.chinook.domain.Chinook.*;
+import org.jminor.framework.domain.Entities;
 
+import javax.swing.JTable;
+import java.awt.Dimension;
 import java.util.Locale;
 
 public final class ChinookAppPanel extends EntityApplicationPanel {
@@ -52,9 +56,42 @@ public final class ChinookAppPanel extends EntityApplicationPanel {
     playlistProvider.addDetailPanelProvider(playlistTrackProvider);
     playlistProvider.setDetailSplitPanelResizeWeight(0.3);
 
-    final EntityPanelProvider invoiceProvider = new EntityPanelProvider(T_INVOICE);
-    invoiceProvider.setModelClass(InvoiceModel.class);
-    invoiceProvider.setPanelClass(InvoicePanel.class);
+    final EntityPanelProvider invoiceLineProvider = new EntityPanelProvider(T_INVOICELINE) {
+
+      @Override
+      protected void configureTableModel(final EntityTableModel tableModel) {
+        tableModel.setQueryConfigurationAllowed(false);
+      }
+
+      @Override
+      protected void configurePanel(final EntityPanel panel) {
+        panel.setIncludeControlPanel(false);
+        ((InvoiceLineEditPanel) panel.getEditPanel()).setTableSearchFeld(panel.getTablePanel().getSearchField());
+      }
+
+      @Override
+      protected void configureTablePanel(final EntityTablePanel tablePanel) {
+        tablePanel.setIncludeSouthPanel(false);
+        tablePanel.getJTable().setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        tablePanel.setPreferredSize(new Dimension(360, 40));
+        tablePanel.getTableModel().setColumnVisible(Entities.getProperty(Chinook.T_INVOICELINE, Chinook.INVOICELINE_INVOICEID_FK), false);
+      }
+    };
+    invoiceLineProvider.setEditPanelClass(InvoiceLineEditPanel.class);
+
+    final EntityPanelProvider invoiceProvider = new EntityPanelProvider(T_INVOICE) {
+
+      @Override
+      protected void configurePanel(final EntityPanel panel) {
+        panel.setIncludeDetailPanelTabPane(false);
+        final EntityPanel invoiceLinePanel = panel.getDetailPanel(Chinook.T_INVOICELINE);
+        invoiceLinePanel.initializePanel();
+        panel.getModel().setLinkedDetailModels(panel.getModel().getDetailModel(Chinook.T_INVOICELINE));
+        ((InvoiceEditPanel) panel.getEditPanel()).setInvoiceLinePanel(invoiceLinePanel);
+      }
+    };
+    invoiceProvider.setEditPanelClass(InvoiceEditPanel.class);
+    invoiceProvider.addDetailPanelProvider(invoiceLineProvider);
 
     final EntityPanelProvider customerProvider = new EntityPanelProvider(T_CUSTOMER);
     customerProvider.setEditPanelClass(CustomerEditPanel.class);

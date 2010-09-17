@@ -2184,3 +2184,4 @@
   PropertySummaryPanel now uses JTextField instead of JLabel
   EntityLookupField transfers focus on select
   EntityTablePanel.includeSouthPanel field added
+  EntityPanel.includeControlPanel and includeDetailPanelTabPane fields added

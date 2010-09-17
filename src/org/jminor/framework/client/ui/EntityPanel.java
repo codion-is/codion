@@ -153,7 +153,16 @@ public class EntityPanel extends JPanel {
    * Holds the current state of the detail panels (HIDDEN, EMBEDDED or DIALOG)
    */
   private int detailPanelState = EMBEDDED;
+
+  /**
+   * if true then the edit control panel should be included
+   */
   private boolean includeControlPanel = true;
+
+  /**
+   * if true then the detail panel tab pane should be include
+   */
+  private boolean includeDetailPanelTabPane = true;
 
   /**
    * True after <code>initializePanel()</code> has been called
@@ -254,6 +263,11 @@ public class EntityPanel extends JPanel {
     }
     else {
       this.tablePanel = tablePanel;
+    }
+    setupKeyboardActions();
+    if (Configuration.getBooleanValue(Configuration.USE_FOCUS_ACTIVATION)) {
+      KeyboardFocusManager.getCurrentKeyboardFocusManager().addPropertyChangeListener("focusOwner",
+              new WeakPropertyChangeListener(focusPropertyListener));
     }
   }
 
@@ -452,19 +466,19 @@ public class EntityPanel extends JPanel {
   }
 
   /**
-   * Returns the detail panel of the type <code>detailPanelClass</code>, if one is available, otherwise
-   * a RuntimeException is thrown
-   * @param detailPanelClass the class of the detail panel to retrieve
+   * Returns the detail panel for the given <code>entityID</code>, if one is available
+   * @param entityID the entiy ID of the detail panel to retrieve
    * @return the detail panel of the given type
+   * @throws IllegalArgumentException in case the panel was not found
    */
-  public final EntityPanel getDetailPanel(final Class<? extends EntityPanel> detailPanelClass) {
+  public final EntityPanel getDetailPanel(final String entityID) {
     for (final EntityPanel detailPanel : detailEntityPanels) {
-      if (detailPanel.getClass().equals(detailPanelClass)) {
+      if (detailPanel.model.getEntityID().equals(entityID)) {
         return detailPanel;
       }
     }
 
-    throw new IllegalArgumentException("Detail panel of type: " + detailPanelClass + " not found in panel: " + getClass());
+    throw new IllegalArgumentException("Detail panel for entity: " + entityID + " not found in panel: " + getClass());
   }
 
   /** {@inheritDoc} */
@@ -528,6 +542,25 @@ public class EntityPanel extends JPanel {
       throw new IllegalStateException("Can not set detailSplitPanelResizeWeight after initialization");
     }
     this.detailSplitPanelResizeWeight = detailSplitPanelResizeWeight;
+    return this;
+  }
+
+  /**
+   * @return true if the control panel should be included
+   */
+  public final boolean isIncludeDetailPanelTabPane() {
+    return includeDetailPanelTabPane;
+  }
+
+  /**
+   * @param includeDetailPanelTabPane true if the detail panel tab pane should be included
+   * @return this entity panel
+   */
+  public final EntityPanel setIncludeDetailPanelTabPane(final boolean includeDetailPanelTabPane) {
+    if (panelInitialized) {
+      throw new IllegalStateException("Can not set includeDetailPanelTabPane after initialization");
+    }
+    this.includeDetailPanelTabPane = includeDetailPanelTabPane;
     return this;
   }
 
@@ -652,7 +685,7 @@ public class EntityPanel extends JPanel {
     }
 
     if (state == EMBEDDED) {
-      if (compactDetailLayout && !detailEntityPanels.isEmpty()) {
+      if (compactDetailLayout && includeDetailPanelTabPane) {
         compactBase.add(editControlPanel, BorderLayout.NORTH);
       }
       else {
@@ -791,6 +824,10 @@ public class EntityPanel extends JPanel {
    * </pre>
    */
   protected void initializeUI() {
+    if (includeDetailPanelTabPane) {
+      horizontalSplitPane = !detailEntityPanels.isEmpty() ? initializeHorizontalSplitPane() : null;
+      detailPanelTabbedPane = !detailEntityPanels.isEmpty() ? initializeDetailTabPane() : null;
+    }
     if (editPanel != null) {
       editPanel.initializePanel();
     }
@@ -799,7 +836,7 @@ public class EntityPanel extends JPanel {
       if (editPanel != null) {
         toolbarControls.add(getToggleEditPanelControl());
       }
-      if (this.model.getDetailModels().size() > 0) {
+      if (includeDetailPanelTabPane) {
         toolbarControls.add(getToggleDetailPanelControl());
       }
       tablePanel.setAdditionalToolbarControls(toolbarControls);
@@ -810,8 +847,6 @@ public class EntityPanel extends JPanel {
       tablePanel.initializePanel();
       tablePanel.setMinimumSize(new Dimension(0,0));
     }
-    horizontalSplitPane = !detailEntityPanels.isEmpty() ? initializeHorizontalSplitPane() : null;
-    detailPanelTabbedPane = !detailEntityPanels.isEmpty() ? initializeDetailTabPane() : null;
 
     setLayout(new BorderLayout(5,5));
     if (detailPanelTabbedPane == null) { //no left right split pane
@@ -831,11 +866,6 @@ public class EntityPanel extends JPanel {
     }
     setDetailPanelState(detailPanelState);
     setEditPanelState(editPanelState);
-    setupKeyboardActions();
-    if (Configuration.getBooleanValue(Configuration.USE_FOCUS_ACTIVATION)) {
-      KeyboardFocusManager.getCurrentKeyboardFocusManager().addPropertyChangeListener("focusOwner",
-              new WeakPropertyChangeListener(focusPropertyListener));
-    }
   }
 
   /**
@@ -1035,7 +1065,7 @@ public class EntityPanel extends JPanel {
    */
   private ControlSet getTablePopupControlSet() {
     final ControlSet controlSet = new ControlSet("");
-    if (!detailEntityPanels.isEmpty()) {
+    if (includeDetailPanelTabPane) {
       controlSet.add(getDetailPanelControls(EMBEDDED));
     }
 
@@ -1052,7 +1082,7 @@ public class EntityPanel extends JPanel {
     return new AbstractAction() {
       /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
-        if (editControlPanel != null || !detailEntityPanels.isEmpty()) {
+        if (editControlPanel != null || includeDetailPanelTabPane) {
           if (editControlPanel != null && getEditPanelState() == HIDDEN) {
             setEditPanelState(DIALOG);
           }

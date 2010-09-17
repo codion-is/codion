@@ -9,18 +9,21 @@ import org.jminor.framework.client.ui.EntityEditPanel;
 import org.jminor.framework.client.ui.EntityPanel;
 import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 
+import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.BorderFactory;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 
 public class InvoiceEditPanel extends EntityEditPanel {
 
-  private final EntityPanel invoiceLinePanel;
+  private EntityPanel invoiceLinePanel;
 
-  public InvoiceEditPanel(final EntityEditModel editModel, final EntityPanel invoiceLinePanel) {
+  public InvoiceEditPanel(final EntityEditModel editModel) {
     super(editModel);
+  }
+
+  public void setInvoiceLinePanel(final EntityPanel invoiceLinePanel) {
     this.invoiceLinePanel = invoiceLinePanel;
   }
 
@@ -61,6 +64,8 @@ public class InvoiceEditPanel extends EntityEditPanel {
 
     setLayout(new BorderLayout(5, 5));
     add(centerBase, BorderLayout.CENTER);
-    add(invoiceLinePanel, BorderLayout.EAST);
+    if (invoiceLinePanel != null) {
+      add(invoiceLinePanel, BorderLayout.EAST);
+    }
   }
 }

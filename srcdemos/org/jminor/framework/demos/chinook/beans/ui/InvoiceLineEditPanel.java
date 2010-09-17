@@ -14,10 +14,13 @@ import java.awt.BorderLayout;
 
 public class InvoiceLineEditPanel extends EntityEditPanel {
 
-  private final JTextField tableSearchField;
+  private JTextField tableSearchField;
 
-  public InvoiceLineEditPanel(final EntityEditModel editModel, final JTextField tableSearchField) {
+  public InvoiceLineEditPanel(final EntityEditModel editModel) {
     super(editModel);
+  }
+
+  public void setTableSearchFeld(final JTextField tableSearchField) {
     this.tableSearchField = tableSearchField;
   }
 
@@ -32,6 +35,8 @@ public class InvoiceLineEditPanel extends EntityEditPanel {
     setLayout(new BorderLayout(5, 5));
     add(createPropertyPanel(INVOICELINE_TRACKID_FK), BorderLayout.WEST);
     add(createPropertyPanel(INVOICELINE_QUANTITY), BorderLayout.CENTER);
-    add(createPropertyPanel(new JLabel(" "), tableSearchField, true, 5, 5), BorderLayout.EAST);
+    if (tableSearchField != null) {
+      add(createPropertyPanel(new JLabel(" "), tableSearchField, true, 5, 5), BorderLayout.EAST);
+    }
   }
 }

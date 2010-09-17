@@ -844,6 +844,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     if (!panelInitialized) {
       try {
         setupControls();
+        setTablePopupMenu(getJTable(), getPopupControls(additionalPopupControls));
         final JPanel tableSearchAndSummaryPanel = new JPanel(new BorderLayout());
         setLayout(new BorderLayout());
         if (searchScrollPane != null) {
@@ -1488,7 +1489,6 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     }
 
     getJTable().addMouseListener(initializeTableMouseListener());
-    setTablePopupMenu(getJTable(), getPopupControls(additionalPopupControls));
 
     final JTableHeader header = getJTable().getTableHeader();
     final TableCellRenderer defaultHeaderRenderer = header.getDefaultRenderer();
