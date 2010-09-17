@@ -893,8 +893,8 @@ public final class EntityCriteriaUtil {
       }
       this.property = property;
       this.searchType = searchType;
+      this.isNullCriteria = values == null || (values.length == 1 && values[0] == null);
       this.values = initializeValues(values);
-      this.isNullCriteria = this.values.size() == 1 && this.values.get(0) == null;
     }
 
     /** {@inheritDoc} */
@@ -1053,11 +1053,12 @@ public final class EntityCriteriaUtil {
       if (values.length == 0) {
         return new ArrayList();
       }
-      if (values[0] instanceof Entity.Key) {
+      final Object value = values[0];
+      if (value == null || value instanceof Entity.Key) {
         return Arrays.asList(values);
       }
       else {
-        final List entities = new ArrayList();
+        final List entities = new ArrayList();//todo
         entities.addAll(Arrays.asList(values));
 
         return EntityUtil.getPrimaryKeys(entities);

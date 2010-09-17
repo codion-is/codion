@@ -2187,3 +2187,5 @@
   EntityPanel.includeControlPanel and includeDetailPanelTabPane fields added
   TextValueLink.format field added
   AbstractValueLink.translateModelValue() added
+  EntityCriteriaUtil.ForeignKeyCriteria nullCriteria bug fixed
+  EntityDbConnection now logs the result packing time and row count
