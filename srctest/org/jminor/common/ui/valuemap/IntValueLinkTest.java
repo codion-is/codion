@@ -25,7 +25,7 @@ public class IntValueLinkTest {
   @Test
   public void test() throws Exception {
     final IntField txt = new IntField();
-    new IntValueLink<String>(txt, model, EmpDept.EMPLOYEE_ID, true, LinkType.READ_WRITE);
+    new IntValueLink<String>(txt, model, EmpDept.EMPLOYEE_ID, true, LinkType.READ_WRITE, null);
     assertNull("Initial Integer value should be null", model.getValue(EmpDept.EMPLOYEE_ID));
     txt.setInt(42);
     assertEquals("Integer value should be 42", 42, model.getValue(EmpDept.EMPLOYEE_ID));

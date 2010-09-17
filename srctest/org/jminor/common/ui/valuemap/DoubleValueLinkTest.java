@@ -25,7 +25,7 @@ public class DoubleValueLinkTest {
   public void test() throws Exception {
     final DoubleField txt = new DoubleField();
     txt.setDecimalSymbol(DoubleField.POINT);
-    final TextValueLink<String> valueLink = new DoubleValueLink<String>(txt, model, EmpDept.EMPLOYEE_COMMISSION, true, LinkType.READ_WRITE);
+    final TextValueLink<String> valueLink = new DoubleValueLink<String>(txt, model, EmpDept.EMPLOYEE_COMMISSION, true, LinkType.READ_WRITE, null);
     ValueLinkValidators.addValidator(valueLink, txt, model);
     assertNull("Initial Double value should be null", model.getValue(EmpDept.EMPLOYEE_COMMISSION));
     txt.setDouble(1000.5);

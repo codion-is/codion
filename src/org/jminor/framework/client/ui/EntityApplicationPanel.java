@@ -1090,7 +1090,10 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
             if (active.getDetailPanelState() == EntityPanel.HIDDEN) {
               active.setDetailPanelState(EntityPanel.EMBEDDED);
             }
-            activatePanel(active.getLinkedDetailPanel());
+            final Collection<EntityPanel> activeDetailPanels = active.getLinkedDetailPanels();
+            if (!activeDetailPanels.isEmpty()) {
+              activatePanel(activeDetailPanels.iterator().next());
+            }
           }
           else {
             activatePanel((EntityPanel) applicationTabPane.getSelectedComponent());

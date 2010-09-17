@@ -76,6 +76,7 @@ public class Chinook {
   public static final String INVOICE_BILLINGCOUNTRY = "billingcountry";
   public static final String INVOICE_BILLINGPOSTALCODE = "billingpostalcode";
   public static final String INVOICE_TOTAL = "total";
+  public static final String INVOICE_TOTAL_SUBQUERY = "select sum(unitprice * quantity) from chinook.invoiceline where invoiceid = invoice.invoiceid";
 
   public static final String T_INVOICELINE = "chinook.invoiceline";
   public static final String INVOICELINE_INVOICELINEID = "invoicelineid";
@@ -367,8 +368,8 @@ public class Chinook {
                     .setMaxLength(40),
             Properties.columnProperty(INVOICE_BILLINGPOSTALCODE, Types.VARCHAR, "Billing postal code")
                     .setMaxLength(10),
-            Properties.columnProperty(INVOICE_TOTAL, Types.DOUBLE, "Total")
-                    .setNullable(false))
+            Properties.subqueryProperty(INVOICE_TOTAL, Types.DOUBLE, "Total", INVOICE_TOTAL_SUBQUERY)
+                    .setMaximumFractionDigits(2))
             .setDomainID(DOMAIN_ID)
             .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_INVOICE)
             .setStringProvider(new StringProvider<String>(INVOICE_INVOICEID))

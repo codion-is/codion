@@ -220,7 +220,7 @@ public final class EntityLookupField extends JTextField {
     return new AbstractAction(FrameworkMessages.get(FrameworkMessages.SEARCH)) {
       /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
-        if (performLookup() && enterAction == transferFocusAction) {
+        if (performLookup() && transferFocusAction.equals(enterAction)) {
           transferFocus();
         }
       }

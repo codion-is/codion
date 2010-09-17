@@ -81,7 +81,7 @@ public final class DoubleField extends IntField {
 
   private String prepareString(final String str, final String documentText, final int offset) {
     String preparedString = str;
-    if (getDecimalSymbol().equals(POINT)) {
+    if (decimalSymbol.equals(POINT)) {
       if (str.contains(COMMA)) {
         preparedString = str.replace(COMMA, POINT);
       }
@@ -104,7 +104,7 @@ public final class DoubleField extends IntField {
           return "";//not allow multiple decimal points
         }
         else {
-          preparedString = getDecimalSymbol();
+          preparedString = decimalSymbol;
         }
       }
     }

@@ -45,7 +45,7 @@ public class FormattedValueLink<K> extends TextValueLink<K> {
 
   /** {@inheritDoc} */
   @Override
-  protected final Object valueFromText(final String text) {
+  protected final Object getValueFromText(final String text) {
     if (text == null) {
       return null;
     }
@@ -60,7 +60,7 @@ public class FormattedValueLink<K> extends TextValueLink<K> {
 
   /** {@inheritDoc} */
   @Override
-  protected final String getValueAsString(final Object value) {
+  protected final String getValueAsText(final Object value) {
     if (value == null) {
       return null;
     }

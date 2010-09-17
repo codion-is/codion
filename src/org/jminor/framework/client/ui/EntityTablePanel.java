@@ -174,9 +174,14 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
   private Action tableDoubleClickAction;
 
   /**
-   * specifies whether or not to include the souht panel
+   * specifies whether or not to include the south panel
    */
   private boolean includeSouthPanel = true;
+
+  /**
+   * specifies whether or not to include the search panel
+   */
+  private boolean includeSearchPanel = true;
 
   /**
    * True after <code>initializePanel()</code> has been called
@@ -281,12 +286,12 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
       summaryBasePanel = null;
       summaryScrollPane = null;
     }
-    initializeTable();
     this.statusMessageLabel = initializeStatusMessageLabel();
     this.refreshToolBar = initializeRefreshToolbar();
     this.horizontalTableScrollBar = getTableScrollPane().getHorizontalScrollBar();
     this.additionalPopupControls = additionalPopupControls;
     this.additionalToolbarControls = additionalToolbarControls;
+    initializeTable();
   }
 
   /**
@@ -327,7 +332,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
   }
 
   /**
-   * @param value true if the south panel should be include
+   * @param value true if the south panel should be included
    * @see #initializeSouthPanel()
    */
   public final void setIncludeSouthPanel(final boolean value) {
@@ -335,6 +340,16 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
       throw new IllegalStateException("includeSouthPanel must be set before the panel is initialized");
     }
     this.includeSouthPanel = value;
+  }
+
+  /**
+   * @param value true if the search panel should be included
+   */
+  public final void setIncludeSearchPanel(final boolean value) {
+    if (panelInitialized) {
+      throw new IllegalStateException("includeSearcPanel must be set before the panel is initialized");
+    }
+    this.includeSearchPanel = value;
   }
 
   /**
@@ -844,10 +859,17 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     if (!panelInitialized) {
       try {
         setupControls();
+        final TableCellRenderer tableCellRenderer = initializeTableCellRenderer();
+        final Enumeration<TableColumn> columnEnumeration = getTableModel().getColumnModel().getColumns();
+        while (columnEnumeration.hasMoreElements()) {
+          final TableColumn column = columnEnumeration.nextElement();
+          column.setCellRenderer(tableCellRenderer);
+          column.setResizable(true);
+        }
         setTablePopupMenu(getJTable(), getPopupControls(additionalPopupControls));
         final JPanel tableSearchAndSummaryPanel = new JPanel(new BorderLayout());
         setLayout(new BorderLayout());
-        if (searchScrollPane != null) {
+        if (includeSearchPanel && searchScrollPane != null) {
           tableSearchAndSummaryPanel.add(searchScrollPane, BorderLayout.NORTH);
           if (searchPanel instanceof EntityTableSearchAdvancedPanel) {
             searchScrollPane.getHorizontalScrollBar().setModel(getTableScrollPane().getHorizontalScrollBar().getModel());
@@ -1480,14 +1502,6 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
   }
 
   private void initializeTable() {
-    final TableCellRenderer tableCellRenderer = initializeTableCellRenderer();
-    final Enumeration<TableColumn> columnEnumeration = getJTable().getColumnModel().getColumns();
-    while (columnEnumeration.hasMoreElements()) {
-      final TableColumn column = columnEnumeration.nextElement();
-      column.setCellRenderer(tableCellRenderer);
-      column.setResizable(true);
-    }
-
     getJTable().addMouseListener(initializeTableMouseListener());
 
     final JTableHeader header = getJTable().getTableHeader();

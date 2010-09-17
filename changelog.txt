@@ -2185,3 +2185,5 @@
   EntityLookupField transfers focus on select
   EntityTablePanel.includeSouthPanel field added
   EntityPanel.includeControlPanel and includeDetailPanelTabPane fields added
+  TextValueLink.format field added
+  AbstractValueLink.translateModelValue() added

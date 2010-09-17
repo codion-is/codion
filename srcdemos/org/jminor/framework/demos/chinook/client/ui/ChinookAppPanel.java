@@ -72,6 +72,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel {
       @Override
       protected void configureTablePanel(final EntityTablePanel tablePanel) {
         tablePanel.setIncludeSouthPanel(false);
+        tablePanel.setIncludeSearchPanel(false);
         tablePanel.getJTable().setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         tablePanel.setPreferredSize(new Dimension(360, 40));
         tablePanel.getTableModel().setColumnVisible(Entities.getProperty(Chinook.T_INVOICELINE, Chinook.INVOICELINE_INVOICEID_FK), false);

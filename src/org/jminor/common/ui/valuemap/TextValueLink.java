@@ -13,6 +13,8 @@ import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.text.Format;
+import java.text.ParseException;
 
 /**
  * A class for linking a text component to a ValueChangeMapEditModel text property value.
@@ -20,6 +22,7 @@ import java.awt.event.FocusEvent;
 public class TextValueLink<K> extends AbstractValueMapLink<K, Object> {
 
   private final Document document;
+  private final Format format;
   /**
    * If true the model value is updated on each keystroke, otherwise it is updated on focus lost and action performed
    */
@@ -34,7 +37,7 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> {
    */
   public TextValueLink(final JTextComponent textComponent, final ValueChangeMapEditModel<K, Object> editModel,
                        final K key, final boolean immediateUpdate) {
-    this(textComponent, editModel, key, immediateUpdate, LinkType.READ_WRITE);
+    this(textComponent, editModel, key, immediateUpdate, LinkType.READ_WRITE, null);
   }
 
   /**
@@ -48,8 +51,24 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> {
    */
   public TextValueLink(final JTextComponent textComponent, final ValueChangeMapEditModel<K, Object> editModel,
                        final K key, final boolean immediateUpdate, final LinkType linkType) {
+    this(textComponent, editModel, key, immediateUpdate, linkType, null);
+  }
+
+  /**
+   * Instantiates a new TextValueLink
+   * @param textComponent the text component to link
+   * @param editModel the ValueChangeMapEditModel instance
+   * @param key the key to link
+   * @param immediateUpdate if true then the underlying model value is updated on each keystroke,
+   * otherwise it is updated on actionPerformed or focusLost
+   * @param linkType the link type
+   * @param format the format to use when displaying the value as text
+   */
+  public TextValueLink(final JTextComponent textComponent, final ValueChangeMapEditModel<K, Object> editModel,
+                       final K key, final boolean immediateUpdate, final LinkType linkType, final Format format) {
     super(editModel, key, linkType);
     this.document = textComponent.getDocument();
+    this.format = format;
     this.immediateUpdate = immediateUpdate;
     if (!this.immediateUpdate) {
       textComponent.addFocusListener(new FocusAdapter() {
@@ -85,7 +104,12 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> {
   /** {@inheritDoc} */
   @Override
   protected final Object getUIValue() {
-    return valueFromText(getText());
+    try {
+      return getValueFromText(getText());
+    }
+    catch (ParseException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   /** {@inheritDoc} */
@@ -94,7 +118,7 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> {
     try {
       document.remove(0, document.getLength());
       if (value != null) {
-        document.insertString(0, getValueAsString(value), null);
+        document.insertString(0, getValueAsText(value), null);
       }
     }
     catch (BadLocationException e) {
@@ -128,8 +152,9 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> {
    * be parsed into a valid value, null is returned
    * @param text the text from which to parse a value
    * @return a value, null if the input text has zero length or if it does not yield a valid value
+   * @throws java.text.ParseException in case the value could not be parsed from the text
    */
-  protected Object valueFromText(final String text) {
+  protected Object getValueFromText(final String text) throws ParseException {
     if (text != null && text.isEmpty()) {
       return null;
     }
@@ -142,7 +167,14 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> {
    * @param value the value to return as String
    * @return a String representation of the given value, null if the value is null
    */
-  protected String getValueAsString(final Object value) {
-    return value == null ? null : value.toString();
+  protected String getValueAsText(final Object value) {
+    if (value == null) {
+      return null;
+    }
+    if (format != null) {
+      return format.format(value);
+    }
+
+    return value.toString();
   }
 }

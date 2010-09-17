@@ -174,7 +174,7 @@ public class EntityPanel extends JPanel {
   /**
    * Hold a reference to this PropertyChangeListener so that it will be garbage collected along with this EntityPanel instance
    */
-  private final PropertyChangeListener focusPropertyListener = new FocusListener();
+  private final PropertyChangeListener focusPropertyListener;
 
   /**
    * Initializes a new EntityPanel instance. The Panel is not laid out and initialized until initialize() is called.
@@ -264,10 +264,13 @@ public class EntityPanel extends JPanel {
     else {
       this.tablePanel = tablePanel;
     }
-    setupKeyboardActions();
     if (Configuration.getBooleanValue(Configuration.USE_FOCUS_ACTIVATION)) {
+      focusPropertyListener = new FocusListener();
       KeyboardFocusManager.getCurrentKeyboardFocusManager().addPropertyChangeListener("focusOwner",
               new WeakPropertyChangeListener(focusPropertyListener));
+    }
+    else {
+      focusPropertyListener = null;
     }
   }
 
@@ -449,8 +452,16 @@ public class EntityPanel extends JPanel {
   /**
    * @return the currently visible/linked detail EntityPanel, if any
    */
-  public final EntityPanel getLinkedDetailPanel() {
-    return detailPanelTabbedPane != null ? (EntityPanel) detailPanelTabbedPane.getSelectedComponent() : null;
+  public final Collection<EntityPanel> getLinkedDetailPanels() {
+    final Collection<EntityModel> linkedDetailModels = model.getLinkedDetailModels();
+    final Collection<EntityPanel> linkedDetailPanels = new ArrayList<EntityPanel>(linkedDetailModels.size());
+    for (final EntityPanel detailPanel : detailEntityPanels) {
+      if (linkedDetailModels.contains(detailPanel.model)) {
+        linkedDetailPanels.add(detailPanel);
+      }
+    }
+
+    return linkedDetailPanels;
   }
 
   /**
@@ -685,7 +696,7 @@ public class EntityPanel extends JPanel {
     }
 
     if (state == EMBEDDED) {
-      if (compactDetailLayout && includeDetailPanelTabPane) {
+      if (compactBase != null) {
         compactBase.add(editControlPanel, BorderLayout.NORTH);
       }
       else {
@@ -740,21 +751,25 @@ public class EntityPanel extends JPanel {
         setEditPanelState(EMBEDDED);
         break;
       case RIGHT:
-        final int rightPos = horizontalSplitPane.getDividerLocation() + pixelAmount;
-        if (rightPos <= horizontalSplitPane.getMaximumDividerLocation()) {
-          horizontalSplitPane.setDividerLocation(rightPos);
-        }
-        else {
-          horizontalSplitPane.setDividerLocation(horizontalSplitPane.getMaximumDividerLocation());
+        if (horizontalSplitPane != null) {
+          final int rightPos = horizontalSplitPane.getDividerLocation() + pixelAmount;
+          if (rightPos <= horizontalSplitPane.getMaximumDividerLocation()) {
+            horizontalSplitPane.setDividerLocation(rightPos);
+          }
+          else {
+            horizontalSplitPane.setDividerLocation(horizontalSplitPane.getMaximumDividerLocation());
+          }
         }
         break;
       case LEFT:
-        final int leftPos = horizontalSplitPane.getDividerLocation() - pixelAmount;
-        if (leftPos >= 0) {
-          horizontalSplitPane.setDividerLocation(leftPos);
-        }
-        else {
-          horizontalSplitPane.setDividerLocation(0);
+        if (horizontalSplitPane != null) {
+          final int leftPos = horizontalSplitPane.getDividerLocation() - pixelAmount;
+          if (leftPos >= 0) {
+            horizontalSplitPane.setDividerLocation(leftPos);
+          }
+          else {
+            horizontalSplitPane.setDividerLocation(0);
+          }
         }
         break;
     }
@@ -864,6 +879,7 @@ public class EntityPanel extends JPanel {
       horizontalSplitPane.setRightComponent(detailPanelTabbedPane);
       add(horizontalSplitPane, BorderLayout.CENTER);
     }
+    setupKeyboardActions();
     setDetailPanelState(detailPanelState);
     setEditPanelState(editPanelState);
   }
