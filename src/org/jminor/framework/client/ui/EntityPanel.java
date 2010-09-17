@@ -23,16 +23,7 @@ import org.jminor.framework.i18n.FrameworkMessages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.BorderFactory;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JPanel;
-import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JToolBar;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.BorderLayout;
@@ -813,10 +804,10 @@ public class EntityPanel extends JPanel {
       }
       tablePanel.setAdditionalToolbarControls(toolbarControls);
       tablePanel.setAdditionalPopupControls(getTablePopupControlSet());
-      tablePanel.initializePanel();
       if (tablePanel.getTableDoubleClickAction() == null) {
         tablePanel.setTableDoubleClickAction(initializeTableDoubleClickAction());
       }
+      tablePanel.initializePanel();
       tablePanel.setMinimumSize(new Dimension(0,0));
     }
     horizontalSplitPane = !detailEntityPanels.isEmpty() ? initializeHorizontalSplitPane() : null;

@@ -144,11 +144,6 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
   private final JScrollBar horizontalTableScrollBar;
 
   /**
-   * the south panel
-   */
-  private final JPanel southPanel;
-
-  /**
    * the summary panel
    */
   private final EntityTableSummaryPanel summaryPanel;
@@ -177,6 +172,11 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
    * the action performed when the table is double clicked
    */
   private Action tableDoubleClickAction;
+
+  /**
+   * specifies whether or not to include the souht panel
+   */
+  private boolean includeSouthPanel = true;
 
   /**
    * True after <code>initializePanel()</code> has been called
@@ -262,8 +262,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
    * @param summaryPanel the summary panel
    */
   public EntityTablePanel(final EntityTableModel tableModel, final ControlSet additionalPopupControls,
-                          final ControlSet additionalToolbarControls,
-                          final EntityTableSearchPanel searchPanel,
+                          final ControlSet additionalToolbarControls, final EntityTableSearchPanel searchPanel,
                           final EntityTableSummaryPanel summaryPanel) {
     super(tableModel);
     this.searchPanel = searchPanel;
@@ -282,7 +281,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
       summaryBasePanel = null;
       summaryScrollPane = null;
     }
-    this.southPanel = new JPanel(new BorderLayout());
+    initializeTable();
     this.statusMessageLabel = initializeStatusMessageLabel();
     this.refreshToolBar = initializeRefreshToolbar();
     this.horizontalTableScrollBar = getTableScrollPane().getHorizontalScrollBar();
@@ -294,6 +293,9 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
    * @param doubleClickAction the action to perform when a double click is performed on the table
    */
   public final void setTableDoubleClickAction(final Action doubleClickAction) {
+    if (panelInitialized) {
+      throw new IllegalStateException("tableDoubleClickAction must be set before the panel is initialized");
+    }
     this.tableDoubleClickAction = doubleClickAction;
   }
 
@@ -322,6 +324,17 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
       throw new IllegalStateException("Additional toolbar controls must be set before the panel is initialized");
     }
     this.additionalToolbarControls = additionalToolbarControls;
+  }
+
+  /**
+   * @param value true if the south panel should be include
+   * @see #initializeSouthPanel()
+   */
+  public final void setIncludeSouthPanel(final boolean value) {
+    if (panelInitialized) {
+      throw new IllegalStateException("includeSouthPanel must be set before the panel is initialized");
+    }
+    this.includeSouthPanel = value;
   }
 
   /**
@@ -849,7 +862,6 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
             });
           }
         }
-        initializeTable();
         final JScrollPane tableScrollPane = getTableScrollPane();
         tableSearchAndSummaryPanel.add(tableScrollPane, BorderLayout.CENTER);
         add(tableSearchAndSummaryPanel, BorderLayout.CENTER);
@@ -865,14 +877,17 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
           tableSearchAndSummaryPanel.add(summaryBasePanel, BorderLayout.SOUTH);
         }
 
-        final JPanel southPanelCenter = initializeSouthPanel();
-        if (southPanelCenter != null) {
-          final JToolBar southToolBar = initializeToolbar();
-          if (southToolBar != null) {
-            southPanelCenter.add(southToolBar, BorderLayout.EAST);
+        if (includeSouthPanel) {
+          final JPanel southPanel = new JPanel(new BorderLayout(5, 5));
+          final JPanel southPanelCenter = initializeSouthPanel();
+          if (southPanelCenter != null) {
+            final JToolBar southToolBar = initializeToolbar();
+            if (southToolBar != null) {
+              southPanelCenter.add(southToolBar, BorderLayout.EAST);
+            }
+            southPanel.add(southPanelCenter, BorderLayout.SOUTH);
+            add(southPanel, BorderLayout.SOUTH);
           }
-          southPanel.add(southPanelCenter, BorderLayout.SOUTH);
-          add(southPanel, BorderLayout.SOUTH);
         }
         bindEvents();
         updateStatusMessage();
@@ -1226,24 +1241,6 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
   }
 
   /**
-   * @return the auto resize mode to use for the JTable, by default this returns the value of Configuration.TABLE_AUTO_RESIZE_MODE
-   * @see Configuration#TABLE_AUTO_RESIZE_MODE
-   */
-  protected int getAutoResizeMode() {
-    return Configuration.getIntValue(Configuration.TABLE_AUTO_RESIZE_MODE);
-  }
-
-  /**
-   * Specifies whether or not column reordering is allowed in this table, called during JTable initialization.
-   * By default this method returns the configuration value ALLOW_COLUMN_REORDERING
-   * @return true if this table should allow column reordering
-   * @see org.jminor.framework.Configuration#ALLOW_COLUMN_REORDERING
-   */
-  protected boolean allowColumnReordering() {
-    return Configuration.getBooleanValue(Configuration.ALLOW_COLUMN_REORDERING);
-  }
-
-  /**
    * Initializes the south panel toolbar, by default based on <code>getToolbarControls()</code>
    * @return the toolbar to add to the south panel
    */
@@ -1511,9 +1508,8 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
       }
     });
     header.setFocusable(false);
-    header.setReorderingAllowed(allowColumnReordering());
-
-    getJTable().setAutoResizeMode(getAutoResizeMode());
+    header.setReorderingAllowed(Configuration.getBooleanValue(Configuration.ALLOW_COLUMN_REORDERING));
+    getJTable().setAutoResizeMode(Configuration.getIntValue(Configuration.TABLE_AUTO_RESIZE_MODE));
   }
 
   private static void showDependenciesDialog(final Map<String, Collection<Entity>> dependencies, final EntityDbProvider dbProvider,

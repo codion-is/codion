@@ -10,6 +10,7 @@ import org.jminor.framework.client.ui.EntityTablePanel;
 import org.jminor.framework.demos.chinook.domain.Chinook;
 import org.jminor.framework.domain.Entities;
 
+import javax.swing.JTable;
 import java.awt.Dimension;
 
 public class InvoicePanel extends EntityPanel {
@@ -20,7 +21,9 @@ public class InvoicePanel extends EntityPanel {
   }
 
   private static EntityPanel initializeInvoiceLinePanel(final EntityModel invoiceLineModel) {
-    final EntityTablePanel invoiceLineTablePanel = new InvoiceLineTablePanel(invoiceLineModel.getTableModel());
+    final EntityTablePanel invoiceLineTablePanel = new EntityTablePanel(invoiceLineModel.getTableModel());
+    invoiceLineTablePanel.setIncludeSouthPanel(false);
+    invoiceLineTablePanel.getJTable().setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
     final EntityEditPanel invoiceLineEditPanel = new InvoiceLineEditPanel(invoiceLineModel.getEditModel(),
             invoiceLineTablePanel.getSearchField());
     final EntityPanel invoiceLinePanel = new EntityPanel(invoiceLineModel,
