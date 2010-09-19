@@ -129,7 +129,7 @@ public class EntityDbConnectionTest {
     Entity emp = connection.selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "KING");
     Map<String, Collection<Entity>> deps = connection.selectDependentEntities(Arrays.asList(emp));
     assertTrue(deps.containsKey(EmpDept.T_EMPLOYEE));
-    assertTrue(deps.get(EmpDept.T_EMPLOYEE).size() == 2);
+    assertEquals(3, deps.get(EmpDept.T_EMPLOYEE).size());
 
     emp = connection.selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "MILLER");
     deps = connection.selectDependentEntities(Arrays.asList(emp));

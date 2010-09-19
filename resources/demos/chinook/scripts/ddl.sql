@@ -1,156 +1,156 @@
 create schema chinook;
 
-CREATE TABLE Chinook.Genre
+create table chinook.genre
 (
-    GenreId IDENTITY NOT NULL,
-    Name VARCHAR(120) ,
-    CONSTRAINT PK_Genre PRIMARY KEY (GenreId)
+    genreid identity not null,
+    name varchar(120) ,
+    constraint pk_genre primary key (genreid)
 );
 
-CREATE TABLE Chinook.MediaType
+create table chinook.mediatype
 (
-    MediaTypeId IDENTITY NOT NULL,
-    Name VARCHAR(120) ,
-    CONSTRAINT PK_MediaType PRIMARY KEY (MediaTypeId)
+    mediatypeid identity not null,
+    name varchar(120) ,
+    constraint pk_mediatype primary key (mediatypeid)
 );
 
-CREATE TABLE Chinook.Artist
+create table chinook.artist
 (
-    ArtistId IDENTITY NOT NULL,
-    Name VARCHAR(120) ,
-    CONSTRAINT PK_Artist PRIMARY KEY (ArtistId)
+    artistid identity not null,
+    name varchar(120) ,
+    constraint pk_artist primary key (artistid)
 );
 
-CREATE TABLE Chinook.Album
+create table chinook.album
 (
-    AlbumId IDENTITY NOT NULL,
-    Title VARCHAR(160) NOT NULL,
-    ArtistId INTEGER NOT NULL,
-    CONSTRAINT PK_ProductItem PRIMARY KEY (AlbumId)
+    albumid identity not null,
+    title varchar(160) not null,
+    artistid integer not null,
+    constraint pk_productitem primary key (albumid)
 );
 
-CREATE TABLE Chinook.Track
+create table chinook.track
 (
-    TrackId IDENTITY NOT NULL,
-    Name VARCHAR(200) NOT NULL,
-    AlbumId INTEGER ,
-    MediaTypeId INTEGER NOT NULL,
-    GenreId INTEGER ,
-    Composer VARCHAR(220) ,
-    Milliseconds INTEGER NOT NULL,
-    Bytes DOUBLE ,
-    UnitPrice DOUBLE NOT NULL,
-    CONSTRAINT PK_Track PRIMARY KEY (TrackId)
+    trackid identity not null,
+    name varchar(200) not null,
+    albumid integer ,
+    mediatypeid integer not null,
+    genreid integer ,
+    composer varchar(220) ,
+    milliseconds integer not null,
+    bytes double ,
+    unitprice double not null,
+    constraint pk_track primary key (trackid)
 );
 
-CREATE TABLE Chinook.Employee
+create table chinook.employee
 (
-    EmployeeId IDENTITY NOT NULL,
-    LastName VARCHAR(20) NOT NULL,
-    FirstName VARCHAR(20) NOT NULL,
-    Title VARCHAR(30) ,
-    ReportsTo INTEGER ,
-    BirthDate DATE ,
-    HireDate DATE ,
-    Address VARCHAR(70) ,
-    City VARCHAR(40) ,
-    State VARCHAR(40) ,
-    Country VARCHAR(40) ,
-    PostalCode VARCHAR(10) ,
-    Phone VARCHAR(24) ,
-    Fax VARCHAR(24) ,
-    Email VARCHAR(60) ,
-    CONSTRAINT PK_Employee PRIMARY KEY (EmployeeId)
+    employeeid identity not null,
+    lastname varchar(20) not null,
+    firstname varchar(20) not null,
+    title varchar(30) ,
+    reportsto integer ,
+    birthdate date ,
+    hiredate date ,
+    address varchar(70) ,
+    city varchar(40) ,
+    state varchar(40) ,
+    country varchar(40) ,
+    postalcode varchar(10) ,
+    phone varchar(24) ,
+    fax varchar(24) ,
+    email varchar(60) ,
+    constraint pk_employee primary key (employeeid)
 );
 
-CREATE TABLE Chinook.Customer
+create table chinook.customer
 (
-    CustomerId IDENTITY NOT NULL,
-    FirstName VARCHAR(40) NOT NULL,
-    LastName VARCHAR(20) NOT NULL,
-    Company VARCHAR(80) ,
-    Address VARCHAR(70) ,
-    City VARCHAR(40) ,
-    State VARCHAR(40) ,
-    Country VARCHAR(40) ,
-    PostalCode VARCHAR(10) ,
-    Phone VARCHAR(24) ,
-    Fax VARCHAR(24) ,
-    Email VARCHAR(60) NOT NULL,
-    SupportRepId INTEGER ,
-    CONSTRAINT PK_Customer PRIMARY KEY (CustomerId)
+    customerid identity not null,
+    firstname varchar(40) not null,
+    lastname varchar(20) not null,
+    company varchar(80) ,
+    address varchar(70) ,
+    city varchar(40) ,
+    state varchar(40) ,
+    country varchar(40) ,
+    postalcode varchar(10) ,
+    phone varchar(24) ,
+    fax varchar(24) ,
+    email varchar(60) not null,
+    supportrepid integer ,
+    constraint pk_customer primary key (customerid)
 );
 
-CREATE TABLE Chinook.Invoice
+create table chinook.invoice
 (
-    InvoiceId IDENTITY NOT NULL,
-    CustomerId INTEGER NOT NULL,
-    InvoiceDate DATE NOT NULL,
-    BillingAddress VARCHAR(70) ,
-    BillingCity VARCHAR(40) ,
-    BillingState VARCHAR(40) ,
-    BillingCountry VARCHAR(40) ,
-    BillingPostalCode VARCHAR(10) ,
-    Total DECIMAL(12, 2), --NOT NULL,
-    CONSTRAINT PK_Invoice PRIMARY KEY (InvoiceId)
+    invoiceid identity not null,
+    customerid integer not null,
+    invoicedate date not null,
+    billingaddress varchar(70) ,
+    billingcity varchar(40) ,
+    billingstate varchar(40) ,
+    billingcountry varchar(40) ,
+    billingpostalcode varchar(10) ,
+    total decimal(12, 2), --not null,
+    constraint pk_invoice primary key (invoiceid)
 );
 
-CREATE TABLE Chinook.InvoiceLine
+create table chinook.invoiceline
 (
-    InvoiceLineId IDENTITY NOT NULL,
-    InvoiceId INTEGER NOT NULL,
-    TrackId INTEGER NOT NULL,
-    UnitPrice DOUBLE NOT NULL,
-    Quantity INTEGER NOT NULL,
-    CONSTRAINT PK_InvoiceLine PRIMARY KEY (InvoiceLineId)
+    invoicelineid identity not null,
+    invoiceid integer not null,
+    trackid integer not null,
+    unitprice double not null,
+    quantity integer not null,
+    constraint pk_invoiceline primary key (invoicelineid)
 );
 
-CREATE TABLE Chinook.Playlist
+create table chinook.playlist
 (
-    PlaylistId IDENTITY NOT NULL,
-    Name VARCHAR(120) ,
-    CONSTRAINT PK_Playlist PRIMARY KEY (PlaylistId)
+    playlistid identity not null,
+    name varchar(120) ,
+    constraint pk_playlist primary key (playlistid)
 );
 
-CREATE TABLE Chinook.PlaylistTrack
+create table chinook.playlisttrack
 (
-    PlaylistId INTEGER NOT NULL,
-    TrackId INTEGER NOT NULL,
-    CONSTRAINT PK_PlaylistTrack PRIMARY KEY (PlaylistId, TrackId)
+    playlistid integer not null,
+    trackid integer not null,
+    constraint pk_playlisttrack primary key (playlistid, trackid)
 );
 
 /*******************************************************************************
-   Create Foreign Keys
+   create foreign keys
 ********************************************************************************/
-ALTER TABLE Chinook.Album ADD CONSTRAINT FK_Artist_Album
-FOREIGN KEY (ArtistId) REFERENCES Chinook.Artist(ArtistId);
+alter table chinook.album add constraint fk_artist_album
+foreign key (artistid) references chinook.artist(artistid);
 
-ALTER TABLE Chinook.Track ADD CONSTRAINT FK_Album_Track
-FOREIGN KEY (AlbumId) REFERENCES Chinook.Album(AlbumId);
+alter table chinook.track add constraint fk_album_track
+foreign key (albumid) references chinook.album(albumid);
 
-ALTER TABLE Chinook.Track ADD CONSTRAINT FK_MediaType_Track
-FOREIGN KEY (MediaTypeId) REFERENCES Chinook.MediaType(MediaTypeId);
+alter table chinook.track add constraint fk_mediatype_track
+foreign key (mediatypeid) references chinook.mediatype(mediatypeid);
 
-ALTER TABLE Chinook.Track ADD CONSTRAINT FK_Genre_Track
-FOREIGN KEY (GenreId) REFERENCES Chinook.Genre(GenreId);
+alter table chinook.track add constraint fk_genre_track
+foreign key (genreid) references chinook.genre(genreid);
 
-ALTER TABLE Chinook.Employee ADD CONSTRAINT FK_Employee_ReportsTo
-FOREIGN KEY (ReportsTo) REFERENCES Chinook.Employee(EmployeeId);
+alter table chinook.employee add constraint fk_employee_reportsto
+foreign key (reportsto) references chinook.employee(employeeid);
 
-ALTER TABLE Chinook.Customer ADD CONSTRAINT FK_Employee_Customer
-FOREIGN KEY (SupportRepId) REFERENCES Chinook.Employee(EmployeeId);
+alter table chinook.customer add constraint fk_employee_customer
+foreign key (supportrepid) references chinook.employee(employeeid);
 
-ALTER TABLE Chinook.Invoice ADD CONSTRAINT FK_Customer_Invoice
-FOREIGN KEY (CustomerId) REFERENCES Chinook.Customer(CustomerId);
+alter table chinook.invoice add constraint fk_customer_invoice
+foreign key (customerid) references chinook.customer(customerid);
 
-ALTER TABLE Chinook.InvoiceLine ADD CONSTRAINT FK_ProductItem_InvoiceLine
-FOREIGN KEY (TrackId) REFERENCES Chinook.Track(TrackId);
+alter table chinook.invoiceline add constraint fk_productitem_invoiceline
+foreign key (trackid) references chinook.track(trackid);
 
-ALTER TABLE Chinook.InvoiceLine ADD CONSTRAINT FK_Invoice_InvoiceLine
-FOREIGN KEY (InvoiceId) REFERENCES Chinook.Invoice(InvoiceId);
+alter table chinook.invoiceline add constraint fk_invoice_invoiceline
+foreign key (invoiceid) references chinook.invoice(invoiceid);
 
-ALTER TABLE Chinook.PlaylistTrack ADD CONSTRAINT FK_Track_PlaylistTrack
-FOREIGN KEY (TrackId) REFERENCES Chinook.Track(TrackId);
+alter table chinook.playlisttrack add constraint fk_track_playlisttrack
+foreign key (trackid) references chinook.track(trackid);
 
-ALTER TABLE Chinook.PlaylistTrack ADD CONSTRAINT FK_Playlist_PlaylistTrack
-FOREIGN KEY (PlaylistId) REFERENCES Chinook.Playlist(PlaylistId);
+alter table chinook.playlisttrack add constraint fk_playlist_playlisttrack
+foreign key (playlistid) references chinook.playlist(playlistid);

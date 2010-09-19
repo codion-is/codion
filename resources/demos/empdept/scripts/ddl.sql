@@ -29,3 +29,8 @@ alter table scott.emp
 add constraint emp_dept_fk
 foreign key (deptno)
 references scott.dept(deptno);
+
+alter table scott.emp
+add constraint emp_mgr_fk
+foreign key (mgr)
+references scott.emp(empno);
