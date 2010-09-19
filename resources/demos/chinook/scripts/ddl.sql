@@ -3,21 +3,21 @@ create schema chinook;
 create table chinook.genre
 (
     genreid identity not null,
-    name varchar(120) ,
+    name varchar(120),
     constraint pk_genre primary key (genreid)
 );
 
 create table chinook.mediatype
 (
     mediatypeid identity not null,
-    name varchar(120) ,
+    name varchar(120),
     constraint pk_mediatype primary key (mediatypeid)
 );
 
 create table chinook.artist
 (
     artistid identity not null,
-    name varchar(120) ,
+    name varchar(120),
     constraint pk_artist primary key (artistid)
 );
 
@@ -33,12 +33,12 @@ create table chinook.track
 (
     trackid identity not null,
     name varchar(200) not null,
-    albumid integer ,
+    albumid integer,
     mediatypeid integer not null,
-    genreid integer ,
-    composer varchar(220) ,
+    genreid integer,
+    composer varchar(220),
     milliseconds integer not null,
-    bytes double ,
+    bytes double,
     unitprice double not null,
     constraint pk_track primary key (trackid)
 );
@@ -48,18 +48,18 @@ create table chinook.employee
     employeeid identity not null,
     lastname varchar(20) not null,
     firstname varchar(20) not null,
-    title varchar(30) ,
-    reportsto integer ,
-    birthdate date ,
-    hiredate date ,
-    address varchar(70) ,
-    city varchar(40) ,
-    state varchar(40) ,
-    country varchar(40) ,
-    postalcode varchar(10) ,
-    phone varchar(24) ,
-    fax varchar(24) ,
-    email varchar(60) ,
+    title varchar(30),
+    reportsto integer,
+    birthdate date,
+    hiredate date,
+    address varchar(70),
+    city varchar(40),
+    state varchar(40),
+    country varchar(40),
+    postalcode varchar(10),
+    phone varchar(24),
+    fax varchar(24),
+    email varchar(60),
     constraint pk_employee primary key (employeeid)
 );
 
@@ -68,16 +68,16 @@ create table chinook.customer
     customerid identity not null,
     firstname varchar(40) not null,
     lastname varchar(20) not null,
-    company varchar(80) ,
-    address varchar(70) ,
-    city varchar(40) ,
-    state varchar(40) ,
-    country varchar(40) ,
-    postalcode varchar(10) ,
-    phone varchar(24) ,
-    fax varchar(24) ,
+    company varchar(80),
+    address varchar(70),
+    city varchar(40),
+    state varchar(40),
+    country varchar(40),
+    postalcode varchar(10),
+    phone varchar(24),
+    fax varchar(24),
     email varchar(60) not null,
-    supportrepid integer ,
+    supportrepid integer,
     constraint pk_customer primary key (customerid)
 );
 
@@ -86,12 +86,12 @@ create table chinook.invoice
     invoiceid identity not null,
     customerid integer not null,
     invoicedate date not null,
-    billingaddress varchar(70) ,
-    billingcity varchar(40) ,
-    billingstate varchar(40) ,
-    billingcountry varchar(40) ,
-    billingpostalcode varchar(10) ,
-    total decimal(12, 2), --not null,
+    billingaddress varchar(70),
+    billingcity varchar(40),
+    billingstate varchar(40),
+    billingcountry varchar(40),
+    billingpostalcode varchar(10),
+    total decimal(10, 2), --not null,
     constraint pk_invoice primary key (invoiceid)
 );
 
@@ -108,7 +108,7 @@ create table chinook.invoiceline
 create table chinook.playlist
 (
     playlistid identity not null,
-    name varchar(120) ,
+    name varchar(120),
     constraint pk_playlist primary key (playlistid)
 );
 
