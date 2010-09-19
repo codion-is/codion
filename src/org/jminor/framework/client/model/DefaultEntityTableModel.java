@@ -291,12 +291,12 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   /** {@inheritDoc} */
   public final Object getValueAt(final int rowIndex, final int columnIndex) {
     final Property property = getColumnIdentifer(columnIndex);
-    final Object value = getItemAt(rowIndex).getValue(property);
-    if (property instanceof Property.ValueListProperty) {
-      return ((Property.ValueListProperty) property).getCaption(value);
+    final Entity rowEntity = getItemAt(rowIndex);
+    if (property instanceof Property.ValueListProperty || property instanceof Property.ForeignKeyProperty) {
+      return rowEntity.getValueAsString(property);
     }
 
-    return value;
+    return rowEntity.getValue(property);
   }
 
   /** {@inheritDoc} */

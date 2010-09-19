@@ -263,6 +263,12 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
     if (property instanceof Property.ValueListProperty) {
       return ((Property.ValueListProperty) property).getCaption(getValue(property));
     }
+    if (property instanceof Property.ForeignKeyProperty && !isLoaded(property.getPropertyID())) {
+      final Entity.Key referencedKey = getReferencedPrimaryKey((Property.ForeignKeyProperty) property);
+      if (referencedKey != null) {
+        return referencedKey.toString();
+      }
+    }
 
     return getFormattedValue(property);
   }

@@ -2202,3 +2202,5 @@
   ItemRandomizer.RandomItem.enabled property added
   EntityDbConnection update and select for update functionality improved
   Entity.getCopy() was now working, setAs() moved from ValueMap to ValueChangeMap
+  DefaultEntityTableModel.getValueAt() returns valueAsString for value list and foreign key properties
+  EntityImpl.getValueAsString() now returns the referenced primary key as string for non-loaded foreign key values
