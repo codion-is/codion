@@ -427,6 +427,7 @@ public class Chinook {
             Properties.primaryKeyProperty(INVOICELINE_INVOICELINEID),
             Properties.foreignKeyProperty(INVOICELINE_INVOICEID_FK, "Invoice", T_INVOICE,
                     Properties.columnProperty(INVOICELINE_INVOICEID))
+                    .setFetchDepth(0)
                     .setNullable(false),
             Properties.foreignKeyProperty(INVOICELINE_TRACKID_FK, "Track", T_TRACK,
                     Properties.columnProperty(INVOICELINE_TRACKID))

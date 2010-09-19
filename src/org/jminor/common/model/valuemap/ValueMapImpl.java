@@ -54,11 +54,6 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V> {
   }
 
   /** {@inheritDoc} */
-  public ValueMap<K, V> getInstance() {
-    return new ValueMapImpl<K, V>();
-  }
-
-  /** {@inheritDoc} */
   public V copyValue(final V value) {
     return value;
   }
@@ -133,26 +128,6 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V> {
   }
 
   /** {@inheritDoc} */
-  public final ValueMap<K, V> getCopy() {
-    final ValueMap<K, V> copy = getInstance();
-    copy.setAs(this);
-
-    return copy;
-  }
-
-  /** {@inheritDoc} */
-  public final void setAs(final ValueMap<K, V> sourceMap) {
-    clear();
-    if (sourceMap != null) {
-      for (final K entryKey : sourceMap.getValueKeys()) {
-        final V value = copyValue(sourceMap.getValue(entryKey));
-        setValue(entryKey, value);
-      }
-    }
-    handleSetAs(sourceMap);
-  }
-
-  /** {@inheritDoc} */
   public final Collection<V> getValues() {
     return Collections.unmodifiableCollection(values.values());
   }
@@ -177,10 +152,4 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V> {
    * Called after the value map has been cleared.
    */
   protected void handleClear() {}
-
-  /**
-   * Called after the value map has been set.
-   * @param sourceMap the source map
-   */
-  protected void handleSetAs(final ValueMap<K, V> sourceMap) {}
 }

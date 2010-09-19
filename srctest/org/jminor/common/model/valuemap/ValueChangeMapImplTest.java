@@ -102,7 +102,7 @@ public class ValueChangeMapImplTest {
   @Test
   public void equals() {
     final ValueChangeMap<String, Integer> mapOne = new ValueChangeMapImpl<String, Integer>();
-    final ValueChangeMap<String, Integer> mapTwo = (ValueChangeMap) mapOne.getInstance();
+    final ValueChangeMap<String, Integer> mapTwo = mapOne.getInstance();
     mapOne.getValueChangeObserver();
     mapTwo.getValueChangeObserver();
 

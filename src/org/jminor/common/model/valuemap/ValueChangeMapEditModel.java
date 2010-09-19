@@ -81,7 +81,7 @@ public interface ValueChangeMapEditModel<K, V> extends Refreshable {
    * @see #getDefaultValueMap()
    * @see #addValueMapSetListener(java.awt.event.ActionListener)
    */
-  void setValueMap(final ValueMap<K, V> valueMap);
+  void setValueMap(final ValueChangeMap<K, V> valueMap);
 
   /**
    * @param key the key
@@ -112,7 +112,7 @@ public interface ValueChangeMapEditModel<K, V> extends Refreshable {
   /**
    * @return a value map containing the default values
    */
-  ValueMap<K, V> getDefaultValueMap();
+  ValueChangeMap<K, V> getDefaultValueMap();
 
   /**
    * Checks if the value associated with the give key is valid, throws a ValidationException if not

@@ -32,7 +32,7 @@ public class AbstractValueChangeMapEditModelTest {
               }
             }
           }) {
-            public ValueMap<String, Integer> getDefaultValueMap() {
+            public ValueChangeMap<String, Integer> getDefaultValueMap() {
               return new ValueChangeMapImpl<String, Integer>();
             }
           };

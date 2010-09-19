@@ -63,23 +63,6 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueAsStringProvid
   int size();
 
   /**
-   * @return a new ValueMap instance compatible with this instance
-   */
-  ValueMap<K, V> getInstance();
-
-  /**
-   * @return a deep copy of this value map
-   */
-  ValueMap<K, V> getCopy();
-
-  /**
-   * After a call to this method this ValueMap contains the same values and original values as the given map.
-   * A null argument to this method clears the destination map of all values and original values.
-   * @param sourceMap the map to copy or null for clearing the destination map
-   */
-  void setAs(final ValueMap<K, V> sourceMap);
-
-  /**
    * Returns a deep copy of the given value, immutable values are simply returned.
    * @param value the value to copy
    * @return a deep copy of the given value, or the same instance in case the value is immutable

@@ -31,7 +31,7 @@ public abstract class AbstractValueChangeMapEditModel<K, V> implements ValueChan
 
   /**
    * Fired when the active value map is set.
-   * @see #setValueMap(ValueMap)
+   * @see #setValueMap(ValueChangeMap)
    */
   private final Event evtValueMapSet = Events.event();
 
@@ -111,7 +111,7 @@ public abstract class AbstractValueChangeMapEditModel<K, V> implements ValueChan
   }
 
   /** {@inheritDoc} */
-  public final void setValueMap(final ValueMap<K, V> valueMap) {
+  public final void setValueMap(final ValueChangeMap<K, V> valueMap) {
     this.valueMap.setAs(valueMap == null ? getDefaultValueMap() : valueMap);
     evtValueMapSet.fire();
   }

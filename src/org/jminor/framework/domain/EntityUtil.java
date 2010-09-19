@@ -311,20 +311,6 @@ public final class EntityUtil {
   }
 
   /**
-   * @param entityKeys the keys to copy
-   * @return deep copies of the given keys
-   */
-  public static List<Entity.Key> copyKeys(final List<Entity.Key> entityKeys) {
-    Util.rejectNullValue(entityKeys, "entityKeys");
-    final List<Entity.Key> copies = new ArrayList<Entity.Key>(entityKeys.size());
-    for (final Entity.Key key : entityKeys) {
-      copies.add((Entity.Key) key.getCopy());
-    }
-
-    return copies;
-  }
-
-  /**
    * @param entityID the entity ID
    * @param referenceEntities entities referenced by the given entity ID
    * @return a Entity instance containing randomized values, based on the property definitions

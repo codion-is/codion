@@ -106,4 +106,21 @@ public interface ValueChangeMap<K, V> extends ValueMap<K, V> {
    * @return an unmodifiable view of the keys mapping the original values in this ValueChangeMap
    */
   Collection<K> getOriginalValueKeys();
+
+  /**
+   * @return a new ValueChangeMap instance compatible with this instance
+   */
+  ValueChangeMap<K, V> getInstance();
+
+  /**
+   * @return a deep copy of this value map
+   */
+  ValueChangeMap<K, V> getCopy();
+
+  /**
+   * After a call to this method this ValueChangeMap contains the same values and original values as the given map.
+   * A null argument to this method clears the destination map of all values and original values.
+   * @param sourceMap the map to copy or null for clearing the destination map
+   */
+  void setAs(final ValueChangeMap<K, V> sourceMap);
 }

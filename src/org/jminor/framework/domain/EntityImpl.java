@@ -6,8 +6,8 @@ package org.jminor.framework.domain;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.ValueChangeEvent;
 import org.jminor.common.model.valuemap.ValueChangeListener;
+import org.jminor.common.model.valuemap.ValueChangeMap;
 import org.jminor.common.model.valuemap.ValueChangeMapImpl;
-import org.jminor.common.model.valuemap.ValueMap;
 import org.jminor.common.model.valuemap.ValueMapImpl;
 
 import java.awt.Color;
@@ -463,7 +463,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
 
   /** {@inheritDoc} */
   @Override
-  protected void handleSetAs(final ValueMap<String, Object> sourceMap) {
+  protected void handleSetAs(final ValueChangeMap<String, Object> sourceMap) {
     super.handleSetAs(sourceMap);
     primaryKey = null;
     toString = null;
@@ -848,14 +848,6 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
       }
 
       return stringBuilder.toString();
-    }
-
-    /**
-     * @return an Key instance with the entityID of this key
-     */
-    @Override
-    public Key getInstance() {
-      return new KeyImpl(definition);
     }
 
     /** {@inheritDoc} */

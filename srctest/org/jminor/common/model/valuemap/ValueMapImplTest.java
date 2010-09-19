@@ -6,8 +6,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
-import java.util.Collection;
-
 /**
  * User: Björn Darri
  * Date: 24.7.2010
@@ -39,31 +37,5 @@ public class ValueMapImplTest {
     map.clear();
     assertFalse(map.containsValue(key));
     assertEquals(0, map.size());
-
-    map.setValue(key, key);
-    final ValueMap<String, Object> mapCopy = map.getCopy();
-    assertEquals(map, mapCopy);
-    assertEquals(map.hashCode(), mapCopy.hashCode());
-
-    final String keyTwo = "key2";
-    mapCopy.setValue(keyTwo, keyTwo);
-    assertEquals(2, mapCopy.size());
-    assertFalse(map.equals(mapCopy));
-
-    final Collection<Object> values = mapCopy.getValues();
-    assertTrue(values.contains(key));
-    assertTrue(values.contains(keyTwo));
-
-    final Collection<String> keys = mapCopy.getValueKeys();
-    assertTrue(keys.contains(key));
-    assertTrue(keys.contains(keyTwo));
-
-    map.setAs(mapCopy);
-    assertEquals(map, mapCopy);
-    mapCopy.setValue(keyTwo, "newKey");
-    assertFalse(map.equals(mapCopy));
-
-    final ValueMap<String, Object> newMap = map.getInstance();
-    assertEquals(0, newMap.size());
   }
 }

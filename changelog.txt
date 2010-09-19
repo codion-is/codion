@@ -2201,3 +2201,4 @@
   AbstractValueLink.translateModelValue() removed
   ItemRandomizer.RandomItem.enabled property added
   EntityDbConnection update and select for update functionality improved
+  Entity.getCopy() was now working, setAs() moved from ValueMap to ValueChangeMap

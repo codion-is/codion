@@ -59,9 +59,37 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
   }
 
   /** {@inheritDoc} */
-  @Override
   public ValueChangeMap<K, V> getInstance() {
     return new ValueChangeMapImpl<K, V>();
+  }
+
+  /** {@inheritDoc} */
+  public final ValueChangeMap<K, V> getCopy() {
+    final ValueChangeMap<K, V> copy = getInstance();
+    copy.setAs(this);
+
+    return copy;
+  }
+
+  /** {@inheritDoc} */
+  public final void setAs(final ValueChangeMap<K, V> sourceMap) {
+    clear();
+    if (sourceMap != null) {
+      for (final K entryKey : sourceMap.getValueKeys()) {
+        final V value = copyValue(sourceMap.getValue(entryKey));
+        initializeValue(entryKey, value);
+      }
+      if (sourceMap.isModified()) {
+        if (originalValues == null) {
+          originalValues = new HashMap<K, V>();
+        }
+        for (final K entryKey : sourceMap.getOriginalValueKeys()) {
+          originalValues.put(entryKey, copyValue(sourceMap.getOriginalValue(entryKey)));
+        }
+      }
+    }
+
+    handleSetAs(sourceMap);
   }
 
   /** {@inheritDoc} */
@@ -97,7 +125,7 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
 
   /** {@inheritDoc} */
   public final ValueChangeMap<K, V> getOriginalCopy() {
-    final ValueChangeMap<K, V> copy = (ValueChangeMap<K, V>) getCopy();
+    final ValueChangeMap<K, V> copy = getCopy();
     copy.revertAll();
 
     return copy;
@@ -198,20 +226,11 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
     }
   }
 
-  @Override
-  protected void handleSetAs(final ValueMap<K, V> sourceMap) {
-    if (sourceMap instanceof ValueChangeMap) {
-      final ValueChangeMap<K, V> sourceChangeMap = (ValueChangeMap<K, V>) sourceMap;
-      if (sourceChangeMap.isModified()) {
-        if (originalValues == null) {
-          originalValues = new HashMap<K, V>();
-        }
-        for (final K entryKey : sourceChangeMap.getOriginalValueKeys()) {
-          originalValues.put(entryKey, copyValue(sourceChangeMap.getOriginalValue(entryKey)));
-        }
-      }
-    }
-  }
+  /**
+   * Called after the value map has been set.
+   * @param sourceMap the source map
+   */
+  protected void handleSetAs(final ValueChangeMap<K, V> sourceMap) {}
 
   private void updateModifiedState(final K key, final V value, final V previousValue) {
     final boolean modified = isModified(key);
