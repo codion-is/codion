@@ -8,13 +8,14 @@ import org.jminor.common.model.LoadTest;
 import org.jminor.common.model.User;
 import org.jminor.common.ui.LoadTestPanel;
 import org.jminor.framework.Configuration;
-import org.jminor.framework.client.model.DefaultEntityApplicationModel;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.model.reporting.EntityReportUtil;
 import org.jminor.framework.db.provider.EntityDbProviderFactory;
+import org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel;
 import org.jminor.framework.demos.chinook.domain.Chinook;
+import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.plugins.jasperreports.model.JasperReportsWrapper;
 import org.jminor.framework.tools.testing.EntityLoadTestModel;
@@ -23,8 +24,37 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
 public final class ChinookLoadTest extends EntityLoadTestModel {
+
+  private static final LoadTest.UsageScenario UPDATE_TOTALS = new AbstractEntityUsageScenario("updateTotals") {
+    @Override
+    protected void performScenario(final EntityApplicationModel application) throws ScenarioException {
+      try {
+        final EntityModel customerModel = application.getMainApplicationModel(Chinook.T_CUSTOMER);
+        customerModel.getTableModel().refresh();
+        selectRandomRows(customerModel.getTableModel(), RANDOM.nextInt(6) + 2);
+        final EntityModel invoiceModel = customerModel.getDetailModel(Chinook.T_INVOICE);
+        selectRandomRows(invoiceModel.getTableModel(), RANDOM.nextInt(6) + 2);
+        final EntityTableModel invoiceLineTableModel = invoiceModel.getDetailModel(Chinook.T_INVOICELINE).getTableModel();
+        final List<Entity> invoiceLines = invoiceLineTableModel.getAllItems();
+        EntityUtil.setPropertyValue(Chinook.INVOICELINE_QUANTITY, RANDOM.nextInt(4) + 1, invoiceLines);
+
+        invoiceLineTableModel.update(invoiceLines);
+
+        ((ChinookAppPanel.ChinookApplicationModel) application).updateInvoiceTotals();
+      }
+      catch (Exception e) {
+        throw new ScenarioException(e);
+      }
+    }
+
+    @Override
+    public int getDefaultWeight() {
+      return 1;
+    }
+  };
 
   private static final LoadTest.UsageScenario VIEW_GENRE = new AbstractEntityUsageScenario("viewGenre") {
     @Override
@@ -40,6 +70,11 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
       catch (Exception e) {
         throw new ScenarioException(e);
       }
+    }
+
+    @Override
+    public int getDefaultWeight() {
+      return 10;
     }
   };
 
@@ -63,6 +98,11 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
         throw new ScenarioException(e);
       }
     }
+
+    @Override
+    public int getDefaultWeight() {
+      return 2;
+    }
   };
 
   private static final UsageScenario VIEW_INVOICE = new AbstractEntityUsageScenario("viewInvoice") {
@@ -78,6 +118,11 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
       catch (Exception e) {
         throw new ScenarioException(e);
       }
+    }
+
+    @Override
+    public int getDefaultWeight() {
+      return 10;
     }
   };
 
@@ -95,21 +140,21 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
         throw new ScenarioException(e);
       }
     }
+
+    @Override
+    public int getDefaultWeight() {
+      return 10;
+    }
   };
 
   public ChinookLoadTest() {
-    super(User.UNIT_TEST_USER, VIEW_GENRE, VIEW_CUSTOMER_REPORT, VIEW_INVOICE, VIEW_ALBUM);
+    super(User.UNIT_TEST_USER, VIEW_GENRE, VIEW_CUSTOMER_REPORT, VIEW_INVOICE, VIEW_ALBUM, UPDATE_TOTALS);
   }
 
   @Override
   protected EntityApplicationModel initializeApplication() throws CancelException {
-    final EntityApplicationModel appModel = new DefaultEntityApplicationModel(
-            EntityDbProviderFactory.createEntityDbProvider(getUser(), ChinookLoadTest.class.getSimpleName())) {
-      @Override
-      protected void loadDomainModel() {
-        Chinook.init();
-      }
-    };
+    final EntityApplicationModel appModel = new ChinookAppPanel.ChinookApplicationModel(
+            EntityDbProviderFactory.createEntityDbProvider(getUser(), ChinookLoadTest.class.getSimpleName()));
     /* ARTIST
     *   ALBUM
     *     TRACK

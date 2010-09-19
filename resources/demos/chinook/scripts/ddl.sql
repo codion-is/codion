@@ -91,7 +91,7 @@ CREATE TABLE Chinook.Invoice
     BillingState VARCHAR(40) ,
     BillingCountry VARCHAR(40) ,
     BillingPostalCode VARCHAR(10) ,
-    Total DOUBLE, --NOT NULL,
+    Total DECIMAL(12, 2), --NOT NULL,
     CONSTRAINT PK_Invoice PRIMARY KEY (InvoiceId)
 );
 

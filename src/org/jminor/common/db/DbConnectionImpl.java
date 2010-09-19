@@ -4,6 +4,7 @@
 package org.jminor.common.db;
 
 import org.jminor.common.db.dbms.Database;
+import org.jminor.common.db.dbms.DatabaseProvider;
 import org.jminor.common.db.exception.DbException;
 import org.jminor.common.model.LogEntry;
 import org.jminor.common.model.MethodLogger;
@@ -462,6 +463,32 @@ public class DbConnectionImpl implements DbConnection {
       }
       catch (SQLException e) {/**/}
       methodLogger.logExit(EXECUTE, exception, null);
+    }
+  }
+
+  /** {@inheritDoc} */
+  public List<Object> executeFunction(final String functionID, final List<Object> arguments) throws DbException {
+    if (isTransactionOpen()) {
+      throw new DbException("Can not execute a function within an open transaction");
+    }
+    final List<Object> returnArguments = DatabaseProvider.getFunction(functionID).execute(this, arguments);
+    if (isTransactionOpen()) {
+      rollbackTransaction();
+      throw new DbException("Function with ID: " + functionID + " did not end the transaction");
+    }
+
+    return returnArguments;
+  }
+
+  /** {@inheritDoc} */
+  public void executeProcedure(final String procedureID, final List<Object> arguments) throws DbException {
+    if (isTransactionOpen()) {
+      throw new DbException("Can not execute a procedure within an open transaction");
+    }
+    DatabaseProvider.getProcedure(procedureID).execute(this, arguments);
+    if (isTransactionOpen()) {
+      rollbackTransaction();
+      throw new DbException("Procedure with ID: " + procedureID + " did not end the transaction");
     }
   }
 

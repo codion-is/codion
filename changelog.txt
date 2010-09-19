@@ -2191,3 +2191,13 @@
   EntityDbConnection now logs the result packing time and row count
   EntityDbConnection result packer logging improved a bit
   EntityEditModel.setPersistValueOnClear() added
+  EntityImpl now rounds double values before setting them if maximumFractionDigits is specified
+  Operation, AbstractOperation, Procedure and Function added
+  DatabaseProvider.add/Get/Function/Procedure() added
+  EntityDb.executeProcedure() added
+  EntityDbRemote.executeProcedure() added
+  EntityDb.exececuteStatement() removed
+  TextValueLink.format field removed
+  AbstractValueLink.translateModelValue() removed
+  ItemRandomizer.RandomItem.enabled property added
+  EntityDbConnection update and select for update functionality improved

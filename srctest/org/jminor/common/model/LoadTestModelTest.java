@@ -9,6 +9,7 @@ import java.util.Random;
 public class LoadTestModelTest {
 
   private static final User USER = new User("hello", "world");
+
   private static final LoadTestModel.UsageScenario SCENARIO = new LoadTestModel.AbstractUsageScenario("test") {
     final Random random = new Random();
     @Override
@@ -17,6 +18,11 @@ public class LoadTestModelTest {
         throw new LoadTestModel.ScenarioException();
       }
     }
+  };
+
+  private static final LoadTestModel.UsageScenario SCENARIO_II = new LoadTestModel.AbstractUsageScenario("testII") {
+    @Override
+    protected void performScenario(final Object application) throws LoadTestModel.ScenarioException {}
   };
 
   @Test
@@ -112,6 +118,8 @@ public class LoadTestModelTest {
     model.setUser(USER);
     assertEquals(USER, model.getUser());
     assertNotNull(model.getScenarioChooser());
+    model.setWeight(SCENARIO.getName(), 2);
+    model.setScenarioEnabled(SCENARIO_II.getName(), false);
     model.addApplicationBatch();
     Thread.sleep(500);
     model.setPaused(true);
@@ -119,6 +127,7 @@ public class LoadTestModelTest {
     model.setPaused(false);
     assertFalse(model.isPaused());
     assertEquals(5, model.getApplicationCount());
+    assertEquals(0, SCENARIO_II.getTotalRunCount());
     assertTrue(SCENARIO.getSuccessfulRunCount() > 0);
     assertTrue(SCENARIO.getUnsuccessfulRunCount() > 0);
     assertEquals(SCENARIO.getSuccessfulRunCount() + SCENARIO.getUnsuccessfulRunCount(), SCENARIO.getTotalRunCount());
@@ -135,7 +144,7 @@ public class LoadTestModelTest {
 
     public TestLoadTestModel(final User user, final int maximumThinkTime, final int loginDelayFactor, final int applicationBatchSize,
                       final int warningTime) {
-      super(user, Arrays.asList(SCENARIO), maximumThinkTime, loginDelayFactor, applicationBatchSize, warningTime);
+      super(user, Arrays.asList(SCENARIO, SCENARIO_II), maximumThinkTime, loginDelayFactor, applicationBatchSize, warningTime);
     }
     @Override
     protected Object initializeApplication() throws CancelException {

@@ -70,6 +70,9 @@ public abstract class EntityLoadTestModel extends LoadTestModel<EntityApplicatio
    * @param count the number of rows to select
    */
   public static void selectRandomRows(final EntityTableModel tableModel, final int count) {
+    if (tableModel.getRowCount() == 0) {
+      return;
+    }
     if (tableModel.getRowCount() < count) {
       tableModel.selectAll();
     }

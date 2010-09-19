@@ -56,7 +56,6 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
-import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -519,7 +518,7 @@ public final class EntityUiUtil {
     Util.rejectNullValue(linkType, "linkType");
     final JTextField textField = initTextField(property, editModel, enabledState, formatMaskString, valueContainsLiteralCharacters);
     final String propertyID = property.getPropertyID();
-    TextValueLink<String> valueLink;
+    final TextValueLink<String> valueLink;
     if (property.isString()) {
       if (formatMaskString != null) {
         valueLink = new FormattedValueLink<String>((JFormattedTextField) textField, editModel, propertyID, null, immediateUpdate, linkType);
@@ -529,10 +528,10 @@ public final class EntityUiUtil {
       }
     }
     else if (property.isInteger()) {
-      valueLink = new IntValueLink<String>((IntField) textField, editModel, propertyID, immediateUpdate, linkType, (NumberFormat) property.getFormat());
+      valueLink = new IntValueLink<String>((IntField) textField, editModel, propertyID, immediateUpdate, linkType);
     }
     else if (property.isDouble()) {
-      valueLink = new DoubleValueLink<String>((DoubleField) textField, editModel, propertyID, immediateUpdate, linkType, (NumberFormat) property.getFormat());
+      valueLink = new DoubleValueLink<String>((DoubleField) textField, editModel, propertyID, immediateUpdate, linkType);
     }
     else if (property.isDate()) {
       valueLink = new DateValueLink<String>((JFormattedTextField) textField, editModel, propertyID, linkType, dateFormat, false);

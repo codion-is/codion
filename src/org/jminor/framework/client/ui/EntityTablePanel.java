@@ -1572,7 +1572,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
   private static void populateEntityMenu(final JComponent rootMenu, final Entity entity, final EntityDbProvider dbProvider) {
     populatePrimaryKeyMenu(rootMenu, entity, new ArrayList<Property.PrimaryKeyProperty>(Entities.getPrimaryKeyProperties(entity.getEntityID())));
     populateForeignKeyMenu(rootMenu, entity, dbProvider, new ArrayList<Property.ForeignKeyProperty>(Entities.getForeignKeyProperties(entity.getEntityID())));
-    populateValueMenu(rootMenu, entity, new ArrayList<Property>(Entities.getProperties(entity.getEntityID(), false)));
+    populateValueMenu(rootMenu, entity, new ArrayList<Property>(Entities.getProperties(entity.getEntityID(), true)));
   }
 
   private static void populatePrimaryKeyMenu(final JComponent rootMenu, final Entity entity, final List<Property.PrimaryKeyProperty> primaryKeyProperties) {

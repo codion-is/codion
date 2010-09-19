@@ -178,6 +178,16 @@ public abstract class LoadTestModel<T> implements LoadTest {
   }
 
   /** {@inheritDoc} */
+  public boolean isScenarioEnabled(final String scenarioName) {
+    return scenarioChooser.isItemEnabled(getUsageScenario(scenarioName));
+  }
+
+  /** {@inheritDoc} */
+  public void setScenarioEnabled(final String scenarioName, final boolean value) {
+    scenarioChooser.setItemEnabled(getUsageScenario(scenarioName), value);
+  }
+
+  /** {@inheritDoc} */
   public final ItemRandomizer<UsageScenario> getScenarioChooser() {
     return scenarioChooser;
   }
@@ -516,7 +526,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
           return;
         }
         counter.updateRequestsPerSecond();
-        if (collectChartData) {
+        if (collectChartData && !paused) {
           updateChartData();
         }
       }

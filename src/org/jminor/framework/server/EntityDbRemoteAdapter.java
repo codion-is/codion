@@ -186,18 +186,18 @@ final class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityD
   }
 
   /** {@inheritDoc} */
-  public void executeStatement(final String statement) throws DbException, RemoteException {
-    loggingEntityDbProxy.executeStatement(statement);
-  }
-
-  /** {@inheritDoc} */
   public List<List> selectRows(final String statement, final int fetchCount) throws DbException, RemoteException {
     return loggingEntityDbProxy.selectRows(statement, fetchCount);
   }
 
   /** {@inheritDoc} */
-  public Object executeStatement(final String statement, final int outParameterType) throws DbException, RemoteException {
-    return loggingEntityDbProxy.executeStatement(statement, outParameterType);
+  public void executeProcedure(final String procedureID, final List<Object> arguments) throws DbException {
+    loggingEntityDbProxy.executeProcedure(procedureID, arguments);
+  }
+
+  /** {@inheritDoc} */
+  public List<Object> executeFunction(final String functionID, final List<Object> arguments) throws DbException {
+    return loggingEntityDbProxy.executeFunction(functionID, arguments);
   }
 
   /** {@inheritDoc} */

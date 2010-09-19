@@ -648,22 +648,29 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
     if (property instanceof Property.PrimaryKeyProperty) {
       this.primaryKey = null;
     }
-
     validateValue(this, property, value);
     if (validateType) {
       validateType(property, value);
     }
 
+    Object actualValue = value;
+    if (value != null && property.isDouble()) {
+      final int maximumFractionDigits = property.getMaximumFractionDigits();
+      if (maximumFractionDigits > 0) {
+        actualValue = Util.roundDouble((Double) value, maximumFractionDigits);
+      }
+    }
+
     toString = null;
-    if (property instanceof Property.ForeignKeyProperty && (value == null || value instanceof Entity)) {
+    if (property instanceof Property.ForeignKeyProperty && (actualValue == null || actualValue instanceof Entity)) {
       final Property.ForeignKeyProperty fkProperty = (Property.ForeignKeyProperty) property;
       final Collection<Property.PrimaryKeyProperty> referenceEntityPKProperties =
               entityDefinitions.get(fkProperty.getReferencedEntityID()).getPrimaryKeyProperties();
-      propagateForeignKeyValues((Property.ForeignKeyProperty) property, (Entity) value,
+      propagateForeignKeyValues((Property.ForeignKeyProperty) property, (Entity) actualValue,
               referenceEntityPKProperties, false, entityDefinitions);
     }
 
-    return super.setValue(property.getPropertyID(), value);
+    return super.setValue(property.getPropertyID(), actualValue);
   }
 
   private void writeObject(final ObjectOutputStream stream) throws IOException {

@@ -37,6 +37,18 @@ public interface LoadTest {
   void setWeight(final String scenarioName, final int weight);
 
   /**
+   * @param scenarioName the scenario name
+   * @return true if the scenario is enabled
+   */
+  boolean isScenarioEnabled(final String scenarioName);
+
+  /**
+   * @param scenarioName the scenario name
+   * @param value true if the scenario should be enabled
+   */
+  void setScenarioEnabled(final String scenarioName, final boolean value);
+
+  /**
    * @return the usage scenarios used by this load test;
    */
   Collection<String> getUsageScenarios();

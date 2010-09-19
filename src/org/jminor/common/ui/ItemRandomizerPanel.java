@@ -11,7 +11,9 @@ import org.jminor.common.model.Util;
 import org.jminor.common.ui.control.AbstractValueLink;
 import org.jminor.common.ui.control.LinkType;
 
+import javax.swing.ButtonModel;
 import javax.swing.DefaultListModel;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -27,6 +29,8 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -131,11 +135,29 @@ public final class ItemRandomizerPanel<T> extends JPanel {
     final JSpinner spinner = new JSpinner(createWeightSpinnerModel(item.getItem()));
     ((JSpinner.DefaultEditor) spinner.getEditor()).getTextField().setColumns(3);
     spinner.setToolTipText(item.getItem().toString());
-    
+
     panel.add(new JLabel(item.getItem().toString()));
     panel.add(spinner);
 
-    return panel;
+    final JCheckBox chkEnabled = createEnabledCheckBox(item.getItem());
+
+    final JPanel base = new JPanel(new BorderLayout(5, 5));
+    base.add(panel, BorderLayout.CENTER);
+    base.add(chkEnabled, BorderLayout.EAST);
+
+    return base;
+  }
+
+  /**
+   * Returns a JCheckBox for controlling the enabled state of the given item.
+   * @param item the item
+   * @return an enabling JCheckBox
+   */
+  private JCheckBox createEnabledCheckBox(final T item) {
+    final JCheckBox enabledBox = new JCheckBox("");
+    new EnabledValueLink(enabledBox.getModel(), item);
+
+    return enabledBox;
   }
 
   /**
@@ -145,13 +167,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
    */
   private SpinnerModel createWeightSpinnerModel(final T item) {
     final SpinnerNumberModel spinnerModel = new SpinnerNumberModel(model.getWeight(item), 0, Integer.MAX_VALUE, 1);
-    final AbstractValueLink<ItemRandomizerPanel, Integer> valueLink = new WeightValueLink(spinnerModel, item);
-    spinnerModel.addChangeListener(new ChangeListener() {
-      /** {@inheritDoc} */
-      public void stateChanged(final ChangeEvent e) {
-        valueLink.updateModel();
-      }
-    });
+    new WeightValueLink(spinnerModel, item);
 
     return spinnerModel;
   }
@@ -166,6 +182,12 @@ public final class ItemRandomizerPanel<T> extends JPanel {
       this.spinnerModel = spinnerModel;
       this.item = item;
       updateUI();
+      spinnerModel.addChangeListener(new ChangeListener() {
+        /** {@inheritDoc} */
+        public void stateChanged(final ChangeEvent e) {
+          updateModel();
+        }
+      });
     }
 
     /** {@inheritDoc} */
@@ -190,6 +212,49 @@ public final class ItemRandomizerPanel<T> extends JPanel {
     @Override
     protected void setUIValue(final Integer value) {
       spinnerModel.setValue(value);
+    }
+  }
+
+  private final class EnabledValueLink extends AbstractValueLink<ItemRandomizerPanel, Boolean> {
+
+    private final ButtonModel buttonModel;
+    private final T item;
+
+    private EnabledValueLink(final ButtonModel buttonModel, final T item) {
+      super(ItemRandomizerPanel.this, model.getEnabledObserver(), LinkType.READ_WRITE);
+      this.buttonModel = buttonModel;
+      this.item = item;
+      updateUI();
+      this.buttonModel.addItemListener(new ItemListener() {
+        /** {@inheritDoc} */
+        public void itemStateChanged(final ItemEvent e) {
+          updateModel();
+        }
+      });
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Boolean getModelValue() {
+      return getModel().isItemEnabled(item);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setModelValue(final Boolean value) {
+      getModel().setItemEnabled(item, value);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    protected Boolean getUIValue() {
+      return buttonModel.isSelected();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    protected void setUIValue(final Boolean value) {
+      buttonModel.setSelected(value);
     }
   }
 }

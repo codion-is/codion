@@ -190,6 +190,10 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
     PreparedStatement statement = null;
     try {
       final Map<String, Collection<Entity>> hashedEntities = EntityUtil.hashByEntityID(entities);
+      if (optimisticLocking) {
+        lockAndCheckForUpdate(hashedEntities);
+      }
+
       final List<Object> statementValues = new ArrayList<Object>();
       final List<Property.ColumnProperty> statementProperties = new ArrayList<Property.ColumnProperty>();
       for (final Map.Entry<String, Collection<Entity>> entry : hashedEntities.entrySet()) {
@@ -203,9 +207,6 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
           statementProperties.addAll(primaryKeyProperties);
           for (final Property.PrimaryKeyProperty primaryKeyProperty : primaryKeyProperties) {
             statementValues.add(entity.getOriginalValue(primaryKeyProperty.getPropertyID()));
-          }
-          if (optimisticLocking) {
-            lockAndCheckForUpdate(entity);
           }
           statement = getConnection().prepareStatement(updateQuery);
           executePreparedUpdate(statement, updateQuery, statementValues, statementProperties);
@@ -428,46 +429,6 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
   }
 
   /** {@inheritDoc} */
-  public void executeStatement(final String statement) throws DbException {
-    try {
-      execute(statement);
-      if (!isTransactionOpen()) {
-        commit();
-      }
-    }
-    catch (SQLException e) {
-      if (!isTransactionOpen()) {
-        rollbackQuietly();
-      }
-      if (getMethodLogger().isEnabled()) {
-        LOG.debug(createLogMessage(getUser(), statement, null, e, null));
-      }
-      throw new DbException(getDatabase().getErrorMessage(e));
-    }
-  }
-
-  /** {@inheritDoc} */
-  public Object executeStatement(final String statement, final int outParameterType) throws DbException {
-    try {
-      final Object result = executeCallableStatement(statement, outParameterType);
-      if (!isTransactionOpen()) {
-        commit();
-      }
-
-      return result;
-    }
-    catch (SQLException e) {
-      if (!isTransactionOpen()) {
-        rollbackQuietly();
-      }
-      if (getMethodLogger().isEnabled()) {
-        LOG.debug(createLogMessage(getUser(), statement, null, e, null));
-      }
-      throw new DbException(getDatabase().getErrorMessage(e));
-    }
-  }
-
-  /** {@inheritDoc} */
   public ReportResult fillReport(final ReportWrapper reportWrapper) throws ReportException {
     return reportWrapper.fillReport(getConnection());
   }
@@ -554,20 +515,28 @@ public final class EntityDbConnection extends DbConnectionImpl implements Entity
   }
 
   /**
-   * Selects the given entity for update and checks it it has been modified by comparing
+   * Selects the given entities for update and checks if they have been modified by comparing
    * the property values to the current values in the database.
    * The calling method is responsible for releasing the select for update lock.
-   * @param entity the entity to check
+   * @param entities the entities to check, hashed by entityID
    * @throws DbException in case of a database exception
-   * @throws RecordNotFoundException in case the entity has been deleted
-   * @throws RecordModifiedException in case the entity has been modified
+   * @throws RecordNotFoundException in case a entity has been deleted
+   * @throws RecordModifiedException in case a entity has been modified
    */
-  private void lockAndCheckForUpdate(final Entity entity) throws DbException {
-    final Entity.Key originalKey = entity.getOriginalPrimaryKey();
-    final Entity current = selectSingle(EntityCriteriaUtil.selectCriteria(originalKey).setSelectForUpdate(true).setForeignKeyFetchDepthLimit(0));
-    for (final String propertyID : current.getValueKeys()) {
-      if (!entity.containsValue(propertyID) || !Util.equal(current.getValue(propertyID), entity.getOriginalValue(propertyID))) {
-        throw new RecordModifiedException(entity, current);
+  private void lockAndCheckForUpdate(final Map<String, Collection<Entity>> entities) throws DbException {
+    for (final Map.Entry<String, Collection<Entity>> entry : entities.entrySet()) {
+      final List<Entity.Key> originalKeys = EntityUtil.getPrimaryKeys(entry.getValue(), true);
+      final EntitySelectCriteria selectForUpdateCriteria = EntityCriteriaUtil.selectCriteria(originalKeys);
+      selectForUpdateCriteria.setSelectForUpdate(true).setForeignKeyFetchDepthLimit(0);
+      final List<Entity> currentValues = doSelectMany(selectForUpdateCriteria, 0);
+      final Map<Entity.Key, Entity> hashedEntites = EntityUtil.hashByPrimaryKey(currentValues);
+      for (final Entity entity : entry.getValue()) {
+        final Entity current = hashedEntites.get(entity.getOriginalPrimaryKey());
+        for (final String propertyID : current.getValueKeys()) {
+          if (!entity.containsValue(propertyID) || !Util.equal(current.getValue(propertyID), entity.getOriginalValue(propertyID))) {
+            throw new RecordModifiedException(entity, current);
+          }
+        }
       }
     }
   }

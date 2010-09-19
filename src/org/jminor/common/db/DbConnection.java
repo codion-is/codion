@@ -134,6 +134,23 @@ public interface DbConnection extends PoolableConnection {
   void execute(final List<String> statements) throws SQLException;
 
   /**
+   * Executes the function with the given id
+   * @param functionID the function ID
+   * @param arguments the arguments, if any
+   * @return the procedure return arguments, if any
+   * @throws DbException in case anyhing goes wrong during the execution
+   */
+  List<Object> executeFunction(final String functionID, final List<Object> arguments) throws DbException;
+
+  /**
+   * Executes the procedure with the given id
+   * @param procedureID the procedure ID
+   * @param arguments the arguments, if any
+   * @throws DbException in case anyhing goes wrong during the execution
+   */
+  void executeProcedure(final String procedureID, final List<Object> arguments) throws DbException;
+
+  /**
    * @return the log entries
    */
   List<LogEntry> getLogEntries();

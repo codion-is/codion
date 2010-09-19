@@ -18,6 +18,11 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
   private final Event evtWeightsChanged = Events.event();
 
   /**
+   * An Event fired when the enabled status of an item has changed
+   */
+  private final Event evtEnabledChanged = Events.event();
+
+  /**
    * The items contained in this model
    */
   private final List<ItemRandomizer.RandomItem<T>> items = new ArrayList<ItemRandomizer.RandomItem<T>>();
@@ -71,6 +76,17 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
   }
 
   /** {@inheritDoc} */
+  public boolean isItemEnabled(final T item) {
+    return getRandomItem(item).isEnabled();
+  }
+
+  /** {@inheritDoc} */
+  public void setItemEnabled(final T item, final boolean value) {
+    getRandomItem(item).setEnabled(value);
+    evtEnabledChanged.fire();
+  }
+
+  /** {@inheritDoc} */
   public final void addItem(final T item) {
     addItem(item, 0);
   }
@@ -88,6 +104,11 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
   /** {@inheritDoc} */
   public final EventObserver getWeightsObserver() {
     return evtWeightsChanged.getObserver();
+  }
+
+  /** {@inheritDoc} */
+  public final EventObserver getEnabledObserver() {
+    return evtEnabledChanged.getObserver();
   }
 
   /** {@inheritDoc} */
@@ -172,6 +193,7 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
 
     private final T item;
     private int weight = 0;
+    private boolean enabled = true;
 
     /**
      * Instantiates a new RandomItem
@@ -188,7 +210,17 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
 
     /** {@inheritDoc} */
     public int getWeight() {
-      return weight;
+      return enabled ? weight : 0;
+    }
+
+    /** {@inheritDoc} */
+    public boolean isEnabled() {
+      return enabled;
+    }
+
+    /** {@inheritDoc} */
+    public void setEnabled(final boolean value) {
+      this.enabled = value;
     }
 
     /** {@inheritDoc} */

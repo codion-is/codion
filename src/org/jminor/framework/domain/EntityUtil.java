@@ -63,10 +63,19 @@ public final class EntityUtil {
    * @return a List containing the primary keys of the given entities
    */
   public static List<Entity.Key> getPrimaryKeys(final Collection<Entity> entities) {
+    return getPrimaryKeys(entities, false);
+  }
+
+  /**
+   * @param entities the entities
+   * @param originalValue if true then the original value of the primary key is used
+   * @return a List containing the primary keys of the given entities
+   */
+  public static List<Entity.Key> getPrimaryKeys(final Collection<Entity> entities, final boolean originalValue) {
     Util.rejectNullValue(entities, ENTITIES_PARAM);
     final List<Entity.Key> keys = new ArrayList<Entity.Key>(entities.size());
     for (final Entity entity : entities) {
-      keys.add(entity.getPrimaryKey());
+      keys.add(originalValue ? entity.getOriginalPrimaryKey() : entity.getPrimaryKey());
     }
 
     return keys;

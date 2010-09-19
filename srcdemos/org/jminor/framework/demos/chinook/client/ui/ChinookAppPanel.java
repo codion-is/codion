@@ -6,6 +6,9 @@ package org.jminor.framework.demos.chinook.client.ui;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.User;
 import org.jminor.common.ui.UiUtil;
+import org.jminor.common.ui.control.ControlSet;
+import org.jminor.common.ui.control.Controls;
+import org.jminor.common.db.exception.DbException;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.DefaultEntityApplicationModel;
 import org.jminor.framework.client.model.EntityApplicationModel;
@@ -120,6 +123,15 @@ public final class ChinookAppPanel extends EntityApplicationPanel {
     return new ChinookApplicationModel(dbProvider);
   }
 
+  @Override
+  protected ControlSet getToolsControlSet() {
+    final ControlSet tools = super.getToolsControlSet();
+    tools.addSeparator();
+    tools.add(Controls.methodControl(getModel(), "updateInvoiceTotals", "Update invoice totals"));
+
+    return tools;
+  }
+
   public static void main(final String[] args) throws CancelException {
     Locale.setDefault(new Locale("EN", "en"));
     Configuration.setValue(Configuration.TOOLBAR_BUTTONS, true);
@@ -129,9 +141,14 @@ public final class ChinookAppPanel extends EntityApplicationPanel {
     new ChinookAppPanel().startApplication("Chinook", null, false, UiUtil.getScreenSizeRatio(0.6), new User("scott", "tiger"));
   }
 
-  private static final class ChinookApplicationModel extends DefaultEntityApplicationModel {
-    private ChinookApplicationModel(final EntityDbProvider dbProvider) {
+  public static final class ChinookApplicationModel extends DefaultEntityApplicationModel {
+
+    public ChinookApplicationModel(final EntityDbProvider dbProvider) {
       super(dbProvider);
+    }
+
+    public void updateInvoiceTotals() throws DbException {
+      getDbProvider().getEntityDb().executeProcedure(Chinook.P_UDPATE_TOTALS, null);
     }
 
     @Override

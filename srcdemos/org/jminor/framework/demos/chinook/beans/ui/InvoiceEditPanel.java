@@ -44,7 +44,7 @@ public class InvoiceEditPanel extends EntityEditPanel {
     txtCountry.setColumns(16);
     final JTextField txtPostalcode = createTextField(INVOICE_BILLINGPOSTALCODE);
     txtPostalcode.setColumns(16);
-    final JTextField txtTotal = createTextField(INVOICE_TOTAL);
+    final JTextField txtTotal = createTextField(INVOICE_TOTAL_SUB);
     txtTotal.setColumns(16);
 
     final JPanel propertyBase = new JPanel(new GridLayout(4, 2, 5, 5));
@@ -55,7 +55,7 @@ public class InvoiceEditPanel extends EntityEditPanel {
     propertyBase.add(createPropertyPanel(INVOICE_BILLINGSTATE));
     propertyBase.add(createPropertyPanel(INVOICE_BILLINGCOUNTRY));
     propertyBase.add(createPropertyPanel(INVOICE_BILLINGPOSTALCODE));
-    propertyBase.add(createPropertyPanel(INVOICE_TOTAL));
+    propertyBase.add(createPropertyPanel(INVOICE_TOTAL_SUB));
 
     final JPanel centerBase = new JPanel(new BorderLayout(5, 5));
     centerBase.add(propertyBase, BorderLayout.CENTER);

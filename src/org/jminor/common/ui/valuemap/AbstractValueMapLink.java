@@ -34,23 +34,13 @@ public abstract class AbstractValueMapLink<K, V> extends AbstractValueLink<Value
   /** {@inheritDoc} */
   @Override
   public final V getModelValue() {
-    return isModelValueNull() ? null : translateModelValue(getEditModel().getValue(key));
+    return isModelValueNull() ? null : getEditModel().getValue(key);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void setModelValue(final V value) {
     getEditModel().setValue(key, value);
-  }
-
-  /**
-   * Translates the value from the model before it is propagated up through <code>getModelValue()</code>,
-   * by default no translation is performed
-   * @param value the value to translate
-   * @return the translated value
-   */
-  protected V translateModelValue(final V value) {
-    return value;
   }
 
   /**

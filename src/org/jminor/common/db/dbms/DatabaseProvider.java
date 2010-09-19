@@ -3,12 +3,22 @@
  */
 package org.jminor.common.db.dbms;
 
+import org.jminor.common.db.operation.Function;
+import org.jminor.common.db.operation.Operation;
+import org.jminor.common.db.operation.Procedure;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Provides Database implementations based on system settings.
  * @see Database#DATABASE_IMPLEMENTATION_CLASS
  * @see Database#DATABASE_TYPE
  */
 public final class DatabaseProvider {
+
+  private final static Map<String, Operation> operations = Collections.synchronizedMap(new HashMap<String, Operation>());
 
   private DatabaseProvider() {}
 
@@ -66,5 +76,46 @@ public final class DatabaseProvider {
     else {
       throw new IllegalArgumentException("Unknown database type: " + dbType);
     }
+  }
+
+  /**
+   * Adds the given Operation to this repository
+   * @param operation the operation to add
+   * @throws RuntimeException in case an operation with the same ID has already been added
+   */
+  public static void addOperation(final Operation operation) {
+    if (operations.containsKey(operation.getID())) {
+      throw new RuntimeException("Operation already defined: " + operations.get(operation.getID()).getName());
+    }
+
+    operations.put(operation.getID(), operation);
+  }
+
+  /**
+   * @param procedureID the procedure ID
+   * @return the procedure
+   * @throws RuntimeException in case the procedure is not found
+   */
+  public static Procedure getProcedure(final String procedureID) {
+    final Operation operation = operations.get(procedureID);
+    if (operation == null) {
+      throw new RuntimeException("Procedure not found: " + procedureID);
+    }
+
+    return (Procedure) operation;
+  }
+
+  /**
+   * @param functionID the function ID
+   * @return the function
+   * @throws RuntimeException in case the function is not found
+   */
+  public static Function getFunction(final String functionID) {
+    final Operation operation = operations.get(functionID);
+    if (operation == null) {
+      throw new RuntimeException("Function not found: " + functionID);
+    }
+
+    return (Function) operation;
   }
 }

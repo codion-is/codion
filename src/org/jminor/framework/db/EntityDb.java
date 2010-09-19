@@ -65,25 +65,21 @@ public interface EntityDb {
   void commitTransaction();
 
   /**
-   * Executes the given statement.
-   * This method does not handle select statements.
-   * Performs a commit unless a transaction is open.
-   * @param statement the statement to execute
-   * @throws org.jminor.common.db.exception.DbException in case of a database exception
+   * Executes the function with the given id
+   * @param functionID the function ID
+   * @param arguments the arguments, if any
+   * @return the function return arguments
+   * @throws DbException in case anyhing goes wrong during the execution
    */
-  void executeStatement(final String statement) throws DbException;
+  List<Object> executeFunction(final String functionID, final List<Object> arguments) throws DbException;
 
   /**
-   * Executes the given statement.
-   * This method does not handle select statements.
-   * Performs a commit unless a transaction is open.
-   * @param statement the statement to execute
-   * @param outParameterType the type of the output parameter, if any, java.sql.Types.*
-   * Use Types.NULL to indicate no output parameter.
-   * @return the return parameter if any, otherwise null
-   * @throws org.jminor.common.db.exception.DbException in case of a database error
+   * Executes the procedure with the given id
+   * @param procedureID the procedure ID
+   * @param arguments the arguments, if any
+   * @throws DbException in case anyhing goes wrong during the execution
    */
-  Object executeStatement(final String statement, final int outParameterType) throws DbException;
+  void executeProcedure(final String procedureID, final List<Object> arguments) throws DbException;
 
   /**
    * Inserts the given entities, returning a list containing the primary keys of the inserted entities

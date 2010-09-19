@@ -1,12 +1,23 @@
 package org.jminor.framework.demos.chinook.domain;
 
+import org.jminor.common.db.dbms.DatabaseProvider;
+import org.jminor.common.db.DbConnection;
+import org.jminor.common.db.exception.DbException;
+import org.jminor.common.db.operation.AbstractProcedure;
+import org.jminor.common.db.operation.Procedure;
 import org.jminor.common.model.IdSource;
 import org.jminor.common.model.valuemap.StringProvider;
+import org.jminor.framework.db.EntityDb;
+import org.jminor.framework.db.criteria.EntityCriteriaUtil;
+import org.jminor.framework.db.criteria.EntitySelectCriteria;
 import org.jminor.framework.domain.Entities;
+import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Properties;
 import org.jminor.framework.domain.Property;
 
 import java.sql.Types;
+import java.util.List;
 import java.util.Map;
 
 public class Chinook {
@@ -76,6 +87,7 @@ public class Chinook {
   public static final String INVOICE_BILLINGCOUNTRY = "billingcountry";
   public static final String INVOICE_BILLINGPOSTALCODE = "billingpostalcode";
   public static final String INVOICE_TOTAL = "total";
+  public static final String INVOICE_TOTAL_SUB = "total_sub";
   public static final String INVOICE_TOTAL_SUBQUERY = "select sum(unitprice * quantity) from chinook.invoiceline where invoiceid = invoice.invoiceid";
 
   public static final String T_INVOICELINE = "chinook.invoiceline";
@@ -148,7 +160,38 @@ public class Chinook {
             }
           };
 
+  public static final String P_UDPATE_TOTALS = "chinook.update_totals_procedure";
+
+  private static final Procedure UPDATE_TOTALS_PROCEDURE = new AbstractProcedure(P_UDPATE_TOTALS, "Update invoice totals") {
+    public void execute(final DbConnection connection, final List<Object> arguments) throws DbException {
+      final EntityDb entityDb = (EntityDb) connection;
+      try {
+        entityDb.beginTransaction();
+        final EntitySelectCriteria selectCriteria = EntityCriteriaUtil.selectCriteria(T_INVOICE);
+        selectCriteria.setSelectForUpdate(true);
+        selectCriteria.setForeignKeyFetchDepthLimit(0);
+        final List<Entity> invoices = entityDb.selectMany(selectCriteria);
+        for (final Entity invoice : invoices) {
+          invoice.setValue(INVOICE_TOTAL, invoice.getValue(INVOICE_TOTAL_SUB));
+        }
+        final List<Entity> modifiedInvoices = EntityUtil.getModifiedEntities(invoices);
+        if (!modifiedInvoices.isEmpty()) {
+          entityDb.update(modifiedInvoices);
+        }
+        entityDb.commitTransaction();
+      }
+      catch (DbException dbException) {
+        if (entityDb.isTransactionOpen()) {
+          entityDb.rollbackTransaction();
+        }
+        throw dbException;
+      }
+    }
+  };
+
   static {
+    DatabaseProvider.addOperation(UPDATE_TOTALS_PROCEDURE);
+
     Entities.define(T_ALBUM,
             Properties.primaryKeyProperty(ALBUM_ALBUMID),
             Properties.foreignKeyProperty(ALBUM_ARTISTID_FK, "Artist", T_ARTIST,
@@ -368,7 +411,10 @@ public class Chinook {
                     .setMaxLength(40),
             Properties.columnProperty(INVOICE_BILLINGPOSTALCODE, Types.VARCHAR, "Billing postal code")
                     .setMaxLength(10),
-            Properties.subqueryProperty(INVOICE_TOTAL, Types.DOUBLE, "Total", INVOICE_TOTAL_SUBQUERY)
+            Properties.columnProperty(INVOICE_TOTAL, Types.DOUBLE, "Total")
+                    .setMaximumFractionDigits(2)
+                    .setHidden(true),
+            Properties.subqueryProperty(INVOICE_TOTAL_SUB, Types.DOUBLE, "Calculated total", INVOICE_TOTAL_SUBQUERY)
                     .setMaximumFractionDigits(2))
             .setDomainID(DOMAIN_ID)
             .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_INVOICE)

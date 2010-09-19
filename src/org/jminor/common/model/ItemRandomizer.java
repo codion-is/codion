@@ -51,6 +51,11 @@ public interface ItemRandomizer<T> {
   EventObserver getWeightsObserver();
 
   /**
+   * @return an Event which fires each time the enabled status of an item has been changed.
+   */
+  EventObserver getEnabledObserver();
+
+  /**
    * Sets the weight of the given item
    * @param item the item
    * @param weight the value
@@ -96,6 +101,18 @@ public interface ItemRandomizer<T> {
    */
   void decrementWeight(final T item);
 
+  /**
+   * @param item the item
+   * @return true if the item is enabled
+   */
+  boolean isItemEnabled(final T item);
+
+  /**
+   * @param item the item
+   * @param value true if the item should be enabled
+   */
+  void setItemEnabled(final T item, final boolean value);
+
   interface RandomItem<T> extends Serializable {
 
     /**
@@ -117,6 +134,16 @@ public interface ItemRandomizer<T> {
      * @return the random weight assigned to this item
      */
     int getWeight();
+
+    /**
+     * @return true if this item is enabled
+     */
+    boolean isEnabled();
+
+    /**
+     * @param value true if this item should be enabled
+     */
+    void setEnabled(final boolean value);
 
     /**
      * @return the item this random item represents

@@ -127,9 +127,9 @@ public final class H2Database extends AbstractDatabase {
     if (inMemory) {
       String init = ";DB_CLOSE_DELAY=-1";
       if (scriptPath != null) {
-        init += ";INIT=RUNSCRIPT FROM './" + scriptPath + "'";
+        init += ";INIT=RUNSCRIPT FROM '" + scriptPath + "'";
       }
-      final String databaseName = System.getProperty(DATABASE_HOST, "");
+      final String databaseName = System.getProperty(DATABASE_HOST, "h2");
       Util.require(DATABASE_HOST, databaseName);
       final String url = URL_PREFIX + databaseName + init;
       DriverManager.getConnection(url, properties).close();

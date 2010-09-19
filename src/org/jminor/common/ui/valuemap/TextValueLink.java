@@ -13,7 +13,6 @@ import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.text.Format;
 import java.text.ParseException;
 
 /**
@@ -22,7 +21,7 @@ import java.text.ParseException;
 public class TextValueLink<K> extends AbstractValueMapLink<K, Object> {
 
   private final Document document;
-  private final Format format;
+
   /**
    * If true the model value is updated on each keystroke, otherwise it is updated on focus lost and action performed
    */
@@ -37,7 +36,7 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> {
    */
   public TextValueLink(final JTextComponent textComponent, final ValueChangeMapEditModel<K, Object> editModel,
                        final K key, final boolean immediateUpdate) {
-    this(textComponent, editModel, key, immediateUpdate, LinkType.READ_WRITE, null);
+    this(textComponent, editModel, key, immediateUpdate, LinkType.READ_WRITE);
   }
 
   /**
@@ -51,24 +50,8 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> {
    */
   public TextValueLink(final JTextComponent textComponent, final ValueChangeMapEditModel<K, Object> editModel,
                        final K key, final boolean immediateUpdate, final LinkType linkType) {
-    this(textComponent, editModel, key, immediateUpdate, linkType, null);
-  }
-
-  /**
-   * Instantiates a new TextValueLink
-   * @param textComponent the text component to link
-   * @param editModel the ValueChangeMapEditModel instance
-   * @param key the key to link
-   * @param immediateUpdate if true then the underlying model value is updated on each keystroke,
-   * otherwise it is updated on actionPerformed or focusLost
-   * @param linkType the link type
-   * @param format the format to use when displaying the value as text
-   */
-  public TextValueLink(final JTextComponent textComponent, final ValueChangeMapEditModel<K, Object> editModel,
-                       final K key, final boolean immediateUpdate, final LinkType linkType, final Format format) {
     super(editModel, key, linkType);
     this.document = textComponent.getDocument();
-    this.format = format;
     this.immediateUpdate = immediateUpdate;
     if (!this.immediateUpdate) {
       textComponent.addFocusListener(new FocusAdapter() {
@@ -168,13 +151,6 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> {
    * @return a String representation of the given value, null if the value is null
    */
   protected String getValueAsText(final Object value) {
-    if (value == null) {
-      return null;
-    }
-    if (format != null) {
-      return format.format(value);
-    }
-
-    return value.toString();
+    return value == null ? null : value.toString();
   }
 }
