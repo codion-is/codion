@@ -81,7 +81,7 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
 
   private final long startDate = System.currentTimeMillis();
 
-  private Timer connectionMaintenanceTimer;
+  private Timer connectionTimeoutTimer;
   private int maintenanceInterval = DEFAULT_CHECK_INTERVAL_MS;
   private int connectionTimeout = DEFAULT_TIMEOUT_MS;
 
@@ -97,17 +97,8 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
     loadDefaultDomainModels();
     this.database = database;
     RemoteEntityConnectionImpl.initializeConnectionPools(database);
-    final String host = database.getHost();
-    final String port = database.getPort();
-    if (Util.nullOrEmpty(host)) {
-      throw new IllegalArgumentException("Database host must be specified (" + Database.DATABASE_HOST + ")");
-    }
-    if (!database.isEmbedded() && Util.nullOrEmpty(port)) {
-      throw new IllegalArgumentException("Database port must be specified (" + Database.DATABASE_PORT + ")");
-    }
-
     setConnectionLimit(Configuration.getIntValue(Configuration.SERVER_CONNECTION_LIMIT));
-    startConnectionCheckTimer();
+    startConnectionTimeoutTimer();
     Util.getRegistry().rebind(getServerName(), this);
     final String connectInfo = getServerName() + " bound to registry";
     LOG.info(connectInfo);
@@ -372,13 +363,13 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
     }
   }
 
-  private void startConnectionCheckTimer() {
-    if (connectionMaintenanceTimer != null) {
-      connectionMaintenanceTimer.cancel();
+  private void startConnectionTimeoutTimer() {
+    if (connectionTimeoutTimer != null) {
+      connectionTimeoutTimer.cancel();
     }
 
-    connectionMaintenanceTimer = new Timer(true);
-    connectionMaintenanceTimer.schedule(new TimerTask() {
+    connectionTimeoutTimer = new Timer(true);
+    connectionTimeoutTimer.schedule(new TimerTask() {
       @Override
       public void run() {
         try {
