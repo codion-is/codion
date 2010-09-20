@@ -215,9 +215,7 @@ public final class EntityUiUtil {
    */
   public static JLabel createLabel(final Property property, final int horizontalAlignment) {
     Util.rejectNullValue(property, PROPERTY_PARAM_NAME);
-    final String caption = property.getCaption();
-    Util.rejectNullValue(caption, "property.caption");
-    final JLabel label = new JLabel(caption, horizontalAlignment);
+    final JLabel label = new JLabel(property.getCaption(), horizontalAlignment);
     if (property.getMnemonic() != null) {
       label.setDisplayedMnemonic(property.getMnemonic());
     }

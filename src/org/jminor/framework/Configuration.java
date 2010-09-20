@@ -200,7 +200,7 @@ public final class Configuration {
   /**
    * Indicates whether entity panels containing detail panels should by default be laid out in a compact manner<br>
    * Value type: Boolean<br>
-   * Default value: false
+   * Default value: true
    */
   public static final String COMPACT_ENTITY_PANEL_LAYOUT = "jminor.client.compactEntityPanelLayout";
 
@@ -486,7 +486,7 @@ public final class Configuration {
     PROPERTIES.put(DEFAULT_TIMESTAMP_FORMAT, "dd-MM-yyyy HH:mm");
     PROPERTIES.put(DEFAULT_DATE_FORMAT, "dd-MM-yyyy");
     PROPERTIES.put(ALL_PANELS_ACTIVE, false);
-    PROPERTIES.put(COMPACT_ENTITY_PANEL_LAYOUT, false);
+    PROPERTIES.put(COMPACT_ENTITY_PANEL_LAYOUT, true);
     PROPERTIES.put(USE_KEYBOARD_NAVIGATION, true);
     PROPERTIES.put(USE_FOCUS_ACTIVATION, true);
     PROPERTIES.put(TABLE_AUTO_RESIZE_MODE, JTable.AUTO_RESIZE_OFF);

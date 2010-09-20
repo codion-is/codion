@@ -136,7 +136,7 @@ public class EntityImplTest {
     assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_MASTER_CODE).getPropertyID(), EntityTestDomain.DETAIL_MASTER_CODE);
 
     //assert captions
-    assertNull(testEntity.getProperty(EntityTestDomain.DETAIL_ID).getCaption());
+    assertNotNull(testEntity.getProperty(EntityTestDomain.DETAIL_ID).getCaption());
     assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_INT).getCaption(), EntityTestDomain.DETAIL_INT);
     assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_DOUBLE).getCaption(), EntityTestDomain.DETAIL_DOUBLE);
     assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_STRING).getCaption(), EntityTestDomain.DETAIL_STRING);
@@ -200,7 +200,7 @@ public class EntityImplTest {
 
     test2.setValue(EntityTestDomain.DETAIL_DOUBLE, 2.1);
     assertTrue(test2.isModified());
-    assertTrue(((Entity) test2.getCopy()).isModified());
+    assertTrue(test2.getCopy().isModified());
 
     //test propogate entity reference/denormalized values
     testEntity.setValue(EntityTestDomain.DETAIL_ENTITY_FK, null);

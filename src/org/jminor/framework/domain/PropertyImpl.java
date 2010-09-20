@@ -425,6 +425,10 @@ class PropertyImpl implements Property, Serializable {
       return parentProperty.getCaption();
     }
 
+    if (caption == null) {
+      return propertyID;
+    }
+
     return caption;
   }
 

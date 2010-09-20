@@ -1269,10 +1269,12 @@ public class EntityPanel extends JPanel {
     private static final long serialVersionUID = 1;
     /** {@inheritDoc} */
     public void propertyChange(final PropertyChangeEvent evt) {
-      final Component focusOwner = (Component) evt.getNewValue();
-      if (focusOwner != null && isParentPanel(focusOwner) && !editPanel.isActive()) {
-        LOG.debug(editPanel.getEntityEditModel().getEntityID() + " focusActivation");
-        getEditPanel().setActive(true);
+      if (containsEditPanel()) {
+        final Component focusOwner = (Component) evt.getNewValue();
+        if (focusOwner != null && isParentPanel(focusOwner) && !editPanel.isActive()) {
+          LOG.debug(editPanel.getEntityEditModel().getEntityID() + " focusActivation");
+          editPanel.setActive(true);
+        }
       }
     }
   }

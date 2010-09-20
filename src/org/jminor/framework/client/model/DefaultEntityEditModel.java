@@ -416,7 +416,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
     final EntityComboBoxModel model = new DefaultEntityComboBoxModel(foreignKeyProperty.getReferencedEntityID(), connectionProvider);
     model.setNullValueString(getValidator().isNullable(getEntity(), foreignKeyProperty.getPropertyID()) ?
             (String) Configuration.getValue(Configuration.DEFAULT_COMBO_BOX_NULL_VALUE_ITEM) : null);
-    model.refresh();
+    model.refresh();//todo too early man
 
     return model;
   }
