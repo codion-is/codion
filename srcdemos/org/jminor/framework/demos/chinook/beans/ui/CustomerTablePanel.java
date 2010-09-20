@@ -38,7 +38,7 @@ public class CustomerTablePanel extends EntityTablePanel {
       @Override
       protected Object doInBackground() throws Exception {
         EntityReportUiUtil.viewJdbcReport(CustomerTablePanel.this, new JasperReportsWrapper(reportPath, reportParameters),
-                new JasperReportsUIWrapper(), null, getEntityTableModel().getDbProvider());
+                new JasperReportsUIWrapper(), null, getEntityTableModel().getConnectionProvider());
         return null;
       }
     }.execute();

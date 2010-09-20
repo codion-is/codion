@@ -5,7 +5,7 @@ package org.jminor.common.ui.valuemap;
 
 import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
 import org.jminor.framework.client.model.DefaultEntityModel;
-import org.jminor.framework.db.EntityDbConnectionTest;
+import org.jminor.framework.db.EntityConnectionImplTest;
 import org.jminor.framework.demos.petstore.domain.Petstore;
 
 import static org.junit.Assert.assertFalse;
@@ -20,7 +20,7 @@ public class BooleanValueLinkTest {
   private ValueChangeMapEditModel<String, Object> model;
 
   public BooleanValueLinkTest() {
-    model = new DefaultEntityModel(Petstore.T_ITEM, EntityDbConnectionTest.DB_PROVIDER).getEditModel();
+    model = new DefaultEntityModel(Petstore.T_ITEM, EntityConnectionImplTest.DB_PROVIDER).getEditModel();
   }
 
   @Test

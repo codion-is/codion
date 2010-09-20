@@ -10,7 +10,7 @@ import org.jminor.common.model.reports.ReportWrapper;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.reports.ReportUIWrapper;
 import org.jminor.framework.client.model.reporting.EntityReportUtil;
-import org.jminor.framework.db.provider.EntityDbProvider;
+import org.jminor.framework.db.provider.EntityConnectionProvider;
 import org.jminor.framework.i18n.FrameworkMessages;
 
 import javax.swing.JComponent;
@@ -31,14 +31,14 @@ public final class EntityReportUiUtil {
    * @param reportWrapper the report wrapper
    * @param uiWrapper the ui wrapper
    * @param reportTitle the title to display on the frame
-   * @param dbProvider the db provider
+   * @param connectionProvider the db provider
    */
   public static void viewJdbcReport(final JComponent component, final ReportWrapper reportWrapper,
                                     final ReportUIWrapper uiWrapper, final String reportTitle,
-                                    final EntityDbProvider dbProvider) {
+                                    final EntityConnectionProvider connectionProvider) {
     try {
       UiUtil.setWaitCursor(true, component);
-      viewReport(EntityReportUtil.fillReport(reportWrapper, dbProvider), uiWrapper, reportTitle);
+      viewReport(EntityReportUtil.fillReport(reportWrapper, connectionProvider), uiWrapper, reportTitle);
     }
     catch (ReportException e) {
       throw new RuntimeException(e);

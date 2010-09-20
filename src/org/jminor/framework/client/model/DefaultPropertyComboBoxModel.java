@@ -3,11 +3,11 @@
  */
 package org.jminor.framework.client.model;
 
-import org.jminor.common.db.exception.DbException;
+import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.combobox.DefaultFilteredComboBoxModel;
 import org.jminor.common.model.valuemap.ValueCollectionProvider;
-import org.jminor.framework.db.provider.EntityDbProvider;
+import org.jminor.framework.db.provider.EntityConnectionProvider;
 import org.jminor.framework.domain.Property;
 
 import java.awt.event.ActionEvent;
@@ -25,21 +25,21 @@ public class DefaultPropertyComboBoxModel extends DefaultFilteredComboBoxModel {
 
   /**
    * @param entityID the ID of the underlying entity
-   * @param dbProvider a EntityDbProvider instance
+   * @param connectionProvider a EntityConnectionProvider instance
    * @param property the underlying property
    * @param nullValueString the value to use to represent a null value
    * @param refreshEvent triggers a refresh
    */
-  public DefaultPropertyComboBoxModel(final String entityID, final EntityDbProvider dbProvider,
+  public DefaultPropertyComboBoxModel(final String entityID, final EntityConnectionProvider connectionProvider,
                                       final Property.ColumnProperty property, final String nullValueString,
                                       final EventObserver refreshEvent) {
     this(new ValueCollectionProvider<Object>() {
       /** {@inheritDoc} */
       public Collection<Object> getValues() {
         try {
-          return dbProvider.getEntityDb().selectPropertyValues(entityID, property.getPropertyID(), true);
+          return connectionProvider.getConnection().selectPropertyValues(entityID, property.getPropertyID(), true);
         }
-        catch (DbException e) {
+        catch (DatabaseException e) {
           throw new RuntimeException(e);
         }
       }

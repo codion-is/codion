@@ -5,7 +5,7 @@ package org.jminor.framework.server.monitor;
 
 import org.jminor.common.model.User;
 import org.jminor.common.server.ClientInfo;
-import org.jminor.framework.server.EntityDbServerAdmin;
+import org.jminor.framework.server.EntityConnectionServerAdmin;
 
 import javax.swing.DefaultListModel;
 import java.rmi.RemoteException;
@@ -16,13 +16,13 @@ import java.util.Collection;
  */
 public final class ClientMonitor {
 
-  private final EntityDbServerAdmin server;
+  private final EntityConnectionServerAdmin server;
   private final String clientTypeID;
   private final User user;
 
   private final DefaultListModel clientInstanceListModel = new DefaultListModel();
 
-  public ClientMonitor(final EntityDbServerAdmin server, final String clientTypeID, final User user) throws RemoteException {
+  public ClientMonitor(final EntityConnectionServerAdmin server, final String clientTypeID, final User user) throws RemoteException {
     this.server = server;
     this.clientTypeID = clientTypeID;
     this.user = user;
@@ -45,7 +45,7 @@ public final class ClientMonitor {
     return clientTypeID;
   }
 
-  public EntityDbServerAdmin getServer() {
+  public EntityConnectionServerAdmin getServer() {
     return server;
   }
 

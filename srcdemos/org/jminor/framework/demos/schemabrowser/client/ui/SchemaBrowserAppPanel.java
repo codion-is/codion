@@ -11,7 +11,7 @@ import org.jminor.framework.client.model.DefaultEntityApplicationModel;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.ui.EntityApplicationPanel;
 import org.jminor.framework.client.ui.EntityPanelProvider;
-import org.jminor.framework.db.provider.EntityDbProvider;
+import org.jminor.framework.db.provider.EntityConnectionProvider;
 import org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser;
 
 import javax.swing.JTable;
@@ -32,8 +32,8 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel {
   }
 
   @Override
-  protected EntityApplicationModel initializeApplicationModel(final EntityDbProvider dbProvider) throws CancelException {
-    return new SchemaBrowserApplicationModel(dbProvider);
+  protected EntityApplicationModel initializeApplicationModel(final EntityConnectionProvider connectionProvider) throws CancelException {
+    return new SchemaBrowserApplicationModel(connectionProvider);
   }
 
   public static void main(final String[] args) {
@@ -43,8 +43,8 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel {
   }
 
   private static final class SchemaBrowserApplicationModel extends DefaultEntityApplicationModel {
-    private SchemaBrowserApplicationModel(final EntityDbProvider dbProvider) {
-      super(dbProvider);
+    private SchemaBrowserApplicationModel(final EntityConnectionProvider connectionProvider) {
+      super(connectionProvider);
     }
 
     @Override

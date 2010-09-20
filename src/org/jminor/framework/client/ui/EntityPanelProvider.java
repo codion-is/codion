@@ -11,7 +11,7 @@ import org.jminor.framework.client.model.DefaultEntityTableModel;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.EntityTableModel;
-import org.jminor.framework.db.provider.EntityDbProvider;
+import org.jminor.framework.db.provider.EntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 
 import org.slf4j.Logger;
@@ -259,14 +259,14 @@ public class EntityPanelProvider implements Comparable {
     return entityID.hashCode();
   }
 
-  public final EntityPanel createPanel(final EntityDbProvider dbProvider) {
-    return createPanel(dbProvider, false);
+  public final EntityPanel createPanel(final EntityConnectionProvider connectionProvider) {
+    return createPanel(connectionProvider, false);
   }
 
-  public final EntityPanel createPanel(final EntityDbProvider dbProvider, final boolean detailPanel) {
-    Util.rejectNullValue(dbProvider, "dbProvider");
+  public final EntityPanel createPanel(final EntityConnectionProvider connectionProvider, final boolean detailPanel) {
+    Util.rejectNullValue(connectionProvider, "connectionProvider");
     try {
-      final EntityModel entityModel = initializeModel(dbProvider);
+      final EntityModel entityModel = initializeModel(connectionProvider);
       if (detailPanel && entityModel.containsTableModel()) {
         entityModel.getTableModel().setDetailModel(true);
       }
@@ -294,7 +294,7 @@ public class EntityPanelProvider implements Comparable {
         entityPanel.setDetailPanelState(detailPanelState);
         entityPanel.setDetailSplitPanelResizeWeight(detailSplitPanelResizeWeight);
         for (final EntityPanelProvider detailProvider : detailPanelProviders) {
-          final EntityPanel detailPanel = detailProvider.createPanel(model.getDbProvider(), true);
+          final EntityPanel detailPanel = detailProvider.createPanel(model.getConnectionProvider(), true);
           model.addDetailModel(detailPanel.getModel());
           entityPanel.addDetailPanel(detailPanel);
         }
@@ -314,12 +314,12 @@ public class EntityPanelProvider implements Comparable {
     }
   }
 
-  public final EntityEditPanel createEditPanel(final EntityDbProvider dbProvider) {
-    return initializeEditPanel(initializeEditModel(dbProvider));
+  public final EntityEditPanel createEditPanel(final EntityConnectionProvider connectionProvider) {
+    return initializeEditPanel(initializeEditModel(connectionProvider));
   }
 
-  public final EntityTablePanel createTablePanel(final EntityDbProvider dbProvider) {
-    return initializeTablePanel(initializeTableModel(dbProvider));
+  public final EntityTablePanel createTablePanel(final EntityConnectionProvider connectionProvider) {
+    return initializeTablePanel(initializeTableModel(connectionProvider));
   }
 
   public static EntityPanelProvider getProvider(final String entityID) {
@@ -406,16 +406,16 @@ public class EntityPanelProvider implements Comparable {
     }
   }
 
-  private EntityModel initializeModel(final EntityDbProvider dbProvider) {
+  private EntityModel initializeModel(final EntityConnectionProvider connectionProvider) {
     try {
       final EntityModel model;
       if (modelClass.equals(DefaultEntityModel.class)) {
         LOG.debug(toString() + " initializing a default entity model");
-        model = initializeDefaultModel(dbProvider);
+        model = initializeDefaultModel(connectionProvider);
       }
       else {
         LOG.debug(toString() + " initializing a custom entity model: " + modelClass);
-        model = modelClass.getConstructor(EntityDbProvider.class).newInstance(dbProvider);
+        model = modelClass.getConstructor(EntityConnectionProvider.class).newInstance(connectionProvider);
       }
       configureModel(model);
 
@@ -429,16 +429,16 @@ public class EntityPanelProvider implements Comparable {
     }
   }
 
-  private EntityEditModel initializeEditModel(final EntityDbProvider dbProvider) {
+  private EntityEditModel initializeEditModel(final EntityConnectionProvider connectionProvider) {
     try {
       final EntityEditModel editModel;
       if (editModelClass.equals(DefaultEntityEditModel.class)) {
         LOG.debug(toString() + " initializing a default model");
-        editModel = initializeDefaultEditModel(dbProvider);
+        editModel = initializeDefaultEditModel(connectionProvider);
       }
       else {
         LOG.debug(toString() + " initializing a custom edit model: " + editModelClass);
-        editModel = editModelClass.getConstructor(EntityDbProvider.class).newInstance(dbProvider);
+        editModel = editModelClass.getConstructor(EntityConnectionProvider.class).newInstance(connectionProvider);
       }
       configureEditModel(editModel);
 
@@ -452,16 +452,16 @@ public class EntityPanelProvider implements Comparable {
     }
   }
 
-  private EntityTableModel initializeTableModel(final EntityDbProvider dbProvider) {
+  private EntityTableModel initializeTableModel(final EntityConnectionProvider connectionProvider) {
     try {
       final EntityTableModel tableModel;
       if (tableModelClass.equals(DefaultEntityTableModel.class)) {
         LOG.debug(toString() + " initializing a default table model");
-        tableModel = initializeDefaultTableModel(dbProvider);
+        tableModel = initializeDefaultTableModel(connectionProvider);
       }
       else {
         LOG.debug(toString() + " initializing a custom table model: " + tableModelClass);
-        tableModel = tableModelClass.getConstructor(EntityDbProvider.class).newInstance(dbProvider);
+        tableModel = tableModelClass.getConstructor(EntityConnectionProvider.class).newInstance(connectionProvider);
       }
       configureTableModel(tableModel);
 
@@ -475,18 +475,18 @@ public class EntityPanelProvider implements Comparable {
     }
   }
 
-  private EntityModel initializeDefaultModel(final EntityDbProvider dbProvider) {
-    final EntityEditModel editModel = initializeEditModel(dbProvider);
-    final EntityTableModel tableModel = initializeTableModel(dbProvider);
+  private EntityModel initializeDefaultModel(final EntityConnectionProvider connectionProvider) {
+    final EntityEditModel editModel = initializeEditModel(connectionProvider);
+    final EntityTableModel tableModel = initializeTableModel(connectionProvider);
 
     return new DefaultEntityModel(editModel, tableModel);
   }
 
-  private EntityEditModel initializeDefaultEditModel(final EntityDbProvider dbProvider) {
-    return new DefaultEntityEditModel(entityID, dbProvider);
+  private EntityEditModel initializeDefaultEditModel(final EntityConnectionProvider connectionProvider) {
+    return new DefaultEntityEditModel(entityID, connectionProvider);
   }
 
-  private EntityTableModel initializeDefaultTableModel(final EntityDbProvider dbProvider) {
-    return new DefaultEntityTableModel(entityID, dbProvider);
+  private EntityTableModel initializeDefaultTableModel(final EntityConnectionProvider connectionProvider) {
+    return new DefaultEntityTableModel(entityID, connectionProvider);
   }
 }

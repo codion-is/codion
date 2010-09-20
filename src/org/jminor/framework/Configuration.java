@@ -376,8 +376,8 @@ public final class Configuration {
 
   /**
    * Specifies the class providing remote db connections<br>
-   * Value type: String (the name of a class implementing org.jminor.framework.db.provider.EntityDbProvider)<br>
-   * Default value: org.jminor.framework.server.EntityDbRemoteProvider
+   * Value type: String (the name of a class implementing org.jminor.framework.db.provider.EntityConnectionProvider)<br>
+   * Default value: org.jminor.framework.server.RemoteEntityConnectionProvider
    */
   public static final String REMOTE_CONNECTION_PROVIDER = "jminor.client.remoteConnectionProvider";
 
@@ -397,8 +397,8 @@ public final class Configuration {
 
   /**
    * Specifies the class providing local db connections<br>
-   * Value type: String (the name of a class implementing org.jminor.framework.db.provider.EntityDbProvider)<br>
-   * Default value: org.jminor.framework.db.provider.EntityDbLocalProvider
+   * Value type: String (the name of a class implementing org.jminor.framework.db.provider.EntityConnectionProvider)<br>
+   * Default value: org.jminor.framework.db.provider.LocalEntityConnectionProvider
    */
   public static final String LOCAL_CONNECTION_PROVIDER = "jminor.client.localConnectionProvider";
 
@@ -507,8 +507,8 @@ public final class Configuration {
     PROPERTIES.put(SERVER_NAME_PREFIX, "JMinor Server");
     PROPERTIES.put(WILDCARD_CHARACTER, "%");
     PROPERTIES.put(USE_NUMBER_FORMAT_GROUPING, true);
-    PROPERTIES.put(REMOTE_CONNECTION_PROVIDER, "org.jminor.framework.server.provider.EntityDbRemoteProvider");
-    PROPERTIES.put(LOCAL_CONNECTION_PROVIDER, "org.jminor.framework.db.provider.EntityDbLocalProvider");
+    PROPERTIES.put(REMOTE_CONNECTION_PROVIDER, "org.jminor.framework.server.provider.RemoteEntityConnectionProvider");
+    PROPERTIES.put(LOCAL_CONNECTION_PROVIDER, "org.jminor.framework.db.provider.LocalEntityConnectionProvider");
     PROPERTIES.put(DEFAULT_COMBO_BOX_NULL_VALUE_ITEM, "-");
     PROPERTIES.put(INVALID_VALUE_BACKGROUND_COLOR, Color.LIGHT_GRAY);
     PROPERTIES.put(PERFORM_NULL_VALIDATION, true);

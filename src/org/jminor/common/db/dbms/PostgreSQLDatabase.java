@@ -3,6 +3,8 @@
  */
 package org.jminor.common.db.dbms;
 
+import org.jminor.common.db.AbstractDatabase;
+
 import java.util.Properties;
 
 /**

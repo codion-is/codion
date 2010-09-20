@@ -1,13 +1,12 @@
 package org.jminor.framework.demos.chinook.domain;
 
-import org.jminor.common.db.dbms.DatabaseProvider;
-import org.jminor.common.db.DbConnection;
-import org.jminor.common.db.exception.DbException;
-import org.jminor.common.db.operation.AbstractProcedure;
-import org.jminor.common.db.operation.Procedure;
+import org.jminor.common.db.Databases;
+import org.jminor.common.db.DatabaseConnection;
+import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.db.AbstractProcedure;
 import org.jminor.common.model.IdSource;
 import org.jminor.common.model.valuemap.StringProvider;
-import org.jminor.framework.db.EntityDb;
+import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.db.criteria.EntitySelectCriteria;
 import org.jminor.framework.domain.Entities;
@@ -162,27 +161,27 @@ public class Chinook {
 
   public static final String P_UDPATE_TOTALS = "chinook.update_totals_procedure";
 
-  private static final Procedure UPDATE_TOTALS_PROCEDURE = new AbstractProcedure(P_UDPATE_TOTALS, "Update invoice totals") {
-    public void execute(final DbConnection connection, final List<Object> arguments) throws DbException {
-      final EntityDb entityDb = (EntityDb) connection;
+  private static final DatabaseConnection.Procedure UPDATE_TOTALS_PROCEDURE = new AbstractProcedure(P_UDPATE_TOTALS, "Update invoice totals") {
+    public void execute(final DatabaseConnection connection, final List<Object> arguments) throws DatabaseException {
+      final EntityConnection entityConnection = (EntityConnection) connection;
       try {
-        entityDb.beginTransaction();
+        entityConnection.beginTransaction();
         final EntitySelectCriteria selectCriteria = EntityCriteriaUtil.selectCriteria(T_INVOICE);
         selectCriteria.setSelectForUpdate(true);
         selectCriteria.setForeignKeyFetchDepthLimit(0);
-        final List<Entity> invoices = entityDb.selectMany(selectCriteria);
+        final List<Entity> invoices = entityConnection.selectMany(selectCriteria);
         for (final Entity invoice : invoices) {
           invoice.setValue(INVOICE_TOTAL, invoice.getValue(INVOICE_TOTAL_SUB));
         }
         final List<Entity> modifiedInvoices = EntityUtil.getModifiedEntities(invoices);
         if (!modifiedInvoices.isEmpty()) {
-          entityDb.update(modifiedInvoices);
+          entityConnection.update(modifiedInvoices);
         }
-        entityDb.commitTransaction();
+        entityConnection.commitTransaction();
       }
-      catch (DbException dbException) {
-        if (entityDb.isTransactionOpen()) {
-          entityDb.rollbackTransaction();
+      catch (DatabaseException dbException) {
+        if (entityConnection.isTransactionOpen()) {
+          entityConnection.rollbackTransaction();
         }
         throw dbException;
       }
@@ -190,7 +189,7 @@ public class Chinook {
   };
 
   static {
-    DatabaseProvider.addOperation(UPDATE_TOTALS_PROCEDURE);
+    Databases.addOperation(UPDATE_TOTALS_PROCEDURE);
 
     Entities.define(T_ALBUM,
             Properties.primaryKeyProperty(ALBUM_ALBUMID),

@@ -54,7 +54,7 @@ public final class LoadTestServer extends AbstractRemoteServer<RemoteLoadTest> {
   /** {@inheritDoc} */
   @Override
   protected RemoteLoadTest doConnect(final ClientInfo clientInfo) throws RemoteException {
-    final RemoteLoadTest remoteAdapter = new RemoteLoadTestAdapter(clientInfo, loadTestPort);
+    final RemoteLoadTest remoteAdapter = new RemoteLoadTestImpl(clientInfo, loadTestPort);
 
     LOG.debug(clientInfo + " connected");
 
@@ -64,7 +64,7 @@ public final class LoadTestServer extends AbstractRemoteServer<RemoteLoadTest> {
   /** {@inheritDoc} */
   @Override
   protected void doDisconnect(final RemoteLoadTest connection) throws RemoteException {
-    LOG.debug(((RemoteLoadTestAdapter) connection).getClientInfo() + " disconnected");
+    LOG.debug(((RemoteLoadTestImpl) connection).getClientInfo() + " disconnected");
   }
 
   /**
@@ -78,7 +78,7 @@ public final class LoadTestServer extends AbstractRemoteServer<RemoteLoadTest> {
   }
 
   /**
-   * Runs a new EntityDbRemote server with a server admin interface exported.
+   * Runs a new LoadTestServer server.
    * @param arguments no arguments required
    * @throws Exception in case of an exception
    */

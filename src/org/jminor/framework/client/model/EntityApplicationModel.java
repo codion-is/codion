@@ -5,7 +5,7 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.User;
-import org.jminor.framework.db.provider.EntityDbProvider;
+import org.jminor.framework.db.provider.EntityConnectionProvider;
 
 import java.util.List;
 
@@ -31,9 +31,9 @@ public interface EntityApplicationModel extends Refreshable {
   User getUser();
 
   /**
-   * @return the EntityDbProvider instance being used by this EntityApplicationModel
+   * @return the EntityConnectionProvider instance being used by this EntityApplicationModel
    */
-  EntityDbProvider getDbProvider();
+  EntityConnectionProvider getConnectionProvider();
 
   /**
    * Adds the given detail models to this model.

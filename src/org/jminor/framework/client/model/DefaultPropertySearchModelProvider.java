@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.client.model;
 
-import org.jminor.framework.db.provider.EntityDbProvider;
+import org.jminor.framework.db.provider.EntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Property;
 
@@ -14,17 +14,17 @@ public class DefaultPropertySearchModelProvider implements PropertySearchModelPr
 
   /** {@inheritDoc} */
   public PropertySearchModel<? extends Property.SearchableProperty> initializePropertySearchModel(
-          final Property.SearchableProperty property, final EntityDbProvider dbProvider) {
+          final Property.SearchableProperty property, final EntityConnectionProvider connectionProvider) {
     if (property instanceof Property.ForeignKeyProperty) {
       final Property.ForeignKeyProperty fkProperty = (Property.ForeignKeyProperty) property;
       if (Entities.isSmallDataset(fkProperty.getReferencedEntityID())) {
-        final EntityComboBoxModel comboBoxModel = new DefaultEntityComboBoxModel(fkProperty.getReferencedEntityID(), dbProvider);
+        final EntityComboBoxModel comboBoxModel = new DefaultEntityComboBoxModel(fkProperty.getReferencedEntityID(), connectionProvider);
         comboBoxModel.setNullValueString("");
         return new DefaultForeignKeySearchModel(fkProperty, comboBoxModel);
       }
       else {
         final EntityLookupModel lookupModel = new DefaultEntityLookupModel(fkProperty.getReferencedEntityID(),
-                dbProvider, Entities.getSearchProperties(fkProperty.getReferencedEntityID()));
+                connectionProvider, Entities.getSearchProperties(fkProperty.getReferencedEntityID()));
         lookupModel.setMultipleSelectionAllowed(true);
         return new DefaultForeignKeySearchModel(fkProperty, lookupModel);
       }

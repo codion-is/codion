@@ -10,6 +10,7 @@ import org.jfree.data.xy.YIntervalSeriesCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -21,7 +22,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.awt.event.ActionListener;
 
 /**
  * A default LoadTest implementation.
@@ -178,12 +178,12 @@ public abstract class LoadTestModel<T> implements LoadTest {
   }
 
   /** {@inheritDoc} */
-  public boolean isScenarioEnabled(final String scenarioName) {
+  public final boolean isScenarioEnabled(final String scenarioName) {
     return scenarioChooser.isItemEnabled(getUsageScenario(scenarioName));
   }
 
   /** {@inheritDoc} */
-  public void setScenarioEnabled(final String scenarioName, final boolean value) {
+  public final void setScenarioEnabled(final String scenarioName, final boolean value) {
     scenarioChooser.setItemEnabled(getUsageScenario(scenarioName), value);
   }
 

@@ -40,7 +40,7 @@ public class DepartmentTablePanel extends EntityTablePanel {
       @Override
       protected Object doInBackground() throws Exception {
         EntityReportUiUtil.viewJdbcReport(DepartmentTablePanel.this, new JasperReportsWrapper(reportPath, reportParameters),
-                new JasperReportsUIWrapper(), null, getEntityTableModel().getDbProvider());
+                new JasperReportsUIWrapper(), null, getEntityTableModel().getConnectionProvider());
         return null;
       }
     }.execute();

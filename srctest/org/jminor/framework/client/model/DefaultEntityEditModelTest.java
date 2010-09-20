@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.client.model;
 
-import org.jminor.common.db.exception.DbException;
+import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.StateObserver;
@@ -17,7 +17,7 @@ import org.jminor.framework.client.model.event.InsertEvent;
 import org.jminor.framework.client.model.event.InsertListener;
 import org.jminor.framework.client.model.event.UpdateEvent;
 import org.jminor.framework.client.model.event.UpdateListener;
-import org.jminor.framework.db.EntityDbConnectionTest;
+import org.jminor.framework.db.EntityConnectionImplTest;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
@@ -54,7 +54,7 @@ public final class DefaultEntityEditModelTest {
     deptProperty = Entities.getForeignKeyProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_DEPARTMENT_FK);
     debugOutput = Configuration.getBooleanValue(Configuration.PROPERTY_DEBUG_OUTPUT);
     Configuration.setValue(Configuration.PROPERTY_DEBUG_OUTPUT, true);
-    editModel = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityDbConnectionTest.DB_PROVIDER);
+    editModel = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.DB_PROVIDER);
   }
 
   @After
@@ -123,7 +123,7 @@ public final class DefaultEntityEditModelTest {
   @Test
   public void test() throws Exception {
     try {
-      new DefaultEntityEditModel(null, EntityDbConnectionTest.DB_PROVIDER);
+      new DefaultEntityEditModel(null, EntityConnectionImplTest.DB_PROVIDER);
       fail();
     }
     catch (IllegalArgumentException e) {}
@@ -162,14 +162,14 @@ public final class DefaultEntityEditModelTest {
     editModel.addAfterRefreshListener(listener);
 
     assertEquals(EmpDept.T_EMPLOYEE, editModel.getEntityID());
-    assertEquals(editModel.getDbProvider().getEntityDb().selectPropertyValues(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB, true),
+    assertEquals(editModel.getConnectionProvider().getConnection().selectPropertyValues(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB, true),
             editModel.getValueProvider(jobProperty).getValues());
 
     editModel.refresh();
     assertTrue(editModel.isEntityNew());
     assertFalse(editModel.getModifiedState().isActive());
 
-    final Entity employee = editModel.getDbProvider().getEntityDb().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "MARTIN");
+    final Entity employee = editModel.getConnectionProvider().getConnection().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "MARTIN");
     editModel.setEntity(employee);
     assertFalse(entityNullState.isActive());
 
@@ -238,19 +238,19 @@ public final class DefaultEntityEditModelTest {
   }
 
   @Test(expected = UnsupportedOperationException.class)
-  public void insertReadOnly() throws CancelException, ValidationException, DbException {
+  public void insertReadOnly() throws CancelException, ValidationException, DatabaseException {
     editModel.setReadOnly(true);
     editModel.insert();
   }
   
   @Test(expected = UnsupportedOperationException.class)
-  public void updateReadOnly() throws CancelException, ValidationException, DbException {
+  public void updateReadOnly() throws CancelException, ValidationException, DatabaseException {
     editModel.setReadOnly(true);
     editModel.update();
   }
 
   @Test(expected = UnsupportedOperationException.class)
-  public void deleteReadOnly() throws CancelException, ValidationException, DbException {
+  public void deleteReadOnly() throws CancelException, ValidationException, DatabaseException {
     editModel.setReadOnly(true);
     editModel.delete();
   }
@@ -259,7 +259,7 @@ public final class DefaultEntityEditModelTest {
   public void insert() throws Exception {
     try {
       assertTrue(editModel.insert(new ArrayList<Entity>()).isEmpty());
-      editModel.getDbProvider().getEntityDb().beginTransaction();
+      editModel.getConnectionProvider().getConnection().beginTransaction();
       editModel.setValue(EmpDept.EMPLOYEE_COMMISSION, 1000d);
       editModel.setValue(EmpDept.EMPLOYEE_HIREDATE, DateUtil.floorDate(new Date()));
       editModel.setValue(EmpDept.EMPLOYEE_JOB, "A Jobby");
@@ -271,7 +271,7 @@ public final class DefaultEntityEditModelTest {
       tmpDept.setValue(EmpDept.DEPARTMENT_LOCATION, "Limbo");
       tmpDept.setValue(EmpDept.DEPARTMENT_NAME, "Judgment");
 
-      final Entity department = editModel.getDbProvider().getEntityDb().selectSingle(editModel.getDbProvider().getEntityDb().insert(Arrays.asList(tmpDept)).get(0));
+      final Entity department = editModel.getConnectionProvider().getConnection().selectSingle(editModel.getConnectionProvider().getConnection().insert(Arrays.asList(tmpDept)).get(0));
 
       editModel.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, department);
 
@@ -279,7 +279,7 @@ public final class DefaultEntityEditModelTest {
         @Override
         protected void inserted(final InsertEvent event) {
           try {
-            final Entity inserted = editModel.getDbProvider().getEntityDb().selectSingle(event.getInsertedKeys().get(0));
+            final Entity inserted = editModel.getConnectionProvider().getConnection().selectSingle(event.getInsertedKeys().get(0));
             assertEquals(department, inserted.getValue(EmpDept.EMPLOYEE_DEPARTMENT_FK));
           }
           catch (Exception ex) {
@@ -308,7 +308,7 @@ public final class DefaultEntityEditModelTest {
       }
     }
     finally {
-      editModel.getDbProvider().getEntityDb().rollbackTransaction();
+      editModel.getConnectionProvider().getConnection().rollbackTransaction();
     }
   }
 
@@ -317,8 +317,8 @@ public final class DefaultEntityEditModelTest {
     try {
       assertTrue(editModel.update().isEmpty());
       assertTrue(editModel.update(new ArrayList<Entity>()).isEmpty());
-      editModel.getDbProvider().getEntityDb().beginTransaction();
-      editModel.setEntity(editModel.getDbProvider().getEntityDb().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "MILLER"));
+      editModel.getConnectionProvider().getConnection().beginTransaction();
+      editModel.setEntity(editModel.getConnectionProvider().getConnection().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "MILLER"));
       editModel.setValue(EmpDept.EMPLOYEE_NAME, "BJORN");
       final List<Entity> toUpdate = Arrays.asList(editModel.getEntityCopy());
       final UpdateListener listener = new UpdateListener() {
@@ -343,7 +343,7 @@ public final class DefaultEntityEditModelTest {
       editModel.removeAfterUpdateListener(listener);
     }
     finally {
-      editModel.getDbProvider().getEntityDb().rollbackTransaction();
+      editModel.getConnectionProvider().getConnection().rollbackTransaction();
     }
   }
 
@@ -351,8 +351,8 @@ public final class DefaultEntityEditModelTest {
   public void delete() throws Exception {
     try {
       assertTrue(editModel.delete(new ArrayList<Entity>()).isEmpty());
-      editModel.getDbProvider().getEntityDb().beginTransaction();
-      editModel.setEntity(editModel.getDbProvider().getEntityDb().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "MILLER"));
+      editModel.getConnectionProvider().getConnection().beginTransaction();
+      editModel.setEntity(editModel.getConnectionProvider().getConnection().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "MILLER"));
       final List<Entity> toDelete = Arrays.asList(editModel.getEntityCopy());
       editModel.addAfterDeleteListener(new DeleteListener() {
         @Override
@@ -373,7 +373,7 @@ public final class DefaultEntityEditModelTest {
       editModel.delete();
     }
     finally {
-      editModel.getDbProvider().getEntityDb().rollbackTransaction();
+      editModel.getConnectionProvider().getConnection().rollbackTransaction();
     }
   }
 }

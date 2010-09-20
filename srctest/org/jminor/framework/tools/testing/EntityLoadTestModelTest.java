@@ -6,26 +6,26 @@ package org.jminor.framework.tools.testing;
 import org.jminor.framework.client.model.DefaultEntityApplicationModel;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityTableModel;
-import org.jminor.framework.db.EntityDbConnectionTest;
+import org.jminor.framework.db.EntityConnectionImplTest;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.demos.empdept.testing.EmpDeptLoadTest;
-import org.jminor.framework.server.EntityDbRemoteServerTest;
+import org.jminor.framework.server.RemoteEntityServerTest;
 
 import org.junit.AfterClass;
-import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import static org.junit.Assert.*;
 
 public class EntityLoadTestModelTest {
 
   @BeforeClass
   public static void setUp() throws Exception {
-    EntityDbRemoteServerTest.setUp();
+    RemoteEntityServerTest.setUp();
   }
 
   @AfterClass
   public static void tearDown() throws Exception {
-    EntityDbRemoteServerTest.tearDown();
+    RemoteEntityServerTest.tearDown();
   }
 
   @Test
@@ -93,7 +93,7 @@ public class EntityLoadTestModelTest {
 
   @Test
   public void testMethods() {
-    final EntityApplicationModel model = new DefaultEntityApplicationModel(EntityDbConnectionTest.DB_PROVIDER) {
+    final EntityApplicationModel model = new DefaultEntityApplicationModel(EntityConnectionImplTest.DB_PROVIDER) {
       @Override
       protected void loadDomainModel() {
         EmpDept.init();
@@ -112,6 +112,6 @@ public class EntityLoadTestModelTest {
     EntityLoadTestModel.selectRandomRows(tableModel, 0.5);
     assertEquals(2, tableModel.getSelectedItems().size());
 
-    model.getDbProvider().disconnect();
+    model.getConnectionProvider().disconnect();
   }
 }

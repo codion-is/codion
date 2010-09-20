@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.client.model;
 
-import org.jminor.common.db.exception.DbException;
+import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.Util;
@@ -14,7 +14,7 @@ import org.jminor.framework.client.model.event.InsertEvent;
 import org.jminor.framework.client.model.event.InsertListener;
 import org.jminor.framework.client.model.event.UpdateEvent;
 import org.jminor.framework.client.model.event.UpdateListener;
-import org.jminor.framework.db.provider.EntityDbProvider;
+import org.jminor.framework.db.provider.EntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
@@ -40,9 +40,9 @@ import java.util.Set;
  * String clientTypeID = "JavadocDemo";
  * User user = new User("scott", "tiger");
  *
- * EntityDbProvider dbProvider = EntityDbProviderFactory.createEntityDbProvider(user, clientTypeID);
+ * EntityConnectionProvider connectionProvider = EntityConnectionProviderFactory.createConnectionProvider(user, clientTypeID);
  *
- * EntityModel model = new DefaultEntityModel(entityID, dbProvider);
+ * EntityModel model = new DefaultEntityModel(entityID, connectionProvider);
  *
  * EntityPanel panel = new EntityPanel(model);
  * </pre>
@@ -71,9 +71,9 @@ public class DefaultEntityModel implements EntityModel {
   private final EntityTableModel tableModel;
 
   /**
-   * The EntityDb connection provider
+   * The EntityConnection provider
    */
-  private final EntityDbProvider dbProvider;
+  private final EntityConnectionProvider connectionProvider;
 
   /**
    * Holds the detail EntityModels used by this EntityModel
@@ -98,26 +98,26 @@ public class DefaultEntityModel implements EntityModel {
   /**
    * Instantiates a new EntityModel with default EntityEditModel and EntityTableModel implementations.
    * @param entityID the ID of the Entity this EntityModel represents
-   * @param dbProvider a EntityDbProvider
+   * @param connectionProvider a EntityConnectionProvider
    */
-  public DefaultEntityModel(final String entityID, final EntityDbProvider dbProvider) {
-    this(entityID, dbProvider, true);
+  public DefaultEntityModel(final String entityID, final EntityConnectionProvider connectionProvider) {
+    this(entityID, connectionProvider, true);
   }
 
   /**
    * Instantiates a new DefaultEntityModel with default EntityEditModel and EntityTableModel implementations.
    * @param entityID the ID of the Entity this DefaultEntityModel represents
-   * @param dbProvider a EntityDbProvider
+   * @param connectionProvider a EntityConnectionProvider
    * @param includeTableModel true if this DefaultEntityModel should include a table model
    */
-  public DefaultEntityModel(final String entityID, final EntityDbProvider dbProvider, final boolean includeTableModel) {
-    Util.rejectNullValue(dbProvider, "dbProvider");
+  public DefaultEntityModel(final String entityID, final EntityConnectionProvider connectionProvider, final boolean includeTableModel) {
+    Util.rejectNullValue(connectionProvider, "connectionProvider");
     Util.rejectNullValue(entityID, "entityID");
     this.entityID = entityID;
-    this.dbProvider = dbProvider;
-    this.editModel = new DefaultEntityEditModel(entityID, dbProvider);
+    this.connectionProvider = connectionProvider;
+    this.editModel = new DefaultEntityEditModel(entityID, connectionProvider);
     if (includeTableModel) {
-      this.tableModel = new DefaultEntityTableModel(entityID, dbProvider);
+      this.tableModel = new DefaultEntityTableModel(entityID, connectionProvider);
     }
     else {
       this.tableModel = null;
@@ -141,7 +141,7 @@ public class DefaultEntityModel implements EntityModel {
    * @param tableModel the table model
    */
   public DefaultEntityModel(final EntityTableModel tableModel) {
-    this(new DefaultEntityEditModel(tableModel.getEntityID(), tableModel.getDbProvider()), tableModel);
+    this(new DefaultEntityEditModel(tableModel.getEntityID(), tableModel.getConnectionProvider()), tableModel);
   }
 
   /**
@@ -150,7 +150,7 @@ public class DefaultEntityModel implements EntityModel {
    * @param includeTableModel if true then a default EntityTableModel is included
    */
   public DefaultEntityModel(final EntityEditModel editModel, final boolean includeTableModel) {
-    this(editModel, includeTableModel ? new DefaultEntityTableModel(editModel.getEntityID(), editModel.getDbProvider()) : null);
+    this(editModel, includeTableModel ? new DefaultEntityTableModel(editModel.getEntityID(), editModel.getConnectionProvider()) : null);
   }
 
   /**
@@ -161,7 +161,7 @@ public class DefaultEntityModel implements EntityModel {
   public DefaultEntityModel(final EntityEditModel editModel, final EntityTableModel tableModel) {
     Util.rejectNullValue(editModel, "editModel");
     this.entityID = editModel.getEntityID();
-    this.dbProvider = editModel.getDbProvider();
+    this.connectionProvider = editModel.getConnectionProvider();
     this.editModel = editModel;
     this.tableModel = tableModel;
     if (tableModel != null) {
@@ -185,8 +185,8 @@ public class DefaultEntityModel implements EntityModel {
   }
 
   /** {@inheritDoc} */
-  public final EntityDbProvider getDbProvider() {
-    return dbProvider;
+  public final EntityConnectionProvider getConnectionProvider() {
+    return connectionProvider;
   }
 
   /** {@inheritDoc} */
@@ -292,7 +292,7 @@ public class DefaultEntityModel implements EntityModel {
 
     if (Configuration.getBooleanValue(Configuration.AUTO_CREATE_ENTITY_MODELS)) {
       try {
-        final EntityModel detailModel = modelClass.getConstructor(EntityDbProvider.class).newInstance(dbProvider);
+        final EntityModel detailModel = modelClass.getConstructor(EntityConnectionProvider.class).newInstance(connectionProvider);
         addDetailModel(detailModel);
         return detailModel;
       }
@@ -312,7 +312,7 @@ public class DefaultEntityModel implements EntityModel {
     }
 
     if (Configuration.getBooleanValue(Configuration.AUTO_CREATE_ENTITY_MODELS)) {
-      final EntityModel detailModel = new DefaultEntityModel(entityID, dbProvider);
+      final EntityModel detailModel = new DefaultEntityModel(entityID, connectionProvider);
       addDetailModel(detailModel);
       return detailModel;
     }
@@ -499,7 +499,7 @@ public class DefaultEntityModel implements EntityModel {
     }
 
     try {
-      final Entity insertedEntity = dbProvider.getEntityDb().selectSingle(insertedPrimaryKeys.get(0));
+      final Entity insertedEntity = connectionProvider.getConnection().selectSingle(insertedPrimaryKeys.get(0));
       for (final EntityModel detailModel : detailModels) {
         for (final Property.ForeignKeyProperty foreignKeyProperty :
                 Entities.getForeignKeyProperties(detailModel.getEntityID(), entityID)) {
@@ -511,7 +511,7 @@ public class DefaultEntityModel implements EntityModel {
         }
       }
     }
-    catch (DbException ex) {
+    catch (DatabaseException ex) {
       throw new RuntimeException(ex);
     }
   }

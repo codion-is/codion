@@ -3,12 +3,12 @@
  */
 package org.jminor.framework.client.model.reporting;
 
-import org.jminor.common.db.exception.DbException;
+import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.reports.ReportDataWrapper;
 import org.jminor.common.model.reports.ReportException;
 import org.jminor.common.model.reports.ReportResult;
 import org.jminor.common.model.reports.ReportWrapper;
-import org.jminor.framework.db.provider.EntityDbProvider;
+import org.jminor.framework.db.provider.EntityConnectionProvider;
 
 /**
  * A static utility class for working with reports.
@@ -20,15 +20,15 @@ public final class EntityReportUtil {
   /**
    * Takes a ReportWrapper which uses a JDBC datasource and returns an initialized ReportResult object
    * @param reportWrapper the report wrapper
-   * @param dbProvider the EntityDbProvider instance to use when filling the report
+   * @param connectionProvider the EntityConnectionProvider instance to use when filling the report
    * @return an initialized ReportResult object
    * @throws ReportException in case of a report exception
    */
-  public static <T, D> ReportResult<T> fillReport(final ReportWrapper<T, D> reportWrapper, final EntityDbProvider dbProvider) throws ReportException {
+  public static <T, D> ReportResult<T> fillReport(final ReportWrapper<T, D> reportWrapper, final EntityConnectionProvider connectionProvider) throws ReportException {
     try {
-      return dbProvider.getEntityDb().fillReport(reportWrapper);
+      return connectionProvider.getConnection().fillReport(reportWrapper);
     }
-    catch (DbException e) {
+    catch (DatabaseException e) {
       throw new RuntimeException(e);
     }
   }

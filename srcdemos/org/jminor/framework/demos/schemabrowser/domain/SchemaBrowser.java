@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.demos.schemabrowser.domain;
 
-import org.jminor.common.db.dbms.DatabaseProvider;
+import org.jminor.common.db.Databases;
 import org.jminor.common.model.valuemap.StringProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Properties;
@@ -20,7 +20,7 @@ public class SchemaBrowser {
 
   private static final ResourceBundle bundle =
           ResourceBundle.getBundle("org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser",
-                  new Locale(DatabaseProvider.getDatabaseType()));
+                  new Locale(Databases.getDatabaseType()));
 
   public static final String T_SCHEMA = "schema";
   public static final String SCHEMA_NAME = bundle.getString("schema_name");

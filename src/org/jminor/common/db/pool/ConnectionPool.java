@@ -31,9 +31,9 @@ public interface ConnectionPool {
   /**
    * Return the given connection to the pool.
    * If the pool has been closed the connection is disconnected and discarded.
-   * @param dbConnection the database connection to return to the pool
+   * @param connection the database connection to return to the pool
    */
-  void returnConnection(final PoolableConnection dbConnection);
+  void returnConnection(final PoolableConnection connection);
 
   /**
    * Closes this connection pool, disconnection connections as they are checked in

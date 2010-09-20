@@ -7,7 +7,7 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.User;
-import org.jminor.framework.server.EntityDbServerAdmin;
+import org.jminor.framework.server.EntityConnectionServerAdmin;
 
 import javax.swing.DefaultListModel;
 import java.awt.event.ActionListener;
@@ -18,13 +18,13 @@ import java.rmi.RemoteException;
  */
 public final class ClientUserMonitor {
 
-  private final EntityDbServerAdmin server;
+  private final EntityConnectionServerAdmin server;
   private final Event evtConnectionTimeoutChanged = Events.event();
 
   private final DefaultListModel clientTypeListModel = new DefaultListModel();
   private final DefaultListModel userListModel = new DefaultListModel();
 
-  public ClientUserMonitor(final EntityDbServerAdmin server) throws RemoteException {
+  public ClientUserMonitor(final EntityConnectionServerAdmin server) throws RemoteException {
     this.server = server;
     refresh();
   }

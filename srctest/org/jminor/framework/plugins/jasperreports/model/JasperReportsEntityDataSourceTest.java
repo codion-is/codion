@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.plugins.jasperreports.model;
 
-import org.jminor.framework.db.EntityDbConnectionTest;
+import org.jminor.framework.db.EntityConnectionImplTest;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entity;
 
@@ -19,7 +19,7 @@ public class JasperReportsEntityDataSourceTest {
 
   @Test
   public void test() throws Exception {
-    final List<Entity> entities = EntityDbConnectionTest.DB_PROVIDER.getEntityDb().selectAll(EmpDept.T_DEPARTMENT);
+    final List<Entity> entities = EntityConnectionImplTest.DB_PROVIDER.getConnection().selectAll(EmpDept.T_DEPARTMENT);
     try {
       new JasperReportsEntityDataSource(null);
       fail();

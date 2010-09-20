@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.tools;
 
-import org.jminor.common.db.dbms.DatabaseProvider;
+import org.jminor.common.db.Databases;
 import org.jminor.common.db.dbms.H2Database;
 
 import static org.junit.Assert.assertNotNull;
@@ -13,7 +13,7 @@ public class EntityGeneratorTest {
 
   @Test
   public void test() throws Exception {
-    final H2Database database = (H2Database) DatabaseProvider.createInstance();
+    final H2Database database = (H2Database) Databases.createInstance();
     final String domainClass = EntityGenerator.getDomainClass(database,
             "Test", "CHINOOK", "org.test", "scott", "tiger", null);
     System.out.println(domainClass);

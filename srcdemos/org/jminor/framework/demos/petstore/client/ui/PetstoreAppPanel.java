@@ -12,7 +12,7 @@ import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.ui.EntityApplicationPanel;
 import org.jminor.framework.client.ui.EntityPanel;
 import org.jminor.framework.client.ui.EntityPanelProvider;
-import org.jminor.framework.db.provider.EntityDbProvider;
+import org.jminor.framework.db.provider.EntityConnectionProvider;
 import org.jminor.framework.demos.petstore.beans.ui.AddressPanel;
 import org.jminor.framework.demos.petstore.beans.ui.CategoryPanel;
 import org.jminor.framework.demos.petstore.beans.ui.ContactInfoPanel;
@@ -52,8 +52,8 @@ public final class PetstoreAppPanel extends EntityApplicationPanel {
   }
 
   @Override
-  protected EntityApplicationModel initializeApplicationModel(final EntityDbProvider dbProvider) throws CancelException {
-    return new PetstoreApplicationModel(dbProvider);
+  protected EntityApplicationModel initializeApplicationModel(final EntityConnectionProvider connectionProvider) throws CancelException {
+    return new PetstoreApplicationModel(connectionProvider);
   }
 
   public static void main(final String[] args) {
@@ -64,8 +64,8 @@ public final class PetstoreAppPanel extends EntityApplicationPanel {
   }
 
   private static final class PetstoreApplicationModel extends DefaultEntityApplicationModel {
-    private PetstoreApplicationModel(EntityDbProvider dbProvider) {
-      super(dbProvider);
+    private PetstoreApplicationModel(EntityConnectionProvider connectionProvider) {
+      super(connectionProvider);
     }
 
     @Override

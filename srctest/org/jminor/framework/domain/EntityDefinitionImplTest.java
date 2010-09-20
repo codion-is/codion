@@ -11,7 +11,7 @@ public class EntityDefinitionImplTest {
 
   @Test
   public void test() {
-    final EntityDefinition definition = new EntityDefinitionImpl("entityID", "tableName",
+    final Entity.Definition definition = new EntityDefinitionImpl("entityID", "tableName",
             Properties.primaryKeyProperty("id"),
             Properties.columnProperty("name", Types.VARCHAR)).setIdSource(IdSource.NONE).setIdValueSource("idValueSource")
             .setSelectQuery("select * from dual").setOrderByClause("order by name")

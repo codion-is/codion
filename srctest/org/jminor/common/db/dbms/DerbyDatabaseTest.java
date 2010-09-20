@@ -3,6 +3,8 @@
  */
 package org.jminor.common.db.dbms;
 
+import org.jminor.common.db.Database;
+
 import static org.junit.Assert.*;
 import org.junit.Test;
 

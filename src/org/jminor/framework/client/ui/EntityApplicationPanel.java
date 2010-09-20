@@ -24,8 +24,8 @@ import org.jminor.common.ui.images.Images;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.DefaultEntityApplicationModel;
 import org.jminor.framework.client.model.EntityApplicationModel;
-import org.jminor.framework.db.provider.EntityDbProvider;
-import org.jminor.framework.db.provider.EntityDbProviderFactory;
+import org.jminor.framework.db.provider.EntityConnectionProvider;
+import org.jminor.framework.db.provider.EntityConnectionProviders;
 import org.jminor.framework.i18n.FrameworkMessages;
 
 import org.slf4j.Logger;
@@ -281,12 +281,12 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
 
   /**
    * Initializes this application panel
-   * @param dbProvider the database provider
+   * @param connectionProvider the connection provider
    * @throws IllegalStateException if the application model has not been set
    * @throws org.jminor.common.model.CancelException in case the initialization is cancelled
    */
-  public final void initialize(final EntityDbProvider dbProvider) throws CancelException {
-    this.applicationModel = initializeApplicationModel(dbProvider);
+  public final void initialize(final EntityConnectionProvider connectionProvider) throws CancelException {
+    this.applicationModel = initializeApplicationModel(connectionProvider);
     if (applicationModel == null) {
       throw new IllegalStateException("Unable to initialize application panel without a model");
     }
@@ -315,7 +315,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
       LOG.debug("Exception while saving preferences", e);
     }
     try {
-      applicationModel.getDbProvider().disconnect();
+      applicationModel.getConnectionProvider().disconnect();
     }
     catch (Exception e) {
       LOG.debug("Exception while disconnecting from database", e);
@@ -582,16 +582,16 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    * Initializes the entity db provider
    * @param user the user
    * @param clientTypeID a string specifying the client type
-   * @return an initialized EntityDbProvider
+   * @return an initialized EntityConnectionProvider
    * @throws CancelException in case the initialization is cancelled
    */
-  protected EntityDbProvider initializeDbProvider(final User user, final String clientTypeID) throws CancelException {
-    return EntityDbProviderFactory.createEntityDbProvider(user, clientTypeID);
+  protected EntityConnectionProvider initializeConnectionProvider(final User user, final String clientTypeID) throws CancelException {
+    return EntityConnectionProviders.createConnectionProvider(user, clientTypeID);
   }
 
   /**
    * Override to add event bindings after initialization
-   * @see #initialize(org.jminor.framework.db.provider.EntityDbProvider)
+   * @see #initialize(org.jminor.framework.db.provider.EntityConnectionProvider)
    */
   protected void bindEvents() {}
 
@@ -654,7 +654,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
         }
       }
       else {
-        entityPanel = panelProvider.createPanel(applicationModel.getDbProvider());
+        entityPanel = panelProvider.createPanel(applicationModel.getConnectionProvider());
         entityPanel.initializePanel();
         if (persistEntityPanels) {
           persistentEntityPanels.put(panelProvider, entityPanel);
@@ -708,7 +708,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
       throw new IllegalStateException("No main entity panels provided");
     }
     for (final EntityPanelProvider provider : mainApplicationPanelProviders) {
-      final EntityPanel entityPanel = provider.createPanel(applicationModel.getDbProvider());
+      final EntityPanel entityPanel = provider.createPanel(applicationModel.getConnectionProvider());
       mainApplicationPanels.add(entityPanel);
       final String caption = !Util.nullOrEmpty(provider.getCaption()) ? entityPanel.getCaption() : provider.getCaption();
       applicationTabPane.addTab(caption, entityPanel);
@@ -821,7 +821,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    * @return a frame title based on the caption and user information
    */
   protected String getFrameTitle(final String frameCaption, final User user) {
-    return frameCaption + " - " + getUserInfo(user, applicationModel.getDbProvider().getDescription());
+    return frameCaption + " - " + getUserInfo(user, applicationModel.getConnectionProvider().getDescription());
   }
 
   /**
@@ -915,11 +915,11 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
 
   /**
    * Initializes the application model
-   * @param dbProvider the db provider
+   * @param connectionProvider the db provider
    * @return an initialized application model
    * @throws CancelException in case the initialization is cancelled
    */
-  protected abstract EntityApplicationModel initializeApplicationModel(final EntityDbProvider dbProvider) throws CancelException;
+  protected abstract EntityApplicationModel initializeApplicationModel(final EntityConnectionProvider connectionProvider) throws CancelException;
 
   /**
    * Returns the user, either via a login dialog or via override, called during startup
@@ -962,7 +962,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
         initializeActiveEntityPanel();
       }
     });
-    final StateObserver connected = applicationModel.getDbProvider().getConnectedState();
+    final StateObserver connected = applicationModel.getConnectionProvider().getConnectedState();
     connected.addActivateListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         UiUtil.getParentFrame(EntityApplicationPanel.this).setTitle(frameTitle);
@@ -984,15 +984,15 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     final ImageIcon applicationIcon = iconName != null ? Images.getImageIcon(getClass(), iconName) :
             Images.loadImage("jminor_logo32.gif");
     final JDialog startupDialog = showStartupDialog ? initializeStartupDialog(applicationIcon, frameCaption) : null;
-    EntityDbProvider entityDbProvider;
+    EntityConnectionProvider entityConnectionProvider;
     while (true) {
       final User user = loginRequired ? getUser(frameCaption, defaultUser, getClass().getSimpleName(), applicationIcon) : new User("", "");
       if (startupDialog != null) {
         startupDialog.setVisible(true);
       }
-      entityDbProvider = initializeDbProvider(user, frameCaption);
+      entityConnectionProvider = initializeConnectionProvider(user, frameCaption);
       try {
-        entityDbProvider.getEntityDb();
+        entityConnectionProvider.getConnection();
         break;//success
       }
       catch (Exception e) {
@@ -1010,16 +1010,16 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     }
     try {
       final long now = System.currentTimeMillis();
-      initialize(entityDbProvider);
+      initialize(entityConnectionProvider);
 
-      saveDefaultUser(entityDbProvider.getUser());
+      saveDefaultUser(entityConnectionProvider.getUser());
       if (startupDialog != null) {
         startupDialog.dispose();
       }
-      this.frameTitle = getFrameTitle(frameCaption, entityDbProvider.getUser());
+      this.frameTitle = getFrameTitle(frameCaption, entityConnectionProvider.getUser());
       final JFrame frame = prepareFrame(frameTitle, maximize, true, frameSize, applicationIcon, showFrame);
       evtApplicationStarted.fire();
-      LOG.info(frame.getTitle() + ", application started successfully, " + entityDbProvider.getUser().getUsername()
+      LOG.info(frame.getTitle() + ", application started successfully, " + entityConnectionProvider.getUser().getUsername()
               + ": " + (System.currentTimeMillis() - now) + " ms");
     }
     catch (Exception e) {

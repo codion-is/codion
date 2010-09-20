@@ -7,7 +7,7 @@ import org.jminor.framework.client.model.DefaultEntityEditModel;
 import org.jminor.framework.client.model.EntityComboBoxModel;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.ui.EntityComboBox;
-import org.jminor.framework.db.EntityDbConnectionTest;
+import org.jminor.framework.db.EntityConnectionImplTest;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
@@ -22,7 +22,7 @@ public class ComboBoxValueLinkTest {
   private EntityEditModel model;
 
   public ComboBoxValueLinkTest() {
-    model = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityDbConnectionTest.DB_PROVIDER);
+    model = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.DB_PROVIDER);
   }
 
   @Test
@@ -33,10 +33,10 @@ public class ComboBoxValueLinkTest {
     comboBoxModel.refresh();
     new ComboBoxValueLink<String>(comboBox, model, fkProperty.getPropertyID());
     assertTrue(comboBox.getSelectedItem() == null);
-    Entity department = model.getDbProvider().getEntityDb().selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "SALES");
+    Entity department = model.getConnectionProvider().getConnection().selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "SALES");
     model.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, department);
     assertEquals(comboBox.getSelectedItem(), department);
-    department = model.getDbProvider().getEntityDb().selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "OPERATIONS");
+    department = model.getConnectionProvider().getConnection().selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "OPERATIONS");
     comboBox.setSelectedItem(department);
     assertEquals(model.getValue(fkProperty.getPropertyID()), department);
   }

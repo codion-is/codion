@@ -3,25 +3,25 @@
  */
 package org.jminor.framework.tools.testing;
 
-import org.jminor.common.db.exception.DbException;
+import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.RecordNotFoundException;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.LoginPanel;
 import org.jminor.framework.Configuration;
-import org.jminor.framework.db.EntityDb;
+import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
-import org.jminor.framework.db.provider.EntityDbProvider;
-import org.jminor.framework.db.provider.EntityDbProviderFactory;
+import org.jminor.framework.db.provider.EntityConnectionProvider;
+import org.jminor.framework.db.provider.EntityConnectionProviders;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 
 import org.junit.After;
-import static org.junit.Assert.*;
 import org.junit.Before;
+import static org.junit.Assert.*;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -33,7 +33,7 @@ import java.util.Map;
  */
 public abstract class EntityTestUnit {
 
-  private EntityDbProvider entityDbProvider;
+  private EntityConnectionProvider entityConnectionProvider;
   private final Map<String, Entity> referencedEntities = new HashMap<String, Entity>();
 
   /**
@@ -49,7 +49,7 @@ public abstract class EntityTestUnit {
    */
   @Before
   public final void setUp() throws CancelException {
-    entityDbProvider = initializeDbConnectionProvider();
+    entityConnectionProvider = initializeConnectionProvider();
     doSetUp();
   }
 
@@ -58,8 +58,8 @@ public abstract class EntityTestUnit {
    */
   @After
   public final void tearDown() {
-    if (entityDbProvider != null) {
-      entityDbProvider.disconnect();
+    if (entityConnectionProvider != null) {
+      entityConnectionProvider.disconnect();
     }
     doTearDown();
   }
@@ -67,10 +67,10 @@ public abstract class EntityTestUnit {
   /**
    * Runs the insert/update/select/delete tests for the given entityID
    * @param entityID the ID of the entity to test
-   * @throws DbException in case of an exception
+   * @throws org.jminor.common.db.exception.DatabaseException in case of an exception
    */
-  public final void testEntity(final String entityID) throws DbException {
-    getEntityDb().beginTransaction();
+  public final void testEntity(final String entityID) throws DatabaseException {
+    getConnection().beginTransaction();
     try {
       initializeReferencedEntities(entityID, entityID);
       Entity testEntity = null;
@@ -85,7 +85,7 @@ public abstract class EntityTestUnit {
     }
     finally {
       referencedEntities.clear();
-      getEntityDb().rollbackTransaction();
+      getConnection().rollbackTransaction();
     }
   }
 
@@ -100,11 +100,11 @@ public abstract class EntityTestUnit {
   protected void doTearDown() {}
 
   /**
-   * @return the EntityDbProvider instance this test case should use
+   * @return the EntityConnectionProvider instance this test case should use
    * @throws CancelException in case the login was cancelled
    */
-  protected EntityDbProvider initializeDbConnectionProvider() throws CancelException {
-    return EntityDbProviderFactory.createEntityDbProvider(getTestUser(), getClass().getSimpleName());
+  protected EntityConnectionProvider initializeConnectionProvider() throws CancelException {
+    return EntityConnectionProviders.createConnectionProvider(getTestUser(), getClass().getSimpleName());
   }
 
   /**
@@ -118,17 +118,17 @@ public abstract class EntityTestUnit {
   }
 
   /**
-   * @return the EntityDbProvider instance used by this EntityTestUnit
+   * @return the EntityConnectionProvider instance used by this EntityTestUnit
    */
-  protected final EntityDbProvider getDbProvider() {
-    return entityDbProvider;
+  protected final EntityConnectionProvider getConnectionProvider() {
+    return entityConnectionProvider;
   }
 
   /**
-   * @return the EntityDb instance used by this EntityTestUnit
+   * @return the EntityConnection instance used by this EntityTestUnit
    */
-  protected final EntityDb getEntityDb() {
-    return entityDbProvider.getEntityDb();
+  protected final EntityConnection getConnection() {
+    return entityConnectionProvider.getConnection();
   }
 
   /**
@@ -149,10 +149,10 @@ public abstract class EntityTestUnit {
    * Maps the given reference entity to the given entityID
    * @param entityID the entityID
    * @param entity the reference entity to map to the given entityID
-   * @throws DbException in case of an exception
+   * @throws org.jminor.common.db.exception.DatabaseException in case of an exception
    * @see #getReferenceEntity(String)
    */
-  protected final void setReferenceEntity(final String entityID, final Entity entity) throws DbException {
+  protected final void setReferenceEntity(final String entityID, final Entity entity) throws DatabaseException {
     if (!entity.is(entityID)) {
       throw new IllegalArgumentException("Reference entity type mismatch: " + entityID + " - " + entity.getEntityID());
     }
@@ -197,11 +197,11 @@ public abstract class EntityTestUnit {
    * <code>entityIDs</code> Collection and map them to their respective entityIDs via the setReferenceEntity method
    * @param testEntityID the ID of the entity being tested
    * @param entityID the ID of the entity for which to initialize the referenced entities
-   * @throws DbException in case of an exception
+   * @throws org.jminor.common.db.exception.DatabaseException in case of an exception
    * @see #setReferenceEntity(String, org.jminor.framework.domain.Entity)
    */
   @SuppressWarnings({"UnusedDeclaration"})
-  protected final void initializeReferencedEntities(final String testEntityID, final String entityID) throws DbException {
+  protected final void initializeReferencedEntities(final String testEntityID, final String entityID) throws DatabaseException {
     for (final Property.ForeignKeyProperty fkProperty : Entities.getForeignKeyProperties(entityID)) {
       if (!fkProperty.getReferencedEntityID().equals(entityID)) {
         initializeReferencedEntities(testEntityID, fkProperty.getReferencedEntityID());
@@ -216,12 +216,12 @@ public abstract class EntityTestUnit {
    * Tests inserting the given entity
    * @param testEntity the entity to test insert for
    * @return the same entity retrieved from the database after the insert
-   * @throws DbException in case of an exception
+   * @throws org.jminor.common.db.exception.DatabaseException in case of an exception
    */
-  private Entity testInsert(final Entity testEntity) throws DbException {
-    final List<Entity.Key> keys = getEntityDb().insert(Arrays.asList(testEntity));
+  private Entity testInsert(final Entity testEntity) throws DatabaseException {
+    final List<Entity.Key> keys = getConnection().insert(Arrays.asList(testEntity));
     try {
-      return getEntityDb().selectSingle(keys.get(0));
+      return getConnection().selectSingle(keys.get(0));
     }
     catch (RecordNotFoundException e) {
       fail("Inserted entity of type " + testEntity.getEntityID() + " not returned by select after insert");
@@ -234,33 +234,33 @@ public abstract class EntityTestUnit {
    * then selecting many entities is tested.
    * @param entityID the entityID in case <code>testEntity</code> is null
    * @param testEntity the entity to test selecting
-   * @throws DbException in case of an exception
+   * @throws org.jminor.common.db.exception.DatabaseException in case of an exception
    */
-  private void testSelect(final String entityID, final Entity testEntity) throws DbException {
+  private void testSelect(final String entityID, final Entity testEntity) throws DatabaseException {
     if (testEntity != null) {
-      final Entity tmp = getEntityDb().selectSingle(testEntity.getPrimaryKey());
+      final Entity tmp = getConnection().selectSingle(testEntity.getPrimaryKey());
       assertTrue("Entity of type " + testEntity.getEntityID() + " failed equals comparison",
               testEntity.equals(tmp));
     }
     else {
-      getEntityDb().selectMany(EntityCriteriaUtil.selectCriteria(entityID, 10));
+      getConnection().selectMany(EntityCriteriaUtil.selectCriteria(entityID, 10));
     }
   }
 
   /**
    * Test updating the given entity, if the entity is not modified this test does nothing
    * @param testEntity the entity to test updating
-   * @throws DbException in case of an exception
+   * @throws org.jminor.common.db.exception.DatabaseException in case of an exception
    */
-  private void testUpdate(final Entity testEntity) throws DbException {
+  private void testUpdate(final Entity testEntity) throws DatabaseException {
     modifyEntity(testEntity);
     if (!testEntity.isModified()) {
       return;
     }
 
-    getEntityDb().update(Arrays.asList(testEntity));
+    getConnection().update(Arrays.asList(testEntity));
 
-    final Entity tmp = getEntityDb().selectSingle(testEntity.getOriginalPrimaryKey());
+    final Entity tmp = getConnection().selectSingle(testEntity.getOriginalPrimaryKey());
     assertEquals("Primary keys of entity and its updated counterpart should be equal",
             testEntity.getPrimaryKey(), tmp.getPrimaryKey());
     for (final Property.ColumnProperty property : Entities.getColumnProperties(testEntity.getEntityID())) {
@@ -278,16 +278,16 @@ public abstract class EntityTestUnit {
   /**
    * Test deleting the given entity
    * @param testEntity the entity to test deleting
-   * @throws DbException in case of an exception
+   * @throws org.jminor.common.db.exception.DatabaseException in case of an exception
    */
-  private void testDelete(final Entity testEntity) throws DbException {
-    getEntityDb().delete(EntityUtil.getPrimaryKeys(Arrays.asList(testEntity)));
+  private void testDelete(final Entity testEntity) throws DatabaseException {
+    getConnection().delete(EntityUtil.getPrimaryKeys(Arrays.asList(testEntity)));
 
     boolean caught = false;
     try {
-      getEntityDb().selectSingle(testEntity.getPrimaryKey());
+      getConnection().selectSingle(testEntity.getPrimaryKey());
     }
-    catch (DbException e) {
+    catch (DatabaseException e) {
       caught = true;
     }
     assertTrue("Entity of type " + testEntity.getEntityID() + " failed delete test", caught);
@@ -298,14 +298,14 @@ public abstract class EntityTestUnit {
    * already exist in the database, returns the same entity
    * @param entity the entity to initialize
    * @return the entity
-   * @throws DbException in case of an exception
+   * @throws org.jminor.common.db.exception.DatabaseException in case of an exception
    */
-  private Entity initialize(final Entity entity) throws DbException {
-    final List<Entity> entities = getEntityDb().selectMany(Arrays.asList(entity.getPrimaryKey()));
+  private Entity initialize(final Entity entity) throws DatabaseException {
+    final List<Entity> entities = getConnection().selectMany(Arrays.asList(entity.getPrimaryKey()));
     if (!entities.isEmpty()) {
       return entities.get(0);
     }
 
-    return getEntityDb().selectSingle(getEntityDb().insert(Arrays.asList(entity)).get(0));
+    return getConnection().selectSingle(getConnection().insert(Arrays.asList(entity)).get(0));
   }
 }

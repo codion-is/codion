@@ -25,4 +25,5 @@ grant {
   //for JasperReports report generation and domain class loading
   permission java.lang.RuntimePermission "createClassLoader";
   permission java.lang.RuntimePermission "getProtectionDomain";
+  permission java.lang.RuntimePermission "accessClassInPackage.sun.reflect";
 };

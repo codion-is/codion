@@ -110,9 +110,9 @@
 
     <rmic base="${build.base}" stubversion="1.2"
           includes="org/jminor/common/server/AbstractRemoteServer.class,
-                                         org/jminor/common/server/loadtest/RemoteLoadTestAdapter.class
-                                         org/jminor/framework/server/EntityDbRemoteAdapter.class,
-                                         org/jminor/framework/server/EntityDbRemoteServerAdmin.class">
+                                         org/jminor/common/server/loadtest/RemoteLoadTestImpl.class
+                                         org/jminor/framework/server/RemoteEntityConnectionImpl.class,
+                                         org/jminor/framework/server/EntityConnectionServerAdminImpl.class">
       <classpath refid="lib.build"/>
     </rmic>
 
@@ -192,9 +192,9 @@
                 org/jminor/framework/i18n/**,
                 org/jminor/framework/domain/**,
                 org/jminor/framework/tools/testing/**,
-                org/jminor/framework/server/provider/EntityDbRemoteProvider*,
-                org/jminor/framework/server/EntityDbRemote.class,
-                org/jminor/framework/server/EntityDbRemoteAdapter_Stub.class"/>
+                org/jminor/framework/server/provider/RemoteEntityConnectionProvider*,
+                org/jminor/framework/server/RemoteEntityConnection.class,
+                org/jminor/framework/server/RemoteEntityConnectionImpl_Stub.class"/>
 
     <jar jarfile="${dist}/${ant.project.name}-server.jar" basedir="${build.base}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
@@ -212,8 +212,8 @@
          includes="*, org/jminor/framework/Configuration*,
                 org/jminor/framework/domain/**,
                 org/jminor/framework/server/monitor/**,
-                org/jminor/framework/server/EntityDbServerAdmin.class,
-                org/jminor/framework/server/EntityDbRemoteServerAdmin_Stub.class"/>
+                org/jminor/framework/server/EntityConnectionServerAdmin.class,
+                org/jminor/framework/server/EntityConnectionServerAdmin_Stub.class"/>
 
     <jar jarfile="${dist}/${ant.project.name}-plugins.jar" basedir="${build.plugins}"
          manifest="${build.base}/META-INF/MANIFEST.MF"/>
@@ -352,6 +352,7 @@
     <copy file="${lib.logback.classic}" todir="${deploy.demos.path}/lib"/>
     <copy file="${lib.logback.core}" todir="${deploy.demos.path}/lib"/>
     <copy file="${lib.jcalendar}" todir="${deploy.demos.path}/lib"/>
+    <copy file="${lib.h2}" todir="${deploy.demos.path}/lib"/>
     <copy file="${lib.jfreechart.base}" todir="${deploy.demos.path}/lib"/>
     <copy file="${lib.jfreechart.common}" todir="${deploy.demos.path}/lib"/>
     <copy todir="${deploy.demos.config.path}">
@@ -367,6 +368,10 @@
       <fileset dir="${basedir}/resources/demos/chinook/" excludes="**/*.jrxml,**/*.bak"/>
       <fileset dir="${basedir}/resources/demos/schemabrowser/"/>
     </copy>
+    <concat destfile="${deploy.demos.path}/scripts/create_h2_db.sql" >
+      <fileset file="${basedir}/resources/demos/chinook/scripts/ddl.sql" />
+      <fileset file="${basedir}/resources/demos/chinook/scripts/dml.sql" />
+    </concat>
     <chmod dir="${deploy.demos.path}" perm="u+x" type="file" includes="*.sh"/>
     <copy todir="${deploy.demos.path}/h2db">
       <fileset dir="${db.h2.dir}"/>
@@ -617,7 +622,7 @@
 
   <target name="run_rmi_server" depends="build"
           description="Runs the RMI server">
-    <java classname="org.jminor.framework.server.EntityDbRemoteServerAdmin" fork="yes">
+    <java classname="org.jminor.framework.server.EntityConnectionServerAdminImpl" fork="yes">
       <classpath>
         <path refid="classes.base"/>
         <path refid="classes.demos"/>
@@ -645,7 +650,7 @@
 
   <target name="run_rmi_server_monitor" depends="build"
           description="Runs the RMI server monitor">
-    <java classname="org.jminor.framework.server.monitor.ui.MonitorPanel" fork="yes">
+    <java classname="org.jminor.framework.server.monitor.ui.EntityServerMonitorPanelMonitorPanel" fork="yes">
       <classpath>
         <path refid="classes.base"/>
         <path refid="lib.server.monitor"/>

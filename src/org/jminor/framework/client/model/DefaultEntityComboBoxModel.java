@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.client.model;
 
-import org.jminor.common.db.exception.DbException;
+import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.FilterCriteria;
@@ -11,7 +11,7 @@ import org.jminor.common.model.Util;
 import org.jminor.common.model.combobox.DefaultFilteredComboBoxModel;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.db.criteria.EntitySelectCriteria;
-import org.jminor.framework.db.provider.EntityDbProvider;
+import org.jminor.framework.db.provider.EntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
@@ -40,9 +40,9 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
   private final String entityID;
 
   /**
-   * the EntityDbProvider instance used by this EntityComboBoxModel
+   * the EntityConnectionProvider instance used by this EntityComboBoxModel
    */
-  private final EntityDbProvider dbProvider;
+  private final EntityConnectionProvider connectionProvider;
 
   /**
    * true if the data should only be fetched once, unless <code>forceRefresh()</code> is called
@@ -81,13 +81,13 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
 
   /**
    * @param entityID the ID of the entity this combo box model should represent
-   * @param dbProvider a EntityDbProvider instance
+   * @param connectionProvider a EntityConnectionProvider instance
    */
-  public DefaultEntityComboBoxModel(final String entityID, final EntityDbProvider dbProvider) {
+  public DefaultEntityComboBoxModel(final String entityID, final EntityConnectionProvider connectionProvider) {
     Util.rejectNullValue(entityID, "entityID");
-    Util.rejectNullValue(dbProvider, "dbProvider");
+    Util.rejectNullValue(connectionProvider, "connectionProvider");
     this.entityID = entityID;
-    this.dbProvider = dbProvider;
+    this.connectionProvider = connectionProvider;
     this.selectCriteria = EntityCriteriaUtil.selectCriteria(entityID);
     final FilterCriteria<Entity> superCriteria = super.getFilterCriteria();
     setFilterCriteria(new FilterCriteria<Entity>() {
@@ -105,8 +105,8 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
   }
 
   /** {@inheritDoc} */
-  public final EntityDbProvider getDbProvider() {
-    return dbProvider;
+  public final EntityConnectionProvider getConnectionProvider() {
+    return connectionProvider;
   }
 
   /** {@inheritDoc} */
@@ -209,7 +209,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
   public final EntityComboBoxModel createForeignKeyFilterComboBoxModel(final String foreignKeyPropertyID) {
     final Property.ForeignKeyProperty foreignKeyProperty = Entities.getForeignKeyProperty(entityID, foreignKeyPropertyID);
     final EntityComboBoxModel foreignKeyModel
-            = new DefaultEntityComboBoxModel(foreignKeyProperty.getReferencedEntityID(), dbProvider);
+            = new DefaultEntityComboBoxModel(foreignKeyProperty.getReferencedEntityID(), connectionProvider);
     foreignKeyModel.setNullValueString("-");
     foreignKeyModel.refresh();
     linkForeignKeyComboBoxModel(foreignKeyPropertyID, this, foreignKeyModel);
@@ -308,9 +308,9 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
    */
   private List<Entity> performQuery() {
     try {
-      return dbProvider.getEntityDb().selectMany(selectCriteria);
+      return connectionProvider.getConnection().selectMany(selectCriteria);
     }
-    catch (DbException e) {
+    catch (DatabaseException e) {
       throw new RuntimeException(e);
     }
   }

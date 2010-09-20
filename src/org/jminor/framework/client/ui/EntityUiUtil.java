@@ -4,7 +4,7 @@
 package org.jminor.framework.client.ui;
 
 import org.jminor.common.db.criteria.Criteria;
-import org.jminor.common.db.exception.DbException;
+import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.DateUtil;
@@ -796,7 +796,7 @@ public final class EntityUiUtil {
     }
 
     public void actionPerformed(final ActionEvent e) {
-      final EntityEditPanel editPanel = panelProvider.createEditPanel(dataProvider.getDbProvider());
+      final EntityEditPanel editPanel = panelProvider.createEditPanel(dataProvider.getConnectionProvider());
       ((EntityEditModel) editPanel.getEditModel()).addAfterInsertListener(new InsertListener() {
         @Override
         protected void inserted(final InsertEvent event) {
@@ -818,10 +818,10 @@ public final class EntityUiUtil {
           }
           else if (dataProvider instanceof EntityLookupModel) {
             try {
-              final List<Entity> insertedEntites = dataProvider.getDbProvider().getEntityDb().selectMany(lastInsertedKeys);
+              final List<Entity> insertedEntites = dataProvider.getConnectionProvider().getConnection().selectMany(lastInsertedKeys);
               ((EntityLookupModel) dataProvider).setSelectedEntities(insertedEntites);
             }
-            catch (DbException ex) {
+            catch (DatabaseException ex) {
               throw new RuntimeException(ex);
             }
           }

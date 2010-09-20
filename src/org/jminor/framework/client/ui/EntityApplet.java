@@ -4,7 +4,7 @@
 package org.jminor.framework.client.ui;
 
 import org.jminor.common.model.User;
-import org.jminor.framework.server.provider.EntityDbRemoteProvider;
+import org.jminor.framework.server.provider.RemoteEntityConnectionProvider;
 
 import javax.swing.JApplet;
 import javax.swing.SwingUtilities;
@@ -29,7 +29,7 @@ public class EntityApplet extends JApplet {
     try {
       SwingUtilities.invokeAndWait(new Runnable() {
         public void run() {
-          final EntityPanel panel = entityPanelProvider.createPanel(new EntityDbRemoteProvider(new User("scott", "tiger"),
+          final EntityPanel panel = entityPanelProvider.createPanel(new RemoteEntityConnectionProvider(new User("scott", "tiger"),
                   UUID.randomUUID(), entityPanelProvider.toString()));
           instance = panel;
           panel.initializeUI();
@@ -46,7 +46,7 @@ public class EntityApplet extends JApplet {
   public final void destroy() {
     SwingUtilities.invokeLater(new Runnable() {
       public void run() {
-        instance.getModel().getDbProvider().disconnect();
+        instance.getModel().getConnectionProvider().disconnect();
       }
     });
   }

@@ -10,7 +10,7 @@ import org.jminor.common.ui.LoadTestPanel;
 import org.jminor.framework.client.model.DefaultEntityApplicationModel;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
-import org.jminor.framework.db.provider.EntityDbProviderFactory;
+import org.jminor.framework.db.provider.EntityConnectionProviders;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
@@ -33,7 +33,7 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
   @Override
   protected EntityApplicationModel initializeApplication() throws CancelException {
     final EntityApplicationModel applicationModel = new DefaultEntityApplicationModel(
-            EntityDbProviderFactory.createEntityDbProvider(getUser(), EmpDeptLoadTest.class.getSimpleName())) {
+            EntityConnectionProviders.createConnectionProvider(getUser(), EmpDeptLoadTest.class.getSimpleName())) {
       @Override
       protected void loadDomainModel() {
         EmpDept.init();
@@ -72,7 +72,7 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
         selectRandomRow(departmentModel.getTableModel());
         final EntityModel employeeModel = departmentModel.getDetailModel(EmpDept.T_EMPLOYEE);
         if (employeeModel.getTableModel().getRowCount() > 0) {
-          employeeModel.getDbProvider().getEntityDb().beginTransaction();
+          employeeModel.getConnectionProvider().getConnection().beginTransaction();
           try {
             selectRandomRow(employeeModel.getTableModel());
             Entity selected = employeeModel.getTableModel().getSelectedItem();
@@ -87,10 +87,10 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
           }
           finally {
             if (random.nextDouble() < 0.5) {
-              employeeModel.getDbProvider().getEntityDb().rollbackTransaction();
+              employeeModel.getConnectionProvider().getConnection().rollbackTransaction();
             }
             else {
-              employeeModel.getDbProvider().getEntityDb().commitTransaction();
+              employeeModel.getConnectionProvider().getConnection().commitTransaction();
             }
           }
         }
@@ -151,9 +151,9 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
     @Override
     protected void performScenario(final EntityApplicationModel application) throws ScenarioException {
       try {
-        application.getDbProvider().disconnect();
+        application.getConnectionProvider().disconnect();
         Thread.sleep(random.nextInt(1500));
-        application.getDbProvider().getEntityDb();
+        application.getConnectionProvider().getConnection();
       }
       catch (InterruptedException e) {/**/}
     }

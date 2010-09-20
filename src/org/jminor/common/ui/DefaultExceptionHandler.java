@@ -3,7 +3,7 @@
  */
 package org.jminor.common.ui;
 
-import org.jminor.common.db.exception.DbException;
+import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Util;
@@ -28,15 +28,15 @@ public final class DefaultExceptionHandler implements ExceptionHandler {
       return;
     }
 
-    if (rootCause instanceof DbException) {
-      handleDbException((DbException) rootCause, dialogParent);
+    if (rootCause instanceof DatabaseException) {
+      handleDbException((DatabaseException) rootCause, dialogParent);
     }
     else {
       ExceptionDialog.showExceptionDialog(UiUtil.getParentWindow(dialogParent), getMessageTitle(rootCause), rootCause.getMessage(), rootCause);
     }
   }
 
-  public void handleDbException(final DbException dbException, final JComponent dialogParent) {
+  public void handleDbException(final DatabaseException dbException, final JComponent dialogParent) {
     String errMsg = dbException.getMessage();
     if (Util.nullOrEmpty(errMsg)) {
       if (dbException.getCause() == null) {

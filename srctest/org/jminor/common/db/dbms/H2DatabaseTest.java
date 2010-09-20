@@ -3,6 +3,8 @@
  */
 package org.jminor.common.db.dbms;
 
+import org.jminor.common.db.Database;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;

@@ -8,7 +8,7 @@ import org.jminor.common.i18n.Messages;
 /**
  * An exception indicating that the row in question has been modified since it was loaded.
  */
-public final class RecordModifiedException extends DbException {
+public final class RecordModifiedException extends DatabaseException {
 
   private static final String MESSAGE = Messages.get(Messages.RECORD_MODIFIED_EXCEPTION);
   private final Object row;

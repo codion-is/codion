@@ -3,11 +3,11 @@
  */
 package org.jminor.framework.server.monitor;
 
-import org.jminor.common.db.DatabaseStatistics;
+import org.jminor.common.db.Database;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
-import org.jminor.framework.server.EntityDbServerAdmin;
+import org.jminor.framework.server.EntityConnectionServerAdmin;
 
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
@@ -23,7 +23,7 @@ public final class DatabaseMonitor {
 
   private final Event evtStatsUpdateIntervalChanged = Events.event();
 
-  private final EntityDbServerAdmin server;
+  private final EntityConnectionServerAdmin server;
   private final PoolMonitor poolMonitor;
   private final XYSeries queriesPerSecond = new XYSeries("Queries per second");
   private final XYSeries selectsPerSecond = new XYSeries("Selects per second");
@@ -35,7 +35,7 @@ public final class DatabaseMonitor {
   private Timer updateTimer;
   private int statsUpdateInterval;
 
-  public DatabaseMonitor(final EntityDbServerAdmin server) throws RemoteException {
+  public DatabaseMonitor(final EntityConnectionServerAdmin server) throws RemoteException {
     this.server = server;
     this.poolMonitor = new PoolMonitor(server);
     this.queriesPerSecondCollection.addSeries(queriesPerSecond);
@@ -79,7 +79,7 @@ public final class DatabaseMonitor {
   }
 
   public void updateStats() throws RemoteException {
-    final DatabaseStatistics dbStats = server.getDatabaseStatistics();
+    final Database.Statistics dbStats = server.getDatabaseStatistics();
     queriesPerSecond.add(dbStats.getTimestamp(), dbStats.getQueriesPerSecond());
     selectsPerSecond.add(dbStats.getTimestamp(), dbStats.getSelectsPerSecond());
     insertsPerSecond.add(dbStats.getTimestamp(), dbStats.getInsertsPerSecond());

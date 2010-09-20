@@ -4,8 +4,8 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.model.User;
-import org.jminor.framework.db.EntityDbConnectionTest;
-import org.jminor.framework.db.provider.EntityDbProvider;
+import org.jminor.framework.db.EntityConnectionImplTest;
+import org.jminor.framework.db.provider.EntityConnectionProvider;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.demos.chinook.domain.Chinook;
 
@@ -71,13 +71,13 @@ public final class DefaultEntityApplicationModelTest {
 
   @Test
   public void test() {
-    final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(EntityDbConnectionTest.DB_PROVIDER) {
+    final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(EntityConnectionImplTest.DB_PROVIDER) {
       @Override
       protected void loadDomainModel() {
         EmpDept.init();
       }
     };
-    model.addMainApplicationModels(new EmpModel(model.getDbProvider()));
+    model.addMainApplicationModels(new EmpModel(model.getConnectionProvider()));
     final EntityModel deptModel = model.getMainApplicationModel(EmpDept.T_DEPARTMENT);
     final EntityModel empModel = model.getMainApplicationModel(EmpModel.class);
     assertNotNull(empModel);
@@ -88,13 +88,13 @@ public final class DefaultEntityApplicationModelTest {
     model.refresh();
     assertTrue(deptModel.getTableModel().getRowCount() > 0);
     model.logout();
-    assertFalse(model.getDbProvider().isConnected());
+    assertFalse(model.getConnectionProvider().isConnected());
     model.login(User.UNIT_TEST_USER);
   }
 
   private static class EmpModel extends DefaultEntityModel {
-    private EmpModel(final EntityDbProvider dbProvider) {
-      super(EmpDept.T_EMPLOYEE, dbProvider);
+    private EmpModel(final EntityConnectionProvider connectionProvider) {
+      super(EmpDept.T_EMPLOYEE, connectionProvider);
     }
   }
 }

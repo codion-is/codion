@@ -3,6 +3,7 @@
  */
 package org.jminor.common.db.dbms;
 
+import org.jminor.common.db.AbstractDatabase;
 import org.jminor.common.i18n.Messages;
 
 import java.sql.SQLException;

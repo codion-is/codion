@@ -12,7 +12,7 @@ import org.jminor.common.ui.control.IntBeanSpinnerValueLink;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.control.SelectedItemBeanValueLink;
 import org.jminor.common.ui.control.TextBeanValueLink;
-import org.jminor.framework.server.EntityDbServerAdmin;
+import org.jminor.framework.server.EntityConnectionServerAdmin;
 import org.jminor.framework.server.monitor.ServerMonitor;
 
 import ch.qos.logback.classic.Level;
@@ -177,7 +177,7 @@ public final class ServerMonitorPanel extends JPanel {
     infoArea.setEditable(false);
 
     final StringBuilder contents = new StringBuilder();
-    final EntityDbServerAdmin server = model.getServer();
+    final EntityConnectionServerAdmin server = model.getServer();
     contents.append("Server info:").append("\n");
     contents.append(server.getServerName()).append(" (").append(
             DateFormats.getDateFormat(DateFormats.FULL_TIMESTAMP).format(new Date(server.getStartDate()))).append(")").append(

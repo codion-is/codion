@@ -4,35 +4,35 @@
 package org.jminor.framework.tools.testing;
 
 import org.jminor.common.model.CancelException;
-import org.jminor.common.model.LoadTestModel;
-import org.jminor.common.model.User;
-import org.jminor.common.model.LoadTest;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.ItemRandomizer;
+import org.jminor.common.model.LoadTest;
+import org.jminor.common.model.LoadTestModel;
+import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
-import org.jminor.common.server.ServerException;
-import org.jminor.common.server.RemoteServer;
-import org.jminor.common.server.ServerUtil;
 import org.jminor.common.server.ClientInfo;
+import org.jminor.common.server.RemoteServer;
+import org.jminor.common.server.ServerException;
+import org.jminor.common.server.ServerUtil;
 import org.jminor.common.server.loadtest.LoadTestServer;
 import org.jminor.common.server.loadtest.RemoteLoadTest;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityTableModel;
 
+import java.awt.event.ActionListener;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.rmi.RemoteException;
-import java.rmi.NotBoundException;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.InvocationTargetException;
-import java.awt.event.ActionListener;
+import java.util.UUID;
 
 /**
  * A class for running multiple EntityApplicationModel instances for load testing purposes.
@@ -109,7 +109,7 @@ public abstract class EntityLoadTestModel extends LoadTestModel<EntityApplicatio
   /** {@inheritDoc} */
   @Override
   protected final void disconnectApplication(final EntityApplicationModel application) {
-    application.getDbProvider().disconnect();
+    application.getConnectionProvider().disconnect();
   }
 
   /** {@inheritDoc} */

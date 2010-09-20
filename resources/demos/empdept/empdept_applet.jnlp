@@ -25,7 +25,7 @@
 
     <property name="jminor.client.connectionType" value="remote"/>
     <property name="javax.net.ssl.trustStore" value="JMinorClientTruststore"/>
-    <property name="jminor.server.hostname" value="97.107.136.43" />
+    <property name="jminor.server.hostname" value="jminor.no-ip.org" />
     <property name="jminor.report.path" value="reports/demos" />
   </resources>
 

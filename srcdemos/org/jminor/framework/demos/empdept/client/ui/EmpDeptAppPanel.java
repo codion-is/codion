@@ -17,7 +17,7 @@ import org.jminor.framework.client.model.PropertySummaryModel;
 import org.jminor.framework.client.ui.EntityApplicationPanel;
 import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.client.ui.EntityTablePanel;
-import org.jminor.framework.db.provider.EntityDbProvider;
+import org.jminor.framework.db.provider.EntityConnectionProvider;
 import org.jminor.framework.demos.empdept.beans.EmployeeEditModel;
 import org.jminor.framework.demos.empdept.beans.ui.DepartmentEditPanel;
 import org.jminor.framework.demos.empdept.beans.ui.DepartmentTablePanel;
@@ -47,7 +47,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel {
   public void importJSON() throws Exception {
     final File file = UiUtil.selectFile(this, null);
     UiUtil.showInDialog(this, EntityTablePanel.createStaticEntityTablePanel(new EntityJSONParser().deserialize(
-            Util.getTextFileContents(file.getAbsolutePath(), Charset.defaultCharset())), getModel().getDbProvider()),
+            Util.getTextFileContents(file.getAbsolutePath(), Charset.defaultCharset())), getModel().getConnectionProvider()),
             true, "Import", null, null, null);
   }
 
@@ -60,8 +60,8 @@ public class EmpDeptAppPanel extends EntityApplicationPanel {
   }
 
   @Override
-  protected EntityApplicationModel initializeApplicationModel(final EntityDbProvider dbProvider) throws CancelException {
-    return new EmpDeptApplicationModel(dbProvider);
+  protected EntityApplicationModel initializeApplicationModel(final EntityConnectionProvider connectionProvider) throws CancelException {
+    return new EmpDeptApplicationModel(connectionProvider);
   }
 
   public static void main(final String[] args) {
@@ -72,8 +72,8 @@ public class EmpDeptAppPanel extends EntityApplicationPanel {
   }
 
   private static final class EmpDeptApplicationModel extends DefaultEntityApplicationModel {
-    private EmpDeptApplicationModel(final EntityDbProvider dbProvider) {
-      super(dbProvider);
+    private EmpDeptApplicationModel(final EntityConnectionProvider connectionProvider) {
+      super(connectionProvider);
     }
 
     @Override

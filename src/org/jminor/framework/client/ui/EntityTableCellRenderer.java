@@ -37,7 +37,7 @@ public class EntityTableCellRenderer implements TableCellRenderer {
    * Instantiates a new EntityTableCellRenderer
    * @param tableModel the table model
    * @see org.jminor.framework.domain.Entity.BackgroundColorProvider
-   * @see org.jminor.framework.domain.EntityDefinition#setBackgroundColorProvider(org.jminor.framework.domain.Entity.BackgroundColorProvider)
+   * @see org.jminor.framework.domain.Entity.Definition#setBackgroundColorProvider(org.jminor.framework.domain.Entity.BackgroundColorProvider)
    */
   public EntityTableCellRenderer(final EntityTableModel tableModel) {
     Util.rejectNullValue(tableModel, "tableModel");

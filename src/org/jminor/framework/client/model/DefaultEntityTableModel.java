@@ -4,7 +4,7 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.db.criteria.Criteria;
-import org.jminor.common.db.exception.DbException;
+import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.AbstractFilteredTableModel;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
@@ -17,7 +17,7 @@ import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.client.model.event.DeleteEvent;
 import org.jminor.framework.client.model.event.DeleteListener;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
-import org.jminor.framework.db.provider.EntityDbProvider;
+import org.jminor.framework.db.provider.EntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
@@ -51,9 +51,9 @@ import java.util.Map;
  * String clientTypeID = "JavadocDemo";
  * User user = new User("scott", "tiger");
  *
- * EntityDbProvider dbProvider = EntityDbProviderFactory.createEntityDbProvider(user, clientTypeID);
+ * EntityConnectionProvider connectionProvider = EntityConnectionProviderFactory.createConnectionProvider(user, clientTypeID);
  *
- * EntityTableModel tableModel = new DefaultEntityTableModel(entityID, dbProvider);
+ * EntityTableModel tableModel = new DefaultEntityTableModel(entityID, connectionProvider);
  *
  * EntityEditModel editModel = ...;
  *
@@ -72,9 +72,9 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   private final String entityID;
 
   /**
-   * The EntityDb connection provider
+   * The EntityConnection provider
    */
-  private final EntityDbProvider dbProvider;
+  private final EntityConnectionProvider connectionProvider;
 
   /**
    * The search model
@@ -118,23 +118,23 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   /**
    * Instantiates a new DefaultEntityTableModel with default column and search models.
    * @param entityID the entity ID
-   * @param dbProvider the db provider
+   * @param connectionProvider the db provider
    */
-  public DefaultEntityTableModel(final String entityID, final EntityDbProvider dbProvider) {
-    this(entityID, dbProvider, new DefaultEntityTableSearchModel(entityID, dbProvider, false));
+  public DefaultEntityTableModel(final String entityID, final EntityConnectionProvider connectionProvider) {
+    this(entityID, connectionProvider, new DefaultEntityTableSearchModel(entityID, connectionProvider, false));
   }
 
   /**
    * Instantiates a new DefaultEntityTableModel.
    * @param entityID the entity ID
-   * @param dbProvider the db provider
+   * @param connectionProvider the db provider
    * @param searchModel the search model
    */
-  public DefaultEntityTableModel(final String entityID, final EntityDbProvider dbProvider,
+  public DefaultEntityTableModel(final String entityID, final EntityConnectionProvider connectionProvider,
                                  final EntityTableSearchModel searchModel) {
     super(initializeColumnModel(entityID), searchModel.getPropertyFilterModelsOrdered());
     this.entityID = entityID;
-    this.dbProvider = dbProvider;
+    this.connectionProvider = connectionProvider;
     this.searchModel = searchModel;
     bindEvents();
   }
@@ -236,8 +236,8 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   /** {@inheritDoc} */
-  public final EntityDbProvider getDbProvider() {
-    return dbProvider;
+  public final EntityConnectionProvider getConnectionProvider() {
+    return connectionProvider;
   }
 
   /** {@inheritDoc} */
@@ -352,9 +352,9 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   /** {@inheritDoc} */
   public final void addEntitiesByPrimaryKeys(final List<Entity.Key> primaryKeys, final boolean atFront) {
     try {
-      addItems(dbProvider.getEntityDb().selectMany(primaryKeys), atFront);
+      addItems(connectionProvider.getConnection().selectMany(primaryKeys), atFront);
     }
-    catch (DbException e) {
+    catch (DatabaseException e) {
       throw new RuntimeException(e);
     }
   }
@@ -465,7 +465,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   /** {@inheritDoc} */
-  public final void deleteSelected() throws CancelException, DbException {
+  public final void deleteSelected() throws CancelException, DatabaseException {
     if (editModel == null) {
       throw new IllegalStateException("No edit model has been set for table model: " + this);
     }
@@ -473,7 +473,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   /** {@inheritDoc} */
-  public final void update(final List<Entity> entities) throws CancelException, ValidationException, DbException {
+  public final void update(final List<Entity> entities) throws CancelException, ValidationException, DatabaseException {
     if (editModel == null) {
       throw new IllegalStateException("No edit model has been set for table model: " + this);
     }
@@ -483,9 +483,9 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   /** {@inheritDoc} */
   public final Map<String, Collection<Entity>> getSelectionDependencies() {
     try {
-      return dbProvider.getEntityDb().selectDependentEntities(getSelectedItems());
+      return connectionProvider.getConnection().selectDependentEntities(getSelectedItems());
     }
-    catch (DbException e) {
+    catch (DatabaseException e) {
       throw new RuntimeException(e);
     }
   }
@@ -565,10 +565,10 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     }
 
     try {
-      return dbProvider.getEntityDb().selectMany(EntityCriteriaUtil.selectCriteria(entityID, criteria,
+      return connectionProvider.getConnection().selectMany(EntityCriteriaUtil.selectCriteria(entityID, criteria,
               Entities.getOrderByClause(entityID), fetchCount));
     }
-    catch (DbException e) {
+    catch (DatabaseException e) {
       throw new RuntimeException(e);
     }
   }

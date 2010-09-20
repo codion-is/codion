@@ -6,7 +6,7 @@ package org.jminor.framework.client.model;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
-import org.jminor.framework.db.provider.EntityDbProvider;
+import org.jminor.framework.db.provider.EntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Property;
 
@@ -24,28 +24,28 @@ import java.util.List;
  */
 public abstract class DefaultEntityApplicationModel implements EntityApplicationModel {
 
-  private final EntityDbProvider dbProvider;
+  private final EntityConnectionProvider connectionProvider;
   private final List<EntityModel> mainApplicationModels = new ArrayList<EntityModel>();
 
   /**
    * Instantiates a new DefaultEntityApplicationModel
-   * @param dbProvider the EntityDbProvider instance
+   * @param connectionProvider the EntityConnectionProvider instance
    */
-  public DefaultEntityApplicationModel(final EntityDbProvider dbProvider) {
-    this.dbProvider = dbProvider;
+  public DefaultEntityApplicationModel(final EntityConnectionProvider connectionProvider) {
+    this.connectionProvider = connectionProvider;
     loadDomainModel();
   }
 
   /** {@inheritDoc} */
   public final void logout() {
-    dbProvider.setUser(null);
+    connectionProvider.setUser(null);
     clear();
     handleLogout();
   }
 
   /** {@inheritDoc} */
   public final void login(final User user) {
-    dbProvider.setUser(user);
+    connectionProvider.setUser(user);
     for (final EntityModel mainApplicationModel : mainApplicationModels) {
       mainApplicationModel.refresh();
     }
@@ -54,12 +54,12 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
 
   /** {@inheritDoc} */
   public final User getUser() {
-    return dbProvider.getEntityDb().getUser();
+    return connectionProvider.getConnection().getUser();
   }
 
   /** {@inheritDoc} */
-  public final EntityDbProvider getDbProvider() {
-    return dbProvider;
+  public final EntityConnectionProvider getConnectionProvider() {
+    return connectionProvider;
   }
 
   /** {@inheritDoc} */
@@ -117,7 +117,7 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
 
     if (Configuration.getBooleanValue(Configuration.AUTO_CREATE_ENTITY_MODELS)) {
       try {
-        final EntityModel detailModel = new DefaultEntityModel(entityID, dbProvider);
+        final EntityModel detailModel = new DefaultEntityModel(entityID, connectionProvider);
         addMainApplicationModel(detailModel);
         return detailModel;
       }
@@ -141,7 +141,7 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
    */
   public static TreeModel getDependencyTreeModel(final String domainID) {
     final DefaultMutableTreeNode root = new DefaultMutableTreeNode(null);
-    for (final String entityID : Entities.getEntityDefinitions(domainID).values()) {
+    for (final String entityID : Entities.getDefinitions(domainID).values()) {
       if (Entities.getForeignKeyProperties(entityID).isEmpty() || referencesOnlySelf(entityID)) {
         root.add(new EntityDependencyTreeNode(domainID, entityID));
       }
@@ -234,7 +234,7 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
 
     private List<EntityDependencyTreeNode> initializeChildren() {
       final List<EntityDependencyTreeNode> childrenList = new ArrayList<EntityDependencyTreeNode>();
-      for (final String entityID : Entities.getEntityDefinitions(domainID).keySet()) {
+      for (final String entityID : Entities.getDefinitions(domainID).keySet()) {
         for (final Property.ForeignKeyProperty fkProperty : Entities.getForeignKeyProperties(entityID)) {
           if (fkProperty.getReferencedEntityID().equals(getEntityID()) && !foreignKeyCycle(fkProperty.getReferencedEntityID())) {
             childrenList.add(new EntityDependencyTreeNode(domainID, entityID));

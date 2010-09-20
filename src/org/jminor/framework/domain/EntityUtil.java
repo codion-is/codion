@@ -17,7 +17,7 @@ import java.text.Collator;
 import java.util.*;
 
 /**
- * A static utility class.
+ * A static utility class containing helper methods for working with Entity instances.
  */
 public final class EntityUtil {
 

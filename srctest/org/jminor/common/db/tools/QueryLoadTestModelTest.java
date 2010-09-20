@@ -3,7 +3,7 @@
  */
 package org.jminor.common.db.tools;
 
-import org.jminor.common.db.dbms.DatabaseProvider;
+import org.jminor.common.db.Databases;
 import org.jminor.common.model.User;
 
 import static org.junit.Assert.assertTrue;
@@ -25,7 +25,7 @@ public final class QueryLoadTestModelTest {
           new QueryLoadTestModel.QueryScenario("selectProducts", "select * from petstore.product");
   @Test
   public void test() {
-    final QueryLoadTestModel loadTest = new QueryLoadTestModel(DatabaseProvider.createInstance(), User.UNIT_TEST_USER,
+    final QueryLoadTestModel loadTest = new QueryLoadTestModel(Databases.createInstance(), User.UNIT_TEST_USER,
             Arrays.asList(SELECT_ALBUMS, SELECT_CUSTOMERS, SELECT_DEPARTMENTS,
                     SELECT_EMPLOYEE, SELECT_PRODUCTS));
     loadTest.setMinimumThinkTime(10);

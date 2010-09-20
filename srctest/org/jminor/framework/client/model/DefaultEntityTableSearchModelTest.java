@@ -1,7 +1,7 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.model.Conjunction;
-import org.jminor.framework.db.EntityDbConnectionTest;
+import org.jminor.framework.db.EntityConnectionImplTest;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 
 import static org.junit.Assert.*;
@@ -12,7 +12,7 @@ public class DefaultEntityTableSearchModelTest {
   @Test
   public void test() {
     EmpDept.init();
-    final EntityTableModel tableModel = new DefaultEntityTableModel(EmpDept.T_EMPLOYEE, EntityDbConnectionTest.DB_PROVIDER);
+    final EntityTableModel tableModel = new DefaultEntityTableModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.DB_PROVIDER);
     final EntityTableSearchModel model = tableModel.getSearchModel();
     assertEquals(EmpDept.T_EMPLOYEE, model.getEntityID());
     assertNotNull(model.getSearchableProperties());

@@ -8,7 +8,7 @@ import org.jminor.common.model.Events;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ServerLog;
 import org.jminor.common.ui.control.ToggleBeanValueLink;
-import org.jminor.framework.server.EntityDbServerAdmin;
+import org.jminor.framework.server.EntityConnectionServerAdmin;
 
 import javax.swing.ButtonModel;
 import java.rmi.RemoteException;
@@ -21,10 +21,10 @@ public final class ClientInstanceMonitor {
   private final Event evtLogginStatusChanged = Events.event();
 
   private final ClientInfo client;
-  private final EntityDbServerAdmin server;
+  private final EntityConnectionServerAdmin server;
   private ButtonModel loggingEnabledButtonModel;
 
-  public ClientInstanceMonitor(final ClientInfo client, final EntityDbServerAdmin server) {
+  public ClientInstanceMonitor(final ClientInfo client, final EntityConnectionServerAdmin server) {
     this.client = client;
     this.server = server;
   }

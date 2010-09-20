@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.server.monitor;
 
-import org.jminor.framework.server.EntityDbRemoteServerTest;
+import org.jminor.framework.server.RemoteEntityServerTest;
 
 import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
@@ -15,12 +15,12 @@ public class MonitorModelTest {
 
   @BeforeClass
   public static void setUp() throws Exception {
-    EntityDbRemoteServerTest.setUp();
+    RemoteEntityServerTest.setUp();
   }
 
   @AfterClass
   public static void tearDown() throws Exception {
-    EntityDbRemoteServerTest.tearDown();
+    RemoteEntityServerTest.tearDown();
   }
 
   @Test

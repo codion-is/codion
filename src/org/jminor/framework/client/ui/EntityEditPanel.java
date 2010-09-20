@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.client.ui;
 
-import org.jminor.common.db.exception.DbException;
+import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Conjunction;
@@ -374,7 +374,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
     catch (ValidationException v) {
       handleException(v);
     }
-    catch (DbException ex) {
+    catch (DatabaseException ex) {
       handleException(ex);
     }
 
@@ -411,7 +411,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
     catch (CancelException c) {
       return false;
     }
-    catch (DbException ex) {
+    catch (DatabaseException ex) {
       handleException(ex);
     }
 
@@ -453,7 +453,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
     catch (ValidationException v) {
       handleException(v);
     }
-    catch (DbException ex) {
+    catch (DatabaseException ex) {
       handleException(ex);
     }
 

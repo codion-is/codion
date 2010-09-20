@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.client.model;
 
-import org.jminor.common.db.exception.DbException;
+import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.FilteredTableModel;
 import org.jminor.common.model.SortingDirective;
@@ -154,7 +154,7 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
    * @param row the row for which to retrieve the background color
    * @param columnProperty the column property for which to retrieve the background color
    * @return the background color for this row and property, specified by the row entity
-   * @see org.jminor.framework.domain.EntityDefinition#setBackgroundColorProvider(org.jminor.framework.domain.Entity.BackgroundColorProvider)
+   * @see org.jminor.framework.domain.Entity.Definition#setBackgroundColorProvider(org.jminor.framework.domain.Entity.BackgroundColorProvider)
    * @see org.jminor.framework.client.ui.EntityTableCellRenderer
    */
   Color getPropertyBackgroundColor(final int row, final Property columnProperty);
@@ -194,20 +194,20 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
    * Updates the given Entities. If the entities are unmodified or the list is empty
    * this method returns silently.
    * @param entities the Entities to update
-   * @throws DbException in case of a database exception
+   * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
    * @throws CancelException in case the user cancels the operation
    * @throws org.jminor.common.db.exception.RecordModifiedException in case an entity was modified by another user
    * @throws ValidationException in case validation fails
    * @see org.jminor.framework.domain.Entity.Validator#validate(java.util.Collection, int)
    */
-  void update(final List<Entity> entities) throws CancelException, ValidationException, DbException;
+  void update(final List<Entity> entities) throws CancelException, ValidationException, DatabaseException;
 
   /**
    * Deletes the selected entities
-   * @throws DbException in case of a database exception
+   * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
    * @throws CancelException in case the user cancels the operation
    */
-  void deleteSelected() throws CancelException, DbException;
+  void deleteSelected() throws CancelException, DatabaseException;
 
   /**
    * @return whether to show all underlying entities when no criteria is applied.

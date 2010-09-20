@@ -3,7 +3,7 @@
  */
 package org.jminor.common.ui;
 
-import org.jminor.common.db.exception.DbException;
+import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
@@ -135,7 +135,7 @@ public final class ExceptionDialog extends JDialog {
   }
 
   private String translateExceptionClass(final Class<? extends Throwable> exceptionClass) {
-    if (exceptionClass.equals(DbException.class)) {
+    if (exceptionClass.equals(DatabaseException.class)) {
       return Messages.get(Messages.DATABASE_EXCEPTION);
     }
 

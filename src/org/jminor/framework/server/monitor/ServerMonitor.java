@@ -8,7 +8,7 @@ import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
 import org.jminor.common.server.RemoteServer;
 import org.jminor.framework.Configuration;
-import org.jminor.framework.server.EntityDbServerAdmin;
+import org.jminor.framework.server.EntityConnectionServerAdmin;
 
 import ch.qos.logback.classic.Level;
 import org.jfree.data.xy.XYSeries;
@@ -43,7 +43,7 @@ public final class ServerMonitor {
 
   private final String hostName;
   private final String serverName;
-  private final EntityDbServerAdmin server;
+  private final EntityConnectionServerAdmin server;
 
   private Timer updateTimer;
   private int statsUpdateInterval;
@@ -103,7 +103,7 @@ public final class ServerMonitor {
     databaseMonitor.shutdown();
   }
 
-  public EntityDbServerAdmin getServer() {
+  public EntityConnectionServerAdmin getServer() {
     return server;
   }
 
@@ -253,11 +253,11 @@ public final class ServerMonitor {
     return evtLoggingLevelChanged.getObserver();
   }
 
-  private EntityDbServerAdmin connectServer(final String serverName) throws RemoteException {
+  private EntityConnectionServerAdmin connectServer(final String serverName) throws RemoteException {
     final long time = System.currentTimeMillis();
     try {
-      final EntityDbServerAdmin db =
-              (EntityDbServerAdmin) LocateRegistry.getRegistry(hostName).lookup(serverName);
+      final EntityConnectionServerAdmin db =
+              (EntityConnectionServerAdmin) LocateRegistry.getRegistry(hostName).lookup(serverName);
       //call to validate the remote connection
       db.getServerPort();
       LOG.info("ServerMonitor connected to server: " + serverName);

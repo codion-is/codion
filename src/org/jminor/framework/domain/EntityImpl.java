@@ -47,7 +47,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
   /**
    * Keep a reference to this frequently referenced object
    */
-  private EntityDefinition definition;
+  private Definition definition;
 
   /**
    * The primary key of this entity
@@ -58,7 +58,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
    * Instantiates a new Entity
    * @param definition the definition of the entity type
    */
-  EntityImpl(final EntityDefinition definition) {
+  EntityImpl(final Definition definition) {
     this.definition = definition;
   }
 
@@ -67,7 +67,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
    * @param definition the definition of the entity type
    * @param primaryKey the primary key
    */
-  EntityImpl(final EntityDefinition definition, final Key primaryKey) {
+  EntityImpl(final Definition definition, final Key primaryKey) {
     this(definition);
     Util.rejectNullValue(primaryKey, "primaryKey");
     for (final Property.PrimaryKeyProperty property : primaryKey.getProperties()) {
@@ -139,7 +139,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
 
   /** {@inheritDoc} */
   public Object setValue(final Property property, final Object value) {
-    return setValue(property, value, true, EntityDefinitionImpl.getEntityDefinitionMap());
+    return setValue(property, value, true, EntityDefinitionImpl.getDefinitionMap());
   }
 
   /**
@@ -357,7 +357,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
 
   /**
    * @return a string representation of this entity
-   * @see org.jminor.framework.domain.EntityDefinition#toString(Entity)
+   * @see org.jminor.framework.domain.Entity.Definition#toString(Entity)
    */
   @Override
   public String toString() {
@@ -389,10 +389,10 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
       return referencedPrimaryKey;
     }
     if (foreignKeyProperty.isCompositeReference()) {
-      referencedPrimaryKey = initializeCompositeKey(foreignKeyProperty, EntityDefinitionImpl.getEntityDefinitionMap());
+      referencedPrimaryKey = initializeCompositeKey(foreignKeyProperty, EntityDefinitionImpl.getDefinitionMap());
     }
     else {
-      referencedPrimaryKey = initializeSingleValueKey(foreignKeyProperty, EntityDefinitionImpl.getEntityDefinitionMap());
+      referencedPrimaryKey = initializeSingleValueKey(foreignKeyProperty, EntityDefinitionImpl.getDefinitionMap());
     }
 
     cacheReferencedKey(foreignKeyProperty, referencedPrimaryKey);
@@ -428,7 +428,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
    * @param originalValues the original values
    * @return an initialized Entity
    */
-  static Entity entityInstance(final EntityDefinition definition, final Map<String, Object> values, final Map<String, Object> originalValues) {
+  static Entity entityInstance(final Definition definition, final Map<String, Object> values, final Map<String, Object> originalValues) {
     Util.rejectNullValue(values, "values");
     final EntityImpl entity = new EntityImpl(definition);
     for (final Map.Entry<String, Object> entry : values.entrySet()) {
@@ -480,7 +480,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
 
   private void propagateForeignKeyValues(final Property.ForeignKeyProperty foreignKeyProperty, final Entity newValue,
                                          final Collection<Property.PrimaryKeyProperty> referenceEntityPKProperties,
-                                         final boolean initialization, final Map<String, EntityDefinition> entityDefinitions) {
+                                         final boolean initialization, final Map<String, Definition> entityDefinitions) {
     setForeignKeyValues(foreignKeyProperty, newValue, referenceEntityPKProperties, initialization, entityDefinitions);
     if (definition.hasDenormalizedProperties()) {
       setDenormalizedValues(foreignKeyProperty, newValue, initialization, entityDefinitions);
@@ -500,7 +500,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
    */
   private void setForeignKeyValues(final Property.ForeignKeyProperty foreignKeyProperty, final Entity referencedEntity,
                                    final Collection<Property.PrimaryKeyProperty> referenceEntityPKProperties,
-                                   final boolean initialization, final Map<String, EntityDefinition> entityDefinitions) {
+                                   final boolean initialization, final Map<String, Definition> entityDefinitions) {
     referencedPrimaryKeysCache = null;
     for (final Property.PrimaryKeyProperty primaryKeyProperty : referenceEntityPKProperties) {
       final Property referenceProperty = foreignKeyProperty.getReferenceProperties().get(primaryKeyProperty.getIndex());
@@ -530,7 +530,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
    * @param entityDefinitions a global entity definition map
    */
   private void setDenormalizedValues(final Property.ForeignKeyProperty foreignKeyProperty, final Entity referencedEntity,
-                                     final boolean initialization, final Map<String, EntityDefinition> entityDefinitions) {
+                                     final boolean initialization, final Map<String, Definition> entityDefinitions) {
     final Collection<Property.DenormalizedProperty> denormalizedProperties =
             definition.getDenormalizedProperties(foreignKeyProperty.getPropertyID());
     if (denormalizedProperties != null) {
@@ -571,7 +571,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
   }
 
   private Key initializeSingleValueKey(final Property.ForeignKeyProperty foreignKeyProperty,
-                                       final Map<String, EntityDefinition> entityDefinitions) {
+                                       final Map<String, Definition> entityDefinitions) {
     final Property referenceKeyProperty = foreignKeyProperty.getReferenceProperties().get(0);
     final Object value = getValue(referenceKeyProperty);
     if (value == null) {
@@ -582,7 +582,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
   }
 
   private Key initializeCompositeKey(final Property.ForeignKeyProperty foreignKeyProperty,
-                                     final Map<String, EntityDefinition> entityDefinitions) {
+                                     final Map<String, Definition> entityDefinitions) {
     final Key key = new KeyImpl(entityDefinitions.get(foreignKeyProperty.getReferencedEntityID()));
     for (final Property referenceKeyProperty : foreignKeyProperty.getReferenceProperties()) {
       final Object value = getValue(referenceKeyProperty);
@@ -649,7 +649,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
    * @return the old value
    */
   private Object setValue(final Property property, final Object value, final boolean validateType,
-                          final Map<String, EntityDefinition> entityDefinitions) {
+                          final Map<String, Definition> entityDefinitions) {
     Util.rejectNullValue(property, PROPERTY_PARAM);
     if (property instanceof Property.PrimaryKeyProperty) {
       this.primaryKey = null;
@@ -701,7 +701,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
   private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
     final String entityID = (String) stream.readObject();
     final boolean isModified = stream.readBoolean();
-    definition = EntityDefinitionImpl.getEntityDefinitionMap().get(entityID);
+    definition = EntityDefinitionImpl.getDefinitionMap().get(entityID);
     if (definition == null) {
       throw new IllegalArgumentException("Undefined entity: " + entityID);
     }
@@ -785,13 +785,13 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
     /**
      * Caching this extremely frequently referenced object
      */
-    private EntityDefinition definition;
+    private Definition definition;
 
     /**
      * Instantiates a new Key for the given entity type
      * @param definition the entity definition
      */
-    KeyImpl(final EntityDefinition definition) {
+    KeyImpl(final Definition definition) {
       this.definition = definition;
       final List<Property.PrimaryKeyProperty> properties = definition.getPrimaryKeyProperties();
       final int propertyCount = properties.size();
@@ -805,7 +805,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
      * @param value the value
      * @throws RuntimeException in case this key is a multi value key
      */
-    KeyImpl(final EntityDefinition definition, final Object value) {
+    KeyImpl(final Definition definition, final Object value) {
       this(definition);
       if (compositeKey) {
         throw new IllegalArgumentException("Not a single value key");
@@ -995,7 +995,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
     @SuppressWarnings({"SuspiciousMethodCalls"})
     private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
       final String entityID = (String) stream.readObject();
-      definition = EntityDefinitionImpl.getEntityDefinitionMap().get(entityID);
+      definition = EntityDefinitionImpl.getDefinitionMap().get(entityID);
       if (definition == null) {
         throw new IllegalArgumentException("Undefined entity: " + entityID);
       }

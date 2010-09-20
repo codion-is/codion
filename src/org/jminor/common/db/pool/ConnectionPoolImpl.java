@@ -3,7 +3,7 @@
  */
 package org.jminor.common.db.pool;
 
-import org.jminor.common.db.dbms.Database;
+import org.jminor.common.db.Database;
 import org.jminor.common.model.User;
 
 import org.slf4j.Logger;
@@ -122,23 +122,23 @@ public final class ConnectionPoolImpl implements ConnectionPool {
   }
 
   /** {@inheritDoc} */
-  public void returnConnection(final PoolableConnection dbConnection) {
-    if (dbConnection.isTransactionOpen()) {
+  public void returnConnection(final PoolableConnection connection) {
+    if (connection.isTransactionOpen()) {
       throw new RuntimeException("Open transaction");
     }
-    if (closed || !dbConnection.isValid()) {
+    if (closed || !connection.isValid()) {
       synchronized (pool) {
-        inUse.remove(dbConnection);
+        inUse.remove(connection);
       }
-      connectionProvider.destroyConnection(dbConnection);
+      connectionProvider.destroyConnection(connection);
       counter.incrementConnectionsDestroyedCounter();
 
       return;
     }
     synchronized (pool) {
-      inUse.remove(dbConnection);
-      pool.push(dbConnection);
-      dbConnection.setPoolTime(System.currentTimeMillis());
+      inUse.remove(connection);
+      pool.push(connection);
+      connection.setPoolTime(System.currentTimeMillis());
     }
   }
 

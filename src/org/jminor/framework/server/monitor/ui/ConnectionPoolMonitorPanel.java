@@ -5,11 +5,11 @@ package org.jminor.framework.server.monitor.ui;
 
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.model.formats.DateFormats;
+import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.Controls;
 import org.jminor.common.ui.control.IntBeanSpinnerValueLink;
 import org.jminor.common.ui.control.ToggleBeanValueLink;
-import org.jminor.common.ui.UiUtil;
 import org.jminor.framework.server.monitor.ConnectionPoolMonitor;
 
 import org.jfree.chart.ChartFactory;

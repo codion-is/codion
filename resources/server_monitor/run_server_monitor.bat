@@ -1,1 +1,1 @@
-java -Djminor.configurationFile=server_monitor.config -Djava.security.policy=config/jminor_server_monitor.policy -cp config;lib/* org.jminor.framework.server.monitor.ui.MonitorPanel
+java -Djminor.configurationFile=server_monitor.config -Djava.security.policy=config/jminor_server_monitor.policy -cp config;lib/* org.jminor.framework.server.monitor.ui.EntityServerMonitorPanel

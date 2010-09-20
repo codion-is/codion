@@ -3,10 +3,10 @@
  */
 package org.jminor.framework.tools;
 
-import org.jminor.common.db.DbConnectionImpl;
+import org.jminor.common.db.Database;
+import org.jminor.common.db.DatabaseConnectionImpl;
+import org.jminor.common.db.Databases;
 import org.jminor.common.db.ResultPacker;
-import org.jminor.common.db.dbms.Database;
-import org.jminor.common.db.dbms.DatabaseProvider;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
@@ -61,7 +61,7 @@ public final class EntityGenerator {
         final User user = LoginPanel.getUser(null, username != null ? new User(username, null) : null);
         final String schemaName = txtSchemaName.getText();
         final String domainClassName = getDomainClassName(schemaName);
-        final String domainClass = getDomainClass(DatabaseProvider.createInstance(), domainClassName, schemaName, txtPackageName.getText(),
+        final String domainClass = getDomainClass(Databases.createInstance(), domainClassName, schemaName, txtPackageName.getText(),
                 user.getUsername(), user.getPassword(), txtTablesToInclude.getText());
         if (!chkClipboard.isSelected()) {
           Util.writeFile(domainClass, UiUtil.chooseFileToSave(null, null, domainClassName + ".java"));
@@ -81,7 +81,7 @@ public final class EntityGenerator {
   public static String getDomainClass(final Database database, final String domainClassName, final String schema, final String packageName,
                                       final String username, final String password, final String tableList) throws Exception {
     Util.rejectNullValue(schema, "schema");
-    final DbConnectionImpl dbConnection = new DbConnectionImpl(database, new User(username, password));
+    final DatabaseConnectionImpl dbConnection = new DatabaseConnectionImpl(database, new User(username, password));
     try {
       final StringBuilder builder = new StringBuilder("package ").append(packageName).append(";\n\n");
 

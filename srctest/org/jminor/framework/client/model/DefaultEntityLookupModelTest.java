@@ -4,7 +4,7 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.model.SearchType;
-import org.jminor.framework.db.EntityDbConnectionTest;
+import org.jminor.framework.db.EntityConnectionImplTest;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entities;
@@ -29,7 +29,7 @@ public final class DefaultEntityLookupModelTest {
   @Test
   public void testConstructor() {
     try {
-      new DefaultEntityLookupModel(null, EntityDbConnectionTest.DB_PROVIDER, new ArrayList<Property.ColumnProperty>());
+      new DefaultEntityLookupModel(null, EntityConnectionImplTest.DB_PROVIDER, new ArrayList<Property.ColumnProperty>());
       fail();
     }
     catch (IllegalArgumentException e) {}
@@ -39,7 +39,7 @@ public final class DefaultEntityLookupModelTest {
     }
     catch (IllegalArgumentException e) {}
     try {
-      new DefaultEntityLookupModel(EmpDept.T_EMPLOYEE, EntityDbConnectionTest.DB_PROVIDER, null);
+      new DefaultEntityLookupModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.DB_PROVIDER, null);
       fail();
     }
     catch (IllegalArgumentException e) {}
@@ -53,7 +53,7 @@ public final class DefaultEntityLookupModelTest {
   @Test
   public void theRest() {
     assertNotNull(lookupModel.getDescription());
-    assertNotNull(lookupModel.getDbProvider());
+    assertNotNull(lookupModel.getConnectionProvider());
     assertEquals(properties, lookupModel.getLookupProperties());
     assertTrue(lookupModel.isMultipleSelectionAllowed());
     lookupModel.setMultipleSelectionAllowed(false);
@@ -138,15 +138,15 @@ public final class DefaultEntityLookupModelTest {
   public void setUp() throws Exception {
     properties = Arrays.asList(Entities.getColumnProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME),
                     Entities.getColumnProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB));
-    lookupModel = new DefaultEntityLookupModel(EmpDept.T_EMPLOYEE, EntityDbConnectionTest.DB_PROVIDER, properties);
+    lookupModel = new DefaultEntityLookupModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.DB_PROVIDER, properties);
 
-    EntityDbConnectionTest.DB_PROVIDER.getEntityDb().beginTransaction();
+    EntityConnectionImplTest.DB_PROVIDER.getConnection().beginTransaction();
     setupData();
   }
 
   @After
   public void tearDown() throws Exception {
-    EntityDbConnectionTest.DB_PROVIDER.getEntityDb().rollbackTransaction();
+    EntityConnectionImplTest.DB_PROVIDER.getConnection().rollbackTransaction();
   }
 
   private boolean contains(final List<Entity> result, final String employeeName) {
@@ -197,6 +197,6 @@ public final class DefaultEntityLookupModelTest {
     emp4.setValue(EmpDept.EMPLOYEE_NAME, "Andrew");
     emp4.setValue(EmpDept.EMPLOYEE_SALARY, 1000d);
 
-    EntityDbConnectionTest.DB_PROVIDER.getEntityDb().insert(Arrays.asList(dept, emp, emp2, emp3, emp4));
+    EntityConnectionImplTest.DB_PROVIDER.getConnection().insert(Arrays.asList(dept, emp, emp2, emp3, emp4));
   }
 }

@@ -7,7 +7,7 @@ import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.db.pool.PoolableConnection;
 import org.jminor.common.model.User;
-import org.jminor.framework.server.EntityDbServerAdmin;
+import org.jminor.framework.server.EntityConnectionServerAdmin;
 
 import java.rmi.RemoteException;
 import java.sql.SQLException;
@@ -19,11 +19,11 @@ import java.util.Collection;
  */
 public final class PoolMonitor {
 
-  private final EntityDbServerAdmin server;
+  private final EntityConnectionServerAdmin server;
 
   private final Collection<ConnectionPoolMonitor> connectionPoolMonitors = new ArrayList<ConnectionPoolMonitor>();
 
-  public PoolMonitor(final EntityDbServerAdmin server) throws RemoteException {
+  public PoolMonitor(final EntityConnectionServerAdmin server) throws RemoteException {
     this.server = server;
     refresh();
   }
@@ -50,10 +50,10 @@ public final class PoolMonitor {
 
   private static final class MonitorPool implements ConnectionPool {
 
-    private final EntityDbServerAdmin server;
+    private final EntityConnectionServerAdmin server;
     private final User user;
 
-    private MonitorPool(final User user, final EntityDbServerAdmin server) {
+    private MonitorPool(final User user, final EntityConnectionServerAdmin server) {
       this.user = user;
       this.server = server;
     }

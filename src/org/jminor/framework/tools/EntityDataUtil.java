@@ -1,7 +1,7 @@
 package org.jminor.framework.tools;
 
-import org.jminor.common.db.exception.DbException;
-import org.jminor.framework.db.EntityDb;
+import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.domain.Entity;
 
@@ -21,10 +21,10 @@ public final class EntityDataUtil {
    * @param transactionBatchSize the number of records to copy between commits
    * @param copyPrimaryKeys if true primary key values are included, if false then they are assumed to be auto-generated
    * @param entityIDs the ID's of the entity types to copy
-   * @throws DbException in case of a db exception
+   * @throws org.jminor.common.db.exception.DatabaseException in case of a db exception
    */
-  public static void copyEntities(final EntityDb source, final EntityDb destination, final int transactionBatchSize,
-                                  final boolean copyPrimaryKeys, final String... entityIDs) throws DbException {
+  public static void copyEntities(final EntityConnection source, final EntityConnection destination, final int transactionBatchSize,
+                                  final boolean copyPrimaryKeys, final String... entityIDs) throws DatabaseException {
     for (final String entityID : entityIDs) {
       final List<Entity> entitiesToCopy = source.selectMany(EntityCriteriaUtil.selectCriteria(entityID).setForeignKeyFetchDepthLimit(0));
       if (!copyPrimaryKeys) {

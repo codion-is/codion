@@ -14,52 +14,65 @@ import java.util.*;
 /**
  * A class encapsulating a entity definition, such as table name, order by clause and properties.
  */
-final class EntityDefinitionImpl implements EntityDefinition {
+final class EntityDefinitionImpl implements Entity.Definition {
+
   /**
    * The entityID
    */
   private final String entityID;
+
   /**
    * The properties
    */
   private final Map<String, Property> properties;
+
   /**
    * The name of the underlying table
    */
   private final String tableName;
+
   /**
    * The domainID
    */
   private String domainID;
+
+
   /**
    * The caption to use for the entity type
    */
   private String caption;
+
   /**
    * The table (view, query) from which to select the entity
    * Used if it differs from the one used for inserts/updates
    */
   private String selectTableName;
+
   /**
    * Holds the order by clause
    */
   private String orderByClause;
+
   /**
    * The source of the entity's id (primary key), i.e. sequence name
    */
   private String idValueSource;
+
   /**
    * The IdSource
    */
   private IdSource idSource = IdSource.NONE;
+
   /**
    * The readOnly value
    */
   private boolean readOnly;
+
   /**
    * The smallDataset value
    */
   private boolean smallDataset = false;
+
   /**
    * The StringProvider used when toString() is called for this entity
    * @see org.jminor.common.model.valuemap.ValueMap.ToString
@@ -72,26 +85,32 @@ final class EntityDefinitionImpl implements EntityDefinition {
       return new StringBuilder(entityID).append(": ").append(entity.getPrimaryKey()).toString();
     }
   };
+
   /**
    * Provides the background color
    */
   private Entity.BackgroundColorProvider backgroundColorProvider = null;
+
   /**
    * The comparator
    */
   private Entity.Comparator comparator = new ComparatorImpl();
+
   /**
    * The validator
    */
   private Entity.Validator validator;
+
   /**
    * A custom sql query used when selecting entities of this type
    */
   private String selectQuery;
+
   /**
    * The IDs of the properties to use when performing a string based lookup on this entity
    */
   private List<String> searchPropertyIDs;
+
   /**
    * Links a set of derived property ids to a parent property id
    */
@@ -106,7 +125,7 @@ final class EntityDefinitionImpl implements EntityDefinition {
   private String selectColumnsString;
   private boolean hasDenormalizedProperties;
 
-  private static final Map<String, EntityDefinition> ENTITY_DEFINITIONS = new HashMap<String, EntityDefinition>();
+  private static final Map<String, Entity.Definition> ENTITY_DEFINITIONS = new HashMap<String, Entity.Definition>();
 
   /**
    * Defines a new entity type, with the entityID serving as the initial entity caption
@@ -133,7 +152,6 @@ final class EntityDefinitionImpl implements EntityDefinition {
     this.caption = entityID;
     this.tableName = tableName;
     this.selectTableName = tableName;
-    this.validator = new EntityValidator(entityID);
     this.properties = Collections.unmodifiableMap(initializeProperties(entityID, propertyDefinitions));
     final String[] selectColumnNames = initSelectColumnNames(getColumnProperties());
     for (int idx = 0; idx < selectColumnNames.length; idx++) {
@@ -158,7 +176,7 @@ final class EntityDefinitionImpl implements EntityDefinition {
   }
 
   /** {@inheritDoc} */
-  public EntityDefinition setDomainID(final String domainID) {
+  public Entity.Definition setDomainID(final String domainID) {
     this.domainID = domainID;
     return this;
   }
@@ -169,7 +187,7 @@ final class EntityDefinitionImpl implements EntityDefinition {
   }
 
   /** {@inheritDoc} */
-  public EntityDefinition setCaption(final String caption) {
+  public Entity.Definition setCaption(final String caption) {
     Util.rejectNullValue(caption, "caption");
     this.caption = caption;
     return this;
@@ -181,7 +199,7 @@ final class EntityDefinitionImpl implements EntityDefinition {
   }
 
   /** {@inheritDoc} */
-  public EntityDefinition setSmallDataset(final boolean smallDataset) {
+  public Entity.Definition setSmallDataset(final boolean smallDataset) {
     this.smallDataset = smallDataset;
     return this;
   }
@@ -192,7 +210,7 @@ final class EntityDefinitionImpl implements EntityDefinition {
   }
 
   /** {@inheritDoc} */
-  public EntityDefinition setReadOnly(final boolean readOnly) {
+  public Entity.Definition setReadOnly(final boolean readOnly) {
     this.readOnly = readOnly;
     return this;
   }
@@ -203,7 +221,7 @@ final class EntityDefinitionImpl implements EntityDefinition {
   }
 
   /** {@inheritDoc} */
-  public EntityDefinition setIdSource(final IdSource idSource) {
+  public Entity.Definition setIdSource(final IdSource idSource) {
     Util.rejectNullValue(idSource, "idSource");
     this.idSource = idSource;
     if ((idSource == IdSource.SEQUENCE || idSource == IdSource.AUTO_INCREMENT) && idValueSource == null) {
@@ -219,7 +237,7 @@ final class EntityDefinitionImpl implements EntityDefinition {
   }
 
   /** {@inheritDoc} */
-  public EntityDefinition setIdValueSource(final String idValueSource) {
+  public Entity.Definition setIdValueSource(final String idValueSource) {
     Util.rejectNullValue(idValueSource, "idValueSource");
     this.idValueSource = idValueSource;
     return this;
@@ -231,7 +249,7 @@ final class EntityDefinitionImpl implements EntityDefinition {
   }
 
   /** {@inheritDoc} */
-  public EntityDefinition setOrderByClause(final String orderByClause) {
+  public Entity.Definition setOrderByClause(final String orderByClause) {
     Util.rejectNullValue(orderByClause, "orderByClause");
     this.orderByClause = orderByClause;
     return this;
@@ -243,7 +261,7 @@ final class EntityDefinitionImpl implements EntityDefinition {
   }
 
   /** {@inheritDoc} */
-  public EntityDefinition setSelectTableName(final String selectTableName) {
+  public Entity.Definition setSelectTableName(final String selectTableName) {
     Util.rejectNullValue(selectTableName, "selectTableName");
     this.selectTableName = selectTableName;
     return this;
@@ -255,7 +273,7 @@ final class EntityDefinitionImpl implements EntityDefinition {
   }
 
   /** {@inheritDoc} */
-  public EntityDefinition setSelectQuery(final String selectQuery) {
+  public Entity.Definition setSelectQuery(final String selectQuery) {
     Util.rejectNullValue(selectQuery, "selectQuery");
     this.selectQuery = selectQuery;
     return this;
@@ -267,7 +285,7 @@ final class EntityDefinitionImpl implements EntityDefinition {
   }
 
   /** {@inheritDoc} */
-  public EntityDefinition setStringProvider(final ValueMap.ToString<String> stringProvider) {
+  public Entity.Definition setStringProvider(final ValueMap.ToString<String> stringProvider) {
     Util.rejectNullValue(stringProvider, "stringProvider");
     this.stringProvider = stringProvider;
     return this;
@@ -279,7 +297,7 @@ final class EntityDefinitionImpl implements EntityDefinition {
   }
 
   /** {@inheritDoc} */
-  public EntityDefinition setComparator(final Entity.Comparator comparator) {
+  public Entity.Definition setComparator(final Entity.Comparator comparator) {
     Util.rejectNullValue(comparator, "comparator");
     this.comparator = comparator;
     return this;
@@ -294,7 +312,7 @@ final class EntityDefinitionImpl implements EntityDefinition {
   }
 
   /** {@inheritDoc} */
-  public EntityDefinition setSearchPropertyIDs(final String... searchPropertyIDs) {
+  public Entity.Definition setSearchPropertyIDs(final String... searchPropertyIDs) {
     Util.rejectNullValue(searchPropertyIDs, "searchPropertyIDs");
     for (final String propertyID : searchPropertyIDs) {
       if (!properties.get(propertyID).isString()) {
@@ -406,25 +424,29 @@ final class EntityDefinitionImpl implements EntityDefinition {
   }
 
   /** {@inheritDoc} */
-  public EntityDefinition setToStringProvider(final ValueMap.ToString<String> toString) {
+  public Entity.Definition setToStringProvider(final ValueMap.ToString<String> toString) {
     this.stringProvider = toString;
     return this;
   }
 
   /** {@inheritDoc} */
-  public EntityDefinition setBackgroundColorProvider(final Entity.BackgroundColorProvider colorProvider) {
+  public Entity.Definition setBackgroundColorProvider(final Entity.BackgroundColorProvider colorProvider) {
     this.backgroundColorProvider = colorProvider;
     return this;
   }
 
   /** {@inheritDoc} */
-  public EntityDefinition setValidator(final Entity.Validator validator) {
+  public Entity.Definition setValidator(final Entity.Validator validator) {
     this.validator = validator;
     return this;
   }
 
   /** {@inheritDoc} */
   public Entity.Validator getValidator() {
+    if (validator == null) {
+      validator = new EntityValidator(entityID, properties, idSource.isAutoGenerated());
+    }
+
     return validator;
   }
 
@@ -449,15 +471,15 @@ final class EntityDefinitionImpl implements EntityDefinition {
     return backgroundColorProvider.getBackgroundColor(entity, property);
   }
 
-  static Map<String, EntityDefinition> getEntityDefinitionMap() {
+  static Map<String, Entity.Definition> getDefinitionMap() {
     return ENTITY_DEFINITIONS;
   }
 
   /**
-   * Returns the EntityDefinition object associated with <code>entityID</code>
+   * Returns the Entity.Definition object associated with <code>entityID</code>
    * @param entityID the entityID
    * @param propertyDefinitions the property definitions
-   * @return the EntityDefinition for the given entityID
+   * @return the Entity.Definition for the given entityID
    * @throws IllegalArgumentException in case the entity has not been defined
    */
 

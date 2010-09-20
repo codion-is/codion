@@ -46,7 +46,7 @@ public final class HostMonitor {
   }
 
   public void refresh() throws RemoteException {
-    for (final String serverName : getEntityDbRemoteServers(hostName)) {
+    for (final String serverName : getRemoteEntityServers(hostName)) {
       if (!containsServerMonitor(serverName)) {
         final ServerMonitor serverMonitor = new ServerMonitor(hostName, serverName);
         serverMonitor.addServerShutDownListener(new ActionListener() {
@@ -103,7 +103,7 @@ public final class HostMonitor {
     return false;
   }
 
-  private static List<String> getEntityDbRemoteServers(final String serverHostName) {
+  private static List<String> getRemoteEntityServers(final String serverHostName) {
     final List<String> serverNames = new ArrayList<String>();
     try {
       String message = "HostMonitor locating registry on host: " + serverHostName;

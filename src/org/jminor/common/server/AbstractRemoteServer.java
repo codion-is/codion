@@ -5,8 +5,8 @@ package org.jminor.common.server;
 
 import org.jminor.common.model.User;
 
-import java.rmi.RemoteException;
 import java.rmi.NoSuchObjectException;
+import java.rmi.RemoteException;
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
 import java.rmi.server.RMISocketFactory;

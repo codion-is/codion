@@ -5,7 +5,7 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.criteria.CriteriaSet;
-import org.jminor.common.db.exception.DbException;
+import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.EventObserver;
@@ -15,7 +15,7 @@ import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.db.criteria.EntitySelectCriteria;
-import org.jminor.framework.db.provider.EntityDbProvider;
+import org.jminor.framework.db.provider.EntityConnectionProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
@@ -49,9 +49,9 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
   private final List<Entity> selectedEntities = new ArrayList<Entity>();
 
   /**
-   * The EntityDbProvider instance used by this EntityLookupModel
+   * The EntityConnectionProvider instance used by this EntityLookupModel
    */
-  private final EntityDbProvider dbProvider;
+  private final EntityConnectionProvider connectionProvider;
 
   private Criteria additionalLookupCriteria;
   private String searchString = "";
@@ -66,14 +66,14 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
   /**
    * Instantiates a new EntityLookupModel
    * @param entityID the ID of the entity to lookup
-   * @param dbProvider the EntityDbProvider to use when performing the lookup
+   * @param connectionProvider the EntityConnectionProvider to use when performing the lookup
    * @param lookupProperties the properties to search by, these must be string based
    */
-  public DefaultEntityLookupModel(final String entityID, final EntityDbProvider dbProvider, final List<Property.ColumnProperty> lookupProperties) {
+  public DefaultEntityLookupModel(final String entityID, final EntityConnectionProvider connectionProvider, final List<Property.ColumnProperty> lookupProperties) {
     Util.rejectNullValue(entityID, "entityID");
-    Util.rejectNullValue(dbProvider, "dbProvider");
+    Util.rejectNullValue(connectionProvider, "connectionProvider");
     Util.rejectNullValue(lookupProperties, "lookupProperties");
-    this.dbProvider = dbProvider;
+    this.connectionProvider = connectionProvider;
     this.entityID = entityID;
     this.lookupProperties = lookupProperties;
     this.description = Util.getCollectionContentsAsString(getLookupProperties(), false);
@@ -85,8 +85,8 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
   }
 
   /** {@inheritDoc} */
-  public final EntityDbProvider getDbProvider() {
-    return dbProvider;
+  public final EntityConnectionProvider getConnectionProvider() {
+    return connectionProvider;
   }
 
   /** {@inheritDoc} */
@@ -230,9 +230,9 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
   /** {@inheritDoc} */
   public final List<Entity> performQuery() {
     try {
-      return dbProvider.getEntityDb().selectMany(getEntitySelectCriteria());
+      return connectionProvider.getConnection().selectMany(getEntitySelectCriteria());
     }
-    catch (DbException e) {
+    catch (DatabaseException e) {
       throw new RuntimeException(e);
     }
   }

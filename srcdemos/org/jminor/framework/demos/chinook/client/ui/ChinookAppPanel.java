@@ -8,7 +8,7 @@ import org.jminor.common.model.User;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.ControlSet;
 import org.jminor.common.ui.control.Controls;
-import org.jminor.common.db.exception.DbException;
+import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.DefaultEntityApplicationModel;
 import org.jminor.framework.client.model.EntityApplicationModel;
@@ -17,7 +17,7 @@ import org.jminor.framework.client.ui.EntityApplicationPanel;
 import org.jminor.framework.client.ui.EntityPanel;
 import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.client.ui.EntityTablePanel;
-import org.jminor.framework.db.provider.EntityDbProvider;
+import org.jminor.framework.db.provider.EntityConnectionProvider;
 import org.jminor.framework.demos.chinook.beans.ui.*;
 import org.jminor.framework.demos.chinook.domain.Chinook;
 import static org.jminor.framework.demos.chinook.domain.Chinook.*;
@@ -119,8 +119,8 @@ public final class ChinookAppPanel extends EntityApplicationPanel {
   }
 
   @Override
-  protected EntityApplicationModel initializeApplicationModel(final EntityDbProvider dbProvider) throws CancelException {
-    return new ChinookApplicationModel(dbProvider);
+  protected EntityApplicationModel initializeApplicationModel(final EntityConnectionProvider connectionProvider) throws CancelException {
+    return new ChinookApplicationModel(connectionProvider);
   }
 
   @Override
@@ -143,12 +143,12 @@ public final class ChinookAppPanel extends EntityApplicationPanel {
 
   public static final class ChinookApplicationModel extends DefaultEntityApplicationModel {
 
-    public ChinookApplicationModel(final EntityDbProvider dbProvider) {
-      super(dbProvider);
+    public ChinookApplicationModel(final EntityConnectionProvider connectionProvider) {
+      super(connectionProvider);
     }
 
-    public void updateInvoiceTotals() throws DbException {
-      getDbProvider().getEntityDb().executeProcedure(Chinook.P_UDPATE_TOTALS, null);
+    public void updateInvoiceTotals() throws DatabaseException {
+      getConnectionProvider().getConnection().executeProcedure(Chinook.P_UDPATE_TOTALS, null);
     }
 
     @Override

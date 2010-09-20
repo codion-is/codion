@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.server.monitor.ui;
 
-import org.jminor.framework.server.EntityDbRemoteServerTest;
+import org.jminor.framework.server.RemoteEntityServerTest;
 import org.jminor.framework.server.monitor.ConnectionPoolMonitor;
 import org.jminor.framework.server.monitor.DatabaseMonitor;
 import org.jminor.framework.server.monitor.MonitorModel;
@@ -17,17 +17,17 @@ public class MonitorPanelTest {
 
   @BeforeClass
   public static void setUp() throws Exception {
-    EntityDbRemoteServerTest.setUp();
+    RemoteEntityServerTest.setUp();
   }
 
   @AfterClass
   public static void tearDown() throws Exception {
-    EntityDbRemoteServerTest.tearDown();
+    RemoteEntityServerTest.tearDown();
   }
 
   @Test
   public void test() throws Exception {
-    final MonitorPanel panel = new MonitorPanel(new MonitorModel("localhost"));
+    final EntityServerMonitorPanel panel = new EntityServerMonitorPanel(new MonitorModel("localhost"));
     final ServerMonitor serverMonitor = panel.getModel().getHostMonitors().iterator().next().getServerMonitors().iterator().next();
     serverMonitor.setStatsUpdateInterval(350);
     final DatabaseMonitor databaseMonitor = serverMonitor.getDatabaseMonitor();

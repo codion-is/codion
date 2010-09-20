@@ -3,14 +3,14 @@
  */
 package org.jminor.framework.client.model;
 
-import org.jminor.common.db.exception.DbException;
+import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.valuemap.exception.ValidationException;
-import org.jminor.framework.db.EntityDb;
-import org.jminor.framework.db.EntityDbConnectionTest;
+import org.jminor.framework.db.EntityConnection;
+import org.jminor.framework.db.EntityConnectionImplTest;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
-import org.jminor.framework.db.provider.EntityDbProvider;
+import org.jminor.framework.db.provider.EntityConnectionProvider;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
@@ -31,14 +31,14 @@ public final class DefaultEntityModelTest {
   private int eventCount = 0;
 
   public static class EmpModel extends DefaultEntityModel {
-    public EmpModel(final EntityDbProvider dbProvider) {
-      super(new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, dbProvider),
-              new DefaultEntityTableModel(EmpDept.T_EMPLOYEE, dbProvider));
+    public EmpModel(final EntityConnectionProvider connectionProvider) {
+      super(new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, connectionProvider),
+              new DefaultEntityTableModel(EmpDept.T_EMPLOYEE, connectionProvider));
     }
   }
 
   @Test
-  public void testDetailModels() throws CancelException, DbException, ValidationException {
+  public void testDetailModels() throws CancelException, DatabaseException, ValidationException {
     assertTrue(departmentModel.containsDetailModel(EmpModel.class));
     final EntityModel employeeModel = departmentModel.getDetailModel(EmpModel.class);
     assertNotNull(employeeModel);
@@ -55,13 +55,13 @@ public final class DefaultEntityModelTest {
     departmentModel.getTableModel().setSelectedByPrimaryKeys(keys);
     final Entity operations = departmentModel.getTableModel().getSelectedItem();
     try {
-      departmentModel.getDbProvider().getEntityDb().beginTransaction();
+      departmentModel.getConnectionProvider().getConnection().beginTransaction();
       departmentModel.getEditModel().delete();
       assertFalse(departmentsComboBoxModel.contains(operations, true));
       departmentModel.getEditModel().setValue(EmpDept.DEPARTMENT_ID, 99);
       departmentModel.getEditModel().setValue(EmpDept.DEPARTMENT_NAME, "nameit");
       final Entity.Key insertedKey = departmentModel.getEditModel().insert().get(0);
-      final Entity inserted = departmentModel.getDbProvider().getEntityDb().selectSingle(insertedKey);
+      final Entity inserted = departmentModel.getConnectionProvider().getConnection().selectSingle(insertedKey);
       assertTrue(departmentsComboBoxModel.contains(inserted, true));
       departmentModel.getTableModel().setSelectedByPrimaryKeys(Arrays.asList(insertedKey));
       departmentModel.getEditModel().setValue(EmpDept.DEPARTMENT_NAME, "nameitagain");
@@ -79,7 +79,7 @@ public final class DefaultEntityModelTest {
       }
     }
     finally {
-      departmentModel.getDbProvider().getEntityDb().rollbackTransaction();
+      departmentModel.getConnectionProvider().getConnection().rollbackTransaction();
     }
   }
 
@@ -102,7 +102,7 @@ public final class DefaultEntityModelTest {
   @Test
   public void constructor() {
     try {
-      new DefaultEntityModel(null, EntityDbConnectionTest.DB_PROVIDER);
+      new DefaultEntityModel(null, EntityConnectionImplTest.DB_PROVIDER);
       fail();
     }
     catch (IllegalArgumentException e) {}
@@ -116,9 +116,9 @@ public final class DefaultEntityModelTest {
       fail();
     }
     catch (IllegalArgumentException e) {}
-    new DefaultEntityModel(new DefaultEntityEditModel(EmpDept.T_DEPARTMENT, EntityDbConnectionTest.DB_PROVIDER));
-    new DefaultEntityModel(new DefaultEntityTableModel(EmpDept.T_DEPARTMENT, EntityDbConnectionTest.DB_PROVIDER));
-    new DefaultEntityModel(new DefaultEntityEditModel(EmpDept.T_DEPARTMENT, EntityDbConnectionTest.DB_PROVIDER), true);
+    new DefaultEntityModel(new DefaultEntityEditModel(EmpDept.T_DEPARTMENT, EntityConnectionImplTest.DB_PROVIDER));
+    new DefaultEntityModel(new DefaultEntityTableModel(EmpDept.T_DEPARTMENT, EntityConnectionImplTest.DB_PROVIDER));
+    new DefaultEntityModel(new DefaultEntityEditModel(EmpDept.T_DEPARTMENT, EntityConnectionImplTest.DB_PROVIDER), true);
   }
 
   @Test
@@ -144,8 +144,8 @@ public final class DefaultEntityModelTest {
     assertEquals(2, eventCount);
 
     try {
-      departmentModel.getDbProvider().getEntityDb().beginTransaction();
-      final Entity department = departmentModel.getDbProvider().getEntityDb().selectSingle(
+      departmentModel.getConnectionProvider().getConnection().beginTransaction();
+      final Entity department = departmentModel.getConnectionProvider().getConnection().selectSingle(
               EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "OPERATIONS");
       departmentModel.getTableModel().setSelectedItem(department);
       final EntityModel employeeModel = departmentModel.getDetailModel(EmpDept.T_EMPLOYEE);
@@ -157,7 +157,7 @@ public final class DefaultEntityModelTest {
       assertNotNull(employeeModel.getEditModel().getEntityComboBoxModel(EmpDept.EMPLOYEE_DEPARTMENT_FK).getSelectedEntity());
     }
     finally {
-      departmentModel.getDbProvider().getEntityDb().rollbackTransaction();
+      departmentModel.getConnectionProvider().getConnection().rollbackTransaction();
     }
     departmentModel.removeBeforeRefreshListener(listener);
     departmentModel.removeAfterRefreshListener(listener);
@@ -178,7 +178,7 @@ public final class DefaultEntityModelTest {
     departmentModel.refreshDetailModels();
     assertTrue(departmentModel.getDetailModel(EmpDept.T_EMPLOYEE).getTableModel().getRowCount() > 0);
 
-    final EntityDb db = departmentModel.getDbProvider().getEntityDb();
+    final EntityConnection db = departmentModel.getConnectionProvider().getConnection();
     final Entity department = db.selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "SALES");
     final List<Entity> salesEmployees = db.selectMany(EntityCriteriaUtil.selectCriteria(EmpDept.T_EMPLOYEE,
             EmpDept.EMPLOYEE_DEPARTMENT_FK, SearchType.LIKE, department));
@@ -192,7 +192,7 @@ public final class DefaultEntityModelTest {
 
   @Before
   public void setUp() throws Exception {
-    departmentModel = new DefaultEntityModel(EmpDept.T_DEPARTMENT, EntityDbConnectionTest.DB_PROVIDER);
+    departmentModel = new DefaultEntityModel(EmpDept.T_DEPARTMENT, EntityConnectionImplTest.DB_PROVIDER);
     departmentModel.getDetailModel(EmpModel.class).getTableModel().setQueryCriteriaRequired(false);
   }
 

@@ -12,7 +12,7 @@ import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.model.reporting.EntityReportUtil;
-import org.jminor.framework.db.provider.EntityDbProviderFactory;
+import org.jminor.framework.db.provider.EntityConnectionProviders;
 import org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel;
 import org.jminor.framework.demos.chinook.domain.Chinook;
 import org.jminor.framework.domain.Entity;
@@ -65,7 +65,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
         selectRandomRow(genreModel.getTableModel());
         final EntityModel trackModel = genreModel.getDetailModel(Chinook.T_TRACK);
         selectRandomRows(trackModel.getTableModel(), 2);
-        genreModel.getDbProvider().getEntityDb().selectDependentEntities(trackModel.getTableModel().getSelectedItems());
+        genreModel.getConnectionProvider().getConnection().selectDependentEntities(trackModel.getTableModel().getSelectedItems());
       }
       catch (Exception e) {
         throw new ScenarioException(e);
@@ -92,7 +92,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
         final HashMap<String, Object> reportParameters = new HashMap<String, Object>();
         reportParameters.put("CUSTOMER_IDS", customerIDs);
         EntityReportUtil.fillReport(new JasperReportsWrapper(reportPath, reportParameters),
-                customerModel.getDbProvider());
+                customerModel.getConnectionProvider());
       }
       catch (Exception e) {
         throw new ScenarioException(e);
@@ -154,7 +154,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
   @Override
   protected EntityApplicationModel initializeApplication() throws CancelException {
     final EntityApplicationModel appModel = new ChinookAppPanel.ChinookApplicationModel(
-            EntityDbProviderFactory.createEntityDbProvider(getUser(), ChinookLoadTest.class.getSimpleName()));
+            EntityConnectionProviders.createConnectionProvider(getUser(), ChinookLoadTest.class.getSimpleName()));
     /* ARTIST
     *   ALBUM
     *     TRACK

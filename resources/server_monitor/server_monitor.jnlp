@@ -24,8 +24,8 @@
     <jar href="lib/jcalendar-1.3.2.jar"/>
 
     <property name="javax.net.ssl.trustStore" value="JMinorServerMonitorTruststore"/>
-    <property name="jminor.server.hostname" value="97.107.136.43" />
+    <property name="jminor.server.hostname" value="jminor.no-ip.org" />
   </resources>
 
-  <application-desc main-class="org.jminor.framework.server.monitor.ui.MonitorPanel"/>
+  <application-desc main-class="org.jminor.framework.server.monitor.ui.EntityServerMonitorPanel"/>
 </jnlp>

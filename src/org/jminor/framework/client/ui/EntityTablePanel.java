@@ -4,7 +4,7 @@
 package org.jminor.framework.client.ui;
 
 import org.jminor.common.db.criteria.Criteria;
-import org.jminor.common.db.exception.DbException;
+import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.ColumnSearchModel;
@@ -39,7 +39,7 @@ import org.jminor.framework.client.model.DefaultEntityEditModel;
 import org.jminor.framework.client.model.DefaultEntityTableModel;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityTableModel;
-import org.jminor.framework.db.provider.EntityDbProvider;
+import org.jminor.framework.db.provider.EntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
@@ -617,7 +617,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
         UiUtil.setWaitCursor(true, this);
         getEntityTableModel().update(selectedEntities);
       }
-      catch (DbException e) {
+      catch (DatabaseException e) {
         throw new RuntimeException(e);
       }
       catch (ValidationException e) {
@@ -632,9 +632,9 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
 
   /**
    * Shows a dialog containing lists of entities depending on the selected entities via foreign key
-   * @throws org.jminor.common.db.exception.DbException in case of a database exception
+   * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
    */
-  public final void viewSelectionDependencies() throws DbException {
+  public final void viewSelectionDependencies() throws DatabaseException {
     final Map<String, Collection<Entity>> dependencies;
     try {
       UiUtil.setWaitCursor(true, this);
@@ -644,7 +644,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
       UiUtil.setWaitCursor(false, this);
     }
     if (!dependencies.isEmpty()) {
-      showDependenciesDialog(dependencies, getEntityTableModel().getDbProvider(), this);
+      showDependenciesDialog(dependencies, getEntityTableModel().getConnectionProvider(), this);
     }
     else {
       JOptionPane.showMessageDialog(this, FrameworkMessages.get(FrameworkMessages.NONE_FOUND),
@@ -654,10 +654,10 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
 
   /**
    * Performs a delete on the active entity or if a table model is available, the selected entities
-   * @throws org.jminor.common.db.exception.DbException in case of a database exception
+   * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
    * @throws org.jminor.common.model.CancelException in the delete action is cancelled
    */
-  public final void delete() throws DbException, CancelException {
+  public final void delete() throws DatabaseException, CancelException {
     if (confirmDelete()) {
       try {
         UiUtil.setWaitCursor(true, this);
@@ -814,28 +814,30 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
   /**
    * Creates a static entity table panel showing the given entities
    * @param entities the entities to show in the panel
-   * @param dbProvider the EntityDbProvider, in case the returned panel should require one
+   * @param connectionProvider the EntityConnectionProvider, in case the returned panel should require one
    * @return a static EntityTablePanel showing the given entities
    */
-  public static EntityTablePanel createStaticEntityTablePanel(final Collection<Entity> entities, final EntityDbProvider dbProvider) {
+  public static EntityTablePanel createStaticEntityTablePanel(final Collection<Entity> entities,
+                                                              final EntityConnectionProvider connectionProvider) {
     if (entities == null || entities.isEmpty()) {
       throw new IllegalArgumentException("Cannot create an EntityPanel without the entities");
     }
 
-    return createStaticEntityTablePanel(entities, dbProvider, entities.iterator().next().getEntityID());
+    return createStaticEntityTablePanel(entities, connectionProvider, entities.iterator().next().getEntityID());
   }
 
   /**
    * Creates a static entity table panel showing the given entities
    * @param entities the entities to show in the panel
-   * @param dbProvider the EntityDbProvider, in case the returned panel should require one
+   * @param connectionProvider the EntityConnectionProvider, in case the returned panel should require one
    * @param entityID the entityID
    * @return a static EntityTablePanel showing the given entities
    */
-  public static EntityTablePanel createStaticEntityTablePanel(final Collection<Entity> entities, final EntityDbProvider dbProvider,
+  public static EntityTablePanel createStaticEntityTablePanel(final Collection<Entity> entities,
+                                                              final EntityConnectionProvider connectionProvider,
                                                               final String entityID) {
-    final EntityEditModel editModel = new DefaultEntityEditModel(entityID, dbProvider);
-    final EntityTableModel tableModel = new DefaultEntityTableModel(entityID, dbProvider) {
+    final EntityEditModel editModel = new DefaultEntityEditModel(entityID, connectionProvider);
+    final EntityTableModel tableModel = new DefaultEntityTableModel(entityID, connectionProvider) {
       /** {@inheritDoc} */
       @Override
       protected List<Entity> performQuery(final Criteria<Property.ColumnProperty> criteria) {
@@ -1404,7 +1406,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     final Entity entity = getEntityTableModel().getSelectedItem();
     if (entity != null) {
       final JPopupMenu popupMenu = new JPopupMenu();
-      populateEntityMenu(popupMenu, (Entity) entity.getCopy(), getEntityTableModel().getDbProvider());
+      populateEntityMenu(popupMenu, (Entity) entity.getCopy(), getEntityTableModel().getConnectionProvider());
       popupMenu.show(getTableScrollPane(), location.x, (int) location.getY() - (int) getTableScrollPane().getViewport().getViewPosition().getY());
     }
   }
@@ -1441,7 +1443,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
             try {
               delete();
             }
-            catch (DbException ex) {
+            catch (DatabaseException ex) {
               throw new RuntimeException(ex);
             }
             catch (CancelException ce) {/**/}
@@ -1526,12 +1528,13 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     getJTable().setAutoResizeMode(Configuration.getIntValue(Configuration.TABLE_AUTO_RESIZE_MODE));
   }
 
-  private static void showDependenciesDialog(final Map<String, Collection<Entity>> dependencies, final EntityDbProvider dbProvider,
+  private static void showDependenciesDialog(final Map<String, Collection<Entity>> dependencies,
+                                             final EntityConnectionProvider connectionProvider,
                                              final JComponent dialogParent) {
     JPanel dependenciesPanel;
     try {
       UiUtil.setWaitCursor(true, dialogParent);
-      dependenciesPanel = createDependenciesPanel(dependencies, dbProvider);
+      dependenciesPanel = createDependenciesPanel(dependencies, connectionProvider);
     }
     finally {
       UiUtil.setWaitCursor(false, dialogParent);
@@ -1548,14 +1551,14 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
   }
 
   private static JPanel createDependenciesPanel(final Map<String, Collection<Entity>> dependencies,
-                                                final EntityDbProvider dbProvider) {
+                                                final EntityConnectionProvider connectionProvider) {
     final JPanel panel = new JPanel(new BorderLayout());
     final JTabbedPane tabPane = new JTabbedPane(JTabbedPane.TOP);
     tabPane.setUI(UiUtil.getBorderlessTabbedPaneUI());
     for (final Map.Entry<String, Collection<Entity>> entry : dependencies.entrySet()) {
       final Collection<Entity> dependantEntities = entry.getValue();
       if (!dependantEntities.isEmpty()) {
-        tabPane.addTab(Entities.getCaption(entry.getKey()), createStaticEntityTablePanel(dependantEntities, dbProvider));
+        tabPane.addTab(Entities.getCaption(entry.getKey()), createStaticEntityTablePanel(dependantEntities, connectionProvider));
       }
     }
     panel.add(tabPane, BorderLayout.CENTER);
@@ -1567,11 +1570,12 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
    * Populates the given root menu with the property values of the given entity
    * @param rootMenu the menu to populate
    * @param entity the entity
-   * @param dbProvider if provided then lazy loaded entity references are loaded so that the full object graph can be shown
+   * @param connectionProvider if provided then lazy loaded entity references are loaded so that the full object graph can be shown
    */
-  private static void populateEntityMenu(final JComponent rootMenu, final Entity entity, final EntityDbProvider dbProvider) {
+  private static void populateEntityMenu(final JComponent rootMenu, final Entity entity,
+                                         final EntityConnectionProvider connectionProvider) {
     populatePrimaryKeyMenu(rootMenu, entity, new ArrayList<Property.PrimaryKeyProperty>(Entities.getPrimaryKeyProperties(entity.getEntityID())));
-    populateForeignKeyMenu(rootMenu, entity, dbProvider, new ArrayList<Property.ForeignKeyProperty>(Entities.getForeignKeyProperties(entity.getEntityID())));
+    populateForeignKeyMenu(rootMenu, entity, connectionProvider, new ArrayList<Property.ForeignKeyProperty>(Entities.getForeignKeyProperties(entity.getEntityID())));
     populateValueMenu(rootMenu, entity, new ArrayList<Property>(Entities.getProperties(entity.getEntityID(), true)));
   }
 
@@ -1582,7 +1586,8 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     }
   }
 
-  private static void populateForeignKeyMenu(final JComponent rootMenu, final Entity entity, final EntityDbProvider dbProvider,
+  private static void populateForeignKeyMenu(final JComponent rootMenu, final Entity entity,
+                                             final EntityConnectionProvider connectionProvider,
                                              final List<Property.ForeignKeyProperty> fkProperties) {
     try {
       Util.collate(fkProperties);
@@ -1592,7 +1597,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
           boolean queried = false;
           Entity referencedEntity = entity.getForeignKeyValue(property.getPropertyID());
           if (referencedEntity == null) {
-            referencedEntity = dbProvider.getEntityDb().selectSingle(entity.getReferencedPrimaryKey(property));
+            referencedEntity = connectionProvider.getConnection().selectSingle(entity.getReferencedPrimaryKey(property));
             entity.removeValue(property.getPropertyID());
             entity.setValue(property, referencedEntity);
             queried = true;
@@ -1601,7 +1606,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
                   .append("] ").append(property.getCaption()).append(": ");
           text.append(referencedEntity.toString());
           final JMenu foreignKeyMenu = new JMenu(text.toString());
-          populateEntityMenu(foreignKeyMenu, entity.getForeignKeyValue(property.getPropertyID()), dbProvider);
+          populateEntityMenu(foreignKeyMenu, entity.getForeignKeyValue(property.getPropertyID()), connectionProvider);
           rootMenu.add(foreignKeyMenu);
         }
         else {
@@ -1610,7 +1615,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
         }
       }
     }
-    catch (DbException e) {
+    catch (DatabaseException e) {
       throw new RuntimeException(e);
     }
   }

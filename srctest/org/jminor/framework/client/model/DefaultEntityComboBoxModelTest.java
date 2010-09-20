@@ -4,7 +4,7 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.db.criteria.SimpleCriteria;
-import org.jminor.framework.db.EntityDbConnectionTest;
+import org.jminor.framework.db.EntityConnectionImplTest;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entity;
@@ -21,13 +21,13 @@ public final class DefaultEntityComboBoxModelTest {
 
   public DefaultEntityComboBoxModelTest() {
     EmpDept.init();
-    comboBoxModel = new DefaultEntityComboBoxModel(EmpDept.T_EMPLOYEE, EntityDbConnectionTest.DB_PROVIDER);
+    comboBoxModel = new DefaultEntityComboBoxModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.DB_PROVIDER);
   }
 
   @Test
   public void testConstructor() {
     try {
-      new DefaultEntityComboBoxModel(null, EntityDbConnectionTest.DB_PROVIDER);
+      new DefaultEntityComboBoxModel(null, EntityConnectionImplTest.DB_PROVIDER);
       fail();
     }
     catch (IllegalArgumentException e) {}
@@ -60,7 +60,7 @@ public final class DefaultEntityComboBoxModelTest {
     }
     catch (RuntimeException e) {}
 
-    final Entity clark = comboBoxModel.getDbProvider().getEntityDb().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "CLARK");
+    final Entity clark = comboBoxModel.getConnectionProvider().getConnection().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "CLARK");
     comboBoxModel.setSelectedItem(clark);
     assertEquals(clark, comboBoxModel.getSelectedEntity());
     comboBoxModel.setSelectedItem("test");
@@ -70,12 +70,12 @@ public final class DefaultEntityComboBoxModelTest {
     assertEquals(clark, comboBoxModel.getSelectedEntity());
 
     //test foreign key filtering
-    final Entity sales = comboBoxModel.getDbProvider().getEntityDb().selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "SALES");
+    final Entity sales = comboBoxModel.getConnectionProvider().getConnection().selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "SALES");
     comboBoxModel.setForeignKeyFilterEntities(EmpDept.EMPLOYEE_DEPARTMENT_FK, Arrays.asList(sales));
     for (int i = 0; i < comboBoxModel.getSize(); i++) {
       assertEquals(((Entity) comboBoxModel.getElementAt(0)).getForeignKeyValue(EmpDept.EMPLOYEE_DEPARTMENT_FK), sales);
     }
-    final Entity research = comboBoxModel.getDbProvider().getEntityDb().selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "RESEARCH");
+    final Entity research = comboBoxModel.getConnectionProvider().getConnection().selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "RESEARCH");
     comboBoxModel.createForeignKeyFilterComboBoxModel(EmpDept.EMPLOYEE_DEPARTMENT_FK).setSelectedItem(research);
     for (int i = 0; i < comboBoxModel.getSize(); i++) {
       assertEquals(((Entity) comboBoxModel.getElementAt(0)).getForeignKeyValue(EmpDept.EMPLOYEE_DEPARTMENT_FK), research);

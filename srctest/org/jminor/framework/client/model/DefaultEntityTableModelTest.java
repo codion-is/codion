@@ -6,7 +6,7 @@ package org.jminor.framework.client.model;
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.model.ColumnSearchModel;
 import org.jminor.common.model.reports.ReportDataWrapper;
-import org.jminor.framework.db.EntityDbConnectionTest;
+import org.jminor.framework.db.EntityConnectionImplTest;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityTestDomain;
@@ -40,22 +40,22 @@ public final class DefaultEntityTableModelTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void setEditModelWrongEntityID() {
-    final EntityTableModel tableModel = new DefaultEntityTableModel(EntityTestDomain.T_DETAIL, EntityDbConnectionTest.DB_PROVIDER);
-    final EntityEditModel editModel = new DefaultEntityEditModel(EntityTestDomain.T_MASTER, EntityDbConnectionTest.DB_PROVIDER);
+    final EntityTableModel tableModel = new DefaultEntityTableModel(EntityTestDomain.T_DETAIL, EntityConnectionImplTest.DB_PROVIDER);
+    final EntityEditModel editModel = new DefaultEntityEditModel(EntityTestDomain.T_MASTER, EntityConnectionImplTest.DB_PROVIDER);
     tableModel.setEditModel(editModel);
   }
 
   @Test(expected = IllegalStateException.class)
   public void setEditModelAlreadySet() {
     assertTrue(testModel.hasEditModel());
-    final EntityEditModel editModel = new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, EntityDbConnectionTest.DB_PROVIDER);
+    final EntityEditModel editModel = new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, EntityConnectionImplTest.DB_PROVIDER);
     testModel.setEditModel(editModel);
   }
 
   @Test
   public void setAndGetEditModel() {
-    final EntityTableModel tableModel = new DefaultEntityTableModel(EntityTestDomain.T_DETAIL, EntityDbConnectionTest.DB_PROVIDER);
-    final EntityEditModel editModel = new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, EntityDbConnectionTest.DB_PROVIDER);
+    final EntityTableModel tableModel = new DefaultEntityTableModel(EntityTestDomain.T_DETAIL, EntityConnectionImplTest.DB_PROVIDER);
+    final EntityEditModel editModel = new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, EntityConnectionImplTest.DB_PROVIDER);
     assertFalse(tableModel.hasEditModel());
     tableModel.setEditModel(editModel);
     assertTrue(tableModel.hasEditModel());
@@ -64,14 +64,14 @@ public final class DefaultEntityTableModelTest {
 
   @Test(expected = IllegalStateException.class)
   public void getEditModelNoEditModelSet() {
-    final EntityTableModel tableModel = new DefaultEntityTableModel(EntityTestDomain.T_DETAIL, EntityDbConnectionTest.DB_PROVIDER);
+    final EntityTableModel tableModel = new DefaultEntityTableModel(EntityTestDomain.T_DETAIL, EntityConnectionImplTest.DB_PROVIDER);
     tableModel.getEditModel();
   }
 
   @Test
   public void isUpdateAllowed() {
-    final EntityTableModel tableModel = new DefaultEntityTableModel(EntityTestDomain.T_DETAIL, EntityDbConnectionTest.DB_PROVIDER);
-    final EntityEditModel editModel = new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, EntityDbConnectionTest.DB_PROVIDER);
+    final EntityTableModel tableModel = new DefaultEntityTableModel(EntityTestDomain.T_DETAIL, EntityConnectionImplTest.DB_PROVIDER);
+    final EntityEditModel editModel = new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, EntityConnectionImplTest.DB_PROVIDER);
     assertFalse(tableModel.isUpdateAllowed());
     tableModel.setEditModel(editModel);
     assertTrue(tableModel.isUpdateAllowed());
@@ -81,8 +81,8 @@ public final class DefaultEntityTableModelTest {
 
   @Test
   public void isDeleteAllowed() {
-    final EntityTableModel tableModel = new DefaultEntityTableModel(EntityTestDomain.T_DETAIL, EntityDbConnectionTest.DB_PROVIDER);
-    final EntityEditModel editModel = new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, EntityDbConnectionTest.DB_PROVIDER);
+    final EntityTableModel tableModel = new DefaultEntityTableModel(EntityTestDomain.T_DETAIL, EntityConnectionImplTest.DB_PROVIDER);
+    final EntityEditModel editModel = new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, EntityConnectionImplTest.DB_PROVIDER);
     assertFalse(tableModel.isDeleteAllowed());
     tableModel.setEditModel(editModel);
     assertTrue(tableModel.isDeleteAllowed());
@@ -92,7 +92,7 @@ public final class DefaultEntityTableModelTest {
 
   @Test
   public void settersAndGetters() {
-    assertEquals(EntityDbConnectionTest.DB_PROVIDER, testModel.getDbProvider());
+    assertEquals(EntityConnectionImplTest.DB_PROVIDER, testModel.getConnectionProvider());
     assertEquals(EntityTestDomain.T_DETAIL, testModel.getEntityID());
     testModel.setDetailModel(false);
     assertFalse(testModel.isDetailModel());
@@ -195,8 +195,8 @@ public final class DefaultEntityTableModelTest {
 
   public static final class EntityTableModelTmp extends DefaultEntityTableModel {
     public EntityTableModelTmp() {
-      super(EntityTestDomain.T_DETAIL, EntityDbConnectionTest.DB_PROVIDER);
-      setEditModel(new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, EntityDbConnectionTest.DB_PROVIDER));
+      super(EntityTestDomain.T_DETAIL, EntityConnectionImplTest.DB_PROVIDER);
+      setEditModel(new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, EntityConnectionImplTest.DB_PROVIDER));
     }
     @Override
     protected List<Entity> performQuery(final Criteria criteria) {

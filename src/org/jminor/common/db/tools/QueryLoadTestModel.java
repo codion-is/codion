@@ -3,8 +3,8 @@
  */
 package org.jminor.common.db.tools;
 
-import org.jminor.common.db.DbConnectionImpl;
-import org.jminor.common.db.dbms.Database;
+import org.jminor.common.db.Database;
+import org.jminor.common.db.DatabaseConnectionImpl;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolImpl;
 import org.jminor.common.db.pool.PoolableConnection;
@@ -178,7 +178,7 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
 
     /** {@inheritDoc} */
     public PoolableConnection createConnection(final User user) throws ClassNotFoundException, SQLException {
-      return new DbConnectionImpl(database, user, database.createConnection(user));
+      return new DatabaseConnectionImpl(database, user, database.createConnection(user));
     }
 
     /** {@inheritDoc} */

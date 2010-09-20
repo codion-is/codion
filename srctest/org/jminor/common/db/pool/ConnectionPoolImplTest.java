@@ -3,9 +3,9 @@
  */
 package org.jminor.common.db.pool;
 
-import org.jminor.common.db.DbConnectionImpl;
-import org.jminor.common.db.dbms.Database;
-import org.jminor.common.db.dbms.DatabaseProvider;
+import org.jminor.common.db.Database;
+import org.jminor.common.db.DatabaseConnectionImpl;
+import org.jminor.common.db.Databases;
 import org.jminor.common.db.tools.QueryLoadTestModel;
 import org.jminor.common.model.User;
 
@@ -29,7 +29,7 @@ public class ConnectionPoolImplTest {
   @Test
   public void loadTest() throws Exception {
     final long startTime = System.currentTimeMillis();
-    final Database database = DatabaseProvider.createInstance();
+    final Database database = Databases.createInstance();
     final QueryLoadTestModel model = new QueryLoadTestModel(database, User.UNIT_TEST_USER,
             Arrays.asList(new QueryLoadTestModel.QueryScenario("selectEmployees", "select * from scott.emp")));
     model.addApplicationBatch();
@@ -189,9 +189,9 @@ public class ConnectionPoolImplTest {
 
   private static PoolableConnectionProvider createConnectionProvider() {
     return new PoolableConnectionProvider() {
-      final Database database = DatabaseProvider.createInstance();
+      final Database database = Databases.createInstance();
       public PoolableConnection createConnection(final User user) throws ClassNotFoundException, SQLException {
-        return new DbConnectionImpl(database, user);
+        return new DatabaseConnectionImpl(database, user);
       }
       public void destroyConnection(final PoolableConnection connection) {
         connection.disconnect();
