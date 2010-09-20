@@ -128,7 +128,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
    */
   @Override
   public boolean isModified() {
-    return writablePropertiesModified();
+    return super.isModified() && writablePropertiesModified();
   }
 
   /** {@inheritDoc} */

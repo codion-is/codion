@@ -2205,3 +2205,4 @@
   DefaultEntityTableModel.getValueAt() returns valueAsString for value list and foreign key properties
   EntityImpl.getValueAsString() now returns the referenced primary key as string for non-loaded foreign key values
   Major refactoring/renaming
+  EntityImpl.isModified() now checks super.isModified() before going any further
