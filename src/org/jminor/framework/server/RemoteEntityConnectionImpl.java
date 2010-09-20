@@ -66,38 +66,47 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
   private static final long serialVersionUID = 1;
 
   private static final Logger LOG = LoggerFactory.getLogger(RemoteEntityConnectionImpl.class);
+
   /**
    * Contains information about the client using this connection
    */
   private final ClientInfo clientInfo;
+
   /**
    * Contains information about the underlying database
    */
   private final Database database;
+
   /**
    * A Proxy for logging method calls
    */
   private final EntityConnection loggingEntityConnectionProxy;
+
   /**
    * The db connection used if connection pooling is not enabled
    */
   private EntityConnectionImpl entityConnection;
+
   /**
    * Indicates whether or not this remote connection is enabled
    */
   private boolean connected = true;
+
   /**
    * The date and time when this remote connection was established
    */
   private final long creationDate = System.currentTimeMillis();
+
   /**
    * The object containing the method call log
    */
   private final transient MethodLogger methodLogger;
+
   /**
    * Contains the active remote connections, that is, those connections that are in the middle of serving a request
    */
   private static final List<RemoteEntityConnectionImpl> ACTIVE_CONNECTIONS = Collections.synchronizedList(new ArrayList<RemoteEntityConnectionImpl>());
+
   /**
    * The available connection pools
    */
