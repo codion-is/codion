@@ -30,6 +30,7 @@ import java.util.concurrent.Executors;
 public abstract class LoadTestModel<T> implements LoadTest {
 
   public static final int DEFAULT_CHART_DATA_UPDATE_INTERVAL_MS = 2000;
+  public static final int DEFAULT_WARNING_TIME_MS = 2000;
 
   protected static final Logger LOG = LoggerFactory.getLogger(LoadTestModel.class);
 
@@ -97,6 +98,18 @@ public abstract class LoadTestModel<T> implements LoadTest {
    * @param maximumThinkTime the maximum think time, by default the minimum think time is max / 2
    * @param loginDelayFactor the value with which to multiply the think time when delaying login
    * @param applicationBatchSize the number of applications to add in a batch
+   */
+  public LoadTestModel(final User user, final int maximumThinkTime, final int loginDelayFactor,
+                       final int applicationBatchSize) {
+    this(user, maximumThinkTime, loginDelayFactor, applicationBatchSize, DEFAULT_WARNING_TIME_MS);
+  }
+
+  /**
+   * Constructs a new LoadTestModel.
+   * @param user the default user to use when initializing applications
+   * @param maximumThinkTime the maximum think time, by default the minimum think time is max / 2
+   * @param loginDelayFactor the value with which to multiply the think time when delaying login
+   * @param applicationBatchSize the number of applications to add in a batch
    * @param warningTime a work request is considered 'delayed' if the time it takes to process it exceeds this value (ms)
    */
   public LoadTestModel(final User user, final int maximumThinkTime, final int loginDelayFactor,
@@ -111,10 +124,24 @@ public abstract class LoadTestModel<T> implements LoadTest {
    * @param maximumThinkTime the maximum think time, by default the minimum think time is max / 2
    * @param loginDelayFactor the value with which to multiply the think time when delaying login
    * @param applicationBatchSize the number of applications to add in a batch
+   */
+  public LoadTestModel(final User user, final Collection<? extends UsageScenario<T>> usageScenarios,
+                       final int maximumThinkTime, final int loginDelayFactor, final int applicationBatchSize) {
+    this(user, usageScenarios, maximumThinkTime, loginDelayFactor, applicationBatchSize, DEFAULT_WARNING_TIME_MS);
+  }
+
+  /**
+   * Constructs a new LoadTestModel.
+   * @param user the default user to use when initializing applications
+   * @param usageScenarios the usage scenarios to use
+   * @param maximumThinkTime the maximum think time, by default the minimum think time is max / 2
+   * @param loginDelayFactor the value with which to multiply the think time when delaying login
+   * @param applicationBatchSize the number of applications to add in a batch
    * @param warningTime a work request is considered 'delayed' if the time it takes to process it exceeds this value (ms)
    */
-  public LoadTestModel(final User user, final Collection<? extends UsageScenario<T>> usageScenarios, final int maximumThinkTime,
-                       final int loginDelayFactor, final int applicationBatchSize, final int warningTime) {
+  public LoadTestModel(final User user, final Collection<? extends UsageScenario<T>> usageScenarios,
+                       final int maximumThinkTime, final int loginDelayFactor, final int applicationBatchSize,
+                       final int warningTime) {
     if (maximumThinkTime <= 0) {
       throw new IllegalArgumentException("Maximum think time must be a positive integer");
     }

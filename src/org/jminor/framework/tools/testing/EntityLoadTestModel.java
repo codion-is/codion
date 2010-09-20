@@ -39,8 +39,6 @@ import java.util.UUID;
  */
 public abstract class EntityLoadTestModel extends LoadTestModel<EntityApplicationModel> {
 
-  private static final int DEFAULT_WARNING_TIME = 200;
-
   /**
    * Instantiates a new EntityLoadTestModel.
    * @param user the default user
@@ -49,7 +47,7 @@ public abstract class EntityLoadTestModel extends LoadTestModel<EntityApplicatio
   public EntityLoadTestModel(final User user, final UsageScenario<EntityApplicationModel>... usageScenarios) {
     super(user, Arrays.asList(usageScenarios), Configuration.getIntValue(Configuration.LOAD_TEST_THINKTIME),
             Configuration.getIntValue(Configuration.LOAD_TEST_LOGIN_DELAY),
-            Configuration.getIntValue(Configuration.LOAD_TEST_BATCH_SIZE), DEFAULT_WARNING_TIME);
+            Configuration.getIntValue(Configuration.LOAD_TEST_BATCH_SIZE));
   }
 
   /**
