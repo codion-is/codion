@@ -6,6 +6,7 @@ package org.jminor.common.server;
 import org.jminor.common.model.User;
 
 import java.rmi.NoSuchObjectException;
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
@@ -19,7 +20,7 @@ import java.util.UUID;
 /**
  * A default RemoteServer implementation.
  */
-public abstract class AbstractRemoteServer<T> extends UnicastRemoteObject implements RemoteServer<T> {
+public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemoteObject implements RemoteServer<T> {
 
   private final Map<ClientInfo, T> connections = Collections.synchronizedMap(new HashMap<ClientInfo, T>());
 

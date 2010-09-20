@@ -12,6 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.rmi.NotBoundException;
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 public class ServerUtilTest {
@@ -25,11 +26,11 @@ public class ServerUtilTest {
     Util.initializeRegistry();
     server = new AbstractRemoteServer(12345, SERVER_NAME) {
       @Override
-      protected Object doConnect(final ClientInfo clientInfo) throws RemoteException {
+      protected Remote doConnect(final ClientInfo clientInfo) throws RemoteException {
         return null;
       }
       @Override
-      protected void doDisconnect(final Object connection) throws RemoteException {}
+      protected void doDisconnect(final Remote connection) throws RemoteException {}
       public int getServerLoad() throws RemoteException {
         return 0;
       }

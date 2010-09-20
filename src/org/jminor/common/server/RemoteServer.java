@@ -13,7 +13,7 @@ import java.util.UUID;
  * Defines the methods available to remote clients.
  * @param <T> the type of remote interface this server supplies to clients
  */
-public interface RemoteServer<T> extends Remote {
+public interface RemoteServer<T extends Remote> extends Remote {
 
   String SERVER_ADMIN_PREFIX = "Admin - ";
 
