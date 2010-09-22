@@ -40,7 +40,7 @@ import java.util.Set;
  * String clientTypeID = "JavadocDemo";
  * User user = new User("scott", "tiger");
  *
- * EntityConnectionProvider connectionProvider = EntityConnectionProviderFactory.createConnectionProvider(user, clientTypeID);
+ * EntityConnectionProvider connectionProvider = EntityConnectionProviders.createConnectionProvider(user, clientTypeID);
  *
  * EntityModel model = new DefaultEntityModel(entityID, connectionProvider);
  *

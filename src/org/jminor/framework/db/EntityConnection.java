@@ -71,7 +71,7 @@ public interface EntityConnection {
    * @return the function return arguments
    * @throws org.jminor.common.db.exception.DatabaseException in case anyhing goes wrong during the execution
    */
-  List<Object> executeFunction(final String functionID, final List<Object> arguments) throws DatabaseException;
+  List<?> executeFunction(final String functionID, final List<?> arguments) throws DatabaseException;
 
   /**
    * Executes the procedure with the given id
@@ -79,7 +79,7 @@ public interface EntityConnection {
    * @param arguments the arguments, if any
    * @throws org.jminor.common.db.exception.DatabaseException in case anyhing goes wrong during the execution
    */
-  void executeProcedure(final String procedureID, final List<Object> arguments) throws DatabaseException;
+  void executeProcedure(final String procedureID, final List<?> arguments) throws DatabaseException;
 
   /**
    * Inserts the given entities, returning a list containing the primary keys of the inserted entities
@@ -150,7 +150,7 @@ public interface EntityConnection {
   Entity selectSingle(final Entity.Key key) throws DatabaseException;
 
   /**
-   * Selects a single entity according to the specified criteria, throws a DbException
+   * Selects a single entity according to the specified criteria, throws a DatabaseException
    * if the criteria results in more than one entity
    * @param criteria the criteria specifying the entity to select
    * @return the entities according to the given criteria

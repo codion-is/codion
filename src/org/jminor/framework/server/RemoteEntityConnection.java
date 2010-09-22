@@ -82,7 +82,7 @@ public interface RemoteEntityConnection extends Remote {
    * @throws org.jminor.common.db.exception.DatabaseException in case anyhing goes wrong during the execution
    * @throws java.rmi.RemoteException in case of a remote exception
    */
-  List<Object> executeFunction(final String functionID, final List<Object> arguments) throws RemoteException, DatabaseException;
+  List<?> executeFunction(final String functionID, final List<Object> arguments) throws RemoteException, DatabaseException;
 
   /**
    * Executes the procedure with the given id
@@ -170,7 +170,7 @@ public interface RemoteEntityConnection extends Remote {
   Entity selectSingle(final Entity.Key key) throws RemoteException, DatabaseException;
 
   /**
-   * Selects a single entity according to the specified criteria, throws a DbException
+   * Selects a single entity according to the specified criteria, throws a DatabaseException
    * if the criteria results in more than one entity
    * @param criteria the criteria specifying the entity to select
    * @return the entities according to the given criteria

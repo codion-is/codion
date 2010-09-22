@@ -51,7 +51,7 @@ import java.util.Map;
  * String clientTypeID = "JavadocDemo";
  * User user = new User("scott", "tiger");
  *
- * EntityConnectionProvider connectionProvider = EntityConnectionProviderFactory.createConnectionProvider(user, clientTypeID);
+ * EntityConnectionProvider connectionProvider = EntityConnectionProviders.createConnectionProvider(user, clientTypeID);
  *
  * EntityTableModel tableModel = new DefaultEntityTableModel(entityID, connectionProvider);
  *

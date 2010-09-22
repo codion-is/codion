@@ -465,12 +465,12 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
   }
 
   /** {@inheritDoc} */
-  public final List<Object> executeFunction(final String functionID, final List<Object> arguments) throws DatabaseException {
-    if (isTransactionOpen()) {
+  public final List<?> executeFunction(final String functionID, final List<?> arguments) throws DatabaseException {
+    if (transactionOpen) {
       throw new DatabaseException("Can not execute a function within an open transaction");
     }
     final List<Object> returnArguments = Databases.getFunction(functionID).execute(this, arguments);
-    if (isTransactionOpen()) {
+    if (transactionOpen) {
       rollbackTransaction();
       throw new DatabaseException("Function with ID: " + functionID + " did not end the transaction");
     }
@@ -479,12 +479,12 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
   }
 
   /** {@inheritDoc} */
-  public final void executeProcedure(final String procedureID, final List<Object> arguments) throws DatabaseException {
-    if (isTransactionOpen()) {
+  public final void executeProcedure(final String procedureID, final List<?> arguments) throws DatabaseException {
+    if (transactionOpen) {
       throw new DatabaseException("Can not execute a procedure within an open transaction");
     }
     Databases.getProcedure(procedureID).execute(this, arguments);
-    if (isTransactionOpen()) {
+    if (transactionOpen) {
       rollbackTransaction();
       throw new DatabaseException("Procedure with ID: " + procedureID + " did not end the transaction");
     }

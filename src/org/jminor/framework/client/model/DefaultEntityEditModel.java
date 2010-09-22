@@ -49,7 +49,7 @@ import java.util.Map;
  * String clientTypeID = "JavadocDemo";
  * User user = new User("scott", "tiger");
  *
- * EntityConnectionProvider connectionProvider = EntityConnectionProviderFactory.createConnectionProvider(user, clientTypeID);
+ * EntityConnectionProvider connectionProvider = EntityConnectionProviders.createConnectionProvider(user, clientTypeID);
  *
  * EntityEditModel editModel = new DefaultEntityEditModel(entityID, connectionProvider);
  *

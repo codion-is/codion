@@ -205,7 +205,7 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
   }
 
   /** {@inheritDoc} */
-  public List<Object> executeFunction(final String functionID, final List<Object> arguments) throws DatabaseException {
+  public List<?> executeFunction(final String functionID, final List<Object> arguments) throws DatabaseException {
     return connectionProxy.executeFunction(functionID, arguments);
   }
 

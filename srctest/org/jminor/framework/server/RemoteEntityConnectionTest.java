@@ -1,16 +1,16 @@
 /*
- * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2004 - 2010, BjÃ¶rn Darri SigurÃ°sson. All Rights Reserved.
  */
 package org.jminor.framework.server;
 
 import org.jminor.framework.db.EntityConnection;
 
-import org.junit.Test;
 import static org.junit.Assert.fail;
+import org.junit.Test;
 
 import java.lang.reflect.Method;
-import java.util.Collection;
 import java.util.Arrays;
+import java.util.Collection;
 
 public class RemoteEntityConnectionTest {
 

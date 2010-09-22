@@ -1,12 +1,12 @@
 /*
- * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2004 - 2010, BjÃ¶rn Darri SigurÃ°sson. All Rights Reserved.
  */
 package org.jminor.common.db;
 
 /**
- * An base Operation implementation
+ * A base Operation implementation
  */
-public abstract class AbstractOperation implements DatabaseConnection.Operation {
+public class AbstractOperation implements DatabaseConnection.Operation {
 
   private final String id;
   private final String name;

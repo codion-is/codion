@@ -1,9 +1,9 @@
 package org.jminor.framework.demos.chinook.domain;
 
-import org.jminor.common.db.Databases;
-import org.jminor.common.db.DatabaseConnection;
-import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.AbstractProcedure;
+import org.jminor.common.db.DatabaseConnection;
+import org.jminor.common.db.Databases;
+import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.IdSource;
 import org.jminor.common.model.valuemap.StringProvider;
 import org.jminor.framework.db.EntityConnection;
@@ -162,7 +162,7 @@ public class Chinook {
   public static final String P_UDPATE_TOTALS = "chinook.update_totals_procedure";
 
   private static final DatabaseConnection.Procedure UPDATE_TOTALS_PROCEDURE = new AbstractProcedure(P_UDPATE_TOTALS, "Update invoice totals") {
-    public void execute(final DatabaseConnection connection, final List<Object> arguments) throws DatabaseException {
+    public void execute(final DatabaseConnection connection, final List<?> arguments) throws DatabaseException {
       final EntityConnection entityConnection = (EntityConnection) connection;
       try {
         entityConnection.beginTransaction();
