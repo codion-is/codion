@@ -407,6 +407,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
         final PoolableConnection connection = iterator.next();
         if (currentTime - connection.getPoolTime() > pooledConnectionTimeout) {
           connectionProvider.destroyConnection(connection);
+          counter.incrementConnectionsDestroyedCounter();
           iterator.remove();
         }
       }

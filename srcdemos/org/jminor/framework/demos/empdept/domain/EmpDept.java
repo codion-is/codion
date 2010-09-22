@@ -4,7 +4,6 @@
 package org.jminor.framework.demos.empdept.domain;
 
 import org.jminor.common.model.IdSource;
-import org.jminor.common.model.Version;
 import org.jminor.common.model.valuemap.StringProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
@@ -27,8 +26,6 @@ public class EmpDept {
   private static final ResourceBundle bundle =
           ResourceBundle.getBundle("org.jminor.framework.demos.empdept.domain.EmpDept", Locale.getDefault());
 
-  public static final Version version = new Version("EmpDept", "v1.0");
-
   /**Used for i18n*/
   public static final String DEPARTMENT = "department";
   public static final String EMPLOYEE = "employee";
@@ -37,7 +34,7 @@ public class EmpDept {
   public static final String IMPORT_JSON = "import_json";
 
   /**Entity identifier for the table scott.dept*/
-  public static final String T_DEPARTMENT = "department" + version;
+  public static final String T_DEPARTMENT = "scott.dept";
 
   /**Property identifier for the DEPTNO column in the table scott.dept*/
   public static final String DEPARTMENT_ID = "deptno";
@@ -47,7 +44,7 @@ public class EmpDept {
   public static final String DEPARTMENT_LOCATION = "loc";
 
   /**Entity identifier for the table scott.emp*/
-  public static final String T_EMPLOYEE = "employee" + version;
+  public static final String T_EMPLOYEE = "scott.emp";
 
   /**Property identifier for the EMPNO column in the table scott.emp*/
   public static final String EMPLOYEE_ID = "empno";
@@ -74,7 +71,7 @@ public class EmpDept {
 
   static {
     /*Defining the entity type T_DEPARTMENT*/
-    Entities.define(T_DEPARTMENT, "scott.dept",
+    Entities.define(T_DEPARTMENT,
             Properties.primaryKeyProperty(DEPARTMENT_ID, Types.INTEGER, getString(DEPARTMENT_ID))
                     .setNullable(false),
             Properties.columnProperty(DEPARTMENT_NAME, Types.VARCHAR, getString(DEPARTMENT_NAME))
@@ -88,7 +85,7 @@ public class EmpDept {
             .setCaption(getString(DEPARTMENT));
 
     /*Defining the entity type T_EMPLOYEE*/
-    Entities.define(T_EMPLOYEE, "scott.emp",
+    Entities.define(T_EMPLOYEE,
             Properties.primaryKeyProperty(EMPLOYEE_ID, Types.INTEGER, getString(EMPLOYEE_ID)),
             Properties.columnProperty(EMPLOYEE_NAME, Types.VARCHAR, getString(EMPLOYEE_NAME))
                     .setMaxLength(10).setNullable(false),

@@ -26,7 +26,7 @@ public class EntityJSONParserTest {
     dept10.setValue(EmpDept.DEPARTMENT_NAME, "DEPTNAME");
     dept10.setValue(EmpDept.DEPARTMENT_LOCATION, "LOCATION");
 
-    final String dept10JSON = "{\"department" + EmpDept.version + " PK[deptno:-10]\":{\"propertyValues\":{\"dname\":\"DEPTNAME\",\"loc\":\"LOCATION\",\"deptno\":-10},\"entityID\":\"department" + EmpDept.version + "\"}}";
+    final String dept10JSON = "{\"scott.dept" + " PK[deptno:-10]\":{\"propertyValues\":{\"dname\":\"DEPTNAME\",\"loc\":\"LOCATION\",\"deptno\":-10},\"entityID\":\"scott.dept" + "\"}}";
     String jsonString = EntityJSONParser.getJSONString(Arrays.asList(dept10));
     assertEquals(dept10JSON, jsonString);
 
@@ -35,7 +35,7 @@ public class EntityJSONParserTest {
     dept20.setValue(EmpDept.DEPARTMENT_NAME, "ADEPT");
     dept20.setValue(EmpDept.DEPARTMENT_LOCATION, "ALOC");
 
-    final String dept20JSON = "{\"department" + EmpDept.version + " PK[deptno:-20]\":{\"propertyValues\":{\"dname\":\"ADEPT\",\"loc\":\"ALOC\",\"deptno\":-20},\"entityID\":\"department" + EmpDept.version + "\"}}";
+    final String dept20JSON = "{\"scott.dept" + " PK[deptno:-20]\":{\"propertyValues\":{\"dname\":\"ADEPT\",\"loc\":\"ALOC\",\"deptno\":-20},\"entityID\":\"scott.dept" + "\"}}";
     jsonString = EntityJSONParser.getJSONString(Arrays.asList(dept20));
     assertEquals(dept20JSON, jsonString);
 
@@ -66,7 +66,7 @@ public class EntityJSONParserTest {
     emp1.setValue(EmpDept.EMPLOYEE_MGR_FK, mgr30);
     emp1.setValue(EmpDept.EMPLOYEE_NAME, "A NAME");
     emp1.setValue(EmpDept.EMPLOYEE_SALARY, 2500.5);
-    String emp1JSON = "{\"employee" + EmpDept.version + " PK[empno:-500]\":{\"propertyValues\":{\"hiredate\":\"2001-12-20\",\"comm\":500.5,\"empno\":-500,\"ename\":\"A NAME\",\"job\":\"A JOB\",\"deptno\":-10,\"mgr\":-30,\"sal\":2500.5},\"entityID\":\"employee" + EmpDept.version + "\"}}";
+    String emp1JSON = "{\"scott.emp" + " PK[empno:-500]\":{\"propertyValues\":{\"hiredate\":\"2001-12-20\",\"comm\":500.5,\"empno\":-500,\"ename\":\"A NAME\",\"job\":\"A JOB\",\"deptno\":-10,\"mgr\":-30,\"sal\":2500.5},\"entityID\":\"scott.emp" + "\"}}";
     jsonString = EntityJSONParser.getJSONString(Arrays.asList(emp1));
     assertEquals(emp1JSON, jsonString);
 
@@ -79,7 +79,7 @@ public class EntityJSONParserTest {
     emp1.setValue(EmpDept.EMPLOYEE_SALARY, 3500.5);
     emp1.setValue(EmpDept.EMPLOYEE_HIREDATE, newHiredate);
 
-    emp1JSON = "{\"employee@EmpDept-v1.0 PK[empno:-500]\":{\"originalValues\":{\"hiredate\":\"2001-12-20\",\"comm\":500.5,\"ename\":\"A NAME\",\"job\":\"A JOB\",\"deptno\":-10,\"mgr\":-30,\"sal\":2500.5},\"propertyValues\":{\"hiredate\":\"2002-11-21\",\"comm\":550.55,\"empno\":-500,\"ename\":\"ANOTHER NAME\",\"job\":\"ANOTHER JOB\",\"deptno\":-20,\"mgr\":-50,\"sal\":3500.5},\"entityID\":\"employee@EmpDept-v1.0\"}}";
+    emp1JSON = "{\"scott.emp PK[empno:-500]\":{\"originalValues\":{\"hiredate\":\"2001-12-20\",\"comm\":500.5,\"ename\":\"A NAME\",\"job\":\"A JOB\",\"deptno\":-10,\"mgr\":-30,\"sal\":2500.5},\"propertyValues\":{\"hiredate\":\"2002-11-21\",\"comm\":550.55,\"empno\":-500,\"ename\":\"ANOTHER NAME\",\"job\":\"ANOTHER JOB\",\"deptno\":-20,\"mgr\":-50,\"sal\":3500.5},\"entityID\":\"scott.emp\"}}";
     jsonString = EntityJSONParser.getJSONString(Arrays.asList(emp1));
     assertEquals(emp1JSON, jsonString);
 

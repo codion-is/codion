@@ -25,7 +25,17 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.xy.DeviationRenderer;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JSpinner;
+import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
@@ -281,7 +291,7 @@ public final class LoadTestPanel extends JPanel {
     thinkTimeChartPanel.setBorder(BorderFactory.createTitledBorder("Think time (ms)"));
     numberOfApplicationsChartPanel.setBorder(BorderFactory.createTitledBorder("Application count"));
     memoryUsageChartPanel.setBorder(BorderFactory.createTitledBorder("Memory usage (MB)"));
-    failureChartPanel.setBorder(BorderFactory.createTitledBorder("Scenario failure rate"));
+    failureChartPanel.setBorder(BorderFactory.createTitledBorder("Scenario failure rate (%)"));
 
     final JTabbedPane twoTab = new JTabbedPane();
     twoTab.addTab("Scenarios run", usageScenarioChartPanel);
@@ -351,7 +361,6 @@ public final class LoadTestPanel extends JPanel {
   @SuppressWarnings({"unchecked"})
   private void handleScenarioSelected() {
     durationBase.removeAll();
-
     for (final Object selectedItem : randomizerPanel.getSelectedItems()) {
       final ItemRandomizer.RandomItem<LoadTest.UsageScenario> item = (ItemRandomizer.RandomItem<LoadTest.UsageScenario>) selectedItem;
       final JFreeChart scenarioDurationChart = ChartFactory.createXYStepChart(null,
@@ -367,7 +376,8 @@ public final class LoadTestPanel extends JPanel {
 
       durationBase.add(scenarioDurationChartPanel);
     }
-    revalidate();
+    validate();
+    repaint();
   }
 
   private void setColors(final JFreeChart chart) {

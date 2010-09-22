@@ -178,8 +178,15 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
     if (property instanceof Property.DerivedProperty) {
       return getDerivedValue((Property.DerivedProperty) property);
     }
+    if (property instanceof Property.ForeignKeyProperty) {
+      return getForeignKeyValue((Property.ForeignKeyProperty) property);
+    }
+    final Object value = super.getValue(property.getPropertyID());
+    if (value != null && property.isDouble()) {
+      return getDoubleValue(property, value);
+    }
 
-    return super.getValue(property.getPropertyID());
+    return value;
   }
 
   /** {@inheritDoc} */
@@ -217,7 +224,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
 
   /** {@inheritDoc} */
   public boolean isLoaded(final String foreignKeyPropertyID) {
-    return !isValueNull(foreignKeyPropertyID);
+    return super.getValue(foreignKeyPropertyID) != null;
   }
 
   /** {@inheritDoc} */
@@ -623,6 +630,18 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
     return derivedProperty.getValueProvider().getValue(values);
   }
 
+  private Entity getForeignKeyValue(final Property.ForeignKeyProperty foreignKeyProperty) {
+    final Entity value = (Entity) super.getValue(foreignKeyProperty.getPropertyID());
+    if (value == null) {//possibly not loaded
+      final Entity.Key referencedKey = getReferencedPrimaryKey(foreignKeyProperty);
+      if (referencedKey != null) {
+        return Entities.entityInstance(referencedKey);
+      }
+    }
+
+    return value;
+  }
+
   private boolean writablePropertiesModified() {
     for (final String propertyID : getOriginalValueKeys()) {
       final Property property = getProperty(propertyID);
@@ -750,6 +769,16 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
     }
     if (value instanceof Entity && value.equals(entity)) {
       throw new IllegalArgumentException("Circular entity reference detected: " + entity + "->" + property.getPropertyID());
+    }
+  }
+
+  private static Object getDoubleValue(final Property property, final Object value) {
+    final int maximumFractionDigits = property.getMaximumFractionDigits();
+    if (maximumFractionDigits > 0) {
+      return Util.roundDouble((Double) value, maximumFractionDigits);
+    }
+    else {
+      return value;
     }
   }
 

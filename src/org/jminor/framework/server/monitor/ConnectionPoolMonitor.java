@@ -43,16 +43,16 @@ public final class ConnectionPoolMonitor {
   private final ConnectionPool pool;
   private ConnectionPoolStatistics poolStats;
 
-  private final XYSeries poolSizeSeries = new XYSeries("Pool size");
-  private final XYSeries minimumPoolSizeSeries = new XYSeries("Minimum size");
-  private final XYSeries maximumPoolSizeSeries = new XYSeries("Maximum size");
+  private final XYSeries poolSizeSeries = new XYSeries("Size");
+  private final XYSeries minimumPoolSizeSeries = new XYSeries("Min");
+  private final XYSeries maximumPoolSizeSeries = new XYSeries("Max");
   private final XYSeries inPoolSeriesMacro = new XYSeries("In pool");
   private final XYSeries inUseSeriesMacro = new XYSeries("In use");
   private final XYSeriesCollection statsCollection = new XYSeriesCollection();
   private final XYSeriesCollection macroStatsCollection = new XYSeriesCollection();
-  private final XYSeries delayedRequestsPerSecond = new XYSeries("Delayed / second");
-  private final XYSeries failedRequestsPerSecond = new XYSeries("Failed / second");
-  private final XYSeries connectionRequestsPerSecond = new XYSeries("Requests / second");
+  private final XYSeries delayedRequestsPerSecond = new XYSeries("Delayed");
+  private final XYSeries failedRequestsPerSecond = new XYSeries("Failed");
+  private final XYSeries connectionRequestsPerSecond = new XYSeries("Requests");
   private final XYSeriesCollection connectionRequestsPerSecondCollection = new XYSeriesCollection();
   private final YIntervalSeries averageCheckOutTime = new YIntervalSeries("Average check out time");
   private final YIntervalSeriesCollection checkOutTimeCollection = new YIntervalSeriesCollection();
@@ -250,8 +250,8 @@ public final class ConnectionPoolMonitor {
             poolStats.getMininumCheckOutTime(), poolStats.getMaximumCheckOutTime());
     final List<ConnectionPoolState> stats = sortAndRemoveDuplicates(poolStats.getFineGrainedStatistics());
     if (!stats.isEmpty()) {
-      final XYSeries inPoolSeries = new XYSeries("Connections available in pool");
-      final XYSeries inUseSeries = new XYSeries("Connections in active use");
+      final XYSeries inPoolSeries = new XYSeries("In pool");
+      final XYSeries inUseSeries = new XYSeries("In use");
       for (final ConnectionPoolState inPool : stats) {
         inPoolSeries.add(inPool.getTimestamp(), inPool.getSize());
         inUseSeries.add(inPool.getTimestamp(), inPool.getInUse());
@@ -264,7 +264,7 @@ public final class ConnectionPoolMonitor {
     evtStatsUpdated.fire();
   }
 
-  private List<ConnectionPoolState> sortAndRemoveDuplicates(final List<ConnectionPoolState> stats) {
+  private static List<ConnectionPoolState> sortAndRemoveDuplicates(final List<ConnectionPoolState> stats) {
     final List<ConnectionPoolState> poolStates = new ArrayList<ConnectionPoolState>(stats.size());
     Collections.sort(poolStates, new StateComparator());
     long time = -1;

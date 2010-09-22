@@ -2208,3 +2208,5 @@
   EntityImpl.isModified() now checks super.isModified() before going any further
   EntityValidator moved to Entities and renamed to Validator
   Configuration.COMPACT_ENTITY_PANEL_LAYOUT is now true by default
+  EntityServerMonitorPanel layout changes
+  EntityImpl now returns an empty entity for non-loaded foreign key values

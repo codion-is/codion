@@ -84,9 +84,9 @@ public abstract class LoadTestModel<T> implements LoadTest {
   private final XYSeries warningTimeSeries = new XYSeries("Warn. limit");
   private final XYSeriesCollection usageScenarioCollection = new XYSeriesCollection();
 
-  private final XYSeries allocatedMemoryCollection = new XYSeries("Allocated memory");
-  private final XYSeries usedMemoryCollection = new XYSeries("Used memory");
-  private final XYSeries maxMemoryCollection = new XYSeries("Maximum memory");
+  private final XYSeries allocatedMemoryCollection = new XYSeries("Allocated");
+  private final XYSeries usedMemoryCollection = new XYSeries("Used");
+  private final XYSeries maxMemoryCollection = new XYSeries("Available");
   private final XYSeriesCollection memoryUsageCollection = new XYSeriesCollection();
   private final Collection<XYSeries> usageSeries = new ArrayList<XYSeries>();
   private final Map<String, YIntervalSeries> durationSeries = new HashMap<String, YIntervalSeries>();
@@ -895,6 +895,9 @@ public abstract class LoadTestModel<T> implements LoadTest {
       final long current = System.currentTimeMillis();
       final double elapsedSeconds = (current - time) / 1000d;
       if (elapsedSeconds > 5) {
+        usageScenarioAvgDurations.clear();
+        usageScenarioMinDurations.clear();
+        usageScenarioMaxDurations.clear();
         workRequestsPerSecond = (int) (workRequestCounter / (double) elapsedSeconds);
         delayedWorkRequestsPerSecond = (int) (delayedWorkRequestCounter / (double) elapsedSeconds);
         for (final UsageScenario scenario : usageScenarios) {

@@ -22,6 +22,7 @@ import javax.swing.JSpinner;
 import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
@@ -54,7 +55,6 @@ public final class ItemRandomizerPanel<T> extends JPanel {
     Util.rejectNullValue(itemRandomizer, "model");
     this.model = itemRandomizer;
     initializeUI();
-    itemList.getSelectionModel().setSelectionInterval(0, itemList.getModel().getSize() - 1);
   }
 
   /**
@@ -131,21 +131,20 @@ public final class ItemRandomizerPanel<T> extends JPanel {
    * @return a conrol panel for the item weight
    */
   private JPanel initializeWeightPanel(final ItemRandomizerModel.RandomItem<T> item) {
-    final JPanel panel = new JPanel(new GridLayout(1, 2, 5, 5));
+    final JPanel panel = new JPanel(new BorderLayout(5, 5));
     final JSpinner spinner = new JSpinner(createWeightSpinnerModel(item.getItem()));
     ((JSpinner.DefaultEditor) spinner.getEditor()).getTextField().setColumns(3);
     spinner.setToolTipText(item.getItem().toString());
-
-    panel.add(new JLabel(item.getItem().toString()));
-    panel.add(spinner);
-
     final JCheckBox chkEnabled = createEnabledCheckBox(item.getItem());
+    final JLabel lblWeight = new JLabel("Weight");
+    lblWeight.setHorizontalAlignment(SwingConstants.RIGHT);
 
-    final JPanel base = new JPanel(new BorderLayout(5, 5));
-    base.add(panel, BorderLayout.CENTER);
-    base.add(chkEnabled, BorderLayout.EAST);
+    panel.add(new JLabel(item.getItem().toString()), BorderLayout.NORTH);
+    panel.add(chkEnabled, BorderLayout.WEST);
+    panel.add(lblWeight, BorderLayout.CENTER);
+    panel.add(spinner, BorderLayout.EAST);
 
-    return base;
+    return panel;
   }
 
   /**
@@ -154,7 +153,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
    * @return an enabling JCheckBox
    */
   private JCheckBox createEnabledCheckBox(final T item) {
-    final JCheckBox enabledBox = new JCheckBox("");
+    final JCheckBox enabledBox = new JCheckBox("Enabled");
     new EnabledValueLink(enabledBox.getModel(), item);
 
     return enabledBox;

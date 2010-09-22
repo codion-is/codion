@@ -100,20 +100,20 @@ public final class ServerMonitorPanel extends JPanel {
 
   private void initUI() throws RemoteException {
     final JPanel infoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
-    infoPanel.add(new JLabel("Remote connections", JLabel.RIGHT));
+    infoPanel.add(new JLabel("Connections", JLabel.RIGHT));
     infoPanel.add(initConnectionCountField());
-    infoPanel.add(new JLabel("Connection limit", JLabel.RIGHT));
+    infoPanel.add(new JLabel("limit", JLabel.RIGHT));
     final JSpinner spnConnectionLimit = new JSpinner(
             new IntBeanSpinnerValueLink(model, "connectionLimit", model.getConnectionLimitObserver()).getSpinnerModel());
     ((JSpinner.DefaultEditor) spnConnectionLimit.getEditor()).getTextField().setColumns(3);
     infoPanel.add(spnConnectionLimit);
-    infoPanel.add(new JLabel("Memory usage", JLabel.RIGHT));
+    infoPanel.add(new JLabel("Mem. usage", JLabel.RIGHT));
     infoPanel.add(initMemoryField());
-    infoPanel.add(new JLabel("Logging level", JLabel.RIGHT));
+    infoPanel.add(new JLabel("Logging", JLabel.RIGHT));
     infoPanel.add(initLoggingLevelField());
     infoPanel.add(ControlProvider.createButton(Controls.methodControl(this, "loadDomainModel", "Load domain...")));
-    infoPanel.add(ControlProvider.createButton(Controls.methodControl(model, "performGC", "GC")));
     infoPanel.add(ControlProvider.createButton(Controls.methodControl(this, "shutdownServer", "Shutdown")));
+    infoPanel.add(ControlProvider.createButton(Controls.methodControl(model, "performGC", "GC")));
 
     final JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
     controlPanel.add(new JLabel("Warning threshold (ms)"));
@@ -134,17 +134,17 @@ public final class ServerMonitorPanel extends JPanel {
     chartPanel.setBorder(BorderFactory.createEtchedBorder());
 
     final JPanel performancePanel = new JPanel(new BorderLayout());
-    performancePanel.add(controlPanelBase, BorderLayout.NORTH);
+    performancePanel.add(controlPanelBase, BorderLayout.SOUTH);
     performancePanel.add(chartPanel, BorderLayout.CENTER);
 
     setLayout(new BorderLayout());
     add(infoPanel, BorderLayout.NORTH);
     final JTabbedPane pane = new JTabbedPane();
     pane.setUI(UiUtil.getBorderlessTabbedPaneUI());
+    pane.addTab("Performance", performancePanel);
     pane.addTab("Database", new DatabaseMonitorPanel(model.getDatabaseMonitor()));
     pane.addTab("Clients/Users", new ClientUserMonitorPanel(model.getClientMonitor()));
     pane.addTab("Environment", initEnvironmentPanel());
-    pane.addTab("Performance", performancePanel);
 
     add(pane, BorderLayout.CENTER);
   }

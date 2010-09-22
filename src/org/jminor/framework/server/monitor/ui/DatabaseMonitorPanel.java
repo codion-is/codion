@@ -77,7 +77,7 @@ public final class DatabaseMonitorPanel extends JPanel {
     final JPanel panel = new JPanel(new BorderLayout(5,5));
     queriesPerSecondChartPanel.setBorder(BorderFactory.createEtchedBorder());
     panel.add(queriesPerSecondChartPanel, BorderLayout.CENTER);
-    panel.add(configBase, BorderLayout.NORTH);
+    panel.add(configBase, BorderLayout.SOUTH);
 
     return panel;
   }

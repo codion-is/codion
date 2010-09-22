@@ -976,7 +976,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
             new AbstractAction("showEntityMenu") {
               /** {@inheritDoc} */
               public void actionPerformed(final ActionEvent e) {
-                showEntityMenu(new Point(100, table.getSelectedRow() * table.getRowHeight()));
+                showEntityMenu(getPopupLocation(table));
               }
             });
   }
@@ -1566,6 +1566,13 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
     return panel;
   }
 
+  private static Point getPopupLocation(final JTable table) {
+    final int x = table.getBounds().getLocation().x + 42;
+    final int y = table.getSelectionModel().isSelectionEmpty() ? 100 : (table.getSelectedRow() + 1) * table.getRowHeight();
+
+    return new Point(x, y);
+  }
+
   /**
    * Populates the given root menu with the property values of the given entity
    * @param rootMenu the menu to populate
@@ -1651,7 +1658,8 @@ public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Propert
 
     /** {@inheritDoc} */
     public void actionPerformed(final ActionEvent e) {
-      popupMenu.show(table, 100, table.getSelectedRow() * table.getRowHeight());
+      final Point location = getPopupLocation(table);
+      popupMenu.show(table, location.x, location.y);
     }
   }
 }
