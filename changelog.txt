@@ -2210,3 +2210,9 @@
   Configuration.COMPACT_ENTITY_PANEL_LAYOUT is now true by default
   EntityServerMonitorPanel layout changes
   EntityImpl now returns an empty entity for non-loaded foreign key values
+  EntityConnectionImpl package private now
+  EntityConnections added as a factory for the above class
+  DatabaseConnections added as a factory for the DatabaseConnection class
+  ConnectionPoolImpl package private
+  ConnectionPools added as a factory class for the above
+  DatabaseConnection, moved a few methods to PoolableConnection

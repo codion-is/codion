@@ -4,6 +4,7 @@
 package org.jminor.framework.server;
 
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.db.pool.PoolableConnection;
 import org.jminor.common.model.User;
 import org.jminor.common.model.reports.ReportException;
 import org.jminor.common.model.reports.ReportResult;
@@ -82,7 +83,7 @@ public interface RemoteEntityConnection extends Remote {
    * @throws org.jminor.common.db.exception.DatabaseException in case anyhing goes wrong during the execution
    * @throws java.rmi.RemoteException in case of a remote exception
    */
-  List<?> executeFunction(final String functionID, final List<Object> arguments) throws RemoteException, DatabaseException;
+  List<?> executeFunction(final String functionID, final Object... arguments) throws RemoteException, DatabaseException;
 
   /**
    * Executes the procedure with the given id
@@ -91,7 +92,7 @@ public interface RemoteEntityConnection extends Remote {
    * @throws org.jminor.common.db.exception.DatabaseException in case anyhing goes wrong during the execution
    * @throws java.rmi.RemoteException in case of a remote exception
    */
-  void executeProcedure(final String procedureID, final List<Object> arguments) throws RemoteException, DatabaseException;
+  void executeProcedure(final String procedureID, final Object... arguments) throws RemoteException, DatabaseException;
 
   /**
    * Inserts the given entities, returning a list containing the primary keys of the inserted entities
@@ -280,4 +281,11 @@ public interface RemoteEntityConnection extends Remote {
    * @throws java.rmi.RemoteException in case of a remote exception
    */
   byte[] readBlob(final Entity.Key primaryKey, final String blobPropertyID) throws RemoteException, DatabaseException;
+
+  /**
+   * @return nothing
+   * @throws UnsupportedOperationException always
+   * @throws java.rmi.RemoteException in case of a remote exception
+   */
+  PoolableConnection getPoolableConnection() throws RemoteException;
 }

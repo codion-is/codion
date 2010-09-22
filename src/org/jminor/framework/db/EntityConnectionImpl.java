@@ -5,10 +5,12 @@ package org.jminor.framework.db;
 
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseConnectionImpl;
+import org.jminor.common.db.DatabaseConnections;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.RecordModifiedException;
 import org.jminor.common.db.exception.RecordNotFoundException;
+import org.jminor.common.db.pool.PoolableConnection;
 import org.jminor.common.model.IdSource;
 import org.jminor.common.model.LogEntry;
 import org.jminor.common.model.SearchType;
@@ -58,7 +60,7 @@ import java.util.Set;
  * connection.disconnect();
  * </pre>
  */
-public final class EntityConnectionImpl extends DatabaseConnectionImpl implements EntityConnection {
+final class EntityConnectionImpl extends DatabaseConnectionImpl implements EntityConnection {
 
   private static final Logger LOG = LoggerFactory.getLogger(EntityConnectionImpl.class);
 
@@ -74,7 +76,7 @@ public final class EntityConnectionImpl extends DatabaseConnectionImpl implement
    * @throws SQLException in case there is a problem connecting to the database
    * @throws ClassNotFoundException in case the JDBC driver class is not found
    */
-  public EntityConnectionImpl(final Database database, final User user) throws SQLException, ClassNotFoundException {
+  EntityConnectionImpl(final Database database, final User user) throws SQLException, ClassNotFoundException {
     super(database, user);
   }
 
@@ -85,37 +87,8 @@ public final class EntityConnectionImpl extends DatabaseConnectionImpl implement
    * @param user the user used for connecting to the database
    * @throws SQLException in case there is a problem connecting to the database
    */
-  public EntityConnectionImpl(final Connection connection, final Database database, final User user) throws SQLException {
+  EntityConnectionImpl(final Connection connection, final Database database, final User user) throws SQLException {
     super(database, user, connection);
-  }
-
-  /**
-   * @return true if optimistic locking is enabled
-   */
-  public boolean isOptimisticLocking() {
-    return optimisticLocking;
-  }
-
-  /**
-   * @param optimisticLocking true if optimistic locking should be enabled
-   */
-  public void setOptimisticLocking(final boolean optimisticLocking) {
-    this.optimisticLocking = optimisticLocking;
-  }
-
-  /**
-   * @return true if foreign key fetch depths are being limited
-   */
-  public boolean isLimitForeignKeyFetchDepth() {
-    return limitForeignKeyFetchDepth;
-  }
-
-  /**
-   * @param limitForeignKeyFetchDepth false to override the fetch depth limit provided by criteria
-   * @see org.jminor.framework.db.criteria.EntitySelectCriteria#setForeignKeyFetchDepthLimit(int)
-   */
-  public void setLimitForeignKeyFetchDepth(final boolean limitForeignKeyFetchDepth) {
-    this.limitForeignKeyFetchDepth = limitForeignKeyFetchDepth;
   }
 
   /** {@inheritDoc} */
@@ -389,7 +362,7 @@ public final class EntityConnectionImpl extends DatabaseConnectionImpl implement
       selectQuery += " " + criteria.getWhereClause(!containsWhereKeyword(selectQuery));
       statement = getConnection().prepareStatement(selectQuery);
       resultSet = executePreparedSelect(statement, selectQuery, criteria.getValues(), criteria.getValueProperties());
-      final List<Integer> result = INT_PACKER.pack(resultSet, -1);
+      final List<Integer> result = DatabaseConnections.INT_PACKER.pack(resultSet, -1);
 
       if (result.isEmpty()) {
         throw new RecordNotFoundException("Record count query returned no value");
@@ -491,6 +464,40 @@ public final class EntityConnectionImpl extends DatabaseConnectionImpl implement
       }
       throw new DatabaseException(getDatabase().getErrorMessage(e));
     }
+  }
+
+  /**
+   * @return true if optimistic locking is enabled
+   */
+  public boolean isOptimisticLocking() {
+    return optimisticLocking;
+  }
+
+  /**
+   * @param optimisticLocking true if optimistic locking should be enabled
+   */
+  public void setOptimisticLocking(final boolean optimisticLocking) {
+    this.optimisticLocking = optimisticLocking;
+  }
+
+  /**
+   * @return true if foreign key fetch depths are being limited
+   */
+  public boolean isLimitForeignKeyFetchDepth() {
+    return limitForeignKeyFetchDepth;
+  }
+
+  /**
+   * @param limitForeignKeyFetchDepth false to override the fetch depth limit provided by criteria
+   * @see org.jminor.framework.db.criteria.EntitySelectCriteria#setForeignKeyFetchDepthLimit(int)
+   */
+  public void setLimitForeignKeyFetchDepth(final boolean limitForeignKeyFetchDepth) {
+    this.limitForeignKeyFetchDepth = limitForeignKeyFetchDepth;
+  }
+
+  /** {@inheritDoc} */
+  public PoolableConnection getPoolableConnection() {
+    return this;
   }
 
   private EntityResultPacker getEntityResultPacker(final String entityID) {
@@ -637,7 +644,7 @@ public final class EntityConnectionImpl extends DatabaseConnectionImpl implement
                                      final List<?> values, final List<Property.ColumnProperty> properties) throws SQLException {
     SQLException exception = null;
     try {
-      QUERY_COUNTER.count(sqlStatement);
+      DatabaseConnections.QUERY_COUNTER.count(sqlStatement);
       getMethodLogger().logAccess("executePreparedUpdate", new Object[] {sqlStatement, values});
       setParameterValues(statement, values, properties);
       statement.executeUpdate();
@@ -658,7 +665,7 @@ public final class EntityConnectionImpl extends DatabaseConnectionImpl implement
                                           final List<?> values, final List<Property.ColumnProperty> properties) throws SQLException {
     SQLException exception = null;
     try {
-      QUERY_COUNTER.count(sqlStatement);
+      DatabaseConnections.QUERY_COUNTER.count(sqlStatement);
       getMethodLogger().logAccess("executePreparedSelect", values == null ? new Object[] {sqlStatement} : new Object[] {sqlStatement, values});
       setParameterValues(statement, values, properties);
       return statement.executeQuery();

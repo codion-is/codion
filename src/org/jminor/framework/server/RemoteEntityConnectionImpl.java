@@ -7,8 +7,8 @@ import org.jminor.common.db.Database;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolException;
-import org.jminor.common.db.pool.ConnectionPoolImpl;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
+import org.jminor.common.db.pool.ConnectionPools;
 import org.jminor.common.db.pool.PoolableConnection;
 import org.jminor.common.db.pool.PoolableConnectionProvider;
 import org.jminor.common.model.Event;
@@ -24,7 +24,7 @@ import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ServerLog;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnection;
-import org.jminor.framework.db.EntityConnectionImpl;
+import org.jminor.framework.db.EntityConnections;
 import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.db.criteria.EntitySelectCriteria;
 import org.jminor.framework.domain.Entities;
@@ -40,7 +40,6 @@ import java.awt.event.ActionListener;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.rmi.NoSuchObjectException;
 import java.rmi.RemoteException;
 import java.rmi.server.RMISocketFactory;
@@ -85,7 +84,7 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
   /**
    * The db connection used if connection pooling is not enabled
    */
-  private EntityConnectionImpl entityConnection;
+  private EntityConnection entityConnection;
 
   /**
    * Indicates whether or not this remote connection is enabled
@@ -200,12 +199,12 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
   }
 
   /** {@inheritDoc} */
-  public void executeProcedure(final String procedureID, final List<Object> arguments) throws DatabaseException {
+  public void executeProcedure(final String procedureID, final Object... arguments) throws DatabaseException {
     connectionProxy.executeProcedure(procedureID, arguments);
   }
 
   /** {@inheritDoc} */
-  public List<?> executeFunction(final String functionID, final List<Object> arguments) throws DatabaseException {
+  public List<?> executeFunction(final String functionID, final Object... arguments) throws DatabaseException {
     return connectionProxy.executeFunction(functionID, arguments);
   }
 
@@ -310,6 +309,11 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
   /** {@inheritDoc} */
   public byte[] readBlob(final Entity.Key primaryKey, final String blobPropertyID) throws DatabaseException, RemoteException {
     return connectionProxy.readBlob(primaryKey, blobPropertyID);
+  }
+
+  /** {@inheritDoc} */
+  public PoolableConnection getPoolableConnection() {
+    throw new UnsupportedOperationException("getPoolableConnection is not supported on remote connections");
   }
 
   /**
@@ -481,7 +485,7 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
     if (!Util.nullOrEmpty(initialPoolUsers)) {
       for (final String username : initialPoolUsers.split(",")) {
         final User poolUser = new User(username.trim(), null);
-        CONNECTION_POOLS.put(poolUser, new ConnectionPoolImpl(new ConnectionProvider(database), poolUser));
+        CONNECTION_POOLS.put(poolUser, ConnectionPools.createPool(new ConnectionProvider(database), poolUser));
       }
     }
   }
@@ -495,20 +499,19 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
   }
 
   private EntityConnection initializeProxy() {
-    return (EntityConnection) Proxy.newProxyInstance(EntityConnectionImpl.class.getClassLoader(),
-            EntityConnectionImpl.class.getInterfaces(), new RemoteConnectionHandler(clientInfo));
+    return Util.initializeProxy(EntityConnection.class, new RemoteConnectionHandler(clientInfo));
   }
 
-  private EntityConnectionImpl getConnection() throws ClassNotFoundException, SQLException {
+  private EntityConnection getConnection() throws ClassNotFoundException, SQLException {
     final ConnectionPool connectionPool = CONNECTION_POOLS.get(clientInfo.getUser());
     if (connectionPool != null && connectionPool.isEnabled()) {
       if (entityConnection != null) {//pool has been turned on since this one was created
         entityConnection.disconnect();//discard
         entityConnection = null;
       }
-      final EntityConnectionImpl pooledDbConnection = (EntityConnectionImpl) connectionPool.getConnection();
+      final EntityConnection pooledDbConnection = (EntityConnection) connectionPool.getConnection();
       if (methodLogger.isEnabled()) {
-        pooledDbConnection.setLoggingEnabled(methodLogger.isEnabled());
+        pooledDbConnection.getPoolableConnection().setLoggingEnabled(methodLogger.isEnabled());
       }
 
       return pooledDbConnection;
@@ -524,23 +527,23 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
         entityConnection = createDatabaseConnection(database, clientInfo.getUser());
       }
     }
-    entityConnection.setLoggingEnabled(methodLogger.isEnabled());
+    entityConnection.getPoolableConnection().setLoggingEnabled(methodLogger.isEnabled());
 
     return entityConnection;
   }
 
-  private void returnConnection(final EntityConnectionImpl connection, final boolean logMethod) {
+  private void returnConnection(final EntityConnection connection, final boolean logMethod) {
     final ConnectionPool connectionPool = CONNECTION_POOLS.get(clientInfo.getUser());
     if (methodLogger.isEnabled()) {
       //we turned logging on when we fetched the connection, turn it off again
-      connection.setLoggingEnabled(false);
+      connection.getPoolableConnection().setLoggingEnabled(false);
     }
     if (connectionPool != null && connectionPool.isEnabled()) {
       try {
         if (logMethod) {
           methodLogger.logAccess(RETURN_CONNECTION, new Object[]{clientInfo.getUser()});
         }
-        connectionPool.returnConnection(connection);
+        connectionPool.returnConnection(connection.getPoolableConnection());
       }
       finally {
         if (logMethod) {
@@ -550,8 +553,8 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
     }
   }
 
-  private static EntityConnectionImpl createDatabaseConnection(final Database database, final User user) throws ClassNotFoundException, SQLException {
-    return new EntityConnectionImpl(database, user);
+  private static EntityConnection createDatabaseConnection(final Database database, final User user) throws ClassNotFoundException, SQLException {
+    return EntityConnections.createConnection(database, user);
   }
 
   private static final String IS_CONNECTED = "isConnected";
@@ -574,21 +577,21 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
     /**
      * Holds the connection while a transaction is open, since it isn't proper to return one to the pool in such a state
      */
-    private volatile EntityConnectionImpl transactionConnection;
+    private volatile EntityConnection transactionConnection;
 
     /** {@inheritDoc} */
     public Object invoke(final Object proxy, final Method method, final Object[] args) throws Exception {
       final String methodName = method.getName();
       Exception exception = null;
-      EntityConnectionImpl connection = transactionConnection;
+      EntityConnection connection = transactionConnection;
       final boolean logMethod = methodLogger.isEnabled() && shouldMethodBeLogged(methodName);
       final long startTime = System.currentTimeMillis();
       try {
         setActive();
         RequestCounter.incrementRequestsPerSecondCounter();
         if (connection == null) {
-          Exception getConnectionException = null;
           methodLogger.logAccess(GET_CONNECTION, new Object[]{clientInfo.getUser()});
+          Exception getConnectionException = null;
           try {
             connection = getConnection();
           }
@@ -598,8 +601,8 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
           }
           finally {
             String message = null;
-            if (connection != null && connection.getRetryCount() > 0) {
-              message = "retries: " + connection.getRetryCount();
+            if (connection != null && connection.getPoolableConnection().getRetryCount() > 0) {
+              message = "retries: " + connection.getPoolableConnection().getRetryCount();
             }
             methodLogger.logExit(GET_CONNECTION, getConnectionException, null, message);
           }
@@ -628,7 +631,7 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
           RequestCounter.incrementWarningTimeExceededCounter();
         }
         if (logMethod) {
-          final LogEntry logEntry = methodLogger.logExit(methodName, exception, connection != null ? connection.getLogEntries() : null);
+          final LogEntry logEntry = methodLogger.logExit(methodName, exception, connection != null ? connection.getPoolableConnection().getLogEntries() : null);
           if (methodLogger.isEnabled()) {
             final StringBuilder messageBuilder = new StringBuilder(client.toString()).append("\n");
             appendLogEntries(messageBuilder, logEntry.getSubLog(), 1);
@@ -638,7 +641,7 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
         if (connection != null) {
           if (connection.isTransactionOpen()) {
             //keep this connection around until the transaction is closed, todo, implement a timeout perhaps?
-            connection.setLoggingEnabled(methodLogger.isEnabled());
+            connection.getPoolableConnection().setLoggingEnabled(methodLogger.isEnabled());
             transactionConnection = connection;
           }
           else {
@@ -651,12 +654,14 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
   }
 
   private static void appendLogEntries(final StringBuilder log, final List<LogEntry> logEntries, final int indentation) {
-    Collections.sort(logEntries);
-    for (final LogEntry logEntry : logEntries) {
-      log.append(logEntry.toString(indentation)).append("\n");
-      final List<LogEntry> subLog = logEntry.getSubLog();
-      if (subLog != null) {
-        appendLogEntries(log, subLog, indentation + 1);
+    if (logEntries != null && !logEntries.isEmpty()) {
+      Collections.sort(logEntries);
+      for (final LogEntry logEntry : logEntries) {
+        log.append(logEntry.toString(indentation)).append("\n");
+        final List<LogEntry> subLog = logEntry.getSubLog();
+        if (subLog != null) {
+          appendLogEntries(log, subLog, indentation + 1);
+        }
       }
     }
   }
@@ -739,7 +744,7 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
 
     /** {@inheritDoc} */
     public PoolableConnection createConnection(final User user) throws ClassNotFoundException, SQLException {
-      return createDatabaseConnection(database, user);
+      return createDatabaseConnection(database, user).getPoolableConnection();
     }
 
     /** {@inheritDoc} */

@@ -4,7 +4,8 @@
 package org.jminor.framework.tools;
 
 import org.jminor.common.db.Database;
-import org.jminor.common.db.DatabaseConnectionImpl;
+import org.jminor.common.db.DatabaseConnection;
+import org.jminor.common.db.DatabaseConnections;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.model.CancelException;
@@ -81,7 +82,7 @@ public final class EntityGenerator {
   public static String getDomainClass(final Database database, final String domainClassName, final String schema, final String packageName,
                                       final String username, final String password, final String tableList) throws Exception {
     Util.rejectNullValue(schema, "schema");
-    final DatabaseConnectionImpl dbConnection = new DatabaseConnectionImpl(database, new User(username, password));
+    final DatabaseConnection dbConnection = DatabaseConnections.createConnection(database, new User(username, password));
     try {
       final StringBuilder builder = new StringBuilder("package ").append(packageName).append(";\n\n");
 

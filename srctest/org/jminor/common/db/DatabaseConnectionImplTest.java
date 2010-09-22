@@ -81,7 +81,7 @@ public class DatabaseConnectionImplTest {
     assertEquals(10, dbConnection.getPoolTime());
     dbConnection.setRetryCount(2);
     assertEquals(2, dbConnection.getRetryCount());
-    DatabaseConnectionImpl.getDatabaseStatistics();
+    DatabaseConnections.getDatabaseStatistics();
   }
 
   @Test

@@ -103,6 +103,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
     validTimer = new Timer();
     validTimer.schedule(new TimerTask() {
       /** {@inheritDoc} */
+      @Override
       public void run() {
         final boolean valid = isConnectionValid();
         stConnectionValid.setActive(valid);

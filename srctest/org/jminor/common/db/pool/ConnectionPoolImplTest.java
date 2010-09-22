@@ -4,16 +4,12 @@
 package org.jminor.common.db.pool;
 
 import org.jminor.common.db.Database;
-import org.jminor.common.db.DatabaseConnectionImpl;
+import org.jminor.common.db.DatabaseConnections;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.tools.QueryLoadTestModel;
 import org.jminor.common.model.User;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 import java.sql.SQLException;
@@ -191,7 +187,7 @@ public class ConnectionPoolImplTest {
     return new PoolableConnectionProvider() {
       final Database database = Databases.createInstance();
       public PoolableConnection createConnection(final User user) throws ClassNotFoundException, SQLException {
-        return new DatabaseConnectionImpl(database, user);
+        return DatabaseConnections.createConnection(database, user);
       }
       public void destroyConnection(final PoolableConnection connection) {
         connection.disconnect();

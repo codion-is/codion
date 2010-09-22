@@ -4,9 +4,9 @@
 package org.jminor.common.db.tools;
 
 import org.jminor.common.db.Database;
-import org.jminor.common.db.DatabaseConnectionImpl;
+import org.jminor.common.db.DatabaseConnections;
 import org.jminor.common.db.pool.ConnectionPool;
-import org.jminor.common.db.pool.ConnectionPoolImpl;
+import org.jminor.common.db.pool.ConnectionPools;
 import org.jminor.common.db.pool.PoolableConnection;
 import org.jminor.common.db.pool.PoolableConnectionProvider;
 import org.jminor.common.model.CancelException;
@@ -31,7 +31,7 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
   private static final int DEFAULT_MAXIMUM_THINK_TIME_MS = 500;
   private static final int DEFAULT_LOGIN_DELAY_MS = 2;
   private static final int DEFAULT_BATCH_SIZE = 5;
-  private static final int DEFAULT_WARNING_TIME_MS = 50;
+  private static final int DEFAULT_QUERY_WARNING_TIME_MS = 50;
 
   private final ConnectionPool pool;
 
@@ -42,8 +42,8 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
    * @param scenarios the query scenarios
    */
   public QueryLoadTestModel(final Database database, final User user, final Collection<? extends QueryScenario> scenarios) {
-    super(user, scenarios, DEFAULT_MAXIMUM_THINK_TIME_MS, DEFAULT_LOGIN_DELAY_MS, DEFAULT_BATCH_SIZE, DEFAULT_WARNING_TIME_MS);
-    this.pool = new ConnectionPoolImpl(new ConnectionProvider(database), user);
+    super(user, scenarios, DEFAULT_MAXIMUM_THINK_TIME_MS, DEFAULT_LOGIN_DELAY_MS, DEFAULT_BATCH_SIZE, DEFAULT_QUERY_WARNING_TIME_MS);
+    this.pool = ConnectionPools.createPool(new ConnectionProvider(database), user);
     addExitListener(new ActionListener() {
       /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
@@ -178,7 +178,7 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
 
     /** {@inheritDoc} */
     public PoolableConnection createConnection(final User user) throws ClassNotFoundException, SQLException {
-      return new DatabaseConnectionImpl(database, user, database.createConnection(user));
+      return DatabaseConnections.createConnection(database, user, database.createConnection(user));
     }
 
     /** {@inheritDoc} */

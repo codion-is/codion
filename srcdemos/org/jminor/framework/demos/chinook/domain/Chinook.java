@@ -162,7 +162,7 @@ public class Chinook {
   public static final String P_UDPATE_TOTALS = "chinook.update_totals_procedure";
 
   private static final DatabaseConnection.Procedure UPDATE_TOTALS_PROCEDURE = new AbstractProcedure(P_UDPATE_TOTALS, "Update invoice totals") {
-    public void execute(final DatabaseConnection connection, final List<?> arguments) throws DatabaseException {
+    public void execute(final DatabaseConnection connection, final Object... arguments) throws DatabaseException {
       final EntityConnection entityConnection = (EntityConnection) connection;
       try {
         entityConnection.beginTransaction();

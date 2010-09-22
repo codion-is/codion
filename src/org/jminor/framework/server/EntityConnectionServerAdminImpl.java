@@ -4,6 +4,7 @@
 package org.jminor.framework.server;
 
 import org.jminor.common.db.Database;
+import org.jminor.common.db.DatabaseConnections;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.model.User;
@@ -13,7 +14,6 @@ import org.jminor.common.server.RemoteServer;
 import org.jminor.common.server.ServerLog;
 import org.jminor.common.server.web.WebStartServer;
 import org.jminor.framework.Configuration;
-import org.jminor.framework.db.EntityConnectionImpl;
 
 import ch.qos.logback.classic.Level;
 import org.slf4j.Logger;
@@ -234,7 +234,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
 
   /** {@inheritDoc} */
   public Database.Statistics getDatabaseStatistics() throws RemoteException {
-    return EntityConnectionImpl.getDatabaseStatistics();
+    return DatabaseConnections.getDatabaseStatistics();
   }
 
   /** {@inheritDoc} */
@@ -398,10 +398,6 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
     return EntityConnectionServer.getEntityDefinitions();
   }
 
-  private void setWebServer(final WebStartServer webServer) {
-    this.webServer = webServer;
-  }
-
   private Runnable getShutdownHook() {
     return new Runnable() {
       /** {@inheritDoc} */
@@ -441,7 +437,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
     if (webDocumentRoot != null) {
       final int port = Configuration.getIntValue(Configuration.WEB_SERVER_PORT);
       final WebStartServer webServer = new WebStartServer(webDocumentRoot, port);
-      admin.setWebServer(webServer);
+      admin.webServer = webServer;
       executor.execute(new Runnable() {
         public void run() {
           webServer.serve();

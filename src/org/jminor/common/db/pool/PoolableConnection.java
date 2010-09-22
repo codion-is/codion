@@ -3,8 +3,14 @@
  */
 package org.jminor.common.db.pool;
 
+import org.jminor.common.db.Database;
+import org.jminor.common.model.LogEntry;
+import org.jminor.common.model.MethodLogger;
+import org.jminor.common.model.User;
+
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * Defines a wrapper connection which can be pooled.
@@ -83,4 +89,34 @@ public interface PoolableConnection {
    * Disconnects this DbConnection
    */
   void disconnect();
+
+  /**
+   * @return the log entries
+   */
+  List<LogEntry> getLogEntries();
+
+  /**
+   * @return the MethodLogger being used by this db connection
+   */
+  MethodLogger getMethodLogger();
+
+  /**
+   * @param enabled true to enable logging on this connection, false to disable
+   */
+  void setLoggingEnabled(final boolean enabled);
+
+  /**
+   * @return true if logging is enabled, false otherwise
+   */
+  boolean isLoggingEnabled();
+
+  /**
+   * @return the connection user
+   */
+  User getUser();
+
+  /**
+   * @return the database implementation this connection is based on
+   */
+  Database getDatabase();
 }

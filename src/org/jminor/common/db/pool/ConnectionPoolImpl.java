@@ -11,21 +11,12 @@ import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Random;
-import java.util.Stack;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 /**
  * A simple connection pool implementation, pools connections on username basis.
  */
-public final class ConnectionPoolImpl implements ConnectionPool {
+final class ConnectionPoolImpl implements ConnectionPool {
 
   private static final Logger LOG = LoggerFactory.getLogger(ConnectionPoolImpl.class);
 
@@ -69,7 +60,7 @@ public final class ConnectionPoolImpl implements ConnectionPool {
    * @param connectionProvider the connection provider
    * @param user the user this pool is based on
    */
-  public ConnectionPoolImpl(final PoolableConnectionProvider connectionProvider, final User user) {
+  ConnectionPoolImpl(final PoolableConnectionProvider connectionProvider, final User user) {
     this.user = user;
     this.connectionProvider = connectionProvider;
     for (int i = 0; i < FINE_GRAINED_STATS_SIZE; i++) {

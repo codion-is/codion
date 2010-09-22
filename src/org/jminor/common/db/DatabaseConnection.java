@@ -5,8 +5,6 @@ package org.jminor.common.db;
 
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.PoolableConnection;
-import org.jminor.common.model.LogEntry;
-import org.jminor.common.model.User;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -16,26 +14,6 @@ import java.util.List;
  * Specifies a database connection, providing basic transaction control and helper functions for querying and manipulating data.
  */
 public interface DatabaseConnection extends PoolableConnection {
-
-  /**
-   * @return the connection user
-   */
-  User getUser();
-
-  /**
-   * @return the database implementation this connection is based on
-   */
-  Database getDatabase();
-
-  /**
-   * @param enabled true to enable logging on this connection, false to disable
-   */
-  void setLoggingEnabled(final boolean enabled);
-
-  /**
-   * @return true if logging is enabled, false otherwise
-   */
-  boolean isLoggingEnabled();
 
   /**
    * Performs the given sql query and returns the result in a List
@@ -139,7 +117,7 @@ public interface DatabaseConnection extends PoolableConnection {
    * @return the procedure return arguments, if any
    * @throws org.jminor.common.db.exception.DatabaseException in case anyhing goes wrong during the execution
    */
-  List<?> executeFunction(final String functionID, final List<?> arguments) throws DatabaseException;
+  List<?> executeFunction(final String functionID, final Object... arguments) throws DatabaseException;
 
   /**
    * Executes the procedure with the given id
@@ -147,12 +125,7 @@ public interface DatabaseConnection extends PoolableConnection {
    * @param arguments the arguments, if any
    * @throws org.jminor.common.db.exception.DatabaseException in case anyhing goes wrong during the execution
    */
-  void executeProcedure(final String procedureID, final List<?> arguments) throws DatabaseException;
-
-  /**
-   * @return the log entries
-   */
-  List<LogEntry> getLogEntries();
+  void executeProcedure(final String procedureID, final Object... arguments) throws DatabaseException;
 
   /**
    * A database operation
@@ -181,7 +154,7 @@ public interface DatabaseConnection extends PoolableConnection {
      * @param arguments the procedure arguments, if any
      * @throws org.jminor.common.db.exception.DatabaseException in case of an exception during the execution
      */
-    void execute(final DatabaseConnection connection, final List<?> arguments) throws DatabaseException;
+    void execute(final DatabaseConnection connection, final Object... arguments) throws DatabaseException;
   }
 
   /**
@@ -196,6 +169,6 @@ public interface DatabaseConnection extends PoolableConnection {
      * @return the function return arguments
      * @throws org.jminor.common.db.exception.DatabaseException in case of an exception during the execution
      */
-    List<Object> execute(final DatabaseConnection connection, final List<?> arguments) throws DatabaseException;
+    List<Object> execute(final DatabaseConnection connection, final Object... arguments) throws DatabaseException;
   }
 }

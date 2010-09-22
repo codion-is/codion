@@ -8,7 +8,7 @@ import org.jminor.common.db.Databases;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.framework.db.EntityConnection;
-import org.jminor.framework.db.EntityConnectionImpl;
+import org.jminor.framework.db.EntityConnections;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,8 +64,8 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
   public void disconnect() {
     if (getConnectionInternal() != null && getConnectionInternal().isValid()) {
       getConnectionInternal().disconnect();
-      if (((EntityConnectionImpl) getConnectionInternal()).getDatabase().isEmbedded()) {
-        ((EntityConnectionImpl) getConnectionInternal()).getDatabase().shutdownEmbedded(connectionProperties);
+      if (getConnectionInternal().getPoolableConnection().getDatabase().isEmbedded()) {
+        getConnectionInternal().getPoolableConnection().getDatabase().shutdownEmbedded(connectionProperties);
       }
       setConnection(null);
     }
@@ -76,7 +76,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
   protected EntityConnection connect() {
     try {
       LOG.debug("Initializing connection for " + getUser());
-      return new EntityConnectionImpl(database, getUser());
+      return EntityConnections.createConnection(database, getUser());
     }
     catch (Exception e) {
       throw new RuntimeException(e);

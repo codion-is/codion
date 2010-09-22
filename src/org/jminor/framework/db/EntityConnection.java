@@ -4,6 +4,7 @@
 package org.jminor.framework.db;
 
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.db.pool.PoolableConnection;
 import org.jminor.common.model.User;
 import org.jminor.common.model.reports.ReportException;
 import org.jminor.common.model.reports.ReportResult;
@@ -71,7 +72,7 @@ public interface EntityConnection {
    * @return the function return arguments
    * @throws org.jminor.common.db.exception.DatabaseException in case anyhing goes wrong during the execution
    */
-  List<?> executeFunction(final String functionID, final List<?> arguments) throws DatabaseException;
+  List<?> executeFunction(final String functionID, final Object... arguments) throws DatabaseException;
 
   /**
    * Executes the procedure with the given id
@@ -79,7 +80,7 @@ public interface EntityConnection {
    * @param arguments the arguments, if any
    * @throws org.jminor.common.db.exception.DatabaseException in case anyhing goes wrong during the execution
    */
-  void executeProcedure(final String procedureID, final List<?> arguments) throws DatabaseException;
+  void executeProcedure(final String procedureID, final Object... arguments) throws DatabaseException;
 
   /**
    * Inserts the given entities, returning a list containing the primary keys of the inserted entities
@@ -249,4 +250,9 @@ public interface EntityConnection {
    * @throws org.jminor.common.db.exception.DatabaseException in case of a db exception
    */
   byte[] readBlob(final Entity.Key primaryKey, final String blobPropertyID) throws DatabaseException;
+
+  /**
+   * @return the underlying poolable connection
+   */
+  PoolableConnection getPoolableConnection();
 }

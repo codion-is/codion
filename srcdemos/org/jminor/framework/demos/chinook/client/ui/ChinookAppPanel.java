@@ -3,12 +3,12 @@
  */
 package org.jminor.framework.demos.chinook.client.ui;
 
+import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.User;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.ControlSet;
 import org.jminor.common.ui.control.Controls;
-import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.DefaultEntityApplicationModel;
 import org.jminor.framework.client.model.EntityApplicationModel;
@@ -148,7 +148,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel {
     }
 
     public void updateInvoiceTotals() throws DatabaseException {
-      getConnectionProvider().getConnection().executeProcedure(Chinook.P_UDPATE_TOTALS, null);
+      getConnectionProvider().getConnection().executeProcedure(Chinook.P_UDPATE_TOTALS);
     }
 
     @Override
