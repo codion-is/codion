@@ -20,7 +20,7 @@ import java.util.Collection;
  * A remote load test adapter.
  * @see org.jminor.common.server.loadtest.LoadTestServer
  */
-public final class RemoteLoadTestImpl extends UnicastRemoteObject implements RemoteLoadTest {
+final class RemoteLoadTestImpl extends UnicastRemoteObject implements RemoteLoadTest {
 
   private static final long serialVersionUID = 1;
 
@@ -34,7 +34,7 @@ public final class RemoteLoadTestImpl extends UnicastRemoteObject implements Rem
    * @param loadTestPort the port on which to register the service
    * @throws RemoteException in case of an exception
    */
-  public RemoteLoadTestImpl(final ClientInfo clientInfo, final int loadTestPort) throws RemoteException {
+  RemoteLoadTestImpl(final ClientInfo clientInfo, final int loadTestPort) throws RemoteException {
     super(loadTestPort, RMISocketFactory.getSocketFactory(), RMISocketFactory.getSocketFactory());
     this.clientInfo = clientInfo;
     this.loadTest = instantiateLoadTest(clientInfo);
