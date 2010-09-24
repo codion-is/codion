@@ -18,7 +18,7 @@ import java.util.Collection;
 
 /**
  * A remote load test adapter.
- * @see org.jminor.common.server.loadtest.LoadTestServer
+ * @see RemoteLoadTestServer
  */
 final class RemoteLoadTestImpl extends UnicastRemoteObject implements RemoteLoadTest {
 

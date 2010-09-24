@@ -15,8 +15,8 @@ import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.RemoteServer;
 import org.jminor.common.server.ServerException;
 import org.jminor.common.server.ServerUtil;
-import org.jminor.common.server.loadtest.LoadTestServer;
 import org.jminor.common.server.loadtest.RemoteLoadTest;
+import org.jminor.common.server.loadtest.RemoteLoadTestServer;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityTableModel;
@@ -127,7 +127,7 @@ public abstract class EntityLoadTestModel extends LoadTestModel<EntityApplicatio
 
   public static LoadTest getRemoteLoadTest(final String serverHost, final String loadTestClassName, final User user) throws RemoteException, NotBoundException,
           ServerException.ServerFullException, ServerException.LoginException {
-    final RemoteServer server = ServerUtil.getServer(serverHost, LoadTestServer.SERVER_NAME);
+    final RemoteServer server = ServerUtil.getServer(serverHost, RemoteLoadTestServer.SERVER_NAME);
 
     final ClientInfo info = new ClientInfo(UUID.randomUUID(), loadTestClassName, user);
 

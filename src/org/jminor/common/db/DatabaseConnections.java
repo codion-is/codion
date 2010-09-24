@@ -117,7 +117,7 @@ public class DatabaseConnections {
     }
 
     /**
-     * Counts the given query, base on it's first character
+     * Counts the given query, based on it's first character
      * @param sql the sql query
      */
     public synchronized void count(final String sql) {

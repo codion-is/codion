@@ -981,8 +981,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     LOG.debug(frameCaption + " application starting");
     Messages.class.getName();//hack to load the class
     UIManager.setLookAndFeel(getDefaultLookAndFeelClassName());
-    final ImageIcon applicationIcon = iconName != null ? Images.getImageIcon(getClass(), iconName) :
-            Images.loadImage("jminor_logo32.gif");
+    final ImageIcon applicationIcon = iconName != null ? Images.getImageIcon(getClass(), iconName) : Images.loadImage("jminor_logo32.gif");
     final JDialog startupDialog = showStartupDialog ? initializeStartupDialog(applicationIcon, frameCaption) : null;
     EntityConnectionProvider entityConnectionProvider;
     while (true) {

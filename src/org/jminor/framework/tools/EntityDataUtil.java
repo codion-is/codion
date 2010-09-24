@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
+ */
 package org.jminor.framework.tools;
 
 import org.jminor.common.db.exception.DatabaseException;

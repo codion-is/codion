@@ -18,14 +18,14 @@ import java.rmi.server.RMISocketFactory;
  * A server for running load tests remotely.
  * @see org.jminor.common.model.LoadTestModel
  */
-public final class LoadTestServer extends AbstractRemoteServer<RemoteLoadTest> {
+public final class RemoteLoadTestServer extends AbstractRemoteServer<RemoteLoadTest> {
 
   private static final long serialVersionUID = 1;
 
   private static final int DEFAULT_PORT = 6666;
 
-  public static final String SERVER_NAME = "LoadTestServer";
-  private static final Logger LOG = LoggerFactory.getLogger(LoadTestServer.class);
+  public static final String SERVER_NAME = "RemoteLoadTestServer";
+  private static final Logger LOG = LoggerFactory.getLogger(RemoteLoadTestServer.class);
   private final int loadTestPort;
 
   static {
@@ -45,7 +45,7 @@ public final class LoadTestServer extends AbstractRemoteServer<RemoteLoadTest> {
    * @param serverName the name of this server
    * @throws java.rmi.RemoteException in case of a remote exception
    */
-  public LoadTestServer(final int serverPort, final int loadTestPort, final String serverName) throws RemoteException {
+  public RemoteLoadTestServer(final int serverPort, final int loadTestPort, final String serverName) throws RemoteException {
     super(serverPort, serverName, RMISocketFactory.getSocketFactory(), RMISocketFactory.getSocketFactory());
     this.loadTestPort = loadTestPort;
     Util.getRegistry().rebind(serverName, this);
@@ -83,7 +83,7 @@ public final class LoadTestServer extends AbstractRemoteServer<RemoteLoadTest> {
    * @throws Exception in case of an exception
    */
   public static void main(final String[] arguments) throws Exception {
-    new LoadTestServer(DEFAULT_PORT, DEFAULT_PORT, SERVER_NAME);
+    new RemoteLoadTestServer(DEFAULT_PORT, DEFAULT_PORT, SERVER_NAME);
     LOG.info(SERVER_NAME + " bound to registry");
   }
 }

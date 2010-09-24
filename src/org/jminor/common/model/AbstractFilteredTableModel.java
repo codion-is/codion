@@ -146,8 +146,10 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
                                     final List<? extends ColumnSearchModel<C>> columnFilterModels) {
     this.columnModel = columnModel;
     this.columnIndexCache = new int[columnModel.getColumnCount()];
-    for (final ColumnSearchModel<C> columnFilterModel : columnFilterModels) {
-      this.columnFilterModels.put(columnFilterModel.getColumnIdentifier(), columnFilterModel);
+    if (columnFilterModels != null) {
+      for (final ColumnSearchModel<C> columnFilterModel : columnFilterModels) {
+        this.columnFilterModels.put(columnFilterModel.getColumnIdentifier(), columnFilterModel);
+      }
     }
     this.selectionModel = new SelectionModel(this);
     resetSortingStates();

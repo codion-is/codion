@@ -334,21 +334,23 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
     while (columns.hasMoreElements()) {
       final TableColumn column = columns.nextElement();
       final ColumnSearchModel model = tableModel.getFilterModel((C) column.getIdentifier());
-      model.addSearchStateListener(new ActionListener() {
-        /** {@inheritDoc} */
-        public void actionPerformed(final ActionEvent e) {
-          if (model.isEnabled()) {
-            addFilterIndicator(column);
-          }
-          else {
-            removeFilterIndicator(column);
-          }
+      if (model != null) {
+        model.addSearchStateListener(new ActionListener() {
+          /** {@inheritDoc} */
+          public void actionPerformed(final ActionEvent e) {
+            if (model.isEnabled()) {
+              addFilterIndicator(column);
+            }
+            else {
+              removeFilterIndicator(column);
+            }
 
-          getJTable().getTableHeader().repaint();
+            getJTable().getTableHeader().repaint();
+          }
+        });
+        if (model.isEnabled()) {
+          addFilterIndicator(column);
         }
-      });
-      if (model.isEnabled()) {
-        addFilterIndicator(column);
       }
     }
   }
