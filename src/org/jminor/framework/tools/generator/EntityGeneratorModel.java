@@ -4,6 +4,7 @@
 package org.jminor.framework.tools.generator;
 
 import org.jminor.common.db.Database;
+import org.jminor.common.db.Databases;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.model.AbstractFilteredTableModel;
 import org.jminor.common.model.DefaultColumnSearchModel;
@@ -44,12 +45,11 @@ public final class EntityGeneratorModel {
   private static final String TABLE_SCHEMA = "TABLE_SCHEM";
   private static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
-  private final Database database;
   private final Connection connection;
   private final String schema;
   private final String catalog;
-  private DatabaseMetaData metaData;
-  private final AbstractFilteredTableModel<Table, Integer> tableModel;
+  private final DatabaseMetaData metaData;
+  private final TableModel tableModel;
   private final Document document;
   private final Event evtRefreshStarted = Events.event();
   private final Event evtRefreshEnded = Events.event();
@@ -58,16 +58,14 @@ public final class EntityGeneratorModel {
 
   /**
    * Instantiates a new EntityGeneratorModel.
-   * @param database the database
    * @param user the user
    * @param schema the schema name
    * @throws ClassNotFoundException in case the JDBC driver class was not found on the classpath
    * @throws SQLException in case of an exception while connecting to the database
    */
-  public EntityGeneratorModel(final Database database, final User user,
-                              final String schema) throws ClassNotFoundException, SQLException {
-    this.database = database;
+  public EntityGeneratorModel(final User user, final String schema) throws ClassNotFoundException, SQLException {
     this.schema = schema;
+    final Database database = Databases.createInstance();
     this.catalog = database.getDatabaseType().equals(Database.MYSQL) ? schema : null;
     this.connection = database.createConnection(user);
     this.metaData = connection.getMetaData();
@@ -99,18 +97,30 @@ public final class EntityGeneratorModel {
     return document;
   }
 
+  /**
+   * @param listener a listener notified each time a refresh has started
+   */
   public void addRefreshStartedListener(final ActionListener listener) {
     evtRefreshStarted.addListener(listener);
   }
 
+  /**
+   * @param listener the listener to remove
+   */
   public void removeRefreshStartedListener(final ActionListener listener) {
     evtRefreshStarted.removeListener(listener);
   }
 
+  /**
+   * @param listener a listener notified each time a refresh has ended
+   */
   public void addRefreshEndedListener(final ActionListener listener) {
     evtRefreshEnded.addListener(listener);
   }
 
+  /**
+   * @param listener the listener to remove
+   */
   public void removeRefreshEndedListener(final ActionListener listener) {
     evtRefreshEnded.removeListener(listener);
   }
@@ -130,36 +140,14 @@ public final class EntityGeneratorModel {
     }
   }
 
-  private AbstractFilteredTableModel<Table, Integer> initializeTableModel() throws ClassNotFoundException, SQLException {
+  private TableModel initializeTableModel() throws ClassNotFoundException, SQLException {
     final TableColumnModel columnModel = new DefaultTableColumnModel();
     final TableColumn column = new TableColumn();
     column.setIdentifier(0);
     column.setHeaderValue("Table");
     columnModel.addColumn(column);
 
-    return new AbstractFilteredTableModel<Table, Integer>(columnModel, Arrays.asList(new DefaultColumnSearchModel<Integer>(0, Types.VARCHAR, "%"))) {
-      @Override
-      protected void doRefresh() {
-        try {
-          clear();
-          final List<Table> schemaTables = new TablePacker(null, schema).pack(metaData.getTables(catalog, schema, null, null), -1);
-          addItems(schemaTables, true);
-        }
-        catch (SQLException e) {
-          LOG.error(e.getMessage(), e);
-          throw new RuntimeException(e);
-        }
-      }
-
-      public Object getValueAt(final int rowIndex, final int columnIndex) {
-        return getItemAt(rowIndex).tableName;
-      }
-
-      @Override
-      protected Comparable getComparable(final Object object, final Integer columnIdentifier) {
-        return ((Table) object).tableName;
-      }
-    };
+    return new TableModel(columnModel, metaData, schema, catalog);
   }
 
   private void bindEvents() {
@@ -222,8 +210,8 @@ public final class EntityGeneratorModel {
   }
 
   private static void appendPropertyConstants(final StringBuilder builder, final Table table,
-                                             final List<Column> columns, final List<ForeignKey> foreignKeys,
-                                             final List<PrimaryKey> primaryKeys) throws SQLException {
+                                              final List<Column> columns, final List<ForeignKey> foreignKeys,
+                                              final List<PrimaryKey> primaryKeys) throws SQLException {
     for (final Column column : columns) {
       column.setForeignKey(getForeignKey(column, foreignKeys));
       column.setPrimaryKey(getPrimaryKey(column, primaryKeys));
@@ -609,6 +597,43 @@ public final class EntityGeneratorModel {
       resultSet.close();
 
       return primaryKeys;
+    }
+  }
+
+  private static final class TableModel extends AbstractFilteredTableModel<Table, Integer> {
+
+    private final DatabaseMetaData metaData;
+    private final String schema;
+    private final String catalog;
+
+    private TableModel(final TableColumnModel columnModel, final DatabaseMetaData metaData,
+                       final String schema, final String catalog) {
+      super(columnModel, Arrays.asList(new DefaultColumnSearchModel<Integer>(0, Types.VARCHAR, "%")));
+      this.metaData = metaData;
+      this.schema = schema;
+      this.catalog = catalog;
+    }
+
+    @Override
+    protected void doRefresh() {
+      try {
+        clear();
+        final List<Table> schemaTables = new TablePacker(null, schema).pack(metaData.getTables(catalog, schema, null, null), -1);
+        addItems(schemaTables, true);
+      }
+      catch (SQLException e) {
+        LOG.error(e.getMessage(), e);
+        throw new RuntimeException(e);
+      }
+    }
+
+    public Object getValueAt(final int rowIndex, final int columnIndex) {
+      return getItemAt(rowIndex).tableName;
+    }
+
+    @Override
+    protected Comparable getComparable(final Object object, final Integer columnIdentifier) {
+      return ((Table) object).tableName;
     }
   }
 }

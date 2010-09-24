@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.tools.generator.ui;
 
-import org.jminor.common.db.Databases;
 import org.jminor.common.model.ColumnSearchModel;
 import org.jminor.common.model.User;
 import org.jminor.common.ui.AbstractFilteredTablePanel;
@@ -57,7 +56,7 @@ public class EntityGeneratorPanel extends JPanel {
     splitPane.setRightComponent(documentScroller);
 
     splitPane.setResizeWeight(0.2);
-    
+
     setLayout(new BorderLayout(5, 5));
     add(splitPane, BorderLayout.CENTER);
 
@@ -95,7 +94,7 @@ public class EntityGeneratorPanel extends JPanel {
 
     final String username = schemaName;
     final User user = LoginPanel.getUser(null, username != null ? new User(username, null) : null);
-    final EntityGeneratorModel model = new EntityGeneratorModel(Databases.createInstance(), user, schemaName);
+    final EntityGeneratorModel model = new EntityGeneratorModel(user, schemaName);
     final EntityGeneratorPanel panel = new EntityGeneratorPanel(model);
 
     final ImageIcon icon = Images.loadImage("jminor_logo32.gif");
