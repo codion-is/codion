@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jnlp spec="1.0+" codebase="http://jminor.no-ip.org/webstart/entity_generator/" href="entity_generator.jnlp">
+
+  <information>
+    <title>JMinor Entity Generator</title>
+    <vendor>JMinor.org</vendor>
+  </information>
+  <security>
+    <all-permissions/>
+  </security>
+
+  <resources>
+    <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se" />
+
+    <jar href="lib/jminor.jar" main="true" />
+
+    <!--  libraries-->
+    <jar href="lib/jminor-common.jar"/>
+    <jar href="lib/slf4j-api-1.6.1.jar"/>
+    <jar href="lib/logback-core-0.9.24.jar"/>
+    <jar href="lib/logback-classic-0.9.24.jar"/>
+
+    <property name="jminor.client.connectionType" value="local"/>
+    <property name="jminor.db.type" value="mysql"/>
+    <property name="jminor.db.host" value="localhost"/>
+    <property name="jminor.db.port" value="3306"/>
+    <property name="jminor.db.sid" value="mysql"/>
+  </resources>
+
+  <application-desc main-class="org.jminor.framework.server.monitor.ui.EntityServerMonitorPanel"/>
+</jnlp>

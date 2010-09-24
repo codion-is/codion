@@ -11,6 +11,7 @@ import org.jminor.common.ui.ColumnSearchPanel;
 import org.jminor.common.ui.LoginPanel;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.images.Images;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.tools.generator.EntityGeneratorModel;
 
 import javax.swing.ImageIcon;
@@ -18,7 +19,9 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
+import javax.swing.UIManager;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -45,12 +48,18 @@ public class EntityGeneratorPanel extends JPanel {
       }
     };
     final JScrollPane scroller = new JScrollPane(table.getJTable());
-    setLayout(new BorderLayout(5, 5));
-    add(scroller, BorderLayout.WEST);
+
+    final JSplitPane splitPane = new JSplitPane();
+    splitPane.setLeftComponent(scroller);
 
     final JTextArea textArea = new JTextArea(generatorModel.getDocument(), "", 40, 60);
     final JScrollPane documentScroller = new JScrollPane(textArea);
-    add(documentScroller, BorderLayout.CENTER);
+    splitPane.setRightComponent(documentScroller);
+
+    splitPane.setResizeWeight(0.2);
+    
+    setLayout(new BorderLayout(5, 5));
+    add(splitPane, BorderLayout.CENTER);
 
     bindEvents();
   }
@@ -74,6 +83,9 @@ public class EntityGeneratorPanel extends JPanel {
    * @throws Exception in case of an exception while initializing the panel
    */
   public static void main(final String[] arguments) throws Exception {
+    Configuration.init();
+    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+
     String schemaName = JOptionPane.showInputDialog("Schema name");
     if (schemaName == null || schemaName.isEmpty()) {
       return;
@@ -83,7 +95,6 @@ public class EntityGeneratorPanel extends JPanel {
 
     final String username = schemaName;
     final User user = LoginPanel.getUser(null, username != null ? new User(username, null) : null);
-
     final EntityGeneratorModel model = new EntityGeneratorModel(Databases.createInstance(), user, schemaName);
     final EntityGeneratorPanel panel = new EntityGeneratorPanel(model);
 

@@ -32,6 +32,12 @@ public final class Configuration {
 
   private static final Logger LOG = LoggerFactory.getLogger(Configuration.class);
 
+
+  /**
+   * A convenience method for loading this class so that it parses configuration files and such
+   */
+  public static void init() {}
+
   private Configuration() {}
 
   /**

@@ -311,7 +311,6 @@
           description="Deploys the rmi server monitor to the path defined by the 'deploy.server.monitor.path' property">
     <mkdir dir="${deploy.server.monitor.path}"/>
     <copy file="${dist}/${ant.project.name}-server-monitor.jar" todir="${deploy.server.monitor.path}/lib"/>
-    <copy file="${dist}/${ant.project.name}-plugins.jar" todir="${deploy.server.path}/lib"/>
     <copy file="${dist}/${ant.project.name}-common.jar" todir="${deploy.server.monitor.path}/lib"/>
     <copy file="${lib.slf4j.api}" todir="${deploy.server.monitor.path}/lib"/>
     <copy file="${lib.logback.classic}" todir="${deploy.server.monitor.path}/lib"/>
@@ -332,6 +331,34 @@
           description="Signs the jars found in the 'deploy.server.monitor.path'">
     <signjar alias="${jar.sign.alias}" storepass="${jar.sign.storepass}" keystore="${jar.sign.keystoreloc}">
       <fileset dir="${deploy.server.monitor.path}/lib" />
+    </signjar>
+  </target>
+
+  <target name="deploy_generator"
+          description="Deploys the entity generator to the path defined by the 'deploy.generator.path' property">
+    <mkdir dir="${deploy.generator.path}"/>
+    <copy file="${dist}/${ant.project.name}.jar" todir="${deploy.generator.path}/lib"/>
+    <copy file="${dist}/${ant.project.name}-common.jar" todir="${deploy.generator.path}/lib"/>
+    <copy file="${lib.h2}" todir="${deploy.generator.path}/lib"/>
+    <copy file="${lib.slf4j.api}" todir="${deploy.generator.path}/lib"/>
+    <copy file="${lib.logback.classic}" todir="${deploy.generator.path}/lib"/>
+    <copy file="${lib.logback.core}" todir="${deploy.generator.path}/lib"/>
+    <copy file="${lib.jcalendar}" todir="${deploy.generator.path}/lib"/>
+    <copy todir="${deploy.generator.path}">
+      <fileset dir="${basedir}/resources/entity_generator/"/>
+    </copy>
+    <copy todir="${deploy.generator.path}/h2db">
+      <fileset dir="${db.h2.dir}"/>
+    </copy>
+    <copy file="${deploy.generator.policy}" todir="${deploy.generator.config.path}"/>
+    <chmod dir="${deploy.generator.path}" perm="u+x" type="file" includes="*.sh"/>
+    <antcall target="sign_generator_jars"/>
+  </target>
+
+  <target name="sign_generator_jars" depends="dist"
+          description="Signs the jars found in the 'deploy.generator.path'">
+    <signjar alias="${jar.sign.alias}" storepass="${jar.sign.storepass}" keystore="${jar.sign.keystoreloc}">
+      <fileset dir="${deploy.generator.path}/lib" />
     </signjar>
   </target>
 
@@ -386,7 +413,7 @@
     </signjar>
   </target>
 
-  <target name="deploy_all" depends="clean, dist, deploy_server, deploy_server_monitor, deploy_demos"
+  <target name="deploy_all" depends="clean, dist, deploy_server, deploy_server_monitor, deploy_demos, deploy_generator"
           description="A convenience target for deploying the server, server monitor and demo applications">
     <delete file="${dist}/deployment/jminor-${version}.zip"/>
     <zip destfile="${dist}/deployment/jminor-${version}.zip">

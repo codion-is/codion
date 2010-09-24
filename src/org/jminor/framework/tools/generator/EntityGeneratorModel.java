@@ -12,6 +12,9 @@ import org.jminor.common.model.Events;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
@@ -35,6 +38,8 @@ import java.util.List;
  * @see org.jminor.framework.tools.generator.ui.EntityGeneratorPanel
  */
 public final class EntityGeneratorModel {
+
+  private static final Logger LOG = LoggerFactory.getLogger(EntityGeneratorModel.class);
 
   private static final String TABLE_SCHEMA = "TABLE_SCHEM";
   private static final String LINE_SEPARATOR = System.getProperty("line.separator");
@@ -117,7 +122,7 @@ public final class EntityGeneratorModel {
     try {
       if (connection != null) {
         connection.close();
-        System.out.println("EntityGeneratorModel closed connection");
+        LOG.info("EntityGeneratorModel closed connection");
       }
     }
     catch (SQLException e) {
@@ -141,6 +146,7 @@ public final class EntityGeneratorModel {
           addItems(schemaTables, true);
         }
         catch (SQLException e) {
+          LOG.error(e.getMessage(), e);
           throw new RuntimeException(e);
         }
       }
@@ -186,6 +192,7 @@ public final class EntityGeneratorModel {
       throw new RuntimeException(e);
     }
     catch (SQLException e) {
+      LOG.error(e.getMessage(), e);
       throw new RuntimeException(e);
     }
   }
