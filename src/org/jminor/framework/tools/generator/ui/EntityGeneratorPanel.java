@@ -98,7 +98,7 @@ public class EntityGeneratorPanel extends JPanel {
     final EntityGeneratorPanel panel = new EntityGeneratorPanel(model);
 
     final ImageIcon icon = Images.loadImage("jminor_logo32.gif");
-    final JFrame frame = new JFrame("JMinor Entity Genarator");
+    final JFrame frame = new JFrame("JMinor Entity Generator");
     frame.setIconImage(icon.getImage());
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     frame.add(panel);
