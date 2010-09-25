@@ -39,8 +39,8 @@ public class EntityGeneratorPanel extends JPanel {
    */
   public EntityGeneratorPanel(final EntityGeneratorModel generatorModel) {
     this.model = generatorModel;
-    AbstractFilteredTablePanel<EntityGeneratorModel.Table, Integer> table =
-            new AbstractFilteredTablePanel<EntityGeneratorModel.Table, Integer>(generatorModel.getTableListModel()) {
+    final AbstractFilteredTablePanel<EntityGeneratorModel.Table, Integer> table =
+            new AbstractFilteredTablePanel<EntityGeneratorModel.Table, Integer>(generatorModel.getTableModel()) {
       @Override
       protected ColumnSearchPanel<Integer> initializeFilterPanel(final ColumnSearchModel<Integer> model) {
         return null;

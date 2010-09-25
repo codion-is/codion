@@ -8,6 +8,7 @@ import org.jfree.data.xy.YIntervalSeriesCollection;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Specifies a class for running multiple application instances for load testing purposes.
@@ -264,9 +265,19 @@ public interface LoadTest {
     int getTotalRunCount();
 
     /**
+     * @return any exceptions that have occurred during a run
+     */
+    List<ScenarioException> getExceptions();
+
+    /**
      * Resets the run counters
      */
     void resetRunCount();
+
+    /**
+     * Clears the exceptions that have been collected so far
+     */
+    void clearExceptions();
 
     /**
      * @return the number of times this scenario has been successfully run

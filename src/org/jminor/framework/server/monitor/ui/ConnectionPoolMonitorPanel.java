@@ -10,6 +10,7 @@ import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.Controls;
 import org.jminor.common.ui.control.IntBeanSpinnerValueLink;
 import org.jminor.common.ui.control.ToggleBeanValueLink;
+import org.jminor.common.ui.layout.FlexibleGridLayout;
 import org.jminor.framework.server.monitor.ConnectionPoolMonitor;
 
 import org.jfree.chart.ChartFactory;
@@ -97,14 +98,11 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
 
   private void initUI() {
     initializeCharts(model);
-    setLayout(new BorderLayout(5,5));
+    setLayout(new FlexibleGridLayout(1, 3, 5, 5, true, false));
 
-    final JPanel statusBase = new JPanel(new BorderLayout(5,5));
-    statusBase.add(getStatsPanel(), BorderLayout.EAST);
-    statusBase.add(getChartPanel(), BorderLayout.CENTER);
-
-    add(getPoolConfigPanel(), BorderLayout.WEST);
-    add(statusBase, BorderLayout.CENTER);
+    add(getChartPanel());
+    add(getStatsPanel());
+    add(getConfigPanel());
   }
 
   private void initializeCharts(final ConnectionPoolMonitor model) {
@@ -146,7 +144,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     });
   }
 
-  private JPanel getPoolConfigPanel() {
+  private JPanel getConfigPanel() {
     final JPanel configBase = new JPanel(new GridLayout(0, 1, 5, 5));
 
     final JSpinner spnTimeout = new JSpinner(new IntBeanSpinnerValueLink(model, "pooledConnectionTimeout", null).getSpinnerModel());
@@ -161,14 +159,8 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     ((JSpinner.DefaultEditor) spnCleanupInterval.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) spnMinimumSize.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) spnMaximumSize.getEditor()).getTextField().setEditable(false);
-//    ((JSpinner.DefaultEditor) spnMaximumRetryWait.getEditor()).getTextField().setEditable(false);
-//    ((JSpinner.DefaultEditor) spnMaximumCheckOutTime.getEditor()).getTextField().setEditable(false);
 
-    ((JSpinner.DefaultEditor) spnTimeout.getEditor()).getTextField().setColumns(3);
-    ((JSpinner.DefaultEditor) spnCleanupInterval.getEditor()).getTextField().setColumns(3);
-    ((JSpinner.DefaultEditor) spnMinimumSize.getEditor()).getTextField().setColumns(3);
-    ((JSpinner.DefaultEditor) spnMaximumSize.getEditor()).getTextField().setColumns(3);
-    ((JSpinner.DefaultEditor) spnNewConnectionThreshold.getEditor()).getTextField().setColumns(3);
+    ((JSpinner.DefaultEditor) spnTimeout.getEditor()).getTextField().setColumns(30);
 
     configBase.add(UiUtil.northCenterPanel(new JLabel("Min size"), spnMinimumSize));
     configBase.add(UiUtil.northCenterPanel(new JLabel("Max size"), spnMaximumSize));
@@ -188,7 +180,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   private JPanel getStatsPanel() {
     final JPanel statsBase = new JPanel(new GridLayout(0, 1, 5, 5));
     txtPoolSize.setEditable(false);
-    txtPoolSize.setColumns(3);
+    txtPoolSize.setColumns(30);
     txtPoolSize.setHorizontalAlignment(JLabel.CENTER);
     txtCreated.setEditable(false);
     txtCreated.setHorizontalAlignment(JLabel.CENTER);

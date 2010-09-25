@@ -13,8 +13,10 @@ import org.slf4j.LoggerFactory;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Stack;
@@ -640,9 +642,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
                 try {
                   scenarioName = loadTestModel.performWork(application);
                 }
-                catch (ScenarioException e) {
-                  LOG.debug("ScenarioException: " + application, e.getCause());
-                }
+                catch (ScenarioException e) {}
               }
               finally {
                 final long workTimeMillis = (System.nanoTime() - currentTimeNano) / NANO_IN_MILLI;
@@ -698,6 +698,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
     private final String name;
     private volatile int successfulRunCount = 0;
     private volatile int unsuccessfulRunCount = 0;
+    private final List<ScenarioException> exceptions = new ArrayList<ScenarioException>();
 
     /**
      * Instantiates a new UsageScenario using the simple class name as scenario name
@@ -735,9 +736,23 @@ public abstract class LoadTestModel<T> implements LoadTest {
     }
 
     /** {@inheritDoc} */
+    public List<ScenarioException> getExceptions() {
+      synchronized (exceptions) {
+        return Collections.unmodifiableList(exceptions);
+      }
+    }
+
+    /** {@inheritDoc} */
     public final void resetRunCount() {
       successfulRunCount = 0;
       unsuccessfulRunCount = 0;
+    }
+
+    /** {@inheritDoc} */
+    public void clearExceptions() {
+      synchronized (exceptions) {
+        exceptions.clear();
+      }
     }
 
     /**
@@ -760,6 +775,9 @@ public abstract class LoadTestModel<T> implements LoadTest {
       }
       catch (ScenarioException e) {
         unsuccessfulRunCount++;
+        synchronized (exceptions) {
+          exceptions.add(e);
+        }
         throw e;
       }
       finally {

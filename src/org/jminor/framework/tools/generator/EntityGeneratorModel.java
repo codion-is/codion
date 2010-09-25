@@ -49,7 +49,7 @@ public final class EntityGeneratorModel {
   private final String schema;
   private final String catalog;
   private final DatabaseMetaData metaData;
-  private final TableModel tableModel;
+  private final AbstractFilteredTableModel<Table, Integer> tableModel;
   private final Document document;
   private final Event evtRefreshStarted = Events.event();
   private final Event evtRefreshEnded = Events.event();
@@ -86,7 +86,7 @@ public final class EntityGeneratorModel {
   /**
    * @return a table model containing the tables from the generator schema
    */
-  public AbstractFilteredTableModel<Table, Integer> getTableListModel() {
+  public AbstractFilteredTableModel<Table, Integer> getTableModel() {
     return tableModel;
   }
 
@@ -183,13 +183,6 @@ public final class EntityGeneratorModel {
       LOG.error(e.getMessage(), e);
       throw new RuntimeException(e);
     }
-  }
-
-  private String getEntityDefinition(final Table table) {
-    final StringBuilder builder = new StringBuilder();
-    appendEntityDefinition(builder, table);
-
-    return builder.toString();
   }
 
   private String getPropertyConstants(final Table table, final List<ForeignKey> foreignKeys, final List<PrimaryKey> primaryKeys) throws SQLException {
@@ -314,9 +307,16 @@ public final class EntityGeneratorModel {
   }
 
   private static String getCaption(final Column column) {
-    String columnName = column.columnName.toLowerCase().replaceAll("_", " ");
+    final String columnName = column.columnName.toLowerCase().replaceAll("_", " ");
 
     return columnName.substring(0, 1).toUpperCase() + columnName.substring(1, columnName.length());
+  }
+
+  private static String getEntityDefinition(final Table table) {
+    final StringBuilder builder = new StringBuilder();
+    appendEntityDefinition(builder, table);
+
+    return builder.toString();
   }
 
   private static List<PrimaryKey> getPrimaryKeys(final DatabaseMetaData metaData, final String catalog, final String schema) throws SQLException {

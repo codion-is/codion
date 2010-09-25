@@ -25,15 +25,18 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.xy.DeviationRenderer;
 
+import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import java.awt.BorderLayout;
@@ -45,6 +48,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.List;
+import java.lang.reflect.UndeclaredThrowableException;
 
 /**
  * A default UI component for the LoadTestModel class.
@@ -54,9 +59,10 @@ public final class LoadTestPanel extends JPanel {
 
   private static final int DEFAULT_MEMORY_USAGE_UPDATE_INTERVAL_MS = 2000;
   private static final double DEFAULT_SCREEN_SIZE_RATIO = 0.75;
+  private static final String LINE_SEPARATOR = System.getProperty("line.separator");
   private final LoadTest loadTestModel;
 
-  private final JPanel durationBase = new JPanel(new GridLayout(0, 1, 5, 5));
+  private final JPanel scenarioBase = new JPanel(new GridLayout(0, 1, 5, 5));
   private ItemRandomizerPanel randomizerPanel;
   private JPanel pluginPanel;
 
@@ -152,7 +158,7 @@ public final class LoadTestPanel extends JPanel {
   }
 
   private ItemRandomizerPanel initializeScenarioPanel() {
-    durationBase.setBorder(BorderFactory.createTitledBorder("Scenario duration (ms)"));
+    scenarioBase.setBorder(BorderFactory.createTitledBorder("Scenario duration (ms)"));
     final ItemRandomizerPanel<LoadTestModel.UsageScenario> scenarioBase = new ItemRandomizerPanel<LoadTestModel.UsageScenario>(loadTestModel.getScenarioChooser());
     scenarioBase.setBorder(BorderFactory.createTitledBorder("Usage scenarios"));
     scenarioBase.addSelectedItemListener(new ActionListener() {
@@ -312,7 +318,7 @@ public final class LoadTestPanel extends JPanel {
 
     final JTabbedPane tabPane = new JTabbedPane();
     tabPane.addTab("Overview", two);
-    tabPane.addTab("Scenario durations", durationBase);
+    tabPane.addTab("Scenarios", scenarioBase);
 
     chartBase.add(tabPane);
 
@@ -360,24 +366,69 @@ public final class LoadTestPanel extends JPanel {
 
   @SuppressWarnings({"unchecked"})
   private void handleScenarioSelected() {
-    durationBase.removeAll();
+    scenarioBase.removeAll();
     for (final Object selectedItem : randomizerPanel.getSelectedItems()) {
       final ItemRandomizer.RandomItem<LoadTest.UsageScenario> item = (ItemRandomizer.RandomItem<LoadTest.UsageScenario>) selectedItem;
-      final JFreeChart scenarioDurationChart = ChartFactory.createXYStepChart(null,
-              null, null, loadTestModel.getScenarioDurationDataset(item.getItem().getName()),
-              PlotOrientation.VERTICAL, true, true, false);
-      setColors(scenarioDurationChart);
-      final ChartPanel scenarioDurationChartPanel = new ChartPanel(scenarioDurationChart);
-      scenarioDurationChartPanel.setBorder(BorderFactory.createEtchedBorder());
-
-      final DeviationRenderer renderer = new DeviationRenderer();
-      renderer.setBaseShapesVisible(false);
-      scenarioDurationChart.getXYPlot().setRenderer(renderer);
-
-      durationBase.add(scenarioDurationChartPanel);
+      final JPanel scenarioPanel = createScenarioPanel(item.getItem());
+      scenarioBase.add(scenarioPanel);
     }
     validate();
     repaint();
+  }
+
+  private JPanel createScenarioPanel(final LoadTest.UsageScenario item) {
+    final JFreeChart scenarioDurationChart = ChartFactory.createXYStepChart(null,
+            null, null, loadTestModel.getScenarioDurationDataset(item.getName()),
+            PlotOrientation.VERTICAL, true, true, false);
+    setColors(scenarioDurationChart);
+    final ChartPanel scenarioDurationChartPanel = new ChartPanel(scenarioDurationChart);
+    scenarioDurationChartPanel.setBorder(BorderFactory.createEtchedBorder());
+
+    final DeviationRenderer renderer = new DeviationRenderer();
+    renderer.setBaseShapesVisible(false);
+    scenarioDurationChart.getXYPlot().setRenderer(renderer);
+
+    final JPanel basePanel = new JPanel(new BorderLayout(5, 5));
+    final JTabbedPane tabPanel = new JTabbedPane();
+    tabPanel.addTab("Duration", scenarioDurationChartPanel);
+
+    final JTextArea txtExceptions = new JTextArea();
+    final JPanel scenarioExceptionPanel = new JPanel(new BorderLayout(5, 5));
+    scenarioExceptionPanel.add(txtExceptions, BorderLayout.CENTER);
+    final JButton btnRefresh = new JButton(new AbstractAction("Refresh") {
+      public void actionPerformed(final ActionEvent e) {
+        txtExceptions.replaceRange("", 0, txtExceptions.getDocument().getLength());
+        final List<LoadTest.ScenarioException> exceptions = item.getExceptions();
+        for (final LoadTest.ScenarioException exception : exceptions) {
+          final Exception root = Util.unwrapAndLog((Exception) exception.getCause(), UndeclaredThrowableException.class, null);
+          txtExceptions.append(root.toString());
+          txtExceptions.append(LINE_SEPARATOR);
+          txtExceptions.append(LINE_SEPARATOR);
+        }
+      }
+    });
+    btnRefresh.doClick();
+    final JButton btnClear = new JButton(new AbstractAction("Reset") {
+      public void actionPerformed(final ActionEvent e) {
+        item.clearExceptions();
+        txtExceptions.replaceRange("", 0, txtExceptions.getDocument().getLength());
+      }
+    });
+
+    final JScrollPane exceptionScroller = new JScrollPane(txtExceptions);
+
+    scenarioExceptionPanel.add(exceptionScroller, BorderLayout.CENTER);
+    final JPanel buttonPanel = new JPanel(new BorderLayout(5, 5));
+    buttonPanel.add(btnRefresh, BorderLayout.NORTH);
+    buttonPanel.add(btnClear, BorderLayout.SOUTH);
+
+    scenarioExceptionPanel.add(buttonPanel, BorderLayout.EAST);
+
+    tabPanel.addTab("Exceptions", scenarioExceptionPanel);
+
+    basePanel.add(tabPanel, BorderLayout.CENTER);
+
+    return basePanel;
   }
 
   private void setColors(final JFreeChart chart) {
