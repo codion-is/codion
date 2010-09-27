@@ -2220,3 +2220,6 @@
   Dependency entanglement removed from common.db and framework.domain
   AbstractFilteredTablePanel.initializeFilterPanel() is no longer abstract, class renamed to FilteredTablePanel
   FilteredTablePanel.initializeFilterPanel() removed
+  AbstractFilteredTableModel now range checks selection indexes
+  EntityGeneratorModel.getDocumentText() added
+  EntityGeneratorModelTest fleshed out some

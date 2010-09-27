@@ -378,16 +378,27 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   /** {@inheritDoc} */
   public final void setSelectedItemIndex(final int index) {
+    if (index < 0 || index > getRowCount() - 1) {
+      throw new IndexOutOfBoundsException("Index: " + index + ", size: " + getRowCount());
+    }
     selectionModel.setSelectionInterval(index, index);
   }
 
   /** {@inheritDoc} */
   public final void addSelectedItemIndex(final int index) {
+    if (index < 0 || index > getRowCount() - 1) {
+      throw new IndexOutOfBoundsException("Index: " + index + ", size: " + getRowCount());
+    }
     selectionModel.addSelectionInterval(index, index);
   }
 
   /** {@inheritDoc} */
   public final void setSelectedItemIndexes(final List<Integer> indexes) {
+    for (final Integer index : indexes) {
+      if (index < 0 || index > getRowCount() - 1) {
+        throw new IndexOutOfBoundsException("Index: " + index + ", size: " + getRowCount());
+      }
+    }
     selectionModel.setSelectedItemIndexes(indexes);
   }
 

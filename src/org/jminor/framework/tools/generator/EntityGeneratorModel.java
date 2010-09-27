@@ -64,8 +64,19 @@ public final class EntityGeneratorModel {
    * @throws SQLException in case of an exception while connecting to the database
    */
   public EntityGeneratorModel(final User user, final String schema) throws ClassNotFoundException, SQLException {
+    this(Databases.createInstance(), user, schema);
+  }
+
+  /**
+   * Instantiates a new EntityGeneratorModel.
+   * @param database the database
+   * @param user the user
+   * @param schema the schema name
+   * @throws ClassNotFoundException in case the JDBC driver class was not found on the classpath
+   * @throws SQLException in case of an exception while connecting to the database
+   */
+  public EntityGeneratorModel(final Database database, final User user, final String schema) throws ClassNotFoundException, SQLException {
     this.schema = schema;
-    final Database database = Databases.createInstance();
     this.catalog = database.getDatabaseType().equals(Database.MYSQL) ? schema : null;
     this.connection = database.createConnection(user);
     this.metaData = connection.getMetaData();
@@ -95,6 +106,18 @@ public final class EntityGeneratorModel {
    */
   public Document getDocument() {
     return document;
+  }
+
+  /**
+   * @return the text from the entity definition document
+   */
+  public String getDocumentText() {
+    try {
+      return document.getText(0, document.getLength());
+    }
+    catch (BadLocationException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   /**
@@ -197,7 +220,7 @@ public final class EntityGeneratorModel {
     builder.append("Entities.define(").append(getEntityID(table)).append(",").append(LINE_SEPARATOR);
     for (final Column column : table.getColumns()) {
       builder.append(getPropertyDefinition(table, column))
-              .append(table.getColumns().indexOf(column) < table.getColumns().size() - 1 ? ", " : "").append(LINE_SEPARATOR);
+              .append(table.getColumns().indexOf(column) < table.getColumns().size() - 1 ? "," : "").append(LINE_SEPARATOR);
     }
     builder.append(");").append(LINE_SEPARATOR).append(LINE_SEPARATOR);
   }
@@ -258,7 +281,7 @@ public final class EntityGeneratorModel {
     final String caption = getCaption(column);
     if (column.foreignKey != null) {
       final String referencePropertyID = getPropertyID(table, column, false);
-      ret = "        Properties.foreignKeyProperty(" + propertyID + ", \"" + caption + "\", " +
+      ret = "        Properties.foreignKeyProperty(" + propertyID + ", \"" + caption + "\"," +
               getEntityID(column.foreignKey.getReferencedTable()) + "," + LINE_SEPARATOR;
       if (column.columnType == Types.INTEGER) {
         ret += "                Properties.columnProperty(" + referencePropertyID + "))";
