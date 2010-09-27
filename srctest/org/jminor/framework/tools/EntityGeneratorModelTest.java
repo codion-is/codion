@@ -64,10 +64,10 @@ public class EntityGeneratorModelTest {
     tagItemBuilder.append("public static final String TAG_ITEM_ITEMID_FK = \"itemid_fk\";").append(LINE_SEPARATOR);
     tagItemBuilder.append(LINE_SEPARATOR);
     tagItemBuilder.append("Entities.define(T_TAG_ITEM,").append(LINE_SEPARATOR);
-    tagItemBuilder.append("        Properties.foreignKeyProperty(TAG_ITEM_TAGID_FK, \"Tagid\",T_TAG,").append(LINE_SEPARATOR);
+    tagItemBuilder.append("        Properties.foreignKeyProperty(TAG_ITEM_TAGID_FK, \"Tagid\", T_TAG,").append(LINE_SEPARATOR);
     tagItemBuilder.append("                Properties.primaryKeyProperty(TAG_ITEM_TAGID))").append(LINE_SEPARATOR);
     tagItemBuilder.append("                .setNullable(false),").append(LINE_SEPARATOR);
-    tagItemBuilder.append("        Properties.foreignKeyProperty(TAG_ITEM_ITEMID_FK, \"Itemid\",T_ITEM,").append(LINE_SEPARATOR);
+    tagItemBuilder.append("        Properties.foreignKeyProperty(TAG_ITEM_ITEMID_FK, \"Itemid\", T_ITEM,").append(LINE_SEPARATOR);
     tagItemBuilder.append("                Properties.primaryKeyProperty(TAG_ITEM_ITEMID)").append(LINE_SEPARATOR);
     tagItemBuilder.append("                        .setIndex(1))").append(LINE_SEPARATOR);
     tagItemBuilder.append("                .setNullable(false)").append(LINE_SEPARATOR);
@@ -86,7 +86,7 @@ public class EntityGeneratorModelTest {
     productBuilder.append(LINE_SEPARATOR);
     productBuilder.append("Entities.define(T_PRODUCT,").append(LINE_SEPARATOR);
     productBuilder.append("        Properties.primaryKeyProperty(PRODUCT_PRODUCTID),").append(LINE_SEPARATOR);
-    productBuilder.append("        Properties.foreignKeyProperty(PRODUCT_CATEGORYID_FK, \"Categoryid\",T_CATEGORY,").append(LINE_SEPARATOR);
+    productBuilder.append("        Properties.foreignKeyProperty(PRODUCT_CATEGORYID_FK, \"Categoryid\", T_CATEGORY,").append(LINE_SEPARATOR);
     productBuilder.append("                Properties.columnProperty(PRODUCT_CATEGORYID))").append(LINE_SEPARATOR);
     productBuilder.append("                .setNullable(false),").append(LINE_SEPARATOR);
     productBuilder.append("        Properties.columnProperty(PRODUCT_NAME, Types.VARCHAR, \"Name\")").append(LINE_SEPARATOR);

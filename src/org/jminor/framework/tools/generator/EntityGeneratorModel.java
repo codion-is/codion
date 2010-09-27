@@ -282,7 +282,7 @@ public final class EntityGeneratorModel {
       final StringBuilder builder = new StringBuilder();
       final String foreignKeyID = getPropertyID(table, column, true);
       final String caption = getCaption(column);
-      builder.append("        Properties.foreignKeyProperty(").append(foreignKeyID).append(", \"").append(caption).append("\",").append(
+      builder.append("        Properties.foreignKeyProperty(").append(foreignKeyID).append(", \"").append(caption).append("\", ").append(
               getEntityID(column.foreignKey.getReferencedTable())).append(",").append(LINE_SEPARATOR);
       builder.append("        ").append(columnPropertyDefinition).append(")");
 
