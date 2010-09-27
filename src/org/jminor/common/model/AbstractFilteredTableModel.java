@@ -250,10 +250,10 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
       return;
     }
     try {
-      resetSortingStates();
       isRefreshing = true;
       evtRefreshStarted.fire();
       doRefresh();
+      sortVisibleItems();
     }
     finally {
       isRefreshing = false;
@@ -886,19 +886,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
       isSorting = true;
       evtSortingStarted.fire();
       final List<R> selectedItems = new ArrayList<R>(getSelectedItems());
-      Collections.sort(visibleItems, new Comparator<R>() {
-        /** {@inheritDoc} */
-        public int compare(final R o1, final R o2) {
-          for (final Map.Entry<C, SortingState> state : getOrderedSortingStates()) {
-            final int comparison = compareRows(o1, o2, state.getKey(), state.getValue().getDirective());
-            if (comparison != 0) {
-              return comparison;
-            }
-          }
-
-          return 0;
-        }
-      });
+      sortVisibleItems();
       fireTableDataChanged();
       setSelectedItems(selectedItems);
     }
@@ -906,6 +894,22 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
       isSorting = false;
       evtSortingDone.fire();
     }
+  }
+
+  private void sortVisibleItems() {
+    Collections.sort(visibleItems, new Comparator<R>() {
+      /** {@inheritDoc} */
+      public int compare(final R o1, final R o2) {
+        for (final Map.Entry<C, SortingState> state : getOrderedSortingStates()) {
+          final int comparison = compareRows(o1, o2, state.getKey(), state.getValue().getDirective());
+          if (comparison != 0) {
+            return comparison;
+          }
+        }
+
+        return 0;
+      }
+    });
   }
 
   private List<Map.Entry<C, SortingState>> getOrderedSortingStates() {

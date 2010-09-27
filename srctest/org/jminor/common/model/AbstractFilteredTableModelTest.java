@@ -202,6 +202,12 @@ public final class AbstractFilteredTableModelTest {
     assertEquals(0, tableModel.getSortingPriority(0));
     assertEquals(2, done.size());
 
+    tableModel.setSortingDirective(0, SortingDirective.DESCENDING);
+    tableModel.refresh();
+    assertEquals("a", tableModel.getItemAt(4));
+    assertEquals("e", tableModel.getItemAt(0));
+    tableModel.setSortingDirective(0, SortingDirective.ASCENDING);
+
     try {
       tableModel.getSortingDirective(1);
       fail();

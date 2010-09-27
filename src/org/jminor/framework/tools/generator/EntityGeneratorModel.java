@@ -276,49 +276,73 @@ public final class EntityGeneratorModel {
   }
 
   private static String getPropertyDefinition(final Table table, final Column column) {
-    String ret;
-    final String propertyID = getPropertyID(table, column, column.foreignKey != null);
-    final String caption = getCaption(column);
+    final String columnPropertyDefinition;
     if (column.foreignKey != null) {
-      final String referencePropertyID = getPropertyID(table, column, false);
-      ret = "        Properties.foreignKeyProperty(" + propertyID + ", \"" + caption + "\"," +
-              getEntityID(column.foreignKey.getReferencedTable()) + "," + LINE_SEPARATOR;
-      if (column.columnType == Types.INTEGER) {
-        ret += "                Properties.columnProperty(" + referencePropertyID + "))";
+      columnPropertyDefinition = getColumnPropertyDefinition(table, column, true);
+      final StringBuilder builder = new StringBuilder();
+      final String foreignKeyID = getPropertyID(table, column, true);
+      final String caption = getCaption(column);
+      builder.append("        Properties.foreignKeyProperty(").append(foreignKeyID).append(", \"").append(caption).append("\",").append(
+              getEntityID(column.foreignKey.getReferencedTable())).append(",").append(LINE_SEPARATOR);
+      builder.append("        ").append(columnPropertyDefinition).append(")");
+
+      if (column.nullable == DatabaseMetaData.columnNoNulls) {
+        builder.append(LINE_SEPARATOR).append("                .setNullable(false)");
       }
-      else {
-        ret += "                Properties.columnProperty(" + referencePropertyID + ", " + column.columnTypeName + "))";
-      }
+
+      return builder.toString();
     }
-    else if (column.primaryKey != null) {
+
+    columnPropertyDefinition = getColumnPropertyDefinition(table, column, false);
+
+    return columnPropertyDefinition;
+  }
+
+  private static String getColumnPropertyDefinition(final Table table, final Column column, final boolean foreignKey) {
+    final StringBuilder builder = new StringBuilder();
+    final String propertyID = getPropertyID(table, column, false);
+    final String caption = getCaption(column);
+    if (column.primaryKey != null) {
       if (column.columnType == Types.INTEGER) {
-        ret = "        Properties.primaryKeyProperty(" + propertyID + ")";
+        builder.append("        Properties.primaryKeyProperty(").append(propertyID).append(")");
       }
       else {
-        ret = "        Properties.primaryKeyProperty(" + propertyID + ", " + column.columnTypeName + ")";
+        builder.append("        Properties.primaryKeyProperty(").append(propertyID).append(", ").append(column.columnTypeName).append(")");
+      }
+      if (column.primaryKey.getKeySeq() > 1) {
+        builder.append(LINE_SEPARATOR);
+        if (foreignKey) {
+          builder.append("        ");
+        }
+        builder.append("                .setIndex(").append(column.primaryKey.getKeySeq() - 1).append(")");
       }
     }
     else {
-      ret = "        Properties.columnProperty(" + propertyID + ", " + column.columnTypeName + ", \"" + caption + "\")";
+      if (column.foreignKey != null && column.columnType == Types.INTEGER) {
+        builder.append("        Properties.columnProperty(").append(propertyID).append(")");
+      }
+      else {
+        builder.append("        Properties.columnProperty(").append(propertyID).append(", ").append(column.columnTypeName).append(", \"").append(caption).append("\")");
+      }
+    }
+
+    if (column.nullable == DatabaseMetaData.columnNoNulls && column.primaryKey == null && column.foreignKey == null) {
+      builder.append(LINE_SEPARATOR).append("                .setNullable(false)");
     }
     if (column.foreignKey == null && column.hasDefaultValue) {
-      ret += LINE_SEPARATOR + "                .setColumnHasDefaultValue(true)";
-    }
-
-    if (column.nullable == DatabaseMetaData.columnNoNulls && column.primaryKey == null) {
-      ret += LINE_SEPARATOR + "                .setNullable(false)";
+      builder.append(LINE_SEPARATOR).append("                .setColumnHasDefaultValue(true)");
     }
     if (column.columnTypeName.equals("Types.VARCHAR")) {
-      ret += LINE_SEPARATOR + "                .setMaxLength(" + column.columnSize + ")";
+      builder.append(LINE_SEPARATOR).append("                .setMaxLength(").append(column.columnSize).append(")");
     }
     if (column.decimalDigits >= 1) {
-      ret += LINE_SEPARATOR + "                .setMaximumFractionDigits(" + column.decimalDigits + ")";
+      builder.append(LINE_SEPARATOR).append("                .setMaximumFractionDigits(").append(column.decimalDigits).append(")");
     }
     if (!Util.nullOrEmpty(column.comment)) {
-      ret += LINE_SEPARATOR + "                .setDescription(" + column.comment + ")";
+      builder.append(LINE_SEPARATOR).append("                .setDescription(").append(column.comment).append(")");
     }
 
-    return ret;
+    return builder.toString();
   }
 
   private static String getEntityID(final Table table) {
@@ -536,18 +560,18 @@ public final class EntityGeneratorModel {
     private final String fkSchemaName;
     private final String fkTableName;
     private final String fkColumnName;
-//    private final int keySeq;
+    private final int keySeq;
 
     private ForeignKey(final String pkSchemaName, final String pkTableName, final String pkColumnName,
-                       final String fkSchemaName, final String fkTableName, final String fkColumnName/*,
-               final int keySeq*/) {
+                       final String fkSchemaName, final String fkTableName, final String fkColumnName,
+                       final int keySeq) {
       this.pkSchemaName = pkSchemaName;
       this.pkTableName = pkTableName;
       this.pkColumnName = pkColumnName;
       this.fkSchemaName = fkSchemaName;
       this.fkTableName = fkTableName;
       this.fkColumnName = fkColumnName;
-//      this.keySeq = keySeq;
+      this.keySeq = keySeq;
     }
 
     private Table getReferencedTable() {
@@ -560,9 +584,9 @@ public final class EntityGeneratorModel {
       return fkSchemaName + "." + fkTableName + "." + fkColumnName + " -> " + pkSchemaName + "." + pkTableName + "." + pkColumnName;
     }
 
-//    private int getKeySeq() {
-//      return keySeq;
-//    }
+    private int getKeySeq() {
+      return keySeq;
+    }
   }
 
   private static final class ForeignKeyPacker implements ResultPacker<ForeignKey> {
@@ -573,8 +597,8 @@ public final class EntityGeneratorModel {
       while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
         foreignKeys.add(new ForeignKey(resultSet.getString("PKTABLE_SCHEM"), resultSet.getString("PKTABLE_NAME"),
                 resultSet.getString("PKCOLUMN_NAME"), resultSet.getString("FKTABLE_SCHEM"),
-                resultSet.getString("FKTABLE_NAME"), resultSet.getString("FKCOLUMN_NAME")/*,
-                resultSet.getShort("KEY_SEQ")*/));
+                resultSet.getString("FKTABLE_NAME"), resultSet.getString("FKCOLUMN_NAME"),
+                resultSet.getShort("KEY_SEQ")));
       }
 
       resultSet.close();
@@ -587,13 +611,13 @@ public final class EntityGeneratorModel {
     private final String pkSchemaName;
     private final String pkTableName;
     private final String pkColumnName;
-//    private final int keySeq;
+    private final int keySeq;
 
-    PrimaryKey(final String pkSchemaName, final String pkTableName, final String pkColumnName/*, final int keySeq*/) {
+    PrimaryKey(final String pkSchemaName, final String pkTableName, final String pkColumnName, final int keySeq) {
       this.pkSchemaName = pkSchemaName;
       this.pkTableName = pkTableName;
       this.pkColumnName = pkColumnName;
-//      this.keySeq = keySeq;
+      this.keySeq = keySeq;
     }
 
     /** {@inheritDoc} */
@@ -602,9 +626,9 @@ public final class EntityGeneratorModel {
       return pkSchemaName + "." + pkTableName + "." + pkColumnName;
     }
 
-//    private int getKeySeq() {
-//      return keySeq;
-//    }
+    private int getKeySeq() {
+      return keySeq;
+    }
   }
 
   private static final class PrimaryKeyPacker implements ResultPacker<PrimaryKey> {
@@ -614,7 +638,7 @@ public final class EntityGeneratorModel {
       int counter = 0;
       while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
         primaryKeys.add(new PrimaryKey(resultSet.getString(TABLE_SCHEMA), resultSet.getString("TABLE_NAME"),
-                resultSet.getString("COLUMN_NAME")/*, resultSet.getInt("KEY_SEQ")*/));
+                resultSet.getString("COLUMN_NAME"), resultSet.getInt("KEY_SEQ")));
       }
 
       resultSet.close();

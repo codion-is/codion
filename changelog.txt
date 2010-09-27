@@ -2223,3 +2223,5 @@
   AbstractFilteredTableModel now range checks selection indexes
   EntityGeneratorModel.getDocumentText() added
   EntityGeneratorModelTest fleshed out some
+  EntityGeneratorModel improved
+  AbstractFilteredTableModel.refresh() no longer resets the sorting state, simple sorts the model before returning

@@ -10,7 +10,6 @@ import org.jminor.framework.tools.generator.EntityGeneratorModel;
 import org.junit.After;
 import static org.junit.Assert.assertEquals;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class EntityGeneratorModelTest {
@@ -66,12 +65,11 @@ public class EntityGeneratorModelTest {
     tagItemBuilder.append(LINE_SEPARATOR);
     tagItemBuilder.append("Entities.define(T_TAG_ITEM,").append(LINE_SEPARATOR);
     tagItemBuilder.append("        Properties.foreignKeyProperty(TAG_ITEM_TAGID_FK, \"Tagid\",T_TAG,").append(LINE_SEPARATOR);
-    tagItemBuilder.append("                Properties.primaryKeyProperty(TAG_ITEM_ITEM_ID)").append(LINE_SEPARATOR);
-    tagItemBuilder.append("                        .setIndex(0))").append(LINE_SEPARATOR);
+    tagItemBuilder.append("                Properties.primaryKeyProperty(TAG_ITEM_TAGID))").append(LINE_SEPARATOR);
     tagItemBuilder.append("                .setNullable(false),").append(LINE_SEPARATOR);
     tagItemBuilder.append("        Properties.foreignKeyProperty(TAG_ITEM_ITEMID_FK, \"Itemid\",T_ITEM,").append(LINE_SEPARATOR);
-    tagItemBuilder.append("                Properties.primaryKeyProperty(TAG_ITEM_ITEM_ID)").append(LINE_SEPARATOR);
-    tagItemBuilder.append("                        .setIndex(0))").append(LINE_SEPARATOR);
+    tagItemBuilder.append("                Properties.primaryKeyProperty(TAG_ITEM_ITEMID)").append(LINE_SEPARATOR);
+    tagItemBuilder.append("                        .setIndex(1))").append(LINE_SEPARATOR);
     tagItemBuilder.append("                .setNullable(false)").append(LINE_SEPARATOR);
     tagItemBuilder.append(");").append(LINE_SEPARATOR).append(LINE_SEPARATOR);
 
@@ -109,6 +107,7 @@ public class EntityGeneratorModelTest {
   @Before
   public void setUp() throws Exception{
     model = new EntityGeneratorModel(new User("scott", "tiger"), "PETSTORE");
+    model.getTableModel().setSortingDirective(0, SortingDirective.ASCENDING);
   }
 
   @After
@@ -118,7 +117,6 @@ public class EntityGeneratorModelTest {
 
   @Test
   public void address() {
-    model.getTableModel().setSortingDirective(0, SortingDirective.ASCENDING);
     model.getTableModel().setSelectedItemIndex(0);
     final String addressDef = model.getDocumentText();
     assertEquals(ADDRESS_DEF, addressDef);
@@ -132,7 +130,6 @@ public class EntityGeneratorModelTest {
   }
 
   @Test
-  @Ignore
   public void tagItem() throws Exception {
     model.getTableModel().setSelectedItemIndex(6);
     final String tagItemDef = model.getDocumentText();
