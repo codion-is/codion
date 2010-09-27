@@ -34,7 +34,7 @@ final class ConnectionPoolImpl implements ConnectionPool {
 
   private final PoolableConnectionProvider connectionProvider;
   private final User user;
-  private final Stack<PoolableConnection> pool = new Stack<PoolableConnection>();
+  private final Deque<PoolableConnection> pool = new ArrayDeque<PoolableConnection>();
   private final Collection<PoolableConnection> inUse = new ArrayList<PoolableConnection>();
   private final Counter counter = new Counter();
   private final Random random = new Random();
@@ -391,22 +391,6 @@ final class ConnectionPoolImpl implements ConnectionPool {
     return poolStates;
   }
 
-  private void cleanPool() {
-    final long currentTime = System.currentTimeMillis();
-    synchronized (pool) {
-      final int inUseCount = inUse.size();
-      final ListIterator<PoolableConnection> iterator = pool.listIterator();
-      while (iterator.hasNext() && pool.size() + inUseCount > minimumPoolSize) {
-        final PoolableConnection connection = iterator.next();
-        if (currentTime - connection.getPoolTime() > pooledConnectionTimeout) {
-          connectionProvider.destroyConnection(connection);
-          counter.incrementConnectionsDestroyedCounter();
-          iterator.remove();
-        }
-      }
-    }
-  }
-
   private void startPoolCleaner() {
     if (cleanupTimer != null) {
       cleanupTimer.cancel();
@@ -418,6 +402,24 @@ final class ConnectionPoolImpl implements ConnectionPool {
         cleanPool();
       }
     }, 0, this.poolCleanupInterval);
+  }
+
+  private void cleanPool() {
+    final long currentTime = System.currentTimeMillis();
+    synchronized (pool) {
+      final int inUseCount = inUse.size();
+      final Collection<PoolableConnection> pooledConnections = new ArrayList<PoolableConnection>(pool);
+      for (final PoolableConnection connection : pooledConnections) {
+        if (pool.size() + inUseCount <= minimumPoolSize) {
+          return;
+        }
+        if (currentTime - connection.getPoolTime() > pooledConnectionTimeout) {
+          connectionProvider.destroyConnection(connection);
+          counter.incrementConnectionsDestroyedCounter();
+          pool.remove(connection);
+        }
+      }
+    }
   }
 
   private static final class Counter {
