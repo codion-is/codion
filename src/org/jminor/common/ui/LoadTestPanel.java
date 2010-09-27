@@ -407,13 +407,21 @@ public final class LoadTestPanel extends JPanel {
   }
 
   private abstract static class ExceptionsAction extends AbstractAction {
-    final JTextArea txtExceptions;
-    final LoadTest.UsageScenario scenario;
+    private final JTextArea exceptionsTextArea;
+    private final LoadTest.UsageScenario scenario;
 
-    private ExceptionsAction(final String name, final JTextArea txtExceptions, final LoadTest.UsageScenario scenario) {
+    private ExceptionsAction(final String name, final JTextArea exceptionsTextArea, final LoadTest.UsageScenario scenario) {
       super(name);
-      this.txtExceptions = txtExceptions;
+      this.exceptionsTextArea = exceptionsTextArea;
       this.scenario = scenario;
+    }
+
+    JTextArea getExceptionsTextArea() {
+      return exceptionsTextArea;
+    }
+
+    LoadTest.UsageScenario getScenario() {
+      return scenario;
     }
   }
 
@@ -424,8 +432,8 @@ public final class LoadTestPanel extends JPanel {
     }
 
     public void actionPerformed(final ActionEvent e) {
-      scenario.clearExceptions();
-      txtExceptions.replaceRange("", 0, txtExceptions.getDocument().getLength());
+      getScenario().clearExceptions();
+      getExceptionsTextArea().replaceRange("", 0, getExceptionsTextArea().getDocument().getLength());
     }
   }
 
@@ -436,13 +444,13 @@ public final class LoadTestPanel extends JPanel {
     }
 
     public void actionPerformed(final ActionEvent e) {
-      txtExceptions.replaceRange("", 0, txtExceptions.getDocument().getLength());
-      final List<LoadTest.ScenarioException> exceptions = scenario.getExceptions();
+      getExceptionsTextArea().replaceRange("", 0, getExceptionsTextArea().getDocument().getLength());
+      final List<LoadTest.ScenarioException> exceptions = getScenario().getExceptions();
       for (final LoadTest.ScenarioException exception : exceptions) {
         final Exception root = Util.unwrapAndLog((Exception) exception.getCause(), UndeclaredThrowableException.class, null);
-        txtExceptions.append(root.toString());
-        txtExceptions.append(LINE_SEPARATOR);
-        txtExceptions.append(LINE_SEPARATOR);
+        getExceptionsTextArea().append(root.toString());
+        getExceptionsTextArea().append(LINE_SEPARATOR);
+        getExceptionsTextArea().append(LINE_SEPARATOR);
       }
     }
   }

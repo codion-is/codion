@@ -269,7 +269,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   public EntityTablePanel(final EntityTableModel tableModel, final ControlSet additionalPopupControls,
                           final ControlSet additionalToolbarControls, final EntityTableSearchPanel searchPanel,
                           final EntityTableSummaryPanel summaryPanel) {
-    super(tableModel);
+    super(tableModel, initializeFilterPanels(tableModel));
     this.searchPanel = searchPanel;
     if (searchPanel != null) {
       this.searchScrollPane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -948,12 +948,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     return panel;
   }
 
-  /** {@inheritDoc} */
-  @Override
-  protected ColumnSearchPanel<Property> initializeFilterPanel(final ColumnSearchModel<Property> model) {
-    return new PropertyFilterPanel(model, true, true);
-  }
-
   /**
    * Adds a popup menu to <code>table</code>
    * @param table the table
@@ -1564,6 +1558,19 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     panel.add(tabPane, BorderLayout.CENTER);
 
     return panel;
+  }
+
+  @SuppressWarnings({"unchecked"})
+  private static List<ColumnSearchPanel<Property>> initializeFilterPanels(final EntityTableModel tableModel) {
+    final List<ColumnSearchPanel<Property>> filterPanels = new ArrayList<ColumnSearchPanel<Property>>(tableModel.getColumnCount());
+    final Enumeration<TableColumn> columns = tableModel.getColumnModel().getColumns();
+    while (columns.hasMoreElements()) {
+      final Property columnProperty = (Property) columns.nextElement().getIdentifier();
+      final ColumnSearchModel<Property> model = tableModel.getSearchModel().getPropertyFilterModel(columnProperty.getPropertyID());
+      filterPanels.add(new PropertyFilterPanel(model, true, true));
+    }
+
+    return filterPanels;
   }
 
   private static Point getPopupLocation(final JTable table) {

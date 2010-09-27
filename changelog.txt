@@ -2219,3 +2219,4 @@
   EntityGenerator refactored into tools.generator.EntityGeneratorModel and tools.generator.ui.EntityGeneratorPanel
   Dependency entanglement removed from common.db and framework.domain
   AbstractFilteredTablePanel.initializeFilterPanel() is no longer abstract, class renamed to FilteredTablePanel
+  FilteredTablePanel.initializeFilterPanel() removed
