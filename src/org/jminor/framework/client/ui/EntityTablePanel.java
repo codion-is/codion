@@ -16,9 +16,9 @@ import org.jminor.common.model.State;
 import org.jminor.common.model.States;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.exception.ValidationException;
-import org.jminor.common.ui.AbstractFilteredTablePanel;
 import org.jminor.common.ui.ColumnSearchPanel;
 import org.jminor.common.ui.DefaultExceptionHandler;
+import org.jminor.common.ui.FilteredTablePanel;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.Control;
 import org.jminor.common.ui.control.ControlProvider;
@@ -99,7 +99,7 @@ import java.util.Map;
  * </pre>
  * The search and summary panels can be hidden
  */
-public class EntityTablePanel extends AbstractFilteredTablePanel<Entity, Property> {
+public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
 
   public static final String PRINT_TABLE = "printTable";
   public static final String DELETE_SELECTED = "deleteSelected";

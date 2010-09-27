@@ -25,20 +25,7 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.xy.DeviationRenderer;
 
-import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JScrollPane;
-import javax.swing.JSpinner;
-import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.SpinnerNumberModel;
+import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
@@ -48,8 +35,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.List;
 import java.lang.reflect.UndeclaredThrowableException;
+import java.util.List;
 
 /**
  * A default UI component for the LoadTestModel class.
@@ -394,25 +381,9 @@ public final class LoadTestPanel extends JPanel {
     final JTextArea txtExceptions = new JTextArea();
     final JPanel scenarioExceptionPanel = new JPanel(new BorderLayout(5, 5));
     scenarioExceptionPanel.add(txtExceptions, BorderLayout.CENTER);
-    final JButton btnRefresh = new JButton(new AbstractAction("Refresh") {
-      public void actionPerformed(final ActionEvent e) {
-        txtExceptions.replaceRange("", 0, txtExceptions.getDocument().getLength());
-        final List<LoadTest.ScenarioException> exceptions = item.getExceptions();
-        for (final LoadTest.ScenarioException exception : exceptions) {
-          final Exception root = Util.unwrapAndLog((Exception) exception.getCause(), UndeclaredThrowableException.class, null);
-          txtExceptions.append(root.toString());
-          txtExceptions.append(LINE_SEPARATOR);
-          txtExceptions.append(LINE_SEPARATOR);
-        }
-      }
-    });
+    final JButton btnRefresh = new JButton(new RefreshExceptionsAction(txtExceptions, item));
     btnRefresh.doClick();
-    final JButton btnClear = new JButton(new AbstractAction("Reset") {
-      public void actionPerformed(final ActionEvent e) {
-        item.clearExceptions();
-        txtExceptions.replaceRange("", 0, txtExceptions.getDocument().getLength());
-      }
-    });
+    final JButton btnClear = new JButton(new ClearExceptionsAction(txtExceptions, item));
 
     final JScrollPane exceptionScroller = new JScrollPane(txtExceptions);
 
@@ -433,5 +404,46 @@ public final class LoadTestPanel extends JPanel {
   private void setColors(final JFreeChart chart) {
     chart.getXYPlot().setBackgroundPaint(Color.BLACK);
     chart.setBackgroundPaint(this.getBackground());
+  }
+
+  private abstract static class ExceptionsAction extends AbstractAction {
+    final JTextArea txtExceptions;
+    final LoadTest.UsageScenario scenario;
+
+    private ExceptionsAction(final String name, final JTextArea txtExceptions, final LoadTest.UsageScenario scenario) {
+      super(name);
+      this.txtExceptions = txtExceptions;
+      this.scenario = scenario;
+    }
+  }
+
+  private static final class ClearExceptionsAction extends ExceptionsAction {
+
+    private ClearExceptionsAction(final JTextArea txtExceptions, final LoadTest.UsageScenario scenario) {
+      super("Clear", txtExceptions, scenario);
+    }
+
+    public void actionPerformed(final ActionEvent e) {
+      scenario.clearExceptions();
+      txtExceptions.replaceRange("", 0, txtExceptions.getDocument().getLength());
+    }
+  }
+
+  private static final class RefreshExceptionsAction extends ExceptionsAction {
+
+    private RefreshExceptionsAction(final JTextArea txtExceptions, final LoadTest.UsageScenario scenario) {
+      super("Refresh", txtExceptions, scenario);
+    }
+
+    public void actionPerformed(final ActionEvent e) {
+      txtExceptions.replaceRange("", 0, txtExceptions.getDocument().getLength());
+      final List<LoadTest.ScenarioException> exceptions = scenario.getExceptions();
+      for (final LoadTest.ScenarioException exception : exceptions) {
+        final Exception root = Util.unwrapAndLog((Exception) exception.getCause(), UndeclaredThrowableException.class, null);
+        txtExceptions.append(root.toString());
+        txtExceptions.append(LINE_SEPARATOR);
+        txtExceptions.append(LINE_SEPARATOR);
+      }
+    }
   }
 }

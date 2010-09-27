@@ -5,7 +5,7 @@ import org.jminor.common.model.User;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class DatabaseConnections {
+public final class DatabaseConnections {
 
   private DatabaseConnections() {}
 

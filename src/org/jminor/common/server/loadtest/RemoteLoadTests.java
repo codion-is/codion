@@ -10,7 +10,7 @@ import java.rmi.RemoteException;
 /**
  * A factory class for the RemoteLoadTest class
  */
-public class RemoteLoadTests {
+public final class RemoteLoadTests {
 
   private RemoteLoadTests() {}
 

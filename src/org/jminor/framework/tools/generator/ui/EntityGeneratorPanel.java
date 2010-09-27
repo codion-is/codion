@@ -3,10 +3,9 @@
  */
 package org.jminor.framework.tools.generator.ui;
 
-import org.jminor.common.model.ColumnSearchModel;
+import org.jminor.common.model.CancelException;
 import org.jminor.common.model.User;
-import org.jminor.common.ui.AbstractFilteredTablePanel;
-import org.jminor.common.ui.ColumnSearchPanel;
+import org.jminor.common.ui.FilteredTablePanel;
 import org.jminor.common.ui.LoginPanel;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.images.Images;
@@ -20,6 +19,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -39,13 +39,8 @@ public class EntityGeneratorPanel extends JPanel {
    */
   public EntityGeneratorPanel(final EntityGeneratorModel generatorModel) {
     this.model = generatorModel;
-    final AbstractFilteredTablePanel<EntityGeneratorModel.Table, Integer> table =
-            new AbstractFilteredTablePanel<EntityGeneratorModel.Table, Integer>(generatorModel.getTableModel()) {
-      @Override
-      protected ColumnSearchPanel<Integer> initializeFilterPanel(final ColumnSearchModel<Integer> model) {
-        return null;
-      }
-    };
+    final FilteredTablePanel<EntityGeneratorModel.Table, Integer> table =
+            new FilteredTablePanel<EntityGeneratorModel.Table, Integer>(generatorModel.getTableModel());
     final JScrollPane scroller = new JScrollPane(table.getJTable());
 
     final JSplitPane splitPane = new JSplitPane();
@@ -79,32 +74,43 @@ public class EntityGeneratorPanel extends JPanel {
   /**
    * Runs a EntityGeneratorPanel instance in a frame
    * @param arguments no arguments required
-   * @throws Exception in case of an exception while initializing the panel
    */
-  public static void main(final String[] arguments) throws Exception {
-    Configuration.init();
-    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+  public static void main(final String[] arguments) {
+    SwingUtilities.invokeLater(new Starter());
+  }
 
-    String schemaName = JOptionPane.showInputDialog("Schema name");
-    if (schemaName == null || schemaName.isEmpty()) {
-      return;
+  private static final class Starter implements Runnable {
+    /** {@inheritDoc} */
+    public void run() {
+      try {
+        Configuration.init();
+        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+
+        String schemaName = JOptionPane.showInputDialog("Schema name");
+        if (schemaName == null || schemaName.isEmpty()) {
+          return;
+        }
+
+        schemaName = schemaName.toUpperCase();
+
+        final String username = schemaName;
+        final User user = LoginPanel.getUser(null, new User(username, null));
+        final EntityGeneratorModel model = new EntityGeneratorModel(user, schemaName);
+        final EntityGeneratorPanel panel = new EntityGeneratorPanel(model);
+        final ImageIcon icon = Images.loadImage("jminor_logo32.gif");
+        final JFrame frame = new JFrame("JMinor Entity Generator");
+        frame.setIconImage(icon.getImage());
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.add(panel);
+
+        frame.pack();
+        UiUtil.centerWindow(frame);
+        frame.setVisible(true);
+      }
+      catch (CancelException e) {/**/}
+      catch (Exception e) {
+        throw new RuntimeException(e);
+      }
     }
-
-    schemaName = schemaName.toUpperCase();
-
-    final String username = schemaName;
-    final User user = LoginPanel.getUser(null, new User(username, null));
-    final EntityGeneratorModel model = new EntityGeneratorModel(user, schemaName);
-    final EntityGeneratorPanel panel = new EntityGeneratorPanel(model);
-
-    final ImageIcon icon = Images.loadImage("jminor_logo32.gif");
-    final JFrame frame = new JFrame("JMinor Entity Generator");
-    frame.setIconImage(icon.getImage());
-    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    frame.add(panel);
-
-    frame.pack();
-    UiUtil.centerWindow(frame);
-    frame.setVisible(true);
   }
 }

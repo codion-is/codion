@@ -39,10 +39,10 @@ import java.util.Enumeration;
 import java.util.List;
 
 /**
- * A UI component based on FilteredTableModel.
+ * A UI component based on a FilteredTableModel.
  * @see FilteredTableModel
  */
-public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
+public class FilteredTablePanel<T, C> extends JPanel {
 
   public static final char FILTER_INDICATOR = '*';
 
@@ -80,10 +80,10 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
   private final JTextField searchField;
 
   /**
-   * Instantiates a new AbstractFilteredTablePanel.
+   * Instantiates a new FilteredTablePanel.
    * @param tableModel the table model
    */
-  public AbstractFilteredTablePanel(final FilteredTableModel<T, C> tableModel) {
+  public FilteredTablePanel(final FilteredTableModel<T, C> tableModel) {
     Util.rejectNullValue(tableModel, "tableModel");
     this.tableModel = tableModel;
     this.table = initializeJTable();
@@ -115,13 +115,6 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
       }
     }
   }
-
-  /**
-   * Initializes a ColumnSearchPanel for the given search model
-   * @param model the search model
-   * @return a column search panel based on the given model
-   */
-  protected abstract ColumnSearchPanel<C> initializeFilterPanel(final ColumnSearchModel<C> model);
 
   /**
    * @return the TableModel used by this TablePanel
@@ -201,6 +194,15 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
         tableModel.setColumnVisible((C) column.getIdentifier(), chkButton.isSelected());
       }
     }
+  }
+
+  /**
+   * Initializes a ColumnSearchPanel for the given search model
+   * @param model the search model
+   * @return a column search panel based on the given model
+   */
+  protected ColumnSearchPanel<C> initializeFilterPanel(final ColumnSearchModel<C> model) {
+    return new ColumnSearchPanel<C>(model, true, true);
   }
 
   private JTable initializeJTable() {
@@ -288,7 +290,7 @@ public abstract class AbstractFilteredTablePanel<T, C> extends JPanel {
     popupMenu.add(new AbstractAction(Messages.get(Messages.SETTINGS)) {
       /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
-        UiUtil.showInDialog(UiUtil.getParentWindow(AbstractFilteredTablePanel.this), panel, true,
+        UiUtil.showInDialog(UiUtil.getParentWindow(FilteredTablePanel.this), panel, true,
                 Messages.get(Messages.SETTINGS), true, true, action);
       }
     });
