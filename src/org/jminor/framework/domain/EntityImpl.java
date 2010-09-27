@@ -635,7 +635,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
     if (value == null) {//possibly not loaded
       final Entity.Key referencedKey = getReferencedPrimaryKey(foreignKeyProperty);
       if (referencedKey != null) {
-        return Entities.entityInstance(referencedKey);
+        return new EntityImpl(EntityDefinitionImpl.getDefinitionMap().get(referencedKey.getEntityID()), referencedKey);
       }
     }
 

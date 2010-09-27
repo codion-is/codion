@@ -444,7 +444,7 @@ final class EntityDefinitionImpl implements Entity.Definition {
   /** {@inheritDoc} */
   public Entity.Validator getValidator() {
     if (validator == null) {
-      validator = new Entities.Validator(entityID);
+      validator = new EntityUtil.Validator(entityID);
     }
 
     return validator;

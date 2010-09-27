@@ -4,11 +4,14 @@
 package org.jminor.common.db.pool;
 
 import org.jminor.common.model.User;
+import org.jminor.common.db.PoolableConnectionProvider;
 
 /**
  * A factory class providing ConnectionPool instances
  */
 public final class ConnectionPools {
+
+  private ConnectionPools() {}
 
   /**
    * Instantiates a new ConnectionPoolImpl.

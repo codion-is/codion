@@ -4,7 +4,7 @@
 package org.jminor.framework.server;
 
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.db.pool.PoolableConnection;
+import org.jminor.common.db.PoolableConnection;
 import org.jminor.common.model.User;
 import org.jminor.common.model.reports.ReportException;
 import org.jminor.common.model.reports.ReportResult;

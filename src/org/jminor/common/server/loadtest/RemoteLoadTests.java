@@ -12,6 +12,8 @@ import java.rmi.RemoteException;
  */
 public class RemoteLoadTests {
 
+  private RemoteLoadTests() {}
+
   /**
    * Instantiates a new RemoteLoadTestAdapter.
    * @param clientInfo the client info

@@ -4,7 +4,6 @@
 package org.jminor.framework.server;
 
 import org.jminor.common.db.Database;
-import org.jminor.common.db.DatabaseConnections;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.model.User;
@@ -234,7 +233,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
 
   /** {@inheritDoc} */
   public Database.Statistics getDatabaseStatistics() throws RemoteException {
-    return DatabaseConnections.getDatabaseStatistics();
+    return Databases.getDatabaseStatistics();
   }
 
   /** {@inheritDoc} */

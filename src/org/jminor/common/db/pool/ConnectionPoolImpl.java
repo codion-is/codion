@@ -4,6 +4,8 @@
 package org.jminor.common.db.pool;
 
 import org.jminor.common.db.Database;
+import org.jminor.common.db.PoolableConnection;
+import org.jminor.common.db.PoolableConnectionProvider;
 import org.jminor.common.model.User;
 
 import org.slf4j.Logger;

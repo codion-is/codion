@@ -530,7 +530,7 @@
           description="Runs the framework unit tests with coverage reporting">
     <mkdir dir="${test.reports}"/>
 
-    <junit printsummary="yes" haltonfailure="true" haltonerror="true" fork="yes">
+    <junit printsummary="yes" haltonfailure="false" haltonerror="false" fork="yes">
       <formatter type="xml" usefile="true"/>
       <sysproperty key="net.sourceforge.cobertura.datafile" file="${basedir}/cobertura.ser" />
 

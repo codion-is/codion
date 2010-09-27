@@ -5,10 +5,10 @@ package org.jminor.common.db.tools;
 
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseConnections;
+import org.jminor.common.db.PoolableConnection;
+import org.jminor.common.db.PoolableConnectionProvider;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPools;
-import org.jminor.common.db.pool.PoolableConnection;
-import org.jminor.common.db.pool.PoolableConnectionProvider;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.LoadTestModel;
 import org.jminor.common.model.User;

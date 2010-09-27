@@ -241,7 +241,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
 
   /** {@inheritDoc} */
   public final List query(final String sql, final ResultPacker resultPacker, final int fetchCount) throws SQLException {
-    DatabaseConnections.QUERY_COUNTER.count(sql);
+    Databases.QUERY_COUNTER.count(sql);
     methodLogger.logAccess("query", new Object[] {sql});
     final long time = System.currentTimeMillis();
     Statement statement = null;
@@ -277,7 +277,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
 
   /** {@inheritDoc} */
   public final List<String> queryStrings(final String sql) throws SQLException {
-    final List res = query(sql, DatabaseConnections.STRING_PACKER, -1);
+    final List res = query(sql, Databases.STRING_PACKER, -1);
     final List<String> strings = new ArrayList<String>(res.size());
     for (final Object object : res) {
       strings.add((String) object);
@@ -299,7 +299,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
   /** {@inheritDoc} */
   @SuppressWarnings({"unchecked"})
   public final List<Integer> queryIntegers(final String sql) throws SQLException {
-    return (List<Integer>) query(sql, DatabaseConnections.INT_PACKER, -1);
+    return (List<Integer>) query(sql, Databases.INT_PACKER, -1);
   }
 
   /** {@inheritDoc} */
@@ -325,7 +325,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
                                    final String whereClause) throws SQLException {
     final long time = System.currentTimeMillis();
     final String sql = "update " + tableName + " set " + columnName + " = ? where " + whereClause;
-    DatabaseConnections.QUERY_COUNTER.count(sql);
+    Databases.QUERY_COUNTER.count(sql);
     methodLogger.logAccess("writeBlobField", new Object[] {sql});
     SQLException exception = null;
     ByteArrayInputStream inputStream = null;
@@ -392,7 +392,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
 
   /** {@inheritDoc} */
   public final Object executeCallableStatement(final String sqlStatement, final int outParameterType) throws SQLException {
-    DatabaseConnections.QUERY_COUNTER.count(sqlStatement);
+    Databases.QUERY_COUNTER.count(sqlStatement);
     methodLogger.logAccess("executeCallableStatement", new Object[] {sqlStatement, outParameterType});
     final long time = System.currentTimeMillis();
     LOG.debug(sqlStatement);
@@ -429,7 +429,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
 
   /** {@inheritDoc} */
   public final void execute(final String sql) throws SQLException {
-    DatabaseConnections.QUERY_COUNTER.count(sql);
+    Databases.QUERY_COUNTER.count(sql);
     methodLogger.logAccess(EXECUTE, new Object[] {sql});
     final long time = System.currentTimeMillis();
     LOG.debug(sql);
@@ -498,7 +498,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
       statement = connection.createStatement();
       for (final String sql : statements) {
         statement.addBatch(sql);
-        DatabaseConnections.QUERY_COUNTER.count(sql);
+        Databases.QUERY_COUNTER.count(sql);
         LOG.debug(sql);
       }
       statement.executeBatch();

@@ -2217,3 +2217,4 @@
   ConnectionPools added as a factory class for the above
   DatabaseConnection, moved a few methods to PoolableConnection
   EntityGenerator refactored into tools.generator.EntityGeneratorModel and tools.generator.ui.EntityGeneratorPanel
+  Dependency entanglement removed from common.db and framework.domain

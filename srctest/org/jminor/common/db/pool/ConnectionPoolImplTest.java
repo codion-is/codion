@@ -6,6 +6,8 @@ package org.jminor.common.db.pool;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseConnections;
 import org.jminor.common.db.Databases;
+import org.jminor.common.db.PoolableConnection;
+import org.jminor.common.db.PoolableConnectionProvider;
 import org.jminor.common.db.tools.QueryLoadTestModel;
 import org.jminor.common.model.User;
 

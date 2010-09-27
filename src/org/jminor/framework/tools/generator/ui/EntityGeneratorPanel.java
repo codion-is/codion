@@ -93,7 +93,7 @@ public class EntityGeneratorPanel extends JPanel {
     schemaName = schemaName.toUpperCase();
 
     final String username = schemaName;
-    final User user = LoginPanel.getUser(null, username != null ? new User(username, null) : null);
+    final User user = LoginPanel.getUser(null, new User(username, null));
     final EntityGeneratorModel model = new EntityGeneratorModel(user, schemaName);
     final EntityGeneratorPanel panel = new EntityGeneratorPanel(model);
 

@@ -4,7 +4,6 @@
 package org.jminor.common.db;
 
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.db.pool.PoolableConnection;
 
 import java.sql.SQLException;
 import java.util.List;

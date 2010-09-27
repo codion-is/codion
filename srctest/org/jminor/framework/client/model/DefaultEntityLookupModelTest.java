@@ -136,6 +136,7 @@ public final class DefaultEntityLookupModelTest {
 
   @Before
   public void setUp() throws Exception {
+    EmpDept.init();
     properties = Arrays.asList(Entities.getColumnProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME),
                     Entities.getColumnProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB));
     lookupModel = new DefaultEntityLookupModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.DB_PROVIDER, properties);

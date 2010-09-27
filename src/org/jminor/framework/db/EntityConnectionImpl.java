@@ -5,12 +5,12 @@ package org.jminor.framework.db;
 
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseConnectionImpl;
-import org.jminor.common.db.DatabaseConnections;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.RecordModifiedException;
 import org.jminor.common.db.exception.RecordNotFoundException;
-import org.jminor.common.db.pool.PoolableConnection;
+import org.jminor.common.db.PoolableConnection;
+import org.jminor.common.db.Databases;
 import org.jminor.common.model.IdSource;
 import org.jminor.common.model.LogEntry;
 import org.jminor.common.model.SearchType;
@@ -362,7 +362,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       selectQuery += " " + criteria.getWhereClause(!containsWhereKeyword(selectQuery));
       statement = getConnection().prepareStatement(selectQuery);
       resultSet = executePreparedSelect(statement, selectQuery, criteria.getValues(), criteria.getValueProperties());
-      final List<Integer> result = DatabaseConnections.INT_PACKER.pack(resultSet, -1);
+      final List<Integer> result = Databases.INT_PACKER.pack(resultSet, -1);
 
       if (result.isEmpty()) {
         throw new RecordNotFoundException("Record count query returned no value");
@@ -644,7 +644,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
                                      final List<?> values, final List<Property.ColumnProperty> properties) throws SQLException {
     SQLException exception = null;
     try {
-      DatabaseConnections.QUERY_COUNTER.count(sqlStatement);
+      Databases.QUERY_COUNTER.count(sqlStatement);
       getMethodLogger().logAccess("executePreparedUpdate", new Object[] {sqlStatement, values});
       setParameterValues(statement, values, properties);
       statement.executeUpdate();
@@ -665,7 +665,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
                                           final List<?> values, final List<Property.ColumnProperty> properties) throws SQLException {
     SQLException exception = null;
     try {
-      DatabaseConnections.QUERY_COUNTER.count(sqlStatement);
+      Databases.QUERY_COUNTER.count(sqlStatement);
       getMethodLogger().logAccess("executePreparedSelect", values == null ? new Object[] {sqlStatement} : new Object[] {sqlStatement, values});
       setParameterValues(statement, values, properties);
       return statement.executeQuery();

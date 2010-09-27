@@ -1,9 +1,8 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.db.pool;
+package org.jminor.common.db;
 
-import org.jminor.common.db.Database;
 import org.jminor.common.model.LogEntry;
 import org.jminor.common.model.MethodLogger;
 import org.jminor.common.model.User;
