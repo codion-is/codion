@@ -560,18 +560,18 @@ public final class EntityGeneratorModel {
     private final String fkSchemaName;
     private final String fkTableName;
     private final String fkColumnName;
-    private final int keySeq;
+//    private final int keySeq;
 
     private ForeignKey(final String pkSchemaName, final String pkTableName, final String pkColumnName,
-                       final String fkSchemaName, final String fkTableName, final String fkColumnName,
-                       final int keySeq) {
+                       final String fkSchemaName, final String fkTableName, final String fkColumnName/*,
+                       final int keySeq*/) {
       this.pkSchemaName = pkSchemaName;
       this.pkTableName = pkTableName;
       this.pkColumnName = pkColumnName;
       this.fkSchemaName = fkSchemaName;
       this.fkTableName = fkTableName;
       this.fkColumnName = fkColumnName;
-      this.keySeq = keySeq;
+//      this.keySeq = keySeq;
     }
 
     private Table getReferencedTable() {
@@ -584,9 +584,9 @@ public final class EntityGeneratorModel {
       return fkSchemaName + "." + fkTableName + "." + fkColumnName + " -> " + pkSchemaName + "." + pkTableName + "." + pkColumnName;
     }
 
-    private int getKeySeq() {
-      return keySeq;
-    }
+//    private int getKeySeq() {
+//      return keySeq;
+//    }
   }
 
   private static final class ForeignKeyPacker implements ResultPacker<ForeignKey> {
@@ -597,8 +597,8 @@ public final class EntityGeneratorModel {
       while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
         foreignKeys.add(new ForeignKey(resultSet.getString("PKTABLE_SCHEM"), resultSet.getString("PKTABLE_NAME"),
                 resultSet.getString("PKCOLUMN_NAME"), resultSet.getString("FKTABLE_SCHEM"),
-                resultSet.getString("FKTABLE_NAME"), resultSet.getString("FKCOLUMN_NAME"),
-                resultSet.getShort("KEY_SEQ")));
+                resultSet.getString("FKTABLE_NAME"), resultSet.getString("FKCOLUMN_NAME")/*,
+                resultSet.getShort("KEY_SEQ")*/));
       }
 
       resultSet.close();

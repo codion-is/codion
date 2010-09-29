@@ -2226,3 +2226,4 @@
   EntityGeneratorModel improved
   AbstractFilteredTableModel.refresh() no longer resets the sorting state, simple sorts the model before returning
   ConnectionPoolImpl, Stack replaced with Deque
+  EntityUiUtil.checkProperty() added, used throughout

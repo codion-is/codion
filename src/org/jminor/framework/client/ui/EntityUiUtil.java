@@ -235,6 +235,7 @@ public final class EntityUiUtil {
   public static JCheckBox createCheckBox(final Property property, final EntityEditModel editModel,
                                          final StateObserver enabledState, final boolean includeCaption) {
     Util.rejectNullValue(property, PROPERTY_PARAM_NAME);
+    checkProperty(property, editModel);
     if (!property.isBoolean()) {
       throw new IllegalArgumentException("Boolean property required for createCheckBox");
     }
@@ -259,6 +260,7 @@ public final class EntityUiUtil {
                                                         final StateObserver enabledState, final boolean includeCaption) {
     Util.rejectNullValue(property, PROPERTY_PARAM_NAME);
     Util.rejectNullValue(editModel, EDIT_MODEL_PARAM_NAME);
+    checkProperty(property, editModel);
     if (!property.isBoolean() && property.isNullable()) {
       throw new IllegalArgumentException("Nullable boolean property required for createTristateCheckBox");
     }
@@ -300,6 +302,7 @@ public final class EntityUiUtil {
                                                     final EntityEditModel editModel, final StateObserver enabledState) {
     Util.rejectNullValue(foreignKeyProperty, "foreignKeyProperty");
     Util.rejectNullValue(editModel, EDIT_MODEL_PARAM_NAME);
+    checkProperty(foreignKeyProperty, editModel);
     final EntityComboBoxModel boxModel = editModel.initializeEntityComboBoxModel(foreignKeyProperty);
     final EntityComboBox comboBox = new EntityComboBox(boxModel);
     new EntityComboBoxValueLink(comboBox, editModel, foreignKeyProperty);
@@ -317,6 +320,8 @@ public final class EntityUiUtil {
 
   public static EntityFieldPanel createEntityFieldPanel(final Property.ForeignKeyProperty foreignKeyProperty,
                                                         final EntityEditModel editModel, final EntityTableModel lookupModel) {
+    checkProperty(foreignKeyProperty, editModel);
+
     return new EntityFieldPanel(foreignKeyProperty, editModel, lookupModel);
   }
 
@@ -324,6 +329,7 @@ public final class EntityUiUtil {
                                              final EntityEditModel editModel) {
     Util.rejectNullValue(foreignKeyProperty, "foreignKeyProperty");
     Util.rejectNullValue(editModel, EDIT_MODEL_PARAM_NAME);
+    checkProperty(foreignKeyProperty, editModel);
     final JTextField textField = new JTextField();
     textField.setEditable(false);
     if (foreignKeyProperty.hasDescription()) {
@@ -361,6 +367,7 @@ public final class EntityUiUtil {
                                                           final String... searchPropertyIDs) {
     Util.rejectNullValue(foreignKeyProperty, "foreignKeyProperty");
     Util.rejectNullValue(editModel, EDIT_MODEL_PARAM_NAME);
+    checkProperty(foreignKeyProperty, editModel);
     if (searchPropertyIDs == null || searchPropertyIDs.length == 0) {
       throw new IllegalArgumentException("No search properties specified for entity lookup field: " + foreignKeyProperty.getReferencedEntityID());
     }
@@ -403,6 +410,7 @@ public final class EntityUiUtil {
                                                final ComboBoxModel model, final StateObserver enabledState,
                                                final boolean editable) {
     Util.rejectNullValue(property, PROPERTY_PARAM_NAME);
+    checkProperty(property, editModel);
     final SteppedComboBox comboBox = new SteppedComboBox(model);
     comboBox.setEditable(editable);
     new EntityComboBoxValueLink(comboBox, editModel, property);
@@ -466,6 +474,7 @@ public final class EntityUiUtil {
                                          final LinkType linkType, final int rows, final int columns) {
     Util.rejectNullValue(property, PROPERTY_PARAM_NAME);
     Util.rejectNullValue(editModel, EDIT_MODEL_PARAM_NAME);
+    checkProperty(property, editModel);
     if (!property.isString()) {
       throw new IllegalArgumentException("Cannot create a text area for a non-string property");
     }
@@ -514,6 +523,7 @@ public final class EntityUiUtil {
     Util.rejectNullValue(property, PROPERTY_PARAM_NAME);
     Util.rejectNullValue(editModel, EDIT_MODEL_PARAM_NAME);
     Util.rejectNullValue(linkType, "linkType");
+    checkProperty(property, editModel);
     final JTextField textField = initTextField(property, editModel, enabledState, formatMaskString, valueContainsLiteralCharacters);
     final String propertyID = property.getPropertyID();
     final TextValueLink<String> valueLink;
@@ -602,6 +612,10 @@ public final class EntityUiUtil {
   public static JPanel createLookupFieldPanel(final EntityLookupField lookupField, final EntityTableModel tableModel) {
     Util.rejectNullValue(lookupField, "lookupField");
     Util.rejectNullValue(tableModel, "tableModel");
+    if (!lookupField.getModel().getEntityID().equals(tableModel.getEntityID())) {
+      throw new IllegalArgumentException("Entity type mismatch: " + lookupField.getModel().getEntityID()
+              + ", shoul be: " + tableModel.getEntityID());
+    }
     final JButton btn = new JButton(new AbstractAction("...") {
       public void actionPerformed(final ActionEvent e) {
         try {
@@ -679,6 +693,12 @@ public final class EntityUiUtil {
     }
 
     return field;
+  }
+
+  private static void checkProperty(final Property property, final EntityEditModel editModel) {
+    if (!property.getEntityID().equals(editModel.getEntityID())) {
+      throw new IllegalArgumentException("Entity type mismatch: " + property.getEntityID() + ", should be: " + editModel.getEntityID());
+    }
   }
 
   public static class EntityComboBoxValueLink extends ComboBoxValueLink<String> {
@@ -808,8 +828,8 @@ public final class EntityUiUtil {
       UiUtil.addInitialFocusHack(editPanel, new InitialFocusAction(editPanel));
       dialog.setVisible(true);
       if (pane.getValue() != null && pane.getValue().equals(0)) {
-        final boolean insert = editPanel.insert();
-        if (insert && !lastInsertedKeys.isEmpty()) {
+        final boolean insertPerformed = editPanel.insert();
+        if (insertPerformed && !lastInsertedKeys.isEmpty()) {
           if (dataProvider instanceof EntityComboBoxModel) {
             ((EntityComboBoxModel) dataProvider).refresh();
             ((EntityComboBoxModel) dataProvider).setSelectedEntityByPrimaryKey(lastInsertedKeys.get(0));
