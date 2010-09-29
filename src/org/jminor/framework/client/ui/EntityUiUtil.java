@@ -815,6 +815,7 @@ public final class EntityUiUtil {
 
     public void actionPerformed(final ActionEvent e) {
       final EntityEditPanel editPanel = panelProvider.createEditPanel(dataProvider.getConnectionProvider());
+      editPanel.initializePanel();
       ((EntityEditModel) editPanel.getEditModel()).addAfterInsertListener(new InsertListener() {
         @Override
         protected void inserted(final InsertEvent event) {

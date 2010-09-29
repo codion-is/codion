@@ -476,7 +476,7 @@ public class DefaultEntityModel implements EntityModel {
           if (comboModel.isVisible(selectedEntity)) {
             comboModel.setSelectedItem(selectedEntity);
           }
-          else if (comboModel.getSize() > 0) {
+          else if (comboModel.getSize() > 0 && !comboModel.isNullValueSelected()) {
             comboModel.setSelectedItem(comboModel.getElementAt(0));
           }
           else {
