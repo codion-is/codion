@@ -5,12 +5,12 @@ package org.jminor.framework.db;
 
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseConnectionImpl;
+import org.jminor.common.db.Databases;
+import org.jminor.common.db.PoolableConnection;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.RecordModifiedException;
 import org.jminor.common.db.exception.RecordNotFoundException;
-import org.jminor.common.db.PoolableConnection;
-import org.jminor.common.db.Databases;
 import org.jminor.common.model.IdSource;
 import org.jminor.common.model.LogEntry;
 import org.jminor.common.model.SearchType;
@@ -466,6 +466,11 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     }
   }
 
+  /** {@inheritDoc} */
+  public PoolableConnection getPoolableConnection() {
+    return this;
+  }
+
   /**
    * @return true if optimistic locking is enabled
    */
@@ -493,11 +498,6 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
    */
   public void setLimitForeignKeyFetchDepth(final boolean limitForeignKeyFetchDepth) {
     this.limitForeignKeyFetchDepth = limitForeignKeyFetchDepth;
-  }
-
-  /** {@inheritDoc} */
-  public PoolableConnection getPoolableConnection() {
-    return this;
   }
 
   private EntityResultPacker getEntityResultPacker(final String entityID) {
