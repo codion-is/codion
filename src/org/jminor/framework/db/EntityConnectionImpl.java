@@ -342,16 +342,6 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
   }
 
   /** {@inheritDoc} */
-  public List<List> selectRows(final String statement, final int fetchCount) throws DatabaseException {
-    try {
-      return queryObjects(statement, fetchCount);
-    }
-    catch (SQLException e) {
-      throw new DatabaseException(getDatabase().getErrorMessage(e));
-    }
-  }
-
-  /** {@inheritDoc} */
   public int selectRowCount(final EntityCriteria criteria) throws DatabaseException {
     PreparedStatement statement = null;
     ResultSet resultSet = null;

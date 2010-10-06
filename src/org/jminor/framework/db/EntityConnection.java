@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.db;
 
-import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.PoolableConnection;
+import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.User;
 import org.jminor.common.model.reports.ReportException;
 import org.jminor.common.model.reports.ReportResult;
@@ -219,16 +219,6 @@ public interface EntityConnection {
    * @see org.jminor.common.model.reports.ReportWrapper#fillReport(java.sql.Connection)
    */
   ReportResult fillReport(final ReportWrapper reportWrapper) throws DatabaseException, ReportException;
-
-  /**
-   * Executes the given statement and returns the result in a List of rows, where each row
-   * is represented by a List of Objects
-   * @param statement the sql statement to execute
-   * @param fetchCount the maximum number of records to retrieve, -1 for all
-   * @return a List of rows represented by a List of Objects
-   * @throws org.jminor.common.db.exception.DatabaseException in case of a db exception
-   */
-  List<List> selectRows(final String statement, final int fetchCount) throws DatabaseException;
 
   /**
    * Writes <code>blobData</code> in the blob field specified by the property identified by <code>propertyID</code>

@@ -2229,3 +2229,4 @@
   EntityUiUtil.checkProperty() added, used throughout
   DefaultEntityModel.refreshDetailModelsAfterDelete() bug fix
   EntityUiUtil.NewEntityAction did not initialize the edit panel so it appeared empty
+  EntityConnection.selectRows() removed

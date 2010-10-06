@@ -4,13 +4,13 @@
 package org.jminor.framework.server;
 
 import org.jminor.common.db.Database;
+import org.jminor.common.db.PoolableConnection;
+import org.jminor.common.db.PoolableConnectionProvider;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolException;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.db.pool.ConnectionPools;
-import org.jminor.common.db.PoolableConnection;
-import org.jminor.common.db.PoolableConnectionProvider;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.LogEntry;
@@ -191,11 +191,6 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
   /** {@inheritDoc} */
   public ReportResult fillReport(final ReportWrapper reportWrapper) throws ReportException, RemoteException, DatabaseException {
     return connectionProxy.fillReport(reportWrapper);
-  }
-
-  /** {@inheritDoc} */
-  public List<List> selectRows(final String statement, final int fetchCount) throws DatabaseException, RemoteException {
-    return connectionProxy.selectRows(statement, fetchCount);
   }
 
   /** {@inheritDoc} */
