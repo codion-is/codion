@@ -407,9 +407,6 @@ public class FilteredTablePanel<T, C> extends JPanel {
       if (index >= 0) {
         final C columnIdentifier = (C) columnModel.getColumn(index).getIdentifier();
         SortingDirective status = tableModel.getSortingDirective(columnIdentifier);
-        if (!e.isControlDown()) {
-          tableModel.clearSortingState();
-        }
         final boolean shiftDown = e.isShiftDown();
         switch (status) {
           case UNSORTED:
@@ -428,7 +425,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
             break;
         }
 
-        tableModel.setSortingDirective(columnIdentifier, status);
+        tableModel.setSortingDirective(columnIdentifier, status, e.isControlDown());
       }
     }
   }

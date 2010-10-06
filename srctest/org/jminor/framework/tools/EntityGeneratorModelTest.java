@@ -107,7 +107,7 @@ public class EntityGeneratorModelTest {
   @Before
   public void setUp() throws Exception{
     model = new EntityGeneratorModel(new User("scott", "tiger"), "PETSTORE");
-    model.getTableModel().setSortingDirective(0, SortingDirective.ASCENDING);
+    model.getTableModel().setSortingDirective(0, SortingDirective.ASCENDING, false);
   }
 
   @After

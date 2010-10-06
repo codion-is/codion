@@ -174,8 +174,12 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R>, TableModel, 
   /**
    * @param columnIdentifier the identifier of the column to sort by
    * @param directive the sorting directive
+   * @param addColumnToSort if false then the sorting state is cleared, otherwise
+   * this column is added to the sorted column set according to <code>getSortingPriority()</code>
+   * @see #getSortingPriority(Object)
    */
-  void setSortingDirective(final C columnIdentifier, final SortingDirective directive);
+  void setSortingDirective(final C columnIdentifier, final SortingDirective directive,
+                           final boolean addColumnToSort);
 
   /**
    * @param columnIdentifier the column identifier

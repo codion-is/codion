@@ -533,8 +533,9 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   /** {@inheritDoc} */
-  public final void setSortingDirective(final String propertyID, final SortingDirective directive) {
-    super.setSortingDirective(Entities.getProperty(entityID, propertyID), directive);
+  public final void setSortingDirective(final String propertyID, final SortingDirective directive,
+                                        final boolean addColumnToSort) {
+    super.setSortingDirective(Entities.getProperty(entityID, propertyID), directive, addColumnToSort);
   }
 
   /** {@inheritDoc} */

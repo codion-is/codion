@@ -291,8 +291,11 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
   /**
    * @param propertyID the propertyID
    * @param directive the sorting directive
+   * @param addColumnToSort if false then the sorting state is cleared, otherwise
+   * this column is added to the sorted column set according to <code>getSortingPriority()</code>
    */
-  void setSortingDirective(final String propertyID, final SortingDirective directive);
+  void setSortingDirective(final String propertyID, final SortingDirective directive,
+                           final boolean addColumnToSort);
 
   /**
    * @param propertyID the propertyID

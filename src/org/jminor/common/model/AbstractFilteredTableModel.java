@@ -287,7 +287,11 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   }
 
   /** {@inheritDoc} */
-  public final void setSortingDirective(final C columnIdentifier, final SortingDirective directive) {
+  public final void setSortingDirective(final C columnIdentifier, final SortingDirective directive,
+                                        final boolean addColumnToSort) {
+    if (!addColumnToSort) {
+      resetSortingStates();
+    }
     if (directive == SortingDirective.UNSORTED) {
       sortingStates.put(columnIdentifier, emptySortingState);
     }
