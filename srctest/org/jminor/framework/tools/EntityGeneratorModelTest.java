@@ -133,7 +133,6 @@ public class EntityGeneratorModelTest {
   public void tagItem() throws Exception {
     model.getTableModel().setSelectedItemIndex(6);
     final String tagItemDef = model.getDocumentText();
-    System.out.println(tagItemDef);
     assertEquals(TAG_ITEM_DEF, tagItemDef);
   }
 }

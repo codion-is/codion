@@ -543,11 +543,8 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   protected final void doRefresh() {
     try {
       LOG.debug(this + " refreshing");
-      final List<Entity.Key> selectedPrimaryKeys = getPrimaryKeysOfSelectedEntities();
-      final List<Entity> queryResult = performQuery(getQueryCriteria());
       clear();
-      addItems(queryResult, false);
-      setSelectedByPrimaryKeys(selectedPrimaryKeys);
+      addItems(performQuery(getQueryCriteria()), false);
     }
     finally {
       LOG.debug(this + " refreshing done");

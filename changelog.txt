@@ -2230,3 +2230,4 @@
   DefaultEntityModel.refreshDetailModelsAfterDelete() bug fix
   EntityUiUtil.NewEntityAction did not initialize the edit panel so it appeared empty
   EntityConnection.selectRows() removed
+  AbstractFilteredTableModel refresh/sorting/selection functionality improved a bit

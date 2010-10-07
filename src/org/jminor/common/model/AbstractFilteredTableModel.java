@@ -252,8 +252,12 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     try {
       isRefreshing = true;
       evtRefreshStarted.fire();
+      final List<R> selectedItems = new ArrayList<R>(getSelectedItems());
       doRefresh();
-      sortVisibleItems();
+      if (isSortRequired()) {
+        sortTableModel();
+      }
+      setSelectedItems(selectedItems);
     }
     finally {
       isRefreshing = false;
@@ -959,6 +963,16 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     }
 
     return 0;
+  }
+
+  private boolean isSortRequired() {
+    for (final SortingState state : sortingStates.values()) {
+      if (!state.equals(emptySortingState)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   @SuppressWarnings({"unchecked"})
