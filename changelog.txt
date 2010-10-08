@@ -2231,3 +2231,5 @@
   EntityUiUtil.NewEntityAction did not initialize the edit panel so it appeared empty
   EntityConnection.selectRows() removed
   AbstractFilteredTableModel refresh/sorting/selection functionality improved a bit
+  EntityApplicationPanel.initializeUI() now adds the main entity models to the application model
+  EntityGeneratorModel fixed maximumFractionDigits appearing on non-floating point data types

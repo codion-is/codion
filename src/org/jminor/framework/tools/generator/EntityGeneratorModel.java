@@ -335,7 +335,7 @@ public final class EntityGeneratorModel {
     if (column.columnTypeName.equals("Types.VARCHAR")) {
       builder.append(LINE_SEPARATOR).append("                .setMaxLength(").append(column.columnSize).append(")");
     }
-    if (column.decimalDigits >= 1) {
+    if (column.columnTypeName.equals("Types.DOUBLE") && column.decimalDigits >= 1) {
       builder.append(LINE_SEPARATOR).append("                .setMaximumFractionDigits(").append(column.decimalDigits).append(")");
     }
     if (!Util.nullOrEmpty(column.comment)) {
