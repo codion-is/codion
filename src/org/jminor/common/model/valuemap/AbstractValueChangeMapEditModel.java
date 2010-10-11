@@ -97,7 +97,7 @@ public abstract class AbstractValueChangeMapEditModel<K, V> implements ValueChan
   /** {@inheritDoc} */
   public final void setValue(final K key, final V value) {
     Util.rejectNullValue(key, "key");
-    final boolean initialization = valueMap.containsValue(key);
+    final boolean initialization = !valueMap.containsValue(key);
     final V oldValue = valueMap.getValue(key);
     valueMap.setValue(key, prepareNewValue(key, value));
     if (!Util.equal(value, oldValue)) {

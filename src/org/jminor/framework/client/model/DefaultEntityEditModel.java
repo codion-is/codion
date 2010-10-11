@@ -669,6 +669,9 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
       }
     });
     if (Configuration.getBooleanValue(Configuration.PROPERTY_DEBUG_OUTPUT)) {
+      for (final Property property : Entities.getProperties(entityID).values()) {
+        addValueSetListener(property.getPropertyID(), new StatusMessageListener());
+      }
       getEntity().addValueListener(new StatusMessageListener());
     }
   }
