@@ -2233,3 +2233,5 @@
   AbstractFilteredTableModel refresh/sorting/selection functionality improved a bit
   EntityApplicationPanel.initializeUI() now adds the main entity models to the application model
   EntityGeneratorModel fixed maximumFractionDigits appearing on non-floating point data types
+  EntityUiUtil.selectEntities() now handles when the dialog is closed via [x]
+  EntityTablePanel, removed a few redundant constructors

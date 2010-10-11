@@ -162,7 +162,7 @@ public class EntityPanel extends JPanel {
   /**
    * if true then the detail panel tab pane should be include
    */
-  private boolean includeDetailPanelTabPane = true;
+  private boolean includeDetailPanelTabPane = false;
 
   /**
    * True after <code>initializePanel()</code> has been called

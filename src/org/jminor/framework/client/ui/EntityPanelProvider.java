@@ -291,6 +291,7 @@ public class EntityPanelProvider implements Comparable {
         entityPanel.getTablePanel().setSearchPanelVisible(tableSearchPanelVisible);
       }
       if (!detailPanelProviders.isEmpty()) {
+        entityPanel.setIncludeDetailPanelTabPane(true);
         entityPanel.setDetailPanelState(detailPanelState);
         entityPanel.setDetailSplitPanelResizeWeight(detailSplitPanelResizeWeight);
         for (final EntityPanelProvider detailProvider : detailPanelProviders) {

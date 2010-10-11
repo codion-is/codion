@@ -196,16 +196,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * @param tableModel the EntityTableModel instance
    */
   public EntityTablePanel(final EntityTableModel tableModel) {
-    this(tableModel, (ControlSet) null);
-  }
-
-  /**
-   * Initializes a new EntityTablePanel instance
-   * @param tableModel the EntityTableModel instance
-   * @param additionalPopupControls a ControlSet which will be added to the popup control set
-   */
-  public EntityTablePanel(final EntityTableModel tableModel, final ControlSet additionalPopupControls) {
-    this(tableModel, additionalPopupControls, null, tableModel.getSearchModel().isSimpleSearch() ?
+    this(tableModel, tableModel.getSearchModel().isSimpleSearch() ?
             new EntityTableSearchSimplePanel(tableModel.getSearchModel(), tableModel) :
             new EntityTableSearchAdvancedPanel(tableModel.getSearchModel(), tableModel.getColumnModel()),
             new EntityTableSummaryPanel(tableModel));
@@ -217,7 +208,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * @param searchPanel the search panel
    */
   public EntityTablePanel(final EntityTableModel tableModel, final EntityTableSearchPanel searchPanel) {
-    this(tableModel, null, null, searchPanel);
+    this(tableModel, searchPanel, new EntityTableSummaryPanel(tableModel));
   }
 
   /**
@@ -226,33 +217,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * @param summaryPanel the summary panel
    */
   public EntityTablePanel(final EntityTableModel tableModel, final EntityTableSummaryPanel summaryPanel) {
-    this(tableModel, null, null, summaryPanel);
-  }
-
-  /**
-   * Initializes a new EntityTablePanel instance
-   * @param tableModel the EntityTableModel instance
-   * @param additionalPopupControls a ControlSet which will be added to the popup control set
-   * @param additionalToolbarControls a ControlSet which will be added to the toolbar control set
-   * @param searchPanel the search panel
-   */
-  public EntityTablePanel(final EntityTableModel tableModel, final ControlSet additionalPopupControls,
-                          final ControlSet additionalToolbarControls,
-                          final EntityTableSearchPanel searchPanel) {
-    this(tableModel, additionalPopupControls, additionalToolbarControls, searchPanel, new EntityTableSummaryPanel(tableModel));
-  }
-
-  /**
-   * Initializes a new EntityTablePanel instance
-   * @param tableModel the EntityTableModel instance
-   * @param additionalPopupControls a ControlSet which will be added to the popup control set
-   * @param additionalToolbarControls a ControlSet which will be added to the toolbar control set
-   * @param summaryPanel the summary panel
-   */
-  public EntityTablePanel(final EntityTableModel tableModel, final ControlSet additionalPopupControls,
-                          final ControlSet additionalToolbarControls,
-                          final EntityTableSummaryPanel summaryPanel) {
-    this(tableModel, additionalPopupControls, additionalToolbarControls, tableModel.getSearchModel().isSimpleSearch() ?
+    this(tableModel, tableModel.getSearchModel().isSimpleSearch() ?
             new EntityTableSearchSimplePanel(tableModel.getSearchModel(), tableModel) :
             new EntityTableSearchAdvancedPanel(tableModel.getSearchModel(), tableModel.getColumnModel()),
             summaryPanel);
@@ -261,13 +226,10 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   /**
    * Initializes a new EntityTablePanel instance
    * @param tableModel the EntityTableModel instance
-   * @param additionalPopupControls a ControlSet which will be added to the popup control set
-   * @param additionalToolbarControls a ControlSet which will be added to the toolbar control set
    * @param searchPanel the search panel
    * @param summaryPanel the summary panel
    */
-  public EntityTablePanel(final EntityTableModel tableModel, final ControlSet additionalPopupControls,
-                          final ControlSet additionalToolbarControls, final EntityTableSearchPanel searchPanel,
+  public EntityTablePanel(final EntityTableModel tableModel, final EntityTableSearchPanel searchPanel,
                           final EntityTableSummaryPanel summaryPanel) {
     super(tableModel, initializeFilterPanels(tableModel));
     this.searchPanel = searchPanel;
@@ -289,8 +251,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     this.statusMessageLabel = initializeStatusMessageLabel();
     this.refreshToolBar = initializeRefreshToolbar();
     this.horizontalTableScrollBar = getTableScrollPane().getHorizontalScrollBar();
-    this.additionalPopupControls = additionalPopupControls;
-    this.additionalToolbarControls = additionalToolbarControls;
     initializeTable();
   }
 
@@ -846,7 +806,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     };
     tableModel.setQueryConfigurationAllowed(false);
     tableModel.setEditModel(editModel);
-    final EntityTablePanel tablePanel = new EntityTablePanel(tableModel, null, null, null, null);
+    final EntityTablePanel tablePanel = new EntityTablePanel(tableModel, null, null);
     tablePanel.initializePanel();
     tableModel.refresh();
 
@@ -1003,10 +963,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     }
     if (controlMap.containsKey(DELETE_SELECTED)) {
       toolbarControls.add(controlMap.get(DELETE_SELECTED));
-      toolbarControls.addSeparator();
     }
     toolbarControls.add(getPrintTableControl());
-    toolbarControls.addSeparator();
     toolbarControls.add(controlMap.get(CLEAR_SELECTION));
     toolbarControls.addSeparator();
     toolbarControls.add(controlMap.get(MOVE_SELECTION_UP));
