@@ -8,12 +8,12 @@ import org.jminor.common.model.Deserializer;
 import org.jminor.common.model.Item;
 import org.jminor.common.model.Serializer;
 import org.jminor.common.model.Util;
-import org.jminor.common.model.valuemap.ValueProvider;
 import org.jminor.common.model.valuemap.DefaultValueMapValidator;
 import org.jminor.common.model.valuemap.ValueMap;
-import org.jminor.common.model.valuemap.exception.ValidationException;
-import org.jminor.common.model.valuemap.exception.RangeValidationException;
+import org.jminor.common.model.valuemap.ValueProvider;
 import org.jminor.common.model.valuemap.exception.NullValidationException;
+import org.jminor.common.model.valuemap.exception.RangeValidationException;
+import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.i18n.FrameworkMessages;
 
@@ -296,7 +296,12 @@ public final class EntityUtil {
       }
     }
     final List<Property> updatable = new ArrayList<Property>(columnProperties);
-    updatable.addAll(Entities.getForeignKeyProperties(entityID));
+    final Collection<Property.ForeignKeyProperty> foreignKeyProperties = Entities.getForeignKeyProperties(entityID);
+    for (final Property.ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
+      if (!foreignKeyProperty.isReadOnly()) {
+        updatable.add(foreignKeyProperty);
+      }
+    }
     sort(updatable);
 
     return updatable;

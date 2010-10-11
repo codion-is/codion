@@ -2235,3 +2235,4 @@
   EntityGeneratorModel fixed maximumFractionDigits appearing on non-floating point data types
   EntityUiUtil.selectEntities() now handles when the dialog is closed via [x]
   EntityTablePanel, removed a few redundant constructors
+  EntityUtil.getUpdatableProperties() did not anticipate read only foreign key properties :|
