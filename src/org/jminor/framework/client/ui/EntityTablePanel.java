@@ -75,7 +75,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * The EntityTablePanel class consists of a JTable as well as filtering/searching and summary facilities.
+ * The EntityTablePanel is a UI class based on the EntityTableModel class.
+ * It consists of a JTable as well as filtering/searching and summary panels.
  *
  * The default layout is as follows
  * <pre>
@@ -98,6 +99,7 @@ import java.util.Map;
  * |____________________________________________________|
  * </pre>
  * The search and summary panels can be hidden
+ * @see org.jminor.framework.client.model.EntityTableModel
  */
 public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
 
