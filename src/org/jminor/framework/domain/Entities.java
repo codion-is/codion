@@ -5,7 +5,13 @@ package org.jminor.framework.domain;
 
 import org.jminor.common.model.IdSource;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.valuemap.DefaultValueMapValidator;
 import org.jminor.common.model.valuemap.ValueMap;
+import org.jminor.common.model.valuemap.exception.NullValidationException;
+import org.jminor.common.model.valuemap.exception.RangeValidationException;
+import org.jminor.common.model.valuemap.exception.ValidationException;
+import org.jminor.framework.Configuration;
+import org.jminor.framework.i18n.FrameworkMessages;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -80,6 +86,7 @@ public final class Entities {
    */
   public static Entity.Definition define(final String entityID, final String tableName, final Property... propertyDefinitions) {
     final EntityDefinitionImpl entityImpl = new EntityDefinitionImpl(entityID, tableName, propertyDefinitions);
+    entityImpl.setValidator(new Validator(entityID));
     EntityDefinitionImpl.getDefinitionMap().put(entityID, entityImpl);
     for (final Property property : propertyDefinitions) {
       property.setEntityID(entityID);
@@ -538,4 +545,124 @@ public final class Entities {
     return definitions;
   }
 
+  /**
+ * A default extensible Entity.Validator implementation.
+   */
+  public static class Validator extends DefaultValueMapValidator<String, Object> implements Entity.Validator {
+
+    private final String entityID;
+
+    /**
+     * Instantiates a new EntityValidator
+     * @param entityID the ID of the entities to validate
+     */
+    public Validator(final String entityID) {
+      Util.rejectNullValue(entityID, "entityID");
+      this.entityID = entityID;
+    }
+
+    /** {@inheritDoc} */
+    public final String getEntityID() {
+      return entityID;
+    }
+
+    /**
+     * Returns true if the given property accepts a null value for the given entity,
+     * by default this method simply returns <code>property.isNullable()</code>
+     * @param valueMap the entity being validated
+     * @param key the property ID
+     * @return true if the property accepts a null value
+     */
+    @Override
+    public boolean isNullable(final ValueMap<String,Object> valueMap, final String key) {
+      final Property property = getProperty(entityID, key);
+      if (property == null) {
+        throw new RuntimeException("Property not found: " + key);
+      }
+
+      return property.isNullable();
+    }
+
+    /** {@inheritDoc} */
+    public void validate(final Entity entity, final int action) throws ValidationException {
+      validate((ValueMap<String, Object>) entity, action);
+    }
+
+    /** {@inheritDoc} */
+    public final void validate(final Collection<Entity> entities, final int action) throws ValidationException {
+      for (final Entity entity : entities) {
+        validate(entity, action);
+      }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public final void validate(final ValueMap<String, Object> valueMap, final int action) throws ValidationException {
+      Util.rejectNullValue(valueMap, "entity");
+      for (final Property property : getProperties(entityID).values()) {
+        validate(valueMap, property.getPropertyID(), action);
+      }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public final void validate(final ValueMap<String, Object> valueMap, final String key, final int action) throws ValidationException {
+      if (valueMap instanceof Entity) {
+        validate((Entity) valueMap, key, action);
+      }
+      else {
+        super.validate(valueMap, key, action);
+      }
+    }
+
+    /** {@inheritDoc} */
+    public void validate(final Entity entity, final String propertyID, final int action) throws ValidationException {
+      Util.rejectNullValue(entity, "entity");
+      final Property property = entity.getProperty(propertyID);
+      if (Configuration.getBooleanValue(Configuration.PERFORM_NULL_VALIDATION) && !property.hasParentProperty()) {
+        performNullValidation(entity, property, action);
+      }
+      if (property.isNumerical()) {
+        performRangeValidation(entity, property);
+      }
+    }
+
+    /** {@inheritDoc} */
+    public final void performRangeValidation(final Entity entity, final Property property) throws RangeValidationException {
+      if (entity.isValueNull(property.getPropertyID())) {
+        return;
+      }
+
+      final Double value = property.isDouble() ? (Double) entity.getValue(property.getPropertyID())
+              : (Integer) entity.getValue(property.getPropertyID());
+      if (value < (property.getMin() == null ? Double.NEGATIVE_INFINITY : property.getMin())) {
+        throw new RangeValidationException(property.getPropertyID(), value, "'" + property + "' " +
+                FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_TOO_SMALL) + " " + property.getMin());
+      }
+      if (value > (property.getMax() == null ? Double.POSITIVE_INFINITY : property.getMax())) {
+        throw new RangeValidationException(property.getPropertyID(), value, "'" + property + "' " +
+                FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_TOO_LARGE) + " " + property.getMax());
+      }
+    }
+
+    /** {@inheritDoc} */
+    public final void performNullValidation(final Entity entity, final Property property, final int action) throws NullValidationException {
+      if (!isNullable(entity, property.getPropertyID()) && entity.isValueNull(property.getPropertyID())) {
+        if (action == INSERT) {
+          final boolean columnPropertyWithoutDefaultValue = property instanceof Property.ColumnProperty && !((Property.ColumnProperty) property).columnHasDefaultValue();
+          final boolean primaryKeyPropertyWithoutAutoGenerate = property instanceof Property.PrimaryKeyProperty &&
+                  !getIdSource(entityID).isAutoGenerated();
+          if (property instanceof Property.ForeignKeyProperty || columnPropertyWithoutDefaultValue || primaryKeyPropertyWithoutAutoGenerate) {
+            throw new NullValidationException(property.getPropertyID(),
+                    FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_IS_REQUIRED) + ": " + property);
+          }
+        }
+        else {
+          throw new NullValidationException(property.getPropertyID(),
+                  FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_IS_REQUIRED) + ": " + property);
+
+        }
+      }
+    }
+  }
 }

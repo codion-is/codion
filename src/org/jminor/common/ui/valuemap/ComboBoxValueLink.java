@@ -5,6 +5,7 @@ package org.jminor.common.ui.valuemap;
 
 import org.jminor.common.model.DocumentAdapter;
 import org.jminor.common.model.Item;
+import org.jminor.common.model.combobox.FilteredComboBoxModel;
 import org.jminor.common.model.combobox.ItemComboBoxModel;
 import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
 import org.jminor.common.ui.control.LinkType;
@@ -75,6 +76,9 @@ public class ComboBoxValueLink<K> extends AbstractValueMapLink<K, Object> {
   protected final Object getUIValue() {
     if (boxModel instanceof ItemComboBoxModel) {
       return ((Item) boxModel.getSelectedItem()).getItem();
+    }
+    else if (boxModel instanceof FilteredComboBoxModel && ((FilteredComboBoxModel) boxModel).isNullValueSelected()) {
+      return null;
     }
 
     return boxModel.getSelectedItem();

@@ -443,10 +443,6 @@ final class EntityDefinitionImpl implements Entity.Definition {
 
   /** {@inheritDoc} */
   public Entity.Validator getValidator() {
-    if (validator == null) {
-      validator = new EntityUtil.Validator(entityID);
-    }
-
     return validator;
   }
 
@@ -529,7 +525,7 @@ final class EntityDefinitionImpl implements Entity.Definition {
   }
 
   static Entity.Definition getDefinition(final String entityID) {
-    final Entity.Definition definition = getDefinitionMap().get(entityID);
+    final Entity.Definition definition = ENTITY_DEFINITIONS.get(entityID);
     if (definition == null) {
       throw new IllegalArgumentException("Undefined entity: " + entityID);
     }
