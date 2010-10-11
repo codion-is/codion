@@ -85,7 +85,7 @@ public interface PoolableConnection {
   void rollback() throws SQLException;
 
   /**
-   * Disconnects this DbConnection
+   * Disconnects this connection
    */
   void disconnect();
 
