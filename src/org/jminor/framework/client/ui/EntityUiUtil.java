@@ -189,7 +189,7 @@ public final class EntityUiUtil {
     dialog.setResizable(true);
     dialog.setVisible(true);
 
-    if (selected.size() == 0 || (selected.size() == 1 && selected.contains(null))) {
+    if (selected.isEmpty() || (selected.size() == 1 && selected.contains(null))) {
       throw new CancelException();
     }
     else {
