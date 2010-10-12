@@ -3,11 +3,19 @@
  */
 package org.jminor.framework.db;
 
-import org.jminor.common.db.*;
+import org.jminor.common.db.Database;
+import org.jminor.common.db.DatabaseConnectionImpl;
+import org.jminor.common.db.Databases;
+import org.jminor.common.db.PoolableConnection;
+import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.RecordModifiedException;
 import org.jminor.common.db.exception.RecordNotFoundException;
-import org.jminor.common.model.*;
+import org.jminor.common.model.IdSource;
+import org.jminor.common.model.LogEntry;
+import org.jminor.common.model.SearchType;
+import org.jminor.common.model.User;
+import org.jminor.common.model.Util;
 import org.jminor.common.model.reports.ReportException;
 import org.jminor.common.model.reports.ReportResult;
 import org.jminor.common.model.reports.ReportWrapper;
@@ -23,9 +31,20 @@ import org.jminor.framework.i18n.FrameworkMessages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.*;
+import java.sql.Connection;
 import java.sql.Date;
-import java.util.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.sql.Types;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * EntityConnection implementation based on a local JDBC connection.
@@ -318,7 +337,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
 
       final Property.ColumnProperty property = (Property.ColumnProperty) Entities.getProperty(entityID, propertyID);
       final String columnName = property.getColumnName();
-      final String sql = getSelectSQL(Entities.getSelectTableName(entityID),
+      final String sql = createSelectSQL(Entities.getSelectTableName(entityID),
               new StringBuilder("distinct ").append(columnName).toString(),
               new StringBuilder("where ").append(columnName).append(" is not null").toString(), order ? columnName : null);
 
@@ -336,7 +355,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     ResultSet resultSet = null;
     try {
       String selectQuery = Entities.getSelectQuery(criteria.getEntityID());
-      selectQuery = getSelectSQL(selectQuery == null ? Entities.getSelectTableName(criteria.getEntityID()) :
+      selectQuery = createSelectSQL(selectQuery == null ? Entities.getSelectTableName(criteria.getEntityID()) :
               "(" + selectQuery + " " + criteria.getWhereClause(!selectQuery.toLowerCase().contains("where")) + ") alias", "count(*)", null, null);
       selectQuery += " " + criteria.getWhereClause(!containsWhereKeyword(selectQuery));
       statement = getConnection().prepareStatement(selectQuery);
@@ -345,9 +364,6 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
 
       if (result.isEmpty()) {
         throw new RecordNotFoundException("Record count query returned no value");
-      }
-      else if (result.size() > 1) {
-        throw new DatabaseException("Record count query returned multiple values");
       }
 
       return result.get(0);
@@ -527,13 +543,13 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     }
   }
 
-  private List<Entity> doSelectMany(final EntitySelectCriteria criteria, final int currentFKFetchDepth) throws DatabaseException {
+  private List<Entity> doSelectMany(final EntitySelectCriteria criteria, final int currentForeignKeyFetchDepth) throws DatabaseException {
     PreparedStatement statement = null;
     ResultSet resultSet = null;
     try {
-      final String selectQuery = initializeSelectQuery(criteria, Entities.getSelectColumnsString(criteria.getEntityID()), criteria.getOrderByClause());
-      statement = getConnection().prepareStatement(selectQuery);
-      resultSet = executePreparedSelect(statement, selectQuery, criteria.getValues(), criteria.getValueProperties());
+      final String selectSQL = getSelectSQL(criteria, Entities.getSelectColumnsString(criteria.getEntityID()), criteria.getOrderByClause());
+      statement = getConnection().prepareStatement(selectSQL);
+      resultSet = executePreparedSelect(statement, selectSQL, criteria.getValues(), criteria.getValueProperties());
       List<Entity> result = null;
       SQLException packingException = null;
       try {
@@ -548,7 +564,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
         final String message = result != null ? "row count: " + result.size() : "";
         getMethodLogger().logExit("packResult", packingException, null, message);
       }
-      setForeignKeyValues(result, criteria, currentFKFetchDepth);
+      setForeignKeyValues(result, criteria, currentForeignKeyFetchDepth);
 
       return result;
     }
@@ -563,28 +579,28 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
 
   /**
    * Selects the entities referenced by the given entities via foreign keys and sets those
-   * as their respective foreign key values. this is done recursively for the entities referenced
+   * as their respective foreign key values. This is done recursively for the entities referenced
    * by the foreign keys as well, until the qriteria fetch depth limit is reached.
    * @param entities the entities for which to set the foreign key entity values
    * @param criteria the criteria
-   * @param currentFetchDepth the current foreign key fetch depth
+   * @param currentForeignKeyFetchDepth the current foreign key fetch depth
    * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
    * @see #setLimitForeignKeyFetchDepth(boolean)
    * @see org.jminor.framework.db.criteria.EntitySelectCriteria#setForeignKeyFetchDepthLimit(int)
    */
-  private void setForeignKeyValues(final List<Entity> entities, final EntitySelectCriteria criteria, final int currentFetchDepth) throws DatabaseException {
+  private void setForeignKeyValues(final List<Entity> entities, final EntitySelectCriteria criteria, final int currentForeignKeyFetchDepth) throws DatabaseException {
     if (entities == null || entities.isEmpty()) {
       return;
     }
     final Collection<Property.ForeignKeyProperty> foreignKeyProperties = Entities.getForeignKeyProperties(entities.get(0).getEntityID());
     for (final Property.ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
-      final int fetchDepthLimit = criteria.getForeignKeyFetchDepthLimit(foreignKeyProperty.getPropertyID());
-      if (!limitForeignKeyFetchDepth || currentFetchDepth < fetchDepthLimit) {
+      final int criteriaFetchDepthLimit = criteria.getForeignKeyFetchDepthLimit(foreignKeyProperty.getPropertyID());
+      if (!limitForeignKeyFetchDepth || currentForeignKeyFetchDepth < criteriaFetchDepthLimit) {
         final List<Entity.Key> referencedPrimaryKeys = getReferencedPrimaryKeys(entities, foreignKeyProperty);
         if (!referencedPrimaryKeys.isEmpty()) {
           final EntitySelectCriteria referencedEntitiesCriteria = EntityCriteriaUtil.selectCriteria(referencedPrimaryKeys);
-          referencedEntitiesCriteria.setForeignKeyFetchDepthLimit(fetchDepthLimit);
-          final List<Entity> referencedEntities = doSelectMany(referencedEntitiesCriteria, currentFetchDepth + 1);
+          referencedEntitiesCriteria.setForeignKeyFetchDepthLimit(criteriaFetchDepthLimit);
+          final List<Entity> referencedEntities = doSelectMany(referencedEntitiesCriteria, currentForeignKeyFetchDepth + 1);
           final Map<Entity.Key, Entity> hashedReferencedEntities = EntityUtil.hashByPrimaryKey(referencedEntities);
           for (final Entity entity : entities) {
             entity.initializeValue(foreignKeyProperty, hashedReferencedEntities.get(entity.getReferencedPrimaryKey(foreignKeyProperty)));
@@ -595,7 +611,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
   }
 
   private int queryNewPrimaryKeyValue(final String entityID, final IdSource idSource, final String idValueSource,
-                              final Property.PrimaryKeyProperty primaryKeyProperty) throws DatabaseException {
+                                      final Property.PrimaryKeyProperty primaryKeyProperty) throws DatabaseException {
     final String sql;
     switch (idSource) {
       case MAX_PLUS_ONE:
@@ -659,30 +675,6 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
         LOG.debug(createLogMessage(getUser(), sqlStatement, values, exception, entry));
       }
     }
-  }
-
-  private String initializeSelectQuery(final EntitySelectCriteria criteria, final String columnsString, final String orderByClause) {
-    String selectQuery = Entities.getSelectQuery(criteria.getEntityID());
-    if (selectQuery == null) {
-      selectQuery = getSelectSQL(Entities.getSelectTableName(criteria.getEntityID()), columnsString, null, null);
-    }
-
-    final StringBuilder queryBuilder = new StringBuilder(selectQuery);
-    final String whereClause = criteria.getWhereClause(!containsWhereKeyword(selectQuery));
-    if (!whereClause.isEmpty()) {
-      queryBuilder.append(" ").append(whereClause);
-    }
-    if (orderByClause != null) {
-      queryBuilder.append(" order by ").append(orderByClause);
-    }
-    if (criteria.isSelectForUpdate()) {
-      queryBuilder.append(" for update");
-      if (getDatabase().supportsNowait()) {
-        queryBuilder.append(" nowait");
-      }
-    }
-
-    return queryBuilder.toString();
   }
 
   private void rollbackQuietly() {
@@ -785,6 +777,30 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     return new ArrayList<Entity.Key>(keySet);
   }
 
+  private String getSelectSQL(final EntitySelectCriteria criteria, final String columnsString, final String orderByClause) {
+    String selectSQL = Entities.getSelectQuery(criteria.getEntityID());
+    if (selectSQL == null) {
+      selectSQL = createSelectSQL(Entities.getSelectTableName(criteria.getEntityID()), columnsString, null, null);
+    }
+
+    final StringBuilder queryBuilder = new StringBuilder(selectSQL);
+    final String whereClause = criteria.getWhereClause(!containsWhereKeyword(selectSQL));
+    if (!whereClause.isEmpty()) {
+      queryBuilder.append(" ").append(whereClause);
+    }
+    if (orderByClause != null) {
+      queryBuilder.append(" order by ").append(orderByClause);
+    }
+    if (criteria.isSelectForUpdate()) {
+      queryBuilder.append(" for update");
+      if (getDatabase().supportsNowait()) {
+        queryBuilder.append(" nowait");
+      }
+    }
+
+    return queryBuilder.toString();
+  }
+
   /**
    * @param selectQuery the query to check
    * @return true if the query contains the WHERE keyword after the last FROM keyword instance
@@ -881,8 +897,8 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
    * "col1, col2" as input results in the following order by clause "order by col1, col2"
    * @return the generated sql query
    */
-  private static String getSelectSQL(final String table, final String columns, final String whereCondition,
-                                     final String orderByClause) {
+  private static String createSelectSQL(final String table, final String columns, final String whereCondition,
+                                        final String orderByClause) {
     final StringBuilder sql = new StringBuilder("select ");
     sql.append(columns);
     sql.append(" from ");
@@ -899,20 +915,21 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
   }
 
   /**
-   * @param forInsert if true then non-null properties are added, if false then update is assumed and all
+   * @param inserting if true then non-null properties are added, if false then update is assumed and all
    * modified properties are added.
    * @param entity the Entity instance
    * @param columnProperties the column properties the entity type is based on
    * @param properties the collection to add the properties to
    * @param values the values are added to this collection
    */
-  private static void populateStatementPropertiesAndValues(final boolean forInsert, final Entity entity,final List<Property.ColumnProperty> columnProperties,
-                                                      final Collection<Property.ColumnProperty> properties,
-                                                      final Collection<Object> values) {
+  private static void populateStatementPropertiesAndValues(final boolean inserting, final Entity entity,
+                                                           final List<Property.ColumnProperty> columnProperties,
+                                                           final Collection<Property.ColumnProperty> properties,
+                                                           final Collection<Object> values) {
     for (final Property.ColumnProperty property : columnProperties) {
-      final boolean insertAndNonNull = forInsert && !entity.isValueNull(property.getPropertyID());
-      final boolean updateAndModified = !forInsert && entity.isModified(property.getPropertyID());
-      if (insertAndNonNull || updateAndModified) {
+      final boolean insertingAndNonNull = inserting && !entity.isValueNull(property.getPropertyID());
+      final boolean updatingAndModified = !inserting && entity.isModified(property.getPropertyID());
+      if (insertingAndNonNull || updatingAndModified) {
         properties.add(property);
         values.add(entity.getValue(property));
       }
