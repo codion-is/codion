@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A default DbConnection implementation, which wraps a standard JDBC Connection object.
+ * A default DatabaseConnection implementation, which wraps a standard JDBC Connection object.
  */
 public class DatabaseConnectionImpl implements DatabaseConnection {
 
@@ -53,7 +53,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
   private final MethodLogger methodLogger = new MethodLogger(100, true);
 
   /**
-   * Constructs a new instance of the DbConnection class, initialized and ready for usage
+   * Constructs a new DatabaseConnectionImpl instance, initialized and ready for usage
    * @param database the database
    * @param user the user for the db-connection
    * @throws SQLException in case there is a problem connecting to the database
@@ -64,11 +64,11 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
   }
 
   /**
-   * Constructs a new instance of the DbConnection class, based on the given Connection object.
+   * Constructs a new DatabaseConnectionImpl instance, based on the given Connection object.
    * NB. auto commit is disabled on the Connection that is provided.
    * @param database the database
    * @param user the user for the db-connection
-   * @param connection the Connection object to base this DbConnection on
+   * @param connection the Connection object to base this DatabaseConnectionImpl on
    * @throws SQLException in case there is a problem connecting to the database
    */
   public DatabaseConnectionImpl(final Database database, final User user, final Connection connection) throws SQLException {

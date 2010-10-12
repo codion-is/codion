@@ -10,7 +10,7 @@ public final class DatabaseConnections {
   private DatabaseConnections() {}
 
   /**
-   * Constructs a new instance of the DbConnection class, based on the given Connection object.
+   * Constructs a new DatabaseConnection instance, based on the given Connection object.
    * NB. auto commit is disabled on the Connection that is provided.
    * @param database the database
    * @param user the user for the db-connection
@@ -23,11 +23,11 @@ public final class DatabaseConnections {
   }
 
   /**
-   * Constructs a new instance of the DbConnection class, based on the given Connection object.
+   * Constructs a new DatabaseConnection instance, based on the given Connection object.
    * NB. auto commit is disabled on the Connection that is provided.
    * @param database the database
    * @param user the user for the db-connection
-   * @param connection the Connection object to base this DbConnection on
+   * @param connection the Connection object to base this DatabaseConnection on
    * @throws SQLException in case there is a problem connecting to the database
    * @return a new DatabaseConnection instance
    */

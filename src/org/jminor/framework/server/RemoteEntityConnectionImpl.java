@@ -504,12 +504,12 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
         entityConnection.disconnect();//discard
         entityConnection = null;
       }
-      final EntityConnection pooledDbConnection = (EntityConnection) connectionPool.getConnection();
+      final EntityConnection pooledConnection = (EntityConnection) connectionPool.getConnection();
       if (methodLogger.isEnabled()) {
-        pooledDbConnection.getPoolableConnection().setLoggingEnabled(methodLogger.isEnabled());
+        pooledConnection.getPoolableConnection().setLoggingEnabled(methodLogger.isEnabled());
       }
 
-      return pooledDbConnection;
+      return pooledConnection;
     }
 
     if (entityConnection == null) {
