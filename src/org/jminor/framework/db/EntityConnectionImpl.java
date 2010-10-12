@@ -3,19 +3,11 @@
  */
 package org.jminor.framework.db;
 
-import org.jminor.common.db.Database;
-import org.jminor.common.db.DatabaseConnectionImpl;
-import org.jminor.common.db.Databases;
-import org.jminor.common.db.PoolableConnection;
-import org.jminor.common.db.ResultPacker;
+import org.jminor.common.db.*;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.RecordModifiedException;
 import org.jminor.common.db.exception.RecordNotFoundException;
-import org.jminor.common.model.IdSource;
-import org.jminor.common.model.LogEntry;
-import org.jminor.common.model.SearchType;
-import org.jminor.common.model.User;
-import org.jminor.common.model.Util;
+import org.jminor.common.model.*;
 import org.jminor.common.model.reports.ReportException;
 import org.jminor.common.model.reports.ReportResult;
 import org.jminor.common.model.reports.ReportWrapper;
@@ -28,24 +20,12 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.Connection;
+import java.sql.*;
 import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.sql.Types;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * EntityConnection implementation based on a local JDBC connection.
@@ -98,39 +78,43 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     }
     checkReadOnly(entities);
 
-    final List<Entity.Key> keys = new ArrayList<Entity.Key>(entities.size());
+    final List<Entity.Key> insertedKeys = new ArrayList<Entity.Key>(entities.size());
     PreparedStatement statement = null;
     try {
       final List<Property.ColumnProperty> statementProperties = new ArrayList<Property.ColumnProperty>();
       final List<Object> statementValues = new ArrayList<Object>();
       for (final Entity entity : entities) {
         final String entityID = entity.getEntityID();
+        final Property.PrimaryKeyProperty firstPrimaryKeyProperty = Entities.getPrimaryKeyProperties(entityID).get(0);
         final IdSource idSource = Entities.getIdSource(entityID);
         final String idValueSource = Entities.getIdValueSource(entityID);
-        final Property.PrimaryKeyProperty firstPrimaryKeyProperty = entity.getPrimaryKey().getFirstKeyProperty();
-        final boolean queryPrimaryKeyValue = idSource.isQueried() && entity.getPrimaryKey().isNull();
-        final List<Property.ColumnProperty> columnProperties = Entities.getColumnProperties(entityID, !idSource.isAutoIncrement(), false, true);
+        final boolean includePrimaryKeyProperties = !idSource.isAutoIncrement();
+        final boolean includeReadOnly = false;
+        final boolean includeNonUpdatable = true;
+        final List<Property.ColumnProperty> columnProperties = Entities.getColumnProperties(entityID,
+                includePrimaryKeyProperties, includeReadOnly, includeNonUpdatable);
 
+        final boolean queryPrimaryKeyValue = idSource.isQueried() && entity.isValueNull(firstPrimaryKeyProperty);
         if (queryPrimaryKeyValue) {
-          final int primaryKeyValue = queryNewPKValue(entityID, idSource, idValueSource, firstPrimaryKeyProperty);
+          final int primaryKeyValue = queryNewPrimaryKeyValue(entityID, idSource, idValueSource, firstPrimaryKeyProperty);
           entity.setValue(firstPrimaryKeyProperty, primaryKeyValue);
         }
 
-        addStatementPropertiesAndValues(true, entity, columnProperties, statementProperties, statementValues);
+        final boolean inserting = true;
+        populateStatementPropertiesAndValues(inserting, entity, columnProperties, statementProperties, statementValues);
 
-        final String insertQuery = getInsertSQL(entityID, statementProperties);
+        final String insertSQL = getInsertSQL(entityID, statementProperties);
 
-        statement = getConnection().prepareStatement(insertQuery);
+        statement = getConnection().prepareStatement(insertSQL);
 
-        executePreparedUpdate(statement, insertQuery, statementValues, statementProperties);
+        executePreparedUpdate(statement, insertSQL, statementValues, statementProperties);
 
-        final Entity.Key primaryKey = entity.getPrimaryKey();
-        if (idSource.isAutoIncrement() && primaryKey.isNull()) {
+        if (idSource.isAutoIncrement()) {
           final int primaryKeyValue = queryInteger(getDatabase().getAutoIncrementValueSQL(idValueSource));
-          primaryKey.setValue(firstPrimaryKeyProperty.getPropertyID(), primaryKeyValue);
+          entity.setValue(firstPrimaryKeyProperty, primaryKeyValue);
         }
 
-        keys.add(primaryKey);
+        insertedKeys.add(entity.getPrimaryKey());
 
         statement.close();
         statementProperties.clear();
@@ -140,7 +124,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
         commit();
       }
 
-      return keys;
+      return insertedKeys;
     }
     catch (SQLException e) {
       if (!isTransactionOpen()) {
@@ -173,7 +157,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
         final List<Property.PrimaryKeyProperty> primaryKeyProperties = Entities.getPrimaryKeyProperties(entry.getKey());
         final List<Property.ColumnProperty> columnProperties = Entities.getColumnProperties(entry.getKey(), true, false, false);
         for (final Entity entity : entry.getValue()) {
-          addStatementPropertiesAndValues(false, entity, columnProperties, statementProperties, statementValues);
+          populateStatementPropertiesAndValues(false, entity, columnProperties, statementProperties, statementValues);
 
           final String updateQuery = getUpdateSQL(entity, statementProperties, primaryKeyProperties);
 
@@ -605,7 +589,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     }
   }
 
-  private int queryNewPKValue(final String entityID, final IdSource idSource, final String idValueSource,
+  private int queryNewPrimaryKeyValue(final String entityID, final IdSource idSource, final String idValueSource,
                               final Property.PrimaryKeyProperty primaryKeyProperty) throws DatabaseException {
     final String sql;
     switch (idSource) {
@@ -917,7 +901,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
    * @param properties the collection to add the properties to
    * @param values the values are added to this collection
    */
-  private static void addStatementPropertiesAndValues(final boolean forInsert, final Entity entity,final List<Property.ColumnProperty> columnProperties,
+  private static void populateStatementPropertiesAndValues(final boolean forInsert, final Entity entity,final List<Property.ColumnProperty> columnProperties,
                                                       final Collection<Property.ColumnProperty> properties,
                                                       final Collection<Object> values) {
     for (final Property.ColumnProperty property : columnProperties) {
