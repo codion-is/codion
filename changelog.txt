@@ -2240,3 +2240,4 @@
   EntityUtil.Validator moved to Entities
   AbstractFilteredTableModel.removeItems() improved a bit
   EntityConnectionImpl.insert(), improved readability and removed repeated calls to entity.getPrimaryKey(), the reasons for which have long since disappeared into the mists of time
+  EntityConnectionImpl.update(),improved readability a bit

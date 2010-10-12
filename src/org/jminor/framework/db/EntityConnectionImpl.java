@@ -104,9 +104,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
         populateStatementPropertiesAndValues(inserting, entity, columnProperties, statementProperties, statementValues);
 
         final String insertSQL = getInsertSQL(entityID, statementProperties);
-
         statement = getConnection().prepareStatement(insertSQL);
-
         executePreparedUpdate(statement, insertSQL, statementValues, statementProperties);
 
         if (idSource.isAutoIncrement()) {
@@ -153,23 +151,30 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
 
       final List<Object> statementValues = new ArrayList<Object>();
       final List<Property.ColumnProperty> statementProperties = new ArrayList<Property.ColumnProperty>();
-      for (final Map.Entry<String, Collection<Entity>> entry : hashedEntities.entrySet()) {
-        final List<Property.PrimaryKeyProperty> primaryKeyProperties = Entities.getPrimaryKeyProperties(entry.getKey());
-        final List<Property.ColumnProperty> columnProperties = Entities.getColumnProperties(entry.getKey(), true, false, false);
-        for (final Entity entity : entry.getValue()) {
-          populateStatementPropertiesAndValues(false, entity, columnProperties, statementProperties, statementValues);
+      for (final Map.Entry<String, Collection<Entity>> hashedEntitiesMapEntry : hashedEntities.entrySet()) {
+        final String entityID = hashedEntitiesMapEntry.getKey();
+        final boolean includePrimaryKeyProperties = true;
+        final boolean includeReadOnlyProperties = false;
+        final boolean includeNonUpdatable = false;
+        final List<Property.ColumnProperty> columnProperties = Entities.getColumnProperties(entityID,
+                includePrimaryKeyProperties, includeReadOnlyProperties, includeNonUpdatable);
 
-          final String updateQuery = getUpdateSQL(entity, statementProperties, primaryKeyProperties);
+        for (final Entity entity : hashedEntitiesMapEntry.getValue()) {
+          final boolean updating = true;
+          populateStatementPropertiesAndValues(updating, entity, columnProperties, statementProperties, statementValues);
 
+          final List<Property.PrimaryKeyProperty> primaryKeyProperties = Entities.getPrimaryKeyProperties(entityID);
+          final String updateSQL = getUpdateSQL(entity, statementProperties, primaryKeyProperties);
           statementProperties.addAll(primaryKeyProperties);
           for (final Property.PrimaryKeyProperty primaryKeyProperty : primaryKeyProperties) {
             statementValues.add(entity.getOriginalValue(primaryKeyProperty.getPropertyID()));
           }
-          statement = getConnection().prepareStatement(updateQuery);
-          executePreparedUpdate(statement, updateQuery, statementValues, statementProperties);
+          statement = getConnection().prepareStatement(updateSQL);
+          executePreparedUpdate(statement, updateSQL, statementValues, statementProperties);
+
           statement.close();
-          statementValues.clear();
           statementProperties.clear();
+          statementValues.clear();
         }
       }
       if (!isTransactionOpen()) {
