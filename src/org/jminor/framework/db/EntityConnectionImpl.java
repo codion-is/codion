@@ -237,10 +237,10 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
         checkReadOnly(entityID);
       }
       final ArrayList<Entity.Key> criteriaKeys = new ArrayList<Entity.Key>();
-      for (final Map.Entry<String, Collection<Entity.Key>> entry : hashedKeys.entrySet()) {
-        criteriaKeys.addAll(entry.getValue());
+      for (final Map.Entry<String, Collection<Entity.Key>> hashedKeysEntry : hashedKeys.entrySet()) {
+        criteriaKeys.addAll(hashedKeysEntry.getValue());
         final EntitySelectCriteria criteria = EntityCriteriaUtil.selectCriteria(criteriaKeys);
-        final String deleteQuery = "delete from " + Entities.getTableName(entry.getKey()) + " " + criteria.getWhereClause();
+        final String deleteQuery = "delete from " + Entities.getTableName(hashedKeysEntry.getKey()) + " " + criteria.getWhereClause();
         statement = getConnection().prepareStatement(deleteQuery);
         executePreparedUpdate(statement, deleteQuery, criteria.getValues(), criteria.getValueProperties());
         statement.close();
