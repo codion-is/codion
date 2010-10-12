@@ -2238,3 +2238,4 @@
   EntityUtil.getUpdatableProperties() did not anticipate read only foreign key properties :|
   ComboBoxValueLink now handles FilteredComboBoxModel with the null value selected correctly
   EntityUtil.Validator moved to Entities
+  AbstractFilteredTableModel.removeItems() improved a bit

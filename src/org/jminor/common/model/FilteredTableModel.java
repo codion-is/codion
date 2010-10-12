@@ -127,7 +127,7 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R>, TableModel, 
    * Removes the given items from this table model
    * @param items the items to remove from the model
    */
-  void removeItems(final List<R> items);
+  void removeItems(final Collection<R> items);
 
   /**
    * Removes the given item from this table model
