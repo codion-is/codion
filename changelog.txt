@@ -2248,3 +2248,4 @@
   EntityTablePanel.setAdditionalPopupControls() renamed to addPopupControls()
   EntityTablePanel.setAdditionalToolbarControls() renamed to addToolbarControls()
   EntityPanelProvider/DefaultEntityModel, tableModel.setEditModel() revised
+  EntityImpl, some minor value setting refactoring

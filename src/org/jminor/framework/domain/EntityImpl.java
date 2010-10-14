@@ -10,7 +10,7 @@ import org.jminor.common.model.valuemap.ValueChangeMap;
 import org.jminor.common.model.valuemap.ValueChangeMapImpl;
 import org.jminor.common.model.valuemap.ValueMapImpl;
 
-import java.awt.Color;
+import java.awt.*;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -486,9 +486,8 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
   }
 
   private void propagateForeignKeyValues(final Property.ForeignKeyProperty foreignKeyProperty, final Entity newValue,
-                                         final Collection<Property.PrimaryKeyProperty> referenceEntityPKProperties,
                                          final boolean initialization, final Map<String, Definition> entityDefinitions) {
-    setForeignKeyValues(foreignKeyProperty, newValue, referenceEntityPKProperties, initialization, entityDefinitions);
+    setForeignKeyValues(foreignKeyProperty, newValue, initialization, entityDefinitions);
     if (definition.hasDenormalizedProperties()) {
       setDenormalizedValues(foreignKeyProperty, newValue, initialization, entityDefinitions);
     }
@@ -501,14 +500,14 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
    * the corresponding reference values are set to null.
    * @param foreignKeyProperty the entity reference property
    * @param referencedEntity the referenced entity
-   * @param referenceEntityPKProperties the referenced primary key properties
    * @param initialization true if the values are being initialized
    * @param entityDefinitions a global entity definition map
    */
   private void setForeignKeyValues(final Property.ForeignKeyProperty foreignKeyProperty, final Entity referencedEntity,
-                                   final Collection<Property.PrimaryKeyProperty> referenceEntityPKProperties,
                                    final boolean initialization, final Map<String, Definition> entityDefinitions) {
     referencedPrimaryKeysCache = null;
+    final Collection<Property.PrimaryKeyProperty> referenceEntityPKProperties =
+            entityDefinitions.get(foreignKeyProperty.getReferencedEntityID()).getPrimaryKeyProperties();
     for (final Property.PrimaryKeyProperty primaryKeyProperty : referenceEntityPKProperties) {
       final Property referenceProperty = foreignKeyProperty.getReferenceProperties().get(primaryKeyProperty.getIndex());
       if (!(referenceProperty instanceof Property.MirrorProperty)) {
@@ -678,6 +677,17 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
       validateType(property, value);
     }
 
+    final Object actualValue = translateNewValue(property, value);
+    toString = null;
+    final Object oldValue = super.setValue(property.getPropertyID(), actualValue);
+    if (property instanceof Property.ForeignKeyProperty) {
+      propagateForeignKeyValues((Property.ForeignKeyProperty) property, (Entity) actualValue, false, entityDefinitions);
+    }
+
+    return oldValue;
+  }
+
+  private Object translateNewValue(final Property property, final Object value) {
     Object actualValue = value;
     if (value != null && property.isDouble()) {
       final int maximumFractionDigits = property.getMaximumFractionDigits();
@@ -686,16 +696,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
       }
     }
 
-    toString = null;
-    if (property instanceof Property.ForeignKeyProperty && (actualValue == null || actualValue instanceof Entity)) {
-      final Property.ForeignKeyProperty fkProperty = (Property.ForeignKeyProperty) property;
-      final Collection<Property.PrimaryKeyProperty> referenceEntityPKProperties =
-              entityDefinitions.get(fkProperty.getReferencedEntityID()).getPrimaryKeyProperties();
-      propagateForeignKeyValues((Property.ForeignKeyProperty) property, (Entity) actualValue,
-              referenceEntityPKProperties, false, entityDefinitions);
-    }
-
-    return super.setValue(property.getPropertyID(), actualValue);
+    return actualValue;
   }
 
   private void writeObject(final ObjectOutputStream stream) throws IOException {
