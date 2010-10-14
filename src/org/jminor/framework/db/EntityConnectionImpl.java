@@ -28,11 +28,11 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -744,8 +744,8 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
                 Configuration.getValue(Configuration.SQL_BOOLEAN_VALUE_FALSE));
       }
     }
-    else if (value instanceof java.util.Date) {
-      return new Date(((java.util.Date) value).getTime());
+    else if (property.isDate() && value instanceof java.util.Date) {
+      return new java.sql.Date(((java.util.Date) value).getTime());
     }
 
     return value;

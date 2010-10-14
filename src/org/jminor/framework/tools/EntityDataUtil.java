@@ -4,6 +4,7 @@
 package org.jminor.framework.tools;
 
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.model.ProgressReporter;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.domain.Entity;
@@ -21,30 +22,51 @@ public final class EntityDataUtil {
    * Copies the given entities from source to destination
    * @param source the source db
    * @param destination the destination db
-   * @param transactionBatchSize the number of records to copy between commits
-   * @param copyPrimaryKeys if true primary key values are included, if false then they are assumed to be auto-generated
+   * @param batchSize the number of records to copy between commits
+   * @param includePrimaryKeys if true primary key values are included, if false then they are assumed to be auto-generated
    * @param entityIDs the ID's of the entity types to copy
    * @throws org.jminor.common.db.exception.DatabaseException in case of a db exception
    */
-  public static void copyEntities(final EntityConnection source, final EntityConnection destination, final int transactionBatchSize,
-                                  final boolean copyPrimaryKeys, final String... entityIDs) throws DatabaseException {
+  public static void copyEntities(final EntityConnection source, final EntityConnection destination, final int batchSize,
+                                  final boolean includePrimaryKeys, final String... entityIDs) throws DatabaseException {
     for (final String entityID : entityIDs) {
-      final List<Entity> entitiesToCopy = source.selectMany(EntityCriteriaUtil.selectCriteria(entityID).setForeignKeyFetchDepthLimit(0));
-      if (!copyPrimaryKeys) {
-        for (final Entity entity : entitiesToCopy) {
+      final List<Entity> entities = source.selectMany(EntityCriteriaUtil.selectCriteria(entityID).setForeignKeyFetchDepthLimit(0));
+      if (!includePrimaryKeys) {
+        for (final Entity entity : entities) {
           entity.getPrimaryKey().clear();
         }
       }
-      int fromIndex = 0;
-      int toIndex = 0;
-      while (fromIndex < entitiesToCopy.size()) {
-        toIndex = Math.min(toIndex + transactionBatchSize, entitiesToCopy.size());
-        final List<Entity> subList = entitiesToCopy.subList(fromIndex, toIndex);
-        fromIndex = toIndex;
-        destination.beginTransaction();
-        destination.insert(subList);
-        destination.commitTransaction();
+      batchInsert(destination, entities, null, batchSize, null);
+    }
+  }
+
+  /**
+   * Inserts the given entities, performing a commit after each <code>batchSize</code> number of inserts.
+   * @param connection the entity connection to use when inserting
+   * @param entities the entities to insert
+   * @param committed after the call this list will contain the primary keys of successfully inserted entities
+   * @param batchSize the commit batch size
+   * @param progressReporter if specified this will be used to report batch progress
+   * @throws DatabaseException in case of an exception
+   */
+  public static void batchInsert(final EntityConnection connection, final List<Entity> entities,
+                                 final List<Entity.Key> committed, final int batchSize,
+                                 final ProgressReporter progressReporter) throws DatabaseException {
+    if (entities == null || entities.isEmpty()) {
+      return;
+    }
+    int insertedCount = 0;
+    for (int i = 0; i < entities.size(); i += batchSize) {
+      final List<Entity> insertBatch = entities.subList(i, Math.min(i + batchSize, entities.size()));
+      final List<Entity.Key> insertedKeys = connection.insert(insertBatch);
+      insertedCount += insertedKeys.size();
+      if (committed != null) {
+        committed.addAll(insertedKeys);
+      }
+      if (progressReporter != null) {
+        progressReporter.reportProgress(insertedCount);
       }
     }
   }
+
 }

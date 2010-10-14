@@ -2242,3 +2242,6 @@
   EntityConnectionImpl.insert(), improved readability and removed repeated calls to entity.getPrimaryKey(), the reasons for which have long since disappeared into the mists of time
   EntityConnectionImpl.update(),improved readability a bit
   EntityConnectionImpl, some more prettyfication
+  ProgressReporter added
+  EntityDataUtil.batchInsert() added
+  EntityConnectionImpl.translateValue() bug fixed, Timestamp got translated into Date

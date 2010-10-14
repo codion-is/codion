@@ -765,6 +765,9 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
         filteredItems.add(item);
       }
     }
+    if (!atFront) {
+      sortTableModel();
+    }
     fireTableDataChanged();
   }
 
