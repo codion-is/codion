@@ -88,6 +88,7 @@ public final class AbstractFilteredTableModelTest {
     };
     tableModel.addTableDataChangedListener(listener);
     tableModel.refresh();
+    assertEquals(1, events.size());
     tableModel.getFilterModel(0).setLikeValue("a");
     tableModel.removeItem("b");
     assertEquals(3, events.size());
@@ -195,12 +196,12 @@ public final class AbstractFilteredTableModelTest {
     tableModel.setSortingDirective(0, SortingDirective.DESCENDING, false);
     assertEquals(SortingDirective.DESCENDING, tableModel.getSortingDirective(0));
     assertEquals("e", tableModel.getItemAt(0));
-    assertEquals(1, done.size());
+    assertEquals(2, done.size());
     tableModel.setSortingDirective(0, SortingDirective.ASCENDING, false);
     assertEquals(SortingDirective.ASCENDING, tableModel.getSortingDirective(0));
     assertEquals("a", tableModel.getItemAt(0));
     assertEquals(0, tableModel.getSortingPriority(0));
-    assertEquals(2, done.size());
+    assertEquals(3, done.size());
 
     tableModel.setSortingDirective(0, SortingDirective.DESCENDING, false);
     tableModel.refresh();

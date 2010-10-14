@@ -170,6 +170,9 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    */
   private final JLabel statusMessageLabel;
 
+  private final List<ControlSet> additionalPopupControlSets = new ArrayList<ControlSet>();
+  private final List<ControlSet> additionalToolbarControlSets = new ArrayList<ControlSet>();
+
   /**
    * the action performed when the table is double clicked
    */
@@ -189,9 +192,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * True after <code>initializePanel()</code> has been called
    */
   private boolean panelInitialized = false;
-
-  private ControlSet additionalPopupControls;
-  private ControlSet additionalToolbarControls;
 
   /**
    * Initializes a new EntityTablePanel instance
@@ -276,21 +276,21 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   /**
    * @param additionalPopupControls a set of controls to add to the table popup menu
    */
-  public final void setAdditionalPopupControls(final ControlSet additionalPopupControls) {
+  public final void addPopupControls(final ControlSet additionalPopupControls) {
     if (panelInitialized) {
       throw new IllegalStateException("Additional popup controls must be set before the panel is initialized");
     }
-    this.additionalPopupControls = additionalPopupControls;
+    this.additionalPopupControlSets.add(additionalPopupControls);
   }
 
   /**
    * @param additionalToolbarControls a set of controls to add to the table toolbar menu
    */
-  public final void setAdditionalToolbarControls(final ControlSet additionalToolbarControls) {
+  public final void addToolbarControls(final ControlSet additionalToolbarControls) {
     if (panelInitialized) {
       throw new IllegalStateException("Additional toolbar controls must be set before the panel is initialized");
     }
-    this.additionalToolbarControls = additionalToolbarControls;
+    this.additionalToolbarControlSets.add(additionalToolbarControls);
   }
 
   /**
@@ -830,7 +830,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
           column.setCellRenderer(tableCellRenderer);
           column.setResizable(true);
         }
-        setTablePopupMenu(getJTable(), getPopupControls(additionalPopupControls));
+        setTablePopupMenu(getJTable(), getPopupControls(additionalPopupControlSets));
         final JPanel tableSearchAndSummaryPanel = new JPanel(new BorderLayout());
         setLayout(new BorderLayout());
         if (includeSearchPanel && searchScrollPane != null) {
@@ -951,7 +951,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     }
   }
 
-  protected ControlSet getToolbarControls(final ControlSet additionalToolbarControls) {
+  protected ControlSet getToolbarControls(final List<ControlSet> additionalToolbarControlSets) {
     final ControlSet toolbarControls = new ControlSet("");
     if (controlMap.containsKey(TOGGLE_SUMMARY_PANEL)) {
       toolbarControls.add(controlMap.get(TOGGLE_SUMMARY_PANEL));
@@ -971,36 +971,35 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     toolbarControls.addSeparator();
     toolbarControls.add(controlMap.get(MOVE_SELECTION_UP));
     toolbarControls.add(controlMap.get(MOVE_SELECTION_DOWN));
-    if (additionalToolbarControls != null && additionalToolbarControls.size() > 0) {
+    for (final ControlSet controlSet : additionalToolbarControlSets) {
       toolbarControls.addSeparator();
-      for (final Action action : additionalToolbarControls.getActions()) {
-        if (action == null) {
-          toolbarControls.addSeparator();
-        }
-        else {
-          toolbarControls.add(action);
-        }
+      for (final Action action : controlSet.getActions()) {
+        toolbarControls.add(action);
       }
     }
 
     return toolbarControls;
   }
 
-  protected ControlSet getPopupControls(final ControlSet additionalPopupControls) {
+  protected ControlSet getPopupControls(final List<ControlSet> additionalPopupControlSets) {
     final ControlSet popupControls = new ControlSet("");
     popupControls.add(controlMap.get(REFRESH));
     popupControls.add(controlMap.get(CLEAR));
-    popupControls.addSeparator();
-    if (additionalPopupControls != null && !additionalPopupControls.getActions().isEmpty()) {
-      if (additionalPopupControls.hasName()) {
-        popupControls.add(additionalPopupControls);
+    boolean separatorRequired = false;
+    for (final ControlSet controlSet : additionalPopupControlSets) {
+      popupControls.addSeparator();
+      if (controlSet.hasName()) {
+        popupControls.add(controlSet);
       }
       else {
-        popupControls.addAll(additionalPopupControls);
+        popupControls.addAll(controlSet);
       }
-      popupControls.addSeparator();
+      separatorRequired = true;
     }
-    boolean separatorRequired = false;
+    if (separatorRequired) {
+      popupControls.addSeparator();
+      separatorRequired = false;
+    }
     if (controlMap.containsKey(UPDATE_SELECTED)) {
       popupControls.add(controlMap.get(UPDATE_SELECTED));
       separatorRequired = true;
@@ -1224,7 +1223,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * @return the toolbar to add to the south panel
    */
   protected JToolBar initializeToolbar() {
-    final ControlSet toolbarControlSet = getToolbarControls(additionalToolbarControls);
+    final ControlSet toolbarControlSet = getToolbarControls(additionalToolbarControlSets);
     if (toolbarControlSet != null) {
       final JToolBar southToolBar = ControlProvider.createToolbar(toolbarControlSet, JToolBar.HORIZONTAL);
       for (final Component component : southToolBar.getComponents()) {

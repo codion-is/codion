@@ -477,10 +477,13 @@ public class EntityPanelProvider implements Comparable {
   }
 
   private EntityModel initializeDefaultModel(final EntityConnectionProvider connectionProvider) {
-    final EntityEditModel editModel = initializeEditModel(connectionProvider);
     final EntityTableModel tableModel = initializeTableModel(connectionProvider);
+    if (!tableModel.hasEditModel()) {
+      final EntityEditModel editModel = initializeEditModel(connectionProvider);
+      tableModel.setEditModel(editModel);
+    }
 
-    return new DefaultEntityModel(editModel, tableModel);
+    return new DefaultEntityModel(tableModel.getEditModel(), tableModel);
   }
 
   private EntityEditModel initializeDefaultEditModel(final EntityConnectionProvider connectionProvider) {

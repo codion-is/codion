@@ -854,8 +854,11 @@ public class EntityPanel extends JPanel {
       if (includeDetailPanelTabPane) {
         toolbarControls.add(getToggleDetailPanelControl());
       }
-      tablePanel.setAdditionalToolbarControls(toolbarControls);
-      tablePanel.setAdditionalPopupControls(getTablePopupControlSet());
+      tablePanel.addToolbarControls(toolbarControls);
+      final ControlSet tablePopupControls = getTablePopupControlSet();
+      if (tablePopupControls != null) {
+        tablePanel.addPopupControls(tablePopupControls);
+      }
       if (tablePanel.getTableDoubleClickAction() == null) {
         tablePanel.setTableDoubleClickAction(initializeTableDoubleClickAction());
       }
@@ -1080,12 +1083,14 @@ public class EntityPanel extends JPanel {
    * @see #getDetailPanelControls(int)
    */
   private ControlSet getTablePopupControlSet() {
-    final ControlSet controlSet = new ControlSet("");
     if (includeDetailPanelTabPane) {
+      final ControlSet controlSet = new ControlSet("");
       controlSet.add(getDetailPanelControls(EMBEDDED));
+
+      return controlSet;
     }
 
-    return controlSet;
+    return null;
   }
 
   /**

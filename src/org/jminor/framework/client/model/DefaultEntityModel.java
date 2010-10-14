@@ -122,9 +122,7 @@ public class DefaultEntityModel implements EntityModel {
     else {
       this.tableModel = null;
     }
-    if (tableModel != null) {
-      tableModel.setEditModel(editModel);
-    }
+    setTableEditModel(editModel, tableModel);
     bindEvents();
   }
 
@@ -164,9 +162,7 @@ public class DefaultEntityModel implements EntityModel {
     this.connectionProvider = editModel.getConnectionProvider();
     this.editModel = editModel;
     this.tableModel = tableModel;
-    if (tableModel != null) {
-      tableModel.setEditModel(editModel);
-    }
+    setTableEditModel(editModel, tableModel);
     bindEvents();
   }
 
@@ -545,6 +541,19 @@ public class DefaultEntityModel implements EntityModel {
       }
     }
     return activeEntities;
+  }
+
+  private void setTableEditModel(final EntityEditModel editModel, final EntityTableModel tableModel) {
+    if (tableModel != null) {
+      if (tableModel.hasEditModel()) {
+        if (tableModel.getEditModel() != editModel) {
+          throw new IllegalArgumentException("Edit model mismatch, found: " + tableModel.getEditModel() + ", required: " + editModel);
+        }
+      }
+      else {
+        tableModel.setEditModel(editModel);
+      }
+    }
   }
 
   private void bindEvents() {

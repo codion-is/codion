@@ -2245,3 +2245,6 @@
   ProgressReporter added
   EntityDataUtil.batchInsert() added
   EntityConnectionImpl.translateValue() bug fixed, Timestamp got translated into Date
+  EntityTablePanel.setAdditionalPopupControls() renamed to addPopupControls()
+  EntityTablePanel.setAdditionalToolbarControls() renamed to addToolbarControls()
+  EntityPanelProvider/DefaultEntityModel, tableModel.setEditModel() revised
