@@ -546,8 +546,9 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
   private List<Entity> doSelectMany(final EntitySelectCriteria criteria, final int currentForeignKeyFetchDepth) throws DatabaseException {
     PreparedStatement statement = null;
     ResultSet resultSet = null;
+    String selectSQL = null;
     try {
-      final String selectSQL = getSelectSQL(criteria, Entities.getSelectColumnsString(criteria.getEntityID()), criteria.getOrderByClause());
+      selectSQL = getSelectSQL(criteria, Entities.getSelectColumnsString(criteria.getEntityID()), criteria.getOrderByClause());
       statement = getConnection().prepareStatement(selectSQL);
       resultSet = executePreparedSelect(statement, selectSQL, criteria.getValues(), criteria.getValueProperties());
       List<Entity> result = null;
@@ -569,7 +570,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       return result;
     }
     catch (SQLException e) {
-      throw new DatabaseException(getDatabase().getErrorMessage(e));
+      throw new DatabaseException(getDatabase().getErrorMessage(e), selectSQL);
     }
     finally {
       Util.closeSilently(statement);
@@ -666,6 +667,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       return statement.executeQuery();
     }
     catch (SQLException e) {
+      e.printStackTrace();
       exception = e;
       throw e;
     }

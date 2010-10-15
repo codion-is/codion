@@ -349,11 +349,14 @@ public class EntityPanel extends JPanel {
     for (final EntityPanel detailPanel : detailPanels) {
       addDetailPanel(detailPanel);
     }
+
     return this;
   }
 
   /**
-   * Adds the given detail panel
+   * Adds the given detail panel, and adds the detail model to the undrlying
+   * model if it does not contain it already, and then sets <code>includeDetailPanelTabPane</code>
+   * to true
    * @param detailPanel the detail panel to add
    * @return this entity panel
    */
@@ -362,6 +365,10 @@ public class EntityPanel extends JPanel {
       throw new IllegalStateException("Can not add detail panel after initialization");
     }
     detailPanel.masterPanel = this;
+    if (!model.containsDetailModel(detailPanel.model.getClass())) {
+      model.addDetailModel(detailPanel.model);
+    }
+    setIncludeDetailPanelTabPane(true);
     detailEntityPanels.add(detailPanel);
 
     return this;

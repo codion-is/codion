@@ -711,7 +711,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
       final EntityPanel entityPanel = provider.createPanel(applicationModel.getConnectionProvider());
       mainApplicationPanels.add(entityPanel);
       applicationModel.addMainApplicationModel(entityPanel.getModel());
-      final String caption = Util.nullOrEmpty(provider.getCaption()) ? entityPanel.getCaption() : provider.getCaption();
+      final String caption = Util.nullOrEmpty(entityPanel.getCaption()) ?  provider.getCaption() : entityPanel.getCaption();
       applicationTabPane.addTab(caption, entityPanel);
       if (entityPanel.getEditPanel() != null) {
         entityPanel.getEditPanel().getActiveState().addListener(new ActionListener() {

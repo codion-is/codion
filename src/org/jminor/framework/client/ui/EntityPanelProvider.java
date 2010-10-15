@@ -291,12 +291,17 @@ public class EntityPanelProvider implements Comparable {
         entityPanel.getTablePanel().setSearchPanelVisible(tableSearchPanelVisible);
       }
       if (!detailPanelProviders.isEmpty()) {
-        entityPanel.setIncludeDetailPanelTabPane(true);
         entityPanel.setDetailPanelState(detailPanelState);
         entityPanel.setDetailSplitPanelResizeWeight(detailSplitPanelResizeWeight);
         for (final EntityPanelProvider detailProvider : detailPanelProviders) {
-          final EntityPanel detailPanel = detailProvider.createPanel(model.getConnectionProvider(), true);
-          model.addDetailModel(detailPanel.getModel());
+          final EntityModel detailModel = model.getDetailModel(detailProvider.modelClass);
+          final EntityPanel detailPanel;
+          if (detailModel == null) {
+            detailPanel = detailProvider.createPanel(model.getConnectionProvider(), true);
+          }
+          else {
+            detailPanel = detailProvider.createPanel(detailModel);
+          }
           entityPanel.addDetailPanel(detailPanel);
         }
       }
