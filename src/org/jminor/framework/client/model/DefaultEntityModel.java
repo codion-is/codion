@@ -220,6 +220,9 @@ public class DefaultEntityModel implements EntityModel {
 
   /** {@inheritDoc} */
   public final EntityModel addDetailModel(final EntityModel detailModel) {
+    if (this.detailModels.contains(detailModel)) {
+      throw new IllegalArgumentException("Detail model " + detailModel + " has already been added");
+    }
     this.detailModels.add(detailModel);
     detailModel.setMasterModel(this);
     if (detailModel.containsTableModel()) {
@@ -286,17 +289,7 @@ public class DefaultEntityModel implements EntityModel {
       }
     }
 
-    if (Configuration.getBooleanValue(Configuration.AUTO_CREATE_ENTITY_MODELS)) {
-      try {
-        final EntityModel detailModel = modelClass.getConstructor(EntityConnectionProvider.class).newInstance(connectionProvider);
-        addDetailModel(detailModel);
-        return detailModel;
-      }
-      catch (Exception e) {
-        throw new RuntimeException(e);
-      }
-    }
-    throw new IllegalArgumentException("No detail model of type " + modelClass + " found in model: " + this);
+    return null;
   }
 
   /** {@inheritDoc} */
@@ -312,6 +305,7 @@ public class DefaultEntityModel implements EntityModel {
       addDetailModel(detailModel);
       return detailModel;
     }
+
     throw new IllegalArgumentException("No detail model for type " + entityID + " found in model: " + this);
   }
 

@@ -2251,3 +2251,4 @@
   EntityImpl, some minor value setting refactoring
   EntityPanel.addDetailPanel() now sets includeDetailPanelTabPane as true and adds the detail model to the underlying model
   EntityPanelProvider.createPanel() now checks if the underlying entityModel contains models for the detail panels
+  EntityModel.getDetailModel(Class) no longer tries to auto create the model, since it does not have the required info (no entityID)

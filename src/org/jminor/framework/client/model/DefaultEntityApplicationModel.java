@@ -104,7 +104,7 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
       }
     }
 
-    throw new IllegalArgumentException("Detail model of class: " + modelClass + " not found");
+    throw new IllegalArgumentException("EntityModel of type: " + modelClass + " not found");
   }
 
   /** {@inheritDoc} */
@@ -125,7 +125,8 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
         throw new RuntimeException(e);
       }
     }
-    throw new IllegalArgumentException("No detail model for type " + entityID + " found in model: " + this);
+
+    throw new IllegalArgumentException("EntityModel for type " + entityID + " not  found in model: " + this);
   }
 
   /**

@@ -87,15 +87,16 @@ public interface EntityModel extends Refreshable, EntityDataProvider {
   boolean containsDetailModel(final String entityID);
 
   /**
-   * Returns the first detail model of the given type
+   * Returns the first detail model of the given type, this method does not
+   * automatically create an entity model if none is available
    * @param modelClass the type of the required EntityModel
-   * @return the detail model of type <code>entityModelClass</code>
-   * @see org.jminor.framework.Configuration#AUTO_CREATE_ENTITY_MODELS
+   * @return the detail model of type <code>entityModelClass</code>, null if none is found
    */
   EntityModel getDetailModel(final Class<? extends EntityModel> modelClass);
 
   /**
-   * Returns a detail model of the given type
+   * Returns a detail model of the given type, automatically creates a
+   * default entity model if none is available and auto creation is turned on
    * @param entityID the entity ID of the required EntityModel
    * @return the detail model of type <code>entityModelClass</code>
    * @see org.jminor.framework.Configuration#AUTO_CREATE_ENTITY_MODELS

@@ -667,7 +667,6 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       return statement.executeQuery();
     }
     catch (SQLException e) {
-      e.printStackTrace();
       exception = e;
       throw e;
     }

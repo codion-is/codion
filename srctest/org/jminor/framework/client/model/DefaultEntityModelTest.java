@@ -193,7 +193,9 @@ public final class DefaultEntityModelTest {
   @Before
   public void setUp() throws Exception {
     departmentModel = new DefaultEntityModel(EmpDept.T_DEPARTMENT, EntityConnectionImplTest.DB_PROVIDER);
-    departmentModel.getDetailModel(EmpModel.class).getTableModel().setQueryCriteriaRequired(false);
+    final EntityModel employeeModel = new EmpModel(departmentModel.getConnectionProvider());
+    employeeModel.getTableModel().setQueryCriteriaRequired(false);
+    departmentModel.addDetailModel(employeeModel);
   }
 
   private static boolean containsAll(final List<Entity> employees, final List<Entity> employeesFromModel) {
