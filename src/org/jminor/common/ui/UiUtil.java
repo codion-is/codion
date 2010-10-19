@@ -274,9 +274,11 @@ public final class UiUtil {
   public static JComponent linkToEnabledState(final StateObserver enabledState, final JComponent component) {
     if (enabledState != null) {
       component.setEnabled(enabledState.isActive());
+      component.setFocusable(enabledState.isActive());
       enabledState.addListener(new ActionListener() {
         public void actionPerformed(final ActionEvent e) {
           component.setEnabled(enabledState.isActive());
+          component.setFocusable(enabledState.isActive());
         }
       });
     }

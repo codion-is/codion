@@ -420,7 +420,6 @@ public final class EntityUiUtil {
     }
     if (Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER)) {
       UiUtil.transferFocusOnEnter((JComponent) comboBox.getEditor().getEditorComponent());
-      UiUtil.transferFocusOnEnter(comboBox);
     }
 
     return comboBox;

@@ -2253,3 +2253,5 @@
   EntityPanelProvider.createPanel() now checks if the underlying entityModel contains models for the detail panels
   EntityModel.getDetailModel(Class) no longer tries to auto create the model, since it does not have the required info (no entityID)
   EntityPanelProvider.createPanel() bug fixed (model.getDetailModel(DefaultEntityModel.class))
+  UiUtil.linkToEnabledState() now affects the focusable state as well
+  EntityUiUtil.createComboBox(), removed apparently redundant transferFocusOnEnter item
