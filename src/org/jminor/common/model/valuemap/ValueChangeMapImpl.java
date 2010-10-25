@@ -38,9 +38,6 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
   /** {@inheritDoc} */
   public void initializeValue(final K key, final V value) {
     super.setValue(key, value);
-    if (evtValueChanged != null) {
-      notifyValueChange(key, value, null, true);
-    }
     handleValueInitialized(key, value);
   }
 

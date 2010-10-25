@@ -985,21 +985,17 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     final ControlSet popupControls = new ControlSet("");
     popupControls.add(controlMap.get(REFRESH));
     popupControls.add(controlMap.get(CLEAR));
-    boolean separatorRequired = false;
+    popupControls.addSeparator();
     for (final ControlSet controlSet : additionalPopupControlSets) {
-      popupControls.addSeparator();
       if (controlSet.hasName()) {
         popupControls.add(controlSet);
       }
       else {
         popupControls.addAll(controlSet);
       }
-      separatorRequired = true;
-    }
-    if (separatorRequired) {
       popupControls.addSeparator();
-      separatorRequired = false;
     }
+    boolean separatorRequired = false;
     if (controlMap.containsKey(UPDATE_SELECTED)) {
       popupControls.add(controlMap.get(UPDATE_SELECTED));
       separatorRequired = true;

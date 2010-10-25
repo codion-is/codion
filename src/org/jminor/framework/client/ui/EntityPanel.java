@@ -366,7 +366,7 @@ public class EntityPanel extends JPanel {
     }
     model.addDetailModel(detailPanel.model);
     detailPanel.masterPanel = this;
-    setIncludeDetailPanelTabPane(true);
+    setIncludeDetailPanelTabPane(true);//todo should not be here
     detailEntityPanels.add(detailPanel);
 
     return this;
