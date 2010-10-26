@@ -4,6 +4,7 @@
 package org.jminor.common.model.combobox;
 
 import org.jminor.common.model.Item;
+import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.Util;
 
 import javax.swing.DefaultComboBoxModel;
@@ -20,7 +21,7 @@ import java.util.List;
 /**
  * A ComboBoxModel implementation based on the <code>ItemComboBoxModel.Item</code> class.
  */
-public class ItemComboBoxModel<T> extends DefaultComboBoxModel {
+public class ItemComboBoxModel<T> extends DefaultComboBoxModel implements Refreshable {
 
   /** Constructs a new ItemComboBoxModel. */
   public ItemComboBoxModel() {
@@ -69,7 +70,26 @@ public class ItemComboBoxModel<T> extends DefaultComboBoxModel {
     return (Item<T>) super.getSelectedItem();
   }
 
-  private void initializeItems(final List<Item<T>> items) {
+  /** {@inheritDoc} */
+  public final void clear() {
+    removeAllElements();
+  }
+
+  /**
+   * Clears the model and adds all the items
+   */
+  public void refresh() {
+    final List<Item<T>> items = new ArrayList<Item<T>>();
+    for (int i = 0; i < getSize(); i++) {
+      //noinspection unchecked
+      items.add((Item) getElementAt(i));
+    }
+    clear();
+
+    initializeItems(items);
+  }
+
+  protected final void initializeItems(final List<Item<T>> items) {
     if (items == null) {
       return;
     }
@@ -99,7 +119,7 @@ public class ItemComboBoxModel<T> extends DefaultComboBoxModel {
   private int indexOf(final Object item) {
     final int size = getSize();
     for (int i = 0; i < size; i++) {
-      if (Util.equal(((Item)getElementAt(i)).getItem(), item)) {
+      if (Util.equal(((Item) getElementAt(i)).getItem(), item)) {
         return i;
       }
     }

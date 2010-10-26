@@ -2255,3 +2255,5 @@
   EntityPanelProvider.createPanel() bug fixed (model.getDetailModel(DefaultEntityModel.class))
   UiUtil.linkToEnabledState() now affects the focusable state as well
   EntityUiUtil.createComboBox(), removed apparently redundant transferFocusOnEnter item
+  ItemComboBoxModel implements Refreshable, initializeItems() protected
+  DefaultEntityComboBoxModel.performQuery() is now overridable

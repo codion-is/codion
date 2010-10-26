@@ -295,7 +295,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
         return super.initializeContents();
       }
 
-      return performQuery();
+      return performQuery(selectCriteria);
     }
     finally {
       evtRefreshDone.fire();
@@ -304,9 +304,11 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
 
   /**
    * Retrieves the entities to present in this EntityComboBoxModel
+   * @param selectCriteria the criteria to base the query on
    * @return the entities to present in this EntityComboBoxModel
    */
-  private List<Entity> performQuery() {
+  protected List<Entity> performQuery(final EntitySelectCriteria selectCriteria) {
+    Util.rejectNullValue(selectCriteria, "selectCriteria");
     try {
       return connectionProvider.getConnection().selectMany(selectCriteria);
     }

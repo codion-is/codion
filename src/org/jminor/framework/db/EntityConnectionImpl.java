@@ -221,6 +221,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
 
   /** {@inheritDoc} */
   public void delete(final EntityCriteria criteria) throws DatabaseException {
+    Util.rejectNullValue(criteria, "criteria");
     checkReadOnly(criteria.getEntityID());
     PreparedStatement statement = null;
     try {
@@ -351,6 +352,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
 
   /** {@inheritDoc} */
   public int selectRowCount(final EntityCriteria criteria) throws DatabaseException {
+    Util.rejectNullValue(criteria, "criteria");
     PreparedStatement statement = null;
     ResultSet resultSet = null;
     try {
@@ -544,6 +546,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
   }
 
   private List<Entity> doSelectMany(final EntitySelectCriteria criteria, final int currentForeignKeyFetchDepth) throws DatabaseException {
+    Util.rejectNullValue(criteria, "criteria");
     PreparedStatement statement = null;
     ResultSet resultSet = null;
     String selectSQL = null;
@@ -885,6 +888,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
    * @return a query for deleting the entities specified by the given criteria
    */
   private static String getDeleteSQL(final EntityCriteria criteria) {
+    Util.rejectNullValue(criteria, "criteria");
     return new StringBuilder("delete from ").append(Entities.getTableName(criteria.getEntityID())).append(" ")
             .append(criteria.getWhereClause()).toString();
   }

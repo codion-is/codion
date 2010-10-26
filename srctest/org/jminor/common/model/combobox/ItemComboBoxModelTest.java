@@ -24,7 +24,13 @@ public class ItemComboBoxModelTest {
             new Item<Integer>(2, "BTwo"),
             new Item<Integer>(3, "CThree"),
             new Item<Integer>(4, "DFour"));
-    final ItemComboBoxModel model = new ItemComboBoxModel<Integer>(items);
+    final ItemComboBoxModel model = new ItemComboBoxModel<Integer>(items) {
+      @Override
+      public void refresh() {
+        clear();
+        initializeItems(items);
+      }
+    };
 
     assertEquals("The item representing 1 should be at index 0", 0, model.getIndexOfItem(1));
     assertEquals("The item representing 2 should be at index 1", 1, model.getIndexOfItem(2));
@@ -46,5 +52,14 @@ public class ItemComboBoxModelTest {
     assertEquals(icon.getIconHeight(), item.getIconHeight());
     assertEquals(icon.getIconWidth(), item.getIconWidth());
     assertEquals("test", item.toString());
+
+    model.clear();
+    assertEquals(0, model.getSize());
+    model.refresh();
+
+    assertEquals("The item representing 1 should be at index 0", 0, model.getIndexOfItem(1));
+    assertEquals("The item representing 2 should be at index 1", 1, model.getIndexOfItem(2));
+    assertEquals("The item representing 3 should be at index 2", 2, model.getIndexOfItem(3));
+    assertEquals("The item representing 4 should be at index 3", 3, model.getIndexOfItem(4));
   }
 }
