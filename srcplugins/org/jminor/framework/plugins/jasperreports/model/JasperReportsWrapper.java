@@ -8,6 +8,7 @@ import org.jminor.common.model.reports.ReportDataWrapper;
 import org.jminor.common.model.reports.ReportException;
 import org.jminor.common.model.reports.ReportResult;
 import org.jminor.common.model.reports.ReportWrapper;
+import org.jminor.framework.Configuration;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
@@ -30,10 +31,16 @@ public final class JasperReportsWrapper implements ReportWrapper<JasperPrint, JR
   private static final long serialVersionUID = 1;
   private final String reportPath;
   private final Map reportParameters;
-  private final static Map<String, JasperReport> reportCache = Collections.synchronizedMap(new HashMap<String, JasperReport>());
+  private static final boolean cacheReports = Configuration.getBooleanValue(Configuration.CACHE_REPORTS);
+  private static final Map<String, JasperReport> reportCache = Collections.synchronizedMap(new HashMap<String, JasperReport>());
+
+  public JasperReportsWrapper(final String reportPath) {
+    this(reportPath, new HashMap());
+  }
 
   public JasperReportsWrapper(final String reportPath, final Map reportParameters) {
     Util.rejectNullValue(reportPath, "reportPath");
+    Util.rejectNullValue(reportParameters, "reportParameters");
     this.reportPath = reportPath;
     this.reportParameters = reportParameters;
   }
@@ -89,18 +96,20 @@ public final class JasperReportsWrapper implements ReportWrapper<JasperPrint, JR
     if (reportPath.isEmpty()) {
       throw new IllegalArgumentException("Empty report path");
     }
-    if (reportCache.containsKey(reportPath)) {
+    if (cacheReports && reportCache.containsKey(reportPath)) {
       return reportCache.get(reportPath);
     }
-    final JasperReport report;
     try {
+      final JasperReport report;
       if (reportPath.toLowerCase().startsWith("http")) {
         report = (JasperReport) JRLoader.loadObject(new URL(reportPath));
       }
       else {
         report = (JasperReport) JRLoader.loadObject(reportPath);
       }
-      reportCache.put(reportPath, report);
+      if (cacheReports) {
+        reportCache.put(reportPath, report);
+      }
 
       return report;
     }

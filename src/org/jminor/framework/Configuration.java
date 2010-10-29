@@ -69,6 +69,15 @@ public final class Configuration {
   public static final String REPORT_PATH = "jminor.report.path";
 
   /**
+   * Specifies whether or not reports are cached when loaded from disk/network,<br>
+   * this prevents "hot deploy" of reports. This is only applicable if caching makes<br>
+   * sense in the reporting plugin context.<br>
+   * Value type: Boolean<br>
+   * Default value: true
+   */
+  public static final String CACHE_REPORTS = "jminor.report.cacheReports";
+
+  /**
    * Default username for the login panel
    */
   public static final String DEFAULT_USERNAME = "jminor.client.defaultUser";
