@@ -534,6 +534,7 @@ public final class Configuration {
     PROPERTIES.put(DEFAULT_LOOK_AND_FEEL_CLASSNAME, UIManager.getSystemLookAndFeelClassName());
     PROPERTIES.put(AUTO_CREATE_ENTITY_MODELS, true);
     PROPERTIES.put(WEB_SERVER_PORT, 80);
+    PROPERTIES.put(CACHE_REPORTS, true);
     parseSystemSettings();
   }
 
@@ -592,6 +593,7 @@ public final class Configuration {
     parseStringSetting(WEB_SERVER_DOCUMENT_ROOT);
     parseIntegerSetting(WEB_SERVER_PORT);
     parseStringSetting(JAVAX_NET_NET_TRUSTSTORE);
+    parseBooleanSetting(CACHE_REPORTS);
   }
 
   private static void parseIntegerSetting(final String setting) {
