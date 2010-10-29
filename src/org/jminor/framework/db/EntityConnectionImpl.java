@@ -84,9 +84,8 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
    * @param connection the connection object to base the entity db connection on
    * @param database the Database instance
    * @param user the user used for connecting to the database
-   * @throws SQLException in case there is a problem connecting to the database
    */
-  EntityConnectionImpl(final Connection connection, final Database database, final User user) throws SQLException {
+  EntityConnectionImpl(final Connection connection, final Database database, final User user) {
     super(database, user, connection);
   }
 

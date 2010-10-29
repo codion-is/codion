@@ -25,9 +25,9 @@ public interface EntitySelectCriteria extends EntityCriteria {
 
   int getForeignKeyFetchDepthLimit(final String foreignKeyPropertyID);
 
-  EntitySelectCriteria setForeignKeyFetchDepthLimit(final String foreignKeyPropertyID, final int maxFetchDepth);
+  EntitySelectCriteria setForeignKeyFetchDepthLimit(final String foreignKeyPropertyID, final int fetchDepthLimit);
 
-  EntitySelectCriteria setForeignKeyFetchDepthLimit(final int fetchDepth);
+  EntitySelectCriteria setForeignKeyFetchDepthLimit(final int fetchDepthLimit);
 
   EntitySelectCriteria setSelectForUpdate(final boolean selectForUpdate);
 }

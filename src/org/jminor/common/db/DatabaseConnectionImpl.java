@@ -69,9 +69,8 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
    * @param database the database
    * @param user the user for the db-connection
    * @param connection the Connection object to base this DatabaseConnectionImpl on
-   * @throws SQLException in case there is a problem connecting to the database
    */
-  public DatabaseConnectionImpl(final Database database, final User user, final Connection connection) throws SQLException {
+  public DatabaseConnectionImpl(final Database database, final User user, final Connection connection) {
     Util.rejectNullValue(database, "database");
     Util.rejectNullValue(user, "user");
     this.database = database;
@@ -530,13 +529,18 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
     return methodLogger;
   }
 
-  private void setConnection(final Connection connection) throws SQLException {
+  private void setConnection(final Connection connection) {
     if (isConnected()) {
       throw new IllegalStateException("Already connected");
     }
 
     this.connection = connection;
-    connection.setAutoCommit(false);
+    try {
+      connection.setAutoCommit(false);
+    }
+    catch (SQLException e) {
+      throw new RuntimeException("Unable to set auto commit on new connection", e);
+    }
   }
 
   private boolean checkConnection() throws SQLException {

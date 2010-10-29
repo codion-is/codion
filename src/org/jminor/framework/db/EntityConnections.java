@@ -30,7 +30,7 @@ public final class EntityConnections {
 
   /**
    * Constructs a new EntityConnection instance
-   * @param connection the connection object to base the entity db connection on
+   * @param connection the connection object to base the entity connection on
    * @param database the Database instance
    * @param user the user used for connecting to the database
    * @return a new EntityConnection instance

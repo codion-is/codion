@@ -483,11 +483,11 @@ public final class EntityCriteriaUtil {
     }
 
     /** {@inheritDoc} */
-    public EntitySelectCriteria setForeignKeyFetchDepthLimit(final String foreignKeyPropertyID, final int maxFetchDepth) {
+    public EntitySelectCriteria setForeignKeyFetchDepthLimit(final String foreignKeyPropertyID, final int fetchDepthLimit) {
       if (foreignKeyFetchDepthLimits == null) {
         foreignKeyFetchDepthLimits = new HashMap<String, Integer>();
       }
-      this.foreignKeyFetchDepthLimits.put(foreignKeyPropertyID, maxFetchDepth);
+      this.foreignKeyFetchDepthLimits.put(foreignKeyPropertyID, fetchDepthLimit);
       return this;
     }
 
@@ -501,10 +501,10 @@ public final class EntityCriteriaUtil {
     }
 
     /** {@inheritDoc} */
-    public EntitySelectCriteria setForeignKeyFetchDepthLimit(final int fetchDepth) {
+    public EntitySelectCriteria setForeignKeyFetchDepthLimit(final int fetchDepthLimit) {
       final Collection<Property.ForeignKeyProperty > properties = Entities.getForeignKeyProperties(getEntityID());
       for (final Property.ForeignKeyProperty property : properties) {
-        setForeignKeyFetchDepthLimit(property.getPropertyID(), fetchDepth);
+        setForeignKeyFetchDepthLimit(property.getPropertyID(), fetchDepthLimit);
       }
 
       return this;
