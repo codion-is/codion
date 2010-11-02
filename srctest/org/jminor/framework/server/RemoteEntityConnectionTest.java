@@ -4,18 +4,18 @@
 package org.jminor.framework.server;
 
 import org.jminor.framework.db.EntityConnection;
-
-import static org.junit.Assert.fail;
 import org.junit.Test;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collection;
 
+import static org.junit.Assert.fail;
+
 public class RemoteEntityConnectionTest {
 
   @Test
-  public void entityConnectionCompatability() throws Exception {
+  public void entityConnectionCompatibility() throws Exception {
     final Class<RemoteEntityConnection> remoteConnectionClass = RemoteEntityConnection.class;
     final Class<EntityConnection> connectionClass = EntityConnection.class;
     if (remoteConnectionClass.getDeclaredMethods().length != connectionClass.getDeclaredMethods().length) {

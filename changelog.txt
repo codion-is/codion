@@ -2257,3 +2257,5 @@
   EntityUiUtil.createComboBox(), removed apparently redundant transferFocusOnEnter item
   ItemComboBoxModel implements Refreshable, initializeItems() protected
   DefaultEntityComboBoxModel.performQuery() is now overridable
+  ValueChangeMapImpl.removeOriginalValue(), no longer notifies value change,
+  ValueChangeMapImpl.originalValues nulled when emptied

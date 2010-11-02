@@ -182,8 +182,8 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
   protected final void removeOriginalValue(final K key) {
     if (originalValues != null && originalValues.containsKey(key)) {
       originalValues.remove(key);
-      if (evtValueChanged != null) {
-        notifyValueChange(key, getValue(key), null, true);
+      if (originalValues.isEmpty()) {
+        originalValues = null;
       }
     }
   }
@@ -219,7 +219,7 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
   @Override
   protected void handleClear() {
     if (originalValues != null) {
-      originalValues.clear();
+      originalValues = null;
     }
   }
 
