@@ -24,12 +24,8 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import org.junit.After;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -242,7 +238,7 @@ public final class DefaultEntityEditModelTest {
     editModel.setReadOnly(true);
     editModel.insert();
   }
-  
+
   @Test(expected = UnsupportedOperationException.class)
   public void updateReadOnly() throws CancelException, ValidationException, DatabaseException {
     editModel.setReadOnly(true);
@@ -266,7 +262,7 @@ public final class DefaultEntityEditModelTest {
       editModel.setValue(EmpDept.EMPLOYEE_NAME, "Björn");
       editModel.setValue(EmpDept.EMPLOYEE_SALARY, 1000d);
 
-      final Entity tmpDept = Entities.entityInstance(EmpDept.T_DEPARTMENT);
+      final Entity tmpDept = Entities.entity(EmpDept.T_DEPARTMENT);
       tmpDept.setValue(EmpDept.DEPARTMENT_ID, 99);
       tmpDept.setValue(EmpDept.DEPARTMENT_LOCATION, "Limbo");
       tmpDept.setValue(EmpDept.DEPARTMENT_NAME, "Judgment");

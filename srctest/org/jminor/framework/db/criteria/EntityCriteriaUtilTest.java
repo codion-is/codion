@@ -20,7 +20,7 @@ public class EntityCriteriaUtilTest {
 
   @Test
   public void criteria() {
-    final Entity entity = Entities.entityInstance(EmpDept.T_DEPARTMENT);
+    final Entity entity = Entities.entity(EmpDept.T_DEPARTMENT);
     entity.setValue(EmpDept.DEPARTMENT_ID, 10);
 
     EntityCriteria criteria = EntityCriteriaUtil.criteria(entity.getPrimaryKey());
@@ -38,7 +38,7 @@ public class EntityCriteriaUtilTest {
 
   @Test
   public void selectCriteria() {
-    final Entity entity = Entities.entityInstance(EmpDept.T_DEPARTMENT);
+    final Entity entity = Entities.entity(EmpDept.T_DEPARTMENT);
     entity.setValue(EmpDept.DEPARTMENT_ID, 10);
 
     EntitySelectCriteria criteria = EntityCriteriaUtil.selectCriteria(entity.getPrimaryKey());

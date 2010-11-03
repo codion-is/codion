@@ -86,7 +86,7 @@ public final class EntityJSONParser implements Serializer<Entity>, Deserializer<
           originalValueMap.put(propertyID, parseJSONValue(entityID, propertyID, originalValues));
         }
       }
-      entities.add(Entities.entityInstance(entityID, propertyValueMap, originalValueMap));
+      entities.add(Entities.entity(entityID, propertyValueMap, originalValueMap));
     }
 
     return entities;

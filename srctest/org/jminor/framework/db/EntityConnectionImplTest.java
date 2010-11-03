@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.db;
 
-import org.jminor.common.db.criteria.SimpleCriteria;
 import org.jminor.common.db.Databases;
+import org.jminor.common.db.criteria.SimpleCriteria;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.RecordModifiedException;
 import org.jminor.common.db.exception.RecordNotFoundException;
@@ -73,7 +73,7 @@ public class EntityConnectionImplTest {
   public void delete() throws Exception {
     try {
       connection.beginTransaction();
-      final Entity.Key key = Entities.keyInstance(EmpDept.T_DEPARTMENT);
+      final Entity.Key key = Entities.key(EmpDept.T_DEPARTMENT);
       key.setValue(EmpDept.DEPARTMENT_ID, 40);
       connection.delete(Arrays.asList(key));
       try {
@@ -87,7 +87,7 @@ public class EntityConnectionImplTest {
     }
     try {
       connection.beginTransaction();
-      final Entity.Key key = Entities.keyInstance(EmpDept.T_DEPARTMENT);
+      final Entity.Key key = Entities.key(EmpDept.T_DEPARTMENT);
       key.setValue(EmpDept.DEPARTMENT_ID, 40);
       connection.delete(EntityCriteriaUtil.criteria(key));
       try {

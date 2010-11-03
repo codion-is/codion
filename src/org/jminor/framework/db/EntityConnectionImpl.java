@@ -1056,7 +1056,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     }
 
     private Entity loadEntity(final ResultSet resultSet) throws SQLException {
-      final Entity entity = Entities.entityInstance(entityID);
+      final Entity entity = Entities.entity(entityID);
       if (transientProperties != null && !transientProperties.isEmpty()) {
         for (final Property.TransientProperty transientProperty : transientProperties) {
           if (!(transientProperty instanceof Property.DenormalizedViewProperty)

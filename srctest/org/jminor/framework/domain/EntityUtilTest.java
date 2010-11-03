@@ -24,7 +24,7 @@ public class EntityUtilTest {
     final List<Entity> entities = new ArrayList<Entity>();
     final List<Object> values = new ArrayList<Object>();
     for (int i = 0; i < 10; i++) {
-      final Entity entity = Entities.entityInstance(EmpDept.T_DEPARTMENT);
+      final Entity entity = Entities.entity(EmpDept.T_DEPARTMENT);
       entity.setValue(EmpDept.DEPARTMENT_ID, i);
       values.add(i);
       entities.add(entity);
@@ -42,27 +42,27 @@ public class EntityUtilTest {
     final List<Entity> entities = new ArrayList<Entity>();
     final List<Object> values = new ArrayList<Object>();
 
-    Entity entity = Entities.entityInstance(EmpDept.T_DEPARTMENT);
+    Entity entity = Entities.entity(EmpDept.T_DEPARTMENT);
     entity.setValue(EmpDept.DEPARTMENT_ID, 1);
     entities.add(entity);
 
-    entity = Entities.entityInstance(EmpDept.T_DEPARTMENT);
+    entity = Entities.entity(EmpDept.T_DEPARTMENT);
     entity.setValue(EmpDept.DEPARTMENT_ID, 1);
     entities.add(entity);
 
-    entity = Entities.entityInstance(EmpDept.T_DEPARTMENT);
+    entity = Entities.entity(EmpDept.T_DEPARTMENT);
     entity.setValue(EmpDept.DEPARTMENT_ID, 2);
     entities.add(entity);
 
-    entity = Entities.entityInstance(EmpDept.T_DEPARTMENT);
+    entity = Entities.entity(EmpDept.T_DEPARTMENT);
     entity.setValue(EmpDept.DEPARTMENT_ID, 3);
     entities.add(entity);
 
-    entity = Entities.entityInstance(EmpDept.T_DEPARTMENT);
+    entity = Entities.entity(EmpDept.T_DEPARTMENT);
     entity.setValue(EmpDept.DEPARTMENT_ID, 3);
     entities.add(entity);
 
-    entity = Entities.entityInstance(EmpDept.T_DEPARTMENT);
+    entity = Entities.entity(EmpDept.T_DEPARTMENT);
     entity.setValue(EmpDept.DEPARTMENT_ID, 4);
     entities.add(entity);
 
@@ -79,12 +79,12 @@ public class EntityUtilTest {
   public void testSetPropertyValue() {
     EmpDept.init();
     final Collection<Entity> entities = new ArrayList<Entity>();
-    entities.add(Entities.entityInstance(EmpDept.T_DEPARTMENT));
-    entities.add(Entities.entityInstance(EmpDept.T_DEPARTMENT));
-    entities.add(Entities.entityInstance(EmpDept.T_DEPARTMENT));
-    entities.add(Entities.entityInstance(EmpDept.T_DEPARTMENT));
-    entities.add(Entities.entityInstance(EmpDept.T_DEPARTMENT));
-    entities.add(Entities.entityInstance(EmpDept.T_DEPARTMENT));
+    entities.add(Entities.entity(EmpDept.T_DEPARTMENT));
+    entities.add(Entities.entity(EmpDept.T_DEPARTMENT));
+    entities.add(Entities.entity(EmpDept.T_DEPARTMENT));
+    entities.add(Entities.entity(EmpDept.T_DEPARTMENT));
+    entities.add(Entities.entity(EmpDept.T_DEPARTMENT));
+    entities.add(Entities.entity(EmpDept.T_DEPARTMENT));
     EntityUtil.setPropertyValue(EmpDept.DEPARTMENT_ID, 1, entities);
     for (final Entity entity : entities) {
       assertEquals(Integer.valueOf(1), entity.getIntValue(EmpDept.DEPARTMENT_ID));
@@ -100,23 +100,23 @@ public class EntityUtilTest {
     EmpDept.init();
     final List<Entity> entities = new ArrayList<Entity>();
 
-    final Entity entityOne = Entities.entityInstance(EmpDept.T_DEPARTMENT);
+    final Entity entityOne = Entities.entity(EmpDept.T_DEPARTMENT);
     entityOne.setValue(EmpDept.DEPARTMENT_ID, 1);
     entities.add(entityOne);
 
-    final Entity entityTwo = Entities.entityInstance(EmpDept.T_DEPARTMENT);
+    final Entity entityTwo = Entities.entity(EmpDept.T_DEPARTMENT);
     entityTwo.setValue(EmpDept.DEPARTMENT_ID, 1);
     entities.add(entityTwo);
 
-    final Entity entityThree = Entities.entityInstance(EmpDept.T_DEPARTMENT);
+    final Entity entityThree = Entities.entity(EmpDept.T_DEPARTMENT);
     entityThree.setValue(EmpDept.DEPARTMENT_ID, 2);
     entities.add(entityThree);
 
-    final Entity entityFour = Entities.entityInstance(EmpDept.T_DEPARTMENT);
+    final Entity entityFour = Entities.entity(EmpDept.T_DEPARTMENT);
     entityFour.setValue(EmpDept.DEPARTMENT_ID, 3);
     entities.add(entityFour);
 
-    final Entity entityFive = Entities.entityInstance(EmpDept.T_DEPARTMENT);
+    final Entity entityFive = Entities.entity(EmpDept.T_DEPARTMENT);
     entityFive.setValue(EmpDept.DEPARTMENT_ID, 3);
     entities.add(entityFive);
 
@@ -136,11 +136,11 @@ public class EntityUtilTest {
   @Test
   public void hashByEntitID() {
     Chinook.init();
-    final Entity one = Entities.entityInstance(Chinook.T_ALBUM);
-    final Entity two = Entities.entityInstance(Chinook.T_ARTIST);
-    final Entity three = Entities.entityInstance(Chinook.T_CUSTOMER);
-    final Entity four = Entities.entityInstance(Chinook.T_ALBUM);
-    final Entity five = Entities.entityInstance(Chinook.T_ARTIST);
+    final Entity one = Entities.entity(Chinook.T_ALBUM);
+    final Entity two = Entities.entity(Chinook.T_ARTIST);
+    final Entity three = Entities.entity(Chinook.T_CUSTOMER);
+    final Entity four = Entities.entity(Chinook.T_ALBUM);
+    final Entity five = Entities.entity(Chinook.T_ARTIST);
 
     final Collection<Entity> entities = Arrays.asList(one, two, three, four, five);
     final Map<String, Collection<Entity>> map = EntityUtil.hashByEntityID(entities);

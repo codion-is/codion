@@ -3,13 +3,13 @@
  */
 package org.jminor.framework.domain;
 
+import org.jminor.common.model.IdSource;
 import org.jminor.common.model.valuemap.ValueChangeMap;
 import org.jminor.common.model.valuemap.ValueMap;
 import org.jminor.common.model.valuemap.ValueMapValidator;
 import org.jminor.common.model.valuemap.exception.NullValidationException;
 import org.jminor.common.model.valuemap.exception.RangeValidationException;
 import org.jminor.common.model.valuemap.exception.ValidationException;
-import org.jminor.common.model.IdSource;
 
 import java.awt.Color;
 import java.sql.Timestamp;
@@ -178,7 +178,6 @@ public interface Entity extends ValueChangeMap<String, Object>, Comparable<Entit
 
   /**
    * @return true if the this entity instance has a null primary key
-   * todo rename to isNew()?
    */
   boolean isNull();
 

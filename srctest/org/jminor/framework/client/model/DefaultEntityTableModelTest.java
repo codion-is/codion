@@ -12,11 +12,7 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityTestDomain;
 import org.jminor.framework.domain.Property;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 import javax.swing.table.TableColumn;
@@ -166,15 +162,15 @@ public final class DefaultEntityTableModelTest {
     assertTrue(values.contains("d"));
     assertTrue(values.contains("e"));
 
-    Entity tmpEnt = Entities.entityInstance(EntityTestDomain.T_DETAIL);
+    Entity tmpEnt = Entities.entity(EntityTestDomain.T_DETAIL);
     tmpEnt.setValue(EntityTestDomain.DETAIL_ID, 3);
     assertEquals("c", testModel.getEntityByPrimaryKey(tmpEnt.getPrimaryKey()).getValue(EntityTestDomain.DETAIL_STRING));
     final List<Entity.Key> keys = new ArrayList<Entity.Key>();
     keys.add(tmpEnt.getPrimaryKey());
-    tmpEnt = Entities.entityInstance(EntityTestDomain.T_DETAIL);
+    tmpEnt = Entities.entity(EntityTestDomain.T_DETAIL);
     tmpEnt.setValue(EntityTestDomain.DETAIL_ID, 2);
     keys.add(tmpEnt.getPrimaryKey());
-    tmpEnt = Entities.entityInstance(EntityTestDomain.T_DETAIL);
+    tmpEnt = Entities.entity(EntityTestDomain.T_DETAIL);
     tmpEnt.setValue(EntityTestDomain.DETAIL_ID, 1);
     keys.add(tmpEnt.getPrimaryKey());
 
@@ -206,7 +202,7 @@ public final class DefaultEntityTableModelTest {
 
   private static Entity[] initTestEntities(final Entity[] testEntities) {
     for (int i = 0; i < testEntities.length; i++) {
-      testEntities[i] = Entities.entityInstance(EntityTestDomain.T_DETAIL);
+      testEntities[i] = Entities.entity(EntityTestDomain.T_DETAIL);
       testEntities[i].setValue(EntityTestDomain.DETAIL_ID, i+1);
       testEntities[i].setValue(EntityTestDomain.DETAIL_INT, i+1);
       testEntities[i].setValue(EntityTestDomain.DETAIL_STRING, new String[]{"a", "b", "c", "d", "e"}[i]);

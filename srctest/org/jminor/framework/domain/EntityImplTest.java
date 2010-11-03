@@ -22,7 +22,7 @@ public class EntityImplTest {
   public static Entity getDetailEntity(final int id, final Integer intValue, final Double doubleValue,
                                        final String stringValue, final Date dateValue, final Timestamp timestampValue,
                                        final Boolean booleanValue, final Entity entityValue) {
-    final Entity entity = Entities.entityInstance(EntityTestDomain.T_DETAIL);
+    final Entity entity = Entities.entity(EntityTestDomain.T_DETAIL);
     entity.setValue(EntityTestDomain.DETAIL_ID, id);
     entity.setValue(EntityTestDomain.DETAIL_INT, intValue);
     entity.setValue(EntityTestDomain.DETAIL_DOUBLE, doubleValue);
@@ -42,7 +42,7 @@ public class EntityImplTest {
 
   @Test
   public void serialization() throws Exception {
-    final Entity referencedEntityValue = Entities.entityInstance(EntityTestDomain.T_MASTER);
+    final Entity referencedEntityValue = Entities.entity(EntityTestDomain.T_MASTER);
     referencedEntityValue.setValue(EntityTestDomain.MASTER_ID, 1);
     referencedEntityValue.setValue(EntityTestDomain.MASTER_NAME, "name");
     referencedEntityValue.setValue(EntityTestDomain.MASTER_CODE, 10);
@@ -81,7 +81,7 @@ public class EntityImplTest {
     final String masterName = "master";
     final int masterCode = 7;
 
-    Entity referencedEntityValue = Entities.entityInstance(EntityTestDomain.T_MASTER);
+    Entity referencedEntityValue = Entities.entity(EntityTestDomain.T_MASTER);
 
     referencedEntityValue.setValue(EntityTestDomain.MASTER_ID, masterId);
     referencedEntityValue.setValue(EntityTestDomain.MASTER_NAME, masterName);
@@ -93,7 +93,7 @@ public class EntityImplTest {
     referencedEntityValue.saveValue(EntityTestDomain.MASTER_ID);
     assertFalse(referencedEntityValue.getModifiedState().isActive());
 
-    referencedEntityValue = Entities.entityInstance(EntityTestDomain.T_MASTER);
+    referencedEntityValue = Entities.entity(EntityTestDomain.T_MASTER);
 
     referencedEntityValue.setValue(EntityTestDomain.MASTER_ID, masterId);
     referencedEntityValue.setValue(EntityTestDomain.MASTER_NAME, masterName);
@@ -104,7 +104,7 @@ public class EntityImplTest {
     referencedEntityValue.revertValue(EntityTestDomain.MASTER_NAME);
     assertFalse(referencedEntityValue.getModifiedState().isActive());
 
-    Entity test = Entities.entityInstance(EntityTestDomain.T_DETAIL);
+    Entity test = Entities.entity(EntityTestDomain.T_DETAIL);
     //assert not modified
     assertFalse(test.isModified());
 
@@ -187,7 +187,7 @@ public class EntityImplTest {
     }
     catch (IllegalArgumentException e) {}
     //test setAs()
-    test = Entities.entityInstance(EntityTestDomain.T_DETAIL);
+    test = Entities.entity(EntityTestDomain.T_DETAIL);
     test.setAs(testEntity);
     assertTrue("Entities should be equal after .setAs()", Util.equal(test, testEntity));
     assertTrue("Entity property values should be equal after .setAs()", test.propertyValuesEqual(testEntity));
@@ -229,10 +229,10 @@ public class EntityImplTest {
 
   @Test
   public void setValue() {
-    final Entity department = Entities.entityInstance(EmpDept.T_DEPARTMENT);
+    final Entity department = Entities.entity(EmpDept.T_DEPARTMENT);
     department.setValue(EmpDept.DEPARTMENT_ID, -10);
 
-    final Entity employee = Entities.entityInstance(EmpDept.T_EMPLOYEE);
+    final Entity employee = Entities.entity(EmpDept.T_EMPLOYEE);
     try {
       employee.setValue(EmpDept.EMPLOYEE_NAME, 1);
       fail();

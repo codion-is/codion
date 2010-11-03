@@ -118,7 +118,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
    * @param validator the validator to use
    */
   public DefaultEntityEditModel(final String entityID, final EntityConnectionProvider connectionProvider, final Entity.Validator validator) {
-    super(Entities.entityInstance(entityID), validator);
+    super(Entities.entity(entityID), validator);
     Util.rejectNullValue(connectionProvider, "connectionProvider");
     this.entityID = entityID;
     this.connectionProvider = connectionProvider;
@@ -509,7 +509,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
 
   /** {@inheritDoc} */
   public final Entity getDefaultValueMap() {
-    final Entity defaultEntity = Entities.entityInstance(entityID);
+    final Entity defaultEntity = Entities.entity(entityID);
     final Collection<Property.ColumnProperty> columnProperties = Entities.getColumnProperties(entityID);
     for (final Property.ColumnProperty property : columnProperties) {
       if (!property.hasParentProperty() && !property.isDenormalized()) {//these are set via their respective parent properties

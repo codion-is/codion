@@ -161,12 +161,12 @@ public final class DefaultEntityLookupModelTest {
   }
 
   private void setupData() throws Exception {
-    final Entity dept = Entities.entityInstance(EmpDept.T_DEPARTMENT);
+    final Entity dept = Entities.entity(EmpDept.T_DEPARTMENT);
     dept.setValue(EmpDept.DEPARTMENT_ID, 88);
     dept.setValue(EmpDept.DEPARTMENT_LOCATION, "TestLoc");
     dept.setValue(EmpDept.DEPARTMENT_NAME, "TestDept");
 
-    final Entity emp = Entities.entityInstance(EmpDept.T_EMPLOYEE);
+    final Entity emp = Entities.entity(EmpDept.T_EMPLOYEE);
     emp.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, dept);
     emp.setValue(EmpDept.EMPLOYEE_COMMISSION, 1000d);
     emp.setValue(EmpDept.EMPLOYEE_HIREDATE, new Date());
@@ -174,7 +174,7 @@ public final class DefaultEntityLookupModelTest {
     emp.setValue(EmpDept.EMPLOYEE_NAME, "John");
     emp.setValue(EmpDept.EMPLOYEE_SALARY, 1000d);
 
-    final Entity emp2 = Entities.entityInstance(EmpDept.T_EMPLOYEE);
+    final Entity emp2 = Entities.entity(EmpDept.T_EMPLOYEE);
     emp2.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, dept);
     emp2.setValue(EmpDept.EMPLOYEE_COMMISSION, 1000d);
     emp2.setValue(EmpDept.EMPLOYEE_HIREDATE, new Date());
@@ -182,7 +182,7 @@ public final class DefaultEntityLookupModelTest {
     emp2.setValue(EmpDept.EMPLOYEE_NAME, "johnson");
     emp2.setValue(EmpDept.EMPLOYEE_SALARY, 1000d);
 
-    final Entity emp3 = Entities.entityInstance(EmpDept.T_EMPLOYEE);
+    final Entity emp3 = Entities.entity(EmpDept.T_EMPLOYEE);
     emp3.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, dept);
     emp3.setValue(EmpDept.EMPLOYEE_COMMISSION, 1000d);
     emp3.setValue(EmpDept.EMPLOYEE_HIREDATE, new Date());
@@ -190,7 +190,7 @@ public final class DefaultEntityLookupModelTest {
     emp3.setValue(EmpDept.EMPLOYEE_NAME, "Andy");
     emp3.setValue(EmpDept.EMPLOYEE_SALARY, 1000d);
 
-    final Entity emp4 = Entities.entityInstance(EmpDept.T_EMPLOYEE);
+    final Entity emp4 = Entities.entity(EmpDept.T_EMPLOYEE);
     emp4.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, dept);
     emp4.setValue(EmpDept.EMPLOYEE_COMMISSION, 1000d);
     emp4.setValue(EmpDept.EMPLOYEE_HIREDATE, new Date());

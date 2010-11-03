@@ -2262,3 +2262,4 @@
   DefaultExceptionHandler.handleException() now unwraps RuntimeException and InvocationTargetException
   EntityApplicationPanel navigation bugs fixed, needs rethinking
   EntityCriteriaUtil, small improvements
+  Entities.entityInstance/keyInstance renamed to entity/key

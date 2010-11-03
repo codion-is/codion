@@ -21,7 +21,7 @@ public class EntityJSONParserTest {
     final Date hiredate = format.parse("2001-12-20");
     EmpDept.init();
 
-    final Entity dept10 = Entities.entityInstance(EmpDept.T_DEPARTMENT);
+    final Entity dept10 = Entities.entity(EmpDept.T_DEPARTMENT);
     dept10.setValue(EmpDept.DEPARTMENT_ID, -10);
     dept10.setValue(EmpDept.DEPARTMENT_NAME, "DEPTNAME");
     dept10.setValue(EmpDept.DEPARTMENT_LOCATION, "LOCATION");
@@ -30,7 +30,7 @@ public class EntityJSONParserTest {
     String jsonString = EntityJSONParser.getJSONString(Arrays.asList(dept10));
     assertEquals(dept10JSON, jsonString);
 
-    final Entity dept20 = Entities.entityInstance(EmpDept.T_DEPARTMENT);
+    final Entity dept20 = Entities.entity(EmpDept.T_DEPARTMENT);
     dept20.setValue(EmpDept.DEPARTMENT_ID, -20);
     dept20.setValue(EmpDept.DEPARTMENT_NAME, "ADEPT");
     dept20.setValue(EmpDept.DEPARTMENT_LOCATION, "ALOC");
@@ -39,7 +39,7 @@ public class EntityJSONParserTest {
     jsonString = EntityJSONParser.getJSONString(Arrays.asList(dept20));
     assertEquals(dept20JSON, jsonString);
 
-    final Entity mgr30 = Entities.entityInstance(EmpDept.T_EMPLOYEE);
+    final Entity mgr30 = Entities.entity(EmpDept.T_EMPLOYEE);
     mgr30.setValue(EmpDept.EMPLOYEE_COMMISSION, 500.5);
     mgr30.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, dept20);
     mgr30.setValue(EmpDept.EMPLOYEE_HIREDATE, hiredate);
@@ -48,7 +48,7 @@ public class EntityJSONParserTest {
     mgr30.setValue(EmpDept.EMPLOYEE_NAME, "MGR NAME");
     mgr30.setValue(EmpDept.EMPLOYEE_SALARY, 2500.5);
 
-    final Entity mgr50 = Entities.entityInstance(EmpDept.T_EMPLOYEE);
+    final Entity mgr50 = Entities.entity(EmpDept.T_EMPLOYEE);
     mgr50.setValue(EmpDept.EMPLOYEE_COMMISSION, 500.5);
     mgr50.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, dept20);
     mgr50.setValue(EmpDept.EMPLOYEE_HIREDATE, hiredate);
@@ -57,7 +57,7 @@ public class EntityJSONParserTest {
     mgr50.setValue(EmpDept.EMPLOYEE_NAME, "MGR2 NAME");
     mgr50.setValue(EmpDept.EMPLOYEE_SALARY, 2500.5);
 
-    final Entity emp1 = Entities.entityInstance(EmpDept.T_EMPLOYEE);
+    final Entity emp1 = Entities.entity(EmpDept.T_EMPLOYEE);
     emp1.setValue(EmpDept.EMPLOYEE_COMMISSION, 500.5);
     emp1.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, dept10);
     emp1.setValue(EmpDept.EMPLOYEE_HIREDATE, hiredate);
@@ -83,7 +83,7 @@ public class EntityJSONParserTest {
     jsonString = EntityJSONParser.getJSONString(Arrays.asList(emp1));
     assertEquals(emp1JSON, jsonString);
 
-    final Entity emp2 = Entities.entityInstance(EmpDept.T_EMPLOYEE);
+    final Entity emp2 = Entities.entity(EmpDept.T_EMPLOYEE);
     emp2.setValue(EmpDept.EMPLOYEE_COMMISSION, 300.5);
     emp2.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, dept10);
     emp2.setValue(EmpDept.EMPLOYEE_HIREDATE, hiredate);
