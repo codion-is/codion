@@ -335,35 +335,35 @@ public class EntityPanelProvider implements Comparable {
     return PANEL_PROVIDERS.get(entityID);
   }
 
-  protected void configurePanel(final EntityPanel panel) {}
+  protected void configurePanel(final EntityPanel entityPanel) {}
 
   protected void configureEditPanel(final EntityEditPanel editPanel) {}
 
   protected void configureTablePanel(final EntityTablePanel tablePanel) {}
 
-  protected void configureModel(final EntityModel model) {}
+  protected void configureModel(final EntityModel entityModel) {}
 
   protected void configureEditModel(final EntityEditModel editModel) {}
 
   protected void configureTableModel(final EntityTableModel tableModel) {}
 
-  private EntityPanel initializePanel(final EntityModel model) {
+  private EntityPanel initializePanel(final EntityModel entityModel) {
     try {
       final EntityPanel entityPanel;
       if (panelClass.equals(EntityPanel.class)) {
         final EntityTablePanel tablePanel;
-        if (model.containsTableModel()) {
-          tablePanel = initializeTablePanel(model.getTableModel());
+        if (entityModel.containsTableModel()) {
+          tablePanel = initializeTablePanel(entityModel.getTableModel());
         }
         else {
           tablePanel = null;
         }
-        final EntityEditPanel editPanel = editPanelClass == null ? null : initializeEditPanel(model.getEditModel());
+        final EntityEditPanel editPanel = editPanelClass == null ? null : initializeEditPanel(entityModel.getEditModel());
         entityPanel = panelClass.getConstructor(EntityModel.class, EntityEditPanel.class, EntityTablePanel.class)
-                .newInstance(model, editPanel, tablePanel);
+                .newInstance(entityModel, editPanel, tablePanel);
       }
       else {
-        entityPanel = panelClass.getConstructor(EntityModel.class).newInstance(model);
+        entityPanel = panelClass.getConstructor(EntityModel.class).newInstance(entityModel);
       }
 
       return entityPanel;

@@ -234,7 +234,12 @@ public final class EntityCriteriaUtil {
    */
   public static Criteria<Property.ColumnProperty> propertyCriteria(final String entityID, final String propertyID, final boolean caseSensitive,
                                                                    final SearchType searchType, final Object... values) {
-    return propertyCriteria((Property.ColumnProperty) Entities.getProperty(entityID, propertyID), caseSensitive, searchType, values);
+    final Property property = Entities.getProperty(entityID, propertyID);
+    if (!(property instanceof Property.ColumnProperty)) {
+      throw new IllegalArgumentException(property + " is not a " + Property.ColumnProperty.class.getName());
+    }
+
+    return propertyCriteria((Property.ColumnProperty) property, caseSensitive, searchType, values);
   }
 
   /**
@@ -260,6 +265,23 @@ public final class EntityCriteriaUtil {
                                                                    final boolean caseSensitive, final SearchType searchType,
                                                                    final Object... values) {
     return new PropertyCriteria(property, searchType, values).setCaseSensitive(caseSensitive);
+  }
+
+  /**
+   * @param entityID the entity ID
+   * @param fkPropertyID the property ID
+   * @param searchType the search type
+   * @param values the criteria values
+   * @return a foreign key property criteria based on the given values
+   */
+  public static Criteria<Property.ColumnProperty> foreignKeyCriteria(final String entityID, final String fkPropertyID,
+                                                                     final SearchType searchType, final Object... values) {
+    final Property property = Entities.getProperty(entityID, fkPropertyID);
+    if (!(property instanceof Property.ForeignKeyProperty)) {
+      throw new IllegalArgumentException(property + " is not a " + Property.ForeignKeyProperty.class.getName());
+    }
+
+    return foreignKeyCriteria((Property.ForeignKeyProperty) property, searchType, values);
   }
 
   /**

@@ -41,6 +41,7 @@ import javax.swing.tree.TreePath;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -1083,7 +1084,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     if (active != null) {
       switch(direction) {
         case EntityPanel.UP:
-          activatePanel(active.getMasterPanel());
+          activatePanel(active, active.getMasterPanel());
           break;
         case EntityPanel.DOWN:
           if (!active.getDetailPanels().isEmpty()) {
@@ -1092,26 +1093,34 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
             }
             final Collection<EntityPanel> activeDetailPanels = active.getLinkedDetailPanels();
             if (!activeDetailPanels.isEmpty()) {
-              activatePanel(activeDetailPanels.iterator().next());
+              activatePanel(active, activeDetailPanels.iterator().next());
             }
           }
           else {
-            activatePanel((EntityPanel) applicationTabPane.getSelectedComponent());
+            activatePanel(active, (EntityPanel) applicationTabPane.getSelectedComponent());
           }//go to top
           break;
         case EntityPanel.LEFT:
-          activatePanel(getPanelOnLeft(active));
+          activatePanel(active, getPanelOnLeft(active));
           break;
         case EntityPanel.RIGHT:
-          activatePanel(getPanelOnRight(active));
+          activatePanel(active, getPanelOnRight(active));
           break;
       }
     }
   }
 
-  private static void activatePanel(final EntityPanel panel) {
+  private static void activatePanel(final EntityPanel active, final EntityPanel panel) {
+    if (active.containsEditPanel()) {
+      active.getEditPanel().setActive(false);
+    }
     if (panel != null) {
-      panel.getEditPanel().setActive(true);
+      if (panel.containsEditPanel()) {
+        panel.getEditPanel().setActive(true);
+      }
+      else {
+        panel.initializePanel();
+      }
     }
   }
 
@@ -1125,7 +1134,10 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
       if (activeDetailPanel != null) {
         return activeDetailPanel;
       }
-      if (panel.getEditPanel().isActive()) {
+      if (panel.containsEditPanel() && panel.getEditPanel().isActive()) {
+        return panel;
+      }
+      if (EntityPanel.isParentPanel(panel, KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner())) {
         return panel;
       }
     }

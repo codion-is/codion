@@ -398,7 +398,7 @@ public class EntityPanel extends JPanel {
     }
 
     //do not try to grab the initial focus when a child component already has the focus, for example the table
-    final boolean grabInitialFocus = !isParentPanel(KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner());
+    final boolean grabInitialFocus = !isParentPanel(this, KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner());
     prepareUI(grabInitialFocus, false);
 
     return this;
@@ -893,6 +893,21 @@ public class EntityPanel extends JPanel {
   }
 
   /**
+   * @param entityPanel the panel to check
+   * @param component the component
+   * @return true if <code>component</code> is a child component of the given panel
+   */
+  static boolean isParentPanel(final EntityPanel entityPanel, final Component component) {
+    final EntityPanel parent = (EntityPanel) SwingUtilities.getAncestorOfClass(EntityPanel.class, component);
+    if (parent == entityPanel) {
+      return true;
+    }
+
+    //is editPanelDialog parent?
+    return entityPanel.editPanelDialog != null && SwingUtilities.getWindowAncestor(component) == entityPanel.editPanelDialog;
+  }
+
+  /**
    * Initializes the keyboard navigation actions.
    * By default CTRL-T transfers focus to the table in case one is available,
    * CTR-E transfers focus to the edit panel in case one is available,
@@ -1248,20 +1263,6 @@ public class EntityPanel extends JPanel {
     });
   }
 
-  /**
-   * @param component the component
-   * @return true if <code>component</code> is a child component of this EntityPanel
-   */
-  private boolean isParentPanel(final Component component) {
-    final EntityPanel parent = (EntityPanel) SwingUtilities.getAncestorOfClass(EntityPanel.class, component);
-    if (parent == this) {
-      return true;
-    }
-
-    //is editPanelDialog parent?
-    return editPanelDialog != null && SwingUtilities.getWindowAncestor(component) == editPanelDialog;
-  }
-
   private void bindEvents() {
     addComponentListener(new EntityPanelComponentAdapter());
   }
@@ -1281,7 +1282,7 @@ public class EntityPanel extends JPanel {
     public void propertyChange(final PropertyChangeEvent evt) {
       if (containsEditPanel()) {
         final Component focusOwner = (Component) evt.getNewValue();
-        if (focusOwner != null && isParentPanel(focusOwner) && !editPanel.isActive()) {
+        if (focusOwner != null && isParentPanel(EntityPanel.this, focusOwner) && !editPanel.isActive()) {
           LOG.debug(editPanel.getEntityEditModel().getEntityID() + " focusActivation");
           editPanel.setActive(true);
         }

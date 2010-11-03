@@ -10,6 +10,7 @@ import org.jminor.common.model.Util;
 
 import javax.swing.JComponent;
 import java.io.FileNotFoundException;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * A default ExcptionHandler implementation.
@@ -23,7 +24,7 @@ public final class DefaultExceptionHandler implements ExceptionHandler {
   }
 
   public void handleException(final Throwable exception, final JComponent dialogParent) {
-    final Throwable rootCause = unwrapRuntimeException(exception);
+    final Throwable rootCause = unwrapExceptions(exception, RuntimeException.class, InvocationTargetException.class);
     if (rootCause instanceof CancelException) {
       return;
     }
@@ -50,15 +51,21 @@ public final class DefaultExceptionHandler implements ExceptionHandler {
             Messages.get(Messages.EXCEPTION), errMsg, dbException);
   }
 
-  private static Throwable unwrapRuntimeException(final Throwable exception) {
+  private static Throwable unwrapExceptions(final Throwable exception, Class<? extends Exception>... exceptions) {
     if (exception.getCause() == null) {
       return exception;
     }
 
-    final boolean isRuntimeException = exception.getClass().equals(RuntimeException.class);
+    boolean unwrap = false;
+    for (final Class<? extends Exception> exceptionClass : exceptions) {
+      unwrap = exception.getClass().equals(exceptionClass);
+      if (unwrap) {
+        break;
+      }
+    }
     final boolean cyclicalCause = exception.getCause() == exception;
-    if (isRuntimeException && !cyclicalCause) {
-      return unwrapRuntimeException(exception.getCause());
+    if (unwrap && !cyclicalCause) {
+      return unwrapExceptions(exception.getCause(), exceptions);
     }
 
     return exception;

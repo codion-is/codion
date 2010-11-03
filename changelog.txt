@@ -2259,3 +2259,6 @@
   DefaultEntityComboBoxModel.performQuery() is now overridable
   ValueChangeMapImpl.removeOriginalValue(), no longer notifies value change,
   ValueChangeMapImpl.originalValues nulled when emptied
+  DefaultExceptionHandler.handleException() now unwraps RuntimeException and InvocationTargetException
+  EntityApplicationPanel navigation bugs fixed, needs rethinking
+  EntityCriteriaUtil, small improvements
