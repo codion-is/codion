@@ -10,7 +10,7 @@ import org.jminor.common.model.valuemap.ValueChangeMap;
 import org.jminor.common.model.valuemap.ValueChangeMapImpl;
 import org.jminor.common.model.valuemap.ValueMapImpl;
 
-import java.awt.*;
+import java.awt.Color;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -321,7 +321,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
   }
 
   /** {@inheritDoc} */
-  public boolean isNull() {
+  public boolean isPrimaryKeyNull() {
     return getPrimaryKey().isNull();
   }
 

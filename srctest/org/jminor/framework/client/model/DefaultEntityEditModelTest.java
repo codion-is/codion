@@ -25,7 +25,6 @@ import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 
 import org.junit.After;
-import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -35,6 +34,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+
+import static org.junit.Assert.*;
 
 public final class DefaultEntityEditModelTest {
 
@@ -175,10 +176,10 @@ public final class DefaultEntityEditModelTest {
     editModel.setEntity(null);
     assertTrue("Active entity is new null after entity is set to null", editModel.isEntityNew());
     assertFalse(editModel.getModifiedState().isActive());
-    assertTrue("Active entity is not null after entity is set to null", editModel.getEntityCopy().isNull());
+    assertTrue("Active entity is not null after entity is set to null", editModel.getEntityCopy().isPrimaryKeyNull());
 
     editModel.setEntity(employee);
-    assertTrue("Active entity is null after selection is made", !editModel.getEntityCopy().isNull());
+    assertTrue("Active entity is null after selection is made", !editModel.getEntityCopy().isPrimaryKeyNull());
     editModel.setEntity(null);
 
     final Double originalCommission = (Double) editModel.getValue(EmpDept.EMPLOYEE_COMMISSION);
@@ -220,7 +221,7 @@ public final class DefaultEntityEditModelTest {
     }
 
     editModel.setValueMap(null);
-    assertTrue("Active entity is not null after model is cleared", editModel.getEntityCopy().isNull());
+    assertTrue("Active entity is not null after model is cleared", editModel.getEntityCopy().isPrimaryKeyNull());
 
     editModel.removeAfterDeleteListener(listener);
     editModel.removeAfterInsertListener(listener);

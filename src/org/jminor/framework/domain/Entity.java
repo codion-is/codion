@@ -179,7 +179,7 @@ public interface Entity extends ValueChangeMap<String, Object>, Comparable<Entit
   /**
    * @return true if the this entity instance has a null primary key
    */
-  boolean isNull();
+  boolean isPrimaryKeyNull();
 
   /**
    * @param property the property

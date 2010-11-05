@@ -665,7 +665,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
     addValueMapSetListener(new ActionListener() {
       /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
-        stEntityNull.setActive(getEntity().isNull());
+        stEntityNull.setActive(getEntity().isPrimaryKeyNull());
       }
     });
     if (Configuration.getBooleanValue(Configuration.PROPERTY_DEBUG_OUTPUT)) {

@@ -7,7 +7,6 @@ import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.Util;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 
-import static org.junit.Assert.*;
 import org.junit.Test;
 
 import java.io.File;
@@ -16,6 +15,8 @@ import java.sql.Types;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+
+import static org.junit.Assert.*;
 
 public class EntityImplTest {
 
@@ -224,7 +225,7 @@ public class EntityImplTest {
 
     testEntity.clear();
     assertTrue(testEntity.getPrimaryKey().isNull());
-    assertTrue(testEntity.isNull());
+    assertTrue(testEntity.isPrimaryKeyNull());
   }
 
   @Test
