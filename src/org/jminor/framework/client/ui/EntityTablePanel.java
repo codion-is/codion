@@ -258,6 +258,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
 
   /**
    * @param doubleClickAction the action to perform when a double click is performed on the table
+   * @see #initializePanel()
+   * @throws IllegalStateException in case the panel has already been initialized
    */
   public final void setTableDoubleClickAction(final Action doubleClickAction) {
     if (panelInitialized) {
@@ -275,6 +277,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
 
   /**
    * @param additionalPopupControls a set of controls to add to the table popup menu
+   * @see #initializePanel()
+   * @throws IllegalStateException in case the panel has already been initialized
    */
   public final void addPopupControls(final ControlSet additionalPopupControls) {
     if (panelInitialized) {
@@ -285,6 +289,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
 
   /**
    * @param additionalToolbarControls a set of controls to add to the table toolbar menu
+   * @see #initializePanel()
+   * @throws IllegalStateException in case the panel has already been initialized
    */
   public final void addToolbarControls(final ControlSet additionalToolbarControls) {
     if (panelInitialized) {
@@ -296,6 +302,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   /**
    * @param value true if the south panel should be included
    * @see #initializeSouthPanel()
+   * @see #initializePanel()
+   * @throws IllegalStateException in case the panel has already been initialized
    */
   public final void setIncludeSouthPanel(final boolean value) {
     if (panelInitialized) {
@@ -306,6 +314,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
 
   /**
    * @param value true if the search panel should be included
+   * @see #initializePanel()
+   * @throws IllegalStateException in case the panel has already been initialized
    */
   public final void setIncludeSearchPanel(final boolean value) {
     if (panelInitialized) {
@@ -448,7 +458,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   /**
    * @param controlCode the control code
    * @return the control associated with <code>controlCode</code>
-   * @throws RuntimeException in case no control is associated with the given control code
+   * @throws IllegalArgumentException in case no control is associated with the given control code
    */
   public final Control getControl(final String controlCode) {
     if (!controlMap.containsKey(controlCode)) {
@@ -461,6 +471,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   /**
    * @return a control set containing a set of controls, one for each updatable property in the
    * underlying entity, for performing an update on the selected entities
+   * @see #initializePanel()
+   * @throws IllegalStateException in case the underlying model is read only or if updating is not allowed
    */
   public ControlSet getUpdateSelectedControlSet() {
     if (getEntityTableModel().isReadOnly() || !getEntityTableModel().isUpdateAllowed()
@@ -508,6 +520,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
 
   /**
    * @return a control for deleting the selected entities
+   * @throws IllegalStateException in case the underlying model is read only or if deleting is not allowed
    */
   public final Control getDeleteSelectedControl() {
     if (getEntityTableModel().isReadOnly() || !getEntityTableModel().isDeleteAllowed()) {
@@ -782,7 +795,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   public static EntityTablePanel createStaticEntityTablePanel(final Collection<Entity> entities,
                                                               final EntityConnectionProvider connectionProvider) {
     if (entities == null || entities.isEmpty()) {
-      throw new IllegalArgumentException("Cannot create an EntityPanel without the entities");
+      throw new IllegalArgumentException("Cannot create a static EntityTablePanel without the entities");
     }
 
     return createStaticEntityTablePanel(entities, connectionProvider, entities.iterator().next().getEntityID());
