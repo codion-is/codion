@@ -127,6 +127,11 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
     bindEventsInternal();
   }
 
+  @Override
+  public String toString() {
+    return getClass().toString() + ", " + getEntityID();
+  }
+
   /** {@inheritDoc} */
   public Object getDefaultValue(final Property property) {
     return persistValueOnClear(property) ? getValue(property.getPropertyID()) : property.getDefaultValue();

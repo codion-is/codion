@@ -2264,3 +2264,8 @@
   EntityCriteriaUtil, small improvements
   Entities.entityInstance/keyInstance renamed to entity/key
   Entity.isNull() renamed to isPrimaryKeyNull()
+  EntityModel.containsDetailModel(EntityModel) added
+  UiUtil.getParentOfType() added
+  Entities.define() bug fixed
+  DefaultFilteredComboBoxModel.setContents() bug fixed
+  ValueChangeMapEditPanel.getComponentKey() added

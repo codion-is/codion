@@ -331,28 +331,22 @@ public final class UiUtil {
     window.setSize(ratioSize);
   }
 
-  public static Window getParentWindow(final Container container) {
+  public static Window getParentWindow(final Component container) {
     final Window window = getParentDialog(container);
 
     return window == null ? getParentFrame(container) : window;
   }
 
-  public static JFrame getParentFrame(final Container container) {
-    Container parent = container;
-    while (!(parent instanceof JFrame) && (parent != null)) {
-      parent = parent.getParent();
-    }
-
-    return (JFrame) parent;
+  public static JFrame getParentFrame(final Component container) {
+    return getParentOfType(container, JFrame.class);
   }
 
-  public static JDialog getParentDialog(final Container container) {
-    Container parent = container;
-    while (!(parent instanceof JDialog) && (parent != null)) {
-      parent = parent.getParent();
-    }
+  public static JDialog getParentDialog(final Component container) {
+    return getParentOfType(container, JDialog.class);
+  }
 
-    return (JDialog) parent;
+  public static <T> T getParentOfType(final Component container, final Class<T> clazz) {
+    return (T) SwingUtilities.getAncestorOfClass(clazz, container);
   }
 
   public static void centerWindow(final Window window) {

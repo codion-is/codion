@@ -87,6 +87,12 @@ public interface EntityModel extends Refreshable, EntityDataProvider {
   boolean containsDetailModel(final String entityID);
 
   /**
+   * @param detailModel the detail model
+   * @return true if this model contains the given detail model
+   */
+  boolean containsDetailModel(final EntityModel detailModel);
+
+  /**
    * Returns the first detail model of the given type, this method does not
    * automatically create an entity model if none is available
    * @param modelClass the type of the required EntityModel

@@ -117,14 +117,26 @@ public abstract class ValueChangeMapEditPanel<K, V> extends JPanel {
 
   /**
    * @param key the key
-   * @return the component associated with the given key
+   * @return the component associated with the given key, null if no component has been
+   * associated with the given key
    */
   public final JComponent getComponent(final K key) {
-    if (!components.containsKey(key)) {
-      throw new IllegalArgumentException("No component associated with key: " + key);
+    return components.get(key);
+  }
+
+  /**
+   * @param component the component
+   * @return the key the given component is associated with, null if the component has not been
+   * associated with a key
+   */
+  public final K getComponentKey(final JComponent component) {
+    for (final Map.Entry<K, JComponent> entry : components.entrySet()) {
+      if (entry.getValue().equals(component)) {
+        return entry.getKey();
+      }
     }
 
-    return components.get(key);
+    return null;
   }
 
   /**

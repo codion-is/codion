@@ -255,6 +255,11 @@ public class DefaultEntityModel implements EntityModel {
   }
 
   /** {@inheritDoc} */
+  public boolean containsDetailModel(final EntityModel detailModel) {
+    return detailModels.contains(detailModel);
+  }
+
+  /** {@inheritDoc} */
   public final Collection<? extends EntityModel> getDetailModels() {
     return Collections.unmodifiableCollection(detailModels);
   }
