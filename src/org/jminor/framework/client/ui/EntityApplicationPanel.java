@@ -14,6 +14,7 @@ import org.jminor.common.ui.DefaultExceptionHandler;
 import org.jminor.common.ui.ExceptionDialog;
 import org.jminor.common.ui.ExceptionHandler;
 import org.jminor.common.ui.LoginPanel;
+import org.jminor.common.ui.MasterDetailPanel;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.Control;
 import org.jminor.common.ui.control.ControlProvider;
@@ -41,7 +42,6 @@ import javax.swing.tree.TreePath;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -51,7 +51,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,7 +58,7 @@ import java.util.Map;
 /**
  * A central application panel class.
  */
-public abstract class EntityApplicationPanel extends JPanel implements ExceptionHandler {
+public abstract class EntityApplicationPanel extends JPanel implements ExceptionHandler, MasterDetailPanel {
 
   private static final Logger LOG = LoggerFactory.getLogger(EntityApplicationPanel.class);
 
@@ -81,18 +80,6 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
 
   private boolean loginRequired = Configuration.getBooleanValue(Configuration.AUTHENTICATION_REQUIRED);
   private boolean showStartupDialog = Configuration.getBooleanValue(Configuration.SHOW_STARTUP_DIALOG);
-
-  private static final int DIVIDER_JUMP = 30;
-
-  private static final String NAV_UP = "navigateUp";
-  private static final String NAV_DOWN = "navigateDown";
-  private static final String NAV_RIGHT = "navigateRight";
-  private static final String NAV_LEFT = "navigateLeft";
-
-  private static final String DIV_LEFT = "divLeft";
-  private static final String DIV_RIGHT = "divRight";
-  private static final String DIV_UP = "divUp";
-  private static final String DIV_DOWN = "divDown";
 
   private String frameTitle = "<no title>";
 
@@ -294,10 +281,42 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     setUncaughtExceptionHandler();
     initializeUI();
     initializeActiveEntityPanel();
-    initializeResizingAndNavigation();
     bindEventsInternal();
     bindEvents();
   }
+
+  /** {@inheritDoc} */
+  public final MasterDetailPanel getMasterPanel() {
+    return null;
+  }
+
+  /** {@inheritDoc} */
+  public final MasterDetailPanel getCurrentDetailPanel() {
+    return getMainApplicationPanels().get(0);
+  }
+
+  /** {@inheritDoc} */
+  public final MasterDetailPanel getPreviousPanel() {
+    return null;
+  }
+
+  /** {@inheritDoc} */
+  public final MasterDetailPanel getNextPanel() {
+    return null;
+  }
+
+  /** {@inheritDoc} */
+  public List<? extends MasterDetailPanel> getDetailPanels() {
+    return Collections.unmodifiableList(mainApplicationPanels);
+  }
+
+  /** {@inheritDoc} */
+  public final void showDetailPanel(final MasterDetailPanel detailPanel) {
+    applicationTabPane.setSelectedComponent((JComponent) detailPanel);
+  }
+
+  /** {@inheritDoc} */
+  public final void activatePanel() {}
 
   /**
    * Exists this application
@@ -888,23 +907,6 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   }
 
   /**
-   * Initializes the panel resizing and navigation functionality
-   */
-  protected final void initializeResizingAndNavigation() {
-    final DefaultTreeModel panelTree = createApplicationTree(mainApplicationPanels);
-    final Enumeration enumeration = ((DefaultMutableTreeNode) panelTree.getRoot()).breadthFirstEnumeration();
-    while (enumeration.hasMoreElements()) {
-      final EntityPanel panel = (EntityPanel) ((DefaultMutableTreeNode) enumeration.nextElement()).getUserObject();
-      if (panel != null) {
-        initializeResizing(panel);
-        if (Configuration.getBooleanValue(Configuration.USE_KEYBOARD_NAVIGATION)) {
-          initializeNavigation(panel);
-        }
-      }
-    }
-  }
-
-  /**
    * Sets the uncaught exception handler, override to add specific uncaught exception handling
    */
   protected void setUncaughtExceptionHandler() {
@@ -1054,121 +1056,6 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     ((EntityPanel) applicationTabPane.getSelectedComponent()).initializePanel();
   }
 
-  private void initializeResizing(final EntityPanel panel) {
-    UiUtil.addKeyEvent(panel, KeyEvent.VK_LEFT, KeyEvent.SHIFT_DOWN_MASK + KeyEvent.ALT_DOWN_MASK,
-            new ResizeHorizontallyAction(panel, DIV_LEFT, EntityPanel.LEFT));
-    UiUtil.addKeyEvent(panel, KeyEvent.VK_RIGHT, KeyEvent.SHIFT_DOWN_MASK + KeyEvent.ALT_DOWN_MASK,
-            new ResizeHorizontallyAction(panel, DIV_RIGHT, EntityPanel.RIGHT));
-    UiUtil.addKeyEvent(panel, KeyEvent.VK_DOWN, KeyEvent.SHIFT_DOWN_MASK + KeyEvent.ALT_DOWN_MASK,
-            new ResizeVerticallyAction(panel, DIV_DOWN, EntityPanel.DOWN));
-    UiUtil.addKeyEvent(panel, KeyEvent.VK_UP, KeyEvent.SHIFT_DOWN_MASK + KeyEvent.ALT_DOWN_MASK,
-            new ResizeVerticallyAction(panel, DIV_UP, EntityPanel.UP));
-  }
-
-  private void initializeNavigation(final EntityPanel panel) {
-    final InputMap inputMap = panel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
-    final ActionMap actionMap = panel.getActionMap();
-    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, KeyEvent.ALT_DOWN_MASK, true), NAV_UP);
-    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, KeyEvent.ALT_DOWN_MASK, true), NAV_DOWN);
-    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK, true), NAV_RIGHT);
-    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK, true), NAV_LEFT);
-
-    actionMap.put(NAV_UP, new NavigateAction(EntityPanel.UP));
-    actionMap.put(NAV_DOWN, new NavigateAction(EntityPanel.DOWN));
-    actionMap.put(NAV_RIGHT, new NavigateAction(EntityPanel.RIGHT));
-    actionMap.put(NAV_LEFT, new NavigateAction(EntityPanel.LEFT));
-  }
-
-  private void navigate(final int direction) {
-    final EntityPanel active = getActivePanel(mainApplicationPanels);
-    if (active != null) {
-      switch(direction) {
-        case EntityPanel.UP:
-          activatePanel(active, active.getMasterPanel());
-          break;
-        case EntityPanel.DOWN:
-          if (!active.getDetailPanels().isEmpty()) {
-            if (active.getDetailPanelState() == EntityPanel.HIDDEN) {
-              active.setDetailPanelState(EntityPanel.EMBEDDED);
-            }
-            final Collection<EntityPanel> activeDetailPanels = active.getLinkedDetailPanels();
-            if (!activeDetailPanels.isEmpty()) {
-              activatePanel(active, activeDetailPanels.iterator().next());
-            }
-          }
-          else {
-            activatePanel(active, (EntityPanel) applicationTabPane.getSelectedComponent());
-          }//go to top
-          break;
-        case EntityPanel.LEFT:
-          activatePanel(active, getPanelOnLeft(active));
-          break;
-        case EntityPanel.RIGHT:
-          activatePanel(active, getPanelOnRight(active));
-          break;
-      }
-    }
-  }
-
-  private static void activatePanel(final EntityPanel active, final EntityPanel panel) {
-    if (active.containsEditPanel()) {
-      active.getEditPanel().setActive(false);
-    }
-    if (panel != null) {
-      if (panel.containsEditPanel()) {
-        panel.getEditPanel().setActive(true);
-      }
-      else {
-        panel.initializePanel();
-      }
-    }
-  }
-
-  private EntityPanel getActivePanel(final List<EntityPanel> panels) {
-    if (panels.isEmpty()) {
-      return null;
-    }
-
-    for (final EntityPanel panel : panels) {
-      final EntityPanel activeDetailPanel = getActivePanel(panel.getDetailPanels());
-      if (activeDetailPanel != null) {
-        return activeDetailPanel;
-      }
-      if (panel.containsEditPanel() && panel.getEditPanel().isActive()) {
-        return panel;
-      }
-      if (EntityPanel.isParentPanel(panel, KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner())) {
-        return panel;
-      }
-    }
-
-    return null;
-  }
-
-  private EntityPanel getPanelOnLeft(final EntityPanel panel) {
-    final List<EntityPanel> siblings = panel.getMasterPanel() == null ?
-            mainApplicationPanels : panel.getMasterPanel().getDetailPanels();
-    final int index = siblings.indexOf(panel);
-    if (index == 0) {//leftmost panel
-      return siblings.get(siblings.size() - 1);
-    }
-    else {
-      return siblings.get(index - 1);
-    }
-  }
-
-  private EntityPanel getPanelOnRight(final EntityPanel panel) {
-    final List<EntityPanel> siblings = panel.getMasterPanel() == null ?
-            mainApplicationPanels : panel.getMasterPanel().getDetailPanels();
-    final int index = siblings.indexOf(panel);
-    if (index == siblings.size()-1) {//rightmost panel
-      return siblings.get(0);
-    }
-    else {
-      return siblings.get(index + 1);
-    }
-  }
-
   private static DefaultTreeModel createApplicationTree(final Collection<? extends EntityPanel> entityPanels) {
     final DefaultTreeModel applicationTreeModel = new DefaultTreeModel(new DefaultMutableTreeNode());
     addModelsToTree((DefaultMutableTreeNode) applicationTreeModel.getRoot(), entityPanels);
@@ -1197,50 +1084,5 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     }
 
     return username;
-  }
-
-  private final class NavigateAction extends AbstractAction {
-    private final int direction;
-    private NavigateAction(final int direction) {
-      this.direction = direction;
-    }
-    public void actionPerformed(final ActionEvent e) {
-      navigate(direction);
-    }
-  }
-
-  private static final class ResizeHorizontallyAction extends AbstractAction {
-
-    private final EntityPanel panel;
-    private final int direction;
-
-    private ResizeHorizontallyAction(final EntityPanel panel, final String action, final int direction) {
-      super(action);
-      this.panel = panel;
-      this.direction = direction;
-    }
-
-    public void actionPerformed(final ActionEvent e) {
-      final EntityPanel activePanelParent = panel.getMasterPanel();
-      if (activePanelParent != null) {
-        activePanelParent.resizePanel(direction, DIVIDER_JUMP);
-      }
-    }
-  }
-
-  private static final class ResizeVerticallyAction extends AbstractAction {
-
-    private final EntityPanel panel;
-    private final int direction;
-
-    private ResizeVerticallyAction(final EntityPanel panel, final String action, final int direction) {
-      super(action);
-      this.panel = panel;
-      this.direction = direction;
-    }
-
-    public void actionPerformed(final ActionEvent e) {
-      panel.resizePanel(direction, DIVIDER_JUMP);
-    }
   }
 }

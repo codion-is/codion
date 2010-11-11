@@ -2269,3 +2269,12 @@
   Entities.define() bug fixed
   DefaultFilteredComboBoxModel.setContents() bug fixed
   ValueChangeMapEditPanel.getComponentKey() added
+  EntityPanel.addDetailPanel() adds the detail model to the underlying entity model if it has not been done already
+  DefaultFilteredComboBoxModel setContents(), selected item bug fixed
+  EntityConnectionImpl.update() bug fixed, inserting = false, instead of the oh so wrong updating = true
+  EntityPanel search panel keyboard action no longer toggles the search panel state, simple shows it and requests focus
+  MasterDetailPanel added, to base the entity panel navigation on
+  EntityApplicationPanel, navigation and resizing functionality moved to EntityPanel
+  EntityApplicationPanel and EntityPanel implement MasterDetailPanel
+  UiUtil.initializeNavigation() added, refactored from EntityApplicationPanel
+  EntityTablePanel.populateForeignKeyMenu() bug fixed, assumed entity.getForeignKeyValue() return null

@@ -1577,8 +1577,11 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
         final boolean fkValueNull = entity.isForeignKeyNull(property);
         if (!fkValueNull) {
           boolean queried = false;
-          Entity referencedEntity = entity.getForeignKeyValue(property.getPropertyID());
-          if (referencedEntity == null) {
+          final Entity referencedEntity;
+          if (entity.isLoaded(property.getPropertyID())) {
+            referencedEntity = entity.getForeignKeyValue(property.getPropertyID());
+          }
+          else {
             referencedEntity = connectionProvider.getConnection().selectSingle(entity.getReferencedPrimaryKey(property));
             entity.removeValue(property.getPropertyID());
             entity.setValue(property, referencedEntity);

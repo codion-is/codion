@@ -59,11 +59,6 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   public static final int CONFIRM_TYPE_UPDATE = 2;
   public static final int CONFIRM_TYPE_DELETE = 3;
 
-  public static final int ACTION_NONE = 0;
-  public static final int ACTION_INSERT = 1;
-  public static final int ACTION_UPDATE = 2;
-  public static final int ACTION_DELETE = 3;
-
   //Control codes
   public static final String INSERT = "insert";
   public static final String UPDATE = "update";
@@ -112,6 +107,11 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
     bindEvents();
   }
 
+  @Override
+  public String toString() {
+    return getEditModel().toString();
+  }
+
   /**
    * @return the edit model this panel is based on
    */
@@ -129,7 +129,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
 
   /**
    * Sets the active state of this edit panel, an active edit panel should be
-   * enabled and ready to recieve input
+   * enabled and ready to receive input
    * @param active the active state
    */
   public final void setActive(final boolean active) {
@@ -521,7 +521,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
     switch (type) {
       case CONFIRM_TYPE_DELETE:
         return new String[]{FrameworkMessages.get(FrameworkMessages.CONFIRM_DELETE_ENTITY),
-            FrameworkMessages.get(FrameworkMessages.DELETE)};
+                FrameworkMessages.get(FrameworkMessages.DELETE)};
       case CONFIRM_TYPE_INSERT:
         return FrameworkMessages.getDefaultConfirmInsertMessages();
       case CONFIRM_TYPE_UPDATE:
@@ -620,9 +620,15 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * The default layout of the resulting panel is with the label on top and inputComponent below.
    * @param propertyID the id of the property from which to retrieve the label caption
    * @return a panel containing a label and a component
+   * @throws IllegalArgumentException in case no component has been associated with the given property
    */
   protected final JPanel createPropertyPanel(final String propertyID) {
-    return createPropertyPanel(propertyID, getComponent(propertyID), true);
+    final JComponent component = getComponent(propertyID);
+    if (component == null) {
+      throw new IllegalArgumentException("No component associated with property: " + propertyID);
+    }
+
+    return createPropertyPanel(propertyID, component, true);
   }
 
   /**

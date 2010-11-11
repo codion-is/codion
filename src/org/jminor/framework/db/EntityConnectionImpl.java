@@ -178,8 +178,8 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
                 includePrimaryKeyProperties, includeReadOnlyProperties, includeNonUpdatable);
 
         for (final Entity entity : hashedEntitiesMapEntry.getValue()) {
-          final boolean updating = true;
-          populateStatementPropertiesAndValues(updating, entity, columnProperties, statementProperties, statementValues);
+          final boolean inserting = false;
+          populateStatementPropertiesAndValues(inserting, entity, columnProperties, statementProperties, statementValues);
 
           final List<Property.PrimaryKeyProperty> primaryKeyProperties = Entities.getPrimaryKeyProperties(entityID);
           final String updateSQL = getUpdateSQL(entity, statementProperties, primaryKeyProperties);

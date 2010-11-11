@@ -84,8 +84,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
    * @param contents the contents to be used by this model
    */
   public final void setContents(final Collection<T> contents) {
-    final Object selected = getSelectedItem();
-    if (selected != null) {
+    if (contents == null || !contents.contains(selectedItem)) {
       setSelectedItem(null);
     }
     filteredItems.clear();
@@ -97,12 +96,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
         visibleItems.add(0, null);
       }
     }
-    if (selected != null) {
-      setSelectedItem(selected);
-    }
-    else {
-      fireContentsChanged();
-    }
+    fireContentsChanged();
     cleared = contents == null;
   }
 

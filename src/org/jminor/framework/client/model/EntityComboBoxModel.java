@@ -26,10 +26,25 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity>, Enti
    */
   Entity getEntity(final Entity.Key primaryKey);
 
+  /**
+   * @param foreignKeyPropertyID the ID of the foreign key property
+   * @return the entity values currently used to filter the contents of this model
+   */
   Collection<Entity> getForeignKeyFilterEntities(final String foreignKeyPropertyID);
 
+  /**
+   * Filters this combo box model so that only entities referencing the given foreign key entities
+   * via the given foreign key property are shown.
+   * @param foreignKeyPropertyID the property ID
+   * @param entities the entities
+   */
   void setForeignKeyFilterEntities(final String foreignKeyPropertyID, final Collection<Entity> entities);
 
+  /**
+   * Returns a combo box model for selecting a foreign key value for filtering this model
+   * @param foreignKeyPropertyID the ID of the property with which values to create the combo box model
+   * @return a combo box model for selecting a filtering value for this combo box model
+   */
   EntityComboBoxModel createForeignKeyFilterComboBoxModel(final String foreignKeyPropertyID);
 
   /**
