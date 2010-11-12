@@ -137,7 +137,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
   }
 
   /** {@inheritDoc} */
-  public Entity getEntity(final Entity.Key primaryKey) {
+  public final Entity getEntity(final Entity.Key primaryKey) {
     for (final Entity entity : getAllItems()) {
       if (entity.getPrimaryKey().equals(primaryKey)) {
         return entity;

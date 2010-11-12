@@ -255,7 +255,7 @@ public class DefaultEntityModel implements EntityModel {
   }
 
   /** {@inheritDoc} */
-  public boolean containsDetailModel(final EntityModel detailModel) {
+  public final boolean containsDetailModel(final EntityModel detailModel) {
     return detailModels.contains(detailModel);
   }
 
