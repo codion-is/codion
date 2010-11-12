@@ -27,6 +27,7 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.KeyboardFocusManager;
@@ -69,12 +70,12 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   private static final String NAVIGATE_RIGHT = "navigateRight";
   private static final String NAVIGATE_LEFT = "navigateLeft";
 
-  private static final int DIVIDER_JUMP = 30;
+  private static final String RESIZE_LEFT = "resizeLeft";
+  private static final String RESIZE_RIGHT = "resizeRight";
+  private static final String RESIZE_UP = "resizeUp";
+  private static final String RESIZE_DOWN = "resizeDown";
 
-  private static final String DIV_LEFT = "divLeft";
-  private static final String DIV_RIGHT = "divRight";
-  private static final String DIV_UP = "divUp";
-  private static final String DIV_DOWN = "divDown";
+  private static final int RESIZE_AMOUNT = 30;
 
   private static final double DEFAULT_SPLIT_PANEL_RESIZE_WEIGHT = 0.5;
   private static final int SPLIT_PANE_DIVIDER_SIZE = 18;
@@ -184,7 +185,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
 
   static {
     if (Configuration.getBooleanValue(Configuration.USE_FOCUS_ACTIVATION)) {
-      KeyboardFocusManager.getCurrentKeyboardFocusManager().addPropertyChangeListener("focusOwner", new FocusListener());
+      KeyboardFocusManager.getCurrentKeyboardFocusManager().addPropertyChangeListener("focusOwner", new FocusActivationListener());
     }
   }
 
@@ -368,8 +369,8 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   }
 
   /**
-   * Initializes this EntityPanel, in case of some specific initialization code, to show the search panel for example,
-   * you can override the <code>initialize()</code> method and add your code there.
+   * Initializes this EntityPanel's UI, in case of some specific initialization code you can override the
+   * <code>initialize()</code> method and add your code there.
    * This method marks this panel as initialized which prevents it from running again, whether or not an exception occurs.
    * @return this EntityPanel instance
    * @see #initialize()
@@ -381,7 +382,6 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
         UiUtil.setWaitCursor(true, this);
         initializeAssociatedPanels();
         initializeControlPanels();
-        bindModelEvents();
         bindEvents();
         initializeUI();
         initialize();
@@ -500,10 +500,6 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
     if (getMasterPanel() != null) {
       getMasterPanel().showDetailPanel(this);
     }
-    //try to grab the focus unless the edit panel already has focus
-//    final boolean editPanelHasFocus = isEditPanelParent(KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner());
-//    final boolean panelHasFocus = isPanelParent(KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner());
-
     prepareUI(true, false);
   }
 
@@ -1035,18 +1031,21 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   }
 
   /**
-   * Called during construction, before controls have been initialized
+   * Called during initialization, before controls have been initialized
+   * @see #initializePanel()
    */
   protected void initializeAssociatedPanels() {}
 
   /**
-   * Called during construction, after controls have been initialized,
+   * Called during initialization, after controls have been initialized,
    * use this method to initialize any application panels that rely on controls having been initialized
+   * @see #initializePanel()
    */
   protected void initializeControlPanels() {}
 
   /**
-   * Override to add code that should be called during the initialization routine after the UI has been initialized
+   * Override to add code that should be called during the initialization routine after the panel has been initialized
+   * @see #initializePanel()
    */
   protected void initialize() {}
 
@@ -1086,7 +1085,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
     panel.setMinimumSize(new Dimension(0,0));
     final int alignment = controlPanelConstraints.equals(BorderLayout.SOUTH) || controlPanelConstraints.equals(BorderLayout.NORTH) ? FlowLayout.CENTER : FlowLayout.LEADING;
     final JPanel propertyBase = new JPanel(new FlowLayout(alignment, 5, 5));
-    panel.addMouseListener(new ActivationAdapter(editPanel));
+    panel.addMouseListener(new MouseActivationListener(editPanel));
     propertyBase.add(editPanel);
     panel.add(propertyBase, BorderLayout.CENTER);
     if (includeControlPanel) {
@@ -1150,14 +1149,25 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   }
 
   private void initializeResizing() {
-    UiUtil.addKeyEvent(this, KeyEvent.VK_UP, KeyEvent.SHIFT_DOWN_MASK + KeyEvent.ALT_DOWN_MASK,
-            new ResizeVerticallyAction(this, DIV_UP, UP));
-    UiUtil.addKeyEvent(this, KeyEvent.VK_DOWN, KeyEvent.SHIFT_DOWN_MASK + KeyEvent.ALT_DOWN_MASK,
-            new ResizeVerticallyAction(this, DIV_DOWN, DOWN));
-    UiUtil.addKeyEvent(this, KeyEvent.VK_RIGHT, KeyEvent.SHIFT_DOWN_MASK + KeyEvent.ALT_DOWN_MASK,
-            new ResizeHorizontallyAction(this, DIV_RIGHT, RIGHT));
-    UiUtil.addKeyEvent(this, KeyEvent.VK_LEFT, KeyEvent.SHIFT_DOWN_MASK + KeyEvent.ALT_DOWN_MASK,
-            new ResizeHorizontallyAction(this, DIV_LEFT, LEFT));
+    UiUtil.addKeyEvent(this, KeyEvent.VK_UP, KeyEvent.ALT_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK,
+            new ResizeVerticallyAction(this, RESIZE_UP, UP));
+    UiUtil.addKeyEvent(this, KeyEvent.VK_DOWN, KeyEvent.ALT_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK,
+            new ResizeVerticallyAction(this, RESIZE_DOWN, DOWN));
+    UiUtil.addKeyEvent(this, KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK,
+            new ResizeHorizontallyAction(this, RESIZE_RIGHT, RIGHT));
+    UiUtil.addKeyEvent(this, KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK,
+            new ResizeHorizontallyAction(this, RESIZE_LEFT, LEFT));
+  }
+
+  private void initializeNavigation() {
+    UiUtil.addKeyEvent(this, KeyEvent.VK_UP, KeyEvent.ALT_DOWN_MASK + KeyEvent.CTRL_DOWN_MASK,
+            new NavigateAction(this, NAVIGATE_UP, UP));
+    UiUtil.addKeyEvent(this, KeyEvent.VK_DOWN, KeyEvent.ALT_DOWN_MASK + KeyEvent.CTRL_DOWN_MASK,
+            new NavigateAction(this, NAVIGATE_DOWN, DOWN));
+    UiUtil.addKeyEvent(this, KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK + KeyEvent.CTRL_DOWN_MASK,
+            new NavigateAction(this, NAVIGATE_RIGHT, RIGHT));
+    UiUtil.addKeyEvent(this, KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK + KeyEvent.CTRL_DOWN_MASK,
+            new NavigateAction(this, NAVIGATE_LEFT, LEFT));
   }
 
   /**
@@ -1312,7 +1322,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
     }
   }
 
-  private void bindModelEvents() {
+  private void bindEvents() {
     entityModel.addBeforeRefreshListener(new ActionListener() {
       /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
@@ -1325,29 +1335,17 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
         UiUtil.setWaitCursor(false, EntityPanel.this);
       }
     });
-  }
-
-  private void bindEvents() {
     addComponentListener(new EntityPanelComponentAdapter());
   }
 
-  private void initializeNavigation() {
-    UiUtil.addKeyEvent(this, KeyEvent.VK_UP, KeyEvent.ALT_DOWN_MASK,
-            new NavigateAction(NAVIGATE_UP, UP));
-    UiUtil.addKeyEvent(this, KeyEvent.VK_DOWN, KeyEvent.ALT_DOWN_MASK,
-            new NavigateAction(NAVIGATE_DOWN, DOWN));
-    UiUtil.addKeyEvent(this, KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK,
-            new NavigateAction(NAVIGATE_RIGHT, RIGHT));
-    UiUtil.addKeyEvent(this, KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK,
-            new NavigateAction(NAVIGATE_LEFT, LEFT));
-  }
+  private static final class NavigateAction extends AbstractAction {
 
-  private final class NavigateAction extends AbstractAction {
-
+    private final EntityPanel entityPanel;
     private final int direction;
 
-    private NavigateAction(final String name, final int direction) {
+    private NavigateAction(final EntityPanel entityPanel, final String name, final int direction) {
       super(name);
+      this.entityPanel = entityPanel;
       this.direction = direction;
     }
 
@@ -1355,16 +1353,16 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
       MasterDetailPanel panel = null;
       switch(direction) {
         case LEFT:
-          panel = getPreviousPanel();
+          panel = entityPanel.getPreviousPanel();
           break;
         case RIGHT:
-          panel = getNextPanel();
+          panel = entityPanel.getNextPanel();
           break;
         case UP:
-          panel = getMasterPanel();
+          panel = entityPanel.getMasterPanel();
           break;
         case DOWN:
-          panel = getCurrentDetailPanel();
+          panel = entityPanel.getCurrentDetailPanel();
           break;
       }
 
@@ -1388,7 +1386,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
     public void actionPerformed(final ActionEvent e) {
       final MasterDetailPanel activePanelParent = panel.masterPanel;
       if (activePanelParent != null) {
-        ((EntityPanel) activePanelParent).resizePanel(direction, DIVIDER_JUMP);
+        ((EntityPanel) activePanelParent).resizePanel(direction, RESIZE_AMOUNT);
       }
     }
   }
@@ -1405,30 +1403,30 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
     }
 
     public void actionPerformed(final ActionEvent e) {
-      panel.resizePanel(direction, DIVIDER_JUMP);
+      panel.resizePanel(direction, RESIZE_AMOUNT);
     }
   }
 
-  private static final class ActivationAdapter extends MouseAdapter {
+  private static final class MouseActivationListener extends MouseAdapter {
 
     private final EntityEditPanel target;
 
-    private ActivationAdapter(final EntityEditPanel target) {
+    private MouseActivationListener(final EntityEditPanel target) {
       this.target = target;
     }
 
     /** {@inheritDoc} */
     @Override
     public void mouseReleased(final MouseEvent e) {
-      target.requestFocusInWindow();//activates this EntityPanel
+      target.requestFocusInWindow();//activates this EntityPanel, see FocusActivationListener below
     }
   }
 
-  private static class FocusListener implements PropertyChangeListener, Serializable {
+  private static class FocusActivationListener implements PropertyChangeListener, Serializable {
     private static final long serialVersionUID = 1;
     /** {@inheritDoc} */
     public void propertyChange(final PropertyChangeEvent evt) {
-      final EntityPanel parent = UiUtil.getParentOfType((JComponent) evt.getNewValue(), EntityPanel.class);
+      final EntityPanel parent = UiUtil.getParentOfType((Component) evt.getNewValue(), EntityPanel.class);
       if (parent != null && parent.getEditPanel() != null) {
         parent.getEditPanel().setActive(true);
       }

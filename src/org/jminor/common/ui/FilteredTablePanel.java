@@ -306,7 +306,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
       /** {@inheritDoc} */
       @Override
       public void mouseClicked(final MouseEvent e) {
-        if (e.isAltDown()) {
+        if (e.isShiftDown() && e.isControlDown()) {
           toggleColumnFilterPanel(e);
         }
       }
