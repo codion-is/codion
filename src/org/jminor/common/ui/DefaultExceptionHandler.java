@@ -51,7 +51,7 @@ public final class DefaultExceptionHandler implements ExceptionHandler {
             Messages.get(Messages.EXCEPTION), errMsg, dbException);
   }
 
-  private static Throwable unwrapExceptions(final Throwable exception, Class<? extends Exception>... exceptions) {
+  private static Throwable unwrapExceptions(final Throwable exception, final Class<? extends Exception>... exceptions) {
     if (exception.getCause() == null) {
       return exception;
     }

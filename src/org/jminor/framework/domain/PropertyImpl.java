@@ -479,7 +479,7 @@ class PropertyImpl implements Property, Serializable {
     return null;
   }
 
-  static class ColumnPropertyImpl extends PropertyImpl implements ColumnProperty, Serializable {
+  static class ColumnPropertyImpl extends PropertyImpl implements ColumnProperty {
 
     private static final long serialVersionUID = 1;
 
@@ -582,7 +582,7 @@ class PropertyImpl implements Property, Serializable {
     }
   }
 
-  static class ForeignKeyPropertyImpl extends PropertyImpl implements Property.ForeignKeyProperty, Serializable {
+  static class ForeignKeyPropertyImpl extends PropertyImpl implements Property.ForeignKeyProperty {
 
     private static final long serialVersionUID = 1;
 
@@ -686,7 +686,7 @@ class PropertyImpl implements Property, Serializable {
     }
   }
 
-  static class MirrorPropertyImpl extends ColumnPropertyImpl implements MirrorProperty, Serializable {
+  static class MirrorPropertyImpl extends ColumnPropertyImpl implements MirrorProperty {
 
     private static final long serialVersionUID = 1;
 
@@ -698,7 +698,7 @@ class PropertyImpl implements Property, Serializable {
   /**
    * A property representing a column that should get its value automatically from a column in a referenced table
    */
-  static class DenormalizedPropertyImpl extends ColumnPropertyImpl implements DenormalizedProperty, Serializable {
+  static class DenormalizedPropertyImpl extends ColumnPropertyImpl implements DenormalizedProperty {
 
     private static final long serialVersionUID = 1;
 
@@ -747,7 +747,7 @@ class PropertyImpl implements Property, Serializable {
     }
   }
 
-  static class ValueListPropertyImpl extends ColumnPropertyImpl implements ValueListProperty, Serializable {
+  static class ValueListPropertyImpl extends ColumnPropertyImpl implements ValueListProperty {
 
     private static final long serialVersionUID = 1;
 
@@ -797,7 +797,7 @@ class PropertyImpl implements Property, Serializable {
     }
   }
 
-  static class TransientPropertyImpl extends PropertyImpl implements TransientProperty, Serializable {
+  static class TransientPropertyImpl extends PropertyImpl implements TransientProperty {
 
     private static final long serialVersionUID = 1;
 
@@ -821,7 +821,7 @@ class PropertyImpl implements Property, Serializable {
     }
   }
 
-  static class DerivedPropertyImpl extends TransientPropertyImpl implements DerivedProperty, Serializable {
+  static class DerivedPropertyImpl extends TransientPropertyImpl implements DerivedProperty {
 
     private static final long serialVersionUID = 1;
 
@@ -852,7 +852,7 @@ class PropertyImpl implements Property, Serializable {
     }
   }
 
-  static class DenormalizedViewPropertyImpl extends TransientPropertyImpl implements DenormalizedViewProperty, Serializable {
+  static class DenormalizedViewPropertyImpl extends TransientPropertyImpl implements DenormalizedViewProperty {
 
     private static final long serialVersionUID = 1;
 
@@ -894,7 +894,7 @@ class PropertyImpl implements Property, Serializable {
     }
   }
 
-  static class SubqueryPropertyImpl extends ColumnPropertyImpl implements SubqueryProperty, Serializable {
+  static class SubqueryPropertyImpl extends ColumnPropertyImpl implements SubqueryProperty {
 
     private static final long serialVersionUID = 1;
 
@@ -920,7 +920,7 @@ class PropertyImpl implements Property, Serializable {
     }
   }
 
-  static class BooleanPropertyImpl extends ColumnPropertyImpl implements BooleanProperty, Serializable {
+  static class BooleanPropertyImpl extends ColumnPropertyImpl implements BooleanProperty {
 
     private static final long serialVersionUID = 1;
 
@@ -1008,7 +1008,7 @@ class PropertyImpl implements Property, Serializable {
     }
   }
 
-  static class BlobPropertyImpl extends ColumnPropertyImpl implements BlobProperty, Serializable {
+  static class BlobPropertyImpl extends ColumnPropertyImpl implements BlobProperty {
 
     private static final long serialVersionUID = 1;
 
@@ -1026,7 +1026,7 @@ class PropertyImpl implements Property, Serializable {
     }
   }
 
-  static class AuditPropertyImpl extends ColumnPropertyImpl implements AuditProperty, Serializable {
+  static class AuditPropertyImpl extends ColumnPropertyImpl implements AuditProperty {
 
     private static final long serialVersionUID = 1;
     private final AuditAction auditAction;
@@ -1047,7 +1047,7 @@ class PropertyImpl implements Property, Serializable {
     }
   }
 
-  static class AuditTimePropertyImpl extends AuditPropertyImpl implements AuditTimeProperty, Serializable {
+  static class AuditTimePropertyImpl extends AuditPropertyImpl implements AuditTimeProperty {
 
     private static final long serialVersionUID = 1;
 
@@ -1060,7 +1060,7 @@ class PropertyImpl implements Property, Serializable {
     }
   }
 
-  static class AuditUserPropertyImpl extends AuditPropertyImpl implements AuditUserProperty, Serializable {
+  static class AuditUserPropertyImpl extends AuditPropertyImpl implements AuditUserProperty {
 
     private static final long serialVersionUID = 1;
 

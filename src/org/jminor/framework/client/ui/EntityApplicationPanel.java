@@ -306,7 +306,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   }
 
   /** {@inheritDoc} */
-  public List<? extends MasterDetailPanel> getDetailPanels() {
+  public final List<? extends MasterDetailPanel> getDetailPanels() {
     return Collections.unmodifiableList(mainApplicationPanels);
   }
 

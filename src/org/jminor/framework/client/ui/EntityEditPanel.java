@@ -108,7 +108,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   }
 
   @Override
-  public String toString() {
+  public final String toString() {
     return getEditModel().toString();
   }
 
