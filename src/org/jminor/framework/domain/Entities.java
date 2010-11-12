@@ -580,12 +580,7 @@ public final class Entities {
      */
     @Override
     public boolean isNullable(final ValueMap<String,Object> valueMap, final String key) {
-      final Property property = getProperty(entityID, key);
-      if (property == null) {
-        throw new RuntimeException("Property not found: " + key);
-      }
-
-      return property.isNullable();
+      return getProperty(entityID, key).isNullable();
     }
 
     /** {@inheritDoc} */
