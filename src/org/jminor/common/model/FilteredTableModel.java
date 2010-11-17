@@ -198,7 +198,7 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R>, TableModel, 
    * the given search criteria.
    * @param fromIndex the row index to start searching at, if this is larger than the size of
    * the table model or less than 0 the search starts from either 0 or rowCount - 1 depending on search direction.
-   * @param forward if true then the search is forward, backwards otherwise
+   * @param forward if true then the search is forward (towards higher row indexes), backwards otherwise
    * @param searchText the text to search by
    * @return the search result coordinate, null if nothing was found
    * @see #isRegularExpressionSearch()
@@ -211,7 +211,7 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R>, TableModel, 
    * the given search criteria.
    * @param fromIndex the row index to start searching at, if this is larger than the size of
    * the table model or less than 0 the search starts from either 0 or rowCount - 1 depending on search direction.
-   * @param forward if true then the search is forward, backwards otherwise
+   * @param forward if true then the search is forward (towards higher row indexes), backwards otherwise
    * @param criteria the search criteria
    * @return the search result coordinate, null if nothing was found
    * @see FilterCriteria#include(Object)

@@ -33,6 +33,11 @@ public interface State extends StateObserver {
   StateObserver getObserver();
 
   /**
+   * @return an EventObserver notified each time the state changes
+   */
+  EventObserver getStateChangeObserver();
+
+  /**
    * Notifies any observer that this state has been updated
    */
   void notifyObservers();

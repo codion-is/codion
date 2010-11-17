@@ -89,6 +89,10 @@ public final class States {
       return observer;
     }
 
+    public final EventObserver getStateChangeObserver() {
+      return evtStateChanged.getObserver();
+    }
+
     public void addActivateListener(final ActionListener listener) {
       evtStateActivated.addListener(listener);
     }

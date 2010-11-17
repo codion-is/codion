@@ -21,7 +21,7 @@ import java.text.Collator;
 import java.util.*;
 
 /**
- * A TableModel implentation that supports filtering, searching and sorting.
+ * A TableModel implementation that supports filtering, searching and sorting.
  * <pre>
  * AbstractFilteredTableModel tableModel = ...;
  * JTable table = new JTable(tableModel, tableModel.getColumnModel(), tableModel.getSelectionModel());
@@ -46,6 +46,18 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     /** {@inheritDoc} */
     public int compare(final Object o1, final Object o2) {
       return collator.compare(o1.toString(), o2.toString());
+    }
+  };
+  private final Comparator<R> rowComparator = new Comparator<R>() {
+    public int compare(final R o1, final R o2) {
+      for (final Map.Entry<C, SortingState> state : getOrderedSortingStates()) {
+        final int comparison = compareRows(o1, o2, state.getKey(), state.getValue().getDirective());
+        if (comparison != 0) {
+          return comparison;
+        }
+      }
+
+      return 0;
     }
   };
 
@@ -212,31 +224,20 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   }
 
   /** {@inheritDoc} */
-  @SuppressWarnings({"unchecked"})
   public final Point findNextItemCoordinate(final int fromIndex, final boolean forward, final FilterCriteria<Object> criteria) {
     if (forward) {
       for (int row = fromIndex >= getRowCount() ? 0 : fromIndex; row < getRowCount(); row++) {
-        final Enumeration<TableColumn> visibleColumns = columnModel.getColumns();
-        int index = 0;
-        while (visibleColumns.hasMoreElements()) {
-          final TableColumn column = visibleColumns.nextElement();
-          if (criteria.include(getSearchValueAt(row, (C) column.getIdentifier()))) {
-            return new Point(index, row);
-          }
-          index ++;
+        final Point point = findColumnValue(columnModel.getColumns(), row, criteria);
+        if (point != null) {
+          return point;
         }
       }
     }
     else {
       for (int row = fromIndex < 0 ? getRowCount() - 1 : fromIndex; row >= 0; row--) {
-        final Enumeration<TableColumn> visibleColumns = columnModel.getColumns();
-        int index = 0;
-        while (visibleColumns.hasMoreElements()) {
-          final TableColumn column = visibleColumns.nextElement();
-          if (criteria.include(getSearchValueAt(row, (C) column.getIdentifier()))) {
-            return new Point(index, row);
-          }
-          index++;
+        final Point point = findColumnValue(columnModel.getColumns(), row, criteria);
+        if (point != null) {
+          return point;
         }
       }
     }
@@ -244,7 +245,10 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     return null;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * Refreshes the data in this table model, respecting the selection, filtering as well
+   * as sorting states.
+   */
   public final void refresh() {
     if (isRefreshing) {
       return;
@@ -254,9 +258,6 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
       evtRefreshStarted.fire();
       final List<R> selectedItems = new ArrayList<R>(getSelectedItems());
       doRefresh();
-      if (isSortRequired()) {
-        sortTableModel();
-      }
       setSelectedItems(selectedItems);
     }
     finally {
@@ -494,7 +495,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
           iterator.remove();
         }
       }
-      fireTableChanged(new TableModelEvent(this, 0, Integer.MAX_VALUE, -1));
+      fireTableDataChanged();
       setSelectedItems(selectedItems);
     }
     finally {
@@ -704,6 +705,8 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   /**
    * Refreshes the data in this table model.
+   * @see #clear()
+   * @see #addItems(java.util.List, boolean)
    */
   protected abstract void doRefresh();
 
@@ -747,9 +750,10 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   }
 
   /**
-   * Adds the given items to this table model
+   * Adds the given items to this table model, filtering on the fly and respecting the current sorting state
    * @param items the items to add
-   * @param atFront if true then the items are added at the front
+   * @param atFront if true then the items are added at the front (topmost), otherwise they are added last or
+   * at their position according to the sorting state
    */
   protected final void addItems(final List<R> items, final boolean atFront) {
     for (final R item : items) {
@@ -765,12 +769,10 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
         filteredItems.add(item);
       }
     }
-    if (!atFront) {
-      sortTableModel();
+    if (!atFront && isSortingStateEnabled()) {
+      Collections.sort(visibleItems, rowComparator);
     }
-    else {
-      fireTableDataChanged();
-    }
+    fireTableDataChanged();
   }
 
   /**
@@ -866,16 +868,18 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     });
   }
 
-  private Comparator getComparator(final C columnIdentifier) {
-    final Class columnClass = getColumnClass(columnIdentifier);
-    if (columnClass.equals(String.class)) {
-      return LEXICAL_COMPARATOR;
-    }
-    if (Comparable.class.isAssignableFrom(columnClass)) {
-      return COMPARABLE_COMPARATOR;
+  @SuppressWarnings({"unchecked"})
+  private Point findColumnValue(final Enumeration<TableColumn> visibleColumns, final int row, final FilterCriteria<Object> criteria) {
+    int index = 0;
+    while (visibleColumns.hasMoreElements()) {
+      final TableColumn column = visibleColumns.nextElement();
+      if (criteria.include(getSearchValueAt(row, (C) column.getIdentifier()))) {
+        return new Point(index, row);
+      }
+      index++;
     }
 
-    return LEXICAL_COMPARATOR;
+    return null;
   }
 
   private SortingState getSortingState(final C columnIdentifier) {
@@ -902,7 +906,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
       isSorting = true;
       evtSortingStarted.fire();
       final List<R> selectedItems = new ArrayList<R>(getSelectedItems());
-      sortVisibleItems();
+      Collections.sort(visibleItems, rowComparator);
       fireTableDataChanged();
       setSelectedItems(selectedItems);
     }
@@ -910,22 +914,6 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
       isSorting = false;
       evtSortingDone.fire();
     }
-  }
-
-  private void sortVisibleItems() {
-    Collections.sort(visibleItems, new Comparator<R>() {
-      /** {@inheritDoc} */
-      public int compare(final R o1, final R o2) {
-        for (final Map.Entry<C, SortingState> state : getOrderedSortingStates()) {
-          final int comparison = compareRows(o1, o2, state.getKey(), state.getValue().getDirective());
-          if (comparison != 0) {
-            return comparison;
-          }
-        }
-
-        return 0;
-      }
-    });
   }
 
   private List<Map.Entry<C, SortingState>> getOrderedSortingStates() {
@@ -948,9 +936,9 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     return entries;
   }
 
-  private int compareRows(final R objectOne, final R objectTwo, final C columnIdentifier, final SortingDirective directive) {
-    final Comparable valueOne = getComparable(objectOne, columnIdentifier);
-    final Comparable valueTwo = getComparable(objectTwo, columnIdentifier);
+  private int compareRows(final R rowOne, final R rowTwo, final C columnIdentifier, final SortingDirective directive) {
+    final Comparable valueOne = getComparable(rowOne, columnIdentifier);
+    final Comparable valueTwo = getComparable(rowTwo, columnIdentifier);
     final int comparison;
     // Define null less than everything, except null.
     if (valueOne == null && valueTwo == null) {
@@ -964,7 +952,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     }
     else {
       //noinspection unchecked
-      comparison = getComparator(columnIdentifier).compare(valueOne, valueTwo);
+      comparison = getComparatorForColumn(columnIdentifier).compare(valueOne, valueTwo);
     }
     if (comparison != 0) {
       return directive == SortingDirective.DESCENDING ? -comparison : comparison;
@@ -973,7 +961,19 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     return 0;
   }
 
-  private boolean isSortRequired() {
+  private Comparator getComparatorForColumn(final C columnIdentifier) {
+    final Class columnClass = getColumnClass(columnIdentifier);
+    if (columnClass.equals(String.class)) {
+      return LEXICAL_COMPARATOR;
+    }
+    if (Comparable.class.isAssignableFrom(columnClass)) {
+      return COMPARABLE_COMPARATOR;
+    }
+
+    return LEXICAL_COMPARATOR;
+  }
+
+  private boolean isSortingStateEnabled() {
     for (final SortingState state : sortingStates.values()) {
       if (!state.equals(emptySortingState)) {
         return true;

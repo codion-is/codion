@@ -2283,3 +2283,6 @@
   EntityPanel, navigation now ctrl+alt based, jcombobox seems to prevent alt+arrowKey propagating further up the ancestor tree, arrgh
   Sonar based cleanup
 0.6.1
+  State.getStateChangeObserver() added
+  AbstractFilteredTableModel, some refactoring
+  DefaultColumnSearchModel, an empty string now results in a null bound value

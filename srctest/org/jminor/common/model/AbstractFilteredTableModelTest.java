@@ -3,7 +3,6 @@
  */
 package org.jminor.common.model;
 
-import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -18,6 +17,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+
+import static org.junit.Assert.*;
 
 /**
  * User: Björn Darri
@@ -184,24 +185,24 @@ public final class AbstractFilteredTableModelTest {
 
   @Test
   public void testSorting() {
-    final Collection<Object> done = new ArrayList<Object>();
+    final Collection<Object> actionsPerformed = new ArrayList<Object>();
     final ActionListener listener = new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
-        done.add(new Object());
+        actionsPerformed.add(new Object());
       }
     };
     tableModel.addSortingListener(listener);
 
-    tableModel.refresh();//resets the sorting
+    tableModel.refresh();
     tableModel.setSortingDirective(0, SortingDirective.DESCENDING, false);
     assertEquals(SortingDirective.DESCENDING, tableModel.getSortingDirective(0));
     assertEquals("e", tableModel.getItemAt(0));
-    assertEquals(2, done.size());
+    assertEquals(1, actionsPerformed.size());
     tableModel.setSortingDirective(0, SortingDirective.ASCENDING, false);
     assertEquals(SortingDirective.ASCENDING, tableModel.getSortingDirective(0));
     assertEquals("a", tableModel.getItemAt(0));
     assertEquals(0, tableModel.getSortingPriority(0));
-    assertEquals(3, done.size());
+    assertEquals(2, actionsPerformed.size());
 
     tableModel.setSortingDirective(0, SortingDirective.DESCENDING, false);
     tableModel.refresh();
