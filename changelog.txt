@@ -2286,3 +2286,4 @@
   State.getStateChangeObserver() added
   AbstractFilteredTableModel, some refactoring
   DefaultColumnSearchModel, an empty string now results in a null bound value
+  ItemComboBoxModel.initializeItems() renamed to setItems(), refactored a bit

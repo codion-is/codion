@@ -525,7 +525,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
   }
 
   /** {@inheritDoc} */
-  public MethodLogger getMethodLogger() {
+  public final MethodLogger getMethodLogger() {
     return methodLogger;
   }
 

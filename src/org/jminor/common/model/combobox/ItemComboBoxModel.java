@@ -25,7 +25,7 @@ public class ItemComboBoxModel<T> extends DefaultComboBoxModel implements Refres
 
   /** Constructs a new ItemComboBoxModel. */
   public ItemComboBoxModel() {
-    initializeItems(null);
+    setItems(null);
   }
 
   /**
@@ -41,7 +41,7 @@ public class ItemComboBoxModel<T> extends DefaultComboBoxModel implements Refres
    * @param items the items
    */
   public ItemComboBoxModel(final List<Item<T>> items) {
-    initializeItems(new ArrayList<Item<T>>(items));
+    setItems(items);
   }
 
   /** {@inheritDoc} */
@@ -76,25 +76,24 @@ public class ItemComboBoxModel<T> extends DefaultComboBoxModel implements Refres
   }
 
   /**
-   * Clears the model and adds all the items
+   * Refreshes the data in this combo box model, this default implementation
+   * does nothing, override to provide dynamic data.
+   * @see #setItems(java.util.List)
    */
-  public void refresh() {
-    final List<Item<T>> items = new ArrayList<Item<T>>();
-    for (int i = 0; i < getSize(); i++) {
-      //noinspection unchecked
-      items.add((Item) getElementAt(i));
-    }
+  public void refresh() {}
+
+  /**
+   * Sorts the given list and adds the items to this combo box model.
+   * @param items the items to show in this combo box model
+   */
+  protected final void setItems(final List<Item<T>> items) {
     clear();
-
-    initializeItems(items);
-  }
-
-  protected final void initializeItems(final List<Item<T>> items) {
     if (items == null) {
       return;
     }
 
-    Collections.sort(items, new Comparator<Item<T>>() {
+    final List<Item<T>> itemsToAdd = new ArrayList<Item<T>>(items);
+    Collections.sort(itemsToAdd, new Comparator<Item<T>>() {
       /** Null items at front of list*/
       public int compare(final Item<T> o1, final Item<T> o2) {
         if (o1.getItem() == null && o2.getItem() == null) {
@@ -111,7 +110,7 @@ public class ItemComboBoxModel<T> extends DefaultComboBoxModel implements Refres
       }
     });
 
-    for (final Item item : items) {
+    for (final Item item : itemsToAdd) {
       super.addElement(item);
     }
   }

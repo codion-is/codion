@@ -6,13 +6,14 @@ package org.jminor.common.model.combobox;
 import org.jminor.common.model.Item;
 import org.jminor.common.ui.images.Images;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import javax.swing.ImageIcon;
 import java.util.Arrays;
 import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class ItemComboBoxModelTest {
 
@@ -27,8 +28,7 @@ public class ItemComboBoxModelTest {
     final ItemComboBoxModel model = new ItemComboBoxModel<Integer>(items) {
       @Override
       public void refresh() {
-        clear();
-        initializeItems(items);
+        setItems(items);
       }
     };
 

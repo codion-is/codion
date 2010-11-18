@@ -359,14 +359,15 @@ public class DefaultEntityModel implements EntityModel {
   }
 
   /** {@inheritDoc} */
-  public void initialize(final String masterEntityID, final List<Entity> selectedMasterEntities) {
+  public final void initialize(final String masterEntityID, final List<Entity> selectedMasterEntities) {
     if (containsTableModel()) {
       tableModel.setForeignKeySearchValues(masterEntityID, selectedMasterEntities);
     }
 
     for (final Property.ForeignKeyProperty foreignKeyProperty : Entities.getForeignKeyProperties(entityID, masterEntityID)) {
-      editModel.setValue(foreignKeyProperty.getPropertyID(), selectedMasterEntities != null
-              && !selectedMasterEntities.isEmpty() ? selectedMasterEntities.get(0) : null);
+      final Entity referencedEntity = selectedMasterEntities == null || selectedMasterEntities.isEmpty() ?
+              null : selectedMasterEntities.get(0);
+      editModel.setValue(foreignKeyProperty.getPropertyID(), referencedEntity);
     }
     handleInitialization(masterEntityID, selectedMasterEntities);
   }

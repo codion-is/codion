@@ -49,7 +49,7 @@ public class FormattedTextBeanValueLink extends TextBeanValueLink {
 
   /**
    * This is a very strict implementation, formatted values are considered
-   * invalid until all placeholder characters have been replaced and null is returned
+   * invalid until all placeholder characters have been replaced, resulting in a null return value
    * @return the value, if a formatter is present, the formatted value is returned
    */
   @Override
@@ -68,8 +68,10 @@ public class FormattedTextBeanValueLink extends TextBeanValueLink {
   }
 
   /**
-   * Provides a hook into the value setting mechanism.
-   * @param parsedValue the parsed value returned from the UI component
+   * Provides a hook into the UI value retrieval.
+   * Override to manipulate the value coming from the UI before it
+   * is set in the model.
+   * @param parsedValue the value returned directly from the UI component
    * @return the translated value
    */
   protected Object translate(final Object parsedValue) {

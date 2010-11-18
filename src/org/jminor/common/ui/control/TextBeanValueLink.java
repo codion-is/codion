@@ -75,6 +75,10 @@ public class TextBeanValueLink extends AbstractBeanValueLink implements Document
   }
 
   /**
+   * Returns a String representation of the given value, used when setting the value in the UI.
+   * This default implementation simply returns value.toString() or null if the value is null.
+   * Override to provide specific (such as formatted) string representations of the model value
+   * when setting the value in the UI.
    * @param value the value
    * @return the value as a string
    */
