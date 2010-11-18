@@ -728,9 +728,15 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
       throw new IllegalStateException("No main entity panels provided");
     }
     for (final EntityPanelProvider provider : mainApplicationPanelProviders) {
-      final EntityPanel entityPanel = provider.createPanel(applicationModel.getConnectionProvider());
+      final EntityPanel entityPanel;
+      if (applicationModel.containsApplicationModel(provider.getEntityID())) {
+        entityPanel = provider.createPanel(applicationModel.getMainApplicationModel(provider.getEntityID()));
+      }
+      else {
+        entityPanel = provider.createPanel(applicationModel.getConnectionProvider());
+        applicationModel.addMainApplicationModel(entityPanel.getModel());
+      }
       mainApplicationPanels.add(entityPanel);
-      applicationModel.addMainApplicationModel(entityPanel.getModel());
       final String caption = Util.nullOrEmpty(entityPanel.getCaption()) ?  provider.getCaption() : entityPanel.getCaption();
       applicationTabPane.addTab(caption, entityPanel);
       if (entityPanel.getEditPanel() != null) {

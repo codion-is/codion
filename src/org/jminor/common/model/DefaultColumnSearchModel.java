@@ -125,7 +125,7 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
   /** {@inheritDoc} */
   public final Object getUpperBound() {
     if (type == Types.VARCHAR) {
-      if (upperBound == null || ((String) upperBound).isEmpty()) {
+      if (upperBound == null || (upperBound instanceof String && ((String) upperBound).isEmpty())) {
         return null;
       }
       if (automaticWildcard) {
@@ -152,7 +152,7 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
   /** {@inheritDoc} */
   public final Object getLowerBound() {
     if (type == Types.VARCHAR) {
-      if (lowerBound == null || ((String) lowerBound).isEmpty()) {
+      if (lowerBound == null || (lowerBound instanceof String && ((String) lowerBound).isEmpty())) {
         return null;
       }
       if (automaticWildcard) {

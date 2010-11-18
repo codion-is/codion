@@ -2287,3 +2287,5 @@
   AbstractFilteredTableModel, some refactoring
   DefaultColumnSearchModel, an empty string now results in a null bound value
   ItemComboBoxModel.initializeItems() renamed to setItems(), refactored a bit
+  EntityApplicationModel.containsApplicationModel() added and overloaded
+  DefaultColumnSearchModel, the above fix now works with collection upper/lower bounds

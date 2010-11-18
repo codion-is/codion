@@ -78,6 +78,33 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
   }
 
   /** {@inheritDoc} */
+  public final boolean containsApplicationModel(final Class<? extends EntityModel> modelClass) {
+    for (final EntityModel applicationModel : mainApplicationModels) {
+      if (applicationModel.getClass().equals(modelClass)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /** {@inheritDoc} */
+  public final boolean containsApplicationModel(final String entityID) {
+    for (final EntityModel applicationModel : mainApplicationModels) {
+      if (applicationModel.getEntityID().equals(entityID)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /** {@inheritDoc} */
+  public final boolean containsApplicationModel(final EntityModel applicationModel) {
+    return mainApplicationModels.contains(applicationModel);
+  }
+
+  /** {@inheritDoc} */
   public final List<? extends EntityModel> getMainApplicationModels() {
     return Collections.unmodifiableList(mainApplicationModels);
   }
@@ -109,9 +136,9 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
 
   /** {@inheritDoc} */
   public final EntityModel getMainApplicationModel(final String entityID) {
-    for (final EntityModel detailModel : mainApplicationModels) {
-      if (detailModel.getEntityID().equals(entityID)) {
-        return detailModel;
+    for (final EntityModel mainModel : mainApplicationModels) {
+      if (mainModel.getEntityID().equals(entityID)) {
+        return mainModel;
       }
     }
 

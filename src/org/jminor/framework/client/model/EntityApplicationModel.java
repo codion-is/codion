@@ -49,6 +49,24 @@ public interface EntityApplicationModel extends Refreshable {
   EntityModel addMainApplicationModel(final EntityModel detailModel);
 
   /**
+   * @param modelClass the application model class
+   * @return true if this model contains an application model of the given class
+   */
+  boolean containsApplicationModel(final Class<? extends EntityModel> modelClass);
+
+  /**
+   * @param entityID the entity ID
+   * @return true if this model contains an application model for the given entity ID
+   */
+  boolean containsApplicationModel(final String entityID);
+
+  /**
+   * @param entityModel the detail model
+   * @return true if this model contains the given application model
+   */
+  boolean containsApplicationModel(final EntityModel entityModel);
+
+  /**
    * @return an unmodifiable List containing the main application models
    */
   List<? extends EntityModel> getMainApplicationModels();
