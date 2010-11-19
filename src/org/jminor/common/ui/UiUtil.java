@@ -598,7 +598,7 @@ public final class UiUtil {
     if (closeAction != null) {
       dialog.addWindowListener(new WindowAdapter() {
         @Override
-        public void windowClosing(final WindowEvent e) {
+        public void windowClosed(final WindowEvent e) {
           closeAction.actionPerformed(new ActionEvent(dialog, -1, null));
         }
       });

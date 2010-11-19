@@ -2289,3 +2289,6 @@
   ItemComboBoxModel.initializeItems() renamed to setItems(), refactored a bit
   EntityApplicationModel.containsApplicationModel() added and overloaded
   DefaultColumnSearchModel, the above fix now works with collection upper/lower bounds
+  MaximumMatch, reverted back to a past version, a bug must have creeped in during refactoring
+  UiUtil.showInDialog() now calls the close action on windowClosed() instead of windowClosing()
+  EntityPanel, navigation and resizing actions added to editControlPanel as well, some minor behavioural changes

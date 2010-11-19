@@ -26,30 +26,25 @@ public final class MaximumMatch extends PlainDocument {
   // flag to indicate if setSelectedItem has been called
   // subsequent calls to remove/insertString should be ignored
   private boolean selecting = false;
-  private final boolean hidePopupOnFocusLoss;
+  private boolean hidePopupOnFocusLoss;
   private boolean hitBackspace = false;
   private boolean hitBackspaceOnSelection;
 
-  /**
-   * Activates the maximum match on the given combo box
-   * @param comboBox the combo box
-   */
   public MaximumMatch(final JComboBox comboBox) {
     this.comboBox = comboBox;
     model = comboBox.getModel();
     editor = (JTextComponent) comboBox.getEditor().getEditorComponent();
     editor.setDocument(this);
     comboBox.addActionListener(new ActionListener() {
-      /** {@inheritDoc} */
-      public void actionPerformed(final ActionEvent e) {
+      public void actionPerformed(ActionEvent e) {
         if (!selecting) {
           highlightCompletedText(0);
         }
       }
     });
-    editor.addKeyListener(new MatchKeyListener());
+    editor.addKeyListener(new MatchKeyAdapter());
     // Bug 5100422 on Java 1.5: Editable JComboBox won't hide popup when tabbing out
-    hidePopupOnFocusLoss=System.getProperty("java.version").startsWith("1.5");
+    hidePopupOnFocusLoss = System.getProperty("java.version").startsWith("1.5");
     // Highlight whole text when gaining focus
     editor.addFocusListener(new FocusAdapter() {
       @Override
@@ -66,18 +61,13 @@ public final class MaximumMatch extends PlainDocument {
     });
     // Handle initially selected object
     final Object selected = comboBox.getSelectedItem();
-    if (selected!=null) {
+    if (selected != null) {
       setText(selected.toString());
     }
     highlightCompletedText(0);
   }
 
-  /**
-   * Enables maximum match for the given combo box.
-   * A side effect of this method is that the combo box is made editable.
-   * @param comboBox the combo box
-   */
-  public static void enable(final JComboBox comboBox) {
+  public static void enable(JComboBox comboBox) {
     // has to be editable
     comboBox.setEditable(true);
     // change the editor's document
@@ -86,8 +76,8 @@ public final class MaximumMatch extends PlainDocument {
 
   /** {@inheritDoc} */
   @Override
-  public void remove(final int offs, final int len) throws BadLocationException {
-    int offset = offs;
+  public void remove(final int offset, final int len) throws BadLocationException {
+    int offs = offset;
     // return immediately when selecting an item
     if (selecting) {
       return;
@@ -95,62 +85,62 @@ public final class MaximumMatch extends PlainDocument {
     if (hitBackspace) {
       // user hit backspace => move the selection backwards
       // old item keeps being selected
-      if (offset > 0) {
+      if (offs > 0) {
         if (hitBackspaceOnSelection) {
-          offset--;
+          offs--;
         }
       }
       else {
         // User hit backspace with the cursor positioned on the start => beep
         UIManager.getLookAndFeel().provideErrorFeedback(comboBox);
       }
-      highlightCompletedText(offset);
+      highlightCompletedText(offs);
     }
     else {
-      super.remove(offset, len);
+      super.remove(offs, len);
     }
   }
 
   /** {@inheritDoc} */
   @Override
-  public void insertString(final int offs, final String str, final AttributeSet a) throws BadLocationException {
-    int offset = offs;
+  public void insertString(final int offset, final String str, final AttributeSet a) throws BadLocationException {
+    int offs = offset;
     // return immediately when selecting an item
     if (selecting || model.getSize() == 0) {
       return;
     }
     // insert the string into the document
-    super.insertString(offset, str, a);
+    super.insertString(offs, str, a);
     // lookup and select a matching item
     boolean match = false;
     Object item = lookupItem(getText(0, getLength()));
     if (item != null) {
-      match=true;
+      match = true;
       setSelectedItem(item);
     }
     else {
       // keep old item selected if there is no match, possibly a null item
       item = comboBox.getSelectedItem();
       // imitate no insert (later on offs will be incremented by str.length(): selection won't move forward)
-      offset = offset - str.length();
+      offs = offs-str.length();
       // provide feedback to the user that his input has been received but can not be accepted
       UIManager.getLookAndFeel().provideErrorFeedback(comboBox);
     }
 
     if (match) {
-      offset = getMaximumMatchingOffset(getText(0, getLength()), item);
+      offs = getMaximumMatchingOffset(getText(0, getLength()), item);
     }
     else {
-      offset += str.length();
+      offs += str.length();
     }
 
     setText(item == null ? "" : item.toString());
     // select the completed part
-    highlightCompletedText(offset);
+    highlightCompletedText(offs);
   }
 
   /**
-   * @param text the text to set
+   * @param text Value to set for property 'text'.
    */
   private void setText(final String text) {
     try {
@@ -159,7 +149,7 @@ public final class MaximumMatch extends PlainDocument {
       super.insertString(0, text, null);
     }
     catch (BadLocationException e) {
-      throw new RuntimeException(e);
+      throw new RuntimeException(e.toString());
     }
   }
 
@@ -169,7 +159,7 @@ public final class MaximumMatch extends PlainDocument {
   }
 
   /**
-   * @param item the item to select
+   * @param item Value to set for property 'selectedItem'.
    */
   private void setSelectedItem(final Object item) {
     selecting = true;
@@ -183,13 +173,14 @@ public final class MaximumMatch extends PlainDocument {
     if (selectedItem != null && startsWithIgnoreCase(selectedItem.toString(), pattern)) {
       return selectedItem;
     }
-    // iterate over all items
-    final int n = model.getSize();
-    for (int i=0; i < n; i++) {
-      final Object currentItem = model.getElementAt(i);
-      // current item starts with the pattern?
-      if (startsWithIgnoreCase(currentItem.toString(), pattern)) {
-        return currentItem;
+    else {
+      // iterate over all items
+      for (int i = 0, n = model.getSize(); i < n; i++) {
+        final Object currentItem = model.getElementAt(i);
+        // current item starts with the pattern?
+        if (startsWithIgnoreCase(currentItem.toString(), pattern)) {
+          return currentItem;
+        }
       }
     }
     // no item starts with the pattern => return null
@@ -198,25 +189,21 @@ public final class MaximumMatch extends PlainDocument {
 
   // checks if str1 starts with str2 - ignores case
   private boolean startsWithIgnoreCase(final String str1, final String str2) {
-    return str1.toLowerCase().startsWith(str2.toLowerCase());
+    return str1.toUpperCase().startsWith(str2.toUpperCase());
   }
 
   // calculates how many characters are predetermined by the given pattern.
   private int getMaximumMatchingOffset(final String pattern, final Object selectedItem) {
-    final String selectedAsString=selectedItem.toString();
-    int match=selectedAsString.length();
+    final String selectedAsString = selectedItem.toString();
+    int match = selectedAsString.length();
     // look for items that match the given pattern
-    final int n = model.getSize();
-    for (int i=0; i < n; i++) {
-      final Object currentItem = model.getElementAt(i);
-      if (currentItem == null) {
-        return 0;
-      }
-      final String itemAsString = currentItem.toString();
+    for (int i = 0, n = model.getSize(); i < n; i++) {
+      Object currentItem = model.getElementAt(i);
+      String itemAsString = currentItem.toString();
       if (startsWithIgnoreCase(itemAsString, pattern)) {
         // current item matches the pattern
         // how many leading characters have the selected and the current item in common?
-        final int tmpMatch=equalStartLength(itemAsString, selectedAsString);
+        final int tmpMatch = equalStartLength(itemAsString, selectedAsString);
         if (tmpMatch < match) {
           match = tmpMatch;
         }
@@ -229,35 +216,34 @@ public final class MaximumMatch extends PlainDocument {
   private static int equalStartLength(final String str1, final String str2) {
     final char[] ch1 = str1.toUpperCase().toCharArray();
     final char[] ch2 = str2.toUpperCase().toCharArray();
-    final int n = ch1.length>ch2.length?ch2.length:ch1.length;
-    for (int i=0; i<n; i++) {
-      if (ch1[i]!=ch2[i]) {
+    final int n = ch1.length > ch2.length ? ch2.length : ch1.length;
+    for (int i = 0; i<n; i++) {
+      if (ch1[i] != ch2[i]) {
         return i;
       }
     }
     return n;
   }
 
-  private final class MatchKeyListener extends KeyAdapter {
+  private final class MatchKeyAdapter extends KeyAdapter {
     @Override
-    public void keyPressed(final KeyEvent e) {
+    public void keyPressed(KeyEvent e) {
       if (comboBox.isDisplayable() && Character.isLetterOrDigit(e.getKeyChar())) {
         comboBox.setPopupVisible(true);
       }
-      hitBackspace=false;
+      hitBackspace = false;
       switch (e.getKeyCode()) {
         // determine if the pressed key is backspace (needed by the remove method)
-        case KeyEvent.VK_BACK_SPACE:
-          hitBackspace=true;
-          hitBackspaceOnSelection=editor.getSelectionStart()!=editor.getSelectionEnd();
-          return;
+        case KeyEvent.VK_BACK_SPACE :
+          hitBackspace = true;
+          hitBackspaceOnSelection = editor.getSelectionStart() != editor.getSelectionEnd();
+          break;
         // ignore delete key
-        case KeyEvent.VK_DELETE:
+        case KeyEvent.VK_DELETE :
           e.consume();
           comboBox.getToolkit().beep();
-          return;
+          break;
       }
-      editor.getParent().dispatchEvent(e);
     }
   }
 }

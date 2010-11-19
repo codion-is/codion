@@ -1,0 +1,19 @@
+package ${PACKAGE_NAME};
+
+import org.jminor.framework.client.model.EntityEditModel;
+import org.jminor.framework.client.ui.EntityEditPanel;
+
+/**
+ * Edit panel for ${entityName} entities.
+ */
+public final class ${entityName}EditPanel extends EntityEditPanel {
+
+  public ${entityName}EditPanel(final EntityEditModel editModel) {
+    super(editModel);
+  }
+
+  @Override
+  protected void initializeUI() {
+
+  }
+}

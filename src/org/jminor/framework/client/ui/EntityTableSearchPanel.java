@@ -24,7 +24,6 @@ public interface EntityTableSearchPanel {
 
   /**
    * Requests the focus for this search panel
-   * @return true if the focus request was granted
    */
-  boolean requestFocusInWindow();
+  void requestFocus();
 }

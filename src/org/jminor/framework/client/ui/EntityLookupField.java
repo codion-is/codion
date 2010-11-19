@@ -108,58 +108,48 @@ public final class EntityLookupField extends JTextField {
   }
 
   private boolean selectEntities(final List<Entity> entities) {
-    if (entities.isEmpty()) {
-      JOptionPane.showMessageDialog(this, FrameworkMessages.get(FrameworkMessages.NO_RESULTS_FROM_CRITERIA));
-      return false;
-    }
-    else if (entities.size() == 1) {
-      model.setSelectedEntities(entities);
-      return true;
-    }
-    else {
-      Collections.sort(entities, new EntityComparator());
-      final JList list = new JList(entities.toArray());
-      final Window owner = UiUtil.getParentWindow(EntityLookupField.this);
-      final JDialog dialog = new JDialog(owner, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY));
-      dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-      final Action okAction = new AbstractAction(Messages.get(Messages.OK)) {
-        /** {@inheritDoc} */
-        public void actionPerformed(final ActionEvent e) {
-          getModel().setSelectedEntities(toEntityList(list.getSelectedValues()));
-          dialog.dispose();
-        }
-      };
-      final Action cancelAction = new UiUtil.DialogDisposeAction(dialog, Messages.get(Messages.CANCEL));
-      list.setSelectionMode(model.isMultipleSelectionAllowed() ?
-              ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);
-      final JButton btnOk  = new JButton(okAction);
-      final JButton btnCancel = new JButton(cancelAction);
-      final String cancelMnemonic = Messages.get(Messages.CANCEL_MNEMONIC);
-      final String okMnemonic = Messages.get(Messages.OK_MNEMONIC);
-      btnOk.setMnemonic(okMnemonic.charAt(0));
-      btnCancel.setMnemonic(cancelMnemonic.charAt(0));
-      UiUtil.addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, cancelAction);
-      list.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
-              KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "none");
-      list.addMouseListener(new LookupFieldMouseListener(okAction));
-      dialog.setLayout(new BorderLayout());
-      final JScrollPane scroller = new JScrollPane(list);
-      dialog.add(scroller, BorderLayout.CENTER);
-      final JPanel buttonPanel = new JPanel(new GridLayout(1,2,5,5));
-      buttonPanel.add(btnOk);
-      buttonPanel.add(btnCancel);
-      final JPanel buttonBasePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-      buttonBasePanel.add(buttonPanel);
-      dialog.getRootPane().setDefaultButton(btnOk);
-      dialog.add(buttonBasePanel, BorderLayout.SOUTH);
-      dialog.pack();
-      dialog.setLocationRelativeTo(owner);
-      dialog.setModal(true);
-      dialog.setResizable(true);
-      dialog.setVisible(true);
+    Collections.sort(entities, new EntityComparator());
+    final JList list = new JList(entities.toArray());
+    final Window owner = UiUtil.getParentWindow(EntityLookupField.this);
+    final JDialog dialog = new JDialog(owner, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY));
+    dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+    final Action okAction = new AbstractAction(Messages.get(Messages.OK)) {
+      /** {@inheritDoc} */
+      public void actionPerformed(final ActionEvent e) {
+        getModel().setSelectedEntities(toEntityList(list.getSelectedValues()));
+        dialog.dispose();
+      }
+    };
+    final Action cancelAction = new UiUtil.DialogDisposeAction(dialog, Messages.get(Messages.CANCEL));
+    list.setSelectionMode(model.isMultipleSelectionAllowed() ?
+            ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);
+    final JButton btnOk  = new JButton(okAction);
+    final JButton btnCancel = new JButton(cancelAction);
+    final String cancelMnemonic = Messages.get(Messages.CANCEL_MNEMONIC);
+    final String okMnemonic = Messages.get(Messages.OK_MNEMONIC);
+    btnOk.setMnemonic(okMnemonic.charAt(0));
+    btnCancel.setMnemonic(cancelMnemonic.charAt(0));
+    UiUtil.addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, cancelAction);
+    list.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
+            KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "none");
+    list.addMouseListener(new LookupFieldMouseListener(okAction));
+    dialog.setLayout(new BorderLayout());
+    final JScrollPane scroller = new JScrollPane(list);
+    dialog.add(scroller, BorderLayout.CENTER);
+    final JPanel buttonPanel = new JPanel(new GridLayout(1,2,5,5));
+    buttonPanel.add(btnOk);
+    buttonPanel.add(btnCancel);
+    final JPanel buttonBasePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+    buttonBasePanel.add(buttonPanel);
+    dialog.getRootPane().setDefaultButton(btnOk);
+    dialog.add(buttonBasePanel, BorderLayout.SOUTH);
+    dialog.pack();
+    dialog.setLocationRelativeTo(owner);
+    dialog.setModal(true);
+    dialog.setResizable(true);
+    dialog.setVisible(true);
 
-      return model.searchStringRepresentsSelected();
-    }
+    return model.searchStringRepresentsSelected();
   }
 
   private void bindProperty() {
@@ -201,10 +191,7 @@ public final class EntityLookupField extends JTextField {
           getModel().setSelectedEntity(null);
         }
         else if (!getText().equals(searchHint.getSearchHint()) && !performingLookup && !model.searchStringRepresentsSelected()) {
-          final boolean entitiesSelected = performLookup();
-          if (!entitiesSelected) {
-            requestFocusInWindow();
-          }
+          performLookup(false);
         }
         updateColors();
       }
@@ -220,14 +207,14 @@ public final class EntityLookupField extends JTextField {
     return new AbstractAction(FrameworkMessages.get(FrameworkMessages.SEARCH)) {
       /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
-        if (performLookup() && transferFocusAction.equals(enterAction)) {
+        if (performLookup(true) && transferFocusAction.equals(enterAction)) {
           transferFocus();
         }
       }
     };
   }
 
-  private boolean performLookup() {
+  private boolean performLookup(final boolean promptUser) {
     try {
       performingLookup = true;
       if (model.getSearchString().isEmpty()) {
@@ -253,7 +240,19 @@ public final class EntityLookupField extends JTextField {
           finally {
             UiUtil.setWaitCursor(false, this);
           }
-          return selectEntities(queryResult);
+          if (queryResult.size() == 1) {
+            model.setSelectedEntities(queryResult);
+            return true;
+          }
+          else if (promptUser) {
+            if (queryResult.isEmpty()) {
+              JOptionPane.showMessageDialog(this, FrameworkMessages.get(FrameworkMessages.NO_RESULTS_FROM_CRITERIA));
+              return false;
+            }
+            else {
+              return selectEntities(queryResult);
+            }
+          }
         }
       }
     }
