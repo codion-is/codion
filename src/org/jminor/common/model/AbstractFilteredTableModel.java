@@ -495,6 +495,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
           iterator.remove();
         }
       }
+      Collections.sort(visibleItems, rowComparator);
       fireTableDataChanged();
       setSelectedItems(selectedItems);
     }
