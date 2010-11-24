@@ -2293,4 +2293,3 @@
   UiUtil.showInDialog() now calls the close action on windowClosed() instead of windowClosing()
   EntityPanel, navigation and resizing actions added to editControlPanel as well, some minor behavioural changes
   AbstractFilteredTableModel, filterContents() now sorts the table model afterwards
-  EntityApplicationPanel.startApplication() now logs missing icon resource instead of failing
