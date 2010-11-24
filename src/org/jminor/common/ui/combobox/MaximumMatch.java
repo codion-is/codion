@@ -197,7 +197,7 @@ public final class MaximumMatch extends PlainDocument {
     final String selectedAsString = selectedItem.toString();
     int match = selectedAsString.length();
     // look for items that match the given pattern
-    for (int i = 0, n = model.getSize(); i < n; i++) {
+    for (int i = 0; i < model.getSize(); i++) {
       final Object currentItem = model.getElementAt(i);
       final String itemAsString = currentItem.toString();
       if (startsWithIgnoreCase(itemAsString, pattern)) {
@@ -217,7 +217,7 @@ public final class MaximumMatch extends PlainDocument {
     final char[] ch1 = str1.toUpperCase().toCharArray();
     final char[] ch2 = str2.toUpperCase().toCharArray();
     final int n = ch1.length > ch2.length ? ch2.length : ch1.length;
-    for (int i = 0; i<n; i++) {
+    for (int i = 0; i < n; i++) {
       if (ch1[i] != ch2[i]) {
         return i;
       }
