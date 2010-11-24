@@ -23,10 +23,10 @@ public final class MaximumMatch extends PlainDocument {
   private final JComboBox comboBox;
   private final ComboBoxModel model;
   private final JTextComponent editor;
+  private final boolean hidePopupOnFocusLoss;
   // flag to indicate if setSelectedItem has been called
   // subsequent calls to remove/insertString should be ignored
   private boolean selecting = false;
-  private boolean hidePopupOnFocusLoss;
   private boolean hitBackspace = false;
   private boolean hitBackspaceOnSelection;
 
@@ -36,7 +36,7 @@ public final class MaximumMatch extends PlainDocument {
     editor = (JTextComponent) comboBox.getEditor().getEditorComponent();
     editor.setDocument(this);
     comboBox.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         if (!selecting) {
           highlightCompletedText(0);
         }
@@ -67,7 +67,7 @@ public final class MaximumMatch extends PlainDocument {
     highlightCompletedText(0);
   }
 
-  public static void enable(JComboBox comboBox) {
+  public static void enable(final JComboBox comboBox) {
     // has to be editable
     comboBox.setEditable(true);
     // change the editor's document
@@ -198,8 +198,8 @@ public final class MaximumMatch extends PlainDocument {
     int match = selectedAsString.length();
     // look for items that match the given pattern
     for (int i = 0, n = model.getSize(); i < n; i++) {
-      Object currentItem = model.getElementAt(i);
-      String itemAsString = currentItem.toString();
+      final Object currentItem = model.getElementAt(i);
+      final String itemAsString = currentItem.toString();
       if (startsWithIgnoreCase(itemAsString, pattern)) {
         // current item matches the pattern
         // how many leading characters have the selected and the current item in common?
@@ -227,7 +227,7 @@ public final class MaximumMatch extends PlainDocument {
 
   private final class MatchKeyAdapter extends KeyAdapter {
     @Override
-    public void keyPressed(KeyEvent e) {
+    public void keyPressed(final KeyEvent e) {
       if (comboBox.isDisplayable() && Character.isLetterOrDigit(e.getKeyChar())) {
         comboBox.setPopupVisible(true);
       }
