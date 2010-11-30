@@ -526,7 +526,7 @@ public class DefaultEntityModel implements EntityModel {
     final List<Entity> activeEntities;
     if (containsTableModel()) {
       if (tableModel.isSelectionEmpty()) {
-        activeEntities = null;
+        activeEntities = Collections.emptyList();
       }
       else {
         activeEntities = tableModel.getSelectedItems();
@@ -534,7 +534,7 @@ public class DefaultEntityModel implements EntityModel {
     }
     else {
       if (editModel.isEntityNew()) {
-        activeEntities = null;
+        activeEntities = Collections.emptyList();
       }
       else {
         activeEntities = Arrays.asList(editModel.getEntityCopy());

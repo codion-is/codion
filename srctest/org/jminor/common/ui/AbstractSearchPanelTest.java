@@ -3,10 +3,15 @@ package org.jminor.common.ui;
 import org.jminor.common.model.ColumnSearchModel;
 import org.jminor.common.model.DefaultColumnSearchModel;
 
-import static org.junit.Assert.*;
 import org.junit.Test;
 
 import java.sql.Types;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class AbstractSearchPanelTest {
 
@@ -18,7 +23,7 @@ public class AbstractSearchPanelTest {
     assertEquals(model, panel.getModel());
     assertNotNull(panel.getUpperBoundField());
     assertNotNull(panel.getLowerBoundField());
-    assertNull(panel.getLastPosition());
+    assertNull(panel.getLastDialogPosition());
     assertFalse(panel.isDialogActive());
     assertFalse(panel.isDialogShowing());
     assertFalse(panel.isAdvancedSearchOn());

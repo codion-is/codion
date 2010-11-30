@@ -5,6 +5,7 @@ package org.jminor.common.ui;
 
 import org.jminor.common.model.ColumnSearchModel;
 import org.jminor.common.model.DateUtil;
+import org.jminor.common.model.Item;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.State;
 import org.jminor.common.model.StateObserver;
@@ -78,21 +79,19 @@ public class ColumnSearchPanel<K> extends JPanel {
    */
   private final JToggleButton toggleSearchAdvanced;
   private final State stIsDialogActive = States.state();
-
   private final State stIsDialogShowing = States.state();
-  private JDialog dialog;
+  private final State stAdvancedSearch = States.state();
+  private final State stTwoSearchFields;
 
-  private Point lastPosition;
+  private JDialog dialog;
+  private Point lastDialogPosition;
   /**
    * A JComboBox for selecting the search type
    */
   private final JComboBox searchTypeCombo;
   private final JComponent upperBoundField;
-
   private final JComponent lowerBoundField;
-  private final State stAdvancedSearch = States.state();
 
-  private final State stTwoSearchFields = States.state();
   private final boolean includeToggleSearchEnabledBtn;
   private final boolean includeToggleSearchAdvancedBtn;
 
@@ -158,6 +157,8 @@ public class ColumnSearchPanel<K> extends JPanel {
     this.toggleSearchAdvanced = ControlProvider.createToggleButton(
             Controls.toggleControl(this, "advancedSearchOn", null, stAdvancedSearch.getObserver()));
     toggleSearchAdvanced.setIcon(Images.loadImage(Images.IMG_PREFERENCES_16));
+    stTwoSearchFields = States.state(model.getSearchType() == SearchType.WITHIN_RANGE
+                || model.getSearchType() == SearchType.OUTSIDE_RANGE);
     linkComponentsToLockedState();
     initUI();
     initializePanel();
@@ -174,8 +175,8 @@ public class ColumnSearchPanel<K> extends JPanel {
   /**
    * @return the last screen position
    */
-  public final Point getLastPosition() {
-    return lastPosition;
+  public final Point getLastDialogPosition() {
+    return lastDialogPosition;
   }
 
   /**
@@ -197,7 +198,7 @@ public class ColumnSearchPanel<K> extends JPanel {
       initSearchDlg(dialogParent);
       Point actualPosition = position;
       if (position == null) {
-        actualPosition = lastPosition;
+        actualPosition = lastDialogPosition;
       }
       if (actualPosition == null) {
         actualPosition = new Point(0, 0);
@@ -216,8 +217,8 @@ public class ColumnSearchPanel<K> extends JPanel {
       if (isDialogShowing()) {
         hideDialog();
       }
-      lastPosition = dialog.getLocation();
-      lastPosition.y = lastPosition.y + dialog.getHeight();
+      lastDialogPosition = dialog.getLocation();
+      lastDialogPosition.y = lastDialogPosition.y + dialog.getHeight();
       dialog.dispose();
       dialog = null;
 
@@ -429,10 +430,10 @@ public class ColumnSearchPanel<K> extends JPanel {
 
   private void initializePanel() {
     if (stAdvancedSearch.isActive()) {
-      initAdvancedPanel();
+      initializeAdvancedPanel();
     }
     else {
-      initSimplePanel();
+      initializeSimplePanel();
     }
   }
 
@@ -440,7 +441,7 @@ public class ColumnSearchPanel<K> extends JPanel {
     final ItemComboBoxModel comboBoxModel = new ItemComboBoxModel();
     for (final SearchType type : SearchType.values()) {
       if (searchTypes.contains(type)) {
-        comboBoxModel.addElement(new ItemComboBoxModel.IconItem<SearchType>(type, Images.loadImage(type.getImageName())));
+        comboBoxModel.addElement(new Item<SearchType>(type, type.getCaption()));
       }
     }
     final JComboBox comboBox = new SteppedComboBox(comboBoxModel);
@@ -457,7 +458,7 @@ public class ColumnSearchPanel<K> extends JPanel {
     this.toggleSearchAdvanced.setPreferredSize(new Dimension(ENABLED_BUTTON_SIZE, ENABLED_BUTTON_SIZE));
   }
 
-  private void initSimplePanel() {
+  private void initializeSimplePanel() {
     removeAll();
     ((FlexibleGridLayout)getLayout()).setRows(1);
     final JPanel basePanel = new JPanel(new BorderLayout(1,1));
@@ -485,7 +486,7 @@ public class ColumnSearchPanel<K> extends JPanel {
     revalidate();
   }
 
-  private void initAdvancedPanel() {
+  private void initializeAdvancedPanel() {
     removeAll();
     ((FlexibleGridLayout) getLayout()).setRows(2);
     final JPanel inputPanel = new JPanel(new BorderLayout(1,1));

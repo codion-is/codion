@@ -11,9 +11,20 @@ import org.jminor.common.model.SortingDirective;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.control.Control;
 import org.jminor.common.ui.control.Controls;
-import org.jminor.common.ui.textfield.SearchFieldHint;
+import org.jminor.common.ui.textfield.TextFieldHint;
 
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.Icon;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.UIManager;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
@@ -214,7 +225,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
     final JTextField txtSearch = new JTextField();
     txtSearch.setBackground((Color) UIManager.getLookAndFeel().getDefaults().get("TextField.inactiveBackground"));
     txtSearch.setColumns(8);
-    SearchFieldHint.enable(txtSearch);
+    TextFieldHint.enable(txtSearch, Messages.get(Messages.SEARCH_FIELD_HINT));
     txtSearch.getDocument().addDocumentListener(new DocumentAdapter() {
       /** {@inheritDoc} */
       @Override

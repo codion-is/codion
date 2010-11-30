@@ -45,7 +45,7 @@ public class ItemComboBoxModelTest {
     model.setSelectedItem(4);
     assertTrue("The item representing 4 should be selected", model.getSelectedItem().equals(items.get(3)));
 
-    final ImageIcon icon = Images.loadImage("Equals60x16.gif");
+    final ImageIcon icon = Images.loadImage("jminor_logo32.gif");
     final ItemComboBoxModel<String> iconModel = new ItemComboBoxModel<String>(new ItemComboBoxModel.IconItem<String>("test", icon));
     iconModel.setSelectedItem("test");
     final ItemComboBoxModel.IconItem item = (ItemComboBoxModel.IconItem) iconModel.getSelectedItem();

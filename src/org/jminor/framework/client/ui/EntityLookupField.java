@@ -7,12 +7,25 @@ import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.TextBeanValueLink;
-import org.jminor.common.ui.textfield.SearchFieldHint;
+import org.jminor.common.ui.textfield.TextFieldHint;
 import org.jminor.framework.client.model.EntityLookupModel;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.i18n.FrameworkMessages;
 
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.KeyStroke;
+import javax.swing.ListSelectionModel;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
@@ -38,7 +51,7 @@ import java.util.List;
 public final class EntityLookupField extends JTextField {
 
   private final EntityLookupModel model;
-  private final SearchFieldHint searchHint;
+  private final TextFieldHint searchHint;
 
   private final Action transferFocusAction = new AbstractAction() {
     /** {@inheritDoc} */
@@ -57,7 +70,7 @@ public final class EntityLookupField extends JTextField {
   public EntityLookupField(final EntityLookupModel lookupModel) {
     Util.rejectNullValue(lookupModel, "lookupModel");
     this.model = lookupModel;
-    this.searchHint = SearchFieldHint.enable(this);
+    this.searchHint = TextFieldHint.enable(this, Messages.get(Messages.SEARCH_FIELD_HINT));
     setToolTipText(lookupModel.getDescription());
     setComponentPopupMenu(initializePopupMenu());
     addActionListener(initializeLookupAction());
@@ -190,7 +203,7 @@ public final class EntityLookupField extends JTextField {
         if (getText().isEmpty()) {
           getModel().setSelectedEntity(null);
         }
-        else if (!getText().equals(searchHint.getSearchHint()) && !performingLookup && !model.searchStringRepresentsSelected()) {
+        else if (!getText().equals(searchHint.getHintText()) && !performingLookup && !model.searchStringRepresentsSelected()) {
           performLookup(false);
         }
         updateColors();
@@ -199,7 +212,7 @@ public final class EntityLookupField extends JTextField {
   }
 
   private void updateColors() {
-    final boolean defaultBackground = model.searchStringRepresentsSelected() || searchHint.isHintVisible();
+    final boolean defaultBackground = model.searchStringRepresentsSelected() || searchHint.isHintTextVisible();
     setBackground(defaultBackground ? defaultBackgroundColor : Color.LIGHT_GRAY);
   }
 

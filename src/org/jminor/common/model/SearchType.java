@@ -10,43 +10,40 @@ public enum SearchType {
 
   LIKE {
     @Override
-    public final String getImageName() {
-      return "Equals60x16.gif";
+    public String getCaption() {
+      return "  = ";
     }
   },
   NOT_LIKE {
     @Override
-    public final String getImageName() {
-      return "NotEquals60x16.gif";
+    public String getCaption() {
+      return "  \u2260 ";
     }
   },
   AT_LEAST {
     @Override
-    public final String getImageName() {
-      return "LessThanOrEquals60x16.gif";
+    public String getCaption() {
+      return "  \u2264 ";
     }
   },
   AT_MOST {
     @Override
-    public final String getImageName() {
-      return "LargerThanOrEquals60x16.gif";
+    public String getCaption() {
+      return "  \u2265 ";
     }
   },
   WITHIN_RANGE {
     @Override
-    public final String getImageName() {
-      return "Inclusive60x16.gif";
+    public String getCaption() {
+      return "\u2265 \u2264";
     }
   },
   OUTSIDE_RANGE {
     @Override
-    public final String getImageName() {
-      return "Exclusive60x16.gif";
+    public String getCaption() {
+      return "\u2264 \u2265";
     }
   };
 
-  /**
-   * @return the name of the image representing this search type
-   */
-  public abstract String getImageName();
+  public abstract String getCaption();
 }
