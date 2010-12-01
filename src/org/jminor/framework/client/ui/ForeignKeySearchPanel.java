@@ -32,10 +32,10 @@ public final class ForeignKeySearchPanel extends ColumnSearchPanel<Property.Fore
   /**
    * Instantiates a new ForeignKeySearchModel.
    * @param model the model to base this panel on
-   * @param includeToggleAdvBtn if true an advanced toggle button is included
+   * @param includeToggleAdvancedSearchButton if true an advanced toggle button is included
    */
-  public ForeignKeySearchPanel(final ForeignKeySearchModel model, final boolean includeToggleAdvBtn) {
-    super(model, true, includeToggleAdvBtn, new ForeignKeyInputFieldProvider(model), SearchType.LIKE, SearchType.NOT_LIKE);
+  public ForeignKeySearchPanel(final ForeignKeySearchModel model, final boolean includeToggleAdvancedSearchButton) {
+    super(model, true, includeToggleAdvancedSearchButton, new ForeignKeyInputFieldProvider(model), SearchType.LIKE, SearchType.NOT_LIKE);
   }
 
   private static final class ForeignKeyInputFieldProvider implements InputFieldProvider<Property.ForeignKeyProperty> {
@@ -53,13 +53,10 @@ public final class ForeignKeySearchPanel extends ColumnSearchPanel<Property.Fore
 
     /** {@inheritDoc} */
     public JComponent initializeInputField(final boolean isUpperBound) {
-      final JComponent field = initEntityField();
-      field.setToolTipText(isUpperBound ? "a" : "b");
-
-      return field;
+      return initializeForeignKeyField();
     }
 
-    private JComponent initEntityField() {
+    private JComponent initializeForeignKeyField() {
       final EntityComboBoxModel boxModel = ((ForeignKeySearchModel) model).getEntityComboBoxModel();
       if (boxModel != null) {
         final EntityComboBox field = new EntityComboBox(boxModel);

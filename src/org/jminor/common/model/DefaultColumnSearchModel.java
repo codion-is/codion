@@ -27,6 +27,7 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
   private final Event evtEnabledChanged = Events.event();
 
   private final State stLocked = States.state();
+  private final State stLowerBoundRequired = States.state();
 
   private final K columnIdentifier;
   private final int type;
@@ -262,6 +263,10 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
     }
   }
 
+  public final boolean isLowerBoundRequired() {
+    return stLowerBoundRequired.isActive();
+  }
+
   /**
    * @return the search wildcard
    */
@@ -367,6 +372,16 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
   /** {@inheritDoc} */
   public final void removeLowerBoundListener(final ActionListener listener) {
     evtLowerBoundChanged.removeListener(listener);
+  }
+
+  /** {@inheritDoc} */
+  public final void addLowerBoundRequiredListener(final ActionListener listener) {
+    stLowerBoundRequired.addListener(listener);
+  }
+
+  /** {@inheritDoc} */
+  public final void removeLowerBoundRequiredListener(final ActionListener listener) {
+    stLowerBoundRequired.removeListener(listener);
   }
 
   /** {@inheritDoc} */
@@ -600,6 +615,11 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
     evtLowerBoundChanged.addListener(evtSearchStateChanged);
     evtSearchTypeChanged.addListener(evtSearchStateChanged);
     evtEnabledChanged.addListener(evtSearchStateChanged);
+    evtSearchTypeChanged.addListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
+        stLowerBoundRequired.setActive(getSearchType() == SearchType.WITHIN_RANGE || getSearchType() == SearchType.OUTSIDE_RANGE);
+      }
+    });
   }
 
   private void checkLock() {

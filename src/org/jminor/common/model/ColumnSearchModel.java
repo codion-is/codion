@@ -114,6 +114,12 @@ public interface ColumnSearchModel<K> {
   void setSearchType(final SearchType searchType);
 
   /**
+   * @return true if the current search type requires a lower bound value to be specified,
+   * such as within and outside range.
+   */
+  boolean isLowerBoundRequired();
+
+  /**
    * @return true if auto enable is enabled
    */
   boolean isAutoEnable();
@@ -273,6 +279,16 @@ public interface ColumnSearchModel<K> {
    * @param listener the listener to remove
    */
   void removeLowerBoundListener(final ActionListener listener);
+
+  /**
+   * @param listener a listener to be notified each time the lower bound required attribute changes
+   */
+  void addLowerBoundRequiredListener(final ActionListener listener);
+
+  /**
+   * @param listener the listener to remove
+   */
+  void removeLowerBoundRequiredListener(final ActionListener listener);
 
   /**
    * @param listener a listener to be notified each time the upper bound changes

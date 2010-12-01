@@ -11,7 +11,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 public class AbstractSearchPanelTest {
 
@@ -20,15 +19,14 @@ public class AbstractSearchPanelTest {
     final String key = "key";
     final ColumnSearchModel<String> model = new DefaultColumnSearchModel<String>(key, Types.VARCHAR, "%");
     final SearchPanelImpl panel = new SearchPanelImpl(model, true, true);
-    assertEquals(model, panel.getModel());
+    assertEquals(model, panel.getSearchModel());
     assertNotNull(panel.getUpperBoundField());
     assertNotNull(panel.getLowerBoundField());
     assertNull(panel.getLastDialogPosition());
-    assertFalse(panel.isDialogActive());
-    assertFalse(panel.isDialogShowing());
+    assertFalse(panel.isDialogEnabled());
+    assertFalse(panel.isDialogVisible());
     assertFalse(panel.isAdvancedSearchOn());
     panel.setAdvancedSearchOn(true);
-    assertTrue(panel.getAdvancedSearchState().isActive());
     panel.setAdvancedSearchOn(false);
     assertFalse(panel.isAdvancedSearchOn());
   }

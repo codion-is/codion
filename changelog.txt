@@ -2296,3 +2296,4 @@
   SearchFieldHint renamed to TextFieldHint, some fields/methods renamed, hintForegroundColor field added
   SearchType.getImageName() removed, getCaption() added, search type images removed
   ColumnSearchPanel, panel initialization bug fixed, stTwoSearchFields not set correctly on init
+  ColumnSearchPanel/Model and related classes refactored a bit

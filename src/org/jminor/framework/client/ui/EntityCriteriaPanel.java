@@ -158,6 +158,7 @@ public final class EntityCriteriaPanel extends JPanel {
     }
 
     /** {@inheritDoc} */
+    @SuppressWarnings({"unchecked"})
     public void valueChanged(final ListSelectionEvent e) {
       editorPanel.removeAll();
       final PropertySearchModel selected = (PropertySearchModel) propertyList.getSelectedValue();

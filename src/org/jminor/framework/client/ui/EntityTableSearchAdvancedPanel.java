@@ -63,17 +63,6 @@ public final class EntityTableSearchAdvancedPanel extends AbstractTableColumnSyn
   }
 
   /**
-   * @param value true if wildcards should automatically be added to strings
-   */
-  public void setAutomaticWildcard(final boolean value) {
-    for (final JPanel searchPanel : getColumnPanels().values()) {
-      if (searchPanel instanceof ColumnSearchPanel) {
-        ((ColumnSearchPanel) searchPanel).getModel().setAutomaticWildcard(value);
-      }
-    }
-  }
-
-  /**
    * @param value true if advanced search should be enabled
    */
   public void setAdvanced(final boolean value) {
@@ -128,7 +117,7 @@ public final class EntityTableSearchAdvancedPanel extends AbstractTableColumnSyn
   }
 
   /**
-   * @param listener a listener notified each time the advamced search state changes
+   * @param listener a listener notified each time the advanced search state changes
    */
   public void addAdvancedListener(final ActionListener listener) {
     evtAdvancedChanged.addListener(listener);
@@ -157,10 +146,11 @@ public final class EntityTableSearchAdvancedPanel extends AbstractTableColumnSyn
   }
 
   /**
-   * Initializes a AbstractSearchPanel for the given model
+   * Initializes a ColumnSearchPanel for the given model
    * @param propertySearchModel the PropertySearchModel for which to create a search panel
    * @return a PropertySearchPanel based on the given model
    */
+  @SuppressWarnings({"unchecked"})
   private ColumnSearchPanel initializeSearchPanel(final PropertySearchModel propertySearchModel) {
     if (propertySearchModel instanceof ForeignKeySearchModel) {
       return new ForeignKeySearchPanel((ForeignKeySearchModel) propertySearchModel, false);

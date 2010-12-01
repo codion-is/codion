@@ -24,12 +24,12 @@ public final class PropertyFilterPanel extends ColumnSearchPanel<Property> {
   /**
    * Instantiates a new PropertyFilterPanel.
    * @param model the model to base this panel on
-   * @param includeActivateBtn if true an activation button is included
-   * @param includeToggleAdvBtn if true an advanced toggle button is included
+   * @param includeToggleFilterEnabledButton if true an activation button is include
+   * @param includeToggleAdvancedFilterButton if true an advanced toggle button is include
    */
-  public PropertyFilterPanel(final ColumnSearchModel<Property> model, final boolean includeActivateBtn,
-                             final boolean includeToggleAdvBtn) {
-    super(model, includeActivateBtn, includeToggleAdvBtn, getSearchTypes(model));
+  public PropertyFilterPanel(final ColumnSearchModel<Property> model, final boolean includeToggleFilterEnabledButton,
+                             final boolean includeToggleAdvancedFilterButton) {
+    super(model, includeToggleFilterEnabledButton, includeToggleAdvancedFilterButton, getSearchTypes(model));
   }
 
   private static SearchType[] getSearchTypes(final ColumnSearchModel<Property> model) {

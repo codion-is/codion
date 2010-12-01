@@ -50,13 +50,13 @@ public final class PropertySearchPanel extends ColumnSearchPanel<Property.Column
   /**
    * Instantiates a new PropertySearchPanel.
    * @param model the model to base this panel on
-   * @param includeActivateBtn if true an activation button is included
-   * @param includeToggleAdvBtn if true an advanced toggle button is included
+   * @param includeToggleSearchEnabledButton if true an activation button is included
+   * @param includeToggleAdvancedSearchButton if true an advanced toggle button is included
    */
   public PropertySearchPanel(final PropertySearchModel<Property.ColumnProperty> model,
-                             final boolean includeActivateBtn, final boolean includeToggleAdvBtn) {
-    super(model, includeActivateBtn, includeToggleAdvBtn, new PropertyInputFieldProvider(model),
-            getSearchTypes(model));
+                             final boolean includeToggleSearchEnabledButton, final boolean includeToggleAdvancedSearchButton) {
+    super(model, includeToggleSearchEnabledButton, includeToggleAdvancedSearchButton,
+            new PropertyInputFieldProvider(model), getSearchTypes(model));
   }
 
   private static SearchType[] getSearchTypes(final PropertySearchModel<Property.ColumnProperty> model) {

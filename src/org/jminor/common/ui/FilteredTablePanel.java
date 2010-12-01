@@ -365,11 +365,11 @@ public class FilteredTablePanel<T, C> extends JPanel {
 
   private static void toggleFilterPanel(final Point position, final ColumnSearchPanel columnFilterPanel,
                                         final Container parent) {
-    if (columnFilterPanel.isDialogActive()) {
-      columnFilterPanel.inactivateDialog();
+    if (columnFilterPanel.isDialogEnabled()) {
+      columnFilterPanel.disableDialog();
     }
     else {
-      columnFilterPanel.activateDialog(parent, position);
+      columnFilterPanel.enableDialog(parent, position);
     }
   }
 
@@ -457,12 +457,12 @@ public class FilteredTablePanel<T, C> extends JPanel {
     /** {@inheritDoc} */
     public void paintIcon(final Component c, final Graphics g, final int x, final int y) {
       final Color color = c == null ? Color.GRAY : c.getBackground();
-      // In a compound sort, make each succesive triangle 20%
+      // In a compound sort, make each successive triangle 20%
       // smaller than the previous one.
       final int dx = (int)(size/PRIORITY_SIZE_CONST * Math.pow(PRIORITY_SIZE_RATIO, priority));
       final int dy = descending ? dx : -dx;
       // Align icon (roughly) with font baseline.
-      final int theY = y + 5*size/6 + (descending ? -dy : 0);
+      final int theY = y + 5 * size / 6 + (descending ? -dy : 0);
       final int shift = descending ? 1 : -1;
       g.translate(x, theY);
 
