@@ -5,13 +5,14 @@ package org.jminor.common.model.valuemap;
 
 import org.jminor.common.model.valuemap.exception.ValidationException;
 
-import static org.junit.Assert.*;
 import org.junit.Test;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
+
+import static org.junit.Assert.*;
 
 public class AbstractValueChangeMapEditModelTest {
 
@@ -83,7 +84,7 @@ public class AbstractValueChangeMapEditModelTest {
     assertTrue(valueChangeCounter.size() == 2);
     assertTrue(model.isValueNull(key));
 
-    assertTrue(model.getModifiedState().isActive());
+    assertTrue(model.getModifiedObserver().isActive());
 
     model.getValueMap();
     model.clear();

@@ -56,7 +56,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   }
 
   /** {@inheritDoc} */
-  public final StateObserver getConnectedState() {
+  public final StateObserver getConnectedObserver() {
     return stConnectionValid.getObserver();
   }
 

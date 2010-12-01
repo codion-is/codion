@@ -18,7 +18,7 @@ import java.awt.event.ActionListener;
  */
 public class Control extends AbstractAction {
 
-  private final StateObserver enabledState;
+  private final StateObserver enabledObserver;
 
   /**
    * Constructs a new Control.
@@ -38,25 +38,25 @@ public class Control extends AbstractAction {
   /**
    * Constructs a new Control.
    * @param name the control name
-   * @param enabledState the state observer dictating the enable state of this control
+   * @param enabledObserver the state observer dictating the enable state of this control
    */
-  public Control(final String name, final StateObserver enabledState) {
-    this(name, enabledState,  null);
+  public Control(final String name, final StateObserver enabledObserver) {
+    this(name, enabledObserver,  null);
   }
 
   /**
    * Constructs a new Control.
    * @param name the control name
-   * @param enabledState the state observer dictating the enable state of this control
+   * @param enabledObserver the state observer dictating the enable state of this control
    * @param icon the icon
    */
-  public Control(final String name, final StateObserver enabledState, final Icon icon) {
+  public Control(final String name, final StateObserver enabledObserver, final Icon icon) {
     super(name);
-    this.enabledState = enabledState == null ? States.state(true) : enabledState;
-    this.enabledState.addListener(new ActionListener() {
+    this.enabledObserver = enabledObserver == null ? States.state(true) : enabledObserver;
+    this.enabledObserver.addListener(new ActionListener() {
       /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
-        firePropertyChange("enabled", !Control.this.enabledState.isActive(), Control.this.enabledState.isActive());
+        firePropertyChange("enabled", !Control.this.enabledObserver.isActive(), Control.this.enabledObserver.isActive());
       }
     });
     setIcon(icon);
@@ -65,7 +65,7 @@ public class Control extends AbstractAction {
   /** {@inheritDoc} */
   @Override
   public final boolean isEnabled() {
-    return enabledState.isActive();
+    return enabledObserver.isActive();
   }
 
   /** {@inheritDoc} */
@@ -112,8 +112,8 @@ public class Control extends AbstractAction {
   /**
    * @return the state which controls whether this Control instance is enabled
    */
-  public final StateObserver getEnabledState() {
-    return enabledState;
+  public final StateObserver getEnabledObserver() {
+    return enabledObserver;
   }
 
   /**

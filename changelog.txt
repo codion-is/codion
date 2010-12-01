@@ -2297,3 +2297,4 @@
   SearchType.getImageName() removed, getCaption() added, search type images removed
   ColumnSearchPanel, panel initialization bug fixed, stTwoSearchFields not set correctly on init
   ColumnSearchPanel/Model and related classes refactored a bit
+  Global renaming, 'StateObserver get...State()' renamed to 'StateObserver get...Observer()'

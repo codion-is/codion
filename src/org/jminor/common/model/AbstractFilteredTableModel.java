@@ -18,7 +18,16 @@ import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.Collator;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
 
 /**
  * A TableModel implementation that supports filtering, searching and sorting.
@@ -605,13 +614,13 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   }
 
   /** {@inheritDoc} */
-  public final StateObserver getSelectionEmptyState() {
-    return selectionModel.getSelectionEmptyState();
+  public final StateObserver getSelectionEmptyObserver() {
+    return selectionModel.getSelectionEmptyObserver();
   }
 
   /** {@inheritDoc} */
-  public final StateObserver getMultipleSelectionState() {
-    return selectionModel.getMultipleSelectionState();
+  public final StateObserver getMultipleSelectionObserver() {
+    return selectionModel.getMultipleSelectionObserver();
   }
 
   /** {@inheritDoc} */
@@ -1156,14 +1165,14 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     /**
      * @return a state active when multiple rows are selected
      */
-    private StateObserver getMultipleSelectionState() {
+    private StateObserver getMultipleSelectionObserver() {
       return stMultipleSelection.getObserver();
     }
 
     /**
      * @return a state active when the selection is empty
      */
-    private StateObserver getSelectionEmptyState() {
+    private StateObserver getSelectionEmptyObserver() {
       return stSelectionEmpty.getObserver();
     }
   }

@@ -1,6 +1,5 @@
 package org.jminor.common.model;
 
-import static org.junit.Assert.*;
 import org.junit.Test;
 
 import java.awt.event.ActionEvent;
@@ -10,6 +9,8 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+
+import static org.junit.Assert.*;
 
 public class DefaultSearchModelTest {
   final Collection<Object> upperBoundCounter = new ArrayList<Object>();
@@ -152,7 +153,7 @@ public class DefaultSearchModelTest {
 
     model.setLocked(true);
     assertTrue(model.isLocked());
-    assertTrue(model.getLockedState().isActive());
+    assertTrue(model.getLockedObserver().isActive());
 
     try {
       model.setUpperBound("test");

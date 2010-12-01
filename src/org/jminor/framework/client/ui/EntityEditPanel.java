@@ -36,7 +36,16 @@ import org.jminor.framework.i18n.FrameworkMessages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.*;
+import javax.swing.ComboBoxModel;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.JToolBar;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
@@ -123,7 +132,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * Indicates whether this panel is active and ready to receive input
    * @return a state indicating whether the active is active and ready to receive input
    */
-  public final StateObserver getActiveState() {
+  public final StateObserver getActiveObserver() {
     return stActive.getObserver();
   }
 
@@ -162,7 +171,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   public final Control getRefreshControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.REFRESH_MNEMONIC);
     return Controls.methodControl(getEditModel(), "refresh", FrameworkMessages.get(FrameworkMessages.REFRESH),
-            getActiveState(), FrameworkMessages.get(FrameworkMessages.REFRESH_TIP) + ALT_PREFIX
+            getActiveObserver(), FrameworkMessages.get(FrameworkMessages.REFRESH_TIP) + ALT_PREFIX
                     + mnemonic + ")", mnemonic.charAt(0), null, Images.loadImage(Images.IMG_REFRESH_16));
   }
 
@@ -173,9 +182,9 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.DELETE_MNEMONIC);
     return Controls.methodControl(this, "delete", FrameworkMessages.get(FrameworkMessages.DELETE),
             States.aggregateState(Conjunction.AND,
-                    getActiveState(),
-                    getEntityEditModel().getAllowDeleteState(),
-                    getEntityEditModel().getEntityNullState().getReversedState()),
+                    getActiveObserver(),
+                    getEntityEditModel().getAllowDeleteObserver(),
+                    getEntityEditModel().getEntityNullObserver().getReversedObserver()),
             FrameworkMessages.get(FrameworkMessages.DELETE_TIP) + ALT_PREFIX + mnemonic + ")", mnemonic.charAt(0), null,
             Images.loadImage(Images.IMG_DELETE_16));
   }
@@ -186,7 +195,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   public final Control getClearControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.CLEAR_MNEMONIC);
     return Controls.methodControl(this, "clearModelValues", FrameworkMessages.get(FrameworkMessages.CLEAR),
-            getActiveState(), FrameworkMessages.get(FrameworkMessages.CLEAR_ALL_TIP) + ALT_PREFIX + mnemonic + ")",
+            getActiveObserver(), FrameworkMessages.get(FrameworkMessages.CLEAR_ALL_TIP) + ALT_PREFIX + mnemonic + ")",
             mnemonic.charAt(0), null, Images.loadImage(Images.IMG_NEW_16));
   }
 
@@ -197,10 +206,10 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.UPDATE_MNEMONIC);
     return Controls.methodControl(this, "update", FrameworkMessages.get(FrameworkMessages.UPDATE),
             States.aggregateState(Conjunction.AND,
-                    getActiveState(),
-                    getEntityEditModel().getAllowUpdateState(),
-                    getEntityEditModel().getEntityNullState().getReversedState(),
-                    getEntityEditModel().getModifiedState()),
+                    getActiveObserver(),
+                    getEntityEditModel().getAllowUpdateObserver(),
+                    getEntityEditModel().getEntityNullObserver().getReversedObserver(),
+                    getEntityEditModel().getModifiedObserver()),
             FrameworkMessages.get(FrameworkMessages.UPDATE_TIP) + ALT_PREFIX + mnemonic + ")", mnemonic.charAt(0),
             null, Images.loadImage(Images.IMG_SAVE_16));
   }
@@ -211,7 +220,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   public final Control getInsertControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.INSERT_MNEMONIC);
     return Controls.methodControl(this, "save", FrameworkMessages.get(FrameworkMessages.INSERT),
-            States.aggregateState(Conjunction.AND, getActiveState(), getEntityEditModel().getAllowInsertState()),
+            States.aggregateState(Conjunction.AND, getActiveObserver(), getEntityEditModel().getAllowInsertObserver()),
             FrameworkMessages.get(FrameworkMessages.INSERT_TIP) + ALT_PREFIX + mnemonic + ")",
             mnemonic.charAt(0), null, Images.loadImage("Add16.gif"));
   }
@@ -221,11 +230,11 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    */
   public final Control getSaveControl() {
     final String insertCaption = FrameworkMessages.get(FrameworkMessages.INSERT_UPDATE);
-    final State stInsertUpdate = States.aggregateState(Conjunction.OR, getEntityEditModel().getAllowInsertState(),
-            States.aggregateState(Conjunction.AND, getEntityEditModel().getAllowUpdateState(),
-                    getEntityEditModel().getModifiedState()));
+    final State stInsertUpdate = States.aggregateState(Conjunction.OR, getEntityEditModel().getAllowInsertObserver(),
+            States.aggregateState(Conjunction.AND, getEntityEditModel().getAllowUpdateObserver(),
+                    getEntityEditModel().getModifiedObserver()));
     return Controls.methodControl(this, "save", insertCaption,
-            States.aggregateState(Conjunction.AND, getActiveState(), stInsertUpdate),
+            States.aggregateState(Conjunction.AND, getActiveObserver(), stInsertUpdate),
             FrameworkMessages.get(FrameworkMessages.INSERT_UPDATE_TIP),
             insertCaption.charAt(0), null, Images.loadImage(Images.IMG_SAVE_16));
   }

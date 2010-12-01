@@ -135,15 +135,15 @@ public final class DefaultEntityEditModelTest {
     }
     catch (IllegalArgumentException e) {}
 
-    final StateObserver entityNullState = editModel.getEntityNullState();
+    final StateObserver entityNullState = editModel.getEntityNullObserver();
 
     assertTrue(entityNullState.isActive());
 
     editModel.setReadOnly(false);
     assertFalse(editModel.isReadOnly());
-    assertTrue(editModel.getAllowInsertState().isActive());
-    assertTrue(editModel.getAllowUpdateState().isActive());
-    assertTrue(editModel.getAllowDeleteState().isActive());
+    assertTrue(editModel.getAllowInsertObserver().isActive());
+    assertTrue(editModel.getAllowUpdateObserver().isActive());
+    assertTrue(editModel.getAllowDeleteObserver().isActive());
 
     final ActionListener listener = new ActionListener() {
       public void actionPerformed(final ActionEvent e) {}
@@ -164,7 +164,7 @@ public final class DefaultEntityEditModelTest {
 
     editModel.refresh();
     assertTrue(editModel.isEntityNew());
-    assertFalse(editModel.getModifiedState().isActive());
+    assertFalse(editModel.getModifiedObserver().isActive());
 
     final Entity employee = editModel.getConnectionProvider().getConnection().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "MARTIN");
     editModel.setEntity(employee);
@@ -172,10 +172,10 @@ public final class DefaultEntityEditModelTest {
 
     assertTrue("Active entity is not equal to the entity just set", editModel.getEntityCopy().propertyValuesEqual(employee));
     assertFalse("Active entity is new after an entity is set", editModel.isEntityNew());
-    assertFalse(editModel.getModifiedState().isActive());
+    assertFalse(editModel.getModifiedObserver().isActive());
     editModel.setEntity(null);
     assertTrue("Active entity is new null after entity is set to null", editModel.isEntityNew());
-    assertFalse(editModel.getModifiedState().isActive());
+    assertFalse(editModel.getModifiedObserver().isActive());
     assertTrue("Active entity is not null after entity is set to null", editModel.getEntityCopy().isPrimaryKeyNull());
 
     editModel.setEntity(employee);
@@ -190,7 +190,7 @@ public final class DefaultEntityEditModelTest {
     final String name = "Mr. Mr";
 
     editModel.setValue(EmpDept.EMPLOYEE_COMMISSION, commission);
-    assertTrue(editModel.getModifiedState().isActive());
+    assertTrue(editModel.getModifiedObserver().isActive());
     editModel.setValue(EmpDept.EMPLOYEE_HIREDATE, hiredate);
     editModel.setValue(EmpDept.EMPLOYEE_NAME, name);
 
@@ -200,7 +200,7 @@ public final class DefaultEntityEditModelTest {
 
     editModel.setValue(EmpDept.EMPLOYEE_COMMISSION, originalCommission);
     assertTrue(editModel.isModified());
-    assertTrue(editModel.getModifiedState().isActive());
+    assertTrue(editModel.getModifiedObserver().isActive());
     editModel.setValue(EmpDept.EMPLOYEE_HIREDATE, originalHiredate);
     assertTrue(editModel.isModified());
     editModel.setValue(EmpDept.EMPLOYEE_NAME, originalName);
@@ -336,7 +336,7 @@ public final class DefaultEntityEditModelTest {
       assertTrue(editModel.isUpdateAllowed());
 
       editModel.update();
-      assertFalse(editModel.getModifiedState().isActive());
+      assertFalse(editModel.getModifiedObserver().isActive());
       editModel.removeAfterUpdateListener(listener);
     }
     finally {

@@ -7,7 +7,20 @@ import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.Util;
 
-import javax.swing.*;
+import javax.swing.Action;
+import javax.swing.Icon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JToggleButton;
+import javax.swing.JToolBar;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -155,7 +168,7 @@ public final class ControlProvider {
       if (description != null) {
         menu.setToolTipText(description);
       }
-      final StateObserver enabledState = controlSet.getEnabledState();
+      final StateObserver enabledState = controlSet.getEnabledObserver();
       if (enabledState != null) {
         menu.setEnabled(enabledState.isActive());
         enabledState.addListener(new ActionListener() {

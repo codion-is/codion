@@ -252,7 +252,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   /** {@inheritDoc} */
-  public final StateObserver getBatchUpdateAllowedState() {
+  public final StateObserver getBatchUpdateAllowedObserver() {
     return stBatchUpdateAllowed.getObserver();
   }
 

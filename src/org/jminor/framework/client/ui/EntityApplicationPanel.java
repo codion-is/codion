@@ -32,7 +32,27 @@ import org.jminor.framework.i18n.FrameworkMessages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.*;
+import javax.swing.Action;
+import javax.swing.BorderFactory;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenuBar;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.JToolBar;
+import javax.swing.JTree;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -740,7 +760,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
       final String caption = Util.nullOrEmpty(entityPanel.getCaption()) ?  provider.getCaption() : entityPanel.getCaption();
       applicationTabPane.addTab(caption, entityPanel);
       if (entityPanel.getEditPanel() != null) {
-        entityPanel.getEditPanel().getActiveState().addListener(new ActionListener() {
+        entityPanel.getEditPanel().getActiveObserver().addListener(new ActionListener() {
           public void actionPerformed(final ActionEvent e) {
             if (entityPanel.getEditPanel().isActive()) {
               LOG.debug(entityPanel.getEditModel().getEntityID() + " selectApplicationTab");
@@ -972,7 +992,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
         initializeActiveEntityPanel();
       }
     });
-    final StateObserver connected = applicationModel.getConnectionProvider().getConnectedState();
+    final StateObserver connected = applicationModel.getConnectionProvider().getConnectedObserver();
     connected.addActivateListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         UiUtil.getParentFrame(EntityApplicationPanel.this).setTitle(frameTitle);

@@ -22,7 +22,7 @@ public interface StateObserver extends EventObserver {
   /**
    * @return A StateObserver object that is always the reverse of the parent state
    */
-  StateObserver getReversedState();
+  StateObserver getReversedObserver();
 
   /**
    * @param listener a listener notified each time this state is activated
@@ -32,7 +32,7 @@ public interface StateObserver extends EventObserver {
   /**
    * @param listener the listener to remove
    */
-  void removeActiveListener(final ActionListener listener);
+  void removeActivateListener(final ActionListener listener);
 
   /**
    * @param listener a listener notified each time this state is deactivated
@@ -42,5 +42,5 @@ public interface StateObserver extends EventObserver {
   /**
    * @param listener the listener to remove
    */
-  void removeDeactiveListener(final ActionListener listener);
+  void removeDeactivateListener(final ActionListener listener);
 }

@@ -97,7 +97,7 @@ public final class States {
       evtStateActivated.addListener(listener);
     }
 
-    public void removeActiveListener(final ActionListener listener) {
+    public void removeActivateListener(final ActionListener listener) {
       evtStateActivated.removeListener(listener);
     }
 
@@ -105,7 +105,7 @@ public final class States {
       evtStateDeactivated.addListener(listener);
     }
 
-    public void removeDeactiveListener(final ActionListener listener) {
+    public void removeDeactivateListener(final ActionListener listener) {
       evtStateDeactivated.removeListener(listener);
     }
 
@@ -149,18 +149,18 @@ public final class States {
       evtStateChanged.removeListener(listener);
     }
 
-    public StateObserver getReversedState() {
-      return getObserver().getReversedState();
+    public StateObserver getReversedObserver() {
+      return getObserver().getReversedObserver();
     }
   }
 
   private static final class ReverseState extends StateImpl {
 
-    private final StateObserver referenceState;
+    private final StateObserver referenceObserver;
 
-    ReverseState(final StateObserver referenceState) {
-      this.referenceState = referenceState;
-      this.referenceState.addListener(new ActionListener() {
+    ReverseState(final StateObserver referenceObserver) {
+      this.referenceObserver = referenceObserver;
+      this.referenceObserver.addListener(new ActionListener() {
         public void actionPerformed(final ActionEvent e) {
           notifyObservers();
         }
@@ -169,12 +169,12 @@ public final class States {
 
     @Override
     public boolean isActive() {
-      return !referenceState.isActive();
+      return !referenceObserver.isActive();
     }
 
     @Override
-    public StateObserver getReversedState() {
-      return referenceState;
+    public StateObserver getReversedObserver() {
+      return referenceObserver;
     }
 
     @Override
@@ -288,7 +288,7 @@ public final class States {
       return state.isActive();
     }
 
-    public StateObserver getReversedState() {
+    public StateObserver getReversedObserver() {
       if (reversedState == null) {
         synchronized (state) {
           reversedState = new ReverseState(this);
@@ -313,16 +313,16 @@ public final class States {
       state.addActivateListener(listener);
     }
 
-    public void removeActiveListener(final ActionListener listener) {
-      state.removeActiveListener(listener);
+    public void removeActivateListener(final ActionListener listener) {
+      state.removeActivateListener(listener);
     }
 
     public void addDeactivateListener(final ActionListener listener) {
       state.addDeactivateListener(listener);
     }
 
-    public void removeDeactiveListener(final ActionListener listener) {
-      state.removeDeactiveListener(listener);
+    public void removeDeactivateListener(final ActionListener listener) {
+      state.removeDeactivateListener(listener);
     }
   }
 

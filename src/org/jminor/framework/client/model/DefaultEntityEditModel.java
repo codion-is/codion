@@ -175,7 +175,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
   }
 
   /** {@inheritDoc} */
-  public final StateObserver getAllowInsertState() {
+  public final StateObserver getAllowInsertObserver() {
     return stAllowInsert.getObserver();
   }
 
@@ -191,7 +191,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
   }
 
   /** {@inheritDoc} */
-  public final StateObserver getAllowUpdateState() {
+  public final StateObserver getAllowUpdateObserver() {
     return stAllowUpdate.getObserver();
   }
 
@@ -207,12 +207,12 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
   }
 
   /** {@inheritDoc} */
-  public final StateObserver getAllowDeleteState() {
+  public final StateObserver getAllowDeleteObserver() {
     return stAllowDelete.getObserver();
   }
 
   /** {@inheritDoc} */
-  public final StateObserver getEntityNullState() {
+  public final StateObserver getEntityNullObserver() {
     return stEntityNull.getObserver();
   }
 

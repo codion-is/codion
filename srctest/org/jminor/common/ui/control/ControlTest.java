@@ -3,8 +3,9 @@ package org.jminor.common.ui.control;
 import org.jminor.common.model.State;
 import org.jminor.common.model.States;
 
-import static org.junit.Assert.*;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class ControlTest {
 
@@ -21,7 +22,7 @@ public class ControlTest {
     final State enabledState = States.state();
     final Control control = new Control("control", enabledState);
     assertEquals("control", control.getName());
-    assertEquals(enabledState, control.getEnabledState());
+    assertEquals(enabledState, control.getEnabledObserver());
     assertFalse(control.isEnabled());
     enabledState.setActive(true);
     assertTrue(control.isEnabled());
@@ -30,7 +31,7 @@ public class ControlTest {
     assertEquals("description", control.getDescription());
 
     enabledState.setActive(false);
-    
+
     assertFalse(control.isEnabled());
   }
 }

@@ -228,25 +228,25 @@ public interface ColumnSearchModel<K> {
   /**
    * @return an observer for this model's locked state
    */
-  StateObserver getLockedState();
+  StateObserver getLockedObserver();
 
   /**
-   * @return an observer for this model's enabled state
+   * @return an observer notified each time the enabled state changes
    */
   EventObserver getEnabledObserver();
 
   /**
-   * @return an observer for this model's lower bound
+   * @return an observer notified each time the lower bound changes
    */
   EventObserver getLowerBoundObserver();
 
   /**
-   * @return an observer for this model's upper bound
+   * @return an observer notified each time the upper bound changes
    */
   EventObserver getUpperBoundObserver();
 
   /**
-   * @return an observer for this model's search type
+   * @return an observer notified each time the search type changes
    */
   EventObserver getSearchTypeObserver();
 

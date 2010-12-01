@@ -117,7 +117,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
   }
 
   /** {@inheritDoc} */
-  public final void setSearchModelState() {
+  public final void setSearchModelState() {//todo rename
     searchStateOnRefresh = getSearchModelState();
     stSearchStateChanged.setActive(false);
   }
@@ -270,7 +270,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
   }
 
   /** {@inheritDoc} */
-  public final StateObserver getSearchStateChangedState() {
+  public final StateObserver getSearchStateChangedObserver() {
     return stSearchStateChanged.getObserver();
   }
 

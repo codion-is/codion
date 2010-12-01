@@ -130,12 +130,12 @@ public abstract class AbstractValueChangeMapEditModel<K, V> implements ValueChan
 
   /** {@inheritDoc} */
   public final boolean isModified() {
-    return getModifiedState().isActive();
+    return getModifiedObserver().isActive();
   }
 
   /** {@inheritDoc} */
   public final boolean isValid() {
-    return getValidState().isActive();
+    return getValidObserver().isActive();
   }
 
   /** {@inheritDoc} */
@@ -179,12 +179,12 @@ public abstract class AbstractValueChangeMapEditModel<K, V> implements ValueChan
   }
 
   /** {@inheritDoc} */
-  public final StateObserver getModifiedState() {
+  public final StateObserver getModifiedObserver() {
     return valueMap.getModifiedState();
   }
 
   /** {@inheritDoc} */
-  public final StateObserver getValidState() {
+  public final StateObserver getValidObserver() {
     return stValid.getObserver();
   }
 

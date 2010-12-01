@@ -22,12 +22,12 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R>, TableModel, 
   /**
    * @return a State active when the selection is empty
    */
-  StateObserver getSelectionEmptyState();
+  StateObserver getSelectionEmptyObserver();
 
   /**
    * @return a State active when multiple rows are selected
    */
-  StateObserver getMultipleSelectionState();
+  StateObserver getMultipleSelectionObserver();
 
   /**
    * @param listener a listener to be notified each time the selection changes

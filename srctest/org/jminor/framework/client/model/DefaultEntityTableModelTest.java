@@ -12,7 +12,6 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityTestDomain;
 import org.jminor.framework.domain.Property;
 
-import static org.junit.Assert.*;
 import org.junit.Test;
 
 import javax.swing.table.TableColumn;
@@ -22,6 +21,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.junit.Assert.*;
 
 public final class DefaultEntityTableModelTest {
 
@@ -131,7 +132,7 @@ public final class DefaultEntityTableModelTest {
     assertEquals(10, testModel.getFetchCount());
     assertFalse(testModel.isDetailModel());
     assertNotNull(testModel.getEditModel());
-    assertNotNull(testModel.getBatchUpdateAllowedState());
+    assertNotNull(testModel.getBatchUpdateAllowedObserver());
     assertFalse(testModel.isReadOnly());
     testModel.setBatchUpdateAllowed(true).setQueryConfigurationAllowed(true);
     assertTrue(testModel.isBatchUpdateAllowed());

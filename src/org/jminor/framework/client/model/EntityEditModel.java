@@ -335,26 +335,26 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * @see #isDeleteAllowed()
    * @see #setDeleteAllowed(boolean)
    */
-  StateObserver getAllowDeleteState();
+  StateObserver getAllowDeleteObserver();
 
   /**
    * @return a State indicating whether or not the active entity is null
    */
-  StateObserver getEntityNullState();
+  StateObserver getEntityNullObserver();
 
   /**
    * @return the state used to determine if updating should be enabled
    * @see #isUpdateAllowed()
    * @see #setUpdateAllowed(boolean)
    */
-  StateObserver getAllowUpdateState();
+  StateObserver getAllowUpdateObserver();
 
   /**
    * @return the state used to determine if inserting should be enabled
    * @see #isInsertAllowed()
    * @see #setInsertAllowed(boolean)
    */
-  StateObserver getAllowInsertState();
+  StateObserver getAllowInsertObserver();
 
   /**
    * @param listener a listener to be notified before an insert is performed

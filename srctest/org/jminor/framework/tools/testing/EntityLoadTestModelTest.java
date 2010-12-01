@@ -14,6 +14,7 @@ import org.jminor.framework.server.RemoteEntityServerTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 public class EntityLoadTestModelTest {
@@ -104,7 +105,7 @@ public class EntityLoadTestModelTest {
     tableModel.refresh();
 
     EntityLoadTestModel.selectRandomRow(tableModel);
-    assertFalse(tableModel.getSelectionEmptyState().isActive());
+    assertFalse(tableModel.getSelectionEmptyObserver().isActive());
 
     EntityLoadTestModel.selectRandomRows(tableModel, 3);
     assertEquals(3, tableModel.getSelectedItems().size());

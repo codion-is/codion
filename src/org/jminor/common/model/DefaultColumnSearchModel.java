@@ -325,7 +325,7 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
   }
 
   /** {@inheritDoc} */
-  public final StateObserver getLockedState() {
+  public final StateObserver getLockedObserver() {
     return stLocked.getObserver();
   }
 

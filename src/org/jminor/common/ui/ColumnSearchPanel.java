@@ -519,7 +519,7 @@ public class ColumnSearchPanel<K> extends JPanel {
   }
 
   private void linkComponentsToLockedState() {
-    final StateObserver stUnlocked = searchModel.getLockedState().getReversedState();
+    final StateObserver stUnlocked = searchModel.getLockedObserver().getReversedObserver();
     UiUtil.linkToEnabledState(stUnlocked, searchTypeCombo);
     UiUtil.linkToEnabledState(stUnlocked, upperBoundField);
     if (lowerBoundField != null) {

@@ -307,5 +307,5 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
    * @return the state used to determine if batch updating of entities should be enabled
    * @see #isBatchUpdateAllowed()
    */
-  StateObserver getBatchUpdateAllowedState();
+  StateObserver getBatchUpdateAllowedObserver();
 }

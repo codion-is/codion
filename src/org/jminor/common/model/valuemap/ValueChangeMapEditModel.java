@@ -21,14 +21,14 @@ public interface ValueChangeMapEditModel<K, V> extends Refreshable {
    * @return a State indicating the modified status of this value map
    * @see #isModified()
    */
-  StateObserver getModifiedState();
+  StateObserver getModifiedObserver();
 
   /**
    * @return a State indicating the valid status of this value map
    * @see #getValidator()
    * @see #isValid()
    */
-  StateObserver getValidState();
+  StateObserver getValidObserver();
 
   /**
    * @param key the key for which to monitor value changes
@@ -136,13 +136,13 @@ public interface ValueChangeMapEditModel<K, V> extends Refreshable {
 
   /**
    * @return true if the underlying value map contains only valid values
-   * @see #getValidState() ()
+   * @see #getValidObserver()
    */
   boolean isValid();
 
   /**
    * @return true if the underlying value map is modified
-   * @see #getModifiedState()
+   * @see #getModifiedObserver()
    */
   boolean isModified();
 }

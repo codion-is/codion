@@ -32,7 +32,7 @@ public interface EntityConnectionProvider {
   /**
    * @return a state active when this provider is connected
    */
-  StateObserver getConnectedState();
+  StateObserver getConnectedObserver();
 
   /**
    * Logs out, disconnects and performs cleanup if required

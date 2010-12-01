@@ -80,7 +80,7 @@ public interface EntityTableSearchModel extends FilterCriteria<Entity>, Refresha
 
   /**
    * Sets the current search model state
-   * @see #getSearchStateChangedState
+   * @see #getSearchStateChangedObserver
    */
   void setSearchModelState();
 
@@ -152,7 +152,7 @@ public interface EntityTableSearchModel extends FilterCriteria<Entity>, Refresha
    * @return a State activated each time the search state differs from the state at last reset
    * @see #setSearchModelState()
    */
-  StateObserver getSearchStateChangedState();
+  StateObserver getSearchStateChangedObserver();
 
   /**
    * @param listener a listener notified each time the filter state changes
