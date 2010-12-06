@@ -20,6 +20,18 @@ public class TextBeanValueLink extends AbstractBeanValueLink implements Document
   private final Document document;
 
   /**
+   * Instantiates a new TextBeanValueLink, with String as value class.
+   * @param textComponent the text component to link with the value
+   * @param owner the value owner
+   * @param propertyName the property name
+   * @param valueChangeEvent an EventObserver notified each time the value changes
+   */
+  public TextBeanValueLink(final JTextComponent textComponent, final Object owner, final String propertyName,
+                           final EventObserver valueChangeEvent) {
+    this(textComponent, owner, propertyName, String.class, valueChangeEvent, LinkType.READ_WRITE);
+  }
+
+  /**
    * Instantiates a new TextBeanValueLink.
    * @param textComponent the text component to link with the value
    * @param owner the value owner

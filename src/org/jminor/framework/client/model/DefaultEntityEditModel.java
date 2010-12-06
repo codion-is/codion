@@ -273,8 +273,8 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
   /** {@inheritDoc} */
   public final boolean isEntityNew() {
     final Entity.Key key = ((Entity) getValueMap()).getPrimaryKey();
-    final Entity.Key originalkey = ((Entity) getValueMap()).getOriginalPrimaryKey();
-    return key.isNull() || originalkey.isNull();
+    final Entity.Key originalKey = ((Entity) getValueMap()).getOriginalPrimaryKey();
+    return key.isNull() || originalKey.isNull();
   }
 
   /** {@inheritDoc} */

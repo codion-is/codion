@@ -218,9 +218,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * @param tableModel the EntityTableModel instance
    */
   public EntityTablePanel(final EntityTableModel tableModel) {
-    this(tableModel, tableModel.getSearchModel().isSimpleSearch() ?
-            new EntityTableSearchSimplePanel(tableModel.getSearchModel(), tableModel) :
-            new EntityTableSearchAdvancedPanel(tableModel.getSearchModel(), tableModel.getColumnModel()),
+    this(tableModel, new EntityTableSearchPanel(tableModel.getSearchModel(), tableModel.getColumnModel()),
             new EntityTableSummaryPanel(tableModel));
   }
 
@@ -239,9 +237,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * @param summaryPanel the summary panel
    */
   public EntityTablePanel(final EntityTableModel tableModel, final EntityTableSummaryPanel summaryPanel) {
-    this(tableModel, tableModel.getSearchModel().isSimpleSearch() ?
-            new EntityTableSearchSimplePanel(tableModel.getSearchModel(), tableModel) :
-            new EntityTableSearchAdvancedPanel(tableModel.getSearchModel(), tableModel.getColumnModel()),
+    this(tableModel, new EntityTableSearchPanel(tableModel.getSearchModel(), tableModel.getColumnModel()),
             summaryPanel);
   }
 
@@ -450,17 +446,17 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * in case it is a EntityTableSearchPanel advanced
    */
   public final void toggleSearchPanel() {
-    if (searchPanel instanceof EntityTableSearchAdvancedPanel) {
+    if (!searchPanel.isSimpleSearch()) {
       if (isSearchPanelVisible()) {
-        if (((EntityTableSearchAdvancedPanel) searchPanel).isAdvanced()) {
+        if (searchPanel.isAdvanced()) {
           setSearchPanelVisible(false);
         }
         else {
-          ((EntityTableSearchAdvancedPanel) searchPanel).setAdvanced(true);
+          searchPanel.setAdvanced(true);
         }
       }
       else {
-        ((EntityTableSearchAdvancedPanel) searchPanel).setAdvanced(false);
+        searchPanel.setAdvanced(false);
         setSearchPanelVisible(true);
       }
     }
@@ -868,11 +864,9 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
         setLayout(new BorderLayout());
         if (includeSearchPanel && searchScrollPane != null) {
           tableSearchAndSummaryPanel.add(searchScrollPane, BorderLayout.NORTH);
-          if (searchPanel instanceof EntityTableSearchAdvancedPanel) {
+          if (!searchPanel.isSimpleSearch()) {
             searchScrollPane.getHorizontalScrollBar().setModel(getTableScrollPane().getHorizontalScrollBar().getModel());
-          }
-          if (searchPanel instanceof EntityTableSearchAdvancedPanel) {
-            ((EntityTableSearchAdvancedPanel) searchPanel).addAdvancedListener(new ActionListener() {
+            searchPanel.addAdvancedListener(new ActionListener() {
               /** {@inheritDoc} */
               public void actionPerformed(final ActionEvent e) {
                 if (isSearchPanelVisible()) {
@@ -1071,11 +1065,15 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       }
       popupControls.add(controlMap.get(CONFIGURE_QUERY));
       if (searchPanel != null) {
-        final ControlSet searchControls = searchPanel.getControls();
+        final ControlSet searchControls = new ControlSet(FrameworkMessages.get(FrameworkMessages.SEARCH));
         if (controlMap.containsKey(SEARCH_PANEL_VISIBLE)) {
           searchControls.add(getControl(SEARCH_PANEL_VISIBLE));
         }
-        if (searchControls != null) {
+        final ControlSet searchPanelControls = searchPanel.getControls();
+        if (searchPanelControls != null) {
+          searchControls.addAll(searchPanelControls);
+        }
+        if (searchControls.size() > 0) {
           popupControls.add(searchControls);
         }
       }
@@ -1361,7 +1359,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     final KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0);
     final String keyName = stroke.toString().replace("pressed ", "");
     final Control refresh = Controls.methodControl(getEntityTableModel(), "refresh", null,
-            getEntityTableModel().getSearchModel().getSearchStateChangedObserver(), FrameworkMessages.get(FrameworkMessages.REFRESH_TIP)
+            getEntityTableModel().getSearchModel().getSearchStateObserver(), FrameworkMessages.get(FrameworkMessages.REFRESH_TIP)
                     + " (" + keyName + ")", 0, null, Images.loadImage(Images.IMG_STOP_16));
 
     final InputMap inputMap = getInputMap(WHEN_IN_FOCUSED_WINDOW);
@@ -1467,7 +1465,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       }
     });
 
-    getEntityTableModel().getSearchModel().getSearchStateChangedObserver().addListener(new ActionListener() {
+    getEntityTableModel().getSearchModel().getSearchStateObserver().addListener(new ActionListener() {
       /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
         getJTable().getTableHeader().repaint();

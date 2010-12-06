@@ -69,16 +69,9 @@ public abstract class AbstractTableColumnSyncPanel extends JPanel {
   }
 
   /**
-   * Initializes the column panel for the given column
-   * @param column the column
-   * @return the column panel for the given column
+   * Resets the panel and lays out all sub-panels.
    */
-  protected abstract JPanel initializeColumnPanel(final TableColumn column);
-
-  /**
-   * Resets the panel and layes out all subpanels.
-   */
-  protected final void resetPanel() {
+  public final void resetPanel() {
     removeAll();
     final Enumeration<TableColumn> columnEnumeration = columnModel.getColumns();
     while (columnEnumeration.hasMoreElements()) {
@@ -89,6 +82,13 @@ public abstract class AbstractTableColumnSyncPanel extends JPanel {
     syncPanelWidths(columnModel, columnPanels);
     repaint();
   }
+
+  /**
+   * Initializes the column panel for the given column
+   * @param column the column
+   * @return the column panel for the given column
+   */
+  protected abstract JPanel initializeColumnPanel(final TableColumn column);
 
   private void bindColumnAndPanelSizes() {
     if (columnModel.getColumnCount() != columnPanels.size()) {

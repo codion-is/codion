@@ -121,7 +121,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
    * @param connectionProvider the db provider
    */
   public DefaultEntityTableModel(final String entityID, final EntityConnectionProvider connectionProvider) {
-    this(entityID, connectionProvider, new DefaultEntityTableSearchModel(entityID, connectionProvider, false));
+    this(entityID, connectionProvider, new DefaultEntityTableSearchModel(entityID, connectionProvider));
   }
 
   /**
@@ -616,6 +616,11 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
         searchModel.setSearchModelState();
       }
     });
+    searchModel.addSimpleSearchListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
+        refresh();
+      }
+    });
     searchModel.addFilterStateListener(new ActionListener() {
       /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
@@ -641,7 +646,8 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     addSelectedIndexListener(new ActionListener() {
       /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
-        editModel.setEntity(isSelectionEmpty() ? null : getSelectedItem());
+        final Entity itemToSelect = isSelectionEmpty() ? null : getSelectedItem();
+        editModel.setEntity(itemToSelect);
       }
     });
 

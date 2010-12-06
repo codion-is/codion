@@ -136,7 +136,7 @@ public final class Entities {
 
   /**
    * Retrieves the properties used when searching for a entity of the given type,
-   * if no search property IDs are defined all STRING based properties are returned.
+   * if no search property IDs are specified all STRING based properties are returned.
    * @param entityID the entity ID
    * @param searchPropertyIds the IDs of the properties to use as search properties
    * @return the search properties to use

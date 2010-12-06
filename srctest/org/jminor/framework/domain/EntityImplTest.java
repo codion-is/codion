@@ -5,6 +5,8 @@ package org.jminor.framework.domain;
 
 import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.valuemap.ValueChangeEvent;
+import org.jminor.common.model.valuemap.ValueChangeListener;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 
 import org.junit.Test;
@@ -285,5 +287,16 @@ public class EntityImplTest {
 
     employee.setValue(EmpDept.EMPLOYEE_NAME, "noname");
     assertEquals(employee.getValue(EmpDept.EMPLOYEE_NAME), "noname");
+
+    employee.addValueListener(new ValueChangeListener() {
+      @Override
+      protected void valueChanged(final ValueChangeEvent changeEvent) {
+        if (changeEvent.getKey().equals(EmpDept.EMPLOYEE_DEPARTMENT_FK)) {
+          assertTrue(employee.isValueNull(EmpDept.EMPLOYEE_DEPARTMENT_FK));
+          assertTrue(employee.isValueNull(EmpDept.EMPLOYEE_DEPARTMENT));
+        }
+      }
+    });
+    employee.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, null);
   }
 }

@@ -168,7 +168,7 @@ public interface EntityLookupModel extends EntityDataProvider {
   /**
    * @return an Event fired each time the search string changes
    */
-  EventObserver searchStringObserver();
+  EventObserver getSearchStringObserver();
 
   /**
    * @param listener a listener to be notified each time the search string changes

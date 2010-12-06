@@ -6,6 +6,7 @@ package org.jminor.framework.client.model;
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.model.ColumnSearchModel;
 import org.jminor.common.model.Conjunction;
+import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.FilterCriteria;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.StateObserver;
@@ -79,18 +80,23 @@ public interface EntityTableSearchModel extends FilterCriteria<Entity>, Refresha
   void setSearchEnabled(final String propertyID, final boolean enabled);
 
   /**
-   * Sets the current search model state
-   * @see #getSearchStateChangedObserver
+   * Sets the current search model state, any subsequent changes to search
+   * parameters or operators are notified via the searchStateChanged observer.
+   * A data model using this search model should call this method each the
+   * model is refreshed according using the search criteria provided by this search model.
+   * @see #getSearchStateObserver
    */
   void setSearchModelState();
 
   /**
-   * @return true if simple search should be activated
+   * @return true if the search model state (or configuration) has changed
+   * since the last time the search model state was set
+   * @see #setSearchModelState()
    */
-  boolean isSimpleSearch();
+  boolean hasSearchStateChanged();
 
   /**
-   * @return the conjunction to be used when more than one column search criteria is active,
+   * @return the conjunction to be used when multiple column search criteria are active,
    * the default is <code>Conjunction.AND</code>
    * @see Conjunction
    */
@@ -149,10 +155,35 @@ public interface EntityTableSearchModel extends FilterCriteria<Entity>, Refresha
   boolean isFilterEnabled(final String propertyID);
 
   /**
+   * @return the text used when performing a simple search
+   * @see #performSimpleSearch()
+   */
+  String getSimpleSearchString();
+
+  /**
+   * @param simpleSearchText the text to use next time a simple search is performed
+   * @see #performSimpleSearch()
+   */
+  void setSimpleSearchString(final String simpleSearchText);
+
+  /**
+   * Uses the simpleSearchText as a basis for a wildcard search on all String based search models,
+   * or the search models representing the search properties for the underlying entity
+   * @see
+   * @see org.jminor.framework.domain.Entities#getSearchProperties(String)
+   */
+  void performSimpleSearch();
+
+  /**
    * @return a State activated each time the search state differs from the state at last reset
    * @see #setSearchModelState()
    */
-  StateObserver getSearchStateChangedObserver();
+  StateObserver getSearchStateObserver();
+
+  /**
+   * @return an event observer notified each time the simple search text changes
+   */
+  EventObserver getSimpleSearchStringObserver();
 
   /**
    * @param listener a listener notified each time the filter state changes
@@ -163,4 +194,14 @@ public interface EntityTableSearchModel extends FilterCriteria<Entity>, Refresha
    * @param listener the listener to remove
    */
   void removeFilterStateListener(final ActionListener listener);
+
+  /**
+   * @param listener a listener notified each time a simple search is performed
+   */
+  void addSimpleSearchListener(final ActionListener listener);
+
+  /**
+   * @param listener the listener to remove
+   */
+  void removeSimpleSearchListener(final ActionListener listener);
 }

@@ -238,7 +238,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
   }
 
   /** {@inheritDoc} */
-  public final EventObserver searchStringObserver() {
+  public final EventObserver getSearchStringObserver() {
     return evtSearchStringChanged.getObserver();
   }
 
@@ -296,4 +296,3 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
     return stringBuilder.toString();
   }
 }
-

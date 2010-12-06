@@ -2298,3 +2298,9 @@
   ColumnSearchPanel, panel initialization bug fixed, stTwoSearchFields not set correctly on init
   ColumnSearchPanel/Model and related classes refactored a bit
   Global renaming, 'StateObserver get...State()' renamed to 'StateObserver get...Observer()'
+  DefaultEntityTableSearchModel initializes property search models for all properties, hidden as well
+  DefaultEntityTableSearchModel.simpleSearchString field added (moved from EntityTableSearchSimplePanel)
+  EntityImpl.setValue() bug fixed, propagates fk values before setting the actual entity value, otherwise isValueNull(FK_PROP) tells lies during the value change event firing
+  EntityTableSearchModel.hasSearchStateChanged() added
+  DefaultEntityEditModel.prepareForUpdate/Insert() added
+  EntityTableSearchSimplePanel and EntityTableSearchAdvancedPanel merged into EntityTableSearchPanel, interface removed

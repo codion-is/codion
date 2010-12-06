@@ -109,7 +109,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
         final boolean includePrimaryKeyProperties = !idSource.isAutoIncrement();
         final boolean includeReadOnly = false;
         final boolean includeNonUpdatable = true;
-        final List<Property.ColumnProperty> columnProperties = Entities.getColumnProperties(entityID,
+        final List<Property.ColumnProperty> insertProperties = Entities.getColumnProperties(entityID,
                 includePrimaryKeyProperties, includeReadOnly, includeNonUpdatable);
 
         final boolean queryPrimaryKeyValue = idSource.isQueried() && entity.isValueNull(firstPrimaryKeyProperty);
@@ -119,7 +119,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
         }
 
         final boolean inserting = true;
-        populateStatementPropertiesAndValues(inserting, entity, columnProperties, statementProperties, statementValues);
+        populateStatementPropertiesAndValues(inserting, entity, insertProperties, statementProperties, statementValues);
 
         final String insertSQL = getInsertSQL(entityID, statementProperties);
         statement = getConnection().prepareStatement(insertSQL);
@@ -731,7 +731,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       }
     }
     catch (SQLException e) {
-      LOG.error("Unable to set parameter: " + property + ", value: " + value + ", value class: " + (value == null ? "null" : value.getClass()), e);
+      LOG.debug("Unable to set parameter: " + property + ", value: " + value + ", value class: " + (value == null ? "null" : value.getClass()), e);
       throw e;
     }
   }

@@ -3,27 +3,244 @@
  */
 package org.jminor.framework.client.ui;
 
+import org.jminor.common.model.Event;
+import org.jminor.common.model.Events;
+import org.jminor.common.ui.AbstractTableColumnSyncPanel;
+import org.jminor.common.ui.ColumnSearchPanel;
+import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.ControlSet;
+import org.jminor.common.ui.control.Controls;
+import org.jminor.common.ui.control.TextBeanValueLink;
+import org.jminor.common.ui.images.Images;
 import org.jminor.framework.client.model.EntityTableSearchModel;
+import org.jminor.framework.client.model.ForeignKeySearchModel;
+import org.jminor.framework.client.model.PropertySearchModel;
+import org.jminor.framework.domain.Property;
+import org.jminor.framework.i18n.FrameworkMessages;
+
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Enumeration;
 
 /**
  * A UI component based on the EntityTableSearchModel
  * @see EntityTableSearchModel
  */
-public interface EntityTableSearchPanel {
+public final class EntityTableSearchPanel extends JPanel {
+
+  private final Event evtAdvancedChanged = Events.event();
+  private final Event evtSimpleSearchChanged = Events.event();
+
+  private final EntityTableSearchModel searchModel;
+
+  private final AbstractTableColumnSyncPanel fullSearchPanel;
+  private final JPanel simpleSearchPanel;
+  private final JTextField simpleSearchTextField = new JTextField();
+  private final Action simpleSearchAction;
+  private boolean simpleSearch = false;//todo use this properly
 
   /**
-   * @return the search model this search panel is based on
+   * Instantiates a new EntityTableSearchPanel
+   * @param searchModel the search model
+   * @param columnModel the column model
    */
-  EntityTableSearchModel getSearchModel();
+  public EntityTableSearchPanel(final EntityTableSearchModel searchModel, final TableColumnModel columnModel) {
+    this(searchModel, columnModel, UiUtil.getPreferredScrollBarWidth());
+  }
 
   /**
-   * @return the search controls
+   * Instantiates a new EntityTableSearchPanel
+   * @param searchModel the search model
+   * @param columnModel the column model
+   * @param verticalFillerWidth the vertical filler width, f.ex. the width of a scroll bar
    */
-  ControlSet getControls();
+  public EntityTableSearchPanel(final EntityTableSearchModel searchModel, final TableColumnModel columnModel,
+                                        final int verticalFillerWidth) {
+    this.searchModel = searchModel;
+    this.fullSearchPanel = initializeFullSearchPanel(searchModel, columnModel, verticalFillerWidth);
+    this.simpleSearchAction = initializeSimpleSearchAction();
+    this.simpleSearchPanel = initializeSimpleSearchPanel();
+    setLayout(new BorderLayout());
+    add(fullSearchPanel, BorderLayout.CENTER);
+  }
+
+  /** {@inheritDoc} */
+  public EntityTableSearchModel getSearchModel() {
+    return searchModel;
+  }
 
   /**
-   * Requests the focus for this search panel
+   * @param value true if advanced search should be enabled
    */
-  void requestFocus();
+  public void setAdvanced(final boolean value) {
+    for (final JPanel searchPanel : fullSearchPanel.getColumnPanels().values()) {
+      if (searchPanel instanceof ColumnSearchPanel) {
+        ((ColumnSearchPanel) searchPanel).setAdvancedSearchOn(value);
+      }
+    }
+
+    evtAdvancedChanged.fire();
+  }
+
+  /**
+   * @return true if advanced search is enabled
+   */
+  public boolean isAdvanced() {
+    for (final JPanel searchPanel : fullSearchPanel.getColumnPanels().values()) {
+      if (searchPanel instanceof ColumnSearchPanel) {
+        return ((ColumnSearchPanel) searchPanel).isAdvancedSearchOn();
+      }
+    }
+
+    return false;
+  }
+
+  public boolean isSimpleSearch() {
+    return simpleSearch;
+  }
+
+  public void setSimpleSearch(final boolean simpleSearch) {
+    this.simpleSearch = simpleSearch;
+    evtSimpleSearchChanged.fire();
+  }
+
+  /**
+   * @param txt the search text
+   */
+  public void setSearchTest(final String txt) {
+    simpleSearchTextField.setText(txt);
+  }
+
+  /**
+   * Performs the search
+   */
+  public void performSearch() {
+    simpleSearchAction.actionPerformed(null);
+  }
+
+  /** {@inheritDoc} */
+  public ControlSet getControls() {
+    final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.SEARCH));
+    controlSet.setIcon(Images.loadImage(Images.IMG_FILTER_16));
+    controlSet.add(Controls.toggleControl(this, "advanced",
+            FrameworkMessages.get(FrameworkMessages.ADVANCED), evtAdvancedChanged));
+    controlSet.add(Controls.methodControl(searchModel, "clearPropertySearchModels", FrameworkMessages.get(FrameworkMessages.CLEAR)));
+
+    return controlSet;
+  }
+
+  /**
+   * @param propertyID the property ID
+   * @return the search panel associated with the given property
+   */
+  public ColumnSearchPanel getSearchPanel(final String propertyID) {
+    final Enumeration<TableColumn> columnEnumeration = fullSearchPanel.getColumnModel().getColumns();
+    while (columnEnumeration.hasMoreElements()) {
+      final TableColumn column = columnEnumeration.nextElement();
+      final Property property = (Property) column.getIdentifier();
+      if (property.is(propertyID)) {
+        return (ColumnSearchPanel) fullSearchPanel.getColumnPanels().get(column);
+      }
+    }
+
+    return null;
+  }
+
+  /**
+   * @param listener a listener notified each time the simple search state changes
+   */
+  public void addSimpleSearchListener(final ActionListener listener) {
+    evtSimpleSearchChanged.addListener(listener);
+  }
+
+  /**
+   * @param listener the listener to remove
+   */
+  public void removeSimpleSearchListener(final ActionListener listener) {
+    evtAdvancedChanged.removeListener(listener);
+  }
+
+  /**
+   * @param listener a listener notified each time the advanced search state changes
+   */
+  public void addAdvancedListener(final ActionListener listener) {
+    evtAdvancedChanged.addListener(listener);
+  }
+
+  /**
+   * @param listener the listener to remove
+   */
+  public void removeAdvancedListener(final ActionListener listener) {
+    evtAdvancedChanged.removeListener(listener);
+  }
+
+  private JPanel initializeSimpleSearchPanel() {
+    final JButton simpleSearchButton = new JButton(simpleSearchAction);
+    simpleSearchTextField.addActionListener(simpleSearchAction);
+    final JPanel panel = new JPanel(new BorderLayout(5,5));
+    new TextBeanValueLink(simpleSearchTextField, searchModel, "simpleSearchString", searchModel.getSimpleSearchStringObserver());
+    panel.setBorder(BorderFactory.createTitledBorder(FrameworkMessages.get(FrameworkMessages.CONDITION)));
+    panel.add(simpleSearchTextField, BorderLayout.CENTER);
+    panel.add(simpleSearchButton, BorderLayout.EAST);
+
+    return panel;
+  }
+
+  private Action initializeSimpleSearchAction() {
+    return new AbstractAction(FrameworkMessages.get(FrameworkMessages.SEARCH)) {
+      /** {@inheritDoc} */
+      public void actionPerformed(final ActionEvent e) {
+        searchModel.performSimpleSearch();
+      }
+    };
+  }
+
+  private AbstractTableColumnSyncPanel initializeFullSearchPanel(final EntityTableSearchModel searchModel,
+                                                               final TableColumnModel columnModel,
+                                                               final int verticalFillerWidth) {
+    final AbstractTableColumnSyncPanel panel = new AbstractTableColumnSyncPanel(columnModel) {
+      /** {@inheritDoc} */
+      @Override
+      protected JPanel initializeColumnPanel(final TableColumn column) {
+        final Property property = (Property) column.getIdentifier();
+        if (searchModel.containsPropertySearchModel(property.getPropertyID())) {
+          final PropertySearchModel propertySearchModel = searchModel.getPropertySearchModel(property.getPropertyID());
+          return initializeSearchPanel(propertySearchModel);
+        }
+        else {
+          final JPanel panel = new JPanel();
+          panel.setPreferredSize(new Dimension(panel.getPreferredSize().width, UiUtil.getPreferredTextFieldHeight()));
+          return panel;
+        }
+      }
+    };
+    panel.setVerticalFillerWidth(verticalFillerWidth);
+    panel.resetPanel();
+
+    return panel;
+  }
+
+  /**
+   * Initializes a ColumnSearchPanel for the given model
+   * @param propertySearchModel the PropertySearchModel for which to create a search panel
+   * @return a PropertySearchPanel based on the given model
+   */
+  @SuppressWarnings({"unchecked"})
+  private ColumnSearchPanel initializeSearchPanel(final PropertySearchModel propertySearchModel) {
+    if (propertySearchModel instanceof ForeignKeySearchModel) {
+      return new ForeignKeySearchPanel((ForeignKeySearchModel) propertySearchModel, false);
+    }
+
+    return new PropertySearchPanel(propertySearchModel, true, false);
+  }
 }

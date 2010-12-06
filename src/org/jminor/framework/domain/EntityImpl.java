@@ -679,24 +679,22 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
 
     final Object actualValue = translateNewValue(property, value);
     toString = null;
-    final Object oldValue = super.setValue(property.getPropertyID(), actualValue);
     if (property instanceof Property.ForeignKeyProperty) {
       propagateForeignKeyValues((Property.ForeignKeyProperty) property, (Entity) actualValue, false, entityDefinitions);
     }
 
-    return oldValue;
+    return super.setValue(property.getPropertyID(), actualValue);
   }
 
   private Object translateNewValue(final Property property, final Object value) {
-    Object actualValue = value;
-    if (value != null && property.isDouble()) {
+    if (value instanceof Double) {
       final int maximumFractionDigits = property.getMaximumFractionDigits();
       if (maximumFractionDigits > 0) {
-        actualValue = Util.roundDouble((Double) value, maximumFractionDigits);
+        return Util.roundDouble((Double) value, maximumFractionDigits);
       }
     }
 
-    return actualValue;
+    return value;
   }
 
   private void writeObject(final ObjectOutputStream stream) throws IOException {

@@ -281,7 +281,7 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * @see #addAfterInsertListener(java.awt.event.ActionListener)
    * @see org.jminor.framework.domain.Entity.Validator#validate(java.util.Collection, int)
    */
-  List<Entity.Key> insert(List<Entity> entities) throws CancelException, DatabaseException, ValidationException;
+  List<Entity.Key> insert(final List<Entity> entities) throws CancelException, DatabaseException, ValidationException;
 
   /**
    * Performs a update on the active entity

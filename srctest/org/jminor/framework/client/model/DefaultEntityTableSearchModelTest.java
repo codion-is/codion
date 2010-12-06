@@ -4,8 +4,9 @@ import org.jminor.common.model.Conjunction;
 import org.jminor.framework.db.EntityConnectionImplTest;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 
-import static org.junit.Assert.*;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class DefaultEntityTableSearchModelTest {
 
@@ -16,7 +17,6 @@ public class DefaultEntityTableSearchModelTest {
     final EntityTableSearchModel model = tableModel.getSearchModel();
     assertEquals(EmpDept.T_EMPLOYEE, model.getEntityID());
     assertNotNull(model.getSearchableProperties());
-    assertEquals(false, model.isSimpleSearch());
     model.setSearchConjunction(Conjunction.OR);
     assertEquals(Conjunction.OR, model.getSearchConjunction());
     assertEquals(9, model.getPropertyFilterModels().size());
