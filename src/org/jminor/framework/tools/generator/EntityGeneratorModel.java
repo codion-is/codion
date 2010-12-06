@@ -6,6 +6,7 @@ package org.jminor.framework.tools.generator;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.ResultPacker;
+import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.AbstractFilteredTableModel;
 import org.jminor.common.model.DefaultColumnSearchModel;
 import org.jminor.common.model.Event;
@@ -61,9 +62,9 @@ public final class EntityGeneratorModel {
    * @param user the user
    * @param schema the schema name
    * @throws ClassNotFoundException in case the JDBC driver class was not found on the classpath
-   * @throws SQLException in case of an exception while connecting to the database
+   * @throws DatabaseException in case of an exception while connecting to the database
    */
-  public EntityGeneratorModel(final User user, final String schema) throws ClassNotFoundException, SQLException {
+  public EntityGeneratorModel(final User user, final String schema) throws ClassNotFoundException, DatabaseException {
     this(Databases.createInstance(), user, schema);
   }
 
@@ -73,25 +74,30 @@ public final class EntityGeneratorModel {
    * @param user the user
    * @param schema the schema name
    * @throws ClassNotFoundException in case the JDBC driver class was not found on the classpath
-   * @throws SQLException in case of an exception while connecting to the database
+   * @throws DatabaseException in case of an exception while connecting to the database
    */
-  public EntityGeneratorModel(final Database database, final User user, final String schema) throws ClassNotFoundException, SQLException {
-    this.schema = schema;
-    this.catalog = database.getDatabaseType().equals(Database.MYSQL) ? schema : null;
-    this.connection = database.createConnection(user);
-    this.metaData = connection.getMetaData();
-    this.tableModel = initializeTableModel();
-    this.tableModel.refresh();
-    this.document = new DefaultStyledDocument();
-    this.foreignKeys = getForeignKeys(metaData, catalog, schema);
-    this.primaryKeys = getPrimaryKeys(metaData, catalog, schema);
-    bindEvents();
-    Runtime.getRuntime().addShutdownHook(new Thread() {
-      @Override
-      public void run() {
-        exit();
-      }
-    });
+  public EntityGeneratorModel(final Database database, final User user, final String schema) throws ClassNotFoundException, DatabaseException {
+    try {
+      this.schema = schema;
+      this.catalog = database.getDatabaseType().equals(Database.MYSQL) ? schema : null;
+      this.connection = database.createConnection(user);
+      this.metaData = connection.getMetaData();
+      this.tableModel = initializeTableModel();
+      this.tableModel.refresh();
+      this.document = new DefaultStyledDocument();
+      this.foreignKeys = getForeignKeys(metaData, catalog, schema);
+      this.primaryKeys = getPrimaryKeys(metaData, catalog, schema);
+      bindEvents();
+      Runtime.getRuntime().addShutdownHook(new Thread() {
+        @Override
+        public void run() {
+          exit();
+        }
+      });
+    }
+    catch (SQLException e) {
+      throw new DatabaseException(e, null, e.getMessage());
+    }
   }
 
   /**

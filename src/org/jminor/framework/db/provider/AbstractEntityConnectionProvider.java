@@ -100,7 +100,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
     if (validTimer != null) {
       validTimer.cancel();
     }
-    validTimer = new Timer();
+    validTimer = new Timer(true);
     validTimer.schedule(new TimerTask() {
       /** {@inheritDoc} */
       @Override

@@ -56,10 +56,10 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
    * Constructs a new DatabaseConnectionImpl instance, initialized and ready for usage
    * @param database the database
    * @param user the user for the db-connection
-   * @throws SQLException in case there is a problem connecting to the database
+   * @throws DatabaseException in case there is a problem connecting to the database
    * @throws ClassNotFoundException in case the database driver was not found
    */
-  public DatabaseConnectionImpl(final Database database, final User user) throws ClassNotFoundException, SQLException {
+  public DatabaseConnectionImpl(final Database database, final User user) throws ClassNotFoundException, DatabaseException {
     this(database, user, database.createConnection(user));
   }
 

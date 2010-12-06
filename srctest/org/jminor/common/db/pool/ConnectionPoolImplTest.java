@@ -8,16 +8,17 @@ import org.jminor.common.db.DatabaseConnections;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.PoolableConnection;
 import org.jminor.common.db.PoolableConnectionProvider;
+import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.tools.QueryLoadTestModel;
 import org.jminor.common.model.User;
 
-import static org.junit.Assert.*;
 import org.junit.Test;
 
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+
+import static org.junit.Assert.*;
 
 public class ConnectionPoolImplTest {
 
@@ -188,7 +189,7 @@ public class ConnectionPoolImplTest {
   private static PoolableConnectionProvider createConnectionProvider() {
     return new PoolableConnectionProvider() {
       final Database database = Databases.createInstance();
-      public PoolableConnection createConnection(final User user) throws ClassNotFoundException, SQLException {
+      public PoolableConnection createConnection(final User user) throws ClassNotFoundException, DatabaseException {
         return DatabaseConnections.createConnection(database, user);
       }
       public void destroyConnection(final PoolableConnection connection) {

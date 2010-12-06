@@ -3,6 +3,7 @@
  */
 package org.jminor.common.db;
 
+import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.User;
 
 import java.sql.Connection;
@@ -228,9 +229,9 @@ public interface Database {
    * @param user the user for which to create a connection
    * @return a Connection
    * @throws ClassNotFoundException in case the driver class was not on the classpath
-   * @throws SQLException in case of a connection error
+   * @throws DatabaseException in case of a connection error
    */
-  Connection createConnection(final User user) throws ClassNotFoundException, SQLException;
+  Connection createConnection(final User user) throws ClassNotFoundException, DatabaseException;
 
   /**
    * Encapsulates basic database usage statistics.

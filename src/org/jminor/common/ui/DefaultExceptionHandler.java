@@ -11,6 +11,7 @@ import org.jminor.common.model.Util;
 import javax.swing.JComponent;
 import java.io.FileNotFoundException;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.UndeclaredThrowableException;
 
 /**
  * A default ExcptionHandler implementation.
@@ -24,20 +25,21 @@ public final class DefaultExceptionHandler implements ExceptionHandler {
   }
 
   public void handleException(final Throwable exception, final JComponent dialogParent) {
-    final Throwable rootCause = unwrapExceptions(exception, RuntimeException.class, InvocationTargetException.class);
+    final Throwable rootCause = unwrapExceptions(exception, RuntimeException.class, InvocationTargetException.class,
+            ExceptionInInitializerError.class, UndeclaredThrowableException.class);
     if (rootCause instanceof CancelException) {
       return;
     }
 
     if (rootCause instanceof DatabaseException) {
-      handleDbException((DatabaseException) rootCause, dialogParent);
+      handleDatabaseException((DatabaseException) rootCause, dialogParent);
     }
     else {
       ExceptionDialog.showExceptionDialog(UiUtil.getParentWindow(dialogParent), getMessageTitle(rootCause), rootCause.getMessage(), rootCause);
     }
   }
 
-  public void handleDbException(final DatabaseException dbException, final JComponent dialogParent) {
+  public void handleDatabaseException(final DatabaseException dbException, final JComponent dialogParent) {
     String errMsg = dbException.getMessage();
     if (Util.nullOrEmpty(errMsg)) {
       if (dbException.getCause() == null) {
@@ -51,13 +53,13 @@ public final class DefaultExceptionHandler implements ExceptionHandler {
             Messages.get(Messages.EXCEPTION), errMsg, dbException);
   }
 
-  private static Throwable unwrapExceptions(final Throwable exception, final Class<? extends Exception>... exceptions) {
+  private static Throwable unwrapExceptions(final Throwable exception, final Class<? extends Throwable>... exceptions) {
     if (exception.getCause() == null) {
       return exception;
     }
 
     boolean unwrap = false;
-    for (final Class<? extends Exception> exceptionClass : exceptions) {
+    for (final Class<? extends Throwable> exceptionClass : exceptions) {
       unwrap = exception.getClass().equals(exceptionClass);
       if (unwrap) {
         break;

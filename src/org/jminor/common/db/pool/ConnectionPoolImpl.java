@@ -6,14 +6,24 @@ package org.jminor.common.db.pool;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.PoolableConnection;
 import org.jminor.common.db.PoolableConnectionProvider;
+import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.User;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
-import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Deque;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * A simple connection pool implementation, pools connections on username basis.
@@ -72,7 +82,7 @@ final class ConnectionPoolImpl implements ConnectionPool {
   }
 
   /** {@inheritDoc} */
-  public PoolableConnection getConnection() throws ClassNotFoundException, SQLException {
+  public PoolableConnection getConnection() throws ClassNotFoundException, DatabaseException {
     if (!enabled || closed) {
       throw new IllegalStateException("ConnectionPool not enabled or closed");
     }
@@ -321,7 +331,7 @@ final class ConnectionPoolImpl implements ConnectionPool {
     return connection;
   }
 
-  private PoolableConnection createConnection() throws ClassNotFoundException, SQLException {
+  private PoolableConnection createConnection() throws ClassNotFoundException, DatabaseException {
     synchronized (pool) {
       creatingConnection = true;
     }
@@ -332,9 +342,9 @@ final class ConnectionPoolImpl implements ConnectionPool {
 
       return connection;
     }
-    catch (SQLException sqle) {
-      LOG.error("Database error while creating a new connection", sqle);
-      throw sqle;
+    catch (DatabaseException dbe) {
+      LOG.error("Database error while creating a new connection", dbe);
+      throw dbe;
     }
     catch (ClassNotFoundException e) {
       LOG.error("JDBC Driver class not found", e);

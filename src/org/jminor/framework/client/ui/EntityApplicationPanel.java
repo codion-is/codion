@@ -11,7 +11,6 @@ import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.DefaultExceptionHandler;
-import org.jminor.common.ui.ExceptionDialog;
 import org.jminor.common.ui.ExceptionHandler;
 import org.jminor.common.ui.LoginPanel;
 import org.jminor.common.ui.MasterDetailPanel;
@@ -269,7 +268,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    * @param frameCaption the caption to display on the frame
    * @param iconName the name of the icon to use
    * @param maximize if true the application frame is maximized on startup
-   * @param frameSize the frame size when unmaximized
+   * @param frameSize the frame size when it is not maximized
    * @param defaultUser the default user to display in the login dialog
    * @param showFrame if true the frame is set visible
    */
@@ -281,8 +280,8 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     catch (CancelException e) {
       System.exit(0);
     }
-    catch (Exception e) {
-      LOG.error("Exception on startup", e);
+    catch (Throwable e) {
+      handleException(e, this);
       System.exit(1);
     }
   }
@@ -294,11 +293,11 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    * @throws org.jminor.common.model.CancelException in case the initialization is cancelled
    */
   public final void initialize(final EntityConnectionProvider connectionProvider) throws CancelException {
+    setUncaughtExceptionHandler();
     this.applicationModel = initializeApplicationModel(connectionProvider);
     if (applicationModel == null) {
       throw new IllegalStateException("Unable to initialize application panel without a model");
     }
-    setUncaughtExceptionHandler();
     initializeUI();
     initializeActiveEntityPanel();
     bindEventsInternal();
@@ -1014,6 +1013,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     final ImageIcon applicationIcon = iconName != null ? Images.getImageIcon(getClass(), iconName) : Images.loadImage("jminor_logo32.gif");
     final JDialog startupDialog = showStartupDialog ? initializeStartupDialog(applicationIcon, frameCaption) : null;
     EntityConnectionProvider entityConnectionProvider;
+    long initializationStarted;
     while (true) {
       final User user = loginRequired ? getUser(frameCaption, defaultUser, getClass().getSimpleName(), applicationIcon) : new User("", "");
       if (startupDialog != null) {
@@ -1022,10 +1022,12 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
       entityConnectionProvider = initializeConnectionProvider(user, frameCaption);
       try {
         entityConnectionProvider.getConnection();
+        initializationStarted = System.currentTimeMillis();
+        initialize(entityConnectionProvider);
         break;//success
       }
       catch (Exception e) {
-        ExceptionDialog.showExceptionDialog(startupDialog, Messages.get(Messages.EXCEPTION), e);
+        handleException(e, null);
         if (JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(null,
                 FrameworkMessages.get(FrameworkMessages.RETRY),
                 FrameworkMessages.get(FrameworkMessages.RETRY_TITLE),
@@ -1038,9 +1040,6 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
       }
     }
     try {
-      final long now = System.currentTimeMillis();
-      initialize(entityConnectionProvider);
-
       saveDefaultUser(entityConnectionProvider.getUser());
       if (startupDialog != null) {
         startupDialog.dispose();
@@ -1049,11 +1048,19 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
       final JFrame frame = prepareFrame(frameTitle, maximize, true, frameSize, applicationIcon, showFrame);
       evtApplicationStarted.fire();
       LOG.info(frame.getTitle() + ", application started successfully, " + entityConnectionProvider.getUser().getUsername()
-              + ": " + (System.currentTimeMillis() - now) + " ms");
+              + ": " + (System.currentTimeMillis() - initializationStarted) + " ms");
     }
-    catch (Exception e) {
-      LOG.error(frameCaption + " application failed starting", e);
-      throw e;
+    catch (Throwable e) {
+      if (startupDialog != null) {
+        startupDialog.setVisible(false);
+        startupDialog.dispose();
+      }
+      if (e instanceof Exception) {
+        throw (Exception) e;
+      }
+      else {
+        throw new RuntimeException("", e);
+      }
     }
   }
 

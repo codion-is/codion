@@ -45,7 +45,6 @@ import java.rmi.RemoteException;
 import java.rmi.server.RMISocketFactory;
 import java.rmi.server.ServerNotActiveException;
 import java.rmi.server.UnicastRemoteObject;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -497,7 +496,7 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
     return Util.initializeProxy(EntityConnection.class, new RemoteConnectionHandler(clientInfo));
   }
 
-  private EntityConnection getConnection() throws ClassNotFoundException, SQLException {
+  private EntityConnection getConnection() throws ClassNotFoundException, DatabaseException {
     final ConnectionPool connectionPool = CONNECTION_POOLS.get(clientInfo.getUser());
     if (connectionPool != null && connectionPool.isEnabled()) {
       if (entityConnection != null) {//pool has been turned on since this one was created
@@ -548,7 +547,7 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
     }
   }
 
-  private static EntityConnection createDatabaseConnection(final Database database, final User user) throws ClassNotFoundException, SQLException {
+  private static EntityConnection createDatabaseConnection(final Database database, final User user) throws ClassNotFoundException, DatabaseException {
     return EntityConnections.createConnection(database, user);
   }
 
@@ -738,7 +737,7 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
     }
 
     /** {@inheritDoc} */
-    public PoolableConnection createConnection(final User user) throws ClassNotFoundException, SQLException {
+    public PoolableConnection createConnection(final User user) throws ClassNotFoundException, DatabaseException {
       return createDatabaseConnection(database, user).getPoolableConnection();
     }
 

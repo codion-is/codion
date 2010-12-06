@@ -3,6 +3,7 @@
  */
 package org.jminor.common.db;
 
+import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 
@@ -125,7 +126,7 @@ public abstract class AbstractDatabase implements Database {
   }
 
   /** {@inheritDoc} */
-  public final Connection createConnection(final User user) throws ClassNotFoundException, SQLException {
+  public final Connection createConnection(final User user) throws ClassNotFoundException, DatabaseException {
     Util.rejectNullValue(user, "user");
     Util.rejectNullValue(user.getUsername(), "Username must be provided");
     Util.rejectNullValue(user.getPassword(), "Password must be provided");
@@ -135,7 +136,12 @@ public abstract class AbstractDatabase implements Database {
     connectionProperties.put(PASSWORD_PROPERTY, user.getPassword());
     DriverManager.setLoginTimeout(getLoginTimeout());
 
-    return DriverManager.getConnection(getURL(connectionProperties), addConnectionProperties(connectionProperties));
+    try {
+      return DriverManager.getConnection(getURL(connectionProperties), addConnectionProperties(connectionProperties));
+    }
+    catch (SQLException e) {
+      throw new DatabaseException(e, null, getErrorMessage(e));
+    }
   }
 
   /** {@inheritDoc} */

@@ -2304,3 +2304,5 @@
   EntityTableSearchModel.hasSearchStateChanged() added
   DefaultEntityEditModel.prepareForUpdate/Insert() added
   EntityTableSearchSimplePanel and EntityTableSearchAdvancedPanel merged into EntityTableSearchPanel, interface removed
+  AbstractDatabase.createConnection() now throws DatabaseException instead of SQLException, for localization, changes bubbled all the way up
+  EntityApplicationPanel, better handling of exceptions during startup

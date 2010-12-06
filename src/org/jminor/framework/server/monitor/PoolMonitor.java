@@ -3,14 +3,14 @@
  */
 package org.jminor.framework.server.monitor;
 
+import org.jminor.common.db.PoolableConnection;
+import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
-import org.jminor.common.db.PoolableConnection;
 import org.jminor.common.model.User;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
 
 import java.rmi.RemoteException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -267,7 +267,7 @@ public final class PoolMonitor {
     public void returnConnection(final PoolableConnection dbConnection) {}
 
     /** {@inheritDoc} */
-    public PoolableConnection getConnection() throws ClassNotFoundException, SQLException {return null;}
+    public PoolableConnection getConnection() throws ClassNotFoundException, DatabaseException {return null;}
 
     /** {@inheritDoc} */
     public void close() {}

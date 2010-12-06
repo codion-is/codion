@@ -15,7 +15,19 @@ import org.jminor.common.ui.control.Controls;
 import org.jminor.common.ui.control.ToggleBeanValueLink;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
 
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -88,11 +100,16 @@ public final class ExceptionDialog extends JDialog {
 
   public static void showExceptionDialog(final Window parentFrame, final String title, final String message,
                                          final Throwable throwable, final boolean modal) {
-    SwingUtilities.invokeLater(new Runnable() {
-      public void run() {
-        new ExceptionDialog(parentFrame).showForThrowable(title, message, throwable, modal);
-      }
-    });
+    try {
+      SwingUtilities.invokeAndWait(new Runnable() {
+        public void run() {
+          new ExceptionDialog(parentFrame).showForThrowable(title, message, throwable, modal);
+        }
+      });
+    }
+    catch (Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 
   public void showForThrowable(final String title, final String message, final Throwable t) {

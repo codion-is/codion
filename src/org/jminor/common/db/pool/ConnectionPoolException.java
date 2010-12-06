@@ -3,14 +3,13 @@
  */
 package org.jminor.common.db.pool;
 
+import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.i18n.Messages;
-
-import java.sql.SQLException;
 
 /**
  * An exception originating from a ConnectionPool
  */
-public class ConnectionPoolException extends SQLException {
+public class ConnectionPoolException extends DatabaseException {
 
   ConnectionPoolException(final String reason) {
     super(reason);
@@ -24,7 +23,7 @@ public class ConnectionPoolException extends SQLException {
     private static final String MESSAGE = Messages.get(Messages.NO_CONNECTION_AVAILABLE);
 
     /**
-     * Instantates a new NoConnectionAvailable exception
+     * Instantiates a new NoConnectionAvailable exception
      * @param retries the number retries trying to check out a connection
      * @param checkoutTime the time used trying to check out a connection
      */

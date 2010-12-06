@@ -3,10 +3,9 @@
  */
 package org.jminor.common.db.pool;
 
-import org.jminor.common.model.User;
 import org.jminor.common.db.PoolableConnection;
-
-import java.sql.SQLException;
+import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.model.User;
 
 /**
  * Defines a simple connection pool.
@@ -23,11 +22,11 @@ public interface ConnectionPool {
    * @return a database connection retrieved from the pool
    * @throws ConnectionPoolException.NoConnectionAvailable in case the maximum check out time is exceeded
    * @throws ClassNotFoundException in case the JDBC driver class is not found
-   * @throws SQLException in case of a database exception
+   * @throws DatabaseException in case of a database exception
    * @throws IllegalStateException if the pool is closed
    * @see #setMaximumCheckOutTime(int)
    */
-  PoolableConnection getConnection() throws ClassNotFoundException, SQLException;
+  PoolableConnection getConnection() throws ClassNotFoundException, DatabaseException;
 
   /**
    * Return the given connection to the pool.

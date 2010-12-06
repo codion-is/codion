@@ -25,7 +25,6 @@ import org.jminor.framework.domain.Property;
 import org.jminor.framework.plugins.jasperreports.model.JasperReportsWrapper;
 
 import org.junit.After;
-import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -36,6 +35,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.junit.Assert.*;
 
 public class EntityConnectionImplTest {
 
@@ -60,7 +61,7 @@ public class EntityConnectionImplTest {
   }
 
   @Before
-  public void setup() throws ClassNotFoundException, SQLException {
+  public void setup() throws ClassNotFoundException, DatabaseException {
     connection = initializeConnection();
   }
 
@@ -258,7 +259,7 @@ public class EntityConnectionImplTest {
     }
   }
 
-  private static EntityConnectionImpl initializeConnection() throws ClassNotFoundException, SQLException {
+  private static EntityConnectionImpl initializeConnection() throws ClassNotFoundException, DatabaseException {
     return new EntityConnectionImpl(Databases.createInstance(), User.UNIT_TEST_USER);
   }
 }

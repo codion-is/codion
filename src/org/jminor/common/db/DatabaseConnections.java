@@ -1,9 +1,9 @@
 package org.jminor.common.db;
 
+import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.User;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 
 public final class DatabaseConnections {
 
@@ -15,10 +15,10 @@ public final class DatabaseConnections {
    * @param database the database
    * @param user the user for the db-connection
    * @return a new DatabaseConnection instance
-   * @throws SQLException in case there is a problem connecting to the database
+   * @throws DatabaseException in case there is a problem connecting to the database
    * @throws ClassNotFoundException in case the JDBC driver class was not found
    */
-  public static DatabaseConnection createConnection(final Database database, final User user) throws ClassNotFoundException, SQLException {
+  public static DatabaseConnection createConnection(final Database database, final User user) throws ClassNotFoundException, DatabaseException {
     return new DatabaseConnectionImpl(database, user, database.createConnection(user));
   }
 
@@ -28,11 +28,10 @@ public final class DatabaseConnections {
    * @param database the database
    * @param user the user for the db-connection
    * @param connection the Connection object to base this DatabaseConnection on
-   * @throws SQLException in case there is a problem connecting to the database
+   * @throws DatabaseException in case there is a problem connecting to the database
    * @return a new DatabaseConnection instance
    */
-  public static DatabaseConnection createConnection(final Database database, final User user, final Connection connection) throws SQLException {
+  public static DatabaseConnection createConnection(final Database database, final User user, final Connection connection) throws DatabaseException {
     return new DatabaseConnectionImpl(database, user, connection);
   }
-
 }
