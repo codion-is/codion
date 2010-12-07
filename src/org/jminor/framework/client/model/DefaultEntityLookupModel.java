@@ -267,15 +267,11 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
    * @see #setAdditionalLookupCriteria(org.jminor.common.db.criteria.Criteria)
    */
   private EntitySelectCriteria getEntitySelectCriteria() {
-    if (searchString.equals(wildcard)) {
-      return EntityCriteriaUtil.selectCriteria(entityID);
-    }
-
     final CriteriaSet<Property.ColumnProperty> baseCriteria = new CriteriaSet<Property.ColumnProperty>(Conjunction.OR);
     final String[] lookupTexts = multipleSelectionAllowed ? searchString.split(multipleValueSeparator) : new String[] {searchString};
     for (final Property.ColumnProperty lookupProperty : lookupProperties) {
       for (final String lookupText : lookupTexts) {
-        final String modifiedLookupText = (wildcardPrefix ? wildcard : "") + lookupText + (wildcardPostfix ? wildcard : "");
+        final String modifiedLookupText = searchString.equals(wildcard) ? wildcard : ((wildcardPrefix ? wildcard : "") + lookupText + (wildcardPostfix ? wildcard : ""));
         baseCriteria.add(EntityCriteriaUtil.propertyCriteria(lookupProperty, caseSensitive, SearchType.LIKE, modifiedLookupText));
       }
     }

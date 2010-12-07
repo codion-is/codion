@@ -67,13 +67,12 @@ public final class ClientInstanceMonitorPanel extends JPanel {
       else {
         log.append("Disconnected!");
       }
-
+      chkLoggingEnabled.setSelected(model.isLoggingOn());
       txtCreationDate.setText(DateFormats.getDateFormat(DateFormats.FULL_TIMESTAMP).format(new Date(model.getCreationDate())));
     }
     else {
       txtCreationDate.setText("");
     }
-
     txtLog.setText(log.toString());
   }
 
