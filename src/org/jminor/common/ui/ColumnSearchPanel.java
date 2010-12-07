@@ -373,12 +373,12 @@ public class ColumnSearchPanel<K> extends JPanel {
       if (model.getType() == Types.INTEGER) {
         return new IntBeanValueLink((IntField) component, model,
                 isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
-                isUpper ? model.getUpperBoundObserver() : model.getLowerBoundObserver());
+                isUpper ? model.getUpperBoundObserver() : model.getLowerBoundObserver(), false);
       }
       if (model.getType() == Types.DOUBLE) {
         return new DoubleBeanValueLink((DoubleField) component, model,
                 isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
-                isUpper ? model.getUpperBoundObserver() : model.getLowerBoundObserver());
+                isUpper ? model.getUpperBoundObserver() : model.getLowerBoundObserver(), false);
       }
       if (model.getType() == Types.DATE) {
         return new DateBeanValueLink((JFormattedTextField) component, model,

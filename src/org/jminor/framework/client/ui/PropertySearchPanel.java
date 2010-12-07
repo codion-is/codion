@@ -141,12 +141,12 @@ public final class PropertySearchPanel extends ColumnSearchPanel<Property.Column
       else if (property.isDouble()) {
         new DoubleBeanValueLink((DoubleField) field, model,
                 isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
-                isUpper ? model.getUpperBoundObserver() : model.getLowerBoundObserver());
+                isUpper ? model.getUpperBoundObserver() : model.getLowerBoundObserver(), false);
       }
       else if (property.isInteger()) {
         new IntBeanValueLink((IntField) field, model,
                 isUpper ? PropertySearchModel.UPPER_BOUND_PROPERTY : PropertySearchModel.LOWER_BOUND_PROPERTY,
-                isUpper ? model.getUpperBoundObserver() : model.getLowerBoundObserver());
+                isUpper ? model.getUpperBoundObserver() : model.getLowerBoundObserver(), false);
       }
       else if (property.isBoolean()) {
         new SelectedItemBeanValueLink((JComboBox) field, model,

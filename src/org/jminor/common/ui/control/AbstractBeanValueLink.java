@@ -63,6 +63,13 @@ public abstract class AbstractBeanValueLink extends AbstractValueLink<Object, Ob
     return propertyName;
   }
 
+  /**
+   * @return he class of the property
+   */
+  public final Class<?> getValueClass() {
+    return valueClass;
+  }
+
   /** {@inheritDoc} */
   @Override
   public final Object getModelValue() {

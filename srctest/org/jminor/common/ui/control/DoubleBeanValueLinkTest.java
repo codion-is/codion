@@ -7,20 +7,23 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.Events;
 import org.jminor.common.ui.textfield.DoubleField;
 
+import org.junit.Test;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import org.junit.Test;
 
 public class DoubleBeanValueLinkTest {
 
   private Double doubleValue;
-  private Event evtDoubleValueChanged = Events.event();
+  private final Event evtDoubleValueChanged = Events.event();
+  private double doublePrimitiveValue;
+  private final Event evtDoublePrimitiveValueValueChanged = Events.event();
 
   @Test
-  public void test() throws Exception {
+  public void testDouble() throws Exception {
     final DoubleField txtDouble = new DoubleField();
     txtDouble.setDecimalSymbol(DoubleField.POINT);
-    new DoubleBeanValueLink(txtDouble, this, "doubleValue", evtDoubleValueChanged);
+    new DoubleBeanValueLink(txtDouble, this, "doubleValue", evtDoubleValueChanged, false);
     assertNull("Double value should be null on initialization", txtDouble.getDouble());
     setDoubleValue(2.2);
     assertEquals("Double value should be 2.2", new Double(2.2), txtDouble.getDouble());
@@ -30,6 +33,20 @@ public class DoubleBeanValueLinkTest {
     assertNull("Double value should be null", doubleValue);
   }
 
+  @Test
+  public void testDoublePrimitive() throws Exception {
+    final DoubleField txtDouble = new DoubleField();
+    txtDouble.setDecimalSymbol(DoubleField.POINT);
+    new DoubleBeanValueLink(txtDouble, this, "doublePrimitiveValue", evtDoublePrimitiveValueValueChanged, true);
+    assertEquals("Double value should be 0 on initialization", (Double) 0.0, txtDouble.getDouble());
+    setDoublePrimitiveValue(2.2);
+    assertEquals("Double value should be 2.2", new Double(2.2), txtDouble.getDouble());
+    txtDouble.setText("42.2");
+    assertEquals("Double value should be 42.2", 42.2, 0, doublePrimitiveValue);
+    txtDouble.setText("");
+    assertEquals("Double value should be 0", 0.0, 0, doublePrimitiveValue);
+  }
+
   public Double getDoubleValue() {
     return doubleValue;
   }
@@ -37,5 +54,14 @@ public class DoubleBeanValueLinkTest {
   public void setDoubleValue(final Double doubleValue) {
     this.doubleValue = doubleValue;
     evtDoubleValueChanged.fire();
+  }
+
+  public double getDoublePrimitiveValue() {
+    return doublePrimitiveValue;
+  }
+
+  public void setDoublePrimitiveValue(final double doublePrimitiveValue) {
+    this.doublePrimitiveValue = doublePrimitiveValue;
+    evtDoublePrimitiveValueValueChanged.fire();
   }
 }

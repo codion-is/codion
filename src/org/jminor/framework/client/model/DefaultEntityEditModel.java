@@ -596,12 +596,12 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
 
   /** {@inheritDoc} */
   public final void removeEntitiesChangedListener(final ActionListener listener) {
-    evtAfterInsert.removeListener(listener);
+    evtEntitiesChanged.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   public final void addEntitiesChangedListener(final ActionListener listener) {
-    evtAfterInsert.addListener(listener);
+    evtEntitiesChanged.addListener(listener);
   }
 
   /** {@inheritDoc} */

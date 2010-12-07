@@ -21,7 +21,7 @@ public class DoubleBeanValueLink extends TextBeanValueLink {
    */
   public DoubleBeanValueLink(final DoubleField doubleField, final Object owner, final String propertyName,
                              final EventObserver valueChangeEvent) {
-    this(doubleField, owner, propertyName, valueChangeEvent,LinkType.READ_WRITE);
+    this(doubleField, owner, propertyName, valueChangeEvent, LinkType.READ_WRITE);
   }
 
   /**
@@ -34,13 +34,44 @@ public class DoubleBeanValueLink extends TextBeanValueLink {
    */
   public DoubleBeanValueLink(final DoubleField doubleField, final Object owner, final String propertyName,
                              final EventObserver valueChangeEvent, final LinkType linkType) {
-    super(doubleField, owner, propertyName, Double.class, valueChangeEvent, linkType);
+    this(doubleField, owner, propertyName, valueChangeEvent, linkType, false);
+  }
+
+  /**
+   * Instantiates a new DoubleBeanValueLink.
+   * @param doubleField the double field to link with the value
+   * @param owner the value owner
+   * @param propertyName the property name
+   * @param valueChangeEvent an EventObserver notified each time the value changes
+   * @param usePrimitive if true then the property is assumed to be a primitive, double instead of Double
+   */
+  public DoubleBeanValueLink(final DoubleField doubleField, final Object owner, final String propertyName,
+                             final EventObserver valueChangeEvent, final boolean usePrimitive) {
+    this(doubleField, owner, propertyName, valueChangeEvent, LinkType.READ_WRITE, usePrimitive);
+  }
+
+  /**
+   * Instantiates a new DoubleBeanValueLink.
+   * @param doubleField the double field to link with the value
+   * @param owner the value owner
+   * @param propertyName the property name
+   * @param valueChangeEvent an EventObserver notified each time the value changes
+   * @param linkType the link type
+   * @param usePrimitive if true then the property is assumed to be a primitive, double instead of Double
+   */
+  public DoubleBeanValueLink(final DoubleField doubleField, final Object owner, final String propertyName,
+                             final EventObserver valueChangeEvent, final LinkType linkType, final boolean usePrimitive) {
+    super(doubleField, owner, propertyName, usePrimitive ? double.class : Double.class, valueChangeEvent, linkType);
     updateUI();
   }
 
   /** {@inheritDoc} */
   @Override
   protected final Object getUIValue() {
+    final String text = getText();
+    if (text.isEmpty() && getValueClass().equals(double.class)) {
+      return 0;
+    }
     try {
       return Util.getDouble(getText());
     }
