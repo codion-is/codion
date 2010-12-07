@@ -27,7 +27,16 @@ import org.jminor.common.ui.images.Images;
 import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.common.ui.textfield.IntField;
 import org.jminor.common.ui.textfield.TextFieldPlus;
-import org.jminor.common.ui.valuemap.*;
+import org.jminor.common.ui.valuemap.AbstractValueMapLink;
+import org.jminor.common.ui.valuemap.BooleanValueLink;
+import org.jminor.common.ui.valuemap.ComboBoxValueLink;
+import org.jminor.common.ui.valuemap.DateValueLink;
+import org.jminor.common.ui.valuemap.DoubleValueLink;
+import org.jminor.common.ui.valuemap.FormattedValueLink;
+import org.jminor.common.ui.valuemap.IntValueLink;
+import org.jminor.common.ui.valuemap.TextValueLink;
+import org.jminor.common.ui.valuemap.TristateValueLink;
+import org.jminor.common.ui.valuemap.ValueLinkValidators;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityComboBoxModel;
 import org.jminor.framework.client.model.EntityDataProvider;
@@ -45,7 +54,23 @@ import ch.qos.logback.classic.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JFormattedTextField;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.KeyStroke;
+import javax.swing.ListSelectionModel;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -523,7 +548,7 @@ public final class EntityUiUtil {
     Util.rejectNullValue(editModel, EDIT_MODEL_PARAM_NAME);
     Util.rejectNullValue(linkType, "linkType");
     checkProperty(property, editModel);
-    final JTextField textField = initTextField(property, editModel, enabledState, formatMaskString, valueContainsLiteralCharacters);
+    final JTextField textField = initializeTextField(property, editModel, enabledState, formatMaskString, valueContainsLiteralCharacters);
     final String propertyID = property.getPropertyID();
     final TextValueLink<String> valueLink;
     if (property.isString()) {
@@ -657,9 +682,9 @@ public final class EntityUiUtil {
     return panel;
   }
 
-  private static JTextField initTextField(final Property property, final EntityEditModel editModel,
-                                          final StateObserver enabledState, final String formatMaskString,
-                                          final boolean valueContainsLiteralCharacters) {
+  private static JTextField initializeTextField(final Property property, final EntityEditModel editModel,
+                                                final StateObserver enabledState, final String formatMaskString,
+                                                final boolean valueContainsLiteralCharacters) {
     final JTextField field;
     if (property.isInteger()) {
       field = new IntField(0);
