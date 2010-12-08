@@ -2311,3 +2311,5 @@
   IntBeanValueLink/DoubleBeanValueLink, usePrimitives parameter added to constructor, tests added
   Entities.define() now throws IllegalArgumentException when the entity has already been defined
   EntityConnectionServer, remote loading of domain models disabled, not that useful
+  EntityConnectionServer, initializes default domain model classes in static initializer
+  EntityApplicationPanel, improved startup error handling

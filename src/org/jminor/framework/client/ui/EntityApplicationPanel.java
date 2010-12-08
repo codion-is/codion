@@ -244,10 +244,11 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    * @param iconName the name of the icon to use
    * @param maximize if true the application frame is maximized on startup
    * @param frameSize the frame size when unmaximized
+   * @return the JFrame instance containing this application panel
    */
-  public final void startApplication(final String frameCaption, final String iconName, final boolean maximize,
+  public final JFrame startApplication(final String frameCaption, final String iconName, final boolean maximize,
                                      final Dimension frameSize) {
-    startApplication(frameCaption, iconName, maximize, frameSize, null);
+    return startApplication(frameCaption, iconName, maximize, frameSize, null);
   }
 
   /**
@@ -257,10 +258,11 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    * @param maximize if true the application frame is maximized on startup
    * @param frameSize the frame size when unmaximized
    * @param defaultUser the default user to display in the login dialog
+   * @return the JFrame instance containing this application panel
    */
-  public final void startApplication(final String frameCaption, final String iconName, final boolean maximize,
+  public final JFrame startApplication(final String frameCaption, final String iconName, final boolean maximize,
                                      final Dimension frameSize, final User defaultUser) {
-    startApplication(frameCaption, iconName, maximize, frameSize, defaultUser, true);
+    return startApplication(frameCaption, iconName, maximize, frameSize, defaultUser, true);
   }
 
   /**
@@ -271,19 +273,21 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    * @param frameSize the frame size when it is not maximized
    * @param defaultUser the default user to display in the login dialog
    * @param showFrame if true the frame is set visible
+   * @return the JFrame instance containing this application panel
    */
-  public final void startApplication(final String frameCaption, final String iconName, final boolean maximize,
+  public final JFrame startApplication(final String frameCaption, final String iconName, final boolean maximize,
                                      final Dimension frameSize, final User defaultUser, final boolean showFrame) {
     try {
-      startApplicationInternal(frameCaption, iconName, maximize, frameSize, defaultUser, showFrame);
+      return startApplicationInternal(frameCaption, iconName, maximize, frameSize, defaultUser, showFrame);
     }
     catch (CancelException e) {
       System.exit(0);
     }
-    catch (Throwable e) {
+    catch (Exception e) {
       handleException(e, this);
       System.exit(1);
     }
+    return null;
   }
 
   /**
@@ -1005,28 +1009,35 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     });
   }
 
-  private void startApplicationInternal(final String frameCaption, final String iconName, final boolean maximize,
-                                        final Dimension frameSize, final User defaultUser, final boolean showFrame) throws Exception {
+  private JFrame startApplicationInternal(final String frameCaption, final String iconName, final boolean maximize,
+                                          final Dimension frameSize, final User defaultUser, final boolean showFrame) throws Exception {
     LOG.debug(frameCaption + " application starting");
     Messages.class.getName();//hack to load the class
     UIManager.setLookAndFeel(getDefaultLookAndFeelClassName());
     final ImageIcon applicationIcon = iconName != null ? Images.getImageIcon(getClass(), iconName) : Images.loadImage("jminor_logo32.gif");
     final JDialog startupDialog = showStartupDialog ? initializeStartupDialog(applicationIcon, frameCaption) : null;
-    EntityConnectionProvider entityConnectionProvider;
-    long initializationStarted;
     while (true) {
       final User user = loginRequired ? getUser(frameCaption, defaultUser, getClass().getSimpleName(), applicationIcon) : new User("", "");
       if (startupDialog != null) {
         startupDialog.setVisible(true);
       }
-      entityConnectionProvider = initializeConnectionProvider(user, frameCaption);
+      final EntityConnectionProvider entityConnectionProvider = initializeConnectionProvider(user, frameCaption);
       try {
-        entityConnectionProvider.getConnection();
-        initializationStarted = System.currentTimeMillis();
+        entityConnectionProvider.getConnection();//throws exception if the server is not reachable
+        final long initializationStarted = System.currentTimeMillis();
         initialize(entityConnectionProvider);
-        break;//success
+        if (startupDialog != null) {
+          startupDialog.dispose();
+        }
+        saveDefaultUser(entityConnectionProvider.getUser());
+        this.frameTitle = getFrameTitle(frameCaption, entityConnectionProvider.getUser());
+        final JFrame frame = prepareFrame(this.frameTitle, maximize, true, frameSize, applicationIcon, showFrame);
+        this.evtApplicationStarted.fire();
+        LOG.info(this.frameTitle + ", application started successfully, " + entityConnectionProvider.getUser().getUsername()
+                + ": " + (System.currentTimeMillis() - initializationStarted) + " ms");
+        return frame;
       }
-      catch (Exception e) {
+      catch (Throwable e) {
         handleException(e, null);
         if (JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(null,
                 FrameworkMessages.get(FrameworkMessages.RETRY),
@@ -1037,29 +1048,6 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
           }
           throw new CancelException();
         }
-      }
-    }
-    try {
-      saveDefaultUser(entityConnectionProvider.getUser());
-      if (startupDialog != null) {
-        startupDialog.dispose();
-      }
-      this.frameTitle = getFrameTitle(frameCaption, entityConnectionProvider.getUser());
-      final JFrame frame = prepareFrame(frameTitle, maximize, true, frameSize, applicationIcon, showFrame);
-      evtApplicationStarted.fire();
-      LOG.info(frame.getTitle() + ", application started successfully, " + entityConnectionProvider.getUser().getUsername()
-              + ": " + (System.currentTimeMillis() - initializationStarted) + " ms");
-    }
-    catch (Throwable e) {
-      if (startupDialog != null) {
-        startupDialog.setVisible(false);
-        startupDialog.dispose();
-      }
-      if (e instanceof Exception) {
-        throw (Exception) e;
-      }
-      else {
-        throw new RuntimeException("", e);
       }
     }
   }

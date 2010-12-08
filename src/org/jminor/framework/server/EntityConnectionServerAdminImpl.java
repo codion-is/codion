@@ -418,11 +418,12 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
    * Runs a new RemoteEntityServer with a server admin interface exported.
    * @param arguments no arguments required
    * @throws java.rmi.RemoteException in case of a remote exception during service export
+   * @throws ClassNotFoundException in case the domain model classes required for the server is not found
    */
-  public static void main(final String[] arguments) throws RemoteException {
+  public static void main(final String[] arguments) throws RemoteException, ClassNotFoundException {
+    final EntityConnectionServer server = new EntityConnectionServer(Databases.createInstance());
     final EntityConnectionServerAdminImpl admin = new EntityConnectionServerAdminImpl(
-            new EntityConnectionServer(Databases.createInstance()),
-            EntityConnectionServer.SSL_CONNECTION_ENABLED);
+            server, EntityConnectionServer.SSL_CONNECTION_ENABLED);
 
     final String webDocumentRoot = Configuration.getStringValue(Configuration.WEB_SERVER_DOCUMENT_ROOT);
     final ExecutorService executor = Executors.newSingleThreadExecutor();

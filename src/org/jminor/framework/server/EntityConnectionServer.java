@@ -65,9 +65,11 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
     SERVER_DB_PORT = Integer.parseInt(serverDbPortProperty);
 
     try {
+      loadDefaultDomainModels();
       Util.initializeRegistry();
     }
-    catch (RemoteException re) {
+    catch (Throwable re) {
+      LOG.error("Exception while initializing server", re);
       throw new RuntimeException(re);
     }
   }
@@ -82,12 +84,13 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
    * Constructs a new RemoteEntityServer and binds it to the given registry
    * @param database the Database implementation
    * @throws java.rmi.RemoteException in case of a remote exception
+   * @throws ClassNotFoundException in case the domain model classes are not found on the classpath
+   * @see Configuration#SERVER_DOMAIN_MODEL_CLASSES
    */
-  EntityConnectionServer(final Database database) throws RemoteException {
+  EntityConnectionServer(final Database database) throws RemoteException, ClassNotFoundException {
     super(SERVER_PORT, initializeServerName(database.getHost(), database.getSid()),
             SSL_CONNECTION_ENABLED ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
             SSL_CONNECTION_ENABLED ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
-    loadDefaultDomainModels();
     this.database = database;
     RemoteEntityConnectionImpl.initializeConnectionPools(database);
     setConnectionLimit(Configuration.getIntValue(Configuration.SERVER_CONNECTION_LIMIT));
@@ -281,8 +284,7 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
     return SERVER_DB_PORT;
   }
 
-  static void loadDomainModel(final String domainClassName) throws ClassNotFoundException,
-          InstantiationException, IllegalAccessException {
+  static void loadDomainModel(final String domainClassName) throws ClassNotFoundException {
     final String message = "Server loading domain model class '" + domainClassName + "' from classpath";
     LOG.info(message);
     Class.forName(domainClassName);
@@ -324,20 +326,15 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
     return connection;
   }
 
-  private static void loadDefaultDomainModels() throws RemoteException {
+  private static void loadDefaultDomainModels() throws ClassNotFoundException {
     final String domainModelClasses = Configuration.getStringValue(Configuration.SERVER_DOMAIN_MODEL_CLASSES);
     if (Util.nullOrEmpty(domainModelClasses)) {
       return;
     }
 
     final String[] classes = domainModelClasses.split(",");
-    try {
-      for (final String classname : classes) {
-        loadDomainModel(classname);
-      }
-    }
-    catch (Exception e) {
-      throw new RemoteException("Exception while loading default domain models", e);
+    for (final String classname : classes) {
+      loadDomainModel(classname);
     }
   }
 
