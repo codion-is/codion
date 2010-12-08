@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.server.monitor.ui;
 
-import org.jminor.common.model.Util;
 import org.jminor.common.model.formats.DateFormats;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.ControlProvider;
@@ -39,7 +38,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
-import java.net.URISyntaxException;
 import java.rmi.RemoteException;
 import java.util.Date;
 
@@ -89,15 +87,6 @@ public final class ServerMonitorPanel extends JPanel {
     }
   }
 
-  public void loadDomainModel() throws ClassNotFoundException, RemoteException,
-          IllegalAccessException, InstantiationException, URISyntaxException {
-    final String domainModelClass = JOptionPane.showInputDialog("Domain class name");
-    final String locationURL = JOptionPane.showInputDialog("Location URL");
-    if (!domainModelClass.isEmpty() && !locationURL.isEmpty()) {
-      model.loadDomainModel(Util.getURI(locationURL), domainModelClass);
-    }
-  }
-
   private void initUI() throws RemoteException {
     final JPanel infoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
     infoPanel.add(new JLabel("Connections", JLabel.RIGHT));
@@ -111,7 +100,6 @@ public final class ServerMonitorPanel extends JPanel {
     infoPanel.add(initMemoryField());
     infoPanel.add(new JLabel("Logging", JLabel.RIGHT));
     infoPanel.add(initLoggingLevelField());
-    infoPanel.add(ControlProvider.createButton(Controls.methodControl(this, "loadDomainModel", "Load domain...")));
     infoPanel.add(ControlProvider.createButton(Controls.methodControl(this, "shutdownServer", "Shutdown")));
     infoPanel.add(ControlProvider.createButton(Controls.methodControl(model, "performGC", "GC")));
 

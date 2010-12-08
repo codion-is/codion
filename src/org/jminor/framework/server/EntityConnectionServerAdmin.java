@@ -11,7 +11,6 @@ import org.jminor.common.server.ServerLog;
 
 import ch.qos.logback.classic.Level;
 
-import java.net.URI;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.Collection;
@@ -298,17 +297,6 @@ public interface EntityConnectionServerAdmin extends Remote {
   String getSystemProperties() throws RemoteException;
 
   /**
-   * Loads the domain model found int he given class, at the given location
-   * @param location the classpath URI
-   * @param domainClassName the domain class name
-   * @throws RemoteException in case of an exception
-   * @throws ClassNotFoundException in case the domain class in not found
-   * @throws IllegalAccessException in case the class loader access is denied
-   */
-  void loadDomainModel(final URI location, final String domainClassName) throws RemoteException, ClassNotFoundException,
-          IllegalAccessException;
-
-  /**
    * @return a map containing all entityIDs, with their respective table names as an associated value
    * @throws RemoteException in case of an exception
    */
@@ -412,7 +400,17 @@ public interface EntityConnectionServerAdmin extends Remote {
    */
   void setMinimumConnectionPoolSize(final User user, final int value) throws RemoteException;
 
+  /**
+   * @param user the pool user
+   * @return the number of milliseconds to wait before trying to create a new connection
+   * @throws RemoteException in case of an exception
+   */
   int getPoolConnectionThreshold(final User user) throws RemoteException;
 
+  /**
+   * @param user the pool user
+   * @param value the number of milliseconds to wait before trying to create a new connection
+   * @throws RemoteException in case of an exception
+   */
   void setPoolConnectionThreshold(final User user, final int value) throws RemoteException;
 }

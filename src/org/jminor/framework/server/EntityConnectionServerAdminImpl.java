@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.rmi.ssl.SslRMIClientSocketFactory;
 import javax.rmi.ssl.SslRMIServerSocketFactory;
-import java.net.URI;
 import java.rmi.NoSuchObjectException;
 import java.rmi.NotBoundException;
 import java.rmi.RMISecurityManager;
@@ -384,12 +383,6 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
   /** {@inheritDoc} */
   public void setConnectionTimeout(final int timeout) throws RemoteException {
     server.setConnectionTimeout(timeout);
-  }
-
-  /** {@inheritDoc} */
-  public void loadDomainModel(final URI location, final String domainClassName) throws RemoteException, ClassNotFoundException,
-          IllegalAccessException {
-    EntityConnectionServer.loadDomainModel(location, domainClassName);
   }
 
   /** {@inheritDoc} */

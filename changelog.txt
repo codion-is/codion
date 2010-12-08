@@ -2309,3 +2309,5 @@
   DefaultEntityLookupModel.getEntitySelectCriteria() ignored any additional criteria in case of a wildcard search string
   AbstractBeanValueLink.getValueClass() added
   IntBeanValueLink/DoubleBeanValueLink, usePrimitives parameter added to constructor, tests added
+  Entities.define() now throws IllegalArgumentException when the entity has already been defined
+  EntityConnectionServer, remote loading of domain models disabled, not that useful

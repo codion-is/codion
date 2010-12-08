@@ -19,16 +19,9 @@ import javax.rmi.ssl.SslRMIClientSocketFactory;
 import javax.rmi.ssl.SslRMIServerSocketFactory;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.rmi.RemoteException;
 import java.rmi.server.RMISocketFactory;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -290,21 +283,9 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
 
   static void loadDomainModel(final String domainClassName) throws ClassNotFoundException,
           InstantiationException, IllegalAccessException {
-    loadDomainModel((URI) null, domainClassName);
-  }
-
-  static void loadDomainModel(final URI location, final String domainClassName) throws ClassNotFoundException,
-          IllegalAccessException {
-    loadDomainModel(location == null ? null : Arrays.asList(location), domainClassName);
-  }
-
-  static void loadDomainModel(final Collection<URI> locations, final String domainClassName) throws ClassNotFoundException,
-          IllegalAccessException {
-    final String message = "Server loading domain model class '" + domainClassName + "' from"
-            + (locations == null || locations.isEmpty() ? " classpath" : " jars: ")
-            + Util.getCollectionContentsAsString(locations, false);
+    final String message = "Server loading domain model class '" + domainClassName + "' from classpath";
     LOG.info(message);
-    AccessController.doPrivileged(new DomainModelAction(locations, domainClassName));
+    Class.forName(domainClassName);
   }
 
   /** {@inheritDoc} */
@@ -350,12 +331,9 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
     }
 
     final String[] classes = domainModelClasses.split(",");
-    final String domainModelJars = Configuration.getStringValue(Configuration.SERVER_DOMAIN_MODEL_JARS);
-    final String[] jars = Util.nullOrEmpty(domainModelJars) ? null : domainModelJars.split(",");
     try {
-      final Collection<URI> jarURIs = jars == null ? null : Util.getURIs(Arrays.asList(jars));
       for (final String classname : classes) {
-        loadDomainModel(jarURIs, classname);
+        loadDomainModel(classname);
       }
     }
     catch (Exception e) {
@@ -389,43 +367,5 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
   private static String initializeServerName(final String host, final String sid) {
     return Configuration.getValue(Configuration.SERVER_NAME_PREFIX)
             + " " + Util.getVersion() + "@" + (sid != null ? sid.toUpperCase() : host.toUpperCase());
-    //+ " [id:" + Long.toHexString(System.currentTimeMillis()) + "]";
-  }
-
-  private static final class DomainModelAction implements PrivilegedAction<Object> {
-
-    private final Collection<URI> locations;
-    private final String domainClassName;
-
-    private DomainModelAction(final Collection<URI> locations, final String domainClassName) {
-      this.locations = locations;
-      this.domainClassName = domainClassName;
-    }
-
-    /** {@inheritDoc} */
-    public Object run() {
-      try {
-        if (locations == null || locations.isEmpty()) {
-          Class.forName(domainClassName);
-        }
-        else {
-          final URL[] locationsURL = new URL[locations.size()];
-          int i = 0;
-          for (final URI uri : locations) {
-            locationsURL[i++] = uri.toURL();
-          }
-          Class.forName(domainClassName.trim(), true, new URLClassLoader(locationsURL, ClassLoader.getSystemClassLoader()));
-          LOG.info("Domain class loaded: " + domainClassName);
-        }
-
-        return null;
-      }
-      catch (MalformedURLException e) {
-        throw new IllegalArgumentException(e);
-      }
-      catch (ClassNotFoundException e) {
-        throw new RuntimeException(e);
-      }
-    }
   }
 }

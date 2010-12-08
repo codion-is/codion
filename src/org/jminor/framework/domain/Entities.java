@@ -72,6 +72,7 @@ public final class Entities {
    * @param entityID the ID uniquely identifying the entity
    * @param propertyDefinitions the Property objects to base this entity on
    * @return a new Entity.Definition
+   * @throws IllegalArgumentException in case the entityID has already been used to define an entity type
    */
   public static Entity.Definition define(final String entityID, final Property... propertyDefinitions) {
     return define(entityID, entityID, propertyDefinitions);
@@ -83,8 +84,12 @@ public final class Entities {
    * @param tableName the name of the underlying table
    * @param propertyDefinitions the Property objects to base the entity on
    * @return a new Entity.Definition
+   * @throws IllegalArgumentException in case the entityID has already been used to define an entity type
    */
   public static Entity.Definition define(final String entityID, final String tableName, final Property... propertyDefinitions) {
+    if (EntityDefinitionImpl.getDefinitionMap().containsKey(entityID)) {
+      throw new IllegalArgumentException("Entity has already been defined: " + entityID + ", for table: " + tableName);
+    }
     final EntityDefinitionImpl entityImpl = new EntityDefinitionImpl(entityID, tableName, propertyDefinitions);
     entityImpl.setValidator(new Validator(entityID));
     EntityDefinitionImpl.getDefinitionMap().put(entityID, entityImpl);

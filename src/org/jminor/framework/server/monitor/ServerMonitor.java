@@ -19,7 +19,6 @@ import org.slf4j.LoggerFactory;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import java.awt.event.ActionListener;
-import java.net.URI;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -173,11 +172,6 @@ public final class ServerMonitor {
     usedMemorySeries.clear();
     maxMemorySeries.clear();
     connectionCountSeries.clear();
-  }
-
-  public void loadDomainModel(final URI location, final String domainClassName) throws ClassNotFoundException, RemoteException,
-          InstantiationException, IllegalAccessException {
-    server.loadDomainModel(location, domainClassName);
   }
 
   public void refreshDomainList() throws RemoteException {

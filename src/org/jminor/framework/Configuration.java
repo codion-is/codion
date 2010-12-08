@@ -139,16 +139,8 @@ public final class Configuration {
   public static final String SERVER_CONNECTION_POOLING_INITIAL = "jminor.server.pooling.initial";
 
   /**
-   * Specifies a comma separated list of jar files to use when loading domain model classes
-   * @see #SERVER_DOMAIN_MODEL_CLASSES
-   */
-  public static final String SERVER_DOMAIN_MODEL_JARS = "jminor.server.domain.jars";
-
-  /**
-   * Specifies a comma separated list of domain model classnames, these classes must be
-   * available on the server classpath or the jars containing these classes specified
-   * via the SERVER_DOMAIN_MODEL_JARS property
-   * @see #SERVER_DOMAIN_MODEL_JARS
+   * Specifies a comma separated list of domain model class names, these classes must be
+   * available on the server classpath
    */
   public static final String SERVER_DOMAIN_MODEL_CLASSES = "jminor.server.domain.classes";
 
@@ -574,7 +566,6 @@ public final class Configuration {
     parseIntegerSetting(SERVER_CONNECTION_LOG_SIZE);
     parseStringSetting(SERVER_CONNECTION_POOLING_INITIAL);
     parseStringSetting(SERVER_DOMAIN_MODEL_CLASSES);
-    parseStringSetting(SERVER_DOMAIN_MODEL_JARS);
     parseStringSetting(SERVER_NAME_PREFIX);
     parseBooleanSetting(SERVER_CONNECTION_SSL_ENABLED);
     parseBooleanSetting(SHOW_STARTUP_DIALOG);
