@@ -487,7 +487,6 @@ final class EntityDefinitionImpl implements Entity.Definition {
    * @return the Entity.Definition for the given entityID
    * @throws IllegalArgumentException in case the entity has not been defined
    */
-
   private static Map<String, Property> initializeProperties(final String entityID, final Property... propertyDefinitions) {
     final Map<String, Property> properties = new LinkedHashMap<String, Property>(propertyDefinitions.length);
     for (final Property property : propertyDefinitions) {
