@@ -16,9 +16,20 @@ public interface MasterDetailPanel {
   MasterDetailPanel getMasterPanel();
 
   /**
+   * @return the detail panels, an empty list if no detail panels exist
+   */
+  List<? extends MasterDetailPanel> getDetailPanels();
+
+  /**
    * @return a detail panel, if one exists, which child panel exactly is up the implementation
    */
-  MasterDetailPanel getCurrentDetailPanel();
+  MasterDetailPanel getSelectedDetailPanel();
+
+  /**
+   * Selects (and shows) the given detail panel
+   * @param detailPanel the detail panel to select and show
+   */
+  void setSelectedDetailPanel(final MasterDetailPanel detailPanel);
 
   /**
    * @return the previous detail panel, if one exists, with wrap around
@@ -29,17 +40,6 @@ public interface MasterDetailPanel {
    * @return the nex detail panel, if one exists, with wrap around
    */
   MasterDetailPanel getNextPanel();
-
-  /**
-   * @return the detail panels, an empty list if no detail panels exist
-   */
-  List<? extends MasterDetailPanel> getDetailPanels();
-
-  /**
-   * Shows the given detail panel
-   * @param detailPanel the detail panel to show
-   */
-  void showDetailPanel(final MasterDetailPanel detailPanel);
 
   /**
    * Activates this panel, showing it and preparing it for input

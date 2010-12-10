@@ -263,27 +263,14 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
   public final void setSimpleSearchString(final String simpleSearchString) {
     this.simpleSearchString = simpleSearchString == null ? "" : simpleSearchString;
     evtSimpleSearchStringChanged.fire();
+    updateSearchModels();
   }
 
   /** {@inheritDoc} */
   public void performSimpleSearch() {
     final Conjunction conjunction = getSearchConjunction();
     try {
-      clearPropertySearchModels();
       setSearchConjunction(Conjunction.OR);
-      if (!simpleSearchString.isEmpty()) {
-        final String wildcard = (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER);
-        final String searchTextWithWildcards = wildcard + simpleSearchString + wildcard;
-        final List<Property.ColumnProperty> searchProperties = Entities.getSearchProperties(entityID);
-        for (final Property searchProperty : searchProperties) {
-          final PropertySearchModel propertySearchModel = getPropertySearchModel(searchProperty.getPropertyID());
-          propertySearchModel.setCaseSensitive(false);
-          propertySearchModel.setUpperBound(searchTextWithWildcards);
-          propertySearchModel.setSearchType(SearchType.LIKE);
-          propertySearchModel.setEnabled(true);
-        }
-      }
-
       evtSimpleSearchPerformed.fire();
     }
     finally {
@@ -346,6 +333,22 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
           stSearchStateChanged.notifyObservers();
         }
       });
+    }
+  }
+
+  private void updateSearchModels() {
+    clearPropertySearchModels();
+    if (!simpleSearchString.isEmpty()) {
+      final String wildcard = (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER);
+      final String searchTextWithWildcards = wildcard + simpleSearchString + wildcard;
+      final List<Property.ColumnProperty> searchProperties = Entities.getSearchProperties(entityID);
+      for (final Property searchProperty : searchProperties) {
+        final PropertySearchModel propertySearchModel = getPropertySearchModel(searchProperty.getPropertyID());
+        propertySearchModel.setCaseSensitive(false);
+        propertySearchModel.setUpperBound(searchTextWithWildcards);
+        propertySearchModel.setSearchType(SearchType.LIKE);
+        propertySearchModel.setEnabled(true);
+      }
     }
   }
 

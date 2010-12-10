@@ -23,7 +23,16 @@ import org.jminor.framework.i18n.FrameworkMessages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.BorderFactory;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JToolBar;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.BorderLayout;
@@ -454,20 +463,8 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   }
 
   /**
-   * @return the detail panel selected in the detail tab pane.
-   * If no detail panels are defined a RuntimeException is thrown.
-   */
-  public final EntityPanel getSelectedDetailPanel() {
-    if (detailPanelTabbedPane == null) {
-      throw new IllegalStateException("No detail panels available");
-    }
-
-    return (EntityPanel) detailPanelTabbedPane.getSelectedComponent();
-  }
-
-  /**
    * Returns the detail panel for the given <code>entityID</code>, if one is available
-   * @param entityID the entiy ID of the detail panel to retrieve
+   * @param entityID the entity ID of the detail panel to retrieve
    * @return the detail panel of the given type
    * @throws IllegalArgumentException in case the panel was not found
    */
@@ -498,7 +495,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   public final void activatePanel() {
     initializePanel();
     if (getMasterPanel() != null) {
-      getMasterPanel().showDetailPanel(this);
+      getMasterPanel().setSelectedDetailPanel(this);
     }
     prepareUI(true, false);
   }
@@ -514,7 +511,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   }
 
   /** {@inheritDoc} */
-  public final MasterDetailPanel getCurrentDetailPanel() {
+  public final EntityPanel getSelectedDetailPanel() {
     final Collection<EntityPanel> linkedDetailPanels = getLinkedDetailPanels();
     if (!linkedDetailPanels.isEmpty()) {
       return linkedDetailPanels.iterator().next();
@@ -567,7 +564,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   }
 
   /** {@inheritDoc} */
-  public final void showDetailPanel(final MasterDetailPanel detailPanel) {
+  public final void setSelectedDetailPanel(final MasterDetailPanel detailPanel) {
     if (detailPanelTabbedPane != null) {
       if (getDetailPanelState() == EntityPanel.HIDDEN) {
         setDetailPanelState(EntityPanel.EMBEDDED);
@@ -977,7 +974,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * CTR-E transfers focus to the edit panel in case one is available,
    * CTR-S transfers focus to the search panel, CTR-C opens a select control dialog
    * and CTR-F selects the table search field
-   *///todo fix this so that dialogged panels also behave accordingly
+   */
   private void setupKeyboardActions() {
     final AbstractAction selectEditPanel = new AbstractAction("selectEditPanel") {
       /** {@inheritDoc} */
@@ -1145,7 +1142,6 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
     for (final EntityPanel detailPanel : detailEntityPanels) {
       tabbedPane.addTab(detailPanel.caption, detailPanel);
     }
-
     tabbedPane.addChangeListener(new ChangeListener() {
       /** {@inheritDoc} */
       public void stateChanged(final ChangeEvent e) {
@@ -1153,6 +1149,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
         getSelectedDetailPanel().activatePanel();
       }
     });
+    getModel().setLinkedDetailModels(((EntityPanel) tabbedPane.getSelectedComponent()).getModel());
     tabbedPane.addMouseListener(new MouseAdapter() {
       /** {@inheritDoc} */
       @Override
@@ -1403,7 +1400,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
           panel = entityPanel.getMasterPanel();
           break;
         case DOWN:
-          panel = entityPanel.getCurrentDetailPanel();
+          panel = entityPanel.getSelectedDetailPanel();
           break;
       }
 

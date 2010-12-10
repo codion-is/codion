@@ -65,7 +65,7 @@ public final class EntityTableSearchPanel extends JPanel {
    * @param verticalFillerWidth the vertical filler width, f.ex. the width of a scroll bar
    */
   public EntityTableSearchPanel(final EntityTableSearchModel searchModel, final TableColumnModel columnModel,
-                                        final int verticalFillerWidth) {
+                                final int verticalFillerWidth) {
     this.searchModel = searchModel;
     this.fullSearchPanel = initializeFullSearchPanel(searchModel, columnModel, verticalFillerWidth);
     this.simpleSearchAction = initializeSimpleSearchAction();

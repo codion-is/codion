@@ -83,7 +83,7 @@ public interface ColumnSearchModel<K> {
 
   /**
    * A shortcut method for setting the upper bound value, searchType to LIKE
-   * and enabling this model.
+   * and enabling this model in case of a non-null value.
    * @param value the value to use as criteria
    */
   void setLikeValue(final Comparable value);

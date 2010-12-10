@@ -1,33 +1,74 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.model.Conjunction;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionImplTest;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 
 import org.junit.Test;
 
+import java.sql.Types;
+
 import static org.junit.Assert.*;
 
 public class DefaultEntityTableSearchModelTest {
 
+  private final EntityTableModel tableModel = new DefaultEntityTableModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.DB_PROVIDER);
+  private final EntityTableSearchModel searchModel = tableModel.getSearchModel();
+
+  public DefaultEntityTableSearchModelTest() {
+    EmpDept.init();
+  }
+
   @Test
   public void test() {
-    EmpDept.init();
-    final EntityTableModel tableModel = new DefaultEntityTableModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.DB_PROVIDER);
-    final EntityTableSearchModel model = tableModel.getSearchModel();
-    assertEquals(EmpDept.T_EMPLOYEE, model.getEntityID());
-    assertNotNull(model.getSearchableProperties());
-    model.setSearchConjunction(Conjunction.OR);
-    assertEquals(Conjunction.OR, model.getSearchConjunction());
-    assertEquals(9, model.getPropertyFilterModels().size());
-    assertEquals(8, model.getPropertySearchModels().size());
+    assertEquals(EmpDept.T_EMPLOYEE, searchModel.getEntityID());
+    assertNotNull(searchModel.getSearchableProperties());
+    searchModel.setSearchConjunction(Conjunction.OR);
+    assertEquals(Conjunction.OR, searchModel.getSearchConjunction());
+    assertEquals(9, searchModel.getPropertyFilterModels().size());
+    assertEquals(8, searchModel.getPropertySearchModels().size());
 
-    model.refresh();
-    assertTrue(((ForeignKeySearchModel) model.getPropertySearchModel(EmpDept.EMPLOYEE_DEPARTMENT_FK)).getEntityComboBoxModel().getSize() > 1);
-    model.clear();
-    assertTrue(((ForeignKeySearchModel) model.getPropertySearchModel(EmpDept.EMPLOYEE_DEPARTMENT_FK)).getEntityComboBoxModel().getSize() == 0);
+    searchModel.refresh();
+    assertTrue(((ForeignKeySearchModel) searchModel.getPropertySearchModel(EmpDept.EMPLOYEE_DEPARTMENT_FK)).getEntityComboBoxModel().getSize() > 1);
+    searchModel.clear();
+    assertTrue(((ForeignKeySearchModel) searchModel.getPropertySearchModel(EmpDept.EMPLOYEE_DEPARTMENT_FK)).getEntityComboBoxModel().getSize() == 0);
 
-    assertFalse(model.isFilterEnabled(EmpDept.EMPLOYEE_DEPARTMENT_FK));
-    assertFalse(model.isSearchEnabled(EmpDept.EMPLOYEE_DEPARTMENT_FK));
+    assertFalse(searchModel.isFilterEnabled(EmpDept.EMPLOYEE_DEPARTMENT_FK));
+    assertFalse(searchModel.isSearchEnabled(EmpDept.EMPLOYEE_DEPARTMENT_FK));
+  }
+
+  @Test
+  public void testSearchState() {
+    assertFalse(searchModel.hasSearchStateChanged());
+    searchModel.getPropertySearchModel(EmpDept.EMPLOYEE_JOB).setLikeValue("job");
+    assertTrue(searchModel.hasSearchStateChanged());
+    searchModel.getPropertySearchModel(EmpDept.EMPLOYEE_JOB).setEnabled(false);
+    assertFalse(searchModel.hasSearchStateChanged());
+    searchModel.getPropertySearchModel(EmpDept.EMPLOYEE_JOB).setEnabled(true);
+    assertTrue(searchModel.hasSearchStateChanged());
+    searchModel.setSearchModelState();
+    assertFalse(searchModel.hasSearchStateChanged());
+  }
+
+  @Test
+  public void testSimpleSearchString() {
+    final String value = "test";
+    final String wildcard = (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER);
+    final String wildcardValue = wildcard + "test" + wildcard;
+    searchModel.setSimpleSearchString(value);
+    for (final PropertySearchModel model : searchModel.getPropertySearchModels()) {
+      if (model.getType() == Types.VARCHAR) {
+        assertEquals(wildcardValue, model.getUpperBound());
+        assertTrue(model.isEnabled());
+      }
+    }
+    searchModel.setSimpleSearchString(null);
+    for (final PropertySearchModel model : searchModel.getPropertySearchModels()) {
+      if (model.getType() == Types.VARCHAR) {
+        assertNull(model.getUpperBound());
+        assertFalse(model.isEnabled());
+      }
+    }
   }
 }

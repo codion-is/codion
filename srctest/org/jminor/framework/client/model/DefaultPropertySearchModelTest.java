@@ -8,11 +8,11 @@ import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Property;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import java.util.List;
+
+import static org.junit.Assert.*;
 
 public class DefaultPropertySearchModelTest {
 
@@ -23,6 +23,7 @@ public class DefaultPropertySearchModelTest {
     final PropertySearchModel model = new DefaultPropertySearchModel(property);
     assertEquals(property, model.getColumnIdentifier());
     model.setSearchType(SearchType.LIKE);
+    assertFalse(model.isLowerBoundRequired());
     model.setUpperBound("upper");
     assertEquals(property.getPropertyID() + " like ?", model.getCriteria().asString());
     model.setSearchType(SearchType.NOT_LIKE);
@@ -33,6 +34,7 @@ public class DefaultPropertySearchModelTest {
     assertEquals(property.getPropertyID() + " <= ?", model.getCriteria().asString());
 
     model.setSearchType(SearchType.WITHIN_RANGE);
+    assertTrue(model.isLowerBoundRequired());
     model.setLowerBound("lower");
     List<Object> values = model.getCriteria().getValues();
     assertTrue(values.contains("upper"));

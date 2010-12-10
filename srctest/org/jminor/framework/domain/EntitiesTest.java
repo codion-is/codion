@@ -5,8 +5,18 @@ package org.jminor.framework.domain;
 
 import org.junit.Test;
 
+import static org.junit.Assert.fail;
+
 public class EntitiesTest {
-  //test method moved, no need to delete the class
+
   @Test
-  public void test() {}
+  public void test() {
+    final String entityID = "entityID";
+    Entities.define(entityID);
+    try {
+      Entities.define(entityID);
+      fail("Should not be able to re-define an entity");
+    }
+    catch (Exception e) {}
+  }
 }

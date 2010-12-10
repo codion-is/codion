@@ -2304,7 +2304,7 @@
   EntityTableSearchModel.hasSearchStateChanged() added
   DefaultEntityEditModel.prepareForUpdate/Insert() added
   EntityTableSearchSimplePanel and EntityTableSearchAdvancedPanel merged into EntityTableSearchPanel, interface removed
-  AbstractDatabase.createConnection() now throws DatabaseException instead of SQLException, for localization, changes bubbled all the way up
+  AbstractDatabase.createConnection() now throws DatabaseException instead of SQLException, for error message localization, changes bubbled all the way up
   EntityApplicationPanel, better handling of exceptions during startup
   DefaultEntityLookupModel.getEntitySelectCriteria() ignored any additional criteria in case of a wildcard search string
   AbstractBeanValueLink.getValueClass() added
@@ -2315,3 +2315,4 @@
   EntityApplicationPanel, improved startup error handling
   EntityDefinitionImpl, default entity comparator now replaces spaces with underscores before sorting with collator
   FilteredTableModel, add/removeTableModelClearedListener() added
+  MasterDetailPanel, some renaming going on

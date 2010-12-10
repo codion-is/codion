@@ -6,8 +6,6 @@ package org.jminor.framework.client.model;
 import org.jminor.common.model.Event;
 import org.jminor.framework.domain.Properties;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import java.awt.event.ActionEvent;
@@ -15,6 +13,9 @@ import java.awt.event.ActionListener;
 import java.sql.Types;
 import java.util.Arrays;
 import java.util.Collection;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class DefaultPropertySummaryModelTest {
 
@@ -26,7 +27,7 @@ public class DefaultPropertySummaryModelTest {
     public boolean isValueSubset() {
       return false;
     }
-    public void bindValuesChangedEvent(Event event) {}
+    public void bindValuesChangedEvent(final Event event) {}
   });
 
   final PropertySummaryModel testDoubleModel = new DefaultPropertySummaryModel(Properties.columnProperty("TestProperty", Types.DOUBLE),
@@ -37,7 +38,7 @@ public class DefaultPropertySummaryModelTest {
     public boolean isValueSubset() {
       return false;
     }
-    public void bindValuesChangedEvent(Event event) {}
+    public void bindValuesChangedEvent(final Event event) {}
   });
 
   @Test
