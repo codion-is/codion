@@ -110,6 +110,16 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R>, TableModel, 
   void removeTableDataChangedListener(final ActionListener listener);
 
   /**
+   * @param listener a listener to be notified each time the table model is cleared
+   */
+  void addTableModelClearedListener(final ActionListener listener);
+
+  /**
+   * @param listener the listener to remove
+   */
+  void removeTableModelClearedListener(final ActionListener listener);
+
+  /**
    * Returns the item found at the given index
    * @param index the index
    * @return the item at the given row index

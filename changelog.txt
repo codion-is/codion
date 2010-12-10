@@ -2314,3 +2314,4 @@
   EntityConnectionServer, initializes default domain model classes in static initializer
   EntityApplicationPanel, improved startup error handling
   EntityDefinitionImpl, default entity comparator now replaces spaces with underscores before sorting with collator
+  FilteredTableModel, add/removeTableModelClearedListener() added

@@ -76,6 +76,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   private final Event evtRefreshStarted = Events.event();
   private final Event evtRefreshDone = Events.event();
   private final Event evtTableDataChanged = Events.event();
+  private final Event evtTableModelCleared = Events.event();
   private final Event evtColumnHidden = Events.event();
   private final Event evtColumnShown = Events.event();
 
@@ -283,6 +284,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
       visibleItems.clear();
       fireTableRowsDeleted(0, size - 1);
     }
+    evtTableModelCleared.fire();
   }
 
   /** {@inheritDoc} */
@@ -711,6 +713,16 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   /** {@inheritDoc} */
   public final void removeTableDataChangedListener(final ActionListener listener) {
     evtTableDataChanged.removeListener(listener);
+  }
+
+  /** {@inheritDoc} */
+  public final void addTableModelClearedListener(final ActionListener listener) {
+    evtTableModelCleared.addListener(listener);
+  }
+
+  /** {@inheritDoc} */
+  public final void removeTableModelClearedListener(final ActionListener listener) {
+    evtTableModelCleared.removeListener(listener);
   }
 
   /**
