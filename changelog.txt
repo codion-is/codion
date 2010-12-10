@@ -2313,3 +2313,4 @@
   EntityConnectionServer, remote loading of domain models disabled, not that useful
   EntityConnectionServer, initializes default domain model classes in static initializer
   EntityApplicationPanel, improved startup error handling
+  EntityDefinitionImpl, default entity comparator now replaces spaces with underscores before sorting with collator

@@ -88,7 +88,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     Util.rejectNullValue(connectionProvider, "connectionProvider");
     this.entityID = entityID;
     this.connectionProvider = connectionProvider;
-    this.selectCriteria = EntityCriteriaUtil.selectCriteria(entityID);
+    this.selectCriteria = initializeSelectCriteria(entityID);
     final FilterCriteria<Entity> superCriteria = super.getFilterCriteria();
     setFilterCriteria(new FilterCriteria<Entity>() {
       /** {@inheritDoc} */
@@ -177,7 +177,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
               + " expected, got " + entitySelectCriteria.getEntityID());
     }
     if (entitySelectCriteria == null) {
-      this.selectCriteria = EntityCriteriaUtil.selectCriteria(entityID);
+      this.selectCriteria = initializeSelectCriteria(entityID);
     }
     else {
       this.selectCriteria = entitySelectCriteria;
@@ -315,6 +315,10 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     catch (DatabaseException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  private EntitySelectCriteria initializeSelectCriteria(final String entityID) {
+    return EntityCriteriaUtil.selectCriteria(entityID, Entities.getOrderByClause(entityID));
   }
 
   private int getIndexOfKey(final Entity.Key primaryKey) {

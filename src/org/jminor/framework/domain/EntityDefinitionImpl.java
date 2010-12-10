@@ -9,7 +9,16 @@ import org.jminor.common.model.valuemap.ValueMap;
 
 import java.awt.Color;
 import java.text.Collator;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * A class encapsulating a entity definition, such as table name, order by clause and properties.
@@ -153,7 +162,7 @@ final class EntityDefinitionImpl implements Entity.Definition {
     this.tableName = tableName;
     this.selectTableName = tableName;
     this.properties = Collections.unmodifiableMap(initializeProperties(entityID, propertyDefinitions));
-    final String[] selectColumnNames = initSelectColumnNames(getColumnProperties());
+    final String[] selectColumnNames = initializeSelectColumnNames(getColumnProperties());
     for (int idx = 0; idx < selectColumnNames.length; idx++) {
       ((Property.ColumnProperty) properties.get(selectColumnNames[idx])).setSelectIndex(idx + 1);
     }
@@ -355,7 +364,7 @@ final class EntityDefinitionImpl implements Entity.Definition {
   /** {@inheritDoc} */
   public String getSelectColumnsString() {
     if (selectColumnsString == null) {
-      selectColumnsString = initSelectColumnsString(getColumnProperties());
+      selectColumnsString = initializeSelectColumnsString(getColumnProperties());
     }
     return selectColumnsString;
   }
@@ -609,7 +618,7 @@ final class EntityDefinitionImpl implements Entity.Definition {
    * @param databaseProperties the properties to base the column names on
    * @return the column names used to select an entity of this type from the database
    */
-  private static String[] initSelectColumnNames(final Collection<Property.ColumnProperty> databaseProperties) {
+  private static String[] initializeSelectColumnNames(final Collection<Property.ColumnProperty> databaseProperties) {
     final List<String> columnNames = new ArrayList<String>();
     for (final Property property : databaseProperties) {
       columnNames.add(property.getPropertyID());
@@ -618,7 +627,7 @@ final class EntityDefinitionImpl implements Entity.Definition {
     return columnNames.toArray(new String[columnNames.size()]);
   }
 
-  private static String initSelectColumnsString(final Collection<Property.ColumnProperty> databaseProperties) {
+  private static String initializeSelectColumnsString(final Collection<Property.ColumnProperty> databaseProperties) {
     final List<Property> selectProperties = new ArrayList<Property>(databaseProperties.size());
     for (final Property.ColumnProperty property : databaseProperties) {
       selectProperties.add(property);
@@ -644,10 +653,12 @@ final class EntityDefinitionImpl implements Entity.Definition {
   }
 
   private static final class ComparatorImpl implements Entity.Comparator {
+    private static final String SPACE = " ";
+    private static final String UNDERSCORE = "_";
     private final Collator collator = Collator.getInstance();
     /** {@inheritDoc} */
     public int compare(final Entity entity, final Entity entityToCompare) {
-      return collator.compare(entity.toString(), entityToCompare.toString());
+      return collator.compare(entity.toString().replaceAll(SPACE, UNDERSCORE), entityToCompare.toString().replaceAll(SPACE, UNDERSCORE));
     }
   }
 }
