@@ -716,7 +716,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
     }
 
     if (state != HIDDEN) {
-      getSelectedDetailPanel().initializePanel();
+      getTabbedDetailPanel().initializePanel();
     }
 
     if (detailPanelState == DIALOG) {//if we are leaving the DIALOG state, hide all child detail dialogs
@@ -727,7 +727,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
       }
     }
 
-    entityModel.setLinkedDetailModels(state == HIDDEN ? null : getSelectedDetailPanel().entityModel);
+    entityModel.setLinkedDetailModels(state == HIDDEN ? null : getTabbedDetailPanel().entityModel);
 
     detailPanelState = state;
     if (state != DIALOG) {
@@ -1145,11 +1145,10 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
     tabbedPane.addChangeListener(new ChangeListener() {
       /** {@inheritDoc} */
       public void stateChanged(final ChangeEvent e) {
-        getModel().setLinkedDetailModels(getDetailPanelState() != HIDDEN ? getSelectedDetailPanel().getModel() : null);
-        getSelectedDetailPanel().activatePanel();
+        getModel().setLinkedDetailModels(getDetailPanelState() != HIDDEN ? getTabbedDetailPanel().getModel() : null);
+        getTabbedDetailPanel().activatePanel();
       }
     });
-    getModel().setLinkedDetailModels(((EntityPanel) tabbedPane.getSelectedComponent()).getModel());
     tabbedPane.addMouseListener(new MouseAdapter() {
       /** {@inheritDoc} */
       @Override
@@ -1342,6 +1341,18 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
       }
     }
     return EntityUtil.getSortedProperties(entityModel.getEntityID(), selectableComponentPropertyIDs);
+  }
+
+  /**
+   * @return the detail panel selected in the detail tab pane.
+   * @throws IllegalStateException in case no detail panels are define
+   */
+  private EntityPanel getTabbedDetailPanel() {
+    if (detailPanelTabbedPane == null) {
+      throw new IllegalStateException("No detail panels available");
+    }
+
+    return (EntityPanel) detailPanelTabbedPane.getSelectedComponent();
   }
 
   private void disposeEditDialog() {

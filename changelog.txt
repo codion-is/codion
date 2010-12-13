@@ -2316,3 +2316,4 @@
   EntityDefinitionImpl, default entity comparator now replaces spaces with underscores before sorting with collator
   FilteredTableModel, add/removeTableModelClearedListener() added
   MasterDetailPanel, some renaming going on
+  EntityPanel, fixed a bug introduced during last commit
