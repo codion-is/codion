@@ -37,7 +37,7 @@ public interface MasterDetailPanel {
   MasterDetailPanel getPreviousPanel();
 
   /**
-   * @return the nex detail panel, if one exists, with wrap around
+   * @return the next detail panel, if one exists, with wrap around
    */
   MasterDetailPanel getNextPanel();
 
