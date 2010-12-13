@@ -23,13 +23,13 @@ public interface MasterDetailPanel {
   /**
    * @return a detail panel, if one exists, which child panel exactly is up the implementation
    */
-  MasterDetailPanel getSelectedDetailPanel();
+  MasterDetailPanel getActiveDetailPanel();
 
   /**
-   * Selects (and shows) the given detail panel
-   * @param detailPanel the detail panel to select and show
+   * Activates (and shows) the given detail panel
+   * @param detailPanel the detail panel to activate and show
    */
-  void setSelectedDetailPanel(final MasterDetailPanel detailPanel);
+  void setActiveDetailPanel(final MasterDetailPanel detailPanel);
 
   /**
    * @return the previous detail panel, if one exists, with wrap around

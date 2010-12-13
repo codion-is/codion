@@ -314,8 +314,13 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   }
 
   /** {@inheritDoc} */
-  public final EntityPanel getSelectedDetailPanel() {
+  public final EntityPanel getActiveDetailPanel() {
     return getMainApplicationPanels().get(0);
+  }
+
+  /** {@inheritDoc} */
+  public final void setActiveDetailPanel(final MasterDetailPanel detailPanel) {
+    applicationTabPane.setSelectedComponent((JComponent) detailPanel);
   }
 
   /** {@inheritDoc} */
@@ -331,11 +336,6 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   /** {@inheritDoc} */
   public final List<? extends MasterDetailPanel> getDetailPanels() {
     return Collections.unmodifiableList(mainApplicationPanels);
-  }
-
-  /** {@inheritDoc} */
-  public final void setSelectedDetailPanel(final MasterDetailPanel detailPanel) {
-    applicationTabPane.setSelectedComponent((JComponent) detailPanel);
   }
 
   /** {@inheritDoc} */

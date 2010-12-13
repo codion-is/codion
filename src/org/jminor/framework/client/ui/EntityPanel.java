@@ -495,7 +495,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   public final void activatePanel() {
     initializePanel();
     if (getMasterPanel() != null) {
-      getMasterPanel().setSelectedDetailPanel(this);
+      getMasterPanel().setActiveDetailPanel(this);
     }
     prepareUI(true, false);
   }
@@ -511,13 +511,23 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   }
 
   /** {@inheritDoc} */
-  public final EntityPanel getSelectedDetailPanel() {
+  public final EntityPanel getActiveDetailPanel() {
     final Collection<EntityPanel> linkedDetailPanels = getLinkedDetailPanels();
     if (!linkedDetailPanels.isEmpty()) {
       return linkedDetailPanels.iterator().next();
     }
 
     return null;
+  }
+
+  /** {@inheritDoc} */
+  public final void setActiveDetailPanel(final MasterDetailPanel detailPanel) {
+    if (detailPanelTabbedPane != null) {
+      if (getDetailPanelState() == EntityPanel.HIDDEN) {
+        setDetailPanelState(EntityPanel.EMBEDDED);
+      }
+      detailPanelTabbedPane.setSelectedComponent((JComponent) detailPanel);
+    }
   }
 
   /** {@inheritDoc} */
@@ -561,16 +571,6 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   /** {@inheritDoc} */
   public final List<EntityPanel> getDetailPanels() {
     return Collections.unmodifiableList(detailEntityPanels);
-  }
-
-  /** {@inheritDoc} */
-  public final void setSelectedDetailPanel(final MasterDetailPanel detailPanel) {
-    if (detailPanelTabbedPane != null) {
-      if (getDetailPanelState() == EntityPanel.HIDDEN) {
-        setDetailPanelState(EntityPanel.EMBEDDED);
-      }
-      detailPanelTabbedPane.setSelectedComponent((JComponent) detailPanel);
-    }
   }
 
   /**
@@ -1411,7 +1411,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
           panel = entityPanel.getMasterPanel();
           break;
         case DOWN:
-          panel = entityPanel.getSelectedDetailPanel();
+          panel = entityPanel.getActiveDetailPanel();
           break;
       }
 

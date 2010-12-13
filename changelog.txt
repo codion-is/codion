@@ -2317,3 +2317,4 @@
   FilteredTableModel, add/removeTableModelClearedListener() added
   MasterDetailPanel, some renaming going on
   EntityPanel, fixed a bug introduced during last commit
+  MasterDetailPanel, more renaming
