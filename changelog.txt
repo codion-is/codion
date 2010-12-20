@@ -2321,3 +2321,4 @@
   EntityTablePanel.bindEvents(), moved some code to FilteredTablePanel
   FilteredTablePanel.sortingEnabled, scrollToCenter() and isCellVisible() added
   JFreeChart library updated to 1.0.13
+  ExceptionDialog.showExceptionDialog(), event dispatch thread related bug fixed

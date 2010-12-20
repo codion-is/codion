@@ -101,11 +101,16 @@ public final class ExceptionDialog extends JDialog {
   public static void showExceptionDialog(final Window parentFrame, final String title, final String message,
                                          final Throwable throwable, final boolean modal) {
     try {
-      SwingUtilities.invokeAndWait(new Runnable() {
-        public void run() {
-          new ExceptionDialog(parentFrame).showForThrowable(title, message, throwable, modal);
-        }
-      });
+      if (SwingUtilities.isEventDispatchThread()) {
+        new ExceptionDialog(parentFrame).showForThrowable(title, message, throwable, modal);
+      }
+      else {
+        SwingUtilities.invokeAndWait(new Runnable() {
+          public void run() {
+            new ExceptionDialog(parentFrame).showForThrowable(title, message, throwable, modal);
+          }
+        });
+      }
     }
     catch (Exception e) {
       throw new RuntimeException(e);
