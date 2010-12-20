@@ -24,6 +24,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.JViewport;
 import javax.swing.UIManager;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.JTableHeader;
@@ -36,6 +37,7 @@ import java.awt.Container;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -89,6 +91,11 @@ public class FilteredTablePanel<T, C> extends JPanel {
    * The text field used for entering the search criteria
    */
   private final JTextField searchField;
+
+  /**
+   * If true then sorting via the table header is enabled
+   */
+  private boolean sortingEnabled = true;
 
   /**
    * Instantiates a new FilteredTablePanel.
@@ -160,7 +167,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
   }
 
   /**
-   * @return the scrollpanel the containing the table
+   * @return the scrollpane the containing the table
    */
   public final JScrollPane getTableScrollPane() {
     return tableScrollPane;
@@ -176,12 +183,80 @@ public class FilteredTablePanel<T, C> extends JPanel {
   }
 
   /**
+   * Scrolls the given row and column to the center of the view
+   * Assumes table is contained in a JScrollPane.
+   * @param rowIndex the row
+   * @param colIndex the column
+   * Based on http://www.exampledepot.com/egs/javax.swing.table/VisCenter.html
+   */
+  public final void scrollToCenter(final int rowIndex, final int colIndex) {
+    if (!(table.getParent() instanceof JViewport)) {
+      return;
+    }
+    final JViewport viewport = (JViewport) table.getParent();
+    // This rectangle is relative to the table where the northwest corner of cell (0,0) is always (0,0)
+    final Rectangle cellRectangle = table.getCellRect(rowIndex, colIndex, true);
+    // The location of the view relative to the table
+    final Rectangle viewRectangle = viewport.getViewRect();
+    // Translate the cell location so that it is relative to the view, assuming the northwest corner of the view is (0,0)
+    cellRectangle.setLocation(cellRectangle.x - viewRectangle.x, cellRectangle.y - viewRectangle.y);
+    // Calculate location of viewRectangle if it were at the center of view
+    int centerX = (viewRectangle.width- cellRectangle.width) / 2;
+    int centerY = (viewRectangle.height- cellRectangle.height) / 2;
+    // Fake the location of the cell so that scrollRectToVisible will move the cell to the center
+    if (cellRectangle.x < centerX) {
+      centerX = -centerX;
+    }
+    if (cellRectangle.y < centerY) {
+      centerY = -centerY;
+    }
+    cellRectangle.translate(centerX, centerY);
+    viewport.scrollRectToVisible(cellRectangle);
+  }
+
+  /**
+   * Assumes table is contained in a JScrollPane.
+   * @param rowIndex the row index
+   * @param colIndex the column index
+   * @return true if the cell (rowIndex, vColIndex) is visible within the viewport.
+   * Based on http://www.exampledepot.com/egs/javax.swing.table/IsVis.html
+   */
+  public final boolean isCellVisible(final int rowIndex, final int colIndex) {
+    if (!(table.getParent() instanceof JViewport)) {
+      return false;
+    }
+    final JViewport viewport = (JViewport) table.getParent();
+    // This rectangle is relative to the table where the northwest corner of cell (0,0) is always (0,0)
+    final Rectangle cellRectangle = table.getCellRect(rowIndex, colIndex, true);
+    // The location of the viewport relative to the table
+    final Point viewPosition = viewport.getViewPosition();
+    // Translate the cell location so that it is relative to the view, assuming the northwest corner of the view is (0,0)
+    cellRectangle.setLocation(cellRectangle.x - viewPosition.x, cellRectangle.y - viewPosition.y);
+
+    return new Rectangle(viewport.getExtentSize()).intersects(cellRectangle);
+  }
+
+  /**
    * @return a control for showing the column selection dialog
    */
   public final Control getSelectColumnsControl() {
     return Controls.methodControl(this, "selectTableColumns",
             Messages.get(Messages.SELECT_COLUMNS) + "...", null,
             Messages.get(Messages.SELECT_COLUMNS));
+  }
+
+  /**
+   * @return true if sorting via the table header is enabled
+   */
+  public final boolean isSortingEnabled() {
+    return sortingEnabled;
+  }
+
+  /**
+   * @param sortingEnabled true if sorting via the table header should be enabled
+   */
+  public final void setSortingEnabled(final boolean sortingEnabled) {
+    this.sortingEnabled = sortingEnabled;
   }
 
   /**
@@ -274,7 +349,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
           tableModel.setSelectedItemIndex(viewIndex.y);
           table.setColumnSelectionInterval(viewIndex.x, viewIndex.x);
         }
-        scrollToCoordinate(viewIndex.y, viewIndex.x);
+        scrollToCenter(viewIndex.y, viewIndex.x);
       }
       else {
         lastSearchResultIndex = NULL_POINT;
@@ -326,10 +401,30 @@ public class FilteredTablePanel<T, C> extends JPanel {
 
   @SuppressWarnings({"unchecked"})
   private void bindEvents() {
-    this.tableModel.addSortingListener(new ActionListener() {
+    tableModel.addSortingListener(new ActionListener() {
       /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
-        getJTable().getTableHeader().repaint();
+        table.getTableHeader().repaint();
+      }
+    });
+    tableModel.addSelectedIndexListener(new ActionListener() {
+      /** {@inheritDoc} */
+      public void actionPerformed(final ActionEvent e) {
+        if (!tableModel.isSelectionEmpty()) {
+          scrollToCoordinate(tableModel.getSelectedIndex(), table.getSelectedColumn());
+        }
+      }
+    });
+    tableModel.addRefreshStartedListener(new ActionListener() {
+      /** {@inheritDoc} */
+      public void actionPerformed(final ActionEvent e) {
+        UiUtil.setWaitCursor(true, FilteredTablePanel.this);
+      }
+    });
+    tableModel.addRefreshDoneListener(new ActionListener() {
+      /** {@inheritDoc} */
+      public void actionPerformed(final ActionEvent e) {
+        UiUtil.setWaitCursor(false, FilteredTablePanel.this);
       }
     });
     final Enumeration<TableColumn> columns = tableModel.getColumnModel().getColumns();
@@ -408,7 +503,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
     @SuppressWarnings({"unchecked"})
     @Override
     public void mouseClicked(final MouseEvent e) {
-      if (e.getButton() != MouseEvent.BUTTON1 || e.isAltDown()) {
+      if (!sortingEnabled || e.getButton() != MouseEvent.BUTTON1 || e.isAltDown()) {
         return;
       }
 

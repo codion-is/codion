@@ -661,9 +661,11 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   }
 
   /**
-   * Exports the selected records as a text file
+   * Exports the selected records as a text file using the available serializer
    * @throws CancelException in case the action is cancelled
    * @throws org.jminor.common.model.Serializer.SerializeException in case of an exception
+   * @see org.jminor.framework.domain.EntityUtil#getEntitySerializer()
+   * @see Configuration#ENTITY_SERIALIZER_CLASS
    */
   public final void exportSelected() throws CancelException, Serializer.SerializeException {
     final List<Entity> selected = getEntityTableModel().getSelectedItems();
@@ -672,15 +674,12 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   }
 
   /**
-   * Prints the table if one is available
+   * Prints the table
+   * @see JTable#print()
+   * @throws java.awt.print.PrinterException in case of a print exception
    */
-  public final void printTable() {
-    try {
-      getJTable().print();
-    }
-    catch (PrinterException pr) {
-      throw new RuntimeException(pr);
-    }
+  public final void printTable() throws PrinterException {
+    getJTable().print();
   }
 
   /**
@@ -713,17 +712,17 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       return null;
     }
 
-    final Control ret = new Control() {
+    final Control toggleControl = new Control() {
       /** {@inheritDoc} */
       @Override
       public void actionPerformed(final ActionEvent e) {
         toggleSearchPanel();
       }
     };
-    ret.setIcon(Images.loadImage(Images.IMG_FILTER_16));
-    ret.setDescription(FrameworkMessages.get(FrameworkMessages.SEARCH));
+    toggleControl.setIcon(Images.loadImage(Images.IMG_FILTER_16));
+    toggleControl.setDescription(FrameworkMessages.get(FrameworkMessages.SEARCH));
 
-    return ret;
+    return toggleControl;
   }
 
   /**
@@ -1419,7 +1418,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
         /** {@inheritDoc} */
         @Override
         public void keyTyped(final KeyEvent e) {
-          if (e.getKeyChar() == KeyEvent.VK_DELETE && !getEntityTableModel().getSelectionEmptyObserver().isActive()) {
+          if (e.getKeyChar() == KeyEvent.VK_DELETE && !getTableModel().isSelectionEmpty()) {
             try {
               delete();
             }
@@ -1434,18 +1433,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
         }
       });
     }
-    getEntityTableModel().addRefreshStartedListener(new ActionListener() {
-      /** {@inheritDoc} */
-      public void actionPerformed(final ActionEvent e) {
-        UiUtil.setWaitCursor(true, EntityTablePanel.this);
-      }
-    });
-    getEntityTableModel().addRefreshDoneListener(new ActionListener() {
-      /** {@inheritDoc} */
-      public void actionPerformed(final ActionEvent e) {
-        UiUtil.setWaitCursor(false, EntityTablePanel.this);
-      }
-    });
     final ActionListener statusListener = new ActionListener() {
       /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
@@ -1455,15 +1442,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     getEntityTableModel().addSelectionChangedListener(statusListener);
     getEntityTableModel().addFilteringListener(statusListener);
     getEntityTableModel().addTableDataChangedListener(statusListener);
-
-    getEntityTableModel().addSelectedIndexListener(new ActionListener() {
-      /** {@inheritDoc} */
-      public void actionPerformed(final ActionEvent e) {
-        if (!getEntityTableModel().getSelectionEmptyObserver().isActive()) {
-          scrollToCoordinate(getEntityTableModel().getSelectedIndex(), getJTable().getSelectedColumn());
-        }
-      }
-    });
 
     getEntityTableModel().getSearchModel().getSearchStateObserver().addListener(new ActionListener() {
       /** {@inheritDoc} */
