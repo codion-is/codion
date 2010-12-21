@@ -2322,3 +2322,5 @@
   FilteredTablePanel.sortingEnabled, scrollToCenter() and isCellVisible() added
   JFreeChart library updated to 1.0.13
   ExceptionDialog.showExceptionDialog(), event dispatch thread related bug fixed
+  Util.collateSansSpaces() added, Util.collate(List) uses it by default
+  FilteredTablePanel.selectTableColumns(), added 'Show all columns' button

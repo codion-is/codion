@@ -72,6 +72,7 @@ public final class Messages {
   public static final String SELECT_VALUE = "select_value";
   public static final String SELECT_INPUT_FIELD = "select_input_field";
   public static final String SELECT_COLUMNS = "select_columns";
+  public static final String SHOW_ALL_COLUMNS = "show_all_columns";
   public static final String SEARCH_FIELD_HINT = "search_field_hint";
   public static final String UNKNOWN_FILE_TYPE = "unknown_file_type";
   public static final String REGULAR_EXPRESSION_SEARCH = "regular_expression_search";

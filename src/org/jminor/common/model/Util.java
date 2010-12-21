@@ -65,6 +65,8 @@ public final class Util {
   private static final Logger LOG = LoggerFactory.getLogger(Util.class);
   private static final Random RANDOM = new Random();
   private static final int K = 1024;
+  private static final String SPACE = " ";
+  private static final String UNDERSCORE = "_";
   private static Preferences userPreferences;
 
   private Util() {}
@@ -545,7 +547,7 @@ public final class Util {
     Collections.sort(values, new Comparator<Object>() {
       private final Collator collator = Collator.getInstance();
       public int compare(final Object o1, final Object o2) {
-        return collator.compare(o1.toString(), o2.toString());
+        return collateSansSpaces(collator, o1.toString(), o2.toString());
       }
     });
   }
@@ -590,6 +592,21 @@ public final class Util {
     }
 
     return value;
+  }
+
+  /**
+   * Collates the given strings after replacing spaces with underscores
+   * @param collator the collator to use
+   * @param stringOne the first string
+   * @param stringTwo the second string
+   * @return the collation result
+   */
+  public static int collateSansSpaces(final Collator collator, final String stringOne, final String stringTwo) {
+    rejectNullValue(collator, "collator");
+    rejectNullValue(stringOne, "stringOne");
+    rejectNullValue(stringTwo, "stringTwo");
+
+    return collator.compare(stringOne.replaceAll(SPACE, UNDERSCORE), stringTwo.replaceAll(SPACE, UNDERSCORE));
   }
 
   public static void closeSilently(final ResultSet... resultSets) {

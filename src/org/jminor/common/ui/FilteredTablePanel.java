@@ -267,12 +267,12 @@ public class FilteredTablePanel<T, C> extends JPanel {
     final List<TableColumn> allColumns = Collections.list(tableModel.getColumnModel().getColumns());
     allColumns.addAll(tableModel.getHiddenColumns());
     Collections.sort(allColumns, new Comparator<TableColumn>() {
+      private final Collator collator = Collator.getInstance();
       /** {@inheritDoc} */
       public int compare(final TableColumn o1, final TableColumn o2) {
-        return Collator.getInstance().compare(o1.getIdentifier().toString(), o2.getIdentifier().toString());
+        return Util.collateSansSpaces(collator, o1.getIdentifier().toString(), o2.getIdentifier().toString());
       }
     });
-
     final JPanel togglePanel = new JPanel(new GridLayout(Math.min(SELECT_COLUMNS_GRID_ROWS, allColumns.size()), 0));
     final List<JCheckBox> buttonList = new ArrayList<JCheckBox>();
     for (final TableColumn column : allColumns) {
@@ -283,8 +283,14 @@ public class FilteredTablePanel<T, C> extends JPanel {
     final JScrollPane scroller = new JScrollPane(togglePanel);
     final int result = JOptionPane.showOptionDialog(this, scroller,
             Messages.get(Messages.SELECT_COLUMNS), JOptionPane.OK_CANCEL_OPTION,
-            JOptionPane.QUESTION_MESSAGE, null, null, null);
-    if (result == JOptionPane.OK_OPTION) {
+            JOptionPane.QUESTION_MESSAGE, null,
+            new String[] {Messages.get(Messages.OK), Messages.get(Messages.CANCEL), Messages.get(Messages.SHOW_ALL_COLUMNS)}, Messages.get(Messages.OK));
+    if (result != 1) {
+      if (result == 2) {
+        for (final JCheckBox box : buttonList) {
+          box.setSelected(true);
+        }
+      }
       for (final JCheckBox chkButton : buttonList) {
         final TableColumn column = allColumns.get(buttonList.indexOf(chkButton));
         tableModel.setColumnVisible((C) column.getIdentifier(), chkButton.isSelected());

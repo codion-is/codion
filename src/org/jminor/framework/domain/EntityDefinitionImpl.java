@@ -652,12 +652,10 @@ final class EntityDefinitionImpl implements Entity.Definition {
   }
 
   private static final class ComparatorImpl implements Entity.Comparator {
-    private static final String SPACE = " ";
-    private static final String UNDERSCORE = "_";
     private final Collator collator = Collator.getInstance();
     /** {@inheritDoc} */
     public int compare(final Entity entity, final Entity entityToCompare) {
-      return collator.compare(entity.toString().replaceAll(SPACE, UNDERSCORE), entityToCompare.toString().replaceAll(SPACE, UNDERSCORE));
+      return Util.collateSansSpaces(collator, entity.toString(), entityToCompare.toString());
     }
   }
 }
