@@ -547,7 +547,7 @@ public class DefaultEntityModel implements EntityModel {
     if (tableModel != null) {
       if (tableModel.hasEditModel()) {
         if (tableModel.getEditModel() != editModel) {
-          throw new IllegalArgumentException("Edit model mismatch, found: " + tableModel.getEditModel() + ", required: " + editModel);
+          throw new IllegalArgumentException("Edit model type or instance mismatch, found: " + tableModel.getEditModel() + ", required: " + editModel);
         }
       }
       else {

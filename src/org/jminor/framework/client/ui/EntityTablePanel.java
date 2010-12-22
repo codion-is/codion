@@ -269,7 +269,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     this.statusMessageLabel = initializeStatusMessageLabel();
     this.refreshToolBar = initializeRefreshToolbar();
     this.horizontalTableScrollBar = getTableScrollPane().getHorizontalScrollBar();
-    initializeTable();
   }
 
   /**
@@ -851,59 +850,11 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     if (!panelInitialized) {
       try {
         setupControls();
-        final TableCellRenderer tableCellRenderer = initializeTableCellRenderer();
-        final Enumeration<TableColumn> columnEnumeration = getTableModel().getColumnModel().getColumns();
-        while (columnEnumeration.hasMoreElements()) {
-          final TableColumn column = columnEnumeration.nextElement();
-          column.setCellRenderer(tableCellRenderer);
-          column.setResizable(true);
-        }
-        setTablePopupMenu(getJTable(), getPopupControls(additionalPopupControlSets));
-        final JPanel tableSearchAndSummaryPanel = new JPanel(new BorderLayout());
-        setLayout(new BorderLayout());
-        if (includeSearchPanel && searchScrollPane != null) {
-          tableSearchAndSummaryPanel.add(searchScrollPane, BorderLayout.NORTH);
-          if (!searchPanel.isSimpleSearch()) {
-            searchScrollPane.getHorizontalScrollBar().setModel(getTableScrollPane().getHorizontalScrollBar().getModel());
-            searchPanel.addAdvancedListener(new ActionListener() {
-              /** {@inheritDoc} */
-              public void actionPerformed(final ActionEvent e) {
-                if (isSearchPanelVisible()) {
-                  revalidate();
-                }
-              }
-            });
-          }
-        }
-        final JScrollPane tableScrollPane = getTableScrollPane();
-        tableSearchAndSummaryPanel.add(tableScrollPane, BorderLayout.CENTER);
-        add(tableSearchAndSummaryPanel, BorderLayout.CENTER);
-        if (summaryScrollPane != null) {
-          tableScrollPane.getViewport().addChangeListener(new ChangeListener() {
-            /** {@inheritDoc} */
-            public void stateChanged(final ChangeEvent e) {
-              horizontalTableScrollBar.setVisible(tableScrollPane.getViewport().getViewSize().width > tableScrollPane.getSize().width);
-              revalidate();
-            }
-          });
-          summaryScrollPane.getHorizontalScrollBar().setModel(horizontalTableScrollBar.getModel());
-          tableSearchAndSummaryPanel.add(summaryBasePanel, BorderLayout.SOUTH);
-        }
-
-        if (includeSouthPanel) {
-          final JPanel southPanel = new JPanel(new BorderLayout(5, 5));
-          final JPanel southPanelCenter = initializeSouthPanel();
-          if (southPanelCenter != null) {
-            final JToolBar southToolBar = initializeToolbar();
-            if (southToolBar != null) {
-              southPanelCenter.add(southToolBar, BorderLayout.EAST);
-            }
-            southPanel.add(southPanelCenter, BorderLayout.SOUTH);
-            add(southPanel, BorderLayout.SOUTH);
-          }
-        }
+        initializeTable();
+        initializeUI();
         bindEvents();
         updateStatusMessage();
+        initialize();
       }
       finally {
         panelInitialized = true;
@@ -913,6 +864,12 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
 
     return this;
   }
+
+  /**
+   * Override to add code that should be called during the initialization routine after the panel has been initialized
+   * @see #initializePanel()
+   */
+  protected void initialize() {}
 
   /**
    * Initializes the south panel, override and return null for no south panel.
@@ -1351,6 +1308,52 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     Util.setClipboard(Util.getDelimitedString(header, data, "\t"));
   }
 
+  private void initializeUI() {
+    final JPanel tableSearchAndSummaryPanel = new JPanel(new BorderLayout());
+    setLayout(new BorderLayout());
+    if (includeSearchPanel && searchScrollPane != null) {
+      tableSearchAndSummaryPanel.add(searchScrollPane, BorderLayout.NORTH);
+      if (!searchPanel.isSimpleSearch()) {
+        searchScrollPane.getHorizontalScrollBar().setModel(getTableScrollPane().getHorizontalScrollBar().getModel());
+        searchPanel.addAdvancedListener(new ActionListener() {
+          /** {@inheritDoc} */
+          public void actionPerformed(final ActionEvent e) {
+            if (isSearchPanelVisible()) {
+              revalidate();
+            }
+          }
+        });
+      }
+    }
+    final JScrollPane tableScrollPane = getTableScrollPane();
+    tableSearchAndSummaryPanel.add(tableScrollPane, BorderLayout.CENTER);
+    add(tableSearchAndSummaryPanel, BorderLayout.CENTER);
+    if (summaryScrollPane != null) {
+      tableScrollPane.getViewport().addChangeListener(new ChangeListener() {
+        /** {@inheritDoc} */
+        public void stateChanged(final ChangeEvent e) {
+          horizontalTableScrollBar.setVisible(tableScrollPane.getViewport().getViewSize().width > tableScrollPane.getSize().width);
+          revalidate();
+        }
+      });
+      summaryScrollPane.getHorizontalScrollBar().setModel(horizontalTableScrollBar.getModel());
+      tableSearchAndSummaryPanel.add(summaryBasePanel, BorderLayout.SOUTH);
+    }
+
+    if (includeSouthPanel) {
+      final JPanel southPanel = new JPanel(new BorderLayout(5, 5));
+      final JPanel southPanelCenter = initializeSouthPanel();
+      if (southPanelCenter != null) {
+        final JToolBar southToolBar = initializeToolbar();
+        if (southToolBar != null) {
+          southPanelCenter.add(southToolBar, BorderLayout.EAST);
+        }
+        southPanel.add(southPanelCenter, BorderLayout.SOUTH);
+        add(southPanel, BorderLayout.SOUTH);
+      }
+    }
+  }
+
   /**
    * @return the refresh toolbar
    */
@@ -1484,6 +1487,14 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     header.setFocusable(false);
     header.setReorderingAllowed(Configuration.getBooleanValue(Configuration.ALLOW_COLUMN_REORDERING));
     getJTable().setAutoResizeMode(Configuration.getIntValue(Configuration.TABLE_AUTO_RESIZE_MODE));
+    final TableCellRenderer tableCellRenderer = initializeTableCellRenderer();
+    final Enumeration<TableColumn> columnEnumeration = getTableModel().getColumnModel().getColumns();
+    while (columnEnumeration.hasMoreElements()) {
+      final TableColumn column = columnEnumeration.nextElement();
+      column.setCellRenderer(tableCellRenderer);
+      column.setResizable(true);
+    }
+    setTablePopupMenu(getJTable(), getPopupControls(additionalPopupControlSets));
   }
 
   private static void showDependenciesDialog(final Map<String, Collection<Entity>> dependencies,

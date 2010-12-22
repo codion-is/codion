@@ -10,8 +10,9 @@ import org.jminor.framework.client.model.DefaultEntityEditModel;
 import org.jminor.framework.db.EntityConnectionImplTest;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 
-import static org.junit.Assert.*;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class DoubleValueLinkTest {
 
@@ -37,6 +38,6 @@ public class DoubleValueLinkTest {
     txt.setText("");
     assertNull("Double value should be null", model.getValue(EmpDept.EMPLOYEE_COMMISSION));
     model.setValue(EmpDept.EMPLOYEE_COMMISSION, 950d);
-    assertEquals("Text field should contain value", "950.0", txt.getText());
+    assertEquals("Text field should contain value", "950", txt.getText());
   }
 }
