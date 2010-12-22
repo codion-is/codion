@@ -595,6 +595,19 @@ public final class Util {
   }
 
   /**
+   * Collates the contents of the list, replacing spaces with underscores before sorting
+   * @param collator the collator
+   * @param list the list
+   */
+  public static void collateSansSpaces(final Collator collator, final List<?> list) {
+    Collections.sort(list, new Comparator<Object>() {
+      public int compare(final Object o1, final Object o2) {
+        return collateSansSpaces(collator, o1.toString(), o2.toString());
+      }
+    });
+  }
+
+  /**
    * Collates the given strings after replacing spaces with underscores
    * @param collator the collator to use
    * @param stringOne the first string
