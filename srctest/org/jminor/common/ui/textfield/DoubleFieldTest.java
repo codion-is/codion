@@ -1,7 +1,8 @@
 package org.jminor.common.ui.textfield;
 
-import static org.junit.Assert.assertEquals;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class DoubleFieldTest {
 
@@ -18,5 +19,10 @@ public class DoubleFieldTest {
     txt.setDecimalSymbol(".");
     txt.setDouble(42.2);
     assertEquals("42.2", txt.getText());
+
+    txt.setDouble(10000000d);
+    assertEquals("10000000", txt.getText());
+    txt.setDouble(100000000.4d);
+    assertEquals("100000000.4", txt.getText());
   }
 }

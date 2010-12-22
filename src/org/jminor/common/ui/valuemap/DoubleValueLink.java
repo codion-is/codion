@@ -8,10 +8,21 @@ import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.textfield.DoubleField;
 
+import java.text.NumberFormat;
+
 /**
  * A class for linking a DoubleField to a ValueChangeMapEditModel double property value.
  */
 public final class DoubleValueLink<K> extends TextValueLink<K> {
+
+  private final ThreadLocal<NumberFormat> format = new ThreadLocal<NumberFormat>() {
+    @Override
+    protected NumberFormat initialValue() {
+      final NumberFormat ret = NumberFormat.getNumberInstance();
+      ret.setGroupingUsed(false);
+      return ret;
+    }
+  };
 
   /**
    * Instantiates a new DoubleValueLink.
@@ -35,5 +46,11 @@ public final class DoubleValueLink<K> extends TextValueLink<K> {
     catch (NumberFormatException nf) {
       throw new RuntimeException(nf);
     }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  protected String getValueAsText(final Object value) {
+    return value == null ? "" : format.get().format(value);
   }
 }

@@ -2324,3 +2324,5 @@
   ExceptionDialog.showExceptionDialog(), event dispatch thread related bug fixed
   Util.collateSansSpaces() added, Util.collate(List) uses it by default
   FilteredTablePanel.selectTableColumns(), added 'Show all columns' button
+  DoubleField, IntField, fixed a bug, fields displayed sci-notation for large numbers, format added
+  DoubleValueLink, IntValueLink fixed according to the above

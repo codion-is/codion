@@ -9,6 +9,7 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.PlainDocument;
+import java.text.NumberFormat;
 
 /**
  * A text field for doubles.
@@ -18,6 +19,14 @@ public final class DoubleField extends IntField {
   public static final String POINT = ".";
   public static final String COMMA = ",";
 
+  private final ThreadLocal<NumberFormat> format = new ThreadLocal<NumberFormat>() {
+    @Override
+    protected NumberFormat initialValue() {
+      final NumberFormat ret = NumberFormat.getNumberInstance();
+      ret.setGroupingUsed(false);
+      return ret;
+    }
+  };
   private String decimalSymbol = COMMA;
 
   /** Constructs a new DoubleField. */
@@ -63,7 +72,7 @@ public final class DoubleField extends IntField {
    * @param value the value to set
    */
   public void setDouble(final Double value) {
-    setText(value == null ? "" : value.toString());
+    setText(value == null ? "" : format.get().format(value));
   }
 
   public static boolean isDecimalSymbol(final Character character) {

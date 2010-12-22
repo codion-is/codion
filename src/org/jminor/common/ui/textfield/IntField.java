@@ -9,11 +9,21 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.PlainDocument;
+import java.text.NumberFormat;
 
 /**
  * A text field for ints.
  */
 public class IntField extends TextFieldPlus {
+
+  private final ThreadLocal<NumberFormat> format = new ThreadLocal<NumberFormat>() {
+    @Override
+    protected NumberFormat initialValue() {
+      final NumberFormat ret = NumberFormat.getIntegerInstance();
+      ret.setGroupingUsed(false);
+      return ret;
+    }
+  };
 
   /**
    * Constructs a new IntField.
@@ -57,7 +67,7 @@ public class IntField extends TextFieldPlus {
    * @param value the value to set
    */
   public final void setInt(final Integer value) {
-    setText(value == null ? "" : value.toString());
+    setText(value == null ? "" : format.get().format(value));
   }
 
   /** {@inheritDoc} */

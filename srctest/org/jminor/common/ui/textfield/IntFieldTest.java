@@ -1,7 +1,8 @@
 package org.jminor.common.ui.textfield;
 
-import static org.junit.Assert.assertEquals;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class IntFieldTest {
 
@@ -13,5 +14,10 @@ public class IntFieldTest {
     txt.setText("22");
     assertEquals(Integer.valueOf(22), txt.getInt());
     assertEquals(Integer.valueOf(22), txt.getValue());
+
+    txt.setInt(10000000);
+    assertEquals("10000000", txt.getText());
+    txt.setInt(100000000);
+    assertEquals("100000000", txt.getText());
   }
 }
