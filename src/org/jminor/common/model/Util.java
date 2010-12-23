@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.Closeable;
@@ -273,6 +274,36 @@ public final class Util {
   public static String getMemoryUsageString() {
     return getUsedMemory() + " KB";
   }
+
+  public static int countLines(final String filename) {
+    return countLines(new File(filename));
+  }
+
+  public static int countLines(final File file) {
+    InputStream is = null;//todo fails to count last line if no 'newline'
+    try {
+      is = new BufferedInputStream(new FileInputStream(file));
+      final byte[] c = new byte[1024];
+      int count = 0;
+      int readChars = 0;
+      while ((readChars = is.read(c)) != -1) {
+        for (int i = 0; i < readChars; ++i) {
+          if (c[i] == '\n') {
+            ++count;
+          }
+        }
+      }
+
+      return count;
+    }
+    catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+    finally {
+      Util.closeSilently(is);
+    }
+  }
+
 
   /**
    * Fetch the entire contents of a resource textfile, and return it in a String, using the default Charset.

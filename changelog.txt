@@ -2328,3 +2328,4 @@
   DoubleValueLink, IntValueLink fixed according to the above
   Util.collateSansSpaces() overloaded for list
   EntityTablePanel, initialization refactored, initializeTable moved from constructor to initializePanel()
+  Util.countLines() added
