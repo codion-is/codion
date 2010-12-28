@@ -2337,3 +2337,5 @@
   EntityImpl.getDoubleValue() now handles the fraction digits if necessary
   EntityEditPanel constructor now accepts null controlKeys parameter
   EntityTablePanel.setupControls() now protected
+  Configuration.DEFAULT_SPLIT_PANE_DIVIDER_SIZE added
+  AbstractTableColumnSyncPanel.SyncColumnModelListener.columnAdded() now initializes a column panel if none exists, such as when the column is hidden before the search panel is initialized

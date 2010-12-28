@@ -472,6 +472,13 @@ public final class Configuration {
    */
   public static final String AUTO_CREATE_ENTITY_MODELS = "jminor.client.autoCreateEntityModels";
 
+  /**
+   * Specifies the default size of the divider for detail panel split panes.
+   * Value type: Integer<br>
+   * Default value: 18<br>
+   */
+  public static final String DEFAULT_SPLIT_PANE_DIVIDER_SIZE = "jminor.client.defaultSplitPaneDividerSize";
+
   public static final String JAVAX_NET_NET_TRUSTSTORE = "javax.net.ssl.trustStore";
   private static final Properties PROPERTIES = new Properties();
   private static final int INPUT_BUFFER_SIZE = 8192;
@@ -527,6 +534,7 @@ public final class Configuration {
     PROPERTIES.put(AUTO_CREATE_ENTITY_MODELS, true);
     PROPERTIES.put(WEB_SERVER_PORT, 80);
     PROPERTIES.put(CACHE_REPORTS, true);
+    PROPERTIES.put(DEFAULT_SPLIT_PANE_DIVIDER_SIZE, 18);
     parseSystemSettings();
   }
 
@@ -585,6 +593,7 @@ public final class Configuration {
     parseIntegerSetting(WEB_SERVER_PORT);
     parseStringSetting(JAVAX_NET_NET_TRUSTSTORE);
     parseBooleanSetting(CACHE_REPORTS);
+    parseIntegerSetting(DEFAULT_SPLIT_PANE_DIVIDER_SIZE);
   }
 
   private static void parseIntegerSetting(final String setting) {

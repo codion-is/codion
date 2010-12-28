@@ -150,6 +150,10 @@ public abstract class AbstractTableColumnSyncPanel extends JPanel {
   private final class SyncColumnModelListener implements TableColumnModelListener {
     /** {@inheritDoc} */
     public void columnAdded(final TableColumnModelEvent e) {
+      final TableColumn column = columnModel.getColumn(e.getToIndex());
+      if (!columnPanels.containsKey(column)) {
+        columnPanels.put(column, initializeColumnPanel(column));
+      }
       resetPanel();
     }
 

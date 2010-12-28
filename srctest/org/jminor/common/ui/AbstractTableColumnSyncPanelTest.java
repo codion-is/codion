@@ -1,12 +1,14 @@
 package org.jminor.common.ui;
 
-import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
 import javax.swing.JPanel;
 import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class AbstractTableColumnSyncPanelTest {
 
@@ -21,11 +23,12 @@ public class AbstractTableColumnSyncPanelTest {
   }
 
   @Test
-  public void test() {
+  public void addColumn() {
     assertNotNull(panel.getColumnModel());
     panel.setVerticalFillerWidth(20);
-    final TableColumn col = columnModel.getColumn(0);
-    col.setWidth(30);
+    final TableColumn col = new TableColumn(3, 20);
+    columnModel.addColumn(col);
+    assertTrue(panel.getColumnPanels().containsKey(col));
   }
 
   private static class TableColumnSyncPanelImpl extends AbstractTableColumnSyncPanel {
