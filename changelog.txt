@@ -2333,5 +2333,7 @@
   Util.countLines() improved
   FilteredTableModel.removeItems(from, to) added
   DateFormats.FULL_COMPACT_TIMESTAMP added
+  EntityImpl.getValue() now longer handles fraction digits for doubles (perf. reasons)
   EntityImpl.getDoubleValue() now handles the fraction digits if necessary
   EntityEditPanel constructor now accepts null controlKeys parameter
+  EntityTablePanel.setupControls() now protected
