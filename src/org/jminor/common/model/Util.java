@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.Closeable;
@@ -17,6 +16,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -280,27 +280,21 @@ public final class Util {
   }
 
   public static int countLines(final File file) {
-    InputStream is = null;//todo fails to count last line if no 'newline'
+    BufferedReader reader = null;
     try {
-      is = new BufferedInputStream(new FileInputStream(file));
-      final byte[] c = new byte[1024];
-      int count = 0;
-      int readChars = 0;
-      while ((readChars = is.read(c)) != -1) {
-        for (int i = 0; i < readChars; ++i) {
-          if (c[i] == '\n') {
-            ++count;
-          }
-        }
+      reader = new BufferedReader(new FileReader(file));
+      int lines = 0;
+      while (reader.readLine() != null) {
+        lines++;
       }
 
-      return count;
+      return lines;
     }
     catch (Exception e) {
       throw new RuntimeException(e);
     }
     finally {
-      Util.closeSilently(is);
+      Util.closeSilently(reader);
     }
   }
 

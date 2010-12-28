@@ -181,12 +181,8 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
     if (property instanceof Property.ForeignKeyProperty) {
       return getForeignKeyValue((Property.ForeignKeyProperty) property);
     }
-    final Object value = super.getValue(property.getPropertyID());
-    if (value != null && property.isDouble()) {
-      return getDoubleValue(property, value);
-    }
 
-    return value;
+    return super.getValue(property.getPropertyID());
   }
 
   /** {@inheritDoc} */
@@ -259,7 +255,15 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
 
   /** {@inheritDoc} */
   public Double getDoubleValue(final String propertyID) {
-    return (Double) getValue(propertyID);
+    final Property property = getProperty(propertyID);
+    final Double value = (Double) getValue(property);
+    final int maximumFractionDigits = property.getMaximumFractionDigits();
+    if (maximumFractionDigits > 0) {
+      return Util.roundDouble(value, maximumFractionDigits);
+    }
+    else {
+      return value;
+    }
   }
 
   /** {@inheritDoc} */
@@ -677,24 +681,12 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
       validateType(property, value);
     }
 
-    final Object actualValue = translateNewValue(property, value);
     toString = null;
     if (property instanceof Property.ForeignKeyProperty) {
-      propagateForeignKeyValues((Property.ForeignKeyProperty) property, (Entity) actualValue, false, entityDefinitions);
+      propagateForeignKeyValues((Property.ForeignKeyProperty) property, (Entity) value, false, entityDefinitions);
     }
 
-    return super.setValue(property.getPropertyID(), actualValue);
-  }
-
-  private Object translateNewValue(final Property property, final Object value) {
-    if (value instanceof Double) {
-      final int maximumFractionDigits = property.getMaximumFractionDigits();
-      if (maximumFractionDigits > 0) {
-        return Util.roundDouble((Double) value, maximumFractionDigits);
-      }
-    }
-
-    return value;
+    return super.setValue(property.getPropertyID(), value);
   }
 
   private void writeObject(final ObjectOutputStream stream) throws IOException {
@@ -768,16 +760,6 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
     }
     if (value instanceof Entity && value.equals(entity)) {
       throw new IllegalArgumentException("Circular entity reference detected: " + entity + "->" + property.getPropertyID());
-    }
-  }
-
-  private static Object getDoubleValue(final Property property, final Object value) {
-    final int maximumFractionDigits = property.getMaximumFractionDigits();
-    if (maximumFractionDigits > 0) {
-      return Util.roundDouble((Double) value, maximumFractionDigits);
-    }
-    else {
-      return value;
     }
   }
 

@@ -417,7 +417,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     }
 
     if (searchScrollPane != null) {
-      searchScrollPane.getViewport().setView(visible ? (JPanel) searchPanel : null);
+      searchScrollPane.getViewport().setView(visible ? searchPanel : null);
       if (refreshToolBar != null) {
         refreshToolBar.setVisible(visible);
       }
@@ -849,6 +849,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   public final EntityTablePanel initializePanel() {
     if (!panelInitialized) {
       try {
+        setupControlsInternal();
         setupControls();
         initializeTable();
         initializeUI();
@@ -919,6 +920,16 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
               }
             });
   }
+
+  /**
+   * Override the default controls by mapping them to their respective control codes
+   * (EntityTablePanel.UPDATE_SELECTED, DELETE_SELECTED etc) via the <code>setControl(String, Control) method,
+   * these can then be retrieved via the <code>getControl(String)</code> method.
+   * @see org.jminor.common.ui.control.Control
+   * @see #setControl(String, org.jminor.common.ui.control.Control)
+   * @see #getControl(String)
+   */
+  protected void setupControls() {}
 
   /**
    * Associates <code>control</code> with <code>controlCode</code>
@@ -1222,15 +1233,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     return null;
   }
 
-  /**
-   * Initializes the controls available to this EntityTablePanel by mapping them to their respective
-   * control codes (EntityTablePanel.UPDATE_SELECTED, DELETE_SELECTED etc) via the <code>setControl(String, Control) method,
-   * these can then be retrieved via the <code>getControl(String)</code> method.
-   * @see org.jminor.common.ui.control.Control
-   * @see #setControl(String, org.jminor.common.ui.control.Control)
-   * @see #getControl(String)
-   */
-  private void setupControls() {
+  private void setupControlsInternal() {
     if (!getEntityTableModel().isReadOnly() && getEntityTableModel().isDeleteAllowed()) {
       setControl(DELETE_SELECTED, getDeleteSelectedControl());
     }
@@ -1422,13 +1425,10 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
         @Override
         public void keyTyped(final KeyEvent e) {
           if (e.getKeyChar() == KeyEvent.VK_DELETE && !getTableModel().isSelectionEmpty()) {
-            try {
-              delete();
+            final Control deleteControl = getControl(DELETE_SELECTED);
+            if (deleteControl != null) {
+              deleteControl.actionPerformed(null);
             }
-            catch (DatabaseException ex) {
-              throw new RuntimeException(ex);
-            }
-            catch (CancelException ce) {/**/}
           }
           else if (getJTable().getParent() != null) {
             getJTable().getParent().dispatchEvent(e);

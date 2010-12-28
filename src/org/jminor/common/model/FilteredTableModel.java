@@ -146,6 +146,13 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R>, TableModel, 
   void removeItem(final R item);
 
   /**
+   * Removes from this table model all of the elements whose index is between fromIndex, inclusive and toIndex, exclusive
+   * @param fromIndex index of first row to be removed
+   * @param toIndex index after last row to be removed
+   */
+  void removeItems(final int fromIndex, final int toIndex);
+
+  /**
    * @return the TableColumnModel used by this TableModel
    */
   TableColumnModel getColumnModel();

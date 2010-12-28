@@ -2329,3 +2329,9 @@
   Util.collateSansSpaces() overloaded for list
   EntityTablePanel, initialization refactored, initializeTable moved from constructor to initializePanel()
   Util.countLines() added
+  LoginPanel, layout changes
+  Util.countLines() improved
+  FilteredTableModel.removeItems(from, to) added
+  DateFormats.FULL_COMPACT_TIMESTAMP added
+  EntityImpl.getDoubleValue() now handles the fraction digits if necessary
+  EntityEditPanel constructor now accepts null controlKeys parameter

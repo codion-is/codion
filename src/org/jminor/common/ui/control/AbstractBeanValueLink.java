@@ -4,6 +4,7 @@
 package org.jminor.common.ui.control;
 
 import org.jminor.common.model.EventObserver;
+import org.jminor.common.model.Util;
 
 import java.lang.reflect.Method;
 
@@ -41,6 +42,11 @@ public abstract class AbstractBeanValueLink extends AbstractValueLink<Object, Ob
                                final EventObserver valueChangeEvent, final LinkType linkType) {
     super(owner, valueChangeEvent, linkType);
     try {
+      Util.rejectNullValue(propertyName, "propertyName");
+      Util.rejectNullValue(valueClass, "valueClass");
+      if (propertyName.isEmpty()) {
+        throw new IllegalArgumentException("propertyName is empty");
+      }
       this.propertyName = Character.toUpperCase(propertyName.charAt(0)) + propertyName.substring(1);
       this.valueClass = valueClass;
       this.getMethod = getGetMethod();
@@ -114,6 +120,11 @@ public abstract class AbstractBeanValueLink extends AbstractValueLink<Object, Ob
     if (valueClass.equals(boolean.class) || valueClass.equals(Boolean.class)) {
       try {
         return getValueOwner().getClass().getMethod("is" + propertyName);
+      }
+      catch (NoSuchMethodException e) {/**/}
+      try {
+        return getValueOwner().getClass().getMethod(propertyName.substring(0, 1).toLowerCase()
+                + propertyName.substring(1, propertyName.length()));
       }
       catch (NoSuchMethodException e) {/**/}
     }

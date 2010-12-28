@@ -79,8 +79,10 @@ public interface Entity extends ValueChangeMap<String, Object>, Comparable<Entit
   /**
    * @param propertyID the ID of the property for which to retrieve the value
    * @return the value of the property identified by <code>propertyID</code>,
-   * assuming it is a Double
+   * assuming it is a Double. Rounds the value before returning it in case
+   * maximumFractionDigits have been specified.
    * @throws ClassCastException if the value is not a Double instance
+   * @see Property#getMaximumFractionDigits()
    */
   Double getDoubleValue(final String propertyID);
 

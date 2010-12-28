@@ -34,6 +34,8 @@ public final class DateFormats {
   public static final String EXACT_TIMESTAMP = "yyyy-MM-dd HH:mm:ss.SSS";
   /** dd-MM-yyyy HH:mm:ss */
   public static final String FULL_TIMESTAMP = "dd-MM-yyyy HH:mm:ss";
+  /** ddMMyy HH:mm:ss */
+  public static final String FULL_COMPACT_TIMESTAMP = "ddMMyy HH:mm:ss";
 
   /**
    * Instantiates a non-lenient date format

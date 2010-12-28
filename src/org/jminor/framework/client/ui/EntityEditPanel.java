@@ -544,12 +544,16 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * Initializes the controls available to this EntityEditPanel by mapping them to their respective
    * control codes (EntityEditPanel.INSERT, UPDATE etc) via the <code>setControl(String, Control) method,
    * these can then be retrieved via the <code>getControl(String)</code> method.
-   * @param controlKeys if specified only controls with those keys are initialized
+   * @param controlKeys if specified only controls with those keys are initialized, a null value results
+   * in no controls
    * @see org.jminor.common.ui.control.Control
    * @see #setControl(String, org.jminor.common.ui.control.Control)
    * @see #getControl(String)
    */
   private void setupControls(final String... controlKeys) {
+    if (controlKeys == null) {
+      return;
+    }
     final Collection<String> keys = Arrays.asList(controlKeys);
     final boolean noKeys = keys.isEmpty();
     if (!getEntityEditModel().isReadOnly()) {
@@ -699,6 +703,17 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
                                              final int labelAlignment) {
     return createPropertyPanel(EntityUiUtil.createLabel(Entities.getProperty(getEntityEditModel().getEntityID(),
             propertyID), labelAlignment), inputComponent, labelOnTop, hgap, vgap);
+  }
+
+  /**
+   * Creates a panel containing a label component and the <code>inputComponent</code> with the label
+   * component positioned above the input component.
+   * @param labelComponent the label component
+   * @param inputComponent a component bound to the property with id <code>propertyID</code>
+   * @return a panel containing a label and a component
+   */
+  protected final JPanel createPropertyPanel(final JComponent labelComponent, final JComponent inputComponent) {
+    return createPropertyPanel(labelComponent, inputComponent, true);
   }
 
   /**
