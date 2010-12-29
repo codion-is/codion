@@ -334,7 +334,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    */
   public final void setIncludeSearchPanel(final boolean value) {
     if (panelInitialized) {
-      throw new IllegalStateException("includeSearcPanel must be set before the panel is initialized");
+      throw new IllegalStateException("includeSearchPanel must be set before the panel is initialized");
     }
     this.includeSearchPanel = value;
   }
@@ -1254,7 +1254,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     if (summaryPanel != null) {
       setControl(TOGGLE_SUMMARY_PANEL, getToggleSummaryPanelControl());
     }
-    if (searchPanel != null) {
+    if (includeSearchPanel && searchPanel != null) {
       setControl(TOGGLE_SEARCH_PANEL, getToggleSearchPanelControl());
     }
     setControl(PRINT_TABLE, getPrintTableControl());

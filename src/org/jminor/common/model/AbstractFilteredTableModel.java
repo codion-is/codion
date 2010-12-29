@@ -561,6 +561,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   /** {@inheritDoc} */
   public final void removeItems(final int fromIndex, final int toIndex) {
     visibleItems.subList(fromIndex, toIndex).clear();
+    fireTableRowsDeleted(fromIndex, toIndex);
   }
 
   /** {@inheritDoc} */

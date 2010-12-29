@@ -98,6 +98,11 @@ public class FilteredTablePanel<T, C> extends JPanel {
   private boolean sortingEnabled = true;
 
   /**
+   * If true then the JTable scrolls to the item selected in the table model
+   */
+  private boolean scrollToSelectedItem = true;
+
+  /**
    * Instantiates a new FilteredTablePanel.
    * @param tableModel the table model
    */
@@ -260,6 +265,22 @@ public class FilteredTablePanel<T, C> extends JPanel {
   }
 
   /**
+   * @return true if the JTable instance scrolls automatically to the coordinate
+   * of the record selected in the underlying table model
+   */
+  public boolean isScrollToSelectedItem() {
+    return scrollToSelectedItem;
+  }
+
+  /**
+   * @param scrollToSelectedItem true if the JTable instance should scroll automatically
+   * to the coordinate of the record selected in the underlying table model
+   */
+  public void setScrollToSelectedItem(final boolean scrollToSelectedItem) {
+    this.scrollToSelectedItem = scrollToSelectedItem;
+  }
+
+  /**
    * Shows a dialog for selecting which columns to show/hide
    */
   @SuppressWarnings({"unchecked"})
@@ -416,7 +437,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
     tableModel.addSelectedIndexListener(new ActionListener() {
       /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
-        if (!tableModel.isSelectionEmpty()) {
+        if (scrollToSelectedItem && !tableModel.isSelectionEmpty()) {
           scrollToCoordinate(tableModel.getSelectedIndex(), table.getSelectedColumn());
         }
       }
