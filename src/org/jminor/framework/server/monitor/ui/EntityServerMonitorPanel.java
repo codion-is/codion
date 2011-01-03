@@ -31,6 +31,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.io.File;
 import java.io.IOException;
 import java.rmi.RemoteException;
 
@@ -98,8 +99,7 @@ public final class EntityServerMonitorPanel extends JPanel {
         throw new IllegalStateException("No JDK home directory has been specified");
       }
     }
-    final String separator = System.getProperty("file.separator");
-    new ProcessBuilder(jdkDir + separator + "bin"  + separator + "jconsole").start();
+    new ProcessBuilder(jdkDir + File.separator + "bin"  + File.separator + "jconsole").start();
   }
 
   public void setJDKDir() {

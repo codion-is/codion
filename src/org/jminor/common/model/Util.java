@@ -62,6 +62,7 @@ public final class Util {
   public static final String VERSION_FILE = "version.txt";
 
   public static final String PREF_DEFAULT_USERNAME = "jminor.username";
+  public static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
   private static final Logger LOG = LoggerFactory.getLogger(Util.class);
   private static final Random RANDOM = new Random();
@@ -343,7 +344,7 @@ public final class Util {
       String line = input.readLine();
       while (line != null) {
         contents.append(line);
-        contents.append(System.getProperty("line.separator"));
+        contents.append(LINE_SEPARATOR);
         line = input.readLine();
       }
     }
@@ -396,7 +397,7 @@ public final class Util {
           contents.append(delimiter);
         }
       }
-      contents.append(System.getProperty("line.separator"));
+      contents.append(LINE_SEPARATOR);
     }
 
     for (final String[] someData : data) {
@@ -406,7 +407,7 @@ public final class Util {
           contents.append(delimiter);
         }
       }
-      contents.append(System.getProperty("line.separator"));
+      contents.append(LINE_SEPARATOR);
     }
 
     return contents.toString();

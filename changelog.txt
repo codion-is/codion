@@ -2341,3 +2341,4 @@
   AbstractTableColumnSyncPanel.SyncColumnModelListener.columnAdded() now initializes a column panel if none exists, such as when the column is hidden before the search panel is initialized
   FilteredTablePanel.scrollToSelectedItem field added
   AbstractFilteredTableModel.removeItems(from, to) now fires a tableRowDeleted event
+  Util.LINE_SEPARATOR added, used throughout

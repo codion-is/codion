@@ -25,7 +25,20 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.xy.DeviationRenderer;
 
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
+import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
@@ -46,7 +59,6 @@ public final class LoadTestPanel extends JPanel {
 
   private static final int DEFAULT_MEMORY_USAGE_UPDATE_INTERVAL_MS = 2000;
   private static final double DEFAULT_SCREEN_SIZE_RATIO = 0.75;
-  private static final String LINE_SEPARATOR = System.getProperty("line.separator");
   private final LoadTest loadTestModel;
 
   private final JPanel scenarioBase = new JPanel(new GridLayout(0, 1, 5, 5));
@@ -449,8 +461,8 @@ public final class LoadTestPanel extends JPanel {
       for (final LoadTest.ScenarioException exception : exceptions) {
         final Exception root = Util.unwrapAndLog((Exception) exception.getCause(), UndeclaredThrowableException.class, null);
         getExceptionsTextArea().append(root.toString());
-        getExceptionsTextArea().append(LINE_SEPARATOR);
-        getExceptionsTextArea().append(LINE_SEPARATOR);
+        getExceptionsTextArea().append(Util.LINE_SEPARATOR);
+        getExceptionsTextArea().append(Util.LINE_SEPARATOR);
       }
     }
   }

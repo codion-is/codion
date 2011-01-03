@@ -46,7 +46,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
   private final Event evtMinimumThinkTimeChanged = Events.event();
   private final Event evtWarningTimeChanged = Events.event();
   private final Event evtLoginDelayFactorChanged = Events.event();
-  private final Event evtApplicationtCountChanged = Events.event();
+  private final Event evtApplicationCountChanged = Events.event();
   private final Event evtApplicationBatchSizeChanged = Events.event();
   private final Event evtDoneExiting = Events.event();
   private final Event evtUpdateIntervalChanged = Events.event();
@@ -335,7 +335,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
       synchronized (applications) {
         applications.push(runner);
       }
-      evtApplicationtCountChanged.fire();
+      evtApplicationCountChanged.fire();
 
       executor.execute(runner);
     }
@@ -442,7 +442,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
 
   /** {@inheritDoc} */
   public final EventObserver applicationCountObserver() {
-    return evtApplicationtCountChanged.getObserver();
+    return evtApplicationCountChanged.getObserver();
   }
 
   /** {@inheritDoc} */
@@ -529,7 +529,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
     synchronized (applications) {
       applications.pop().stop();
     }
-    evtApplicationtCountChanged.fire();
+    evtApplicationCountChanged.fire();
   }
 
   private ItemRandomizer<UsageScenario> initializeScenarioChooser() {

@@ -44,7 +44,6 @@ public final class EntityGeneratorModel {
   private static final Logger LOG = LoggerFactory.getLogger(EntityGeneratorModel.class);
 
   private static final String TABLE_SCHEMA = "TABLE_SCHEM";
-  private static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
   private final Connection connection;
   private final String schema;
@@ -223,12 +222,12 @@ public final class EntityGeneratorModel {
   }
 
   private static void appendEntityDefinition(final StringBuilder builder, final Table table) {
-    builder.append("Entities.define(").append(getEntityID(table)).append(",").append(LINE_SEPARATOR);
+    builder.append("Entities.define(").append(getEntityID(table)).append(",").append(Util.LINE_SEPARATOR);
     for (final Column column : table.getColumns()) {
       builder.append(getPropertyDefinition(table, column))
-              .append(table.getColumns().indexOf(column) < table.getColumns().size() - 1 ? "," : "").append(LINE_SEPARATOR);
+              .append(table.getColumns().indexOf(column) < table.getColumns().size() - 1 ? "," : "").append(Util.LINE_SEPARATOR);
     }
-    builder.append(");").append(LINE_SEPARATOR).append(LINE_SEPARATOR);
+    builder.append(");").append(Util.LINE_SEPARATOR).append(Util.LINE_SEPARATOR);
   }
 
   private static void appendPropertyConstants(final StringBuilder builder, final Table table,
@@ -240,7 +239,7 @@ public final class EntityGeneratorModel {
     }
     table.setColumns(columns);
     builder.append(getConstants(table));
-    builder.append(LINE_SEPARATOR);
+    builder.append(Util.LINE_SEPARATOR);
   }
 
   private static ForeignKey getForeignKey(final Column column, final List<ForeignKey> foreignKeys) {
@@ -268,13 +267,13 @@ public final class EntityGeneratorModel {
   private static String getConstants(final Table table) {
     final String schemaName = table.schemaName;
     final StringBuilder builder = new StringBuilder("public static final String ").append(getEntityID(table)).append(
-            " = \"").append(schemaName.toLowerCase()).append(".").append(table.tableName.toLowerCase()).append("\";").append(LINE_SEPARATOR);
+            " = \"").append(schemaName.toLowerCase()).append(".").append(table.tableName.toLowerCase()).append("\";").append(Util.LINE_SEPARATOR);
     for (final Column column : table.getColumns()) {
       builder.append("public static final String ").append(getPropertyID(table, column, false))
-              .append(" = \"").append(column.columnName.toLowerCase()).append("\";").append(LINE_SEPARATOR);
+              .append(" = \"").append(column.columnName.toLowerCase()).append("\";").append(Util.LINE_SEPARATOR);
       if (column.foreignKey != null) {
         builder.append("public static final String ").append(getPropertyID(table, column, true))
-                .append(" = \"").append(column.columnName.toLowerCase()).append("_fk\";").append(LINE_SEPARATOR);
+                .append(" = \"").append(column.columnName.toLowerCase()).append("_fk\";").append(Util.LINE_SEPARATOR);
       }
     }
 
@@ -289,11 +288,11 @@ public final class EntityGeneratorModel {
       final String foreignKeyID = getPropertyID(table, column, true);
       final String caption = getCaption(column);
       builder.append("        Properties.foreignKeyProperty(").append(foreignKeyID).append(", \"").append(caption).append("\", ").append(
-              getEntityID(column.foreignKey.getReferencedTable())).append(",").append(LINE_SEPARATOR);
+              getEntityID(column.foreignKey.getReferencedTable())).append(",").append(Util.LINE_SEPARATOR);
       builder.append("        ").append(columnPropertyDefinition).append(")");
 
       if (column.nullable == DatabaseMetaData.columnNoNulls) {
-        builder.append(LINE_SEPARATOR).append("                .setNullable(false)");
+        builder.append(Util.LINE_SEPARATOR).append("                .setNullable(false)");
       }
 
       return builder.toString();
@@ -316,7 +315,7 @@ public final class EntityGeneratorModel {
         builder.append("        Properties.primaryKeyProperty(").append(propertyID).append(", ").append(column.columnTypeName).append(")");
       }
       if (column.primaryKey.getKeySeq() > 1) {
-        builder.append(LINE_SEPARATOR);
+        builder.append(Util.LINE_SEPARATOR);
         if (foreignKey) {
           builder.append("        ");
         }
@@ -333,19 +332,19 @@ public final class EntityGeneratorModel {
     }
 
     if (column.nullable == DatabaseMetaData.columnNoNulls && column.primaryKey == null && column.foreignKey == null) {
-      builder.append(LINE_SEPARATOR).append("                .setNullable(false)");
+      builder.append(Util.LINE_SEPARATOR).append("                .setNullable(false)");
     }
     if (column.foreignKey == null && column.hasDefaultValue) {
-      builder.append(LINE_SEPARATOR).append("                .setColumnHasDefaultValue(true)");
+      builder.append(Util.LINE_SEPARATOR).append("                .setColumnHasDefaultValue(true)");
     }
     if (column.columnTypeName.equals("Types.VARCHAR")) {
-      builder.append(LINE_SEPARATOR).append("                .setMaxLength(").append(column.columnSize).append(")");
+      builder.append(Util.LINE_SEPARATOR).append("                .setMaxLength(").append(column.columnSize).append(")");
     }
     if (column.columnTypeName.equals("Types.DOUBLE") && column.decimalDigits >= 1) {
-      builder.append(LINE_SEPARATOR).append("                .setMaximumFractionDigits(").append(column.decimalDigits).append(")");
+      builder.append(Util.LINE_SEPARATOR).append("                .setMaximumFractionDigits(").append(column.decimalDigits).append(")");
     }
     if (!Util.nullOrEmpty(column.comment)) {
-      builder.append(LINE_SEPARATOR).append("                .setDescription(").append(column.comment).append(")");
+      builder.append(Util.LINE_SEPARATOR).append("                .setDescription(").append(column.comment).append(")");
     }
 
     return builder.toString();
