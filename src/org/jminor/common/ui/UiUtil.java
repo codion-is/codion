@@ -919,6 +919,42 @@ public final class UiUtil {
   }
 
   /**
+   * Returns the File described by the given transfer support object, in case of many files the first one is used.
+   * Null is returned if no files are found.
+   * @param support the drag'n drop transfer support
+   * @return the absolute path of the first file described the given transfer support object
+   * @throws RuntimeException in case of an exception
+   */
+  @SuppressWarnings({"unchecked"})
+  public static File getFileDataFlavor(final TransferHandler.TransferSupport support) {
+    try {
+      for (final DataFlavor flavor : support.getDataFlavors()) {
+        if (flavor.isFlavorJavaFileListType()) {
+          final List<File> files = (List<File>) support.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
+
+          return files.isEmpty() ? null : files.get(0);
+        }
+      }
+      //the code below is for handling unix/linux
+      final DataFlavor nixFileDataFlavor = new DataFlavor("text/uri-list;class=java.lang.String");
+      final String data = (String) support.getTransferable().getTransferData(nixFileDataFlavor);
+      for (final StringTokenizer st = new StringTokenizer(data, "\r\n"); st.hasMoreTokens();) {
+        final String token = st.nextToken().trim();
+        if (token.startsWith("#") || token.isEmpty()) {// comment line, by RFC 2483
+          continue;
+        }
+
+        return new File(new URI(token));
+      }
+    }
+    catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+
+    return null;
+  }
+
+  /**
    * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=5018574
    * @param component the component, in case of text fields the caret is moved to the end of the text
    * @param onFocusAction the action to run when the focus has been requested
@@ -994,43 +1030,14 @@ public final class UiUtil {
 
     @Override
     public boolean importData(final TransferSupport support) {
-      final String path = getFileDataFlavor(support);
-      if (path != null) {
-        textComponent.setText(path);
+      final File file = getFileDataFlavor(support);
+      if (file != null) {
+        textComponent.setText(file.getAbsolutePath());
         return true;
       }
       else {
         return false;
       }
-    }
-
-    @SuppressWarnings({"unchecked"})
-    private static String getFileDataFlavor(final TransferHandler.TransferSupport support) {
-      try {
-        for (final DataFlavor flavor : support.getDataFlavors()) {
-          if (flavor.isFlavorJavaFileListType()) {
-            final List<File> files = (List<File>) support.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
-
-            return !files.isEmpty() ? files.get(0).getAbsolutePath() : null;
-          }
-        }
-        //the code below is for handling unix/linux
-        final DataFlavor nixFileDataFlavor = new DataFlavor("text/uri-list;class=java.lang.String");
-        final String data = (String) support.getTransferable().getTransferData(nixFileDataFlavor);
-        for (final StringTokenizer st = new StringTokenizer(data, "\r\n"); st.hasMoreTokens();) {
-          final String token = st.nextToken().trim();
-          if (token.startsWith("#") || token.isEmpty()) {// comment line, by RFC 2483
-            continue;
-          }
-
-          return new File(new URI(token)).getAbsolutePath();
-        }
-      }
-      catch (Exception e) {
-        throw new RuntimeException(e);
-      }
-
-      return null;
     }
   }
 }
