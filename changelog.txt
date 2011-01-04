@@ -2343,3 +2343,4 @@
   AbstractFilteredTableModel.removeItems(from, to) now fires a tableRowDeleted event
   Util.LINE_SEPARATOR added, used throughout
   UiUtil.getFileDataFlavor() added
+  UiUtil.isFileDataFlavor() added

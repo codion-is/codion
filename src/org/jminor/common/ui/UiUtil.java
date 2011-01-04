@@ -552,10 +552,12 @@ public final class UiUtil {
       public void insertString(final FilterBypass fb, final int offset, final String string, final AttributeSet attr) throws BadLocationException {
         super.insertString(fb, offset, string.toLowerCase(), attr);
       }
+
       @Override
       public void remove(final FilterBypass fb, final int offset, final int length) throws BadLocationException {
         super.remove(fb, offset, length);
       }
+
       @Override
       public void replace(final FilterBypass fb, final int offset, final int length, final String text, final AttributeSet attrs) throws BadLocationException {
         super.replace(fb, offset, length, text.toLowerCase(), attrs);
@@ -597,9 +599,10 @@ public final class UiUtil {
       public void focusGained(final FocusEvent e) {
         textComponent.selectAll();
       }
+
       @Override
       public void focusLost(final FocusEvent e) {
-        textComponent.select(0,0);
+        textComponent.select(0, 0);
       }
     });
   }
@@ -919,6 +922,26 @@ public final class UiUtil {
   }
 
   /**
+   * @param support a drag'n drop transfer support instance
+   * @return true if the given transfer support instance represents a file or a list of files
+   */
+  public static boolean isFileDataFlavor(final TransferHandler.TransferSupport support) {
+    try {
+        final DataFlavor nixFileDataFlavor = new DataFlavor("text/uri-list;class=java.lang.String");
+        for (final DataFlavor flavor : support.getDataFlavors()) {
+          if (flavor.isFlavorJavaFileListType() || flavor.equals(nixFileDataFlavor)) {
+            return true;
+          }
+        }
+
+        return false;
+      }
+      catch (ClassNotFoundException e) {
+        throw new RuntimeException(e);
+      }
+  }
+
+  /**
    * Returns the File described by the given transfer support object, in case of many files the first one is used.
    * Null is returned if no files are found.
    * @param support the drag'n drop transfer support
@@ -1013,31 +1036,18 @@ public final class UiUtil {
 
     @Override
     public boolean canImport(final TransferSupport support) {
-      try {
-        final DataFlavor nixFileDataFlavor = new DataFlavor("text/uri-list;class=java.lang.String");
-        for (final DataFlavor flavor : support.getDataFlavors()) {
-          if (flavor.isFlavorJavaFileListType() || flavor.equals(nixFileDataFlavor)) {
-            return true;
-          }
-        }
-
-        return false;
-      }
-      catch (ClassNotFoundException e) {
-        throw new RuntimeException(e);
-      }
+      return isFileDataFlavor(support);
     }
 
     @Override
     public boolean importData(final TransferSupport support) {
       final File file = getFileDataFlavor(support);
-      if (file != null) {
-        textComponent.setText(file.getAbsolutePath());
-        return true;
-      }
-      else {
+      if (file == null) {
         return false;
       }
+
+      textComponent.setText(file.getAbsolutePath());
+      return true;
     }
   }
 }
