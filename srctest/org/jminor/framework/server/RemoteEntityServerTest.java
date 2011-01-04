@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.server;
 
-import org.jminor.common.db.Databases;
 import org.jminor.common.db.Database;
+import org.jminor.common.db.Databases;
 import org.jminor.common.model.LogEntry;
 import org.jminor.common.model.User;
 import org.jminor.common.server.ClientInfo;
@@ -16,15 +16,13 @@ import org.jminor.framework.demos.petstore.domain.Petstore;
 import org.jminor.framework.server.provider.RemoteEntityConnectionProvider;
 
 import org.junit.AfterClass;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.Collection;
 import java.util.UUID;
+
+import static org.junit.Assert.*;
 
 public class RemoteEntityServerTest {
 
@@ -63,7 +61,7 @@ public class RemoteEntityServerTest {
     if (admin != null) {
       throw new RuntimeException("Server admin not torn down after last run");
     }
-    admin = new EntityConnectionServerAdminImpl(server, EntityConnectionServer.SSL_CONNECTION_ENABLED);
+    admin = new EntityConnectionServerAdminImpl(server);
   }
 
   @AfterClass
@@ -137,7 +135,7 @@ public class RemoteEntityServerTest {
     server.setConnectionLimit(2);
     providerTwo.getConnection();
     assertEquals(2, server.getConnectionCount());
-    
+
     providerOne.disconnect();
     assertEquals(1, server.getConnectionCount());
     providerTwo.disconnect();

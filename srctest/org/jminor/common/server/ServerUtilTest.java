@@ -6,14 +6,15 @@ package org.jminor.common.server;
 import org.jminor.common.model.Util;
 
 import org.junit.After;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.rmi.NotBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 public class ServerUtilTest {
 

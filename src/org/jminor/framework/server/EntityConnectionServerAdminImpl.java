@@ -57,12 +57,11 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
   /**
    * Instantiates a new RemoteEntityServerAdminImpl
    * @param server the server to administer
-   * @param sslEnabled true if the server is using SSL connection encryption
    * @throws RemoteException in case of an exception
    */
-  public EntityConnectionServerAdminImpl(final EntityConnectionServer server, final boolean sslEnabled) throws RemoteException {
-    super(SERVER_ADMIN_PORT, sslEnabled ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
-            sslEnabled ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
+  public EntityConnectionServerAdminImpl(final EntityConnectionServer server) throws RemoteException {
+    super(SERVER_ADMIN_PORT, EntityConnectionServer.SSL_CONNECTION_ENABLED ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
+            EntityConnectionServer.SSL_CONNECTION_ENABLED ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
     this.server = server;
     Util.getRegistry().rebind(RemoteServer.SERVER_ADMIN_PREFIX + server.getServerName(), this);
     Runtime.getRuntime().addShutdownHook(new Thread(getShutdownHook()));
@@ -422,8 +421,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
    */
   public static void main(final String[] arguments) throws RemoteException, ClassNotFoundException {
     final EntityConnectionServer server = new EntityConnectionServer(Databases.createInstance());
-    final EntityConnectionServerAdminImpl admin = new EntityConnectionServerAdminImpl(
-            server, EntityConnectionServer.SSL_CONNECTION_ENABLED);
+    final EntityConnectionServerAdminImpl admin = new EntityConnectionServerAdminImpl(server);
 
     final String webDocumentRoot = Configuration.getStringValue(Configuration.WEB_SERVER_DOCUMENT_ROOT);
     final ExecutorService executor = Executors.newSingleThreadExecutor();

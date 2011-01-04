@@ -284,12 +284,6 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
     return SERVER_DB_PORT;
   }
 
-  static void loadDomainModel(final String domainClassName) throws ClassNotFoundException {
-    final String message = "Server loading domain model class '" + domainClassName + "' from classpath";
-    LOG.info(message);
-    Class.forName(domainClassName);
-  }
-
   /** {@inheritDoc} */
   @Override
   protected void handleShutdown() throws RemoteException {
@@ -333,9 +327,15 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
     }
 
     final String[] classes = domainModelClasses.split(",");
-    for (final String classname : classes) {
-      loadDomainModel(classname);
+    for (final String className : classes) {
+      loadDomainModel(className);
     }
+  }
+
+  private static void loadDomainModel(final String domainClassName) throws ClassNotFoundException {
+    final String message = "Server loading domain model class '" + domainClassName + "' from classpath";
+    LOG.info(message);
+    Class.forName(domainClassName);
   }
 
   private void startConnectionTimeoutTimer() {
