@@ -2345,3 +2345,4 @@
   UiUtil.getFileDataFlavor() added
   UiUtil.isFileDataFlavor() added
   EntityImpl.getDoubleValue() bug fixed, it did not handle null values correctly
+  DoubleValueLink and IntValueLink, bug fixed, ThreadLocal format objects were instance variables

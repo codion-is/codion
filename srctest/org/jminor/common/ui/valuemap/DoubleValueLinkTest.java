@@ -16,7 +16,7 @@ import static org.junit.Assert.*;
 
 public class DoubleValueLinkTest {
 
-  private ValueChangeMapEditModel<String, Object> model;
+  private final ValueChangeMapEditModel<String, Object> model;
 
   public DoubleValueLinkTest() {
     model = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.DB_PROVIDER);
@@ -27,13 +27,16 @@ public class DoubleValueLinkTest {
     final DoubleField txt = new DoubleField();
     txt.setDecimalSymbol(DoubleField.POINT);
     final TextValueLink<String> valueLink = new DoubleValueLink<String>(txt, model, EmpDept.EMPLOYEE_COMMISSION, true, LinkType.READ_WRITE);
-    ValueLinkValidators.addValidator(valueLink, txt, model);
+    ValueLinkValidators.addValidator(valueLink, txt, model);/*Range 100 - 2000*/
     assertNull("Initial Double value should be null", model.getValue(EmpDept.EMPLOYEE_COMMISSION));
     txt.setDouble(1000.5);
     assertEquals("Double value should be 1000.5", 1000.5, model.getValue(EmpDept.EMPLOYEE_COMMISSION));
+    assertNull("ToolTip should not contain invalid message", txt.getToolTipText());
     txt.setDouble(50d);//value out of range, invalid
     assertTrue("ToolTip should contain invalid message", txt.getToolTipText().length() > 0);
-    txt.setDouble(1500d);//value out of range, invalid
+    txt.setDouble(2050d);//value out of range, invalid
+    assertNotNull("ToolTip should contain invalid message", txt.getToolTipText());
+    txt.setDouble(1500d);//value within of range, valid
     assertNull("ToolTip should not contain invalid message", txt.getToolTipText());
     txt.setText("");
     assertNull("Double value should be null", model.getValue(EmpDept.EMPLOYEE_COMMISSION));

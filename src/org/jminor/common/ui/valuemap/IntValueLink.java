@@ -15,7 +15,7 @@ import java.text.NumberFormat;
  */
 public final class IntValueLink<K> extends TextValueLink<K> {
 
-  private final ThreadLocal<NumberFormat> format = new ThreadLocal<NumberFormat>() {
+  private static final ThreadLocal<NumberFormat> FORMAT = new ThreadLocal<NumberFormat>() {
     @Override
     protected NumberFormat initialValue() {
       final NumberFormat ret = NumberFormat.getIntegerInstance();
@@ -51,6 +51,6 @@ public final class IntValueLink<K> extends TextValueLink<K> {
   /** {@inheritDoc} */
   @Override
   protected String getValueAsText(final Object value) {
-    return value == null ? "" : format.get().format(value);
+    return value == null ? "" : FORMAT.get().format(value);
   }
 }
