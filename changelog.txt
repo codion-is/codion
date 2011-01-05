@@ -2344,3 +2344,4 @@
   Util.LINE_SEPARATOR added, used throughout
   UiUtil.getFileDataFlavor() added
   UiUtil.isFileDataFlavor() added
+  EntityImpl.getDoubleValue() bug fixed, it did not handle null values correctly

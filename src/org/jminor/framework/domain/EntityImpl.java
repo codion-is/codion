@@ -257,6 +257,9 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
   public Double getDoubleValue(final String propertyID) {
     final Property property = getProperty(propertyID);
     final Double value = (Double) getValue(property);
+    if (value == null) {
+      return null;
+    }
     final int maximumFractionDigits = property.getMaximumFractionDigits();
     if (maximumFractionDigits > 0) {
       return Util.roundDouble(value, maximumFractionDigits);
