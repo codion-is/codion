@@ -70,7 +70,8 @@ public final class Entities {
   /**
    * Defines a new entity, by default the <code>entityID</code> is used as the underlying table name
    * @param entityID the ID uniquely identifying the entity
-   * @param propertyDefinitions the Property objects to base this entity on
+   * @param propertyDefinitions the Property objects to base this entity on. In case a select query is specified
+   * for this entity, the property order must match the select column order.
    * @return a new Entity.Definition
    * @throws IllegalArgumentException in case the entityID has already been used to define an entity type
    */
@@ -82,7 +83,8 @@ public final class Entities {
    * Defines a new entity
    * @param entityID the ID uniquely identifying the entity
    * @param tableName the name of the underlying table
-   * @param propertyDefinitions the Property objects to base the entity on
+   * @param propertyDefinitions the Property objects to base the entity on. In case a select query is specified
+   * for this entity, the property order must match the select column order.
    * @return a new Entity.Definition
    * @throws IllegalArgumentException in case the entityID has already been used to define an entity type
    */

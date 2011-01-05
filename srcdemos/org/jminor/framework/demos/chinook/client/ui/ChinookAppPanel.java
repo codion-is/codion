@@ -18,14 +18,26 @@ import org.jminor.framework.client.ui.EntityPanel;
 import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.client.ui.EntityTablePanel;
 import org.jminor.framework.db.provider.EntityConnectionProvider;
-import org.jminor.framework.demos.chinook.beans.ui.*;
+import org.jminor.framework.demos.chinook.beans.ui.AlbumEditPanel;
+import org.jminor.framework.demos.chinook.beans.ui.ArtistEditPanel;
+import org.jminor.framework.demos.chinook.beans.ui.CustomerEditPanel;
+import org.jminor.framework.demos.chinook.beans.ui.CustomerTablePanel;
+import org.jminor.framework.demos.chinook.beans.ui.EmployeeEditPanel;
+import org.jminor.framework.demos.chinook.beans.ui.GenreEditPanel;
+import org.jminor.framework.demos.chinook.beans.ui.InvoiceEditPanel;
+import org.jminor.framework.demos.chinook.beans.ui.InvoiceLineEditPanel;
+import org.jminor.framework.demos.chinook.beans.ui.MediaTypeEditPanel;
+import org.jminor.framework.demos.chinook.beans.ui.PlaylistEditPanel;
+import org.jminor.framework.demos.chinook.beans.ui.PlaylistTrackEditPanel;
+import org.jminor.framework.demos.chinook.beans.ui.TrackEditPanel;
 import org.jminor.framework.demos.chinook.domain.Chinook;
-import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 import org.jminor.framework.domain.Entities;
 
 import javax.swing.JTable;
 import java.awt.Dimension;
 import java.util.Locale;
+
+import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 
 public final class ChinookAppPanel extends EntityApplicationPanel {
 
@@ -148,7 +160,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel {
     }
 
     public void updateInvoiceTotals() throws DatabaseException {
-      getConnectionProvider().getConnection().executeProcedure(Chinook.P_UDPATE_TOTALS);
+      getConnectionProvider().getConnection().executeProcedure(Chinook.P_UPDATE_TOTALS);
     }
 
     @Override

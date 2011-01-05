@@ -511,7 +511,8 @@ public interface Entity extends ValueChangeMap<String, Object>, Comparable<Entit
 
     /**
      * Sets the select query to use when selecting entities of this type,
-     * use with care.
+     * use with care. The order of the properties when defining the entity
+     * must match the column order in the given query.
      * @param selectQuery the select query to use for this entity type
      * @return this Entity.Definition instance
      */

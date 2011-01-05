@@ -532,9 +532,9 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       final EntitySelectCriteria selectForUpdateCriteria = EntityCriteriaUtil.selectCriteria(originalKeys);
       selectForUpdateCriteria.setSelectForUpdate(true).setForeignKeyFetchDepthLimit(0);
       final List<Entity> currentValues = doSelectMany(selectForUpdateCriteria, 0);
-      final Map<Entity.Key, Entity> hashedEntites = EntityUtil.hashByPrimaryKey(currentValues);
+      final Map<Entity.Key, Entity> hashedEntities = EntityUtil.hashByPrimaryKey(currentValues);
       for (final Entity entity : entry.getValue()) {
-        final Entity current = hashedEntites.get(entity.getOriginalPrimaryKey());
+        final Entity current = hashedEntities.get(entity.getOriginalPrimaryKey());
         for (final String propertyID : current.getValueKeys()) {
           if (!entity.containsValue(propertyID) || !Util.equal(current.getValue(propertyID), entity.getOriginalValue(propertyID))) {
             throw new RecordModifiedException(entity, current);
