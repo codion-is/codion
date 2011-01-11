@@ -902,7 +902,8 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @see org.jminor.framework.Configuration#DEFAULT_DATE_FORMAT
    */
   protected final DateInputPanel createDateInputPanel(final String propertyID, final boolean includeButton) {
-    return createDateInputPanel(propertyID, Configuration.getDefaultDateFormat(), includeButton, null);
+    final Property property = Entities.getProperty(getEntityEditModel().getEntityID(), propertyID);
+    return createDateInputPanel(property, (SimpleDateFormat) property.getFormat(), includeButton, null);
   }
 
   /**
