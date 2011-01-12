@@ -190,7 +190,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   /** {@inheritDoc} */
   public final int getVisibleItemCount() {
-    return visibleItems.size();
+    return getRowCount();
   }
 
   /** {@inheritDoc} */
