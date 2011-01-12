@@ -79,12 +79,31 @@ public final class DefaultEntityEditModelTest {
   }
 
   @Test
+  public void initializeEntityComboBoxModel() {
+    try {
+      editModel.getEntityComboBoxModel(deptProperty);
+      fail();
+    }
+    catch (IllegalStateException e) {}
+    final EntityComboBoxModel model = editModel.initializeEntityComboBoxModel(deptProperty);
+    assertNotNull(model);
+    assertTrue(model.isCleared());
+    assertTrue(model.getAllItems().isEmpty());
+    editModel.refreshComboBoxModels();
+    assertFalse(model.isCleared());
+    assertFalse(model.getAllItems().isEmpty());
+    editModel.clearComboBoxModels();
+    assertTrue(model.isCleared());
+    assertTrue(model.getAllItems().isEmpty());
+  }
+
+  @Test
   public void createEntityComboBoxModel() {
     final EntityComboBoxModel model = editModel.createEntityComboBoxModel(deptProperty);
     assertNotNull(model);
+    assertTrue(model.isCleared());
+    assertTrue(model.getAllItems().isEmpty());
     assertEquals(deptProperty.getReferencedEntityID(), model.getEntityID());
-    editModel.refreshComboBoxModels();
-    editModel.clearComboBoxModels();
   }
 
   @Test

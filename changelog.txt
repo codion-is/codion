@@ -2347,3 +2347,5 @@
   EntityImpl.getDoubleValue() bug fixed, it did not handle null values correctly
   DoubleValueLink and IntValueLink, bug fixed, ThreadLocal format objects were instance variables
   EntityEditPanel.createDateInputPanel() now uses the property date format by default, instead of the default date format
+  DefaultEntityEditModel.initializeEntityComboBoxModel() no longer refreshes the combo box model
+  EntityUiUtil.createEntityComboBox() now refreshes the combo box model
