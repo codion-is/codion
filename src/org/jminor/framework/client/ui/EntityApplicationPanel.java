@@ -102,6 +102,10 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
 
   private String frameTitle = "<no title>";
 
+  public EntityApplicationPanel() {
+    setUncaughtExceptionHandler();
+  }
+
   /** {@inheritDoc} */
   public final void handleException(final Throwable exception, final JComponent dialogParent) {
     LOG.error(exception.getMessage(), exception);
@@ -247,7 +251,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    * @return the JFrame instance containing this application panel
    */
   public final JFrame startApplication(final String frameCaption, final String iconName, final boolean maximize,
-                                     final Dimension frameSize) {
+                                       final Dimension frameSize) {
     return startApplication(frameCaption, iconName, maximize, frameSize, null);
   }
 
@@ -261,7 +265,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    * @return the JFrame instance containing this application panel
    */
   public final JFrame startApplication(final String frameCaption, final String iconName, final boolean maximize,
-                                     final Dimension frameSize, final User defaultUser) {
+                                       final Dimension frameSize, final User defaultUser) {
     return startApplication(frameCaption, iconName, maximize, frameSize, defaultUser, true);
   }
 
@@ -276,7 +280,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    * @return the JFrame instance containing this application panel
    */
   public final JFrame startApplication(final String frameCaption, final String iconName, final boolean maximize,
-                                     final Dimension frameSize, final User defaultUser, final boolean showFrame) {
+                                       final Dimension frameSize, final User defaultUser, final boolean showFrame) {
     try {
       return startApplicationInternal(frameCaption, iconName, maximize, frameSize, defaultUser, showFrame);
     }
@@ -288,24 +292,6 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
       System.exit(1);
     }
     return null;
-  }
-
-  /**
-   * Initializes this application panel
-   * @param connectionProvider the connection provider
-   * @throws IllegalStateException if the application model has not been set
-   * @throws org.jminor.common.model.CancelException in case the initialization is cancelled
-   */
-  public final void initialize(final EntityConnectionProvider connectionProvider) throws CancelException {
-    setUncaughtExceptionHandler();
-    this.applicationModel = initializeApplicationModel(connectionProvider);
-    if (applicationModel == null) {
-      throw new IllegalStateException("Unable to initialize application panel without a model");
-    }
-    initializeUI();
-    initializeActiveEntityPanel();
-    bindEventsInternal();
-    bindEvents();
   }
 
   /** {@inheritDoc} */
@@ -633,8 +619,23 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   }
 
   /**
+   * Initializes this application panel
+   * @param applicationModel the application model
+   * @throws IllegalStateException if the application model has not been set
+   * @throws org.jminor.common.model.CancelException in case the initialization is cancelled
+   */
+  protected final void initialize(final EntityApplicationModel applicationModel) throws CancelException {
+    Util.rejectNullValue(applicationModel, "applicationModel");
+    this.applicationModel = applicationModel;
+    initializeUI();
+    initializeActiveEntityPanel();
+    bindEventsInternal();
+    bindEvents();
+  }
+
+  /**
    * Override to add event bindings after initialization
-   * @see #initialize(org.jminor.framework.db.provider.EntityConnectionProvider)
+   * @see #initialize(org.jminor.framework.client.model.EntityApplicationModel)
    */
   protected void bindEvents() {}
 
@@ -852,7 +853,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    * @return an initialized startup progress panel
    */
   protected JPanel initializeStartupProgressPanel(final Icon icon) {
-    final JPanel panel = new JPanel(new BorderLayout(5,5));
+    final JPanel panel = new JPanel(new BorderLayout(5, 5));
     final JProgressBar progressBar = new JProgressBar(JProgressBar.HORIZONTAL);
     progressBar.setIndeterminate(true);
     panel.add(progressBar, BorderLayout.CENTER);
@@ -1013,7 +1014,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
                                           final Dimension frameSize, final User defaultUser, final boolean showFrame) throws Exception {
     LOG.debug(frameCaption + " application starting");
     Messages.class.getName();//hack to load the class
-    UIManager.setLookAndFeel(getDefaultLookAndFeelClassName());
+          UIManager.setLookAndFeel(getDefaultLookAndFeelClassName());
     final ImageIcon applicationIcon = iconName != null ? Images.getImageIcon(getClass(), iconName) : Images.loadImage("jminor_logo32.gif");
     final JDialog startupDialog = showStartupDialog ? initializeStartupDialog(applicationIcon, frameCaption) : null;
     while (true) {
@@ -1021,19 +1022,20 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
       if (startupDialog != null) {
         startupDialog.setVisible(true);
       }
-      final EntityConnectionProvider entityConnectionProvider = initializeConnectionProvider(user, frameCaption);
+      final EntityConnectionProvider connectionProvider = initializeConnectionProvider(user, frameCaption);
       try {
-        entityConnectionProvider.getConnection();//throws exception if the server is not reachable
+        connectionProvider.getConnection();//throws exception if the server is not reachable
         final long initializationStarted = System.currentTimeMillis();
-        initialize(entityConnectionProvider);
+        initialize(initializeApplicationModel(connectionProvider));
+
         if (startupDialog != null) {
           startupDialog.dispose();
         }
-        saveDefaultUser(entityConnectionProvider.getUser());
-        this.frameTitle = getFrameTitle(frameCaption, entityConnectionProvider.getUser());
+        saveDefaultUser(connectionProvider.getUser());
+        this.frameTitle = getFrameTitle(frameCaption, connectionProvider.getUser());
         final JFrame frame = prepareFrame(this.frameTitle, maximize, true, frameSize, applicationIcon, showFrame);
         this.evtApplicationStarted.fire();
-        LOG.info(this.frameTitle + ", application started successfully, " + entityConnectionProvider.getUser().getUsername()
+        LOG.info(this.frameTitle + ", application started successfully, " + connectionProvider.getUser().getUsername()
                 + ": " + (System.currentTimeMillis() - initializationStarted) + " ms");
         return frame;
       }
@@ -1053,14 +1055,14 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   }
 
   private JScrollPane initializeApplicationTree() {
-    return initalizeTree(createApplicationTree(mainApplicationPanels));
+    return initializeTree(createApplicationTree(mainApplicationPanels));
   }
 
   private JScrollPane initializeDependencyTree() {
-    return initalizeTree(DefaultEntityApplicationModel.getDependencyTreeModel());
+    return initializeTree(DefaultEntityApplicationModel.getDependencyTreeModel());
   }
 
-  private JScrollPane initalizeTree(final TreeModel treeModel) {
+  private JScrollPane initializeTree(final TreeModel treeModel) {
     final JTree tree = new JTree(treeModel);
     tree.setShowsRootHandles(true);
     tree.setToggleClickCount(1);

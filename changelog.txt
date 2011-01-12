@@ -2349,3 +2349,4 @@
   EntityEditPanel.createDateInputPanel() now uses the property date format by default, instead of the default date format
   DefaultEntityEditModel.initializeEntityComboBoxModel() no longer refreshes the combo box model
   EntityUiUtil.createEntityComboBox() now refreshes the combo box model
+  EntityApplicationPanel, some minor refactoring
