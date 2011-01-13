@@ -54,6 +54,11 @@ public interface FilteredComboBoxModel<T> extends FilteredModel<T>, ComboBoxMode
   boolean isNullValueSelected();
 
   /**
+   * @return the selected item, null in case the <code>nullValueString</code> is selected
+   */
+  T getSelectedValue();
+
+  /**
    * Sets the nullValueItem, a refresh is required for it to show up
    * @param nullValueString a String representing a null value
    */

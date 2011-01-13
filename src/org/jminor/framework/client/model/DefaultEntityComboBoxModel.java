@@ -162,15 +162,6 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
   }
 
   /** {@inheritDoc} */
-  public final Entity getSelectedEntity() {
-    if (isNullValueSelected()) {
-      return null;
-    }
-
-    return (Entity) getSelectedItem();
-  }
-
-  /** {@inheritDoc} */
   public final void setEntitySelectCriteria(final EntitySelectCriteria entitySelectCriteria) {
     if (entitySelectCriteria != null && !entitySelectCriteria.getEntityID().equals(entityID)) {
       throw new IllegalArgumentException("EntitySelectCriteria entityID mismatch, " + entityID
@@ -236,7 +227,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     foreignKeyModel.addSelectionListener(new ActionListener() {
       /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
-        final Entity selectedEntity = foreignKeyModel.getSelectedEntity();
+        final Entity selectedEntity = foreignKeyModel.getSelectedValue();
         model.setForeignKeyFilterEntities(foreignKeyPropertyID,
                 selectedEntity == null ? new ArrayList<Entity>(0) : Arrays.asList(selectedEntity));
       }
@@ -244,7 +235,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     model.addSelectionListener(new ActionListener() {
       /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
-        final Entity selected = model.getSelectedEntity();
+        final Entity selected = model.getSelectedValue();
         if (selected != null) {
           foreignKeyModel.setSelectedEntityByPrimaryKey(selected.getReferencedPrimaryKey(
                   Entities.getForeignKeyProperty(model.getEntityID(), foreignKeyPropertyID)));

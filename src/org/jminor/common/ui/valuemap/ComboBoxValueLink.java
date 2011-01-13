@@ -77,8 +77,8 @@ public class ComboBoxValueLink<K> extends AbstractValueMapLink<K, Object> {
     if (boxModel instanceof ItemComboBoxModel) {
       return ((Item) boxModel.getSelectedItem()).getItem();
     }
-    else if (boxModel instanceof FilteredComboBoxModel && ((FilteredComboBoxModel) boxModel).isNullValueSelected()) {
-      return null;
+    else if (boxModel instanceof FilteredComboBoxModel) {
+      return ((FilteredComboBoxModel) boxModel).getSelectedValue();
     }
 
     return boxModel.getSelectedItem();

@@ -17,28 +17,27 @@ public final class EntityComboProvider extends AbstractInputProvider<Entity, JCo
 
   /**
    * Instantiates a new input provider based on the EntityComboBoxModel class
-   * @param model the combo box model
+   * @param comboBoxModel the combo box model
    * @param initialValue the initial value to display
    */
-  public EntityComboProvider(final EntityComboBoxModel model, final Entity initialValue) {
-    super(createEntityField(model, initialValue));
+  public EntityComboProvider(final EntityComboBoxModel comboBoxModel, final Entity initialValue) {
+    super(createComboBox(comboBoxModel, initialValue));
   }
 
   /** {@inheritDoc} */
   @Override
   public Entity getValue() {
-    final EntityComboBoxModel model = (EntityComboBoxModel) getInputComponent().getModel();
-    return model.getSelectedEntity();
+    return ((EntityComboBoxModel) getInputComponent().getModel()).getSelectedValue();
   }
 
-  private static JComboBox createEntityField(final EntityComboBoxModel model, final Object currentValue) {
-    if (model.isCleared()) {
-      model.refresh();
+  private static JComboBox createComboBox(final EntityComboBoxModel comboBoxModel, final Object currentValue) {
+    if (comboBoxModel.isCleared()) {
+      comboBoxModel.refresh();
     }
     if (currentValue != null) {
-      model.setSelectedItem(currentValue);
+      comboBoxModel.setSelectedItem(currentValue);
     }
 
-    return new JComboBox(model);
+    return new JComboBox(comboBoxModel);
   }
 }

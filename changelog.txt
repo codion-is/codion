@@ -2350,3 +2350,11 @@
   DefaultEntityEditModel.initializeEntityComboBoxModel() no longer refreshes the combo box model
   EntityUiUtil.createEntityComboBox() now refreshes the combo box model
   EntityApplicationPanel, some minor refactoring
+  ValueChangeEvent.getNew/OldValue() generified
+  FilteredComboBoxModel.getSelectedValue() added
+  EntityComboBoxModel.getSelectedEntity() removed, the above covers it quite nicely
+  ItemComboBoxModel now extends DefaultFilteredComboBoxModel instead of DefaultComboBoxModel
+  CombBoxValueLink slightly modified to accommodate the above
+  DefaultFilteredComboBoxModel.isNullValueSelected() now regards an empty string to be null
+  Entity.clearPrimaryKeyValues() added
+  EntityTablePanel, added column info tooltips to entity popup menu

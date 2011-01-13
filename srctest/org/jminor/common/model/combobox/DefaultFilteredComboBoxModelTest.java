@@ -6,7 +6,6 @@ package org.jminor.common.model.combobox;
 import org.jminor.common.model.FilterCriteria;
 
 import org.junit.After;
-import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,6 +16,8 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import static org.junit.Assert.*;
 
 public class DefaultFilteredComboBoxModelTest {
 
@@ -70,9 +71,11 @@ public class DefaultFilteredComboBoxModelTest {
     testModel.setSelectedItem(BJORN);
     assertEquals(1, selectionChangedCounter.size());
     assertEquals(BJORN, testModel.getSelectedItem());
+    assertEquals(BJORN, testModel.getSelectedValue());
     testModel.setSelectedItem(null);
     assertEquals(2, selectionChangedCounter.size());
     assertNull(testModel.getSelectedItem());
+    assertNull(testModel.getSelectedValue());
     testModel.removeSelectionListener(selectionListener);
   }
 
@@ -88,21 +91,21 @@ public class DefaultFilteredComboBoxModelTest {
     testModel.addFilteringListener(filteringEndedListener);
 
     testModel.setFilterCriteria(new FilterCriteria<String>() {
-      public boolean include(String item) {
+      public boolean include(final String item) {
         return false;
       }
     });
     assertEquals(1, filteringEndedCounter.size());
     assertTrue("The model should be empty", testModel.getSize() == 0);
     testModel.setFilterCriteria(new FilterCriteria<String>() {
-      public boolean include(String item) {
+      public boolean include(final String item) {
         return true;
       }
     });
     assertEquals(2, filteringEndedCounter.size());
     assertTrue("The model should be full", testModel.getSize() == 5);
     testModel.setFilterCriteria(new FilterCriteria<String>() {
-      public boolean include(String item) {
+      public boolean include(final String item) {
         return !item.equals(ANNA);
       }
     });
@@ -110,7 +113,7 @@ public class DefaultFilteredComboBoxModelTest {
     assertTrue("The model should not contain '" + ANNA + "'", !testModel.isVisible(ANNA));
     assertTrue(testModel.isFiltered(ANNA));
     testModel.setFilterCriteria(new FilterCriteria<String>() {
-      public boolean include(String item) {
+      public boolean include(final String item) {
         return item.equals(ANNA);
       }
     });
@@ -137,7 +140,7 @@ public class DefaultFilteredComboBoxModelTest {
   public void removeItem() {
     //remove filtered item
     testModel.setFilterCriteria(new FilterCriteria<String>() {
-      public boolean include(String item) {
+      public boolean include(final String item) {
         return !item.equals(BJORN);
       }
     });
@@ -162,6 +165,7 @@ public class DefaultFilteredComboBoxModelTest {
     testModel.setSelectedItem(null);
     assertEquals(testModel.getSelectedItem(), nullValueString);
     assertTrue(testModel.isNullValueSelected());
+    assertNull(testModel.getSelectedValue());
     testModel.setSelectedItem(nullValueString);
     assertEquals(nullValueString, testModel.getElementAt(0));
     assertEquals(ANNA, testModel.getElementAt(1));

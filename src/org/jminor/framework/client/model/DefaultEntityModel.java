@@ -465,14 +465,14 @@ public class DefaultEntityModel implements EntityModel {
         final EntityEditModel detailEditModel = detailModel.getEditModel();
         if (detailEditModel.containsComboBoxModel(foreignKeyProperty.getPropertyID())) {
           final EntityComboBoxModel comboModel = detailEditModel.getEntityComboBoxModel(foreignKeyProperty);
-          final Entity selectedEntity = comboModel.getSelectedEntity();
+          final Entity selectedEntity = comboModel.getSelectedValue();
           for (final Entity deletedEntity : deletedEntities) {
             comboModel.removeItem(deletedEntity);
           }
           if (comboModel.isVisible(selectedEntity)) {
             comboModel.setSelectedItem(selectedEntity);
-          }
-          else if (comboModel.getSize() > 0 && !comboModel.isNullValueSelected()) {
+          }//if the null value is selected we're fine, otherwise select topmost item
+          else if (!comboModel.isNullValueSelected() && comboModel.getSize() > 0) {
             comboModel.setSelectedItem(comboModel.getElementAt(0));
           }
           else {

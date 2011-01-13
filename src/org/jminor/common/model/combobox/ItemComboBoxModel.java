@@ -4,29 +4,22 @@
 package org.jminor.common.model.combobox;
 
 import org.jminor.common.model.Item;
-import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.Util;
 
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import java.awt.Component;
 import java.awt.Graphics;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 /**
  * A ComboBoxModel implementation based on the <code>ItemComboBoxModel.Item</code> class.
  */
-public class ItemComboBoxModel<T> extends DefaultComboBoxModel implements Refreshable {
+public class ItemComboBoxModel<T> extends DefaultFilteredComboBoxModel<Item<T>> {
 
   /** Constructs a new ItemComboBoxModel. */
-  public ItemComboBoxModel() {
-    setItems(null);
-  }
+  public ItemComboBoxModel() {}
 
   /**
    * Constructs a new ItemComboBoxModel
@@ -41,18 +34,7 @@ public class ItemComboBoxModel<T> extends DefaultComboBoxModel implements Refres
    * @param items the items
    */
   public ItemComboBoxModel(final List<Item<T>> items) {
-    setItems(items);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final void setSelectedItem(final Object anObject) {
-    if (!(anObject instanceof Item)) {
-      super.setSelectedItem(getElementAt(indexOf(anObject)));
-    }
-    else {
-      super.setSelectedItem(anObject);
-    }
+    setContents(items);
   }
 
   /**
@@ -63,56 +45,18 @@ public class ItemComboBoxModel<T> extends DefaultComboBoxModel implements Refres
     return indexOf(item);
   }
 
-  /** {@inheritDoc} */
-  @SuppressWarnings({"unchecked"})
   @Override
-  public final Item<T> getSelectedItem() {
-    return (Item<T>) super.getSelectedItem();
-  }
-
-  /** {@inheritDoc} */
-  public final void clear() {
-    removeAllElements();
-  }
-
-  /**
-   * Refreshes the data in this combo box model, this default implementation
-   * does nothing, override to provide dynamic data.
-   * @see #setItems(java.util.List)
-   */
-  public void refresh() {}
-
-  /**
-   * Sorts the given list and adds the items to this combo box model.
-   * @param items the items to show in this combo box model
-   */
-  protected final void setItems(final List<Item<T>> items) {
-    clear();
-    if (items == null) {
-      return;
+  protected final Object translateSelectionItem(final Object item) {
+    if (item instanceof Item) {
+      return item;
     }
 
-    final List<Item<T>> itemsToAdd = new ArrayList<Item<T>>(items);
-    Collections.sort(itemsToAdd, new Comparator<Item<T>>() {
-      /** Null items at front of list*/
-      public int compare(final Item<T> o1, final Item<T> o2) {
-        if (o1.getItem() == null && o2.getItem() == null) {
-          return o1.compareTo(o2);
-        }
-        if (o1.getItem() == null) {
-          return -1;
-        }
-        if (o2.getItem() == null) {
-          return 1;
-        }
-
-        return o1.compareTo(o2);
-      }
-    });
-
-    for (final Item item : itemsToAdd) {
-      super.addElement(item);
+    final int index = indexOf(item);
+    if (index >= 0) {
+      return getElementAt(index);
     }
+
+    return null;
   }
 
   private int indexOf(final Object item) {
@@ -141,7 +85,7 @@ public class ItemComboBoxModel<T> extends DefaultComboBoxModel implements Refres
      * @param icon the icon
      */
     public IconItem(final T item, final ImageIcon icon) {
-      super(item, item == null ? "" : item.toString());
+      super(item, "");
       Util.rejectNullValue(icon, "icon");
       this.icon = icon;
     }

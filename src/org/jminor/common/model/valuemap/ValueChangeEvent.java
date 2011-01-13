@@ -82,14 +82,14 @@ public final class ValueChangeEvent<K, V> extends ActionEvent {
   /**
    * @return the old value
    */
-  public Object getOldValue() {
+  public V getOldValue() {
     return oldValue;
   }
 
   /**
    * @return the new value
    */
-  public Object getNewValue() {
+  public V getNewValue() {
     return newValue;
   }
 

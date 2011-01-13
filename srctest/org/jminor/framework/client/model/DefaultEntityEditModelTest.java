@@ -137,6 +137,17 @@ public final class DefaultEntityEditModelTest {
   }
 
   @Test
+  public void getEntityCopy() throws DatabaseException {
+    final Entity employee = editModel.getConnectionProvider().getConnection().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "MARTIN");
+    editModel.setEntity(employee);
+    final Entity copyWithPrimaryKeyValue = editModel.getEntityCopy();
+    assertEquals(employee, copyWithPrimaryKeyValue);
+    assertFalse(copyWithPrimaryKeyValue.isPrimaryKeyNull());
+    final Entity copyWithoutPrimaryKeyValue = editModel.getEntityCopy(false);
+    assertTrue(copyWithoutPrimaryKeyValue.isPrimaryKeyNull());
+  }
+
+  @Test
   public void test() throws Exception {
     try {
       new DefaultEntityEditModel(null, EntityConnectionImplTest.DB_PROVIDER);

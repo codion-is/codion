@@ -190,6 +190,12 @@ public interface Entity extends ValueChangeMap<String, Object>, Comparable<Entit
   boolean isValueNull(final Property property);
 
   /**
+   * Clears the primary key values from this entity,
+   * current as well as original values if any
+   */
+  void clearPrimaryKeyValues();
+
+  /**
    * @param property the property
    * @return true if this entity contains a value for the given property
    */

@@ -39,6 +39,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -97,10 +98,11 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     checkReadOnly(entities);
 
     final List<Entity.Key> insertedKeys = new ArrayList<Entity.Key>(entities.size());
+    final List<Object> statementValues = new ArrayList<Object>();
     PreparedStatement statement = null;
+    String insertSQL = null;
     try {
       final List<Property.ColumnProperty> statementProperties = new ArrayList<Property.ColumnProperty>();
-      final List<Object> statementValues = new ArrayList<Object>();
       for (final Entity entity : entities) {
         final String entityID = entity.getEntityID();
         final Property.PrimaryKeyProperty firstPrimaryKeyProperty = Entities.getPrimaryKeyProperties(entityID).get(0);
@@ -121,7 +123,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
         final boolean inserting = true;
         populateStatementPropertiesAndValues(inserting, entity, insertProperties, statementProperties, statementValues);
 
-        final String insertSQL = getInsertSQL(entityID, statementProperties);
+        insertSQL = getInsertSQL(entityID, statementProperties);
         statement = getConnection().prepareStatement(insertSQL);
         executePreparedUpdate(statement, insertSQL, statementValues, statementProperties);
 
@@ -146,6 +148,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       if (!isTransactionOpen()) {
         rollbackQuietly();
       }
+      LOG.debug(createLogMessage(getUser(), insertSQL, statementValues, e, null));
       throw new DatabaseException(getDatabase().getErrorMessage(e));
     }
     finally {
@@ -160,29 +163,30 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     }
     checkReadOnly(entities);
 
+    final List<Object> statementValues = new ArrayList<Object>();
     PreparedStatement statement = null;
+    String updateSQL = null;
     try {
       final Map<String, Collection<Entity>> hashedEntities = EntityUtil.hashByEntityID(entities);
       if (optimisticLocking) {
         lockAndCheckForUpdate(hashedEntities);
       }
 
-      final List<Object> statementValues = new ArrayList<Object>();
       final List<Property.ColumnProperty> statementProperties = new ArrayList<Property.ColumnProperty>();
       for (final Map.Entry<String, Collection<Entity>> hashedEntitiesMapEntry : hashedEntities.entrySet()) {
         final String entityID = hashedEntitiesMapEntry.getKey();
         final boolean includePrimaryKeyProperties = true;
         final boolean includeReadOnlyProperties = false;
-        final boolean includeNonUpdatable = false;
+        final boolean includeNonUpdatableProperties = false;
         final List<Property.ColumnProperty> columnProperties = Entities.getColumnProperties(entityID,
-                includePrimaryKeyProperties, includeReadOnlyProperties, includeNonUpdatable);
+                includePrimaryKeyProperties, includeReadOnlyProperties, includeNonUpdatableProperties);
 
         for (final Entity entity : hashedEntitiesMapEntry.getValue()) {
           final boolean inserting = false;
           populateStatementPropertiesAndValues(inserting, entity, columnProperties, statementProperties, statementValues);
 
           final List<Property.PrimaryKeyProperty> primaryKeyProperties = Entities.getPrimaryKeyProperties(entityID);
-          final String updateSQL = getUpdateSQL(entity, statementProperties, primaryKeyProperties);
+          updateSQL = getUpdateSQL(entity, statementProperties, primaryKeyProperties);
           statementProperties.addAll(primaryKeyProperties);
           for (final Property.PrimaryKeyProperty primaryKeyProperty : primaryKeyProperties) {
             statementValues.add(entity.getOriginalValue(primaryKeyProperty.getPropertyID()));
@@ -211,6 +215,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       if (!isTransactionOpen()) {
         rollbackQuietly();
       }
+      LOG.debug(createLogMessage(getUser(), updateSQL, statementValues, e, null));
       throw new DatabaseException(getDatabase().getErrorMessage(e));
     }
     finally {
@@ -223,10 +228,11 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     Util.rejectNullValue(criteria, "criteria");
     checkReadOnly(criteria.getEntityID());
     PreparedStatement statement = null;
+    String deleteSQL = null;
     try {
-      final String deleteQuery = getDeleteSQL(criteria);
-      statement = getConnection().prepareStatement(deleteQuery);
-      executePreparedUpdate(statement, deleteQuery, criteria.getValues(), criteria.getValueProperties());
+      deleteSQL = getDeleteSQL(criteria);
+      statement = getConnection().prepareStatement(deleteSQL);
+      executePreparedUpdate(statement, deleteSQL, criteria.getValues(), criteria.getValueProperties());
 
       if (!isTransactionOpen()) {
         commit();
@@ -236,6 +242,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       if (!isTransactionOpen()) {
         rollbackQuietly();
       }
+      LOG.debug(createLogMessage(getUser(), deleteSQL, criteria.getValues(), e, null));
       throw new DatabaseException(getDatabase().getErrorMessage(e));
     }
     finally {
@@ -250,6 +257,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     }
 
     PreparedStatement statement = null;
+    String deleteSQL = null;
     try {
       final Map<String, Collection<Entity.Key>> hashedKeys = EntityUtil.hashKeysByEntityID(entityKeys);
       for (final String entityID : hashedKeys.keySet()) {
@@ -259,9 +267,9 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       for (final Map.Entry<String, Collection<Entity.Key>> hashedKeysEntry : hashedKeys.entrySet()) {
         criteriaKeys.addAll(hashedKeysEntry.getValue());
         final EntitySelectCriteria criteria = EntityCriteriaUtil.selectCriteria(criteriaKeys);
-        final String deleteQuery = "delete from " + Entities.getTableName(hashedKeysEntry.getKey()) + " " + criteria.getWhereClause();
-        statement = getConnection().prepareStatement(deleteQuery);
-        executePreparedUpdate(statement, deleteQuery, criteria.getValues(), criteria.getValueProperties());
+        deleteSQL = "delete from " + Entities.getTableName(hashedKeysEntry.getKey()) + " " + criteria.getWhereClause();
+        statement = getConnection().prepareStatement(deleteSQL);
+        executePreparedUpdate(statement, deleteSQL, criteria.getValues(), criteria.getValueProperties());
         statement.close();
         criteriaKeys.clear();
       }
@@ -273,6 +281,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       if (!isTransactionOpen()) {
         rollbackQuietly();
       }
+      LOG.debug(createLogMessage(getUser(), deleteSQL, entityKeys, e, null));
       throw new DatabaseException(getDatabase().getErrorMessage(e));
     }
     finally {
@@ -330,6 +339,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
 
   /** {@inheritDoc} */
   public List<Object> selectPropertyValues(final String entityID, final String propertyID, final boolean order) throws DatabaseException {
+    String selectSQL = null;
     try {
       if (Entities.getSelectQuery(entityID) != null) {
         throw new UnsupportedOperationException("selectPropertyValues is not implemented for entities with custom select queries");
@@ -337,14 +347,15 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
 
       final Property.ColumnProperty property = (Property.ColumnProperty) Entities.getProperty(entityID, propertyID);
       final String columnName = property.getColumnName();
-      final String sql = createSelectSQL(Entities.getSelectTableName(entityID),
+      selectSQL = createSelectSQL(Entities.getSelectTableName(entityID),
               new StringBuilder("distinct ").append(columnName).toString(),
               new StringBuilder("where ").append(columnName).append(" is not null").toString(), order ? columnName : null);
 
       //noinspection unchecked
-      return query(sql, getPropertyResultPacker(property), -1);
+      return query(selectSQL, getPropertyResultPacker(property), -1);
     }
     catch (SQLException e) {
+      LOG.debug(createLogMessage(getUser(), selectSQL, Arrays.asList(entityID, propertyID, order), e, null));
       throw new DatabaseException(getDatabase().getErrorMessage(e));
     }
   }
@@ -354,13 +365,14 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     Util.rejectNullValue(criteria, "criteria");
     PreparedStatement statement = null;
     ResultSet resultSet = null;
+    String selectSQL = null;
     try {
-      String selectQuery = Entities.getSelectQuery(criteria.getEntityID());
-      selectQuery = createSelectSQL(selectQuery == null ? Entities.getSelectTableName(criteria.getEntityID()) :
-              "(" + selectQuery + " " + criteria.getWhereClause(!selectQuery.toLowerCase().contains("where")) + ") alias", "count(*)", null, null);
-      selectQuery += " " + criteria.getWhereClause(!containsWhereKeyword(selectQuery));
-      statement = getConnection().prepareStatement(selectQuery);
-      resultSet = executePreparedSelect(statement, selectQuery, criteria.getValues(), criteria.getValueProperties());
+      selectSQL = Entities.getSelectQuery(criteria.getEntityID());
+      selectSQL = createSelectSQL(selectSQL == null ? Entities.getSelectTableName(criteria.getEntityID()) :
+              "(" + selectSQL + " " + criteria.getWhereClause(!selectSQL.toLowerCase().contains("where")) + ") alias", "count(*)", null, null);
+      selectSQL += " " + criteria.getWhereClause(!containsWhereKeyword(selectSQL));
+      statement = getConnection().prepareStatement(selectSQL);
+      resultSet = executePreparedSelect(statement, selectSQL, criteria.getValues(), criteria.getValueProperties());
       final List<Integer> result = Databases.INT_PACKER.pack(resultSet, -1);
 
       if (result.isEmpty()) {
@@ -370,6 +382,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       return result.get(0);
     }
     catch (SQLException e) {
+      LOG.debug(createLogMessage(getUser(), selectSQL, criteria.getValues(), e, null));
       throw new DatabaseException(getDatabase().getErrorMessage(e));
     }
     finally {
@@ -572,6 +585,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       return result;
     }
     catch (SQLException e) {
+      LOG.debug(createLogMessage(getUser(), selectSQL, criteria.getValues(), e, null));
       throw new DatabaseException(getDatabase().getErrorMessage(e), selectSQL);
     }
     finally {
@@ -634,6 +648,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       return queryInteger(sql);
     }
     catch (SQLException e) {
+      LOG.debug(createLogMessage(getUser(), sql, Arrays.asList(entityID, idSource, idValueSource), e, null));
       throw new DatabaseException(getDatabase().getErrorMessage(e));
     }
   }

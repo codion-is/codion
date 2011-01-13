@@ -235,10 +235,26 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
 
   /** {@inheritDoc} */
   public final boolean isNullValueSelected() {
+    if (selectedItem instanceof String && nullValueString == null) {
+      return ((String) selectedItem).isEmpty();
+    }
+
     return selectedItem == null && nullValueString != null;
   }
 
   /** {@inheritDoc} */
+  public T getSelectedValue() {
+    if (isNullValueSelected()) {
+      return null;
+    }
+
+    return selectedItem;
+  }
+
+  /**
+   * @return the selected item, N.B. this can include the <code>nullValueString</code>
+   * in case it has been set, {@link #getSelectedValue()} is usually what you want
+   */
   public final Object getSelectedItem() {
     if (selectedItem == null && nullValueString != null) {
       return nullValueString;

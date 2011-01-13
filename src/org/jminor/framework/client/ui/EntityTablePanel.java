@@ -1571,7 +1571,9 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   private static void populatePrimaryKeyMenu(final JComponent rootMenu, final Entity entity, final List<Property.PrimaryKeyProperty> primaryKeyProperties) {
     Util.collate(primaryKeyProperties);
     for (final Property.PrimaryKeyProperty property : primaryKeyProperties) {
-      rootMenu.add(new JMenuItem("[PK] " + property.getColumnName() + ": " + entity.getValueAsString(property.getPropertyID())));
+      final JMenuItem menuItem = new JMenuItem("[PK] " + property.getColumnName() + ": " + entity.getValueAsString(property.getPropertyID()));
+      menuItem.setToolTipText(property.getColumnName());
+      rootMenu.add(menuItem);
     }
   }
 
@@ -1581,6 +1583,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     try {
       Util.collate(fkProperties);
       for (final Property.ForeignKeyProperty property : fkProperties) {
+        final String toolTipText = getReferenceColumnNames(property);
         final boolean fkValueNull = entity.isForeignKeyNull(property);
         if (!fkValueNull) {
           boolean queried = false;
@@ -1598,18 +1601,30 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
                   .append("] ").append(property.getCaption()).append(": ");
           text.append(referencedEntity.toString());
           final JMenu foreignKeyMenu = new JMenu(text.toString());
+          foreignKeyMenu.setToolTipText(toolTipText);
           populateEntityMenu(foreignKeyMenu, entity.getForeignKeyValue(property.getPropertyID()), connectionProvider);
           rootMenu.add(foreignKeyMenu);
         }
         else {
           final StringBuilder text = new StringBuilder("[FK] ").append(property.getCaption()).append(": <null>");
-          rootMenu.add(new JMenuItem(text.toString()));
+          final JMenuItem menuItem = new JMenuItem(text.toString());
+          menuItem.setToolTipText(toolTipText);
+          rootMenu.add(menuItem);
         }
       }
     }
     catch (DatabaseException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  private static String getReferenceColumnNames(final Property.ForeignKeyProperty property) {
+    final List<String> columnNames = new ArrayList<String>(property.getReferenceProperties().size());
+    for (final Property.ColumnProperty referenceProperty : property.getReferenceProperties()) {
+      columnNames.add(referenceProperty.getColumnName());
+    }
+
+    return Util.getArrayContentsAsString(columnNames.toArray(), false);
   }
 
   private static void populateValueMenu(final JComponent rootMenu, final Entity entity, final List<Property> properties) {
@@ -1623,9 +1638,14 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
         final String value = entity.isValueNull(property.getPropertyID()) ? "<null>" : entity.getValueAsString(property.getPropertyID());
         final boolean longValue = value != null && value.length() > maxValueLength;
         final JMenuItem menuItem = new JMenuItem(prefix + property + ": " + (longValue ? value.substring(0, maxValueLength) + "..." : value));
-        if (longValue) {
-          menuItem.setToolTipText(value.length() > 1000 ? value.substring(0, 1000) : value);
+        String toolTipText = "";
+        if (property instanceof Property.ColumnProperty) {
+          toolTipText = ((Property.ColumnProperty) property).getColumnName();
         }
+        if (longValue) {
+          toolTipText += (value.length() > 1000 ? value.substring(0, 1000) : value);
+        }
+        menuItem.setToolTipText(toolTipText);
         rootMenu.add(menuItem);
       }
     }

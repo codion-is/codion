@@ -264,7 +264,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
   public final Entity getEntityCopy(final boolean includePrimaryKeyValues) {
     final Entity copy = (Entity) getEntity().getCopy();
     if (!includePrimaryKeyValues) {
-      copy.getPrimaryKey().clear();
+      copy.clearPrimaryKeyValues();
     }
 
     return copy;

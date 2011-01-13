@@ -10,10 +10,11 @@ import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
-import static org.junit.Assert.*;
 import org.junit.Test;
 
 import java.util.Arrays;
+
+import static org.junit.Assert.*;
 
 public final class DefaultEntityComboBoxModelTest {
 
@@ -62,12 +63,12 @@ public final class DefaultEntityComboBoxModelTest {
 
     final Entity clark = comboBoxModel.getConnectionProvider().getConnection().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "CLARK");
     comboBoxModel.setSelectedItem(clark);
-    assertEquals(clark, comboBoxModel.getSelectedEntity());
+    assertEquals(clark, comboBoxModel.getSelectedValue());
     comboBoxModel.setSelectedItem("test");
-    assertEquals("Selecting a string should not change the selection", clark, comboBoxModel.getSelectedEntity());
+    assertEquals("Selecting a string should not change the selection", clark, comboBoxModel.getSelectedValue());
     comboBoxModel.setSelectedItem(null);
     comboBoxModel.setSelectedEntityByPrimaryKey(clark.getPrimaryKey());
-    assertEquals(clark, comboBoxModel.getSelectedEntity());
+    assertEquals(clark, comboBoxModel.getSelectedValue());
 
     //test foreign key filtering
     final Entity sales = comboBoxModel.getConnectionProvider().getConnection().selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "SALES");

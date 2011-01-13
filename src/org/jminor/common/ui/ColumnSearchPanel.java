@@ -435,10 +435,10 @@ public class ColumnSearchPanel<K> extends JPanel {
   }
 
   private JComboBox initializeSearchTypeComboBox() {
-    final ItemComboBoxModel comboBoxModel = new ItemComboBoxModel();
+    final ItemComboBoxModel<SearchType> comboBoxModel = new ItemComboBoxModel<SearchType>();
     for (final SearchType type : SearchType.values()) {
       if (searchTypes.contains(type)) {
-        comboBoxModel.addElement(new Item<SearchType>(type, type.getCaption()));
+        comboBoxModel.addItem(new Item<SearchType>(type, type.getCaption()));
       }
     }
     final JComboBox comboBox = new SteppedComboBox(comboBoxModel);

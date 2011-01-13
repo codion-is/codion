@@ -138,7 +138,7 @@ public class DefaultForeignKeySearchModel extends DefaultColumnSearchModel<Prope
           if (upperBound instanceof Entity) {
             entityLookupModel.setSelectedEntities(Arrays.asList(((Entity) upperBound)));
           }
-          else {
+          else {//noinspection unchecked
             entityLookupModel.setSelectedEntities((List<Entity>) upperBound);
           }
         }
@@ -151,7 +151,7 @@ public class DefaultForeignKeySearchModel extends DefaultColumnSearchModel<Prope
       /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
         if (!updatingModel) {
-          setUpperBound(entityComboBoxModel.getSelectedEntity());
+          setUpperBound(entityComboBoxModel.getSelectedValue());
         }
       }
     });

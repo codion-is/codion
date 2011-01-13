@@ -16,11 +16,6 @@ import java.util.Collection;
 public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity>, EntityDataProvider {
 
   /**
-   * @return the selected entity or null if none is selected
-   */
-  Entity getSelectedEntity();
-
-  /**
    * @param primaryKey the primary key of the entity to fetch from this model
    * @return the entity with the given key if it is contained in the model, null otherwise
    */

@@ -333,6 +333,15 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
   }
 
   /** {@inheritDoc} */
+  public void clearPrimaryKeyValues() {
+    for (final Property.PrimaryKeyProperty primaryKeyProperty : definition.getPrimaryKeyProperties()) {
+      removeValue(primaryKeyProperty.getPropertyID());
+      removeOriginalValue(primaryKeyProperty.getPropertyID());
+    }
+    this.primaryKey = null;
+  }
+
+  /** {@inheritDoc} */
   public boolean propertyValuesEqual(final Entity entity) {
     Util.rejectNullValue(entity, "entity");
     for (final Property property : definition.getProperties().values()) {
