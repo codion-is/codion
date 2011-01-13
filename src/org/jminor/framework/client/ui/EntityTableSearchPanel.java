@@ -74,7 +74,9 @@ public final class EntityTableSearchPanel extends JPanel {
     add(fullSearchPanel, BorderLayout.CENTER);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * @return the search model this search panel is based on
+   */
   public EntityTableSearchModel getSearchModel() {
     return searchModel;
   }
@@ -128,7 +130,10 @@ public final class EntityTableSearchPanel extends JPanel {
     simpleSearchAction.actionPerformed(null);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * @return the controls provided by this search panel, for toggling the
+   * advanced mode and clearing the search
+   */
   public ControlSet getControls() {
     final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.SEARCH));
     controlSet.setIcon(Images.loadImage(Images.IMG_FILTER_16));

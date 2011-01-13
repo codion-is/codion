@@ -169,7 +169,6 @@ public interface EntityTableSearchModel extends FilterCriteria<Entity>, Refresha
   /**
    * Uses the simpleSearchText as a basis for a wildcard search on all String based search models,
    * or the search models representing the search properties for the underlying entity
-   * @see
    * @see org.jminor.framework.domain.Entities#getSearchProperties(String)
    */
   void performSimpleSearch();
