@@ -6,6 +6,7 @@ package org.jminor.common.ui.valuemap;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
 
+import javax.swing.JComponent;
 import javax.swing.text.JTextComponent;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -51,14 +52,66 @@ public final class ValueLinkValidators {
     }
   }
 
-  private static class TextValidator<K> {
+  private static abstract class AbstractValidator<K> {
 
-    private final TextValueLink<K> link;
-    private final JTextComponent textComponent;
+    private final AbstractValueMapLink<K, Object> link;
+    private final JComponent component;
     private final ValueChangeMapEditModel<K, Object> editModel;
+    private final String defaultToolTip;
+
+    private AbstractValidator(final AbstractValueMapLink<K, Object> link, final JComponent component,
+                              final ValueChangeMapEditModel<K, Object> editModel,
+                              final String defaultToolTip) {
+      this.link = link;
+      this.component = component;
+      this.editModel = editModel;
+      this.defaultToolTip = defaultToolTip;
+      editModel.addValueListener(link.getKey(), new ActionListener() {
+        /** {@inheritDoc} */
+        public void actionPerformed(final ActionEvent e) {
+          updateValidityInfo();
+        }
+      });
+    }
+
+    /**
+     * @return the text component associated with the value being validated
+     */
+    protected final JComponent getComponent() {
+      return component;
+    }
+
+    /**
+     * @return the underlying value link
+     */
+    protected final AbstractValueMapLink<K, Object> getValueLink() {
+      return link;
+    }
+
+    /**
+     * @return the underlying edit model
+     */
+    protected final ValueChangeMapEditModel<K, Object> getEditModel() {
+      return editModel;
+    }
+
+    /**
+     * @return the default tooltip to show when the field value is valid
+     */
+    protected final String getDefaultToolTip() {
+      return defaultToolTip;
+    }
+
+    /**
+     * Updates the underlying component indicating the validity of the value being shown
+     */
+    protected abstract void updateValidityInfo();
+  }
+
+  private static class TextValidator<K> extends AbstractValidator<K> {
+
     private final Color validBackgroundColor;
     private final Color invalidBackgroundColor;
-    private final String defaultToolTip;
 
     /**
      * Instantiates a new ValidatorImpl
@@ -81,49 +134,12 @@ public final class ValueLinkValidators {
      */
     protected TextValidator(final TextValueLink<K> link, final JTextComponent textComponent, final ValueChangeMapEditModel<K, Object> editModel,
                             final Color validBackgroundColor, final Color invalidBackgroundColor, final String defaultToolTip) {
-      this.link = link;
-      this.defaultToolTip = defaultToolTip;
-      this.editModel = editModel;
-      this.invalidBackgroundColor = invalidBackgroundColor;
-      this.textComponent = textComponent;
-      this.validBackgroundColor = validBackgroundColor;
+      super(link, textComponent, editModel, defaultToolTip);
       if (invalidBackgroundColor.equals(validBackgroundColor)) {
         throw new IllegalArgumentException("Invalid background color is the same as the current text component background");
       }
-      editModel.addValueListener(link.getKey(), new ActionListener() {
-        /** {@inheritDoc} */
-        public void actionPerformed(final ActionEvent e) {
-          updateValidityInfo();
-        }
-      });
-    }
-
-    /**
-     * @return the text component associated with the value being validated
-     */
-    protected final JTextComponent getTextComponent() {
-      return textComponent;
-    }
-
-    /**
-     * @return the underlying value link
-     */
-    protected final TextValueLink<K> getValueLink() {
-      return link;
-    }
-
-    /**
-     * @return the underlying edit model
-     */
-    protected final ValueChangeMapEditModel<K, Object> getEditModel() {
-      return editModel;
-    }
-
-    /**
-     * @return the default tooltip to show when the field value is valid
-     */
-    protected final String getDefaultToolTip() {
-      return defaultToolTip;
+      this.validBackgroundColor = validBackgroundColor;
+      this.invalidBackgroundColor = invalidBackgroundColor;
     }
 
     /**
@@ -141,11 +157,12 @@ public final class ValueLinkValidators {
     }
 
     /** {@inheritDoc} */
-    void updateValidityInfo() {
-      final String validationMessage = link.getValidationMessage(editModel);
-      textComponent.setBackground(validationMessage == null ? validBackgroundColor : invalidBackgroundColor);
-      textComponent.setToolTipText(validationMessage == null ? defaultToolTip :
-              (!Util.nullOrEmpty(defaultToolTip) ? defaultToolTip + ": " : "") + validationMessage);
+    @Override
+    protected void updateValidityInfo() {
+      final String validationMessage = getValueLink().getValidationMessage(getEditModel());
+      getComponent().setBackground(validationMessage == null ? validBackgroundColor : invalidBackgroundColor);
+      getComponent().setToolTipText(validationMessage == null ? getDefaultToolTip() :
+              (!Util.nullOrEmpty(getDefaultToolTip()) ? getDefaultToolTip() + ": " : "") + validationMessage);
     }
   }
 
@@ -161,9 +178,9 @@ public final class ValueLinkValidators {
 
     /** {@inheritDoc} */
     @Override
-    void updateValidityInfo() {
-      final JTextComponent textComponent = getTextComponent();
-      final TextValueLink<K> valueLink = getValueLink();
+    protected void updateValidityInfo() {
+      final JTextComponent textComponent = (JTextComponent) getComponent();
+      final TextValueLink<K> valueLink = (TextValueLink<K>) getValueLink();
       final boolean stringEqualsMask = textComponent.getText().equals(maskString);
       final boolean validInput = !valueLink.isModelValueNull() || (stringEqualsMask && valueLink.isNullable());
       final String validationMessage = valueLink.getValidationMessage(getEditModel());
@@ -178,7 +195,7 @@ public final class ValueLinkValidators {
       }
 
       final String defaultToolTip = getDefaultToolTip();
-      String tooltip;
+      final String tooltip;
       if (validationMessage == null) {
         tooltip = defaultToolTip;
       }
@@ -187,7 +204,7 @@ public final class ValueLinkValidators {
           tooltip = validationMessage;
         }
         else {
-          tooltip = defaultToolTip + ": "  + validationMessage;
+          tooltip = validationMessage + ": "  + defaultToolTip;
         }
       }
 

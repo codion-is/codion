@@ -7,7 +7,6 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.FilteredTableModel;
 import org.jminor.common.model.SortingDirective;
-import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.reports.ReportDataWrapper;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.domain.Entity;
@@ -170,25 +169,19 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
   String getStatusMessage();
 
   /**
-   * Returns the maximum number of records to fetch via the underlying query,
-   * by default this returns -1, meaning all records should be fetched
+   * Returns the maximum number of records to fetch via the underlying query the next time
+   * this table model is refreshed, a value of -1 means all records should be fetched
    * @return the fetch count
    */
   int getFetchCount();
 
   /**
-   * Sets the maximum number of records to fetch via the underlying query,
-   * a value of -1 means all records should be fetched
+   * Sets the maximum number of records to fetch via the underlying query the next time
+   * this table model is refreshed, a value of -1 means all records should be fetched
    * @param fetchCount the fetch count
    * @return this table model
    */
   EntityTableModel setFetchCount(final int fetchCount);
-
-  /**
-   * @return a Map containing all entities which depend on the selected entities,
-   * where the keys are entityIDs and the value is an array of entities of that type
-   */
-  Map<String, Collection<Entity>> getSelectionDependencies();
 
   /**
    * Updates the given Entities. If the entities are unmodified or the list is empty
@@ -220,6 +213,19 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
    * @return this table model instance
    */
   EntityTableModel setQueryCriteriaRequired(final boolean value);
+
+  /**
+   * @return true if items that are deleted via the associated edit model
+   * should be automatically removed from this table model
+   */
+  boolean isRemoveItemsOnDelete();
+
+  /**
+   * @param value true if items that are deleted via the associated edit model
+   * should be automatically removed from this table model
+   * @return this table model instance
+   */
+  EntityTableModel setRemoveItemsOnDelete(final boolean value);
 
   /**
    * Finds entities according to the values in <code>keys</code>
@@ -302,10 +308,4 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
    * @return the sorting directive assigned to the given property column
    */
   SortingDirective getSortingDirective(final String propertyID);
-
-  /**
-   * @return the state used to determine if batch updating of entities should be enabled
-   * @see #isBatchUpdateAllowed()
-   */
-  StateObserver getBatchUpdateAllowedObserver();
 }

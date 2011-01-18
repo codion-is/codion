@@ -4,9 +4,12 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.db.criteria.Criteria;
+import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.model.CancelException;
 import org.jminor.common.model.ColumnSearchModel;
 import org.jminor.common.model.reports.ReportDataWrapper;
 import org.jminor.framework.db.EntityConnectionImplTest;
+import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityTestDomain;
@@ -33,6 +36,65 @@ public final class DefaultEntityTableModelTest {
   static {
     EntityTestDomain.init();
     testEntities = initTestEntities(new Entity[5]);
+  }
+
+  @Test
+  public void setSelectedByPrimaryKeys() {
+    final DefaultEntityTableModel tableModel = new DefaultEntityTableModel(EmpDept.T_EMPLOYEE, testModel.getConnectionProvider());
+    tableModel.refresh();
+
+    final Entity.Key pk1 = Entities.key(EmpDept.T_EMPLOYEE);
+    pk1.setValue(EmpDept.EMPLOYEE_ID, 1);
+    final Entity.Key pk2 = Entities.key(EmpDept.T_EMPLOYEE);
+    pk2.setValue(EmpDept.EMPLOYEE_ID, 2);
+
+    tableModel.setSelectedByPrimaryKeys(Arrays.asList(pk1));
+    final Entity selectedPK1 = tableModel.getSelectedItem();
+    assertEquals(pk1, selectedPK1.getPrimaryKey());
+    assertEquals(1, tableModel.getSelectionCount());
+
+    tableModel.setSelectedByPrimaryKeys(Arrays.asList(pk2));
+    final Entity selectedPK2 = tableModel.getSelectedItem();
+    assertEquals(pk2, selectedPK2.getPrimaryKey());
+    assertEquals(1, tableModel.getSelectionCount());
+
+    final List<Entity.Key> keys = Arrays.asList(pk1, pk2);
+    tableModel.setSelectedByPrimaryKeys(keys);
+    final List<Entity> selectedItems = tableModel.getSelectedItems();
+    for (final Entity selected : selectedItems) {
+      assertTrue(keys.contains(selected.getPrimaryKey()));
+    }
+    assertEquals(2, tableModel.getSelectionCount());
+  }
+
+  @Test
+  public void removeOnDelete() throws CancelException, DatabaseException {
+    final DefaultEntityTableModel tableModel = new DefaultEntityTableModel(EmpDept.T_EMPLOYEE, testModel.getConnectionProvider());
+    tableModel.setEditModel(new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, testModel.getConnectionProvider()));
+    tableModel.refresh();
+
+    final Entity.Key pk1 = Entities.key(EmpDept.T_EMPLOYEE);
+    pk1.setValue(EmpDept.EMPLOYEE_ID, 1);
+    final Entity.Key pk2 = Entities.key(EmpDept.T_EMPLOYEE);
+    pk2.setValue(EmpDept.EMPLOYEE_ID, 2);
+    try {
+      tableModel.getConnectionProvider().getConnection().beginTransaction();
+      tableModel.setSelectedByPrimaryKeys(Arrays.asList(pk1));
+      tableModel.setSelectedItemIndex(0);
+      Entity selected = tableModel.getSelectedItem();
+      tableModel.setRemoveItemsOnDelete(true);
+      tableModel.deleteSelected();
+      assertFalse(tableModel.contains(selected, false));
+
+      tableModel.setSelectedByPrimaryKeys(Arrays.asList(pk2));
+      selected = tableModel.getSelectedItem();
+      tableModel.setRemoveItemsOnDelete(false);
+      tableModel.deleteSelected();
+      assertTrue(tableModel.contains(selected, false));
+    }
+    finally {
+      tableModel.getConnectionProvider().getConnection().rollbackTransaction();
+    }
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -132,7 +194,6 @@ public final class DefaultEntityTableModelTest {
     assertEquals(10, testModel.getFetchCount());
     assertFalse(testModel.isDetailModel());
     assertNotNull(testModel.getEditModel());
-    assertNotNull(testModel.getBatchUpdateAllowedObserver());
     assertFalse(testModel.isReadOnly());
     testModel.setBatchUpdateAllowed(true).setQueryConfigurationAllowed(true);
     assertTrue(testModel.isBatchUpdateAllowed());

@@ -22,6 +22,16 @@ import static org.junit.Assert.*;
 
 public class EntityImplTest {
 
+  private final int detailId = 1;
+  private final int detailInt = 2;
+  private final double detailDouble = 1.2;
+  private final String detailString = "string";
+  private final Date detailDate = new Date();
+  private final Timestamp detailTimestamp = new Timestamp(new Date().getTime());
+  private final Boolean detailBoolean = true;
+
+  private final String masterName = "master";
+
   public static Entity getDetailEntity(final int id, final Integer intValue, final Double doubleValue,
                                        final String stringValue, final Date dateValue, final Timestamp timestampValue,
                                        final Boolean booleanValue, final Entity entityValue) {
@@ -72,19 +82,10 @@ public class EntityImplTest {
 
   @Test
   public void entity() throws Exception {
-    final int detailId = 1;
-    final int detailInt = 2;
-    final double detailDouble = 1.2;
-    final String detailString = "string";
-    final Date detailDate = new Date();
-    final Timestamp detailTimestamp = new Timestamp(new Date().getTime());
-    final Boolean detailBoolean = true;
+    Entity referencedEntityValue = Entities.entity(EntityTestDomain.T_MASTER);
 
     final int masterId = 2;
-    final String masterName = "master";
     final int masterCode = 7;
-
-    Entity referencedEntityValue = Entities.entity(EntityTestDomain.T_MASTER);
 
     referencedEntityValue.setValue(EntityTestDomain.MASTER_ID, masterId);
     referencedEntityValue.setValue(EntityTestDomain.MASTER_NAME, masterName);
@@ -205,7 +206,7 @@ public class EntityImplTest {
     assertTrue(test2.isModified());
     assertTrue(test2.getCopy().isModified());
 
-    //test propogate entity reference/denormalized values
+    //test propagate entity reference/denormalized values
     testEntity.setValue(EntityTestDomain.DETAIL_ENTITY_FK, null);
     assertTrue(testEntity.isValueNull(EntityTestDomain.DETAIL_ENTITY_ID));
     assertTrue(testEntity.isValueNull(EntityTestDomain.DETAIL_MASTER_NAME));
@@ -224,10 +225,29 @@ public class EntityImplTest {
     testEntity.setValue(EntityTestDomain.DETAIL_ENTITY_FK, referencedEntityValue);
     assertEquals(testEntity.getValue(EntityTestDomain.DETAIL_MASTER_CODE),
             referencedEntityValue.getValue(EntityTestDomain.MASTER_CODE));
+  }
 
+  @Test
+  public void clear() {
+    final Entity referencedEntityValue = Entities.entity(EntityTestDomain.T_MASTER);
+    Entity testEntity = getDetailEntity(detailId, detailInt, detailDouble,
+            detailString, detailDate, detailTimestamp, detailBoolean, referencedEntityValue);
     testEntity.clear();
     assertTrue(testEntity.getPrimaryKey().isNull());
     assertTrue(testEntity.isPrimaryKeyNull());
+    assertFalse(testEntity.containsValue(EntityTestDomain.DETAIL_DATE));
+    assertFalse(testEntity.containsValue(EntityTestDomain.DETAIL_STRING));
+    assertFalse(testEntity.containsValue(EntityTestDomain.DETAIL_BOOLEAN));
+
+    testEntity = getDetailEntity(detailId, detailInt, detailDouble,
+            detailString, detailDate, detailTimestamp, detailBoolean, referencedEntityValue);
+
+    testEntity.clearPrimaryKeyValues();
+    assertTrue(testEntity.getPrimaryKey().isNull());
+    assertTrue(testEntity.isPrimaryKeyNull());
+    assertTrue(testEntity.containsValue(EntityTestDomain.DETAIL_DATE));
+    assertTrue(testEntity.containsValue(EntityTestDomain.DETAIL_STRING));
+    assertTrue(testEntity.containsValue(EntityTestDomain.DETAIL_BOOLEAN));
   }
 
   @Test

@@ -89,17 +89,8 @@ public final class EntityCriteriaUtil {
   public static EntitySelectCriteria selectCriteria(final String entityID, final String propertyID,
                                                     final SearchType searchType, final String orderByClause,
                                                     final int fetchCount, final Object... values) {
-
-    final Property property = Entities.getProperty(entityID, propertyID);
-    final Criteria<Property.ColumnProperty> criteria;
-    if (property instanceof Property.ForeignKeyProperty) {
-      criteria = new ForeignKeyCriteria((Property.ForeignKeyProperty) property, searchType, values);
-    }
-    else {
-      criteria = new PropertyCriteria((Property.ColumnProperty) property, searchType, values);
-    }
-
-    return new DefaultEntitySelectCriteria(entityID, criteria, orderByClause, fetchCount);
+    return new DefaultEntitySelectCriteria(entityID, createPropertyCriteria(entityID, propertyID, searchType, values),
+            orderByClause, fetchCount);
   }
 
   /**
@@ -207,8 +198,7 @@ public final class EntityCriteriaUtil {
    */
   public static EntityCriteria criteria(final String entityID, final String propertyID,
                                         final SearchType searchType, final Object... values) {
-    return new DefaultEntityCriteria(entityID, new PropertyCriteria((Property.ColumnProperty) Entities.getProperty(entityID, propertyID),
-            searchType, values));
+    return new DefaultEntityCriteria(entityID, createPropertyCriteria(entityID, propertyID, searchType, values));
   }
 
   /**
@@ -301,6 +291,20 @@ public final class EntityCriteriaUtil {
    */
   public static EntityCriteria criteria(final String entityID, final Criteria<Property.ColumnProperty> criteria) {
     return new DefaultEntityCriteria(entityID, criteria);
+  }
+
+  private static Criteria<Property.ColumnProperty> createPropertyCriteria(final String entityID, final String propertyID,
+                                                                          final SearchType searchType, final Object[] values) {
+    final Property property = Entities.getProperty(entityID, propertyID);
+    final Criteria<Property.ColumnProperty> criteria;
+    if (property instanceof Property.ForeignKeyProperty) {
+      criteria = new ForeignKeyCriteria((Property.ForeignKeyProperty) property, searchType, values);
+    }
+    else {
+      criteria = new PropertyCriteria((Property.ColumnProperty) property, searchType, values);
+    }
+
+    return criteria;
   }
 
   private static class DefaultEntityCriteria implements EntityCriteria, Serializable {

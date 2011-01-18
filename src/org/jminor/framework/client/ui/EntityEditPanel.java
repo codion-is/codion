@@ -266,18 +266,23 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
 
   /**
    * Initializes the control panel, that is, the panel containing buttons for editing entities (Insert, Update...)
-   * @param horizontal true if the buttons should be layed out horizontally, false otherwise
-   * @return the control panel
+   * @param horizontal true if the buttons should be laid out horizontally, false otherwise
+   * @return the control panel, null if no controls are defined
+   * @see #getControlPanelControlSet()
    */
   public final JPanel createControlPanel(final boolean horizontal) {
+    final ControlSet controlPanelControlSet = getControlPanelControlSet();
+    if (controlPanelControlSet.size() == 0) {
+      return null;
+    }
     if (horizontal) {
       final JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
-      panel.add(ControlProvider.createHorizontalButtonPanel(getControlPanelControlSet()));
+      panel.add(ControlProvider.createHorizontalButtonPanel(controlPanelControlSet));
       return panel;
     }
     else {
       final JPanel panel = new JPanel(new BorderLayout(5, 5));
-      panel.add(ControlProvider.createVerticalButtonPanel(getControlPanelControlSet()), BorderLayout.NORTH);
+      panel.add(ControlProvider.createVerticalButtonPanel(controlPanelControlSet), BorderLayout.NORTH);
       return panel;
     }
   }
@@ -285,10 +290,15 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   /**
    * Initializes the control toolbar, that is, the toolbar containing buttons for editing entities (Insert, Update...)
    * @param orientation the orientation
-   * @return the control toolbar
+   * @return the control toolbar, null if no controls are defined
+   * @see #getControlPanelControlSet()
    */
   public final JToolBar getControlToolBar(final int orientation) {
-    return ControlProvider.createToolbar(getControlPanelControlSet(), orientation);
+    final ControlSet controlPanelControlSet = getControlPanelControlSet();
+    if (controlPanelControlSet.size() == 0) {
+      return null;
+    }
+    return ControlProvider.createToolbar(controlPanelControlSet, orientation);
   }
 
   /**

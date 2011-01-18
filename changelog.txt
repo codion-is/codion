@@ -2358,3 +2358,7 @@
   DefaultFilteredComboBoxModel.isNullValueSelected() now regards an empty string to be null
   Entity.clearPrimaryKeyValues() added
   EntityTablePanel, added column info tooltips to entity popup menu
+  EntityTableModel.removeItemsOnDelete field added
+  EntityEditPanel.createControlPanel() and createControlToolBar() now return null if no controls are defined
+  ValueLinkValidators, some refactoring
+  EntityTableModel.getSelectionDependencies() removed

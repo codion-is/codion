@@ -12,7 +12,7 @@ import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.Serializer;
-import org.jminor.common.model.State;
+import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.States;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.exception.ValidationException;
@@ -494,9 +494,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
             || !getEntityTableModel().isBatchUpdateAllowed()) {
       throw new IllegalStateException("Table model is read only or does not allow updates");
     }
-    final State enabled = States.aggregateState(Conjunction.AND,
-            getEntityTableModel().getBatchUpdateAllowedObserver(),
-            getEntityTableModel().getSelectionEmptyObserver().getReversedObserver());
+    final StateObserver enabled = getEntityTableModel().getSelectionEmptyObserver().getReversedObserver();
     final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED),
             (char) 0, Images.loadImage("Modify16.gif"), enabled);
     controlSet.setDescription(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_TIP));
@@ -625,16 +623,21 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
    */
   public final void viewSelectionDependencies() throws DatabaseException {
+    if (getTableModel().isSelectionEmpty()) {
+      return;
+    }
+
     final Map<String, Collection<Entity>> dependencies;
+    final EntityTableModel tableModel = getEntityTableModel();
     try {
       UiUtil.setWaitCursor(true, this);
-      dependencies = getEntityTableModel().getSelectionDependencies();
+      dependencies = tableModel.getConnectionProvider().getConnection().selectDependentEntities(tableModel.getSelectedItems());
     }
     finally {
       UiUtil.setWaitCursor(false, this);
     }
     if (!dependencies.isEmpty()) {
-      showDependenciesDialog(dependencies, getEntityTableModel().getConnectionProvider(), this);
+      showDependenciesDialog(dependencies, tableModel.getConnectionProvider(), this);
     }
     else {
       JOptionPane.showMessageDialog(this, FrameworkMessages.get(FrameworkMessages.NONE_FOUND),

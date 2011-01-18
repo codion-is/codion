@@ -9,9 +9,6 @@ import org.jminor.common.model.AbstractFilteredTableModel;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.SortingDirective;
-import org.jminor.common.model.State;
-import org.jminor.common.model.StateObserver;
-import org.jminor.common.model.States;
 import org.jminor.common.model.reports.ReportDataWrapper;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.client.model.event.DeleteEvent;
@@ -111,7 +108,15 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
    */
   private boolean queryCriteriaRequired = true;
 
-  private final State stBatchUpdateAllowed = States.state(true);
+  /**
+   * If true then items deleted via the edit model are removed from this table model
+   */
+  private boolean removeItemsOnDelete = true;
+
+  /**
+   * A State indicating whether or not multiple entities can be updated at a time
+   */
+  private boolean batchUpdateAllowed = true;
 
   private ReportDataWrapper reportDataSource;
 
@@ -218,6 +223,17 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   /** {@inheritDoc} */
+  public boolean isRemoveItemsOnDelete() {
+    return removeItemsOnDelete;
+  }
+
+  /** {@inheritDoc} */
+  public EntityTableModel setRemoveItemsOnDelete(final boolean value) {
+    this.removeItemsOnDelete = value;
+    return this;
+  }
+
+  /** {@inheritDoc} */
   public final String getEntityID() {
     return entityID;
   }
@@ -242,18 +258,13 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   /** {@inheritDoc} */
   public final boolean isBatchUpdateAllowed() {
-    return stBatchUpdateAllowed.isActive();
+    return batchUpdateAllowed;
   }
 
   /** {@inheritDoc} */
   public final EntityTableModel setBatchUpdateAllowed(final boolean batchUpdateAllowed) {
-    stBatchUpdateAllowed.setActive(batchUpdateAllowed);
+    this.batchUpdateAllowed = batchUpdateAllowed;
     return this;
-  }
-
-  /** {@inheritDoc} */
-  public final StateObserver getBatchUpdateAllowedObserver() {
-    return stBatchUpdateAllowed.getObserver();
   }
 
   /** {@inheritDoc} */
@@ -481,16 +492,6 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   /** {@inheritDoc} */
-  public final Map<String, Collection<Entity>> getSelectionDependencies() {
-    try {
-      return connectionProvider.getConnection().selectDependentEntities(getSelectedItems());
-    }
-    catch (DatabaseException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  /** {@inheritDoc} */
   public final PropertySummaryModel getPropertySummaryModel(final String propertyID) {
     return getPropertySummaryModel(Entities.getProperty(entityID, propertyID));
   }
@@ -664,7 +665,9 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   private void handleDeleteInternal(final DeleteEvent e) {
-    removeItems(e.getDeletedEntities());
+    if (removeItemsOnDelete) {
+      removeItems(e.getDeletedEntities());
+    }
     handleDelete(e);
   }
 
