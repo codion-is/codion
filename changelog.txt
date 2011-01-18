@@ -2362,3 +2362,4 @@
   EntityEditPanel.createControlPanel() and createControlToolBar() now return null if no controls are defined
   ValueLinkValidators, some refactoring
   EntityTableModel.getSelectionDependencies() removed
+  EntityEditPanel, controlKeys constructor parameter handled better

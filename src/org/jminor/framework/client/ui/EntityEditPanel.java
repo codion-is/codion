@@ -69,11 +69,11 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   public static final int CONFIRM_TYPE_DELETE = 3;
 
   //Control codes
-  public static final String INSERT = "insert";
-  public static final String UPDATE = "update";
-  public static final String DELETE = "delete";
-  public static final String REFRESH = "refresh";
-  public static final String CLEAR = "clear";
+  public static final String INSERT = "EntityEditPanel.insert";
+  public static final String UPDATE = "EntityEditPanel.update";
+  public static final String DELETE = "EntityEditPanel.delete";
+  public static final String REFRESH = "EntityEditPanel.refresh";
+  public static final String CLEAR = "EntityEditPanel.clear";
 
   private static final String ALT_PREFIX = " (ALT-";
 
@@ -99,13 +99,14 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @param editModel the EntityEditModel instance to base this EntityEditPanel on
    */
   public EntityEditPanel(final EntityEditModel editModel) {
-    this(editModel, new String[0]);
+    this(editModel, INSERT, UPDATE, DELETE, CLEAR, REFRESH);
   }
 
   /**
    * Instantiates a new EntityEditPanel based on the provided EntityEditModel
    * @param editModel the EntityEditModel instance to base this EntityEditPanel on
-   * @param controlKeys if specified only controls with those keys are initialized
+   * @param controlKeys if specified only controls with those keys are initialized,
+   * an empty String array will result in no controls being initialized
    */
   public EntityEditPanel(final EntityEditModel editModel, final String... controlKeys) {
     super(editModel);
@@ -551,41 +552,6 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   }
 
   /**
-   * Initializes the controls available to this EntityEditPanel by mapping them to their respective
-   * control codes (EntityEditPanel.INSERT, UPDATE etc) via the <code>setControl(String, Control) method,
-   * these can then be retrieved via the <code>getControl(String)</code> method.
-   * @param controlKeys if specified only controls with those keys are initialized, a null value results
-   * in no controls
-   * @see org.jminor.common.ui.control.Control
-   * @see #setControl(String, org.jminor.common.ui.control.Control)
-   * @see #getControl(String)
-   */
-  private void setupControls(final String... controlKeys) {
-    if (controlKeys == null) {
-      return;
-    }
-    final Collection<String> keys = Arrays.asList(controlKeys);
-    final boolean noKeys = keys.isEmpty();
-    if (!getEntityEditModel().isReadOnly()) {
-      if (getEntityEditModel().isInsertAllowed() && (noKeys || keys.contains(INSERT))) {
-        setControl(INSERT, getInsertControl());
-      }
-      if (getEntityEditModel().isUpdateAllowed() && (noKeys || keys.contains(UPDATE))) {
-        setControl(UPDATE, getUpdateControl());
-      }
-      if (getEntityEditModel().isDeleteAllowed() && (noKeys || keys.contains(DELETE))) {
-        setControl(DELETE, getDeleteControl());
-      }
-    }
-    if ((noKeys || keys.contains(CLEAR))) {
-      setControl(CLEAR, getClearControl());
-    }
-    if ((noKeys || keys.contains(REFRESH))) {
-      setControl(REFRESH, getRefreshControl());
-    }
-  }
-
-  /**
    * Associates <code>control</code> with <code>controlCode</code>
    * @param controlCode the control code
    * @param control the control to associate with <code>controlCode</code>
@@ -596,6 +562,39 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
     }
     else {
       controlMap.put(controlCode, control);
+    }
+  }
+
+  /**
+   * Initializes the controls available to this EntityEditPanel by mapping them to their respective
+   * control codes (EntityEditPanel.INSERT, UPDATE etc) via the <code>setControl(String, Control) method,
+   * these can then be retrieved via the <code>getControl(String)</code> method.
+   * @param controlKeys the control keys for which controls should be initialized
+   * @see org.jminor.common.ui.control.Control
+   * @see #setControl(String, org.jminor.common.ui.control.Control)
+   * @see #getControl(String)
+   */
+  private void setupControls(final String... controlKeys) {
+    final Collection<String> keys = Arrays.asList(controlKeys);
+    if (keys.isEmpty()) {
+      return;
+    }
+    if (!getEntityEditModel().isReadOnly()) {
+      if (getEntityEditModel().isInsertAllowed() && keys.contains(INSERT)) {
+        setControl(INSERT, getInsertControl());
+      }
+      if (getEntityEditModel().isUpdateAllowed() && keys.contains(UPDATE)) {
+        setControl(UPDATE, getUpdateControl());
+      }
+      if (getEntityEditModel().isDeleteAllowed() && keys.contains(DELETE)) {
+        setControl(DELETE, getDeleteControl());
+      }
+    }
+    if (keys.contains(CLEAR)) {
+      setControl(CLEAR, getClearControl());
+    }
+    if (keys.contains(REFRESH)) {
+      setControl(REFRESH, getRefreshControl());
     }
   }
 
