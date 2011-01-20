@@ -23,6 +23,7 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * A default DatabaseConnection implementation, which wraps a standard JDBC Connection object.
@@ -38,7 +39,6 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
 
   private final User user;
   private final Database database;
-  private final boolean supportsIsValid;
 
   private Connection connection;
   private Statement checkConnectionStatement;
@@ -60,26 +60,29 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
    * @throws ClassNotFoundException in case the database driver was not found
    */
   public DatabaseConnectionImpl(final Database database, final User user) throws ClassNotFoundException, DatabaseException {
-    this(database, user, database.createConnection(user));
+    Util.rejectNullValue(database, "database");
+    Util.rejectNullValue(user, "user");
+    this.database = database;
+    this.user = user;
+    setConnection(database.createConnection(user));
   }
 
   /**
    * Constructs a new DatabaseConnectionImpl instance, based on the given Connection object.
    * NB. auto commit is disabled on the Connection that is provided.
    * @param database the database
-   * @param user the user for the db-connection
    * @param connection the Connection object to base this DatabaseConnectionImpl on
+   * @throws IllegalArgumentException in case the given connection is invalid or disconnected
+   * @throws DatabaseException in case the validation statement creation fails
    */
-  public DatabaseConnectionImpl(final Database database, final User user, final Connection connection) {
+  public DatabaseConnectionImpl(final Database database, final Connection connection) throws DatabaseException {
     Util.rejectNullValue(database, "database");
-    Util.rejectNullValue(user, "user");
     this.database = database;
-    this.supportsIsValid = database.supportsIsValid();
-    this.user = user;
-    setConnection(connection);
-    if (!isValid()) {
+    this.user = getUser(connection);
+    if (!isValid(database, connection, null)) {
       throw new IllegalArgumentException("Connection invalid during instantiation");
     }
+    setConnection(connection);
   }
 
   /** {@inheritDoc} */
@@ -125,13 +128,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
 
   /** {@inheritDoc} */
   public final boolean isValid() {
-    try {
-      return connection != null && supportsIsValid ? connection.isValid(0) : checkConnection();
-    }
-    catch (SQLException e) {
-      LOG.error(e.getMessage(), e);
-      return false;
-    }
+    return isValid(database, connection, checkConnectionStatement);
   }
 
   /** {@inheritDoc} */
@@ -437,7 +434,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
     try {
       statement = connection.createStatement();
       statement.executeUpdate(sql);
-      LOG.debug(sql + LOG_COMMENT_PREFIX + Long.toString(System.currentTimeMillis()-time) + MS_LOG_POSTFIX);
+      LOG.debug(sql + LOG_COMMENT_PREFIX + Long.toString(System.currentTimeMillis() - time) + MS_LOG_POSTFIX);
     }
     catch (SQLException e) {
       exception = e;
@@ -501,7 +498,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
         LOG.debug(sql);
       }
       statement.executeBatch();
-      LOG.debug("batch" + LOG_COMMENT_PREFIX + Long.toString(System.currentTimeMillis()-time) + MS_LOG_POSTFIX);
+      LOG.debug("batch" + LOG_COMMENT_PREFIX + Long.toString(System.currentTimeMillis() - time) + MS_LOG_POSTFIX);
     }
     catch (SQLException e) {
       exception = e;
@@ -529,7 +526,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
     return methodLogger;
   }
 
-  private void setConnection(final Connection connection) {
+  private void setConnection(final Connection connection) throws DatabaseException {
     if (isConnected()) {
       throw new IllegalStateException("Already connected");
     }
@@ -541,29 +538,83 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
     catch (SQLException e) {
       throw new RuntimeException("Unable to set auto commit on new connection", e);
     }
-  }
-
-  private boolean checkConnection() throws SQLException {
-    if (connection != null) {
-      ResultSet rs = null;
+    if (!database.supportsIsValid()) {
       try {
-        if (checkConnectionStatement == null) {
-          checkConnectionStatement = connection.createStatement();
-        }
-        rs = checkConnectionStatement.executeQuery(database.getCheckConnectionQuery());
-        return true;
+        this.checkConnectionStatement = connection.createStatement();
       }
-      finally {
-        try {
-          if (rs != null) {
-            rs.close();
-          }
-        }
-        catch (Exception e) {/**/}
+      catch (SQLException e) {
+        throw new DatabaseException(e, "", "Unable to create a statement for validity checking");
       }
     }
+  }
 
-    return false;
+  private static boolean isValid(final Database database, final Connection connection, final Statement checkConnectionStatement) {
+    if (connection == null) {
+      return false;
+    }
+    Statement temporaryStatement = null;
+    try {
+      if (database.supportsIsValid()) {
+        return connection.isValid(0);
+      }
+
+      if (checkConnectionStatement == null) {
+        temporaryStatement = connection.createStatement();
+      }
+
+      return checkConnection(database, checkConnectionStatement == null ? temporaryStatement : checkConnectionStatement);
+    }
+    catch (SQLException e) {
+      LOG.error(e.getMessage(), e);
+      return false;
+    }
+    finally {
+      if (temporaryStatement != null) {
+        Util.closeSilently(temporaryStatement);
+      }
+    }
+  }
+
+  private static boolean checkConnection(final Database database, final Statement checkConnectionStatement) {
+    ResultSet rs = null;
+    try {
+      rs = checkConnectionStatement.executeQuery(database.getCheckConnectionQuery());
+      return true;
+    }
+    catch (SQLException e) {
+      return false;
+    }
+    finally {
+      try {
+        if (rs != null) {
+          rs.close();
+        }
+      }
+      catch (Exception e) {/**/}
+    }
+  }
+
+  /**
+   * Tries to fetch the user info from the given connection, via the getClientInfo() api,
+   * if the connection does not provide any user info the username returned is simply
+   * a string representation of the connection object.
+   * @param connection the connection
+   * @return a user based on the information gleamed from the given connection
+   */
+  private static User getUser(final Connection connection) {
+    String username = connection.toString();
+    try {
+      final Properties properties = connection.getClientInfo();
+      final String user = properties.getProperty(Database.USER_PROPERTY);
+      if (user != null) {
+        username = user;
+      }
+    }
+    catch (Exception e) {
+      LOG.debug("Client info not available in wrapped connection: " + connection, e);
+    }
+
+    return new User(username, null);
   }
 
   private static final class MixedResultPacker implements ResultPacker<List> {

@@ -253,7 +253,7 @@
     <mkdir dir="${docsapi}"/>
     <mkdir dir="${pluginsapi}"/>
     <javadoc destdir="${docsapi}" sourcepath="${src}" packagenames="org.jminor.*" Encoding="UTF-8"
-             docencoding="UTF-8" overview="${src}/overview.html" author="true" version="true" use="true"
+             docencoding="UTF-8" author="true" version="true" use="true"
              windowtitle="JMinor v${version} API" doctitle="JMinor v${version} API"
              group="Common org.jminor.common*,
                     Client org.jminor.framework.client*,

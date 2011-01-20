@@ -6,15 +6,17 @@ package org.jminor.common.db;
 import org.jminor.common.model.User;
 
 import org.junit.After;
-import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static org.junit.Assert.*;
 
 /**
  * This test relies on the emp/dept schema
@@ -68,6 +70,36 @@ public class DatabaseConnectionImplTest {
     }
     catch (Exception e) {
       e.printStackTrace();
+    }
+  }
+
+  @Test
+  public void construction() throws Exception {
+    Connection connection = null;
+    try {
+      connection = DATABASE.createConnection(User.UNIT_TEST_USER);
+      final DatabaseConnectionImpl entityConnection = new DatabaseConnectionImpl(DATABASE, connection);
+      assertTrue(entityConnection.isConnected());
+      assertTrue(entityConnection.isValid());
+      assertNotNull(entityConnection.getUser());
+      //getClientInfo() not supported in H2
+//      assertEquals(User.UNIT_TEST_USER, entityConnection.getUser());
+      assertNotNull(entityConnection.queryInteger("select count(*) from scott.dept"));
+
+      connection.close();
+      try {
+        new DatabaseConnectionImpl(DATABASE, connection);
+        fail("Should not be able to create a connection with a closed connection");
+      }
+      catch (IllegalArgumentException e) {/**/}
+    }
+    finally {
+      if (connection != null) {
+        try {
+          connection.close();
+        }
+        catch (Exception e) {/**/}
+      }
     }
   }
 

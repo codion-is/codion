@@ -82,12 +82,15 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
 
   /**
    * Constructs a new EntityConnectionImpl instance
-   * @param connection the connection object to base the entity db connection on
    * @param database the Database instance
-   * @param user the user used for connecting to the database
+   * @param connection the connection object to base this entity db connection on
+   * @throws IllegalArgumentException in case the given connection is invalid or disconnected
+   * @throws org.jminor.common.db.exception.DatabaseException in case a validation statement is required
+   * but could not be created
+   * @see org.jminor.common.db.Database#supportsIsValid()
    */
-  EntityConnectionImpl(final Connection connection, final Database database, final User user) {
-    super(database, user, connection);
+  EntityConnectionImpl(final Database database, final Connection connection) throws DatabaseException {
+    super(database, connection);
   }
 
   /** {@inheritDoc} */
@@ -1085,7 +1088,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
           entity.initializeValue(property, getValue(resultSet, property));
         }
         catch (Exception e) {
-          throw new SQLException("Unable to load property: " + property, e);
+          throw new SQLException("Unable to load property: " + property + " for entity: " + entityID, e);
         }
       }
 

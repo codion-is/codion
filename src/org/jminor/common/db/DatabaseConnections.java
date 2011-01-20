@@ -19,19 +19,18 @@ public final class DatabaseConnections {
    * @throws ClassNotFoundException in case the JDBC driver class was not found
    */
   public static DatabaseConnection createConnection(final Database database, final User user) throws ClassNotFoundException, DatabaseException {
-    return new DatabaseConnectionImpl(database, user, database.createConnection(user));
+    return new DatabaseConnectionImpl(database, user);
   }
 
   /**
    * Constructs a new DatabaseConnection instance, based on the given Connection object.
    * NB. auto commit is disabled on the Connection that is provided.
    * @param database the database
-   * @param user the user for the db-connection
    * @param connection the Connection object to base this DatabaseConnection on
    * @throws DatabaseException in case there is a problem connecting to the database
    * @return a new DatabaseConnection instance
    */
-  public static DatabaseConnection createConnection(final Database database, final User user, final Connection connection) throws DatabaseException {
-    return new DatabaseConnectionImpl(database, user, connection);
+  public static DatabaseConnection createConnection(final Database database, final Connection connection) throws DatabaseException {
+    return new DatabaseConnectionImpl(database, connection);
   }
 }

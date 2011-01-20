@@ -179,7 +179,7 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
 
     /** {@inheritDoc} */
     public PoolableConnection createConnection(final User user) throws ClassNotFoundException, DatabaseException {
-      return DatabaseConnections.createConnection(database, user, database.createConnection(user));
+      return DatabaseConnections.createConnection(database, user);
     }
 
     /** {@inheritDoc} */
