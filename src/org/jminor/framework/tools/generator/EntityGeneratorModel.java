@@ -331,11 +331,11 @@ public final class EntityGeneratorModel {
       }
     }
 
-    if (column.nullable == DatabaseMetaData.columnNoNulls && column.primaryKey == null && column.foreignKey == null) {
-      builder.append(Util.LINE_SEPARATOR).append("                .setNullable(false)");
-    }
     if (column.foreignKey == null && column.hasDefaultValue) {
       builder.append(Util.LINE_SEPARATOR).append("                .setColumnHasDefaultValue(true)");
+    }
+    if (column.nullable == DatabaseMetaData.columnNoNulls && column.primaryKey == null && column.foreignKey == null) {
+      builder.append(Util.LINE_SEPARATOR).append("                .setNullable(false)");
     }
     if (column.columnTypeName.equals("Types.VARCHAR")) {
       builder.append(Util.LINE_SEPARATOR).append("                .setMaxLength(").append(column.columnSize).append(")");
