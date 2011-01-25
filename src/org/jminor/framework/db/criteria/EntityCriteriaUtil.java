@@ -208,21 +208,22 @@ public final class EntityCriteriaUtil {
    * @param values the criteria values
    * @return a property criteria based on the given values
    */
-  public static Criteria<Property.ColumnProperty> propertyCriteria(final String entityID, final String propertyID, final SearchType searchType,
-                                                                   final Object... values) {
-    return propertyCriteria(entityID, propertyID, true, searchType, values);
+  public static Criteria<Property.ColumnProperty> propertyCriteria(final String entityID, final String propertyID,
+                                                                   final SearchType searchType, final Object... values) {
+    return propertyCriteria(entityID, propertyID, searchType, true, values);
   }
 
   /**
    * @param entityID the entity ID
    * @param propertyID the property ID
-   * @param caseSensitive true if the criteria should be case sensitive, only applicable to string properties
    * @param searchType the search type
+   * @param caseSensitive true if the criteria should be case sensitive, only applicable to string properties
    * @param values the criteria values
    * @return a property criteria based on the given values
    */
-  public static Criteria<Property.ColumnProperty> propertyCriteria(final String entityID, final String propertyID, final boolean caseSensitive,
-                                                                   final SearchType searchType, final Object... values) {
+  public static Criteria<Property.ColumnProperty> propertyCriteria(final String entityID, final String propertyID,
+                                                                   final SearchType searchType, final boolean caseSensitive,
+                                                                   final Object... values) {
     final Property property = Entities.getProperty(entityID, propertyID);
     if (!(property instanceof Property.ColumnProperty)) {
       throw new IllegalArgumentException(property + " is not a " + Property.ColumnProperty.class.getName());
@@ -314,8 +315,6 @@ public final class EntityCriteriaUtil {
     private String entityID;
     private Criteria<Property.ColumnProperty> criteria;
 
-    DefaultEntityCriteria() {}
-
     /**
      * Instantiates a new empty EntityCriteria.
      * Using an empty criteria means all underlying records should be selected
@@ -359,14 +358,6 @@ public final class EntityCriteriaUtil {
       return criteria;
     }
 
-    /**
-     * Returns a where condition based on this EntityCriteria
-     * @return a where condition based on this EntityCriteria
-     */
-    public String asString() {
-      return Entities.getTableName(entityID) + " " + getWhereClause();
-    }
-
     /** {@inheritDoc} */
     public final String getWhereClause() {
       return getWhereClause(true);
@@ -401,8 +392,6 @@ public final class EntityCriteriaUtil {
     private String orderByClause;
     private int fetchCount;
     private boolean selectForUpdate;
-
-    DefaultEntitySelectCriteria() {}
 
     /**
      * Instantiates a new DefaultEntityCriteria, which includes all the underlying entities
@@ -574,8 +563,6 @@ public final class EntityCriteriaUtil {
     private String entityID;
     private CriteriaSet<Property.ColumnProperty> criteria;
 
-    EntityKeyCriteria() {}
-
     /**
      * Instantiates a new EntityKeyCriteria comprised of the given keys
      * @param keys the keys
@@ -697,8 +684,6 @@ public final class EntityCriteriaUtil {
      * True if this criteria should be case sensitive, only applies to criteria based on string properties
      */
     private boolean caseSensitive = true;
-
-    PropertyCriteria() {}
 
     /**
      * Instantiates a new PropertyCriteria instance

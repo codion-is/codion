@@ -114,6 +114,12 @@ public class EntityImplTest {
 
     final Entity testEntity = getDetailEntity(detailId, detailInt, detailDouble,
             detailString, detailDate, detailTimestamp, detailBoolean, referencedEntityValue);
+    try {
+      testEntity.getProperty(EntityTestDomain.MASTER_CODE);
+      fail("Trying to retrieve a property from the wrong entity type");
+    }
+    catch (IllegalArgumentException e) {}
+
     //assert types
     assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_ID).getType(), Types.INTEGER);
     assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_INT).getType(), Types.INTEGER);

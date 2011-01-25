@@ -1,15 +1,19 @@
 package org.jminor.framework.db.criteria;
 
+import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.model.SearchType;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.Property;
 
-import static org.junit.Assert.assertEquals;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.Arrays;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class EntityCriteriaUtilTest {
 
@@ -52,5 +56,22 @@ public class EntityCriteriaUtilTest {
     criteria = EntityCriteriaUtil.selectCriteria(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, SearchType.NOT_LIKE, "DEPT");
     assertEquals(EmpDept.T_DEPARTMENT, criteria.getEntityID());
     assertEquals("where dname not like ?", criteria.getWhereClause());
+
+    final Criteria<Property.ColumnProperty> critOne = EntityCriteriaUtil.propertyCriteria(EmpDept.T_DEPARTMENT,
+            EmpDept.DEPARTMENT_LOCATION, SearchType.LIKE, "New York");
+
+    criteria = EntityCriteriaUtil.selectCriteria(EmpDept.T_DEPARTMENT, critOne, EmpDept.DEPARTMENT_NAME);
+    assertEquals(-1, criteria.getFetchCount());
+
+    criteria = EntityCriteriaUtil.selectCriteria(EmpDept.T_DEPARTMENT, 10);
+    assertEquals(10, criteria.getFetchCount());
+  }
+
+  @Test
+  public void propertyCriteria() {
+    final Criteria<Property.ColumnProperty> critOne = EntityCriteriaUtil.propertyCriteria(EmpDept.T_DEPARTMENT,
+            EmpDept.DEPARTMENT_LOCATION, SearchType.LIKE, true, "New York");
+    assertEquals("loc like ?", critOne.asString());
+    assertNotNull(critOne);
   }
 }

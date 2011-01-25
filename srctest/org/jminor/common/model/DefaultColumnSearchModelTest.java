@@ -12,7 +12,7 @@ import java.util.Date;
 
 import static org.junit.Assert.*;
 
-public class DefaultSearchModelTest {
+public class DefaultColumnSearchModelTest {
   final Collection<Object> upperBoundCounter = new ArrayList<Object>();
   final Collection<Object> lowerBoundCounter = new ArrayList<Object>();
   final Collection<Object> searchStateCounter = new ArrayList<Object>();

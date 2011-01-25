@@ -21,10 +21,12 @@ public final class EntityReportUtil {
    * Takes a ReportWrapper which uses a JDBC datasource and returns an initialized ReportResult object
    * @param reportWrapper the report wrapper
    * @param connectionProvider the EntityConnectionProvider instance to use when filling the report
+   * @param <R> the type of the actual report object being wrapped
+   * @param <D> the type of the data source used to fill the report
    * @return an initialized ReportResult object
    * @throws ReportException in case of a report exception
    */
-  public static <T, D> ReportResult<T> fillReport(final ReportWrapper<T, D> reportWrapper, final EntityConnectionProvider connectionProvider) throws ReportException {
+  public static <R, D> ReportResult<R> fillReport(final ReportWrapper<R, D> reportWrapper, final EntityConnectionProvider connectionProvider) throws ReportException {
     try {
       return connectionProvider.getConnection().fillReport(reportWrapper);
     }
@@ -37,10 +39,12 @@ public final class EntityReportUtil {
    * Takes a ReportWrapper object and returns an initialized ReportResult object
    * @param reportWrapper the report wrapper
    * @param dataSource the ReportDataWrapper to use
+   * @param <R> the type of the actual report object being wrapped
+   * @param <D> the type of the data source used to fill the report
    * @return an initialized ReportResult object
    * @throws ReportException in case of a report exception
    */
-  public static <T, D> ReportResult<T> fillReport(final ReportWrapper<T, D> reportWrapper, final ReportDataWrapper<D> dataSource) throws ReportException {
+  public static <R, D> ReportResult<R> fillReport(final ReportWrapper<R, D> reportWrapper, final ReportDataWrapper<D> dataSource) throws ReportException {
     return reportWrapper.fillReport(dataSource);
   }
 }
