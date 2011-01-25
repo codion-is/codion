@@ -52,7 +52,7 @@ public final class ValueLinkValidators {
     }
   }
 
-  private static abstract class AbstractValidator<K> {
+  private abstract static class AbstractValidator<K> {
 
     private final AbstractValueMapLink<K, Object> link;
     private final JComponent component;

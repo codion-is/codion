@@ -16,7 +16,7 @@ import java.text.NumberFormat;
  */
 public class IntField extends TextFieldPlus {
 
-  private final ThreadLocal<NumberFormat> format = new ThreadLocal<NumberFormat>() {
+  private transient final ThreadLocal<NumberFormat> format = new ThreadLocal<NumberFormat>() {
     @Override
     protected NumberFormat initialValue() {
       final NumberFormat ret = NumberFormat.getIntegerInstance();
@@ -53,7 +53,7 @@ public class IntField extends TextFieldPlus {
   /** {@inheritDoc} */
   @Override
   public Object getValue() {
-    return this.getInt();
+    return getInt();
   }
 
   /**

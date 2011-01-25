@@ -23,7 +23,6 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 /**
  * A default DatabaseConnection implementation, which wraps a standard JDBC Connection object.
@@ -595,26 +594,13 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
   }
 
   /**
-   * Tries to fetch the user info from the given connection, via the getClientInfo() api,
-   * if the connection does not provide any user info the username returned is simply
-   * a string representation of the connection object.
+   * Returns a User with which username is simply a string representation
+   * of the connection object.
    * @param connection the connection
    * @return a user based on the information gleamed from the given connection
    */
   private static User getUser(final Connection connection) {
-    String username = connection.toString();
-    try {
-      final Properties properties = connection.getClientInfo();
-      final String user = properties.getProperty(Database.USER_PROPERTY);
-      if (user != null) {
-        username = user;
-      }
-    }
-    catch (Exception e) {
-      LOG.debug("Client info not available in wrapped connection: " + connection, e);
-    }
-
-    return new User(username, null);
+    return new User(connection.toString(), null);
   }
 
   private static final class MixedResultPacker implements ResultPacker<List> {

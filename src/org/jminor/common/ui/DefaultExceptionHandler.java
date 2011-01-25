@@ -14,7 +14,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.UndeclaredThrowableException;
 
 /**
- * A default ExcptionHandler implementation.
+ * A default ExceptionHandler implementation
  */
 public final class DefaultExceptionHandler implements ExceptionHandler {
 

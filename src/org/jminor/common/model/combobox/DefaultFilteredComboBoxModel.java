@@ -243,7 +243,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   }
 
   /** {@inheritDoc} */
-  public T getSelectedValue() {
+  public final T getSelectedValue() {
     if (isNullValueSelected()) {
       return null;
     }

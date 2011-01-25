@@ -47,7 +47,7 @@ public final class EntityTableSearchPanel extends JPanel {
   private final JPanel simpleSearchPanel;
   private final JTextField simpleSearchTextField = new JTextField();
   private final Action simpleSearchAction;
-  private boolean simpleSearch = false;//todo use this properly
+  private boolean simpleSearch = false;
 
   /**
    * Instantiates a new EntityTableSearchPanel
@@ -71,7 +71,7 @@ public final class EntityTableSearchPanel extends JPanel {
     this.simpleSearchAction = initializeSimpleSearchAction();
     this.simpleSearchPanel = initializeSimpleSearchPanel();
     setLayout(new BorderLayout());
-    add(fullSearchPanel, BorderLayout.CENTER);
+    setSimpleSearch(false);
   }
 
   /**
@@ -82,7 +82,8 @@ public final class EntityTableSearchPanel extends JPanel {
   }
 
   /**
-   * @param value true if advanced search should be enabled
+   * @param value true if advanced search should be enabled in the full search panel,
+   * does not apply when simple search is enabled
    */
   public void setAdvanced(final boolean value) {
     for (final JPanel searchPanel : fullSearchPanel.getColumnPanels().values()) {
@@ -95,7 +96,8 @@ public final class EntityTableSearchPanel extends JPanel {
   }
 
   /**
-   * @return true if advanced search is enabled
+   * @return true if advanced search is enabled in the full search panel,
+   * does not apply when simple search is enabled
    */
   public boolean isAdvanced() {
     for (final JPanel searchPanel : fullSearchPanel.getColumnPanels().values()) {
@@ -107,12 +109,26 @@ public final class EntityTableSearchPanel extends JPanel {
     return false;
   }
 
+  /**
+   * @return true if the simple search panel is visible, false if the full panel is visible
+   */
   public boolean isSimpleSearch() {
     return simpleSearch;
   }
 
+  /**
+   * @param simpleSearch if true then the simple search panel is shown, if false the full
+   * search panel is shown
+   */
   public void setSimpleSearch(final boolean simpleSearch) {
     this.simpleSearch = simpleSearch;
+    removeAll();
+    if (simpleSearch) {
+      add(simpleSearchPanel, BorderLayout.CENTER);
+    }
+    else {
+      add(fullSearchPanel, BorderLayout.CENTER);
+    }
     evtSimpleSearchChanged.fire();
   }
 

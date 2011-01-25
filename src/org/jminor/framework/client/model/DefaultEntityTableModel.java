@@ -223,12 +223,12 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   /** {@inheritDoc} */
-  public boolean isRemoveItemsOnDelete() {
+  public final boolean isRemoveItemsOnDelete() {
     return removeItemsOnDelete;
   }
 
   /** {@inheritDoc} */
-  public EntityTableModel setRemoveItemsOnDelete(final boolean value) {
+  public final EntityTableModel setRemoveItemsOnDelete(final boolean value) {
     this.removeItemsOnDelete = value;
     return this;
   }

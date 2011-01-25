@@ -268,7 +268,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
    * @return true if the JTable instance scrolls automatically to the coordinate
    * of the record selected in the underlying table model
    */
-  public boolean isScrollToSelectedItem() {
+  public final boolean isScrollToSelectedItem() {
     return scrollToSelectedItem;
   }
 
@@ -276,7 +276,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
    * @param scrollToSelectedItem true if the JTable instance should scroll automatically
    * to the coordinate of the record selected in the underlying table model
    */
-  public void setScrollToSelectedItem(final boolean scrollToSelectedItem) {
+  public final void setScrollToSelectedItem(final boolean scrollToSelectedItem) {
     this.scrollToSelectedItem = scrollToSelectedItem;
   }
 

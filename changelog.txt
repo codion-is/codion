@@ -2365,3 +2365,4 @@
   EntityEditPanel, controlKeys constructor parameter handled better
   DatabaseConnectionImpl, EntityConnectionImpl, some refactoring
   EntityGeneratorModel, setColumnHasDefaultValue() moved above setNullable() since the latter returns Property instead of Property.ColumnProperty
+  Sonar based fixes
