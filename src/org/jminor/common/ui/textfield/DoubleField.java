@@ -19,7 +19,7 @@ public final class DoubleField extends IntField {
   public static final String POINT = ".";
   public static final String COMMA = ",";
 
-  private transient final ThreadLocal<NumberFormat> format = new ThreadLocal<NumberFormat>() {
+  private final transient ThreadLocal<NumberFormat> format = new ThreadLocal<NumberFormat>() {
     @Override
     protected NumberFormat initialValue() {
       final NumberFormat ret = NumberFormat.getNumberInstance();
