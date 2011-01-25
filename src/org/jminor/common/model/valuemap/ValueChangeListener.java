@@ -7,7 +7,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * Used when listening to ValueChangeEvents
+ * Used when listening to ValueChangeEvents.
+ * @param <K> the type of the object used to identify the value, or the key type
+ * @param <V> the type of the actual value
  */
 public abstract class ValueChangeListener<K, V> implements ActionListener {
 
