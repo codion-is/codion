@@ -12,18 +12,11 @@ import javax.swing.text.PlainDocument;
 import java.text.NumberFormat;
 
 /**
- * A text field for ints.
+ * A text field for integers.
  */
 public class IntField extends TextFieldPlus {
 
-  private final transient ThreadLocal<NumberFormat> format = new ThreadLocal<NumberFormat>() {
-    @Override
-    protected NumberFormat initialValue() {
-      final NumberFormat ret = NumberFormat.getIntegerInstance();
-      ret.setGroupingUsed(false);
-      return ret;
-    }
-  };
+  private final transient ThreadLocal<NumberFormat> format = new LocalFormat();
 
   /**
    * Constructs a new IntField.
@@ -110,6 +103,15 @@ public class IntField extends TextFieldPlus {
       if (valueOk) {
         super.insertString(offs, str, a);
       }
+    }
+  }
+
+  private static final class LocalFormat extends ThreadLocal<NumberFormat> {
+    @Override
+    protected NumberFormat initialValue() {
+      final NumberFormat ret = NumberFormat.getIntegerInstance();
+      ret.setGroupingUsed(false);
+      return ret;
     }
   }
 }

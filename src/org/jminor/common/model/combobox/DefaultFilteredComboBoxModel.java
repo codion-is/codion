@@ -344,10 +344,18 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     return contents;
   }
 
+  /**
+   * @param item the item to be selected
+   * @return true if the selection change is ok, false if it should be vetoed
+   */
   protected boolean vetoSelectionChange(final Object item) {
     return false;
   }
 
+  /**
+   * @param item the item to be selected
+   * @return the actual item to select
+   */
   protected Object translateSelectionItem(final Object item) {
     return item;
   }

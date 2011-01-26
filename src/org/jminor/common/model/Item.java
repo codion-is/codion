@@ -10,7 +10,7 @@ import java.text.Collator;
  * A class encapsulating an item and caption.
  * @param <T> the type of the actual item
  */
-public class Item<T> implements Comparable<Item<T>>, Serializable {
+public class Item<T> implements Comparable<Item>, Serializable {
 
   private static final long serialVersionUID = 1;
 
@@ -69,7 +69,7 @@ public class Item<T> implements Comparable<Item<T>>, Serializable {
    * @param o the item to compare with
    * @return the compare result
    */
-  public final int compareTo(final Item<T> o) {
+  public final int compareTo(final Item o) {
     return COLLATOR.get().compare(caption, o.caption);
   }
 }

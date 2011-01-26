@@ -308,7 +308,7 @@ public final class EntityCriteriaUtil {
     return criteria;
   }
 
-  private static class DefaultEntityCriteria implements EntityCriteria, Serializable {
+  private static final class DefaultEntityCriteria implements EntityCriteria, Serializable {
 
     private static final long serialVersionUID = 1;
 

@@ -19,14 +19,8 @@ public final class DoubleField extends IntField {
   public static final String POINT = ".";
   public static final String COMMA = ",";
 
-  private final transient ThreadLocal<NumberFormat> format = new ThreadLocal<NumberFormat>() {
-    @Override
-    protected NumberFormat initialValue() {
-      final NumberFormat ret = NumberFormat.getNumberInstance();
-      ret.setGroupingUsed(false);
-      return ret;
-    }
-  };
+  private final transient ThreadLocal<NumberFormat> format = new LocalFormat();
+
   private String decimalSymbol = COMMA;
 
   /** Constructs a new DoubleField. */
@@ -162,6 +156,15 @@ public final class DoubleField extends IntField {
       if (valueOk) {
         super.insertString(offs, preparedString, a);
       }
+    }
+  }
+
+  private static final class LocalFormat extends ThreadLocal<NumberFormat> {
+    @Override
+    protected NumberFormat initialValue() {
+      final NumberFormat ret = NumberFormat.getNumberInstance();
+      ret.setGroupingUsed(false);
+      return ret;
     }
   }
 }

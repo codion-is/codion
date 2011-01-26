@@ -267,7 +267,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
   }
 
   /** {@inheritDoc} */
-  public void performSimpleSearch() {
+  public final void performSimpleSearch() {
     final Conjunction conjunction = getSearchConjunction();
     try {
       setSearchConjunction(Conjunction.OR);

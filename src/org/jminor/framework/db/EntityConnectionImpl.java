@@ -63,6 +63,7 @@ import java.util.Set;
 final class EntityConnectionImpl extends DatabaseConnectionImpl implements EntityConnection {
 
   private static final Logger LOG = LoggerFactory.getLogger(EntityConnectionImpl.class);
+  private static final String CRITERIA_PARAM_NAME = "criteria";
 
   private final Map<String, EntityResultPacker> entityResultPackers = new HashMap<String, EntityResultPacker>();
   private final Map<Integer, ResultPacker> propertyResultPackers = new HashMap<Integer, ResultPacker>();
@@ -228,7 +229,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
 
   /** {@inheritDoc} */
   public void delete(final EntityCriteria criteria) throws DatabaseException {
-    Util.rejectNullValue(criteria, "criteria");
+    Util.rejectNullValue(criteria, CRITERIA_PARAM_NAME);
     checkReadOnly(criteria.getEntityID());
     PreparedStatement statement = null;
     String deleteSQL = null;
@@ -365,7 +366,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
 
   /** {@inheritDoc} */
   public int selectRowCount(final EntityCriteria criteria) throws DatabaseException {
-    Util.rejectNullValue(criteria, "criteria");
+    Util.rejectNullValue(criteria, CRITERIA_PARAM_NAME);
     PreparedStatement statement = null;
     ResultSet resultSet = null;
     String selectSQL = null;
@@ -561,7 +562,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
   }
 
   private List<Entity> doSelectMany(final EntitySelectCriteria criteria, final int currentForeignKeyFetchDepth) throws DatabaseException {
-    Util.rejectNullValue(criteria, "criteria");
+    Util.rejectNullValue(criteria, CRITERIA_PARAM_NAME);
     PreparedStatement statement = null;
     ResultSet resultSet = null;
     String selectSQL = null;
@@ -905,7 +906,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
    * @return a query for deleting the entities specified by the given criteria
    */
   private static String getDeleteSQL(final EntityCriteria criteria) {
-    Util.rejectNullValue(criteria, "criteria");
+    Util.rejectNullValue(criteria, CRITERIA_PARAM_NAME);
     return new StringBuilder("delete from ").append(Entities.getTableName(criteria.getEntityID())).append(" ")
             .append(criteria.getWhereClause()).toString();
   }

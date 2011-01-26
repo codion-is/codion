@@ -2366,3 +2366,5 @@
   DatabaseConnectionImpl, EntityConnectionImpl, some refactoring
   EntityGeneratorModel, setColumnHasDefaultValue() moved above setNullable() since the latter returns Property instead of Property.ColumnProperty
   Sonar based fixes
+  Item, removed unnecessary type parameter
+  Sonar based cleanup
