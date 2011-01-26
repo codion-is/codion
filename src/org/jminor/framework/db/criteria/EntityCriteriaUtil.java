@@ -339,32 +339,32 @@ public final class EntityCriteriaUtil {
     }
 
     /** {@inheritDoc} */
-    public final List<Object> getValues() {
+    public List<Object> getValues() {
       return criteria == null ? null : criteria.getValues();
     }
 
     /** {@inheritDoc} */
-    public final List<Property.ColumnProperty> getValueProperties() {
+    public List<Property.ColumnProperty> getValueProperties() {
       return criteria == null ? null : criteria.getValueKeys();
     }
 
     /** {@inheritDoc} */
-    public final String getEntityID() {
+    public String getEntityID() {
       return entityID;
     }
 
     /** {@inheritDoc} */
-    public final Criteria<Property.ColumnProperty> getCriteria() {
+    public Criteria<Property.ColumnProperty> getCriteria() {
       return criteria;
     }
 
     /** {@inheritDoc} */
-    public final String getWhereClause() {
+    public String getWhereClause() {
       return getWhereClause(true);
     }
 
     /** {@inheritDoc} */
-    public final String getWhereClause(final boolean includeWhereKeyword) {
+    public String getWhereClause(final boolean includeWhereKeyword) {
       final String criteriaString = criteria == null ? "" : criteria.asString();
 
       return !criteriaString.isEmpty() ? (includeWhereKeyword ? "where " : "and ") + criteriaString : "";
