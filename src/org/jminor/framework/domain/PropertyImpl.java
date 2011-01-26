@@ -616,6 +616,7 @@ class PropertyImpl implements Property, Serializable {
                            final ColumnProperty[] referenceProperties, final String[] referencedPropertyIDs) {
       super(propertyID, Types.REF, caption);
       for (final Property referenceProperty : referenceProperties) {
+        Util.rejectNullValue(referenceProperty, "referenceProperty");
         if (referenceProperty.getPropertyID().equals(propertyID)) {
           throw new IllegalArgumentException(referencedEntityID + ", reference property does not have a unique name: " + propertyID);
         }
@@ -832,8 +833,8 @@ class PropertyImpl implements Property, Serializable {
                         final Provider valueProvider, final String... linkedPropertyIDs) {
       super(propertyID, type, caption);
       this.valueProvider = valueProvider;
-      if (linkedPropertyIDs == null) {
-        this.linkedPropertyIDs = Collections.emptyList();
+      if (linkedPropertyIDs == null || linkedPropertyIDs.length == 0) {
+        throw new IllegalArgumentException("No linked propertyIDs, a derived property must be derived from one or more properties");
       }
       else {
         this.linkedPropertyIDs = Arrays.asList(linkedPropertyIDs);

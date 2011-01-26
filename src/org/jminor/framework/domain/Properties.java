@@ -118,9 +118,11 @@ public final class Properties {
    * @param valueProvider the object responsible for providing the derived value
    * @param linkedPropertyIDs the IDs of the properties on whose value this property derives its value
    * @return a new derived property
+   * @throws IllegalArgumentException in case no linked property IDs are provided
    */
   public static Property.DerivedProperty derivedProperty(final String propertyID, final int type, final String caption,
-                        final Property.DerivedProperty.Provider valueProvider, final String... linkedPropertyIDs) {
+                                                         final Property.DerivedProperty.Provider valueProvider,
+                                                         final String... linkedPropertyIDs) {
     return new PropertyImpl.DerivedPropertyImpl(propertyID, type, caption, valueProvider, linkedPropertyIDs);
   }
 

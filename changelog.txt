@@ -2368,3 +2368,4 @@
   Sonar based fixes
   Item, removed unnecessary type parameter
   Sonar based cleanup
+  PropertiesTest added
