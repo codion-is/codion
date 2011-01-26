@@ -299,7 +299,6 @@ public final class Util {
     }
   }
 
-
   /**
    * Fetch the entire contents of a resource textfile, and return it in a String, using the default Charset.
    * @param resourceClass the resource class
