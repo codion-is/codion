@@ -21,12 +21,13 @@ import org.jminor.framework.domain.Property;
 
 import org.junit.After;
 import org.junit.Before;
-import static org.junit.Assert.*;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.junit.Assert.*;
 
 /**
  * A class for unit testing domain entities.
@@ -72,7 +73,7 @@ public abstract class EntityTestUnit {
   public final void testEntity(final String entityID) throws DatabaseException {
     getConnection().beginTransaction();
     try {
-      initializeReferencedEntities(entityID, entityID);
+      initializeReferencedEntities(entityID);
       Entity testEntity = null;
       if (!Entities.isReadOnly(entityID)) {
         testEntity = testInsert(Util.rejectNullValue(initializeTestEntity(entityID), "test entity"));
@@ -193,22 +194,29 @@ public abstract class EntityTestUnit {
   }
 
   /**
-   * This method should initialize instances of entities specified by the entityIDs found in the
-   * <code>entityIDs</code> Collection and map them to their respective entityIDs via the setReferenceEntity method
-   * @param testEntityID the ID of the entity being tested
+   * Initializes the entities referenced by the entity identified by <code>entityID</code>
    * @param entityID the ID of the entity for which to initialize the referenced entities
    * @throws org.jminor.common.db.exception.DatabaseException in case of an exception
-   * @see #setReferenceEntity(String, org.jminor.framework.domain.Entity)
+   * @see #initializeReferenceEntity(String) (String, org.jminor.framework.domain.Entity)
    */
   @SuppressWarnings({"UnusedDeclaration"})
-  protected final void initializeReferencedEntities(final String testEntityID, final String entityID) throws DatabaseException {
-    for (final Property.ForeignKeyProperty fkProperty : Entities.getForeignKeyProperties(entityID)) {
-      if (!fkProperty.getReferencedEntityID().equals(entityID)) {
-        initializeReferencedEntities(testEntityID, fkProperty.getReferencedEntityID());
+  private void initializeReferencedEntities(final String entityID) throws DatabaseException {
+    boolean referencesSelf = false;
+    for (final Property.ForeignKeyProperty foreignKeyProperty : Entities.getForeignKeyProperties(entityID)) {
+      final String referencedEntityID = foreignKeyProperty.getReferencedEntityID();
+      if (referencedEntityID.equals(entityID)) {
+        referencesSelf = true;
       }
-      if (!referencedEntities.containsKey(fkProperty.getReferencedEntityID())) {
-        setReferenceEntity(fkProperty.getReferencedEntityID(), initializeReferenceEntity(fkProperty.getReferencedEntityID()));
+      else {
+        initializeReferencedEntities(referencedEntityID);
+        if (!referencedEntities.containsKey(referencedEntityID)) {
+          setReferenceEntity(referencedEntityID, initializeReferenceEntity(referencedEntityID));
+        }
       }
+    }
+    //we initialize the self reference last, to insure that all other referenced entities have been initialized
+    if (referencesSelf && !referencedEntities.containsKey(entityID)) {
+      setReferenceEntity(entityID, initializeReferenceEntity(entityID));
     }
   }
 

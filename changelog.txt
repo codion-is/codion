@@ -2369,3 +2369,4 @@
   Item, removed unnecessary type parameter
   Sonar based cleanup
   PropertiesTest added
+  EntityTestUnit.initializeReferencedEntities() now deals with self referencing entities correctly
