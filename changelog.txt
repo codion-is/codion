@@ -2370,3 +2370,4 @@
   Sonar based cleanup
   PropertiesTest added
   EntityTestUnit.initializeReferencedEntities() now deals with self referencing entities correctly
+  EntityConnectionImpl, some refactoring/renaming, exception handling/throwing for insert/update and delete improved

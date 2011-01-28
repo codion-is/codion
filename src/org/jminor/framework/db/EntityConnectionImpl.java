@@ -115,7 +115,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
         final boolean includePrimaryKeyProperties = !idSource.isAutoIncrement();
         final boolean includeReadOnly = false;
         final boolean includeNonUpdatable = true;
-        final List<Property.ColumnProperty> insertProperties = Entities.getColumnProperties(entityID,
+        final List<Property.ColumnProperty> columnProperties = Entities.getColumnProperties(entityID,
                 includePrimaryKeyProperties, includeReadOnly, includeNonUpdatable);
 
         final boolean queryPrimaryKeyValue = idSource.isQueried() && entity.isValueNull(firstPrimaryKeyProperty);
@@ -125,9 +125,9 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
         }
 
         final boolean inserting = true;
-        populateStatementPropertiesAndValues(inserting, entity, insertProperties, statementProperties, statementValues);
+        populateStatementPropertiesAndValues(inserting, entity, columnProperties, statementProperties, statementValues);
 
-        insertSQL = getInsertSQL(entityID, statementProperties);
+        insertSQL = createInsertSQL(entityID, statementProperties);
         statement = getConnection().prepareStatement(insertSQL);
         executePreparedUpdate(statement, insertSQL, statementValues, statementProperties);
 
@@ -190,7 +190,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
           populateStatementPropertiesAndValues(inserting, entity, columnProperties, statementProperties, statementValues);
 
           final List<Property.PrimaryKeyProperty> primaryKeyProperties = Entities.getPrimaryKeyProperties(entityID);
-          updateSQL = getUpdateSQL(entity, statementProperties, primaryKeyProperties);
+          updateSQL = createUpdateSQL(entity, statementProperties, primaryKeyProperties);
           statementProperties.addAll(primaryKeyProperties);
           for (final Property.PrimaryKeyProperty primaryKeyProperty : primaryKeyProperties) {
             statementValues.add(entity.getOriginalValue(primaryKeyProperty.getPropertyID()));
@@ -206,10 +206,8 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       if (!isTransactionOpen()) {
         commit();
       }
-
-      return selectMany(EntityUtil.getPrimaryKeys(entities));
     }
-    catch (RecordModifiedException e) {
+    catch (RecordModifiedException e) {//thrown by lockAndCheckForUpdate
       if (optimisticLocking && !isTransactionOpen()) {
         rollbackQuietly();//releasing the select for update lock
       }
@@ -225,16 +223,19 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     finally {
       Util.closeSilently(statement);
     }
+
+    return selectMany(EntityUtil.getPrimaryKeys(entities));
   }
 
   /** {@inheritDoc} */
   public void delete(final EntityCriteria criteria) throws DatabaseException {
     Util.rejectNullValue(criteria, CRITERIA_PARAM_NAME);
     checkReadOnly(criteria.getEntityID());
+
     PreparedStatement statement = null;
     String deleteSQL = null;
     try {
-      deleteSQL = getDeleteSQL(criteria);
+      deleteSQL = createDeleteSQL(criteria);
       statement = getConnection().prepareStatement(deleteSQL);
       executePreparedUpdate(statement, deleteSQL, criteria.getValues(), criteria.getValueProperties());
 
@@ -373,8 +374,8 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     try {
       selectSQL = Entities.getSelectQuery(criteria.getEntityID());
       selectSQL = createSelectSQL(selectSQL == null ? Entities.getSelectTableName(criteria.getEntityID()) :
-              "(" + selectSQL + " " + criteria.getWhereClause(!selectSQL.toLowerCase().contains("where")) + ") alias", "count(*)", null, null);
-      selectSQL += " " + criteria.getWhereClause(!containsWhereKeyword(selectSQL));
+              "(" + selectSQL + " " + criteria.getWhereClause(!selectSQL.toLowerCase().contains("where ")) + ") alias", "count(*)", null, null);
+      selectSQL += " " + criteria.getWhereClause(!containsWhereClause(selectSQL));
       statement = getConnection().prepareStatement(selectSQL);
       resultSet = executePreparedSelect(statement, selectSQL, criteria.getValues(), criteria.getValueProperties());
       final List<Integer> result = Databases.INT_PACKER.pack(resultSet, -1);
@@ -434,7 +435,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
         final Property.BlobProperty property =
                 (Property.BlobProperty) Entities.getProperty(primaryKey.getEntityID(), blobPropertyID);
 
-        final String whereCondition = getWhereCondition(primaryKey.getProperties());
+        final String whereCondition = createWhereCondition(primaryKey.getProperties());
 
         statement = new StringBuilder("update ").append(primaryKey.getEntityID()).append(" set ").append(property.getColumnName())
                 .append(" = '").append(dataDescription).append("' where ").append(whereCondition).toString();
@@ -469,7 +470,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
               (Property.BlobProperty) Entities.getProperty(primaryKey.getEntityID(), blobPropertyID);
 
       return readBlobField(Entities.getTableName(primaryKey.getEntityID()), property.getBlobColumnName(),
-              getWhereCondition(primaryKey.getProperties()));
+              createWhereCondition(primaryKey.getProperties()));
     }
     catch (SQLException e) {
       if (getMethodLogger().isEnabled()) {
@@ -632,7 +633,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
   }
 
   private int queryNewPrimaryKeyValue(final String entityID, final IdSource idSource, final String idValueSource,
-                                      final Property.PrimaryKeyProperty primaryKeyProperty) throws DatabaseException {
+                                      final Property.PrimaryKeyProperty primaryKeyProperty) throws SQLException {
     final String sql;
     switch (idSource) {
       case MAX_PLUS_ONE:
@@ -653,7 +654,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     }
     catch (SQLException e) {
       LOG.debug(createLogMessage(getUser(), sql, Arrays.asList(entityID, idSource, idValueSource), e, null));
-      throw new DatabaseException(getDatabase().getErrorMessage(e));
+      throw e;
     }
   }
 
@@ -806,7 +807,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     }
 
     final StringBuilder queryBuilder = new StringBuilder(selectSQL);
-    final String whereClause = criteria.getWhereClause(!containsWhereKeyword(selectSQL));
+    final String whereClause = criteria.getWhereClause(!containsWhereClause(selectSQL));
     if (!whereClause.isEmpty()) {
       queryBuilder.append(" ").append(whereClause);
     }
@@ -825,17 +826,17 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
 
   /**
    * @param selectQuery the query to check
-   * @return true if the query contains the WHERE keyword after the last FROM keyword instance
+   * @return true if the query contains the WHERE clause after the last FROM keyword instance
    * todo too simplistic, wont this fail at some point?
    */
-  private static boolean containsWhereKeyword(final String selectQuery) {
+  private static boolean containsWhereClause(final String selectQuery) {
     final String lowerCaseQuery = selectQuery.toLowerCase();
-    int lastFromIndex = lowerCaseQuery.lastIndexOf("from");
+    int lastFromIndex = lowerCaseQuery.lastIndexOf("from ");
     if (lastFromIndex < 0) {
       lastFromIndex = 0;
     }
 
-    return selectQuery.substring(lastFromIndex, lowerCaseQuery.length()-1).contains("where");
+    return selectQuery.substring(lastFromIndex, lowerCaseQuery.length()-1).contains("where ");
   }
 
   /**
@@ -843,10 +844,9 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
    * @param properties the properties being updated
    * @param primaryKeyProperties the primary key properties for the given entity
    * @return a query for updating this entity instance
-   * @throws org.jminor.common.db.exception.DatabaseException in case the entity is unmodified or it contains no modified updatable properties
    */
-  private static String getUpdateSQL(final Entity entity, final Collection<Property.ColumnProperty> properties,
-                                     final List<Property.PrimaryKeyProperty> primaryKeyProperties) throws DatabaseException {
+  private static String createUpdateSQL(final Entity entity, final Collection<Property.ColumnProperty> properties,
+                                        final List<Property.PrimaryKeyProperty> primaryKeyProperties) {
     final StringBuilder sql = new StringBuilder("update ");
     sql.append(Entities.getTableName(entity.getEntityID())).append(" set ");
     int columnIndex = 0;
@@ -857,7 +857,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       }
     }
 
-    return sql.append(getWhereCondition(primaryKeyProperties)).toString();
+    return sql.append(createWhereCondition(primaryKeyProperties)).toString();
   }
 
   /**
@@ -865,7 +865,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
    * @param insertProperties the properties used to insert the given entity type
    * @return a query for inserting this entity instance
    */
-  private static String getInsertSQL(final String entityID, final Collection<Property.ColumnProperty> insertProperties) {
+  private static String createInsertSQL(final String entityID, final Collection<Property.ColumnProperty> insertProperties) {
     final StringBuilder sql = new StringBuilder("insert into ");
     sql.append(Entities.getTableName(entityID)).append("(");
     final StringBuilder columnValues = new StringBuilder(") values(");
@@ -883,29 +883,10 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
   }
 
   /**
-   * Constructs a where condition based on the given primary key properties and the values provide by <code>valueProvider</code>
-   * @param properties the properties to use when constructing the condition
-   * @return a where clause according to the given properties without the 'where' keyword
-   * e.g. "(idCol = ?)" or in case of multiple properties "(idCol1 = ? and idCol2 = ?)"
-   */
-  private static String getWhereCondition(final List<Property.PrimaryKeyProperty> properties) {
-    final StringBuilder stringBuilder = new StringBuilder(" where (");
-    int i = 0;
-    for (final Property.PrimaryKeyProperty property : properties) {
-      stringBuilder.append(property.getColumnName()).append(" = ?");
-      if (i++ < properties.size() - 1) {
-        stringBuilder.append(" and ");
-      }
-    }
-
-    return stringBuilder.append(")").toString();
-  }
-
-  /**
    * @param criteria the EntityCriteria instance
    * @return a query for deleting the entities specified by the given criteria
    */
-  private static String getDeleteSQL(final EntityCriteria criteria) {
+  private static String createDeleteSQL(final EntityCriteria criteria) {
     Util.rejectNullValue(criteria, CRITERIA_PARAM_NAME);
     return new StringBuilder("delete from ").append(Entities.getTableName(criteria.getEntityID())).append(" ")
             .append(criteria.getWhereClause()).toString();
@@ -938,17 +919,37 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
   }
 
   /**
-   * @param inserting if true then non-null properties are added, if false then update is assumed and all
-   * modified properties are added.
+   * Constructs a where condition based on the given primary key properties
+   * @param properties the properties to use when constructing the condition
+   * @return a where clause according to the given properties
+   * e.g. " where (idCol = ?)" or in case of multiple properties " where (idCol1 = ? and idCol2 = ?)"
+   */
+  private static String createWhereCondition(final List<Property.PrimaryKeyProperty> properties) {
+    final StringBuilder stringBuilder = new StringBuilder(" where (");
+    int i = 0;
+    for (final Property.PrimaryKeyProperty property : properties) {
+      stringBuilder.append(property.getColumnName()).append(" = ?");
+      if (i++ < properties.size() - 1) {
+        stringBuilder.append(" and ");
+      }
+    }
+
+    return stringBuilder.append(")").toString();
+  }
+
+  /**
+   * @param inserting if true then only properties with non-null values are added,
+   * otherwise update is assumed and all properties with modified values are added.
    * @param entity the Entity instance
    * @param columnProperties the column properties the entity type is based on
-   * @param properties the collection to add the properties to
-   * @param values the values are added to this collection
+   * @param properties afterwards this collection will contain the properties on which to base the statement
+   * @param values afterwards this collection will contain the values to use in the statement
+   * @throws java.sql.SQLException if no properties to populate the values for were found
    */
   private static void populateStatementPropertiesAndValues(final boolean inserting, final Entity entity,
                                                            final List<Property.ColumnProperty> columnProperties,
                                                            final Collection<Property.ColumnProperty> properties,
-                                                           final Collection<Object> values) {
+                                                           final Collection<Object> values) throws SQLException {
     for (final Property.ColumnProperty property : columnProperties) {
       final boolean insertingAndNonNull = inserting && !entity.isValueNull(property.getPropertyID());
       final boolean updatingAndModified = !inserting && entity.isModified(property.getPropertyID());
@@ -956,6 +957,9 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
         properties.add(property);
         values.add(entity.getValue(property));
       }
+    }
+    if (properties.isEmpty()) {
+      throw new SQLException((inserting ? "Inserting " : "Updating ") + " entity " + entity.getEntityID() + ", no applicable properties found");
     }
   }
 
@@ -989,7 +993,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     private final String entityID;
     private final List<Property.ColumnProperty> foreignKeyProperties;
 
-    Dependency(final String entityID, final List<Property.ColumnProperty> foreignKeyProperties) {
+    private Dependency(final String entityID, final List<Property.ColumnProperty> foreignKeyProperties) {
       this.entityID = entityID;
       this.foreignKeyProperties = foreignKeyProperties;
     }

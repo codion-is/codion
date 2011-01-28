@@ -282,13 +282,13 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
   }
 
   /** {@inheritDoc} */
-  public final int queryInteger(final String sql) throws SQLException, DatabaseException {
+  public final int queryInteger(final String sql) throws SQLException {
     final List<Integer> integers = queryIntegers(sql);
     if (!integers.isEmpty()) {
       return integers.get(0);
     }
 
-    throw new DatabaseException("No records returned when querying for an integer", sql);
+    throw new SQLException("No records returned when querying for an integer", sql);
   }
 
   /** {@inheritDoc} */

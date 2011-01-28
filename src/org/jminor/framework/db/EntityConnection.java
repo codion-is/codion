@@ -70,7 +70,7 @@ public interface EntityConnection {
    * @param functionID the function ID
    * @param arguments the arguments, if any
    * @return the function return arguments
-   * @throws org.jminor.common.db.exception.DatabaseException in case anyhing goes wrong during the execution
+   * @throws org.jminor.common.db.exception.DatabaseException in case anything goes wrong during the execution
    */
   List<?> executeFunction(final String functionID, final Object... arguments) throws DatabaseException;
 
@@ -78,7 +78,7 @@ public interface EntityConnection {
    * Executes the procedure with the given id
    * @param procedureID the procedure ID
    * @param arguments the arguments, if any
-   * @throws org.jminor.common.db.exception.DatabaseException in case anyhing goes wrong during the execution
+   * @throws org.jminor.common.db.exception.DatabaseException in case anything goes wrong during the execution
    */
   void executeProcedure(final String procedureID, final Object... arguments) throws DatabaseException;
 

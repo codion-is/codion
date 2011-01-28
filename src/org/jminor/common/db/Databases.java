@@ -3,17 +3,17 @@
  */
 package org.jminor.common.db;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.Date;
-import java.util.List;
-import java.util.ArrayList;
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Provides Database implementations based on system settings.
@@ -44,6 +44,7 @@ public final class Databases {
       return integers;
     }
   };
+
   /**
    * A result packer for fetching strings from an result set containing a single string column
    */
@@ -169,7 +170,7 @@ public final class Databases {
   }
 
   /**
-   * A class for counting query types, providing avarages over time
+   * A class for counting query types, providing averages over time
    */
   public static final class QueryCounter {
 
