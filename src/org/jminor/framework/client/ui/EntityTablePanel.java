@@ -574,10 +574,10 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * @see #getInputProvider(org.jminor.framework.domain.Property, java.util.List)
    */
   public final void updateSelectedEntities() {
-    try {
-      updateSelectedEntities(getPropertyToUpdate());
+    final Property toUpdate = getPropertyToUpdate();
+    if (toUpdate != null) {//null if cancelled
+      updateSelectedEntities(toUpdate);
     }
-    catch (CancelException e) {/**/}
   }
 
   /**
@@ -605,13 +605,15 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
         UiUtil.setWaitCursor(true, this);
         getEntityTableModel().update(selectedEntities);
       }
-      catch (DatabaseException e) {
-        throw new RuntimeException(e);
-      }
       catch (ValidationException e) {
-        throw new RuntimeException(e);
+        handleException(e);
       }
-      catch (CancelException e) {/**/}
+      catch (DatabaseException e) {
+        handleException(e);
+      }
+      catch (CancelException e) {
+        handleException(e);
+      }
       finally {
         UiUtil.setWaitCursor(false, this);
       }
@@ -620,41 +622,47 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
 
   /**
    * Shows a dialog containing lists of entities depending on the selected entities via foreign key
-   * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
    */
-  public final void viewSelectionDependencies() throws DatabaseException {
+  public final void viewSelectionDependencies() {
     if (getTableModel().isSelectionEmpty()) {
       return;
     }
 
-    final Map<String, Collection<Entity>> dependencies;
     final EntityTableModel tableModel = getEntityTableModel();
     try {
       UiUtil.setWaitCursor(true, this);
-      dependencies = tableModel.getConnectionProvider().getConnection().selectDependentEntities(tableModel.getSelectedItems());
+      final Map<String, Collection<Entity>> dependencies =
+              tableModel.getConnectionProvider().getConnection().selectDependentEntities(tableModel.getSelectedItems());
+      if (!dependencies.isEmpty()) {
+        showDependenciesDialog(dependencies, tableModel.getConnectionProvider(), this);
+      }
+      else {
+        JOptionPane.showMessageDialog(this, FrameworkMessages.get(FrameworkMessages.NONE_FOUND),
+                FrameworkMessages.get(FrameworkMessages.NO_DEPENDENT_RECORDS), JOptionPane.INFORMATION_MESSAGE);
+      }
+    }
+    catch (DatabaseException e) {
+      handleException(e);
     }
     finally {
       UiUtil.setWaitCursor(false, this);
-    }
-    if (!dependencies.isEmpty()) {
-      showDependenciesDialog(dependencies, tableModel.getConnectionProvider(), this);
-    }
-    else {
-      JOptionPane.showMessageDialog(this, FrameworkMessages.get(FrameworkMessages.NONE_FOUND),
-              FrameworkMessages.get(FrameworkMessages.NO_DEPENDENT_RECORDS), JOptionPane.INFORMATION_MESSAGE);
     }
   }
 
   /**
    * Performs a delete on the active entity or if a table model is available, the selected entities
-   * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
-   * @throws org.jminor.common.model.CancelException in the delete action is cancelled
    */
-  public final void delete() throws DatabaseException, CancelException {
+  public final void delete() {
     if (confirmDelete()) {
       try {
         UiUtil.setWaitCursor(true, this);
         getEntityTableModel().deleteSelected();
+      }
+      catch (DatabaseException e) {
+        handleException(e);
+      }
+      catch (CancelException e) {
+        handleException(e);
       }
       finally {
         UiUtil.setWaitCursor(false, this);
@@ -664,15 +672,21 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
 
   /**
    * Exports the selected records as a text file using the available serializer
-   * @throws CancelException in case the action is cancelled
-   * @throws org.jminor.common.model.Serializer.SerializeException in case of an exception
    * @see org.jminor.framework.domain.EntityUtil#getEntitySerializer()
    * @see Configuration#ENTITY_SERIALIZER_CLASS
    */
-  public final void exportSelected() throws CancelException, Serializer.SerializeException {
-    final List<Entity> selected = getEntityTableModel().getSelectedItems();
-    Util.writeFile(EntityUtil.getEntitySerializer().serialize(selected), UiUtil.chooseFileToSave(this, null, null));
-    JOptionPane.showMessageDialog(this, FrameworkMessages.get(FrameworkMessages.EXPORT_SELECTED_DONE));
+  public final void exportSelected() {
+    try {
+      final List<Entity> selected = getEntityTableModel().getSelectedItems();
+      Util.writeFile(EntityUtil.getEntitySerializer().serialize(selected), UiUtil.chooseFileToSave(this, null, null));
+      JOptionPane.showMessageDialog(this, FrameworkMessages.get(FrameworkMessages.EXPORT_SELECTED_DONE));
+    }
+    catch (Serializer.SerializeException e) {
+      handleException(e);
+    }
+    catch (CancelException e) {
+      handleException(e);
+    }
   }
 
   /**
@@ -1399,7 +1413,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     }
   }
 
-  private Property getPropertyToUpdate() throws CancelException {
+  private Property getPropertyToUpdate() {
     final JComboBox box = new JComboBox(EntityUtil.getUpdatableProperties(getEntityTableModel().getEntityID()).toArray());
     final int ret = JOptionPane.showOptionDialog(this, box,
             FrameworkMessages.get(FrameworkMessages.SELECT_PROPERTY_FOR_UPDATE),
@@ -1408,9 +1422,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     if (ret == JOptionPane.OK_OPTION) {
       return (Property) box.getSelectedItem();
     }
-    else {
-      throw new CancelException();
-    }
+
+    return null;
   }
 
   private void updateStatusMessage() {

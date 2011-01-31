@@ -2371,3 +2371,4 @@
   PropertiesTest added
   EntityTestUnit.initializeReferencedEntities() now deals with self referencing entities correctly
   EntityConnectionImpl, some refactoring/renaming, exception handling/throwing for insert/update and delete improved
+  EntityTablePanel, now performs it's own error handling, instead of throwing
