@@ -82,8 +82,6 @@ public class DatabaseConnectionImplTest {
       assertTrue(entityConnection.isConnected());
       assertTrue(entityConnection.isValid());
       assertNotNull(entityConnection.getUser());
-      //getClientInfo() not supported in H2
-//      assertEquals(User.UNIT_TEST_USER, entityConnection.getUser());
       assertNotNull(entityConnection.queryInteger("select count(*) from scott.dept"));
 
       connection.close();

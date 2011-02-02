@@ -13,8 +13,8 @@ public class AbstractOperation implements DatabaseConnection.Operation {
 
   /**
    * Instantiates a new AbstractOperation
-   * @param id the operation ID
-   * @param name the operatin name
+   * @param id a unique operation ID
+   * @param name the operation name
    */
   public AbstractOperation(final String id, final String name) {
     this.id = id;

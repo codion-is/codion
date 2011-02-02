@@ -32,7 +32,8 @@ public interface DatabaseConnection extends PoolableConnection {
   /**
    * @param sql the query
    * @param fetchCount the maximum number of records to return, -1 for all
-   * @return the result of this query, in a List of rows represented as Lists
+   * @return the result of this query, in a List of rows, with each row represented by
+   * a List of column values in the same order as in the query
    * @throws SQLException thrown if anything goes wrong during the query execution
    */
   List<List> queryObjects(final String sql, final int fetchCount) throws SQLException;
@@ -103,7 +104,7 @@ public interface DatabaseConnection extends PoolableConnection {
   Object executeCallableStatement(final String sqlStatement, final int outParameterType) throws SQLException;
 
   /**
-   * Executes the given statements, in a batch if possible, which can be anything except a select query.
+   * Executes the given statements in a batch, statements which can be anything except a select query.
    * @param statements the statements to execute
    * @throws SQLException thrown if anything goes wrong during execution
    */
@@ -132,7 +133,7 @@ public interface DatabaseConnection extends PoolableConnection {
   interface Operation {
 
     /**
-     * @return this operation's unique ID
+     * @return this operation's ID, unique for the Database instance being used
      */
     String getID();
 

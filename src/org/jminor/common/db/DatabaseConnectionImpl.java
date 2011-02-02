@@ -32,7 +32,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
   private static final Logger LOG = LoggerFactory.getLogger(DatabaseConnection.class);
 
   private static final String EXECUTE = "execute";
-  private static final String MS_LOG_PRESTFIX = "ms): ";
+  private static final String MS_LOG_PREFIX = "ms): ";
   private static final String MS_LOG_POSTFIX = "ms)";
   private static final String LOG_COMMENT_PREFIX = " --(";
 
@@ -253,7 +253,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
     }
     catch (SQLException e) {
       exception = e;
-      LOG.error(user.getUsername() + " (" + Long.toString(System.currentTimeMillis() - time) + MS_LOG_PRESTFIX + sql + ";", e);
+      LOG.error(user.getUsername() + " (" + Long.toString(System.currentTimeMillis() - time) + MS_LOG_PREFIX + sql + ";", e);
       throw e;
     }
     finally {
@@ -333,7 +333,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
     }
     catch (SQLException e) {
       exception = e;
-      LOG.error(user.getUsername() + " (" + Long.toString(System.currentTimeMillis()-time) + MS_LOG_PRESTFIX + sql+";", e);
+      LOG.error(user.getUsername() + " (" + Long.toString(System.currentTimeMillis()-time) + MS_LOG_PREFIX + sql+";", e);
       throw e;
     }
     finally {
@@ -408,7 +408,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
     }
     catch (SQLException e) {
       exception = e;
-      LOG.error(user.getUsername() + " (" + Long.toString(System.currentTimeMillis()-time) + MS_LOG_PRESTFIX + sqlStatement+";", e);
+      LOG.error(user.getUsername() + " (" + Long.toString(System.currentTimeMillis()-time) + MS_LOG_PREFIX + sqlStatement+";", e);
       throw e;
     }
     finally {
@@ -437,7 +437,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
     }
     catch (SQLException e) {
       exception = e;
-      LOG.error(user.getUsername() + " (" + Long.toString(System.currentTimeMillis()-time) + MS_LOG_PRESTFIX + sql+";", e);
+      LOG.error(user.getUsername() + " (" + Long.toString(System.currentTimeMillis()-time) + MS_LOG_PREFIX + sql+";", e);
       throw e;
     }
     finally {
@@ -535,7 +535,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
       connection.setAutoCommit(false);
     }
     catch (SQLException e) {
-      throw new RuntimeException("Unable to set auto commit on new connection", e);
+      throw new DatabaseException(e, "", "Unable to disable auto commit on the given connection");
     }
     if (!database.supportsIsValid()) {
       try {

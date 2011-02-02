@@ -73,7 +73,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -197,8 +196,8 @@ public final class UiUtil {
     throw new CancelException();
   }
 
-  public static File chooseFileToSave(final JComponent dialogParent, final String startDir, final String defaultFileName)
-          throws CancelException {
+  public static File chooseFileToSave(final JComponent dialogParent, final String startDir,
+                                      final String defaultFileName) throws CancelException {
     if (fileChooser == null) {
       try {
         setWaitCursor(true, dialogParent);
@@ -278,7 +277,7 @@ public final class UiUtil {
   }
 
   public static JFormattedTextField createFormattedField(final String mask, final boolean valueContainsLiteralCharacter) {
-    return createFormattedField(mask,valueContainsLiteralCharacter,false);
+    return createFormattedField(mask, valueContainsLiteralCharacter, false);
   }
 
   public static JFormattedTextField createFormattedField(final String mask, final boolean valueContainsLiteralCharacter,
@@ -903,22 +902,15 @@ public final class UiUtil {
         throw new IllegalArgumentException(Messages.get(Messages.UNKNOWN_FILE_TYPE) + ": " + type);
       }
     }
-    final NavigableImagePanel imagePanel = new NavigableImagePanel();
     final File imageFile = new File(imagePath);
-    if (imageFile.exists()) {
-      final BufferedImage bufferedImage = ImageIO.read(imageFile);
-      imagePanel.setImage(bufferedImage);
-      final JDialog dialog = initializeDialog(dialogParent, imagePanel);
-
-      dialog.setTitle(imageFile.getName());
-
-      if (!dialog.isShowing()) {
-        dialog.setVisible(true);
-      }
-    }
-    else {
+    if (!imageFile.exists()) {
       throw new RuntimeException(Messages.get(Messages.FILE_NOT_FOUND) + ": " + imagePath);
     }
+    final NavigableImagePanel imagePanel = new NavigableImagePanel();
+    imagePanel.setImage(ImageIO.read(imageFile));
+    final JDialog dialog = initializeDialog(dialogParent, imagePanel);
+    dialog.setTitle(imageFile.getName());
+    dialog.setVisible(true);
   }
 
   /**
@@ -927,18 +919,18 @@ public final class UiUtil {
    */
   public static boolean isFileDataFlavor(final TransferHandler.TransferSupport support) {
     try {
-        final DataFlavor nixFileDataFlavor = new DataFlavor("text/uri-list;class=java.lang.String");
-        for (final DataFlavor flavor : support.getDataFlavors()) {
-          if (flavor.isFlavorJavaFileListType() || flavor.equals(nixFileDataFlavor)) {
-            return true;
-          }
+      final DataFlavor nixFileDataFlavor = new DataFlavor("text/uri-list;class=java.lang.String");
+      for (final DataFlavor flavor : support.getDataFlavors()) {
+        if (flavor.isFlavorJavaFileListType() || flavor.equals(nixFileDataFlavor)) {
+          return true;
         }
+      }
 
-        return false;
-      }
-      catch (ClassNotFoundException e) {
-        throw new RuntimeException(e);
-      }
+      return false;
+    }
+    catch (ClassNotFoundException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   /**
