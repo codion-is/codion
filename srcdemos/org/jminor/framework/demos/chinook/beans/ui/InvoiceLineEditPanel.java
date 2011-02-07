@@ -6,12 +6,13 @@ package org.jminor.framework.demos.chinook.beans.ui;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.ui.EntityEditPanel;
 import org.jminor.framework.demos.chinook.domain.Chinook;
-import static org.jminor.framework.demos.chinook.domain.Chinook.INVOICELINE_QUANTITY;
-import static org.jminor.framework.demos.chinook.domain.Chinook.INVOICELINE_TRACKID_FK;
 
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import java.awt.BorderLayout;
+
+import static org.jminor.framework.demos.chinook.domain.Chinook.INVOICELINE_QUANTITY;
+import static org.jminor.framework.demos.chinook.domain.Chinook.INVOICELINE_TRACKID_FK;
 
 public class InvoiceLineEditPanel extends EntityEditPanel {
 
@@ -37,8 +38,6 @@ public class InvoiceLineEditPanel extends EntityEditPanel {
     setLayout(new BorderLayout(5, 5));
     add(createPropertyPanel(INVOICELINE_TRACKID_FK), BorderLayout.WEST);
     add(createPropertyPanel(INVOICELINE_QUANTITY), BorderLayout.CENTER);
-    if (tableSearchField != null) {
-      add(createPropertyPanel(new JLabel(" "), tableSearchField, true, 5, 5), BorderLayout.EAST);
-    }
+    add(createPropertyPanel(new JLabel(" "), tableSearchField, true, 5, 5), BorderLayout.EAST);
   }
 }

@@ -7,13 +7,14 @@ import org.jminor.common.ui.DateInputPanel;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.ui.EntityEditPanel;
 import org.jminor.framework.client.ui.EntityPanel;
-import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
+
+import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 
 public class InvoiceEditPanel extends EntityEditPanel {
 
@@ -64,8 +65,6 @@ public class InvoiceEditPanel extends EntityEditPanel {
 
     setLayout(new BorderLayout(5, 5));
     add(centerBase, BorderLayout.CENTER);
-    if (invoiceLinePanel != null) {
-      add(invoiceLinePanel, BorderLayout.EAST);
-    }
+    add(invoiceLinePanel, BorderLayout.EAST);
   }
 }
