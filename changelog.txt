@@ -2374,3 +2374,5 @@
   EntityTablePanel, now performs it's own error handling, instead of throwing
   ComboBoxValueLink, now updates model via itemListener on both state changes, ItemEvent.SELECTED and ItemEvent.DESELECTED
   Minor mostly cosmetic doc/code changes
+  Entity.ToString added
+  Entities.StringProvider added, implements the above, org.jminor.common.model.valuemap.StringProvider removed, test code moved accordingly, demos updated

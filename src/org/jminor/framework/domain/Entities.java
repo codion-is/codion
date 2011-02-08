@@ -13,6 +13,8 @@ import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.i18n.FrameworkMessages;
 
+import java.io.Serializable;
+import java.text.Format;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -247,10 +249,11 @@ public final class Entities {
 
   /**
    * @param entityID the entity ID
-   * @return the StringProvider used in case toString() is called for the given entity
+   * @return the Entity.ToString instance used to provide string representations
+   * of entities of the given type
    * @throws RuntimeException if the entity is undefined
    */
-  public static ValueMap.ToString<String> getStringProvider(final String entityID) {
+  public static Entity.ToString getStringProvider(final String entityID) {
     return EntityDefinitionImpl.getDefinition(entityID).getStringProvider();
   }
 
@@ -558,7 +561,186 @@ public final class Entities {
   }
 
   /**
- * A default extensible Entity.Validator implementation.
+   * Provides String representations of Entity instances.<br>
+   * Given a Entity instance named entity containing the following mappings:
+   * <pre>
+   * "key1" -> value1
+   * "key2" -> value2
+   * "key3" -> value3
+   * "key4" -> {Entity instance with a single mapping "refKey" -> refValue}
+   * </pre>
+   * <code>
+   * Entities.StringProvider provider = new Entities.StringProvider();<br>
+   * provider.addText("key1=").addValue("key1").addText(", key3='").addValue("key3")<br>
+   *         .addText("' foreign key value=").addForeignKeyValue("key4", "refKey");<br>
+   * System.out.println(provider.toString(entity));<br>
+   * </code>
+   * <br>
+   * outputs the following String:<br><br>
+   * <code>key1=value1, key3='value3' foreign key value=refValue</code>
+   */
+  public static final class StringProvider implements Entity.ToString, Serializable {
+
+    private static final long serialVersionUID = 1;
+
+    /**
+     * Holds the ValueProviders used when constructing the String representation
+     */
+    private final List<ValueProvider> valueProviders = new ArrayList<ValueProvider>();
+
+    /**
+     * Instantiates a new StringProvider instance
+     */
+    public StringProvider() {}
+
+    /**
+     * Instantiates a new StringProvider instance
+     * @param propertyID the ID of the property which value should be used for a string representation
+     */
+    public StringProvider(final String propertyID) {
+      addValue(propertyID);
+    }
+
+    public String toString(final Entity entity) {
+      final StringBuilder builder = new StringBuilder();
+      for (final ValueProvider valueProvider : valueProviders) {
+        builder.append(valueProvider.toString(entity));
+      }
+
+      return builder.toString();
+    }
+
+    /**
+     * Adds the value mapped to the given key to this StringProvider
+     * @param propertyID the ID of the property which value should be added to the string representation
+     * @return this StringProvider instance
+     */
+    public StringProvider addValue(final String propertyID) {
+      valueProviders.add(new StringValueProvider(propertyID));
+      return this;
+    }
+
+    /**
+     * Adds the value mapped to the given key to this StringProvider
+     * @param propertyID the ID of the property which value should be added to the string representation
+     * @param format the Format to use when appending the value
+     * @return this StringProvider instance
+     */
+    public StringProvider addFormattedValue(final String propertyID, final Format format) {
+      valueProviders.add(new FormattedValueProvider(propertyID, format));
+      return this;
+    }
+
+    /**
+     * Adds the value mapped to the given property in the Entity instance mapped to the given foreignKeyPropertyID
+     * to this StringProvider
+     * @param foreignKeyPropertyID the ID of the foreign key property
+     * @param propertyID the ID of the property in the referenced entity to use
+     * @return this StringProvider instance
+     */
+    public StringProvider addForeignKeyValue(final String foreignKeyPropertyID, final String propertyID) {
+      valueProviders.add(new ForeignKeyValueProvider(foreignKeyPropertyID, propertyID));
+      return this;
+    }
+
+    /**
+     * Adds the given static text to this StringProvider
+     * @param text the text to add
+     * @return this StringProvider instance
+     */
+    public StringProvider addText(final String text) {
+      valueProviders.add(new StaticTextProvider(text));
+      return this;
+    }
+
+    private interface ValueProvider extends Serializable {
+      /**
+       * @param entity the entity
+       * @return a String representation of a property value from the given entity
+       */
+      String toString(final Entity entity);
+    }
+
+    private static final class FormattedValueProvider implements ValueProvider {
+      private static final long serialVersionUID = 1;
+      private final String propertyID;
+      private final Format format;
+
+      private FormattedValueProvider(final String propertyID, final Format format) {
+        this.propertyID = propertyID;
+        this.format = format;
+      }
+
+      /** {@inheritDoc} */
+      public String toString(final Entity entity) {
+        if (entity.isValueNull(propertyID)) {
+          return "";
+        }
+
+        return format.format(entity.getValue(propertyID));
+      }
+    }
+
+    private static final class ForeignKeyValueProvider implements ValueProvider {
+      private static final long serialVersionUID = 1;
+      private final String foreignKeyPropertyID;
+      private final String propertyID;
+
+      private ForeignKeyValueProvider(final String foreignKeyPropertyID, final String propertyID) {
+        this.foreignKeyPropertyID = foreignKeyPropertyID;
+        this.propertyID = propertyID;
+      }
+
+      /** {@inheritDoc} */
+      @SuppressWarnings({"unchecked"})
+      public String toString(final Entity entity) {
+        if (entity.isValueNull(foreignKeyPropertyID)) {
+          return "";
+        }
+        final Entity referencedValue = entity.getForeignKeyValue(foreignKeyPropertyID);
+        if (referencedValue.isValueNull(propertyID)) {
+          return "";
+        }
+
+        return referencedValue.getValue(propertyID).toString();
+      }
+    }
+
+    private static final class StringValueProvider implements ValueProvider {
+      private static final long serialVersionUID = 1;
+      private final String propertyID;
+
+      private StringValueProvider(final String propertyID) {
+        this.propertyID = propertyID;
+      }
+
+      /** {@inheritDoc} */
+      public String toString(final Entity entity) {
+        if (entity.isValueNull(propertyID)) {
+          return "";
+        }
+
+        return entity.getValueAsString(propertyID);
+      }
+    }
+
+    private static final class StaticTextProvider implements ValueProvider {
+      private static final long serialVersionUID = 1;
+      private final String text;
+
+      private StaticTextProvider(final String text) {
+        this.text = text;
+      }
+
+      /** {@inheritDoc} */
+      public String toString(final Entity entity) {
+        return text;
+      }
+    }
+  }
+
+  /**
+   * A default extensible Entity.Validator implementation.
    */
   public static class Validator extends DefaultValueMapValidator<String, Object> implements Entity.Validator {
 

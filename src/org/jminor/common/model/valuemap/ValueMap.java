@@ -71,14 +71,15 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueAsStringProvid
 
   /**
    * Describes an object responsible for providing String representations of ValueMap instances
-   * @param <K> the type of the map keys
+   * @param <K> the value map key type
+   * @param <V> the valueMap type
    */
-  interface ToString<K> {
+  interface ToString<K, V extends ValueMap<K, ?>> {
     /**
      * Returns a string representation of the given value map
      * @param valueMap the value map
      * @return a string representation of the value map
      */
-    String toString(final ValueMap<K, ?> valueMap);
+    String toString(final V valueMap);
   }
 }

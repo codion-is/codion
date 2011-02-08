@@ -5,7 +5,6 @@ package org.jminor.framework.demos.petstore.domain;
 
 import org.jminor.common.model.IdSource;
 import org.jminor.common.model.Version;
-import org.jminor.common.model.valuemap.StringProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Properties;
 
@@ -87,7 +86,7 @@ public class Petstore {
             Properties.columnProperty(ADDRESS_LONGITUDE, Types.DOUBLE, "Longitude").setNullable(false).setMaximumFractionDigits(2))
             .setIdSource(IdSource.MAX_PLUS_ONE)
             .setOrderByClause(ADDRESS_CITY + ", " + ADDRESS_STREET_1 + ", " + ADDRESS_STREET_2)
-            .setStringProvider(new StringProvider<String>(ADDRESS_STREET_1).addText(" ")
+            .setStringProvider(new Entities.StringProvider(ADDRESS_STREET_1).addText(" ")
             .addValue(ADDRESS_STREET_2).addText(", ").addValue(ADDRESS_CITY).addText(" ")
             .addValue(ADDRESS_ZIP).addText(", ").addValue(ADDRESS_STATE))
             .setCaption("Addresses");
@@ -99,7 +98,7 @@ public class Petstore {
             Properties.columnProperty(CATEGORY_IMAGE_URL, Types.VARCHAR, "Image URL").setHidden(true))
             .setIdSource(IdSource.MAX_PLUS_ONE)
             .setOrderByClause(CATEGORY_NAME)
-            .setStringProvider(new StringProvider<String>(CATEGORY_NAME))
+            .setStringProvider(new Entities.StringProvider(CATEGORY_NAME))
             .setCaption("Categories");
 
     Entities.define(T_ITEM, "petstore.item",
@@ -118,7 +117,7 @@ public class Petstore {
             Properties.columnProperty(ITEM_DISABLED, Types.BOOLEAN, "Disabled").setDefaultValue(false))
             .setIdSource(IdSource.MAX_PLUS_ONE)
             .setOrderByClause(ITEM_NAME)
-            .setStringProvider(new StringProvider<String>(ITEM_PRODUCT_FK).addText(" - ").addValue(ITEM_NAME))
+            .setStringProvider(new Entities.StringProvider(ITEM_PRODUCT_FK).addText(" - ").addValue(ITEM_NAME))
             .setCaption("Items");
 
     Entities.define(T_PRODUCT, "petstore.product",
@@ -130,7 +129,7 @@ public class Petstore {
             Properties.columnProperty(PRODUCT_IMAGE_URL, Types.VARCHAR, "Image URL").setMaxLength(55).setHidden(true))
             .setIdSource(IdSource.MAX_PLUS_ONE)
             .setOrderByClause(PRODUCT_NAME)
-            .setStringProvider(new StringProvider<String>(PRODUCT_CATEGORY_FK)
+            .setStringProvider(new Entities.StringProvider(PRODUCT_CATEGORY_FK)
             .addText(" - ").addValue(PRODUCT_NAME))
             .setCaption("Products");
 
@@ -141,7 +140,7 @@ public class Petstore {
             Properties.columnProperty(SELLER_CONTACT_INFO_EMAIL, Types.VARCHAR, "Email").setMaxLength(24).setNullable(false))
             .setIdSource(IdSource.MAX_PLUS_ONE)
             .setOrderByClause(SELLER_CONTACT_INFO_LAST_NAME + ", "+ SELLER_CONTACT_INFO_FIRST_NAME)
-            .setStringProvider(new StringProvider<String>(SELLER_CONTACT_INFO_LAST_NAME)
+            .setStringProvider(new Entities.StringProvider(SELLER_CONTACT_INFO_LAST_NAME)
             .addText(", ").addValue(SELLER_CONTACT_INFO_FIRST_NAME))
             .setCaption("Seller info");
 
@@ -153,7 +152,7 @@ public class Petstore {
             .setIdSource(IdSource.MAX_PLUS_ONE)
             .setOrderByClause(TAG_TAG)
             .setSelectTableName("petstore.tag tag")
-            .setStringProvider(new StringProvider<String>(TAG_TAG))
+            .setStringProvider(new Entities.StringProvider(TAG_TAG))
             .setCaption("Tags");
 
     Entities.define(T_TAG_ITEM, "petstore.tag_item",
@@ -161,7 +160,7 @@ public class Petstore {
                     Properties.primaryKeyProperty(TAG_ITEM_ITEM_ID, Types.INTEGER).setIndex(0)).setNullable(false),
             Properties.foreignKeyProperty(TAG_ITEM_TAG_FK, "Tag", T_TAG,
                     Properties.primaryKeyProperty(TAG_ITEM_TAG_ID, Types.INTEGER).setIndex(1)).setNullable(false))
-            .setStringProvider(new StringProvider<String>(TAG_ITEM_ITEM_FK).addText(" - ").addValue(TAG_ITEM_TAG_FK))
+            .setStringProvider(new Entities.StringProvider(TAG_ITEM_ITEM_FK).addText(" - ").addValue(TAG_ITEM_TAG_FK))
             .setCaption("Item tags");
   }
 }

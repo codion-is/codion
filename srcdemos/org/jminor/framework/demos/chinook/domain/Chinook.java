@@ -5,7 +5,6 @@ import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.IdSource;
-import org.jminor.common.model.valuemap.StringProvider;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.db.criteria.EntitySelectCriteria;
@@ -203,7 +202,7 @@ public class Chinook {
                     .setPreferredColumnWidth(160))
             .setDomainID(DOMAIN_ID)
             .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_ALBUM)
-            .setStringProvider(new StringProvider<String>(ALBUM_TITLE))
+            .setStringProvider(new Entities.StringProvider(ALBUM_TITLE))
             .setSearchPropertyIDs(ALBUM_TITLE)
             .setOrderByClause(ALBUM_ARTISTID + ", " + ALBUM_TITLE)
             .setCaption("Albums");
@@ -215,7 +214,7 @@ public class Chinook {
                     .setPreferredColumnWidth(160))
             .setDomainID(DOMAIN_ID)
             .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_ARTIST)
-            .setStringProvider(new StringProvider<String>(ARTIST_NAME))
+            .setStringProvider(new Entities.StringProvider(ARTIST_NAME))
             .setSearchPropertyIDs(ARTIST_NAME)
             .setOrderByClause(ARTIST_NAME)
             .setCaption("Artists");
@@ -251,7 +250,7 @@ public class Chinook {
                     Properties.columnProperty(CUSTOMER_SUPPORTREPID)))
             .setDomainID(DOMAIN_ID)
             .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_CUSTOMER)
-            .setStringProvider(new StringProvider<String>(CUSTOMER_LASTNAME)
+            .setStringProvider(new Entities.StringProvider(CUSTOMER_LASTNAME)
                     .addText(", ").addValue(CUSTOMER_FIRSTNAME))
             .setSearchPropertyIDs(CUSTOMER_FIRSTNAME, CUSTOMER_LASTNAME, CUSTOMER_EMAIL)
             .setOrderByClause(CUSTOMER_LASTNAME + ", " + CUSTOMER_FIRSTNAME)
@@ -289,7 +288,7 @@ public class Chinook {
                     .setMaxLength(60))
             .setDomainID(DOMAIN_ID)
             .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_EMPLOYEE)
-            .setStringProvider(new StringProvider<String>(EMPLOYEE_LASTNAME)
+            .setStringProvider(new Entities.StringProvider(EMPLOYEE_LASTNAME)
                     .addText(", ").addValue(EMPLOYEE_FIRSTNAME))
             .setSearchPropertyIDs(EMPLOYEE_FIRSTNAME, EMPLOYEE_LASTNAME, EMPLOYEE_EMAIL)
             .setOrderByClause(EMPLOYEE_LASTNAME + ", " + EMPLOYEE_FIRSTNAME)
@@ -302,7 +301,7 @@ public class Chinook {
                     .setPreferredColumnWidth(160))
             .setDomainID(DOMAIN_ID)
             .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_GENRE)
-            .setStringProvider(new StringProvider<String>(GENRE_NAME))
+            .setStringProvider(new Entities.StringProvider(GENRE_NAME))
             .setSearchPropertyIDs(GENRE_NAME)
             .setOrderByClause(GENRE_NAME)
             .setCaption("Genres");
@@ -314,7 +313,7 @@ public class Chinook {
                     .setPreferredColumnWidth(160))
             .setDomainID(DOMAIN_ID)
             .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_MEDIATYPE)
-            .setStringProvider(new StringProvider<String>(MEDIATYPE_NAME))
+            .setStringProvider(new Entities.StringProvider(MEDIATYPE_NAME))
             .setOrderByClause(MEDIATYPE_NAME)
             .setCaption("Media types");
 
@@ -348,7 +347,7 @@ public class Chinook {
                     .setNullable(false))
             .setDomainID(DOMAIN_ID)
             .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_TRACK)
-            .setStringProvider(new StringProvider<String>(TRACK_NAME))
+            .setStringProvider(new Entities.StringProvider(TRACK_NAME))
             .setSearchPropertyIDs(TRACK_NAME)
             .setOrderByClause(TRACK_NAME)
             .setCaption("Tracks");
@@ -360,7 +359,7 @@ public class Chinook {
                     .setPreferredColumnWidth(160))
             .setDomainID(DOMAIN_ID)
             .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_PLAYLIST)
-            .setStringProvider(new StringProvider<String>(PLAYLIST_NAME))
+            .setStringProvider(new Entities.StringProvider(PLAYLIST_NAME))
             .setSearchPropertyIDs(PLAYLIST_NAME)
             .setOrderByClause(PLAYLIST_NAME)
             .setCaption("Playlists");
@@ -386,7 +385,7 @@ public class Chinook {
                     .setPreferredColumnWidth(160))
             .setDomainID(DOMAIN_ID)
             .setIdSource(IdSource.NONE)
-            .setStringProvider(new StringProvider<String>(PLAYLISTTRACK_PLAYLISTID_FK)
+            .setStringProvider(new Entities.StringProvider(PLAYLISTTRACK_PLAYLISTID_FK)
                     .addText(" - ").addValue(PLAYLISTTRACK_TRACKID_FK))
             .setCaption("Playlist tracks");
 
@@ -417,7 +416,7 @@ public class Chinook {
                     .setMaximumFractionDigits(2))
             .setDomainID(DOMAIN_ID)
             .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_INVOICE)
-            .setStringProvider(new StringProvider<String>(INVOICE_INVOICEID))
+            .setStringProvider(new Entities.StringProvider(INVOICE_INVOICEID))
             .setSearchPropertyIDs(INVOICE_INVOICEID_AS_STRING)
             .setOrderByClause(INVOICE_CUSTOMERID + ", " + INVOICE_INVOICEDATE + " desc")
             .setCaption("Invoices");

@@ -369,6 +369,8 @@ public interface Entity extends ValueChangeMap<String, Object>, Comparable<Entit
     void performRangeValidation(final Entity entity, final Property property) throws RangeValidationException;
   }
 
+  interface ToString extends ValueMap.ToString<String, Entity> {}
+
   /**
    * Specifies a entity definition.
    */
@@ -400,7 +402,7 @@ public interface Entity extends ValueChangeMap<String, Object>, Comparable<Entit
      * @param toString the to string provider
      * @return this Entity.Definition instance
      */
-    Definition setToStringProvider(final ToString<String> toString);
+    Definition setToStringProvider(final ToString toString);
 
     /**
      * @param colorProvider the background color provider
@@ -527,14 +529,14 @@ public interface Entity extends ValueChangeMap<String, Object>, Comparable<Entit
     /**
      * @return the object responsible for providing toString values for this entity type
      */
-    ToString<String> getStringProvider();
+    ToString getStringProvider();
 
     /**
      * Sets the string provider, that is, the object responsible for providing toString values for this entity type
      * @param stringProvider the string provider
      * @return this Entity.Definition instance
      */
-    Definition setStringProvider(final ToString<String> stringProvider);
+    Definition setStringProvider(final ToString stringProvider);
 
     /**
      * Sets the comparator to use when comparing this entity type to other entities
@@ -577,7 +579,7 @@ public interface Entity extends ValueChangeMap<String, Object>, Comparable<Entit
      * Returns the IDs of the properties which values are linked to the value of the given property,
      * an empty collection if no such linked properties exist
      * @param propertyID the ID of the property
-     * @return a collection conaining the IDs of any properties which are linked to the given property
+     * @return a collection containing the IDs of any properties which are linked to the given property
      */
     Collection<String> getLinkedPropertyIDs(final String propertyID);
 

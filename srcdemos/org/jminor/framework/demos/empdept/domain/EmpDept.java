@@ -4,7 +4,6 @@
 package org.jminor.framework.demos.empdept.domain;
 
 import org.jminor.common.model.IdSource;
-import org.jminor.common.model.valuemap.StringProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Properties;
@@ -81,7 +80,7 @@ public class EmpDept {
             .setIdSource(IdSource.NONE)
             .setSmallDataset(true)
             .setOrderByClause(DEPARTMENT_NAME)
-            .setStringProvider(new StringProvider<String>(DEPARTMENT_NAME))
+            .setStringProvider(new Entities.StringProvider(DEPARTMENT_NAME))
             .setCaption(getString(DEPARTMENT));
 
     /*Defining the entity type T_EMPLOYEE*/
@@ -107,7 +106,7 @@ public class EmpDept {
                     getString(DEPARTMENT_LOCATION)).setPreferredColumnWidth(100))
             .setIdSource(IdSource.MAX_PLUS_ONE)
             .setOrderByClause(EMPLOYEE_DEPARTMENT + ", " + EMPLOYEE_NAME)
-            .setStringProvider(new StringProvider<String>(EMPLOYEE_NAME))
+            .setStringProvider(new Entities.StringProvider(EMPLOYEE_NAME))
             .setCaption(getString(EMPLOYEE))
             .setBackgroundColorProvider(new Entity.BackgroundColorProvider() {
               /*provide a custom background color for managers*/

@@ -4,7 +4,6 @@
 package org.jminor.framework.demos.schemabrowser.domain;
 
 import org.jminor.common.db.Databases;
-import org.jminor.common.model.valuemap.StringProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Properties;
 import org.jminor.framework.domain.Property;
@@ -57,7 +56,7 @@ public class SchemaBrowser {
             Properties.primaryKeyProperty(SCHEMA_NAME, Types.VARCHAR, "Name"))
             .setOrderByClause(SCHEMA_NAME)
             .setReadOnly(true)
-            .setStringProvider(new StringProvider<String>(SCHEMA_NAME))
+            .setStringProvider(new Entities.StringProvider(SCHEMA_NAME))
             .setCaption("Schemas");
 
     Entities.define(T_TABLE, bundle.getString("t_table"),
@@ -66,7 +65,7 @@ public class SchemaBrowser {
             Properties.primaryKeyProperty(TABLE_NAME, Types.VARCHAR, "Name").setIndex(1))
             .setOrderByClause(TABLE_SCHEMA + ", " + TABLE_NAME)
             .setReadOnly(true)
-            .setStringProvider(new StringProvider<String>(TABLE_SCHEMA_FK).addText(".").addValue(TABLE_NAME))
+            .setStringProvider(new Entities.StringProvider(TABLE_SCHEMA_FK).addText(".").addValue(TABLE_NAME))
             .setCaption("Tables");
 
     Entities.define(T_COLUMN, bundle.getString("t_column"),
@@ -79,7 +78,7 @@ public class SchemaBrowser {
             Properties.columnProperty(COLUMN_DATA_TYPE, Types.VARCHAR, "Data type"))
             .setOrderByClause(COLUMN_SCHEMA + ", " + COLUMN_TABLE_NAME + ", " + COLUMN_NAME)
             .setReadOnly(true)
-            .setStringProvider(new StringProvider<String>(COLUMN_TABLE_FK).addText(".").addValue(COLUMN_NAME))
+            .setStringProvider(new Entities.StringProvider(COLUMN_TABLE_FK).addText(".").addValue(COLUMN_NAME))
             .setCaption("Columns");
 
     Entities.define(T_CONSTRAINT, bundle.getString("t_constraint"),
@@ -92,7 +91,7 @@ public class SchemaBrowser {
             Properties.columnProperty(CONSTRAINT_TYPE, Types.VARCHAR, "Type"))
             .setOrderByClause(CONSTRAINT_SCHEMA + ", " + CONSTRAINT_TABLE_NAME + ", " + CONSTRAINT_NAME)
             .setReadOnly(true)
-            .setStringProvider(new StringProvider<String>(CONSTRAINT_TABLE_FK).addText(".").addValue(CONSTRAINT_NAME))
+            .setStringProvider(new Entities.StringProvider(CONSTRAINT_TABLE_FK).addText(".").addValue(CONSTRAINT_NAME))
             .setCaption("Constraints");
 
     Entities.define(T_COLUMN_CONSTRAINT, bundle.getString("t_column_constraint"),

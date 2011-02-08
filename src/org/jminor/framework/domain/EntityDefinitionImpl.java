@@ -5,7 +5,6 @@ package org.jminor.framework.domain;
 
 import org.jminor.common.model.IdSource;
 import org.jminor.common.model.Util;
-import org.jminor.common.model.valuemap.ValueMap;
 
 import java.awt.Color;
 import java.text.Collator;
@@ -83,14 +82,12 @@ final class EntityDefinitionImpl implements Entity.Definition {
   private boolean smallDataset = false;
 
   /**
-   * The StringProvider used when toString() is called for this entity
-   * @see org.jminor.common.model.valuemap.ValueMap.ToString
+   * The default Entity.ToString instance used when toString() is called for this entity type
    */
-  private ValueMap.ToString<String> stringProvider = new ValueMap.ToString<String>() {
+  private Entity.ToString stringProvider = new Entity.ToString() {
     /** {@inheritDoc} */
-    public String toString(final ValueMap<String, ?> valueMap) {
-      Util.rejectNullValue(valueMap, "entity");
-      final Entity entity = (Entity) valueMap;
+    public String toString(final Entity entity) {
+      Util.rejectNullValue(entity, "entity");
       return new StringBuilder(entityID).append(": ").append(entity.getPrimaryKey()).toString();
     }
   };
@@ -289,12 +286,12 @@ final class EntityDefinitionImpl implements Entity.Definition {
   }
 
   /** {@inheritDoc} */
-  public ValueMap.ToString<String> getStringProvider() {
+  public Entity.ToString getStringProvider() {
     return stringProvider;
   }
 
   /** {@inheritDoc} */
-  public Entity.Definition setStringProvider(final ValueMap.ToString<String> stringProvider) {
+  public Entity.Definition setStringProvider(final Entity.ToString stringProvider) {
     Util.rejectNullValue(stringProvider, "stringProvider");
     this.stringProvider = stringProvider;
     return this;
@@ -433,7 +430,7 @@ final class EntityDefinitionImpl implements Entity.Definition {
   }
 
   /** {@inheritDoc} */
-  public Entity.Definition setToStringProvider(final ValueMap.ToString<String> toString) {
+  public Entity.Definition setToStringProvider(final Entity.ToString toString) {
     this.stringProvider = toString;
     return this;
   }

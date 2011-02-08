@@ -4,7 +4,6 @@ import org.jminor.common.model.CancelException;
 import org.jminor.common.model.IdSource;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.User;
-import org.jminor.common.model.valuemap.StringProvider;
 import org.jminor.framework.client.model.DefaultEntityApplicationModel;
 import org.jminor.framework.client.model.DefaultEntityEditModel;
 import org.jminor.framework.client.model.EntityApplicationModel;
@@ -47,7 +46,7 @@ public class EmpDeptMinimalApp {
                       .setMaxLength(13))
               .setIdSource(IdSource.MAX_PLUS_ONE)
               .setCaption("Departments")
-              .setStringProvider(new StringProvider<String>("dname"));
+              .setStringProvider(new Entities.StringProvider("dname"));
       /**
        * We then define the entity based on the SCOTT.EMP table,
        * notice the foreign key wrapper properties, referencing the
@@ -76,7 +75,7 @@ public class EmpDeptMinimalApp {
                       .setNullable(false))
               .setIdSource(IdSource.MAX_PLUS_ONE)
               .setCaption("Employees")
-              .setStringProvider(new StringProvider<String>("ename"));
+              .setStringProvider(new Entities.StringProvider("ename"));
     }
   }
 
