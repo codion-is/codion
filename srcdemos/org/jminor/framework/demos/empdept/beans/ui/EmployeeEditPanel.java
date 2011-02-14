@@ -7,11 +7,12 @@ import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.ui.EntityEditPanel;
-import static org.jminor.framework.demos.empdept.domain.EmpDept.*;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+
+import static org.jminor.framework.demos.empdept.domain.EmpDept.*;
 
 public class EmployeeEditPanel extends EntityEditPanel {
 

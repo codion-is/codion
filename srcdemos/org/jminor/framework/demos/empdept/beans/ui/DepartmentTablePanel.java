@@ -10,8 +10,6 @@ import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.ui.EntityTablePanel;
 import org.jminor.framework.client.ui.reporting.EntityReportUiUtil;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
-import static org.jminor.framework.demos.empdept.domain.EmpDept.DEPARTMENT_ID;
-import static org.jminor.framework.demos.empdept.domain.EmpDept.EMPLOYEE_REPORT;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.plugins.jasperreports.model.JasperReportsWrapper;
 import org.jminor.framework.plugins.jasperreports.ui.JasperReportsUIWrapper;
@@ -19,6 +17,9 @@ import org.jminor.framework.plugins.jasperreports.ui.JasperReportsUIWrapper;
 import javax.swing.SwingWorker;
 import java.util.Collection;
 import java.util.HashMap;
+
+import static org.jminor.framework.demos.empdept.domain.EmpDept.DEPARTMENT_ID;
+import static org.jminor.framework.demos.empdept.domain.EmpDept.EMPLOYEE_REPORT;
 
 public class DepartmentTablePanel extends EntityTablePanel {
 
