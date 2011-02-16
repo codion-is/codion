@@ -2376,3 +2376,5 @@
   Minor mostly cosmetic doc/code changes
   Entity.ToString added
   Entities.StringProvider added, implements the above, org.jminor.common.model.valuemap.StringProvider removed, test code moved accordingly, demos updated
+  EntityImpl.isValueNull() now relies on the result of isLoaded() in case of foreign key properties, tested
+  Some javadoc updates, using (perhaps overusing?) {@link ...} where applicable

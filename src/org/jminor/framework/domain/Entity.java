@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * An ORM entity interface, providing access to the property values via the ValueMap interface.
+ * Represents a row in a database table, providing access to the column values via the {@link org.jminor.common.model.valuemap.ValueMap} interface.
  */
 public interface Entity extends ValueChangeMap<String, Object>, Comparable<Entity> {
 
@@ -147,6 +147,11 @@ public interface Entity extends ValueChangeMap<String, Object>, Comparable<Entit
   String getValueAsString(final Property property);
 
   /**
+   * Returns the Entity instance referenced by the given foreign key property.
+   * If the underlying reference property contains a value, that is,
+   * a foreign key value exists but the actual referenced entity has not
+   * been loaded, an "empty" entity is returned, containing only the primary
+   * key value. Null is returned only if the actual reference property is null.
    * @param foreignKeyPropertyID the ID of the property for which to retrieve the value
    * @return the value of the property identified by <code>propertyID</code>,
    * assuming it is an Entity
@@ -343,7 +348,7 @@ public interface Entity extends ValueChangeMap<String, Object>, Comparable<Entit
      * Validates the given Entity objects.
      * @param entities the entities to validate
      * @param action describes the action requiring validation,
-     * EntityEditor.INSERT, EntityEditor.UPDATE or EntityEditor.UNKNOWN
+     * {@link ValueMapValidator#INSERT}, {@link ValueMapValidator#UPDATE} or {@link ValueMapValidator#UNKNOWN}
      * @throws org.jminor.common.model.valuemap.exception.ValidationException in case the validation fails
      */
     void validate(final Collection<Entity> entities, final int action) throws ValidationException;
@@ -353,7 +358,7 @@ public interface Entity extends ValueChangeMap<String, Object>, Comparable<Entit
      * @param entity the entity
      * @param property the property
      * @param action the action requiring validation
-     * @throws org.jminor.common.model.valuemap.exception.NullValidationException in case the proerty value is null and the property is not nullable
+     * @throws org.jminor.common.model.valuemap.exception.NullValidationException in case the property value is null and the property is not nullable
      * @see Property#isNullable()
      */
     void performNullValidation(final Entity entity, final Property property, final int action) throws NullValidationException;
@@ -400,24 +405,24 @@ public interface Entity extends ValueChangeMap<String, Object>, Comparable<Entit
 
     /**
      * @param toString the to string provider
-     * @return this Entity.Definition instance
+     * @return this {@link Entity.Definition} instance
      */
     Definition setToStringProvider(final ToString toString);
 
     /**
      * @param colorProvider the background color provider
-     * @return this Entity.Definition instance
+     * @return this {@link Entity.Definition} instance
      */
     Definition setBackgroundColorProvider(final BackgroundColorProvider colorProvider);
 
     /**
      * @param validator the validator for this entity type
-     * @return this Entity.Definition instance
+     * @return this {@link Entity.Definition} instance
      */
     Definition setValidator(final Validator validator);
 
     /**
-     * @return the validator for this enitity type
+     * @return the validator for this entity type
      */
     Validator getValidator();
 
@@ -429,7 +434,7 @@ public interface Entity extends ValueChangeMap<String, Object>, Comparable<Entit
     /**
      * Sets the caption for this entity type
      * @param caption the caption
-     * @return this Entity.Definition instance
+     * @return this {@link Entity.Definition} instance
      */
     Definition setCaption(final String caption);
 
@@ -443,7 +448,7 @@ public interface Entity extends ValueChangeMap<String, Object>, Comparable<Entit
      * which primarily means that combo box models can be based on this entity.
      * This is false by default.
      * @param smallDataset true if the underlying table is small enough for displaying the contents in a combo box
-     * @return this Entity.Definition instance
+     * @return this {@link Entity.Definition} instance
      */
     Definition setSmallDataset(final boolean smallDataset);
 
@@ -455,7 +460,7 @@ public interface Entity extends ValueChangeMap<String, Object>, Comparable<Entit
     /**
      * Sets the read only value
      * @param readOnly true if this entity type should be read only
-     * @return this Entity.Definition instance
+     * @return this {@link Entity.Definition} instance
      */
     Definition setReadOnly(final boolean readOnly);
 
@@ -468,7 +473,7 @@ public interface Entity extends ValueChangeMap<String, Object>, Comparable<Entit
      * Sets the id source for this entity type, which specifies the primary key
      * generation strategy to use.
      * @param idSource the idSource
-     * @return this Entity.Definition instance
+     * @return this {@link Entity.Definition} instance
      */
     Definition setIdSource(final IdSource idSource);
 
@@ -481,7 +486,7 @@ public interface Entity extends ValueChangeMap<String, Object>, Comparable<Entit
      * Sets the id value source for this entity type, such as sequence or table name,
      * depending on the underlying primary key generation strategy.
      * @param idValueSource the id value source
-     * @return this Entity.Definition instance
+     * @return this {@link Entity.Definition} instance
      */
     Definition setIdValueSource(final String idValueSource);
 
@@ -495,7 +500,7 @@ public interface Entity extends ValueChangeMap<String, Object>, Comparable<Entit
      * Sets the order by clause for this entity type, this clause should not
      * include the "order by" keywords.
      * @param orderByClause the order by clause
-     * @return this Entity.Definition instance
+     * @return this {@link Entity.Definition} instance
      */
     Definition setOrderByClause(final String orderByClause);
 
@@ -508,7 +513,7 @@ public interface Entity extends ValueChangeMap<String, Object>, Comparable<Entit
      * Sets the name of the table to use when selecting entities of this type,
      * when it differs from the one used to update/insert, such as a view.
      * @param selectTableName the name of the table
-     * @return this Entity.Definition instance
+     * @return this {@link Entity.Definition} instance
      */
     Definition setSelectTableName(final String selectTableName);
 
@@ -522,7 +527,7 @@ public interface Entity extends ValueChangeMap<String, Object>, Comparable<Entit
      * use with care. The order of the properties when defining the entity
      * must match the column order in the given query.
      * @param selectQuery the select query to use for this entity type
-     * @return this Entity.Definition instance
+     * @return this {@link Entity.Definition} instance
      */
     Definition setSelectQuery(final String selectQuery);
 
@@ -534,14 +539,14 @@ public interface Entity extends ValueChangeMap<String, Object>, Comparable<Entit
     /**
      * Sets the string provider, that is, the object responsible for providing toString values for this entity type
      * @param stringProvider the string provider
-     * @return this Entity.Definition instance
+     * @return this {@link Entity.Definition} instance
      */
     Definition setStringProvider(final ToString stringProvider);
 
     /**
      * Sets the comparator to use when comparing this entity type to other entities
      * @param comparator the comparator
-     * @return this Entity.Definition instance
+     * @return this {@link Entity.Definition} instance
      */
     Definition setComparator(final Comparator comparator);
 
@@ -559,7 +564,7 @@ public interface Entity extends ValueChangeMap<String, Object>, Comparable<Entit
     /**
      * Sets the IDs of the properties to use when performing a default lookup for this entity type
      * @param searchPropertyIDs the search property IDs
-     * @return this Entity.Definition instance
+     * @return this {@link Entity.Definition} instance
      */
     Definition setSearchPropertyIDs(final String... searchPropertyIDs);
 

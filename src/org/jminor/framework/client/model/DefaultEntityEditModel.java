@@ -42,7 +42,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A default EntityEditModel implementation
+ * A default {@link EntityEditModel} implementation
  *
  * <pre>
  * String entityID = "some.entity";
@@ -81,13 +81,13 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
   private final String entityID;
 
   /**
-   * The EntityConnectionProvider instance to use
+   * The {@link EntityConnectionProvider} instance to use
    */
   private final EntityConnectionProvider connectionProvider;
 
   /**
-   * Holds the ComboBoxModels used by this EntityModel, those that implement Refreshable
-   * are refreshed when refreshComboBoxModels() is called
+   * Holds the ComboBoxModels used by this {@link EntityEditModel}, those that implement Refreshable
+   * are refreshed when {@link #refreshComboBoxModels()} is called
    * @see org.jminor.common.model.Refreshable
    */
   private final Map<Property, FilteredComboBoxModel> propertyComboBoxModels = new HashMap<Property, FilteredComboBoxModel>();
@@ -103,18 +103,18 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
   private boolean readOnly;
 
   /**
-   * Instantiates a new EntityEditModel based on the entity identified by <code>entityID</code>.
-   * @param entityID the ID of the entity to base this EntityEditModel on
-   * @param connectionProvider the EntityConnectionProvider instance
+   * Instantiates a new {@link DefaultEntityEditModel} based on the entity identified by <code>entityID</code>.
+   * @param entityID the ID of the entity to base this {@link DefaultEntityEditModel} on
+   * @param connectionProvider the {@link EntityConnectionProvider} instance
    */
   public DefaultEntityEditModel(final String entityID, final EntityConnectionProvider connectionProvider) {
     this(entityID, connectionProvider, Entities.getValidator(entityID));
   }
 
   /**
-   * Instantiates a new EntityEditModel based on the entity identified by <code>entityID</code>.
-   * @param entityID the ID of the entity to base this EntityEditModel on
-   * @param connectionProvider the EntityConnectionProvider instance
+   * Instantiates a new {@link DefaultEntityEditModel} based on the entity identified by <code>entityID</code>.
+   * @param entityID the ID of the entity to base this {@link DefaultEntityEditModel} on
+   * @param connectionProvider the {@link EntityConnectionProvider} instance
    * @param validator the validator to use
    */
   public DefaultEntityEditModel(final String entityID, final EntityConnectionProvider connectionProvider, final Entity.Validator validator) {
@@ -656,7 +656,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
   }
 
   /**
-   * @return the Entity instance being edited
+   * @return the actual {@link Entity} instance being edited
    */
   protected final Entity getEntity() {
     return (Entity) getValueMap();

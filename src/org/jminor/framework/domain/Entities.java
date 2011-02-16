@@ -23,7 +23,7 @@ import java.util.ListIterator;
 import java.util.Map;
 
 /**
- * A Entity factory class
+ * A {@link Entity} factory class
  */
 public final class Entities {
 
@@ -32,38 +32,38 @@ public final class Entities {
   private Entities() {}
 
   /**
-   * Creates a new Entity instance with the given entityID
+   * Creates a new {@link Entity} instance with the given entityID
    * @param entityID the entity ID
-   * @return a new Entity instance
+   * @return a new {@link Entity} instance
    */
   public static Entity entity(final String entityID) {
     return new EntityImpl(EntityDefinitionImpl.getDefinition(entityID));
   }
 
   /**
-   * Creates a new Entity instance with the given primary key
+   * Creates a new {@link Entity} instance with the given primary key
    * @param key the primary key
-   * @return a new Entity instance
+   * @return a new {@link Entity} instance
    */
   public static Entity entity(final Entity.Key key) {
     return new EntityImpl(EntityDefinitionImpl.getDefinition(key.getEntityID()), key);
   }
 
   /**
-   * Creates a new Entity instance with the given entityID and the given values/originalValues
+   * Creates a new {@link Entity} instance with the given entityID and the given values/originalValues
    * @param entityID the entity ID
    * @param values the values
    * @param originalValues the original values
-   * @return a new Entity instance
+   * @return a new {@link Entity} instance
    */
   public static Entity entity(final String entityID, final Map<String, Object> values, final Map<String, Object> originalValues) {
     return EntityImpl.entityInstance(EntityDefinitionImpl.getDefinition(entityID), values, originalValues);
   }
 
   /**
-   * Creates a new Entity.Key instance with the given entityID
+   * Creates a new {@link Entity.Key} instance with the given entityID
    * @param entityID the entity ID
-   * @return a new Entity.Key instance
+   * @return a new {@link Entity.Key} instance
    */
   public static Entity.Key key(final String entityID) {
     return new EntityImpl.KeyImpl(EntityDefinitionImpl.getDefinition(entityID));
@@ -72,9 +72,9 @@ public final class Entities {
   /**
    * Defines a new entity, by default the <code>entityID</code> is used as the underlying table name
    * @param entityID the ID uniquely identifying the entity
-   * @param propertyDefinitions the Property objects to base this entity on. In case a select query is specified
+   * @param propertyDefinitions the {@link Property} objects to base this entity on. In case a select query is specified
    * for this entity, the property order must match the select column order.
-   * @return a new Entity.Definition
+   * @return a new {@link Entity.Definition}
    * @throws IllegalArgumentException in case the entityID has already been used to define an entity type
    */
   public static Entity.Definition define(final String entityID, final Property... propertyDefinitions) {
@@ -85,9 +85,9 @@ public final class Entities {
    * Defines a new entity
    * @param entityID the ID uniquely identifying the entity
    * @param tableName the name of the underlying table
-   * @param propertyDefinitions the Property objects to base the entity on. In case a select query is specified
+   * @param propertyDefinitions the {@link Property} objects to base the entity on. In case a select query is specified
    * for this entity, the property order must match the select column order.
-   * @return a new Entity.Definition
+   * @return a new {@link Entity.Definition}
    * @throws IllegalArgumentException in case the entityID has already been used to define an entity type
    */
   public static Entity.Definition define(final String entityID, final String tableName, final Property... propertyDefinitions) {
@@ -249,7 +249,7 @@ public final class Entities {
 
   /**
    * @param entityID the entity ID
-   * @return the Entity.ToString instance used to provide string representations
+   * @return the {@link Entity.ToString} instance used to provide string representations
    * of entities of the given type
    * @throws RuntimeException if the entity is undefined
    */
@@ -561,8 +561,8 @@ public final class Entities {
   }
 
   /**
-   * Provides String representations of Entity instances.<br>
-   * Given a Entity instance named entity containing the following mappings:
+   * Provides String representations of {@link Entity} instances.<br>
+   * Given a {@link Entity} instance named entity containing the following mappings:
    * <pre>
    * "key1" -> value1
    * "key2" -> value2
@@ -584,23 +584,24 @@ public final class Entities {
     private static final long serialVersionUID = 1;
 
     /**
-     * Holds the ValueProviders used when constructing the String representation
+     * Holds the {@link ValueProvider}s used when constructing the String representation
      */
     private final List<ValueProvider> valueProviders = new ArrayList<ValueProvider>();
 
     /**
-     * Instantiates a new StringProvider instance
+     * Instantiates a new {@link StringProvider} instance
      */
     public StringProvider() {}
 
     /**
-     * Instantiates a new StringProvider instance
+     * Instantiates a new {@link StringProvider} instance
      * @param propertyID the ID of the property which value should be used for a string representation
      */
     public StringProvider(final String propertyID) {
       addValue(propertyID);
     }
 
+    /** {@inheritDoc} */
     public String toString(final Entity entity) {
       final StringBuilder builder = new StringBuilder();
       for (final ValueProvider valueProvider : valueProviders) {
@@ -611,9 +612,9 @@ public final class Entities {
     }
 
     /**
-     * Adds the value mapped to the given key to this StringProvider
+     * Adds the value mapped to the given key to this {@link StringProvider}
      * @param propertyID the ID of the property which value should be added to the string representation
-     * @return this StringProvider instance
+     * @return this {@link StringProvider} instance
      */
     public StringProvider addValue(final String propertyID) {
       valueProviders.add(new StringValueProvider(propertyID));
@@ -624,7 +625,7 @@ public final class Entities {
      * Adds the value mapped to the given key to this StringProvider
      * @param propertyID the ID of the property which value should be added to the string representation
      * @param format the Format to use when appending the value
-     * @return this StringProvider instance
+     * @return this {@link StringProvider} instance
      */
     public StringProvider addFormattedValue(final String propertyID, final Format format) {
       valueProviders.add(new FormattedValueProvider(propertyID, format));
@@ -632,11 +633,11 @@ public final class Entities {
     }
 
     /**
-     * Adds the value mapped to the given property in the Entity instance mapped to the given foreignKeyPropertyID
-     * to this StringProvider
+     * Adds the value mapped to the given property in the {@link Entity} instance mapped to the given foreignKeyPropertyID
+     * to this {@link StringProvider}
      * @param foreignKeyPropertyID the ID of the foreign key property
      * @param propertyID the ID of the property in the referenced entity to use
-     * @return this StringProvider instance
+     * @return this {@link StringProvider} instance
      */
     public StringProvider addForeignKeyValue(final String foreignKeyPropertyID, final String propertyID) {
       valueProviders.add(new ForeignKeyValueProvider(foreignKeyPropertyID, propertyID));
@@ -644,9 +645,9 @@ public final class Entities {
     }
 
     /**
-     * Adds the given static text to this StringProvider
+     * Adds the given static text to this {@link StringProvider}
      * @param text the text to add
-     * @return this StringProvider instance
+     * @return this {@link StringProvider} instance
      */
     public StringProvider addText(final String text) {
       valueProviders.add(new StaticTextProvider(text));
@@ -740,14 +741,14 @@ public final class Entities {
   }
 
   /**
-   * A default extensible Entity.Validator implementation.
+   * A default extensible {@link Entity.Validator} implementation.
    */
   public static class Validator extends DefaultValueMapValidator<String, Object> implements Entity.Validator {
 
     private final String entityID;
 
     /**
-     * Instantiates a new EntityValidator
+     * Instantiates a new {@link Entity.Validator}
      * @param entityID the ID of the entities to validate
      */
     public Validator(final String entityID) {

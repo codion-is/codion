@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Represents a row in a database table, providing access to the column values via the ValueMap interface.
+ * Represents a row in a database table, providing access to the column values via the {@link org.jminor.common.model.valuemap.ValueMap} interface.
  */
 final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Entity, Serializable, Comparable<Entity> {
 
@@ -169,7 +169,16 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
     return getValue(getProperty(key));
   }
 
-  /** {@inheritDoc} */
+  /**
+   *
+   * @param property the property for which to retrieve the value
+   * @return the value associated with the given property.
+   * {@link Property.ForeignKeyProperty}'s are handled in a specific way,
+   * if the underlying reference property contains a value, that is,
+   * a foreign key value exists but the actual referenced entity has not
+   * been loaded, an "empty" entity is returned, containing only the primary
+   * key value.
+   */
   public Object getValue(final Property property) {
     Util.rejectNullValue(property, PROPERTY_PARAM);
     if (property instanceof Property.DenormalizedViewProperty) {
@@ -197,15 +206,33 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * Returns true if the value associated with the given property is null.
+   * In case of {@link Property.ForeignKeyProperty}'s the value is considered
+   * to be null if the referenced entity has not been loaded.
+   * @param propertyID the property ID
+   * @return true if the value associated with the property is null
+   */
   @Override
-  public boolean isValueNull(final String key) {
-    return isValueNull(getProperty(key));
+  public boolean isValueNull(final String propertyID) {
+    return isValueNull(getProperty(propertyID));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * Returns true if the value associated with the given property is null.
+   * In case of {@link Property.ForeignKeyProperty}'s the value is considered
+   * to be null if the referenced entity has not been loaded. Use the underlying
+   * reference property to check if the foreign key value is null.
+   * @param property the property
+   * @return true if the value associated with the property is null
+   */
   public boolean isValueNull(final Property property) {
-    return super.isValueNull(Util.rejectNullValue(property, PROPERTY_PARAM).getPropertyID());
+    Util.rejectNullValue(property, PROPERTY_PARAM);
+    if (property instanceof Property.ForeignKeyProperty) {
+      return !isLoaded(property.getPropertyID());
+    }
+
+    return super.isValueNull(property.getPropertyID());
   }
 
   /** {@inheritDoc} */

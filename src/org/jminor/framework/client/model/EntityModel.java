@@ -11,22 +11,22 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Specifies a class responsible for, among other things, coordinating a EntityEditModel and an EntityTableModel.
+ * Specifies a class responsible for, among other things, coordinating a {@link EntityEditModel} and an {@link EntityTableModel}.
  */
 public interface EntityModel extends Refreshable, EntityDataProvider {
 
   /**
-   * @return the EntityEditModel instance used by this EntityModel
+   * @return the {@link EntityEditModel} instance used by this {@link EntityModel}
    */
   EntityEditModel getEditModel();
 
   /**
-   * @return the EntityTableModel, null if none is specified
+   * @return the {@link EntityTableModel}, null if none is specified
    */
   EntityTableModel getTableModel();
 
   /**
-   * @return true if this EntityModel contains a TableModel
+   * @return true if this {@link EntityModel} contains a {@link EntityTableModel}
    */
   boolean containsTableModel();
 
@@ -43,8 +43,8 @@ public interface EntityModel extends Refreshable, EntityDataProvider {
   void setLinkedDetailModels(final EntityModel... detailModels);
 
   /**
-   * Initializes this EntityModel according to the given master entities,
-   * sets the appropriate property value and filters the EntityTableModel
+   * Initializes this {@link EntityModel} according to the given master entities,
+   * sets the appropriate property value in the {@link EntityEditModel} and filters the {@link EntityTableModel}
    * @param masterEntityID the ID of the master entity
    * @param selectedMasterEntities the master entities
    */
@@ -95,7 +95,7 @@ public interface EntityModel extends Refreshable, EntityDataProvider {
   /**
    * Returns the first detail model of the given type, this method does not
    * automatically create an entity model if none is available
-   * @param modelClass the type of the required EntityModel
+   * @param modelClass the type of the required {@link EntityModel}
    * @return the detail model of type <code>entityModelClass</code>, null if none is found
    */
   EntityModel getDetailModel(final Class<? extends EntityModel> modelClass);

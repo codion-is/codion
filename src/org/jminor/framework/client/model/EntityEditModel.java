@@ -20,12 +20,13 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Specifies a class for editing entity instances.
+ * Specifies a class for editing {@link Entity} instances.
  */
 public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>, EntityDataProvider {
 
   /**
-   * Sets the Entity instance to edit
+   * Copies the values from the given {@link Entity} into the underlying
+   * {@link Entity} being edited by this edit model
    * @param entity the entity
    */
   void setEntity(final Entity entity);
@@ -52,10 +53,10 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
 
   /**
    * Returns the value associated with the given propertyID assuming it
-   * is an Entity instance
+   * is an {@link Entity} instance
    * @param foreignKeyPropertyID the ID of the property
-   * @return the value assuming it is an Entity
-   * @throws ClassCastException in case the value was not an Entity
+   * @return the value assuming it is an {@link Entity}
+   * @throws ClassCastException in case the value was not an {@link Entity}
    */
   Entity getForeignKeyValue(final String foreignKeyPropertyID);
 
@@ -69,7 +70,7 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
   void replaceForeignKeyValues(final String foreignKeyEntityID, final Collection<Entity> newForeignKeyValues);
 
   /**
-   * Initializes a value provider for the given property, used for adding lookup
+   * Initializes a value provider for the given property, useful for adding lookup
    * functionality to input fields for example.
    * @param property the property
    * @return a value provider for the given property
@@ -130,26 +131,26 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
   EntityEditModel setDeleteAllowed(final boolean value);
 
   /**
-   * Creates a default EntityComboBoxModel for the given property, override to provide
-   * specific EntityComboBoxModels (filtered for example) for properties.
-   * This method is called when creating a EntityComboBoxModel for entity properties, both
+   * Creates a default {@link EntityComboBoxModel} for the given property, override to provide
+   * specific {@link EntityComboBoxModel} (filtered for example) for properties.
+   * This method is called when creating a {@link EntityComboBoxModel} for entity properties, both
    * for the edit fields used when editing a single record and the edit field used
    * when updating multiple records.
-   * This default implementation returns a sorted EntityComboBoxModel with the default nullValueItem
+   * This default implementation returns a sorted {@link EntityComboBoxModel} with the default nullValueItem
    * if the underlying property is nullable
-   * @param foreignKeyProperty the foreign key property for which to create a EntityComboBoxModel
-   * @return a EntityComboBoxModel for the given property
+   * @param foreignKeyProperty the foreign key property for which to create a {@link EntityComboBoxModel}
+   * @return a {@link EntityComboBoxModel} for the given property
    * @see org.jminor.framework.Configuration#DEFAULT_COMBO_BOX_NULL_VALUE_ITEM
    * @see org.jminor.framework.domain.Property#isNullable()
    */
   EntityComboBoxModel createEntityComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty);
 
   /**
-   * Creates a EntityLookupModel for the given entityID
+   * Creates a {@link EntityLookupModel} for looking up entities of the given type, using the given properties
    * @param entityID the ID of the entity
    * @param lookupProperties the properties involved in the lookup
    * @param additionalSearchCriteria an additional search criteria applied when performing the lookup
-   * @return a EntityLookupModel
+   * @return a {@link EntityLookupModel} for looking up entities of the given type, using the given properties
    */
   EntityLookupModel createEntityLookupModel(final String entityID, final List<Property.ColumnProperty> lookupProperties,
                                             final Criteria additionalSearchCriteria);
@@ -157,10 +158,10 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
   /**
    * @param property the property for which to get the ComboBoxModel
    * @param refreshEvent the combo box model is refreshed when this event fires,
-   * if none is specified <code>addEntitiesChangedListener()</code> is used.
+   * if none is specified the entities changed event is used ({@link #addEntitiesChangedListener(java.awt.event.ActionListener)}).
    * @param nullValueString the value to use for representing the null item at the top of the list,
    * if this value is null then no such item is included
-   * @return a PropertyComboBoxModel representing <code>property</code>, if no combo box model
+   * @return a ComboBoxModel representing <code>property</code>, if no combo box model
    * has been initialized for the given property, a new one is created and associated with
    * the property, to be returned the next time this method is called
    */
@@ -169,7 +170,7 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
 
   /**
    * @param property the property for which to get the ComboBoxModel
-   * @return a PropertyComboBoxModel representing <code>property</code>
+   * @return a ComboBoxModel representing <code>property</code>
    * @throws RuntimeException if no combo box has been initialized for the given property
    */
   FilteredComboBoxModel getPropertyComboBoxModel(final Property.ColumnProperty property);
@@ -182,8 +183,8 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
   boolean containsComboBoxModel(final String propertyID);
 
   /**
-   * @param propertyID the ID of the property for which to retrieve the <code>EntityComboBoxModel</code>
-   * @return the EntityComboBoxModel for the property identified by <code>propertyID</code>,
+   * @param propertyID the ID of the property for which to retrieve the {@link EntityComboBoxModel}
+   * @return the {@link EntityComboBoxModel} for the property identified by <code>propertyID</code>,
    * if no combo box model is associated with the property a new one is initialized, and associated
    * with the given property
    * @throws RuntimeException if no combo box has been initialized for the given property
@@ -191,23 +192,23 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
   EntityComboBoxModel getEntityComboBoxModel(final String propertyID);
 
   /**
-   * @param foreignKeyProperty the foreign key property for which to retrieve the <code>EntityComboBoxModel</code>
-   * @return the EntityComboBoxModel associated with the <code>property</code>
+   * @param foreignKeyProperty the foreign key property for which to retrieve the {@link EntityComboBoxModel}
+   * @return the {@link EntityComboBoxModel} associated with the <code>property</code>
    * @throws RuntimeException if no combo box has been initialized for the given property
    */
   EntityComboBoxModel getEntityComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty);
 
   /**
-   * @param propertyID the ID of the foreign key property for which to retrieve the <code>EntityComboBoxModel</code>
-   * @return the EntityComboBoxModel for the <code>property</code>,
+   * @param propertyID the ID of the foreign key property for which to retrieve the {@link EntityComboBoxModel}
+   * @return the {@link EntityComboBoxModel} for the <code>property</code>,
    * if no combo box model is associated with the property a new one is initialized, and associated
    * with the given property
    */
   EntityComboBoxModel initializeEntityComboBoxModel(final String propertyID);
 
   /**
-   * @param foreignKeyProperty the foreign key property for which to retrieve the <code>EntityComboBoxModel</code>
-   * @return the EntityComboBoxModel for the <code>property</code>,
+   * @param foreignKeyProperty the foreign key property for which to retrieve the {@link EntityComboBoxModel}
+   * @return the {@link EntityComboBoxModel} for the <code>property</code>,
    * if no combo box model is associated with the property a new one is initialized, and associated
    * with the given property
    */
@@ -224,7 +225,7 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
                                                     final String nullValueString);
 
   /**
-   * Refreshes the Refreshable ComboBoxModels associated with this EntityEditModel
+   * Refreshes the Refreshable ComboBoxModels associated with this {@link EntityEditModel}
    * @see org.jminor.common.model.Refreshable
    */
   void refreshComboBoxModels();
@@ -237,8 +238,8 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
   /**
    * Returns the default value for the given property, used when initializing a new
    * default entity for this edit model. This does not apply to denormalized properties
-   * (Property.DenormalizedProperty) nor properties that are wrapped in foreign key properties
-   * (Property.ForeignKeyProperty)
+   * ({@link Property.DenormalizedProperty}) nor properties that are wrapped in foreign key properties
+   * ({@link Property.ForeignKeyProperty})
    * If the default value of a property should be the last value used <code>persistValueOnClear</code>
    * should be overridden so that it returns <code>true</code> for that property.
    * @param property the property
@@ -252,8 +253,8 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * Returns true if the last available value for this property should be used when initializing
    * a default entity.
    * Override for selective reset of field values when the model is cleared.
-   * For Property.ForeignKeyProperty values this method by default returns the value of the
-   * property <code>Configuration.PERSIST_FOREIGN_KEY_VALUES</code>.
+   * For {@link Property.ForeignKeyProperty} values this method by default returns the value of the
+   * property {@link org.jminor.framework.Configuration#PERSIST_FOREIGN_KEY_VALUES}.
    * @param property the property
    * @return true if the given field value should be reset when the model is cleared
    * @see org.jminor.framework.Configuration#PERSIST_FOREIGN_KEY_VALUES
@@ -271,7 +272,7 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
   List<Entity.Key> insert() throws CancelException, DatabaseException, ValidationException;
 
   /**
-   * Performs an insert on the given entities, returns silently on recieving an empty list
+   * Performs an insert on the given entities, returns silently on receiving an empty list
    * @param entities the entities to insert
    * @return the primary keys of the inserted entities
    * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
@@ -295,9 +296,9 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
   List<Entity> update() throws CancelException, DatabaseException, ValidationException;
 
   /**
-   * Updates the given Entities. If the entities are unmodified or the list is empty
+   * Updates the given entities. If the entities are unmodified or the list is empty
    * this method returns silently.
-   * @param entities the Entities to update
+   * @param entities the entities to update
    * @return the updated entities
    * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
    * @throws CancelException in case the user cancels the operation
@@ -320,7 +321,7 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
   List<Entity> delete() throws DatabaseException, CancelException;
 
   /**
-   * Deletes the given entities, returns silently on recieving an empty list
+   * Deletes the given entities, returns silently on receiving an empty list
    * @param entities the entities to delete
    * @return the deleted entities
    * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
@@ -338,19 +339,19 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
   StateObserver getAllowDeleteObserver();
 
   /**
-   * @return a State indicating whether or not the active entity is null
+   * @return a {@link StateObserver} indicating whether or not the active entity is null
    */
   StateObserver getEntityNullObserver();
 
   /**
-   * @return the state used to determine if updating should be enabled
+   * @return the {@link StateObserver} used to determine if updating should be enabled
    * @see #isUpdateAllowed()
    * @see #setUpdateAllowed(boolean)
    */
   StateObserver getAllowUpdateObserver();
 
   /**
-   * @return the state used to determine if inserting should be enabled
+   * @return the {@link StateObserver} used to determine if inserting should be enabled
    * @see #isInsertAllowed()
    * @see #setInsertAllowed(boolean)
    */
@@ -362,7 +363,7 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
   void addBeforeInsertListener(final ActionListener listener);
 
   /**
-   * @param listener a listener to be notified each time
+   * @param listener a listener to remove
    */
   void removeBeforeInsertListener(final ActionListener listener);
 
@@ -372,7 +373,7 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
   void addAfterInsertListener(final ActionListener listener);
 
   /**
-   * @param listener a listener to be notified each time
+   * @param listener a listener to remove
    */
   void removeAfterInsertListener(final ActionListener listener);
 
@@ -382,7 +383,7 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
   void addBeforeUpdateListener(final ActionListener listener);
 
   /**
-   * @param listener a listener to be notified each time
+   * @param listener a listener to remove
    */
   void removeBeforeUpdateListener(final ActionListener listener);
 
@@ -392,7 +393,7 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
   void addAfterUpdateListener(final ActionListener listener);
 
   /**
-   * @param listener a listener to be notified each time
+   * @param listener a listener to remove
    */
   void removeAfterUpdateListener(final ActionListener listener);
 
@@ -402,7 +403,7 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
   void addBeforeDeleteListener(final ActionListener listener);
 
   /**
-   * @param listener a listener to be notified each time
+   * @param listener a listener to remove
    */
   void removeBeforeDeleteListener(final ActionListener listener);
 
@@ -412,7 +413,7 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
   void addAfterDeleteListener(final ActionListener listener);
 
   /**
-   * @param listener a listener to be notified each time
+   * @param listener a listener to remove
    */
   void removeAfterDeleteListener(final ActionListener listener);
 
@@ -422,7 +423,7 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
   void addBeforeRefreshListener(final ActionListener listener);
 
   /**
-   * @param listener a listener to be notified each time
+   * @param listener a listener to remove
    */
   void removeBeforeRefreshListener(final ActionListener listener);
 
@@ -432,7 +433,7 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
   void addAfterRefreshListener(final ActionListener listener);
 
   /**
-   * @param listener a listener to be notified each time
+   * @param listener a listener to remove
    */
   void removeAfterRefreshListener(final ActionListener listener);
 
@@ -443,7 +444,7 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
   void addEntitiesChangedListener(final ActionListener listener);
 
   /**
-   * @param listener a listener to be notified each time
+   * @param listener a listener to remove
    */
   void removeEntitiesChangedListener(final ActionListener listener);
 }

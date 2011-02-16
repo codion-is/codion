@@ -19,31 +19,33 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Specifies a table model containing Entity objects
+ * Specifies a table model containing {@link Entity} objects
  */
 public interface EntityTableModel extends FilteredTableModel<Entity, Property>, EntityDataProvider {
 
   /**
-   * Returns the edit model associated with this table model,
-   * throws a RuntimeExcption in case no edit model has been associated with this table model
+   * Returns the {@link EntityEditModel} associated with this table model
    * @return the edit model associated with this table model
    * @see #setEditModel(EntityEditModel)
+   * @throws IllegalStateException in case no edit model has been associated with this table model
    */
   EntityEditModel getEditModel();
 
   /**
-   * @return true if this table model contains a edit model
+   * @return true if this {@link EntityTableModel} contains a {@link EntityEditModel}
    */
   boolean hasEditModel();
 
   /**
-   * Associates the given edit model with this table model, this enables delete/update
+   * Associates the given {@link EntityEditModel} with this {@link EntityTableModel}, this enables delete/update
    * functionality via this table model as well as enabling it to
    * react to delete events in the edit model.
    * Throws a RuntimeException in case the edit model has been previously set
    * @param editModel the edit model to associate with this table model
    * @see #deleteSelected()
    * @see #update(java.util.List)
+   * @throws IllegalStateException in case an {@link EntityEditModel} has already been associated with this {@link EntityTableModel}
+   * @throws IllegalArgumentException in case the given {@link EntityEditModel} is not based on the same entityID as this {@link EntityTableModel}
    */
   void setEditModel(final EntityEditModel editModel);
 
@@ -94,12 +96,12 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
   /**
    * Specifies whether or not the underlying query should be configurable
    * @param value the value
-   * @return this table model instance
+   * @return this {@link EntityTableModel} instance
    */
   EntityTableModel setQueryConfigurationAllowed(final boolean value);
 
   /**
-   * @return the EntityTableSearcher instance used by this table model
+   * @return the {@link EntityTableSearchModel} instance used by this table model
    */
   EntityTableSearchModel getSearchModel();
 
@@ -114,7 +116,7 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
   boolean isDeleteAllowed();
 
   /**
-   * @return true if this model is read only or if no edit model has been specified.
+   * @return true if this model is read only or if no {@link EntityEditModel} has been specified.
    * @see #setEditModel(EntityEditModel)
    */
   boolean isReadOnly();
@@ -131,21 +133,21 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
 
   /**
    * @param batchUpdateAllowed true if this model should allow multiple entities to be updated at a time
-   * @return this EntityTableModel instance
+   * @return this {@link EntityTableModel} instance
    */
   EntityTableModel setBatchUpdateAllowed(final boolean batchUpdateAllowed);
 
   /**
-   * Returns the PropertySummaryModel associated with the property identified by <code>propertyID</code>
+   * Returns the {@link PropertySummaryModel} associated with the property identified by <code>propertyID</code>
    * @param propertyID the ID of the property
-   * @return the PropertySummaryModel for the given property ID
+   * @return the {@link PropertySummaryModel} for the given property ID
    */
   PropertySummaryModel getPropertySummaryModel(final String propertyID);
 
   /**
-   * Returns the PropertySummaryModel associated with the given property
+   * Returns the {@link PropertySummaryModel} associated with the given property
    * @param property the property
-   * @return the PropertySummaryModel for the given property
+   * @return the {@link PropertySummaryModel} for the given property
    */
   PropertySummaryModel getPropertySummaryModel(final Property property);
 
@@ -184,7 +186,7 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
   EntityTableModel setFetchCount(final int fetchCount);
 
   /**
-   * Updates the given Entities. If the entities are unmodified or the list is empty
+   * Updates the given entities. If the entities are unmodified or the list is empty
    * this method returns silently.
    * @param entities the Entities to update
    * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
@@ -223,7 +225,7 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
   /**
    * @param value true if items that are deleted via the associated edit model
    * should be automatically removed from this table model
-   * @return this table model instance
+   * @return this {@link EntityTableModel} instance
    */
   EntityTableModel setRemoveItemsOnDelete(final boolean value);
 
@@ -262,16 +264,16 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
   List<Entity.Key> getPrimaryKeysOfSelectedEntities();
 
   /**
-   * Returns an initialized ReportDataWrapper instance, the default implementation returns null.
-   * @return an initialized ReportDataWrapper
+   * Returns an initialized {@link ReportDataWrapper} instance, the default implementation returns null.
+   * @return an initialized {@link ReportDataWrapper}
    * @see #getSelectedEntitiesIterator()
    */
   ReportDataWrapper getReportDataSource();
 
   /**
-   * Sets the report data source to use during report generation
+   * Sets the {@link ReportDataWrapper} to use during report generation
    * @param reportDataSource the data source
-   * @return this table model instance
+   * @return this {@link EntityTableModel} instance
    */
   EntityTableModel setReportDataSource(final ReportDataWrapper reportDataSource);
 
