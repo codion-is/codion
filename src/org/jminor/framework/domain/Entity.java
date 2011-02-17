@@ -15,6 +15,7 @@ import java.awt.Color;
 import java.sql.Timestamp;
 import java.text.Format;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -300,20 +301,6 @@ public interface Entity extends ValueChangeMap<String, Object>, Comparable<Entit
   }
 
   /**
-   * Provides comparisons for entities.
-   */
-  interface Comparator {
-
-    /**
-     * Compares the given entities.
-     * @param entity the first entity
-     * @param entityToCompare the second entity
-     * @return the compare result
-     */
-    int compare(final Entity entity, final Entity entityToCompare);
-  }
-
-  /**
    * Responsible for providing validation for entities.
    */
   interface Validator extends ValueMapValidator<String, Object> {
@@ -548,12 +535,12 @@ public interface Entity extends ValueChangeMap<String, Object>, Comparable<Entit
      * @param comparator the comparator
      * @return this {@link Entity.Definition} instance
      */
-    Definition setComparator(final Comparator comparator);
+    Definition setComparator(final Comparator<Entity> comparator);
 
     /**
      * @return the comparator used when comparing this entity type to other entities
      */
-    Comparator getComparator();
+    Comparator<Entity> getComparator();
 
     /**
      * @return a list of property IDs identifying the properties to use when performing

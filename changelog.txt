@@ -2378,3 +2378,7 @@
   Entities.StringProvider added, implements the above, org.jminor.common.model.valuemap.StringProvider removed, test code moved accordingly, demos updated
   EntityImpl.isValueNull() now relies on the result of isLoaded() in case of foreign key properties, tested
   Some javadoc updates, using (perhaps overusing?) {@link ...} where applicable
+  AbstractFilteredTableModel now uses Util.collateSansSpaces() when sorting
+  Util.getSpaceAwareCollator() added, used where applicable and tested
+  Entity.Comparator removed
+  Some javadoc improvements

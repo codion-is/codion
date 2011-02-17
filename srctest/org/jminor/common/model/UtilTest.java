@@ -3,13 +3,32 @@
  */
 package org.jminor.common.model;
 
-import static org.junit.Assert.*;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
+import static org.junit.Assert.*;
+
 public class UtilTest {
+
+  @Test
+  public void spaceAwareCollator() {
+    final String one = "björn";
+    final String two = "bjö rn";
+    final String three = "björ n";
+    final List<String> strings = Arrays.asList(one, two, three);
+
+    final Comparator<String> collator = Util.getSpaceAwareCollator();
+
+    Collections.sort(strings, collator);
+    assertEquals(two, strings.get(0));
+    assertEquals(three, strings.get(1));
+    assertEquals(one, strings.get(2));
+  }
 
   @Test
   public void testRejectNullValue() {
@@ -105,7 +124,7 @@ public class UtilTest {
     assertTrue(Util.notNull(new Object(), new Object(), new Object()));
     assertTrue(Util.notNull(new Object()));
     assertFalse(Util.notNull(new Object(), null, new Object()));
-    Object ob = null;
+    final Object ob = null;
     assertFalse(Util.notNull(ob));
   }
 }

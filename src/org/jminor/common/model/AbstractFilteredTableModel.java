@@ -17,7 +17,6 @@ import javax.swing.table.TableColumnModel;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -50,13 +49,8 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
       return (o1.compareTo(o2));
     }
   };
-  private static final Comparator<Object> LEXICAL_COMPARATOR = new Comparator<Object>() {
-    private final Collator collator = Collator.getInstance();
-    /** {@inheritDoc} */
-    public int compare(final Object o1, final Object o2) {
-      return collator.compare(o1.toString(), o2.toString());
-    }
-  };
+  private static final Comparator LEXICAL_COMPARATOR = Util.getSpaceAwareCollator();
+
   private final Comparator<R> rowComparator = new Comparator<R>() {
     public int compare(final R o1, final R o2) {
       for (final Map.Entry<C, SortingState> state : getOrderedSortingStates()) {
@@ -70,6 +64,8 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     }
   };
 
+  private static final SortingState EMPTY_SORTING_STATE = new SortingStateImpl(SortingDirective.UNSORTED, -1);
+
   private final Event evtFilteringDone = Events.event();
   private final Event evtSortingStarted = Events.event();
   private final Event evtSortingDone = Events.event();
@@ -79,9 +75,6 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   private final Event evtTableModelCleared = Events.event();
   private final Event evtColumnHidden = Events.event();
   private final Event evtColumnShown = Events.event();
-
-  @SuppressWarnings({"unchecked"})
-  private final SortingState emptySortingState = new SortingStateImpl(SortingDirective.UNSORTED, -1);
 
   /**
    * Holds visible items
@@ -309,11 +302,11 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
       resetSortingStates();
     }
     if (directive == SortingDirective.UNSORTED) {
-      sortingStates.put(columnIdentifier, emptySortingState);
+      sortingStates.put(columnIdentifier, EMPTY_SORTING_STATE);
     }
     else {
       final SortingState state = getSortingState(columnIdentifier);
-      if (state.equals(emptySortingState)) {
+      if (state.equals(EMPTY_SORTING_STATE)) {
         final int priority = getNextSortPriority();
         sortingStates.put(columnIdentifier, new SortingStateImpl(directive, priority));
       }
@@ -947,7 +940,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   private List<Map.Entry<C, SortingState>> getOrderedSortingStates() {
     final ArrayList<Map.Entry<C, SortingState>> entries = new ArrayList<Map.Entry<C, SortingState>>();
     for (final Map.Entry<C, SortingState> entry : sortingStates.entrySet()) {
-      if (!emptySortingState.equals(entry.getValue())) {
+      if (!EMPTY_SORTING_STATE.equals(entry.getValue())) {
         entries.add(entry);
       }
     }
@@ -1003,7 +996,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   private boolean isSortingStateEnabled() {
     for (final SortingState state : sortingStates.values()) {
-      if (!state.equals(emptySortingState)) {
+      if (!state.equals(EMPTY_SORTING_STATE)) {
         return true;
       }
     }
@@ -1015,7 +1008,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   private void resetSortingStates() {
     final Enumeration<TableColumn> columns = columnModel.getColumns();
     while (columns.hasMoreElements()) {
-      sortingStates.put((C) columns.nextElement().getIdentifier(), emptySortingState);
+      sortingStates.put((C) columns.nextElement().getIdentifier(), EMPTY_SORTING_STATE);
     }
   }
 

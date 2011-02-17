@@ -12,7 +12,6 @@ import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import java.awt.event.ActionListener;
 import java.io.Serializable;
-import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -21,7 +20,7 @@ import java.util.List;
 import java.util.ListIterator;
 
 /**
- * A default FilteredComboBoxModel implementation.
+ * A default {@link FilteredComboBoxModel} implementation.
  */
 public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T> {
 
@@ -47,14 +46,16 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   private final List<ListDataListener> listDataListeners = new ArrayList<ListDataListener>();
 
   /**
-   * Instantiates a new DefaultFilteredComboBoxModel that does not sort its contents and does not include a nullValueItem.
+   * Instantiates a new DefaultFilteredComboBoxModel, without a nullValueString.
+   * The model contents are sorted automatically.
    */
   public DefaultFilteredComboBoxModel() {
     this(null);
   }
 
   /**
-   * Instantiates a new FilteredComboBoxModel.
+   * Instantiates a new DefaultFilteredComboBoxModel with the given nullValueString.
+   * The model contents are sorted automatically.
    * @param nullValueString a string representing a null value, which is shown at the top of the item list
    * @see #isNullValueSelected()
    */
@@ -371,7 +372,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     private static final long serialVersionUID = 1;
 
     private final String nullValueString;
-    private final Collator collator = Collator.getInstance();
+    private final Comparator comparator = Util.getSpaceAwareCollator();
 
     SortComparator(final String nullValueString) {
       this.nullValueString = nullValueString;
@@ -401,7 +402,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
         return ((Comparable) o1).compareTo(o2);
       }
       else {
-        return collator.compare(o1.toString(), o2.toString());
+        return comparator.compare(o1, o2);
       }
     }
   }

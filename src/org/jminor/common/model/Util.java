@@ -276,10 +276,18 @@ public final class Util {
     return getUsedMemory() + " KB";
   }
 
+  /**
+   * @param filename the name of the file
+   * @return the number of lines in the given file
+   */
   public static int countLines(final String filename) {
     return countLines(new File(filename));
   }
 
+  /**
+   * @param file the file
+   * @return the number of lines in the given file
+   */
   public static int countLines(final File file) {
     BufferedReader reader = null;
     try {
@@ -502,6 +510,12 @@ public final class Util {
     }
   }
 
+  /**
+   * Rounds the given double to <code>places</code> decimal places
+   * @param d the double to round
+   * @param places the number of decimal places
+   * @return the rounded value
+   */
   public static double roundDouble(final double d, final int places) {
     return Math.round(d * Math.pow(10, (double) places)) / Math.pow(10, (double) places);
   }
@@ -568,13 +582,14 @@ public final class Util {
     return sb.toString();
   }
 
+  /**
+   * Sorts the string representations of this list's contents, using
+   * the space aware collator
+   * @see #getSpaceAwareCollator()
+   * @param values the list to sort (collate)
+   */
   public static void collate(final List<?> values) {
-    Collections.sort(values, new Comparator<Object>() {
-      private final Collator collator = Collator.getInstance();
-      public int compare(final Object o1, final Object o2) {
-        return collateSansSpaces(collator, o1.toString(), o2.toString());
-      }
-    });
+    Collections.sort(values, getSpaceAwareCollator());
   }
 
   public static URI getURI(final String urlOrPath) throws URISyntaxException {
@@ -595,6 +610,9 @@ public final class Util {
     return urls;
   }
 
+  /**
+   * @return a ThreadLocal version of the default Collator
+   */
   public static ThreadLocal<Collator> getThreadLocalCollator() {
     return new ThreadLocal<Collator>() {
       @Override
@@ -617,6 +635,20 @@ public final class Util {
     }
 
     return value;
+  }
+
+  /**
+   * @return a Comparator which compares the string representations of the objects
+   * using the default Collator, taking spaces into account.
+   */
+  public static <T> Comparator<T> getSpaceAwareCollator() {
+    return new Comparator<T>() {
+      private final Collator collator = Collator.getInstance();
+      /** {@inheritDoc} */
+      public int compare(final T o1, final T o2) {
+        return collateSansSpaces(collator, o1.toString(), o2.toString());
+      }
+    };
   }
 
   /**
@@ -647,6 +679,10 @@ public final class Util {
     return collator.compare(stringOne.replaceAll(SPACE, UNDERSCORE), stringTwo.replaceAll(SPACE, UNDERSCORE));
   }
 
+  /**
+   * Closes the given ResultSet instances, swallowing any SQLExceptions that occur
+   * @param resultSets the result sets to close
+   */
   public static void closeSilently(final ResultSet... resultSets) {
     if (resultSets == null) {
       return;
@@ -661,6 +697,10 @@ public final class Util {
     }
   }
 
+  /**
+   * Closes the given Statement instances, swallowing any SQLExceptions that occur
+   * @param statements the statements to close
+   */
   public static void closeSilently(final Statement... statements) {
     if (statements == null) {
       return;
@@ -675,6 +715,10 @@ public final class Util {
     }
   }
 
+  /**
+   * Closes the given Closeable instances, swallowing any Exceptions that occur
+   * @param closeables the closeables to close
+   */
   public static void closeSilently(final Closeable... closeables) {
     if (closeables == null) {
       return;
@@ -725,10 +769,14 @@ public final class Util {
     return map;
   }
 
-  public static boolean onClasspath(final String classname) {
-    rejectNullValue(classname, "classname");
+  /**
+   * @param className the name of the class to search for
+   * @return true if the given class is found on the classpath
+   */
+  public static boolean onClasspath(final String className) {
+    rejectNullValue(className, "className");
     try {
-      Class.forName(classname);
+      Class.forName(className);
       return true;
     }
     catch (ClassNotFoundException e) {
@@ -736,12 +784,23 @@ public final class Util {
     }
   }
 
+  /**
+   * Throws a RuntimeException in case the given string value is null or an empty string,
+   * using <code>propertyName</code> in the error message, as in: "propertyName is required"
+   * @param propertyName the name of the property that is required
+   * @param value the value
+   * @throws RuntimeException in case the value is null
+   */
   public static void require(final String propertyName, final String value) {
     if (nullOrEmpty(value)) {
       throw new RuntimeException(propertyName + " is required");
     }
   }
 
+  /**
+   * @param strings the strings to check
+   * @return true if one of the given strings is null or empty, false otherwise
+   */
   public static boolean nullOrEmpty(final String... strings) {
     if (strings == null) {
       return true;

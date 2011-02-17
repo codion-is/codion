@@ -14,7 +14,18 @@ import org.jminor.framework.Configuration;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.text.Collator;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
 
 /**
  * A static utility class containing helper methods for working with Entity instances.
@@ -262,7 +273,7 @@ public final class EntityUtil {
   }
 
   /**
-   * Sorts the given properties by caption, or if that is not available, property ID
+   * Sorts the given properties by caption, or if that is not available, property ID, ignoring case
    * @param properties the properties to sort
    */
   public static void sort(final List<? extends Property> properties) {

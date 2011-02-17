@@ -7,11 +7,11 @@ import org.jminor.common.model.IdSource;
 import org.jminor.common.model.Util;
 
 import java.awt.Color;
-import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -100,7 +100,7 @@ final class EntityDefinitionImpl implements Entity.Definition {
   /**
    * The comparator
    */
-  private Entity.Comparator comparator = new ComparatorImpl();
+  private Comparator<Entity> comparator = Util.getSpaceAwareCollator();
 
   /**
    * The validator
@@ -298,12 +298,12 @@ final class EntityDefinitionImpl implements Entity.Definition {
   }
 
   /** {@inheritDoc} */
-  public Entity.Comparator getComparator() {
+  public Comparator<Entity> getComparator() {
     return comparator;
   }
 
   /** {@inheritDoc} */
-  public Entity.Definition setComparator(final Entity.Comparator comparator) {
+  public Entity.Definition setComparator(final Comparator<Entity> comparator) {
     Util.rejectNullValue(comparator, "comparator");
     this.comparator = comparator;
     return this;
@@ -646,13 +646,5 @@ final class EntityDefinitionImpl implements Entity.Definition {
     }
 
     return stringBuilder.toString();
-  }
-
-  private static final class ComparatorImpl implements Entity.Comparator {
-    private final Collator collator = Collator.getInstance();
-    /** {@inheritDoc} */
-    public int compare(final Entity entity, final Entity entityToCompare) {
-      return Util.collateSansSpaces(collator, entity.toString(), entityToCompare.toString());
-    }
   }
 }

@@ -17,9 +17,9 @@ import org.jminor.framework.domain.Entities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +32,7 @@ public class EntityPanelProvider implements Comparable {
 
   protected static final Logger LOG = LoggerFactory.getLogger(EntityPanelProvider.class);
 
-  private final Collator collator = Collator.getInstance();
+  private final Comparator<String> comparator = Util.getSpaceAwareCollator();
 
   private final String entityID;
   private String caption;
@@ -244,7 +244,7 @@ public class EntityPanelProvider implements Comparable {
     final String thatCompare = ((EntityPanelProvider) o).caption == null
             ? ((EntityPanelProvider) o).panelClass.getSimpleName() : ((EntityPanelProvider) o).caption;
 
-    return collator.compare(thisCompare, thatCompare);
+    return comparator.compare(thisCompare, thatCompare);
   }
 
   /** {@inheritDoc} */
