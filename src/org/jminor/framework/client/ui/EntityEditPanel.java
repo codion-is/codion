@@ -57,8 +57,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A UI component based on the EntityEditModel.
- * @see org.jminor.framework.client.model.EntityEditModel
+ * A UI component based on a {@link EntityEditModel}.
  */
 public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Object> implements ExceptionHandler {
 
@@ -95,18 +94,18 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   private boolean panelInitialized = false;
 
   /**
-   * Instantiates a new EntityEditPanel based on the provided EntityEditModel
-   * @param editModel the EntityEditModel instance to base this EntityEditPanel on
+   * Instantiates a new EntityEditPanel based on the given {@link EntityEditModel}
+   * @param editModel the {@link EntityEditModel} instance to base this EntityEditPanel on
    */
   public EntityEditPanel(final EntityEditModel editModel) {
     this(editModel, INSERT, UPDATE, DELETE, CLEAR, REFRESH);
   }
 
   /**
-   * Instantiates a new EntityEditPanel based on the provided EntityEditModel
-   * @param editModel the EntityEditModel instance to base this EntityEditPanel on
+   * Instantiates a new EntityEditPanel based on the given {@link EntityEditModel}
+   * @param editModel the {@link EntityEditModel} instance to base this EntityEditPanel on
    * @param controlKeys if specified only controls with those keys are initialized,
-   * an empty String array will result in no controls being initialized
+   * null or an empty String array will result in no controls being initialized
    */
   public EntityEditPanel(final EntityEditModel editModel, final String... controlKeys) {
     super(editModel);
@@ -575,10 +574,10 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @see #getControl(String)
    */
   private void setupControls(final String... controlKeys) {
-    final Collection<String> keys = Arrays.asList(controlKeys);
-    if (keys.isEmpty()) {
+    if (controlKeys == null || controlKeys.length == 0) {
       return;
     }
+    final Collection<String> keys = Arrays.asList(controlKeys);
     if (!getEntityEditModel().isReadOnly()) {
       if (getEntityEditModel().isInsertAllowed() && keys.contains(INSERT)) {
         setControl(INSERT, getInsertControl());

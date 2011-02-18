@@ -2382,3 +2382,4 @@
   Util.getSpaceAwareCollator() added, used where applicable and tested
   Entity.Comparator removed
   Some javadoc improvements
+  EntityEditPanel now handles a null controlKeys constructor argument
