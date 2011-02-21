@@ -543,10 +543,10 @@ public interface Entity extends ValueChangeMap<String, Object>, Comparable<Entit
     Comparator<Entity> getComparator();
 
     /**
-     * @return a list of property IDs identifying the properties to use when performing
+     * @return a collection of property IDs identifying the properties to use when performing
      * a default lookup for this entity type
      */
-    List<String> getSearchPropertyIDs();
+    Collection<String> getSearchPropertyIDs();
 
     /**
      * Sets the IDs of the properties to use when performing a default lookup for this entity type

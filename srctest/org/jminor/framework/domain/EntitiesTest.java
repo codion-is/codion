@@ -4,20 +4,21 @@
 package org.jminor.framework.domain;
 
 import org.jminor.common.model.formats.DateFormats;
+import org.jminor.framework.demos.chinook.domain.Chinook;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 
 import org.junit.Test;
 
 import java.text.DateFormat;
+import java.util.Collection;
 import java.util.Date;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 public class EntitiesTest {
 
   @Test
-  public void test() {
+  public void define() {
     final String entityID = "entityID";
     Entities.define(entityID);
     try {
@@ -25,6 +26,39 @@ public class EntitiesTest {
       fail("Should not be able to re-define an entity");
     }
     catch (Exception e) {}
+  }
+
+  @Test
+  public void getSearchProperties() {
+    Chinook.init();
+    Collection<Property.ColumnProperty> searchProperties = Entities.getSearchProperties(Chinook.T_CUSTOMER);
+    assertTrue(searchProperties.contains(Entities.getColumnProperty(Chinook.T_CUSTOMER, Chinook.CUSTOMER_FIRSTNAME)));
+    assertTrue(searchProperties.contains(Entities.getColumnProperty(Chinook.T_CUSTOMER, Chinook.CUSTOMER_LASTNAME)));
+    assertTrue(searchProperties.contains(Entities.getColumnProperty(Chinook.T_CUSTOMER, Chinook.CUSTOMER_EMAIL)));
+
+    searchProperties = Entities.getSearchProperties(Chinook.T_CUSTOMER, Chinook.CUSTOMER_FIRSTNAME, Chinook.CUSTOMER_EMAIL);
+    assertTrue(searchProperties.contains(Entities.getColumnProperty(Chinook.T_CUSTOMER, Chinook.CUSTOMER_FIRSTNAME)));
+    assertFalse(searchProperties.contains(Entities.getColumnProperty(Chinook.T_CUSTOMER, Chinook.CUSTOMER_LASTNAME)));
+    assertTrue(searchProperties.contains(Entities.getColumnProperty(Chinook.T_CUSTOMER, Chinook.CUSTOMER_EMAIL)));
+
+    EmpDept.init();
+    searchProperties = Entities.getSearchProperties(EmpDept.T_DEPARTMENT);
+    //should contain all string based properties
+    assertTrue(searchProperties.contains(Entities.getColumnProperty(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME)));
+    assertTrue(searchProperties.contains(Entities.getColumnProperty(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_LOCATION)));
+  }
+
+  @Test
+  public void getSearchPropertyIDs() {
+    Chinook.init();
+    Collection<String> searchPropertyIDs = Entities.getSearchPropertyIDs(Chinook.T_CUSTOMER);
+    assertTrue(searchPropertyIDs.contains(Chinook.CUSTOMER_FIRSTNAME));
+    assertTrue(searchPropertyIDs.contains(Chinook.CUSTOMER_LASTNAME));
+    assertTrue(searchPropertyIDs.contains(Chinook.CUSTOMER_EMAIL));
+
+    EmpDept.init();
+    searchPropertyIDs = Entities.getSearchPropertyIDs(EmpDept.T_DEPARTMENT);
+    assertTrue(searchPropertyIDs.isEmpty());
   }
 
   @Test

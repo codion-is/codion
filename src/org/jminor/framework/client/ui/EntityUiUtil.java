@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.client.ui;
 
-import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
@@ -373,7 +372,7 @@ public final class EntityUiUtil {
 
   public static EntityLookupField createEntityLookupField(final Property.ForeignKeyProperty foreignKeyProperty,
                                                           final EntityEditModel editModel) {
-    final Collection<String> searchPropertyIDs = Entities.getEntitySearchPropertyIDs(foreignKeyProperty.getReferencedEntityID());
+    final Collection<String> searchPropertyIDs = Entities.getSearchPropertyIDs(foreignKeyProperty.getReferencedEntityID());
     if (searchPropertyIDs.isEmpty()) {
       throw new IllegalArgumentException("No default search properties specified for entity: " + foreignKeyProperty.getReferencedEntityID()
               + ", unable to create EntityLookupField, you must specify the searchPropertyIDs");
@@ -384,25 +383,16 @@ public final class EntityUiUtil {
 
   public static EntityLookupField createEntityLookupField(final Property.ForeignKeyProperty foreignKeyProperty,
                                                           final EntityEditModel editModel, final String... searchPropertyIDs) {
-    return createEntityLookupField(foreignKeyProperty, editModel, null, searchPropertyIDs);
-  }
-
-  public static EntityLookupField createEntityLookupField(final Property.ForeignKeyProperty foreignKeyProperty,
-                                                          final EntityEditModel editModel,
-                                                          final Criteria additionalSearchCriteria,
-                                                          final String... searchPropertyIDs) {
     Util.rejectNullValue(foreignKeyProperty, "foreignKeyProperty");
     Util.rejectNullValue(editModel, EDIT_MODEL_PARAM_NAME);
     checkProperty(foreignKeyProperty, editModel);
     if (searchPropertyIDs == null || searchPropertyIDs.length == 0) {
       throw new IllegalArgumentException("No search properties specified for entity lookup field: " + foreignKeyProperty.getReferencedEntityID());
     }
-    final List<Property.ColumnProperty> searchProperties = Entities.getSearchProperties(
-            foreignKeyProperty.getReferencedEntityID(), Arrays.asList(searchPropertyIDs));
 
-    final EntityLookupField lookupField =
-            new EntityLookupField(editModel.createEntityLookupModel(foreignKeyProperty.getReferencedEntityID(),
-                    searchProperties, additionalSearchCriteria));
+    final EntityLookupModel lookupModel = editModel.initializeEntityLookupModel(foreignKeyProperty);
+    final EntityLookupField lookupField = new EntityLookupField(lookupModel);
+
     if (Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER)) {
       lookupField.setTransferFocusOnEnter();
     }

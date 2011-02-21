@@ -1652,7 +1652,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   protected final EntityLookupField createEntityLookupField(final String foreignKeyPropertyID) {
     final Property.ForeignKeyProperty fkProperty = Entities.getForeignKeyProperty(getEntityEditModel().getEntityID(),
             foreignKeyPropertyID);
-    final Collection<String> searchPropertyIDs = Entities.getEntitySearchPropertyIDs(fkProperty.getReferencedEntityID());
+    final Collection<String> searchPropertyIDs = Entities.getSearchPropertyIDs(fkProperty.getReferencedEntityID());
     return createEntityLookupField(fkProperty, searchPropertyIDs.toArray(new String[searchPropertyIDs.size()]));
   }
 
@@ -1668,7 +1668,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
     final Property.ForeignKeyProperty fkProperty = Entities.getForeignKeyProperty(getEntityEditModel().getEntityID(),
             foreignKeyPropertyID);
     if (searchPropertyIDs == null || searchPropertyIDs.length == 0) {
-      final Collection<String> propertyIDs = Entities.getEntitySearchPropertyIDs(fkProperty.getReferencedEntityID());
+      final Collection<String> propertyIDs = Entities.getSearchPropertyIDs(fkProperty.getReferencedEntityID());
       return createEntityLookupField(fkProperty, propertyIDs.toArray(new String[propertyIDs.size()]));
     }
 

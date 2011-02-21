@@ -22,6 +22,7 @@ import org.jminor.framework.domain.Property;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -41,7 +42,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
   /**
    * The properties to use when doing the lookup
    */
-  private final List<Property.ColumnProperty> lookupProperties;
+  private final Collection<Property.ColumnProperty> lookupProperties;
 
   /**
    * The selected entities
@@ -69,7 +70,8 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
    * @param connectionProvider the EntityConnectionProvider to use when performing the lookup
    * @param lookupProperties the properties to search by, these must be string based
    */
-  public DefaultEntityLookupModel(final String entityID, final EntityConnectionProvider connectionProvider, final List<Property.ColumnProperty> lookupProperties) {
+  public DefaultEntityLookupModel(final String entityID, final EntityConnectionProvider connectionProvider,
+                                  final Collection<Property.ColumnProperty> lookupProperties) {
     Util.rejectNullValue(entityID, "entityID");
     Util.rejectNullValue(connectionProvider, "connectionProvider");
     Util.rejectNullValue(lookupProperties, "lookupProperties");
@@ -90,8 +92,8 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
   }
 
   /** {@inheritDoc} */
-  public final List<Property.ColumnProperty> getLookupProperties() {
-    return Collections.unmodifiableList(lookupProperties);
+  public final Collection<Property.ColumnProperty> getLookupProperties() {
+    return Collections.unmodifiableCollection(lookupProperties);
   }
 
   /** {@inheritDoc} */

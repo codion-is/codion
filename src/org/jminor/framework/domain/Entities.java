@@ -129,7 +129,7 @@ public final class Entities {
    * @return a String array containing the IDs of the properties used as default search properties
    * for entities identified by <code>entityID</code>
    */
-  public static Collection<String> getEntitySearchPropertyIDs(final String entityID) {
+  public static Collection<String> getSearchPropertyIDs(final String entityID) {
     return EntityDefinitionImpl.getDefinition(entityID).getSearchPropertyIDs();
   }
 
@@ -139,29 +139,42 @@ public final class Entities {
    * @param entityID the entity ID
    * @return the search properties to use
    */
-  public static List<Property.ColumnProperty> getSearchProperties(final String entityID) {
-    return getSearchProperties(entityID, getEntitySearchPropertyIDs(entityID));
+  public static Collection<Property.ColumnProperty> getSearchProperties(final String entityID) {
+    final Collection<String> searchPropertyIDs = getSearchPropertyIDs(entityID);
+    return getSearchProperties(entityID, searchPropertyIDs.toArray(new String[searchPropertyIDs.size()]));
   }
 
   /**
    * Retrieves the properties used when searching for a entity of the given type,
    * if no search property IDs are specified all STRING based properties are returned.
    * @param entityID the entity ID
-   * @param searchPropertyIds the IDs of the properties to use as search properties
+   * @param searchPropertyIds the IDs of the search properties to retrieve
    * @return the search properties to use
    */
-  public static List<Property.ColumnProperty> getSearchProperties(final String entityID, final Collection<String> searchPropertyIds) {
-    final List<Property.ColumnProperty> searchProperties = new ArrayList<Property.ColumnProperty>();
-    if (searchPropertyIds != null && !searchPropertyIds.isEmpty()) {
+  public static Collection<Property.ColumnProperty> getSearchProperties(final String entityID, final String... searchPropertyIds) {
+    if (searchPropertyIds != null && searchPropertyIds.length > 0) {
+      final List<Property.ColumnProperty> searchProperties = new ArrayList<Property.ColumnProperty>();
       for (final String propertyID : searchPropertyIds) {
         searchProperties.add(getColumnProperty(entityID, propertyID));
       }
+
+      return searchProperties;
     }
     else {
-      for (final Property.ColumnProperty property : getColumnProperties(entityID)) {
-        if (property.isString() && property.isSearchable()) {
-          searchProperties.add(property);
-        }
+      final Collection<String> searchableProperties = getSearchablePropertyIDs(entityID);
+      return getColumnProperties(entityID, searchableProperties.toArray(new String[searchableProperties.size()]));
+    }
+  }
+
+  /**
+   * @param entityID the entityID
+   * @return all searchable string-based properties for the given entity type
+   */
+  public static Collection<String> getSearchablePropertyIDs(final String entityID) {
+    final Collection<String> searchProperties = new ArrayList<String>();
+    for (final Property.ColumnProperty property : getColumnProperties(entityID)) {
+      if (property.isString() && property.isSearchable()) {
+        searchProperties.add(property.getPropertyID());
       }
     }
 
@@ -179,7 +192,7 @@ public final class Entities {
   /**
    * @param entityID the entity ID
    * @return true if the entity identified by <code>entityID</code> is read only
-   * @throws RuntimeException if the entity is undefined
+   * @throws IllegalArgumentException if the entity is undefined
    */
   public static boolean isReadOnly(final String entityID) {
     return EntityDefinitionImpl.getDefinition(entityID).isReadOnly();
@@ -188,7 +201,7 @@ public final class Entities {
   /**
    * @param entityID the entity ID
    * @return true if the entity identified by <code>entityID</code> is based on a small dataset
-   * @throws RuntimeException if the entity is undefined
+   * @throws IllegalArgumentException if the entity is undefined
    */
   public static boolean isSmallDataset(final String entityID) {
     return EntityDefinitionImpl.getDefinition(entityID).isSmallDataset();
@@ -205,7 +218,7 @@ public final class Entities {
   /**
    * @param entityID the entity ID
    * @return the name of the table used to select entities identified by <code>entityID</code>
-   * @throws RuntimeException if the entity is undefined
+   * @throws IllegalArgumentException if the entity is undefined
    */
   public static String getSelectTableName(final String entityID) {
     return EntityDefinitionImpl.getDefinition(entityID).getSelectTableName();
@@ -214,7 +227,7 @@ public final class Entities {
   /**
    * @param entityID the entity ID
    * @return the name of the table on which entities identified by <code>entityID</code> are based
-   * @throws RuntimeException if the entity is undefined
+   * @throws IllegalArgumentException if the entity is undefined
    */
   public static String getTableName(final String entityID) {
     return EntityDefinitionImpl.getDefinition(entityID).getTableName();
@@ -223,7 +236,7 @@ public final class Entities {
   /**
    * @param entityID the entity ID
    * @return the sql query used when selecting entities identified by <code>entityID</code>
-   * @throws RuntimeException if the entity is undefined
+   * @throws IllegalArgumentException if the entity is undefined
    */
   public static String getSelectQuery(final String entityID) {
     return EntityDefinitionImpl.getDefinition(entityID).getSelectQuery();
@@ -232,7 +245,7 @@ public final class Entities {
   /**
    * @param entityID the entity ID
    * @return the query string used to select entities identified by <code>entityID</code>
-   * @throws RuntimeException if the entity is undefined
+   * @throws IllegalArgumentException if the entity is undefined
    */
   public static String getSelectColumnsString(final String entityID) {
     return EntityDefinitionImpl.getDefinition(entityID).getSelectColumnsString();
@@ -241,7 +254,7 @@ public final class Entities {
   /**
    * @param entityID the entity ID
    * @return the IdSource of the entity identified by <code>entityID</code>
-   * @throws RuntimeException if the entity is undefined
+   * @throws IllegalArgumentException if the entity is undefined
    */
   public static IdSource getIdSource(final String entityID) {
     return EntityDefinitionImpl.getDefinition(entityID).getIdSource();
@@ -251,7 +264,7 @@ public final class Entities {
    * @param entityID the entity ID
    * @return the {@link Entity.ToString} instance used to provide string representations
    * of entities of the given type
-   * @throws RuntimeException if the entity is undefined
+   * @throws IllegalArgumentException if the entity is undefined
    */
   public static Entity.ToString getStringProvider(final String entityID) {
     return EntityDefinitionImpl.getDefinition(entityID).getStringProvider();
@@ -298,7 +311,6 @@ public final class Entities {
    * @param entityID the entity ID
    * @return a list containing the visible (non-hidden) properties
    * in the entity identified by <code>entityID</code>
-   * @throws RuntimeException if no visible properties are defined for the given entity
    */
   public static List<Property> getVisibleProperties(final String entityID) {
     Util.rejectNullValue(entityID, ENTITY_ID_PARAM);
@@ -306,9 +318,29 @@ public final class Entities {
   }
 
   /**
+   * @param entityID the entityID
+   * @param propertyIDs the IDs of the properties to retrieve
+   * @return the {@link Property.ColumnProperty}s specified by the given property IDs
+   * @throws IllegalArgumentException in case a given propertyID does not represent a {@link Property.ColumnProperty}
+   */
+  public static List<Property.ColumnProperty> getColumnProperties(final String entityID, final String... propertyIDs) {
+    final List<Property.ColumnProperty> columnProperties = new ArrayList<Property.ColumnProperty>();
+    if (propertyIDs == null || propertyIDs.length == 0) {
+      return columnProperties;
+    }
+
+    for (final String propertyID : propertyIDs) {
+      columnProperties.add(getColumnProperty(entityID, propertyID));
+    }
+
+    return columnProperties;
+  }
+
+  /**
    * @param entityID the entity ID
    * @param propertyID the property ID
    * @return the column property identified by property ID
+   * @throws IllegalArgumentException in case the propertyID does not represent a {@link Property.ColumnProperty}
    */
   public static Property.ColumnProperty getColumnProperty(final String entityID, final String propertyID) {
     final Property property = getProperty(entityID, propertyID);
@@ -323,7 +355,7 @@ public final class Entities {
    * @param entityID the entity ID
    * @param propertyID the property ID
    * @return the property identified by <code>propertyID</code> in the entity identified by <code>entityID</code>
-   * @throws RuntimeException in case no such property exists
+   * @throws IllegalArgumentException in case no such property exists
    */
   public static Property getProperty(final String entityID, final String propertyID) {
     Util.rejectNullValue(entityID, ENTITY_ID_PARAM);
@@ -473,7 +505,7 @@ public final class Entities {
    * @param entityID the entity ID
    * @param propertyID the property ID
    * @return the Property.ForeignKeyProperty with the given propertyID
-   * @throws RuntimeException in case no such property exists
+   * @throws IllegalArgumentException in case no such property exists
    */
   public static Property.ForeignKeyProperty getForeignKeyProperty(final String entityID, final String propertyID) {
     for (final Property.ForeignKeyProperty foreignKeyProperty : getForeignKeyProperties(entityID)) {
@@ -496,7 +528,6 @@ public final class Entities {
   /**
    * @param entityID the entity ID
    * @return the name of the primary key value source for the given entity
-   * @throws RuntimeException in case no id source name is specified
    */
   public static String getIdValueSource(final String entityID) {
     return EntityDefinitionImpl.getDefinition(entityID).getIdValueSource();

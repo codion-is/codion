@@ -2383,3 +2383,4 @@
   Entity.Comparator removed
   Some javadoc improvements
   EntityEditPanel now handles a null controlKeys constructor argument
+  EntityEditModel, contains/initialise/create/getEntityComboBoxModel() functionality replicated for EntityLookupModels, plus some related changes

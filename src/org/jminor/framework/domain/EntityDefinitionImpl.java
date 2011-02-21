@@ -115,7 +115,7 @@ final class EntityDefinitionImpl implements Entity.Definition {
   /**
    * The IDs of the properties to use when performing a string based lookup on this entity
    */
-  private List<String> searchPropertyIDs;
+  private Collection<String> searchPropertyIDs;
 
   /**
    * Links a set of derived property ids to a parent property id
@@ -310,11 +310,11 @@ final class EntityDefinitionImpl implements Entity.Definition {
   }
 
   /** {@inheritDoc} */
-  public List<String> getSearchPropertyIDs() {
+  public Collection<String> getSearchPropertyIDs() {
     if (searchPropertyIDs == null) {
       return Collections.emptyList();
     }
-    return Collections.unmodifiableList(searchPropertyIDs);
+    return Collections.unmodifiableCollection(searchPropertyIDs);
   }
 
   /** {@inheritDoc} */

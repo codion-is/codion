@@ -341,7 +341,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
     if (!simpleSearchString.isEmpty()) {
       final String wildcard = (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER);
       final String searchTextWithWildcards = wildcard + simpleSearchString + wildcard;
-      final List<Property.ColumnProperty> searchProperties = Entities.getSearchProperties(entityID);
+      final Collection<Property.ColumnProperty> searchProperties = Entities.getSearchProperties(entityID);
       for (final Property searchProperty : searchProperties) {
         final PropertySearchModel propertySearchModel = getPropertySearchModel(searchProperty.getPropertyID());
         propertySearchModel.setCaseSensitive(false);

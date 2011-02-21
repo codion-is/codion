@@ -39,7 +39,7 @@ import static org.junit.Assert.*;
 
 public final class DefaultEntityEditModelTest {
 
-  private DefaultEntityEditModel editModel;
+  private DefaultEntityEditModel employeeEditModel;
   private Property.ColumnProperty jobProperty;
   private Property.ForeignKeyProperty deptProperty;
   private boolean debugOutput;
@@ -51,7 +51,7 @@ public final class DefaultEntityEditModelTest {
     deptProperty = Entities.getForeignKeyProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_DEPARTMENT_FK);
     debugOutput = Configuration.getBooleanValue(Configuration.PROPERTY_DEBUG_OUTPUT);
     Configuration.setValue(Configuration.PROPERTY_DEBUG_OUTPUT, true);
-    editModel = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.DB_PROVIDER);
+    employeeEditModel = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.DB_PROVIDER);
   }
 
   @After
@@ -62,44 +62,44 @@ public final class DefaultEntityEditModelTest {
   @Test
   public void initializePropertyComboBoxModel() {
     try {
-      editModel.getPropertyComboBoxModel(jobProperty);
+      employeeEditModel.getPropertyComboBoxModel(jobProperty);
       fail();
     }
     catch (IllegalStateException e) {}
-    final FilteredComboBoxModel model = editModel.initializePropertyComboBoxModel(jobProperty, null, "null");
+    final FilteredComboBoxModel model = employeeEditModel.initializePropertyComboBoxModel(jobProperty, null, "null");
     assertNotNull(model);
-    assertTrue(editModel.containsComboBoxModel(jobProperty.getPropertyID()));
-    assertEquals(model, editModel.getPropertyComboBoxModel(jobProperty));
-    editModel.refreshComboBoxModels();
-    editModel.clearComboBoxModels();
-    assertTrue(editModel.getPropertyComboBoxModel(jobProperty).isCleared());
-    editModel.refreshComboBoxModels();
-    editModel.clear();
-    assertTrue(editModel.getPropertyComboBoxModel(jobProperty).isCleared());
+    assertTrue(employeeEditModel.containsComboBoxModel(jobProperty.getPropertyID()));
+    assertEquals(model, employeeEditModel.getPropertyComboBoxModel(jobProperty));
+    employeeEditModel.refreshComboBoxModels();
+    employeeEditModel.clearComboBoxModels();
+    assertTrue(employeeEditModel.getPropertyComboBoxModel(jobProperty).isCleared());
+    employeeEditModel.refreshComboBoxModels();
+    employeeEditModel.clear();
+    assertTrue(employeeEditModel.getPropertyComboBoxModel(jobProperty).isCleared());
   }
 
   @Test
   public void initializeEntityComboBoxModel() {
     try {
-      editModel.getEntityComboBoxModel(deptProperty);
+      employeeEditModel.getEntityComboBoxModel(deptProperty);
       fail();
     }
     catch (IllegalStateException e) {}
-    final EntityComboBoxModel model = editModel.initializeEntityComboBoxModel(deptProperty);
+    final EntityComboBoxModel model = employeeEditModel.initializeEntityComboBoxModel(deptProperty);
     assertNotNull(model);
     assertTrue(model.isCleared());
     assertTrue(model.getAllItems().isEmpty());
-    editModel.refreshComboBoxModels();
+    employeeEditModel.refreshComboBoxModels();
     assertFalse(model.isCleared());
     assertFalse(model.getAllItems().isEmpty());
-    editModel.clearComboBoxModels();
+    employeeEditModel.clearComboBoxModels();
     assertTrue(model.isCleared());
     assertTrue(model.getAllItems().isEmpty());
   }
 
   @Test
   public void createEntityComboBoxModel() {
-    final EntityComboBoxModel model = editModel.createEntityComboBoxModel(deptProperty);
+    final EntityComboBoxModel model = employeeEditModel.createEntityComboBoxModel(deptProperty);
     assertNotNull(model);
     assertTrue(model.isCleared());
     assertTrue(model.getAllItems().isEmpty());
@@ -109,41 +109,81 @@ public final class DefaultEntityEditModelTest {
   @Test
   public void getEntityComboBoxModel() {
     try {
-      editModel.initializeEntityComboBoxModel(jobProperty.getPropertyID());
+      employeeEditModel.initializeEntityComboBoxModel(jobProperty.getPropertyID());
       fail();
     }
     catch (IllegalArgumentException e) {}
     try {
-      editModel.getEntityComboBoxModel(jobProperty.getPropertyID());
+      employeeEditModel.getEntityComboBoxModel(jobProperty.getPropertyID());
       fail();
     }
     catch (IllegalArgumentException e) {}
     try {
-      editModel.getEntityComboBoxModel(deptProperty.getPropertyID());
+      employeeEditModel.getEntityComboBoxModel(deptProperty.getPropertyID());
       fail();
     }
     catch (IllegalStateException e) {}
-    final EntityComboBoxModel model = editModel.initializeEntityComboBoxModel(deptProperty.getPropertyID());
+    final EntityComboBoxModel model = employeeEditModel.initializeEntityComboBoxModel(deptProperty.getPropertyID());
     assertNotNull(model);
-    assertEquals(model, editModel.getEntityComboBoxModel(deptProperty));
+    assertEquals(model, employeeEditModel.getEntityComboBoxModel(deptProperty));
+  }
+
+  @Test
+  public void getEntityLookupModel() {
+    try {
+      employeeEditModel.initializeEntityLookupModel(jobProperty.getPropertyID());
+      fail();
+    }
+    catch (IllegalArgumentException e) {}
+    try {
+      employeeEditModel.getEntityLookupModel(jobProperty.getPropertyID());
+      fail();
+    }
+    catch (IllegalArgumentException e) {}
+    try {
+      employeeEditModel.getEntityLookupModel(deptProperty.getPropertyID());
+      fail();
+    }
+    catch (IllegalStateException e) {}
+    final EntityLookupModel model = employeeEditModel.initializeEntityLookupModel(deptProperty.getPropertyID());
+    assertNotNull(model);
+    assertEquals(model, employeeEditModel.getEntityLookupModel(deptProperty));
+  }
+
+  @Test
+  public void initializeEntityLookupModel() {
+    assertFalse(employeeEditModel.containsLookupModel(deptProperty.getPropertyID()));
+    try {
+      employeeEditModel.getEntityLookupModel(deptProperty);
+      fail();
+    }
+    catch (IllegalStateException e) {}
+    final EntityLookupModel model = employeeEditModel.initializeEntityLookupModel(deptProperty);
+    assertNotNull(model);
+    assertTrue(employeeEditModel.containsLookupModel(deptProperty.getPropertyID()));
+    assertNotNull(employeeEditModel.getEntityLookupModel(deptProperty));
   }
 
   @Test
   public void createEntityLookupModel() {
-    final EntityLookupModel model = editModel.createEntityLookupModel(EmpDept.T_DEPARTMENT,
-            Entities.getSearchProperties(EmpDept.T_DEPARTMENT), null);
+    final EntityLookupModel model = employeeEditModel.createEntityLookupModel(EmpDept.EMPLOYEE_DEPARTMENT_FK);
     assertNotNull(model);
     assertEquals(EmpDept.T_DEPARTMENT, model.getEntityID());
+    try {
+      employeeEditModel.createEntityLookupModel(EmpDept.EMPLOYEE_COMMISSION);
+      fail();
+    }
+    catch (IllegalArgumentException e) {}
   }
 
   @Test
   public void getEntityCopy() throws DatabaseException {
-    final Entity employee = editModel.getConnectionProvider().getConnection().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "MARTIN");
-    editModel.setEntity(employee);
-    final Entity copyWithPrimaryKeyValue = editModel.getEntityCopy();
+    final Entity employee = employeeEditModel.getConnectionProvider().getConnection().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "MARTIN");
+    employeeEditModel.setEntity(employee);
+    final Entity copyWithPrimaryKeyValue = employeeEditModel.getEntityCopy();
     assertEquals(employee, copyWithPrimaryKeyValue);
     assertFalse(copyWithPrimaryKeyValue.isPrimaryKeyNull());
-    final Entity copyWithoutPrimaryKeyValue = editModel.getEntityCopy(false);
+    final Entity copyWithoutPrimaryKeyValue = employeeEditModel.getEntityCopy(false);
     assertTrue(copyWithoutPrimaryKeyValue.isPrimaryKeyNull());
   }
 
@@ -165,81 +205,81 @@ public final class DefaultEntityEditModelTest {
     }
     catch (IllegalArgumentException e) {}
 
-    final StateObserver entityNullState = editModel.getEntityNullObserver();
+    final StateObserver entityNullState = employeeEditModel.getEntityNullObserver();
 
     assertTrue(entityNullState.isActive());
 
-    editModel.setReadOnly(false);
-    assertFalse(editModel.isReadOnly());
-    assertTrue(editModel.getAllowInsertObserver().isActive());
-    assertTrue(editModel.getAllowUpdateObserver().isActive());
-    assertTrue(editModel.getAllowDeleteObserver().isActive());
+    employeeEditModel.setReadOnly(false);
+    assertFalse(employeeEditModel.isReadOnly());
+    assertTrue(employeeEditModel.getAllowInsertObserver().isActive());
+    assertTrue(employeeEditModel.getAllowUpdateObserver().isActive());
+    assertTrue(employeeEditModel.getAllowDeleteObserver().isActive());
 
     final ActionListener listener = new ActionListener() {
       public void actionPerformed(final ActionEvent e) {}
     };
-    editModel.addAfterDeleteListener(listener);
-    editModel.addAfterInsertListener(listener);
-    editModel.addAfterUpdateListener(listener);
-    editModel.addBeforeDeleteListener(listener);
-    editModel.addBeforeInsertListener(listener);
-    editModel.addBeforeUpdateListener(listener);
-    editModel.addEntitiesChangedListener(listener);
-    editModel.addBeforeRefreshListener(listener);
-    editModel.addAfterRefreshListener(listener);
+    employeeEditModel.addAfterDeleteListener(listener);
+    employeeEditModel.addAfterInsertListener(listener);
+    employeeEditModel.addAfterUpdateListener(listener);
+    employeeEditModel.addBeforeDeleteListener(listener);
+    employeeEditModel.addBeforeInsertListener(listener);
+    employeeEditModel.addBeforeUpdateListener(listener);
+    employeeEditModel.addEntitiesChangedListener(listener);
+    employeeEditModel.addBeforeRefreshListener(listener);
+    employeeEditModel.addAfterRefreshListener(listener);
 
-    assertEquals(EmpDept.T_EMPLOYEE, editModel.getEntityID());
-    assertEquals(editModel.getConnectionProvider().getConnection().selectPropertyValues(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB, true),
-            editModel.getValueProvider(jobProperty).getValues());
+    assertEquals(EmpDept.T_EMPLOYEE, employeeEditModel.getEntityID());
+    assertEquals(employeeEditModel.getConnectionProvider().getConnection().selectPropertyValues(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB, true),
+            employeeEditModel.getValueProvider(jobProperty).getValues());
 
-    editModel.refresh();
-    assertTrue(editModel.isEntityNew());
-    assertFalse(editModel.getModifiedObserver().isActive());
+    employeeEditModel.refresh();
+    assertTrue(employeeEditModel.isEntityNew());
+    assertFalse(employeeEditModel.getModifiedObserver().isActive());
 
-    final Entity employee = editModel.getConnectionProvider().getConnection().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "MARTIN");
-    editModel.setEntity(employee);
+    final Entity employee = employeeEditModel.getConnectionProvider().getConnection().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "MARTIN");
+    employeeEditModel.setEntity(employee);
     assertFalse(entityNullState.isActive());
 
-    assertTrue("Active entity is not equal to the entity just set", editModel.getEntityCopy().propertyValuesEqual(employee));
-    assertFalse("Active entity is new after an entity is set", editModel.isEntityNew());
-    assertFalse(editModel.getModifiedObserver().isActive());
-    editModel.setEntity(null);
-    assertTrue("Active entity is new null after entity is set to null", editModel.isEntityNew());
-    assertFalse(editModel.getModifiedObserver().isActive());
-    assertTrue("Active entity is not null after entity is set to null", editModel.getEntityCopy().isPrimaryKeyNull());
+    assertTrue("Active entity is not equal to the entity just set", employeeEditModel.getEntityCopy().propertyValuesEqual(employee));
+    assertFalse("Active entity is new after an entity is set", employeeEditModel.isEntityNew());
+    assertFalse(employeeEditModel.getModifiedObserver().isActive());
+    employeeEditModel.setEntity(null);
+    assertTrue("Active entity is new null after entity is set to null", employeeEditModel.isEntityNew());
+    assertFalse(employeeEditModel.getModifiedObserver().isActive());
+    assertTrue("Active entity is not null after entity is set to null", employeeEditModel.getEntityCopy().isPrimaryKeyNull());
 
-    editModel.setEntity(employee);
-    assertTrue("Active entity is null after selection is made", !editModel.getEntityCopy().isPrimaryKeyNull());
-    editModel.setEntity(null);
+    employeeEditModel.setEntity(employee);
+    assertTrue("Active entity is null after selection is made", !employeeEditModel.getEntityCopy().isPrimaryKeyNull());
+    employeeEditModel.setEntity(null);
 
-    final Double originalCommission = (Double) editModel.getValue(EmpDept.EMPLOYEE_COMMISSION);
+    final Double originalCommission = (Double) employeeEditModel.getValue(EmpDept.EMPLOYEE_COMMISSION);
     final double commission = 1500.5;
-    final Date originalHiredate = (Date) editModel.getValue(EmpDept.EMPLOYEE_HIREDATE);
+    final Date originalHiredate = (Date) employeeEditModel.getValue(EmpDept.EMPLOYEE_HIREDATE);
     final Date hiredate = new Date();
-    final String originalName = (String) editModel.getValue(EmpDept.EMPLOYEE_NAME);
+    final String originalName = (String) employeeEditModel.getValue(EmpDept.EMPLOYEE_NAME);
     final String name = "Mr. Mr";
 
-    editModel.setValue(EmpDept.EMPLOYEE_COMMISSION, commission);
-    assertTrue(editModel.getModifiedObserver().isActive());
-    editModel.setValue(EmpDept.EMPLOYEE_HIREDATE, hiredate);
-    editModel.setValue(EmpDept.EMPLOYEE_NAME, name);
+    employeeEditModel.setValue(EmpDept.EMPLOYEE_COMMISSION, commission);
+    assertTrue(employeeEditModel.getModifiedObserver().isActive());
+    employeeEditModel.setValue(EmpDept.EMPLOYEE_HIREDATE, hiredate);
+    employeeEditModel.setValue(EmpDept.EMPLOYEE_NAME, name);
 
-    assertEquals("Commission does not fit", editModel.getValue(EmpDept.EMPLOYEE_COMMISSION), commission);
-    assertEquals("Hiredate does not fit", editModel.getValue(EmpDept.EMPLOYEE_HIREDATE), hiredate);
-    assertEquals("Name does not fit", editModel.getValue(EmpDept.EMPLOYEE_NAME), name);
+    assertEquals("Commission does not fit", employeeEditModel.getValue(EmpDept.EMPLOYEE_COMMISSION), commission);
+    assertEquals("Hiredate does not fit", employeeEditModel.getValue(EmpDept.EMPLOYEE_HIREDATE), hiredate);
+    assertEquals("Name does not fit", employeeEditModel.getValue(EmpDept.EMPLOYEE_NAME), name);
 
-    editModel.setValue(EmpDept.EMPLOYEE_COMMISSION, originalCommission);
-    assertTrue(editModel.isModified());
-    assertTrue(editModel.getModifiedObserver().isActive());
-    editModel.setValue(EmpDept.EMPLOYEE_HIREDATE, originalHiredate);
-    assertTrue(editModel.isModified());
-    editModel.setValue(EmpDept.EMPLOYEE_NAME, originalName);
-    assertFalse(editModel.isModified());
+    employeeEditModel.setValue(EmpDept.EMPLOYEE_COMMISSION, originalCommission);
+    assertTrue(employeeEditModel.isModified());
+    assertTrue(employeeEditModel.getModifiedObserver().isActive());
+    employeeEditModel.setValue(EmpDept.EMPLOYEE_HIREDATE, originalHiredate);
+    assertTrue(employeeEditModel.isModified());
+    employeeEditModel.setValue(EmpDept.EMPLOYEE_NAME, originalName);
+    assertFalse(employeeEditModel.isModified());
 
     //test validation
     try {
-      editModel.setValue(EmpDept.EMPLOYEE_COMMISSION, 50d);
-      editModel.validate(EmpDept.EMPLOYEE_COMMISSION, ValueMapValidator.INSERT);
+      employeeEditModel.setValue(EmpDept.EMPLOYEE_COMMISSION, 50d);
+      employeeEditModel.validate(EmpDept.EMPLOYEE_COMMISSION, ValueMapValidator.INSERT);
       fail("Validation should fail on invalid commission value");
     }
     catch (ValidationException e) {
@@ -250,63 +290,63 @@ public final class DefaultEntityEditModelTest {
               FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_TOO_SMALL) + " " + property.getMin(), e.getMessage());
     }
 
-    editModel.setValueMap(null);
-    assertTrue("Active entity is not null after model is cleared", editModel.getEntityCopy().isPrimaryKeyNull());
+    employeeEditModel.setValueMap(null);
+    assertTrue("Active entity is not null after model is cleared", employeeEditModel.getEntityCopy().isPrimaryKeyNull());
 
-    editModel.removeAfterDeleteListener(listener);
-    editModel.removeAfterInsertListener(listener);
-    editModel.removeAfterUpdateListener(listener);
-    editModel.removeBeforeDeleteListener(listener);
-    editModel.removeBeforeInsertListener(listener);
-    editModel.removeBeforeUpdateListener(listener);
-    editModel.removeEntitiesChangedListener(listener);
-    editModel.removeBeforeRefreshListener(listener);
-    editModel.removeAfterRefreshListener(listener);
+    employeeEditModel.removeAfterDeleteListener(listener);
+    employeeEditModel.removeAfterInsertListener(listener);
+    employeeEditModel.removeAfterUpdateListener(listener);
+    employeeEditModel.removeBeforeDeleteListener(listener);
+    employeeEditModel.removeBeforeInsertListener(listener);
+    employeeEditModel.removeBeforeUpdateListener(listener);
+    employeeEditModel.removeEntitiesChangedListener(listener);
+    employeeEditModel.removeBeforeRefreshListener(listener);
+    employeeEditModel.removeAfterRefreshListener(listener);
   }
 
   @Test(expected = UnsupportedOperationException.class)
   public void insertReadOnly() throws CancelException, ValidationException, DatabaseException {
-    editModel.setReadOnly(true);
-    editModel.insert();
+    employeeEditModel.setReadOnly(true);
+    employeeEditModel.insert();
   }
 
   @Test(expected = UnsupportedOperationException.class)
   public void updateReadOnly() throws CancelException, ValidationException, DatabaseException {
-    editModel.setReadOnly(true);
-    editModel.update();
+    employeeEditModel.setReadOnly(true);
+    employeeEditModel.update();
   }
 
   @Test(expected = UnsupportedOperationException.class)
   public void deleteReadOnly() throws CancelException, ValidationException, DatabaseException {
-    editModel.setReadOnly(true);
-    editModel.delete();
+    employeeEditModel.setReadOnly(true);
+    employeeEditModel.delete();
   }
 
   @Test
   public void insert() throws Exception {
     try {
-      assertTrue(editModel.insert(new ArrayList<Entity>()).isEmpty());
-      editModel.getConnectionProvider().getConnection().beginTransaction();
-      editModel.setValue(EmpDept.EMPLOYEE_COMMISSION, 1000d);
-      editModel.setValue(EmpDept.EMPLOYEE_HIREDATE, DateUtil.floorDate(new Date()));
-      editModel.setValue(EmpDept.EMPLOYEE_JOB, "A Jobby");
-      editModel.setValue(EmpDept.EMPLOYEE_NAME, "Björn");
-      editModel.setValue(EmpDept.EMPLOYEE_SALARY, 1000d);
+      assertTrue(employeeEditModel.insert(new ArrayList<Entity>()).isEmpty());
+      employeeEditModel.getConnectionProvider().getConnection().beginTransaction();
+      employeeEditModel.setValue(EmpDept.EMPLOYEE_COMMISSION, 1000d);
+      employeeEditModel.setValue(EmpDept.EMPLOYEE_HIREDATE, DateUtil.floorDate(new Date()));
+      employeeEditModel.setValue(EmpDept.EMPLOYEE_JOB, "A Jobby");
+      employeeEditModel.setValue(EmpDept.EMPLOYEE_NAME, "Björn");
+      employeeEditModel.setValue(EmpDept.EMPLOYEE_SALARY, 1000d);
 
       final Entity tmpDept = Entities.entity(EmpDept.T_DEPARTMENT);
       tmpDept.setValue(EmpDept.DEPARTMENT_ID, 99);
       tmpDept.setValue(EmpDept.DEPARTMENT_LOCATION, "Limbo");
       tmpDept.setValue(EmpDept.DEPARTMENT_NAME, "Judgment");
 
-      final Entity department = editModel.getConnectionProvider().getConnection().selectSingle(editModel.getConnectionProvider().getConnection().insert(Arrays.asList(tmpDept)).get(0));
+      final Entity department = employeeEditModel.getConnectionProvider().getConnection().selectSingle(employeeEditModel.getConnectionProvider().getConnection().insert(Arrays.asList(tmpDept)).get(0));
 
-      editModel.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, department);
+      employeeEditModel.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, department);
 
-      editModel.addAfterInsertListener(new InsertListener() {
+      employeeEditModel.addAfterInsertListener(new InsertListener() {
         @Override
         protected void inserted(final InsertEvent event) {
           try {
-            final Entity inserted = editModel.getConnectionProvider().getConnection().selectSingle(event.getInsertedKeys().get(0));
+            final Entity inserted = employeeEditModel.getConnectionProvider().getConnection().selectSingle(event.getInsertedKeys().get(0));
             assertEquals(department, inserted.getValue(EmpDept.EMPLOYEE_DEPARTMENT_FK));
           }
           catch (Exception ex) {
@@ -314,93 +354,93 @@ public final class DefaultEntityEditModelTest {
           }
         }
       });
-      editModel.setInsertAllowed(false);
-      assertFalse(editModel.isInsertAllowed());
+      employeeEditModel.setInsertAllowed(false);
+      assertFalse(employeeEditModel.isInsertAllowed());
       try {
-        editModel.insert();
+        employeeEditModel.insert();
         fail("Should not be able to insert");
       }
       catch (UnsupportedOperationException e) {}
-      editModel.setInsertAllowed(true);
-      assertTrue(editModel.isInsertAllowed());
+      employeeEditModel.setInsertAllowed(true);
+      assertTrue(employeeEditModel.isInsertAllowed());
 
-      editModel.insert();
+      employeeEditModel.insert();
 
-      editModel.setValue(EmpDept.EMPLOYEE_NAME, "Bobby");
+      employeeEditModel.setValue(EmpDept.EMPLOYEE_NAME, "Bobby");
       try {
-        editModel.insert();
+        employeeEditModel.insert();
       }
       catch (Exception e) {
         fail("Should be able to insert again");
       }
     }
     finally {
-      editModel.getConnectionProvider().getConnection().rollbackTransaction();
+      employeeEditModel.getConnectionProvider().getConnection().rollbackTransaction();
     }
   }
 
   @Test
   public void update() throws Exception {
     try {
-      assertTrue(editModel.update().isEmpty());
-      assertTrue(editModel.update(new ArrayList<Entity>()).isEmpty());
-      editModel.getConnectionProvider().getConnection().beginTransaction();
-      editModel.setEntity(editModel.getConnectionProvider().getConnection().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "MILLER"));
-      editModel.setValue(EmpDept.EMPLOYEE_NAME, "BJORN");
-      final List<Entity> toUpdate = Arrays.asList(editModel.getEntityCopy());
+      assertTrue(employeeEditModel.update().isEmpty());
+      assertTrue(employeeEditModel.update(new ArrayList<Entity>()).isEmpty());
+      employeeEditModel.getConnectionProvider().getConnection().beginTransaction();
+      employeeEditModel.setEntity(employeeEditModel.getConnectionProvider().getConnection().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "MILLER"));
+      employeeEditModel.setValue(EmpDept.EMPLOYEE_NAME, "BJORN");
+      final List<Entity> toUpdate = Arrays.asList(employeeEditModel.getEntityCopy());
       final UpdateListener listener = new UpdateListener() {
         @Override
         protected void updated(final UpdateEvent event) {
           assertEquals(toUpdate, event.getUpdatedEntities());
         }
       };
-      editModel.addAfterUpdateListener(listener);
-      editModel.setUpdateAllowed(false);
-      assertFalse(editModel.isUpdateAllowed());
+      employeeEditModel.addAfterUpdateListener(listener);
+      employeeEditModel.setUpdateAllowed(false);
+      assertFalse(employeeEditModel.isUpdateAllowed());
       try {
-        editModel.update();
+        employeeEditModel.update();
         fail("Should not be able to update");
       }
       catch (UnsupportedOperationException e) {}
-      editModel.setUpdateAllowed(true);
-      assertTrue(editModel.isUpdateAllowed());
+      employeeEditModel.setUpdateAllowed(true);
+      assertTrue(employeeEditModel.isUpdateAllowed());
 
-      editModel.update();
-      assertFalse(editModel.getModifiedObserver().isActive());
-      editModel.removeAfterUpdateListener(listener);
+      employeeEditModel.update();
+      assertFalse(employeeEditModel.getModifiedObserver().isActive());
+      employeeEditModel.removeAfterUpdateListener(listener);
     }
     finally {
-      editModel.getConnectionProvider().getConnection().rollbackTransaction();
+      employeeEditModel.getConnectionProvider().getConnection().rollbackTransaction();
     }
   }
 
   @Test
   public void delete() throws Exception {
     try {
-      assertTrue(editModel.delete(new ArrayList<Entity>()).isEmpty());
-      editModel.getConnectionProvider().getConnection().beginTransaction();
-      editModel.setEntity(editModel.getConnectionProvider().getConnection().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "MILLER"));
-      final List<Entity> toDelete = Arrays.asList(editModel.getEntityCopy());
-      editModel.addAfterDeleteListener(new DeleteListener() {
+      assertTrue(employeeEditModel.delete(new ArrayList<Entity>()).isEmpty());
+      employeeEditModel.getConnectionProvider().getConnection().beginTransaction();
+      employeeEditModel.setEntity(employeeEditModel.getConnectionProvider().getConnection().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "MILLER"));
+      final List<Entity> toDelete = Arrays.asList(employeeEditModel.getEntityCopy());
+      employeeEditModel.addAfterDeleteListener(new DeleteListener() {
         @Override
         protected void deleted(final DeleteEvent event) {
           assertEquals(toDelete, event.getDeletedEntities());
         }
       });
-      editModel.setDeleteAllowed(false);
-      assertFalse(editModel.isDeleteAllowed());
+      employeeEditModel.setDeleteAllowed(false);
+      assertFalse(employeeEditModel.isDeleteAllowed());
       try {
-        editModel.delete();
+        employeeEditModel.delete();
         fail("Should not be able to delete");
       }
       catch (UnsupportedOperationException e) {}
-      editModel.setDeleteAllowed(true);
-      assertTrue(editModel.isDeleteAllowed());
+      employeeEditModel.setDeleteAllowed(true);
+      assertTrue(employeeEditModel.isDeleteAllowed());
 
-      editModel.delete();
+      employeeEditModel.delete();
     }
     finally {
-      editModel.getConnectionProvider().getConnection().rollbackTransaction();
+      employeeEditModel.getConnectionProvider().getConnection().rollbackTransaction();
     }
   }
 }

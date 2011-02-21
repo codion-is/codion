@@ -940,7 +940,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
 
   /**
    * Override the default controls by mapping them to their respective control codes
-   * (EntityTablePanel.UPDATE_SELECTED, DELETE_SELECTED etc) via the <code>setControl(String, Control) method,
+   * ({@link EntityTablePanel#UPDATE_SELECTED}, {@link EntityTablePanel#DELETE_SELECTED} etc)
+   * via the <code>setControl(String, Control) method,
    * these can then be retrieved via the <code>getControl(String)</code> method.
    * @see org.jminor.common.ui.control.Control
    * @see #setControl(String, org.jminor.common.ui.control.Control)
@@ -1122,17 +1123,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   }
 
   /**
-   * Initializes the panel containing the table column summary panels
-   * @return the summary panel
-   */
-  protected final EntityTableSummaryPanel initializeSummaryPanel() {
-    final EntityTableSummaryPanel panel = new EntityTableSummaryPanel(getEntityTableModel());
-    panel.setVerticalFillerWidth(UiUtil.getPreferredScrollBarWidth());
-
-    return panel;
-  }
-
-  /**
    * Provides value input components for multiple entity update, override to supply
    * specific InputValueProvider implementations for properties.
    * Remember to return with a call to super.getInputProviderInputProvider().
@@ -1186,12 +1176,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       return new EntityComboProvider(editModel.createEntityComboBoxModel(foreignKeyProperty), currentValue);
     }
     else {
-      final List<Property.ColumnProperty> searchProperties = Entities.getSearchProperties(foreignKeyProperty.getReferencedEntityID());
-      if (searchProperties.isEmpty()) {
-        throw new IllegalArgumentException("No searchable properties found for entity: " + foreignKeyProperty.getReferencedEntityID());
-      }
-
-      return new EntityLookupProvider(editModel.createEntityLookupModel(foreignKeyProperty.getReferencedEntityID(), searchProperties, null), currentValue);
+      return new EntityLookupProvider(editModel.createEntityLookupModel(foreignKeyProperty), currentValue);
     }
   }
 

@@ -9,6 +9,7 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
 import java.awt.event.ActionListener;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -47,7 +48,7 @@ public interface EntityLookupModel extends EntityDataProvider {
   /**
    * @return a list containing the properties used when performing a lookup
    */
-  List<Property.ColumnProperty> getLookupProperties();
+  Collection<Property.ColumnProperty> getLookupProperties();
 
   /**
    * @return true if this lookup model allows selection of multiple entities

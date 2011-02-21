@@ -12,19 +12,21 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
 import org.junit.After;
-import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+
+import static org.junit.Assert.*;
 
 public final class DefaultEntityLookupModelTest {
 
   private DefaultEntityLookupModel lookupModel;
-  private List<Property.ColumnProperty> properties;
+  private Collection<Property.ColumnProperty> lookupProperties;
 
   @Test
   public void testConstructor() {
@@ -54,7 +56,7 @@ public final class DefaultEntityLookupModelTest {
   public void theRest() {
     assertNotNull(lookupModel.getDescription());
     assertNotNull(lookupModel.getConnectionProvider());
-    assertEquals(properties, lookupModel.getLookupProperties());
+    assertTrue(lookupModel.getLookupProperties().containsAll(lookupProperties));
     assertTrue(lookupModel.isMultipleSelectionAllowed());
     lookupModel.setMultipleSelectionAllowed(false);
     assertFalse(lookupModel.isMultipleSelectionAllowed());
@@ -137,9 +139,9 @@ public final class DefaultEntityLookupModelTest {
   @Before
   public void setUp() throws Exception {
     EmpDept.init();
-    properties = Arrays.asList(Entities.getColumnProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME),
+    lookupProperties = Arrays.asList(Entities.getColumnProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME),
                     Entities.getColumnProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB));
-    lookupModel = new DefaultEntityLookupModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.DB_PROVIDER, properties);
+    lookupModel = new DefaultEntityLookupModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.DB_PROVIDER, lookupProperties);
 
     EntityConnectionImplTest.DB_PROVIDER.getConnection().beginTransaction();
     setupData();
