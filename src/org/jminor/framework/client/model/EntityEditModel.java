@@ -158,18 +158,6 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * Creates a {@link EntityLookupModel} for looking up entities referenced by the given foreign key property,
    * using the search properties defined for that entity type, or if none are defined all string based searchable
    * properties in that entity.
-   * @param foreignKeyPropertyID the ID of the foreign key property for which to create a {@link EntityLookupModel}
-   * @return a {@link EntityLookupModel} for looking up entities of the type referenced by the given foreign key property,
-   * using the default lookup properties
-   * @throws IllegalStateException in case no searchable properties are found for the entity type referenced by the
-   * given foreign key property
-   */
-  EntityLookupModel createEntityLookupModel(final String foreignKeyPropertyID);
-
-  /**
-   * Creates a {@link EntityLookupModel} for looking up entities referenced by the given foreign key property,
-   * using the search properties defined for that entity type, or if none are defined all string based searchable
-   * properties in that entity.
    * @param foreignKeyProperty the foreign key property for which to create a {@link EntityLookupModel}
    * @return a {@link EntityLookupModel} for looking up entities of the type referenced by the given foreign key property,
    * @throws IllegalStateException in case no searchable properties can be found for the entity type referenced by the

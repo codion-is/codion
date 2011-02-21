@@ -166,14 +166,9 @@ public final class DefaultEntityEditModelTest {
 
   @Test
   public void createEntityLookupModel() {
-    final EntityLookupModel model = employeeEditModel.createEntityLookupModel(EmpDept.EMPLOYEE_DEPARTMENT_FK);
+    final EntityLookupModel model = employeeEditModel.createEntityLookupModel(Entities.getForeignKeyProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_DEPARTMENT_FK));
     assertNotNull(model);
     assertEquals(EmpDept.T_DEPARTMENT, model.getEntityID());
-    try {
-      employeeEditModel.createEntityLookupModel(EmpDept.EMPLOYEE_COMMISSION);
-      fail();
-    }
-    catch (IllegalArgumentException e) {}
   }
 
   @Test
