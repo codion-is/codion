@@ -11,6 +11,8 @@ import org.junit.Test;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Types;
+import java.text.Format;
+import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -40,6 +42,8 @@ public class DefaultPropertySummaryModelTest {
     }
     public void bindValuesChangedEvent(final Event event) {}
   });
+
+  private final Format numberFormat = NumberFormat.getInstance();
 
   @Test
   public void test() {
@@ -89,30 +93,30 @@ public class DefaultPropertySummaryModelTest {
   @Test
   public void doubleSum() {
     testDoubleModel.setSummaryType(PropertySummaryModel.SummaryType.SUM);
-    assertEquals("16,5", testDoubleModel.getSummaryText());
+    assertEquals(numberFormat.format(16.5), testDoubleModel.getSummaryText());
   }
 
   @Test
   public void doubleAverage() {
     testDoubleModel.setSummaryType(PropertySummaryModel.SummaryType.AVERAGE);
-    assertEquals("3,3", testDoubleModel.getSummaryText());
+    assertEquals(numberFormat.format(3.3), testDoubleModel.getSummaryText());
   }
 
   @Test
   public void doubleMininum() {
     testDoubleModel.setSummaryType(PropertySummaryModel.SummaryType.MINIMUM);
-    assertEquals("1,1", testDoubleModel.getSummaryText());
+    assertEquals(numberFormat.format(1.1), testDoubleModel.getSummaryText());
   }
 
   @Test
   public void doubleMaximum() {
     testDoubleModel.setSummaryType(PropertySummaryModel.SummaryType.MAXIMUM);
-    assertEquals("5,5", testDoubleModel.getSummaryText());
+    assertEquals(numberFormat.format(5.5), testDoubleModel.getSummaryText());
   }
 
   @Test
   public void doubleMininumMaximum() {
     testDoubleModel.setSummaryType(PropertySummaryModel.SummaryType.MINIMUM_MAXIMUM);
-    assertEquals("1,1/5,5", testDoubleModel.getSummaryText());
+    assertEquals(numberFormat.format(1.1) + "/" + numberFormat.format(5.5), testDoubleModel.getSummaryText());
   }
 }

@@ -2385,3 +2385,4 @@
   EntityEditPanel now handles a null controlKeys constructor argument
   EntityEditModel, contains/initialise/create/getEntityComboBoxModel() functionality replicated for EntityLookupModels, plus some related changes
   EntityEditModel, removed superfluous method introduced in the above
+  DefaultPropertySummaryModelTest, fixed locale sensitive tests
