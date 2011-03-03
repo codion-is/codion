@@ -17,13 +17,14 @@ public interface Criteria<T> {
 
   /**
    * @return a list of the values this criteria is based on, in the order they appear
-   * in the condition clause.
+   * in the condition clause. An empty list is returned in case no values are specified.
    */
   List<Object> getValues();
 
   /**
    * @return a list of T describing the values this criteria is based on, in the same
-   * order as their respective values appear in the condition clause
+   * order as their respective values appear in the condition clause.
+   * An empty list is returned in case no values are specified.
    */
   List<T> getValueKeys();
 }

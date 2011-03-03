@@ -3,6 +3,7 @@
  */
 package org.jminor.common.ui.valuemap;
 
+import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
 
 import javax.swing.JComponent;
@@ -30,10 +31,10 @@ public abstract class ValueChangeMapEditPanel<K, V> extends JPanel {
 
   /**
    * Instantiates a new ValueChangeMapEditPanel based on the given model.
-   * @param model the model
+   * @param editModel the model
    */
-  public ValueChangeMapEditPanel(final ValueChangeMapEditModel<K, V> model) {
-    this.model = model;
+  public ValueChangeMapEditPanel(final ValueChangeMapEditModel<K, V> editModel) {
+    this.model = Util.rejectNullValue(editModel, "editModel");
   }
 
   /**

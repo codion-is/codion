@@ -706,7 +706,7 @@ public final class EntityCriteriaUtil {
     /** {@inheritDoc} */
     public List<Object> getValues() {
       if (isNullCriteria) {
-        return new ArrayList<Object>();
+        return Collections.emptyList();
       }//null criteria, uses 'x is null', not 'x = ?'
 
       return values;
@@ -715,7 +715,7 @@ public final class EntityCriteriaUtil {
     /** {@inheritDoc} */
     public List<Property.ColumnProperty> getValueKeys() {
       if (isNullCriteria) {
-        return new ArrayList<Property.ColumnProperty>();
+        return Collections.emptyList();
       }//null criteria, uses 'x is null', not 'x = ?'
 
       return Collections.nCopies(values.size(), property);
@@ -915,7 +915,7 @@ public final class EntityCriteriaUtil {
     /** {@inheritDoc} */
     public List<Property.ColumnProperty> getValueKeys() {
       if (isNullCriteria) {
-        return new ArrayList<Property.ColumnProperty>();
+        return Collections.emptyList();
       }//null criteria, uses 'x is null', not 'x = ?'
 
       return getForeignKeyValueProperties();
@@ -924,7 +924,7 @@ public final class EntityCriteriaUtil {
     /** {@inheritDoc} */
     public List<Object> getValues() {
       if (isNullCriteria) {
-        return new ArrayList<Object>();
+        return Collections.emptyList();
       }//null criteria, uses 'x is null', not 'x = ?'
 
       return getForeignKeyCriteriaValues();

@@ -12,7 +12,6 @@ import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.db.provider.EntityConnectionProvider;
-import org.jminor.framework.domain.Entities;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,7 +92,7 @@ public class EntityPanelProvider implements Comparable {
     Util.rejectNullValue(entityModelClass, "entityModelClass");
     Util.rejectNullValue(entityPanelClass, "entityPanelClass");
     this.entityID = entityID;
-    this.caption = caption == null ? "" : caption;
+    this.caption = caption;
     this.modelClass = entityModelClass;
     this.panelClass = entityPanelClass;
   }
@@ -120,14 +119,6 @@ public class EntityPanelProvider implements Comparable {
    * @return the caption to use when this EntityPanelProvider is shown in f.x. menus
    */
   public final String getCaption() {
-    if (Util.nullOrEmpty(caption)) {
-      this.caption = Entities.getCaption(entityID);
-    }
-
-    if (caption == null) {
-      return "<no caption>";
-    }
-
     return caption;
   }
 

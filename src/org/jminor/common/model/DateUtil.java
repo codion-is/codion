@@ -285,11 +285,12 @@ public final class DateUtil {
   /**
    * Parses the date pattern and returns mask string that can be used in JFormattedFields.
    * This only works with plain numerical date formats.
-   * @param format the SimpleDateFormat for which to retrieve the date mask
+   * @param dateFormat the SimpleDateFormat for which to retrieve the date mask
    * @return a String representing the mask to use in JFormattedTextFields, i.e. "##-##-####"
    */
-  public static String getDateMask(final SimpleDateFormat format) {
-    final String datePattern = format.toPattern();
+  public static String getDateMask(final SimpleDateFormat dateFormat) {
+    Util.rejectNullValue(dateFormat, "dateFormat");
+    final String datePattern = dateFormat.toPattern();
     final StringBuilder stringBuilder = new StringBuilder(datePattern.length());
     for (final Character character : datePattern.toCharArray()) {
       stringBuilder.append(Character.isLetter(character) ? "#" : character);

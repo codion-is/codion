@@ -1,6 +1,7 @@
 package org.jminor.framework.db.criteria;
 
 import org.jminor.common.db.criteria.Criteria;
+import org.jminor.common.db.criteria.SimpleCriteria;
 import org.jminor.common.model.SearchType;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entities;
@@ -28,16 +29,13 @@ public class EntityCriteriaUtilTest {
     entity.setValue(EmpDept.DEPARTMENT_ID, 10);
 
     EntityCriteria criteria = EntityCriteriaUtil.criteria(entity.getPrimaryKey());
-    assertEquals(EmpDept.T_DEPARTMENT, criteria.getEntityID());
-    assertEquals("where deptno = ?", criteria.getWhereClause());
+    assertPrimaryKeyCriteria(criteria);
 
     criteria = EntityCriteriaUtil.criteria(Arrays.asList(entity.getPrimaryKey()));
-    assertEquals(EmpDept.T_DEPARTMENT, criteria.getEntityID());
-    assertEquals("where deptno = ?", criteria.getWhereClause());
+    assertPrimaryKeyCriteria(criteria);
 
     criteria = EntityCriteriaUtil.criteria(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, SearchType.NOT_LIKE, "DEPT");
-    assertEquals(EmpDept.T_DEPARTMENT, criteria.getEntityID());
-    assertEquals("where dname not like ?", criteria.getWhereClause());
+    assertCriteria(criteria);
   }
 
   @Test
@@ -46,16 +44,13 @@ public class EntityCriteriaUtilTest {
     entity.setValue(EmpDept.DEPARTMENT_ID, 10);
 
     EntitySelectCriteria criteria = EntityCriteriaUtil.selectCriteria(entity.getPrimaryKey());
-    assertEquals(EmpDept.T_DEPARTMENT, criteria.getEntityID());
-    assertEquals("where deptno = ?", criteria.getWhereClause());
+    assertPrimaryKeyCriteria(criteria);
 
     criteria = EntityCriteriaUtil.selectCriteria(Arrays.asList(entity.getPrimaryKey()));
-    assertEquals(EmpDept.T_DEPARTMENT, criteria.getEntityID());
-    assertEquals("where deptno = ?", criteria.getWhereClause());
+    assertPrimaryKeyCriteria(criteria);
 
     criteria = EntityCriteriaUtil.selectCriteria(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, SearchType.NOT_LIKE, "DEPT");
-    assertEquals(EmpDept.T_DEPARTMENT, criteria.getEntityID());
-    assertEquals("where dname not like ?", criteria.getWhereClause());
+    assertCriteria(criteria);
 
     final Criteria<Property.ColumnProperty> critOne = EntityCriteriaUtil.propertyCriteria(EmpDept.T_DEPARTMENT,
             EmpDept.DEPARTMENT_LOCATION, SearchType.LIKE, "New York");
@@ -73,5 +68,31 @@ public class EntityCriteriaUtilTest {
             EmpDept.DEPARTMENT_LOCATION, SearchType.LIKE, true, "New York");
     assertEquals("loc like ?", critOne.asString());
     assertNotNull(critOne);
+  }
+
+  @Test
+  public void simpleCriteria() {
+    final EntitySelectCriteria criteria = EntityCriteriaUtil.selectCriteria(EmpDept.T_DEPARTMENT,
+            new SimpleCriteria<Property.ColumnProperty>("department name is not null"));
+    assertEquals(0, criteria.getValues().size());
+    assertEquals(0, criteria.getValueProperties().size());
+  }
+
+  private void assertPrimaryKeyCriteria(final EntityCriteria criteria) {
+    assertEquals(EmpDept.T_DEPARTMENT, criteria.getEntityID());
+    assertEquals("where deptno = ?", criteria.getWhereClause());
+    assertEquals(1, criteria.getValues().size());
+    assertEquals(1, criteria.getValueProperties().size());
+    assertEquals(10, criteria.getValues().get(0));
+    assertEquals(EmpDept.DEPARTMENT_ID, criteria.getValueProperties().get(0).getPropertyID());
+  }
+
+  private void assertCriteria(final EntityCriteria criteria) {
+    assertEquals(EmpDept.T_DEPARTMENT, criteria.getEntityID());
+    assertEquals("where dname not like ?", criteria.getWhereClause());
+    assertEquals(1, criteria.getValues().size());
+    assertEquals(1, criteria.getValueProperties().size());
+    assertEquals("DEPT", criteria.getValues().get(0));
+    assertEquals(EmpDept.DEPARTMENT_NAME, criteria.getValueProperties().get(0).getPropertyID());
   }
 }

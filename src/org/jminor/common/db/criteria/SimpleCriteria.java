@@ -3,7 +3,10 @@
  */
 package org.jminor.common.db.criteria;
 
+import org.jminor.common.model.Util;
+
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -20,9 +23,10 @@ public final class SimpleCriteria<T> implements Criteria<T>, Serializable {
   /**
    * Instantiates a new SimpleCriteria
    * @param criteriaString the criteria string
+   * @throws IllegalArgumentException in case the criteria string is null
    */
   public SimpleCriteria(final String criteriaString) {
-    this(criteriaString, null, null);
+    this(criteriaString, Collections.<Object>emptyList(), Collections.<T>emptyList());
   }
 
   /**
@@ -30,11 +34,12 @@ public final class SimpleCriteria<T> implements Criteria<T>, Serializable {
    * @param criteriaString the criteria string
    * @param values the values required by this criteria string
    * @param keys the keys required by this criteria string, in the same order as their respective values
+   * @throws IllegalArgumentException in case any of the parameters are null
    */
   public SimpleCriteria(final String criteriaString, final List<Object> values, final List<T> keys) {
-    this.criteriaString = criteriaString;
-    this.values = values;
-    this.keys = keys;
+    this.criteriaString = Util.rejectNullValue(criteriaString, "criteriaString");
+    this.values = Util.rejectNullValue(values, "values");
+    this.keys = Util.rejectNullValue(keys, "keys");
   }
 
   /** {@inheritDoc} */

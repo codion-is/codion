@@ -199,7 +199,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   }
 
   /**
-   * Initializes a new EntityPanel instance. The Panel is not laid out and initialized until initialize() is called.
+   * Initializes a new EntityPanel instance. The Panel is not laid out and initialized until {@link #initializePanel()} is called.
    * The default caption of the underlying entity is used.
    * @param entityModel the EntityModel
    */
@@ -208,7 +208,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   }
 
   /**
-   * Initializes a new EntityPanel instance. The Panel is not laid out and initialized until initialize() is called.
+   * Initializes a new EntityPanel instance. The Panel is not laid out and initialized until {@link #initializePanel()} is called.
    * @param entityModel the EntityModel
    * @param caption the caption to use when presenting this entity panel
    */
@@ -217,7 +217,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   }
 
   /**
-   * Instantiates a new EntityPanel instance. The Panel is not laid out and initialized until initialize() is called.
+   * Instantiates a new EntityPanel instance. The Panel is not laid out and initialized until {@link #initializePanel()} is called.
    * @param entityModel the EntityModel
    * @param editPanel the edit panel
    */
@@ -226,7 +226,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   }
 
   /**
-   * Instantiates a new EntityPanel instance. The Panel is not laid out and initialized until initialize() is called.
+   * Instantiates a new EntityPanel instance. The Panel is not laid out and initialized until {@link #initializePanel()} is called.
    * @param entityModel the EntityModel
    * @param tablePanel the table panel
    */
@@ -235,7 +235,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   }
 
   /**
-   * Instantiates a new EntityPanel instance. The Panel is not laid out and initialized until initialize() is called.
+   * Instantiates a new EntityPanel instance. The Panel is not laid out and initialized until {@link #initializePanel()} is called.
    * @param entityModel the EntityModel
    * @param caption the caption to use when presenting this entity panel
    * @param editPanel the edit panel
@@ -245,7 +245,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   }
 
   /**
-   * Instantiates a new EntityPanel instance. The Panel is not laid out and initialized until initialize() is called.
+   * Instantiates a new EntityPanel instance. The Panel is not laid out and initialized until {@link #initializePanel()} is called.
    * @param entityModel the EntityModel
    * @param caption the caption to use when presenting this entity panel
    * @param tablePanel the table panel
@@ -255,7 +255,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   }
 
   /**
-   * Instantiates a new EntityPanel instance. The Panel is not laid out and initialized until initialize() is called.
+   * Instantiates a new EntityPanel instance. The Panel is not laid out and initialized until {@link #initializePanel()} is called.
    * @param entityModel the EntityModel
    * @param editPanel the edit panel
    * @param tablePanel the table panel
@@ -265,7 +265,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   }
 
   /**
-   * Instantiates a new EntityPanel instance. The Panel is not laid out and initialized until initialize() is called.
+   * Instantiates a new EntityPanel instance. The Panel is not laid out and initialized until {@link #initializePanel()} is called.
    * @param entityModel the EntityModel
    * @param caption the caption to use when presenting this entity panel
    * @param editPanel the edit panel
@@ -273,7 +273,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    */
   public EntityPanel(final EntityModel entityModel, final String caption, final EntityEditPanel editPanel,
                      final EntityTablePanel tablePanel) {
-    Util.rejectNullValue(entityModel, "model");
+    Util.rejectNullValue(entityModel, "entityModel");
     this.entityModel = entityModel;
     this.caption = caption == null ? entityModel.getEntityID() : caption;
     this.editPanel = editPanel;
@@ -504,7 +504,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   public final MasterDetailPanel getMasterPanel() {
     MasterDetailPanel parentPanel = masterPanel;
     if (parentPanel == null) {
-      parentPanel = UiUtil.getParentOfType(this, EntityApplicationPanel.class);
+      parentPanel = UiUtil.getParentOfType(this, MasterDetailPanel.class);
     }
 
     return parentPanel;

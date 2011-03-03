@@ -539,7 +539,7 @@ public final class EntityUiUtil {
     Util.rejectNullValue(editModel, EDIT_MODEL_PARAM_NAME);
     Util.rejectNullValue(linkType, "linkType");
     checkProperty(property, editModel);
-    final JTextField textField = initializeTextField(property, editModel, enabledState, formatMaskString, valueContainsLiteralCharacters);
+    final JTextField textField = initializeTextField(property, editModel, enabledState, dateFormat, formatMaskString, valueContainsLiteralCharacters);
     final String propertyID = property.getPropertyID();
     final TextValueLink<String> valueLink;
     if (property.isString()) {
@@ -674,8 +674,8 @@ public final class EntityUiUtil {
   }
 
   private static JTextField initializeTextField(final Property property, final EntityEditModel editModel,
-                                                final StateObserver enabledState, final String formatMaskString,
-                                                final boolean valueContainsLiteralCharacters) {
+                                                final StateObserver enabledState, final SimpleDateFormat dateFormat,
+                                                final String formatMaskString, final boolean valueContainsLiteralCharacters) {
     final JTextField field;
     if (property.isInteger()) {
       field = new IntField(0);
@@ -684,7 +684,7 @@ public final class EntityUiUtil {
       field = new DoubleField(0);
     }
     else if (property.isTime()) {
-      field = UiUtil.createFormattedField(formatMaskString, true);
+      field = UiUtil.createFormattedField(DateUtil.getDateMask(dateFormat), true);
     }
     else if (property.isString()) {
       field = formatMaskString == null ? new TextFieldPlus() : UiUtil.createFormattedField(formatMaskString, valueContainsLiteralCharacters);

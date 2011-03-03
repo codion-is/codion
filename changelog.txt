@@ -2386,3 +2386,7 @@
   EntityEditModel, contains/initialise/create/getEntityComboBoxModel() functionality replicated for EntityLookupModels, plus some related changes
   EntityEditModel, removed superfluous method introduced in the above
   DefaultPropertySummaryModelTest, fixed locale sensitive tests
+  EntityPanelProvider.getCaption() no longer sets the caption if it is null
+  EntityCriteriaUtil.getValues()/getValueKeys() now return Collections.emptyList() instead of new ArrayList() for null criteria
+  EntityApplicationPanel.initializeUI(), EntityPanelProvider caption used by default, entityPanel.getCaption() used only if the other is not available
+  Some minor doc improvements
