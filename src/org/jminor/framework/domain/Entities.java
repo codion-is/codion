@@ -615,7 +615,7 @@ public final class Entities {
     private static final long serialVersionUID = 1;
 
     /**
-     * Holds the {@link ValueProvider}s used when constructing the String representation
+     * Holds the ValueProviders used when constructing the String representation
      */
     private final List<ValueProvider> valueProviders = new ArrayList<ValueProvider>();
 

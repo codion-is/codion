@@ -277,9 +277,8 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
   /**
    * Returns the default value for the given property, used when initializing a new
    * default entity for this edit model. This does not apply to denormalized properties
-   * ({@link Property.DenormalizedProperty}) nor properties that are wrapped in foreign key properties
-   * ({@link Property.ForeignKeyProperty})
-   * If the default value of a property should be the last value used <code>persistValueOnClear</code>
+   * nor properties that are wrapped in foreign key properties.
+   * If the default value of a property should be the last value used {@link #persistValueOnClear}
    * should be overridden so that it returns <code>true</code> for that property.
    * @param property the property
    * @return the default value for the property
@@ -292,7 +291,7 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * Returns true if the last available value for this property should be used when initializing
    * a default entity.
    * Override for selective reset of field values when the model is cleared.
-   * For {@link Property.ForeignKeyProperty} values this method by default returns the value of the
+   * For foreign key property values this method by default returns the value of the
    * property {@link org.jminor.framework.Configuration#PERSIST_FOREIGN_KEY_VALUES}.
    * @param property the property
    * @return true if the given field value should be reset when the model is cleared
