@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.rmi.registry.Registry;
 import java.text.SimpleDateFormat;
 import java.util.Properties;
 
@@ -88,6 +89,13 @@ public final class Configuration {
    * Default value: localhost
    */
   public static final String SERVER_HOST_NAME = "jminor.server.hostname";
+
+  /**
+   * The port on which to locate the server registry<br>
+   * Value type: Integer<br>
+   * Default value: 1099
+   */
+  public static final String REGISTRY_PORT_NUMBER = "jminor.server.registryPort";
 
   /**
    * If specified, the client will look for a server running on this port
@@ -497,6 +505,7 @@ public final class Configuration {
     PROPERTIES.put(SERVER_CONNECTION_LOG_SIZE, 40);
     PROPERTIES.put(SERVER_CONNECTION_SSL_ENABLED, true);
     PROPERTIES.put(SERVER_HOST_NAME, "localhost");
+    PROPERTIES.put(REGISTRY_PORT_NUMBER, Registry.REGISTRY_PORT);
     PROPERTIES.put(DEFAULT_TIMESTAMP_FORMAT, "dd-MM-yyyy HH:mm");
     PROPERTIES.put(DEFAULT_DATE_FORMAT, "dd-MM-yyyy");
     PROPERTIES.put(ALL_PANELS_ACTIVE, false);
@@ -569,6 +578,7 @@ public final class Configuration {
     parseStringSetting(SERVER_HOST_NAME);
     parseStringSetting(REPORT_PATH);
     parseStringSetting(SERVER_PORT);
+    parseIntegerSetting(REGISTRY_PORT_NUMBER);
     parseBooleanSetting(SERVER_CLIENT_LOGGING_ENABLED);
     parseIntegerSetting(SERVER_CONNECTION_LIMIT);
     parseIntegerSetting(SERVER_CONNECTION_LOG_SIZE);

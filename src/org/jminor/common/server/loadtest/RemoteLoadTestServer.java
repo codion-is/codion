@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
+import java.rmi.registry.Registry;
 import java.rmi.server.RMISocketFactory;
 
 /**
@@ -31,7 +32,7 @@ public final class RemoteLoadTestServer extends AbstractRemoteServer<RemoteLoadT
   static {
     System.setSecurityManager(new RMISecurityManager());
     try {
-      Util.initializeRegistry();
+      Util.initializeRegistry(Registry.REGISTRY_PORT);
     }
     catch (RemoteException re) {
       throw new RuntimeException(re);
@@ -39,7 +40,7 @@ public final class RemoteLoadTestServer extends AbstractRemoteServer<RemoteLoadT
   }
 
   /**
-   * Instantiates and exports a new LoadTestServer.
+   * Instantiates and exports a new RemoteLoadTestServer.
    * @param serverPort the port on which to serve clients
    * @param loadTestPort the port on which to export the load tests
    * @param serverName the name of this server
@@ -48,7 +49,7 @@ public final class RemoteLoadTestServer extends AbstractRemoteServer<RemoteLoadT
   public RemoteLoadTestServer(final int serverPort, final int loadTestPort, final String serverName) throws RemoteException {
     super(serverPort, serverName, RMISocketFactory.getSocketFactory(), RMISocketFactory.getSocketFactory());
     this.loadTestPort = loadTestPort;
-    Util.getRegistry().rebind(serverName, this);
+    Util.getRegistry(Registry.REGISTRY_PORT).rebind(serverName, this);
   }
 
   /** {@inheritDoc} */

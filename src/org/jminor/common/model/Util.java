@@ -873,25 +873,28 @@ public final class Util {
 
   /**
    * Initializes a Registry if one is not running
+   * @param port the port on which to look for (or create) a registry
    * @throws RemoteException in case of an exception
    */
-  public static void initializeRegistry() throws RemoteException {
-    final Registry localRegistry = LocateRegistry.getRegistry(Registry.REGISTRY_PORT);
+  public static void initializeRegistry(final int port) throws RemoteException {
+    final Registry localRegistry = getRegistry(port);
     try {
       localRegistry.list();
     }
     catch (Exception e) {
-      LOG.info("Creating registry on port: " + Registry.REGISTRY_PORT);
-      LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
+      LOG.debug("Trying to locate registry on server start", e);
+      LOG.info("Creating registry on port: " + port);
+      LocateRegistry.createRegistry(port);
     }
   }
 
   /**
-   * @return the local registry
+   * @param port the port on which to look for a registry
+   * @return the registry
    * @throws java.rmi.RemoteException in case of an exception
    */
-  public static Registry getRegistry() throws RemoteException {
-    return LocateRegistry.getRegistry(Registry.REGISTRY_PORT);
+  public static Registry getRegistry(final int port) throws RemoteException {
+    return LocateRegistry.getRegistry(port);
   }
 
   @SuppressWarnings({"unchecked"})

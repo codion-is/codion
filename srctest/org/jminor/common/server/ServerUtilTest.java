@@ -12,6 +12,7 @@ import org.junit.Test;
 import java.rmi.NotBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.rmi.registry.Registry;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
@@ -24,7 +25,7 @@ public class ServerUtilTest {
 
   @Before
   public void setUp() throws RemoteException {
-    Util.initializeRegistry();
+    Util.initializeRegistry(Registry.REGISTRY_PORT);
     server = new AbstractRemoteServer(12345, SERVER_NAME) {
       @Override
       protected Remote doConnect(final ClientInfo clientInfo) throws RemoteException {
@@ -36,19 +37,19 @@ public class ServerUtilTest {
         return 0;
       }
     };
-    Util.getRegistry().rebind(SERVER_NAME, server);
+    Util.getRegistry(Registry.REGISTRY_PORT).rebind(SERVER_NAME, server);
   }
 
   @After
   public void tearDown() throws RemoteException, NotBoundException {
     server.shutdown();
-    Util.getRegistry().unbind(SERVER_NAME);
+    Util.getRegistry(Registry.REGISTRY_PORT).unbind(SERVER_NAME);
   }
 
   @Test
   public void test() throws RemoteException {
     try {
-      final RemoteServer remoteServer = ServerUtil.getServer("localhost", SERVER_NAME);
+      final RemoteServer remoteServer = ServerUtil.getServer("localhost", SERVER_NAME, Registry.REGISTRY_PORT, -1);
       assertNotNull(remoteServer);
     }
     catch (NotBoundException e) {

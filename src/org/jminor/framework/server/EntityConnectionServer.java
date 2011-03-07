@@ -49,6 +49,7 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
   private static final int DEFAULT_CHECK_INTERVAL_MS = 30000;
   private static final int DEFAULT_TIMEOUT_MS = 120000;
 
+  private static final int REGISTRY_PORT;
   private static final int SERVER_PORT;
   private static final int SERVER_DB_PORT;
 
@@ -61,12 +62,13 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
     Util.require(Configuration.SERVER_PORT, serverPortProperty);
     Util.require(Configuration.SERVER_DB_PORT, serverDbPortProperty);
 
+    REGISTRY_PORT = Configuration.getIntValue(Configuration.REGISTRY_PORT_NUMBER);
     SERVER_PORT = Integer.parseInt(serverPortProperty);
     SERVER_DB_PORT = Integer.parseInt(serverDbPortProperty);
 
     try {
       loadDefaultDomainModels();
-      Util.initializeRegistry();
+      Util.initializeRegistry(REGISTRY_PORT);
     }
     catch (Throwable re) {
       LOG.error("Exception while initializing server", re);
@@ -95,7 +97,7 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
     RemoteEntityConnectionImpl.initializeConnectionPools(database);
     setConnectionLimit(Configuration.getIntValue(Configuration.SERVER_CONNECTION_LIMIT));
     startConnectionTimeoutTimer();
-    Util.getRegistry().rebind(getServerName(), this);
+    Util.getRegistry(REGISTRY_PORT).rebind(getServerName(), this);
     final String connectInfo = getServerName() + " bound to registry";
     LOG.info(connectInfo);
     System.out.println(connectInfo);

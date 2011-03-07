@@ -6,12 +6,15 @@ package org.jminor.framework.server.monitor;
 import org.jminor.framework.server.RemoteEntityServerTest;
 
 import org.junit.AfterClass;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class MonitorModelTest {
+import java.rmi.registry.Registry;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+public class EntityServerMonitorTest {
 
   @BeforeClass
   public static void setUp() throws Exception {
@@ -25,7 +28,7 @@ public class MonitorModelTest {
 
   @Test
   public void test() throws Exception {
-    final MonitorModel model = new MonitorModel("localhost");
+    final EntityServerMonitor model = new EntityServerMonitor("localhost", new int[] {Registry.REGISTRY_PORT});
     model.refresh();
     final HostMonitor hostMonitor = model.getHostMonitors().iterator().next();
     assertEquals("localhost", hostMonitor.getHostName());

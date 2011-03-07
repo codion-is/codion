@@ -1,1 +1,1 @@
-java -Djava.security.policy=all_permissions.policy -cp config/;lib/* sun.rmi.registry.RegistryImpl
+java -Djava.security.policy=config/all_permissions.policy -cp lib/* sun.rmi.registry.RegistryImpl

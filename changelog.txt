@@ -2390,3 +2390,4 @@
   EntityCriteriaUtil.getValues()/getValueKeys() now return Collections.emptyList() instead of new ArrayList() for null criteria
   EntityApplicationPanel.initializeUI(), EntityPanelProvider caption used by default, entityPanel.getCaption() used only if the other is not available
   Some minor doc improvements
+  Added the option of using a non-default rmi registry port, via Configuration.REGISTRY_PORT_NUMBER

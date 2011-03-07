@@ -10,7 +10,6 @@ import org.jminor.common.server.ClientInfo;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.demos.chinook.domain.Chinook;
 
-import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import java.lang.reflect.InvocationHandler;
@@ -21,6 +20,8 @@ import java.rmi.registry.Registry;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.UUID;
+
+import static org.junit.Assert.assertTrue;
 
 public class RemoteEntityConnectionImplTest {
 
@@ -34,7 +35,7 @@ public class RemoteEntityConnectionImplTest {
       final ClientInfo info = new ClientInfo(UUID.randomUUID(), "RemoteEntityConnectionImplTestClient", User.UNIT_TEST_USER);
       adapter = new RemoteEntityConnectionImpl(Databases.createInstance(), info, 2222, true, false);
 
-      Util.initializeRegistry();
+      Util.initializeRegistry(Registry.REGISTRY_PORT);
 
       registry = LocateRegistry.getRegistry("localhost");
       registry.rebind(serviceName, adapter);

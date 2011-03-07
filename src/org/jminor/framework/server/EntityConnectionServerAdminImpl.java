@@ -42,6 +42,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
 
   private static final long serialVersionUID = 1;
 
+  private static final int REGISTRY_PORT;
   private static final int SERVER_ADMIN_PORT;
 
   static {
@@ -49,6 +50,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
     final String serverAdminPortProperty = Configuration.getStringValue(Configuration.SERVER_ADMIN_PORT);
     Util.require(Configuration.SERVER_ADMIN_PORT, serverAdminPortProperty);
     SERVER_ADMIN_PORT = Integer.parseInt(serverAdminPortProperty);
+    REGISTRY_PORT = Configuration.getIntValue(Configuration.REGISTRY_PORT_NUMBER);
   }
 
   private final EntityConnectionServer server;
@@ -63,7 +65,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
     super(SERVER_ADMIN_PORT, EntityConnectionServer.SSL_CONNECTION_ENABLED ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
             EntityConnectionServer.SSL_CONNECTION_ENABLED ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
     this.server = server;
-    Util.getRegistry().rebind(RemoteServer.SERVER_ADMIN_PREFIX + server.getServerName(), this);
+    Util.getRegistry(REGISTRY_PORT).rebind(RemoteServer.SERVER_ADMIN_PREFIX + server.getServerName(), this);
     Runtime.getRuntime().addShutdownHook(new Thread(getShutdownHook()));
   }
 
@@ -148,11 +150,11 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
   /** {@inheritDoc} */
   public void shutdown() throws RemoteException {
     try {
-      Util.getRegistry().unbind(server.getServerName());
+      Util.getRegistry(REGISTRY_PORT).unbind(server.getServerName());
     }
     catch (NotBoundException e) {/**/}
     try {
-      Util.getRegistry().unbind(RemoteServer.SERVER_ADMIN_PREFIX + server.getServerName());
+      Util.getRegistry(REGISTRY_PORT).unbind(RemoteServer.SERVER_ADMIN_PREFIX + server.getServerName());
     }
     catch (NotBoundException e) {/**/}
 

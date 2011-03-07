@@ -15,8 +15,8 @@ import org.jminor.common.ui.control.ControlSet;
 import org.jminor.common.ui.control.Controls;
 import org.jminor.common.ui.images.Images;
 import org.jminor.framework.Configuration;
+import org.jminor.framework.server.monitor.EntityServerMonitor;
 import org.jminor.framework.server.monitor.HostMonitor;
-import org.jminor.framework.server.monitor.MonitorModel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +34,7 @@ import java.awt.FlowLayout;
 import java.io.File;
 import java.io.IOException;
 import java.rmi.RemoteException;
+import java.rmi.registry.Registry;
 
 /**
  * A UI based on the EntityServerMonitor model
@@ -47,15 +48,15 @@ public final class EntityServerMonitorPanel extends JPanel {
 
   private final Event evtAlwaysOnTopChanged = Events.event();
   private static final int MEMORY_USAGE_UPDATE_INTERVAL = 2000;
-  private final MonitorModel model;
+  private final EntityServerMonitor model;
   private JFrame monitorFrame;
 
   /**
-   * Instantiates a new MonitorPanel
+   * Instantiates a new EntityServerMonitorPanel
    * @throws RemoteException in case of an exception
    */
   public EntityServerMonitorPanel() throws RemoteException {
-    this(new MonitorModel(Configuration.getStringValue(Configuration.SERVER_HOST_NAME)));
+    this(new EntityServerMonitor(Configuration.getStringValue(Configuration.SERVER_HOST_NAME), getRegistryPorts()));
     Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
       public void uncaughtException(final Thread t, final Throwable e) {
         DefaultExceptionHandler.getInstance().handleException(e, EntityServerMonitorPanel.this);
@@ -64,16 +65,16 @@ public final class EntityServerMonitorPanel extends JPanel {
   }
 
   /**
-   * Instantiates a new MonitorPanel
-   * @param model the MonitorModel to base this panel on
+   * Instantiates a new EntityServerMonitorPanel
+   * @param model the EntityServerMonitor to base this panel on
    * @throws RemoteException in case of an exception
    */
-  public EntityServerMonitorPanel(final MonitorModel model) throws RemoteException {
+  public EntityServerMonitorPanel(final EntityServerMonitor model) throws RemoteException {
     this.model = model;
     initUI();
   }
 
-  public MonitorModel getModel() {
+  public EntityServerMonitor getModel() {
     return model;
   }
 
@@ -204,6 +205,16 @@ public final class EntityServerMonitorPanel extends JPanel {
     southPanel.add(UiUtil.createMemoryUsageField(MEMORY_USAGE_UPDATE_INTERVAL));
 
     return southPanel;
+  }
+
+  private static int[] getRegistryPorts() {
+    final int registryPort = Configuration.getIntValue(Configuration.REGISTRY_PORT_NUMBER);
+    if (registryPort == Registry.REGISTRY_PORT) {//just the default registry port
+      return new int[] {registryPort};
+    }
+    else {
+      return new int[] {registryPort, Registry.REGISTRY_PORT};
+    }
   }
 
   public static void main(final String[] arguments) {

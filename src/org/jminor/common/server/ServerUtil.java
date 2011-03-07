@@ -30,27 +30,15 @@ public final class ServerUtil {
    * given prefix as a criteria.
    * @param serverHostName the name of the host
    * @param serverNamePrefix the server name prefix, an empty string results in all servers being returned
-   * @return the servers having a name with the given prefix
-   * @throws RemoteException in case of a remote exception
-   * @throws NotBoundException in case no such server is found
-   */
-  public static RemoteServer getServer(final String serverHostName, final String serverNamePrefix) throws RemoteException, NotBoundException {
-    return getServer(serverHostName, serverNamePrefix, -1);
-  }
-
-  /**
-   * Retrieves a RemoteServer from a registry running on the given host, using the
-   * given prefix as a criteria.
-   * @param serverHostName the name of the host
-   * @param serverNamePrefix the server name prefix, an empty string results in all servers being returned
-   * @param port the required server port, -1 for any port
+   * @param registryPort the port on which to lookup the registry
+   * @param serverPort the required server port, -1 for any port
    * @return the servers having a name with the given prefix
    * @throws RemoteException in case of a remote exception
    * @throws NotBoundException in case no such server is found
    */
   public static RemoteServer getServer(final String serverHostName, final String serverNamePrefix,
-                                       final int port) throws RemoteException, NotBoundException {
-    final List<RemoteServer> servers = getServers(serverHostName, serverNamePrefix, port);
+                                       final int registryPort, final int serverPort) throws RemoteException, NotBoundException {
+    final List<RemoteServer> servers = getServers(serverHostName, serverNamePrefix, registryPort, serverPort);
     if (!servers.isEmpty()) {
       return servers.get(0);
     }
@@ -61,15 +49,15 @@ public final class ServerUtil {
   }
 
   private static List<RemoteServer> getServers(final String hostNames, final String serverNamePrefix,
-                                               final int port) throws RemoteException {
+                                               final int registryPort, final int serverPort) throws RemoteException {
     final List<RemoteServer> servers = new ArrayList<RemoteServer>();
     for (final String serverHostName : hostNames.split(",")) {
-      final Registry registry = LocateRegistry.getRegistry(serverHostName);
+      final Registry registry = LocateRegistry.getRegistry(serverHostName, registryPort);
       for (final String name : registry.list()) {
         LOG.info("Found server \"" + name + "\"");
         if (name.startsWith(serverNamePrefix)) {
           try {
-            final RemoteServer server = checkServer((RemoteServer) registry.lookup(name), port);
+            final RemoteServer server = checkServer((RemoteServer) registry.lookup(name), serverPort);
             if (server != null) {
               LOG.info("Adding server \"" + name + "\"");
               servers.add(server);
