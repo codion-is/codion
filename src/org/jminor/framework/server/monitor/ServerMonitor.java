@@ -42,6 +42,7 @@ public final class ServerMonitor {
 
   private final String hostName;
   private final String serverName;
+  private final int registryPort;
   private final EntityConnectionServerAdmin server;
 
   private Timer updateTimer;
@@ -68,9 +69,10 @@ public final class ServerMonitor {
   private final XYSeries connectionLimitSeries = new XYSeries("Maximum connection count");
   private final XYSeriesCollection connectionCountCollection = new XYSeriesCollection();
 
-  public ServerMonitor(final String hostName, final String serverName) throws RemoteException {
+  public ServerMonitor(final String hostName, final String serverName, final int registryPort) throws RemoteException {
     this.hostName = hostName;
     this.serverName = removeAdminPrefix(serverName);
+    this.registryPort = registryPort;
     Configuration.class.getName();
     this.server = connectServer(serverName);
     connectionRequestsPerSecondCollection.addSeries(connectionRequestsPerSecondSeries);
@@ -251,7 +253,7 @@ public final class ServerMonitor {
     final long time = System.currentTimeMillis();
     try {
       final EntityConnectionServerAdmin db =
-              (EntityConnectionServerAdmin) LocateRegistry.getRegistry(hostName).lookup(serverName);
+              (EntityConnectionServerAdmin) LocateRegistry.getRegistry(hostName, registryPort).lookup(serverName);
       //call to validate the remote connection
       db.getServerPort();
       LOG.info("ServerMonitor connected to server: " + serverName);

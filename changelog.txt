@@ -2391,3 +2391,4 @@
   EntityApplicationPanel.initializeUI(), EntityPanelProvider caption used by default, entityPanel.getCaption() used only if the other is not available
   Some minor doc improvements
   Added the option of using a non-default rmi registry port, via Configuration.REGISTRY_PORT_NUMBER
+  Fixed a bug in the custom registry port functionality

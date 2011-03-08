@@ -877,12 +877,13 @@ public final class Util {
    * @throws RemoteException in case of an exception
    */
   public static void initializeRegistry(final int port) throws RemoteException {
+    LOG.info("Initializing registry on port: " + port);
     final Registry localRegistry = getRegistry(port);
     try {
       localRegistry.list();
     }
     catch (Exception e) {
-      LOG.debug("Trying to locate registry on server start", e);
+      LOG.debug("Error when trying to locate registry on server start", e);
       LOG.info("Creating registry on port: " + port);
       LocateRegistry.createRegistry(port);
     }
