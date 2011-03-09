@@ -9,6 +9,7 @@ import org.jminor.common.model.Util;
 import org.jminor.common.server.AbstractRemoteServer;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ServerLog;
+import org.jminor.common.server.web.WebStartServer;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.domain.Entities;
 
@@ -31,6 +32,8 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * The remote server class, responsible for handling requests for RemoteEntityConnections.
@@ -78,6 +81,7 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
 
   private final long startDate = System.currentTimeMillis();
 
+  private WebStartServer webServer;
   private Timer connectionTimeoutTimer;
   private int maintenanceInterval = DEFAULT_CHECK_INTERVAL_MS;
   private int connectionTimeout = DEFAULT_TIMEOUT_MS;
@@ -98,6 +102,7 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
     setConnectionLimit(Configuration.getIntValue(Configuration.SERVER_CONNECTION_LIMIT));
     startConnectionTimeoutTimer();
     Util.getRegistry(REGISTRY_PORT).rebind(getServerName(), this);
+    startWebServer();
     final String connectInfo = getServerName() + " bound to registry on port: " + REGISTRY_PORT;
     LOG.info(connectInfo);
     System.out.println(connectInfo);
@@ -273,6 +278,33 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
   }
 
   /**
+   * Starts the web server in case a web document root is specified
+   * @see Configuration#WEB_SERVER_DOCUMENT_ROOT
+   */
+  private void startWebServer() {
+    final String webDocumentRoot = Configuration.getStringValue(Configuration.WEB_SERVER_DOCUMENT_ROOT);
+    if (webDocumentRoot != null) {
+      final int port = Configuration.getIntValue(Configuration.WEB_SERVER_PORT);
+      LOG.info("Starting web server on port: " + port + ", document root: " + webDocumentRoot);
+      final WebStartServer webServer = new WebStartServer(webDocumentRoot, port);
+      this.webServer = webServer;
+      final ExecutorService executor = Executors.newSingleThreadExecutor();
+      executor.execute(new Runnable() {
+        public void run() {
+          webServer.serve();
+        }
+      });
+    }
+  }
+
+  private void shutdownWebServer() {
+    if (webServer != null) {
+      LOG.info("Shutting down web server");
+      webServer.stop();
+    }
+  }
+
+  /**
    * @return a map containing all defined entityIDs, with their respective table names as an associated value
    */
   static Map<String, String> getEntityDefinitions() {
@@ -290,6 +322,7 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
   @Override
   protected void handleShutdown() throws RemoteException {
     removeConnections(false);
+    shutdownWebServer();
     if (database.isEmbedded()) {
       database.shutdownEmbedded(null);
     }//todo does not work when shutdown requires user authentication, jminor.db.shutdownUser hmmm

@@ -841,7 +841,8 @@ public final class Util {
   }
 
   /**
-   * Parses the configuration file specified by the CONFIGURATION_FILE property
+   * Parses the configuration file specified by the CONFIGURATION_FILE property,
+   * adding the resulting properties via System.setProperty(key, value)
    * @see #CONFIGURATION_FILE
    */
   public static void parseConfigurationFile() {

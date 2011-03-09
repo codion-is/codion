@@ -11,7 +11,6 @@ import org.jminor.common.model.Util;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.RemoteServer;
 import org.jminor.common.server.ServerLog;
-import org.jminor.common.server.web.WebStartServer;
 import org.jminor.framework.Configuration;
 
 import ch.qos.logback.classic.Level;
@@ -32,11 +31,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
- * Implements the RemoteEntityServerAdmin interface, providing admin access to a RemoteEntityServer instance.
+ * Implements the EntityConnectionServerAdmin interface, providing admin access to a EntityConnectionServer instance.
  */
 public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject implements EntityConnectionServerAdmin {
 
@@ -52,7 +49,6 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
   }
 
   private final EntityConnectionServer server;
-  private WebStartServer webServer;
 
   /**
    * Instantiates a new EntityConnectionServerAdminImpl
@@ -156,11 +152,10 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
     }
     catch (NotBoundException e) {/**/}
 
-    final String connectInfo = server.getServerName() + " removed from registry";
-    EntityConnectionServer.LOG.info(connectInfo);
-    System.out.println(connectInfo);
+    final String shutdownInfo = server.getServerName() + " removed from registry";
+    EntityConnectionServer.LOG.info(shutdownInfo);
+    System.out.println(shutdownInfo);
 
-    shutdownWebServer();
     EntityConnectionServer.LOG.info("Shutting down server");
     server.shutdown();
     try {
@@ -400,40 +395,20 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
           shutdown();
         }
         catch (RemoteException e) {
-          EntityConnectionServer.LOG.error("Exception on shutdown", e);
+          EntityConnectionServer.LOG.error("Exception during shutdown", e);
         }
       }
     };
   }
 
-  private void shutdownWebServer() {
-    if (webServer != null) {
-      EntityConnectionServer.LOG.info("Shutting down web server");
-      webServer.stop();
-    }
-  }
-
   /**
-   * Runs a new RemoteEntityServer with a server admin interface exported.
+   * Runs a new EntityConnectionServer with a server admin interface exported.
    * @param arguments no arguments required
    * @throws java.rmi.RemoteException in case of a remote exception during service export
    * @throws ClassNotFoundException in case the domain model classes required for the server is not found
    */
   public static void main(final String[] arguments) throws RemoteException, ClassNotFoundException {
     final EntityConnectionServer server = new EntityConnectionServer(Databases.createInstance());
-    final EntityConnectionServerAdminImpl admin = new EntityConnectionServerAdminImpl(server);
-
-    final String webDocumentRoot = Configuration.getStringValue(Configuration.WEB_SERVER_DOCUMENT_ROOT);
-    final ExecutorService executor = Executors.newSingleThreadExecutor();
-    if (webDocumentRoot != null) {
-      final int port = Configuration.getIntValue(Configuration.WEB_SERVER_PORT);
-      final WebStartServer webServer = new WebStartServer(webDocumentRoot, port);
-      admin.webServer = webServer;
-      executor.execute(new Runnable() {
-        public void run() {
-          webServer.serve();
-        }
-      });
-    }
+    new EntityConnectionServerAdminImpl(server);
   }
 }

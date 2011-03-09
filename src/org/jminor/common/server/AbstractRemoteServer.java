@@ -110,7 +110,7 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
 
   /** {@inheritDoc} */
   public final boolean connectionsAvailable() throws RemoteException {
-    return !maximumNummberOfConnectionReached();
+    return !maximumNumberOfConnectionReached();
   }
 
   /** {@inheritDoc} */
@@ -134,7 +134,7 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
       return connections.get(clientInfo);
     }
 
-    if (maximumNummberOfConnectionReached()) {
+    if (maximumNumberOfConnectionReached()) {
       throw ServerException.serverFullException();
     }
 
@@ -222,7 +222,7 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
    */
   protected abstract void doDisconnect(final T connection) throws RemoteException;
 
-  private boolean maximumNummberOfConnectionReached() {
+  private boolean maximumNumberOfConnectionReached() {
     return connectionLimit > -1 && getConnectionCount() >= connectionLimit;
   }
 }
