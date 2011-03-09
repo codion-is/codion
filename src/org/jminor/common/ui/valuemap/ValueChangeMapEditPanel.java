@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -150,6 +151,37 @@ public abstract class ValueChangeMapEditPanel<K, V> extends JPanel {
   }
 
   /**
+   * @return a list of keys to use when selecting a input component in this panel,
+   * this returns all the keys that have mapped components in this panel
+   * that are enabled, visible and focusable.
+   * @see #includeComponentSelectionKey(Object)
+   * @see org.jminor.common.ui.valuemap.ValueChangeMapEditPanel#setComponent(Object, javax.swing.JComponent)
+   */
+  public final List<K> getSelectComponentKeys() {
+    final Collection<K> keys = getComponentKeys();
+    final List<K> selectableComponentPropertyIDs = new ArrayList<K>(keys.size());
+    for (final K key : keys) {
+      final JComponent component = getComponent(key);
+      if (component != null && includeComponentSelectionKey(key) && component.isVisible() &&
+              component.isFocusable() && component.isEnabled()) {
+        selectableComponentPropertyIDs.add(key);
+      }
+    }
+
+    return selectableComponentPropertyIDs;
+  }
+
+  /**
+   * Override to exclude components from the component selection.
+   * @param key the component key
+   * @return true if the component associated with the given key should be included when selecting a input component in this panel,
+   * returns true by default.
+   */
+  public boolean includeComponentSelectionKey(final K key) {
+    return true;
+  }
+
+  /**
    * @return the component that should get the initial focus
    */
   protected JComponent getInitialFocusComponent() {
@@ -165,10 +197,10 @@ public abstract class ValueChangeMapEditPanel<K, V> extends JPanel {
   }
 
   /**
-   * Associates the given input component with the given property,
+   * Associates the given input component with the given key,
    * preferably this should be called for components associated with
    * key values.
-   * @param key the propertyID
+   * @param key the key
    * @param component the input component
    */
   protected final void setComponent(final K key, final JComponent component) {

@@ -872,15 +872,6 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
     }
   }
 
-  /**
-   * @param propertyID the ID of the property
-   * @return true if the given property should be included when selecting a input component in the edit panel,
-   * returns true by default.
-   */
-  protected boolean includeComponentSelectionProperty(final String propertyID) {
-    return true;
-  }
-
   //#############################################################################################
   // Begin - initialization methods
   //#############################################################################################
@@ -991,8 +982,9 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
         if (getEditPanelState() == HIDDEN) {
           setEditPanelState(EMBEDDED);
         }
-        final Property property = (Property) UiUtil.selectValue(getEditPanel(), getSelectComponentProperties(),
-                Messages.get(Messages.SELECT_INPUT_FIELD));
+        final List<String> propertyIDs = editPanel.getSelectComponentKeys();
+        final List<Property> properties = EntityUtil.getSortedProperties(entityModel.getEntityID(), propertyIDs);
+        final Property property = (Property) UiUtil.selectValue(getEditPanel(), properties, Messages.get(Messages.SELECT_INPUT_FIELD));
         if (property != null) {
           getEditPanel().selectComponent(property.getPropertyID());
         }
@@ -1322,25 +1314,6 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
               }
             });
     editPanel.prepareUI(true, false);
-  }
-
-  /**
-   * @return a list of properties to use when selecting a input component in the edit panel,
-   * this returns all the properties that have mapped components in the edit panel
-   * that are enabled, visible and focusable.
-   * @see org.jminor.common.ui.valuemap.ValueChangeMapEditPanel#setComponent(Object, javax.swing.JComponent)
-   */
-  private List<Property> getSelectComponentProperties() {
-    final Collection<String> propertyIDs = editPanel.getComponentKeys();
-    final Collection<String> selectableComponentPropertyIDs = new ArrayList<String>(propertyIDs.size());
-    for (final String propertyID : propertyIDs) {
-      final JComponent component = editPanel.getComponent(propertyID);
-      if (component != null && includeComponentSelectionProperty(propertyID) && component.isVisible() &&
-              component.isFocusable() && component.isEnabled()) {
-        selectableComponentPropertyIDs.add(propertyID);
-      }
-    }
-    return EntityUtil.getSortedProperties(entityModel.getEntityID(), selectableComponentPropertyIDs);
   }
 
   /**
