@@ -132,6 +132,8 @@ public final class FrameworkMessages {
   public static final String PREFIX_WILDCARD = "prefix_wildcard";
   public static final String PROPERTY_VALUE_IS_REQUIRED = "property_value_is_required";
   public static final String FILTER_BY = "filter_by";
+  public static final String ENABLE_MULTIPLE_SEARCH_VALUES = "enable_multiple_search_values";
+  public static final String MULTIPLE_SEARCH_VALUE_SEPARATOR = "multiple_search_value_separator";
 
   public static final String EXPORT_SELECTED = "export_selected";
   public static final String EXPORT_SELECTED_TIP = "export_selected_tip";

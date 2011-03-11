@@ -8,6 +8,7 @@ import org.jminor.common.model.Util;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.TextBeanValueLink;
 import org.jminor.common.ui.textfield.TextFieldHint;
+import org.jminor.common.ui.textfield.TextFieldPlus;
 import org.jminor.framework.client.model.EntityLookupModel;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.i18n.FrameworkMessages;
@@ -18,6 +19,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -303,22 +305,39 @@ public final class EntityLookupField extends JTextField {
 
     /** {@inheritDoc} */
     public void actionPerformed(final ActionEvent e) {
-      final JPanel panel = new JPanel(new GridLayout(3,1,5,5));
+      final JPanel panel = new JPanel(new GridLayout(5,1,5,5));
       final JCheckBox boxCaseSensitive =
               new JCheckBox(FrameworkMessages.get(FrameworkMessages.CASE_SENSITIVE), lookupPanel.getModel().isCaseSensitive());
       final JCheckBox boxPrefixWildcard =
               new JCheckBox(FrameworkMessages.get(FrameworkMessages.PREFIX_WILDCARD), lookupPanel.getModel().isWildcardPrefix());
       final JCheckBox boxPostfixWildcard =
               new JCheckBox(FrameworkMessages.get(FrameworkMessages.POSTFIX_WILDCARD), lookupPanel.getModel().isWildcardPostfix());
+      final JCheckBox boxAllowMultipleValues =
+              new JCheckBox(FrameworkMessages.get(FrameworkMessages.ENABLE_MULTIPLE_SEARCH_VALUES), lookupPanel.getModel().isMultipleSelectionAllowed());
+      final TextFieldPlus txtMultipleValueSeparator = new TextFieldPlus(1);
+      txtMultipleValueSeparator.setMaxLength(1);
+      txtMultipleValueSeparator.setText(lookupPanel.getModel().getMultipleValueSeparator());
+
       panel.add(boxCaseSensitive);
       panel.add(boxPrefixWildcard);
       panel.add(boxPostfixWildcard);
+      panel.add(boxAllowMultipleValues);
+
+      final JPanel pnlValueSeparator = new JPanel(new BorderLayout(5,5));
+      pnlValueSeparator.add(txtMultipleValueSeparator, BorderLayout.WEST);
+      pnlValueSeparator.add(new JLabel(FrameworkMessages.get(FrameworkMessages.MULTIPLE_SEARCH_VALUE_SEPARATOR)), BorderLayout.CENTER);
+
+      panel.add(pnlValueSeparator);
       final AbstractAction action = new AbstractAction(Messages.get(Messages.OK)) {
         /** {@inheritDoc} */
         public void actionPerformed(final ActionEvent e) {
           lookupPanel.getModel().setCaseSensitive(boxCaseSensitive.isSelected());
           lookupPanel.getModel().setWildcardPrefix(boxPrefixWildcard.isSelected());
           lookupPanel.getModel().setWildcardPostfix(boxPostfixWildcard.isSelected());
+          lookupPanel.getModel().setMultipleSelectionAllowed(boxAllowMultipleValues.isSelected());
+          if (!txtMultipleValueSeparator.getText().isEmpty()) {
+            lookupPanel.getModel().setMultipleValueSeparator(txtMultipleValueSeparator.getText());
+          }
         }
       };
       action.putValue(Action.MNEMONIC_KEY, Messages.get(Messages.OK_MNEMONIC).charAt(0));

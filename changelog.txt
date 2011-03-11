@@ -2395,3 +2395,5 @@
   Moved the web server instance from the server admin class to the server class itself
   EntityPanel.includeComponentSelectionProperty() moved to ValueChangeMapEditPanel, and renamed to includeComponentSelectionKey()
   EntityPanel.getSelectComponentProperties() moved to ValueChangeMapEditPanel, and renamed to getSelectComponentKeys()
+  DefaultEntityLookupModel now trims the search strings
+  EntityLookupPanel, added multiple value configuration to settings panel

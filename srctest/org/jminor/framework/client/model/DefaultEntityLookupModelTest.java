@@ -109,6 +109,12 @@ public final class DefaultEntityLookupModelTest {
     assertFalse("Result should not contain Andrew", contains(result, "Andrew"));
 
     lookupModel.setMultipleValueSeparator(";");
+    lookupModel.setSearchString("andy ; Andrew ");//spaces should be trimmed away
+    result = lookupModel.performQuery();
+    assertEquals("Result count should be 2", 2, result.size());
+    assertTrue("Result should contain Andy", contains(result, "Andy"));
+    assertTrue("Result should contain Andrew", contains(result, "Andrew"));
+
     lookupModel.setSearchString("andy;Andrew");
     result = lookupModel.performQuery();
     assertEquals("Result count should be 2", 2, result.size());
@@ -117,7 +123,7 @@ public final class DefaultEntityLookupModelTest {
     lookupModel.setSelectedEntities(result);
     assertTrue("Search string should represent the selected items", lookupModel.searchStringRepresentsSelected());
 
-    lookupModel.setSearchString("and;rew");
+    lookupModel.setSearchString("and; rew");
     lookupModel.setWildcardPrefix(true);
     lookupModel.setWildcardPostfix(false);
     result = lookupModel.performQuery();

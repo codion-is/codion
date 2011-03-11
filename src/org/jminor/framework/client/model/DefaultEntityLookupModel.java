@@ -272,7 +272,8 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
     final CriteriaSet<Property.ColumnProperty> baseCriteria = new CriteriaSet<Property.ColumnProperty>(Conjunction.OR);
     final String[] lookupTexts = multipleSelectionAllowed ? searchString.split(multipleValueSeparator) : new String[] {searchString};
     for (final Property.ColumnProperty lookupProperty : lookupProperties) {
-      for (final String lookupText : lookupTexts) {
+      for (final String rawLookupText : lookupTexts) {
+        final String lookupText = rawLookupText.trim();
         final String modifiedLookupText = searchString.equals(wildcard) ? wildcard : ((wildcardPrefix ? wildcard : "") + lookupText + (wildcardPostfix ? wildcard : ""));
         baseCriteria.add(EntityCriteriaUtil.propertyCriteria(lookupProperty, caseSensitive, SearchType.LIKE, modifiedLookupText));
       }
