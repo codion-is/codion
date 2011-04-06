@@ -6,9 +6,11 @@ import org.jminor.common.model.SearchType;
 import org.jminor.common.model.User;
 import org.jminor.framework.client.model.DefaultEntityApplicationModel;
 import org.jminor.framework.client.model.DefaultEntityEditModel;
+import org.jminor.framework.client.model.DefaultEntityModelProvider;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityComboBoxModel;
 import org.jminor.framework.client.model.EntityEditModel;
+import org.jminor.framework.client.model.EntityModelProvider;
 import org.jminor.framework.client.ui.EntityApplicationPanel;
 import org.jminor.framework.client.ui.EntityEditPanel;
 import org.jminor.framework.client.ui.EntityPanelProvider;
@@ -216,8 +218,9 @@ public class EmpDeptMinimalApp {
 
     final EntityPanelProvider departmentProvider = new EntityPanelProvider("scott.dept")
             .setEditPanelClass(DepartmentEditPanel.class);
-    final EntityPanelProvider employeeProvider = new EntityPanelProvider("scott.emp")
-            .setEditModelClass(EmployeeEditModel.class)
+    final EntityModelProvider employeeModelProvider = new DefaultEntityModelProvider("scott.emp")
+            .setEditModelClass(EmployeeEditModel.class);
+    final EntityPanelProvider employeeProvider = new EntityPanelProvider(employeeModelProvider)
             .setEditPanelClass(EmployeeEditPanel.class);
     departmentProvider.addDetailPanelProvider(employeeProvider);
 

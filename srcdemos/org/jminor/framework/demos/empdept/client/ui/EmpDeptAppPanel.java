@@ -11,6 +11,7 @@ import org.jminor.common.ui.control.ControlSet;
 import org.jminor.common.ui.control.Controls;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.DefaultEntityApplicationModel;
+import org.jminor.framework.client.model.DefaultEntityModelProvider;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.model.PropertySummaryModel;
@@ -23,17 +24,17 @@ import org.jminor.framework.demos.empdept.beans.ui.DepartmentEditPanel;
 import org.jminor.framework.demos.empdept.beans.ui.DepartmentTablePanel;
 import org.jminor.framework.demos.empdept.beans.ui.EmployeeEditPanel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
-import static org.jminor.framework.demos.empdept.domain.EmpDept.*;
 import org.jminor.framework.plugins.json.EntityJSONParser;
 
 import java.io.File;
 import java.nio.charset.Charset;
 
+import static org.jminor.framework.demos.empdept.domain.EmpDept.*;
+
 public class EmpDeptAppPanel extends EntityApplicationPanel {
 
   public EmpDeptAppPanel() {
     final EntityPanelProvider employeePanelProvider = new EmployeePanelProvider();
-    employeePanelProvider.setEditModelClass(EmployeeEditModel.class);
     employeePanelProvider.setEditPanelClass(EmployeeEditPanel.class);
 
     final EntityPanelProvider departmentPanelProvider = new EntityPanelProvider(T_DEPARTMENT);
@@ -82,15 +83,22 @@ public class EmpDeptAppPanel extends EntityApplicationPanel {
     }
   }
 
-  private static final class EmployeePanelProvider extends EntityPanelProvider {
-    private EmployeePanelProvider() {
+  private static final class EmployeeModelProvider extends DefaultEntityModelProvider {
+    private EmployeeModelProvider() {
       super(EmpDept.T_EMPLOYEE);
+      setEditModelClass(EmployeeEditModel.class);
     }
 
     @Override
     protected void configureTableModel(final EntityTableModel tableModel) {
       tableModel.setQueryCriteriaRequired(false);
       tableModel.getPropertySummaryModel(EMPLOYEE_SALARY).setSummaryType(PropertySummaryModel.SummaryType.AVERAGE);
+    }
+  }
+
+  private static final class EmployeePanelProvider extends EntityPanelProvider {
+    private EmployeePanelProvider() {
+      super(new EmployeeModelProvider());
     }
 
     @Override

@@ -5,11 +5,11 @@ package org.jminor.common.db.dbms;
 
 import org.jminor.common.db.Database;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import java.util.Properties;
+
+import static org.junit.Assert.*;
 
 public class HSQLDatabaseTest {
 
@@ -28,5 +28,12 @@ public class HSQLDatabaseTest {
 
     db = new HSQLDatabase("dbname");
     assertEquals("jdbc:hsqldb:file:dbname;user=scott;password=tiger", db.getURL(props));
+
+    db = new HSQLDatabase(null, null, null);
+    try {
+      db.getURL(null);
+      fail();
+    }
+    catch (RuntimeException e) {}
   }
 }

@@ -86,13 +86,6 @@ public abstract class AbstractDatabase implements Database {
   public AbstractDatabase(final String databaseType, final String host, final String port, final String sid,
                           final boolean embedded) {
     Util.rejectNullValue(databaseType, "databaseType");
-    Util.require(DATABASE_HOST, host);
-    if (!embedded) {
-      Util.require(DATABASE_PORT, port);
-      if (!SQLSERVER.equals(databaseType)) {
-        Util.require(DATABASE_SID, sid);
-      }
-    }
     this.databaseType = databaseType;
     this.host = host;
     this.port = port;

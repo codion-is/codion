@@ -184,6 +184,13 @@
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/common/**, logback.xml"/>
 
+    <jar jarfile="${dist}/${ant.project.name}-db.jar" basedir="${build.base}"
+         manifest="${build.base}/META-INF/MANIFEST.MF"
+         includes="org/jminor/framework/Configuration*,
+                org/jminor/framework/db/**,
+                org/jminor/framework/domain/*,
+                org/jminor/framework/i18n/**"/>
+
     <jar jarfile="${dist}/${ant.project.name}-client.jar" basedir="${build.base}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/Configuration*,

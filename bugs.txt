@@ -7,3 +7,5 @@ in the client at a later time does not render the entity modified
 SchemaBrowser, when autoresize on table search panels do not resize when column is manually resized
 **fixed**
 SchemaBrowser, information_schema name does not show up -> seems to be MySQL string comparison related
+
+SearchPanel, SummaryPanel, do not restrict component size

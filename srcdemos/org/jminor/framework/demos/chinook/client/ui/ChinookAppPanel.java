@@ -11,7 +11,9 @@ import org.jminor.common.ui.control.ControlSet;
 import org.jminor.common.ui.control.Controls;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.DefaultEntityApplicationModel;
+import org.jminor.framework.client.model.DefaultEntityModelProvider;
 import org.jminor.framework.client.model.EntityApplicationModel;
+import org.jminor.framework.client.model.EntityModelProvider;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.ui.EntityApplicationPanel;
 import org.jminor.framework.client.ui.EntityPanel;
@@ -71,12 +73,14 @@ public final class ChinookAppPanel extends EntityApplicationPanel {
     playlistProvider.addDetailPanelProvider(playlistTrackProvider);
     playlistProvider.setDetailSplitPanelResizeWeight(0.3);
 
-    final EntityPanelProvider invoiceLineProvider = new EntityPanelProvider(T_INVOICELINE) {
+    final EntityModelProvider invoiceLineModelProvider = new DefaultEntityModelProvider(T_INVOICELINE) {
 
       @Override
       protected void configureTableModel(final EntityTableModel tableModel) {
         tableModel.setQueryConfigurationAllowed(false);
       }
+    };
+    final EntityPanelProvider invoiceLineProvider = new EntityPanelProvider(invoiceLineModelProvider) {
 
       @Override
       protected void configurePanel(final EntityPanel panel) {

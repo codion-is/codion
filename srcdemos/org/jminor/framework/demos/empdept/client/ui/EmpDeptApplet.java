@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.demos.empdept.client.ui;
 
+import org.jminor.framework.client.model.DefaultEntityModelProvider;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.model.PropertySummaryModel;
 import org.jminor.framework.client.ui.EntityApplet;
@@ -22,18 +23,19 @@ import org.jminor.framework.demos.empdept.domain.EmpDept;
 public class EmpDeptApplet extends EntityApplet {
 
   public EmpDeptApplet() {
-    super(new EntityPanelProvider(EmpDept.T_DEPARTMENT).setEditPanelClass(DepartmentEditPanel.class)
-            .setTablePanelClass(DepartmentTablePanel.class).addDetailPanelProvider(new EntityPanelProvider(EmpDept.T_EMPLOYEE) {
+    super(new EntityPanelProvider(new DefaultEntityModelProvider(EmpDept.T_DEPARTMENT) {
       @Override
       protected void configureTableModel(final EntityTableModel tableModel) {
         tableModel.setQueryCriteriaRequired(true);
         tableModel.getPropertySummaryModel(EmpDept.EMPLOYEE_SALARY).setSummaryType(PropertySummaryModel.SummaryType.AVERAGE);
       }
+    }.setEditModelClass(EmployeeEditModel.class)).setEditPanelClass(DepartmentEditPanel.class)
+            .setTablePanelClass(DepartmentTablePanel.class).addDetailPanelProvider(new EntityPanelProvider(EmpDept.T_EMPLOYEE) {
 
       @Override
       protected void configureTablePanel(final EntityTablePanel tablePanel) {
         tablePanel.setSummaryPanelVisible(true);
       }
-    }.setEditModelClass(EmployeeEditModel.class).setEditPanelClass(EmployeeEditPanel.class)));
+    }.setEditPanelClass(EmployeeEditPanel.class)));
   }
 }

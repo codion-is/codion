@@ -5,11 +5,11 @@ package org.jminor.framework.client.ui;
 
 import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
-import org.jminor.framework.client.model.DefaultEntityEditModel;
 import org.jminor.framework.client.model.DefaultEntityModel;
-import org.jminor.framework.client.model.DefaultEntityTableModel;
+import org.jminor.framework.client.model.DefaultEntityModelProvider;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityModel;
+import org.jminor.framework.client.model.EntityModelProvider;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.db.provider.EntityConnectionProvider;
 
@@ -33,19 +33,17 @@ public class EntityPanelProvider implements Comparable {
 
   private final Comparator<String> comparator = Util.getSpaceAwareCollator();
 
-  private final String entityID;
-  private String caption;
+  private final String caption;
   private boolean refreshOnInit = true;
   private int detailPanelState = EntityPanel.EMBEDDED;
   private double detailSplitPanelResizeWeight = 0.5;
   private boolean tableSearchPanelVisible = Configuration.getBooleanValue(Configuration.DEFAULT_SEARCH_PANEL_STATE);
 
-  private Class<? extends EntityModel> modelClass = DefaultEntityModel.class;
-  private Class<? extends EntityEditModel> editModelClass = DefaultEntityEditModel.class;
-  private Class<? extends EntityTableModel> tableModelClass = DefaultEntityTableModel.class;
   private Class<? extends EntityPanel> panelClass = EntityPanel.class;
   private Class<? extends EntityTablePanel> tablePanelClass = EntityTablePanel.class;
   private Class<? extends EntityEditPanel> editPanelClass;
+
+  private final EntityModelProvider modelProvider;
 
   private final List<EntityPanelProvider> detailPanelProviders = new ArrayList<EntityPanelProvider>();
 
@@ -56,7 +54,7 @@ public class EntityPanelProvider implements Comparable {
    * @param entityID the entity ID
    */
   public EntityPanelProvider(final String entityID) {
-    this(entityID, null);
+    this(entityID, (String) null);
   }
 
   /**
@@ -91,18 +89,27 @@ public class EntityPanelProvider implements Comparable {
     Util.rejectNullValue(entityID, "entityID");
     Util.rejectNullValue(entityModelClass, "entityModelClass");
     Util.rejectNullValue(entityPanelClass, "entityPanelClass");
-    this.entityID = entityID;
     this.caption = caption;
-    this.modelClass = entityModelClass;
     this.panelClass = entityPanelClass;
+    this.modelProvider = new DefaultEntityModelProvider(entityID, entityModelClass);
+  }
+
+  public EntityPanelProvider (final EntityModelProvider modelProvider) {
+    this(modelProvider, null);
+  }
+
+  public EntityPanelProvider (final EntityModelProvider modelProvider, final String caption) {
+    Util.rejectNullValue(modelProvider, "modelProvider");
+    this.modelProvider = modelProvider;
+    this.caption = caption;
   }
 
   public final EntityPanelProvider register() {
     synchronized (PANEL_PROVIDERS) {
-      if (PANEL_PROVIDERS.containsKey(entityID)) {
-        throw new IllegalStateException("Panel provider has already been set for entity: " + entityID);
+      if (PANEL_PROVIDERS.containsKey(modelProvider.getEntityID())) {
+        throw new IllegalStateException("Panel provider has already been set for entity: " + modelProvider.getEntityID());
       }
-      PANEL_PROVIDERS.put(entityID, this);
+      PANEL_PROVIDERS.put(modelProvider.getEntityID(), this);
     }
 
     return this;
@@ -112,7 +119,11 @@ public class EntityPanelProvider implements Comparable {
    * @return the entity ID
    */
   public final String getEntityID() {
-    return entityID;
+    return modelProvider.getEntityID();
+  }
+
+  public final EntityModelProvider getModelProvider() {
+    return modelProvider;
   }
 
   /**
@@ -170,11 +181,6 @@ public class EntityPanelProvider implements Comparable {
     return this;
   }
 
-  public final EntityPanelProvider setModelClass(final Class<? extends EntityModel> modelClass) {
-    this.modelClass = modelClass;
-    return this;
-  }
-
   public final EntityPanelProvider setPanelClass(final Class<? extends EntityPanel> panelClass) {
     this.panelClass = panelClass;
     return this;
@@ -188,23 +194,6 @@ public class EntityPanelProvider implements Comparable {
   public final EntityPanelProvider setTablePanelClass(final Class<? extends EntityTablePanel> tablePanelClass) {
     this.tablePanelClass = tablePanelClass;
     return this;
-  }
-
-  public final EntityPanelProvider setEditModelClass(final Class<? extends EntityEditModel> editModelClass) {
-    this.editModelClass = editModelClass;
-    return this;
-  }
-
-  public final EntityPanelProvider setTableModelClass(final Class<? extends EntityTableModel> tableModelClass) {
-    this.tableModelClass = tableModelClass;
-    return this;
-  }
-
-  /**
-   * @return the EntityModel Class to use when instantiating an EntityPanel
-   */
-  public final Class<? extends EntityModel> getModelClass() {
-    return modelClass;
   }
 
   /**
@@ -222,16 +211,8 @@ public class EntityPanelProvider implements Comparable {
     return tablePanelClass;
   }
 
-  public final Class<? extends EntityEditModel> getEditModelClass() {
-    return editModelClass;
-  }
-
-  public final Class<? extends EntityTableModel> getTableModelClass() {
-    return tableModelClass;
-  }
-
   public final int compareTo(final Object o) {
-    final String thisCompare = caption == null ? modelClass.getSimpleName() : caption;
+    final String thisCompare = caption == null ? modelProvider.getModelClass().getSimpleName() : caption;
     final String thatCompare = ((EntityPanelProvider) o).caption == null
             ? ((EntityPanelProvider) o).panelClass.getSimpleName() : ((EntityPanelProvider) o).caption;
 
@@ -241,13 +222,13 @@ public class EntityPanelProvider implements Comparable {
   /** {@inheritDoc} */
   @Override
   public final boolean equals(final Object obj) {
-    return obj instanceof EntityPanelProvider && ((EntityPanelProvider) obj).entityID.equals(entityID);
+    return obj instanceof EntityPanelProvider && ((EntityPanelProvider) obj).modelProvider.getEntityID().equals(modelProvider.getEntityID());
   }
 
   /** {@inheritDoc} */
   @Override
   public final int hashCode() {
-    return entityID.hashCode();
+    return modelProvider.getEntityID().hashCode();
   }
 
   public final EntityPanel createPanel(final EntityConnectionProvider connectionProvider) {
@@ -257,10 +238,7 @@ public class EntityPanelProvider implements Comparable {
   public final EntityPanel createPanel(final EntityConnectionProvider connectionProvider, final boolean detailPanel) {
     Util.rejectNullValue(connectionProvider, "connectionProvider");
     try {
-      final EntityModel entityModel = initializeModel(connectionProvider);
-      if (detailPanel && entityModel.containsTableModel()) {
-        entityModel.getTableModel().setDetailModel(true);
-      }
+      final EntityModel entityModel = modelProvider.initializeModel(connectionProvider, detailPanel);
 
       return createPanel(entityModel);
     }
@@ -285,11 +263,12 @@ public class EntityPanelProvider implements Comparable {
         entityPanel.setDetailPanelState(detailPanelState);
         entityPanel.setDetailSplitPanelResizeWeight(detailSplitPanelResizeWeight);
         for (final EntityPanelProvider detailProvider : detailPanelProviders) {
+          final EntityModelProvider modelProvider = detailProvider.getModelProvider();
           final EntityPanel detailPanel;
-          if (!detailProvider.modelClass.equals(DefaultEntityModel.class)) {
-            final EntityModel detailModel = model.getDetailModel(detailProvider.modelClass);
+          if (!modelProvider.getModelClass().equals(DefaultEntityModel.class)) {
+            final EntityModel detailModel = model.getDetailModel(detailProvider.getModelProvider().getModelClass());
             if (detailModel == null) {
-              throw new IllegalArgumentException("Detail model of type " + detailProvider.modelClass + " not found in model " + model);
+              throw new IllegalArgumentException("Detail model of type " + modelProvider.getModelClass() + " not found in model " + model);
             }
             detailPanel = detailProvider.createPanel(detailModel);
           }
@@ -315,11 +294,11 @@ public class EntityPanelProvider implements Comparable {
   }
 
   public final EntityEditPanel createEditPanel(final EntityConnectionProvider connectionProvider) {
-    return initializeEditPanel(initializeEditModel(connectionProvider));
+    return initializeEditPanel(modelProvider.initializeEditModel(connectionProvider));
   }
 
-  public final EntityTablePanel createTablePanel(final EntityConnectionProvider connectionProvider) {
-    return initializeTablePanel(initializeTableModel(connectionProvider));
+  public final EntityTablePanel createTablePanel(final EntityConnectionProvider connectionProvider, final boolean detailPanel) {
+    return initializeTablePanel(modelProvider.initializeTableModel(connectionProvider, detailPanel));
   }
 
   public static EntityPanelProvider getProvider(final String entityID) {
@@ -331,12 +310,6 @@ public class EntityPanelProvider implements Comparable {
   protected void configureEditPanel(final EntityEditPanel editPanel) {}
 
   protected void configureTablePanel(final EntityTablePanel tablePanel) {}
-
-  protected void configureModel(final EntityModel entityModel) {}
-
-  protected void configureEditModel(final EntityEditModel editModel) {}
-
-  protected void configureTableModel(final EntityTableModel tableModel) {}
 
   private EntityPanel initializePanel(final EntityModel entityModel) {
     try {
@@ -369,10 +342,10 @@ public class EntityPanelProvider implements Comparable {
 
   private EntityEditPanel initializeEditPanel(final EntityEditModel editModel) {
     if (editPanelClass == null) {
-      throw new IllegalArgumentException("No edit panel class has been specified for entity panel provider: " + entityID);
+      throw new IllegalArgumentException("No edit panel class has been specified for entity panel provider: " + getEntityID());
     }
-    if (!editModel.getEntityID().equals(entityID)) {
-      throw new IllegalArgumentException("Entity ID mismatch, editModel: " + editModel.getEntityID() + ", required: " + entityID);
+    if (!editModel.getEntityID().equals(getEntityID())) {
+      throw new IllegalArgumentException("Entity ID mismatch, editModel: " + editModel.getEntityID() + ", required: " + getEntityID());
     }
     try {
       final EntityEditPanel editPanel = editPanelClass.getConstructor(EntityEditModel.class).newInstance(editModel);
@@ -390,8 +363,8 @@ public class EntityPanelProvider implements Comparable {
 
   private EntityTablePanel initializeTablePanel(final EntityTableModel tableModel) {
     try {
-      if (!tableModel.getEntityID().equals(entityID)) {
-        throw new IllegalArgumentException("Entity ID mismatch, tableModel: " + tableModel.getEntityID() + ", required: " + entityID);
+      if (!tableModel.getEntityID().equals(getEntityID())) {
+        throw new IllegalArgumentException("Entity ID mismatch, tableModel: " + tableModel.getEntityID() + ", required: " + getEntityID());
       }
       final EntityTablePanel tablePanel = tablePanelClass.getConstructor(EntityTableModel.class).newInstance(tableModel);
       configureTablePanel(tablePanel);
@@ -404,92 +377,5 @@ public class EntityPanelProvider implements Comparable {
     catch (Exception e) {
       throw new RuntimeException(e);
     }
-  }
-
-  private EntityModel initializeModel(final EntityConnectionProvider connectionProvider) {
-    try {
-      final EntityModel model;
-      if (modelClass.equals(DefaultEntityModel.class)) {
-        LOG.debug(toString() + " initializing a default entity model");
-        model = initializeDefaultModel(connectionProvider);
-      }
-      else {
-        LOG.debug(toString() + " initializing a custom entity model: " + modelClass);
-        model = modelClass.getConstructor(EntityConnectionProvider.class).newInstance(connectionProvider);
-      }
-      configureModel(model);
-
-      return model;
-    }
-    catch (RuntimeException re) {
-      throw re;
-    }
-    catch (Exception e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  private EntityEditModel initializeEditModel(final EntityConnectionProvider connectionProvider) {
-    try {
-      final EntityEditModel editModel;
-      if (editModelClass.equals(DefaultEntityEditModel.class)) {
-        LOG.debug(toString() + " initializing a default model");
-        editModel = initializeDefaultEditModel(connectionProvider);
-      }
-      else {
-        LOG.debug(toString() + " initializing a custom edit model: " + editModelClass);
-        editModel = editModelClass.getConstructor(EntityConnectionProvider.class).newInstance(connectionProvider);
-      }
-      configureEditModel(editModel);
-
-      return editModel;
-    }
-    catch (RuntimeException re) {
-      throw re;
-    }
-    catch (Exception e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  private EntityTableModel initializeTableModel(final EntityConnectionProvider connectionProvider) {
-    try {
-      final EntityTableModel tableModel;
-      if (tableModelClass.equals(DefaultEntityTableModel.class)) {
-        LOG.debug(toString() + " initializing a default table model");
-        tableModel = initializeDefaultTableModel(connectionProvider);
-      }
-      else {
-        LOG.debug(toString() + " initializing a custom table model: " + tableModelClass);
-        tableModel = tableModelClass.getConstructor(EntityConnectionProvider.class).newInstance(connectionProvider);
-      }
-      configureTableModel(tableModel);
-
-      return tableModel;
-    }
-    catch (RuntimeException re) {
-      throw re;
-    }
-    catch (Exception e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  private EntityModel initializeDefaultModel(final EntityConnectionProvider connectionProvider) {
-    final EntityTableModel tableModel = initializeTableModel(connectionProvider);
-    if (!tableModel.hasEditModel()) {
-      final EntityEditModel editModel = initializeEditModel(connectionProvider);
-      tableModel.setEditModel(editModel);
-    }
-
-    return new DefaultEntityModel(tableModel.getEditModel(), tableModel);
-  }
-
-  private EntityEditModel initializeDefaultEditModel(final EntityConnectionProvider connectionProvider) {
-    return new DefaultEntityEditModel(entityID, connectionProvider);
-  }
-
-  private EntityTableModel initializeDefaultTableModel(final EntityConnectionProvider connectionProvider) {
-    return new DefaultEntityTableModel(entityID, connectionProvider);
   }
 }

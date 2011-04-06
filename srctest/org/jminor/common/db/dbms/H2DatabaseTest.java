@@ -5,11 +5,11 @@ package org.jminor.common.db.dbms;
 
 import org.jminor.common.db.Database;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import java.util.Properties;
+
+import static org.junit.Assert.*;
 
 public class H2DatabaseTest {
 
@@ -28,5 +28,12 @@ public class H2DatabaseTest {
 
     db = new H2Database("dbname");
     assertEquals(H2Database.URL_PREFIX + "dbname;user=scott;password=tiger", db.getURL(props));
+
+    db = new H2Database(null, null, null);
+    try {
+      db.getURL(null);
+      fail();
+    }
+    catch (RuntimeException e) {}
   }
 }

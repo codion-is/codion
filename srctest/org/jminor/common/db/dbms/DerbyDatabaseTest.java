@@ -5,10 +5,11 @@ package org.jminor.common.db.dbms;
 
 import org.jminor.common.db.Database;
 
-import static org.junit.Assert.*;
 import org.junit.Test;
 
 import java.util.Properties;
+
+import static org.junit.Assert.*;
 
 public class DerbyDatabaseTest {
 
@@ -31,5 +32,12 @@ public class DerbyDatabaseTest {
 
     db = new DerbyDatabase("dbname");
     assertEquals("jdbc:derby:dbname;user=scott;password=tiger", db.getURL(props));
+
+    db = new DerbyDatabase(null, null, null);
+    try {
+      db.getURL(null);
+      fail();
+    }
+    catch (RuntimeException e) {}
   }
 }

@@ -105,6 +105,7 @@ public final class H2Database extends AbstractDatabase {
   public String getURL(final Properties connectionProperties) {
     final String authentication = getAuthenticationInfo(connectionProperties);
     if (isEmbedded()) {
+      Util.require("host", getHost());
       if (connectionProperties != null && (Util.nullOrEmpty((String) connectionProperties.get(USER_PROPERTY)))) {
         connectionProperties.put(USER_PROPERTY, SYSADMIN_USERNAME);
       }
@@ -112,6 +113,9 @@ public final class H2Database extends AbstractDatabase {
       return URL_PREFIX + getHost() + (authentication == null ? "" : ";" + authentication) + urlAppend;
     }
     else {
+      Util.require("host", getHost());
+      Util.require("port", getPort());
+      Util.require("sid", getSid());
       return URL_PREFIX + "//" + getHost() + ":" + getPort() + "/" + getSid() + (authentication == null ? "" : ";" + authentication) + urlAppend;
     }
   }

@@ -4,6 +4,7 @@
 package org.jminor.common.db.dbms;
 
 import org.jminor.common.db.AbstractDatabase;
+import org.jminor.common.model.Util;
 
 import java.util.Properties;
 
@@ -63,9 +64,13 @@ public final class HSQLDatabase extends AbstractDatabase {
   public String getURL(final Properties connectionProperties) {
     final String authentication = getAuthenticationInfo(connectionProperties);
     if (isEmbedded()) {
+      Util.require("host", getHost());
       return EMBEDDED_URL_PREFIX + getHost() + (authentication == null ? "" : ";" + authentication);
     }
     else {
+      Util.require("host", getHost());
+      Util.require("port", getPort());
+      Util.require("sid", getSid());
       return NETWORKED_URL_PREFIX + getHost() + ":" + getPort() + "/" + getSid() + (authentication == null ? "" : ";" + authentication);
     }
   }

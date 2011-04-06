@@ -4,6 +4,7 @@
 package org.jminor.common.db.dbms;
 
 import org.jminor.common.db.AbstractDatabase;
+import org.jminor.common.model.Util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,9 +64,13 @@ public final class DerbyDatabase extends AbstractDatabase {
   public String getURL(final Properties connectionProperties) {
     final String authentication = getAuthenticationInfo(connectionProperties);
     if (isEmbedded()) {
+      Util.require("host", getHost());
       return URL_PREFIX + getHost() + (authentication == null ? "" : ";" + authentication);
     }
     else {
+      Util.require("host", getHost());
+      Util.require("port", getPort());
+      Util.require("sid", getSid());
       return URL_PREFIX + "//" + getHost() + ":" + getPort() + "/" + getSid() + (authentication == null ? "" : ";" + authentication);
     }
   }

@@ -2397,3 +2397,6 @@
   EntityPanel.getSelectComponentProperties() moved to ValueChangeMapEditPanel, and renamed to getSelectComponentKeys()
   DefaultEntityLookupModel now trims the search strings
   EntityLookupPanel, added multiple value configuration to settings panel
+  EntityModelProvider/DefaultEntityModelProvider refactored from EntityPanelProvider
+  AbstractDatabase, removed null check of parameters where, added to getURL() of subclasses
+  jminor-db.jar added to dist ant target

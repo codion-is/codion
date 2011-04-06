@@ -4,6 +4,7 @@
 package org.jminor.common.db.dbms;
 
 import org.jminor.common.db.AbstractDatabase;
+import org.jminor.common.model.Util;
 
 import java.util.Properties;
 
@@ -45,6 +46,9 @@ public final class MySQLDatabase extends AbstractDatabase {
 
   /** {@inheritDoc} */
   public String getURL(final Properties connectionProperties) {
+    Util.require("host", getHost());
+    Util.require("port", getPort());
+    Util.require("sid", getSid());
     return URL_PREFIX + getHost() + ":" + getPort() + "/" + getSid();
   }
 

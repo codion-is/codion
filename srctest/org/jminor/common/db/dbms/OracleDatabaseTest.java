@@ -3,8 +3,9 @@
  */
 package org.jminor.common.db.dbms;
 
-import static org.junit.Assert.*;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class OracleDatabaseTest {
 
@@ -17,5 +18,12 @@ public class OracleDatabaseTest {
     assertEquals("select seq.nextval from dual", db.getSequenceSQL("seq"));
     assertEquals("jdbc:oracle:thin:@host:1234:sid", db.getURL(null));
     assertEquals(OracleDatabase.CHECK_QUERY, db.getCheckConnectionQuery());
+
+    db = new OracleDatabase(null, null, null);
+    try {
+      db.getURL(null);
+      fail();
+    }
+    catch (RuntimeException e) {}
   }
 }

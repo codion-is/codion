@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.client.ui;
 
-import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.combobox.MaximumMatch;
 import org.jminor.common.ui.combobox.SteppedComboBox;
 import org.jminor.common.ui.images.Images;
@@ -14,7 +13,6 @@ import org.jminor.framework.i18n.FrameworkMessages;
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.util.Collection;
 
@@ -31,15 +29,6 @@ public final class EntityComboBox extends SteppedComboBox {
   public EntityComboBox(final EntityComboBoxModel model) {
     super(model);
     setComponentPopupMenu(initializePopupMenu());
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public Dimension getPreferredSize() {
-    final Dimension dimension = super.getPreferredSize();
-    dimension.setSize(new Dimension(dimension.width, UiUtil.getPreferredTextFieldHeight()));
-
-    return dimension;
   }
 
   /** {@inheritDoc} */
