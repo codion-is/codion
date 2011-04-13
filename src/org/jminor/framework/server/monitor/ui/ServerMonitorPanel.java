@@ -166,11 +166,13 @@ public final class ServerMonitorPanel extends JPanel {
 
     final StringBuilder contents = new StringBuilder();
     final EntityConnectionServerAdmin server = model.getServer();
+    final String startDate = DateFormats.getDateFormat(DateFormats.FULL_TIMESTAMP).format(new Date(server.getStartDate()));
     contents.append("Server info:").append("\n");
-    contents.append(server.getServerName()).append(" (").append(
-            DateFormats.getDateFormat(DateFormats.FULL_TIMESTAMP).format(new Date(server.getStartDate()))).append(")").append(
+    contents.append(server.getServerName()).append(" (").append(startDate).append(")").append(
             " server/db port: ").append(server.getServerPort()).append("/").append(
             server.getServerDbPort()).append("\n").append("\n");
+    contents.append("Server version:").append("\n");
+    contents.append(server.getServerVersion()).append("\n");
     contents.append("Database URL:").append("\n");
     contents.append(server.getDatabaseURL()).append("\n").append("\n");
     contents.append("System properties:").append("\n");

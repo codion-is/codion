@@ -9,10 +9,11 @@ import org.jminor.common.model.SearchType;
 import org.jminor.framework.domain.Properties;
 import org.jminor.framework.domain.Property;
 
-import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import java.sql.Types;
+
+import static org.junit.Assert.assertEquals;
 
 public class EntityCriteriaTest {
 

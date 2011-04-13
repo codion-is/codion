@@ -55,6 +55,12 @@ public interface RemoteServer<T extends Remote> extends Remote {
   String getServerName() throws RemoteException;
 
   /**
+   * @return the server version and build number
+   * @throws RemoteException in case of a communication error
+   */
+  String getServerVersion() throws RemoteException;
+
+  /**
    * @return the server port
    * @throws RemoteException in case of a RemoteException
    */

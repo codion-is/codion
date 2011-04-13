@@ -4,6 +4,7 @@
 package org.jminor.common.server;
 
 import org.jminor.common.model.User;
+import org.jminor.common.model.Util;
 
 import java.rmi.NoSuchObjectException;
 import java.rmi.Remote;
@@ -163,6 +164,11 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
   /** {@inheritDoc} */
   public final String getServerName() {
     return serverName;
+  }
+
+  /** {@inheritDoc} */
+  public final String getServerVersion() {
+    return Util.getVersionAndBuildNumber();
   }
 
   /** {@inheritDoc} */

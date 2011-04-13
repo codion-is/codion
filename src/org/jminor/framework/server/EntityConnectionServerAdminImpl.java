@@ -69,6 +69,11 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
   }
 
   /** {@inheritDoc} */
+  public String getServerVersion() {
+    return server.getServerVersion();
+  }
+
+  /** {@inheritDoc} */
   public int getServerPort() throws RemoteException {
     return server.getServerPort();
   }

@@ -568,7 +568,8 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     ResultSet resultSet = null;
     String selectSQL = null;
     try {
-      selectSQL = getSelectSQL(criteria, Entities.getSelectColumnsString(criteria.getEntityID()), criteria.getOrderByClause());
+      selectSQL = getSelectSQL(criteria, Entities.getSelectColumnsString(criteria.getEntityID()),
+              criteria.getOrderByClause(), criteria.getGroupByClause());
       statement = getConnection().prepareStatement(selectSQL);
       resultSet = executePreparedSelect(statement, selectSQL, criteria.getValues(), criteria.getValueProperties());
       List<Entity> result = null;
@@ -800,7 +801,8 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     return new ArrayList<Entity.Key>(keySet);
   }
 
-  private String getSelectSQL(final EntitySelectCriteria criteria, final String columnsString, final String orderByClause) {
+  private String getSelectSQL(final EntitySelectCriteria criteria, final String columnsString, final String orderByClause,
+                              final String groupByClause) {
     String selectSQL = Entities.getSelectQuery(criteria.getEntityID());
     if (selectSQL == null) {
       selectSQL = createSelectSQL(Entities.getSelectTableName(criteria.getEntityID()), columnsString, null, null);
@@ -810,6 +812,9 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     final String whereClause = criteria.getWhereClause(!containsWhereClause(selectSQL));
     if (!whereClause.isEmpty()) {
       queryBuilder.append(" ").append(whereClause);
+    }
+    if (groupByClause != null) {
+      queryBuilder.append(" group by ").append(groupByClause);
     }
     if (orderByClause != null) {
       queryBuilder.append(" order by ").append(orderByClause);

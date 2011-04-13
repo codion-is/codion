@@ -768,7 +768,6 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
   /**
    * Performs a basic data validation of <code>value</code>, checking if the <code>value</code> data type is
    * consistent with the data type of this property, returns the value.
-   * For foreign key properties this method also checks if the value entityID fits the key.
    * @param value the value to validate
    * @param property the property
    * @return the value to validate

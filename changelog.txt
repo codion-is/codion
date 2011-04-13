@@ -2400,3 +2400,8 @@
   EntityModelProvider/DefaultEntityModelProvider refactored from EntityPanelProvider
   AbstractDatabase, removed null check of parameters where, added to getURL() of subclasses
   jminor-db.jar added to dist ant target
+  EntitySelectCriteria.getGroupByClause() added
+  EntityConnection takes EntitySelectCriteria.getGroupByClause() into account
+  AbstractRemoteServer.getServerVersion() added
+  EntityConnectionServerAdmin.getServerVersion() added
+  ServerMonitorPanel, added server version info to environment tab

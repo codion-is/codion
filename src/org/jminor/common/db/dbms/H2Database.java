@@ -122,7 +122,7 @@ public final class H2Database extends AbstractDatabase {
 
   /**
    * Initializes a new H2 database, with the given script
-   * @param scriptPath the path to the initilization script
+   * @param scriptPath the path to the initialization script
    * @param inMemory true if the database should be created in memory only
    * @throws java.sql.SQLException in case of an exception
    */

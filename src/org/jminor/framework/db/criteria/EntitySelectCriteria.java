@@ -8,10 +8,16 @@ package org.jminor.framework.db.criteria;
  */
 public interface EntitySelectCriteria extends EntityCriteria {
 
-    /**
-     * @return the order by clause specified by this criteria
-     */
+  /**
+   * @return the order by clause specified by this criteria
+   */
   String getOrderByClause();
+
+  /**
+   * @return the group by clause specified by this criteria,
+   * the 'group by' keywords are not included.
+   */
+  String getGroupByClause();
 
   /**
    * @return true if this select should lock to result for update
@@ -19,8 +25,8 @@ public interface EntitySelectCriteria extends EntityCriteria {
   boolean isSelectForUpdate();
 
   /**
-     * @return the maximum number of records to fetch from the result
-     */
+   * @return the maximum number of records to fetch from the result
+   */
   int getFetchCount();
 
   int getForeignKeyFetchDepthLimit(final String foreignKeyPropertyID);
