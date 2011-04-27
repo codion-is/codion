@@ -286,8 +286,7 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
     if (webDocumentRoot != null) {
       final int port = Configuration.getIntValue(Configuration.WEB_SERVER_PORT);
       LOG.info("Starting web server on port: " + port + ", document root: " + webDocumentRoot);
-      final WebStartServer webServer = new WebStartServer(webDocumentRoot, port);
-      this.webServer = webServer;
+      webServer = new WebStartServer(webDocumentRoot, port);
       final ExecutorService executor = Executors.newSingleThreadExecutor();
       executor.execute(new Runnable() {
         public void run() {

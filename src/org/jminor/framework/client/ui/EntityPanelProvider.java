@@ -263,12 +263,12 @@ public class EntityPanelProvider implements Comparable {
         entityPanel.setDetailPanelState(detailPanelState);
         entityPanel.setDetailSplitPanelResizeWeight(detailSplitPanelResizeWeight);
         for (final EntityPanelProvider detailProvider : detailPanelProviders) {
-          final EntityModelProvider modelProvider = detailProvider.getModelProvider();
+          final EntityModelProvider detailModelProvider = detailProvider.getModelProvider();
           final EntityPanel detailPanel;
-          if (!modelProvider.getModelClass().equals(DefaultEntityModel.class)) {
+          if (!detailModelProvider.getModelClass().equals(DefaultEntityModel.class)) {
             final EntityModel detailModel = model.getDetailModel(detailProvider.getModelProvider().getModelClass());
             if (detailModel == null) {
-              throw new IllegalArgumentException("Detail model of type " + modelProvider.getModelClass() + " not found in model " + model);
+              throw new IllegalArgumentException("Detail model of type " + detailModelProvider.getModelClass() + " not found in model " + model);
             }
             detailPanel = detailProvider.createPanel(detailModel);
           }

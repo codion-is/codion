@@ -32,6 +32,7 @@ import java.util.TimerTask;
 public final class ServerMonitor {
 
   private static final Logger LOG = LoggerFactory.getLogger(ServerMonitor.class);
+  private static final double THOUSAND = 1000d;
 
   private final Event evtStatsUpdateIntervalChanged = Events.event();
   private final Event evtServerShutDown = Events.event();
@@ -278,9 +279,9 @@ public final class ServerMonitor {
     memoryUsage = server.getMemoryUsage();
     connectionRequestsPerSecondSeries.add(time, server.getRequestsPerSecond());
     warningTimeExceededSecondSeries.add(time, server.getWarningTimeExceededPerSecond());
-    maxMemorySeries.add(time, server.getMaxMemory() / 1000d);
-    allocatedMemorySeries.add(time, server.getAllocatedMemory() / 1000d);
-    usedMemorySeries.add(time, server.getUsedMemory() / 1000d);
+    maxMemorySeries.add(time, server.getMaxMemory() / THOUSAND);
+    allocatedMemorySeries.add(time, server.getAllocatedMemory() / THOUSAND);
+    usedMemorySeries.add(time, server.getUsedMemory() / THOUSAND);
     connectionCountSeries.add(time, server.getConnectionCount());
     connectionLimitSeries.add(time, server.getConnectionLimit());
     evtStatsUpdated.fire();

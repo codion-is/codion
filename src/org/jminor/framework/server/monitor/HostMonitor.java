@@ -39,7 +39,7 @@ public final class HostMonitor {
 
   public HostMonitor(final String hostName, final int[] registryPorts) throws RemoteException {
     this.hostName = hostName;
-    this.registryPorts = registryPorts;
+    this.registryPorts = registryPorts.clone();
     refresh();
   }
 
