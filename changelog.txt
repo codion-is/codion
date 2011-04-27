@@ -2405,3 +2405,4 @@
   AbstractRemoteServer.getServerVersion() added
   EntityConnectionServerAdmin.getServerVersion() added
   ServerMonitorPanel, added server version info to environment tab
+  Databases.QueryCounter no longer uses a Timer to refresh queries per second, it is updated on demand instead

@@ -8,12 +8,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Provides Database implementations based on system settings.
@@ -161,9 +158,11 @@ public final class Databases {
   }
 
   /**
-   * @return a DatabaseStatistics object containing the most recent statistics from the underlying database
+   * @return a DatabaseStatistics object containing query statistics collected since
+   * the last time this function was called.
    */
   public static Database.Statistics getDatabaseStatistics() {
+    QUERY_COUNTER.updateQueriesPerSecond();
     return new DatabaseStatistics(QUERY_COUNTER.getQueriesPerSecond(),
             QUERY_COUNTER.getSelectsPerSecond(), QUERY_COUNTER.getInsertsPerSecond(),
             QUERY_COUNTER.getDeletesPerSecond(), QUERY_COUNTER.getUpdatesPerSecond());
@@ -173,8 +172,6 @@ public final class Databases {
    * A class for counting query types, providing averages over time
    */
   public static final class QueryCounter {
-
-    private static final int DEFAULT_UPDATE_INTERVAL_MS = 2000;
 
     private long queriesPerSecondTime = System.currentTimeMillis();
     private int queriesPerSecond = 0;
@@ -189,15 +186,6 @@ public final class Databases {
     private int deletesPerSecondCounter = 0;
     private int undefinedPerSecond = 0;
     private int undefinedPerSecondCounter = 0;
-
-    private QueryCounter() {
-      new Timer(true).schedule(new TimerTask() {
-        @Override
-        public void run() {
-          updateQueriesPerSecond();
-        }
-      }, new Date(), DEFAULT_UPDATE_INTERVAL_MS);
-    }
 
     /**
      * Counts the given query, based on it's first character
@@ -268,7 +256,7 @@ public final class Databases {
     private synchronized void updateQueriesPerSecond() {
       final long current = System.currentTimeMillis();
       final double seconds = (current - queriesPerSecondTime) / 1000d;
-      if (seconds > 5) {
+      if (seconds > 0) {
         queriesPerSecond = (int) (queriesPerSecondCounter / (double) seconds);
         selectsPerSecond = (int) (selectsPerSecondCounter / (double) seconds);
         insertsPerSecond = (int) (insertsPerSecondCounter / (double) seconds);
@@ -301,7 +289,7 @@ public final class Databases {
     private final int updatesPerSecond;
 
     /**
-     * Instantiates a new DbStatistics object
+     * Instantiates a new DatabaseStatistics object
      * @param queriesPerSecond the number of queries being run per second
      * @param selectsPerSecond the number of select queries being run per second
      * @param insertsPerSecond the number of insert queries being run per second
