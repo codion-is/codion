@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A cyclycal method logger.
+ * A cyclical method logger.
  */
 public class MethodLogger {
 

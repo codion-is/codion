@@ -1,9 +1,10 @@
 package org.jminor.common.model;
 
-import static org.junit.Assert.*;
 import org.junit.Test;
 
 import java.util.Arrays;
+
+import static org.junit.Assert.*;
 
 public class LogEntryTest {
 
@@ -28,7 +29,6 @@ public class LogEntryTest {
     assertNotNull(entry.getEntryTimeFormatted());
     assertNotNull(entry.getExitTimeFormatted());
     assertEquals(200, entry.getDelta());
-    assertNotNull(entry.toString());
 
     final LogEntry copy = new LogEntry(entry);
     assertEquals(entry, copy);
@@ -45,7 +45,6 @@ public class LogEntryTest {
     new LogEntry().getStackTrace();
 
     assertTrue(entry.getSubLog().contains(newEntry));
-    assertNotNull(newEntry.toString());
     assertEquals(-1, entry.compareTo(newEntry));
     newEntry.set("method", "message", 900, 900000000, new Exception());
     assertEquals(1, entry.compareTo(newEntry));

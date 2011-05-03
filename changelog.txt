@@ -2407,3 +2407,5 @@
   ServerMonitorPanel, added server version info to environment tab
   Databases.QueryCounter no longer uses a Timer to refresh queries per second, it is updated on demand instead
   Minor Sonar based cleanup
+0.6.2
+  Minor javadoc improvements

@@ -23,6 +23,7 @@ public final class LogEntry implements Serializable, Comparable<LogEntry> {
 
   private static final long serialVersionUID = 1;
   private static final ThreadLocal<DateFormat> TIMESTAMP_FORMAT = DateUtil.getThreadLocalDateFormat(DateFormats.EXACT_TIMESTAMP);
+  private static final long NANO_IN_MILLI = 1000000;
 
   private String method;
   private String entryMessage;
@@ -110,8 +111,9 @@ public final class LogEntry implements Serializable, Comparable<LogEntry> {
     return entryTime;
   }
 
-  private static final long NANO_IN_MILLI = 1000000;
   /**
+   * Sets the exit time in nanosecond precision, after this a call
+   * to <code>getDelta()</code> will return the difference.
    * @param exitTimeNano the exit time in nano precision
    * @return the difference between the given exit time and the entry time
    */
@@ -130,6 +132,9 @@ public final class LogEntry implements Serializable, Comparable<LogEntry> {
   }
 
   /**
+   * Returns the duration of the method call this entry represents,
+   * this value is 0 or undefined until <code>setExitTimeNano()</code>
+   * has been called, this can be checked via <code>isComplete()</code>.
    * @return the duration of the method call this entry represents
    */
   public long getDelta() {
