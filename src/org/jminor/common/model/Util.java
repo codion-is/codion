@@ -911,14 +911,16 @@ public final class Util {
 
   public static Exception unwrapAndLog(final Exception exception, final Class<? extends Exception> wrappingExceptionClass,
                                        final Logger logger, final Class<? extends Exception>... dontLog) {
-    if (wrappingExceptionClass.equals(exception.getClass())) {
-      return unwrapAndLog((Exception) exception.getCause(), wrappingExceptionClass, logger);
-    }
+    if (exception.getCause() instanceof Exception) {//else we can't really unwrap it
+      if (wrappingExceptionClass.equals(exception.getClass())) {
+        return unwrapAndLog((Exception) exception.getCause(), wrappingExceptionClass, logger);
+      }
 
-    if (dontLog != null) {
-      for (final Class<? extends Exception> noLog : dontLog) {
-        if (exception.getClass().equals(noLog)) {
-          return exception;
+      if (dontLog != null) {
+        for (final Class<? extends Exception> noLog : dontLog) {
+          if (exception.getClass().equals(noLog)) {
+            return exception;
+          }
         }
       }
     }

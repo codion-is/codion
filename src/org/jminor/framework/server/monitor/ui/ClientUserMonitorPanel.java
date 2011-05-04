@@ -12,7 +12,17 @@ import org.jminor.common.ui.control.IntBeanSpinnerValueLink;
 import org.jminor.framework.server.monitor.ClientMonitor;
 import org.jminor.framework.server.monitor.ClientUserMonitor;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
+import javax.swing.JSplitPane;
+import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.BorderLayout;
@@ -87,7 +97,6 @@ public final class ClientUserMonitorPanel extends JPanel {
     actionBase.add(new JLabel("Connection timeout (s)"));
     final JSpinner spnConnectionTimeout = new JSpinner(
             new IntBeanSpinnerValueLink(model, "connectionTimeout", model.getConnectionTimeoutObserver()).getSpinnerModel());
-    ((JSpinner.DefaultEditor) spnConnectionTimeout.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) spnConnectionTimeout.getEditor()).getTextField().setColumns(7);
     actionBase.add(spnConnectionTimeout);
 

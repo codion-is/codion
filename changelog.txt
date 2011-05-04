@@ -2409,3 +2409,5 @@
   Minor Sonar based cleanup
 0.6.2
   Minor javadoc improvements
+  Util.unwrapAndLog() now takes Throwable causes into account
+  ClientUserMonitorPanel, connection timeout spinner now editable
