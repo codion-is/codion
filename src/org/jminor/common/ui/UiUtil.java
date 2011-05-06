@@ -73,9 +73,11 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -748,7 +750,7 @@ public final class UiUtil {
    */
   public static void addAcceptSingleFileDragAndDrop(final JTextComponent textComponent) {
     textComponent.setDragEnabled(true);
-    textComponent.setTransferHandler(new DnDTransferHandler(textComponent));
+    textComponent.setTransferHandler(new FileTransferHandler(textComponent));
   }
 
   public static void addKeyEvent(final JComponent component, final int keyEvent, final Action action) {
@@ -902,14 +904,22 @@ public final class UiUtil {
         throw new IllegalArgumentException(Messages.get(Messages.UNKNOWN_FILE_TYPE) + ": " + type);
       }
     }
-    final File imageFile = new File(imagePath);
-    if (!imageFile.exists()) {
-      throw new RuntimeException(Messages.get(Messages.FILE_NOT_FOUND) + ": " + imagePath);
+    final BufferedImage image;
+    if (imagePath.toLowerCase().startsWith("http")) {
+      final URL url = new URL(imagePath);
+      image = ImageIO.read(url);
+    }
+    else {
+      final File imageFile = new File(imagePath);
+      if (!imageFile.exists()) {
+        throw new RuntimeException(Messages.get(Messages.FILE_NOT_FOUND) + ": " + imagePath);
+      }
+      image = ImageIO.read(imageFile);
     }
     final NavigableImagePanel imagePanel = new NavigableImagePanel();
-    imagePanel.setImage(ImageIO.read(imageFile));
+    imagePanel.setImage(image);
     final JDialog dialog = initializeDialog(dialogParent, imagePanel);
-    dialog.setTitle(imageFile.getName());
+    dialog.setTitle(imagePath);
     dialog.setVisible(true);
   }
 
@@ -1018,11 +1028,11 @@ public final class UiUtil {
     }
   }
 
-  private static final class DnDTransferHandler extends TransferHandler {
+  private static final class FileTransferHandler extends TransferHandler {
 
     private final JTextComponent textComponent;
 
-    private DnDTransferHandler(final JTextComponent textComponent) {
+    private FileTransferHandler(final JTextComponent textComponent) {
       this.textComponent = textComponent;
     }
 
