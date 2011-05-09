@@ -454,7 +454,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
     final Collection<EntityModel> linkedDetailModels = entityModel.getLinkedDetailModels();
     final Collection<EntityPanel> linkedDetailPanels = new ArrayList<EntityPanel>(linkedDetailModels.size());
     for (final EntityPanel detailPanel : detailEntityPanels) {
-            if (linkedDetailModels.contains(detailPanel.entityModel)) {
+      if (linkedDetailModels.contains(detailPanel.entityModel)) {
         linkedDetailPanels.add(detailPanel);
       }
     }
@@ -470,7 +470,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    */
   public final EntityPanel getDetailPanel(final String entityID) {
     for (final EntityPanel detailPanel : detailEntityPanels) {
-            if (detailPanel.entityModel.getEntityID().equals(entityID)) {
+      if (detailPanel.entityModel.getEntityID().equals(entityID)) {
         return detailPanel;
       }
     }
@@ -802,8 +802,8 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
     }
     for (final EntityPanel detailEntityPanel : detailEntityPanels) {
       detailEntityPanel.setFilterPanelsVisible(value);
-      }
     }
+  }
 
   /**
    * Resizes this panel in the given direction
