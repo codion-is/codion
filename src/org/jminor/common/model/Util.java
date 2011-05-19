@@ -45,7 +45,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Enumeration;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -734,7 +734,8 @@ public final class Util {
   }
 
   /**
-   * Maps the given values according to the keys provided by the given key provider.
+   * Maps the given values according to the keys provided by the given key provider,
+   * keeping the iteration order of the given collection.
    * <code>
    * <pre>
    * class Person {
@@ -756,12 +757,12 @@ public final class Util {
    * @param keyProvider the object providing keys to use when hashing the values
    * @param <K> the key type
    * @param <V> the value type
-   * @return a map with the values hashed by their respective key values
+   * @return a map with the values hashed by their respective key values, respecting the iteration order of the given collection
    */
-  public static <K, V> Map<K, Collection<V>> map(final Collection<V> values, final HashKeyProvider<K, V> keyProvider) {
+  public static <K, V> LinkedHashMap<K, Collection<V>> map(final Collection<V> values, final HashKeyProvider<K, V> keyProvider) {
     rejectNullValue(values, "values");
     rejectNullValue(keyProvider, "keyProvider");
-    final Map<K, Collection<V>> map = new HashMap<K, Collection<V>>(values.size());
+    final LinkedHashMap<K, Collection<V>> map = new LinkedHashMap<K, Collection<V>>(values.size());
     for (final V value : values) {
       map(map, value, keyProvider.getKey(value));
     }
