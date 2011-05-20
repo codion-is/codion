@@ -465,8 +465,8 @@ public class ColumnSearchPanel<K> extends JPanel {
     final JPanel basePanel = new JPanel(new BorderLayout(1, 1));
     if (searchModel.isLowerBoundRequired()) {
       final JPanel fieldBase = new JPanel(new GridLayout(1, 2, 1, 1));
-      fieldBase.add(upperBoundField);
       fieldBase.add(lowerBoundField);
+      fieldBase.add(upperBoundField);
       basePanel.add(fieldBase, BorderLayout.CENTER);
     }
     else {

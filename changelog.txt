@@ -2413,3 +2413,4 @@
   ClientUserMonitorPanel, connection timeout spinner now editable
   UiUtil.showImage() now handles urls as well as file paths
   Util.map() now uses and returns a LinkedHashMap, respecting the iteration order of the given collection
+  ColumnSearchPanel.initializeSimpleSearchPanel(), bug fixed, corrected order of search fields so that lower bound appears before upper bound
