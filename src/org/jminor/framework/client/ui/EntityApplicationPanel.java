@@ -26,6 +26,7 @@ import org.jminor.framework.client.model.DefaultEntityApplicationModel;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.db.provider.EntityConnectionProvider;
 import org.jminor.framework.db.provider.EntityConnectionProviders;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.i18n.FrameworkMessages;
 
 import org.slf4j.Logger;
@@ -658,7 +659,11 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.SUPPORT_TABLES),
             FrameworkMessages.get(FrameworkMessages.SUPPORT_TABLES_MNEMONIC).charAt(0));
     for (final EntityPanelProvider panelProvider : supportPanelProviders) {
-      controlSet.add(new Control(panelProvider.getCaption()) {
+      String caption = panelProvider.getCaption();
+      if (caption == null) {
+        caption = Entities.getCaption(panelProvider.getEntityID());
+      }
+      controlSet.add(new Control(caption) {
         @Override
         public void actionPerformed(final ActionEvent e) {
           SwingUtilities.invokeLater(new Runnable() {
@@ -704,7 +709,11 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
           persistentEntityPanels.put(panelProvider, entityPanel);
         }
       }
-      dialog = new JDialog(UiUtil.getParentWindow(this), panelProvider.getCaption());
+      String caption = panelProvider.getCaption();
+      if (caption == null) {
+        caption = Entities.getCaption(panelProvider.getEntityID());
+      }
+      dialog = new JDialog(UiUtil.getParentWindow(this), caption);
       dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
       dialog.setLayout(new BorderLayout());
       dialog.add(entityPanel, BorderLayout.CENTER);

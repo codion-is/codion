@@ -337,6 +337,7 @@ public final class EntityUiUtil {
       comboBox.setToolTipText(foreignKeyProperty.getDescription());
     }
     if (Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER)) {
+      //getEditor().getEditorComponent() only required because the combo box is editable, due to MaximumMatch.enable() above
       UiUtil.transferFocusOnEnter((JComponent) comboBox.getEditor().getEditorComponent());
     }
 
