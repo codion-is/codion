@@ -170,6 +170,9 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    */
   private final EntityTableSummaryPanel summaryPanel;
 
+
+  private final JPanel tableSearchAndSummaryPanel = new JPanel(new BorderLayout());
+
   /**
    * the panel used as a base panel for the summary panels, used for showing/hiding the summary panels
    */
@@ -1189,6 +1192,19 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   }
 
   /**
+   * Sets the layout and lays out the given components, as well as any additional components, on this table panel
+   * @param tableSearchAndSummaryPanel the panel containing the actual table, with search and summary panels
+   * @param southPanel the panel to add to the bottom of the panel
+   */
+  protected void layoutPanel(final JPanel tableSearchAndSummaryPanel, final JPanel southPanel) {
+    setLayout(new BorderLayout());
+    add(tableSearchAndSummaryPanel, BorderLayout.CENTER);
+    if (southPanel != null) {
+      add(southPanel, BorderLayout.SOUTH);
+    }
+  }
+
+  /**
    * Initialize the MouseListener for the table component.
    * The default implementation simply invokes the action returned
    * by <code>getDoubleClickAction()</code> on a double click with
@@ -1314,8 +1330,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   }
 
   private void initializeUI() {
-    final JPanel tableSearchAndSummaryPanel = new JPanel(new BorderLayout());
-    setLayout(new BorderLayout());
     if (includeSearchPanel && searchScrollPane != null) {
       tableSearchAndSummaryPanel.add(searchScrollPane, BorderLayout.NORTH);
       if (!searchPanel.isSimpleSearch()) {
@@ -1332,7 +1346,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     }
     final JScrollPane tableScrollPane = getTableScrollPane();
     tableSearchAndSummaryPanel.add(tableScrollPane, BorderLayout.CENTER);
-    add(tableSearchAndSummaryPanel, BorderLayout.CENTER);
     if (summaryScrollPane != null) {
       tableScrollPane.getViewport().addChangeListener(new ChangeListener() {
         /** {@inheritDoc} */
@@ -1345,8 +1358,9 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       tableSearchAndSummaryPanel.add(summaryBasePanel, BorderLayout.SOUTH);
     }
 
+    JPanel southPanel = null;
     if (includeSouthPanel) {
-      final JPanel southPanel = new JPanel(new BorderLayout(5, 5));
+      southPanel = new JPanel(new BorderLayout(5, 5));
       final JPanel southPanelCenter = initializeSouthPanel();
       if (southPanelCenter != null) {
         final JToolBar southToolBar = initializeToolbar();
@@ -1354,9 +1368,9 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
           southPanelCenter.add(southToolBar, BorderLayout.EAST);
         }
         southPanel.add(southPanelCenter, BorderLayout.SOUTH);
-        add(southPanel, BorderLayout.SOUTH);
       }
     }
+    layoutPanel(tableSearchAndSummaryPanel, southPanel);
   }
 
   /**

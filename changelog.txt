@@ -2416,3 +2416,4 @@
   ColumnSearchPanel.initializeSimpleSearchPanel(), bug fixed, corrected order of search fields so that lower bound appears before upper bound
   EntityApplicationPanel.getSupportTableControlSet() and showEntityPanelDialog() now use the default entity caption if the panel provider does not provide one
   AbstractFunction now correctly implements DatabaseConnection.Function instead of DatabaseConnection.Procedure
+  EntityTablePanel.layoutPanel() added, overrideable
