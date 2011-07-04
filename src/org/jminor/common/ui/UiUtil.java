@@ -1049,6 +1049,7 @@ public final class UiUtil {
       }
 
       textComponent.setText(file.getAbsolutePath());
+      textComponent.requestFocusInWindow();
       return true;
     }
   }

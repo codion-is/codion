@@ -2417,3 +2417,5 @@
   EntityApplicationPanel.getSupportTableControlSet() and showEntityPanelDialog() now use the default entity caption if the panel provider does not provide one
   AbstractFunction now correctly implements DatabaseConnection.Function instead of DatabaseConnection.Procedure
   EntityTablePanel.layoutPanel() added, overrideable
+  UiUtil.addAcceptSingleFileDragAndDrop() now requests focus for the text field after drop is accepted
+  ColumnSearchPanel, no longer uses UiUtil.getPreferredTextFieldHeight() to determine it's own preferred size

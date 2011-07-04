@@ -449,7 +449,6 @@ public class ColumnSearchPanel<K> extends JPanel {
 
   private void initializeUI() {
     final FlexibleGridLayout layout = new FlexibleGridLayout(2, 1, 1, 1, true, false);
-    layout.setFixedRowHeight(UiUtil.getPreferredTextFieldHeight());
     setLayout(layout);
     if (toggleSearchEnabled != null) {
       this.toggleSearchEnabled.setPreferredSize(new Dimension(ENABLED_BUTTON_SIZE, ENABLED_BUTTON_SIZE));
@@ -482,7 +481,7 @@ public class ColumnSearchPanel<K> extends JPanel {
 
     add(basePanel);
 
-    setPreferredSize(new Dimension(getPreferredSize().width, UiUtil.getPreferredTextFieldHeight()));
+    setPreferredSize(new Dimension(getPreferredSize().width, basePanel.getPreferredSize().height));
 
     revalidate();
   }
@@ -513,7 +512,7 @@ public class ColumnSearchPanel<K> extends JPanel {
     add(controlPanel);
     add(inputPanel);
 
-    setPreferredSize(new Dimension(getPreferredSize().width, UiUtil.getPreferredTextFieldHeight() * 2));
+    setPreferredSize(new Dimension(getPreferredSize().width, controlPanel.getPreferredSize().height + inputPanel.getPreferredSize().height));
 
     revalidate();
   }
