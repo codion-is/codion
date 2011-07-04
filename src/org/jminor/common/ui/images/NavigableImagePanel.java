@@ -256,6 +256,7 @@ public final class NavigableImagePanel extends JPanel {
    */
   public NavigableImagePanel() {
     setOpaque(false);
+    previousPanelSize = getSize();
     addComponentListener(new ComponentAdapter() {
       @Override
       public void componentResized(final ComponentEvent e) {
