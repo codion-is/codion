@@ -2420,3 +2420,4 @@
   UiUtil.addAcceptSingleFileDragAndDrop() now requests focus for the text field after drop is accepted
   ColumnSearchPanel, no longer uses UiUtil.getPreferredTextFieldHeight() to determine it's own preferred size
   NavigableImagePanel, previousPanelSize initialized during construction, seemed to cause NullPointerException on Windows
+  EntityUiUtil.createEntityLookupField() and EntityEditPanel.createEntityLookupField() overloaded with enabledState parameter

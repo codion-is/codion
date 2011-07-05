@@ -373,17 +373,28 @@ public final class EntityUiUtil {
 
   public static EntityLookupField createEntityLookupField(final Property.ForeignKeyProperty foreignKeyProperty,
                                                           final EntityEditModel editModel) {
+    return createEntityLookupField(foreignKeyProperty, editModel, (StateObserver) null);
+  }
+
+  public static EntityLookupField createEntityLookupField(final Property.ForeignKeyProperty foreignKeyProperty,
+                                                          final EntityEditModel editModel, final String... searchPropertyIDs) {
+    return createEntityLookupField(foreignKeyProperty, editModel, null, searchPropertyIDs);
+  }
+
+  public static EntityLookupField createEntityLookupField(final Property.ForeignKeyProperty foreignKeyProperty,
+                                                          final EntityEditModel editModel, final StateObserver enabledState) {
     final Collection<String> searchPropertyIDs = Entities.getSearchPropertyIDs(foreignKeyProperty.getReferencedEntityID());
     if (searchPropertyIDs.isEmpty()) {
       throw new IllegalArgumentException("No default search properties specified for entity: " + foreignKeyProperty.getReferencedEntityID()
               + ", unable to create EntityLookupField, you must specify the searchPropertyIDs");
     }
 
-    return createEntityLookupField(foreignKeyProperty, editModel, searchPropertyIDs.toArray(new String[searchPropertyIDs.size()]));
+    return createEntityLookupField(foreignKeyProperty, editModel, enabledState, searchPropertyIDs.toArray(new String[searchPropertyIDs.size()]));
   }
 
   public static EntityLookupField createEntityLookupField(final Property.ForeignKeyProperty foreignKeyProperty,
-                                                          final EntityEditModel editModel, final String... searchPropertyIDs) {
+                                                          final EntityEditModel editModel, final StateObserver enabledState,
+                                                          final String... searchPropertyIDs) {
     Util.rejectNullValue(foreignKeyProperty, "foreignKeyProperty");
     Util.rejectNullValue(editModel, EDIT_MODEL_PARAM_NAME);
     checkProperty(foreignKeyProperty, editModel);
@@ -398,6 +409,7 @@ public final class EntityUiUtil {
       lookupField.setTransferFocusOnEnter();
     }
     new LookupValueLink(lookupField.getModel(), editModel, foreignKeyProperty.getPropertyID());
+    UiUtil.linkToEnabledState(enabledState, lookupField);
     if (foreignKeyProperty.hasDescription()) {
       lookupField.setToolTipText(foreignKeyProperty.getDescription());
     }
@@ -581,15 +593,15 @@ public final class EntityUiUtil {
   }
 
   public static SteppedComboBox createPropertyComboBox(final String propertyID, final EntityEditModel editModel,
-                                                       final EventObserver refreshEvent, final StateObserver state) {
-    return createPropertyComboBox(propertyID, editModel, refreshEvent, state, null);
+                                                       final EventObserver refreshEvent, final StateObserver enabledState) {
+    return createPropertyComboBox(propertyID, editModel, refreshEvent, enabledState, null);
   }
 
   public static SteppedComboBox createPropertyComboBox(final String propertyID, final EntityEditModel editModel,
-                                                       final EventObserver refreshEvent, final StateObserver state,
+                                                       final EventObserver refreshEvent, final StateObserver enabledState,
                                                        final String nullValue) {
     return createPropertyComboBox(Entities.getColumnProperty(editModel.getEntityID(), propertyID),
-            editModel, refreshEvent, state, nullValue);
+            editModel, refreshEvent, enabledState, nullValue);
   }
 
   public static SteppedComboBox createPropertyComboBox(final Property.ColumnProperty property, final EntityEditModel editModel) {
@@ -602,22 +614,22 @@ public final class EntityUiUtil {
   }
 
   public static SteppedComboBox createPropertyComboBox(final Property.ColumnProperty property, final EntityEditModel editModel,
-                                                       final EventObserver refreshEvent, final StateObserver state) {
-    return createPropertyComboBox(property, editModel, refreshEvent, state, null);
+                                                       final EventObserver refreshEvent, final StateObserver enabledState) {
+    return createPropertyComboBox(property, editModel, refreshEvent, enabledState, null);
   }
 
   public static SteppedComboBox createPropertyComboBox(final Property.ColumnProperty property, final EntityEditModel editModel,
-                                                       final EventObserver refreshEvent, final StateObserver state,
+                                                       final EventObserver refreshEvent, final StateObserver enabledState,
                                                        final String nullValue) {
-    return createPropertyComboBox(property, editModel, refreshEvent, state, nullValue, false);
+    return createPropertyComboBox(property, editModel, refreshEvent, enabledState, nullValue, false);
   }
 
 
   public static SteppedComboBox createPropertyComboBox(final Property.ColumnProperty property, final EntityEditModel editModel,
-                                                       final EventObserver refreshEvent, final StateObserver state,
+                                                       final EventObserver refreshEvent, final StateObserver enabledState,
                                                        final String nullValue, final boolean editable) {
     final SteppedComboBox comboBox = createComboBox(property, editModel,
-            editModel.initializePropertyComboBoxModel(property, refreshEvent, nullValue), state, editable);
+            editModel.initializePropertyComboBoxModel(property, refreshEvent, nullValue), enabledState, editable);
     if (!editable) {
       MaximumMatch.enable(comboBox);
     }
