@@ -485,4 +485,15 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * @param listener a listener to remove
    */
   void removeEntitiesChangedListener(final ActionListener listener);
+
+  /**
+   * @see #setEntity(org.jminor.framework.domain.Entity)
+   * @param listener a listener notified each time the entity instance is set
+   */
+  void addEntityListener(final ActionListener listener);
+
+  /**
+   * @param listener the listener to remove
+   */
+  void removeEntityListener(final ActionListener listener);
 }

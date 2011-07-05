@@ -131,7 +131,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
     this.entityID = entityID;
     this.connectionProvider = connectionProvider;
     this.readOnly = Entities.isReadOnly(entityID);
-    setValueMap(null);
+    setEntity(null);
     bindEventsInternal();
   }
 
@@ -659,6 +659,16 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
   /** {@inheritDoc} */
   public final void removeAfterRefreshListener(final ActionListener listener) {
     evtRefreshDone.removeListener(listener);
+  }
+
+  /** {@inheritDoc} */
+  public void addEntityListener(final ActionListener listener) {
+    addValueMapSetListener(listener);
+  }
+
+  /** {@inheritDoc} */
+  public void removeEntityListener(final ActionListener listener) {
+    removeValueMapSetListener(listener);
   }
 
   /**

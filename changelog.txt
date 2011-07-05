@@ -2421,3 +2421,5 @@
   ColumnSearchPanel, no longer uses UiUtil.getPreferredTextFieldHeight() to determine it's own preferred size
   NavigableImagePanel, previousPanelSize initialized during construction, seemed to cause NullPointerException on Windows
   EntityUiUtil.createEntityLookupField() and EntityEditPanel.createEntityLookupField() overloaded with enabledState parameter
+  EntityEditModel.add/removeEntityListener() added
+  DefaultEntityEditModel implements the above by delegating to the underlying ValueChangeMapEditModel.add/RemoveValueMapSetListener()

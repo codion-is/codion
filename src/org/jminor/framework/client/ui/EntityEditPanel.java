@@ -767,7 +767,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   }
 
   /**
-   * Creates a JTextArea component bound to the property identified by <code>propertyID </code>.
+   * Creates a JTextArea component bound to the property identified by <code>propertyID</code>.
    * @param propertyID the ID of the property to bind
    * @return a JTextArea bound to the property
    */
@@ -776,7 +776,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   }
 
   /**
-   * Creates a JTextArea component bound to the property identified by <code>propertyID </code>.
+   * Creates a JTextArea component bound to the property identified by <code>propertyID</code>.
    * @param propertyID the ID of the property to bind
    * @param rows the number of rows in the text area
    * @param columns the number of columns in the text area
@@ -787,7 +787,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   }
 
   /**
-   * Creates a JTextArea component bound to the property identified by <code>propertyID </code>.
+   * Creates a JTextArea component bound to the property identified by <code>propertyID</code>.
    * @param propertyID the ID of the property to bind
    * @param linkType the link type
    * @param rows the number of rows in the text area
