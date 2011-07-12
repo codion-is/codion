@@ -438,4 +438,16 @@ public final class DefaultEntityEditModelTest {
       employeeEditModel.getConnectionProvider().getConnection().rollbackTransaction();
     }
   }
+
+  @Test
+  public void setEntity() throws Exception {
+    final Entity martin = employeeEditModel.getConnectionProvider().getConnection().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "MARTIN");
+    final Entity king = employeeEditModel.getConnectionProvider().getConnection().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "KING");
+    employeeEditModel.setEntity(king);
+    employeeEditModel.setValue(EmpDept.EMPLOYEE_MGR_FK, martin);
+    employeeEditModel.setEntity(null);
+    king.setValue(EmpDept.EMPLOYEE_MGR_FK, null);
+    employeeEditModel.setEntity(king);
+    assertNull(employeeEditModel.getValue(EmpDept.EMPLOYEE_MGR_FK));
+  }
 }

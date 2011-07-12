@@ -620,7 +620,12 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       final int criteriaFetchDepthLimit = criteria.getForeignKeyFetchDepthLimit(foreignKeyProperty.getPropertyID());
       if (!limitForeignKeyFetchDepth || currentForeignKeyFetchDepth < criteriaFetchDepthLimit) {
         final List<Entity.Key> referencedPrimaryKeys = getReferencedPrimaryKeys(entities, foreignKeyProperty);
-        if (!referencedPrimaryKeys.isEmpty()) {
+        if (referencedPrimaryKeys.isEmpty()) {
+          for (final Entity entity : entities) {
+            entity.initializeValue(foreignKeyProperty, null);
+          }
+        }
+        else {
           final EntitySelectCriteria referencedEntitiesCriteria = EntityCriteriaUtil.selectCriteria(referencedPrimaryKeys);
           referencedEntitiesCriteria.setForeignKeyFetchDepthLimit(criteriaFetchDepthLimit);
           final List<Entity> referencedEntities = doSelectMany(referencedEntitiesCriteria, currentForeignKeyFetchDepth + 1);

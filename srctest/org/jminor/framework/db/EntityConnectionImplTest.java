@@ -198,6 +198,10 @@ public class EntityConnectionImplTest {
     assertEquals(sales.getStringValue(EmpDept.DEPARTMENT_NAME), "SALES");
     sales = connection.selectSingle(EntityCriteriaUtil.selectCriteria(EmpDept.T_DEPARTMENT, new SimpleCriteria<Property.ColumnProperty>("dname = 'SALES'")));
     assertEquals(sales.getStringValue(EmpDept.DEPARTMENT_NAME), "SALES");
+
+    final Entity king = connection.selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "KING");
+    assertTrue(king.containsValue(EmpDept.EMPLOYEE_MGR_FK));
+    assertNull(king.getValue(EmpDept.EMPLOYEE_MGR_FK));
   }
 
   @Test(expected = RecordNotFoundException.class)
