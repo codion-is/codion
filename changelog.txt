@@ -2424,3 +2424,4 @@
   EntityEditModel.add/removeEntityListener() added
   DefaultEntityEditModel implements the above by delegating to the underlying ValueChangeMapEditModel.add/RemoveValueMapSetListener()
   EntityConnectionImpl.setForeignKeyValues(), bug fixed, foreign key property values were not initialized if all selected entities had a null value for that property
+  AbstractBeanValueLinkTest added

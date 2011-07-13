@@ -40,7 +40,8 @@ public abstract class AbstractValueLink<T, V> extends Control {
   /**
    * Instantiates a new AbstractValueLink
    * @param valueOwner the owner of the property value
-   * @param modelValueChangeEvent an Event on which the UI should be updated to reflect changes in the model
+   * @param modelValueChangeEvent an EventObserver notified each time the UI should be updated to reflect changes
+   * to the value in the model
    * @param linkType the link Type
    */
   public AbstractValueLink(final T valueOwner, final EventObserver modelValueChangeEvent, final LinkType linkType) {

@@ -116,7 +116,7 @@ public class TextBeanValueLink extends AbstractBeanValueLink implements Document
   }
 
   /**
-   * @return the from the input component
+   * @return the text from the input component
    */
   protected final String getText() {
     try {
