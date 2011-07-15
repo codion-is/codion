@@ -2427,3 +2427,4 @@
   AbstractBeanValueLinkTest added
   EntitySelectCriteria.groupByClause() moved to EntityDefinition, since the group by clause is static for a given entity
   EntityConnectionImpl changed according to the above
+  EntityConnectionImpl, query debug logging no longer depends on the method logger being enabled

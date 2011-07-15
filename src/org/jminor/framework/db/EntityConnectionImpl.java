@@ -456,9 +456,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       }
     }
     catch (SQLException e) {
-      if (getMethodLogger().isEnabled()) {
-        LOG.debug(createLogMessage(getUser(), statement, null, e, null));
-      }
+      LOG.debug(createLogMessage(getUser(), statement, null, e, null));
       throw new DatabaseException(getDatabase().getErrorMessage(e));
     }
   }
@@ -473,9 +471,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
               createWhereCondition(primaryKey.getProperties()));
     }
     catch (SQLException e) {
-      if (getMethodLogger().isEnabled()) {
-        LOG.debug(createLogMessage(getUser(), null, null, e, null));
-      }
+      LOG.debug(createLogMessage(getUser(), null, null, e, null));
       throw new DatabaseException(getDatabase().getErrorMessage(e));
     }
   }
@@ -679,7 +675,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     }
     finally {
       final LogEntry entry = getMethodLogger().logExit("executePreparedUpdate", exception, null);
-      if (getMethodLogger().isEnabled()) {
+      if (LOG.isDebugEnabled()) {
         LOG.debug(createLogMessage(getUser(), sqlStatement, values, exception, entry));
       }
     }
@@ -700,7 +696,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     }
     finally {
       final LogEntry entry = getMethodLogger().logExit("executePreparedSelect", exception, null);
-      if (getMethodLogger().isEnabled()) {
+      if (LOG.isDebugEnabled()) {
         LOG.debug(createLogMessage(getUser(), sqlStatement, values, exception, entry));
       }
     }
