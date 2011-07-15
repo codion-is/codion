@@ -2425,3 +2425,5 @@
   DefaultEntityEditModel implements the above by delegating to the underlying ValueChangeMapEditModel.add/RemoveValueMapSetListener()
   EntityConnectionImpl.setForeignKeyValues(), bug fixed, foreign key property values were not initialized if all selected entities had a null value for that property
   AbstractBeanValueLinkTest added
+  EntitySelectCriteria.groupByClause() moved to EntityDefinition, since the group by clause is static for a given entity
+  EntityConnectionImpl changed according to the above

@@ -90,24 +90,7 @@ public final class EntityCriteriaUtil {
                                                     final SearchType searchType, final String orderByClause,
                                                     final int fetchCount, final Object... values) {
     return new DefaultEntitySelectCriteria(entityID, createPropertyCriteria(entityID, propertyID, searchType, values),
-            orderByClause, null, fetchCount);
-  }
-
-  /**
-   * @param entityID the entity ID
-   * @param propertyID the property ID
-   * @param searchType the search type
-   * @param orderByClause the order by clause, without the 'order by' keywords
-   * @param groupByClause the group by clause, without the 'group by' keywords
-   * @param fetchCount the maximum number of entities to fetch
-   * @param values the criteria values
-   * @return a select criteria based on the given values
-   */
-  public static EntitySelectCriteria selectCriteria(final String entityID, final String propertyID,
-                                                    final SearchType searchType, final String orderByClause,
-                                                    final String groupByClause, final int fetchCount, final Object... values) {
-    return new DefaultEntitySelectCriteria(entityID, createPropertyCriteria(entityID, propertyID, searchType, values),
-            orderByClause, groupByClause, fetchCount);
+            orderByClause, fetchCount);
   }
 
   /**
@@ -152,20 +135,7 @@ public final class EntityCriteriaUtil {
    */
   public static EntitySelectCriteria selectCriteria(final String entityID, final Criteria<Property.ColumnProperty> propertyCriteria,
                                                     final String orderByClause, final int fetchCount) {
-    return new DefaultEntitySelectCriteria(entityID, propertyCriteria, orderByClause, null, fetchCount);
-  }
-
-  /**
-   * @param entityID the entity ID
-   * @param propertyCriteria the column criteria
-   * @param orderByClause the order by clause
-   * @param groupByClause the group by clause
-   * @param fetchCount the maximum number of entities to fetch
-   * @return a select criteria based on the given column criteria
-   */
-  public static EntitySelectCriteria selectCriteria(final String entityID, final Criteria<Property.ColumnProperty> propertyCriteria,
-                                                    final String orderByClause, final String groupByClause, final int fetchCount) {
-    return new DefaultEntitySelectCriteria(entityID, propertyCriteria, orderByClause, groupByClause, fetchCount);
+    return new DefaultEntitySelectCriteria(entityID, propertyCriteria, orderByClause, fetchCount);
   }
 
   /**
@@ -420,7 +390,6 @@ public final class EntityCriteriaUtil {
     private HashMap<String, Integer> foreignKeyFetchDepthLimits;
 
     private String orderByClause;
-    private String groupByClause;
     private int fetchCount;
     private boolean selectForUpdate;
 
@@ -455,7 +424,7 @@ public final class EntityCriteriaUtil {
      * @see EntityKeyCriteria
      */
     private DefaultEntitySelectCriteria(final String entityID, final Criteria<Property.ColumnProperty> criteria, final String orderByClause) {
-      this(entityID, criteria, orderByClause, null, -1);
+      this(entityID, criteria, orderByClause, -1);
     }
 
     /**
@@ -468,7 +437,7 @@ public final class EntityCriteriaUtil {
      * @see EntityKeyCriteria
      */
     private DefaultEntitySelectCriteria(final String entityID, final Criteria<Property.ColumnProperty> criteria, final int fetchCount) {
-      this(entityID, criteria, null, null, fetchCount);
+      this(entityID, criteria, null, fetchCount);
     }
 
     /**
@@ -476,18 +445,16 @@ public final class EntityCriteriaUtil {
      * @param entityID the ID of the entity to select
      * @param criteria the Criteria object
      * @param orderByClause the 'order by' clause to use, i.e. "last_name, first_name desc"
-     * @param groupByClause the 'group by' clause to use, i.e. "last_name, first_name"
      * @param fetchCount the maximum number of records to fetch from the result
      * @see org.jminor.common.db.criteria.CriteriaSet
      * @see PropertyCriteria
      * @see EntityKeyCriteria
      */
     private DefaultEntitySelectCriteria(final String entityID, final Criteria<Property.ColumnProperty> criteria, final String orderByClause,
-                                        final String groupByClause, final int fetchCount) {
+                                        final int fetchCount) {
       this.criteria = new DefaultEntityCriteria(entityID, criteria);
       this.fetchCount = fetchCount;
       this.orderByClause = orderByClause;
-      this.groupByClause = groupByClause;
     }
 
     /** {@inheritDoc} */
@@ -531,11 +498,6 @@ public final class EntityCriteriaUtil {
     }
 
     /** {@inheritDoc} */
-    public String getGroupByClause() {
-      return groupByClause;
-    }
-
-    /** {@inheritDoc} */
     public EntitySelectCriteria setForeignKeyFetchDepthLimit(final String foreignKeyPropertyID, final int fetchDepthLimit) {
       if (foreignKeyFetchDepthLimits == null) {
         foreignKeyFetchDepthLimits = new HashMap<String, Integer>();
@@ -576,7 +538,6 @@ public final class EntityCriteriaUtil {
 
     private void writeObject(final ObjectOutputStream stream) throws IOException {
       stream.writeObject(orderByClause);
-      stream.writeObject(groupByClause);
       stream.writeInt(fetchCount);
       stream.writeBoolean(selectForUpdate);
       stream.writeObject(foreignKeyFetchDepthLimits);
@@ -586,7 +547,6 @@ public final class EntityCriteriaUtil {
     @SuppressWarnings({"unchecked"})
     private void readObject(final ObjectInputStream stream) throws ClassNotFoundException, IOException {
       orderByClause = (String) stream.readObject();
-      groupByClause = (String) stream.readObject();
       fetchCount = stream.readInt();
       selectForUpdate = stream.readBoolean();
       foreignKeyFetchDepthLimits = (HashMap<String, Integer>) stream.readObject();

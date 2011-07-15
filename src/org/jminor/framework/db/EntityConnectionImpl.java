@@ -569,7 +569,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     String selectSQL = null;
     try {
       selectSQL = getSelectSQL(criteria, Entities.getSelectColumnsString(criteria.getEntityID()),
-              criteria.getOrderByClause(), criteria.getGroupByClause());
+              criteria.getOrderByClause(), Entities.getGroupByClause(criteria.getEntityID()));
       statement = getConnection().prepareStatement(selectSQL);
       resultSet = executePreparedSelect(statement, selectSQL, criteria.getValues(), criteria.getValueProperties());
       List<Entity> result = null;

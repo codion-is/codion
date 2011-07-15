@@ -492,6 +492,20 @@ public interface Entity extends ValueChangeMap<String, Object>, Comparable<Entit
     Definition setOrderByClause(final String orderByClause);
 
     /**
+     * @return the group by clause to use when querying entities of this type,
+     * without the "group by" keywords
+     */
+    String getGroupByClause();
+
+    /**
+     * Sets the group by clause for this entity type, this clause should not
+     * include the "group by" keywords.
+     * @param groupByClause the group by clause
+     * @return this {@link Entity.Definition} instance
+     */
+    Definition setGroupByClause(final String groupByClause);
+
+    /**
      * @return the name of the table to use when selecting entities of this type
      */
     String getSelectTableName();

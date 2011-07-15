@@ -217,6 +217,14 @@ public final class Entities {
 
   /**
    * @param entityID the entity ID
+   * @return a comma separated list of columns to use in the group by clause
+   */
+  public static String getGroupByClause(final String entityID) {
+    return EntityDefinitionImpl.getDefinition(entityID).getGroupByClause();
+  }
+
+  /**
+   * @param entityID the entity ID
    * @return the name of the table used to select entities identified by <code>entityID</code>
    * @throws IllegalArgumentException if the entity is undefined
    */

@@ -73,12 +73,10 @@ public class EntityCriteriaUtilTest {
   @Test
   public void simpleCriteria() {
     final EntitySelectCriteria criteria = EntityCriteriaUtil.selectCriteria(EmpDept.T_DEPARTMENT,
-            new SimpleCriteria<Property.ColumnProperty>("department name is not null"), EmpDept.DEPARTMENT_NAME,
-            EmpDept.DEPARTMENT_NAME, -1);
+            new SimpleCriteria<Property.ColumnProperty>("department name is not null"), EmpDept.DEPARTMENT_NAME, -1);
     assertEquals(0, criteria.getValues().size());
     assertEquals(0, criteria.getValueProperties().size());
     assertEquals(criteria.getOrderByClause(), EmpDept.DEPARTMENT_NAME);
-    assertEquals(criteria.getGroupByClause(), EmpDept.DEPARTMENT_NAME);
   }
 
   private void assertPrimaryKeyCriteria(final EntityCriteria criteria) {

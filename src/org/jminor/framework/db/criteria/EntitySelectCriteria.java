@@ -14,12 +14,6 @@ public interface EntitySelectCriteria extends EntityCriteria {
   String getOrderByClause();
 
   /**
-   * @return the group by clause specified by this criteria,
-   * the 'group by' keywords are not included.
-   */
-  String getGroupByClause();
-
-  /**
    * @return true if this select should lock to result for update
    */
   boolean isSelectForUpdate();

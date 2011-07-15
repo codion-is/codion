@@ -62,6 +62,11 @@ final class EntityDefinitionImpl implements Entity.Definition {
   private String orderByClause;
 
   /**
+   * Holds the group by clause
+   */
+  private String groupByClause;
+
+  /**
    * The source of the entity's id (primary key), i.e. sequence name
    */
   private String idValueSource;
@@ -258,6 +263,18 @@ final class EntityDefinitionImpl implements Entity.Definition {
   public Entity.Definition setOrderByClause(final String orderByClause) {
     Util.rejectNullValue(orderByClause, "orderByClause");
     this.orderByClause = orderByClause;
+    return this;
+  }
+
+  /** {@inheritDoc} */
+  public String getGroupByClause() {
+    return groupByClause;
+  }
+
+  /** {@inheritDoc} */
+  public Entity.Definition setGroupByClause(final String groupByClause) {
+    Util.rejectNullValue(groupByClause, "groupByClause");
+    this.groupByClause = groupByClause;
     return this;
   }
 
