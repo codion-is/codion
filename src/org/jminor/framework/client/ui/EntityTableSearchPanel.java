@@ -27,7 +27,6 @@ import javax.swing.JTextField;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Enumeration;
@@ -239,9 +238,7 @@ public final class EntityTableSearchPanel extends JPanel {
           return initializeSearchPanel(propertySearchModel);
         }
         else {
-          final JPanel panel = new JPanel();
-          panel.setPreferredSize(new Dimension(panel.getPreferredSize().width, UiUtil.getPreferredTextFieldHeight()));
-          return panel;
+          return new JPanel();
         }
       }
     };

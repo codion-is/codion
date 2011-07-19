@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.client.ui;
 
-import org.jminor.common.ui.UiUtil;
 import org.jminor.framework.client.model.PropertySummaryModel;
 
 import javax.swing.AbstractAction;
@@ -54,7 +53,6 @@ public final class PropertySummaryPanel extends JPanel {
     txtSummary.setHorizontalAlignment(JTextField.RIGHT);
     txtSummary.setEditable(false);
     txtSummary.setFocusable(false);
-    txtSummary.setPreferredSize(UiUtil.getPreferredTextFieldSize());
     add(txtSummary, BorderLayout.CENTER);
     final JPopupMenu menu = createPopupMenu();
     txtSummary.addMouseListener(new MouseAdapter() {
