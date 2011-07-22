@@ -442,7 +442,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
   public EntityLookupModel createEntityLookupModel(final Property.ForeignKeyProperty foreignKeyProperty) {
     final Collection<Property.ColumnProperty> searchProperties = Entities.getSearchProperties(foreignKeyProperty.getReferencedEntityID());
     if (searchProperties.isEmpty()) {
-      throw new IllegalStateException("No search properties defined for entity: " + entityID);
+      throw new IllegalStateException("No search properties defined for entity: " + foreignKeyProperty.getReferencedEntityID());
     }
 
     return new DefaultEntityLookupModel(foreignKeyProperty.getReferencedEntityID(), connectionProvider, searchProperties);
