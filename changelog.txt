@@ -2430,3 +2430,4 @@
   EntityConnectionImpl, query debug logging no longer depends on the method logger being enabled
   PropertySummaryPanel, no longer uses UiUtil.getPreferredTextFieldHeight() to set the field size
   DefaultEntityEditModel.createEntityLookupModel(), bug fixed, no search properties exception contained the wrong entityID
+  EntityImpl.setAs(), bug fixed, referencedPrimaryKeysCache was not reset, test added

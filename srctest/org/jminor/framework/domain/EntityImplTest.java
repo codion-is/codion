@@ -197,10 +197,17 @@ public class EntityImplTest {
     }
     catch (IllegalArgumentException e) {}
     //test setAs()
+    testEntity.getReferencedPrimaryKey(Entities.getForeignKeyProperty(EntityTestDomain.T_DETAIL, EntityTestDomain.DETAIL_ENTITY_FK));
     test = Entities.entity(EntityTestDomain.T_DETAIL);
     test.setAs(testEntity);
     assertTrue("Entities should be equal after .setAs()", Util.equal(test, testEntity));
     assertTrue("Entity property values should be equal after .setAs()", test.propertyValuesEqual(testEntity));
+
+    //assure that no cached foreign key values linger
+    test.setValue(EntityTestDomain.DETAIL_ENTITY_FK, null);
+    testEntity.setAs(test);
+    assertNull(testEntity.getValue(EntityTestDomain.DETAIL_ENTITY_ID));
+    assertNull(testEntity.getValue(EntityTestDomain.DETAIL_ENTITY_FK));
 
     //test copy()
     final Entity test2 = (Entity) testEntity.getCopy();
