@@ -336,7 +336,7 @@
 
   <target name="sign_server_monitor_jars" depends="dist"
           description="Signs the jars found in the 'deploy.server.monitor.path'">
-    <signjar alias="${jar.sign.alias}" storepass="${jar.sign.storepass}" keystore="${jar.sign.keystoreloc}">
+    <signjar alias="${jar.sign.alias}" storepass="${jar.sign.storepass}" keystore="${jar.sign.keystore}">
       <fileset dir="${deploy.server.monitor.path}/lib" />
     </signjar>
   </target>
@@ -364,7 +364,7 @@
 
   <target name="sign_generator_jars" depends="dist"
           description="Signs the jars found in the 'deploy.generator.path'">
-    <signjar alias="${jar.sign.alias}" storepass="${jar.sign.storepass}" keystore="${jar.sign.keystoreloc}">
+    <signjar alias="${jar.sign.alias}" storepass="${jar.sign.storepass}" keystore="${jar.sign.keystore}">
       <fileset dir="${deploy.generator.path}/lib" />
     </signjar>
   </target>
@@ -415,7 +415,7 @@
 
   <target name="sign_demo_jars" depends="dist"
           description="Signs the jars found in the 'deploy.demos.path'">
-    <signjar alias="${jar.sign.alias}" storepass="${jar.sign.storepass}" keystore="${jar.sign.keystoreloc}">
+    <signjar alias="${jar.sign.alias}" storepass="${jar.sign.storepass}" keystore="${jar.sign.keystore}">
       <fileset dir="${deploy.demos.path}/lib" />
     </signjar>
   </target>

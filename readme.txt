@@ -34,7 +34,7 @@ Release contents (~20 MB):
               and the demo applications. resources/project_template contains an ant build file template
               for projects using the JMinor framework.
 * "src" contains the Java source files for the framework
-* "srcdemos" contains the Java source files for the framework demos: EmpDept, Petstore and SchemaBrowser
+* "srcdemos" contains the Java source files for the framework demos: EmpDept, Petstore, Chinook and SchemaBrowser
 * "srctest" contains the JUnit test sources for the framework
 
 
@@ -74,14 +74,14 @@ The "dist" directory contains the following distinct jar files for use in applic
 
 4. GETTING STARTED
 
-JMinor comes with three demo applications, a small one based on the SCOTT schema found in most if not all Oracle
-setups called EmpDept, a larger one called Petstore based on a schema of the same name and a SchemaBrowser, which
-is limited to Oracle, MySQL and H2 databases. An H2 database containing the required schemas are
-generated via respective ant targets.
+JMinor comes with four demo applications, a small one based on the SCOTT schema found in most if not all Oracle
+setups called EmpDept, a larger one called Petstore based on a schema of the same name, an application based on
+a music web-store schema called Chinook and a SchemaBrowser, which is limited to Oracle, MySQL and H2 databases.
+An H2 database containing the required schemas can be generated via the ant target 'recreate_h2_db'.
 
 In order to run the demos you must first run the deploy_all target in the ant build file (info on how to run ant
 builds can be found at ant.apache.org), which deployes the demo applications into the folder dist/deployment along
-with the required databases.
+with the required database.
 
 dist/deployment
   '-jminor_demos          - application jar files, the H2 database, files to run the demo applications
@@ -100,3 +100,10 @@ the ...client_remote.bat/sh run files in the 'jminor_demos' directory.
 The Ant build file included in the project contains standard targets for building the project, running unit tests
 and packaging the compiled classes as well a targets for running the server and demo applications and creating the
 required databases.
+
+Before you can use the 'sign_*_jars targets' the you must create a file called 'user.properties' in the project
+directory, and in it define the following build properties:
+
+jar.sign.alias            - the keystore alias
+jar.sign.storepass        - the keystore password
+jar.sign.keystore         - the keystore path

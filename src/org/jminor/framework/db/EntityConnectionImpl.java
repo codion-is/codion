@@ -152,7 +152,9 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       if (!isTransactionOpen()) {
         rollbackQuietly();
       }
-      LOG.debug(createLogMessage(getUser(), insertSQL, statementValues, e, null));
+      if (LOG.isDebugEnabled()) {
+        LOG.debug(createLogMessage(getUser(), insertSQL, statementValues, e, null));
+      }
       throw new DatabaseException(getDatabase().getErrorMessage(e));
     }
     finally {
@@ -217,7 +219,9 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       if (!isTransactionOpen()) {
         rollbackQuietly();
       }
-      LOG.debug(createLogMessage(getUser(), updateSQL, statementValues, e, null));
+      if (LOG.isDebugEnabled()) {
+        LOG.debug(createLogMessage(getUser(), updateSQL, statementValues, e, null));
+      }
       throw new DatabaseException(getDatabase().getErrorMessage(e));
     }
     finally {
@@ -247,7 +251,9 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       if (!isTransactionOpen()) {
         rollbackQuietly();
       }
-      LOG.debug(createLogMessage(getUser(), deleteSQL, criteria.getValues(), e, null));
+      if (LOG.isDebugEnabled()) {
+        LOG.debug(createLogMessage(getUser(), deleteSQL, criteria.getValues(), e, null));
+      }
       throw new DatabaseException(getDatabase().getErrorMessage(e));
     }
     finally {
@@ -286,7 +292,9 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       if (!isTransactionOpen()) {
         rollbackQuietly();
       }
-      LOG.debug(createLogMessage(getUser(), deleteSQL, entityKeys, e, null));
+      if (LOG.isDebugEnabled()) {
+        LOG.debug(createLogMessage(getUser(), deleteSQL, entityKeys, e, null));
+      }
       throw new DatabaseException(getDatabase().getErrorMessage(e));
     }
     finally {
@@ -360,7 +368,9 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       return query(selectSQL, getPropertyResultPacker(property), -1);
     }
     catch (SQLException e) {
-      LOG.debug(createLogMessage(getUser(), selectSQL, Arrays.asList(entityID, propertyID, order), e, null));
+      if (LOG.isDebugEnabled()) {
+        LOG.debug(createLogMessage(getUser(), selectSQL, Arrays.asList(entityID, propertyID, order), e, null));
+      }
       throw new DatabaseException(getDatabase().getErrorMessage(e));
     }
   }
@@ -387,7 +397,9 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       return result.get(0);
     }
     catch (SQLException e) {
-      LOG.debug(createLogMessage(getUser(), selectSQL, criteria.getValues(), e, null));
+      if (LOG.isDebugEnabled()) {
+        LOG.debug(createLogMessage(getUser(), selectSQL, criteria.getValues(), e, null));
+      }
       throw new DatabaseException(getDatabase().getErrorMessage(e));
     }
     finally {
@@ -456,7 +468,9 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       }
     }
     catch (SQLException e) {
-      LOG.debug(createLogMessage(getUser(), statement, null, e, null));
+      if (LOG.isDebugEnabled()) {
+        LOG.debug(createLogMessage(getUser(), statement, null, e, null));
+      }
       throw new DatabaseException(getDatabase().getErrorMessage(e));
     }
   }
@@ -471,7 +485,9 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
               createWhereCondition(primaryKey.getProperties()));
     }
     catch (SQLException e) {
-      LOG.debug(createLogMessage(getUser(), null, null, e, null));
+      if (LOG.isDebugEnabled()) {
+        LOG.debug(createLogMessage(getUser(), null, null, e, null));
+      }
       throw new DatabaseException(getDatabase().getErrorMessage(e));
     }
   }
@@ -587,7 +603,9 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       return result;
     }
     catch (SQLException e) {
-      LOG.debug(createLogMessage(getUser(), selectSQL, criteria.getValues(), e, null));
+      if (LOG.isDebugEnabled()) {
+        LOG.debug(createLogMessage(getUser(), selectSQL, criteria.getValues(), e, null));
+      }
       throw new DatabaseException(getDatabase().getErrorMessage(e), selectSQL);
     }
     finally {
@@ -655,7 +673,9 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       return queryInteger(sql);
     }
     catch (SQLException e) {
-      LOG.debug(createLogMessage(getUser(), sql, Arrays.asList(entityID, idSource, idValueSource), e, null));
+      if (LOG.isDebugEnabled()) {
+        LOG.debug(createLogMessage(getUser(), sql, Arrays.asList(entityID, idSource, idValueSource), e, null));
+      }
       throw e;
     }
   }
