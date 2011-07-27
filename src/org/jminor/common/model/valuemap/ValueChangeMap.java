@@ -17,13 +17,13 @@ import java.util.Collection;
 public interface ValueChangeMap<K, V> extends ValueMap<K, V> {
 
   /**
-   * @return a State active when this value map has been modified.
+   * @return a StateObserver indicating if this value map has been modified.
    */
   StateObserver getModifiedState();
 
   /**
-   * Returns an Event fired each time a value changes, with a ValueChangeEvent argument.
-   * @return an Event fired when a value changes.
+   * Returns an EventObserver notified each time a value changes, with a {@link ValueChangeEvent} argument.
+   * @return an EventObserver notified when a value changes.
    * @see org.jminor.common.model.valuemap.ValueChangeEvent
    */
   EventObserver getValueChangeObserver();

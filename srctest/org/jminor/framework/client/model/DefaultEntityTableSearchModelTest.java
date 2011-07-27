@@ -47,7 +47,7 @@ public class DefaultEntityTableSearchModelTest {
     assertFalse(searchModel.hasSearchStateChanged());
     searchModel.getPropertySearchModel(EmpDept.EMPLOYEE_JOB).setEnabled(true);
     assertTrue(searchModel.hasSearchStateChanged());
-    searchModel.setSearchModelState();
+    searchModel.rememberCurrentSearchState();
     assertFalse(searchModel.hasSearchStateChanged());
   }
 

@@ -80,18 +80,18 @@ public interface EntityTableSearchModel extends FilterCriteria<Entity>, Refresha
   void setSearchEnabled(final String propertyID, final boolean enabled);
 
   /**
-   * Sets the current search model state, any subsequent changes to search
+   * Remembers the current search model state, any subsequent changes to search
    * parameters or operators are notified via the searchStateChanged observer.
-   * A data model using this search model should call this method each the
-   * model is refreshed according using the search criteria provided by this search model.
+   * A data model using this search model should call this method each time the
+   * model is refreshed according to the search criteria provided by this search model.
    * @see #getSearchStateObserver
    */
-  void setSearchModelState();
+  void rememberCurrentSearchState();
 
   /**
    * @return true if the search model state (or configuration) has changed
-   * since the last time the search model state was set
-   * @see #setSearchModelState()
+   * since the last time the search model state was remembered
+   * @see #rememberCurrentSearchState()
    */
   boolean hasSearchStateChanged();
 
@@ -174,8 +174,8 @@ public interface EntityTableSearchModel extends FilterCriteria<Entity>, Refresha
   void performSimpleSearch();
 
   /**
-   * @return a State activated each time the search state differs from the state at last reset
-   * @see #setSearchModelState()
+   * @return a StateObserver indicating if the search state has changed since it was last remembered
+   * @see #rememberCurrentSearchState()
    */
   StateObserver getSearchStateObserver();
 
@@ -183,16 +183,6 @@ public interface EntityTableSearchModel extends FilterCriteria<Entity>, Refresha
    * @return an event observer notified each time the simple search text changes
    */
   EventObserver getSimpleSearchStringObserver();
-
-  /**
-   * @param listener a listener notified each time the filter state changes
-   */
-  void addFilterStateListener(final ActionListener listener);
-
-  /**
-   * @param listener the listener to remove
-   */
-  void removeFilterStateListener(final ActionListener listener);
 
   /**
    * @param listener a listener notified each time a simple search is performed

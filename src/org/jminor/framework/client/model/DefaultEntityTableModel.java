@@ -114,7 +114,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   private boolean removeItemsOnDelete = true;
 
   /**
-   * A State indicating whether or not multiple entities can be updated at a time
+   * Indicates if multiple entities can be updated at a time
    */
   private boolean batchUpdateAllowed = true;
 
@@ -614,18 +614,12 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     addRefreshDoneListener(new ActionListener() {
       /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
-        searchModel.setSearchModelState();
+        searchModel.rememberCurrentSearchState();
       }
     });
     searchModel.addSimpleSearchListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         refresh();
-      }
-    });
-    searchModel.addFilterStateListener(new ActionListener() {
-      /** {@inheritDoc} */
-      public void actionPerformed(final ActionEvent e) {
-        filterContents();
       }
     });
   }

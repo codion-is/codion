@@ -18,13 +18,13 @@ import java.awt.event.ActionListener;
 public interface ValueChangeMapEditModel<K, V> extends Refreshable {
 
   /**
-   * @return a State indicating the modified status of this value map
+   * @return a StateObserver indicating if any values in this value map have been modified
    * @see #isModified()
    */
   StateObserver getModifiedObserver();
 
   /**
-   * @return a State indicating the valid status of this value map
+   * @return a StateObserver indicating the valid status of this value map
    * @see #getValidator()
    * @see #isValid()
    */

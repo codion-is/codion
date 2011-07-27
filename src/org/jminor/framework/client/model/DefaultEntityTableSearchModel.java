@@ -37,7 +37,6 @@ import java.util.Map;
  */
 public class DefaultEntityTableSearchModel implements EntityTableSearchModel, EntityDataProvider {
 
-  private final Event evtFilterStateChanged = Events.event();
   private final State stSearchStateChanged = States.state();
   private final Event evtSimpleSearchStringChanged = Events.event();
   private final Event evtSimpleSearchPerformed = Events.event();
@@ -48,7 +47,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
   private final Map<String, PropertySearchModel<? extends Property.SearchableProperty>> propertySearchModels = new HashMap<String, PropertySearchModel<? extends Property.SearchableProperty>>();
   private Criteria<Property.ColumnProperty> additionalSearchCriteria;
   private Conjunction searchConjunction = Conjunction.AND;
-  private String searchStateOnRefresh = "";
+  private String rememberedSearchState = "";
   private String simpleSearchString = "";
 
   /**
@@ -89,7 +88,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
         }
       }
     }
-    this.searchStateOnRefresh = getSearchModelState();
+    this.rememberedSearchState = getSearchModelState();
     bindEvents();
   }
 
@@ -114,8 +113,8 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
   }
 
   /** {@inheritDoc} */
-  public final void setSearchModelState() {//todo rename
-    searchStateOnRefresh = getSearchModelState();
+  public final void rememberCurrentSearchState() {
+    rememberedSearchState = getSearchModelState();
     stSearchStateChanged.setActive(false);
   }
 
@@ -305,16 +304,6 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
   }
 
   /** {@inheritDoc} */
-  public final void addFilterStateListener(final ActionListener listener) {
-    evtFilterStateChanged.addListener(listener);
-  }
-
-  /** {@inheritDoc} */
-  public final void removeFilterStateListener(final ActionListener listener) {
-    evtFilterStateChanged.removeListener(listener);
-  }
-
-  /** {@inheritDoc} */
   public final void addSimpleSearchListener(final ActionListener listener) {
     evtSimpleSearchPerformed.addListener(listener);
   }
@@ -329,7 +318,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
       searchModel.addSearchStateListener(new ActionListener() {
         /** {@inheritDoc} */
         public void actionPerformed(final ActionEvent e) {
-          stSearchStateChanged.setActive(!searchStateOnRefresh.equals(getSearchModelState()));
+          stSearchStateChanged.setActive(!rememberedSearchState.equals(getSearchModelState()));
           stSearchStateChanged.notifyObservers();
         }
       });

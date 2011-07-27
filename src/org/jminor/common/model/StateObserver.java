@@ -4,7 +4,7 @@ import javax.swing.Action;
 import java.awt.event.ActionListener;
 
 /**
- * Specifies a State observer.
+ * Specifies an observer for a {@link State} instance.
  */
 public interface StateObserver extends EventObserver {
 

@@ -2431,3 +2431,5 @@
   PropertySummaryPanel, no longer uses UiUtil.getPreferredTextFieldHeight() to set the field size
   DefaultEntityEditModel.createEntityLookupModel(), bug fixed, no search properties exception contained the wrong entityID
   EntityImpl.setAs(), bug fixed, referencedPrimaryKeysCache was not reset, test added
+  EntityTableSearchMode.setSearchState() renamed to rememberCurrentSearchState()
+  Some javadoc improvements
