@@ -900,7 +900,7 @@ public final class EntityCriteriaUtil {
       Util.rejectNullValue(property, "property");
       Util.rejectNullValue(searchType, "searchType");
       if (values != null && values.length == 0) {
-        throw new IllegalArgumentException("No values specified for ForeignKeyPropertyCriteria: " + property);
+        throw new IllegalArgumentException("No values specified for ForeignKeyCriteria: " + property);
       }
       this.property = property;
       this.searchType = searchType;
@@ -1068,12 +1068,11 @@ public final class EntityCriteriaUtil {
       if (value == null || value instanceof Entity.Key) {
         return Arrays.asList(values);
       }
-      else {
-        final List entities = new ArrayList();//todo
-        entities.addAll(Arrays.asList(values));
-
-        return EntityUtil.getPrimaryKeys(entities);
+      else if (value instanceof Entity) {
+        return EntityUtil.getPrimaryKeys((List) Arrays.asList(values));
       }
+
+      throw new IllegalArgumentException("Foreign key criteria uses only Entity or Entity.Key instances for values");
     }
   }
 }

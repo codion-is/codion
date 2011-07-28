@@ -2437,3 +2437,5 @@
   TextFieldPlus.lowerCase field added
   UiUtil.makeLowerCase(TextFieldPlus) added for consistency
   UiUtil, added javadoc
+  EntityConnectionImpl.delete() now uses EntityCriteriaUtil.criteria() instead of selectCriteria() when constructing the where condition
+  EntityCriteriaUtil.ForeignKeyCriteria now throws an IllegalArgumentException if values of types other than Entity or Entity.Key are used, tests added

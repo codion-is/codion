@@ -277,7 +277,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       final ArrayList<Entity.Key> criteriaKeys = new ArrayList<Entity.Key>();
       for (final Map.Entry<String, Collection<Entity.Key>> hashedKeysEntry : hashedKeys.entrySet()) {
         criteriaKeys.addAll(hashedKeysEntry.getValue());
-        final EntitySelectCriteria criteria = EntityCriteriaUtil.selectCriteria(criteriaKeys);
+        final EntityCriteria criteria = EntityCriteriaUtil.criteria(criteriaKeys);
         deleteSQL = "delete from " + Entities.getTableName(hashedKeysEntry.getKey()) + " " + criteria.getWhereClause();
         statement = getConnection().prepareStatement(deleteSQL);
         executePreparedUpdate(statement, deleteSQL, criteria.getValues(), criteria.getValueProperties());

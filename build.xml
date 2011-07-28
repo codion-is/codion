@@ -20,14 +20,14 @@
   </path>
 
   <path id="lib.client.remote">
-    <pathelement location="${lib.jasperreports.logging}"/>
-    <pathelement location="${lib.jasperreports.collections}"/>
-    <pathelement location="${lib.jasperreports.base}"/>
     <pathelement location="${lib.jcalendar}"/>
     <pathelement location="${lib.json}"/>
     <pathelement location="${lib.slf4j.api}"/>
     <pathelement location="${lib.logback.classic}"/>
     <pathelement location="${lib.logback.core}"/>
+    <pathelement location="${lib.jasperreports.base}"/>
+    <pathelement location="${lib.jasperreports.logging}"/>
+    <pathelement location="${lib.jasperreports.collections}"/>
   </path>
 
   <path id="lib.client.local">
@@ -47,10 +47,10 @@
   </path>
 
   <path id="lib.server.monitor">
+    <pathelement location="${lib.jcalendar}"/>
     <pathelement location="${lib.slf4j.api}"/>
     <pathelement location="${lib.logback.classic}"/>
     <pathelement location="${lib.logback.core}"/>
-    <pathelement location="${lib.jcalendar}"/>
     <pathelement location="${lib.jfreechart.base}"/>
     <pathelement location="${lib.jfreechart.common}"/>
   </path>

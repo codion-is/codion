@@ -71,6 +71,37 @@ public class EntityCriteriaUtilTest {
   }
 
   @Test
+  public void foreignKeyCriteriaNull() {
+    final Criteria<Property.ColumnProperty> criteria = EntityCriteriaUtil.foreignKeyCriteria(EmpDept.T_EMPLOYEE,
+            EmpDept.EMPLOYEE_DEPARTMENT_FK, SearchType.LIKE, null);
+    assertEquals("deptno is null", criteria.asString());
+  }
+
+  @Test
+  public void foreignKeyCriteriaEntity() {
+    final Entity department = Entities.entity(EmpDept.T_DEPARTMENT);
+    department.setValue(EmpDept.DEPARTMENT_ID, 10);
+    final Criteria<Property.ColumnProperty> criteria = EntityCriteriaUtil.foreignKeyCriteria(EmpDept.T_EMPLOYEE,
+            EmpDept.EMPLOYEE_DEPARTMENT_FK, SearchType.LIKE, department);
+    assertEquals("deptno = ?", criteria.asString());
+  }
+
+  @Test
+  public void foreignKeyCriteriaEntityKey() {
+    final Entity department = Entities.entity(EmpDept.T_DEPARTMENT);
+    department.setValue(EmpDept.DEPARTMENT_ID, 10);
+    final Criteria<Property.ColumnProperty> criteria = EntityCriteriaUtil.foreignKeyCriteria(EmpDept.T_EMPLOYEE,
+            EmpDept.EMPLOYEE_DEPARTMENT_FK, SearchType.LIKE, department.getPrimaryKey());
+    assertEquals("deptno = ?", criteria.asString());
+  }
+
+  @Test (expected = IllegalArgumentException.class)
+  public void foreignKeyCriteriaInvalidType() {
+    final String department = "department no 10";
+    EntityCriteriaUtil.foreignKeyCriteria(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_DEPARTMENT_FK, SearchType.LIKE, department);
+  }
+
+  @Test
   public void simpleCriteria() {
     final EntitySelectCriteria criteria = EntityCriteriaUtil.selectCriteria(EmpDept.T_DEPARTMENT,
             new SimpleCriteria<Property.ColumnProperty>("department name is not null"), EmpDept.DEPARTMENT_NAME, -1);
