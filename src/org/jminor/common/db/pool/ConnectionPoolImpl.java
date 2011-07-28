@@ -20,7 +20,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Deque;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -389,9 +388,7 @@ final class ConnectionPoolImpl implements ConnectionPool {
   private List<ConnectionPoolState> getFineGrainedStatistics(final long since) {
     final List<ConnectionPoolState> poolStates = new ArrayList<ConnectionPoolState>();
     synchronized (pool) {
-      final ListIterator<ConnectionPoolStateImpl> iterator = connectionPoolStatistics.listIterator();
-      while (iterator.hasNext()) {//NB. the stat log is circular, result should be sorted
-        final ConnectionPoolState state = iterator.next();
+      for (final ConnectionPoolStateImpl state : connectionPoolStatistics) {//NB. the stat log is circular, result should be sorted
         if (state.getTimestamp() >= since) {
           poolStates.add(state);
         }
@@ -424,7 +421,7 @@ final class ConnectionPoolImpl implements ConnectionPool {
           return;
         }
         if (currentTime - connection.getPoolTime() > pooledConnectionTimeout) {
-          connectionProvider.destroyConnection(connection);
+          connectionProvider.destroyConnection(connection);//todo could be spun of into a thread, if the operation is expensive
           counter.incrementConnectionsDestroyedCounter();
           pool.remove(connection);
         }

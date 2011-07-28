@@ -617,7 +617,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
   /**
    * Selects the entities referenced by the given entities via foreign keys and sets those
    * as their respective foreign key values. This is done recursively for the entities referenced
-   * by the foreign keys as well, until the qriteria fetch depth limit is reached.
+   * by the foreign keys as well, until the criteria fetch depth limit is reached.
    * @param entities the entities for which to set the foreign key entity values
    * @param criteria the criteria
    * @param currentForeignKeyFetchDepth the current foreign key fetch depth
