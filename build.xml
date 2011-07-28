@@ -225,7 +225,7 @@
     <jar jarfile="${dist}/${ant.project.name}-plugins.jar" basedir="${build.plugins}"
          manifest="${build.base}/META-INF/MANIFEST.MF"/>
 
-    <copy file="${deploy.demos.truststore}" todir="${build.demos}"/>
+    <copy file="${demos.truststore}" todir="${build.demos}"/>
 
     <jar jarfile="${dist}/${ant.project.name}-demos.jar" basedir="${build.demos}"
          manifest="${build.base}/META-INF/MANIFEST.MF"/>
@@ -250,7 +250,7 @@
       <attribute name="Implementation-Version" value="${version}"/>
       <attribute name="Implementation-URL" value="http://jminor.org"/>
       <attribute name="Build-Jdk" value="${java.specification.version}"/>
-      </manifest>
+    </manifest>
   </target>
 
   <target name="javadoc" depends="build"
@@ -371,43 +371,43 @@
 
   <target name="deploy_demos" depends="recreate_h2_db, compile_demo_reports"
           description="Deploys the demo applications to the path defined by the 'deploy.demos.path' property">
-    <mkdir dir="${deploy.demos.path}"/>
-    <copy file="${dist}/${ant.project.name}-client.jar" todir="${deploy.demos.path}/lib"/>
-    <copy file="${dist}/${ant.project.name}-plugins.jar" todir="${deploy.demos.path}/lib"/>
-    <copy file="${dist}/${ant.project.name}-demos.jar" todir="${deploy.demos.path}/lib"/>
-    <copy file="${dist}/${ant.project.name}-common.jar" todir="${deploy.demos.path}/lib"/>
-    <copy file="${lib.h2}" todir="${deploy.demos.path}/lib"/>
-    <copy file="${lib.json}" todir="${deploy.demos.path}/lib"/>
-    <copy file="${lib.jasperreports.base}" todir="${deploy.demos.path}/lib"/>
-    <copy file="${lib.jasperreports.collections}" todir="${deploy.demos.path}/lib"/>
-    <copy file="${lib.jasperreports.itext}" todir="${deploy.demos.path}/lib"/>
-    <copy file="${lib.jasperreports.logging}" todir="${deploy.demos.path}/lib"/>
-    <copy file="${lib.slf4j.api}" todir="${deploy.demos.path}/lib"/>
-    <copy file="${lib.logback.classic}" todir="${deploy.demos.path}/lib"/>
-    <copy file="${lib.logback.core}" todir="${deploy.demos.path}/lib"/>
-    <copy file="${lib.jcalendar}" todir="${deploy.demos.path}/lib"/>
-    <copy file="${lib.h2}" todir="${deploy.demos.path}/lib"/>
-    <copy file="${lib.jfreechart.base}" todir="${deploy.demos.path}/lib"/>
-    <copy file="${lib.jfreechart.common}" todir="${deploy.demos.path}/lib"/>
-    <copy todir="${deploy.demos.config.path}">
-      <fileset dir="${deploy.demos.config}"/>
+    <mkdir dir="${deploy.demos.dir}"/>
+    <copy file="${dist}/${ant.project.name}-client.jar" todir="${deploy.demos.lib}"/>
+    <copy file="${dist}/${ant.project.name}-plugins.jar" todir="${deploy.demos.lib}"/>
+    <copy file="${dist}/${ant.project.name}-demos.jar" todir="${deploy.demos.lib}"/>
+    <copy file="${dist}/${ant.project.name}-common.jar" todir="${deploy.demos.lib}"/>
+    <copy file="${lib.h2}" todir="${deploy.demos.lib}"/>
+    <copy file="${lib.json}" todir="${deploy.demos.lib}"/>
+    <copy file="${lib.jasperreports.base}" todir="${deploy.demos.lib}"/>
+    <copy file="${lib.jasperreports.collections}" todir="${deploy.demos.lib}"/>
+    <copy file="${lib.jasperreports.itext}" todir="${deploy.demos.lib}"/>
+    <copy file="${lib.jasperreports.logging}" todir="${deploy.demos.lib}"/>
+    <copy file="${lib.slf4j.api}" todir="${deploy.demos.lib}"/>
+    <copy file="${lib.logback.classic}" todir="${deploy.demos.lib}"/>
+    <copy file="${lib.logback.core}" todir="${deploy.demos.lib}"/>
+    <copy file="${lib.jcalendar}" todir="${deploy.demos.lib}"/>
+    <copy file="${lib.h2}" todir="${deploy.demos.lib}"/>
+    <copy file="${lib.jfreechart.base}" todir="${deploy.demos.lib}"/>
+    <copy file="${lib.jfreechart.common}" todir="${deploy.demos.lib}"/>
+    <copy todir="${deploy.demos.config.dir}">
+      <fileset dir="${demos.config}"/>
     </copy>
-    <copy file="${deploy.demos.policy}" todir="${deploy.demos.config.path}"/>
-    <copy file="${deploy.loadtest.policy}" todir="${deploy.demos.config.path}"/>
-    <copy file="${deploy.loadtest.server.policy}" todir="${deploy.demos.config.path}"/>
-    <copy file="${deploy.demos.truststore}" todir="${deploy.demos.config.path}"/>
-    <copy todir="${deploy.demos.path}">
+    <copy file="${demos.policy}" todir="${deploy.demos.config.dir}"/>
+    <copy file="${deploy.loadtest.policy}" todir="${deploy.demos.config.dir}"/>
+    <copy file="${deploy.loadtest.server.policy}" todir="${deploy.demos.config.dir}"/>
+    <copy file="${demos.truststore}" todir="${deploy.demos.config.dir}"/>
+    <copy todir="${deploy.demos.dir}">
       <fileset dir="${basedir}/resources/demos/empdept/" excludes="**/*.jrxml,**/*.bak"/>
       <fileset dir="${basedir}/resources/demos/petstore/" excludes="**/*.jrxml,**/*.bak"/>
       <fileset dir="${basedir}/resources/demos/chinook/" excludes="**/*.jrxml,**/*.bak"/>
       <fileset dir="${basedir}/resources/demos/schemabrowser/"/>
     </copy>
-    <concat destfile="${deploy.demos.path}/scripts/create_h2_db.sql" >
+    <concat destfile="${deploy.demos.dir}/scripts/create_h2_db.sql" >
       <fileset file="${basedir}/resources/demos/chinook/scripts/ddl.sql" />
       <fileset file="${basedir}/resources/demos/chinook/scripts/dml.sql" />
     </concat>
-    <chmod dir="${deploy.demos.path}" perm="u+x" type="file" includes="*.sh"/>
-    <copy todir="${deploy.demos.path}/h2db">
+    <chmod dir="${deploy.demos.dir}" perm="u+x" type="file" includes="*.sh"/>
+    <copy todir="${deploy.demos.dir}/h2db">
       <fileset dir="${db.h2.dir}"/>
     </copy>
     <antcall target="sign_demo_jars"/>
@@ -416,7 +416,7 @@
   <target name="sign_demo_jars" depends="dist"
           description="Signs the jars found in the 'deploy.demos.path'">
     <signjar alias="${jar.sign.alias}" storepass="${jar.sign.storepass}" keystore="${jar.sign.keystore}">
-      <fileset dir="${deploy.demos.path}/lib" />
+      <fileset dir="${deploy.demos.lib}" />
     </signjar>
   </target>
 
@@ -587,10 +587,10 @@
     <mkdir dir="${test.coveragereport.html}"/>
     <cobertura-report format="html" destdir="${test.coveragereport.html}" >
       <fileset dir="${src}">
-          <include name="**/*.java" />
+        <include name="**/*.java" />
       </fileset>
       <fileset dir="${srcplugins}">
-          <include name="**/*.java" />
+        <include name="**/*.java" />
       </fileset>
     </cobertura-report>
   </target>
@@ -632,8 +632,8 @@
       <jvmarg value="-Djminor.client.connectionType=remote"/>
       <jvmarg value="-Djminor.server.hostname=localhost"/>
       <jvmarg value="-Djminor.report.path=resources/demos/chinook/reports/"/>
-      <jvmarg value="-Djavax.net.ssl.trustStore=${basedir}/resources/security/JMinorClientTruststore"/>
-      <jvmarg value="-Djava.security.policy=${basedir}/resources/security/jminor_client.policy"/>
+      <jvmarg value="-Djavax.net.ssl.trustStore=${resources.security}/JMinorClientTruststore"/>
+      <jvmarg value="-Djava.security.policy=${resources.security}/jminor_client.policy"/>
     </java>
   </target>
 
@@ -649,8 +649,8 @@
       <jvmarg value="-Djminor.client.connectionType=remote"/>
       <jvmarg value="-Djminor.server.hostname=localhost"/>
       <jvmarg value="-Djminor.report.path=resources/demos/chinook/reports/"/>
-      <jvmarg value="-Djavax.net.ssl.trustStore=${basedir}/resources/security/JMinorClientTruststore"/>
-      <jvmarg value="-Djava.security.policy=${basedir}/resources/security/jminor_load_test.policy"/>
+      <jvmarg value="-Djavax.net.ssl.trustStore=${resources.security}/JMinorClientTruststore"/>
+      <jvmarg value="-Djava.security.policy=${resources.security}/jminor_load_test.policy"/>
     </java>
   </target>
 
@@ -675,8 +675,8 @@
       <jvmarg value="-Djminor.server.admin.port=4444"/>
       <jvmarg value="-Djminor.server.db.port=3333"/>
       <jvmarg value="-Djminor.server.domain.classes=org.jminor.framework.demos.empdept.domain.EmpDept, org.jminor.framework.demos.petstore.domain.Petstore, org.jminor.framework.demos.chinook.domain.Chinook, org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser"/>
-      <jvmarg value="-Djavax.net.ssl.keyStore=${basedir}/resources/security/JMinorServerKeystore"/>
-      <jvmarg value="-Djava.security.policy=${basedir}/resources/security/jminor_server.policy"/>
+      <jvmarg value="-Djavax.net.ssl.keyStore=${resources.security}/JMinorServerKeystore"/>
+      <jvmarg value="-Djava.security.policy=${resources.security}/jminor_server.policy"/>
       <jvmarg value="-Djavax.net.ssl.keyStorePassword=jminor"/>
       <jvmarg value="-Djava.rmi.server.hostname=localhost"/>
     </java>
@@ -690,8 +690,8 @@
         <path refid="lib.server.monitor"/>
       </classpath>
       <jvmarg value="-Djminor.server.hostname=localhost"/>
-      <jvmarg value="-Djavax.net.ssl.trustStore=${basedir}/resources/security/JMinorServerMonitorTruststore"/>
-      <jvmarg value="-Djava.security.policy=${basedir}/resources/security/jminor_server_monitor.policy"/>
+      <jvmarg value="-Djavax.net.ssl.trustStore=${resources.security}/JMinorServerMonitorTruststore"/>
+      <jvmarg value="-Djava.security.policy=${resources.security}/jminor_server_monitor.policy"/>
     </java>
   </target>
 
@@ -702,7 +702,7 @@
         <path refid="classes.base"/>
         <path refid="lib.server"/>
       </classpath>
-      <jvmarg value="-Djava.security.policy=${basedir}/resources/security/all_permissions.policy"/>
+      <jvmarg value="-Djava.security.policy=${resources.security}/all_permissions.policy"/>
     </java>
   </target>
 
@@ -710,7 +710,7 @@
           description="Recreates the demo h2 database. The demo database includes the EmpDept, Petstore and Chinook schemas, used by unit tests and demo applications">
     <delete dir="${db.h2.dir}"/>
     <java fork="true" classname="org.h2.tools.RunScript" classpathref="lib.build">
-      <arg line="-url jdbc:h2:${db.h2.dir}/${db.h2.name} -showResults -script ${basedir}/resources/db/scripts/create_h2_db.sql"/>
+      <arg line="-url jdbc:h2:${db.h2.dir}/${db.h2.name} -showResults -script ${db.init.h2}"/>
     </java>
   </target>
 
@@ -719,7 +719,7 @@
     <delete dir="${db.derby.dir}"/>
     <java fork="true" classname="org.apache.derby.tools.ij" classpathref="lib.build">
       <sysproperty key="ij.connection.demo" value="jdbc:derby:${db.derby.dir}/${db.derby.name};create=true"/>
-      <arg value="${db.sql.dir}/create_derby_db.sql"/>
+      <arg value="${db.init.derby}"/>
     </java>
   </target>
 </project>

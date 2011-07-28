@@ -1,6 +1,6 @@
 grant {
-  permission java.io.FilePermission "${user.home}/logs", "read";
-  permission java.io.FilePermission "${user.home}/logs/-", "read,write,delete";
+  permission java.io.FilePermission "${user.dir}/logs", "read";
+  permission java.io.FilePermission "${user.dir}/logs/-", "read,write,delete";
   permission java.io.FilePermission "${user.dir}/-", "read,write,delete";
   permission java.io.FilePermission "./-", "read,write,delete";
   //Web Start Server document root
@@ -26,4 +26,9 @@ grant {
   permission java.lang.RuntimePermission "createClassLoader";
   permission java.lang.RuntimePermission "getProtectionDomain";
   permission java.lang.RuntimePermission "accessClassInPackage.sun.reflect";
+  //for logback
+  permission java.lang.RuntimePermission "accessClassInPackage.sun.rmi.transport.proxy";
+  permission java.lang.RuntimePermission "accessClassInPackage.sun.rmi.registry";
+  permission java.lang.RuntimePermission "accessClassInPackage.sun.rmi.server";
+  permission java.lang.RuntimePermission "accessClassInPackage.sun.rmi.transport.tcp";
 };
