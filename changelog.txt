@@ -2433,3 +2433,7 @@
   EntityImpl.setAs(), bug fixed, referencedPrimaryKeysCache was not reset, test added
   EntityTableSearchMode.setSearchState() renamed to rememberCurrentSearchState()
   Some javadoc improvements
+  JCalendar build dependency removed, UiUtil.getDateFromUser() now uses JCalendar if available on classpath
+  TextFieldPlus.lowerCase field added
+  UiUtil.makeLowerCase(TextFieldPlus) added for consistency
+  UiUtil, added javadoc

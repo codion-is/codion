@@ -11,12 +11,13 @@ import javax.swing.text.PlainDocument;
 import java.util.Locale;
 
 /**
- * A normal text field that allows setting max number of chars and uppercase.
+ * A normal text field that allows setting max number of chars and uppercase/lowercase.
  * Also includes basic numerical range checking facilities.
  */
 public class TextFieldPlus extends JTextField {
 
   private boolean upperCase = false;
+  private boolean lowerCase = false;
   private int maxLength = 0;
 
   private double min = Double.NEGATIVE_INFINITY;
@@ -59,10 +60,23 @@ public class TextFieldPlus extends JTextField {
    */
   public final void setUpperCase(final boolean upperCase) {
     this.upperCase = upperCase;
+    this.lowerCase = false;
   }
 
   public final boolean isUpperCase() {
     return upperCase;
+  }
+
+  /**
+   * @param lowerCase true if this text field should automatically convert text to lowercase
+   */
+  public void setLowerCase(final boolean lowerCase) {
+    this.lowerCase = lowerCase;
+    this.upperCase = false;
+  }
+
+  public boolean isLowerCase() {
+    return lowerCase;
   }
 
   public final void setRange(final int min, final int max) {
@@ -90,8 +104,8 @@ public class TextFieldPlus extends JTextField {
 
   /** {@inheritDoc} */
   @Override
-  public final void setText(final String t) {
-    super.setText(t == null ? "" : t);
+  public final void setText(final String text) {
+    super.setText(text == null ? "" : text);
   }
 
   protected final boolean isWithinRange(final double value) {
@@ -108,7 +122,14 @@ public class TextFieldPlus extends JTextField {
           return;
         }
 
-        super.insertString(offs, upperCase ? str.toUpperCase(Locale.getDefault()) : str, a);
+        String toInsert = str;
+        if (upperCase) {
+          toInsert = str.toUpperCase(Locale.getDefault());
+        }
+        if (lowerCase) {
+          toInsert = str.toLowerCase(Locale.getDefault());
+        }
+        super.insertString(offs, toInsert, a);
       }
     };
   }

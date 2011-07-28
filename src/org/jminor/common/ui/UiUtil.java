@@ -13,8 +13,6 @@ import org.jminor.common.model.valuemap.ValueCollectionProvider;
 import org.jminor.common.ui.images.NavigableImagePanel;
 import org.jminor.common.ui.textfield.TextFieldPlus;
 
-import com.toedter.calendar.JCalendar;
-
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -76,8 +74,11 @@ import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URL;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -247,22 +248,82 @@ public final class UiUtil {
     return selectedFile;
   }
 
+  /**
+   * Retrieves a date from the user. If JCalendar is available on the classpath a JCalendar panel is shown,
+   * otherwise a simple formatted text field is used
+   * @param startDate the starting date, if null the current date is used
+   * @param message the message to display as dialog title
+   * @param parent the dialog parent
+   * @return a Date from the user
+   */
   public static Date getDateFromUser(final Date startDate, final String message, final Container parent) {
-    final Calendar cal = Calendar.getInstance();
-    if (startDate != null) {
-      cal.setTime(startDate);
+    final String jCalendarClassName = "com.toedter.calendar.JCalendar";
+    if (!Util.onClasspath(jCalendarClassName)) {
+      return getDateFromUserAsText(startDate, message, parent);
     }
 
-    cal.set(Calendar.HOUR_OF_DAY, 0);
-    cal.set(Calendar.MINUTE, 0);
-    cal.set(Calendar.SECOND, 0);
-    cal.set(Calendar.MILLISECOND, 0);
+    try {
+      final Calendar cal = Calendar.getInstance();
+      if (startDate != null) {
+        cal.setTime(startDate);
+      }
 
-    final JCalendar calendar = new JCalendar(cal);
+      cal.set(Calendar.HOUR_OF_DAY, 0);
+      cal.set(Calendar.MINUTE, 0);
+      cal.set(Calendar.SECOND, 0);
+      cal.set(Calendar.MILLISECOND, 0);
 
-    showInDialog(getParentWindow(parent), calendar, true, message, true, true, null);
+      final Class jCalendarClass = Class.forName(jCalendarClassName);
+      final Method getCalendar = jCalendarClass.getMethod("getCalendar");
+      final Constructor constructor = jCalendarClass.getConstructor(Calendar.class);
+      final JPanel calendarPanel = (JPanel) constructor.newInstance(cal);
 
-    return new Date(calendar.getCalendar().getTimeInMillis());
+      showInDialog(getParentWindow(parent), calendarPanel, true, message, true, true, null);
+
+      return new Date(((Calendar) getCalendar.invoke(calendarPanel)).getTimeInMillis());
+    }
+    catch (Exception e) {
+      throw new RuntimeException("Exception while using JCalendar", e);
+    }
+  }
+
+  /**
+   * Retrieves a date from the user using a simple formatted text field
+   * @param startDate the initial date, if null the current date is used
+   * @param message the message to display as dialog title
+   * @param parent the dialog parent
+   * @return a Date from the user
+   */
+  public static Date getDateFromUserAsText(final Date startDate, final String message, final Container parent) {
+    return getDateFromUserAsText(startDate, message, (SimpleDateFormat) DateFormat.getDateInstance(DateFormat.SHORT), parent);
+  }
+
+  /**
+   * Retrieves a date from the user using a simple formatted text field
+   * @param startDate the initial date, if null the current date is used
+   * @param message the message to display as dialog title
+   * @param inputDateFormat the date format to use
+   * @param parent the dialog parent
+   * @return a Date from the user
+   */
+  public static Date getDateFromUserAsText(final Date startDate, final String message, final SimpleDateFormat inputDateFormat,
+                                           final Container parent) {
+    try {
+      final MaskFormatter formatter = new MaskFormatter(DateUtil.getDateMask(inputDateFormat));
+      formatter.setPlaceholderCharacter('_');
+      final JFormattedTextField txtField = new JFormattedTextField(inputDateFormat);
+      txtField.setColumns(12);
+      txtField.setValue(startDate);
+
+      final JPanel datePanel = new JPanel(new GridLayout(1, 1, 5, 5));
+      datePanel.add(txtField);
+
+      showInDialog(getParentWindow(parent), datePanel, true, message, true, true, null);
+      return inputDateFormat.parse(txtField.getText());
+    }
+    catch (ParseException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   public static JFormattedTextField createFormattedField(final SimpleDateFormat maskFormat, final Object initialValue) {
@@ -311,6 +372,13 @@ public final class UiUtil {
     }
   }
 
+  /**
+   * Links the given action to the given StateObserver, so that the action is enabled
+   * only when the state is active
+   * @param enabledState the StateObserver with which to link the action
+   * @param action the action
+   * @return the linked action
+   */
   public static Action linkToEnabledState(final StateObserver enabledState, final Action action) {
     if (enabledState != null) {
       action.setEnabled(enabledState.isActive());
@@ -324,6 +392,13 @@ public final class UiUtil {
     return action;
   }
 
+  /**
+   * Links the given component to the given StateObserver, so that the component is enabled and focusable
+   * only when the state is active
+   * @param enabledState the StateObserver with which to link the component
+   * @param component the component
+   * @return the linked component
+   */
   public static JComponent linkToEnabledState(final StateObserver enabledState, final JComponent component) {
     if (enabledState != null) {
       component.setEnabled(enabledState.isActive());
@@ -339,6 +414,11 @@ public final class UiUtil {
     return component;
   }
 
+  /**
+   * Creates a JFrame instance with the given icon which does nothing on close
+   * @param icon used as a frame icon if specified
+   * @return a JFram instance
+   */
   public static JFrame createFrame(final Image icon) {
     final JFrame frame = new JFrame();
     if (icon != null) {
@@ -360,6 +440,11 @@ public final class UiUtil {
     return new Dimension((int) (screen.getWidth() * ratio), (int) (screen.getHeight() * ratio));
   }
 
+  /**
+   * Resizes the given window so that if fits within the current screen bounds,
+   * if the window already fits then calling this method has no effect
+   * @param window the window to resize
+   */
   public static void setSizeWithinScreenBounds(final Window window) {
     final Dimension screenSize = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getSize();
     final Dimension frameSize = window.getSize();
@@ -370,10 +455,22 @@ public final class UiUtil {
     }
   }
 
+  /**
+   * Resizes the given window so that it is <code>screenSizeRatio</code> percent of the current screen size
+   * @param window the window to resize
+   * @param screenSizeRatio the screen size ratio
+   */
   public static void resizeWindow(final Window window, final double screenSizeRatio) {
     resizeWindow(window, screenSizeRatio, null);
   }
 
+  /**
+   * Resizes the given window so that it is <code>screenSizeRatio</code> percent of the current screen size,
+   * within the given minimum size
+   * @param window the window to resize
+   * @param screenSizeRatio the screen size ratio
+   * @param minimumSize a minimum size
+   */
   public static void resizeWindow(final Window window, final double screenSizeRatio,
                                   final Dimension minimumSize) {
     final Dimension ratioSize = getScreenSizeRatio(screenSizeRatio);
@@ -384,24 +481,46 @@ public final class UiUtil {
     window.setSize(ratioSize);
   }
 
-  public static Window getParentWindow(final Component container) {
-    final Window window = getParentDialog(container);
+  /**
+   * @param component the component
+   * @return the parent Window of the given component, null if none exists
+   */
+  public static Window getParentWindow(final Component component) {
+    final Window window = getParentDialog(component);
 
-    return window == null ? getParentFrame(container) : window;
+    return window == null ? getParentFrame(component) : window;
   }
 
-  public static JFrame getParentFrame(final Component container) {
-    return getParentOfType(container, JFrame.class);
+  /**
+   * @param component the component
+   * @return the parent JFrame of the given component, null if none exists
+   */
+  public static JFrame getParentFrame(final Component component) {
+    return getParentOfType(component, JFrame.class);
   }
 
-  public static JDialog getParentDialog(final Component container) {
-    return getParentOfType(container, JDialog.class);
+  /**
+   * @param component the component
+   * @return the parent JDialog of the given component, null if none exists
+   */
+  public static JDialog getParentDialog(final Component component) {
+    return getParentOfType(component, JDialog.class);
   }
 
-  public static <T> T getParentOfType(final Component container, final Class<T> clazz) {
-    return (T) SwingUtilities.getAncestorOfClass(clazz, container);
+  /**
+   * Searches the parent component hierarchy of the given component for
+   * an ancestor of the given type
+   * @param component the component
+   * @return the parent of the given component of the given type, null if none is found
+   */
+  public static <T> T getParentOfType(final Component component, final Class<T> clazz) {
+    return (T) SwingUtilities.getAncestorOfClass(clazz, component);
   }
 
+  /**
+   * Centers the given window on the screen
+   * @param window the window to center on screen
+   */
   public static void centerWindow(final Window window) {
     final Dimension size = window.getSize();
     final Dimension screen = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getSize();
@@ -537,6 +656,11 @@ public final class UiUtil {
     return textField;
   }
 
+  /**
+   * Makes <code>textField</code> convert all lower case input to upper case
+   * @param textField the text field
+   * @return the text field
+   */
   public static TextFieldPlus makeUpperCase(final TextFieldPlus textField) {
     textField.setUpperCase(true);
     return textField;
@@ -548,6 +672,10 @@ public final class UiUtil {
    * @return the text field
    */
   public static JTextComponent makeLowerCase(final JTextComponent textField) {
+    if (textField instanceof TextFieldPlus) {
+      return makeLowerCase((TextFieldPlus) textField);
+    }
+
     ((PlainDocument) textField.getDocument()).setDocumentFilter(new DocumentFilter() {
       @Override
       public void insertString(final FilterBypass fb, final int offset, final String string, final AttributeSet attr) throws BadLocationException {
@@ -565,6 +693,16 @@ public final class UiUtil {
       }
     });
 
+    return textField;
+  }
+
+  /**
+   * Makes <code>textField</code> convert all upper case input to lower case
+   * @param textField the text field
+   * @return the text field
+   */
+  public static TextFieldPlus makeLowerCase(final TextFieldPlus textField) {
+    textField.setLowerCase(true);
     return textField;
   }
 
@@ -849,28 +987,21 @@ public final class UiUtil {
     return list.getSelectedValue();
   }
 
+  /**
+   * Creates an Action instance, with a triple-dot name ('...') for selecting a file path to display in the given text field
+   * @param txtFilename the text field for displaying the file path
+   * @return the Action
+   */
   public static Action getBrowseAction(final JTextField txtFilename) {
     return new AbstractAction("...") {
       public void actionPerformed(final ActionEvent e) {
         try {
-          final File file = selectFile(txtFilename, getStartDir(txtFilename.getText()));
+          final File file = selectFile(txtFilename, getParentPath(txtFilename.getText()));
           txtFilename.setText(file.getAbsolutePath());
         }
         catch (CancelException ex) {/**/}
       }
     };
-  }
-
-  public static String getStartDir(final String text) {
-    if (Util.nullOrEmpty(text)) {
-      return null;
-    }
-    try {
-      return new File(text).getParentFile().getPath();
-    }
-    catch (Exception e) {
-      return null;
-    }
   }
 
   /**
@@ -1013,6 +1144,18 @@ public final class UiUtil {
     dialog.setModal(false);
 
     return dialog;
+  }
+
+  private static String getParentPath(final String text) {
+    if (Util.nullOrEmpty(text)) {
+      return null;
+    }
+    try {
+      return new File(text).getParentFile().getPath();
+    }
+    catch (Exception e) {
+      return null;
+    }
   }
 
   public static final class DialogDisposeAction extends AbstractAction {
