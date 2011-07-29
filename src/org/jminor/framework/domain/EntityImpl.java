@@ -242,7 +242,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
       return (Entity) getValue(property.getPropertyID());
     }
 
-    throw new RuntimeException(foreignKeyPropertyID + " is not a foreign key property");
+    throw new IllegalArgumentException(foreignKeyPropertyID + " is not a foreign key property");
   }
 
   /** {@inheritDoc} */
@@ -852,7 +852,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
      * Instantiates a new Key for the given entity type, assuming it is a single value key
      * @param definition the entity definition
      * @param value the value
-     * @throws RuntimeException in case this key is a multi value key
+     * @throws IllegalArgumentException in case this key is a composite key
      */
     KeyImpl(final Definition definition, final Object value) {
       this(definition);

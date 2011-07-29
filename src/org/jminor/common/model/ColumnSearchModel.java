@@ -34,7 +34,7 @@ public interface ColumnSearchModel<K> {
   void setCaseSensitive(final boolean caseSensitive);
 
   /**
-   * @return the Format object to use when formatting input, is any
+   * @return the Format object to use when formatting input, if any
    */
   Format getFormat();
 

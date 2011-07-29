@@ -346,4 +346,74 @@ public class EntityImplTest {
     });
     employee.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, null);
   }
+
+  @Test
+  public void propertyValuesEqual() {
+    final Entity testEntityOne = getDetailEntity(detailId, detailInt, detailDouble,
+            detailString, detailDate, detailTimestamp, detailBoolean, null);
+    final Entity testEntityTwo = getDetailEntity(detailId, detailInt, detailDouble,
+            detailString, detailDate, detailTimestamp, detailBoolean, null);
+
+    assertTrue(testEntityOne.propertyValuesEqual(testEntityTwo));
+
+    testEntityTwo.setValue(EntityTestDomain.DETAIL_INT, 42);
+
+    assertFalse(testEntityOne.propertyValuesEqual(testEntityTwo));
+  }
+
+  @Test
+  public void getDoubleValue() {
+    final Entity employee = Entities.entity(EmpDept.T_EMPLOYEE);
+    employee.setValue(EmpDept.EMPLOYEE_ID, -10);
+
+    assertNull(employee.getDoubleValue(EmpDept.EMPLOYEE_SALARY));
+
+    final double salary = 1000.1234;
+    employee.setValue(EmpDept.EMPLOYEE_SALARY, salary);
+    assertEquals(Double.valueOf(1000.12), employee.getDoubleValue(EmpDept.EMPLOYEE_SALARY));
+  }
+
+  @Test
+  public void getForeignKeyValue() {
+    final Entity department = Entities.entity(EmpDept.T_DEPARTMENT);
+    department.setValue(EmpDept.DEPARTMENT_ID, -10);
+    final Entity employee = Entities.entity(EmpDept.T_EMPLOYEE);
+    employee.setValue(EmpDept.EMPLOYEE_ID, -10);
+    assertTrue(employee.isForeignKeyNull(Entities.getForeignKeyProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_DEPARTMENT_FK)));
+    assertNull(employee.getValue(EmpDept.EMPLOYEE_DEPARTMENT_FK));
+    assertNull(employee.getValue(EmpDept.EMPLOYEE_DEPARTMENT));
+
+    employee.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, department);
+    assertFalse(employee.isForeignKeyNull(Entities.getForeignKeyProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_DEPARTMENT_FK)));
+    assertNotNull(employee.getValue(EmpDept.EMPLOYEE_DEPARTMENT_FK));
+    assertNotNull(employee.getValue(EmpDept.EMPLOYEE_DEPARTMENT));
+  }
+
+  @Test (expected = IllegalArgumentException.class)
+  public void getForeignKeyValueNonFKProperty() {
+    final Entity department = Entities.entity(EmpDept.T_DEPARTMENT);
+    department.setValue(EmpDept.DEPARTMENT_ID, -10);
+    final Entity employee = Entities.entity(EmpDept.T_EMPLOYEE);
+    employee.setValue(EmpDept.EMPLOYEE_ID, -10);
+    employee.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, department);
+
+    employee.getForeignKeyValue(EmpDept.EMPLOYEE_COMMISSION);
+  }
+
+  @Test
+  public void removeValue() {
+    final Entity department = Entities.entity(EmpDept.T_DEPARTMENT);
+    department.setValue(EmpDept.DEPARTMENT_ID, -10);
+    final Entity employee = Entities.entity(EmpDept.T_EMPLOYEE);
+    employee.setValue(EmpDept.EMPLOYEE_ID, -10);
+    employee.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, department);
+    assertNotNull(employee.getForeignKeyValue(EmpDept.EMPLOYEE_DEPARTMENT_FK));
+    assertEquals(Integer.valueOf(-10), employee.getIntValue(EmpDept.EMPLOYEE_DEPARTMENT));
+
+    employee.removeValue(EmpDept.EMPLOYEE_DEPARTMENT_FK);
+    assertNull(employee.getForeignKeyValue(EmpDept.EMPLOYEE_DEPARTMENT_FK));
+    assertNull(employee.getValue(EmpDept.EMPLOYEE_DEPARTMENT));
+    assertFalse(employee.containsValue(EmpDept.EMPLOYEE_DEPARTMENT_FK));
+    assertFalse(employee.containsValue(Entities.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_DEPARTMENT)));
+  }
 }

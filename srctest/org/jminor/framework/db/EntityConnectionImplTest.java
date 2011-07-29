@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.db;
 
+import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.criteria.SimpleCriteria;
 import org.jminor.common.db.exception.DatabaseException;
@@ -28,8 +29,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -76,6 +79,7 @@ public class EntityConnectionImplTest {
       connection.beginTransaction();
       final Entity.Key key = Entities.key(EmpDept.T_DEPARTMENT);
       key.setValue(EmpDept.DEPARTMENT_ID, 40);
+      connection.delete(new ArrayList<Entity.Key>());
       connection.delete(Arrays.asList(key));
       try {
         connection.selectSingle(key);
@@ -121,6 +125,8 @@ public class EntityConnectionImplTest {
 
   @Test
   public void selectDependentEntities() throws Exception {
+    final Map<String, Collection<Entity>> empty = connection.selectDependentEntities(new ArrayList<Entity>());
+    assertTrue(empty.isEmpty());
     final List<Entity> accounting = connection.selectMany(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "ACCOUNTING");
     final Map<String, Collection<Entity>> emps = connection.selectDependentEntities(accounting);
     assertEquals(1, emps.size());
@@ -139,7 +145,9 @@ public class EntityConnectionImplTest {
 
   @Test
   public void selectMany() throws Exception {
-    List<Entity> result = connection.selectMany(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_ID, 10, 20);
+    List<Entity> result = connection.selectMany(new ArrayList<Entity.Key>());
+    assertTrue(result.isEmpty());
+    result = connection.selectMany(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_ID, 10, 20);
     assertEquals(2, result.size());
     result = connection.selectMany(EntityUtil.getPrimaryKeys(result));
     assertEquals(2, result.size());
@@ -215,6 +223,18 @@ public class EntityConnectionImplTest {
   }
 
   @Test
+  public void insert() throws DatabaseException {
+    final List<Entity.Key> pks = connection.insert(new ArrayList<Entity>());
+    assertTrue(pks.isEmpty());
+  }
+
+  @Test
+  public void update() throws DatabaseException {
+    final List<Entity> updated = connection.update(new ArrayList<Entity>());
+    assertTrue(updated.isEmpty());
+  }
+
+  @Test
   public void selectPropertyValues() throws Exception {
     final List<Object> result = connection.selectPropertyValues(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, false);
     assertTrue(result.contains("ACCOUNTING"));
@@ -259,6 +279,45 @@ public class EntityConnectionImplTest {
       }
       catch (Exception e) {
         e.printStackTrace();
+      }
+    }
+  }
+
+  @Test
+  public void testConstructor() throws Exception {
+    Connection connection = null;
+    try {
+      final Database db = Databases.createInstance();
+      connection = db.createConnection(User.UNIT_TEST_USER);
+      final EntityConnection conn = new EntityConnectionImpl(db, connection);
+      assertTrue(conn.isConnected());
+      assertTrue(conn.isValid());
+    }
+    finally {
+      if (connection != null) {
+        try {
+          connection.close();
+        }
+        catch (Exception e) {}
+      }
+    }
+  }
+
+  @Test (expected = IllegalArgumentException.class)
+  public void testConstructorInvalidConnection() throws Exception {
+    Connection connection = null;
+    try {
+      final Database db = Databases.createInstance();
+      connection = db.createConnection(User.UNIT_TEST_USER);
+      connection.close();
+      new EntityConnectionImpl(db, connection);
+    }
+    finally {
+      if (connection != null) {
+        try {
+          connection.close();
+        }
+        catch (Exception e) {}
       }
     }
   }

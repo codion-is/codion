@@ -263,6 +263,7 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
     }
   }
 
+  /** {@inheritDoc} */
   public final boolean isLowerBoundRequired() {
     return stLowerBoundRequired.isActive();
   }
