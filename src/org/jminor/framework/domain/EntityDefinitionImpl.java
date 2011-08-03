@@ -143,6 +143,7 @@ final class EntityDefinitionImpl implements Entity.Definition {
    * as well as the table name.
    * @param entityID the ID uniquely identifying the entity
    * @param propertyDefinitions the Property objects this entity should encompass
+   * @throws IllegalArgumentException if no primary key property is specified
    */
   EntityDefinitionImpl(final String entityID, final Property... propertyDefinitions) {
     this(entityID, entityID, propertyDefinitions);
@@ -153,6 +154,7 @@ final class EntityDefinitionImpl implements Entity.Definition {
    * @param entityID the ID uniquely identifying the entity
    * @param tableName the name of the underlying table
    * @param propertyDefinitions the Property objects this entity should encompass
+   * @throws IllegalArgumentException if no primary key property is specified
    */
   EntityDefinitionImpl(final String entityID, final String tableName, final Property... propertyDefinitions) {
     Util.rejectNullValue(entityID, "entityID");
@@ -523,7 +525,23 @@ final class EntityDefinitionImpl implements Entity.Definition {
         }
       }
     }
+    checkForPrimaryKey(properties);
+
     return properties;
+  }
+
+  /**
+   *
+   * @param propertyDefinitions the properties
+   * @throws IllegalArgumentException in case the given properties do not contain a primary key property
+   */
+  private static void checkForPrimaryKey(final Map<String, Property> propertyDefinitions) {
+    for (final Property property : propertyDefinitions.values()) {
+      if (property instanceof Property.PrimaryKeyProperty) {
+        return;
+      }
+    }
+    throw new IllegalArgumentException("Entities must have a primary key property");
   }
 
   private void initializeDerivedPropertyChangeLinks() {

@@ -2441,3 +2441,5 @@
   EntityCriteriaUtil.ForeignKeyCriteria now throws an IllegalArgumentException if values of types other than Entity or Entity.Key are used, tests added
   EntityImplTest, added a few tests
   Entity.getForeignKeyValue(), now throws IllegalArgumentException instead of RuntimeException
+  EntityDefinitionImpl constructor throws IllegalArgumentException if no primary key property is specified, tests added
+  EntityConnectionServerAdminImpl, added logging of service calls

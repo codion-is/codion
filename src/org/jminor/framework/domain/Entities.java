@@ -75,7 +75,8 @@ public final class Entities {
    * @param propertyDefinitions the {@link Property} objects to base this entity on. In case a select query is specified
    * for this entity, the property order must match the select column order.
    * @return a new {@link Entity.Definition}
-   * @throws IllegalArgumentException in case the entityID has already been used to define an entity type
+   * @throws IllegalArgumentException in case the entityID has already been used to define an entity type or if
+   * no primary key property is specified
    */
   public static Entity.Definition define(final String entityID, final Property... propertyDefinitions) {
     return define(entityID, entityID, propertyDefinitions);
@@ -88,7 +89,8 @@ public final class Entities {
    * @param propertyDefinitions the {@link Property} objects to base the entity on. In case a select query is specified
    * for this entity, the property order must match the select column order.
    * @return a new {@link Entity.Definition}
-   * @throws IllegalArgumentException in case the entityID has already been used to define an entity type
+   * @throws IllegalArgumentException in case the entityID has already been used to define an entity type or if
+   * no primary key property is specified
    */
   public static Entity.Definition define(final String entityID, final String tableName, final Property... propertyDefinitions) {
     if (EntityDefinitionImpl.getDefinitionMap().containsKey(entityID)) {

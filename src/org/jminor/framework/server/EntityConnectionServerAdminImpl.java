@@ -37,6 +37,8 @@ import java.util.UUID;
  */
 public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject implements EntityConnectionServerAdmin {
 
+  private static final Logger LOG = LoggerFactory.getLogger(EntityConnectionServerAdminImpl.class);
+
   private static final long serialVersionUID = 1;
 
   private static final int SERVER_ADMIN_PORT;
@@ -107,6 +109,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
 
   /** {@inheritDoc} */
   public void setLoggingLevel(final Level level) throws RemoteException {
+    LOG.info("setLogginLevel({})", level);
     final ch.qos.logback.classic.Logger rootLogger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
     rootLogger.setLevel(level);
   }
@@ -143,6 +146,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
 
   /** {@inheritDoc} */
   public void disconnect(final UUID clientID) throws RemoteException {
+    LOG.info("disconnect({})", clientID);
     server.disconnect(clientID);
   }
 
@@ -158,10 +162,10 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
     catch (NotBoundException e) {/**/}
 
     final String shutdownInfo = server.getServerName() + " removed from registry";
-    EntityConnectionServer.LOG.info(shutdownInfo);
+    LOG.info(shutdownInfo);
     System.out.println(shutdownInfo);
 
-    EntityConnectionServer.LOG.info("Shutting down server");
+    LOG.info("Shutting down server");
     server.shutdown();
     try {
       UnicastRemoteObject.unexportObject(this, true);
@@ -181,16 +185,19 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
 
   /** {@inheritDoc} */
   public void setMaintenanceInterval(final int interval) {
+    LOG.info("setMaintenanceInterval({})", interval);
     server.setMaintenanceInterval(interval);
   }
 
   /** {@inheritDoc} */
   public void removeConnections(final boolean inactiveOnly) throws RemoteException {
+    LOG.info("removeConnections({})", inactiveOnly);
     server.removeConnections(inactiveOnly);
   }
 
   /** {@inheritDoc} */
   public void resetConnectionPoolStatistics(final User user) throws RemoteException {
+    LOG.info("resetConnectionPoolStatistics({})", user);
     RemoteEntityConnectionImpl.resetPoolStatistics(user);
   }
 
@@ -201,6 +208,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
 
   /** {@inheritDoc} */
   public void setCollectFineGrainedPoolStatistics(final User user, final boolean value) throws RemoteException {
+    LOG.info("setCollectFineGrainedPoolStatistics({}, {})", user, value);
     RemoteEntityConnectionImpl.setCollectFineGrainedPoolStatistics(user, value);
   }
 
@@ -216,6 +224,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
 
   /** {@inheritDoc} */
   public void setWarningTimeThreshold(final int threshold) throws RemoteException {
+    LOG.info("setWarningThreshold({})", threshold);
     RemoteEntityConnectionImpl.setWarningThreshold(threshold);
   }
 
@@ -246,11 +255,13 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
 
   /** {@inheritDoc} */
   public void setConnectionPoolCleanupInterval(final User user, final int poolCleanupInterval) throws RemoteException {
+    LOG.info("setConnectionPoolCleanupInterval({}, {})", user, poolCleanupInterval);
     RemoteEntityConnectionImpl.setPoolCleanupInterval(user, poolCleanupInterval);
   }
 
   /** {@inheritDoc} */
   public void setConnectionPoolEnabled(final User user, final boolean enabled) throws RemoteException {
+    LOG.info("setConnectionPoolEnabled({}, {})", user, enabled);
     RemoteEntityConnectionImpl.setPoolEnabled(user, enabled);
   }
 
@@ -276,11 +287,13 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
 
   /** {@inheritDoc} */
   public void setMaximumConnectionPoolSize(final User user, final int value) throws RemoteException {
+    LOG.info("setMaximumConnectionPoolSize({}, {})", user, value);
     RemoteEntityConnectionImpl.setMaximumPoolSize(user, value);
   }
 
   /** {@inheritDoc} */
   public void setMinimumConnectionPoolSize(final User user, final int value) throws RemoteException {
+    LOG.info("setMinimumConnectionPoolSize({}, {})", user, value);
     RemoteEntityConnectionImpl.setMinimumPoolSize(user, value);
   }
 
@@ -291,11 +304,13 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
 
   /** {@inheritDoc} */
   public void setPoolConnectionThreshold(final User user, final int value) throws RemoteException {
+    LOG.info("setPoolConnectionThreshold({}, {})", user, value);
     RemoteEntityConnectionImpl.setPoolConnectionThreshold(user, value);
   }
 
   /** {@inheritDoc} */
   public void setPooledConnectionTimeout(final User user, final int timeout) throws RemoteException {
+    LOG.info("setPooledConnectionTimeout({}, {})", user, timeout);
     RemoteEntityConnectionImpl.setPoolConnectionTimeout(user, timeout);
   }
 
@@ -306,6 +321,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
 
   /** {@inheritDoc} */
   public void setMaximumPoolRetryWaitPeriod(final User user, final int value) throws RemoteException {
+    LOG.info("setMaximumPoolRetryWaitPeriod({}, {})", user, value);
     RemoteEntityConnectionImpl.setMaximumPoolRetryWaitPeriod(user, value);
   }
 
@@ -316,6 +332,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
 
   /** {@inheritDoc} */
   public void setMaximumPoolCheckOutTime(final User user, final int value) throws RemoteException {
+    LOG.info("setMaximumPoolCheckOutTime({}, {})", user, value);
     RemoteEntityConnectionImpl.setMaximumPoolCheckOutTime(user, value);
   }
 
@@ -341,6 +358,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
 
   /** {@inheritDoc} */
   public void performGC() throws RemoteException {
+    LOG.info("performGG()");
     Runtime.getRuntime().gc();
   }
 
@@ -356,6 +374,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
 
   /** {@inheritDoc} */
   public void setConnectionLimit(final int value) throws RemoteException {
+    LOG.info("setConnectionLimit", value);
     server.setConnectionLimit(value);
   }
 
@@ -371,6 +390,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
 
   /** {@inheritDoc} */
   public void setLoggingOn(final UUID clientID, final boolean status) {
+    LOG.info("setLoggingOn({}, {})", clientID, status);
     server.setLoggingOn(clientID, status);
   }
 
@@ -381,6 +401,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
 
   /** {@inheritDoc} */
   public void setConnectionTimeout(final int timeout) throws RemoteException {
+    LOG.info("setConnectionTimeout({})", timeout);
     server.setConnectionTimeout(timeout);
   }
 
@@ -400,7 +421,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
           shutdown();
         }
         catch (RemoteException e) {
-          EntityConnectionServer.LOG.error("Exception during shutdown", e);
+          LOG.error("Exception during shutdown", e);
         }
       }
     };

@@ -42,7 +42,7 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
 
   private static final long serialVersionUID = 1;
 
-  static final Logger LOG = LoggerFactory.getLogger(EntityConnectionServer.class);
+  private static final Logger LOG = LoggerFactory.getLogger(EntityConnectionServer.class);
 
   private static final boolean CLIENT_LOGGING_ENABLED =
           Configuration.getBooleanValue(Configuration.SERVER_CLIENT_LOGGING_ENABLED);

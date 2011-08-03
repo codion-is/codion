@@ -4,9 +4,11 @@ import org.jminor.common.model.IdSource;
 
 import org.junit.Test;
 
+import java.awt.Color;
 import java.sql.Types;
+import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class EntityDefinitionImplTest {
 
@@ -17,7 +19,7 @@ public class EntityDefinitionImplTest {
             Properties.columnProperty("name", Types.VARCHAR)).setIdSource(IdSource.NONE).setIdValueSource("idValueSource")
             .setSelectQuery("select * from dual").setOrderByClause("order by name")
             .setReadOnly(true).setSelectTableName("selectTableName").setGroupByClause("name");
-
+    assertEquals("entityID", definition.toString());
     assertEquals("entityID", definition.getEntityID());
     assertEquals("tableName", definition.getTableName());
     assertEquals(IdSource.NONE, definition.getIdSource());
@@ -29,5 +31,81 @@ public class EntityDefinitionImplTest {
     assertEquals("selectTableName", definition.getSelectTableName());
     assertEquals("id, name", definition.getSelectColumnsString());
     assertEquals("name", definition.getGroupByClause());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testNoPrimaryKey() {
+    new EntityDefinitionImpl("entityID", "tableName",
+            Properties.columnProperty("propertyID", Types.INTEGER));
+  }
+
+  @Test
+  public void testForeignPrimaryKey() {
+    new EntityDefinitionImpl("entityID", "tableName",
+            Properties.foreignKeyProperty("fkPropertyID", "caption", "parent",
+                    Properties.primaryKeyProperty("propertyID")));
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testPropertyIDConflict() {
+    new EntityDefinitionImpl("entityId",
+            Properties.primaryKeyProperty("pk"),
+            Properties.columnProperty("col"),
+            Properties.columnProperty("col"));
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testPropertyIDConflictInForeignKey() {
+    new EntityDefinitionImpl("entityId",
+            Properties.primaryKeyProperty("pk"),
+            Properties.columnProperty("col"),
+            Properties.foreignKeyProperty("fk", "cap", "par",
+                    Properties.columnProperty("col")));
+  }
+
+  @Test
+  public void testLinkedPropertyies() {
+    final EntityDefinitionImpl def = new EntityDefinitionImpl("entityId",
+            Properties.primaryKeyProperty("pk"),
+            Properties.columnProperty("1"),
+            Properties.columnProperty("2"),
+            Properties.derivedProperty("der", Types.INTEGER, "cap", new Property.DerivedProperty.Provider() {
+              public Object getValue(final Map<String, Object> linkedValues) {
+                return null;
+              }
+            }, "1", "2"));
+    assertTrue(def.hasLinkedProperties("1"));
+    assertTrue(def.hasLinkedProperties("2"));
+  }
+
+  @Test
+  public void getBackgroundColor() {
+    final Entity.Definition def = Entities.define("entity", "tableName",
+            Properties.primaryKeyProperty("propertyID"));
+    final Entity entity = Entities.entity("entity");
+    assertNull(def.getBackgroundColor(entity, entity.getPrimaryKey().getFirstKeyProperty()));
+    def.setBackgroundColorProvider(new Entity.BackgroundColorProvider() {
+      public Color getBackgroundColor(final Entity entity, final Property property) {
+        return Color.BLUE;
+      }
+    });
+    assertEquals(Color.BLUE, def.getBackgroundColor(entity, entity.getPrimaryKey().getFirstKeyProperty()));
+  }
+
+  @Test
+  public void setToStringProvider() {
+    final Entity.Definition def = Entities.define("entityToString", "tableName",
+            Properties.primaryKeyProperty("propertyID"));
+    final Entity entity = Entities.entity("entityToString");
+    entity.setValue("propertyID", 1);
+    assertEquals("entityToString: propertyID:1", entity.toString());
+    def.setToStringProvider(new Entity.ToString() {
+      public String toString(final Entity valueMap) {
+        return "test";
+      }
+    });
+    //the toString value is cached, so we need to clear it by setting a value
+    entity.setValue("propertyID", 2);
+    assertEquals("test", entity.toString());
   }
 }
