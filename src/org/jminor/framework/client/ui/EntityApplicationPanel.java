@@ -776,7 +776,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
         entityPanel.getEditPanel().getActiveObserver().addListener(new ActionListener() {
           public void actionPerformed(final ActionEvent e) {
             if (entityPanel.getEditPanel().isActive()) {
-              LOG.debug(entityPanel.getEditModel().getEntityID() + " selectApplicationTab");
+              LOG.debug("{} selectApplicationTab", entityPanel.getEditModel().getEntityID());
               applicationTabPane.setSelectedComponent(entityPanel);
             }
           }
@@ -1021,7 +1021,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
 
   private JFrame startApplicationInternal(final String frameCaption, final String iconName, final boolean maximize,
                                           final Dimension frameSize, final User defaultUser, final boolean showFrame) throws Exception {
-    LOG.debug(frameCaption + " application starting");
+    LOG.debug("{} application starting", frameCaption);
     Messages.class.getName();//hack to load the class
           UIManager.setLookAndFeel(getDefaultLookAndFeelClassName());
     final ImageIcon applicationIcon = iconName != null ? Images.getImageIcon(getClass(), iconName) : Images.loadImage("jminor_logo32.gif");

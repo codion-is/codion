@@ -516,7 +516,7 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
     }
     else {
       if (!entityConnection.isValid()) {//dead connection
-        LOG.debug("Removing an invalid database connection: " + entityConnection);
+        LOG.debug("Removing an invalid database connection: {}", entityConnection);
         entityConnection.disconnect();//just in case
         entityConnection = createDatabaseConnection(database, clientInfo.getUser());
       }

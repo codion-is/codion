@@ -57,7 +57,7 @@ public final class RemoteLoadTestServer extends AbstractRemoteServer<RemoteLoadT
   protected RemoteLoadTest doConnect(final ClientInfo clientInfo) throws RemoteException {
     final RemoteLoadTest remoteAdapter = new RemoteLoadTestImpl(clientInfo, loadTestPort);
 
-    LOG.debug(clientInfo + " connected");
+    LOG.debug("{} connected", clientInfo);
 
     return remoteAdapter;
   }
@@ -65,7 +65,7 @@ public final class RemoteLoadTestServer extends AbstractRemoteServer<RemoteLoadT
   /** {@inheritDoc} */
   @Override
   protected void doDisconnect(final RemoteLoadTest connection) throws RemoteException {
-    LOG.debug(((RemoteLoadTestImpl) connection).getClientInfo() + " disconnected");
+    LOG.debug("{} disconnected", ((RemoteLoadTestImpl) connection).getClientInfo());
   }
 
   /**
@@ -85,6 +85,6 @@ public final class RemoteLoadTestServer extends AbstractRemoteServer<RemoteLoadT
    */
   public static void main(final String[] arguments) throws Exception {
     new RemoteLoadTestServer(DEFAULT_PORT, DEFAULT_PORT, SERVER_NAME);
-    LOG.info(SERVER_NAME + " bound to registry");
+    LOG.info("{} bound to registry", SERVER_NAME);
   }
 }

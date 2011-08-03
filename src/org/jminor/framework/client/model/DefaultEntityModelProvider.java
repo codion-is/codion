@@ -82,11 +82,11 @@ public class DefaultEntityModelProvider implements EntityModelProvider {
     try {
       final EntityModel model;
       if (modelClass.equals(DefaultEntityModel.class)) {
-        LOG.debug(toString() + " initializing a default entity model");
+        LOG.debug("{} initializing a default entity model", this);
         model = initializeDefaultModel(connectionProvider, detailModel);
       }
       else {
-        LOG.debug(toString() + " initializing a custom entity model: " + modelClass);
+        LOG.debug("{} initializing a custom entity model: {}", this, modelClass);
         model = modelClass.getConstructor(EntityConnectionProvider.class).newInstance(connectionProvider);
       }
       configureModel(model);
@@ -106,11 +106,11 @@ public class DefaultEntityModelProvider implements EntityModelProvider {
     try {
       final EntityEditModel editModel;
       if (editModelClass.equals(DefaultEntityEditModel.class)) {
-        LOG.debug(toString() + " initializing a default model");
+        LOG.debug("{} initializing a default model", this);
         editModel = initializeDefaultEditModel(connectionProvider);
       }
       else {
-        LOG.debug(toString() + " initializing a custom edit model: " + editModelClass);
+        LOG.debug("{} initializing a custom edit model: {}", this, editModelClass);
         editModel = editModelClass.getConstructor(EntityConnectionProvider.class).newInstance(connectionProvider);
       }
       configureEditModel(editModel);
@@ -130,11 +130,11 @@ public class DefaultEntityModelProvider implements EntityModelProvider {
     try {
       final EntityTableModel tableModel;
       if (tableModelClass.equals(DefaultEntityTableModel.class)) {
-        LOG.debug(toString() + " initializing a default table model");
+        LOG.debug("{} initializing a default table model", this);
         tableModel = initializeDefaultTableModel(connectionProvider);
       }
       else {
-        LOG.debug(toString() + " initializing a custom table model: " + tableModelClass);
+        LOG.debug("{} initializing a custom table model: {}", this, tableModelClass);
         tableModel = tableModelClass.getConstructor(EntityConnectionProvider.class).newInstance(connectionProvider);
       }
       if (detailModel) {

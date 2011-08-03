@@ -110,15 +110,15 @@ public final class HostMonitor {
   private static List<String> getRemoteEntityServers(final String serverHostName, final int registryPort) {
     final List<String> serverNames = new ArrayList<String>();
     try {
-      LOG.debug("HostMonitor locating registry on host: " + serverHostName + ", port: " + registryPort);
+      LOG.debug("HostMonitor locating registry on host: {}, port: {}: ", serverHostName, registryPort);
       final Registry registry = LocateRegistry.getRegistry(serverHostName, registryPort);
-      LOG.debug("HostMonitor located registry: " + registry + " on port: " + registryPort);
+      LOG.debug("HostMonitor located registry: {} on port: {}", registry, registryPort);
       final String[] boundNames = getEntityServers(registry);
       if (boundNames.length == 0) {
-        LOG.debug("HostMonitor found no server bound to registry: " + registry + " on port: " + registryPort);
+        LOG.debug("HostMonitor found no server bound to registry: {} on port: {}", registry, registryPort);
       }
       for (final String name : boundNames) {
-        LOG.debug("HostMonitor found server '" + name + "'");
+        LOG.debug("HostMonitor found server '{}'", name);
         serverNames.add(name);
       }
     }

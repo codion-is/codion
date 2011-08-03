@@ -75,7 +75,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
   @Override
   protected EntityConnection connect() {
     try {
-      LOG.debug("Initializing connection for " + getUser());
+      LOG.debug("Initializing connection for {}", getUser());
       return EntityConnections.createConnection(database, getUser());
     }
     catch (Exception e) {

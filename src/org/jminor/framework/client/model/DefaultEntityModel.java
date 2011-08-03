@@ -320,7 +320,7 @@ public class DefaultEntityModel implements EntityModel {
       return;
     }
     try {
-      LOG.debug(this + " refreshing");
+      LOG.debug("{} refreshing", this);
       isRefreshing = true;
       evtRefreshStarted.fire();
       if (containsTableModel()) {
@@ -331,7 +331,7 @@ public class DefaultEntityModel implements EntityModel {
     finally {
       isRefreshing = false;
       evtRefreshDone.fire();
-      LOG.debug(this + " done refreshing");
+      LOG.debug("{} done refreshing", this);
     }
   }
 

@@ -304,7 +304,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
       throw new UnsupportedOperationException("This model does not allow inserting!");
     }
 
-    LOG.debug(toString() + " - insert " + Util.getCollectionContentsAsString(entities, false));
+    LOG.debug("{} - insert {}", this, Util.getCollectionContentsAsString(entities, false));
 
     evtBeforeInsert.fire();
     ((Entity.Validator) getValidator()).validate(entities, Entity.Validator.INSERT);
@@ -333,7 +333,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
       throw new UnsupportedOperationException("This model does not allow updating!");
     }
 
-    LOG.debug(toString() + " - update " + Util.getCollectionContentsAsString(entities, false));
+    LOG.debug("{} - update {}", this, Util.getCollectionContentsAsString(entities, false));
 
     final List<Entity> modifiedEntities = EntityUtil.getModifiedEntities(entities);
     if (modifiedEntities.isEmpty()) {
@@ -372,7 +372,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
       throw new UnsupportedOperationException("This model does not allow deleting!");
     }
 
-    LOG.debug(toString() + " - delete " + Util.getCollectionContentsAsString(entities, false));
+    LOG.debug("{} - delete {}", this, Util.getCollectionContentsAsString(entities, false));
 
     evtBeforeDelete.fire();
 

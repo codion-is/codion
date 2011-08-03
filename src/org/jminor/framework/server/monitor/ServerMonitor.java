@@ -257,7 +257,7 @@ public final class ServerMonitor {
               (EntityConnectionServerAdmin) LocateRegistry.getRegistry(hostName, registryPort).lookup(serverName);
       //call to validate the remote connection
       db.getServerPort();
-      LOG.info("ServerMonitor connected to server: " + serverName);
+      LOG.info("ServerMonitor connected to server: {}", serverName);
       return db;
     }
     catch (RemoteException e) {
@@ -269,7 +269,7 @@ public final class ServerMonitor {
       throw new RemoteException("Server " + serverName + " is not bound", e);
     }
     finally {
-      LOG.debug("Registry.lookup(\"" + serverName + "\"): " + (System.currentTimeMillis() - time));
+      LOG.debug("Registry.lookup(\"{}\"): {}", serverName, System.currentTimeMillis() - time);
     }
   }
 

@@ -631,7 +631,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
           try {
             if (application == null) {
               application = loadTestModel.initializeApplication();
-              LOG.debug("LoadTestModel initialized application: " + application);
+              LOG.debug("LoadTestModel initialized application: {}", application);
             }
             think();
             if (!loadTestModel.isPaused()) {
@@ -662,7 +662,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
         }
         if (application != null) {
           loadTestModel.disconnectApplication(application);
-          LOG.debug("LoadTestModel disconnected application: " + application);
+          LOG.debug("LoadTestModel disconnected application: {}", application);
         }
       }
       catch (Exception e) {

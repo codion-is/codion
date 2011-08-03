@@ -195,7 +195,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
         throw new IllegalStateException("Transaction is not open");
       }
 
-      LOG.debug(user.getUsername() + ": rollback transaction;");
+      LOG.debug("{}: rollback transaction;", user.getUsername());
       methodLogger.logAccess("rollbackTransaction", new Object[0]);
       connection.rollback();
     }
@@ -216,7 +216,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
         throw new IllegalStateException("Transaction is not open");
       }
 
-      LOG.debug(user.getUsername() + ": commit transaction;");
+      LOG.debug("{}: commit transaction;", user.getUsername());
       methodLogger.logAccess("commitTransaction", new Object[0]);
       connection.commit();
     }
@@ -349,7 +349,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
       throw new IllegalStateException("Can not perform a commit during an open transaction");
     }
 
-    LOG.debug(user.getUsername() + ": " + "commit;");
+    LOG.debug("{}: commit;", user.getUsername());
     methodLogger.logAccess("commit", new Object[0]);
     SQLException exception = null;
     try {
@@ -370,7 +370,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
       throw new IllegalStateException("Can not perform a rollback during an open transaction");
     }
 
-    LOG.debug(user.getUsername() + ": " + "rollback;");
+    LOG.debug("{}: rollback;", user.getUsername());
     methodLogger.logAccess("rollback", new Object[0]);
     SQLException exception = null;
     try {

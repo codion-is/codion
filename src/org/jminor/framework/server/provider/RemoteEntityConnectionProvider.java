@@ -89,7 +89,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
   @Override
   protected EntityConnection connect() {
     try {
-      LOG.debug("Initializing connection for " + getUser());
+      LOG.debug("Initializing connection for {}", getUser());
       final RemoteEntityConnection remote = (RemoteEntityConnection) getRemoteEntityServer().connect(getUser(), clientID, clientTypeID);
 
       return Util.initializeProxy(EntityConnection.class, new RemoteEntityConnectionHandler(remote));
@@ -112,7 +112,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
       return true;
     }
     catch (Exception e) {
-      LOG.debug("Remote connection invalid: " + e.getMessage());
+      LOG.debug("Remote connection invalid", e);
       return false;
     }
   }
@@ -130,13 +130,13 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
       }//just to check the connection
     }
     catch (RemoteException e) {
-      LOG.info(serverName + " was unreachable, " + getUser() + " - " + clientID + " reconnecting...");
+      LOG.info("{} was unreachable, {} - {} reconnecting...", new Object[] {serverName, getUser(), clientID});
       unreachable = true;
     }
     if (server == null || unreachable) {
       //if server is not reachable, try to reconnect once and return
       connectToServer();
-      LOG.debug("ClientID: " + clientID + ", user: " + getUser() + " connected to server: " + serverName);
+      LOG.info("ClientID: {}, {} connected to server: {}", new Object[] {getUser(), clientID, serverName});
     }
 
     return this.server;

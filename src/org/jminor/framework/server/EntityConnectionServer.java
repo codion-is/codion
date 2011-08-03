@@ -285,7 +285,7 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
     final String webDocumentRoot = Configuration.getStringValue(Configuration.WEB_SERVER_DOCUMENT_ROOT);
     if (webDocumentRoot != null) {
       final int port = Configuration.getIntValue(Configuration.WEB_SERVER_PORT);
-      LOG.info("Starting web server on port: " + port + ", document root: " + webDocumentRoot);
+      LOG.info("Starting web server on port: {}, document root: {}", port, webDocumentRoot);
       webServer = new WebStartServer(webDocumentRoot, port);
       final ExecutorService executor = Executors.newSingleThreadExecutor();
       executor.execute(new Runnable() {
@@ -331,7 +331,7 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
   @Override
   protected void doDisconnect(final RemoteEntityConnection connection) throws RemoteException {
     connection.disconnect();
-    LOG.debug(((RemoteEntityConnectionImpl) connection).getClientInfo() + " disconnected");
+    LOG.debug("{} disconnected", ((RemoteEntityConnectionImpl) connection).getClientInfo());
   }
 
   /** {@inheritDoc} */
@@ -349,7 +349,7 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
         }
       }
     });
-    LOG.debug(clientInfo + " connected");
+    LOG.debug("{} connected", clientInfo);
 
     return connection;
   }

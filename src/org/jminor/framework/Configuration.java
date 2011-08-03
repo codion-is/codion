@@ -711,7 +711,7 @@ public final class Configuration {
   public static void resolveTruststoreProperty(final String temporaryFileName) {
     final String value = getStringValue(JAVAX_NET_NET_TRUSTSTORE);
     if (value == null || value.isEmpty()) {
-      LOG.debug("resolveFileProperty: " + JAVAX_NET_NET_TRUSTSTORE + " is empty");
+      LOG.debug("resolveTruststoreProperty: {} is empty", JAVAX_NET_NET_TRUSTSTORE);
       return;
     }
     FileOutputStream out = null;
@@ -720,7 +720,7 @@ public final class Configuration {
       final ClassLoader loader = Util.class.getClassLoader();
       in = loader.getResourceAsStream(value);
       if (in == null) {
-        LOG.debug("resolveFileProperty: " + value + " not found on classpath");
+        LOG.debug("resolveTruststoreProperty: {} not found on classpath", value);
         return;
       }
       final File file = File.createTempFile(temporaryFileName, "tmp");
@@ -732,7 +732,7 @@ public final class Configuration {
         out.write(buf, 0, br);
         br = in.read(buf);
       }
-      LOG.debug("resolveFileProperty: " + JAVAX_NET_NET_TRUSTSTORE + " -> " + file.toString());
+      LOG.debug("resolveTruststoreProperty: {} -> {}", JAVAX_NET_NET_TRUSTSTORE, file);
       setValue(JAVAX_NET_NET_TRUSTSTORE, file.toString());
     }
     catch (IOException e) {

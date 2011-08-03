@@ -543,12 +543,12 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   @Override
   protected final void doRefresh() {
     try {
-      LOG.debug(this + " refreshing");
+      LOG.debug("{} refreshing", this);
       clear();
       addItems(performQuery(getQueryCriteria()), false);
     }
     finally {
-      LOG.debug(this + " refreshing done");
+      LOG.debug("{} refreshing done", this);
     }
   }
 

@@ -855,12 +855,12 @@ public final class Util {
         if (inputStream == null) {
           throw new RuntimeException("Unable to load configuration file: " + filename);
         }
-        LOG.debug("Reading configuration file: " + filename);
+        LOG.debug("Reading configuration file: {}", filename);
         final Properties properties = new Properties();
         properties.load(inputStream);
         for (final Map.Entry entry : properties.entrySet()) {
           final Object key = entry.getKey();
-          LOG.debug(key + " - > " + properties.get(key));
+          LOG.debug("{} - > {}", key, properties.get(key));
           System.setProperty((String) key, (String) properties.get(key));
         }
       }
@@ -879,14 +879,14 @@ public final class Util {
    * @throws RemoteException in case of an exception
    */
   public static void initializeRegistry(final int port) throws RemoteException {
-    LOG.info("Initializing registry on port: " + port);
+    LOG.info("Initializing registry on port: {}", port);
     final Registry localRegistry = getRegistry(port);
     try {
       localRegistry.list();
     }
     catch (Exception e) {
       LOG.debug("Error when trying to locate registry on server start", e);
-      LOG.info("Creating registry on port: " + port);
+      LOG.info("Creating registry on port: {}", port);
       LocateRegistry.createRegistry(port);
     }
   }
