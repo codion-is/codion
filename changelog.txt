@@ -2444,3 +2444,4 @@
   EntityDefinitionImpl constructor throws IllegalArgumentException if no primary key property is specified, tests added
   EntityConnectionServerAdminImpl, added logging of service calls
   LOG.debug("{} bla bla", value) used instead of LOG.debug(value + " bla bla") where applicable
+  EntityEditPanel.getControlToolBar() renamed to createControlToolBar() for consistency

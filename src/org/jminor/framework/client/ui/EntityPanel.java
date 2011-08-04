@@ -1100,7 +1100,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
     panel.add(propertyBase, BorderLayout.CENTER);
     if (includeControlPanel) {
       final JComponent controlPanel = Configuration.getBooleanValue(Configuration.TOOLBAR_BUTTONS) ?
-              editPanel.getControlToolBar(JToolBar.VERTICAL) : editPanel.createControlPanel(alignment == FlowLayout.CENTER);
+              editPanel.createControlToolBar(JToolBar.VERTICAL) : editPanel.createControlPanel(alignment == FlowLayout.CENTER);
       if (controlPanel != null) {
         panel.add(controlPanel, controlPanelConstraints);
       }

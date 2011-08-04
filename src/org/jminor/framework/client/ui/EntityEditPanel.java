@@ -293,7 +293,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @return the control toolbar, null if no controls are defined
    * @see #getControlPanelControlSet()
    */
-  public final JToolBar getControlToolBar(final int orientation) {
+  public final JToolBar createControlToolBar(final int orientation) {
     final ControlSet controlPanelControlSet = getControlPanelControlSet();
     if (controlPanelControlSet.size() == 0) {
       return null;
