@@ -2445,3 +2445,5 @@
   EntityConnectionServerAdminImpl, added logging of service calls
   LOG.debug("{} bla bla", value) used instead of LOG.debug(value + " bla bla") where applicable
   EntityEditPanel.getControlToolBar() renamed to createControlToolBar() for consistency
+  EntityApplicationPanel,evtSelectedEntityPanelChanged removed, add/removeSelectedPanelListener() removed, initializeActiveEntityPanel() removed, initialize() and initializeUI() refactored to accomodate changes
+  DefaultEntityApplicationModel.getDependencyTreeModel(), bug fixed, Entities.getDefinitions(domainID).values() (table names) replaced with Entities.getDefinitions(domainID).keySet() (entityIDs)

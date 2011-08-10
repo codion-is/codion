@@ -169,7 +169,7 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
    */
   public static TreeModel getDependencyTreeModel(final String domainID) {
     final DefaultMutableTreeNode root = new DefaultMutableTreeNode(null);
-    for (final String entityID : Entities.getDefinitions(domainID).values()) {
+    for (final String entityID : Entities.getDefinitions(domainID).keySet()) {
       if (Entities.getForeignKeyProperties(entityID).isEmpty() || referencesOnlySelf(entityID)) {
         root.add(new EntityDependencyTreeNode(domainID, entityID));
       }

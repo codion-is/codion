@@ -92,7 +92,6 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   private JTabbedPane applicationTabPane;
 
   private final Event evtApplicationStarted = Events.event();
-  private final Event evtSelectedEntityPanelChanged = Events.event();
   private final Event evtAlwaysOnTopChanged = Events.event();
 
   private final boolean persistEntityPanels = Configuration.getBooleanValue(Configuration.PERSIST_ENTITY_PANELS);
@@ -307,7 +306,9 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
 
   /** {@inheritDoc} */
   public final void setActiveDetailPanel(final MasterDetailPanel detailPanel) {
-    applicationTabPane.setSelectedComponent((JComponent) detailPanel);
+    if (applicationTabPane != null) {//initializeUI() may have been overridden
+      applicationTabPane.setSelectedComponent((JComponent) detailPanel);
+    }
   }
 
   /** {@inheritDoc} */
@@ -412,20 +413,6 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    */
   public final void removeApplicationStartedListener(final ActionListener listener) {
     evtApplicationStarted.removeListener(listener);
-  }
-
-  /**
-   * @param listener a listener notified each time the selected main panel changes
-   */
-  public final void addSelectedPanelListener(final ActionListener listener) {
-    evtSelectedEntityPanelChanged.addListener(listener);
-  }
-
-  /**
-   * @param listener the listener to remove
-   */
-  public final void removeSelectedPanelListener(final ActionListener listener) {
-    evtSelectedEntityPanelChanged.removeListener(listener);
   }
 
   /**
@@ -629,7 +616,6 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     Util.rejectNullValue(applicationModel, "applicationModel");
     this.applicationModel = applicationModel;
     initializeUI();
-    initializeActiveEntityPanel();
     bindEventsInternal();
     bindEvents();
   }
@@ -754,7 +740,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     applicationTabPane.setUI(UiUtil.getBorderlessTabbedPaneUI());
     applicationTabPane.addChangeListener(new ChangeListener() {
       public void stateChanged(final ChangeEvent e) {
-        evtSelectedEntityPanelChanged.fire();
+        ((EntityPanel) applicationTabPane.getSelectedComponent()).initializePanel();
       }
     });
     if (mainApplicationPanelProviders.isEmpty()) {
@@ -783,6 +769,8 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
         });
       }
     }
+    //initialize first panel
+    ((EntityPanel) applicationTabPane.getSelectedComponent()).initializePanel();
     add(applicationTabPane, BorderLayout.CENTER);
 
     final JPanel southPanel = initializeSouthPanel();
@@ -800,7 +788,8 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   }
 
   /**
-   * Sets wheteher or not this application requires a login dialog
+   * Sets whether or not this application requires a login dialog, setting this value
+   * after the application has been started has no effect
    * @param loginRequired the login required status
    */
   protected final void setLoginRequired(final boolean loginRequired) {
@@ -1000,11 +989,6 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   protected void savePreferences() {}
 
   private void bindEventsInternal() {
-    evtSelectedEntityPanelChanged.addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent e) {
-        initializeActiveEntityPanel();
-      }
-    });
     final StateObserver connected = applicationModel.getConnectionProvider().getConnectedObserver();
     connected.addActivateListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
@@ -1079,13 +1063,6 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     UiUtil.expandAll(tree, new TreePath(tree.getModel().getRoot()), true);
 
     return new JScrollPane(tree, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-  }
-
-  private void initializeActiveEntityPanel() {
-    if (applicationTabPane.getComponentCount() == 0) {
-      throw new IllegalStateException("No application panel has been added to the application tab pane");
-    }
-    ((EntityPanel) applicationTabPane.getSelectedComponent()).initializePanel();
   }
 
   private static DefaultTreeModel createApplicationTree(final Collection<? extends EntityPanel> entityPanels) {
