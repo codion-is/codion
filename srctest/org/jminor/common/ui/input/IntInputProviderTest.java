@@ -1,10 +1,9 @@
 package org.jminor.common.ui.input;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import org.junit.Test;
 
-import javax.swing.JTextField;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class IntInputProviderTest {
 
@@ -17,7 +16,14 @@ public class IntInputProviderTest {
     provider = new IntInputProvider(null);
     assertNull(provider.getValue());
 
-    ((JTextField) provider.getInputComponent()).setText("15");
+    provider.getInputComponent().setText("15");
     assertEquals(Integer.valueOf(15), provider.getValue());
+
+    provider = new IntInputProvider(value, 0, 100);
+    assertEquals(value, provider.getValue());
+    provider.getInputComponent().setText("-10");
+    assertNull(provider.getValue());
+    provider.getInputComponent().setText("150");
+    assertNull(provider.getValue());
   }
 }

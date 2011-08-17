@@ -477,6 +477,21 @@
     </zip>
   </target>
 
+  <target name="deploy" depends="dist" >
+    <copy file="${dist}/${ant.project.name}.jar" todir="${deploy.path}" overwrite="true"/>
+    <copy file="${dist}/${ant.project.name}-common.jar" todir="${deploy.path}" overwrite="true"/>
+    <copy file="${dist}/${ant.project.name}-db.jar" todir="${deploy.path}" overwrite="true"/>
+    <copy file="${dist}/${ant.project.name}-client.jar" todir="${deploy.path}" overwrite="true"/>
+    <copy file="${dist}/${ant.project.name}-plugins.jar" todir="${deploy.path}" overwrite="true"/>
+    <copy file="${dist}/${ant.project.name}-demos.jar" todir="${deploy.path}" overwrite="true"/>
+    <copy file="${dist}/${ant.project.name}-server.jar" todir="${deploy.path}" overwrite="true"/>
+    <copy file="${dist}/${ant.project.name}-server-monitor.jar" todir="${deploy.path}" overwrite="true"/>
+    <copy file="${dist}/${ant.project.name}-src.jar" todir="${deploy.path}" overwrite="true"/>
+    <copy file="${dist}/${ant.project.name}-src-test.jar" todir="${deploy.path}" overwrite="true"/>
+    <copy file="${dist}/${ant.project.name}-src-demos.jar" todir="${deploy.path}" overwrite="true"/>
+    <copy file="${dist}/${ant.project.name}-api-doc.jar" todir="${deploy.path}" overwrite="true"/>
+  </target>
+
   <target name="create_unit_test_report"
           description="Creates a unit test html report on previously run tests">
     <mkdir dir="${test.reports.html}"/>

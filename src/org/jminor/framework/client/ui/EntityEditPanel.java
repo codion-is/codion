@@ -112,7 +112,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
     if (!Configuration.getBooleanValue(Configuration.ALL_PANELS_ACTIVE)) {
       ACTIVE_STATE_GROUP.addState(stActive);
     }
-    setupControls(controlKeys);
+    setupDefaultControls(controlKeys);
     bindEvents();
   }
 
@@ -268,10 +268,10 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * Initializes the control panel, that is, the panel containing buttons for editing entities (Insert, Update...)
    * @param horizontal true if the buttons should be laid out horizontally, false otherwise
    * @return the control panel, null if no controls are defined
-   * @see #getControlPanelControlSet()
+   * @see #initializeControlPanelControlSet()
    */
   public final JPanel createControlPanel(final boolean horizontal) {
-    final ControlSet controlPanelControlSet = getControlPanelControlSet();
+    final ControlSet controlPanelControlSet = initializeControlPanelControlSet();
     if (controlPanelControlSet.size() == 0) {
       return null;
     }
@@ -291,10 +291,10 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * Initializes the control toolbar, that is, the toolbar containing buttons for editing entities (Insert, Update...)
    * @param orientation the orientation
    * @return the control toolbar, null if no controls are defined
-   * @see #getControlPanelControlSet()
+   * @see #initializeControlPanelControlSet()
    */
   public final JToolBar createControlToolBar(final int orientation) {
-    final ControlSet controlPanelControlSet = getControlPanelControlSet();
+    final ControlSet controlPanelControlSet = initializeControlPanelControlSet();
     if (controlPanelControlSet.size() == 0) {
       return null;
     }
@@ -565,42 +565,10 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   }
 
   /**
-   * Initializes the controls available to this EntityEditPanel by mapping them to their respective
-   * control codes (EntityEditPanel.INSERT, UPDATE etc) via the <code>setControl(String, Control) method,
-   * these can then be retrieved via the <code>getControl(String)</code> method.
-   * @param controlKeys the control keys for which controls should be initialized
-   * @see org.jminor.common.ui.control.Control
-   * @see #setControl(String, org.jminor.common.ui.control.Control)
-   * @see #getControl(String)
-   */
-  private void setupControls(final String... controlKeys) {
-    if (controlKeys == null || controlKeys.length == 0) {
-      return;
-    }
-    final Collection<String> keys = Arrays.asList(controlKeys);
-    if (!getEntityEditModel().isReadOnly()) {
-      if (getEntityEditModel().isInsertAllowed() && keys.contains(INSERT)) {
-        setControl(INSERT, getInsertControl());
-      }
-      if (getEntityEditModel().isUpdateAllowed() && keys.contains(UPDATE)) {
-        setControl(UPDATE, getUpdateControl());
-      }
-      if (getEntityEditModel().isDeleteAllowed() && keys.contains(DELETE)) {
-        setControl(DELETE, getDeleteControl());
-      }
-    }
-    if (keys.contains(CLEAR)) {
-      setControl(CLEAR, getClearControl());
-    }
-    if (keys.contains(REFRESH)) {
-      setControl(REFRESH, getRefreshControl());
-    }
-  }
-
-  /**
+   * Initializes a ControlSet on which to base the control panel
    * @return the ControlSet on which to base the control panel
    */
-  private ControlSet getControlPanelControlSet() {
+  protected ControlSet initializeControlPanelControlSet() {
     final ControlSet controlSet = new ControlSet("Actions");
     if (controlMap.containsKey(INSERT)) {
       controlSet.add(controlMap.get(INSERT));
@@ -1793,6 +1761,39 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    */
   protected final JLabel createLabel(final String propertyID, final int horizontalAlignment) {
     return EntityUiUtil.createLabel(Entities.getProperty(getEntityEditModel().getEntityID(), propertyID), horizontalAlignment);
+  }
+
+  /**
+   * Initializes the default controls available to this EntityEditPanel by mapping them to their respective
+   * control codes (EntityEditPanel.INSERT, UPDATE etc) via the <code>setControl(String, Control) method,
+   * these can then be retrieved via the <code>getControl(String)</code> method.
+   * @param controlKeys the control keys for which controls should be initialized
+   * @see org.jminor.common.ui.control.Control
+   * @see #setControl(String, org.jminor.common.ui.control.Control)
+   * @see #getControl(String)
+   */
+  private void setupDefaultControls(final String... controlKeys) {
+    if (controlKeys == null || controlKeys.length == 0) {
+      return;
+    }
+    final Collection<String> keys = Arrays.asList(controlKeys);
+    if (!getEntityEditModel().isReadOnly()) {
+      if (getEntityEditModel().isInsertAllowed() && keys.contains(INSERT)) {
+        setControl(INSERT, getInsertControl());
+      }
+      if (getEntityEditModel().isUpdateAllowed() && keys.contains(UPDATE)) {
+        setControl(UPDATE, getUpdateControl());
+      }
+      if (getEntityEditModel().isDeleteAllowed() && keys.contains(DELETE)) {
+        setControl(DELETE, getDeleteControl());
+      }
+    }
+    if (keys.contains(CLEAR)) {
+      setControl(CLEAR, getClearControl());
+    }
+    if (keys.contains(REFRESH)) {
+      setControl(REFRESH, getRefreshControl());
+    }
   }
 
   private void bindEvents() {

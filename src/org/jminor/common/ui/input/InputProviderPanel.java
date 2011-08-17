@@ -92,7 +92,9 @@ public final class InputProviderPanel extends JPanel implements InputProvider {
 
   private void initUI(final String caption) {
     setLayout(new BorderLayout(5,5));
-    setBorder(BorderFactory.createTitledBorder(caption));
+    if (caption != null) {
+      setBorder(BorderFactory.createTitledBorder(caption));
+    }
     add(inputProvider.getInputComponent(), BorderLayout.CENTER);
     final JPanel btnBase = new JPanel(new FlowLayout(FlowLayout.CENTER));
     btnBase.add(createButtonPanel());

@@ -267,7 +267,11 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * Returns true if the given item can not be selected, that is, if the item is not null, not the nullValueString and not an Entity instance.
+   * @param item the item to be selected
+   * @return true if the item can not be selected in this model
+   */
   @Override
   protected final boolean vetoSelectionChange(final Object item) {
     if (getSize() == 0) {

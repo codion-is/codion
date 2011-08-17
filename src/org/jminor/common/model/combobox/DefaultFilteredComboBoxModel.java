@@ -80,10 +80,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     return cleared;
   }
 
-  /**
-   * Resets the contents of this model using the values found in <code>contents</code>
-   * @param contents the contents to be used by this model
-   */
+  /** {@inheritDoc} */
   public final void setContents(final Collection<T> contents) {
     if (contents == null || !contents.contains(selectedItem)) {
       setSelectedItem(null);
@@ -113,9 +110,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
           itemIterator.remove();
         }
       }
-      if (sortComparator != null) {
-        Collections.sort(visibleItems, sortComparator);
-      }
+      sort(visibleItems);
       if (selectedItem != null && !visibleItems.contains(selectedItem)) {
         setSelectedItem(null);
       }
@@ -361,6 +356,20 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     return item;
   }
 
+  /**
+   * Sorts the items in the given list, used when sorting
+   * the contents of this model. This method is responsible for calling
+   * {@link #fireContentsChanged()} when done sorting.
+   * @param items the items to sort
+   */
+  protected void sort(final List<T> items) {
+    Collections.sort(items, sortComparator);
+    fireContentsChanged();
+  }
+
+  /**
+   * Fires a {@link ListDataEvent#CONTENTS_CHANGED} event on all registered listeners
+   */
   protected final void fireContentsChanged() {
     final ListDataEvent event = new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0, Integer.MAX_VALUE);
     for (final ListDataListener dataListener : listDataListeners) {

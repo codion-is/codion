@@ -2447,3 +2447,8 @@
   EntityEditPanel.getControlToolBar() renamed to createControlToolBar() for consistency
   EntityApplicationPanel,evtSelectedEntityPanelChanged removed, add/removeSelectedPanelListener() removed, initializeActiveEntityPanel() removed, initialize() and initializeUI() refactored to accomodate changes
   DefaultEntityApplicationModel.getDependencyTreeModel(), bug fixed, Entities.getDefinitions(domainID).values() (table names) replaced with Entities.getDefinitions(domainID).keySet() (entityIDs)
+  DefaultFilteredComboBoxModel.sort() added
+  IntInputProvider constructor overloaded with minValue and maxValue
+  DoubleInputProvider constructor overloaded with minValue and maxValue
+  InputProviderPanel now handles a null caption
+  EntityEditPanel.getControlPanelControlSet() renamed to initializeControlPanelControlSet(), setupControls() renamed to setupDefaultControls()

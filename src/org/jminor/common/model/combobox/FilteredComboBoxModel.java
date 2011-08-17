@@ -28,6 +28,7 @@ public interface FilteredComboBoxModel<T> extends FilteredModel<T>, ComboBoxMode
   void removeSelectionListener(final ActionListener listener);
 
   /**
+   * Resets the contents of this model using the values found in <code>contents</code>
    * @param contents the contents to display in this combo box model
    */
   void setContents(final Collection<T> contents);
