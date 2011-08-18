@@ -32,7 +32,6 @@ public interface Property extends Attribute {
    * By default this ID serves as column name for database properties.
    * @return the ID of this property
    */
-
   String getPropertyID();
 
   /**
@@ -48,12 +47,12 @@ public interface Property extends Attribute {
   boolean is(final Property property);
 
   /**
-   * @return the data type of the value of this property
+   * @return the data type ({@link java.sql.Types}) of the value of this property
    */
   int getType();
 
   /**
-   * @param type the type to check
+   * @param type the type to check ({@link java.sql.Types})
    * @return true if the type of this property is the one given
    */
   boolean isType(final int type);
