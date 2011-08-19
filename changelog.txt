@@ -2452,3 +2452,5 @@
   DoubleInputProvider constructor overloaded with minValue and maxValue
   InputProviderPanel now handles a null caption
   EntityEditPanel.getControlPanelControlSet() renamed to initializeControlPanelControlSet(), setupControls() renamed to setupDefaultControls()
+  DefaultEntityModel, simplified constructors
+  DefaultEntityModelTest refactored to improve testing of the above

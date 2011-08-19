@@ -102,24 +102,30 @@ public final class DefaultEntityModelTest {
 
   @Test
   public void constructor() {
-    try {
-      new DefaultEntityModel(null, EntityConnectionImplTest.DB_PROVIDER);
-      fail();
-    }
-    catch (IllegalArgumentException e) {}
-    try {
-      new DefaultEntityModel(EmpDept.T_EMPLOYEE, null);
-      fail();
-    }
-    catch (IllegalArgumentException e) {}
-    try {
-      new DefaultEntityModel((DefaultEntityEditModel) null, null);
-      fail();
-    }
-    catch (IllegalArgumentException e) {}
     new DefaultEntityModel(new DefaultEntityEditModel(EmpDept.T_DEPARTMENT, EntityConnectionImplTest.DB_PROVIDER));
     new DefaultEntityModel(new DefaultEntityTableModel(EmpDept.T_DEPARTMENT, EntityConnectionImplTest.DB_PROVIDER));
-    new DefaultEntityModel(new DefaultEntityEditModel(EmpDept.T_DEPARTMENT, EntityConnectionImplTest.DB_PROVIDER), true);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void constructorNullEntityID() {
+    new DefaultEntityModel(null, EntityConnectionImplTest.DB_PROVIDER);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void constructorNullConnectionProvider() {
+    new DefaultEntityModel(EmpDept.T_EMPLOYEE, null);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void constructorNullEditModelNullTableModel() {
+    new DefaultEntityModel((DefaultEntityEditModel) null, null);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void constructorTableModelEntityIDMismatch() {
+    final EntityEditModel editModel = new DefaultEntityEditModel(EmpDept.T_DEPARTMENT, EntityConnectionImplTest.DB_PROVIDER);
+    final EntityTableModel tableModel = new DefaultEntityTableModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.DB_PROVIDER);
+    new DefaultEntityModel(editModel, tableModel);
   }
 
   @Test

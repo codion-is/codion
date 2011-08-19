@@ -66,7 +66,7 @@ public class DefaultEntityModel implements EntityModel {
   private final EntityEditModel editModel;
 
   /**
-   * The table model
+   * The EntityTableModel model
    */
   private final EntityTableModel tableModel;
 
@@ -96,59 +96,29 @@ public class DefaultEntityModel implements EntityModel {
   private boolean isRefreshing = false;
 
   /**
-   * Instantiates a new EntityModel with default EntityEditModel and EntityTableModel implementations.
-   * @param entityID the ID of the Entity this EntityModel represents
-   * @param connectionProvider a EntityConnectionProvider
-   */
-  public DefaultEntityModel(final String entityID, final EntityConnectionProvider connectionProvider) {
-    this(entityID, connectionProvider, true);
-  }
-
-  /**
    * Instantiates a new DefaultEntityModel with default EntityEditModel and EntityTableModel implementations.
    * @param entityID the ID of the Entity this DefaultEntityModel represents
    * @param connectionProvider a EntityConnectionProvider
-   * @param includeTableModel true if this DefaultEntityModel should include a table model
    */
-  public DefaultEntityModel(final String entityID, final EntityConnectionProvider connectionProvider, final boolean includeTableModel) {
-    Util.rejectNullValue(connectionProvider, "connectionProvider");
-    Util.rejectNullValue(entityID, "entityID");
-    this.entityID = entityID;
-    this.connectionProvider = connectionProvider;
-    this.editModel = new DefaultEntityEditModel(entityID, connectionProvider);
-    if (includeTableModel) {
-      this.tableModel = new DefaultEntityTableModel(entityID, connectionProvider);
-    }
-    else {
-      this.tableModel = null;
-    }
-    setTableEditModel(editModel, tableModel);
-    bindEvents();
+  public DefaultEntityModel(final String entityID, final EntityConnectionProvider connectionProvider) {
+    this(new DefaultEntityEditModel(Util.rejectNullValue(entityID, "entityID"),
+            Util.rejectNullValue(connectionProvider, "connectionProvider")));
   }
 
   /**
-   * Instantiates a new DefaultEntityModel
+   * Instantiates a new DefaultEntityModel, including a default {@link EntityTableModel}
    * @param editModel the edit model
    */
   public DefaultEntityModel(final EntityEditModel editModel) {
-    this(editModel, true);
+    this(editModel, new DefaultEntityTableModel(editModel.getEntityID(), editModel.getConnectionProvider()));
   }
 
   /**
-   * Instantiates a new DefaultEntityModel
+   * Instantiates a new DefaultEntityModel, including a default {@link EntityEditModel}
    * @param tableModel the table model
    */
   public DefaultEntityModel(final EntityTableModel tableModel) {
     this(new DefaultEntityEditModel(tableModel.getEntityID(), tableModel.getConnectionProvider()), tableModel);
-  }
-
-  /**
-   * Instantiates a new DefaultEntityModel
-   * @param editModel the edit model
-   * @param includeTableModel if true then a default EntityTableModel is included
-   */
-  public DefaultEntityModel(final EntityEditModel editModel, final boolean includeTableModel) {
-    this(editModel, includeTableModel ? new DefaultEntityTableModel(editModel.getEntityID(), editModel.getConnectionProvider()) : null);
   }
 
   /**
@@ -544,6 +514,11 @@ public class DefaultEntityModel implements EntityModel {
   }
 
   private void setTableEditModel(final EntityEditModel editModel, final EntityTableModel tableModel) {
+    if (tableModel != null) {
+      if (!entityID.equals(tableModel.getEntityID())) {
+        throw new IllegalArgumentException("Table model entityID mismatch, found: " + tableModel.getEntityID() + ", required: " + entityID);
+      }
+    }
     if (tableModel != null) {
       if (tableModel.hasEditModel()) {
         if (tableModel.getEditModel() != editModel) {
