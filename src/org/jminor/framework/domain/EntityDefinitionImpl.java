@@ -525,23 +525,18 @@ final class EntityDefinitionImpl implements Entity.Definition {
         }
       }
     }
-    checkForPrimaryKey(properties);
+    checkForPrimaryKey(entityID, properties);
 
     return properties;
   }
 
-  /**
-   *
-   * @param propertyDefinitions the properties
-   * @throws IllegalArgumentException in case the given properties do not contain a primary key property
-   */
-  private static void checkForPrimaryKey(final Map<String, Property> propertyDefinitions) {
+  private static void checkForPrimaryKey(final String entityID, final Map<String, Property> propertyDefinitions) {
     for (final Property property : propertyDefinitions.values()) {
       if (property instanceof Property.PrimaryKeyProperty) {
         return;
       }
     }
-    throw new IllegalArgumentException("Entities must have a primary key property");
+    throw new IllegalArgumentException("Entity is missing a primary key: " + entityID);
   }
 
   private void initializeDerivedPropertyChangeLinks() {

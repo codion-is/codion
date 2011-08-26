@@ -2454,3 +2454,5 @@
   EntityEditPanel.getControlPanelControlSet() renamed to initializeControlPanelControlSet(), setupControls() renamed to setupDefaultControls()
   DefaultEntityModel, simplified constructors
   DefaultEntityModelTest refactored to improve testing of the above
+  EntityTablePanel.initializeRefreshToolbar() bug fixed, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT used instead of WHEN_IN_FOCUSED_WINDOW, which resulted in the detail panel being refreshed instead
+  EntityDefinitionImpl.checkForPrimaryKey() now includes the entityID in the exception

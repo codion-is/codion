@@ -1377,16 +1377,16 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * @return the refresh toolbar
    */
   private JToolBar initializeRefreshToolbar() {
-    final KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0);
-    final String keyName = stroke.toString().replace("pressed ", "");
+    final KeyStroke keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0);
+    final String keyName = keyStroke.toString().replace("pressed ", "");
     final Control refresh = Controls.methodControl(getEntityTableModel(), "refresh", null,
             getEntityTableModel().getSearchModel().getSearchStateObserver(), FrameworkMessages.get(FrameworkMessages.REFRESH_TIP)
                     + " (" + keyName + ")", 0, null, Images.loadImage(Images.IMG_STOP_16));
 
-    final InputMap inputMap = getInputMap(WHEN_IN_FOCUSED_WINDOW);
+    final InputMap inputMap = getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
     final ActionMap actionMap = getActionMap();
 
-    inputMap.put(stroke, "refreshControl");
+    inputMap.put(keyStroke, "refreshControl");
     actionMap.put("refreshControl", refresh);
 
     final AbstractButton button = ControlProvider.createButton(refresh);

@@ -8,4 +8,6 @@ SchemaBrowser, when autoresize on table search panels do not resize when column 
 **fixed**
 SchemaBrowser, information_schema name does not show up -> seems to be MySQL string comparison related
 
-SearchPanel, SummaryPanel, do not restrict component size
+SearchPanel, SummaryPanel, do not restrict component size -> done
+
+F5 with search panel focused, refreshes detail panel -> done

@@ -46,6 +46,7 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
   /**
    * @return true if the active entity is new, that is, has a primary key with null value
    * or a original null value
+   * @see #getEntityNullObserver()
    * @see org.jminor.framework.domain.Entity#isPrimaryKeyNull()
    */
   boolean isEntityNew();
