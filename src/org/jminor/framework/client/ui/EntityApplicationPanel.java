@@ -62,6 +62,7 @@ import javax.swing.tree.TreePath;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -187,10 +188,17 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   }
 
   /**
+   * @return the parent window of this panel, if one exists, null otherwise
+   */
+  public final Window getParentWindow() {
+    return UiUtil.getParentWindow(this);
+  }
+
+  /**
    * @return true if the frame this application panel is shown in should be 'alwaysOnTop'
    */
   public final boolean isAlwaysOnTop() {
-    final JFrame parent = UiUtil.getParentFrame(this);
+    final Window parent = getParentWindow();
     return parent != null && parent.isAlwaysOnTop();
   }
 
@@ -199,7 +207,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    * @param value the new value
    */
   public final void setAlwaysOnTop(final boolean value) {
-    final JFrame parent = UiUtil.getParentFrame(this);
+    final Window parent = getParentWindow();
     if (parent != null) {
       parent.setAlwaysOnTop(value);
       evtAlwaysOnTopChanged.fire();
@@ -230,7 +238,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   }
 
   public final void viewApplicationTree() {
-    UiUtil.showInDialog(UiUtil.getParentWindow(this), initializeApplicationTree(), false,
+    UiUtil.showInDialog(getParentWindow(), initializeApplicationTree(), false,
             FrameworkMessages.get(FrameworkMessages.APPLICATION_TREE), false, true, null);
   }
 
@@ -238,7 +246,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    * Shows a dialog containing a dependency tree view of all defined entities
    */
   public final void viewDependencyTree() {
-    UiUtil.showInDialog(UiUtil.getParentWindow(this), initializeDependencyTree(), false,
+    UiUtil.showInDialog(getParentWindow(), initializeDependencyTree(), false,
             FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES), false, true, null);
   }
 
@@ -699,7 +707,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
       if (caption == null) {
         caption = Entities.getCaption(panelProvider.getEntityID());
       }
-      dialog = new JDialog(UiUtil.getParentWindow(this), caption);
+      dialog = new JDialog(getParentWindow(), caption);
       dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
       dialog.setLayout(new BorderLayout());
       dialog.add(entityPanel, BorderLayout.CENTER);
@@ -992,13 +1000,18 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     final StateObserver connected = applicationModel.getConnectionProvider().getConnectedObserver();
     connected.addActivateListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
-        UiUtil.getParentFrame(EntityApplicationPanel.this).setTitle(frameTitle);
+        final Window parentWindow = getParentWindow();
+        if (parentWindow instanceof JFrame) {
+          ((JFrame) parentWindow).setTitle(frameTitle);
+        }
       }
     });
     connected.addDeactivateListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
-        UiUtil.getParentFrame(EntityApplicationPanel.this).setTitle(frameTitle + " - "
-                + Messages.get(Messages.NOT_CONNECTED));
+        final Window parentWindow = getParentWindow();
+        if (parentWindow instanceof JFrame) {
+          ((JFrame) parentWindow).setTitle(frameTitle + " - " + Messages.get(Messages.NOT_CONNECTED));
+        }
       }
     });
   }

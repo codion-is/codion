@@ -5,7 +5,6 @@ package org.jminor.framework.client.ui;
 
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.i18n.Messages;
-import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.State;
 import org.jminor.common.model.StateObserver;
@@ -387,9 +386,6 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
         return true;
       }
     }
-    catch (CancelException c) {
-      return false;
-    }
     catch (ValidationException v) {
       handleException(v);
     }
@@ -427,9 +423,6 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
         return true;
       }
     }
-    catch (CancelException c) {
-      return false;
-    }
     catch (DatabaseException ex) {
       handleException(ex);
     }
@@ -466,9 +459,6 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
         return true;
       }
     }
-    catch (CancelException c) {
-      return false;
-    }
     catch (ValidationException v) {
       handleException(v);
     }
@@ -486,9 +476,8 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   /**
    * for overriding, called before insert/update
    * @throws org.jminor.common.model.valuemap.exception.ValidationException in case of a validation failure
-   * @throws org.jminor.common.model.CancelException in case the user cancels the action during validation
    */
-  protected void validateData() throws ValidationException, CancelException {}
+  protected void validateData() throws ValidationException {}
 
   /**
    * Called before a insert is performed, the default implementation simply returns true

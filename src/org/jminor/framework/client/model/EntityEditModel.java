@@ -4,7 +4,6 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.model.CancelException;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
@@ -304,35 +303,32 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * Performs a insert on the active entity
    * @return the primary keys of the inserted entities
    * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
-   * @throws CancelException in case the user cancels the operation
    * @throws org.jminor.common.model.valuemap.exception.ValidationException in case validation fails
    * @see org.jminor.framework.domain.Entity.Validator#validate(java.util.Collection, int)
    */
-  List<Entity.Key> insert() throws CancelException, DatabaseException, ValidationException;
+  List<Entity.Key> insert() throws DatabaseException, ValidationException;
 
   /**
    * Performs an insert on the given entities, returns silently on receiving an empty list
    * @param entities the entities to insert
    * @return the primary keys of the inserted entities
    * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
-   * @throws CancelException in case the user cancels the operation
    * @throws ValidationException in case validation fails
    * @see #addBeforeInsertListener(java.awt.event.ActionListener)
    * @see #addAfterInsertListener(java.awt.event.ActionListener)
    * @see org.jminor.framework.domain.Entity.Validator#validate(java.util.Collection, int)
    */
-  List<Entity.Key> insert(final List<Entity> entities) throws CancelException, DatabaseException, ValidationException;
+  List<Entity.Key> insert(final List<Entity> entities) throws DatabaseException, ValidationException;
 
   /**
    * Performs a update on the active entity
    * @return the updated entities
    * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
-   * @throws CancelException in case the user cancels the operation
    * @throws org.jminor.common.db.exception.RecordModifiedException in case an entity was modified by another user
    * @throws org.jminor.common.model.valuemap.exception.ValidationException in case validation fails
    * @see org.jminor.framework.domain.Entity.Validator#validate(java.util.Collection, int)
    */
-  List<Entity> update() throws CancelException, DatabaseException, ValidationException;
+  List<Entity> update() throws DatabaseException, ValidationException;
 
   /**
    * Updates the given entities. If the entities are unmodified or the list is empty
@@ -340,35 +336,32 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * @param entities the entities to update
    * @return the updated entities
    * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
-   * @throws CancelException in case the user cancels the operation
    * @throws org.jminor.common.db.exception.RecordModifiedException in case an entity was modified by another user
    * @throws ValidationException in case validation fails
    * @see #addBeforeUpdateListener(java.awt.event.ActionListener)
    * @see #addAfterUpdateListener(java.awt.event.ActionListener)
    * @see org.jminor.framework.domain.Entity.Validator#validate(java.util.Collection, int)
    */
-  List<Entity> update(final List<Entity> entities) throws DatabaseException, CancelException, ValidationException;
+  List<Entity> update(final List<Entity> entities) throws DatabaseException, ValidationException;
 
   /**
    * Deletes the active entity
    * @return the deleted entities
    * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
-   * @throws CancelException in case the user cancels the operation
    * @see #addBeforeDeleteListener(java.awt.event.ActionListener)
    * @see #addAfterDeleteListener(java.awt.event.ActionListener)
    */
-  List<Entity> delete() throws DatabaseException, CancelException;
+  List<Entity> delete() throws DatabaseException;
 
   /**
    * Deletes the given entities, returns silently on receiving an empty list
    * @param entities the entities to delete
    * @return the deleted entities
    * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
-   * @throws CancelException in case the user cancels the operation
    * @see #addBeforeDeleteListener(java.awt.event.ActionListener)
    * @see #addAfterDeleteListener(java.awt.event.ActionListener)
    */
-  List<Entity> delete(final List<Entity> entities) throws DatabaseException, CancelException;
+  List<Entity> delete(final List<Entity> entities) throws DatabaseException;
 
   /**
    * @return the state used to determine if deleting should be enabled

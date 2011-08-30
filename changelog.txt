@@ -2456,3 +2456,6 @@
   DefaultEntityModelTest refactored to improve testing of the above
   EntityTablePanel.initializeRefreshToolbar() bug fixed, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT used instead of WHEN_IN_FOCUSED_WINDOW, which resulted in the detail panel being refreshed instead
   EntityDefinitionImpl.checkForPrimaryKey() now includes the entityID in the exception
+  EntityApplicationPanel.getParentWindow() added
+  EntityEditModel.insert(), update(), delete() no longer throw CancelException
+  EntityEditPanel, no longer handles the above exception
