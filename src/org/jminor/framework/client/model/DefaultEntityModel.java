@@ -334,10 +334,12 @@ public class DefaultEntityModel implements EntityModel {
       tableModel.setForeignKeySearchValues(masterEntityID, selectedMasterEntities);
     }
 
-    for (final Property.ForeignKeyProperty foreignKeyProperty : Entities.getForeignKeyProperties(entityID, masterEntityID)) {
-      final Entity referencedEntity = selectedMasterEntities == null || selectedMasterEntities.isEmpty() ?
-              null : selectedMasterEntities.get(0);
-      editModel.setValue(foreignKeyProperty.getPropertyID(), referencedEntity);
+    if (editModel.isEntityNew()) {
+      for (final Property.ForeignKeyProperty foreignKeyProperty : Entities.getForeignKeyProperties(entityID, masterEntityID)) {
+        final Entity referencedEntity = selectedMasterEntities == null || selectedMasterEntities.isEmpty() ?
+                null : selectedMasterEntities.get(0);
+        editModel.setValue(foreignKeyProperty.getPropertyID(), referencedEntity);
+      }
     }
     handleInitialization(masterEntityID, selectedMasterEntities);
   }

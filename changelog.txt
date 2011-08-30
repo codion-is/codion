@@ -2459,3 +2459,4 @@
   EntityApplicationPanel.getParentWindow() added
   EntityEditModel.insert(), update(), delete() no longer throw CancelException
   EntityEditPanel, no longer handles the above exception
+  DefaultEntityModel.initialize() only sets the relevant values in the edit model if the edit model entity is new, so as to not change a persistent entity
