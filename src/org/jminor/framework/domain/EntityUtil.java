@@ -165,19 +165,35 @@ public final class EntityUtil {
   }
 
   /**
+   * Returns a Collection containing the distinct values of <code>propertyID</code> from the given entities, excluding null values.
+   * If the <code>entities</code> list is null an empty Collection is returned.
+   * @param propertyID the ID of the property for which to retrieve the values
+   * @param entities the entities from which to retrieve the values
+   * @return a Collection containing the distinct property values, excluding null values
+   */
+  public static Collection<Object> getDistinctPropertyValues(final String propertyID, final List<Entity> entities) {
+    return getDistinctPropertyValues(propertyID, entities, false);
+  }
+
+  /**
    * Returns a Collection containing the distinct values of <code>propertyID</code> from the given entities.
    * If the <code>entities</code> list is null an empty Collection is returned.
    * @param propertyID the ID of the property for which to retrieve the values
    * @param entities the entities from which to retrieve the values
+   * @param includeNullValue if true then null is considered a value
    * @return a Collection containing the distinct property values
    */
-  public static Collection<Object> getDistinctPropertyValues(final String propertyID, final List<Entity> entities) {
+  public static Collection<Object> getDistinctPropertyValues(final String propertyID, final List<Entity> entities,
+                                                             final boolean includeNullValue) {
     final Set<Object> values = new HashSet<Object>();
     if (entities == null) {
       return values;
     }
     for (final Entity entity : entities) {
-      values.add(entity.getValue(propertyID));
+      final Object value = entity.getValue(propertyID);
+      if (value != null || includeNullValue) {
+        values.add(value);
+      }
     }
 
     return values;

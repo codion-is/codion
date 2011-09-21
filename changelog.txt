@@ -2445,7 +2445,7 @@
   EntityConnectionServerAdminImpl, added logging of service calls
   LOG.debug("{} bla bla", value) used instead of LOG.debug(value + " bla bla") where applicable
   EntityEditPanel.getControlToolBar() renamed to createControlToolBar() for consistency
-  EntityApplicationPanel,evtSelectedEntityPanelChanged removed, add/removeSelectedPanelListener() removed, initializeActiveEntityPanel() removed, initialize() and initializeUI() refactored to accomodate changes
+  EntityApplicationPanel,evtSelectedEntityPanelChanged removed, add/removeSelectedPanelListener() removed, initializeActiveEntityPanel() removed, initialize() and initializeUI() refactored to accommodate changes
   DefaultEntityApplicationModel.getDependencyTreeModel(), bug fixed, Entities.getDefinitions(domainID).values() (table names) replaced with Entities.getDefinitions(domainID).keySet() (entityIDs)
   DefaultFilteredComboBoxModel.sort() added
   IntInputProvider constructor overloaded with minValue and maxValue
@@ -2460,3 +2460,7 @@
   EntityEditModel.insert(), update(), delete() no longer throw CancelException
   EntityEditPanel, no longer handles the above exception
   DefaultEntityModel.initialize() only sets the relevant values in the edit model if the edit model entity is new, so as to not change a persistent entity
+  EntityUiUtil.createComboBox() sets transfer focus on enter on both the editor as well as the combobox itself, thereby handling both editable and non-editable
+  DefaultEntityComboBoxModel.linkForeignKeyComboBoxModel() now throws an exception if the foreign key combobox model is not of the required type
+  EntityUtil.getDistinctPropertyValues() overloaded with includeNullValue parameter
+  DefaultEntityComboBoxModel.linkForeignKeyComboBoxModel() made an instance function on EntityComboBoxModel

@@ -7,7 +7,6 @@ import org.jminor.framework.Configuration;
 import org.jminor.framework.demos.chinook.domain.Chinook;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 
-import static org.junit.Assert.*;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -15,6 +14,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+
+import static org.junit.Assert.*;
 
 public class EntityUtilTest {
 
@@ -43,6 +44,10 @@ public class EntityUtilTest {
     final List<Object> values = new ArrayList<Object>();
 
     Entity entity = Entities.entity(EmpDept.T_DEPARTMENT);
+    entity.setValue(EmpDept.DEPARTMENT_ID, null);
+    entities.add(entity);
+
+    entity = Entities.entity(EmpDept.T_DEPARTMENT);
     entity.setValue(EmpDept.DEPARTMENT_ID, 1);
     entities.add(entity);
 
@@ -72,6 +77,12 @@ public class EntityUtilTest {
     values.add(4);
 
     Collection<Object> propertyValues = EntityUtil.getDistinctPropertyValues(EmpDept.DEPARTMENT_ID, entities);
+    assertEquals(4, propertyValues.size());
+    assertTrue(propertyValues.containsAll(values));
+
+    propertyValues = EntityUtil.getDistinctPropertyValues(EmpDept.DEPARTMENT_ID, entities, true);
+    assertEquals(5, propertyValues.size());
+    values.add(null);
     assertTrue(propertyValues.containsAll(values));
   }
 

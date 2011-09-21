@@ -73,7 +73,7 @@ public class EntityCriteriaUtilTest {
   @Test
   public void foreignKeyCriteriaNull() {
     final Criteria<Property.ColumnProperty> criteria = EntityCriteriaUtil.foreignKeyCriteria(EmpDept.T_EMPLOYEE,
-            EmpDept.EMPLOYEE_DEPARTMENT_FK, SearchType.LIKE, null);
+            EmpDept.EMPLOYEE_DEPARTMENT_FK, SearchType.LIKE, (Object) null);
     assertEquals("deptno is null", criteria.asString());
   }
 

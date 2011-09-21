@@ -19,7 +19,7 @@ public final class TextInputProvider extends AbstractInputProvider<String, TextI
   /**
    * Instantiates a new TextInputProvider.
    * @param inputDialogTitle the title to use for the lookup input dialog
-   * @param valueProvider the value provider
+   * @param valueProvider the value provider, if specified a lookup dialog accessed by CTRL-SPACE is added to the field
    * @param initialValue the initial value
    */
   public TextInputProvider(final String inputDialogTitle, final ValueCollectionProvider valueProvider, final String initialValue) {
@@ -38,7 +38,9 @@ public final class TextInputProvider extends AbstractInputProvider<String, TextI
                                                      final Object initialValue) {
     final JTextField txtField = new JTextField(initialValue != null ? initialValue.toString() : "");
     txtField.setColumns(DEFAULT_COLUMNS);
-    UiUtil.addLookupDialog(txtField, valueProvider);
+    if (valueProvider != null) {
+      UiUtil.addLookupDialog(txtField, valueProvider);
+    }
 
     return new TextInputPanel(txtField, inputDialogTitle);
   }

@@ -203,9 +203,45 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
             new DefaultEntityComboBoxModel(foreignKeyProperty.getReferencedEntityID(), connectionProvider);
     foreignKeyModel.setNullValueString("-");
     foreignKeyModel.refresh();
-    linkForeignKeyComboBoxModel(foreignKeyPropertyID, this, foreignKeyModel);
+    linkForeignKeyComboBoxModel(foreignKeyPropertyID, foreignKeyModel);
 
     return foreignKeyModel;
+  }
+
+  /** {@inheritDoc} */
+  public final void linkForeignKeyComboBoxModel(final String foreignKeyPropertyID, final EntityComboBoxModel foreignKeyModel) {
+    final Property.ForeignKeyProperty foreignKeyProperty = Entities.getForeignKeyProperty(getEntityID(), foreignKeyPropertyID);
+    if (!foreignKeyProperty.getReferencedEntityID().equals(foreignKeyModel.getEntityID())) {
+      throw new IllegalArgumentException("Foreign key ComboBoxModel is of type: " + foreignKeyModel.getEntityID()
+              + ", should be: " + foreignKeyProperty.getReferencedEntityID());
+    }
+    final Collection<Entity> filterEntities = getForeignKeyFilterEntities(foreignKeyPropertyID);
+    if (filterEntities != null && !filterEntities.isEmpty()) {
+      foreignKeyModel.setSelectedItem(filterEntities.iterator().next());
+    }
+    foreignKeyModel.addSelectionListener(new ActionListener() {
+      /** {@inheritDoc} */
+      public void actionPerformed(final ActionEvent e) {
+        final Entity selectedEntity = foreignKeyModel.getSelectedValue();
+        setForeignKeyFilterEntities(foreignKeyPropertyID,
+                selectedEntity == null ? new ArrayList<Entity>(0) : Arrays.asList(selectedEntity));
+      }
+    });
+    addSelectionListener(new ActionListener() {
+      /** {@inheritDoc} */
+      public void actionPerformed(final ActionEvent e) {
+        final Entity selected = getSelectedValue();
+        if (selected != null) {
+          foreignKeyModel.setSelectedEntityByPrimaryKey(selected.getReferencedPrimaryKey(foreignKeyProperty));
+        }
+      }
+    });
+    addRefreshListener(new ActionListener() {
+      /** {@inheritDoc} */
+      public void actionPerformed(final ActionEvent e) {
+        foreignKeyModel.forceRefresh();
+      }
+    });
   }
 
   /** {@inheritDoc} */
@@ -216,38 +252,6 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
   /** {@inheritDoc} */
   public final void removeRefreshListener(final ActionListener listener) {
     evtRefreshDone.removeListener(listener);
-  }
-
-  //todo move somewhere else?
-  public static void linkForeignKeyComboBoxModel(final String foreignKeyPropertyID, final EntityComboBoxModel model, final EntityComboBoxModel foreignKeyModel) {
-    final Collection<Entity> filterEntities = model.getForeignKeyFilterEntities(foreignKeyPropertyID);
-    if (filterEntities != null && !filterEntities.isEmpty()) {
-      foreignKeyModel.setSelectedItem(filterEntities.iterator().next());
-    }
-    foreignKeyModel.addSelectionListener(new ActionListener() {
-      /** {@inheritDoc} */
-      public void actionPerformed(final ActionEvent e) {
-        final Entity selectedEntity = foreignKeyModel.getSelectedValue();
-        model.setForeignKeyFilterEntities(foreignKeyPropertyID,
-                selectedEntity == null ? new ArrayList<Entity>(0) : Arrays.asList(selectedEntity));
-      }
-    });
-    model.addSelectionListener(new ActionListener() {
-      /** {@inheritDoc} */
-      public void actionPerformed(final ActionEvent e) {
-        final Entity selected = model.getSelectedValue();
-        if (selected != null) {
-          foreignKeyModel.setSelectedEntityByPrimaryKey(selected.getReferencedPrimaryKey(
-                  Entities.getForeignKeyProperty(model.getEntityID(), foreignKeyPropertyID)));
-        }
-      }
-    });
-    model.addRefreshListener(new ActionListener() {
-      /** {@inheritDoc} */
-      public void actionPerformed(final ActionEvent e) {
-        foreignKeyModel.forceRefresh();
-      }
-    });
   }
 
   /** {@inheritDoc} */
