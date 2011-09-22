@@ -166,6 +166,12 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
   List<Property> getTableColumnProperties();
 
   /**
+   * @param propertyID the propertyID
+   * @return the index of the column representing the given property
+   */
+  int getPropertyColumnIndex(final String propertyID);
+
+  /**
    * @return a String describing the selected/filtered state of this table model
    */
   String getStatusMessage();

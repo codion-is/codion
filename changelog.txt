@@ -2464,3 +2464,4 @@
   DefaultEntityComboBoxModel.linkForeignKeyComboBoxModel() now throws an exception if the foreign key combobox model is not of the required type
   EntityUtil.getDistinctPropertyValues() overloaded with includeNullValue parameter
   DefaultEntityComboBoxModel.linkForeignKeyComboBoxModel() made an instance function on EntityComboBoxModel
+  EntityTableModel.getPropertyColumnIndex(propertyID) added

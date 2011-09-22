@@ -185,6 +185,19 @@ public final class DefaultEntityTableModelTest {
   }
 
   @Test
+  public void getPropertyColumnIndex() {
+    assertEquals(0, testModel.getPropertyColumnIndex(EntityTestDomain.DETAIL_INT));
+    assertEquals(1, testModel.getPropertyColumnIndex(EntityTestDomain.DETAIL_DOUBLE));
+    assertEquals(2, testModel.getPropertyColumnIndex(EntityTestDomain.DETAIL_STRING));
+    assertEquals(3, testModel.getPropertyColumnIndex(EntityTestDomain.DETAIL_DATE));
+    assertEquals(4, testModel.getPropertyColumnIndex(EntityTestDomain.DETAIL_TIMESTAMP));
+    assertEquals(5, testModel.getPropertyColumnIndex(EntityTestDomain.DETAIL_BOOLEAN));
+    assertEquals(6, testModel.getPropertyColumnIndex(EntityTestDomain.DETAIL_ENTITY_FK));
+    assertEquals(7, testModel.getPropertyColumnIndex(EntityTestDomain.DETAIL_MASTER_NAME));
+    assertEquals(8, testModel.getPropertyColumnIndex(EntityTestDomain.DETAIL_MASTER_CODE));
+  }
+
+  @Test
   public void testTheRest() {
     final List<Property> columnProperties = testModel.getTableColumnProperties();
     assertEquals(testModel.getColumnCount(), columnProperties.size());

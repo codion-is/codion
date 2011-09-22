@@ -300,6 +300,11 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   /** {@inheritDoc} */
+  public final int getPropertyColumnIndex(final String propertyID) {
+    return getColumnModel().getColumnIndex(Entities.getProperty(getEntityID(), propertyID));
+  }
+
+  /** {@inheritDoc} */
   public final Object getValueAt(final int rowIndex, final int columnIndex) {
     final Property property = getColumnIdentifer(columnIndex);
     final Entity rowEntity = getItemAt(rowIndex);
