@@ -11,10 +11,11 @@ import javax.swing.ImageIcon;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 /**
- * A ComboBoxModel implementation based on the <code>ItemComboBoxModel.Item</code> class.
+ * A ComboBoxModel implementation based on the {@link Item} class.
  */
 public class ItemComboBoxModel<T> extends DefaultFilteredComboBoxModel<Item<T>> {
 
@@ -34,6 +35,28 @@ public class ItemComboBoxModel<T> extends DefaultFilteredComboBoxModel<Item<T>> 
    * @param items the items
    */
   public ItemComboBoxModel(final List<Item<T>> items) {
+    super(null);
+    setContents(items);
+  }
+
+  /**
+   * Constructs a new ItemComboBoxModel
+   * @param sortComparator the Comparator used to sort the contents of this combo box model,
+   * if null then the original item order will be preserved
+   * @param items the items
+   */
+  public ItemComboBoxModel(final Comparator<? super Item<T>> sortComparator, final Item<T>... items) {
+    this(sortComparator, Arrays.asList(items));
+  }
+
+  /**
+   * Constructs a new ItemComboBoxModel
+   * @param sortComparator the Comparator used to sort the contents of this combo box model,
+   * if null then the original item order will be preserved
+   * @param items the items
+   */
+  public ItemComboBoxModel(final Comparator<? super Item<T>> sortComparator, final List<Item<T>> items) {
+    super(null, sortComparator);
     setContents(items);
   }
 

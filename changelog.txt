@@ -2465,3 +2465,9 @@
   EntityUtil.getDistinctPropertyValues() overloaded with includeNullValue parameter
   DefaultEntityComboBoxModel.linkForeignKeyComboBoxModel() made an instance function on EntityComboBoxModel
   EntityTableModel.getPropertyColumnIndex(propertyID) added
+  DefaultFilteredComboBoxModel, constructor overloaded with Comparator parameter
+  ItemComboBoxModel, constructor overloaded with Comparator parameter
+  EntityUiUtil.createValueListComboBox() overloaded with sortItems parameter
+  EntityEditPanel.createValueListComboBox() overloaded with sortItems parameter
+  FilteredComboBoxModel.is/setFilterSelectedItem() added
+  PropertySearchPanel redundant tool tips removed from input fields

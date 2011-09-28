@@ -20,16 +20,17 @@ public class ItemComboBoxModelTest {
   @Test
   public void test() throws Exception {
     new ItemComboBoxModel();
-    final List<Item<Integer>> items = Arrays.asList(
-            new Item<Integer>(null, ""),
-            new Item<Integer>(1, "AOne"),
-            new Item<Integer>(2, "BTwo"),
-            new Item<Integer>(3, "CThree"),
-            new Item<Integer>(4, "DFour"));
+    final Item<Integer> nullItem = new Item<Integer>(null, "");
+    final Item<Integer> aOne = new Item<Integer>(1, "AOne");
+    final Item<Integer> bTwo = new Item<Integer>(2, "BTwo");
+    final Item<Integer> cThree = new Item<Integer>(3, "CThree");
+    final Item<Integer> dFour = new Item<Integer>(4, "DFour");
+
+    final List<Item<Integer>> items = Arrays.asList(nullItem, cThree, bTwo, aOne, dFour);
     final ItemComboBoxModel<Integer> model = new ItemComboBoxModel<Integer>(items) {
       @Override
       protected List<Item<Integer>> initializeContents() {
-        return items;
+        return items;//so we can clear the model later on without removing all items
       }
     };
 
@@ -40,18 +41,18 @@ public class ItemComboBoxModelTest {
     assertEquals("The item representing 4 should be at index 4", 4, model.getIndexOfItem(4));
 
     model.setSelectedItem(1);
-    assertTrue("The item representing 1 should be selected", model.getSelectedItem().equals(items.get(1)));
+    assertTrue("The item representing 1 should be selected", model.getSelectedItem().equals(aOne));
     assertEquals(1, (int) model.getSelectedValue().getItem());
     assertEquals("The item representing 1 should be selected", "AOne", model.getSelectedItem().toString());
     model.setSelectedItem(2);
     assertEquals(2, (int) model.getSelectedValue().getItem());
-    assertTrue("The item representing 2 should be selected", model.getSelectedItem().equals(items.get(2)));
+    assertTrue("The item representing 2 should be selected", model.getSelectedItem().equals(bTwo));
     model.setSelectedItem(4);
     assertEquals(4, (int) model.getSelectedValue().getItem());
-    assertTrue("The item representing 4 should be selected", model.getSelectedItem().equals(items.get(4)));
+    assertTrue("The item representing 4 should be selected", model.getSelectedItem().equals(dFour));
     model.setSelectedItem(null);
     assertEquals(null, model.getSelectedValue().getItem());
-    assertTrue("The item representing null should be selected", model.getSelectedItem().equals(items.get(0)));
+    assertTrue("The item representing null should be selected", model.getSelectedItem().equals(nullItem));
 
     final ImageIcon icon = Images.loadImage("jminor_logo32.gif");
     final ItemComboBoxModel<String> iconModel = new ItemComboBoxModel<String>(new ItemComboBoxModel.IconItem<String>("test", icon));
@@ -70,5 +71,19 @@ public class ItemComboBoxModelTest {
     assertEquals("The item representing 2 should be at index 2", 2, model.getIndexOfItem(2));
     assertEquals("The item representing 3 should be at index 3", 3, model.getIndexOfItem(3));
     assertEquals("The item representing 4 should be at index 4", 4, model.getIndexOfItem(4));
+
+    //test unsorted final List<Item<Integer>> items = Arrays.asList(nullItem, cThree, bTwo, aOne, dFour);
+    final ItemComboBoxModel<Integer> unsortedModel = new ItemComboBoxModel<Integer>(null, items) {
+      @Override
+      protected List<Item<Integer>> initializeContents() {
+        return items;//so we can clear the model later on without removing all items
+      }
+    };
+
+    assertEquals("The item representing null should be at index 0", 0, unsortedModel.getIndexOfItem(null));
+    assertEquals("The item representing 3 should be at index 1", 1, unsortedModel.getIndexOfItem(3));
+    assertEquals("The item representing 2 should be at index 2", 2, unsortedModel.getIndexOfItem(2));
+    assertEquals("The item representing 1 should be at index 3", 3, unsortedModel.getIndexOfItem(1));
+    assertEquals("The item representing 4 should be at index 4", 4, unsortedModel.getIndexOfItem(4));
   }
 }

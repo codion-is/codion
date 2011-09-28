@@ -3,11 +3,12 @@
  */
 package org.jminor.common.model.valuemap;
 
-import static org.junit.Assert.*;
 import org.junit.Test;
 
 import java.awt.event.ActionEvent;
 import java.util.HashMap;
+
+import static org.junit.Assert.*;
 
 public class ValueChangeMapImplTest {
 
@@ -135,5 +136,30 @@ public class ValueChangeMapImplTest {
 
     assertFalse(mapOne.equals(mapTwo));
     assertFalse(mapTwo.equals(mapOne));
+  }
+
+  @Test
+  public void clear() {
+    final ValueChangeMap<String, Integer> map = new ValueChangeMapImpl<String, Integer>();
+    map.setValue("1", 1);
+    map.setValue("2", 2);
+    map.setValue("3", 3);
+
+    map.setValue("2", 3);
+
+    assertTrue(map.isModified());
+    assertTrue(map.isModified("2"));
+
+    map.clear();
+
+    assertTrue(map.getValues().isEmpty());
+    assertTrue(map.getValueKeys().isEmpty());
+
+    assertFalse(map.isModified());
+    assertFalse(map.isModified("2"));
+
+    map.setValue("2", 4);
+    assertFalse(map.isModified());
+    assertFalse(map.isModified("2"));
   }
 }

@@ -40,8 +40,8 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   private T selectedItem = null;
   private String nullValueString;
   private FilterCriteria<T> filterCriteria = acceptAllCriteria;
-
-  private final Comparator<? super T> sortComparator;
+  private Comparator<? super T> sortComparator;
+  private boolean filterSelectedItem = true;
 
   private final List<ListDataListener> listDataListeners = new ArrayList<ListDataListener>();
 
@@ -54,14 +54,24 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   }
 
   /**
-   * Instantiates a new DefaultFilteredComboBoxModel with the given nullValueString.
-   * The model contents are sorted automatically.
+   * Instantiates a new DefaultFilteredComboBoxModel, without a nullValueString.
+   * The model contents are sorted automatically with a default collation based comparator.
    * @param nullValueString a string representing a null value, which is shown at the top of the item list
-   * @see #isNullValueSelected()
    */
   public DefaultFilteredComboBoxModel(final String nullValueString) {
+    this(nullValueString, new SortComparator<T>(nullValueString));
+  }
+
+  /**
+   * Instantiates a new DefaultFilteredComboBoxModel with the given nullValueString.
+   * @param nullValueString a string representing a null value, which is shown at the top of the item list
+   * @param sortComparator the Comparator used to sort the contents of this combo box model, if null then
+   * the contents are not sorted
+   * @see #isNullValueSelected()
+   */
+  public DefaultFilteredComboBoxModel(final String nullValueString, final Comparator<? super T> sortComparator) {
     this.nullValueString = nullValueString;
-    this.sortComparator = new SortComparator<T>(nullValueString);
+    this.sortComparator = sortComparator;
   }
 
   /** {@inheritDoc} */
@@ -111,7 +121,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
         }
       }
       sort(visibleItems);
-      if (selectedItem != null && !visibleItems.contains(selectedItem)) {
+      if (selectedItem != null && !visibleItems.contains(selectedItem) && filterSelectedItem) {
         setSelectedItem(null);
       }
 
@@ -281,6 +291,16 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   }
 
   /** {@inheritDoc} */
+  public void setFilterSelectedItem(final boolean value) {
+    this.filterSelectedItem = value;
+  }
+
+  /** {@inheritDoc} */
+  public boolean isFilterSelectedItem() {
+    return filterSelectedItem;
+  }
+
+  /** {@inheritDoc} */
   public final void addListDataListener(final ListDataListener l) {
     listDataListeners.add(l);
   }
@@ -363,8 +383,10 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
    * @param items the items to sort
    */
   protected void sort(final List<T> items) {
-    Collections.sort(items, sortComparator);
-    fireContentsChanged();
+    if (sortComparator != null) {
+      Collections.sort(items, sortComparator);
+      fireContentsChanged();
+    }
   }
 
   /**

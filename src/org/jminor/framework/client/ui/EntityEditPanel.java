@@ -1370,7 +1370,19 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @throws IllegalArgumentException in case the property is not a value list property
    */
   protected final SteppedComboBox createValueListComboBox(final String propertyID) {
-    return createValueListComboBox(propertyID, null);
+    return createValueListComboBox(propertyID, true);
+  }
+
+  /**
+   * Creates a SteppedComboBox containing the values defined by the given value list property,
+   * bound to the given property.
+   * @param propertyID the propertyID
+   * @param sortItems if true the items are sorted, otherwise the original ordering is preserved
+   * @return a SteppedComboBox bound to the property
+   * @throws IllegalArgumentException in case the property is not a value list property
+   */
+  protected final SteppedComboBox createValueListComboBox(final String propertyID, final boolean sortItems) {
+    return createValueListComboBox(propertyID, sortItems, null);
   }
 
   /**
@@ -1382,12 +1394,25 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @throws IllegalArgumentException in case the property is not a value list property
    */
   protected final SteppedComboBox createValueListComboBox(final String propertyID, final StateObserver enabledState) {
+    return createValueListComboBox(propertyID, true, enabledState);
+  }
+
+  /**
+   * Creates a SteppedComboBox containing the values defined by the given value list property,
+   * bound to the given property.
+   * @param propertyID the propertyID
+   * @param sortItems if true the items are sorted, otherwise the original ordering is preserved
+   * @param enabledState a state for controlling the enabled state of the component
+   * @return a SteppedComboBox bound to the property
+   * @throws IllegalArgumentException in case the property is not a value list property
+   */
+  protected final SteppedComboBox createValueListComboBox(final String propertyID, final boolean sortItems, final StateObserver enabledState) {
     final Property property = Entities.getProperty(getEntityEditModel().getEntityID(), propertyID);
     if (!(property instanceof Property.ValueListProperty)) {
       throw new IllegalArgumentException("Property identified by '" + propertyID + "' is not a ValueListProperty");
     }
 
-    return createValueListComboBox((Property.ValueListProperty) property, enabledState);
+    return createValueListComboBox((Property.ValueListProperty) property, sortItems, enabledState);
   }
 
   /**
@@ -1397,7 +1422,18 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @return a SteppedComboBox bound to the property
    */
   protected final SteppedComboBox createValueListComboBox(final Property.ValueListProperty property) {
-    return createValueListComboBox(property, null);
+    return createValueListComboBox(property, true);
+  }
+
+  /**
+   * Creates a SteppedComboBox containing the values defined in the given value list property,
+   * bound to the given property.
+   * @param property the property
+   * @param sortItems if true the items are sorted, otherwise the original ordering is preserved
+   * @return a SteppedComboBox bound to the property
+   */
+  protected final SteppedComboBox createValueListComboBox(final Property.ValueListProperty property, final boolean sortItems) {
+    return createValueListComboBox(property, sortItems, null);
   }
 
   /**
@@ -1408,7 +1444,23 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @return a SteppedComboBox bound to the property
    */
   protected final SteppedComboBox createValueListComboBox(final Property.ValueListProperty property, final StateObserver enabledState) {
-    final SteppedComboBox box = EntityUiUtil.createValueListComboBox(property, getEntityEditModel(), enabledState);
+    final SteppedComboBox box = EntityUiUtil.createValueListComboBox(property, getEntityEditModel(), true, enabledState);
+    setComponent(property.getPropertyID(), box);
+
+    return box;
+  }
+
+  /**
+   * Creates a SteppedComboBox containing the values defined in the given value list property,
+   * bound to the given property.
+   * @param property the property
+   * @param sortItems if true the items are sorted, otherwise the original ordering is preserved
+   * @param enabledState a state for controlling the enabled state of the component
+   * @return a SteppedComboBox bound to the property
+   */
+  protected final SteppedComboBox createValueListComboBox(final Property.ValueListProperty property, final boolean sortItems,
+                                                          final StateObserver enabledState) {
+    final SteppedComboBox box = EntityUiUtil.createValueListComboBox(property, getEntityEditModel(), sortItems, enabledState);
     setComponent(property.getPropertyID(), box);
 
     return box;

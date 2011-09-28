@@ -91,7 +91,6 @@ public final class PropertySearchPanel extends ColumnSearchPanel<Property.Column
       if (field instanceof JTextField) { //enter button toggles the filter on/off
         ((JTextField) field).addActionListener(getEnableAction());
       }
-      field.setToolTipText(isUpperBound ? "a" : "b");
 
       return field;
     }

@@ -21,7 +21,7 @@ import static org.junit.Assert.*;
 
 public class DefaultFilteredComboBoxModelTest {
 
-  private DefaultFilteredComboBoxModel<String> testModel;
+  private FilteredComboBoxModel<String> testModel;
 
   private static final String ANNA = "anna";
   private static final String KALLI = "kalli";
@@ -80,6 +80,28 @@ public class DefaultFilteredComboBoxModelTest {
   }
 
   @Test
+  public void filterWithSelection() {
+    testModel.setSelectedItem(BJORN);
+    testModel.setFilterCriteria(new FilterCriteria<String>() {
+      public boolean include(final String item) {
+        return !item.equals(BJORN);
+      }
+    });
+    assertNull(testModel.getSelectedItem());
+
+    testModel.setFilterCriteria(null);
+    testModel.setFilterSelectedItem(false);
+    testModel.setSelectedItem(BJORN);
+    testModel.setFilterCriteria(new FilterCriteria<String>() {
+      public boolean include(final String item) {
+        return !item.equals(BJORN);
+      }
+    });
+    assertNotNull(testModel.getSelectedItem());
+    assertEquals(BJORN, testModel.getSelectedValue());
+  }
+
+  @Test
   public void setFilterCriteria() {
     final Collection<Object> filteringEndedCounter = new ArrayList<Object>();
     final ActionListener filteringEndedListener = new ActionListener() {
@@ -118,7 +140,7 @@ public class DefaultFilteredComboBoxModelTest {
       }
     });
     assertTrue("The model should only contain 1 item", testModel.getSize() == 1);
-    assertTrue("The mopel should only contain '" + ANNA + "'", testModel.isVisible(ANNA));
+    assertTrue("The model should only contain '" + ANNA + "'", testModel.isVisible(ANNA));
 
     assertTrue(testModel.getFilteredItems().size() == 4);
     assertTrue(testModel.getVisibleItems().size() == 1);
