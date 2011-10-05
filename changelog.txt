@@ -2471,3 +2471,4 @@
   EntityEditPanel.createValueListComboBox() overloaded with sortItems parameter
   FilteredComboBoxModel.is/setFilterSelectedItem() added
   PropertySearchPanel redundant tool tips removed from input fields
+  FilteredTablePanel.selectTableColumns(), bug fixed

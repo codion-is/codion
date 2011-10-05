@@ -307,7 +307,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
             JOptionPane.QUESTION_MESSAGE, null,
             new String[] {Messages.get(Messages.SHOW_ALL_COLUMNS), Messages.get(Messages.CANCEL), Messages.get(Messages.OK)}, Messages.get(Messages.OK));
     if (result != 1) {
-      if (result == 2) {
+      if (result == 0) {
         for (final JCheckBox box : buttonList) {
           box.setSelected(true);
         }
