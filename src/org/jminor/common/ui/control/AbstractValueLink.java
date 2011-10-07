@@ -4,6 +4,7 @@
 package org.jminor.common.ui.control;
 
 import org.jminor.common.model.EventObserver;
+import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.Util;
 
 import javax.swing.SwingUtilities;
@@ -45,6 +46,20 @@ public abstract class AbstractValueLink<T, V> extends Control {
    * @param linkType the link Type
    */
   public AbstractValueLink(final T valueOwner, final EventObserver modelValueChangeEvent, final LinkType linkType) {
+    this(valueOwner,  modelValueChangeEvent, linkType, null);
+  }
+
+  /**
+   * Instantiates a new AbstractValueLink
+   * @param valueOwner the owner of the property value
+   * @param modelValueChangeEvent an EventObserver notified each time the UI should be updated to reflect changes
+   * to the value in the model
+   * @param linkType the link Type
+   * @param enabledObserver the state observer dictating the enable state of the control associated with this value link
+   */
+  public AbstractValueLink(final T valueOwner, final EventObserver modelValueChangeEvent, final LinkType linkType,
+                           final StateObserver enabledObserver) {
+    super(null, enabledObserver);
     Util.rejectNullValue(valueOwner, "valueOwner");
     Util.rejectNullValue(linkType, "linkType");
     this.valueOwner = valueOwner;

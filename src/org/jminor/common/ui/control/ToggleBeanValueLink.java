@@ -4,6 +4,7 @@
 package org.jminor.common.ui.control;
 
 import org.jminor.common.model.EventObserver;
+import org.jminor.common.model.StateObserver;
 
 import javax.swing.ButtonModel;
 import javax.swing.JToggleButton;
@@ -49,7 +50,21 @@ public final class ToggleBeanValueLink extends AbstractBeanValueLink {
    */
   public ToggleBeanValueLink(final Object owner, final String propertyName, final EventObserver valueChangeEvent,
                              final String caption, final LinkType linkType) {
-    this(new JToggleButton.ToggleButtonModel(), owner, propertyName, valueChangeEvent, caption, linkType);
+    this(new JToggleButton.ToggleButtonModel(), owner, propertyName, valueChangeEvent, caption, linkType, null);
+  }
+
+  /**
+   * Instantiates a new ToggleBeanValueLink.
+   * @param owner the value owner
+   * @param propertyName the property name
+   * @param valueChangeEvent an EventObserver notified each time the value changes
+   * @param caption the check box caption, if any
+   * @param linkType the link type
+   * @param enabledObserver the state observer dictating the enable state of the control associated with this value link
+   */
+  public ToggleBeanValueLink(final Object owner, final String propertyName, final EventObserver valueChangeEvent,
+                             final String caption, final LinkType linkType, final StateObserver enabledObserver) {
+    this(new JToggleButton.ToggleButtonModel(), owner, propertyName, valueChangeEvent, caption, linkType, enabledObserver);
   }
 
   /**
@@ -88,7 +103,23 @@ public final class ToggleBeanValueLink extends AbstractBeanValueLink {
    */
   public ToggleBeanValueLink(final ButtonModel buttonModel, final Object owner, final String propertyName,
                              final EventObserver valueChangeEvent, final String caption, final LinkType linkType) {
-    super(owner, propertyName, boolean.class, valueChangeEvent, linkType);
+    this(buttonModel, owner, propertyName, valueChangeEvent, caption, linkType, null);
+  }
+
+  /**
+   * Instantiates a new ToggleBeanValueLink.
+   * @param buttonModel the button model to link with the value
+   * @param owner the value owner
+   * @param propertyName the property name
+   * @param valueChangeEvent an EventObserver notified each time the value changes
+   * @param caption the check box caption, if any
+   * @param linkType the link type
+   * @param enabledObserver the state observer dictating the enable state of the control associated with this value link
+   */
+  public ToggleBeanValueLink(final ButtonModel buttonModel, final Object owner, final String propertyName,
+                             final EventObserver valueChangeEvent, final String caption, final LinkType linkType,
+                             final StateObserver enabledObserver) {
+    super(owner, propertyName, boolean.class, valueChangeEvent, linkType, enabledObserver);
     this.buttonModel = buttonModel;
     this.buttonModel.addItemListener(new ItemListener() {
       /** {@inheritDoc} */

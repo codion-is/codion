@@ -2472,3 +2472,4 @@
   FilteredComboBoxModel.is/setFilterSelectedItem() added
   PropertySearchPanel redundant tool tips removed from input fields
   FilteredTablePanel.selectTableColumns(), bug fixed
+  AbstractValueLink constructor overloaded with enabledObserver parameter, all the way up through AbstractBeanValueLink, ToggleBeanValueLink and Controls

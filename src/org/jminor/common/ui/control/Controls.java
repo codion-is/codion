@@ -18,7 +18,12 @@ public final class Controls {
 
   public static ToggleBeanValueLink toggleControl(final Object owner, final String propertyName, final String caption,
                                                   final EventObserver changeEvent) {
-    return toggleControl(owner, propertyName, caption, changeEvent, null);
+    return toggleControl(owner, propertyName, caption, changeEvent, (StateObserver) null);
+  }
+
+  public static ToggleBeanValueLink toggleControl(final Object owner, final String propertyName, final String caption,
+                                                  final EventObserver changeEvent, final StateObserver enabledObserver) {
+    return new ToggleBeanValueLink(owner, propertyName, changeEvent, caption, LinkType.READ_WRITE, enabledObserver);
   }
 
   public static ToggleBeanValueLink toggleControl(final Object owner, final String propertyName, final String caption,

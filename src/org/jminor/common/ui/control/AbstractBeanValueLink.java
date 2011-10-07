@@ -4,6 +4,7 @@
 package org.jminor.common.ui.control;
 
 import org.jminor.common.model.EventObserver;
+import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.Util;
 
 import java.lang.reflect.Method;
@@ -40,7 +41,22 @@ public abstract class AbstractBeanValueLink extends AbstractValueLink<Object, Ob
    */
   public AbstractBeanValueLink(final Object owner, final String propertyName, final Class<?> valueClass,
                                final EventObserver valueChangeEvent, final LinkType linkType) {
-    super(owner, valueChangeEvent, linkType);
+    this(owner, propertyName, valueClass, valueChangeEvent, linkType, null);
+  }
+
+  /**
+   * Instantiates a new AbstractBeanValueLink.
+   * @param owner the value owner
+   * @param propertyName the name of the property
+   * @param valueClass the value class
+   * @param valueChangeEvent an event observer notified each time the value changes
+   * @param linkType the link type
+   * @param enabledObserver the state observer dictating the enable state of the control associated with this value link
+   */
+  public AbstractBeanValueLink(final Object owner, final String propertyName, final Class<?> valueClass,
+                               final EventObserver valueChangeEvent, final LinkType linkType,
+                               final StateObserver enabledObserver) {
+    super(owner, valueChangeEvent, linkType, enabledObserver);
     try {
       Util.rejectNullValue(propertyName, "propertyName");
       Util.rejectNullValue(valueClass, "valueClass");
