@@ -2473,3 +2473,4 @@
   PropertySearchPanel redundant tool tips removed from input fields
   FilteredTablePanel.selectTableColumns(), bug fixed
   AbstractValueLink constructor overloaded with enabledObserver parameter, all the way up through AbstractBeanValueLink, ToggleBeanValueLink and Controls
+  UiUtil.showImage() now sets the wait cursor while the image is being loaded and rendered

@@ -130,11 +130,11 @@ public final class UiUtil {
     txt.setEditable(false);
     txt.setHorizontalAlignment(JTextField.CENTER);
     new Timer(true).schedule(new TimerTask() {
-      @Override
-      public void run() {
-        txt.setText(Util.getMemoryUsageString());
-      }
-    }, new Date(), updateInterval);
+              @Override
+              public void run() {
+                txt.setText(Util.getMemoryUsageString());
+              }
+            }, new Date(), updateInterval);
 
     return txt;
   }
@@ -1035,20 +1035,27 @@ public final class UiUtil {
         throw new IllegalArgumentException(Messages.get(Messages.UNKNOWN_FILE_TYPE) + ": " + type);
       }
     }
-    final BufferedImage image;
-    if (imagePath.toLowerCase().startsWith("http")) {
-      final URL url = new URL(imagePath);
-      image = ImageIO.read(url);
-    }
-    else {
-      final File imageFile = new File(imagePath);
-      if (!imageFile.exists()) {
-        throw new RuntimeException(Messages.get(Messages.FILE_NOT_FOUND) + ": " + imagePath);
+    final NavigableImagePanel imagePanel;
+    try {
+      setWaitCursor(true, dialogParent);
+      imagePanel = new NavigableImagePanel();
+      final BufferedImage image;
+      if (imagePath.toLowerCase().startsWith("http")) {
+        final URL url = new URL(imagePath);
+        image = ImageIO.read(url);
       }
-      image = ImageIO.read(imageFile);
+      else {
+        final File imageFile = new File(imagePath);
+        if (!imageFile.exists()) {
+          throw new RuntimeException(Messages.get(Messages.FILE_NOT_FOUND) + ": " + imagePath);
+        }
+        image = ImageIO.read(imageFile);
+      }
+      imagePanel.setImage(image);
     }
-    final NavigableImagePanel imagePanel = new NavigableImagePanel();
-    imagePanel.setImage(image);
+    finally {
+      setWaitCursor(false, dialogParent);
+    }
     final JDialog dialog = initializeDialog(dialogParent, imagePanel);
     dialog.setTitle(imagePath);
     dialog.setVisible(true);
