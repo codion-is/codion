@@ -45,9 +45,9 @@ public final class InputProviderPanel extends JPanel implements InputProvider {
   }
 
   /**
-   * @return true if the edit has been accepted
+   * @return true if the input has been accepted, that is, the OK button has been clicked
    */
-  public boolean isEditAccepted() {
+  public boolean isInputAccepted() {
     return buttonValue == JOptionPane.OK_OPTION;
   }
 
@@ -76,7 +76,6 @@ public final class InputProviderPanel extends JPanel implements InputProvider {
   }
 
   /**
-   *
    * @param listener a listener notified each time the OK button is clicked
    */
   public void addButtonClickListener(final ActionListener listener) {

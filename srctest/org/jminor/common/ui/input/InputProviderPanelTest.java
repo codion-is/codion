@@ -1,6 +1,5 @@
 package org.jminor.common.ui.input;
 
-import static org.junit.Assert.*;
 import org.junit.Test;
 
 import javax.swing.JComponent;
@@ -9,6 +8,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
+
+import static org.junit.Assert.*;
 
 public class InputProviderPanelTest {
 
@@ -26,7 +27,7 @@ public class InputProviderPanelTest {
     assertEquals(txt, panel.getInputComponent());
     txt.setText("hello");
     assertEquals("hello", panel.getValue());
-    assertFalse(panel.isEditAccepted());
+    assertFalse(panel.isInputAccepted());
     final Collection<Object> event = new ArrayList<Object>();
     final ActionListener listener = new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
@@ -35,7 +36,7 @@ public class InputProviderPanelTest {
     };
     panel.addButtonClickListener(listener);
     panel.getOkButton().doClick();
-    assertTrue(panel.isEditAccepted());
+    assertTrue(panel.isInputAccepted());
     assertEquals(1, event.size());
     panel.removeButtonClickListener(listener);
   }

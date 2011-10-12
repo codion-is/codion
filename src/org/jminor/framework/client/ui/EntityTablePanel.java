@@ -602,7 +602,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
             getInputProvider(propertyToUpdate, selectedEntities));
     UiUtil.showInDialog(this, inputPanel, true, FrameworkMessages.get(FrameworkMessages.SET_PROPERTY_VALUE),
             null, inputPanel.getOkButton(), inputPanel.getButtonClickObserver());
-    if (inputPanel.isEditAccepted()) {
+    if (inputPanel.isInputAccepted()) {
       EntityUtil.setPropertyValue(propertyToUpdate.getPropertyID(), inputPanel.getValue(), selectedEntities);
       try {
         UiUtil.setWaitCursor(true, this);
