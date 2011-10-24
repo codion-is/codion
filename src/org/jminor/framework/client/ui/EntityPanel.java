@@ -527,6 +527,11 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
         setDetailPanelState(EntityPanel.EMBEDDED);
       }
       detailPanelTabbedPane.setSelectedComponent((JComponent) detailPanel);
+      SwingUtilities.invokeLater(new Runnable() {
+        public void run() {
+          entityModel.setLinkedDetailModels(getDetailPanelState() != HIDDEN ? getTabbedDetailPanel().getModel() : null);
+        }
+      });
     }
   }
 
@@ -1137,7 +1142,6 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
     tabbedPane.addChangeListener(new ChangeListener() {
       /** {@inheritDoc} */
       public void stateChanged(final ChangeEvent e) {
-        getModel().setLinkedDetailModels(getDetailPanelState() != HIDDEN ? getTabbedDetailPanel().getModel() : null);
         getTabbedDetailPanel().activatePanel();
       }
     });

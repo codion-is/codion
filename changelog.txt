@@ -2475,3 +2475,4 @@
   AbstractValueLink constructor overloaded with enabledObserver parameter, all the way up through AbstractBeanValueLink, ToggleBeanValueLink and Controls
   UiUtil.showImage() now sets the wait cursor while the image is being loaded and rendered
   InputProviderPanel.isEditAccepted() renamed to isInputAccepted()
+  EntityPanel.setActiveDetailPanel() uses SwingUtilities.invokeLater() when setting the linked detail model, selected tab now shown before table model is refreshed
