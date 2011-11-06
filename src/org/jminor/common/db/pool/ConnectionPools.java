@@ -14,7 +14,7 @@ public final class ConnectionPools {
   private ConnectionPools() {}
 
   /**
-   * Instantiates a new ConnectionPoolImpl.
+   * Instantiates a new ConnectionPool.
    * @param connectionProvider the connection provider
    * @param user the user this pool is based on
    * @return a new connection pool

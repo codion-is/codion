@@ -77,10 +77,10 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
     this.connectionProvider = connectionProvider;
     for (final Property property : Entities.getProperties(entityID).values()) {
       if (!property.isHidden()) {
-      final ColumnSearchModel<Property> filterModel = filterModelProvider.initializePropertyFilterModel(property);
-      this.propertyFilterModels.put(filterModel.getColumnIdentifier().getPropertyID(), filterModel);
+        final ColumnSearchModel<Property> filterModel = filterModelProvider.initializePropertyFilterModel(property);
+        this.propertyFilterModels.put(filterModel.getColumnIdentifier().getPropertyID(), filterModel);
       }
-      if (property instanceof Property.SearchableProperty && !property.hasParentProperty()) {
+      if (property instanceof Property.SearchableProperty && !property.hasParentProperty() && !isAggregateColumnProperty(property)) {
         final PropertySearchModel<? extends Property.SearchableProperty> searchModel =
                 searchModelProvider.initializePropertySearchModel((Property.SearchableProperty) property, connectionProvider);
         if (searchModel != null) {
@@ -351,5 +351,13 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
     }
 
     return stringBuilder.toString();
+  }
+
+  /**
+   * @param property the property
+   * @return true if the property is a column property and that column is the result of an aggregate function
+   */
+  private static boolean isAggregateColumnProperty(final Property property) {
+    return property instanceof Property.ColumnProperty && ((Property.ColumnProperty) property).isAggregateColumn();
   }
 }

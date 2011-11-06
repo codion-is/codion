@@ -286,7 +286,7 @@ public interface Property extends Attribute {
      * @param updatable specifies whether this property is updatable
      * @return this Property instance
      */
-    ColumnProperty setUpdatable(boolean updatable);
+    ColumnProperty setUpdatable(final boolean updatable);
 
     /**
      * Sets the index to use when fetching the value of this column from a result set
@@ -305,6 +305,30 @@ public interface Property extends Attribute {
      * @return this Property instance
      */
     ColumnProperty setSearchable(final boolean searchable);
+
+    /**
+     * @param groupingColumn true if this column should be used in a group by clause
+     * @throws IllegalStateException in case the column has already been defined as an aggregate column
+     * @return this Property instance
+     */
+    ColumnProperty setGroupingColumn(final boolean groupingColumn);
+
+    /**
+     * @return true if this column is a group by column
+     */
+    boolean isGroupingColumn();
+
+    /**
+     * @param aggregateColumn true if this column is an aggregate function column
+     * @throws IllegalStateException in case the column has already been defined as a grouping column
+     * @return this Property instance
+     */
+    ColumnProperty setAggregateColumn(final boolean aggregateColumn);
+
+    /**
+     * @return true if this is an aggregate column
+     */
+    boolean isAggregateColumn();
   }
 
   /**

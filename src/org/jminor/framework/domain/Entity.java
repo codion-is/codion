@@ -502,6 +502,9 @@ public interface Entity extends ValueChangeMap<String, Object>, Comparable<Entit
      * include the "group by" keywords.
      * @param groupByClause the group by clause
      * @return this {@link Entity.Definition} instance
+     * @throws IllegalStateException in case a group by clause has already been set,
+     * for example automatically, based on grouping properties
+     * @see Property.ColumnProperty#setGroupingColumn(boolean)
      */
     Definition setGroupByClause(final String groupByClause);
 

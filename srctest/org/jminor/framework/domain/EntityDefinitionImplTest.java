@@ -33,6 +33,24 @@ public class EntityDefinitionImplTest {
     assertEquals("name", definition.getGroupByClause());
   }
 
+  @Test
+  public void testGroupingProperties() {
+    final Entity.Definition definition = new EntityDefinitionImpl("entityID",
+            Properties.primaryKeyProperty("p0").setAggregateColumn(true),
+            Properties.columnProperty("p1").setGroupingColumn(true),
+            Properties.columnProperty("p2").setGroupingColumn(true));
+    assertEquals("p1, p2", definition.getGroupByClause());
+  }
+
+  @Test(expected = IllegalStateException.class)
+  public void testSetGroupByClauseWithGroupingProperties() {
+    final Entity.Definition definition = new EntityDefinitionImpl("entityID",
+            Properties.primaryKeyProperty("p0").setAggregateColumn(true),
+            Properties.columnProperty("p1").setGroupingColumn(true),
+            Properties.columnProperty("p2").setGroupingColumn(true));
+    definition.setGroupByClause("p1, p2");
+  }
+
   @Test(expected = IllegalArgumentException.class)
   public void testNoPrimaryKey() {
     new EntityDefinitionImpl("entityID", "tableName",

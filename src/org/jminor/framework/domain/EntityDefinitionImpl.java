@@ -166,6 +166,7 @@ final class EntityDefinitionImpl implements Entity.Definition {
     this.tableName = tableName;
     this.selectTableName = tableName;
     this.properties = Collections.unmodifiableMap(initializeProperties(entityID, propertyDefinitions));
+    this.groupByClause = initializeGroupByClause(getColumnProperties());
     final String[] selectColumnNames = initializeSelectColumnNames(getColumnProperties());
     for (int idx = 0; idx < selectColumnNames.length; idx++) {
       ((Property.ColumnProperty) properties.get(selectColumnNames[idx])).setSelectIndex(idx + 1);
@@ -276,6 +277,9 @@ final class EntityDefinitionImpl implements Entity.Definition {
   /** {@inheritDoc} */
   public Entity.Definition setGroupByClause(final String groupByClause) {
     Util.rejectNullValue(groupByClause, "groupByClause");
+    if (this.groupByClause != null) {
+      throw new IllegalStateException("Group by clause has already been set: " + this.groupByClause);
+    }
     this.groupByClause = groupByClause;
     return this;
   }
@@ -651,6 +655,34 @@ final class EntityDefinitionImpl implements Entity.Definition {
     }
 
     return columnNames.toArray(new String[columnNames.size()]);
+  }
+
+  /**
+   * @param databaseProperties the column properties
+   * @return a list of grouping columns separated with a comma, to serve as a group by clause,
+   * null if no grouping properties are defined
+   */
+  private static String initializeGroupByClause(final Collection<Property.ColumnProperty> databaseProperties) {
+    final List<Property> groupingProperties = new ArrayList<Property>(databaseProperties.size());
+    for (final Property.ColumnProperty property : databaseProperties) {
+      if (property.isGroupingColumn()) {
+        groupingProperties.add(property);
+      }
+    }
+    if (groupingProperties.isEmpty()) {
+      return null;
+    }
+
+    final StringBuilder stringBuilder = new StringBuilder();
+    int i = 0;
+    for (final Property property : groupingProperties) {
+      stringBuilder.append(property.getPropertyID());
+      if (i++ < groupingProperties.size() - 1) {
+        stringBuilder.append(", ");
+      }
+    }
+
+    return stringBuilder.toString();
   }
 
   private static String initializeSelectColumnsString(final Collection<Property.ColumnProperty> databaseProperties) {

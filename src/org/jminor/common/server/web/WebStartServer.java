@@ -35,7 +35,6 @@ public final class WebStartServer extends Serve {
   }
 
   /**
-   *
    * Instantiates a new WebStartServer on the given port.
    * @param documentRoot the document root
    * @param port the port on which to serve files
@@ -46,7 +45,7 @@ public final class WebStartServer extends Serve {
 
     setMappingTable(aliases);
 
-    // setting properties for the server, and exchangable Acceptors
+    // setting properties for the server, and exchangeable Acceptors
     final Map<String, Object> properties = new HashMap<String, Object>();
     properties.put("port", port);
     properties.put(Acme.Serve.Serve.ARG_NOHUP, "nohup");

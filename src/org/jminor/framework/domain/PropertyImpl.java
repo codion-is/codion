@@ -488,6 +488,8 @@ class PropertyImpl implements Property, Serializable {
     private boolean columnHasDefaultValue = false;
     private boolean updatable = true;
     private boolean searchable = true;
+    private boolean groupingColumn = false;
+    private boolean aggregateColumn = false;
 
     ColumnPropertyImpl(final String propertyID, final int type, final String caption) {
       super(propertyID, type, caption);
@@ -545,6 +547,34 @@ class PropertyImpl implements Property, Serializable {
     /** {@inheritDoc} */
     public final int getSelectIndex() {
       return selectIndex;
+    }
+
+    /** {@inheritDoc} */
+    public ColumnProperty setGroupingColumn(final boolean groupingColumn) {
+      if (aggregateColumn) {
+        throw new IllegalStateException(columnName + " is an aggregate column");
+      }
+      this.groupingColumn = groupingColumn;
+      return this;
+    }
+
+    /** {@inheritDoc} */
+    public boolean isGroupingColumn() {
+      return groupingColumn;
+    }
+
+    /** {@inheritDoc} */
+    public ColumnProperty setAggregateColumn(final boolean aggregateColumn) {
+      if (groupingColumn) {
+        throw new IllegalStateException(columnName + " is a grouping column");
+      }
+      this.aggregateColumn = aggregateColumn;
+      return this;
+    }
+
+    /** {@inheritDoc} */
+    public boolean isAggregateColumn() {
+      return aggregateColumn;
     }
   }
 
