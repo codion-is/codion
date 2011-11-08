@@ -2479,3 +2479,4 @@
   groupingColumn and aggregateColumn attributes added to Property.ColumnProperty, groupByClause automatically set in EntityDefinitionImpl based on those, also used to exclude a search model for aggregate columns in DefaultEntityTableSearchModel, some spelling errors fixed
   RemoteEntityConnectionImpl now initializes the database connection on construction, so that wrong username or password is handled immediately, in case of connection pool it checks the username and password manually
   Configuration.SERVER_CONNECTION_POOLING_INITIAL now takes a comma separated list of username:password combinations
+  Configuration.SERVER_CONNECTION_TIMEOUT added, used int EntityConnectionServer

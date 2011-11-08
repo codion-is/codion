@@ -490,6 +490,7 @@
     <copy file="${dist}/${ant.project.name}-src-test.jar" todir="${deploy.path}" overwrite="true"/>
     <copy file="${dist}/${ant.project.name}-src-demos.jar" todir="${deploy.path}" overwrite="true"/>
     <copy file="${dist}/${ant.project.name}-api-doc.jar" todir="${deploy.path}" overwrite="true"/>
+    <copy file="${basedir}/changelog.txt" todir="${deploy.path}" overwrite="true"/>
   </target>
 
   <target name="create_unit_test_report"

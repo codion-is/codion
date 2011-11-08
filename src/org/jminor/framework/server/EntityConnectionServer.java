@@ -51,7 +51,6 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
           Configuration.getBooleanValue(Configuration.SERVER_CONNECTION_SSL_ENABLED);
 
   private static final int DEFAULT_CHECK_INTERVAL_MS = 30000;
-  private static final int DEFAULT_TIMEOUT_MS = 120000;
 
   static final int REGISTRY_PORT;
   private static final int SERVER_PORT;
@@ -85,7 +84,7 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
   private WebStartServer webServer;
   private Timer connectionTimeoutTimer;
   private int maintenanceInterval = DEFAULT_CHECK_INTERVAL_MS;
-  private int connectionTimeout = DEFAULT_TIMEOUT_MS;
+  private int connectionTimeout = Configuration.getIntValue(Configuration.SERVER_CONNECTION_TIMEOUT);
 
   /**
    * Constructs a new RemoteEntityServer and binds it to the given registry
