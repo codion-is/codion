@@ -684,7 +684,7 @@
       <jvmarg value="-Djminor.db.embedded=${demo.db.embedded}"/>
       <jvmarg value="-Djminor.db.embeddedInMemory=${demo.db.embeddedInMemory}"/>
       <jvmarg value="-Djminor.db.initScript=${demo.db.initScript}"/>
-      <jvmarg value="-Djminor.server.pooling.initial=scott"/>
+      <jvmarg value="-Djminor.server.pooling.initial=scott:tiger"/>
       <jvmarg value="-Djminor.server.clientLoggingEnabled=true"/>
       <jvmarg value="-Djminor.server.port=2222"/>
       <jvmarg value="-Djminor.server.admin.port=4444"/>

@@ -4,6 +4,7 @@
 package org.jminor.framework.server;
 
 import org.jminor.common.db.Database;
+import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.server.AbstractRemoteServer;
@@ -337,21 +338,29 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
   /** {@inheritDoc} */
   @Override
   protected RemoteEntityConnectionImpl doConnect(final ClientInfo clientInfo) throws RemoteException {
-    final RemoteEntityConnectionImpl connection = new RemoteEntityConnectionImpl(database, clientInfo, SERVER_DB_PORT,
-            CLIENT_LOGGING_ENABLED, SSL_CONNECTION_ENABLED);
-    connection.addDisconnectListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent e) {
-        try {
-          disconnect(connection.getClientInfo().getClientID());
+    try {
+      final RemoteEntityConnectionImpl connection = new RemoteEntityConnectionImpl(database, clientInfo, SERVER_DB_PORT,
+              CLIENT_LOGGING_ENABLED, SSL_CONNECTION_ENABLED);
+      connection.addDisconnectListener(new ActionListener() {
+        public void actionPerformed(final ActionEvent e) {
+          try {
+            disconnect(connection.getClientInfo().getClientID());
+          }
+          catch (RemoteException ex) {
+            LOG.error(ex.getMessage(), ex);
+          }
         }
-        catch (RemoteException ex) {
-          LOG.error(ex.getMessage(), ex);
-        }
-      }
-    });
-    LOG.debug("{} connected", clientInfo);
+      });
+      LOG.debug("{} connected", clientInfo);
 
-    return connection;
+      return connection;
+    }
+    catch (DatabaseException e) {
+      throw new RemoteException(e.getMessage(), e);
+    }
+    catch (ClassNotFoundException e) {
+      throw new RemoteException(e.getMessage(), e);
+    }
   }
 
   private static void loadDefaultDomainModels() throws ClassNotFoundException {

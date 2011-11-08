@@ -74,7 +74,8 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
    * Constructs a new EntityConnectionImpl instance
    * @param database the Database instance
    * @param user the user used for connecting to the database
-   * @throws DatabaseException in case there is a problem connecting to the database
+   * @throws DatabaseException in case there is a problem connecting to the database,
+   * such as a wrong username or password being provided
    * @throws ClassNotFoundException in case the JDBC driver class is not found
    */
   EntityConnectionImpl(final Database database, final User user) throws DatabaseException, ClassNotFoundException {

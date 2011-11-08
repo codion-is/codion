@@ -141,7 +141,8 @@ public final class Configuration {
   public static final String SERVER_CONNECTION_SSL_ENABLED = "jminor.server.connection.sslEnabled";
 
   /**
-   * Specifies a comma separated list of usernames for which to create connection pools on startup
+   * Specifies a comma separated list of username:password combinations for which to create connection pools on startup
+   * Example: scott:tiger,john:foo,paul:bar
    */
   public static final String SERVER_CONNECTION_POOLING_INITIAL = "jminor.server.pooling.initial";
 

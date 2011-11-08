@@ -133,23 +133,40 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
    * @param loggingEnabled specifies whether or not method logging is enabled
    * @param sslEnabled specifies whether or not ssl should be enabled
    * @throws RemoteException in case of an exception
+   * @throws DatabaseException in case a database connection can not be established, for example
+   * if a wrong username or password is provided
+   * @throws ClassNotFoundException in case the database driver class is not found
    */
   RemoteEntityConnectionImpl(final Database database, final ClientInfo clientInfo, final int port,
-                             final boolean loggingEnabled, final boolean sslEnabled) throws RemoteException {
+                             final boolean loggingEnabled, final boolean sslEnabled)
+          throws DatabaseException, ClassNotFoundException, RemoteException {
     super(port, sslEnabled ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
             sslEnabled ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
-    if (CONNECTION_POOLS.containsKey(clientInfo.getUser())) {
-      CONNECTION_POOLS.get(clientInfo.getUser()).getUser().setPassword(clientInfo.getUser().getPassword());
-    }
-    this.database = database;
-    this.clientInfo = clientInfo;
-    this.connectionProxy = initializeProxy();
-    this.methodLogger = new RemoteLogger();
-    this.methodLogger.setEnabled(loggingEnabled);
     try {
-      clientInfo.setClientHost(getClientHost());
+      if (CONNECTION_POOLS.containsKey(clientInfo.getUser())) {
+        checkConnectionPoolCredentials(clientInfo.getUser());
+      }
+      else {
+        entityConnection = createDatabaseConnection(database, clientInfo.getUser());
+      }
+      this.database = database;
+      this.clientInfo = clientInfo;
+      this.connectionProxy = initializeProxy();
+      this.methodLogger = new RemoteLogger();
+      this.methodLogger.setEnabled(loggingEnabled);
+      try {
+        clientInfo.setClientHost(getClientHost());
+      }
+      catch (ServerNotActiveException e) {/**/}
     }
-    catch (ServerNotActiveException e) {/**/}
+    catch (DatabaseException e) {
+      disconnect();
+      throw e;
+    }
+    catch (ClassNotFoundException e) {
+      disconnect();
+      throw e;
+    }
   }
 
   /** {@inheritDoc} */
@@ -477,8 +494,15 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
   static void initializeConnectionPools(final Database database) {
     final String initialPoolUsers = Configuration.getStringValue(Configuration.SERVER_CONNECTION_POOLING_INITIAL);
     if (!Util.nullOrEmpty(initialPoolUsers)) {
-      for (final String username : initialPoolUsers.split(",")) {
-        final User poolUser = new User(username.trim(), null);
+      for (final String commaSplit : initialPoolUsers.split(",")) {
+        final String usernamePassword = commaSplit.trim();
+        final int splitIndex = usernamePassword.indexOf(":");
+        if (splitIndex == -1) {
+          throw new IllegalArgumentException("Username and password for pooled connection should be separated by ':', " + usernamePassword);
+        }
+        final String username = usernamePassword.substring(0, splitIndex);
+        final String password = usernamePassword.substring(splitIndex + 1, usernamePassword.length());
+        final User poolUser = new User(username, password);
         CONNECTION_POOLS.put(poolUser, ConnectionPools.createPool(new ConnectionProvider(database), poolUser));
       }
     }
@@ -549,6 +573,19 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
 
   private static EntityConnection createDatabaseConnection(final Database database, final User user) throws ClassNotFoundException, DatabaseException {
     return EntityConnections.createConnection(database, user);
+  }
+
+  /**
+   * Checks the credentials provided by <code>clientInfo</code> against the credentials
+   * found in the connection pool
+   * @param user the user credentials to check
+   * @throws DatabaseException in case the password does not match the one in the pool
+   */
+  private static void checkConnectionPoolCredentials(final User user) throws DatabaseException {
+    final User poolUser = CONNECTION_POOLS.get(user).getUser();
+    if (!poolUser.getPassword().equals(user.getPassword())) {
+      throw new DatabaseException("Wrong username or password for connection pool");
+    }
   }
 
   private static final String IS_CONNECTED = "isConnected";

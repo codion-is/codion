@@ -40,7 +40,7 @@ public class RemoteEntityServerTest {
     Configuration.setValue(Configuration.SERVER_DB_PORT, "2223");
     Configuration.setValue(Configuration.SERVER_ADMIN_PORT, "3334");
     Configuration.setValue(Configuration.SERVER_HOST_NAME, "localhost");
-    Configuration.setValue(Configuration.SERVER_CONNECTION_POOLING_INITIAL, User.UNIT_TEST_USER.getUsername());
+    Configuration.setValue(Configuration.SERVER_CONNECTION_POOLING_INITIAL, User.UNIT_TEST_USER.getUsername() + ":" + User.UNIT_TEST_USER.getPassword());
     Configuration.setValue(Configuration.SERVER_CONNECTION_SSL_ENABLED, true);
     Configuration.setValue(Configuration.SERVER_DOMAIN_MODEL_CLASSES, "org.jminor.framework.demos.empdept.domain.EmpDept,org.jminor.framework.demos.petstore.domain.Petstore");
     Configuration.setValue("java.rmi.server.hostname", "localhost");
@@ -73,6 +73,11 @@ public class RemoteEntityServerTest {
     admin = null;
     server = null;
     System.setSecurityManager(defaultManager);
+  }
+
+  @Test(expected = RuntimeException.class)
+  public void testWrongPassword() throws Exception {
+    new RemoteEntityConnectionProvider(new User(User.UNIT_TEST_USER.getUsername(), "foobar"), UUID.randomUUID(), getClass().getSimpleName()).getConnection();
   }
 
   @Test

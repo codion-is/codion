@@ -4,6 +4,7 @@
 package org.jminor.framework.server;
 
 import org.jminor.common.db.Databases;
+import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.server.ClientInfo;
@@ -24,6 +25,18 @@ import java.util.UUID;
 import static org.junit.Assert.assertTrue;
 
 public class RemoteEntityConnectionImplTest {
+
+  @Test(expected = DatabaseException.class)
+  public void wrongUsername() throws Exception {
+    final ClientInfo info = new ClientInfo(UUID.randomUUID(), "RemoteEntityConnectionImplTestClient", new User("foo", "bar"));
+    new RemoteEntityConnectionImpl(Databases.createInstance(), info, 2222, true, false);
+  }
+
+  @Test(expected = DatabaseException.class)
+  public void wrongPassword() throws Exception {
+    final ClientInfo info = new ClientInfo(UUID.randomUUID(), "RemoteEntityConnectionImplTestClient", new User(User.UNIT_TEST_USER.getUsername(), "xxxxx"));
+    new RemoteEntityConnectionImpl(Databases.createInstance(), info, 2222, true, false);
+  }
 
   @Test
   public void test() throws Exception {

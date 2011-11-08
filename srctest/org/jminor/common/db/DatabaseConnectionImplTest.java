@@ -3,6 +3,7 @@
  */
 package org.jminor.common.db;
 
+import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.User;
 
 import org.junit.After;
@@ -99,6 +100,16 @@ public class DatabaseConnectionImplTest {
         catch (Exception e) {/**/}
       }
     }
+  }
+
+  @Test(expected = DatabaseException.class)
+  public void wrongUsername() throws Exception {
+    new DatabaseConnectionImpl(DATABASE, new User("foo", "bar"));
+  }
+
+  @Test(expected = DatabaseException.class)
+  public void wrongPassword() throws Exception {
+    new DatabaseConnectionImpl(DATABASE, new User(User.UNIT_TEST_USER.getUsername(), "xxxxx"));
   }
 
   @Test
