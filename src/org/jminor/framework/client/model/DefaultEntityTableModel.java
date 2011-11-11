@@ -9,6 +9,7 @@ import org.jminor.common.model.AbstractFilteredTableModel;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.SortingDirective;
+import org.jminor.common.model.Util;
 import org.jminor.common.model.reports.ReportDataWrapper;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.client.model.event.DeleteEvent;
@@ -94,7 +95,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   private EntityEditModel editModel;
 
   /**
-   * If true this table model behaves like a detail model, that is
+   * If true this table model behaves like a detail model
    */
   private boolean isDetailModel = false;
 
@@ -134,10 +135,15 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
    * @param entityID the entity ID
    * @param connectionProvider the db provider
    * @param searchModel the search model
+   * @throws IllegalArgumentException if <code>searchModel</code> is null or the search model entityID
+   * does not match the one supplied as parameter
    */
   public DefaultEntityTableModel(final String entityID, final EntityConnectionProvider connectionProvider,
                                  final EntityTableSearchModel searchModel) {
-    super(initializeColumnModel(entityID), searchModel.getPropertyFilterModelsOrdered());
+    super(initializeColumnModel(entityID), Util.rejectNullValue(searchModel, "searchModelModel").getPropertyFilterModelsOrdered());
+    if (!searchModel.getEntityID().equals(entityID)) {
+      throw new IllegalArgumentException("Entity ID mismatch, searchModel: " + searchModel.getEntityID() + ", tableModel: " + entityID);
+    }
     this.entityID = entityID;
     this.connectionProvider = connectionProvider;
     this.searchModel = searchModel;

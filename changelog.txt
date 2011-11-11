@@ -2487,3 +2487,7 @@
   DefaultForeignKeySearchModelTest improved
   DefaultForeignKeySearchModel.getSearchEntities() bug fixed
   ConnectionPoolImplTest, added trying to return a connection with an open transaction to the pool
+  DefaultEntityTableModel constructor now throws IllegalArgumentException if searchModel is null or the search model entityID does not match the one supplied as parameter
+  DefaultEntityTableModelTest updated accordingly
+  AbstractFilteredTableModel, null check added for columnModel parameter
+  AbstractFilteredTableModel updated accordingly

@@ -156,9 +156,11 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
    * Instantiates a new table model.
    * @param columnModel the column model to base this table model on
    * @param columnFilterModels the column filter models
+   * @throws IllegalArgumentException in case <code>columnModel</code> is null
    */
   public AbstractFilteredTableModel(final TableColumnModel columnModel,
                                     final List<? extends ColumnSearchModel<C>> columnFilterModels) {
+    Util.rejectNullValue(columnModel, "columnModel");
     this.columnModel = columnModel;
     this.columnIndexCache = new int[columnModel.getColumnCount()];
     if (columnFilterModels != null) {

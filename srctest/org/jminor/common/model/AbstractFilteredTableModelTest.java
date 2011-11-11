@@ -55,6 +55,18 @@ public final class AbstractFilteredTableModelTest {
     tableModel = createTestModel();
   }
 
+  @Test(expected = IllegalArgumentException.class)
+  public void nullColumnModel() {
+    new AbstractFilteredTableModel<String, Integer>(null, null) {
+      @Override
+      protected void doRefresh() {}
+
+      public Object getValueAt(final int rowIndex, final int columnIndex) {
+        return null;
+      }
+    };
+  }
+
   @Test
   public void refresh() {
     final Collection<Object> started = new ArrayList<Object>();
