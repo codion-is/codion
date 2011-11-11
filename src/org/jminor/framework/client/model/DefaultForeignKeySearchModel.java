@@ -15,6 +15,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -93,6 +94,13 @@ public class DefaultForeignKeySearchModel extends DefaultColumnSearchModel<Prope
   /** {@inheritDoc} */
   public final EntityLookupModel getEntityLookupModel() {
     return entityLookupModel;
+  }
+
+  /** {@inheritDoc} */
+  public Collection<Entity> getSearchEntities() {
+    //noinspection unchecked
+    final Collection<Entity> entities = (Collection<Entity>) getUpperBound();
+    return entities == null ? Collections.<Entity>emptyList() : entities;
   }
 
   /**

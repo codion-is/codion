@@ -54,7 +54,7 @@ public class EntityPanelProvider implements Comparable {
    * @param entityID the entity ID
    */
   public EntityPanelProvider(final String entityID) {
-    this(entityID, (String) null);
+    this(entityID, null);
   }
 
   /**
@@ -252,7 +252,7 @@ public class EntityPanelProvider implements Comparable {
 
   public final EntityPanel createPanel(final EntityModel model) {
     if (model == null) {
-      throw new IllegalArgumentException("Can not create a EntityPanel without an EntityModel");
+      throw new IllegalArgumentException("Can not create EntityPanel without an EntityModel");
     }
     try {
       final EntityPanel entityPanel = initializePanel(model);
@@ -266,7 +266,7 @@ public class EntityPanelProvider implements Comparable {
           final EntityModelProvider detailModelProvider = detailProvider.getModelProvider();
           final EntityPanel detailPanel;
           if (!detailModelProvider.getModelClass().equals(DefaultEntityModel.class)) {
-            final EntityModel detailModel = model.getDetailModel(detailProvider.getModelProvider().getModelClass());
+            final EntityModel detailModel = model.getDetailModel(detailProvider.getModelProvider().getModelClass());//todo create and add if not found?
             if (detailModel == null) {
               throw new IllegalArgumentException("Detail model of type " + detailModelProvider.getModelClass() + " not found in model " + model);
             }
