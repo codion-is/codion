@@ -12,7 +12,6 @@ import org.jminor.framework.domain.Property;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -98,9 +97,12 @@ public class DefaultForeignKeySearchModel extends DefaultColumnSearchModel<Prope
 
   /** {@inheritDoc} */
   public Collection<Entity> getSearchEntities() {
+    final Object upperBound = getUpperBound();
+    if (upperBound instanceof Entity) {
+      return Arrays.asList((Entity) upperBound);
+    }
     //noinspection unchecked
-    final Collection<Entity> entities = (Collection<Entity>) getUpperBound();
-    return entities == null ? Collections.<Entity>emptyList() : entities;
+    return upperBound == null ? Collections.<Entity>emptyList() : (Collection<Entity>) upperBound;
   }
 
   /**
@@ -131,7 +133,7 @@ public class DefaultForeignKeySearchModel extends DefaultColumnSearchModel<Prope
         try {
           updatingModel = true;
           final Collection<Entity> selectedEntities = entityLookupModel.getSelectedEntities();
-          setUpperBound(selectedEntities.isEmpty() ? null : new ArrayList<Entity>(selectedEntities));
+          setUpperBound(selectedEntities.isEmpty() ? null : selectedEntities);
         }
         finally {
           updatingModel = false;

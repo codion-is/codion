@@ -109,6 +109,18 @@ public class ConnectionPoolImplTest {
     assertEquals(2, statistics.getInUse());
     assertEquals(2, statistics.getSize());
 
+    try {
+      dbConnectionOne.beginTransaction();
+      pool.returnConnection(dbConnectionOne);
+      fail("Should not be able to return a connection with an open transaction");
+    }
+    catch (RuntimeException e) {
+      //expected
+    }
+    finally {
+      dbConnectionOne.rollbackTransaction();
+    }
+
     pool.returnConnection(dbConnectionOne);
     statistics = pool.getStatistics(startDate.getTime());
     assertEquals(2, statistics.getRequests());

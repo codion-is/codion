@@ -2484,3 +2484,6 @@
   ForeignKeySearchModel.getSearchEntities() added
   DefaultForeignKeySearchModel.getSearchEntities() implemented
   DefaultForeignKeySearchModelTest added
+  DefaultForeignKeySearchModelTest improved
+  DefaultForeignKeySearchModel.getSearchEntities() bug fixed
+  ConnectionPoolImplTest, added trying to return a connection with an open transaction to the pool

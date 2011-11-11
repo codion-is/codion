@@ -11,13 +11,12 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.Collection;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class DefaultForeignKeySearchModelTest {
 
   @Test
-  public void getSearchEntities() throws DatabaseException {
+  public void getSearchEntitiesLookupModel() throws DatabaseException {
     EmpDept.init();
     final EntityLookupModel lookupModel = new DefaultEntityLookupModel(EmpDept.T_DEPARTMENT, EntityConnectionImplTest.DB_PROVIDER,
             Arrays.asList(Entities.getColumnProperty(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME)));
@@ -41,6 +40,29 @@ public class DefaultForeignKeySearchModelTest {
     assertEquals(lookupModel.getSelectedEntities().get(0), sales);
 
     lookupModel.setSelectedEntity(null);
+
+    searchEntities = searchModel.getSearchEntities();
+    assertTrue(searchEntities.isEmpty());
+  }
+
+  @Test
+  public void getSearchEntitiesComboBoxModel() throws DatabaseException {
+    EmpDept.init();
+    final EntityComboBoxModel comboBoxModel = new DefaultEntityComboBoxModel(EmpDept.T_DEPARTMENT, EntityConnectionImplTest.DB_PROVIDER);
+    final ForeignKeySearchModel searchModel = new DefaultForeignKeySearchModel(
+            Entities.getForeignKeyProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_DEPARTMENT_FK), comboBoxModel);
+    final Entity sales = EntityConnectionImplTest.DB_PROVIDER.getConnection().selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "SALES");
+    comboBoxModel.setSelectedItem(sales);
+    Collection<Entity> searchEntities = searchModel.getSearchEntities();
+    assertEquals(1, searchEntities.size());
+    assertTrue(searchEntities.contains(sales));
+
+    searchModel.setUpperBound((Object) null);
+    assertNull(comboBoxModel.getSelectedItem());
+    searchModel.setUpperBound(sales);
+    assertEquals(comboBoxModel.getSelectedItem(), sales);
+
+    comboBoxModel.setSelectedItem(null);
 
     searchEntities = searchModel.getSearchEntities();
     assertTrue(searchEntities.isEmpty());
