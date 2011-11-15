@@ -72,7 +72,7 @@
   <taskdef classpathref="cobertura.classpath" resource="tasks.properties" />
 
   <fileset id="common_resources" dir="${src}" includes=
-          "org/jminor/common/**/*.gif, org/jminor/common/**/*.png, org/jminor/common/**/*.properties, org/jminor/common/**/*.txt, logback.xml"/>
+          "org/jminor/common/**/*.gif, org/jminor/common/**/*.png, org/jminor/common/**/*.properties, org/jminor/common/**/*.txt"/>
   <fileset id="framework_resources" dir="${src}" includes=
           "org/jminor/framework/**/*.gif, org/jminor/framework/**/*.png, org/jminor/framework/**/*.properties, org/jminor/framework/**/*.txt"/>
   <fileset id="test_resources" dir="${srctest}" includes=
@@ -178,11 +178,11 @@
     <mkdir dir="${dist}"/>
     <jar jarfile="${dist}/${ant.project.name}.jar" basedir="${build.base}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
-         excludes="org/jminor/framework/demos/**"/>
+         excludes="org/jminor/framework/demos/**,logback.xml"/>
 
     <jar jarfile="${dist}/${ant.project.name}-common.jar" basedir="${build.base}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
-         includes="org/jminor/common/**, logback.xml"/>
+         includes="org/jminor/common/**"/>
 
     <jar jarfile="${dist}/${ant.project.name}-db.jar" basedir="${build.base}"
          manifest="${build.base}/META-INF/MANIFEST.MF"

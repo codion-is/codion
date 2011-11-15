@@ -573,8 +573,11 @@ public final class Util {
   private static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
   public static String createRandomString(final int minLength, final int maxLength) {
+    if (minLength > maxLength) {
+      throw new IllegalArgumentException("Mininum length can not exceed maximum length");
+    }
     final StringBuilder sb = new StringBuilder();
-    final int length = RANDOM.nextInt(maxLength - minLength) + minLength;
+    final int length = minLength == maxLength ? minLength : RANDOM.nextInt(maxLength - minLength) + minLength;
     for( int i = 0; i < length; i++ ) {
       sb.append(AB.charAt(RANDOM.nextInt(AB.length())));
     }

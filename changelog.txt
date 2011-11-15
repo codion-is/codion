@@ -2491,3 +2491,5 @@
   DefaultEntityTableModelTest updated accordingly
   AbstractFilteredTableModel, null check added for columnModel parameter
   AbstractFilteredTableModel updated accordingly
+  logback.xml no longer included in dist jars
+  Util.createRandomString() could not create strings of a fixed length, test added

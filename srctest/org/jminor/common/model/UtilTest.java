@@ -75,6 +75,22 @@ public class UtilTest {
     assertEquals("hello***", Util.padString(string, 8, '*', false));
   }
 
+  @Test(expected = IllegalArgumentException.class)
+  public void createRandomStringMinLengthExceedsMaxLength() {
+    Util.createRandomString(3, 2);
+  }
+
+  @Test
+  public void createRandomString() {
+    String randomString = Util.createRandomString(1, 1);
+    assertEquals(1, randomString.length());
+    randomString = Util.createRandomString(5, 5);
+    assertEquals(5, randomString.length());
+    randomString = Util.createRandomString(4, 10);
+    assertTrue(randomString.length() >= 4);
+    assertTrue(randomString.length() <= 10);
+  }
+
   @Test
   public void equal() throws Exception {
     assertTrue("Two null values should be equal", Util.equal(null, null));
