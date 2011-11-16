@@ -402,7 +402,7 @@ class PropertyImpl implements Property, Serializable {
   /** {@inheritDoc} */
   public final Property setMaximumFractionDigits(final int maximumFractionDigits) {
     if (!(format instanceof NumberFormat)) {
-      throw new IllegalStateException("Maximum fraction digits only good for number formats");
+      throw new IllegalStateException("Maximum fraction digits is only applicable for numerical formats");
     }
 
     ((NumberFormat) format).setMaximumFractionDigits(maximumFractionDigits);
@@ -411,6 +411,10 @@ class PropertyImpl implements Property, Serializable {
 
   /** {@inheritDoc} */
   public final int getMaximumFractionDigits() {
+    if (!(format instanceof NumberFormat)) {
+      throw new IllegalStateException("Maximum fraction digits is only applicable for numerical formats");
+    }
+
     return ((NumberFormat) format).getMaximumFractionDigits();
   }
 
@@ -473,7 +477,10 @@ class PropertyImpl implements Property, Serializable {
       }
     }
     else if (isNumerical()) {
-      return NumberFormat.getInstance();
+      final NumberFormat format = NumberFormat.getInstance();
+      format.setGroupingUsed(false);
+
+      return format;
     }
 
     return null;

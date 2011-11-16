@@ -6,7 +6,7 @@ package org.jminor.framework.client.model;
 import org.jminor.framework.db.provider.EntityConnectionProvider;
 
 /**
- * The base interface for model objects responsible for reading and writing entities to and from a database. 
+ * The base interface for model objects responsible for reading and writing entities to and from a database.
  */
 public interface EntityDataProvider {
 
@@ -16,7 +16,7 @@ public interface EntityDataProvider {
   String getEntityID();
 
   /**
-   * @return the db provider this data provider uses
+   * @return the connection provider used by this data provider
    */
   EntityConnectionProvider getConnectionProvider();
 }

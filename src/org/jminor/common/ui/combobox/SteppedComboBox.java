@@ -99,8 +99,8 @@ public class SteppedComboBox extends JComboBox {
 
       /** {@inheritDoc} */
       @Override
-      public void setVisible(final boolean b) {
-        if (b) {
+      public void setVisible(final boolean visible) {
+        if (visible) {
           final Dimension popupSize = ((SteppedComboBox)comboBox).getPopupSize(getDisplaySize());
           popupSize.setSize(popupSize.width, getPopupHeightForRowCount(comboBox.getMaximumRowCount()));
           final Rectangle popupBounds = computePopupBounds(0, comboBox.getBounds().height,
@@ -120,7 +120,7 @@ public class SteppedComboBox extends JComboBox {
           setLightWeightPopupEnabled(comboBox.isLightWeightPopupEnabled());
         }
 
-        super.setVisible(b);
+        super.setVisible(visible);
       }
     }
   }

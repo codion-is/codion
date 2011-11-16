@@ -12,6 +12,8 @@ import org.jminor.framework.demos.empdept.domain.EmpDept;
 
 import org.junit.Test;
 
+import java.text.NumberFormat;
+
 import static org.junit.Assert.*;
 
 public class DoubleValueLinkTest {
@@ -26,7 +28,10 @@ public class DoubleValueLinkTest {
   public void test() throws Exception {
     final DoubleField txt = new DoubleField();
     txt.setDecimalSymbol(DoubleField.POINT);
-    final TextValueLink<String> valueLink = new DoubleValueLink<String>(txt, model, EmpDept.EMPLOYEE_COMMISSION, true, LinkType.READ_WRITE);
+    final NumberFormat format = NumberFormat.getNumberInstance();
+    format.setMaximumFractionDigits(4);
+    final TextValueLink<String> valueLink = new DoubleValueLink<String>(txt, model, EmpDept.EMPLOYEE_COMMISSION, true,
+            LinkType.READ_WRITE, format);
     ValueLinkValidators.addValidator(valueLink, txt, model);/*Range 100 - 2000*/
     assertNull("Initial Double value should be null", model.getValue(EmpDept.EMPLOYEE_COMMISSION));
     txt.setDouble(1000.5);
@@ -40,7 +45,9 @@ public class DoubleValueLinkTest {
     assertNull("ToolTip should not contain invalid message", txt.getToolTipText());
     txt.setText("");
     assertNull("Double value should be null", model.getValue(EmpDept.EMPLOYEE_COMMISSION));
-    model.setValue(EmpDept.EMPLOYEE_COMMISSION, 950d);
-    assertEquals("Text field should contain value", "950", txt.getText());
+    model.setValue(EmpDept.EMPLOYEE_COMMISSION, 950.1234);
+    assertEquals("Text field should contain value", "950.1234", txt.getText());
+    model.setValue(EmpDept.EMPLOYEE_COMMISSION, 950.123456);
+    assertEquals("Text field should contain value", "950.1235", txt.getText());
   }
 }

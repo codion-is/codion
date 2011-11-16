@@ -2493,3 +2493,8 @@
   AbstractFilteredTableModel updated accordingly
   logback.xml no longer included in dist jars
   Util.createRandomString() could not create strings of a fixed length, test added
+  EntityLookupModel.setAdditionalLookupCriteria() no longer has the side effect of resetting the selected values, documented, tested
+  EntityUiUtil.createNewEntityButton() added for EntityLookupField and EntityComboBox
+  IntValueLink and DoubleValueLink now take a format via the constructor
+  EntityUiUtil.createTextField() now uses the format associated with the property when instantiating IntValueLink or DoubleValueLink
+  PropertyImpl, number format by default has grouping off

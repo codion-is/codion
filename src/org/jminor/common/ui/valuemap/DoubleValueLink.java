@@ -8,6 +8,7 @@ import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.textfield.DoubleField;
 
+import java.text.Format;
 import java.text.NumberFormat;
 
 /**
@@ -15,17 +16,10 @@ import java.text.NumberFormat;
  */
 public final class DoubleValueLink<K> extends TextValueLink<K> {
 
-  private static final ThreadLocal<NumberFormat> FORMAT = new ThreadLocal<NumberFormat>() {
-    @Override
-    protected NumberFormat initialValue() {
-      final NumberFormat ret = NumberFormat.getNumberInstance();
-      ret.setGroupingUsed(false);
-      return ret;
-    }
-  };
+  private final Format format;
 
   /**
-   * Instantiates a new DoubleValueLink.
+   * Instantiates a new DoubleValueLink, with a default non-grouping NumberFormat instance.
    * @param textField the double field to link
    * @param editModel the edit model
    * @param key the key of the property to link
@@ -34,7 +28,23 @@ public final class DoubleValueLink<K> extends TextValueLink<K> {
    */
   public DoubleValueLink(final DoubleField textField, final ValueChangeMapEditModel<K, Object> editModel,
                          final K key, final boolean immediateUpdate, final LinkType linkType) {
+    this(textField, editModel, key, immediateUpdate, linkType, initializeDefaultFormat());
+  }
+
+  /**
+   * Instantiates a new DoubleValueLink.
+   * @param textField the double field to link
+   * @param editModel the edit model
+   * @param key the key of the property to link
+   * @param immediateUpdate if true the model value is update on each keystroke
+   * @param linkType the link type
+   * @param format the format to use when formatting a number before displaying it in the field
+   */
+  public DoubleValueLink(final DoubleField textField, final ValueChangeMapEditModel<K, Object> editModel,
+                         final K key, final boolean immediateUpdate, final LinkType linkType,
+                         final Format format) {
     super(textField, editModel, key, immediateUpdate, linkType);
+    this.format = format;
   }
 
   /** {@inheritDoc} */
@@ -51,6 +61,13 @@ public final class DoubleValueLink<K> extends TextValueLink<K> {
   /** {@inheritDoc} */
   @Override
   protected String getValueAsText(final Object value) {
-    return value == null ? "" : FORMAT.get().format(value);
+    return value == null ? "" : format.format(value);
+  }
+
+  private static Format initializeDefaultFormat() {
+    final NumberFormat ret = NumberFormat.getNumberInstance();
+    ret.setGroupingUsed(false);
+
+    return ret;
   }
 }

@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.client.model;
 
+import org.jminor.common.db.criteria.SimpleCriteria;
 import org.jminor.common.model.SearchType;
 import org.jminor.framework.db.EntityConnectionImplTest;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
@@ -140,6 +141,20 @@ public final class DefaultEntityLookupModelTest {
     result = lookupModel.performQuery();
     assertTrue("Result should contain john", contains(result, "John"));
     assertFalse("Result should not contain johnson", contains(result, "johnson"));
+  }
+
+  @Test
+  public void setAdditionalLookupCriteria() {
+    lookupModel.setMultipleSelectionAllowed(false);
+    lookupModel.setWildcard("%");
+    lookupModel.setSearchString("johnson");
+    List<Entity> result = lookupModel.performQuery();
+    assertTrue("A single result should be returned", result.size() == 1);
+    lookupModel.setSelectedEntities(result);
+    lookupModel.setAdditionalLookupCriteria(new SimpleCriteria("1 = 2"));
+    assertEquals(1, lookupModel.getSelectedEntities().size());
+    result = lookupModel.performQuery();
+    assertTrue("No result should be returned", result.isEmpty());
   }
 
   @Before

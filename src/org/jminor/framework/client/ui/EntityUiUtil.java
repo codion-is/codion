@@ -582,10 +582,12 @@ public final class EntityUiUtil {
       }
     }
     else if (property.isInteger()) {
-      valueLink = new IntValueLink<String>((IntField) textField, editModel, propertyID, immediateUpdate, linkType);
+      valueLink = new IntValueLink<String>((IntField) textField, editModel, propertyID, immediateUpdate,
+              linkType, property.getFormat());
     }
     else if (property.isDouble()) {
-      valueLink = new DoubleValueLink<String>((DoubleField) textField, editModel, propertyID, immediateUpdate, linkType);
+      valueLink = new DoubleValueLink<String>((DoubleField) textField, editModel, propertyID, immediateUpdate,
+              linkType, property.getFormat());
     }
     else if (property.isDate()) {
       valueLink = new DateValueLink<String>((JFormattedTextField) textField, editModel, propertyID, linkType, dateFormat, false);
@@ -660,7 +662,7 @@ public final class EntityUiUtil {
     Util.rejectNullValue(tableModel, "tableModel");
     if (!lookupField.getModel().getEntityID().equals(tableModel.getEntityID())) {
       throw new IllegalArgumentException("Entity type mismatch: " + lookupField.getModel().getEntityID()
-              + ", shoul be: " + tableModel.getEntityID());
+              + ", should be: " + tableModel.getEntityID());
     }
     final JButton btn = new JButton(new AbstractAction("...") {
       public void actionPerformed(final ActionEvent e) {
@@ -680,9 +682,31 @@ public final class EntityUiUtil {
     return panel;
   }
 
+  /**
+   * Creates a new JButton which shows the edit panel provided by <code>panelProvider</code> and if an insert is performed
+   * selects the new entity in the <code>lookupField</code>.
+   * @param comboBox the combo box in which to select the new entity, if any
+   * @param panelProvider the EntityPanelProvider for providing the EntityEditPanel to use for creating the new entity
+   * @return the JButton
+   */
+  public static JButton createNewEntityButton(final EntityComboBox comboBox, final EntityPanelProvider panelProvider) {
+    return new JButton(new CreateEntityAction(comboBox, panelProvider));
+  }
+
+  /**
+   * Creates a new JButton which shows the edit panel provided by <code>panelProvider</code> and if an insert is performed
+   * selects the new entity in the <code>lookupField</code>.
+   * @param lookupField the lookup field in which to select the new entity, if any
+   * @param panelProvider the EntityPanelProvider for providing the EntityEditPanel to use for creating the new entity
+   * @return the JButton
+   */
+  public static JButton createNewEntityButton(final EntityLookupField lookupField, final EntityPanelProvider panelProvider) {
+    return new JButton(new CreateEntityAction(lookupField, panelProvider));
+  }
+
   public static JPanel createEntityComboBoxPanel(final EntityComboBox entityComboBox, final EntityPanelProvider panelProvider,
                                                  final boolean newRecordButtonTakesFocus) {
-    return createEastButtonPanel(entityComboBox, new NewEntityAction(entityComboBox, panelProvider), newRecordButtonTakesFocus);
+    return createEastButtonPanel(entityComboBox, new CreateEntityAction(entityComboBox, panelProvider), newRecordButtonTakesFocus);
   }
 
   public static JPanel createEntityComboBoxFilterPanel(final EntityComboBox entityComboBox, final String foreignKeyPropertyID,
@@ -837,14 +861,14 @@ public final class EntityUiUtil {
     }
   }
 
-  private static final class NewEntityAction extends AbstractAction {
+  private static final class CreateEntityAction extends AbstractAction {
 
     private final JComponent component;
     private final EntityDataProvider dataProvider;
     private final EntityPanelProvider panelProvider;
     private final List<Entity.Key> lastInsertedKeys = new ArrayList<Entity.Key>();
 
-    private NewEntityAction(final JComponent component, final EntityPanelProvider panelProvider) {
+    private CreateEntityAction(final JComponent component, final EntityPanelProvider panelProvider) {
       super("", Images.loadImage(Images.IMG_ADD_16));
       this.component = component;
       if (component instanceof EntityComboBox) {
@@ -875,7 +899,7 @@ public final class EntityUiUtil {
       UiUtil.addInitialFocusHack(editPanel, new InitialFocusAction(editPanel));
       dialog.setVisible(true);
       if (pane.getValue() != null && pane.getValue().equals(0)) {
-        final boolean insertPerformed = editPanel.insert();
+        final boolean insertPerformed = editPanel.insert();//todo exception during insert, f.ex validation failure not handled
         if (insertPerformed && !lastInsertedKeys.isEmpty()) {
           if (dataProvider instanceof EntityComboBoxModel) {
             ((EntityComboBoxModel) dataProvider).refresh();
@@ -883,8 +907,8 @@ public final class EntityUiUtil {
           }
           else if (dataProvider instanceof EntityLookupModel) {
             try {
-              final List<Entity> insertedEntites = dataProvider.getConnectionProvider().getConnection().selectMany(lastInsertedKeys);
-              ((EntityLookupModel) dataProvider).setSelectedEntities(insertedEntites);
+              final List<Entity> insertedEntities = dataProvider.getConnectionProvider().getConnection().selectMany(lastInsertedKeys);
+              ((EntityLookupModel) dataProvider).setSelectedEntities(insertedEntities);
             }
             catch (DatabaseException ex) {
               throw new RuntimeException(ex);

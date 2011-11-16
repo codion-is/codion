@@ -202,7 +202,6 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
   /** {@inheritDoc} */
   public final EntityLookupModel setAdditionalLookupCriteria(final Criteria additionalLookupCriteria) {
     this.additionalLookupCriteria = additionalLookupCriteria;
-    setSelectedEntities(null);
     return this;
   }
 

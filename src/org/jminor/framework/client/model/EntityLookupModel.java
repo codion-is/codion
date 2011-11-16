@@ -149,8 +149,9 @@ public interface EntityLookupModel extends EntityDataProvider {
   String getMultipleValueSeparator();
 
   /**
-   * Sets the additional lookup criteria to use when performing the lookup.
+   * Sets the additional lookup criteria to use when performing the next lookup.
    * This criteria is AND'ed to the actual lookup criteria.
+   * NOTE, this does not affect the currently selected value(s), if any.
    * @param additionalLookupCriteria the additional lookup criteria
    * @return this EntityLookupModel instance
    */

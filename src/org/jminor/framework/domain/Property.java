@@ -153,7 +153,7 @@ public interface Property extends Attribute {
 
   /**
    * Sets the maximum fraction digits to show for this property, only applicable to DOUBLE properties
-   * This setting is overridden during subsquence calls to <code>setFormat</code>
+   * This setting is overridden during subsequent calls to <code>setFormat</code>
    * @param maximumFractionDigits the maximum fraction digits
    * @return this Property instance
    */
@@ -168,8 +168,9 @@ public interface Property extends Attribute {
   /**
    * Specifies whether to use number grouping when presenting this value.
    * i.e. 1234567 shown as 1.234.567 or 1,234,567 depending on locale.
+   * By default grouping is not used.
    * Only applicable to numerical properties.
-   * This setting is overridden during subsquence calls to <code>setFormat</code>
+   * This setting is overridden during subsequent calls to <code>setFormat</code>
    * @param useGrouping if true then number grouping is used
    * @return this Property instance
    */
