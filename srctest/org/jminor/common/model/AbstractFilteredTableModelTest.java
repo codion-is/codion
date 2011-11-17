@@ -262,9 +262,14 @@ public final class AbstractFilteredTableModelTest {
     tableModel.addSelectedIndexListener(listener);
     tableModel.addSelectionChangedListener(listener);
 
+    assertFalse(tableModel.getSingleSelectionObserver().isActive());
+    assertTrue(tableModel.getSelectionEmptyObserver().isActive());
+    assertFalse(tableModel.getMultipleSelectionObserver().isActive());
+
     tableModel.refresh();
     tableModel.setSelectedItemIndex(2);
     assertEquals(2, events.size());
+    assertTrue(tableModel.getSingleSelectionObserver().isActive());
     assertFalse(tableModel.getSelectionEmptyObserver().isActive());
     assertFalse(tableModel.getMultipleSelectionObserver().isActive());
     assertEquals(2, tableModel.getSelectedIndex());
@@ -299,6 +304,7 @@ public final class AbstractFilteredTableModelTest {
     tableModel.selectAll();
     assertEquals(5, tableModel.getSelectedItems().size());
     tableModel.clearSelection();
+    assertFalse(tableModel.getSingleSelectionObserver().isActive());
     assertTrue(tableModel.getSelectionEmptyObserver().isActive());
     assertFalse(tableModel.getMultipleSelectionObserver().isActive());
     assertEquals(0, tableModel.getSelectedItems().size());

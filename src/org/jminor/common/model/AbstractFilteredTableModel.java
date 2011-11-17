@@ -627,6 +627,11 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   }
 
   /** {@inheritDoc} */
+  public StateObserver getSingleSelectionObserver() {
+    return selectionModel.getSingleSelectionObserver();
+  }
+
+  /** {@inheritDoc} */
   public final void addColumnHiddenListener(final ActionListener listener) {
     evtColumnHidden.addListener(listener);
   }
@@ -1041,6 +1046,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     private final Event evtSelectedIndexChanged = Events.event();
     private final State stSelectionEmpty = States.state(true);
     private final State stMultipleSelection = States.state(false);
+    private final State stSingleSelection = States.state(false);
 
     private final AbstractFilteredTableModel tableModel;
 
@@ -1062,7 +1068,8 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     public void fireValueChanged(final int firstIndex, final int lastIndex, final boolean isAdjusting) {
       super.fireValueChanged(firstIndex, lastIndex, isAdjusting);
       stSelectionEmpty.setActive(isSelectionEmpty());
-      stMultipleSelection.setActive(getSelectionCount() > 1);
+      stSingleSelection.setActive(getSelectionCount() == 1);
+      stMultipleSelection.setActive(!stSelectionEmpty.isActive() && !stSingleSelection.isActive());
       final int minSelIndex = getMinSelectionIndex();
       if (selectedIndex != minSelIndex) {
         selectedIndex = minSelIndex;
@@ -1180,6 +1187,13 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
      */
     private StateObserver getMultipleSelectionObserver() {
       return stMultipleSelection.getObserver();
+    }
+
+    /**
+     * @return a state active when a single row is selected
+     */
+    private StateObserver getSingleSelectionObserver() {
+      return stSingleSelection.getObserver();
     }
 
     /**

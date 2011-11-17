@@ -2498,3 +2498,5 @@
   IntValueLink and DoubleValueLink now take a format via the constructor
   EntityUiUtil.createTextField() now uses the format associated with the property when instantiating IntValueLink or DoubleValueLink
   PropertyImpl, number format by default has grouping off
+  FilteredTableModel.getSingleSelectionObserver() added
+  AbstractFilteredTableModel.getSingleSelectionObserver() implemented, tested

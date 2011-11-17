@@ -20,14 +20,19 @@ import java.util.List;
 public interface FilteredTableModel<R, C> extends FilteredModel<R>, TableModel, Refreshable {
 
   /**
-   * @return a StateObserver indicating if the selection is empty
+   * @return a StateObserver indicating that the selection is empty
    */
   StateObserver getSelectionEmptyObserver();
 
   /**
-   * @return a StateObserver indicating if multiple rows are selected
+   * @return a StateObserver indicating that multiple rows are selected
    */
   StateObserver getMultipleSelectionObserver();
+
+  /**
+   * @return a StateObserver indicating that a single row is selected
+   */
+  StateObserver getSingleSelectionObserver();
 
   /**
    * @param listener a listener to be notified each time the selection changes
