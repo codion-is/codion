@@ -12,17 +12,18 @@ import org.jminor.framework.client.model.DefaultEntityEditModel;
 import org.jminor.framework.db.EntityConnectionImplTest;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import org.junit.Test;
 
 import javax.swing.JFormattedTextField;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
 public class DateValueLinkTest {
 
-  private ValueChangeMapEditModel<String, Object> model;
+  private final ValueChangeMapEditModel<String, Object> model;
 
   public DateValueLinkTest() {
     model = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.DB_PROVIDER);

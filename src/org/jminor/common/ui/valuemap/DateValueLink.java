@@ -35,7 +35,11 @@ public final class DateValueLink<K> extends FormattedValueLink<K> {
     Util.rejectNullValue(dateFormat, "dateFormat");
   }
 
-  /** {@inheritDoc} */
+  /**
+   * @param parsedValue the value to translate
+   * @return if this value link represents a timestamp a Timestamp based on the parsed
+   * Date value is returned, otherwise the Date value is returned
+   */
   @Override
   protected Object translate(final Object parsedValue) {
     final Date formatted = (Date) parsedValue;

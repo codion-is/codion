@@ -8,15 +8,12 @@ import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.textfield.IntField;
 
-import java.text.Format;
 import java.text.NumberFormat;
 
 /**
  * A class for linking a IntField to a ValueChangeMapEditor int key value.
  */
 public final class IntValueLink<K> extends TextValueLink<K> {
-
-  private final Format format;
 
   /**
    * Instantiates a new IntValueLink, with a default non-grouping NumberFormat instance.
@@ -28,7 +25,7 @@ public final class IntValueLink<K> extends TextValueLink<K> {
    */
   public IntValueLink(final IntField textField, final ValueChangeMapEditModel<K, Object> editModel,
                       final K key, final boolean immediateUpdate, final LinkType linkType) {
-    this(textField, editModel, key, immediateUpdate, linkType, initializeDefaultFormat());
+    this(textField, editModel, key, immediateUpdate, linkType, Util.getNonGroupingNumberFormat(true));
   }
 
   /**
@@ -41,9 +38,8 @@ public final class IntValueLink<K> extends TextValueLink<K> {
    * @param format the format to use when formatting a number before displaying it in the field
    */
   public IntValueLink(final IntField textField, final ValueChangeMapEditModel<K, Object> editModel,
-                      final K key, final boolean immediateUpdate, final LinkType linkType, final Format format) {
-    super(textField, editModel, key, immediateUpdate, linkType);
-    this.format = format;
+                      final K key, final boolean immediateUpdate, final LinkType linkType, final NumberFormat format) {
+    super(textField, editModel, key, immediateUpdate, linkType, format);
   }
 
   /** {@inheritDoc} */
@@ -55,17 +51,5 @@ public final class IntValueLink<K> extends TextValueLink<K> {
     catch (NumberFormatException nf) {
       throw new RuntimeException(nf);
     }
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  protected String getValueAsText(final Object value) {
-    return value == null ? "" : format.format(value);
-  }
-
-  private static Format initializeDefaultFormat() {
-    final NumberFormat ret = NumberFormat.getIntegerInstance();
-    ret.setGroupingUsed(false);
-    return ret;
   }
 }

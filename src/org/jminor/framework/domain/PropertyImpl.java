@@ -9,6 +9,7 @@ import org.jminor.framework.Configuration;
 
 import java.io.Serializable;
 import java.sql.Types;
+import java.text.DateFormat;
 import java.text.Format;
 import java.text.NumberFormat;
 import java.util.Arrays;
@@ -105,7 +106,7 @@ class PropertyImpl implements Property, Serializable {
   private Character mnemonic;
 
   /**
-   * The Format used when presenting this Property value
+   * The Format used when presenting the value of this property
    */
   private Format format;
 
@@ -149,7 +150,7 @@ class PropertyImpl implements Property, Serializable {
     this.type = type;
     this.caption = caption;
     setHidden(caption == null);
-    setFormat(initializeFormat());
+    setFormat(initializeDefaultFormat());
   }
 
   /**
@@ -395,6 +396,12 @@ class PropertyImpl implements Property, Serializable {
 
   /** {@inheritDoc} */
   public final Property setFormat(final Format format) {
+    if (isNumerical() && !(format instanceof NumberFormat)) {
+      throw new IllegalArgumentException("NumberFormat expected for numerical property: " + propertyID);
+    }
+    if (isTime() && !(format instanceof DateFormat)) {
+      throw new IllegalArgumentException("DateFormat expected for time based property: " + propertyID);
+    }
     this.format = format;
     return this;
   }
@@ -467,7 +474,7 @@ class PropertyImpl implements Property, Serializable {
     return this.parentProperty;
   }
 
-  private Format initializeFormat() {
+  private Format initializeDefaultFormat() {
     if (isTime()) {
       if (isDate()) {
         return Configuration.getDefaultDateFormat();
@@ -477,10 +484,7 @@ class PropertyImpl implements Property, Serializable {
       }
     }
     else if (isNumerical()) {
-      final NumberFormat format = NumberFormat.getInstance();
-      format.setGroupingUsed(false);
-
-      return format;
+      return Util.getNonGroupingNumberFormat();
     }
 
     return null;

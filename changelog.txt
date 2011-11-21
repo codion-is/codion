@@ -2500,3 +2500,8 @@
   PropertyImpl, number format by default has grouping off
   FilteredTableModel.getSingleSelectionObserver() added
   AbstractFilteredTableModel.getSingleSelectionObserver() implemented, tested
+  TextValueLink.format field added, with a default non-formatting format, removed from IntValueLink, DoubleValueLink and FormattedValueLink, propagated via constructor
+  IntValueLink and DoubleValueLink format parameter narrowed to NumberFormat
+  TextValueLink.getValueAsText(), no longer overridden in subclasses, finalized
+  Property.setFormat() now throws IllegalArgumentException if the format does not fit the property, tested
+  Util.getNonGroupingNumberFormat() added, used where applicable

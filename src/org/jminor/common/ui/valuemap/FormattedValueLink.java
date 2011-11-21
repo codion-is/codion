@@ -15,7 +15,6 @@ import java.text.ParseException;
  */
 public class FormattedValueLink<K> extends TextValueLink<K> {
 
-  private final Format format;
   private final JFormattedTextField.AbstractFormatter formatter;
 
   /**
@@ -30,17 +29,9 @@ public class FormattedValueLink<K> extends TextValueLink<K> {
   public FormattedValueLink(final JFormattedTextField textComponent, final ValueChangeMapEditModel<K, Object> editModel,
                             final K key, final Format format, final boolean immediateUpdate,
                             final LinkType linkType) {
-    super(textComponent, editModel, key, immediateUpdate, linkType);
-    this.format = format;
+    super(textComponent, editModel, key, immediateUpdate, linkType, format);
     this.formatter = textComponent.getFormatter();
     updateUI();
-  }
-
-  /**
-   * @return the format, if any
-   */
-  public final Format getFormat() {
-    return format;
   }
 
   /** {@inheritDoc} */
@@ -51,21 +42,11 @@ public class FormattedValueLink<K> extends TextValueLink<K> {
     }
 
     try {
-      return format == null ? text : translate(format.parseObject(text));
+      return translate(getFormat().parseObject(text));
     }
     catch (ParseException nf) {
       return null;
     }
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  protected final String getValueAsText(final Object value) {
-    if (value == null) {
-      return null;
-    }
-
-    return format == null ? value.toString() : format.format(value);
   }
 
   /** {@inheritDoc} */
@@ -79,6 +60,14 @@ public class FormattedValueLink<K> extends TextValueLink<K> {
     }
   }
 
+  /**
+   * Allows for a hook into the value parsing mechanism, so that
+   * a value returned by the format parsing can be replaced with, say
+   * a subclass, or some more appropriate value.
+   * By default this simple returns the value.
+   * @param parsedValue the value to translate
+   * @return a translated value
+   */
   protected Object translate(final Object parsedValue) {
     return parsedValue;
   }

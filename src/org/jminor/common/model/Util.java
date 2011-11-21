@@ -38,6 +38,7 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.text.Collator;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -518,6 +519,24 @@ public final class Util {
    */
   public static double roundDouble(final double d, final int places) {
     return Math.round(d * Math.pow(10, (double) places)) / Math.pow(10, (double) places);
+  }
+
+  /**
+   * @return a NumberFormat instance with grouping disabled
+   */
+  public static NumberFormat getNonGroupingNumberFormat() {
+    return getNonGroupingNumberFormat(false);
+  }
+
+  /**
+   * @param integerFormat if true an integer based number format is returned
+   * @return a NumberFormat instance with grouping disabled
+   */
+  public static NumberFormat getNonGroupingNumberFormat(final boolean integerFormat) {
+    final NumberFormat ret = integerFormat ? NumberFormat.getIntegerInstance() : NumberFormat.getNumberInstance();
+    ret.setGroupingUsed(false);
+
+    return ret;
   }
 
   /**

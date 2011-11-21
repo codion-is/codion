@@ -80,6 +80,7 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -583,11 +584,11 @@ public final class EntityUiUtil {
     }
     else if (property.isInteger()) {
       valueLink = new IntValueLink<String>((IntField) textField, editModel, propertyID, immediateUpdate,
-              linkType, property.getFormat());
+              linkType, (NumberFormat) property.getFormat());
     }
     else if (property.isDouble()) {
       valueLink = new DoubleValueLink<String>((DoubleField) textField, editModel, propertyID, immediateUpdate,
-              linkType, property.getFormat());
+              linkType, (NumberFormat) property.getFormat());
     }
     else if (property.isDate()) {
       valueLink = new DateValueLink<String>((JFormattedTextField) textField, editModel, propertyID, linkType, dateFormat, false);

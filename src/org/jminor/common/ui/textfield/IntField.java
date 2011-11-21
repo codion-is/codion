@@ -109,9 +109,7 @@ public class IntField extends TextFieldPlus {
   private static final class LocalFormat extends ThreadLocal<NumberFormat> {
     @Override
     protected NumberFormat initialValue() {
-      final NumberFormat ret = NumberFormat.getIntegerInstance();
-      ret.setGroupingUsed(false);
-      return ret;
+      return Util.getNonGroupingNumberFormat(true);
     }
   }
 }

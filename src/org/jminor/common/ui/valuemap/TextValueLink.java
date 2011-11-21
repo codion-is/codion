@@ -13,7 +13,10 @@ import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.text.FieldPosition;
+import java.text.Format;
 import java.text.ParseException;
+import java.text.ParsePosition;
 
 /**
  * A class for linking a text component to a ValueChangeMapEditModel text property value.
@@ -26,6 +29,11 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> {
    * If true the model value is updated on each keystroke, otherwise it is updated on focus lost and action performed
    */
   private final boolean immediateUpdate;
+
+  /**
+   * The format to use when presenting values in the linked text field
+   */
+  private final Format format;
 
   /**
    * Instantiates a new TextValueLink
@@ -50,9 +58,26 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> {
    */
   public TextValueLink(final JTextComponent textComponent, final ValueChangeMapEditModel<K, Object> editModel,
                        final K key, final boolean immediateUpdate, final LinkType linkType) {
+    this(textComponent, editModel, key, immediateUpdate, linkType, null);
+  }
+
+  /**
+   * Instantiates a new TextValueLink
+   * @param textComponent the text component to link
+   * @param editModel the ValueChangeMapEditModel instance
+   * @param key the key to link
+   * @param immediateUpdate if true then the underlying model value is updated on each keystroke,
+   * otherwise it is updated on actionPerformed or focusLost
+   * @param linkType the link type
+   * @param format the format to use when displaying the linked value,
+   * null if no formatting should be performed
+   */
+  public TextValueLink(final JTextComponent textComponent, final ValueChangeMapEditModel<K, Object> editModel,
+                       final K key, final boolean immediateUpdate, final LinkType linkType, final Format format) {
     super(editModel, key, linkType);
     this.document = textComponent.getDocument();
     this.immediateUpdate = immediateUpdate;
+    this.format = format == null ? new NullFormat() : format;
     if (!this.immediateUpdate) {
       textComponent.addFocusListener(new FocusAdapter() {
         /** {@inheritDoc} */
@@ -122,6 +147,23 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> {
   }
 
   /**
+   * Returns a String representation of the given value object, using the format,
+   * an empty string is returned in case of a null value
+   * @param value the value to return as String
+   * @return a formatted String representation of the given value, an empty string if the value is null
+   */
+  protected final String getValueAsText(final Object value) {
+    return value == null ? "" : format.format(value);
+  }
+
+  /**
+   * @return the format object being used by this value link
+   */
+  protected final Format getFormat() {
+    return format;
+  }
+
+  /**
    * Provides a hook into the value setting mechanism.
    * @param text the value returned from the UI component
    * @return the translated value
@@ -146,11 +188,25 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> {
   }
 
   /**
-   * Returns a String representation of the given value object, null is returned in case of a null value
-   * @param value the value to return as String
-   * @return a String representation of the given value, null if the value is null
+   * A simple null format, which performs no formatting
    */
-  protected String getValueAsText(final Object value) {
-    return value == null ? null : value.toString();
+  private static final class NullFormat extends Format {
+    /** {@inheritDoc} */
+    @Override
+    public Object clone() {
+      return super.clone();
+    }
+    /** {@inheritDoc} */
+    @Override
+    public StringBuffer format(final Object obj, final StringBuffer toAppendTo, final FieldPosition pos) {
+      toAppendTo.append(obj.toString());
+
+      return toAppendTo;
+    }
+    /** {@inheritDoc} */
+    @Override
+    public Object parseObject(final String source, final ParsePosition pos) {
+      return source;
+    }
   }
 }
