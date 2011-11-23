@@ -110,6 +110,12 @@ public final class DefaultEntityTableModelTest {
   }
 
   @Test(expected = IllegalArgumentException.class)
+  public void setEditModelNullValue() {
+    final EntityTableModel tableModel = new DefaultEntityTableModel(EntityTestDomain.T_DETAIL, EntityConnectionImplTest.DB_PROVIDER);
+    tableModel.setEditModel(null);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
   public void setEditModelWrongEntityID() {
     final EntityTableModel tableModel = new DefaultEntityTableModel(EntityTestDomain.T_DETAIL, EntityConnectionImplTest.DB_PROVIDER);
     final EntityEditModel editModel = new DefaultEntityEditModel(EntityTestDomain.T_MASTER, EntityConnectionImplTest.DB_PROVIDER);

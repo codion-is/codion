@@ -5,6 +5,7 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.model.EventObserver;
+import org.jminor.common.model.StateObserver;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
@@ -168,7 +169,7 @@ public interface EntityLookupModel extends EntityDataProvider {
   void removeSelectedEntitiesListener(final ActionListener listener);
 
   /**
-   * @return an Event fired each time the search string changes
+   * @return an EventObserver fired each time the search string changes
    */
   EventObserver getSearchStringObserver();
 
@@ -181,4 +182,9 @@ public interface EntityLookupModel extends EntityDataProvider {
    * @param listener the listener to remove
    */
   void removeSearchStringListener(final ActionListener listener);
+
+  /**
+   * @return a StateObserver indicating whether or not the search string represents the selected entities
+   */
+  StateObserver getSearchStringRepresentsSelectedObserver();
 }

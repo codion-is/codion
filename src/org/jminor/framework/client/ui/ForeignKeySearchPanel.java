@@ -11,10 +11,7 @@ import org.jminor.framework.client.model.EntityComboBoxModel;
 import org.jminor.framework.client.model.ForeignKeySearchModel;
 import org.jminor.framework.domain.Property;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.JComponent;
-import java.awt.event.ActionEvent;
 
 /**
  * A column search panel based on foreign key properties.
@@ -66,20 +63,10 @@ public final class ForeignKeySearchPanel extends ColumnSearchPanel<Property.Fore
       }
       else {
         final EntityLookupField field = new EntityLookupField(((ForeignKeySearchModel) model).getEntityLookupModel());
-        field.setEnterAction(getEnableAction());
         field.getModel().refreshSearchText();
 
         return field;
       }
-    }
-
-    private Action getEnableAction() {
-      return new AbstractAction() {
-        /** {@inheritDoc} */
-        public void actionPerformed(final ActionEvent e) {
-          model.setEnabled(!model.isEnabled());
-        }
-      };
     }
   }
 }

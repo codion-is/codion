@@ -11,6 +11,9 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.SearchType;
+import org.jminor.common.model.State;
+import org.jminor.common.model.StateObserver;
+import org.jminor.common.model.States;
 import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
@@ -33,6 +36,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
 
   private final Event evtSelectedEntitiesChanged = Events.event();
   private final Event evtSearchStringChanged = Events.event();
+  private final State stSearchStringRepresentsSelected = States.state(true);
 
   /**
    * The ID of the entity this lookup model is based on
@@ -208,11 +212,13 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
   /** {@inheritDoc} */
   public final void refreshSearchText() {
     setSearchString(selectedEntities.isEmpty() ? "" : toString(getSelectedEntities()));
+    stSearchStringRepresentsSelected.setActive(searchStringRepresentsSelected());
   }
 
   /** {@inheritDoc} */
   public final void setSearchString(final String searchString) {
     this.searchString = searchString == null ? "" : searchString;
+    stSearchStringRepresentsSelected.setActive(searchStringRepresentsSelected());
     evtSearchStringChanged.fire();
   }
 
@@ -261,6 +267,11 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
   /** {@inheritDoc} */
   public final void removeSelectedEntitiesListener(final ActionListener listener) {
     evtSelectedEntitiesChanged.removeListener(listener);
+  }
+
+  /** {@inheritDoc} */
+  public StateObserver getSearchStringRepresentsSelectedObserver() {
+    return stSearchStringRepresentsSelected.getObserver();
   }
 
   /**

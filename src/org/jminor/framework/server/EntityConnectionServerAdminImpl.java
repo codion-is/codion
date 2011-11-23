@@ -434,7 +434,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
    * @throws ClassNotFoundException in case the domain model classes required for the server is not found
    */
   public static void main(final String[] arguments) throws RemoteException, ClassNotFoundException {
-    final EntityConnectionServer server = new EntityConnectionServer(Databases.createInstance());
-    new EntityConnectionServerAdminImpl(server);
+      final EntityConnectionServer server = new EntityConnectionServer(Databases.createInstance());
+      new EntityConnectionServerAdminImpl(server);
+    }
   }
-}

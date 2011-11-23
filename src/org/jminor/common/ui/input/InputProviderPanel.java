@@ -69,7 +69,7 @@ public final class InputProviderPanel extends JPanel implements InputProvider {
   }
 
   /**
-   * @return an event observer notified each time the OK button is clicked
+   * @return an EventObserver notified each time the OK button is clicked
    */
   public EventObserver getButtonClickObserver() {
     return evtButtonClicked.getObserver();

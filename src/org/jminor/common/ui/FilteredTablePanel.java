@@ -17,6 +17,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JCheckBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -351,7 +352,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
       }
     });
     UiUtil.selectAllOnFocusGained(txtSearch);
-    UiUtil.addKeyEvent(txtSearch, KeyEvent.VK_ESCAPE, new AbstractAction("requestJTableFocus") {
+    UiUtil.addKeyEvent(txtSearch, KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_FOCUSED, false, new AbstractAction("requestJTableFocus") {
       /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
         getJTable().requestFocusInWindow();

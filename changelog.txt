@@ -2506,3 +2506,10 @@
   Property.setFormat() now throws IllegalArgumentException if the format does not fit the property, tested
   Util.getNonGroupingNumberFormat() added, used where applicable
   UiUtil.transferFocusOnEnter() now uses keyReleased instead of keyPressed
+  UiUtil.transferFocusOnEnter() now uses key bindings instead of key listener
+  UiUtil.TransferFocusAction added
+  UiUtil.addKeyEvent() now uses onKeyRelease as default, instead of onKeyPressed
+  EntityLookupModel.getSearchStringRepresentsSelectedObserver() added
+  ForeignKeySearchPanel no longer uses EntityLookupField.setEnterAction()
+  EntityLookupField.enterAction field removed
+  EntityLookupField.transferFocusOnEnter() improved, using key bindings, instead of enterAction

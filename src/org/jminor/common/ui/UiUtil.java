@@ -65,7 +65,6 @@ import java.awt.event.FocusEvent;
 import java.awt.event.HierarchyEvent;
 import java.awt.event.HierarchyListener;
 import java.awt.event.InputEvent;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -130,11 +129,11 @@ public final class UiUtil {
     txt.setEditable(false);
     txt.setHorizontalAlignment(JTextField.CENTER);
     new Timer(true).schedule(new TimerTask() {
-              @Override
-              public void run() {
-                txt.setText(Util.getMemoryUsageString());
-              }
-            }, new Date(), updateInterval);
+      @Override
+      public void run() {
+        txt.setText(Util.getMemoryUsageString());
+      }
+    }, new Date(), updateInterval);
 
     return txt;
   }
@@ -707,24 +706,13 @@ public final class UiUtil {
   }
 
   /**
-   * Attaches a key listener to the component which transfers focus
+   * Adds a key event to the component which transfers focus
    * on enter, and backwards if shift is down
    * @param component the component
    */
   public static void transferFocusOnEnter(final JComponent component) {
-    component.addKeyListener(new KeyAdapter() {
-      @Override
-      public void keyReleased(final KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-          if (e.isShiftDown()) {
-            component.transferFocusBackward();
-          }
-          else {
-            component.transferFocus();
-          }
-        }
-      }
-    });
+    addKeyEvent(component, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED, true, new TransferFocusAction(component));
+    addKeyEvent(component, KeyEvent.VK_ENTER, KeyEvent.SHIFT_DOWN_MASK, JComponent.WHEN_FOCUSED, true, new TransferFocusAction(component, true));
   }
 
   /**
@@ -902,7 +890,7 @@ public final class UiUtil {
 
   public static void addKeyEvent(final JComponent component, final int keyEvent, final int modifiers, final int condition,
                                  final Action action) {
-    addKeyEvent(component, keyEvent, modifiers, condition, false, action);
+    addKeyEvent(component, keyEvent, modifiers, condition, true, action);
   }
 
   public static void addKeyEvent(final JComponent component, final int keyEvent, final int modifiers, final int condition,
@@ -1165,6 +1153,9 @@ public final class UiUtil {
     }
   }
 
+  /**
+   * An action which disposes a given dialog
+   */
   public static final class DialogDisposeAction extends AbstractAction {
     private final JDialog dialog;
 
@@ -1175,6 +1166,41 @@ public final class UiUtil {
 
     public void actionPerformed(final ActionEvent e) {
       dialog.dispose();
+    }
+  }
+
+  /**
+   * An action which transfers focus either forward or backward for a given component
+   */
+  public static final class TransferFocusAction extends AbstractAction {
+
+    private final JComponent component;
+    private final boolean backward;
+
+    /**
+     * @param component the component
+     */
+    public TransferFocusAction(final JComponent component) {
+      this(component, false);
+    }
+
+    /**
+     * @param component the component
+     * @param backward if true the focus is transferred backward
+     */
+    public TransferFocusAction(final JComponent component, final boolean backward) {
+      super(backward ? "transferFocusBackward" : "transferFocus");
+      this.component = component;
+      this.backward = backward;
+    }
+
+    public void actionPerformed(final ActionEvent e) {
+      if (backward) {
+        component.transferFocusBackward();
+      }
+      else {
+        component.transferFocus();
+      }
     }
   }
 

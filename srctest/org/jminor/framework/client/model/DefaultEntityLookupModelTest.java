@@ -72,6 +72,7 @@ public final class DefaultEntityLookupModelTest {
     lookupModel.setMultipleSelectionAllowed(true);
     lookupModel.setWildcard("%");
     lookupModel.setSearchString("joh");
+    assertFalse(lookupModel.searchStringRepresentsSelected());
     List<Entity> result = lookupModel.performQuery();
     assertTrue("Result should not be empty", result.size() > 0);
     assertTrue("Result should contain John", contains(result, "John"));

@@ -66,7 +66,7 @@ public interface ValueChangeMapEditModel<K, V> extends Refreshable {
 
   /**
    * @param key the key for which to retrieve the event
-   * @return an Event object which fires when the value of <code>key</code> changes
+   * @return an EventObserver which fires when the value of <code>key</code> changes
    */
   EventObserver getValueChangeObserver(K key);
 

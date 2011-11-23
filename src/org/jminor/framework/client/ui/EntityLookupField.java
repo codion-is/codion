@@ -53,32 +53,28 @@ import java.util.List;
 public final class EntityLookupField extends JTextField {
 
   private final EntityLookupModel model;
-  private final TextFieldHint searchHint;
+  private final TextFieldHint searchHint = TextFieldHint.enable(this, Messages.get(Messages.SEARCH_FIELD_HINT));
+  private final Action transferFocusAction = new UiUtil.TransferFocusAction(this);
+  private final Action transferFocusBackwardAction = new UiUtil.TransferFocusAction(this, true);
 
-  private final Action transferFocusAction = new AbstractAction() {
-    /** {@inheritDoc} */
-    public void actionPerformed(final ActionEvent e) {
-      transferFocus();
-    }
-  };
-  private Action enterAction;
   private Color defaultBackgroundColor = getBackground();
   private boolean performingLookup = false;
 
   /**
    * Initializes a new EntityLookupField
-   * @param lookupModel the model
+   * @param lookupModel the lookup model on which to base this lookup field
    */
   public EntityLookupField(final EntityLookupModel lookupModel) {
     Util.rejectNullValue(lookupModel, "lookupModel");
     this.model = lookupModel;
-    this.searchHint = TextFieldHint.enable(this, Messages.get(Messages.SEARCH_FIELD_HINT));
     setToolTipText(lookupModel.getDescription());
     setComponentPopupMenu(initializePopupMenu());
     addActionListener(initializeLookupAction());
     addFocusListener(initializeFocusListener());
     addEscapeListener();
-    bindProperty();
+    linkToModel();
+    UiUtil.linkToEnabledState(lookupModel.getSearchStringRepresentsSelectedObserver(), transferFocusAction);
+    UiUtil.linkToEnabledState(lookupModel.getSearchStringRepresentsSelectedObserver(), transferFocusBackwardAction);
   }
 
   /**
@@ -86,22 +82,6 @@ public final class EntityLookupField extends JTextField {
    */
   public EntityLookupModel getModel() {
     return model;
-  }
-
-  /**
-   * @return the action called when ENTER is pressed
-   */
-  public Action getEnterAction() {
-    return enterAction;
-  }
-
-  /**
-   * @param enterAction the action to call when ENTER is pressed
-   * @return this lookup field
-   */
-  public EntityLookupField setEnterAction(final Action enterAction) {
-    this.enterAction = enterAction;
-    return this;
   }
 
   /**
@@ -114,12 +94,13 @@ public final class EntityLookupField extends JTextField {
   }
 
   /**
-   * Activates the transferral of focus on ENTER, N.B. uses the enter action
+   * Activates the transferral of focus on ENTER
    * @return this lookup field
-   * @see #setEnterAction(javax.swing.Action)
    */
   public EntityLookupField setTransferFocusOnEnter() {
-    return setEnterAction(transferFocusAction);
+    UiUtil.addKeyEvent(this, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED, true, transferFocusAction);
+    UiUtil.addKeyEvent(this, KeyEvent.VK_ENTER, KeyEvent.SHIFT_DOWN_MASK, JComponent.WHEN_FOCUSED, true, transferFocusBackwardAction);
+    return this;
   }
 
   private boolean selectEntities(final List<Entity> entities) {
@@ -145,8 +126,7 @@ public final class EntityLookupField extends JTextField {
     btnOk.setMnemonic(okMnemonic.charAt(0));
     btnCancel.setMnemonic(cancelMnemonic.charAt(0));
     UiUtil.addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, cancelAction);
-    list.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
-            KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "none");
+    list.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "none");
     list.addMouseListener(new LookupFieldMouseListener(okAction));
     dialog.setLayout(new BorderLayout());
     final JScrollPane scroller = new JScrollPane(list);
@@ -167,7 +147,7 @@ public final class EntityLookupField extends JTextField {
     return model.searchStringRepresentsSelected();
   }
 
-  private void bindProperty() {
+  private void linkToModel() {
     new TextBeanValueLink(this, getModel(), "searchString", String.class, getModel().getSearchStringObserver()) {
       /** {@inheritDoc} */
       @Override
@@ -222,9 +202,7 @@ public final class EntityLookupField extends JTextField {
     return new AbstractAction(FrameworkMessages.get(FrameworkMessages.SEARCH)) {
       /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
-        if (performLookup(true) && transferFocusAction.equals(enterAction)) {
-          transferFocus();
-        }
+        performLookup(true);
       }
     };
   }
@@ -234,19 +212,11 @@ public final class EntityLookupField extends JTextField {
       performingLookup = true;
       if (model.getSearchString().isEmpty()) {
         model.setSelectedEntities(null);
-        if (enterAction != null) {
-          enterAction.actionPerformed(new ActionEvent(this, 0, "actionPerformed"));
-        }
 
         return true;
       }
       else {
-        if (model.searchStringRepresentsSelected() && enterAction != null) {
-          enterAction.actionPerformed(new ActionEvent(this, 0, "actionPerformed"));
-
-          return true;
-        }
-        else if (!model.searchStringRepresentsSelected()) {
+        if (!model.searchStringRepresentsSelected()) {
           List<Entity> queryResult;
           try {
             UiUtil.setWaitCursor(true, this);

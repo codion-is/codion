@@ -158,6 +158,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   /** {@inheritDoc} */
   public final void setEditModel(final EntityEditModel editModel) {
+    Util.rejectNullValue(editModel, "editModel");
     if (this.editModel != null) {
       throw new IllegalStateException("Edit model has already been set for table model: " + this);
     }
