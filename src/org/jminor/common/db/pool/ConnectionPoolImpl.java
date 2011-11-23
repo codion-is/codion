@@ -55,7 +55,7 @@ final class ConnectionPoolImpl implements ConnectionPool {
   private volatile int maximumRetryWaitPeriod = DEFAULT_MAXIMUM_RETRY_WAIT_PERIOD_MS;
   private volatile int poolCleanupInterval = DEFAULT_CLEANUP_INTERVAL_MS;
   private volatile int pooledConnectionTimeout = DEFAULT_CONNECTION_TIMEOUT_MS;
-  private volatile int maximumCheckOuttime = DEFAULT_MAXIMUM_CHECK_OUT_TIME;
+  private volatile int maximumCheckOutTime = DEFAULT_MAXIMUM_CHECK_OUT_TIME;
   private volatile int newConnectionThreshold = DEFAULT_NEW_CONNECTION_THRESHOLD;
 
   private volatile boolean creatingConnection = false;
@@ -109,7 +109,7 @@ final class ConnectionPoolImpl implements ConnectionPool {
         connection = fetchFromPool();
       }
       elapsedNanoTime = System.nanoTime() - nanoStartTime;
-      keepTrying = connection == null && (elapsedNanoTime / NANO_IN_MILLI) < maximumCheckOuttime;
+      keepTrying = connection == null && (elapsedNanoTime / NANO_IN_MILLI) < maximumCheckOutTime;
     }
 
     if (connection != null) {
@@ -280,7 +280,7 @@ final class ConnectionPoolImpl implements ConnectionPool {
 
   /** {@inheritDoc} */
   public int getMaximumCheckOutTime() {
-    return maximumCheckOuttime;
+    return maximumCheckOutTime;
   }
 
   /** {@inheritDoc} */
@@ -288,7 +288,7 @@ final class ConnectionPoolImpl implements ConnectionPool {
     if (value < 0) {
       throw new IllegalArgumentException("Maximum check out time must be a positive integer");
     }
-    this.maximumCheckOuttime = value;
+    this.maximumCheckOutTime = value;
   }
 
   /** {@inheritDoc} */
@@ -298,7 +298,7 @@ final class ConnectionPoolImpl implements ConnectionPool {
 
   /** {@inheritDoc} */
   public void setNewConnectionThreshold(final int value) {
-    if (value < 0 || value >= maximumCheckOuttime) {
+    if (value < 0 || value >= maximumCheckOutTime) {
       throw new IllegalArgumentException("Wait time before new connection must be larger than zero and smaller than maximumCheckOutTime");
     }
     this.newConnectionThreshold = value;

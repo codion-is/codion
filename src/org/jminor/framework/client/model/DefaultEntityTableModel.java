@@ -95,11 +95,6 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   private EntityEditModel editModel;
 
   /**
-   * If true this table model behaves like a detail model
-   */
-  private boolean isDetailModel = false;
-
-  /**
    * the maximum number of records to fetch via the underlying query, -1 meaning all records should be fetched
    */
   private int fetchCount = -1;
@@ -107,7 +102,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   /**
    * If true then querying should be disabled if no criteria is specified
    */
-  private boolean queryCriteriaRequired = true;
+  private boolean queryCriteriaRequired = false;
 
   /**
    * If true then items deleted via the edit model are removed from this table model
@@ -204,17 +199,6 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   /** {@inheritDoc} */
   public final EntityTableModel setFetchCount(final int fetchCount) {
     this.fetchCount = fetchCount;
-    return this;
-  }
-
-  /** {@inheritDoc} */
-  public final boolean isDetailModel() {
-    return isDetailModel;
-  }
-
-  /** {@inheritDoc} */
-  public final EntityTableModel setDetailModel(final boolean detailModel) {
-    this.isDetailModel = detailModel;
     return this;
   }
 
@@ -405,25 +389,23 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   /** {@inheritDoc} */
-  public void setForeignKeySearchValues(final String referencedEntityID, final List<Entity> referenceEntities) {
-    final List<Property.ForeignKeyProperty> properties = Entities.getForeignKeyProperties(entityID, referencedEntityID);
-    if (!properties.isEmpty() && isDetailModel /*todo detail?*/&& searchModel.setSearchValues(properties.get(0).getPropertyID(), referenceEntities)) {
+  public void setForeignKeySearchValues(final String foreignKeyPropertyID, final List<Entity> referenceEntities) {
+    final Property.ForeignKeyProperty property = Entities.getForeignKeyProperty(entityID, foreignKeyPropertyID);
+    if (searchModel.setSearchValues(property.getPropertyID(), referenceEntities)) {
       refresh();
     }
   }
 
   /** {@inheritDoc} */
-  public final void replaceForeignKeyValues(final String foreignKeyEntityID, final Collection<Entity> newForeignKeyValues) {
-    final List<Property.ForeignKeyProperty> foreignKeyProperties = Entities.getForeignKeyProperties(this.entityID, foreignKeyEntityID);
+  public final void replaceForeignKeyValues(final String foreignKeyPropertyID, final Collection<Entity> newForeignKeyValues) {
+    final Property.ForeignKeyProperty foreignKeyProperty = Entities.getForeignKeyProperty(this.entityID, foreignKeyPropertyID);
     boolean changed = false;
     for (final Entity entity : getAllItems()) {
-      for (final Property.ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
-        for (final Entity newForeignKeyValue : newForeignKeyValues) {
-          final Entity currentForeignKeyValue = entity.getForeignKeyValue(foreignKeyProperty.getPropertyID());
-          if (currentForeignKeyValue != null && currentForeignKeyValue.equals(newForeignKeyValue)) {
-            currentForeignKeyValue.setAs(newForeignKeyValue);
-            changed = true;
-          }
+      for (final Entity newForeignKeyValue : newForeignKeyValues) {
+        final Entity currentForeignKeyValue = entity.getForeignKeyValue(foreignKeyProperty.getPropertyID());
+        if (currentForeignKeyValue != null && currentForeignKeyValue.equals(newForeignKeyValue)) {
+          currentForeignKeyValue.setAs(newForeignKeyValue);
+          changed = true;
         }
       }
     }
@@ -571,7 +553,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
    * @see #getQueryCriteria()
    */
   protected List<Entity> performQuery(final Criteria<Property.ColumnProperty> criteria) {
-    if (isDetailModel && criteria == null && queryCriteriaRequired) {
+    if (criteria == null && queryCriteriaRequired) {
       return new ArrayList<Entity>();
     }
 

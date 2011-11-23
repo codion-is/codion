@@ -46,7 +46,7 @@ public class EntityConnectionImplTest {
   public static final EntityConnectionProvider DB_PROVIDER =
           EntityConnectionProviders.createConnectionProvider(User.UNIT_TEST_USER, "JMinor Unit Tests");
 
-  public static final String COMBINED_ENTITY_ID = "selectQueryEntityID";
+  private static final String COMBINED_ENTITY_ID = "selectQueryEntityID";
 
   private EntityConnectionImpl connection;
 

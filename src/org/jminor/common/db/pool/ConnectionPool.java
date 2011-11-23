@@ -36,7 +36,7 @@ public interface ConnectionPool {
   void returnConnection(final PoolableConnection connection);
 
   /**
-   * Closes this connection pool, disconnection connections as they are checked in
+   * Closes this connection pool, connections subsequently checked in are disconnected
    */
   void close();
 

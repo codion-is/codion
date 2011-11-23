@@ -61,6 +61,13 @@ public interface EntityModelProvider {
   EntityModelProvider setTableModelClass(final Class<? extends EntityTableModel> tableModelClass);
 
   /**
+   * @param foreignKeyPropertyID the ID of the foreign key property
+   * @param detailModelProvider an EntityModelProvider providing a detail model
+   * @return this EntityModelProvider instance
+   */
+  EntityModelProvider addDetailModelProvider(final String foreignKeyPropertyID, final EntityModelProvider detailModelProvider);
+
+  /**
    * @return the class of the {@link EntityModel}s provided
    */
   Class<? extends EntityModel> getModelClass();

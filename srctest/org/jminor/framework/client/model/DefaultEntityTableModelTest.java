@@ -171,8 +171,6 @@ public final class DefaultEntityTableModelTest {
   public void settersAndGetters() {
     assertEquals(EntityConnectionImplTest.DB_PROVIDER, testModel.getConnectionProvider());
     assertEquals(EntityTestDomain.T_DETAIL, testModel.getEntityID());
-    testModel.setDetailModel(false);
-    assertFalse(testModel.isDetailModel());
     testModel.setQueryCriteriaRequired(false);
     assertFalse(testModel.isQueryCriteriaRequired());
     testModel.setQueryConfigurationAllowed(false);
@@ -223,7 +221,6 @@ public final class DefaultEntityTableModelTest {
     assertFalse(testModel.isQueryConfigurationAllowed());
     testModel.setFetchCount(10);
     assertEquals(10, testModel.getFetchCount());
-    assertFalse(testModel.isDetailModel());
     assertNotNull(testModel.getEditModel());
     assertFalse(testModel.isReadOnly());
     testModel.setBatchUpdateAllowed(true).setQueryConfigurationAllowed(true);

@@ -2513,3 +2513,10 @@
   ForeignKeySearchPanel no longer uses EntityLookupField.setEnterAction()
   EntityLookupField.enterAction field removed
   EntityLookupField.transferFocusOnEnter() improved, using key bindings, instead of enterAction
+  EntityModelProvider.addDetailModelProvider() added
+  DefaultEntityModelProvider.detailModelProviders added
+  DefaultEntityModelProvider.equals() and hashCode() added for good measure
+  DefaultEntityModelProviderTest added
+  EntityTableModel.detailModel attribute removed along with associated crap
+  EntityModel.addDetailModel() has the side effect that the table model of the added detail model has it's setQueryCriteriaRequired() called with true
+  DefaultEntityModelProvider.initializeTableModel() calls setQueryCriteriaRequired() on the initialized table model if it is a detail model

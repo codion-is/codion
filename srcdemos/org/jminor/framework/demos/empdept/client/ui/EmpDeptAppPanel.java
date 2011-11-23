@@ -13,6 +13,7 @@ import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.DefaultEntityApplicationModel;
 import org.jminor.framework.client.model.DefaultEntityModelProvider;
 import org.jminor.framework.client.model.EntityApplicationModel;
+import org.jminor.framework.client.model.EntityModelProvider;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.model.PropertySummaryModel;
 import org.jminor.framework.client.ui.EntityApplicationPanel;
@@ -34,9 +35,12 @@ import static org.jminor.framework.demos.empdept.domain.EmpDept.*;
 public class EmpDeptAppPanel extends EntityApplicationPanel {
 
   public EmpDeptAppPanel() {
-    final EntityPanelProvider employeePanelProvider = new EmployeePanelProvider();
+    final EmployeeModelProvider employeeModelProvider = new EmployeeModelProvider();
+    final EmployeePanelProvider employeePanelProvider = new EmployeePanelProvider(employeeModelProvider);
     employeePanelProvider.setEditPanelClass(EmployeeEditPanel.class);
 
+    final EntityModelProvider departmentModelProvider = new DefaultEntityModelProvider(T_DEPARTMENT);
+    departmentModelProvider.addDetailModelProvider(EmpDept.EMPLOYEE_DEPARTMENT_FK, employeeModelProvider);
     final EntityPanelProvider departmentPanelProvider = new EntityPanelProvider(T_DEPARTMENT);
     departmentPanelProvider.setEditPanelClass(DepartmentEditPanel.class);
     departmentPanelProvider.setTablePanelClass(DepartmentTablePanel.class);
@@ -97,8 +101,8 @@ public class EmpDeptAppPanel extends EntityApplicationPanel {
   }
 
   private static final class EmployeePanelProvider extends EntityPanelProvider {
-    private EmployeePanelProvider() {
-      super(new EmployeeModelProvider());
+    private EmployeePanelProvider(final EmployeeModelProvider modelProvider) {
+      super(modelProvider);
     }
 
     @Override

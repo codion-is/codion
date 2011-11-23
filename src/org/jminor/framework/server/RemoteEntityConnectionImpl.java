@@ -81,12 +81,13 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
   private final EntityConnection connectionProxy;
 
   /**
-   * The db connection used if connection pooling is not enabled
+   * The connection used if connection pooling is not enabled
    */
   private EntityConnection entityConnection;
 
   /**
-   * Indicates whether or not this remote connection is enabled
+   * Indicates whether or not this remote connection is connected when it is based on a connection pool,
+   * otherwise checking the entityConnection is sufficient
    */
   private boolean connected = true;
 
@@ -96,7 +97,7 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
   private final long creationDate = System.currentTimeMillis();
 
   /**
-   * The object containing the method call log
+   * The method call log
    */
   private final transient MethodLogger methodLogger;
 

@@ -244,19 +244,18 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
   }
 
   /** {@inheritDoc} */
-  public final void replaceForeignKeyValues(final String foreignKeyEntityID, final Collection<Entity> newForeignKeyValues) {
-    final List<Property.ForeignKeyProperty> foreignKeyProperties = Entities.getForeignKeyProperties(this.entityID, foreignKeyEntityID);
-    for (final Property.ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
-      if (containsComboBoxModel(foreignKeyProperty.getPropertyID())) {
-        getEntityComboBoxModel(foreignKeyProperty.getPropertyID()).refresh();
-      }
-      final Entity currentForeignKeyValue = getForeignKeyValue(foreignKeyProperty.getPropertyID());
-      if (currentForeignKeyValue != null) {
-        for (final Entity newForeignKeyValue : newForeignKeyValues) {
-          if (currentForeignKeyValue.equals(newForeignKeyValue)) {
-            setValue(foreignKeyProperty.getPropertyID(), null);
-            setValue(foreignKeyProperty.getPropertyID(), newForeignKeyValue);
-          }
+  public final void replaceForeignKeyValues(final String foreignKeyPropertyID, final Collection<Entity> newForeignKeyValues) {
+    //todo, wtf is this doing with multiple new foreign key values?
+    final Property.ForeignKeyProperty foreignKeyProperty = Entities.getForeignKeyProperty(this.entityID, foreignKeyPropertyID);
+    if (containsComboBoxModel(foreignKeyProperty.getPropertyID())) {
+      getEntityComboBoxModel(foreignKeyProperty.getPropertyID()).refresh();
+    }
+    final Entity currentForeignKeyValue = getForeignKeyValue(foreignKeyProperty.getPropertyID());
+    if (currentForeignKeyValue != null) {
+      for (final Entity newForeignKeyValue : newForeignKeyValues) {
+        if (currentForeignKeyValue.equals(newForeignKeyValue)) {
+          setValue(foreignKeyProperty.getPropertyID(), null);
+          setValue(foreignKeyProperty.getPropertyID(), newForeignKeyValue);
         }
       }
     }
@@ -671,7 +670,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
   }
 
   /**
-   * Inserts the given entities from the database
+   * Inserts the given entities into the database
    * @param entities the entities to insert
    * @return a list containing the primary keys of the inserted entities
    * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception

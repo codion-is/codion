@@ -4,9 +4,11 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.framework.db.provider.EntityConnectionProvider;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A default {@link EntityModelProvider} implementation.
@@ -17,7 +19,7 @@ public class DefaultEntityModelProvider implements EntityModelProvider {
 
   private final String entityID;
 
-  //private final List<EntityModelProvider> detailModelProviders = new ArrayList<EntityModelProvider>(); //todo
+  private final Map<String, EntityModelProvider> detailModelProviders = new HashMap<String, EntityModelProvider> ();
 
   private Class<? extends EntityModel> modelClass = DefaultEntityModel.class;
   private Class<? extends EntityEditModel> editModelClass = DefaultEntityEditModel.class;
@@ -80,6 +82,27 @@ public class DefaultEntityModelProvider implements EntityModelProvider {
   }
 
   /** {@inheritDoc} */
+  public final EntityModelProvider addDetailModelProvider(final String foreignKeyPropertyID, final EntityModelProvider detailModelProvider) {
+    if (!detailModelProviders.containsKey(foreignKeyPropertyID)) {
+      detailModelProviders.put(foreignKeyPropertyID, detailModelProvider);
+    }
+
+    return this;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final boolean equals(final Object obj) {
+    return obj instanceof EntityModelProvider && ((EntityModelProvider) obj).getEntityID().equals(getEntityID());
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final int hashCode() {
+    return getEntityID().hashCode();
+  }
+
+  /** {@inheritDoc} */
   public final EntityModel initializeModel(final EntityConnectionProvider connectionProvider, final boolean detailModel) {
     try {
       final EntityModel model;
@@ -90,6 +113,9 @@ public class DefaultEntityModelProvider implements EntityModelProvider {
       else {
         LOG.debug("{} initializing a custom entity model: {}", this, modelClass);
         model = modelClass.getConstructor(EntityConnectionProvider.class).newInstance(connectionProvider);
+      }
+      for (final Map.Entry<String, EntityModelProvider> detailProviderEntry : detailModelProviders.entrySet()) {
+        model.addDetailModel(detailProviderEntry.getKey(), detailProviderEntry.getValue().initializeModel(connectionProvider, true));
       }
       configureModel(model);
 
@@ -140,7 +166,7 @@ public class DefaultEntityModelProvider implements EntityModelProvider {
         tableModel = tableModelClass.getConstructor(EntityConnectionProvider.class).newInstance(connectionProvider);
       }
       if (detailModel) {
-        tableModel.setDetailModel(true);
+        tableModel.setQueryCriteriaRequired(true);
       }
       configureTableModel(tableModel);
 

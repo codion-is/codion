@@ -190,7 +190,6 @@ public final class DefaultEntityModelTest {
     final List<Entity> salesEmployees = db.selectMany(EntityCriteriaUtil.selectCriteria(EmpDept.T_EMPLOYEE,
             EmpDept.EMPLOYEE_DEPARTMENT_FK, SearchType.LIKE, department));
     assertTrue("Number of employees for department should not be 0", salesEmployees.size() > 0);
-    departmentModel.getDetailModel(EmpDept.T_EMPLOYEE).getTableModel().setDetailModel(true);
     departmentModel.getTableModel().setSelectedItem(department);
     final List<Entity> employeesFromDetailModel =
             departmentModel.getDetailModel(EmpDept.T_EMPLOYEE).getTableModel().getAllItems();
@@ -201,8 +200,8 @@ public final class DefaultEntityModelTest {
   public void setUp() throws Exception {
     departmentModel = new DefaultEntityModel(EmpDept.T_DEPARTMENT, EntityConnectionImplTest.DB_PROVIDER);
     final EntityModel employeeModel = new EmpModel(departmentModel.getConnectionProvider());
-    employeeModel.getTableModel().setQueryCriteriaRequired(false);
     departmentModel.addDetailModel(employeeModel);
+    employeeModel.getTableModel().setQueryCriteriaRequired(false);
   }
 
   private static boolean containsAll(final List<Entity> employees, final List<Entity> employeesFromModel) {

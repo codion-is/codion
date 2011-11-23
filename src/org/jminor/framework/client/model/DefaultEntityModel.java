@@ -29,7 +29,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -76,9 +78,9 @@ public class DefaultEntityModel implements EntityModel {
   private final EntityConnectionProvider connectionProvider;
 
   /**
-   * Holds the detail EntityModels used by this EntityModel
+   * Holds the detail EntityModels used by this EntityModel, mapped to their respective foreign key property IDs
    */
-  private final List<EntityModel> detailModels = new ArrayList<EntityModel>();
+  private final Map<String, EntityModel> detailModels = new LinkedHashMap<String, EntityModel>();
 
   /**
    * Holds linked detail models that should be updated and filtered according to the selected entity/entities
@@ -190,13 +192,23 @@ public class DefaultEntityModel implements EntityModel {
 
   /** {@inheritDoc} */
   public final EntityModel addDetailModel(final EntityModel detailModel) {
-    if (this.detailModels.contains(detailModel)) {
-      throw new IllegalArgumentException("Detail model " + detailModel + " has already been added");
+    final List<Property.ForeignKeyProperty> properties = Entities.getForeignKeyProperties(detailModel.getEntityID(), getEntityID());
+    return addDetailModel(properties.get(0).getPropertyID(), detailModel);
+  }
+
+  /** {@inheritDoc} */
+  public EntityModel addDetailModel(final String foreignKeyPropertyID, final EntityModel detailModel) {
+    if (this.detailModels.containsKey(foreignKeyPropertyID)) {
+      throw new IllegalArgumentException("Detail model for foreign key property" + foreignKeyPropertyID + " has already been added");
     }
-    this.detailModels.add(detailModel);
+    Entities.getForeignKeyProperty(detailModel.getEntityID(), foreignKeyPropertyID);
+    if (this.detailModels.values().contains(detailModel)) {
+      throw new IllegalArgumentException("Entity model " + detailModel + " has already been added as a detail model");
+    }
+    this.detailModels.put(foreignKeyPropertyID, detailModel);
     detailModel.setMasterModel(this);
     if (detailModel.containsTableModel()) {
-      detailModel.getTableModel().setDetailModel(true);
+      detailModel.getTableModel().setQueryCriteriaRequired(true);
     }
 
     return detailModel;
@@ -204,7 +216,7 @@ public class DefaultEntityModel implements EntityModel {
 
   /** {@inheritDoc} */
   public final boolean containsDetailModel(final Class<? extends EntityModel> modelClass) {
-    for (final EntityModel detailModel : detailModels) {
+    for (final EntityModel detailModel : detailModels.values()) {
       if (detailModel.getClass().equals(modelClass)) {
         return true;
       }
@@ -215,7 +227,7 @@ public class DefaultEntityModel implements EntityModel {
 
   /** {@inheritDoc} */
   public final boolean containsDetailModel(final String entityID) {
-    for (final EntityModel detailModel : detailModels) {
+    for (final EntityModel detailModel : detailModels.values()) {
       if (detailModel.getEntityID().equals(entityID)) {
         return true;
       }
@@ -226,12 +238,12 @@ public class DefaultEntityModel implements EntityModel {
 
   /** {@inheritDoc} */
   public final boolean containsDetailModel(final EntityModel detailModel) {
-    return detailModels.contains(detailModel);
+    return detailModels.containsValue(detailModel);
   }
 
   /** {@inheritDoc} */
   public final Collection<? extends EntityModel> getDetailModels() {
-    return Collections.unmodifiableCollection(detailModels);
+    return Collections.unmodifiableCollection(detailModels.values());
   }
 
   /** {@inheritDoc} */
@@ -258,7 +270,7 @@ public class DefaultEntityModel implements EntityModel {
 
   /** {@inheritDoc} */
   public final EntityModel getDetailModel(final Class<? extends EntityModel> modelClass) {
-    for (final EntityModel detailModel : detailModels) {
+    for (final EntityModel detailModel : detailModels.values()) {
       if (detailModel.getClass().equals(modelClass)) {
         return detailModel;
       }
@@ -268,8 +280,8 @@ public class DefaultEntityModel implements EntityModel {
   }
 
   /** {@inheritDoc} */
-  public final EntityModel getDetailModel(final String entityID) {
-    for (final EntityModel detailModel : detailModels) {
+  public final EntityModel getDetailModel(final String entityID) {//todo add getDetailModel(foreignKeyPropertyID)?
+    for (final EntityModel detailModel : detailModels.values()) {
       if (detailModel.getEntityID().equals(entityID)) {
         return detailModel;
       }
@@ -307,7 +319,7 @@ public class DefaultEntityModel implements EntityModel {
 
   /** {@inheritDoc} */
   public final void refreshDetailModels() {
-    for (final EntityModel detailModel : detailModels) {
+    for (final EntityModel detailModel : detailModels.values()) {
       detailModel.refresh();
     }
   }
@@ -323,25 +335,24 @@ public class DefaultEntityModel implements EntityModel {
 
   /** {@inheritDoc} */
   public final void clearDetailModels() {
-    for (final EntityModel detailModel : detailModels) {
+    for (final EntityModel detailModel : detailModels.values()) {
       detailModel.clear();
     }
   }
 
   /** {@inheritDoc} */
-  public final void initialize(final String masterEntityID, final List<Entity> selectedMasterEntities) {
+  public final void initialize(final String foreignKeyPropertyID, final List<Entity> selectedMasterEntities) {
     if (containsTableModel()) {
-      tableModel.setForeignKeySearchValues(masterEntityID, selectedMasterEntities);
+      tableModel.setForeignKeySearchValues(foreignKeyPropertyID, selectedMasterEntities);
     }
 
     if (editModel.isEntityNew()) {
-      for (final Property.ForeignKeyProperty foreignKeyProperty : Entities.getForeignKeyProperties(entityID, masterEntityID)) {
-        final Entity referencedEntity = selectedMasterEntities == null || selectedMasterEntities.isEmpty() ?
-                null : selectedMasterEntities.get(0);
-        editModel.setValue(foreignKeyProperty.getPropertyID(), referencedEntity);
-      }
+      final Property.ForeignKeyProperty foreignKeyProperty = Entities.getForeignKeyProperty(entityID, foreignKeyPropertyID);
+      final Entity referencedEntity = selectedMasterEntities == null || selectedMasterEntities.isEmpty() ?
+              null : selectedMasterEntities.get(0);
+      editModel.setValue(foreignKeyProperty.getPropertyID(), referencedEntity);
     }
-    handleInitialization(masterEntityID, selectedMasterEntities);
+    handleInitialization(foreignKeyPropertyID, selectedMasterEntities);
   }
 
   /** {@inheritDoc} */
@@ -375,16 +386,20 @@ public class DefaultEntityModel implements EntityModel {
   }
 
   /**
-   * @param masterEntityID the entity ID of the master model doing the initialization
+   * @param foreignKeyPropertyID the  ID of the foreign key property referring to the entity of the master model doing the initialization
    * @param selectedMasterEntities the entities selected in the master model
    */
   @SuppressWarnings({"UnusedDeclaration"})
-  protected void handleInitialization(final String masterEntityID, final List<Entity> selectedMasterEntities) {}
+  protected void handleInitialization(final String foreignKeyPropertyID, final List<Entity> selectedMasterEntities) {}
 
   private void initializeDetailModels() {
     final List<Entity> activeEntities = getActiveEntities();
     for (final EntityModel detailModel : linkedDetailModels) {
-      detailModel.initialize(entityID, activeEntities);
+      for (final Map.Entry<String, EntityModel> detailModelEntry : detailModels.entrySet()) {
+        if (detailModelEntry.getValue() == detailModel) {
+          detailModel.initialize(detailModelEntry.getKey(), activeEntities);
+        }
+      }
     }
   }
 
@@ -431,7 +446,7 @@ public class DefaultEntityModel implements EntityModel {
       return;
     }
 
-    for (final EntityModel detailModel : detailModels) {
+    for (final EntityModel detailModel : detailModels.values()) {
       for (final Property.ForeignKeyProperty foreignKeyProperty :
               Entities.getForeignKeyProperties(detailModel.getEntityID(), entityID)) {
         final EntityEditModel detailEditModel = detailModel.getEditModel();
@@ -468,7 +483,7 @@ public class DefaultEntityModel implements EntityModel {
 
     try {
       final Entity insertedEntity = connectionProvider.getConnection().selectSingle(insertedPrimaryKeys.get(0));
-      for (final EntityModel detailModel : detailModels) {
+      for (final EntityModel detailModel : detailModels.values()) {
         for (final Property.ForeignKeyProperty foreignKeyProperty :
                 Entities.getForeignKeyProperties(detailModel.getEntityID(), entityID)) {
           final EntityEditModel detailEditModel = detailModel.getEditModel();
@@ -486,10 +501,12 @@ public class DefaultEntityModel implements EntityModel {
 
   @SuppressWarnings({"UnusedDeclaration"})
   private void refreshDetailModelsAfterUpdate(final Collection<Entity> updatedEntities) {
-    for (final EntityModel detailModel : detailModels) {
-      detailModel.getEditModel().replaceForeignKeyValues(entityID, updatedEntities);
+    for (final Map.Entry<String, EntityModel> detailModelEntry : detailModels.entrySet()) {
+      final String foreignKeyPropertyID = detailModelEntry.getKey();
+      final EntityModel detailModel = detailModelEntry.getValue();
+      detailModel.getEditModel().replaceForeignKeyValues(foreignKeyPropertyID, updatedEntities);
       if (detailModel.containsTableModel()) {
-        detailModel.getTableModel().replaceForeignKeyValues(entityID, updatedEntities);
+        detailModel.getTableModel().replaceForeignKeyValues(foreignKeyPropertyID, updatedEntities);
       }
     }
   }

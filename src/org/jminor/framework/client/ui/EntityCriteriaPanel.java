@@ -69,9 +69,7 @@ public final class EntityCriteriaPanel extends JPanel {
 
     tableModel.getSearchModel().refresh();
 
-    if (tableModel.isDetailModel()) {
-      add(initializeShowAllPanel(tableModel), BorderLayout.SOUTH);
-    }
+    add(initializeShowAllPanel(tableModel), BorderLayout.SOUTH);
   }
 
   private JPanel initializeShowAllPanel(final EntityTableModel tableModel) {

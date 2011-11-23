@@ -45,10 +45,10 @@ public interface EntityModel extends Refreshable, EntityDataProvider {
   /**
    * Initializes this {@link EntityModel} according to the given master entities,
    * sets the appropriate property value in the {@link EntityEditModel} and filters the {@link EntityTableModel}
-   * @param masterEntityID the ID of the master entity
+   * @param foreignKeyPropertyID the ID of the foreign key involved
    * @param selectedMasterEntities the master entities
    */
-  void initialize(final String masterEntityID, final List<Entity> selectedMasterEntities);
+  void initialize(final String foreignKeyPropertyID, final List<Entity> selectedMasterEntities);
 
   /**
    * Sets the model serving as master model
@@ -62,17 +62,40 @@ public interface EntityModel extends Refreshable, EntityDataProvider {
   EntityModel getMasterModel();
 
   /**
-   * Adds the given detail models to this model.
+   * Adds the given detail model to this model, using the first foreign key property found
+   * with the entityID of this entity model, a side-effect if the detail model contains
+   * a table model is that it is configured so that a query criteria is required for it to show
+   * any data, via {@link EntityTableModel#setQueryCriteriaRequired(boolean)}
    * @param detailModels the detail models to add
+   * @deprecated use {@link #addDetailModel(String, EntityModel)}
    */
   void addDetailModels(final EntityModel... detailModels);
 
   /**
-   * Adds the given detail model to this model
+   * Adds the given detail model to this model, using the first foreign key property found
+   * with the entityID of this entity model, a side-effect if the detail model contains
+   * a table model is that it is configured so that a query criteria is required for it to show
+   * any data, via {@link EntityTableModel#setQueryCriteriaRequired(boolean)}
    * @param detailModel the detail model
    * @return the detail model just added
+   * @deprecated use {@link #addDetailModel(String, EntityModel)}
    */
   EntityModel addDetailModel(final EntityModel detailModel);
+
+  /**
+   * Adds the given detail model to this model, a side-effect if the detail model contains
+   * a table model is that it is configured so that a query criteria is required for it to show
+   * any data, via {@link EntityTableModel#setQueryCriteriaRequired(boolean)}.
+   * An entity model can only be added once as a detail model.
+   * @param foreignKeyPropertyID the ID of the foreign key property in the detail entity which
+   * refers to this master entity
+   * @param detailModel the detail model
+   * @return the detail model just added
+   * @throws IllegalArgumentException in case a detail model for the given foreign key property has already been added
+   * or if the given detail model has already been added or if a foreign
+   * key property with the given ID does not exist in the detail model entity
+   */
+  EntityModel addDetailModel(final String foreignKeyPropertyID, final EntityModel detailModel);
 
   /**
    * @param modelClass the detail model class

@@ -44,7 +44,6 @@ final class EntityDefinitionImpl implements Entity.Definition {
    */
   private String domainID;
 
-
   /**
    * The caption to use for the entity type
    */

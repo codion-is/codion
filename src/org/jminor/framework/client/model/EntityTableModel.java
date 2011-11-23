@@ -50,30 +50,21 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
   void setEditModel(final EntityEditModel editModel);
 
   /**
-   * @param detailModel if set to true then this table model will not run a query unless a query criteria has been specified
-   * @see #setQueryCriteriaRequired(boolean)
-   * @return this table model instance
-   */
-  EntityTableModel setDetailModel(final boolean detailModel);
-
-  /**
-   * Refreshes this table model according the the given values by finding the first foreign key property
-   * referencing the entity identified by <code>referencedEntityID</code> and setting <code>referenceEntities</code>
-   * as the criteria values. If no foreign key property is found this method has no effect.
-   * @param referencedEntityID the ID of the master entity
+   * Refreshes this table model after setting <code>referenceEntities</code>
+   * as the criteria values for the given foreign key property..
+   * @param foreignKeyPropertyID the ID of the foreign key property for which to set the criteria values
    * @param referenceEntities the entities to use as criteria values
-   * @see #isDetailModel()
    */
-  void setForeignKeySearchValues(final String referencedEntityID, final List<Entity> referenceEntities);
+  void setForeignKeySearchValues(final String foreignKeyPropertyID, final List<Entity> referenceEntities);
 
   /**
    * For every entity in this table model, replaces the foreign key instance bearing the primary
    * key with the corresponding entity from <code>foreignKeyValues</code>, useful when property
    * values have been changed in the referenced entity that must be reflected in the table model.
-   * @param foreignKeyEntityID the entity ID of the foreign key values
+   * @param foreignKeyPropertyID the ID of the foreign key property, for which to replace the values
    * @param newForeignKeyValues the foreign key entities
    */
-  void replaceForeignKeyValues(final String foreignKeyEntityID, final Collection<Entity> newForeignKeyValues);
+  void replaceForeignKeyValues(final String foreignKeyPropertyID, final Collection<Entity> newForeignKeyValues);
 
   /**
    * Retrieves the entities identified by the given primary keys and adds them to this table model
@@ -104,11 +95,6 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
    * @return the {@link EntityTableSearchModel} instance used by this table model
    */
   EntityTableSearchModel getSearchModel();
-
-  /**
-   * @return true if this table model has a master model
-   */
-  boolean isDetailModel();
 
   /**
    * @return true if this model allows records to be deleted

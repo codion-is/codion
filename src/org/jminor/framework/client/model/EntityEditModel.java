@@ -60,13 +60,13 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
   Entity getForeignKeyValue(final String foreignKeyPropertyID);
 
   /**
-   * For every field referencing the given foreign key values, replaces that foreign key instance with
+   * For the field representing the given foreign key property, replaces that foreign key value with
    * the corresponding entity from <code>foreignKeyValues</code>, useful when property
    * values have been changed in the referenced entity that must be reflected in the edit model.
-   * @param foreignKeyEntityID the entity ID of the foreign key values
+   * @param foreignKeyPropertyID the ID of the foreign key property
    * @param newForeignKeyValues the new foreign key entities
    */
-  void replaceForeignKeyValues(final String foreignKeyEntityID, final Collection<Entity> newForeignKeyValues);
+  void replaceForeignKeyValues(final String foreignKeyPropertyID, final Collection<Entity> newForeignKeyValues);
 
   /**
    * Initializes a value provider for the given property, useful for adding lookup
