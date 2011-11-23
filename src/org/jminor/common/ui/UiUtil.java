@@ -714,7 +714,7 @@ public final class UiUtil {
   public static void transferFocusOnEnter(final JComponent component) {
     component.addKeyListener(new KeyAdapter() {
       @Override
-      public void keyPressed(final KeyEvent e) {
+      public void keyReleased(final KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_ENTER) {
           if (e.isShiftDown()) {
             component.transferFocusBackward();

@@ -2505,3 +2505,4 @@
   TextValueLink.getValueAsText(), no longer overridden in subclasses, finalized
   Property.setFormat() now throws IllegalArgumentException if the format does not fit the property, tested
   Util.getNonGroupingNumberFormat() added, used where applicable
+  UiUtil.transferFocusOnEnter() now uses keyReleased instead of keyPressed
