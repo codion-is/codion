@@ -2529,3 +2529,4 @@
   EntityPanel.addDetailPanel() no longer adds the detail panel model as detail model
   EntityPanelProvider.addDetailPanelProvider() now calls addDetailModelProvider()
   AbstractFilteredTableModel.addItems() overloaded with index parameter, tested
+  Some javadoc improvements

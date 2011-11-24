@@ -98,18 +98,23 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
   EntityTableSearchModel getSearchModel();
 
   /**
-   * @return true if this model allows records to be deleted
+   * @return true if this model has an edit model and that edit model allows deletion of records
+   * @see #hasEditModel()
+   * @see #setEditModel(EntityEditModel)
    */
   boolean isDeleteAllowed();
 
   /**
-   * @return true if this model is read only or if no {@link EntityEditModel} has been specified.
+   * @return true if this model has no {@link EntityEditModel} or if that edit model is read only
+   * @see #hasEditModel().
    * @see #setEditModel(EntityEditModel)
    */
   boolean isReadOnly();
 
   /**
-   * @return true if this model allows records to be deleted
+   * @return true if this model has an edit model and that edit model allows updating of records
+   * @see #hasEditModel()
+   * @see #setEditModel(EntityEditModel)
    */
   boolean isUpdateAllowed();
 
@@ -186,6 +191,7 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
    * @throws CancelException in case the user cancels the operation
    * @throws org.jminor.common.db.exception.RecordModifiedException in case an entity was modified by another user
    * @throws ValidationException in case validation fails
+   * @throws IllegalStateException in case this table model has no edit model
    * @see org.jminor.framework.domain.Entity.Validator#validate(java.util.Collection, int)
    */
   void update(final List<Entity> entities) throws CancelException, ValidationException, DatabaseException;
@@ -194,6 +200,7 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
    * Deletes the selected entities
    * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
    * @throws CancelException in case the user cancels the operation
+   * @throws  IllegalStateException in case this table model has no edit model
    */
   void deleteSelected() throws CancelException, DatabaseException;
 
@@ -257,8 +264,8 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
   List<Entity.Key> getPrimaryKeysOfSelectedEntities();
 
   /**
-   * Returns an initialized {@link ReportDataWrapper} instance, the default implementation returns null.
-   * @return an initialized {@link ReportDataWrapper}
+   * @return the {@link ReportDataWrapper} specified for this table model
+   * @see #setReportDataSource(ReportDataWrapper)
    * @see #getSelectedEntitiesIterator()
    */
   ReportDataWrapper getReportDataSource();
