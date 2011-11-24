@@ -6,16 +6,16 @@ package org.jminor.framework.client.model;
 import org.jminor.common.model.User;
 import org.jminor.framework.db.EntityConnectionImplTest;
 import org.jminor.framework.db.provider.EntityConnectionProvider;
-import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.demos.chinook.domain.Chinook;
+import org.jminor.framework.demos.empdept.domain.EmpDept;
 
-import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
-import javax.swing.tree.TreeModel;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeModel;
 import java.util.Enumeration;
+
+import static org.junit.Assert.*;
 
 public final class DefaultEntityApplicationModelTest {
 
@@ -77,12 +77,11 @@ public final class DefaultEntityApplicationModelTest {
         EmpDept.init();
       }
     };
-    model.addMainApplicationModels(new EmpModel(model.getConnectionProvider()));
+    model.addMainApplicationModels(new DeptModel(model.getConnectionProvider()));
     final EntityModel deptModel = model.getMainApplicationModel(EmpDept.T_DEPARTMENT);
-    final EntityModel empModel = model.getMainApplicationModel(EmpModel.class);
-    assertNotNull(empModel);
+    assertNotNull(deptModel);
     deptModel.getDetailModel(EmpDept.T_EMPLOYEE).getTableModel().setQueryCriteriaRequired(false);
-    assertEquals(2, model.getMainApplicationModels().size());
+    assertEquals(1, model.getMainApplicationModels().size());
     assertNotNull(deptModel);
     assertEquals(User.UNIT_TEST_USER, model.getUser());
     model.refresh();
@@ -92,9 +91,10 @@ public final class DefaultEntityApplicationModelTest {
     model.login(User.UNIT_TEST_USER);
   }
 
-  private static class EmpModel extends DefaultEntityModel {
-    private EmpModel(final EntityConnectionProvider connectionProvider) {
-      super(EmpDept.T_EMPLOYEE, connectionProvider);
+  private static class DeptModel extends DefaultEntityModel {
+    private DeptModel(final EntityConnectionProvider connectionProvider) {
+      super(EmpDept.T_DEPARTMENT, connectionProvider);
+      addDetailModel(new DefaultEntityModel(EmpDept.T_EMPLOYEE, connectionProvider));
     }
   }
 }

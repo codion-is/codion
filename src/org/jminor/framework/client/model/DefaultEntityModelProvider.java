@@ -4,11 +4,12 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.framework.db.provider.EntityConnectionProvider;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A default {@link EntityModelProvider} implementation.
@@ -19,7 +20,7 @@ public class DefaultEntityModelProvider implements EntityModelProvider {
 
   private final String entityID;
 
-  private final Map<String, EntityModelProvider> detailModelProviders = new HashMap<String, EntityModelProvider> ();
+  private final List<EntityModelProvider> detailModelProviders = new ArrayList<EntityModelProvider>();
 
   private Class<? extends EntityModel> modelClass = DefaultEntityModel.class;
   private Class<? extends EntityEditModel> editModelClass = DefaultEntityEditModel.class;
@@ -82,9 +83,9 @@ public class DefaultEntityModelProvider implements EntityModelProvider {
   }
 
   /** {@inheritDoc} */
-  public final EntityModelProvider addDetailModelProvider(final String foreignKeyPropertyID, final EntityModelProvider detailModelProvider) {
-    if (!detailModelProviders.containsKey(foreignKeyPropertyID)) {
-      detailModelProviders.put(foreignKeyPropertyID, detailModelProvider);
+  public final EntityModelProvider addDetailModelProvider(final EntityModelProvider detailModelProvider) {
+    if (!detailModelProviders.contains(detailModelProvider)) {
+      detailModelProviders.add(detailModelProvider);
     }
 
     return this;
@@ -114,8 +115,8 @@ public class DefaultEntityModelProvider implements EntityModelProvider {
         LOG.debug("{} initializing a custom entity model: {}", this, modelClass);
         model = modelClass.getConstructor(EntityConnectionProvider.class).newInstance(connectionProvider);
       }
-      for (final Map.Entry<String, EntityModelProvider> detailProviderEntry : detailModelProviders.entrySet()) {
-        model.addDetailModel(detailProviderEntry.getKey(), detailProviderEntry.getValue().initializeModel(connectionProvider, true));
+      for (final EntityModelProvider detailProvider : detailModelProviders) {
+        model.addDetailModel(detailProvider.initializeModel(connectionProvider, true));
       }
       configureModel(model);
 

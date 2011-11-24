@@ -8,16 +8,17 @@ import org.jminor.framework.client.model.DefaultEntityModel;
 import org.jminor.framework.db.EntityConnectionImplTest;
 import org.jminor.framework.demos.petstore.domain.Petstore;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import javax.swing.ButtonModel;
 import javax.swing.JCheckBox;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 public class BooleanValueLinkTest {
 
-  private ValueChangeMapEditModel<String, Object> model;
+  private final ValueChangeMapEditModel<String, Object> model;
 
   public BooleanValueLinkTest() {
     model = new DefaultEntityModel(Petstore.T_ITEM, EntityConnectionImplTest.DB_PROVIDER).getEditModel();

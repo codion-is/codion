@@ -387,16 +387,6 @@ public final class Configuration {
   public static final String WILDCARD_CHARACTER = "jminor.wildcardCharacter";
 
   /**
-   * Specifies whether or not to use number format grouping in table views,
-   * i.e. 1234567 shown as 1.234.567 or 1,234,567 depending on locale.
-   * This can be overridden on Property basis via Property.setUseNumberFormatGrouping()<br>
-   * Value type: Boolean<br>
-   * Default value: true
-   * @see org.jminor.framework.domain.Property#setUseNumberFormatGrouping(boolean)
-   */
-  public static final String USE_NUMBER_FORMAT_GROUPING = "jminor.client.useNumberFormatGrouping";
-
-  /**
    * Specifies the class providing remote db connections<br>
    * Value type: String (the name of a class implementing org.jminor.framework.db.provider.EntityConnectionProvider)<br>
    * Default value: org.jminor.framework.server.RemoteEntityConnectionProvider
@@ -481,13 +471,6 @@ public final class Configuration {
   public static final String DEFAULT_LOOK_AND_FEEL_CLASSNAME = "jminor.client.defaultLookAndFeelClassName";
 
   /**
-   * Specifies whether entity models should be automatically created if not specified.
-   * Value type: Boolean<br>
-   * Default value: true<br>
-   */
-  public static final String AUTO_CREATE_ENTITY_MODELS = "jminor.client.autoCreateEntityModels";
-
-  /**
    * Specifies the default size of the divider for detail panel split panes.
    * Value type: Integer<br>
    * Default value: 18<br>
@@ -537,7 +520,6 @@ public final class Configuration {
     PROPERTIES.put(DEFAULT_SEARCH_PANEL_STATE, false);
     PROPERTIES.put(SERVER_NAME_PREFIX, "JMinor Server");
     PROPERTIES.put(WILDCARD_CHARACTER, "%");
-    PROPERTIES.put(USE_NUMBER_FORMAT_GROUPING, true);
     PROPERTIES.put(REMOTE_CONNECTION_PROVIDER, "org.jminor.framework.server.provider.RemoteEntityConnectionProvider");
     PROPERTIES.put(LOCAL_CONNECTION_PROVIDER, "org.jminor.framework.db.provider.LocalEntityConnectionProvider");
     PROPERTIES.put(DEFAULT_COMBO_BOX_NULL_VALUE_ITEM, "-");
@@ -548,7 +530,6 @@ public final class Configuration {
     PROPERTIES.put(DEFAULT_FOREIGN_KEY_FETCH_DEPTH, 1);
     PROPERTIES.put(LIMIT_FOREIGN_KEY_FETCH_DEPTH, true);
     PROPERTIES.put(DEFAULT_LOOK_AND_FEEL_CLASSNAME, UIManager.getSystemLookAndFeelClassName());
-    PROPERTIES.put(AUTO_CREATE_ENTITY_MODELS, true);
     PROPERTIES.put(WEB_SERVER_PORT, 80);
     PROPERTIES.put(CACHE_REPORTS, true);
     PROPERTIES.put(DEFAULT_SPLIT_PANE_DIVIDER_SIZE, 18);
@@ -602,12 +583,10 @@ public final class Configuration {
     parseBooleanSetting(TRANSFER_FOCUS_ON_ENTER);
     parseBooleanSetting(USE_FOCUS_ACTIVATION);
     parseBooleanSetting(USE_KEYBOARD_NAVIGATION);
-    parseBooleanSetting(USE_NUMBER_FORMAT_GROUPING);
     parseBooleanSetting(USE_OPTIMISTIC_LOCKING);
     parseStringSetting(USERNAME_PREFIX);
     parseStringSetting(WILDCARD_CHARACTER);
     parseStringSetting(DEFAULT_LOOK_AND_FEEL_CLASSNAME);
-    parseBooleanSetting(AUTO_CREATE_ENTITY_MODELS);
     parseStringSetting(WEB_SERVER_DOCUMENT_ROOT);
     parseIntegerSetting(WEB_SERVER_PORT);
     parseStringSetting(JAVAX_NET_NET_TRUSTSTORE);

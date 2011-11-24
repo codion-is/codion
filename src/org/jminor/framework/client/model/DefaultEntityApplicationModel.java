@@ -5,7 +5,6 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
-import org.jminor.framework.Configuration;
 import org.jminor.framework.db.provider.EntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Property;
@@ -139,17 +138,6 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
     for (final EntityModel mainModel : mainApplicationModels) {
       if (mainModel.getEntityID().equals(entityID)) {
         return mainModel;
-      }
-    }
-
-    if (Configuration.getBooleanValue(Configuration.AUTO_CREATE_ENTITY_MODELS)) {
-      try {
-        final EntityModel detailModel = new DefaultEntityModel(entityID, connectionProvider);
-        addMainApplicationModel(detailModel);
-        return detailModel;
-      }
-      catch (Exception e) {
-        throw new RuntimeException(e);
       }
     }
 

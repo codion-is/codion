@@ -50,21 +50,22 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
   void setEditModel(final EntityEditModel editModel);
 
   /**
-   * Refreshes this table model after setting <code>referenceEntities</code>
-   * as the criteria values for the given foreign key property..
-   * @param foreignKeyPropertyID the ID of the foreign key property for which to set the criteria values
-   * @param referenceEntities the entities to use as criteria values
+   * Refreshes this table model according the the given values by finding the first foreign key property
+   * referencing the entity identified by <code>foreignKeyEntityID</code> and setting <code>foreignKeyValues</code>
+   * as the criteria values. If no foreign key property is found this method has no effect.
+   * @param foreignKeyEntityID the ID of the master entity
+   * @param foreignKeyValues the entities to use as criteria values
    */
-  void setForeignKeySearchValues(final String foreignKeyPropertyID, final List<Entity> referenceEntities);
+  void setForeignKeySearchValues(final String foreignKeyEntityID, final List<Entity> foreignKeyValues);
 
   /**
    * For every entity in this table model, replaces the foreign key instance bearing the primary
    * key with the corresponding entity from <code>foreignKeyValues</code>, useful when property
    * values have been changed in the referenced entity that must be reflected in the table model.
-   * @param foreignKeyPropertyID the ID of the foreign key property, for which to replace the values
-   * @param newForeignKeyValues the foreign key entities
+   * @param foreignKeyEntityID the entity ID of the foreign key values
+   * @param foreignKeyValues the foreign key entities
    */
-  void replaceForeignKeyValues(final String foreignKeyPropertyID, final Collection<Entity> newForeignKeyValues);
+  void replaceForeignKeyValues(final String foreignKeyEntityID, final Collection<Entity> foreignKeyValues);
 
   /**
    * Retrieves the entities identified by the given primary keys and adds them to this table model

@@ -29,30 +29,50 @@ public final class AbstractFilteredTableModelTest {
 
   private static final String[] ITEMS = {"a", "b", "c", "d", "e"};
 
-  private AbstractFilteredTableModel<String, Integer> tableModel;
+  private TestAbstractFilteredTableModel tableModel;
 
-  public static AbstractFilteredTableModel<String, Integer> createTestModel() {
+  private static final class TestAbstractFilteredTableModel extends AbstractFilteredTableModel<String, Integer> {
+
+    private TestAbstractFilteredTableModel(final TableColumnModel columnModel, final List<? extends ColumnSearchModel<Integer>> columnFilterModels) {
+      super(columnModel, columnFilterModels);
+    }
+
+    @Override
+    protected void doRefresh() {
+      clear();
+      addItems(Arrays.asList(ITEMS), false);
+    }
+
+    public Object getValueAt(final int rowIndex, final int columnIndex) {
+      return getItemAt(rowIndex);
+    }
+
+    public void addItemsAt(final List<String> items, final int index) {
+      addItems(items, index);
+    }
+  }
+
+  public static TestAbstractFilteredTableModel createTestModel() {
     final TableColumnModel columnModel = new DefaultTableColumnModel();
     final TableColumn column = new TableColumn(0);
     column.setIdentifier(0);
     columnModel.addColumn(column);
     final ColumnSearchModel<Integer> filterModel = new DefaultColumnSearchModel<Integer>(0, Types.VARCHAR, "%");
-    return new AbstractFilteredTableModel<String, Integer>(columnModel, Arrays.asList(filterModel)) {
-      @Override
-      protected void doRefresh() {
-        clear();
-        addItems(Arrays.asList(ITEMS), false);
-      }
-
-      public Object getValueAt(final int rowIndex, final int columnIndex) {
-        return getItemAt(rowIndex);
-      }
-    };
+    return new TestAbstractFilteredTableModel(columnModel, Arrays.asList(filterModel));
   }
 
   @Before
   public void setUp() {
     tableModel = createTestModel();
+  }
+
+  @Test
+  public void addItemsAt() {
+    tableModel.refresh();
+    tableModel.addItemsAt(Arrays.asList("f", "g"), 2);
+    assertEquals(2, tableModel.indexOf("f"));
+    assertEquals(3, tableModel.indexOf("g"));
+    assertEquals(4, tableModel.indexOf("c"));
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -479,7 +499,7 @@ public final class AbstractFilteredTableModelTest {
   }
 
   private static boolean tableModelContainsAll(final String[] strings, final boolean includeFiltered,
-                                        final AbstractFilteredTableModel<String, Integer> model) {
+                                               final AbstractFilteredTableModel<String, Integer> model) {
     for (final String string : strings) {
       if (!model.contains(string, includeFiltered)) {
         return false;

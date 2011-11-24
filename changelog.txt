@@ -2520,3 +2520,12 @@
   EntityTableModel.detailModel attribute removed along with associated crap
   EntityModel.addDetailModel() has the side effect that the table model of the added detail model has it's setQueryCriteriaRequired() called with true
   DefaultEntityModelProvider.initializeTableModel() calls setQueryCriteriaRequired() on the initialized table model if it is a detail model
+  Ill-thought changes reverted
+  Configuration.AUTO_CREATE_ENTITY_MODELS removed
+  DefaultEntityModel.getDetailModel() and DefaultEntityApplicationModel.getMainApplicationModel() no longer create a default model if none exists
+  Tests and demos updated to accommodate the above change
+  Configuration.USE_NUMBER_FORMAT_GROUPING removed
+  EntityPanelProvider.register() removed, didn't pan out
+  EntityPanel.addDetailPanel() no longer adds the detail panel model as detail model
+  EntityPanelProvider.addDetailPanelProvider() now calls addDetailModelProvider()
+  AbstractFilteredTableModel.addItems() overloaded with index parameter, tested

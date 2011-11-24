@@ -711,8 +711,8 @@ public final class UiUtil {
    * @param component the component
    */
   public static void transferFocusOnEnter(final JComponent component) {
-    addKeyEvent(component, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED, true, new TransferFocusAction(component));
-    addKeyEvent(component, KeyEvent.VK_ENTER, KeyEvent.SHIFT_DOWN_MASK, JComponent.WHEN_FOCUSED, true, new TransferFocusAction(component, true));
+    addKeyEvent(component, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED, new TransferFocusAction(component));
+    addKeyEvent(component, KeyEvent.VK_ENTER, KeyEvent.SHIFT_DOWN_MASK, JComponent.WHEN_FOCUSED, new TransferFocusAction(component, true));
   }
 
   /**
@@ -901,7 +901,7 @@ public final class UiUtil {
   }
 
   public static void addLookupDialog(final JTextField txtField, final ValueCollectionProvider valueListProvider) {
-    addKeyEvent(txtField, KeyEvent.VK_SPACE, InputEvent.CTRL_DOWN_MASK, 0, new AbstractAction("valueLookup") {
+    addKeyEvent(txtField, KeyEvent.VK_SPACE, InputEvent.CTRL_DOWN_MASK, JComponent.WHEN_FOCUSED, new AbstractAction("valueLookup") {
       public void actionPerformed(final ActionEvent e) {
         try {
           final Object value = selectValue(txtField, valueListProvider.getValues());

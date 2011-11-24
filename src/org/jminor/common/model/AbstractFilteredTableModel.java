@@ -804,6 +804,27 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   }
 
   /**
+   * Adds the given items to this table model, non-filtered items are added at the given index
+   * @param items the items to add
+   * @param index the index at which to add the items
+   */
+  protected final void addItems(final List<R> items, final int index) {
+    int counter = 0;
+    for (final R item : items) {
+      if (filterCriteria.include(item)) {
+        visibleItems.add(index + counter++, item);
+      }
+      else {
+        filteredItems.add(item);
+      }
+    }
+    if (isSortingStateEnabled()) {
+      Collections.sort(visibleItems, rowComparator);
+    }
+    fireTableDataChanged();
+  }
+
+  /**
    * Returns the value to use when searching through the table.
    * @param rowIndex the row index
    * @param columnIdentifier the column identifier

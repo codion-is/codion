@@ -8,6 +8,7 @@ import org.jminor.common.model.LoadTest;
 import org.jminor.common.model.User;
 import org.jminor.common.ui.LoadTestPanel;
 import org.jminor.framework.client.model.DefaultEntityApplicationModel;
+import org.jminor.framework.client.model.DefaultEntityModel;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.db.provider.EntityConnectionProviders;
@@ -39,6 +40,9 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
         EmpDept.init();
       }
     };
+    final EntityModel deptModel = new DefaultEntityModel(EmpDept.T_DEPARTMENT, applicationModel.getConnectionProvider());
+    deptModel.addDetailModel(new DefaultEntityModel(EmpDept.T_EMPLOYEE, applicationModel.getConnectionProvider()));
+    applicationModel.addMainApplicationModel(deptModel);
 
     final EntityModel model = applicationModel.getMainApplicationModel(EmpDept.T_DEPARTMENT);
     model.setLinkedDetailModels(model.getDetailModel(EmpDept.T_EMPLOYEE));

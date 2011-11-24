@@ -19,9 +19,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * A class providing EntityPanel instances.
@@ -46,8 +44,6 @@ public class EntityPanelProvider implements Comparable {
   private final EntityModelProvider modelProvider;
 
   private final List<EntityPanelProvider> detailPanelProviders = new ArrayList<EntityPanelProvider>();
-
-  private static final Map<String, EntityPanelProvider> PANEL_PROVIDERS = Collections.synchronizedMap(new HashMap<String, EntityPanelProvider>());
 
   /**
    * Instantiates a new EntityPanelProvider for the given entity type
@@ -104,17 +100,6 @@ public class EntityPanelProvider implements Comparable {
     this.caption = caption;
   }
 
-  public final EntityPanelProvider register() {
-    synchronized (PANEL_PROVIDERS) {
-      if (PANEL_PROVIDERS.containsKey(modelProvider.getEntityID())) {
-        throw new IllegalStateException("Panel provider has already been set for entity: " + modelProvider.getEntityID());
-      }
-      PANEL_PROVIDERS.put(modelProvider.getEntityID(), this);
-    }
-
-    return this;
-  }
-
   /**
    * @return the entity ID
    */
@@ -136,6 +121,7 @@ public class EntityPanelProvider implements Comparable {
   public final EntityPanelProvider addDetailPanelProvider(final EntityPanelProvider panelProvider) {
     if (!detailPanelProviders.contains(panelProvider)) {
       detailPanelProviders.add(panelProvider);
+      modelProvider.addDetailModelProvider(panelProvider.getModelProvider());
     }
 
     return this;
@@ -299,10 +285,6 @@ public class EntityPanelProvider implements Comparable {
 
   public final EntityTablePanel createTablePanel(final EntityConnectionProvider connectionProvider, final boolean detailPanel) {
     return initializeTablePanel(modelProvider.initializeTableModel(connectionProvider, detailPanel));
-  }
-
-  public static EntityPanelProvider getProvider(final String entityID) {
-    return PANEL_PROVIDERS.get(entityID);
   }
 
   protected void configurePanel(final EntityPanel entityPanel) {}

@@ -4,6 +4,7 @@
 package org.jminor.framework.tools.testing;
 
 import org.jminor.framework.client.model.DefaultEntityApplicationModel;
+import org.jminor.framework.client.model.DefaultEntityModel;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.db.EntityConnectionImplTest;
@@ -100,6 +101,7 @@ public class EntityLoadTestModelTest {
         EmpDept.init();
       }
     };
+    model.addMainApplicationModel(new DefaultEntityModel(EmpDept.T_DEPARTMENT, EntityConnectionImplTest.DB_PROVIDER));
     final EntityTableModel tableModel = model.getMainApplicationModel(EmpDept.T_DEPARTMENT).getTableModel();
     tableModel.setQueryCriteriaRequired(false);
     tableModel.refresh();

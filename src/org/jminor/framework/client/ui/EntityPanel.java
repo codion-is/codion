@@ -368,9 +368,6 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
     if (panelInitialized) {
       throw new IllegalStateException("Can not add detail panel after initialization");
     }
-    if (!entityModel.containsDetailModel(detailPanel.entityModel)) {
-      entityModel.addDetailModel(detailPanel.entityModel);
-    }
     detailPanel.setMasterPanel(this);
     detailEntityPanels.add(detailPanel);
 

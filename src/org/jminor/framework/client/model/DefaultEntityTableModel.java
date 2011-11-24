@@ -389,23 +389,25 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   /** {@inheritDoc} */
-  public void setForeignKeySearchValues(final String foreignKeyPropertyID, final List<Entity> referenceEntities) {
-    final Property.ForeignKeyProperty property = Entities.getForeignKeyProperty(entityID, foreignKeyPropertyID);
-    if (searchModel.setSearchValues(property.getPropertyID(), referenceEntities)) {
+  public void setForeignKeySearchValues(final String foreignKeyEntityID, final List<Entity> foreignKeyValues) {
+    final List<Property.ForeignKeyProperty> properties = Entities.getForeignKeyProperties(entityID, foreignKeyEntityID);
+    if (!properties.isEmpty() && searchModel.setSearchValues(properties.get(0).getPropertyID(), foreignKeyValues)) {
       refresh();
     }
   }
 
   /** {@inheritDoc} */
-  public final void replaceForeignKeyValues(final String foreignKeyPropertyID, final Collection<Entity> newForeignKeyValues) {
-    final Property.ForeignKeyProperty foreignKeyProperty = Entities.getForeignKeyProperty(this.entityID, foreignKeyPropertyID);
+  public final void replaceForeignKeyValues(final String foreignKeyEntityID, final Collection<Entity> foreignKeyValues) {
+    final List<Property.ForeignKeyProperty> foreignKeyProperties = Entities.getForeignKeyProperties(this.entityID, foreignKeyEntityID);
     boolean changed = false;
     for (final Entity entity : getAllItems()) {
-      for (final Entity newForeignKeyValue : newForeignKeyValues) {
-        final Entity currentForeignKeyValue = entity.getForeignKeyValue(foreignKeyProperty.getPropertyID());
-        if (currentForeignKeyValue != null && currentForeignKeyValue.equals(newForeignKeyValue)) {
-          currentForeignKeyValue.setAs(newForeignKeyValue);
-          changed = true;
+      for (final Property.ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
+        for (final Entity foreignKeyValue : foreignKeyValues) {
+          final Entity currentForeignKeyValue = entity.getForeignKeyValue(foreignKeyProperty.getPropertyID());
+          if (currentForeignKeyValue != null && currentForeignKeyValue.equals(foreignKeyValue)) {
+            currentForeignKeyValue.setAs(foreignKeyValue);
+            changed = true;
+          }
         }
       }
     }

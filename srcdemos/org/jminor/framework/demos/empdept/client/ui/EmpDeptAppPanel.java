@@ -40,7 +40,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel {
     employeePanelProvider.setEditPanelClass(EmployeeEditPanel.class);
 
     final EntityModelProvider departmentModelProvider = new DefaultEntityModelProvider(T_DEPARTMENT);
-    departmentModelProvider.addDetailModelProvider(EmpDept.EMPLOYEE_DEPARTMENT_FK, employeeModelProvider);
+    departmentModelProvider.addDetailModelProvider(employeeModelProvider);
     final EntityPanelProvider departmentPanelProvider = new EntityPanelProvider(T_DEPARTMENT);
     departmentPanelProvider.setEditPanelClass(DepartmentEditPanel.class);
     departmentPanelProvider.setTablePanelClass(DepartmentTablePanel.class);

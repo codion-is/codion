@@ -244,18 +244,19 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
   }
 
   /** {@inheritDoc} */
-  public final void replaceForeignKeyValues(final String foreignKeyPropertyID, final Collection<Entity> newForeignKeyValues) {
-    //todo, wtf is this doing with multiple new foreign key values?
-    final Property.ForeignKeyProperty foreignKeyProperty = Entities.getForeignKeyProperty(this.entityID, foreignKeyPropertyID);
-    if (containsComboBoxModel(foreignKeyProperty.getPropertyID())) {
-      getEntityComboBoxModel(foreignKeyProperty.getPropertyID()).refresh();
-    }
-    final Entity currentForeignKeyValue = getForeignKeyValue(foreignKeyProperty.getPropertyID());
-    if (currentForeignKeyValue != null) {
-      for (final Entity newForeignKeyValue : newForeignKeyValues) {
-        if (currentForeignKeyValue.equals(newForeignKeyValue)) {
-          setValue(foreignKeyProperty.getPropertyID(), null);
-          setValue(foreignKeyProperty.getPropertyID(), newForeignKeyValue);
+  public final void replaceForeignKeyValues(final String foreignKeyEntityID, final Collection<Entity> foreignKeyValues) {
+    final List<Property.ForeignKeyProperty> foreignKeyProperties = Entities.getForeignKeyProperties(this.entityID, foreignKeyEntityID);
+    for (final Property.ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
+      if (containsComboBoxModel(foreignKeyProperty.getPropertyID())) {
+        getEntityComboBoxModel(foreignKeyProperty.getPropertyID()).refresh();
+      }
+      final Entity currentForeignKeyValue = getForeignKeyValue(foreignKeyProperty.getPropertyID());
+      if (currentForeignKeyValue != null) {
+        for (final Entity newForeignKeyValue : foreignKeyValues) {
+          if (currentForeignKeyValue.equals(newForeignKeyValue)) {
+            setValue(foreignKeyProperty.getPropertyID(), null);
+            setValue(foreignKeyProperty.getPropertyID(), newForeignKeyValue);
+          }
         }
       }
     }

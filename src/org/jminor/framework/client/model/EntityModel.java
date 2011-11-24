@@ -43,12 +43,12 @@ public interface EntityModel extends Refreshable, EntityDataProvider {
   void setLinkedDetailModels(final EntityModel... detailModels);
 
   /**
-   * Initializes this {@link EntityModel} according to the given master entities,
+   * Initializes this {@link EntityModel} according to the given foreign key entities,
    * sets the appropriate property value in the {@link EntityEditModel} and filters the {@link EntityTableModel}
-   * @param foreignKeyPropertyID the ID of the foreign key involved
-   * @param selectedMasterEntities the master entities
+   * @param foreignKeyEntityID the ID of the master entity
+   * @param foreignKeyValues the master entities
    */
-  void initialize(final String foreignKeyPropertyID, final List<Entity> selectedMasterEntities);
+  void initialize(final String foreignKeyEntityID, final List<Entity> foreignKeyValues);
 
   /**
    * Sets the model serving as master model
@@ -67,7 +67,6 @@ public interface EntityModel extends Refreshable, EntityDataProvider {
    * a table model is that it is configured so that a query criteria is required for it to show
    * any data, via {@link EntityTableModel#setQueryCriteriaRequired(boolean)}
    * @param detailModels the detail models to add
-   * @deprecated use {@link #addDetailModel(String, EntityModel)}
    */
   void addDetailModels(final EntityModel... detailModels);
 
@@ -78,24 +77,8 @@ public interface EntityModel extends Refreshable, EntityDataProvider {
    * any data, via {@link EntityTableModel#setQueryCriteriaRequired(boolean)}
    * @param detailModel the detail model
    * @return the detail model just added
-   * @deprecated use {@link #addDetailModel(String, EntityModel)}
    */
   EntityModel addDetailModel(final EntityModel detailModel);
-
-  /**
-   * Adds the given detail model to this model, a side-effect if the detail model contains
-   * a table model is that it is configured so that a query criteria is required for it to show
-   * any data, via {@link EntityTableModel#setQueryCriteriaRequired(boolean)}.
-   * An entity model can only be added once as a detail model.
-   * @param foreignKeyPropertyID the ID of the foreign key property in the detail entity which
-   * refers to this master entity
-   * @param detailModel the detail model
-   * @return the detail model just added
-   * @throws IllegalArgumentException in case a detail model for the given foreign key property has already been added
-   * or if the given detail model has already been added or if a foreign
-   * key property with the given ID does not exist in the detail model entity
-   */
-  EntityModel addDetailModel(final String foreignKeyPropertyID, final EntityModel detailModel);
 
   /**
    * @param modelClass the detail model class
@@ -116,19 +99,17 @@ public interface EntityModel extends Refreshable, EntityDataProvider {
   boolean containsDetailModel(final EntityModel detailModel);
 
   /**
-   * Returns the first detail model of the given type, this method does not
-   * automatically create an entity model if none is available
+   * Returns the first detail model of the given type
    * @param modelClass the type of the required {@link EntityModel}
    * @return the detail model of type <code>entityModelClass</code>, null if none is found
    */
   EntityModel getDetailModel(final Class<? extends EntityModel> modelClass);
 
   /**
-   * Returns a detail model of the given type, automatically creates a
-   * default entity model if none is available and auto creation is turned on
+   * Returns a detail model of the given type
    * @param entityID the entity ID of the required EntityModel
    * @return the detail model of type <code>entityModelClass</code>
-   * @see org.jminor.framework.Configuration#AUTO_CREATE_ENTITY_MODELS
+   * @throws IllegalArgumentException in case no detail model for the given entityID is found
    */
   EntityModel getDetailModel(final String entityID);
 
