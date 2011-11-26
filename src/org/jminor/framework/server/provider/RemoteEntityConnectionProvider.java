@@ -45,7 +45,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
   public RemoteEntityConnectionProvider(final User user, final UUID clientID, final String clientTypeID) {
     super(user);
     Util.rejectNullValue(user, "user");
-    serverHostName = Configuration.getStringValue(Configuration.SERVER_HOST_NAME);
+    this.serverHostName = Configuration.getStringValue(Configuration.SERVER_HOST_NAME);
     this.clientID = clientID;
     this.clientTypeID = clientTypeID;
     Configuration.resolveTruststoreProperty(clientTypeID);
@@ -143,11 +143,10 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
   }
 
   private void connectToServer() throws RemoteException, NotBoundException {
-    final String portNumber = Configuration.getStringValue(Configuration.SERVER_PORT);
-    final int serverPort = portNumber == null || portNumber.isEmpty() ? -1 : Integer.parseInt(portNumber);
+    final int serverPort = Configuration.getIntValue(Configuration.SERVER_PORT);//todo handle no port
     final int registryPort = Configuration.getIntValue(Configuration.REGISTRY_PORT_NUMBER);
     this.server = ServerUtil.getServer(serverHostName,
-            (String) Configuration.getValue(Configuration.SERVER_NAME_PREFIX), registryPort, serverPort);
+            Configuration.getStringValue(Configuration.SERVER_NAME_PREFIX), registryPort, serverPort);
     this.serverName = this.server.getServerName();
   }
 

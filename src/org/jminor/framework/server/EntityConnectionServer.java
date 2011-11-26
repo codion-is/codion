@@ -45,39 +45,13 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
 
   private static final Logger LOG = LoggerFactory.getLogger(EntityConnectionServer.class);
 
-  private static final boolean CLIENT_LOGGING_ENABLED =
-          Configuration.getBooleanValue(Configuration.SERVER_CLIENT_LOGGING_ENABLED);
-  static final boolean SSL_CONNECTION_ENABLED =
-          Configuration.getBooleanValue(Configuration.SERVER_CONNECTION_SSL_ENABLED);
-
   private static final int DEFAULT_CHECK_INTERVAL_MS = 30000;
 
-  static final int REGISTRY_PORT;
-  private static final int SERVER_PORT;
-  private static final int SERVER_DB_PORT;
-
+  private final int registryPort;
+  private final int serverDbPort;
   private final Database database;
-
-  static {
-    final String serverPortProperty = Configuration.getStringValue(Configuration.SERVER_PORT);
-    final String serverDbPortProperty = Configuration.getStringValue(Configuration.SERVER_DB_PORT);
-
-    Util.require(Configuration.SERVER_PORT, serverPortProperty);
-    Util.require(Configuration.SERVER_DB_PORT, serverDbPortProperty);
-
-    REGISTRY_PORT = Configuration.getIntValue(Configuration.REGISTRY_PORT_NUMBER);
-    SERVER_PORT = Integer.parseInt(serverPortProperty);
-    SERVER_DB_PORT = Integer.parseInt(serverDbPortProperty);
-
-    try {
-      loadDefaultDomainModels();
-      Util.initializeRegistry(REGISTRY_PORT);
-    }
-    catch (Throwable re) {
-      LOG.error("Exception while initializing server", re);
-      throw new RuntimeException(re);
-    }
-  }
+  private final boolean sslEnabled;
+  private final boolean clientLoggingEnabled = Configuration.getBooleanValue(Configuration.SERVER_CLIENT_LOGGING_ENABLED);
 
   private final long startDate = System.currentTimeMillis();
 
@@ -87,23 +61,36 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
   private int connectionTimeout = Configuration.getIntValue(Configuration.SERVER_CONNECTION_TIMEOUT);
 
   /**
-   * Constructs a new RemoteEntityServer and binds it to the given registry
+   * Constructs a new EntityConnectionServer and binds it to a registry on the given port
+   *
+   * @param serverName the serverName
+   * @param serverPort the port on which to make the server accessible
+   * @param serverDbPort the port on which client connections should be served
+   * @param registryPort the registry port to use
    * @param database the Database implementation
+   * @param sslEnabled if true then ssl is enabled
+   * @param connectionLimit the maximum number of concurrent connections, -1 for no limit
    * @throws java.rmi.RemoteException in case of a remote exception
    * @throws ClassNotFoundException in case the domain model classes are not found on the classpath
    * @see Configuration#SERVER_DOMAIN_MODEL_CLASSES
    */
-  EntityConnectionServer(final Database database) throws RemoteException, ClassNotFoundException {
-    super(SERVER_PORT, initializeServerName(database.getHost(), database.getSid()),
-            SSL_CONNECTION_ENABLED ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
-            SSL_CONNECTION_ENABLED ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
+  EntityConnectionServer(final String serverName, final int serverPort, final int serverDbPort, final int registryPort, final Database database,
+                         final boolean sslEnabled, final int connectionLimit) throws RemoteException, ClassNotFoundException {
+    super(serverPort, serverName,
+            sslEnabled ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
+            sslEnabled ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
     this.database = database;
+    this.registryPort = registryPort;
+    this.serverDbPort = serverDbPort;
+    this.sslEnabled = sslEnabled;
+    loadDefaultDomainModels();
     RemoteEntityConnectionImpl.initializeConnectionPools(database);
-    setConnectionLimit(Configuration.getIntValue(Configuration.SERVER_CONNECTION_LIMIT));
+    setConnectionLimit(connectionLimit);
     startConnectionTimeoutTimer();
-    Util.getRegistry(REGISTRY_PORT).rebind(getServerName(), this);
     startWebServer();
-    final String connectInfo = getServerName() + " bound to registry on port: " + REGISTRY_PORT;
+    Util.initializeRegistry(registryPort);
+    Util.getRegistry(registryPort).rebind(getServerName(), this);
+    final String connectInfo = getServerName() + " bound to registry on port: " + registryPort;
     LOG.info(connectInfo);
     System.out.println(connectInfo);
   }
@@ -259,6 +246,27 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
   }
 
   /**
+   * @return the port of the registry this server is using
+   */
+  int getRegistryPort() {
+    return registryPort;
+  }
+
+  /**
+   * @return the port this server exports client db connections on
+   */
+  int getServerDbPort() {
+    return serverDbPort;
+  }
+
+  /**
+   * @return true if connections to this server are ssl enabled
+   */
+  boolean isSslEnabled() {
+    return sslEnabled;
+  }
+
+  /**
    * @param inactiveOnly if true only inactive connections are culled
    * @throws RemoteException in case of an exception
    */
@@ -310,13 +318,6 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
     return Entities.getDefinitions();
   }
 
-  /**
-   * @return the port this server exports client db connections on
-   */
-  static int getServerDbPort() {
-    return SERVER_DB_PORT;
-  }
-
   /** {@inheritDoc} */
   @Override
   protected void handleShutdown() throws RemoteException {
@@ -338,8 +339,8 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
   @Override
   protected RemoteEntityConnectionImpl doConnect(final ClientInfo clientInfo) throws RemoteException {
     try {
-      final RemoteEntityConnectionImpl connection = new RemoteEntityConnectionImpl(database, clientInfo, SERVER_DB_PORT,
-              CLIENT_LOGGING_ENABLED, SSL_CONNECTION_ENABLED);
+      final RemoteEntityConnectionImpl connection = new RemoteEntityConnectionImpl(database, clientInfo, serverDbPort,
+              clientLoggingEnabled, sslEnabled);
       connection.addDisconnectListener(new ActionListener() {
         public void actionPerformed(final ActionEvent e) {
           try {
@@ -401,10 +402,5 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
 
   private void maintainConnections() throws RemoteException {
     removeConnections(true);
-  }
-
-  private static String initializeServerName(final String host, final String sid) {
-    return Configuration.getValue(Configuration.SERVER_NAME_PREFIX)
-            + " " + Util.getVersion() + "@" + (sid != null ? sid.toUpperCase() : host.toUpperCase());
   }
 }

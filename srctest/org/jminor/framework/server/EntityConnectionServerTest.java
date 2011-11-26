@@ -24,7 +24,7 @@ import java.util.UUID;
 
 import static org.junit.Assert.*;
 
-public class RemoteEntityServerTest {
+public class EntityConnectionServerTest {
 
   private static SecurityManager defaultManager;
   private static EntityConnectionServer server;
@@ -35,24 +35,21 @@ public class RemoteEntityServerTest {
     EmpDept.init();
     Petstore.init();
     defaultManager = System.getSecurityManager();
-    Configuration.class.getName();
-    Configuration.setValue(Configuration.SERVER_PORT, "2222");
-    Configuration.setValue(Configuration.SERVER_DB_PORT, "2223");
-    Configuration.setValue(Configuration.SERVER_ADMIN_PORT, "3334");
+    Configuration.init();
     Configuration.setValue(Configuration.SERVER_HOST_NAME, "localhost");
     Configuration.setValue(Configuration.SERVER_CONNECTION_POOLING_INITIAL, User.UNIT_TEST_USER.getUsername() + ":" + User.UNIT_TEST_USER.getPassword());
-    Configuration.setValue(Configuration.SERVER_CONNECTION_SSL_ENABLED, true);
     Configuration.setValue(Configuration.SERVER_DOMAIN_MODEL_CLASSES, "org.jminor.framework.demos.empdept.domain.EmpDept,org.jminor.framework.demos.petstore.domain.Petstore");
     Configuration.setValue("java.rmi.server.hostname", "localhost");
     Configuration.setValue("java.security.policy", "resources/security/all_permissions.policy");
     Configuration.setValue("javax.net.ssl.trustStore", "resources/security/JMinorClientTruststore");
     Configuration.setValue("javax.net.ssl.keyStore", "resources/security/JMinorServerKeystore");
     Configuration.setValue("javax.net.ssl.keyStorePassword", "jminor");
+    final String testServerName = Configuration.getStringValue(Configuration.SERVER_NAME_PREFIX) + " unit test server";
     if (server != null) {
       throw new RuntimeException("Server not torn down after last run");
     }
     try {
-      server = new EntityConnectionServer(Databases.createInstance());
+      server = new EntityConnectionServer(testServerName, 2222, 2223, 1099, Databases.createInstance(), true, -1);
     }
     catch (Exception e) {
       e.printStackTrace();
@@ -61,7 +58,7 @@ public class RemoteEntityServerTest {
     if (admin != null) {
       throw new RuntimeException("Server admin not torn down after last run");
     }
-    admin = new EntityConnectionServerAdminImpl(server);
+    admin = new EntityConnectionServerAdminImpl(server, 3334);
   }
 
   @AfterClass

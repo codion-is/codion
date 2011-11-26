@@ -10,7 +10,7 @@ import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.db.EntityConnectionImplTest;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.demos.empdept.testing.EmpDeptLoadTest;
-import org.jminor.framework.server.RemoteEntityServerTest;
+import org.jminor.framework.server.EntityConnectionServerTest;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -22,12 +22,12 @@ public class EntityLoadTestModelTest {
 
   @BeforeClass
   public static void setUp() throws Exception {
-    RemoteEntityServerTest.setUp();
+    EntityConnectionServerTest.setUp();
   }
 
   @AfterClass
   public static void tearDown() throws Exception {
-    RemoteEntityServerTest.tearDown();
+    EntityConnectionServerTest.tearDown();
   }
 
   @Test

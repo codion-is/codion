@@ -305,6 +305,7 @@
     <copy file="${deploy.server.policy}" todir="${deploy.server.config.path}"/>
     <copy file="${deploy.server.allpermissions.policy}" todir="${deploy.server.config.path}"/>
     <copy file="${deploy.server.keystore}" todir="${deploy.server.config.path}"/>
+    <copy file="${deploy.server.monitor.truststore}" todir="${deploy.server.config.path}"/>
     <chmod dir="${deploy.server.path}" perm="u+x" type="file" includes="*.sh"/>
     <copy todir="${deploy.server.path}/h2db">
       <fileset dir="${db.h2.dir}"/>

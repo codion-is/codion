@@ -97,17 +97,24 @@ public final class Configuration {
   public static final String REGISTRY_PORT_NUMBER = "jminor.server.registryPort";
 
   /**
-   * If specified, the client will look for a server running on this port
+   * The port on which the server is made available to clients.
+   * If specified on the client side, the client will only connect to a server running on this port<br>
+   * Value type: Integer<br>
+   * Default value: 2222
    */
   public static final String SERVER_PORT = "jminor.server.port";
 
   /**
-   * The port on which the server should export the remote admin interface
+   * The port on which the server should export the remote admin interface<br>
+   * Value type: Integer<br>
+   * Default value: 3333
    */
   public static final String SERVER_ADMIN_PORT = "jminor.server.admin.port";
 
   /**
-   * The port on which the server should export the remote database connections
+   * The port on which the server should export the remote database connections<br>
+   * Value type: Integer<br>
+   * Default value: 2223
    */
   public static final String SERVER_DB_PORT = "jminor.server.db.port";
 
@@ -495,6 +502,9 @@ public final class Configuration {
     PROPERTIES.put(SERVER_CONNECTION_TIMEOUT, 120000);
     PROPERTIES.put(SERVER_CONNECTION_LOG_SIZE, 40);
     PROPERTIES.put(SERVER_CONNECTION_SSL_ENABLED, true);
+    PROPERTIES.put(SERVER_ADMIN_PORT, 3333);
+    PROPERTIES.put(SERVER_PORT, 2222);
+    PROPERTIES.put(SERVER_DB_PORT, 2223);
     PROPERTIES.put(SERVER_HOST_NAME, "localhost");
     PROPERTIES.put(REGISTRY_PORT_NUMBER, Registry.REGISTRY_PORT);
     PROPERTIES.put(DEFAULT_TIMESTAMP_FORMAT, "dd-MM-yyyy HH:mm");
@@ -562,11 +572,11 @@ public final class Configuration {
     parseBooleanSetting(PERSIST_FOREIGN_KEY_VALUES);
     parseBooleanSetting(PROPERTY_DEBUG_OUTPUT);
     parseStringSetting(REMOTE_CONNECTION_PROVIDER);
-    parseStringSetting(SERVER_ADMIN_PORT);
-    parseStringSetting(SERVER_DB_PORT);
+    parseIntegerSetting(SERVER_ADMIN_PORT);
+    parseIntegerSetting(SERVER_PORT);
+    parseIntegerSetting(SERVER_DB_PORT);
     parseStringSetting(SERVER_HOST_NAME);
     parseStringSetting(REPORT_PATH);
-    parseStringSetting(SERVER_PORT);
     parseIntegerSetting(REGISTRY_PORT_NUMBER);
     parseBooleanSetting(SERVER_CLIENT_LOGGING_ENABLED);
     parseIntegerSetting(SERVER_CONNECTION_LIMIT);
@@ -721,7 +731,7 @@ public final class Configuration {
         br = in.read(buf);
       }
       LOG.debug("resolveTruststoreProperty: {} -> {}", JAVAX_NET_NET_TRUSTSTORE, file);
-      setValue(JAVAX_NET_NET_TRUSTSTORE, file.toString());
+      setValue(JAVAX_NET_NET_TRUSTSTORE, file.getPath());
     }
     catch (IOException e) {
       throw new RuntimeException(e);

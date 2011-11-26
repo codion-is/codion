@@ -23,6 +23,7 @@ import java.rmi.NoSuchObjectException;
 import java.rmi.NotBoundException;
 import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
+import java.rmi.registry.Registry;
 import java.rmi.server.RMISocketFactory;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Collection;
@@ -41,27 +42,28 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
 
   private static final long serialVersionUID = 1;
 
-  private static final int SERVER_ADMIN_PORT;
-
   static {
+    Configuration.init();
     System.setSecurityManager(new RMISecurityManager());
-    final String serverAdminPortProperty = Configuration.getStringValue(Configuration.SERVER_ADMIN_PORT);
-    Util.require(Configuration.SERVER_ADMIN_PORT, serverAdminPortProperty);
-    SERVER_ADMIN_PORT = Integer.parseInt(serverAdminPortProperty);
   }
 
+  /**
+   * The server being administrated
+   */
   private final EntityConnectionServer server;
 
   /**
    * Instantiates a new EntityConnectionServerAdminImpl
    * @param server the server to administer
+   * @param serverAdminPort the port on which to make the server admin available
    * @throws RemoteException in case of an exception
    */
-  public EntityConnectionServerAdminImpl(final EntityConnectionServer server) throws RemoteException {
-    super(SERVER_ADMIN_PORT, EntityConnectionServer.SSL_CONNECTION_ENABLED ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
-            EntityConnectionServer.SSL_CONNECTION_ENABLED ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
+  public EntityConnectionServerAdminImpl(final EntityConnectionServer server, final int serverAdminPort) throws RemoteException {
+    super(serverAdminPort,
+            server.isSslEnabled() ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
+            server.isSslEnabled() ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
     this.server = server;
-    Util.getRegistry(EntityConnectionServer.REGISTRY_PORT).rebind(RemoteServer.SERVER_ADMIN_PREFIX + server.getServerName(), this);
+    Util.getRegistry(server.getRegistryPort()).rebind(RemoteServer.SERVER_ADMIN_PREFIX + server.getServerName(), this);
     Runtime.getRuntime().addShutdownHook(new Thread(getShutdownHook()));
   }
 
@@ -87,7 +89,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
 
   /** {@inheritDoc} */
   public int getServerDbPort() throws RemoteException {
-    return EntityConnectionServer.getServerDbPort();
+    return server.getServerDbPort();
   }
 
   /** {@inheritDoc} */
@@ -153,11 +155,11 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
   /** {@inheritDoc} */
   public void shutdown() throws RemoteException {
     try {
-      Util.getRegistry(EntityConnectionServer.REGISTRY_PORT).unbind(server.getServerName());
+      Util.getRegistry(server.getRegistryPort()).unbind(server.getServerName());
     }
     catch (NotBoundException e) {/**/}
     try {
-      Util.getRegistry(EntityConnectionServer.REGISTRY_PORT).unbind(RemoteServer.SERVER_ADMIN_PREFIX + server.getServerName());
+      Util.getRegistry(server.getRegistryPort()).unbind(RemoteServer.SERVER_ADMIN_PREFIX + server.getServerName());
     }
     catch (NotBoundException e) {/**/}
 
@@ -427,6 +429,10 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
     };
   }
 
+  private static String initializeServerName(final String serverNamePrefix, final String databaseHost, final String sid) {
+    return serverNamePrefix + " " + Util.getVersion() + "@" + (sid != null ? sid.toUpperCase() : databaseHost.toUpperCase());
+  }
+
   /**
    * Runs a new EntityConnectionServer with a server admin interface exported.
    * @param arguments no arguments required
@@ -434,7 +440,40 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
    * @throws ClassNotFoundException in case the domain model classes required for the server is not found
    */
   public static void main(final String[] arguments) throws RemoteException, ClassNotFoundException {
-      final EntityConnectionServer server = new EntityConnectionServer(Databases.createInstance());
-      new EntityConnectionServerAdminImpl(server);
+    final int registryPort = Configuration.getIntValue(Configuration.REGISTRY_PORT_NUMBER);
+    if (arguments.length > 0 && arguments[0].toLowerCase().equals("shutdown")) {
+      final String sid = System.getProperty(Database.DATABASE_SID);
+      final String host = System.getProperty(Database.DATABASE_HOST);
+      final String serverName = initializeServerName(RemoteServer.SERVER_ADMIN_PREFIX, sid, host);
+      Configuration.resolveTruststoreProperty(EntityConnectionServerAdminImpl.class.getSimpleName());
+      try {
+        final Registry registry = Util.getRegistry(registryPort);
+        if (registry == null) {
+          System.out.println("Registry not found on port: " + registryPort);
+          return;
+        }
+        System.out.println("Registry found on port: " + registryPort + ", " + registry);
+        final EntityConnectionServerAdmin admin = (EntityConnectionServerAdmin) registry.lookup(serverName);
+        System.out.println(serverName + " found, shutting down");
+        admin.shutdown();
+      }
+      catch (NotBoundException e) {
+        System.out.println(serverName + " not found");
+        e.printStackTrace();
+      }
+    }
+    else {
+      final int serverPort = Configuration.getIntValue(Configuration.SERVER_PORT);
+      final boolean sslEnabled = Configuration.getBooleanValue(Configuration.SERVER_CONNECTION_SSL_ENABLED);
+      final Database  database = Databases.createInstance();
+      final String serverName = initializeServerName(Configuration.getStringValue(Configuration.SERVER_NAME_PREFIX),
+            database.getHost(), database.getSid());
+      final int serverDbPort = Configuration.getIntValue(Configuration.SERVER_DB_PORT);
+      final int connectionLimit = Configuration.getIntValue(Configuration.SERVER_CONNECTION_LIMIT);
+      final int serverAdminPort = Configuration.getIntValue(Configuration.SERVER_ADMIN_PORT);
+      final EntityConnectionServer server = new EntityConnectionServer(serverName, serverPort, serverDbPort, registryPort, database, sslEnabled,
+              connectionLimit);
+      new EntityConnectionServerAdminImpl(server, serverAdminPort);
     }
   }
+}

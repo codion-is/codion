@@ -5,16 +5,17 @@ package org.jminor.framework.server.provider;
 
 import org.jminor.common.model.User;
 import org.jminor.framework.db.EntityConnection;
-import org.jminor.framework.server.RemoteEntityServerTest;
+import org.jminor.framework.server.EntityConnectionServerTest;
 
-import static junit.framework.Assert.assertFalse;
 import org.junit.AfterClass;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.UUID;
+
+import static junit.framework.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * User: Bjorn Darri
@@ -25,12 +26,12 @@ public class RemoteEntityConnectionProviderTest {
 
   @BeforeClass
   public static void setUp() throws Exception {
-    RemoteEntityServerTest.setUp();
+    EntityConnectionServerTest.setUp();
   }
 
   @AfterClass
   public static void tearDown() throws Exception {
-    RemoteEntityServerTest.tearDown();
+    EntityConnectionServerTest.tearDown();
   }
 
   @Test

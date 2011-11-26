@@ -2530,3 +2530,9 @@
   EntityPanelProvider.addDetailPanelProvider() now calls addDetailModelProvider()
   AbstractFilteredTableModel.addItems() overloaded with index parameter, tested
   Some javadoc improvements
+  EntityConnectionServer, static configuration now instance based, supplied via constructor parameters
+  EntityConnectionServerAdminImpl, static configuration now instance based
+  SSL truststore specified in server run config, for shutdown command
+  SSL truststore deployed into server config path
+  EntityConnectionServerAdminImpl responds to shutdown command
+  Configuration, port settings now integer based

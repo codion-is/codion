@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.server.monitor.ui;
 
-import org.jminor.framework.server.RemoteEntityServerTest;
+import org.jminor.framework.server.EntityConnectionServerTest;
 import org.jminor.framework.server.monitor.ConnectionPoolMonitor;
 import org.jminor.framework.server.monitor.DatabaseMonitor;
 import org.jminor.framework.server.monitor.EntityServerMonitor;
@@ -19,12 +19,12 @@ public class EntityServerMonitorPanelTest {
 
   @BeforeClass
   public static void setUp() throws Exception {
-    RemoteEntityServerTest.setUp();
+    EntityConnectionServerTest.setUp();
   }
 
   @AfterClass
   public static void tearDown() throws Exception {
-    RemoteEntityServerTest.tearDown();
+    EntityConnectionServerTest.tearDown();
   }
 
   @Test
