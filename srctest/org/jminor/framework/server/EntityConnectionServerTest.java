@@ -49,7 +49,7 @@ public class EntityConnectionServerTest {
       throw new RuntimeException("Server not torn down after last run");
     }
     try {
-      server = new EntityConnectionServer(testServerName, 2222, 2223, 1099, Databases.createInstance(), true, -1);
+      server = new EntityConnectionServer(testServerName, 2222, 1099, Databases.createInstance(), true, -1);
     }
     catch (Exception e) {
       e.printStackTrace();

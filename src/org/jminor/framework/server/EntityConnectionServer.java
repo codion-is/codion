@@ -48,7 +48,6 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
   private static final int DEFAULT_CHECK_INTERVAL_MS = 30000;
 
   private final int registryPort;
-  private final int serverDbPort;
   private final Database database;
   private final boolean sslEnabled;
   private final boolean clientLoggingEnabled = Configuration.getBooleanValue(Configuration.SERVER_CLIENT_LOGGING_ENABLED);
@@ -65,7 +64,6 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
    *
    * @param serverName the serverName
    * @param serverPort the port on which to make the server accessible
-   * @param serverDbPort the port on which client connections should be served
    * @param registryPort the registry port to use
    * @param database the Database implementation
    * @param sslEnabled if true then ssl is enabled
@@ -74,14 +72,13 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
    * @throws ClassNotFoundException in case the domain model classes are not found on the classpath
    * @see Configuration#SERVER_DOMAIN_MODEL_CLASSES
    */
-  EntityConnectionServer(final String serverName, final int serverPort, final int serverDbPort, final int registryPort, final Database database,
+  EntityConnectionServer(final String serverName, final int serverPort, final int registryPort, final Database database,
                          final boolean sslEnabled, final int connectionLimit) throws RemoteException, ClassNotFoundException {
     super(serverPort, serverName,
             sslEnabled ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
             sslEnabled ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
     this.database = database;
     this.registryPort = registryPort;
-    this.serverDbPort = serverDbPort;
     this.sslEnabled = sslEnabled;
     loadDefaultDomainModels();
     RemoteEntityConnectionImpl.initializeConnectionPools(database);
@@ -253,13 +250,6 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
   }
 
   /**
-   * @return the port this server exports client db connections on
-   */
-  int getServerDbPort() {
-    return serverDbPort;
-  }
-
-  /**
    * @return true if connections to this server are ssl enabled
    */
   boolean isSslEnabled() {
@@ -339,7 +329,7 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
   @Override
   protected RemoteEntityConnectionImpl doConnect(final ClientInfo clientInfo) throws RemoteException {
     try {
-      final RemoteEntityConnectionImpl connection = new RemoteEntityConnectionImpl(database, clientInfo, serverDbPort,
+      final RemoteEntityConnectionImpl connection = new RemoteEntityConnectionImpl(database, clientInfo, getServerPort(),
               clientLoggingEnabled, sslEnabled);
       connection.addDisconnectListener(new ActionListener() {
         public void actionPerformed(final ActionEvent e) {
@@ -391,16 +381,12 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
       @Override
       public void run() {
         try {
-          maintainConnections();
+          removeConnections(true);
         }
         catch (RemoteException e) {
           throw new RuntimeException(e);
         }
       }
     }, new Date(), maintenanceInterval);
-  }
-
-  private void maintainConnections() throws RemoteException {
-    removeConnections(true);
   }
 }

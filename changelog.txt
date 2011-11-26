@@ -2536,3 +2536,6 @@
   SSL truststore deployed into server config path
   EntityConnectionServerAdminImpl responds to shutdown command
   Configuration, port settings now integer based
+  Configuration.SERVER_DB_PORT removed
+  run_server.sh and run_server.bat now pass a single argument to the process
+  EntityConnectionServerAdminImpl, startup/shutdown functionality refactored

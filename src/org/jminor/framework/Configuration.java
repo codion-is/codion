@@ -97,8 +97,9 @@ public final class Configuration {
   public static final String REGISTRY_PORT_NUMBER = "jminor.server.registryPort";
 
   /**
-   * The port on which the server is made available to clients.
-   * If specified on the client side, the client will only connect to a server running on this port<br>
+   * The port on which the server is made available to clients.<br>
+   * If specified on the client side, the client will only connect to a server running on this port,
+   * use -1 if the client should connect to any available server<br>
    * Value type: Integer<br>
    * Default value: 2222
    */
@@ -110,13 +111,6 @@ public final class Configuration {
    * Default value: 3333
    */
   public static final String SERVER_ADMIN_PORT = "jminor.server.admin.port";
-
-  /**
-   * The port on which the server should export the remote database connections<br>
-   * Value type: Integer<br>
-   * Default value: 2223
-   */
-  public static final String SERVER_DB_PORT = "jminor.server.db.port";
 
   /**
    * The initial connection logging status on the server, either true (on) or false (off)<br>
@@ -504,7 +498,6 @@ public final class Configuration {
     PROPERTIES.put(SERVER_CONNECTION_SSL_ENABLED, true);
     PROPERTIES.put(SERVER_ADMIN_PORT, 3333);
     PROPERTIES.put(SERVER_PORT, 2222);
-    PROPERTIES.put(SERVER_DB_PORT, 2223);
     PROPERTIES.put(SERVER_HOST_NAME, "localhost");
     PROPERTIES.put(REGISTRY_PORT_NUMBER, Registry.REGISTRY_PORT);
     PROPERTIES.put(DEFAULT_TIMESTAMP_FORMAT, "dd-MM-yyyy HH:mm");
@@ -574,7 +567,6 @@ public final class Configuration {
     parseStringSetting(REMOTE_CONNECTION_PROVIDER);
     parseIntegerSetting(SERVER_ADMIN_PORT);
     parseIntegerSetting(SERVER_PORT);
-    parseIntegerSetting(SERVER_DB_PORT);
     parseStringSetting(SERVER_HOST_NAME);
     parseStringSetting(REPORT_PATH);
     parseIntegerSetting(REGISTRY_PORT_NUMBER);

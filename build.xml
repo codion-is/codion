@@ -690,7 +690,6 @@
       <jvmarg value="-Djminor.server.clientLoggingEnabled=true"/>
       <jvmarg value="-Djminor.server.port=2222"/>
       <jvmarg value="-Djminor.server.admin.port=4444"/>
-      <jvmarg value="-Djminor.server.db.port=3333"/>
       <jvmarg value="-Djminor.server.domain.classes=org.jminor.framework.demos.empdept.domain.EmpDept, org.jminor.framework.demos.petstore.domain.Petstore, org.jminor.framework.demos.chinook.domain.Chinook, org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser"/>
       <jvmarg value="-Djavax.net.ssl.keyStore=${resources.security}/JMinorServerKeystore"/>
       <jvmarg value="-Djava.security.policy=${resources.security}/jminor_server.policy"/>

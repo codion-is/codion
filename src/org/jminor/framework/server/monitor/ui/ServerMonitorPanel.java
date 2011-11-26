@@ -169,8 +169,7 @@ public final class ServerMonitorPanel extends JPanel {
     final String startDate = DateFormats.getDateFormat(DateFormats.FULL_TIMESTAMP).format(new Date(server.getStartDate()));
     contents.append("Server info:").append("\n");
     contents.append(server.getServerName()).append(" (").append(startDate).append(")").append(
-            " server/db port: ").append(server.getServerPort()).append("/").append(
-            server.getServerDbPort()).append("\n").append("\n");
+            " port: ").append(server.getServerPort()).append("\n").append("\n");
     contents.append("Server version:").append("\n");
     contents.append(server.getServerVersion()).append("\n");
     contents.append("Database URL:").append("\n");

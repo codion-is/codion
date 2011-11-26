@@ -60,12 +60,6 @@ public interface EntityConnectionServerAdmin extends Remote {
   int getServerPort() throws RemoteException;
 
   /**
-   * @return the port on which db connections are created
-   * @throws RemoteException in case of a communication error
-   */
-  int getServerDbPort() throws RemoteException;
-
-  /**
    * @return the number of active connections
    * @throws RemoteException in case of a communication error
    */

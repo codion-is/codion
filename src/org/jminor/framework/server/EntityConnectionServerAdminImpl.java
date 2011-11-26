@@ -88,11 +88,6 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
   }
 
   /** {@inheritDoc} */
-  public int getServerDbPort() throws RemoteException {
-    return server.getServerDbPort();
-  }
-
-  /** {@inheritDoc} */
   public long getStartDate() {
     return server.getStartDate();
   }
@@ -429,51 +424,62 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
     };
   }
 
-  private static String initializeServerName(final String serverNamePrefix, final String databaseHost, final String sid) {
-    return serverNamePrefix + " " + Util.getVersion() + "@" + (sid != null ? sid.toUpperCase() : databaseHost.toUpperCase());
+  private static String initializeServerName(final String databaseHost, final String sid) {
+    return Configuration.getStringValue(Configuration.SERVER_NAME_PREFIX) + " " + Util.getVersion()
+            + "@" + (sid != null ? sid.toUpperCase() : databaseHost.toUpperCase());
+  }
+
+  private static void startServer() throws RemoteException, ClassNotFoundException {
+    final int registryPort = Configuration.getIntValue(Configuration.REGISTRY_PORT_NUMBER);
+    final int serverPort = Configuration.getIntValue(Configuration.SERVER_PORT);
+    final boolean sslEnabled = Configuration.getBooleanValue(Configuration.SERVER_CONNECTION_SSL_ENABLED);
+    final Database database = Databases.createInstance();
+    final String serverName = initializeServerName(database.getHost(), database.getSid());
+    final int connectionLimit = Configuration.getIntValue(Configuration.SERVER_CONNECTION_LIMIT);
+    final int serverAdminPort = Configuration.getIntValue(Configuration.SERVER_ADMIN_PORT);
+    final EntityConnectionServer server = new EntityConnectionServer(serverName, serverPort, registryPort, database,
+            sslEnabled, connectionLimit);
+    new EntityConnectionServerAdminImpl(server, serverAdminPort);
   }
 
   /**
-   * Runs a new EntityConnectionServer with a server admin interface exported.
-   * @param arguments no arguments required
+   * Connects to the server and shuts it down
+   */
+  private static void shutdownServer() {
+    final int registryPort = Configuration.getIntValue(Configuration.REGISTRY_PORT_NUMBER);
+    final String sid = System.getProperty(Database.DATABASE_SID);
+    final String host = System.getProperty(Database.DATABASE_HOST);
+    final String serverName = RemoteServer.SERVER_ADMIN_PREFIX + initializeServerName(sid, host);
+    Configuration.resolveTruststoreProperty(EntityConnectionServerAdminImpl.class.getSimpleName());
+    try {
+      final Registry registry = Util.getRegistry(registryPort);
+      final EntityConnectionServerAdmin serverAdmin = (EntityConnectionServerAdmin) registry.lookup(serverName);
+      final String shutDownInfo = serverName + " found in registry on port: " + registryPort + ", shutting down";
+      LOG.info(shutDownInfo);
+      System.out.println(shutDownInfo);
+      serverAdmin.shutdown();
+    }
+    catch (RemoteException e) {
+      System.out.println("No rmi registry running on port: " + registryPort);
+    }
+    catch (NotBoundException e) {
+      System.out.println(serverName + " not bound to registry on port: " + registryPort);
+    }
+  }
+
+  /**
+   * If no arguments are supplied a new EntityConnectionServer with a server admin interface is started,
+   * If the argument 'shutdown' is supplied the server, if running, is shut down.
+   * @param arguments 'shutdown' causes a running server to be shut down
    * @throws java.rmi.RemoteException in case of a remote exception during service export
    * @throws ClassNotFoundException in case the domain model classes required for the server is not found
    */
   public static void main(final String[] arguments) throws RemoteException, ClassNotFoundException {
-    final int registryPort = Configuration.getIntValue(Configuration.REGISTRY_PORT_NUMBER);
-    if (arguments.length > 0 && arguments[0].toLowerCase().equals("shutdown")) {
-      final String sid = System.getProperty(Database.DATABASE_SID);
-      final String host = System.getProperty(Database.DATABASE_HOST);
-      final String serverName = initializeServerName(RemoteServer.SERVER_ADMIN_PREFIX, sid, host);
-      Configuration.resolveTruststoreProperty(EntityConnectionServerAdminImpl.class.getSimpleName());
-      try {
-        final Registry registry = Util.getRegistry(registryPort);
-        if (registry == null) {
-          System.out.println("Registry not found on port: " + registryPort);
-          return;
-        }
-        System.out.println("Registry found on port: " + registryPort + ", " + registry);
-        final EntityConnectionServerAdmin admin = (EntityConnectionServerAdmin) registry.lookup(serverName);
-        System.out.println(serverName + " found, shutting down");
-        admin.shutdown();
-      }
-      catch (NotBoundException e) {
-        System.out.println(serverName + " not found");
-        e.printStackTrace();
-      }
+    if (arguments.length == 0) {
+      startServer();
     }
-    else {
-      final int serverPort = Configuration.getIntValue(Configuration.SERVER_PORT);
-      final boolean sslEnabled = Configuration.getBooleanValue(Configuration.SERVER_CONNECTION_SSL_ENABLED);
-      final Database  database = Databases.createInstance();
-      final String serverName = initializeServerName(Configuration.getStringValue(Configuration.SERVER_NAME_PREFIX),
-            database.getHost(), database.getSid());
-      final int serverDbPort = Configuration.getIntValue(Configuration.SERVER_DB_PORT);
-      final int connectionLimit = Configuration.getIntValue(Configuration.SERVER_CONNECTION_LIMIT);
-      final int serverAdminPort = Configuration.getIntValue(Configuration.SERVER_ADMIN_PORT);
-      final EntityConnectionServer server = new EntityConnectionServer(serverName, serverPort, serverDbPort, registryPort, database, sslEnabled,
-              connectionLimit);
-      new EntityConnectionServerAdminImpl(server, serverAdminPort);
+    else if (arguments[0].toLowerCase().equals("shutdown")) {
+      shutdownServer();
     }
   }
 }
