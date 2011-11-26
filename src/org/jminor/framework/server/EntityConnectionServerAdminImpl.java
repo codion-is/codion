@@ -430,13 +430,13 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
   }
 
   private static void startServer() throws RemoteException, ClassNotFoundException {
-    final int registryPort = Configuration.getIntValue(Configuration.REGISTRY_PORT_NUMBER);
     final int serverPort = Configuration.getIntValue(Configuration.SERVER_PORT);
+    final int registryPort = Configuration.getIntValue(Configuration.REGISTRY_PORT_NUMBER);
+    final int serverAdminPort = Configuration.getIntValue(Configuration.SERVER_ADMIN_PORT);
     final boolean sslEnabled = Configuration.getBooleanValue(Configuration.SERVER_CONNECTION_SSL_ENABLED);
+    final int connectionLimit = Configuration.getIntValue(Configuration.SERVER_CONNECTION_LIMIT);
     final Database database = Databases.createInstance();
     final String serverName = initializeServerName(database.getHost(), database.getSid());
-    final int connectionLimit = Configuration.getIntValue(Configuration.SERVER_CONNECTION_LIMIT);
-    final int serverAdminPort = Configuration.getIntValue(Configuration.SERVER_ADMIN_PORT);
     final EntityConnectionServer server = new EntityConnectionServer(serverName, serverPort, registryPort, database,
             sslEnabled, connectionLimit);
     new EntityConnectionServerAdminImpl(server, serverAdminPort);
