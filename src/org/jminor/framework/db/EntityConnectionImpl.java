@@ -1180,7 +1180,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
         }
       }
 
-      throw new IllegalArgumentException("Unknown value type: " + sqlType);
+      throw new IllegalArgumentException("Unsupported value type: " + sqlType);
     }
 
     private static Integer getInteger(final ResultSet resultSet, final int columnIndex) throws SQLException {

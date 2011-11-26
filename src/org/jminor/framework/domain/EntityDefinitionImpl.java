@@ -76,12 +76,13 @@ final class EntityDefinitionImpl implements Entity.Definition {
   private IdSource idSource = IdSource.NONE;
 
   /**
-   * The readOnly value
+   * If true then it should not be possible to insert, update or delete entities of this type
    */
   private boolean readOnly;
 
   /**
-   * The smallDataset value
+   * A somewhat subjective indicator, useful in deciding if all entities of this type
+   * would fit in, say, a combo box
    */
   private boolean smallDataset = false;
 

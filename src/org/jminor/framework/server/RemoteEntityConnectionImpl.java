@@ -102,7 +102,7 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
   private final transient MethodLogger methodLogger;
 
   /**
-   * Contains the active remote connections, that is, those connections that are in the middle of serving a request
+   * Contains the active remote connections, that is, those connections that are in the process of serving a request
    */
   private static final List<RemoteEntityConnectionImpl> ACTIVE_CONNECTIONS = Collections.synchronizedList(new ArrayList<RemoteEntityConnectionImpl>());
 

@@ -252,7 +252,7 @@ public class EntityPanelProvider implements Comparable {
           final EntityModelProvider detailModelProvider = detailProvider.getModelProvider();
           final EntityPanel detailPanel;
           if (!detailModelProvider.getModelClass().equals(DefaultEntityModel.class)) {
-            final EntityModel detailModel = model.getDetailModel(detailProvider.getModelProvider().getModelClass());//todo create and add if not found?
+            final EntityModel detailModel = model.getDetailModel(detailProvider.getModelProvider().getModelClass());
             if (detailModel == null) {
               throw new IllegalArgumentException("Detail model of type " + detailModelProvider.getModelClass() + " not found in model " + model);
             }

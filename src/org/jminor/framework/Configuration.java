@@ -143,7 +143,7 @@ public final class Configuration {
 
   /**
    * Specifies whether the server should establish connections using a secure sockets layer, true (on) or false (off)<br>
-   * ValueType: Boolean<br>
+   * Value type: Boolean<br>
    * Default value: true
    */
   public static final String SERVER_CONNECTION_SSL_ENABLED = "jminor.server.connection.sslEnabled";

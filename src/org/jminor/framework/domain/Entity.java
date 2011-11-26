@@ -445,7 +445,8 @@ public interface Entity extends ValueChangeMap<String, Object>, Comparable<Entit
     boolean isReadOnly();
 
     /**
-     * Sets the read only value
+     * Sets the read only value, if true then it should not be possible to
+     * insert, update or delete entities of this type
      * @param readOnly true if this entity type should be read only
      * @return this {@link Entity.Definition} instance
      */
