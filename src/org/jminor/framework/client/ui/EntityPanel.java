@@ -475,6 +475,21 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
     throw new IllegalArgumentException("Detail panel for entity: " + entityID + " not found in panel: " + getClass());
   }
 
+  /**
+   * Returns true if this panel contains a detail panel for the given <code>entityID</code>
+   * @param entityID the entityID
+   * @return true if a detail panel for the given entityID is found
+   */
+  public final boolean containsDetailPanel(final String entityID) {
+    for (final EntityPanel detailPanel : detailEntityPanels) {
+      if (detailPanel.entityModel.getEntityID().equals(entityID)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   /** {@inheritDoc} */
   @Override
   public final String toString() {

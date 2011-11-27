@@ -16,7 +16,6 @@ import org.jminor.framework.db.criteria.EntitySelectCriteria;
 import org.jminor.framework.db.provider.EntityConnectionProvider;
 import org.jminor.framework.db.provider.EntityConnectionProviders;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
-import org.jminor.framework.demos.petstore.domain.Petstore;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityTestDomain;
@@ -43,17 +42,16 @@ import static org.junit.Assert.*;
 
 public class EntityConnectionImplTest {
 
-  public static final EntityConnectionProvider DB_PROVIDER =
+  public static final EntityConnectionProvider CONNECTION_PROVIDER =
           EntityConnectionProviders.createConnectionProvider(User.UNIT_TEST_USER, "JMinor Unit Tests");
 
-  private static final String COMBINED_ENTITY_ID = "selectQueryEntityID";
+  private static final String JOINED_QUERY_ENTITY_ID = "joinedQueryEntityID";
 
   private EntityConnectionImpl connection;
 
   static {
-    Petstore.init();
     EmpDept.init();
-    Entities.define(COMBINED_ENTITY_ID,
+    Entities.define(JOINED_QUERY_ENTITY_ID,
             Properties.primaryKeyProperty("empno"),
             Properties.columnProperty("deptno", Types.INTEGER))
             .setSelectQuery("select e.empno, d.deptno from scott.emp e, scott.dept d where e.deptno = d.deptno");
@@ -118,9 +116,9 @@ public class EntityConnectionImplTest {
   @Test
   public void selectAll() throws Exception {
     final List<Entity> depts = connection.selectAll(EmpDept.T_DEPARTMENT);
-    assertEquals(depts.size(), 4);
-    final List<Entity> emps = connection.selectAll(COMBINED_ENTITY_ID);
-    assertTrue(emps.size() > 0);
+    assertEquals(4, depts.size());
+    final List<Entity> emps = connection.selectAll(JOINED_QUERY_ENTITY_ID);
+    assertEquals(16, emps.size());
   }
 
   @Test
@@ -153,8 +151,8 @@ public class EntityConnectionImplTest {
     assertEquals(2, result.size());
     result = connection.selectMany(EntityCriteriaUtil.selectCriteria(EmpDept.T_DEPARTMENT, new SimpleCriteria<Property.ColumnProperty>("deptno in (10, 20)")));
     assertEquals(2, result.size());
-    result = connection.selectMany(EntityCriteriaUtil.selectCriteria(COMBINED_ENTITY_ID, new SimpleCriteria<Property.ColumnProperty>("d.deptno = 10")));
-    assertTrue(result.size() > 0);
+    result = connection.selectMany(EntityCriteriaUtil.selectCriteria(JOINED_QUERY_ENTITY_ID, new SimpleCriteria<Property.ColumnProperty>("d.deptno = 10")));
+    assertEquals(7, result.size());
 
     final EntitySelectCriteria criteria = EntityCriteriaUtil.selectCriteria(EmpDept.T_EMPLOYEE, new SimpleCriteria<Property.ColumnProperty>("ename = 'BLAKE'"));
     result = connection.selectMany(criteria);
@@ -194,7 +192,7 @@ public class EntityConnectionImplTest {
   public void selectRowCount() throws Exception {
     int rowCount = connection.selectRowCount(EntityCriteriaUtil.criteria(EmpDept.T_DEPARTMENT));
     assertEquals(4, rowCount);
-    rowCount = connection.selectRowCount(EntityCriteriaUtil.criteria(COMBINED_ENTITY_ID));
+    rowCount = connection.selectRowCount(EntityCriteriaUtil.criteria(JOINED_QUERY_ENTITY_ID));
     assertEquals(16, rowCount);
   }
 

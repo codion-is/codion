@@ -23,8 +23,7 @@ public final class DefaultPropertyComboBoxModelTest {
     EmpDept.init();
     final Property.ColumnProperty property = Entities.getColumnProperty(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME);
     comboBoxModel = new DefaultPropertyComboBoxModel(EmpDept.T_DEPARTMENT,
-            EntityConnectionImplTest.DB_PROVIDER, property,
-            null, refreshEvent);
+            EntityConnectionImplTest.CONNECTION_PROVIDER, property, null, refreshEvent);
   }
 
   @Test

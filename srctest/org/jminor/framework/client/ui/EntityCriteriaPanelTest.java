@@ -12,7 +12,7 @@ public class EntityCriteriaPanelTest {
   @Test
   public void test() {
     EmpDept.init();
-    final EntityTableModel tableModel = new DefaultEntityTableModel(EmpDept.T_DEPARTMENT, EntityConnectionImplTest.DB_PROVIDER);
+    final EntityTableModel tableModel = new DefaultEntityTableModel(EmpDept.T_DEPARTMENT, EntityConnectionImplTest.CONNECTION_PROVIDER);
     new EntityCriteriaPanel(tableModel);
   }
 }

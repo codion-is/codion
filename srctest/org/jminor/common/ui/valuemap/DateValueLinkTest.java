@@ -26,7 +26,7 @@ public class DateValueLinkTest {
   private final ValueChangeMapEditModel<String, Object> model;
 
   public DateValueLinkTest() {
-    model = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.DB_PROVIDER);
+    model = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.CONNECTION_PROVIDER);
   }
 
   @Test

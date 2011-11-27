@@ -62,8 +62,8 @@ public interface EntityModel extends Refreshable, EntityDataProvider {
   EntityModel getMasterModel();
 
   /**
-   * Adds the given detail model to this model, using the first foreign key property found
-   * with the entityID of this entity model, a side-effect if the detail model contains
+   * Adds the given detail model to this model, sets this model as the master model of the
+   * given detail models via {@link #setMasterModel(EntityModel)}, a side-effect if the detail model contains
    * a table model is that it is configured so that a query criteria is required for it to show
    * any data, via {@link EntityTableModel#setQueryCriteriaRequired(boolean)}
    * @param detailModels the detail models to add
@@ -71,8 +71,8 @@ public interface EntityModel extends Refreshable, EntityDataProvider {
   void addDetailModels(final EntityModel... detailModels);
 
   /**
-   * Adds the given detail model to this model, using the first foreign key property found
-   * with the entityID of this entity model, a side-effect if the detail model contains
+   * Adds the given detail model to this model, sets this model as the master model of the
+   * given detail model via {@link #setMasterModel(EntityModel)}, a side-effect if the detail model contains
    * a table model is that it is configured so that a query criteria is required for it to show
    * any data, via {@link EntityTableModel#setQueryCriteriaRequired(boolean)}
    * @param detailModel the detail model

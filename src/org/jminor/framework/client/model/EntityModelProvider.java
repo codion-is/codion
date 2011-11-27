@@ -17,27 +17,27 @@ public interface EntityModelProvider {
   String getEntityID();
 
   /**
-   * Initializes a {@link EntityModel} instance, based on the given connection provider
+   * Creates a {@link EntityModel} instance, based on the given connection provider
    * @param connectionProvider the connection provider
    * @param detailModel if true the model should be configured as a detail model
    * @return the entity model instance
    */
-  EntityModel initializeModel(final EntityConnectionProvider connectionProvider, final boolean detailModel);
+  EntityModel createModel(final EntityConnectionProvider connectionProvider, final boolean detailModel);
 
   /**
-   * Initializes a {@link EntityEditModel} instance, based on the given connection provider
+   * Creates a {@link EntityEditModel} instance, based on the given connection provider
    * @param connectionProvider the connection provider
    * @return the edit model instance
    */
-  EntityEditModel initializeEditModel(final EntityConnectionProvider connectionProvider);
+  EntityEditModel createEditModel(final EntityConnectionProvider connectionProvider);
 
   /**
-   * Initializes a {@link EntityTableModel} instance, based on the given connection provider
+   * Creates a {@link EntityTableModel} instance, based on the given connection provider
    * @param connectionProvider the connection provider
    * @param detailModel if true the model should be configured as a detail model
    * @return the table model instance
    */
-  EntityTableModel initializeTableModel(final EntityConnectionProvider connectionProvider, final boolean detailModel);
+  EntityTableModel createTableModel(final EntityConnectionProvider connectionProvider, final boolean detailModel);
 
   /**
    * Sets the model class
@@ -65,6 +65,12 @@ public interface EntityModelProvider {
    * @return this EntityModelProvider instance
    */
   EntityModelProvider addDetailModelProvider(final EntityModelProvider detailModelProvider);
+
+  /**
+   * @param detailModelProvider the detail model provider
+   * @return true if this model provider contains the given detail model provider
+   */
+  boolean containsDetailModelProvider(final EntityModelProvider detailModelProvider);
 
   /**
    * @return the class of the {@link EntityModel}s provided

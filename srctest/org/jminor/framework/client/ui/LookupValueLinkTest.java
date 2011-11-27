@@ -23,13 +23,13 @@ public class LookupValueLinkTest {
   private final EntityEditModel model;
 
   public LookupValueLinkTest() {
-    model = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.DB_PROVIDER);
+    model = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.CONNECTION_PROVIDER);
   }
 
   @Test
   public void test() throws Exception {
     final Property.ForeignKeyProperty fkProperty = Entities.getForeignKeyProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_DEPARTMENT_FK);
-    final EntityLookupModel lookupModel = new DefaultEntityLookupModel(fkProperty.getReferencedEntityID(), EntityConnectionImplTest.DB_PROVIDER,
+    final EntityLookupModel lookupModel = new DefaultEntityLookupModel(fkProperty.getReferencedEntityID(), EntityConnectionImplTest.CONNECTION_PROVIDER,
             Entities.getColumnProperties(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME));
     new EntityUiUtil.LookupValueLink(lookupModel, model, fkProperty.getPropertyID());
     assertTrue(lookupModel.getSelectedEntities().size() == 0);

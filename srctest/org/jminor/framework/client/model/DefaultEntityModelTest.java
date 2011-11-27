@@ -102,13 +102,13 @@ public final class DefaultEntityModelTest {
 
   @Test
   public void constructor() {
-    new DefaultEntityModel(new DefaultEntityEditModel(EmpDept.T_DEPARTMENT, EntityConnectionImplTest.DB_PROVIDER));
-    new DefaultEntityModel(new DefaultEntityTableModel(EmpDept.T_DEPARTMENT, EntityConnectionImplTest.DB_PROVIDER));
+    new DefaultEntityModel(new DefaultEntityEditModel(EmpDept.T_DEPARTMENT, EntityConnectionImplTest.CONNECTION_PROVIDER));
+    new DefaultEntityModel(new DefaultEntityTableModel(EmpDept.T_DEPARTMENT, EntityConnectionImplTest.CONNECTION_PROVIDER));
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void constructorNullEntityID() {
-    new DefaultEntityModel(null, EntityConnectionImplTest.DB_PROVIDER);
+    new DefaultEntityModel(null, EntityConnectionImplTest.CONNECTION_PROVIDER);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -123,8 +123,8 @@ public final class DefaultEntityModelTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void constructorTableModelEntityIDMismatch() {
-    final EntityEditModel editModel = new DefaultEntityEditModel(EmpDept.T_DEPARTMENT, EntityConnectionImplTest.DB_PROVIDER);
-    final EntityTableModel tableModel = new DefaultEntityTableModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.DB_PROVIDER);
+    final EntityEditModel editModel = new DefaultEntityEditModel(EmpDept.T_DEPARTMENT, EntityConnectionImplTest.CONNECTION_PROVIDER);
+    final EntityTableModel tableModel = new DefaultEntityTableModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.CONNECTION_PROVIDER);
     new DefaultEntityModel(editModel, tableModel);
   }
 
@@ -198,7 +198,7 @@ public final class DefaultEntityModelTest {
 
   @Before
   public void setUp() throws Exception {
-    departmentModel = new DefaultEntityModel(EmpDept.T_DEPARTMENT, EntityConnectionImplTest.DB_PROVIDER);
+    departmentModel = new DefaultEntityModel(EmpDept.T_DEPARTMENT, EntityConnectionImplTest.CONNECTION_PROVIDER);
     final EntityModel employeeModel = new EmpModel(departmentModel.getConnectionProvider());
     departmentModel.addDetailModel(employeeModel);
     employeeModel.getTableModel().setQueryCriteriaRequired(false);

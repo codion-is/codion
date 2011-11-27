@@ -67,7 +67,7 @@ public final class ClientInstanceMonitorPanel extends JPanel {
       else {
         log.append("Disconnected!");
       }
-      chkLoggingEnabled.setSelected(model.isLoggingOn());
+      chkLoggingEnabled.setSelected(model.isLoggingEnabled());
       txtCreationDate.setText(DateFormats.getDateFormat(DateFormats.FULL_TIMESTAMP).format(new Date(model.getCreationDate())));
     }
     else {
@@ -76,13 +76,13 @@ public final class ClientInstanceMonitorPanel extends JPanel {
     txtLog.setText(log.toString());
   }
 
-  public boolean isLoggingOn() throws RemoteException {
-    return model != null && model.isLoggingOn();
+  public boolean isLoggingEnabled() throws RemoteException {
+    return model != null && model.isLoggingEnabled();
   }
 
-  public void setLoggingOn(final boolean status) throws RemoteException {
+  public void setLoggingEnabled(final boolean status) throws RemoteException {
     if (model != null) {
-      model.setLoggingOn(status);
+      model.setLoggingEnabled(status);
     }
   }
 

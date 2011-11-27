@@ -24,12 +24,12 @@ public class EntityLookupProviderTest {
   @Test
   public void test() throws Exception {
     final EntityLookupModel model = new DefaultEntityLookupModel(EmpDept.T_DEPARTMENT,
-            EntityConnectionImplTest.DB_PROVIDER, Entities.getSearchProperties(EmpDept.T_DEPARTMENT));
+            EntityConnectionImplTest.CONNECTION_PROVIDER, Entities.getSearchProperties(EmpDept.T_DEPARTMENT));
     final EntityLookupProvider provider = new EntityLookupProvider(model, null);
 
     assertNull(provider.getValue());
 
-    final Entity dept = EntityConnectionImplTest.DB_PROVIDER.getConnection().selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "SALES");
+    final Entity dept = EntityConnectionImplTest.CONNECTION_PROVIDER.getConnection().selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "SALES");
 
     model.setSelectedEntity(dept);
     assertEquals(dept, provider.getValue());

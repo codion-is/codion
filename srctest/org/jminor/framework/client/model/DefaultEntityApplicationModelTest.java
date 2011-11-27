@@ -71,7 +71,7 @@ public final class DefaultEntityApplicationModelTest {
 
   @Test
   public void test() {
-    final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(EntityConnectionImplTest.DB_PROVIDER) {
+    final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(EntityConnectionImplTest.CONNECTION_PROVIDER) {
       @Override
       protected void loadDomainModel() {
         EmpDept.init();

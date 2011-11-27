@@ -110,7 +110,7 @@ public interface EntityConnectionServerAdmin extends Remote {
    * @return true if logging is on for the given connection
    * @throws RemoteException in case of a communication error
    */
-  boolean isLoggingOn(final UUID clientID) throws RemoteException;
+  boolean isLoggingEnabled(final UUID clientID) throws RemoteException;
 
   /**
    * Sets the logging status for the given connection
@@ -118,7 +118,7 @@ public interface EntityConnectionServerAdmin extends Remote {
    * @param status the new logging status
    * @throws RemoteException in case of a communication error
    */
-  void setLoggingOn(final UUID clientID, final boolean status) throws RemoteException;
+  void setLoggingEnabled(final UUID clientID, final boolean status) throws RemoteException;
 
   /**
    * @return a string containing memory usage information

@@ -12,7 +12,6 @@ import org.jminor.common.server.ServerLog;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
-import org.jminor.framework.demos.petstore.domain.Petstore;
 import org.jminor.framework.server.provider.RemoteEntityConnectionProvider;
 
 import org.junit.AfterClass;
@@ -32,13 +31,11 @@ public class EntityConnectionServerTest {
 
   @BeforeClass
   public static void setUp() throws Exception {
-    EmpDept.init();
-    Petstore.init();
     defaultManager = System.getSecurityManager();
     Configuration.init();
     Configuration.setValue(Configuration.SERVER_HOST_NAME, "localhost");
     Configuration.setValue(Configuration.SERVER_CONNECTION_POOLING_INITIAL, User.UNIT_TEST_USER.getUsername() + ":" + User.UNIT_TEST_USER.getPassword());
-    Configuration.setValue(Configuration.SERVER_DOMAIN_MODEL_CLASSES, "org.jminor.framework.demos.empdept.domain.EmpDept,org.jminor.framework.demos.petstore.domain.Petstore");
+    Configuration.setValue(Configuration.SERVER_DOMAIN_MODEL_CLASSES, "org.jminor.framework.demos.empdept.domain.EmpDept");
     Configuration.setValue("java.rmi.server.hostname", "localhost");
     Configuration.setValue("java.security.policy", "resources/security/all_permissions.policy");
     Configuration.setValue("javax.net.ssl.trustStore", "resources/security/JMinorClientTruststore");
@@ -88,8 +85,8 @@ public class EntityConnectionServerTest {
     final RemoteEntityConnectionProvider providerTwo = new RemoteEntityConnectionProvider(User.UNIT_TEST_USER,
             UUID.randomUUID(), getClass().getSimpleName());
     final EntityConnection remoteDbTwo = providerTwo.getConnection();
-    server.setLoggingOn(providerTwo.getClientID(), true);
-    assertTrue(server.isLoggingOn(providerTwo.getClientID()));
+    server.setLoggingEnabled(providerTwo.getClientID(), true);
+    assertTrue(server.isLoggingEnabled(providerTwo.getClientID()));
     assertTrue(remoteDbTwo.isValid());
     assertEquals(2, server.getConnectionCount());
 

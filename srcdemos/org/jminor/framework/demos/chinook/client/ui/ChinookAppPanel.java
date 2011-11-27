@@ -60,7 +60,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel {
     albumProvider.setEditPanelClass(AlbumEditPanel.class);
     albumProvider.addDetailPanelProvider(trackProvider);
 
-    final EntityPanelProvider  artistProvider = new EntityPanelProvider(T_ARTIST);
+    final EntityPanelProvider artistProvider = new EntityPanelProvider(T_ARTIST);
     artistProvider.setEditPanelClass(ArtistEditPanel.class);
     artistProvider.addDetailPanelProvider(albumProvider);
     artistProvider.setDetailSplitPanelResizeWeight(0.3);

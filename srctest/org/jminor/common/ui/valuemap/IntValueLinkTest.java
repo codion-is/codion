@@ -19,7 +19,7 @@ public class IntValueLinkTest {
   private final ValueChangeMapEditModel<String, Object> model;
 
   public IntValueLinkTest() {
-    model = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.DB_PROVIDER);
+    model = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.CONNECTION_PROVIDER);
   }
 
   @Test

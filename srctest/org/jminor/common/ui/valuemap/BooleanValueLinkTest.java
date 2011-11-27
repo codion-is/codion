@@ -21,7 +21,7 @@ public class BooleanValueLinkTest {
   private final ValueChangeMapEditModel<String, Object> model;
 
   public BooleanValueLinkTest() {
-    model = new DefaultEntityModel(Petstore.T_ITEM, EntityConnectionImplTest.DB_PROVIDER).getEditModel();
+    model = new DefaultEntityModel(Petstore.T_ITEM, EntityConnectionImplTest.CONNECTION_PROVIDER).getEditModel();
   }
 
   @Test

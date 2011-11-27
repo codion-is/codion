@@ -19,7 +19,7 @@ public class JasperReportsEntityDataSourceTest {
 
   @Test
   public void test() throws Exception {
-    final List<Entity> entities = EntityConnectionImplTest.DB_PROVIDER.getConnection().selectAll(EmpDept.T_DEPARTMENT);
+    final List<Entity> entities = EntityConnectionImplTest.CONNECTION_PROVIDER.getConnection().selectAll(EmpDept.T_DEPARTMENT);
     try {
       new JasperReportsEntityDataSource(null);
       fail();

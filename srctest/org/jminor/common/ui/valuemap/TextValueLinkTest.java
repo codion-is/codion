@@ -20,7 +20,7 @@ public class TextValueLinkTest {
   private final ValueChangeMapEditModel<String, Object> model;
 
   public TextValueLinkTest() {
-    model = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.DB_PROVIDER);
+    model = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.CONNECTION_PROVIDER);
   }
 
   @Test

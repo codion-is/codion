@@ -51,7 +51,7 @@ public final class DefaultEntityEditModelTest {
     deptProperty = Entities.getForeignKeyProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_DEPARTMENT_FK);
     debugOutput = Configuration.getBooleanValue(Configuration.PROPERTY_DEBUG_OUTPUT);
     Configuration.setValue(Configuration.PROPERTY_DEBUG_OUTPUT, true);
-    employeeEditModel = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.DB_PROVIDER);
+    employeeEditModel = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.CONNECTION_PROVIDER);
   }
 
   @After
@@ -185,7 +185,7 @@ public final class DefaultEntityEditModelTest {
   @Test
   public void test() throws Exception {
     try {
-      new DefaultEntityEditModel(null, EntityConnectionImplTest.DB_PROVIDER);
+      new DefaultEntityEditModel(null, EntityConnectionImplTest.CONNECTION_PROVIDER);
       fail();
     }
     catch (IllegalArgumentException e) {}

@@ -92,6 +92,11 @@ public class DefaultEntityModelProvider implements EntityModelProvider {
   }
 
   /** {@inheritDoc} */
+  public boolean containsDetailModelProvider(final EntityModelProvider detailModelProvider) {
+    return detailModelProviders.contains(detailModelProvider);
+  }
+
+  /** {@inheritDoc} */
   @Override
   public final boolean equals(final Object obj) {
     return obj instanceof EntityModelProvider && ((EntityModelProvider) obj).getEntityID().equals(getEntityID());
@@ -104,7 +109,7 @@ public class DefaultEntityModelProvider implements EntityModelProvider {
   }
 
   /** {@inheritDoc} */
-  public final EntityModel initializeModel(final EntityConnectionProvider connectionProvider, final boolean detailModel) {
+  public final EntityModel createModel(final EntityConnectionProvider connectionProvider, final boolean detailModel) {
     try {
       final EntityModel model;
       if (modelClass.equals(DefaultEntityModel.class)) {
@@ -116,7 +121,7 @@ public class DefaultEntityModelProvider implements EntityModelProvider {
         model = modelClass.getConstructor(EntityConnectionProvider.class).newInstance(connectionProvider);
       }
       for (final EntityModelProvider detailProvider : detailModelProviders) {
-        model.addDetailModel(detailProvider.initializeModel(connectionProvider, true));
+        model.addDetailModel(detailProvider.createModel(connectionProvider, true));
       }
       configureModel(model);
 
@@ -131,7 +136,7 @@ public class DefaultEntityModelProvider implements EntityModelProvider {
   }
 
   /** {@inheritDoc} */
-  public final EntityEditModel initializeEditModel(final EntityConnectionProvider connectionProvider) {
+  public final EntityEditModel createEditModel(final EntityConnectionProvider connectionProvider) {
     try {
       final EntityEditModel editModel;
       if (editModelClass.equals(DefaultEntityEditModel.class)) {
@@ -155,7 +160,7 @@ public class DefaultEntityModelProvider implements EntityModelProvider {
   }
 
   /** {@inheritDoc} */
-  public final EntityTableModel initializeTableModel(final EntityConnectionProvider connectionProvider, final boolean detailModel) {
+  public final EntityTableModel createTableModel(final EntityConnectionProvider connectionProvider, final boolean detailModel) {
     try {
       final EntityTableModel tableModel;
       if (tableModelClass.equals(DefaultEntityTableModel.class)) {
@@ -203,9 +208,9 @@ public class DefaultEntityModelProvider implements EntityModelProvider {
   protected void configureTableModel(final EntityTableModel tableModel) {}
 
   private EntityModel initializeDefaultModel(final EntityConnectionProvider connectionProvider, final boolean detailModel) {
-    final EntityTableModel tableModel = initializeTableModel(connectionProvider, detailModel);
+    final EntityTableModel tableModel = createTableModel(connectionProvider, detailModel);
     if (!tableModel.hasEditModel()) {
-      final EntityEditModel editModel = initializeEditModel(connectionProvider);
+      final EntityEditModel editModel = createEditModel(connectionProvider);
       tableModel.setEditModel(editModel);
     }
 

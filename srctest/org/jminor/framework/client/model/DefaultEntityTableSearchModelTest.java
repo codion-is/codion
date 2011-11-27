@@ -13,7 +13,7 @@ import static org.junit.Assert.*;
 
 public class DefaultEntityTableSearchModelTest {
 
-  private final EntityTableModel tableModel = new DefaultEntityTableModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.DB_PROVIDER);
+  private final EntityTableModel tableModel = new DefaultEntityTableModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.CONNECTION_PROVIDER);
   private final EntityTableSearchModel searchModel = tableModel.getSearchModel();
 
   public DefaultEntityTableSearchModelTest() {

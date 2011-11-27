@@ -21,7 +21,7 @@ public class DoubleValueLinkTest {
   private final ValueChangeMapEditModel<String, Object> model;
 
   public DoubleValueLinkTest() {
-    model = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.DB_PROVIDER);
+    model = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.CONNECTION_PROVIDER);
   }
 
   @Test

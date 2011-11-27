@@ -192,6 +192,9 @@ public class DefaultEntityModel implements EntityModel {
     if (this.detailModels.contains(detailModel)) {
       throw new IllegalArgumentException("Detail model " + detailModel + " has already been added");
     }
+    if (detailModel.getMasterModel() != null) {
+      throw new IllegalArgumentException("Detail model " + detailModel + " has already had a master model defined");
+    }
     this.detailModels.add(detailModel);
     detailModel.setMasterModel(this);
     if (detailModel.containsTableModel()) {

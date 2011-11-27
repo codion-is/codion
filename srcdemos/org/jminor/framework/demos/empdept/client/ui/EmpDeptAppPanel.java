@@ -13,6 +13,7 @@ import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.DefaultEntityApplicationModel;
 import org.jminor.framework.client.model.DefaultEntityModelProvider;
 import org.jminor.framework.client.model.EntityApplicationModel;
+import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.EntityModelProvider;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.model.PropertySummaryModel;
@@ -39,9 +40,14 @@ public class EmpDeptAppPanel extends EntityApplicationPanel {
     final EmployeePanelProvider employeePanelProvider = new EmployeePanelProvider(employeeModelProvider);
     employeePanelProvider.setEditPanelClass(EmployeeEditPanel.class);
 
-    final EntityModelProvider departmentModelProvider = new DefaultEntityModelProvider(T_DEPARTMENT);
+    final EntityModelProvider departmentModelProvider = new DefaultEntityModelProvider(T_DEPARTMENT) {
+      @Override
+      protected void configureModel(final EntityModel entityModel) {
+        entityModel.getDetailModel(EmpDept.T_EMPLOYEE).getTableModel().setQueryCriteriaRequired(false);
+      }
+    };
     departmentModelProvider.addDetailModelProvider(employeeModelProvider);
-    final EntityPanelProvider departmentPanelProvider = new EntityPanelProvider(T_DEPARTMENT);
+    final EntityPanelProvider departmentPanelProvider = new EntityPanelProvider(departmentModelProvider);
     departmentPanelProvider.setEditPanelClass(DepartmentEditPanel.class);
     departmentPanelProvider.setTablePanelClass(DepartmentTablePanel.class);
     departmentPanelProvider.addDetailPanelProvider(employeePanelProvider);
@@ -95,7 +101,6 @@ public class EmpDeptAppPanel extends EntityApplicationPanel {
 
     @Override
     protected void configureTableModel(final EntityTableModel tableModel) {
-      tableModel.setQueryCriteriaRequired(false);
       tableModel.getPropertySummaryModel(EMPLOYEE_SALARY).setSummaryType(PropertySummaryModel.SummaryType.AVERAGE);
     }
   }

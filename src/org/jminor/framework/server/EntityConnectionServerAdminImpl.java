@@ -381,14 +381,14 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
   }
 
   /** {@inheritDoc} */
-  public boolean isLoggingOn(final UUID clientID) throws RemoteException {
-    return server.isLoggingOn(clientID);
+  public boolean isLoggingEnabled(final UUID clientID) throws RemoteException {
+    return server.isLoggingEnabled(clientID);
   }
 
   /** {@inheritDoc} */
-  public void setLoggingOn(final UUID clientID, final boolean status) {
-    LOG.info("setLoggingOn({}, {})", clientID, status);
-    server.setLoggingOn(clientID, status);
+  public void setLoggingEnabled(final UUID clientID, final boolean status) {
+    LOG.info("setLoggingEnabled({}, {})", clientID, status);
+    server.setLoggingEnabled(clientID, status);
   }
 
   /** {@inheritDoc} */

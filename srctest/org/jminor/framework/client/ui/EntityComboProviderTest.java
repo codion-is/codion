@@ -22,12 +22,12 @@ public class EntityComboProviderTest {
 
   @Test
   public void test() throws Exception {
-    final EntityComboBoxModel model = new DefaultEntityComboBoxModel(EmpDept.T_DEPARTMENT, EntityConnectionImplTest.DB_PROVIDER);
+    final EntityComboBoxModel model = new DefaultEntityComboBoxModel(EmpDept.T_DEPARTMENT, EntityConnectionImplTest.CONNECTION_PROVIDER);
     final EntityComboProvider provider = new EntityComboProvider(model, null);
 
     assertNull(provider.getValue());
 
-    final Entity dept = EntityConnectionImplTest.DB_PROVIDER.getConnection().selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "SALES");
+    final Entity dept = EntityConnectionImplTest.CONNECTION_PROVIDER.getConnection().selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "SALES");
 
     model.setSelectedItem(dept);
     assertEquals(dept, provider.getValue());

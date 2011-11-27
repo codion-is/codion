@@ -2539,3 +2539,11 @@
   Configuration.SERVER_DB_PORT removed
   run_server.sh and run_server.bat now pass a single argument to the process
   EntityConnectionServerAdminImpl, startup/shutdown functionality refactored
+  EntityPanelProvider.createPanel() bug fixed, when creating detail panels it did not use the detail models available in the model, but created new ones
+  EntityModel.addDetailModel() no longer calls setQueryCriteriaRequired(true) on the detail table model
+  EntityModelProvider.initializeModel renamed to createModel, making it consistent with EntityPanelProvider
+  EntityConnectionServer.isLoggingOn, setLoggingOn renamed to isLoggingEnabled, setLoggingEnabled
+  Some unit test cleanup
+  EntityPanel.containsDetailPanel(entityID) added
+  EntityPanelProviderTest added
+  EntityModelProvider.containsDetailModelProvider() added

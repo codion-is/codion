@@ -210,7 +210,7 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
    * @param clientID the client ID
    * @return true if logging is enabled for the given client
    */
-  boolean isLoggingOn(final UUID clientID) {
+  boolean isLoggingEnabled(final UUID clientID) {
     final ClientInfo client = new ClientInfo(clientID);
     for (final RemoteEntityConnection connection : getConnections().values()) {
       if (((RemoteEntityConnectionImpl) connection).getClientInfo().equals(client)) {
@@ -225,7 +225,7 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
    * @param clientID the client ID
    * @param status the new logging status
    */
-  void setLoggingOn(final UUID clientID, final boolean status) {
+  void setLoggingEnabled(final UUID clientID, final boolean status) {
     final ClientInfo client = new ClientInfo(clientID);
     for (final RemoteEntityConnection connection : getConnections().values()) {
       if (((RemoteEntityConnectionImpl) connection).getClientInfo().equals(client)) {

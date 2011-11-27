@@ -121,7 +121,9 @@ public class EntityPanelProvider implements Comparable {
   public final EntityPanelProvider addDetailPanelProvider(final EntityPanelProvider panelProvider) {
     if (!detailPanelProviders.contains(panelProvider)) {
       detailPanelProviders.add(panelProvider);
-      modelProvider.addDetailModelProvider(panelProvider.getModelProvider());
+      if (!modelProvider.containsDetailModelProvider(panelProvider.getModelProvider())) {
+        modelProvider.addDetailModelProvider(panelProvider.getModelProvider());//todo not very clean
+      }
     }
 
     return this;
@@ -224,7 +226,7 @@ public class EntityPanelProvider implements Comparable {
   public final EntityPanel createPanel(final EntityConnectionProvider connectionProvider, final boolean detailPanel) {
     Util.rejectNullValue(connectionProvider, "connectionProvider");
     try {
-      final EntityModel entityModel = modelProvider.initializeModel(connectionProvider, detailPanel);
+      final EntityModel entityModel = modelProvider.createModel(connectionProvider, detailPanel);
 
       return createPanel(entityModel);
     }
@@ -248,19 +250,9 @@ public class EntityPanelProvider implements Comparable {
       if (!detailPanelProviders.isEmpty()) {
         entityPanel.setDetailPanelState(detailPanelState);
         entityPanel.setDetailSplitPanelResizeWeight(detailSplitPanelResizeWeight);
-        for (final EntityPanelProvider detailProvider : detailPanelProviders) {
-          final EntityModelProvider detailModelProvider = detailProvider.getModelProvider();
-          final EntityPanel detailPanel;
-          if (!detailModelProvider.getModelClass().equals(DefaultEntityModel.class)) {
-            final EntityModel detailModel = model.getDetailModel(detailProvider.getModelProvider().getModelClass());
-            if (detailModel == null) {
-              throw new IllegalArgumentException("Detail model of type " + detailModelProvider.getModelClass() + " not found in model " + model);
-            }
-            detailPanel = detailProvider.createPanel(detailModel);
-          }
-          else {
-            detailPanel = detailProvider.createPanel(model.getConnectionProvider(), true);
-          }
+        for (final EntityPanelProvider detailPanelProvider : detailPanelProviders) {
+          final EntityModel detailModel = model.getDetailModel(detailPanelProvider.getEntityID());
+          final EntityPanel detailPanel = detailPanelProvider.createPanel(detailModel);
           entityPanel.addDetailPanel(detailPanel);
         }
       }
@@ -280,11 +272,11 @@ public class EntityPanelProvider implements Comparable {
   }
 
   public final EntityEditPanel createEditPanel(final EntityConnectionProvider connectionProvider) {
-    return initializeEditPanel(modelProvider.initializeEditModel(connectionProvider));
+    return initializeEditPanel(modelProvider.createEditModel(connectionProvider));
   }
 
   public final EntityTablePanel createTablePanel(final EntityConnectionProvider connectionProvider, final boolean detailPanel) {
-    return initializeTablePanel(modelProvider.initializeTableModel(connectionProvider, detailPanel));
+    return initializeTablePanel(modelProvider.createTableModel(connectionProvider, detailPanel));
   }
 
   protected void configurePanel(final EntityPanel entityPanel) {}

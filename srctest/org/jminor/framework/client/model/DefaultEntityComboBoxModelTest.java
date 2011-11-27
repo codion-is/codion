@@ -22,13 +22,13 @@ public final class DefaultEntityComboBoxModelTest {
 
   public DefaultEntityComboBoxModelTest() {
     EmpDept.init();
-    comboBoxModel = new DefaultEntityComboBoxModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.DB_PROVIDER);
+    comboBoxModel = new DefaultEntityComboBoxModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.CONNECTION_PROVIDER);
   }
 
   @Test
   public void testConstructor() {
     try {
-      new DefaultEntityComboBoxModel(null, EntityConnectionImplTest.DB_PROVIDER);
+      new DefaultEntityComboBoxModel(null, EntityConnectionImplTest.CONNECTION_PROVIDER);
       fail();
     }
     catch (IllegalArgumentException e) {}
