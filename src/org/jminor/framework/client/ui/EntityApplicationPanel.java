@@ -1020,7 +1020,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
                                           final Dimension frameSize, final User defaultUser, final boolean showFrame) throws Exception {
     LOG.debug("{} application starting", frameCaption);
     Messages.class.getName();//hack to load the class
-          UIManager.setLookAndFeel(getDefaultLookAndFeelClassName());
+    UIManager.setLookAndFeel(getDefaultLookAndFeelClassName());
     final ImageIcon applicationIcon = iconName != null ? Images.getImageIcon(getClass(), iconName) : Images.loadImage("jminor_logo32.gif");
     final JDialog startupDialog = showStartupDialog ? initializeStartupDialog(applicationIcon, frameCaption) : null;
     while (true) {
@@ -1046,6 +1046,14 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
         return frame;
       }
       catch (Throwable e) {
+        try {
+          if (connectionProvider != null) {
+            connectionProvider.disconnect();
+          }
+        }
+        catch (Exception ex) {
+          LOG.debug("Exception while disconnecting on startup error", ex);
+        }
         handleException(e, null);
         if (JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(null,
                 FrameworkMessages.get(FrameworkMessages.RETRY),

@@ -43,8 +43,8 @@ public final class ServerUtil {
       return servers.get(0);
     }
     else {
-      throw new NotBoundException("No reachable or suitable server found, "
-              + serverNamePrefix + " on " + serverHostName);
+      throw new NotBoundException("No reachable or suitable server found, " + serverNamePrefix
+              + " on host: " + serverHostName + ", port: " + serverPort + ", registryPort: " + registryPort);
     }
   }
 

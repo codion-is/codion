@@ -449,7 +449,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
     final int registryPort = Configuration.getIntValue(Configuration.REGISTRY_PORT_NUMBER);
     final String sid = System.getProperty(Database.DATABASE_SID);
     final String host = System.getProperty(Database.DATABASE_HOST);
-    final String serverName = RemoteServer.SERVER_ADMIN_PREFIX + initializeServerName(sid, host);
+    final String serverName = RemoteServer.SERVER_ADMIN_PREFIX + initializeServerName(host, sid);
     Configuration.resolveTruststoreProperty(EntityConnectionServerAdminImpl.class.getSimpleName());
     try {
       final Registry registry = Util.getRegistry(registryPort);
