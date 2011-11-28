@@ -143,7 +143,10 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
   }
 
   private void connectToServer() throws RemoteException, NotBoundException {
-    final int serverPort = Configuration.getIntValue(Configuration.SERVER_PORT);
+    Integer serverPort = (Integer) Configuration.getValue(Configuration.SERVER_PORT);
+    if (serverPort == null) {
+      serverPort = -1;
+    }
     final int registryPort = Configuration.getIntValue(Configuration.REGISTRY_PORT_NUMBER);
     this.server = ServerUtil.getServer(serverHostName,
             Configuration.getStringValue(Configuration.SERVER_NAME_PREFIX), registryPort, serverPort);

@@ -2550,3 +2550,4 @@
   EntityConnectionServerAdminImpl, shutdown bug fixed, db sid and hostname switched
   EntityApplicationPanel, server/db connection disconnected on startup error
   ServerUtil.getServer(), exception thrown if no server is found now contains server port and registryPort
+  Configuration.SERVER_PORT no longer has a default value, required on the server side but not on the client side
