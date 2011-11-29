@@ -474,7 +474,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
    * If no arguments are supplied a new EntityConnectionServer with a server admin interface is started,
    * If the argument 'shutdown' is supplied the server, if running, is shut down.
    * @param arguments 'shutdown' causes a running server to be shut down
-   * @throws java.rmi.RemoteException in case of a remote exception during service export
+   * @throws RemoteException in case of a remote exception during service export
    * @throws ClassNotFoundException in case the domain model classes required for the server is not found
    */
   public static void main(final String[] arguments) throws RemoteException, ClassNotFoundException {
