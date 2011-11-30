@@ -69,7 +69,7 @@ public final class User implements Serializable {
     return "User: " + username;
   }
 
-  /** {@inheritDoc} */
+  /** User objects are equal if the usernames match */
   @Override
   public boolean equals(final Object obj) {
     return this == obj || obj instanceof User && ((User) obj).username.equals(username);

@@ -6,6 +6,8 @@ import org.junit.Test;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.UUID;
 
 import static org.junit.Assert.*;
@@ -71,11 +73,16 @@ public class AbstractRemoteServerTest {
     RemoteServerTest connection = server.connect(baseClientInfo);
     assertNotNull(connection);
     assertEquals(baseClientInfo, connection.getClientInfo());
-    server.setLoginProxy(clientTypeID, new LoginProxy() {
+    final Collection<Object> closeIndicator = new ArrayList<Object>();
+    final LoginProxy loginProxy = new LoginProxy() {
       public ClientInfo doLogin(final ClientInfo clientInfo) throws ServerException.LoginException {
         return proxyClientInfo;
       }
-    });
+      public void close() {
+        closeIndicator.add(new Object());
+      }
+    };
+    server.setLoginProxy(clientTypeID, loginProxy);
     server.disconnect(baseClientInfo.getClientID());
 
     connection = server.connect(baseClientInfo);
@@ -88,6 +95,10 @@ public class AbstractRemoteServerTest {
     connection = server.connect(baseClientInfo);
     assertNotNull(connection);
     assertEquals(baseClientInfo, connection.getClientInfo());
+
+    server.setLoginProxy(clientTypeID, loginProxy);
+    server.shutdown();
+    assertTrue(!closeIndicator.isEmpty());
   }
 
   private static class RemoteServerTestImpl implements RemoteServerTest {

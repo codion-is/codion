@@ -7,12 +7,21 @@ public interface LoginProxy {
 
   /**
    * Performs login validation for the user specified by the client info
-   * and returns a client info with the same clientID and the user
-   * to propagate for further login procedures, which may or may not be
-   * the same user
+   * and returns a client info with the same clientID and user but possibly
+   * a different databaseUser to propagate to further login procedures
    * @param clientInfo the client info
-   * @return a new client info with the same clientID but not necessarily the same user
+   * @return a new client info with the same clientID but not necessarily the same user or databaseUser
    * @throws ServerException.LoginException in case the login fails
+   * @see org.jminor.common.server.ClientInfo#getDatabaseUser()
    */
   ClientInfo doLogin(final ClientInfo clientInfo) throws ServerException.LoginException;
+
+  /**
+   * Disposes of all resources used by this LoginProxy, after a call to this
+   * method the proxy should be regarded as unusable.
+   * This method should be called by a server using this LoginProxy on shutdown,
+   * giving the LoginProxy a chance to release resources in an orderly manner.
+   * Any exception thrown by this method is ignored.
+   */
+  void close();
 }

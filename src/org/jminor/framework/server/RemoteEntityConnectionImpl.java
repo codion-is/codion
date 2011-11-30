@@ -144,11 +144,11 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
     super(port, sslEnabled ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
             sslEnabled ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
     try {
-      if (CONNECTION_POOLS.containsKey(clientInfo.getUser())) {
-        checkConnectionPoolCredentials(clientInfo.getUser());
+      if (CONNECTION_POOLS.containsKey(clientInfo.getDatabaseUser())) {
+        checkConnectionPoolCredentials(clientInfo.getDatabaseUser());
       }
       else {
-        entityConnection = createDatabaseConnection(database, clientInfo.getUser());
+        entityConnection = createDatabaseConnection(database, clientInfo.getDatabaseUser());
       }
       this.database = database;
       this.clientInfo = clientInfo;
@@ -522,7 +522,7 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
   }
 
   private EntityConnection getConnection() throws ClassNotFoundException, DatabaseException {
-    final ConnectionPool connectionPool = CONNECTION_POOLS.get(clientInfo.getUser());
+    final ConnectionPool connectionPool = CONNECTION_POOLS.get(clientInfo.getDatabaseUser());
     if (connectionPool != null && connectionPool.isEnabled()) {
       if (entityConnection != null) {//pool has been turned on since this one was created
         entityConnection.disconnect();//discard
@@ -537,13 +537,13 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
     }
 
     if (entityConnection == null) {
-      entityConnection = createDatabaseConnection(database, clientInfo.getUser());
+      entityConnection = createDatabaseConnection(database, clientInfo.getDatabaseUser());
     }
     else {
       if (!entityConnection.isValid()) {//dead connection
         LOG.debug("Removing an invalid database connection: {}", entityConnection);
         entityConnection.disconnect();//just in case
-        entityConnection = createDatabaseConnection(database, clientInfo.getUser());
+        entityConnection = createDatabaseConnection(database, clientInfo.getDatabaseUser());
       }
     }
     entityConnection.getPoolableConnection().setLoggingEnabled(methodLogger.isEnabled());
@@ -552,7 +552,7 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
   }
 
   private void returnConnection(final EntityConnection connection, final boolean logMethod) {
-    final ConnectionPool connectionPool = CONNECTION_POOLS.get(clientInfo.getUser());
+    final ConnectionPool connectionPool = CONNECTION_POOLS.get(clientInfo.getDatabaseUser());
     if (methodLogger.isEnabled()) {
       //we turned logging on when we fetched the connection, turn it off again
       connection.getPoolableConnection().setLoggingEnabled(false);
@@ -560,7 +560,7 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
     if (connectionPool != null && connectionPool.isEnabled()) {
       try {
         if (logMethod) {
-          methodLogger.logAccess(RETURN_CONNECTION, new Object[]{clientInfo.getUser()});
+          methodLogger.logAccess(RETURN_CONNECTION, new Object[]{clientInfo.getDatabaseUser(), clientInfo.getUser()});
         }
         connectionPool.returnConnection(connection.getPoolableConnection());
       }
@@ -622,7 +622,7 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
         setActive();
         RequestCounter.incrementRequestsPerSecondCounter();
         if (connection == null) {
-          methodLogger.logAccess(GET_CONNECTION, new Object[]{clientInfo.getUser()});
+          methodLogger.logAccess(GET_CONNECTION, new Object[]{clientInfo.getDatabaseUser(), clientInfo.getUser()});
           Exception getConnectionException = null;
           try {
             connection = getConnection();

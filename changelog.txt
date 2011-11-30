@@ -2553,3 +2553,9 @@
   Configuration.SERVER_PORT no longer has a default value, required on the server side but not on the client side
   AbstractRemoteServer now supports a LoginProxy instance per clientTypeID
   AbstractRemoteServerTest added
+0.6.4
+  ClientInfo.databaseUser field added, by default same as user
+  RemoteEntityConnectionImpl uses ClientInfo.databaseUser where applicable
+  EntityConnectionServerTest.testLoginProxy() added
+  LoginProxy.close() added
+  AbstractRemoteServer.shutdown() calls close() on all registered LoginProxy instances, ignoring exceptions

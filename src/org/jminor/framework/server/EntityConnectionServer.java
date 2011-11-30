@@ -61,7 +61,6 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
 
   /**
    * Constructs a new EntityConnectionServer and binds it to a registry on the given port
-   *
    * @param serverName the serverName
    * @param serverPort the port on which to make the server accessible
    * @param registryPort the registry port to use

@@ -21,7 +21,8 @@ public final class ClientInfo implements Serializable {
   private UUID clientID;
   private String clientTypeID;
   private User user;
-  private String clientHost = "unknown host";
+  private User databaseUser;
+  private String clientHost = "unknown";
 
   /**
    * Instantiates a new ClientInfo
@@ -38,9 +39,21 @@ public final class ClientInfo implements Serializable {
    * @param user the user
    */
   public ClientInfo(final UUID clientID, final String clientTypeID, final User user) {
+    this(clientID, clientTypeID, user, user);
+  }
+
+  /**
+   * Instantiates a new ClientInfo
+   * @param clientID the client ID
+   * @param clientTypeID a string specifying the client type
+   * @param user the user
+   * @param databaseUser the user to use when connecting to the underlying database
+   */
+  public ClientInfo(final UUID clientID, final String clientTypeID, final User user, final User databaseUser) {
     this.clientID = clientID;
     this.clientTypeID = clientTypeID;
     this.user = user;
+    this.databaseUser = databaseUser;
   }
 
   /**
@@ -48,6 +61,13 @@ public final class ClientInfo implements Serializable {
    */
   public User getUser() {
     return user;
+  }
+
+  /**
+   * @return the user used when connecting to the underlying database
+   */
+  public User getDatabaseUser() {
+    return databaseUser;
   }
 
   /**
@@ -93,13 +113,24 @@ public final class ClientInfo implements Serializable {
   /** {@inheritDoc} */
   @Override
   public String toString() {
-    return user != null ? user + "@" + clientHost + " [" + clientTypeID + "] - " + clientID : clientID.toString();
+    if (user == null) {
+      return clientID.toString();
+    }
+
+    final StringBuilder builder = new StringBuilder(user.toString());
+    if (databaseUser != null && databaseUser != user) {
+      builder.append(" (databaseUser: ").append(databaseUser.toString()).append(")");
+    }
+    builder.append("@").append(clientHost).append(" [").append(clientTypeID).append("] - ").append(clientID.toString());
+
+    return builder.toString();
   }
 
   private void writeObject(final ObjectOutputStream stream) throws IOException {
     stream.writeObject(clientID);
     stream.writeObject(clientTypeID);
     stream.writeObject(user);
+    stream.writeObject(databaseUser);
     stream.writeObject(clientHost);
   }
 
@@ -107,6 +138,7 @@ public final class ClientInfo implements Serializable {
     this.clientID = (UUID) stream.readObject();
     this.clientTypeID = (String) stream.readObject();
     this.user = (User) stream.readObject();
+    this.databaseUser = (User) stream.readObject();
     this.clientHost = (String) stream.readObject();
   }
 }

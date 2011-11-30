@@ -12,6 +12,7 @@ import java.util.UUID;
 /**
  * Defines the methods available to remote clients.
  * @param <T> the type of remote interface this server supplies to clients
+ * todo isn't it inconvenient that a class with the same name exists in java.rmi.server.RemoteServer?
  */
 public interface RemoteServer<T extends Remote> extends Remote {
 
