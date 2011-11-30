@@ -26,18 +26,19 @@ public class ServerException extends Exception {
   }
 
   /**
+   * @param message the exception message
    * @return an exception indicating that a login has failed
    */
-  public static LoginException loginException() {
-    return new LoginException();
+  public static LoginException loginException(final String message) {
+    return new LoginException(message);
   }
 
   /**
    * An exception indicating that a login has failed
    */
   public static final class LoginException extends ServerException {
-    private LoginException() {
-      super();
+    private LoginException(final String message) {
+      super(message);
     }
   }
 

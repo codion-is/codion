@@ -9,6 +9,7 @@ import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.server.AbstractRemoteServer;
 import org.jminor.common.server.ClientInfo;
+import org.jminor.common.server.LoginProxy;
 import org.jminor.common.server.ServerLog;
 import org.jminor.common.server.web.WebStartServer;
 import org.jminor.framework.Configuration;
@@ -80,6 +81,7 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
     this.registryPort = registryPort;
     this.sslEnabled = sslEnabled;
     loadDefaultDomainModels();
+    loadLoginProxies();
     RemoteEntityConnectionImpl.initializeConnectionPools(database);
     setConnectionLimit(connectionLimit);
     startConnectionTimeoutTimer();
@@ -352,6 +354,32 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
     }
   }
 
+  private void loadLoginProxies() throws ClassNotFoundException {
+    final String loginProxyClasses = Configuration.getStringValue(Configuration.SERVER_LOGIN_PROXY_CLASSES);
+    if (Util.nullOrEmpty(loginProxyClasses)) {
+      return;
+    }
+
+    final String[] classes = loginProxyClasses.split(",");
+    for (final String className : classes) {
+      loadLoginProxy(className.trim());
+    }
+  }
+
+  private void loadLoginProxy(final String loginProxyClassName) throws ClassNotFoundException {
+    final String message = "Server loading login proxy class '" + loginProxyClassName + "' from classpath";
+    LOG.info(message);
+    final Class loginProxyClass = Class.forName(loginProxyClassName);
+    try {
+      final LoginProxy proxy = (LoginProxy) loginProxyClass.getConstructor().newInstance();
+      setLoginProxy(proxy.getClientTypeID(), proxy);
+    }
+    catch (Exception ex) {
+      LOG.error("Exception while instantiating LoginProxy: " + loginProxyClassName, ex);
+      throw new RuntimeException(ex);
+    }
+  }
+
   private static void loadDefaultDomainModels() throws ClassNotFoundException {
     final String domainModelClasses = Configuration.getStringValue(Configuration.SERVER_DOMAIN_MODEL_CLASSES);
     if (Util.nullOrEmpty(domainModelClasses)) {
@@ -360,7 +388,7 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
 
     final String[] classes = domainModelClasses.split(",");
     for (final String className : classes) {
-      loadDomainModel(className);
+      loadDomainModel(className.trim());
     }
   }
 

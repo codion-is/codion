@@ -161,6 +161,13 @@ public final class Configuration {
   public static final String SERVER_DOMAIN_MODEL_CLASSES = "jminor.server.domain.classes";
 
   /**
+   * Specifies a comma separated list of LoginProxy class names, which should be initialized on server startup,
+   * these classes must be available on the server classpath and contain a parameterless constructor
+   * @see org.jminor.common.server.LoginProxy
+   */
+  public static final String SERVER_LOGIN_PROXY_CLASSES = "jminor.server.loginProxyClasses";
+
+  /**
    * Specifies the initial think time setting for the load test client
    * (max think time = thinktime, min think time = max think time / 2)<br>
    * Value type: Integer<br>
@@ -575,6 +582,7 @@ public final class Configuration {
     parseIntegerSetting(SERVER_CONNECTION_LOG_SIZE);
     parseStringSetting(SERVER_CONNECTION_POOLING_INITIAL);
     parseStringSetting(SERVER_DOMAIN_MODEL_CLASSES);
+    parseStringSetting(SERVER_LOGIN_PROXY_CLASSES);
     parseStringSetting(SERVER_NAME_PREFIX);
     parseBooleanSetting(SERVER_CONNECTION_SSL_ENABLED);
     parseBooleanSetting(SHOW_STARTUP_DIALOG);

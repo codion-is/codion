@@ -6,6 +6,11 @@ package org.jminor.common.server;
 public interface LoginProxy {
 
   /**
+   * @return the String identifying the client type for which to use this login proxy
+   */
+  String getClientTypeID();
+
+  /**
    * Performs login validation for the user specified by the client info
    * and returns a client info with the same clientID and user but possibly
    * a different databaseUser to propagate to further login procedures

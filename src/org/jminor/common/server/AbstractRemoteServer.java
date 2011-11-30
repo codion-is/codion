@@ -179,7 +179,7 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
   public final void setLoginProxy(final String clientTypeID, final LoginProxy loginProxy) {
     synchronized (loginProxies) {
       if (loginProxy == null) {
-        loginProxies.put(clientTypeID, createDefaultLoginProxy());
+        loginProxies.put(clientTypeID, createDefaultLoginProxy(clientTypeID));
       }
       else {
         loginProxies.put(clientTypeID, loginProxy);
@@ -246,7 +246,7 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
     synchronized (loginProxies) {
       LoginProxy loginProxy = loginProxies.get(clientInfo.getClientTypeID());
       if (loginProxy == null) {//initialize a default proxy
-        loginProxy = createDefaultLoginProxy();
+        loginProxy = createDefaultLoginProxy(clientInfo.getClientTypeID());
         loginProxies.put(clientInfo.getClientTypeID(), loginProxy);
       }
 
@@ -254,8 +254,11 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
     }
   }
 
-  private static LoginProxy createDefaultLoginProxy() {
+  private static LoginProxy createDefaultLoginProxy(final String clientTypeID) {
     return new LoginProxy() {
+      public String getClientTypeID() {
+        return clientTypeID;
+      }
       public ClientInfo doLogin(final ClientInfo clientInfo) {
         return clientInfo;
       }

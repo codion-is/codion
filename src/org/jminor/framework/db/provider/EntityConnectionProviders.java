@@ -58,7 +58,7 @@ public final class EntityConnectionProviders {
     }
     catch (InvocationTargetException ite) {
       if (ite.getTargetException() instanceof RuntimeException) {
-        throw (RuntimeException) ((InvocationTargetException) ite).getTargetException();
+        throw (RuntimeException) ite.getTargetException();
       }
 
       throw new RuntimeException("Exception while initializing db provider", ite);

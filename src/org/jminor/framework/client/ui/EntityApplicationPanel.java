@@ -1024,11 +1024,12 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     final ImageIcon applicationIcon = iconName != null ? Images.getImageIcon(getClass(), iconName) : Images.loadImage("jminor_logo32.gif");
     final JDialog startupDialog = showStartupDialog ? initializeStartupDialog(applicationIcon, frameCaption) : null;
     while (true) {
-      final User user = loginRequired ? getUser(frameCaption, defaultUser, getClass().getSimpleName(), applicationIcon) : new User("", "");
+      final User user = loginRequired ? getUser(frameCaption, defaultUser, getClass().getName(), applicationIcon) : new User("", "");
       if (startupDialog != null) {
         startupDialog.setVisible(true);
       }
-      final EntityConnectionProvider connectionProvider = initializeConnectionProvider(user, frameCaption);
+      final String clientTypeID = getClass().getName();
+      final EntityConnectionProvider connectionProvider = initializeConnectionProvider(user, clientTypeID);
       try {
         connectionProvider.getConnection();//throws exception if the server is not reachable
         final long initializationStarted = System.currentTimeMillis();
