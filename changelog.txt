@@ -2562,7 +2562,7 @@
   ServerException.LoginException, message constructor parameter added
   EntityApplicationPanel.startApplicationInternal(), now uses getClass().getName() for clientTypeID supplied to the connection provider
   LoginProxy.getClientTypeID() added
-  Configuration.SERVER_LOGIN_PROXY classes added
+  Configuration.SERVER_LOGIN_PROXY_CLASSES added
   EntityConnectionServer.loadLoginProxies() added and called on startup
   EmpDeptLoginProxy added as a LoginProxy example
   jminor.server.loginProxyClasses, added EmpDeptLoginProxy to demo server launch files
