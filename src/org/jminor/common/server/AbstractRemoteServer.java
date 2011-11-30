@@ -24,17 +24,12 @@ import java.util.UUID;
 public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemoteObject implements RemoteServer<T> {
 
   private final Map<ClientInfo, T> connections = Collections.synchronizedMap(new HashMap<ClientInfo, T>());
+  private final Map<String, LoginProxy> loginProxies = new HashMap<String, LoginProxy>();
 
   private final String serverName;
   private final int serverPort;
   private volatile int connectionLimit = -1;
   private volatile boolean shuttingDown = false;
-
-  private LoginProxy loginProxy = new LoginProxy() {
-    public ClientInfo doLogin(final ClientInfo clientInfo) {
-      return clientInfo;
-    }
-  };
 
   /**
    * Instantiates a new AbstractRemoteServer
@@ -139,6 +134,7 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
       throw ServerException.serverFullException();
     }
 
+    final LoginProxy loginProxy = getLoginProxy(clientInfo);
     final T connection = doConnect(loginProxy.doLogin(clientInfo));
     synchronized (connections) {
       connections.put(clientInfo, connection);
@@ -177,10 +173,18 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
   }
 
   /**
+   * @param clientTypeID the client type ID with which to associate the given login proxy
    * @param loginProxy the login proxy
    */
-  public final void setLoginProxy(final LoginProxy loginProxy) {
-    this.loginProxy = loginProxy;
+  public final void setLoginProxy(final String clientTypeID, final LoginProxy loginProxy) {
+    synchronized (loginProxies) {
+      if (loginProxy == null) {
+        loginProxies.put(clientTypeID, createDefaultLoginProxy());
+      }
+      else {
+        loginProxies.put(clientTypeID, loginProxy);
+      }
+    }
   }
 
   /**
@@ -230,5 +234,25 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
 
   private boolean maximumNumberOfConnectionReached() {
     return connectionLimit > -1 && getConnectionCount() >= connectionLimit;
+  }
+
+  private LoginProxy getLoginProxy(final ClientInfo clientInfo) {
+    synchronized (loginProxies) {
+      LoginProxy loginProxy = loginProxies.get(clientInfo.getClientTypeID());
+      if (loginProxy == null) {//initialize a default proxy
+        loginProxy = createDefaultLoginProxy();
+        loginProxies.put(clientInfo.getClientTypeID(), loginProxy);
+      }
+
+      return loginProxy;
+    }
+  }
+
+  private static LoginProxy createDefaultLoginProxy() {
+    return new LoginProxy() {
+      public ClientInfo doLogin(final ClientInfo clientInfo) {
+        return clientInfo;
+      }
+    };
   }
 }

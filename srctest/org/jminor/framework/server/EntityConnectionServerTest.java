@@ -33,6 +33,7 @@ public class EntityConnectionServerTest {
   public static void setUp() throws Exception {
     defaultManager = System.getSecurityManager();
     Configuration.init();
+    Configuration.setValue(Configuration.SERVER_PORT, 2222);
     Configuration.setValue(Configuration.SERVER_HOST_NAME, "localhost");
     Configuration.setValue(Configuration.SERVER_CONNECTION_POOLING_INITIAL, User.UNIT_TEST_USER.getUsername() + ":" + User.UNIT_TEST_USER.getPassword());
     Configuration.setValue(Configuration.SERVER_DOMAIN_MODEL_CLASSES, "org.jminor.framework.demos.empdept.domain.EmpDept");

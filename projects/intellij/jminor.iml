@@ -13,8 +13,14 @@
       <sourceFolder url="file://$MODULE_DIR$/../../srcplugins" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../srctest" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/../../classes" />
+      <excludeFolder url="file://$MODULE_DIR$/../../derbydb" />
       <excludeFolder url="file://$MODULE_DIR$/../../dist" />
       <excludeFolder url="file://$MODULE_DIR$/../../docs" />
+      <excludeFolder url="file://$MODULE_DIR$/../../embh2" />
+      <excludeFolder url="file://$MODULE_DIR$/../../h2db" />
+      <excludeFolder url="file://$MODULE_DIR$/../../instrumented" />
+      <excludeFolder url="file://$MODULE_DIR$/../../panopticode" />
+      <excludeFolder url="file://$MODULE_DIR$/../../target" />
       <excludeFolder url="file://$MODULE_DIR$/../../test" />
     </content>
     <orderEntry type="inheritedJdk" />
@@ -23,13 +29,11 @@
       <library name="jminor-lib">
         <CLASSES>
           <root url="file://$MODULE_DIR$/../../lib" />
-          <root url="file://$MODULE_DIR$/../../lib/derby" />
           <root url="file://$MODULE_DIR$/../../lib/jasperreports" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
         <jarDirectory url="file://$MODULE_DIR$/../../lib" recursive="false" />
-        <jarDirectory url="file://$MODULE_DIR$/../../lib/derby" recursive="false" />
         <jarDirectory url="file://$MODULE_DIR$/../../lib/jasperreports" recursive="false" />
       </library>
     </orderEntry>

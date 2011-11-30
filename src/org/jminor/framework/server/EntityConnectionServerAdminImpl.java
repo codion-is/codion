@@ -430,7 +430,10 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
   }
 
   private static void startServer() throws RemoteException, ClassNotFoundException {
-    final int serverPort = Configuration.getIntValue(Configuration.SERVER_PORT);
+    final Integer serverPort = (Integer) Configuration.getValue(Configuration.SERVER_PORT);
+    if (serverPort == null) {
+      throw new RuntimeException("Configuration property '" + Configuration.SERVER_PORT + "' is required");
+    }
     final int registryPort = Configuration.getIntValue(Configuration.REGISTRY_PORT_NUMBER);
     final int serverAdminPort = Configuration.getIntValue(Configuration.SERVER_ADMIN_PORT);
     final boolean sslEnabled = Configuration.getBooleanValue(Configuration.SERVER_CONNECTION_SSL_ENABLED);
@@ -449,7 +452,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
     final int registryPort = Configuration.getIntValue(Configuration.REGISTRY_PORT_NUMBER);
     final String sid = System.getProperty(Database.DATABASE_SID);
     final String host = System.getProperty(Database.DATABASE_HOST);
-    final String serverName = RemoteServer.SERVER_ADMIN_PREFIX + initializeServerName(sid, host);
+    final String serverName = RemoteServer.SERVER_ADMIN_PREFIX + initializeServerName(host, sid);
     Configuration.resolveTruststoreProperty(EntityConnectionServerAdminImpl.class.getSimpleName());
     try {
       final Registry registry = Util.getRegistry(registryPort);
@@ -471,7 +474,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
    * If no arguments are supplied a new EntityConnectionServer with a server admin interface is started,
    * If the argument 'shutdown' is supplied the server, if running, is shut down.
    * @param arguments 'shutdown' causes a running server to be shut down
-   * @throws java.rmi.RemoteException in case of a remote exception during service export
+   * @throws RemoteException in case of a remote exception during service export
    * @throws ClassNotFoundException in case the domain model classes required for the server is not found
    */
   public static void main(final String[] arguments) throws RemoteException, ClassNotFoundException {
