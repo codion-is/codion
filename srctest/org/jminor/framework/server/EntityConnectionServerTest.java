@@ -40,6 +40,7 @@ public class EntityConnectionServerTest {
     Configuration.setValue(Configuration.SERVER_HOST_NAME, "localhost");
     Configuration.setValue(Configuration.SERVER_CONNECTION_POOLING_INITIAL, User.UNIT_TEST_USER.getUsername() + ":" + User.UNIT_TEST_USER.getPassword());
     Configuration.setValue(Configuration.SERVER_DOMAIN_MODEL_CLASSES, "org.jminor.framework.demos.empdept.domain.EmpDept");
+    Configuration.setValue(Configuration.SERVER_LOGIN_PROXY_CLASSES, "org.jminor.framework.demos.empdept.server.EmpDeptLoginProxy");
     Configuration.setValue("java.rmi.server.hostname", "localhost");
     Configuration.setValue("java.security.policy", "resources/security/all_permissions.policy");
     Configuration.setValue("javax.net.ssl.trustStore", "resources/security/JMinorClientTruststore");
@@ -142,6 +143,32 @@ public class EntityConnectionServerTest {
     providerOne.disconnect();
     assertEquals(1, server.getConnectionCount());
     providerTwo.disconnect();
+    assertEquals(0, server.getConnectionCount());
+
+    //testing with the EmpDeptLoginProxy
+    server.setConnectionLimit(3);
+    final String empDeptClientTypeID = "org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel";
+    final RemoteEntityConnectionProvider empDeptProviderJohn = new RemoteEntityConnectionProvider(new User("john", "hello"),
+            UUID.randomUUID(), empDeptClientTypeID);
+    final RemoteEntityConnectionProvider empDeptProviderHelen = new RemoteEntityConnectionProvider(new User("helen", "juno"),
+            UUID.randomUUID(), empDeptClientTypeID);
+    final RemoteEntityConnectionProvider empDeptProviderInvalid = new RemoteEntityConnectionProvider(new User("foo", "bar"),
+            UUID.randomUUID(), empDeptClientTypeID);
+    empDeptProviderJohn.getConnection();
+    empDeptProviderHelen.getConnection();
+    try {
+      empDeptProviderInvalid.getConnection();
+      fail("Should not be able to connect with an invalid user");
+    }
+    catch (Exception e) {}
+    final Collection<ClientInfo> empDeptClients = server.getClients(empDeptClientTypeID);
+    assertEquals(2, empDeptClients.size());
+    for (final ClientInfo empDeptClient : empDeptClients) {
+      assertEquals(User.UNIT_TEST_USER, empDeptClient.getDatabaseUser());
+    }
+    empDeptProviderJohn.disconnect();
+    assertEquals(1, server.getConnectionCount());
+    empDeptProviderHelen.disconnect();
     assertEquals(0, server.getConnectionCount());
   }
 

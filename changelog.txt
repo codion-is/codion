@@ -2566,3 +2566,5 @@
   EntityConnectionServer.loadLoginProxies() added and called on startup
   EmpDeptLoginProxy added as a LoginProxy example
   jminor.server.loginProxyClasses, added EmpDeptLoginProxy to demo server launch files
+  jminor.server.domain.jars property removed from server launch files
+  EntityConnectionServerTest now tests with EmpDeptLoginProxy

@@ -75,6 +75,9 @@ public class AbstractRemoteServerTest {
     assertEquals(baseClientInfo, connection.getClientInfo());
     final Collection<Object> closeIndicator = new ArrayList<Object>();
     final LoginProxy loginProxy = new LoginProxy() {
+      public String getClientTypeID() {
+        return clientTypeID;
+      }
       public ClientInfo doLogin(final ClientInfo clientInfo) throws ServerException.LoginException {
         return proxyClientInfo;
       }
