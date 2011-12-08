@@ -21,7 +21,7 @@ public interface EntityLookupModel extends EntityDataProvider {
   /**
    * @return an unmodifiable view of the selected entities
    */
-  List<Entity> getSelectedEntities();
+  Collection<Entity> getSelectedEntities();
 
   /**
    * Sets the given entity as the selected entity
@@ -34,7 +34,7 @@ public interface EntityLookupModel extends EntityDataProvider {
    * @param entities the entities to set as selected
    * @throws IllegalArgumentException if this lookup model does not allow multiple selections and <code>entities.size() > 1</code>
    */
-  void setSelectedEntities(final List<Entity> entities);
+  void setSelectedEntities(final Collection<Entity> entities);
 
   /**
    * @return a string describing this lookup model, by default a comma separated list of search property names

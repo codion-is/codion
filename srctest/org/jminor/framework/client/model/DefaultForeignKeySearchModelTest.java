@@ -37,7 +37,7 @@ public class DefaultForeignKeySearchModelTest {
     searchModel.setUpperBound((Object) null);
     assertTrue(lookupModel.getSelectedEntities().isEmpty());
     searchModel.setUpperBound(sales);
-    assertEquals(lookupModel.getSelectedEntities().get(0), sales);
+    assertEquals(lookupModel.getSelectedEntities().iterator().next(), sales);
 
     lookupModel.setSelectedEntity(null);
 

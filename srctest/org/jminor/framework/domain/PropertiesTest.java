@@ -11,6 +11,9 @@ import java.sql.Types;
 import java.text.NumberFormat;
 import java.util.Map;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 public final class PropertiesTest {
 
   @Test(expected = IllegalArgumentException.class)
@@ -56,5 +59,25 @@ public final class PropertiesTest {
   @Test(expected = IllegalArgumentException.class)
   public void timestampPropertyWithNumberFormat() {
     Properties.columnProperty("propertyID", Types.TIMESTAMP).setFormat(NumberFormat.getIntegerInstance());
+  }
+
+  @Test
+  public void foreignKeyPropertyUpdatable() {
+    final Property.ColumnProperty updatableReferenceProperty = Properties.columnProperty("propertyID");
+    final Property.ColumnProperty nonUpdatableReferenceProperty = Properties.columnProperty("propertyID").setUpdatable(false);
+
+    final Property.ForeignKeyProperty updatableForeignKeyProperty = Properties.foreignKeyProperty("fkProperty", "test",
+            "referencedEntityID", updatableReferenceProperty);
+    assertTrue(updatableForeignKeyProperty.isUpdatable());
+
+    final Property.ForeignKeyProperty nonUpdatableForeignKeyProperty = Properties.foreignKeyProperty("fkProperty", "test",
+            "referencedEntityID", nonUpdatableReferenceProperty);
+
+    assertFalse(nonUpdatableForeignKeyProperty.isUpdatable());
+
+    final Property.ForeignKeyProperty nonUpdatableCompositeForeignKeyProperty = Properties.foreignKeyProperty("fkProperty", "test",
+            "referencedEntityID", new Property.ColumnProperty[] {updatableReferenceProperty, nonUpdatableReferenceProperty},
+            new String[] {"test", "testing"});
+    assertFalse(nonUpdatableCompositeForeignKeyProperty.isUpdatable());
   }
 }

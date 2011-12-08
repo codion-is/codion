@@ -56,7 +56,7 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
    * @param foreignKeyEntityID the ID of the master entity
    * @param foreignKeyValues the entities to use as criteria values
    */
-  void setForeignKeySearchValues(final String foreignKeyEntityID, final List<Entity> foreignKeyValues);
+  void setForeignKeySearchValues(final String foreignKeyEntityID, final Collection<Entity> foreignKeyValues);
 
   /**
    * For every entity in this table model, replaces the foreign key instance bearing the primary
@@ -234,13 +234,13 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
    * @param keys the primary key values to use as condition
    * @return the entities having the primary key values as in <code>keys</code>
    */
-  List<Entity> getEntitiesByPrimaryKeys(final List<Entity.Key> keys);
+  Collection<Entity> getEntitiesByPrimaryKeys(final Collection<Entity.Key> keys);
 
   /**
    * Sets the selected entities according to the primary keys in <code>primaryKeys</code>
    * @param keys the primary keys of the entities to select
    */
-  void setSelectedByPrimaryKeys(final List<Entity.Key> keys);
+  void setSelectedByPrimaryKeys(final Collection<Entity.Key> keys);
 
   /**
    * Finds entities according to the values of <code>propertyValues</code>
@@ -258,10 +258,10 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
   Iterator<Entity> getSelectedEntitiesIterator();
 
   /**
-   * @return a list containing the primary keys of the selected entities,
+   * @return a Collection containing the primary keys of the selected entities,
    * if none are selected an empty list is returned
    */
-  List<Entity.Key> getPrimaryKeysOfSelectedEntities();
+  Collection<Entity.Key> getPrimaryKeysOfSelectedEntities();
 
   /**
    * @return the {@link ReportDataWrapper} specified for this table model

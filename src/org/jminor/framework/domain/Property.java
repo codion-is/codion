@@ -362,6 +362,12 @@ public interface Property extends Attribute {
   interface ForeignKeyProperty extends SearchableProperty {
 
     /**
+     * @return true if all reference properties comprising this
+     * foreign key property are updatable
+     */
+    boolean isUpdatable();
+
+    /**
      * @return the ID of the referenced entity
      */
     String getReferencedEntityID();

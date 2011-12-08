@@ -2568,3 +2568,9 @@
   jminor.server.loginProxyClasses, added EmpDeptLoginProxy to demo server launch files
   jminor.server.domain.jars property removed from server launch files
   EntityConnectionServerTest now tests with EmpDeptLoginProxy
+  EntityTableModel, methods use Collection instead of a List as parameter/return value where applicable
+  EntityLookupModel.get/setSelectedEntities(), Collection used instead of List
+  DefaultEntityLookupModel.selectedEntities is now a Collection instead of a List
+  EntityUtil, methods use Collection instead of a List as parameter/return value where applicable
+  FilteredTableModel.setSelectedItems() and setSelectedItemIndexes() take Collection instead of List
+  ForeignKeyProperty.isUpdatable() added, returns true if and only if all component properties are updatable

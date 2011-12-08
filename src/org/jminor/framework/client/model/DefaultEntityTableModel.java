@@ -389,7 +389,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   /** {@inheritDoc} */
-  public void setForeignKeySearchValues(final String foreignKeyEntityID, final List<Entity> foreignKeyValues) {
+  public void setForeignKeySearchValues(final String foreignKeyEntityID, final Collection<Entity> foreignKeyValues) {
     final List<Property.ForeignKeyProperty> properties = Entities.getForeignKeyProperties(entityID, foreignKeyEntityID);
     if (!properties.isEmpty() && searchModel.setSearchValues(properties.get(0).getPropertyID(), foreignKeyValues)) {
       refresh();
@@ -417,12 +417,12 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   /** {@inheritDoc} */
-  public final List<Entity.Key> getPrimaryKeysOfSelectedEntities() {
+  public final Collection<Entity.Key> getPrimaryKeysOfSelectedEntities() {
     return EntityUtil.getPrimaryKeys(getSelectedItems());
   }
 
   /** {@inheritDoc} */
-  public final void setSelectedByPrimaryKeys(final List<Entity.Key> keys) {
+  public final void setSelectedByPrimaryKeys(final Collection<Entity.Key> keys) {
     final List<Entity.Key> keyList = new ArrayList<Entity.Key>(keys);
     final List<Integer> indexes = new ArrayList<Integer>();
     for (final Entity visibleEntity : getVisibleItems()) {
@@ -437,7 +437,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   /** {@inheritDoc} */
-  public final List<Entity> getEntitiesByPrimaryKeys(final List<Entity.Key> keys) {
+  public final Collection<Entity> getEntitiesByPrimaryKeys(final Collection<Entity.Key> keys) {
     final List<Entity> entities = new ArrayList<Entity>();
     for (final Entity entity : getAllItems()) {
       for (final Entity.Key key : keys) {

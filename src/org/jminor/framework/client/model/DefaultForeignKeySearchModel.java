@@ -15,7 +15,6 @@ import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 /**
  * A default ForeignKeySearchModel implementation.
@@ -149,7 +148,7 @@ public class DefaultForeignKeySearchModel extends DefaultColumnSearchModel<Prope
             entityLookupModel.setSelectedEntities(Arrays.asList(((Entity) upperBound)));
           }
           else {//noinspection unchecked
-            entityLookupModel.setSelectedEntities((List<Entity>) upperBound);
+            entityLookupModel.setSelectedEntities((Collection<Entity>) upperBound);
           }
         }
       }

@@ -31,7 +31,7 @@ public class EntityUtilTest {
       entities.add(entity);
     }
     final Property property = Entities.getProperty(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_ID);
-    List<Object> propertyValues = EntityUtil.getPropertyValues(EmpDept.DEPARTMENT_ID, entities);
+    Collection<Object> propertyValues = EntityUtil.getPropertyValues(EmpDept.DEPARTMENT_ID, entities);
     assertTrue(propertyValues.containsAll(values));
     propertyValues = EntityUtil.getPropertyValues(property, entities);
     assertTrue(propertyValues.containsAll(values));

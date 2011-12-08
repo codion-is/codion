@@ -51,7 +51,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
   /**
    * The selected entities
    */
-  private final List<Entity> selectedEntities = new ArrayList<Entity>();
+  private final Collection<Entity> selectedEntities = new ArrayList<Entity>();
 
   /**
    * The EntityConnectionProvider instance used by this EntityLookupModel
@@ -126,7 +126,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
   }
 
   /** {@inheritDoc} */
-  public final void setSelectedEntities(final List<Entity> entities) {
+  public final void setSelectedEntities(final Collection<Entity> entities) {
     if ((entities == null || entities.isEmpty()) && this.selectedEntities.isEmpty()) {
       return;
     }//no change
@@ -143,8 +143,8 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
   }
 
   /** {@inheritDoc} */
-  public final List<Entity> getSelectedEntities() {
-    return Collections.unmodifiableList(selectedEntities);
+  public final Collection<Entity> getSelectedEntities() {
+    return Collections.unmodifiableCollection(selectedEntities);
   }
 
   /** {@inheritDoc} */
@@ -293,11 +293,13 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
             new CriteriaSet<Property.ColumnProperty>(Conjunction.AND, additionalLookupCriteria, baseCriteria));
   }
 
-  private String toString(final List<Entity> entityList) {
+  private String toString(final Collection<Entity> entities) {
     final StringBuilder stringBuilder = new StringBuilder();
-    for (int i = 0; i < entityList.size(); i++) {
-      stringBuilder.append(entityList.get(i).toString());
-      if (i < entityList.size() - 1) {
+    int counter = 0;
+    for (final Entity entity : entities) {
+      stringBuilder.append(entity.toString());
+      counter++;
+      if (counter < entities.size()) {
         stringBuilder.append(multipleValueSeparator);
       }
     }

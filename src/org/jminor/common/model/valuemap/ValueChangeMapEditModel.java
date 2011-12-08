@@ -87,27 +87,27 @@ public interface ValueChangeMapEditModel<K, V> extends Refreshable {
    * @param key the key
    * @return true if this value is allowed to be null in the underlying value map
    */
-  boolean isNullable(K key);
+  boolean isNullable(final K key);
 
   /**
    * @param key the key
    * @return true if the value of the given key is null
    */
-  boolean isValueNull(K key);
+  boolean isValueNull(final K key);
 
   /**
    * Sets the given value in the underlying value map
    * @param key the key to associate the given value with
    * @param value the value to associate with the given key
    */
-  void setValue(K key, V value);
+  void setValue(final K key, final V value);
 
   /**
    * Returns the value associated with the given key in the underlying value map
    * @param key the key of the value to retrieve
    * @return the value associated with the given key
    */
-  V getValue(K key);
+  V getValue(final K key);
 
   /**
    * @return a value map containing the default values
@@ -118,7 +118,7 @@ public interface ValueChangeMapEditModel<K, V> extends Refreshable {
    * Checks if the value associated with the give key is valid, throws a ValidationException if not
    * @param key the key
    * @param action describes the action requiring validation,
-   * ValueChangeMapEditModel.INSERT, ValueChangeMapEditModel.UPDATE or ValueChangeMapEditModel.UNKNOWN
+   * {@link ValueMapValidator#INSERT}, {@link ValueMapValidator#UPDATE} or {@link ValueMapValidator#UNKNOWN}
    * @throws org.jminor.common.model.valuemap.exception.ValidationException if the given value is not valid for the given key
    */
   void validate(final K key, final int action) throws ValidationException;

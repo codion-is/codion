@@ -264,7 +264,7 @@ public final class DefaultEntityTableModelTest {
     tmpEnt.setValue(EntityTestDomain.DETAIL_ID, 1);
     keys.add(tmpEnt.getPrimaryKey());
 
-    final List<Entity> entities = testModel.getEntitiesByPrimaryKeys(keys);
+    final Collection<Entity> entities = testModel.getEntitiesByPrimaryKeys(keys);
     assertEquals(3, entities.size());
 
     final Map<String, Object> propValues = new HashMap<String, Object>();

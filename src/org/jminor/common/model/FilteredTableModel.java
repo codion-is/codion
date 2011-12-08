@@ -290,13 +290,13 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R>, TableModel, 
    * Selects the given indexes
    * @param indexes the indexes to select
    */
-  void setSelectedItemIndexes(final List<Integer> indexes);
+  void setSelectedItemIndexes(final Collection<Integer> indexes);
 
   /**
    * Selects the given items
    * @param items the items to select
    */
-  void setSelectedItems(final List<R> items);
+  void setSelectedItems(final Collection<R> items);
 
   /**
    * @return a list containing the selected items

@@ -59,7 +59,7 @@ public final class EntityUtil {
    * @param entities the entities to hash
    * @return the hashed entities
    */
-  public static Map<Entity.Key, Entity> hashByPrimaryKey(final List<Entity> entities) {
+  public static Map<Entity.Key, Entity> hashByPrimaryKey(final Collection<Entity> entities) {
     Util.rejectNullValue(entities, ENTITIES_PARAM);
     final Map<Entity.Key, Entity> entityMap = new HashMap<Entity.Key, Entity>();
     for (final Entity entity : entities) {
@@ -97,7 +97,7 @@ public final class EntityUtil {
    * @param keys the keys
    * @return the actual property values of the given keys
    */
-  public static List<Object> getPropertyValues(final List<Entity.Key> keys) {
+  public static Collection<Object> getPropertyValues(final Collection<Entity.Key> keys) {
     Util.rejectNullValue(keys, "keys");
     final List<Object> list = new ArrayList<Object>(keys.size());
     for (final Entity.Key key : keys) {
@@ -110,10 +110,10 @@ public final class EntityUtil {
   /**
    * @param propertyID the ID of the property for which to retrieve the values
    * @param entities the entities from which to retrieve the property value
-   * @return a List containing the values of the property with the given ID from the given entities,
+   * @return a Collection containing the values of the property with the given ID from the given entities,
    * null values are included
    */
-  public static List<Object> getPropertyValues(final String propertyID, final List<Entity> entities) {
+  public static Collection<Object> getPropertyValues(final String propertyID, final Collection<Entity> entities) {
     return getPropertyValues(propertyID, entities, true);
   }
 
@@ -121,24 +121,24 @@ public final class EntityUtil {
    * @param propertyID the ID of the property for which to retrieve the values
    * @param entities the entities from which to retrieve the property value
    * @param includeNullValues if true then null values are included
-   * @return a List containing the values of the property with the given ID from the given entities
+   * @return a Collection containing the values of the property with the given ID from the given entities
    */
-  public static List<Object> getPropertyValues(final String propertyID, final List<Entity> entities,
-                                               final boolean includeNullValues) {
+  public static Collection<Object> getPropertyValues(final String propertyID, final Collection<Entity> entities,
+                                                     final boolean includeNullValues) {
     if (entities == null || entities.isEmpty()) {
       return new ArrayList<Object>(0);
     }
 
-    return getPropertyValues(entities.get(0).getProperty(propertyID), entities, includeNullValues);
+    return getPropertyValues(entities.iterator().next().getProperty(propertyID), entities, includeNullValues);
   }
 
   /**
    * @param property the the property for which to retrieve the values
    * @param entities the entities from which to retrieve the property value
-   * @return a List containing the values of the property with the given ID from the given entities,
+   * @return a Collection containing the values of the property with the given ID from the given entities,
    * null values are included
    */
-  public static List<Object> getPropertyValues(final Property property, final List<Entity> entities) {
+  public static Collection<Object> getPropertyValues(final Property property, final Collection<Entity> entities) {
     return getPropertyValues(property, entities, true);
   }
 
@@ -146,10 +146,10 @@ public final class EntityUtil {
    * @param property the the property for which to retrieve the values
    * @param entities the entities from which to retrieve the property value
    * @param includeNullValues if true then null values are included
-   * @return a List containing the values of the property with the given ID from the given entities
+   * @return a Collection containing the values of the property with the given ID from the given entities
    */
-  public static List<Object> getPropertyValues(final Property property, final List<Entity> entities,
-                                               final boolean includeNullValues) {
+  public static Collection<Object> getPropertyValues(final Property property, final Collection<Entity> entities,
+                                                     final boolean includeNullValues) {
     Util.rejectNullValue(entities, ENTITIES_PARAM);
     final List<Object> values = new ArrayList<Object>(entities.size());
     for (final Entity entity : entities) {
@@ -171,7 +171,7 @@ public final class EntityUtil {
    * @param entities the entities from which to retrieve the values
    * @return a Collection containing the distinct property values, excluding null values
    */
-  public static Collection<Object> getDistinctPropertyValues(final String propertyID, final List<Entity> entities) {
+  public static Collection<Object> getDistinctPropertyValues(final String propertyID, final Collection<Entity> entities) {
     return getDistinctPropertyValues(propertyID, entities, false);
   }
 
@@ -183,7 +183,7 @@ public final class EntityUtil {
    * @param includeNullValue if true then null is considered a value
    * @return a Collection containing the distinct property values
    */
-  public static Collection<Object> getDistinctPropertyValues(final String propertyID, final List<Entity> entities,
+  public static Collection<Object> getDistinctPropertyValues(final String propertyID, final Collection<Entity> entities,
                                                              final boolean includeNullValue) {
     final Set<Object> values = new HashSet<Object>();
     if (entities == null) {
@@ -263,7 +263,7 @@ public final class EntityUtil {
    * @param propertyIDs the property IDs
    * @return a list containing the properties identified by the given propertyIDs
    */
-  public static List<Property> getProperties(final String entityID, final Collection<String> propertyIDs) {
+  public static Collection<Property> getProperties(final String entityID, final Collection<String> propertyIDs) {
     if (propertyIDs == null || propertyIDs.isEmpty()) {
       return new ArrayList<Property>(0);
     }
@@ -282,7 +282,7 @@ public final class EntityUtil {
    * @return the given properties sorted by caption, or if that is not available, property ID
    */
   public static List<Property> getSortedProperties(final String entityID, final Collection<String> propertyIDs) {
-    final List<Property> properties = getProperties(entityID, propertyIDs);
+    final List<Property> properties = new ArrayList<Property>(getProperties(entityID, propertyIDs));
     sort(properties);
 
     return properties;
@@ -319,7 +319,7 @@ public final class EntityUtil {
     final List<Property> updatable = new ArrayList<Property>(columnProperties);
     final Collection<Property.ForeignKeyProperty> foreignKeyProperties = Entities.getForeignKeyProperties(entityID);
     for (final Property.ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
-      if (!foreignKeyProperty.isReadOnly()) {
+      if (!foreignKeyProperty.isReadOnly() && foreignKeyProperty.isUpdatable()) {
         updatable.add(foreignKeyProperty);
       }
     }

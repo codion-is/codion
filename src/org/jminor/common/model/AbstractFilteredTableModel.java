@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -408,7 +409,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   }
 
   /** {@inheritDoc} */
-  public final void setSelectedItemIndexes(final List<Integer> indexes) {
+  public final void setSelectedItemIndexes(final Collection<Integer> indexes) {
     for (final Integer index : indexes) {
       if (index < 0 || index > getRowCount() - 1) {
         throw new IndexOutOfBoundsException("Index: " + index + ", size: " + getRowCount());
@@ -429,7 +430,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   }
 
   /** {@inheritDoc} */
-  public final void setSelectedItems(final List<R> items) {
+  public final void setSelectedItems(final Collection<R> items) {
     final List<Integer> indexes = new ArrayList<Integer>();
     for (final R item : items) {
       final int index = indexOf(item);
@@ -1127,27 +1128,31 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
      * Adds these indexes to the selection
      * @param indexes the indexes to add to the selection
      */
-    private void addSelectedItemIndexes(final List<Integer> indexes) {
+    private void addSelectedItemIndexes(final Collection<Integer> indexes) {
+      if (indexes.isEmpty()) {
+        return;
+      }
+      final Iterator<Integer> iterator = indexes.iterator();
+      //keep the first index and add last in order to avoid firing evtSelectionChanged
+      //for each index being added, see fireValueChanged() above
+      final int firstIndex = iterator.next();
       try {
         isUpdatingSelection = true;
-        for (int i = 0; i < indexes.size()-1; i++) {
-          final int index = indexes.get(i);
+        while (iterator.hasNext()) {
+          final int index = iterator.next();
           addSelectionInterval(index, index);
         }
       }
       finally {
         isUpdatingSelection = false;
-        if (!indexes.isEmpty()) {
-          final int lastIndex = indexes.get(indexes.size()-1);
-          addSelectionInterval(lastIndex, lastIndex);
-        }
+        addSelectionInterval(firstIndex, firstIndex);
       }
     }
 
     /**
      * @param indexes the indexes to select
      */
-    private void setSelectedItemIndexes(final List<Integer> indexes) {
+    private void setSelectedItemIndexes(final Collection<Integer> indexes) {
       clearSelection();
       addSelectedItemIndexes(indexes);
     }
@@ -1156,7 +1161,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
      * @return the selected indexes
      */
     private Collection<Integer> getSelectedIndexes() {
-      final List<Integer> indexes = new ArrayList<Integer>();
+      final Collection<Integer> indexes = new ArrayList<Integer>();
       final int min = getMinSelectionIndex();
       final int max = getMaxSelectionIndex();
       for (int i = min; i <= max; i++) {

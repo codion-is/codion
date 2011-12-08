@@ -807,8 +807,8 @@ public final class EntityUiUtil {
 
     @Override
     protected Object getUIValue() {
-      final List<Entity> selectedEntities = lookupModel.getSelectedEntities();
-      return selectedEntities.isEmpty() ? null : selectedEntities.get(0);
+      final Collection<Entity> selectedEntities = lookupModel.getSelectedEntities();
+      return selectedEntities.isEmpty() ? null : selectedEntities.iterator().next();
     }
 
     @Override

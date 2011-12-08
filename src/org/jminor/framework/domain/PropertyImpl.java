@@ -682,6 +682,17 @@ class PropertyImpl implements Property, Serializable {
     }
 
     /** {@inheritDoc} */
+    public boolean isUpdatable() {
+      for (final ColumnProperty referenceProperty : referenceProperties) {
+        if (!referenceProperty.isUpdatable()) {
+          return false;
+        }
+      }
+
+      return true;
+    }
+
+    /** {@inheritDoc} */
     public final String getReferencedEntityID() {
       return referencedEntityID;
     }
