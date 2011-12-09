@@ -57,7 +57,8 @@ public final class EntityLookupField extends JTextField {
   private final Action transferFocusAction = new UiUtil.TransferFocusAction(this);
   private final Action transferFocusBackwardAction = new UiUtil.TransferFocusAction(this, true);
 
-  private Color defaultBackgroundColor = getBackground();
+  private Color validBackgroundColor;
+  private Color invalidBackgroundColor;
   private boolean performingLookup = false;
 
   /**
@@ -67,12 +68,15 @@ public final class EntityLookupField extends JTextField {
   public EntityLookupField(final EntityLookupModel lookupModel) {
     Util.rejectNullValue(lookupModel, "lookupModel");
     this.model = lookupModel;
+    setValidBackgroundColor(getBackground());
+    setInvalidBackgroundColor(Color.LIGHT_GRAY);
     setToolTipText(lookupModel.getDescription());
     setComponentPopupMenu(initializePopupMenu());
     addActionListener(initializeLookupAction());
     addFocusListener(initializeFocusListener());
     addEscapeListener();
     linkToModel();
+    UiUtil.addKeyEvent(this, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED, true, initializeLookupAction());
     UiUtil.linkToEnabledState(lookupModel.getSearchStringRepresentsSelectedObserver(), transferFocusAction);
     UiUtil.linkToEnabledState(lookupModel.getSearchStringRepresentsSelectedObserver(), transferFocusBackwardAction);
   }
@@ -85,21 +89,30 @@ public final class EntityLookupField extends JTextField {
   }
 
   /**
-   * @param defaultBackgroundColor the default background color
+   * @param validBackgroundColor the background color to use when the text represents the selected items
    * @return this lookup field
    */
-  public EntityLookupField setDefaultBackgroundColor(final Color defaultBackgroundColor) {
-    this.defaultBackgroundColor = defaultBackgroundColor;
+  public EntityLookupField setValidBackgroundColor(final Color validBackgroundColor) {
+    this.validBackgroundColor = validBackgroundColor;
     return this;
   }
 
   /**
-   * Activates the transferral of focus on ENTER
+   * @param invalidBackgroundColor the background color to use when the text does not represent the selected items
+   * @return this lookup field
+   */
+  public EntityLookupField setInvalidBackgroundColor(final Color invalidBackgroundColor) {
+    this.invalidBackgroundColor = invalidBackgroundColor;
+    return this;
+  }
+
+  /**
+   * Activates the transferal of focus on ENTER
    * @return this lookup field
    */
   public EntityLookupField setTransferFocusOnEnter() {
-    UiUtil.addKeyEvent(this, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED, true, transferFocusAction);
-    UiUtil.addKeyEvent(this, KeyEvent.VK_ENTER, KeyEvent.SHIFT_DOWN_MASK, JComponent.WHEN_FOCUSED, true, transferFocusBackwardAction);
+    UiUtil.addKeyEvent(this, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED, false, transferFocusAction);
+    UiUtil.addKeyEvent(this, KeyEvent.VK_ENTER, KeyEvent.SHIFT_DOWN_MASK, JComponent.WHEN_FOCUSED, false, transferFocusBackwardAction);
     return this;
   }
 
@@ -194,8 +207,8 @@ public final class EntityLookupField extends JTextField {
   }
 
   private void updateColors() {
-    final boolean defaultBackground = model.searchStringRepresentsSelected() || searchHint.isHintTextVisible();
-    setBackground(defaultBackground ? defaultBackgroundColor : Color.LIGHT_GRAY);
+    final boolean validBackground = model.searchStringRepresentsSelected() || searchHint.isHintTextVisible();
+    setBackground(validBackground ? validBackgroundColor : invalidBackgroundColor);
   }
 
   private AbstractAction initializeLookupAction() {

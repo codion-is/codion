@@ -2574,3 +2574,8 @@
   EntityUtil, methods use Collection instead of a List as parameter/return value where applicable
   FilteredTableModel.setSelectedItems() and setSelectedItemIndexes() take Collection instead of List
   ForeignKeyProperty.isUpdatable() added, returns true if and only if all component properties are updatable
+  EntityLookupField no longer sets lookupAction as actionListener on the field, conflicts with focus transferal, uses keyEvent on ENTER instead
+  EntityLookupField.defaultBackgroundColor renamed to validBackgroundColor
+  EntityLookupField.invalidBackgroundColor added
+  UiUtil.transferFocusOnEnter() now uses onKeyRelease = false, otherwise it gets called on actionPerformed on associated dialogs and such
+  TextValueLink.NullFormat bug fixed, parseObject() did not update the parse position as specified in the method contract

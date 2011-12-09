@@ -206,6 +206,7 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> {
     /** {@inheritDoc} */
     @Override
     public Object parseObject(final String source, final ParsePosition pos) {
+      pos.setIndex(source.length());
       return source;
     }
   }
