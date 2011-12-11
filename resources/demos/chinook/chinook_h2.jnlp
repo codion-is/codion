@@ -23,7 +23,7 @@
     <jar href="lib/logback-core-0.9.24.jar"/>
     <jar href="lib/logback-classic-0.9.24.jar"/>
     <jar href="lib/jasperreports-3.0.0.jar"/>
-    <jar href="lib/h2-1.2.141.jar"/>
+    <jar href="lib/h2-1.3.161.jar"/>
 
     <property name="jminor.client.connectionType" value="local"/>
     <property name="jminor.db.type" value="h2"/>

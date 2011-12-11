@@ -2579,3 +2579,4 @@
   EntityLookupField.invalidBackgroundColor added
   UiUtil.transferFocusOnEnter() now uses onKeyRelease = false, otherwise it gets called on actionPerformed on associated dialogs and such
   TextValueLink.NullFormat bug fixed, parseObject() did not update the parse position as specified in the method contract
+  H2 database library updated to 1.3.161, chinook dml character encoding fixed, removed problematic comments from ddl

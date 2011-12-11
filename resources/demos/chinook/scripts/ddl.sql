@@ -119,9 +119,6 @@ create table chinook.playlisttrack
     constraint pk_playlisttrack primary key (playlistid, trackid)
 );
 
-/*******************************************************************************
-   create foreign keys
-********************************************************************************/
 alter table chinook.album add constraint fk_artist_album
 foreign key (artistid) references chinook.artist(artistid);
 
