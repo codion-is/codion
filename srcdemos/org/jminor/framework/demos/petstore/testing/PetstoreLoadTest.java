@@ -24,7 +24,7 @@ public final class PetstoreLoadTest extends EntityLoadTestModel {
     super(User.UNIT_TEST_USER, new LoadTestModel.AbstractUsageScenario("selectRecords") {
       @Override
       protected void performScenario(final Object application) throws ScenarioException {
-        final EntityModel categoryModel = ((EntityApplicationModel) application).getMainApplicationModels().iterator().next();
+        final EntityModel categoryModel = ((EntityApplicationModel) application).getEntityModels().iterator().next();
         categoryModel.getTableModel().clearSelection();
         categoryModel.refresh();
         selectRandomRow(categoryModel.getTableModel());
@@ -43,7 +43,7 @@ public final class PetstoreLoadTest extends EntityLoadTestModel {
         Petstore.init();
       }
     };
-    final EntityModel categoryModel = applicationModel.getMainApplicationModels().iterator().next();
+    final EntityModel categoryModel = applicationModel.getEntityModels().iterator().next();
     categoryModel.setLinkedDetailModels(categoryModel.getDetailModels().iterator().next());
     final EntityModel productModel = categoryModel.getDetailModels().iterator().next();
     productModel.setLinkedDetailModels(productModel.getDetailModels().iterator().next());

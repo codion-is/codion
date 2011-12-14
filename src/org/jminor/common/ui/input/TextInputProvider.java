@@ -8,6 +8,7 @@ import org.jminor.common.ui.TextInputPanel;
 import org.jminor.common.ui.UiUtil;
 
 import javax.swing.JTextField;
+import javax.swing.text.JTextComponent;
 
 /**
  * A InputProvider implementation for String values.
@@ -22,8 +23,18 @@ public final class TextInputProvider extends AbstractInputProvider<String, TextI
    * @param valueProvider the value provider, if specified a lookup dialog accessed by CTRL-SPACE is added to the field
    * @param initialValue the initial value
    */
-  public TextInputProvider(final String inputDialogTitle, final ValueCollectionProvider valueProvider, final String initialValue) {
-    super(createTextInputPanel(inputDialogTitle, valueProvider, initialValue));
+  public TextInputProvider(final String inputDialogTitle, final ValueCollectionProvider valueProvider,
+                           final String initialValue) {
+    this(createDefaultTextField(valueProvider, initialValue), inputDialogTitle);
+  }
+
+  /**
+   * Instantiates a new TextInputProvider.
+   * @param inputComponent the input component to use
+   * @param inputDialogTitle the title to use for the lookup input dialog
+   */
+  public TextInputProvider(final JTextComponent inputComponent, final String inputDialogTitle) {
+    super(new TextInputPanel(inputComponent, inputDialogTitle));
   }
 
   /** {@inheritDoc} */
@@ -34,14 +45,13 @@ public final class TextInputProvider extends AbstractInputProvider<String, TextI
     return value.isEmpty() ? null : value;
   }
 
-  private static TextInputPanel createTextInputPanel(final String inputDialogTitle, final ValueCollectionProvider valueProvider,
-                                                     final Object initialValue) {
+  private static JTextField createDefaultTextField(final ValueCollectionProvider valueProvider, final Object initialValue) {
     final JTextField txtField = new JTextField(initialValue != null ? initialValue.toString() : "");
     txtField.setColumns(DEFAULT_COLUMNS);
     if (valueProvider != null) {
       UiUtil.addLookupDialog(txtField, valueProvider);
     }
 
-    return new TextInputPanel(txtField, inputDialogTitle);
+    return txtField;
   }
 }

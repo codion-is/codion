@@ -32,7 +32,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
     @Override
     protected void performScenario(final EntityApplicationModel application) throws ScenarioException {
       try {
-        final EntityModel customerModel = application.getMainApplicationModel(Chinook.T_CUSTOMER);
+        final EntityModel customerModel = application.getEntityModel(Chinook.T_CUSTOMER);
         customerModel.getTableModel().refresh();
         selectRandomRows(customerModel.getTableModel(), RANDOM.nextInt(6) + 2);
         final EntityModel invoiceModel = customerModel.getDetailModel(Chinook.T_INVOICE);
@@ -60,7 +60,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
     @Override
     protected void performScenario(final EntityApplicationModel application) throws ScenarioException {
       try {
-        final EntityModel genreModel = application.getMainApplicationModel(Chinook.T_GENRE);
+        final EntityModel genreModel = application.getEntityModel(Chinook.T_GENRE);
         genreModel.getTableModel().refresh();
         selectRandomRow(genreModel.getTableModel());
         final EntityModel trackModel = genreModel.getDetailModel(Chinook.T_TRACK);
@@ -82,7 +82,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
     @Override
     protected void performScenario(final EntityApplicationModel application) throws ScenarioException {
       try {
-        final EntityTableModel customerModel = application.getMainApplicationModel(Chinook.T_CUSTOMER).getTableModel();
+        final EntityTableModel customerModel = application.getEntityModel(Chinook.T_CUSTOMER).getTableModel();
         customerModel.refresh();
         selectRandomRow(customerModel);
 
@@ -109,7 +109,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
     @Override
     protected void performScenario(final EntityApplicationModel application) throws ScenarioException {
       try {
-        final EntityModel customerModel = application.getMainApplicationModel(Chinook.T_CUSTOMER);
+        final EntityModel customerModel = application.getEntityModel(Chinook.T_CUSTOMER);
         customerModel.getTableModel().refresh();
         selectRandomRow(customerModel.getTableModel());
         final EntityModel invoiceModel = customerModel.getDetailModel(Chinook.T_INVOICE);
@@ -130,7 +130,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
     @Override
     protected void performScenario(final EntityApplicationModel application) throws ScenarioException {
       try {
-        final EntityModel artistModel = application.getMainApplicationModel(Chinook.T_ARTIST);
+        final EntityModel artistModel = application.getEntityModel(Chinook.T_ARTIST);
         artistModel.getTableModel().refresh();
         selectRandomRow(artistModel.getTableModel());
         final EntityModel albumModel = artistModel.getDetailModel(Chinook.T_ALBUM);
@@ -164,21 +164,21 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
     *   INVOICE
     *     INVOICELINE
     */
-    final EntityModel artistModel = appModel.getMainApplicationModel(Chinook.T_ARTIST);
+    final EntityModel artistModel = appModel.getEntityModel(Chinook.T_ARTIST);
     final EntityModel albumModel = artistModel.getDetailModel(Chinook.T_ALBUM);
     final EntityModel trackModel = albumModel.getDetailModel(Chinook.T_TRACK);
     artistModel.setLinkedDetailModels(albumModel);
     albumModel.setLinkedDetailModels(trackModel);
 
-    final EntityModel genreModel = appModel.getMainApplicationModel(Chinook.T_GENRE);
+    final EntityModel genreModel = appModel.getEntityModel(Chinook.T_GENRE);
     final EntityModel genreTrackModel = genreModel.getDetailModel(Chinook.T_TRACK);
     genreModel.setLinkedDetailModels(genreTrackModel);
 
-    final EntityModel playlistModel = appModel.getMainApplicationModel(Chinook.T_PLAYLIST);
+    final EntityModel playlistModel = appModel.getEntityModel(Chinook.T_PLAYLIST);
     final EntityModel playlistTrackModel = playlistModel.getDetailModel(Chinook.T_PLAYLISTTRACK);
     playlistModel.setLinkedDetailModels(playlistTrackModel);
 
-    final EntityModel customerModel = appModel.getMainApplicationModel(Chinook.T_CUSTOMER);
+    final EntityModel customerModel = appModel.getEntityModel(Chinook.T_CUSTOMER);
     final EntityModel invoiceModel = customerModel.getDetailModel(Chinook.T_INVOICE);
     final EntityModel invoicelineModel = invoiceModel.getDetailModel(Chinook.T_INVOICELINE);
     customerModel.setLinkedDetailModels(invoiceModel);

@@ -40,7 +40,7 @@ public final class PetstoreAppPanel extends EntityApplicationPanel {
     final EntityPanelProvider categoryProvider = new EntityPanelProvider(Petstore.T_CATEGORY).setEditPanelClass(CategoryPanel.class);
     categoryProvider.addDetailPanelProvider(productProvider).setDetailSplitPanelResizeWeight(0.3);
 
-    addMainApplicationPanelProvider(categoryProvider);
+    addEntityPanelProvider(categoryProvider);
 
     final EntityPanelProvider addressProvider = new EntityPanelProvider(Petstore.T_ADDRESS).setEditPanelClass(AddressPanel.class);
     final EntityPanelProvider contactInfoProvider = new EntityPanelProvider(Petstore.T_SELLER_CONTACT_INFO).setEditPanelClass(ContactInfoPanel.class);

@@ -491,13 +491,8 @@ public class DefaultEntityModel implements EntityModel {
 
   private List<Entity> getActiveEntities() {
     final List<Entity> activeEntities;
-    if (containsTableModel()) {
-      if (tableModel.isSelectionEmpty()) {
-        activeEntities = Collections.emptyList();
-      }
-      else {
-        activeEntities = tableModel.getSelectedItems();
-      }
+    if (containsTableModel() && !tableModel.isSelectionEmpty()) {
+      activeEntities = tableModel.getSelectedItems();
     }
     else {
       if (editModel.isEntityNew()) {

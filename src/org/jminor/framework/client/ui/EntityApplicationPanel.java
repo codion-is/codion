@@ -85,9 +85,9 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
 
   public static final String TIPS_AND_TRICKS_FILE = "TipsAndTricks.txt";
 
-  private final List<EntityPanelProvider> mainApplicationPanelProviders = new ArrayList<EntityPanelProvider>();
+  private final List<EntityPanelProvider> entityPanelProviders = new ArrayList<EntityPanelProvider>();
   private final List<EntityPanelProvider> supportPanelProviders = new ArrayList<EntityPanelProvider>();
-  private final List<EntityPanel> mainApplicationPanels = new ArrayList<EntityPanel>();
+  private final List<EntityPanel> entityPanels = new ArrayList<EntityPanel>();
 
   private EntityApplicationModel applicationModel;
   private JTabbedPane applicationTabPane;
@@ -125,10 +125,10 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    * @param panelProviders the main application panel providers
    * @return this application panel instance
    */
-  public final EntityApplicationPanel addMainApplicationPanelProviders(final EntityPanelProvider... panelProviders) {
+  public final EntityApplicationPanel addEntityPanelProviders(final EntityPanelProvider... panelProviders) {
     Util.rejectNullValue(panelProviders, "panelProviders");
     for (final EntityPanelProvider panelProvider : panelProviders) {
-      addMainApplicationPanelProvider(panelProvider);
+      addEntityPanelProvider(panelProvider);
     }
     return this;
   }
@@ -138,8 +138,8 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    * @param panelProvider the main application panel provider
    * @return this application panel instance
    */
-  public final EntityApplicationPanel addMainApplicationPanelProvider(final EntityPanelProvider panelProvider) {
-    mainApplicationPanelProviders.add(panelProvider);
+  public final EntityApplicationPanel addEntityPanelProvider(final EntityPanelProvider panelProvider) {
+    entityPanelProviders.add(panelProvider);
     return this;
   }
 
@@ -168,12 +168,12 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
 
   /**
    * @param entityID the entity ID
-   * @return the main entity panel based on the given entity type, null if none is found
+   * @return the entity panel based on the given entity type, null if none is found
    */
-  public final EntityPanel getMainApplicationPanel(final String entityID) {
-    for (final EntityPanel panel : mainApplicationPanels) {
-      if (panel.getModel().getEntityID().equals(entityID)) {
-        return panel;
+  public final EntityPanel getEntityPanel(final String entityID) {
+    for (final EntityPanel entityPanel : entityPanels) {
+      if (entityPanel.getModel().getEntityID().equals(entityID)) {
+        return entityPanel;
       }
     }
 
@@ -183,8 +183,8 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   /**
    * @return an unmodifiable view of the main application panels
    */
-  public final List<EntityPanel> getMainApplicationPanels() {
-    return Collections.unmodifiableList(mainApplicationPanels);
+  public final List<EntityPanel> getEntityPanels() {
+    return Collections.unmodifiableList(entityPanels);
   }
 
   /**
@@ -309,7 +309,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
 
   /** {@inheritDoc} */
   public final EntityPanel getActiveDetailPanel() {
-    return getMainApplicationPanels().get(0);
+    return getEntityPanels().get(0);
   }
 
   /** {@inheritDoc} */
@@ -331,7 +331,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
 
   /** {@inheritDoc} */
   public final List<? extends MasterDetailPanel> getDetailPanels() {
-    return Collections.unmodifiableList(mainApplicationPanels);
+    return Collections.unmodifiableList(entityPanels);
   }
 
   /** {@inheritDoc} */
@@ -580,22 +580,8 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    * @return the main entity panel of the given type, null if none is found
    */
   protected final EntityPanel getEntityPanel(final Class<? extends EntityPanel> entityPanelClass) {
-    for (final EntityPanel entityPanel : mainApplicationPanels) {
+    for (final EntityPanel entityPanel : entityPanels) {
       if (entityPanel.getClass().equals(entityPanelClass)) {
-        return entityPanel;
-      }
-    }
-
-    return null;
-  }
-
-  /**
-   * @param entityID the entity ID
-   * @return the main entity panel of the given entity type, null if none is found
-   */
-  protected final EntityPanel getEntityPanel(final String entityID) {
-    for (final EntityPanel entityPanel : mainApplicationPanels) {
-      if (entityPanel.getModel().getEntityID().equals(entityID)) {
         return entityPanel;
       }
     }
@@ -751,19 +737,19 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
         ((EntityPanel) applicationTabPane.getSelectedComponent()).initializePanel();
       }
     });
-    if (mainApplicationPanelProviders.isEmpty()) {
-      throw new IllegalStateException("No main entity panels provided");
+    if (entityPanelProviders.isEmpty()) {
+      throw new IllegalStateException("No entity panels provided");
     }
-    for (final EntityPanelProvider provider : mainApplicationPanelProviders) {
+    for (final EntityPanelProvider provider : entityPanelProviders) {
       final EntityPanel entityPanel;
-      if (applicationModel.containsApplicationModel(provider.getEntityID())) {
-        entityPanel = provider.createPanel(applicationModel.getMainApplicationModel(provider.getEntityID()));
+      if (applicationModel.containsEntityModel(provider.getEntityID())) {
+        entityPanel = provider.createPanel(applicationModel.getEntityModel(provider.getEntityID()));
       }
       else {
         entityPanel = provider.createPanel(applicationModel.getConnectionProvider());
-        applicationModel.addMainApplicationModel(entityPanel.getModel());
+        applicationModel.addEntityModel(entityPanel.getModel());
       }
-      mainApplicationPanels.add(entityPanel);
+      entityPanels.add(entityPanel);
       final String caption = Util.nullOrEmpty(provider.getCaption()) ? entityPanel.getCaption() : provider.getCaption();
       applicationTabPane.addTab(caption, entityPanel);
       if (entityPanel.getEditPanel() != null) {
@@ -1070,7 +1056,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   }
 
   private JScrollPane initializeApplicationTree() {
-    return initializeTree(createApplicationTree(mainApplicationPanels));
+    return initializeTree(createApplicationTree(entityPanels));
   }
 
   private JScrollPane initializeDependencyTree() {

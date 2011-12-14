@@ -22,7 +22,7 @@ public final class SchemaBrowserLoadTest extends EntityLoadTestModel {
   private static final UsageScenario SCENARIO = new AbstractEntityUsageScenario() {
     @Override
     protected void performScenario(final EntityApplicationModel application) throws ScenarioException {
-      final EntityModel schemaModel = application.getMainApplicationModels().iterator().next();
+      final EntityModel schemaModel = application.getEntityModels().iterator().next();
       schemaModel.getTableModel().refresh();
       selectRandomRow(schemaModel.getTableModel());
       selectRandomRow(schemaModel.getDetailModels().iterator().next().getTableModel());
@@ -43,7 +43,7 @@ public final class SchemaBrowserLoadTest extends EntityLoadTestModel {
         SchemaBrowser.init();
       }
     };
-    final EntityModel schemaModel = applicationModel.getMainApplicationModel(SchemaBrowser.T_SCHEMA);
+    final EntityModel schemaModel = applicationModel.getEntityModel(SchemaBrowser.T_SCHEMA);
     final EntityModel dbObjectModel = schemaModel.getDetailModel(SchemaBrowser.T_TABLE);
     schemaModel.setLinkedDetailModels(dbObjectModel);
     final EntityModel columnModel = dbObjectModel.getDetailModel(SchemaBrowser.T_COLUMN);

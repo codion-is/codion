@@ -77,11 +77,11 @@ public final class DefaultEntityApplicationModelTest {
         EmpDept.init();
       }
     };
-    model.addMainApplicationModels(new DeptModel(model.getConnectionProvider()));
-    final EntityModel deptModel = model.getMainApplicationModel(EmpDept.T_DEPARTMENT);
+    model.addEntityModels(new DeptModel(model.getConnectionProvider()));
+    final EntityModel deptModel = model.getEntityModel(EmpDept.T_DEPARTMENT);
     assertNotNull(deptModel);
     deptModel.getDetailModel(EmpDept.T_EMPLOYEE).getTableModel().setQueryCriteriaRequired(false);
-    assertEquals(1, model.getMainApplicationModels().size());
+    assertEquals(1, model.getEntityModels().size());
     assertNotNull(deptModel);
     assertEquals(User.UNIT_TEST_USER, model.getUser());
     model.refresh();

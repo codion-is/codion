@@ -42,9 +42,9 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
     };
     final EntityModel deptModel = new DefaultEntityModel(EmpDept.T_DEPARTMENT, applicationModel.getConnectionProvider());
     deptModel.addDetailModel(new DefaultEntityModel(EmpDept.T_EMPLOYEE, applicationModel.getConnectionProvider()));
-    applicationModel.addMainApplicationModel(deptModel);
+    applicationModel.addEntityModel(deptModel);
 
-    final EntityModel model = applicationModel.getMainApplicationModel(EmpDept.T_DEPARTMENT);
+    final EntityModel model = applicationModel.getEntityModel(EmpDept.T_DEPARTMENT);
     model.setLinkedDetailModels(model.getDetailModel(EmpDept.T_EMPLOYEE));
     try {
       model.refresh();
@@ -57,7 +57,7 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
   private static final class SelectDepartment extends AbstractEntityUsageScenario {
     @Override
     protected void performScenario(final EntityApplicationModel application) throws ScenarioException {
-      selectRandomRow(application.getMainApplicationModel(EmpDept.T_DEPARTMENT).getTableModel());
+      selectRandomRow(application.getEntityModel(EmpDept.T_DEPARTMENT).getTableModel());
     }
     @Override
     public int getDefaultWeight() {
@@ -72,7 +72,7 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
     @Override
     protected void performScenario(final EntityApplicationModel application) throws LoadTest.ScenarioException {
       try {
-        final EntityModel departmentModel = application.getMainApplicationModel(EmpDept.T_DEPARTMENT);
+        final EntityModel departmentModel = application.getEntityModel(EmpDept.T_DEPARTMENT);
         selectRandomRow(departmentModel.getTableModel());
         final EntityModel employeeModel = departmentModel.getDetailModel(EmpDept.T_EMPLOYEE);
         if (employeeModel.getTableModel().getRowCount() > 0) {
@@ -113,7 +113,7 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
     @Override
     protected void performScenario(final EntityApplicationModel application) throws ScenarioException {
       try {
-        final EntityModel departmentModel = application.getMainApplicationModel(EmpDept.T_DEPARTMENT);
+        final EntityModel departmentModel = application.getEntityModel(EmpDept.T_DEPARTMENT);
         selectRandomRow(departmentModel.getTableModel());
         final EntityModel employeeModel = departmentModel.getDetailModel(EmpDept.T_EMPLOYEE);
         final Map<String, Entity> references = new HashMap<String, Entity>();
@@ -135,7 +135,7 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
     @Override
     protected void performScenario(final EntityApplicationModel application) throws ScenarioException {
       try {
-        final EntityModel departmentModel = application.getMainApplicationModel(EmpDept.T_DEPARTMENT);
+        final EntityModel departmentModel = application.getEntityModel(EmpDept.T_DEPARTMENT);
         departmentModel.getEditModel().setValueMap(EntityUtil.createRandomEntity(EmpDept.T_DEPARTMENT, null));
         departmentModel.getEditModel().insert();
       }

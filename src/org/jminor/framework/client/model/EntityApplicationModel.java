@@ -36,50 +36,51 @@ public interface EntityApplicationModel extends Refreshable {
   EntityConnectionProvider getConnectionProvider();
 
   /**
-   * Adds the given detail models to this model.
-   * @param mainApplicationModels the detail models to add
+   * Adds the given entity models to this model.
+   * @param entityModels the entity models to add
    */
-  void addMainApplicationModels(final EntityModel... mainApplicationModels);
+  void addEntityModels(final EntityModel... entityModels);
 
   /**
-   * Adds the given detail model to this model
-   * @param detailModel the detail model
-   * @return the detail model just added
+   * Adds the given entity model to this model
+   * @param entityModel the detail model
+   * @return the EntityModel model just added
    */
-  EntityModel addMainApplicationModel(final EntityModel detailModel);
+  EntityModel addEntityModel(final EntityModel entityModel);
 
   /**
    * @param modelClass the application model class
-   * @return true if this model contains an application model of the given class
+   * @return true if this model contains a EntityModel instance of the given class
    */
-  boolean containsApplicationModel(final Class<? extends EntityModel> modelClass);
+  boolean containsEntityModel(final Class<? extends EntityModel> modelClass);
 
   /**
    * @param entityID the entity ID
-   * @return true if this model contains an application model for the given entity ID
+   * @return true if this model contains a EntityModel for the given entity ID
    */
-  boolean containsApplicationModel(final String entityID);
+  boolean containsEntityModel(final String entityID);
 
   /**
-   * @param entityModel the detail model
-   * @return true if this model contains the given application model
+   * @param entityModel the entity model
+   * @return true if this model contains the given EntityModel
    */
-  boolean containsApplicationModel(final EntityModel entityModel);
+  boolean containsEntityModel(final EntityModel entityModel);
 
   /**
-   * @return an unmodifiable List containing the main application models
+   * @return an unmodifiable List containing the EntityModel instances contained
+   * in this EntityApplicationModel
    */
-  List<? extends EntityModel> getMainApplicationModels();
+  List<? extends EntityModel> getEntityModels();
 
   /**
    * @param modelClass the model class
    * @return the EntityModel of the given type
    */
-  EntityModel getMainApplicationModel(final Class<? extends EntityModel> modelClass);
+  EntityModel getEntityModel(final Class<? extends EntityModel> modelClass);
 
   /**
    * @param entityID the entity ID
    * @return the EntityModel based on the given entityID
    */
-  EntityModel getMainApplicationModel(final String entityID);
+  EntityModel getEntityModel(final String entityID);
 }

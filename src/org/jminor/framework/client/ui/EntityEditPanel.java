@@ -88,6 +88,11 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   private static final State.StateGroup ACTIVE_STATE_GROUP = States.stateGroup();
 
   /**
+   * Indicates whether or not the UI should be cleared after insert has been performed
+   */
+  private boolean clearAfterInsert = true;
+
+  /**
    * True after <code>initializePanel()</code> has been called
    */
   private boolean panelInitialized = false;
@@ -149,6 +154,20 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    */
   public final boolean isActive() {
     return stActive.isActive();
+  }
+
+  /**
+   * @return true if the UI should be cleared after insert has been performed
+   */
+  public final boolean isClearAfterInsert() {
+    return clearAfterInsert;
+  }
+
+  /**
+   * @param clearAfterInsert true if the UI should be cleared after insert has been performed
+   */
+  public final void setClearAfterInsert(final boolean clearAfterInsert) {
+    this.clearAfterInsert = clearAfterInsert;
   }
 
   /**
@@ -382,7 +401,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
         finally {
           UiUtil.setWaitCursor(false, this);
         }
-        prepareUI(true, true);
+        prepareUI(true, clearAfterInsert);
         return true;
       }
     }

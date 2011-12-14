@@ -130,7 +130,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel {
     employeeProvider.setEditPanelClass(EmployeeEditPanel.class);
     employeeProvider.addDetailPanelProvider(customerProvider).setDetailPanelState(EntityPanel.HIDDEN);
 
-    addMainApplicationPanelProviders(artistProvider, playlistProvider, customerProvider);
+    addEntityPanelProviders(artistProvider, playlistProvider, customerProvider);
     addSupportPanelProviders(genreProvider, mediaTypeProvider, employeeProvider);
   }
 

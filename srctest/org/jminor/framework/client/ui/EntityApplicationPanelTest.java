@@ -10,9 +10,10 @@ import org.jminor.framework.demos.chinook.domain.Chinook;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 
 import org.junit.After;
+import org.junit.Test;
+
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import org.junit.Test;
 
 public class EntityApplicationPanelTest {
 
@@ -28,8 +29,8 @@ public class EntityApplicationPanelTest {
     panel.setLoginRequired(false);
     panel.setShowStartupDialog(false);
     panel.startApplication("Test", null, false, null, User.UNIT_TEST_USER, false);
-    assertNotNull(panel.getMainApplicationPanel(Chinook.T_CUSTOMER));
-    assertNull(panel.getMainApplicationPanel(EmpDept.T_DEPARTMENT));
+    assertNotNull(panel.getEntityPanel(Chinook.T_CUSTOMER));
+    assertNull(panel.getEntityPanel(EmpDept.T_DEPARTMENT));
 
     panel.logout();
   }

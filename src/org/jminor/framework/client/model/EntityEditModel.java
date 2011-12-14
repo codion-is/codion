@@ -300,8 +300,9 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
   boolean persistValueOnClear(final Property property);
 
   /**
-   * Performs a insert on the active entity
-   * @return the primary keys of the inserted entities
+   * Performs a insert on the active entity, sets the primary key values of the active entity
+   * according to the primary key returned by the method
+   * @return a list containing the primary key of the inserted entity
    * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
    * @throws org.jminor.common.model.valuemap.exception.ValidationException in case validation fails
    * @see org.jminor.framework.domain.Entity.Validator#validate(java.util.Collection, int)
@@ -311,7 +312,7 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
   /**
    * Performs an insert on the given entities, returns silently on receiving an empty list
    * @param entities the entities to insert
-   * @return the primary keys of the inserted entities
+   * @return a list containing the primary keys of the inserted entities
    * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
    * @throws ValidationException in case validation fails
    * @see #addBeforeInsertListener(java.awt.event.ActionListener)

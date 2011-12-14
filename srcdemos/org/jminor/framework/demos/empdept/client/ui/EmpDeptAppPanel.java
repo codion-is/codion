@@ -52,7 +52,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel {
     departmentPanelProvider.setTablePanelClass(DepartmentTablePanel.class);
     departmentPanelProvider.addDetailPanelProvider(employeePanelProvider);
 
-    addMainApplicationPanelProvider(departmentPanelProvider);
+    addEntityPanelProvider(departmentPanelProvider);
   }
 
   public void importJSON() throws Exception {

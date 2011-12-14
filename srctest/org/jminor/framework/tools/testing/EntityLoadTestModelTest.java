@@ -101,8 +101,8 @@ public class EntityLoadTestModelTest {
         EmpDept.init();
       }
     };
-    model.addMainApplicationModel(new DefaultEntityModel(EmpDept.T_DEPARTMENT, EntityConnectionImplTest.CONNECTION_PROVIDER));
-    final EntityTableModel tableModel = model.getMainApplicationModel(EmpDept.T_DEPARTMENT).getTableModel();
+    model.addEntityModel(new DefaultEntityModel(EmpDept.T_DEPARTMENT, EntityConnectionImplTest.CONNECTION_PROVIDER));
+    final EntityTableModel tableModel = model.getEntityModel(EmpDept.T_DEPARTMENT).getTableModel();
     tableModel.setQueryCriteriaRequired(false);
     tableModel.refresh();
 

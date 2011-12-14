@@ -239,7 +239,7 @@ public final class DefaultEntityEditModelTest {
     assertFalse("Active entity is new after an entity is set", employeeEditModel.isEntityNew());
     assertFalse(employeeEditModel.getModifiedObserver().isActive());
     employeeEditModel.setEntity(null);
-    assertTrue("Active entity is new null after entity is set to null", employeeEditModel.isEntityNew());
+    assertTrue("Active entity is new after entity is set to null", employeeEditModel.isEntityNew());
     assertFalse(employeeEditModel.getModifiedObserver().isActive());
     assertTrue("Active entity is not null after entity is set to null", employeeEditModel.getEntityCopy().isPrimaryKeyNull());
 
@@ -360,6 +360,10 @@ public final class DefaultEntityEditModelTest {
       assertTrue(employeeEditModel.isInsertAllowed());
 
       employeeEditModel.insert();
+      assertFalse(employeeEditModel.isEntityNew());
+      final Entity entityCopy = employeeEditModel.getEntityCopy();
+      assertFalse(entityCopy.getPrimaryKey().isNull());
+      assertEquals(entityCopy.getPrimaryKey(), entityCopy.getOriginalPrimaryKey());
 
       employeeEditModel.setValue(EmpDept.EMPLOYEE_NAME, "Bobby");
       try {

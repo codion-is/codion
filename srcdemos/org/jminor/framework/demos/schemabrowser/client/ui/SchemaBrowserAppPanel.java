@@ -28,7 +28,7 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel {
     dbObjectProvider.addDetailPanelProvider(constraintProvider);
     final EntityPanelProvider schemaProvider = new EntityPanelProvider(SchemaBrowser.T_SCHEMA);
     schemaProvider.addDetailPanelProvider(dbObjectProvider).setDetailSplitPanelResizeWeight(0.3);
-    addMainApplicationPanelProvider(schemaProvider);
+    addEntityPanelProvider(schemaProvider);
   }
 
   @Override

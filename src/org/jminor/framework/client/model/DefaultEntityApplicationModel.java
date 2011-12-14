@@ -24,7 +24,7 @@ import java.util.List;
 public abstract class DefaultEntityApplicationModel implements EntityApplicationModel {
 
   private final EntityConnectionProvider connectionProvider;
-  private final List<EntityModel> mainApplicationModels = new ArrayList<EntityModel>();
+  private final List<EntityModel> entityModels = new ArrayList<EntityModel>();
 
   /**
    * Instantiates a new DefaultEntityApplicationModel
@@ -45,8 +45,8 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
   /** {@inheritDoc} */
   public final void login(final User user) {
     connectionProvider.setUser(user);
-    for (final EntityModel mainApplicationModel : mainApplicationModels) {
-      mainApplicationModel.refresh();
+    for (final EntityModel entityModel : entityModels) {
+      entityModel.refresh();
     }
     handleLogin();
   }
@@ -62,24 +62,24 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
   }
 
   /** {@inheritDoc} */
-  public final void addMainApplicationModels(final EntityModel... mainApplicationModels) {
-    Util.rejectNullValue(mainApplicationModels, "mainApplicationModels");
-    for (final EntityModel model : mainApplicationModels) {
-      addMainApplicationModel(model);
+  public final void addEntityModels(final EntityModel... entityModels) {
+    Util.rejectNullValue(entityModels, "entityModels");
+    for (final EntityModel entityModel : entityModels) {
+      addEntityModel(entityModel);
     }
   }
 
   /** {@inheritDoc} */
-  public final EntityModel addMainApplicationModel(final EntityModel detailModel) {
-    this.mainApplicationModels.add(detailModel);
+  public final EntityModel addEntityModel(final EntityModel detailModel) {
+    this.entityModels.add(detailModel);
 
     return detailModel;
   }
 
   /** {@inheritDoc} */
-  public final boolean containsApplicationModel(final Class<? extends EntityModel> modelClass) {
-    for (final EntityModel applicationModel : mainApplicationModels) {
-      if (applicationModel.getClass().equals(modelClass)) {
+  public final boolean containsEntityModel(final Class<? extends EntityModel> modelClass) {
+    for (final EntityModel entityModel : entityModels) {
+      if (entityModel.getClass().equals(modelClass)) {
         return true;
       }
     }
@@ -88,9 +88,9 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
   }
 
   /** {@inheritDoc} */
-  public final boolean containsApplicationModel(final String entityID) {
-    for (final EntityModel applicationModel : mainApplicationModels) {
-      if (applicationModel.getEntityID().equals(entityID)) {
+  public final boolean containsEntityModel(final String entityID) {
+    for (final EntityModel entityModel : entityModels) {
+      if (entityModel.getEntityID().equals(entityID)) {
         return true;
       }
     }
@@ -99,32 +99,32 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
   }
 
   /** {@inheritDoc} */
-  public final boolean containsApplicationModel(final EntityModel applicationModel) {
-    return mainApplicationModels.contains(applicationModel);
+  public final boolean containsEntityModel(final EntityModel entityModel) {
+    return entityModels.contains(entityModel);
   }
 
   /** {@inheritDoc} */
-  public final List<? extends EntityModel> getMainApplicationModels() {
-    return Collections.unmodifiableList(mainApplicationModels);
+  public final List<? extends EntityModel> getEntityModels() {
+    return Collections.unmodifiableList(entityModels);
   }
 
   /** {@inheritDoc} */
   public final void refresh() {
-    for (final EntityModel mainApplicationModel : mainApplicationModels) {
-      mainApplicationModel.refresh();
+    for (final EntityModel entityModel : entityModels) {
+      entityModel.refresh();
     }
   }
 
   /** {@inheritDoc} */
   public final void clear() {
-    for (final EntityModel mainApplicationModel : mainApplicationModels) {
-      mainApplicationModel.clear();
+    for (final EntityModel entityModel : entityModels) {
+      entityModel.clear();
     }
   }
 
   /** {@inheritDoc} */
-  public final EntityModel getMainApplicationModel(final Class<? extends EntityModel> modelClass) {
-    for (final EntityModel model : mainApplicationModels) {
+  public final EntityModel getEntityModel(final Class<? extends EntityModel> modelClass) {
+    for (final EntityModel model : entityModels) {
       if (model.getClass().equals(modelClass)) {
         return model;
       }
@@ -134,10 +134,10 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
   }
 
   /** {@inheritDoc} */
-  public final EntityModel getMainApplicationModel(final String entityID) {
-    for (final EntityModel mainModel : mainApplicationModels) {
-      if (mainModel.getEntityID().equals(entityID)) {
-        return mainModel;
+  public final EntityModel getEntityModel(final String entityID) {
+    for (final EntityModel entityModel : entityModels) {
+      if (entityModel.getEntityID().equals(entityID)) {
+        return entityModel;
       }
     }
 

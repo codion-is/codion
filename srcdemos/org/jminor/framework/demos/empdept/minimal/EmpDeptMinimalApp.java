@@ -225,7 +225,7 @@ public class EmpDeptMinimalApp {
     departmentProvider.addDetailPanelProvider(employeeProvider);
 
     //the department panel is the main (or root) application panel
-    mainPanel.addMainApplicationPanelProvider(departmentProvider);
+    mainPanel.addEntityPanelProvider(departmentProvider);
 
     //and then we start the application
     mainPanel.startApplication("EmpDept Minimal", null, false,
