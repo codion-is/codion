@@ -75,7 +75,7 @@ public final class ValueLinkValidators {
     }
 
     /**
-     * @return the text component associated with the value being validated
+     * @return the component associated with the value being validated
      */
     protected final JComponent getComponent() {
       return component;

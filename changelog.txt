@@ -2582,7 +2582,8 @@
   H2 database library updated to 1.3.161, chinook dml character encoding fixed, removed problematic comments from ddl
   TextInputProvider constructor overloaded with a JTextComponent parameter
   EntityApplicationModel, renamed references to mainApplicationModels to entityModels throughout
-EntityApplicationPanel, renamed references to mainApplicationPanels to entityPanels throughout
+  EntityApplicationPanel, renamed references to mainApplicationPanels to entityPanels throughout
   EntityEditPanel.clearAfterInsert field added, with getter and setter
   DefaultEntityModel.getActiveEntities() now returns the edit model entity in case the table model selection is empty
   DefaultEntityEditModel.insert() now sets the primary key in the underlying entity according to the inserted value
+  Events.EventObserverImpl bug fixed, listeners is now an ArrayList instead of HashSet, chaotic iteration order no longer a problem

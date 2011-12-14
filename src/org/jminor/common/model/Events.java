@@ -8,8 +8,6 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * A factory class for Event objects.
@@ -53,8 +51,8 @@ public final class Events {
 
     /** {@inheritDoc} */
     public EventObserver getObserver() {
-      if (observer == null) {
-        synchronized (defaultActionEvent) {
+      synchronized (defaultActionEvent) {
+        if (observer == null) {
           observer = new EventObserverImpl();
         }
       }
@@ -77,13 +75,15 @@ public final class Events {
 
   private static final class EventObserverImpl implements EventObserver {
 
-    private final Set<ActionListener> listeners = new HashSet<ActionListener>();
+    private final Collection<ActionListener> listeners = new ArrayList<ActionListener>();
 
     /** {@inheritDoc} */
     public void addListener(final ActionListener listener) {
       Util.rejectNullValue(listener, "listener");
       synchronized (listeners) {
-        listeners.add(listener);
+        if (!listeners.contains(listener)) {
+          listeners.add(listener);
+        }
       }
     }
 
