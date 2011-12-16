@@ -166,11 +166,13 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   private final JScrollBar horizontalTableScrollBar;
 
   /**
-   * the summary panel
+   * the column summary panel
    */
   private final EntityTableSummaryPanel summaryPanel;
 
-
+  /**
+   * a panel for the table, column search and column summary panels
+   */
   private final JPanel tableSearchAndSummaryPanel = new JPanel(new BorderLayout());
 
   /**
@@ -653,7 +655,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   }
 
   /**
-   * Performs a delete on the active entity or if a table model is available, the selected entities
+   * Deletes the entities selected in the underlying table model
+   * @see #confirmDelete()
    */
   public final void delete() {
     if (confirmDelete()) {
@@ -702,8 +705,9 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   }
 
   /**
-   * By default this delegates to the edit panel
+   * Uses the default exception handler to handle the given exception
    * @param exception the exception to handle
+   * @see DefaultExceptionHandler#handleException(Throwable, javax.swing.JComponent)
    */
   public final void handleException(final Exception exception) {
     DefaultExceptionHandler.getInstance().handleException(exception, this);
@@ -757,7 +761,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   }
 
   /**
-   * @return a control for moving the table selection one index down
+   * @return a control for moving the table selection down one index
    */
   public final Control getMoveSelectionDownControl() {
     final Control selectionDown = Controls.methodControl(getEntityTableModel(), "moveSelectionDown",
@@ -768,7 +772,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   }
 
   /**
-   * @return a control for moving the table selection one index up
+   * @return a control for moving the table selection up one index
    */
   public final Control getMoveSelectionUpControl() {
     final Control selectionUp = Controls.methodControl(getEntityTableModel(), "moveSelectionUp",
