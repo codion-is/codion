@@ -2587,3 +2587,13 @@
   DefaultEntityModel.getActiveEntities() now returns the edit model entity in case the table model selection is empty
   DefaultEntityEditModel.insert() now sets the primary key in the underlying entity according to the inserted value
   Events.EventObserverImpl bug fixed, listeners is now an ArrayList instead of HashSet, chaotic iteration order no longer a problem
+  EntityLookupField was still doing lookup on actionPerformed, removed
+  EntityLookupField, actions linked to keyEvents now enabled/disabled according to the lookup model state
+  EntityTablePanel, bug fixed, delete action now based on inputMap/actionMap instead of keyListener, now respects the enabled state of the delete action
+  UiUtil.addKeyEvent() uses JComponent.WHEN_FOCUSED instead of JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT as default condition
+  Calls to UiUtil.addKeyEvent() changed according to the above
+  UiUtil.showInDialog() bug fixed, dispose action did not work since its name was null
+  UiUtil.addKeyEvent() now throws IllegalArgumentException if the action name is null
+  EntityLookupProvider now creates a EntityLookupField with the lookup action activated on keyPressed, so as to not interfere with the default button on the dialog containing the field
+  UiUtil.createFormattedField(SimpleDateFormat, Date) renamed to createFormattedDateField
+  DefaultEntityModel now uses SwingUtilities.invokeLater() when initializing detail models if on the event dispatch thread, allowing the UI to update before querying data

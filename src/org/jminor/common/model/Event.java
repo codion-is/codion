@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 
 /**
  * A synchronous event class.
+ * Listeners are notified in the order they were added.
  * <pre>
  * Event event = Events.event();
  *

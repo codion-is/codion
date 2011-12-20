@@ -193,7 +193,7 @@ public final class EntityUiUtil {
     btnOk.setMnemonic(okMnemonic.charAt(0));
     btnCancel.setMnemonic(cancelMnemonic.charAt(0));
     btnSearch.setMnemonic(searchMnemonic.charAt(0));
-    UiUtil.addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, cancelAction);
+    UiUtil.addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, cancelAction);
     entityTablePanel.getJTable().getInputMap(
             JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
             KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "none");

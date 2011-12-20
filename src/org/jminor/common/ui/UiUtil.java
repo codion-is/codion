@@ -325,7 +325,7 @@ public final class UiUtil {
     }
   }
 
-  public static JFormattedTextField createFormattedField(final SimpleDateFormat maskFormat, final Object initialValue) {
+  public static JFormattedTextField createFormattedDateField(final SimpleDateFormat maskFormat, final Date initialValue) {
     final JFormattedTextField txtField = createFormattedField(DateUtil.getDateMask(maskFormat));
     if (initialValue != null) {
       txtField.setText(maskFormat.format(initialValue));
@@ -334,14 +334,35 @@ public final class UiUtil {
     return txtField;
   }
 
+  /**
+   * Creates a JFormattedTextField with the given mask, using '_' as a placeholder character, disallowing invalid values,
+   * with JFormattedTextField.COMMIT as focus lost behaviour.
+   * @param mask the format mask
+   * @return a JFormattedTextField
+   */
   public static JFormattedTextField createFormattedField(final String mask) {
     return createFormattedField(mask, false);
   }
 
+  /**
+   * Creates a JFormattedTextField with the given mask, using '_' as a placeholder character, disallowing invalid values,
+   * with JFormattedTextField.COMMIT as focus lost behaviour.
+   * @param mask the format mask
+   * @param valueContainsLiteralCharacter if true, the value will also contain the literal characters in mask
+   * @return a JFormattedTextField
+   */
   public static JFormattedTextField createFormattedField(final String mask, final boolean valueContainsLiteralCharacter) {
     return createFormattedField(mask, valueContainsLiteralCharacter, false);
   }
 
+  /**
+   * Creates a JFormattedTextField with the given mask, using '_' as a placeholder character, disallowing invalid values,
+   * with JFormattedTextField.COMMIT as focus lost behaviour.
+   * @param mask the format mask
+   * @param valueContainsLiteralCharacter if true, the value will also contain the literal characters in mask
+   * @param charsAsUpper if true then the field will automatically convert characters to upper case
+   * @return a JFormattedTextField
+   */
   public static JFormattedTextField createFormattedField(final String mask, final boolean valueContainsLiteralCharacter,
                                                          final boolean charsAsUpper) {
     try {
@@ -579,6 +600,9 @@ public final class UiUtil {
     }
   }
 
+  /**
+   * @return the preferred width of a JScrollBar
+   */
   public static int getPreferredScrollBarWidth() {
     if (verticalScrollBar == null) {
       verticalScrollBar = new JScrollBar(JScrollBar.VERTICAL);
@@ -587,6 +611,9 @@ public final class UiUtil {
     return verticalScrollBar.getPreferredSize().width;
   }
 
+  /**
+   * @return the preferred size of a JTextField
+   */
   public static Dimension getPreferredTextFieldSize() {
     if (textField == null) {
       textField = new JTextField();
@@ -595,6 +622,9 @@ public final class UiUtil {
     return textField.getPreferredSize();
   }
 
+  /**
+   * @return the preferred height of a JTextField
+   */
   public static int getPreferredTextFieldHeight() {
     if (textField == null) {
       textField = new JTextField();
@@ -612,6 +642,13 @@ public final class UiUtil {
     };
   }
 
+  /**
+   * Creates a JPanel, using a BorderLayout with a five pixel hgap and vgap, adding
+   * the given components to their respective positions.
+   * @param north the panel to display in the BorderLayout.NORTH position
+   * @param center the panel to display in the BorderLayout.CENTER position
+   * @return a panel displaying the given components in the NORTH an CENTER positions in a BorderLayout
+   */
   public static JPanel northCenterPanel(final JComponent north, final JComponent center) {
     final JPanel panel = new JPanel(new BorderLayout(5, 5));
     panel.add(north, BorderLayout.NORTH);
@@ -797,7 +834,8 @@ public final class UiUtil {
         }
       }
     };
-    addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, new DialogDisposeAction(dialog, "close"));
+    addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
+            new DialogDisposeAction(dialog, "disposeDialog"));
     if (includeButtonPanel) {
       final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT,5,5));
       final JButton okButton = new JButton(ok);
@@ -846,8 +884,8 @@ public final class UiUtil {
       dialog.getRootPane().setDefaultButton(defaultButton);
     }
 
-    final Action disposeActionListener = new DialogDisposeAction(dialog, null);
-    addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, disposeActionListener);
+    final Action disposeActionListener = new DialogDisposeAction(dialog, "disposeDialog");
+    addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, disposeActionListener);
     if (closeEvent != null) {
       closeEvent.addListener(disposeActionListener);
     }
@@ -879,23 +917,71 @@ public final class UiUtil {
     textComponent.setTransferHandler(new FileTransferHandler(textComponent));
   }
 
+
+  /**
+   * Links the given action to the given key event on the given component via inputMap/actionMap, using the name
+   * of the action as key for the actionMap, JComponent.WHEN_FOCUSED as condition, 0 as modifier and true for onKeyRelease.
+   * @param component the component
+   * @param keyEvent the key event
+   * @param action the action
+   * @throws IllegalArgumentException in case the action name is null
+   * @see KeyStroke#getKeyStroke(int, int, boolean)
+   */
   public static void addKeyEvent(final JComponent component, final int keyEvent, final Action action) {
     addKeyEvent(component, keyEvent, 0, action);
   }
 
+
+  /**
+   * Links the given action to the given key event on the given component via inputMap/actionMap, using the name
+   * of the action as key for the actionMap, JComponent.WHEN_FOCUSED as condition and true for onKeyRelease.
+   * @param component the component
+   * @param keyEvent the key event
+   * @param modifiers the modifiers
+   * @param action the action
+   * @throws IllegalArgumentException in case the action name is null
+   * @see KeyStroke#getKeyStroke(int, int, boolean)
+   */
   public static void addKeyEvent(final JComponent component, final int keyEvent, final int modifiers,
                                  final Action action) {
-    addKeyEvent(component, keyEvent, modifiers, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, action);
+    addKeyEvent(component, keyEvent, modifiers, JComponent.WHEN_FOCUSED, action);
   }
 
+
+  /**
+   * Links the given action to the given key event on the given component via inputMap/actionMap, using the name
+   * of the action as key for the actionMap and true for onKeyRelease.
+   * @param component the component
+   * @param keyEvent the key event
+   * @param modifiers the modifiers
+   * @param condition the condition
+   * @param action the action
+   * @throws IllegalArgumentException in case the action name is null
+   * @see KeyStroke#getKeyStroke(int, int, boolean)
+   */
   public static void addKeyEvent(final JComponent component, final int keyEvent, final int modifiers, final int condition,
                                  final Action action) {
     addKeyEvent(component, keyEvent, modifiers, condition, true, action);
   }
 
+  /**
+   * Links the given action to the given key event on the given component via inputMap/actionMap, using the name
+   * of the action as key for the actionMap
+   * @param component the component
+   * @param keyEvent the key event
+   * @param modifiers the modifiers
+   * @param condition the condition
+   * @param onKeyRelease the onKeyRelease condition
+   * @param action the action
+   * @throws IllegalArgumentException in case the action name is null
+   * @see KeyStroke#getKeyStroke(int, int, boolean)
+   */
   public static void addKeyEvent(final JComponent component, final int keyEvent, final int modifiers, final int condition,
                                  final boolean onKeyRelease, final Action action) {
     final Object name = action.getValue(Action.NAME);
+    if (name == null) {
+      throw new IllegalArgumentException("Action name must be specified");
+    }
     component.getInputMap(condition).put(KeyStroke.getKeyStroke(keyEvent, modifiers, onKeyRelease), name);
     component.getActionMap().put(name, action);
   }
@@ -944,7 +1030,7 @@ public final class UiUtil {
     final String okMnemonic = Messages.get(Messages.OK_MNEMONIC);
     btnOk.setMnemonic(okMnemonic.charAt(0));
     btnCancel.setMnemonic(cancelMnemonic.charAt(0));
-    addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, cancelAction);
+    addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, cancelAction);
     list.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
             KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "none");
     list.addMouseListener(new MouseAdapter() {
@@ -1132,7 +1218,8 @@ public final class UiUtil {
     final JDialog dialog =  new JDialog(getParentWindow(parent));
     dialog.setLayout(new BorderLayout());
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-    addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, new DialogDisposeAction(dialog, "close"));
+    addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
+            new DialogDisposeAction(dialog, "disposeDialog"));
     dialog.add(panel, BorderLayout.CENTER);
     dialog.setSize(getScreenSizeRatio(0.5));
     dialog.setLocationRelativeTo(parent);
@@ -1194,6 +1281,10 @@ public final class UiUtil {
       this.backward = backward;
     }
 
+    /**
+     * Transfers focus according the the value of <code>backward</code>
+     * @param e the action event
+     */
     public void actionPerformed(final ActionEvent e) {
       if (backward) {
         component.transferFocusBackward();

@@ -80,7 +80,6 @@ import java.awt.Font;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -1439,21 +1438,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
 
   private void bindEvents() {
     if (!getEntityTableModel().isReadOnly() && getEntityTableModel().isDeleteAllowed()) {
-      getJTable().addKeyListener(new KeyAdapter() {
-        /** {@inheritDoc} */
-        @Override
-        public void keyTyped(final KeyEvent e) {
-          if (e.getKeyChar() == KeyEvent.VK_DELETE && !getTableModel().isSelectionEmpty()) {
-            final Control deleteControl = getControl(DELETE_SELECTED);
-            if (deleteControl != null) {
-              deleteControl.actionPerformed(null);
-            }
-          }
-          else if (getJTable().getParent() != null) {
-            getJTable().getParent().dispatchEvent(e);
-          }
-        }
-      });
+      UiUtil.addKeyEvent(getJTable(), KeyEvent.VK_DELETE, 0, JComponent.WHEN_FOCUSED, getDeleteSelectedControl());
     }
     final ActionListener statusListener = new ActionListener() {
       /** {@inheritDoc} */

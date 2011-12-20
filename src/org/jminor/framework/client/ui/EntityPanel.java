@@ -1175,43 +1175,43 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
 
   private void initializeResizing() {
     UiUtil.addKeyEvent(this, KeyEvent.VK_UP, KeyEvent.ALT_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK,
-            new ResizeVerticallyAction(this, RESIZE_UP, UP));
+            JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeVerticallyAction(this, RESIZE_UP, UP));
     UiUtil.addKeyEvent(this, KeyEvent.VK_DOWN, KeyEvent.ALT_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK,
-            new ResizeVerticallyAction(this, RESIZE_DOWN, DOWN));
+            JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeVerticallyAction(this, RESIZE_DOWN, DOWN));
     UiUtil.addKeyEvent(this, KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK,
-            new ResizeHorizontallyAction(this, RESIZE_RIGHT, RIGHT));
+            JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeHorizontallyAction(this, RESIZE_RIGHT, RIGHT));
     UiUtil.addKeyEvent(this, KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK,
-            new ResizeHorizontallyAction(this, RESIZE_LEFT, LEFT));
+            JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeHorizontallyAction(this, RESIZE_LEFT, LEFT));
     if (containsEditPanel()) {
       UiUtil.addKeyEvent(editControlPanel, KeyEvent.VK_UP, KeyEvent.ALT_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK,
-              new ResizeVerticallyAction(this, RESIZE_UP, UP));
+              JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeVerticallyAction(this, RESIZE_UP, UP));
       UiUtil.addKeyEvent(editControlPanel, KeyEvent.VK_DOWN, KeyEvent.ALT_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK,
-              new ResizeVerticallyAction(this, RESIZE_DOWN, DOWN));
+              JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeVerticallyAction(this, RESIZE_DOWN, DOWN));
       UiUtil.addKeyEvent(editControlPanel, KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK,
-              new ResizeHorizontallyAction(this, RESIZE_RIGHT, RIGHT));
+              JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeHorizontallyAction(this, RESIZE_RIGHT, RIGHT));
       UiUtil.addKeyEvent(editControlPanel, KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK,
-              new ResizeHorizontallyAction(this, RESIZE_LEFT, LEFT));
+              JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeHorizontallyAction(this, RESIZE_LEFT, LEFT));
     }
   }
 
   private void initializeNavigation() {
     UiUtil.addKeyEvent(this, KeyEvent.VK_UP, KeyEvent.ALT_DOWN_MASK + KeyEvent.CTRL_DOWN_MASK,
-            new NavigateAction(this, NAVIGATE_UP, UP));
+            JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, NAVIGATE_UP, UP));
     UiUtil.addKeyEvent(this, KeyEvent.VK_DOWN, KeyEvent.ALT_DOWN_MASK + KeyEvent.CTRL_DOWN_MASK,
-            new NavigateAction(this, NAVIGATE_DOWN, DOWN));
+            JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, NAVIGATE_DOWN, DOWN));
     UiUtil.addKeyEvent(this, KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK + KeyEvent.CTRL_DOWN_MASK,
-            new NavigateAction(this, NAVIGATE_RIGHT, RIGHT));
+            JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, NAVIGATE_RIGHT, RIGHT));
     UiUtil.addKeyEvent(this, KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK + KeyEvent.CTRL_DOWN_MASK,
-            new NavigateAction(this, NAVIGATE_LEFT, LEFT));
+            JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, NAVIGATE_LEFT, LEFT));
     if (containsEditPanel()) {
       UiUtil.addKeyEvent(editControlPanel, KeyEvent.VK_UP, KeyEvent.ALT_DOWN_MASK + KeyEvent.CTRL_DOWN_MASK,
-              new NavigateAction(this, NAVIGATE_UP, UP));
+              JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, NAVIGATE_UP, UP));
       UiUtil.addKeyEvent(editControlPanel, KeyEvent.VK_DOWN, KeyEvent.ALT_DOWN_MASK + KeyEvent.CTRL_DOWN_MASK,
-              new NavigateAction(this, NAVIGATE_DOWN, DOWN));
+              JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, NAVIGATE_DOWN, DOWN));
       UiUtil.addKeyEvent(editControlPanel, KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK + KeyEvent.CTRL_DOWN_MASK,
-              new NavigateAction(this, NAVIGATE_RIGHT, RIGHT));
+              JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, NAVIGATE_RIGHT, RIGHT));
       UiUtil.addKeyEvent(editControlPanel, KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK + KeyEvent.CTRL_DOWN_MASK,
-              new NavigateAction(this, NAVIGATE_LEFT, LEFT));
+              JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, NAVIGATE_LEFT, LEFT));
     }
   }
 

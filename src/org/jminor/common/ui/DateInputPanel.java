@@ -34,7 +34,7 @@ public final class DateInputPanel extends JPanel {
    * @param dateFormat the date format
    */
   public DateInputPanel(final Date initialValue, final SimpleDateFormat dateFormat) {
-    this(UiUtil.createFormattedField(dateFormat, initialValue), dateFormat, true, null);
+    this(UiUtil.createFormattedDateField(dateFormat, initialValue), dateFormat, true, null);
   }
 
   /**

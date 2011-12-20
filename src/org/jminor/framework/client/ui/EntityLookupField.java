@@ -62,21 +62,30 @@ public final class EntityLookupField extends JTextField {
   private boolean performingLookup = false;
 
   /**
-   * Initializes a new EntityLookupField
+   * Initializes a new EntityLookupField.
+   * By default lookup is performed on ENTER key release.
    * @param lookupModel the lookup model on which to base this lookup field
    */
   public EntityLookupField(final EntityLookupModel lookupModel) {
+    this(lookupModel, true);
+  }
+
+  /**
+   * Initializes a new EntityLookupField
+   * @param lookupModel the lookup model on which to base this lookup field
+   * @param lookupOnKeyRelease if true then lookup is performed on key release
+   */
+  public EntityLookupField(final EntityLookupModel lookupModel, final boolean lookupOnKeyRelease) {
     Util.rejectNullValue(lookupModel, "lookupModel");
     this.model = lookupModel;
     setValidBackgroundColor(getBackground());
     setInvalidBackgroundColor(Color.LIGHT_GRAY);
     setToolTipText(lookupModel.getDescription());
     setComponentPopupMenu(initializePopupMenu());
-    addActionListener(initializeLookupAction());
     addFocusListener(initializeFocusListener());
     addEscapeListener();
     linkToModel();
-    UiUtil.addKeyEvent(this, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED, true, initializeLookupAction());
+    UiUtil.addKeyEvent(this, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED, lookupOnKeyRelease, initializeLookupAction());
     UiUtil.linkToEnabledState(lookupModel.getSearchStringRepresentsSelectedObserver(), transferFocusAction);
     UiUtil.linkToEnabledState(lookupModel.getSearchStringRepresentsSelectedObserver(), transferFocusBackwardAction);
   }
@@ -138,7 +147,7 @@ public final class EntityLookupField extends JTextField {
     final String okMnemonic = Messages.get(Messages.OK_MNEMONIC);
     btnOk.setMnemonic(okMnemonic.charAt(0));
     btnCancel.setMnemonic(cancelMnemonic.charAt(0));
-    UiUtil.addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, cancelAction);
+    UiUtil.addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, cancelAction);
     list.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "none");
     list.addMouseListener(new LookupFieldMouseListener(okAction));
     dialog.setLayout(new BorderLayout());
@@ -178,13 +187,15 @@ public final class EntityLookupField extends JTextField {
   }
 
   private void addEscapeListener() {
-    UiUtil.addKeyEvent(this, KeyEvent.VK_ESCAPE, new AbstractAction("cancel") {
+    final AbstractAction escapeAction = new AbstractAction("cancel") {
       /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
         getModel().refreshSearchText();
         selectAll();
       }
-    });
+    };
+    UiUtil.linkToEnabledState(getModel().getSearchStringRepresentsSelectedObserver().getReversedObserver(), escapeAction);
+    UiUtil.addKeyEvent(this, KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_FOCUSED, escapeAction);
   }
 
   private FocusListener initializeFocusListener() {
@@ -212,12 +223,15 @@ public final class EntityLookupField extends JTextField {
   }
 
   private AbstractAction initializeLookupAction() {
-    return new AbstractAction(FrameworkMessages.get(FrameworkMessages.SEARCH)) {
+    final AbstractAction lookupAction = new AbstractAction(FrameworkMessages.get(FrameworkMessages.SEARCH)) {
       /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
         performLookup(true);
       }
     };
+    UiUtil.linkToEnabledState(getModel().getSearchStringRepresentsSelectedObserver().getReversedObserver(), lookupAction);
+
+    return lookupAction;
   }
 
   private boolean performLookup(final boolean promptUser) {

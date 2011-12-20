@@ -700,7 +700,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
       final Action closeAction = new UiUtil.DialogDisposeAction(dialog, Messages.get(Messages.CLOSE));
       final JButton btnClose = new JButton(closeAction);
       btnClose.setMnemonic('L');
-      UiUtil.addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, closeAction);
+      UiUtil.addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, closeAction);
       final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
       buttonPanel.add(btnClose);
       dialog.add(buttonPanel, BorderLayout.SOUTH);

@@ -18,10 +18,10 @@ public final class EntityLookupProvider extends AbstractInputProvider<Entity, En
   /**
    * Instantiates a new EntityLookupProvider
    * @param lookupModel the lookup model to base the lookup field on
-   * @param initalValue the initial value
+   * @param initialValue the initial value
    */
-  public EntityLookupProvider(final EntityLookupModel lookupModel, final Entity initalValue) {
-    super(createEntityField(lookupModel, initalValue));
+  public EntityLookupProvider(final EntityLookupModel lookupModel, final Entity initialValue) {
+    super(createEntityField(lookupModel, initialValue));
   }
 
   /** {@inheritDoc} */
@@ -31,10 +31,10 @@ public final class EntityLookupProvider extends AbstractInputProvider<Entity, En
     return selectedEntities.isEmpty() ? null : selectedEntities.iterator().next();
   }
 
-  private static EntityLookupField createEntityField(final EntityLookupModel lookupModel, final Object initialValue) {
-    final EntityLookupField field = new EntityLookupField(lookupModel);
+  private static EntityLookupField createEntityField(final EntityLookupModel lookupModel, final Entity initialValue) {
+    final EntityLookupField field = new EntityLookupField(lookupModel, false);
     if (initialValue != null) {
-      lookupModel.setSelectedEntity((Entity) initialValue);
+      lookupModel.setSelectedEntity(initialValue);
     }
 
     return field;

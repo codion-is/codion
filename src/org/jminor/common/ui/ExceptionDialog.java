@@ -18,6 +18,7 @@ import org.jminor.common.ui.layout.FlexibleGridLayout;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -269,11 +270,12 @@ public final class ExceptionDialog extends JDialog {
   }
 
   private void initUI() {
-    UiUtil.addKeyEvent(this.getRootPane(), KeyEvent.VK_ESCAPE, new AbstractAction("close") {
+    final AbstractAction closeAction = new AbstractAction("close") {
       public void actionPerformed(final ActionEvent e) {
         close();
       }
-    });
+    };
+    UiUtil.addKeyEvent(getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, closeAction);
     final JPanel basePanel = new JPanel(new BorderLayout(5,5));
     basePanel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
     basePanel.add(createNorthPanel(), BorderLayout.NORTH);
