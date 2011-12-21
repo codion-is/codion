@@ -23,6 +23,7 @@ import org.jminor.common.ui.combobox.MaximumMatch;
 import org.jminor.common.ui.combobox.SteppedComboBox;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.images.Images;
+import org.jminor.common.ui.input.InputProviderPanel;
 import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.common.ui.textfield.IntField;
 import org.jminor.common.ui.textfield.TextFieldPlus;
@@ -37,6 +38,7 @@ import org.jminor.common.ui.valuemap.TextValueLink;
 import org.jminor.common.ui.valuemap.TristateValueLink;
 import org.jminor.common.ui.valuemap.ValueLinkValidators;
 import org.jminor.framework.Configuration;
+import org.jminor.framework.client.model.DefaultEntityLookupModel;
 import org.jminor.framework.client.model.EntityComboBoxModel;
 import org.jminor.framework.client.model.EntityDataProvider;
 import org.jminor.framework.client.model.EntityEditModel;
@@ -44,6 +46,7 @@ import org.jminor.framework.client.model.EntityLookupModel;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.model.event.InsertEvent;
 import org.jminor.framework.client.model.event.InsertListener;
+import org.jminor.framework.db.provider.EntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
@@ -85,6 +88,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -128,16 +132,65 @@ public final class EntityUiUtil {
     };
   }
 
-  public static List<Entity> selectEntities(final EntityTableModel lookupModel, final Window owner,
-                                            final boolean singleSelection, final String dialogTitle) throws CancelException {
+  /**
+   * Performs a lookup for the given entity type, using a EntityLookupField displayed
+   * in a dialog, using the default search properties for the given entityID.
+   * @param entityID the entityID of the entity to perform a lookup for
+   * @param connectionProvider the connection provider
+   * @param singleSelection if true only a single entity can be selected
+   * @param dialogParent the component serving as the dialog parent
+   * @param lookupCaption the caption for the lookup field, used as a caption for the dialog as well
+   * @return the selected entities or an empty collection in case a selection was not performed
+   * @see EntityLookupField
+   * @see Entities#getSearchProperties(String)
+   */
+  public static Collection<Entity> lookupEntities(final String entityID, final EntityConnectionProvider connectionProvider,
+                                                  final boolean singleSelection, final JComponent dialogParent,
+                                                  final String lookupCaption) {
+    return lookupEntities(entityID, connectionProvider, singleSelection, dialogParent, lookupCaption, lookupCaption);
+  }
+
+  /**
+   * Performs a lookup for the given entity type, using a EntityLookupField displayed
+   * in a dialog, using the default search properties for the given entityID.
+   * @param entityID the entityID of the entity to perform a lookup for
+   * @param connectionProvider the connection provider
+   * @param singleSelection if true only a single entity can be selected
+   * @param dialogParent the component serving as the dialog parent
+   * @param lookupCaption the caption for the lookup field
+   * @param dialogTitle the title to display on the dialog
+   * @return the selected entities or an empty collection in case a selection was not performed
+   * @see EntityLookupField
+   * @see Entities#getSearchProperties(String)
+   */
+  public static Collection<Entity> lookupEntities(final String entityID, final EntityConnectionProvider connectionProvider,
+                                                  final boolean singleSelection, final JComponent dialogParent,
+                                                  final String lookupCaption, final String dialogTitle) {
+    final EntityLookupModel lookupModel = new DefaultEntityLookupModel(entityID, connectionProvider,
+            Entities.getSearchProperties(entityID));
+    if (singleSelection) {
+      lookupModel.setMultipleSelectionAllowed(false);
+    }
+    final InputProviderPanel inputPanel = new InputProviderPanel(lookupCaption, new EntityLookupProvider(lookupModel, null));
+    UiUtil.showInDialog(UiUtil.getParentWindow(dialogParent), inputPanel, true, dialogTitle,
+            null, inputPanel.getOkButton(), inputPanel.getButtonClickObserver());
+    if (inputPanel.isInputAccepted()) {
+      return lookupModel.getSelectedEntities();
+    }
+
+    return Collections.emptyList();
+  }
+
+  public static Collection<Entity> selectEntities(final EntityTableModel lookupModel, final Window owner,
+                                                  final boolean singleSelection, final String dialogTitle) throws CancelException {
     return selectEntities(lookupModel, owner, singleSelection, dialogTitle, null);
   }
 
-  public static List<Entity> selectEntities(final EntityTableModel lookupModel, final Window owner,
-                                            final boolean singleSelection, final String dialogTitle,
-                                            final Dimension preferredSize) throws CancelException {
+  public static Collection<Entity> selectEntities(final EntityTableModel lookupModel, final Window owner,
+                                                  final boolean singleSelection, final String dialogTitle,
+                                                  final Dimension preferredSize) throws CancelException {
     Util.rejectNullValue(lookupModel, "lookupModel");
-    final List<Entity> selected = new ArrayList<Entity>();
+    final Collection<Entity> selected = new ArrayList<Entity>();
     final JDialog dialog = new JDialog(owner, dialogTitle);
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     final Action okAction = new AbstractAction(Messages.get(Messages.OK)) {
@@ -848,9 +901,9 @@ public final class EntityUiUtil {
       final JButton btn = new JButton(new AbstractAction("...") {
         public void actionPerformed(final ActionEvent e) {
           try {
-            final List<Entity> selected = EntityUiUtil.selectEntities(lookupModel, UiUtil.getParentWindow(textField),
+            final Collection<Entity> selected = selectEntities(lookupModel, UiUtil.getParentWindow(textField),
                     true, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY), null);
-            editModel.setValue(foreignKeyProperty.getPropertyID(), !selected.isEmpty() ? selected.get(0) : null);
+            editModel.setValue(foreignKeyProperty.getPropertyID(), !selected.isEmpty() ? selected.iterator().next() : null);
           }
           catch (CancelException ex) {/**/}
         }

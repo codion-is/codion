@@ -47,7 +47,14 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * A UI component based on the EntityLookupModel
+ * A UI component based on the EntityLookupModel.
+ *
+ * The lookup is triggered by the ENTER key and behaves in the following way:
+ * If the lookup result is empty a message is shown, if a single entity fits the
+ * criteria then that entity is selected, otherwise a list containing the entities
+ * fitting the criteria is shown in a dialog allowing either a single or multiple
+ * selection based on {@link org.jminor.framework.client.model.EntityLookupModel#isMultipleSelectionAllowed()}}.
+ *
  * @see EntityLookupModel
  */
 public final class EntityLookupField extends JTextField {
@@ -63,7 +70,6 @@ public final class EntityLookupField extends JTextField {
 
   /**
    * Initializes a new EntityLookupField.
-   * By default lookup is performed on ENTER key release.
    * @param lookupModel the lookup model on which to base this lookup field
    */
   public EntityLookupField(final EntityLookupModel lookupModel) {
@@ -73,7 +79,8 @@ public final class EntityLookupField extends JTextField {
   /**
    * Initializes a new EntityLookupField
    * @param lookupModel the lookup model on which to base this lookup field
-   * @param lookupOnKeyRelease if true then lookup is performed on key release
+   * @param lookupOnKeyRelease if true then lookup is performed on key release, otherwise it
+   * is performed on keyPressed.
    */
   public EntityLookupField(final EntityLookupModel lookupModel, final boolean lookupOnKeyRelease) {
     Util.rejectNullValue(lookupModel, "lookupModel");

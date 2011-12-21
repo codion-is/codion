@@ -268,7 +268,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    * @param frameCaption the caption to display on the frame
    * @param iconName the name of the icon to use
    * @param maximize if true the application frame is maximized on startup
-   * @param frameSize the frame size when unmaximized
+   * @param frameSize the frame size when not maximized
    * @param defaultUser the default user to display in the login dialog
    * @return the JFrame instance containing this application panel
    */
