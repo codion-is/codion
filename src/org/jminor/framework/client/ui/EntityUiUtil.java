@@ -76,7 +76,6 @@ import javax.swing.ListSelectionModel;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
@@ -101,6 +100,10 @@ public final class EntityUiUtil {
 
   private EntityUiUtil() {}
 
+  /**
+   * Shows a dialog for selecting the root logging level.
+   * @param dialogParent the component serving as a dialog parent
+   */
   public static void setLoggingLevel(final JComponent dialogParent) {
     final DefaultComboBoxModel model = new DefaultComboBoxModel(
             new Object[] {Level.TRACE, Level.ERROR, Level.WARN, Level.INFO, Level.DEBUG});
@@ -111,7 +114,16 @@ public final class EntityUiUtil {
     rootLogger.setLevel((Level) model.getSelectedItem());
   }
 
-  public static AbstractAction initializeViewImageAction(final EntityTablePanel tablePanel, final String imagePathPropertyID) {
+  /**
+   * Creates an Action for viewing an image based on the entity selected in a EntityTablePanel.
+   * The action shows an image found at the path specified by the value of the given propertyID.
+   * If no entity is selected or the image path value is null no action is performed.
+   * @param tablePanel the EntityTablePanel the table panel
+   * @param imagePathPropertyID the ID of the property specifying the image path
+   * @return an Action for viewing an image based on the selected entity in a EntityTablePanel
+   * @see UiUtil#showImage(String, javax.swing.JComponent)
+   */
+  public static Action initializeViewImageAction(final EntityTablePanel tablePanel, final String imagePathPropertyID) {
     Util.rejectNullValue(tablePanel, "tablePanel");
     Util.rejectNullValue(imagePathPropertyID, "imagePathPropertyID");
     return new AbstractAction() {
@@ -181,17 +193,17 @@ public final class EntityUiUtil {
     return Collections.emptyList();
   }
 
-  public static Collection<Entity> selectEntities(final EntityTableModel lookupModel, final Window owner,
+  public static Collection<Entity> selectEntities(final EntityTableModel lookupModel, final JComponent dialogOwner,
                                                   final boolean singleSelection, final String dialogTitle) throws CancelException {
-    return selectEntities(lookupModel, owner, singleSelection, dialogTitle, null);
+    return selectEntities(lookupModel, dialogOwner, singleSelection, dialogTitle, null);
   }
 
-  public static Collection<Entity> selectEntities(final EntityTableModel lookupModel, final Window owner,
+  public static Collection<Entity> selectEntities(final EntityTableModel lookupModel, final JComponent dialogOwner,
                                                   final boolean singleSelection, final String dialogTitle,
                                                   final Dimension preferredSize) throws CancelException {
     Util.rejectNullValue(lookupModel, "lookupModel");
     final Collection<Entity> selected = new ArrayList<Entity>();
-    final JDialog dialog = new JDialog(owner, dialogTitle);
+    final JDialog dialog = new JDialog(UiUtil.getParentWindow(dialogOwner), dialogTitle);
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     final Action okAction = new AbstractAction(Messages.get(Messages.OK)) {
       public void actionPerformed(final ActionEvent e) {
@@ -262,7 +274,7 @@ public final class EntityUiUtil {
     dialog.getRootPane().setDefaultButton(btnOk);
     dialog.add(buttonPanel, BorderLayout.SOUTH);
     dialog.pack();
-    dialog.setLocationRelativeTo(owner);
+    dialog.setLocationRelativeTo(dialogOwner);
     dialog.setModal(true);
     dialog.setResizable(true);
     dialog.setVisible(true);
@@ -721,7 +733,7 @@ public final class EntityUiUtil {
     final JButton btn = new JButton(new AbstractAction("...") {
       public void actionPerformed(final ActionEvent e) {
         try {
-          lookupField.getModel().setSelectedEntities(selectEntities(tableModel, UiUtil.getParentWindow(lookupField),
+          lookupField.getModel().setSelectedEntities(selectEntities(tableModel, lookupField,
                   true, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY), null));
         }
         catch (CancelException ex) {/**/}
@@ -901,7 +913,7 @@ public final class EntityUiUtil {
       final JButton btn = new JButton(new AbstractAction("...") {
         public void actionPerformed(final ActionEvent e) {
           try {
-            final Collection<Entity> selected = selectEntities(lookupModel, UiUtil.getParentWindow(textField),
+            final Collection<Entity> selected = selectEntities(lookupModel, textField,
                     true, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY), null);
             editModel.setValue(foreignKeyProperty.getPropertyID(), !selected.isEmpty() ? selected.iterator().next() : null);
           }

@@ -2602,3 +2602,4 @@
   EntityDefinitionImpl.setIdSource() no longer automatically sets the idValueSource as tableName + "_seq" for AUTO_INCREMENT and SEQUENCE
   EntityUiUtil.lookupEntities() added
   EntityUiUtil.selectEntities() now returns Collection instead of List
+  EntityUiUtil.selectEntities() now takes JComponent instead of Window as dialogParent
