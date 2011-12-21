@@ -98,6 +98,7 @@ public final class H2Database extends AbstractDatabase {
   /** {@inheritDoc} */
   @Override
   public String getSequenceSQL(final String sequenceName) {
+    Util.rejectNullValue(sequenceName, "sequenceName");
     return SEQUENCE_VALUE_QUERY + sequenceName;
   }
 

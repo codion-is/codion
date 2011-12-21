@@ -2597,3 +2597,6 @@
   EntityLookupProvider now creates a EntityLookupField with the lookup action activated on keyPressed, so as to not interfere with the default button on the dialog containing the field
   UiUtil.createFormattedField(SimpleDateFormat, Date) renamed to createFormattedDateField
   DefaultEntityModel now uses SwingUtilities.invokeLater() when initializing detail models if on the event dispatch thread, allowing the UI to update before querying data
+  Database.getSequenceSQL() and getAutoIncrementValueSQL() documentation now specifies which exceptions should be thrown
+  Database implementations now respect the above requirements, tested
+  EntityDefinitionImpl.setIdSource() no longer automatically sets the idValueSource as tableName + "_seq" for AUTO_INCREMENT and SEQUENCE

@@ -13,6 +13,11 @@ import static org.junit.Assert.*;
 
 public class DerbyDatabaseTest {
 
+  @Test(expected = UnsupportedOperationException.class)
+  public void getSequenceSQL() {
+    new DerbyDatabase("host", "1234", "sid").getSequenceSQL("seq");
+  }
+
   @Test
   public void test() {
     DerbyDatabase db = new DerbyDatabase("host", "1234", "sid");
@@ -23,11 +28,6 @@ public class DerbyDatabaseTest {
     assertEquals("user=scott;password=tiger", db.getAuthenticationInfo(props));
     final String idSource = "id_source";
     assertEquals(DerbyDatabase.AUTO_INCREMENT_QUERY + idSource, db.getAutoIncrementValueSQL(idSource));
-    try {
-      db.getSequenceSQL("seq");
-      fail();
-    }
-    catch (RuntimeException e) {}
     assertEquals("jdbc:derby://host:1234/sid;user=scott;password=tiger", db.getURL(props));
 
     db = new DerbyDatabase("dbname");

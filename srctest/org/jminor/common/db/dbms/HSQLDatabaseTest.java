@@ -13,6 +13,11 @@ import static org.junit.Assert.*;
 
 public class HSQLDatabaseTest {
 
+  @Test (expected = IllegalArgumentException.class)
+  public void getSequenceSQLNullSequence() {
+    new HSQLDatabase("host", "1234", "sid").getSequenceSQL(null);
+  }
+
   @Test
   public void test() {
     HSQLDatabase db = new HSQLDatabase("host", "1234", "sid");

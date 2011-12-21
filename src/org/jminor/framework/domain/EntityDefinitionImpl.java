@@ -238,10 +238,6 @@ final class EntityDefinitionImpl implements Entity.Definition {
   public Entity.Definition setIdSource(final IdSource idSource) {
     Util.rejectNullValue(idSource, "idSource");
     this.idSource = idSource;
-    if ((idSource == IdSource.SEQUENCE || idSource == IdSource.AUTO_INCREMENT) && idValueSource == null) {
-      setIdValueSource(tableName + "_seq");
-    }//todo remove
-
     return this;
   }
 

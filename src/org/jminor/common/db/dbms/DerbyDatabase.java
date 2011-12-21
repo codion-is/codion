@@ -57,6 +57,7 @@ public final class DerbyDatabase extends AbstractDatabase {
 
   /** {@inheritDoc} */
   public String getAutoIncrementValueSQL(final String idSource) {
+    Util.rejectNullValue(idSource, "idSource");
     return AUTO_INCREMENT_QUERY + idSource;
   }
 

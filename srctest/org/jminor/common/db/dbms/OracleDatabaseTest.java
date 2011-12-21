@@ -9,6 +9,11 @@ import static org.junit.Assert.*;
 
 public class OracleDatabaseTest {
 
+  @Test (expected = IllegalArgumentException.class)
+  public void getSequenceSQLNullSequence() {
+    new OracleDatabase("host", "1234", "sid").getSequenceSQL(null);
+  }
+
   @Test
   public void test() {
     OracleDatabase db = new OracleDatabase("host", "1234", "sid");

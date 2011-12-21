@@ -402,9 +402,9 @@ public interface Property extends Attribute {
   }
 
   /**
-   * Represents a child foreign key property that is already included as part of another reference foreign key property,
-   * and should not handle updating the underlying property, useful in rare cases when foreign keys are referencing
-   * tables having composite natural primary keys as opposed to surrogate ones.
+   * Represents a property which is part of a composite foreign key but is already included as part of another composite foreign key,
+   * and should not handle updating the underlying property, useful in rare cases where multiple foreign keys are referencing tables
+   * having composite natural primary keys, using the same column.
    * todo example pleeeeaaase!
    */
   interface MirrorProperty extends ColumnProperty {}

@@ -9,6 +9,11 @@ import static org.junit.Assert.*;
 
 public class PostgreSQLDatabaseTest {
 
+  @Test (expected = IllegalArgumentException.class)
+  public void getSequenceSQLNullSequence() {
+    new PostgreSQLDatabase("host", "1234", "sid").getSequenceSQL(null);
+  }
+
   @Test
   public void test() {
     PostgreSQLDatabase db = new PostgreSQLDatabase("host", "1234", "sid");
