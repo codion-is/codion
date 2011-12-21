@@ -936,7 +936,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     UiUtil.addKeyEvent(table, KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_FOCUSED,
             new PopupMenuAction(popupMenu, table));
     UiUtil.addKeyEvent(table, KeyEvent.VK_V, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_FOCUSED,
-            new AbstractAction("showEntityMenu") {
+            new AbstractAction("EntityTablePanel.showEntityMenu") {
               /** {@inheritDoc} */
               public void actionPerformed(final ActionEvent e) {
                 showEntityMenu(getPopupLocation(table));
@@ -1389,8 +1389,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     final InputMap inputMap = getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
     final ActionMap actionMap = getActionMap();
 
-    inputMap.put(keyStroke, "refreshControl");
-    actionMap.put("refreshControl", refresh);
+    inputMap.put(keyStroke, "EntityTablePanel.refreshControl");
+    actionMap.put("EntityTablePanel.refreshControl", refresh);
 
     final AbstractButton button = ControlProvider.createButton(refresh);
     button.setPreferredSize(TOOLBAR_BUTTON_SIZE);
@@ -1491,6 +1491,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     header.setFocusable(false);
     header.setReorderingAllowed(Configuration.getBooleanValue(Configuration.ALLOW_COLUMN_REORDERING));
     getJTable().setAutoResizeMode(Configuration.getIntValue(Configuration.TABLE_AUTO_RESIZE_MODE));
+    UiUtil.addKeyEvent(getJTable(), KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK, new ResizeSelectedColumnAction(getJTable(), false));
+    UiUtil.addKeyEvent(getJTable(), KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK, new ResizeSelectedColumnAction(getJTable(), true));
     final TableCellRenderer tableCellRenderer = initializeTableCellRenderer();
     final Enumeration<TableColumn> columnEnumeration = getTableModel().getColumnModel().getColumns();
     while (columnEnumeration.hasMoreElements()) {
@@ -1660,7 +1662,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     private final JTable table;
 
     private PopupMenuAction(final JPopupMenu popupMenu, final JTable table) {
-      super("showPopupMenu");
+      super("EntityTablePanel.showPopupMenu");
       this.popupMenu = popupMenu;
       this.table = table;
     }
@@ -1669,6 +1671,30 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     public void actionPerformed(final ActionEvent e) {
       final Point location = getPopupLocation(table);
       popupMenu.show(table, location.x, location.y);
+    }
+  }
+
+  /**
+   * Resizes the selected table column by 10 pixels.
+   */
+  private static class ResizeSelectedColumnAction extends  AbstractAction {
+
+    private final JTable table;
+    private final boolean enlarge;
+
+    public ResizeSelectedColumnAction(final JTable table, final boolean enlarge) {
+      super("EntityTablePanel.column" + (enlarge ? "Larger" : "Smaller"));
+      this.table = table;
+      this.enlarge = enlarge;
+    }
+
+    /** {@inheritDoc} */
+    public void actionPerformed(final ActionEvent e) {
+      final int selectedColumnIndex = table.getSelectedColumn();
+      if (selectedColumnIndex != -1) {
+        final TableColumn column = table.getColumnModel().getColumn(selectedColumnIndex);
+        column.setPreferredWidth(column.getWidth() + (enlarge ? 10 : -10));
+      }
     }
   }
 }

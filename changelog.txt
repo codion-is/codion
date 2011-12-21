@@ -2603,3 +2603,4 @@
   EntityUiUtil.lookupEntities() added
   EntityUiUtil.selectEntities() now returns Collection instead of List
   EntityUiUtil.selectEntities() now takes JComponent instead of Window as dialogParent
+  EntityTablePanel, selected table column resizing via ALT-LEFT, ALT-RIGHT added
