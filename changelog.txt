@@ -2604,3 +2604,8 @@
   EntityUiUtil.selectEntities() now returns Collection instead of List
   EntityUiUtil.selectEntities() now takes JComponent instead of Window as dialogParent
   EntityTablePanel, selected table column resizing via ALT-LEFT, ALT-RIGHT added
+  Minor cleanup of action names in UiUtil and some associated panels
+  EntityApplicationPanel, removed Close button from support panel dialog, ESC still closes the window, as well as the close window decorator
+  Removed parameters from calls to UiUtil.addKeyEvent() made redundant by sensible default values
+  FilteredTablePanel, searchField KeyAdapter no longer explicitly dispatches unhandled event to parent
+  UiUtil.DialogDisposeAction renamed to DisposeWindowAction, changed accordingly, no longer takes action name as constructor parameter

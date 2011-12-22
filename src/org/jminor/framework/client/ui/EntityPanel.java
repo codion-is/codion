@@ -984,7 +984,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * and CTR-F selects the table search field
    */
   private void setupKeyboardActions() {
-    final AbstractAction selectEditPanel = new AbstractAction("selectEditPanel") {
+    final Action selectEditPanelAction = new AbstractAction("EntityPanel.selectEditPanel") {
       /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
         if (getEditPanelState() == HIDDEN) {
@@ -993,7 +993,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
         getEditPanel().prepareUI(true, false);
       }
     };
-    final AbstractAction selectInputComponent = new AbstractAction("selectInputComponent") {
+    final Action selectInputComponentAction = new AbstractAction("EntityPanel.selectInputComponent") {
       /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
         if (getEditPanelState() == HIDDEN) {
@@ -1007,19 +1007,19 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
         }
       }
     };
-    final AbstractAction selectTablePanel = new AbstractAction("selectTablePanel") {
+    final Action selectTablePanelAction = new AbstractAction("EntityPanel.selectTablePanel") {
       /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
         getTablePanel().getJTable().requestFocus();
       }
     };
-    final AbstractAction selectSearchField = new AbstractAction("selectSearchField") {
+    final Action selectSearchFieldAction = new AbstractAction("EntityPanel.selectSearchField") {
       /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
         getTablePanel().getSearchField().requestFocus();
       }
     };
-    final AbstractAction toggleSearchPanel = new AbstractAction("toggleSearchPanel") {
+    final Action toggleSearchPanelAction = new AbstractAction("EntityPanel.toggleSearchPanel") {
       /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
         if (!getTablePanel().isSearchPanelVisible()) {
@@ -1030,31 +1030,31 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
     };
     if (containsTablePanel()) {
       UiUtil.addKeyEvent(this, KeyEvent.VK_T, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
-              true, selectTablePanel);
+              selectTablePanelAction);
       UiUtil.addKeyEvent(this, KeyEvent.VK_F, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
-              true, selectSearchField);
+              selectSearchFieldAction);
       if (tablePanel.getSearchPanel() != null) {
         UiUtil.addKeyEvent(this, KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
-                true, toggleSearchPanel);
+                toggleSearchPanelAction);
       }
       if (containsEditPanel()) {
         UiUtil.addKeyEvent(editControlPanel, KeyEvent.VK_T, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
-                true, selectTablePanel);
+                selectTablePanelAction);
         UiUtil.addKeyEvent(editControlPanel, KeyEvent.VK_F, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
-                true, selectSearchField);
+                selectSearchFieldAction);
         if (tablePanel.getSearchPanel() != null) {
           UiUtil.addKeyEvent(editControlPanel, KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
-                  true, toggleSearchPanel);
+                  toggleSearchPanelAction);
         }
       }
     }
     if (containsEditPanel()) {
       UiUtil.addKeyEvent(this, KeyEvent.VK_E, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
-              true, selectEditPanel);
+              selectEditPanelAction);
       UiUtil.addKeyEvent(this, KeyEvent.VK_I, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
-              true, selectInputComponent);
+              selectInputComponentAction);
       UiUtil.addKeyEvent(editControlPanel, KeyEvent.VK_I, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
-              true, selectInputComponent);
+              selectInputComponentAction);
     }
   }
 

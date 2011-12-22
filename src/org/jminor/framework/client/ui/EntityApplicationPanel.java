@@ -32,11 +32,9 @@ import org.jminor.framework.i18n.FrameworkMessages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -61,7 +59,6 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -697,13 +694,8 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
       dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
       dialog.setLayout(new BorderLayout());
       dialog.add(entityPanel, BorderLayout.CENTER);
-      final Action closeAction = new UiUtil.DialogDisposeAction(dialog, Messages.get(Messages.CLOSE));
-      final JButton btnClose = new JButton(closeAction);
-      btnClose.setMnemonic('L');
-      UiUtil.addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, closeAction);
-      final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-      buttonPanel.add(btnClose);
-      dialog.add(buttonPanel, BorderLayout.SOUTH);
+      UiUtil.addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, 0,
+              JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new UiUtil.DisposeWindowAction(dialog));
       dialog.pack();
       dialog.setLocationRelativeTo(this);
       if (modalDialog) {

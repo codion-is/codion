@@ -835,7 +835,7 @@ public final class UiUtil {
       }
     };
     addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
-            new DialogDisposeAction(dialog, "disposeDialog"));
+            new DisposeWindowAction(dialog));
     if (includeButtonPanel) {
       final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT,5,5));
       final JButton okButton = new JButton(ok);
@@ -884,7 +884,7 @@ public final class UiUtil {
       dialog.getRootPane().setDefaultButton(defaultButton);
     }
 
-    final Action disposeActionListener = new DialogDisposeAction(dialog, "disposeDialog");
+    final Action disposeActionListener = new DisposeWindowAction(dialog);
     addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, disposeActionListener);
     if (closeEvent != null) {
       closeEvent.addListener(disposeActionListener);
@@ -986,11 +986,11 @@ public final class UiUtil {
     component.getActionMap().put(name, action);
   }
 
-  public static void addLookupDialog(final JTextField txtField, final ValueCollectionProvider valueListProvider) {
-    addKeyEvent(txtField, KeyEvent.VK_SPACE, InputEvent.CTRL_DOWN_MASK, JComponent.WHEN_FOCUSED, new AbstractAction("valueLookup") {
+  public static void addLookupDialog(final JTextField txtField, final ValueCollectionProvider valueCollectionProvider) {
+    addKeyEvent(txtField, KeyEvent.VK_SPACE, InputEvent.CTRL_DOWN_MASK, new AbstractAction("UiUtil.lookupValue") {
       public void actionPerformed(final ActionEvent e) {
         try {
-          final Object value = selectValue(txtField, valueListProvider.getValues());
+          final Object value = selectValue(txtField, valueCollectionProvider.getValues());
           if (value != null) {
             txtField.setText(value.toString());
           }
@@ -1016,8 +1016,8 @@ public final class UiUtil {
     final Window owner = getParentWindow(dialogOwner);
     final JDialog dialog = new JDialog(owner, dialogTitle);
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-    final Action okAction = new DialogDisposeAction(dialog, Messages.get(Messages.OK));
-    final Action cancelAction = new AbstractAction(Messages.get(Messages.CANCEL)) {
+    final Action okAction = new DisposeWindowAction(dialog);
+    final Action cancelAction = new AbstractAction("UiUtil.cancel") {
       public void actionPerformed(final ActionEvent e) {
         list.clearSelection();
         dialog.dispose();
@@ -1025,7 +1025,9 @@ public final class UiUtil {
     };
     list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     final JButton btnOk  = new JButton(okAction);
+    btnOk.setText(Messages.get(Messages.OK));
     final JButton btnCancel = new JButton(cancelAction);
+    btnCancel.setText(Messages.get(Messages.CANCEL));
     final String cancelMnemonic = Messages.get(Messages.CANCEL_MNEMONIC);
     final String okMnemonic = Messages.get(Messages.OK_MNEMONIC);
     btnOk.setMnemonic(okMnemonic.charAt(0));
@@ -1219,7 +1221,7 @@ public final class UiUtil {
     dialog.setLayout(new BorderLayout());
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
-            new DialogDisposeAction(dialog, "disposeDialog"));
+            new DisposeWindowAction(dialog));
     dialog.add(panel, BorderLayout.CENTER);
     dialog.setSize(getScreenSizeRatio(0.5));
     dialog.setLocationRelativeTo(parent);
@@ -1241,18 +1243,27 @@ public final class UiUtil {
   }
 
   /**
-   * An action which disposes a given dialog
+   * An action which disposes a given window when performed
    */
-  public static final class DialogDisposeAction extends AbstractAction {
-    private final JDialog dialog;
+  public static final class DisposeWindowAction extends AbstractAction {
 
-    public DialogDisposeAction(final JDialog dialog, final String name) {
-      super(name);
-      this.dialog = dialog;
+    private final Window window;
+
+    /**
+     * Instantiates a new DisposeWindowAction, which disposes of the given window when performed
+     * @param window the window to dispose
+     */
+    public DisposeWindowAction(final Window window) {
+      super("UiUtil.disposeDialog");
+      this.window = window;
     }
 
+    /**
+     * Calls dispose on the window
+     * @param e ignored
+     */
     public void actionPerformed(final ActionEvent e) {
-      dialog.dispose();
+      window.dispose();
     }
   }
 
@@ -1276,7 +1287,7 @@ public final class UiUtil {
      * @param backward if true the focus is transferred backward
      */
     public TransferFocusAction(final JComponent component, final boolean backward) {
-      super(backward ? "transferFocusBackward" : "transferFocus");
+      super(backward ? "UiUtil.transferFocusBackward" : "UiUtil.transferFocusForward");
       this.component = component;
       this.backward = backward;
     }

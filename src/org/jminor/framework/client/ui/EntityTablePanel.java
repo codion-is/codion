@@ -933,9 +933,9 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     if (table.getParent() != null) {
       ((JComponent) table.getParent()).setComponentPopupMenu(popupMenu);
     }
-    UiUtil.addKeyEvent(table, KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_FOCUSED,
+    UiUtil.addKeyEvent(table, KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK,
             new PopupMenuAction(popupMenu, table));
-    UiUtil.addKeyEvent(table, KeyEvent.VK_V, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_FOCUSED,
+    UiUtil.addKeyEvent(table, KeyEvent.VK_V, KeyEvent.CTRL_DOWN_MASK,
             new AbstractAction("EntityTablePanel.showEntityMenu") {
               /** {@inheritDoc} */
               public void actionPerformed(final ActionEvent e) {
@@ -1438,7 +1438,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
 
   private void bindEvents() {
     if (!getEntityTableModel().isReadOnly() && getEntityTableModel().isDeleteAllowed()) {
-      UiUtil.addKeyEvent(getJTable(), KeyEvent.VK_DELETE, 0, JComponent.WHEN_FOCUSED, getDeleteSelectedControl());
+      UiUtil.addKeyEvent(getJTable(), KeyEvent.VK_DELETE, getDeleteSelectedControl());
     }
     final ActionListener statusListener = new ActionListener() {
       /** {@inheritDoc} */

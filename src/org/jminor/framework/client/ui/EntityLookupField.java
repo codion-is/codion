@@ -145,11 +145,12 @@ public final class EntityLookupField extends JTextField {
         dialog.dispose();
       }
     };
-    final Action cancelAction = new UiUtil.DialogDisposeAction(dialog, Messages.get(Messages.CANCEL));
+    final Action cancelAction = new UiUtil.DisposeWindowAction(dialog);
     list.setSelectionMode(model.isMultipleSelectionAllowed() ?
             ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);
     final JButton btnOk  = new JButton(okAction);
     final JButton btnCancel = new JButton(cancelAction);
+    btnCancel.setText(Messages.get(Messages.CANCEL));
     final String cancelMnemonic = Messages.get(Messages.CANCEL_MNEMONIC);
     final String okMnemonic = Messages.get(Messages.OK_MNEMONIC);
     btnOk.setMnemonic(okMnemonic.charAt(0));
@@ -194,7 +195,7 @@ public final class EntityLookupField extends JTextField {
   }
 
   private void addEscapeListener() {
-    final AbstractAction escapeAction = new AbstractAction("cancel") {
+    final AbstractAction escapeAction = new AbstractAction("EntityLookupField.cancel") {
       /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
         getModel().refreshSearchText();
@@ -202,7 +203,7 @@ public final class EntityLookupField extends JTextField {
       }
     };
     UiUtil.linkToEnabledState(getModel().getSearchStringRepresentsSelectedObserver().getReversedObserver(), escapeAction);
-    UiUtil.addKeyEvent(this, KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_FOCUSED, escapeAction);
+    UiUtil.addKeyEvent(this, KeyEvent.VK_ESCAPE, escapeAction);
   }
 
   private FocusListener initializeFocusListener() {
