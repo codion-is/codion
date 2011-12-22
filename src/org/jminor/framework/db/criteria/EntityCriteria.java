@@ -31,7 +31,7 @@ public interface EntityCriteria {
   /**
    * @param includeWhereKeyword if true the returned string is prefixed with the WHERE keyword,
    * if false it is prefixed with the AND keyword
-   * @return a where clause base on this criteria
+   * @return a where clause based on this criteria
    */
   String getWhereClause(final boolean includeWhereKeyword);
 
