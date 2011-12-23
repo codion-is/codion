@@ -80,7 +80,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
         final ColumnSearchModel<Property> filterModel = filterModelProvider.initializePropertyFilterModel(property);
         this.propertyFilterModels.put(filterModel.getColumnIdentifier().getPropertyID(), filterModel);
       }
-      if (property instanceof Property.SearchableProperty && !property.hasParentProperty() && !isAggregateColumnProperty(property)) {
+      if (property instanceof Property.SearchableProperty && !property.isForeignKeyProperty() && !isAggregateColumnProperty(property)) {
         final PropertySearchModel<? extends Property.SearchableProperty> searchModel =
                 searchModelProvider.initializePropertySearchModel((Property.SearchableProperty) property, connectionProvider);
         if (searchModel != null) {

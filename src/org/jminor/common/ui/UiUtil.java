@@ -1045,7 +1045,6 @@ public final class UiUtil {
     });
     dialog.setLayout(new BorderLayout());
     final JScrollPane scroller = new JScrollPane(list);
-    //scroller.setPreferredSize(new Dimension(400, 400)); //todo dialog can get extremely wide, fix please!
     dialog.add(scroller, BorderLayout.CENTER);
     final JPanel buttonPanel = new JPanel(new GridLayout(1,2,5,5));
     buttonPanel.add(btnOk);
@@ -1055,6 +1054,9 @@ public final class UiUtil {
     dialog.getRootPane().setDefaultButton(btnOk);
     dialog.add(buttonBasePanel, BorderLayout.SOUTH);
     dialog.pack();
+    if (dialog.getSize().width > 500) {
+      dialog.setSize(new Dimension(500, dialog.getSize().height));
+    }
     dialog.setLocationRelativeTo(owner);
     dialog.setModal(true);
     dialog.setResizable(true);

@@ -561,7 +561,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
     final Entity defaultEntity = Entities.entity(entityID);
     final Collection<Property.ColumnProperty> columnProperties = Entities.getColumnProperties(entityID);
     for (final Property.ColumnProperty property : columnProperties) {
-      if (!property.hasParentProperty() && !property.isDenormalized()) {//these are set via their respective parent properties
+      if (!property.isForeignKeyProperty() && !property.isDenormalized()) {//these are set via their respective parent properties
         defaultEntity.setValue(property, getDefaultValue(property));
       }
     }
@@ -751,7 +751,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
     final Entity valueOwner = (Entity) event.getValueOwner();
     final Property property = Entities.getProperty(valueOwner.getEntityID(), event.getKey());
     stringBuilder.append(valueOwner.getEntityID()).append(" : ").append(property).append(
-            property.hasParentProperty() ? " [fk]" : "").append("; ");
+            property.isForeignKeyProperty() ? " [fk]" : "").append("; ");
     if (!event.isInitialization()) {
       if (!event.isOldValueNull()) {
         stringBuilder.append(event.getOldValue().getClass().getSimpleName()).append(" ");

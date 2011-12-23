@@ -2611,3 +2611,6 @@
   UiUtil.DialogDisposeAction renamed to DisposeWindowAction, changed accordingly, no longer takes action name as constructor parameter
   FilteredTablePanel, searchField ignores key events with modifiers
   MaximumMatch, ignores key events with modifiers
+  UiUtil.lookupValue() now restricts dialog width to a somewhat arbitrary 500 pixels
+  Property.has/set/getParentProperty() renamed to is/set/getForeignKeyProperty()
+  PropertyImpl.parentProperty field renamed to foreignKeyProperty

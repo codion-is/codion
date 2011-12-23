@@ -1637,7 +1637,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     Util.collate(properties);
     final int maxValueLength = 20;
     for (final Property property : properties) {
-      if (!property.hasParentProperty() && !(property instanceof Property.ForeignKeyProperty)) {
+      if (!property.isForeignKeyProperty() && !(property instanceof Property.ForeignKeyProperty)) {
         final String prefix = "[" + Util.getTypeClass(property.getType()).getSimpleName().substring(0, 1)
                 + (property instanceof Property.DenormalizedViewProperty ? "*" : "")
                 + (property instanceof Property.DenormalizedProperty ? "+" : "") + "] ";

@@ -850,7 +850,7 @@ public final class Entities {
     public void validate(final Entity entity, final String propertyID, final int action) throws ValidationException {
       Util.rejectNullValue(entity, "entity");
       final Property property = entity.getProperty(propertyID);
-      if (Configuration.getBooleanValue(Configuration.PERFORM_NULL_VALIDATION) && !property.hasParentProperty()) {
+      if (Configuration.getBooleanValue(Configuration.PERFORM_NULL_VALIDATION) && !property.isForeignKeyProperty()) {
         performNullValidation(entity, property, action);
       }
       if (property.isNumerical()) {

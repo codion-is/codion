@@ -196,8 +196,7 @@ public interface Property extends Attribute {
 
   /**
    * Specifies whether or not this property is nullable, in case of
-   * properties that have parent properties (properties which comprise a fk property fx)
-   * inherit the nullable state of the parent property.
+   * properties that are parts of a ForeignKeyProperty inherit the nullable state of that property.
    * @param nullable specifies whether or not this property accepts a null value
    * @return this Property instance
    */
@@ -260,20 +259,19 @@ public interface Property extends Attribute {
   boolean isReadOnly();
 
   /**
-   * @return true if this property is part of a foreign key property
-   * todo rename
+   * @return true if this property is part of a ForeignKeyProperty
    */
-  boolean hasParentProperty();
+  boolean isForeignKeyProperty();
 
   /**
-   * @param foreignKeyProperty the parent foreign key property, if any
+   * @param foreignKeyProperty the ForeignKeyProperty this property is part of
    */
-  void setParentProperty(final ForeignKeyProperty foreignKeyProperty);
+  void setForeignKeyProperty(final ForeignKeyProperty foreignKeyProperty);
 
   /**
-   * @return the parent property
+   * @return the ForeignKeyProperty this property is part of, if any
    */
-  ForeignKeyProperty getParentProperty();
+  ForeignKeyProperty getForeignKeyProperty();
 
   /**
    * Specifies a property that can be include in database search criteria
