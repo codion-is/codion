@@ -787,6 +787,7 @@ public final class Entities {
   public static class Validator extends DefaultValueMapValidator<String, Object> implements Entity.Validator {
 
     private final String entityID;
+    private final boolean performNullValidation = Configuration.getBooleanValue(Configuration.PERFORM_NULL_VALIDATION);
 
     /**
      * Instantiates a new {@link Entity.Validator}
@@ -850,7 +851,9 @@ public final class Entities {
     public void validate(final Entity entity, final String propertyID, final int action) throws ValidationException {
       Util.rejectNullValue(entity, "entity");
       final Property property = entity.getProperty(propertyID);
-      if (Configuration.getBooleanValue(Configuration.PERFORM_NULL_VALIDATION) && !property.isForeignKeyProperty()) {
+      final boolean isForeignKeyProperty = property instanceof Property.ColumnProperty
+              && ((Property.ColumnProperty) property).isForeignKeyProperty();
+      if (performNullValidation && !isForeignKeyProperty) {
         performNullValidation(entity, property, action);
       }
       if (property.isNumerical()) {

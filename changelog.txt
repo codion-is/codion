@@ -2614,3 +2614,6 @@
   UiUtil.lookupValue() now restricts dialog width to a somewhat arbitrary 500 pixels
   Property.has/set/getParentProperty() renamed to is/set/getForeignKeyProperty()
   PropertyImpl.parentProperty field renamed to foreignKeyProperty
+  Property.is/set/getForeignKeyProperty() moved to Property.ColumnProperty, where it belongs
+  DefaultEntityTableSearchModel refactored, no longer implements EntityDataProvider, connectionProvider field removed
+  DefaultPropertySearchModelProvider refactored

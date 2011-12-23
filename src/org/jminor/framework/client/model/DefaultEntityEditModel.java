@@ -750,8 +750,10 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
     }
     final Entity valueOwner = (Entity) event.getValueOwner();
     final Property property = Entities.getProperty(valueOwner.getEntityID(), event.getKey());
+    final boolean isForeignKeyProperty = property instanceof Property.ColumnProperty
+            && ((Property.ColumnProperty) property).isForeignKeyProperty();
     stringBuilder.append(valueOwner.getEntityID()).append(" : ").append(property).append(
-            property.isForeignKeyProperty() ? " [fk]" : "").append("; ");
+            isForeignKeyProperty ? " [fk]" : "").append("; ");
     if (!event.isInitialization()) {
       if (!event.isOldValueNull()) {
         stringBuilder.append(event.getOldValue().getClass().getSimpleName()).append(" ");

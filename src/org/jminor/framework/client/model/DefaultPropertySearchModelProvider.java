@@ -16,23 +16,27 @@ public class DefaultPropertySearchModelProvider implements PropertySearchModelPr
   public PropertySearchModel<? extends Property.SearchableProperty> initializePropertySearchModel(
           final Property.SearchableProperty property, final EntityConnectionProvider connectionProvider) {
     if (property instanceof Property.ForeignKeyProperty) {
-      final Property.ForeignKeyProperty fkProperty = (Property.ForeignKeyProperty) property;
-      if (Entities.isSmallDataset(fkProperty.getReferencedEntityID())) {
-        final EntityComboBoxModel comboBoxModel = new DefaultEntityComboBoxModel(fkProperty.getReferencedEntityID(), connectionProvider);
-        comboBoxModel.setNullValueString("");
-        return new DefaultForeignKeySearchModel(fkProperty, comboBoxModel);
-      }
-      else {
-        final EntityLookupModel lookupModel = new DefaultEntityLookupModel(fkProperty.getReferencedEntityID(),
-                connectionProvider, Entities.getSearchProperties(fkProperty.getReferencedEntityID()));
-        lookupModel.setMultipleSelectionAllowed(true);
-        return new DefaultForeignKeySearchModel(fkProperty, lookupModel);
-      }
+      return initializeForeignKeySearchModel((Property.ForeignKeyProperty) property, connectionProvider);
     }
     else if (property instanceof Property.ColumnProperty) {
       return new DefaultPropertySearchModel((Property.ColumnProperty) property);
     }
 
-    throw new IllegalArgumentException("Not a searchable property (Property.ColumnProperty or PropertyForeignKeyProperty): " + property);
+    throw new IllegalArgumentException("Not a searchable property (Property.ColumnProperty or Property.ForeignKeyProperty): " + property);
+  }
+
+  private PropertySearchModel<? extends Property.SearchableProperty> initializeForeignKeySearchModel(
+          final Property.ForeignKeyProperty property, final EntityConnectionProvider connectionProvider) {
+    if (Entities.isSmallDataset(property.getReferencedEntityID())) {
+      final EntityComboBoxModel comboBoxModel = new DefaultEntityComboBoxModel(property.getReferencedEntityID(), connectionProvider);
+      comboBoxModel.setNullValueString("");
+      return new DefaultForeignKeySearchModel(property, comboBoxModel);
+    }
+    else {
+      final EntityLookupModel lookupModel = new DefaultEntityLookupModel(property.getReferencedEntityID(),
+              connectionProvider, Entities.getSearchProperties(property.getReferencedEntityID()));
+      lookupModel.setMultipleSelectionAllowed(true);
+      return new DefaultForeignKeySearchModel(property, lookupModel);
+    }
   }
 }

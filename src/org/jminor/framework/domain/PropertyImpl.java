@@ -48,9 +48,9 @@ class PropertyImpl implements Property, Serializable {
   private final String caption;
 
   /**
-   * A reference to a parent foreign key property, if one exists
+   * This is based on an immutable field, so cache it
    */
-  private ForeignKeyProperty foreignKeyProperty;
+  private final int hashCode;
 
   /**
    * The default value for this property
@@ -114,11 +114,6 @@ class PropertyImpl implements Property, Serializable {
    * Caching this frequently referenced attribute
    */
   private Class<?> typeClass;
-
-  /**
-   * This is based on an immutable field, so cache it
-   */
-  private int hashCode;
 
   /**
    * Instantiates a new property of the type Types.INTEGER
@@ -260,21 +255,13 @@ class PropertyImpl implements Property, Serializable {
   }
 
   /** {@inheritDoc} */
-  public final Property setReadOnly(final boolean readOnly) {
-    if (isForeignKeyProperty()) {
-      throw new IllegalStateException("Can not set the read only status of a property with a parent property");
-    }
-
+  public Property setReadOnly(final boolean readOnly) {
     this.readOnly = readOnly;
     return this;
   }
 
   /** {@inheritDoc} */
-  public final boolean isReadOnly() {
-    if (foreignKeyProperty != null) {
-      return foreignKeyProperty.isReadOnly();
-    }
-
+  public boolean isReadOnly() {
     return this.readOnly;
   }
 
@@ -290,21 +277,13 @@ class PropertyImpl implements Property, Serializable {
   }
 
   /** {@inheritDoc} */
-  public final Property setNullable(final boolean nullable) {
-    if (isForeignKeyProperty()) {
-      throw new IllegalStateException("Set the nullable status of the parent property instead: " + foreignKeyProperty);
-    }
-
+  public Property setNullable(final boolean nullable) {
     this.nullable = nullable;
     return this;
   }
 
   /** {@inheritDoc} */
-  public final boolean isNullable() {
-    if (isForeignKeyProperty()) {
-      return foreignKeyProperty.isNullable();
-    }
-
+  public boolean isNullable() {
     return nullable;
   }
 
@@ -426,16 +405,7 @@ class PropertyImpl implements Property, Serializable {
   }
 
   /** {@inheritDoc} */
-  public final boolean isForeignKeyProperty() {
-    return this.foreignKeyProperty != null;
-  }
-
-  /** {@inheritDoc} */
-  public final String getCaption() {
-    if (caption == null && isForeignKeyProperty()) {
-      return foreignKeyProperty.getCaption();
-    }
-
+  public String getCaption() {
     if (caption == null) {
       return propertyID;
     }
@@ -462,16 +432,6 @@ class PropertyImpl implements Property, Serializable {
     }
 
     return typeClass;
-  }
-
-  /** {@inheritDoc} */
-  public final void setForeignKeyProperty(final ForeignKeyProperty foreignKeyProperty) {
-    this.foreignKeyProperty = foreignKeyProperty;
-  }
-
-  /** {@inheritDoc} */
-  public final ForeignKeyProperty getForeignKeyProperty() {
-    return this.foreignKeyProperty;
   }
 
   private Format initializeDefaultFormat() {
@@ -501,6 +461,7 @@ class PropertyImpl implements Property, Serializable {
     private boolean searchable = true;
     private boolean groupingColumn = false;
     private boolean aggregateColumn = false;
+    private ForeignKeyProperty foreignKeyProperty;
 
     ColumnPropertyImpl(final String propertyID, final int type, final String caption) {
       super(propertyID, type, caption);
@@ -586,6 +547,72 @@ class PropertyImpl implements Property, Serializable {
     /** {@inheritDoc} */
     public boolean isAggregateColumn() {
       return aggregateColumn;
+    }
+
+    /** {@inheritDoc} */
+    public final void setForeignKeyProperty(final ForeignKeyProperty foreignKeyProperty) {
+      this.foreignKeyProperty = foreignKeyProperty;
+    }
+
+    /** {@inheritDoc} */
+    public final ForeignKeyProperty getForeignKeyProperty() {
+      return foreignKeyProperty;
+    }
+
+    /** {@inheritDoc} */
+    public final boolean isForeignKeyProperty() {
+      return foreignKeyProperty != null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public final Property setReadOnly(final boolean readOnly) {
+      if (isForeignKeyProperty()) {
+        throw new IllegalStateException("Can not set the read only status of a property which is part of a foreign key property");
+      }
+
+      return super.setReadOnly(readOnly);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public final boolean isReadOnly() {
+      if (foreignKeyProperty != null) {
+        return foreignKeyProperty.isReadOnly();
+      }
+
+      return super.isReadOnly();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public final Property setNullable(final boolean nullable) {
+      if (isForeignKeyProperty()) {
+        throw new IllegalStateException("Set the nullable status of the parent property instead: " + foreignKeyProperty);
+      }
+
+      return super.setNullable(nullable);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public final boolean isNullable() {
+      if (isForeignKeyProperty()) {
+        return foreignKeyProperty.isNullable();
+      }
+
+      return super.isNullable();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public final String getCaption() {
+      final String superCaption = super.getCaption();
+      if (superCaption == null && isForeignKeyProperty()) {
+        return foreignKeyProperty.getCaption();
+      }
+
+      return superCaption;
     }
   }
 

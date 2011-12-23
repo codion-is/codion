@@ -247,7 +247,7 @@ public interface Property extends Attribute {
    * Sets the Format to use when presenting property values
    * @param format the format to use
    * @return this Property instance
-   * @throws IllegalArgumentException in case the format does now fit the property type,
+   * @throws IllegalArgumentException in case the format does not fit the property type,
    * f.ex. NumberFormat is expected for numerical properties and DateFormat for date properties
    */
   Property setFormat(final Format format);
@@ -257,21 +257,6 @@ public interface Property extends Attribute {
    * @return true if this attribute is read only
    */
   boolean isReadOnly();
-
-  /**
-   * @return true if this property is part of a ForeignKeyProperty
-   */
-  boolean isForeignKeyProperty();
-
-  /**
-   * @param foreignKeyProperty the ForeignKeyProperty this property is part of
-   */
-  void setForeignKeyProperty(final ForeignKeyProperty foreignKeyProperty);
-
-  /**
-   * @return the ForeignKeyProperty this property is part of, if any
-   */
-  ForeignKeyProperty getForeignKeyProperty();
 
   /**
    * Specifies a property that can be include in database search criteria
@@ -330,6 +315,21 @@ public interface Property extends Attribute {
      * @return true if this is an aggregate column
      */
     boolean isAggregateColumn();
+
+    /**
+     * @return true if this property is part of a ForeignKeyProperty
+     */
+    boolean isForeignKeyProperty();
+
+    /**
+     * @param foreignKeyProperty the ForeignKeyProperty this property is part of
+     */
+    void setForeignKeyProperty(final ForeignKeyProperty foreignKeyProperty);
+
+    /**
+     * @return the ForeignKeyProperty this property is part of, if any
+     */
+    ForeignKeyProperty getForeignKeyProperty();
   }
 
   /**

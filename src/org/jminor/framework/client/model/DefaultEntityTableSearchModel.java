@@ -35,14 +35,13 @@ import java.util.Map;
 /**
  * A default EntityTableSearchModel implementation
  */
-public class DefaultEntityTableSearchModel implements EntityTableSearchModel, EntityDataProvider {
+public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
 
   private final State stSearchStateChanged = States.state();
   private final Event evtSimpleSearchStringChanged = Events.event();
   private final Event evtSimpleSearchPerformed = Events.event();
 
   private final String entityID;
-  private final EntityConnectionProvider connectionProvider;
   private final Map<String, ColumnSearchModel<Property>> propertyFilterModels = new LinkedHashMap<String, ColumnSearchModel<Property>>();
   private final Map<String, PropertySearchModel<? extends Property.SearchableProperty>> propertySearchModels = new HashMap<String, PropertySearchModel<? extends Property.SearchableProperty>>();
   private Criteria<Property.ColumnProperty> additionalSearchCriteria;
@@ -74,32 +73,16 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
                                        final PropertySearchModelProvider searchModelProvider) {
     Util.rejectNullValue(entityID, entityID);
     this.entityID = entityID;
-    this.connectionProvider = connectionProvider;
-    for (final Property property : Entities.getProperties(entityID).values()) {
-      if (!property.isHidden()) {
-        final ColumnSearchModel<Property> filterModel = filterModelProvider.initializePropertyFilterModel(property);
-        this.propertyFilterModels.put(filterModel.getColumnIdentifier().getPropertyID(), filterModel);
-      }
-      if (property instanceof Property.SearchableProperty && !property.isForeignKeyProperty() && !isAggregateColumnProperty(property)) {
-        final PropertySearchModel<? extends Property.SearchableProperty> searchModel =
-                searchModelProvider.initializePropertySearchModel((Property.SearchableProperty) property, connectionProvider);
-        if (searchModel != null) {
-          this.propertySearchModels.put(searchModel.getColumnIdentifier().getPropertyID(), searchModel);
-        }
-      }
-    }
-    this.rememberedSearchState = getSearchModelState();
+    initializeFilterModels(entityID, filterModelProvider);
+    initializeColumnPropertySearchModels(entityID, searchModelProvider);
+    initializeForeignKeyPropertySearchModels(entityID, connectionProvider, searchModelProvider);
+    rememberCurrentSearchState();
     bindEvents();
   }
 
   /** {@inheritDoc} */
   public final String getEntityID() {
     return entityID;
-  }
-
-  /** {@inheritDoc} */
-  public final EntityConnectionProvider getConnectionProvider() {
-    return connectionProvider;
   }
 
   /** {@inheritDoc} */
@@ -353,11 +336,35 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel, En
     return stringBuilder.toString();
   }
 
-  /**
-   * @param property the property
-   * @return true if the property is a column property and that column is the result of an aggregate function
-   */
-  private static boolean isAggregateColumnProperty(final Property property) {
-    return property instanceof Property.ColumnProperty && ((Property.ColumnProperty) property).isAggregateColumn();
+  private void initializeFilterModels(final String entityID, final PropertyFilterModelProvider filterModelProvider) {
+    for (final Property property : Entities.getProperties(entityID).values()) {
+      if (!property.isHidden()) {
+        final ColumnSearchModel<Property> filterModel = filterModelProvider.initializePropertyFilterModel(property);
+        this.propertyFilterModels.put(filterModel.getColumnIdentifier().getPropertyID(), filterModel);
+      }
+    }
+  }
+
+  private void initializeColumnPropertySearchModels(final String entityID, final PropertySearchModelProvider searchModelProvider) {
+    for (final Property.ColumnProperty columnProperty : Entities.getColumnProperties(entityID)) {
+      if (!columnProperty.isForeignKeyProperty() && !columnProperty.isAggregateColumn()) {
+        final PropertySearchModel<? extends Property.SearchableProperty> searchModel =
+                searchModelProvider.initializePropertySearchModel(columnProperty, null);
+        if (searchModel != null) {
+          this.propertySearchModels.put(searchModel.getColumnIdentifier().getPropertyID(), searchModel);
+        }
+      }
+    }
+  }
+
+  private void initializeForeignKeyPropertySearchModels(final String entityID, final EntityConnectionProvider connectionProvider,
+                                                        final PropertySearchModelProvider searchModelProvider) {
+    for (final Property.ForeignKeyProperty foreignKeyProperty : Entities.getForeignKeyProperties(entityID)) {
+      final PropertySearchModel<? extends Property.SearchableProperty> searchModel =
+              searchModelProvider.initializePropertySearchModel(foreignKeyProperty, connectionProvider);
+      if (searchModel != null) {
+        this.propertySearchModels.put(searchModel.getColumnIdentifier().getPropertyID(), searchModel);
+      }
+    }
   }
 }
