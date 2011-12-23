@@ -339,6 +339,9 @@ public class FilteredTablePanel<T, C> extends JPanel {
       /** {@inheritDoc} */
       @Override
       public void keyReleased(final KeyEvent e) {
+        if (e.getModifiers() != 0) {
+          return;
+        }
         if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_DOWN) {
           doSearch(e.isShiftDown(), lastSearchResultIndex.y + 1, true, txtSearch.getText());
         }

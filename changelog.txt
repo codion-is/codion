@@ -2609,3 +2609,5 @@
   Removed parameters from calls to UiUtil.addKeyEvent() made redundant by sensible default values
   FilteredTablePanel, searchField KeyAdapter no longer explicitly dispatches unhandled event to parent
   UiUtil.DialogDisposeAction renamed to DisposeWindowAction, changed accordingly, no longer takes action name as constructor parameter
+  FilteredTablePanel, searchField ignores key events with modifiers
+  MaximumMatch, ignores key events with modifiers
