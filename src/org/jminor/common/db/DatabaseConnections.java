@@ -11,7 +11,6 @@ public final class DatabaseConnections {
 
   /**
    * Constructs a new DatabaseConnection instance, based on the given Connection object.
-   * NB. auto commit is disabled on the Connection that is provided.
    * @param database the database
    * @param user the user for the db-connection
    * @return a new DatabaseConnection instance

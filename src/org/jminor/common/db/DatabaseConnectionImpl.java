@@ -54,7 +54,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
   /**
    * Constructs a new DatabaseConnectionImpl instance, initialized and ready for usage
    * @param database the database
-   * @param user the user for the db-connection
+   * @param user the user to base this database connection on
    * @throws DatabaseException in case there is a problem connecting to the database
    * @throws ClassNotFoundException in case the database driver was not found
    */
@@ -72,15 +72,16 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
    * @param database the database
    * @param connection the Connection object to base this DatabaseConnectionImpl on
    * @throws IllegalArgumentException in case the given connection is invalid or disconnected
-   * @throws DatabaseException in case the validation statement creation fails
+   * @throws DatabaseException in case of an exception while retrieving the username from the connection
+   * meta data or if a validation statement is required and creating it fails
    */
   public DatabaseConnectionImpl(final Database database, final Connection connection) throws DatabaseException {
     Util.rejectNullValue(database, "database");
     this.database = database;
-    this.user = getUser(connection);
     if (!isValid(database, connection, null)) {
       throw new IllegalArgumentException("Connection invalid during instantiation");
     }
+    this.user = getUser(connection);
     setConnection(connection);
   }
 
@@ -594,13 +595,20 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
   }
 
   /**
-   * Returns a User with which username is simply a string representation
-   * of the connection object.
+   * Returns a User with the username from the meta data retrieved from the given connection
    * @param connection the connection
    * @return a user based on the information gleamed from the given connection
+   * @throws DatabaseException in case of an exception while retrieving
+   * the username from the connection meta data
+   * @see java.sql.DatabaseMetaData#getUserName()
    */
-  private static User getUser(final Connection connection) {
-    return new User(connection.toString(), null);
+  private static User getUser(final Connection connection) throws DatabaseException {
+    try {
+      return new User(connection.getMetaData().getUserName(), null);
+    }
+    catch (SQLException e) {
+      throw new DatabaseException(e, "", "Exception while trying to retrieve username from meta data");
+    }
   }
 
   private static final class MixedResultPacker implements ResultPacker<List> {

@@ -34,7 +34,7 @@ public final class EntityConnections {
    * @param connection the connection object to base the entity connection on
    * @return a new EntityConnection instance, wrapping the given connection
    * @throws IllegalArgumentException in case the given connection is invalid or disconnected
-   * @throws org.jminor.common.db.exception.DatabaseException in case a validation statement is required
+   * @throws DatabaseException in case a validation statement is required
    * but could not be created
    * @see org.jminor.common.db.Database#supportsIsValid()
    */

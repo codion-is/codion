@@ -2617,3 +2617,4 @@
   Property.is/set/getForeignKeyProperty() moved to Property.ColumnProperty, where it belongs
   DefaultEntityTableSearchModel refactored, no longer implements EntityDataProvider, connectionProvider field removed
   DefaultPropertySearchModelProvider refactored
+  DatabaseConnectionImpl, Connection based constructor now retrieves username from the underlying connection meta data instead of using .toString(), tested

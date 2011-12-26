@@ -79,11 +79,12 @@ public class DatabaseConnectionImplTest {
     Connection connection = null;
     try {
       connection = DATABASE.createConnection(User.UNIT_TEST_USER);
-      final DatabaseConnectionImpl entityConnection = new DatabaseConnectionImpl(DATABASE, connection);
-      assertTrue(entityConnection.isConnected());
-      assertTrue(entityConnection.isValid());
-      assertNotNull(entityConnection.getUser());
-      assertNotNull(entityConnection.queryInteger("select count(*) from scott.dept"));
+      final DatabaseConnectionImpl databaseConnection = new DatabaseConnectionImpl(DATABASE, connection);
+      assertTrue(databaseConnection.isConnected());
+      assertTrue(databaseConnection.isValid());
+      assertNotNull(databaseConnection.getUser());
+      assertTrue(User.UNIT_TEST_USER.getUsername().equalsIgnoreCase(databaseConnection.getUser().getUsername()));
+      assertNotNull(databaseConnection.queryInteger("select count(*) from scott.dept"));
 
       connection.close();
       try {
