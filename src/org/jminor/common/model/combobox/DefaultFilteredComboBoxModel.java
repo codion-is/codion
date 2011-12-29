@@ -143,7 +143,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
       return Collections.unmodifiableList(visibleItems);
     }
 
-    return Collections.unmodifiableList(visibleItems.subList(1, getSize() - 1));
+    return Collections.unmodifiableList(visibleItems.subList(1, getSize()));
   }
 
   /** {@inheritDoc} */

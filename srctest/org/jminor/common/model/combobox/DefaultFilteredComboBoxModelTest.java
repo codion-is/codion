@@ -23,6 +23,7 @@ public class DefaultFilteredComboBoxModelTest {
 
   private FilteredComboBoxModel<String> testModel;
 
+  private static final String NULL = "null";
   private static final String ANNA = "anna";
   private static final String KALLI = "kalli";
   private static final String SIGGI = "siggi";
@@ -38,9 +39,9 @@ public class DefaultFilteredComboBoxModelTest {
   @Test
   public void testRefreshClear() {
     testModel.refresh();
-    assertEquals(Integer.valueOf(5), (Integer) testModel.getVisibleItems().size());
+    assertEquals(5, testModel.getVisibleItems().size());
     testModel.clear();
-    assertTrue(testModel.getSize() == 0);
+    assertEquals(0, testModel.getSize());
     assertTrue(testModel.isCleared());
   }
 
@@ -52,11 +53,11 @@ public class DefaultFilteredComboBoxModelTest {
 
   @Test
   public void testSorting() {
-    assertTrue(ANNA + " should be at index 0, got " + testModel.getElementAt(0), testModel.getElementAt(0).equals(ANNA));
-    assertTrue(BJORN + " should be at index 1, got " + testModel.getElementAt(1), testModel.getElementAt(1).equals(BJORN));
-    assertTrue(KALLI + " should be at index 2, got " + testModel.getElementAt(2), testModel.getElementAt(2).equals(KALLI));
-    assertTrue(SIGGI + " should be at index 3, got " + testModel.getElementAt(3), testModel.getElementAt(3).equals(SIGGI));
-    assertTrue(TOMAS + " should be at index 4, got " + testModel.getElementAt(4), testModel.getElementAt(4).equals(TOMAS));
+    assertEquals(ANNA + " should be at index 1, got " + testModel.getElementAt(1), ANNA, testModel.getElementAt(1));
+    assertEquals(BJORN + " should be at index 2, got " + testModel.getElementAt(2), BJORN, testModel.getElementAt(2));
+    assertEquals(KALLI + " should be at index 3, got " + testModel.getElementAt(3), KALLI, testModel.getElementAt(3));
+    assertEquals(SIGGI + " should be at index 4, got " + testModel.getElementAt(4), SIGGI, testModel.getElementAt(4));
+    assertEquals(TOMAS + " should be at index 5, got " + testModel.getElementAt(5), TOMAS, testModel.getElementAt(5));
   }
 
   @Test
@@ -74,7 +75,7 @@ public class DefaultFilteredComboBoxModelTest {
     assertEquals(BJORN, testModel.getSelectedValue());
     testModel.setSelectedItem(null);
     assertEquals(2, selectionChangedCounter.size());
-    assertNull(testModel.getSelectedItem());
+    assertEquals(NULL, testModel.getSelectedItem());
     assertNull(testModel.getSelectedValue());
     testModel.removeSelectionListener(selectionListener);
   }
@@ -87,7 +88,8 @@ public class DefaultFilteredComboBoxModelTest {
         return !item.equals(BJORN);
       }
     });
-    assertNull(testModel.getSelectedItem());
+    assertEquals(NULL, testModel.getSelectedItem());
+    assertNull(testModel.getSelectedValue());
 
     testModel.setFilterCriteria(null);
     testModel.setFilterSelectedItem(false);
@@ -118,20 +120,20 @@ public class DefaultFilteredComboBoxModelTest {
       }
     });
     assertEquals(1, filteringEndedCounter.size());
-    assertTrue("The model should be empty", testModel.getSize() == 0);
+    assertEquals("The model should only include the null value item", 1, testModel.getSize());
     testModel.setFilterCriteria(new FilterCriteria<String>() {
       public boolean include(final String item) {
         return true;
       }
     });
     assertEquals(2, filteringEndedCounter.size());
-    assertTrue("The model should be full", testModel.getSize() == 5);
+    assertEquals("The model should be full", 6, testModel.getSize());
     testModel.setFilterCriteria(new FilterCriteria<String>() {
       public boolean include(final String item) {
         return !item.equals(ANNA);
       }
     });
-    assertTrue("The model should contain 4 items", testModel.getSize() == 4);
+    assertEquals("The model should contain 5 items", 5, testModel.getSize());
     assertTrue("The model should not contain '" + ANNA + "'", !testModel.isVisible(ANNA));
     assertTrue(testModel.isFiltered(ANNA));
     testModel.setFilterCriteria(new FilterCriteria<String>() {
@@ -139,17 +141,17 @@ public class DefaultFilteredComboBoxModelTest {
         return item.equals(ANNA);
       }
     });
-    assertTrue("The model should only contain 1 item", testModel.getSize() == 1);
+    assertEquals("The model should only contain 2 items", 2, testModel.getSize());
     assertTrue("The model should only contain '" + ANNA + "'", testModel.isVisible(ANNA));
 
-    assertTrue(testModel.getFilteredItems().size() == 4);
-    assertTrue(testModel.getVisibleItems().size() == 1);
-    assertTrue(testModel.getFilteredItemCount() == 4);
-    assertTrue(testModel.getVisibleItemCount() == 1);
-    assertTrue(testModel.getAllItems().size() == 5);
+    assertEquals(4, testModel.getFilteredItems().size());
+    assertEquals(1, testModel.getVisibleItems().size());
+    assertEquals(4, testModel.getFilteredItemCount());
+    assertEquals(2, testModel.getVisibleItemCount());
+    assertEquals(6, testModel.getAllItems().size());
 
     testModel.addItem(BJORN);
-    assertTrue(testModel.getFilteredItemCount() == 5);
+    assertEquals(5, testModel.getFilteredItemCount());
 
     assertFalse(testModel.contains(BJORN, false));
     assertTrue(testModel.contains(BJORN, true));
@@ -177,41 +179,34 @@ public class DefaultFilteredComboBoxModelTest {
 
   @Test
   public void setNullValueString() throws Exception {
-    testModel.addItem(null);
-    final String nullValueString = "nullValueString";
-    testModel.setNullValueString(nullValueString);
     assertTrue(testModel.isVisible(null));
     testModel.refresh();
-    assertEquals(Integer.valueOf(4), (Integer) testModel.getVisibleItems().size());//sublist 1 ... due to nullValueString
-    assertTrue(testModel.getNullValueString().equals(nullValueString));
+    assertEquals(5, testModel.getVisibleItems().size());
+    assertTrue(testModel.getNullValueString().equals(NULL));
     testModel.setSelectedItem(null);
-    assertEquals(testModel.getSelectedItem(), nullValueString);
+    assertEquals(testModel.getSelectedItem(), NULL);
     assertTrue(testModel.isNullValueSelected());
     assertNull(testModel.getSelectedValue());
-    testModel.setSelectedItem(nullValueString);
-    assertEquals(nullValueString, testModel.getElementAt(0));
+    testModel.setSelectedItem(NULL);
+    assertEquals(NULL, testModel.getElementAt(0));
     assertEquals(ANNA, testModel.getElementAt(1));
   }
 
   @Before
   public void setUp() throws Exception {
     testModel = new DefaultFilteredComboBoxModel<String>();
-    testModel.setContents(initContents());
-  }
-
-  @After
-  public void tearDown() throws Exception {
-    testModel = null;
-  }
-
-  private List<String> initContents() {
+    testModel.setNullValueString(NULL);
     final List<String> names = new ArrayList<String>();
     names.add(ANNA);
     names.add(KALLI);
     names.add(SIGGI);
     names.add(TOMAS);
     names.add(BJORN);
+    testModel.setContents(names);
+  }
 
-    return names;
+  @After
+  public void tearDown() throws Exception {
+    testModel = null;
   }
 }

@@ -17,7 +17,7 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity>, Enti
 
   /**
    * @param primaryKey the primary key of the entity to fetch from this model
-   * @return the entity with the given key if it is contained in the model, null otherwise
+   * @return the entity with the given key if found in the model, null otherwise
    */
   Entity getEntity(final Entity.Key primaryKey);
 
