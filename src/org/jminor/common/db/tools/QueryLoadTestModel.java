@@ -44,7 +44,7 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
    */
   public QueryLoadTestModel(final Database database, final User user, final Collection<? extends QueryScenario> scenarios) {
     super(user, scenarios, DEFAULT_MAXIMUM_THINK_TIME_MS, DEFAULT_LOGIN_DELAY_MS, DEFAULT_BATCH_SIZE, DEFAULT_QUERY_WARNING_TIME_MS);
-    this.pool = ConnectionPools.createPool(new ConnectionProvider(database), user);
+    this.pool = ConnectionPools.createPool(new ConnectionProvider(database, user));
     addExitListener(new ActionListener() {
       /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
@@ -172,19 +172,26 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
   private static class ConnectionProvider implements PoolableConnectionProvider {
 
     private final Database database;
+    private final User user;
 
-    private ConnectionProvider(final Database database) {
+    private ConnectionProvider(final Database database, final User user) {
       this.database = database;
+      this.user = user;
     }
 
     /** {@inheritDoc} */
-    public PoolableConnection createConnection(final User user) throws ClassNotFoundException, DatabaseException {
+    public PoolableConnection createConnection() throws ClassNotFoundException, DatabaseException {
       return DatabaseConnections.createConnection(database, user);
     }
 
     /** {@inheritDoc} */
     public void destroyConnection(final PoolableConnection connection) {
       connection.disconnect();
+    }
+
+    /** {@inheritDoc} */
+    public User getUser() {
+      return user;
     }
   }
 }

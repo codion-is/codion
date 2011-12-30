@@ -3,7 +3,6 @@
  */
 package org.jminor.common.db.pool;
 
-import org.jminor.common.model.User;
 import org.jminor.common.db.PoolableConnectionProvider;
 
 /**
@@ -16,10 +15,9 @@ public final class ConnectionPools {
   /**
    * Instantiates a new ConnectionPool.
    * @param connectionProvider the connection provider
-   * @param user the user this pool is based on
    * @return a new connection pool
    */
-  public static ConnectionPool createPool(final PoolableConnectionProvider connectionProvider, final User user) {
-    return new ConnectionPoolImpl(connectionProvider, user);
+  public static ConnectionPool createPool(final PoolableConnectionProvider connectionProvider) {
+    return new ConnectionPoolImpl(connectionProvider);
   }
 }

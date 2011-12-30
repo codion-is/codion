@@ -13,11 +13,6 @@ import org.jminor.common.model.User;
 public interface ConnectionPool {
 
   /**
-   * @return the user this connection pool is based on.
-   */
-  User getUser();
-
-  /**
    * Fetches a connection from the pool.
    * @return a database connection retrieved from the pool
    * @throws ConnectionPoolException.NoConnectionAvailable in case the maximum check out time is exceeded
@@ -34,6 +29,11 @@ public interface ConnectionPool {
    * @param connection the database connection to return to the pool
    */
   void returnConnection(final PoolableConnection connection);
+
+  /**
+   * @return the user this connection pool is based on.
+   */
+  User getUser();
 
   /**
    * Closes this connection pool, connections subsequently checked in are disconnected
@@ -147,7 +147,6 @@ public interface ConnectionPool {
   int getNewConnectionThreshold();
 
   /**
-   *
    * @param value the time to wait before creating a new connection in ms
    * @throws IllegalArgumentException in case value is negative or larger than <code>maximumCheckOutTime</code>
    */

@@ -2621,3 +2621,8 @@
   DefaultEntityComboBoxModel.getEntity(Entity.Key) bug fixed, did not handle the null element
   DefaultFilteredComboBoxModel.getVisibleItems() bug fixed, threw index out of bounds exception when the model contained only the null value item, did not return the last value in the list otherwise
   DefaultFilteredComboBoxModelTest test model now has the nullValueString set, changed accordingly
+  Events, minor refactoring
+  PoolableConnectionProvider.createConnection() no longer takes User as parameter
+  PoolableConnectionProvider.getUser() added
+  ConnectionPoolImpl.user field removed, constructor changed accordingly, getUser() delegates to the connectionProvider, see above
+  ConnectionPools.createPool() no longer takes a User argument

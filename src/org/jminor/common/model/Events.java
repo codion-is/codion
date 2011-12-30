@@ -7,7 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 
 /**
  * A factory class for Event objects.
@@ -38,7 +37,7 @@ public final class Events {
     /** {@inheritDoc} */
     public void fire(final ActionEvent event) {
       if (observer != null) {
-        for (final ActionListener listener : new ArrayList<ActionListener>(observer.getListeners())) {
+        for (final ActionListener listener : observer.getListeners()) {
           listener.actionPerformed(event);
         }
       }
@@ -94,9 +93,9 @@ public final class Events {
       }
     }
 
-    private synchronized Collection<? extends ActionListener> getListeners() {
+    private synchronized Collection<ActionListener> getListeners() {
       synchronized (listeners) {
-        return Collections.unmodifiableCollection(listeners);
+        return new ArrayList<ActionListener>(listeners);
       }
     }
   }

@@ -45,7 +45,7 @@ public class ConnectionPoolImplTest {
   public void test() throws Exception {
     final Date startDate = new Date();
     final User user = User.UNIT_TEST_USER;
-    final ConnectionPool pool = new ConnectionPoolImpl(createConnectionProvider(), user);
+    final ConnectionPool pool = new ConnectionPoolImpl(createConnectionProvider(user));
     assertTrue(pool.isEnabled());
     pool.getUser().setPassword(User.UNIT_TEST_USER.getPassword());
     assertEquals(user, pool.getUser());
@@ -198,14 +198,17 @@ public class ConnectionPoolImplTest {
     catch (IllegalStateException e) {}
   }
 
-  private static PoolableConnectionProvider createConnectionProvider() {
+  private static PoolableConnectionProvider createConnectionProvider(final User user) {
     return new PoolableConnectionProvider() {
       final Database database = Databases.createInstance();
-      public PoolableConnection createConnection(final User user) throws ClassNotFoundException, DatabaseException {
+      public PoolableConnection createConnection() throws ClassNotFoundException, DatabaseException {
         return DatabaseConnections.createConnection(database, user);
       }
       public void destroyConnection(final PoolableConnection connection) {
         connection.disconnect();
+      }
+      public User getUser() {
+        return user;
       }
     };
   }

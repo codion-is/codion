@@ -504,7 +504,7 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
         final String username = usernamePassword.substring(0, splitIndex);
         final String password = usernamePassword.substring(splitIndex + 1, usernamePassword.length());
         final User poolUser = new User(username, password);
-        CONNECTION_POOLS.put(poolUser, ConnectionPools.createPool(new ConnectionProvider(database), poolUser));
+        CONNECTION_POOLS.put(poolUser, ConnectionPools.createPool(new ConnectionProvider(database, poolUser)));
       }
     }
   }
@@ -769,19 +769,26 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
   private static final class ConnectionProvider implements PoolableConnectionProvider {
 
     private final Database database;
+    private final User user;
 
-    private ConnectionProvider(final Database database) {
+    private ConnectionProvider(final Database database, final User user) {
       this.database = database;
+      this.user = user;
     }
 
     /** {@inheritDoc} */
-    public PoolableConnection createConnection(final User user) throws ClassNotFoundException, DatabaseException {
+    public PoolableConnection createConnection() throws ClassNotFoundException, DatabaseException {
       return createDatabaseConnection(database, user).getPoolableConnection();
     }
 
     /** {@inheritDoc} */
     public void destroyConnection(final PoolableConnection connection) {
       connection.disconnect();
+    }
+
+    /** {@inheritDoc} */
+    public User getUser() {
+      return user;
     }
   }
 

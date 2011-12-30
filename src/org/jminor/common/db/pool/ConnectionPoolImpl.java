@@ -42,7 +42,6 @@ final class ConnectionPoolImpl implements ConnectionPool {
   private static final long NANO_IN_MILLI = 1000000;
 
   private final PoolableConnectionProvider connectionProvider;
-  private final User user;
   private final Deque<PoolableConnection> pool = new ArrayDeque<PoolableConnection>();
   private final Collection<PoolableConnection> inUse = new ArrayList<PoolableConnection>();
   private final Counter counter = new Counter();
@@ -69,10 +68,8 @@ final class ConnectionPoolImpl implements ConnectionPool {
   /**
    * Instantiates a new ConnectionPoolImpl.
    * @param connectionProvider the connection provider
-   * @param user the user this pool is based on
    */
-  ConnectionPoolImpl(final PoolableConnectionProvider connectionProvider, final User user) {
-    this.user = user;
+  ConnectionPoolImpl(final PoolableConnectionProvider connectionProvider) {
     this.connectionProvider = connectionProvider;
     for (int i = 0; i < FINE_GRAINED_STATS_SIZE; i++) {
       connectionPoolStatistics.add(new ConnectionPoolStateImpl());
@@ -146,7 +143,7 @@ final class ConnectionPoolImpl implements ConnectionPool {
 
   /** {@inheritDoc} */
   public User getUser() {
-    return user;
+    return connectionProvider.getUser();
   }
 
   /** {@inheritDoc} */
@@ -162,7 +159,7 @@ final class ConnectionPoolImpl implements ConnectionPool {
 
   /** {@inheritDoc} */
   public ConnectionPoolStatistics getStatistics(final long since) {
-    final ConnectionPoolStatisticsImpl statistics = new ConnectionPoolStatisticsImpl(user);
+    final ConnectionPoolStatisticsImpl statistics = new ConnectionPoolStatisticsImpl(getUser());
     synchronized (pool) {
       final int inPool = pool.size();
       final int inUseCount = inUse.size();
@@ -335,7 +332,7 @@ final class ConnectionPoolImpl implements ConnectionPool {
       creatingConnection = true;
     }
     try {
-      final PoolableConnection connection = connectionProvider.createConnection(user);
+      final PoolableConnection connection = connectionProvider.createConnection();
       counter.incrementConnectionsCreatedCounter();
       inUse.add(connection);
 

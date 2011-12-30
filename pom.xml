@@ -6,7 +6,7 @@
   <groupId>org.jminor</groupId>
   <artifactId>jminor</artifactId>
   <name>JMinor</name>
-  <version>0.6.2</version>
+  <version>0.6.4</version>
   <description>
     JMinor is a minimalistic Java rich client/server CRUD application framework, based solely on Java Standard Edition components, JDBC, RMI and Swing.
   </description>
