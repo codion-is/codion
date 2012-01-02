@@ -168,7 +168,7 @@ public final class EntityGeneratorModel {
     }
   }
 
-  private TableModel initializeTableModel() throws ClassNotFoundException, SQLException {
+  private TableModel initializeTableModel() {
     final TableColumnModel columnModel = new DefaultTableColumnModel();
     final TableColumn column = new TableColumn();
     column.setIdentifier(0);
@@ -232,7 +232,7 @@ public final class EntityGeneratorModel {
 
   private static void appendPropertyConstants(final StringBuilder builder, final Table table,
                                               final List<Column> columns, final List<ForeignKey> foreignKeys,
-                                              final List<PrimaryKey> primaryKeys) throws SQLException {
+                                              final List<PrimaryKey> primaryKeys) {
     for (final Column column : columns) {
       column.setForeignKey(getForeignKey(column, foreignKeys));
       column.setPrimaryKey(getPrimaryKey(column, primaryKeys));

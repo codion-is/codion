@@ -75,8 +75,4 @@ public final class HSQLDatabase extends AbstractDatabase {
       return NETWORKED_URL_PREFIX + getHost() + ":" + getPort() + "/" + getSid() + (authentication == null ? "" : ";" + authentication);
     }
   }
-
-  /** {@inheritDoc} */
-  @Override
-  public void shutdownEmbedded(final Properties connectionProperties) {}
 }

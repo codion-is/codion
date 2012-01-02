@@ -4,14 +4,11 @@
   <description>Ant build file for project_name</description>
 
   <property file="build.properties"/>
+  <property file="user.properties"/>
 
-  <path id="libraries">
-    <fileset dir="${lib}">
-      <include name="**/*.jar"/>
-    </fileset>
-  </path>
+  <fileset id="libraries" dir="${lib}" />
 
-  <fileset id="resources" dir="${src}" includes="**/*.jpg,**/*.gif,**/*.png,**/*.properties,**/*.jasper" />
+  <fileset id="resources" dir="${src}" includes="**/*.jpg,**/*.gif,**/*.png,**/*.properties,**/*.jasper,logback.xml" />
 
   <target name="clean">
     <delete dir="${build.root}" includeEmptyDirs="true" />
@@ -39,7 +36,9 @@
   <target name="build" depends="init">
     <javac destdir="${build.base}" debug="true" >
       <src path="${src}" />
-      <classpath refid="libraries"/>
+      <classpath>
+        <fileset refid="libraries" />
+      </classpath>
     </javac>
   </target>
 
@@ -54,7 +53,7 @@
       <fileset refid="resources" />
     </zip>
     <copy todir="${dist}/${DSTAMP}/lib">
-      <path refid="libraries" />
+      <fileset refid="libraries" />
     </copy>
     <copy file="${basedir}/${launch.file.dev}" todir="${dist}/${DSTAMP}" overwrite="true" />
     <copy file="${basedir}/${launch.file.test}" todir="${dist}/${DSTAMP}" overwrite="true" />
@@ -131,10 +130,11 @@
   </target>
 
   <target name="doc" depends="init">
-    <javadoc destdir="${docsapi}" author="true" version="true"
-        use="true" windowtitle="API for project_name">
-      <classpath refid="libraries" />
-      <fileset dir="${src}" defaultexcludes="yes" excludes="**/Test*.java" />
+    <javadoc destdir="${docsapi}" author="true" version="true" use="true" windowtitle="API for project_name">
+      <classpath>
+        <fileset refid="libraries" />
+      </classpath>
+      <fileset dir="${src}" />
     </javadoc>
   </target>
 
@@ -147,7 +147,7 @@
       <formatter type="xml" usefile="true" />
       <classpath>
         <dirset dir="${build.base}" />
-        <path refid="libraries" />
+        <fileset refid="libraries" />
       </classpath>
       <batchtest todir="${test.reports}">
         <fileset dir="${build.test}" includes="**/*Test.class" />

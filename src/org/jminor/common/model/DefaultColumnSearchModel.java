@@ -528,7 +528,7 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
       realValue = realValue.toUpperCase(Locale.getDefault());
     }
 
-    if (upperBoundString.indexOf(wildcard) < 0) {
+    if (!upperBoundString.contains(wildcard)) {
       return realValue.compareTo(upperBoundString) == 0;
     }
 

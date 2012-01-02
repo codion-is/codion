@@ -31,6 +31,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
 
   private final List<T> visibleItems = new ArrayList<T>();
   private final List<T> filteredItems = new ArrayList<T>();
+  private final Comparator<? super T> sortComparator;
 
   /**
    * set during setContents
@@ -40,7 +41,6 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   private T selectedItem = null;
   private String nullValueString;
   private FilterCriteria<T> filterCriteria = acceptAllCriteria;
-  private Comparator<? super T> sortComparator;
   private boolean filterSelectedItem = true;
 
   private final List<ListDataListener> listDataListeners = new ArrayList<ListDataListener>();

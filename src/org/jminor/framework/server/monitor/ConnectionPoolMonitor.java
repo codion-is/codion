@@ -86,19 +86,19 @@ public final class ConnectionPoolMonitor {
     return poolStats;
   }
 
-  public int getPooledConnectionTimeout() throws RemoteException {
+  public int getPooledConnectionTimeout() {
     return pool.getConnectionTimeout() / THOUSAND;
   }
 
-  public void setPooledConnectionTimeout(final int value) throws RemoteException {
+  public void setPooledConnectionTimeout(final int value) {
     pool.setConnectionTimeout(value * THOUSAND);
   }
 
-  public int getPoolCleanupInterval() throws RemoteException {
+  public int getPoolCleanupInterval() {
     return pool.getCleanupInterval() / THOUSAND;
   }
 
-  public void setPoolCleanupInterval(final int value) throws RemoteException {
+  public void setPoolCleanupInterval(final int value) {
     pool.setCleanupInterval(value);
   }
 
@@ -106,7 +106,7 @@ public final class ConnectionPoolMonitor {
     return pool.getMinimumPoolSize();
   }
 
-  public void setMinimumPoolSize(final int value) throws RemoteException {
+  public void setMinimumPoolSize(final int value) {
     pool.setMinimumPoolSize(value);
   }
 
@@ -114,7 +114,7 @@ public final class ConnectionPoolMonitor {
     return pool.getMaximumPoolSize();
   }
 
-  public void setMaximumPoolSize(final int value) throws RemoteException {
+  public void setMaximumPoolSize(final int value) {
     pool.setMaximumPoolSize(value);
   }
 
@@ -122,7 +122,7 @@ public final class ConnectionPoolMonitor {
     return pool.getMaximumRetryWaitPeriod();
   }
 
-  public void setMaximumRetryWaitPeriod(final int value) throws RemoteException {
+  public void setMaximumRetryWaitPeriod(final int value) {
     pool.setMaximumRetryWaitPeriod(value);
   }
 
@@ -130,7 +130,7 @@ public final class ConnectionPoolMonitor {
     return pool.getMaximumCheckOutTime();
   }
 
-  public void setMaximumCheckOutTime(final int value) throws RemoteException {
+  public void setMaximumCheckOutTime(final int value) {
     pool.setMaximumCheckOutTime(value);
   }
 
@@ -138,7 +138,7 @@ public final class ConnectionPoolMonitor {
     return pool.getNewConnectionThreshold();
   }
 
-  public void setNewConnectionThreshold(final int value) throws RemoteException {
+  public void setNewConnectionThreshold(final int value) {
     pool.setNewConnectionThreshold(value);
   }
 
@@ -168,7 +168,7 @@ public final class ConnectionPoolMonitor {
     return checkOutTimeCollection;
   }
 
-  public void resetStats() throws RemoteException {
+  public void resetStats() {
     pool.resetStatistics();
   }
 
@@ -184,12 +184,12 @@ public final class ConnectionPoolMonitor {
     averageCheckOutTime.clear();
   }
 
-  public void setCollectFineGrainedStats(final boolean value) throws RemoteException {
+  public void setCollectFineGrainedStats(final boolean value) {
     pool.setCollectFineGrainedStatistics(value);
     evtCollectFineGrainedStatsChanged.fire();
   }
 
-  public boolean isCollectFineGrainedStats() throws RemoteException {
+  public boolean isCollectFineGrainedStats() {
     return pool.isCollectFineGrainedStatistics();
   }
 
@@ -235,7 +235,7 @@ public final class ConnectionPoolMonitor {
     return evtStatsUpdateIntervalChanged.getObserver();
   }
 
-  private void updateStats() throws RemoteException {
+  private void updateStats() {
     poolStats = pool.getStatistics(lastStatsUpdateTime);
     lastStatsUpdateTime = poolStats.getTimestamp();
     poolSizeSeries.add(poolStats.getTimestamp(), poolStats.getSize());
@@ -292,10 +292,7 @@ public final class ConnectionPoolMonitor {
     updateTimer.schedule(new TimerTask() {
       @Override
       public void run() {
-        try {
-          updateStats();
-        }
-        catch (RemoteException e) {/**/}
+        updateStats();
       }
     }, delay, delay);
   }

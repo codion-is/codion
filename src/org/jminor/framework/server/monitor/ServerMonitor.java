@@ -189,12 +189,12 @@ public final class ServerMonitor {
     return domainListModel;
   }
 
-  public void shutdownServer() throws RemoteException {
+  public void shutdownServer() {
     shutdown();
     try {
       server.shutdown();
     }
-    catch (RemoteException e) {/**/}
+    catch (RemoteException ignored) {}
     evtServerShutDown.fire();
   }
 

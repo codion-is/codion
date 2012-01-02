@@ -52,7 +52,7 @@ public final class ClientInstanceMonitorPanel extends JPanel {
     updateView();
   }
 
-  public void disconnectSelected() throws RemoteException {
+  public void disconnectSelected() {
     throw new UnsupportedOperationException("ClientInstanceMonitorPanel.disconnectSelected() has not been implemented");
   }
 
@@ -86,7 +86,7 @@ public final class ClientInstanceMonitorPanel extends JPanel {
     }
   }
 
-  private void initUI() throws RemoteException {
+  private void initUI() {
     setLayout(new BorderLayout(5,5));
     txtCreationDate.setEditable(false);
     final JPanel infoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));

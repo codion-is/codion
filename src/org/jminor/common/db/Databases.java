@@ -257,12 +257,12 @@ public final class Databases {
       final long current = System.currentTimeMillis();
       final double seconds = (current - queriesPerSecondTime) / 1000d;
       if (seconds > 0) {
-        queriesPerSecond = (int) (queriesPerSecondCounter / (double) seconds);
-        selectsPerSecond = (int) (selectsPerSecondCounter / (double) seconds);
-        insertsPerSecond = (int) (insertsPerSecondCounter / (double) seconds);
-        deletesPerSecond = (int) (deletesPerSecondCounter / (double) seconds);
-        updatesPerSecond = (int) (updatesPerSecondCounter / (double) seconds);
-        undefinedPerSecond = (int) (undefinedPerSecondCounter / (double) seconds);
+        queriesPerSecond = (int) (queriesPerSecondCounter / seconds);
+        selectsPerSecond = (int) (selectsPerSecondCounter / seconds);
+        insertsPerSecond = (int) (insertsPerSecondCounter / seconds);
+        deletesPerSecond = (int) (deletesPerSecondCounter / seconds);
+        updatesPerSecond = (int) (updatesPerSecondCounter / seconds);
+        undefinedPerSecond = (int) (undefinedPerSecondCounter / seconds);
         queriesPerSecondCounter = 0;
         selectsPerSecondCounter = 0;
         insertsPerSecondCounter = 0;

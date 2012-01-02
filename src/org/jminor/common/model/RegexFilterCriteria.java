@@ -26,14 +26,7 @@ public final class RegexFilterCriteria<T> implements FilterCriteria<T> {
    * @param caseSensitive if true then this criteria is case sensitive
    */
   public RegexFilterCriteria(final String patternString, final boolean caseSensitive) {
-    pattern = initializePattern(patternString, caseSensitive);
-  }
-
-  /**
-   * @return true if the pattern is valid.
-   */
-  public boolean isPatternValid() {
-    return pattern != null;
+    pattern = caseSensitive ? Pattern.compile(patternString) : Pattern.compile(patternString, Pattern.CASE_INSENSITIVE);
   }
 
   /**
@@ -42,24 +35,6 @@ public final class RegexFilterCriteria<T> implements FilterCriteria<T> {
    * @return true if the item should be included
    */
   public boolean include(final T item) {
-    if (item == null || pattern == null) {
-      return false;
-    }
-
-    return pattern.matcher(item.toString()).find();
-  }
-
-  private Pattern initializePattern(final String patternString, final boolean caseSensitive) {
-    try {
-      if (caseSensitive) {
-        return Pattern.compile(patternString);
-      }
-      else {
-        return Pattern.compile(patternString, Pattern.CASE_INSENSITIVE);
-      }
-    }
-    catch (Exception e) {
-      return null;
-    }
+    return item != null && pattern.matcher(item.toString()).find();
   }
 }

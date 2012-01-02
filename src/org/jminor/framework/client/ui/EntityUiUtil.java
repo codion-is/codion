@@ -26,7 +26,7 @@ import org.jminor.common.ui.images.Images;
 import org.jminor.common.ui.input.InputProviderPanel;
 import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.common.ui.textfield.IntField;
-import org.jminor.common.ui.textfield.TextFieldPlus;
+import org.jminor.common.ui.textfield.SizedDocument;
 import org.jminor.common.ui.valuemap.AbstractValueMapLink;
 import org.jminor.common.ui.valuemap.BooleanValueLink;
 import org.jminor.common.ui.valuemap.ComboBoxValueLink;
@@ -808,7 +808,12 @@ public final class EntityUiUtil {
       field = UiUtil.createFormattedField(DateUtil.getDateMask(dateFormat), true);
     }
     else if (property.isString()) {
-      field = formatMaskString == null ? new TextFieldPlus() : UiUtil.createFormattedField(formatMaskString, valueContainsLiteralCharacters);
+      if (formatMaskString == null) {
+        field = new JTextField(new SizedDocument(), "", 0);
+      }
+      else {
+        field = UiUtil.createFormattedField(formatMaskString, valueContainsLiteralCharacters);
+      }
     }
     else {
       throw new IllegalArgumentException("Unable to create text field for property type: " + property.getType());
@@ -821,8 +826,8 @@ public final class EntityUiUtil {
     if (property.hasDescription()) {
       field.setToolTipText(property.getDescription());
     }
-    if (field instanceof TextFieldPlus && property.getMaxLength() > 0) {
-      ((TextFieldPlus) field).setMaxLength(property.getMaxLength());
+    if (property.getMaxLength() > 0 && field.getDocument() instanceof SizedDocument) {
+      ((SizedDocument) field.getDocument()).setMaxLength(property.getMaxLength());
     }
     if (property instanceof Property.ColumnProperty) {
       UiUtil.addLookupDialog(field, editModel.getValueProvider(property));

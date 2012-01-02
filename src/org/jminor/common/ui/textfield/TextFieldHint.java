@@ -12,7 +12,7 @@ import java.awt.event.FocusListener;
 
 /**
  * Implements a hint text for text fields, that is, text that is shown
- * when the field contains no data, is empty an unfocused.
+ * when the field contains no data, is empty and unfocused.
  */
 public final class TextFieldHint {
 

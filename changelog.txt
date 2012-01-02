@@ -2626,3 +2626,10 @@
   PoolableConnectionProvider.getUser() added
   ConnectionPoolImpl.user field removed, constructor changed accordingly, getUser() delegates to the connectionProvider, see above
   ConnectionPools.createPool() no longer takes a User argument
+  minor changes to example build file
+  Inspection run, minor things, exceptions not thrown, final and such
+  DatabaseConnectionImpl.commit() and rollback() now throw exceptions as per method contract instead of ignoring them
+  TextFieldPlus removed
+  SizedDocument added, serves the purpose of the class removed above
+  IntField and DoubleField refactored to accomodate the above
+  RegexFilterCriteria refactored a bit

@@ -17,8 +17,8 @@ public final class SimpleCriteria<T> implements Criteria<T>, Serializable {
   private static final long serialVersionUID = 1;
 
   private final String criteriaString;
-  private List<Object> values;
-  private List<T> keys;
+  private final List<Object> values;
+  private final List<T> keys;
 
   /**
    * Instantiates a new SimpleCriteria

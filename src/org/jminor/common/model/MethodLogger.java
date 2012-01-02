@@ -7,13 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A cyclical method logger.
+ * A cyclical method call logger.
  */
 public class MethodLogger {
 
-  private int logSize;
+  private final int logSize;
+  private final List<LogEntry> logEntries;
   private volatile boolean enabled = false;
-  private List<LogEntry> logEntries;
   private int currentLogEntryIndex = 0;
 
   private long lastAccessDate = System.currentTimeMillis();

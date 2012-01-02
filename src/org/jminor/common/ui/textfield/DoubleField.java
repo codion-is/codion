@@ -5,10 +5,7 @@ package org.jminor.common.ui.textfield;
 
 import org.jminor.common.model.Util;
 
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
-import javax.swing.text.PlainDocument;
 import java.text.NumberFormat;
 
 /**
@@ -21,8 +18,6 @@ public final class DoubleField extends IntField {
 
   private final transient ThreadLocal<NumberFormat> format = new LocalFormat();
 
-  private String decimalSymbol = COMMA;
-
   /** Constructs a new DoubleField. */
   public DoubleField() {
     this(0);
@@ -33,26 +28,15 @@ public final class DoubleField extends IntField {
   }
 
   public DoubleField(final double min, final double max) {
-    this(0);
     setRange(min, max);
   }
 
-  @Override
-  public Object getValue() {
-    return getDouble();
-  }
-
   public String getDecimalSymbol() {
-    return decimalSymbol;
+    return ((DoubleFieldDocument) getDocument()).getDecimalSymbol();
   }
 
   public void setDecimalSymbol(final String decimalSymbol) {
-    Util.rejectNullValue(decimalSymbol, "decimalSymbol");
-    if (decimalSymbol.length() > 1) {
-      throw new IllegalArgumentException("Decimal symbols can only be one character long");
-    }
-
-    this.decimalSymbol = decimalSymbol;
+    ((DoubleFieldDocument) getDocument()).setDecimalSymbol(decimalSymbol);
   }
 
   /**
@@ -82,80 +66,86 @@ public final class DoubleField extends IntField {
     return new DoubleFieldDocument();
   }
 
-  private String prepareString(final String str, final String documentText, final int offset) {
-    String preparedString = str;
-    if (decimalSymbol.equals(POINT)) {
-      if (str.contains(COMMA)) {
-        preparedString = str.replace(COMMA, POINT);
+  private class DoubleFieldDocument extends SizedDocument {
+
+    private String decimalSymbol = COMMA;
+
+    public String getDecimalSymbol() {
+      return decimalSymbol;
+    }
+
+    public void setDecimalSymbol(final String decimalSymbol) {
+      Util.rejectNullValue(decimalSymbol, "decimalSymbol");
+      if (decimalSymbol.length() > 1) {
+        throw new IllegalArgumentException("Decimal symbols can only be one character long");
       }
-    }
-    else if (str.contains(POINT)) {
-      preparedString = str.replace(POINT, COMMA);
+
+      this.decimalSymbol = decimalSymbol;
     }
 
-    //convert "." or "," to "0." before proceeding
-    if (documentText.length() == 0 && (isDecimalSymbol(preparedString))) {
-      preparedString = "0" + preparedString;
-    }
+    @Override
+    protected String prepareString(final String string, final String documentText, final int offset) {
+      String preparedString = string;
+      if (decimalSymbol.equals(POINT)) {
+        if (string.contains(COMMA)) {
+          preparedString = string.replace(COMMA, POINT);
+        }
+      }
+      else if (string.contains(POINT)) {
+        preparedString = string.replace(POINT, COMMA);
+      }
 
-    if (isDecimalSymbol(str)) {
-      if (documentText.length() == 0) {
+      //convert "." or "," to "0." before proceeding
+      if (documentText.length() == 0 && (isDecimalSymbol(preparedString))) {
         preparedString = "0" + preparedString;
       }
-      else {
-        if (offset != 0 && (documentText.contains(POINT) || documentText.contains(COMMA))) {
-          return "";//not allow multiple decimal points
+
+      if (isDecimalSymbol(string)) {
+        if (documentText.length() == 0) {
+          preparedString = "0" + preparedString;
         }
         else {
-          preparedString = decimalSymbol;
+          if (offset != 0 && (documentText.contains(POINT) || documentText.contains(COMMA))) {
+            return "";//not allow multiple decimal points
+          }
+          else {
+            preparedString = decimalSymbol;
+          }
         }
       }
+
+      return preparedString;
     }
 
-    return preparedString;
-  }
-
-  private class DoubleFieldDocument extends PlainDocument {
     @Override
-    public void insertString(final int offs, final String str, final AttributeSet a) throws BadLocationException {
-      if (getMaxLength() > 0 && getLength() + (str != null ? str.length() : 0) > getMaxLength()) {
-        return;
-      }
-      if (str == null || str.equals("")) {
-        super.insertString(offs, str, a);
-        return;
-      }
-
-      final String text = getText(0, getLength());
-      final String preparedString = prepareString(str, text, offs);
+    protected boolean validValue(final String string, final String documentText, final int offset) {
+      final String preparedString = prepareString(string, documentText, offset);
       if (preparedString.isEmpty()) {
-        return;
+        return true;
       }
       double value = 0;
-      if (text != null && !text.equals("") && !text.equals("-")) {
-        value = Util.getDouble(text);
+      if (documentText != null && !documentText.equals("") && !documentText.equals("-")) {
+        value = Util.getDouble(documentText);
       }
       boolean valueOk = false;
       final char c = preparedString.charAt(0);
-      if (offs == 0 && c == '-') {
+      if (offset == 0 && c == '-') {
         valueOk = value >= 0;
       }
       else if (Character.isDigit(c)) {
-        valueOk = !((offs == 0) && (value < 0));
+        valueOk = !((offset == 0) && (value < 0));
       }
       else if (isDecimalSymbol(preparedString)) {
         valueOk = true;
       }
       // Range check
       if (valueOk) {
-        final StringBuilder sb = new StringBuilder(text);
-        sb.insert(offs, preparedString);
+        final StringBuilder sb = new StringBuilder(documentText);
+        sb.insert(offset, preparedString);
         valueOk = isWithinRange(Util.getDouble(sb.toString()));
       }
 
-      if (valueOk) {
-        super.insertString(offs, preparedString, a);
-      }
+      return valueOk;
     }
   }
 

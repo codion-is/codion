@@ -14,7 +14,7 @@ public class DoubleFieldTest {
     txt.setText("22,3");
     assertEquals(Double.valueOf(22.3), txt.getDouble());
     txt.setText("22.3");
-    assertEquals(Double.valueOf(22.3), txt.getValue());
+    assertEquals(Double.valueOf(22.3), txt.getDouble());
 
     txt.setDecimalSymbol(".");
     txt.setDouble(42.2);

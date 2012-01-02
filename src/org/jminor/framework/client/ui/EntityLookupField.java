@@ -7,8 +7,8 @@ import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.TextBeanValueLink;
+import org.jminor.common.ui.textfield.SizedDocument;
 import org.jminor.common.ui.textfield.TextFieldHint;
-import org.jminor.common.ui.textfield.TextFieldPlus;
 import org.jminor.framework.client.model.EntityLookupModel;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.i18n.FrameworkMessages;
@@ -242,13 +242,11 @@ public final class EntityLookupField extends JTextField {
     return lookupAction;
   }
 
-  private boolean performLookup(final boolean promptUser) {
+  private void performLookup(final boolean promptUser) {
     try {
       performingLookup = true;
       if (model.getSearchString().isEmpty()) {
         model.setSelectedEntities(null);
-
-        return true;
       }
       else {
         if (!model.searchStringRepresentsSelected()) {
@@ -262,15 +260,13 @@ public final class EntityLookupField extends JTextField {
           }
           if (queryResult.size() == 1) {
             model.setSelectedEntities(queryResult);
-            return true;
           }
           else if (promptUser) {
             if (queryResult.isEmpty()) {
               JOptionPane.showMessageDialog(this, FrameworkMessages.get(FrameworkMessages.NO_RESULTS_FROM_CRITERIA));
-              return false;
             }
             else {
-              return selectEntities(queryResult);
+              selectEntities(queryResult);
             }
           }
         }
@@ -279,8 +275,6 @@ public final class EntityLookupField extends JTextField {
     finally {
       performingLookup = false;
     }
-
-    return false;
   }
 
   private JPopupMenu initializePopupMenu() {
@@ -319,8 +313,9 @@ public final class EntityLookupField extends JTextField {
               new JCheckBox(FrameworkMessages.get(FrameworkMessages.POSTFIX_WILDCARD), lookupPanel.getModel().isWildcardPostfix());
       final JCheckBox boxAllowMultipleValues =
               new JCheckBox(FrameworkMessages.get(FrameworkMessages.ENABLE_MULTIPLE_SEARCH_VALUES), lookupPanel.getModel().isMultipleSelectionAllowed());
-      final TextFieldPlus txtMultipleValueSeparator = new TextFieldPlus(1);
-      txtMultipleValueSeparator.setMaxLength(1);
+      final SizedDocument document = new SizedDocument();
+      document.setMaxLength(1);
+      final JTextField txtMultipleValueSeparator = new JTextField(document, "", 1);
       txtMultipleValueSeparator.setText(lookupPanel.getModel().getMultipleValueSeparator());
 
       panel.add(boxCaseSensitive);

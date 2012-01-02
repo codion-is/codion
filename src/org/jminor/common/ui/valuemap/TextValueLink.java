@@ -15,7 +15,6 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.text.FieldPosition;
 import java.text.Format;
-import java.text.ParseException;
 import java.text.ParsePosition;
 
 /**
@@ -112,12 +111,7 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> {
   /** {@inheritDoc} */
   @Override
   protected final Object getUIValue() {
-    try {
-      return getValueFromText(getText());
-    }
-    catch (ParseException e) {
-      throw new RuntimeException(e);
-    }
+    return getValueFromText(getText());
   }
 
   /** {@inheritDoc} */
@@ -176,10 +170,9 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> {
    * Returns a property value based on the given text, if the text can not
    * be parsed into a valid value, null is returned
    * @param text the text from which to parse a value
-   * @return a value, null if the input text has zero length or if it does not yield a valid value
-   * @throws java.text.ParseException in case the value could not be parsed from the text
+   * @return a value from the given text, or null if the parsing did not yield a valid value
    */
-  protected Object getValueFromText(final String text) throws ParseException {
+  protected Object getValueFromText(final String text) {
     if (text != null && text.isEmpty()) {
       return null;
     }
@@ -191,11 +184,6 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> {
    * A simple null format, which performs no formatting
    */
   private static final class NullFormat extends Format {
-    /** {@inheritDoc} */
-    @Override
-    public Object clone() {
-      return super.clone();
-    }
     /** {@inheritDoc} */
     @Override
     public StringBuffer format(final Object obj, final StringBuffer toAppendTo, final FieldPosition pos) {

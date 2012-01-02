@@ -17,7 +17,6 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 
 /**
  * <p>
@@ -305,9 +304,8 @@ public final class NavigableImagePanel extends JPanel {
    * <p>Creates a new navigable image panel with the specified image
    * and the mouse scroll wheel as the zooming device.</p>
    * @param image the default image
-   * @throws java.io.IOException in case of an exception
    */
-  public NavigableImagePanel(final BufferedImage image) throws IOException {
+  public NavigableImagePanel(final BufferedImage image) {
     this();
     setImage(image);
   }

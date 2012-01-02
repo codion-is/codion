@@ -32,7 +32,6 @@ import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.rmi.RemoteException;
 import java.text.NumberFormat;
 
 /**
@@ -68,11 +67,10 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   /**
    * Instantiates a new ConnectionPoolMonitorPanel
    * @param model the ConnectionPoolMonitor to base this panel on
-   * @throws RemoteException in case of an exception
    */
-  public ConnectionPoolMonitorPanel(final ConnectionPoolMonitor model) throws RemoteException {
+  public ConnectionPoolMonitorPanel(final ConnectionPoolMonitor model) {
     this.model = model;
-    format.setMaximumFractionDigits(2);
+    this.format.setMaximumFractionDigits(2);
     initUI();
     updateView();
     bindEvents();

@@ -642,7 +642,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
                 try {
                   scenarioName = loadTestModel.performWork(application);
                 }
-                catch (ScenarioException e) {}
+                catch (ScenarioException ignored) {}
               }
               finally {
                 final long workTimeMillis = (System.nanoTime() - currentTimeNano) / NANO_IN_MILLI;
@@ -916,8 +916,8 @@ public abstract class LoadTestModel<T> implements LoadTest {
         usageScenarioAvgDurations.clear();
         usageScenarioMinDurations.clear();
         usageScenarioMaxDurations.clear();
-        workRequestsPerSecond = (int) (workRequestCounter / (double) elapsedSeconds);
-        delayedWorkRequestsPerSecond = (int) (delayedWorkRequestCounter / (double) elapsedSeconds);
+        workRequestsPerSecond = (int) (workRequestCounter / elapsedSeconds);
+        delayedWorkRequestsPerSecond = (int) (delayedWorkRequestCounter / elapsedSeconds);
         for (final UsageScenario scenario : usageScenarios) {
           usageScenarioRates.put(scenario.getName(), (int) (scenario.getTotalRunCount() / elapsedSeconds));
           final double failures = scenario.getUnsuccessfulRunCount();

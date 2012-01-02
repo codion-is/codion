@@ -11,7 +11,7 @@ import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.ValueCollectionProvider;
 import org.jminor.common.ui.images.NavigableImagePanel;
-import org.jminor.common.ui.textfield.TextFieldPlus;
+import org.jminor.common.ui.textfield.SizedDocument;
 
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
@@ -531,6 +531,7 @@ public final class UiUtil {
    * Searches the parent component hierarchy of the given component for
    * an ancestor of the given type
    * @param component the component
+   * @param clazz the class of the parent to find
    * @return the parent of the given component of the given type, null if none is found
    */
   public static <T> T getParentOfType(final Component component, final Class<T> clazz) {
@@ -670,35 +671,13 @@ public final class UiUtil {
    * @return the text field
    */
   public static JTextComponent makeUpperCase(final JTextComponent textField) {
-    if (textField instanceof TextFieldPlus) {
-      return makeUpperCase((TextFieldPlus) textField);
+    if (textField.getDocument() instanceof SizedDocument) {
+      ((SizedDocument) textField.getDocument()).setUpperCase(true);
+    }
+    else {
+      ((PlainDocument) textField.getDocument()).setDocumentFilter(new CaseDocumentFilter(true));
     }
 
-    ((PlainDocument) textField.getDocument()).setDocumentFilter(new DocumentFilter() {
-      @Override
-      public void insertString(final FilterBypass fb, final int offset, final String string, final AttributeSet attr) throws BadLocationException {
-        super.insertString(fb, offset, string == null ? null : string.toUpperCase(Locale.getDefault()), attr);
-      }
-      @Override
-      public void remove(final FilterBypass fb, final int offset, final int length) throws BadLocationException {
-        super.remove(fb, offset, length);
-      }
-      @Override
-      public void replace(final FilterBypass fb, final int offset, final int length, final String text, final AttributeSet attrs) throws BadLocationException {
-        super.replace(fb, offset, length, text == null ? null : text.toUpperCase(Locale.getDefault()), attrs);
-      }
-    });
-
-    return textField;
-  }
-
-  /**
-   * Makes <code>textField</code> convert all lower case input to upper case
-   * @param textField the text field
-   * @return the text field
-   */
-  public static TextFieldPlus makeUpperCase(final TextFieldPlus textField) {
-    textField.setUpperCase(true);
     return textField;
   }
 
@@ -708,37 +687,13 @@ public final class UiUtil {
    * @return the text field
    */
   public static JTextComponent makeLowerCase(final JTextComponent textField) {
-    if (textField instanceof TextFieldPlus) {
-      return makeLowerCase((TextFieldPlus) textField);
+    if (textField.getDocument() instanceof SizedDocument) {
+      ((SizedDocument) textField.getDocument()).setLowerCase(true);
+    }
+    else {
+      ((PlainDocument) textField.getDocument()).setDocumentFilter(new CaseDocumentFilter(false));
     }
 
-    ((PlainDocument) textField.getDocument()).setDocumentFilter(new DocumentFilter() {
-      @Override
-      public void insertString(final FilterBypass fb, final int offset, final String string, final AttributeSet attr) throws BadLocationException {
-        super.insertString(fb, offset, string.toLowerCase(), attr);
-      }
-
-      @Override
-      public void remove(final FilterBypass fb, final int offset, final int length) throws BadLocationException {
-        super.remove(fb, offset, length);
-      }
-
-      @Override
-      public void replace(final FilterBypass fb, final int offset, final int length, final String text, final AttributeSet attrs) throws BadLocationException {
-        super.replace(fb, offset, length, text.toLowerCase(), attrs);
-      }
-    });
-
-    return textField;
-  }
-
-  /**
-   * Makes <code>textField</code> convert all upper case input to lower case
-   * @param textField the text field
-   * @return the text field
-   */
-  public static TextFieldPlus makeLowerCase(final TextFieldPlus textField) {
-    textField.setLowerCase(true);
     return textField;
   }
 
@@ -1331,6 +1286,29 @@ public final class UiUtil {
       textComponent.setText(file.getAbsolutePath());
       textComponent.requestFocusInWindow();
       return true;
+    }
+  }
+
+  private static final class CaseDocumentFilter extends DocumentFilter {
+
+    private final boolean upperCase;
+
+    private CaseDocumentFilter(final boolean upperCase) {
+      this.upperCase = upperCase;
+    }
+
+    @Override
+    public void insertString(final FilterBypass bypass, final int offset, final String string,
+                             final AttributeSet attributeSet) throws BadLocationException {
+      super.insertString(bypass, offset, string == null ? null :
+              (upperCase ? string.toUpperCase(Locale.getDefault()) : string.toLowerCase(Locale.getDefault())), attributeSet);
+    }
+
+    @Override
+    public void replace(final FilterBypass bypass, final int offset, final int length, final String string,
+                        final AttributeSet attributeSet) throws BadLocationException {
+      super.replace(bypass, offset, length, string == null ? null :
+              (upperCase ? string.toUpperCase(Locale.getDefault()) : string.toLowerCase(Locale.getDefault())), attributeSet);
     }
   }
 }

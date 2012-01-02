@@ -62,8 +62,8 @@ public final class LoadTestPanel extends JPanel {
   private final LoadTest loadTestModel;
 
   private final JPanel scenarioBase = new JPanel(new GridLayout(0, 1, 5, 5));
+  private final JPanel pluginPanel;
   private ItemRandomizerPanel randomizerPanel;
-  private JPanel pluginPanel;
 
   /**
    * Constructs a new LoadTestPanel.

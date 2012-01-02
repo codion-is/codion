@@ -5,18 +5,19 @@ package org.jminor.common.ui.textfield;
 
 import org.jminor.common.model.Util;
 
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
+import javax.swing.JTextField;
 import javax.swing.text.Document;
-import javax.swing.text.PlainDocument;
 import java.text.NumberFormat;
 
 /**
  * A text field for integers.
  */
-public class IntField extends TextFieldPlus {
+public class IntField extends JTextField {
 
   private final transient ThreadLocal<NumberFormat> format = new LocalFormat();
+
+  private double minimumValue = Double.NEGATIVE_INFINITY;
+  private double maximumValue = Double.POSITIVE_INFINITY;
 
   /**
    * Constructs a new IntField.
@@ -39,14 +40,39 @@ public class IntField extends TextFieldPlus {
    * @param max the maximum value
    */
   public IntField(final int min, final int max) {
-    this();
     setRange(min, max);
   }
 
-  /** {@inheritDoc} */
-  @Override
-  public Object getValue() {
-    return getInt();
+  /**
+   * Sets the range of values this field should allow
+   * @param min the minimum value
+   * @param max the maximum value
+   */
+  public final void setRange(final double min, final double max) {
+    this.minimumValue = min;
+    this.maximumValue = max;
+  }
+
+  /**
+   * @return the minimum value this field should accept
+   */
+  public final double getMinimumValue() {
+    return minimumValue;
+  }
+
+  /**
+   * @return the maximum value this field should accept
+   */
+  public final double getMaximumValue() {
+    return maximumValue;
+  }
+
+  /**
+   * @param value the value to check
+   * @return true if this value is within the allowed range for this field
+   */
+  public final boolean isWithinRange(final double value) {
+    return ((value <= maximumValue) && (value >= minimumValue));
   }
 
   /**
@@ -69,40 +95,30 @@ public class IntField extends TextFieldPlus {
     return new IntFieldDocument();
   }
 
-  private final class IntFieldDocument extends PlainDocument {
-    /** {@inheritDoc} */
+  private final class IntFieldDocument extends SizedDocument {
+
     @Override
-    public void insertString(final int offs, final String str, final AttributeSet a) throws BadLocationException {
-      if (getMaxLength() > 0 && getLength() + (str != null ? str.length() : 0) > getMaxLength()) {
-        return;
-      }
-      if (str == null || str.equals("")) {
-        super.insertString(offs, str, a);
-        return;
-      }
-      final String text = getText(0, getLength());
+    protected boolean validValue(final String string, final String documentText, final int offset) {
       int value = 0;
-      if (text != null && !text.equals("") && !text.equals("-")) {
-        value = Integer.parseInt(text);
+      if (documentText != null && !documentText.equals("") && !documentText.equals("-")) {
+        value = Integer.parseInt(documentText);
       }
       boolean valueOk = false;
-      final char c = str.charAt(0);
-      if (offs == 0 && c == '-') {
+      final char c = string.charAt(0);
+      if (offset == 0 && c == '-') {
         valueOk = value >= 0;
       }
       else if (Character.isDigit(c)) {
-        valueOk = !((offs == 0) && (value < 0));
+        valueOk = !((offset == 0) && (value < 0));
       }
       // Range check
       if (valueOk) {
-        final StringBuilder sb = new StringBuilder(text);
-        sb.insert(offs, str);
+        final StringBuilder sb = new StringBuilder(documentText);
+        sb.insert(offset, string);
         valueOk = isWithinRange(Util.getLong(sb.toString()));
       }
 
-      if (valueOk) {
-        super.insertString(offs, str, a);
-      }
+      return valueOk;
     }
   }
 
