@@ -18,7 +18,7 @@ public final class PostgreSQLDatabase extends AbstractDatabase {
   static final String CHECK_QUERY = "select 1";
 
   /**
-   * Instantiates a new PostgreDatabase.
+   * Instantiates a new PostgreSQLDatabase.
    */
   public PostgreSQLDatabase() {
     super(POSTGRESQL);
