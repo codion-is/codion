@@ -25,7 +25,7 @@ public final class PostgreSQLDatabase extends AbstractDatabase {
   }
 
   /**
-   * Instantiates a new PostgreDatabase.
+   * Instantiates a new PostgreSQLDatabase.
    * @param host the host name
    * @param port the port number
    * @param database the database name
