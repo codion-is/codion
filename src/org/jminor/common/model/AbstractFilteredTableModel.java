@@ -98,6 +98,16 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   private final Map<C, TableColumn> hiddenColumns = new HashMap<C, TableColumn>();
 
   /**
+   * The SearchModels used for filtering
+   */
+  private final Map<C, ColumnSearchModel<C>> columnFilterModels = new HashMap<C, ColumnSearchModel<C>>();
+
+  /**
+   * holds the column sorting states
+   */
+  private final Map<C, SortingState> sortingStates = new HashMap<C, SortingState>();
+
+  /**
    * The selection model
    */
   private final SelectionModel selectionModel;
@@ -121,16 +131,6 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
    * true while the model data is being sorted
    */
   private boolean isSorting = false;
-
-  /**
-   * The SearchModels used for filtering
-   */
-  private final Map<C, ColumnSearchModel<C>> columnFilterModels = new HashMap<C, ColumnSearchModel<C>>();
-
-  /**
-   * holds the column sorting states
-   */
-  private final Map<C, SortingState> sortingStates = new HashMap<C, SortingState>();
 
   /**
    * the filter criteria used by this model
@@ -581,7 +581,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   /** {@inheritDoc} */
   @SuppressWarnings({"unchecked"})
-  public final C getColumnIdentifer(final int modelColumnIndex) {
+  public final C getColumnIdentifier(final int modelColumnIndex) {
     return (C) columnModel.getColumn(convertColumnIndexToView(modelColumnIndex)).getIdentifier();
   }
 

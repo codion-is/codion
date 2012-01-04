@@ -2633,3 +2633,4 @@
   SizedDocument added, serves the purpose of the class removed above
   IntField and DoubleField refactored to accomodate the above
   RegexFilterCriteria refactored a bit
+  FilteredTableModel.getColumnIdentifer() spelling fixed, getColumnIdentifier()

@@ -287,7 +287,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   /** {@inheritDoc} */
   @Override
   public final Class<?> getColumnClass(final int columnIndex) {
-    return getColumnClass(getColumnIdentifer(columnIndex));
+    return getColumnClass(getColumnIdentifier(columnIndex));
   }
 
   /** {@inheritDoc} */
@@ -297,7 +297,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   /** {@inheritDoc} */
   public final Object getValueAt(final int rowIndex, final int columnIndex) {
-    final Property property = getColumnIdentifer(columnIndex);
+    final Property property = getColumnIdentifier(columnIndex);
     final Entity rowEntity = getItemAt(rowIndex);
     if (property instanceof Property.ValueListProperty || property instanceof Property.ForeignKeyProperty) {
       return rowEntity.getValueAsString(property);
