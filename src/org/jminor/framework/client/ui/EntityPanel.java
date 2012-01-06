@@ -59,7 +59,17 @@ import java.util.List;
 
 /**
  * A panel representing a Entity via a EntityModel, which facilitates browsing and editing of records.
- * To lay out the panel components and initialize the panel you must call the method <code>initializePanel()</code>.
+ * <pre>
+ *   String entityID = ...;
+ *   EntityConnectionProvider connectionProvider = ...;
+ *   EntityModel entityModel = new DefaultEntityModel(entityID, connectionProvider);
+ *   EntityPanel entityPanel = new EntityPanel(entityModel);
+ *   entityPanel.initializePanel();
+ *   JFrame frame = new JFrame();
+ *   frame.add(entityPanel);
+ *   frame.pack();
+ *   frame.setVisible(true);
+ * </pre>
  */
 public class EntityPanel extends JPanel implements MasterDetailPanel {
 
@@ -1299,10 +1309,10 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
         detailPanelDialog = UiUtil.showInDialog(UiUtil.getParentWindow(EntityPanel.this), detailPanelTabbedPane, false,
                 caption + " - " + FrameworkMessages.get(FrameworkMessages.DETAIL_TABLES), false, true,
                 null, size, location, new AbstractAction() {
-                  public void actionPerformed(final ActionEvent e) {
-                    setDetailPanelState(HIDDEN);
-                  }
-                });
+          public void actionPerformed(final ActionEvent e) {
+            setDetailPanelState(HIDDEN);
+          }
+        });
       }
     });
   }
@@ -1324,11 +1334,11 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
     location.setLocation(location.x + 1, location.y + getSize().height - editControlPanel.getSize().height - EDIT_DIALOG_LOCATION_OFFSET);
     editPanelDialog = UiUtil.showInDialog(UiUtil.getParentWindow(this), editControlPanel, false,
             caption, false, true, null, null, location, new AbstractAction() {
-              /** {@inheritDoc} */
-              public void actionPerformed(final ActionEvent e) {
-                setEditPanelState(HIDDEN);
-              }
-            });
+      /** {@inheritDoc} */
+      public void actionPerformed(final ActionEvent e) {
+        setEditPanelState(HIDDEN);
+      }
+    });
     editPanel.prepareUI(true, false);
   }
 

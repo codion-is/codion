@@ -2634,3 +2634,7 @@
   IntField and DoubleField refactored to accomodate the above
   RegexFilterCriteria refactored a bit
   FilteredTableModel.getColumnIdentifer() spelling fixed, getColumnIdentifier()
+  cobertura.dir property moved from build.properties to user.properties
+  CriteriaSet, criteriaList instantiated inline
+  EntityPanel, javadoc improvements
+  ResultPacker, added doc for type parameter

@@ -9,6 +9,7 @@ import java.util.List;
 
 /**
  * A ResultPacker packs the contents of a ResultSet into a List.
+ * @param <T> the type of object resulting from the packing
  */
 public interface ResultPacker<T> {
 
