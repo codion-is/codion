@@ -2638,3 +2638,6 @@
   CriteriaSet, criteriaList instantiated inline
   EntityPanel, javadoc improvements
   ResultPacker, added doc for type parameter
+  Entities.getDefinitions() now uses a LinkedHashMap for a defined iteration order
+  EntityDefinitionImpl.ENTITY_DEFINITIONS is now a LinkedHashMap for a defined iteration order
+  DefaultEntityApplicationModelTest.getDependencyTreeModel() now uses preorderEnumeration when going through dependency tree

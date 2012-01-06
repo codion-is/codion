@@ -136,7 +136,7 @@ final class EntityDefinitionImpl implements Entity.Definition {
   private String selectColumnsString;
   private boolean hasDenormalizedProperties;
 
-  private static final Map<String, Entity.Definition> ENTITY_DEFINITIONS = new HashMap<String, Entity.Definition>();
+  private static final Map<String, Entity.Definition> ENTITY_DEFINITIONS = new LinkedHashMap<String, Entity.Definition>();
 
   /**
    * Defines a new entity type, with the entityID serving as the initial entity caption

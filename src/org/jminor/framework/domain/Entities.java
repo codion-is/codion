@@ -17,7 +17,7 @@ import java.io.Serializable;
 import java.text.Format;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -586,7 +586,7 @@ public final class Entities {
    * @return a map containing all defined entityIDs, with their respective table names as an associated value
    */
   public static Map<String, String> getDefinitions(final String domainID) {
-    final Map<String, String> definitions = new HashMap<String, String>();
+    final Map<String, String> definitions = new LinkedHashMap<String, String>();
     for (final Entity.Definition definition : EntityDefinitionImpl.getDefinitionMap().values()) {
       if (domainID == null) {
         definitions.put(definition.getEntityID(), definition.getTableName());
